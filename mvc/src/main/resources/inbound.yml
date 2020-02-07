@@ -1,0 +1,48 @@
+#  --------------------------------------------------------
+#  Configuration of Karnak DICOM inbound stream
+#  --------------------------------------------------------
+
+dicom:
+    listener:
+        aet: KARNAK-IN
+        port: 11115
+        # Listening in DICOM-S (TLS), if true, required TLS configuration
+        tls: false
+gateway:
+    # Gateway mode [FORWARD | ARCHIVE | PULL | DISABLE]
+    mode: DISABLE
+    archive:
+        # URL of the pulling service (only with ARCHIVE mode)
+        url:
+    pull:       
+        check:
+            # For PULL mode, interval in seconds for checking the directory (default value = 5)
+            interval: 5
+# SMTP server for notifications
+mail:
+    smtp:
+        host:
+        port:
+        # Value with authentication should be "SSL" or "STARTTLS"
+        type:
+        user:
+        secret:
+# Notification configuration (works only at least one object of the study can be sent to the destination, otherwise no notification is sent)
+notify:
+    # Interval in seconds for sending a notification (when no new image is arrived in the archive folder). Default value is 45.
+    interval: 30
+    object:
+        error:
+            prefix: '**ERROR**'
+        # Pattern of the notification title (the email object),see https://dzone.com/articles/java-string-format-examples
+        pattern: '[Karnak Notification] %s %.30s'
+        # Values injected in the pattern [PatientID StudyDescription StudyDate StudyInstanceUID]
+        values: PatientID,StudyDescription
+# For DICOM TLS and for ARCHIVE and PULL services
+tls:
+    keystore:
+        path:
+        secret:
+    truststore:
+        path:
+        secret:

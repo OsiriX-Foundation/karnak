@@ -1,0 +1,45 @@
+# IntelliJ project files 
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# eclipse project files
+.settings/
+.classpath
+.project
+
+# NetBeans specific
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+nbactions.xml
+nb-configuration.xml
+
+# Ignore Maven files
+target/
+release.properties
+pom.xml.releaseBackup
+pom.xml.tag
+*.command
+*.marker
+
+# OS generated files
+.DS_Store
+Thumbs.db
+_*/
+
+# crash file
+hs_err*.log
+
+# Vaadin
+package.json
+package-lock.json
+webpack.config.js
+webpack.generated.js
+node_modules/
+
+docker/
+
