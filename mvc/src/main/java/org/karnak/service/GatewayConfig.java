@@ -150,7 +150,7 @@ public class GatewayConfig {
 
     private static String getProperty(PropertySource<?> config, String key, String defaultValue) {
         Object val = config.getProperty(key);
-        if (val == null) {
+        if (val == null || !StringUtil.hasText(val.toString())) {
             return defaultValue;
         }
         return val.toString();

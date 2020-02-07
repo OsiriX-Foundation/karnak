@@ -1,0 +1,12 @@
+version: '3.1'
+
+services:
+  karnak:
+    container_name: karnak
+    image: karnak-mvc:5.0.0-SNAPSHOT
+    ports:
+      - "11117:11117"
+      - "8081:8081"
+    env_file: karnak.env
+    volumes:
+      - ./destination:/usr/local/karnak
