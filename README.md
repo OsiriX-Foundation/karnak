@@ -36,7 +36,7 @@ Build docker image:
  - with devh2: `mvn spring-boot:build-image -P devh2,production -f mvc`
  - with postgres: `mvn spring-boot:build-image -P production -f mvc`
 
-Run Karnak: `docker run -it -p8081:8081 -p11117:11117 karnak-mvc:5.0.0-SNAPSHOT`
+Run Karnak: `docker run -it -p8081:8081 -p11119:11119 karnak-mvc:5.0.0-SNAPSHOT`
 
 # Architecture
 
@@ -44,5 +44,10 @@ This project provides two modules:
  - karnak-data: the data model for persistence of the gateway configuration 
  - karnak-mvc: the services and UI for updating the data model
 
+# Workflow
 
+![Workflow](doc/karnak-workflow.svg)
 
+# Pipeline
+
+![Workflow](doc/karnak-pipeline.svg)

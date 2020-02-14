@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.karnak</groupId>
@@ -37,12 +38,31 @@
 
 	<repositories>
 		<repository>
+			<id>central</id>
+			<name>Central Repository</name>
+			<url>https://repo.maven.apache.org/maven2</url>
+		</repository>
+		<repository>
 			<id>spring-releases</id>
 			<url>https://repo.spring.io/libs-release</url>
 		</repository>
 		<repository>
 			<id>spring-milestone</id>
 			<url>https://repo.spring.io/milestone</url>
+		</repository>
+		<repository>
+			<id>mvn-repo-master</id>
+			<url>https://raw.github.com/nroduit/mvn-repo/master/</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>www.dcm4che.org</id>
+			<name>dcm4che Repository</name>
+			<url>http://maven.dcm4che.org</url>
+			<!-- <url>http://www.dcm4che.org/maven2</url> (which will redirected to 
+				https://www.dcm4che.org/maven2). -->
 		</repository>
 	</repositories>
 	<pluginRepositories>

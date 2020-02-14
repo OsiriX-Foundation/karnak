@@ -84,36 +84,6 @@ public class OutputRepositoryTest {
     }
 
     @Test
-    public void testInvalidForwardNode_WhiteSpace1() {
-        expectedEx.expect(ConstraintViolationException.class);
-        expectedEx.expectMessage("Forward AETitle contains white spaces");
-
-        ForwardNode forwardNode = ForwardNode.ofEmpty();
-        forwardNode.setFwdAeTitle("A A");
-        entityManager.persistAndFlush(forwardNode);
-    }
-
-    @Test
-    public void testInvalidForwardNode_WhiteSpace2() {
-        expectedEx.expect(ConstraintViolationException.class);
-        expectedEx.expectMessage("Forward AETitle contains white spaces");
-
-        ForwardNode forwardNode = ForwardNode.ofEmpty();
-        forwardNode.setFwdAeTitle(" AA");
-        entityManager.persistAndFlush(forwardNode);
-    }
-
-    @Test
-    public void testInvalidForwardNode_WhiteSpace3() {
-        expectedEx.expect(ConstraintViolationException.class);
-        expectedEx.expectMessage("Forward AETitle contains white spaces");
-
-        ForwardNode forwardNode = ForwardNode.ofEmpty();
-        forwardNode.setFwdAeTitle("AA ");
-        entityManager.persistAndFlush(forwardNode);
-    }
-
-    @Test
     public void testInvalidSourceNode_AETitle_mandatory() {
         expectedEx.expect(ConstraintViolationException.class);
         expectedEx.expectMessage("AETitle is mandatory");

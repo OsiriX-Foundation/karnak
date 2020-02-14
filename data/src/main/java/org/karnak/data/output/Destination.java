@@ -19,7 +19,7 @@ import org.karnak.data.output.DestinationGroupSequenceProvider.DestinationDicomG
 import org.karnak.data.output.DestinationGroupSequenceProvider.DestinationStowGroup;
 
 @GroupSequenceProvider(value = DestinationGroupSequenceProvider.class)
-@Entity (name = "OutputDestination")
+@Entity(name = "OutputDestination")
 @Table(name = "output_destination")
 public class Destination {
     @Id
@@ -57,7 +57,6 @@ public class Destination {
     // mandatory[type=dicom]
     @NotBlank(groups = DestinationDicomGroup.class, message = "AETitle is mandatory")
     @Size(groups = DestinationDicomGroup.class, max = 16, message = "AETitle has more than 16 characters")
-    @Pattern(groups = DestinationDicomGroup.class, regexp = "^[^\\s]+$", message = "AETitle contains white spaces")
     private String aeTitle;
 
     // the host or IP of the destination node.

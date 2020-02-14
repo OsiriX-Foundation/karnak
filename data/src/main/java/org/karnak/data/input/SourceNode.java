@@ -15,7 +15,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-@Entity(name = "input_source_node")
+@Entity(name = "InputSourceNode")
 @Table(name = "input_source_node")
 public class SourceNode {
     @Id
@@ -27,13 +27,11 @@ public class SourceNode {
     // AET source during the forward (see by the destination as the source AET).
     @NotBlank(message = "Source AETitle is mandatory")
     @Size(max = 16, message = "Source AETitle has more than 16 characters")
-    @Pattern(regexp = "^[^\\s]+$", message = "Source AETitle contains white spaces")
     private String srcAeTitle;
 
-    // AET de destination, vers où les images arrivent.
+    // Destination AET.
     @NotBlank(message = "Destination AETitle is mandatory")
     @Size(max = 16, message = "Destination AETitle has more than 16 characters")
-    @Pattern(regexp = "^[^\\s]+$", message = "Destination AETitle contains white spaces")
     private String dstAeTitle;
 
     // the host or IP of the destination node.
@@ -132,14 +130,15 @@ public class SourceNode {
     /**
      * Informs if this object matches with the filter as text.
      * 
-     * @param filterText the filter as text.
+     * @param filterText
+     *            the filter as text.
      * @return true if this object matches with the filter as text; false otherwise.
      */
     public boolean matchesFilter(String filterText) {
         if (contains(srcAeTitle, filterText) //
-                || contains(dstAeTitle, filterText) //
-                || contains(hostname, filterText) //
-                || contains(description, filterText)) {
+            || contains(dstAeTitle, filterText) //
+            || contains(hostname, filterText) //
+            || contains(description, filterText)) {
             return true;
         }
 
@@ -159,6 +158,6 @@ public class SourceNode {
     @Override
     public String toString() {
         return "SourceNode [id=" + id + ", description=" + description + ", srcAeTitle=" + srcAeTitle + ", dstAeTitle="
-                + dstAeTitle + ", hostname=" + hostname + ", checkHostname=" + checkHostname + "]";
+            + dstAeTitle + ", hostname=" + hostname + ", checkHostname=" + checkHostname + "]";
     }
 }

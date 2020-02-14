@@ -4,50 +4,47 @@
 name: dev-YAML
 environment: LOCAL
 logging:
-    level:
-        com:
-            zaxxer: INFO
-        org:
-            atmosphere: WARN
-            dcm4che3:
-                net: WARN
-            hibernate: WARN
-            springframework: INFO
-            springframework.core.io.support: INFO
-            weasis: DEBUG
-        root: INFO
-    pattern:
-        console: '%-5level %logger{36} - %msg%n'
+  level:
+    com:
+      zaxxer: INFO
+    org:
+      atmosphere: WARN
+      dcm4che3:
+        net: WARN
+      hibernate: WARN
+      springframework: INFO
+      springframework.core.io.support: INFO
+      weasis: DEBUG
+    root: INFO
+  pattern:
+    console: '%-5level %logger{36} - %msg%n'
 server:
-    port: 8081
+  port: 8081
 spring:
-    datasource:
-        hikari:
-            connectionTimeout: 20000
-            maximumPoolSize: 5
-        password: qwe
-        url: jdbc:postgresql://localhost:5432/karnak
-        username: postgres
-    jpa:
-        hibernate:
-            ddl-auto: validate
-        show-sql: false
-    profiles:
-        active: '@activatedProperties@'
-
----
-
-name: devh2-YAML
-environment: LOCAL
-spring:
-    datasource:
-        driverClassName: org.h2.Driver
-        password: password
-        url: jdbc:h2:mem:testdb
-        username: sa
-    jpa:
-        database-platform: org.hibernate.dialect.H2Dialect
-        hibernate:
-            # Always recreate the database
-            ddl-auto: create
-
+  profiles:
+    active: '@activatedProperties@'
+  datasource:
+    password: 5!KAnN@%98%d
+    url: 'jdbc:postgresql://localhost:5433/karnak'
+    username: karnak
+    hikari:
+      leak-detection-threshold: 2000
+      minimum-idle: 5
+      maximum-pool-size: 10
+      connection-timeout: 10000
+      idle-timeout: 20000
+      max-lifetime: 1800000
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    generate-ddl: false
+    show-sql: false
+    open-in-view: false
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+    properties:
+      hibernate:
+        temp:
+          use_jdbc_metadata_defaults: false
+      jdbc:
+        lob:
+          non_contextual_creation: true

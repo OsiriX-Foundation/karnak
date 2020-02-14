@@ -10,9 +10,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.karnak.data.input.Destination;
-import org.karnak.data.input.InputRepository;
-import org.karnak.data.input.SourceNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
@@ -25,20 +22,20 @@ import org.springframework.test.context.junit4.SpringRunner;
 @DataJpaTest
 public class InputRepositoryTest {
     private Consumer<SourceNode> sourceNodeConsumer = //
-            x -> assertThat(x) //
-                    .hasFieldOrPropertyWithValue("description", "description") //
-                    .hasFieldOrPropertyWithValue("srcAeTitle", "srcAeTitle") //
-                    .hasFieldOrPropertyWithValue("dstAeTitle", "dstAeTitle") //
-                    .hasFieldOrPropertyWithValue("hostname", "hostname") //
-                    .hasFieldOrPropertyWithValue("checkHostname", true) //
-                    .extracting(Object::toString).asString().matches("^SourceNode \\[.*");
+        x -> assertThat(x) //
+            .hasFieldOrPropertyWithValue("description", "description") //
+            .hasFieldOrPropertyWithValue("srcAeTitle", "srcAeTitle") //
+            .hasFieldOrPropertyWithValue("dstAeTitle", "dstAeTitle") //
+            .hasFieldOrPropertyWithValue("hostname", "hostname") //
+            .hasFieldOrPropertyWithValue("checkHostname", true) //
+            .extracting(Object::toString).asString().matches("^SourceNode \\[.*");
     private Consumer<Destination> destinationConsumer = //
-            x -> assertThat(x) //
-                    .hasFieldOrPropertyWithValue("description", "description") //
-                    .hasFieldOrPropertyWithValue("aeTitle", "aeTitle") //
-                    .hasFieldOrPropertyWithValue("hostname", "hostname") //
-                    .hasFieldOrPropertyWithValue("port", 1024) //
-                    .extracting(Object::toString).asString().matches("^Destination \\[.*");
+        x -> assertThat(x) //
+            .hasFieldOrPropertyWithValue("description", "description") //
+            .hasFieldOrPropertyWithValue("aeTitle", "aeTitle") //
+            .hasFieldOrPropertyWithValue("hostname", "hostname") //
+            .hasFieldOrPropertyWithValue("port", 1024) //
+            .extracting(Object::toString).asString().matches("^Destination \\[.*");
 
     @Rule
     public ExpectedException expectedEx = ExpectedException.none();
@@ -95,42 +92,6 @@ public class InputRepositoryTest {
     }
 
     @Test
-    public void testInvalidSourceNode_SourceAETitle_whiteSpace1() {
-        expectedEx.expect(ConstraintViolationException.class);
-        expectedEx.expectMessage("Source AETitle contains white spaces");
-
-        SourceNode sourceNode = createDefaultSourceNode();
-
-        sourceNode.setSrcAeTitle("A A");
-
-        entityManager.persistAndFlush(sourceNode);
-    }
-
-    @Test
-    public void testInvalidSourceNode_SourceAETitle_whiteSpace2() {
-        expectedEx.expect(ConstraintViolationException.class);
-        expectedEx.expectMessage("Source AETitle contains white spaces");
-
-        SourceNode sourceNode = createDefaultSourceNode();
-
-        sourceNode.setSrcAeTitle(" AA");
-
-        entityManager.persistAndFlush(sourceNode);
-    }
-
-    @Test
-    public void testInvalidSourceNode_SourceAETitle_whiteSpace3() {
-        expectedEx.expect(ConstraintViolationException.class);
-        expectedEx.expectMessage("Source AETitle contains white spaces");
-
-        SourceNode sourceNode = createDefaultSourceNode();
-
-        sourceNode.setSrcAeTitle("AA ");
-
-        entityManager.persistAndFlush(sourceNode);
-    }
-
-    @Test
     public void testInvalidSourceNode_DestinationAETitle_mandatory() {
         expectedEx.expect(ConstraintViolationException.class);
         expectedEx.expectMessage("Destination AETitle is mandatory");
@@ -150,42 +111,6 @@ public class InputRepositoryTest {
         SourceNode sourceNode = createDefaultSourceNode();
 
         sourceNode.setDstAeTitle("0123456789-0123456789");
-
-        entityManager.persistAndFlush(sourceNode);
-    }
-
-    @Test
-    public void testInvalidSourceNode_DestinationAETitle_whiteSpace1() {
-        expectedEx.expect(ConstraintViolationException.class);
-        expectedEx.expectMessage("Destination AETitle contains white spaces");
-
-        SourceNode sourceNode = createDefaultSourceNode();
-
-        sourceNode.setDstAeTitle("A A");
-
-        entityManager.persistAndFlush(sourceNode);
-    }
-
-    @Test
-    public void testInvalidSourceNode_DestinationAETitle_whiteSpace2() {
-        expectedEx.expect(ConstraintViolationException.class);
-        expectedEx.expectMessage("Destination AETitle contains white spaces");
-
-        SourceNode sourceNode = createDefaultSourceNode();
-
-        sourceNode.setDstAeTitle(" AA");
-
-        entityManager.persistAndFlush(sourceNode);
-    }
-
-    @Test
-    public void testInvalidSourceNode_DestinationAETitle_whiteSpace3() {
-        expectedEx.expect(ConstraintViolationException.class);
-        expectedEx.expectMessage("Destination AETitle contains white spaces");
-
-        SourceNode sourceNode = createDefaultSourceNode();
-
-        sourceNode.setDstAeTitle("AA ");
 
         entityManager.persistAndFlush(sourceNode);
     }
@@ -212,9 +137,9 @@ public class InputRepositoryTest {
 
         Iterable<SourceNode> all = repository.findAll();
         assertThat(all) //
-                .hasSize(1) //
-                .first() //
-                .satisfies(sourceNodeConsumer);
+            .hasSize(1) //
+            .first() //
+            .satisfies(sourceNodeConsumer);
     }
 
     @Test
@@ -227,15 +152,15 @@ public class InputRepositoryTest {
 
         Iterable<SourceNode> all = repository.findAll();
         assertThat(all) //
-                .hasSize(1) //
-                .first() //
-                .satisfies(sourceNodeConsumer);
+            .hasSize(1) //
+            .first() //
+            .satisfies(sourceNodeConsumer);
 
         assertThat(all) //
-                .hasSize(1) //
-                .flatExtracting(SourceNode::getDestinations) //
-                .hasSize(1) //
-                .first() //
-                .satisfies(destinationConsumer);
+            .hasSize(1) //
+            .flatExtracting(SourceNode::getDestinations) //
+            .hasSize(1) //
+            .first() //
+            .satisfies(destinationConsumer);
     }
 }

@@ -41,5 +41,4 @@ webpack.config.js
 webpack.generated.js
 node_modules/
 
-docker/
 

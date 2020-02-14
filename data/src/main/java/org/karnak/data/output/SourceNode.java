@@ -6,11 +6,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-@Entity
+@Entity(name = "OutputSourceNode")
+@Table(name = "outpout_source_node")
 public class SourceNode {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -21,7 +22,6 @@ public class SourceNode {
     // AETitle of the source node.
     @NotBlank(message = "AETitle is mandatory")
     @Size(max = 16, message = "AETitle has more than 16 characters")
-    @Pattern(regexp = "^[^\\s]+$", message = "AETitle contains white spaces")
     private String aeTitle;
 
     // the host or IP of the source node. If the hostname exists then it is checked
@@ -82,22 +82,22 @@ public class SourceNode {
     public ForwardNode getForwardNode() {
         return forwardNode;
     }
-    
+
     public void setForwardNode(ForwardNode forwardNode) {
         this.forwardNode = forwardNode;
     }
 
-
     /**
      * Informs if this object matches with the filter as text.
      * 
-     * @param filterText the filter as text.
+     * @param filterText
+     *            the filter as text.
      * @return true if this object matches with the filter as text; false otherwise.
      */
     public boolean matchesFilter(String filterText) {
         if (contains(description, filterText) //
-                || contains(aeTitle, filterText) //
-                || contains(hostname, filterText)) {
+            || contains(aeTitle, filterText) //
+            || contains(hostname, filterText)) {
             return true;
         }
         return false;
@@ -110,6 +110,6 @@ public class SourceNode {
     @Override
     public String toString() {
         return "SourceNode [id=" + id + ", description=" + description + ", aeTitle=" + aeTitle + ", hostname="
-                + hostname + "]";
+            + hostname + "]";
     }
 }

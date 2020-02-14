@@ -10,11 +10,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-@Entity
+@Entity(name = "ForwardNode")
+@Table(name = "forward_node")
 public class ForwardNode {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -26,7 +28,6 @@ public class ForwardNode {
     // a destination in the DICOM component that sends images to the gateway.
     @NotBlank(message = "Forward AETitle is mandatory")
     @Size(max = 16, message = "Forward AETitle has more than 16 characters")
-    @Pattern(regexp = "^[^\\s]+$", message = "Forward AETitle contains white spaces")
     private String fwdAeTitle;
 
     // Specification of a DICOM source node (the one which sends images to the
@@ -107,12 +108,13 @@ public class ForwardNode {
     /**
      * Informs if this object matches with the filter as text.
      * 
-     * @param filterText the filter as text.
+     * @param filterText
+     *            the filter as text.
      * @return true if this object matches with the filter as text; false otherwise.
      */
     public boolean matchesFilter(String filterText) {
         if (contains(fwdAeTitle, filterText) //
-                || contains(description, filterText)) {
+            || contains(description, filterText)) {
             return true;
         }
 
@@ -138,6 +140,6 @@ public class ForwardNode {
     @Override
     public String toString() {
         return "ForwardNode [id=" + id + ", description=" + description + ", fwdAeTitle=" + fwdAeTitle
-                + ", sourceNodes=" + sourceNodes + ", destinations=" + destinations + "]";
+            + ", sourceNodes=" + sourceNodes + ", destinations=" + destinations + "]";
     }
 }

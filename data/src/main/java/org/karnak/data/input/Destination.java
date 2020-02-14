@@ -11,10 +11,9 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-@Entity (name = "InputDestination")
+@Entity(name = "InputDestination")
 @Table(name = "input_destination")
 public class Destination {
     @Id
@@ -26,7 +25,6 @@ public class Destination {
     // the AETitle of the destination node.
     @NotBlank(message = "AETitle is mandatory")
     @Size(max = 16, message = "AETitle has more than 16 characters")
-    @Pattern(regexp = "^[^\\s]+$", message = "AETitle contains white spaces")
     private String aeTitle;
 
     // the host or IP of the destination node.
@@ -152,16 +150,17 @@ public class Destination {
     /**
      * Informs if this object matches with the filter as text.
      * 
-     * @param filterText the filter as text.
+     * @param filterText
+     *            the filter as text.
      * @return true if this object matches with the filter as text; false otherwise.
      */
     public boolean matchesFilter(String filterText) {
         if (contains(description, filterText) //
-                || contains(aeTitle, filterText) //
-                || contains(hostname, filterText) //
-                || contains(aeTitle, filterText) //
-                || equals(port, filterText) //
-                || contains(notify, filterText)) {
+            || contains(aeTitle, filterText) //
+            || contains(hostname, filterText) //
+            || contains(aeTitle, filterText) //
+            || equals(port, filterText) //
+            || contains(notify, filterText)) {
             return true;
         }
         return false;
@@ -178,7 +177,7 @@ public class Destination {
     @Override
     public String toString() {
         return "Destination [id=" + id + ", description=" + description + ", aeTitle=" + aeTitle + ", hostname="
-                + hostname + ", port=" + port + ", useaetdest=" + useaetdest + ", secure=" + secure + ", notify="
-                + notify + "]";
+            + hostname + ", port=" + port + ", useaetdest=" + useaetdest + ", secure=" + secure + ", notify=" + notify
+            + "]";
     }
 }

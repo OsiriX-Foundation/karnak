@@ -25,7 +25,6 @@ import org.karnak.data.output.ForwardNode;
 import org.karnak.data.output.OutputRepository;
 import org.karnak.ui.input.InputConfiguration;
 import org.karnak.ui.output.OutputConfiguration;
-import org.karnak.util.YamlPropertySourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
@@ -113,60 +112,51 @@ public class GatewayConfig {
 
     public GatewayConfig(Stream stream, Environment env) throws Exception {
         this.stream = stream;
-        Resource path = new ClassPathResource((stream == Stream.IN ? "in" : "out") + "bound.yml");
-        PropertySource<?> config = loadYaml(path);
 
-        String storePath = getProperty(config, "gateway.archive.storage.path", null);
+        String storePath = getProperty("_GATEWAY_ARCHIVE_PATH", null); // Only Archive and Pull mode
         storeDir = StringUtil.hasText(storePath) ? new File(storePath) : null;
+        intervalCheck = StringUtil.getInt(getProperty("_GATEWAY_PULL_CHECK_INTERNAL", "5")); // Only Pull mode
+        archiveUrl = getProperty("_GATEWAY_ARCHIVE_URL", ""); // Only Archive mode
 
         // Default value is disable (in case the properties file does not exist)
-        mode = Mode.getMode(getProperty(config, "gateway.mode", "disable"));
-        listenerAET = getProperty(config, "dicom.listener.aet", "KARNAK-" + stream.name().toUpperCase());
-        listenerPort = StringUtil.getInt(getProperty(config, "dicom.listener.port", null));
-        listenerTLS = LangUtil.getEmptytoFalse(getProperty(config, "dicom.listener.tls", null));
-        clientKey = getProperty(config, "tls.keystore.path", null);
-        clientKeyPwd = getProperty(config, "tls.keystore.secret", null);
-        truststorePwd = getProperty(config, "tls.truststore.secret", null);
-        truststore = getProperty(config, "tls.truststore.path", null);
+        mode = Mode.getMode(getProperty("_GATEWAY_MODE", "disable"));
 
-        intervalCheck = StringUtil.getInt(getProperty(config, "gateway.pull.check.interval", "5"));
-        archiveUrl = getProperty(config, "gateway.archive.url", "");
-        smtpHost = getProperty(config, "mail.smtp.host", null);
-        smtpPort = getProperty(config, "mail.smtp.port", null);
-        mailAuthType = getProperty(config, "mail.smtp.auth.type", null);
-        mailAuthUser = getProperty(config, "mail.smtp.auth.user", null);
-        mailAuthPwd = getProperty(config, "mail.smtp.auth.secret", null);
+        listenerAET = getProperty("_DICOM_LISTENER_AET", "KARNAK-" + stream.name().toUpperCase());
+        listenerPort =
+            StringUtil.getInt(getProperty("_DICOM_LISTENER_PORT", null), stream == Stream.IN ? 11115 : 11119);
+        listenerTLS = LangUtil.getEmptytoFalse(getProperty("_DICOM_LISTENER_TLS", null));
 
-        String notifyObjectErrorPrefix = getProperty(config, "notify.object.error.prefix", "**ERROR**");
-        String notifyObjectPattern = getProperty(config, "notify.object.pattern", "[Karnak Notification] %s %.30s");
-        String[] notifyObjectValues =
-            getProperty(config, "notify.object.values", "PatientID,StudyDescription").split(",");
-        int notifyInterval = StringUtil.getInt(getProperty(config, "notify.interval", "45"));
+        clientKey = getProperty("_TLS_KEYSTORE_PATH", null);
+        clientKeyPwd = getProperty("_TLS_KEYSTORE_SECRET", null);
+        truststorePwd = getProperty("_TLS_TRUSTSTORE_PATH", null);
+        truststore = getProperty("_TLS_TRUSTSTORE_SECRET", null);
+
+        smtpHost = getProperty("_MAIL_SMTP_HOST", null);
+        smtpPort = getProperty("_MAIL_SMTP_PORT", null);
+        mailAuthType = getProperty("_MAIL_SMTP_TYPE", null);
+        mailAuthUser = getProperty("_MAIL_SMTP_USER", null);
+        mailAuthPwd = getProperty("_MAIL_SMTP_SECRET", null);
+
+        String notifyObjectErrorPrefix = getProperty("_NOTIFY_OBJECT_ERROR_PREFIX", "**ERROR**");
+        String notifyObjectPattern = getProperty("_NOTIFY_OBJECT_PATTERN", "[Karnak Notification] %s %.30s");
+        String[] notifyObjectValues = getProperty("_NOTIFY_OBJECT_VALUES", "PatientID,StudyDescription").split(",");
+        int notifyInterval = StringUtil.getInt(getProperty("_NOTIFY_INTERNAL", "45"));
         this.notifConfiguration = new NotificationConfiguration(notifyObjectErrorPrefix, notifyObjectPattern,
             notifyObjectValues, notifyInterval);
 
         reloadNodesConfiguration();
     }
 
-    private static String getProperty(PropertySource<?> config, String key, String defaultValue) {
-        Object val = config.getProperty(key);
-        if (val == null || !StringUtil.hasText(val.toString())) {
-            return defaultValue;
+    private String getProperty(String key, String defaultValue) {
+        String k = stream.name() + key;
+        String val = System.getProperty(k);
+        if (!StringUtil.hasText(val)) {
+            val = System.getenv(k);
+            if (!StringUtil.hasText(val)) {
+                return defaultValue;
+            }
         }
-        return val.toString();
-    }
-
-    private PropertySource<?> loadYaml(Resource path) {
-        if (!path.exists()) {
-            throw new IllegalArgumentException("Resource " + path + " does not exist");
-        }
-        try {
-            EncodedResource resource = new EncodedResource(path, StandardCharsets.UTF_8);
-            YamlPropertySourceFactory loader = new YamlPropertySourceFactory();
-            return loader.createPropertySource("custom-resource", resource);
-        } catch (IOException ex) {
-            throw new IllegalStateException("Failed to load yaml configuration from " + path, ex);
-        }
+        return val;
     }
 
     @Override
@@ -210,7 +200,6 @@ public class GatewayConfig {
     public Boolean getListenerTLS() {
         return listenerTLS;
     }
-
 
     public int getIntervalCheck() {
         return intervalCheck;
@@ -368,8 +357,6 @@ public class GatewayConfig {
         }
     }
 
-
-
     private static AdvancedParams getDefaultAdvancedParameters() {
         AdvancedParams params = new AdvancedParams();
         ConnectOptions connectOptions = new ConnectOptions();
@@ -436,8 +423,7 @@ public class GatewayConfig {
 
             }
         } else if (src instanceof org.karnak.data.output.Destination) {
-            org.karnak.data.output.Destination dstNode =
-                (org.karnak.data.output.Destination) src;
+            org.karnak.data.output.Destination dstNode = (org.karnak.data.output.Destination) src;
             if (type == NodeEventType.ADD) {
                 addDestinationNode(destMap.get(fwdNode), fwdNode, dstNode);
             } else if (type == NodeEventType.REMOVE) {
@@ -446,7 +432,7 @@ public class GatewayConfig {
                         && ((WebForwardDestination) d).getRequestURL() == dstNode.getUrl());
                 } else {
                     DicomNode node = new DicomNode(dstNode.getAeTitle(), dstNode.getHostname(), dstNode.getPort());
-                //    destMap.get(fwdNode).removeIf(d -> d.getForwardDicomNode());
+                    // destMap.get(fwdNode).removeIf(d -> d.getForwardDicomNode());
                 }
             } else if (type == NodeEventType.UPDATE) {
 
