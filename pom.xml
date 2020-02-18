@@ -15,8 +15,8 @@
 		<enforcer.maven-version>[3.2.0,)</enforcer.maven-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<weasis-dicom-tools.version>5.22.0</weasis-dicom-tools.version>
-		<weasis.opencv.native.version>4.2.0-dcm</weasis.opencv.native.version>
+		<weasis-dicom-tools.version>5.20.0</weasis-dicom-tools.version>
+		<weasis.opencv.native.version>4.1.1-dcm</weasis.opencv.native.version>
 		<springframework.version>2.3.0.M1</springframework.version>
 		<javax.el.version>3.0.0</javax.el.version>
 		<javax.mail.version>1.6.2</javax.mail.version>
