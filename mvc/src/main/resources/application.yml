@@ -36,6 +36,7 @@ spring:
       max-lifetime: 1800000
   jpa:
     hibernate:
+      # First time to create the db the value must be: create
       ddl-auto: validate
     generate-ddl: false
     show-sql: false
