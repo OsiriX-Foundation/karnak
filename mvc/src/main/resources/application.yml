@@ -10,11 +10,12 @@ logging:
     org:
       atmosphere: WARN
       dcm4che3:
-        net: WARN
+        net: INFO
       hibernate: WARN
       springframework: INFO
       springframework.core.io.support: INFO
       weasis: DEBUG
+      karnak: DEBUG
     root: INFO
   pattern:
     console: '%-5level %logger{36} - %msg%n'

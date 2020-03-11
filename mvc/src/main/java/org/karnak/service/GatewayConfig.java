@@ -122,8 +122,7 @@ public class GatewayConfig {
         mode = Mode.getMode(getProperty("_GATEWAY_MODE", "disable"));
 
         listenerAET = getProperty("_DICOM_LISTENER_AET", "KARNAK-" + stream.name().toUpperCase());
-        listenerPort =
-            StringUtil.getInt(getProperty("_DICOM_LISTENER_PORT", null), stream == Stream.IN ? 11115 : 11119);
+        listenerPort = stream == Stream.IN ? 11115 : 11119;
         listenerTLS = LangUtil.getEmptytoFalse(getProperty("_DICOM_LISTENER_TLS", null));
 
         clientKey = getProperty("_TLS_KEYSTORE_PATH", null);
