@@ -3,8 +3,7 @@ package org.karnak.ui;
 import org.karnak.ui.about.AboutView;
 import org.karnak.ui.admin.AdminView;
 import org.karnak.ui.authentication.AccessControlFactory;
-import org.karnak.ui.input.InputView;
-import org.karnak.ui.output.OutputView;
+import org.karnak.ui.gateway.GatewayView;
 
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Key;
@@ -35,8 +34,7 @@ public class MainLayout extends FlexLayout implements RouterLayout {
         setClassName("main-layout");
 
         menu = new Menu();
-        menu.addView(InputView.class, InputView.VIEW_NAME, VaadinIcon.EDIT.create());
-        menu.addView(OutputView.class, OutputView.VIEW_NAME, VaadinIcon.EDIT.create());
+        menu.addView(GatewayView.class, GatewayView.VIEW_NAME, VaadinIcon.EDIT.create());
         menu.addView(AboutView.class, AboutView.VIEW_NAME, VaadinIcon.INFO_CIRCLE.create());
 
         add(menu);

@@ -27,7 +27,7 @@ import org.weasis.dicom.param.ListenerParams;
 import org.weasis.dicom.tool.DicomGateway;
 import org.weasis.dicom.tool.DicomListener;
 
-@DependsOn({ "InputNodes", "OutputNodes" })
+@DependsOn({ "GatewayPersistence" })
 @Component
 public class GatewayManager implements ApplicationListener<ContextRefreshedEvent> {
 
@@ -39,10 +39,7 @@ public class GatewayManager implements ApplicationListener<ContextRefreshedEvent
     private NativeLibraryManager manager;
     private GlobalConfig globalConfig;
 
-    private DicomListener dicomListenerIn;
     private DicomListener dicomListenerOut;
-
-    private DicomGateway dicomForwardIn;
     private DicomGateway dicomForwardOut;
 
     private PullingService httpPullIn;
@@ -66,11 +63,6 @@ public class GatewayManager implements ApplicationListener<ContextRefreshedEvent
     }
 
     @EventListener
-    public void reloadInboundNodes(InputNodeEvent event) {
-       globalConfig.getConfigIn().update(event);
-    }
-
-    @EventListener
     public void reloadOutboundNodes(OutputNodeEvent event) {
         globalConfig.getConfigOut().update(event);
     }
@@ -91,11 +83,7 @@ public class GatewayManager implements ApplicationListener<ContextRefreshedEvent
         }
 
         Mode inMode = configIn.getMode();
-        if (Mode.FORWARD.equals(inMode)) {
-            dicomForwardIn = buildDicomGateway(configIn);
-        } else if (Mode.ARCHIVE.equals(inMode)) {
-            dicomListenerIn = buildDicomListener(configIn);
-        } else if (Mode.PULL.equals(inMode)) {
+        if (Mode.PULL.equals(inMode)) {
             httpPullIn = new PullingService(configIn);
             httpPullIn.start();
         }
@@ -108,12 +96,6 @@ public class GatewayManager implements ApplicationListener<ContextRefreshedEvent
         }
         if (dicomForwardOut != null) {
             dicomForwardOut.stop();
-        }
-        if (dicomListenerIn != null) {
-            dicomListenerIn.stop();
-        }
-        if (dicomForwardIn != null) {
-            dicomForwardIn.stop();
         }
         if (httpPullIn != null) {
             httpPullIn.stop();
