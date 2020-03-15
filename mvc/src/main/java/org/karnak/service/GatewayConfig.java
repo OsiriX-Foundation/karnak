@@ -338,8 +338,15 @@ public class GatewayConfig {
             if (dstNode.getType() == DestinationType.stow) {
                 HashMap<String, String> map = new HashMap<>();
                 for (String h : dstNode.getHeaders().split(";")) {
-                    // map.put(key, value);
+                    //map.put(key, value);
                 }
+
+                String[] splitHeader = dstNode.getHeaders().split( ";");
+                if(splitHeader.length>1){
+                    map.put(splitHeader[0], splitHeader[1]);
+                }
+
+                //map.put("Authorization", "Bearer 9zaDDnJQXE0IvzmAQjuTHv");
                 WebForwardDestination fwd =
                     new WebForwardDestination(fwdSrcNode, dstNode.getUrl(), map, progress, streamRegistry);
                 progress.addProgressListener(new EmailNotifyProgress(streamRegistry, fwd, emails, this, notifConfig));

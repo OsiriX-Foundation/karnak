@@ -3,13 +3,13 @@ version: '3.7'
 services:
   karnak:
     container_name: karnak
-    image: osirixfoundation/karnak-mvc:5.0.0-SNAPSHOT
+    image: docker.io/library/karnak-mvc:5.0.0-SNAPSHOT
     ports:
       - "${IN_DICOM_LISTENER_PORT}:11115"
       - "${OUT_DICOM_LISTENER_PORT}:11119"
       - "${WEB_ADMIN}:8081"
     env_file: karnak.env
-    volumes:
+    #volumes:
     # - ./destination:/var/lib/karnak
   postgresidp:
     image: postgres:12.1-alpine
