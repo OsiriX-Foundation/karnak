@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.karnak.data.EmailNotifyProgress;
 import org.karnak.data.InputNodeEvent;
 import org.karnak.data.NodeEventType;
@@ -336,17 +338,14 @@ public class GatewayConfig {
             }
 
             if (dstNode.getType() == DestinationType.stow) {
+                //parse headers to hashmap
                 HashMap<String, String> map = new HashMap<>();
-                for (String h : dstNode.getHeaders().split(";")) {
-                    //map.put(key, value);
-                }
+                String headers = dstNode.getHeaders();
+                Document doc = Jsoup.parse(headers);
+                String key = doc.getElementsByTag("key").text();
+                String value = doc.getElementsByTag("value").text();
+                map.put(key, value);
 
-                String[] splitHeader = dstNode.getHeaders().split( ";");
-                if(splitHeader.length>1){
-                    map.put(splitHeader[0], splitHeader[1]);
-                }
-
-                //map.put("Authorization", "Bearer 9zaDDnJQXE0IvzmAQjuTHv");
                 WebForwardDestination fwd =
                     new WebForwardDestination(fwdSrcNode, dstNode.getUrl(), map, progress, streamRegistry);
                 progress.addProgressListener(new EmailNotifyProgress(streamRegistry, fwd, emails, this, notifConfig));
