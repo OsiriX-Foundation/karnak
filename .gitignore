@@ -41,4 +41,5 @@ webpack.config.js
 webpack.generated.js
 node_modules/
 
-
+#vscode config
+.vscode
