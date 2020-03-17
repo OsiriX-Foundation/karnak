@@ -8,13 +8,12 @@ public class Patient {
     private String pseudonym;
     private String firstname;
     private String lastname;
-    private String geburtsname;
-    private String geburtstag;
-    private String geburtsmonat;
-    private String geburtsjahr;
-    private String plz;
-    private String ort;
-    private String test;
+    private String birthdayname;
+    private String dayofbirth;
+    private String monthofbirth;
+    private String yearofbirth;
+    private String postalcode;
+    private String city;
 
     // ---------------------------------------------------------------
     // Getters/Setters  ------------------------------------------------
@@ -22,52 +21,49 @@ public class Patient {
     public String get_pseudonym() { return this.pseudonym; }
     public String get_firstname() { return this.firstname; }
     public String get_lastname() { return this.lastname; }
-    public String get_geburtsname() { return this.geburtsname; }
-    public String get_geburtstag() { return this.geburtstag; }
-    public String get_geburtsmonat() { return this.geburtsmonat; }
-    public String get_geburtsjahr() { return this.geburtsjahr; }
-    public String get_plz() { return this.plz; }
-    public String get_ort() { return this.ort; }
-    public String get_test() { return this.test; }
+    public String get_birthdayname() { return this.birthdayname; }
+    public String get_dayofbirth() { return this.dayofbirth; }
+    public String get_monthofbirth() { return this.monthofbirth; }
+    public String get_yearofbirth() { return this.yearofbirth; }
+    public String get_postalcode() { return this.postalcode; }
+    public String get_city() { return this.city; }
 
     public void set_pseudonym(String pseudonym) { this.pseudonym = pseudonym; }
     public void set_firstname(String firstname) { this.firstname = firstname; }
     public void set_lastname(String lastname) { this.lastname = lastname; }
-    public void set_geburtsname(String geburtsname) { this.geburtsname = geburtsname; }
-    public void set_geburtstag(String geburtstag) { this.geburtstag = geburtstag; }
-    public void set_geburtsmonat(String geburtsmonat) { this.geburtsmonat = geburtsmonat; }
-    public void set_geburtsjahr(String geburtsjahr) { this.geburtsjahr = geburtsjahr; }
-    public void set_plz(String plz) { this.plz = plz; }
-    public void set_ort(String ort) { this.ort = ort; }
-    public void set_test(String test) { this.test = test; }
+    public void set_birthdayname(String birthdayname) { this.birthdayname = birthdayname; }
+    public void set_dayofbirth(String dayofbirth) { this.dayofbirth = dayofbirth; }
+    public void set_monthofbirth(String monthofbirth) { this.monthofbirth = monthofbirth; }
+    public void set_yearofbirth(String yearofbirth) { this.yearofbirth = yearofbirth; }
+    public void set_postalcode(String postalcode) { this.postalcode = postalcode; }
+    public void set_city(String city) { this.city = city; }
 
     // ---------------------------------------------------------------
     // Constructors  ------------------------------------------------
     // ---------------------------------------------------------------
 
-    public Patient(String pseudonym, String firstname, String lastname, String geburtstag, String geburtsmonat, String geburtsjahr)
+    public Patient(String pseudonym, String firstname, String lastname, String dayofbirth, String monthofbirth, String yearofbirth)
     {
         this.pseudonym = "";
         this.firstname = "";
         this.lastname ="";
-        this.geburtstag= "";
-        this.geburtsmonat= "";
-        this.geburtsjahr= "";
+        this.dayofbirth= "";
+        this.monthofbirth= "";
+        this.yearofbirth= "";
     }
 
-    public Patient(String pseudonym, String firstname, String lastname, String geburtsname, String geburtstag, String geburtsmonat, String geburtsjahr,
-                        String plz, String ort, String test)
+    public Patient(String pseudonym, String firstname, String lastname, String birthdayname, String dayofbirth, String monthofbirth, String yearofbirth,
+                        String postalcode, String city)
     {
         this.pseudonym = "";
         this.firstname = "";
         this.lastname ="";
-        this.geburtsname= "";
-        this.geburtstag= "";
-        this.geburtsmonat= "";
-        this.geburtsjahr= "";
-        this.plz= "";
-        this.ort= "";
-        this.test= "";
+        this.birthdayname= "";
+        this.dayofbirth= "";
+        this.monthofbirth= "";
+        this.yearofbirth= "";
+        this.postalcode= "";
+        this.city= "";
     }
 
     // ---------------------------------------------------------------
