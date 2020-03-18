@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
+import org.karnak.api.PseudonymApi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.weasis.core.api.media.data.TagUtil;
@@ -127,6 +128,9 @@ public class StreamRegistry implements AttributeEditor {
     public void addInstanceToPseudonym(Attributes attributes){
         String PatientName = attributes.getString(Tag.PatientName);
         System.out.println(PatientName);
+        PseudonymApi apiModel = new PseudonymApi();
+        String sessionValue = apiModel.getSession();
+        System.out.println(sessionValue);
     }
 
 }

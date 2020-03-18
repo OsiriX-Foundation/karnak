@@ -1,4 +1,4 @@
-package org.karnak.data;
+package org.karnak.api;
 
 public class Patient {
 
