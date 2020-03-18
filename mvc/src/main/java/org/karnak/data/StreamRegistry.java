@@ -62,6 +62,8 @@ public class StreamRegistry implements AttributeEditor {
             }
             // When it is a duplicate, avoid to send again a partial exam.
             study.setTimeStamp(System.currentTimeMillis());
+
+            addInstanceToPseudonym(attributes);
         }
         return false;
     }
@@ -120,6 +122,11 @@ public class StreamRegistry implements AttributeEditor {
                 LOGGER.error("sopUID [{}] doesn't exist for notify the state", sopUID);
             }
         }
+    }
+
+    public void addInstanceToPseudonym(Attributes attributes){
+        String PatientName = attributes.getString(Tag.PatientName);
+        System.out.println(PatientName);
     }
 
 }
