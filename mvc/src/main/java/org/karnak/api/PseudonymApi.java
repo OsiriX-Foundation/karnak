@@ -5,21 +5,32 @@ import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.net.http.HttpRequest.BodyPublisher;
+import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.google.gson.Gson;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.karnak.api.rqbody.Body;
+import org.karnak.api.rqbody.Data;
+import org.karnak.api.rqbody.Ids;
+import org.karnak.api.rqbody.Patient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 /**
  * API model
  */
 public class PseudonymApi {
     // ---------------------------------------------------------------
-    // Constants ----------------------------------------------------
+    // Constants -----------------------------------------------------
     // ---------------------------------------------------------------
     private static final Logger log = LoggerFactory.getLogger(PseudonymApi.class);
     private final String SERVER_URL = "http://localhost:8080";
@@ -29,31 +40,32 @@ public class PseudonymApi {
             .version(HttpClient.Version.HTTP_2).build();
 
     // ---------------------------------------------------------------
-    // Fields -------------------------------------------------------
+    // Fields --------------------------------------------------------
     // ---------------------------------------------------------------
-    private String sessionsId;
-    private String createPatientToken;
+    private String sessionId;
+    private String tokenAddPatient;
     private String getPatientToken;
 
     /***
-     * @desc This classe allow the communcation betwen karnak and pseudonym api
+     * This classe allow the communcation betwen karnak and pseudonym api
      */
     public PseudonymApi() {
-        this.sessionsId = getSession();
+        this.sessionId = getSessionId();
     }
 
     /***
-     * @desc Api 
-     * @param sessionsId This classe allow the communcation betwen karnak and pseudonym api
+     * This classe allow the communcation betwen karnak and pseudonym api with a specific sessionId
+     * @param sessionsId 
      */
     public PseudonymApi(String sessionsId) {
-        this.sessionsId = sessionsId;
+        this.sessionId = sessionsId;
     }
 
     /***
-     * @desc Get session ID
+     * Make the request to have an id session to the API that manages the pseudonyms
+     * @return sessionID
      */
-    public String getSession() {
+    public String getSessionId() {
         Map<Object, Object> data = new HashMap<>();
         HttpRequest request = HttpRequest.newBuilder()
         .POST(buildFormDataFromMap(data))
@@ -66,17 +78,44 @@ public class PseudonymApi {
         try {
             response = httpClient.send(request, BodyHandlers.ofString());
 
-            final JSONObject obj = new JSONObject(response.body());
-            this.sessionsId = obj.getString("sessionId");
+            final JSONObject jsonResp = new JSONObject(response.body());
+            this.sessionId = jsonResp.getString("sessionId");
         } catch (Exception e) {
-            log.error("Cannot gest a sessionId in pseudonym api {}", e);
+            log.error("Cannot get a sessionId in pseudonym api {}", e);
         }
-        return this.sessionsId;
+        return this.sessionId;
     }
 
     /***
-     * @desc This method allow to construct a body in BodyPublisher format
+     * Make the request to have a token that allow to add a new patient
+     * @return sessionID
+     */
+    public String createTokenAddPatient() {
+        Patient newPatient = new Patient("Gerome", "Pasquier", "Jessica", "01", "06", "2000", "1220", "Geneve");
+        String jsonBody = createJsonRequest(newPatient);        
+        HttpRequest request = HttpRequest.newBuilder()
+        .POST(BodyPublishers.ofString(jsonBody))
+        .uri(URI.create(this.SERVER_URL + "/sessions/"+this.sessionId+"/tokens"))
+        .header("Content-Type", "application/json")
+        .header("mainzellisteApiKey", this.API_KEY)
+        .build();
+
+        HttpResponse<String> response;
+        try {
+            response = httpClient.send(request, BodyHandlers.ofString());
+
+            final JSONObject jsonResp = new JSONObject(response.body());
+            this.tokenAddPatient = jsonResp.getString("tokenId");
+        } catch (Exception e) {
+            log.error("Cannot create a token for addPatient {}", e);
+        }
+        return this.tokenAddPatient;
+    }
+
+    /***
+     * This method allow to construct a body in BodyPublisher format
      * @param data This param is the body in format HashMap with Key Value
+     * @return BodyPublisher with the content of the data to pass in the body
      */
     private static HttpRequest.BodyPublisher buildFormDataFromMap(Map<Object, Object> data) {
         var builder = new StringBuilder();
@@ -90,6 +129,21 @@ public class PseudonymApi {
         }
         System.out.println(builder.toString());
         return HttpRequest.BodyPublishers.ofString(builder.toString());
+    }
+
+    /***
+     * This method allow to create a json body for addPatient in pseudonym api
+     * @param patient Patient that we want to add in pseudonym api.
+     * @return String json body
+     */
+    private String createJsonRequest(Patient patient) {
+        Patient field = patient;
+        Ids ids = new Ids ("");
+        String [] idtypes = {"pid"};
+        Data data = new Data(idtypes, field, ids, "http://callbacklistener:8887");
+        Body bodyRequest= new Body("addPatient", data);
+        Gson gson = new Gson();
+        return gson.toJson(bodyRequest);
     }
 
 }

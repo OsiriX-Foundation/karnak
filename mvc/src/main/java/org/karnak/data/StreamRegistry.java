@@ -128,9 +128,11 @@ public class StreamRegistry implements AttributeEditor {
     public void addInstanceToPseudonym(Attributes attributes){
         String PatientName = attributes.getString(Tag.PatientName);
         System.out.println(PatientName);
-        PseudonymApi apiModel = new PseudonymApi();
-        String sessionValue = apiModel.getSession();
-        System.out.println(sessionValue);
+        PseudonymApi pseudonymApi = new PseudonymApi();
+        String sessionIdValue = pseudonymApi.getSessionId();
+        System.out.println(sessionIdValue);
+        String tokenId = pseudonymApi.createTokenAddPatient();
+        System.out.println(tokenId);
     }
 
 }
