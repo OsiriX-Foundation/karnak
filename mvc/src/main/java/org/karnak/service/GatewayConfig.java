@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.karnak.data.EmailNotifyProgress;
 import org.karnak.data.NodeEventType;
 import org.karnak.data.NotificationConfiguration;
@@ -322,10 +324,14 @@ public class GatewayConfig {
             }
 
             if (dstNode.getType() == DestinationType.stow) {
+                //parse headers to hashmap
                 HashMap<String, String> map = new HashMap<>();
-                for (String h : dstNode.getHeaders().split(";")) {
-                    // map.put(key, value);
-                }
+                String headers = dstNode.getHeaders();
+                Document doc = Jsoup.parse(headers);
+                String key = doc.getElementsByTag("key").text();
+                String value = doc.getElementsByTag("value").text();
+                map.put(key, value);
+
                 WebForwardDestination fwd =
                     new WebForwardDestination(fwdSrcNode, dstNode.getUrl(), map, progress, streamRegistry);
                 progress.addProgressListener(new EmailNotifyProgress(streamRegistry, fwd, emails, this, notifConfig));
