@@ -10,6 +10,7 @@ import java.util.Set;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.karnak.api.PseudonymApi;
+import org.karnak.api.rqbody.Patient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.weasis.core.api.media.data.TagUtil;
@@ -129,10 +130,11 @@ public class StreamRegistry implements AttributeEditor {
         String PatientName = attributes.getString(Tag.PatientName);
         System.out.println(PatientName);
         PseudonymApi pseudonymApi = new PseudonymApi();
-        String sessionIdValue = pseudonymApi.getSessionId();
-        System.out.println(sessionIdValue);
-        String tokenId = pseudonymApi.createTokenAddPatient();
-        System.out.println(tokenId);
+        Patient newPatient = new Patient("James", "Jones", "Scoot", "04", "12", "1993", "1218", "Geneve");
+        String pseudonym = pseudonymApi.createPatient(newPatient);
+        System.out.println(pseudonym);
+        
+        
     }
 
 }

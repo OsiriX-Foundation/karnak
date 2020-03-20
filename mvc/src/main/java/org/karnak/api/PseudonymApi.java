@@ -43,14 +43,12 @@ public class PseudonymApi {
     // Fields --------------------------------------------------------
     // ---------------------------------------------------------------
     private String sessionId;
-    private String tokenAddPatient;
-    private String getPatientToken;
 
     /***
-     * This classe allow the communcation betwen karnak and pseudonym api
+     * This classe allow the communcation betwen karnak and pseudonym api. Get sessionId at initialization.
      */
     public PseudonymApi() {
-        this.sessionId = getSessionId();
+        this.sessionId = rqGetSessionId();
     }
 
     /***
@@ -61,11 +59,30 @@ public class PseudonymApi {
         this.sessionId = sessionsId;
     }
 
+
+    /***
+     * Create patient in pseudonym api
+     * @param tokenId 
+     * @return Pseudonym
+     */
+    public String createPatient(Patient patient){
+        String pseudonym="";    
+        try{
+            String tokenId = rqCreateTokenAddPatient(patient);
+            pseudonym = rqCreatePatient(tokenId);
+        }catch (Exception e){
+            log.error("Cannot create patient", e);
+        } 
+        return pseudonym;
+    }
+
+
+
     /***
      * Make the request to have an id session to the API that manages the pseudonyms
      * @return sessionID
      */
-    public String getSessionId() {
+    public String rqGetSessionId() {
         Map<Object, Object> data = new HashMap<>();
         HttpRequest request = HttpRequest.newBuilder()
         .POST(buildFormDataFromMap(data))
@@ -81,7 +98,7 @@ public class PseudonymApi {
             final JSONObject jsonResp = new JSONObject(response.body());
             this.sessionId = jsonResp.getString("sessionId");
         } catch (Exception e) {
-            log.error("Cannot get a sessionId in pseudonym api {}", e);
+            log.error("Cannot get a sessionId request {}", e);
         }
         return this.sessionId;
     }
@@ -90,9 +107,8 @@ public class PseudonymApi {
      * Make the request to have a token that allow to add a new patient
      * @return sessionID
      */
-    public String createTokenAddPatient() {
-        Patient newPatient = new Patient("Gerome", "Pasquier", "Jessica", "01", "06", "2000", "1220", "Geneve");
-        String jsonBody = createJsonRequest(newPatient);        
+    public String rqCreateTokenAddPatient(Patient patient) {
+        String jsonBody = createJsonRequest(patient);        
         HttpRequest request = HttpRequest.newBuilder()
         .POST(BodyPublishers.ofString(jsonBody))
         .uri(URI.create(this.SERVER_URL + "/sessions/"+this.sessionId+"/tokens"))
@@ -100,16 +116,44 @@ public class PseudonymApi {
         .header("mainzellisteApiKey", this.API_KEY)
         .build();
 
+        String tokenAddPatient="";
         HttpResponse<String> response;
         try {
             response = httpClient.send(request, BodyHandlers.ofString());
 
             final JSONObject jsonResp = new JSONObject(response.body());
-            this.tokenAddPatient = jsonResp.getString("tokenId");
+            tokenAddPatient = jsonResp.getString("tokenId");
         } catch (Exception e) {
-            log.error("Cannot create a token for addPatient {}", e);
+            log.error("Cannot create a token request for addPatient {}", e);
         }
-        return this.tokenAddPatient;
+        return tokenAddPatient;
+    }
+
+    /***
+     * Make the request to create patient with the tokenId
+     * @param tokenId 
+     * @return Pseudonym
+     */
+    public String rqCreatePatient(String tokenId) {
+        Map<Object, Object> data = new HashMap<>();
+        HttpRequest request = HttpRequest.newBuilder()
+        .POST(buildFormDataFromMap(data))
+        .uri(URI.create(this.SERVER_URL + "/patients?tokenId="+tokenId))
+        .header("Content-Type", "application/x-www-form-urlencoded")
+        .header("mainzellisteApiKey", this.API_KEY)
+        .build();
+
+        String newId="";
+        HttpResponse<String> response;
+        try {
+            response = httpClient.send(request, BodyHandlers.ofString());
+
+            final JSONObject jsonResp = new JSONObject(response.body());
+            newId = jsonResp.getString("newId");
+        } catch (Exception e) {
+            log.error("Cannot create patient request {}", e);
+        }
+        return newId;
     }
 
     /***
@@ -138,9 +182,9 @@ public class PseudonymApi {
      */
     private String createJsonRequest(Patient patient) {
         Patient field = patient;
-        Ids ids = new Ids ("");
-        String [] idtypes = {"pid"};
-        Data data = new Data(idtypes, field, ids, "http://callbacklistener:8887");
+        Ids ids = new Ids (""); // IDS not use 
+        String [] idtypes = {"pid"};    //pseudonymisation type
+        Data data = new Data(idtypes, field, ids, "http://callbacklistener:8887"); 
         Body bodyRequest= new Body("addPatient", data);
         Gson gson = new Gson();
         return gson.toJson(bodyRequest);
