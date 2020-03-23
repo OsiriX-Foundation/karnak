@@ -10,7 +10,7 @@ import java.util.Set;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.karnak.api.PseudonymApi;
-import org.karnak.api.rqbody.Patient;
+import org.karnak.api.rqbody.Fields;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.weasis.core.api.media.data.TagUtil;
@@ -126,14 +126,23 @@ public class StreamRegistry implements AttributeEditor {
         }
     }
 
-    public void addInstanceToPseudonym(Attributes attributes){
+    public String addInstanceToPseudonym(Attributes attributes){
+        //Get patient info in Dicom File receive
+        String PatientID = attributes.getString(Tag.PatientID);
         String PatientName = attributes.getString(Tag.PatientName);
-        System.out.println(PatientName);
+        String PatientBirthDate = attributes.getString(Tag.PatientBirthDate);
+        String PatientBirthTime = attributes.getString(Tag.PatientBirthTime);
+        String PatientAge = attributes.getString(Tag.PatientAge);
+        String PatientAddress = attributes.getString(Tag.PatientAddress);
+
         PseudonymApi pseudonymApi = new PseudonymApi();
-        Patient newPatient = new Patient("James", "Jones", "Scoot", "04", "12", "1993", "1218", "Geneve");
-        String pseudonym = pseudonymApi.createPatient(newPatient);
-        System.out.println(pseudonym);
+
+        Fields newPatientFields = new Fields(PatientID, PatientName, PatientBirthDate, PatientBirthTime, PatientAge, PatientAddress);
         
+        String pseudonym ="";
+        pseudonym = pseudonymApi.createPatient(newPatientFields);
+
+        return pseudonym;
         
     }
 

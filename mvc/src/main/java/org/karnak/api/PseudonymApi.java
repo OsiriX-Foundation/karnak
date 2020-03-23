@@ -21,7 +21,7 @@ import org.json.JSONObject;
 import org.karnak.api.rqbody.Body;
 import org.karnak.api.rqbody.Data;
 import org.karnak.api.rqbody.Ids;
-import org.karnak.api.rqbody.Patient;
+import org.karnak.api.rqbody.Fields;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,10 +65,10 @@ public class PseudonymApi {
      * @param tokenId 
      * @return Pseudonym
      */
-    public String createPatient(Patient patient){
+    public String createPatient(Fields patientFields){
         String pseudonym="";    
         try{
-            String tokenId = rqCreateTokenAddPatient(patient);
+            String tokenId = rqCreateTokenAddPatient(patientFields);
             pseudonym = rqCreatePatient(tokenId);
         }catch (Exception e){
             log.error("Cannot create patient", e);
@@ -107,8 +107,8 @@ public class PseudonymApi {
      * Make the request to have a token that allow to add a new patient
      * @return sessionID
      */
-    public String rqCreateTokenAddPatient(Patient patient) {
-        String jsonBody = createJsonRequest(patient);        
+    public String rqCreateTokenAddPatient(Fields patientFields) {
+        String jsonBody = createJsonRequest(patientFields);        
         HttpRequest request = HttpRequest.newBuilder()
         .POST(BodyPublishers.ofString(jsonBody))
         .uri(URI.create(this.SERVER_URL + "/sessions/"+this.sessionId+"/tokens"))
@@ -180,8 +180,8 @@ public class PseudonymApi {
      * @param patient Patient that we want to add in pseudonym api.
      * @return String json body
      */
-    private String createJsonRequest(Patient patient) {
-        Patient field = patient;
+    private String createJsonRequest(Fields patientFields) {
+        Fields field = patientFields;
         Ids ids = new Ids (""); // IDS not use 
         String [] idtypes = {"pid"};    //pseudonymisation type
         Data data = new Data(idtypes, field, ids, "http://callbacklistener:8887"); 
