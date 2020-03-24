@@ -9,8 +9,10 @@ import java.util.Set;
 
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
+import org.json.JSONArray;
 import org.karnak.api.PseudonymApi;
 import org.karnak.api.rqbody.Fields;
+import org.karnak.api.rqbody.SearchIds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.weasis.core.api.media.data.TagUtil;
@@ -138,12 +140,17 @@ public class StreamRegistry implements AttributeEditor {
         PseudonymApi pseudonymApi = new PseudonymApi();
 
         Fields newPatientFields = new Fields(PatientID, PatientName, PatientBirthDate, PatientBirthTime, PatientAge, PatientAddress);
-        
-        String pseudonym ="";
-        pseudonym = pseudonymApi.createPatient(newPatientFields);
-
+      
+        String pseudonym = pseudonymApi.createPatient(newPatientFields);
+        searchPatient(pseudonym);
         return pseudonym;
-        
+    }
+
+    public JSONArray searchPatient(String pseudonym){
+        PseudonymApi pseudonymApi = new PseudonymApi();
+        SearchIds [] searchIds = {new SearchIds("pid", pseudonym)}; //search example
+        JSONArray patientsReturns = pseudonymApi.getPatients(searchIds);
+        return patientsReturns;
     }
 
 }

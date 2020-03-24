@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,6 +22,7 @@ import org.json.JSONObject;
 import org.karnak.api.rqbody.Body;
 import org.karnak.api.rqbody.Data;
 import org.karnak.api.rqbody.Ids;
+import org.karnak.api.rqbody.SearchIds;
 import org.karnak.api.rqbody.Fields;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,7 +64,7 @@ public class PseudonymApi {
 
     /***
      * Create patient in pseudonym api
-     * @param tokenId 
+     * @param patientFields 
      * @return Pseudonym
      */
     public String createPatient(Fields patientFields){
@@ -76,6 +78,21 @@ public class PseudonymApi {
         return pseudonym;
     }
 
+    /***
+     * Get patient in pseudonym api
+     * @param searchIds 
+     * @return Pseudonym
+     */
+    public JSONArray getPatients(SearchIds [] searchIds){
+        JSONArray patientArray=null;    
+        try{
+            String tokenId = rqCreateTokenReadPatient(searchIds);
+            patientArray = rqGetPatient(tokenId);
+        }catch (Exception e){
+            log.error("Cannot create patient", e);
+        } 
+        return patientArray;
+    }
 
 
     /***
@@ -130,6 +147,33 @@ public class PseudonymApi {
     }
 
     /***
+     * Make the request to have a token that allow to get patient(s)
+     * @param SearchIds 
+     * @return Patients
+     */
+    public String rqCreateTokenReadPatient(SearchIds [] searchIds) {
+        String jsonBody = createJsonReadPatient(searchIds);        
+        HttpRequest request = HttpRequest.newBuilder()
+        .POST(BodyPublishers.ofString(jsonBody))
+        .uri(URI.create(this.SERVER_URL + "/sessions/"+this.sessionId+"/tokens"))
+        .header("Content-Type", "application/json")
+        .header("mainzellisteApiKey", this.API_KEY)
+        .build();
+
+        String tokenReadPatient="";
+        HttpResponse<String> response;
+        try {
+            response = httpClient.send(request, BodyHandlers.ofString());
+
+            final JSONObject jsonResp = new JSONObject(response.body());
+            tokenReadPatient = jsonResp.getString("tokenId");
+        } catch (Exception e) {
+            log.error("Cannot create a token request for addPatient {}", e);
+        }
+        return tokenReadPatient;
+    }
+
+    /***
      * Make the request to create patient with the tokenId
      * @param tokenId 
      * @return Pseudonym
@@ -154,6 +198,30 @@ public class PseudonymApi {
             log.error("Cannot create patient request {}", e);
         }
         return newId;
+    }
+
+    /***
+     * Make the request to get patient with the tokenId
+     * @param tokenId 
+     * @return Pseudonym
+     */
+    public JSONArray rqGetPatient(String tokenId) {
+        HttpRequest request = HttpRequest.newBuilder()
+        .GET()
+        .uri(URI.create(this.SERVER_URL + "/patients?tokenId="+tokenId))
+        .header("Content-Type", "application/x-www-form-urlencoded")
+        .header("mainzellisteApiKey", this.API_KEY)
+        .build();
+
+        JSONArray jsonResp = null;
+        HttpResponse<String> response;
+        try {
+            response = httpClient.send(request, BodyHandlers.ofString());
+            jsonResp = new JSONArray(response.body());
+        } catch (Exception e) {
+            log.error("Cannot create patient request {}", e);
+        }
+        return jsonResp;
     }
 
     /***
@@ -186,6 +254,20 @@ public class PseudonymApi {
         String [] idtypes = {"pid"};    //pseudonymisation type
         Data data = new Data(idtypes, field, ids, "http://callbacklistener:8887"); 
         Body bodyRequest= new Body("addPatient", data);
+        Gson gson = new Gson();
+        return gson.toJson(bodyRequest);
+    }
+
+    /***
+     * This method allow to create a json body for readPatients in pseudonym api
+     * @param patient SearchIds that we want to read in pseudonym api.
+     * @return String json body
+     */
+    private String createJsonReadPatient(SearchIds [] searchIds) {
+        String [] resultFields = {"patientName"};    //fields returns
+        Data data = new Data(searchIds, resultFields); 
+
+        Body bodyRequest= new Body("readPatients", data);
         Gson gson = new Gson();
         return gson.toJson(bodyRequest);
     }
