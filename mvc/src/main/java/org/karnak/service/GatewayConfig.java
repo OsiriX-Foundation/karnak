@@ -2,7 +2,6 @@ package org.karnak.service;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -14,26 +13,18 @@ import java.util.Set;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.karnak.data.EmailNotifyProgress;
-import org.karnak.data.InputNodeEvent;
 import org.karnak.data.NodeEventType;
 import org.karnak.data.NotificationConfiguration;
 import org.karnak.data.OutputNodeEvent;
 import org.karnak.data.StreamRegistry;
-import org.karnak.data.input.InputRepository;
-import org.karnak.data.input.SourceNode;
-import org.karnak.data.output.Destination;
-import org.karnak.data.output.DestinationType;
-import org.karnak.data.output.ForwardNode;
-import org.karnak.data.output.OutputRepository;
-import org.karnak.ui.input.InputConfiguration;
-import org.karnak.ui.output.OutputConfiguration;
+import org.karnak.data.gateway.Destination;
+import org.karnak.data.gateway.DestinationType;
+import org.karnak.data.gateway.ForwardNode;
+import org.karnak.data.gateway.GatewayPersistence;
+import org.karnak.ui.gateway.GatewayConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
-import org.springframework.core.env.PropertySource;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.EncodedResource;
 import org.weasis.core.api.util.LangUtil;
 import org.weasis.core.api.util.StringUtil;
 import org.weasis.dicom.param.AdvancedParams;
@@ -124,8 +115,7 @@ public class GatewayConfig {
         mode = Mode.getMode(getProperty("_GATEWAY_MODE", "disable"));
 
         listenerAET = getProperty("_DICOM_LISTENER_AET", "KARNAK-" + stream.name().toUpperCase());
-        listenerPort =
-            StringUtil.getInt(getProperty("_DICOM_LISTENER_PORT", null), stream == Stream.IN ? 11115 : 11119);
+        listenerPort = stream == Stream.IN ? 11115 : 11119;
         listenerTLS = LangUtil.getEmptytoFalse(getProperty("_DICOM_LISTENER_TLS", null));
 
         clientKey = getProperty("_TLS_KEYSTORE_PATH", null);
@@ -300,11 +290,7 @@ public class GatewayConfig {
     }
 
     public void reloadNodesConfiguration() {
-        if (stream == Stream.IN) {
-            reloadInputNodes();
-        } else {
-            reloadOutputNodes();
-        }
+            reloadGatewayPersistence();
     }
 
     private void addDestinationNode(List<ForwardDestination> dstList, ForwardDicomNode fwdSrcNode,
@@ -375,32 +361,12 @@ public class GatewayConfig {
         return params;
     }
 
-    public void reloadInputNodes() {
-        InputRepository inputRepository = InputConfiguration.getInstance().getInputRepository();
-        List<SourceNode> list = new ArrayList<>(inputRepository.findAll());
-        for (SourceNode sourceNode : list) {
-            // fwdSrcNode.addAcceptedSourceNode(sourceNode.getAeTitle(), sourceNode.getHostname());
-        }
-    }
-
-    public void update(InputNodeEvent event) {
-        if (event.getEventType() == NodeEventType.ADD) {
-
-        } else if (event.getEventType() == NodeEventType.REMOVE) {
-
-        } else if (event.getEventType() == NodeEventType.UPDATE) {
-
-        } else {
-            reloadInputNodes();
-        }
-    }
-
-    public void reloadOutputNodes() {
-        OutputRepository outputRepository = OutputConfiguration.getInstance().getOutputRepository();
-        List<ForwardNode> list = new ArrayList<>(outputRepository.findAll());
+    public void reloadGatewayPersistence() {
+        GatewayPersistence gatewayPersistence = GatewayConfiguration.getInstance().getGatewayPersistence();
+        List<ForwardNode> list = new ArrayList<>(gatewayPersistence.findAll());
         for (ForwardNode forwardNode : list) {
             ForwardDicomNode fwdSrcNode = new ForwardDicomNode(forwardNode.getFwdAeTitle());
-            for (org.karnak.data.output.SourceNode srcNode : forwardNode.getSourceNodes()) {
+            for (org.karnak.data.gateway.SourceNode srcNode : forwardNode.getSourceNodes()) {
                 fwdSrcNode.addAcceptedSourceNode(srcNode.getAeTitle(), srcNode.getHostname());
             }
 
@@ -418,8 +384,8 @@ public class GatewayConfig {
         Object src = event.getSource();
         ForwardDicomNode fwdNode = getForwardDicomNode(event.getForwardNode().getFwdAeTitle());
         idMap.put(event.getForwardNode().getId(), fwdNode);
-        if (src instanceof org.karnak.data.output.SourceNode) {
-            org.karnak.data.output.SourceNode srcNode = (org.karnak.data.output.SourceNode) src;
+        if (src instanceof org.karnak.data.gateway.SourceNode) {
+            org.karnak.data.gateway.SourceNode srcNode = (org.karnak.data.gateway.SourceNode) src;
             if (type == NodeEventType.ADD) {
                 fwdNode.addAcceptedSourceNode(srcNode.getAeTitle(), srcNode.getHostname());
             } else if (type == NodeEventType.REMOVE) {
@@ -428,8 +394,8 @@ public class GatewayConfig {
             } else if (type == NodeEventType.UPDATE) {
 
             }
-        } else if (src instanceof org.karnak.data.output.Destination) {
-            org.karnak.data.output.Destination dstNode = (org.karnak.data.output.Destination) src;
+        } else if (src instanceof org.karnak.data.gateway.Destination) {
+            org.karnak.data.gateway.Destination dstNode = (org.karnak.data.gateway.Destination) src;
             if (type == NodeEventType.ADD) {
                 addDestinationNode(destMap.get(fwdNode), fwdNode, dstNode);
             } else if (type == NodeEventType.REMOVE) {
@@ -454,7 +420,7 @@ public class GatewayConfig {
                 // TODO remove old aet
             }
         } else {
-            reloadOutputNodes();
+            reloadGatewayPersistence();
         }
     }
 
@@ -471,7 +437,7 @@ public class GatewayConfig {
     }
 
     private void addAcceptedSourceNodes(ForwardDicomNode fwdSrcNode, ForwardNode forwardNode) {
-        for (org.karnak.data.output.SourceNode srcNode : forwardNode.getSourceNodes()) {
+        for (org.karnak.data.gateway.SourceNode srcNode : forwardNode.getSourceNodes()) {
             fwdSrcNode.addAcceptedSourceNode(srcNode.getAeTitle(), srcNode.getHostname());
         }
     }

@@ -2,9 +2,9 @@ package org.karnak.data;
 
 import java.util.Objects;
 
-import org.karnak.data.output.Destination;
-import org.karnak.data.output.ForwardNode;
-import org.karnak.data.output.SourceNode;
+import org.karnak.data.gateway.Destination;
+import org.karnak.data.gateway.ForwardNode;
+import org.karnak.data.gateway.SourceNode;
 import org.springframework.context.ApplicationEvent;
 
 public class OutputNodeEvent extends ApplicationEvent {
