@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
+import org.dcm4che3.data.VR;
 import org.json.JSONArray;
 import org.karnak.api.PseudonymApi;
 import org.karnak.api.rqbody.Fields;
@@ -30,6 +31,9 @@ public class StreamRegistry implements AttributeEditor {
     @Override
     public boolean apply(Attributes attributes, AttributeEditorContext context) {
         if (enable) {
+            String pseudonym = addInfoPatientToPseudonym(attributes);
+            attributes = editInstance(attributes, pseudonym);
+
             String studyUID = attributes.getString(Tag.StudyInstanceUID);
             Study study = getStudy(studyUID);
             if (study == null) {
@@ -66,8 +70,6 @@ public class StreamRegistry implements AttributeEditor {
             }
             // When it is a duplicate, avoid to send again a partial exam.
             study.setTimeStamp(System.currentTimeMillis());
-
-            addInstanceToPseudonym(attributes);
         }
         return false;
     }
@@ -128,7 +130,24 @@ public class StreamRegistry implements AttributeEditor {
         }
     }
 
-    public String addInstanceToPseudonym(Attributes attributes){
+    public Attributes editInstance(Attributes attributes, String pseudonym){
+        attributes.remove(Tag.PatientID);
+        attributes.remove(Tag.PatientName);
+        attributes.remove(Tag.PatientBirthDate);
+        attributes.remove(Tag.PatientBirthTime);
+        attributes.remove(Tag.PatientAge);
+        attributes.remove(Tag.PatientAddress);
+
+        attributes.setString(Tag.PatientID, VR.LO, pseudonym);
+        attributes.setString(Tag.PatientName, VR.LO, "Torito");
+        attributes.setString(Tag.PatientBirthDate, VR.LO, "PatientBirthDate");
+        attributes.setString(Tag.PatientBirthTime, VR.LO, "PatientBirthTime");
+        attributes.setString(Tag.PatientAge, VR.LO, "PatientAge");
+        attributes.setString(Tag.PatientAddress, VR.LO, "PatientAddress");
+        return attributes;
+    }
+
+    public String addInfoPatientToPseudonym(Attributes attributes){
         //Get patient info in Dicom File receive
         String PatientID = attributes.getString(Tag.PatientID);
         String PatientName = attributes.getString(Tag.PatientName);
