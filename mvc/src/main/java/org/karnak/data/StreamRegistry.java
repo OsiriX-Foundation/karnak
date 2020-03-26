@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Random;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -131,6 +132,9 @@ public class StreamRegistry implements AttributeEditor {
     }
 
     public Attributes editInstance(Attributes attributes, String pseudonym){
+        attributes.remove(Tag.StudyInstanceUID);
+        attributes.remove(Tag.SeriesInstanceUID);
+        attributes.remove(Tag.SOPInstanceUID);
         attributes.remove(Tag.PatientID);
         attributes.remove(Tag.PatientName);
         attributes.remove(Tag.PatientBirthDate);
@@ -138,14 +142,17 @@ public class StreamRegistry implements AttributeEditor {
         attributes.remove(Tag.PatientAge);
         attributes.remove(Tag.PatientAddress);
         attributes.remove(Tag.PatientSex);
-
+        
+        attributes.setString(Tag.StudyInstanceUID, VR.LO, "2.16.840.1.113669.632.20.1211."+new Random().nextInt(536871066));
+        attributes.setString(Tag.SeriesInstanceUID, VR.LO, "1.2.276.0.7238010.5.1.3.0.1254.1347882964."+new Random().nextInt(536871066));
+        attributes.setString(Tag.SOPInstanceUID, VR.LO, "1.2.276.0.7238010.5.1.4.0.1254.1347882964."+new Random().nextInt(536871066));
         attributes.setString(Tag.PatientID, VR.LO, pseudonym);
-        attributes.setString(Tag.PatientName, VR.LO, "Torito");
-        attributes.setString(Tag.PatientBirthDate, VR.LO, "PatientBirthDate");
-        attributes.setString(Tag.PatientBirthTime, VR.LO, "PatientBirthTime");
-        attributes.setString(Tag.PatientAge, VR.LO, "PatientAge");
-        attributes.setString(Tag.PatientAddress, VR.LO, "PatientAddress");
-        attributes.setString(Tag.PatientSex, VR.LO, "PatientSex");
+        attributes.setString(Tag.PatientName, VR.LO, "Jessica");
+        attributes.setString(Tag.PatientBirthDate, VR.DA, "19930222");
+        attributes.setString(Tag.PatientBirthTime, VR.TM, "070907.0705");
+        attributes.setString(Tag.PatientAge, VR.LO, "026Y");
+        attributes.setString(Tag.PatientAddress, VR.LO, "Rue des Pâquis 1200, Genève");
+        attributes.setString(Tag.PatientSex, VR.LO, "M");
         return attributes;
     }
 
