@@ -137,6 +137,7 @@ public class StreamRegistry implements AttributeEditor {
         attributes.remove(Tag.PatientBirthTime);
         attributes.remove(Tag.PatientAge);
         attributes.remove(Tag.PatientAddress);
+        attributes.remove(Tag.PatientSex);
 
         attributes.setString(Tag.PatientID, VR.LO, pseudonym);
         attributes.setString(Tag.PatientName, VR.LO, "Torito");
@@ -144,21 +145,23 @@ public class StreamRegistry implements AttributeEditor {
         attributes.setString(Tag.PatientBirthTime, VR.LO, "PatientBirthTime");
         attributes.setString(Tag.PatientAge, VR.LO, "PatientAge");
         attributes.setString(Tag.PatientAddress, VR.LO, "PatientAddress");
+        attributes.setString(Tag.PatientSex, VR.LO, "PatientSex");
         return attributes;
     }
 
     public String addInfoPatientToPseudonym(Attributes attributes){
         //Get patient info in Dicom File receive
-        String PatientID = attributes.getString(Tag.PatientID);
-        String PatientName = attributes.getString(Tag.PatientName);
-        String PatientBirthDate = attributes.getString(Tag.PatientBirthDate);
-        String PatientBirthTime = attributes.getString(Tag.PatientBirthTime);
-        String PatientAge = attributes.getString(Tag.PatientAge);
-        String PatientAddress = attributes.getString(Tag.PatientAddress);
+        String patientID = attributes.getString(Tag.PatientID);
+        String patientName = attributes.getString(Tag.PatientName);
+        String patientBirthDate = attributes.getString(Tag.PatientBirthDate);
+        String patientBirthTime = attributes.getString(Tag.PatientBirthTime);
+        String patientAge = attributes.getString(Tag.PatientAge);
+        String patientSex = attributes.getString(Tag.PatientSex);
+        String patientAddress = attributes.getString(Tag.PatientAddress);
 
         PseudonymApi pseudonymApi = new PseudonymApi();
 
-        Fields newPatientFields = new Fields(PatientID, PatientName, PatientBirthDate, PatientBirthTime, PatientAge, PatientAddress);
+        Fields newPatientFields = new Fields(patientID, patientName, patientBirthDate, patientBirthTime, patientAge, patientSex, patientAddress);
       
         String pseudonym = pseudonymApi.createPatient(newPatientFields);
         searchPatient(pseudonym);

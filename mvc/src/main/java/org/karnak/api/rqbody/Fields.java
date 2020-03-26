@@ -10,6 +10,7 @@ public class Fields {
     private String patientBirthDate;
     private String patientBirthTime;
     private String patientAge;
+    private String patientSex;
     private String patientAddress;
 
     // ---------------------------------------------------------------
@@ -20,6 +21,7 @@ public class Fields {
     public String get_patientBirthDate() { return this.patientBirthDate; }
     public String get_patientBirthTime() { return this.patientBirthTime; }
     public String get_patientAge() { return this.patientAge; }
+    public String get_patientSex() { return this.patientSex; }
     public String get_patientAddress() { return this.patientAddress; }
 
     public void set_patientID(String patientID) { this.patientID = patientID; }
@@ -27,6 +29,7 @@ public class Fields {
     public void set_patientBirthDate(String patientBirthDate) { this.patientBirthDate = patientBirthDate; }
     public void set_patientBirthTime(String patientBirthTime) { this.patientBirthTime = patientBirthTime; }
     public void set_patientAge(String patientAge) { this.patientAge = patientAge; }
+    public void set_patientSex(String patientSex) { this.patientSex = patientSex; }
     public void set_patientAddress(String patientAddress) { this.patientAddress = patientAddress; }
 
     // ---------------------------------------------------------------
@@ -36,13 +39,14 @@ public class Fields {
     {
         this.patientID = patientID;
     }
-    public Fields(String patientID, String patientName, String patientBirthDate, String patientBirthTime, String patientAge, String patientAddress)
+    public Fields(String patientID, String patientName, String patientBirthDate, String patientBirthTime, String patientAge, String patientSex, String patientAddress)
     {
         this.patientID = patientID;
         this.patientName =patientName;
         this.patientBirthDate= patientBirthDate;
         this.patientBirthTime= patientBirthTime;
         this.patientAge= patientAge;
+        this.patientSex = patientSex;
         this.patientAddress = patientAddress;
     }
 }
