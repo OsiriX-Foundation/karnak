@@ -177,7 +177,7 @@ public class StreamRegistry implements AttributeEditor {
 
     public JSONArray searchPatient(String pseudonym){
         PseudonymApi pseudonymApi = new PseudonymApi();
-        SearchIds [] searchIds = {new SearchIds("pid", pseudonym)}; //search example
+        SearchIds [] searchIds = {new SearchIds("elasticid", pseudonym)}; //search example
         JSONArray patientsReturns = pseudonymApi.getPatients(searchIds);
         return patientsReturns;
     }

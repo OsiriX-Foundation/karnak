@@ -251,8 +251,8 @@ public class PseudonymApi {
     private String createJsonRequest(Fields patientFields) {
         Fields field = patientFields;
         Ids ids = new Ids (""); // IDS not use 
-        String [] idtypes = {"pid"};    //pseudonymisation type
-        Data data = new Data(idtypes, field, ids, "http://callbacklistener:8887"); 
+        String [] idtypes = {"elasticid"};    //pseudonymisation type
+        Data data = new Data(idtypes, field, ids); 
         Body bodyRequest= new Body("addPatient", data);
         Gson gson = new Gson();
         return gson.toJson(bodyRequest);

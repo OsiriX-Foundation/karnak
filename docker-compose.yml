@@ -1,0 +1,27 @@
+version: "3"
+services:
+  db:
+    image: postgres:9.5-alpine
+    environment:
+      - POSTGRES_DB=mainzelliste
+      - POSTGRES_USER=mainzelliste
+      - POSTGRES_PASSWORD=PleasePutASafePasswordHere
+    volumes:
+      - db-scripts:/docker-entrypoint-initdb.d
+      - db-data:/var/lib/postgresql/data
+  mainzelliste:
+    image: medicalinformatics/mainzelliste:1.8-latest
+    volumes:  
+      - ./mainzelliste/mainzelliste.conf:/mainzelliste.conf.default
+    ports:
+      - "8080:8080"
+    environment:
+      - ML_REVERSEPROXY_FQDN=mainzelliste
+      - ML_DB_PASS=PleasePutASafePasswordHere
+      - ML_API_KEY=changeThisApiKey
+    depends_on:
+      - db
+  
+volumes:
+  db-scripts:
+  db-data:
