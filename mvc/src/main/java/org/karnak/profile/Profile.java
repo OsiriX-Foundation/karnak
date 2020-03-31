@@ -18,7 +18,7 @@ public class Profile {
     public void execute(Integer tag, VR vr) {
         Action action = actionMap.get(tag);
         if (action == null) {
-            throw new IllegalStateException("no command registered for " + tag);
+            throw new IllegalStateException("no action registered for " + tag);
         }
         this.history.add(action); // optional 
         action.execute(vr);        
