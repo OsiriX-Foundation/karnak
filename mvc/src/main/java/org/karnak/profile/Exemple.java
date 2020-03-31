@@ -3,8 +3,8 @@ package org.karnak.profile;
 import org.dcm4che3.data.Tag;
 import org.dcm4che3.data.VR;
 import org.karnak.profile.action.Action;
-import org.karnak.profile.action.deident.Remove;
-import org.karnak.profile.action.deident.Replace;
+import org.karnak.profile.action.Remove;
+import org.karnak.profile.action.Replace;
 
 public class Exemple {
     public void exemple() {

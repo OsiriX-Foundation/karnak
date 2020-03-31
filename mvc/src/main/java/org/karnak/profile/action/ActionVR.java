@@ -1,4 +1,4 @@
-package org.karnak.profile.action.deident;
+package org.karnak.profile.action;
 
 public interface ActionVR {
     void LO();
