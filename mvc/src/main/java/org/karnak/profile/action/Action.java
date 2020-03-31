@@ -1,7 +1,6 @@
 package org.karnak.profile.action;
 
 import org.dcm4che3.data.VR;
-import org.karnak.profile.action.ActionVR;
 public class Action {
 
    private ActionVR actionVR;

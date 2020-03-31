@@ -20,11 +20,5 @@ public class Exemple {
         //execute (stream registry)
         profile1.execute(Tag.StudyInstanceUID, VR.LO);
         profile1.execute(Tag.PatientName, VR.TM);
-
-
-        //ActionManager actionX = new ActionManager(new Remove(), VR.LO);
-        //actionX.execute();
-        //Action actionX = new Action(new Remove());
-        //actionX.executer();
     }
 }
