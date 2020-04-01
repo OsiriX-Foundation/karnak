@@ -23,4 +23,4 @@ public class Profile {
         this.history.add(action); // optional 
         action.execute(vr);        
     }
- }
+}

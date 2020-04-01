@@ -1,11 +1,7 @@
 package org.karnak.profile.action;
 
-public class Replace implements ActionVR{
-    public void LO() {
+public class Replace implements ActionInterface{
+    public void execute() {
         System.out.println("replace VR LO");
-    }
-
-    public void TM() {
-        System.out.println("replace VR TM");
     }
 }

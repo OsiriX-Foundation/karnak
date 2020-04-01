@@ -3,21 +3,13 @@ package org.karnak.profile.action;
 import org.dcm4che3.data.VR;
 public class Action {
 
-   private ActionVR actionVR;
+   private ActionInterface action;
 
-   public Action(ActionVR actionVR) {
-      this.actionVR = actionVR;
+   public Action(ActionInterface action) {
+      this.action = action;
    }
 
    public void execute(VR vr){
-      switch(vr){
-         case LO:
-            this.actionVR.LO();
-            break;
-         case TM:
-            this.actionVR.TM();
-            break;
-         default:
-      }
+      this.action.execute();
    }
 }
