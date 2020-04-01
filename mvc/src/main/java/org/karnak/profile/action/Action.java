@@ -1,15 +1,7 @@
 package org.karnak.profile.action;
 
-import org.dcm4che3.data.VR;
-public class Action {
+import org.dcm4che3.data.Attributes;
 
-   private ActionInterface action;
-
-   public Action(ActionInterface action) {
-      this.action = action;
-   }
-
-   public void execute(VR vr){
-      this.action.execute();
-   }
+public interface Action {
+    void execute(Attributes attributes, int tag);
 }

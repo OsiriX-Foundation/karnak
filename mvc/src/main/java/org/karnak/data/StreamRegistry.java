@@ -15,6 +15,9 @@ import org.json.JSONArray;
 import org.karnak.api.PseudonymApi;
 import org.karnak.api.rqbody.Fields;
 import org.karnak.api.rqbody.SearchIds;
+import org.karnak.profile.Profile;
+import org.karnak.profile.action.Action;
+import org.karnak.profile.action.Remove;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.weasis.core.api.media.data.TagUtil;
@@ -34,6 +37,7 @@ public class StreamRegistry implements AttributeEditor {
         if (enable) {
             String pseudonym = addInfoPatientToPseudonym(attributes);
             attributes = editInstance(attributes, pseudonym);
+            example(attributes);
 
             String studyUID = attributes.getString(Tag.StudyInstanceUID);
             Study study = getStudy(studyUID);
@@ -180,6 +184,18 @@ public class StreamRegistry implements AttributeEditor {
         SearchIds [] searchIds = {new SearchIds("elasticid", pseudonym)}; //search example
         JSONArray patientsReturns = pseudonymApi.getPatients(searchIds);
         return patientsReturns;
+    }
+
+    public void example(Attributes attributes) {
+        Action remove = new Remove();
+
+        //store (init app)
+        Profile profile1 = new Profile();
+        profile1.register(Tag.StudyInstanceUID, remove);
+        profile1.register(Tag.PatientName, remove);
+
+        //execute (stream registry)
+        profile1.execute(attributes);
     }
 
 }
