@@ -15,6 +15,7 @@ public class Algorithm {
         this.vrMap.put(VR.LO, ()->this.LO());
         this.vrMap.put(VR.TM, ()->this.TM());
         this.vrMap.put(VR.PN, ()->this.PN());
+        this.vrMap.put(VR.SH, ()->this.SH());
     }
 
     public String execute(VR vr){
@@ -26,12 +27,14 @@ public class Algorithm {
         this.value = "LO"+new Random().nextInt(536871066);
     }
 
-    private void TM(){
-        this.value = "VALUE LO";
-    }
+    private void TM(){ this.value = "VALUE TM"; }
 
     private void PN(){
-        this.value = "VALUE LO";
+        this.value = "VALUE PN";
+    }
+
+    private void SH(){
+        this.value = "SH"+new Random().nextInt(536871066);
     }
 
 }

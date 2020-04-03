@@ -35,8 +35,9 @@ public class StreamRegistry implements AttributeEditor {
     public boolean apply(Attributes attributes, AttributeEditorContext context) {
         if (enable) {
             String pseudonym = addInfoPatientToPseudonym(attributes);
-            attributes = editInstance(attributes, pseudonym);
+            // attributes = editInstance(attributes, pseudonym);
             profileExample(attributes);
+            attributes.setString(Tag.PatientID, VR.LO, pseudonym);
 
             String studyUID = attributes.getString(Tag.StudyInstanceUID);
             Study study = getStudy(studyUID);
@@ -194,9 +195,13 @@ public class StreamRegistry implements AttributeEditor {
         //store (init app)
         Profile profile1 = new Profile();
 
-        profile1.register(Tag.PatientID, dReplace);
-        profile1.register(Tag.StudyDescription, dReplace);
-        profile1.register(Tag.PatientName, dReplace);
+        profile1.register(Tag.StudyID, dReplace);
+        profile1.register(Tag.StudyDescription, remove);
+        profile1.register(Tag.SOPInstanceUID, uid);
+        profile1.register(Tag.SeriesInstanceUID, uid);
+        profile1.register(Tag.StudyInstanceUID, uid);
+        profile1.register(Tag.StudyDate, zReplace);
+        profile1.register(Tag.PatientName, keep);
 
         //execute (stream registry)
         profile1.execute(attributes);
