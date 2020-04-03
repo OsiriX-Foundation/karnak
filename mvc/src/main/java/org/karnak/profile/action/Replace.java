@@ -9,6 +9,7 @@ public class Replace implements Action{
 
     public void execute(Attributes attributes, int tag) {   
         VR vr = attributes.getVR(tag);
-        this.algo.execute(vr);
+        String vrValue = this.algo.execute(vr);
+        attributes.setValue(tag, vr, vrValue);
     }
 }

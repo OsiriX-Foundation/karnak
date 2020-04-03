@@ -6,28 +6,28 @@ import org.dcm4che3.data.VR;
 
 public class Algorithm {
 
-    private Map<VR, Runnable> vrMap = new HashMap<>();
+    private Map<VR, String> vrMap = new HashMap<>();
     
     public Algorithm(){
-        this.vrMap.put(VR.LO, () -> this.LO());
-        this.vrMap.put(VR.TM, () -> this.TM());
-        this.vrMap.put(VR.PN, () -> this.PN());
+        this.vrMap.put(VR.LO, this.LO());
+        this.vrMap.put(VR.TM, this.TM());
+        this.vrMap.put(VR.PN, this.PN());
     }
 
-    public void execute(VR vr){
-        this.vrMap.get(vr).run();
+    public String execute(VR vr){
+        return this.vrMap.get(vr);
     }
 
-    public void LO(){
-        System.out.println("LO");
+    private String LO(){
+        return "VALUE LO";
     }
 
-    public void TM(){
-        System.out.println("TM");
+    private String TM(){
+        return "VALUE LO";
     }
 
-    public void PN(){
-        System.out.println("PN");
+    private String PN(){
+        return "VALUE LO";
     }
 
 }
