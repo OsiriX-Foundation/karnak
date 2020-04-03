@@ -3,7 +3,7 @@ package org.karnak.profile.action;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.VR;
 
-public class Replace implements Action{
+public class DReplace implements Action{
 
     private Algorithm algo = new Algorithm();
 
