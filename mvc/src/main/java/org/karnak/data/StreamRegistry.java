@@ -16,10 +16,7 @@ import org.karnak.api.PseudonymApi;
 import org.karnak.api.rqbody.Fields;
 import org.karnak.api.rqbody.SearchIds;
 import org.karnak.profile.Profile;
-import org.karnak.profile.action.Action;
-import org.karnak.profile.action.KKeep;
-import org.karnak.profile.action.XRemove;
-import org.karnak.profile.action.Replace;
+import org.karnak.profile.action.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.weasis.core.api.media.data.TagUtil;
@@ -190,14 +187,16 @@ public class StreamRegistry implements AttributeEditor {
 
     public void profileExample(Attributes attributes) {
         Action remove = new XRemove();
-        Action replace = new Replace();
+        Action dReplace = new DReplace();
+        Action zReplace = new ZReplace();
         Action keep = new KKeep();
+        Action uid = new UUID();
         //store (init app)
         Profile profile1 = new Profile();
 
-        profile1.register(Tag.PatientID, replace);
-        profile1.register(Tag.StudyDescription, replace);
-        profile1.register(Tag.PatientName, replace);
+        profile1.register(Tag.PatientID, dReplace);
+        profile1.register(Tag.StudyDescription, dReplace);
+        profile1.register(Tag.PatientName, dReplace);
 
         //execute (stream registry)
         profile1.execute(attributes);
