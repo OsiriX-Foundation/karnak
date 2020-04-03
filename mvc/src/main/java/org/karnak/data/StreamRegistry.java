@@ -17,6 +17,7 @@ import org.karnak.api.rqbody.Fields;
 import org.karnak.api.rqbody.SearchIds;
 import org.karnak.profile.Profile;
 import org.karnak.profile.action.Action;
+import org.karnak.profile.action.KKeep;
 import org.karnak.profile.action.XRemove;
 import org.karnak.profile.action.Replace;
 import org.slf4j.Logger;
@@ -190,7 +191,7 @@ public class StreamRegistry implements AttributeEditor {
     public void profileExample(Attributes attributes) {
         Action remove = new XRemove();
         Action replace = new Replace();
-
+        Action keep = new KKeep();
         //store (init app)
         Profile profile1 = new Profile();
 
