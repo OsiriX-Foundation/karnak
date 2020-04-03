@@ -18,6 +18,7 @@ import org.karnak.api.rqbody.SearchIds;
 import org.karnak.profile.Profile;
 import org.karnak.profile.action.Action;
 import org.karnak.profile.action.Remove;
+import org.karnak.profile.action.Replace;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.weasis.core.api.media.data.TagUtil;
@@ -37,7 +38,7 @@ public class StreamRegistry implements AttributeEditor {
         if (enable) {
             String pseudonym = addInfoPatientToPseudonym(attributes);
             attributes = editInstance(attributes, pseudonym);
-            example(attributes);
+            profileExample(attributes);
 
             String studyUID = attributes.getString(Tag.StudyInstanceUID);
             Study study = getStudy(studyUID);
@@ -186,12 +187,14 @@ public class StreamRegistry implements AttributeEditor {
         return patientsReturns;
     }
 
-    public void example(Attributes attributes) {
+    public void profileExample(Attributes attributes) {
         Action remove = new Remove();
+        Action replace = new Replace();
 
         //store (init app)
         Profile profile1 = new Profile();
-        profile1.register(Tag.StudyInstanceUID, remove);
+
+        profile1.register(Tag.PatientID, replace);
         profile1.register(Tag.PatientName, remove);
 
         //execute (stream registry)

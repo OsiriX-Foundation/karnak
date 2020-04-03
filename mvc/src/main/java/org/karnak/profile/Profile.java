@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.dcm4che3.data.Attributes;
 import org.karnak.profile.action.Action;
-import org.karnak.profile.action.Remove;
-import org.karnak.profile.action.Replace;
 
 import java.util.ArrayList;
 import java.util.HashMap;
