@@ -2,32 +2,36 @@ package org.karnak.profile.action;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
+
 import org.dcm4che3.data.VR;
 
 public class Algorithm {
 
-    private Map<VR, String> vrMap = new HashMap<>();
-    
+    private Map<VR, Runnable> vrMap = new HashMap<>();
+    private String value ="";
+
     public Algorithm(){
-        this.vrMap.put(VR.LO, this.LO());
-        this.vrMap.put(VR.TM, this.TM());
-        this.vrMap.put(VR.PN, this.PN());
+        this.vrMap.put(VR.LO, ()->this.LO());
+        this.vrMap.put(VR.TM, ()->this.TM());
+        this.vrMap.put(VR.PN, ()->this.PN());
     }
 
     public String execute(VR vr){
-        return this.vrMap.get(vr);
+        this.vrMap.get(vr).run();
+        return this.value;
     }
 
-    private String LO(){
-        return "VALUE LO";
+    private void LO(){
+        this.value = "LO"+new Random().nextInt(536871066);
     }
 
-    private String TM(){
-        return "VALUE LO";
+    private void TM(){
+        this.value = "VALUE LO";
     }
 
-    private String PN(){
-        return "VALUE LO";
+    private void PN(){
+        this.value = "VALUE LO";
     }
 
 }

@@ -195,7 +195,8 @@ public class StreamRegistry implements AttributeEditor {
         Profile profile1 = new Profile();
 
         profile1.register(Tag.PatientID, replace);
-        profile1.register(Tag.PatientName, remove);
+        profile1.register(Tag.StudyDescription, replace);
+        profile1.register(Tag.PatientName, replace);
 
         //execute (stream registry)
         profile1.execute(attributes);
