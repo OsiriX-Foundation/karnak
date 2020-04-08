@@ -19,7 +19,11 @@ public class Algorithm {
     }
 
     public String execute(VR vr){
-        this.vrMap.get(vr).run();
+        if(this.vrMap.containsKey(vr)){
+            this.vrMap.get(vr).run();
+        }else{
+            this.value = "VR NOT Implemented";
+        }
         return this.value;
     }
 
