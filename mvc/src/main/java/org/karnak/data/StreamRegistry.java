@@ -147,15 +147,8 @@ public class StreamRegistry implements AttributeEditor {
         Fields newPatientFields = new Fields(patientID, patientName, patientBirthDate, patientSex, issuerOfPatientID);
       
         String pseudonym = pseudonymApi.createPatient(newPatientFields);
-        searchPatient(pseudonym);
+        pseudonymApi.searchPatient(pseudonym);
         return pseudonym;
-    }
-
-    public JSONArray searchPatient(String pseudonym){
-        PseudonymApi pseudonymApi = new PseudonymApi();
-        SearchIds [] searchIds = {new SearchIds("elasticid", pseudonym)}; //search example
-        JSONArray patientsReturns = pseudonymApi.getPatients(searchIds);
-        return patientsReturns;
     }
 
     public void deident(Attributes attributes) {

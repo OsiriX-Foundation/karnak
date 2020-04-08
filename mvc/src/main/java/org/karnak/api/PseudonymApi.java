@@ -57,6 +57,16 @@ public class PseudonymApi {
         this.sessionId = sessionsId;
     }
 
+    /***
+     * Get patient info with pseudonym
+     * @param pseudonym 
+     * @return patient
+     */
+    public JSONArray searchPatient(String pseudonym){
+        SearchIds [] searchIds = {new SearchIds("elasticid", pseudonym)}; //search example
+        JSONArray patientsReturns = getPatients(searchIds);
+        return patientsReturns;
+    }
 
     /***
      * Create patient in pseudonym api
@@ -260,7 +270,7 @@ public class PseudonymApi {
      * @return String json body
      */
     private String createJsonReadPatient(SearchIds [] searchIds) {
-        String [] resultFields = {"patientName"};    //fields returns
+        String [] resultFields = {"patientID","patientName", "patientBirthDate", "patientSex", "issuerOfPatientID"};    //fields returns
         Data data = new Data(searchIds, resultFields); 
 
         Body bodyRequest= new Body("readPatients", data);
