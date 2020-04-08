@@ -161,6 +161,7 @@ public class StreamRegistry implements AttributeEditor {
     public void deident(Attributes attributes) {
         //store (init app)
         Profile profile = new Profile("/mvc/profiles/profile.json");
+        // Profile profile = new Profile();
         
         //execute (stream registry)
         profile.execute(attributes);
