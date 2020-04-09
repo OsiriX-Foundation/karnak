@@ -38,7 +38,7 @@ spring:
   jpa:
     hibernate:
       # First time to create the db the value must be: create
-      ddl-auto: validate
+      ddl-auto: update
     generate-ddl: false
     show-sql: false
     open-in-view: false

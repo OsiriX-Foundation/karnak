@@ -4,6 +4,8 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -12,12 +14,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.dcm4che6.img.util.FileUtil;
 import org.karnak.service.AbstractGateway;
-import org.karnak.service.GlobalConfig;
+import org.karnak.service.GatewayConfig;
 import org.karnak.util.ServletUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.weasis.core.api.util.FileUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+
 
 @WebServlet(urlPatterns = "/download")
 public class DownloadingServlet extends HttpServlet {
@@ -25,34 +29,35 @@ public class DownloadingServlet extends HttpServlet {
     private static final long serialVersionUID = -3991470951272725755L;
     private static final Logger LOGGER = LoggerFactory.getLogger(DownloadingServlet.class);
 
+    @Autowired
+    private GatewayConfig globalConfig;
+    
     @Override
     public final void init() throws ServletException {
-        GlobalConfig globalConfig = (GlobalConfig) this.getServletContext().getAttribute("globalConfig");
         if (globalConfig == null) {
-            LOGGER.error("DownloadingServlet service cannot start: {}", "GlobalConfig is missing.");
+            LOGGER.error("DownloadingServlet service cannot start: GatewayConfig is missing.");
             destroy();
         }
     }
 
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        GlobalConfig globalConfig = (GlobalConfig) this.getServletContext().getAttribute("globalConfig");
         if (globalConfig == null) {
             String errorMsg = "Missing 'GlobalConfig' from current ServletContext";
             LOGGER.error(errorMsg);
             ServletUtil.sendResponseError(res, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, errorMsg);
             return;
         }
-        final File archiveDir = globalConfig.getConfigIn().getStoreDir();
+        final Path archiveDir = globalConfig.getStorePath();
 
         try {
-            if (archiveDir == null || !archiveDir.isDirectory() || !archiveDir.canRead()) {
+            if (archiveDir == null || !Files.isDirectory(archiveDir) || !Files.isReadable(archiveDir)) {
                 throw new IllegalStateException("Cannot access to the archive directory");
             } else {
                 String aet = req.getParameter("aet");
                 String filename = req.getParameter("sopuid");
                 if (aet != null && filename != null) {
-                    File file = new File(archiveDir, aet + File.separator + filename);
+                    Path file = Path.of(archiveDir.toString(), aet,filename );
                     String delete = req.getParameter("delete");
                     if ("true".equals(delete)) {
                         FileUtil.delete(file);
@@ -67,7 +72,7 @@ public class DownloadingServlet extends HttpServlet {
         }
 
         try {
-            AbstractGateway.deleteOldFiles(archiveDir);
+            AbstractGateway.deleteOldFiles(archiveDir.toFile());
         } catch (SecurityException e) {
             LOGGER.error("SecurityException:", e);
         }
@@ -87,18 +92,18 @@ public class DownloadingServlet extends HttpServlet {
      *            The name the browser should receive.
      * @throws IOException
      */
-    private boolean download(HttpServletResponse resp, File file) throws IOException {
-        if (file == null || !file.canRead()) {
-            LOGGER.warn("Cannot get this file for downloading: {}", file);
+    private boolean download(HttpServletResponse resp, Path path) throws IOException {
+        if (path == null || !Files.isReadable(path)) {
+            LOGGER.warn("Cannot get this file for downloading: {}", path);
             return false;
         }
 
-        try (DataInputStream in = new DataInputStream(new FileInputStream(file));
+        try (DataInputStream in = new DataInputStream(Files.newInputStream(path));
                         ServletOutputStream op = resp.getOutputStream()) {
             int length = 0;
             resp.setContentType("application/octet-stream");
-            resp.setContentLength((int) file.length());
-            resp.setHeader("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
+            resp.setContentLength((int) Files.size(path));
+            resp.setHeader("Content-Disposition", "attachment; filename=\"" + path.getFileName() + "\"");
 
             byte[] buf = new byte[4096];
             while ((length = in.read(buf)) != -1) {

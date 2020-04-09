@@ -1,12 +1,11 @@
 package org.karnak.profile.action;
 
-import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import org.apache.commons.lang3.RandomStringUtils;
-import org.dcm4che3.data.VR;
+import org.dcm4che6.data.VR;
+
 
 public class Algorithm {
 

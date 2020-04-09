@@ -2,6 +2,7 @@ package org.karnak.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -15,10 +16,11 @@ import org.jsoup.nodes.Document;
 import org.karnak.data.EmailNotifyProgress;
 import org.karnak.data.NodeEventType;
 import org.karnak.data.NotificationConfiguration;
-import org.karnak.data.OutputNodeEvent;
+import org.karnak.data.NodeEvent;
 import org.karnak.data.StreamRegistry;
 import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.DestinationType;
+import org.karnak.data.gateway.DicomSourceNode;
 import org.karnak.data.gateway.ForwardNode;
 import org.karnak.data.gateway.GatewayPersistence;
 import org.karnak.ui.gateway.GatewayConfiguration;
@@ -60,33 +62,15 @@ public class GatewayConfig {
 
     protected static final String T_URL = "url";
 
-    public enum Stream {
-        IN, OUT
-    }
-
-    public enum Mode {
-        FORWARD, ARCHIVE, PULL, DISABLE;
-
-        public static Mode getMode(String str) {
-            try {
-                return valueOf(str.toUpperCase());
-            } catch (Exception ex) {
-                return DISABLE;
-            }
-        }
-    }
-
     private final Map<ForwardDicomNode, List<ForwardDestination>> destMap = new HashMap<>();
 
-    private final Stream stream;
-    private final File storeDir;
+    private final Path storePath;
 
     private final String listenerAET;
     private final int listenerPort;
     private final Boolean listenerTLS;
     private final int intervalCheck;
 
-    private final Mode mode;
     private final String archiveUrl;
     private final String smtpHost;
     private final String mailAuthType;
@@ -101,49 +85,41 @@ public class GatewayConfig {
     private String truststorePwd;
     private String truststore;
 
-    private final Map<Long, Object> idMap = new HashMap<>();
+    public GatewayConfig(Environment env) throws Exception {
+        String path = getProperty("GATEWAY_ARCHIVE_PATH", null); // Only Archive and Pull mode
+        storePath = StringUtil.hasText(path) ? Path.of(path) : null;
+        intervalCheck = StringUtil.getInt(getProperty("GATEWAY_PULL_CHECK_INTERNAL", "5")); // Only Pull mode
+        archiveUrl = getProperty("GATEWAY_ARCHIVE_URL", ""); // Only Archive mode
 
-    public GatewayConfig(Stream stream, Environment env) throws Exception {
-        this.stream = stream;
+        listenerAET = getProperty("DICOM_LISTENER_AET", "KARNAK-GATEWAY");
+        listenerPort = 11119;
+        listenerTLS = LangUtil.getEmptytoFalse(getProperty("DICOM_LISTENER_TLS", null));
 
-        String storePath = getProperty("_GATEWAY_ARCHIVE_PATH", null); // Only Archive and Pull mode
-        storeDir = StringUtil.hasText(storePath) ? new File(storePath) : null;
-        intervalCheck = StringUtil.getInt(getProperty("_GATEWAY_PULL_CHECK_INTERNAL", "5")); // Only Pull mode
-        archiveUrl = getProperty("_GATEWAY_ARCHIVE_URL", ""); // Only Archive mode
+        clientKey = getProperty("TLS_KEYSTORE_PATH", null);
+        clientKeyPwd = getProperty("TLS_KEYSTORE_SECRET", null);
+        truststorePwd = getProperty("TLS_TRUSTSTORE_PATH", null);
+        truststore = getProperty("TLS_TRUSTSTORE_SECRET", null);
 
-        // Default value is disable (in case the properties file does not exist)
-        mode = Mode.getMode(getProperty("_GATEWAY_MODE", "disable"));
+        smtpHost = getProperty("MAIL_SMTP_HOST", null);
+        smtpPort = getProperty("MAIL_SMTP_PORT", null);
+        mailAuthType = getProperty("MAIL_SMTP_TYPE", null);
+        mailAuthUser = getProperty("MAIL_SMTP_USER", null);
+        mailAuthPwd = getProperty("MAIL_SMTP_SECRET", null);
 
-        listenerAET = getProperty("_DICOM_LISTENER_AET", "KARNAK-" + stream.name().toUpperCase());
-        listenerPort = stream == Stream.IN ? 11115 : 11119;
-        listenerTLS = LangUtil.getEmptytoFalse(getProperty("_DICOM_LISTENER_TLS", null));
-
-        clientKey = getProperty("_TLS_KEYSTORE_PATH", null);
-        clientKeyPwd = getProperty("_TLS_KEYSTORE_SECRET", null);
-        truststorePwd = getProperty("_TLS_TRUSTSTORE_PATH", null);
-        truststore = getProperty("_TLS_TRUSTSTORE_SECRET", null);
-
-        smtpHost = getProperty("_MAIL_SMTP_HOST", null);
-        smtpPort = getProperty("_MAIL_SMTP_PORT", null);
-        mailAuthType = getProperty("_MAIL_SMTP_TYPE", null);
-        mailAuthUser = getProperty("_MAIL_SMTP_USER", null);
-        mailAuthPwd = getProperty("_MAIL_SMTP_SECRET", null);
-
-        String notifyObjectErrorPrefix = getProperty("_NOTIFY_OBJECT_ERROR_PREFIX", "**ERROR**");
-        String notifyObjectPattern = getProperty("_NOTIFY_OBJECT_PATTERN", "[Karnak Notification] %s %.30s");
-        String[] notifyObjectValues = getProperty("_NOTIFY_OBJECT_VALUES", "PatientID,StudyDescription").split(",");
-        int notifyInterval = StringUtil.getInt(getProperty("_NOTIFY_INTERNAL", "45"));
+        String notifyObjectErrorPrefix = getProperty("NOTIFY_OBJECT_ERROR_PREFIX", "**ERROR**");
+        String notifyObjectPattern = getProperty("NOTIFY_OBJECT_PATTERN", "[Karnak Notification] %s %.30s");
+        String[] notifyObjectValues = getProperty("NOTIFY_OBJECT_VALUES", "PatientID,StudyDescription").split(",");
+        int notifyInterval = StringUtil.getInt(getProperty("NOTIFY_INTERNAL", "45"));
         this.notifConfiguration = new NotificationConfiguration(notifyObjectErrorPrefix, notifyObjectPattern,
             notifyObjectValues, notifyInterval);
 
-        reloadNodesConfiguration();
+        reloadGatewayPersistence();
     }
 
     private String getProperty(String key, String defaultValue) {
-        String k = stream.name() + key;
-        String val = System.getProperty(k);
+        String val = System.getProperty(key);
         if (!StringUtil.hasText(val)) {
-            val = System.getenv(k);
+            val = System.getenv(key);
             if (!StringUtil.hasText(val)) {
                 return defaultValue;
             }
@@ -160,25 +136,15 @@ public class GatewayConfig {
         buf.append(listenerAET);
         buf.append(" Port=");
         buf.append(listenerPort);
-        buf.append(" Mode=");
-        buf.append(mode);
         return buf.toString();
-    }
-
-    public Stream getStream() {
-        return stream;
     }
 
     public String getArchiveUrl() {
         return archiveUrl;
     }
 
-    public Mode getMode() {
-        return mode;
-    }
-
-    public File getStoreDir() {
-        return storeDir;
+    public Path getStorePath() {
+        return storePath;
     }
 
     public String getListenerAET() {
@@ -289,10 +255,6 @@ public class GatewayConfig {
         return destMap.keySet();
     }
 
-    public void reloadNodesConfiguration() {
-            reloadGatewayPersistence();
-    }
-
     private void addDestinationNode(List<ForwardDestination> dstList, ForwardDicomNode fwdSrcNode,
         Destination dstNode) {
         try {
@@ -324,7 +286,7 @@ public class GatewayConfig {
             }
 
             if (dstNode.getType() == DestinationType.stow) {
-                //parse headers to hashmap
+                // parse headers to hashmap
                 HashMap<String, String> map = new HashMap<>();
                 String headers = dstNode.getHeaders();
                 Document doc = Jsoup.parse(headers);
@@ -332,15 +294,16 @@ public class GatewayConfig {
                 String value = doc.getElementsByTag("value").text();
                 map.put(key, value);
 
-                WebForwardDestination fwd =
-                    new WebForwardDestination(fwdSrcNode, dstNode.getUrl(), map, progress, streamRegistry);
+                WebForwardDestination fwd = new WebForwardDestination(dstNode.getId(), fwdSrcNode, dstNode.getUrl(),
+                    map, progress, streamRegistry);
                 progress.addProgressListener(new EmailNotifyProgress(streamRegistry, fwd, emails, this, notifConfig));
                 dstList.add(fwd);
             } else {
                 DicomNode destinationNode =
                     new DicomNode(dstNode.getAeTitle(), dstNode.getHostname(), dstNode.getPort());
-                DicomForwardDestination dest = new DicomForwardDestination(getDefaultAdvancedParameters(), fwdSrcNode,
-                    destinationNode, dstNode.getUseaetdest(), progress, streamRegistry);
+                DicomForwardDestination dest =
+                    new DicomForwardDestination(dstNode.getId(), getDefaultAdvancedParameters(), fwdSrcNode,
+                        destinationNode, dstNode.getUseaetdest(), progress, streamRegistry);
                 progress.addProgressListener(new EmailNotifyProgress(streamRegistry, dest, emails, this, notifConfig));
                 dstList.add(dest);
             }
@@ -365,49 +328,48 @@ public class GatewayConfig {
         GatewayPersistence gatewayPersistence = GatewayConfiguration.getInstance().getGatewayPersistence();
         List<ForwardNode> list = new ArrayList<>(gatewayPersistence.findAll());
         for (ForwardNode forwardNode : list) {
-            ForwardDicomNode fwdSrcNode = new ForwardDicomNode(forwardNode.getFwdAeTitle());
-            for (org.karnak.data.gateway.SourceNode srcNode : forwardNode.getSourceNodes()) {
-                fwdSrcNode.addAcceptedSourceNode(srcNode.getAeTitle(), srcNode.getHostname());
-            }
-
+            ForwardDicomNode fwdSrcNode = new ForwardDicomNode(forwardNode.getFwdAeTitle(), null, forwardNode.getId());
+            addAcceptedSourceNodes(fwdSrcNode, forwardNode);
             List<ForwardDestination> dstList = new ArrayList<>(forwardNode.getDestinations().size());
             for (Destination dstNode : forwardNode.getDestinations()) {
                 addDestinationNode(dstList, fwdSrcNode, dstNode);
             }
-            idMap.put(forwardNode.getId(), fwdSrcNode);
             destMap.put(fwdSrcNode, dstList);
         }
     }
 
-    public void update(OutputNodeEvent event) {
+    public void update(NodeEvent event) {
         NodeEventType type = event.getEventType();
         Object src = event.getSource();
-        ForwardDicomNode fwdNode = getForwardDicomNode(event.getForwardNode().getFwdAeTitle());
-        idMap.put(event.getForwardNode().getId(), fwdNode);
-        if (src instanceof org.karnak.data.gateway.SourceNode) {
-            org.karnak.data.gateway.SourceNode srcNode = (org.karnak.data.gateway.SourceNode) src;
+        Long id = event.getForwardNode().getId();
+        String aet = event.getForwardNode().getFwdAeTitle();
+        Optional<ForwardDicomNode> val = destMap.keySet().stream().filter(f -> id.equals(f.getId())).findFirst();
+        ForwardDicomNode fwdNode;
+        if (val.isEmpty()) {
+            fwdNode = new ForwardDicomNode(aet, null, id);
+            destMap.put(fwdNode, new ArrayList<>(2));
+        } else {
+            fwdNode = val.get();
+        }
+        if (src instanceof DicomSourceNode) {
+            DicomSourceNode srcNode = (DicomSourceNode) src;
             if (type == NodeEventType.ADD) {
-                fwdNode.addAcceptedSourceNode(srcNode.getAeTitle(), srcNode.getHostname());
+                fwdNode.addAcceptedSourceNode(srcNode.getId(), srcNode.getAeTitle(), srcNode.getHostname());
             } else if (type == NodeEventType.REMOVE) {
-                DicomNode node = new DicomNode(srcNode.getAeTitle(), srcNode.getHostname(), null);
-                fwdNode.getAcceptedSourceNodes().removeIf(n -> n.equals(node));
+                fwdNode.getAcceptedSourceNodes().removeIf(s -> srcNode.getId().equals(s.getId()));
             } else if (type == NodeEventType.UPDATE) {
-
+                fwdNode.getAcceptedSourceNodes().removeIf(s -> srcNode.getId().equals(s.getId()));
+                fwdNode.addAcceptedSourceNode(srcNode.getId(), srcNode.getAeTitle(), srcNode.getHostname());
             }
-        } else if (src instanceof org.karnak.data.gateway.Destination) {
-            org.karnak.data.gateway.Destination dstNode = (org.karnak.data.gateway.Destination) src;
+        } else if (src instanceof Destination) {
+            Destination dstNode = (Destination) src;
             if (type == NodeEventType.ADD) {
                 addDestinationNode(destMap.get(fwdNode), fwdNode, dstNode);
             } else if (type == NodeEventType.REMOVE) {
-                if (dstNode.getType() == DestinationType.stow) {
-                    destMap.get(fwdNode).removeIf(d -> (d instanceof WebForwardDestination)
-                        && ((WebForwardDestination) d).getRequestURL() == dstNode.getUrl());
-                } else {
-                    DicomNode node = new DicomNode(dstNode.getAeTitle(), dstNode.getHostname(), dstNode.getPort());
-                    // destMap.get(fwdNode).removeIf(d -> d.getForwardDicomNode());
-                }
+                destMap.get(fwdNode).removeIf(d -> dstNode.getId().equals(d.getId()));
             } else if (type == NodeEventType.UPDATE) {
-
+                destMap.get(fwdNode).removeIf(d -> dstNode.getId().equals(d.getId()));
+                addDestinationNode(destMap.get(fwdNode), fwdNode, dstNode);
             }
         } else if (src instanceof ForwardNode) {
             ForwardNode fw = (ForwardNode) src;
@@ -417,28 +379,22 @@ public class GatewayConfig {
             } else if (type == NodeEventType.REMOVE) {
                 destMap.remove(fwdNode);
             } else if (type == NodeEventType.UPDATE) {
-                // TODO remove old aet
+                if (!aet.equals(fwdNode.getAet())) {
+                    ForwardDicomNode newfwdNode = new ForwardDicomNode(aet, null, id);
+                    for (DicomNode srcNode : fwdNode.getAcceptedSourceNodes()) {
+                        newfwdNode.getAcceptedSourceNodes().add(srcNode);
+                    }
+                    destMap.put(newfwdNode, destMap.remove(fwdNode));
+                }
             }
         } else {
             reloadGatewayPersistence();
         }
     }
 
-    private ForwardDicomNode getForwardDicomNode(String aet) {
-        Optional<ForwardDicomNode> val = destMap.keySet().stream().filter(f -> f.getAet().equals(aet)).findFirst();
-        ForwardDicomNode fwdNode;
-        if (val.isEmpty()) {
-            fwdNode = new ForwardDicomNode(aet);
-            destMap.put(fwdNode, new ArrayList<>(2));
-        } else {
-            fwdNode = val.get();
-        }
-        return fwdNode;
-    }
-
     private void addAcceptedSourceNodes(ForwardDicomNode fwdSrcNode, ForwardNode forwardNode) {
-        for (org.karnak.data.gateway.SourceNode srcNode : forwardNode.getSourceNodes()) {
-            fwdSrcNode.addAcceptedSourceNode(srcNode.getAeTitle(), srcNode.getHostname());
+        for (DicomSourceNode srcNode : forwardNode.getSourceNodes()) {
+            fwdSrcNode.addAcceptedSourceNode(srcNode.getId(), srcNode.getAeTitle(), srcNode.getHostname());
         }
     }
 

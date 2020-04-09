@@ -1,7 +1,11 @@
 package org.karnak.ui.gateway;
 
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Optional;
+
+import org.karnak.data.NodeEvent;
 import org.karnak.data.NodeEventType;
-import org.karnak.data.OutputNodeEvent;
 import org.karnak.data.gateway.ForwardNode;
 import org.karnak.ui.MainLayout;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +13,10 @@ import org.springframework.context.ApplicationEventPublisher;
 
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.KeyModifier;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -22,17 +28,18 @@ import com.vaadin.flow.router.OptionalParameter;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
+import com.vaadin.flow.server.StreamRegistration;
+import com.vaadin.flow.server.StreamResource;
 
 /**
- * A view for performing create-read-update-delete operations on output
- * configuration.
+ * A view for performing create-read-update-delete operations on output configuration.
  *
- * See also {@link GatewayViewLogic} for fetching the data, the actual CRUD
- * operations and controlling the view based on events from outside.
+ * See also {@link GatewayViewLogic} for fetching the data, the actual CRUD operations and controlling the view based on
+ * events from outside.
  */
-@Route(value = "output", layout = MainLayout.class)
+@Route(value = "gateway", layout = MainLayout.class)
 @RouteAlias(value = "", layout = MainLayout.class)
-@PageTitle("Output configuration")
+@PageTitle("Gateway configuration")
 @SuppressWarnings("serial")
 public class GatewayView extends HorizontalLayout implements HasUrlParameter<String> {
     public static final String VIEW_NAME = "Gateway";
@@ -73,9 +80,9 @@ public class GatewayView extends HorizontalLayout implements HasUrlParameter<Str
 
         viewLogic.init();
     }
-    
+
     @Autowired
-    private void addEventManager(ApplicationEventPublisher publisher){       
+    private void addEventManager(ApplicationEventPublisher publisher) {
         viewLogic.setApplicationEventPublisher(publisher);
     }
 
@@ -107,7 +114,29 @@ public class GatewayView extends HorizontalLayout implements HasUrlParameter<Str
     }
 
     protected void showError(String msg) {
-        Notification.show(msg);
+        Div content = new Div();
+        content.addClassName("my-style");
+        content.setText(msg);
+
+        Notification notification = new Notification(content);
+        notification.setDuration(5000);
+
+        // @formatter:off
+        String styles = ".my-style { " + "  color: red;" + " }";
+        // @formatter:on
+
+        /*
+         * The code below register the style file dynamically. Normally you use @StyleSheet annotation for the component
+         * class. This way is chosen just to show the style file source code.
+         */
+        StreamRegistration resource =
+            UI.getCurrent().getSession().getResourceRegistry().registerResource(new StreamResource("styles.css", () -> {
+                byte[] bytes = styles.getBytes(StandardCharsets.UTF_8);
+                return new ByteArrayInputStream(bytes);
+            }));
+        UI.getCurrent().getPage().addStyleSheet("base://" + resource.getResourceUri().toString());
+
+        notification.open();
     }
 
     protected void showSaveNotification(String msg) {
@@ -135,14 +164,23 @@ public class GatewayView extends HorizontalLayout implements HasUrlParameter<Str
     }
 
     protected void updateForwardNode(ForwardNode data) {
-        NodeEventType eventType = data.isNewData() ? NodeEventType.ADD: NodeEventType.UPDATE;
-        viewLogic.getApplicationEventPublisher().publishEvent(new OutputNodeEvent(data, eventType));
+        NodeEventType eventType = data.isNewData() ? NodeEventType.ADD : NodeEventType.UPDATE;
+        if (eventType == NodeEventType.ADD) {
+            Optional<ForwardNode> val = dataProvider.getDataService().getAllForwardNodes().stream()
+                .filter(f -> f.getFwdAeTitle().equals(data.getFwdAeTitle())).findFirst();
+            if (val.isPresent()) {
+                grid.getDataProvider().refreshAll();
+                showError("Cannot add this new node because the AE-Title already exists!");
+                return;
+            }
+        }
         dataProvider.save(data);
         grid.getDataProvider().refreshAll();
+        viewLogic.getApplicationEventPublisher().publishEvent(new NodeEvent(data, eventType));
     }
 
     protected void removeForwardNode(ForwardNode data) {
-        viewLogic.getApplicationEventPublisher().publishEvent(new OutputNodeEvent(data, NodeEventType.REMOVE));
+        viewLogic.getApplicationEventPublisher().publishEvent(new NodeEvent(data, NodeEventType.REMOVE));
         dataProvider.delete(data);
     }
 

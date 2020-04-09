@@ -1,5 +1,6 @@
 package org.karnak.data;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -16,7 +17,7 @@ public class Study {
     private String[] otherPatientIDs;
     private String studyDescription;
     private String accessionNumber;
-    private Date studyDate;
+    private LocalDateTime studyDate;
     private long timeStamp;
 
     public Study(String studyInstanceUID, String patientID) {
@@ -42,11 +43,11 @@ public class Study {
         return studyDescription;
     }
 
-    public Date getStudyDate() {
+    public LocalDateTime getStudyDate() {
         return studyDate;
     }
 
-    public void setStudyDate(Date studyDate) {
+    public void setStudyDate(LocalDateTime studyDate) {
         this.studyDate = studyDate;
     }
 

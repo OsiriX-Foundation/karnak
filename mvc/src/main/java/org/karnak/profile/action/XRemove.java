@@ -1,9 +1,19 @@
 package org.karnak.profile.action;
 
-import org.dcm4che3.data.Attributes;
+import java.util.Iterator;
 
-public class XRemove implements Action{
-    public void execute(Attributes attributes, int tag) {
-        attributes.remove(tag);
+import org.dcm4che6.data.DicomElement;
+import org.dcm4che6.data.DicomObject;
+
+public class XRemove implements Action {
+    public void execute(DicomObject dcm, int tag) {
+        synchronized (dcm) {
+            for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext();) {
+                DicomElement dcmEl = iterator.next();
+                if (dcmEl.tag() == tag) {
+                    iterator.remove();
+                }
+            }
+        }
     }
 }

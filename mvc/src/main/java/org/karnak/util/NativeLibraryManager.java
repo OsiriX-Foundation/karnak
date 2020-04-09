@@ -6,18 +6,24 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.invoke.VarHandle;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
+import java.util.Optional;
+import java.util.function.Predicate;
+import java.util.logging.Level;
 
+import org.dcm4che6.img.util.FileUtil;
 import org.opencv.core.Core;
 import org.opencv.osgi.OpenCVNativeLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.weasis.core.api.util.FileUtil;
 import org.weasis.core.api.util.StringUtil;
 
 public class NativeLibraryManager {
@@ -72,47 +78,24 @@ public class NativeLibraryManager {
     }
 
     private void initNativeLibs(URL resource) {
-        String tempDir = System.getProperty("java.io.tmpdir");
-        File dir;
-        String folder = "dicom-native-codec-" + Core.VERSION;
-        if (tempDir == null || tempDir.length() == 1) {
-            dir = new File(System.getProperty("user.home", ""), folder);
-        } else {
-            dir = new File(tempDir, folder);
+        Optional<String> oLibPath = Arrays.stream(System.getProperty("java.library.path").split(File.pathSeparator))
+            .filter(p -> p.contains("dicom-opencv")).findFirst();
+        if(oLibPath.isEmpty()) {
+            throw new IllegalStateException("OpenCV library is not configured in java.library.path");
         }
-        dir.mkdirs();
 
-        String system =  NativeLibraryManager.getSystemSpecification();
-        String filename =  system.startsWith("win") ? "opencv_java.dll" : system.startsWith("mac") ? "libopencv_java.jnilib":"libopencv_java.so";
-        File outputFile = new File(dir, filename);
-        
-        System.setProperty("dicom.native.codec", outputFile.getParent());
+        String system = NativeLibraryManager.getSystemSpecification();
+        String filename = system.startsWith("win") ? "opencv_java.dll"
+            : system.startsWith("mac") ? "libopencv_java.jnilib" : "libopencv_java.so";
+        Path outputFile = Path.of(oLibPath.get(), filename);
+        System.setProperty("dicom.native.codec", oLibPath.get());
 
         try {
+            Files.createDirectories(outputFile.getParent());
             String path = resource.toString() + "/" + system + "/" + filename;
-            FileUtil.writeStream(new URL(path).openStream(), outputFile);
+            FileUtil.writeStream(new URL(path).openStream(), outputFile, true);
         } catch (IOException e) {
             LOGGER.error("copy native libs", e);
-        }
-
-        String path = dir.getPath();
-        String oldSysPaths = System.getProperty("java.library.path");
-        if (StringUtil.hasText(oldSysPaths)) {
-            path = oldSysPaths + File.pathSeparator + path;
-        }
-
-        System.setProperty("java.library.path", path);
-
-        try {
-            Lookup cl = MethodHandles.privateLookupIn(ClassLoader.class, MethodHandles.lookup());
-            VarHandle sys_paths = cl.findStaticVarHandle(ClassLoader.class, "sys_paths", String[].class);
-            sys_paths.set(null);
-            // Trick to reload JMV setting for "java.library.path"
-//            sysPath = ClassLoader.class.getDeclaredField("sys_paths");
-//            sysPath.setAccessible(true);
-//            sysPath.set(null, null);
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-            LOGGER.error("Cannot reload java.library.path", e);
         }
 
         OpenCVNativeLoader loader = new OpenCVNativeLoader();

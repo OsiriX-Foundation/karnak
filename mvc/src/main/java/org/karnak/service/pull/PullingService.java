@@ -25,9 +25,8 @@ import javax.net.ssl.TrustManagerFactory;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.dcm4che3.net.Priority;
-import org.dcm4che3.net.Status;
-import org.dcm4che3.net.service.DicomServiceException;
+import org.dcm4che6.net.DicomServiceException;
+import org.dcm4che6.net.Status;
 import org.karnak.data.FileInfo;
 import org.karnak.service.AbstractGateway;
 import org.karnak.service.GatewayConfig;
@@ -109,7 +108,7 @@ public final class PullingService extends AbstractGateway {
         // Check every 1000 interval if files must be deleted
         if (count > 1000) {
             iterationCount.resetCount();
-            AbstractGateway.deleteOldFiles(config.getStoreDir());
+            AbstractGateway.deleteOldFiles(config.getStorePath().toFile());
         }
     }
 
@@ -205,7 +204,7 @@ public final class PullingService extends AbstractGateway {
                             continue;
                         }
 
-                        Params p = new Params(info.getIuid(), info.getCuid(), info.getTsuid(), Priority.NORMAL,
+                        Params p = new Params(info.getIuid(), info.getCuid(), (byte) 0,
                             new BufferedInputStream(httpCon.getInputStream()), null);
                         ForwardDicomNode srcNode = new ForwardDicomNode(name);
                         store(destinations, srcNode, p, buf);
@@ -238,7 +237,7 @@ public final class PullingService extends AbstractGateway {
 
                 deleteRemoteImage = true;
                 for (DicomForwardDestination f : dicomDest) {
-                    if (f.getStreamSCU().getState().getStatus() != Status.Success) {
+                    if (f.getStreamSCU().getState().getStatus().orElse(Status.Pending) != Status.Success) {
                         deleteRemoteImage = false;
                         break;
                     }
@@ -246,7 +245,7 @@ public final class PullingService extends AbstractGateway {
             } else {
                 DicomForwardDestination d = dicomDest.get(0);
                 ForwardUtil.storeOneDestination(sourceNode, d, p);
-                deleteRemoteImage = d.getStreamSCU().getState().getStatus() == Status.Success;
+                deleteRemoteImage = d.getStreamSCU().getState().getStatus().orElse(Status.Pending) == Status.Success;
             }
 
             if (deleteRemoteImage) {
@@ -257,7 +256,7 @@ public final class PullingService extends AbstractGateway {
             }
 
         } catch (Exception e) {
-            throw new DicomServiceException(Status.ProcessingFailure, e);
+            throw new DicomServiceException(Status.ProcessingFailure);
         }
     }
 

@@ -1,12 +1,17 @@
 package org.karnak.profile.action;
 
-import org.dcm4che3.data.Attributes;
-import org.dcm4che3.data.VR;
+import java.util.Optional;
+
+import org.dcm4che6.data.DicomElement;
+import org.dcm4che6.data.DicomObject;
+import org.dcm4che6.data.VR;
 
 public class ZReplace implements Action {
 
-    public void execute(Attributes attributes, int tag) {
-        VR vr = attributes.getVR(tag);
-        attributes.setNull(tag, vr);
+    public void execute(DicomObject dcm, int tag) {
+        Optional<DicomElement> dcmItem = dcm.get(tag);
+        if(dcmItem.isPresent()) {
+            dcm.setNull(tag, dcmItem.get().vr());
+        }
     }
 }

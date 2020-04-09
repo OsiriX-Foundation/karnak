@@ -9,7 +9,7 @@ Karnak is a DICOM Gateway with normalization and de-identification capabilities.
 
 # Build Karnak
 
-Prerequisites: JDK 11 and Maven 3
+Prerequisites: JDK 14 and Maven 3
 
 Execute the maven command `mvn clean install` in the root directory of the project.
 
@@ -24,11 +24,55 @@ The UI could be launch with a database in memory (H2), by using maven profiles :
  - Enable Sring and Spring Boot for the project
  - Create a Spring Boot from main of SartApplication.java
  - Working Directory must be the mvc directory
- 
+
+For h2 database:
+
+For Postgres database: see Configure a local Postgres database
+
 ## Debug in Eclipse
  - From Eclipse Marketplace: install the latest Spring Tools
- - To support devh2 profile dependencies add the profile name the the karnak-mvc project with the contextual menu: Properties -> Maven-> Active Maven Profiles
  - Create a Spring Boot App launcher from main of SartApplication.java
+ - In the Arguments tab of the launcher, add in VM arguments (note: the tmp folder must be adapted according to your system and the dicom-opencv must the last folder): `-Djava.library.path="/tmp/dicom-opencv"`
+
+For h2 database:
+ - To support devh2 profile dependencies add the profile name in the karnak-mvc project with the contextual menu: Properties -> Maven-> Active Maven Profiles
+ - In the Spring Boot App launcher, select the profile "devh2"
+
+For Postgres database: see Configure a local Postgres database
+
+## Configure a local Postgres database
+
+- Create a docker-compose.yml file in a empty folder
+
+```
+version: "3.7"
+
+services:
+  postgresidp:
+    image: postgres:12.1-alpine
+    environment:
+      POSTGRES_DB: ${PGDATABASE}
+      POSTGRES_USER: ${PGUSER}
+      POSTGRES_PASSWORD: ${PGPASSWORD}
+    ports:
+      - ${PGPORT}:5432
+    volumes:
+      - ${VSVOLUME_NAME}:/var/lib/postgresql/data
+```
+
+- Create a .env file in the same folder (adapt the values if necessary)
+
+```
+VSVOLUME_NAME=./psqldata12
+
+PGDATABASE=karnak
+PGUSER=karnak
+PGPASSWORD=5!KAnN@%98%d
+PGPORT=5433
+```
+- Execute command:    
+    - start: `docker-compose up -d`
+    - stop: `docker-compose down`
 
 # Docker
 

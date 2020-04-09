@@ -1,23 +1,25 @@
 package org.karnak.profile.action;
 
-import org.dcm4che3.data.Attributes;
-import org.dcm4che3.data.VR;
+import java.util.Optional;
 
-import java.nio.ByteBuffer;
+import org.dcm4che6.data.DicomElement;
+import org.dcm4che6.data.DicomObject;
 
 public class DReplace implements Action{
 
     private Algorithm algo = new Algorithm();
 
-    public void execute(Attributes attributes, int tag) {   
-        VR vr = attributes.getVR(tag);
-        Object value = attributes.getValue(tag);
-        String valueString = value.toString();
-        System.out.println(valueString);
-        int seed = 3; // ByteBuffer.wrap(value).getInt();
-        String vrValue = this.algo.execute(vr, seed);
-        if (vrValue != "-1") {
-            attributes.setValue(tag, vr, vrValue);
+    public void execute(DicomObject dcm, int tag) {
+        Optional<DicomElement> dcmItem = dcm.get(tag);
+        if(dcmItem.isPresent()) {
+            DicomElement dcmEl = dcmItem.get();
+            String valueString = dcm.getString(tag).orElse(null);
+            System.out.println(valueString);
+            int seed = 3; // ByteBuffer.wrap(value).getInt();
+            String vrValue = this.algo.execute(dcmEl.vr(), seed);
+            if (vrValue != "-1") {
+                dcm.setString(tag, dcmEl.vr(), vrValue);
+            }
         }
     }
 }

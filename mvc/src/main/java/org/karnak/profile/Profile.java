@@ -3,7 +3,8 @@ package org.karnak.profile;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.dcm4che3.data.Attributes;
+import org.dcm4che6.data.DicomObject;
+import org.dcm4che6.data.Tag;
 import org.json.JSONObject;
 import org.karnak.profile.action.Action;
 import org.karnak.profile.action.DReplace;
@@ -16,7 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import org.dcm4che3.data.Tag;
+
 
 public class Profile {
 
@@ -89,15 +90,15 @@ public class Profile {
     }
 
 
-    public void execute(Attributes attributes) {
-        for (int tag : attributes.tags()) {
-            Action action = actionMap.get(tag);
+    public void execute(DicomObject dcm) {
+        dcm.elementStream().forEach(e -> {
+            Action action = actionMap.get(e.tag());
             if (action != null) {
                 this.history.add(action); // optional
-                action.execute(attributes, tag);
+                action.execute(dcm, e.tag());
             }
-            // Default: remove ? White List system.
-        }
+            // Default: remove ? White List system. 
+        });
     }
 
     public void readJsonProfile(String filename) {

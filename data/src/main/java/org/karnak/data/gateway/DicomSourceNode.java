@@ -10,9 +10,9 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-@Entity(name = "OutputSourceNode")
-@Table(name = "outpout_source_node")
-public class SourceNode {
+@Entity(name = "DicomSourceNode")
+@Table(name = "dicom_source_node")
+public class DicomSourceNode {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -36,12 +36,12 @@ public class SourceNode {
     @JoinColumn
     private ForwardNode forwardNode;
 
-    public static SourceNode ofEmpty() {
-        SourceNode instance = new SourceNode();
+    public static DicomSourceNode ofEmpty() {
+        DicomSourceNode instance = new DicomSourceNode();
         return instance;
     }
 
-    protected SourceNode() {
+    protected DicomSourceNode() {
         this.description = "";
         this.aeTitle = "";
         this.hostname = "";
@@ -123,7 +123,7 @@ public class SourceNode {
 
     @Override
     public String toString() {
-        return "SourceNode [id=" + id + ", description=" + description + ", aeTitle=" + aeTitle + ", hostname="
+        return "DicomSourceNode [id=" + id + ", description=" + description + ", aeTitle=" + aeTitle + ", hostname="
             + hostname + ", checkHostname=" + checkHostname +"]";
     }
 }
