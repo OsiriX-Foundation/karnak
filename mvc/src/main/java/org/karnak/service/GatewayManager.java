@@ -1,14 +1,13 @@
 package org.karnak.service;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
-import org.karnak.data.InputNodeEvent;
-import org.karnak.data.OutputNodeEvent;
-import org.karnak.service.GatewayConfig.Mode;
+import org.karnak.data.NodeEvent;
 import org.karnak.service.pull.PullingService;
 import org.karnak.util.NativeLibraryManager;
 import org.slf4j.Logger;
@@ -37,11 +36,11 @@ public class GatewayManager implements ApplicationListener<ContextRefreshedEvent
     private Environment environment;
 
     private NativeLibraryManager manager;
-    private GlobalConfig globalConfig;
+    private GatewayConfig globalConfig;
 
-    private DicomListener dicomListenerOut;
     private DicomGateway dicomForwardOut;
 
+    private DicomListener dicomListenerOut;
     private PullingService httpPullIn;
 
     @Override
@@ -55,7 +54,7 @@ public class GatewayManager implements ApplicationListener<ContextRefreshedEvent
         try {
             URL resource = this.getClass().getResource("/lib");
             manager = new NativeLibraryManager(resource);
-            globalConfig = new GlobalConfig(environment);
+            globalConfig = new GatewayConfig(environment);
         } catch (Exception e1) {
             throw new IllegalStateException("Cannot register DICOM native librairies", e1);
         }
@@ -63,39 +62,36 @@ public class GatewayManager implements ApplicationListener<ContextRefreshedEvent
     }
 
     @EventListener
-    public void reloadOutboundNodes(OutputNodeEvent event) {
-        globalConfig.getConfigOut().update(event);
+    public void reloadOutboundNodes(NodeEvent event) {
+        globalConfig.update(event);
     }
 
     private void initGateway() {
+        dicomForwardOut = buildDicomGateway(globalConfig);
+        // } else if (Mode.ARCHIVE.equals(outMode)) {
+        // dicomListenerOut = buildDicomListener(configOut);
+        // }
 
-        GatewayConfig configIn = globalConfig.getConfigIn();
-        GatewayConfig configOut = globalConfig.getConfigOut();
-        if (configIn == null || configOut == null) {
-            throw new IllegalStateException("Configuration is null!");
-        }
+        // httpPullIn = new PullingService(configIn);
+        // httpPullIn.start();
 
-        Mode outMode = configOut.getMode();
-        if (Mode.FORWARD.equals(outMode)) {
-            dicomForwardOut = buildDicomGateway(configOut);
-        } else if (Mode.ARCHIVE.equals(outMode)) {
-            dicomListenerOut = buildDicomListener(configOut);
-        }
-
-        Mode inMode = configIn.getMode();
-        if (Mode.PULL.equals(inMode)) {
-            httpPullIn = new PullingService(configIn);
-            httpPullIn.start();
-        }
     }
 
     @PreDestroy
     public void destroy() {
         if (dicomListenerOut != null) {
-            dicomListenerOut.stop();
+            try {
+                dicomListenerOut.stop();
+            } catch (IOException e) {
+                LOGGER.error("Cannot stop DICOM listener", e);
+            }
         }
         if (dicomForwardOut != null) {
-            dicomForwardOut.stop();
+            try {
+                dicomForwardOut.stop();
+            } catch (IOException e) {
+                LOGGER.error("Cannot stop gateway", e);
+            }
         }
         if (httpPullIn != null) {
             httpPullIn.stop();
@@ -115,10 +111,10 @@ public class GatewayManager implements ApplicationListener<ContextRefreshedEvent
             GatewayParams gparams = new GatewayParams(config.getAdvancedParams(), false, null, acceptedCallingAETitles);
             gateway = new DicomGateway(config.getDestinations());
             gateway.start(config.getCallingDicomNode(), gparams);
-            LOGGER.info("Karnak {}-stream gateway servlet is running: {}", config.getStream(), config);
+            LOGGER.info("Karnak DICOM gateway servlet is running: {}", config);
             return gateway;
         } catch (Exception e) {
-            LOGGER.error("Cannot start {}-stream gateway", config.getStream(), e);
+            LOGGER.error("Cannot start DICOM gateway", e);
             return null;
         }
     }
@@ -126,12 +122,12 @@ public class GatewayManager implements ApplicationListener<ContextRefreshedEvent
     private static DicomListener buildDicomListener(GatewayConfig config) {
         DicomListener dicomListener;
         try {
-            dicomListener = new DicomListener(config.getStoreDir());
+            dicomListener = new DicomListener(config.getStorePath());
             String[] acceptedCallingAETitles = GatewayParams.getAcceptedCallingAETitles(config.getDestinations());
             ListenerParams params = new ListenerParams(config.getAdvancedParams(), false, "{00020016}/{00020003}", null,
                 acceptedCallingAETitles);
             dicomListener.start(config.getCallingDicomNode(), params);
-            LOGGER.info("Karnak {}-stream DICOM listener is running: {}", config.getStream(), config);
+            LOGGER.info("Gateway DICOM listener is running: {}", config);
             return dicomListener;
         } catch (Exception e) {
             LOGGER.error("Cannot start {}-stream DICOM listener", e);

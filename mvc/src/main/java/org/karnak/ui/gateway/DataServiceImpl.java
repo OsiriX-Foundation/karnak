@@ -9,7 +9,7 @@ import java.util.Objects;
 import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.ForwardNode;
 import org.karnak.data.gateway.GatewayPersistence;
-import org.karnak.data.gateway.SourceNode;
+import org.karnak.data.gateway.DicomSourceNode;
 
 @SuppressWarnings("serial")
 public class DataServiceImpl extends DataService {
@@ -83,7 +83,7 @@ public class DataServiceImpl extends DataService {
     }
 
     @Override
-    public Collection<SourceNode> getAllSourceNodes(ForwardNode forwardNode) {
+    public Collection<DicomSourceNode> getAllSourceNodes(ForwardNode forwardNode) {
         if (forwardNode != null) {
             return forwardNode.getSourceNodes();
         }
@@ -91,9 +91,9 @@ public class DataServiceImpl extends DataService {
     }
 
     @Override
-    public SourceNode getSourceNodeById(ForwardNode forwardNode, Long dataId) {
-        Collection<SourceNode> sourceNodes = getAllSourceNodes(forwardNode);
-        for (SourceNode sourceNode : sourceNodes) {
+    public DicomSourceNode getSourceNodeById(ForwardNode forwardNode, Long dataId) {
+        Collection<DicomSourceNode> sourceNodes = getAllSourceNodes(forwardNode);
+        for (DicomSourceNode sourceNode : sourceNodes) {
             if (Objects.equals(sourceNode.getId(), dataId)) {
                 return sourceNode;
             }
@@ -102,11 +102,11 @@ public class DataServiceImpl extends DataService {
     }
 
     @Override
-    public SourceNode updateSourceNode(ForwardNode forwardNode, SourceNode data) {
+    public DicomSourceNode updateSourceNode(ForwardNode forwardNode, DicomSourceNode data) {
         if (forwardNode == null || data == null) {
             return null;
         }
-        Collection<SourceNode> sourceNodes = getAllSourceNodes(forwardNode);
+        Collection<DicomSourceNode> sourceNodes = getAllSourceNodes(forwardNode);
         if (!sourceNodes.contains(data)) {
             forwardNode.addSourceNode(data);
         }
@@ -114,7 +114,7 @@ public class DataServiceImpl extends DataService {
     }
 
     @Override
-    public void deleteSourceNode(ForwardNode forwardNode, SourceNode data) {
+    public void deleteSourceNode(ForwardNode forwardNode, DicomSourceNode data) {
         if (forwardNode == null || data == null) {
             return;
         }

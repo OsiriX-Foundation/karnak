@@ -6,14 +6,14 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.karnak.data.gateway.ForwardNode;
-import org.karnak.data.gateway.SourceNode;
+import org.karnak.data.gateway.DicomSourceNode;
 
 import com.vaadin.flow.data.provider.ListDataProvider;
 
 @SuppressWarnings("serial")
-public class SourceNodeDataProvider extends ListDataProvider<SourceNode> {
+public class SourceNodeDataProvider extends ListDataProvider<DicomSourceNode> {
     private final DataService dataService;
-    private Set<SourceNode> backend;
+    private Set<DicomSourceNode> backend;
     private boolean hasChanges;
 
     private ForwardNode forwardNode; // Current forward node
@@ -25,7 +25,7 @@ public class SourceNodeDataProvider extends ListDataProvider<SourceNode> {
         this(dataService, new HashSet<>());
     }
 
-    private SourceNodeDataProvider(DataService dataService, Set<SourceNode> backend) {
+    private SourceNodeDataProvider(DataService dataService, Set<DicomSourceNode> backend) {
         super(backend);
         this.dataService = dataService;
         this.backend = backend;
@@ -33,7 +33,7 @@ public class SourceNodeDataProvider extends ListDataProvider<SourceNode> {
 
     public void setForwardNode(ForwardNode forwardNode) {
         this.forwardNode = forwardNode;
-        Collection<SourceNode> sourceNodes = this.dataService.getAllSourceNodes(forwardNode);
+        Collection<DicomSourceNode> sourceNodes = this.dataService.getAllSourceNodes(forwardNode);
 
         this.backend.clear();
         this.backend.addAll(sourceNodes);
@@ -42,14 +42,14 @@ public class SourceNodeDataProvider extends ListDataProvider<SourceNode> {
     }
 
     /**
-     * Store given SourceNode to the backing data service.
+     * Store given DicomSourceNode to the backing data service.
      * 
      * @param data the updated or new data
      */
-    public void save(SourceNode data) {
+    public void save(DicomSourceNode data) {
         boolean newData = data.isNewData();
 
-        SourceNode dataUpdated = this.dataService.updateSourceNode(forwardNode, data);
+        DicomSourceNode dataUpdated = this.dataService.updateSourceNode(forwardNode, data);
         if (newData) {
             refreshAll();
         } else {
@@ -63,7 +63,7 @@ public class SourceNodeDataProvider extends ListDataProvider<SourceNode> {
      * 
      * @param data the data to be deleted
      */
-    public void delete(SourceNode data) {
+    public void delete(DicomSourceNode data) {
         this.dataService.deleteSourceNode(forwardNode, data);
         refreshAll();
         hasChanges = true;
@@ -90,13 +90,13 @@ public class SourceNodeDataProvider extends ListDataProvider<SourceNode> {
     }
 
     @Override
-    public Object getId(SourceNode data) {
+    public Object getId(DicomSourceNode data) {
         Objects.requireNonNull(data, "Cannot provide an id for a null item.");
 
         return data.hashCode();
     }
 
-    private boolean matchesFilter(SourceNode data, String filterText) {
+    private boolean matchesFilter(DicomSourceNode data, String filterText) {
         return data != null && data.matchesFilter(filterText);
     }
 

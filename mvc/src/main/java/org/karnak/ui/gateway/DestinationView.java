@@ -1,7 +1,7 @@
 package org.karnak.ui.gateway;
 
 import org.karnak.data.NodeEventType;
-import org.karnak.data.OutputNodeEvent;
+import org.karnak.data.NodeEvent;
 import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.DestinationType;
 import org.karnak.data.gateway.ForwardNode;
@@ -134,12 +134,12 @@ public class DestinationView extends HorizontalLayout {
     }
 
     protected void updateDestination(Destination data) {
-        if (data.getForwardNode() != null) {
-            NodeEventType eventType = data.isNewData() ? NodeEventType.ADD : NodeEventType.UPDATE;
-            viewLogic.getOutputLogic().getApplicationEventPublisher()
-                .publishEvent(new OutputNodeEvent(data, eventType));
-        }
+        NodeEventType eventType = data.isNewData() ? NodeEventType.ADD : NodeEventType.UPDATE;
         dataProvider.save(data);
+        if (data.getForwardNode() != null) {
+        viewLogic.getOutputLogic().getApplicationEventPublisher()
+                .publishEvent(new NodeEvent(data, eventType));
+        }
         showDicomForm(false);
         showStowForm(false);
     }
@@ -147,7 +147,7 @@ public class DestinationView extends HorizontalLayout {
     protected void removeDestination(Destination data) {
         if (data.getForwardNode() != null) {
             viewLogic.getOutputLogic().getApplicationEventPublisher()
-                .publishEvent(new OutputNodeEvent(data, NodeEventType.REMOVE));
+                .publishEvent(new NodeEvent(data, NodeEventType.REMOVE));
         }
         dataProvider.delete(data);
         showDicomForm(false);

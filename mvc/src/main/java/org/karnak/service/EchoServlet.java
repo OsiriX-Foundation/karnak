@@ -15,6 +15,7 @@ import org.karnak.data.SourceNode;
 import org.karnak.util.ServletUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.weasis.dicom.op.Echo;
 import org.weasis.dicom.param.AdvancedParams;
 import org.weasis.dicom.param.ConnectOptions;
@@ -31,11 +32,14 @@ public class EchoServlet extends HttpServlet {
     private static final long serialVersionUID = -8349040600894140520L;
     private static final Logger LOGGER = LoggerFactory.getLogger(EchoServlet.class);
 
+    @Autowired
+    private GatewayConfig globalConfig;
+    
     @Override
     public final void init() throws ServletException {
-        GlobalConfig globalConfig = (GlobalConfig) this.getServletContext().getAttribute("globalConfig");
         if (globalConfig == null) {
-            LOGGER.error("{}", "GlobalConfig is missing. Echo service cannot start.");
+            LOGGER.error("EchoServlet service cannot start: GatewayConfig is missing.");
+            destroy();
         }
     }
 
@@ -44,7 +48,6 @@ public class EchoServlet extends HttpServlet {
         res.setContentType("text/xml");
         PrintWriter out = res.getWriter();
         String aet = req.getParameter("srcAET");
-        GlobalConfig globalConfig = (GlobalConfig) this.getServletContext().getAttribute("globalConfig");
         if (globalConfig == null) {
             String errorMsg = "Missing 'GlobalConfig' from current ServletContext";
             LOGGER.error(errorMsg);
@@ -52,8 +55,6 @@ public class EchoServlet extends HttpServlet {
             return;
         }
         // Echo service, only work for the out stream configuration
-        GatewayConfig config = globalConfig.getConfigOut();
-
         AdvancedParams params = new AdvancedParams();
         ConnectOptions connectOptions = new ConnectOptions();
         connectOptions.setConnectTimeout(3000);
@@ -61,9 +62,9 @@ public class EchoServlet extends HttpServlet {
         params.setConnectOptions(connectOptions);
         StringBuilder sb = new StringBuilder("<destinations>");
 
-        Optional<ForwardDicomNode> srcNode = config.getDestinationNode(aet);
+        Optional<ForwardDicomNode> srcNode = globalConfig.getDestinationNode(aet);
         if (srcNode.isPresent()) {
-            List<ForwardDestination> list = config.getDestinations(srcNode.get());
+            List<ForwardDestination> list = globalConfig.getDestinations(srcNode.get());
             for (ForwardDestination val : list) {
                 if (val instanceof DicomForwardDestination) {
                     DicomNode calledNode = ((DicomForwardDestination) val).getStreamSCU().getCalledNode();

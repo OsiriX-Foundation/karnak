@@ -14,7 +14,7 @@ import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.DestinationType;
 import org.karnak.data.gateway.ForwardNode;
 import org.karnak.data.gateway.GatewayPersistence;
-import org.karnak.data.gateway.SourceNode;
+import org.karnak.data.gateway.DicomSourceNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
@@ -31,13 +31,13 @@ public class GatewayPersistenceTest {
                     .hasFieldOrPropertyWithValue("description", "description") //
                     .hasFieldOrPropertyWithValue("fwdAeTitle", "fwdAeTitle") //
                     .extracting(Object::toString).asString().matches("^ForwardNode \\[.*");
-    private Consumer<SourceNode> sourceNodeConsumer = //
+    private Consumer<DicomSourceNode> sourceNodeConsumer = //
             x -> assertThat(x) //
                     .hasFieldOrPropertyWithValue("description", "description") //
                     .hasFieldOrPropertyWithValue("aeTitle", "aeTitle") //
                     .hasFieldOrPropertyWithValue("hostname", "hostname") //
                     .hasFieldOrPropertyWithValue("checkHostname", true) //
-                    .extracting(Object::toString).asString().matches("^SourceNode \\[.*");
+                    .extracting(Object::toString).asString().matches("^DicomSourceNode \\[.*");
     private Consumer<Destination> destinationDicomConsumer = //
             x -> assertThat(x) //
                     .hasFieldOrPropertyWithValue("description", "description") //
@@ -92,7 +92,7 @@ public class GatewayPersistenceTest {
         ForwardNode forwardNode = ForwardNode.ofEmpty();
         forwardNode.setDescription("description");
         forwardNode.setFwdAeTitle("fwdAeTitle");
-        SourceNode sourceNode = SourceNode.ofEmpty();
+        DicomSourceNode sourceNode = DicomSourceNode.ofEmpty();
         sourceNode.setDescription("description");
         sourceNode.setAeTitle(null);
         sourceNode.setHostname("hostname");
@@ -145,7 +145,7 @@ public class GatewayPersistenceTest {
         ForwardNode forwardNode = ForwardNode.ofEmpty();
         forwardNode.setDescription("description");
         forwardNode.setFwdAeTitle("fwdAeTitle");
-        SourceNode sourceNode = SourceNode.ofEmpty();
+        DicomSourceNode sourceNode = DicomSourceNode.ofEmpty();
         sourceNode.setDescription("description");
         sourceNode.setAeTitle("aeTitle");
         sourceNode.setHostname("hostname");
@@ -233,7 +233,7 @@ public class GatewayPersistenceTest {
         ForwardNode forwardNode = ForwardNode.ofEmpty();
         forwardNode.setDescription("description");
         forwardNode.setFwdAeTitle("fwdAeTitle");
-        SourceNode sourceNode = SourceNode.ofEmpty();
+        DicomSourceNode sourceNode = DicomSourceNode.ofEmpty();
         sourceNode.setDescription("description");
         sourceNode.setAeTitle("aeTitle");
         sourceNode.setHostname("hostname");

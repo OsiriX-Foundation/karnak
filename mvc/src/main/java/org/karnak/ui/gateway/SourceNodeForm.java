@@ -1,6 +1,6 @@
 package org.karnak.ui.gateway;
 
-import org.karnak.data.gateway.SourceNode;
+import org.karnak.data.gateway.DicomSourceNode;
 import org.karnak.ui.util.UIS;
 
 import com.vaadin.flow.component.Key;
@@ -35,8 +35,8 @@ public class SourceNodeForm extends Div {
     private Button cancel;
     private Button remove;
 
-    private Binder<SourceNode> binder;
-    private SourceNode currentSourceNode;
+    private Binder<DicomSourceNode> binder;
+    private DicomSourceNode currentSourceNode;
 
     public SourceNodeForm(SourceNodeLogic viewLogic) {
         this.viewLogic = viewLogic;
@@ -91,7 +91,7 @@ public class SourceNodeForm extends Div {
         content.add(UIS.setWidthFull(new HorizontalLayout(hostname)));
         content.add(UIS.setWidthFull(checkHostname));
 
-        binder = new BeanValidationBinder<>(SourceNode.class);
+        binder = new BeanValidationBinder<>(DicomSourceNode.class);
         binder.bindInstanceFields(this);
 
         // enable/disable update button while editing
@@ -137,11 +137,11 @@ public class SourceNodeForm extends Div {
             new HorizontalLayout(update, discard, remove, cancel)));
     }
 
-    public void editSourceNode(SourceNode data) {
+    public void editSourceNode(DicomSourceNode data) {
         remove.setVisible(data != null);
         cancel.setVisible(data == null);
         if (data == null) {
-            data = SourceNode.ofEmpty();
+            data = DicomSourceNode.ofEmpty();
         }
         currentSourceNode = data;
         binder.readBean(data);

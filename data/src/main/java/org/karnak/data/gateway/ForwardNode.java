@@ -34,7 +34,7 @@ public class ForwardNode {
     // gateway). When no source node is defined all the DICOM nodes are accepted by
     // the gateway.
     @OneToMany(mappedBy = "forwardNode", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    private Set<SourceNode> sourceNodes = new HashSet<>();
+    private Set<DicomSourceNode> sourceNodes = new HashSet<>();
 
     // Specification of a final DICOM destination node. Multiple destinations can be
     // defined either as a DICOM or DICOMWeb type.
@@ -47,8 +47,8 @@ public class ForwardNode {
     }
 
     protected ForwardNode() {
-        this.description = "";
         this.fwdAeTitle = "";
+        this.description = "";
     }
 
     public Long getId() {
@@ -75,16 +75,16 @@ public class ForwardNode {
         this.fwdAeTitle = fwdAeTitle;
     }
 
-    public Set<SourceNode> getSourceNodes() {
+    public Set<DicomSourceNode> getSourceNodes() {
         return this.sourceNodes;
     }
 
-    public void addSourceNode(SourceNode sourceNode) {
+    public void addSourceNode(DicomSourceNode sourceNode) {
         sourceNode.setForwardNode(this);
         this.sourceNodes.add(sourceNode);
     }
 
-    public void removeSourceNode(SourceNode sourceNode) {
+    public void removeSourceNode(DicomSourceNode sourceNode) {
         if (this.sourceNodes.remove(sourceNode)) {
             sourceNode.setForwardNode(null);
         }
@@ -118,7 +118,7 @@ public class ForwardNode {
             return true;
         }
 
-        for (SourceNode sourceNode : sourceNodes) {
+        for (DicomSourceNode sourceNode : sourceNodes) {
             if (sourceNode.matchesFilter(filterText)) {
                 return true;
             }
@@ -142,4 +142,30 @@ public class ForwardNode {
         return "ForwardNode [id=" + id + ", description=" + description + ", fwdAeTitle=" + fwdAeTitle
             + ", sourceNodes=" + sourceNodes + ", destinations=" + destinations + "]";
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        ForwardNode other = (ForwardNode) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        return true;
+    }
+    
 }

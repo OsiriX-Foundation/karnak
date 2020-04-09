@@ -3,7 +3,7 @@ package org.karnak.ui.gateway;
 import java.io.Serializable;
 
 import org.karnak.data.gateway.ForwardNode;
-import org.karnak.data.gateway.SourceNode;
+import org.karnak.data.gateway.DicomSourceNode;
 import org.karnak.ui.authentication.AccessControl;
 import org.karnak.ui.authentication.AccessControlFactory;
 
@@ -41,7 +41,7 @@ public class SourceNodeLogic implements Serializable {
         return outputLogic;
     }
 
-    public void saveSourceNode(SourceNode data) {
+    public void saveSourceNode(DicomSourceNode data) {
         boolean newData = data.isNewData();
         view.clearSelection();
         view.updateSourceNode(data);
@@ -49,23 +49,23 @@ public class SourceNodeLogic implements Serializable {
         outputLogic.validateView();
     }
 
-    public void deleteSourceNode(SourceNode data) {
+    public void deleteSourceNode(DicomSourceNode data) {
         view.clearSelection();
         view.removeSourceNode(data);
         view.showSaveNotification(data.getAeTitle() + " removed");
         outputLogic.validateView();
     }
 
-    public void editSourceNode(SourceNode data) {
+    public void editSourceNode(DicomSourceNode data) {
         view.editSourceNode(data);
     }
 
     public void newSourceNode() {
         view.clearSelection();
-        view.editSourceNode(SourceNode.ofEmpty());
+        view.editSourceNode(DicomSourceNode.ofEmpty());
     }
 
-    public void rowSelected(SourceNode data) {
+    public void rowSelected(DicomSourceNode data) {
         if (AccessControlFactory.getInstance().createAccessControl().isUserInRole(AccessControl.ADMIN_ROLE_NAME)) {
             editSourceNode(data);
         }

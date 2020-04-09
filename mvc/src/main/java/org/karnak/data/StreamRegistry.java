@@ -1,17 +1,18 @@
 package org.karnak.data;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 
-import org.dcm4che3.data.Attributes;
-import org.dcm4che3.data.Tag;
+import org.dcm4che6.data.DicomObject;
+import org.dcm4che6.data.Tag;
+import org.dcm4che6.util.DateTimeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.weasis.core.api.media.data.TagUtil;
 import org.weasis.dicom.param.AttributeEditor;
 import org.weasis.dicom.param.AttributeEditorContext;
 import org.weasis.dicom.param.AttributeEditorContext.Abort;
@@ -24,37 +25,34 @@ public class StreamRegistry implements AttributeEditor {
     private final Map<String, Study> studyMap = new HashMap<>();
 
     @Override
-    public boolean apply(Attributes attributes, AttributeEditorContext context) {
+    public boolean apply(DicomObject dcm, AttributeEditorContext context) {
         if (enable) {
-            String studyUID = attributes.getString(Tag.StudyInstanceUID);
+            String studyUID = dcm.getString(Tag.StudyInstanceUID).orElseThrow();
             Study study = getStudy(studyUID);
             if (study == null) {
-                study = new Study(studyUID, attributes.getString(Tag.PatientID));
-                study.setOtherPatientIDs(attributes.getStrings(Tag.OtherPatientIDs));
-                study.setAccessionNumber(attributes.getString(Tag.AccessionNumber));
-                study.setStudyDescription(attributes.getString(Tag.StudyDescription, ""));
-                Date date = TagUtil.dateTime(getDateFromDicomElement(attributes, Tag.StudyDate, null),
-                    getDateFromDicomElement(attributes, Tag.StudyTime, null));
-                study.setStudyDate(date);
+                study = new Study(studyUID, dcm.getString(Tag.PatientID).orElse(null));
+                study.setOtherPatientIDs(dcm.getStrings(Tag.OtherPatientIDs).orElse(null));
+                study.setAccessionNumber(dcm.getString(Tag.AccessionNumber).orElse(null));
+                study.setStudyDescription(dcm.getString(Tag.StudyDescription).orElse(""));
+                study.setStudyDate(getDateTime(dcm, Tag.StudyDate, Tag.StudyTime));
                 addStudy(study);
             }
 
-            String seriesUID = attributes.getString(Tag.SeriesInstanceUID);
+            String seriesUID = dcm.getString(Tag.SeriesInstanceUID).orElseThrow();
             Series series = study.getSeries(seriesUID);
             if (series == null) {
                 series = new Series(seriesUID);
-                series.setSeriesDescription(attributes.getString(Tag.SeriesDescription, study.getStudyDescription()));
-                Date date = TagUtil.dateTime(getDateFromDicomElement(attributes, Tag.SeriesDate, null),
-                    getDateFromDicomElement(attributes, Tag.SeriesTime, null));
-                series.setSeriesDate(date == null ? study.getStudyDate() : date);
+                series.setSeriesDescription(dcm.getString(Tag.SeriesDescription).orElse(study.getStudyDescription()));
+                LocalDateTime dateTime = getDateTime(dcm, Tag.SeriesDate,Tag.SeriesTime);
+                series.setSeriesDate(dateTime == null ? study.getStudyDate() : dateTime);
                 study.addSeries(series);
             }
 
-            String sopUID = attributes.getString(Tag.SOPInstanceUID);
+            String sopUID = dcm.getString(Tag.SOPInstanceUID).orElseThrow();
             SopInstance sopInstance = series.getSopInstance(sopUID);
             if (sopInstance == null) {
                 sopInstance = new SopInstance(sopUID);
-                sopInstance.setSopClassUID(attributes.getString(Tag.SOPInstanceUID));
+                sopInstance.setSopClassUID(dcm.getString(Tag.SOPClassUID).orElse(null));
                 series.addSopInstance(sopInstance);
             } else {
                 context.setAbort(Abort.FILE_EXCEPTION);
@@ -66,11 +64,14 @@ public class StreamRegistry implements AttributeEditor {
         return false;
     }
 
-    private static Date getDateFromDicomElement(Attributes dicom, int tag, Date defaultValue) {
-        if (dicom == null || !dicom.containsValue(tag)) {
-            return defaultValue;
+    private static LocalDateTime getDateTime(DicomObject dicom, int date, int time) {
+        Optional<String> od = dicom.getString(date);
+        Optional<String> ot = dicom.getString(time);
+        if (dicom == null || od.isEmpty()) {
+            return null;
         }
-        return dicom.getDate(tag, defaultValue);
+        
+        return LocalDateTime.from(DateTimeUtils.parseDT(od.get() + ot.orElse("")));
     }
 
     public void addStudy(Study study) {
@@ -101,9 +102,9 @@ public class StreamRegistry implements AttributeEditor {
 
     public void update(DicomProgress progress) {
         if (enable) {
-            Attributes attributes = progress.getAttributes();
-            if (attributes != null) {
-                String sopUID = attributes.getString(Tag.AffectedSOPInstanceUID);
+            DicomObject dcm = progress.getAttributes();
+            if (dcm != null) {
+                String sopUID = dcm.getString(Tag.AffectedSOPInstanceUID).orElse(null);
                 Iterator<Entry<String, Study>> studyIt = studyMap.entrySet().iterator();
                 while (studyIt.hasNext()) {
                     Study study = studyIt.next().getValue();

@@ -1,9 +1,9 @@
 package org.karnak.ui.gateway;
 
 import org.karnak.data.NodeEventType;
-import org.karnak.data.OutputNodeEvent;
+import org.karnak.data.NodeEvent;
 import org.karnak.data.gateway.ForwardNode;
-import org.karnak.data.gateway.SourceNode;
+import org.karnak.data.gateway.DicomSourceNode;
 
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.KeyModifier;
@@ -107,11 +107,11 @@ public class SourceNodeView extends HorizontalLayout {
         grid.getSelectionModel().deselectAll();
     }
 
-    protected void selectRow(SourceNode row) {
+    protected void selectRow(DicomSourceNode row) {
         grid.getSelectionModel().select(row);
     }
 
-    protected SourceNode getSelectedRow() {
+    protected DicomSourceNode getSelectedRow() {
         return grid.getSelectedRow();
     }
 
@@ -119,26 +119,26 @@ public class SourceNodeView extends HorizontalLayout {
         showForm(false);
     }
 
-    protected void updateSourceNode(SourceNode data) {
-        if (data.getForwardNode() != null) {
-            NodeEventType eventType = data.isNewData() ? NodeEventType.ADD : NodeEventType.UPDATE;
-            viewLogic.getOutputLogic().getApplicationEventPublisher()
-                .publishEvent(new OutputNodeEvent(data, eventType));
-        }
+    protected void updateSourceNode(DicomSourceNode data) {
+        NodeEventType eventType = data.isNewData() ? NodeEventType.ADD : NodeEventType.UPDATE;
         dataProvider.save(data);
+        if (data.getForwardNode() != null) {
+            viewLogic.getOutputLogic().getApplicationEventPublisher()
+                .publishEvent(new NodeEvent(data, eventType));
+        }
         showForm(false);
     }
 
-    protected void removeSourceNode(SourceNode data) {
+    protected void removeSourceNode(DicomSourceNode data) {
         if (data.getForwardNode() != null) {
-        viewLogic.getOutputLogic().getApplicationEventPublisher()
-            .publishEvent(new OutputNodeEvent(data, NodeEventType.REMOVE));
+            viewLogic.getOutputLogic().getApplicationEventPublisher()
+            .publishEvent(new NodeEvent(data, NodeEventType.REMOVE));
         }
         dataProvider.delete(data);
         showForm(false);
     }
 
-    protected void editSourceNode(SourceNode data) {
+    protected void editSourceNode(DicomSourceNode data) {
         showForm(data != null);
         form.editSourceNode(data);
     }

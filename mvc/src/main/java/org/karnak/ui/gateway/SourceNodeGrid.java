@@ -1,6 +1,6 @@
 package org.karnak.ui.gateway;
 
-import org.karnak.data.gateway.SourceNode;
+import org.karnak.data.gateway.DicomSourceNode;
 
 import com.vaadin.flow.component.grid.Grid;
 
@@ -10,22 +10,22 @@ import com.vaadin.flow.component.grid.Grid;
  * small data sets.
  */
 @SuppressWarnings("serial")
-public class SourceNodeGrid extends Grid<SourceNode> {
+public class SourceNodeGrid extends Grid<DicomSourceNode> {
     public SourceNodeGrid() {
         setSizeFull();
 
-        addColumn(SourceNode::getAeTitle).setHeader("AETitle").setFlexGrow(20).setSortable(true);
+        addColumn(DicomSourceNode::getAeTitle).setHeader("AETitle").setFlexGrow(20).setSortable(true);
 
-        addColumn(SourceNode::getHostname).setHeader("Hostname").setFlexGrow(20).setSortable(true);
+        addColumn(DicomSourceNode::getHostname).setHeader("Hostname").setFlexGrow(20).setSortable(true);
 
-        addColumn(SourceNode::getDescription).setHeader("Description").setFlexGrow(20).setSortable(true);
+        addColumn(DicomSourceNode::getDescription).setHeader("Description").setFlexGrow(20).setSortable(true);
     }
 
-    public SourceNode getSelectedRow() {
+    public DicomSourceNode getSelectedRow() {
         return asSingleSelect().getValue();
     }
 
-    public void refresh(SourceNode data) {
+    public void refresh(DicomSourceNode data) {
         getDataCommunicator().refresh(data);
     }
 }

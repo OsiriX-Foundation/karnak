@@ -19,8 +19,8 @@ import org.karnak.data.gateway.DestinationGroupSequenceProvider.DestinationDicom
 import org.karnak.data.gateway.DestinationGroupSequenceProvider.DestinationStowGroup;
 
 @GroupSequenceProvider(value = DestinationGroupSequenceProvider.class)
-@Entity(name = "OutputDestination")
-@Table(name = "output_destination")
+@Entity(name = "Destination")
+@Table(name = "destination")
 public class Destination {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

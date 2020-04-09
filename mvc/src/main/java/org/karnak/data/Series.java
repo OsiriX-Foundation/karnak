@@ -1,5 +1,6 @@
 package org.karnak.data;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -14,7 +15,7 @@ public class Series {
     private final Map<String, SopInstance> sopInstanceMap;
 
     private String seriesDescription;
-    private Date seriesDate;
+    private LocalDateTime seriesDate;
 
     public Series(String seriesInstanceUID) {
         this.seriesInstanceUID = Objects.requireNonNull(seriesInstanceUID, "seriesInstanceUID is null");
@@ -34,11 +35,11 @@ public class Series {
         seriesDescription = s;
     }
 
-    public Date getSeriesDate() {
+    public LocalDateTime getSeriesDate() {
         return seriesDate;
     }
 
-    public void setSeriesDate(Date seriesDate) {
+    public void setSeriesDate(LocalDateTime seriesDate) {
         this.seriesDate = seriesDate;
     }
 
