@@ -31,7 +31,6 @@ public class StreamRegistry implements AttributeEditor {
     @Override
     public boolean apply(DicomObject dcm, AttributeEditorContext context) {
         if (enable) {
-            
             String pseudonym = addInfoPatientToPseudonym(dcm);
             deident(dcm);
             dcm.setString(Tag.PatientID, VR.LO, pseudonym);

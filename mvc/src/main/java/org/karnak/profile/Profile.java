@@ -19,10 +19,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
+import java.util.Iterator;
+
+import org.dcm4che6.data.DicomElement;
+import org.dcm4che6.data.DicomObject;
 public class Profile {
 
     private final HashMap<Integer, Action> actionMap = new HashMap<>();
-    private List<Action> history = new ArrayList<Action>();
     private Action xRemove = new XRemove();
     private Action dReplace = new DReplace();
     private Action zReplace = new ZReplace();
@@ -91,14 +94,19 @@ public class Profile {
 
 
     public void execute(DicomObject dcm) {
-        dcm.elementStream().forEach(e -> {
+        for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext();) {
+            DicomElement dcmEl = iterator.next();
+            Action action = actionMap.get(dcmEl.tag());
+            if(action != null){ //if action != keep
+                action.execute(dcm, dcmEl.tag(), iterator);
+            }
+        }
+        /* dcm.elementStream().forEach(e -> {
             Action action = actionMap.get(e.tag());
-            if (action != null) {
-                this.history.add(action); // optional
+            if(action != null){ //if action != keep
                 action.execute(dcm, e.tag());
             }
-            // Default: remove ? White List system. 
-        });
+        }); */
     }
 
     public void readJsonProfile(String filename) {
