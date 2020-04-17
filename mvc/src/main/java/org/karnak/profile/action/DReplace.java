@@ -20,21 +20,6 @@ public class DReplace implements Action{
             if (vrValue != "-1") {
                 dcm.setString(tag, dcmEl.vr(), vrValue);
             }
-            
-//            var type = switch (dcmEl.vr()) {
-//                case AE, AT, CS, LO, SH, UC, UI -> TagType.STRING;
-//                case LT, ST, UT -> TagType.TEXT;
-//                case IS, SL, SS, US, UL -> TagType.INTEGER;
-//                case FL -> TagType.FLOAT;
-//                case DS, FD -> TagType.DOUBLE;
-//                case DA -> TagType.DICOM_DATE;
-//                case TM -> TagType.DICOM_TIME;
-//                case SQ -> TagType.DICOM_SEQUENCE;
-//                case PN -> TagType.DICOM_PERSON_NAME;
-//                case AS -> TagType.DICOM_PERIOD;
-//                case UR -> TagType.URI;
-//                default -> TagType.BYTE;
-//            };
         }
     }
 }
