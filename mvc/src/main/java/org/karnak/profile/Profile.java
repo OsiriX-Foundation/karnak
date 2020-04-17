@@ -125,7 +125,7 @@ public class Profile {
                 String attributeName = attributeJson.get("attributeName").toString();
 
                 Integer intTag = hexToDecimal(cleanTag(tag));
-                System.out.println("Att.: "+attributeName+"\t\tTag: "+tag+"\t\tDec. val: "+intTag+ "\t\tAction: "+action);
+                // System.out.println("Att.: "+attributeName+"\t\tTag: "+tag+"\t\tDec. val: "+intTag+ "\t\tAction: "+action); 
                 
                 register(intTag, action);
             });
