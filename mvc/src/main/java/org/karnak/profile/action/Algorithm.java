@@ -15,6 +15,7 @@ public class Algorithm {
 
     public String execute(VR vr, String stringValue){
         this.stringValue = stringValue;
+        
         switch (vr) {
             case LO-> LO();
             case SH-> SH();
@@ -30,7 +31,7 @@ public class Algorithm {
     }
 
     private void LO(){
-        Integer seed = Integer.parseInt(this.stringValue);
+        Integer seed = this.stringValue.chars().reduce(0, (sumTotal, character) -> sumTotal + character);
         Random random = new Random(seed);
         this.value = generateAlphanumeric(64, random);
     }
@@ -42,7 +43,7 @@ public class Algorithm {
     }
 
     private void SH(){
-        Integer seed = Integer.parseInt(this.stringValue);
+        Integer seed = this.stringValue.chars().reduce(0, (sumTotal, character) -> sumTotal + character);
         Random random = new Random(seed);
         this.value = generateAlphanumeric(16, random);
     }
