@@ -9,25 +9,26 @@ import org.dcm4che6.data.VR;
 
 public class Algorithm {
 
-    private Map<VR, Runnable> vrMap = new HashMap<>();
     private String value ="";
     private int seed = 0;
 
     public Algorithm(){
-        this.vrMap.put(VR.LO, ()->this.LO());
-        this.vrMap.put(VR.TM, ()->this.TM());
-        this.vrMap.put(VR.PN, ()->this.PN());
-        this.vrMap.put(VR.SH, ()->this.SH());
     }
 
     public String execute(VR vr, int seed){
-        if(this.vrMap.containsKey(vr)){
-            this.seed = seed;
-            this.vrMap.get(vr).run();
-        }else{
-            this.value = "-1";
+        this.seed = seed;
+        switch (vr) {
+            case LO-> LO();
+            case SH-> SH();
+            case TM -> TM();
+            case PN -> PN();
+            default -> notImplemented();
         }
         return this.value;
+    }
+
+    private void notImplemented(){
+        this.value = "-1";
     }
 
     private void LO(){
