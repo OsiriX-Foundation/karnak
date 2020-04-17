@@ -1,7 +1,5 @@
 package org.karnak.profile.action;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 
 import org.dcm4che6.data.VR;
@@ -10,13 +8,13 @@ import org.dcm4che6.data.VR;
 public class Algorithm {
 
     private String value ="";
-    private int seed = 0;
+    private String stringValue = "";
 
     public Algorithm(){
     }
 
-    public String execute(VR vr, int seed){
-        this.seed = seed;
+    public String execute(VR vr, String stringValue){
+        this.stringValue = stringValue;
         switch (vr) {
             case LO-> LO();
             case SH-> SH();
@@ -32,7 +30,8 @@ public class Algorithm {
     }
 
     private void LO(){
-        Random random = new Random(this.seed);
+        Integer seed = Integer.parseInt(this.stringValue);
+        Random random = new Random(seed);
         this.value = generateAlphanumeric(64, random);
     }
 
@@ -43,7 +42,8 @@ public class Algorithm {
     }
 
     private void SH(){
-        Random random = new Random(this.seed);
+        Integer seed = Integer.parseInt(this.stringValue);
+        Random random = new Random(seed);
         this.value = generateAlphanumeric(16, random);
     }
 

@@ -13,10 +13,9 @@ public class DReplace implements Action{
         Optional<DicomElement> dcmItem = dcm.get(tag);
         if(dcmItem.isPresent()) {
             DicomElement dcmEl = dcmItem.get();
-            String valueString = dcm.getString(tag).orElse(null);
-            System.out.println(valueString);
-            int seed = 3; // ByteBuffer.wrap(value).getInt();
-            String vrValue = this.algo.execute(dcmEl.vr(), seed);
+            String stringValue = dcm.getString(tag).orElse(null);
+            System.out.println(stringValue);
+            String vrValue = this.algo.execute(dcmEl.vr(), stringValue);
             if (vrValue != "-1") {
                 dcm.setString(tag, dcmEl.vr(), vrValue);
             }
