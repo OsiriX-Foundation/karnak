@@ -17,12 +17,15 @@ public class Algorithm {
         this.stringValue = stringValue;
         
         switch (vr) {
+            case LT -> LT();
             case LO-> LO();
             case SH-> SH();
             case TM -> TM();
             case DA -> DA();
             case DT -> DT();
             case PN -> PN();
+            case UN -> UN();
+            case UT -> UT();
             default -> notImplemented();
         }
         return this.value;
@@ -31,11 +34,16 @@ public class Algorithm {
     private void notImplemented(){
         this.value = "-1";
     }
+    private void LT() {
+        Integer seed = this.stringValue.chars().reduce(0, (sumTotal, character) -> sumTotal + character);
+        Random random = new Random(seed);
+        this.value = generateAlphanumeric(32, random);
+    }
 
     private void LO(){
         Integer seed = this.stringValue.chars().reduce(0, (sumTotal, character) -> sumTotal + character);
         Random random = new Random(seed);
-        this.value = generateAlphanumeric(64, random);
+        this.value = generateAlphanumeric(32, random);
     }
 
     private void TM(){
@@ -62,6 +70,18 @@ public class Algorithm {
         Integer seed = this.stringValue.chars().reduce(0, (sumTotal, character) -> sumTotal + character);
         Random random = new Random(seed);
         this.value = generateAlphanumeric(16, random);
+    }
+
+    private void UN(){
+        Integer seed = this.stringValue.chars().reduce(0, (sumTotal, character) -> sumTotal + character);
+        Random random = new Random(seed);
+        this.value = generateAlphanumeric(16, random);
+    }
+
+    private void UT(){
+        Integer seed = this.stringValue.chars().reduce(0, (sumTotal, character) -> sumTotal + character);
+        Random random = new Random(seed);
+        this.value = generateAlphanumeric(32, random);
     }
 
     private String generateAlphanumeric(int targetStringLength, Random random) {
