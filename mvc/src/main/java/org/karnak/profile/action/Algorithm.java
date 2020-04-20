@@ -20,6 +20,8 @@ public class Algorithm {
             case LO-> LO();
             case SH-> SH();
             case TM -> TM();
+            case DA -> DA();
+            case DT -> DT();
             case PN -> PN();
             default -> notImplemented();
         }
@@ -36,7 +38,21 @@ public class Algorithm {
         this.value = generateAlphanumeric(64, random);
     }
 
-    private void TM(){ this.value = "000000"; }
+    private void TM(){
+        Integer seed = this.stringValue.chars().reduce(0, (sumTotal, character) -> sumTotal + character);
+        Random random = new Random(seed);
+        this.value = RandomDicomDateTime.randomTM(random);
+    }
+    private void DA(){
+        Integer seed = this.stringValue.chars().reduce(0, (sumTotal, character) -> sumTotal + character);
+        Random random = new Random(seed);
+        this.value = RandomDicomDateTime.randomDA(random);
+    }
+    private void DT(){
+        Integer seed = this.stringValue.chars().reduce(0, (sumTotal, character) -> sumTotal + character);
+        Random random = new Random(seed);
+        this.value = RandomDicomDateTime.randomDT(random);
+    }
 
     private void PN(){
         this.value = "VALUE PN";
