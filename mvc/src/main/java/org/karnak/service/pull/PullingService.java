@@ -36,7 +36,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.weasis.core.api.util.FileUtil;
+import org.weasis.core.util.FileUtil;
 import org.weasis.dicom.param.DicomForwardDestination;
 import org.weasis.dicom.param.ForwardDestination;
 import org.weasis.dicom.param.ForwardDicomNode;

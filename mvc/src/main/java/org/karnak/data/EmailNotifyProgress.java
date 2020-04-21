@@ -20,7 +20,7 @@ import javax.mail.internet.MimeMessage;
 import org.karnak.service.GatewayConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.weasis.core.api.util.StringUtil;
+import org.weasis.core.util.StringUtil;
 import org.weasis.dicom.param.DicomProgress;
 import org.weasis.dicom.param.ForwardDestination;
 import org.weasis.dicom.param.ProgressListener;

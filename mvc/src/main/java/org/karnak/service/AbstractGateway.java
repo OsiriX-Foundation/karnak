@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
-import org.weasis.core.api.util.FileUtil;
+import org.weasis.core.util.FileUtil;
 
 public abstract class AbstractGateway {
 

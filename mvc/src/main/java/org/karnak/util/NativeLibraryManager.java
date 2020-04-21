@@ -2,29 +2,17 @@ package org.karnak.util;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodHandles.Lookup;
-import java.lang.invoke.VarHandle;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.URL;
-import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.function.Predicate;
-import java.util.logging.Level;
 
 import org.dcm4che6.img.util.FileUtil;
-import org.opencv.core.Core;
 import org.opencv.osgi.OpenCVNativeLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.weasis.core.api.util.StringUtil;
+import org.weasis.core.util.StringUtil;
 
 public class NativeLibraryManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(NativeLibraryManager.class);
