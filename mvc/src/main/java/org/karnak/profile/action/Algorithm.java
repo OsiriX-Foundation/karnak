@@ -20,6 +20,7 @@ public class Algorithm {
             Integer seed = this.stringValue.chars().reduce(0, (sumTotal, character) -> sumTotal + character);
             this.random = new Random(seed);
             String dummyValue = switch (vr) {
+                case AE -> AE();
                 case LT -> LT();
                 case LO -> LO();
                 case SH -> SH();
