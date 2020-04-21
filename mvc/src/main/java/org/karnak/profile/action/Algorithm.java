@@ -40,6 +40,10 @@ public class Algorithm {
         return null;
     }
 
+    private String AE() {
+        return RandomUtils.generateAlphanumeric(32, this.random);
+    }
+
     private String LT() {
         return RandomUtils.generateAlphanumeric(32, this.random);
     }
