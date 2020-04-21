@@ -41,21 +41,21 @@ public class Algorithm {
         this.value = null;
     }
     private void LT() {
-        this.value = generateAlphanumeric(32);
+        this.value = RandomUtils.generateAlphanumeric(32, this.random);
     }
 
     private void LO(){
-        this.value = generateAlphanumeric(32);
+        this.value = RandomUtils.generateAlphanumeric(32, this.random);
     }
 
     private void TM(){
-        this.value = RandomDicomDateTime.randomTM(this.random);
+        this.value = RandomUtils.randomTM(this.random);
     }
     private void DA(){
-        this.value = RandomDicomDateTime.randomDA(this.random);
+        this.value = RandomUtils.randomDA(this.random);
     }
     private void DT(){
-        this.value = RandomDicomDateTime.randomDT(this.random);
+        this.value = RandomUtils.randomDT(this.random);
     }
 
     private void PN(){
@@ -63,25 +63,15 @@ public class Algorithm {
     }
 
     private void SH(){
-        this.value = generateAlphanumeric(16);
+        this.value = RandomUtils.generateAlphanumeric(16, this.random);
     }
 
     private void UN(){
-        this.value = generateAlphanumeric(16);
+        this.value = RandomUtils.generateAlphanumeric(16, this.random);
     }
 
     private void UT(){
-        this.value = generateAlphanumeric(32);
+        this.value = RandomUtils.generateAlphanumeric(32, this.random);
     }
 
-    private String generateAlphanumeric(int targetStringLength) {
-        int leftLimit = 48; // numeral '0'
-        int rightLimit = 122; // letter 'z'
-        String generatedString = this.random.ints(leftLimit, rightLimit + 1)
-            .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
-            .limit(targetStringLength)
-            .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
-            .toString();
-        return generatedString;
-    }
 }
