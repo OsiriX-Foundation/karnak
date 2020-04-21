@@ -17,6 +17,16 @@ public class RandomUtils {
         return generatedString;
     }
 
+    public static String generateUppercase(int targetStringLength, Random random) {
+        int leftLimit = 65; // numeral '0'
+        int rightLimit = 90; // letter 'z'
+        String generatedString = random.ints(leftLimit, rightLimit + 1)
+                .limit(targetStringLength)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
+        return generatedString;
+    }
+
     public static String generateNumeric(int min, int max, Random random) {
         int randValue = createRandomIntBetween(min, max, random);
         return Integer.toString(randValue);
