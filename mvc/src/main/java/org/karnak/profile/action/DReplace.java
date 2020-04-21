@@ -17,8 +17,11 @@ public class DReplace implements Action{
             String stringValue = dcm.getString(tag).orElse(null);
             System.out.println(stringValue);
             String vrValue = this.algo.execute(dcmEl.vr(), stringValue);
-            if (vrValue != "-1") {
+
+            if (vrValue != null) {
                 dcm.setString(tag, dcmEl.vr(), vrValue);
+            }else{
+                dcm.setNull(tag, dcmEl.vr());
             }
         }
     }

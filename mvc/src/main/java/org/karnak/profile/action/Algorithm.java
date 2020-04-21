@@ -9,57 +9,53 @@ public class Algorithm {
 
     private String value ="";
     private String stringValue = "";
+    private Random random = new Random(0);
 
     public Algorithm(){
     }
 
     public String execute(VR vr, String stringValue){
         this.stringValue = stringValue;
-        
-        switch (vr) {
-            case LT -> LT();
-            case LO-> LO();
-            case SH-> SH();
-            case TM -> TM();
-            case DA -> DA();
-            case DT -> DT();
-            case PN -> PN();
-            case UN -> UN();
-            case UT -> UT();
-            default -> notImplemented();
+        if(this.stringValue!=null){
+            Integer seed = this.stringValue.chars().reduce(0, (sumTotal, character) -> sumTotal + character);
+            this.random = new Random(seed);
+
+            switch (vr) {
+                case LT -> LT();
+                case LO-> LO();
+                case SH-> SH();
+                case TM -> TM();
+                case DA -> DA();
+                case DT -> DT();
+                case PN -> PN();
+                case UN -> UN();
+                case UT -> UT();
+                default -> notImplemented();
+            }
+            return this.value;
         }
-        return this.value;
+        return null;
     }
 
     private void notImplemented(){
-        this.value = "-1";
+        this.value = null;
     }
     private void LT() {
-        Integer seed = this.stringValue.chars().reduce(0, (sumTotal, character) -> sumTotal + character);
-        Random random = new Random(seed);
-        this.value = generateAlphanumeric(32, random);
+        this.value = generateAlphanumeric(32);
     }
 
     private void LO(){
-        Integer seed = this.stringValue.chars().reduce(0, (sumTotal, character) -> sumTotal + character);
-        Random random = new Random(seed);
-        this.value = generateAlphanumeric(32, random);
+        this.value = generateAlphanumeric(32);
     }
 
     private void TM(){
-        Integer seed = this.stringValue.chars().reduce(0, (sumTotal, character) -> sumTotal + character);
-        Random random = new Random(seed);
-        this.value = RandomDicomDateTime.randomTM(random);
+        this.value = RandomDicomDateTime.randomTM(this.random);
     }
     private void DA(){
-        Integer seed = this.stringValue.chars().reduce(0, (sumTotal, character) -> sumTotal + character);
-        Random random = new Random(seed);
-        this.value = RandomDicomDateTime.randomDA(random);
+        this.value = RandomDicomDateTime.randomDA(this.random);
     }
     private void DT(){
-        Integer seed = this.stringValue.chars().reduce(0, (sumTotal, character) -> sumTotal + character);
-        Random random = new Random(seed);
-        this.value = RandomDicomDateTime.randomDT(random);
+        this.value = RandomDicomDateTime.randomDT(this.random);
     }
 
     private void PN(){
@@ -67,27 +63,21 @@ public class Algorithm {
     }
 
     private void SH(){
-        Integer seed = this.stringValue.chars().reduce(0, (sumTotal, character) -> sumTotal + character);
-        Random random = new Random(seed);
-        this.value = generateAlphanumeric(16, random);
+        this.value = generateAlphanumeric(16);
     }
 
     private void UN(){
-        Integer seed = this.stringValue.chars().reduce(0, (sumTotal, character) -> sumTotal + character);
-        Random random = new Random(seed);
-        this.value = generateAlphanumeric(16, random);
+        this.value = generateAlphanumeric(16);
     }
 
     private void UT(){
-        Integer seed = this.stringValue.chars().reduce(0, (sumTotal, character) -> sumTotal + character);
-        Random random = new Random(seed);
-        this.value = generateAlphanumeric(32, random);
+        this.value = generateAlphanumeric(32);
     }
 
-    private String generateAlphanumeric(int targetStringLength, Random random) {
+    private String generateAlphanumeric(int targetStringLength) {
         int leftLimit = 48; // numeral '0'
         int rightLimit = 122; // letter 'z'
-        String generatedString = random.ints(leftLimit, rightLimit + 1)
+        String generatedString = this.random.ints(leftLimit, rightLimit + 1)
             .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
             .limit(targetStringLength)
             .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
