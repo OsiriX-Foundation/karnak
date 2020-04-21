@@ -17,6 +17,11 @@ public class RandomUtils {
         return generatedString;
     }
 
+    public static String generateNumeric(int min, int max, Random random) {
+        int randValue = createRandomIntBetween(min, max, random);
+        return Integer.toString(randValue);
+    }
+
     public static int createRandomIntBetween(int min, int max, Random random) {
         return random.nextInt(max-min) + min;
     }
