@@ -32,6 +32,11 @@ public class RandomUtils {
         return Integer.toString(randValue);
     }
 
+    public static String generateBinary(int min, int max, Random random) {
+        int randValue = createRandomIntBetween(min, max, random);
+        return Integer.toBinaryString(randValue);
+    }
+
     public static int createRandomIntBetween(int min, int max, Random random) {
         return random.nextInt(max-min) + min;
     }
