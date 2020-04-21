@@ -29,7 +29,7 @@ public class RandomUtils {
     public static String randomAS(Random random){
         String format = "DWMY";
         char rndFormat = format.charAt(random.nextInt(format.length()));
-        return rndFormat + generateNumeric(0, 999, random);
+        return generateNumeric(0, 999, random) + rndFormat;
     }
 
     public static String randomDA(Random random) {
