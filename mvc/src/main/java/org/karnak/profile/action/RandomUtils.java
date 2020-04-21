@@ -26,6 +26,12 @@ public class RandomUtils {
         return random.nextInt(max-min) + min;
     }
 
+    public static String randomAS(Random random){
+        String format = "DWMY";
+        char rndFormat = format.charAt(random.nextInt(format.length()));
+        return rndFormat + generateNumeric(0, 999, random);
+    }
+
     public static String randomDA(Random random) {
         int day = createRandomIntBetween(1, 28, random);
         int month = createRandomIntBetween(1, 12, random);
