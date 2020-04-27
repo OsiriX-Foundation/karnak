@@ -16,7 +16,7 @@ services:
     volumes:  
       - ./mainzelliste/mainzelliste.conf:/mainzelliste.conf.default
     ports:
-      - "8080:8080"
+      - "8083:8080"
     environment:
       - ML_REVERSEPROXY_FQDN=mainzelliste
       - ML_DB_PASS=PleasePutASafePasswordHere

@@ -110,7 +110,7 @@ public class GatewayConfig {
         String[] notifyObjectValues = getProperty("NOTIFY_OBJECT_VALUES", "PatientID,StudyDescription").split(",");
         int notifyInterval = StringUtil.getInt(getProperty("NOTIFY_INTERNAL", "45"));
         this.notifConfiguration = new NotificationConfiguration(notifyObjectErrorPrefix, notifyObjectPattern,
-            notifyObjectValues, notifyInterval);
+                notifyObjectValues, notifyInterval);
 
         reloadGatewayPersistence();
     }
@@ -212,7 +212,7 @@ public class GatewayConfig {
         connectOptions.setMaxOpsPerformed(15);
         if (getListenerTLS()) {
             TlsOptions tls = new TlsOptions(false, getClientKey(), "JKS", getClientKeyPwd(), getClientKeyPwd(),
-                getTruststore(), "JKS", getTruststorePwd());
+                    getTruststore(), "JKS", getTruststorePwd());
             options.setTlsOptions(tls);
         }
         options.setConnectOptions(connectOptions);
@@ -255,7 +255,7 @@ public class GatewayConfig {
     }
 
     private void addDestinationNode(List<ForwardDestination> dstList, ForwardDicomNode fwdSrcNode,
-        Destination dstNode) {
+                                    Destination dstNode) {
         try {
             DicomProgress progress = new DicomProgress();
             StreamRegistry streamRegistry = new StreamRegistry();
@@ -267,7 +267,7 @@ public class GatewayConfig {
             Integer notifyInterval = dstNode.getNotifyInterval();
 
             if (notifyObjectErrorPrefix != null || notifyObjectPattern != null || notifyObjectValues != null
-                || notifyInterval != null) {
+                    || notifyInterval != null) {
                 if (notifyObjectErrorPrefix == null) {
                     notifyObjectErrorPrefix = getNotifConfiguration().getNotifyObjectErrorPrefix();
                 }
@@ -281,7 +281,7 @@ public class GatewayConfig {
                     notifyInterval = getNotifConfiguration().getNotifyInterval();
                 }
                 notifConfig = new NotificationConfiguration(notifyObjectErrorPrefix, notifyObjectPattern,
-                    notifyObjectValues, notifyInterval);
+                        notifyObjectValues, notifyInterval);
             }
 
             if (dstNode.getType() == DestinationType.stow) {
@@ -291,18 +291,20 @@ public class GatewayConfig {
                 Document doc = Jsoup.parse(headers);
                 String key = doc.getElementsByTag("key").text();
                 String value = doc.getElementsByTag("value").text();
-                map.put(key, value);
+                if (StringUtil.hasText(key)) {
+                    map.put(key, value);
+                }
 
                 WebForwardDestination fwd = new WebForwardDestination(dstNode.getId(), fwdSrcNode, dstNode.getUrl(),
-                    map, progress, streamRegistry);
+                        map, progress, streamRegistry);
                 progress.addProgressListener(new EmailNotifyProgress(streamRegistry, fwd, emails, this, notifConfig));
                 dstList.add(fwd);
             } else {
                 DicomNode destinationNode =
-                    new DicomNode(dstNode.getAeTitle(), dstNode.getHostname(), dstNode.getPort());
+                        new DicomNode(dstNode.getAeTitle(), dstNode.getHostname(), dstNode.getPort());
                 DicomForwardDestination dest =
-                    new DicomForwardDestination(dstNode.getId(), getDefaultAdvancedParameters(), fwdSrcNode,
-                        destinationNode, dstNode.getUseaetdest(), progress, streamRegistry);
+                        new DicomForwardDestination(dstNode.getId(), getDefaultAdvancedParameters(), fwdSrcNode,
+                                destinationNode, dstNode.getUseaetdest(), progress, streamRegistry);
                 progress.addProgressListener(new EmailNotifyProgress(streamRegistry, dest, emails, this, notifConfig));
                 dstList.add(dest);
             }

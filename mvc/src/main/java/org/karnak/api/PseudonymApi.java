@@ -31,7 +31,7 @@ public class PseudonymApi {
     // Constants -----------------------------------------------------
     // ---------------------------------------------------------------
     private static final Logger log = LoggerFactory.getLogger(PseudonymApi.class);
-    private final String SERVER_URL = "http://localhost:8080";
+    private final String SERVER_URL = "http://localhost:8083";
     private final String API_KEY = "changeThisApiKey";
 
     private final HttpClient httpClient = HttpClient.newBuilder() // one instance, reuse
