@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.Tag;
+import org.dcm4che6.util.TagUtils;
 import org.karnak.data.ProfileConfiguration;
 import org.karnak.data.gateway.ActionTable;
 import org.karnak.data.gateway.ProfilePersistence;
@@ -121,24 +122,6 @@ public class Profile {
          */
     }
 
-    public static int hexToDecimal(String hex) {
-        final String digits = "0123456789ABCDEF";
-        hex = hex.toUpperCase();
-        int decimal = 0;
-        try {
-
-            for (int i = 0; i < hex.length(); i++) {
-                final char c = hex.charAt(i);
-                final int d = digits.indexOf(c);
-                decimal = 16 * decimal + d;
-            }
-            return decimal;
-        } catch (final NumberFormatException e) { // handle your exception
-            LOGGER.error("Cannot hexToDecimal {}", hex, e);
-        }
-        return decimal;
-
-    }
 
     public String cleanTag(String tag) {
         try {
@@ -157,27 +140,38 @@ public class Profile {
             for (Entry<String, JsonElement> entry : jsonProfile.entrySet()) {
                 final JsonObject val = entry.getValue().getAsJsonObject();
                 final String action = val.get("action").getAsString();
-
-                final Integer intTag = hexToDecimal(cleanTag(entry.getKey()));
+                final String tagKey = entry.getKey();
+                Integer intTag = 0;
+                try {
+                    intTag = TagUtils.intFromHexString(cleanTag(tagKey));
+                } catch (Exception e) {
+                    LOGGER.error("Cannot read tag {} to register in HashMap", tagKey, e);
+                }
 
                 register(intTag, action);
             }
         } catch (final Exception e) {
-            LOGGER.error("Cannot register profile in HashMap", e);
+            LOGGER.error("Cannot register json profile in HashMap", e);
         }
     }
 
 
     public void persistJsonProfile(JsonObject jsonProfile, String profileName) {
-        final ProfileTable profileTable = new ProfileTable(profileName);
         try {
+            final ProfileTable profileTable = new ProfileTable(profileName);
             for (Entry<String, JsonElement> entry : jsonProfile.entrySet()) {
                 final JsonObject val = entry.getValue().getAsJsonObject();
                 final String action = val.get("action").getAsString();
                 final String attributeName = val.get("attributeName").getAsString();
-
-                final Integer intTag = hexToDecimal(cleanTag(entry.getKey()));
-
+                final String tagKey = entry.getKey();
+                Integer intTag = 0;
+                try {
+                    
+                    intTag = TagUtils.intFromHexString(cleanTag(tagKey));
+                } catch (Exception e) {
+                    LOGGER.error("Cannot read tag {} to persist", tagKey, e);
+                }
+                
                 final ActionTable actionTable = new ActionTable(profileTable, intTag.longValue(), action, attributeName);
                 profileTable.addAction(actionTable);
             }
@@ -185,7 +179,7 @@ public class Profile {
             this.profilePersistence.save(profileTable);
 
         } catch (Exception e) {
-            LOGGER.error("Cannot persist profile {} in database", profileName, e);
+            LOGGER.error("Cannot persist json profile in database {}", profileName, e);
         }
     }
 
