@@ -9,6 +9,10 @@ import java.util.Map.Entry;
 import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.Tag;
+import org.karnak.data.ProfileConfiguration;
+import org.karnak.data.gateway.ActionTable;
+import org.karnak.data.gateway.ProfilePersistence;
+import org.karnak.data.gateway.ProfileTable;
 import org.karnak.profile.action.Action;
 import org.karnak.profile.action.DReplace;
 import org.karnak.profile.action.KKeep;
@@ -26,11 +30,16 @@ public class Profile {
     private static final Logger LOGGER = LoggerFactory.getLogger(Profile.class);
 
     private final HashMap<Integer, Action> actionMap = new HashMap<>();
-    private Action xRemove = new XRemove();
-    private Action dReplace = new DReplace();
-    private Action zReplace = new ZReplace();
-    private Action kKeep = new KKeep();
-    private Action uUid = new UUID();
+    private final Action xRemove = new XRemove();
+    private final Action dReplace = new DReplace();
+    private final Action zReplace = new ZReplace();
+    private final Action kKeep = new KKeep();
+    private final Action uUid = new UUID();
+
+    private ProfilePersistence profilePersistence;
+    {
+        profilePersistence = ProfileConfiguration.getInstance().getProfilePersistence();
+    }
 
     public Profile() {
         register(Tag.StudyID, dReplace);
@@ -44,6 +53,7 @@ public class Profile {
 
     public Profile(String filename) {
         readJsonProfile(filename);
+        //persistJsonProfile("standard_profile");
     }
 
     public void register(Integer tag, Action action) {
@@ -93,12 +103,16 @@ public class Profile {
     }
 
     public void execute(DicomObject dcm) {
-        for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext();) {
-            DicomElement dcmEl = iterator.next();
-            Action action = actionMap.get(dcmEl.tag());
-            if (action != null) { // if action != keep
-                action.execute(dcm, dcmEl.tag(), iterator);
+        try {
+            for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext();) {
+                final DicomElement dcmEl = iterator.next();
+                final Action action = actionMap.get(dcmEl.tag());
+                if (action != null) { // if action != keep
+                    action.execute(dcm, dcmEl.tag(), iterator);
+                }
             }
+        } catch (final Exception e) {
+            LOGGER.error("Cannot execute actions", e);
         }
         /*
          * dcm.elementStream().forEach(e -> { Action action = actionMap.get(e.tag()); if(action != null){ //if action !=
@@ -108,39 +122,36 @@ public class Profile {
 
     public void readJsonProfile(String filename) {
         try {
-        JsonElement root =
-            JsonParser.parseReader(new InputStreamReader(this.getClass().getResourceAsStream("profile.json"), StandardCharsets.UTF_8));
-        JsonObject rootobj = root.getAsJsonObject();
-        for (Entry<String, JsonElement> entry : rootobj.entrySet()) {
-            JsonObject val = entry.getValue().getAsJsonObject();
-            String action = val.get("action").getAsString();
-            String attributeName = val.get("attributeName").getAsString();
+            final JsonElement root = JsonParser.parseReader(
+                    new InputStreamReader(this.getClass().getResourceAsStream("profile.json"), StandardCharsets.UTF_8));
+            final JsonObject rootobj = root.getAsJsonObject();
+            for (Entry<String, JsonElement> entry : rootobj.entrySet()) {
+                final JsonObject val = entry.getValue().getAsJsonObject();
+                final String action = val.get("action").getAsString();
 
-            Integer intTag = hexToDecimal(cleanTag(entry.getKey()));
-            // System.out.println("Att.: "+attributeName+"\t\tTag: "+tag+"\t\tDec. val: "+intTag+ "\t\tAction:
-            // "+action);
+                final Integer intTag = hexToDecimal(cleanTag(entry.getKey()));
 
-            register(intTag, action);
-        }
-        } catch (Exception e) {
-            LOGGER.error("Cannot parse profile", e);
+                register(intTag, action);
+            }
+        } catch (final Exception e) {
+            LOGGER.error("Cannot parse profile {}", filename, e);
         }
     }
 
     public static int hexToDecimal(String hex) {
-        String digits = "0123456789ABCDEF";
+        final String digits = "0123456789ABCDEF";
         hex = hex.toUpperCase();
         int decimal = 0;
         try {
 
             for (int i = 0; i < hex.length(); i++) {
-                char c = hex.charAt(i);
-                int d = digits.indexOf(c);
+                final char c = hex.charAt(i);
+                final int d = digits.indexOf(c);
                 decimal = 16 * decimal + d;
             }
             return decimal;
-        } catch (NumberFormatException e) { // handle your exception
-            e.printStackTrace();
+        } catch (final NumberFormatException e) { // handle your exception
+            LOGGER.error("Cannot hexToDecimal {}", hex, e);
         }
         return decimal;
 
@@ -151,9 +162,34 @@ public class Profile {
             if (tag.contains("(") || tag.contains(")") || tag.contains(",")) {
                 return tag.replace("(", "").replace(")", "").replace(",", "");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (final Exception e) {
+            LOGGER.error("Cannot clean tag {}", tag, e);
         }
         return tag;
+    }
+
+    public void persistJsonProfile(String profileName) {
+        final JsonElement root = JsonParser.parseReader(
+                new InputStreamReader(this.getClass().getResourceAsStream("profile.json"), StandardCharsets.UTF_8));
+        final JsonObject rootobj = root.getAsJsonObject();
+
+        final ProfileTable profileTable = new ProfileTable(profileName);
+        try {
+            for (Entry<String, JsonElement> entry : rootobj.entrySet()) {
+                final JsonObject val = entry.getValue().getAsJsonObject();
+                final String action = val.get("action").getAsString();
+                final String attributeName = val.get("attributeName").getAsString();
+
+                final Integer intTag = hexToDecimal(cleanTag(entry.getKey()));
+
+                final ActionTable actionTable = new ActionTable(profileTable, intTag.longValue(), action, attributeName);
+                profileTable.addAction(actionTable);
+            }
+
+            this.profilePersistence.save(profileTable);
+
+        } catch (Exception e) {
+            LOGGER.error("Cannot persist profile", e);
+        }
     }
 }
