@@ -10,7 +10,7 @@ import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.Tag;
 import org.dcm4che6.util.TagUtils;
-import org.karnak.data.ProfileConfiguration;
+import org.karnak.data.AppConfig;
 import org.karnak.data.gateway.ActionTable;
 import org.karnak.data.gateway.ProfilePersistence;
 import org.karnak.data.gateway.ProfileTable;
@@ -39,7 +39,7 @@ public class Profile {
 
     private ProfilePersistence profilePersistence;
     {
-        profilePersistence = ProfileConfiguration.getInstance().getProfilePersistence();
+        profilePersistence = AppConfig.getInstance().getProfilePersistence();
     }
 
     public Profile() {
