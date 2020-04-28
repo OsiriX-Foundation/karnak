@@ -52,8 +52,9 @@ public class Profile {
     }
 
     public Profile(String filename) {
-        readJsonProfile(filename);
-        //persistJsonProfile("standard_profile");
+        final JsonObject jsonProfile = readJsonFile(filename);
+        persistJsonProfile(jsonProfile , "standard_profile");
+        registerJsonProfile(jsonProfile);
     }
 
     public void register(Integer tag, Action action) {
@@ -120,24 +121,6 @@ public class Profile {
          */
     }
 
-    public void readJsonProfile(String filename) {
-        try {
-            final JsonElement root = JsonParser.parseReader(
-                    new InputStreamReader(this.getClass().getResourceAsStream("profile.json"), StandardCharsets.UTF_8));
-            final JsonObject rootobj = root.getAsJsonObject();
-            for (Entry<String, JsonElement> entry : rootobj.entrySet()) {
-                final JsonObject val = entry.getValue().getAsJsonObject();
-                final String action = val.get("action").getAsString();
-
-                final Integer intTag = hexToDecimal(cleanTag(entry.getKey()));
-
-                register(intTag, action);
-            }
-        } catch (final Exception e) {
-            LOGGER.error("Cannot parse profile {}", filename, e);
-        }
-    }
-
     public static int hexToDecimal(String hex) {
         final String digits = "0123456789ABCDEF";
         hex = hex.toUpperCase();
@@ -168,14 +151,27 @@ public class Profile {
         return tag;
     }
 
-    public void persistJsonProfile(String profileName) {
-        final JsonElement root = JsonParser.parseReader(
-                new InputStreamReader(this.getClass().getResourceAsStream("profile.json"), StandardCharsets.UTF_8));
-        final JsonObject rootobj = root.getAsJsonObject();
 
+    public void registerJsonProfile(JsonObject jsonProfile) {
+        try {
+            for (Entry<String, JsonElement> entry : jsonProfile.entrySet()) {
+                final JsonObject val = entry.getValue().getAsJsonObject();
+                final String action = val.get("action").getAsString();
+
+                final Integer intTag = hexToDecimal(cleanTag(entry.getKey()));
+
+                register(intTag, action);
+            }
+        } catch (final Exception e) {
+            LOGGER.error("Cannot register profile in HashMap", e);
+        }
+    }
+
+
+    public void persistJsonProfile(JsonObject jsonProfile, String profileName) {
         final ProfileTable profileTable = new ProfileTable(profileName);
         try {
-            for (Entry<String, JsonElement> entry : rootobj.entrySet()) {
+            for (Entry<String, JsonElement> entry : jsonProfile.entrySet()) {
                 final JsonObject val = entry.getValue().getAsJsonObject();
                 final String action = val.get("action").getAsString();
                 final String attributeName = val.get("attributeName").getAsString();
@@ -189,7 +185,19 @@ public class Profile {
             this.profilePersistence.save(profileTable);
 
         } catch (Exception e) {
-            LOGGER.error("Cannot persist profile", e);
+            LOGGER.error("Cannot persist profile {} in database", profileName, e);
         }
+    }
+
+    public JsonObject readJsonFile(String filename){
+        JsonObject rootobj = new JsonObject();
+        try {
+            final JsonElement root = JsonParser.parseReader(
+                new InputStreamReader(this.getClass().getResourceAsStream("profile.json"), StandardCharsets.UTF_8));
+            rootobj = root.getAsJsonObject();
+        } catch (Exception e) {
+            LOGGER.error("Cannot read json profile {}", filename, e);
+        }
+        return rootobj;
     }
 }
