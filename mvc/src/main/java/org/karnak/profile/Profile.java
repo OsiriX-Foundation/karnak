@@ -8,7 +8,6 @@ import java.util.Map.Entry;
 
 import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
-import org.dcm4che6.data.Tag;
 import org.dcm4che6.util.TagUtils;
 import org.karnak.data.AppConfig;
 import org.karnak.data.gateway.ActionTable;
@@ -44,9 +43,17 @@ public class Profile {
     }
 
     public Profile() {
-        final JsonObject standardProfile = readStandardProfile();
-        persistJsonProfile(standardProfile , "standardProfile");
-        registerJsonProfile(standardProfile);
+        final Boolean stantardProfileExist = this.profilePersistence.existsByName("standardProfile");
+        if(stantardProfileExist){
+            //!!!!!!!!Missing READ data in database
+            final JsonObject standardProfile = readStandardProfile(); 
+            registerJsonProfile(standardProfile);
+        }else{
+            final JsonObject standardProfile = readStandardProfile();
+            persistJsonProfile(standardProfile , "standardProfile");
+            registerJsonProfile(standardProfile);
+        }
+        
     }
 
     public void register(Integer tag, Action action) {
