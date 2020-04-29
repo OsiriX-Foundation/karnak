@@ -24,7 +24,7 @@ public class ProfileTable {
     private Long id;
 
     @Basic(optional = false)
-    @Column(name = "name")
+    @Column(name = "name", unique = true)
     private String name;
 
     @OneToMany(mappedBy = "profileTable", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
