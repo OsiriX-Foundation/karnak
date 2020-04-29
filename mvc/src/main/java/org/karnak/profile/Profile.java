@@ -30,6 +30,7 @@ import com.google.gson.JsonParser;
 public class Profile {
     private static final Logger LOGGER = LoggerFactory.getLogger(Profile.class);
 
+    private final String standardProfilePath = "profile.json";
     private final HashMap<Integer, Action> actionMap = new HashMap<>();
     private final Action xRemove = new XRemove();
     private final Action dReplace = new DReplace();
@@ -43,19 +44,9 @@ public class Profile {
     }
 
     public Profile() {
-        register(Tag.StudyID, dReplace);
-        register(Tag.StudyDescription, xRemove);
-        register(Tag.SOPInstanceUID, uUid);
-        register(Tag.SeriesInstanceUID, uUid);
-        register(Tag.StudyInstanceUID, uUid);
-        register(Tag.StudyDate, zReplace);
-        register(Tag.PatientName, kKeep);
-    }
-
-    public Profile(String filename) {
-        final JsonObject jsonProfile = readJsonFile(filename);
-        persistJsonProfile(jsonProfile , "standard_profile");
-        registerJsonProfile(jsonProfile);
+        final JsonObject standardProfile = readStandardProfile();
+        persistJsonProfile(standardProfile , "standardProfile");
+        registerJsonProfile(standardProfile);
     }
 
     public void register(Integer tag, Action action) {
@@ -183,14 +174,14 @@ public class Profile {
         }
     }
 
-    public JsonObject readJsonFile(String filename){
+    public JsonObject readStandardProfile(){
         JsonObject rootobj = new JsonObject();
         try {
             final JsonElement root = JsonParser.parseReader(
-                new InputStreamReader(this.getClass().getResourceAsStream("profile.json"), StandardCharsets.UTF_8));
+                new InputStreamReader(this.getClass().getResourceAsStream(this.standardProfilePath), StandardCharsets.UTF_8));
             rootobj = root.getAsJsonObject();
         } catch (Exception e) {
-            LOGGER.error("Cannot read json profile {}", filename, e);
+            LOGGER.error("Cannot read json profile {}", this.standardProfilePath, e);
         }
         return rootobj;
     }

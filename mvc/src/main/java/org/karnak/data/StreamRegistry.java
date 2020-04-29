@@ -150,7 +150,7 @@ public class StreamRegistry implements AttributeEditor {
 
     public void deident(DicomObject dcm) {
         //store (init app)
-        Profile profile = new Profile("/mvc/profiles/profile.json");
+        Profile profile = new Profile();
         // Profile profile = new Profile();
         
         //execute (stream registry)
