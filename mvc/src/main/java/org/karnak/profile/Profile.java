@@ -8,7 +8,11 @@ import java.util.Map.Entry;
 
 import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
-import org.dcm4che6.data.Tag;
+import org.dcm4che6.util.TagUtils;
+import org.karnak.data.AppConfig;
+import org.karnak.data.gateway.ActionTable;
+import org.karnak.data.gateway.ProfilePersistence;
+import org.karnak.data.gateway.ProfileTable;
 import org.karnak.profile.action.Action;
 import org.karnak.profile.action.DReplace;
 import org.karnak.profile.action.KKeep;
@@ -25,25 +29,31 @@ import com.google.gson.JsonParser;
 public class Profile {
     private static final Logger LOGGER = LoggerFactory.getLogger(Profile.class);
 
+    private final String standardProfilePath = "profile.json";
     private final HashMap<Integer, Action> actionMap = new HashMap<>();
-    private Action xRemove = new XRemove();
-    private Action dReplace = new DReplace();
-    private Action zReplace = new ZReplace();
-    private Action kKeep = new KKeep();
-    private Action uUid = new UUID();
+    private final Action xRemove = new XRemove();
+    private final Action dReplace = new DReplace();
+    private final Action zReplace = new ZReplace();
+    private final Action kKeep = new KKeep();
+    private final Action uUid = new UUID();
 
-    public Profile() {
-        register(Tag.StudyID, dReplace);
-        register(Tag.StudyDescription, xRemove);
-        register(Tag.SOPInstanceUID, uUid);
-        register(Tag.SeriesInstanceUID, uUid);
-        register(Tag.StudyInstanceUID, uUid);
-        register(Tag.StudyDate, zReplace);
-        register(Tag.PatientName, kKeep);
+    private ProfilePersistence profilePersistence;
+    {
+        profilePersistence = AppConfig.getInstance().getProfilePersistence();
     }
 
-    public Profile(String filename) {
-        readJsonProfile(filename);
+    public Profile() {
+        final Boolean stantardProfileExist = this.profilePersistence.existsByName("standardProfile");
+        if(stantardProfileExist){
+            //!!!!!!!!Missing READ data in database
+            final JsonObject standardProfile = readStandardProfile(); 
+            registerJsonProfile(standardProfile);
+        }else{
+            final JsonObject standardProfile = readStandardProfile();
+            persistJsonProfile(standardProfile , "standardProfile");
+            registerJsonProfile(standardProfile);
+        }
+        
     }
 
     public void register(Integer tag, Action action) {
@@ -93,12 +103,16 @@ public class Profile {
     }
 
     public void execute(DicomObject dcm) {
-        for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext();) {
-            DicomElement dcmEl = iterator.next();
-            Action action = actionMap.get(dcmEl.tag());
-            if (action != null) { // if action != keep
-                action.execute(dcm, dcmEl.tag(), iterator);
+        try {
+            for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext();) {
+                final DicomElement dcmEl = iterator.next();
+                final Action action = actionMap.get(dcmEl.tag());
+                if (action != null) { // if action != keep
+                    action.execute(dcm, dcmEl.tag(), iterator);
+                }
             }
+        } catch (final Exception e) {
+            LOGGER.error("Cannot execute actions", e);
         }
         /*
          * dcm.elementStream().forEach(e -> { Action action = actionMap.get(e.tag()); if(action != null){ //if action !=
@@ -106,54 +120,76 @@ public class Profile {
          */
     }
 
-    public void readJsonProfile(String filename) {
-        try {
-        JsonElement root =
-            JsonParser.parseReader(new InputStreamReader(this.getClass().getResourceAsStream("profile.json"), StandardCharsets.UTF_8));
-        JsonObject rootobj = root.getAsJsonObject();
-        for (Entry<String, JsonElement> entry : rootobj.entrySet()) {
-            JsonObject val = entry.getValue().getAsJsonObject();
-            String action = val.get("action").getAsString();
-            String attributeName = val.get("attributeName").getAsString();
-
-            Integer intTag = hexToDecimal(cleanTag(entry.getKey()));
-            // System.out.println("Att.: "+attributeName+"\t\tTag: "+tag+"\t\tDec. val: "+intTag+ "\t\tAction:
-            // "+action);
-
-            register(intTag, action);
-        }
-        } catch (Exception e) {
-            LOGGER.error("Cannot parse profile", e);
-        }
-    }
-
-    public static int hexToDecimal(String hex) {
-        String digits = "0123456789ABCDEF";
-        hex = hex.toUpperCase();
-        int decimal = 0;
-        try {
-
-            for (int i = 0; i < hex.length(); i++) {
-                char c = hex.charAt(i);
-                int d = digits.indexOf(c);
-                decimal = 16 * decimal + d;
-            }
-            return decimal;
-        } catch (NumberFormatException e) { // handle your exception
-            e.printStackTrace();
-        }
-        return decimal;
-
-    }
 
     public String cleanTag(String tag) {
         try {
             if (tag.contains("(") || tag.contains(")") || tag.contains(",")) {
                 return tag.replace("(", "").replace(")", "").replace(",", "");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (final Exception e) {
+            LOGGER.error("Cannot clean tag {}", tag, e);
         }
         return tag;
+    }
+
+
+    public void registerJsonProfile(JsonObject jsonProfile) {
+        try {
+            for (Entry<String, JsonElement> entry : jsonProfile.entrySet()) {
+                final JsonObject val = entry.getValue().getAsJsonObject();
+                final String action = val.get("action").getAsString();
+                final String tagKey = entry.getKey();
+                Integer intTag = 0;
+                try {
+                    intTag = TagUtils.intFromHexString(cleanTag(tagKey));
+                } catch (Exception e) {
+                    LOGGER.error("Cannot read tag {} to register in HashMap", tagKey, e);
+                }
+
+                register(intTag, action);
+            }
+        } catch (final Exception e) {
+            LOGGER.error("Cannot register json profile in HashMap", e);
+        }
+    }
+
+
+    public void persistJsonProfile(JsonObject jsonProfile, String profileName) {
+        try {
+            final ProfileTable profileTable = new ProfileTable(profileName);
+            for (Entry<String, JsonElement> entry : jsonProfile.entrySet()) {
+                final JsonObject val = entry.getValue().getAsJsonObject();
+                final String action = val.get("action").getAsString();
+                final String attributeName = val.get("attributeName").getAsString();
+                final String tagKey = entry.getKey();
+                Integer intTag = 0;
+                try {
+                    
+                    intTag = TagUtils.intFromHexString(cleanTag(tagKey));
+                } catch (Exception e) {
+                    LOGGER.error("Cannot read tag {} to persist", tagKey, e);
+                }
+                
+                final ActionTable actionTable = new ActionTable(profileTable, intTag.longValue(), action, attributeName);
+                profileTable.addAction(actionTable);
+            }
+
+            this.profilePersistence.save(profileTable);
+
+        } catch (Exception e) {
+            LOGGER.error("Cannot persist json profile in database {}", profileName, e);
+        }
+    }
+
+    public JsonObject readStandardProfile(){
+        JsonObject rootobj = new JsonObject();
+        try {
+            final JsonElement root = JsonParser.parseReader(
+                new InputStreamReader(this.getClass().getResourceAsStream(this.standardProfilePath), StandardCharsets.UTF_8));
+            rootobj = root.getAsJsonObject();
+        } catch (Exception e) {
+            LOGGER.error("Cannot read json profile {}", this.standardProfilePath, e);
+        }
+        return rootobj;
     }
 }
