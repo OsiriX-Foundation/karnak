@@ -2,7 +2,7 @@ Karnak is a DICOM Gateway with normalization and de-identification capabilities.
 
 # Application Features
 
- - Allows a mapping between the AETitle of the DICOM Listener and the final DICOM destination  
+ - Allows a mapping between the AETitle of the DICOM Listener and the final DICOM or DICOMweb destination  
  - Allows multiples destinations (DICOM StoreSCU and/or STWO-RS output)
  - Filter the images providers by AETitle and/or hostname (Guarantees the authenticity of the source)
 
@@ -21,55 +21,29 @@ The UI could be launch with a database in memory (H2), by using maven profiles :
  - devh2: `mvn -Pdevh2 spring-boot:run -f mvc`
  
 ## Debug in IntelliJ
+
+ - Configure locally mainzelliste and Postgres database (see below)
  - Enable Sring and Spring Boot for the project
- - Create a Spring Boot from main of SartApplication.java
- - Working Directory must be the mvc directory
-
-For h2 database:
-
-For Postgres database: see Configure a local Postgres database
+ - Create a Spring Boot launcher from main of SartApplication.java
+    - Working Directory must be the mvc directory
+    - Copy the KARNAK environment variables in docker/.env and paste into User environment variables  
+    - In VM Options, add `-Djava.library.path="/tmp/dicom-opencv"`    
+    Note: the tmp folder must be adapted according to your system and the dicom-opencv must the last folder.
 
 ## Debug in Eclipse
+
+ - Configure locally mainzelliste and Postgres database (see below)
  - From Eclipse Marketplace: install the latest Spring Tools
  - Create a Spring Boot App launcher from main of SartApplication.java
- - In the Arguments tab of the launcher, add in VM arguments (note: the tmp folder must be adapted according to your system and the dicom-opencv must the last folder): `-Djava.library.path="/tmp/dicom-opencv"`
+    - Copy the KARNAK environment variables in docker/.env and paste into the Environment tab of the launcher    
+    - In the Arguments tab of the launcher, add in VM arguments: `-Djava.library.path="/tmp/dicom-opencv"`    
+    Note: the tmp folder must be adapted according to your system and the dicom-opencv must the last folder.
 
-For h2 database:
- - To support devh2 profile dependencies add the profile name in the karnak-mvc project with the contextual menu: Properties -> Maven-> Active Maven Profiles
- - In the Spring Boot App launcher, select the profile "devh2"
+## Configure locally mainzelliste and Postgres database
 
-For Postgres database: see Configure a local Postgres database
-
-## Configure a local Postgres database
-
-- Create a docker-compose.yml file in a empty folder
-
-```
-version: "3.7"
-
-services:
-  postgresidp:
-    image: postgres:12.1-alpine
-    environment:
-      POSTGRES_DB: ${PGDATABASE}
-      POSTGRES_USER: ${PGUSER}
-      POSTGRES_PASSWORD: ${PGPASSWORD}
-    ports:
-      - ${PGPORT}:5432
-    volumes:
-      - ${VSVOLUME_NAME}:/var/lib/postgresql/data
-```
-
-- Create a .env file in the same folder (adapt the values if necessary)
-
-```
-VSVOLUME_NAME=./psqldata12
-
-PGDATABASE=karnak
-PGUSER=karnak
-PGPASSWORD=5!KAnN@%98%d
-PGPORT=5433
-```
+- Go in the docker folder located in the root project folder
+- Create a .env file and copy the content of the env.example
+- Adapt the values if necessary
 - Execute command:    
     - start: `docker-compose up -d`
     - stop: `docker-compose down`

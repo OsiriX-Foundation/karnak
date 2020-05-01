@@ -1,0 +1,45 @@
+package org.karnak.ui.dicom;
+
+import org.karnak.dicom.model.Message;
+import org.karnak.dicom.model.MessageType;
+import org.karnak.ui.component.MessageBox;
+
+import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.dependency.JsModule;
+import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.Notification.Position;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+
+@JsModule("@polymer/iron-icons/iron-icons.js")
+@CssImport(value = "./styles/custom-style.css")
+public abstract class AbstractView extends Div {
+	
+	private static final long serialVersionUID = 1L;
+	
+	private static final int DURATION_MSG_INFO_SUCCESS = 5000;
+
+    protected VerticalLayout mainLayout;
+	
+	
+	public void displayMessage(Message message) {
+        MessageBox messageBox = new MessageBox(message, MessageType.NOTIFICATION_MESSAGE);
+        
+        Notification notification = new Notification(messageBox);
+        notification.setPosition(Position.TOP_CENTER);
+        notification.setDuration(DURATION_MSG_INFO_SUCCESS);
+        notification.open();
+    }
+	
+	protected void setFormResponsive(FormLayout formLayout) {
+    	formLayout.setResponsiveSteps(
+       	    new ResponsiveStep("0px", 1),
+    	    new ResponsiveStep("350px", 2),
+    	    new ResponsiveStep("1050px", 4),
+    	    new ResponsiveStep("2450px", 8)
+    	);
+	}
+
+}
