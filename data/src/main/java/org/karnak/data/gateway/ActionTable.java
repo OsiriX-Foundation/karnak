@@ -3,7 +3,6 @@ package org.karnak.data.gateway;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,7 +22,7 @@ public class ActionTable {
 
     @Basic(optional = false)
     @Column(name = "tag")
-    private Long tag;
+    private Integer tag;
 
     @Basic(optional = false)
     @Column(name = "action")
@@ -33,16 +32,27 @@ public class ActionTable {
     @Column(name = "attributeName")
     private String attributeName;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne( optional = false)
     @JoinColumn(name = "id_profile", nullable = false)
     private ProfileTable profileTable;
 
+    public ActionTable() {
+    }
 
-    public ActionTable(ProfileTable profileTable, Long tag, String action, String attributeName){
+
+    public ActionTable(ProfileTable profileTable, Integer tag, String action, String attributeName){
         this.profileTable = profileTable;
         this.tag = tag;
         this.action = action;
         this.attributeName = attributeName;
+    }
+
+    public Integer getTag(){
+        return this.tag;
+    }
+
+    public String getAction(){
+        return this.action;
     }
 
 

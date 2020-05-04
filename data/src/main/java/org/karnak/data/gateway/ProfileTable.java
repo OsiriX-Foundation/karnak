@@ -27,7 +27,7 @@ public class ProfileTable {
     @Column(name = "name", unique = true)
     private String name;
 
-    @OneToMany(mappedBy = "profileTable", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "profileTable", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<ActionTable> actions;
 
 
@@ -46,6 +46,14 @@ public class ProfileTable {
 
     public void addAction(ActionTable action){
         this.actions.add(action);
+    }
+
+    public Long getId(){
+        return this.id;
+    }
+
+    public Set<ActionTable> getActions(){
+        return this.actions;
     }
 
 }

@@ -4,6 +4,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import org.dcm4che6.data.DicomElement;
@@ -43,12 +44,16 @@ public class Profile {
     }
 
     public Profile() {
+
         final Boolean stantardProfileExist = this.profilePersistence.existsByName("standardProfile");
-        if(stantardProfileExist){
-            //!!!!!!!!Missing READ data in database
-            final JsonObject standardProfile = readStandardProfile(); 
-            registerJsonProfile(standardProfile);
-        }else{
+
+        if (stantardProfileExist) {
+            final ProfileTable standardProfileTable = this.profilePersistence.findByName("standardProfile");
+            final Set<ActionTable> standardActionTable = standardProfileTable.getActions();
+            standardActionTable.forEach(action->{
+                register(action.getTag(), action.getAction());
+            });
+        } else {
             final JsonObject standardProfile = readStandardProfile();
             persistJsonProfile(standardProfile , "standardProfile");
             registerJsonProfile(standardProfile);
@@ -170,10 +175,9 @@ public class Profile {
                     LOGGER.error("Cannot read tag {} to persist", tagKey, e);
                 }
                 
-                final ActionTable actionTable = new ActionTable(profileTable, intTag.longValue(), action, attributeName);
+                final ActionTable actionTable = new ActionTable(profileTable, intTag, action, attributeName);
                 profileTable.addAction(actionTable);
             }
-
             this.profilePersistence.save(profileTable);
 
         } catch (Exception e) {
