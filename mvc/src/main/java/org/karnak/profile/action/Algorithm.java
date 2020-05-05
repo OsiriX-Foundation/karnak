@@ -1,5 +1,6 @@
 package org.karnak.profile.action;
 
+import java.nio.ByteBuffer;
 import java.util.Random;
 
 import org.dcm4che6.data.VR;
@@ -9,16 +10,16 @@ import org.dcm4che6.util.UIDUtils;
 public class Algorithm {
 
     private String value ="";
-    private String stringValue = "";
-    private Random random = new Random(0);
+    private Random random;
+    private HMAC hmac = new HMAC();
 
     public Algorithm(){
     }
 
     public String execute(VR vr, String stringValue){
-        this.stringValue = stringValue;
-        if(this.stringValue!=null){
-            Integer seed = this.stringValue.chars().reduce(0, (sumTotal, character) -> sumTotal + character);
+        if (stringValue != null) {
+            byte[] hashedBytes = this.hmac.byteHash(stringValue);
+            long seed = bytesToLong(hashedBytes);
             this.random = new Random(seed);
             String dummyValue = switch (vr) {
                 case AE -> AE();
@@ -48,6 +49,11 @@ public class Algorithm {
             return dummyValue;
         }
         return null;
+    }
+
+    private long bytesToLong(byte[] bytes) {
+        ByteBuffer buffer = ByteBuffer.wrap(bytes);
+        return buffer.getLong();
     }
 
     private String notImplemented(){
