@@ -4,6 +4,7 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -64,5 +65,22 @@ public class HMAC {
             LOGGER.error("On hashed Value getBytes", e);
         }
         return bytes;
+    }
+
+    public long longHash(String value) {
+        long hash = 0;
+        try {
+            byte[] bytes = mac.doFinal(value.getBytes("ASCII"));
+            hash = bytesToLong(bytes);
+        }
+        catch(UnsupportedEncodingException e) {
+            LOGGER.error("On hashed Value getBytes", e);
+        }
+        return hash;
+    }
+
+    public long bytesToLong(byte[] bytes) {
+        ByteBuffer buffer = ByteBuffer.wrap(bytes);
+        return buffer.getLong();
     }
 }

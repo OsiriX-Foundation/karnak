@@ -16,16 +16,15 @@ public class Algorithm {
     public Algorithm(){
     }
 
-    public String execute(VR vr, String stringValue){
+    public String execute(VR vr, String stringValue, String StudyInstanceUID){
         if (stringValue != null) {
-            byte[] hashedBytes = this.hmac.byteHash(stringValue);
-            long seed = bytesToLong(hashedBytes);
+            long seed = this.hmac.longHash(stringValue);
             this.random = new Random(seed);
             String dummyValue = switch (vr) {
                 case AE -> AE();
                 case AS -> AS();
                 case CS -> CS();
-                case DA -> DA();
+                case DA -> DA(stringValue, StudyInstanceUID);
                 case DS -> DS();
                 case DT -> DT();
                 case FL -> FL();
@@ -49,11 +48,6 @@ public class Algorithm {
             return dummyValue;
         }
         return null;
-    }
-
-    private long bytesToLong(byte[] bytes) {
-        ByteBuffer buffer = ByteBuffer.wrap(bytes);
-        return buffer.getLong();
     }
 
     private String notImplemented(){
@@ -80,7 +74,9 @@ public class Algorithm {
         return RandomUtils.randomTM(this.random);
     }
 
-    private String DA(){
+    private String DA(String date, String StudyInstanceUID){
+        ShiftDate shiftDate = new ShiftDate(StudyInstanceUID);
+        shiftDate.shiftByDay(date, 10);
         return RandomUtils.randomDA(this.random);
     }
 
