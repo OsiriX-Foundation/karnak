@@ -5,12 +5,12 @@ import java.util.Optional;
 import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
 import java.util.Iterator;
-import org.dcm4che6.data.Tag;
 import org.dcm4che6.util.TagUtils;
 
-public class DReplace implements Action{
+public class DReplace extends Action{
 
     private Algorithm algo;
+    private String strAction = "D";
 
     public DReplace() {
         this.algo = new Algorithm();
@@ -18,6 +18,10 @@ public class DReplace implements Action{
 
     public DReplace(Algorithm algo) {
         this.algo = algo;
+    }
+
+    public String getStrAction() {
+        return strAction;
     }
 
     public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator) {
