@@ -16,6 +16,10 @@ public class DReplace implements Action{
         this.algo = new Algorithm();
     }
 
+    public DReplace(Algorithm algo) {
+        this.algo = algo;
+    }
+
     public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator) {
         Optional<DicomElement> dcmItem = dcm.get(tag);
         int tagStudyInstanceUID = TagUtils.intFromHexString("0020000D");

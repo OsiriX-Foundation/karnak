@@ -9,40 +9,24 @@ import org.dcm4che6.util.UIDUtils;
 
 public class Algorithm {
 
-    private String value ="";
     private Random random;
     private HMAC hmac = new HMAC();
 
-    public Algorithm(){
+    public Algorithm() {
     }
 
-    public String execute(VR vr, String stringValue, String StudyInstanceUID){
+    public String execute(VR vr, String stringValue, String StudyInstanceUID) {
         if (stringValue != null) {
             long seed = this.hmac.longHash(stringValue);
             this.random = new Random(seed);
             String dummyValue = switch (vr) {
-                case AE -> AE();
+                case AE, CS, LO, LT, PN, SH, ST, UN, UT -> unknownValue();
+                case DS, FL, FD, IS, SL, SS, UL, US -> zeroValue();
                 case AS -> AS();
-                case CS -> CS();
                 case DA -> DA(stringValue, StudyInstanceUID);
-                case DS -> DS();
-                case DT -> DT();
-                case FL -> FL();
-                case FD -> FD();
-                case IS -> IS();
-                case LO -> LO();
-                case LT -> LT();
-                case PN -> PN();
-                case SH -> SH();
-                case SL -> SL();
-                case SS -> SS();
-                case ST -> ST();
-                case TM -> TM();
+                case DT -> DT(stringValue, StudyInstanceUID);
+                case TM -> TM(stringValue, StudyInstanceUID);
                 case UI -> UI();
-                case UL -> UL();
-                case UN -> UN();
-                case US -> US();
-                case UT -> UT();
                 default -> notImplemented();
             };
             return dummyValue;
@@ -50,108 +34,47 @@ public class Algorithm {
         return null;
     }
 
-    private String notImplemented(){
+    private String notImplemented() {
         return null;
     }
 
-    private String AE() {
-        return RandomUtils.generateAlphanumeric(32, this.random);
+    private String unknownValue() {
+        return "UNKNOWN";
+    }
+
+    private String zeroValue() {
+        return "0";
     }
 
     private String AS() {
+        // shift Date
         return RandomUtils.randomAS(this.random);
     }
 
-    private String LT() {
-        return RandomUtils.generateAlphanumeric(32, this.random);
-    }
-
-    private String LO(){
-        return RandomUtils.generateAlphanumeric(32, this.random);
-    }
-
-    private String TM(){
-        return RandomUtils.randomTM(this.random);
-    }
-
-    private String DA(String date, String StudyInstanceUID){
+    private String TM(String time, String StudyInstanceUID) {
         ShiftDate shiftDate = new ShiftDate(StudyInstanceUID);
-        shiftDate.shiftByDay(date, 10);
-        return RandomUtils.randomDA(this.random);
+        String[] timeSplit = time.split("\\.");
+        return shiftDate.TMshiftByRandomSeconds(timeSplit[0], 24*360);
     }
 
-    private String DT(){
-        return RandomUtils.randomDT(this.random);
+    private String DA(String date, String StudyInstanceUID) {
+        ShiftDate shiftDate = new ShiftDate(StudyInstanceUID);
+        return shiftDate.DAshiftByRandomDays(date, 120);
     }
 
-    private String PN(){
-        return RandomUtils.generateAlphanumeric(16, this.random);
-    }
-
-    private String SH(){
-        return RandomUtils.generateAlphanumeric(16, this.random);
-    }
-
-    private String UN(){
-        return RandomUtils.generateAlphanumeric(16, this.random);
-    }
-
-    private String UT(){
-        return RandomUtils.generateAlphanumeric(32, this.random);
-    }
-
-    private String US(){
-        int max = (int)Math.pow(2, 16)-1;
-        return RandomUtils.generateNumeric(0, max, this.random);
-    }
-
-    private String UL(){
-        int max = (int)Math.pow(2, 32)-1;
-        return RandomUtils.generateNumeric(0, max, this.random);
-    }
-
-    private String SS() {
-        int min = (int)Math.pow(-2, 15);
-        int max = (int)Math.pow(2, 15)-1;
-        return RandomUtils.generateNumeric(min, max, this.random);
-    }
-
-    private String SL() {
-        int min = (int)Math.pow(-2, 31);
-        int max = (int)Math.pow(2, 31)-1;
-        return RandomUtils.generateNumeric(min, max, this.random);
-    }
-
-    private String ST() {
-        return RandomUtils.generateAlphanumeric(16, this.random);
-    }
-
-    private String IS() {
-        int min = (int)Math.pow(-2, 31);
-        int max = (int)Math.pow(2, 31)-1;
-        return RandomUtils.generateNumeric(min, max, this.random);
-    }
-
-    private String FD() {
-        int max = (int)Math.pow(2, 32)-1;
-        return RandomUtils.generateNumeric(0, max, this.random);
-    }
-
-    private String FL() {
-        int max = (int)Math.pow(2, 32)-1;
-        return RandomUtils.generateNumeric(0, max, this.random);
-    }
-
-    private String DS() {
-        int max = (int)Math.pow(2, 16)-1;
-        return RandomUtils.generateNumeric(0, max, this.random);
+    private String DT(String datetime, String StudyInstanceUID) {
+        String date = datetime.substring(0, 8);
+        String dummyDate = DA(date, StudyInstanceUID);
+        String dummyTime = null;
+        if (datetime.length() > 8) {
+            String time = datetime.substring(8, 14);
+            dummyTime = TM(time, StudyInstanceUID);
+            return dummyDate.concat(dummyTime);
+        }
+        return dummyDate;
     }
 
     private String UI() {
         return UIDUtils.randomUID();
-    }
-
-    private String CS() {
-        return RandomUtils.generateUppercase(16, this.random);
     }
 }
