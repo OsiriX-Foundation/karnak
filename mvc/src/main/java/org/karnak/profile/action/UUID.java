@@ -11,6 +11,11 @@ import java.util.Map;
 import org.dcm4che6.data.DicomElement;
 public class UUID implements Action {
     private final Map<String, String> UIDMap = new HashMap<>();
+    private String strAction = "U";
+
+    public String getStrAction() {
+        return strAction;
+    }
 
     public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator) {
 

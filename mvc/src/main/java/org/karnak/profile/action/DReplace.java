@@ -9,7 +9,11 @@ import org.dcm4che6.data.Tag;
 public class DReplace implements Action{
 
     private Algorithm algo = new Algorithm();
+    private String strAction = "D";
 
+    public String getStrAction() {
+        return strAction;
+    }
     public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator) {
         Optional<DicomElement> dcmItem = dcm.get(tag);
         if(dcmItem.isPresent()) {

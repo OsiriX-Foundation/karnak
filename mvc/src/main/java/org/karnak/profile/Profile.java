@@ -1,5 +1,6 @@
 package org.karnak.profile;
 
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -9,6 +10,7 @@ import java.util.Map.Entry;
 
 import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
+import org.dcm4che6.data.Tag;
 import org.dcm4che6.util.TagUtils;
 import org.karnak.data.AppConfig;
 import org.karnak.data.gateway.ActionTable;
@@ -20,6 +22,8 @@ import org.karnak.profile.action.KKeep;
 import org.karnak.profile.action.UUID;
 import org.karnak.profile.action.XRemove;
 import org.karnak.profile.action.ZReplace;
+import org.karnak.profile.parser.JSONparser;
+import org.karnak.profile.parser.ParserProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +35,7 @@ public class Profile {
     private static final Logger LOGGER = LoggerFactory.getLogger(Profile.class);
 
     private final String standardProfilePath = "profile.json";
-    private final HashMap<Integer, Action> actionMap = new HashMap<>();
+    private  HashMap<Integer, Action> actionMap = new HashMap<>();
     private final Action xRemove = new XRemove();
     private final Action dReplace = new DReplace();
     private final Action zReplace = new ZReplace();
@@ -54,9 +58,10 @@ public class Profile {
                 register(action.getTag(), action.getAction());
             });
         } else {
-            final JsonObject standardProfile = readStandardProfile();
-            persistJsonProfile(standardProfile , "standardProfile");
-            registerJsonProfile(standardProfile);
+            InputStream inputStream = this.getClass().getResourceAsStream(this.standardProfilePath);
+            ParserProfile parserProfile = new JSONparser();
+            actionMap = parserProfile.parse(inputStream);
+            persistProfile(this.actionMap, "standardProfile");
         }
         
     }
@@ -126,74 +131,17 @@ public class Profile {
     }
 
 
-    public String cleanTag(String tag) {
+
+    public void persistProfile(HashMap<Integer, Action> aMap, String profileName) {
+        final ProfileTable profileTable = new ProfileTable(profileName);
         try {
-            if (tag.contains("(") || tag.contains(")") || tag.contains(",")) {
-                return tag.replace("(", "").replace(")", "").replace(",", "");
-            }
-        } catch (final Exception e) {
-            LOGGER.error("Cannot clean tag {}", tag, e);
-        }
-        return tag;
-    }
-
-
-    public void registerJsonProfile(JsonObject jsonProfile) {
-        try {
-            for (Entry<String, JsonElement> entry : jsonProfile.entrySet()) {
-                final JsonObject val = entry.getValue().getAsJsonObject();
-                final String action = val.get("action").getAsString();
-                final String tagKey = entry.getKey();
-                Integer intTag = 0;
-                try {
-                    intTag = TagUtils.intFromHexString(cleanTag(tagKey));
-                } catch (Exception e) {
-                    LOGGER.error("Cannot read tag {} to register in HashMap", tagKey, e);
-                }
-
-                register(intTag, action);
-            }
-        } catch (final Exception e) {
-            LOGGER.error("Cannot register json profile in HashMap", e);
-        }
-    }
-
-
-    public void persistJsonProfile(JsonObject jsonProfile, String profileName) {
-        try {
-            final ProfileTable profileTable = new ProfileTable(profileName);
-            for (Entry<String, JsonElement> entry : jsonProfile.entrySet()) {
-                final JsonObject val = entry.getValue().getAsJsonObject();
-                final String action = val.get("action").getAsString();
-                final String attributeName = val.get("attributeName").getAsString();
-                final String tagKey = entry.getKey();
-                Integer intTag = 0;
-                try {
-                    
-                    intTag = TagUtils.intFromHexString(cleanTag(tagKey));
-                } catch (Exception e) {
-                    LOGGER.error("Cannot read tag {} to persist", tagKey, e);
-                }
-                
-                final ActionTable actionTable = new ActionTable(profileTable, intTag, action, attributeName);
+            aMap.forEach((tag, action) -> {
+                final ActionTable actionTable = new ActionTable(profileTable, tag, action.getStrAction(), "AttributeName");
                 profileTable.addAction(actionTable);
-            }
+            });
             this.profilePersistence.save(profileTable);
-
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOGGER.error("Cannot persist json profile in database {}", profileName, e);
         }
-    }
-
-    public JsonObject readStandardProfile(){
-        JsonObject rootobj = new JsonObject();
-        try {
-            final JsonElement root = JsonParser.parseReader(
-                new InputStreamReader(this.getClass().getResourceAsStream(this.standardProfilePath), StandardCharsets.UTF_8));
-            rootobj = root.getAsJsonObject();
-        } catch (Exception e) {
-            LOGGER.error("Cannot read json profile {}", this.standardProfilePath, e);
-        }
-        return rootobj;
     }
 }
