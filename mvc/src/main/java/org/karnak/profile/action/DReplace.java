@@ -6,7 +6,7 @@ import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
 import java.util.Iterator;
 import org.dcm4che6.data.Tag;
-public class DReplace implements Action{
+public class DReplace extends Action{
 
     private Algorithm algo = new Algorithm();
     private String strAction = "D";

@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.dcm4che6.data.DicomElement;
-public class UUID implements Action {
+public class UUID extends Action {
     private final Map<String, String> UIDMap = new HashMap<>();
     private String strAction = "U";
 
