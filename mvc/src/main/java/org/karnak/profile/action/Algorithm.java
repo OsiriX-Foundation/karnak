@@ -1,8 +1,6 @@
 package org.karnak.profile.action;
 
-import java.nio.ByteBuffer;
 import java.util.Random;
-
 import org.dcm4che6.data.VR;
 import org.dcm4che6.util.UIDUtils;
 
