@@ -20,8 +20,13 @@ public class Algorithm {
         if (stringValue != null) {
             long seed = this.hmac.longHash(stringValue);
             this.random = new Random(seed);
+            /*
+            * AT -> ?
+            * OB, OD, ... -> ?
+            * SV, UV -> Not present in class dcm4che.VR
+            * */
             String dummyValue = switch (vr) {
-                case AE, CS, LO, LT, PN, SH, ST, UN, UT -> unknownValue();
+                case AE, CS, LO, LT, PN, SH, ST, UN, UT, UC, UR -> unknownValue();
                 case DS, FL, FD, IS, SL, SS, UL, US -> zeroValue();
                 case AS -> AS();
                 case DA -> DA(stringValue, StudyInstanceUID);
