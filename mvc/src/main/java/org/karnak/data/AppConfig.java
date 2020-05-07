@@ -1,10 +1,9 @@
 package org.karnak.data;
 
-import org.karnak.data.gateway.ProfilePersistence;
+import org.karnak.data.profile.ProfilePersistence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

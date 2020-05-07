@@ -1,4 +1,4 @@
-package org.karnak.data.gateway;
+package org.karnak.data.profile;
 
 import java.util.HashSet;
 import java.util.Set;

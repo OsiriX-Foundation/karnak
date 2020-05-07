@@ -1,4 +1,4 @@
-package org.karnak.data.gateway;
+package org.karnak.data.profile;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;

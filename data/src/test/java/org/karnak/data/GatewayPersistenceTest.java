@@ -1,4 +1,4 @@
-package org.karnak.data.gateway;
+package org.karnak.data;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -10,11 +10,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.karnak.data.gateway.Destination;
-import org.karnak.data.gateway.DestinationType;
-import org.karnak.data.gateway.ForwardNode;
-import org.karnak.data.gateway.GatewayPersistence;
-import org.karnak.data.gateway.DicomSourceNode;
+import org.karnak.data.gateway.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;

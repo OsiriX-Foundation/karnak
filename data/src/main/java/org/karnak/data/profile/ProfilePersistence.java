@@ -1,4 +1,4 @@
-package org.karnak.data.gateway;
+package org.karnak.data.profile;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
