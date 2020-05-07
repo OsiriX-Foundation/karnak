@@ -5,7 +5,7 @@ import java.util.Iterator;
 import org.dcm4che6.data.DicomElement;
 
 public abstract class Action {
-    abstract public void execute(DicomObject attributes, int tag, Iterator<DicomElement> iterator);
+    abstract public void execute(DicomObject attributes, int tag, Iterator<DicomElement> iterator, String value);
 
     abstract public String getStrAction();
 

@@ -1,6 +1,9 @@
-package org.karnak.profile.action;
+package org.karnak.profile.option.dummyvalue;
 
 import java.util.Random;
+
+import org.dcm4che6.data.DicomObject;
+import org.dcm4che6.data.Tag;
 import org.dcm4che6.data.VR;
 import org.dcm4che6.util.UIDUtils;
 import org.karnak.profile.HMAC;
@@ -19,7 +22,9 @@ public class DefaultDummyValue {
     public DefaultDummyValue() {
     }
 
-    public String execute(VR vr, String stringValue, String StudyInstanceUID) {
+    public String execute(VR vr, DicomObject dcm, int tag) {
+        String stringValue = dcm.getString(tag).orElse(null);
+        String studyInstanceUID = dcm.getString(Tag.StudyInstanceUID).orElse(null);
         if (stringValue != null) {
             long seed = this.hmac.longHash(stringValue);
             this.random = new Random(seed);
@@ -32,9 +37,9 @@ public class DefaultDummyValue {
                 case AE, CS, LO, LT, PN, SH, ST, UN, UT, UC, UR -> unknownValue();
                 case DS, FL, FD, IS, SL, SS, UL, US -> zeroValue();
                 case AS -> AS();
-                case DA -> DA(stringValue, StudyInstanceUID);
-                case DT -> DT(stringValue, StudyInstanceUID);
-                case TM -> TM(stringValue, StudyInstanceUID);
+                case DA -> DA(stringValue, studyInstanceUID);
+                case DT -> DT(stringValue, studyInstanceUID);
+                case TM -> TM(stringValue, studyInstanceUID);
                 case UI -> UI();
                 default -> notImplemented();
             };

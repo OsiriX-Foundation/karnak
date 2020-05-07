@@ -3,6 +3,7 @@ package org.karnak.profile;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Optional;
 import java.util.Set;
 
 import org.dcm4che6.data.DicomElement;
@@ -12,6 +13,7 @@ import org.karnak.data.profile.ActionTable;
 import org.karnak.data.profile.ProfilePersistence;
 import org.karnak.data.profile.ProfileTable;
 import org.karnak.profile.action.*;
+import org.karnak.profile.option.dummyvalue.DefaultDummyValue;
 import org.karnak.profile.parser.JSONparser;
 import org.karnak.profile.parser.ParserProfile;
 import org.slf4j.Logger;
@@ -22,6 +24,7 @@ public class Profile {
 
     private final String standardProfilePath = "profile.json";
     private  HashMap<Integer, Action> actionMap = new HashMap<>();
+    private DefaultDummyValue defaultDummyValue = new DefaultDummyValue();
 
     private ProfilePersistence profilePersistence;
     {
@@ -47,13 +50,27 @@ public class Profile {
         
     }
 
+    private String setDummyValue(DicomObject dcm, int tag) {
+        Optional<DicomElement> dcmItem = dcm.get(tag);
+        if(dcmItem.isPresent()) {
+            DicomElement dcmEl = dcmItem.get();
+            return this.defaultDummyValue.execute(dcmEl.vr(), dcm, tag);
+        }
+        return null;
+    }
+
     public void execute(DicomObject dcm) {
         try {
             for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext();) {
                 final DicomElement dcmEl = iterator.next();
                 final Action action = actionMap.get(dcmEl.tag());
+                String value = null;
+
                 if (action != null) { // if action != keep
-                    action.execute(dcm, dcmEl.tag(), iterator);
+                    if (action instanceof DReplace) {
+                        value = setDummyValue(dcm, dcmEl.tag());
+                    }
+                    action.execute(dcm, dcmEl.tag(), iterator, value);
                 }
             }
         } catch (final Exception e) {

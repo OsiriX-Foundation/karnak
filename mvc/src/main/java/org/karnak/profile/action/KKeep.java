@@ -11,5 +11,5 @@ public class KKeep extends Action{
         return strAction;
     }
 
-    public void execute(DicomObject attributes, int tag, Iterator<DicomElement> iterator) {}
+    public void execute(DicomObject attributes, int tag, Iterator<DicomElement> iterator, String value) {}
 }

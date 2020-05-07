@@ -12,7 +12,7 @@ public class XRemove extends Action {
         return strAction;
     }
 
-    public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator) {
+    public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, String value) {
         iterator.remove();
     }
 }

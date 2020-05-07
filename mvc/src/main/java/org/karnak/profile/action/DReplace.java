@@ -1,11 +1,9 @@
 package org.karnak.profile.action;
 
-import java.util.Optional;
-
 import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
 import java.util.Iterator;
-import org.dcm4che6.util.TagUtils;
+import org.karnak.profile.option.dummyvalue.DefaultDummyValue;
 
 public class DReplace extends Action{
 
@@ -24,20 +22,13 @@ public class DReplace extends Action{
         return strAction;
     }
 
-    public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator) {
-        Optional<DicomElement> dcmItem = dcm.get(tag);
-        int tagStudyInstanceUID = TagUtils.intFromHexString("0020000D");
-        if(dcmItem.isPresent()) {
-            DicomElement dcmEl = dcmItem.get();
-            String stringValue = dcm.getString(tag).orElse(null);
-            String studyInstanceUID = dcm.getString(tagStudyInstanceUID).orElse(null);
-            String vrValue = this.algo.execute(dcmEl.vr(), stringValue, studyInstanceUID);
-
-            if (vrValue != null) {
-                dcm.setString(tag, dcmEl.vr(), vrValue);
-            }else{
+    public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, String value) {
+        dcm.get(tag).ifPresent(dcmEl -> {
+            if (value != null) {
+                dcm.setString(tag, dcmEl.vr(), value);
+            } else {
                 dcm.setNull(tag, dcmEl.vr());
             }
-        }
+        });
     }
 }
