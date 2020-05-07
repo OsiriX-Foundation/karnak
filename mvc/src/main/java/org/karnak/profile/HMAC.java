@@ -1,4 +1,4 @@
-package org.karnak.profile.action;
+package org.karnak.profile;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -19,12 +19,12 @@ public class HMAC {
     private static final String HMAC_SHA256 = "HmacSHA256";
     private static final String keyPath = "mvc/src/main/resources/karnak_profile_hmac";
 
-    HMAC() {
+    public HMAC() {
         String key = readTextFile(this.keyPath);
         initHMAC(key);
     }
 
-    HMAC(String keyPath) {
+    public HMAC(String keyPath) {
         String key = readTextFile(keyPath);
         initHMAC(key);
     }

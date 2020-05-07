@@ -3,9 +3,12 @@ package org.karnak.profile.action;
 import java.util.Random;
 import org.dcm4che6.data.VR;
 import org.dcm4che6.util.UIDUtils;
+import org.karnak.profile.HMAC;
+import org.karnak.profile.option.datemanager.RandomUtils;
+import org.karnak.profile.option.datemanager.ShiftDate;
 
 
-public class Algorithm {
+public class DefaultDummyValue {
 
     private Random random;
     private HMAC hmac = new HMAC();
@@ -13,7 +16,7 @@ public class Algorithm {
     private final int maxSeconds = 24*60*60;
     private final int nbBytesFormatDA = 8;
 
-    public Algorithm() {
+    public DefaultDummyValue() {
     }
 
     public String execute(VR vr, String stringValue, String StudyInstanceUID) {

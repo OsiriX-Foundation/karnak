@@ -9,14 +9,14 @@ import org.dcm4che6.util.TagUtils;
 
 public class DReplace extends Action{
 
-    private Algorithm algo;
+    private DefaultDummyValue algo;
     private String strAction = "D";
 
     public DReplace() {
-        this.algo = new Algorithm();
+        this.algo = new DefaultDummyValue();
     }
 
-    public DReplace(Algorithm algo) {
+    public DReplace(DefaultDummyValue algo) {
         this.algo = algo;
     }
 

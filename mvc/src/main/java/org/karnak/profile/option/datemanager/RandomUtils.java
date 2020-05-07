@@ -1,4 +1,4 @@
-package org.karnak.profile.action;
+package org.karnak.profile.option.datemanager;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
