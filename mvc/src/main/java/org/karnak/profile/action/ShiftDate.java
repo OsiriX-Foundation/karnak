@@ -10,7 +10,6 @@ import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoField;
 import java.util.Random;
-import java.util.logging.Logger;
 
 import static io.swagger.codegen.v3.config.CodegenConfigurator.LOGGER;
 
@@ -66,8 +65,8 @@ public class ShiftDate {
                 .appendOptional(hourFormat)
                 .toFormatter();
         try {
-            LocalTime result = LocalTime.parse(cleanTime, formatter);
-            return result;
+            LocalTime timeParse = LocalTime.parse(cleanTime, formatter);
+            return timeParse;
         } catch (DateTimeParseException e) {
             // log the time given ?
             LOGGER.error("Unable to parse the time given" , e);
@@ -96,8 +95,8 @@ public class ShiftDate {
                 .appendOptional(yearFormat)
                 .toFormatter();
         try {
-            LocalDate result = LocalDate.parse(date, formatter);
-            return result;
+            LocalDate dateParse = LocalDate.parse(date, formatter);
+            return dateParse;
         } catch (DateTimeParseException e) {
             // log the date given ?
             LOGGER.error("Unable to parse the date given" , e);
@@ -111,8 +110,8 @@ public class ShiftDate {
     }
 
     private String timeToString(LocalTime time) {
-        String formattedDate = this.TMformater.format(time);
-        return formattedDate;
+        String formattedTime = this.TMformater.format(time);
+        return formattedTime;
     }
 
     public String DAshiftByRandomDays(String date, int maxDays) {

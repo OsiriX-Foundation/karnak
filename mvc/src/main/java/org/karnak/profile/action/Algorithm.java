@@ -9,6 +9,9 @@ public class Algorithm {
 
     private Random random;
     private HMAC hmac = new HMAC();
+    private final int maxDays = 365;
+    private final int maxSeconds = 24*60*60;
+    private final int nbBytesFormatDA = 8;
 
     public Algorithm() {
     }
@@ -27,21 +30,6 @@ public class Algorithm {
                 case UI -> UI();
                 default -> notImplemented();
             };
-            /*
-            WONDERFULL TEST
-             */
-            System.out.println(DT("2012", StudyInstanceUID));
-            System.out.println(DT("201212", StudyInstanceUID));
-            System.out.println(DT("20121231", StudyInstanceUID));
-            System.out.println(DT("2012123108", StudyInstanceUID));
-            System.out.println(DT("201212310845", StudyInstanceUID));
-            System.out.println(DT("20121231084559", StudyInstanceUID));
-            System.out.println(DT("20121231084559.1", StudyInstanceUID));
-            System.out.println(DT("20121231084559.12", StudyInstanceUID));
-            System.out.println(DT("20121231084559.123", StudyInstanceUID));
-            System.out.println(DT("20121231084559.1234", StudyInstanceUID));
-            System.out.println(DT("20121231084559.12345", StudyInstanceUID));
-            System.out.println(DT("20121231084559.123456", StudyInstanceUID));
             return dummyValue;
         }
         return null;
@@ -66,21 +54,22 @@ public class Algorithm {
 
     private String TM(String time, String StudyInstanceUID) {
         ShiftDate shiftDate = new ShiftDate(StudyInstanceUID);
-        return shiftDate.TMshiftByRandomSeconds(time, 24*360);
+        return shiftDate.TMshiftByRandomSeconds(time, this.maxSeconds);
     }
 
     private String DA(String date, String StudyInstanceUID) {
         ShiftDate shiftDate = new ShiftDate(StudyInstanceUID);
-        return shiftDate.DAshiftByRandomDays(date, 120);
+        return shiftDate.DAshiftByRandomDays(date, this.maxDays);
     }
 
     private String DT(String datetime, String StudyInstanceUID) {
         String dummyDate = null;
-        if (datetime.length() > 8) {
-            String date = datetime.substring(0, 8);
+        int datetimeLength = datetime.length();
+        if (datetimeLength > this.nbBytesFormatDA) {
+            String date = datetime.substring(0, this.nbBytesFormatDA);
             dummyDate = DA(date, StudyInstanceUID);
             String dummyTime = null;
-            String time = datetime.substring(8, datetime.length());
+            String time = datetime.substring(8, datetimeLength);
             dummyTime = TM(time, StudyInstanceUID);
             return dummyDate.concat(dummyTime);
         }
