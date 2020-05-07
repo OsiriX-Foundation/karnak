@@ -27,6 +27,21 @@ public class Algorithm {
                 case UI -> UI();
                 default -> notImplemented();
             };
+            /*
+            WONDERFULL TEST
+             */
+            System.out.println(DT("2012", StudyInstanceUID));
+            System.out.println(DT("201212", StudyInstanceUID));
+            System.out.println(DT("20121231", StudyInstanceUID));
+            System.out.println(DT("2012123108", StudyInstanceUID));
+            System.out.println(DT("201212310845", StudyInstanceUID));
+            System.out.println(DT("20121231084559", StudyInstanceUID));
+            System.out.println(DT("20121231084559.1", StudyInstanceUID));
+            System.out.println(DT("20121231084559.12", StudyInstanceUID));
+            System.out.println(DT("20121231084559.123", StudyInstanceUID));
+            System.out.println(DT("20121231084559.1234", StudyInstanceUID));
+            System.out.println(DT("20121231084559.12345", StudyInstanceUID));
+            System.out.println(DT("20121231084559.123456", StudyInstanceUID));
             return dummyValue;
         }
         return null;
@@ -51,8 +66,7 @@ public class Algorithm {
 
     private String TM(String time, String StudyInstanceUID) {
         ShiftDate shiftDate = new ShiftDate(StudyInstanceUID);
-        String[] timeSplit = time.split("\\.");
-        return shiftDate.TMshiftByRandomSeconds(timeSplit[0], 24*360);
+        return shiftDate.TMshiftByRandomSeconds(time, 24*360);
     }
 
     private String DA(String date, String StudyInstanceUID) {
@@ -61,14 +75,16 @@ public class Algorithm {
     }
 
     private String DT(String datetime, String StudyInstanceUID) {
-        String date = datetime.substring(0, 8);
-        String dummyDate = DA(date, StudyInstanceUID);
-        String dummyTime = null;
+        String dummyDate = null;
         if (datetime.length() > 8) {
-            String time = datetime.substring(8, 14);
+            String date = datetime.substring(0, 8);
+            dummyDate = DA(date, StudyInstanceUID);
+            String dummyTime = null;
+            String time = datetime.substring(8, datetime.length());
             dummyTime = TM(time, StudyInstanceUID);
             return dummyDate.concat(dummyTime);
         }
+        dummyDate = DA(datetime, StudyInstanceUID);
         return dummyDate;
     }
 
