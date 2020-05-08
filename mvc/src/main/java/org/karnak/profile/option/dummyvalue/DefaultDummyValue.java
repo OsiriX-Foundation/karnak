@@ -29,8 +29,6 @@ public class DefaultDummyValue {
             long seed = this.hmac.longHash(stringValue);
             this.random = new Random(seed);
             /*
-            * AT -> ?
-            * OB, OD, ... -> ?
             * SV, UV -> Not present in class dcm4che.VR
             * */
             String dummyValue = switch (vr) {
