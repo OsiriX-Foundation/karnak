@@ -1,9 +1,8 @@
 package org.karnak.profile.option.datemanager;
 
 import org.apache.commons.lang3.StringUtils;
+import org.karnak.data.AppConfig;
 import org.karnak.profile.HMAC;
-import org.karnak.profile.option.datemanager.RandomUtils;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -18,12 +17,18 @@ public class ShiftDate {
     private Random random;
     private DateTimeFormatter DAformater = DateTimeFormatter.ofPattern("yyyyMMdd");
     private DateTimeFormatter TMformater = DateTimeFormatter.ofPattern("HHmmss");
+
+    private HMAC hmac;
+    {
+        hmac = AppConfig.getInstance().getHmac();
+    }
+
+
     public ShiftDate(String value) {
         this.random = generateRandomShift(value);
     }
 
     private Random generateRandomShift(String value) {
-        HMAC hmac = new HMAC();
         long seed = hmac.longHash(value);
         return new Random(seed);
     }
