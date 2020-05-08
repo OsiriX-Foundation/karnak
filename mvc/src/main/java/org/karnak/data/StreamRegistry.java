@@ -149,12 +149,8 @@ public class StreamRegistry implements AttributeEditor {
     }
 
     public void deident(DicomObject dcm) {
-        //store (init app)
-        Profile profile = new Profile();
-        // Profile profile = new Profile();
-        
-        //execute (stream registry)
-        profile.execute(dcm);
+        Profile standardProfile = AppConfig.getInstance().getStandardProfile();
+        standardProfile.execute(dcm);
     }
 
 }

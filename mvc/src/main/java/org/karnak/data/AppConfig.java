@@ -2,11 +2,12 @@ package org.karnak.data;
 
 import org.karnak.data.profile.ProfilePersistence;
 import org.karnak.profile.HMAC;
+import org.karnak.profile.Profile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.*;
+
 import javax.annotation.PostConstruct;
 
 @Configuration
@@ -14,10 +15,12 @@ import javax.annotation.PostConstruct;
 @ConfigurationProperties
 public class AppConfig {
 
-    private HMAC hmac = new HMAC();
     private static AppConfig instance;
     private String environment;
     private String name;
+
+    @Autowired
+    private ProfilePersistence profilePersistence;
 
     @PostConstruct
     public void postConstruct() {
@@ -44,16 +47,18 @@ public class AppConfig {
         this.name = name;
     }
 
-    @Autowired
-    private ProfilePersistence profilePersistence;
-
     @Bean("ProfilePersistence")
     public ProfilePersistence getProfilePersistence() {
         return profilePersistence;
     }
 
+    @Bean("StandardProfile")
+    public Profile getStandardProfile() {
+        return new Profile();
+    }
+
     @Bean("HMAC")
     public HMAC getHmac(){
-        return this.hmac;
+        return new HMAC();
     }
 }
