@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
+import org.dcm4che6.data.ElementDictionary;
 import org.karnak.data.AppConfig;
 import org.karnak.data.profile.ActionTable;
 import org.karnak.data.profile.ProfilePersistence;
@@ -82,7 +83,7 @@ public class Profile {
         final ProfileTable profileTable = new ProfileTable(profileName);
         try {
             aMap.forEach((tag, action) -> {
-                final ActionTable actionTable = new ActionTable(profileTable, tag, action.getStrAction(), "AttributeName");
+                final ActionTable actionTable = new ActionTable(profileTable, tag, action.getStrAction(), ElementDictionary.keywordOf(tag, Optional.ofNullable("Null")));
                 profileTable.addAction(actionTable);
             });
             this.profilePersistence.save(profileTable);
