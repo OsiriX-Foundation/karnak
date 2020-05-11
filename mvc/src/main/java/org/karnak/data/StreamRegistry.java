@@ -31,9 +31,7 @@ public class StreamRegistry implements AttributeEditor {
     @Override
     public boolean apply(DicomObject dcm, AttributeEditorContext context) {
         if (enable) {
-            String pseudonym = addInfoPatientToPseudonym(dcm);
             deident(dcm);
-            dcm.setString(Tag.PatientID, VR.LO, pseudonym);
 
             String studyUID = dcm.getString(Tag.StudyInstanceUID).orElseThrow();
             Study study = getStudy(studyUID);
@@ -149,8 +147,14 @@ public class StreamRegistry implements AttributeEditor {
     }
 
     public void deident(DicomObject dcm) {
+        final String pseudonym = addInfoPatientToPseudonym(dcm);
+
         Profile standardProfile = AppConfig.getInstance().getStandardProfile();
-        standardProfile.execute(dcm);
+        standardProfile.execute(dcm, pseudonym);
+
+        dcm.setString(Tag.ClinicalTrialSponsorName, VR.LO, "Standard Profile");
+        dcm.setString(Tag.ClinicalTrialProtocolID, VR.LO, "StandardProfile");
+        dcm.setString(Tag.ClinicalTrialSubjectID, VR.LO, pseudonym);
     }
 
 }
