@@ -51,16 +51,16 @@ public class Profile {
         
     }
 
-    private String setDummyValue(DicomObject dcm, int tag) {
+    private String setDummyValue(DicomObject dcm, int tag, String patientID) {
         Optional<DicomElement> dcmItem = dcm.get(tag);
         if(dcmItem.isPresent()) {
             DicomElement dcmEl = dcmItem.get();
-            return this.defaultDummyValue.execute(dcmEl.vr(), dcm, tag);
+            return this.defaultDummyValue.execute(dcmEl.vr(), dcm, tag, patientID);
         }
         return null;
     }
 
-    public void execute(DicomObject dcm) {
+    public void execute(DicomObject dcm, String patientID) {
         try {
             for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext();) {
                 final DicomElement dcmEl = iterator.next();
@@ -69,7 +69,7 @@ public class Profile {
 
                 if (action != null) { // if action != keep
                     if (action instanceof DReplace) {
-                        value = setDummyValue(dcm, dcmEl.tag());
+                        value = setDummyValue(dcm, dcmEl.tag(), patientID);
                     }
                     action.execute(dcm, dcmEl.tag(), iterator, value);
                 }

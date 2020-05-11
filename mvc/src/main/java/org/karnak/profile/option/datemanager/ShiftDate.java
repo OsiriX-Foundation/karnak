@@ -1,36 +1,20 @@
 package org.karnak.profile.option.datemanager;
 
 import org.apache.commons.lang3.StringUtils;
-import org.karnak.data.AppConfig;
-import org.karnak.profile.HMAC;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoField;
-import java.util.Random;
 
 import static io.swagger.codegen.v3.config.CodegenConfigurator.LOGGER;
 
 public class ShiftDate {
-    private Random random;
     private DateTimeFormatter DAformater = DateTimeFormatter.ofPattern("yyyyMMdd");
     private DateTimeFormatter TMformater = DateTimeFormatter.ofPattern("HHmmss");
 
-    private HMAC hmac;
-    {
-        hmac = AppConfig.getInstance().getHmac();
-    }
-
-
-    public ShiftDate(String value) {
-        this.random = generateRandomShift(value);
-    }
-
-    private Random generateRandomShift(String value) {
-        long seed = hmac.longHash(value);
-        return new Random(seed);
+    public ShiftDate() {
     }
 
     private String addMissingMilliSeconds(String time) {
@@ -120,22 +104,6 @@ public class ShiftDate {
         return formattedTime;
     }
 
-    public String DAshiftByRandomDays(String date, int maxDays) {
-        int shiftDays = RandomUtils.createRandomIntBetween(0, maxDays, this.random);
-        LocalDate localDate = parseDate(date);
-        LocalDate dummyLocalDate = localDate.minusDays(shiftDays);
-        String dummyDate = dateToString(dummyLocalDate);
-        return dummyDate;
-    }
-
-    public String TMshiftByRandomSeconds(String time, int maxSeconds) {
-        int shiftSeconds = RandomUtils.createRandomIntBetween(0, maxSeconds, this.random);
-        LocalTime localTime = parseTime(time);
-        LocalTime dummyLocalTime = localTime.minusSeconds(shiftSeconds);
-        String dummyTime = timeToString(dummyLocalTime);
-        return dummyTime;
-    }
-
     public String DAshiftByDays(String date, int shiftDays) {
         LocalDate localDate = parseDate(date);
         LocalDate dummyLocalDate = localDate.minusDays(shiftDays);
@@ -148,5 +116,29 @@ public class ShiftDate {
         LocalTime dummyLocalTime = localTime.minusSeconds(shiftSeconds);
         String dummyTime = timeToString(dummyLocalTime);
         return dummyTime;
+    }
+
+    private String addMissingZero(String age, int nMissingValue) {
+        int n = nMissingValue-age.length();
+        String missingZero = StringUtils.repeat('0', n) + age;
+        return missingZero;
+    }
+
+    public String ASshiftByDays(String age, int shiftDays) {
+        String valueAge = age.substring(0, 3);
+        int intAge = Integer.parseInt(valueAge);
+
+        int maxSubstring = age.length();
+        String formatAge = age.substring(3, maxSubstring);
+
+        int intDummyAge = switch (formatAge) {
+            case "Y" -> intAge + shiftDays/365;
+            case "M" -> intAge + shiftDays/30;
+            case "W" -> intAge + shiftDays/7;
+            default -> intAge + shiftDays;
+        };
+
+        String dummyValue = addMissingZero(String.valueOf(intDummyAge), 3) + formatAge;
+        return dummyValue;
     }
 }

@@ -4,7 +4,7 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.nio.ByteBuffer;
+import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -56,6 +56,7 @@ public class HMAC {
         }
         return content;
     }
+
     public byte[] byteHash(String value) {
         byte[] bytes = null;
         try {
@@ -67,20 +68,17 @@ public class HMAC {
         return bytes;
     }
 
-    public long longHash(String value) {
-        long hash = 0;
-        try {
-            byte[] bytes = mac.doFinal(value.getBytes("ASCII"));
-            hash = bytesToLong(bytes);
-        }
-        catch(UnsupportedEncodingException e) {
-            LOGGER.error("On hashed Value getBytes", e);
-        }
-        return hash;
-    }
+    public double scaleHash(String value, int scaledMin, int scaledMax) {
+        double result = 0.0;
+        byte[] hash = new byte[8];
+        double max = Math.pow(2, 64)-1;
+        double min = 0.0;
 
-    public long bytesToLong(byte[] bytes) {
-        ByteBuffer buffer = ByteBuffer.wrap(bytes);
-        return buffer.getLong();
+        System.arraycopy(byteHash(value), 0 , hash, 0, 8);
+        BigInteger integerValue = new BigInteger(1, hash);
+        double doubleValue = integerValue.doubleValue();
+        result = ((doubleValue - min)/(max - min)) * (scaledMax - scaledMin) + scaledMin;
+
+        return result;
     }
 }
