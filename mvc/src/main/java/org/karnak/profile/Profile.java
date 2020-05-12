@@ -24,8 +24,11 @@ public class Profile {
     private static final Logger LOGGER = LoggerFactory.getLogger(Profile.class);
 
     private final String standardProfilePath = "profile.json";
+    private final String standardProfileName = "standardProfile";
     private  HashMap<Integer, Action> actionMap = new HashMap<>();
     private DefaultDummyValue defaultDummyValue = new DefaultDummyValue();
+    private String profileName;
+    private Long profileID;
 
     private ProfilePersistence profilePersistence;
     {
@@ -33,22 +36,31 @@ public class Profile {
     }
 
     public Profile() {
-
-        final Boolean stantardProfileExist = this.profilePersistence.existsByName("standardProfile");
-
-        if (stantardProfileExist) {
-            final ProfileTable standardProfileTable = this.profilePersistence.findByName("standardProfile");
+        final Boolean standardProfileExist = this.profilePersistence.existsByName(this.standardProfileName);
+        ProfileTable standardProfileTable;
+        if (standardProfileExist) {
+            standardProfileTable = this.profilePersistence.findByName(this.standardProfileName);
             final Set<ActionTable> standardActionTable = standardProfileTable.getActions();
             standardActionTable.forEach(action->{
-                actionMap.put(action.getTag(), Action.convertAction(action.getAction()));
+                this.actionMap.put(action.getTag(), Action.convertAction(action.getAction()));
             });
         } else {
             InputStream inputStream = this.getClass().getResourceAsStream(this.standardProfilePath);
             ParserProfile parserProfile = new JSONparser();
-            actionMap = parserProfile.parse(inputStream);
-            persistProfile(this.actionMap, "standardProfile");
+            this.actionMap = parserProfile.parse(inputStream);
+            persistProfile(this.actionMap, this.standardProfileName);
+            standardProfileTable = this.profilePersistence.findByName(this.standardProfileName);
         }
-        
+        this.profileName = this.standardProfileName;
+        this.profileID = standardProfileTable.getId();
+    }
+
+    public String getProfileName() {
+        return profileName;
+    }
+
+    public Long getProfileID() {
+        return profileID;
     }
 
     private String setDummyValue(DicomObject dcm, int tag, String patientID) {

@@ -152,8 +152,8 @@ public class StreamRegistry implements AttributeEditor {
         Profile standardProfile = AppConfig.getInstance().getStandardProfile();
         standardProfile.execute(dcm, pseudonym);
 
-        dcm.setString(Tag.ClinicalTrialSponsorName, VR.LO, "Standard Profile");
-        dcm.setString(Tag.ClinicalTrialProtocolID, VR.LO, "StandardProfile");
+        dcm.setString(Tag.ClinicalTrialSponsorName, VR.LO, standardProfile.getProfileName());
+        dcm.setString(Tag.ClinicalTrialProtocolID, VR.LO, standardProfile.getProfileID().toString());
         dcm.setString(Tag.ClinicalTrialSubjectID, VR.LO, pseudonym);
     }
 
