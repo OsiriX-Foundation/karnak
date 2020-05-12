@@ -104,14 +104,14 @@ public class ShiftDate {
         return formattedTime;
     }
 
-    public String DAshiftByDays(String date, int shiftDays) {
+    public String DAbyDays(String date, int shiftDays) {
         LocalDate localDate = parseDate(date);
         LocalDate dummyLocalDate = localDate.minusDays(shiftDays);
         String dummyDate = dateToString(dummyLocalDate);
         return dummyDate;
     }
 
-    public String TMshiftBySeconds(String time, int shiftSeconds) {
+    public String TMbySeconds(String time, int shiftSeconds) {
         LocalTime localTime = parseTime(time);
         LocalTime dummyLocalTime = localTime.minusSeconds(shiftSeconds);
         String dummyTime = timeToString(dummyLocalTime);
@@ -124,7 +124,7 @@ public class ShiftDate {
         return missingZero;
     }
 
-    public String ASshiftByDays(String age, int shiftDays) {
+    public String ASbyDays(String age, int shiftDays) {
         String valueAge = age.substring(0, 3);
         int intAge = Integer.parseInt(valueAge);
 

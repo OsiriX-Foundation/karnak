@@ -60,17 +60,17 @@ public class DefaultDummyValue {
 
     private String AS(String age, String patientID) {
         double shiftDays = this.hmac.scaleHash(patientID, 0, this.maxDays);
-        return this.shiftDate.ASshiftByDays(age, (int) shiftDays);
+        return this.shiftDate.ASbyDays(age, (int) shiftDays);
     }
 
     private String TM(String time, String patientID) {
         double shiftSeconds = this.hmac.scaleHash(patientID, 0, this.maxSeconds);
-        return this.shiftDate.TMshiftBySeconds(time, (int) shiftSeconds);
+        return this.shiftDate.TMbySeconds(time, (int) shiftSeconds);
     }
 
     private String DA(String date, String patientID) {
         double shiftDays = this.hmac.scaleHash(patientID, 0, this.maxDays);
-        return this.shiftDate.DAshiftByDays(date, (int) shiftDays);
+        return this.shiftDate.DAbyDays(date, (int) shiftDays);
     }
 
     private String DT(String datetime, String patientID) {
