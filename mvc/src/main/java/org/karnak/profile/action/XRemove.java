@@ -5,7 +5,7 @@ import java.util.Iterator;
 import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
 
-public class XRemove extends Action {
+public class XRemove implements Action {
     private String strAction = "X";
 
     public String getStrAction() {

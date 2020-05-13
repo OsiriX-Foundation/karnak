@@ -4,7 +4,7 @@ import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
 import java.util.Iterator;
 
-public class ZReplace extends Action {
+public class ZReplace implements Action {
     private String strAction = "Z";
 
     public String getStrAction() {

@@ -4,7 +4,7 @@ import org.dcm4che6.data.DicomObject;
 import java.util.Iterator;
 
 import org.dcm4che6.data.DicomElement;
-public class KKeep extends Action{
+public class KKeep implements Action{
     private String strAction = "K";
 
     public String getStrAction() {
