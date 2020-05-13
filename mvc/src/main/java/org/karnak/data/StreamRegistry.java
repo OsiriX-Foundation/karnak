@@ -14,6 +14,7 @@ import org.dcm4che6.data.VR;
 import org.dcm4che6.util.DateTimeUtils;
 import org.karnak.api.PseudonymApi;
 import org.karnak.api.rqbody.Fields;
+import org.karnak.profile.Deidentification;
 import org.karnak.profile.Profile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -150,7 +151,9 @@ public class StreamRegistry implements AttributeEditor {
         final String pseudonym = addInfoPatientToPseudonym(dcm);
 
         Profile standardProfile = AppConfig.getInstance().getStandardProfile();
-        standardProfile.execute(dcm, pseudonym);
+
+        Deidentification deidentification = new Deidentification(standardProfile, dcm, pseudonym);
+        deidentification.execute();
 
         dcm.setString(Tag.ClinicalTrialSponsorName, VR.LO, standardProfile.getProfileName());
         dcm.setString(Tag.ClinicalTrialProtocolID, VR.LO, standardProfile.getProfileID().toString());

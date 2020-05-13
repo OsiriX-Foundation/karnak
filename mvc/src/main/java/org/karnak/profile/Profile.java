@@ -26,12 +26,22 @@ public class Profile {
     private final String standardProfilePath = "profile.json";
     private final String standardProfileName = "standardProfile";
     private  HashMap<Integer, Action> actionMap = new HashMap<>();
-    private DefaultDummyValue defaultDummyValue = new DefaultDummyValue();
     private String profileName;
     private Long profileID;
 
-    private ProfilePersistence profilePersistence;
-    {
+    public String getProfileName() {
+        return profileName;
+    }
+
+    public Long getProfileID() {
+        return profileID;
+    }
+
+    public HashMap<Integer, Action> getActionMap() {
+        return actionMap;
+    }
+
+    private ProfilePersistence profilePersistence;{
         profilePersistence = AppConfig.getInstance().getProfilePersistence();
     }
 
@@ -53,42 +63,6 @@ public class Profile {
         }
         this.profileName = this.standardProfileName;
         this.profileID = standardProfileTable.getId();
-    }
-
-    public String getProfileName() {
-        return profileName;
-    }
-
-    public Long getProfileID() {
-        return profileID;
-    }
-
-    private String setDummyValue(DicomObject dcm, int tag, String patientID) {
-        Optional<DicomElement> dcmItem = dcm.get(tag);
-        if(dcmItem.isPresent()) {
-            DicomElement dcmEl = dcmItem.get();
-            return this.defaultDummyValue.execute(dcmEl.vr(), dcm, tag, patientID);
-        }
-        return null;
-    }
-
-    public void execute(DicomObject dcm, String patientID) {
-        try {
-            for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext();) {
-                final DicomElement dcmEl = iterator.next();
-                final Action action = actionMap.get(dcmEl.tag());
-                String value = null;
-
-                if (action != null) { // if action != keep
-                    if (action instanceof DReplace) {
-                        value = setDummyValue(dcm, dcmEl.tag(), patientID);
-                    }
-                    action.execute(dcm, dcmEl.tag(), iterator, value);
-                }
-            }
-        } catch (final Exception e) {
-            LOGGER.error("Cannot execute actions", e);
-        }
     }
 
     public void persistProfile(HashMap<Integer, Action> aMap, String profileName) {
