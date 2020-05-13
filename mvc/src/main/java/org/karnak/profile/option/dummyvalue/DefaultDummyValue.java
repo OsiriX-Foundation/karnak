@@ -2,13 +2,17 @@ package org.karnak.profile.option.dummyvalue;
 
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.VR;
-import org.dcm4che6.util.UIDUtils;
+import org.karnak.data.AppConfig;
+import org.karnak.profile.HMAC;
 
 public class DefaultDummyValue {
     public DefaultDummyValue() {
     }
+    private HMAC hmac;{
+        hmac = AppConfig.getInstance().getHmac();
+    }
 
-    public String execute(VR vr, DicomObject dcm, int tag, String patientID) {
+    public String execute(VR vr, DicomObject dcm, int tag, String pseudonym) {
         String stringValue = dcm.getString(tag).orElse(null);
         if (stringValue != null) {
             String dummyValue = switch (vr) {
@@ -18,9 +22,10 @@ public class DefaultDummyValue {
                 case DA -> DA();
                 case DT -> DT();
                 case TM -> TM();
-                case UI -> UI();
+                case UI -> UI(pseudonym, stringValue);
                 default -> notImplemented();
             };
+            System.out.println(stringValue + " - " + dummyValue);
             return dummyValue;
         }
         return null;
@@ -54,7 +59,7 @@ public class DefaultDummyValue {
         return "19991111111111";
     }
 
-    private String UI() {
-        return UIDUtils.randomUID();
+    private String UI(String pseudonym, String uidValue) {
+        return hmac.uidHash(pseudonym, uidValue);
     }
 }

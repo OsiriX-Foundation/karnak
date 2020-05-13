@@ -78,4 +78,11 @@ public class HMAC {
         double fraction = new BigInteger(1, hash).doubleValue()/max;
         return (int)(fraction * scale) + scaledMin;
     }
+
+    public String uidHash(String inputPseudonym, String inputUID) {
+        byte[] uuid = new byte[16];
+        String value = inputPseudonym+inputUID;
+        System.arraycopy(byteHash(value), 0 , uuid, 0, 16);
+        return "2.25." + new BigInteger(1, uuid).toString();
+    }
 }

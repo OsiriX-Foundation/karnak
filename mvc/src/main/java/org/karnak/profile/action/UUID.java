@@ -9,26 +9,24 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.dcm4che6.data.DicomElement;
+import org.karnak.data.AppConfig;
+import org.karnak.data.profile.ProfilePersistence;
+import org.karnak.profile.HMAC;
+
 public class UUID implements Action {
-    private final Map<String, String> UIDMap = new HashMap<>();
     private String strAction = "U";
+    private HMAC hmac;{
+        hmac = AppConfig.getInstance().getHmac();
+    }
 
     public String getStrAction() {
         return strAction;
     }
 
-    public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, String value) {
-
+    public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, String pseudonym, String dummyValue) {
         String uidValue = dcm.getString(tag).orElse(null);
-
-        if( UIDMap.containsKey(uidValue) ){
-            String uidDeidentValue = UIDMap.get(uidValue);
-            dcm.setString(tag, VR.UI, uidDeidentValue);
-        }else{
-            String uidDeidentValue =  UIDUtils.randomUID();
-            UIDMap.put(uidValue, uidDeidentValue);
-            dcm.setString(tag, VR.UI, uidDeidentValue);
-        }
-        
+        String uidHashed = hmac.uidHash(pseudonym, uidValue);
+        System.out.println(uidValue + " - " + uidHashed);
+        dcm.setString(tag, VR.UI, uidHashed);
     }
 }

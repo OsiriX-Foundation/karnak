@@ -11,7 +11,7 @@ public class ZReplace implements Action {
         return strAction;
     }
 
-    public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, String value) {
+    public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, String pseudonym, String dummyValue) {
         dcm.get(tag).ifPresent(dcmEl -> {
             dcm.setNull(tag, dcmEl.vr());
         });

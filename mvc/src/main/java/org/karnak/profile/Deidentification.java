@@ -44,7 +44,7 @@ public class Deidentification {
                     if (action instanceof DReplace) {
                         value = setDummyValue(this.dcm, dcmEl.tag(), this.pseudonym);
                     }
-                    action.execute(dcm, dcmEl.tag(), iterator, value);
+                    action.execute(dcm, dcmEl.tag(), iterator, this.pseudonym, value);
                 }
             }
         } catch (final Exception e) {

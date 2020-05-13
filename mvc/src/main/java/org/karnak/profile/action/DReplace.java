@@ -22,10 +22,10 @@ public class DReplace implements Action{
         return strAction;
     }
 
-    public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, String value) {
+    public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, String pseudonym, String dummyValue) {
         dcm.get(tag).ifPresent(dcmEl -> {
-            if (value != null) {
-                dcm.setString(tag, dcmEl.vr(), value);
+            if (dummyValue != null) {
+                dcm.setString(tag, dcmEl.vr(), dummyValue);
             } else {
                 dcm.setNull(tag, dcmEl.vr());
             }
