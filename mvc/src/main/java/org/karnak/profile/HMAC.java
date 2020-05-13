@@ -68,17 +68,14 @@ public class HMAC {
         return bytes;
     }
 
+    // returns value in [scaleMin..scaleMax)
     public double scaleHash(String value, int scaledMin, int scaledMax) {
-        double result = 0.0;
-        byte[] hash = new byte[8];
-        double max = Math.pow(2, 64)-1;
-        double min = 0.0;
+        final byte[] hash = new byte[6];
+        final double max = 0x1000000000000L;
+        final double scale = scaledMax - scaledMin;
 
-        System.arraycopy(byteHash(value), 0 , hash, 0, 8);
-        BigInteger integerValue = new BigInteger(1, hash);
-        double doubleValue = integerValue.doubleValue();
-        result = ((doubleValue - min)/(max - min)) * (scaledMax - scaledMin) + scaledMin;
-
-        return result;
+        System.arraycopy(byteHash(value), 0 , hash, 0, 6);
+        double fraction = new BigInteger(1, hash).doubleValue()/max;
+        return (int)(fraction * scale) + scaledMin;
     }
 }
