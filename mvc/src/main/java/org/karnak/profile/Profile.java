@@ -42,11 +42,11 @@ public class Profile {
             standardProfileTable = this.profilePersistence.findByName(this.standardProfileName);
             final Set<ActionTable> standardActionTable = standardProfileTable.getActions();
             standardActionTable.forEach(action->{
-                this.actionMap.put(action.getTag(), Action.convertAction(action.getAction()));
+                this.actionMap.put(action.getTag(), ParserProfile.convertAction(action.getAction()));
             });
         } else {
             InputStream inputStream = this.getClass().getResourceAsStream(this.standardProfilePath);
-            ParserProfile parserProfile = new JSONparser();
+            final ParserProfile parserProfile = new JSONparser();
             this.actionMap = parserProfile.parse(inputStream);
             persistProfile(this.actionMap, this.standardProfileName);
             standardProfileTable = this.profilePersistence.findByName(this.standardProfileName);

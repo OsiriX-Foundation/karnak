@@ -5,7 +5,7 @@ import org.dcm4che6.data.DicomObject;
 import java.util.Iterator;
 import org.karnak.profile.option.dummyvalue.DefaultDummyValue;
 
-public class DReplace extends Action{
+public class DReplace implements Action{
 
     private DefaultDummyValue algo;
     private String strAction = "D";

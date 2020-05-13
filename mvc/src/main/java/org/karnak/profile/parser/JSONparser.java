@@ -37,7 +37,7 @@ public class JSONparser extends ParserProfile{
                     } catch (Exception e) {
                         LOGGER.error("Cannot read tag {} to register in HashMap", tagKey, e);
                     }
-                    actionMap.put(intTag, Action.convertAction(action));
+                    actionMap.put(intTag, convertAction(action));
                 }
             } catch (final Exception e) {
                 LOGGER.error("Cannot register json profile in HashMap", e);

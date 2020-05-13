@@ -24,4 +24,22 @@ public abstract class ParserProfile {
         }
         return tag;
     }
+
+    public static Action convertAction(String strAction) {
+        Action action = switch (strAction) {
+            case "D" -> new DReplace();
+            case "Z" -> new ZReplace();
+            case "X" -> new XRemove();
+            case "K" -> new KKeep();
+            case "C" -> new DReplace();
+            case "U" -> new UUID();
+            case "Z/D" -> new DReplace();
+            case "X/Z" -> new ZReplace();
+            case "X/D" -> new DReplace();
+            case "X/Z/D" -> new DReplace();
+            case "X/Z/U" -> new UUID();
+            default -> new DReplace();
+        };
+        return action;
+    }
 }
