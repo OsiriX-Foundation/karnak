@@ -83,6 +83,10 @@ public class HMAC {
         byte[] uuid = new byte[16];
         String value = inputPseudonym+inputUID;
         System.arraycopy(byteHash(value), 0 , uuid, 0, 16);
+        uuid[6] &= 0x0F;
+        uuid[6] |= 0x40;
+        uuid[8] &= 0x3F;
+        uuid[8] |= 0x80;
         return "2.25." + new BigInteger(1, uuid).toString();
     }
 }
