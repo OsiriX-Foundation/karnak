@@ -1,5 +1,5 @@
 package org.karnak.profile;
 
 public enum KeepEnum {
-    keepNoChange, keepSetNull, noKeep
+    keep, noKeep, notDefined
 }

@@ -8,14 +8,16 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 
+import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.Tag;
 import org.dcm4che6.data.VR;
 import org.dcm4che6.util.DateTimeUtils;
 import org.karnak.api.PseudonymApi;
 import org.karnak.api.rqbody.Fields;
-import org.karnak.profile.Deidentification;
-import org.karnak.profile.Profile;
+import org.karnak.profile.*;
+import org.karnak.profile.action.Action;
+import org.karnak.profile.action.DReplace;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.weasis.dicom.param.AttributeEditor;
@@ -150,14 +152,25 @@ public class StreamRegistry implements AttributeEditor {
     public void deident(DicomObject dcm) {
         final String pseudonym = addInfoPatientToPseudonym(dcm);
 
-        Profile standardProfile = AppConfig.getInstance().getStandardProfile();
+        //Profile standardProfile = AppConfig.getInstance().getStandardProfile();
+        try {
+        ProfileChain standardProfile = new StandardProfile();
+            for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext();) {
+                final DicomElement dcmEl = iterator.next();
+                if(standardProfile.isKeep(dcmEl) == KeepEnum.keep){
+                    Action action = standardProfile.getAction(dcmEl);
+                    System.out.println(dcmEl.tag()+" "+action.getStrAction());
+                }else{
+                    System.out.println(dcmEl.tag()+" nokeep");
+                }
+            }
+        } catch (final Exception e) {
+            LOGGER.error("Cannot execute actions", e);
+        }
 
-        Deidentification deidentification = new Deidentification(standardProfile, dcm, pseudonym);
-        deidentification.execute();
-
-        dcm.setString(Tag.ClinicalTrialSponsorName, VR.LO, standardProfile.getProfileName());
-        dcm.setString(Tag.ClinicalTrialProtocolID, VR.LO, standardProfile.getProfileID().toString());
-        dcm.setString(Tag.ClinicalTrialSubjectID, VR.LO, pseudonym);
+        //dcm.setString(Tag.ClinicalTrialSponsorName, VR.LO, standardProfile.getProfileName());
+        //dcm.setString(Tag.ClinicalTrialProtocolID, VR.LO, standardProfile.getProfileID().toString());
+        //dcm.setString(Tag.ClinicalTrialSubjectID, VR.LO, pseudonym);
     }
 
 }

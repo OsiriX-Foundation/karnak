@@ -11,20 +11,26 @@ import java.util.HashMap;
 
 public class StandardProfile implements ProfileChain{
     private ProfileChain parent;
-    private HashMap<Integer, Action> tagList;
+    private HashMap<Integer, Action> tagList = new HashMap<>();;
+
 
     public StandardProfile() {
+        this.parent = new UpdateUIDsProfile();
         this.tagList.put(Tag.PatientName, new DReplace());
         this.tagList.put(Tag.PatientSex, new KKeep());
     }
 
     @Override
     public KeepEnum isKeep(DicomElement dcmElem) {
-        return isKeep(dcmElem);
+        return this.parent.isKeep(dcmElem);
     }
 
     @Override
     public Action getAction(DicomElement dcmElem) {
-        return this.tagList.get(dcmElem.tag());
+        if(tagList.containsKey(dcmElem.tag())){
+            return this.tagList.get(dcmElem.tag());
+        } else {
+            return this.parent.getAction(dcmElem);
+        }
     }
 }

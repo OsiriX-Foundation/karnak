@@ -1,38 +1,32 @@
 package org.karnak.profile;
 
 import org.dcm4che6.data.DicomElement;
-import org.dcm4che6.data.Tag;
-import org.dcm4che6.data.VR;
-import org.dcm4che6.internal.VRType;
-import org.dcm4che6.util.TagUtils;
-import org.karnak.data.AppConfig;
+
 import org.karnak.profile.action.Action;
 import org.karnak.profile.action.UUID;
 
-import java.util.ArrayList;
-import java.util.Optional;
+import java.util.HashMap;
 
 public class UpdateUIDsProfile implements ProfileChain{
     private ProfileChain parent;
-    private HMAC hmac;{
-        hmac = AppConfig.getInstance().getHmac();
+    private HashMap<Integer, Action> uidTagList = new HashMap<>();
+
+
+    UpdateUIDsProfile(){
+        this.parent = new SOPProfile();
     }
 
     @Override
     public KeepEnum isKeep(DicomElement dcmElem) {
-            if(dcmElem.vr() == VR.UI) {
-                return parent.isKeep(dcmElem); //ask profile parent
-            } else {
-                return KeepEnum.noKeep;
-            }
+        return this.parent.isKeep(dcmElem); //ask profile parent
     }
 
     @Override
     public Action getAction(DicomElement dcmElem) {
-        if(isKeep(dcmElem)== KeepEnum.keepNoChange){
+        if(uidTagList.containsKey(dcmElem.tag())){
             return new UUID();
-        } else {
-          return null;
+        }else{
+            return this.parent.getAction(dcmElem);
         }
     }
 }

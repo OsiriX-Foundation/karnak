@@ -5,13 +5,13 @@ import org.dcm4che6.data.Tag;
 import org.karnak.profile.action.Action;
 import org.karnak.profile.action.KKeep;
 import org.karnak.profile.action.XRemove;
+import org.karnak.profile.action.ZReplace;
 
 import java.util.ArrayList;
 
 public class SOPProfile implements ProfileChain{
     private String profileName;
     private String args;
-    private ArrayList<Integer> tagList;
     private ProfileChain parent;
 
     public SOPProfile() {
@@ -34,8 +34,8 @@ public class SOPProfile implements ProfileChain{
     @Override
     public KeepEnum isKeep(DicomElement dcmElem) {
         KeepEnum keepEnum = switch (getType(dcmElem.tag())){
-            case 1 -> KeepEnum.keepNoChange;
-            case 2 -> KeepEnum.keepSetNull;
+            case 1 -> KeepEnum.keep;
+            case 2 -> KeepEnum.keep;
             case 3 -> KeepEnum.noKeep;
             default -> KeepEnum.noKeep;
         };
@@ -44,6 +44,11 @@ public class SOPProfile implements ProfileChain{
 
     @Override
     public Action getAction(DicomElement dcmElem) {
-        return null;
+        Action action = switch (getType(dcmElem.tag())){
+            case 1 -> new KKeep();
+            case 2 -> new ZReplace();
+            default -> new XRemove();
+        };
+        return action;
     }
 }
