@@ -2,7 +2,10 @@ package org.karnak.profile;
 
 import org.dcm4che6.data.DicomElement;
 
+import org.dcm4che6.data.Tag;
 import org.karnak.profile.action.Action;
+import org.karnak.profile.action.DReplace;
+import org.karnak.profile.action.KKeep;
 import org.karnak.profile.action.UUID;
 
 import java.util.HashMap;
@@ -12,8 +15,12 @@ public class UpdateUIDsProfile implements ProfileChain{
     private HashMap<Integer, Action> uidTagList = new HashMap<>();
 
 
-    UpdateUIDsProfile(){
+    public UpdateUIDsProfile(){
         this.parent = new SOPProfile();
+    }
+
+    public UpdateUIDsProfile(ProfileChain parent) {
+        this.parent = parent;
     }
 
     @Override

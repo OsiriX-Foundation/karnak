@@ -7,8 +7,6 @@ import org.karnak.profile.action.KKeep;
 import org.karnak.profile.action.XRemove;
 import org.karnak.profile.action.ZReplace;
 
-import java.util.ArrayList;
-
 public class SOPProfile implements ProfileChain{
     private String profileName;
     private String args;
@@ -16,6 +14,10 @@ public class SOPProfile implements ProfileChain{
 
     public SOPProfile() {
         this.parent = null;
+    }
+
+    public SOPProfile(ProfileChain parent) {
+        this.parent = parent;
     }
 
     public Integer getType(Integer tag){

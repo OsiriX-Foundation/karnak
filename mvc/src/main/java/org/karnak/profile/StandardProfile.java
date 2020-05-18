@@ -20,6 +20,12 @@ public class StandardProfile implements ProfileChain{
         this.tagList.put(Tag.PatientSex, new KKeep());
     }
 
+    public StandardProfile(ProfileChain parent) {
+        this.parent = parent;
+        this.tagList.put(Tag.PatientName, new DReplace());
+        this.tagList.put(Tag.PatientSex, new KKeep());
+    }
+
     @Override
     public KeepEnum isKeep(DicomElement dcmElem) {
         return this.parent.isKeep(dcmElem);

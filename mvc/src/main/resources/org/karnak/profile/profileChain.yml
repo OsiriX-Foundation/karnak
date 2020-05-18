@@ -1,0 +1,12 @@
+name: "My Favorite Chain"
+version: "0.9.4"
+minimumkarnakversion: "0.1"
+profiles:
+   - name: "SOP"
+     classname: "org.karnak.profile.SOPProfile"
+
+   - name: "UpdateUIDs"
+     classname: "org.karnak.profile.UpdateUIDsProfile"
+
+   - name: "DicomProfileBase"
+     classname: "org.karnak.profile.StandardProfile"

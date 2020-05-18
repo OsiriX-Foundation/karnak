@@ -11,13 +11,11 @@ import java.util.Set;
 import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.Tag;
-import org.dcm4che6.data.VR;
 import org.dcm4che6.util.DateTimeUtils;
 import org.karnak.api.PseudonymApi;
 import org.karnak.api.rqbody.Fields;
 import org.karnak.profile.*;
 import org.karnak.profile.action.Action;
-import org.karnak.profile.action.DReplace;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.weasis.dicom.param.AttributeEditor;
@@ -154,7 +152,10 @@ public class StreamRegistry implements AttributeEditor {
 
         //Profile standardProfile = AppConfig.getInstance().getStandardProfile();
         try {
-        ProfileChain standardProfile = new StandardProfile();
+            CreateProfile createProfile = new CreateProfile("profileChain.yml");
+            ProfileChain standardProfile = createProfile.getProfile();
+            //ProfileChain standardProfile = new StandardProfile();
+
             for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext();) {
                 final DicomElement dcmEl = iterator.next();
                 if(standardProfile.isKeep(dcmEl) == KeepEnum.keep){

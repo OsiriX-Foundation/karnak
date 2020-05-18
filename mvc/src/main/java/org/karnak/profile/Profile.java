@@ -2,19 +2,14 @@ package org.karnak.profile;
 
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Optional;
 import java.util.Set;
-
-import org.dcm4che6.data.DicomElement;
-import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.ElementDictionary;
 import org.karnak.data.AppConfig;
 import org.karnak.data.profile.ActionTable;
 import org.karnak.data.profile.ProfilePersistence;
 import org.karnak.data.profile.ProfileTable;
 import org.karnak.profile.action.*;
-import org.karnak.profile.option.dummyvalue.DefaultDummyValue;
 import org.karnak.profile.parser.JSONparser;
 import org.karnak.profile.parser.ParserProfile;
 import org.slf4j.Logger;
