@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 public class Profile {
     private static final Logger LOGGER = LoggerFactory.getLogger(Profile.class);
 
-    private final String standardProfilePath = "org/karnak/profileschain/utils/profile.json";
+    private final String standardProfilePath = "profile.json";
     private final String standardProfileName = "standardProfile";
     private  HashMap<Integer, Action> actionMap = new HashMap<>();
     private String profileName;
