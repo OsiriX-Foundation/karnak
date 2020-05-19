@@ -34,17 +34,6 @@ public class SOPProfile implements ProfileChain{
     }
 
     @Override
-    public KeepEnum isKeep(DicomElement dcmElem) {
-        KeepEnum keepEnum = switch (getType(dcmElem.tag())){
-            case 1 -> KeepEnum.keep;
-            case 2 -> KeepEnum.keep;
-            case 3 -> KeepEnum.noKeep;
-            default -> KeepEnum.noKeep;
-        };
-        return keepEnum;
-    }
-
-    @Override
     public Action getAction(DicomElement dcmElem) {
         Action action = switch (getType(dcmElem.tag())){
             case 1 -> new KKeep();

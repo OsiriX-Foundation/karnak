@@ -14,7 +14,7 @@ import org.yaml.snakeyaml.constructor.Constructor;
 import java.io.InputStream;
 import java.util.List;
 
-public class CreateProfile implements ProfileChain{
+public class CreateProfile {
     private static final Logger LOGGER = LoggerFactory.getLogger(StreamRegistry.class);
     private ProfileChain profile;
 
@@ -49,16 +49,4 @@ public class CreateProfile implements ProfileChain{
     public ProfileChain getProfile() {
         return profile;
     }
-
-    @Override
-    public KeepEnum isKeep(DicomElement dcmElem) {
-        return null;
-    }
-
-    @Override
-    public Action getAction(DicomElement dcmElem) {
-        return null;
-    }
-
-
 }

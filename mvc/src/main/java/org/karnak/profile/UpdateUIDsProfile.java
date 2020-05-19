@@ -3,10 +3,7 @@ package org.karnak.profile;
 import org.dcm4che6.data.DicomElement;
 
 import org.dcm4che6.data.Tag;
-import org.karnak.profile.action.Action;
-import org.karnak.profile.action.DReplace;
-import org.karnak.profile.action.KKeep;
-import org.karnak.profile.action.UUID;
+import org.karnak.profile.action.*;
 
 import java.util.HashMap;
 
@@ -24,16 +21,13 @@ public class UpdateUIDsProfile implements ProfileChain{
     }
 
     @Override
-    public KeepEnum isKeep(DicomElement dcmElem) {
-        return this.parent.isKeep(dcmElem); //ask profile parent
-    }
-
-    @Override
     public Action getAction(DicomElement dcmElem) {
-        if(uidTagList.containsKey(dcmElem.tag())){
+        if (uidTagList.containsKey(dcmElem.tag())) {
             return new UUID();
-        }else{
+        } else if (this.parent != null) {
             return this.parent.getAction(dcmElem);
+        } else {
+            return new XRemove();
         }
     }
 }
