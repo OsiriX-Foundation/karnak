@@ -1,8 +1,8 @@
 package org.karnak.data;
 
 import org.karnak.data.profile.ProfilePersistence;
-import org.karnak.profile.HMAC;
-import org.karnak.profile.Profile;
+import org.karnak.profileschain.utils.HMAC;
+import org.karnak.profileschain.utils.Profile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
