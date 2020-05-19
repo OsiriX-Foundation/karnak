@@ -14,6 +14,7 @@ import org.dcm4che6.data.Tag;
 import org.dcm4che6.util.DateTimeUtils;
 import org.karnak.api.PseudonymApi;
 import org.karnak.api.rqbody.Fields;
+import org.karnak.profileschain.Deidentification;
 import org.karnak.profileschain.action.Action;
 import org.karnak.profileschain.profiles.ProfileChain;
 import org.karnak.profileschain.utils.CreateProfile;
@@ -151,17 +152,9 @@ public class StreamRegistry implements AttributeEditor {
     public void deident(DicomObject dcm) {
         final String pseudonym = addInfoPatientToPseudonym(dcm);
         final String profileFilename = "profileChain.yml";
-        try {
-            CreateProfile createProfile = new CreateProfile(profileFilename);
-            ProfileChain standardProfile = createProfile.getProfile();
-            for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext();) {
-                final DicomElement dcmEl = iterator.next();
-                Action action = standardProfile.getAction(dcmEl);
-                System.out.println(dcmEl.tag()+" "+action.getStrAction());
-            }
-        } catch (final Exception e) {
-            LOGGER.error("Cannot execute actions", e);
-        }
+        Deidentification deidentification = new Deidentification(profileFilename, dcm, pseudonym);
+        deidentification.execute();
+
         // dcm.setString(Tag.ClinicalTrialSponsorName, VR.LO, profileFilename);
         // dcm.setString(Tag.PatientID, VR.LO, profileFilename + pseudonym);
         // dcm.setString(Tag.ClinicalTrialProtocolID, VR.LO, hash(profileFilename));
