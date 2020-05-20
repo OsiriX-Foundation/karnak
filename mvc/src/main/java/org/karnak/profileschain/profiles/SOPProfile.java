@@ -22,7 +22,7 @@ public class SOPProfile implements ProfileChain{
 
     public Integer getType(Integer tag){
         Integer type = switch (tag) {
-            case Tag.Modality -> 1;
+            case Tag.Modality, Tag.SOPClassUID -> 1;
             case Tag.PatientName, Tag.PatientBirthDate, Tag.PatientSex -> 2;
             case Tag.StudyDescription -> 3;
             default -> -1;

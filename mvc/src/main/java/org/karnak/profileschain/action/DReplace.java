@@ -3,20 +3,9 @@ package org.karnak.profileschain.action;
 import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
 import java.util.Iterator;
-import org.karnak.profileschain.option.dummyvalue.DefaultDummyValue;
 
 public class DReplace implements Action{
-
-    private DefaultDummyValue algo;
     private String strAction = "D";
-
-    public DReplace() {
-        this.algo = new DefaultDummyValue();
-    }
-
-    public DReplace(DefaultDummyValue algo) {
-        this.algo = algo;
-    }
 
     public String getStrAction() {
         return strAction;
