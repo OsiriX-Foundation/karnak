@@ -5,8 +5,5 @@ profiles:
    - name: "SOP"
      classname: "org.karnak.profileschain.profiles.SOPProfile"
 
-   - name: "UpdateUIDs"
-     classname: "org.karnak.profileschain.profiles.UpdateUIDsProfile"
-
    - name: "DicomProfileBase"
      classname: "org.karnak.profileschain.profiles.StandardProfile"

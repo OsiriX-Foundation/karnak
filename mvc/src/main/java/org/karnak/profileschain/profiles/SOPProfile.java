@@ -6,11 +6,16 @@ import org.karnak.profileschain.action.Action;
 import org.karnak.profileschain.action.KKeep;
 import org.karnak.profileschain.action.XRemove;
 import org.karnak.profileschain.action.ZReplace;
+import org.karnak.profileschain.parser.SOPParser;
+
+import java.io.InputStream;
+import java.util.HashMap;
 
 public class SOPProfile implements ProfileChain{
     private String profileName;
     private String args;
     private ProfileChain parent;
+    private HashMap<Integer, Integer> sopMap = new HashMap<>();
 
     public SOPProfile() {
         this.parent = null;
@@ -18,19 +23,16 @@ public class SOPProfile implements ProfileChain{
 
     public SOPProfile(ProfileChain parent) {
         this.parent = parent;
+        InputStream inputStream = this.getClass().getResourceAsStream("minSOP_CTImage.json");
+        final SOPParser parserProfile = new SOPParser();
+        sopMap = parserProfile.parse(inputStream);
     }
 
     public Integer getType(Integer tag){
-        Integer type = switch (tag) {
-            case Tag.Modality, Tag.SOPClassUID -> 1;
-            case Tag.PatientName, Tag.PatientBirthDate, Tag.PatientSex -> 2;
-            case Tag.StudyDescription -> 3;
-            default -> -1;
-        };
-        if(type==-1){
-            System.out.println("No type");
+        if (sopMap.containsKey(tag)) {
+            return sopMap.get(tag);
         }
-        return type;
+        return -1;
     }
 
     @Override

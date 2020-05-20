@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Iterator;
 
 public class Deidentification {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Profile.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Deidentification.class);
     private DefaultDummyValue defaultDummyValue = new DefaultDummyValue();
     String profileYmlPath;
     DicomObject dcm;
