@@ -14,13 +14,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.dcm4che6.img.util.FileUtil;
 import org.karnak.service.AbstractGateway;
 import org.karnak.service.GatewayConfig;
 import org.karnak.util.ServletUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.weasis.core.util.FileUtil;
 
 
 @WebServlet(urlPatterns = "/download")

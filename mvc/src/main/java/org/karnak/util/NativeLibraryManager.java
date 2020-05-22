@@ -8,10 +8,10 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Optional;
 
-import org.dcm4che6.img.util.FileUtil;
 import org.opencv.osgi.OpenCVNativeLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.weasis.core.util.FileUtil;
 import org.weasis.core.util.StringUtil;
 
 public class NativeLibraryManager {
