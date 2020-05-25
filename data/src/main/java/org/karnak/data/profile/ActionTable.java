@@ -55,5 +55,15 @@ public class ActionTable {
         return this.action;
     }
 
+    public Long getId() {
+        return id;
+    }
 
+    public String getAttributeName() {
+        return attributeName;
+    }
+
+    public ProfileTable getProfileTable() {
+        return profileTable;
+    }
 }

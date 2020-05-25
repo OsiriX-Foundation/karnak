@@ -8,7 +8,7 @@ import org.karnak.profileschain.action.XRemove;
 import org.karnak.profileschain.action.ZReplace;
 import org.karnak.profileschain.parser.SOPParser;
 
-import java.io.InputStream;
+import java.net.URL;
 import java.util.HashMap;
 
 public class SOPProfile implements ProfileChain{

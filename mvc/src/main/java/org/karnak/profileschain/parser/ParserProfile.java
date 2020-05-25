@@ -1,30 +1,18 @@
 package org.karnak.profileschain.parser;
 
-import org.karnak.profileschain.action.*;
-import org.karnak.profileschain.action.DefaultDummyValue;
+import org.karnak.data.profile.ProfileTable;
+import org.karnak.profileschain.action.Action;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.InputStream;
-import java.util.HashMap;
+import java.net.URL;
 
 
 public abstract class ParserProfile {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ParserProfile.class);
 
-    abstract public HashMap<Integer, Action> parse(InputStream inputStream);
-
-    public String cleanTag(String tag) {
-        try {
-            if (tag.contains("(") || tag.contains(")") || tag.contains(",")) {
-                return tag.replace("(", "").replace(")", "").replace(",", "");
-            }
-        } catch (final Exception e) {
-            LOGGER.error("Cannot clean tag {}", tag, e);
-        }
-        return tag;
-    }
+    abstract public ProfileTable parse(URL url, String profileName);
 
     public static Action convertAction(String strAction) {
         Action action = switch (strAction) {

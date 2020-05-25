@@ -1,14 +1,10 @@
 package org.karnak.profileschain.profiles;
 
 import org.dcm4che6.data.DicomElement;
-import org.dcm4che6.data.Tag;
+import org.dcm4che6.data.VR;
+import org.dcm4che6.util.TagUtils;
 import org.karnak.data.AppConfig;
-import org.karnak.data.profile.ProfilePersistence;
-import org.karnak.profileschain.utils.Profile;
 import org.karnak.profileschain.action.Action;
-import org.karnak.profileschain.action.DReplace;
-import org.karnak.profileschain.action.KKeep;
-import org.karnak.profileschain.action.XRemove;
 
 import java.util.HashMap;
 

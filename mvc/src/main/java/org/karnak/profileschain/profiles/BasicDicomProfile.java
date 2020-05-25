@@ -1,6 +1,6 @@
-package org.karnak.profileschain.utils;
+package org.karnak.profileschain.profiles;
 
-import java.io.InputStream;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.Set;
@@ -18,9 +18,9 @@ import org.slf4j.LoggerFactory;
 public class Profile {
     private static final Logger LOGGER = LoggerFactory.getLogger(Profile.class);
 
-    private final String standardProfilePath = "profile.json";
+    private final String standardProfilePath = "confidentiality_profile_attributes.json";
     private final String standardProfileName = "standardProfile";
-    private  HashMap<Integer, Action> actionMap = new HashMap<>();
+    private final HashMap<Integer, Action> actionMap = new HashMap<>();
     private String profileName;
     private Long profileID;
 
@@ -36,9 +36,7 @@ public class Profile {
         return actionMap;
     }
 
-    private ProfilePersistence profilePersistence;{
-        profilePersistence = AppConfig.getInstance().getProfilePersistence();
-    }
+    private ProfilePersistence profilePersistence = AppConfig.getInstance().getProfilePersistence();
 
     public Profile() {
         final Boolean standardProfileExist = this.profilePersistence.existsByName(this.standardProfileName);
@@ -50,26 +48,16 @@ public class Profile {
                 this.actionMap.put(action.getTag(), ParserProfile.convertAction(action.getAction()));
             });
         } else {
-            InputStream inputStream = this.getClass().getResourceAsStream(this.standardProfilePath);
             final ParserProfile parserProfile = new JSONparser();
-            this.actionMap = parserProfile.parse(inputStream);
-            persistProfile(this.actionMap, this.standardProfileName);
+            URL url = this.getClass().getResource(this.standardProfilePath);
+            ProfileTable profileTable = parserProfile.parse(url, standardProfileName);
+            profileTable.getActions().forEach(action->{
+                this.actionMap.put(action.getTag(), ParserProfile.convertAction(action.getAction()));
+            });
+            this.profilePersistence.save(profileTable);
             standardProfileTable = this.profilePersistence.findByName(this.standardProfileName);
         }
         this.profileName = this.standardProfileName;
         this.profileID = standardProfileTable.getId();
-    }
-
-    public void persistProfile(HashMap<Integer, Action> aMap, String profileName) {
-        final ProfileTable profileTable = new ProfileTable(profileName);
-        try {
-            aMap.forEach((tag, action) -> {
-                final ActionTable actionTable = new ActionTable(profileTable, tag, action.getStrAction(), ElementDictionary.keywordOf(tag, Optional.ofNullable("Null")));
-                profileTable.addAction(actionTable);
-            });
-            this.profilePersistence.save(profileTable);
-        } catch (final Exception e) {
-            LOGGER.error("Cannot persist json profile in database {}", profileName, e);
-        }
     }
 }

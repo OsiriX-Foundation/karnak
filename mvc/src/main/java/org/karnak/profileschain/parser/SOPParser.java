@@ -1,5 +1,6 @@
 package org.karnak.profileschain.parser;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,13 +21,12 @@ public class SOPParser {
 
     public SOPParser() {}
 
-    public HashMap<Integer, Integer> parse(InputStream inputStream) {
+    public HashMap<Integer, Integer> parse(URL url) {
         HashMap<Integer, Integer> sopMap = new HashMap<>();
 
-        try{
-            com.google.gson.JsonArray sopArray = new com.google.gson.JsonArray();
-            final JsonElement root = JsonParser.parseReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-            sopArray = root.getAsJsonArray();
+        try (InputStreamReader inputStream = new InputStreamReader(url.openStream(), StandardCharsets.UTF_8)){
+            final JsonElement root = JsonParser.parseReader(inputStream);
+            JsonArray sopArray = root.getAsJsonArray();
             try {
                 sopArray.forEach(sopRow -> {
                     final JsonObject sopObj = sopRow.getAsJsonObject();
