@@ -108,8 +108,8 @@ public class ProfileChain {
         }
 
         for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext(); ) {
+            DicomElement dcmEl = iterator.next();
             for (ProfileItem p : sortedSet) {
-                DicomElement dcmEl = iterator.next();
                 Action action = p.getAction(dcmEl);
                 if (action != null) {
                     try {
