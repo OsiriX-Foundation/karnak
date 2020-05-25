@@ -2,9 +2,8 @@ package org.karnak.profileschain.profiles;
 
 import java.net.URL;
 import java.util.HashMap;
-import java.util.Optional;
 import java.util.Set;
-import org.dcm4che6.data.ElementDictionary;
+
 import org.karnak.data.AppConfig;
 import org.karnak.data.profile.ActionTable;
 import org.karnak.data.profile.ProfilePersistence;
@@ -15,8 +14,8 @@ import org.karnak.profileschain.parser.ParserProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Profile {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Profile.class);
+public class BasicDicomProfile {
+    private static final Logger LOGGER = LoggerFactory.getLogger(BasicDicomProfile.class);
 
     private final String standardProfilePath = "confidentiality_profile_attributes.json";
     private final String standardProfileName = "standardProfile";
@@ -38,7 +37,7 @@ public class Profile {
 
     private ProfilePersistence profilePersistence = AppConfig.getInstance().getProfilePersistence();
 
-    public Profile() {
+    public BasicDicomProfile() {
         final Boolean standardProfileExist = this.profilePersistence.existsByName(this.standardProfileName);
         ProfileTable standardProfileTable;
         if (standardProfileExist) {

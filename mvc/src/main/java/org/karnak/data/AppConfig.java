@@ -2,7 +2,7 @@ package org.karnak.data;
 
 import org.karnak.data.profile.ProfilePersistence;
 import org.karnak.profileschain.utils.HMAC;
-import org.karnak.profileschain.utils.Profile;
+import org.karnak.profileschain.profiles.BasicDicomProfile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -53,8 +53,8 @@ public class AppConfig {
     }
 
     @Bean("StandardProfile")
-    public Profile getStandardProfile() {
-        return new Profile();
+    public BasicDicomProfile getStandardProfile() {
+        return new BasicDicomProfile();
     }
 
     @Bean("HMAC")

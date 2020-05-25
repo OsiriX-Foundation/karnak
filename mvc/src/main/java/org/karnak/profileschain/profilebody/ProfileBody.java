@@ -2,7 +2,7 @@ package org.karnak.profileschain.profilebody;
 
 public class ProfileBody {
     private String name;
-    private String classname;
+    private String codename;
 
     public String getName() {
         return name;
@@ -12,11 +12,11 @@ public class ProfileBody {
         this.name = name;
     }
 
-    public String getClassname() {
-        return classname;
+    public String getCodename() {
+        return codename;
     }
 
-    public void setClassname(String classname) {
-        this.classname = classname;
+    public void setCodename(String codename) {
+        this.codename = codename;
     }
 }

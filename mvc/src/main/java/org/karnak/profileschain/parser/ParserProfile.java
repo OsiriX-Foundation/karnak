@@ -15,14 +15,13 @@ public abstract class ParserProfile {
     abstract public ProfileTable parse(URL url, String profileName);
 
     public static Action convertAction(String strAction) {
-        Action action = switch (strAction) {
-            case "D", "C", "Z/D", "X/D", "X/Z/D" -> new DefaultDummyValue();
-            case "Z", "X/Z" -> new ZReplace();
-            case "X" -> new XRemove();
-            case "K" -> new KKeep();
-            case "U", "X/Z/U" -> new UUID();
-            default -> new DReplace();
+        return switch (strAction) {
+            case "D", "C", "Z/D", "X/D", "X/Z/D" -> Action.DEFAULT_DUMMY;
+            case "Z", "X/Z" -> Action.REPLACE_NULL;
+            case "X" -> Action.REMOVE;
+            case "K" -> Action.KEEP;
+            case "U", "X/Z/U" -> Action.UID;
+            default -> Action.REPLACE;
         };
-        return action;
     }
 }

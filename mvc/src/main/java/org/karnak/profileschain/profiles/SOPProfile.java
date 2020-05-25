@@ -1,31 +1,20 @@
 package org.karnak.profileschain.profiles;
 
 import org.dcm4che6.data.DicomElement;
-import org.dcm4che6.data.Tag;
 import org.karnak.profileschain.action.Action;
-import org.karnak.profileschain.action.KKeep;
-import org.karnak.profileschain.action.XRemove;
-import org.karnak.profileschain.action.ZReplace;
 import org.karnak.profileschain.parser.SOPParser;
 
 import java.net.URL;
 import java.util.HashMap;
 
-public class SOPProfile implements ProfileChain{
-    private String profileName;
-    private String args;
-    private ProfileChain parent;
-    private HashMap<Integer, Integer> sopMap = new HashMap<>();
+public class SOPProfile extends AbstractProfileItem {
+    private final HashMap<Integer, Integer> sopMap;
 
-    public SOPProfile() {
-        this.parent = null;
-    }
-
-    public SOPProfile(ProfileChain parent) {
-        this.parent = parent;
-        InputStream inputStream = this.getClass().getResourceAsStream("minSOP_CTImage.json");
+    public SOPProfile(String name, String codeName) {
+        super(name, codeName);
         final SOPParser parserProfile = new SOPParser();
-        sopMap = parserProfile.parse(inputStream);
+        URL url = this.getClass().getResource("minSOP_CTImage.json");
+        this.sopMap = parserProfile.parse(url);
     }
 
     public Integer getType(Integer tag){
@@ -37,11 +26,10 @@ public class SOPProfile implements ProfileChain{
 
     @Override
     public Action getAction(DicomElement dcmElem) {
-        Action action = switch (getType(dcmElem.tag())){
-            case 1 -> new KKeep();
-            case 2 -> new ZReplace();
-            default -> new XRemove();
+        return switch (getType(dcmElem.tag())){
+            case 1 -> Action.KEEP;
+            case 2 -> Action.REPLACE_NULL;
+            default -> Action.REMOVE;
         };
-        return action;
     }
 }

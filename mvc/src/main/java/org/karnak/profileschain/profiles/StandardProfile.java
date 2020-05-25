@@ -8,36 +8,28 @@ import org.karnak.profileschain.action.Action;
 
 import java.util.HashMap;
 
-public class StandardProfile implements ProfileChain{
-    private ProfileChain parent;
-    private HashMap<Integer, Action> tagList = new HashMap<>();
-    private ProfilePersistence profilePersistence;{
-        profilePersistence = AppConfig.getInstance().getProfilePersistence();
-    }
+public class StandardProfile extends AbstractProfileItem {
 
-    private Profile profile;{
-        profile = AppConfig.getInstance().getStandardProfile();
-    }
+    private final HashMap<Integer, Action> tagList;
 
-    public StandardProfile() {
-        this.parent = new UpdateUIDsProfile();
-        this.tagList.put(Tag.PatientName, new DReplace());
-        this.tagList.put(Tag.PatientSex, new KKeep());
+    public StandardProfile(String name, String codeName) {
+        super(name, codeName);
+        this.tagList = AppConfig.getInstance().getStandardProfile().getActionMap();
     }
-
-    public StandardProfile(ProfileChain parent) {
-        this.parent = parent;
-        this.tagList = this.profile.getActionMap();
-    }
-
+    
     @Override
     public Action getAction(DicomElement dcmElem) {
-        if (tagList.containsKey(dcmElem.tag())) {
-            return this.tagList.get(dcmElem.tag());
-        } else if (this.parent != null) {
-            return this.parent.getAction(dcmElem);
+        int tag = dcmElem.tag();
+        Action action = tagList.get(tag);
+        if (action == null) {
+            if(TagUtils.isPrivateGroup(tag)){
+                return Action.REMOVE;
+            }
         } else {
-            return new XRemove();
+            if (dcmElem.vr() == VR.UI && Action.UID.getSymbol().equals(action.getSymbol())) {
+                return Action.UID;
+            }
         }
+        return action;
     }
 }

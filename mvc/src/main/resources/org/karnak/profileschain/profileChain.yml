@@ -1,0 +1,16 @@
+name: "My Favorite Chain"
+version: "0.9.4"
+minimumkarnakversion: "0.1"
+defaultIssuerOfPatientID: "DPA"
+profiles:
+  - name: "DICOM basic profile"
+    codename: "basic.dicom.profile"
+
+#  - name: "Remove private tags"
+#    codename: "remove.private.tag"
+
+#  - name: "Remove overlays"
+#    codename: "remove.overlay"
+
+#   - name: "Keep only mandatory SOPClass elements"
+#     codename: "keep.mandatory.sop"

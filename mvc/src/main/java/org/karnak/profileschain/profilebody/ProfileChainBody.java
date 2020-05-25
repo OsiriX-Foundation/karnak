@@ -6,6 +6,7 @@ public class ProfileChainBody {
     private String name;
     private String version;
     private String minimumkarnakversion;
+    private String defaultIssuerOfPatientID;
     private List<ProfileBody> profiles;
 
     public String getName() {
@@ -38,5 +39,13 @@ public class ProfileChainBody {
 
     public void setProfiles(List<ProfileBody> profiles) {
         this.profiles = profiles;
+    }
+
+    public String getDefaultIssuerOfPatientID() {
+        return defaultIssuerOfPatientID;
+    }
+
+    public void setDefaultIssuerOfPatientID(String defaultIssuerOfPatientID) {
+        this.defaultIssuerOfPatientID = defaultIssuerOfPatientID;
     }
 }
