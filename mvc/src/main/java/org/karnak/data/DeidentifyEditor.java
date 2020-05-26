@@ -24,7 +24,7 @@ public class DeidentifyEditor implements AttributeEditor {
 
     public DeidentifyEditor(URL url) {
         this.profileChain = new ProfileChain(url);
-        this.enable = !profileChain.getSortedSet().isEmpty();
+        this.enable = true;
     }
 
     @Override

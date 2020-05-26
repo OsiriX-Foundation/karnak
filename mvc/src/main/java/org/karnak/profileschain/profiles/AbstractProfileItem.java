@@ -1,5 +1,7 @@
 package org.karnak.profileschain.profiles;
 
+import org.dcm4che6.data.DicomElement;
+import org.karnak.profileschain.action.Action;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -8,6 +10,7 @@ public abstract class AbstractProfileItem implements ProfileItem {
 
     public enum Type {
         BASIC_DICOM(StandardProfile.class, "basic.dicom.profile"),
+        KEEP_ALL(KeepAllTags.class, "keep.all.tags"),
         REMOVE_OVERLAY(OverlaysProfile.class, "remove.overlay"),
         REMOVE_PRIVATE_TAG(PrivateTagsProfile.class, "remove.private.tag"),
         REPLACE_UID(UpdateUIDsProfile.class, "replace.uid"),
@@ -42,10 +45,12 @@ public abstract class AbstractProfileItem implements ProfileItem {
 
     protected final String name;
     protected final String codeName;
+    protected final ProfileItem profileParent;
 
-    public AbstractProfileItem(String name, String codeName) {
+    public AbstractProfileItem(String name, String codeName, ProfileItem profileParent) {
         this.name = name;
         this.codeName = codeName;
+        this.profileParent = profileParent;
     }
 
     public String getName() {
@@ -54,6 +59,17 @@ public abstract class AbstractProfileItem implements ProfileItem {
 
     public String getCodeName() {
         return codeName;
+    }
+
+    public ProfileItem getProfileParent() {
+        return profileParent;
+    }
+
+    public Action getParentAction(DicomElement dcmElem) {
+        if (this.profileParent != null) {
+            return this.profileParent.getAction(dcmElem);
+        }
+        return Action.REMOVE;
     }
 
     @Override

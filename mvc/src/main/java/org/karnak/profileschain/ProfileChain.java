@@ -27,13 +27,13 @@ public class ProfileChain {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProfileChain.class);
 
     private final URL profileURL;
-    private final Set<ProfileItem> sortedSet;
     private final ProfileChainBody profileChainYml;
+    private ProfileItem profile;
 
     public ProfileChain(URL profileURL) {
         this.profileURL = profileURL;
         this.profileChainYml = init(profileURL);
-        this.sortedSet = createProfileChain();
+        this.profile = createProfileChain();
     }
 
     private ProfileChainBody init(URL profileURL) {
@@ -46,34 +46,31 @@ public class ProfileChain {
         return null;
     }
 
-    public Set<ProfileItem> createProfileChain() {
+    public ProfileItem createProfileChain() {
         if (profileChainYml != null) {
-            LinkedHashSet<ProfileItem> sortedSet = new LinkedHashSet<ProfileItem>();
             final List<ProfileBody> profilesYml = profileChainYml.getProfiles();
+            ProfileItem parent = null;
             for (ProfileBody profileYml : profilesYml) {
                 AbstractProfileItem.Type t = AbstractProfileItem.Type.getType(profileYml.getCodename());
                 if (t == null) {
                     LOGGER.error("Cannot find the profile codename: {}", profileYml.getCodename());
                 } else {
+                    Object instanceProfileItem;
                     try {
-                        Object instance = t.getProfileClass().getConstructor(String.class, String.class).newInstance(profileYml.getName(), profileYml.getCodename());
-                        sortedSet.add(t.getProfileClass().cast(instance));
+                        instanceProfileItem = t.getProfileClass().getConstructor(String.class, String.class, ProfileItem.class).newInstance(profileYml.getName(), profileYml.getCodename(), parent);
+                        parent = (ProfileItem) instanceProfileItem;
                     } catch (Exception e) {
                         LOGGER.error("Cannot build the profile: {}", t.getProfileClass().getName());
                     }
                 }
             }
-            return sortedSet;
+            return parent;
         }
-        return Collections.emptySet();
+        return null;
     }
 
     public URL getProfileURL() {
         return profileURL;
-    }
-
-    public Set<ProfileItem> getSortedSet() {
-        return sortedSet;
     }
 
     public String getMainzellistePseudonym(DicomObject dcm) {
@@ -102,38 +99,41 @@ public class ProfileChain {
     }
 
     public void apply(DicomObject dcm) {
-        String pseudonym = getMainzellistePseudonym(dcm);
+        String pseudonym = getMainzellistePseudonym(dcm) + "ONLY KEEP WITHOUT TEST";
         if(!StringUtil.hasText(pseudonym)){
             throw new IllegalStateException("Cannot build a pseudonym");
         }
-
         for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext(); ) {
             DicomElement dcmEl = iterator.next();
-            for (ProfileItem p : sortedSet) {
-                Action action = p.getAction(dcmEl);
-                if (action != null) {
-                    try {
-                        ActionStrategy.Output out = action.execute(dcm, dcmEl.tag(), pseudonym, null);
-                        if (out == ActionStrategy.Output.TO_REMOVE) {
-                            iterator.remove();
-                        }
-                    } catch (final Exception e) {
-                        LOGGER.error("Cannot execute the action {}", action, e);
-                    }
-                    continue;
+            final Action action = this.profile.getAction(dcmEl);
+            try {
+                ActionStrategy.Output out = action.execute(dcm, dcmEl.tag(), pseudonym, null);
+                if (out == ActionStrategy.Output.TO_REMOVE) {
+                    iterator.remove();
                 }
+            } catch (final Exception e) {
+                LOGGER.error("Cannot execute the action {}", action, e);
             }
         }
-
         String profileFilename = profileChainYml.getName();
         dcm.setString(Tag.PatientID, VR.LO,  pseudonym);
         dcm.setString(Tag.PatientName, VR.LO,  pseudonym);
-        dcm.setString(Tag.PatientIdentityRemoved, VR.CS,  "YES"); // TODO pixel data is missing
-        dcm.setString(Tag.DeidentificationMethod, VR.LO,  sortedSet.stream().map(p -> p.getCodeName()).toArray(String[]::new));
-
-        //dcm.setString(Tag.ClinicalTrialSponsorName, VR.LO, PiName);
+        dcm.setString(Tag.PatientIdentityRemoved, VR.CS,  "YES");
+        // 0012,0063 -> module patient
+        // A description or label of the mechanism or method use to remove the Patient's identity
+        dcm.setString(Tag.DeidentificationMethod, VR.LO, getCodesName(this.profile, new ArrayList<String>()).toString());
+        /*
+        dcm.setString(Tag.ClinicalTrialSponsorName, VR.LO, getCodesName(this.profile, new ArrayList<String>()).toString());
+        dcm.setString(Tag.ClinicalTrialProtocolID, VR.LO, "123456");
         dcm.setString(Tag.ClinicalTrialSubjectID, VR.LO, pseudonym);
-        //       dcm.setString(Tag.ClinicalTrialProtocolID, VR.LO, hash(profileFilename));
+         */
     }
 
+    public ArrayList<String> getCodesName(ProfileItem profile, ArrayList<String> output) {
+        output.add(profile.getCodeName());
+        if (profile.getProfileParent() != null) {
+            return getCodesName(profile.getProfileParent(), output);
+        }
+        return output;
+    }
 }

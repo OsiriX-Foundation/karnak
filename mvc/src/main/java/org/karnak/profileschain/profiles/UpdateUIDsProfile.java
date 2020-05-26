@@ -6,8 +6,8 @@ import org.karnak.profileschain.action.Action;
 
 public class UpdateUIDsProfile extends AbstractProfileItem {
 
-    public UpdateUIDsProfile(String name, String codeName) {
-        super(name, codeName);
+    public UpdateUIDsProfile(String name, String codeName, ProfileItem parentProfile) {
+        super(name, codeName, parentProfile);
     }
 
     @Override

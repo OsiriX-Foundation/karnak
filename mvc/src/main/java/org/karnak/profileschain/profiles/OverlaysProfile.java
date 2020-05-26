@@ -7,8 +7,8 @@ import org.karnak.profileschain.action.Action;
 
 public class OverlaysProfile extends AbstractProfileItem {
 
-    public OverlaysProfile(String name, String codeName) {
-        super(name, codeName);
+    public OverlaysProfile(String name, String codeName, ProfileItem parentProfile) {
+        super(name, codeName, parentProfile);
     }
 
     @Override
@@ -17,6 +17,6 @@ public class OverlaysProfile extends AbstractProfileItem {
         if ((dcmElem.tag() & Tag.OverlayData) != 0) {
             return Action.REMOVE;
         }
-        return null;
+        return this.getParentAction(dcmElem);
     }
 }

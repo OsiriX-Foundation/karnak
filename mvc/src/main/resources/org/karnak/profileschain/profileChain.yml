@@ -3,8 +3,11 @@ version: "0.9.4"
 minimumkarnakversion: "0.1"
 defaultIssuerOfPatientID: "DPA"
 profiles:
-  - name: "DICOM basic profile"
-    codename: "basic.dicom.profile"
+  - name: "Black list system"
+    codename: "keep.all.tags"
+
+#  - name: "DICOM basic profile"
+#    codename: "basic.dicom.profile"
 
 #  - name: "Remove private tags"
 #    codename: "remove.private.tag"

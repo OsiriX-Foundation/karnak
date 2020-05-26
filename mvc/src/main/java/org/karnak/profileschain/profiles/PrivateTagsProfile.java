@@ -6,8 +6,8 @@ import org.karnak.profileschain.action.Action;
 
 public class PrivateTagsProfile extends AbstractProfileItem {
 
-    public PrivateTagsProfile(String name, String codeName) {
-        super(name, codeName);
+    public PrivateTagsProfile(String name, String codeName, ProfileItem parentProfile) {
+        super(name, codeName, parentProfile);
     }
 
     @Override
@@ -15,6 +15,6 @@ public class PrivateTagsProfile extends AbstractProfileItem {
         if (TagUtils.isPrivateGroup(dcmElem.tag())) {
             return Action.REMOVE;
         }
-        return null;
+        return this.getParentAction(dcmElem);
     }
 }
