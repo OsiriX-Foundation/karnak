@@ -99,7 +99,8 @@ public class ProfileChain {
     }
 
     public void apply(DicomObject dcm) {
-        String pseudonym = getMainzellistePseudonym(dcm) + "ONLY KEEP WITHOUT TEST";
+        String pseudonym = getMainzellistePseudonym(dcm);
+        String profileChainCodeName = getCodesName(this.profile, new ArrayList<String>()).toString();
         if(!StringUtil.hasText(pseudonym)){
             throw new IllegalStateException("Cannot build a pseudonym");
         }
@@ -107,7 +108,7 @@ public class ProfileChain {
             DicomElement dcmEl = iterator.next();
             final Action action = this.profile.getAction(dcmEl);
             try {
-                ActionStrategy.Output out = action.execute(dcm, dcmEl.tag(), pseudonym, null);
+                ActionStrategy.Output out = action.execute(dcm, dcmEl.tag(), pseudonym + profileChainCodeName, null);
                 if (out == ActionStrategy.Output.TO_REMOVE) {
                     iterator.remove();
                 }
@@ -116,12 +117,12 @@ public class ProfileChain {
             }
         }
         String profileFilename = profileChainYml.getName();
-        dcm.setString(Tag.PatientID, VR.LO,  pseudonym);
-        dcm.setString(Tag.PatientName, VR.LO,  pseudonym);
+        dcm.setString(Tag.PatientID, VR.LO,  pseudonym + profileChainCodeName);
+        dcm.setString(Tag.PatientName, VR.LO,  pseudonym + profileChainCodeName);
         dcm.setString(Tag.PatientIdentityRemoved, VR.CS,  "YES");
         // 0012,0063 -> module patient
         // A description or label of the mechanism or method use to remove the Patient's identity
-        dcm.setString(Tag.DeidentificationMethod, VR.LO, getCodesName(this.profile, new ArrayList<String>()).toString());
+        dcm.setString(Tag.DeidentificationMethod, VR.LO, profileChainCodeName);
         /*
         dcm.setString(Tag.ClinicalTrialSponsorName, VR.LO, getCodesName(this.profile, new ArrayList<String>()).toString());
         dcm.setString(Tag.ClinicalTrialProtocolID, VR.LO, "123456");
