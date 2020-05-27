@@ -246,7 +246,6 @@ public class PseudonymApi {
             builder.append("=");
             builder.append(URLEncoder.encode(entry.getValue().toString(), StandardCharsets.UTF_8));
         }
-        System.out.println(builder.toString());
         return HttpRequest.BodyPublishers.ofString(builder.toString());
     }
 
