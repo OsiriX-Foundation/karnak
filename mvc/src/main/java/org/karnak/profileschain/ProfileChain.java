@@ -6,12 +6,15 @@ import org.dcm4che6.data.Tag;
 import org.dcm4che6.data.VR;
 import org.karnak.api.PseudonymApi;
 import org.karnak.api.rqbody.Fields;
+import org.karnak.data.AppConfig;
 import org.karnak.profileschain.action.Action;
 import org.karnak.profileschain.action.ActionStrategy;
 import org.karnak.profileschain.profilebody.ProfileBody;
 import org.karnak.profileschain.profilebody.ProfileChainBody;
 import org.karnak.profileschain.profiles.AbstractProfileItem;
+import org.karnak.profileschain.profiles.BasicDicomProfile;
 import org.karnak.profileschain.profiles.ProfileItem;
+import org.karnak.profileschain.utils.HMAC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.weasis.core.util.StringUtil;
@@ -19,6 +22,7 @@ import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
 import java.io.InputStream;
+import java.math.BigInteger;
 import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -29,6 +33,9 @@ public class ProfileChain {
     private final URL profileURL;
     private final ProfileChainBody profileChainYml;
     private ProfileItem profile;
+    private HMAC hmac;{
+        hmac = AppConfig.getInstance().getHmac();
+    }
 
     public ProfileChain(URL profileURL) {
         this.profileURL = profileURL;
@@ -101,6 +108,8 @@ public class ProfileChain {
     public void apply(DicomObject dcm) {
         String pseudonym = getMainzellistePseudonym(dcm);
         String profileChainCodeName = getCodesName(this.profile, new ArrayList<String>()).toString();
+        String patientName = generatePatientName(pseudonym, profileChainCodeName);
+
         if(!StringUtil.hasText(pseudonym)){
             throw new IllegalStateException("Cannot build a pseudonym");
         }
@@ -108,7 +117,7 @@ public class ProfileChain {
             DicomElement dcmEl = iterator.next();
             final Action action = this.profile.getAction(dcmEl);
             try {
-                ActionStrategy.Output out = action.execute(dcm, dcmEl.tag(), pseudonym + profileChainCodeName, null);
+                ActionStrategy.Output out = action.execute(dcm, dcmEl.tag(), patientName, null);
                 if (out == ActionStrategy.Output.TO_REMOVE) {
                     iterator.remove();
                 }
@@ -117,17 +126,21 @@ public class ProfileChain {
             }
         }
         String profileFilename = profileChainYml.getName();
-        dcm.setString(Tag.PatientID, VR.LO,  pseudonym + profileChainCodeName);
-        dcm.setString(Tag.PatientName, VR.LO,  pseudonym + profileChainCodeName);
+        dcm.setString(Tag.PatientID, VR.LO,  patientName);
+        dcm.setString(Tag.PatientName, VR.LO,  patientName);
         dcm.setString(Tag.PatientIdentityRemoved, VR.CS,  "YES");
         // 0012,0063 -> module patient
         // A description or label of the mechanism or method use to remove the Patient's identity
         dcm.setString(Tag.DeidentificationMethod, VR.LO, profileChainCodeName);
-        /*
-        dcm.setString(Tag.ClinicalTrialSponsorName, VR.LO, getCodesName(this.profile, new ArrayList<String>()).toString());
-        dcm.setString(Tag.ClinicalTrialProtocolID, VR.LO, "123456");
+        dcm.setString(Tag.ClinicalTrialSponsorName, VR.LO, profileChainCodeName);
+        dcm.setString(Tag.ClinicalTrialProtocolID, VR.LO, profileFilename);
         dcm.setString(Tag.ClinicalTrialSubjectID, VR.LO, pseudonym);
-         */
+    }
+
+    public String generatePatientName(String pseudonym, String profiles) {
+        byte[] bytes = new byte[16];
+        System.arraycopy(hmac.byteHash(pseudonym+profiles), 0 , bytes, 0, 16);
+        return new BigInteger(1, bytes).toString();
     }
 
     public ArrayList<String> getCodesName(ProfileItem profile, ArrayList<String> output) {
