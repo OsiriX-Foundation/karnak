@@ -154,7 +154,7 @@ public class PseudonymApi {
 
     /***
      * Make the request to have a token that allow to get patient(s)
-     * @param SearchIds 
+     * @param searchIds
      * @return Patients
      */
     public String rqCreateTokenReadPatient(SearchIds [] searchIds) {
@@ -186,6 +186,7 @@ public class PseudonymApi {
      */
     public String rqCreatePatient(String tokenId) {
         Map<Object, Object> data = new HashMap<>();
+        data.put("sureness", true);
         HttpRequest request = HttpRequest.newBuilder()
         .POST(buildFormDataFromMap(data))
         .uri(URI.create(this.SERVER_URL + "/patients?tokenId="+tokenId))
@@ -251,7 +252,7 @@ public class PseudonymApi {
 
     /***
      * This method allow to create a json body for addPatient in pseudonym api
-     * @param patient Patient that we want to add in pseudonym api.
+     * @param patientFields Patient that we want to add in pseudonym api.
      * @return String json body
      */
     private String createJsonRequest(Fields patientFields) {
@@ -266,7 +267,7 @@ public class PseudonymApi {
 
     /***
      * This method allow to create a json body for readPatients in pseudonym api
-     * @param patient SearchIds that we want to read in pseudonym api.
+     * @param searchIds SearchIds that we want to read in pseudonym api.
      * @return String json body
      */
     private String createJsonReadPatient(SearchIds [] searchIds) {
