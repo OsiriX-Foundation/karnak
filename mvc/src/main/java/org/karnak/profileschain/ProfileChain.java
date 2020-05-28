@@ -127,7 +127,7 @@ public class ProfileChain {
         }
         String profileFilename = profileChainYml.getName();
         dcm.setString(Tag.PatientID, VR.LO,  patientName);
-        dcm.setString(Tag.PatientName, VR.LO,  patientName);
+        dcm.setString(Tag.PatientName, VR.PN,  patientName);
         dcm.setString(Tag.PatientIdentityRemoved, VR.CS,  "YES");
         // 0012,0063 -> module patient
         // A description or label of the mechanism or method use to remove the Patient's identity
@@ -135,6 +135,9 @@ public class ProfileChain {
         dcm.setString(Tag.ClinicalTrialSponsorName, VR.LO, profileChainCodeName);
         dcm.setString(Tag.ClinicalTrialProtocolID, VR.LO, profileFilename);
         dcm.setString(Tag.ClinicalTrialSubjectID, VR.LO, pseudonym);
+        dcm.setString(Tag.ClinicalTrialProtocolName, VR.LO);
+        dcm.setString(Tag.ClinicalTrialSiteID, VR.LO);
+        dcm.setString(Tag.ClinicalTrialSiteName, VR.LO);
     }
 
     public String generatePatientName(String pseudonym, String profiles) {
