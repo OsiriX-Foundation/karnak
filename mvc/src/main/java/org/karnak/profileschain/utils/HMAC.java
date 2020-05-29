@@ -3,6 +3,7 @@ package org.karnak.profileschain.utils;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.nio.file.Files;
@@ -17,7 +18,7 @@ public class HMAC {
     private Mac mac;
 
     private static final String HMAC_SHA256 = "HmacSHA256";
-    private static final String keyPath = "mvc/src/main/resources/karnak_profile_hmac";
+    private static final String keyPath = "karnak_profile_hmac";
 
     public HMAC() {
         String key = readTextFile(this.keyPath);
@@ -44,13 +45,12 @@ public class HMAC {
     }
 
     private String readTextFile(String keyPath) {
-        Path filePath = Paths.get(keyPath);
         String content = "";
         try {
+            InputStream inputStream = this.getClass().getResourceAsStream(keyPath);
             // readAllBytes ensures that the file is closed when all bytes have been read.
-            byte[] data = Files.readAllBytes(filePath);
+            byte[] data = inputStream.readAllBytes();
             content = new String(data);
-
         } catch (IOException e) {
             LOGGER.error("Cannot read HMACKey file", e);
         }
