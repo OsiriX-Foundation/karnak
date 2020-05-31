@@ -95,14 +95,30 @@ public class ProfileChain {
         return pseudonym;
     }
 
-    public static List<DicomObject> getSequence(DicomObject dicom, int tagSeq) {
-        if (dicom != null) {
-            Optional<DicomElement> item = dicom.get(tagSeq);
-            if (item.isPresent() && !item.get().isEmpty() && item.get().vr() == VR.SQ) {
-                return item.get().itemStream().collect(Collectors.toList());
+    public void getSequence(DicomElement dcmEl, String patientName, ActionStrategy.Output output) {
+        final VR vr = dcmEl.vr();
+        if (vr == VR.SQ && output == ActionStrategy.Output.PRESERVED) {
+            List<DicomObject> ldcm = dcmEl.itemStream().collect(Collectors.toList());
+            for (DicomObject dcm: ldcm) {
+                applyAction(dcm, patientName);
             }
         }
-        return Collections.emptyList();
+    }
+
+    public void applyAction(DicomObject dcm, String patientName) {
+        for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext(); ) {
+            DicomElement dcmEl = iterator.next();
+            final Action action = this.profile.getAction(dcmEl);
+            try {
+                ActionStrategy.Output out = action.execute(dcm, dcmEl.tag(), patientName, null);
+                getSequence(dcmEl, patientName, out);
+                if (out == ActionStrategy.Output.TO_REMOVE) {
+                    iterator.remove();
+                }
+            } catch (final Exception e) {
+                LOGGER.error("Cannot execute the action {}", action, e);
+            }
+        }
     }
 
     public void apply(DicomObject dcm) {
@@ -113,18 +129,9 @@ public class ProfileChain {
         if(!StringUtil.hasText(pseudonym)){
             throw new IllegalStateException("Cannot build a pseudonym");
         }
-        for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext(); ) {
-            DicomElement dcmEl = iterator.next();
-            final Action action = this.profile.getAction(dcmEl);
-            try {
-                ActionStrategy.Output out = action.execute(dcm, dcmEl.tag(), patientName, null);
-                if (out == ActionStrategy.Output.TO_REMOVE) {
-                    iterator.remove();
-                }
-            } catch (final Exception e) {
-                LOGGER.error("Cannot execute the action {}", action, e);
-            }
-        }
+
+        applyAction(dcm, patientName);
+
         String profileFilename = profileChainYml.getName();
         dcm.setString(Tag.PatientID, VR.LO,  patientName);
         dcm.setString(Tag.PatientName, VR.PN,  patientName);
