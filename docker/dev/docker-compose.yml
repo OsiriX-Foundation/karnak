@@ -1,17 +1,5 @@
-version: '3.7'
-
+version: "3.1"
 services:
-  karnak:
-    image: docker.io/library/karnak-mvc:5.0.0-SNAPSHOT
-    ports:
-      - "${DICOM_LISTENER_PORT}:11119"
-      - "${KARNAK_WEB_PORT}:8081"
-    env_file: karnak.env
-    depends_on:
-      - karnak-db
-    #volumes:
-    # - ./destination:/var/lib/karnak
-
   mainzelliste-db:
     image: postgres:9.5-alpine
     environment:
@@ -25,8 +13,10 @@ services:
 
   mainzelliste:
     image: medicalinformatics/mainzelliste:1.8-latest
-    volumes:
+    volumes:  
       - ./mainzelliste/mainzelliste.conf:/mainzelliste.conf.default
+    ports:
+      - ${MAINZELLISTE_WEB_PORT}:8080
     environment:
       - ML_REVERSEPROXY_FQDN=mainzelliste
       - ML_DB_HOST=mainzelliste-db
@@ -42,6 +32,8 @@ services:
       - POSTGRES_DB=karnak
       - POSTGRES_USER=karnak
       - POSTGRES_PASSWORD_FILE=/run/secrets/postgres_karnak_password
+    ports:
+      - ${KARNAK_PG_PORT}:5432
     volumes:
       - karnak-db-data:/var/lib/postgresql/data
     secrets:
