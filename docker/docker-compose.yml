@@ -7,7 +7,7 @@ services:
       - POSTGRES_USER=mainzelliste
       - POSTGRES_PASSWORD=PleasePutASafePasswordHere
     ports:
-      - 5444:5432
+      - ${MAINZELLISTE_PG_PORT}:5432
     volumes:
       - db-scripts:/docker-entrypoint-initdb.d
       - db-data:/var/lib/postgresql/data
@@ -16,7 +16,7 @@ services:
     volumes:  
       - ./mainzelliste/mainzelliste.conf:/mainzelliste.conf.default
     ports:
-      - "8083:8080"
+      - ${MAINZELLISTE_WEB_PORT}:8080
     environment:
       - ML_REVERSEPROXY_FQDN=mainzelliste
       - ML_DB_PASS=PleasePutASafePasswordHere
@@ -26,14 +26,14 @@ services:
   postgresidp:
     image: postgres:12.1-alpine
     environment:
-      POSTGRES_DB: karnak
-      POSTGRES_USER: karnak
-      POSTGRES_PASSWORD: 5!KAnN@%98%d
+      POSTGRES_DB: ${KARNAK_PG_DB}
+      POSTGRES_USER: ${KARNAK_PG_USER}
+      POSTGRES_PASSWORD: ${KARNAK_PG_PASSWORD}
     ports:
-      - 5433:5432
+      - ${KARNAK_PG_PORT}:5432
     volumes:
       - karnak-db-data:/var/lib/postgresql/data
-  
+
 volumes:
   db-scripts:
   db-data:

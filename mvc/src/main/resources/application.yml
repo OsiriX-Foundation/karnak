@@ -20,14 +20,14 @@ logging:
   pattern:
     console: '%-5level %logger{36} - %msg%n'
 server:
-  port: 8081
+  port: ${KARNAK_WEB_PORT}
 spring:
   profiles:
     active: '@activatedProperties@'
   datasource:
-    password: 5!KAnN@%98%d
-    url: 'jdbc:postgresql://localhost:5433/karnak'
-    username: karnak
+    password: ${KARNAK_PG_PASSWORD}
+    url: 'jdbc:postgresql://localhost:${KARNAK_PG_PORT}/${KARNAK_PG_DB}'
+    username: ${KARNAK_PG_USER}
     hikari:
       leak-detection-threshold: 2000
       minimum-idle: 5
