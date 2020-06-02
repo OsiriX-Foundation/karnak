@@ -6,8 +6,8 @@ profiles:
   - name: "Black list system"
     codename: "keep.all.tags"
 
-#  - name: "DICOM basic profile"
-#    codename: "basic.dicom.profile"
+  - name: "DICOM basic profile"
+    codename: "basic.dicom.profile"
 
 #  - name: "Remove private tags"
 #    codename: "remove.private.tag"
