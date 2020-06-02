@@ -2,15 +2,26 @@ version: '3.7'
 
 services:
   karnak:
-    image: docker.io/library/karnak-mvc:5.0.0-SNAPSHOT
+    image: karnak-hardcoded:latest
     ports:
       - "${DICOM_LISTENER_PORT}:11119"
-      - "${KARNAK_WEB_PORT}:8081"
+      - "${KARNAK_WEB_PORT}:8088"
     env_file: karnak.env
     depends_on:
       - karnak-db
     #volumes:
     # - ./destination:/var/lib/karnak
+
+  karnak-db:
+    image: postgres:12.1-alpine
+    environment:
+      - POSTGRES_DB=karnak
+      - POSTGRES_USER=karnak
+      - POSTGRES_PASSWORD_FILE=/run/secrets/postgres_karnak_password
+    volumes:
+      - karnak-db-data:/var/lib/postgresql/data
+    secrets:
+      - postgres_karnak_password
 
   mainzelliste-db:
     image: postgres:9.5-alpine
@@ -35,17 +46,6 @@ services:
       - mainzellisteApiKey
     depends_on:
       - mainzelliste-db
-
-  karnak-db:
-    image: postgres:12.1-alpine
-    environment:
-      - POSTGRES_DB=karnak
-      - POSTGRES_USER=karnak
-      - POSTGRES_PASSWORD_FILE=/run/secrets/postgres_karnak_password
-    volumes:
-      - karnak-db-data:/var/lib/postgresql/data
-    secrets:
-      - postgres_karnak_password
 
 secrets:
   postgres_karnak_password:
