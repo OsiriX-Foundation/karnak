@@ -233,6 +233,13 @@
 				<configuration>
 					<jvmArguments>-Djava.library.path="${java.io.tmpdir}/dicom-opencv-${weasis.opencv.native.version}"</jvmArguments>
 				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<!-- Take care of synchronizing java dependencies and imports in package.json and main.js files. It also creates webpack.config.js 
 				if not exists yet. -->
