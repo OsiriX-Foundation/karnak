@@ -29,10 +29,16 @@ public class StandardProfile extends AbstractProfileItem {
             if (TagUtils.isPrivateGroup(tag)) {
                 return Action.REMOVE;
             }
-            if ((dcmElem.tag() & Tag.OverlayData) != 0) {
+            //Curve Data
+            if((dcmElem.tag() & 0xFF000000) == 0x50000000){
                 return Action.REMOVE;
             }
-            if ((dcmElem.tag() & Tag.OverlayComments) != 0) {
+            //Overlay Data
+            if((dcmElem.tag() & 0xFF00FFFF) == 0x60003000){
+                return Action.REMOVE;
+            }
+            // Overlay Comments
+            if((dcmElem.tag() & 0xFF00FFFF) == 0x60004000){
                 return Action.REMOVE;
             }
             return this.getParentAction(dcmElem);

@@ -14,10 +14,12 @@ public class OverlaysProfile extends AbstractProfileItem {
     @Override
     public Action getAction(DicomElement dcmElem) {
         // TODO implement all required tags
-        if ((dcmElem.tag() & Tag.OverlayData) != 0) {
+        //Overlay Data
+        if((dcmElem.tag() & 0xFF00FFFF) == 0x60003000){
             return Action.REMOVE;
         }
-        if ((dcmElem.tag() & Tag.OverlayComments) != 0) {
+        // Overlay Comments
+        if((dcmElem.tag() & 0xFF00FFFF) == 0x60004000){
             return Action.REMOVE;
         }
         return this.getParentAction(dcmElem);
