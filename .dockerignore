@@ -1,0 +1,7 @@
+**/.gitignore
+**/.git
+**/Dockerfile
+**/.dockerignore
+**/README.md
+**/docker
+**/doc
