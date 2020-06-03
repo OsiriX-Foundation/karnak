@@ -17,6 +17,9 @@ public class OverlaysProfile extends AbstractProfileItem {
         if ((dcmElem.tag() & Tag.OverlayData) != 0) {
             return Action.REMOVE;
         }
+        if ((dcmElem.tag() & Tag.OverlayComments) != 0) {
+            return Action.REMOVE;
+        }
         return this.getParentAction(dcmElem);
     }
 }
