@@ -33,6 +33,7 @@ public class PseudonymApi {
     private static final Logger log = LoggerFactory.getLogger(PseudonymApi.class);
     private final String SERVER_URL = "http://localhost:8083";
     private final String API_KEY = "changeThisApiKey";
+    private final String ID_TYPES = "pid";
 
     private final HttpClient httpClient = HttpClient.newBuilder() // one instance, reuse
             .version(HttpClient.Version.HTTP_2).build();
@@ -63,7 +64,7 @@ public class PseudonymApi {
      * @return patient
      */
     public JSONArray searchPatient(String pseudonym){
-        SearchIds [] searchIds = {new SearchIds("elasticid", pseudonym)}; //search example
+        SearchIds [] searchIds = {new SearchIds(ID_TYPES, pseudonym)}; //search example
         JSONArray patientsReturns = getPatients(searchIds);
         return patientsReturns;
     }
@@ -257,7 +258,7 @@ public class PseudonymApi {
     private String createJsonRequest(Fields patientFields) {
         Fields field = patientFields;
         Ids ids = new Ids (""); // IDS not use 
-        String [] idtypes = {"elasticid"};    //pseudonymisation type
+        String [] idtypes = {ID_TYPES};    //pseudonymisation type
         Data data = new Data(idtypes, field, ids); 
         Body bodyRequest= new Body("addPatient", data);
         Gson gson = new Gson();

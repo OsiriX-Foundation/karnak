@@ -81,17 +81,16 @@ public class ProfileChain {
     }
 
     public String getMainzellistePseudonym(DicomObject dcm) {
-        String patientID = dcm.getString(Tag.PatientID).orElse(null);
-        String patientName = dcm.getString(Tag.PatientName).orElse(null);
-        String patientBirthDate = dcm.getString(Tag.PatientBirthDate).orElse(null);
-        String patientSex = dcm.getString(Tag.PatientSex).orElse(null);
+        final String patientID = dcm.getString(Tag.PatientID).orElse(null);
+        final String patientName = dcm.getString(Tag.PatientName).orElse(null);
+        final String patientBirthDate = dcm.getString(Tag.PatientBirthDate).orElse(null);
+        final String patientSex = dcm.getString(Tag.PatientSex).orElse(null);
         // Issuer of patientID is recommended to make the patientID universally unique. Can be defined in profile if missing.
-        String issuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID).orElse(profileChainYml.getDefaultIssuerOfPatientID());
+        final String issuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID).orElse(profileChainYml.getDefaultIssuerOfPatientID());
 
         PseudonymApi pseudonymApi = new PseudonymApi();
-        Fields newPatientFields = new Fields(patientID, patientName, patientBirthDate, patientSex, issuerOfPatientID);
-        String pseudonym = pseudonymApi.createPatient(newPatientFields);
-        pseudonymApi.searchPatient(pseudonym);
+        final Fields newPatientFields = new Fields(patientID, patientName, patientBirthDate, patientSex, issuerOfPatientID);
+        final String pseudonym = pseudonymApi.createPatient(newPatientFields);
         return pseudonym;
     }
 
