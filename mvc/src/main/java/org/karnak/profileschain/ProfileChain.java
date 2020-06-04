@@ -96,7 +96,7 @@ public class ProfileChain {
 
     public void getSequence(DicomElement dcmEl, String patientName, ActionStrategy.Output output) {
         final VR vr = dcmEl.vr();
-        if (vr == VR.SQ && output == ActionStrategy.Output.PRESERVED) {
+        if (vr == VR.SQ && output != ActionStrategy.Output.TO_REMOVE) {
             List<DicomObject> ldcm = dcmEl.itemStream().collect(Collectors.toList());
             for (DicomObject dcm: ldcm) {
                 applyAction(dcm, patientName);
