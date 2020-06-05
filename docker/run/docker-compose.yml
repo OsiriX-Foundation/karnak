@@ -9,6 +9,9 @@ services:
     env_file: karnak.env
     depends_on:
       - karnak-db
+    secrets:
+      - postgres_karnak_password
+      - mainzellisteApiKey
     #volumes:
     # - ./destination:/var/lib/karnak
 

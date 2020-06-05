@@ -25,6 +25,8 @@ FROM openjdk:14.0-jdk as production-stage
 WORKDIR /app
 
 COPY --from=build-stage /build/mvc/target/karnak-mvc-5.0.0-SNAPSHOT.jar /app/karnak-mvc-5.0.0-SNAPSHOT.jar
+COPY tools/docker-entrypoint.sh .
 
 EXPOSE 8088
-ENTRYPOINT ["java", "-Djava.library.path='/tmp/dicom-opencv'", "-jar", "/app/karnak-mvc-5.0.0-SNAPSHOT.jar"]
+ENTRYPOINT ["/app/docker-entrypoint.sh"]
+# ENTRYPOINT ["java", "-Djava.library.path='/tmp/dicom-opencv'", "-jar", "/app/karnak-mvc-5.0.0-SNAPSHOT.jar"]
