@@ -58,10 +58,12 @@ file_env 'MAINZELLISTE_API_KEY'
 : "${MAINZELLISTE_ID_TYPES:=pid}"
 : "${MAINZELLISTE_API_KEY:=undefined}"
 
-SYS_PROPS+=" -Dkarnak.mainzelliste.hostname=$MAINZELLISTE_HOSTNAME"
-SYS_PROPS+=" -Dkarnak.mainzelliste.httpPort=$MAINZELLISTE_HTTP_PORT"
-SYS_PROPS+=" -Dkarnak.mainzelliste.idTypes=$MAINZELLISTE_ID_TYPES"
-SYS_PROPS+=" -Dkarnak.mainzelliste.apiKey=$MAINZELLISTE_API_KEY"
+MAINZELLISTE_SERVER_URL=http://$MAINZELLISTE_HOSTNAME:$MAINZELLISTE_HTTP_PORT
+
+SYS_PROPS+=" -Dmainzelliste.serverurl=$MAINZELLISTE_SERVER_URL"
+SYS_PROPS+=" -Dmainzelliste.idtypes=$MAINZELLISTE_ID_TYPES"
+SYS_PROPS+=" -Dmainzelliste.apikey=$MAINZELLISTE_API_KEY"
+
 
 eval java $SYS_PROPS -jar /app/karnak-mvc-5.0.0-SNAPSHOT.jar
 # exec /opt/jboss/keycloak/bin/standalone.sh $SYS_PROPS $@
