@@ -3,6 +3,10 @@
 #  --------------------------------------------------------
 name: dev-YAML
 environment: LOCAL
+mainzelliste:
+  apikey: 'changeThisApiKey'
+  serverurl: 'http://localhost:8083'
+  idtypes: 'pid'
 logging:
   level:
     com:

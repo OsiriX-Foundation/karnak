@@ -20,6 +20,7 @@ import org.karnak.api.rqbody.Data;
 import org.karnak.api.rqbody.Ids;
 import org.karnak.api.rqbody.SearchIds;
 import org.karnak.api.rqbody.Fields;
+import org.karnak.data.MainzellisteConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,9 +32,10 @@ public class PseudonymApi {
     // Constants -----------------------------------------------------
     // ---------------------------------------------------------------
     private static final Logger log = LoggerFactory.getLogger(PseudonymApi.class);
-    private final String SERVER_URL = "http://mainzelliste:8080";
-    private final String API_KEY = "changeThisApiKey";
-    private final String ID_TYPES = "pid";
+
+    private final String SERVER_URL = MainzellisteConfig.getInstance().getServerurl();
+    private final String API_KEY = MainzellisteConfig.getInstance().getApikey();
+    private final String ID_TYPES = MainzellisteConfig.getInstance().getIdtypes();
 
     private final HttpClient httpClient = HttpClient.newBuilder() // one instance, reuse
             .version(HttpClient.Version.HTTP_2).build();
