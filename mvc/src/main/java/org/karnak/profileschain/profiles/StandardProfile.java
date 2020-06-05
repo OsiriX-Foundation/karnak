@@ -1,11 +1,9 @@
 package org.karnak.profileschain.profiles;
 
 import org.dcm4che6.data.DicomElement;
-import org.dcm4che6.data.DicomObject;
-import org.dcm4che6.data.VR;
+import org.dcm4che6.data.Tag;
 import org.dcm4che6.util.TagUtils;
 import org.karnak.data.AppConfig;
-import org.karnak.data.profile.ProfilePersistence;
 import org.karnak.profileschain.action.Action;
 
 import java.util.HashMap;
@@ -31,15 +29,20 @@ public class StandardProfile extends AbstractProfileItem {
             if (TagUtils.isPrivateGroup(tag)) {
                 return Action.REMOVE;
             }
+            //Curve Data
+            if((dcmElem.tag() & 0xFF000000) == 0x50000000){
+                return Action.REMOVE;
+            }
+            //Overlay Data
+            if((dcmElem.tag() & 0xFF00FFFF) == 0x60003000){
+                return Action.REMOVE;
+            }
+            // Overlay Comments
+            if((dcmElem.tag() & 0xFF00FFFF) == 0x60004000){
+                return Action.REMOVE;
+            }
             return this.getParentAction(dcmElem);
         }
-        /*
-        else {
-            if (dcmElem.vr() == VR.UI && Action.UID.getSymbol().equals(action.getSymbol())) {
-                return Action.UID;
-            }
-        }
-        */
         return action;
     }
 }
