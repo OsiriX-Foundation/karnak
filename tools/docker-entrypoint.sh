@@ -43,11 +43,11 @@ file_env 'DB_PASSWORD'
 : "${DB_HOST:=localhost}"
 : "${DB_PORT:=5432}"
 
-SYS_PROPS+=" -Dkarnak.database.user=$DB_USER"
-SYS_PROPS+=" -Dkarnak.database.password=$DB_PASSWORD"
-SYS_PROPS+=" -Dkarnak.database.name=$DB_NAME"
-SYS_PROPS+=" -Dkarnak.database.host=$DB_HOST"
-SYS_PROPS+=" -Dkarnak.database.port=$DB_PORT"
+DB_URL=jdbc:postgresql://$DB_HOST:$DB_PORT/$DB_NAME
+
+SYS_PROPS+=" -Dspring.datasource.username=$DB_USER"
+SYS_PROPS+=" -Dspring.datasource.password=$DB_PASSWORD"
+SYS_PROPS+=" -Dspring.datasource.url=$DB_URL"
 
 ############################
 # MAINZELLISTE ENVIRONMENT #
@@ -62,7 +62,6 @@ SYS_PROPS+=" -Dkarnak.mainzelliste.hostname=$MAINZELLISTE_HOSTNAME"
 SYS_PROPS+=" -Dkarnak.mainzelliste.httpPort=$MAINZELLISTE_HTTP_PORT"
 SYS_PROPS+=" -Dkarnak.mainzelliste.idTypes=$MAINZELLISTE_ID_TYPES"
 SYS_PROPS+=" -Dkarnak.mainzelliste.apiKey=$MAINZELLISTE_API_KEY"
-
 
 eval java $SYS_PROPS -jar /app/karnak-mvc-5.0.0-SNAPSHOT.jar
 # exec /opt/jboss/keycloak/bin/standalone.sh $SYS_PROPS $@

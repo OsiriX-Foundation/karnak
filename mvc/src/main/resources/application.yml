@@ -25,9 +25,9 @@ spring:
   profiles:
     active: '@activatedProperties@'
   datasource:
-    password: 5!KAnN@%98%d
-    url: 'jdbc:postgresql://karnak-db:5432/karnak'
-    username: karnak
+    password: ${KARNAK_PG_PASSWORD}
+    url: 'jdbc:postgresql://localhost:${KARNAK_PG_PORT}/${KARNAK_PG_DB}'
+    username: ${KARNAK_PG_USER}
     hikari:
       leak-detection-threshold: 2000
       minimum-idle: 5
