@@ -3,17 +3,16 @@ version: "0.9.4"
 minimumkarnakversion: "0.1"
 defaultIssuerOfPatientID: "DPA"
 profiles:
-  - name: "Black list system"
-    codename: "keep.all.tags"
+#  - name: "Black list system"
+#    codename: "keep.all.tags"
+#    policy: "WHITELIST"
 
   - name: "DICOM basic profile"
     codename: "basic.dicom.profile"
+    policy: "BLACKLIST"
 
 #  - name: "Remove private tags"
 #    codename: "remove.private.tag"
-
-#  - name: "Remove overlays"
-#    codename: "remove.overlay"
 
 #   - name: "Keep only mandatory SOPClass elements"
 #     codename: "keep.mandatory.sop"

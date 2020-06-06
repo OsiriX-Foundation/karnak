@@ -8,6 +8,12 @@ import org.karnak.profileschain.action.ActionStrategy;
 public interface ProfileItem {
     Action getAction(DicomElement dcmElem);
 
+    Action put(int tag, Action action);
+
+    Action remove(int tag);
+
+    void clearTagMap();
+
     String getName();
 
     String getCodeName();

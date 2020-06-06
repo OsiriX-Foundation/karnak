@@ -10,8 +10,6 @@ import java.net.URL;
 
 public abstract class ParserProfile {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ParserProfile.class);
-
     abstract public ProfileTable parse(URL url, String profileName);
 
     public static Action convertAction(String strAction) {

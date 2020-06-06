@@ -7,12 +7,12 @@ import org.dcm4che6.data.VR;
 import org.karnak.api.PseudonymApi;
 import org.karnak.api.rqbody.Fields;
 import org.karnak.data.AppConfig;
+import org.karnak.data.profile.Policy;
 import org.karnak.profileschain.action.Action;
 import org.karnak.profileschain.action.ActionStrategy;
 import org.karnak.profileschain.profilebody.ProfileBody;
 import org.karnak.profileschain.profilebody.ProfileChainBody;
 import org.karnak.profileschain.profiles.AbstractProfileItem;
-import org.karnak.profileschain.profiles.BasicDicomProfile;
 import org.karnak.profileschain.profiles.ProfileItem;
 import org.karnak.profileschain.utils.HMAC;
 import org.slf4j.Logger;
@@ -24,7 +24,9 @@ import org.yaml.snakeyaml.constructor.Constructor;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class ProfileChain {
@@ -32,12 +34,11 @@ public class ProfileChain {
 
     private final URL profileURL;
     private final ProfileChainBody profileChainYml;
-    private ProfileItem profile;
-    private HMAC hmac;{
-        hmac = AppConfig.getInstance().getHmac();
-    }
+    private final ProfileItem profile;
+    private final HMAC hmac;
 
     public ProfileChain(URL profileURL) {
+        this.hmac = AppConfig.getInstance().getHmac();
         this.profileURL = profileURL;
         this.profileChainYml = init(profileURL);
         this.profile = createProfileChain();
@@ -64,7 +65,8 @@ public class ProfileChain {
                 } else {
                     Object instanceProfileItem;
                     try {
-                        instanceProfileItem = t.getProfileClass().getConstructor(String.class, String.class, ProfileItem.class).newInstance(profileYml.getName(), profileYml.getCodename(), parent);
+                        Policy type = Policy.valueOf(profileYml.getPolicy());
+                        instanceProfileItem = t.getProfileClass().getConstructor(String.class, String.class, Policy.class, ProfileItem.class).newInstance(profileYml.getName(), profileYml.getCodename(), type, parent);
                         parent = (ProfileItem) instanceProfileItem;
                     } catch (Exception e) {
                         LOGGER.error("Cannot build the profile: {}", t.getProfileClass().getName());
@@ -98,7 +100,7 @@ public class ProfileChain {
         final VR vr = dcmEl.vr();
         if (vr == VR.SQ && output != ActionStrategy.Output.TO_REMOVE) {
             List<DicomObject> ldcm = dcmEl.itemStream().collect(Collectors.toList());
-            for (DicomObject dcm: ldcm) {
+            for (DicomObject dcm : ldcm) {
                 applyAction(dcm, patientName);
             }
         }
@@ -108,14 +110,16 @@ public class ProfileChain {
         for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext(); ) {
             DicomElement dcmEl = iterator.next();
             final Action action = this.profile.getAction(dcmEl);
-            try {
-                ActionStrategy.Output out = action.execute(dcm, dcmEl.tag(), patientName, null);
-                getSequence(dcmEl, patientName, out);
-                if (out == ActionStrategy.Output.TO_REMOVE) {
-                    iterator.remove();
+            if (action != null) {
+                try {
+                    ActionStrategy.Output out = action.execute(dcm, dcmEl.tag(), patientName, null);
+                    getSequence(dcmEl, patientName, out);
+                    if (out == ActionStrategy.Output.TO_REMOVE) {
+                        iterator.remove();
+                    }
+                } catch (final Exception e) {
+                    LOGGER.error("Cannot execute the action {}", action, e);
                 }
-            } catch (final Exception e) {
-                LOGGER.error("Cannot execute the action {}", action, e);
             }
         }
     }
@@ -125,16 +129,16 @@ public class ProfileChain {
         String profileChainCodeName = getCodesName(this.profile, new ArrayList<String>()).toString();
         String patientName = generatePatientName(pseudonym, profileChainCodeName);
 
-        if(!StringUtil.hasText(pseudonym)){
+        if (!StringUtil.hasText(pseudonym)) {
             throw new IllegalStateException("Cannot build a pseudonym");
         }
 
         applyAction(dcm, patientName);
 
         String profileFilename = profileChainYml.getName();
-        dcm.setString(Tag.PatientID, VR.LO,  patientName);
-        dcm.setString(Tag.PatientName, VR.PN,  patientName);
-        dcm.setString(Tag.PatientIdentityRemoved, VR.CS,  "YES");
+        dcm.setString(Tag.PatientID, VR.LO, patientName);
+        dcm.setString(Tag.PatientName, VR.PN, patientName);
+        dcm.setString(Tag.PatientIdentityRemoved, VR.CS, "YES");
         // 0012,0063 -> module patient
         // A description or label of the mechanism or method use to remove the Patient's identity
         dcm.setString(Tag.DeidentificationMethod, VR.LO, profileChainCodeName);
@@ -148,7 +152,7 @@ public class ProfileChain {
 
     public String generatePatientName(String pseudonym, String profiles) {
         byte[] bytes = new byte[16];
-        System.arraycopy(hmac.byteHash(pseudonym+profiles), 0 , bytes, 0, 16);
+        System.arraycopy(hmac.byteHash(pseudonym + profiles), 0, bytes, 0, 16);
         return new BigInteger(1, bytes).toString();
     }
 

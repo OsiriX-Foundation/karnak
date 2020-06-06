@@ -1,24 +1,14 @@
 package org.karnak.data.profile;
 
+import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
-
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
 
 @Entity(name = "Profile")
 @Table(name = "profile")
 public class ProfileTable {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -28,32 +18,41 @@ public class ProfileTable {
     private String name;
 
     @OneToMany(mappedBy = "profileTable", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<ActionTable> actions;
+    private Set<TagActionTable> actions;
 
+    @OneToMany(mappedBy = "profileTable", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<GroupTag> groupTagSet;
 
     public ProfileTable() {
     }
 
     public ProfileTable(String name) {
-        this.name = name;
-        this.actions = new HashSet<>();
+        this(name, null, null);
     }
 
-    public ProfileTable(String name, Set<ActionTable> actions) {
+    public ProfileTable(String name, Set<TagActionTable> actions, Set<GroupTag> groupTagSet) {
         this.name = name;
-        this.actions = actions;
+        this.actions = actions == null ? new HashSet<>() : actions;
+        this.groupTagSet = groupTagSet == null ? new HashSet<>() : groupTagSet;
     }
 
-    public void addAction(ActionTable action){
+    public void addAction(TagActionTable action) {
         this.actions.add(action);
     }
 
-    public Long getId(){
+    public Long getId() {
         return this.id;
     }
 
-    public Set<ActionTable> getActions(){
+    public Set<TagActionTable> getActions() {
         return this.actions;
     }
 
+    public void addGroupAction(GroupTag groupTag) {
+        this.groupTagSet.add(groupTag);
+    }
+
+    public Set<GroupTag> getGroupTagSet() {
+        return this.groupTagSet;
+    }
 }

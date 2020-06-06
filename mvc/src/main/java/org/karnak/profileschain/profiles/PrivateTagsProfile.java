@@ -2,19 +2,28 @@ package org.karnak.profileschain.profiles;
 
 import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.util.TagUtils;
+import org.karnak.data.profile.Policy;
 import org.karnak.profileschain.action.Action;
 
-public class PrivateTagsProfile extends AbstractProfileItem {
+import java.util.Objects;
 
-    public PrivateTagsProfile(String name, String codeName, ProfileItem parentProfile) {
-        super(name, codeName, parentProfile);
+public class PrivateTagsProfile extends AbstractProfileItem {
+    public static final String TAG_PATTERN = "ggggeeee-where-gggg-is-odd";
+
+    public PrivateTagsProfile(String name, String codeName, Policy policy, ProfileItem parentProfile) {
+        super(name, codeName, policy, parentProfile);
     }
 
     @Override
     public Action getAction(DicomElement dcmElem) {
-        if (TagUtils.isPrivateGroup(dcmElem.tag())) {
-            return Action.REMOVE;
+        boolean retainMode = policy == Policy.WHITELIST;
+        int tag = dcmElem.tag();
+        if (TagUtils.isPrivateGroup(tag)) {
+            if(retainMode){
+                return tagMap.getOrDefault(tag, Action.REMOVE);
+            }
+            return tagMap.getOrDefault(tag, Action.KEEP);
         }
-        return this.getParentAction(dcmElem);
+        return profileParent == null ? null : getParentAction(dcmElem);
     }
 }

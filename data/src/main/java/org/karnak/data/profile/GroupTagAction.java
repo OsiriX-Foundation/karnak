@@ -1,21 +1,12 @@
 package org.karnak.data.profile;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 
+@Entity(name = "GroupAction")
+@Table(name = "group_action")
+public class GroupTagAction {
 
-@Entity(name = "Action")
-@Table(name = "action")
-public class ActionTable {
-    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -33,15 +24,15 @@ public class ActionTable {
     private String attributeName;
 
     @ManyToOne( optional = false)
-    @JoinColumn(name = "id_profile", nullable = false)
-    private ProfileTable profileTable;
+    @JoinColumn(name = "id_group", nullable = false)
+    private GroupTag groupTag;
 
-    public ActionTable() {
+    public GroupTagAction() {
     }
 
 
-    public ActionTable(ProfileTable profileTable, Integer tag, String action, String attributeName){
-        this.profileTable = profileTable;
+    public GroupTagAction(GroupTag groupTag, Integer tag, String action, String attributeName){
+        this.groupTag = groupTag;
         this.tag = tag;
         this.action = action;
         this.attributeName = attributeName;
@@ -63,7 +54,7 @@ public class ActionTable {
         return attributeName;
     }
 
-    public ProfileTable getProfileTable() {
-        return profileTable;
+    public GroupTag getGroupTag() {
+        return groupTag;
     }
 }
