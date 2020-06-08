@@ -40,8 +40,6 @@ services:
 
   mainzelliste:
     image: mainzelliste_karnak:latest
-    volumes:
-      - ./mainzelliste/mainzelliste.conf:/mainzelliste.conf.default
     environment:
       - ML_REVERSEPROXY_FQDN=mainzelliste
       - ML_DB_HOST=mainzelliste-db

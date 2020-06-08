@@ -24,12 +24,12 @@ file_env() {
 file_env 'MAINZELLISTE_PID_K1'
 file_env 'MAINZELLISTE_PID_K2'
 file_env 'MAINZELLISTE_PID_K3'
-: "${MAINZELLISTE_PID_K1:=undefined1}"
-: "${MAINZELLISTE_PID_K2:=undefined2}"
-: "${MAINZELLISTE_PID_K3:=undefined3}"
+: "${MAINZELLISTE_PID_K1:=1}"
+: "${MAINZELLISTE_PID_K2:=2}"
+: "${MAINZELLISTE_PID_K3:=3}"
 
-sed -e "s|idgenerator.pid.k1 = 1|idgenerator.pid.k1 = ${MAINZELLISTE_PID_K1}|g" /mainzelliste.conf.default
-sed -e "s|idgenerator.pid.k2 = 2|idgenerator.pid.k2 = ${MAINZELLISTE_PID_K2}|g" /mainzelliste.conf.default
-sed -e "s|idgenerator.pid.k3 = 3|idgenerator.pid.k3 = ${MAINZELLISTE_PID_K3}|g" /mainzelliste.conf.default
+sed -i "s|idgenerator.pid.k1 = 1|idgenerator.pid.k1 = ${MAINZELLISTE_PID_K1}|g" /mainzelliste.conf.default
+sed -i "s|idgenerator.pid.k2 = 2|idgenerator.pid.k2 = ${MAINZELLISTE_PID_K2}|g" /mainzelliste.conf.default
+sed -i "s|idgenerator.pid.k3 = 3|idgenerator.pid.k3 = ${MAINZELLISTE_PID_K3}|g" /mainzelliste.conf.default
 
 exec /ml_entrypoint.sh
