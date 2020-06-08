@@ -29,4 +29,3 @@ COPY tools/docker-entrypoint.sh .
 
 EXPOSE 8088
 ENTRYPOINT ["/app/docker-entrypoint.sh"]
-# ENTRYPOINT ["java", "-Djava.library.path='/tmp/dicom-opencv'", "-jar", "/app/karnak-mvc-5.0.0-SNAPSHOT.jar"]

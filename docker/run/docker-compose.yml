@@ -12,6 +12,7 @@ services:
     secrets:
       - postgres_karnak_password
       - mainzellisteApiKey
+      - karnakProfileHmac
     #volumes:
     # - ./destination:/var/lib/karnak
 
@@ -51,6 +52,8 @@ services:
       - mainzelliste-db
 
 secrets:
+  karnakProfileHmac:
+    file: secrets/karnak_profile_hmac
   postgres_karnak_password:
     file: secrets/karnak_postgres_password
   mainzellisteDbPassword:

@@ -32,6 +32,13 @@ SYS_PROPS=""
 SYS_PROPS+=" -Djava.library.path='/tmp/dicom-opencv'"
 
 ########################
+# KARNAK ENVIRONMENT #
+########################
+file_env 'KARNAK_PROFILE_HMAC'
+: "${KARNAK_PROFILE_HMAC:=undefined}"
+SYS_PROPS+=" -Ddcmprofile.hmackey='$KARNAK_PROFILE_HMAC'"
+
+########################
 # DATABASE ENVIRONMENT #
 ########################
 file_env 'DB_USER'
@@ -66,4 +73,3 @@ SYS_PROPS+=" -Dmainzelliste.apikey=$MAINZELLISTE_API_KEY"
 
 
 eval java $SYS_PROPS -jar /app/karnak-mvc-5.0.0-SNAPSHOT.jar
-# exec /opt/jboss/keycloak/bin/standalone.sh $SYS_PROPS $@

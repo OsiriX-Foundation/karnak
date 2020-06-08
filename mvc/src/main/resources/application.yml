@@ -7,6 +7,8 @@ mainzelliste:
   apikey: 'changeThisApiKey'
   serverurl: 'http://localhost:8083'
   idtypes: 'pid'
+dcmprofile:
+  hmackey: 'undefined'
 logging:
   level:
     com:
