@@ -39,15 +39,19 @@ services:
       - mainzellisteDbPassword
 
   mainzelliste:
-    image: medicalinformatics/mainzelliste:1.8-latest
+    image: mainzelliste_karnak:latest
     volumes:
       - ./mainzelliste/mainzelliste.conf:/mainzelliste.conf.default
     environment:
       - ML_REVERSEPROXY_FQDN=mainzelliste
       - ML_DB_HOST=mainzelliste-db
+    env_file: mainzelliste.env
     secrets:
       - mainzellisteDbPassword
       - mainzellisteApiKey
+      - mainzellistePIDK1
+      - mainzellistePIDK2
+      - mainzellistePIDK3
     depends_on:
       - mainzelliste-db
 
@@ -60,6 +64,12 @@ secrets:
     file: secrets/mainzelliste_postgres_password
   mainzellisteApiKey:
     file: secrets/mainzelliste_api_key
+  mainzellistePIDK1:
+    file: secrets/mainzelliste_pid_k1
+  mainzellistePIDK2:
+    file: secrets/mainzelliste_pid_k2
+  mainzellistePIDK3:
+    file: secrets/mainzelliste_pid_k3
 
 volumes:
   mainzelliste-db-data:
