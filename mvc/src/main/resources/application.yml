@@ -4,11 +4,11 @@
 name: dev-YAML
 environment: LOCAL
 mainzelliste:
-  apikey: 'changeThisApiKey'
-  serverurl: 'http://localhost:8083'
-  idtypes: 'pid'
+  apikey: '${MAINZELLISTE_API_KEY}'
+  serverurl: 'http://${MAINZELLISTE_HOSTNAME}:${MAINZELLISTE_HTTP_PORT}'
+  idtypes: '${MAINZELLISTE_ID_TYPES}'
 dcmprofile:
-  hmackey: 'undefined'
+  hmackey: '${KARNAK_HMAC_KEY}'
 logging:
   level:
     com:
@@ -26,14 +26,14 @@ logging:
   pattern:
     console: '%-5level %logger{36} - %msg%n'
 server:
-  port: 8088
+  port: 8081
 spring:
   profiles:
     active: '@activatedProperties@'
   datasource:
-    password: ${KARNAK_PG_PASSWORD}
-    url: 'jdbc:postgresql://localhost:${KARNAK_PG_PORT}/${KARNAK_PG_DB}'
-    username: ${KARNAK_PG_USER}
+    password: ${DB_PASSWORD}
+    url: 'jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}'
+    username: ${DB_USER}
     hikari:
       leak-detection-threshold: 2000
       minimum-idle: 5
