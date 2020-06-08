@@ -5,14 +5,14 @@ services:
     image: karnak-hardcoded:latest
     ports:
       - "${DICOM_LISTENER_PORT}:11119"
-      - "${KARNAK_WEB_PORT}:8088"
+      - "${KARNAK_WEB_PORT}:8081"
     env_file: karnak.env
     depends_on:
       - karnak-db
     secrets:
       - postgres_karnak_password
       - mainzellisteApiKey
-      - karnakProfileHmac
+      - karnak_hmac_key
     #volumes:
     # - ./destination:/var/lib/karnak
 
@@ -52,8 +52,8 @@ services:
       - mainzelliste-db
 
 secrets:
-  karnakProfileHmac:
-    file: secrets/karnak_profile_hmac
+  karnak_hmac_key:
+    file: secrets/karnak_hmac_key
   postgres_karnak_password:
     file: secrets/karnak_postgres_password
   mainzellisteDbPassword:

@@ -34,9 +34,9 @@ SYS_PROPS+=" -Djava.library.path='/tmp/dicom-opencv'"
 ########################
 # KARNAK ENVIRONMENT #
 ########################
-file_env 'KARNAK_PROFILE_HMAC'
-: "${KARNAK_PROFILE_HMAC:=undefined}"
-SYS_PROPS+=" -Ddcmprofile.hmackey='$KARNAK_PROFILE_HMAC'"
+file_env 'KARNAK_HMAC_KEY'
+: "${KARNAK_HMAC_KEY:=undefined}"
+SYS_PROPS+=" -Ddcmprofile.hmackey='$KARNAK_HMAC_KEY'"
 
 ########################
 # DATABASE ENVIRONMENT #
