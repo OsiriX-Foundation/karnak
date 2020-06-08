@@ -39,10 +39,7 @@ services:
       - mainzellisteDbPassword
 
   mainzelliste:
-    image: mainzelliste_karnak:latest
-    environment:
-      - ML_REVERSEPROXY_FQDN=mainzelliste
-      - ML_DB_HOST=mainzelliste-db
+    image: osirixfoundation/karnak-mainzelliste:latest
     env_file: mainzelliste.env
     secrets:
       - mainzellisteDbPassword
