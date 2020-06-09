@@ -20,9 +20,14 @@ public class HMAC {
     private Mac mac;
 
     private static final String HMAC_SHA256 = "HmacSHA256";
-    private final String hmackey = DcmProfileConfig.getInstance().getHmackey();
+    private String hmackey;
 
     public HMAC() {
+        hmackey = DcmProfileConfig.getInstance().getHmackey();
+        initHMAC(hmackey);
+    }
+
+    public HMAC(String hmackey) {
         initHMAC(hmackey);
     }
 
