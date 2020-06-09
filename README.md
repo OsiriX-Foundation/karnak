@@ -9,7 +9,28 @@ Karnak is a DICOM Gateway with normalization and de-identification capabilities.
 
 # Build Karnak
 
-Prerequisites: JDK 14 and Maven 3
+Prerequisites:
+- JDK 14
+- Maven 3
+- Package dcm4che20
+- Package weasis-dicom-tools
+
+Use the following commands to build the two dependencies (dcm4che20 and weasis-dicom-tools):
+
+##### dcm4che20
+
+1. `git clone https://github.com/nroduit/dcm4che20.git`
+1. `git checkout image`
+1. `mvn source:jar install`
+
+##### weasis-dicom-tools
+
+1. `git clone https://github.com/nroduit/weasis-dicom-tools.git`
+1. `git checkout dcm4che6`
+1. `mvn clean install`
+
+
+##### Karnak
 
 Execute the maven command `mvn clean install` in the root directory of the project.
 
@@ -17,19 +38,17 @@ Execute the maven command `mvn clean install` in the root directory of the proje
 
 To launch the UI, execute the maven command `mvn spring-boot:run -f mvc` in the root directory of the project.
 
-The UI could be launch with a database in memory (H2), by using maven profiles :
- - devh2: `mvn -Pdevh2 spring-boot:run -f mvc`
- 
+# Debug Karnak
+
 ## Debug in IntelliJ
 
- - Configure locally mainzelliste and Postgres database (see below)
+ - Launch the docker needed for Karnak (see "Configure locally Mainzelliste and Postgres database with docker-compose")
  - Enable Sring and Spring Boot for the project
  - Create a Spring Boot launcher from main of SartApplication.java
     - Working Directory must be the mvc directory
-    - Copy the KARNAK environment variables in docker/.env and paste into User environment variables  
     - In VM Options, add `-Djava.library.path="/tmp/dicom-opencv"`
     - In Environment variables, add the following values. 
-    The following values work with our default configuration define with docker used for the development (see: "Configure locally mainzelliste and Postgres database with docker-compose") :
+    The following values work with our default configuration define with docker used for the development (see: "Configure locally Mainzelliste and Postgres database with docker-compose") :
         - `DB_PASSWORD=5!KAnN@%98%d`
         - `DB_PORT=5433`
         - `DB_USER=karnak`
@@ -42,8 +61,8 @@ The UI could be launch with a database in memory (H2), by using maven profiles :
         - `KARNAK_HMAC_KEY=changeThisHmacKey`
 
     Note: the tmp folder must be adapted according to your system and the dicom-opencv must the last folder.
-
-## Debug in Eclipse
+<!--
+## Debug in Eclipse - obsolete
 
  - Configure locally mainzelliste and Postgres database (see below)
  - From Eclipse Marketplace: install the latest Spring Tools
@@ -51,8 +70,8 @@ The UI could be launch with a database in memory (H2), by using maven profiles :
     - Copy the KARNAK environment variables in docker/.env and paste into the Environment tab of the launcher    
     - In the Arguments tab of the launcher, add in VM arguments: `-Djava.library.path="/tmp/dicom-opencv"`    
     Note: the tmp folder must be adapted according to your system and the dicom-opencv must the last folder.
-
-## Configure locally mainzelliste and Postgres database with docker-compose
+-->
+## Configure locally Mainzelliste and Postgres database with docker-compose
 
 Minimum docker-compose version: **1.22**
 
@@ -77,13 +96,6 @@ Go on the root folder and launch the following command:
 `docker build -t karnak/locally:latest .`
 
 Run Karnak: `docker run -it -p8081:8081 -p11119:11119 karnak/locally:latest`
-
-## Build with mvn spring-boot
-
- - with devh2: `mvn spring-boot:build-image -P devh2,production -f mvc`
- - with postgres: `mvn spring-boot:build-image -P production -f mvc`
-
-Run Karnak: `docker run -it -p8081:8081 -p11119:11119 karnak-mvc:5.0.0-SNAPSHOT`
 
 ## Docker environment variables
 
