@@ -247,7 +247,8 @@ public class GatewayConfig {
                                     Destination dstNode) {
         try {
             List<AttributeEditor> editors = new ArrayList<>();
-            if(true){ //TODO add an option in destination model
+            boolean desidentificationEnable = dstNode.getDesidentification();
+            if(desidentificationEnable == true){ //TODO add an option in destination model
                 editors.add(new DeidentifyEditor());
             }
 

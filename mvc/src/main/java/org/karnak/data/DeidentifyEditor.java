@@ -16,31 +16,19 @@ public class DeidentifyEditor implements AttributeEditor {
     private static final Logger LOGGER = LoggerFactory.getLogger(DeidentifyEditor.class);
 
     private final ProfileChain profileChain;
-    private boolean enable;
+    private static String defaultYamlProfile = "profileChain.yml";
 
     public DeidentifyEditor() {
-        this(ProfileChain.class.getResource("profileChain.yml"));
+        URL defaultProfileChain = ProfileChain.class.getResource(defaultYamlProfile);
+        this.profileChain = new ProfileChain(defaultProfileChain);
     }
 
     public DeidentifyEditor(URL url) {
         this.profileChain = new ProfileChain(url);
-        this.enable = true;
     }
 
     @Override
     public void apply(DicomObject dcm, AttributeEditorContext context) {
-        if (enable) {
-            profileChain.apply(dcm);
-        }
+        profileChain.apply(dcm);
     }
-
-    public boolean isEnable() {
-        return enable;
-    }
-
-    public void setEnable(boolean enable) {
-        this.enable = enable;
-    }
-
-
 }
