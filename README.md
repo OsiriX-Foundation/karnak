@@ -43,8 +43,8 @@ To launch the UI, execute the maven command `mvn spring-boot:run -f mvc` in the 
 ## Debug in IntelliJ
 
  - Launch the docker needed for Karnak (see "Configure locally Mainzelliste and Postgres database with docker-compose")
- - Enable Sring and Spring Boot for the project
- - Create a Spring Boot launcher from main of SartApplication.java
+ - Enable Spring and Spring Boot for the project
+ - Create a Spring Boot launcher from main of StartApplication.java
     - Working Directory must be the mvc directory
     - In VM Options, add `-Djava.library.path="/tmp/dicom-opencv"`
     - In Environment variables, add the following values. 
