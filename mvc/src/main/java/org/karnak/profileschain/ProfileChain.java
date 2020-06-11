@@ -1,5 +1,6 @@
 package org.karnak.profileschain;
 
+import org.apache.logging.log4j.*;
 import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.Tag;
@@ -12,11 +13,9 @@ import org.karnak.profileschain.action.ActionStrategy;
 import org.karnak.profileschain.profilebody.ProfileBody;
 import org.karnak.profileschain.profilebody.ProfileChainBody;
 import org.karnak.profileschain.profiles.AbstractProfileItem;
-import org.karnak.profileschain.profiles.BasicDicomProfile;
 import org.karnak.profileschain.profiles.ProfileItem;
 import org.karnak.profileschain.utils.HMAC;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import org.weasis.core.util.StringUtil;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
@@ -28,7 +27,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ProfileChain {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProfileChain.class);
+    private Logger LOGGER = LogManager.getLogger(ProfileChain.class.getName());
+    private static final Level CLINICAL_LEVEL = Level.forName("CLINICAL", 35);
+    private static final Marker PSEUDONYM_MARKER = MarkerManager.getMarker("PSEUDONYM");
+    private static final Marker DICOMOUT_MARKER = MarkerManager.getMarker("DICOMOUT");
+    private static final Marker DICOMIN_MARKER = MarkerManager.getMarker("DICOMIN");
+    private static final Marker PROFILE_MARKER = MarkerManager.getMarker("PROFILE");
 
     private final URL profileURL;
     private final ProfileChainBody profileChainYml;
@@ -144,6 +148,11 @@ public class ProfileChain {
         dcm.setString(Tag.ClinicalTrialProtocolName, VR.LO);
         dcm.setString(Tag.ClinicalTrialSiteID, VR.LO);
         dcm.setString(Tag.ClinicalTrialSiteName, VR.LO);
+
+
+        LOGGER.log(CLINICAL_LEVEL, PROFILE_MARKER, profileChainCodeName);
+        LOGGER.log(CLINICAL_LEVEL, PSEUDONYM_MARKER, pseudonym);
+        LOGGER.log(CLINICAL_LEVEL, DICOMOUT_MARKER, patientName);
     }
 
     public String generatePatientName(String pseudonym, String profiles) {
