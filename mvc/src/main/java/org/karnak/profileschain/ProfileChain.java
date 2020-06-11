@@ -28,11 +28,7 @@ import java.util.stream.Collectors;
 
 public class ProfileChain {
     private Logger LOGGER = LogManager.getLogger(ProfileChain.class.getName());
-    private static final Level CLINICAL_LEVEL = Level.forName("CLINICAL", 35);
-    private static final Marker PSEUDONYM_MARKER = MarkerManager.getMarker("PSEUDONYM");
-    private static final Marker DICOMOUT_MARKER = MarkerManager.getMarker("DICOMOUT");
-    private static final Marker DICOMIN_MARKER = MarkerManager.getMarker("DICOMIN");
-    private static final Marker PROFILE_MARKER = MarkerManager.getMarker("PROFILE");
+    private static final Level CLINICAL_LEVEL = Level.forName("CLINICAL_LEVEL", 35);
 
     private final URL profileURL;
     private final ProfileChainBody profileChainYml;
@@ -133,7 +129,14 @@ public class ProfileChain {
             throw new IllegalStateException("Cannot build a pseudonym");
         }
 
+        final Marker PSEUDONYM_MARKER = MarkerManager.getMarker(pseudonym);
+
+        LOGGER.log(CLINICAL_LEVEL, PSEUDONYM_MARKER,  "DICOMIN PatientName: " + dcm.getString(Tag.PatientName).orElse(null));
+        LOGGER.log(CLINICAL_LEVEL, PSEUDONYM_MARKER, "DICOMIN PatientID: " + dcm.getString(Tag.PatientID).orElse(null));
+        LOGGER.log(CLINICAL_LEVEL, PSEUDONYM_MARKER, "DICOMIN SOPInstanceUI: " + dcm.getString(Tag.SOPInstanceUID).orElse(null));
+
         applyAction(dcm, patientName);
+
 
         String profileFilename = profileChainYml.getName();
         dcm.setString(Tag.PatientID, VR.LO,  patientName);
@@ -149,10 +152,11 @@ public class ProfileChain {
         dcm.setString(Tag.ClinicalTrialSiteID, VR.LO);
         dcm.setString(Tag.ClinicalTrialSiteName, VR.LO);
 
+        LOGGER.log(CLINICAL_LEVEL, PSEUDONYM_MARKER, "DICOMOUT DeidentificationMethod: " + profileChainCodeName);
+        LOGGER.log(CLINICAL_LEVEL, PSEUDONYM_MARKER, "DICOMOUT PatientName: " + dcm.getString(Tag.PatientName).orElse(null));
+        LOGGER.log(CLINICAL_LEVEL, PSEUDONYM_MARKER, "DICOMOUT PatientID: " + dcm.getString(Tag.PatientID).orElse(null));
+        LOGGER.log(CLINICAL_LEVEL, PSEUDONYM_MARKER, "DICOMOUT SOPInstanceUI: " + dcm.getString(Tag.SOPInstanceUID).orElse(null));
 
-        LOGGER.log(CLINICAL_LEVEL, PROFILE_MARKER, profileChainCodeName);
-        LOGGER.log(CLINICAL_LEVEL, PSEUDONYM_MARKER, pseudonym);
-        LOGGER.log(CLINICAL_LEVEL, DICOMOUT_MARKER, patientName);
     }
 
     public String generatePatientName(String pseudonym, String profiles) {
