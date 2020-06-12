@@ -5,7 +5,7 @@
     </Properties>
 
     <CustomLevels>
-        <CustomLevel name="CLINICAL_LEVEL" intLevel="35" />
+        <CustomLevel name="CLINICAL" intLevel="35" />
         <CustomLevel name="DATA" intLevel="25" />
     </CustomLevels>
 
@@ -29,7 +29,7 @@
     <Loggers>
         <Root level="debug">
             <AppenderRef ref="Console" level="info" />
-            <AppenderRef ref="ClinicalFile" level="clinical_level"/>
+            <AppenderRef ref="ClinicalFile" level="clinical"/>
             <AppenderRef ref="DataFile" level="data" />
             <AppenderRef ref="AllFile" level="info" />
             <AppenderRef ref="ErrorFile" level="error"/>
