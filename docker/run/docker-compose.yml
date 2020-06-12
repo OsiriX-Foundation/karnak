@@ -5,13 +5,14 @@ services:
     image: karnak-hardcoded:latest
     ports:
       - "${DICOM_LISTENER_PORT}:11119"
-      - "${KARNAK_WEB_PORT}:8088"
+      - "${KARNAK_WEB_PORT}:8081"
     env_file: karnak.env
     depends_on:
       - karnak-db
     secrets:
       - postgres_karnak_password
       - mainzellisteApiKey
+      - karnak_hmac_key
     #volumes:
     # - ./destination:/var/lib/karnak
 
@@ -38,25 +39,32 @@ services:
       - mainzellisteDbPassword
 
   mainzelliste:
-    image: medicalinformatics/mainzelliste:1.8-latest
-    volumes:
-      - ./mainzelliste/mainzelliste.conf:/mainzelliste.conf.default
-    environment:
-      - ML_REVERSEPROXY_FQDN=mainzelliste
-      - ML_DB_HOST=mainzelliste-db
+    image: osirixfoundation/karnak-mainzelliste:latest
+    env_file: mainzelliste.env
     secrets:
       - mainzellisteDbPassword
       - mainzellisteApiKey
+      - mainzellistePIDK1
+      - mainzellistePIDK2
+      - mainzellistePIDK3
     depends_on:
       - mainzelliste-db
 
 secrets:
+  karnak_hmac_key:
+    file: secrets/karnak_hmac_key
   postgres_karnak_password:
     file: secrets/karnak_postgres_password
   mainzellisteDbPassword:
     file: secrets/mainzelliste_postgres_password
   mainzellisteApiKey:
     file: secrets/mainzelliste_api_key
+  mainzellistePIDK1:
+    file: secrets/mainzelliste_pid_k1
+  mainzellistePIDK2:
+    file: secrets/mainzelliste_pid_k2
+  mainzellistePIDK3:
+    file: secrets/mainzelliste_pid_k3
 
 volumes:
   mainzelliste-db-data:

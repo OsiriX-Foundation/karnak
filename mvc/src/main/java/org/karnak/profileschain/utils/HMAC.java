@@ -1,5 +1,7 @@
 package org.karnak.profileschain.utils;
 
+import org.karnak.data.DcmProfileConfig;
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
@@ -18,16 +20,15 @@ public class HMAC {
     private Mac mac;
 
     private static final String HMAC_SHA256 = "HmacSHA256";
-    private static final String keyPath = "karnak_profile_hmac";
+    private String hmackey;
 
     public HMAC() {
-        String key = readTextFile(this.keyPath);
-        initHMAC(key);
+        hmackey = DcmProfileConfig.getInstance().getHmackey();
+        initHMAC(hmackey);
     }
 
-    public HMAC(String keyPath) {
-        String key = readTextFile(keyPath);
-        initHMAC(key);
+    public HMAC(String hmackey) {
+        initHMAC(hmackey);
     }
 
     private void initHMAC(String keyValue) {
@@ -44,18 +45,6 @@ public class HMAC {
         }
     }
 
-    private String readTextFile(String keyPath) {
-        String content = "";
-        try {
-            InputStream inputStream = this.getClass().getResourceAsStream(keyPath);
-            // readAllBytes ensures that the file is closed when all bytes have been read.
-            byte[] data = inputStream.readAllBytes();
-            content = new String(data);
-        } catch (IOException e) {
-            LOGGER.error("Cannot read HMACKey file", e);
-        }
-        return content;
-    }
 
     public byte[] byteHash(String value) {
         byte[] bytes = null;

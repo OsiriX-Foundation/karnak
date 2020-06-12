@@ -30,6 +30,8 @@ public class Destination {
     @NotNull(message = "Type is mandatory")
     private DestinationType type;
 
+    private boolean desidentification;
+
     // list of emails (comma separated) used when the images have been sent (or
     // partially sent) to the final destination. Note: if an issue appears before
     // sending to the final destination then no email is delivered.
@@ -125,6 +127,7 @@ public class Destination {
     protected Destination() {
         this.type = null;
         this.description = "";
+        this.desidentification = true;
         this.notify = "";
         this.notifyObjectErrorPrefix = "";
         this.notifyObjectPattern = "";
@@ -174,6 +177,14 @@ public class Destination {
 
     public DestinationType getType() {
         return type;
+    }
+
+    public boolean getDesidentification() {
+        return desidentification;
+    }
+
+    public void setDesidentification(boolean desidentification) {
+        this.desidentification = desidentification;
     }
 
     public String getNotify() {
