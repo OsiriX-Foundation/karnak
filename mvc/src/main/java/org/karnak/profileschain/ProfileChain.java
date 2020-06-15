@@ -32,8 +32,7 @@ public class ProfileChain {
     private static final Level CLINICAL_LEVEL = Level.forName("CLINICAL", 35);
     private final String PATTERN_WITH_INOUT = "PATIENTID={} TAGHEX={} TAGINT={} DEIDENTACTION={} TAGVALUEIN={} TAGOUT={}";
     private final String PATTERN_WITH_IN = "PATIENTID={} TAGHEX={} TAGINT={} DEIDENTACTION={} TAGVALUEIN={}";
-    private final String PATTERN_WITH_OUT = "PATIENTID={} TAGHEX={} TAGINT={} DEIDENTACTION={} TAGVALUEOUT={}";
-    private final String PATTERN_WITHOUT_INOUT = "PATIENTID={} TAGHEX={} TAGINT={} DEIDENTACTION={}";
+    private final String DUMMY_DEIDENT_METHOD = "dDeidentMethod";
 
     private final URL profileURL;
     private final ProfileChainBody profileChainYml;
@@ -153,37 +152,47 @@ public class ProfileChain {
     public void setDefaultDeidentTagValue(DicomObject dcm, String patientID, String profileChainCodeName, String pseudonym, Marker SOPinstanceUIDMarker){
         final String profileFilename = profileChainYml.getName();
 
+        final String tagValueInPatientID = dcm.getString(Tag.PatientID).orElse(null);
         dcm.setString(Tag.PatientID, VR.LO,  patientID);
-        LOGGER.log(CLINICAL_LEVEL, SOPinstanceUIDMarker, PATTERN_WITH_OUT, patientID, TagUtils.toString(Tag.PatientID), Tag.PatientID, "DeidentMethodValue", patientID);
+        LOGGER.log(CLINICAL_LEVEL, SOPinstanceUIDMarker, PATTERN_WITH_INOUT, patientID, TagUtils.toString(Tag.PatientID), Tag.PatientID, DUMMY_DEIDENT_METHOD, tagValueInPatientID, patientID);
 
+        final String tagValueInPatientName= dcm.getString(Tag.PatientID).orElse(null);
         dcm.setString(Tag.PatientName, VR.PN,  patientID);
-        LOGGER.log(CLINICAL_LEVEL, SOPinstanceUIDMarker, PATTERN_WITH_OUT, patientID, TagUtils.toString(Tag.PatientName), Tag.PatientName, "DeidentMethodValue", patientID);
+        LOGGER.log(CLINICAL_LEVEL, SOPinstanceUIDMarker, PATTERN_WITH_INOUT, patientID, TagUtils.toString(Tag.PatientName), Tag.PatientName, DUMMY_DEIDENT_METHOD, tagValueInPatientName, patientID);
 
+        final String tagValueInPatientIdentityRemoved = dcm.getString(Tag.PatientID).orElse(null);
         dcm.setString(Tag.PatientIdentityRemoved, VR.CS,  "YES");
-        LOGGER.log(CLINICAL_LEVEL, SOPinstanceUIDMarker, PATTERN_WITH_OUT, patientID, TagUtils.toString(Tag.PatientIdentityRemoved), Tag.PatientIdentityRemoved, "DeidentMethodValue", "YES");
+        LOGGER.log(CLINICAL_LEVEL, SOPinstanceUIDMarker, PATTERN_WITH_INOUT, patientID, TagUtils.toString(Tag.PatientIdentityRemoved), Tag.PatientIdentityRemoved, DUMMY_DEIDENT_METHOD, tagValueInPatientIdentityRemoved, "YES");
 
         // 0012,0063 -> module patient
         // A description or label of the mechanism or method use to remove the Patient's identity
+        final String tagValueInDeidentificationMethod = dcm.getString(Tag.PatientID).orElse(null);
         dcm.setString(Tag.DeidentificationMethod, VR.LO, profileChainCodeName);
-        LOGGER.log(CLINICAL_LEVEL, SOPinstanceUIDMarker, PATTERN_WITH_OUT, patientID, TagUtils.toString(Tag.DeidentificationMethod), Tag.DeidentificationMethod, "DeidentMethodValue", profileChainCodeName);
+        LOGGER.log(CLINICAL_LEVEL, SOPinstanceUIDMarker, PATTERN_WITH_INOUT, patientID, TagUtils.toString(Tag.DeidentificationMethod), Tag.DeidentificationMethod, DUMMY_DEIDENT_METHOD, tagValueInDeidentificationMethod, profileChainCodeName);
 
+        final String tagValueInClinicalTrialSponsorName = dcm.getString(Tag.PatientID).orElse(null);
         dcm.setString(Tag.ClinicalTrialSponsorName, VR.LO, profileChainCodeName);
-        LOGGER.log(CLINICAL_LEVEL, SOPinstanceUIDMarker, PATTERN_WITH_OUT, patientID, TagUtils.toString(Tag.ClinicalTrialSponsorName), Tag.ClinicalTrialSponsorName, "DeidentMethodValue", profileChainCodeName);
+        LOGGER.log(CLINICAL_LEVEL, SOPinstanceUIDMarker, PATTERN_WITH_INOUT, patientID, TagUtils.toString(Tag.ClinicalTrialSponsorName), Tag.ClinicalTrialSponsorName, DUMMY_DEIDENT_METHOD, tagValueInClinicalTrialSponsorName, profileChainCodeName);
 
+        final String tagValueInClinicalTrialProtocolID = dcm.getString(Tag.PatientID).orElse(null);
         dcm.setString(Tag.ClinicalTrialProtocolID, VR.LO, profileFilename);
-        LOGGER.log(CLINICAL_LEVEL, SOPinstanceUIDMarker, PATTERN_WITH_OUT, patientID, TagUtils.toString(Tag.ClinicalTrialProtocolID), Tag.ClinicalTrialProtocolID, "DeidentMethodValue", profileFilename);
+        LOGGER.log(CLINICAL_LEVEL, SOPinstanceUIDMarker, PATTERN_WITH_INOUT, patientID, TagUtils.toString(Tag.ClinicalTrialProtocolID), Tag.ClinicalTrialProtocolID, DUMMY_DEIDENT_METHOD, tagValueInClinicalTrialProtocolID, profileFilename);
 
+        final String tagValueInClinicalTrialSubjectID = dcm.getString(Tag.PatientID).orElse(null);
         dcm.setString(Tag.ClinicalTrialSubjectID, VR.LO, pseudonym);
-        LOGGER.log(CLINICAL_LEVEL, SOPinstanceUIDMarker, PATTERN_WITH_OUT, patientID, TagUtils.toString(Tag.ClinicalTrialSubjectID), Tag.ClinicalTrialSubjectID, "DeidentMethodValue", pseudonym);
+        LOGGER.log(CLINICAL_LEVEL, SOPinstanceUIDMarker, PATTERN_WITH_INOUT, patientID, TagUtils.toString(Tag.ClinicalTrialSubjectID), Tag.ClinicalTrialSubjectID, DUMMY_DEIDENT_METHOD, tagValueInClinicalTrialSubjectID, pseudonym);
 
+        final String tagValueInClinicalTrialProtocolName = dcm.getString(Tag.PatientID).orElse(null);
         dcm.setString(Tag.ClinicalTrialProtocolName, VR.LO);
-        LOGGER.log(CLINICAL_LEVEL, SOPinstanceUIDMarker, PATTERN_WITHOUT_INOUT, patientID, TagUtils.toString(Tag.ClinicalTrialProtocolName), Tag.ClinicalTrialProtocolName, "DeidentMethodValue");
+        LOGGER.log(CLINICAL_LEVEL, SOPinstanceUIDMarker, PATTERN_WITH_IN, patientID, TagUtils.toString(Tag.ClinicalTrialProtocolName), Tag.ClinicalTrialProtocolName, DUMMY_DEIDENT_METHOD, tagValueInClinicalTrialProtocolName);
 
+        final String tagValueInClinicalTrialSiteID = dcm.getString(Tag.PatientID).orElse(null);
         dcm.setString(Tag.ClinicalTrialSiteID, VR.LO);
-        LOGGER.log(CLINICAL_LEVEL, SOPinstanceUIDMarker, PATTERN_WITHOUT_INOUT, patientID, TagUtils.toString(Tag.ClinicalTrialSiteID), Tag.ClinicalTrialSiteID, "DeidentMethodValue");
+        LOGGER.log(CLINICAL_LEVEL, SOPinstanceUIDMarker, PATTERN_WITH_IN, patientID, TagUtils.toString(Tag.ClinicalTrialSiteID), Tag.ClinicalTrialSiteID, DUMMY_DEIDENT_METHOD, tagValueInClinicalTrialSiteID);
 
+        final String tagValueInClinicalTrialSiteName = dcm.getString(Tag.PatientID).orElse(null);
         dcm.setString(Tag.ClinicalTrialSiteName, VR.LO);
-        LOGGER.log(CLINICAL_LEVEL, SOPinstanceUIDMarker, PATTERN_WITHOUT_INOUT, patientID, TagUtils.toString(Tag.ClinicalTrialSiteName), Tag.ClinicalTrialSiteName, "DeidentMethodValue");
+        LOGGER.log(CLINICAL_LEVEL, SOPinstanceUIDMarker, PATTERN_WITH_IN, patientID, TagUtils.toString(Tag.ClinicalTrialSiteName), Tag.ClinicalTrialSiteName, DUMMY_DEIDENT_METHOD, tagValueInClinicalTrialSiteName);
 
 
     }
