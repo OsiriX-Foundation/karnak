@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <property name="LOGS" value="logs" />
+
+    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>%black(%d{ISO8601})  %highlight(%-5level) %marker %highlight(%X{SOPInstanceUID}) %highlight(%X{issuerOfPatientID}) %highlight(%X{PatientID}) [%yellow(%t)] %yellow(%C{1.}): %msg%n%throwable </Pattern>
+        </layout>
+    </appender>
+
+    <appender name="AllFile" class="ch.qos.logback.core.FileAppender">
+        <file>${LOGS}/all.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>%p %marker %d %C{1.} [%t] %m%n</Pattern>
+        </encoder>
+    </appender>
+
+    <appender name="ClinicalFile" class="ch.qos.logback.core.FileAppender">
+        <file>${LOGS}/clinical.log</file>
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+            <evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
+                <marker>CLINICAL</marker>
+            </evaluator>
+            <onMismatch>DENY</onMismatch>
+            <onMatch>NEUTRAL</onMatch>
+        </filter>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>%p %d %C{1.} [%t] %m%n</Pattern>
+        </encoder>
+    </appender>
+
+    <!-- LOG everything at INFO level -->
+    <root level="info">
+        <appender-ref ref="AllFile" />
+        <appender-ref ref="ClinicalFile">
+        </appender-ref>
+        <appender-ref ref="Console" />
+    </root>
+
+    <!-- LOG "org.karnak*" at TRACE level -->
+    <logger name="org.karnak" level="trace" additivity="false">
+        <appender-ref ref="AllFile" />
+        <appender-ref ref="ClinicalFile">
+        </appender-ref>
+        <appender-ref ref="Console" />
+    </logger>
+
+</configuration>

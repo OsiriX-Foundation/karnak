@@ -9,6 +9,20 @@ mainzelliste:
   idtypes: '${MAINZELLISTE_ID_TYPES}'
 dcmprofile:
   hmackey: '${KARNAK_HMAC_KEY}'
+logging:
+  level:
+    com:
+      zaxxer: INFO
+    org:
+      atmosphere: WARN
+      dcm4che3:
+        net: INFO
+      hibernate: WARN
+      springframework: INFO
+      springframework.core.io.support: INFO
+      weasis: DEBUG
+      karnak: DEBUG
+    root: INFO
 server:
   port: 8081
 spring:
