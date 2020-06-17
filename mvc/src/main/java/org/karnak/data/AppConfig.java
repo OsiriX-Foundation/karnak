@@ -1,6 +1,7 @@
 package org.karnak.data;
 
 import org.karnak.data.profile.ProfilePersistence;
+import org.karnak.standard.StandardDICOM;
 import org.karnak.profileschain.utils.HMAC;
 import org.karnak.profileschain.profiles.BasicDicomProfile;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,5 +61,10 @@ public class AppConfig {
     @Bean("HMAC")
     public HMAC getHmac(){
         return new HMAC();
+    }
+
+    @Bean("StandardDICOM")
+    public StandardDICOM getStandardDICOM() {
+        return new StandardDICOM();
     }
 }
