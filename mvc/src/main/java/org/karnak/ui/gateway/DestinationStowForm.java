@@ -1,6 +1,7 @@
 package org.karnak.ui.gateway;
 
 import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.checkbox.CheckboxGroup;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.data.gateway.Destination;
 import org.karnak.ui.component.converter.HStringToIntegerConverter;
@@ -41,6 +42,8 @@ public class DestinationStowForm extends Div {
     private final TextField notifyInterval;
 
     private final Checkbox desidentification;
+
+    private final CheckboxGroup<String> sopFilter;
 
     private Button update;
     private Button discard;
@@ -163,6 +166,12 @@ public class DestinationStowForm extends Div {
         desidentification.setLabel("Activate de-identification");
         desidentification.setValue(true);
 
+
+        // A multi-select check box group
+        sopFilter = new CheckboxGroup<String>();
+        sopFilter.setLabel("Filter by SOP class");
+        sopFilter.setItems("MRImageStorage", "CTImageStorage");
+
         content.add(UIS.setWidthFull( //
                 new HorizontalLayout(description)));
         content.add(UIS.setWidthFull( //
@@ -176,6 +185,7 @@ public class DestinationStowForm extends Div {
                         notifyInterval)));
         content.add(UIS.setWidthFull( //
                 new HorizontalLayout(desidentification)));
+        content.add(UIS.setWidthFull(sopFilter));
 
         binder = new BeanValidationBinder<>(Destination.class);
         // Define the same validators as the Destination class, because the validation
