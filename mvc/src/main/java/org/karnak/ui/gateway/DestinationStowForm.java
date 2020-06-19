@@ -215,6 +215,7 @@ public class DestinationStowForm extends Div {
         binder.forField(desidentification) //
                 .bind(Destination::getDesidentification, Destination::setDesidentification);
         binder.bindInstanceFields(this);
+        //binder.forField(sopFilter).bind(Destination::getFilterBySOPClasses, Destination::setFilterBySOPClasses);
 
         // enable/disable update button while editing
         binder.addStatusChangeListener(event -> {
