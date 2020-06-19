@@ -1,7 +1,8 @@
 package org.karnak.ui.gateway;
 
 import com.vaadin.flow.component.checkbox.Checkbox;
-import com.vaadin.flow.component.checkbox.CheckboxGroup;
+import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.listbox.MultiSelectListBox;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.data.gateway.Destination;
 import org.karnak.ui.component.converter.HStringToIntegerConverter;
@@ -43,7 +44,8 @@ public class DestinationStowForm extends Div {
 
     private final Checkbox desidentification;
 
-    private final CheckboxGroup<String> sopFilter;
+    private final Label sopFitlerLabel;
+    private final MultiSelectListBox<String> sopFilter;
 
     private Button update;
     private Button discard;
@@ -166,11 +168,21 @@ public class DestinationStowForm extends Div {
         desidentification.setLabel("Activate de-identification");
         desidentification.setValue(true);
 
-
-        // A multi-select check box group
-        sopFilter = new CheckboxGroup<String>();
-        sopFilter.setLabel("Filter by SOP class");
+        //SOP FILTER LAYOUT
+        sopFilter = new MultiSelectListBox<>();
         sopFilter.setItems("MRImageStorage", "CTImageStorage");
+        VerticalLayout sopFilterPanel = new VerticalLayout();
+        sopFilterPanel.getStyle().set("overflow", "auto");
+        sopFilterPanel.setHeight("50%");
+        add(sopFilterPanel);
+
+        VerticalLayout sopFilterlayout = new VerticalLayout();
+        sopFilterlayout.add(sopFilter);
+        sopFilterlayout.getStyle().set("margin-top", "-15px");
+        sopFilterPanel.add(sopFilterlayout);
+        sopFitlerLabel = new Label();
+        sopFitlerLabel.setText("Filter by SOP");
+
 
         content.add(UIS.setWidthFull( //
                 new HorizontalLayout(description)));
@@ -185,7 +197,9 @@ public class DestinationStowForm extends Div {
                         notifyInterval)));
         content.add(UIS.setWidthFull( //
                 new HorizontalLayout(desidentification)));
-        content.add(UIS.setWidthFull(sopFilter));
+
+        content.add(UIS.setWidthFull( //
+                new VerticalLayout(sopFitlerLabel, sopFilterPanel)));
 
         binder = new BeanValidationBinder<>(Destination.class);
         // Define the same validators as the Destination class, because the validation
