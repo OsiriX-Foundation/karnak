@@ -1,12 +1,6 @@
 package org.karnak.data.gateway;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -16,6 +10,7 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.group.GroupSequenceProvider;
 import org.karnak.data.gateway.DestinationGroupSequenceProvider.DestinationDicomGroup;
 import org.karnak.data.gateway.DestinationGroupSequenceProvider.DestinationStowGroup;
+import java.util.Set;
 
 @GroupSequenceProvider(value = DestinationGroupSequenceProvider.class)
 @Entity(name = "Destination")
@@ -31,6 +26,9 @@ public class Destination {
     private DestinationType type;
 
     private boolean desidentification;
+
+    @OneToMany(mappedBy = "destination")
+    private Set<FilterBySOPClass> filterBySOPClasses;
 
     // list of emails (comma separated) used when the images have been sent (or
     // partially sent) to the final destination. Note: if an issue appears before
@@ -183,8 +181,17 @@ public class Destination {
         return desidentification;
     }
 
+
     public void setDesidentification(boolean desidentification) {
         this.desidentification = desidentification;
+    }
+
+    public Set<FilterBySOPClass> getFilterBySOPClasses(){
+        return this.filterBySOPClasses;
+    }
+
+    public void setFilterBySOPClasses(Set<FilterBySOPClass> filterBySOPClasses){
+        this.filterBySOPClasses = filterBySOPClasses;
     }
 
     public String getNotify() {
