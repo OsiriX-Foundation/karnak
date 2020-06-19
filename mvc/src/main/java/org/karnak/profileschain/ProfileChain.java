@@ -96,16 +96,6 @@ public class ProfileChain {
         return pseudonym;
     }
 
-    public void getSequence(DicomElement dcmEl, String patientName, ActionStrategy.Output output) {
-        final VR vr = dcmEl.vr();
-        if (vr == VR.SQ && output != ActionStrategy.Output.TO_REMOVE) {
-            List<DicomObject> ldcm = dcmEl.itemStream().collect(Collectors.toList());
-            for (DicomObject dcm : ldcm) {
-                applyAction(dcm, patientName);
-            }
-        }
-    }
-
     public void applyAction(DicomObject dcm, String patientName) {
         for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext(); ) {
             DicomElement dcmEl = iterator.next();
@@ -113,13 +103,15 @@ public class ProfileChain {
             if (action != null) {
                 try {
                     ActionStrategy.Output out = action.execute(dcm, dcmEl.tag(), patientName, null);
-                    getSequence(dcmEl, patientName, out);
                     if (out == ActionStrategy.Output.TO_REMOVE) {
                         iterator.remove();
                     }
                 } catch (final Exception e) {
                     LOGGER.error("Cannot execute the action {}", action, e);
                 }
+            }
+            else if (dcmEl.vr() == VR.SQ) {
+                dcmEl.itemStream().forEach(d -> applyAction(d, patientName));
             }
         }
     }
