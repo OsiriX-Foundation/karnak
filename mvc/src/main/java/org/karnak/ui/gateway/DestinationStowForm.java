@@ -5,6 +5,8 @@ import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.listbox.MultiSelectListBox;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.data.gateway.Destination;
+import org.karnak.data.gateway.FilterBySOPClass;
+import org.karnak.data.gateway.SOPClassUID;
 import org.karnak.ui.component.converter.HStringToIntegerConverter;
 import org.karnak.ui.util.UIS;
 
@@ -21,6 +23,11 @@ import com.vaadin.flow.component.textfield.TextFieldVariant;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.value.ValueChangeMode;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * A form for editing a single destination.
@@ -52,11 +59,16 @@ public class DestinationStowForm extends Div {
     private Button cancel;
     private Button remove;
 
+    private Binder<SOPClassUID> sopClassUIDBinder;
+    private SOPClassUID sopClassUID;
+
     private Binder<Destination> binder;
     private Destination currentDestination;
+    private DataService dataService;
 
-    public DestinationStowForm(DestinationLogic viewLogic) {
+    public DestinationStowForm(DestinationLogic viewLogic, DataService dataService) {
         this.viewLogic = viewLogic;
+        this.dataService = dataService;
 
         setClassName("destination-form");
 
@@ -215,7 +227,6 @@ public class DestinationStowForm extends Div {
         binder.forField(desidentification) //
                 .bind(Destination::getDesidentification, Destination::setDesidentification);
         binder.bindInstanceFields(this);
-        //binder.forField(sopFilter).bind(Destination::getFilterBySOPClasses, Destination::setFilterBySOPClasses);
 
         // enable/disable update button while editing
         binder.addStatusChangeListener(event -> {

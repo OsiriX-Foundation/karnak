@@ -2,10 +2,12 @@ package org.karnak.ui.gateway;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 
 import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.ForwardNode;
 import org.karnak.data.gateway.DicomSourceNode;
+import org.karnak.data.gateway.SOPClassUID;
 
 /**
  * Back-end service interface for retrieving and updating data.
@@ -36,4 +38,7 @@ public abstract class DataService implements Serializable {
     public abstract DicomSourceNode updateSourceNode(ForwardNode forwardNode, DicomSourceNode data);
 
     public abstract void deleteSourceNode(ForwardNode forwardNode, DicomSourceNode data);
+
+    public abstract Collection<SOPClassUID> getAllSOPClassUIDs();
+
 }

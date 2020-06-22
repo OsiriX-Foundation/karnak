@@ -15,4 +15,7 @@ public class FilterBySOPClass {
     @ManyToOne
     @JoinColumn(name = "sop_class_uid_id")
     SOPClassUID sopClassUID;
+
+    public FilterBySOPClass() {
+    }
 }
