@@ -23,8 +23,6 @@ logging:
       weasis: DEBUG
       karnak: DEBUG
     root: INFO
-  pattern:
-    console: '%-5level %logger{36} - %msg%n'
 server:
   port: 8081
 spring:
