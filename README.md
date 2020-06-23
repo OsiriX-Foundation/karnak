@@ -75,7 +75,7 @@ To launch the UI, execute the maven command `mvn spring-boot:run -f mvc` in the 
 
 Minimum docker-compose version: **1.22**
 
-- Go in the `docker/dev` folder located in the root project folder.
+- Go in the `docker` folder located in the root project folder.
 - To configure the docker used by karnak, please refer to this links.
     - [docker hub postgres](https://hub.docker.com/_/postgres)
     - [docker hub mainzelliste](https://hub.docker.com/r/osirixfoundation/karnak-mainzelliste)
