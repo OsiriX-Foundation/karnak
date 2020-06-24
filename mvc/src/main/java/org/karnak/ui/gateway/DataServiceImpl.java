@@ -19,7 +19,7 @@ public class DataServiceImpl extends DataService {
 
     private SOPClassUIDPersistence sopClassUIDPersistence;
     {
-        sopClassUIDPersistence = GatewayConfiguration.getInstance().getSOPClassUIDPersistence();
+        sopClassUIDPersistence = GatewayConfiguration.getInstance().getSopClassUIDPersistence();
     }
 
 
@@ -126,7 +126,7 @@ public class DataServiceImpl extends DataService {
     }
 
     @Override
-    public Collection<SOPClassUID> getAllSOPClassUIDs() {
+    public List<SOPClassUID> getAllSOPClassUIDs() {
         List<SOPClassUID> list = new ArrayList<>();
         sopClassUIDPersistence.findAll() //
                 .forEach(list::add);

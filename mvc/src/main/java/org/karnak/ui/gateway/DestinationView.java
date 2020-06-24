@@ -2,9 +2,7 @@ package org.karnak.ui.gateway;
 
 import org.karnak.data.NodeEventType;
 import org.karnak.data.NodeEvent;
-import org.karnak.data.gateway.Destination;
-import org.karnak.data.gateway.DestinationType;
-import org.karnak.data.gateway.ForwardNode;
+import org.karnak.data.gateway.*;
 
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.KeyModifier;
@@ -15,11 +13,6 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
-import org.karnak.data.gateway.SOPClassUID;
-import org.karnak.service.GatewayConfig;
-
-import java.util.Collection;
-import java.util.List;
 
 /**
  * A view for performing create-read-update-delete operations on destination configuration.
@@ -40,6 +33,8 @@ public class DestinationView extends HorizontalLayout {
     private DestinationDicomForm dicomForm;
     private DestinationStowForm stowForm;
 
+    private SOPClassUIDPersistence sopClassUIDPersistence = GatewayConfiguration.getInstance().getSopClassUIDPersistence();
+
     public DestinationView(DataService dataService, GatewayViewLogic outputLogic) {
         this.dataProvider = new DestinationDataProvider(dataService);
         this.viewLogic = new DestinationLogic(outputLogic, this);
@@ -53,10 +48,7 @@ public class DestinationView extends HorizontalLayout {
         grid.asSingleSelect().addValueChangeListener(event -> viewLogic.rowSelected(event.getValue()));
 
         dicomForm = new DestinationDicomForm(viewLogic);
-        ////
-        Collection<SOPClassUID> sopClassUIDS = GatewayConfiguration.getInstance().getSOPClassUIDPersistence().findAll();
         stowForm = new DestinationStowForm(viewLogic, dataService);
-        ////
 
         VerticalLayout barAndGridLayout = new VerticalLayout();
         barAndGridLayout.setPadding(false);

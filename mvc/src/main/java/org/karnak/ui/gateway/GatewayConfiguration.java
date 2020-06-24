@@ -7,8 +7,10 @@ import org.karnak.data.gateway.SOPClassUIDPersistence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @Configuration
+@EnableJpaRepositories
 public class GatewayConfiguration {
     private static GatewayConfiguration instance;
 
@@ -22,6 +24,7 @@ public class GatewayConfiguration {
     @Autowired
     private SOPClassUIDPersistence sopClassUIDPersistence;
 
+
     @PostConstruct
     public void postConstruct() {
         instance = this;
@@ -32,8 +35,5 @@ public class GatewayConfiguration {
         return gatewayPersistence;
     }
 
-    @Bean("SOPClassUIDPersistence")
-    public SOPClassUIDPersistence getSOPClassUIDPersistence() {
-        return sopClassUIDPersistence;
-    }
+    public SOPClassUIDPersistence getSopClassUIDPersistence() {return sopClassUIDPersistence; }
 }

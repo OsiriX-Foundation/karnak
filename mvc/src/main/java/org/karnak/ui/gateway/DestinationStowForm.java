@@ -5,7 +5,6 @@ import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.listbox.MultiSelectListBox;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.data.gateway.Destination;
-import org.karnak.data.gateway.FilterBySOPClass;
 import org.karnak.data.gateway.SOPClassUID;
 import org.karnak.ui.component.converter.HStringToIntegerConverter;
 import org.karnak.ui.util.UIS;
@@ -24,10 +23,7 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.value.ValueChangeMode;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A form for editing a single destination.
@@ -181,11 +177,17 @@ public class DestinationStowForm extends Div {
         desidentification.setValue(true);
 
         //SOP FILTER LAYOUT
+        List<SOPClassUID> sopClassUIDList = new ArrayList<>();
+        sopClassUIDList = dataService.getAllSOPClassUIDs();
+
         sopFilter = new MultiSelectListBox<>();
-        sopFilter.setItems("MRImageStorage", "CTImageStorage");
+        ArrayList<String> listOfCIODS = new ArrayList<>();
+        sopClassUIDList.forEach(sopClassUID -> listOfCIODS.add(sopClassUID.getName()));
+        sopFilter.setItems(listOfCIODS);
+
         VerticalLayout sopFilterPanel = new VerticalLayout();
         sopFilterPanel.getStyle().set("overflow", "auto");
-        sopFilterPanel.setHeight("50%");
+        sopFilterPanel.setHeight("100px");
         add(sopFilterPanel);
 
         VerticalLayout sopFilterlayout = new VerticalLayout();

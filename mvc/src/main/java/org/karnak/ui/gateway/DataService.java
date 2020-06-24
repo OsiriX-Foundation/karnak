@@ -39,6 +39,6 @@ public abstract class DataService implements Serializable {
 
     public abstract void deleteSourceNode(ForwardNode forwardNode, DicomSourceNode data);
 
-    public abstract Collection<SOPClassUID> getAllSOPClassUIDs();
+    public abstract List<SOPClassUID> getAllSOPClassUIDs();
 
 }

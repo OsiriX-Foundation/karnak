@@ -15,22 +15,42 @@ public class SOPClassUID {
     private Long id;
 
 
-    private String sopClassUIDValue;
+    private String ciod;
+    private String uid;
+    private String name;
 
 
     @OneToMany(mappedBy = "sopClassUID")
     private Set<FilterBySOPClass> filterBySOPClasses;
 
-    public SOPClassUID(String sopClassUIDValue){
-        this.sopClassUIDValue = sopClassUIDValue;
+    public SOPClassUID(){
     }
 
-    public String getSopClassUIDValue() {
-        return sopClassUIDValue;
+    public SOPClassUID(String ciod){
+        this.ciod = ciod;
     }
 
-    public void setSopClassUIDValue(String sopClassUIDValue) {
-        this.sopClassUIDValue = sopClassUIDValue;
+    public String getCiod() {
+        return ciod;
     }
 
+    public void setCiod(String ciod) {
+        this.ciod = ciod;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }
