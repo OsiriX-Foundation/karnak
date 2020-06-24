@@ -12,10 +12,10 @@ public class StandardDICOM {
     private static StandardCIODtoModules standardCIODtoModules;
     private static StandardModuleToAttributes standardModuleToAttributes;
 
-    private static HashMap<String, HashMap<String, ModuleToAttribute>> HMapModuleToAttributes;
-    private static HashMap<String, HashMap<String, CIODtoModule>> HMapCIODtoModules;
-    private static HashMap<String, CIOD> HMapCIODS;
-    private static HashMap<String, SOP> HMapSOPS;
+    private static HashMap<String, HashMap<String, jsonModuleToAttribute>> HMapModuleToAttributes;
+    private static HashMap<String, HashMap<String, jsonCIODtoModule>> HMapCIODtoModules;
+    private static HashMap<String, jsonCIOD> HMapCIODS;
+    private static HashMap<String, jsonSOP> HMapSOPS;
 
     public StandardDICOM() {
         standardSOPS = new StandardSOPS();
@@ -31,17 +31,17 @@ public class StandardDICOM {
         getAttributesSOP("1.2.840.10008.5.1.4.1.1.2");
     }
 
-    private HashMap<String, HashMap<String, ModuleToAttribute>> generateHMapAttribute(ModuleToAttribute[] moduleToAttributes) {
-        HashMap<String, HashMap<String, ModuleToAttribute>> HMapModulesToAttribute = new HashMap<>();
-        for (ModuleToAttribute moduleToAttribute: moduleToAttributes) {
+    private HashMap<String, HashMap<String, jsonModuleToAttribute>> generateHMapAttribute(jsonModuleToAttribute[] moduleToAttributes) {
+        HashMap<String, HashMap<String, jsonModuleToAttribute>> HMapModulesToAttribute = new HashMap<>();
+        for (jsonModuleToAttribute moduleToAttribute: moduleToAttributes) {
             String attributePath = moduleToAttribute.getPath();
             String module = splitModuleAttribute(attributePath);
 
             if (HMapModulesToAttribute.containsKey(module)) {
-                HashMap<String, ModuleToAttribute> HMapAttribute = HMapModulesToAttribute.get(module);
+                HashMap<String, jsonModuleToAttribute> HMapAttribute = HMapModulesToAttribute.get(module);
                 HMapAttribute.put(attributePath, moduleToAttribute);
             } else {
-                HashMap<String, ModuleToAttribute> HMapAttribute = new HashMap<>();
+                HashMap<String, jsonModuleToAttribute> HMapAttribute = new HashMap<>();
                 HMapAttribute.put(attributePath, moduleToAttribute);
                 HMapModulesToAttribute.put(module, HMapAttribute);
             }
@@ -57,17 +57,17 @@ public class StandardDICOM {
         return module;
     }
 
-    private HashMap<String, HashMap<String, CIODtoModule>> generateHMapCIODtoModule(CIODtoModule[] ciodToModules) {
-        HashMap<String, HashMap<String, CIODtoModule>> HMapCIODtoModule = new HashMap<>();
-        for (CIODtoModule ciodToModule: ciodToModules) {
+    private HashMap<String, HashMap<String, jsonCIODtoModule>> generateHMapCIODtoModule(jsonCIODtoModule[] ciodToModules) {
+        HashMap<String, HashMap<String, jsonCIODtoModule>> HMapCIODtoModule = new HashMap<>();
+        for (jsonCIODtoModule ciodToModule: ciodToModules) {
             String ciodKey = ciodToModule.getCiodId();
             String moduleKey = ciodToModule.getModuleId();
 
             if (HMapCIODtoModule.containsKey(ciodKey)) {
-                HashMap<String, CIODtoModule> HMapModule = HMapCIODtoModule.get(ciodKey);
+                HashMap<String, jsonCIODtoModule> HMapModule = HMapCIODtoModule.get(ciodKey);
                 HMapModule.put(moduleKey, ciodToModule);
             } else {
-                HashMap<String, CIODtoModule> HMapModule = new HashMap<>();
+                HashMap<String, jsonCIODtoModule> HMapModule = new HashMap<>();
                 HMapModule.put(moduleKey, ciodToModule);
                 HMapCIODtoModule.put(ciodKey, HMapModule);
             }
@@ -75,44 +75,44 @@ public class StandardDICOM {
         return HMapCIODtoModule;
     }
 
-    private HashMap<String, CIOD> generateHMapCIOD(CIOD[] ciods) {
-        HashMap<String, CIOD> HMapCIOD = new HashMap<>();
-        for (CIOD ciod: ciods) {
+    private HashMap<String, jsonCIOD> generateHMapCIOD(jsonCIOD[] ciods) {
+        HashMap<String, jsonCIOD> HMapCIOD = new HashMap<>();
+        for (jsonCIOD ciod: ciods) {
             HMapCIOD.put(ciod.getName(), ciod);
         }
         return HMapCIOD;
     }
 
-    private HashMap<String, SOP> generateHMapSOP(SOP[] sops) {
-        HashMap<String, SOP> HMapSOP = new HashMap<>();
-        for (SOP sop: sops) {
+    private HashMap<String, jsonSOP> generateHMapSOP(jsonSOP[] sops) {
+        HashMap<String, jsonSOP> HMapSOP = new HashMap<>();
+        for (jsonSOP sop: sops) {
             HMapSOP.put(sop.getId(), sop);
         }
         return HMapSOP;
     }
 
-    public SOP getSOP(String SOPclassUID) {
+    public jsonSOP getSOP(String SOPclassUID) {
         if (HMapSOPS.containsKey(SOPclassUID)) {
             return HMapSOPS.get(SOPclassUID);
         }
         return null;
     }
 
-    public CIOD getCIOD(String CIODname) {
+    public jsonCIOD getCIOD(String CIODname) {
         if (HMapCIODS.containsKey(CIODname)) {
             return HMapCIODS.get(CIODname);
         }
         return null;
     }
 
-    public HashMap<String, CIODtoModule> getHMapCIODtoModule(String CIODname) {
+    public HashMap<String, jsonCIODtoModule> getHMapCIODtoModule(String CIODname) {
         if (HMapCIODtoModules.containsKey(CIODname)) {
             return HMapCIODtoModules.get(CIODname);
         }
         return null;
     }
 
-    public HashMap<String, ModuleToAttribute> getHMapModuleToAttribute(String moduleID) {
+    public HashMap<String, jsonModuleToAttribute> getHMapModuleToAttribute(String moduleID) {
         if (HMapModuleToAttributes.containsKey(moduleID)) {
             return HMapModuleToAttributes.get(moduleID);
         }
@@ -121,14 +121,14 @@ public class StandardDICOM {
 
     public void getAttributesSOP(String SOPclassUID) {
 
-        SOP sop = getSOP(SOPclassUID);
+        jsonSOP sop = getSOP(SOPclassUID);
         if (sop != null) {
-            CIOD ciod = getCIOD(sop.getCiod());
+            jsonCIOD ciod = getCIOD(sop.getCiod());
             if (ciod != null) {
-                HashMap<String, CIODtoModule> modulesInCIOD = getHMapCIODtoModule(ciod.getId());
+                HashMap<String, jsonCIODtoModule> modulesInCIOD = getHMapCIODtoModule(ciod.getId());
                 if (modulesInCIOD != null) {
                     for (String module: modulesInCIOD.keySet()) {
-                        HashMap<String, ModuleToAttribute> attributes = getHMapModuleToAttribute(module);
+                        HashMap<String, jsonModuleToAttribute> attributes = getHMapModuleToAttribute(module);
                         if (attributes != null) {
                             for (String attributePath: attributes.keySet()) {
                                 System.out.println(attributePath);

@@ -1,6 +1,6 @@
 package org.karnak.standard.dicominnolitics;
 
-public class CIODtoModule {
+public class jsonCIODtoModule {
     private String ciodId;
     private String moduleId;
     private String usage;

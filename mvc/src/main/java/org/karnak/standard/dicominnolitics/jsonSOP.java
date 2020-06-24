@@ -1,6 +1,6 @@
 package org.karnak.standard.dicominnolitics;
 
-public class SOP {
+public class jsonSOP {
     private String name;
     private String id;
     private String ciod;

@@ -1,6 +1,6 @@
 package org.karnak.standard.dicominnolitics;
 
-public class ModuleToAttribute {
+public class jsonModuleToAttribute {
     private String moduleId;
     private String path;
     private String tag;

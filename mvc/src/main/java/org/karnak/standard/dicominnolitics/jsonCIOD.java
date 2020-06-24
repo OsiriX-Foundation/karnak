@@ -1,6 +1,6 @@
 package org.karnak.standard.dicominnolitics;
 
-public class CIOD {
+public class jsonCIOD {
     private String name;
     private String id;
     private String description;
