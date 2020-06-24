@@ -10,6 +10,10 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.group.GroupSequenceProvider;
 import org.karnak.data.gateway.DestinationGroupSequenceProvider.DestinationDicomGroup;
 import org.karnak.data.gateway.DestinationGroupSequenceProvider.DestinationStowGroup;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @GroupSequenceProvider(value = DestinationGroupSequenceProvider.class)
@@ -27,8 +31,14 @@ public class Destination {
 
     private boolean desidentification;
 
-    @OneToMany(mappedBy = "destination")
-    private Set<FilterBySOPClass> filterBySOPClasses;
+    //@OneToMany(mappedBy = "destination")
+    //private Set<FilterBySOPClass> filterBySOPClasses;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name="sop_class_filter",
+            joinColumns = @JoinColumn(name = "destination_id"),
+            inverseJoinColumns = @JoinColumn(name = "sop_class_uid_id"))
+    private List<SOPClassUID> SOPClassUIDFilters = new ArrayList<>();
 
     // list of emails (comma separated) used when the images have been sent (or
     // partially sent) to the final destination. Note: if an issue appears before
@@ -186,14 +196,6 @@ public class Destination {
         this.desidentification = desidentification;
     }
 
-    public Set<FilterBySOPClass> getFilterBySOPClasses(){
-        return this.filterBySOPClasses;
-    }
-
-    public void setFilterBySOPClasses(Set<FilterBySOPClass> filterBySOPClasses){
-        this.filterBySOPClasses = filterBySOPClasses;
-    }
-
     public String getNotify() {
         return notify;
     }
@@ -297,6 +299,24 @@ public class Destination {
     public void setForwardNode(ForwardNode forwardNode) {
         this.forwardNode = forwardNode;
     }
+
+    public List<SOPClassUID> getSOPClassUIDFilters(){
+        return this.SOPClassUIDFilters;
+    }
+
+    public void setSOPClassUIDFilters(List<SOPClassUID> sopClassUIDfilters) {
+        this.SOPClassUIDFilters = sopClassUIDfilters;
+    }
+
+    public Set<String> getSOPClassUIDFiltersName(){
+        Set<String> sopList = new HashSet<>();
+        this.SOPClassUIDFilters.forEach(sopClassUID -> sopList.add(sopClassUID.getName()));
+        return sopList;
+    }
+
+    //public void setSopClassUIDFiltersName(Set<String> sopList){
+      //  sopList.forEach(sopClassName -> this.sopClassUIDfilters.set);
+    //}
 
     /**
      * Informs if this object matches with the filter as text.

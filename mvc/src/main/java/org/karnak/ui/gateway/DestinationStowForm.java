@@ -1,8 +1,11 @@
 package org.karnak.ui.gateway;
 
 import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.listbox.MultiSelectListBox;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.data.gateway.Destination;
+import org.karnak.data.gateway.SOPClassUID;
 import org.karnak.ui.component.converter.HStringToIntegerConverter;
 import org.karnak.ui.util.UIS;
 
@@ -19,6 +22,9 @@ import com.vaadin.flow.component.textfield.TextFieldVariant;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.value.ValueChangeMode;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A form for editing a single destination.
@@ -51,6 +57,9 @@ public class DestinationStowForm extends Div {
     private Binder<Destination> binder;
     private Destination currentDestination;
     private DataService dataService;
+
+    private final MultiSelectListBox<String> sopFilter;
+    private final Label sopFilterLabel;
 
     public DestinationStowForm(DestinationLogic viewLogic, DataService dataService) {
         this.viewLogic = viewLogic;
@@ -167,6 +176,29 @@ public class DestinationStowForm extends Div {
         desidentification.setValue(true);
 
 
+        //SOP FILTER LAYOUT
+        List<SOPClassUID> sopClassUIDList = new ArrayList<>();
+        sopClassUIDList = dataService.getAllSOPClassUIDs();
+
+        sopFilter = new MultiSelectListBox<>();
+        ArrayList<String> listOfCIODS = new ArrayList<>();
+        sopClassUIDList.forEach(sopClassUID -> listOfCIODS.add(sopClassUID.getName()));
+        sopFilter.setItems(listOfCIODS);
+
+        VerticalLayout sopFilterPanel = new VerticalLayout();
+        sopFilterPanel.getStyle().set("overflow", "auto");
+        sopFilterPanel.setHeight("100px");
+        add(sopFilterPanel);
+
+        VerticalLayout sopFilterlayout = new VerticalLayout();
+        sopFilterlayout.add(sopFilter);
+        sopFilterlayout.getStyle().set("margin-top", "-15px");
+        sopFilterPanel.add(sopFilterlayout);
+        sopFilterLabel = new Label();
+        sopFilterLabel.setText("Filter by SOP");
+
+        add(UIS.setWidthFull(new VerticalLayout(sopFilterLabel, sopFilterPanel)));
+
         content.add(UIS.setWidthFull( //
                 new HorizontalLayout(description)));
         content.add(UIS.setWidthFull( //
@@ -181,8 +213,7 @@ public class DestinationStowForm extends Div {
         content.add(UIS.setWidthFull( //
                 new HorizontalLayout(desidentification)));
 
-        destinationFilterForm = new DicomFiltersForm(this.dataService);
-        content.add(destinationFilterForm);
+        //content.add(new DicomFiltersForm(dataService, currentDestination, binder));
 
         binder = new BeanValidationBinder<>(Destination.class);
         // Define the same validators as the Destination class, because the validation
@@ -198,6 +229,8 @@ public class DestinationStowForm extends Div {
         binder.forField(desidentification) //
                 .bind(Destination::getDesidentification, Destination::setDesidentification);
         binder.bindInstanceFields(this);
+
+        //binder.forField(sopFilter).bind(Destination::getSopClassUIDFiltersName, null);
 
         // enable/disable update button while editing
         binder.addStatusChangeListener(event -> {

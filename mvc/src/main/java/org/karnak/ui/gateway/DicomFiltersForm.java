@@ -17,7 +17,7 @@ public class DicomFiltersForm extends HorizontalLayout {
     private final MultiSelectListBox<String> sopFilter;
     private final Label sopFilterLabel;
 
-    public DicomFiltersForm(DataService dataService) {
+    public DicomFiltersForm(DataService dataService, Destination currentDestination, Binder binder) {
 
         setClassName("filters-form");
 
