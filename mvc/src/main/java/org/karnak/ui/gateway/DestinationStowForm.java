@@ -197,7 +197,7 @@ public class DestinationStowForm extends Div {
         sopFilterLabel = new Label();
         sopFilterLabel.setText("Filter by SOP");
 
-        add(UIS.setWidthFull(new VerticalLayout(sopFilterLabel, sopFilterPanel)));
+
 
         content.add(UIS.setWidthFull( //
                 new HorizontalLayout(description)));
@@ -214,6 +214,7 @@ public class DestinationStowForm extends Div {
                 new HorizontalLayout(desidentification)));
 
         //content.add(new DicomFiltersForm(dataService, currentDestination, binder));
+        content.add(UIS.setWidthFull(new VerticalLayout(sopFilterLabel, sopFilterPanel)));
 
         binder = new BeanValidationBinder<>(Destination.class);
         // Define the same validators as the Destination class, because the validation
@@ -230,7 +231,7 @@ public class DestinationStowForm extends Div {
                 .bind(Destination::getDesidentification, Destination::setDesidentification);
         binder.bindInstanceFields(this);
 
-        //binder.forField(sopFilter).bind(Destination::getSopClassUIDFiltersName, null);
+        binder.forField(sopFilter).bind(Destination::getSOPClassUIDFiltersName, null);
 
         // enable/disable update button while editing
         binder.addStatusChangeListener(event -> {
