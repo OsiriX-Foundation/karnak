@@ -1,6 +1,5 @@
 package org.karnak.profileschain;
 
-
 import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.Tag;
@@ -106,16 +105,6 @@ public class ProfileChain {
         return pseudonym;
     }
 
-    public void getSequence(DicomElement dcmEl, String patientName, ActionStrategy.Output output) {
-        final VR vr = dcmEl.vr();
-        if (vr == VR.SQ && output != ActionStrategy.Output.TO_REMOVE) {
-            List<DicomObject> ldcm = dcmEl.itemStream().collect(Collectors.toList());
-            for (DicomObject dcm : ldcm) {
-                applyAction(dcm, patientName);
-            }
-        }
-    }
-
     public void applyAction(DicomObject dcm, String patientID) {
         for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext(); ) {
             DicomElement dcmEl = iterator.next();
@@ -124,8 +113,6 @@ public class ProfileChain {
                 try {
                     final String tagValueIn = dcm.getString(dcmEl.tag()).orElse(null);
                     ActionStrategy.Output out = action.execute(dcm, dcmEl.tag(), patientID, null);
-                    getSequence(dcmEl, patientID, out);
-
                     final String tagValueOut = dcm.getString(dcmEl.tag()).orElse(null);
                     if (out == ActionStrategy.Output.TO_REMOVE) {
                         iterator.remove();
@@ -136,6 +123,9 @@ public class ProfileChain {
                 } catch (final Exception e) {
                     LOGGER.error("Cannot execute the action {}", action, e);
                 }
+            }
+            else if (dcmEl.vr() == VR.SQ) {
+                dcmEl.itemStream().forEach(d -> applyAction(d, patientID));
             }
         }
     }
