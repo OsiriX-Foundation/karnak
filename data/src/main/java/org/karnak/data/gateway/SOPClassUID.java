@@ -1,13 +1,6 @@
 package org.karnak.data.gateway;
 
-import org.hibernate.validator.group.GroupSequenceProvider;
-import org.karnak.data.profile.ActionTable;
-import org.karnak.data.profile.ProfileTable;
-
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 @Entity(name = "SOPClassUID")
 @Table(name = "sop_class_uid")
@@ -21,10 +14,13 @@ public class SOPClassUID {
     private String uid;
     private String name;
 
-    @ManyToMany(mappedBy = "SOPClassUIDFilters", fetch = FetchType.EAGER)
-    private List<Destination> Destinations = new ArrayList<>();
-
     public SOPClassUID(){
+    }
+
+    public SOPClassUID(String ciod, String uid, String name){
+        this.ciod = ciod;
+        this.uid = uid;
+        this.name = name;
     }
 
     public SOPClassUID(String ciod){
@@ -53,13 +49,5 @@ public class SOPClassUID {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public List<Destination> getDestinations() {
-        return Destinations;
-    }
-
-    public void setDestinations(List<Destination> destinations) {
-        Destinations = destinations;
     }
 }

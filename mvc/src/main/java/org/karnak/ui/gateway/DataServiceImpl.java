@@ -132,4 +132,11 @@ public class DataServiceImpl extends DataService {
                 .forEach(list::add);
         return list;
     }
+
+    @Override
+    public SOPClassUID getSOPClassUIDByName(String name) {
+        return sopClassUIDPersistence.getSOPClassUIDByName(name);
+    }
+
+
 }

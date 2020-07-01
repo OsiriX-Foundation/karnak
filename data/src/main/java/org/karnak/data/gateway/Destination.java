@@ -314,9 +314,6 @@ public class Destination {
         return sopList;
     }
 
-    //public void setSopClassUIDFiltersName(Set<String> sopList){
-      //  sopList.forEach(sopClassName -> this.sopClassUIDfilters.set);
-    //}
 
     /**
      * Informs if this object matches with the filter as text.

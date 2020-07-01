@@ -231,7 +231,15 @@ public class DestinationStowForm extends Div {
                 .bind(Destination::getDesidentification, Destination::setDesidentification);
         binder.bindInstanceFields(this);
 
-        binder.forField(sopFilter).bind(Destination::getSOPClassUIDFiltersName, null);
+        binder.forField(sopFilter).bind(Destination::getSOPClassUIDFiltersName, (destination, sopClassNames) -> {
+            ArrayList<SOPClassUID> newSOPClassUIDS= new ArrayList<>();
+            sopClassNames.forEach(sopClasseName -> {
+                SOPClassUID sopClassUID = dataService.getSOPClassUIDByName(sopClasseName);
+                newSOPClassUIDS.add(sopClassUID);
+            });
+            destination.setSOPClassUIDFilters(newSOPClassUIDS);
+        });
+
 
         // enable/disable update button while editing
         binder.addStatusChangeListener(event -> {
