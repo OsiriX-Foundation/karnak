@@ -30,8 +30,6 @@ public class DeidentifyEditor implements AttributeEditor {
 
     @Override
     public void apply(DicomObject dcm, AttributeEditorContext context) {
-        if(dcm.getString(Tag.SOPClassUID).equals("MRImageStorage")){
-            profileChain.apply(dcm);
-        }
+        profileChain.apply(dcm);
     }
 }
