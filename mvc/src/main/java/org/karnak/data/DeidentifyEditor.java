@@ -2,6 +2,7 @@ package org.karnak.data;
 
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.Tag;
+import org.dcm4che6.util.TagUtils;
 import org.karnak.profileschain.ProfileChain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +30,8 @@ public class DeidentifyEditor implements AttributeEditor {
 
     @Override
     public void apply(DicomObject dcm, AttributeEditorContext context) {
-        profileChain.apply(dcm);
+        if(dcm.getString(Tag.SOPClassUID).equals("MRImageStorage")){
+            profileChain.apply(dcm);
+        }
     }
 }

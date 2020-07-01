@@ -1,12 +1,6 @@
 package org.karnak.data.gateway;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -16,6 +10,11 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.group.GroupSequenceProvider;
 import org.karnak.data.gateway.DestinationGroupSequenceProvider.DestinationDicomGroup;
 import org.karnak.data.gateway.DestinationGroupSequenceProvider.DestinationStowGroup;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @GroupSequenceProvider(value = DestinationGroupSequenceProvider.class)
 @Entity(name = "Destination")
@@ -31,6 +30,15 @@ public class Destination {
     private DestinationType type;
 
     private boolean desidentification;
+
+    //@OneToMany(mappedBy = "destination")
+    //private Set<FilterBySOPClass> filterBySOPClasses;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name="sop_class_filter",
+            joinColumns = @JoinColumn(name = "destination_id"),
+            inverseJoinColumns = @JoinColumn(name = "sop_class_uid_id"))
+    private List<SOPClassUID> SOPClassUIDFilters = new ArrayList<>();
 
     // list of emails (comma separated) used when the images have been sent (or
     // partially sent) to the final destination. Note: if an issue appears before
@@ -183,6 +191,7 @@ public class Destination {
         return desidentification;
     }
 
+
     public void setDesidentification(boolean desidentification) {
         this.desidentification = desidentification;
     }
@@ -290,6 +299,21 @@ public class Destination {
     public void setForwardNode(ForwardNode forwardNode) {
         this.forwardNode = forwardNode;
     }
+
+    public List<SOPClassUID> getSOPClassUIDFilters(){
+        return this.SOPClassUIDFilters;
+    }
+
+    public void setSOPClassUIDFilters(List<SOPClassUID> sopClassUIDfilters) {
+        this.SOPClassUIDFilters = sopClassUIDfilters;
+    }
+
+    public Set<String> getSOPClassUIDFiltersName(){
+        Set<String> sopList = new HashSet<>();
+        this.SOPClassUIDFilters.forEach(sopClassUID -> sopList.add(sopClassUID.getName()));
+        return sopList;
+    }
+
 
     /**
      * Informs if this object matches with the filter as text.
