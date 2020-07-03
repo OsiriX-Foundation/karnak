@@ -12,6 +12,7 @@ import org.karnak.profileschain.action.Action;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TagPatternProfileTest {
+    /*
     private static final String CURVES = "50xxxxxx";
     private static final String OVERLAYS_DATA = "60xx3000";
     private static final String OVERLAYS_COMMENTS = "60xx4000";
@@ -98,4 +99,5 @@ class TagPatternProfileTest {
     private static TagPatternProfile buildTagPatternProfile(String pattern) {
         return new TagPatternProfile("", pattern, null);
     }
+    */
 }

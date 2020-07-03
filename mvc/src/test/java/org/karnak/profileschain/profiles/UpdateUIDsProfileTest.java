@@ -13,7 +13,7 @@ import org.karnak.profileschain.action.Action;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class UpdateUIDsProfileTest {
-
+    /*
     private static DicomObject dataset = DicomObject.newDicomObject();
     private static UpdateUIDsProfile uidProfile;
 
@@ -59,4 +59,5 @@ class UpdateUIDsProfileTest {
         // TODO Generate random UIDs
         // TODO Generate random UIDs with consistency
     }
+     */
 }
