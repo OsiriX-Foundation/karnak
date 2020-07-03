@@ -5,13 +5,14 @@ import org.dcm4che6.util.TagUtils;
 import org.karnak.data.profile.Policy;
 import org.karnak.profileschain.action.Action;
 
+import java.util.List;
 import java.util.Objects;
 
 public class PrivateTagsProfile extends AbstractProfileItem {
     public static final String TAG_PATTERN = "ggggeeee-where-gggg-is-odd";
 
-    public PrivateTagsProfile(String name, String codeName, ProfileItem parentProfile) {
-        super(name, codeName, parentProfile);
+    public PrivateTagsProfile(String name, String codeName, ProfileItem parentProfile, String action, List<String> tags) {
+        super(name, codeName, parentProfile, action, tags);
     }
 
     @Override

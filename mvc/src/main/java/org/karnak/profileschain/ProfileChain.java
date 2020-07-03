@@ -74,7 +74,9 @@ public class ProfileChain {
                 } else {
                     Object instanceProfileItem;
                     try {
-                        instanceProfileItem = t.getProfileClass().getConstructor(String.class, String.class, ProfileItem.class).newInstance(profileYml.getName(), profileYml.getCodename(), parent);
+                        instanceProfileItem = t.getProfileClass()
+                                .getConstructor(String.class, String.class, ProfileItem.class, String.class, List.class)
+                                .newInstance(profileYml.getName(), profileYml.getCodename(), parent, profileYml.getAction(), profileYml.getTags());
                         parent = (ProfileItem) instanceProfileItem;
                     } catch (Exception e) {
                         LOGGER.error("Cannot build the profile: {}", t.getProfileClass().getName());

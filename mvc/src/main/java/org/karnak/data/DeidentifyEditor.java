@@ -16,7 +16,8 @@ public class DeidentifyEditor implements AttributeEditor {
     private static final Logger LOGGER = LoggerFactory.getLogger(DeidentifyEditor.class);
 
     private final ProfileChain profileChain;
-    private static String defaultYamlProfile = "profileChain.yml";
+    // private static String defaultYamlProfile = "profileChain.yml";
+    private static String defaultYamlProfile = "profilePipe.yml";
 
     public DeidentifyEditor() {
         URL defaultProfileChain = ProfileChain.class.getResource(defaultYamlProfile);

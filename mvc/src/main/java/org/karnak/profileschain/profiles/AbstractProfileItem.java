@@ -5,6 +5,7 @@ import org.karnak.data.profile.Policy;
 import org.karnak.profileschain.action.Action;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -15,7 +16,8 @@ public abstract class AbstractProfileItem implements ProfileItem {
         KEEP_ALL(KeepAllTags.class, "keep.all.tags"),
         REMOVE_PRIVATE_TAG(PrivateTagsProfile.class, "remove.private.tag"),
         REPLACE_UID(UpdateUIDsProfile.class, "replace.uid"),
-        SOP_MIN(SOPProfile.class, "keep.mandatory.sop");
+        SOP_MIN(SOPProfile.class, "keep.mandatory.sop"),
+        ACTION_TAGS(ActionTags.class, "action.on.specific.tags");
 
         private final Class<? extends ProfileItem> profileClass;
         private final String classAlias;
@@ -46,12 +48,16 @@ public abstract class AbstractProfileItem implements ProfileItem {
     protected final String name;
     protected final String codeName;
     protected final ProfileItem profileParent;
+    protected final String action;
+    protected final List<String> tags;
     protected final Map<Integer, Action> tagMap;
 
-    public AbstractProfileItem(String name, String codeName, ProfileItem profileParent) {
+    public AbstractProfileItem(String name, String codeName, ProfileItem profileParent, String action, List<String> tags) {
         this.name = Objects.requireNonNull(name);
         this.codeName = Objects.requireNonNull(codeName);
         this.profileParent = profileParent;
+        this.action = action;
+        this.tags = tags;
         this.tagMap = new HashMap<>();
     }
 
