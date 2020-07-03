@@ -20,6 +20,7 @@ import org.karnak.api.rqbody.Data;
 import org.karnak.api.rqbody.Ids;
 import org.karnak.api.rqbody.SearchIds;
 import org.karnak.api.rqbody.Fields;
+import org.karnak.data.MainzellisteConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,8 +32,10 @@ public class PseudonymApi {
     // Constants -----------------------------------------------------
     // ---------------------------------------------------------------
     private static final Logger log = LoggerFactory.getLogger(PseudonymApi.class);
-    private final String SERVER_URL = "http://localhost:8083";
-    private final String API_KEY = "changeThisApiKey";
+
+    private final String SERVER_URL = MainzellisteConfig.getInstance().getServerurl();
+    private final String API_KEY = MainzellisteConfig.getInstance().getApikey();
+    private final String ID_TYPES = MainzellisteConfig.getInstance().getIdtypes();
 
     private final HttpClient httpClient = HttpClient.newBuilder() // one instance, reuse
             .version(HttpClient.Version.HTTP_2).build();
@@ -63,7 +66,7 @@ public class PseudonymApi {
      * @return patient
      */
     public JSONArray searchPatient(String pseudonym){
-        SearchIds [] searchIds = {new SearchIds("elasticid", pseudonym)}; //search example
+        SearchIds [] searchIds = {new SearchIds(ID_TYPES, pseudonym)}; //search example
         JSONArray patientsReturns = getPatients(searchIds);
         return patientsReturns;
     }
@@ -154,7 +157,7 @@ public class PseudonymApi {
 
     /***
      * Make the request to have a token that allow to get patient(s)
-     * @param SearchIds 
+     * @param searchIds
      * @return Patients
      */
     public String rqCreateTokenReadPatient(SearchIds [] searchIds) {
@@ -186,6 +189,7 @@ public class PseudonymApi {
      */
     public String rqCreatePatient(String tokenId) {
         Map<Object, Object> data = new HashMap<>();
+        data.put("sureness", true);
         HttpRequest request = HttpRequest.newBuilder()
         .POST(buildFormDataFromMap(data))
         .uri(URI.create(this.SERVER_URL + "/patients?tokenId="+tokenId))
@@ -245,19 +249,18 @@ public class PseudonymApi {
             builder.append("=");
             builder.append(URLEncoder.encode(entry.getValue().toString(), StandardCharsets.UTF_8));
         }
-        System.out.println(builder.toString());
         return HttpRequest.BodyPublishers.ofString(builder.toString());
     }
 
     /***
      * This method allow to create a json body for addPatient in pseudonym api
-     * @param patient Patient that we want to add in pseudonym api.
+     * @param patientFields Patient that we want to add in pseudonym api.
      * @return String json body
      */
     private String createJsonRequest(Fields patientFields) {
         Fields field = patientFields;
         Ids ids = new Ids (""); // IDS not use 
-        String [] idtypes = {"elasticid"};    //pseudonymisation type
+        String [] idtypes = {ID_TYPES};    //pseudonymisation type
         Data data = new Data(idtypes, field, ids); 
         Body bodyRequest= new Body("addPatient", data);
         Gson gson = new Gson();
@@ -266,7 +269,7 @@ public class PseudonymApi {
 
     /***
      * This method allow to create a json body for readPatients in pseudonym api
-     * @param patient SearchIds that we want to read in pseudonym api.
+     * @param searchIds SearchIds that we want to read in pseudonym api.
      * @return String json body
      */
     private String createJsonReadPatient(SearchIds [] searchIds) {

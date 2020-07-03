@@ -3,8 +3,8 @@ package org.karnak.data;
 import java.util.Objects;
 
 import org.karnak.data.gateway.Destination;
-import org.karnak.data.gateway.ForwardNode;
 import org.karnak.data.gateway.DicomSourceNode;
+import org.karnak.data.gateway.ForwardNode;
 import org.springframework.context.ApplicationEvent;
 
 public class NodeEvent extends ApplicationEvent {

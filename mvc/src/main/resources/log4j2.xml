@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Properties>
+        <Property name="LOG_PATTERN">%d{yyyy-MM-dd'T'HH:mm:ss.SSSZ} %-7level %marker %logger{36} - %msg%n</Property>
+    </Properties>
+
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </Console>
+        <File name="ClinicalFile" fileName="logs/clinical.log">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </File>
+        <File name="AllFile" fileName="logs/all.log">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </File>
+        <File name="ErrorFile" fileName="logs/error.log">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </File>
+    </Appenders>
+    <Loggers>
+        <Root level="debug">
+            <AppenderRef ref="Console" level="info" />
+            <AppenderRef ref="ClinicalFile" level="info">
+                <MarkerFilter marker="CLINICAL" onMatch="ACCEPT" onMismatch="DENY" />
+            </AppenderRef>
+            <AppenderRef ref="AllFile" level="info" />
+            <AppenderRef ref="ErrorFile" level="error"/>
+        </Root>
+    </Loggers>
+</Configuration>

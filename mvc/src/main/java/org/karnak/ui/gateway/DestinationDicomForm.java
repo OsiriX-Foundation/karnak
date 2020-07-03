@@ -42,6 +42,8 @@ public class DestinationDicomForm extends Div {
     private final TextField notifyObjectValues;
     private final TextField notifyInterval;
 
+    private final Checkbox desidentification;
+
     private Button update;
     private Button discard;
     private Button cancel;
@@ -160,6 +162,10 @@ public class DestinationDicomForm extends Div {
         UIS.setTooltip(notifyInterval,
                 "Interval in seconds for sending a notification (when no new image is arrived in the archive folder). Default value: 45");
 
+        desidentification = new Checkbox();
+        desidentification.setLabel("Activate de-identification");
+        desidentification.setValue(true);
+
         content.add(UIS.setWidthFull( //
                 new HorizontalLayout(aeTitle, description)));
         content.add(UIS.setWidthFull( //
@@ -171,6 +177,8 @@ public class DestinationDicomForm extends Div {
         content.add(UIS.setWidthFull( //
                 new HorizontalLayout(notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues,
                         notifyInterval)));
+        content.add(UIS.setWidthFull( //
+                new HorizontalLayout(desidentification)));
 
         binder = new BeanValidationBinder<>(Destination.class);
         // Define the same validators as the Destination class, because the validation
@@ -203,6 +211,8 @@ public class DestinationDicomForm extends Div {
         binder.forField(notifyInterval) //
                 .withConverter(new HStringToIntegerConverter()) //
                 .bind(Destination::getNotifyInterval, Destination::setNotifyInterval);
+        binder.forField(desidentification) //
+                .bind(Destination::getDesidentification, Destination::setDesidentification);
         binder.bindInstanceFields(this);
 
         // enable/disable update button while editing

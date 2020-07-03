@@ -12,11 +12,7 @@ import java.util.Set;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.karnak.data.EmailNotifyProgress;
-import org.karnak.data.NodeEvent;
-import org.karnak.data.NodeEventType;
-import org.karnak.data.NotificationConfiguration;
-import org.karnak.data.StreamRegistry;
+import org.karnak.data.*;
 import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.DestinationType;
 import org.karnak.data.gateway.DicomSourceNode;
@@ -28,14 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
 import org.weasis.core.util.LangUtil;
 import org.weasis.core.util.StringUtil;
-import org.weasis.dicom.param.AdvancedParams;
-import org.weasis.dicom.param.ConnectOptions;
-import org.weasis.dicom.param.DicomForwardDestination;
-import org.weasis.dicom.param.DicomNode;
-import org.weasis.dicom.param.DicomProgress;
-import org.weasis.dicom.param.ForwardDestination;
-import org.weasis.dicom.param.ForwardDicomNode;
-import org.weasis.dicom.param.TlsOptions;
+import org.weasis.dicom.param.*;
 import org.weasis.dicom.web.WebForwardDestination;
 
 public class GatewayConfig {
@@ -257,8 +246,15 @@ public class GatewayConfig {
     private void addDestinationNode(List<ForwardDestination> dstList, ForwardDicomNode fwdSrcNode,
                                     Destination dstNode) {
         try {
+            List<AttributeEditor> editors = new ArrayList<>();
+            boolean desidentificationEnable = dstNode.getDesidentification();
+            if(desidentificationEnable == true){ //TODO add an option in destination model
+                editors.add(new DeidentifyEditor());
+            }
+
             DicomProgress progress = new DicomProgress();
             StreamRegistry streamRegistry = new StreamRegistry();
+            editors.add(streamRegistry);
             String[] emails = dstNode.getNotify().split(",");
             NotificationConfiguration notifConfig = null;
             String notifyObjectErrorPrefix = dstNode.getNotifyObjectErrorPrefix();
@@ -296,7 +292,7 @@ public class GatewayConfig {
                 }
 
                 WebForwardDestination fwd = new WebForwardDestination(dstNode.getId(), fwdSrcNode, dstNode.getUrl(),
-                        map, progress, streamRegistry);
+                        map, progress, editors);
                 progress.addProgressListener(new EmailNotifyProgress(streamRegistry, fwd, emails, this, notifConfig));
                 dstList.add(fwd);
             } else {
@@ -304,7 +300,7 @@ public class GatewayConfig {
                         new DicomNode(dstNode.getAeTitle(), dstNode.getHostname(), dstNode.getPort());
                 DicomForwardDestination dest =
                         new DicomForwardDestination(dstNode.getId(), getDefaultAdvancedParameters(), fwdSrcNode,
-                                destinationNode, dstNode.getUseaetdest(), progress, streamRegistry);
+                                destinationNode, dstNode.getUseaetdest(), progress, editors);
                 progress.addProgressListener(new EmailNotifyProgress(streamRegistry, dest, emails, this, notifConfig));
                 dstList.add(dest);
             }

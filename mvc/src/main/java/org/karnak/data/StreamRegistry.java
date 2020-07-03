@@ -1,26 +1,18 @@
 package org.karnak.data;
 
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.Set;
-
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.Tag;
-import org.dcm4che6.data.VR;
 import org.dcm4che6.util.DateTimeUtils;
-import org.karnak.api.PseudonymApi;
-import org.karnak.api.rqbody.Fields;
-import org.karnak.profile.Profile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.weasis.dicom.param.AttributeEditor;
 import org.weasis.dicom.param.AttributeEditorContext;
 import org.weasis.dicom.param.AttributeEditorContext.Abort;
 import org.weasis.dicom.param.DicomProgress;
+
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.Map.Entry;
 
 public class StreamRegistry implements AttributeEditor {
     private static final Logger LOGGER = LoggerFactory.getLogger(StreamRegistry.class);
@@ -29,12 +21,8 @@ public class StreamRegistry implements AttributeEditor {
     private final Map<String, Study> studyMap = new HashMap<>();
 
     @Override
-    public boolean apply(DicomObject dcm, AttributeEditorContext context) {
+    public void apply(DicomObject dcm, AttributeEditorContext context) {
         if (enable) {
-            String pseudonym = addInfoPatientToPseudonym(dcm);
-            deident(dcm);
-            dcm.setString(Tag.PatientID, VR.LO, pseudonym);
-
             String studyUID = dcm.getString(Tag.StudyInstanceUID).orElseThrow();
             Study study = getStudy(studyUID);
             if (study == null) {
@@ -69,7 +57,6 @@ public class StreamRegistry implements AttributeEditor {
             // When it is a duplicate, avoid to send again a partial exam.
             study.setTimeStamp(System.currentTimeMillis());
         }
-        return false;
     }
 
     private static LocalDateTime getDateTime(DicomObject dicom, int date, int time) {
@@ -130,31 +117,4 @@ public class StreamRegistry implements AttributeEditor {
             }
         }
     }
-
-    public String addInfoPatientToPseudonym(DicomObject dcm){
-        //Get patient info in Dicom File receive
-        String patientID = dcm.getString(Tag.PatientID).orElse(null);
-        String patientName = dcm.getString(Tag.PatientName).orElse(null);
-        String patientBirthDate = dcm.getString(Tag.PatientBirthDate).orElse(null);
-        String patientSex = dcm.getString(Tag.PatientSex).orElse(null);
-        String issuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID).orElse(null);
-
-        PseudonymApi pseudonymApi = new PseudonymApi();
-
-        Fields newPatientFields = new Fields(patientID, patientName, patientBirthDate, patientSex, issuerOfPatientID);
-      
-        String pseudonym = pseudonymApi.createPatient(newPatientFields);
-        pseudonymApi.searchPatient(pseudonym);
-        return pseudonym;
-    }
-
-    public void deident(DicomObject dcm) {
-        //store (init app)
-        Profile profile = new Profile("/mvc/profiles/profile.json");
-        // Profile profile = new Profile();
-        
-        //execute (stream registry)
-        profile.execute(dcm);
-    }
-
 }
