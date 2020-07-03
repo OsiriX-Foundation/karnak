@@ -10,13 +10,14 @@ import java.util.Objects;
 public class PrivateTagsProfile extends AbstractProfileItem {
     public static final String TAG_PATTERN = "ggggeeee-where-gggg-is-odd";
 
-    public PrivateTagsProfile(String name, String codeName, Policy policy, ProfileItem parentProfile) {
-        super(name, codeName, policy, parentProfile);
+    public PrivateTagsProfile(String name, String codeName, ProfileItem parentProfile) {
+        super(name, codeName, parentProfile);
     }
 
     @Override
     public Action getAction(DicomElement dcmElem) {
-        boolean retainMode = policy == Policy.WHITELIST;
+        // boolean retainMode = policy == Policy.WHITELIST;
+        boolean retainMode = false;
         int tag = dcmElem.tag();
         if (TagUtils.isPrivateGroup(tag)) {
             if(retainMode){

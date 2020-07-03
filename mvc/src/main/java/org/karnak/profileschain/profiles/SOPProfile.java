@@ -12,7 +12,7 @@ public class SOPProfile extends AbstractProfileItem {
     private final HashMap<Integer, Integer> sopMap;
 
     public SOPProfile(String name, String codeName, ProfileItem parentProfile) {
-        super(name, codeName, Type.SOP_MIN.getPolicy(), parentProfile);
+        super(name, codeName, parentProfile);
         final SOPParser parserProfile = new SOPParser();
         URL url = this.getClass().getResource("minSOP_CTImage.json");
         this.sopMap = parserProfile.parse(url);

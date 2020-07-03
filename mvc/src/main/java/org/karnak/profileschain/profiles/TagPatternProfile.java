@@ -12,8 +12,8 @@ public class TagPatternProfile extends AbstractProfileItem {
     private final int patternTag;
     private final int patternMask;
 
-    public TagPatternProfile(String name, String tagPattern, Policy policy, ProfileItem parentProfile) {
-        super(name, Objects.requireNonNull(tagPattern).toUpperCase(), policy, parentProfile);
+    public TagPatternProfile(String name, String tagPattern, ProfileItem parentProfile) {
+        super(name, Objects.requireNonNull(tagPattern).toUpperCase(), parentProfile);
         if (!isValid(getCodeName())) throw new IllegalArgumentException("Not a valid tag pattern");
         this.patternTag = TagUtils.intFromHexString(getCodeName().replace("X", "0"));
         this.patternMask = TagUtils.intFromHexString(getMask(getCodeName()));
@@ -42,7 +42,8 @@ public class TagPatternProfile extends AbstractProfileItem {
     @Override
     public Action getAction(DicomElement dcmElem) {
         int tag = dcmElem.tag();
-        boolean retainMode = policy == Policy.WHITELIST;
+        // boolean retainMode = policy == Policy.WHITELIST;
+        boolean retainMode = false;
         if ((tag & patternMask) == patternTag) {
             if(retainMode){
                 return tagMap.getOrDefault(tag, Action.REMOVE);

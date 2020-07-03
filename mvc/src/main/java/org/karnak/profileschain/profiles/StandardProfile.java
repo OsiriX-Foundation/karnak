@@ -13,14 +13,12 @@ public class StandardProfile extends AbstractProfileItem {
     private final List<ProfileItem> groupList;
 
     public StandardProfile(String name, String codeName, ProfileItem profileParent) {
-        this(name, codeName, Type.BASIC_DICOM.getPolicy(), profileParent);
-    }
-
-    public StandardProfile(String name, String codeName, Policy policy, ProfileItem profileParent) {
-        super(name, codeName, policy, profileParent);
+        super(name, codeName, profileParent);
+        /*
         if (policy != Type.BASIC_DICOM.getPolicy()) {
             throw new IllegalStateException(String.format("The policy %s is not consistent with the profile %s!", policy, codeName));
         }
+        */
         BasicDicomProfile basicDicomProfile = AppConfig.getInstance().getStandardProfile();
         this.tagMap.putAll(basicDicomProfile.getActionMap());
         this.groupList = new ArrayList<>(basicDicomProfile.getGroupList());

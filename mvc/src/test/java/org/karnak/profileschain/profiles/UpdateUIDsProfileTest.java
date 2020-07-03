@@ -19,7 +19,7 @@ class UpdateUIDsProfileTest {
 
     @BeforeAll
     protected static void setUpBeforeClass() throws Exception {
-        TagPatternProfile curves = new TagPatternProfile("", "50xxxxxx", Policy.WHITELIST, null);
+        TagPatternProfile curves = new TagPatternProfile("", "50xxxxxx", null);
         curves.put(Tag.CurveReferencedOverlaySequence, Action.KEEP);
         uidProfile = new UpdateUIDsProfile("", AbstractProfileItem.Type.REPLACE_UID.getClassAlias(), curves);
         dataset.setNull(Tag.OverlayData | (1 << 17), VR.OB);

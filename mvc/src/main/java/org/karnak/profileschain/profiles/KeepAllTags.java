@@ -6,8 +6,8 @@ import org.karnak.profileschain.action.Action;
 
 public class KeepAllTags extends AbstractProfileItem {
 
-    public KeepAllTags(String name, String codeName, Policy policy, ProfileItem parentProfile) {
-        super(name, codeName, policy, parentProfile);
+    public KeepAllTags(String name, String codeName, ProfileItem parentProfile) {
+        super(name, codeName, parentProfile);
     }
 
     @Override

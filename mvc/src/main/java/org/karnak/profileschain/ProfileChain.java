@@ -74,8 +74,7 @@ public class ProfileChain {
                 } else {
                     Object instanceProfileItem;
                     try {
-                        Policy type = Policy.valueOf(profileYml.getPolicy());
-                        instanceProfileItem = t.getProfileClass().getConstructor(String.class, String.class, Policy.class, ProfileItem.class).newInstance(profileYml.getName(), profileYml.getCodename(), type, parent);
+                        instanceProfileItem = t.getProfileClass().getConstructor(String.class, String.class, ProfileItem.class).newInstance(profileYml.getName(), profileYml.getCodename(), parent);
                         parent = (ProfileItem) instanceProfileItem;
                     } catch (Exception e) {
                         LOGGER.error("Cannot build the profile: {}", t.getProfileClass().getName());

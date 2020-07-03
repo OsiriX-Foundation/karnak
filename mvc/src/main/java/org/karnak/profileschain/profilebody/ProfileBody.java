@@ -1,9 +1,12 @@
 package org.karnak.profileschain.profilebody;
 
+import java.util.List;
+
 public class ProfileBody {
     private String name;
     private String codename;
-    private String policy;
+    private String action;
+    private List<String> tags;
 
     public String getName() {
         return name;
@@ -21,11 +24,19 @@ public class ProfileBody {
         this.codename = codename;
     }
 
-    public String getPolicy() {
-        return policy;
+    public String getAction() {
+        return action;
     }
 
-    public void setPolicy(String policy) {
-        this.policy = policy;
+    public void setAction(String action) {
+        this.action = action;
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
     }
 }
