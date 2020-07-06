@@ -9,6 +9,8 @@ profiles:
     tags:
       - "0008,0013"
       - "(0008,0016)"
+      - "(0008,00XX)"
+      - "0010,00XX"
 
   - name: "Specific tags"
     codename: "action.on.specific.tags"
@@ -16,6 +18,19 @@ profiles:
     tags:
       - "0008,0008"
       - "(0008,0012)"
+
+  - name: "Specific tags"
+    codename: "action.on.specific.tags"
+    action: "REMOVE"
+
+  - name: "Specific tags"
+    codename: "action.on.specific.tags"
+    tags:
+      - "0008,0008"
+      - "(0008,0012)"
+
+  - name: "Specific tags"
+    codename: "action.on.specific.tags"
 
   - name: "Private tags"
     codename: "action.on.private.tag"
