@@ -155,6 +155,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.vaadin.gatanaso</groupId>
+			<artifactId>multiselect-combo-box-flow</artifactId>
+			<version>3.0.2</version> <!-- use appropriate version -->
+		</dependency>
+
+		<dependency>
 			<groupId>javax.validation</groupId>
 			<artifactId>validation-api</artifactId>
 		</dependency>

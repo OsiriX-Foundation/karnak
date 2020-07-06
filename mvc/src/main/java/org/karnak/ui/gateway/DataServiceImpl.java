@@ -1,14 +1,8 @@
 package org.karnak.ui.gateway;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import org.karnak.data.gateway.*;
-import org.karnak.service.GatewayConfig;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @SuppressWarnings("serial")
 public class DataServiceImpl extends DataService {
