@@ -8,8 +8,8 @@ import java.util.List;
 
 public class UpdateUIDsProfile extends AbstractProfileItem {
 
-    public UpdateUIDsProfile(String name, String codeName, ProfileItem parentProfile, String action, List<String> tags) {
-        super(name, codeName, parentProfile, action, tags);
+    public UpdateUIDsProfile(String name, String codeName, String action, List<String> tags) {
+        super(name, codeName, action, tags);
         /*
         if (not BlackList) {
             throw new IllegalStateException(String.format("The policy %s is not consistent with the profile %s!", policy, codeName));
@@ -23,7 +23,7 @@ public class UpdateUIDsProfile extends AbstractProfileItem {
         if (val != null) {
             return val;
         }
-        return profileParent == null ? null : getParentAction(dcmElem);
+        return null;
     }
 
     @Override

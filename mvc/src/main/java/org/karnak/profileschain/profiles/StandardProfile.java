@@ -12,8 +12,8 @@ public class StandardProfile extends AbstractProfileItem {
 
     private final List<ProfileItem> groupList;
 
-    public StandardProfile(String name, String codeName, ProfileItem profileParent, String action, List<String> tags) {
-        super(name, codeName, profileParent, action, tags);
+    public StandardProfile(String name, String codeName, String action, List<String> tags) {
+        super(name, codeName, action, tags);
         /*
         if (policy != Type.BASIC_DICOM.getPolicy()) {
             throw new IllegalStateException(String.format("The policy %s is not consistent with the profile %s!", policy, codeName));
@@ -35,7 +35,7 @@ public class StandardProfile extends AbstractProfileItem {
                     return val;
                 }
             }
-            return this.getParentAction(dcmElem);
+            return null;
         }
         return action;
     }

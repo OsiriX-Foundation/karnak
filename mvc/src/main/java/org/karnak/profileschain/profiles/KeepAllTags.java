@@ -8,8 +8,8 @@ import java.util.List;
 
 public class KeepAllTags extends AbstractProfileItem {
 
-    public KeepAllTags(String name, String codeName, ProfileItem parentProfile, String action, List<String> tags) {
-        super(name, codeName, parentProfile, action, tags);
+    public KeepAllTags(String name, String codeName, String action, List<String> tags) {
+        super(name, codeName, action, tags);
     }
 
     @Override

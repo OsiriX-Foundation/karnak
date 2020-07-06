@@ -17,6 +17,4 @@ public interface ProfileItem {
     String getName();
 
     String getCodeName();
-
-    ProfileItem getProfileParent();
 }

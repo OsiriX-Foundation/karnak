@@ -12,8 +12,8 @@ import java.util.Objects;
 public class SOPProfile extends AbstractProfileItem {
     private final HashMap<Integer, Integer> sopMap;
 
-    public SOPProfile(String name, String codeName, ProfileItem parentProfile, String action, List<String> tags) {
-        super(name, codeName, parentProfile, action, tags);
+    public SOPProfile(String name, String codeName, String action, List<String> tags) {
+        super(name, codeName, action, tags);
         final SOPParser parserProfile = new SOPParser();
         URL url = this.getClass().getResource("minSOP_CTImage.json");
         this.sopMap = parserProfile.parse(url);

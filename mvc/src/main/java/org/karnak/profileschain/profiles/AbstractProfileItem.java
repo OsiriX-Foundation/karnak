@@ -1,7 +1,5 @@
 package org.karnak.profileschain.profiles;
 
-import org.dcm4che6.data.DicomElement;
-import org.karnak.data.profile.Policy;
 import org.karnak.profileschain.action.Action;
 
 import java.util.HashMap;
@@ -47,15 +45,13 @@ public abstract class AbstractProfileItem implements ProfileItem {
 
     protected final String name;
     protected final String codeName;
-    protected final ProfileItem profileParent;
     protected final String action;
     protected final List<String> tags;
     protected final Map<Integer, Action> tagMap;
 
-    public AbstractProfileItem(String name, String codeName, ProfileItem profileParent, String action, List<String> tags) {
+    public AbstractProfileItem(String name, String codeName, String action, List<String> tags) {
         this.name = Objects.requireNonNull(name);
         this.codeName = Objects.requireNonNull(codeName);
-        this.profileParent = profileParent;
         this.action = action;
         this.tags = tags;
         this.tagMap = new HashMap<>();
@@ -67,18 +63,6 @@ public abstract class AbstractProfileItem implements ProfileItem {
 
     public String getCodeName() {
         return codeName;
-    }
-
-    public ProfileItem getProfileParent() {
-        return profileParent;
-    }
-
-    public Action getParentAction(DicomElement dcmElem) {
-        if (this.profileParent != null) {
-            return this.profileParent.getAction(dcmElem);
-        }
-        return null;
-        // return policy == Policy.WHITELIST ? Action.REMOVE : null;
     }
 
     @Override

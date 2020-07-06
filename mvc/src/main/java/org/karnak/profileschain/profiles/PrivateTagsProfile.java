@@ -11,8 +11,8 @@ import java.util.Objects;
 public class PrivateTagsProfile extends AbstractProfileItem {
     public static final String TAG_PATTERN = "ggggeeee-where-gggg-is-odd";
 
-    public PrivateTagsProfile(String name, String codeName, ProfileItem parentProfile, String action, List<String> tags) {
-        super(name, codeName, parentProfile, action, tags);
+    public PrivateTagsProfile(String name, String codeName, String action, List<String> tags) {
+        super(name, codeName, action, tags);
     }
 
     @Override
@@ -26,6 +26,7 @@ public class PrivateTagsProfile extends AbstractProfileItem {
             }
             return tagMap.getOrDefault(tag, Action.KEEP);
         }
-        return profileParent == null ? null : getParentAction(dcmElem);
+        return null;
+        // return profileParent == null ? null : getParentAction(dcmElem);
     }
 }

@@ -43,14 +43,14 @@ public class ProfileChain {
 
     private final URL profileURL;
     private final ProfileChainBody profileChainYml;
-    private final ProfileItem profile;
     private final HMAC hmac;
+    private final ArrayList<ProfileItem> profiles;
 
     public ProfileChain(URL profileURL) {
         this.hmac = AppConfig.getInstance().getHmac();
         this.profileURL = profileURL;
         this.profileChainYml = init(profileURL);
-        this.profile = createProfileChain();
+        this.profiles = createProfilesList();
     }
 
     private ProfileChainBody init(URL profileURL) {
@@ -62,11 +62,11 @@ public class ProfileChain {
         }
         return null;
     }
-
-    public ProfileItem createProfileChain() {
+    public ArrayList<ProfileItem> createProfilesList() {
         if (profileChainYml != null) {
             final List<ProfileBody> profilesYml = profileChainYml.getProfiles();
             ProfileItem parent = null;
+            ArrayList<ProfileItem> profiles = new ArrayList<>();
             for (ProfileBody profileYml : profilesYml) {
                 AbstractProfileItem.Type t = AbstractProfileItem.Type.getType(profileYml.getCodename());
                 if (t == null) {
@@ -75,15 +75,15 @@ public class ProfileChain {
                     Object instanceProfileItem;
                     try {
                         instanceProfileItem = t.getProfileClass()
-                                .getConstructor(String.class, String.class, ProfileItem.class, String.class, List.class)
-                                .newInstance(profileYml.getName(), profileYml.getCodename(), parent, profileYml.getAction(), profileYml.getTags());
-                        parent = (ProfileItem) instanceProfileItem;
+                                .getConstructor(String.class, String.class, String.class, List.class)
+                                .newInstance(profileYml.getName(), profileYml.getCodename(), profileYml.getAction(), profileYml.getTags());
+                        profiles.add((ProfileItem) instanceProfileItem);
                     } catch (Exception e) {
                         LOGGER.error("Cannot build the profile: {}", t.getProfileClass().getName());
                     }
                 }
             }
-            return parent;
+            return profiles;
         }
         return null;
     }
@@ -109,24 +109,27 @@ public class ProfileChain {
     public void applyAction(DicomObject dcm, String patientID) {
         for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext(); ) {
             DicomElement dcmEl = iterator.next();
-            final Action action = this.profile.getAction(dcmEl);
-            if (action != null) {
-                try {
-                    final String tagValueIn = dcm.getString(dcmEl.tag()).orElse(null);
-                    ActionStrategy.Output out = action.execute(dcm, dcmEl.tag(), patientID, null);
-                    final String tagValueOut = dcm.getString(dcmEl.tag()).orElse(null);
-                    if (out == ActionStrategy.Output.TO_REMOVE) {
-                        iterator.remove();
-                        LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_IN, TagUtils.toString(dcmEl.tag()), dcmEl.tag(), action.getSymbol(), tagValueIn);
-                    }else{
-                        LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_INOUT, TagUtils.toString(dcmEl.tag()), dcmEl.tag(), action.getSymbol(), tagValueIn, tagValueOut);
+            for (ProfileItem profile : profiles) {
+                Action action = profile.getAction(dcmEl);
+                if (action != null) {
+                    try {
+                        final String tagValueIn = dcm.getString(dcmEl.tag()).orElse(null);
+                        ActionStrategy.Output out = action.execute(dcm, dcmEl.tag(), patientID, null);
+                        final String tagValueOut = dcm.getString(dcmEl.tag()).orElse(null);
+                        if (out == ActionStrategy.Output.TO_REMOVE) {
+                            iterator.remove();
+                            LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_IN, TagUtils.toString(dcmEl.tag()), dcmEl.tag(), action.getSymbol(), tagValueIn);
+                        } else {
+                            LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_INOUT, TagUtils.toString(dcmEl.tag()), dcmEl.tag(), action.getSymbol(), tagValueIn, tagValueOut);
+                        }
+                    } catch (final Exception e) {
+                        LOGGER.error("Cannot execute the action {}", action, e);
                     }
-                } catch (final Exception e) {
-                    LOGGER.error("Cannot execute the action {}", action, e);
+                    break;
                 }
-            }
-            else if (dcmEl.vr() == VR.SQ) {
-                dcmEl.itemStream().forEach(d -> applyAction(d, patientID));
+                else if (dcmEl.vr() == VR.SQ) {
+                    dcmEl.itemStream().forEach(d -> applyAction(d, patientID));
+                }
             }
         }
     }
@@ -140,8 +143,10 @@ public class ProfileChain {
         MDC.put("PatientID", PatientID);
 
         String pseudonym = getMainzellistePseudonym(dcm);
-        String profileChainCodeName = getCodesName(this.profile, new ArrayList<String>()).toString();
-        String patientID = generatePatientID(pseudonym, profileChainCodeName);
+        String profilesCodeName = String.join(
+            "-" , profiles.stream().map(profile -> profile.getCodeName()).collect(Collectors.toList())
+        );
+        String patientID = generatePatientID(pseudonym, profilesCodeName);
 
         if (!StringUtil.hasText(pseudonym)) {
             throw new IllegalStateException("Cannot build a pseudonym");
@@ -149,7 +154,7 @@ public class ProfileChain {
 
         applyAction(dcm, patientID);
 
-        setDefaultDeidentTagValue(dcm, patientID, profileChainCodeName, pseudonym);
+        setDefaultDeidentTagValue(dcm, patientID, profilesCodeName, pseudonym);
     }
 
     public void setDefaultDeidentTagValue(DicomObject dcm, String patientID, String profileChainCodeName, String pseudonym){
@@ -204,13 +209,5 @@ public class ProfileChain {
         byte[] bytes = new byte[16];
         System.arraycopy(hmac.byteHash(pseudonym + profiles), 0, bytes, 0, 16);
         return new BigInteger(1, bytes).toString();
-    }
-
-    public ArrayList<String> getCodesName(ProfileItem profile, ArrayList<String> output) {
-        output.add(profile.getCodeName());
-        if (profile.getProfileParent() != null) {
-            return getCodesName(profile.getProfileParent(), output);
-        }
-        return output;
     }
 }
