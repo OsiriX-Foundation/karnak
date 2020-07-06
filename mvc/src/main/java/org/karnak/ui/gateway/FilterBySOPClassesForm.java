@@ -15,34 +15,23 @@ import java.util.List;
 public class FilterBySOPClassesForm extends HorizontalLayout {
 
     private final MultiselectComboBox<String> sopFilter;
-    private final Label sopFilterLabel;
     private Binder<Destination> binder;
+    private DataService dataService;
 
     public FilterBySOPClassesForm(DataService dataService, Binder<Destination> binder) {
+        this.dataService = dataService;
         this.binder = binder;
         setClassName("filters-form");
 
         setSizeFull();
 
-        List<SOPClassUID> sopClassUIDList = new ArrayList<>();
-        sopClassUIDList = dataService.getAllSOPClassUIDs();
+
 
         sopFilter = new MultiselectComboBox();
-        ArrayList<String> listOfCIODS = new ArrayList<>();
-        sopClassUIDList.forEach(sopClassUID -> listOfCIODS.add(sopClassUID.getName()));
-        sopFilter.setItems(listOfCIODS);
-
-        VerticalLayout sopFilterPanel = new VerticalLayout();
-        add(sopFilterPanel);
-
-        VerticalLayout sopFilterlayout = new VerticalLayout();
-        sopFilterlayout.add(sopFilter);
-        sopFilterPanel.add(sopFilterlayout);
-        sopFilterLabel = new Label();
-        sopFilterLabel.setText("Filter by SOP");
+        this.updatedSopFilterItems();
 
         this.binder.forField(sopFilter).bind(Destination::getSOPClassUIDFiltersName, (destination, sopClassNames) -> {
-            ArrayList<SOPClassUID> newSOPClassUIDS= new ArrayList<>();
+            ArrayList<SOPClassUID> newSOPClassUIDS = new ArrayList<>();
             sopClassNames.forEach(sopClasseName -> {
                 SOPClassUID sopClassUID = dataService.getSOPClassUIDByName(sopClasseName);
                 newSOPClassUIDS.add(sopClassUID);
@@ -50,6 +39,14 @@ public class FilterBySOPClassesForm extends HorizontalLayout {
             destination.setSOPClassUIDFilters(newSOPClassUIDS);
         });
 
-        add(UIS.setWidthFull(new VerticalLayout(sopFilterLabel, sopFilterPanel)));
+        add(sopFilter);
     }
+
+    public void updatedSopFilterItems(){
+        final List<SOPClassUID> sopClassUIDList = dataService.getAllSOPClassUIDs();
+        ArrayList<String> listOfCIODS = new ArrayList<>();
+        sopClassUIDList.forEach(sopClassUID -> listOfCIODS.add(sopClassUID.getName()));
+        sopFilter.setItems(listOfCIODS);
+    }
+
 }

@@ -42,6 +42,7 @@ public class DestinationStowForm extends Div {
     private final TextField notifyInterval;
 
     private final Checkbox desidentification;
+    private final Checkbox filterBySOPClasses;
 
     private Button update;
     private Button discard;
@@ -165,11 +166,22 @@ public class DestinationStowForm extends Div {
                 "Interval in seconds for sending a notification (when no new image is arrived in the archive folder). Default value: 45");
 
         desidentification = new Checkbox();
-        desidentification.setLabel("Activate de-identification");
+        desidentification.setLabel("De-identification");
         desidentification.setValue(true);
 
+        filterBySOPClasses = new Checkbox();
+        filterBySOPClasses.setLabel("Filter by SOP classes");
+        filterBySOPClasses.setValue(true);
 
         filterSopForm = new FilterBySOPClassesForm(this.dataService, this.binder);
+
+        filterBySOPClasses.addValueChangeListener(checkboxBooleanComponentValueChangeEvent -> {
+            if(checkboxBooleanComponentValueChangeEvent.getValue()){
+                filterSopForm.setEnabled(true);
+            }else{
+                filterSopForm.setEnabled(false);
+            }
+        });
 
 
         content.add(UIS.setWidthFull( //
@@ -185,6 +197,8 @@ public class DestinationStowForm extends Div {
                         notifyInterval)));
         content.add(UIS.setWidthFull( //
                 new HorizontalLayout(desidentification)));
+
+        content.add(UIS.setWidthFull(new HorizontalLayout(filterBySOPClasses)));
 
         content.add(filterSopForm);
 
