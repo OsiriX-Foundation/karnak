@@ -44,9 +44,10 @@ public class FilterBySOPClassesForm extends HorizontalLayout {
 
     public void updatedSopFilterItems(){
         final List<SOPClassUID> sopClassUIDList = dataService.getAllSOPClassUIDs();
-        ArrayList<String> listOfCIODS = new ArrayList<>();
-        sopClassUIDList.forEach(sopClassUID -> listOfCIODS.add(sopClassUID.getName()));
-        sopFilter.setItems(listOfCIODS);
+        ArrayList<String> listOfSOPClasses = new ArrayList<>();
+        sopClassUIDList.forEach(sopClassUID -> listOfSOPClasses.add(sopClassUID.getName()));
+        listOfSOPClasses.sort((e1, e2) -> e1.compareTo(e2));
+        sopFilter.setItems(listOfSOPClasses);
     }
 
 }
