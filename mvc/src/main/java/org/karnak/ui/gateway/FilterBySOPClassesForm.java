@@ -31,22 +31,17 @@ public class FilterBySOPClassesForm extends HorizontalLayout {
         this.updatedSopFilterItems();
 
         filterBySOPClassesCheckbox.addValueChangeListener(checkboxBooleanComponentValueChangeEvent -> {
-            if(checkboxBooleanComponentValueChangeEvent.getValue()){
+            if (checkboxBooleanComponentValueChangeEvent.getValue()) {
                 sopFilter.setEnabled(true);
-            }else{
+            } else {
                 sopFilter.setEnabled(false);
             }
         });
 
-        add(filterBySOPClassesCheckbox);
-
-        add(sopFilter);
-
-        binder.forField(filterBySOPClassesCheckbox) //
-                .bind(Destination::getFilterBySOPClasses, Destination::setFilterBySOPClasses);
-
         this.binder.forField(sopFilter)
-                .withValidator(strings -> !strings.isEmpty(), "No filter is applied\n")
+                .withValidator(listOfSOPFilter ->
+                                (!listOfSOPFilter.isEmpty()) | (listOfSOPFilter.isEmpty() && filterBySOPClassesCheckbox.getValue() == false),
+                        "No filter is applied\n")
                 .bind(Destination::getSOPClassUIDFiltersName, (destination, sopClassNames) -> {
                     ArrayList<SOPClassUID> newSOPClassUIDS = new ArrayList<>();
                     sopClassNames.forEach(sopClasseName -> {
@@ -55,9 +50,19 @@ public class FilterBySOPClassesForm extends HorizontalLayout {
                     });
                     destination.setSOPClassUIDFilters(newSOPClassUIDS);
                 });
+
+
+        add(filterBySOPClassesCheckbox);
+
+        add(sopFilter);
+
+        binder.forField(filterBySOPClassesCheckbox) //
+                .bind(Destination::getFilterBySOPClasses, Destination::setFilterBySOPClasses);
+
+
     }
 
-    public void updatedSopFilterItems(){
+    public void updatedSopFilterItems() {
         final List<SOPClassUID> sopClassUIDList = dataService.getAllSOPClassUIDs();
         ArrayList<String> listOfSOPClasses = new ArrayList<>();
         sopClassUIDList.forEach(sopClassUID -> listOfSOPClasses.add(sopClassUID.getName()));
