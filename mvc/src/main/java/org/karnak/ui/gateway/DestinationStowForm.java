@@ -42,7 +42,7 @@ public class DestinationStowForm extends Div {
     private final TextField notifyInterval;
 
     private final Checkbox desidentification;
-    private final Checkbox filterBySOPClasses;
+    private final Checkbox filterBySOPClassesCheckbox;
 
     private Button update;
     private Button discard;
@@ -169,13 +169,12 @@ public class DestinationStowForm extends Div {
         desidentification.setLabel("De-identification");
         desidentification.setValue(true);
 
-        filterBySOPClasses = new Checkbox();
-        filterBySOPClasses.setLabel("Filter by SOP classes");
-        filterBySOPClasses.setValue(true);
+        filterBySOPClassesCheckbox = new Checkbox();
+        filterBySOPClassesCheckbox.setLabel("Filter by SOP classes");
 
         filterSopForm = new FilterBySOPClassesForm(this.dataService, this.binder);
 
-        filterBySOPClasses.addValueChangeListener(checkboxBooleanComponentValueChangeEvent -> {
+        filterBySOPClassesCheckbox.addValueChangeListener(checkboxBooleanComponentValueChangeEvent -> {
             if(checkboxBooleanComponentValueChangeEvent.getValue()){
                 filterSopForm.setEnabled(true);
             }else{
@@ -198,7 +197,7 @@ public class DestinationStowForm extends Div {
         content.add(UIS.setWidthFull( //
                 new HorizontalLayout(desidentification)));
 
-        content.add(UIS.setWidthFull(new HorizontalLayout(filterBySOPClasses)));
+        content.add(UIS.setWidthFull(new HorizontalLayout(filterBySOPClassesCheckbox)));
 
         content.add(filterSopForm);
 
@@ -214,6 +213,9 @@ public class DestinationStowForm extends Div {
                 .bind(Destination::getNotifyInterval, Destination::setNotifyInterval);
         binder.forField(desidentification) //
                 .bind(Destination::getDesidentification, Destination::setDesidentification);
+
+        binder.forField(filterBySOPClassesCheckbox) //
+                .bind(Destination::getFilterBySOPClasses, Destination::setFilterBySOPClasses);
 
 
         binder.bindInstanceFields(this);

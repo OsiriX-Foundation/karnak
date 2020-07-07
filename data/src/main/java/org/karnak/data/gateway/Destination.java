@@ -31,8 +31,7 @@ public class Destination {
 
     private boolean desidentification;
 
-    //@OneToMany(mappedBy = "destination")
-    //private Set<FilterBySOPClass> filterBySOPClasses;
+    private boolean filterBySOPClasses;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name="sop_class_filter",
@@ -136,6 +135,7 @@ public class Destination {
         this.type = null;
         this.description = "";
         this.desidentification = true;
+        this.filterBySOPClasses = true;
         this.notify = "";
         this.notifyObjectErrorPrefix = "";
         this.notifyObjectPattern = "";
@@ -194,6 +194,14 @@ public class Destination {
 
     public void setDesidentification(boolean desidentification) {
         this.desidentification = desidentification;
+    }
+
+    public boolean getFilterBySOPClasses() {
+        return filterBySOPClasses;
+    }
+
+    public void setFilterBySOPClasses(boolean filterBySOPClasses) {
+        this.filterBySOPClasses = filterBySOPClasses;
     }
 
     public String getNotify() {
