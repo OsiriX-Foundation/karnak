@@ -1,23 +1,21 @@
 package org.karnak.ui.gateway;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
-import org.karnak.data.gateway.Destination;
-import org.karnak.data.gateway.ForwardNode;
-import org.karnak.data.gateway.GatewayPersistence;
-import org.karnak.data.gateway.DicomSourceNode;
+import org.karnak.data.gateway.*;
 
 @SuppressWarnings("serial")
 public class DataServiceImpl extends DataService {
     private GatewayPersistence gatewayPersistence;
-
     {
         gatewayPersistence = GatewayConfiguration.getInstance().getGatewayPersistence();
     }
+
+    private SOPClassUIDPersistence sopClassUIDPersistence;
+    {
+        sopClassUIDPersistence = GatewayConfiguration.getInstance().getSopClassUIDPersistence();
+    }
+
 
     @Override
     public Collection<ForwardNode> getAllForwardNodes() {
@@ -120,4 +118,19 @@ public class DataServiceImpl extends DataService {
         }
         forwardNode.removeSourceNode(data);
     }
+
+    @Override
+    public List<SOPClassUID> getAllSOPClassUIDs() {
+        List<SOPClassUID> list = new ArrayList<>();
+        sopClassUIDPersistence.findAll() //
+                .forEach(list::add);
+        return list;
+    }
+
+    @Override
+    public SOPClassUID getSOPClassUIDByName(String name) {
+        return sopClassUIDPersistence.getSOPClassUIDByName(name);
+    }
+
+
 }

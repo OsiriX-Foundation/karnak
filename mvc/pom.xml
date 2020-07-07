@@ -155,6 +155,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.vaadin.gatanaso</groupId>
+			<artifactId>multiselect-combo-box-flow</artifactId>
+			<version>3.0.2</version> <!-- use appropriate version -->
+		</dependency>
+
+		<dependency>
 			<groupId>javax.validation</groupId>
 			<artifactId>validation-api</artifactId>
 		</dependency>
@@ -179,6 +185,11 @@
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-api</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.vaadin</groupId>
+			<artifactId>vaadin-checkbox-flow</artifactId>
+			<version>3.0.1</version>
 		</dependency>
 	</dependencies>
 

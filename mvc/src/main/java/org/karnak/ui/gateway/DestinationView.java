@@ -2,9 +2,7 @@ package org.karnak.ui.gateway;
 
 import org.karnak.data.NodeEventType;
 import org.karnak.data.NodeEvent;
-import org.karnak.data.gateway.Destination;
-import org.karnak.data.gateway.DestinationType;
-import org.karnak.data.gateway.ForwardNode;
+import org.karnak.data.gateway.*;
 
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.KeyModifier;
@@ -35,6 +33,8 @@ public class DestinationView extends HorizontalLayout {
     private DestinationDicomForm dicomForm;
     private DestinationStowForm stowForm;
 
+    private SOPClassUIDPersistence sopClassUIDPersistence = GatewayConfiguration.getInstance().getSopClassUIDPersistence();
+
     public DestinationView(DataService dataService, GatewayViewLogic outputLogic) {
         this.dataProvider = new DestinationDataProvider(dataService);
         this.viewLogic = new DestinationLogic(outputLogic, this);
@@ -47,8 +47,8 @@ public class DestinationView extends HorizontalLayout {
         grid.setDataProvider(this.dataProvider);
         grid.asSingleSelect().addValueChangeListener(event -> viewLogic.rowSelected(event.getValue()));
 
-        dicomForm = new DestinationDicomForm(viewLogic);
-        stowForm = new DestinationStowForm(viewLogic);
+        dicomForm = new DestinationDicomForm(viewLogic,dataService);
+        stowForm = new DestinationStowForm(viewLogic, dataService);
 
         VerticalLayout barAndGridLayout = new VerticalLayout();
         barAndGridLayout.setPadding(false);
