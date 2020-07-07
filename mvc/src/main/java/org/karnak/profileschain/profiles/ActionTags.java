@@ -54,6 +54,9 @@ public class ActionTags extends AbstractProfileItem {
     }
 
     public Action stringToAction() {
+        if (action == null) {
+            return null;
+        }
         return switch (action) {
             case "REPLACE_NULL" -> Action.REPLACE_NULL;
             case "REMOVE" -> Action.REMOVE;
