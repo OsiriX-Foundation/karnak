@@ -47,13 +47,15 @@ public abstract class AbstractProfileItem implements ProfileItem {
     protected final String codeName;
     protected final String action;
     protected final List<String> tags;
+    protected final List<String> exceptedTags;
     protected final Map<Integer, Action> tagMap;
 
-    public AbstractProfileItem(String name, String codeName, String action, List<String> tags) {
+    public AbstractProfileItem(String name, String codeName, String action, List<String> tags, List<String> exceptedTags) {
         this.name = Objects.requireNonNull(name);
         this.codeName = Objects.requireNonNull(codeName);
         this.action = action;
         this.tags = tags;
+        this.exceptedTags = exceptedTags;
         this.tagMap = new HashMap<>();
     }
 

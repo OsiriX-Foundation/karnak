@@ -65,7 +65,6 @@ public class ProfileChain {
     public ArrayList<ProfileItem> createProfilesList() {
         if (profileChainYml != null) {
             final List<ProfileBody> profilesYml = profileChainYml.getProfiles();
-            ProfileItem parent = null;
             ArrayList<ProfileItem> profiles = new ArrayList<>();
             for (ProfileBody profileYml : profilesYml) {
                 AbstractProfileItem.Type t = AbstractProfileItem.Type.getType(profileYml.getCodename());
@@ -75,8 +74,8 @@ public class ProfileChain {
                     Object instanceProfileItem;
                     try {
                         instanceProfileItem = t.getProfileClass()
-                                .getConstructor(String.class, String.class, String.class, List.class)
-                                .newInstance(profileYml.getName(), profileYml.getCodename(), profileYml.getAction(), profileYml.getTags());
+                                .getConstructor(String.class, String.class, String.class, List.class, List.class)
+                                .newInstance(profileYml.getName(), profileYml.getCodename(), profileYml.getAction(), profileYml.getTags(), profileYml.getExceptedtags());
                         profiles.add((ProfileItem) instanceProfileItem);
                     } catch (Exception e) {
                         LOGGER.error("Cannot build the profile: {}", t.getProfileClass().getName());
@@ -110,7 +109,7 @@ public class ProfileChain {
         for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext(); ) {
             DicomElement dcmEl = iterator.next();
             for (ProfileItem profile : profiles) {
-                Action action = profile.getAction(dcmEl);
+                final Action action = profile.getAction(dcmEl);
                 if (action != null) {
                     try {
                         final String tagValueIn = dcm.getString(dcmEl.tag()).orElse(null);

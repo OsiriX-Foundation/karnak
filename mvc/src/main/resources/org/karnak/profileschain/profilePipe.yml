@@ -7,17 +7,20 @@ profiles:
     codename: "action.on.specific.tags"
     action: "KEEP"
     tags:
-      - "0008,0013"
-      - "(0008,0016)"
       - "(0008,00XX)"
       - "0010,00XX"
+    exceptedtags:
+      - "0008,0008"
+      - "0008,0013"
+      - "(0008,0016)"
 
   - name: "Specific tags"
     codename: "action.on.specific.tags"
     action: "REMOVE"
     tags:
       - "0008,0008"
-      - "(0008,0012)"
+      - "0008,0013"
+      - "(0008,0016)"
 
   - name: "Specific tags"
     codename: "action.on.specific.tags"

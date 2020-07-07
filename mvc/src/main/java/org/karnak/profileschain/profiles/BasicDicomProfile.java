@@ -55,13 +55,13 @@ public class BasicDicomProfile {
             String name = g.getGroupName();
             AbstractProfileItem item;
             if (PrivateTagsProfile.TAG_PATTERN.equals(tagKey)) {
-                item = new PrivateTagsProfile(name, tagKey, null, null);
+                item = new PrivateTagsProfile(name, tagKey, null, null, null);
                 for(GroupTagAction t : g.getTagActions()) {
                     item.put(t.getTag(),  ParserProfile.convertAction(t.getAction()));
                 }
             } else if (TagPatternProfile.isValid(tagKey)) {
                 try {
-                    item = new TagPatternProfile(name, tagKey, null, null);
+                    item = new TagPatternProfile(name, tagKey, null, null, null);
                     for(GroupTagAction t : g.getTagActions()) {
                         item.put(t.getTag(),  ParserProfile.convertAction(t.getAction()));
                     }

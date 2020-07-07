@@ -20,7 +20,7 @@ public class FilterEditor  implements AttributeEditor {
         final String classUID = dcm.getString(Tag.SOPClassUID).orElse(null);
         final Predicate<SOPClassUID> sopClassUIDPredicate = sopClassUID -> classUID.equals(sopClassUID.getUid());
         boolean sopClassUIDisPresent = this.sopClassUIDSet.stream().anyMatch(sopClassUIDPredicate);
-        if(sopClassUIDisPresent==false){
+        if (sopClassUIDisPresent == false) {
             throw new IllegalStateException("SOPClassUID is not in a filter");
         }
     }

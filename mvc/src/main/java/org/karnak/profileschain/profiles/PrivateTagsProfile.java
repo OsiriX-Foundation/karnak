@@ -11,8 +11,8 @@ import java.util.Objects;
 public class PrivateTagsProfile extends AbstractProfileItem {
     public static final String TAG_PATTERN = "ggggeeee-where-gggg-is-odd";
 
-    public PrivateTagsProfile(String name, String codeName, String action, List<String> tags) {
-        super(name, codeName, action, tags);
+    public PrivateTagsProfile(String name, String codeName, String action, List<String> tags, List<String> exceptedTags) {
+        super(name, codeName, action, tags, exceptedTags);
     }
 
     @Override

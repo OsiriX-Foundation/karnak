@@ -11,17 +11,19 @@ import java.util.List;
 public class ActionTags extends AbstractProfileItem {
     private final Logger LOGGER = LoggerFactory.getLogger(ActionTags.class);
     private TagActionMap tagsAction;
+    private TagActionMap exceptedTagsAction;
 
-    public ActionTags(String name, String codeName, String action, List<String> tags) throws Exception {
-        super(name, codeName, action, tags);
+    public ActionTags(String name, String codeName, String action, List<String> tags, List<String> exceptedTags) throws Exception {
+        super(name, codeName, action, tags, exceptedTags);
         tagsAction = new TagActionMap();
+        exceptedTagsAction = new TagActionMap();
         setActionHashMap();
     }
 
     private void setActionHashMap() throws Exception {
         Action action = stringToAction();
 
-        if (stringToAction() == null) {
+        if (action == null) {
             throw new Exception("Cannot build the profile " + codeName + ": Unknown Action");
         }
 
@@ -32,11 +34,19 @@ public class ActionTags extends AbstractProfileItem {
         for (String tag: tags) {
             tagsAction.put(tag, action);
         }
+        if (exceptedTags != null) {
+            for (String tag : exceptedTags) {
+                exceptedTagsAction.put(tag, action);
+            }
+        }
     }
 
     @Override
     public Action getAction(DicomElement dcmElem) {
-        return tagsAction.get(dcmElem.tag());
+        if (exceptedTagsAction.get(dcmElem.tag()) == null) {
+            return tagsAction.get(dcmElem.tag());
+        }
+        return null;
     }
 
     public Action stringToAction() {
