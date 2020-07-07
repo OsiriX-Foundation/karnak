@@ -51,9 +51,13 @@ public class DestinationDicomForm extends Div {
 
     private Binder<Destination> binder;
     private Destination currentDestination;
+    private DataService dataService;
+    private FilterBySOPClassesForm filterSopForm;
 
-    public DestinationDicomForm(DestinationLogic viewLogic) {
+    public DestinationDicomForm(DestinationLogic viewLogic, DataService dataService) {
         this.viewLogic = viewLogic;
+        this.dataService = dataService;
+        this.binder = new BeanValidationBinder<>(Destination.class);
 
         setClassName("destination-form");
 
@@ -166,6 +170,8 @@ public class DestinationDicomForm extends Div {
         desidentification.setLabel("Activate de-identification");
         desidentification.setValue(true);
 
+        filterSopForm = new FilterBySOPClassesForm(this.dataService, this.binder);
+
         content.add(UIS.setWidthFull( //
                 new HorizontalLayout(aeTitle, description)));
         content.add(UIS.setWidthFull( //
@@ -180,9 +186,8 @@ public class DestinationDicomForm extends Div {
         content.add(UIS.setWidthFull( //
                 new HorizontalLayout(desidentification)));
 
-        binder = new BeanValidationBinder<>(Destination.class);
-        // Define the same validators as the Destination class, because the validation
-        // bean doesn't work in Vaadin
+        content.add(filterSopForm);
+
         binder.forField(aeTitle) //
                 .withValidator( //
                         StringUtils::isNotBlank, //

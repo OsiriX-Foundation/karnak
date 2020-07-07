@@ -49,9 +49,13 @@ public class DestinationStowForm extends Div {
 
     private Binder<Destination> binder;
     private Destination currentDestination;
+    private DataService dataService;
+    private FilterBySOPClassesForm filterSopForm;
 
-    public DestinationStowForm(DestinationLogic viewLogic) {
+    public DestinationStowForm(DestinationLogic viewLogic, DataService dataService) {
         this.viewLogic = viewLogic;
+        this.dataService = dataService;
+        this.binder = new BeanValidationBinder<>(Destination.class);
 
         setClassName("destination-form");
 
@@ -163,6 +167,11 @@ public class DestinationStowForm extends Div {
         desidentification.setLabel("Activate de-identification");
         desidentification.setValue(true);
 
+
+        filterSopForm = new FilterBySOPClassesForm(this.dataService, this.binder);
+
+
+
         content.add(UIS.setWidthFull( //
                 new HorizontalLayout(description)));
         content.add(UIS.setWidthFull( //
@@ -177,7 +186,8 @@ public class DestinationStowForm extends Div {
         content.add(UIS.setWidthFull( //
                 new HorizontalLayout(desidentification)));
 
-        binder = new BeanValidationBinder<>(Destination.class);
+        content.add(filterSopForm);
+
         // Define the same validators as the Destination class, because the validation
         // bean doesn't work in Vaadin
         binder.forField(url) //
@@ -190,7 +200,9 @@ public class DestinationStowForm extends Div {
                 .bind(Destination::getNotifyInterval, Destination::setNotifyInterval);
         binder.forField(desidentification) //
                 .bind(Destination::getDesidentification, Destination::setDesidentification);
+
         binder.bindInstanceFields(this);
+
 
         // enable/disable update button while editing
         binder.addStatusChangeListener(event -> {
