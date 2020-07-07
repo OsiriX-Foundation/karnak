@@ -3,7 +3,7 @@ version: "0.9.4"
 minimumkarnakversion: "0.1"
 defaultIssuerOfPatientID: "DPA"
 profiles:
-  - name: "Specific tags"
+  - name: "Keep tags"
     codename: "action.on.specific.tags"
     action: "KEEP"
     tags:
@@ -14,7 +14,7 @@ profiles:
       - "0008,0013"
       - "(0008,0016)"
 
-  - name: "Specific tags"
+  - name: "Remove tags"
     codename: "action.on.specific.tags"
     action: "REMOVE"
     tags:
@@ -22,17 +22,17 @@ profiles:
       - "0008,0013"
       - "(0008,0016)"
 
-  - name: "Specific tags"
+  - name: "Missing tags (generate an error)"
     codename: "action.on.specific.tags"
     action: "REMOVE"
 
-  - name: "Specific tags"
+  - name: "Missing action (generate an error)"
     codename: "action.on.specific.tags"
     tags:
       - "0008,0008"
       - "(0008,0012)"
 
-  - name: "Specific tags"
+  - name: "Missing tags and action (generate an error)"
     codename: "action.on.specific.tags"
 
   - name: "Private tags"

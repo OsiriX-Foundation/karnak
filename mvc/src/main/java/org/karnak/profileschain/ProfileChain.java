@@ -78,7 +78,7 @@ public class ProfileChain {
                                 .newInstance(profileYml.getName(), profileYml.getCodename(), profileYml.getAction(), profileYml.getTags(), profileYml.getExceptedtags());
                         profiles.add((ProfileItem) instanceProfileItem);
                     } catch (Exception e) {
-                        LOGGER.error("Cannot build the profile: {}", t.getProfileClass().getName());
+                        LOGGER.error("Cannot build the profile: {}", t.getProfileClass().getName(), e);
                     }
                 }
             }

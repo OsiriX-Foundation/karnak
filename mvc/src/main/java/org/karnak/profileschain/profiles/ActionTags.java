@@ -23,11 +23,15 @@ public class ActionTags extends AbstractProfileItem {
     private void setActionHashMap() throws Exception {
         Action action = stringToAction();
 
+        if (action == null && tags == null) {
+            throw new Exception("Cannot build the profile " + codeName + ": Unknown Action and no tags defined");
+        }
+
         if (action == null) {
             throw new Exception("Cannot build the profile " + codeName + ": Unknown Action");
         }
 
-        if (tags == null || tags.size() == 0) {
+        if (tags == null) {
             throw new Exception("Cannot build the profile " + codeName + ": No tags defined");
         }
 
