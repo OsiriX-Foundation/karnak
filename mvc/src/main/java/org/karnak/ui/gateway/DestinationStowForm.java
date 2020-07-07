@@ -42,7 +42,6 @@ public class DestinationStowForm extends Div {
     private final TextField notifyInterval;
 
     private final Checkbox desidentification;
-    private final Checkbox filterBySOPClassesCheckbox;
 
     private Button update;
     private Button discard;
@@ -169,18 +168,9 @@ public class DestinationStowForm extends Div {
         desidentification.setLabel("De-identification");
         desidentification.setValue(true);
 
-        filterBySOPClassesCheckbox = new Checkbox();
-        filterBySOPClassesCheckbox.setLabel("Filter by SOP classes");
 
         filterSopForm = new FilterBySOPClassesForm(this.dataService, this.binder);
 
-        filterBySOPClassesCheckbox.addValueChangeListener(checkboxBooleanComponentValueChangeEvent -> {
-            if(checkboxBooleanComponentValueChangeEvent.getValue()){
-                filterSopForm.setEnabled(true);
-            }else{
-                filterSopForm.setEnabled(false);
-            }
-        });
 
 
         content.add(UIS.setWidthFull( //
@@ -197,8 +187,6 @@ public class DestinationStowForm extends Div {
         content.add(UIS.setWidthFull( //
                 new HorizontalLayout(desidentification)));
 
-        content.add(UIS.setWidthFull(new HorizontalLayout(filterBySOPClassesCheckbox)));
-
         content.add(filterSopForm);
 
         // Define the same validators as the Destination class, because the validation
@@ -213,10 +201,6 @@ public class DestinationStowForm extends Div {
                 .bind(Destination::getNotifyInterval, Destination::setNotifyInterval);
         binder.forField(desidentification) //
                 .bind(Destination::getDesidentification, Destination::setDesidentification);
-
-        binder.forField(filterBySOPClassesCheckbox) //
-                .bind(Destination::getFilterBySOPClasses, Destination::setFilterBySOPClasses);
-
 
         binder.bindInstanceFields(this);
 

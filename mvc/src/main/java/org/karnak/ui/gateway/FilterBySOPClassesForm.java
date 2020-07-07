@@ -1,12 +1,10 @@
 package org.karnak.ui.gateway;
 
-import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.binder.Binder;
 import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.SOPClassUID;
-import org.karnak.ui.util.UIS;
 import org.vaadin.gatanaso.MultiselectComboBox;
 
 import java.util.ArrayList;
@@ -15,6 +13,7 @@ import java.util.List;
 public class FilterBySOPClassesForm extends HorizontalLayout {
 
     private final MultiselectComboBox<String> sopFilter;
+    private final Checkbox filterBySOPClassesCheckbox;
     private Binder<Destination> binder;
     private DataService dataService;
 
@@ -25,21 +24,37 @@ public class FilterBySOPClassesForm extends HorizontalLayout {
 
         setSizeFull();
 
-
+        filterBySOPClassesCheckbox = new Checkbox();
+        filterBySOPClassesCheckbox.setLabel("Filter by SOP classes");
 
         sopFilter = new MultiselectComboBox();
         this.updatedSopFilterItems();
 
-        this.binder.forField(sopFilter).bind(Destination::getSOPClassUIDFiltersName, (destination, sopClassNames) -> {
-            ArrayList<SOPClassUID> newSOPClassUIDS = new ArrayList<>();
-            sopClassNames.forEach(sopClasseName -> {
-                SOPClassUID sopClassUID = dataService.getSOPClassUIDByName(sopClasseName);
-                newSOPClassUIDS.add(sopClassUID);
-            });
-            destination.setSOPClassUIDFilters(newSOPClassUIDS);
+        filterBySOPClassesCheckbox.addValueChangeListener(checkboxBooleanComponentValueChangeEvent -> {
+            if(checkboxBooleanComponentValueChangeEvent.getValue()){
+                sopFilter.setEnabled(true);
+            }else{
+                sopFilter.setEnabled(false);
+            }
         });
 
+        add(filterBySOPClassesCheckbox);
+
         add(sopFilter);
+
+        binder.forField(filterBySOPClassesCheckbox) //
+                .bind(Destination::getFilterBySOPClasses, Destination::setFilterBySOPClasses);
+
+        this.binder.forField(sopFilter)
+                .withValidator(strings -> !strings.isEmpty(), "No filter is applied\n")
+                .bind(Destination::getSOPClassUIDFiltersName, (destination, sopClassNames) -> {
+                    ArrayList<SOPClassUID> newSOPClassUIDS = new ArrayList<>();
+                    sopClassNames.forEach(sopClasseName -> {
+                        SOPClassUID sopClassUID = dataService.getSOPClassUIDByName(sopClasseName);
+                        newSOPClassUIDS.add(sopClassUID);
+                    });
+                    destination.setSOPClassUIDFilters(newSOPClassUIDS);
+                });
     }
 
     public void updatedSopFilterItems(){
