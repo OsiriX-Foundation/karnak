@@ -47,7 +47,7 @@ public class DestinationView extends HorizontalLayout {
         grid.setDataProvider(this.dataProvider);
         grid.asSingleSelect().addValueChangeListener(event -> viewLogic.rowSelected(event.getValue()));
 
-        dicomForm = new DestinationDicomForm(viewLogic);
+        dicomForm = new DestinationDicomForm(viewLogic,dataService);
         stowForm = new DestinationStowForm(viewLogic, dataService);
 
         VerticalLayout barAndGridLayout = new VerticalLayout();

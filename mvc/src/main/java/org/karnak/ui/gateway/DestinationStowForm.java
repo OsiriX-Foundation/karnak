@@ -28,7 +28,6 @@ public class DestinationStowForm extends Div {
     private DestinationLogic viewLogic;
 
     private VerticalLayout content;
-    private FilterBySOPClassesForm destinationFilterForm;
 
     private final TextField description;
     private final TextField url;
@@ -165,7 +164,7 @@ public class DestinationStowForm extends Div {
                 "Interval in seconds for sending a notification (when no new image is arrived in the archive folder). Default value: 45");
 
         desidentification = new Checkbox();
-        desidentification.setLabel("De-identification");
+        desidentification.setLabel("Activate de-identification");
         desidentification.setValue(true);
 
 

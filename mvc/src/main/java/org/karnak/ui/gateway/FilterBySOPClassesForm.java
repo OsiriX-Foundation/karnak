@@ -41,7 +41,7 @@ public class FilterBySOPClassesForm extends HorizontalLayout {
         this.binder.forField(sopFilter)
                 .withValidator(listOfSOPFilter ->
                                 (!listOfSOPFilter.isEmpty()) | (listOfSOPFilter.isEmpty() && filterBySOPClassesCheckbox.getValue() == false),
-                        "No filter is applied\n")
+                        "No filter are applied\n")
                 .bind(Destination::getSOPClassUIDFiltersName, (destination, sopClassNames) -> {
                     ArrayList<SOPClassUID> newSOPClassUIDS = new ArrayList<>();
                     sopClassNames.forEach(sopClasseName -> {
