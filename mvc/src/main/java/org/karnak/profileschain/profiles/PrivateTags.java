@@ -19,6 +19,11 @@ public class PrivateTags extends AbstractProfileItem {
     }
 
     private void setActionHashMap(Action action) throws Exception {
+
+        if (action == null) {
+            throw new Exception("Cannot build the profile " + codeName + ": Unknown Action");
+        }
+
         if(tags != null) {
             for (String tag : tags) {
                 tagsAction.put(tag, action);
