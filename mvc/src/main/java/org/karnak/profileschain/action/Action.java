@@ -73,4 +73,19 @@ public enum Action implements ActionStrategy {
     public Output execute(DicomObject dcm, int tag, String pseudo, String dummy) {
         return action.execute(dcm, tag, pseudo, dummy);
     }
+
+    public static Action convertAction(String action) {
+        if (action == null) {
+            return null;
+        }
+        return switch (action) {
+            case "Z" -> Action.REPLACE_NULL;
+            case "X" -> Action.REMOVE;
+            case "K" -> Action.KEEP;
+            case "U" -> Action.UID;
+            case "DDum" -> Action.DEFAULT_DUMMY;
+            case "D" -> Action.REPLACE;
+            default -> null;
+        };
+    }
 }

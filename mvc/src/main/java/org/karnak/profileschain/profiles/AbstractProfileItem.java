@@ -15,7 +15,8 @@ public abstract class AbstractProfileItem implements ProfileItem {
         REMOVE_PRIVATE_TAG(PrivateTagsProfile.class, "remove.private.tag"),
         REPLACE_UID(UpdateUIDsProfile.class, "replace.uid"),
         SOP_MIN(SOPProfile.class, "keep.mandatory.sop"),
-        ACTION_TAGS(ActionTags.class, "action.on.specific.tags");
+        ACTION_TAGS(ActionTags.class, "action.on.specific.tags"),
+        ACTION_PRIVATETAGS(PrivateTags.class, "action.on.privatetags");
 
         private final Class<? extends ProfileItem> profileClass;
         private final String classAlias;

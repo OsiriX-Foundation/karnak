@@ -36,11 +36,13 @@ profiles:
     codename: "action.on.specific.tags"
 
   - name: "Private tags"
-    codename: "action.on.private.tag"
-    action: "REMOVE"
+    codename: "action.on.privatetags"
+    action: "X"
     tags:
+      - "001X,0010"
       - "0009,0010"
-      - "0010,00XX"
+    exceptedtags:
+      - "0011,0010"
 
   - name: "DICOM basic profile"
     codename: "basic.dicom.profile"
