@@ -40,6 +40,14 @@ public class TagActionMap {
         return action;
     }
 
+    public int size() {
+        return this.tagAction.size() + this.tagPatternAction.size();
+    }
+
+    public boolean isEmpty() {
+        return this.tagAction.isEmpty() && this.tagPatternAction.isEmpty();
+    }
+
     private static String getMask(String tagPattern) {
         char[] chars = tagPattern.toUpperCase().toCharArray();
         for (int i = 0; i < chars.length; i++) {
