@@ -12,35 +12,24 @@ public class ActionTags extends AbstractProfileItem {
     private final Logger LOGGER = LoggerFactory.getLogger(ActionTags.class);
     private TagActionMap tagsAction;
     private TagActionMap exceptedTagsAction;
+    private Action actionByDefault;
 
     public ActionTags(String name, String codeName, String action, List<String> tags, List<String> exceptedTags) throws Exception {
         super(name, codeName, action, tags, exceptedTags);
         tagsAction = new TagActionMap();
         exceptedTagsAction = new TagActionMap();
+        actionByDefault = Action.convertAction(this.action);
+        errorManagement();
         setActionHashMap();
     }
 
     private void setActionHashMap() throws Exception {
-        Action action = stringToAction();
-
-        if (action == null && tags == null) {
-            throw new Exception("Cannot build the profile " + codeName + ": Unknown Action and no tags defined");
-        }
-
-        if (action == null) {
-            throw new Exception("Cannot build the profile " + codeName + ": Unknown Action");
-        }
-
-        if (tags == null) {
-            throw new Exception("Cannot build the profile " + codeName + ": No tags defined");
-        }
-
         for (String tag: tags) {
-            tagsAction.put(tag, action);
+            tagsAction.put(tag, actionByDefault);
         }
         if (exceptedTags != null) {
             for (String tag : exceptedTags) {
-                exceptedTagsAction.put(tag, action);
+                exceptedTagsAction.put(tag, actionByDefault);
             }
         }
     }
@@ -53,16 +42,21 @@ public class ActionTags extends AbstractProfileItem {
         return null;
     }
 
-    public Action stringToAction() {
-        if (action == null) {
-            return null;
+    private void errorManagement() throws Exception{
+        if (action == null && tags == null) {
+            throw new Exception("Cannot build the profile " + codeName + ": Unknown Action and no tags defined");
         }
-        return switch (action) {
-            case "REPLACE_NULL" -> Action.REPLACE_NULL;
-            case "REMOVE" -> Action.REMOVE;
-            case "KEEP" -> Action.KEEP;
-            case "REPLACE_UID" -> Action.UID;
-            default -> null;
-        };
+
+        if (action == null) {
+            throw new Exception("Cannot build the profile " + codeName + ": Unknown Action");
+        }
+
+        if (actionByDefault == Action.REPLACE) {
+            throw new Exception("Cannot build the profile " + codeName + ": Action D is not recognized in this profile");
+        }
+
+        if (tags == null) {
+            throw new Exception("Cannot build the profile " + codeName + ": No tags defined");
+        }
     }
 }
