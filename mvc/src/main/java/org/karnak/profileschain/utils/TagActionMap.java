@@ -16,7 +16,7 @@ public class TagActionMap {
     }
 
     public void put(String tag, Action action) {
-        String cleanTag = tag.replaceAll("[(),]", "");
+        String cleanTag = tag.replaceAll("[(),]", "").toUpperCase();
         if (tag.contains("X")) {
             tagPatternAction.put(cleanTag, action);
         } else {

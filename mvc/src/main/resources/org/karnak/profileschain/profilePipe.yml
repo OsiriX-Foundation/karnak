@@ -7,12 +7,11 @@ profiles:
     codename: "action.on.specific.tags"
     action: "K"
     tags:
-      - "(0008,00XX)"
-      - "0010,00XX"
+      - "(0008,00Xx)"
+      - "0010,00xX"
     exceptedtags:
       - "0008,0008"
       - "0008,0013"
-      - "(0008,0016)"
 
   - name: "Remove tags"
     codename: "action.on.specific.tags"
@@ -20,7 +19,6 @@ profiles:
     tags:
       - "0008,0008"
       - "0008,0013"
-      - "(0008,0016)"
 
   - name: "Missing tags (generate an error)"
     codename: "action.on.specific.tags"
