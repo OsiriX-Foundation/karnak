@@ -62,10 +62,9 @@ public class AppConfig {
     public HMAC getHmac(){
         return new HMAC();
     }
-    /*
+
     @Bean("StandardDICOM")
     public StandardDICOM getStandardDICOM() {
         return new StandardDICOM();
     }
-     */
 }
