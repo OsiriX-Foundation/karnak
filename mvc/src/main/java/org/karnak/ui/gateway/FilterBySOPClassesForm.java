@@ -32,9 +32,9 @@ public class FilterBySOPClassesForm extends HorizontalLayout {
 
         filterBySOPClassesCheckbox.addValueChangeListener(checkboxBooleanComponentValueChangeEvent -> {
             if (checkboxBooleanComponentValueChangeEvent.getValue()) {
-                sopFilter.setEnabled(true);
+                sopFilter.onEnabledStateChanged(true);
             } else {
-                sopFilter.setEnabled(false);
+                sopFilter.onEnabledStateChanged(false);
             }
         });
 
