@@ -64,14 +64,6 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<version>${springframework.version}</version>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>${maven-surefire-plugin.version}</version>
-				<configuration>
-					<argLine>-Xverify:none</argLine>
-				</configuration>
-			</plugin>
 		</plugins>
 	</build>
 </project>

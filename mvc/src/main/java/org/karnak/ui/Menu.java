@@ -1,5 +1,8 @@
 package org.karnak.ui;
 
+import com.vaadin.flow.component.dependency.JsModule;
+import com.vaadin.flow.component.dependency.NpmPackage;
+import com.vaadin.flow.component.icon.IronIcon;
 import org.karnak.ui.authentication.AccessControlFactory;
 
 import com.vaadin.flow.component.Component;
@@ -18,6 +21,8 @@ import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.VaadinServletService;
 import com.vaadin.flow.server.VaadinSession;
 
+@NpmPackage(value = "@polymer/iron-icons", version = "3.0.1")
+@JsModule("@polymer/iron-icons/iron-icons.js")
 @SuppressWarnings("serial")
 public class Menu extends FlexLayout {
     private static final String SHOW_TABS = "show-tabs";
@@ -40,22 +45,6 @@ public class Menu extends FlexLayout {
         showMenu.setIcon(new Icon(VaadinIcon.MENU));
         add(showMenu);
 
-        // header of the menu
-        final HorizontalLayout top = new HorizontalLayout();
-        top.setDefaultVerticalComponentAlignment(Alignment.CENTER);
-        top.setClassName("menu-header");
-
-        Label title = new Label("Configuration");
-
-        // Note! Image resource url is resolved here as it is dependent on the
-        // execution mode (development or production) and browser ES level support
-        String resolvedImage = VaadinServletService.getCurrent().resolveResource("frontend://img/table-logo.png");
-
-        Image image = new Image(resolvedImage, "");
-        top.add(image);
-        top.add(title);
-        add(top);
-
         // container for the navigation buttons, which are added by addView()
         tabs = new Tabs();
         tabs.setOrientation(Tabs.Orientation.VERTICAL);
@@ -77,7 +66,7 @@ public class Menu extends FlexLayout {
      * @param caption   view caption in the menu
      * @param icon      view icon in the menu
      */
-    public void addView(Class<? extends Component> viewClass, String caption, Icon icon) {
+    public void addView(Class<? extends Component> viewClass, String caption, IronIcon icon) {
         Tab tab = new Tab();
         RouterLink routerLink = new RouterLink(null, viewClass);
         routerLink.setClassName("menu-link");
