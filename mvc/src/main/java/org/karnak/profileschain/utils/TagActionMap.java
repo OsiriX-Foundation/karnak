@@ -2,6 +2,7 @@ package org.karnak.profileschain.utils;
 
 import org.dcm4che6.util.TagUtils;
 import org.karnak.profileschain.action.Action;
+import org.weasis.core.util.StringUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +18,7 @@ public class TagActionMap {
 
     public void put(String tag, Action action) {
         String cleanTag = tag.replaceAll("[(),]", "").toUpperCase();
-        if (tag.contains("X")) {
+        if (isValidPattern(cleanTag)) {
             tagPatternAction.put(cleanTag, action);
         } else {
             tagAction.put(TagUtils.intFromHexString(cleanTag), action);
@@ -46,6 +47,14 @@ public class TagActionMap {
 
     public boolean isEmpty() {
         return this.tagAction.isEmpty() && this.tagPatternAction.isEmpty();
+    }
+
+    private static boolean isValidPattern(String tagPattern) {
+        if (!StringUtil.hasText(tagPattern) || tagPattern.length() != 8) {
+            return false;
+        }
+        String p = tagPattern.toUpperCase();
+        return p.matches("[0-9A-FX]+") && p.contains("X");
     }
 
     private static String getMask(String tagPattern) {

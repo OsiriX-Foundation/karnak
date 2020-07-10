@@ -3,5 +3,11 @@ version: "0.9.4"
 minimumkarnakversion: "0.1"
 defaultIssuerOfPatientID: "DPA"
 profiles:
+  - name: "Keep tags"
+    codename: "action.on.specific.tags"
+    action: "K"
+    tags:
+      - "(6040,xxxx)"
+
   - name: "DICOM basic profile"
     codename: "basic.dicom.profile"

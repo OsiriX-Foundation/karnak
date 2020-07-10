@@ -10,11 +10,8 @@ import java.util.Objects;
 public abstract class AbstractProfileItem implements ProfileItem {
 
     public enum Type {
-        BASIC_DICOM(StandardProfile.class, "basic.dicom.profile"),
-        KEEP_ALL(KeepAllTags.class, "keep.all.tags"),
-        REMOVE_PRIVATE_TAG(PrivateTagsProfile.class, "remove.private.tag"),
+        BASIC_DICOM(BasicProfile.class, "basic.dicom.profile"),
         REPLACE_UID(UpdateUIDsProfile.class, "replace.uid"),
-        SOP_MIN(SOPProfile.class, "keep.mandatory.sop"),
         ACTION_TAGS(ActionTags.class, "action.on.specific.tags"),
         ACTION_PRIVATETAGS(PrivateTags.class, "action.on.privatetags");
 
