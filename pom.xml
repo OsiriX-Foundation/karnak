@@ -54,10 +54,6 @@
 			</snapshots>
 		</repository>
 		<repository>
-			<id>vaadin-addons</id>
-			<url>http://maven.vaadin.com/vaadin-addons</url>
-		</repository>
-		<repository>
 			<id>www.dcm4che.org</id>
 			<name>dcm4che Repository</name>
 			<url>http://maven.dcm4che.org</url>

@@ -41,6 +41,9 @@ webpack.config.js
 webpack.generated.js
 tsconfig.json
 node_modules/
+types.d.ts
+pnpmfile.js
+pnpm-lock.yaml
 
 #vscode config
 .vscode
