@@ -16,6 +16,8 @@ public class AppConfig {
     private static AppConfig instance;
     private String environment;
     private String name;
+    private String karnakadmin;
+    private String karnakpassword;
 
     @PostConstruct
     public void postConstruct() {
@@ -40,6 +42,22 @@ public class AppConfig {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getKarnakadmin() {
+        return karnakadmin;
+    }
+
+    public void setKarnakadmin(String karnakadmin) {
+        this.karnakadmin = karnakadmin;
+    }
+
+    public String getKarnakpassword() {
+        return karnakpassword;
+    }
+
+    public void setKarnakpassword(String karnakpassword) {
+        this.karnakpassword = karnakpassword;
     }
 
     @Bean("ConfidentialityProfiles")

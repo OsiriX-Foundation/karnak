@@ -59,6 +59,8 @@ To launch the UI, execute the maven command `mvn spring-boot:run -f mvc` in the 
         - `MAINZELLISTE_ID_TYPES=pid`
         - `MAINZELLISTE_API_KEY=changeThisApiKey`
         - `KARNAK_HMAC_KEY=changeThisHmacKey`
+        - `KARNAK_ADMIN=admin`
+        - `KARNAK_PASSWORD=admin`
 
     Note: the tmp folder must be adapted according to your system and the dicom-opencv must the last folder.
 <!--
@@ -154,6 +156,18 @@ The key used for the HMAC. This HMAC will be used for all the hash created by ka
 `KARNAK_HMAC_KEY_FILE`
 
 The key used for the HMAC via file input. (alternative to `KARNAK_HMAC_KEY`).
+
+`KARNAK_LOGIN_ADMIN`
+
+Login used for Karnak. (optional, default is `admin`).
+
+`KARNAK_LOGIN_PASSWORD`
+
+Password used for Karnak. (optional, default is `undefined`).
+
+`KARNAK_LOGIN_PASSWORD_FILE`
+
+Password used for Karnak via file input. (alternative to `KARNAK_LOGIN_PASSWORD`).
 
 # Architecture
 
