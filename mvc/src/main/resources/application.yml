@@ -3,6 +3,8 @@
 #  --------------------------------------------------------
 name: dev-YAML
 environment: LOCAL
+karnakadmin: ${KARNAK_ADMIN}
+karnakpassword: ${KARNAK_PASSWORD}
 mainzelliste:
   apikey: '${MAINZELLISTE_API_KEY}'
   serverurl: 'http://${MAINZELLISTE_HOSTNAME}:${MAINZELLISTE_HTTP_PORT}'
