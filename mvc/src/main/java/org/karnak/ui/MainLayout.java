@@ -21,6 +21,7 @@ import com.vaadin.flow.router.RouterLayout;
 import com.vaadin.flow.server.Command;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
+import org.karnak.ui.profile.ProfileView;
 
 
 /**
@@ -44,6 +45,7 @@ public class MainLayout extends FlexLayout implements RouterLayout {
         IronIcon icon = new IronIcon("icons", "settings");
         menu.addView(GatewayView.class, GatewayView.VIEW_NAME, icon);
         menu.addView(DicomMainView.class, DicomMainView.VIEW_NAME, new IronIcon("icons", "build"));
+        menu.addView(ProfileView.class, ProfileView.VIEW_NAME, new IronIcon("icons", "assignment"));
         menu.addView(AboutView.class, AboutView.VIEW_NAME,new IronIcon("icons", "help"));
         add(menu);
     }
