@@ -1,7 +1,9 @@
 package org.karnak.data;
 
+import org.karnak.data.profile.ProfilePipePersistence;
 import org.karnak.standard.ConfidentialityProfiles;
 import org.karnak.profilepipe.utils.HMAC;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.*;
@@ -18,6 +20,9 @@ public class AppConfig {
     private String name;
     private String karnakadmin;
     private String karnakpassword;
+
+    @Autowired
+    private ProfilePipePersistence profilePipePersistence;
 
     @PostConstruct
     public void postConstruct() {
@@ -58,6 +63,10 @@ public class AppConfig {
 
     public void setKarnakpassword(String karnakpassword) {
         this.karnakpassword = karnakpassword;
+    }
+
+    public ProfilePipePersistence getProfilePipePersistence() {
+        return profilePipePersistence;
     }
 
     @Bean("ConfidentialityProfiles")
