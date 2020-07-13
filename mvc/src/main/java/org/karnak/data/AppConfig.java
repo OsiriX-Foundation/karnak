@@ -1,9 +1,7 @@
 package org.karnak.data;
 
-import org.karnak.data.profile.ProfilePersistence;
 import org.karnak.standard.ConfidentialityProfiles;
 import org.karnak.profileschain.utils.HMAC;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.*;
@@ -18,9 +16,6 @@ public class AppConfig {
     private static AppConfig instance;
     private String environment;
     private String name;
-
-    @Autowired
-    private ProfilePersistence profilePersistence;
 
     @PostConstruct
     public void postConstruct() {
@@ -45,11 +40,6 @@ public class AppConfig {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    @Bean("ProfilePersistence")
-    public ProfilePersistence getProfilePersistence() {
-        return profilePersistence;
     }
 
     @Bean("ConfidentialityProfiles")

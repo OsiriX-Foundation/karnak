@@ -8,7 +8,6 @@ import org.dcm4che6.util.TagUtils;
 import org.karnak.api.PseudonymApi;
 import org.karnak.api.rqbody.Fields;
 import org.karnak.data.AppConfig;
-import org.karnak.data.profile.Policy;
 import org.karnak.profileschain.action.Action;
 import org.karnak.profileschain.action.ActionStrategy;
 import org.karnak.profileschain.profilebody.ProfileBody;

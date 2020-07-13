@@ -7,7 +7,6 @@ import org.dcm4che6.util.UIDUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.karnak.data.profile.Policy;
 import org.karnak.profileschain.action.Action;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
