@@ -1,4 +1,4 @@
-package org.karnak.profileschain.option.datemanager;
+package org.karnak.profilepipe.option.datemanager;
 
 import org.apache.commons.lang3.StringUtils;
 import java.time.LocalDate;

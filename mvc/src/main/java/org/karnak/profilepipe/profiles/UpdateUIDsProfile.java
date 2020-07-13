@@ -1,7 +1,7 @@
-package org.karnak.profileschain.profiles;
+package org.karnak.profilepipe.profiles;
 
 import org.dcm4che6.data.DicomElement;
-import org.karnak.profileschain.action.Action;
+import org.karnak.profilepipe.action.Action;
 
 import java.util.List;
 

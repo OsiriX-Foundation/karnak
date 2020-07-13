@@ -1,11 +1,11 @@
 package org.karnak.standard;
 
-import org.karnak.profileschain.action.Action;
-import org.karnak.profileschain.profiles.AbstractProfileItem;
-import org.karnak.profileschain.profiles.PrivateTags;
-import org.karnak.profileschain.profiles.ProfileItem;
-import org.karnak.profileschain.utils.PrivateTagPattern;
-import org.karnak.profileschain.utils.TagActionMap;
+import org.karnak.profilepipe.action.Action;
+import org.karnak.profilepipe.profiles.AbstractProfileItem;
+import org.karnak.profilepipe.profiles.PrivateTags;
+import org.karnak.profilepipe.profiles.ProfileItem;
+import org.karnak.profilepipe.utils.PrivateTagPattern;
+import org.karnak.profilepipe.utils.TagActionMap;
 import org.karnak.standard.dicominnolitics.StandardConfidentialityProfiles;
 import org.karnak.standard.dicominnolitics.jsonConfidentialityProfiles;
 import org.slf4j.Logger;

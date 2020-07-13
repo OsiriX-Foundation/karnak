@@ -1,12 +1,11 @@
-package org.karnak.profileschain.profiles;
+package org.karnak.profilepipe.profiles;
 
 import org.dcm4che6.data.DicomElement;
 import org.karnak.data.AppConfig;
-import org.karnak.profileschain.action.Action;
-import org.karnak.profileschain.utils.TagActionMap;
+import org.karnak.profilepipe.action.Action;
+import org.karnak.profilepipe.utils.TagActionMap;
 import org.karnak.standard.ConfidentialityProfiles;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class BasicProfile extends AbstractProfileItem {

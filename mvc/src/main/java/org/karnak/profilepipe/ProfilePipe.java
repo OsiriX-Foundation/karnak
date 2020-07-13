@@ -1,4 +1,4 @@
-package org.karnak.profileschain;
+package org.karnak.profilepipe;
 
 import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
@@ -8,13 +8,13 @@ import org.dcm4che6.util.TagUtils;
 import org.karnak.api.PseudonymApi;
 import org.karnak.api.rqbody.Fields;
 import org.karnak.data.AppConfig;
-import org.karnak.profileschain.action.Action;
-import org.karnak.profileschain.action.ActionStrategy;
-import org.karnak.profileschain.profilebody.ProfileBody;
-import org.karnak.profileschain.profilebody.ProfileChainBody;
-import org.karnak.profileschain.profiles.AbstractProfileItem;
-import org.karnak.profileschain.profiles.ProfileItem;
-import org.karnak.profileschain.utils.HMAC;
+import org.karnak.profilepipe.action.Action;
+import org.karnak.profilepipe.action.ActionStrategy;
+import org.karnak.profilepipe.profilebody.ProfileBody;
+import org.karnak.profilepipe.profilebody.ProfilePipeBody;
+import org.karnak.profilepipe.profiles.AbstractProfileItem;
+import org.karnak.profilepipe.profiles.ProfileItem;
+import org.karnak.profilepipe.utils.HMAC;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,28 +33,28 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ProfileChain {
-    private final Logger LOGGER = LoggerFactory.getLogger(ProfileChain.class);
+public class ProfilePipe {
+    private final Logger LOGGER = LoggerFactory.getLogger(ProfilePipe.class);
     private final Marker CLINICAL_MARKER = MarkerFactory.getMarker("CLINICAL");
     private final String PATTERN_WITH_INOUT = "TAGHEX={} TAGINT={} DEIDENTACTION={} TAGVALUEIN={} TAGOUT={}";
     private final String PATTERN_WITH_IN = "TAGHEX={} TAGINT={} DEIDENTACTION={} TAGVALUEIN={}";
     private final String DUMMY_DEIDENT_METHOD = "dDeidentMethod";
 
     private final URL profileURL;
-    private final ProfileChainBody profileChainYml;
+    private final ProfilePipeBody profilePipeYml;
     private final HMAC hmac;
     private final ArrayList<ProfileItem> profiles;
 
-    public ProfileChain(URL profileURL) {
+    public ProfilePipe(URL profileURL) {
         this.hmac = AppConfig.getInstance().getHmac();
         this.profileURL = profileURL;
-        this.profileChainYml = init(profileURL);
+        this.profilePipeYml = init(profileURL);
         this.profiles = createProfilesList();
     }
 
-    private ProfileChainBody init(URL profileURL) {
+    private ProfilePipeBody init(URL profileURL) {
         try (InputStream inputStream = profileURL.openStream()) {
-            final Yaml yaml = new Yaml(new Constructor(ProfileChainBody.class));
+            final Yaml yaml = new Yaml(new Constructor(ProfilePipeBody.class));
             return yaml.load(inputStream);
         } catch (final Exception e) {
             LOGGER.error("Cannot load yaml {}", profileURL, e);
@@ -62,8 +62,8 @@ public class ProfileChain {
         return null;
     }
     public ArrayList<ProfileItem> createProfilesList() {
-        if (profileChainYml != null) {
-            final List<ProfileBody> profilesYml = profileChainYml.getProfiles();
+        if (profilePipeYml != null) {
+            final List<ProfileBody> profilesYml = profilePipeYml.getProfiles();
             ArrayList<ProfileItem> profiles = new ArrayList<>();
             for (ProfileBody profileYml : profilesYml) {
                 AbstractProfileItem.Type t = AbstractProfileItem.Type.getType(profileYml.getCodename());
@@ -96,7 +96,7 @@ public class ProfileChain {
         final String patientBirthDate = dcm.getString(Tag.PatientBirthDate).orElse(null);
         final String patientSex = dcm.getString(Tag.PatientSex).orElse(null);
         // Issuer of patientID is recommended to make the patientID universally unique. Can be defined in profile if missing.
-        final String issuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID).orElse(profileChainYml.getDefaultIssuerOfPatientID());
+        final String issuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID).orElse(profilePipeYml.getDefaultIssuerOfPatientID());
 
         PseudonymApi pseudonymApi = new PseudonymApi();
         final Fields newPatientFields = new Fields(patientID, patientName, patientBirthDate, patientSex, issuerOfPatientID);
@@ -155,8 +155,8 @@ public class ProfileChain {
         setDefaultDeidentTagValue(dcm, patientID, profilesCodeName, pseudonym);
     }
 
-    public void setDefaultDeidentTagValue(DicomObject dcm, String patientID, String profileChainCodeName, String pseudonym){
-        final String profileFilename = profileChainYml.getName();
+    public void setDefaultDeidentTagValue(DicomObject dcm, String patientID, String profilePipeCodeName, String pseudonym){
+        final String profileFilename = profilePipeYml.getName();
 
         final String tagValueInPatientID = dcm.getString(Tag.PatientID).orElse(null);
         dcm.setString(Tag.PatientID, VR.LO,  patientID);
@@ -173,12 +173,12 @@ public class ProfileChain {
         // 0012,0063 -> module patient
         // A description or label of the mechanism or method use to remove the Patient's identity
         final String tagValueInDeidentificationMethod = dcm.getString(Tag.PatientID).orElse(null);
-        dcm.setString(Tag.DeidentificationMethod, VR.LO, profileChainCodeName);
-        LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_INOUT, TagUtils.toString(Tag.DeidentificationMethod), Tag.DeidentificationMethod, DUMMY_DEIDENT_METHOD, tagValueInDeidentificationMethod, profileChainCodeName);
+        dcm.setString(Tag.DeidentificationMethod, VR.LO, profilePipeCodeName);
+        LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_INOUT, TagUtils.toString(Tag.DeidentificationMethod), Tag.DeidentificationMethod, DUMMY_DEIDENT_METHOD, tagValueInDeidentificationMethod, profilePipeCodeName);
 
         final String tagValueInClinicalTrialSponsorName = dcm.getString(Tag.PatientID).orElse(null);
-        dcm.setString(Tag.ClinicalTrialSponsorName, VR.LO, profileChainCodeName);
-        LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_INOUT, TagUtils.toString(Tag.ClinicalTrialSponsorName), Tag.ClinicalTrialSponsorName, DUMMY_DEIDENT_METHOD, tagValueInClinicalTrialSponsorName, profileChainCodeName);
+        dcm.setString(Tag.ClinicalTrialSponsorName, VR.LO, profilePipeCodeName);
+        LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_INOUT, TagUtils.toString(Tag.ClinicalTrialSponsorName), Tag.ClinicalTrialSponsorName, DUMMY_DEIDENT_METHOD, tagValueInClinicalTrialSponsorName, profilePipeCodeName);
 
         final String tagValueInClinicalTrialProtocolID = dcm.getString(Tag.PatientID).orElse(null);
         dcm.setString(Tag.ClinicalTrialProtocolID, VR.LO, profileFilename);

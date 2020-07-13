@@ -1,4 +1,4 @@
-package org.karnak.profileschain.option.datemanager;
+package org.karnak.profilepipe.option.datemanager;
 
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.ElementDictionary;

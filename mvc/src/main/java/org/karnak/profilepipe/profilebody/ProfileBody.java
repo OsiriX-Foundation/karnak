@@ -1,4 +1,4 @@
-package org.karnak.profileschain.profilebody;
+package org.karnak.profilepipe.profilebody;
 
 import java.util.List;
 

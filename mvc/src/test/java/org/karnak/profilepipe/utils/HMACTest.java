@@ -1,4 +1,4 @@
-package org.karnak.profileschain.utils;
+package org.karnak.profilepipe.utils;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;

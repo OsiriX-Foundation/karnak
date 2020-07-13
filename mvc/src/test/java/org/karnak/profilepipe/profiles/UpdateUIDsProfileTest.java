@@ -1,13 +1,4 @@
-package org.karnak.profileschain.profiles;
-
-import org.dcm4che6.data.DicomObject;
-import org.dcm4che6.data.Tag;
-import org.dcm4che6.data.VR;
-import org.dcm4che6.util.UIDUtils;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.karnak.profileschain.action.Action;
+package org.karnak.profilepipe.profiles;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

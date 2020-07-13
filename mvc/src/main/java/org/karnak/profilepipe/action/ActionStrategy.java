@@ -1,7 +1,6 @@
-package org.karnak.profileschain.action;
+package org.karnak.profilepipe.action;
 
 import org.dcm4che6.data.DicomObject;
-import org.karnak.profileschain.ProfileChain;
 
 @FunctionalInterface
 public interface ActionStrategy {

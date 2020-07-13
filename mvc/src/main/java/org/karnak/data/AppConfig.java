@@ -1,7 +1,7 @@
 package org.karnak.data;
 
 import org.karnak.standard.ConfidentialityProfiles;
-import org.karnak.profileschain.utils.HMAC;
+import org.karnak.profilepipe.utils.HMAC;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.*;

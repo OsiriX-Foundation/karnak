@@ -1,4 +1,4 @@
-package org.karnak.profileschain.action;
+package org.karnak.profilepipe.action;
 
 import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;

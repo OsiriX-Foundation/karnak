@@ -1,6 +1,6 @@
-package org.karnak.profileschain.profiles;
+package org.karnak.profilepipe.profiles;
 
-import org.karnak.profileschain.action.Action;
+import org.karnak.profilepipe.action.Action;
 
 import java.util.HashMap;
 import java.util.List;

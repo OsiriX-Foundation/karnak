@@ -1,8 +1,8 @@
-package org.karnak.profileschain.profilebody;
+package org.karnak.profilepipe.profilebody;
 
 import java.util.List;
 
-public class ProfileChainBody {
+public class ProfilePipeBody {
     private String name;
     private String version;
     private String minimumkarnakversion;

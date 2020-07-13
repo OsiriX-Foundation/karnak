@@ -1,7 +1,6 @@
 package org.karnak.standard.dicominnolitics;
 
-import org.dcm4che6.util.TagUtils;
-import org.karnak.profileschain.action.Action;
+import org.karnak.profilepipe.action.Action;
 
 public class jsonConfidentialityProfiles {
     private String id;

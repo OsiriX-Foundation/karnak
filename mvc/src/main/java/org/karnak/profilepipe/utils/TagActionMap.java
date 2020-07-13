@@ -1,7 +1,7 @@
-package org.karnak.profileschain.utils;
+package org.karnak.profilepipe.utils;
 
 import org.dcm4che6.util.TagUtils;
-import org.karnak.profileschain.action.Action;
+import org.karnak.profilepipe.action.Action;
 import org.weasis.core.util.StringUtil;
 
 import java.util.HashMap;
