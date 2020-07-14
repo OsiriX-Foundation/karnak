@@ -24,6 +24,7 @@ public class ProfileView extends HorizontalLayout {
     public static final String VIEW_NAME = "Profile";
 
     private VerticalLayout profileOutput = new VerticalLayout();
+    private ProfileComponent profileComponent = new ProfileComponent();
     private Upload uploadProfile;
     private Button btnUploadProfile;
 
@@ -53,8 +54,7 @@ public class ProfileView extends HorizontalLayout {
         // https://github.com/vaadin/vaadin-upload-flow/blob/6fa9cc429e1d0894704fb962e0df375a9d0439c8/vaadin-upload-flow-integration-tests/src/main/java/com/vaadin/flow/component/upload/tests/it/UploadView.java#L122
         uploadProfile = new Upload(memoryBuffer);
         uploadProfile.addSucceededListener(e -> {
-            Component component = createComponent(e.getMIMEType(), memoryBuffer.getInputStream());
-            showProfile(e.getFileName(), component, profileOutput);
+            setProfileComponent(e.getMIMEType(), memoryBuffer.getInputStream());
         });
 
         btnUploadProfile = new Button("Upload profile");
@@ -67,32 +67,21 @@ public class ProfileView extends HorizontalLayout {
         return layout;
     }
 
-    private Component createComponent(String mimeType,
+    private void setProfileComponent(String mimeType,
                                       InputStream stream) {
         if (mimeType.equals("application/x-yaml")) {
-            return createProfileComponent(stream);
+            ProfilePipeBody profilePipe = readProfileYaml(stream);
+            profileComponent.setProfilePipe(profilePipe);
+        } else {
+            profileComponent.setError();
         }
-        Div content = new Div();
-        String text = String.format("Mime type: '%s'\nMust be 'application/x-yaml'",
-                mimeType);
-        content.setText(text);
-        return content;
-    }
 
-    private Component createProfileComponent(InputStream stream) {
-        ProfilePipeBody profilePipe = readProfileYaml(stream);
-        ProfileComponent profileComponent = new ProfileComponent(profilePipe);
-        return profileComponent;
+        profileOutput.removeAll();
+        profileOutput.add(profileComponent);
     }
 
     private ProfilePipeBody readProfileYaml(InputStream stream) {
         final Yaml yaml = new Yaml(new Constructor(ProfilePipeBody.class));
         return yaml.load(stream);
-    }
-
-    private void showProfile(String text, Component content,
-                            HasComponents outputContainer) {
-        outputContainer.removeAll();
-        outputContainer.add(content);
     }
 }
