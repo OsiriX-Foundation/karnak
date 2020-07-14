@@ -58,7 +58,7 @@ public class ProfileView extends HorizontalLayout {
             setProfileComponent(e.getMIMEType(), memoryBuffer.getInputStream());
         });
 
-        btnUploadProfile = new Button("Upload profile");
+        btnUploadProfile = new Button("Save profile");
         btnUploadProfile.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         btnUploadProfile.setIcon(VaadinIcon.CHECK_CIRCLE.create());
         btnUploadProfile.setEnabled(false);
