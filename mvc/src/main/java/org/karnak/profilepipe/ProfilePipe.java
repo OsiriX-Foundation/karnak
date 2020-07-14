@@ -19,7 +19,8 @@ import org.karnak.profilepipe.profilebody.ProfilePipeBody;
 import org.karnak.profilepipe.profiles.AbstractProfileItem;
 import org.karnak.profilepipe.profiles.ProfileItem;
 import org.karnak.profilepipe.utils.HMAC;
-
+import org.karnak.ui.profile.ProfilePipeService;
+import org.karnak.ui.profile.ProfilePipeServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
@@ -35,7 +36,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class ProfilePipe {
@@ -50,12 +50,13 @@ public class ProfilePipe {
     private final HMAC hmac;
     private final ArrayList<ProfileItem> profiles;
     private final ProfilePipePersistence profilePipePersistence = AppConfig.getInstance().getProfilePipePersistence();
-
+    private final ProfilePipeService profilePipeService;
     public ProfilePipe(URL profileURL) {
         this.hmac = AppConfig.getInstance().getHmac();
         this.profileURL = profileURL;
         this.profilePipeYml = init(profileURL);
-        persist(this.profilePipeYml);
+        this.profilePipeService = new ProfilePipeServiceImpl();
+        this.profilePipeService.updateProfilePipe(this.profilePipeYml);
         this.profiles = createProfilesList();
     }
 
@@ -214,35 +215,5 @@ public class ProfilePipe {
         byte[] bytes = new byte[16];
         System.arraycopy(hmac.byteHash(pseudonym + profiles), 0, bytes, 0, 16);
         return new BigInteger(1, bytes).toString();
-    }
-
-    public void persist(ProfilePipeBody profilePipeYml){
-        org.karnak.data.profile.ProfilePipe newProfilePipe = new org.karnak.data.profile.ProfilePipe(profilePipeYml.getName(), profilePipeYml.getVersion(), profilePipeYml.getMinimumkarnakversion(), profilePipeYml.getDefaultIssuerOfPatientID());
-
-        AtomicInteger profilePosition = new AtomicInteger(0);
-        profilePipeYml.getProfiles().forEach(profileBody -> {
-            Profile profile = new Profile(profileBody.getName(), profileBody.getCodename(), profileBody.getAction(), profilePosition.get(), newProfilePipe);
-
-            if(profileBody.getTags()!=null){
-                profileBody.getTags().forEach(tag->{
-                    final IncludedTag includedTagValue = new IncludedTag(tag, profile);
-                    //TODO normalize TAG before persist
-                    profile.addIncludedTag(includedTagValue);
-                });
-            }
-
-            if(profileBody.getExceptedtags()!=null) {
-                profileBody.getExceptedtags().forEach(exceptedtag -> {
-                    final ExceptedTag exceptedTagValue = new ExceptedTag(exceptedtag, profile);
-                    //TODO normalize TAG before persist
-                    profile.addExceptedtags(exceptedTagValue);
-                });
-            }
-
-            newProfilePipe.addProfilePipe(profile);
-            profilePosition.getAndIncrement();
-        });
-
-        profilePipePersistence.save(newProfilePipe);
     }
 }

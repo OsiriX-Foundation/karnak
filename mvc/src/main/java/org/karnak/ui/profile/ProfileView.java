@@ -23,13 +23,14 @@ import java.io.InputStream;
 public class ProfileView extends HorizontalLayout {
     public static final String VIEW_NAME = "Profile";
 
-    private ProfileViewLogic profileViewLogic = new ProfileViewLogic();
     private VerticalLayout profileOutput = new VerticalLayout();
     private ProfileComponent profileComponent = new ProfileComponent();
     private Upload uploadProfile;
     private Button btnUploadProfile;
+    private final ProfilePipeService profilePipeService;
 
     public ProfileView() {
+        this.profilePipeService = new ProfilePipeServiceImpl();
         setSizeFull();
         VerticalLayout barAndGridLayout = createTopLayoutGrid();
         add(barAndGridLayout);
@@ -63,7 +64,7 @@ public class ProfileView extends HorizontalLayout {
         btnUploadProfile.setEnabled(false);
 
         btnUploadProfile.addClickListener(event -> {
-            profileViewLogic.persist(profileComponent.getProfilePipe());
+            this.profilePipeService.updateProfilePipe(profileComponent.getProfilePipe());
         });
 
         HorizontalLayout layout = new HorizontalLayout();

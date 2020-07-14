@@ -65,11 +65,11 @@ public class ProfilePipe {
         this.defaultissueropatientid = defaultissueropatientid;
     }
 
-   /* public List<Profile> getProfiles() {
+    public List<Profile> getProfiles() {
         return profiles;
     }
 
     public void setProfiles(List<Profile> profiles) {
         this.profiles = profiles;
-    }*/
+    }
 }
