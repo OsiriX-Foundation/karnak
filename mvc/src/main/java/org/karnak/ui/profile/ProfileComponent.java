@@ -11,18 +11,17 @@ public class ProfileComponent extends VerticalLayout {
     ProfileComponent(ProfilePipeBody profilePipe) {
         setSizeFull();
         this.profilePipe = profilePipe;
+        createComponent();
     }
 
-    public Component getComponent() {
-        VerticalLayout layout = new VerticalLayout();
+    public void createComponent() {
         TitleValue name = new TitleValue("Name", profilePipe.getName());
         TitleValue version = new TitleValue("Profile version", profilePipe.getVersion());
         TitleValue minVersion = new TitleValue("Min. version KARNAK required", profilePipe.getMinimumkarnakversion());
         TitleValue defaultIssuerOfPatientID = new TitleValue("Default issuer of PatientID", profilePipe.getDefaultIssuerOfPatientID());
-        layout.add(name, version, minVersion, defaultIssuerOfPatientID);
+        add(name, version, minVersion, defaultIssuerOfPatientID);
         for (ProfileBody profile: profilePipe.getProfiles()) {
-            layout.add(new TitleValue("Profile name", profile.getName()));
+            add(new TitleValue("Profile name", profile.getName()));
         }
-        return layout;
     }
 }

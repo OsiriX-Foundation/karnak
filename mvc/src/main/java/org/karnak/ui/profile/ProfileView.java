@@ -1,7 +1,10 @@
 package org.karnak.ui.profile;
 
 import com.vaadin.flow.component.*;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.upload.Upload;
@@ -19,32 +22,42 @@ import java.io.InputStream;
 @PageTitle("Profile configuration")
 public class ProfileView extends HorizontalLayout {
     public static final String VIEW_NAME = "Profile";
-    private Div profileOutput = new Div();
+
+    private VerticalLayout profileOutput = new VerticalLayout();
+    private Upload uploadProfile;
+    private Button btnUploadProfile;
 
     public ProfileView() {
         setSizeFull();
-        VerticalLayout topLayout = createTopBar();
-        /*
-        HorizontalLayout profileData = new HorizontalLayout();
-        profileData.add(profileOutput);
-        */
+        HorizontalLayout topLayout = createTopBar();
+        ProfileNameGrid profileNameGrid = new ProfileNameGrid();
 
         VerticalLayout barAndGridLayout = new VerticalLayout();
-        barAndGridLayout.add(topLayout, profileOutput);
+        barAndGridLayout.add(topLayout);
+        barAndGridLayout.add(profileNameGrid);
+        barAndGridLayout.setFlexGrow(0, topLayout);
+        barAndGridLayout.setFlexGrow(1, profileNameGrid);
+        barAndGridLayout.setSizeFull();
         add(barAndGridLayout);
+        add(profileOutput);
     }
 
-    private VerticalLayout createTopBar() {
+    private HorizontalLayout createTopBar() {
         MemoryBuffer memoryBuffer = new MemoryBuffer();
         // https://github.com/vaadin/vaadin-upload-flow/blob/6fa9cc429e1d0894704fb962e0df375a9d0439c8/vaadin-upload-flow-integration-tests/src/main/java/com/vaadin/flow/component/upload/tests/it/UploadView.java#L122
-        Upload uploadProfile = new Upload(memoryBuffer);
+        uploadProfile = new Upload(memoryBuffer);
         uploadProfile.addSucceededListener(e -> {
             Component component = createComponent(e.getMIMEType(), memoryBuffer.getInputStream());
             showProfile(e.getFileName(), component, profileOutput);
         });
 
-        VerticalLayout layout = new VerticalLayout();
+        btnUploadProfile = new Button("Upload profile");
+        btnUploadProfile.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        btnUploadProfile.setIcon(VaadinIcon.PLUS_CIRCLE.create());
+
+        HorizontalLayout layout = new HorizontalLayout();
         layout.add(uploadProfile);
+        layout.add(btnUploadProfile);
         return layout;
     }
 
@@ -63,7 +76,7 @@ public class ProfileView extends HorizontalLayout {
     private Component createProfileComponent(InputStream stream) {
         ProfilePipeBody profilePipe = readProfileYaml(stream);
         ProfileComponent profileComponent = new ProfileComponent(profilePipe);
-        return profileComponent.getComponent();
+        return profileComponent;
     }
 
     private ProfilePipeBody readProfileYaml(InputStream stream) {
