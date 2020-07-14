@@ -23,6 +23,7 @@ import java.io.InputStream;
 public class ProfileView extends HorizontalLayout {
     public static final String VIEW_NAME = "Profile";
 
+    private ProfileViewLogic profileViewLogic = new ProfileViewLogic();
     private VerticalLayout profileOutput = new VerticalLayout();
     private ProfileComponent profileComponent = new ProfileComponent();
     private Upload uploadProfile;
@@ -30,7 +31,6 @@ public class ProfileView extends HorizontalLayout {
 
     public ProfileView() {
         setSizeFull();
-
         VerticalLayout barAndGridLayout = createTopLayoutGrid();
         add(barAndGridLayout);
         add(profileOutput);
@@ -60,6 +60,11 @@ public class ProfileView extends HorizontalLayout {
         btnUploadProfile = new Button("Upload profile");
         btnUploadProfile.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         btnUploadProfile.setIcon(VaadinIcon.CHECK_CIRCLE.create());
+        btnUploadProfile.setEnabled(false);
+
+        btnUploadProfile.addClickListener(event -> {
+            profileViewLogic.persist(profileComponent.getProfilePipe());
+        });
 
         HorizontalLayout layout = new HorizontalLayout();
         layout.add(uploadProfile);
@@ -72,8 +77,10 @@ public class ProfileView extends HorizontalLayout {
         if (mimeType.equals("application/x-yaml")) {
             ProfilePipeBody profilePipe = readProfileYaml(stream);
             profileComponent.setProfilePipe(profilePipe);
+            btnUploadProfile.setEnabled(true);
         } else {
             profileComponent.setError();
+            btnUploadProfile.setEnabled(false);
         }
 
         profileOutput.removeAll();
