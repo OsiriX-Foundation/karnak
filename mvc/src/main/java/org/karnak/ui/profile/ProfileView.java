@@ -29,6 +29,13 @@ public class ProfileView extends HorizontalLayout {
 
     public ProfileView() {
         setSizeFull();
+
+        VerticalLayout barAndGridLayout = createTopLayoutGrid();
+        add(barAndGridLayout);
+        add(profileOutput);
+    }
+
+    private VerticalLayout createTopLayoutGrid() {
         HorizontalLayout topLayout = createTopBar();
         ProfileNameGrid profileNameGrid = new ProfileNameGrid();
 
@@ -38,8 +45,7 @@ public class ProfileView extends HorizontalLayout {
         barAndGridLayout.setFlexGrow(0, topLayout);
         barAndGridLayout.setFlexGrow(1, profileNameGrid);
         barAndGridLayout.setSizeFull();
-        add(barAndGridLayout);
-        add(profileOutput);
+        return barAndGridLayout;
     }
 
     private HorizontalLayout createTopBar() {
@@ -53,7 +59,7 @@ public class ProfileView extends HorizontalLayout {
 
         btnUploadProfile = new Button("Upload profile");
         btnUploadProfile.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        btnUploadProfile.setIcon(VaadinIcon.PLUS_CIRCLE.create());
+        btnUploadProfile.setIcon(VaadinIcon.CHECK_CIRCLE.create());
 
         HorizontalLayout layout = new HorizontalLayout();
         layout.add(uploadProfile);

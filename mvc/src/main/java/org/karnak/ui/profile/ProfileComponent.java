@@ -1,12 +1,11 @@
 package org.karnak.ui.profile;
 
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import org.karnak.profilepipe.profilebody.ProfileBody;
 import org.karnak.profilepipe.profilebody.ProfilePipeBody;
 
 public class ProfileComponent extends VerticalLayout {
-    ProfilePipeBody profilePipe;
+    private ProfilePipeBody profilePipe;
 
     ProfileComponent(ProfilePipeBody profilePipe) {
         setSizeFull();
@@ -23,5 +22,13 @@ public class ProfileComponent extends VerticalLayout {
         for (ProfileBody profile: profilePipe.getProfiles()) {
             add(new TitleValue("Profile name", profile.getName()));
         }
+    }
+
+    public ProfilePipeBody getProfilePipe() {
+        return profilePipe;
+    }
+
+    public void setProfilePipe(ProfilePipeBody profilePipe) {
+        this.profilePipe = profilePipe;
     }
 }
