@@ -56,7 +56,7 @@ public class ProfilePipe {
         this.profileURL = profileURL;
         this.profilePipeYml = init(profileURL);
         this.profilePipeService = new ProfilePipeServiceImpl();
-        this.profilePipeService.updateProfilePipe(this.profilePipeYml);
+        //this.profilePipeService.updateProfilePipe(this.profilePipeYml);
         this.profiles = createProfilesList();
     }
 

@@ -1,9 +1,9 @@
 package org.karnak.ui.profile;
 
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.grid.Grid;
+import org.karnak.data.profile.ProfilePipe;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProfileNameGrid extends Grid<Profile> {
@@ -11,11 +11,14 @@ public class ProfileNameGrid extends Grid<Profile> {
     Grid<Profile> gridProfile;
 
     ProfileNameGrid() {
-        profilesName = Arrays.asList(
-                new Profile("Profile1"),
-                new Profile("Profile2"),
-                new Profile("Profile3")
-        );
+        ProfilePipeService profilePipeService = new ProfilePipeServiceImpl();
+        List<ProfilePipe> profilePipes = profilePipeService.getAllProfiles();
+
+        profilesName = new ArrayList<>();
+        profilePipes.forEach(profilePipe -> {
+            profilesName.add(new Profile(profilePipe.getName()));
+        });
+
 
         setSelectionMode(SelectionMode.SINGLE);
         setItems(profilesName);
