@@ -8,6 +8,8 @@ import org.dcm4che6.util.TagUtils;
 import org.karnak.api.PseudonymApi;
 import org.karnak.api.rqbody.Fields;
 import org.karnak.data.AppConfig;
+import org.karnak.data.profile.ExceptedTag;
+import org.karnak.data.profile.IncludedTag;
 import org.karnak.data.profile.Profile;
 import org.karnak.data.profile.ProfilePipePersistence;
 import org.karnak.profilepipe.action.Action;
@@ -223,16 +225,19 @@ public class ProfilePipe {
 
             if(profileBody.getTags()!=null){
                 profileBody.getTags().forEach(tag->{
-                    final org.karnak.data.profile.Tag tagValue = new org.karnak.data.profile.Tag(tag, profile);
-                    profile.addTag(tagValue);
+                    final IncludedTag includedTagValue = new IncludedTag(tag, profile);
+                    //TODO normalize TAG before persist
+                    profile.addIncludedTag(includedTagValue);
                 });
             }
 
-
-            /*profileBody.getExceptedtags().forEach(exceptedtags->{
-                final org.karnak.data.profile.Tag tagValue = new org.karnak.data.profile.Tag(exceptedtags);
-                profile.addExceptedtags(tagValue);
-            });*/
+            if(profileBody.getExceptedtags()!=null) {
+                profileBody.getExceptedtags().forEach(exceptedtag -> {
+                    final ExceptedTag exceptedTagValue = new ExceptedTag(exceptedtag, profile);
+                    //TODO normalize TAG before persist
+                    profile.addExceptedtags(exceptedTagValue);
+                });
+            }
 
             newProfilePipe.addProfilePipe(profile);
             profilePosition.getAndIncrement();

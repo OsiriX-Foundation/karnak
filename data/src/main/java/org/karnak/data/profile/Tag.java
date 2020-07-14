@@ -4,7 +4,9 @@ import javax.persistence.*;
 
 @Entity(name = "Tag")
 @Table(name = "tag")
-public class Tag {
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "tag_type")
+public abstract class Tag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -15,9 +17,6 @@ public class Tag {
     private Profile profile;
 
     String tagValue;
-
-    @Enumerated(EnumType.STRING)
-    TagType type;
 
     public Tag() {
     }

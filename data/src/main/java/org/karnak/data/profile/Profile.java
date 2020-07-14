@@ -22,11 +22,11 @@ public class Profile {
     private ProfilePipe profilePipe;
 
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Tag> tags = new ArrayList<>();
+    private List<IncludedTag> includedtag = new ArrayList<>();
 
-    /*@OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Tag> exceptedtags = new ArrayList<>();
-    */
+    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<ExceptedTag> exceptedtags = new ArrayList<>();
+
     public Profile() {
     }
 
@@ -38,13 +38,13 @@ public class Profile {
         this.profilePipe = profilePipe;
     }
 
-    public void addTag(Tag tag){
-        this.tags.add(tag);
+    public void addIncludedTag(IncludedTag includedtag){
+        this.includedtag.add(includedtag);
     }
 
-    /*public void addExceptedtags(Tag tag){
-        //this.exceptedtags.add(tag);
-    }*/
+    public void addExceptedtags(ExceptedTag exceptedtags){
+        this.exceptedtags.add(exceptedtags);
+    }
 
     public String getName() {
         return name;
@@ -78,19 +78,27 @@ public class Profile {
         this.position = position;
     }
 
-    public List<Tag> getTags() {
-        return tags;
+    public ProfilePipe getProfilePipe() {
+        return profilePipe;
     }
 
-    public void setTags(List<Tag> tags) {
-        this.tags = tags;
+    public void setProfilePipe(ProfilePipe profilePipe) {
+        this.profilePipe = profilePipe;
     }
 
-    /*public List<Tag> getExceptedtags() {
+    public List<IncludedTag> getIncludedtag() {
+        return includedtag;
+    }
+
+    public void setIncludedtag(List<IncludedTag> includedtag) {
+        this.includedtag = includedtag;
+    }
+
+    public List<ExceptedTag> getExceptedtags() {
         return exceptedtags;
     }
 
-    public void setExceptedtags(List<Tag> exceptedtags) {
+    public void setExceptedtags(List<ExceptedTag> exceptedtags) {
         this.exceptedtags = exceptedtags;
-    }*/
+    }
 }
