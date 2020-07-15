@@ -25,7 +25,7 @@ public class ProfilePipeServiceImpl extends ProfilePipeService {
     }
 
     @Override
-    public ProfilePipe updateProfilePipe(ProfilePipeBody profilePipeYml) {
+    public ProfilePipe saveProfilePipe(ProfilePipeBody profilePipeYml) {
         ProfilePipe newProfilePipe = new ProfilePipe(profilePipeYml.getName(), profilePipeYml.getVersion(), profilePipeYml.getMinimumkarnakversion(), profilePipeYml.getDefaultIssuerOfPatientID());
 
         AtomicInteger profilePosition = new AtomicInteger(0);
@@ -52,5 +52,10 @@ public class ProfilePipeServiceImpl extends ProfilePipeService {
             profilePosition.getAndIncrement();
         });
         return profilePipePersistence.saveAndFlush(newProfilePipe);
+    }
+
+    @Override
+    public ProfilePipe updateProfile(ProfilePipe profilePipe) {
+        return profilePipePersistence.saveAndFlush(profilePipe);
     }
 }

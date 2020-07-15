@@ -72,4 +72,8 @@ public class ProfilePipe {
     public void setProfiles(List<Profile> profiles) {
         this.profiles = profiles;
     }
+
+    public Long getId() {
+        return id;
+    }
 }
