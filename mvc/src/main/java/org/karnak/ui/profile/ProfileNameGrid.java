@@ -3,7 +3,6 @@ package org.karnak.ui.profile;
 import com.vaadin.flow.component.grid.Grid;
 import org.karnak.data.profile.ProfilePipe;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ProfileNameGrid extends Grid<ProfilePipe> {

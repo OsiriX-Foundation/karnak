@@ -2,13 +2,17 @@ package org.karnak.ui.profile;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
+import com.vaadin.flow.data.selection.SingleSelect;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import org.karnak.data.profile.Profile;
+import org.karnak.data.profile.ProfilePipe;
 import org.karnak.profilepipe.profilebody.ProfilePipeBody;
 import org.karnak.ui.MainLayout;
 import org.yaml.snakeyaml.Yaml;
@@ -24,7 +28,6 @@ public class ProfileView extends HorizontalLayout {
     private VerticalLayout profileOutput = new VerticalLayout();
     private ProfileComponent profileComponent = new ProfileComponent();
     private Upload uploadProfile;
-    private Button btnUploadProfile;
     private ProfileNameGrid profileNameGrid;
     private final ProfilePipeService profilePipeService;
 
@@ -39,6 +42,13 @@ public class ProfileView extends HorizontalLayout {
     private VerticalLayout createTopLayoutGrid() {
         HorizontalLayout topLayout = createTopBar();
         profileNameGrid = new ProfileNameGrid();
+        SingleSelect<Grid<ProfilePipe>, ProfilePipe> profilePipeSingleSelect =
+                profileNameGrid.asSingleSelect();
+
+        profilePipeSingleSelect.addValueChangeListener(e -> {
+            ProfilePipe profileSelected = e.getValue();
+            profileComponent.setProfilePipe(profileSelected);
+        });
 
         VerticalLayout barAndGridLayout = new VerticalLayout();
         barAndGridLayout.add(topLayout);
@@ -57,19 +67,8 @@ public class ProfileView extends HorizontalLayout {
             setProfileComponent(e.getMIMEType(), memoryBuffer.getInputStream());
         });
 
-        btnUploadProfile = new Button("Save profile");
-        btnUploadProfile.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        btnUploadProfile.setIcon(VaadinIcon.CHECK_CIRCLE.create());
-        btnUploadProfile.setEnabled(false);
-
-        btnUploadProfile.addClickListener(event -> {
-            profilePipeService.updateProfilePipe(profileComponent.getProfilePipe());
-            profileNameGrid.updatedProfilePipesView();
-        });
-
         HorizontalLayout layout = new HorizontalLayout();
         layout.add(uploadProfile);
-        layout.add(btnUploadProfile);
         return layout;
     }
 
@@ -77,11 +76,10 @@ public class ProfileView extends HorizontalLayout {
                                       InputStream stream) {
         if (mimeType.equals("application/x-yaml")) {
             ProfilePipeBody profilePipe = readProfileYaml(stream);
-            profileComponent.setProfilePipe(profilePipe);
-            btnUploadProfile.setEnabled(true);
+            profilePipeService.updateProfilePipe(profilePipe);
+            profileNameGrid.updatedProfilePipesView();
         } else {
             profileComponent.setError();
-            btnUploadProfile.setEnabled(false);
         }
 
         profileOutput.removeAll();

@@ -2,16 +2,15 @@ package org.karnak.ui.profile;
 
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import org.karnak.profilepipe.profilebody.ProfileBody;
-import org.karnak.profilepipe.profilebody.ProfilePipeBody;
+import org.karnak.data.profile.ProfilePipe;
 
 public class ProfileComponent extends VerticalLayout {
-    private ProfilePipeBody profilePipe;
+    private ProfilePipe profilePipe;
     ProfileComponent() {
         setSizeFull();
     }
 
-    ProfileComponent(ProfilePipeBody profilePipe) {
+    ProfileComponent(ProfilePipe profilePipe) {
         setSizeFull();
         setProfilePipe(profilePipe);
     }
@@ -21,17 +20,19 @@ public class ProfileComponent extends VerticalLayout {
         ProfileMetadata name = new ProfileMetadata("Name", profilePipe.getName());
         ProfileMetadata version = new ProfileMetadata("Profile version", profilePipe.getVersion());
         ProfileMetadata minVersion = new ProfileMetadata("Min. version KARNAK required", profilePipe.getMinimumkarnakversion());
-        ProfileMetadata defaultIssuerOfPatientID = new ProfileMetadata("Default issuer of PatientID", profilePipe.getDefaultIssuerOfPatientID());
+        ProfileMetadata defaultIssuerOfPatientID = new ProfileMetadata("Default issuer of PatientID", profilePipe.getDefaultissueropatientid());
         add(name, version, minVersion, defaultIssuerOfPatientID);
     }
 
-    public ProfilePipeBody getProfilePipe() {
+    public ProfilePipe getProfilePipe() {
         return profilePipe;
     }
 
-    public void setProfilePipe(ProfilePipeBody profilePipe) {
+    public void setProfilePipe(ProfilePipe profilePipe) {
         this.profilePipe = profilePipe;
-        setProfile();
+        if (profilePipe != null) {
+            setProfile();
+        }
     }
 
     public void setError() {
