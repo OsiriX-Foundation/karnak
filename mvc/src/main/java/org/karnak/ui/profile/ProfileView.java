@@ -1,9 +1,6 @@
 package org.karnak.ui.profile;
 
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.upload.Upload;
@@ -11,7 +8,6 @@ import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 import com.vaadin.flow.data.selection.SingleSelect;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import org.karnak.data.profile.Profile;
 import org.karnak.data.profile.ProfilePipe;
 import org.karnak.profilepipe.profilebody.ProfilePipeBody;
 import org.karnak.ui.MainLayout;
@@ -47,6 +43,7 @@ public class ProfileView extends HorizontalLayout {
 
         profilePipeSingleSelect.addValueChangeListener(e -> {
             ProfilePipe profileSelected = e.getValue();
+            profilePipeService.updateProfile(profileSelected);
             profileComponent.setProfilePipe(profileSelected);
         });
 
@@ -76,7 +73,7 @@ public class ProfileView extends HorizontalLayout {
                                       InputStream stream) {
         if (mimeType.equals("application/x-yaml")) {
             ProfilePipeBody profilePipe = readProfileYaml(stream);
-            profilePipeService.updateProfilePipe(profilePipe);
+            profilePipeService.saveProfilePipe(profilePipe);
             profileNameGrid.updatedProfilePipesView();
         } else {
             profileComponent.setError();
