@@ -1,5 +1,6 @@
 package org.karnak.ui.profile;
 
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import org.karnak.profilepipe.profilebody.ProfileBody;
 import org.karnak.profilepipe.profilebody.ProfilePipeBody;
@@ -17,14 +18,11 @@ public class ProfileComponent extends VerticalLayout {
 
     public void setProfile() {
         removeAll();
-        TitleValue name = new TitleValue("Name", profilePipe.getName());
-        TitleValue version = new TitleValue("Profile version", profilePipe.getVersion());
-        TitleValue minVersion = new TitleValue("Min. version KARNAK required", profilePipe.getMinimumkarnakversion());
-        TitleValue defaultIssuerOfPatientID = new TitleValue("Default issuer of PatientID", profilePipe.getDefaultIssuerOfPatientID());
+        ProfileMetadata name = new ProfileMetadata("Name", profilePipe.getName());
+        ProfileMetadata version = new ProfileMetadata("Profile version", profilePipe.getVersion());
+        ProfileMetadata minVersion = new ProfileMetadata("Min. version KARNAK required", profilePipe.getMinimumkarnakversion());
+        ProfileMetadata defaultIssuerOfPatientID = new ProfileMetadata("Default issuer of PatientID", profilePipe.getDefaultIssuerOfPatientID());
         add(name, version, minVersion, defaultIssuerOfPatientID);
-        for (ProfileBody profile: profilePipe.getProfiles()) {
-            add(new TitleValue("Profile name", profile.getName()));
-        }
     }
 
     public ProfilePipeBody getProfilePipe() {
@@ -38,7 +36,7 @@ public class ProfileComponent extends VerticalLayout {
 
     public void setError() {
         removeAll();
-        TitleValue error = new TitleValue("Error", "An error occured");
+        Text error = new Text("An error occured");
         add(error);
     }
 }
