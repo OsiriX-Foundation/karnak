@@ -1,8 +1,10 @@
 package org.karnak.ui.gateway;
 
 import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.data.validator.StringLengthValidator;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.data.gateway.Destination;
+import org.karnak.data.gateway.SOPClassUID;
 import org.karnak.profilepipe.ProfilePipe;
 import org.karnak.ui.component.converter.HStringToIntegerConverter;
 import org.karnak.ui.util.UIS;
@@ -20,6 +22,9 @@ import com.vaadin.flow.component.textfield.TextFieldVariant;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.value.ValueChangeMode;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A form for editing a single destination.
@@ -173,8 +178,7 @@ public class DestinationStowForm extends Div {
 
         desidentification.addValueChangeListener(event -> {
             if (event.getValue() != null) {
-                boolean desidentificationState = event.getValue();
-                profileDropDown.setEnabled(desidentificationState);
+                profileDropDown.setEnabled(event.getValue());
             }
         });
 
@@ -211,11 +215,14 @@ public class DestinationStowForm extends Div {
         binder.forField(desidentification) //
                 .bind(Destination::getDesidentification, Destination::setDesidentification);
 
-        /*
         binder.forField(profileDropDown)
-                .bind(ProfilePipe::getProfilePip, ProfilePipe:setProfilePipe);
-        */
-
+                /*
+                .withValidator(profilePipe -> {
+                    boolean value = desidentification.getValue();
+                    return profilePipe == null && desidentification.getValue() == false;
+                }, "Choose the de-identification profile\n")
+                */
+                .bind(Destination::getProfilePipe, Destination::setProfilePipe);
         binder.bindInstanceFields(this);
 
 

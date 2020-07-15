@@ -8,7 +8,7 @@ import org.karnak.ui.profile.ProfilePipeServiceImpl;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ProfileDropDown extends Select<String> {
+public class ProfileDropDown extends Select<ProfilePipe> {
     private ProfilePipeService profilePipeService;
     private List<ProfilePipe> profilePipes;
 
@@ -19,14 +19,9 @@ public class ProfileDropDown extends Select<String> {
 
     public void updateList() {
         profilePipes = profilePipeService.getAllProfiles();
-        List<String> listProfilePipes = profilePipesToString(profilePipes);
-        setItems(listProfilePipes);
-    }
-
-    private List<String> profilePipesToString(List<ProfilePipe> profilePipes) {
-        return profilePipes.stream()
-                .map(profile -> profile.getName() + " - " + profile.getVersion())
-                .collect(Collectors.toList());
+        setItems(profilePipeService.getAllProfiles());
+        setItemLabelGenerator(ProfilePipe::getName);
+        setValue(getValue());
     }
 
 }
