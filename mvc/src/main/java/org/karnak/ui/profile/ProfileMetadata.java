@@ -5,7 +5,6 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 
@@ -90,5 +89,9 @@ public class ProfileMetadata extends VerticalLayout {
 
     public String getValue() {
         return value;
+    }
+
+    public Button getValidateEditButton() {
+        return validateEditButton;
     }
 }

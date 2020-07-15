@@ -22,13 +22,15 @@ public class ProfileView extends HorizontalLayout {
     public static final String VIEW_NAME = "Profile";
 
     private VerticalLayout profileOutput = new VerticalLayout();
-    private ProfileComponent profileComponent = new ProfileComponent();
+    private ProfileComponent profileComponent;
     private Upload uploadProfile;
     private ProfileNameGrid profileNameGrid;
     private final ProfilePipeService profilePipeService;
 
     public ProfileView() {
         profilePipeService = new ProfilePipeServiceImpl();
+        profileComponent = new ProfileComponent(profilePipeService);
+        profileOutput.add(profileComponent);
         setSizeFull();
         VerticalLayout barAndGridLayout = createTopLayoutGrid();
         add(barAndGridLayout);
@@ -43,7 +45,6 @@ public class ProfileView extends HorizontalLayout {
 
         profilePipeSingleSelect.addValueChangeListener(e -> {
             ProfilePipe profileSelected = e.getValue();
-            profilePipeService.updateProfile(profileSelected);
             profileComponent.setProfilePipe(profileSelected);
         });
 
@@ -78,9 +79,6 @@ public class ProfileView extends HorizontalLayout {
         } else {
             profileComponent.setError();
         }
-
-        profileOutput.removeAll();
-        profileOutput.add(profileComponent);
     }
 
     private ProfilePipeBody readProfileYaml(InputStream stream) {
