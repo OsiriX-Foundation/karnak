@@ -2,6 +2,8 @@ package org.karnak.profilepipe.profiles;
 
 import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.util.TagUtils;
+import org.karnak.data.profile.ExceptedTag;
+import org.karnak.data.profile.IncludedTag;
 import org.karnak.profilepipe.action.Action;
 import org.karnak.profilepipe.utils.TagActionMap;
 import org.slf4j.Logger;
@@ -15,7 +17,7 @@ public class PrivateTags extends AbstractProfileItem {
     private TagActionMap exceptedTagsAction;
     private Action actionByDefault;
 
-    public PrivateTags(String name, String codeName, String action, List<String> tags, List<String> exceptedTags) throws Exception{
+    public PrivateTags(String name, String codeName, String action, List<IncludedTag> tags, List<ExceptedTag> exceptedTags) throws Exception{
         super(name, codeName, action, tags, exceptedTags);
         tagsAction = new TagActionMap();
         exceptedTagsAction = new TagActionMap();
@@ -26,14 +28,14 @@ public class PrivateTags extends AbstractProfileItem {
 
     private void setActionHashMap() throws Exception {
 
-        if(tags != null) {
-            for (String tag : tags) {
-                tagsAction.put(tag, actionByDefault);
+        if(tags != null && tags.size() > 0) {
+            for (IncludedTag tag : tags) {
+                tagsAction.put(tag.getTagValue(), actionByDefault);
             }
         }
-        if (exceptedTags != null) {
-            for (String tag : exceptedTags) {
-                exceptedTagsAction.put(tag, actionByDefault);
+        if (exceptedTags != null && exceptedTags.size() > 0) {
+            for (ExceptedTag tag : exceptedTags) {
+                exceptedTagsAction.put(tag.getTagValue(), actionByDefault);
             }
         }
     }

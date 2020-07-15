@@ -1,6 +1,8 @@
 package org.karnak.profilepipe.profiles;
 
 import org.dcm4che6.data.DicomElement;
+import org.karnak.data.profile.ExceptedTag;
+import org.karnak.data.profile.IncludedTag;
 import org.karnak.profilepipe.action.Action;
 import org.karnak.profilepipe.utils.TagActionMap;
 import org.slf4j.Logger;
@@ -14,7 +16,7 @@ public class ActionTags extends AbstractProfileItem {
     private TagActionMap exceptedTagsAction;
     private Action actionByDefault;
 
-    public ActionTags(String name, String codeName, String action, List<String> tags, List<String> exceptedTags) throws Exception {
+    public ActionTags(String name, String codeName, String action, List<IncludedTag> tags, List<ExceptedTag> exceptedTags) throws Exception {
         super(name, codeName, action, tags, exceptedTags);
         tagsAction = new TagActionMap();
         exceptedTagsAction = new TagActionMap();
@@ -24,12 +26,12 @@ public class ActionTags extends AbstractProfileItem {
     }
 
     private void setActionHashMap() throws Exception {
-        for (String tag: tags) {
-            tagsAction.put(tag, actionByDefault);
+        for (IncludedTag tag: tags) {
+            tagsAction.put(tag.getTagValue(), actionByDefault);
         }
         if (exceptedTags != null) {
-            for (String tag : exceptedTags) {
-                exceptedTagsAction.put(tag, actionByDefault);
+            for (ExceptedTag tag : exceptedTags) {
+                exceptedTagsAction.put(tag.getTagValue(), actionByDefault);
             }
         }
     }
@@ -43,7 +45,7 @@ public class ActionTags extends AbstractProfileItem {
     }
 
     private void errorManagement() throws Exception{
-        if (action == null && tags == null) {
+        if (action == null && (tags == null || tags.size() > 0)) {
             throw new Exception("Cannot build the profile " + codeName + ": Unknown Action and no tags defined");
         }
 
@@ -55,7 +57,7 @@ public class ActionTags extends AbstractProfileItem {
             throw new Exception("Cannot build the profile " + codeName + ": Action D is not recognized in this profile");
         }
 
-        if (tags == null) {
+        if (tags == null || tags.size() == 0) {
             throw new Exception("Cannot build the profile " + codeName + ": No tags defined");
         }
     }

@@ -5,7 +5,6 @@ import com.vaadin.flow.data.validator.StringLengthValidator;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.SOPClassUID;
-import org.karnak.profilepipe.ProfilePipe;
 import org.karnak.ui.component.converter.HStringToIntegerConverter;
 import org.karnak.ui.util.UIS;
 

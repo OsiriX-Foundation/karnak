@@ -253,7 +253,7 @@ public class GatewayConfig {
             }
             final boolean desidentificationEnable = dstNode.getDesidentification();
             if(desidentificationEnable){ //TODO add an option in destination model
-                editors.add(new DeidentifyEditor());
+                editors.add(new DeidentifyEditor(dstNode.getProfilePipe()));
             }
 
             DicomProgress progress = new DicomProgress();

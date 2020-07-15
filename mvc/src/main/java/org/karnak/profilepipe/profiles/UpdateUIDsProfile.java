@@ -1,13 +1,15 @@
 package org.karnak.profilepipe.profiles;
 
 import org.dcm4che6.data.DicomElement;
+import org.karnak.data.profile.ExceptedTag;
+import org.karnak.data.profile.IncludedTag;
 import org.karnak.profilepipe.action.Action;
 
 import java.util.List;
 
 public class UpdateUIDsProfile extends AbstractProfileItem {
 
-    public UpdateUIDsProfile(String name, String codeName, String action, List<String> tags, List<String> exceptedTags) {
+    public UpdateUIDsProfile(String name, String codeName, String action, List<IncludedTag> tags, List<ExceptedTag> exceptedTags) {
         super(name, codeName, action, tags, exceptedTags);
         /*
         if (not BlackList) {
