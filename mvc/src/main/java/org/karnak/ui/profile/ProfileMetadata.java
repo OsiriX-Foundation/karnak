@@ -12,6 +12,7 @@ import com.vaadin.flow.component.textfield.TextField;
 public class ProfileMetadata extends VerticalLayout {
     private Div titleDiv = new Div();
     private Div valueDiv = new Div();
+    private TextField valueField = new TextField();
     private Button editButton = new Button(new Icon(VaadinIcon.EDIT));
     private Button validateEditButton = new Button(new Icon(VaadinIcon.CHECK));
     private Button disabledEditButton = new Button(new Icon(VaadinIcon.CLOSE));
@@ -41,7 +42,7 @@ public class ProfileMetadata extends VerticalLayout {
         });
 
         validateEditButton.addClickListener(event -> {
-
+            validateEditButton();
         });
 
         add(titleDiv, valueDiv);
@@ -62,7 +63,6 @@ public class ProfileMetadata extends VerticalLayout {
     }
 
     private void setValueTextField() {
-        TextField valueField = new TextField();
         valueField.setValue(this.value);
         valueDiv.add(valueField);
         valueDiv.add(validateEditButton);
@@ -83,7 +83,12 @@ public class ProfileMetadata extends VerticalLayout {
 
     private void validateEditButton() {
         titleDiv.add(editButton);
+        this.value = valueField.getValue();
         valueDiv.removeAll();
         setValueText();
+    }
+
+    public String getValue() {
+        return value;
     }
 }
