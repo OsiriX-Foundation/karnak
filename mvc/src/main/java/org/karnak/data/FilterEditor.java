@@ -6,12 +6,12 @@ import org.karnak.data.gateway.SOPClassUID;
 import org.weasis.dicom.param.AttributeEditor;
 import org.weasis.dicom.param.AttributeEditorContext;
 
-import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 
 public class FilterEditor  implements AttributeEditor {
-    private List<SOPClassUID> sopClassUIDSet;
-    public FilterEditor(List<SOPClassUID> sopClassUIDSet) {
+    private Set<SOPClassUID> sopClassUIDSet;
+    public FilterEditor(Set<SOPClassUID> sopClassUIDSet) {
         this.sopClassUIDSet = sopClassUIDSet;
     }
 

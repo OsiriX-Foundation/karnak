@@ -8,6 +8,8 @@ import org.karnak.data.gateway.SOPClassUID;
 import org.vaadin.gatanaso.MultiselectComboBox;
 
 import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.List;
 
 public class FilterBySOPClassesForm extends HorizontalLayout {
@@ -43,7 +45,7 @@ public class FilterBySOPClassesForm extends HorizontalLayout {
                                 (!listOfSOPFilter.isEmpty()) | (listOfSOPFilter.isEmpty() && filterBySOPClassesCheckbox.getValue() == false),
                         "No filter are applied\n")
                 .bind(Destination::getSOPClassUIDFiltersName, (destination, sopClassNames) -> {
-                    ArrayList<SOPClassUID> newSOPClassUIDS = new ArrayList<>();
+                    Set<SOPClassUID> newSOPClassUIDS = new HashSet<>();
                     sopClassNames.forEach(sopClasseName -> {
                         SOPClassUID sopClassUID = dataService.getSOPClassUIDByName(sopClasseName);
                         newSOPClassUIDS.add(sopClassUID);

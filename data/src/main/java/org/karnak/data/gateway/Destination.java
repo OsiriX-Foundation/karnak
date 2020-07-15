@@ -10,10 +10,9 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.group.GroupSequenceProvider;
 import org.karnak.data.gateway.DestinationGroupSequenceProvider.DestinationDicomGroup;
 import org.karnak.data.gateway.DestinationGroupSequenceProvider.DestinationStowGroup;
+import org.karnak.data.profile.ProfilePipe;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @GroupSequenceProvider(value = DestinationGroupSequenceProvider.class)
@@ -37,7 +36,11 @@ public class Destination {
     @JoinTable(name="sop_class_filter",
             joinColumns = @JoinColumn(name = "destination_id"),
             inverseJoinColumns = @JoinColumn(name = "sop_class_uid_id"))
-    private List<SOPClassUID> SOPClassUIDFilters = new ArrayList<>();
+    private Set<SOPClassUID> SOPClassUIDFilters = new HashSet<>();
+
+    @ManyToOne
+    @JoinColumn(name="profile_pipe_id")
+    private ProfilePipe profilePipe;
 
     // list of emails (comma separated) used when the images have been sent (or
     // partially sent) to the final destination. Note: if an issue appears before
@@ -308,11 +311,11 @@ public class Destination {
         this.forwardNode = forwardNode;
     }
 
-    public List<SOPClassUID> getSOPClassUIDFilters(){
+    public Set<SOPClassUID> getSOPClassUIDFilters(){
         return this.SOPClassUIDFilters;
     }
 
-    public void setSOPClassUIDFilters(List<SOPClassUID> sopClassUIDfilters) {
+    public void setSOPClassUIDFilters(Set<SOPClassUID> sopClassUIDfilters) {
         this.SOPClassUIDFilters = sopClassUIDfilters;
     }
 
@@ -377,5 +380,17 @@ public class Destination {
         return "Destination [id=" + id + ", description=" + description + ", type=" + type + ", notify=" + notify
             + ", notifyObjectErrorPrefix=" + notifyObjectErrorPrefix + ", notifyObjectPattern=" + notifyObjectPattern
             + ", notifyObjectValues=" + notifyObjectValues + ", notifyInterval=" + notifyInterval + "]";
+    }
+
+    public ProfilePipe getProfilePipe() {
+        return profilePipe;
+    }
+
+    public String getProfilePipeName() {
+        return profilePipe.getName();
+    }
+
+    public void setProfilePipe(ProfilePipe profilePipe) {
+        this.profilePipe = profilePipe;
     }
 }
