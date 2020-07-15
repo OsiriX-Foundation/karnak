@@ -1,9 +1,7 @@
 package org.karnak.ui.profile;
 
-import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -27,10 +25,11 @@ public class ProfileView extends HorizontalLayout {
     private ProfileComponent profileComponent = new ProfileComponent();
     private Upload uploadProfile;
     private Button btnUploadProfile;
+    private ProfileNameGrid profileNameGrid;
     private final ProfilePipeService profilePipeService;
 
     public ProfileView() {
-        this.profilePipeService = new ProfilePipeServiceImpl();
+        profilePipeService = new ProfilePipeServiceImpl();
         setSizeFull();
         VerticalLayout barAndGridLayout = createTopLayoutGrid();
         add(barAndGridLayout);
@@ -39,7 +38,7 @@ public class ProfileView extends HorizontalLayout {
 
     private VerticalLayout createTopLayoutGrid() {
         HorizontalLayout topLayout = createTopBar();
-        ProfileNameGrid profileNameGrid = new ProfileNameGrid();
+        profileNameGrid = new ProfileNameGrid();
 
         VerticalLayout barAndGridLayout = new VerticalLayout();
         barAndGridLayout.add(topLayout);
@@ -64,7 +63,8 @@ public class ProfileView extends HorizontalLayout {
         btnUploadProfile.setEnabled(false);
 
         btnUploadProfile.addClickListener(event -> {
-            this.profilePipeService.updateProfilePipe(profileComponent.getProfilePipe());
+            profilePipeService.updateProfilePipe(profileComponent.getProfilePipe());
+            profileNameGrid.updatedProfilePipesView();
         });
 
         HorizontalLayout layout = new HorizontalLayout();

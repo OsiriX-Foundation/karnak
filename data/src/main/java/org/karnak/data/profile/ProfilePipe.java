@@ -13,7 +13,7 @@ public class ProfilePipe {
 
     private String name;
     private String version;
-    private String karnakversionmin;
+    private String minimumkarnakversion;
     private String defaultissueropatientid;
 
     @OneToMany(mappedBy = "profilePipe", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -22,10 +22,10 @@ public class ProfilePipe {
     public ProfilePipe() {
     }
 
-    public ProfilePipe(String name, String version, String karnakversionmin, String defaultissueropatientid) {
+    public ProfilePipe(String name, String version, String minimumkarnakversion, String defaultissueropatientid) {
         this.name = name;
         this.version = version;
-        this.karnakversionmin = karnakversionmin;
+        this.minimumkarnakversion = minimumkarnakversion;
         this.defaultissueropatientid = defaultissueropatientid;
     }
 
@@ -49,12 +49,12 @@ public class ProfilePipe {
         this.version = version;
     }
 
-    public String getKarnakversionmin() {
-        return karnakversionmin;
+    public String getMinimumkarnakversion() {
+        return minimumkarnakversion;
     }
 
-    public void setKarnakversionmin(String karnakversionmin) {
-        this.karnakversionmin = karnakversionmin;
+    public void setMinimumkarnakversion(String minimumkarnakversion) {
+        this.minimumkarnakversion = minimumkarnakversion;
     }
 
     public String getDefaultissueropatientid() {
