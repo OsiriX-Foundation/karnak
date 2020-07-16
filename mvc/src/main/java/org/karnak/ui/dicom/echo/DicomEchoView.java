@@ -40,7 +40,7 @@ import com.vaadin.flow.data.value.ValueChangeMode;
  * 3) beforeEnter
  * 
  */
-@PageTitle("Dicom Echo")
+@PageTitle("KARNAK - DICOM Echo")
 @Route(value = "echo", layout= DicomMainView.class)
 @SuppressWarnings("serial")
 public class DicomEchoView extends AbstractView implements HasUrlParameter<String> {

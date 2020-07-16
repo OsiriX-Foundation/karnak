@@ -19,7 +19,7 @@ import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.tabs.Tabs.Orientation;
 
 @Route(value = "dicom", layout = MainLayout.class)
-@PageTitle("DICOM Tools")
+@PageTitle("KARNAK - DICOM Tools")
 public class DicomMainView extends AppLayout implements BeforeEnterObserver {
   public static final String VIEW_NAME = "DICOM Tools";
   private static final long serialVersionUID = 1L;

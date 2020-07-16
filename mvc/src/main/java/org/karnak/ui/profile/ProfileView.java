@@ -17,7 +17,7 @@ import org.yaml.snakeyaml.constructor.Constructor;
 import java.io.InputStream;
 
 @Route(value = "profile", layout = MainLayout.class)
-@PageTitle("Profile configuration")
+@PageTitle("KARNAK - Profile")
 public class ProfileView extends HorizontalLayout {
     public static final String VIEW_NAME = "Profile";
 

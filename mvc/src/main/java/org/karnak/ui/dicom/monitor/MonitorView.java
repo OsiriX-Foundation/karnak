@@ -1,5 +1,6 @@
 package org.karnak.ui.dicom.monitor;
 
+import com.vaadin.flow.router.PageTitle;
 import org.karnak.dicom.model.DicomNodeList;
 import org.karnak.dicom.model.WadoNodeList;
 import org.karnak.dicom.service.DicomNodeManager;
@@ -21,6 +22,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.router.Route;
 
+@PageTitle("KARNAK - Monitor")
 @Route(value="monitor", layout= DicomMainView.class)
 public class MonitorView extends AbstractView {
 

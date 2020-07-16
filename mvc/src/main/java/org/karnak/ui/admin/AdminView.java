@@ -7,7 +7,7 @@ import com.vaadin.flow.router.PageTitle;
 /**
  * Admin view that is registered dynamically on admin user login.
  */
-@PageTitle("Admin")
+@PageTitle("KARNAK - Admin")
 @SuppressWarnings("serial")
 public class AdminView extends VerticalLayout {
     public static final String VIEW_NAME = "Admin";

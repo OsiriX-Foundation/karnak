@@ -19,7 +19,7 @@ import com.vaadin.flow.router.RouteConfiguration;
  * UI content when the user is not logged in yet.
  */
 @Route("Login")
-@PageTitle("Login")
+@PageTitle("KARNAK - Login")
 @CssImport(value ="./styles/shared-styles.css")
 @SuppressWarnings("serial")
 public class LoginScreen extends FlexLayout {
@@ -52,7 +52,7 @@ public class LoginScreen extends FlexLayout {
         loginInformation.setJustifyContentMode(JustifyContentMode.CENTER);
         loginInformation.setAlignItems(Alignment.CENTER);
 
-        loginInformation.add(new H1("Karnak configuration"));
+        loginInformation.add(new H1("KARNAK configuration"));
         loginInformation.add(loginForm);
 
         return loginInformation;

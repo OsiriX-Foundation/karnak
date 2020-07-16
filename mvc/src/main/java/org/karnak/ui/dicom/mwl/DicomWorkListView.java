@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.router.*;
 import org.dcm4che6.data.DicomObject;
 import org.karnak.dicom.model.ConfigNode;
 import org.karnak.dicom.model.Message;
@@ -36,10 +37,6 @@ import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.validator.IntegerRangeValidator;
 import com.vaadin.flow.data.value.ValueChangeMode;
-import com.vaadin.flow.router.BeforeEvent;
-import com.vaadin.flow.router.HasUrlParameter;
-import com.vaadin.flow.router.OptionalParameter;
-import com.vaadin.flow.router.Route;
 
 /**
  * Calling Order 
@@ -48,6 +45,8 @@ import com.vaadin.flow.router.Route;
  * 3) beforeEnter
  *
  */
+
+@PageTitle("KARNAK - DICOM Worklist")
 @Route(value = "mwl", layout= DicomMainView.class)
 public class DicomWorkListView extends AbstractView implements HasUrlParameter<String> {
 
