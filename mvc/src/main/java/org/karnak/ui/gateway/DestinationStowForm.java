@@ -215,12 +215,8 @@ public class DestinationStowForm extends Div {
                 .bind(Destination::getDesidentification, Destination::setDesidentification);
 
         binder.forField(profileDropDown)
-                /*
-                .withValidator(profilePipe -> {
-                    boolean value = desidentification.getValue();
-                    return profilePipe == null && desidentification.getValue() == false;
-                }, "Choose the de-identification profile\n")
-                */
+                .withValidator(profilePipe -> profilePipe != null || (profilePipe == null && desidentification.getValue() == false),
+                        "Choose the de-identification profile\n")
                 .bind(Destination::getProfilePipe, Destination::setProfilePipe);
         binder.bindInstanceFields(this);
 
