@@ -29,7 +29,8 @@ public class ProfileView extends HorizontalLayout {
 
     public ProfileView() {
         profilePipeService = new ProfilePipeServiceImpl();
-        profileComponent = new ProfileComponent(profilePipeService);
+        profileNameGrid = new ProfileNameGrid();
+        profileComponent = new ProfileComponent(profilePipeService, profileNameGrid);
         profileOutput.add(profileComponent);
         setSizeFull();
         VerticalLayout barAndGridLayout = createTopLayoutGrid();
@@ -39,7 +40,6 @@ public class ProfileView extends HorizontalLayout {
 
     private VerticalLayout createTopLayoutGrid() {
         HorizontalLayout topLayout = createTopBar();
-        profileNameGrid = new ProfileNameGrid();
         SingleSelect<Grid<ProfilePipe>, ProfilePipe> profilePipeSingleSelect =
                 profileNameGrid.asSingleSelect();
 
