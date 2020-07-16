@@ -31,6 +31,6 @@ public class DeidentifyEditor implements AttributeEditor {
 
     @Override
     public void apply(DicomObject dcm, AttributeEditorContext context) {
-        profileChain.apply(dcm);
+        profileChain.apply(dcm, context);
     }
 }

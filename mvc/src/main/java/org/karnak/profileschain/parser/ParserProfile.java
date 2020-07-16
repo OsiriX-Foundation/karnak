@@ -19,6 +19,7 @@ public abstract class ParserProfile {
             case "X" -> Action.REMOVE;
             case "K" -> Action.KEEP;
             case "U", "X/Z/U" -> Action.UID;
+            case "P" -> Action.CLEAN_PIXEL;
             default -> Action.REPLACE;
         };
     }

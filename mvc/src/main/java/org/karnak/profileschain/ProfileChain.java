@@ -4,11 +4,11 @@ import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.Tag;
 import org.dcm4che6.data.VR;
+import org.dcm4che6.img.op.MaskArea;
 import org.dcm4che6.util.TagUtils;
 import org.karnak.api.PseudonymApi;
 import org.karnak.api.rqbody.Fields;
 import org.karnak.data.AppConfig;
-import org.karnak.data.profile.Policy;
 import org.karnak.profileschain.action.Action;
 import org.karnak.profileschain.action.ActionStrategy;
 import org.karnak.profileschain.profilebody.ProfileBody;
@@ -23,14 +23,16 @@ import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 import org.slf4j.MDC;
 import org.weasis.core.util.StringUtil;
+import org.weasis.dicom.param.AttributeEditorContext;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
+import java.awt.*;
+import java.awt.geom.RectangularShape;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -105,7 +107,7 @@ public class ProfileChain {
         return pseudonym;
     }
 
-    public void applyAction(DicomObject dcm, String patientID) {
+    public void applyAction(DicomObject dcm, String patientID, AttributeEditorContext context) {
         for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext(); ) {
             DicomElement dcmEl = iterator.next();
             for (ProfileItem profile : profiles) {
@@ -118,6 +120,12 @@ public class ProfileChain {
                         if (out == ActionStrategy.Output.TO_REMOVE) {
                             iterator.remove();
                             LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_IN, TagUtils.toString(dcmEl.tag()), dcmEl.tag(), action.getSymbol(), tagValueIn);
+                        } else if(out == ActionStrategy.Output.CLEAN_PIXEL){
+                            List<Shape> shapeList = new ArrayList<>();
+                            shapeList.add(new Rectangle(25, 15 , 150, 50));
+                            shapeList.add(new Rectangle(340, 15 , 150, 50));
+                            MaskArea mask = new MaskArea(Color.RED, shapeList);
+                            context.setMaskArea(mask);
                         } else {
                             LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_INOUT, TagUtils.toString(dcmEl.tag()), dcmEl.tag(), action.getSymbol(), tagValueIn, tagValueOut);
                         }
@@ -127,13 +135,13 @@ public class ProfileChain {
                     break;
                 }
                 else if (dcmEl.vr() == VR.SQ) {
-                    dcmEl.itemStream().forEach(d -> applyAction(d, patientID));
+                    dcmEl.itemStream().forEach(d -> applyAction(d, patientID, context));
                 }
             }
         }
     }
 
-    public void apply(DicomObject dcm) {
+    public void apply(DicomObject dcm, AttributeEditorContext context) {
         final String SOPinstanceUID = dcm.getString(Tag.SOPInstanceUID).orElse(null);
         final String IssuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID).orElse(null);
         final String PatientID = dcm.getString(Tag.PatientID).orElse(null);
@@ -151,7 +159,7 @@ public class ProfileChain {
             throw new IllegalStateException("Cannot build a pseudonym");
         }
 
-        applyAction(dcm, patientID);
+        applyAction(dcm, patientID, context);
 
         setDefaultDeidentTagValue(dcm, patientID, profilesCodeName, pseudonym);
     }

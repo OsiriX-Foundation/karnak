@@ -2,6 +2,7 @@ package org.karnak.profileschain.action;
 
 import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
+import org.dcm4che6.data.Tag;
 import org.dcm4che6.data.VR;
 import org.karnak.data.AppConfig;
 
@@ -18,6 +19,10 @@ public enum Action implements ActionStrategy {
             }
         });
         return Output.APPLIED;
+    }),
+
+    CLEAN_PIXEL("P", (dcm, tag, pseudo, dummy) -> {
+        return tag == Tag.PixelData && dcm.get(tag).isPresent() ? Output.CLEAN_PIXEL: null;
     }),
 
     DEFAULT_DUMMY("DDum", (dcm, tag, pseudo, dummy) -> {
@@ -85,6 +90,7 @@ public enum Action implements ActionStrategy {
             case "U" -> Action.UID;
             case "DDum" -> Action.DEFAULT_DUMMY;
             case "D" -> Action.REPLACE;
+            case "P" -> Action.CLEAN_PIXEL;
             default -> null;
         };
     }
