@@ -74,7 +74,7 @@ public class ProfileView extends HorizontalLayout {
                                       InputStream stream) {
         if (mimeType.equals("application/x-yaml")) {
             ProfilePipeBody profilePipe = readProfileYaml(stream);
-            profilePipeService.saveProfilePipe(profilePipe);
+            profilePipeService.saveProfilePipe(profilePipe, false);
             profileNameGrid.updatedProfilePipesView();
         } else {
             profileComponent.setError();

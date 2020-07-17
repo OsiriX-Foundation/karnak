@@ -15,6 +15,7 @@ public class ProfilePipe {
     private String version;
     private String minimumkarnakversion;
     private String defaultissueropatientid;
+    private Boolean bydefault;
 
     @OneToMany(mappedBy = "profilePipe", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Profile> profiles = new ArrayList<>();
@@ -27,6 +28,15 @@ public class ProfilePipe {
         this.version = version;
         this.minimumkarnakversion = minimumkarnakversion;
         this.defaultissueropatientid = defaultissueropatientid;
+        this.bydefault = false;
+    }
+
+    public ProfilePipe(String name, String version, String minimumkarnakversion, String defaultissueropatientid, Boolean bydefault) {
+        this.name = name;
+        this.version = version;
+        this.minimumkarnakversion = minimumkarnakversion;
+        this.defaultissueropatientid = defaultissueropatientid;
+        this.bydefault = bydefault;
     }
 
     public void addProfilePipe(Profile profile){

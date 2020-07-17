@@ -25,8 +25,15 @@ public class ProfilePipeServiceImpl extends ProfilePipeService {
     }
 
     @Override
-    public ProfilePipe saveProfilePipe(ProfilePipeBody profilePipeYml) {
-        ProfilePipe newProfilePipe = new ProfilePipe(profilePipeYml.getName(), profilePipeYml.getVersion(), profilePipeYml.getMinimumkarnakversion(), profilePipeYml.getDefaultIssuerOfPatientID());
+    public ProfilePipe saveProfilePipe(ProfilePipeBody profilePipeYml, Boolean byDefault) {
+        ProfilePipe newProfilePipe;
+
+        if(byDefault){
+            newProfilePipe = new ProfilePipe(profilePipeYml.getName(), profilePipeYml.getVersion(), profilePipeYml.getMinimumkarnakversion(), profilePipeYml.getDefaultIssuerOfPatientID(), true);
+        }else{
+            newProfilePipe = new ProfilePipe(profilePipeYml.getName(), profilePipeYml.getVersion(), profilePipeYml.getMinimumkarnakversion(), profilePipeYml.getDefaultIssuerOfPatientID());
+        }
+
 
         AtomicInteger profilePosition = new AtomicInteger(0);
         profilePipeYml.getProfiles().forEach(profileBody -> {
@@ -35,7 +42,6 @@ public class ProfilePipeServiceImpl extends ProfilePipeService {
             if(profileBody.getTags()!=null){
                 profileBody.getTags().forEach(tag->{
                     final IncludedTag includedTagValue = new IncludedTag(tag, profile);
-                    //TODO normalize TAG before persist
                     profile.addIncludedTag(includedTagValue);
                 });
             }
@@ -43,7 +49,6 @@ public class ProfilePipeServiceImpl extends ProfilePipeService {
             if(profileBody.getExceptedtags()!=null) {
                 profileBody.getExceptedtags().forEach(exceptedtag -> {
                     final ExceptedTag exceptedTagValue = new ExceptedTag(exceptedtag, profile);
-                    //TODO normalize TAG before persist
                     profile.addExceptedtags(exceptedTagValue);
                 });
             }

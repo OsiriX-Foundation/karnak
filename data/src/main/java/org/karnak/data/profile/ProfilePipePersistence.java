@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ProfilePipePersistence extends JpaRepository<ProfilePipe, Long> {
     Boolean existsByName(String name);
+
+    Boolean existsByNameAndBydefault(String name, Boolean bydefault);
 }
