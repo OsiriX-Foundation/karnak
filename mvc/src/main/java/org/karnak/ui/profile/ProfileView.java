@@ -8,7 +8,6 @@ import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 import com.vaadin.flow.data.selection.SingleSelect;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import org.karnak.data.profile.Profile;
 import org.karnak.data.profile.ProfilePipe;
 import org.karnak.profilepipe.profilebody.ProfilePipeBody;
 import org.karnak.ui.MainLayout;
@@ -51,8 +50,10 @@ public class ProfileView extends HorizontalLayout {
 
         profilePipeSingleSelect.addValueChangeListener(e -> {
             ProfilePipe profileSelected = e.getValue();
-            profileComponent.setProfilePipe(profileSelected);
-            profilesMetadata.setProfiles(profileSelected.getProfiles());
+            if (profileSelected != null) {
+                profileComponent.setProfilePipe(profileSelected);
+                profilesMetadata.setProfiles(profileSelected.getProfiles());
+            }
         });
 
         VerticalLayout barAndGridLayout = new VerticalLayout();
