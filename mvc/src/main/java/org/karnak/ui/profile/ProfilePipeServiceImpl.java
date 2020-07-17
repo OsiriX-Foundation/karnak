@@ -61,10 +61,6 @@ public class ProfilePipeServiceImpl extends ProfilePipeService {
 
     @Override
     public ProfilePipe updateProfile(ProfilePipe profilePipe) {
-        if (profilePipe.getBydefault()!=true){
-            return profilePipePersistence.saveAndFlush(profilePipe);
-        }else {
-            return null;
-        }
+        return profilePipePersistence.saveAndFlush(profilePipe);
     }
 }

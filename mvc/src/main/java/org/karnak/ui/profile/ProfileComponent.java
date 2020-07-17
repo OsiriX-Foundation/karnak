@@ -37,7 +37,7 @@ public class ProfileComponent extends VerticalLayout {
             updatedProfilePipes();
         });
 
-        ProfileMetadata defaultIssuerOfPatientID = new ProfileMetadata("Default issuer of PatientID", profilePipe.getDefaultissueropatientid(), profilePipe.getBydefault());
+        ProfileMetadata defaultIssuerOfPatientID = new ProfileMetadata("Default issuer of PatientID", profilePipe.getDefaultissueropatientid(), false);
         defaultIssuerOfPatientID.getValidateEditButton().addClickListener(event -> {
             profilePipe.setDefaultissueropatientid(defaultIssuerOfPatientID.getValue());
             updatedProfilePipes();
