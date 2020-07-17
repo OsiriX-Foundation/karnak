@@ -21,7 +21,7 @@ public class ProfileMetadata extends VerticalLayout {
 
     private boolean inputEnable = false;
 
-    public ProfileMetadata(String title, String value) {
+    public ProfileMetadata(String title, String value, Boolean profileByDefault) {
         this.title = title;
         this.value = value;
 
@@ -29,8 +29,9 @@ public class ProfileMetadata extends VerticalLayout {
         setValueText();
 
         setStyle();
-
-        titleDiv.add(editButton);
+        if(profileByDefault!=true) {
+            titleDiv.add(editButton);
+        }
 
         editButton.addClickListener(event -> {
             editOnClick();

@@ -83,6 +83,14 @@ public class ProfilePipe {
         this.profiles = profiles;
     }
 
+    public Boolean getBydefault() {
+        return bydefault;
+    }
+
+    public void setBydefault(Boolean bydefault) {
+        this.bydefault = bydefault;
+    }
+
     public Long getId() {
         return id;
     }

@@ -17,25 +17,25 @@ public class ProfileComponent extends VerticalLayout {
 
     public void setProfile() {
         removeAll();
-        ProfileMetadata name = new ProfileMetadata("Name", profilePipe.getName());
+        ProfileMetadata name = new ProfileMetadata("Name", profilePipe.getName(), profilePipe.getBydefault());
         name.getValidateEditButton().addClickListener(event -> {
             profilePipe.setName(name.getValue());
             updatedProfilePipes();
         });
 
-        ProfileMetadata version = new ProfileMetadata("Profile version", profilePipe.getVersion());
+        ProfileMetadata version = new ProfileMetadata("Profile version", profilePipe.getVersion(), profilePipe.getBydefault());
         version.getValidateEditButton().addClickListener(event -> {
             profilePipe.setVersion(version.getValue());
             updatedProfilePipes();
         });
 
-        ProfileMetadata minVersion = new ProfileMetadata("Min. version KARNAK required", profilePipe.getMinimumkarnakversion());
+        ProfileMetadata minVersion = new ProfileMetadata("Min. version KARNAK required", profilePipe.getMinimumkarnakversion(), profilePipe.getBydefault());
         minVersion.getValidateEditButton().addClickListener(event -> {
             profilePipe.setMinimumkarnakversion(minVersion.getValue());
             updatedProfilePipes();
         });
 
-        ProfileMetadata defaultIssuerOfPatientID = new ProfileMetadata("Default issuer of PatientID", profilePipe.getDefaultissueropatientid());
+        ProfileMetadata defaultIssuerOfPatientID = new ProfileMetadata("Default issuer of PatientID", profilePipe.getDefaultissueropatientid(), profilePipe.getBydefault());
         defaultIssuerOfPatientID.getValidateEditButton().addClickListener(event -> {
             profilePipe.setDefaultissueropatientid(defaultIssuerOfPatientID.getValue());
             updatedProfilePipes();

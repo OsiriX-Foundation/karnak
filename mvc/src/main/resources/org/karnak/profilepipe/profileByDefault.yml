@@ -1,4 +1,4 @@
-name: "Default profile"
+name: "Dicom Basic Profile"
 version: "0.9.0"
 minimumkarnakversion: "0.1"
 defaultIssuerOfPatientID: "DPA"

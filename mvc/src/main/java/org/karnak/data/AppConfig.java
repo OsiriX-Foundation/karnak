@@ -92,7 +92,7 @@ public class AppConfig {
     @PostConstruct
     public void setProfilesByDefault() {
         URL profileURL = Profiles.class.getResource("profileByDefault.yml");
-        if(profilePipePersistence.existsByNameAndBydefault("Default profile", true)==false){
+        if(profilePipePersistence.existsByNameAndBydefault("Dicom Basic Profile", true)==false){
             try (InputStream inputStream = profileURL.openStream()) {
                 final Yaml yaml = new Yaml(new Constructor(ProfilePipeBody.class));
                 final ProfilePipeBody profilePipeYml = yaml.load(inputStream);
