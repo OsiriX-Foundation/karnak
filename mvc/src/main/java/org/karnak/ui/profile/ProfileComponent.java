@@ -1,6 +1,7 @@
 package org.karnak.ui.profile;
 
 import com.vaadin.flow.component.Text;
+import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import org.karnak.data.profile.ProfilePipe;
 
@@ -17,6 +18,7 @@ public class ProfileComponent extends VerticalLayout {
 
     public void setProfile() {
         removeAll();
+        H2 title = new H2("Profile metadata");
         ProfileMetadata name = new ProfileMetadata("Name", profilePipe.getName());
         name.getValidateEditButton().addClickListener(event -> {
             profilePipe.setName(name.getValue());
@@ -41,7 +43,7 @@ public class ProfileComponent extends VerticalLayout {
             updatedProfilePipes();
         });
 
-        add(name, version, minVersion, defaultIssuerOfPatientID);
+        add(title, name, version, minVersion, defaultIssuerOfPatientID);
     }
 
     private void updatedProfilePipes() {

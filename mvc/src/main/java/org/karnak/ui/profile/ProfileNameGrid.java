@@ -15,8 +15,6 @@ public class ProfileNameGrid extends Grid<ProfilePipe> {
         updatedProfilePipesView();
         addColumn(ProfilePipe::getName).setHeader("Name");
         addColumn(ProfilePipe::getVersion).setHeader("Version");
-        addColumn(ProfilePipe::getMinimumkarnakversion).setHeader("Min. Karnak Version");
-        addColumn(ProfilePipe::getDefaultissueropatientid).setHeader("DeffaultIssuerOfPatientID");
     }
 
     public void updatedProfilePipesView(){
