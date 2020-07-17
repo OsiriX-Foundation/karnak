@@ -122,7 +122,9 @@ public class Profiles {
         String profilesCodeName = String.join(
                 "-" , profiles.stream().map(profile -> profile.getCodeName()).collect(Collectors.toList())
         );
-        String patientID = generatePatientID(pseudonym, profilesCodeName);
+        BigInteger patientValue = generatePatientID(pseudonym, profilesCodeName);
+        String patientName = patientValue.toString(16).toUpperCase();
+        String patientID = patientValue.toString();
 
         if (!StringUtil.hasText(pseudonym)) {
             throw new IllegalStateException("Cannot build a pseudonym");
@@ -130,10 +132,10 @@ public class Profiles {
 
         applyAction(dcm, patientID);
 
-        setDefaultDeidentTagValue(dcm, patientID, profilesCodeName, pseudonym);
+        setDefaultDeidentTagValue(dcm, patientID, patientName, profilesCodeName, pseudonym);
     }
 
-    public void setDefaultDeidentTagValue(DicomObject dcm, String patientID, String profilePipeCodeName, String pseudonym){
+    public void setDefaultDeidentTagValue(DicomObject dcm, String patientID, String patientName, String profilePipeCodeName, String pseudonym){
         final String profileFilename = profilePipe.getName();
 
         final String tagValueInPatientID = dcm.getString(Tag.PatientID).orElse(null);
@@ -141,8 +143,8 @@ public class Profiles {
         LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_INOUT, TagUtils.toString(Tag.PatientID), Tag.PatientID, DUMMY_DEIDENT_METHOD, tagValueInPatientID, patientID);
 
         final String tagValueInPatientName= dcm.getString(Tag.PatientID).orElse(null);
-        dcm.setString(Tag.PatientName, VR.PN,  patientID);
-        LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_INOUT, TagUtils.toString(Tag.PatientName), Tag.PatientName, DUMMY_DEIDENT_METHOD, tagValueInPatientName, patientID);
+        dcm.setString(Tag.PatientName, VR.PN,  patientName);
+        LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_INOUT, TagUtils.toString(Tag.PatientName), Tag.PatientName, DUMMY_DEIDENT_METHOD, tagValueInPatientName, patientName);
 
         final String tagValueInPatientIdentityRemoved = dcm.getString(Tag.PatientID).orElse(null);
         dcm.setString(Tag.PatientIdentityRemoved, VR.CS,  "YES");
@@ -181,9 +183,9 @@ public class Profiles {
 
     }
 
-    public String generatePatientID(String pseudonym, String profiles) {
+    public BigInteger generatePatientID(String pseudonym, String profiles) {
         byte[] bytes = new byte[16];
         System.arraycopy(hmac.byteHash(pseudonym + profiles), 0, bytes, 0, 16);
-        return new BigInteger(1, bytes).toString();
+        return new BigInteger(1, bytes);
     }
 }
