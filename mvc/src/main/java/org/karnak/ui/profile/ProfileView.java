@@ -8,6 +8,7 @@ import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 import com.vaadin.flow.data.selection.SingleSelect;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import org.karnak.data.profile.Profile;
 import org.karnak.data.profile.ProfilePipe;
 import org.karnak.profilepipe.profilebody.ProfilePipeBody;
 import org.karnak.ui.MainLayout;
@@ -18,11 +19,12 @@ import java.io.InputStream;
 
 @Route(value = "profile", layout = MainLayout.class)
 @PageTitle("KARNAK - Profile")
+@SuppressWarnings("serial")
 public class ProfileView extends HorizontalLayout {
     public static final String VIEW_NAME = "Profile";
 
-    private VerticalLayout profileOutput = new VerticalLayout();
     private ProfileComponent profileComponent;
+    private ProfilesMetadata profilesMetadata;
     private Upload uploadProfile;
     private ProfileNameGrid profileNameGrid;
     private final ProfilePipeService profilePipeService;
@@ -31,11 +33,15 @@ public class ProfileView extends HorizontalLayout {
         profilePipeService = new ProfilePipeServiceImpl();
         profileNameGrid = new ProfileNameGrid();
         profileComponent = new ProfileComponent(profilePipeService, profileNameGrid);
-        profileOutput.add(profileComponent);
+        profilesMetadata = new ProfilesMetadata();
         setSizeFull();
         VerticalLayout barAndGridLayout = createTopLayoutGrid();
+        barAndGridLayout.setWidth("25%");
+        profileComponent.setWidth("30%");
+        profilesMetadata.setWidth("45%");
         add(barAndGridLayout);
-        add(profileOutput);
+        add(profileComponent);
+        add(profilesMetadata);
     }
 
     private VerticalLayout createTopLayoutGrid() {
@@ -46,6 +52,7 @@ public class ProfileView extends HorizontalLayout {
         profilePipeSingleSelect.addValueChangeListener(e -> {
             ProfilePipe profileSelected = e.getValue();
             profileComponent.setProfilePipe(profileSelected);
+            profilesMetadata.setProfiles(profileSelected.getProfiles());
         });
 
         VerticalLayout barAndGridLayout = new VerticalLayout();
