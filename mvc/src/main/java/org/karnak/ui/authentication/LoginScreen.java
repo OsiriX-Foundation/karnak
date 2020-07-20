@@ -5,7 +5,6 @@ import org.karnak.ui.admin.AdminView;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.KeyModifier;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.login.LoginForm;
@@ -14,6 +13,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteConfiguration;
+import org.karnak.ui.image.LogoKarnak;
 
 /**
  * UI content when the user is not logged in yet.
@@ -51,8 +51,9 @@ public class LoginScreen extends FlexLayout {
         VerticalLayout loginInformation = new VerticalLayout();
         loginInformation.setJustifyContentMode(JustifyContentMode.CENTER);
         loginInformation.setAlignItems(Alignment.CENTER);
-
-        loginInformation.add(new H1("KARNAK configuration"));
+        LogoKarnak logoKarnak = new LogoKarnak("KARNAK", "225px");
+        loginInformation.add(logoKarnak);
+        loginInformation.add(new H1("KARNAK"));
         loginInformation.add(loginForm);
 
         return loginInformation;
