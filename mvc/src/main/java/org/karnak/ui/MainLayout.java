@@ -4,6 +4,7 @@ import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.component.icon.IronIcon;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.PWA;
 import org.karnak.ui.about.AboutView;
 import org.karnak.ui.admin.AdminView;
 import org.karnak.ui.authentication.AccessControlFactory;
@@ -32,7 +33,7 @@ import org.karnak.ui.profile.ProfileView;
 @CssImport(value ="./styles/shared-styles.css")
 @Theme(value = Lumo.class)
 @Route(value="mainLayout")
-//@PWA(name = "Karnak Gateway", shortName = "karnak")
+@PWA(name = "Karnak Gateway", shortName = "karnak")
 @SuppressWarnings("serial")
 public class MainLayout extends FlexLayout implements RouterLayout {
     private Menu menu;
