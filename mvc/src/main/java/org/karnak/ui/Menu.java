@@ -22,7 +22,6 @@ import org.karnak.ui.util.ToggleButtonTheme;
 
 @NpmPackage(value = "@polymer/iron-icons", version = "3.0.1")
 @JsModule("@polymer/iron-icons/iron-icons.js")
-@PreserveOnRefresh
 @SuppressWarnings("serial")
 public class Menu extends FlexLayout {
     private static final String SHOW_TABS = "show-tabs";

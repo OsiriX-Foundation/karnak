@@ -1,5 +1,6 @@
 package org.karnak.ui.authentication;
 
+import com.vaadin.flow.theme.lumo.Lumo;
 import org.karnak.ui.MainLayout;
 import org.karnak.ui.admin.AdminView;
 
@@ -24,6 +25,7 @@ import org.karnak.ui.image.LogoKarnak;
 @SuppressWarnings("serial")
 public class LoginScreen extends FlexLayout {
     private AccessControl accessControl;
+    private String THEME_COLOR_KEY = "theme-variant";
 
     public LoginScreen() {
         accessControl = AccessControlFactory.getInstance().createAccessControl();
@@ -33,6 +35,15 @@ public class LoginScreen extends FlexLayout {
     private void buildUI() {
         setSizeFull();
         setClassName("login-screen");
+
+        //read local storage theme
+        UI.getCurrent().getPage().executeJs("return localStorage.getItem($0)", THEME_COLOR_KEY).then(String.class, string->{
+            final String themeColor = string;
+            if(string.equals(Lumo.DARK) || string.equals(Lumo.LIGHT)) {
+                UI.getCurrent().getElement().setAttribute("theme", themeColor);
+                UI.getCurrent().getPage().executeJs("localStorage.setItem($0, $1)", THEME_COLOR_KEY,  themeColor);
+            }
+        });
 
         add(buildLoginMainComponent());
 
