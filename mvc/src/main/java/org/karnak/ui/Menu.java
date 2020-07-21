@@ -1,12 +1,11 @@
 package org.karnak.ui;
 
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.component.icon.IronIcon;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
-import com.vaadin.flow.dom.ThemeList;
-import com.vaadin.flow.theme.lumo.Lumo;
+import com.vaadin.flow.router.PreserveOnRefresh;
 import org.karnak.ui.authentication.AccessControlFactory;
 
 import com.vaadin.flow.component.Component;
@@ -19,15 +18,18 @@ import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.RouterLink;
+import org.karnak.ui.util.ToggleButtonTheme;
 
 @NpmPackage(value = "@polymer/iron-icons", version = "3.0.1")
 @JsModule("@polymer/iron-icons/iron-icons.js")
+@PreserveOnRefresh
 @SuppressWarnings("serial")
 public class Menu extends FlexLayout {
     private static final String SHOW_TABS = "show-tabs";
 
     private Tabs tabs;
     private RadioButtonGroup<String> radioGroup;
+    private ToggleButtonTheme toggleButtonTheme;
 
     public Menu() {
         setClassName("menu-bar");
@@ -51,28 +53,15 @@ public class Menu extends FlexLayout {
         setFlexGrow(1, tabs);
         add(tabs);
 
-        // Theme color
-        radioGroup = new RadioButtonGroup<>();
-        radioGroup.setLabel("Thème");
-        radioGroup.setItems("Light", "Dark");
-        radioGroup.setValue("Light");
-        radioGroup.addValueChangeListener(radioButtonGroupStringComponentValueChangeEvent -> {
-            ThemeList themeList = UI.getCurrent().getElement().getThemeList(); //
-
-            if (themeList.contains(Lumo.DARK)) { //
-                themeList.remove(Lumo.DARK);
-            } else {
-                themeList.add(Lumo.DARK);
-            }
-        });
-
-        add(radioGroup);
+        //theme
+        toggleButtonTheme = new ToggleButtonTheme();
+        add(new VerticalLayout(toggleButtonTheme));
 
         // logout menu item
         Button logoutButton = new Button("Logout", VaadinIcon.SIGN_OUT.create());
         logoutButton.addClickListener(event -> AccessControlFactory.getInstance().createAccessControl().signOut());
 
-        logoutButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
+        logoutButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
         add(logoutButton);
     }
 
