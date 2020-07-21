@@ -21,23 +21,22 @@ public class ToggleButtonTheme extends HorizontalLayout {
         //read local storage theme
         UI.getCurrent().getPage().executeJs("return localStorage.getItem($0)", THEME_COLOR_KEY).then(String.class, string->{
             final String themeColor = string;
-            if(string.equals(Lumo.DARK)){
-                toggleButton.setValue(true);
-                UI.getCurrent().getElement().setAttribute("theme", Lumo.DARK);
-            }else if (string.equals(Lumo.LIGHT)){
-                toggleButton.setValue(false);
-                UI.getCurrent().getElement().setAttribute("theme", Lumo.LIGHT);
+            if (themeColor != null) {
+                if (string.equals(Lumo.DARK)) {
+                    toggleButton.setValue(true);
+                } else if (string.equals(Lumo.LIGHT)) {
+                    toggleButton.setValue(false);
+                }
             }
         });
 
         toggleButton.addValueChangeListener(toggleButtonBooleanComponentValueChangeEvent -> {
-            themeList = UI.getCurrent().getElement().getThemeList();
-            if (themeList.contains(Lumo.DARK)) {
-                UI.getCurrent().getElement().setAttribute("theme", Lumo.LIGHT);
-                UI.getCurrent().getPage().executeJs("localStorage.setItem($0, $1)", THEME_COLOR_KEY,  Lumo.LIGHT);
-            } else {
+            if (toggleButtonBooleanComponentValueChangeEvent.getValue() == Boolean.TRUE) {
                 UI.getCurrent().getElement().setAttribute("theme", Lumo.DARK);
                 UI.getCurrent().getPage().executeJs("localStorage.setItem($0, $1)", THEME_COLOR_KEY,  Lumo.DARK);
+            } else {
+                UI.getCurrent().getElement().setAttribute("theme", Lumo.LIGHT);
+                UI.getCurrent().getPage().executeJs("localStorage.setItem($0, $1)", THEME_COLOR_KEY,  Lumo.LIGHT);
             }
         });
         add(sunIcon, toggleButton, moonIcon);
