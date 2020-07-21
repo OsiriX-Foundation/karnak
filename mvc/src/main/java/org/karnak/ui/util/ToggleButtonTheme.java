@@ -5,11 +5,9 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.dom.ThemeList;
 import com.vaadin.flow.theme.lumo.Lumo;
 
 public class ToggleButtonTheme extends HorizontalLayout {
-    private ThemeList themeList;
     private ToggleButton toggleButton;
     private String THEME_COLOR_KEY = "theme-variant";
 
