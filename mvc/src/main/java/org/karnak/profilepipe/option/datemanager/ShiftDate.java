@@ -1,6 +1,9 @@
 package org.karnak.profilepipe.option.datemanager;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -8,9 +11,8 @@ import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoField;
 
-import static io.swagger.codegen.v3.config.CodegenConfigurator.LOGGER;
-
 public class ShiftDate {
+    private final Logger LOGGER = LoggerFactory.getLogger(ShiftDate.class);
     private DateTimeFormatter DAformater = DateTimeFormatter.ofPattern("yyyyMMdd");
     private DateTimeFormatter TMformater = DateTimeFormatter.ofPattern("HHmmss");
 

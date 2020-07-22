@@ -8,10 +8,10 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-
-import static io.swagger.codegen.v3.config.CodegenConfigurator.LOGGER;
+import org.slf4j.*;
 
 public class HMAC {
+    private final Logger LOGGER = LoggerFactory.getLogger(HMAC.class);
     private Mac mac;
 
     private static final String HMAC_SHA256 = "HmacSHA256";
