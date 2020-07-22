@@ -1,6 +1,7 @@
 package org.karnak.ui.profile;
 
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.upload.Upload;
@@ -69,6 +70,7 @@ public class ProfileView extends HorizontalLayout {
         MemoryBuffer memoryBuffer = new MemoryBuffer();
         // https://github.com/vaadin/vaadin-upload-flow/blob/6fa9cc429e1d0894704fb962e0df375a9d0439c8/vaadin-upload-flow-integration-tests/src/main/java/com/vaadin/flow/component/upload/tests/it/UploadView.java#L122
         uploadProfile = new Upload(memoryBuffer);
+        uploadProfile.setDropLabel(new Span("Drag and drop your profile here"));
         uploadProfile.addSucceededListener(e -> {
             setProfileComponent(e.getMIMEType(), memoryBuffer.getInputStream());
         });
