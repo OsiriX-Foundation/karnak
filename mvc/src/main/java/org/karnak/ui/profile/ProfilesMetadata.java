@@ -19,7 +19,7 @@ public class ProfilesMetadata extends VerticalLayout {
 
     private void profilesView() {
         removeAll();
-        add(new H2("Profile(s) pipeline used"));
+        add(new H2("Profile element(s)"));
         for (Profile profile : profilesOrder) {
             add(setProfileName((profile.getPosition()+1) + ". " + profile.getName()));
             if (profile.getCodename() != null) {
