@@ -48,8 +48,8 @@ public class MainLayout extends FlexLayout implements RouterLayout {
         menu.addView(GatewayView.class, GatewayView.VIEW_NAME, icon);
         menu.addView(DicomMainView.class, DicomMainView.VIEW_NAME, new IronIcon("icons", "build"));
         menu.addView(ProfileView.class, ProfileView.VIEW_NAME, new IronIcon("icons", "assignment"));
-        menu.addView(AboutView.class, AboutView.VIEW_NAME,new IronIcon("icons", "help"));
         menu.addView(HelpView.class, HelpView.VIEW_NAME, new IronIcon("icons", "help"));
+        menu.addView(AboutView.class, AboutView.VIEW_NAME, new IronIcon("icons", "info"));
         add(menu);
     }
 
@@ -63,7 +63,7 @@ public class MainLayout extends FlexLayout implements RouterLayout {
                 KeyModifier.CONTROL);
 
         // add the admin view menu item if/when it is registered dynamically
-
+        /*
         Command addAdminMenuItemCommand = () -> menu.addView(AdminView.class, AdminView.VIEW_NAME,
                 new IronIcon("icons", "perm-identity"));
         RouteConfiguration sessionScopedConfiguration = RouteConfiguration.forSessionScope();
@@ -78,5 +78,6 @@ public class MainLayout extends FlexLayout implements RouterLayout {
                 }
             });
         }
+         */
     }
 }
