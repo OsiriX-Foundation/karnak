@@ -29,9 +29,9 @@ public class ProfilePipeServiceImpl extends ProfilePipeService {
         ProfilePipe newProfilePipe;
 
         if(byDefault){
-            newProfilePipe = new ProfilePipe(profilePipeYml.getName(), profilePipeYml.getVersion(), profilePipeYml.getMinimumkarnakversion(), profilePipeYml.getDefaultIssuerOfPatientID(), true);
+            newProfilePipe = new ProfilePipe(profilePipeYml.getName(), profilePipeYml.getVersion(), profilePipeYml.getMinimumKarnakVersion(), profilePipeYml.getDefaultIssuerOfPatientID(), true);
         }else{
-            newProfilePipe = new ProfilePipe(profilePipeYml.getName(), profilePipeYml.getVersion(), profilePipeYml.getMinimumkarnakversion(), profilePipeYml.getDefaultIssuerOfPatientID());
+            newProfilePipe = new ProfilePipe(profilePipeYml.getName(), profilePipeYml.getVersion(), profilePipeYml.getMinimumKarnakVersion(), profilePipeYml.getDefaultIssuerOfPatientID());
         }
 
 
@@ -46,8 +46,8 @@ public class ProfilePipeServiceImpl extends ProfilePipeService {
                 });
             }
 
-            if(profileBody.getExceptedtags()!=null) {
-                profileBody.getExceptedtags().forEach(exceptedtag -> {
+            if(profileBody.getExcludedTags()!=null) {
+                profileBody.getExcludedTags().forEach(exceptedtag -> {
                     final ExceptedTag exceptedTagValue = new ExceptedTag(exceptedtag, profile);
                     profile.addExceptedtags(exceptedTagValue);
                 });

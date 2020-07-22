@@ -5,7 +5,7 @@ import java.util.List;
 public class ProfilePipeBody {
     private String name;
     private String version;
-    private String minimumkarnakversion;
+    private String minimumKarnakVersion;
     private String defaultIssuerOfPatientID;
     private List<ProfileBody> profiles;
 
@@ -25,12 +25,12 @@ public class ProfilePipeBody {
         this.version = version;
     }
 
-    public String getMinimumkarnakversion() {
-        return minimumkarnakversion;
+    public String getMinimumKarnakVersion() {
+        return minimumKarnakVersion;
     }
 
-    public void setMinimumkarnakversion(String minimumkarnakversion) {
-        this.minimumkarnakversion = minimumkarnakversion;
+    public void setMinimumKarnakVersion(String minimumKarnakVersion) {
+        this.minimumKarnakVersion = minimumKarnakVersion;
     }
 
     public List<ProfileBody> getProfiles() {

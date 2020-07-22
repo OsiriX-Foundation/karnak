@@ -7,7 +7,7 @@ public class ProfileBody {
     private String codename;
     private String action;
     private List<String> tags;
-    private List<String> exceptedtags;
+    private List<String> excludedTags;
 
     public String getName() {
         return name;
@@ -41,11 +41,11 @@ public class ProfileBody {
         this.tags = tags;
     }
 
-    public List<String> getExceptedtags() {
-        return exceptedtags;
+    public List<String> getExcludedTags() {
+        return excludedTags;
     }
 
-    public void setExceptedtags(List<String> exceptedtags) {
-        this.exceptedtags = exceptedtags;
+    public void setExcludedTags(List<String> excludedTags) {
+        this.excludedTags = excludedTags;
     }
 }

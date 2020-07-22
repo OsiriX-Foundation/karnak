@@ -58,12 +58,19 @@ public class ProfileMetadata extends VerticalLayout {
     }
 
     private void setValueText() {
-        Text valueText = new Text(this.value);
+        String text = "Not defined";
+        if (this.value != null) {
+            text = this.value;
+        }
+        Text valueText = new Text(text);
         valueDiv.add(valueText);
     }
 
     private void setValueTextField() {
-        valueField.setValue(this.value);
+        valueField.setValue("");
+        if (this.value != null) {
+            valueField.setValue(this.value);
+        }
         valueDiv.add(valueField);
         valueDiv.add(validateEditButton);
         valueDiv.add(disabledEditButton);
