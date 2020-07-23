@@ -27,6 +27,13 @@ file_env() {
     unset "$fileVar"
 }
 
+# https://github.com/dcm4che-dockerfiles/wildfly/blob/1550dced41da57248c40b963706e856c67d31858/docker-entrypoint.sh#L45
+for c in $KARNAK_WAIT_FOR; do
+    echo "Waiting for $c ..."
+    while ! nc -w 1 -z ${c/:/ }; do sleep 1; done
+    echo "done"
+done
+
 SYS_PROPS=""
 
 SYS_PROPS+=" -Djava.library.path='/tmp/dicom-opencv'"

@@ -22,6 +22,8 @@ RUN mvn clean package -Pproduction
 
 FROM openjdk:14.0-jdk as production-stage
 
+RUN yum install nc -y
+
 WORKDIR /app
 
 COPY --from=build-stage /build/mvc/target/karnak-mvc-5.0.0-SNAPSHOT.jar /app/karnak-mvc-5.0.0-SNAPSHOT.jar

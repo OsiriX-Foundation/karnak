@@ -169,6 +169,11 @@ Password used for Karnak. (optional, default is `undefined`).
 
 Password used for Karnak via file input. (alternative to `KARNAK_LOGIN_PASSWORD`).
 
+`KARNAK_WAIT_FOR`
+
+List of service to wait before start KARNAK.
+
+
 # Architecture
 
 This project provides two modules:

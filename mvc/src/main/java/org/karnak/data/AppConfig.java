@@ -10,9 +10,11 @@ import org.karnak.ui.profile.ProfilePipeServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.*;
+import org.springframework.context.event.EventListener;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
@@ -89,7 +91,8 @@ public class AppConfig {
         return new HMAC();
     }
 
-    @PostConstruct
+    // https://stackoverflow.com/questions/27405713/running-code-after-spring-boot-starts
+    @EventListener(ApplicationReadyEvent.class)
     public void setProfilesByDefault() {
         URL profileURL = Profiles.class.getResource("profileByDefault.yml");
         if(profilePersistence.existsByNameAndBydefault("Dicom Basic Profile", true)==false){
