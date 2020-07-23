@@ -8,6 +8,7 @@ import org.weasis.dicom.param.AttributeEditorContext;
 
 import java.util.Set;
 import java.util.function.Predicate;
+import org.weasis.dicom.param.AttributeEditorContext.Abort;
 
 public class FilterEditor  implements AttributeEditor {
     private Set<SOPClassUID> sopClassUIDSet;
@@ -17,11 +18,11 @@ public class FilterEditor  implements AttributeEditor {
 
     @Override
     public void apply(DicomObject dcm, AttributeEditorContext context) {
-        final String classUID = dcm.getString(Tag.SOPClassUID).orElse(null);
-        final Predicate<SOPClassUID> sopClassUIDPredicate = sopClassUID -> classUID.equals(sopClassUID.getUid());
-        boolean sopClassUIDisPresent = this.sopClassUIDSet.stream().anyMatch(sopClassUIDPredicate);
-        if (sopClassUIDisPresent == false) {
-            throw new IllegalStateException("SOPClassUID is not in a filter");
+        String classUID = dcm.getString(Tag.SOPClassUID).orElse(null);
+        Predicate<SOPClassUID> sopClassUIDPredicate = sopClassUID -> sopClassUID.getUid().equals(classUID);
+        if (!sopClassUIDSet.stream().anyMatch(sopClassUIDPredicate)) {
+            context.setAbort(Abort.FILE_EXCEPTION);
+            context.setAbortMessage(classUID + " is not in the SOPClassUID filter");
         }
     }
 }
