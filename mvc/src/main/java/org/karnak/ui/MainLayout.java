@@ -46,8 +46,8 @@ public class MainLayout extends FlexLayout implements RouterLayout {
         menu = new Menu();
         IronIcon icon = new IronIcon("icons", "settings");
         menu.addView(GatewayView.class, GatewayView.VIEW_NAME, icon);
-        menu.addView(DicomMainView.class, DicomMainView.VIEW_NAME, new IronIcon("icons", "build"));
         menu.addView(ProfileView.class, ProfileView.VIEW_NAME, new IronIcon("icons", "assignment"));
+        menu.addView(DicomMainView.class, DicomMainView.VIEW_NAME, new IronIcon("icons", "build"));
         menu.addView(HelpView.class, HelpView.VIEW_NAME, new IronIcon("icons", "help"));
         //menu.addView(AboutView.class, AboutView.VIEW_NAME, new IronIcon("icons", "info"));
         add(menu);
