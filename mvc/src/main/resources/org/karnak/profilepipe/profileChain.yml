@@ -9,7 +9,7 @@ profileElements:
     tags:
       - "(0008,00Xx)"
       - "0010,00xX"
-    exceptedtags:
+    excludedTags:
       - "0008,0008"
       - "0008,0013"
 
@@ -43,7 +43,7 @@ profileElements:
     tags:
       - "001X,0010"
       - "0009,0010"
-    exceptedtags:
+    excludedTags:
       - "0011,0010"
 
   - name: "Missing action (generate an error)"
@@ -51,7 +51,7 @@ profileElements:
     tags:
       - "001X,0010"
       - "0009,0010"
-    exceptedtags:
+    excludedTags:
       - "0011,0010"
 
   - name: "DICOM basic profile"
