@@ -171,7 +171,9 @@ public class DestinationDicomForm extends Div {
         desidentification = new Checkbox();
         desidentification.setLabel("Activate de-identification");
         desidentification.setValue(true);
+        desidentification.setMinWidth("25%");
         profileDropDown = new ProfileDropDown();
+        profileDropDown.setMinWidth("70%");
 
         desidentification.addValueChangeListener(event -> {
             if (event.getValue() != null) {

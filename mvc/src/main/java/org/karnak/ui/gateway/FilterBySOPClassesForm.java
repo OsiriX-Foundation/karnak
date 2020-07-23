@@ -27,9 +27,11 @@ public class FilterBySOPClassesForm extends HorizontalLayout {
         setSizeFull();
 
         filterBySOPClassesCheckbox = new Checkbox();
-        filterBySOPClassesCheckbox.setLabel("Filter by SOP classes");
+        filterBySOPClassesCheckbox.setLabel("Authorized SOPs");
+        filterBySOPClassesCheckbox.setMinWidth("25%");
 
         sopFilter = new MultiselectComboBox();
+        sopFilter.setMinWidth("70%");
         this.updatedSopFilterItems();
 
         filterBySOPClassesCheckbox.addValueChangeListener(checkboxBooleanComponentValueChangeEvent -> {
