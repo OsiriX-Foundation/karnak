@@ -13,7 +13,7 @@ public class ProfilePipe {
 
     private String name;
     private String version;
-    private String minimumkarnakversion;
+    private String minimumKarnakVersion;
     private String defaultissueropatientid;
     private Boolean bydefault;
 
@@ -23,18 +23,18 @@ public class ProfilePipe {
     public ProfilePipe() {
     }
 
-    public ProfilePipe(String name, String version, String minimumkarnakversion, String defaultissueropatientid) {
+    public ProfilePipe(String name, String version, String minimumKarnakVersion, String defaultissueropatientid) {
         this.name = name;
         this.version = version;
-        this.minimumkarnakversion = minimumkarnakversion;
+        this.minimumKarnakVersion = minimumKarnakVersion;
         this.defaultissueropatientid = defaultissueropatientid;
         this.bydefault = false;
     }
 
-    public ProfilePipe(String name, String version, String minimumkarnakversion, String defaultissueropatientid, Boolean bydefault) {
+    public ProfilePipe(String name, String version, String minimumKarnakVersion, String defaultissueropatientid, Boolean bydefault) {
         this.name = name;
         this.version = version;
-        this.minimumkarnakversion = minimumkarnakversion;
+        this.minimumKarnakVersion = minimumKarnakVersion;
         this.defaultissueropatientid = defaultissueropatientid;
         this.bydefault = bydefault;
     }
@@ -60,11 +60,11 @@ public class ProfilePipe {
     }
 
     public String getMinimumkarnakversion() {
-        return minimumkarnakversion;
+        return minimumKarnakVersion;
     }
 
-    public void setMinimumkarnakversion(String minimumkarnakversion) {
-        this.minimumkarnakversion = minimumkarnakversion;
+    public void setMinimumkarnakversion(String minimumKarnakVersion) {
+        this.minimumKarnakVersion = minimumKarnakVersion;
     }
 
     public String getDefaultissueropatientid() {

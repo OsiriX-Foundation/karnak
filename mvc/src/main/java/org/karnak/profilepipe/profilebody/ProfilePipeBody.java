@@ -7,7 +7,7 @@ public class ProfilePipeBody {
     private String version;
     private String minimumKarnakVersion;
     private String defaultIssuerOfPatientID;
-    private List<ProfileBody> profiles;
+    private List<ProfileElementBody> profiles;
 
     public String getName() {
         return name;
@@ -33,11 +33,11 @@ public class ProfilePipeBody {
         this.minimumKarnakVersion = minimumKarnakVersion;
     }
 
-    public List<ProfileBody> getProfiles() {
+    public List<ProfileElementBody> getProfileElements() {
         return profiles;
     }
 
-    public void setProfiles(List<ProfileBody> profiles) {
+    public void setProfileElements(List<ProfileElementBody> profiles) {
         this.profiles = profiles;
     }
 

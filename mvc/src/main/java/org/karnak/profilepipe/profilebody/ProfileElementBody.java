@@ -2,7 +2,7 @@ package org.karnak.profilepipe.profilebody;
 
 import java.util.List;
 
-public class ProfileBody {
+public class ProfileElementBody {
     private String name;
     private String codename;
     private String action;

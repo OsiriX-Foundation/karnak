@@ -12,7 +12,6 @@ import org.karnak.data.profile.Profile;
 import org.karnak.data.profile.ProfilePipe;
 import org.karnak.profilepipe.action.Action;
 import org.karnak.profilepipe.action.ActionStrategy;
-import org.karnak.profilepipe.profilebody.ProfileBody;
 import org.karnak.profilepipe.profiles.AbstractProfileItem;
 import org.karnak.profilepipe.profiles.ProfileItem;
 import org.karnak.profilepipe.utils.HMAC;
