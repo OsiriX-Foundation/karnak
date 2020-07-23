@@ -10,7 +10,7 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.group.GroupSequenceProvider;
 import org.karnak.data.gateway.DestinationGroupSequenceProvider.DestinationDicomGroup;
 import org.karnak.data.gateway.DestinationGroupSequenceProvider.DestinationStowGroup;
-import org.karnak.data.profile.ProfilePipe;
+import org.karnak.data.profile.Profile;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -40,7 +40,7 @@ public class Destination {
 
     @ManyToOne
     @JoinColumn(name="profile_pipe_id")
-    private ProfilePipe profilePipe;
+    private Profile profile;
 
     // list of emails (comma separated) used when the images have been sent (or
     // partially sent) to the final destination. Note: if an issue appears before
@@ -382,15 +382,15 @@ public class Destination {
             + ", notifyObjectValues=" + notifyObjectValues + ", notifyInterval=" + notifyInterval + "]";
     }
 
-    public ProfilePipe getProfilePipe() {
-        return profilePipe;
+    public Profile getProfile() {
+        return profile;
     }
 
     public String getProfilePipeName() {
-        return profilePipe.getName();
+        return profile.getName();
     }
 
-    public void setProfilePipe(ProfilePipe profilePipe) {
-        this.profilePipe = profilePipe;
+    public void setProfile(Profile profile) {
+        this.profile = profile;
     }
 }

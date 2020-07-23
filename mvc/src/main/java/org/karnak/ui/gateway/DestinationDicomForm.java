@@ -232,7 +232,7 @@ public class DestinationDicomForm extends Div {
         binder.forField(profileDropDown)
                 .withValidator(profilePipe -> profilePipe != null || (profilePipe == null && desidentification.getValue() == false),
                         "Choose the de-identification profile\n")
-                .bind(Destination::getProfilePipe, Destination::setProfilePipe);
+                .bind(Destination::getProfile, Destination::setProfile);
         binder.bindInstanceFields(this);
 
         // enable/disable update button while editing

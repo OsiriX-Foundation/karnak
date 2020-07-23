@@ -1,7 +1,7 @@
 package org.karnak.profilepipe.profiles;
 
 import org.dcm4che6.data.DicomElement;
-import org.karnak.data.profile.ExceptedTag;
+import org.karnak.data.profile.ExcludedTag;
 import org.karnak.data.profile.IncludedTag;
 import org.karnak.profilepipe.action.Action;
 import org.karnak.profilepipe.utils.TagActionMap;
@@ -16,8 +16,8 @@ public class ActionTags extends AbstractProfileItem {
     private TagActionMap exceptedTagsAction;
     private Action actionByDefault;
 
-    public ActionTags(String name, String codeName, String action, List<IncludedTag> tags, List<ExceptedTag> exceptedTags) throws Exception {
-        super(name, codeName, action, tags, exceptedTags);
+    public ActionTags(String name, String codeName, String action, List<IncludedTag> tags, List<ExcludedTag> excludedTags) throws Exception {
+        super(name, codeName, action, tags, excludedTags);
         tagsAction = new TagActionMap();
         exceptedTagsAction = new TagActionMap();
         actionByDefault = Action.convertAction(this.action);
@@ -29,8 +29,8 @@ public class ActionTags extends AbstractProfileItem {
         for (IncludedTag tag: tags) {
             tagsAction.put(tag.getTagValue(), actionByDefault);
         }
-        if (exceptedTags != null) {
-            for (ExceptedTag tag : exceptedTags) {
+        if (excludedTags != null) {
+            for (ExcludedTag tag : excludedTags) {
                 exceptedTagsAction.put(tag.getTagValue(), actionByDefault);
             }
         }

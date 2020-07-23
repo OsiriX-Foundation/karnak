@@ -18,17 +18,17 @@ public abstract class Tag {
     private Long id;
 
     @ManyToOne()
-    @JoinColumn(name = "profile_id", nullable = false)
-    private Profile profile;
+    @JoinColumn(name = "profile_element_id", nullable = false)
+    private ProfileElement profileElement;
 
     String tagValue;
 
     public Tag() {
     }
 
-    public Tag(String tagValue, Profile profile) {
+    public Tag(String tagValue, ProfileElement profileElement) {
         this.tagValue = tagValue;
-        this.profile = profile;
+        this.profileElement = profileElement;
     }
 
     public String getTagValue() {

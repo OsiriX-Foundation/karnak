@@ -10,7 +10,7 @@ public class IncludedTag extends Tag{
     public IncludedTag() {
     }
 
-    public IncludedTag(String tagValue, Profile profile) {
-        super(tagValue, profile);
+    public IncludedTag(String tagValue, ProfileElement profileElement) {
+        super(tagValue, profileElement);
     }
 }

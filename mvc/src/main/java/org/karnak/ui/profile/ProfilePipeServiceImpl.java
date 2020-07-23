@@ -2,7 +2,7 @@ package org.karnak.ui.profile;
 
 import org.karnak.data.AppConfig;
 import org.karnak.data.profile.*;
-import org.karnak.data.profile.Profile;
+import org.karnak.data.profile.ProfileElement;
 import org.karnak.profilepipe.profilebody.ProfilePipeBody;
 
 import java.util.ArrayList;
@@ -10,57 +10,57 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ProfilePipeServiceImpl extends ProfilePipeService {
-    private ProfilePipePersistence profilePipePersistence;
+    private ProfilePersistence profilePersistence;
     {
-        profilePipePersistence = AppConfig.getInstance().getProfilePipePersistence();
+        profilePersistence = AppConfig.getInstance().getProfilePersistence();
     }
 
 
     @Override
-    public List<ProfilePipe> getAllProfiles() {
-        List<ProfilePipe> list = new ArrayList<>();
-        profilePipePersistence.findAll() //
+    public List<Profile> getAllProfiles() {
+        List<Profile> list = new ArrayList<>();
+        profilePersistence.findAll() //
                 .forEach(list::add);
         return list;
     }
 
     @Override
-    public ProfilePipe saveProfilePipe(ProfilePipeBody profilePipeYml, Boolean byDefault) {
-        ProfilePipe newProfilePipe;
+    public Profile saveProfilePipe(ProfilePipeBody profilePipeYml, Boolean byDefault) {
+        Profile newProfile;
 
         if(byDefault){
-            newProfilePipe = new ProfilePipe(profilePipeYml.getName(), profilePipeYml.getVersion(), profilePipeYml.getMinimumKarnakVersion(), profilePipeYml.getDefaultIssuerOfPatientID(), true);
+            newProfile = new Profile(profilePipeYml.getName(), profilePipeYml.getVersion(), profilePipeYml.getMinimumKarnakVersion(), profilePipeYml.getDefaultIssuerOfPatientID(), true);
         }else{
-            newProfilePipe = new ProfilePipe(profilePipeYml.getName(), profilePipeYml.getVersion(), profilePipeYml.getMinimumKarnakVersion(), profilePipeYml.getDefaultIssuerOfPatientID());
+            newProfile = new Profile(profilePipeYml.getName(), profilePipeYml.getVersion(), profilePipeYml.getMinimumKarnakVersion(), profilePipeYml.getDefaultIssuerOfPatientID());
         }
 
 
         AtomicInteger profilePosition = new AtomicInteger(0);
         profilePipeYml.getProfileElements().forEach(profileBody -> {
-            Profile profile = new Profile(profileBody.getName(), profileBody.getCodename(), profileBody.getAction(), profilePosition.get(), newProfilePipe);
+            ProfileElement profileElement = new ProfileElement(profileBody.getName(), profileBody.getCodename(), profileBody.getAction(), profilePosition.get(), newProfile);
 
             if(profileBody.getTags()!=null){
                 profileBody.getTags().forEach(tag->{
-                    final IncludedTag includedTagValue = new IncludedTag(tag, profile);
-                    profile.addIncludedTag(includedTagValue);
+                    final IncludedTag includedTagValue = new IncludedTag(tag, profileElement);
+                    profileElement.addIncludedTag(includedTagValue);
                 });
             }
 
             if(profileBody.getExcludedTags()!=null) {
                 profileBody.getExcludedTags().forEach(exceptedtag -> {
-                    final ExceptedTag exceptedTagValue = new ExceptedTag(exceptedtag, profile);
-                    profile.addExceptedtags(exceptedTagValue);
+                    final ExcludedTag excludedTagValue = new ExcludedTag(exceptedtag, profileElement);
+                    profileElement.addExceptedtags(excludedTagValue);
                 });
             }
 
-            newProfilePipe.addProfilePipe(profile);
+            newProfile.addProfilePipe(profileElement);
             profilePosition.getAndIncrement();
         });
-        return profilePipePersistence.saveAndFlush(newProfilePipe);
+        return profilePersistence.saveAndFlush(newProfile);
     }
 
     @Override
-    public ProfilePipe updateProfile(ProfilePipe profilePipe) {
-        return profilePipePersistence.saveAndFlush(profilePipe);
+    public Profile updateProfile(Profile profile) {
+        return profilePersistence.saveAndFlush(profile);
     }
 }

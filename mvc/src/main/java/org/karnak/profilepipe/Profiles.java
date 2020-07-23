@@ -8,8 +8,8 @@ import org.dcm4che6.util.TagUtils;
 import org.karnak.api.PseudonymApi;
 import org.karnak.api.rqbody.Fields;
 import org.karnak.data.AppConfig;
+import org.karnak.data.profile.ProfileElement;
 import org.karnak.data.profile.Profile;
-import org.karnak.data.profile.ProfilePipe;
 import org.karnak.profilepipe.action.Action;
 import org.karnak.profilepipe.action.ActionStrategy;
 import org.karnak.profilepipe.profiles.AbstractProfileItem;
@@ -31,31 +31,31 @@ public class Profiles {
     private final String PATTERN_WITH_IN = "TAGHEX={} TAGINT={} DEIDENTACTION={} TAGVALUEIN={}";
     private final String DUMMY_DEIDENT_METHOD = "dDeidentMethod";
 
-    private ProfilePipe profilePipe;
+    private Profile profile;
     private final ArrayList<ProfileItem> profiles;
     private final HMAC hmac;
 
-    public Profiles(ProfilePipe profilePipe) {
+    public Profiles(Profile profile) {
         this.hmac = AppConfig.getInstance().getHmac();
-        this.profilePipe = profilePipe;
+        this.profile = profile;
         this.profiles = createProfilesList();
     }
 
     public ArrayList<ProfileItem> createProfilesList() {
-        if (profilePipe != null) {
-            final List<Profile> listProfile = profilePipe.getProfiles();
+        if (profile != null) {
+            final List<ProfileElement> listProfileElement = profile.getProfileElements();
             ArrayList<ProfileItem> profiles = new ArrayList<>();
 
-            for (Profile profile : listProfile) {
-                AbstractProfileItem.Type t = AbstractProfileItem.Type.getType(profile.getCodename());
+            for (ProfileElement profileElement : listProfileElement) {
+                AbstractProfileItem.Type t = AbstractProfileItem.Type.getType(profileElement.getCodename());
                 if (t == null) {
-                    LOGGER.error("Cannot find the profile codename: {}", profile.getCodename());
+                    LOGGER.error("Cannot find the profile codename: {}", profileElement.getCodename());
                 } else {
                     Object instanceProfileItem;
                     try {
                         instanceProfileItem = t.getProfileClass()
                                 .getConstructor(String.class, String.class, String.class, List.class, List.class)
-                                .newInstance(profile.getName(), profile.getCodename(), profile.getAction(), profile.getIncludedtag(), profile.getExceptedtags());
+                                .newInstance(profileElement.getName(), profileElement.getCodename(), profileElement.getAction(), profileElement.getIncludedtag(), profileElement.getExceptedtags());
                         profiles.add((ProfileItem) instanceProfileItem);
                     } catch (Exception e) {
                         LOGGER.error("Cannot build the profile: {}", t.getProfileClass().getName(), e);
@@ -73,7 +73,7 @@ public class Profiles {
         final String patientBirthDate = dcm.getString(Tag.PatientBirthDate).orElse(null);
         final String patientSex = dcm.getString(Tag.PatientSex).orElse(null);
         // Issuer of patientID is recommended to make the patientID universally unique. Can be defined in profile if missing.
-        final String issuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID).orElse(profilePipe.getDefaultissueropatientid());
+        final String issuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID).orElse(profile.getDefaultissueropatientid());
 
         PseudonymApi pseudonymApi = new PseudonymApi();
         final Fields newPatientFields = new Fields(patientID, patientName, patientBirthDate, patientSex, issuerOfPatientID);
@@ -135,7 +135,7 @@ public class Profiles {
     }
 
     public void setDefaultDeidentTagValue(DicomObject dcm, String patientID, String patientName, String profilePipeCodeName, String pseudonym){
-        final String profileFilename = profilePipe.getName();
+        final String profileFilename = profile.getName();
 
         final String tagValueInPatientID = dcm.getString(Tag.PatientID).orElse(null);
         dcm.setString(Tag.PatientID, VR.LO,  patientID);

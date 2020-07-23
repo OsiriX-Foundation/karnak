@@ -1,11 +1,11 @@
 package org.karnak.ui.gateway;
 
 import com.vaadin.flow.component.combobox.ComboBox;
-import org.karnak.data.profile.ProfilePipe;
+import org.karnak.data.profile.Profile;
 import org.karnak.ui.profile.ProfilePipeService;
 import org.karnak.ui.profile.ProfilePipeServiceImpl;
 
-public class ProfileDropDown extends ComboBox<ProfilePipe> {
+public class ProfileDropDown extends ComboBox<Profile> {
     private ProfilePipeService profilePipeService;
 
     public ProfileDropDown() {
@@ -15,6 +15,6 @@ public class ProfileDropDown extends ComboBox<ProfilePipe> {
 
     public void updateList() {
         setItems(profilePipeService.getAllProfiles());
-        setItemLabelGenerator(ProfilePipe::getName);
+        setItemLabelGenerator(Profile::getName);
     }
 }

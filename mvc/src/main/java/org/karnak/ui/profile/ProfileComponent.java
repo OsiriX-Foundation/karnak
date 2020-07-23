@@ -3,10 +3,10 @@ package org.karnak.ui.profile;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import org.karnak.data.profile.ProfilePipe;
+import org.karnak.data.profile.Profile;
 
 public class ProfileComponent extends VerticalLayout {
-    private ProfilePipe profilePipe;
+    private Profile profile;
     private ProfilePipeService profilePipeService;
     private ProfileNameGrid profileNameGrid;
 
@@ -19,27 +19,27 @@ public class ProfileComponent extends VerticalLayout {
     public void setProfile() {
         removeAll();
         H2 title = new H2("Profile metadata");
-        ProfileMetadata name = new ProfileMetadata("Name", profilePipe.getName(), profilePipe.getBydefault());
+        ProfileMetadata name = new ProfileMetadata("Name", profile.getName(), profile.getBydefault());
         name.getValidateEditButton().addClickListener(event -> {
-            profilePipe.setName(name.getValue());
+            profile.setName(name.getValue());
             updatedProfilePipes();
         });
 
-        ProfileMetadata version = new ProfileMetadata("Profile version", profilePipe.getVersion(), profilePipe.getBydefault());
+        ProfileMetadata version = new ProfileMetadata("Profile version", profile.getVersion(), profile.getBydefault());
         version.getValidateEditButton().addClickListener(event -> {
-            profilePipe.setVersion(version.getValue());
+            profile.setVersion(version.getValue());
             updatedProfilePipes();
         });
 
-        ProfileMetadata minVersion = new ProfileMetadata("Min. version KARNAK required", profilePipe.getMinimumkarnakversion(), profilePipe.getBydefault());
+        ProfileMetadata minVersion = new ProfileMetadata("Min. version KARNAK required", profile.getMinimumkarnakversion(), profile.getBydefault());
         minVersion.getValidateEditButton().addClickListener(event -> {
-            profilePipe.setMinimumkarnakversion(minVersion.getValue());
+            profile.setMinimumkarnakversion(minVersion.getValue());
             updatedProfilePipes();
         });
 
-        ProfileMetadata defaultIssuerOfPatientID = new ProfileMetadata("Default issuer of PatientID", profilePipe.getDefaultissueropatientid(), false);
+        ProfileMetadata defaultIssuerOfPatientID = new ProfileMetadata("Default issuer of PatientID", profile.getDefaultissueropatientid(), false);
         defaultIssuerOfPatientID.getValidateEditButton().addClickListener(event -> {
-            profilePipe.setDefaultissueropatientid(defaultIssuerOfPatientID.getValue());
+            profile.setDefaultissueropatientid(defaultIssuerOfPatientID.getValue());
             updatedProfilePipes();
         });
 
@@ -47,23 +47,23 @@ public class ProfileComponent extends VerticalLayout {
     }
 
     private void updatedProfilePipes() {
-        profilePipeService.updateProfile(profilePipe);
+        profilePipeService.updateProfile(profile);
         profileNameGrid.updatedProfilePipesView();
     }
 
     public void setEventValidate(ProfileMetadata metadata) {
         metadata.getValidateEditButton().addClickListener(event -> {
-            profilePipe.setName(metadata.getValue());
+            profile.setName(metadata.getValue());
         });
     }
 
-    public ProfilePipe getProfilePipe() {
-        return profilePipe;
+    public Profile getProfile() {
+        return profile;
     }
 
-    public void setProfilePipe(ProfilePipe profilePipe) {
-        if (profilePipe != null) {
-            this.profilePipe = profilePipe;
+    public void setProfile(Profile profile) {
+        if (profile != null) {
+            this.profile = profile;
             setProfile();
         }
     }

@@ -4,14 +4,14 @@ import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import org.karnak.data.profile.Profile;
+import org.karnak.data.profile.ProfileElement;
 import org.karnak.data.profile.Tag;
 
 import java.util.Comparator;
 import java.util.List;
 
 public class ProfilesMetadata extends VerticalLayout {
-    private List<Profile> profilesOrder;
+    private List<ProfileElement> profilesOrder;
 
     ProfilesMetadata() {
         getStyle().set("overflow-y", "auto");
@@ -20,21 +20,21 @@ public class ProfilesMetadata extends VerticalLayout {
     private void profilesView() {
         removeAll();
         add(new H2("Profile element(s)"));
-        for (Profile profile : profilesOrder) {
-            add(setProfileName((profile.getPosition()+1) + ". " + profile.getName()));
-            if (profile.getCodename() != null) {
-                add(setProfileValue("Codename : " + profile.getCodename()));
+        for (ProfileElement profileElement : profilesOrder) {
+            add(setProfileName((profileElement.getPosition()+1) + ". " + profileElement.getName()));
+            if (profileElement.getCodename() != null) {
+                add(setProfileValue("Codename : " + profileElement.getCodename()));
             }
-            if (profile.getAction() != null) {
-                add(setProfileValue("Action : " + profile.getAction()));
+            if (profileElement.getAction() != null) {
+                add(setProfileValue("Action : " + profileElement.getAction()));
             }
-            if (profile.getIncludedtag().size() > 0) {
+            if (profileElement.getIncludedtag().size() > 0) {
                 add(setProfileValue("Tags"));
-                add(setProfileTags(profile.getIncludedtag()));
+                add(setProfileTags(profileElement.getIncludedtag()));
             }
-            if (profile.getExceptedtags().size() > 0) {
+            if (profileElement.getExceptedtags().size() > 0) {
                 add(setProfileValue("Excluded tags"));
-                add(setProfileTags(profile.getExceptedtags()));
+                add(setProfileTags(profileElement.getExceptedtags()));
             }
         }
     }
@@ -65,10 +65,10 @@ public class ProfilesMetadata extends VerticalLayout {
         return verticalLayout;
     }
 
-    public void setProfiles(List<Profile> profiles) {
-        if (profiles != null) {
-            profiles.sort(Comparator.comparingInt(Profile::getPosition));
-            profilesOrder = profiles;
+    public void setProfiles(List<ProfileElement> profileElements) {
+        if (profileElements != null) {
+            profileElements.sort(Comparator.comparingInt(ProfileElement::getPosition));
+            profilesOrder = profileElements;
             profilesView();
         }
     }

@@ -1,6 +1,6 @@
 package org.karnak.data;
 
-import org.karnak.data.profile.ProfilePipePersistence;
+import org.karnak.data.profile.ProfilePersistence;
 import org.karnak.profilepipe.Profiles;
 import org.karnak.profilepipe.profilebody.ProfilePipeBody;
 import org.karnak.standard.ConfidentialityProfiles;
@@ -32,7 +32,7 @@ public class AppConfig {
     private String karnakpassword;
 
     @Autowired
-    private ProfilePipePersistence profilePipePersistence;
+    private ProfilePersistence profilePersistence;
 
     @PostConstruct
     public void postConstruct() {
@@ -75,8 +75,8 @@ public class AppConfig {
         this.karnakpassword = karnakpassword;
     }
 
-    public ProfilePipePersistence getProfilePipePersistence() {
-        return profilePipePersistence;
+    public ProfilePersistence getProfilePersistence() {
+        return profilePersistence;
     }
 
     @Bean("ConfidentialityProfiles")
@@ -92,7 +92,7 @@ public class AppConfig {
     @PostConstruct
     public void setProfilesByDefault() {
         URL profileURL = Profiles.class.getResource("profileByDefault.yml");
-        if(profilePipePersistence.existsByNameAndBydefault("Dicom Basic Profile", true)==false){
+        if(profilePersistence.existsByNameAndBydefault("Dicom Basic Profile", true)==false){
             try (InputStream inputStream = profileURL.openStream()) {
                 final Yaml yaml = new Yaml(new Constructor(ProfilePipeBody.class));
                 final ProfilePipeBody profilePipeYml = yaml.load(inputStream);
