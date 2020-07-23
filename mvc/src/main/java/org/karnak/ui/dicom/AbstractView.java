@@ -3,9 +3,6 @@ package org.karnak.ui.dicom;
 import org.karnak.dicom.model.Message;
 import org.karnak.dicom.model.MessageType;
 import org.karnak.ui.component.MessageBox;
-
-import com.vaadin.flow.component.dependency.CssImport;
-import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
 import com.vaadin.flow.component.html.Div;
@@ -13,8 +10,7 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
-@JsModule("@polymer/iron-icons/iron-icons.js")
-@CssImport(value = "./styles/custom-style.css")
+
 public abstract class AbstractView extends Div {
 	
 	private static final long serialVersionUID = 1L;

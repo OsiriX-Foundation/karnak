@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.vaadin.flow.router.*;
-import org.karnak.ui.dicom.DicomMainView;
 import org.karnak.dicom.model.ConfigNode;
 import org.karnak.dicom.model.DicomEchoQueryData;
 import org.karnak.dicom.model.Message;
@@ -40,8 +39,7 @@ import com.vaadin.flow.data.value.ValueChangeMode;
  * 3) beforeEnter
  * 
  */
-@PageTitle("KARNAK - DICOM Echo")
-@Route(value = "echo", layout= DicomMainView.class)
+
 @SuppressWarnings("serial")
 public class DicomEchoView extends AbstractView implements HasUrlParameter<String> {
 
@@ -125,7 +123,6 @@ public class DicomEchoView extends AbstractView implements HasUrlParameter<Strin
     }
     
     private void createView() {
-        getStyle().set("background-color", "#fafafa");
     	setSizeFull();
     }
 
@@ -146,7 +143,6 @@ public class DicomEchoView extends AbstractView implements HasUrlParameter<Strin
         dicomEchoQueryLayout.setWidthFull();
         dicomEchoQueryLayout.setPadding(true);
         dicomEchoQueryLayout.setSpacing(false);
-        dicomEchoQueryLayout.getStyle().set("background-color", "#ffffff");
         dicomEchoQueryLayout.getStyle().set("box-shadow", "0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12)");
         dicomEchoQueryLayout.getStyle().set("border-radius", "4px");
         
@@ -280,7 +276,6 @@ public class DicomEchoView extends AbstractView implements HasUrlParameter<Strin
         dicomEchoStatusLayout = new Div();
         dicomEchoStatusLayout.setWidth("-webkit-fill-available");
         dicomEchoStatusLayout.getStyle().set("padding", "1em");
-        dicomEchoStatusLayout.getStyle().set("background-color", "#ffffff");
         dicomEchoStatusLayout.getStyle().set("box-shadow", "0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12)");
         dicomEchoStatusLayout.getStyle().set("border-radius", "4px");
         

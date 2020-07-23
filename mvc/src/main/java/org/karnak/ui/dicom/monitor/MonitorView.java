@@ -1,12 +1,9 @@
 package org.karnak.ui.dicom.monitor;
 
-import com.vaadin.flow.router.PageTitle;
 import org.karnak.dicom.model.DicomNodeList;
 import org.karnak.dicom.model.WadoNodeList;
-import org.karnak.dicom.service.DicomNodeManager;
 import org.karnak.ui.dicom.Util;
 import org.karnak.ui.dicom.AbstractView;
-import org.karnak.ui.dicom.DicomMainView;
 
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -20,10 +17,7 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
-import com.vaadin.flow.router.Route;
 
-@PageTitle("KARNAK - Monitor")
-@Route(value="monitor", layout= DicomMainView.class)
 public class MonitorView extends AbstractView {
 
     private static final long serialVersionUID = 1L;
@@ -71,7 +65,6 @@ public class MonitorView extends AbstractView {
     }
     
     private void createView() {
-        getStyle().set("background-color", "#fafafa");
     	setSizeFull();
     }
     
@@ -200,7 +193,6 @@ public class MonitorView extends AbstractView {
     	dicomAndWadoLayout.setWidthFull();
     	dicomAndWadoLayout.setPadding(true);
     	dicomAndWadoLayout.setSpacing(false);
-    	dicomAndWadoLayout.getStyle().set("background-color", "#ffffff");
         dicomAndWadoLayout.getStyle().set("box-shadow", "0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12)");
         dicomAndWadoLayout.getStyle().set("border-radius", "4px");
     	
@@ -217,7 +209,6 @@ public class MonitorView extends AbstractView {
         resultLayout.setSizeFull();
         resultLayout.setPadding(true);
         resultLayout.setSpacing(false);
-        resultLayout.getStyle().set("background-color", "#ffffff");
         resultLayout.getStyle().set("box-shadow", "0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12)");
         resultLayout.getStyle().set("border-radius", "4px");
         resultLayout.setVisible(false);
