@@ -103,6 +103,10 @@ Go on the root folder and launch the following command:
 
 Run Karnak: `docker run -it -p8081:8081 -p11119:11119 karnak/locally:latest`
 
+## Run image from Docker Hub
+
+See [documentation](https://github.com/OsiriX-Foundation/karnak-docker)
+
 ## Docker environment variables
 
 `DB_USER`
