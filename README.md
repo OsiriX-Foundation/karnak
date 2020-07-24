@@ -1,11 +1,14 @@
-Karnak is a DICOM Gateway with normalization and de-identification capabilities.
+Karnak is a DICOM gateway for data de-identification and DICOM attribute normalization.
+
+Karnak manages a continuous DICOM flow with a DICOM listener as input and a DICOM and/or DICOMWeb as output.
 
 # Application Features
 
- - Allows a mapping between the AETitle of the DICOM Listener and the final DICOM destination  
- - Allows multiples destinations (DICOM StoreSCU and/or STWO-RS output)
- - Filter the images providers by AETitle and/or hostname (Guarantees the authenticity of the source)
-
+- Allows to build mapping between a source and one or more destinations
+- Filter the images providers by AETitle and/or hostname (ot ensure the authenticity of the source)
+- Each destination can be configured with de-identification profiles and to allow only specific SopClassUIDs
+- Build your own de-identification profile or add modifications to the basic DICOM profile
+- Import and export the de-identification profiles
 
 # Build Karnak
 
