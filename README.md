@@ -64,6 +64,7 @@ To launch the UI, execute the maven command `mvn spring-boot:run -f mvc` in the 
         - `KARNAK_HMAC_KEY=changeThisHmacKey`
         - `KARNAK_ADMIN=admin`
         - `KARNAK_PASSWORD=admin`
+        - `KARNAK_WEB_PORT=8081`
 
     Note: the tmp folder must be adapted according to your system and the dicom-opencv must the last folder.
 <!--
