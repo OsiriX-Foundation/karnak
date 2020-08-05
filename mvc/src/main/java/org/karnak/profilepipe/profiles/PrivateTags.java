@@ -17,8 +17,8 @@ public class PrivateTags extends AbstractProfileItem {
     private TagActionMap exceptedTagsAction;
     private Action actionByDefault;
 
-    public PrivateTags(String name, String codeName, String action, List<IncludedTag> tags, List<ExcludedTag> excludedTags) throws Exception{
-        super(name, codeName, action, tags, excludedTags);
+    public PrivateTags(String name, String codeName, String condition, String action, List<IncludedTag> tags, List<ExcludedTag> excludedTags) throws Exception{
+        super(name, codeName, condition, action, tags, excludedTags);
         tagsAction = new TagActionMap();
         exceptedTagsAction = new TagActionMap();
         actionByDefault = Action.convertAction(this.action);

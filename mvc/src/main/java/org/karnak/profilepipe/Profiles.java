@@ -14,8 +14,14 @@ import org.karnak.profilepipe.action.Action;
 import org.karnak.profilepipe.action.ActionStrategy;
 import org.karnak.profilepipe.profiles.AbstractProfileItem;
 import org.karnak.profilepipe.profiles.ProfileItem;
+import org.karnak.profilepipe.utils.MyDCMElem;
 import org.karnak.profilepipe.utils.HMAC;
 import org.slf4j.*;
+import org.springframework.expression.EvaluationContext;
+import org.springframework.expression.Expression;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.weasis.core.util.StringUtil;
 
 import java.math.BigInteger;
@@ -34,6 +40,8 @@ public class Profiles {
     private Profile profile;
     private final ArrayList<ProfileItem> profiles;
     private final HMAC hmac;
+
+    private final ExpressionParser parser = new SpelExpressionParser();
 
     public Profiles(Profile profile) {
         this.hmac = AppConfig.getInstance().getHmac();
@@ -54,8 +62,8 @@ public class Profiles {
                     Object instanceProfileItem;
                     try {
                         instanceProfileItem = t.getProfileClass()
-                                .getConstructor(String.class, String.class, String.class, List.class, List.class)
-                                .newInstance(profileElement.getName(), profileElement.getCodename(), profileElement.getAction(), profileElement.getIncludedtag(), profileElement.getExceptedtags());
+                                .getConstructor(String.class, String.class, String.class, String.class, List.class, List.class)
+                                .newInstance(profileElement.getName(), profileElement.getCodename(), profileElement.getCondition(), profileElement.getAction(), profileElement.getIncludedtag(), profileElement.getExceptedtags());
                         profiles.add((ProfileItem) instanceProfileItem);
                     } catch (Exception e) {
                         LOGGER.error("Cannot build the profile: {}", t.getProfileClass().getName(), e);
@@ -84,7 +92,20 @@ public class Profiles {
     public void applyAction(DicomObject dcm, String patientID) {
         for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext(); ) {
             DicomElement dcmEl = iterator.next();
+
+            final MyDCMElem dcmO = new MyDCMElem(dcmEl.tag(), dcmEl.vr(), dcm);
             for (ProfileItem profile : profiles) {
+
+                if (profile.getCondition()!=null) {
+                    final Expression exp = parser.parseExpression(profile.getCondition());
+                    //final Expression exp = parser.parseExpression("tag == 524432 || stringValue == 'CARDIX'");
+                    final EvaluationContext context = new StandardEvaluationContext(dcmO);
+                    boolean result = exp.getValue(context, Boolean.class);  // evaluates to true
+                    if (result) {
+                        System.out.println("Filter ok");
+                    }
+                }
+
                 final Action action = profile.getAction(dcmEl);
                 if (action != null) {
                     try {

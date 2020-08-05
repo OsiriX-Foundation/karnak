@@ -45,14 +45,16 @@ public abstract class AbstractProfileItem implements ProfileItem {
 
     protected final String name;
     protected final String codeName;
+    protected final String condition;
     protected final String action;
     protected final List<IncludedTag> tags;
     protected final List<ExcludedTag> excludedTags;
     protected final Map<Integer, Action> tagMap;
 
-    public AbstractProfileItem(String name, String codeName, String action, List<IncludedTag> tags, List<ExcludedTag> excludedTags) {
+    public AbstractProfileItem(String name, String codeName, String condition, String action, List<IncludedTag> tags, List<ExcludedTag> excludedTags) {
         this.name = Objects.requireNonNull(name);
         this.codeName = Objects.requireNonNull(codeName);
+        this.condition = condition;
         this.action = action;
         this.tags = tags;
         this.excludedTags = excludedTags;
@@ -66,6 +68,8 @@ public abstract class AbstractProfileItem implements ProfileItem {
     public String getCodeName() {
         return codeName;
     }
+
+    public String getCondition() { return condition; }
 
     @Override
     public String toString() {

@@ -37,7 +37,7 @@ public class ProfilePipeServiceImpl extends ProfilePipeService {
 
         AtomicInteger profilePosition = new AtomicInteger(0);
         profilePipeYml.getProfileElements().forEach(profileBody -> {
-            ProfileElement profileElement = new ProfileElement(profileBody.getName(), profileBody.getCodename(), profileBody.getAction(), profilePosition.get(), newProfile);
+            ProfileElement profileElement = new ProfileElement(profileBody.getName(), profileBody.getCodename(), profileBody.getCondition(), profileBody.getAction(), profilePosition.get(), newProfile);
 
             if(profileBody.getTags()!=null){
                 profileBody.getTags().forEach(tag->{

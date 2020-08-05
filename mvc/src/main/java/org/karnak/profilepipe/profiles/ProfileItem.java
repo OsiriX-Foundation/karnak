@@ -15,4 +15,6 @@ public interface ProfileItem {
     String getName();
 
     String getCodeName();
+
+    String getCondition();
 }

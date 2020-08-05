@@ -14,8 +14,8 @@ public class BasicProfile extends AbstractProfileItem {
     private final List<ProfileItem> listProfiles;
     private final TagActionMap actionMap;
 
-    public BasicProfile(String name, String codeName, String action, List<IncludedTag> tags, List<ExcludedTag> excludedTags) {
-        super(name, codeName, action, tags, excludedTags);
+    public BasicProfile(String name, String codeName, String condition, String action, List<IncludedTag> tags, List<ExcludedTag> excludedTags) {
+        super(name, codeName, condition, action, tags, excludedTags);
         ConfidentialityProfiles confidentialityProfiles = AppConfig.getInstance().getConfidentialityProfile();
         actionMap = confidentialityProfiles.getActionMap();
         listProfiles = confidentialityProfiles.getListProfiles();

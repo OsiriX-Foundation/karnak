@@ -25,6 +25,9 @@ public class ProfilesMetadata extends VerticalLayout {
             if (profileElement.getCodename() != null) {
                 add(setProfileValue("Codename : " + profileElement.getCodename()));
             }
+            if (profileElement.getCondition() != null) {
+                add(setProfileValue("Condition : " + profileElement.getCondition()));
+            }
             if (profileElement.getAction() != null) {
                 add(setProfileValue("Action : " + profileElement.getAction()));
             }

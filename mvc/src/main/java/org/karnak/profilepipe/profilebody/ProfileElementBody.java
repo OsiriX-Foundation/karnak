@@ -5,6 +5,7 @@ import java.util.List;
 public class ProfileElementBody {
     private String name;
     private String codename;
+    private String condition;
     private String action;
     private List<String> tags;
     private List<String> excludedTags;
@@ -23,6 +24,14 @@ public class ProfileElementBody {
 
     public void setCodename(String codename) {
         this.codename = codename;
+    }
+
+    public String getCondition() {
+        return condition;
+    }
+
+    public void setCondition(String condition) {
+        this.condition = condition;
     }
 
     public String getAction() {

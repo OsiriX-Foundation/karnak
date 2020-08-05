@@ -14,6 +14,7 @@ public class ProfileElement {
 
     private String name;
     private String codename;
+    private String condition;
     private String action;
     private Integer position;
 
@@ -30,9 +31,10 @@ public class ProfileElement {
     public ProfileElement() {
     }
 
-    public ProfileElement(String name, String codename, String action, Integer position, Profile profile) {
+    public ProfileElement(String name, String codename, String condition, String action, Integer position, Profile profile) {
         this.name = name;
         this.codename = codename;
+        this.condition = condition;
         this.action = action;
         this.position = position;
         this.profile = profile;
@@ -60,6 +62,14 @@ public class ProfileElement {
 
     public void setCodename(String codename) {
         this.codename = codename;
+    }
+
+    public String getCondition() {
+        return condition;
+    }
+
+    public void setCondition(String condition) {
+        this.condition = condition;
     }
 
     public String getAction() {

@@ -31,7 +31,7 @@ public class ConfidentialityProfiles {
             AbstractProfileItem item;
             if (PrivateTagPattern.TAG_PATTERN.equals(tag)) {
                 try {
-                    item = new PrivateTags(name, tag, "X", null, null);
+                    item = new PrivateTags(name, tag, null,"X", null, null);
                 } catch (Exception e) {
                     item = null;
                     LOGGER.error("Cannot build the profile: PrivateTags", e);

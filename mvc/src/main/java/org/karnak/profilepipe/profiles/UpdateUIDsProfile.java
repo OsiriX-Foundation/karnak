@@ -9,8 +9,8 @@ import java.util.List;
 
 public class UpdateUIDsProfile extends AbstractProfileItem {
 
-    public UpdateUIDsProfile(String name, String codeName, String action, List<IncludedTag> tags, List<ExcludedTag> excludedTags) {
-        super(name, codeName, action, tags, excludedTags);
+    public UpdateUIDsProfile(String name, String codeName, String condition, String action, List<IncludedTag> tags, List<ExcludedTag> excludedTags) {
+        super(name, codeName, condition, action, tags, excludedTags);
         /*
         if (not BlackList) {
             throw new IllegalStateException(String.format("The policy %s is not consistent with the profile %s!", policy, codeName));
