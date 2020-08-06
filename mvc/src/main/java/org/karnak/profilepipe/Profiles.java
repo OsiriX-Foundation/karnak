@@ -92,14 +92,20 @@ public class Profiles {
     public void applyAction(DicomObject dcm, String patientID) {
         for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext(); ) {
             DicomElement dcmEl = iterator.next();
-
             final MyDCMElem dcmO = new MyDCMElem(dcmEl.tag(), dcmEl.vr(), dcm);
             for (ProfileItem profile : profiles) {
 
                 if (profile.getCondition()!=null) {
-                    final Expression exp = parser.parseExpression(profile.getCondition());
+                    //https://docs.spring.io/spring/docs/3.0.x/reference/expressions.html
+                    //final Expression exp = parser.parseExpression(profile.getCondition());
                     //final Expression exp = parser.parseExpression("tag == 524432 || stringValue == 'CARDIX'");
-                    final EvaluationContext context = new StandardEvaluationContext(dcmO);
+                    //final Expression exp = parser.parseExpression("vr == T(org.dcm4che6.data.VR).PN");
+                    EvaluationContext context = new StandardEvaluationContext(dcmO);
+                    context.setVariable("VR", VR.class);
+                    final Expression exp = parser.parseExpression("vr == #VR.PN");
+
+
+
                     boolean result = exp.getValue(context, Boolean.class);  // evaluates to true
                     if (result) {
                         System.out.println("Filter ok");
