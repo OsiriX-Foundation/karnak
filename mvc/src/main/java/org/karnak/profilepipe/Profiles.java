@@ -93,6 +93,7 @@ public class Profiles {
         for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext(); ) {
             DicomElement dcmEl = iterator.next();
             final MyDCMElem dcmO = new MyDCMElem(dcmEl.tag(), dcmEl.vr(), dcm);
+            boolean condition = false;
             for (ProfileItem profile : profiles) {
 
                 if (profile.getCondition()!=null) {
@@ -108,16 +109,15 @@ public class Profiles {
                     //final Expression exp = parser.parseExpression("vr == #VR.PN");
                     final Expression exp = parser.parseExpression("tag == #TAG.PatientName");
 
+                    condition = exp.getValue(context, Boolean.class);  // evaluates to true
 
-
-                    boolean result = exp.getValue(context, Boolean.class);  // evaluates to true
-                    if (result) {
+                    if (condition) {
                         System.out.println("Filter ok");
                     }
                 }
 
                 final Action action = profile.getAction(dcmEl);
-                if (action != null) {
+                if (action != null || condition == true) {
                     try {
                         final String tagValueIn = dcm.getString(dcmEl.tag()).orElse(null);
                         ActionStrategy.Output out = action.execute(dcm, dcmEl.tag(), patientID, null);
@@ -132,8 +132,7 @@ public class Profiles {
                         LOGGER.error("Cannot execute the action {}", action, e);
                     }
                     break;
-                }
-                else if (dcmEl.vr() == VR.SQ) {
+                } else if (dcmEl.vr() == VR.SQ) {
                     dcmEl.itemStream().forEach(d -> applyAction(d, patientID));
                 }
             }
