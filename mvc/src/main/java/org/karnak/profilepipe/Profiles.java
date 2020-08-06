@@ -96,13 +96,17 @@ public class Profiles {
             for (ProfileItem profile : profiles) {
 
                 if (profile.getCondition()!=null) {
+
+                    EvaluationContext context = new StandardEvaluationContext(dcmO);
+                    context.setVariable("VR", VR.class);
+                    context.setVariable("TAG", Tag.class);
+
                     //https://docs.spring.io/spring/docs/3.0.x/reference/expressions.html
                     //final Expression exp = parser.parseExpression(profile.getCondition());
                     //final Expression exp = parser.parseExpression("tag == 524432 || stringValue == 'CARDIX'");
                     //final Expression exp = parser.parseExpression("vr == T(org.dcm4che6.data.VR).PN");
-                    EvaluationContext context = new StandardEvaluationContext(dcmO);
-                    context.setVariable("VR", VR.class);
-                    final Expression exp = parser.parseExpression("vr == #VR.PN");
+                    //final Expression exp = parser.parseExpression("vr == #VR.PN");
+                    final Expression exp = parser.parseExpression("tag == #TAG.PatientName");
 
 
 
