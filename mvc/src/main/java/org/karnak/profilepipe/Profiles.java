@@ -103,10 +103,6 @@ public class Profiles {
                     context.setVariable("TAG", Tag.class);
                     final Expression exp = parser.parseExpression(profile.getCondition());
                     condition = exp.getValue(context, Boolean.class);  // evaluates to true
-
-                    if (condition) {
-                        System.out.println("Filter ok");
-                    }
                 }
 
                 final Action action = profile.getAction(dcmEl);
