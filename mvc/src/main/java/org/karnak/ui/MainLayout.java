@@ -4,6 +4,7 @@ import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.component.icon.IronIcon;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.PWA;
 import org.karnak.ui.about.AboutView;
 import org.karnak.ui.admin.AdminView;
 import org.karnak.ui.authentication.AccessControlFactory;
@@ -21,6 +22,8 @@ import com.vaadin.flow.router.RouterLayout;
 import com.vaadin.flow.server.Command;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
+import org.karnak.ui.help.HelpView;
+import org.karnak.ui.profile.ProfileView;
 
 
 /**
@@ -31,7 +34,7 @@ import com.vaadin.flow.theme.lumo.Lumo;
 @CssImport(value ="./styles/shared-styles.css")
 @Theme(value = Lumo.class)
 @Route(value="mainLayout")
-//@PWA(name = "Karnak Gateway", shortName = "karnak")
+@PWA(name = "Karnak Gateway", shortName = "karnak", iconPath = "icons/logo.png")
 @SuppressWarnings("serial")
 public class MainLayout extends FlexLayout implements RouterLayout {
     private Menu menu;
@@ -43,8 +46,10 @@ public class MainLayout extends FlexLayout implements RouterLayout {
         menu = new Menu();
         IronIcon icon = new IronIcon("icons", "settings");
         menu.addView(GatewayView.class, GatewayView.VIEW_NAME, icon);
+        menu.addView(ProfileView.class, ProfileView.VIEW_NAME, new IronIcon("icons", "assignment"));
         menu.addView(DicomMainView.class, DicomMainView.VIEW_NAME, new IronIcon("icons", "build"));
-        menu.addView(AboutView.class, AboutView.VIEW_NAME,new IronIcon("icons", "help"));
+        menu.addView(HelpView.class, HelpView.VIEW_NAME, new IronIcon("icons", "help"));
+        //menu.addView(AboutView.class, AboutView.VIEW_NAME, new IronIcon("icons", "info"));
         add(menu);
     }
 
@@ -58,7 +63,7 @@ public class MainLayout extends FlexLayout implements RouterLayout {
                 KeyModifier.CONTROL);
 
         // add the admin view menu item if/when it is registered dynamically
-
+        /*
         Command addAdminMenuItemCommand = () -> menu.addView(AdminView.class, AdminView.VIEW_NAME,
                 new IronIcon("icons", "perm-identity"));
         RouteConfiguration sessionScopedConfiguration = RouteConfiguration.forSessionScope();
@@ -73,5 +78,6 @@ public class MainLayout extends FlexLayout implements RouterLayout {
                 }
             });
         }
+         */
     }
 }

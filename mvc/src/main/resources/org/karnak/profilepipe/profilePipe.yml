@@ -1,0 +1,13 @@
+name: "My Favorite Chain"
+version: "0.9.4"
+minimumKarnakVersion: "0.1"
+defaultIssuerOfPatientID: "DPA"
+profileElements:
+  - name: "Keep tags"
+    codename: "action.on.specific.tags"
+    action: "K"
+    tags:
+      - "(6040,xxxx)"
+
+  - name: "DICOM basic profile"
+    codename: "basic.dicom.profile"

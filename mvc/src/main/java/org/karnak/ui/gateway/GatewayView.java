@@ -39,7 +39,7 @@ import com.vaadin.flow.server.StreamResource;
  */
 @Route(value = "gateway", layout = MainLayout.class)
 @RouteAlias(value = "", layout = MainLayout.class)
-@PageTitle("Gateway configuration")
+@PageTitle("KARNAK - Gateway")
 @SuppressWarnings("serial")
 public class GatewayView extends HorizontalLayout implements HasUrlParameter<String> {
     public static final String VIEW_NAME = "Gateway";

@@ -27,6 +27,13 @@ file_env() {
     unset "$fileVar"
 }
 
+# https://github.com/dcm4che-dockerfiles/wildfly/blob/1550dced41da57248c40b963706e856c67d31858/docker-entrypoint.sh#L45
+for c in $KARNAK_WAIT_FOR; do
+    echo "Waiting for $c ..."
+    while ! nc -w 1 -z ${c/:/ }; do sleep 1; done
+    echo "done"
+done
+
 SYS_PROPS=""
 
 SYS_PROPS+=" -Djava.library.path='/tmp/dicom-opencv'"
@@ -35,8 +42,12 @@ SYS_PROPS+=" -Djava.library.path='/tmp/dicom-opencv'"
 # KARNAK ENVIRONMENT #
 ########################
 file_env 'KARNAK_HMAC_KEY'
+file_env 'KARNAK_LOGIN_PASSWORD'
 : "${KARNAK_HMAC_KEY:=undefined}"
+: "${KARNAK_LOGIN_PASSWORD:=undefined}"
 SYS_PROPS+=" -Ddcmprofile.hmackey='$KARNAK_HMAC_KEY'"
+SYS_PROPS+=" -Dkarnakadmin='$KARNAK_LOGIN_ADMIN'"
+SYS_PROPS+=" -Dkarnakpassword='$KARNAK_LOGIN_PASSWORD'"
 
 ########################
 # DATABASE ENVIRONMENT #

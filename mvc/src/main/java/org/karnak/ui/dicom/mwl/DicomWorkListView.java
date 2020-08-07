@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.router.*;
 import org.dcm4che6.data.DicomObject;
 import org.karnak.dicom.model.ConfigNode;
 import org.karnak.dicom.model.Message;
@@ -16,7 +17,6 @@ import org.karnak.dicom.model.Modality;
 import org.karnak.dicom.model.WorkListQueryData;
 import org.karnak.ui.dicom.PortField;
 import org.karnak.ui.dicom.AbstractView;
-import org.karnak.ui.dicom.DicomMainView;
 import org.karnak.ui.dicom.mwl.DicomWorkListSelectionDialog.WorkListSelectionEvent;
 
 import com.vaadin.flow.component.ClickEvent;
@@ -36,10 +36,6 @@ import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.validator.IntegerRangeValidator;
 import com.vaadin.flow.data.value.ValueChangeMode;
-import com.vaadin.flow.router.BeforeEvent;
-import com.vaadin.flow.router.HasUrlParameter;
-import com.vaadin.flow.router.OptionalParameter;
-import com.vaadin.flow.router.Route;
 
 /**
  * Calling Order 
@@ -48,7 +44,8 @@ import com.vaadin.flow.router.Route;
  * 3) beforeEnter
  *
  */
-@Route(value = "mwl", layout= DicomMainView.class)
+
+
 public class DicomWorkListView extends AbstractView implements HasUrlParameter<String> {
 
     private static final long serialVersionUID = 1L;
@@ -155,7 +152,6 @@ public class DicomWorkListView extends AbstractView implements HasUrlParameter<S
     }
     
     private void createView() {
-        getStyle().set("background-color", "#fafafa");
         setSizeFull();
     }
 
@@ -176,7 +172,6 @@ public class DicomWorkListView extends AbstractView implements HasUrlParameter<S
         wlConfigurationAndQueryLayout.setWidthFull();
         wlConfigurationAndQueryLayout.setPadding(true);
         wlConfigurationAndQueryLayout.setSpacing(false);
-        wlConfigurationAndQueryLayout.getStyle().set("background-color", "#ffffff");
         wlConfigurationAndQueryLayout.getStyle().set("box-shadow", "0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12)");
         wlConfigurationAndQueryLayout.getStyle().set("border-radius", "4px");
 
@@ -369,7 +364,6 @@ public class DicomWorkListView extends AbstractView implements HasUrlParameter<S
         queryResultLayout.setSizeFull();
         queryResultLayout.setPadding(true);
         queryResultLayout.setSpacing(false);
-        queryResultLayout.getStyle().set("background-color", "#ffffff");
         queryResultLayout.getStyle().set("box-shadow", "0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12)");
         queryResultLayout.getStyle().set("border-radius", "4px");
         queryResultLayout.setVisible(false);

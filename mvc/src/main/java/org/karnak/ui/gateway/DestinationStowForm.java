@@ -51,6 +51,7 @@ public class DestinationStowForm extends Div {
     private Destination currentDestination;
     private DataService dataService;
     private FilterBySOPClassesForm filterSopForm;
+    private ProfileDropDown profileDropDown;
 
     public DestinationStowForm(DestinationLogic viewLogic, DataService dataService) {
         this.viewLogic = viewLogic;
@@ -163,14 +164,23 @@ public class DestinationStowForm extends Div {
         UIS.setTooltip(notifyInterval,
                 "Interval in seconds for sending a notification (when no new image is arrived in the archive folder). Default value: 45");
 
+        HorizontalLayout desidentificationLayout = new HorizontalLayout();
         desidentification = new Checkbox();
         desidentification.setLabel("Activate de-identification");
         desidentification.setValue(true);
+        desidentification.setMinWidth("25%");
+        profileDropDown = new ProfileDropDown();
+        profileDropDown.setMinWidth("70%");
 
+        desidentification.addValueChangeListener(event -> {
+            if (event.getValue() != null) {
+                profileDropDown.setEnabled(event.getValue());
+            }
+        });
+
+        desidentificationLayout.add(desidentification, profileDropDown);
 
         filterSopForm = new FilterBySOPClassesForm(this.dataService, this.binder);
-
-
 
         content.add(UIS.setWidthFull( //
                 new HorizontalLayout(description)));
@@ -184,7 +194,7 @@ public class DestinationStowForm extends Div {
                 new HorizontalLayout(notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues,
                         notifyInterval)));
         content.add(UIS.setWidthFull( //
-                new HorizontalLayout(desidentification)));
+                desidentificationLayout));
 
         content.add(filterSopForm);
 
@@ -201,6 +211,10 @@ public class DestinationStowForm extends Div {
         binder.forField(desidentification) //
                 .bind(Destination::getDesidentification, Destination::setDesidentification);
 
+        binder.forField(profileDropDown)
+                .withValidator(profilePipe -> profilePipe != null || (profilePipe == null && desidentification.getValue() == false),
+                        "Choose the de-identification profile\n")
+                .bind(Destination::getProfile, Destination::setProfile);
         binder.bindInstanceFields(this);
 
 

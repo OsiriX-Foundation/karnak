@@ -252,8 +252,8 @@ public class GatewayConfig {
                 editors.add(new FilterEditor(dstNode.getSOPClassUIDFilters()));
             }
             final boolean desidentificationEnable = dstNode.getDesidentification();
-            if(desidentificationEnable){ //TODO add an option in destination model
-                editors.add(new DeidentifyEditor());
+            if(desidentificationEnable && dstNode.getProfile() != null){ //TODO add an option in destination model
+                editors.add(new DeidentifyEditor(dstNode.getProfile()));
             }
 
             DicomProgress progress = new DicomProgress();

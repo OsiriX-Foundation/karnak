@@ -43,6 +43,7 @@ public class DestinationDicomForm extends Div {
     private final TextField notifyInterval;
 
     private final Checkbox desidentification;
+    private final ProfileDropDown profileDropDown;
 
     private Button update;
     private Button discard;
@@ -166,9 +167,21 @@ public class DestinationDicomForm extends Div {
         UIS.setTooltip(notifyInterval,
                 "Interval in seconds for sending a notification (when no new image is arrived in the archive folder). Default value: 45");
 
+        HorizontalLayout desidentificationLayout = new HorizontalLayout();
         desidentification = new Checkbox();
         desidentification.setLabel("Activate de-identification");
         desidentification.setValue(true);
+        desidentification.setMinWidth("25%");
+        profileDropDown = new ProfileDropDown();
+        profileDropDown.setMinWidth("70%");
+
+        desidentification.addValueChangeListener(event -> {
+            if (event.getValue() != null) {
+                profileDropDown.setEnabled(event.getValue());
+            }
+        });
+
+        desidentificationLayout.add(desidentification, profileDropDown);
 
         filterSopForm = new FilterBySOPClassesForm(this.dataService, this.binder);
 
@@ -184,7 +197,7 @@ public class DestinationDicomForm extends Div {
                 new HorizontalLayout(notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues,
                         notifyInterval)));
         content.add(UIS.setWidthFull( //
-                new HorizontalLayout(desidentification)));
+                desidentificationLayout));
 
         content.add(filterSopForm);
 
@@ -218,6 +231,10 @@ public class DestinationDicomForm extends Div {
                 .bind(Destination::getNotifyInterval, Destination::setNotifyInterval);
         binder.forField(desidentification) //
                 .bind(Destination::getDesidentification, Destination::setDesidentification);
+        binder.forField(profileDropDown)
+                .withValidator(profilePipe -> profilePipe != null || (profilePipe == null && desidentification.getValue() == false),
+                        "Choose the de-identification profile\n")
+                .bind(Destination::getProfile, Destination::setProfile);
         binder.bindInstanceFields(this);
 
         // enable/disable update button while editing

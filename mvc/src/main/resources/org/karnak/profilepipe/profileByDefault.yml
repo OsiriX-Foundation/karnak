@@ -1,0 +1,13 @@
+name: "Dicom Basic Profile"
+version: "0.9.0"
+minimumKarnakVersion: "0.1"
+defaultIssuerOfPatientID: "DPA"
+profileElements:
+  - name: "Clean pixel data"
+    codename: "action.on.specific.tags"
+    action: "P"
+    tags:
+      - "7FE0,0010"
+
+  - name: "DICOM basic profile"
+    codename: "basic.dicom.profile"
