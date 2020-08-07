@@ -49,7 +49,7 @@ public class TagActionMap {
         return this.tagAction.isEmpty() && this.tagPatternAction.isEmpty();
     }
 
-    private static boolean isValidPattern(String tagPattern) {
+    public static boolean isValidPattern(String tagPattern) {
         if (!StringUtil.hasText(tagPattern) || tagPattern.length() != 8) {
             return false;
         }
@@ -57,7 +57,7 @@ public class TagActionMap {
         return p.matches("[0-9A-FX]+") && p.contains("X");
     }
 
-    private static String getMask(String tagPattern) {
+    public static String getMask(String tagPattern) {
         char[] chars = tagPattern.toUpperCase().toCharArray();
         for (int i = 0; i < chars.length; i++) {
             if (chars[i] == 'X') {

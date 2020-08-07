@@ -92,21 +92,22 @@ public class Profiles {
     public void applyAction(DicomObject dcm, String patientID) {
         for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext(); ) {
             DicomElement dcmEl = iterator.next();
-            final MyDCMElem dcmO = new MyDCMElem(dcmEl.tag(), dcmEl.vr(), dcm);
-            boolean condition = false;
+            final MyDCMElem myDCMElem = new MyDCMElem(dcmEl.tag(), dcmEl.vr(), dcm);
+            boolean conditionIsOk = false;
             for (ProfileItem profile : profiles) {
 
                 if (profile.getCondition()!=null) {
                     //https://docs.spring.io/spring/docs/3.0.x/reference/expressions.html
-                    EvaluationContext context = new StandardEvaluationContext(dcmO);
+                    EvaluationContext context = new StandardEvaluationContext(myDCMElem);
+                    final String cleanCondition = myDCMElem.conditionInterpreter(profile.getCondition());
                     context.setVariable("VR", VR.class);
                     context.setVariable("TAG", Tag.class);
-                    final Expression exp = parser.parseExpression(profile.getCondition());
-                    condition = exp.getValue(context, Boolean.class);  // evaluates to true
+                    final Expression exp = parser.parseExpression(cleanCondition);
+                    conditionIsOk = exp.getValue(context, Boolean.class);  // evaluates to true
                 }
 
                 final Action action = profile.getAction(dcmEl);
-                if (action != null || condition == true) {
+                if (action != null || conditionIsOk == true) {
                     try {
                         final String tagValueIn = dcm.getString(dcmEl.tag()).orElse(null);
                         ActionStrategy.Output out = action.execute(dcm, dcmEl.tag(), patientID, null);
