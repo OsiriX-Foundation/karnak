@@ -55,6 +55,7 @@ public abstract class AbstractProfileItem implements ProfileItem {
     public AbstractProfileItem(ProfileElement profileElement) {
         this.name = Objects.requireNonNull(profileElement.getName());
         this.codeName = Objects.requireNonNull(profileElement.getCodename());
+        this.condition = profileElement.getCondition();
         this.action = profileElement.getAction();
         this.tags = profileElement.getIncludedtag();
         this.excludedTags = profileElement.getExceptedtags();
