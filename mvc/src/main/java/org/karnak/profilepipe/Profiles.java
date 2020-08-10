@@ -62,8 +62,8 @@ public class Profiles {
                     Object instanceProfileItem;
                     try {
                         instanceProfileItem = t.getProfileClass()
-                                .getConstructor(String.class, String.class, String.class, String.class, List.class, List.class)
-                                .newInstance(profileElement.getName(), profileElement.getCodename(), profileElement.getCondition(), profileElement.getAction(), profileElement.getIncludedtag(), profileElement.getExceptedtags());
+                                .getConstructor(ProfileElement.class)
+                                .newInstance(profileElement);
                         profiles.add((ProfileItem) instanceProfileItem);
                     } catch (Exception e) {
                         LOGGER.error("Cannot build the profile: {}", t.getProfileClass().getName(), e);

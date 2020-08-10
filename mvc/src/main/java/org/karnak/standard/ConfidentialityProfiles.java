@@ -1,5 +1,6 @@
 package org.karnak.standard;
 
+import org.karnak.data.profile.ProfileElement;
 import org.karnak.profilepipe.action.Action;
 import org.karnak.profilepipe.profiles.AbstractProfileItem;
 import org.karnak.profilepipe.profiles.PrivateTags;
@@ -31,7 +32,8 @@ public class ConfidentialityProfiles {
             AbstractProfileItem item;
             if (PrivateTagPattern.TAG_PATTERN.equals(tag)) {
                 try {
-                    item = new PrivateTags(name, tag, null,"X", null, null);
+                    final ProfileElement profileElement = new ProfileElement(name, AbstractProfileItem.Type.ACTION_PRIVATETAGS.getClassAlias(), "X", null, null);
+                    item = new PrivateTags(profileElement);
                 } catch (Exception e) {
                     item = null;
                     LOGGER.error("Cannot build the profile: PrivateTags", e);

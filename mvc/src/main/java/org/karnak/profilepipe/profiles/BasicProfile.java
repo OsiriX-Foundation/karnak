@@ -4,6 +4,7 @@ import org.dcm4che6.data.DicomElement;
 import org.karnak.data.AppConfig;
 import org.karnak.data.profile.ExcludedTag;
 import org.karnak.data.profile.IncludedTag;
+import org.karnak.data.profile.ProfileElement;
 import org.karnak.profilepipe.action.Action;
 import org.karnak.profilepipe.utils.TagActionMap;
 import org.karnak.standard.ConfidentialityProfiles;
@@ -14,8 +15,8 @@ public class BasicProfile extends AbstractProfileItem {
     private final List<ProfileItem> listProfiles;
     private final TagActionMap actionMap;
 
-    public BasicProfile(String name, String codeName, String condition, String action, List<IncludedTag> tags, List<ExcludedTag> excludedTags) {
-        super(name, codeName, condition, action, tags, excludedTags);
+    public BasicProfile(ProfileElement profileElement) {
+        super(profileElement);
         ConfidentialityProfiles confidentialityProfiles = AppConfig.getInstance().getConfidentialityProfile();
         actionMap = confidentialityProfiles.getActionMap();
         listProfiles = confidentialityProfiles.getListProfiles();

@@ -3,12 +3,11 @@ package org.karnak.profilepipe.profiles;
 import org.dcm4che6.data.DicomElement;
 import org.karnak.data.profile.ExcludedTag;
 import org.karnak.data.profile.IncludedTag;
+import org.karnak.data.profile.ProfileElement;
 import org.karnak.profilepipe.action.Action;
 import org.karnak.profilepipe.utils.TagActionMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 public class ActionTags extends AbstractProfileItem {
     private final Logger LOGGER = LoggerFactory.getLogger(ActionTags.class);
@@ -16,8 +15,8 @@ public class ActionTags extends AbstractProfileItem {
     private TagActionMap exceptedTagsAction;
     private Action actionByDefault;
 
-    public ActionTags(String name, String codeName, String condition,String action, List<IncludedTag> tags, List<ExcludedTag> excludedTags) throws Exception {
-        super(name, codeName, condition, action, tags, excludedTags);
+    public ActionTags(ProfileElement profileElement) throws Exception {
+        super(profileElement);
         tagsAction = new TagActionMap();
         exceptedTagsAction = new TagActionMap();
         actionByDefault = Action.convertAction(this.action);

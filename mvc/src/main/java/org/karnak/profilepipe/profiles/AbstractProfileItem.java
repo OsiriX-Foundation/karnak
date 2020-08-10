@@ -2,6 +2,7 @@ package org.karnak.profilepipe.profiles;
 
 import org.karnak.data.profile.ExcludedTag;
 import org.karnak.data.profile.IncludedTag;
+import org.karnak.data.profile.ProfileElement;
 import org.karnak.profilepipe.action.Action;
 
 import java.util.HashMap;
@@ -51,13 +52,12 @@ public abstract class AbstractProfileItem implements ProfileItem {
     protected final List<ExcludedTag> excludedTags;
     protected final Map<Integer, Action> tagMap;
 
-    public AbstractProfileItem(String name, String codeName, String condition, String action, List<IncludedTag> tags, List<ExcludedTag> excludedTags) {
-        this.name = Objects.requireNonNull(name);
-        this.codeName = Objects.requireNonNull(codeName);
-        this.condition = condition;
-        this.action = action;
-        this.tags = tags;
-        this.excludedTags = excludedTags;
+    public AbstractProfileItem(ProfileElement profileElement) {
+        this.name = Objects.requireNonNull(profileElement.getName());
+        this.codeName = Objects.requireNonNull(profileElement.getCodename());
+        this.action = profileElement.getAction();
+        this.tags = profileElement.getIncludedtag();
+        this.excludedTags = profileElement.getExceptedtags();
         this.tagMap = new HashMap<>();
     }
 
