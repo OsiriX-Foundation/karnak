@@ -54,15 +54,19 @@ public class MyDCMElem {
 
             if (isHexTag(elem)) {
                 String cleanTag = elem.replaceAll("[(),]", "").toUpperCase();
-                /*if ( (TagActionMap.isValidPattern(cleanTag))) {
+                if ( (TagActionMap.isValidPattern(cleanTag))) {
                     String currentTagPattern = cleanTag;
                     int patternTag = TagUtils.intFromHexString(currentTagPattern.replace("X", "0"));
                     int patternMask = TagUtils.intFromHexString(TagActionMap.getMask(currentTagPattern));
-                    return "(tag &"+ patternMask+") == "+ patternTag+ " ";
-                } else {
+
+                    if ((tag & patternMask) == patternTag) {
+                        return String.valueOf(tag);
+                    } else {
+                        return "null";
+                    }
+                }else{
                     return String.valueOf(TagUtils.intFromHexString(cleanTag));
-                }*/
-                return String.valueOf(TagUtils.intFromHexString(cleanTag));
+                }
 
             } else {
                 return elem;
