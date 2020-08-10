@@ -2,6 +2,7 @@ package org.karnak.profilepipe.utils;
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.VR;
 import org.dcm4che6.util.TagUtils;
+import org.weasis.core.util.StringUtil;
 
 import java.util.Arrays;
 import java.util.List;
@@ -15,10 +16,15 @@ public class MyDCMElem {
     private String stringValue;
 
     public MyDCMElem(int tag, VR vr, DicomObject dcm){
-
         this.tag = Objects.requireNonNull(tag);
         this.vr = Objects.requireNonNull(vr);
         this.stringValue = dcm.getString(this.tag).orElse(null);
+    }
+
+    public MyDCMElem(int tag, VR vr, String stringValue){
+        this.tag = Objects.requireNonNull(tag);
+        this.vr = Objects.requireNonNull(vr);
+        this.stringValue = stringValue;
     }
 
     public int getTag() {
@@ -77,11 +83,12 @@ public class MyDCMElem {
         return String.join(delim, newConditionList);
     }
 
-    public boolean isHexTag(String elem){
-        String[] words = {"[", "]", "(", ")", ","};
-        List<String> inputStringList = Arrays.asList(elem.split(""));
-        List<String> wordsList = Arrays.asList(words);
+    public static boolean isHexTag(String elem){
+        String cleanElem = elem.replaceAll("[(),]", "").toUpperCase();
 
-        return wordsList.stream().anyMatch(inputStringList::contains);
+        if (!StringUtil.hasText(cleanElem) || cleanElem.length() != 8) {
+            return false;
+        }
+        return cleanElem.matches("[0-9A-FX]+");
     }
 }
