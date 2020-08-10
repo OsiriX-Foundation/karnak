@@ -93,14 +93,13 @@ public class Profiles {
         for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext(); ) {
             DicomElement dcmEl = iterator.next();
             final MyDCMElem myDCMElem = new MyDCMElem(dcmEl.tag(), dcmEl.vr(), dcm);
-            boolean conditionIsOk = false;
+            boolean conditionIsOk = true;
             for (ProfileItem profile : profiles) {
 
                 if (profile.getCondition()!=null) {
                     //https://docs.spring.io/spring/docs/3.0.x/reference/expressions.html
-                    EvaluationContext context = new StandardEvaluationContext(myDCMElem);
+                    final EvaluationContext context = new StandardEvaluationContext(myDCMElem);
                     final String cleanCondition = myDCMElem.conditionInterpreter(profile.getCondition());
-                    //final String cleanCondition = myDCMElem.conditionInterpreter("tag == (0040,xxxx)");
                     context.setVariable("VR", VR.class);
                     context.setVariable("TAG", Tag.class);
                     final Expression exp = parser.parseExpression(cleanCondition);
@@ -108,7 +107,7 @@ public class Profiles {
                 }
 
                 final Action action = profile.getAction(dcmEl);
-                if (action != null) {
+                if (action != null && conditionIsOk) {
                     try {
                         final String tagValueIn = dcm.getString(dcmEl.tag()).orElse(null);
                         ActionStrategy.Output out = action.execute(dcm, dcmEl.tag(), patientID, null);
@@ -123,7 +122,9 @@ public class Profiles {
                         LOGGER.error("Cannot execute the action {}", action, e);
                     }
                     break;
-                } else if (dcmEl.vr() == VR.SQ) {
+                }
+
+                if (action != Action.REMOVE && dcmEl.vr() == VR.SQ) {
                     dcmEl.itemStream().forEach(d -> applyAction(d, patientID));
                 }
             }
