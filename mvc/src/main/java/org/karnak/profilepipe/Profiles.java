@@ -193,15 +193,20 @@ public class Profiles {
     }
 
     public static boolean getResultCondition(String condition, MyDCMElem myDCMElem){
+        final Logger LOGGER = LoggerFactory.getLogger(Profiles.class);
         if (condition!=null) {
-            //https://docs.spring.io/spring/docs/3.0.x/reference/expressions.html
-            final ExpressionParser parser = new SpelExpressionParser();
-            final EvaluationContext context = new StandardEvaluationContext(myDCMElem);
-            final String cleanCondition = myDCMElem.conditionInterpreter(condition);
-            context.setVariable("VR", VR.class);
-            context.setVariable("TAG", Tag.class);
-            final Expression exp = parser.parseExpression(cleanCondition);
-            return exp.getValue(context, Boolean.class);
+            try {
+                //https://docs.spring.io/spring/docs/3.0.x/reference/expressions.html
+                final ExpressionParser parser = new SpelExpressionParser();
+                final EvaluationContext context = new StandardEvaluationContext(myDCMElem);
+                final String cleanCondition = myDCMElem.conditionInterpreter(condition);
+                context.setVariable("VR", VR.class);
+                context.setVariable("TAG", Tag.class);
+                final Expression exp = parser.parseExpression(cleanCondition);
+                return exp.getValue(context, Boolean.class);
+            } catch (final Exception e) {
+                LOGGER.error("Cannot execute the parser expression for this expression: {}", condition, e);
+            }
         }
         return true; // if there is no condition we return true by default
     }
