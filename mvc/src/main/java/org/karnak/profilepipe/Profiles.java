@@ -41,8 +41,6 @@ public class Profiles {
     private final ArrayList<ProfileItem> profiles;
     private final HMAC hmac;
 
-    private final ExpressionParser parser = new SpelExpressionParser();
-
     public Profiles(Profile profile) {
         this.hmac = AppConfig.getInstance().getHmac();
         this.profile = profile;
@@ -95,7 +93,7 @@ public class Profiles {
             final MyDCMElem myDCMElem = new MyDCMElem(dcmEl.tag(), dcmEl.vr(), dcm);
 
             for (ProfileItem profile : profiles) {
-                final boolean conditionIsOk = getResultCondition(profile, myDCMElem);
+                final boolean conditionIsOk = getResultCondition(profile.getCondition(), myDCMElem);
                 final Action action = profile.getAction(dcmEl);
                 if (action != null && conditionIsOk) {
                     try {
@@ -194,11 +192,12 @@ public class Profiles {
 
     }
 
-    public boolean getResultCondition(ProfileItem profileItem, MyDCMElem myDCMElem){
-        if (profileItem.getCondition()!=null) {
+    public static boolean getResultCondition(String condition, MyDCMElem myDCMElem){
+        if (condition!=null) {
             //https://docs.spring.io/spring/docs/3.0.x/reference/expressions.html
+            final ExpressionParser parser = new SpelExpressionParser();
             final EvaluationContext context = new StandardEvaluationContext(myDCMElem);
-            final String cleanCondition = myDCMElem.conditionInterpreter(profileItem.getCondition());
+            final String cleanCondition = myDCMElem.conditionInterpreter(condition);
             context.setVariable("VR", VR.class);
             context.setVariable("TAG", Tag.class);
             final Expression exp = parser.parseExpression(cleanCondition);
