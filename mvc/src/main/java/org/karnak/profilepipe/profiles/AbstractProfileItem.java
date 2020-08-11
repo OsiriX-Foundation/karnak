@@ -48,6 +48,8 @@ public abstract class AbstractProfileItem implements ProfileItem {
     protected final String codeName;
     protected final String condition;
     protected final String action;
+    protected final String option;
+    protected final String args;
     protected final List<IncludedTag> tags;
     protected final List<ExcludedTag> excludedTags;
     protected final Map<Integer, Action> tagMap;
@@ -57,6 +59,8 @@ public abstract class AbstractProfileItem implements ProfileItem {
         this.codeName = Objects.requireNonNull(profileElement.getCodename());
         this.condition = profileElement.getCondition();
         this.action = profileElement.getAction();
+        this.option = profileElement.getOption();
+        this.args = profileElement.getArgs();
         this.tags = profileElement.getIncludedtag();
         this.excludedTags = profileElement.getExceptedtags();
         this.tagMap = new HashMap<>();
@@ -71,6 +75,10 @@ public abstract class AbstractProfileItem implements ProfileItem {
     }
 
     public String getCondition() { return condition; }
+
+    public String getOption() { return option; }
+
+    public String getArgs() { return args; }
 
     @Override
     public String toString() {

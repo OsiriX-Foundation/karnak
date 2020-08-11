@@ -16,6 +16,8 @@ public class ProfileElement {
     private String codename;
     private String condition;
     private String action;
+    private String option;
+    private String args;
     private Integer position;
 
     @ManyToOne()
@@ -31,11 +33,13 @@ public class ProfileElement {
     public ProfileElement() {
     }
 
-    public ProfileElement(String name, String codename, String condition, String action, Integer position, Profile profile) {
+    public ProfileElement(String name, String codename, String condition, String action, String option, String args, Integer position, Profile profile) {
         this.name = name;
         this.codename = codename;
         this.condition = condition;
         this.action = action;
+        this.option = option;
+        this.args = args;
         this.position = position;
         this.profile = profile;
     }
@@ -78,6 +82,22 @@ public class ProfileElement {
 
     public void setAction(String action) {
         this.action = action;
+    }
+
+    public String getOption() {
+        return option;
+    }
+
+    public void setOption(String option) {
+        this.option = option;
+    }
+
+    public String getArgs() {
+        return args;
+    }
+
+    public void setArgs(String args) {
+        this.args = args;
     }
 
     public Integer getPosition() {

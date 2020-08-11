@@ -12,6 +12,7 @@ import org.karnak.data.profile.ProfileElement;
 import org.karnak.data.profile.Profile;
 import org.karnak.profilepipe.action.Action;
 import org.karnak.profilepipe.action.ActionStrategy;
+import org.karnak.profilepipe.option.OptionManager;
 import org.karnak.profilepipe.profiles.AbstractProfileItem;
 import org.karnak.profilepipe.profiles.ProfileItem;
 import org.karnak.profilepipe.utils.MyDCMElem;
@@ -94,11 +95,12 @@ public class Profiles {
 
             for (ProfileItem profile : profiles) {
                 final boolean conditionIsOk = getResultCondition(profile.getCondition(), myDCMElem);
+                final String optionDummy = OptionManager.getActionReplace(dcm, dcmEl, patientID, profile.getOption(), profile.getArgs());
                 final Action action = profile.getAction(dcmEl);
                 if (action != null && conditionIsOk) {
                     try {
                         final String tagValueIn = dcm.getString(dcmEl.tag()).orElse(null);
-                        ActionStrategy.Output out = action.execute(dcm, dcmEl.tag(), patientID, null);
+                        ActionStrategy.Output out = action.execute(dcm, dcmEl.tag(), patientID, optionDummy);
                         final String tagValueOut = dcm.getString(dcmEl.tag()).orElse(null);
                         if (out == ActionStrategy.Output.TO_REMOVE) {
                             iterator.remove();

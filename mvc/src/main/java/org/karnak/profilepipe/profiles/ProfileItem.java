@@ -17,4 +17,8 @@ public interface ProfileItem {
     String getCodeName();
 
     String getCondition();
+
+    String getOption();
+
+    String getArgs();
 }

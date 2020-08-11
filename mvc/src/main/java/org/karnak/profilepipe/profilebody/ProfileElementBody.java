@@ -7,6 +7,8 @@ public class ProfileElementBody {
     private String codename;
     private String condition;
     private String action;
+    private String option;
+    private String args;
     private List<String> tags;
     private List<String> excludedTags;
 
@@ -40,6 +42,22 @@ public class ProfileElementBody {
 
     public void setAction(String action) {
         this.action = action;
+    }
+
+    public String getOption() {
+        return option;
+    }
+
+    public void setOption(String option) {
+        this.option = option;
+    }
+
+    public String getArgs() {
+        return args;
+    }
+
+    public void setArgs(String args) {
+        this.args = args;
     }
 
     public List<String> getTags() {
