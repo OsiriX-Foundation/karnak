@@ -91,21 +91,11 @@ public class Profiles {
 
     public void applyAction(DicomObject dcm, String patientID) {
         for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext(); ) {
-            DicomElement dcmEl = iterator.next();
+            final DicomElement dcmEl = iterator.next();
             final MyDCMElem myDCMElem = new MyDCMElem(dcmEl.tag(), dcmEl.vr(), dcm);
-            boolean conditionIsOk = true;
+
             for (ProfileItem profile : profiles) {
-
-                if (profile.getCondition()!=null) {
-                    //https://docs.spring.io/spring/docs/3.0.x/reference/expressions.html
-                    final EvaluationContext context = new StandardEvaluationContext(myDCMElem);
-                    final String cleanCondition = myDCMElem.conditionInterpreter(profile.getCondition());
-                    context.setVariable("VR", VR.class);
-                    context.setVariable("TAG", Tag.class);
-                    final Expression exp = parser.parseExpression(cleanCondition);
-                    conditionIsOk = exp.getValue(context, Boolean.class);  // evaluates to true
-                }
-
+                final boolean conditionIsOk = getResultCondition(profile, myDCMElem);
                 final Action action = profile.getAction(dcmEl);
                 if (action != null && conditionIsOk) {
                     try {
@@ -202,6 +192,19 @@ public class Profiles {
         LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_IN, TagUtils.toString(Tag.ClinicalTrialSiteName), Tag.ClinicalTrialSiteName, DUMMY_DEIDENT_METHOD, tagValueInClinicalTrialSiteName);
 
 
+    }
+
+    public boolean getResultCondition(ProfileItem profileItem, MyDCMElem myDCMElem){
+        if (profileItem.getCondition()!=null) {
+            //https://docs.spring.io/spring/docs/3.0.x/reference/expressions.html
+            final EvaluationContext context = new StandardEvaluationContext(myDCMElem);
+            final String cleanCondition = myDCMElem.conditionInterpreter(profileItem.getCondition());
+            context.setVariable("VR", VR.class);
+            context.setVariable("TAG", Tag.class);
+            final Expression exp = parser.parseExpression(cleanCondition);
+            return exp.getValue(context, Boolean.class);
+        }
+        return true; // if there is no condition we return true by default
     }
 
     public BigInteger generatePatientID(String pseudonym, String profiles) {
