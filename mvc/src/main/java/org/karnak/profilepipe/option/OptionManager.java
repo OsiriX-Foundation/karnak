@@ -13,9 +13,17 @@ public class OptionManager {
             return null;
         }
         return switch (option) {
-            case "shiftDate" -> "execute algo shift date and return dummy";
-            case "dummyValue" -> "return dummy value of args";
+            case "shiftDate" -> "19930822"; //call the function that executes the algo for shift date and return this value
+            case "dummyValue" ->  replaceByDummy(args);
             default -> null;
         };
+    }
+
+    public static String replaceByDummy(String args){
+        if (args == null){
+            return "";
+        } else {
+            return args;
+        }
     }
 }
