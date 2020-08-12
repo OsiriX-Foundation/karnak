@@ -16,7 +16,8 @@ public abstract class AbstractProfileItem implements ProfileItem {
         BASIC_DICOM(BasicProfile.class, "basic.dicom.profile"),
         REPLACE_UID(UpdateUIDsProfile.class, "replace.uid"),
         ACTION_TAGS(ActionTags.class, "action.on.specific.tags"),
-        ACTION_PRIVATETAGS(PrivateTags.class, "action.on.privatetags");
+        ACTION_PRIVATETAGS(PrivateTags.class, "action.on.privatetags"),
+        ACTION_DATES(ActionDates.class, "action.on.dates");
 
         private final Class<? extends ProfileItem> profileClass;
         private final String classAlias;

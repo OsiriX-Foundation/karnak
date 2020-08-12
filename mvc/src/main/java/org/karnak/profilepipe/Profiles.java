@@ -94,12 +94,11 @@ public class Profiles {
 
             for (ProfileItem profile : profiles) {
                 final boolean conditionIsOk = getResultCondition(profile.getCondition(), myDCMElem);
-                final String optionDummy = OptionManager.getActionReplace(dcm, dcmEl, patientID, profile.getOption(), profile.getArgs());
                 final Action action = profile.getAction(dcmEl);
                 if (action != null && conditionIsOk) {
                     try {
                         final String tagValueIn = dcm.getString(dcmEl.tag()).orElse(null);
-                        ActionStrategy.Output out = action.execute(dcm, dcmEl.tag(), patientID, optionDummy);
+                        ActionStrategy.Output out = action.execute(dcm, dcmEl.tag(), patientID, null);
                         final String tagValueOut = dcm.getString(dcmEl.tag()).orElse(null);
                         if (out == ActionStrategy.Output.TO_REMOVE) {
                             iterator.remove();
