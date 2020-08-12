@@ -146,8 +146,19 @@ public class ShiftDate {
         return dummyValue;
     }
 
-    public static String execute(DicomObject dcm, DicomElement dcmEl, String args){
-        String stringValue = dcm.getString(dcmEl.tag()).orElse(null);
+    public static String DTbyDays(String dateTime, int shiftDays) {
+        if(dateTime.length()>8){
+            final String valueDate = dateTime.substring(0, 8);
+            final String valueTime = dateTime.substring(8, dateTime.length());
+            return DAbyDays(valueDate, shiftDays).concat(TMbySeconds(valueTime, shiftDays * (60 * 60 * 24)));
+        }
+        final String valueDate = dateTime.substring(0, 8);
+        final String valueTime = dateTime.substring(8, dateTime.length());
+        return DAbyDays(valueDate, shiftDays).concat(TMbySeconds(valueTime, shiftDays * (60 * 60 * 24)));
+    }
+
+    public static String days(DicomObject dcm, DicomElement dcmEl, String args){
+        String dcmElValue = dcm.getString(dcmEl.tag()).orElse(null);
         int shiftDays = 0;
 
         try{
@@ -156,12 +167,12 @@ public class ShiftDate {
             LOGGER.error("args {} is not correct" , args,  e);
         }
 
-        if(stringValue != null){
+        if(dcmElValue != null){
             return switch (dcmEl.vr()) {
-                case AS -> ASbyDays(stringValue, shiftDays);
-                case DA -> DAbyDays(stringValue, shiftDays);
-                case DT -> "19991111111111";
-                case TM -> TMbySeconds(dcm.getString(dcmEl.tag()).orElse(null), shiftDays * (60 * 60 * 24) );
+                case AS -> ASbyDays(dcmElValue, shiftDays);
+                case DA -> DAbyDays(dcmElValue, shiftDays);
+                case DT -> DTbyDays(dcmElValue, shiftDays);
+                case TM -> TMbySeconds(dcmElValue, shiftDays * (60 * 60 * 24) );
                 default -> null;
             };
         } else {

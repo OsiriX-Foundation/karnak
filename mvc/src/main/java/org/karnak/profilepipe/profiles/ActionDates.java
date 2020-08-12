@@ -25,7 +25,12 @@ public class ActionDates extends AbstractProfileItem {
     @Override
     public Action getAction(DicomObject dcmCopy, DicomElement dcmElem) {
         final String stringValue = dcmCopy.getString(dcmElem.tag()).orElse(null);
-        String defaultDummyValue = ShiftDate.execute(dcmCopy, dcmElem, args);
+
+        final String defaultDummyValue  = switch (option) {
+            case "shiftDays" -> ShiftDate.days(dcmCopy, dcmElem, args);
+            default -> null;
+        };
+
         if (defaultDummyValue != null) {
             actionByDefault.setDummyValue(defaultDummyValue);
             return actionByDefault;
