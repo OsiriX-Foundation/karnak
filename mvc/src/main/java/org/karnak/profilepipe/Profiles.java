@@ -12,7 +12,6 @@ import org.karnak.data.profile.ProfileElement;
 import org.karnak.data.profile.Profile;
 import org.karnak.profilepipe.action.Action;
 import org.karnak.profilepipe.action.ActionStrategy;
-import org.karnak.profilepipe.option.OptionManager;
 import org.karnak.profilepipe.profiles.AbstractProfileItem;
 import org.karnak.profilepipe.profiles.ProfileItem;
 import org.karnak.profilepipe.utils.MyDCMElem;
@@ -94,7 +93,7 @@ public class Profiles {
 
             for (ProfileItem profile : profiles) {
                 final boolean conditionIsOk = getResultCondition(profile.getCondition(), myDCMElem);
-                final Action action = profile.getAction(dcmEl);
+                final Action action = profile.getAction(dcm, dcmEl);
                 if (action != null && conditionIsOk) {
                     try {
                         final String tagValueIn = dcm.getString(dcmEl.tag()).orElse(null);

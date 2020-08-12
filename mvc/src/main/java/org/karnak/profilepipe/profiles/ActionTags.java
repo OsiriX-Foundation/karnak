@@ -1,6 +1,7 @@
 package org.karnak.profilepipe.profiles;
 
 import org.dcm4che6.data.DicomElement;
+import org.dcm4che6.data.DicomObject;
 import org.karnak.data.profile.ExcludedTag;
 import org.karnak.data.profile.IncludedTag;
 import org.karnak.data.profile.ProfileElement;
@@ -36,7 +37,7 @@ public class ActionTags extends AbstractProfileItem {
     }
 
     @Override
-    public Action getAction(DicomElement dcmElem) {
+    public Action getAction(DicomObject dcmCopy, DicomElement dcmElem) {
         if (exceptedTagsAction.get(dcmElem.tag()) == null) {
             return tagsAction.get(dcmElem.tag());
         }

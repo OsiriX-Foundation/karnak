@@ -14,14 +14,14 @@ import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoField;
 
 public class ShiftDate {
-    private final Logger LOGGER = LoggerFactory.getLogger(ShiftDate.class);
-    private DateTimeFormatter DAformater = DateTimeFormatter.ofPattern("yyyyMMdd");
-    private DateTimeFormatter TMformater = DateTimeFormatter.ofPattern("HHmmss");
+    private static final Logger LOGGER = LoggerFactory.getLogger(ShiftDate.class);
+    private static DateTimeFormatter DAformater = DateTimeFormatter.ofPattern("yyyyMMdd");
+    private static DateTimeFormatter TMformater = DateTimeFormatter.ofPattern("HHmmss");
 
     public ShiftDate() {
     }
 
-    private String addMissingMilliSeconds(String time) {
+    private static String addMissingMilliSeconds(String time) {
         String[] timeSplit = time.split("\\.");
         if (timeSplit.length > 1) {
             int n = 6-timeSplit[1].length();
@@ -31,7 +31,7 @@ public class ShiftDate {
         return time;
     }
 
-    private LocalTime parseTime(String time) {
+    private static LocalTime parseTime(String time) {
         String cleanTime = addMissingMilliSeconds(time);
         DateTimeFormatter hourFormat = new DateTimeFormatterBuilder()
                 .appendPattern("HH")
@@ -68,7 +68,7 @@ public class ShiftDate {
         }
     }
 
-    private LocalDate parseDate(String date) {
+    private static LocalDate parseDate(String date) {
         DateTimeFormatter yearFormat = new DateTimeFormatterBuilder()
                 .appendPattern("yyyy")
                 .parseDefaulting(ChronoField.MONTH_OF_YEAR, 1)
@@ -98,37 +98,37 @@ public class ShiftDate {
         }
     }
 
-    private String dateToString(LocalDate date) {
-        String formattedDate = this.DAformater.format(date);
+    private static String dateToString(LocalDate date) {
+        String formattedDate = DAformater.format(date);
         return formattedDate;
     }
 
-    private String timeToString(LocalTime time) {
-        String formattedTime = this.TMformater.format(time);
+    private static String timeToString(LocalTime time) {
+        String formattedTime = TMformater.format(time);
         return formattedTime;
     }
 
-    public String DAbyDays(String date, int shiftDays) {
+    public static String DAbyDays(String date, int shiftDays) {
         LocalDate localDate = parseDate(date);
         LocalDate dummyLocalDate = localDate.minusDays(shiftDays);
         String dummyDate = dateToString(dummyLocalDate);
         return dummyDate;
     }
 
-    public String TMbySeconds(String time, int shiftSeconds) {
+    public static String TMbySeconds(String time, int shiftSeconds) {
         LocalTime localTime = parseTime(time);
         LocalTime dummyLocalTime = localTime.minusSeconds(shiftSeconds);
         String dummyTime = timeToString(dummyLocalTime);
         return dummyTime;
     }
 
-    private String addMissingZero(String age, int nMissingValue) {
+    private static String addMissingZero(String age, int nMissingValue) {
         int n = nMissingValue-age.length();
         String missingZero = StringUtils.repeat('0', n) + age;
         return missingZero;
     }
 
-    public String ASbyDays(String age, int shiftDays) {
+    public static String ASbyDays(String age, int shiftDays) {
         String valueAge = age.substring(0, 3);
         int intAge = Integer.parseInt(valueAge);
 
@@ -146,7 +146,7 @@ public class ShiftDate {
         return dummyValue;
     }
 
-    public String days(DicomObject dcm, DicomElement dcmEl, String patientID, String args){
+    public static String execute(DicomObject dcm, DicomElement dcmEl, String args){
         String stringValue = dcm.getString(dcmEl.tag()).orElse(null);
         int shiftDays = 0;
 

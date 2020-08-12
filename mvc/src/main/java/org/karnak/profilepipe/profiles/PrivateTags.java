@@ -1,6 +1,7 @@
 package org.karnak.profilepipe.profiles;
 
 import org.dcm4che6.data.DicomElement;
+import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.util.TagUtils;
 import org.karnak.data.profile.ExcludedTag;
 import org.karnak.data.profile.IncludedTag;
@@ -42,7 +43,7 @@ public class PrivateTags extends AbstractProfileItem {
     }
 
     @Override
-    public Action getAction(DicomElement dcmElem) {
+    public Action getAction(DicomObject dcmCopy, DicomElement dcmElem) {
         final int tag = dcmElem.tag();
         if (TagUtils.isPrivateGroup(tag)) {
             if (tagsAction.isEmpty() == false && exceptedTagsAction.isEmpty()) {

@@ -1,8 +1,10 @@
 package org.karnak.profilepipe.profiles;
 
 import org.dcm4che6.data.DicomElement;
+import org.dcm4che6.data.DicomObject;
 import org.karnak.data.profile.ProfileElement;
 import org.karnak.profilepipe.action.Action;
+import org.karnak.profilepipe.option.datemanager.ShiftDate;
 import org.karnak.profilepipe.utils.TagActionMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,14 +23,9 @@ public class ActionDates extends AbstractProfileItem {
     }
 
     @Override
-    public Action getAction(DicomElement dcmElem) {
-        String defaultDummyValue = switch (dcmElem.vr()) {
-            case AS -> "045Y";
-            case DA -> "19991111";
-            case DT -> "19991111111111";
-            case TM -> "111111";
-            default -> null;
-        };
+    public Action getAction(DicomObject dcmCopy, DicomElement dcmElem) {
+        final String stringValue = dcmCopy.getString(dcmElem.tag()).orElse(null);
+        String defaultDummyValue = ShiftDate.execute(dcmCopy, dcmElem, args);
         if (defaultDummyValue != null) {
             actionByDefault.setDummyValue(defaultDummyValue);
             return actionByDefault;
