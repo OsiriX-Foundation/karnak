@@ -26,9 +26,7 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.weasis.core.util.StringUtil;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Profiles {
@@ -69,6 +67,7 @@ public class Profiles {
                     }
                 }
             }
+            profiles.sort(Comparator.comparing(ProfileItem::getPosition));
             return profiles;
         }
         return null;

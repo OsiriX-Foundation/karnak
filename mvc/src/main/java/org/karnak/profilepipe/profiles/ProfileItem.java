@@ -21,4 +21,6 @@ public interface ProfileItem {
     String getOption();
 
     String getArgs();
+
+    Integer getPosition();
 }
