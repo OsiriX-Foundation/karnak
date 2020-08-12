@@ -147,14 +147,12 @@ public class ShiftDate {
     }
 
     public static String DTbyDays(String dateTime, int shiftDays) {
-        if(dateTime.length()>8){
+        if (dateTime.length() > 8) {
             final String valueDate = dateTime.substring(0, 8);
             final String valueTime = dateTime.substring(8, dateTime.length());
             return DAbyDays(valueDate, shiftDays).concat(TMbySeconds(valueTime, shiftDays * (60 * 60 * 24)));
         }
-        final String valueDate = dateTime.substring(0, 8);
-        final String valueTime = dateTime.substring(8, dateTime.length());
-        return DAbyDays(valueDate, shiftDays).concat(TMbySeconds(valueTime, shiftDays * (60 * 60 * 24)));
+        return DAbyDays(dateTime, shiftDays);
     }
 
     public static String days(DicomObject dcm, DicomElement dcmEl, String args){
@@ -166,7 +164,6 @@ public class ShiftDate {
         }catch (Exception e){
             LOGGER.error("args {} is not correct" , args,  e);
         }
-
         if(dcmElValue != null){
             return switch (dcmEl.vr()) {
                 case AS -> ASbyDays(dcmElValue, shiftDays);
