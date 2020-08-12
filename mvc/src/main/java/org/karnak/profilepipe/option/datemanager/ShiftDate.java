@@ -1,6 +1,8 @@
 package org.karnak.profilepipe.option.datemanager;
 
 import org.apache.commons.lang3.StringUtils;
+import org.dcm4che6.data.DicomElement;
+import org.dcm4che6.data.DicomObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -142,5 +144,28 @@ public class ShiftDate {
 
         String dummyValue = addMissingZero(String.valueOf(intDummyAge), 3) + formatAge;
         return dummyValue;
+    }
+
+    public String days(DicomObject dcm, DicomElement dcmEl, String patientID, String args){
+        String stringValue = dcm.getString(dcmEl.tag()).orElse(null);
+        int shiftDays = 0;
+
+        try{
+            shiftDays = Integer.parseInt(args);
+        }catch (Exception e){
+            LOGGER.error("args {} is not correct" , args,  e);
+        }
+
+        if(stringValue != null){
+            return switch (dcmEl.vr()) {
+                case AS -> ASbyDays(stringValue, shiftDays);
+                case DA -> DAbyDays(stringValue, shiftDays);
+                case DT -> "19991111111111";
+                case TM -> TMbySeconds(dcm.getString(dcmEl.tag()).orElse(null), shiftDays * (60 * 60 * 24) );
+                default -> null;
+            };
+        } else {
+            return null;
+        }
     }
 }
