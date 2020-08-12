@@ -98,7 +98,8 @@ public class Profiles {
                 if (action != null && conditionIsOk) {
                     try {
                         final String tagValueIn = dcm.getString(dcmEl.tag()).orElse(null);
-                        ActionStrategy.Output out = action.execute(dcm, dcmEl.tag(), patientID, null);
+                        final ActionStrategy.Output out = action.execute(dcm, dcmEl.tag(), patientID, null);
+                        action.setDummyValue(null);
                         final String tagValueOut = dcm.getString(dcmEl.tag()).orElse(null);
                         if (out == ActionStrategy.Output.TO_REMOVE) {
                             iterator.remove();
@@ -107,7 +108,7 @@ public class Profiles {
                             LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_INOUT, TagUtils.toString(dcmEl.tag()), dcmEl.tag(), action.getSymbol(), tagValueIn, tagValueOut);
                         }
                     } catch (final Exception e) {
-                        LOGGER.error("Cannot execute the action {}", action, e);
+                        LOGGER.error("Cannot execute the action {} for tag: {}", action,  TagUtils.toString(dcmEl.tag()), e);
                     }
                     break;
                 }
