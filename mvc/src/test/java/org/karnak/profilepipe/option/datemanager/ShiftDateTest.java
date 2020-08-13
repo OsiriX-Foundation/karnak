@@ -15,8 +15,8 @@ class ShiftDateTest {
 
     @Test
     void TMbySeconds() {
-        assertEquals("071907.0705", ShiftDate.ASbyDays("070907.0705", 1)); //???????
-        assertEquals("1020", ShiftDate.ASbyDays("1010", 1));
+        assertEquals("070906.070500", ShiftDate.TMbySeconds("070907.0705", 1));
+        assertEquals("100959.000000", ShiftDate.TMbySeconds("1010", 1));
     }
 
     @Test
@@ -31,7 +31,9 @@ class ShiftDateTest {
 
     @Test
     void DTbyDays() {
-        assertEquals("20180729131503", ShiftDate.ASbyDays("20080729131503", 1)); // ?????
-
+        assertEquals("20180301", ShiftDate.DTbyDays("20180302", 1));
+        assertEquals("20080728131503.000000", ShiftDate.DTbyDays("20080729131503", 1));
+        assertEquals("20201211000030.000000", ShiftDate.DTbyDays("20201212000030", 1));
+        assertEquals("20201211000130.000000", ShiftDate.DTbyDays("20201212000130", 1));
     }
 }

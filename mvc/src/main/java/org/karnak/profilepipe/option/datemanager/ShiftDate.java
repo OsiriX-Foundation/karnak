@@ -16,7 +16,7 @@ import java.time.temporal.ChronoField;
 public class ShiftDate {
     private static final Logger LOGGER = LoggerFactory.getLogger(ShiftDate.class);
     private static DateTimeFormatter DAformater = DateTimeFormatter.ofPattern("yyyyMMdd");
-    private static DateTimeFormatter TMformater = DateTimeFormatter.ofPattern("HHmmss");
+    private static DateTimeFormatter TMformater = DateTimeFormatter.ofPattern("HHmmss.SSSSSS");
 
     public ShiftDate() {
     }
