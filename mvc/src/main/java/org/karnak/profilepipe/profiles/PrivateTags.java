@@ -4,6 +4,7 @@ import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.util.TagUtils;
 import org.karnak.data.profile.ExcludedTag;
 import org.karnak.data.profile.IncludedTag;
+import org.karnak.data.profile.ProfileElement;
 import org.karnak.profilepipe.action.Action;
 import org.karnak.profilepipe.utils.TagActionMap;
 import org.slf4j.Logger;
@@ -17,8 +18,8 @@ public class PrivateTags extends AbstractProfileItem {
     private TagActionMap exceptedTagsAction;
     private Action actionByDefault;
 
-    public PrivateTags(String name, String codeName, String action, List<IncludedTag> tags, List<ExcludedTag> excludedTags) throws Exception{
-        super(name, codeName, action, tags, excludedTags);
+    public PrivateTags(ProfileElement profileElement) throws Exception{
+        super(profileElement);
         tagsAction = new TagActionMap();
         exceptedTagsAction = new TagActionMap();
         actionByDefault = Action.convertAction(this.action);
