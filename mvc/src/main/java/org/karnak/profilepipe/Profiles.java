@@ -109,9 +109,9 @@ public class Profiles {
                             LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_IN, TagUtils.toString(dcmEl.tag()), dcmEl.tag(), action.getSymbol(), tagValueIn);
                         } else if(out == ActionStrategy.Output.CLEAN_PIXEL){
                             List<Shape> shapeList = new ArrayList<>();
-                            shapeList.add(new Rectangle(25, 15 , 250, 70));
+                            shapeList.add(new Rectangle(25, 15 , 150, 70));
                             shapeList.add(new Rectangle(340, 15 , 150, 50));
-                            MaskArea mask = new MaskArea(shapeList, null);
+                            MaskArea mask = new MaskArea(shapeList, Color.RED);
                             context.setMaskArea(mask);
                             LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_IN, TagUtils.toString(dcmEl.tag()), dcmEl.tag(), action.getSymbol(), tagValueIn);
                         } else {
