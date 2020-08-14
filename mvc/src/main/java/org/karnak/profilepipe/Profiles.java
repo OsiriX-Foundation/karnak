@@ -96,15 +96,7 @@ public class Profiles {
                 final ActionItem action = profile.getAction(dcm, dcmEl);
                 if (action != null && conditionIsOk) {
                     try {
-                        final String tagValueIn = dcm.getString(dcmEl.tag()).orElse(null);
-                        action.execute(dcm, dcmEl.tag(), patientID, null);
-                        final String tagValueOut = dcm.getString(dcmEl.tag()).orElse(null);
-                        if ((Remove.class.isInstance(action))) {
-                            iterator.remove();
-                            LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_IN, TagUtils.toString(dcmEl.tag()), dcmEl.tag(), action.getSymbol(), tagValueIn);
-                        } else {
-                            LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_INOUT, TagUtils.toString(dcmEl.tag()), dcmEl.tag(), action.getSymbol(), tagValueIn, tagValueOut);
-                        }
+                        action.execute(dcm, dcmEl.tag(), iterator, patientID);
                     } catch (final Exception e) {
                         LOGGER.error("Cannot execute the action {} for tag: {}", action,  TagUtils.toString(dcmEl.tag()), e);
                     }

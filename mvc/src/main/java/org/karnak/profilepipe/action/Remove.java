@@ -1,6 +1,11 @@
 package org.karnak.profilepipe.action;
 
+import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
+import org.dcm4che6.util.TagUtils;
+
+import java.util.Iterator;
+import java.util.Optional;
 
 public class Remove extends AbstractAction {
 
@@ -9,7 +14,11 @@ public class Remove extends AbstractAction {
     }
 
     @Override
-    public void execute(DicomObject dcm, int tag, String pseudo, String dummy) {
+    public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, String pseudo) {
+        final String tagValueIn = dcm.getString(tag).orElse(null);
+        final Optional<DicomElement> dcmItem = dcm.get(tag);
 
+        iterator.remove();
+        LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_IN, TagUtils.toString(tag), tag, symbol, tagValueIn);
     }
 }
