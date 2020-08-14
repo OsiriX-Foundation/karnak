@@ -6,24 +6,23 @@ import org.dcm4che6.util.TagUtils;
 import org.karnak.data.profile.ExcludedTag;
 import org.karnak.data.profile.IncludedTag;
 import org.karnak.data.profile.ProfileElement;
-import org.karnak.profilepipe.action.Action;
+import org.karnak.profilepipe.action.AbstractAction;
+import org.karnak.profilepipe.action.ActionItem;
 import org.karnak.profilepipe.utils.TagActionMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 public class PrivateTags extends AbstractProfileItem {
     private final Logger LOGGER = LoggerFactory.getLogger(PrivateTags.class);
     private TagActionMap tagsAction;
     private TagActionMap exceptedTagsAction;
-    private Action actionByDefault;
+    private ActionItem actionByDefault;
 
     public PrivateTags(ProfileElement profileElement) throws Exception{
         super(profileElement);
         tagsAction = new TagActionMap();
         exceptedTagsAction = new TagActionMap();
-        actionByDefault = Action.convertAction(this.action);
+        actionByDefault = AbstractAction.convertAction(this.action);
         errorManagement();
         setActionHashMap();
     }
@@ -43,7 +42,7 @@ public class PrivateTags extends AbstractProfileItem {
     }
 
     @Override
-    public Action getAction(DicomObject dcmCopy, DicomElement dcmElem) {
+    public ActionItem getAction(DicomObject dcmCopy, DicomElement dcmElem) {
         final int tag = dcmElem.tag();
         if (TagUtils.isPrivateGroup(tag)) {
             if (tagsAction.isEmpty() == false && exceptedTagsAction.isEmpty()) {

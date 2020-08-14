@@ -2,9 +2,14 @@ package org.karnak.profilepipe.action;
 
 import org.dcm4che6.data.DicomObject;
 
-public class Remove implements ActionStrategy {
+public class Remove extends AbstractAction {
+
+    public Remove(String symbol) {
+        super(symbol);
+    }
+
     @Override
-    public Output execute(DicomObject dcm, int tag, String pseudo, String dummy) {
-        return null;
+    public void execute(DicomObject dcm, int tag, String pseudo, String dummy) {
+
     }
 }

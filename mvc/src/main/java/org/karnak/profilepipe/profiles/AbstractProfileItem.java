@@ -3,7 +3,7 @@ package org.karnak.profilepipe.profiles;
 import org.karnak.data.profile.ExcludedTag;
 import org.karnak.data.profile.IncludedTag;
 import org.karnak.data.profile.ProfileElement;
-import org.karnak.profilepipe.action.Action;
+import org.karnak.profilepipe.action.ActionItem;
 
 import java.util.HashMap;
 import java.util.List;
@@ -53,7 +53,7 @@ public abstract class AbstractProfileItem implements ProfileItem {
     protected final String args;
     protected final List<IncludedTag> tags;
     protected final List<ExcludedTag> excludedTags;
-    protected final Map<Integer, Action> tagMap;
+    protected final Map<Integer, ActionItem> tagMap;
     protected final Integer position;
 
     public AbstractProfileItem(ProfileElement profileElement) {
@@ -98,12 +98,12 @@ public abstract class AbstractProfileItem implements ProfileItem {
     }
 
     @Override
-    public Action remove(int tag) {
+    public ActionItem remove(int tag) {
         return tagMap.remove(tag);
     }
 
     @Override
-    public Action put(int tag, Action action) {
+    public ActionItem put(int tag, ActionItem action) {
         Objects.requireNonNull(action);
         /*
         Garde fou
