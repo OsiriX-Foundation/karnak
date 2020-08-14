@@ -1,8 +1,7 @@
 package org.karnak.profilepipe.profiles;
 
 import org.dcm4che6.data.DicomElement;
-import org.karnak.data.profile.ExcludedTag;
-import org.karnak.data.profile.IncludedTag;
+import org.dcm4che6.data.DicomObject;
 import org.karnak.data.profile.ProfileElement;
 import org.karnak.profilepipe.action.Action;
 
@@ -20,7 +19,7 @@ public class UpdateUIDsProfile extends AbstractProfileItem {
     }
 
     @Override
-    public Action getAction(DicomElement dcmElem) {
+    public Action getAction(DicomObject dcmCopy, DicomElement dcmElem) {
         Action val = tagMap.get(dcmElem.tag());
         if (val != null) {
             return val;

@@ -16,7 +16,8 @@ public abstract class AbstractProfileItem implements ProfileItem {
         BASIC_DICOM(BasicProfile.class, "basic.dicom.profile"),
         REPLACE_UID(UpdateUIDsProfile.class, "replace.uid"),
         ACTION_TAGS(ActionTags.class, "action.on.specific.tags"),
-        ACTION_PRIVATETAGS(PrivateTags.class, "action.on.privatetags");
+        ACTION_PRIVATETAGS(PrivateTags.class, "action.on.privatetags"),
+        ACTION_DATES(ActionDates.class, "action.on.dates");
 
         private final Class<? extends ProfileItem> profileClass;
         private final String classAlias;
@@ -48,17 +49,23 @@ public abstract class AbstractProfileItem implements ProfileItem {
     protected final String codeName;
     protected final String condition;
     protected final String action;
+    protected final String option;
+    protected final String args;
     protected final List<IncludedTag> tags;
     protected final List<ExcludedTag> excludedTags;
     protected final Map<Integer, Action> tagMap;
+    protected final Integer position;
 
     public AbstractProfileItem(ProfileElement profileElement) {
         this.name = Objects.requireNonNull(profileElement.getName());
         this.codeName = Objects.requireNonNull(profileElement.getCodename());
         this.condition = profileElement.getCondition();
         this.action = profileElement.getAction();
+        this.option = profileElement.getOption();
+        this.args = profileElement.getArgs();
         this.tags = profileElement.getIncludedtag();
         this.excludedTags = profileElement.getExceptedtags();
+        this.position = profileElement.getPosition();
         this.tagMap = new HashMap<>();
     }
 
@@ -71,6 +78,14 @@ public abstract class AbstractProfileItem implements ProfileItem {
     }
 
     public String getCondition() { return condition; }
+
+    public String getOption() { return option; }
+
+    public String getArgs() { return args; }
+
+    public Integer getPosition() {
+        return position;
+    }
 
     @Override
     public String toString() {

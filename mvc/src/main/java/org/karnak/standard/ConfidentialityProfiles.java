@@ -32,7 +32,7 @@ public class ConfidentialityProfiles {
             AbstractProfileItem item;
             if (PrivateTagPattern.TAG_PATTERN.equals(tag)) {
                 try {
-                    final ProfileElement profileElement = new ProfileElement(name, AbstractProfileItem.Type.ACTION_PRIVATETAGS.getClassAlias(), null, "X", null, null);
+                    final ProfileElement profileElement = new ProfileElement(name, AbstractProfileItem.Type.ACTION_PRIVATETAGS.getClassAlias(), null, "X", null, null, null, null);
                     item = new PrivateTags(profileElement);
                 } catch (Exception e) {
                     item = null;

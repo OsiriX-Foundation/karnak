@@ -1,6 +1,8 @@
 package org.karnak.profilepipe.option.datemanager;
 
 import org.apache.commons.lang3.StringUtils;
+import org.dcm4che6.data.DicomElement;
+import org.dcm4che6.data.DicomObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,14 +14,14 @@ import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoField;
 
 public class ShiftDate {
-    private final Logger LOGGER = LoggerFactory.getLogger(ShiftDate.class);
-    private DateTimeFormatter DAformater = DateTimeFormatter.ofPattern("yyyyMMdd");
-    private DateTimeFormatter TMformater = DateTimeFormatter.ofPattern("HHmmss");
+    private static final Logger LOGGER = LoggerFactory.getLogger(ShiftDate.class);
+    private static DateTimeFormatter DAformater = DateTimeFormatter.ofPattern("yyyyMMdd");
+    private static DateTimeFormatter TMformater = DateTimeFormatter.ofPattern("HHmmss.SSSSSS");
 
     public ShiftDate() {
     }
 
-    private String addMissingMilliSeconds(String time) {
+    private static String addMissingMilliSeconds(String time) {
         String[] timeSplit = time.split("\\.");
         if (timeSplit.length > 1) {
             int n = 6-timeSplit[1].length();
@@ -29,7 +31,7 @@ public class ShiftDate {
         return time;
     }
 
-    private LocalTime parseTime(String time) {
+    private static LocalTime parseTime(String time) {
         String cleanTime = addMissingMilliSeconds(time);
         DateTimeFormatter hourFormat = new DateTimeFormatterBuilder()
                 .appendPattern("HH")
@@ -66,7 +68,7 @@ public class ShiftDate {
         }
     }
 
-    private LocalDate parseDate(String date) {
+    private static LocalDate parseDate(String date) {
         DateTimeFormatter yearFormat = new DateTimeFormatterBuilder()
                 .appendPattern("yyyy")
                 .parseDefaulting(ChronoField.MONTH_OF_YEAR, 1)
@@ -96,37 +98,37 @@ public class ShiftDate {
         }
     }
 
-    private String dateToString(LocalDate date) {
-        String formattedDate = this.DAformater.format(date);
+    private static String dateToString(LocalDate date) {
+        String formattedDate = DAformater.format(date);
         return formattedDate;
     }
 
-    private String timeToString(LocalTime time) {
-        String formattedTime = this.TMformater.format(time);
+    private static String timeToString(LocalTime time) {
+        String formattedTime = TMformater.format(time);
         return formattedTime;
     }
 
-    public String DAbyDays(String date, int shiftDays) {
+    public static String DAbyDays(String date, int shiftDays) {
         LocalDate localDate = parseDate(date);
         LocalDate dummyLocalDate = localDate.minusDays(shiftDays);
         String dummyDate = dateToString(dummyLocalDate);
         return dummyDate;
     }
 
-    public String TMbySeconds(String time, int shiftSeconds) {
+    public static String TMbySeconds(String time, int shiftSeconds) {
         LocalTime localTime = parseTime(time);
         LocalTime dummyLocalTime = localTime.minusSeconds(shiftSeconds);
         String dummyTime = timeToString(dummyLocalTime);
         return dummyTime;
     }
 
-    private String addMissingZero(String age, int nMissingValue) {
+    private static String addMissingZero(String age, int nMissingValue) {
         int n = nMissingValue-age.length();
         String missingZero = StringUtils.repeat('0', n) + age;
         return missingZero;
     }
 
-    public String ASbyDays(String age, int shiftDays) {
+    public static String ASbyDays(String age, int shiftDays) {
         String valueAge = age.substring(0, 3);
         int intAge = Integer.parseInt(valueAge);
 
@@ -142,5 +144,36 @@ public class ShiftDate {
 
         String dummyValue = addMissingZero(String.valueOf(intDummyAge), 3) + formatAge;
         return dummyValue;
+    }
+
+    public static String DTbyDays(String dateTime, int shiftDays) {
+        if (dateTime.length() > 8) {
+            final String valueDate = dateTime.substring(0, 8);
+            final String valueTime = dateTime.substring(8, dateTime.length());
+            return DAbyDays(valueDate, shiftDays).concat(TMbySeconds(valueTime, shiftDays * (60 * 60 * 24)));
+        }
+        return DAbyDays(dateTime, shiftDays);
+    }
+
+    public static String days(DicomObject dcm, DicomElement dcmEl, String args){
+        String dcmElValue = dcm.getString(dcmEl.tag()).orElse(null);
+        int shiftDays = 0;
+
+        try{
+            shiftDays = Integer.parseInt(args);
+        }catch (Exception e){
+            LOGGER.error("args {} is not correct" , args,  e);
+        }
+        if(dcmElValue != null){
+            return switch (dcmEl.vr()) {
+                case AS -> ASbyDays(dcmElValue, shiftDays);
+                case DA -> DAbyDays(dcmElValue, shiftDays);
+                case DT -> DTbyDays(dcmElValue, shiftDays);
+                case TM -> TMbySeconds(dcmElValue, shiftDays * (60 * 60 * 24) );
+                default -> null;
+            };
+        } else {
+            return null;
+        }
     }
 }

@@ -25,9 +25,7 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.weasis.core.util.StringUtil;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Profiles {
@@ -68,6 +66,7 @@ public class Profiles {
                     }
                 }
             }
+            profiles.sort(Comparator.comparing(ProfileItem::getPosition));
             return profiles;
         }
         return null;
@@ -94,11 +93,12 @@ public class Profiles {
 
             for (ProfileItem profile : profiles) {
                 final boolean conditionIsOk = getResultCondition(profile.getCondition(), myDCMElem);
-                final Action action = profile.getAction(dcmEl);
+                final Action action = profile.getAction(dcm, dcmEl);
                 if (action != null && conditionIsOk) {
                     try {
                         final String tagValueIn = dcm.getString(dcmEl.tag()).orElse(null);
-                        ActionStrategy.Output out = action.execute(dcm, dcmEl.tag(), patientID, null);
+                        final ActionStrategy.Output out = action.execute(dcm, dcmEl.tag(), patientID, null);
+                        action.setDummyValue(null);
                         final String tagValueOut = dcm.getString(dcmEl.tag()).orElse(null);
                         if (out == ActionStrategy.Output.TO_REMOVE) {
                             iterator.remove();
@@ -107,7 +107,7 @@ public class Profiles {
                             LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_INOUT, TagUtils.toString(dcmEl.tag()), dcmEl.tag(), action.getSymbol(), tagValueIn, tagValueOut);
                         }
                     } catch (final Exception e) {
-                        LOGGER.error("Cannot execute the action {}", action, e);
+                        LOGGER.error("Cannot execute the action {} for tag: {}", action,  TagUtils.toString(dcmEl.tag()), e);
                     }
                     break;
                 }

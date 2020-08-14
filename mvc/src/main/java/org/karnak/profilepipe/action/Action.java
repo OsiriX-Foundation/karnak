@@ -59,19 +59,25 @@ public enum Action implements ActionStrategy {
 
     private final String symbol;
     private final ActionStrategy action;
+    private String dummyValue;
 
     Action(String symbol, ActionStrategy action) {
         this.symbol = symbol;
         this.action = action;
+        this.dummyValue = null;
     }
 
     public String getSymbol() {
         return symbol;
     }
 
+    public void setDummyValue(String dummyValue) {
+        this.dummyValue = dummyValue;
+    }
+
     @Override
     public Output execute(DicomObject dcm, int tag, String pseudo, String dummy) {
-        return action.execute(dcm, tag, pseudo, dummy);
+        return action.execute(dcm, tag, pseudo, dummy != null ? dummy : dummyValue);
     }
 
     public static Action convertAction(String action) {
