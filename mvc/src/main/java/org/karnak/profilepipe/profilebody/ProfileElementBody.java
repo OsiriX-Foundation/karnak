@@ -1,6 +1,7 @@
 package org.karnak.profilepipe.profilebody;
 
 import java.util.List;
+import java.util.Map;
 
 public class ProfileElementBody {
     private String name;
@@ -11,6 +12,7 @@ public class ProfileElementBody {
     private String args;
     private List<String> tags;
     private List<String> excludedTags;
+    private Map<String, String> arguments;
 
     public String getName() {
         return name;
@@ -58,6 +60,14 @@ public class ProfileElementBody {
 
     public void setArgs(String args) {
         this.args = args;
+    }
+
+    public Map<String, String> getArguments() {
+        return arguments;
+    }
+
+    public void setArguments(Map<String, String> arguments) {
+        this.arguments = arguments;
     }
 
     public List<String> getTags() {

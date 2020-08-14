@@ -17,7 +17,6 @@ public class ProfileElement {
     private String condition;
     private String action;
     private String option;
-    private String args;
     private Integer position;
 
     @ManyToOne()
@@ -30,16 +29,18 @@ public class ProfileElement {
     @OneToMany(mappedBy = "profileElement", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<ExcludedTag> exceptedtags = new ArrayList<>();
 
+    @OneToMany(mappedBy = "profileElement", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Argument> arguments = new ArrayList<>();
+
     public ProfileElement() {
     }
 
-    public ProfileElement(String name, String codename, String condition, String action, String option, String args, Integer position, Profile profile) {
+    public ProfileElement(String name, String codename, String condition, String action, String option, Integer position, Profile profile) {
         this.name = name;
         this.codename = codename;
         this.condition = condition;
         this.action = action;
         this.option = option;
-        this.args = args;
         this.position = position;
         this.profile = profile;
     }
@@ -51,6 +52,8 @@ public class ProfileElement {
     public void addExceptedtags(ExcludedTag exceptedtags){
         this.exceptedtags.add(exceptedtags);
     }
+
+    public void addArgument(Argument argument) { this.arguments.add(argument); }
 
     public String getName() {
         return name;
@@ -92,12 +95,12 @@ public class ProfileElement {
         this.option = option;
     }
 
-    public String getArgs() {
-        return args;
+    public List<Argument> getArguments() {
+        return arguments;
     }
 
-    public void setArgs(String args) {
-        this.args = args;
+    public void setArguments(List<Argument> arguments) {
+        this.arguments = arguments;
     }
 
     public Integer getPosition() {

@@ -37,7 +37,18 @@ public class ProfilePipeServiceImpl extends ProfilePipeService {
 
         AtomicInteger profilePosition = new AtomicInteger(0);
         profilePipeYml.getProfileElements().forEach(profileBody -> {
-            ProfileElement profileElement = new ProfileElement(profileBody.getName(), profileBody.getCodename(), profileBody.getCondition(), profileBody.getAction(), profileBody.getOption(), profileBody.getArgs(), profilePosition.get(), newProfile);
+            // TODO: add list arguments in yaml
+            ProfileElement profileElement = new ProfileElement(
+                    profileBody.getName(), profileBody.getCodename(), profileBody.getCondition(), profileBody.getAction(),
+                    profileBody.getOption(), profilePosition.get(), newProfile
+            );
+
+            if (profileBody.getArguments() != null) {
+                profileBody.getArguments().forEach((key, value) -> {
+                    final Argument argument = new Argument(key, value, profileElement);
+                    profileElement.addArgument(argument);
+                });
+            }
 
             if(profileBody.getTags()!=null){
                 profileBody.getTags().forEach(tag->{

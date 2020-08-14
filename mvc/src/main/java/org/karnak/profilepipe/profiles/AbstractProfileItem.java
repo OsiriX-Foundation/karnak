@@ -1,5 +1,6 @@
 package org.karnak.profilepipe.profiles;
 
+import org.karnak.data.profile.Argument;
 import org.karnak.data.profile.ExcludedTag;
 import org.karnak.data.profile.IncludedTag;
 import org.karnak.data.profile.ProfileElement;
@@ -50,7 +51,7 @@ public abstract class AbstractProfileItem implements ProfileItem {
     protected final String condition;
     protected final String action;
     protected final String option;
-    protected final String args;
+    protected final List<Argument> arguments;
     protected final List<IncludedTag> tags;
     protected final List<ExcludedTag> excludedTags;
     protected final Map<Integer, Action> tagMap;
@@ -62,7 +63,7 @@ public abstract class AbstractProfileItem implements ProfileItem {
         this.condition = profileElement.getCondition();
         this.action = profileElement.getAction();
         this.option = profileElement.getOption();
-        this.args = profileElement.getArgs();
+        this.arguments = profileElement.getArguments();
         this.tags = profileElement.getIncludedtag();
         this.excludedTags = profileElement.getExceptedtags();
         this.position = profileElement.getPosition();
@@ -81,7 +82,7 @@ public abstract class AbstractProfileItem implements ProfileItem {
 
     public String getOption() { return option; }
 
-    public String getArgs() { return args; }
+    public List<Argument> getArguments() { return arguments; }
 
     public Integer getPosition() {
         return position;
