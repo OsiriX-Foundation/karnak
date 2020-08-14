@@ -221,7 +221,7 @@ public class ShiftDate {
         return addMissingZero(String.valueOf(intDummyAge), 3) + formatAge;
     }
 
-    public static String days(DicomObject dcm, DicomElement dcmEl, String args){
+    public static String shift(DicomObject dcm, DicomElement dcmEl, String args){
         String dcmElValue = dcm.getString(dcmEl.tag()).orElse(null);
         int shiftDays = 0;
         int shiftSeconds = 0;
