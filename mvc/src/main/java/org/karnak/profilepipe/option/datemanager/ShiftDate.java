@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
@@ -17,6 +18,7 @@ public class ShiftDate {
     private static final Logger LOGGER = LoggerFactory.getLogger(ShiftDate.class);
     private static DateTimeFormatter DAformater = DateTimeFormatter.ofPattern("yyyyMMdd");
     private static DateTimeFormatter TMformater = DateTimeFormatter.ofPattern("HHmmss.SSSSSS");
+    private static DateTimeFormatter DTformatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss.SSSSSS");
 
     public ShiftDate() {
     }
@@ -62,9 +64,8 @@ public class ShiftDate {
             LocalTime timeParse = LocalTime.parse(cleanTime, formatter);
             return timeParse;
         } catch (DateTimeParseException e) {
-            // log the time given ?
-            LOGGER.error("Unable to parse the time given" , e);
-            return null;
+            LOGGER.error("Format of chosen time (should be [HH-HHmmss.SSSSSS]) is invalid: " + time, e);
+            throw e;
         }
     }
 
@@ -92,8 +93,70 @@ public class ShiftDate {
             LocalDate dateParse = LocalDate.parse(date, formatter);
             return dateParse;
         } catch (DateTimeParseException e) {
-            // log the date given ?
-            LOGGER.error("Unable to parse the date given" , e);
+            LOGGER.error("Format of chosen time (should be [yyyy-yyyyMMdd]) is invalid: " + date, e);
+            throw e;
+        }
+    }
+
+    private static LocalDateTime parseDateTime(String dateTime) {
+        String cleanDateTime = addMissingMilliSeconds(dateTime);
+        DateTimeFormatter yearFormat = new DateTimeFormatterBuilder()
+                .appendPattern("yyyy")
+                .parseDefaulting(ChronoField.MONTH_OF_YEAR, 1)
+                .parseDefaulting(ChronoField.DAY_OF_MONTH, 1)
+                .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
+                .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
+                .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
+                .parseDefaulting(ChronoField.MILLI_OF_SECOND, 0)
+                .toFormatter();
+        DateTimeFormatter yearMonthFormat = new DateTimeFormatterBuilder()
+                .appendPattern("yyyyMM")
+                .parseDefaulting(ChronoField.DAY_OF_MONTH,1)
+                .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
+                .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
+                .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
+                .parseDefaulting(ChronoField.MILLI_OF_SECOND, 0)
+                .toFormatter();
+        DateTimeFormatter yearMonthDayFormat = new DateTimeFormatterBuilder()
+                .appendPattern("yyyyMMdd")
+                .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
+                .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
+                .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
+                .parseDefaulting(ChronoField.MILLI_OF_SECOND, 0)
+                .toFormatter();
+        DateTimeFormatter hourFormat = new DateTimeFormatterBuilder()
+                .appendPattern("yyyyMMddHH")
+                .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
+                .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
+                .parseDefaulting(ChronoField.MILLI_OF_SECOND, 0)
+                .toFormatter();
+        DateTimeFormatter hourMinuteFormat = new DateTimeFormatterBuilder()
+                .appendPattern("yyyyMMddHHmm")
+                .parseDefaulting(ChronoField.SECOND_OF_MINUTE,0)
+                .parseDefaulting(ChronoField.MILLI_OF_SECOND, 0)
+                .toFormatter();
+        DateTimeFormatter hourMinuteSecondFormat = new DateTimeFormatterBuilder()
+                .appendPattern("yyyyMMddHHmmss")
+                .parseDefaulting(ChronoField.MILLI_OF_SECOND, 0)
+                .toFormatter();
+        DateTimeFormatter hourMinuteSecondFractionFormat = new DateTimeFormatterBuilder()
+                .appendPattern("yyyyMMddHHmmss.SSSSSS")
+                .toFormatter();
+
+        DateTimeFormatter formatter = new DateTimeFormatterBuilder()
+                .appendOptional(hourMinuteSecondFractionFormat)
+                .appendOptional(hourMinuteSecondFormat)
+                .appendOptional(hourMinuteFormat)
+                .appendOptional(hourFormat)
+                .appendOptional(yearMonthDayFormat)
+                .appendOptional(yearMonthFormat)
+                .appendOptional(yearFormat)
+                .toFormatter();
+        try {
+            LocalDateTime dateParse = LocalDateTime.parse(cleanDateTime, formatter);
+            return dateParse;
+        } catch (DateTimeParseException e) {
+            LOGGER.error("Format of chosen time (should be [yyyy-yyyyMMddHHmmss.SSSSSS]) is invalid: " + dateTime, e);
             throw e;
         }
     }
@@ -108,18 +171,31 @@ public class ShiftDate {
         return formattedTime;
     }
 
+    private static String dateTimeToString(LocalDateTime dateTime) {
+        String formattedDateTime = DTformatter.format(dateTime);
+        return formattedDateTime;
+    }
+
     public static String DAbyDays(String date, int shiftDays) {
         LocalDate localDate = parseDate(date);
         LocalDate dummyLocalDate = localDate.minusDays(shiftDays);
-        String dummyDate = dateToString(dummyLocalDate);
-        return dummyDate;
+        return dateToString(dummyLocalDate);
     }
 
     public static String TMbySeconds(String time, int shiftSeconds) {
         LocalTime localTime = parseTime(time);
         LocalTime dummyLocalTime = localTime.minusSeconds(shiftSeconds);
-        String dummyTime = timeToString(dummyLocalTime);
-        return dummyTime;
+        return timeToString(dummyLocalTime);
+    }
+
+    public static String DTbyDays(String dateTime, int shiftDays, int shiftSeconds) {
+        if (dateTime.length() > 8) {
+            LocalDateTime localDateTime = parseDateTime(dateTime);
+            LocalDateTime dummyLocalDateTime = localDateTime.minusDays(shiftDays);
+            dummyLocalDateTime = dummyLocalDateTime.minusSeconds(shiftSeconds);
+            return dateTimeToString(dummyLocalDateTime);
+        }
+        return DAbyDays(dateTime, shiftDays);
     }
 
     private static String addMissingZero(String age, int nMissingValue) {
@@ -142,22 +218,13 @@ public class ShiftDate {
             default -> intAge + shiftDays;
         };
 
-        String dummyValue = addMissingZero(String.valueOf(intDummyAge), 3) + formatAge;
-        return dummyValue;
-    }
-
-    public static String DTbyDays(String dateTime, int shiftDays) {
-        if (dateTime.length() > 8) {
-            final String valueDate = dateTime.substring(0, 8);
-            final String valueTime = dateTime.substring(8, dateTime.length());
-            return DAbyDays(valueDate, shiftDays).concat(TMbySeconds(valueTime, shiftDays * (60 * 60 * 24)));
-        }
-        return DAbyDays(dateTime, shiftDays);
+        return addMissingZero(String.valueOf(intDummyAge), 3) + formatAge;
     }
 
     public static String days(DicomObject dcm, DicomElement dcmEl, String args){
         String dcmElValue = dcm.getString(dcmEl.tag()).orElse(null);
         int shiftDays = 0;
+        int shiftSeconds = 0;
 
         try{
             shiftDays = Integer.parseInt(args);
@@ -168,8 +235,8 @@ public class ShiftDate {
             return switch (dcmEl.vr()) {
                 case AS -> ASbyDays(dcmElValue, shiftDays);
                 case DA -> DAbyDays(dcmElValue, shiftDays);
-                case DT -> DTbyDays(dcmElValue, shiftDays);
-                case TM -> TMbySeconds(dcmElValue, shiftDays * (60 * 60 * 24) );
+                case DT -> DTbyDays(dcmElValue, shiftDays, shiftSeconds);
+                case TM -> TMbySeconds(dcmElValue, shiftSeconds);
                 default -> null;
             };
         } else {
