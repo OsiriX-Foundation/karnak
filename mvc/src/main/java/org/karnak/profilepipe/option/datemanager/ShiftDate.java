@@ -240,17 +240,17 @@ public class ShiftDate {
             final String value = argument.getValue();
 
             try {
-                if (key == "seconds") {
+                if (key.equals("seconds")) {
                     shiftSeconds = Integer.parseInt(value);
                 }
-                if (key == "days") {
+                if (key.equals("days")) {
                     shiftDays = Integer.parseInt(value);
                 }
             } catch (Exception e) {
                 LOGGER.error("args {} is not correct" , value,  e);
             }
         }
-        if(dcmElValue != null){
+        if (dcmElValue != null) {
             return switch (dcmEl.vr()) {
                 case AS -> ASbyDays(dcmElValue, shiftDays);
                 case DA -> DAbyDays(dcmElValue, shiftDays);

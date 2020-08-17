@@ -1,5 +1,8 @@
 package org.karnak.data.profile;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +32,8 @@ public class ProfileElement {
     @OneToMany(mappedBy = "profileElement", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<ExcludedTag> exceptedtags = new ArrayList<>();
 
-    @OneToMany(mappedBy = "profileElement", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "profileElement", cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Argument> arguments = new ArrayList<>();
 
     public ProfileElement() {

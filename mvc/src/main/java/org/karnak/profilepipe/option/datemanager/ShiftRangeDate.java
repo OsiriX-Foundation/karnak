@@ -40,16 +40,16 @@ public class ShiftRangeDate {
             final String value = argument.getValue();
 
             try {
-                if (key == "max_seconds") {
+                if (key.equals("max_seconds")) {
                     shiftMaxSeconds = Integer.parseInt(value);
                 }
-                if (key == "max_days") {
+                if (key.equals("max_days")) {
                     shiftMaxDays = Integer.parseInt(value);
                 }
-                if (key == "min_seconds") {
+                if (key.equals("min_seconds")) {
                     shiftMinSeconds = Integer.parseInt(value);
                 }
-                if (key == "min_days") {
+                if (key.equals("min_days")) {
                     shiftMinDays = Integer.parseInt(value);
                 }
             } catch (Exception e) {
