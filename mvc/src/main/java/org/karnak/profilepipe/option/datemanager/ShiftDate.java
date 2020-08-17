@@ -3,6 +3,7 @@ package org.karnak.profilepipe.option.datemanager;
 import org.apache.commons.lang3.StringUtils;
 import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
+import org.karnak.data.profile.Argument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,6 +14,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoField;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ShiftDate {
     private static final Logger LOGGER = LoggerFactory.getLogger(ShiftDate.class);
@@ -221,15 +224,31 @@ public class ShiftDate {
         return addMissingZero(String.valueOf(intDummyAge), 3) + formatAge;
     }
 
-    public static String shift(DicomObject dcm, DicomElement dcmEl, String args){
+    public static String shift(DicomObject dcm, DicomElement dcmEl, List<Argument> arguments) {
         String dcmElValue = dcm.getString(dcmEl.tag()).orElse(null);
-        int shiftDays = 0;
-        int shiftSeconds = 0;
+        int shiftDays = -1;
+        int shiftSeconds = -1;
 
-        try{
-            shiftDays = Integer.parseInt(args);
-        }catch (Exception e){
-            LOGGER.error("args {} is not correct" , args,  e);
+        try {
+            verifyShiftArguments(arguments);
+        } catch(IllegalArgumentException e) {
+            throw e;
+        }
+
+        for (Argument argument: arguments) {
+            final String key = argument.getKey();
+            final String value = argument.getValue();
+
+            try {
+                if (key == "seconds") {
+                    shiftSeconds = Integer.parseInt(value);
+                }
+                if (key == "days") {
+                    shiftDays = Integer.parseInt(value);
+                }
+            } catch (Exception e) {
+                LOGGER.error("args {} is not correct" , value,  e);
+            }
         }
         if(dcmElValue != null){
             return switch (dcmEl.vr()) {
@@ -241,6 +260,20 @@ public class ShiftDate {
             };
         } else {
             return null;
+        }
+    }
+
+    private static void verifyShiftArguments(List<Argument> arguments) throws IllegalArgumentException {
+        if (!arguments.stream().anyMatch(argument -> argument.getKey().equals("seconds")) ||
+                !arguments.stream().anyMatch(argument -> argument.getKey().equals("days"))) {
+            List<String> args = arguments.stream()
+                    .map(argument -> argument.getKey())
+                    .collect(Collectors.toList());
+            IllegalArgumentException missingParameters = new IllegalArgumentException(
+                    "Missing argument, the class need [seconds, days] as parameters. Parameters given " + args
+            );
+            LOGGER.error("Missing argument, the class need seconds and days as parameters", missingParameters);
+            throw missingParameters;
         }
     }
 }

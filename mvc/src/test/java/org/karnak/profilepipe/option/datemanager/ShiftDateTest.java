@@ -1,13 +1,41 @@
 package org.karnak.profilepipe.option.datemanager;
 
+import org.dcm4che6.data.DicomObject;
+import org.dcm4che6.data.Tag;
+import org.dcm4che6.data.VR;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.karnak.data.profile.Argument;
 
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class ShiftDateTest {
+    private static DicomObject dataset = DicomObject.newDicomObject();
+    private static List<Argument> arguments = new ArrayList<>();
+    private static Argument seconds = new Argument();
+    private static Argument days = new Argument();
+
+    @BeforeAll
+    protected static void setUpBeforeClass() throws Exception {
+        seconds.setKey("seconds");
+        seconds.setValue("500");
+        days.setKey("days");
+        days.setValue("40");
+
+        arguments.add(seconds);
+        arguments.add(days);
+
+        dataset.setString(Tag.StudyDate, VR.DA, "20180209");
+        dataset.setString(Tag.StudyTime, VR.TM, "120843");
+        dataset.setString(Tag.PatientAge, VR.AS, "043Y");
+        dataset.setString(Tag.AcquisitionDateTime, VR.DT, "20180209120854.354");
+        dataset.setString(Tag.AcquisitionTime, VR.TM, "000134");
+    }
 
     @Test
     void DAbyDays() {
@@ -100,6 +128,48 @@ class ShiftDateTest {
         });
         Assertions.assertThrows(DateTimeParseException.class, () -> {
             ShiftDate.DTbyDays("20080728125989", 365, 60);
+        });
+    }
+
+    @Test
+    void shift() {
+
+        assertEquals("20171231",
+                ShiftDate.shift(dataset, dataset.get(Tag.StudyDate).orElse(null), arguments)
+        );
+        assertEquals("120023.000000",
+                ShiftDate.shift(dataset, dataset.get(Tag.StudyTime).orElse(null), arguments)
+        );
+        assertEquals("043Y",
+                ShiftDate.shift(dataset, dataset.get(Tag.PatientAge).orElse(null), arguments)
+        );
+        assertEquals("20171231120034.354000",
+                ShiftDate.shift(dataset, dataset.get(Tag.AcquisitionDateTime).orElse(null), arguments)
+        );
+        assertEquals("235314.000000",
+                ShiftDate.shift(dataset, dataset.get(Tag.AcquisitionTime).orElse(null), arguments)
+        );
+
+        seconds.setKey("notseconds");
+        days.setKey("days");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            ShiftDate.shift(dataset, dataset.get(Tag.AcquisitionTime).orElse(null), arguments);
+        });
+
+        seconds.setKey("seconds");
+        days.setKey("notdays");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            ShiftDate.shift(dataset, dataset.get(Tag.AcquisitionTime).orElse(null), arguments);
+        });
+
+        seconds.setKey("notseconds");
+        days.setKey("notdays");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            ShiftDate.shift(dataset, dataset.get(Tag.AcquisitionTime).orElse(null), arguments);
+        });
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            ShiftDate.shift(dataset, dataset.get(Tag.AcquisitionTime).orElse(null), new ArrayList<>());
         });
     }
 }
