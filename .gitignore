@@ -48,4 +48,4 @@ pnpm-lock.yaml
 #vscode config
 .vscode
 
-/logs
+logs/
