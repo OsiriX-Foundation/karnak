@@ -15,11 +15,11 @@ public class UID extends AbstractAction {
     }
 
     @Override
-    public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, String pseudo) {
+    public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, String patientID) {
         final String tagValueIn = dcm.getString(tag).orElse(null);
 
         String uidValue = dcm.getString(tag).orElse(null);
-        String uidHashed = AppConfig.getInstance().getHmac().uidHash(pseudo, uidValue);
+        String uidHashed = AppConfig.getInstance().getHmac().uidHash(patientID, uidValue);
         System.out.println(uidValue + " - " + uidHashed);
         dcm.setString(tag, VR.UI, uidHashed);
 

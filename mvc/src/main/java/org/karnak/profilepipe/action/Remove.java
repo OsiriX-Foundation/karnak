@@ -14,7 +14,7 @@ public class Remove extends AbstractAction {
     }
 
     @Override
-    public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, String pseudo) {
+    public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, String patientID) {
         final String tagValueIn = dcm.getString(tag).orElse(null);
         final Optional<DicomElement> dcmItem = dcm.get(tag);
 

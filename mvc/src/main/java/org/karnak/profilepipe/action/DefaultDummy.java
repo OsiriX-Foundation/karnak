@@ -19,7 +19,7 @@ public class DefaultDummy extends AbstractAction {
     }
 
     @Override
-    public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, String pseudo) {
+    public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, String patientID) {
         final String tagValueIn = dcm.getString(tag).orElse(null);
 
         final Optional<DicomElement> dcmItem = dcm.get(tag);
@@ -32,10 +32,10 @@ public class DefaultDummy extends AbstractAction {
             case DA -> "19991111";
             case DT -> "19991111111111";
             case TM -> "111111";
-            case UI -> AppConfig.getInstance().getHmac().uidHash(pseudo, tagValueIn);
+            case UI -> AppConfig.getInstance().getHmac().uidHash(patientID, tagValueIn);
             default -> null;
         };
         final ActionItem replace = new Replace(symbol, defaultDummyValue);
-        replace.execute(dcm, tag, iterator, pseudo);
+        replace.execute(dcm, tag, iterator, patientID);
     }
 }

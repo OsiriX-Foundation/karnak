@@ -18,5 +18,5 @@ public interface ActionItem {
 
     void setVr(VR vr);
 
-    void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, String pseudo);
+    void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, String patientID);
 }
