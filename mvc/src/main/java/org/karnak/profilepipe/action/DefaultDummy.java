@@ -3,7 +3,6 @@ package org.karnak.profilepipe.action;
 import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.VR;
-import org.dcm4che6.util.TagUtils;
 import org.karnak.data.AppConfig;
 
 import java.util.Iterator;
@@ -38,7 +37,5 @@ public class DefaultDummy extends AbstractAction {
         };
         final ActionItem replace = new Replace(symbol, defaultDummyValue);
         replace.execute(dcm, tag, iterator, pseudo);
-        final String tagValueOut = dcm.getString(tag).orElse(null);
-        LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_INOUT, TagUtils.toString(tag), tag, symbol, tagValueIn, tagValueOut);
     }
 }

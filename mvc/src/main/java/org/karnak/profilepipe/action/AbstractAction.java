@@ -1,5 +1,6 @@
 package org.karnak.profilepipe.action;
 
+import org.dcm4che6.data.VR;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
@@ -9,20 +10,29 @@ public abstract class AbstractAction implements ActionItem {
 
     protected final String symbol;
     protected String dummyValue;
+    protected VR vr;
     protected final Logger LOGGER = LoggerFactory.getLogger(AbstractAction.class);
     protected final Marker CLINICAL_MARKER = MarkerFactory.getMarker("CLINICAL");
     protected final String PATTERN_WITH_INOUT = "TAGHEX={} TAGINT={} DEIDENTACTION={} TAGVALUEIN={} TAGOUT={}";
     protected final String PATTERN_WITH_IN = "TAGHEX={} TAGINT={} DEIDENTACTION={} TAGVALUEIN={}";
-    protected final String DUMMY_DEIDENT_METHOD = "dDeidentMethod";
+    protected final String ADD_METHOD = "a";
 
     public AbstractAction(String symbol) {
         this.symbol = symbol;
         this.dummyValue = null;
+        this.vr = null;
     }
 
     public AbstractAction(String symbol, String dummyValue) {
         this.symbol = symbol;
         this.dummyValue = dummyValue;
+        this.vr = null;
+    }
+
+    public AbstractAction(String symbol, String dummyValue, VR vr){
+        this.symbol = symbol;
+        this.dummyValue = dummyValue;
+        this.vr = vr;
     }
 
     public static AbstractAction convertAction(String action) {
@@ -52,4 +62,7 @@ public abstract class AbstractAction implements ActionItem {
         this.dummyValue = dummyValue;
     }
 
+    public VR getVr() { return vr; }
+
+    public void setVr(VR vr) { this.vr = vr; }
 }
