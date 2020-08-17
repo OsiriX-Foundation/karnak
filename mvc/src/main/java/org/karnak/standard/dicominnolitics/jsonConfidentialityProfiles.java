@@ -1,6 +1,6 @@
 package org.karnak.standard.dicominnolitics;
 
-import org.karnak.profilepipe.action.Action;
+import org.karnak.profilepipe.action.*;
 
 public class jsonConfidentialityProfiles {
     private String id;
@@ -22,26 +22,26 @@ public class jsonConfidentialityProfiles {
         return tag;
     }
 
-    public Action getBasicProfile() {
+    public ActionItem getBasicProfile() {
         return convertAction(basicProfile);
     }
 
-    public Action getStdCompIOD() {
+    public ActionItem getStdCompIOD() {
         return convertAction(stdCompIOD);
     }
 
-    public Action getCleanDescOpt() {
+    public ActionItem getCleanDescOpt() {
         return convertAction(cleanDescOpt);
     }
 
-    private static Action convertAction(String strAction) {
+    private static ActionItem convertAction(String strAction) {
         return switch (strAction) {
-            case "D", "C", "Z/D", "X/D", "X/Z/D" -> Action.DEFAULT_DUMMY;
-            case "Z", "X/Z" -> Action.REPLACE_NULL;
-            case "X" -> Action.REMOVE;
-            case "K" -> Action.KEEP;
-            case "U", "X/Z/U" -> Action.UID;
-            default -> Action.REPLACE;
+            case "D", "C", "Z/D", "X/D", "X/Z/D" -> new DefaultDummy("DDum");
+            case "Z", "X/Z" -> new ReplaceNull("Z");
+            case "X" -> new Remove("X");
+            case "K" -> new Keep("K");
+            case "U", "X/Z/U", "X/Z/U*" -> new UID("U");
+            default -> new Replace("D");
         };
     }
 }

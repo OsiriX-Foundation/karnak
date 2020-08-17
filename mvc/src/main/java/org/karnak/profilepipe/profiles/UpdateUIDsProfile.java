@@ -3,9 +3,7 @@ package org.karnak.profilepipe.profiles;
 import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
 import org.karnak.data.profile.ProfileElement;
-import org.karnak.profilepipe.action.Action;
-
-import java.util.List;
+import org.karnak.profilepipe.action.*;
 
 public class UpdateUIDsProfile extends AbstractProfileItem {
 
@@ -19,8 +17,8 @@ public class UpdateUIDsProfile extends AbstractProfileItem {
     }
 
     @Override
-    public Action getAction(DicomObject dcmCopy, DicomElement dcmElem) {
-        Action val = tagMap.get(dcmElem.tag());
+    public ActionItem getAction(DicomObject dcmCopy, DicomElement dcmElem) {
+        ActionItem val = tagMap.get(dcmElem.tag());
         if (val != null) {
             return val;
         }
@@ -28,8 +26,8 @@ public class UpdateUIDsProfile extends AbstractProfileItem {
     }
 
     @Override
-    public Action put(int tag, Action action) {
-        if (action != Action.UID && action != Action.REMOVE && action != Action.REPLACE_NULL) {
+    public ActionItem put(int tag, ActionItem action) {
+        if ( !(UID.class.isInstance(action)) && !(Remove.class.isInstance(action)) && !(ReplaceNull.class.isInstance(action))) {
             throw new IllegalStateException(String.format("The action %s is not consistent !", action));
         }
         return tagMap.put(tag, action);

@@ -3,16 +3,16 @@ package org.karnak.profilepipe.profiles;
 import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
 import org.karnak.data.profile.Argument;
-import org.karnak.profilepipe.action.Action;
+import org.karnak.profilepipe.action.ActionItem;
 
 import java.util.List;
 
 public interface ProfileItem {
-    Action getAction(DicomObject dcmCopy, DicomElement dcmElem);
+    ActionItem getAction(DicomObject dcmCopy, DicomElement dcmElem);
 
-    Action put(int tag, Action action);
+    ActionItem put(int tag, ActionItem action);
 
-    Action remove(int tag);
+    ActionItem remove(int tag);
 
     void clearTagMap();
 

@@ -4,7 +4,7 @@ import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
 import org.karnak.data.AppConfig;
 import org.karnak.data.profile.ProfileElement;
-import org.karnak.profilepipe.action.Action;
+import org.karnak.profilepipe.action.ActionItem;
 import org.karnak.profilepipe.utils.TagActionMap;
 import org.karnak.standard.ConfidentialityProfiles;
 
@@ -22,12 +22,12 @@ public class BasicProfile extends AbstractProfileItem {
     }
 
     @Override
-    public Action getAction(DicomObject dcmCopy, DicomElement dcmElem) {
+    public ActionItem getAction(DicomObject dcmCopy, DicomElement dcmElem) {
         int tag = dcmElem.tag();
-        Action action = actionMap.get(tag);
+        ActionItem action = actionMap.get(tag);
         if (action == null) {
             for (ProfileItem p : listProfiles) {
-                Action val = p.getAction(dcmCopy, dcmElem);
+                ActionItem val = p.getAction(dcmCopy, dcmElem);
                 if(val != null){
                     return val;
                 }
