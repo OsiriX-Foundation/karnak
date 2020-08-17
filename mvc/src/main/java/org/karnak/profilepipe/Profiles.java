@@ -90,7 +90,7 @@ public class Profiles {
 
             for (ProfileItem profile : profiles) {
                 final boolean conditionIsOk = getResultCondition(profile.getCondition(), myDCMElem);
-                final ActionItem action = profile.getAction(dcm, dcmEl);
+                final ActionItem action = profile.getAction(dcm, dcmEl, patientID);
                 if (action != null && conditionIsOk) {
                     try {
                         action.execute(dcm, dcmEl.tag(), iterator, patientID);

@@ -42,7 +42,7 @@ public class PrivateTags extends AbstractProfileItem {
     }
 
     @Override
-    public ActionItem getAction(DicomObject dcmCopy, DicomElement dcmElem) {
+    public ActionItem getAction(DicomObject dcmCopy, DicomElement dcmElem, String PatientID) {
         final int tag = dcmElem.tag();
         if (TagUtils.isPrivateGroup(tag)) {
             if (tagsAction.isEmpty() == false && exceptedTagsAction.isEmpty()) {
