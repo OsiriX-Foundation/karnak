@@ -225,15 +225,15 @@ public class ShiftDate {
     }
 
     public static String shift(DicomObject dcm, DicomElement dcmEl, List<Argument> arguments) {
-        String dcmElValue = dcm.getString(dcmEl.tag()).orElse(null);
-        int shiftDays = -1;
-        int shiftSeconds = -1;
-
         try {
             verifyShiftArguments(arguments);
         } catch(IllegalArgumentException e) {
             throw e;
         }
+
+        String dcmElValue = dcm.getString(dcmEl.tag()).orElse(null);
+        int shiftDays = -1;
+        int shiftSeconds = -1;
 
         for (Argument argument: arguments) {
             final String key = argument.getKey();
