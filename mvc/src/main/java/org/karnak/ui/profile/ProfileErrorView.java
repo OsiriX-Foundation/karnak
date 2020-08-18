@@ -4,7 +4,6 @@ import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.icon.IronIcon;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import org.karnak.data.profile.ProfileElement;
 
@@ -64,7 +63,7 @@ public class ProfileErrorView extends VerticalLayout {
     private Div setProfileName(String name) {
         Div profileNameDiv = new Div();
         profileNameDiv.add(new Text(name));
-        profileNameDiv.getStyle().set("font-weight", "bold").set("padding-left", "5px");
+        profileNameDiv.getStyle().set("font-weight", "bold");
         return profileNameDiv;
     }
 

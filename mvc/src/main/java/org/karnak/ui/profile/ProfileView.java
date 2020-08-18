@@ -96,8 +96,9 @@ public class ProfileView extends HorizontalLayout {
             Predicate<ProfileError> errorPredicate = profileError -> profileError.getError() != null;
             if (!profileErrors.stream().anyMatch(errorPredicate)) {
                 remove(profileErrorView);
-                profilePipeService.saveProfilePipe(profilePipe, false);
+                Profile newProfile = profilePipeService.saveProfilePipe(profilePipe, false);
                 profileNameGrid.updatedProfilePipesView();
+                profileNameGrid.selectRow(newProfile);
             } else {
                 profileErrorView.setView(profileErrors);
             }
