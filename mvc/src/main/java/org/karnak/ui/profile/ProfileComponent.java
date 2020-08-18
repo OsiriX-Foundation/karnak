@@ -1,6 +1,5 @@
 package org.karnak.ui.profile;
 
-import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import org.karnak.data.profile.Profile;
@@ -66,11 +65,5 @@ public class ProfileComponent extends VerticalLayout {
             this.profile = profile;
             setProfile();
         }
-    }
-
-    public void setError() {
-        removeAll();
-        Text error = new Text("An error occured");
-        add(error);
     }
 }
