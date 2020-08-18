@@ -27,6 +27,7 @@ public class ActionDates extends AbstractProfileItem {
         tagsAction = new TagActionMap();
         exceptedTagsAction = new TagActionMap();
         actionByDefault = new Replace("D");
+        profileValidation();
         setActionHashMap();
     }
 
@@ -42,6 +43,9 @@ public class ActionDates extends AbstractProfileItem {
             }
         }
     }
+
+    @Override
+    public void profileValidation() throws Exception {}
 
     @Override
     public ActionItem getAction(DicomObject dcmCopy, DicomElement dcmElem, String PatientID) {

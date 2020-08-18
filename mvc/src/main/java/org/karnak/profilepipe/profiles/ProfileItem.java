@@ -27,4 +27,6 @@ public interface ProfileItem {
     List<Argument> getArguments();
 
     Integer getPosition();
+
+    void profileValidation() throws Exception;
 }

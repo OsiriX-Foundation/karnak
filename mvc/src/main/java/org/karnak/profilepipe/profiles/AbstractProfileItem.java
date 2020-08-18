@@ -114,4 +114,7 @@ public abstract class AbstractProfileItem implements ProfileItem {
         */
         return tagMap.put(tag, action);
     }
+
+    @Override
+    public void profileValidation() throws Exception {}
 }

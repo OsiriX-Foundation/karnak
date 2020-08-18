@@ -23,7 +23,7 @@ public class PrivateTags extends AbstractProfileItem {
         tagsAction = new TagActionMap();
         exceptedTagsAction = new TagActionMap();
         actionByDefault = AbstractAction.convertAction(this.action);
-        errorManagement();
+        profileValidation();
         setActionHashMap();
     }
 
@@ -66,7 +66,7 @@ public class PrivateTags extends AbstractProfileItem {
         return null;
     }
 
-    private void errorManagement() throws Exception{
+    public void profileValidation() throws Exception{
         if (action == null) {
             throw new Exception("Cannot build the profile " + codeName + ": Unknown Action");
         }
