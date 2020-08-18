@@ -73,13 +73,13 @@ public class ShiftRangeDate {
         return null;
     }
 
-    private static void verifyShiftArguments(List<Argument> arguments) throws IllegalArgumentException {
+    public static void verifyShiftArguments(List<Argument> arguments) throws IllegalArgumentException {
         if (!arguments.stream().anyMatch(argument -> argument.getKey().equals("max_seconds")) ||
                 !arguments.stream().anyMatch(argument -> argument.getKey().equals("max_days"))) {
             List<String> args = arguments.stream()
                     .map(argument -> argument.getKey())
                     .collect(Collectors.toList());
-            String text = "Missing argument, the class minimum need [max_seconds, max_days] as parameters. Parameters given " + args;
+            String text = "Cannot build the option ShiftRangeDate: Missing argument, the class minimum need [max_seconds, max_days] as parameters. Parameters given " + args;
 
             IllegalArgumentException missingParameters = new IllegalArgumentException(text);
             LOGGER.error(text, missingParameters);

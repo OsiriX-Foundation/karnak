@@ -45,7 +45,20 @@ public class ActionDates extends AbstractProfileItem {
     }
 
     @Override
-    public void profileValidation() throws Exception {}
+    public void profileValidation() throws Exception {
+        try {
+            if (option == null) {
+                throw new Exception("Cannot build the profile " + codeName + " : An option must be given. Option available: [shift, shift_range]");
+            }
+            switch (option) {
+                case "shift" -> ShiftDate.verifyShiftArguments(arguments);
+                case "shift_range" -> shiftRangeDate.verifyShiftArguments(arguments);
+                default -> throw new Exception("Cannot build the profile " + codeName + " with the option given " + option + " : Option available (shift, shift_range)");
+            }
+        } catch (Exception e) {
+            throw e;
+        }
+    }
 
     @Override
     public ActionItem getAction(DicomObject dcmCopy, DicomElement dcmElem, String PatientID) {

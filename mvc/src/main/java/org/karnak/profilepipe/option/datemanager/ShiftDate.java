@@ -263,14 +263,14 @@ public class ShiftDate {
         }
     }
 
-    private static void verifyShiftArguments(List<Argument> arguments) throws IllegalArgumentException {
+    public static void verifyShiftArguments(List<Argument> arguments) throws IllegalArgumentException {
         if (!arguments.stream().anyMatch(argument -> argument.getKey().equals("seconds")) ||
                 !arguments.stream().anyMatch(argument -> argument.getKey().equals("days"))) {
             List<String> args = arguments.stream()
                     .map(argument -> argument.getKey())
                     .collect(Collectors.toList());
             IllegalArgumentException missingParameters = new IllegalArgumentException(
-                    "Missing argument, the class need [seconds, days] as parameters. Parameters given " + args
+                    "Cannot build the option ShiftDate: Missing argument, the class need [seconds, days] as parameters. Parameters given " + args
             );
             LOGGER.error("Missing argument, the class need seconds and days as parameters", missingParameters);
             throw missingParameters;
