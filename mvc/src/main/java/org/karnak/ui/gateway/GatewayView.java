@@ -49,6 +49,10 @@ public class GatewayView extends HorizontalLayout implements HasUrlParameter<Str
 
     private TextField filter;
     private Button newForwardNode;
+
+    private TextField newAETitleForwardNode;
+    private Button addNewForwardNode;
+    private Button cancelNewForwardNode;
     private ForwardNodeGrid grid;
 
     private ForwardNodeForm form;
@@ -97,17 +101,59 @@ public class GatewayView extends HorizontalLayout implements HasUrlParameter<Str
         filter.addValueChangeListener(event -> dataProvider.setFilter(event.getValue()));
         filter.addFocusShortcut(Key.KEY_F, KeyModifier.CONTROL);
 
+
+        newAETitleForwardNode = new TextField();
+        newAETitleForwardNode.setPlaceholder("Forward AETitle");
+        newAETitleForwardNode.setVisible(false);
+
+        addNewForwardNode = new Button("Add");
+        addNewForwardNode.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        addNewForwardNode.setIcon(VaadinIcon.PLUS_CIRCLE.create());
+        addNewForwardNode.setVisible(false);
+        addNewForwardNode.addClickListener(click -> {
+            form.setEnabled(false);
+            filter.setVisible(true);
+            newForwardNode.setVisible(true);
+            newAETitleForwardNode.setVisible(false);
+            addNewForwardNode.setVisible(false);
+            cancelNewForwardNode.setVisible(false);
+            final ForwardNode forwardNode = new ForwardNode(newAETitleForwardNode.getValue());
+            updateForwardNode(forwardNode);
+        });
+
+        cancelNewForwardNode= new Button("Cancel");
+        cancelNewForwardNode.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        cancelNewForwardNode.setVisible(false);
+        cancelNewForwardNode.addClickListener(click -> {
+            form.setEnabled(false);
+            filter.setVisible(true);
+            newForwardNode.setVisible(true);
+            newAETitleForwardNode.setVisible(false);
+            addNewForwardNode.setVisible(false);
+            cancelNewForwardNode.setVisible(false);
+        });
+
         newForwardNode = new Button("New forward node");
         newForwardNode.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         newForwardNode.setIcon(VaadinIcon.PLUS_CIRCLE.create());
-        newForwardNode.addClickListener(click -> viewLogic.newForwardNode());
+        newForwardNode.addClickListener(click -> {
+            form.setEnabled(false);
+            filter.setVisible(false);
+            newForwardNode.setVisible(false);
+            newAETitleForwardNode.setVisible(true);
+            newAETitleForwardNode.setValue("");
+            addNewForwardNode.setVisible(true);
+            cancelNewForwardNode.setVisible(true);
+
+        });
         // CTRL+N will create a new window which is unavoidable
         newForwardNode.addClickShortcut(Key.KEY_N, KeyModifier.ALT);
 
         HorizontalLayout topLayout = new HorizontalLayout();
         topLayout.setWidth("100%");
-        topLayout.add(filter);
+        //topLayout.add(filter);
         topLayout.add(newForwardNode);
+        topLayout.add(newAETitleForwardNode, addNewForwardNode, cancelNewForwardNode);
         topLayout.setVerticalComponentAlignment(Alignment.START, filter);
         topLayout.expand(filter);
         return topLayout;
