@@ -26,15 +26,18 @@ public class ProfilesMetadata extends VerticalLayout {
             if (profileElement.getCodename() != null) {
                 add(setProfileValue("Codename : " + profileElement.getCodename()));
             }
+            if (profileElement.getAction() != null) {
+                add(setProfileValue("Action : " + profileElement.getAction()));
+            }
+            if (profileElement.getOption() != null){
+                add(setProfileValue("Option : " + profileElement.getOption()));
+            }
             if (profileElement.getArguments() != null && profileElement.getArguments().size() > 0){
                 add(setProfileValue("Arguments"));
                 add(setProfileArguments(profileElement.getArguments()));
             }
             if (profileElement.getCondition() != null) {
                 add(setProfileValue("Condition : " + profileElement.getCondition()));
-            }
-            if (profileElement.getAction() != null) {
-                add(setProfileValue("Action : " + profileElement.getAction()));
             }
             if (profileElement.getIncludedtag().size() > 0) {
                 add(setProfileValue("Tags"));
