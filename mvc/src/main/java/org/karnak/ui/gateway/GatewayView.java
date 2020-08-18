@@ -119,6 +119,7 @@ public class GatewayView extends HorizontalLayout implements HasUrlParameter<Str
             cancelNewForwardNode.setVisible(false);
             final ForwardNode forwardNode = new ForwardNode(newAETitleForwardNode.getValue());
             updateForwardNode(forwardNode);
+            grid.getSelectionModel().select(forwardNode);
         });
 
         cancelNewForwardNode= new Button("Cancel");
