@@ -130,7 +130,7 @@ public class SourceNodeForm extends VerticalLayout {
         });
 
         add(UIS.setWidthFull( //
-            new HorizontalLayout(update, discard, remove, cancel)));
+            new HorizontalLayout(update, remove, cancel)));
     }
 
     public void editSourceNode(DicomSourceNode data) {

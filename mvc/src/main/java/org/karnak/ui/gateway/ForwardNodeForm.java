@@ -156,7 +156,7 @@ public class ForwardNodeForm extends Div {
         });
 
         content.add(UIS.setWidthFull( //
-                new HorizontalLayout(save, discard, delete, cancel)));
+                new HorizontalLayout(save, delete, cancel)));
     }
 
     public void editForwardNode(ForwardNode data) {

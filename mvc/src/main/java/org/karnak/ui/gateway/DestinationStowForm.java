@@ -252,7 +252,7 @@ public class DestinationStowForm extends VerticalLayout {
         });
 
         add(UIS.setWidthFull( //
-                new HorizontalLayout(update, discard, remove, cancel)));
+                new HorizontalLayout(update, remove, cancel)));
     }
 
     public void editDestination(Destination data) {
