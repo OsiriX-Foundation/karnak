@@ -135,7 +135,6 @@ public class SourceNodeForm extends VerticalLayout {
 
     public void editSourceNode(DicomSourceNode data) {
         remove.setVisible(data != null);
-        cancel.setVisible(data == null);
         if (data == null) {
             data = DicomSourceNode.ofEmpty();
         }

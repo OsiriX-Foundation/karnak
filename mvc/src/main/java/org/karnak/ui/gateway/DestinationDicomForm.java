@@ -282,7 +282,6 @@ public class DestinationDicomForm extends VerticalLayout {
 
     public void editDestination(Destination data) {
         remove.setVisible(data != null);
-        cancel.setVisible(data == null);
         if (data == null) {
             data = Destination.ofDicomEmpty();
         }

@@ -164,7 +164,6 @@ public class ForwardNodeForm extends Div {
             data = ForwardNode.ofEmpty();
         }
         delete.setVisible(!data.isNewData());
-        cancel.setVisible(data.isNewData());
         currentForwardNode = data;
         destinationLogic.init(data);
         sourceNodeLogic.init(data);
@@ -183,5 +182,9 @@ public class ForwardNodeForm extends Div {
         fwdAeTitle.setVisible(show);
         description.setVisible(show);
         tabs.setVisible(show);
+        save.setVisible(show);
+        discard.setVisible(show);
+        delete.setVisible(show);
+        cancel.setVisible(show);
     }
 }
