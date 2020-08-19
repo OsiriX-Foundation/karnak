@@ -45,7 +45,7 @@ public class GatewayView extends HorizontalLayout implements HasUrlParameter<Str
     public static final String VIEW_NAME = "Gateway";
 
     private final ForwardNodeDataProvider dataProvider;
-    private final GatewayViewLogic viewLogic;
+    private final GatewayViewLogic gatewayViewLogic;
 
     private TextField filter;
     private Button newForwardNode;
@@ -55,11 +55,11 @@ public class GatewayView extends HorizontalLayout implements HasUrlParameter<Str
     private Button cancelNewForwardNode;
     private ForwardNodeGrid grid;
 
-    private ForwardNodeForm form;
+    private ForwardNodeForm forwardNodeForm;
 
     public GatewayView() {
         this.dataProvider = buidDataProvider();
-        this.viewLogic = new GatewayViewLogic(this);
+        this.gatewayViewLogic = new GatewayViewLogic(this);
 
         setSizeFull();
 
@@ -67,9 +67,9 @@ public class GatewayView extends HorizontalLayout implements HasUrlParameter<Str
 
         grid = new ForwardNodeGrid();
         grid.setDataProvider(this.dataProvider);
-        grid.asSingleSelect().addValueChangeListener(event -> viewLogic.rowSelected(event.getValue()));
+        grid.asSingleSelect().addValueChangeListener(event -> gatewayViewLogic.rowSelected(event.getValue()));
 
-        form = new ForwardNodeForm(this.dataProvider.getDataService(), viewLogic);
+        forwardNodeForm = new ForwardNodeForm(this.dataProvider.getDataService(), gatewayViewLogic);
 
         VerticalLayout barAndGridLayout = new VerticalLayout();
         barAndGridLayout.add(topLayout);
@@ -80,14 +80,18 @@ public class GatewayView extends HorizontalLayout implements HasUrlParameter<Str
         barAndGridLayout.expand(grid);
 
         add(barAndGridLayout);
-        add(form);
+        add(forwardNodeForm);
 
-        viewLogic.init();
+        gatewayViewLogic.init();
+    }
+
+    public ForwardNodeForm getForwardNodeForm() {
+        return forwardNodeForm;
     }
 
     @Autowired
     private void addEventManager(ApplicationEventPublisher publisher) {
-        viewLogic.setApplicationEventPublisher(publisher);
+        gatewayViewLogic.setApplicationEventPublisher(publisher);
     }
 
     private ForwardNodeDataProvider buidDataProvider() {
@@ -111,7 +115,7 @@ public class GatewayView extends HorizontalLayout implements HasUrlParameter<Str
         addNewForwardNode.setIcon(VaadinIcon.PLUS_CIRCLE.create());
         addNewForwardNode.setVisible(false);
         addNewForwardNode.addClickListener(click -> {
-            form.setEnabled(false);
+            forwardNodeForm.setEnabled(false);
             filter.setVisible(true);
             newForwardNode.setVisible(true);
             newAETitleForwardNode.setVisible(false);
@@ -126,7 +130,7 @@ public class GatewayView extends HorizontalLayout implements HasUrlParameter<Str
         cancelNewForwardNode.addThemeVariants(ButtonVariant.LUMO_ERROR);
         cancelNewForwardNode.setVisible(false);
         cancelNewForwardNode.addClickListener(click -> {
-            form.setEnabled(false);
+            forwardNodeForm.setEnabled(false);
             filter.setVisible(true);
             newForwardNode.setVisible(true);
             newAETitleForwardNode.setVisible(false);
@@ -138,7 +142,7 @@ public class GatewayView extends HorizontalLayout implements HasUrlParameter<Str
         newForwardNode.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         newForwardNode.setIcon(VaadinIcon.PLUS_CIRCLE.create());
         newForwardNode.addClickListener(click -> {
-            form.setEnabled(false);
+            forwardNodeForm.setEnabled(false);
             filter.setVisible(false);
             newForwardNode.setVisible(false);
             newAETitleForwardNode.setVisible(true);
@@ -223,30 +227,30 @@ public class GatewayView extends HorizontalLayout implements HasUrlParameter<Str
         }
         dataProvider.save(data);
         grid.getDataProvider().refreshAll();
-        viewLogic.getApplicationEventPublisher().publishEvent(new NodeEvent(data, eventType));
+        gatewayViewLogic.getApplicationEventPublisher().publishEvent(new NodeEvent(data, eventType));
     }
 
     protected void removeForwardNode(ForwardNode data) {
-        viewLogic.getApplicationEventPublisher().publishEvent(new NodeEvent(data, NodeEventType.REMOVE));
+        gatewayViewLogic.getApplicationEventPublisher().publishEvent(new NodeEvent(data, NodeEventType.REMOVE));
         dataProvider.delete(data);
     }
 
     protected void editForwardNode(ForwardNode data) {
         showForm(data != null);
-        form.editForwardNode(data);
+        forwardNodeForm.editForwardNode(data);
     }
 
     protected void showForm(boolean show) {
-        form.setVisible(true);
-        form.setEnabled(show);
+        forwardNodeForm.setVisible(true);
+        forwardNodeForm.setEnabled(show);
     }
 
     @Override
     public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
-        viewLogic.enter(parameter);
+        gatewayViewLogic.enter(parameter);
     }
 
     public void validateView() {
-        form.validateView();
+        forwardNodeForm.validateView();
     }
 }

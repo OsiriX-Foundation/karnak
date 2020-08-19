@@ -24,10 +24,8 @@ import com.vaadin.flow.data.value.ValueChangeMode;
  * A form for editing a single destination.
  */
 @SuppressWarnings("serial")
-public class DestinationStowForm extends Div {
+public class DestinationStowForm extends VerticalLayout {
     private DestinationLogic viewLogic;
-
-    private VerticalLayout content;
 
     private final TextField description;
     private final TextField url;
@@ -59,10 +57,6 @@ public class DestinationStowForm extends Div {
         this.binder = new BeanValidationBinder<>(Destination.class);
 
         setClassName("destination-form");
-
-        content = new VerticalLayout();
-        content.setSizeFull();
-        add(content);
 
         description = new TextField("Description");
         description.setWidth("100%");
@@ -182,21 +176,21 @@ public class DestinationStowForm extends Div {
 
         filterSopForm = new FilterBySOPClassesForm(this.dataService, this.binder);
 
-        content.add(UIS.setWidthFull( //
+        add(UIS.setWidthFull( //
                 new HorizontalLayout(description)));
-        content.add(UIS.setWidthFull( //
+        add(UIS.setWidthFull( //
                 new HorizontalLayout(url, urlCredentials)));
-        content.add(UIS.setWidthFull( //
+        add(UIS.setWidthFull( //
                 headers));
-        content.add(UIS.setWidthFull( //
+        add(UIS.setWidthFull( //
                 new HorizontalLayout(notify)));
-        content.add(UIS.setWidthFull( //
+        add(UIS.setWidthFull( //
                 new HorizontalLayout(notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues,
                         notifyInterval)));
-        content.add(UIS.setWidthFull( //
+        add(UIS.setWidthFull( //
                 desidentificationLayout));
 
-        content.add(filterSopForm);
+        add(filterSopForm);
 
         // Define the same validators as the Destination class, because the validation
         // bean doesn't work in Vaadin
@@ -257,7 +251,7 @@ public class DestinationStowForm extends Div {
             }
         });
 
-        content.add(UIS.setWidthFull( //
+        add(UIS.setWidthFull( //
                 new HorizontalLayout(update, discard, remove, cancel)));
     }
 

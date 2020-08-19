@@ -20,10 +20,8 @@ import com.vaadin.flow.data.value.ValueChangeMode;
  * A form for editing a single soure node.
  */
 @SuppressWarnings("serial")
-public class SourceNodeForm extends Div {
+public class SourceNodeForm extends VerticalLayout {
     private SourceNodeLogic viewLogic;
-
-    private VerticalLayout content;
 
     private final TextField description;
     private final TextField aeTitle;
@@ -43,9 +41,7 @@ public class SourceNodeForm extends Div {
 
         setClassName("sourcenode-form");
 
-        content = new VerticalLayout();
-        content.setSizeFull();
-        add(content);
+        setSizeFull();
 
         aeTitle = new TextField("AETitle");
         aeTitle.setRequired(true);
@@ -87,9 +83,9 @@ public class SourceNodeForm extends Div {
         UIS.setTooltip(checkHostname,
             "if \"true\" check the hostname during the DICOM association and if not match the connection is abort");
 
-        content.add(UIS.setWidthFull(new HorizontalLayout(aeTitle, description)));
-        content.add(UIS.setWidthFull(new HorizontalLayout(hostname)));
-        content.add(UIS.setWidthFull(checkHostname));
+        add(UIS.setWidthFull(new HorizontalLayout(aeTitle, description)));
+        add(UIS.setWidthFull(new HorizontalLayout(hostname)));
+        add(UIS.setWidthFull(checkHostname));
 
         binder = new BeanValidationBinder<>(DicomSourceNode.class);
         binder.bindInstanceFields(this);
@@ -133,7 +129,7 @@ public class SourceNodeForm extends Div {
             }
         });
 
-        content.add(UIS.setWidthFull( //
+        add(UIS.setWidthFull( //
             new HorizontalLayout(update, discard, remove, cancel)));
     }
 

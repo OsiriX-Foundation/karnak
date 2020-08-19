@@ -25,7 +25,7 @@ import com.vaadin.flow.data.value.ValueChangeMode;
  * A form for editing a single destination.
  */
 @SuppressWarnings("serial")
-public class DestinationDicomForm extends Div {
+public class DestinationDicomForm extends VerticalLayout {
     private DestinationLogic viewLogic;
 
     private VerticalLayout content;

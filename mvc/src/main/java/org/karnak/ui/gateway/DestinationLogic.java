@@ -14,11 +14,11 @@ import org.karnak.ui.authentication.AccessControlFactory;
 public class DestinationLogic implements Serializable {
     private static final long serialVersionUID = -1056308023882753627L;
 
-    private final GatewayViewLogic outputLogic;
+    private final GatewayViewLogic gatewayViewLogic;
     private final DestinationView view;
 
-    public DestinationLogic(GatewayViewLogic outputLogic, DestinationView view) {
-        this.outputLogic = outputLogic;
+    public DestinationLogic(GatewayViewLogic gatewayViewLogic, DestinationView view) {
+        this.gatewayViewLogic = gatewayViewLogic;
         this.view = view;
     }
 
@@ -31,8 +31,8 @@ public class DestinationLogic implements Serializable {
         }
     }
 
-    public GatewayViewLogic getOutputLogic() {
-        return outputLogic;
+    public GatewayViewLogic getGatewayViewLogic() {
+        return gatewayViewLogic;
     }
 
     public void cancelDestination() {
@@ -45,14 +45,14 @@ public class DestinationLogic implements Serializable {
         view.clearSelection();
         view.updateDestination(data);
         view.showSaveNotification(data.getStringReference() + (newData ? " created" : " updated"));
-        outputLogic.validateView();
+        gatewayViewLogic.validateView();
     }
 
     public void deleteDestination(Destination data) {
         view.clearSelection();
         view.removeDestination(data);
         view.showSaveNotification(data.getStringReference() + " removed");
-        outputLogic.validateView();
+        gatewayViewLogic.validateView();
     }
 
     public void editDestination(Destination data) {

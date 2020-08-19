@@ -70,28 +70,6 @@
             background: var(--lumo-base-color);
         }
 
-        .destination-form {
-            position: absolute;
-            left: 0;
-            bottom: 0;
-            height: 100%;
-            width: 50%;
-            overflow: auto;
-            background: var(--lumo-base-color);
-            box-shadow: var(--overlay-box-shadow);
-        }
-
-        .sourcenode-form {
-            position: absolute;
-            left: 0;
-            bottom: 0;
-            height: 100%;
-            width: 50%;
-            overflow: auto;
-            background: var(--lumo-base-color);
-            box-shadow: var(--overlay-box-shadow);
-        }
-
         .inputsourcenode-form {
             height: 100%;
             width: 250%;

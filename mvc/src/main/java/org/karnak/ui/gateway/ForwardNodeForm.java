@@ -23,7 +23,7 @@ import com.vaadin.flow.data.value.ValueChangeMode;
  */
 @SuppressWarnings("serial")
 public class ForwardNodeForm extends Div {
-    private final GatewayViewLogic viewLogic;
+    private final GatewayViewLogic gatewayViewLogic;
 
     private final DestinationView destinationView;
     private final DestinationLogic destinationLogic;
@@ -40,18 +40,19 @@ public class ForwardNodeForm extends Div {
     private Button discard;
     private Button cancel;
     private Button delete;
+    private Tabs tabs;
 
     private Binder<ForwardNode> binder;
     private ForwardNode currentForwardNode;
 
-    public ForwardNodeForm(DataService dataService, GatewayViewLogic viewLogic) {
-        this.viewLogic = viewLogic;
+    public ForwardNodeForm(DataService dataService, GatewayViewLogic gatewayViewLogic) {
+        this.gatewayViewLogic = gatewayViewLogic;
 
-        this.destinationView = new DestinationView(dataService, viewLogic);
-        this.destinationLogic = destinationView.getViewLogic();
+        this.destinationView = new DestinationView(dataService, gatewayViewLogic);
+        this.destinationLogic = destinationView.getDestinationLogic();
 
-        this.sourceNodeView = new SourceNodeView(dataService, viewLogic);
-        this.sourceNodeLogic = sourceNodeView.getViewLogic();
+        this.sourceNodeView = new SourceNodeView(dataService, gatewayViewLogic);
+        this.sourceNodeLogic = sourceNodeView.getSourceNodeLogic();
 
         setClassName("forwardnode-form");
 
@@ -89,7 +90,7 @@ public class ForwardNodeForm extends Div {
 
         Tab sourcesTab = new Tab("Sources");
         Tab destinationsTab = new Tab("Destinations");
-        Tabs tabs = new Tabs(sourcesTab, destinationsTab);
+        tabs = new Tabs(sourcesTab, destinationsTab);
         tabs.addSelectedChangeListener(event -> {
             Tab selectedTab = event.getSource().getSelectedTab();
             if (selectedTab == sourcesTab) {
@@ -126,20 +127,20 @@ public class ForwardNodeForm extends Div {
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         save.addClickListener(event -> {
             if (currentForwardNode != null && binder.writeBeanIfValid(currentForwardNode)) {
-                this.viewLogic.saveForwardNode(currentForwardNode);
+                this.gatewayViewLogic.saveForwardNode(currentForwardNode);
             }
         });
         save.addClickShortcut(Key.KEY_S, KeyModifier.CONTROL);
 
         discard = new Button("Discard changes");
         discard.setWidth("100%");
-        discard.addClickListener(event -> this.viewLogic.discardForwardNode(currentForwardNode));
+        discard.addClickListener(event -> this.gatewayViewLogic.discardForwardNode(currentForwardNode));
 
         cancel = new Button("Cancel");
         cancel.setWidth("100%");
-        cancel.addClickListener(event -> this.viewLogic.cancelForwardNode());
+        cancel.addClickListener(event -> this.gatewayViewLogic.cancelForwardNode());
         cancel.addClickShortcut(Key.ESCAPE);
-        getElement().addEventListener("keydown", event -> this.viewLogic.cancelForwardNode())
+        getElement().addEventListener("keydown", event -> this.gatewayViewLogic.cancelForwardNode())
                 .setFilter("event.key == 'Escape'");
 
         delete = new Button("Delete");
@@ -149,7 +150,7 @@ public class ForwardNodeForm extends Div {
             if (currentForwardNode != null) {
                 ConfirmDialog dialog = new ConfirmDialog(
                         "Are you sure to delete the forward node " + currentForwardNode.getFwdAeTitle() + " ?");
-                dialog.addConfirmationListener(componentEvent -> this.viewLogic.deleteForwardNode(currentForwardNode));
+                dialog.addConfirmationListener(componentEvent -> this.gatewayViewLogic.deleteForwardNode(currentForwardNode));
                 dialog.open();
             }
         });
@@ -176,5 +177,11 @@ public class ForwardNodeForm extends Div {
 
     public boolean hasChanges() {
         return binder.hasChanges() || destinationView.hasChanges() || sourceNodeView.hasChanges();
+    }
+
+    public void showForm(boolean show){
+        fwdAeTitle.setVisible(show);
+        description.setVisible(show);
+        tabs.setVisible(show);
     }
 }

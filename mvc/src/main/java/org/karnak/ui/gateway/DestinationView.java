@@ -23,7 +23,7 @@ import com.vaadin.flow.component.textfield.TextField;
 @SuppressWarnings("serial")
 public class DestinationView extends HorizontalLayout {
     private final DestinationDataProvider dataProvider;
-    private final DestinationLogic viewLogic;
+    private final DestinationLogic destinationLogic;
 
     private TextField filter;
     private Button newDestinationDicom;
@@ -32,12 +32,15 @@ public class DestinationView extends HorizontalLayout {
 
     private DestinationDicomForm dicomForm;
     private DestinationStowForm stowForm;
+    private VerticalLayout barAndGridLayout;
+    private GatewayViewLogic gatewayViewLogic;
 
     private SOPClassUIDPersistence sopClassUIDPersistence = GatewayConfiguration.getInstance().getSopClassUIDPersistence();
 
-    public DestinationView(DataService dataService, GatewayViewLogic outputLogic) {
+    public DestinationView(DataService dataService, GatewayViewLogic gatewayViewLogic) {
+        this.gatewayViewLogic = gatewayViewLogic;
         this.dataProvider = new DestinationDataProvider(dataService);
-        this.viewLogic = new DestinationLogic(outputLogic, this);
+        this.destinationLogic = new DestinationLogic(gatewayViewLogic, this);
 
         setSizeFull();
 
@@ -45,12 +48,12 @@ public class DestinationView extends HorizontalLayout {
 
         grid = new DestinationGrid();
         grid.setDataProvider(this.dataProvider);
-        grid.asSingleSelect().addValueChangeListener(event -> viewLogic.rowSelected(event.getValue()));
+        grid.asSingleSelect().addValueChangeListener(event -> destinationLogic.rowSelected(event.getValue()));
 
-        dicomForm = new DestinationDicomForm(viewLogic,dataService);
-        stowForm = new DestinationStowForm(viewLogic, dataService);
+        dicomForm = new DestinationDicomForm(destinationLogic,dataService);
+        stowForm = new DestinationStowForm(destinationLogic, dataService);
 
-        VerticalLayout barAndGridLayout = new VerticalLayout();
+        barAndGridLayout = new VerticalLayout();
         barAndGridLayout.setPadding(false);
         barAndGridLayout.add(topLayout);
         barAndGridLayout.add(grid);
@@ -63,11 +66,11 @@ public class DestinationView extends HorizontalLayout {
         add(dicomForm);
         add(stowForm);
 
-        viewLogic.init(null);
+        destinationLogic.init(null);
     }
 
-    public DestinationLogic getViewLogic() {
-        return viewLogic;
+    public DestinationLogic getDestinationLogic() {
+        return destinationLogic;
     }
 
     protected void setForwardNode(ForwardNode forwardNode) {
@@ -85,13 +88,13 @@ public class DestinationView extends HorizontalLayout {
         newDestinationDicom.getElement().setAttribute("title", "New destination of type dicom");
         newDestinationDicom.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         newDestinationDicom.setIcon(VaadinIcon.PLUS_CIRCLE.create());
-        newDestinationDicom.addClickListener(click -> viewLogic.newDestinationDicom());
+        newDestinationDicom.addClickListener(click -> destinationLogic.newDestinationDicom());
 
         newDestinationStow = new Button("Stow");
         newDestinationStow.getElement().setAttribute("title", "New destination of type stow");
         newDestinationStow.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         newDestinationStow.setIcon(VaadinIcon.PLUS_CIRCLE.create());
-        newDestinationStow.addClickListener(click -> viewLogic.newDestinationStow());
+        newDestinationStow.addClickListener(click -> destinationLogic.newDestinationStow());
 
         HorizontalLayout topLayout = new HorizontalLayout();
         topLayout.setWidthFull();
@@ -137,7 +140,7 @@ public class DestinationView extends HorizontalLayout {
         NodeEventType eventType = data.isNewData() ? NodeEventType.ADD : NodeEventType.UPDATE;
         dataProvider.save(data);
         if (data.getForwardNode() != null) {
-        viewLogic.getOutputLogic().getApplicationEventPublisher()
+        destinationLogic.getGatewayViewLogic().getApplicationEventPublisher()
                 .publishEvent(new NodeEvent(data, eventType));
         }
         showDicomForm(false);
@@ -146,7 +149,7 @@ public class DestinationView extends HorizontalLayout {
 
     protected void removeDestination(Destination data) {
         if (data.getForwardNode() != null) {
-            viewLogic.getOutputLogic().getApplicationEventPublisher()
+            destinationLogic.getGatewayViewLogic().getApplicationEventPublisher()
                 .publishEvent(new NodeEvent(data, NodeEventType.REMOVE));
         }
         dataProvider.delete(data);
@@ -184,11 +187,15 @@ public class DestinationView extends HorizontalLayout {
     protected void showDicomForm(boolean show) {
         dicomForm.setVisible(show);
         dicomForm.setEnabled(show);
+        barAndGridLayout.setVisible(!show);
+        gatewayViewLogic.showForwardNodeForm(!show);
     }
 
     protected void showStowForm(boolean show) {
         stowForm.setVisible(show);
         stowForm.setEnabled(show);
+        barAndGridLayout.setVisible(!show);
+        gatewayViewLogic.showForwardNodeForm(!show);
     }
 
     public boolean hasChanges() {

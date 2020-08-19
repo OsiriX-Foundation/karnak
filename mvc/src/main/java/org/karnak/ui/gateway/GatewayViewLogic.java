@@ -17,18 +17,18 @@ import com.vaadin.flow.component.UI;
 public class GatewayViewLogic implements Serializable {
     private static final long serialVersionUID = -8780527437240110630L;
 
-    private final GatewayView view;
+    private final GatewayView gatewayView;
     private ApplicationEventPublisher applicationEventPublisher;
 
-    public GatewayViewLogic(GatewayView view) {
-        this.view = view;
+    public GatewayViewLogic(GatewayView gatewayView) {
+        this.gatewayView = gatewayView;
     }
 
     public void init() {
         editForwardNode(null);
         // Hide and disable if not admin
         if (!AccessControlFactory.getInstance().createAccessControl().isUserInRole(AccessControl.ADMIN_ROLE_NAME)) {
-            view.setNewForwardNodeEnabled(false);
+            gatewayView.setNewForwardNodeEnabled(false);
         }
     }
 
@@ -64,39 +64,39 @@ public class GatewayViewLogic implements Serializable {
                 try {
                     Long dataId = Long.valueOf(dataIdStr);
                     ForwardNode data = findForwardNode(dataId);
-                    view.selectRow(data);
+                    gatewayView.selectRow(data);
                 } catch (NumberFormatException e) {
                 }
             }
         } else {
-            view.showForm(false);
+            gatewayView.showForm(false);
         }
     }
 
     private ForwardNode findForwardNode(Long dataId) {
-        return view.getForwardNodeById(dataId);
+        return gatewayView.getForwardNodeById(dataId);
     }
 
     public void cancelForwardNode() {
-        view.clearSelection();
+        gatewayView.clearSelection();
         editForwardNode(null);
         setFragmentParameter("");
     }
 
     public void saveForwardNode(ForwardNode data) {
         boolean newData = data.isNewData();
-        view.clearSelection();
-        view.updateForwardNode(data);
+        gatewayView.clearSelection();
+        gatewayView.updateForwardNode(data);
         setFragmentParameter("");
-        view.showSaveNotification(data.getFwdAeTitle() + (newData ? " created" : " updated"));
+        gatewayView.showSaveNotification(data.getFwdAeTitle() + (newData ? " created" : " updated"));
         editForwardNode(null);
     }
 
     public void deleteForwardNode(ForwardNode data) {
-        view.clearSelection();
-        view.removeForwardNode(data);
+        gatewayView.clearSelection();
+        gatewayView.removeForwardNode(data);
         setFragmentParameter("");
-        view.showSaveNotification(data.getFwdAeTitle() + " removed");
+        gatewayView.showSaveNotification(data.getFwdAeTitle() + " removed");
     }
 
     public void discardForwardNode(ForwardNode data) {
@@ -113,13 +113,13 @@ public class GatewayViewLogic implements Serializable {
         } else {
             setFragmentParameter(String.valueOf(data.getId()));
         }
-        view.editForwardNode(data);
+        gatewayView.editForwardNode(data);
     }
 
     public void newForwardNode() {
-        view.clearSelection();
+        gatewayView.clearSelection();
         setFragmentParameter("new");
-        view.editForwardNode(ForwardNode.ofEmpty());
+        gatewayView.editForwardNode(ForwardNode.ofEmpty());
     }
 
     public void rowSelected(ForwardNode data) {
@@ -129,6 +129,12 @@ public class GatewayViewLogic implements Serializable {
     }
 
     public void validateView() {
-        view.validateView();
+        gatewayView.validateView();
+    }
+
+    public void showForwardNodeForm(boolean show){
+        if(gatewayView.getForwardNodeForm() != null){
+            gatewayView.getForwardNodeForm().showForm(show);
+        }
     }
 }
