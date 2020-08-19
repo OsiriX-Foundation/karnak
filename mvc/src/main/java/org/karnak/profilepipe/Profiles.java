@@ -8,6 +8,8 @@ import org.dcm4che6.util.TagUtils;
 import org.karnak.api.PseudonymApi;
 import org.karnak.api.rqbody.Fields;
 import org.karnak.data.AppConfig;
+import org.karnak.data.gateway.Destination;
+import org.karnak.data.gateway.ExternalPseudonym;
 import org.karnak.data.profile.ProfileElement;
 import org.karnak.data.profile.Profile;
 import org.karnak.profilepipe.action.ActionItem;
@@ -17,6 +19,7 @@ import org.karnak.profilepipe.profiles.AbstractProfileItem;
 import org.karnak.profilepipe.profiles.ProfileItem;
 import org.karnak.profilepipe.utils.MyDCMElem;
 import org.karnak.profilepipe.utils.HMAC;
+import org.karnak.util.SpecialCharacter;
 import org.slf4j.*;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
@@ -69,18 +72,30 @@ public class Profiles {
         return null;
     }
 
-    public String getMainzellistePseudonym(DicomObject dcm) {
+    public String getMainzellistePseudonym(DicomObject dcm, ExternalPseudonym pseudonym) {
         final String patientID = dcm.getString(Tag.PatientID).orElse(null);
         final String patientName = dcm.getString(Tag.PatientName).orElse(null);
         final String patientBirthDate = dcm.getString(Tag.PatientBirthDate).orElse(null);
         final String patientSex = dcm.getString(Tag.PatientSex).orElse(null);
         // Issuer of patientID is recommended to make the patientID universally unique. Can be defined in profile if missing.
         final String issuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID).orElse(profile.getDefaultissueropatientid());
+        final String externalPseudonym = pseudonym != null ? getExternalPseudonym(dcm, pseudonym) : null;
 
-        PseudonymApi pseudonymApi = new PseudonymApi();
+        PseudonymApi pseudonymApi = new PseudonymApi(externalPseudonym);
         final Fields newPatientFields = new Fields(patientID, patientName, patientBirthDate, patientSex, issuerOfPatientID);
-        final String pseudonym = pseudonymApi.createPatient(newPatientFields);
-        return pseudonym;
+        return pseudonymApi.createPatient(newPatientFields, pseudonym == null ? false : pseudonym.getUseExternalPseudonym());
+    }
+
+    private String getExternalPseudonym(DicomObject dcm, ExternalPseudonym externalPseudonym) {
+        String cleanTag = externalPseudonym.getTag().replaceAll("[(),]", "").toUpperCase();
+        final String tagValue = dcm.getString(TagUtils.intFromHexString(cleanTag)).orElse(null);
+        if (tagValue != null && externalPseudonym.getDelimiter() != null && externalPseudonym.getPosition() != null) {
+            String delimiterSpec = SpecialCharacter.escapeSpecialRegexChars(externalPseudonym.getDelimiter());
+            return tagValue.split(delimiterSpec)[Integer.parseInt(externalPseudonym.getPosition())];
+        } else if (tagValue != null) {
+            return tagValue;
+        }
+        return null;
     }
 
     public void applyAction(DicomObject dcm, String patientID) {
@@ -107,7 +122,7 @@ public class Profiles {
         }
     }
 
-    public void apply(DicomObject dcm) {
+    public void apply(DicomObject dcm, Destination destination) {
         final String SOPinstanceUID = dcm.getString(Tag.SOPInstanceUID).orElse(null);
         final String IssuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID).orElse(null);
         final String PatientID = dcm.getString(Tag.PatientID).orElse(null);
@@ -115,7 +130,7 @@ public class Profiles {
         MDC.put("issuerOfPatientID", IssuerOfPatientID);
         MDC.put("PatientID", PatientID);
 
-        String pseudonym = getMainzellistePseudonym(dcm);
+        String pseudonym = getMainzellistePseudonym(dcm, destination.getExternalPseudonym());
         String profilesCodeName = String.join(
                 "-" , profiles.stream().map(profile -> profile.getCodeName()).collect(Collectors.toList())
         );
