@@ -42,6 +42,10 @@ public class Destination {
     @JoinColumn(name="profile_pipe_id")
     private Profile profile;
 
+    @OneToOne
+    @JoinColumn(name="external_pseudonym_id")
+    private ExternalPseudonym externalPseudonym;
+
     // list of emails (comma separated) used when the images have been sent (or
     // partially sent) to the final destination. Note: if an issue appears before
     // sending to the final destination then no email is delivered.
@@ -392,5 +396,13 @@ public class Destination {
 
     public void setProfile(Profile profile) {
         this.profile = profile;
+    }
+
+    public ExternalPseudonym getExternalPseudonym() {
+        return externalPseudonym;
+    }
+
+    public void setExternalPseudonym(ExternalPseudonym externalPseudonym) {
+        this.externalPseudonym = externalPseudonym;
     }
 }
