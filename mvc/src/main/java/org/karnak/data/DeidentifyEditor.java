@@ -1,7 +1,7 @@
 package org.karnak.data;
 
 import org.dcm4che6.data.DicomObject;
-import org.karnak.data.profile.Profile;
+import org.karnak.data.gateway.Destination;
 import org.karnak.profilepipe.Profiles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,16 +12,15 @@ public class DeidentifyEditor implements AttributeEditor {
     private static final Logger LOGGER = LoggerFactory.getLogger(DeidentifyEditor.class);
 
     private Profiles profiles;
+    private Destination destination;
 
-    // private static String defaultYamlProfile = "profileChain.yml";
-    private static String defaultYamlProfile = "profilePipe.yml";
-
-    public DeidentifyEditor(Profile profile) {
-        profiles = new Profiles(profile);
+    public DeidentifyEditor(Destination destination) {
+        this.destination = destination;
+        profiles = new Profiles(destination.getProfile());
     }
 
     @Override
     public void apply(DicomObject dcm, AttributeEditorContext context) {
-        profiles.apply(dcm);
+        profiles.apply(dcm, destination);
     }
 }
