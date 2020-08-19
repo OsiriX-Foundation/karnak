@@ -27,8 +27,6 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 public class DestinationDicomForm extends VerticalLayout {
     private DestinationLogic destinationLogic;
 
-    private VerticalLayout content;
-
     private final TextField description;
     private final TextField aeTitle;
     private final TextField hostname;
@@ -55,15 +53,14 @@ public class DestinationDicomForm extends VerticalLayout {
     private FilterBySOPClassesForm filterSopForm;
 
     public DestinationDicomForm(DestinationLogic destinationLogic, DataService dataService) {
+        setClassName("destination-form");
+        setSizeFull();
+
         this.destinationLogic = destinationLogic;
         this.dataService = dataService;
         this.binder = new BeanValidationBinder<>(Destination.class);
 
-        setClassName("destination-form");
 
-        content = new VerticalLayout();
-        content.setSizeFull();
-        add(content);
 
         aeTitle = new TextField("AETitle");
         aeTitle.setWidth("30%");
@@ -184,21 +181,21 @@ public class DestinationDicomForm extends VerticalLayout {
 
         filterSopForm = new FilterBySOPClassesForm(this.dataService, this.binder);
 
-        content.add(UIS.setWidthFull( //
+        add(UIS.setWidthFull( //
                 new HorizontalLayout(aeTitle, description)));
-        content.add(UIS.setWidthFull( //
+        add(UIS.setWidthFull( //
                 new HorizontalLayout(hostname, port)));
-        content.add(UIS.setWidthFull( //
+        add(UIS.setWidthFull( //
                 useaetdest));
-        content.add(UIS.setWidthFull( //
+        add(UIS.setWidthFull( //
                 new HorizontalLayout(notify)));
-        content.add(UIS.setWidthFull( //
+        add(UIS.setWidthFull( //
                 new HorizontalLayout(notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues,
                         notifyInterval)));
-        content.add(UIS.setWidthFull( //
+        add(UIS.setWidthFull( //
                 desidentificationLayout));
 
-        content.add(filterSopForm);
+        add(filterSopForm);
 
         binder.forField(aeTitle) //
                 .withValidator( //
@@ -245,12 +242,13 @@ public class DestinationDicomForm extends VerticalLayout {
             remove.setEnabled(!hasChanges);
         });
 
-        update = new Button("Update");
+        update = new Button("Save");
         update.setWidthFull();
         update.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         update.addClickListener(event -> {
             if (currentDestination != null && binder.writeBeanIfValid(currentDestination)) {
                 this.destinationLogic.saveDestination(currentDestination);
+                this.destinationLogic.getGatewayViewLogic().saveForwardNode();
             }
         });
         update.addClickShortcut(Key.KEY_S, KeyModifier.CONTROL);
@@ -272,10 +270,11 @@ public class DestinationDicomForm extends VerticalLayout {
         remove.addClickListener(event -> {
             if (currentDestination != null) {
                 this.destinationLogic.deleteDestination(currentDestination);
+                this.destinationLogic.getGatewayViewLogic().saveForwardNode();
             }
         });
 
-        content.add(UIS.setWidthFull( //
+        add(UIS.setWidthFull( //
                 new HorizontalLayout(update, remove, cancel)));
     }
 

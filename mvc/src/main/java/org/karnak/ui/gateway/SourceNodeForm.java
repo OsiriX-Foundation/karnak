@@ -98,12 +98,13 @@ public class SourceNodeForm extends VerticalLayout {
             remove.setEnabled(!hasChanges);
         });
 
-        update = new Button("Update");
+        update = new Button("Save");
         update.setWidthFull();
         update.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         update.addClickListener(event -> {
             if (currentSourceNode != null && binder.writeBeanIfValid(currentSourceNode)) {
                 this.sourceNodeLogic.saveSourceNode(currentSourceNode);
+                this.sourceNodeLogic.getGatewayViewLogic().saveForwardNode();
             }
         });
         update.addClickShortcut(Key.KEY_S, KeyModifier.CONTROL);
@@ -125,6 +126,7 @@ public class SourceNodeForm extends VerticalLayout {
         remove.addClickListener(event -> {
             if (currentSourceNode != null) {
                 this.sourceNodeLogic.deleteSourceNode(currentSourceNode);
+                this.sourceNodeLogic.getGatewayViewLogic().saveForwardNode();
             }
         });
 

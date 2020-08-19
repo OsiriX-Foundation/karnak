@@ -126,7 +126,7 @@ public class SourceNodeView extends HorizontalLayout {
         NodeEventType eventType = data.isNewData() ? NodeEventType.ADD : NodeEventType.UPDATE;
         dataProvider.save(data);
         if (data.getForwardNode() != null) {
-            sourceNodeLogic.getOutputLogic().getApplicationEventPublisher()
+            sourceNodeLogic.getGatewayViewLogic().getApplicationEventPublisher()
                 .publishEvent(new NodeEvent(data, eventType));
         }
         showForm(false);
@@ -134,7 +134,7 @@ public class SourceNodeView extends HorizontalLayout {
 
     protected void removeSourceNode(DicomSourceNode data) {
         if (data.getForwardNode() != null) {
-            sourceNodeLogic.getOutputLogic().getApplicationEventPublisher()
+            sourceNodeLogic.getGatewayViewLogic().getApplicationEventPublisher()
             .publishEvent(new NodeEvent(data, NodeEventType.REMOVE));
         }
         dataProvider.delete(data);

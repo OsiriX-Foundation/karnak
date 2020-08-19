@@ -137,4 +137,8 @@ public class GatewayViewLogic implements Serializable {
             gatewayView.getForwardNodeForm().showForm(show);
         }
     }
+
+    public void saveForwardNode(){
+        gatewayView.getForwardNodeForm().saveForwardNode();
+    }
 }

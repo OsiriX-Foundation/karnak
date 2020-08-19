@@ -126,9 +126,7 @@ public class ForwardNodeForm extends Div {
         save.setWidth("100%");
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         save.addClickListener(event -> {
-            if (currentForwardNode != null && binder.writeBeanIfValid(currentForwardNode)) {
-                this.gatewayViewLogic.saveForwardNode(currentForwardNode);
-            }
+            saveForwardNode();
         });
         save.addClickShortcut(Key.KEY_S, KeyModifier.CONTROL);
 
@@ -186,5 +184,11 @@ public class ForwardNodeForm extends Div {
         discard.setVisible(show);
         delete.setVisible(show);
         cancel.setVisible(show);
+    }
+
+    public void saveForwardNode(){
+        if (currentForwardNode != null && binder.writeBeanIfValid(currentForwardNode)) {
+            this.gatewayViewLogic.saveForwardNode(currentForwardNode);
+        }
     }
 }

@@ -51,11 +51,12 @@ public class DestinationStowForm extends VerticalLayout {
     private ProfileDropDown profileDropDown;
 
     public DestinationStowForm(DestinationLogic destinationLogic, DataService dataService) {
+        setClassName("destination-form");
+        setSizeFull();
+
         this.destinationLogic = destinationLogic;
         this.dataService = dataService;
         this.binder = new BeanValidationBinder<>(Destination.class);
-
-        setClassName("destination-form");
 
         description = new TextField("Description");
         description.setWidth("100%");
@@ -220,12 +221,13 @@ public class DestinationStowForm extends VerticalLayout {
             remove.setEnabled(!hasChanges);
         });
 
-        update = new Button("Update");
+        update = new Button("Save");
         update.setWidthFull();
         update.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         update.addClickListener(event -> {
             if (currentDestination != null && binder.writeBeanIfValid(currentDestination)) {
                 this.destinationLogic.saveDestination(currentDestination);
+                this.destinationLogic.getGatewayViewLogic().saveForwardNode();
             }
         });
         update.addClickShortcut(Key.KEY_S, KeyModifier.CONTROL);
@@ -247,6 +249,7 @@ public class DestinationStowForm extends VerticalLayout {
         remove.addClickListener(event -> {
             if (currentDestination != null) {
                 this.destinationLogic.deleteDestination(currentDestination);
+                this.destinationLogic.getGatewayViewLogic().saveForwardNode();
             }
         });
 

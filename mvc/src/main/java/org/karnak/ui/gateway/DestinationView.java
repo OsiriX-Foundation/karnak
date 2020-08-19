@@ -163,10 +163,10 @@ public class DestinationView extends HorizontalLayout {
             if (type != null) {
                 switch (type) {
                     case dicom:
-                        showDicomForm(true);
-                        dicomForm.editDestination(data);
                         showStowForm(false);
                         stowForm.editDestination(null);
+                        showDicomForm(true);
+                        dicomForm.editDestination(data);
                         return;
                     case stow:
                         showDicomForm(false);
