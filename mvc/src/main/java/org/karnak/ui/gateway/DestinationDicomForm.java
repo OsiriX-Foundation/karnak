@@ -12,7 +12,6 @@ import com.vaadin.flow.component.KeyModifier;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -26,7 +25,7 @@ import com.vaadin.flow.data.value.ValueChangeMode;
  */
 @SuppressWarnings("serial")
 public class DestinationDicomForm extends VerticalLayout {
-    private DestinationLogic viewLogic;
+    private DestinationLogic destinationLogic;
 
     private VerticalLayout content;
 
@@ -55,8 +54,8 @@ public class DestinationDicomForm extends VerticalLayout {
     private DataService dataService;
     private FilterBySOPClassesForm filterSopForm;
 
-    public DestinationDicomForm(DestinationLogic viewLogic, DataService dataService) {
-        this.viewLogic = viewLogic;
+    public DestinationDicomForm(DestinationLogic destinationLogic, DataService dataService) {
+        this.destinationLogic = destinationLogic;
         this.dataService = dataService;
         this.binder = new BeanValidationBinder<>(Destination.class);
 
@@ -251,20 +250,20 @@ public class DestinationDicomForm extends VerticalLayout {
         update.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         update.addClickListener(event -> {
             if (currentDestination != null && binder.writeBeanIfValid(currentDestination)) {
-                this.viewLogic.saveDestination(currentDestination);
+                this.destinationLogic.saveDestination(currentDestination);
             }
         });
         update.addClickShortcut(Key.KEY_S, KeyModifier.CONTROL);
 
         discard = new Button("Discard changes");
         discard.setWidth("100%");
-        discard.addClickListener(event -> this.viewLogic.editDestination(currentDestination));
+        discard.addClickListener(event -> this.destinationLogic.editDestination(currentDestination));
 
         cancel = new Button("Cancel");
         cancel.setWidth("100%");
-        cancel.addClickListener(event -> this.viewLogic.cancelDestination());
+        cancel.addClickListener(event -> this.destinationLogic.cancelDestination());
         cancel.addClickShortcut(Key.ESCAPE);
-        getElement().addEventListener("keydown", event -> this.viewLogic.cancelDestination())
+        getElement().addEventListener("keydown", event -> this.destinationLogic.cancelDestination())
                 .setFilter("event.key == 'Escape'");
 
         remove = new Button("Remove");
@@ -272,7 +271,7 @@ public class DestinationDicomForm extends VerticalLayout {
         remove.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
         remove.addClickListener(event -> {
             if (currentDestination != null) {
-                this.viewLogic.deleteDestination(currentDestination);
+                this.destinationLogic.deleteDestination(currentDestination);
             }
         });
 

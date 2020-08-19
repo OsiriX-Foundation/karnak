@@ -8,7 +8,6 @@ import com.vaadin.flow.component.KeyModifier;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -21,7 +20,7 @@ import com.vaadin.flow.data.value.ValueChangeMode;
  */
 @SuppressWarnings("serial")
 public class SourceNodeForm extends VerticalLayout {
-    private SourceNodeLogic viewLogic;
+    private SourceNodeLogic sourceNodeLogic;
 
     private final TextField description;
     private final TextField aeTitle;
@@ -36,8 +35,8 @@ public class SourceNodeForm extends VerticalLayout {
     private Binder<DicomSourceNode> binder;
     private DicomSourceNode currentSourceNode;
 
-    public SourceNodeForm(SourceNodeLogic viewLogic) {
-        this.viewLogic = viewLogic;
+    public SourceNodeForm(SourceNodeLogic sourceNodeLogic) {
+        this.sourceNodeLogic = sourceNodeLogic;
 
         setClassName("sourcenode-form");
 
@@ -104,20 +103,20 @@ public class SourceNodeForm extends VerticalLayout {
         update.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         update.addClickListener(event -> {
             if (currentSourceNode != null && binder.writeBeanIfValid(currentSourceNode)) {
-                this.viewLogic.saveSourceNode(currentSourceNode);
+                this.sourceNodeLogic.saveSourceNode(currentSourceNode);
             }
         });
         update.addClickShortcut(Key.KEY_S, KeyModifier.CONTROL);
 
         discard = new Button("Discard changes");
         discard.setWidth("100%");
-        discard.addClickListener(event -> this.viewLogic.editSourceNode(currentSourceNode));
+        discard.addClickListener(event -> this.sourceNodeLogic.editSourceNode(currentSourceNode));
 
         cancel = new Button("Cancel");
         cancel.setWidth("100%");
-        cancel.addClickListener(event -> this.viewLogic.cancelSourceNode());
+        cancel.addClickListener(event -> this.sourceNodeLogic.cancelSourceNode());
         cancel.addClickShortcut(Key.ESCAPE);
-        getElement().addEventListener("keydown", event -> this.viewLogic.cancelSourceNode())
+        getElement().addEventListener("keydown", event -> this.sourceNodeLogic.cancelSourceNode())
             .setFilter("event.key == 'Escape'");
 
         remove = new Button("Remove");
@@ -125,7 +124,7 @@ public class SourceNodeForm extends VerticalLayout {
         remove.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
         remove.addClickListener(event -> {
             if (currentSourceNode != null) {
-                this.viewLogic.deleteSourceNode(currentSourceNode);
+                this.sourceNodeLogic.deleteSourceNode(currentSourceNode);
             }
         });
 
