@@ -127,7 +127,6 @@ public class GatewayView extends HorizontalLayout implements HasUrlParameter<Str
         });
 
         cancelNewForwardNode= new Button("Cancel");
-        cancelNewForwardNode.addThemeVariants(ButtonVariant.LUMO_ERROR);
         cancelNewForwardNode.setVisible(false);
         cancelNewForwardNode.addClickListener(click -> {
             forwardNodeForm.setEnabled(false);
