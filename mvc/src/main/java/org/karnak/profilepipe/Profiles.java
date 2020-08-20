@@ -91,7 +91,7 @@ public class Profiles {
         final String tagValue = dcm.getString(TagUtils.intFromHexString(cleanTag)).orElse(null);
         if (tagValue != null && externalPseudonym.getDelimiter() != null && externalPseudonym.getPosition() != null) {
             String delimiterSpec = SpecialCharacter.escapeSpecialRegexChars(externalPseudonym.getDelimiter());
-            return tagValue.split(delimiterSpec)[Integer.parseInt(externalPseudonym.getPosition())];
+            return tagValue.split(delimiterSpec)[externalPseudonym.getPosition()];
         } else if (tagValue != null) {
             return tagValue;
         }

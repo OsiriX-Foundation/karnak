@@ -15,14 +15,14 @@ public class ExternalPseudonym {
 
     private String delimiter;
 
-    private String position;
+    private Integer position;
 
     private Boolean useExternalPseudonym;
 
     public ExternalPseudonym() {
     }
 
-    public ExternalPseudonym(String tag, String delimiter, String position) {
+    public ExternalPseudonym(String tag, String delimiter, Integer position) {
         this.tag = tag;
         this.delimiter = delimiter;
         this.position = position;
@@ -48,11 +48,11 @@ public class ExternalPseudonym {
         this.delimiter = delimiter;
     }
 
-    public String getPosition() {
+    public Integer getPosition() {
         return position;
     }
 
-    public void setPosition(String position) {
+    public void setPosition(Integer position) {
         this.position = position;
     }
 
