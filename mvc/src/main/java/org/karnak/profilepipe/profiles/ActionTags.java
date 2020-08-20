@@ -43,7 +43,7 @@ public class ActionTags extends AbstractProfileItem {
     }
 
     public void profileValidation() throws Exception{
-        if (action == null && (tags == null || tags.size() > 0)) {
+        if (action == null && (tags == null || tags.size() <= 0)) {
             throw new Exception("Cannot build the profile " + codeName + ": Unknown Action and no tags defined");
         }
 
@@ -51,7 +51,7 @@ public class ActionTags extends AbstractProfileItem {
             throw new Exception("Cannot build the profile " + codeName + ": Unknown Action");
         }
 
-        if (tags == null || tags.size() == 0) {
+        if (tags == null || tags.size() <= 0) {
             throw new Exception("Cannot build the profile " + codeName + ": No tags defined");
         }
     }
