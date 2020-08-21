@@ -86,22 +86,16 @@ public class PseudonymApi {
      * @param patientFields 
      * @return Pseudonym
      */
-    public String createPatient(Fields patientFields, boolean useExternalPseudonym){
-        String pseudonym = null;
+    public String createPatient(Fields patientFields) {
         try{
             String tokenId = rqCreateTokenAddPatient(patientFields);
             List<JSONObject> pseudonymList = rqCreatePatient(tokenId);
-            String idType = this.externalPseudonym != null && useExternalPseudonym == true ? EXTERNAL_ID : ID_TYPES;
-            JSONObject jsonPseudonym = pseudonymList.stream().filter(p -> p.getString("idType").equals(idType)).findFirst().get();
-
-            if (jsonPseudonym == null && idType.equals(EXTERNAL_ID)) {
-                jsonPseudonym = pseudonymList.stream().filter(p -> p.getString("idType").equals(ID_TYPES)).findFirst().get();
-            }
-            pseudonym = jsonPseudonym.getString("idString");
+            JSONObject jsonPseudonym = pseudonymList.stream().filter(p -> p.getString("idType").equals(ID_TYPES)).findFirst().get();
+            return jsonPseudonym.getString("idString");
         } catch (Exception e) {
             log.error("Cannot create patient", e);
         } 
-        return pseudonym;
+        return null;
     }
 
     /***

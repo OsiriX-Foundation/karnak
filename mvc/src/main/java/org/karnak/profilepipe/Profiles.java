@@ -72,28 +72,34 @@ public class Profiles {
         return null;
     }
 
-    public String getMainzellistePseudonym(DicomObject dcm, ExternalPseudonym pseudonym) {
+    public String getMainzellistePseudonym(DicomObject dcm, String externalPseudonym) {
         final String patientID = dcm.getString(Tag.PatientID).orElse(null);
         final String patientName = dcm.getString(Tag.PatientName).orElse(null);
         final String patientBirthDate = dcm.getString(Tag.PatientBirthDate).orElse(null);
         final String patientSex = dcm.getString(Tag.PatientSex).orElse(null);
         // Issuer of patientID is recommended to make the patientID universally unique. Can be defined in profile if missing.
         final String issuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID).orElse(profile.getDefaultissueropatientid());
-        final String externalPseudonym = pseudonym != null ? getExternalPseudonym(dcm, pseudonym) : null;
 
         PseudonymApi pseudonymApi = new PseudonymApi(externalPseudonym);
         final Fields newPatientFields = new Fields(patientID, patientName, patientBirthDate, patientSex, issuerOfPatientID);
-        return pseudonymApi.createPatient(newPatientFields, pseudonym == null ? false : pseudonym.getUseExternalPseudonym());
+        return pseudonymApi.createPatient(newPatientFields);
     }
 
     private String getExternalPseudonym(DicomObject dcm, ExternalPseudonym externalPseudonym) {
-        String cleanTag = externalPseudonym.getTag().replaceAll("[(),]", "").toUpperCase();
-        final String tagValue = dcm.getString(TagUtils.intFromHexString(cleanTag)).orElse(null);
-        if (tagValue != null && externalPseudonym.getDelimiter() != null && externalPseudonym.getPosition() != null) {
-            String delimiterSpec = SpecialCharacter.escapeSpecialRegexChars(externalPseudonym.getDelimiter());
-            return tagValue.split(delimiterSpec)[externalPseudonym.getPosition()];
-        } else if (tagValue != null) {
-            return tagValue;
+        if (externalPseudonym != null) {
+            String cleanTag = externalPseudonym.getTag().replaceAll("[(),]", "").toUpperCase();
+            final String tagValue = dcm.getString(TagUtils.intFromHexString(cleanTag)).orElse(null);
+            if (tagValue != null && externalPseudonym.getDelimiter() != null && externalPseudonym.getPosition() != null) {
+                String delimiterSpec = SpecialCharacter.escapeSpecialRegexChars(externalPseudonym.getDelimiter());
+                try {
+                    return tagValue.split(delimiterSpec)[externalPseudonym.getPosition()];
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    LOGGER.error("Can not split the external pseudonym", e);
+                    return null;
+                }
+            } else if (tagValue != null) {
+                return tagValue;
+            }
         }
         return null;
     }
@@ -126,25 +132,28 @@ public class Profiles {
         final String SOPinstanceUID = dcm.getString(Tag.SOPInstanceUID).orElse(null);
         final String IssuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID).orElse(null);
         final String PatientID = dcm.getString(Tag.PatientID).orElse(null);
+        final ExternalPseudonym externalPseudonym = destination.getExternalPseudonym();
+        final String stringExternalPseudonym = getExternalPseudonym(dcm, externalPseudonym);
         MDC.put("SOPInstanceUID", SOPinstanceUID);
         MDC.put("issuerOfPatientID", IssuerOfPatientID);
         MDC.put("PatientID", PatientID);
 
-        String pseudonym = getMainzellistePseudonym(dcm, destination.getExternalPseudonym());
+        String mainzellistePseudonym = getMainzellistePseudonym(dcm, stringExternalPseudonym);
         String profilesCodeName = String.join(
                 "-" , profiles.stream().map(profile -> profile.getCodeName()).collect(Collectors.toList())
         );
-        BigInteger patientValue = generatePatientID(pseudonym, profilesCodeName);
-        String patientName = patientValue.toString(16).toUpperCase();
+        BigInteger patientValue = generatePatientID(mainzellistePseudonym, profilesCodeName);
+        String patientName = stringExternalPseudonym != null && externalPseudonym.getUseExternalPseudonym() == true ?
+                stringExternalPseudonym : patientValue.toString(16).toUpperCase();
         String patientID = patientValue.toString();
 
-        if (!StringUtil.hasText(pseudonym)) {
+        if (!StringUtil.hasText(mainzellistePseudonym)) {
             throw new IllegalStateException("Cannot build a pseudonym");
         }
 
         applyAction(dcm, patientID);
 
-        setDefaultDeidentTagValue(dcm, patientID, patientName, profilesCodeName, pseudonym);
+        setDefaultDeidentTagValue(dcm, patientID, patientName, profilesCodeName, mainzellistePseudonym);
     }
 
     public void setDefaultDeidentTagValue(DicomObject dcm, String patientID, String patientName, String profilePipeCodeName, String pseudonym){
