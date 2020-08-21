@@ -50,6 +50,11 @@ public class ForwardNode {
         this.description = "";
     }
 
+    public ForwardNode(String fwdAeTitle) {
+        this.fwdAeTitle = fwdAeTitle;
+        this.description = "";
+    }
+
     public Long getId() {
         return id;
     }

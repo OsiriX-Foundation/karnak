@@ -15,11 +15,11 @@ import org.karnak.ui.authentication.AccessControlFactory;
 public class SourceNodeLogic implements Serializable {
     private static final long serialVersionUID = -1056308023882753627L;
 
-    private final GatewayViewLogic outputLogic;
+    private final GatewayViewLogic gatewayViewLogic;
     private final SourceNodeView view;
 
-    public SourceNodeLogic(GatewayViewLogic outputLogic, SourceNodeView view) {
-        this.outputLogic = outputLogic;
+    public SourceNodeLogic(GatewayViewLogic gatewayViewLogic, SourceNodeView view) {
+        this.gatewayViewLogic = gatewayViewLogic;
         this.view = view;
     }
 
@@ -37,8 +37,8 @@ public class SourceNodeLogic implements Serializable {
         view.cancelDestination();
     }
 
-    public GatewayViewLogic getOutputLogic() {
-        return outputLogic;
+    public GatewayViewLogic getGatewayViewLogic() {
+        return gatewayViewLogic;
     }
 
     public void saveSourceNode(DicomSourceNode data) {
@@ -46,14 +46,14 @@ public class SourceNodeLogic implements Serializable {
         view.clearSelection();
         view.updateSourceNode(data);
         view.showSaveNotification(data.getAeTitle() + (newData ? " created" : " updated"));
-        outputLogic.validateView();
+        gatewayViewLogic.validateView();
     }
 
     public void deleteSourceNode(DicomSourceNode data) {
         view.clearSelection();
         view.removeSourceNode(data);
         view.showSaveNotification(data.getAeTitle() + " removed");
-        outputLogic.validateView();
+        gatewayViewLogic.validateView();
     }
 
     public void editSourceNode(DicomSourceNode data) {

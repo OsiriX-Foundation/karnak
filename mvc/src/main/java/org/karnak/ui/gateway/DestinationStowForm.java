@@ -10,7 +10,6 @@ import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.KeyModifier;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
@@ -24,10 +23,8 @@ import com.vaadin.flow.data.value.ValueChangeMode;
  * A form for editing a single destination.
  */
 @SuppressWarnings("serial")
-public class DestinationStowForm extends Div {
-    private DestinationLogic viewLogic;
-
-    private VerticalLayout content;
+public class DestinationStowForm extends VerticalLayout {
+    private DestinationLogic destinationLogic;
 
     private final TextField description;
     private final TextField url;
@@ -53,16 +50,13 @@ public class DestinationStowForm extends Div {
     private FilterBySOPClassesForm filterSopForm;
     private ProfileDropDown profileDropDown;
 
-    public DestinationStowForm(DestinationLogic viewLogic, DataService dataService) {
-        this.viewLogic = viewLogic;
+    public DestinationStowForm(DestinationLogic destinationLogic, DataService dataService) {
+        setClassName("destination-form");
+        setSizeFull();
+
+        this.destinationLogic = destinationLogic;
         this.dataService = dataService;
         this.binder = new BeanValidationBinder<>(Destination.class);
-
-        setClassName("destination-form");
-
-        content = new VerticalLayout();
-        content.setSizeFull();
-        add(content);
 
         description = new TextField("Description");
         description.setWidth("100%");
@@ -182,21 +176,21 @@ public class DestinationStowForm extends Div {
 
         filterSopForm = new FilterBySOPClassesForm(this.dataService, this.binder);
 
-        content.add(UIS.setWidthFull( //
+        add(UIS.setWidthFull( //
                 new HorizontalLayout(description)));
-        content.add(UIS.setWidthFull( //
+        add(UIS.setWidthFull( //
                 new HorizontalLayout(url, urlCredentials)));
-        content.add(UIS.setWidthFull( //
+        add(UIS.setWidthFull( //
                 headers));
-        content.add(UIS.setWidthFull( //
+        add(UIS.setWidthFull( //
                 new HorizontalLayout(notify)));
-        content.add(UIS.setWidthFull( //
+        add(UIS.setWidthFull( //
                 new HorizontalLayout(notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues,
                         notifyInterval)));
-        content.add(UIS.setWidthFull( //
+        add(UIS.setWidthFull( //
                 desidentificationLayout));
 
-        content.add(filterSopForm);
+        add(filterSopForm);
 
         // Define the same validators as the Destination class, because the validation
         // bean doesn't work in Vaadin
@@ -227,43 +221,44 @@ public class DestinationStowForm extends Div {
             remove.setEnabled(!hasChanges);
         });
 
-        update = new Button("Update");
+        update = new Button("Save");
         update.setWidthFull();
         update.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         update.addClickListener(event -> {
             if (currentDestination != null && binder.writeBeanIfValid(currentDestination)) {
-                this.viewLogic.saveDestination(currentDestination);
+                this.destinationLogic.saveDestination(currentDestination);
+                this.destinationLogic.getGatewayViewLogic().saveForwardNode();
             }
         });
         update.addClickShortcut(Key.KEY_S, KeyModifier.CONTROL);
 
         discard = new Button("Discard changes");
         discard.setWidth("100%");
-        discard.addClickListener(event -> this.viewLogic.editDestination(currentDestination));
+        discard.addClickListener(event -> this.destinationLogic.editDestination(currentDestination));
 
         cancel = new Button("Cancel");
         cancel.setWidth("100%");
-        cancel.addClickListener(event -> this.viewLogic.cancelDestination());
+        cancel.addClickListener(event -> this.destinationLogic.cancelDestination());
         cancel.addClickShortcut(Key.ESCAPE);
-        getElement().addEventListener("keydown", event -> this.viewLogic.cancelDestination())
+        getElement().addEventListener("keydown", event -> this.destinationLogic.cancelDestination())
                 .setFilter("event.key == 'Escape'");
 
-        remove = new Button("Remove");
+        remove = new Button("Delete");
         remove.setWidth("100%");
         remove.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
         remove.addClickListener(event -> {
             if (currentDestination != null) {
-                this.viewLogic.deleteDestination(currentDestination);
+                this.destinationLogic.deleteDestination(currentDestination);
+                this.destinationLogic.getGatewayViewLogic().saveForwardNode();
             }
         });
 
-        content.add(UIS.setWidthFull( //
-                new HorizontalLayout(update, discard, remove, cancel)));
+        add(UIS.setWidthFull( //
+                new HorizontalLayout(update, remove, cancel)));
     }
 
     public void editDestination(Destination data) {
         remove.setVisible(data != null);
-        cancel.setVisible(data == null);
         if (data == null) {
             data = Destination.ofStowEmpty();
         }
