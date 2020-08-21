@@ -89,8 +89,8 @@ public class GatewayViewLogic implements Serializable {
         gatewayView.updateForwardNode(data);
         setFragmentParameter("");
         gatewayView.showSaveNotification(data.getFwdAeTitle() + (newData ? " created" : " updated"));
-        editForwardNode(data); //if you dont't want to exit the selection after saving a forward node.
-        //editForwardNode(null); //if you want to exit the selection after saving a forward node.
+        //editForwardNode(data); //if you dont't want to exit the selection after saving a forward node.
+        editForwardNode(null); //if you want to exit the selection after saving a forward node.
     }
 
     public void deleteForwardNode(ForwardNode data) {
