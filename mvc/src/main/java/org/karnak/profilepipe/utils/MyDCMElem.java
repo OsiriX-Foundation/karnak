@@ -2,6 +2,7 @@ package org.karnak.profilepipe.utils;
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.VR;
 import org.dcm4che6.util.TagUtils;
+import org.karnak.profilepipe.action.*;
 import org.weasis.core.util.StringUtil;
 
 import java.util.Arrays;
@@ -91,4 +92,27 @@ public class MyDCMElem {
         }
         return cleanElem.matches("[0-9A-FX]+");
     }
+
+    public ActionItem Keep(){
+        return new Keep("K");
+    }
+
+    public ActionItem Remove(){
+        return new Remove("X");
+    }
+
+    public ActionItem Replace(String dummyValue){
+        ActionItem replace = new Replace("D");
+        replace.setDummyValue(dummyValue);
+        return replace;
+    }
+
+    public ActionItem UID(){
+        return new UID("U");
+    }
+
+    public ActionItem ReplaceNull(){
+        return new ReplaceNull("Z");
+    }
+
 }
