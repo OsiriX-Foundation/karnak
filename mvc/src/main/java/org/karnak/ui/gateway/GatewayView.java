@@ -148,7 +148,7 @@ public class GatewayView extends HorizontalLayout implements HasUrlParameter<Str
             newAETitleForwardNode.setValue("");
             addNewForwardNode.setVisible(true);
             cancelNewForwardNode.setVisible(true);
-
+            this.gatewayViewLogic.cancelForwardNode();
         });
         // CTRL+N will create a new window which is unavoidable
         newForwardNode.addClickShortcut(Key.KEY_N, KeyModifier.ALT);

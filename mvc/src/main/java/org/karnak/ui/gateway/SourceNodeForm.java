@@ -120,7 +120,7 @@ public class SourceNodeForm extends VerticalLayout {
         getElement().addEventListener("keydown", event -> this.sourceNodeLogic.cancelSourceNode())
             .setFilter("event.key == 'Escape'");
 
-        remove = new Button("Remove");
+        remove = new Button("Delete");
         remove.setWidth("100%");
         remove.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
         remove.addClickListener(event -> {

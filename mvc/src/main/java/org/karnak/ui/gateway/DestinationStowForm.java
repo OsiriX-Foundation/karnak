@@ -243,7 +243,7 @@ public class DestinationStowForm extends VerticalLayout {
         getElement().addEventListener("keydown", event -> this.destinationLogic.cancelDestination())
                 .setFilter("event.key == 'Escape'");
 
-        remove = new Button("Remove");
+        remove = new Button("Delete");
         remove.setWidth("100%");
         remove.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
         remove.addClickListener(event -> {
