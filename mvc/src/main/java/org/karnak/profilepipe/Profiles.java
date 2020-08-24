@@ -86,7 +86,7 @@ public class Profiles {
     }
 
     public void applyAction(DicomObject dcm, DicomObject dcmCopy, String patientID) {
-        for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext(); ) {
+        for (Iterator<DicomElement> iterator = dcmCopy.iterator(); iterator.hasNext(); ) {
             final DicomElement dcmEl = iterator.next();
             final ExprDCMElem exprDCMElem = new ExprDCMElem(dcmEl.tag(), dcmEl.vr(), dcm, dcmCopy);
 
@@ -152,7 +152,7 @@ public class Profiles {
         defaultDeidentTagValue.add(new ExprDCMElem(Tag.ClinicalTrialSiteName, VR.LO, (String) null));
 
         defaultDeidentTagValue.forEach(newElem -> {
-            final ActionItem add = new Add("A", newElem.getStringValue(), newElem.getVr());
+            final ActionItem add = new Add("A", newElem.getTag(), newElem.getVr(), newElem.getStringValue());
             add.execute(dcm, newElem.getTag(), null, patientID);
         });
     }
