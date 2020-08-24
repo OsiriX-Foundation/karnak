@@ -4,6 +4,8 @@ import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.Tag;
 import org.dcm4che6.data.VR;
+import org.dcm4che6.img.util.DicomObjectUtil;
+import org.dcm4che6.internal.DicomObjectImpl;
 import org.dcm4che6.util.TagUtils;
 import org.karnak.api.PseudonymApi;
 import org.karnak.api.rqbody.Fields;
@@ -83,14 +85,14 @@ public class Profiles {
         return pseudonym;
     }
 
-    public void applyAction(DicomObject dcm, String patientID) {
+    public void applyAction(DicomObject dcm, DicomObject dcmCopy, String patientID) {
         for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext(); ) {
             final DicomElement dcmEl = iterator.next();
-            final MyDCMElem myDCMElem = new MyDCMElem(dcmEl.tag(), dcmEl.vr(), dcm);
+            final MyDCMElem myDCMElem = new MyDCMElem(dcmEl.tag(), dcmEl.vr(), dcm, dcmCopy);
 
             for (ProfileItem profile : profiles) {
                 final boolean conditionIsOk = getResultCondition(profile.getCondition(), myDCMElem);
-                final ActionItem action = profile.getAction(dcm, dcmEl, patientID);
+                final ActionItem action = profile.getAction(dcm, dcmCopy, dcmEl, patientID);
                 if (action != null && conditionIsOk) {
                     try {
                         action.execute(dcm, dcmEl.tag(), iterator, patientID);
@@ -99,9 +101,8 @@ public class Profiles {
                     }
                     break;
                 }
-
                 if (!(Remove.class.isInstance(action)) && dcmEl.vr() == VR.SQ) {
-                    dcmEl.itemStream().forEach(d -> applyAction(d, patientID));
+                    dcmEl.itemStream().forEach(d -> applyAction(d, dcmCopy, patientID));
                 }
             }
         }
@@ -127,7 +128,9 @@ public class Profiles {
             throw new IllegalStateException("Cannot build a pseudonym");
         }
 
-        applyAction(dcm, patientID);
+        DicomObject dcmCopy = new DicomObjectImpl();
+        DicomObjectUtil.copyDataset(dcm, dcmCopy);
+        applyAction(dcm, dcmCopy, patientID);
 
         setDefaultDeidentTagValue(dcm, patientID, patientName, profilesCodeName, pseudonym);
     }

@@ -15,11 +15,15 @@ public class MyDCMElem {
     private int tag;
     private VR vr;
     private String stringValue;
+    private DicomObject dcm;
+    private DicomObject dcmCopy;
 
-    public MyDCMElem(int tag, VR vr, DicomObject dcm){
+    public MyDCMElem(int tag, VR vr, DicomObject dcm, DicomObject dcmCopy){
         this.tag = Objects.requireNonNull(tag);
         this.vr = Objects.requireNonNull(vr);
-        this.stringValue = dcm.getString(this.tag).orElse(null);
+        this.stringValue = dcmCopy.getString(this.tag).orElse(null);
+        this.dcmCopy = dcmCopy;
+        this.dcm = dcm;
     }
 
     public MyDCMElem(int tag, VR vr, String stringValue){
@@ -115,4 +119,7 @@ public class MyDCMElem {
         return new ReplaceNull("Z");
     }
 
+    public String getString(int tag){
+        return dcmCopy.getString(tag).orElse(null);
+    }
 }

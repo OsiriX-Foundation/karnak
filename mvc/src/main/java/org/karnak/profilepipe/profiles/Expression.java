@@ -50,10 +50,10 @@ public class Expression extends AbstractProfileItem {
     }
 
     @Override
-    public ActionItem getAction(DicomObject dcmCopy, DicomElement dcmElem, String PatientID) {
+    public ActionItem getAction(DicomObject dcm, DicomObject dcmCopy, DicomElement dcmElem, String PatientID) {
         if (exceptedTagsAction.get(dcmElem.tag()) == null && tagsAction.get(dcmElem.tag()) != null) {
             final String expr = arguments.get(0).getValue();
-            final MyDCMElem myDCMElem = new MyDCMElem(dcmElem.tag(), dcmElem.vr(), dcmCopy);
+            final MyDCMElem myDCMElem = new MyDCMElem(dcmElem.tag(), dcmElem.vr(), dcm, dcmCopy);
             return getResultCondition(expr, myDCMElem);
         }
         return null;

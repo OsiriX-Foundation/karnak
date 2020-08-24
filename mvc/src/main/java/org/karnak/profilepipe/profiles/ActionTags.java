@@ -35,7 +35,7 @@ public class ActionTags extends AbstractProfileItem {
     }
 
     @Override
-    public ActionItem getAction(DicomObject dcmCopy, DicomElement dcmElem, String PatientID) {
+    public ActionItem getAction(DicomObject dcm, DicomObject dcmCopy, DicomElement dcmElem, String PatientID) {
         if (exceptedTagsAction.get(dcmElem.tag()) == null) {
             return tagsAction.get(dcmElem.tag());
         }
