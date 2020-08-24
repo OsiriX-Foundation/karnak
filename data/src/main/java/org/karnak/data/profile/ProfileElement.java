@@ -49,6 +49,17 @@ public class ProfileElement {
         this.profile = profile;
     }
 
+    public ProfileElement(String name, String codename, String condition, String action, String option, List<Argument> arguments, Integer position, Profile profile) {
+        this.name = name;
+        this.codename = codename;
+        this.condition = condition;
+        this.action = action;
+        this.option = option;
+        this.arguments = arguments;
+        this.position = position;
+        this.profile = profile;
+    }
+
     public void addIncludedTag(IncludedTag includedtag){
         this.includedtag.add(includedtag);
     }
