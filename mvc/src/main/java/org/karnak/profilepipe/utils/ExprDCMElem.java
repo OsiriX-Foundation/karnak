@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class MyDCMElem {
+public class ExprDCMElem {
 
     private int tag;
     private VR vr;
@@ -18,7 +18,7 @@ public class MyDCMElem {
     private DicomObject dcm;
     private DicomObject dcmCopy;
 
-    public MyDCMElem(int tag, VR vr, DicomObject dcm, DicomObject dcmCopy){
+    public ExprDCMElem(int tag, VR vr, DicomObject dcm, DicomObject dcmCopy){
         this.tag = Objects.requireNonNull(tag);
         this.vr = Objects.requireNonNull(vr);
         this.stringValue = dcmCopy.getString(this.tag).orElse(null);
@@ -26,7 +26,7 @@ public class MyDCMElem {
         this.dcm = dcm;
     }
 
-    public MyDCMElem(int tag, VR vr, String stringValue){
+    public ExprDCMElem(int tag, VR vr, String stringValue){
         this.tag = Objects.requireNonNull(tag);
         this.vr = Objects.requireNonNull(vr);
         this.stringValue = stringValue;

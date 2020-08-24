@@ -17,7 +17,7 @@ import org.karnak.profilepipe.action.Add;
 import org.karnak.profilepipe.action.Remove;
 import org.karnak.profilepipe.profiles.AbstractProfileItem;
 import org.karnak.profilepipe.profiles.ProfileItem;
-import org.karnak.profilepipe.utils.MyDCMElem;
+import org.karnak.profilepipe.utils.ExprDCMElem;
 import org.karnak.profilepipe.utils.HMAC;
 import org.slf4j.*;
 import org.springframework.expression.EvaluationContext;
@@ -88,10 +88,10 @@ public class Profiles {
     public void applyAction(DicomObject dcm, DicomObject dcmCopy, String patientID) {
         for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext(); ) {
             final DicomElement dcmEl = iterator.next();
-            final MyDCMElem myDCMElem = new MyDCMElem(dcmEl.tag(), dcmEl.vr(), dcm, dcmCopy);
+            final ExprDCMElem exprDCMElem = new ExprDCMElem(dcmEl.tag(), dcmEl.vr(), dcm, dcmCopy);
 
             for (ProfileItem profile : profiles) {
-                final boolean conditionIsOk = getResultCondition(profile.getCondition(), myDCMElem);
+                final boolean conditionIsOk = getResultCondition(profile.getCondition(), exprDCMElem);
                 final ActionItem action = profile.getAction(dcm, dcmCopy, dcmEl, patientID);
                 if (action != null && conditionIsOk) {
                     try {
@@ -137,19 +137,19 @@ public class Profiles {
 
     public void setDefaultDeidentTagValue(DicomObject dcm, String patientID, String patientName, String profilePipeCodeName, String pseudonym){
         final String profileFilename = profile.getName();
-        final ArrayList<MyDCMElem> defaultDeidentTagValue = new ArrayList<>();
-        defaultDeidentTagValue.add(new MyDCMElem(Tag.PatientID, VR.LO, patientID));
-        defaultDeidentTagValue.add(new MyDCMElem(Tag.PatientName, VR.PN, patientName));
-        defaultDeidentTagValue.add(new MyDCMElem(Tag.PatientIdentityRemoved, VR.CS, "YES"));
+        final ArrayList<ExprDCMElem> defaultDeidentTagValue = new ArrayList<>();
+        defaultDeidentTagValue.add(new ExprDCMElem(Tag.PatientID, VR.LO, patientID));
+        defaultDeidentTagValue.add(new ExprDCMElem(Tag.PatientName, VR.PN, patientName));
+        defaultDeidentTagValue.add(new ExprDCMElem(Tag.PatientIdentityRemoved, VR.CS, "YES"));
         // 0012,0063 -> module patient
         // A description or label of the mechanism or method use to remove the Patient's identity
-        defaultDeidentTagValue.add(new MyDCMElem(Tag.DeidentificationMethod, VR.LO, profilePipeCodeName));
-        defaultDeidentTagValue.add(new MyDCMElem(Tag.ClinicalTrialSponsorName, VR.LO, profilePipeCodeName));
-        defaultDeidentTagValue.add(new MyDCMElem(Tag.ClinicalTrialProtocolID, VR.LO, profileFilename));
-        defaultDeidentTagValue.add(new MyDCMElem(Tag.ClinicalTrialSubjectID, VR.LO, pseudonym));
-        defaultDeidentTagValue.add(new MyDCMElem(Tag.ClinicalTrialProtocolName, VR.LO, (String) null));
-        defaultDeidentTagValue.add(new MyDCMElem(Tag.ClinicalTrialSiteID, VR.LO, (String) null));
-        defaultDeidentTagValue.add(new MyDCMElem(Tag.ClinicalTrialSiteName, VR.LO, (String) null));
+        defaultDeidentTagValue.add(new ExprDCMElem(Tag.DeidentificationMethod, VR.LO, profilePipeCodeName));
+        defaultDeidentTagValue.add(new ExprDCMElem(Tag.ClinicalTrialSponsorName, VR.LO, profilePipeCodeName));
+        defaultDeidentTagValue.add(new ExprDCMElem(Tag.ClinicalTrialProtocolID, VR.LO, profileFilename));
+        defaultDeidentTagValue.add(new ExprDCMElem(Tag.ClinicalTrialSubjectID, VR.LO, pseudonym));
+        defaultDeidentTagValue.add(new ExprDCMElem(Tag.ClinicalTrialProtocolName, VR.LO, (String) null));
+        defaultDeidentTagValue.add(new ExprDCMElem(Tag.ClinicalTrialSiteID, VR.LO, (String) null));
+        defaultDeidentTagValue.add(new ExprDCMElem(Tag.ClinicalTrialSiteName, VR.LO, (String) null));
 
         defaultDeidentTagValue.forEach(newElem -> {
             final ActionItem add = new Add("A", newElem.getStringValue(), newElem.getVr());
@@ -157,14 +157,14 @@ public class Profiles {
         });
     }
 
-    public static boolean getResultCondition(String condition, MyDCMElem myDCMElem){
+    public static boolean getResultCondition(String condition, ExprDCMElem exprDCMElem){
         final Logger LOGGER = LoggerFactory.getLogger(Profiles.class);
         if (condition!=null) {
             try {
                 //https://docs.spring.io/spring/docs/3.0.x/reference/expressions.html
                 final ExpressionParser parser = new SpelExpressionParser();
-                final EvaluationContext context = new StandardEvaluationContext(myDCMElem);
-                final String cleanCondition = myDCMElem.conditionInterpreter(condition);
+                final EvaluationContext context = new StandardEvaluationContext(exprDCMElem);
+                final String cleanCondition = exprDCMElem.conditionInterpreter(condition);
                 context.setVariable("VR", VR.class);
                 context.setVariable("TAG", Tag.class);
                 final Expression exp = parser.parseExpression(cleanCondition);

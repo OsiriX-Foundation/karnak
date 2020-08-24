@@ -10,7 +10,7 @@ import org.karnak.data.profile.ProfileElement;
 import org.karnak.profilepipe.Profiles;
 import org.karnak.profilepipe.action.AbstractAction;
 import org.karnak.profilepipe.action.ActionItem;
-import org.karnak.profilepipe.utils.MyDCMElem;
+import org.karnak.profilepipe.utils.ExprDCMElem;
 import org.karnak.profilepipe.utils.TagActionMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,19 +53,19 @@ public class Expression extends AbstractProfileItem {
     public ActionItem getAction(DicomObject dcm, DicomObject dcmCopy, DicomElement dcmElem, String PatientID) {
         if (exceptedTagsAction.get(dcmElem.tag()) == null && tagsAction.get(dcmElem.tag()) != null) {
             final String expr = arguments.get(0).getValue();
-            final MyDCMElem myDCMElem = new MyDCMElem(dcmElem.tag(), dcmElem.vr(), dcm, dcmCopy);
-            return getResultCondition(expr, myDCMElem);
+            final ExprDCMElem exprDCMElem = new ExprDCMElem(dcmElem.tag(), dcmElem.vr(), dcm, dcmCopy);
+            return getResultCondition(expr, exprDCMElem);
         }
         return null;
     }
 
-    public static ActionItem getResultCondition(String expr, MyDCMElem myDCMElem){
+    public static ActionItem getResultCondition(String expr, ExprDCMElem exprDCMElem){
         final Logger LOGGER = LoggerFactory.getLogger(Profiles.class);
         if (expr!=null) {
             try {
                 final ExpressionParser parser = new SpelExpressionParser();
-                final EvaluationContext context = new StandardEvaluationContext(myDCMElem);
-                final String cleanCondition = myDCMElem.conditionInterpreter(expr);
+                final EvaluationContext context = new StandardEvaluationContext(exprDCMElem);
+                final String cleanCondition = exprDCMElem.conditionInterpreter(expr);
                 context.setVariable("VR", VR.class);
                 context.setVariable("TAG", Tag.class);
                 final org.springframework.expression.Expression exp = parser.parseExpression(cleanCondition);
