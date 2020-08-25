@@ -59,4 +59,28 @@ public class DicomObjectTools {
         }
         return true;
     }
+
+
+    public static boolean tagIsInDicomObject(int tag, DicomObject dcm){
+        for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext(); ) {
+            final DicomElement dcmEl = iterator.next();
+
+            if(dcmEl.tag() == tag){
+                return true;
+            }
+
+            if (dcmEl.vr() == VR.SQ) {
+                int i = 0;
+                while (dcmEl.getItem(i) != null){
+                    DicomObject dcmItem1 = dcmEl.getItem(i);
+                    boolean resultSequence = tagIsInDicomObject(tag, dcmItem1);
+                    if(resultSequence == true){
+                        return true;
+                    }
+                    i = i +1;
+                }
+            }
+        }
+        return false;
+    }
 }

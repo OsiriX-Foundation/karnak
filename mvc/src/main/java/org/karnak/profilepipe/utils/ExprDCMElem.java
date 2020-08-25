@@ -129,11 +129,8 @@ public class ExprDCMElem {
         return dcmCopy.getString(tag).orElse(null);
     }
 
+    // #TODO doesn't work in sequence
     public boolean tagIsPresent(int tag){
-        if( dcm.getString(tag).orElse(null) != null){
-            return true;
-        }else{
-            return false;
-        }
+        return DicomObjectTools.tagIsInDicomObject(tag, dcmCopy);
     }
 }
