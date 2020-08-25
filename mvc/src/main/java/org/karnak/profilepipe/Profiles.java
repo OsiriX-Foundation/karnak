@@ -102,7 +102,7 @@ public class Profiles {
                     break;
                 }
                 if (!(Remove.class.isInstance(action)) && dcmEl.vr() == VR.SQ) {
-                    dcmEl.itemStream().forEach(d -> applyAction(d, dcmCopy, patientID));
+                    dcmEl.itemStream().forEach(d -> applyAction(dcm, d, patientID));
                 }
             }
         }
