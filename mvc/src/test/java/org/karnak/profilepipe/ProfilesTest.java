@@ -10,45 +10,52 @@ import org.karnak.data.profile.Argument;
 import org.karnak.data.profile.IncludedTag;
 import org.karnak.data.profile.Profile;
 import org.karnak.data.profile.ProfileElement;
+import org.karnak.profilepipe.utils.DicomObjectTools;
 import org.karnak.profilepipe.utils.ExprDCMElem;
 import org.karnak.profilepipe.utils.HMAC;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class ProfilesTest {
     private static final HMAC hmacTest = new HMAC("0123456789");
-    private static DicomObject dcmDeidentTestExprAdd = DicomObject.newDicomObject();
-    private static DicomObject dcmAfterDeidentTestExprAdd = DicomObject.newDicomObject();
-    private static Profile profileTestExprAddCtion = new Profile("TEST-Expr-AddAction", "0.9.1", "0.9.1", "DPA");
+    private static DicomObject dataset1 = DicomObject.newDicomObject();
+    private static DicomObject dataset2 = DicomObject.newDicomObject();
 
+    private static Profile profileExpressions = new Profile("TEST-Expr-AddAction", "0.9.1", "0.9.1", "DPA");
+    private static ProfileElement profileElementExpr;
+    private static Profiles profiles;
     @BeforeAll
     protected static void setUpBeforeClass() throws Exception {
-
         //Datasets
-        dcmDeidentTestExprAdd.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
-        dcmDeidentTestExprAdd.setString(Tag.StudyInstanceUID, VR.UI, "250");
+        dataset1.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
+        dataset1.setString(Tag.StudyInstanceUID, VR.UI, "250");
 
-        dcmAfterDeidentTestExprAdd.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
-        dcmAfterDeidentTestExprAdd.setString(Tag.StudyInstanceUID, VR.UI, "250");
-        dcmAfterDeidentTestExprAdd.setString(Tag.PatientAge, VR.AS, "075Y");
-
-        //Profiles
-        List<Argument> arguments = new ArrayList<>();
-        ProfileElement profileElementExprAdd = new ProfileElement("expr Add tag", "expression.on.tags", null, null, null, 0, profileTestExprAddCtion);
-        profileElementExprAdd.addArgument(new Argument("expr", "tagIsPresent(#TAG.PatientAge) == false? Add(#TAG.PatientAge, #VR.AS, '075Y') : Keep()", profileElementExprAdd));
-        profileElementExprAdd.addIncludedTag(new IncludedTag("(xxxx,xxxx)", profileElementExprAdd));
-        profileTestExprAddCtion.addProfilePipe(profileElementExprAdd);
+        dataset2.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
+        dataset2.setString(Tag.StudyInstanceUID, VR.UI, "250");
+        dataset2.setString(Tag.PatientAge, VR.AS, "075Y");
     }
 
 
     @Test
-    void applyProfile() {
-        Profiles profiles = new Profiles(profileTestExprAddCtion, hmacTest);
-        profiles.apply(dcmDeidentTestExprAdd, true);
-        assertEquals(dcmAfterDeidentTestExprAdd, dcmDeidentTestExprAdd);
+    void expressionProfile() {
+        //TEST expression profile with tagIsPresent() method, Add() method and Keep() method.
+        profileElementExpr = new ProfileElement("expr Add tag", "expression.on.tags", null, null, null, 0, profileExpressions);
+        profileElementExpr.addArgument(new Argument("expr", "tagIsPresent(#TAG.PatientAge) == false? Add(#TAG.PatientAge, #VR.AS, '075Y') : Keep()", profileElementExpr));
+        profileElementExpr.addIncludedTag(new IncludedTag("(xxxx,xxxx)", profileElementExpr));
+        profileExpressions.addProfilePipe(profileElementExpr);
+        profiles = new Profiles(profileExpressions, hmacTest);
+        profiles.apply(dataset1, true);
+        assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
+
+
+        profileElementExpr = new ProfileElement("expr Remove tag", "expression.on.tags", null, null, null, 0, profileExpressions);
+        profileElementExpr.addArgument(new Argument("expr", "stringValue == '075Y'? Remove() : Keep()", profileElementExpr));
+        profileElementExpr.addIncludedTag(new IncludedTag("(xxxx,xxxx)", profileElementExpr));
+        profileExpressions.addProfilePipe(profileElementExpr);
+        profiles = new Profiles(profileExpressions, hmacTest);
+        profiles.apply(dataset2, true);
+        assertTrue(DicomObjectTools.dicomObjectEquals(dataset1, dataset2));
     }
 
     @Test
