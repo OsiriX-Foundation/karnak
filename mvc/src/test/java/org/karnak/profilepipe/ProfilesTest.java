@@ -75,15 +75,15 @@ class ProfilesTest {
         assertEquals(false, Profiles.getResultCondition("tag == 1", exprDCMElem1));
 
         final ExprDCMElem exprDCMElem2 = new ExprDCMElem(TagUtils.intFromHexString("00100020"), VR.AE, "AE_TITLE"); //tag decimal = 1048608
-        assertEquals(true, Profiles.getResultCondition("tag == (00x0,0020) and tag == #TAG.PatientID", exprDCMElem2));
-        assertEquals(true, Profiles.getResultCondition("tag == 001xxx20 or #TAG.PatientName", exprDCMElem2));
+        assertEquals(true, Profiles.getResultCondition("tag == (00x0,0020) and tag == #Tag.PatientID", exprDCMElem2));
+        assertEquals(true, Profiles.getResultCondition("tag == 001xxx20 or #Tag.PatientName", exprDCMElem2));
         assertEquals(true, Profiles.getResultCondition("tag <= 2096928 and tag >= 1048608", exprDCMElem2));
         assertEquals(true, Profiles.getResultCondition("tag <= 001FFF20 and tag >= 00100020", exprDCMElem2));
         assertEquals(true, Profiles.getResultCondition("tag < 1048609", exprDCMElem2));
-        assertEquals(true, Profiles.getResultCondition("tag == (00x0,0020) and tag == #TAG.PatientID and vr == #VR.AE", exprDCMElem2));
+        assertEquals(true, Profiles.getResultCondition("tag == (00x0,0020) and tag == #Tag.PatientID and vr == #VR.AE", exprDCMElem2));
 
-        assertEquals(false, Profiles.getResultCondition("tag == (00x0,0020) and tag == #TAG.PatientName", exprDCMElem2));
-        assertEquals(false, Profiles.getResultCondition("tag == (0010,0010) or tag == #TAG.PatientName", exprDCMElem2));
+        assertEquals(false, Profiles.getResultCondition("tag == (00x0,0020) and tag == #Tag.PatientName", exprDCMElem2));
+        assertEquals(false, Profiles.getResultCondition("tag == (0010,0010) or tag == #Tag.PatientName", exprDCMElem2));
         assertEquals(false, Profiles.getResultCondition("tag < 1048608", exprDCMElem2));
 
 

@@ -122,7 +122,7 @@ public class ExprDCMElem {
     public ActionItem Add(int newTag, VR newVr, String newValue){
         Add add = new Add("A", newTag, newVr, newValue);
         add.execute(dcm, newTag, null, null);
-        return new Keep("Keep");
+        return null;
     }
 
     public String getString(int tag){

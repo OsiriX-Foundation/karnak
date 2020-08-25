@@ -18,7 +18,7 @@ class ExprDCMElemTest {
         assertEquals("tag == 1048592", exprDCMElem.conditionInterpreter("tag == 001x00x0"));
 
         final ExprDCMElem exprDCMElem2 = new ExprDCMElem(TagUtils.intFromHexString("00100020"), VR.PN, "CARDIX");
-        assertEquals("tag == 1048608 and tag == #TAG.PatientName", exprDCMElem2.conditionInterpreter("tag == (00x0,0020) and tag == #TAG.PatientName"));
+        assertEquals("tag == 1048608 and tag == #Tag.PatientName", exprDCMElem2.conditionInterpreter("tag == (00x0,0020) and tag == #Tag.PatientName"));
         assertEquals("tag == 1048608", exprDCMElem2.conditionInterpreter("tag == 001xxx20"));
         assertEquals("tag == 1048608", exprDCMElem2.conditionInterpreter("tag == 0010002x"));
         assertEquals("tag == 1048608", exprDCMElem2.conditionInterpreter("tag == x010002x"));
