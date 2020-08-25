@@ -166,7 +166,7 @@ public class Profiles {
                 final EvaluationContext context = new StandardEvaluationContext(exprDCMElem);
                 final String cleanCondition = exprDCMElem.conditionInterpreter(condition);
                 context.setVariable("VR", VR.class);
-                context.setVariable("TAG", Tag.class);
+                context.setVariable("Tag", Tag.class);
                 final Expression exp = parser.parseExpression(cleanCondition);
                 return exp.getValue(context, Boolean.class);
             } catch (final Exception e) {

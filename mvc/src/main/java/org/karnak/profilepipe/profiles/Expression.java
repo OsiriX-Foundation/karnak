@@ -67,7 +67,7 @@ public class Expression extends AbstractProfileItem {
                 final EvaluationContext context = new StandardEvaluationContext(exprDCMElem);
                 final String cleanCondition = exprDCMElem.conditionInterpreter(expr);
                 context.setVariable("VR", VR.class);
-                context.setVariable("TAG", Tag.class);
+                context.setVariable("Tag", Tag.class);
                 final org.springframework.expression.Expression exp = parser.parseExpression(cleanCondition);
                 return exp.getValue(context, ActionItem.class);
             } catch (final Exception e) {
