@@ -41,7 +41,7 @@ class ProfilesTest {
     void expressionProfile() {
         //TEST expression profile with tagIsPresent() method, Add() method and Keep() method.
         profileElementExpr = new ProfileElement("expr Add tag", "expression.on.tags", null, null, null, 0, profileExpressions);
-        profileElementExpr.addArgument(new Argument("expr", "tagIsPresent(#TAG.PatientAge) == false? Add(#TAG.PatientAge, #VR.AS, '075Y') : Keep()", profileElementExpr));
+        profileElementExpr.addArgument(new Argument("expr", "tagIsPresent(#Tag.PatientAge) == false? Add(#Tag.PatientAge, #VR.AS, '075Y') : Keep()", profileElementExpr));
         profileElementExpr.addIncludedTag(new IncludedTag("(xxxx,xxxx)", profileElementExpr));
         profileExpressions.addProfilePipe(profileElementExpr);
         profiles = new Profiles(profileExpressions, hmacTest);
