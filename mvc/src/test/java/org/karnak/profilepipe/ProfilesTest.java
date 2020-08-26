@@ -6,6 +6,9 @@ import org.dcm4che6.data.VR;
 import org.dcm4che6.util.TagUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.karnak.data.profile.Argument;
 import org.karnak.data.profile.IncludedTag;
 import org.karnak.data.profile.Profile;
@@ -39,6 +42,7 @@ class ProfilesTest {
 
     @Test
     void expressionProfile() {
+        /*
         //TEST expression profile with tagIsPresent() method, Add() method and Keep() method.
         profileElementExpr = new ProfileElement("expr Add tag", "expression.on.tags", null, null, null, 0, profileExpressions);
         profileElementExpr.addArgument(new Argument("expr", "tagIsPresent(#Tag.PatientAge) == false? Add(#Tag.PatientAge, #VR.AS, '075Y') : Keep()", profileElementExpr));
@@ -56,47 +60,55 @@ class ProfilesTest {
         profiles = new Profiles(profileExpressions, hmacTest);
         profiles.apply(dataset2, true);
         assertTrue(DicomObjectTools.dicomObjectEquals(dataset1, dataset2));
+        */
     }
 
-    @Test
-    void getResultCondition() {
+
+    //#######################   TEST getResultCondition ############################################
+    @ParameterizedTest
+    @ValueSource(strings = {"tag == (0010,00xx) or", "tag == (0010,0010) and stringValue == 'CARDIX'", "tag == (0010,00xx)",
+            "tag == 0010,00x0) and stringValue == 'CARDIX'", "tag == (00x0,0010", "tag == 001x00x0", "tag == (00x0,0010 and vr == #VR.PN"})
+    void getResultConditionTrue1(String input){
         final ExprDCMElem exprDCMElem1 = new ExprDCMElem(TagUtils.intFromHexString("00100010"), VR.PN, "CARDIX");
-        assertEquals(true, Profiles.getResultCondition("tag == (0010,00xx) or", exprDCMElem1)); // generate an exception
-        assertEquals(true, Profiles.getResultCondition("tag == (0010,0010) and stringValue == 'CARDIX'", exprDCMElem1));
-        assertEquals(true, Profiles.getResultCondition("tag == (0010,00xx)", exprDCMElem1));
-        assertEquals(true, Profiles.getResultCondition("tag == 0010,00x0) and stringValue == 'CARDIX'", exprDCMElem1));
-        assertEquals(true, Profiles.getResultCondition("tag == (00x0,0010", exprDCMElem1));
-        assertEquals(true, Profiles.getResultCondition("tag == 001x00x0", exprDCMElem1));
-        assertEquals(true, Profiles.getResultCondition("tag == (00x0,0010 and vr == #VR.PN", exprDCMElem1));
+        assertTrue(Profiles.getResultCondition(input, exprDCMElem1)); // generate an exception
+    }
 
-        assertEquals(false, Profiles.getResultCondition("tag == (0010,0010) and stringValue == 'PANORAMIX'", exprDCMElem1));
-        assertEquals(false, Profiles.getResultCondition("tag == 2222,00x0) and stringValue == 'CARDIX'", exprDCMElem1));
-        assertEquals(false, Profiles.getResultCondition("tag == (00x0,0010 and vr == #VR.AE", exprDCMElem1));
-        assertEquals(false, Profiles.getResultCondition("tag == 1", exprDCMElem1));
-
+    @ParameterizedTest
+    @ValueSource(strings = {"tag == (00x0,0020) and tag == #Tag.PatientID", "tag == 001xxx20 or #Tag.PatientName",
+            "tag <= 2096928 and tag >= 1048608", "tag <= 001FFF20 and tag >= 00100020", "tag < 1048609",
+            "tag == (00x0,0020) and tag == #Tag.PatientID and vr == #VR.AE"})
+    void getResultConditionTrue2(String input){
         final ExprDCMElem exprDCMElem2 = new ExprDCMElem(TagUtils.intFromHexString("00100020"), VR.AE, "AE_TITLE"); //tag decimal = 1048608
-        assertEquals(true, Profiles.getResultCondition("tag == (00x0,0020) and tag == #Tag.PatientID", exprDCMElem2));
-        assertEquals(true, Profiles.getResultCondition("tag == 001xxx20 or #Tag.PatientName", exprDCMElem2));
-        assertEquals(true, Profiles.getResultCondition("tag <= 2096928 and tag >= 1048608", exprDCMElem2));
-        assertEquals(true, Profiles.getResultCondition("tag <= 001FFF20 and tag >= 00100020", exprDCMElem2));
-        assertEquals(true, Profiles.getResultCondition("tag < 1048609", exprDCMElem2));
-        assertEquals(true, Profiles.getResultCondition("tag == (00x0,0020) and tag == #Tag.PatientID and vr == #VR.AE", exprDCMElem2));
+        assertTrue(Profiles.getResultCondition(input, exprDCMElem2)); // generate an exception
+    }
 
-        assertEquals(false, Profiles.getResultCondition("tag == (00x0,0020) and tag == #Tag.PatientName", exprDCMElem2));
-        assertEquals(false, Profiles.getResultCondition("tag == (0010,0010) or tag == #Tag.PatientName", exprDCMElem2));
-        assertEquals(false, Profiles.getResultCondition("tag < 1048608", exprDCMElem2));
-
-
+    @ParameterizedTest
+    @ValueSource(strings = {"tag == 02100220)", "tag == (02100220 and vr == #VR.DA", "tag == 0210,0220 and stringValue == '1M'",
+            "tag == 0210,0220 and stringValue == '1M' and vr == #VR.DA", "tag == 0210,0220)"})
+    void getResultConditionTrue3(String input){
         final ExprDCMElem exprDCMElem3 = new ExprDCMElem(TagUtils.intFromHexString("02100220"), VR.DA, "1M");
-        assertEquals(true, Profiles.getResultCondition("tag == 02100220)", exprDCMElem3));
-        assertEquals(true, Profiles.getResultCondition("tag == (02100220 and vr == #VR.DA", exprDCMElem3));
-        assertEquals(true, Profiles.getResultCondition("tag == 0210,0220 and stringValue == '1M'", exprDCMElem3));
-        assertEquals(true, Profiles.getResultCondition("tag == 0210,0220 and stringValue == '1M' and vr == #VR.DA", exprDCMElem3));
-        assertEquals(true, Profiles.getResultCondition("tag == 0210,0220)", exprDCMElem3));
+        assertTrue(Profiles.getResultCondition(input, exprDCMElem3)); // generate an exception
+    }
 
-        assertEquals(false, Profiles.getResultCondition("tag == 12100220)", exprDCMElem3));
-        assertEquals(false, Profiles.getResultCondition("tag == (02100220 and vr == #VR.AE", exprDCMElem3));
-        assertEquals(false, Profiles.getResultCondition("tag == 0210,0220 and stringValue == '1'", exprDCMElem3));
-        assertEquals(false, Profiles.getResultCondition("tag == 2210,0220 and stringValue == '1' and vr == #VR.PN", exprDCMElem3));
+    @ParameterizedTest
+    @ValueSource(strings = {"tag == (0010,0010) and stringValue == 'PANORAMIX'", "tag == 2222,00x0) and stringValue == 'CARDIX'",
+            "tag == (00x0,0010 and vr == #VR.AE", "tag == 1" })
+    void getResultConditionFalse1(String input){
+        final ExprDCMElem exprDCMElem1 = new ExprDCMElem(TagUtils.intFromHexString("00100010"), VR.PN, "CARDIX");
+        assertFalse(Profiles.getResultCondition(input, exprDCMElem1)); // generate an exception
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"tag == (00x0,0020) and tag == #Tag.PatientName", "tag == (0010,0010) or tag == #Tag.PatientName", "tag < 1048608" })
+    void getResultConditionFalse2(String input){
+        final ExprDCMElem exprDCMElem2 = new ExprDCMElem(TagUtils.intFromHexString("00100020"), VR.AE, "AE_TITLE"); //tag decimal = 1048608
+        assertFalse(Profiles.getResultCondition(input, exprDCMElem2)); // generate an exception
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"tag == 12100220)", "tag == 12100220)", "tag == 0210,0220 and stringValue == '1'", "tag == 2210,0220 and stringValue == '1' and vr == #VR.PN"})
+    void getResultConditionFalse3(String input){
+        final ExprDCMElem exprDCMElem3 = new ExprDCMElem(TagUtils.intFromHexString("02100220"), VR.DA, "1M");
+        assertFalse(Profiles.getResultCondition(input, exprDCMElem3)); // generate an exception
     }
 }
