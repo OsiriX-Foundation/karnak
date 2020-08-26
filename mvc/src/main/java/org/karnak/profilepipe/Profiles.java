@@ -86,7 +86,7 @@ public class Profiles {
     }
 
     public void applyAction(DicomObject dcm, DicomObject dcmCopy, String patientID) {
-        for (Iterator<DicomElement> iterator = dcmCopy.iterator(); iterator.hasNext(); ) {
+        for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext(); ) {
             final DicomElement dcmEl = iterator.next();
             final ExprDCMElem exprDCMElem = new ExprDCMElem(dcmEl.tag(), dcmEl.vr(), dcm, dcmCopy);
 
@@ -102,7 +102,7 @@ public class Profiles {
                     break;
                 }
                 if (!(Remove.class.isInstance(action)) && dcmEl.vr() == VR.SQ) {
-                    dcmEl.itemStream().forEach(d -> applyAction(dcm, d, patientID));
+                    dcmEl.itemStream().forEach(d -> applyAction(d, dcmCopy, patientID));
                 }
             }
         }
