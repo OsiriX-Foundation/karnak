@@ -154,6 +154,40 @@ class ProfilesTest {
         assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
 
+    @Test
+    void KprivateTagsAndXRestProfile(){
+        final DicomObject dataset1 = DicomObject.newDicomObject();
+        final DicomObject dataset2 = DicomObject.newDicomObject();
+
+        dataset1.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
+        dataset1.setString(Tag.StudyInstanceUID, VR.UI, "12345");
+        dataset1.setString(Tag.PatientAge, VR.AS, "069Y");
+        dataset1.setString(Tag.PatientBirthDate, VR.DA, "20080822");
+        dataset1.setString(Tag.AcquisitionDateTime, VR.DT, "20080729131503");
+        dataset1.setString(Tag.InstanceCreationTime, VR.TM, "131735.000000");
+        dataset1.setString(0x70531200, VR.LO, "Private Tag");
+        dataset1.setString(0x70534200, VR.LO, "Private Tag");
+        dataset1.setString(0x70531209, VR.LO, "Private Tag");
+        dataset1.setString(0x70534209, VR.LO, "Private Tag");
+        dataset1.setString(0x70534205, VR.LO, "Private Tag"); //it's a private tag but it's not in scope
+
+        dataset2.setString(0x70531200, VR.LO, "Private Tag");
+        dataset2.setString(0x70534200, VR.LO, "Private Tag");
+        dataset2.setString(0x70531209, VR.LO, "Private Tag");
+        dataset2.setString(0x70534209, VR.LO, "Private Tag");
+
+        final Profile profile = new Profile("TEST", "0.9.1", "0.9.1", "DPA");
+        final ProfileElement profileElement = new ProfileElement("Remove tag", "action.on.privatetags", null, "K", null, 0, profile);
+        profileElement.addIncludedTag(new IncludedTag("(7053,xx00)", profileElement));
+        profileElement.addIncludedTag(new IncludedTag("(7053,xx09)", profileElement));
+        profile.addProfilePipe(profileElement);
+        final ProfileElement profileElement2 = new ProfileElement("Replace by null", "action.on.specific.tags", null, "X", null, 0, profile);
+        profileElement2.addIncludedTag(new IncludedTag("(xxxx,xxxx)", profileElement));
+        profile.addProfilePipe(profileElement2);
+        final Profiles profiles = new Profiles(profile, hmacTest);
+        profiles.apply(dataset1, true);
+        assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
+    }
 
     @Test
     void expressionProfile() {
