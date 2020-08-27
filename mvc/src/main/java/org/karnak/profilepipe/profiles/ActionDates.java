@@ -10,6 +10,7 @@ import org.karnak.profilepipe.action.ActionItem;
 import org.karnak.profilepipe.action.Replace;
 import org.karnak.profilepipe.option.datemanager.ShiftDate;
 import org.karnak.profilepipe.option.datemanager.ShiftRangeDate;
+import org.karnak.profilepipe.utils.HMAC;
 import org.karnak.profilepipe.utils.TagActionMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +24,12 @@ public class ActionDates extends AbstractProfileItem {
 
     public ActionDates(ProfileElement profileElement) throws Exception {
         super(profileElement);
-        shiftRangeDate = new ShiftRangeDate();
+        try {
+            shiftRangeDate = new ShiftRangeDate();
+        } catch (Exception e){
+            HMAC hmac = new HMAC("HMACTEST");
+            shiftRangeDate = new ShiftRangeDate(hmac);
+        }
         tagsAction = new TagActionMap();
         exceptedTagsAction = new TagActionMap();
         actionByDefault = new Replace("D");

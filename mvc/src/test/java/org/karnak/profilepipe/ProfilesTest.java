@@ -7,6 +7,7 @@ import org.dcm4che6.util.TagUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.karnak.data.profile.Argument;
 import org.karnak.data.profile.IncludedTag;
 import org.karnak.data.profile.Profile;
 import org.karnak.data.profile.ProfileElement;
@@ -18,7 +19,7 @@ import org.karnak.profilepipe.utils.HMAC;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ProfilesTest {
-    private static final HMAC hmacTest = new HMAC("0123456789");
+    private static final HMAC hmacTest = new HMAC("HMACTEST");
 
 
     @Test
@@ -64,19 +65,26 @@ class ProfilesTest {
         assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
 
-    /*
+
     @Test
     void shiftDateProfile(){
+        //SHIFT days: 365, seconds:60
         final DicomObject dataset1 = DicomObject.newDicomObject();
         final DicomObject dataset2 = DicomObject.newDicomObject();
 
         dataset1.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
         dataset1.setString(Tag.StudyInstanceUID, VR.UI, "12345");
-        dataset1.setString(Tag.PatientAge, VR.AS, "075Y");
+        dataset1.setString(Tag.PatientAge, VR.AS, "069Y");
+        dataset1.setString(Tag.PatientBirthDate, VR.DA, "20080822");
+        dataset1.setString(Tag.AcquisitionDateTime, VR.DT, "20080729131503");
+        dataset1.setString(Tag.InstanceCreationTime, VR.TM, "131735.000000");
 
         dataset2.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
         dataset2.setString(Tag.StudyInstanceUID, VR.UI, "12345");
-        dataset2.setString(Tag.PatientAge, VR.AS, "076Y");
+        dataset2.setString(Tag.PatientAge, VR.AS, "070Y");
+        dataset2.setString(Tag.PatientBirthDate, VR.DA, "20070823");
+        dataset2.setString(Tag.AcquisitionDateTime, VR.DT, "20070730131403.000000");
+        dataset2.setString(Tag.InstanceCreationTime, VR.TM, "131635.000000");
 
         //TEST replace null profile.
         Profile profile = new Profile("TEST", "0.9.1", "0.9.1", "DPA");
@@ -88,7 +96,7 @@ class ProfilesTest {
         final Profiles profiles = new Profiles(profile, hmacTest);
         profiles.apply(dataset1, true);
         assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
-    }*/
+    }
 
     @Test
     void XZactionTagsProfile(){
