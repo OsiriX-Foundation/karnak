@@ -9,6 +9,7 @@ import org.karnak.ui.about.AboutView;
 import org.karnak.ui.admin.AdminView;
 import org.karnak.ui.authentication.AccessControlFactory;
 import org.karnak.ui.dicom.DicomMainView;
+import org.karnak.ui.extid.ExtIDView;
 import org.karnak.ui.gateway.GatewayView;
 
 import com.vaadin.flow.component.AttachEvent;
@@ -44,9 +45,9 @@ public class MainLayout extends FlexLayout implements RouterLayout {
         setClassName("main-layout");
 
         menu = new Menu();
-        IronIcon icon = new IronIcon("icons", "settings");
-        menu.addView(GatewayView.class, GatewayView.VIEW_NAME, icon);
+        menu.addView(GatewayView.class, GatewayView.VIEW_NAME, new IronIcon("icons", "settings"));
         menu.addView(ProfileView.class, ProfileView.VIEW_NAME, new IronIcon("icons", "assignment"));
+        menu.addView(ExtIDView.class, ExtIDView.VIEW_NAME, new IronIcon("icons", "social:person-add"));
         menu.addView(DicomMainView.class, DicomMainView.VIEW_NAME, new IronIcon("icons", "build"));
         menu.addView(HelpView.class, HelpView.VIEW_NAME, new IronIcon("icons", "help"));
         //menu.addView(AboutView.class, AboutView.VIEW_NAME, new IronIcon("icons", "info"));
