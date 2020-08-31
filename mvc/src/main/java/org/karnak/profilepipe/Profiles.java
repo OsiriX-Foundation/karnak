@@ -114,7 +114,7 @@ public class Profiles {
         }
     }
 
-    public void apply(DicomObject dcm, boolean test) {
+    public void apply(DicomObject dcm) {
         final String SOPinstanceUID = dcm.getString(Tag.SOPInstanceUID).orElse(null);
         final String IssuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID).orElse(null);
         final String PatientID = dcm.getString(Tag.PatientID).orElse(null);
@@ -122,12 +122,7 @@ public class Profiles {
         MDC.put("issuerOfPatientID", IssuerOfPatientID);
         MDC.put("PatientID", PatientID);
 
-        String pseudonym;
-        if (!test) {
-            pseudonym = getMainzellistePseudonym(dcm);
-        } else {
-            pseudonym = "testpseudonym";
-        }
+        String pseudonym = getMainzellistePseudonym(dcm);
 
         String profilesCodeName = String.join(
                 "-" , profiles.stream().map(profile -> profile.getCodeName()).collect(Collectors.toList())
@@ -144,9 +139,7 @@ public class Profiles {
         DicomObjectUtil.copyDataset(dcm, dcmCopy);
         applyAction(dcm, dcmCopy, patientID);
 
-        if (!test) {
-            setDefaultDeidentTagValue(dcm, patientID, patientName, profilesCodeName, pseudonym);
-        }
+        setDefaultDeidentTagValue(dcm, patientID, patientName, profilesCodeName, pseudonym);
     }
 
     public void setDefaultDeidentTagValue(DicomObject dcm, String patientID, String patientName, String profilePipeCodeName, String pseudonym){
