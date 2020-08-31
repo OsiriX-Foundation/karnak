@@ -191,25 +191,27 @@ class ProfilesTest {
 
     @Test
     void expressionProfile() {
-        /*
-        //TEST expression profile with tagIsPresent() method, Add() method and Keep() method.
-        profileElementExpr = new ProfileElement("expr Add tag", "expression.on.tags", null, null, null, 0, profileExpressions);
-        profileElementExpr.addArgument(new Argument("expr", "tagIsPresent(#Tag.PatientAge) == false? Add(#Tag.PatientAge, #VR.AS, '075Y') : Keep()", profileElementExpr));
-        profileElementExpr.addIncludedTag(new IncludedTag("(xxxx,xxxx)", profileElementExpr));
-        profileExpressions.addProfilePipe(profileElementExpr);
-        profiles = new Profiles(profileExpressions, hmacTest);
-        profiles.apply(dataset1, true);
+
+        final DicomObject dataset1 = DicomObject.newDicomObject();
+        final DicomObject dataset2 = DicomObject.newDicomObject();
+
+        dataset1.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
+        dataset1.setString(Tag.StudyInstanceUID, VR.UI, "12345");
+        dataset1.setString(Tag.PatientAge, VR.AS, "075Y");
+
+        dataset2.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
+        dataset2.setString(Tag.StudyInstanceUID, VR.UI, "12345");
+
+
+        Profile profile = new Profile("TEST", "0.9.1", "0.9.1", "DPA");
+        ProfileElement profileElement = new ProfileElement("Expr", "expression.on.tags", null, null, null, 0, profile);
+        profileElement.addArgument(new Argument("expr", "stringValue == '075Y'? Remove() : Keep()", profileElement));
+        profileElement.addIncludedTag(new IncludedTag("(xxxx,xxxx)", profileElement));
+
+        profile.addProfilePipe(profileElement);
+        final Profiles profiles = new Profiles(profile, hmacTest);
+        profiles.applyAction(dataset1, dataset1, "pseudonym");
         assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
-
-
-        profileElementExpr = new ProfileElement("expr Remove tag", "expression.on.tags", null, null, null, 0, profileExpressions);
-        profileElementExpr.addArgument(new Argument("expr", "stringValue == '075Y'? Remove() : Keep()", profileElementExpr));
-        profileElementExpr.addIncludedTag(new IncludedTag("(xxxx,xxxx)", profileElementExpr));
-        profileExpressions.addProfilePipe(profileElementExpr);
-        profiles = new Profiles(profileExpressions, hmacTest);
-        profiles.apply(dataset2, true);
-        assertTrue(DicomObjectTools.dicomObjectEquals(dataset1, dataset2));
-        */
     }
 
 
