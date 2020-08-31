@@ -25,28 +25,31 @@ import com.vaadin.flow.component.textfield.TextField;
 @SuppressWarnings("serial")
 public class SourceNodeView extends HorizontalLayout {
     private final SourceNodeDataProvider dataProvider;
-    private final SourceNodeLogic viewLogic;
+    private final SourceNodeLogic sourceNodeLogic;
 
     private TextField filter;
     private Button newSourceNode;
     private SourceNodeGrid grid;
+    private GatewayViewLogic gatewayViewLogic;
 
-    private SourceNodeForm form;
+    private SourceNodeForm sourceNodeForm;
+    VerticalLayout barAndGridLayout;
 
-    public SourceNodeView(DataService dataService, GatewayViewLogic outputLogic) {
+    public SourceNodeView(DataService dataService, GatewayViewLogic gatewayViewLogic) {
+        this.gatewayViewLogic = gatewayViewLogic;
         this.dataProvider = new SourceNodeDataProvider(dataService);
-        this.viewLogic = new SourceNodeLogic(outputLogic, this);
+        this.sourceNodeLogic = new SourceNodeLogic(gatewayViewLogic, this);
         setSizeFull();
 
         HorizontalLayout topLayout = createTopBar();
 
         grid = new SourceNodeGrid();
         grid.setDataProvider(this.dataProvider);
-        grid.asSingleSelect().addValueChangeListener(event -> viewLogic.rowSelected(event.getValue()));
+        grid.asSingleSelect().addValueChangeListener(event -> sourceNodeLogic.rowSelected(event.getValue()));
 
-        form = new SourceNodeForm(viewLogic);
+        sourceNodeForm = new SourceNodeForm(sourceNodeLogic);
 
-        VerticalLayout barAndGridLayout = new VerticalLayout();
+        barAndGridLayout = new VerticalLayout();
         barAndGridLayout.setPadding(false);
         barAndGridLayout.add(topLayout);
         barAndGridLayout.add(grid);
@@ -56,13 +59,13 @@ public class SourceNodeView extends HorizontalLayout {
         barAndGridLayout.expand(grid);
 
         add(barAndGridLayout);
-        add(form);
+        add(sourceNodeForm);
 
-        viewLogic.init(null);
+        sourceNodeLogic.init(null);
     }
 
-    public SourceNodeLogic getViewLogic() {
-        return viewLogic;
+    public SourceNodeLogic getSourceNodeLogic() {
+        return sourceNodeLogic;
     }
 
     protected void setForwardNode(ForwardNode forwardNode) {
@@ -80,7 +83,7 @@ public class SourceNodeView extends HorizontalLayout {
         newSourceNode.getElement().setAttribute("title", "New source");
         newSourceNode.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         newSourceNode.setIcon(VaadinIcon.PLUS_CIRCLE.create());
-        newSourceNode.addClickListener(click -> viewLogic.newSourceNode());
+        newSourceNode.addClickListener(click -> sourceNodeLogic.newSourceNode());
 
         HorizontalLayout topLayout = new HorizontalLayout();
         topLayout.setWidthFull();
@@ -123,7 +126,7 @@ public class SourceNodeView extends HorizontalLayout {
         NodeEventType eventType = data.isNewData() ? NodeEventType.ADD : NodeEventType.UPDATE;
         dataProvider.save(data);
         if (data.getForwardNode() != null) {
-            viewLogic.getOutputLogic().getApplicationEventPublisher()
+            sourceNodeLogic.getGatewayViewLogic().getApplicationEventPublisher()
                 .publishEvent(new NodeEvent(data, eventType));
         }
         showForm(false);
@@ -131,7 +134,7 @@ public class SourceNodeView extends HorizontalLayout {
 
     protected void removeSourceNode(DicomSourceNode data) {
         if (data.getForwardNode() != null) {
-            viewLogic.getOutputLogic().getApplicationEventPublisher()
+            sourceNodeLogic.getGatewayViewLogic().getApplicationEventPublisher()
             .publishEvent(new NodeEvent(data, NodeEventType.REMOVE));
         }
         dataProvider.delete(data);
@@ -140,12 +143,14 @@ public class SourceNodeView extends HorizontalLayout {
 
     protected void editSourceNode(DicomSourceNode data) {
         showForm(data != null);
-        form.editSourceNode(data);
+        sourceNodeForm.editSourceNode(data);
     }
 
     protected void showForm(boolean show) {
-        form.setVisible(show);
-        form.setEnabled(show);
+        sourceNodeForm.setVisible(show);
+        sourceNodeForm.setEnabled(show);
+        barAndGridLayout.setVisible(!show);
+        gatewayViewLogic.showForwardNodeForm(!show);
     }
 
     public boolean hasChanges() {

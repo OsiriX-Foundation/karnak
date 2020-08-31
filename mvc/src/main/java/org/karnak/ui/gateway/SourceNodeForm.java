@@ -8,7 +8,6 @@ import com.vaadin.flow.component.KeyModifier;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -20,10 +19,8 @@ import com.vaadin.flow.data.value.ValueChangeMode;
  * A form for editing a single soure node.
  */
 @SuppressWarnings("serial")
-public class SourceNodeForm extends Div {
-    private SourceNodeLogic viewLogic;
-
-    private VerticalLayout content;
+public class SourceNodeForm extends VerticalLayout {
+    private SourceNodeLogic sourceNodeLogic;
 
     private final TextField description;
     private final TextField aeTitle;
@@ -38,14 +35,12 @@ public class SourceNodeForm extends Div {
     private Binder<DicomSourceNode> binder;
     private DicomSourceNode currentSourceNode;
 
-    public SourceNodeForm(SourceNodeLogic viewLogic) {
-        this.viewLogic = viewLogic;
+    public SourceNodeForm(SourceNodeLogic sourceNodeLogic) {
+        this.sourceNodeLogic = sourceNodeLogic;
 
         setClassName("sourcenode-form");
 
-        content = new VerticalLayout();
-        content.setSizeFull();
-        add(content);
+        setSizeFull();
 
         aeTitle = new TextField("AETitle");
         aeTitle.setRequired(true);
@@ -87,9 +82,9 @@ public class SourceNodeForm extends Div {
         UIS.setTooltip(checkHostname,
             "if \"true\" check the hostname during the DICOM association and if not match the connection is abort");
 
-        content.add(UIS.setWidthFull(new HorizontalLayout(aeTitle, description)));
-        content.add(UIS.setWidthFull(new HorizontalLayout(hostname)));
-        content.add(UIS.setWidthFull(checkHostname));
+        add(UIS.setWidthFull(new HorizontalLayout(aeTitle, description)));
+        add(UIS.setWidthFull(new HorizontalLayout(hostname)));
+        add(UIS.setWidthFull(checkHostname));
 
         binder = new BeanValidationBinder<>(DicomSourceNode.class);
         binder.bindInstanceFields(this);
@@ -103,43 +98,44 @@ public class SourceNodeForm extends Div {
             remove.setEnabled(!hasChanges);
         });
 
-        update = new Button("Update");
+        update = new Button("Save");
         update.setWidthFull();
         update.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         update.addClickListener(event -> {
             if (currentSourceNode != null && binder.writeBeanIfValid(currentSourceNode)) {
-                this.viewLogic.saveSourceNode(currentSourceNode);
+                this.sourceNodeLogic.saveSourceNode(currentSourceNode);
+                this.sourceNodeLogic.getGatewayViewLogic().saveForwardNode();
             }
         });
         update.addClickShortcut(Key.KEY_S, KeyModifier.CONTROL);
 
         discard = new Button("Discard changes");
         discard.setWidth("100%");
-        discard.addClickListener(event -> this.viewLogic.editSourceNode(currentSourceNode));
+        discard.addClickListener(event -> this.sourceNodeLogic.editSourceNode(currentSourceNode));
 
         cancel = new Button("Cancel");
         cancel.setWidth("100%");
-        cancel.addClickListener(event -> this.viewLogic.cancelSourceNode());
+        cancel.addClickListener(event -> this.sourceNodeLogic.cancelSourceNode());
         cancel.addClickShortcut(Key.ESCAPE);
-        getElement().addEventListener("keydown", event -> this.viewLogic.cancelSourceNode())
+        getElement().addEventListener("keydown", event -> this.sourceNodeLogic.cancelSourceNode())
             .setFilter("event.key == 'Escape'");
 
-        remove = new Button("Remove");
+        remove = new Button("Delete");
         remove.setWidth("100%");
         remove.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
         remove.addClickListener(event -> {
             if (currentSourceNode != null) {
-                this.viewLogic.deleteSourceNode(currentSourceNode);
+                this.sourceNodeLogic.deleteSourceNode(currentSourceNode);
+                this.sourceNodeLogic.getGatewayViewLogic().saveForwardNode();
             }
         });
 
-        content.add(UIS.setWidthFull( //
-            new HorizontalLayout(update, discard, remove, cancel)));
+        add(UIS.setWidthFull( //
+            new HorizontalLayout(update, remove, cancel)));
     }
 
     public void editSourceNode(DicomSourceNode data) {
         remove.setVisible(data != null);
-        cancel.setVisible(data == null);
         if (data == null) {
             data = DicomSourceNode.ofEmpty();
         }
