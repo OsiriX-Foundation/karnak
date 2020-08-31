@@ -65,71 +65,71 @@ class ProfilesTest {
         assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
 
+    /*
+        @Test
+        void shiftDateProfileOptionShift(){
+            //SHIFT days: 365, seconds:60
+            final DicomObject dataset1 = DicomObject.newDicomObject();
+            final DicomObject dataset2 = DicomObject.newDicomObject();
 
-    @Test
-    void shiftDateProfileOptionShift(){
-        //SHIFT days: 365, seconds:60
-        final DicomObject dataset1 = DicomObject.newDicomObject();
-        final DicomObject dataset2 = DicomObject.newDicomObject();
+            dataset1.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
+            dataset1.setString(Tag.StudyInstanceUID, VR.UI, "12345");
+            dataset1.setString(Tag.PatientAge, VR.AS, "069Y");
+            dataset1.setString(Tag.PatientBirthDate, VR.DA, "20080822");
+            dataset1.setString(Tag.AcquisitionDateTime, VR.DT, "20080729131503");
+            dataset1.setString(Tag.InstanceCreationTime, VR.TM, "131735.000000");
 
-        dataset1.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
-        dataset1.setString(Tag.StudyInstanceUID, VR.UI, "12345");
-        dataset1.setString(Tag.PatientAge, VR.AS, "069Y");
-        dataset1.setString(Tag.PatientBirthDate, VR.DA, "20080822");
-        dataset1.setString(Tag.AcquisitionDateTime, VR.DT, "20080729131503");
-        dataset1.setString(Tag.InstanceCreationTime, VR.TM, "131735.000000");
+            dataset2.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
+            dataset2.setString(Tag.StudyInstanceUID, VR.UI, "12345");
+            dataset2.setString(Tag.PatientAge, VR.AS, "070Y");
+            dataset2.setString(Tag.PatientBirthDate, VR.DA, "20070823");
+            dataset2.setString(Tag.AcquisitionDateTime, VR.DT, "20070730131403.000000");
+            dataset2.setString(Tag.InstanceCreationTime, VR.TM, "131635.000000");
 
-        dataset2.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
-        dataset2.setString(Tag.StudyInstanceUID, VR.UI, "12345");
-        dataset2.setString(Tag.PatientAge, VR.AS, "070Y");
-        dataset2.setString(Tag.PatientBirthDate, VR.DA, "20070823");
-        dataset2.setString(Tag.AcquisitionDateTime, VR.DT, "20070730131403.000000");
-        dataset2.setString(Tag.InstanceCreationTime, VR.TM, "131635.000000");
+            Profile profile = new Profile("TEST", "0.9.1", "0.9.1", "DPA");
+            ProfileElement profileElement = new ProfileElement("Shift Date with arguments", "action.on.dates", null, null, "shift", 0, profile);
+            profileElement.addIncludedTag(new IncludedTag("(xxxx,xxxx)", profileElement));
+            profileElement.addArgument(new Argument("seconds", "60", profileElement));
+            profileElement.addArgument(new Argument("days", "365", profileElement));
+            profile.addProfilePipe(profileElement);
+            final Profiles profiles = new Profiles(profile, hmacTest);
+            profiles.applyAction(dataset1, dataset1, "pseudonym");
+            assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
+        }
 
-        Profile profile = new Profile("TEST", "0.9.1", "0.9.1", "DPA");
-        ProfileElement profileElement = new ProfileElement("Shift Date with arguments", "action.on.dates", null, null, "shift", 0, profile);
-        profileElement.addIncludedTag(new IncludedTag("(xxxx,xxxx)", profileElement));
-        profileElement.addArgument(new Argument("seconds", "60", profileElement));
-        profileElement.addArgument(new Argument("days", "365", profileElement));
-        profile.addProfilePipe(profileElement);
-        final Profiles profiles = new Profiles(profile, hmacTest);
-        profiles.applyAction(dataset1, dataset1, "pseudonym");
-        assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
-    }
-/*
-    @Test
-    void shiftDateProfileOptionShiftRange(){
-        //SHIFT range with hmackey: HmacKeyToTEST -> days: 80, seconds:36
-        final DicomObject dataset1 = DicomObject.newDicomObject();
-        final DicomObject dataset2 = DicomObject.newDicomObject();
+        @Test
+        void shiftDateProfileOptionShiftRange(){
+            //SHIFT range with hmackey: HmacKeyToTEST -> days: 80, seconds:36
+            final DicomObject dataset1 = DicomObject.newDicomObject();
+            final DicomObject dataset2 = DicomObject.newDicomObject();
 
-        dataset1.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
-        dataset1.setString(Tag.StudyInstanceUID, VR.UI, "12345");
-        dataset1.setString(Tag.PatientAge, VR.AS, "069Y");
-        dataset1.setString(Tag.PatientBirthDate, VR.DA, "20080822");
-        dataset1.setString(Tag.AcquisitionDateTime, VR.DT, "20080729131503");
-        dataset1.setString(Tag.InstanceCreationTime, VR.TM, "131735.000000");
+            dataset1.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
+            dataset1.setString(Tag.StudyInstanceUID, VR.UI, "12345");
+            dataset1.setString(Tag.PatientAge, VR.AS, "069Y");
+            dataset1.setString(Tag.PatientBirthDate, VR.DA, "20080822");
+            dataset1.setString(Tag.AcquisitionDateTime, VR.DT, "20080729131503");
+            dataset1.setString(Tag.InstanceCreationTime, VR.TM, "131735.000000");
 
-        dataset2.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
-        dataset2.setString(Tag.StudyInstanceUID, VR.UI, "12345");
-        dataset2.setString(Tag.PatientAge, VR.AS, "069Y");
-        dataset2.setString(Tag.PatientBirthDate, VR.DA, "20080603");
-        dataset2.setString(Tag.AcquisitionDateTime, VR.DT, "20080510131427.000000");
-        dataset2.setString(Tag.InstanceCreationTime, VR.TM, "131659.000000");
+            dataset2.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
+            dataset2.setString(Tag.StudyInstanceUID, VR.UI, "12345");
+            dataset2.setString(Tag.PatientAge, VR.AS, "069Y");
+            dataset2.setString(Tag.PatientBirthDate, VR.DA, "20080603");
+            dataset2.setString(Tag.AcquisitionDateTime, VR.DT, "20080510131427.000000");
+            dataset2.setString(Tag.InstanceCreationTime, VR.TM, "131659.000000");
 
-        Profile profile = new Profile("TEST", "0.9.1", "0.9.1", "DPA");
-        ProfileElement profileElement = new ProfileElement("Shift Date with arguments", "action.on.dates", null, null, "shift_range", 0, profile);
-        profileElement.addIncludedTag(new IncludedTag("(xxxx,xxxx)", profileElement));
-        profileElement.addArgument(new Argument("max_seconds", "60", profileElement));
-        profileElement.addArgument(new Argument("min_days", "50", profileElement));
-        profileElement.addArgument(new Argument("max_days", "100", profileElement));
+            Profile profile = new Profile("TEST", "0.9.1", "0.9.1", "DPA");
+            ProfileElement profileElement = new ProfileElement("Shift Date with arguments", "action.on.dates", null, null, "shift_range", 0, profile);
+            profileElement.addIncludedTag(new IncludedTag("(xxxx,xxxx)", profileElement));
+            profileElement.addArgument(new Argument("max_seconds", "60", profileElement));
+            profileElement.addArgument(new Argument("min_days", "50", profileElement));
+            profileElement.addArgument(new Argument("max_days", "100", profileElement));
 
-        profile.addProfilePipe(profileElement);
-        final Profiles profiles = new Profiles(profile, hmacTest);
-        profiles.applyAction(dataset1, dataset1, "pseudonym");
-        assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
-    }
-*/
+            profile.addProfilePipe(profileElement);
+            final Profiles profiles = new Profiles(profile, hmacTest);
+            profiles.applyAction(dataset1, dataset1, "pseudonym");
+            assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
+        }
+    */
     @Test
     void XZactionTagsProfile(){
         final DicomObject dataset1 = DicomObject.newDicomObject();

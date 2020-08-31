@@ -24,12 +24,7 @@ public class ActionDates extends AbstractProfileItem {
 
     public ActionDates(ProfileElement profileElement) throws Exception {
         super(profileElement);
-        try {
-            shiftRangeDate = new ShiftRangeDate();
-        } catch (Exception e){
-            HMAC hmac = new HMAC("HMACTEST");
-            shiftRangeDate = new ShiftRangeDate(hmac);
-        }
+        shiftRangeDate = new ShiftRangeDate();
         tagsAction = new TagActionMap();
         exceptedTagsAction = new TagActionMap();
         actionByDefault = new Replace("D");
