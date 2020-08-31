@@ -23,7 +23,11 @@ public class DicomObjectTools {
             return false;
         }
 
-        while (dicomElementIterator1.hasNext() && dicomElementIterator2.hasNext()) {
+        while (dicomElementIterator1.hasNext() || dicomElementIterator2.hasNext()) {
+            if(!dicomElementIterator1.hasNext() || !dicomElementIterator2.hasNext()){
+                return false;
+            }
+
             final DicomElement dcmDicomElement1 = dicomElementIterator1.next();
             final DicomElement dcmDicomElement2 = dicomElementIterator2.next();
             final String stringValue1 = dcmDicomElement1.stringValue(0).orElse(null);
