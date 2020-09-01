@@ -54,29 +54,25 @@ public class ExtIDView extends VerticalLayout {
     private TextField patientBirthDate;
     private TextField patientSexField;
 
+    private AddNewPatient addNewPatient;
+
 
     //https://vaadin.com/components/vaadin-grid/java-examples/assigning-data
     public ExtIDView() {
         setSizeFull();
-        add(new H2("External ID"));
-
-        addNewPatientButton = new Button("Add");
-        addNewPatientButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        addNewPatientButton.setIcon(VaadinIcon.PLUS_CIRCLE.create());
-        addNewPatientButton.addClickListener(click -> {
-            dataProvider.getItems().add(new Patient("extid", "2345", "new patient", "01051998", "M", "15616"));
-            grid.getDataProvider().refreshAll();
-        });
-
-        add(addNewPatientButton);
+        VerticalLayout verticalLayout = new VerticalLayout();
+        verticalLayout.add(new H2("External ID"));
 
         binder = new Binder<>(Patient.class);
         patientList = new ArrayList<>();
         grid = new Grid<>();
-
         grid.setHeightByRows(true);
-
         grid.setItems(patientList);
+        dataProvider = (ListDataProvider<Patient>) grid.getDataProvider();
+
+
+        addNewPatient = new AddNewPatient(dataProvider, grid);
+
 
         extidColumn = grid.addColumn(Patient::getExtid).setHeader("External ID");
         patientIdColumn = grid.addColumn(Patient::getPatientId).setHeader("Patient ID");
@@ -126,22 +122,27 @@ public class ExtIDView extends VerticalLayout {
         patientBirthDateColumn.setEditorComponent(patientBirthDate);
         patientSexColumn.setEditorComponent(patientSexField);
 
-        editor.addOpenListener(e -> editButtons.stream()
-                .forEach(button -> button.setEnabled(!editor.isOpen())));
-        editor.addCloseListener(e -> editButtons.stream()
-                .forEach(button -> button.setEnabled(!editor.isOpen())));
+        editor.addOpenListener(e -> {
+            editButtons.stream()
+                .forEach(button -> button.setEnabled(!editor.isOpen()));
+            showEditor(true);
+        });
+
+        editor.addCloseListener(e -> {
+            editButtons.stream()
+                .forEach(button -> button.setEnabled(!editor.isOpen()));
+            showEditor(false);
+        });
 
 
 
         saveEditPatientButton = new Button("Save", e -> {
             editor.save();
         });
-        saveEditPatientButton.addClassName("save");
 
         cancelEditPatientButton = new Button("Cancel", e -> {
             editor.cancel();
         });
-        cancelEditPatientButton.addClassName("cancel");
 
 
 
@@ -162,37 +163,43 @@ public class ExtIDView extends VerticalLayout {
             return deletePatientButton;
         });
 
-        dataProvider = (ListDataProvider<Patient>) grid
-                .getDataProvider();
 
-        add(validationStatus, grid);
+        verticalLayout.add(addNewPatient);
+        verticalLayout.add(grid);
+
+        add(verticalLayout);
     }
 
 
     public void fieldValidator(){
         binder.forField(externalIdField)
                 .withValidator(new StringLengthValidator("External pseudonym length must be between 1 and 50.", 1, 50))
-                .withStatusLabel(validationStatus).bind("extid");
+                .bind("extid");
 
         binder.forField(patientIdField)
                 .withValidator(new StringLengthValidator("Patient ID length must be between 1 and 50.", 1, 50))
-                .withStatusLabel(validationStatus).bind("patientId");
+                .bind("patientId");
 
         binder.forField(patientNameField)
                 .withValidator(new StringLengthValidator("Patient Name length must be between 1 and 50.", 1, 50))
-                .withStatusLabel(validationStatus).bind("patientName");
+                .bind("patientName");
 
         binder.forField(issuerOfPatientIdField)
                 .withValidator(new StringLengthValidator("Issuer of Patient ID length must be between 1 and 50.", 1, 50))
-                .withStatusLabel(validationStatus).bind("issuerOfPatientId");
+                .bind("issuerOfPatientId");
 
         binder.forField(patientBirthDate)
                 .withValidator(new StringLengthValidator("Patient Birth Date length must be 8.", 8, 8))
-                .withStatusLabel(validationStatus).bind("patientBirthDate");
+                .bind("patientBirthDate");
 
         binder.forField(patientSexField)
                 .withValidator(new StringLengthValidator("Patient Sex length must be 1.", 1, 1))
-                .withStatusLabel(validationStatus).bind("patientSex");
+                .bind("patientSex");
+    }
+
+    public void showEditor(boolean show){
+        deletePatientButton.setEnabled(!show);
+        addNewPatient.setEnabled(!show);
     }
 
 }
