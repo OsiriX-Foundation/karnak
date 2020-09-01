@@ -1,7 +1,12 @@
 package org.karnak.ui.forwardnode;
 
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.server.VaadinService;
+import com.vaadin.flow.server.VaadinServletRequest;
 import org.karnak.data.gateway.ForwardNode;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 
 public class ForwardNodeViewLogic {
     private final ForwardNodeView forwardNodeView;
@@ -20,12 +25,17 @@ public class ForwardNodeViewLogic {
         } else {
             fragmentParameter = dataIdStr;
         }
-
         UI.getCurrent().navigate(ForwardNodeView.class, fragmentParameter);
     }
 
-    public void enter(String dataIdStr) {
+    public Long enter(String dataIdStr) {
         // TODO: On enter, go to dataIdStr
+        try {
+            Long dataId = Long.valueOf(dataIdStr);
+            return dataId;
+        } catch (NumberFormatException e) {
+        }
+        return null;
         /*
         if (dataIdStr != null && !dataIdStr.isEmpty()) {
             // Ensure this is selected even if coming directly here from login
@@ -47,5 +57,9 @@ public class ForwardNodeViewLogic {
         } else {
             setFragmentParameter(String.valueOf(data.getId()));
         }
+    }
+
+    public ForwardNode findForwardNode(Long dataId) {
+        return forwardNodeView.getForwardNodeById(dataId);
     }
 }

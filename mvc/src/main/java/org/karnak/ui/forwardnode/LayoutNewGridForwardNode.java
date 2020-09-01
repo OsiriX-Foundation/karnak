@@ -22,9 +22,9 @@ public class LayoutNewGridForwardNode extends VerticalLayout {
     private Button buttonAddNewForwardNode;
     private Button buttonCancelNewForwardNode;
 
-    public LayoutNewGridForwardNode(ForwardNodeViewLogic forwardNodeViewLogic) {
+    public LayoutNewGridForwardNode(ForwardNodeViewLogic forwardNodeViewLogic, ForwardNodeDataProvider dataProvider) {
         this.forwardNodeViewLogic = forwardNodeViewLogic;
-        dataProvider = new ForwardNodeDataProvider();
+        this.dataProvider = dataProvider;
         newForwardNode = new NewForwardNode();
         gridForwardNode = new GridForwardNode();
         gridForwardNode.setDataProvider(this.dataProvider);
