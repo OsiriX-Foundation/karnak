@@ -1,5 +1,6 @@
 package org.karnak.ui.extid;
 
+import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
@@ -19,7 +20,8 @@ import org.karnak.ui.MainLayout;
 import java.util.*;
 
 @Route(value = "extid", layout = MainLayout.class)
-@PageTitle("KARNAK - External pseudonym")
+@PageTitle("KARNAK - External ID")
+@Tag("extid-view")
 @SuppressWarnings("serial")
 public class ExtIDView extends VerticalLayout {
     public static final String VIEW_NAME = "External pseudonym";
@@ -40,8 +42,12 @@ public class ExtIDView extends VerticalLayout {
     private Grid.Column<Patient> issuerOfPatientIDColumn;
     private Grid.Column<Patient> patientBirthDateColumn;
     private Grid.Column<Patient> patientSexColumn;
+    private Grid.Column<Patient> editorColumn;
 
-    private TextField ExternalIdField;
+    private Editor<Patient> editor;
+    private Collection<Button> editButtons;
+
+    private TextField externalIdField;
     private TextField patientIdField;
     private TextField patientNameField;
     private TextField issuerOfPatientIdField;
@@ -52,7 +58,7 @@ public class ExtIDView extends VerticalLayout {
     //https://vaadin.com/components/vaadin-grid/java-examples/assigning-data
     public ExtIDView() {
         setSizeFull();
-        add(new H2("About KARNAK"));
+        add(new H2("External ID"));
 
         addNewPatientButton = new Button("Add");
         addNewPatientButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -79,27 +85,46 @@ public class ExtIDView extends VerticalLayout {
         patientBirthDateColumn = grid.addColumn(Patient::getPatientBirthDate).setHeader("Patient Birth Date");
         patientSexColumn = grid.addColumn(Patient::getPatientSex).setHeader("Patient Sex");
 
-        createValidator();
 
 
-        Collection<Button> editButtons = Collections
-                .newSetFromMap(new WeakHashMap<>());
 
-        Editor<Patient> editor = grid.getEditor();
+
+        editButtons = Collections.newSetFromMap(new WeakHashMap<>());
+
+        editor = grid.getEditor();
         editor.setBinder(binder);
         editor.setBuffered(true);
 
-        Grid.Column<Patient> editorColumn = grid.addComponentColumn(patient -> {
+        editorColumn = grid.addComponentColumn(patient -> {
             Button edit = new Button("Edit");
             edit.addClassName("edit");
             edit.addClickListener(e -> {
                 editor.editItem(patient);
-                ExternalIdField.focus();
+                externalIdField.focus();
             });
             edit.setEnabled(!editor.isOpen());
             editButtons.add(edit);
             return edit;
         });
+
+        externalIdField = new TextField();
+        patientIdField = new TextField();
+        patientNameField = new TextField();
+        issuerOfPatientIdField = new TextField();
+        patientBirthDate = new TextField();
+        patientSexField = new TextField();
+
+        validationStatus = new Div();
+        validationStatus.setId("validation");
+
+        fieldValidator();
+
+        extidColumn.setEditorComponent(externalIdField);
+        patientIdColumn.setEditorComponent(patientIdField);
+        patientNameColumn.setEditorComponent(patientNameField);
+        issuerOfPatientIDColumn.setEditorComponent(issuerOfPatientIdField);
+        patientBirthDateColumn.setEditorComponent(patientBirthDate);
+        patientSexColumn.setEditorComponent(patientSexField);
 
         editor.addOpenListener(e -> editButtons.stream()
                 .forEach(button -> button.setEnabled(!editor.isOpen())));
@@ -144,45 +169,30 @@ public class ExtIDView extends VerticalLayout {
     }
 
 
-    public void createValidator(){
-        validationStatus = new Div();
-        validationStatus.setId("validation");
-
-        ExternalIdField = new TextField();
-        binder.forField(ExternalIdField)
+    public void fieldValidator(){
+        binder.forField(externalIdField)
                 .withValidator(new StringLengthValidator("External pseudonym length must be between 1 and 50.", 1, 50))
                 .withStatusLabel(validationStatus).bind("extid");
-        extidColumn.setEditorComponent(ExternalIdField);
 
-        patientIdField = new TextField();
         binder.forField(patientIdField)
                 .withValidator(new StringLengthValidator("Patient ID length must be between 1 and 50.", 1, 50))
                 .withStatusLabel(validationStatus).bind("patientId");
-        patientIdColumn.setEditorComponent(patientIdField);
 
-        patientNameField = new TextField();
         binder.forField(patientNameField)
                 .withValidator(new StringLengthValidator("Patient Name length must be between 1 and 50.", 1, 50))
                 .withStatusLabel(validationStatus).bind("patientName");
-        patientNameColumn.setEditorComponent(patientNameField);
 
-        issuerOfPatientIdField = new TextField();
         binder.forField(issuerOfPatientIdField)
                 .withValidator(new StringLengthValidator("Issuer of Patient ID length must be between 1 and 50.", 1, 50))
                 .withStatusLabel(validationStatus).bind("issuerOfPatientId");
-        issuerOfPatientIDColumn.setEditorComponent(issuerOfPatientIdField);
 
-        patientBirthDate = new TextField();
         binder.forField(patientBirthDate)
                 .withValidator(new StringLengthValidator("Patient Birth Date length must be 8.", 8, 8))
                 .withStatusLabel(validationStatus).bind("patientBirthDate");
-        patientBirthDateColumn.setEditorComponent(patientBirthDate);
 
-        patientSexField = new TextField();
         binder.forField(patientSexField)
                 .withValidator(new StringLengthValidator("Patient Sex length must be 1.", 1, 1))
                 .withStatusLabel(validationStatus).bind("patientSex");
-        patientSexColumn.setEditorComponent(patientSexField);
     }
 
 }
