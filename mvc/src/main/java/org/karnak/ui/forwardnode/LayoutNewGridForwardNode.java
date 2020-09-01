@@ -13,6 +13,7 @@ import java.util.Optional;
 public class LayoutNewGridForwardNode extends VerticalLayout {
     private final ForwardNodeDataProvider dataProvider;
     private NewForwardNode newForwardNode;
+    private GridForwardNode gridForwardNode;
 
     private Button buttonNewForwardNode;
     private TextField textFieldNewAETitleForwardNode;
@@ -22,7 +23,10 @@ public class LayoutNewGridForwardNode extends VerticalLayout {
     public LayoutNewGridForwardNode() {
         dataProvider = new ForwardNodeDataProvider();
         newForwardNode = new NewForwardNode();
-        add(newForwardNode);
+        gridForwardNode = new GridForwardNode();
+        gridForwardNode.setDataProvider(this.dataProvider);
+        add(newForwardNode, gridForwardNode);
+
         buttonNewForwardNode = newForwardNode.getNewForwardNode();
         textFieldNewAETitleForwardNode = newForwardNode.getNewAETitleForwardNode();
         buttonAddNewForwardNode = newForwardNode.getAddNewForwardNode();
@@ -32,12 +36,9 @@ public class LayoutNewGridForwardNode extends VerticalLayout {
 
     private void createNewForwardNode() {
         buttonAddNewForwardNode.addClickListener(click -> {
-            // TODO: Select in the grid the new Forward Node
-            // textFieldNewAETitleForwardNode.getValue();
-
             final ForwardNode forwardNode = new ForwardNode(textFieldNewAETitleForwardNode.getValue());
             updateForwardNode(forwardNode);
-            // grid.getSelectionModel().select(forwardNode);
+            gridForwardNode.getSelectionModel().select(forwardNode);
         });
     }
 
