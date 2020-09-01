@@ -15,6 +15,7 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.validator.StringLengthValidator;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import org.apache.commons.lang3.StringUtils;
 import org.karnak.ui.MainLayout;
 
 import java.util.*;
@@ -51,8 +52,10 @@ public class ExtIDView extends VerticalLayout {
     private TextField patientIdField;
     private TextField patientNameField;
     private TextField issuerOfPatientIdField;
-    private TextField patientBirthDate;
+    private TextField patientBirthDateField;
     private TextField patientSexField;
+
+    private Grid.Column<Patient> deleteColumn;
 
     private AddNewPatient addNewPatient;
 
@@ -107,7 +110,7 @@ public class ExtIDView extends VerticalLayout {
         patientIdField = new TextField();
         patientNameField = new TextField();
         issuerOfPatientIdField = new TextField();
-        patientBirthDate = new TextField();
+        patientBirthDateField = new TextField();
         patientSexField = new TextField();
 
         validationStatus = new Div();
@@ -119,7 +122,7 @@ public class ExtIDView extends VerticalLayout {
         patientIdColumn.setEditorComponent(patientIdField);
         patientNameColumn.setEditorComponent(patientNameField);
         issuerOfPatientIDColumn.setEditorComponent(issuerOfPatientIdField);
-        patientBirthDateColumn.setEditorComponent(patientBirthDate);
+        patientBirthDateColumn.setEditorComponent(patientBirthDateField);
         patientSexColumn.setEditorComponent(patientSexField);
 
         editor.addOpenListener(e -> {
@@ -153,7 +156,7 @@ public class ExtIDView extends VerticalLayout {
         editorColumn.setEditorComponent(buttons);
 
 
-        Grid.Column<Patient> removeColumn = grid.addComponentColumn(patient -> {
+        deleteColumn = grid.addComponentColumn(patient -> {
             deletePatientButton = new Button("Delete");
             deletePatientButton.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
             deletePatientButton.addClickListener( e -> {
@@ -173,32 +176,38 @@ public class ExtIDView extends VerticalLayout {
 
     public void fieldValidator(){
         binder.forField(externalIdField)
-                .withValidator(new StringLengthValidator("External pseudonym length must be between 1 and 50.", 1, 50))
+                .withValidator(StringUtils::isNotBlank, "External ID is empty")
+                .withValidator(new StringLengthValidator("Length must be between 1 and 50.", 1, 50))
                 .bind("extid");
 
         binder.forField(patientIdField)
-                .withValidator(new StringLengthValidator("Patient ID length must be between 1 and 50.", 1, 50))
+                .withValidator(StringUtils::isNotBlank, "Patient ID is empty")
+                .withValidator(new StringLengthValidator("Length must be between 1 and 50.", 1, 50))
                 .bind("patientId");
 
         binder.forField(patientNameField)
-                .withValidator(new StringLengthValidator("Patient Name length must be between 1 and 50.", 1, 50))
+                .withValidator(StringUtils::isNotBlank, "Patient Name is empty")
+                .withValidator(new StringLengthValidator("Length must be between 1 and 50.", 1, 50))
                 .bind("patientName");
 
         binder.forField(issuerOfPatientIdField)
-                .withValidator(new StringLengthValidator("Issuer of Patient ID length must be between 1 and 50.", 1, 50))
+                .withValidator(StringUtils::isNotBlank, "Issuer of patient ID is empty")
+                .withValidator(new StringLengthValidator("Length must be between 1 and 50.", 1, 50))
                 .bind("issuerOfPatientId");
 
-        binder.forField(patientBirthDate)
-                .withValidator(new StringLengthValidator("Patient Birth Date length must be 8.", 8, 8))
+        binder.forField(patientBirthDateField)
+                .withValidator(StringUtils::isNotBlank, "Patient Birth Date is empty")
+                .withValidator(new StringLengthValidator("Length must be 8.", 8, 8))
                 .bind("patientBirthDate");
 
         binder.forField(patientSexField)
-                .withValidator(new StringLengthValidator("Patient Sex length must be 1.", 1, 1))
+                .withValidator(StringUtils::isNotBlank, "Patient Sex is empty")
+                .withValidator(new StringLengthValidator("Length must be 1.", 1, 1))
                 .bind("patientSex");
     }
 
     public void showEditor(boolean show){
-        deletePatientButton.setEnabled(!show);
+        deleteColumn.setVisible(!show);
         addNewPatient.setEnabled(!show);
     }
 

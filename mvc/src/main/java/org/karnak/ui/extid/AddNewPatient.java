@@ -11,6 +11,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.validator.StringLengthValidator;
 import org.apache.commons.lang3.StringUtils;
@@ -63,7 +64,6 @@ public class AddNewPatient extends HorizontalLayout {
                 dataProvider.getItems().add(newPatient);
                 grid.getDataProvider().refreshAll();
                 clearFields();
-                binder.removeBean();
             }
         });
 
@@ -84,32 +84,32 @@ public class AddNewPatient extends HorizontalLayout {
     public void fieldValidator(){
         binder.forField(externalIdField)
                 .withValidator(StringUtils::isNotBlank, "External ID is empty")
-                .withValidator(new StringLengthValidator("External pseudonym length must be between 1 and 50.", 1, 50))
+                .withValidator(new StringLengthValidator("Length must be between 1 and 50.", 1, 50))
                 .bind("extid");
 
         binder.forField(patientIdField)
                 .withValidator(StringUtils::isNotBlank, "Patient ID is empty")
-                .withValidator(new StringLengthValidator("Patient ID length must be between 1 and 50.", 1, 50))
+                .withValidator(new StringLengthValidator("Length must be between 1 and 50.", 1, 50))
                 .bind("patientId");
 
         binder.forField(patientNameField)
                 .withValidator(StringUtils::isNotBlank, "Patient Name is empty")
-                .withValidator(new StringLengthValidator("Patient Name length must be between 1 and 50.", 1, 50))
+                .withValidator(new StringLengthValidator("Length must be between 1 and 50.", 1, 50))
                 .bind("patientName");
 
         binder.forField(issuerOfPatientIdField)
                 .withValidator(StringUtils::isNotBlank, "Issuer of patient ID is empty")
-                .withValidator(new StringLengthValidator("Issuer of Patient ID length must be between 1 and 50.", 1, 50))
+                .withValidator(new StringLengthValidator("Length must be between 1 and 50.", 1, 50))
                 .bind("issuerOfPatientId");
 
         binder.forField(patientBirthDateField)
                 .withValidator(StringUtils::isNotBlank, "Patient Birth Date is empty")
-                .withValidator(new StringLengthValidator("Patient Birth Date length must be 8.", 8, 8))
+                .withValidator(new StringLengthValidator("Length must be 8.", 8, 8))
                 .bind("patientBirthDate");
 
         binder.forField(patientSexField)
                 .withValidator(StringUtils::isNotBlank, "Patient Sex is empty")
-                .withValidator(new StringLengthValidator("Patient Sex length must be 1.", 1, 1))
+                .withValidator(new StringLengthValidator("Length must be 1.", 1, 1))
                 .bind("patientSex");
     }
 
