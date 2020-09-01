@@ -11,7 +11,9 @@ import org.karnak.ui.gateway.ForwardNodeDataProvider;
 import java.util.Optional;
 
 public class LayoutNewGridForwardNode extends VerticalLayout {
+    private final ForwardNodeViewLogic forwardNodeViewLogic;
     private final ForwardNodeDataProvider dataProvider;
+
     private NewForwardNode newForwardNode;
     private GridForwardNode gridForwardNode;
 
@@ -20,7 +22,8 @@ public class LayoutNewGridForwardNode extends VerticalLayout {
     private Button buttonAddNewForwardNode;
     private Button buttonCancelNewForwardNode;
 
-    public LayoutNewGridForwardNode() {
+    public LayoutNewGridForwardNode(ForwardNodeViewLogic forwardNodeViewLogic) {
+        this.forwardNodeViewLogic = forwardNodeViewLogic;
         dataProvider = new ForwardNodeDataProvider();
         newForwardNode = new NewForwardNode();
         gridForwardNode = new GridForwardNode();
@@ -31,14 +34,22 @@ public class LayoutNewGridForwardNode extends VerticalLayout {
         textFieldNewAETitleForwardNode = newForwardNode.getNewAETitleForwardNode();
         buttonAddNewForwardNode = newForwardNode.getAddNewForwardNode();
 
-        createNewForwardNode();
+        eventNewForwardNode();
+        eventGridSelection();
     }
 
-    private void createNewForwardNode() {
+    private void eventNewForwardNode() {
         buttonAddNewForwardNode.addClickListener(click -> {
             final ForwardNode forwardNode = new ForwardNode(textFieldNewAETitleForwardNode.getValue());
             updateForwardNode(forwardNode);
             gridForwardNode.getSelectionModel().select(forwardNode);
+            forwardNodeViewLogic.editForwardNode(forwardNode);
+        });
+    }
+
+    private void eventGridSelection() {
+        gridForwardNode.asSingleSelect().addValueChangeListener(event -> {
+            forwardNodeViewLogic.editForwardNode(event.getValue());
         });
     }
 
