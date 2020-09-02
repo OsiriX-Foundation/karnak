@@ -17,8 +17,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
         add(editAETitleDescription);
     }
 
-    public void load(long idForwardNode) {
-        ForwardNode forwardNode = forwardNodeViewLogic.findForwardNode(idForwardNode);
+    public void load(ForwardNode forwardNode) {
         if (forwardNode != null) {
             editAETitleDescription.setForwardNode(forwardNode);
         }

@@ -20,4 +20,9 @@ public class GridForwardNode extends Grid<ForwardNode> {
     public void refresh(ForwardNode data) {
         getDataCommunicator().refresh(data);
     }
+
+    public void selectRow(ForwardNode row) {
+        getSelectionModel().select(row);
+    }
+
 }

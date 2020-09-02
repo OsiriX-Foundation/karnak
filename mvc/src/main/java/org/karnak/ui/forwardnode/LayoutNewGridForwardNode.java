@@ -38,6 +38,12 @@ public class LayoutNewGridForwardNode extends VerticalLayout {
         eventGridSelection();
     }
 
+    public void load(ForwardNode forwardNode) {
+        if (forwardNode != null && forwardNode != gridForwardNode.getSelectedRow()) {
+            gridForwardNode.selectRow(forwardNode);
+        }
+    }
+
     private void eventNewForwardNode() {
         buttonAddNewForwardNode.addClickListener(click -> {
             final ForwardNode forwardNode = new ForwardNode(textFieldNewAETitleForwardNode.getValue());
