@@ -87,8 +87,7 @@ public class AddNewPatientForm extends VerticalLayout {
 
 
         horizontalLayoutAddClear = new HorizontalLayout();
-        horizontalLayoutAddClear.getStyle().set("position", "absolute");
-        horizontalLayoutAddClear.getStyle().set("right", "33px");
+        horizontalLayoutAddClear.getStyle().set("margin-left", "auto");
 
         clearFieldsButton = new Button("Clear");
         clearFieldsButton.addClickListener( click -> {
@@ -207,6 +206,4 @@ public class AddNewPatientForm extends VerticalLayout {
     public Button getAddNewPatientButton() {
         return addNewPatientButton;
     }
-
-
 }
