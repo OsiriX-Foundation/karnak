@@ -62,6 +62,12 @@ public class ButtonSaveDeleteCancel extends HorizontalLayout {
         */
     }
 
+    public void setEnabled(boolean enabled) {
+        save.setEnabled(enabled);
+        delete.setEnabled(enabled);
+        cancel.setEnabled(enabled);
+    }
+
     public Button getSave() {
         return save;
     }

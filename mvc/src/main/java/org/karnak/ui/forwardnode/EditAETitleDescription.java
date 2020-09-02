@@ -44,9 +44,16 @@ public class EditAETitleDescription extends HorizontalLayout {
         if (forwardNode != null) {
             textFieldDescription.setValue(forwardNode.getDescription());
             textFieldAETitle.setValue(forwardNode.getFwdAeTitle());
+            setEnabled(true);
         } else {
             textFieldDescription.clear();
             textFieldAETitle.clear();
+            setEnabled(false);
         }
+    }
+
+    public void setEnabled(boolean enabled) {
+        textFieldAETitle.setEnabled(enabled);
+        textFieldDescription.setEnabled(enabled);
     }
 }

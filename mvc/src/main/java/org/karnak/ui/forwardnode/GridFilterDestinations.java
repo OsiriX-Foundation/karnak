@@ -46,6 +46,11 @@ public class GridFilterDestinations extends VerticalLayout {
     }
 
     protected void setForwardNode(ForwardNode forwardNode) {
+        if (forwardNode == null) {
+            setEnabled(false);
+        } else {
+            setEnabled(true);
+        }
         destinationDataProvider.setForwardNode(forwardNode);
         gridDestination.setDataProvider(destinationDataProvider);
     }
@@ -68,5 +73,13 @@ public class GridFilterDestinations extends VerticalLayout {
         newDestinationStow.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         newDestinationStow.setIcon(VaadinIcon.PLUS_CIRCLE.create());
         // newDestinationStow.addClickListener(click -> destinationLogic.newDestinationStow());
+    }
+
+
+    public void setEnabled(boolean enabled) {
+        filter.setEnabled(enabled);
+        newDestinationDICOM.setEnabled(enabled);
+        newDestinationStow.setEnabled(enabled);
+        gridDestination.setEnabled(enabled);
     }
 }

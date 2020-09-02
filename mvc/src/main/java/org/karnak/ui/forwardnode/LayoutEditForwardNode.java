@@ -4,7 +4,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import org.karnak.data.gateway.ForwardNode;
 import org.karnak.ui.api.ForwardNodeAPI;
-import org.karnak.ui.gateway.ForwardNodeDataProvider;
 import org.karnak.ui.util.UIS;
 
 public class LayoutEditForwardNode extends VerticalLayout {
@@ -43,10 +42,17 @@ public class LayoutEditForwardNode extends VerticalLayout {
     }
 
     public void load(ForwardNode forwardNode) {
-        // TODO: Disable all component if forwardNode is null
         currentForwardNode = forwardNode;
         editAETitleDescription.setForwardNode(forwardNode);
         gridFilterDestinations.setForwardNode(forwardNode);
+
+        if (forwardNode == null) {
+            tabSourcesDestination.setEnabled(false);
+            buttonSaveDeleteCancel.setEnabled(false);
+        } else {
+            tabSourcesDestination.setEnabled(true);
+            buttonSaveDeleteCancel.setEnabled(true);
+        }
     }
 
     private void setEventChangeTabValue() {
