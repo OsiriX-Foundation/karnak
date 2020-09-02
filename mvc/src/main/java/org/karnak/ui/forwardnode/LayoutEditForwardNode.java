@@ -22,6 +22,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
         editAETitleDescription = new EditAETitleDescription();
         tabSourcesDestination = new TabSourcesDestination();
         layoutDestinationsSources = new VerticalLayout();
+        layoutDestinationsSources.setSizeFull();
         gridFilterDestinations = new GridFilterDestinations(dataProvider.getDataService());
 
         add(UIS.setWidthFull(editAETitleDescription),

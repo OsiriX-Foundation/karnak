@@ -28,6 +28,7 @@ public class GridFilterDestinations extends VerticalLayout {
     private String PLACEHOLDER_FILTER = "Filter properties of destination";
 
     public GridFilterDestinations(DataService dataService) {
+        setSizeFull();
         destinationDataProvider = new DestinationDataProvider(dataService);
         filter = new TextField();
         newDestinationDICOM = new Button(LABEL_NEW_DESTINATION_DICOM);
