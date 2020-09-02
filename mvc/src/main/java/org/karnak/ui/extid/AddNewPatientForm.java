@@ -19,13 +19,13 @@ import com.vaadin.flow.data.validator.StringLengthValidator;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.ui.component.ConfirmDialog;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 
-public class AddNewPatient extends VerticalLayout {
+public class AddNewPatientForm extends VerticalLayout {
 
     private Binder<Patient> binder;
-    private Grid<Patient> grid;
     private ListDataProvider<Patient> dataProvider;
 
     private TextField externalIdField;
@@ -44,14 +44,14 @@ public class AddNewPatient extends VerticalLayout {
     private HorizontalLayout horizontalLayout2;
     private HorizontalLayout horizontalLayout3;
 
-    public AddNewPatient(ListDataProvider<Patient> dataProvider, Grid<Patient> grid){
+    public AddNewPatientForm(ListDataProvider<Patient> dataProvider){
         setSizeFull();
         getElement().addEventListener("keydown", event -> {
             addPatientFieldsInGrid();
         }).setFilter("event.key == 'Enter'");
 
         this.dataProvider = dataProvider;
-        this.grid = grid;
+
         binder = new BeanValidationBinder<>(Patient.class);
 
         externalIdField = new TextField("External ID");
@@ -176,7 +176,7 @@ public class AddNewPatient extends VerticalLayout {
         binder.validate();
         if(binder.isValid()){
             dataProvider.getItems().add(newPatient);
-            grid.getDataProvider().refreshAll();
+            dataProvider.refreshAll();
             binder.readBean(null);
         }
     }
