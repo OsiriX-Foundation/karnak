@@ -136,6 +136,7 @@ public class ExtIDView extends VerticalLayout {
         saveEditPatientButton = new Button("Save", e -> {
             editor.save();
         });
+        saveEditPatientButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
         cancelEditPatientButton = new Button("Cancel", e -> {
             editor.cancel();
