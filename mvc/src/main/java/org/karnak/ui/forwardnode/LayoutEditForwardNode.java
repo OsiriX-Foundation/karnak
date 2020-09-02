@@ -3,9 +3,8 @@ package org.karnak.ui.forwardnode;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
-import com.vaadin.flow.data.binder.BeanValidationBinder;
-import com.vaadin.flow.data.binder.Binder;
 import org.karnak.data.gateway.Destination;
+import org.karnak.data.gateway.DestinationType;
 import org.karnak.data.gateway.ForwardNode;
 import org.karnak.ui.api.ForwardNodeAPI;
 import org.karnak.ui.component.ConfirmDialog;
@@ -43,6 +42,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
         setEventChangeTabValue();
         setEventCancelButton();
         setEventDeleteButton();
+        setEventDestination();
 
         setEventDestinationsViewDICOM();
     }
@@ -87,14 +87,14 @@ public class LayoutEditForwardNode extends VerticalLayout {
 
     private void setEventDestinationsViewDICOM() {
         destinationsView.getNewDestinationDICOM().addClickListener(event -> {
-            newUpdateDestination.setView("DICOM");
+            newUpdateDestination.setView(DestinationType.dicom);
             addFormView(newUpdateDestination);
         });
     }
 
     private void setEventDestinationsViewSTOW() {
         destinationsView.getNewDestinationDICOM().addClickListener(event -> {
-            newUpdateDestination.setView("STOW");
+            newUpdateDestination.setView(DestinationType.stow);
             addFormView(newUpdateDestination);
         });
     }
@@ -126,6 +126,14 @@ public class LayoutEditForwardNode extends VerticalLayout {
 
     private void setEventSaveButton() {
         buttonForwardNodeSaveDeleteCancel.getSave().addClickListener(event -> {
+        });
+    }
+
+    private void setEventDestination() {
+        destinationsView.getGridDestination().addItemClickListener(event -> {
+            Destination destination = event.getItem();
+            newUpdateDestination.setView(destination.getType());
+            addFormView(newUpdateDestination);
         });
     }
 }

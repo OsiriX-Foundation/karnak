@@ -4,6 +4,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import org.karnak.data.gateway.Destination;
+import org.karnak.data.gateway.DestinationType;
 import org.karnak.ui.util.UIS;
 
 public class NewUpdateDestination extends VerticalLayout {
@@ -18,13 +19,12 @@ public class NewUpdateDestination extends VerticalLayout {
         buttonDestinationSaveDeleteCancel = new ButtonSaveDeleteCancel();
     }
 
-    // TODO: Use enumerate?
-    public void setView(String type) {
+    public void setView(DestinationType type) {
         removeAll();
-        if (type == "STOW") {
+        if (type == DestinationType.stow) {
             //TODO: implement formSTOW
             // add(formSTOW);
-        } else if (type == "DICOM") {
+        } else if (type == DestinationType.dicom) {
             add(formDICOM);
         }
         add(UIS.setWidthFull(buttonDestinationSaveDeleteCancel));
