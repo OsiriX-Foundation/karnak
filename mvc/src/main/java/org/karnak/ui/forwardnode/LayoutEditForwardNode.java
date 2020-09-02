@@ -1,7 +1,11 @@
 package org.karnak.ui.forwardnode;
 
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
+import com.vaadin.flow.data.binder.BeanValidationBinder;
+import com.vaadin.flow.data.binder.Binder;
+import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.ForwardNode;
 import org.karnak.ui.api.ForwardNodeAPI;
 import org.karnak.ui.component.ConfirmDialog;
@@ -16,7 +20,8 @@ public class LayoutEditForwardNode extends VerticalLayout {
     private TabSourcesDestination tabSourcesDestination;
     private VerticalLayout layoutDestinationsSources;
     private DestinationsView destinationsView;
-    private ButtonSaveDeleteCancel buttonSaveDeleteCancel;
+    private NewUpdateDestination newUpdateDestination;
+    private ButtonSaveDeleteCancel buttonForwardNodeSaveDeleteCancel;
 
     public LayoutEditForwardNode(ForwardNodeViewLogic forwardNodeViewLogic, ForwardNodeAPI forwardNodeAPI) {
         this.forwardNodeViewLogic = forwardNodeViewLogic;
@@ -29,30 +34,38 @@ public class LayoutEditForwardNode extends VerticalLayout {
         layoutDestinationsSources = new VerticalLayout();
         layoutDestinationsSources.setSizeFull();
         destinationsView = new DestinationsView(forwardNodeAPI.getDataProvider().getDataService());
-        buttonSaveDeleteCancel = new ButtonSaveDeleteCancel();
+        buttonForwardNodeSaveDeleteCancel = new ButtonSaveDeleteCancel();
 
-        add(UIS.setWidthFull(editAETitleDescription),
-                UIS.setWidthFull(tabSourcesDestination),
-                UIS.setWidthFull(layoutDestinationsSources),
-                UIS.setWidthFull(buttonSaveDeleteCancel));
+        newUpdateDestination = new NewUpdateDestination();
+        addEditView();
 
         setLayoutDestinationsSources(tabSourcesDestination.getSelectedTab().getLabel());
         setEventChangeTabValue();
         setEventCancelButton();
         setEventDeleteButton();
+
+        setEventDestinationsViewDICOM();
+    }
+
+    private void addEditView() {
+        removeAll();
+        add(UIS.setWidthFull(editAETitleDescription),
+                UIS.setWidthFull(tabSourcesDestination),
+                UIS.setWidthFull(layoutDestinationsSources),
+                UIS.setWidthFull(buttonForwardNodeSaveDeleteCancel));
     }
 
     public void load(ForwardNode forwardNode) {
         currentForwardNode = forwardNode;
         editAETitleDescription.setForwardNode(forwardNode);
         destinationsView.setForwardNode(forwardNode);
-
+        addEditView();
         if (forwardNode == null) {
             tabSourcesDestination.setEnabled(false);
-            buttonSaveDeleteCancel.setEnabled(false);
+            buttonForwardNodeSaveDeleteCancel.setEnabled(false);
         } else {
             tabSourcesDestination.setEnabled(true);
-            buttonSaveDeleteCancel.setEnabled(true);
+            buttonForwardNodeSaveDeleteCancel.setEnabled(true);
         }
     }
 
@@ -72,15 +85,33 @@ public class LayoutEditForwardNode extends VerticalLayout {
         }
     }
 
+    private void setEventDestinationsViewDICOM() {
+        destinationsView.getNewDestinationDICOM().addClickListener(event -> {
+            newUpdateDestination.setView("DICOM");
+            addFormView(newUpdateDestination);
+        });
+    }
+
+    private void setEventDestinationsViewSTOW() {
+        destinationsView.getNewDestinationDICOM().addClickListener(event -> {
+            newUpdateDestination.setView("STOW");
+            addFormView(newUpdateDestination);
+        });
+    }
+
+    private void addFormView(Component form) {
+        removeAll();
+        add(form);
+    }
+
     private void setEventCancelButton() {
-        buttonSaveDeleteCancel.getCancel().addClickListener(event -> {
+        buttonForwardNodeSaveDeleteCancel.getCancel().addClickListener(event -> {
             forwardNodeViewLogic.cancelForwardNode();
         });
     }
 
     private void setEventDeleteButton() {
-        buttonSaveDeleteCancel.getDelete().addClickListener(event -> {
-
+        buttonForwardNodeSaveDeleteCancel.getDelete().addClickListener(event -> {
             if (currentForwardNode != null) {
                 ConfirmDialog dialog = new ConfirmDialog(
                         "Are you sure to delete the forward node " + currentForwardNode.getFwdAeTitle() + " ?");
@@ -94,8 +125,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
     }
 
     private void setEventSaveButton() {
-        buttonSaveDeleteCancel.getSave().addClickListener(event -> {
-            // forwardNodeAPI.saveForwardNode();
+        buttonForwardNodeSaveDeleteCancel.getSave().addClickListener(event -> {
         });
     }
 }

@@ -85,4 +85,16 @@ public class DestinationsView extends VerticalLayout {
         newDestinationStow.setEnabled(enabled);
         gridDestination.setEnabled(enabled);
     }
+
+    public Button getNewDestinationDICOM() {
+        return newDestinationDICOM;
+    }
+
+    public Button getNewDestinationStow() {
+        return newDestinationStow;
+    }
+
+    public GridDestination getGridDestination() {
+        return gridDestination;
+    }
 }
