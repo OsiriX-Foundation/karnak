@@ -41,6 +41,9 @@ public class GridFilterDestinations extends VerticalLayout {
         setForwardNode(null);
 
         layoutFilterButton = new HorizontalLayout(filter, newDestinationDICOM, newDestinationStow);
+        layoutFilterButton.setVerticalComponentAlignment(Alignment.START, filter);
+        layoutFilterButton.expand(filter);
+
         add(UIS.setWidthFull(layoutFilterButton),
                 UIS.setWidthFull(gridDestination));
     }
