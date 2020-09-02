@@ -7,9 +7,9 @@ public class GridDestination extends Grid<Destination> {
     public GridDestination() {
         setSizeFull();
 
-        addColumn(Destination::getType).setHeader("Type").setFlexGrow(20).setSortable(true);
-
         addColumn(Destination::getDescription).setHeader("Description").setFlexGrow(20).setSortable(true);
+
+        addColumn(Destination::getType).setHeader("Type").setFlexGrow(20).setSortable(true);
     }
 
     public Destination getSelectedRow() {
