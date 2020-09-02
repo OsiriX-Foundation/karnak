@@ -87,6 +87,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
 
     private void setEventDestinationsViewDICOM() {
         destinationsView.getNewDestinationDICOM().addClickListener(event -> {
+            newUpdateDestination.load(null);
             newUpdateDestination.setView(DestinationType.dicom);
             addFormView(newUpdateDestination);
         });
@@ -94,6 +95,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
 
     private void setEventDestinationsViewSTOW() {
         destinationsView.getNewDestinationDICOM().addClickListener(event -> {
+            newUpdateDestination.load(null);
             newUpdateDestination.setView(DestinationType.stow);
             addFormView(newUpdateDestination);
         });
@@ -132,7 +134,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
     private void setEventDestination() {
         destinationsView.getGridDestination().addItemClickListener(event -> {
             Destination destination = event.getItem();
-            newUpdateDestination.setView(destination.getType());
+            newUpdateDestination.load(destination);
             addFormView(newUpdateDestination);
         });
     }

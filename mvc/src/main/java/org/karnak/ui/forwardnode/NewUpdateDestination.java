@@ -29,4 +29,13 @@ public class NewUpdateDestination extends VerticalLayout {
         }
         add(UIS.setWidthFull(buttonDestinationSaveDeleteCancel));
     }
+
+    public void load(Destination destination) {
+        if (destination != null) {
+            setView(destination.getType());
+            binderFormDICOM.readBean(destination);
+        } else {
+            binderFormDICOM.readBean(Destination.ofDicomEmpty());
+        }
+    }
 }

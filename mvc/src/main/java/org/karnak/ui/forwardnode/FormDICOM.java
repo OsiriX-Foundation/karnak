@@ -17,6 +17,7 @@ import java.util.Objects;
 
 public class FormDICOM extends VerticalLayout {
     private Binder<Destination> binder;
+    private Destination currentDestination;
 
     private final TextField aeTitle;
     private final TextField description;
