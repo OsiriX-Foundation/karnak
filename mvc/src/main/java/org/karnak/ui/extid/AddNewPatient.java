@@ -11,15 +11,13 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.validator.StringLengthValidator;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.validator.internal.constraintvalidators.bv.NotNullValidator;
-import org.karnak.data.gateway.Destination;
 
 
-public class AddNewPatient extends HorizontalLayout {
+
+public class AddNewPatient extends VerticalLayout {
 
     private Binder<Patient> binder;
     private Grid<Patient> grid;
@@ -34,20 +32,27 @@ public class AddNewPatient extends HorizontalLayout {
     private Button addNewPatientButton;
 
     private Div validationStatus;
+    private HorizontalLayout horizontalLayout1;
+    private HorizontalLayout horizontalLayout2;
 
     public AddNewPatient(ListDataProvider<Patient> dataProvider, Grid<Patient> grid){
-
-
+        setSizeFull();
         this.dataProvider = dataProvider;
         this.grid = grid;
         binder = new BeanValidationBinder<>(Patient.class);
 
         externalIdField = new TextField("External ID");
+        externalIdField.setWidth("33%");
         patientIdField = new TextField("Patient ID");
+        patientIdField.setWidth("33%");
         patientNameField = new TextField("Patient Name");
+        patientNameField.setWidth("33%");
         issuerOfPatientIdField = new TextField("Issuer of patient ID");
+        issuerOfPatientIdField.setWidth("33%");
         patientBirthDateField = new TextField("Patient Birth Date");
+        patientBirthDateField.setWidth("33%");
         patientSexField = new TextField("Patient Sex");
+        patientSexField.setWidth("33%");
 
         addNewPatientButton = new Button("Adding a new patient ");
         addNewPatientButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -78,7 +83,14 @@ public class AddNewPatient extends HorizontalLayout {
         validationStatus.setId("validation");
         fieldValidator();
 
-        add(externalIdField, patientIdField, patientNameField, issuerOfPatientIdField, patientBirthDateField, patientSexField, addNewPatientButton);
+        horizontalLayout1 = new HorizontalLayout();
+        horizontalLayout2 = new HorizontalLayout();
+        horizontalLayout1.setSizeFull();
+        horizontalLayout1.add(externalIdField, patientIdField, patientNameField);
+
+        horizontalLayout2.add(issuerOfPatientIdField, patientBirthDateField, patientSexField);
+        horizontalLayout2.setSizeFull();
+        add(horizontalLayout1, horizontalLayout2,addNewPatientButton);
     }
 
     public void fieldValidator(){
