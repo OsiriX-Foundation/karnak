@@ -105,13 +105,15 @@ public class ExternalIDGrid extends Grid<Patient> {
         editor.addOpenListener(e -> {
             editButtons.stream()
                     .forEach(button -> button.setEnabled(!editor.isOpen()));
-            showEditor(true);
+            deleteColumn.setVisible(false);
+            addNewPatientButton.setVisible(false);
         });
 
         editor.addCloseListener(e -> {
             editButtons.stream()
                     .forEach(button -> button.setEnabled(!editor.isOpen()));
-            showEditor(false);
+            deleteColumn.setVisible(true);
+            addNewPatientButton.setVisible(true);
         });
 
 
@@ -176,8 +178,7 @@ public class ExternalIDGrid extends Grid<Patient> {
                 .bind("patientSex");
     }
 
-    public void showEditor(boolean show){
-        deleteColumn.setVisible(!show);
-        addNewPatientForm.setEnabled(!show);
+    public void setAddNewPatientButton(Button addNewPatientButton) {
+        this.addNewPatientButton = addNewPatientButton;
     }
 }

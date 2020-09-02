@@ -18,7 +18,7 @@ public class ExternalIDView extends HorizontalLayout {
     public static final String VIEW_NAME = "External pseudonym";
 
     private ListDataProvider<Patient> dataProvider;
-    private Grid<Patient> grid;
+    private ExternalIDGrid grid;
     private AddNewPatientForm addNewPatientForm;
 
 
@@ -31,6 +31,7 @@ public class ExternalIDView extends HorizontalLayout {
         getStyle().set("overflow-y", "auto");
         dataProvider = (ListDataProvider<Patient>) grid.getDataProvider();
         addNewPatientForm = new AddNewPatientForm(dataProvider);
+        grid.setAddNewPatientButton(addNewPatientForm.getAddNewPatientButton());
 
         verticalLayout.add(new H2("External ID"), addNewPatientForm, grid);
 

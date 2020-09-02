@@ -203,4 +203,10 @@ public class AddNewPatientForm extends VerticalLayout {
         });
     }
 
+
+    public Button getAddNewPatientButton() {
+        return addNewPatientButton;
+    }
+
+
 }
