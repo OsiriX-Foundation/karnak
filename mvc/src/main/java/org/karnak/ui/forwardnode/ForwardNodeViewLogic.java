@@ -59,6 +59,10 @@ public class ForwardNodeViewLogic {
         }
     }
 
+    public void cancelForwardNode() {
+        setFragmentParameter("");
+    }
+
     public ForwardNode findForwardNode(Long dataId) {
         return forwardNodeView.getForwardNodeById(dataId);
     }

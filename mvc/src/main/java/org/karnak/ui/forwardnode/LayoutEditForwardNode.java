@@ -13,6 +13,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
     private TabSourcesDestination tabSourcesDestination;
     private VerticalLayout layoutDestinationsSources;
     private GridFilterDestinations gridFilterDestinations;
+    private ButtonSaveDeleteCancel buttonSaveDeleteCancel;
 
     public LayoutEditForwardNode(ForwardNodeViewLogic forwardNodeViewLogic, ForwardNodeDataProvider dataProvider) {
         setSizeFull();
@@ -24,13 +25,16 @@ public class LayoutEditForwardNode extends VerticalLayout {
         layoutDestinationsSources = new VerticalLayout();
         layoutDestinationsSources.setSizeFull();
         gridFilterDestinations = new GridFilterDestinations(dataProvider.getDataService());
+        buttonSaveDeleteCancel = new ButtonSaveDeleteCancel();
 
         add(UIS.setWidthFull(editAETitleDescription),
                 UIS.setWidthFull(tabSourcesDestination),
-                UIS.setWidthFull(layoutDestinationsSources));
+                UIS.setWidthFull(layoutDestinationsSources),
+                UIS.setWidthFull(buttonSaveDeleteCancel));
 
         setLayoutDestinationsSources(tabSourcesDestination.getSelectedTab().getLabel());
         setEventChangeTabValue();
+        setEventCancelButton();
     }
 
     public void load(ForwardNode forwardNode) {
@@ -53,5 +57,11 @@ public class LayoutEditForwardNode extends VerticalLayout {
         } else if (currentTab.equals(tabSourcesDestination.LABEL_DESTINATIONS)) {
             layoutDestinationsSources.add(gridFilterDestinations);
         }
+    }
+
+    private void setEventCancelButton() {
+        buttonSaveDeleteCancel.getCancel().addClickListener(event -> {
+            forwardNodeViewLogic.cancelForwardNode();
+        });
     }
 }

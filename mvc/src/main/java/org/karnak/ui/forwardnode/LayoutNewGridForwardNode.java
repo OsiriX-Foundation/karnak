@@ -39,6 +39,8 @@ public class LayoutNewGridForwardNode extends VerticalLayout {
     public void load(ForwardNode forwardNode) {
         if (forwardNode != null && forwardNode != gridForwardNode.getSelectedRow()) {
             gridForwardNode.selectRow(forwardNode);
+        } else {
+            gridForwardNode.getSelectionModel().deselectAll();
         }
     }
 
