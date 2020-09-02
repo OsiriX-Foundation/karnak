@@ -73,9 +73,7 @@ public class ExtIDView extends VerticalLayout {
         grid.setItems(patientList);
         dataProvider = (ListDataProvider<Patient>) grid.getDataProvider();
 
-
         addNewPatient = new AddNewPatient(dataProvider, grid);
-
 
         extidColumn = grid.addColumn(Patient::getExtid).setHeader("External ID");
         patientIdColumn = grid.addColumn(Patient::getPatientId).setHeader("Patient ID");
@@ -85,15 +83,10 @@ public class ExtIDView extends VerticalLayout {
         patientSexColumn = grid.addColumn(Patient::getPatientSex).setHeader("Patient Sex");
 
 
-
-
-
         editButtons = Collections.newSetFromMap(new WeakHashMap<>());
-
         editor = grid.getEditor();
         editor.setBinder(binder);
         editor.setBuffered(true);
-
         editorColumn = grid.addComponentColumn(patient -> {
             Button edit = new Button("Edit");
             edit.addClassName("edit");

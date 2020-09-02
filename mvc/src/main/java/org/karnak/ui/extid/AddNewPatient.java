@@ -5,6 +5,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.icon.IronIcon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -14,7 +15,7 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.validator.StringLengthValidator;
 import org.apache.commons.lang3.StringUtils;
-
+import org.karnak.ui.component.ConfirmDialog;
 
 
 public class AddNewPatient extends VerticalLayout {
@@ -30,13 +31,22 @@ public class AddNewPatient extends VerticalLayout {
     private TextField patientBirthDateField;
     private TextField patientSexField;
     private Button addNewPatientButton;
+    private Button sendInMainzellisteButton;
 
     private Div validationStatus;
     private HorizontalLayout horizontalLayout1;
     private HorizontalLayout horizontalLayout2;
+    private HorizontalLayout horizontalLayout3;
 
     public AddNewPatient(ListDataProvider<Patient> dataProvider, Grid<Patient> grid){
         setSizeFull();
+        getElement().addEventListener("keydown", event -> {
+            addPatientFieldsInGrid();
+        }).setFilter("event.key == 'Enter'");
+        getElement().addEventListener("keydown", event -> {
+            clearPatientFields();
+        }).setFilter("event.key == 'Escape'");
+
         this.dataProvider = dataProvider;
         this.grid = grid;
         binder = new BeanValidationBinder<>(Patient.class);
@@ -54,22 +64,31 @@ public class AddNewPatient extends VerticalLayout {
         patientSexField = new TextField("Patient Sex");
         patientSexField.setWidth("33%");
 
-        addNewPatientButton = new Button("Adding a new patient ");
+        addNewPatientButton = new Button("Add");
         addNewPatientButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         addNewPatientButton.setIcon(VaadinIcon.PLUS_CIRCLE.create());
+        addNewPatientButton.getStyle().set("position", "absolute");
+        addNewPatientButton.getStyle().set("right", "33px");
         addNewPatientButton.addClickListener(click -> {
-            Patient newPatient = new Patient(externalIdField.getValue(),
-                    patientIdField.getValue(),
-                    patientNameField.getValue(),
-                    patientBirthDateField.getValue(),
-                    patientSexField.getValue(),
-                    issuerOfPatientIdField.getValue());
-            binder.validate();
-            if(binder.isValid()){
-                dataProvider.getItems().add(newPatient);
-                grid.getDataProvider().refreshAll();
-                clearFields();
-            }
+            addPatientFieldsInGrid();
+        });
+
+        sendInMainzellisteButton = new Button("Send patients in database");
+        sendInMainzellisteButton.setEnabled(false);
+        sendInMainzellisteButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        sendInMainzellisteButton.setIcon(new IronIcon("icons", "icons:send"));
+        sendInMainzellisteButton.addClickListener( click -> {
+            ConfirmDialog dialog = new ConfirmDialog("Are you sure to send in database all patients in grid?");
+            dialog.addConfirmationListener(componentEvent -> {
+                sendInMainzellisteButton.setEnabled(false);
+                dataProvider.getItems().forEach( patient -> {
+                    System.out.println(patient.getPatientName());
+
+                });
+                dataProvider.getItems().clear();
+                dataProvider.refreshAll();
+            });
+            dialog.open();
         });
 
         // enable/disable update button while editing
@@ -79,18 +98,28 @@ public class AddNewPatient extends VerticalLayout {
             addNewPatientButton.setEnabled(hasChanges && isValid);
         });
 
+        dataProvider.addDataProviderListener( dataChangeEvent -> {
+            if(dataProvider.getItems().isEmpty()){
+                sendInMainzellisteButton.setEnabled(false);
+            }else{
+                sendInMainzellisteButton.setEnabled(true);
+            }
+        });
+
         validationStatus = new Div();
         validationStatus.setId("validation");
         fieldValidator();
 
         horizontalLayout1 = new HorizontalLayout();
         horizontalLayout2 = new HorizontalLayout();
+        horizontalLayout3 = new HorizontalLayout();
         horizontalLayout1.setSizeFull();
-        horizontalLayout1.add(externalIdField, patientIdField, patientNameField);
-
-        horizontalLayout2.add(issuerOfPatientIdField, patientBirthDateField, patientSexField);
         horizontalLayout2.setSizeFull();
-        add(horizontalLayout1, horizontalLayout2,addNewPatientButton);
+        horizontalLayout3.setSizeFull();
+        horizontalLayout1.add(externalIdField, patientIdField, patientNameField);
+        horizontalLayout2.add(issuerOfPatientIdField, patientBirthDateField, patientSexField);
+        horizontalLayout3.add(sendInMainzellisteButton, addNewPatientButton);
+        add(horizontalLayout1, horizontalLayout2, horizontalLayout3);
     }
 
     public void fieldValidator(){
@@ -125,13 +154,29 @@ public class AddNewPatient extends VerticalLayout {
                 .bind("patientSex");
     }
 
-    public void clearFields(){
+    public void addPatientFieldsInGrid(){
+        final Patient newPatient = new Patient(externalIdField.getValue(),
+                patientIdField.getValue(),
+                patientNameField.getValue(),
+                patientBirthDateField.getValue(),
+                patientSexField.getValue(),
+                issuerOfPatientIdField.getValue());
+        binder.validate();
+        if(binder.isValid()){
+            dataProvider.getItems().add(newPatient);
+            grid.getDataProvider().refreshAll();
+            binder.readBean(null);
+        }
+    }
+
+    public void clearPatientFields(){
         externalIdField.clear();
         patientIdField.clear();
         patientNameField.clear();
         issuerOfPatientIdField.clear();
         patientBirthDateField.clear();
         patientSexField.clear();
+        binder.readBean(null);
     }
 
 }
