@@ -32,8 +32,10 @@ public class AddNewPatient extends VerticalLayout {
     private TextField patientSexField;
     private Button addNewPatientButton;
     private Button sendInMainzellisteButton;
+    private Button clearFieldsButton;
 
     private Div validationStatus;
+    private HorizontalLayout horizontalLayoutAddClear;
     private HorizontalLayout horizontalLayout1;
     private HorizontalLayout horizontalLayout2;
     private HorizontalLayout horizontalLayout3;
@@ -43,9 +45,6 @@ public class AddNewPatient extends VerticalLayout {
         getElement().addEventListener("keydown", event -> {
             addPatientFieldsInGrid();
         }).setFilter("event.key == 'Enter'");
-        getElement().addEventListener("keydown", event -> {
-            clearPatientFields();
-        }).setFilter("event.key == 'Escape'");
 
         this.dataProvider = dataProvider;
         this.grid = grid;
@@ -64,14 +63,6 @@ public class AddNewPatient extends VerticalLayout {
         patientSexField = new TextField("Patient Sex");
         patientSexField.setWidth("33%");
 
-        addNewPatientButton = new Button("Add");
-        addNewPatientButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        addNewPatientButton.setIcon(VaadinIcon.PLUS_CIRCLE.create());
-        addNewPatientButton.getStyle().set("position", "absolute");
-        addNewPatientButton.getStyle().set("right", "33px");
-        addNewPatientButton.addClickListener(click -> {
-            addPatientFieldsInGrid();
-        });
 
         sendInMainzellisteButton = new Button("Send patients in database");
         sendInMainzellisteButton.setEnabled(false);
@@ -90,6 +81,25 @@ public class AddNewPatient extends VerticalLayout {
             });
             dialog.open();
         });
+
+
+        horizontalLayoutAddClear = new HorizontalLayout();
+        horizontalLayoutAddClear.getStyle().set("position", "absolute");
+        horizontalLayoutAddClear.getStyle().set("right", "33px");
+
+        clearFieldsButton = new Button("Clear");
+        clearFieldsButton.addClickListener( click -> {
+            clearPatientFields();
+        });
+
+        addNewPatientButton = new Button("Add");
+        addNewPatientButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        addNewPatientButton.setIcon(VaadinIcon.PLUS_CIRCLE.create());
+        addNewPatientButton.addClickListener(click -> {
+            addPatientFieldsInGrid();
+        });
+        horizontalLayoutAddClear.add(clearFieldsButton, addNewPatientButton);
+
 
         // enable/disable update button while editing
         binder.addStatusChangeListener(event -> {
@@ -118,7 +128,7 @@ public class AddNewPatient extends VerticalLayout {
         horizontalLayout3.setSizeFull();
         horizontalLayout1.add(externalIdField, patientIdField, patientNameField);
         horizontalLayout2.add(issuerOfPatientIdField, patientBirthDateField, patientSexField);
-        horizontalLayout3.add(sendInMainzellisteButton, addNewPatientButton);
+        horizontalLayout3.add(sendInMainzellisteButton, horizontalLayoutAddClear);
         add(horizontalLayout1, horizontalLayout2, horizontalLayout3);
     }
 
