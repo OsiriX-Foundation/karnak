@@ -9,6 +9,7 @@ import com.vaadin.flow.component.icon.IronIcon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
@@ -29,7 +30,7 @@ public class AddNewPatient extends VerticalLayout {
     private TextField patientNameField;
     private TextField issuerOfPatientIdField;
     private TextField patientBirthDateField;
-    private TextField patientSexField;
+    private Select<String> patientSexField;
     private Button addNewPatientButton;
     private Button sendInMainzellisteButton;
     private Button clearFieldsButton;
@@ -60,7 +61,9 @@ public class AddNewPatient extends VerticalLayout {
         issuerOfPatientIdField.setWidth("33%");
         patientBirthDateField = new TextField("Patient Birth Date");
         patientBirthDateField.setWidth("33%");
-        patientSexField = new TextField("Patient Sex");
+        patientSexField = new Select<>();
+        patientSexField.setLabel("Patient Sex");
+        patientSexField.setItems("M", "F", "O");
         patientSexField.setWidth("33%");
 
 
@@ -73,7 +76,7 @@ public class AddNewPatient extends VerticalLayout {
             dialog.addConfirmationListener(componentEvent -> {
                 sendInMainzellisteButton.setEnabled(false);
                 dataProvider.getItems().forEach( patient -> {
-                    System.out.println(patient.getPatientName());
+                    System.out.println(patient.getPatientName() + " " + patient.getPatientSex());
 
                 });
                 dataProvider.getItems().clear();
