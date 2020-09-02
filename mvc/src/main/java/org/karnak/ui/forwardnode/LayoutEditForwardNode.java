@@ -4,6 +4,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import org.karnak.data.gateway.ForwardNode;
 import org.karnak.ui.api.ForwardNodeAPI;
+import org.karnak.ui.component.ConfirmDialog;
 import org.karnak.ui.util.UIS;
 
 public class LayoutEditForwardNode extends VerticalLayout {
@@ -79,8 +80,22 @@ public class LayoutEditForwardNode extends VerticalLayout {
 
     private void setEventDeleteButton() {
         buttonSaveDeleteCancel.getDelete().addClickListener(event -> {
-            forwardNodeAPI.deleteForwardNode(currentForwardNode);
-            forwardNodeViewLogic.cancelForwardNode();
+
+            if (currentForwardNode != null) {
+                ConfirmDialog dialog = new ConfirmDialog(
+                        "Are you sure to delete the forward node " + currentForwardNode.getFwdAeTitle() + " ?");
+                dialog.addConfirmationListener(componentEvent -> {
+                    forwardNodeAPI.deleteForwardNode(currentForwardNode);
+                    forwardNodeViewLogic.cancelForwardNode();
+                });
+                dialog.open();
+            }
+        });
+    }
+
+    private void setEventSaveButton() {
+        buttonSaveDeleteCancel.getSave().addClickListener(event -> {
+            // forwardNodeAPI.saveForwardNode();
         });
     }
 }

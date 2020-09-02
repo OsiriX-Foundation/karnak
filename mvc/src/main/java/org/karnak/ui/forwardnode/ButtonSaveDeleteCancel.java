@@ -5,7 +5,6 @@ import com.vaadin.flow.component.KeyModifier;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import org.karnak.ui.component.ConfirmDialog;
 
 public class ButtonSaveDeleteCancel extends HorizontalLayout {
     private Button save;
@@ -31,35 +30,15 @@ public class ButtonSaveDeleteCancel extends HorizontalLayout {
         save.setWidth("100%");
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         save.addClickShortcut(Key.KEY_S, KeyModifier.CONTROL);
-        /*
-        save.addClickListener(event -> {
-            saveForwardNode();
-        });
-        */
     }
     private void setButtonCancel() {
         cancel.setWidth("100%");
         cancel.addClickShortcut(Key.ESCAPE);
-        /*
-        cancel.addClickListener(event -> this.gatewayViewLogic.cancelForwardNode());
-        getElement().addEventListener("keydown", event -> this.gatewayViewLogic.cancelForwardNode())
-                .setFilter("event.key == 'Escape'");
-        */
     }
 
     private void setButtonDelete() {
         delete.setWidth("100%");
         delete.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
-        /*
-        delete.addClickListener(event -> {
-            if (currentForwardNode != null) {
-                ConfirmDialog dialog = new ConfirmDialog(
-                        "Are you sure to delete the forward node " + currentForwardNode.getFwdAeTitle() + " ?");
-                dialog.addConfirmationListener(componentEvent -> this.gatewayViewLogic.deleteForwardNode(currentForwardNode));
-                dialog.open();
-            }
-        });
-        */
     }
 
     public void setEnabled(boolean enabled) {
