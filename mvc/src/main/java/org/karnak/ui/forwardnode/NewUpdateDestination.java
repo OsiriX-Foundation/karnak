@@ -9,6 +9,7 @@ import org.karnak.ui.util.UIS;
 
 public class NewUpdateDestination extends VerticalLayout {
     private FormDICOM formDICOM;
+    private Destination currentDestination;
     private Binder<Destination> binderFormDICOM;
     private ButtonSaveDeleteCancel buttonDestinationSaveDeleteCancel;
 
@@ -16,7 +17,9 @@ public class NewUpdateDestination extends VerticalLayout {
         setSizeFull();
         binderFormDICOM = new BeanValidationBinder<>(Destination.class);
         formDICOM = new FormDICOM(binderFormDICOM);
+        currentDestination = Destination.ofDicomEmpty();
         buttonDestinationSaveDeleteCancel = new ButtonSaveDeleteCancel();
+        setBinderEvent();
     }
 
     public void setView(DestinationType type) {
@@ -33,9 +36,20 @@ public class NewUpdateDestination extends VerticalLayout {
     public void load(Destination destination) {
         if (destination != null) {
             setView(destination.getType());
-            binderFormDICOM.readBean(destination);
+            currentDestination = destination;
+            buttonDestinationSaveDeleteCancel.getDelete().setEnabled(true);
         } else {
-            binderFormDICOM.readBean(Destination.ofDicomEmpty());
+            currentDestination = Destination.ofDicomEmpty();
+            buttonDestinationSaveDeleteCancel.getDelete().setEnabled(false);
         }
+        binderFormDICOM.readBean(currentDestination);
+    }
+
+    private void setBinderEvent() {
+        binderFormDICOM.addStatusChangeListener(event -> {
+            boolean isValid = !event.hasValidationErrors();
+            boolean hasChanges = binderFormDICOM.hasChanges();
+            buttonDestinationSaveDeleteCancel.getSave().setEnabled(hasChanges && isValid);
+        });
     }
 }
