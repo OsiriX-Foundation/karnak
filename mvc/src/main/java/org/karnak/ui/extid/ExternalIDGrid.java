@@ -16,7 +16,6 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.*;
 
 public class ExternalIDGrid extends Grid<Patient> {
-    private Div validationStatus;
     private Binder<Patient> binder;
     private List<Patient> patientList;
     private Button addNewPatientButton;
@@ -49,13 +48,12 @@ public class ExternalIDGrid extends Grid<Patient> {
 
     public ExternalIDGrid(){
         setSizeFull();
-
         binder = new Binder<>(Patient.class);
         patientList = new ArrayList<>();
 
         setHeightByRows(true);
         setItems(patientList);
-        getStyle().set("overflow-y", "auto");
+
         dataProvider = (ListDataProvider<Patient>) getDataProvider();
 
         extidColumn = addColumn(Patient::getExtid).setHeader("External ID");
@@ -90,8 +88,7 @@ public class ExternalIDGrid extends Grid<Patient> {
         patientSexField = new Select<>();
         patientSexField.setItems("M", "F", "O");
 
-        validationStatus = new Div();
-        validationStatus.setId("validation");
+
 
         fieldValidator();
 
@@ -147,35 +144,39 @@ public class ExternalIDGrid extends Grid<Patient> {
         });
     }
 
-    public void fieldValidator(){
+    public Div fieldValidator(){
+        Div validationStatus = new Div();
+        validationStatus.setId("validation");
+        validationStatus.getStyle().set("color", "var(--theme-color, red)");
         binder.forField(externalIdField)
                 .withValidator(StringUtils::isNotBlank, "External ID is empty")
                 .withValidator(new StringLengthValidator("Length must be between 1 and 50.", 1, 50))
-                .bind("extid");
+                .withStatusLabel(validationStatus).bind("extid");
 
         binder.forField(patientIdField)
                 .withValidator(StringUtils::isNotBlank, "Patient ID is empty")
                 .withValidator(new StringLengthValidator("Length must be between 1 and 50.", 1, 50))
-                .bind("patientId");
+                .withStatusLabel(validationStatus).bind("patientId");
 
         binder.forField(patientNameField)
                 .withValidator(StringUtils::isNotBlank, "Patient Name is empty")
                 .withValidator(new StringLengthValidator("Length must be between 1 and 50.", 1, 50))
-                .bind("patientName");
+                .withStatusLabel(validationStatus).bind("patientName");
 
         binder.forField(issuerOfPatientIdField)
                 .withValidator(StringUtils::isNotBlank, "Issuer of patient ID is empty")
                 .withValidator(new StringLengthValidator("Length must be between 1 and 50.", 1, 50))
-                .bind("issuerOfPatientId");
+                .withStatusLabel(validationStatus).bind("issuerOfPatientId");
 
         binder.forField(patientBirthDateField)
                 .asRequired("Please choose a date")
-                .bind("patientBirthDate");
+                .withStatusLabel(validationStatus).bind("patientBirthDate");
 
         binder.forField(patientSexField)
                 .withValidator(StringUtils::isNotBlank, "Patient Sex is empty")
                 .withValidator(new StringLengthValidator("Length must be 1.", 1, 1))
-                .bind("patientSex");
+                .withStatusLabel(validationStatus).bind("patientSex");
+        return validationStatus;
     }
 
     public void setAddNewPatientButton(Button addNewPatientButton) {

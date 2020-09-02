@@ -1,7 +1,7 @@
 package org.karnak.ui.extid;
 
 import com.vaadin.flow.component.Tag;
-import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -20,6 +20,7 @@ public class ExternalIDView extends HorizontalLayout {
     private ListDataProvider<Patient> dataProvider;
     private ExternalIDGrid grid;
     private AddNewPatientForm addNewPatientForm;
+    private Div validationStatus;
 
 
     //https://vaadin.com/components/vaadin-grid/java-examples/assigning-data
@@ -28,12 +29,13 @@ public class ExternalIDView extends HorizontalLayout {
         VerticalLayout verticalLayout = new VerticalLayout();
 
         grid = new ExternalIDGrid();
-        getStyle().set("overflow-y", "auto");
         dataProvider = (ListDataProvider<Patient>) grid.getDataProvider();
         addNewPatientForm = new AddNewPatientForm(dataProvider);
         grid.setAddNewPatientButton(addNewPatientForm.getAddNewPatientButton());
 
-        verticalLayout.add(new H2("External ID"), addNewPatientForm, grid);
+        validationStatus = grid.fieldValidator();
+
+        verticalLayout.add(new H2("External ID"), addNewPatientForm, validationStatus, grid);
 
         add(verticalLayout);
     }
