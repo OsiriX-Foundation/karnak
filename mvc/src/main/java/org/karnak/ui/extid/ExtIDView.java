@@ -7,8 +7,8 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.editor.Editor;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.provider.ListDataProvider;
@@ -53,7 +53,7 @@ public class ExtIDView extends VerticalLayout {
     private TextField patientNameField;
     private TextField issuerOfPatientIdField;
     private TextField patientBirthDateField;
-    private TextField patientSexField;
+    private Select<String> patientSexField;
 
     private Grid.Column<Patient> deleteColumn;
 
@@ -104,7 +104,8 @@ public class ExtIDView extends VerticalLayout {
         patientNameField = new TextField();
         issuerOfPatientIdField = new TextField();
         patientBirthDateField = new TextField();
-        patientSexField = new TextField();
+        patientSexField = new Select<>();
+        patientSexField.setItems("M", "F", "O");
 
         validationStatus = new Div();
         validationStatus.setId("validation");
