@@ -15,7 +15,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
     private EditAETitleDescription editAETitleDescription;
     private TabSourcesDestination tabSourcesDestination;
     private VerticalLayout layoutDestinationsSources;
-    private GridFilterDestinations gridFilterDestinations;
+    private DestinationsView destinationsView;
     private ButtonSaveDeleteCancel buttonSaveDeleteCancel;
 
     public LayoutEditForwardNode(ForwardNodeViewLogic forwardNodeViewLogic, ForwardNodeAPI forwardNodeAPI) {
@@ -28,7 +28,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
         tabSourcesDestination = new TabSourcesDestination();
         layoutDestinationsSources = new VerticalLayout();
         layoutDestinationsSources.setSizeFull();
-        gridFilterDestinations = new GridFilterDestinations(forwardNodeAPI.getDataProvider().getDataService());
+        destinationsView = new DestinationsView(forwardNodeAPI.getDataProvider().getDataService());
         buttonSaveDeleteCancel = new ButtonSaveDeleteCancel();
 
         add(UIS.setWidthFull(editAETitleDescription),
@@ -45,7 +45,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
     public void load(ForwardNode forwardNode) {
         currentForwardNode = forwardNode;
         editAETitleDescription.setForwardNode(forwardNode);
-        gridFilterDestinations.setForwardNode(forwardNode);
+        destinationsView.setForwardNode(forwardNode);
 
         if (forwardNode == null) {
             tabSourcesDestination.setEnabled(false);
@@ -68,7 +68,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
         if (currentTab.equals(tabSourcesDestination.LABEL_SOURCES)) {
             System.out.println("SOURCE");
         } else if (currentTab.equals(tabSourcesDestination.LABEL_DESTINATIONS)) {
-            layoutDestinationsSources.add(gridFilterDestinations);
+            layoutDestinationsSources.add(destinationsView);
         }
     }
 

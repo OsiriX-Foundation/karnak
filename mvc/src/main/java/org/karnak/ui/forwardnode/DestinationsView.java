@@ -13,7 +13,7 @@ import org.karnak.ui.gateway.DataService;
 import org.karnak.ui.gateway.DestinationDataProvider;
 import org.karnak.ui.util.UIS;
 
-public class GridFilterDestinations extends VerticalLayout {
+public class DestinationsView extends VerticalLayout {
     private final DestinationDataProvider destinationDataProvider;
 
     private TextField filter;
@@ -27,7 +27,7 @@ public class GridFilterDestinations extends VerticalLayout {
     private String LABEL_NEW_DESTINATION_STOW = "STOW";
     private String PLACEHOLDER_FILTER = "Filter properties of destination";
 
-    public GridFilterDestinations(DataService dataService) {
+    public DestinationsView(DataService dataService) {
         setSizeFull();
         destinationDataProvider = new DestinationDataProvider(dataService);
         filter = new TextField();
