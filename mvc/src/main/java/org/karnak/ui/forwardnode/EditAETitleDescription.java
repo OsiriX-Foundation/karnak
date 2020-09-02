@@ -14,6 +14,9 @@ public class EditAETitleDescription extends HorizontalLayout {
         textFieldDescription = new TextField("Description");
 
         textFieldAETitle.setWidth("30%");
+        textFieldDescription.setWidth("70%");
+        add(textFieldAETitle, textFieldDescription);
+        /*
         textFieldAETitle.setRequired(true);
         textFieldAETitle.setValueChangeMode(ValueChangeMode.EAGER);
         textFieldAETitle.addBlurListener(e -> {
@@ -23,7 +26,6 @@ public class EditAETitleDescription extends HorizontalLayout {
             }
         });
 
-        textFieldDescription.setWidth("70%");
         textFieldDescription.setValueChangeMode(ValueChangeMode.EAGER);
         textFieldDescription.addBlurListener(e -> {
             TextField tf = e.getSource();
@@ -35,13 +37,16 @@ public class EditAETitleDescription extends HorizontalLayout {
             TextField tf = e.getSource();
             tf.getElement().setAttribute("title", tf.getValue());
         });
-        add(textFieldAETitle, textFieldDescription);
+        */
     }
 
     public void setForwardNode(ForwardNode forwardNode) {
         if (forwardNode != null) {
             textFieldDescription.setValue(forwardNode.getDescription());
             textFieldAETitle.setValue(forwardNode.getFwdAeTitle());
+        } else {
+            textFieldDescription.clear();
+            textFieldAETitle.clear();
         }
     }
 }

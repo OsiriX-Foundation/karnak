@@ -38,7 +38,7 @@ public class GridFilterDestinations extends VerticalLayout {
         setTextFieldFilter();
         setButtonNewDestinationDICOM();
         setButtonNewDestinationSTOW();
-        setGridDestination();
+        setForwardNode(null);
 
         layoutFilterButton = new HorizontalLayout(filter, newDestinationDICOM, newDestinationStow);
         add(UIS.setWidthFull(layoutFilterButton),
@@ -47,11 +47,7 @@ public class GridFilterDestinations extends VerticalLayout {
 
     protected void setForwardNode(ForwardNode forwardNode) {
         destinationDataProvider.setForwardNode(forwardNode);
-    }
-
-    private void setGridDestination() {
         gridDestination.setDataProvider(destinationDataProvider);
-        // gridDestination.asSingleSelect().addValueChangeListener(event -> destinationLogic.rowSelected(event.getValue()));
     }
 
     private void setTextFieldFilter() {

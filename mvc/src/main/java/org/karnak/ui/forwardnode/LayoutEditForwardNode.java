@@ -34,10 +34,9 @@ public class LayoutEditForwardNode extends VerticalLayout {
     }
 
     public void load(ForwardNode forwardNode) {
-        if (forwardNode != null) {
-            editAETitleDescription.setForwardNode(forwardNode);
-            gridFilterDestinations.setForwardNode(forwardNode);
-        }
+        // TODO: Disable all component if forwardNode is null
+        editAETitleDescription.setForwardNode(forwardNode);
+        gridFilterDestinations.setForwardNode(forwardNode);
     }
 
     private void setEventChangeTabValue() {
