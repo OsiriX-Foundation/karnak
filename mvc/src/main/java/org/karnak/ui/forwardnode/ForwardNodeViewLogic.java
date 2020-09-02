@@ -1,18 +1,14 @@
 package org.karnak.ui.forwardnode;
 
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.server.VaadinService;
-import com.vaadin.flow.server.VaadinServletRequest;
 import org.karnak.data.gateway.ForwardNode;
-
-import java.net.URI;
-import java.net.URISyntaxException;
+import org.karnak.ui.api.ForwardNodeAPI;
 
 public class ForwardNodeViewLogic {
-    private final ForwardNodeView forwardNodeView;
+    private final ForwardNodeAPI forwardNodeAPI;
 
-    public ForwardNodeViewLogic(ForwardNodeView forwardNodeView) {
-        this.forwardNodeView = forwardNodeView;
+    public ForwardNodeViewLogic(ForwardNodeAPI forwardNodeAPI) {
+        this.forwardNodeAPI = forwardNodeAPI;
     }
 
     /**
@@ -63,7 +59,26 @@ public class ForwardNodeViewLogic {
         setFragmentParameter("");
     }
 
-    public ForwardNode findForwardNode(Long dataId) {
-        return forwardNodeView.getForwardNodeById(dataId);
+
+    public void saveForwardNode(ForwardNode data) {
+        /*
+        boolean newData = data.isNewData();
+        gatewayView.clearSelection();
+        gatewayView.updateForwardNode(data);
+        setFragmentParameter("");
+        gatewayView.showSaveNotification(data.getFwdAeTitle() + (newData ? " created" : " updated"));
+        //editForwardNode(data); //if you dont't want to exit the selection after saving a forward node.
+        editForwardNode(null); //if you want to exit the selection after saving a forward node.
+         */
+    }
+
+    public void deleteForwardNode(ForwardNode data) {
+        /*
+        gatewayView.clearSelection();
+        gatewayView.removeForwardNode(data);
+        setFragmentParameter("");
+        gatewayView.showSaveNotification(data.getFwdAeTitle() + " removed");
+        */
+        setFragmentParameter("");
     }
 }

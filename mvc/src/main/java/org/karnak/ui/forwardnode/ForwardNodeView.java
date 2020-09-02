@@ -4,6 +4,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.router.*;
 import org.karnak.data.gateway.ForwardNode;
 import org.karnak.ui.MainLayout;
+import org.karnak.ui.api.ForwardNodeAPI;
 import org.karnak.ui.gateway.ForwardNodeDataProvider;
 
 @Route(value = "forwardnode", layout = MainLayout.class)
@@ -11,22 +12,19 @@ import org.karnak.ui.gateway.ForwardNodeDataProvider;
 @PageTitle("KARNAK - Forward node")
 public class ForwardNodeView extends HorizontalLayout implements HasUrlParameter<String> {
     public static final String VIEW_NAME = "Gateway";
+    private ForwardNodeAPI forwardNodeAPI;
     private LayoutNewGridForwardNode layoutNewGridForwardNode;
     private LayoutEditForwardNode layoutEditForwardNode;
     private ForwardNodeViewLogic forwardNodeViewLogic;
-    private ForwardNodeDataProvider dataProvider;
 
     public ForwardNodeView() {
         setSizeFull();
-        dataProvider = new ForwardNodeDataProvider();
-        forwardNodeViewLogic = new ForwardNodeViewLogic(this);
-        layoutNewGridForwardNode = new LayoutNewGridForwardNode(forwardNodeViewLogic, dataProvider);
-        layoutEditForwardNode = new LayoutEditForwardNode(forwardNodeViewLogic, dataProvider);
+        ForwardNodeDataProvider dataProvider = new ForwardNodeDataProvider();
+        forwardNodeAPI = new ForwardNodeAPI(dataProvider);
+        forwardNodeViewLogic = new ForwardNodeViewLogic(forwardNodeAPI);
+        layoutNewGridForwardNode = new LayoutNewGridForwardNode(forwardNodeViewLogic, forwardNodeAPI);
+        layoutEditForwardNode = new LayoutEditForwardNode(forwardNodeViewLogic, forwardNodeAPI);
         add(layoutNewGridForwardNode, layoutEditForwardNode);
-    }
-
-    protected ForwardNode getForwardNodeById(Long dataId) {
-        return dataProvider.get(dataId);
     }
 
     @Override
@@ -34,7 +32,7 @@ public class ForwardNodeView extends HorizontalLayout implements HasUrlParameter
         Long idForwardNode = forwardNodeViewLogic.enter(parameter);
         ForwardNode currentForwardNode = null;
         if (idForwardNode != null) {
-            currentForwardNode = forwardNodeViewLogic.findForwardNode(idForwardNode);
+            currentForwardNode = forwardNodeAPI.getForwardNodeById(idForwardNode);
         }
         layoutNewGridForwardNode.load(currentForwardNode);
         layoutEditForwardNode.load(currentForwardNode);
