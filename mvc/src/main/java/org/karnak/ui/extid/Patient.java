@@ -1,11 +1,14 @@
 package org.karnak.ui.extid;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 public class Patient {
 
     private String extid;
     private String patientId;
     private String patientName;
-    private String patientBirthDate;
+    private LocalDate patientBirthDate;
     private String patientSex;
     private String issuerOfPatientId;
 
@@ -33,11 +36,11 @@ public class Patient {
         this.patientName = patientName;
     }
 
-    public String getPatientBirthDate() {
+    public LocalDate getPatientBirthDate() {
         return patientBirthDate;
     }
 
-    public void setPatientBirthDate(String patientBirthDate) {
+    public void setPatientBirthDate(LocalDate patientBirthDate) {
         this.patientBirthDate = patientBirthDate;
     }
 
@@ -57,7 +60,7 @@ public class Patient {
         this.issuerOfPatientId = issuerOfPatientId;
     }
 
-    public Patient(String extid, String patientId, String patientName, String patientBirthDate, String patientSex, String issuerOfPatientId)
+    public Patient(String extid, String patientId, String patientName, LocalDate patientBirthDate, String patientSex, String issuerOfPatientId)
     {
         this.extid = extid;
         this.patientId = patientId;

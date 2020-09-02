@@ -3,6 +3,7 @@ package org.karnak.ui.extid;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.editor.Editor;
 import com.vaadin.flow.component.html.Div;
@@ -52,7 +53,7 @@ public class ExtIDView extends VerticalLayout {
     private TextField patientIdField;
     private TextField patientNameField;
     private TextField issuerOfPatientIdField;
-    private TextField patientBirthDateField;
+    private DatePicker patientBirthDateField;
     private Select<String> patientSexField;
 
     private Grid.Column<Patient> deleteColumn;
@@ -103,7 +104,7 @@ public class ExtIDView extends VerticalLayout {
         patientIdField = new TextField();
         patientNameField = new TextField();
         issuerOfPatientIdField = new TextField();
-        patientBirthDateField = new TextField();
+        patientBirthDateField = new DatePicker();
         patientSexField = new Select<>();
         patientSexField.setItems("M", "F", "O");
 
@@ -191,8 +192,7 @@ public class ExtIDView extends VerticalLayout {
                 .bind("issuerOfPatientId");
 
         binder.forField(patientBirthDateField)
-                .withValidator(StringUtils::isNotBlank, "Patient Birth Date is empty")
-                .withValidator(new StringLengthValidator("Length must be 8.", 8, 8))
+                .asRequired("Please choose a date")
                 .bind("patientBirthDate");
 
         binder.forField(patientSexField)

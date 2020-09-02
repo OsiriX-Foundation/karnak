@@ -3,6 +3,7 @@ package org.karnak.ui.extid;
 import com.vaadin.flow.component.button.Button;
 
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.IronIcon;
@@ -18,6 +19,8 @@ import com.vaadin.flow.data.validator.StringLengthValidator;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.ui.component.ConfirmDialog;
 
+import java.time.format.DateTimeFormatter;
+
 
 public class AddNewPatient extends VerticalLayout {
 
@@ -29,7 +32,7 @@ public class AddNewPatient extends VerticalLayout {
     private TextField patientIdField;
     private TextField patientNameField;
     private TextField issuerOfPatientIdField;
-    private TextField patientBirthDateField;
+    private DatePicker patientBirthDateField;
     private Select<String> patientSexField;
     private Button addNewPatientButton;
     private Button sendInMainzellisteButton;
@@ -59,7 +62,7 @@ public class AddNewPatient extends VerticalLayout {
         patientNameField.setWidth("33%");
         issuerOfPatientIdField = new TextField("Issuer of patient ID");
         issuerOfPatientIdField.setWidth("33%");
-        patientBirthDateField = new TextField("Patient Birth Date");
+        patientBirthDateField = new DatePicker("Patient Birth Date");
         patientBirthDateField.setWidth("33%");
         patientSexField = new Select<>();
         patientSexField.setLabel("Patient Sex");
@@ -75,10 +78,7 @@ public class AddNewPatient extends VerticalLayout {
             ConfirmDialog dialog = new ConfirmDialog("Are you sure to send in database all patients in grid?");
             dialog.addConfirmationListener(componentEvent -> {
                 sendInMainzellisteButton.setEnabled(false);
-                dataProvider.getItems().forEach( patient -> {
-                    System.out.println(patient.getPatientName() + " " + patient.getPatientSex());
-
-                });
+                sendInMainzelliste();
                 dataProvider.getItems().clear();
                 dataProvider.refreshAll();
             });
@@ -157,8 +157,7 @@ public class AddNewPatient extends VerticalLayout {
                 .bind("issuerOfPatientId");
 
         binder.forField(patientBirthDateField)
-                .withValidator(StringUtils::isNotBlank, "Patient Birth Date is empty")
-                .withValidator(new StringLengthValidator("Length must be 8.", 8, 8))
+                .asRequired("Please choose a date")
                 .bind("patientBirthDate");
 
         binder.forField(patientSexField)
@@ -190,6 +189,18 @@ public class AddNewPatient extends VerticalLayout {
         patientBirthDateField.clear();
         patientSexField.clear();
         binder.readBean(null);
+    }
+
+    public void sendInMainzelliste(){
+        dataProvider.getItems().forEach( patient -> {
+            System.out.println(
+                "ExternalID:" + patient.getExtid() + " "
+                + "PatientID:" + patient.getPatientId() + " "
+                + "PatientName:" + patient.getPatientName() + " "
+                + "IssuerOfPatientID:" + patient.getIssuerOfPatientId() + " "
+                + "PatientSex:" + patient.getPatientSex() + " "
+                + "PatientBirthDate:" + patient.getPatientBirthDate().format(DateTimeFormatter.ofPattern("YYYYMMdd")));
+        });
     }
 
 }
