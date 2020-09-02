@@ -1,11 +1,14 @@
 package org.karnak.ui.api;
 
+import org.karnak.data.NodeEvent;
+import org.karnak.data.NodeEventType;
 import org.karnak.data.gateway.ForwardNode;
 import org.karnak.ui.gateway.ForwardNodeDataProvider;
 
+import java.io.Serializable;
 import java.util.Optional;
 
-public class ForwardNodeAPI {
+public class ForwardNodeAPI implements Serializable {
     private final ForwardNodeDataProvider dataProvider;
 
     public ForwardNodeAPI(ForwardNodeDataProvider dataProvider) {
@@ -24,6 +27,10 @@ public class ForwardNodeAPI {
             return;
         }
         dataProvider.save(data);
+    }
+
+    public void deleteForwardNode(ForwardNode data) {
+        dataProvider.delete(data);
     }
 
     public ForwardNode getForwardNodeById(Long dataId) {

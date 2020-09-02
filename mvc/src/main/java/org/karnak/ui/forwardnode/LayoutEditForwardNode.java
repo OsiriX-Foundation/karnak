@@ -10,6 +10,8 @@ import org.karnak.ui.util.UIS;
 public class LayoutEditForwardNode extends VerticalLayout {
     private ForwardNodeViewLogic forwardNodeViewLogic;
     private ForwardNodeAPI forwardNodeAPI;
+    private ForwardNode currentForwardNode;
+
     private EditAETitleDescription editAETitleDescription;
     private TabSourcesDestination tabSourcesDestination;
     private VerticalLayout layoutDestinationsSources;
@@ -17,10 +19,11 @@ public class LayoutEditForwardNode extends VerticalLayout {
     private ButtonSaveDeleteCancel buttonSaveDeleteCancel;
 
     public LayoutEditForwardNode(ForwardNodeViewLogic forwardNodeViewLogic, ForwardNodeAPI forwardNodeAPI) {
-        setSizeFull();
         this.forwardNodeViewLogic = forwardNodeViewLogic;
         this.forwardNodeAPI = forwardNodeAPI;
+        this.currentForwardNode = null;
 
+        setSizeFull();
         editAETitleDescription = new EditAETitleDescription();
         tabSourcesDestination = new TabSourcesDestination();
         layoutDestinationsSources = new VerticalLayout();
@@ -36,10 +39,12 @@ public class LayoutEditForwardNode extends VerticalLayout {
         setLayoutDestinationsSources(tabSourcesDestination.getSelectedTab().getLabel());
         setEventChangeTabValue();
         setEventCancelButton();
+        setEventDeleteButton();
     }
 
     public void load(ForwardNode forwardNode) {
         // TODO: Disable all component if forwardNode is null
+        currentForwardNode = forwardNode;
         editAETitleDescription.setForwardNode(forwardNode);
         gridFilterDestinations.setForwardNode(forwardNode);
     }
@@ -62,6 +67,13 @@ public class LayoutEditForwardNode extends VerticalLayout {
 
     private void setEventCancelButton() {
         buttonSaveDeleteCancel.getCancel().addClickListener(event -> {
+            forwardNodeViewLogic.cancelForwardNode();
+        });
+    }
+
+    private void setEventDeleteButton() {
+        buttonSaveDeleteCancel.getDelete().addClickListener(event -> {
+            forwardNodeAPI.deleteForwardNode(currentForwardNode);
             forwardNodeViewLogic.cancelForwardNode();
         });
     }
