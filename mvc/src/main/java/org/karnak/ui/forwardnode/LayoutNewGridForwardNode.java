@@ -3,8 +3,6 @@ package org.karnak.ui.forwardnode;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
-import org.karnak.data.NodeEvent;
-import org.karnak.data.NodeEventType;
 import org.karnak.data.gateway.ForwardNode;
 import org.karnak.ui.gateway.ForwardNodeDataProvider;
 
@@ -47,7 +45,7 @@ public class LayoutNewGridForwardNode extends VerticalLayout {
     private void eventNewForwardNode() {
         buttonAddNewForwardNode.addClickListener(click -> {
             final ForwardNode forwardNode = new ForwardNode(textFieldNewAETitleForwardNode.getValue());
-            updateForwardNode(forwardNode);
+            addForwardNode(forwardNode);
             gridForwardNode.getSelectionModel().select(forwardNode);
             forwardNodeViewLogic.editForwardNode(forwardNode);
         });
@@ -59,15 +57,12 @@ public class LayoutNewGridForwardNode extends VerticalLayout {
         });
     }
 
-    protected void updateForwardNode(ForwardNode data) {
-        NodeEventType eventType = data.isNewData() ? NodeEventType.ADD : NodeEventType.UPDATE;
-        if (eventType == NodeEventType.ADD) {
-            Optional<ForwardNode> val = dataProvider.getDataService().getAllForwardNodes().stream()
-                    .filter(f -> f.getFwdAeTitle().equals(data.getFwdAeTitle())).findFirst();
-            if (val.isPresent()) {
-                // showError("Cannot add this new node because the AE-Title already exists!");
-                return;
-            }
+    protected void addForwardNode(ForwardNode data) {
+        Optional<ForwardNode> val = dataProvider.getDataService().getAllForwardNodes().stream()
+                .filter(f -> f.getFwdAeTitle().equals(data.getFwdAeTitle())).findFirst();
+        if (val.isPresent()) {
+            // showError("Cannot add this new node because the AE-Title already exists!");
+            return;
         }
         dataProvider.save(data);
     }
