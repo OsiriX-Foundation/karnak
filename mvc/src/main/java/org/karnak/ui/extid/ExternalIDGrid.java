@@ -1,36 +1,23 @@
 package org.karnak.ui.extid;
 
-import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.editor.Editor;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.validator.StringLengthValidator;
-import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
 import org.apache.commons.lang3.StringUtils;
-import org.karnak.ui.MainLayout;
 
 import java.util.*;
 
-@Route(value = "extid", layout = MainLayout.class)
-@PageTitle("KARNAK - External ID")
-@Tag("extid-view")
-@SuppressWarnings("serial")
-public class ExtIDView extends VerticalLayout {
-    public static final String VIEW_NAME = "External pseudonym";
-
+public class ExternalIDGrid extends Grid<Patient> {
     private Div validationStatus;
     private Binder<Patient> binder;
-    private Grid<Patient> grid;
     private List<Patient> patientList;
     private Button addNewPatientButton;
     private ListDataProvider<Patient> dataProvider;
@@ -58,37 +45,32 @@ public class ExtIDView extends VerticalLayout {
 
     private Grid.Column<Patient> deleteColumn;
 
-    private AddNewPatient addNewPatient;
+    private AddNewPatientForm addNewPatientForm;
 
-
-    //https://vaadin.com/components/vaadin-grid/java-examples/assigning-data
-    public ExtIDView() {
+    public ExternalIDGrid(){
         setSizeFull();
-        VerticalLayout verticalLayout = new VerticalLayout();
-        verticalLayout.add(new H2("External ID"));
 
         binder = new Binder<>(Patient.class);
         patientList = new ArrayList<>();
-        grid = new Grid<>();
-        grid.setHeightByRows(true);
-        grid.setItems(patientList);
-        dataProvider = (ListDataProvider<Patient>) grid.getDataProvider();
 
-        addNewPatient = new AddNewPatient(dataProvider, grid);
+        setHeightByRows(true);
+        setItems(patientList);
+        getStyle().set("overflow-y", "auto");
+        dataProvider = (ListDataProvider<Patient>) getDataProvider();
 
-        extidColumn = grid.addColumn(Patient::getExtid).setHeader("External ID");
-        patientIdColumn = grid.addColumn(Patient::getPatientId).setHeader("Patient ID");
-        patientNameColumn = grid.addColumn(Patient::getPatientName).setHeader("Patient Name");
-        issuerOfPatientIDColumn = grid.addColumn(Patient::getIssuerOfPatientId).setHeader("Issuer of patient ID");
-        patientBirthDateColumn = grid.addColumn(Patient::getPatientBirthDate).setHeader("Patient Birth Date");
-        patientSexColumn = grid.addColumn(Patient::getPatientSex).setHeader("Patient Sex");
+        extidColumn = addColumn(Patient::getExtid).setHeader("External ID");
+        patientIdColumn = addColumn(Patient::getPatientId).setHeader("Patient ID");
+        patientNameColumn = addColumn(Patient::getPatientName).setHeader("Patient Name");
+        issuerOfPatientIDColumn = addColumn(Patient::getIssuerOfPatientId).setHeader("Issuer of patient ID");
+        patientBirthDateColumn = addColumn(Patient::getPatientBirthDate).setHeader("Patient Birth Date");
+        patientSexColumn = addColumn(Patient::getPatientSex).setHeader("Patient Sex");
 
 
         editButtons = Collections.newSetFromMap(new WeakHashMap<>());
-        editor = grid.getEditor();
+        editor = getEditor();
         editor.setBinder(binder);
         editor.setBuffered(true);
-        editorColumn = grid.addComponentColumn(patient -> {
+        editorColumn = addComponentColumn(patient -> {
             Button edit = new Button("Edit");
             edit.addClassName("edit");
             edit.addClickListener(e -> {
@@ -122,13 +104,13 @@ public class ExtIDView extends VerticalLayout {
 
         editor.addOpenListener(e -> {
             editButtons.stream()
-                .forEach(button -> button.setEnabled(!editor.isOpen()));
+                    .forEach(button -> button.setEnabled(!editor.isOpen()));
             showEditor(true);
         });
 
         editor.addCloseListener(e -> {
             editButtons.stream()
-                .forEach(button -> button.setEnabled(!editor.isOpen()));
+                    .forEach(button -> button.setEnabled(!editor.isOpen()));
             showEditor(false);
         });
 
@@ -145,30 +127,23 @@ public class ExtIDView extends VerticalLayout {
 
 
 
-        grid.getElement().addEventListener("keyup", event -> editor.cancel())
+        getElement().addEventListener("keyup", event -> editor.cancel())
                 .setFilter("event.key === 'Escape' || event.key === 'Esc'");
 
         Div buttons = new Div(saveEditPatientButton, cancelEditPatientButton);
         editorColumn.setEditorComponent(buttons);
 
 
-        deleteColumn = grid.addComponentColumn(patient -> {
+        deleteColumn = addComponentColumn(patient -> {
             deletePatientButton = new Button("Delete");
             deletePatientButton.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
             deletePatientButton.addClickListener( e -> {
                 patientList.remove(patient);
-                grid.getDataProvider().refreshAll();
+                getDataProvider().refreshAll();
             });
             return deletePatientButton;
         });
-
-
-        verticalLayout.add(addNewPatient);
-        verticalLayout.add(grid);
-
-        add(verticalLayout);
     }
-
 
     public void fieldValidator(){
         binder.forField(externalIdField)
@@ -203,7 +178,6 @@ public class ExtIDView extends VerticalLayout {
 
     public void showEditor(boolean show){
         deleteColumn.setVisible(!show);
-        addNewPatient.setEnabled(!show);
+        addNewPatientForm.setEnabled(!show);
     }
-
 }
