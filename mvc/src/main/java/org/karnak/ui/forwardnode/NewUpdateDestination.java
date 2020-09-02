@@ -9,14 +9,18 @@ import org.karnak.ui.util.UIS;
 
 public class NewUpdateDestination extends VerticalLayout {
     private FormDICOM formDICOM;
+    private FormSTOW formSTOW;
     private Destination currentDestination;
     private Binder<Destination> binderFormDICOM;
+    private Binder<Destination> binderFormSTOW;
     private ButtonSaveDeleteCancel buttonDestinationSaveDeleteCancel;
 
     public NewUpdateDestination() {
         setSizeFull();
         binderFormDICOM = new BeanValidationBinder<>(Destination.class);
+        binderFormSTOW = new BeanValidationBinder<>(Destination.class);
         formDICOM = new FormDICOM(binderFormDICOM);
+        formSTOW = new FormSTOW(binderFormSTOW);
         currentDestination = Destination.ofDicomEmpty();
         buttonDestinationSaveDeleteCancel = new ButtonSaveDeleteCancel();
         setBinderEvent();
@@ -25,12 +29,19 @@ public class NewUpdateDestination extends VerticalLayout {
     public void setView(DestinationType type) {
         removeAll();
         if (type == DestinationType.stow) {
-            //TODO: implement formSTOW
-            // add(formSTOW);
+            add(formSTOW);
         } else if (type == DestinationType.dicom) {
             add(formDICOM);
         }
         add(UIS.setWidthFull(buttonDestinationSaveDeleteCancel));
+    }
+
+    public void setBinder(DestinationType type) {
+        if (type == DestinationType.stow) {
+            binderFormSTOW.readBean(currentDestination);
+        } else if (type == DestinationType.dicom) {
+            binderFormDICOM.readBean(currentDestination);
+        }
     }
 
     public void load(Destination destination) {
@@ -42,7 +53,7 @@ public class NewUpdateDestination extends VerticalLayout {
             currentDestination = Destination.ofDicomEmpty();
             buttonDestinationSaveDeleteCancel.getDelete().setEnabled(false);
         }
-        binderFormDICOM.readBean(currentDestination);
+        setBinder(destination.getType());
     }
 
     private void setBinderEvent() {

@@ -18,7 +18,7 @@ public class DestinationsView extends VerticalLayout {
 
     private TextField filter;
     private Button newDestinationDICOM;
-    private Button newDestinationStow;
+    private Button newDestinationSTOW;
     private GridDestination gridDestination;
 
     private HorizontalLayout layoutFilterButton;
@@ -32,7 +32,7 @@ public class DestinationsView extends VerticalLayout {
         destinationDataProvider = new DestinationDataProvider(dataService);
         filter = new TextField();
         newDestinationDICOM = new Button(LABEL_NEW_DESTINATION_DICOM);
-        newDestinationStow = new Button(LABEL_NEW_DESTINATION_STOW);
+        newDestinationSTOW = new Button(LABEL_NEW_DESTINATION_STOW);
         gridDestination = new GridDestination();
 
         setTextFieldFilter();
@@ -40,7 +40,7 @@ public class DestinationsView extends VerticalLayout {
         setButtonNewDestinationSTOW();
         setForwardNode(null);
 
-        layoutFilterButton = new HorizontalLayout(filter, newDestinationDICOM, newDestinationStow);
+        layoutFilterButton = new HorizontalLayout(filter, newDestinationDICOM, newDestinationSTOW);
         layoutFilterButton.setVerticalComponentAlignment(Alignment.START, filter);
         layoutFilterButton.expand(filter);
 
@@ -72,9 +72,9 @@ public class DestinationsView extends VerticalLayout {
     }
 
     private void setButtonNewDestinationSTOW() {
-        newDestinationStow.getElement().setAttribute("title", "New destination of type stow");
-        newDestinationStow.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        newDestinationStow.setIcon(VaadinIcon.PLUS_CIRCLE.create());
+        newDestinationSTOW.getElement().setAttribute("title", "New destination of type stow");
+        newDestinationSTOW.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        newDestinationSTOW.setIcon(VaadinIcon.PLUS_CIRCLE.create());
         // newDestinationStow.addClickListener(click -> destinationLogic.newDestinationStow());
     }
 
@@ -82,7 +82,7 @@ public class DestinationsView extends VerticalLayout {
     public void setEnabled(boolean enabled) {
         filter.setEnabled(enabled);
         newDestinationDICOM.setEnabled(enabled);
-        newDestinationStow.setEnabled(enabled);
+        newDestinationSTOW.setEnabled(enabled);
         gridDestination.setEnabled(enabled);
     }
 
@@ -90,8 +90,8 @@ public class DestinationsView extends VerticalLayout {
         return newDestinationDICOM;
     }
 
-    public Button getNewDestinationStow() {
-        return newDestinationStow;
+    public Button getNewDestinationSTOW() {
+        return newDestinationSTOW;
     }
 
     public GridDestination getGridDestination() {

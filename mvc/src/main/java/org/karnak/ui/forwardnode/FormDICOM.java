@@ -46,10 +46,15 @@ public class FormDICOM extends VerticalLayout {
         notifyObjectValues = new TextField("Notif.: subject values");
         notifyInterval = new TextField("Notif.: interval");
 
+        add(UIS.setWidthFull(new HorizontalLayout(aeTitle, description)),
+                UIS.setWidthFull(new HorizontalLayout(hostname, port)),
+                UIS.setWidthFull(new HorizontalLayout(useaetdest)),
+                UIS.setWidthFull(new HorizontalLayout(notify)),
+                UIS.setWidthFull(new HorizontalLayout(notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues, notifyInterval)));
+
+
         setElements();
         setBinder();
-
-        addElements();
     }
 
     private void setElements() {
@@ -84,14 +89,6 @@ public class FormDICOM extends VerticalLayout {
         notifyInterval.addThemeVariants(TextFieldVariant.LUMO_ALIGN_RIGHT);
         UIS.setTooltip(notifyInterval,
                 "Interval in seconds for sending a notification (when no new image is arrived in the archive folder). Default value: 45");
-    }
-
-    private void addElements() {
-        add(UIS.setWidthFull(new HorizontalLayout(aeTitle, description)),
-                UIS.setWidthFull(new HorizontalLayout(hostname, port)),
-                UIS.setWidthFull(new HorizontalLayout(useaetdest)),
-                UIS.setWidthFull(new HorizontalLayout(notify)),
-                UIS.setWidthFull(new HorizontalLayout(notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues, notifyInterval)));
     }
 
     private void setBinder() {

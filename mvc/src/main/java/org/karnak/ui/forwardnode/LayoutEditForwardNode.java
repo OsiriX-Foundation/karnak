@@ -45,6 +45,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
         setEventDestination();
 
         setEventDestinationsViewDICOM();
+        setEventDestinationsViewSTOW();
     }
 
     private void addEditView() {
@@ -94,7 +95,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
     }
 
     private void setEventDestinationsViewSTOW() {
-        destinationsView.getNewDestinationDICOM().addClickListener(event -> {
+        destinationsView.getNewDestinationSTOW().addClickListener(event -> {
             newUpdateDestination.load(null);
             newUpdateDestination.setView(DestinationType.stow);
             addFormView(newUpdateDestination);
