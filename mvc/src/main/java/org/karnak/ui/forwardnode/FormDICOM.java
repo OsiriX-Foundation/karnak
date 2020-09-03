@@ -106,5 +106,8 @@ public class FormDICOM extends VerticalLayout {
         binder.forField(notifyInterval) //
             .withConverter(new HStringToIntegerConverter()) //
             .bind(Destination::getNotifyInterval, Destination::setNotifyInterval);
+
+        binder.bindInstanceFields(this);
+
     }
 }

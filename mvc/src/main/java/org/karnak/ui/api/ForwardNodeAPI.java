@@ -1,3 +1,6 @@
+/*
+* TODO: REMOVE THIS USELESS PACKAGE/CLASS
+* */
 package org.karnak.ui.api;
 
 import org.karnak.data.gateway.ForwardNode;

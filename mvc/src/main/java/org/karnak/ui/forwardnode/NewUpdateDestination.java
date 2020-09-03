@@ -6,9 +6,11 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.DestinationType;
+import org.karnak.ui.gateway.DestinationDataProvider;
 import org.karnak.ui.util.UIS;
 
 public class NewUpdateDestination extends VerticalLayout {
+    private DestinationDataProvider destinationDataProvider;
     private FormDICOM formDICOM;
     private FormSTOW formSTOW;
     private Destination currentDestination;
@@ -16,15 +18,18 @@ public class NewUpdateDestination extends VerticalLayout {
     private Binder<Destination> binderFormSTOW;
     private ButtonSaveDeleteCancel buttonDestinationSaveDeleteCancel;
 
-    public NewUpdateDestination() {
+    public NewUpdateDestination(DestinationDataProvider destinationDataProvider) {
+        this.destinationDataProvider = destinationDataProvider;
         setSizeFull();
         binderFormDICOM = new BeanValidationBinder<>(Destination.class);
         binderFormSTOW = new BeanValidationBinder<>(Destination.class);
         formDICOM = new FormDICOM(binderFormDICOM);
         formSTOW = new FormSTOW(binderFormSTOW);
-        currentDestination = Destination.ofDicomEmpty();
+        currentDestination = null;
         buttonDestinationSaveDeleteCancel = new ButtonSaveDeleteCancel();
+
         setBinderEvent();
+        setButtonSaveEvent();
     }
 
     public void load(Destination destination, DestinationType type) {
@@ -32,7 +37,7 @@ public class NewUpdateDestination extends VerticalLayout {
             currentDestination = destination;
             buttonDestinationSaveDeleteCancel.getDelete().setEnabled(true);
         } else {
-            currentDestination = Destination.ofDicomEmpty();
+            currentDestination = type == DestinationType.stow ? Destination.ofStowEmpty() : Destination.ofDicomEmpty();
             buttonDestinationSaveDeleteCancel.getDelete().setEnabled(false);
         }
         setView(type);
@@ -51,10 +56,30 @@ public class NewUpdateDestination extends VerticalLayout {
     }
 
     private void setBinderEvent() {
+        /*
         binderFormDICOM.addStatusChangeListener(event -> {
             boolean isValid = !event.hasValidationErrors();
             boolean hasChanges = binderFormDICOM.hasChanges();
             buttonDestinationSaveDeleteCancel.getSave().setEnabled(hasChanges && isValid);
+        });
+
+        binderFormSTOW.addStatusChangeListener(event -> {
+            boolean isValid = !event.hasValidationErrors();
+            boolean hasChanges = binderFormDICOM.hasChanges();
+            buttonDestinationSaveDeleteCancel.getSave().setEnabled(hasChanges && isValid);
+        });
+        */
+    }
+
+    private void setButtonSaveEvent() {
+        buttonDestinationSaveDeleteCancel.getSave().addClickListener(event -> {
+            if (currentDestination.getType() == DestinationType.stow && binderFormSTOW.writeBeanIfValid(currentDestination)) {
+                destinationDataProvider.save(currentDestination);
+            }
+
+            if (currentDestination.getType() == DestinationType.dicom && binderFormDICOM.writeBeanIfValid(currentDestination)) {
+                destinationDataProvider.save(currentDestination);
+            }
         });
     }
 

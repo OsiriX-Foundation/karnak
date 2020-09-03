@@ -2,6 +2,7 @@ package org.karnak.ui.gateway;
 
 import javax.annotation.PostConstruct;
 
+import org.karnak.data.gateway.DestinationPersistence;
 import org.karnak.data.gateway.GatewayPersistence;
 import org.karnak.data.gateway.SOPClassUID;
 import org.karnak.data.gateway.SOPClassUIDPersistence;
@@ -26,6 +27,9 @@ public class GatewayConfiguration {
 
     @Autowired
     private GatewayPersistence gatewayPersistence;
+
+    @Autowired
+    private DestinationPersistence destinationPersistence;
 
     @Autowired
     private SOPClassUIDPersistence sopClassUIDPersistence;
@@ -53,6 +57,10 @@ public class GatewayConfiguration {
     @Bean("GatewayPersistence")
     public GatewayPersistence getGatewayPersistence() {
         return gatewayPersistence;
+    }
+
+    public DestinationPersistence getDestinationPersistence() {
+        return destinationPersistence;
     }
 
     public SOPClassUIDPersistence getSopClassUIDPersistence() {return sopClassUIDPersistence; }

@@ -6,12 +6,19 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.karnak.data.gateway.Destination;
+import org.karnak.data.gateway.DestinationPersistence;
 import org.karnak.data.gateway.ForwardNode;
 
 import com.vaadin.flow.data.provider.ListDataProvider;
 
 @SuppressWarnings("serial")
 public class DestinationDataProvider extends ListDataProvider<Destination> {
+
+    private DestinationPersistence destinationPersistence;
+    {
+        destinationPersistence = GatewayConfiguration.getInstance().getDestinationPersistence();
+    }
+
     private final DataService dataService;
     private Set<Destination> backend;
     private boolean hasChanges;
@@ -56,6 +63,7 @@ public class DestinationDataProvider extends ListDataProvider<Destination> {
             refreshItem(dataUpdated);
         }
         hasChanges = true;
+        destinationPersistence.saveAndFlush(dataUpdated);
     }
 
     /**

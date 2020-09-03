@@ -10,6 +10,7 @@ import org.karnak.data.gateway.DestinationType;
 import org.karnak.data.gateway.ForwardNode;
 import org.karnak.ui.api.ForwardNodeAPI;
 import org.karnak.ui.component.ConfirmDialog;
+import org.karnak.ui.gateway.DestinationDataProvider;
 import org.karnak.ui.util.UIS;
 
 public class LayoutEditForwardNode extends VerticalLayout {
@@ -17,6 +18,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
     private ForwardNodeAPI forwardNodeAPI;
     private ForwardNode currentForwardNode;
     private Binder<ForwardNode> binderForwardNode;
+    DestinationDataProvider destinationDataProvider;
 
     private EditAETitleDescription editAETitleDescription;
     private TabSourcesDestination tabSourcesDestination;
@@ -37,9 +39,10 @@ public class LayoutEditForwardNode extends VerticalLayout {
         layoutDestinationsSources = new VerticalLayout();
         layoutDestinationsSources.setSizeFull();
         destinationsView = new DestinationsView(forwardNodeAPI.getDataProvider().getDataService());
+        destinationDataProvider = new DestinationDataProvider(forwardNodeAPI.getDataProvider().getDataService());
         buttonForwardNodeSaveDeleteCancel = new ButtonSaveDeleteCancel();
 
-        newUpdateDestination = new NewUpdateDestination();
+        newUpdateDestination = new NewUpdateDestination(destinationDataProvider);
         setEditView();
 
         setLayoutDestinationsSources(tabSourcesDestination.getSelectedTab().getLabel());
@@ -67,6 +70,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
         currentForwardNode = forwardNode;
         editAETitleDescription.setForwardNode(forwardNode);
         destinationsView.setForwardNode(forwardNode);
+        destinationDataProvider.setForwardNode(forwardNode);
         setEditView();
         if (forwardNode == null) {
             tabSourcesDestination.setEnabled(false);
