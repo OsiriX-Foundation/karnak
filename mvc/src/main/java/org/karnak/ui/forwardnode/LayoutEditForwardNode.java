@@ -3,6 +3,8 @@ package org.karnak.ui.forwardnode;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
+import com.vaadin.flow.data.binder.BeanValidationBinder;
+import com.vaadin.flow.data.binder.Binder;
 import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.DestinationType;
 import org.karnak.data.gateway.ForwardNode;
@@ -14,6 +16,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
     private ForwardNodeViewLogic forwardNodeViewLogic;
     private ForwardNodeAPI forwardNodeAPI;
     private ForwardNode currentForwardNode;
+    private Binder<ForwardNode> binderForwardNode;
 
     private EditAETitleDescription editAETitleDescription;
     private TabSourcesDestination tabSourcesDestination;
@@ -26,9 +29,10 @@ public class LayoutEditForwardNode extends VerticalLayout {
         this.forwardNodeViewLogic = forwardNodeViewLogic;
         this.forwardNodeAPI = forwardNodeAPI;
         this.currentForwardNode = null;
+        binderForwardNode = new BeanValidationBinder<>(ForwardNode.class);
 
         setSizeFull();
-        editAETitleDescription = new EditAETitleDescription();
+        editAETitleDescription = new EditAETitleDescription(binderForwardNode);
         tabSourcesDestination = new TabSourcesDestination();
         layoutDestinationsSources = new VerticalLayout();
         layoutDestinationsSources.setSizeFull();
@@ -42,6 +46,8 @@ public class LayoutEditForwardNode extends VerticalLayout {
         setEventChangeTabValue();
         setEventCancelButton();
         setEventDeleteButton();
+        setEventSaveButton();
+        setEventBinderForwardNode();
         setEventDestination();
 
         setEventDestinationsViewDICOM();
@@ -126,8 +132,20 @@ public class LayoutEditForwardNode extends VerticalLayout {
         });
     }
 
+    private void setEventBinderForwardNode() {
+        binderForwardNode.addStatusChangeListener(event -> {
+            boolean isValid = !event.hasValidationErrors();
+            boolean hasChanges = binderForwardNode.hasChanges();
+            buttonForwardNodeSaveDeleteCancel.getSave().setEnabled(hasChanges && isValid);
+        });
+    }
+
     private void setEventSaveButton() {
         buttonForwardNodeSaveDeleteCancel.getSave().addClickListener(event -> {
+            if (binderForwardNode.writeBeanIfValid(currentForwardNode)) {
+                forwardNodeAPI.updateForwardNode(currentForwardNode);
+                forwardNodeViewLogic.cancelForwardNode();
+            }
         });
     }
 

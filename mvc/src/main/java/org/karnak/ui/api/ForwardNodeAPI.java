@@ -1,7 +1,5 @@
 package org.karnak.ui.api;
 
-import org.karnak.data.NodeEvent;
-import org.karnak.data.NodeEventType;
 import org.karnak.data.gateway.ForwardNode;
 import org.karnak.ui.gateway.ForwardNodeDataProvider;
 
@@ -26,6 +24,10 @@ public class ForwardNodeAPI implements Serializable {
             // showError("Cannot add this new node because the AE-Title already exists!");
             return;
         }
+        dataProvider.save(data);
+    }
+
+    public void updateForwardNode(ForwardNode data) {
         dataProvider.save(data);
     }
 
