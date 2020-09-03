@@ -12,7 +12,7 @@ services:
       - mainzellisteDbPassword
 
   mainzelliste:
-    image: osirixfoundation/karnak-mainzelliste:latest
+    image: osirixfoundation/karnak-mainzelliste:extid
     ports:
       - ${MAINZELLISTE_WEB_PORT}:8080
     env_file: mainzelliste.env
