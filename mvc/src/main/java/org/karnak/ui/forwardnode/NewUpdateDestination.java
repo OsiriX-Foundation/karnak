@@ -1,5 +1,6 @@
 package org.karnak.ui.forwardnode;
 
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
@@ -55,5 +56,9 @@ public class NewUpdateDestination extends VerticalLayout {
             boolean hasChanges = binderFormDICOM.hasChanges();
             buttonDestinationSaveDeleteCancel.getSave().setEnabled(hasChanges && isValid);
         });
+    }
+
+    public Button getButtonCancel() {
+        return buttonDestinationSaveDeleteCancel.getCancel();
     }
 }

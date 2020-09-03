@@ -36,7 +36,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
         buttonForwardNodeSaveDeleteCancel = new ButtonSaveDeleteCancel();
 
         newUpdateDestination = new NewUpdateDestination();
-        addEditView();
+        setEditView();
 
         setLayoutDestinationsSources(tabSourcesDestination.getSelectedTab().getLabel());
         setEventChangeTabValue();
@@ -46,9 +46,10 @@ public class LayoutEditForwardNode extends VerticalLayout {
 
         setEventDestinationsViewDICOM();
         setEventDestinationsViewSTOW();
+        setEventDestinationCancelButton();
     }
 
-    private void addEditView() {
+    private void setEditView() {
         removeAll();
         add(UIS.setWidthFull(editAETitleDescription),
                 UIS.setWidthFull(tabSourcesDestination),
@@ -60,7 +61,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
         currentForwardNode = forwardNode;
         editAETitleDescription.setForwardNode(forwardNode);
         destinationsView.setForwardNode(forwardNode);
-        addEditView();
+        setEditView();
         if (forwardNode == null) {
             tabSourcesDestination.setEnabled(false);
             buttonForwardNodeSaveDeleteCancel.setEnabled(false);
@@ -135,6 +136,12 @@ public class LayoutEditForwardNode extends VerticalLayout {
             Destination destination = event.getItem();
             newUpdateDestination.load(destination, destination.getType());
             addFormView(newUpdateDestination);
+        });
+    }
+
+    private void setEventDestinationCancelButton() {
+        newUpdateDestination.getButtonCancel().addClickListener(event -> {
+            setEditView();
         });
     }
 }
