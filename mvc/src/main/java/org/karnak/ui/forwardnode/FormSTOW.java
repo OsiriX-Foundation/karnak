@@ -51,6 +51,7 @@ public class FormSTOW extends VerticalLayout  {
                         notifyInterval)));
 
         setElements();
+        setBinder();
     }
 
     private void setElements() {

@@ -26,34 +26,27 @@ public class NewUpdateDestination extends VerticalLayout {
         setBinderEvent();
     }
 
-    public void setView(DestinationType type) {
-        removeAll();
-        if (type == DestinationType.stow) {
-            add(formSTOW);
-        } else if (type == DestinationType.dicom) {
-            add(formDICOM);
-        }
-        add(UIS.setWidthFull(buttonDestinationSaveDeleteCancel));
-    }
-
-    public void setBinder(DestinationType type) {
-        if (type == DestinationType.stow) {
-            binderFormSTOW.readBean(currentDestination);
-        } else if (type == DestinationType.dicom) {
-            binderFormDICOM.readBean(currentDestination);
-        }
-    }
-
-    public void load(Destination destination) {
+    public void load(Destination destination, DestinationType type) {
         if (destination != null) {
-            setView(destination.getType());
             currentDestination = destination;
             buttonDestinationSaveDeleteCancel.getDelete().setEnabled(true);
         } else {
             currentDestination = Destination.ofDicomEmpty();
             buttonDestinationSaveDeleteCancel.getDelete().setEnabled(false);
         }
-        setBinder(destination.getType());
+        setView(type);
+    }
+
+    public void setView(DestinationType type) {
+        removeAll();
+        if (type == DestinationType.stow) {
+            add(formSTOW);
+            binderFormSTOW.readBean(currentDestination);
+        } else if (type == DestinationType.dicom) {
+            add(formDICOM);
+            binderFormDICOM.readBean(currentDestination);
+        }
+        add(UIS.setWidthFull(buttonDestinationSaveDeleteCancel));
     }
 
     private void setBinderEvent() {
