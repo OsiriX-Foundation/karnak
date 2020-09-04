@@ -23,6 +23,7 @@ import org.karnak.api.rqbody.Ids;
 import org.karnak.api.rqbody.SearchIds;
 import org.karnak.api.rqbody.Fields;
 import org.karnak.data.MainzellisteConfig;
+import org.karnak.data.gateway.IdTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,11 +87,11 @@ public class PseudonymApi {
      * @param patientFields 
      * @return Pseudonym
      */
-    public String createPatient(Fields patientFields) {
+    public String createPatient(Fields patientFields, IdTypes idTypes) {
         try{
-            String tokenId = rqCreateTokenAddPatient(patientFields);
+            String tokenId = rqCreateTokenAddPatient(patientFields, idTypes);
             List<JSONObject> pseudonymList = rqCreatePatient(tokenId);
-            JSONObject jsonPseudonym = pseudonymList.stream().filter(p -> p.getString("idType").equals(ID_TYPES)).findFirst().get();
+            JSONObject jsonPseudonym = pseudonymList.stream().filter(p -> p.getString("idType").equals(idTypes.getValue())).findFirst().get();
             return jsonPseudonym.getString("idString");
         } catch (Exception e) {
             log.error("Cannot create patient", e);
@@ -144,8 +145,8 @@ public class PseudonymApi {
      * Make the request to have a token that allow to add a new patient
      * @return sessionID
      */
-    public String rqCreateTokenAddPatient(Fields patientFields) {
-        String jsonBody = createJsonRequest(patientFields);        
+    public String rqCreateTokenAddPatient(Fields patientFields, IdTypes idTypes) {
+        String jsonBody = createJsonRequest(patientFields, idTypes);
         HttpRequest request = HttpRequest.newBuilder()
         .POST(BodyPublishers.ofString(jsonBody))
         .uri(URI.create(this.SERVER_URL + "/sessions/"+this.sessionId+"/tokens"))
@@ -208,7 +209,6 @@ public class PseudonymApi {
         .header("mainzellisteApiKey", this.API_KEY)
         .build();
 
-        String newId="";
         HttpResponse<String> response;
         List<JSONObject> newIds = new ArrayList<>();
         try {
@@ -274,13 +274,25 @@ public class PseudonymApi {
      * @param patientFields Patient that we want to add in pseudonym api.
      * @return String json body
      */
-    private String createJsonRequest(Fields patientFields) {
-        Fields field = patientFields;
-        String [] idTypes = {ID_TYPES};    //pseudonymisation type
-        String [] idTypesExternal = {ID_TYPES, EXTERNAL_ID};
-        Data data = new Data(externalPseudonym == null ? idTypes : idTypesExternal, field, externalPseudonym == null ? null : new Ids(externalPseudonym));
-        Body bodyRequest= new Body("addPatient", data);
-        Gson gson = new Gson();
+    private String createJsonRequest(Fields patientFields, IdTypes idTypes) {
+        final Fields field = patientFields;
+        final String [] pid = {ID_TYPES};    //pseudonymisation type
+        final String [] extidInDicom = {ID_TYPES, EXTERNAL_ID};
+        final String [] extid = {EXTERNAL_ID};
+
+        Data data; // = new Data(externalPseudonym == null ? idTypes : idTypesExternal, field, externalPseudonym == null ? null : new Ids(externalPseudonym));
+        switch (idTypes) {
+            case EXTID_IN_INSTANCE: data = new Data(extidInDicom, field, new Ids(externalPseudonym));
+            break;
+            case EXTID: data = new Data(extid, field, null);
+            break;
+            case PID: data = new Data(pid, field, null);
+            break;
+            default: PID: data = new Data(pid, field, null);
+        }
+
+        final Body bodyRequest= new Body("addPatient", data);
+        final Gson gson = new Gson();
         return gson.toJson(bodyRequest);
     }
 

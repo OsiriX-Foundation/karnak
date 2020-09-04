@@ -5,6 +5,7 @@ import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.Tag;
 import org.dcm4che6.data.VR;
 import org.dcm4che6.util.TagUtils;
+import org.karnak.data.gateway.IdTypes;
 import org.karnak.api.PseudonymApi;
 import org.karnak.api.rqbody.Fields;
 import org.karnak.data.AppConfig;
@@ -82,7 +83,9 @@ public class Profiles {
 
         PseudonymApi pseudonymApi = new PseudonymApi(externalPseudonym);
         final Fields newPatientFields = new Fields(patientID, patientName, patientBirthDate, patientSex, issuerOfPatientID);
-        return pseudonymApi.createPatient(newPatientFields);
+
+        IdTypes idTypes = IdTypes.PID; //read destination db (temporary)
+        return pseudonymApi.createPatient(newPatientFields, idTypes);
     }
 
     private String getExternalPseudonym(DicomObject dcm, ExternalPseudonym externalPseudonym) {
