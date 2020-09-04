@@ -3,7 +3,7 @@ package org.karnak.data.gateway;
 public enum IdTypes {
     PID("pid"),
     EXTID("extid"),
-    EXTID_IN_INSTANCE("extid");
+    ADD_EXTID("extid");
 
     private String value;
 

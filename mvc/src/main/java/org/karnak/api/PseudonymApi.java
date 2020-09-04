@@ -282,13 +282,13 @@ public class PseudonymApi {
 
         Data data; // = new Data(externalPseudonym == null ? idTypes : idTypesExternal, field, externalPseudonym == null ? null : new Ids(externalPseudonym));
         switch (idTypes) {
-            case EXTID_IN_INSTANCE: data = new Data(extidInDicom, field, new Ids(externalPseudonym));
+            case ADD_EXTID: data = new Data(extidInDicom, field, new Ids(externalPseudonym));
             break;
             case EXTID: data = new Data(extid, field, null);
             break;
             case PID: data = new Data(pid, field, null);
             break;
-            default: PID: data = new Data(pid, field, null);
+            default: data = new Data(pid, field, null);
         }
 
         final Body bodyRequest= new Body("addPatient", data);

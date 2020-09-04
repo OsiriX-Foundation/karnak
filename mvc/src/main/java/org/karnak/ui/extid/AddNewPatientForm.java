@@ -4,7 +4,6 @@ import com.vaadin.flow.component.button.Button;
 
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.datepicker.DatePicker;
-import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.IronIcon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -17,13 +16,17 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.validator.StringLengthValidator;
 import org.apache.commons.lang3.StringUtils;
+import org.karnak.api.PseudonymApi;
+import org.karnak.api.rqbody.Fields;
+import org.karnak.data.gateway.IdTypes;
 import org.karnak.ui.component.ConfirmDialog;
-
-import java.time.LocalDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.time.format.DateTimeFormatter;
 
 
 public class AddNewPatientForm extends VerticalLayout {
+    protected final Logger LOGGER = LoggerFactory.getLogger(AddNewPatientForm.class);
 
     private Binder<Patient> binder;
     private ListDataProvider<Patient> dataProvider;
@@ -191,14 +194,25 @@ public class AddNewPatientForm extends VerticalLayout {
     }
 
     public void sendInMainzelliste(){
+
         dataProvider.getItems().forEach( patient -> {
-            System.out.println(
-                "ExternalID:" + patient.getExtid() + " "
-                + "PatientID:" + patient.getPatientId() + " "
-                + "PatientName:" + patient.getPatientName() + " "
-                + "IssuerOfPatientID:" + patient.getIssuerOfPatientId() + " "
-                + "PatientSex:" + patient.getPatientSex() + " "
-                + "PatientBirthDate:" + patient.getPatientBirthDate().format(DateTimeFormatter.ofPattern("YYYYMMdd")));
+            final PseudonymApi pseudonymApi = new PseudonymApi(patient.getExtid());
+            final Fields newPatientFields = new Fields(
+                    patient.getPatientId(),
+                    patient.getPatientName(),
+                    patient.getPatientBirthDate().format(DateTimeFormatter.ofPattern("YYYYMMdd")),
+                    patient.getPatientSex(),
+                    patient.getIssuerOfPatientId());
+            final String pseudonym = pseudonymApi.createPatient(newPatientFields, IdTypes.ADD_EXTID);
+            if (pseudonym != null) {
+                final String strPatient = "ExternalID: " + patient.getExtid() + " "
+                        + "PatientID:" + patient.getPatientId() + " "
+                        + "PatientName:" + patient.getPatientName() + " "
+                        + "IssuerOfPatientID:" + patient.getIssuerOfPatientId() + " "
+                        + "PatientSex:" + patient.getPatientSex() + " "
+                        + "PatientBirthDate:" + patient.getPatientBirthDate().format(DateTimeFormatter.ofPattern("YYYYMMdd"));
+                LOGGER.info("Added a new patient in mainzelliste: " + strPatient);
+            }
         });
     }
 
