@@ -8,7 +8,7 @@ import org.karnak.ui.api.ForwardNodeAPI;
 import org.karnak.ui.gateway.ForwardNodeDataProvider;
 
 @Route(value = "forwardnode", layout = MainLayout.class)
-@RouteAlias(value = "forwardnode", layout = MainLayout.class)
+@RouteAlias(value = "", layout = MainLayout.class)
 @PageTitle("KARNAK - Forward node")
 public class ForwardNodeView extends HorizontalLayout implements HasUrlParameter<String> {
     public static final String VIEW_NAME = "Gateway";
