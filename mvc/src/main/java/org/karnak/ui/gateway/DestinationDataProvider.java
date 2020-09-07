@@ -57,7 +57,6 @@ public class DestinationDataProvider extends ListDataProvider<Destination> {
         boolean newData = data.isNewData();
 
         Destination dataUpdated = dataService.updateDestination(forwardNode, data);
-        dataService.updateForwardNode(forwardNode);
         if (newData) {
             refreshAll();
         } else {
