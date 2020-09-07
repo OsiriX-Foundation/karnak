@@ -30,6 +30,7 @@ public class NewUpdateDestination extends VerticalLayout {
 
         setBinderEvent();
         setButtonSaveEvent();
+        setButtonDeleteEvent();
     }
 
     public void load(Destination destination, DestinationType type) {
@@ -80,6 +81,12 @@ public class NewUpdateDestination extends VerticalLayout {
             if (currentDestination.getType() == DestinationType.dicom && binderFormDICOM.writeBeanIfValid(currentDestination)) {
                 destinationDataProvider.save(currentDestination);
             }
+        });
+    }
+
+    private void setButtonDeleteEvent() {
+        buttonDestinationSaveDeleteCancel.getDelete().addClickListener(event -> {
+            destinationDataProvider.delete(currentDestination);
         });
     }
 

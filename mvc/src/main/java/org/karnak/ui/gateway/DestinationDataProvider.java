@@ -56,7 +56,8 @@ public class DestinationDataProvider extends ListDataProvider<Destination> {
     public void save(Destination data) {
         boolean newData = data.isNewData();
 
-        Destination dataUpdated = this.dataService.updateDestination(forwardNode, data);
+        Destination dataUpdated = dataService.updateDestination(forwardNode, data);
+        dataService.updateForwardNode(forwardNode);
         if (newData) {
             refreshAll();
         } else {
@@ -72,9 +73,9 @@ public class DestinationDataProvider extends ListDataProvider<Destination> {
      * @param data the data to be deleted
      */
     public void delete(Destination data) {
-        this.dataService.deleteDestination(forwardNode, data);
+        dataService.deleteDestination(forwardNode, data);
+        dataService.updateForwardNode(forwardNode);
         refreshAll();
-        hasChanges = true;
     }
 
     /**
