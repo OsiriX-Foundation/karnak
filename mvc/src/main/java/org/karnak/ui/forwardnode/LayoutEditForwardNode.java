@@ -15,8 +15,9 @@ import org.karnak.ui.util.UIS;
 
 public class LayoutEditForwardNode extends VerticalLayout {
     private ForwardNodeViewLogic forwardNodeViewLogic;
+    private DestinationViewLogic destinationViewLogic;
     private ForwardNodeAPI forwardNodeAPI;
-    private ForwardNode currentForwardNode;
+    public ForwardNode currentForwardNode;
     private Binder<ForwardNode> binderForwardNode;
     DestinationDataProvider destinationDataProvider;
 
@@ -29,6 +30,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
 
     public LayoutEditForwardNode(ForwardNodeViewLogic forwardNodeViewLogic, ForwardNodeAPI forwardNodeAPI) {
         this.forwardNodeViewLogic = forwardNodeViewLogic;
+        this.destinationViewLogic = new DestinationViewLogic(this);
         this.forwardNodeAPI = forwardNodeAPI;
         this.currentForwardNode = null;
         binderForwardNode = new BeanValidationBinder<>(ForwardNode.class);
@@ -42,7 +44,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
         destinationDataProvider = new DestinationDataProvider(forwardNodeAPI.getDataProvider().getDataService());
         buttonForwardNodeSaveDeleteCancel = new ButtonSaveDeleteCancel();
 
-        newUpdateDestination = new NewUpdateDestination(destinationDataProvider);
+        newUpdateDestination = new NewUpdateDestination(destinationDataProvider, destinationViewLogic);
         setEditView();
 
         setLayoutDestinationsSources(tabSourcesDestination.getSelectedTab().getLabel());
@@ -58,7 +60,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
         setEventDestinationCancelButton();
     }
 
-    private void setEditView() {
+    public void setEditView() {
         removeAll();
         add(UIS.setWidthFull(editAETitleDescription),
                 UIS.setWidthFull(tabSourcesDestination),

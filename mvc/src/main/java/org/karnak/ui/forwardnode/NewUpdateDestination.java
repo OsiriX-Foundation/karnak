@@ -11,6 +11,7 @@ import org.karnak.ui.util.UIS;
 
 public class NewUpdateDestination extends VerticalLayout {
     private DestinationDataProvider destinationDataProvider;
+    private DestinationViewLogic destinationViewLogic;
     private FormDICOM formDICOM;
     private FormSTOW formSTOW;
     private Destination currentDestination;
@@ -18,8 +19,9 @@ public class NewUpdateDestination extends VerticalLayout {
     private Binder<Destination> binderFormSTOW;
     private ButtonSaveDeleteCancel buttonDestinationSaveDeleteCancel;
 
-    public NewUpdateDestination(DestinationDataProvider destinationDataProvider) {
+    public NewUpdateDestination(DestinationDataProvider destinationDataProvider, DestinationViewLogic destinationViewLogic) {
         this.destinationDataProvider = destinationDataProvider;
+        this.destinationViewLogic = destinationViewLogic;
         setSizeFull();
         binderFormDICOM = new BeanValidationBinder<>(Destination.class);
         binderFormSTOW = new BeanValidationBinder<>(Destination.class);
@@ -76,10 +78,12 @@ public class NewUpdateDestination extends VerticalLayout {
         buttonDestinationSaveDeleteCancel.getSave().addClickListener(event -> {
             if (currentDestination.getType() == DestinationType.stow && binderFormSTOW.writeBeanIfValid(currentDestination)) {
                 destinationDataProvider.save(currentDestination);
+                destinationViewLogic.updateForwardNodeInEditView();
             }
 
             if (currentDestination.getType() == DestinationType.dicom && binderFormDICOM.writeBeanIfValid(currentDestination)) {
                 destinationDataProvider.save(currentDestination);
+                destinationViewLogic.updateForwardNodeInEditView();
             }
         });
     }
@@ -87,6 +91,7 @@ public class NewUpdateDestination extends VerticalLayout {
     private void setButtonDeleteEvent() {
         buttonDestinationSaveDeleteCancel.getDelete().addClickListener(event -> {
             destinationDataProvider.delete(currentDestination);
+            destinationViewLogic.updateForwardNodeInEditView();
         });
     }
 
