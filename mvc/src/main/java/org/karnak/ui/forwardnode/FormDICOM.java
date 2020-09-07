@@ -11,6 +11,7 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.data.gateway.Destination;
 import org.karnak.ui.component.converter.HStringToIntegerConverter;
+import org.karnak.ui.gateway.ProfileDropDown;
 import org.karnak.ui.util.UIS;
 
 import java.util.Objects;
@@ -30,6 +31,7 @@ public class FormDICOM extends VerticalLayout {
     private final TextField notifyObjectPattern;
     private final TextField notifyObjectValues;
     private final TextField notifyInterval;
+    private final LayoutDesidentification layoutDesidentification;
 
     public FormDICOM(Binder<Destination> binder) {
         setSizeFull();
@@ -45,14 +47,14 @@ public class FormDICOM extends VerticalLayout {
         notifyObjectPattern = new TextField("Notif.: subject pattern");
         notifyObjectValues = new TextField("Notif.: subject values");
         notifyInterval = new TextField("Notif.: interval");
+        layoutDesidentification = new LayoutDesidentification(binder);
 
         add(UIS.setWidthFull(new HorizontalLayout(aeTitle, description)),
                 UIS.setWidthFull(new HorizontalLayout(hostname, port)),
                 UIS.setWidthFull(new HorizontalLayout(useaetdest)),
                 UIS.setWidthFull(new HorizontalLayout(notify)),
-                UIS.setWidthFull(new HorizontalLayout(notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues, notifyInterval)));
-
-
+                UIS.setWidthFull(new HorizontalLayout(notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues, notifyInterval)),
+                UIS.setWidthFull(layoutDesidentification));
         setElements();
         setBinder();
     }
