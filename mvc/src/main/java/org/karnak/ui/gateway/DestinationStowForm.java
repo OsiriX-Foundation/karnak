@@ -3,6 +3,7 @@ package org.karnak.ui.gateway;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.data.gateway.Destination;
+import org.karnak.data.gateway.ExternalPseudonym;
 import org.karnak.ui.component.converter.HStringToIntegerConverter;
 import org.karnak.ui.util.UIS;
 
@@ -38,6 +39,7 @@ public class DestinationStowForm extends VerticalLayout {
     private final TextField notifyInterval;
 
     private final Checkbox desidentification;
+    private final Checkbox externalPseudonymCheckbox;
 
     private Button update;
     private Button discard;
@@ -45,10 +47,12 @@ public class DestinationStowForm extends VerticalLayout {
     private Button remove;
 
     private Binder<Destination> binder;
+    private Binder<ExternalPseudonym> binderExternalPseudonym;
     private Destination currentDestination;
     private DataService dataService;
     private FilterBySOPClassesForm filterSopForm;
     private ProfileDropDown profileDropDown;
+    private ExternalPseudonymView externalPseudonymView;
 
     public DestinationStowForm(DestinationLogic destinationLogic, DataService dataService) {
         setClassName("destination-form");
@@ -57,6 +61,7 @@ public class DestinationStowForm extends VerticalLayout {
         this.destinationLogic = destinationLogic;
         this.dataService = dataService;
         this.binder = new BeanValidationBinder<>(Destination.class);
+        this.binderExternalPseudonym = new BeanValidationBinder<>(ExternalPseudonym.class);
 
         description = new TextField("Description");
         description.setWidth("100%");
@@ -172,9 +177,22 @@ public class DestinationStowForm extends VerticalLayout {
             }
         });
 
-        desidentificationLayout.add(desidentification, profileDropDown);
-
         filterSopForm = new FilterBySOPClassesForm(this.dataService, this.binder);
+
+        externalPseudonymView = new ExternalPseudonymView(binderExternalPseudonym);
+        externalPseudonymCheckbox = new Checkbox();
+        externalPseudonymCheckbox.setLabel("Use an external pseudonym");
+        externalPseudonymCheckbox.addValueChangeListener(event -> {
+            if (event != null) {
+                if (event.getValue() == true) {
+                    externalPseudonymView.setVisible(true);
+                } else {
+                    externalPseudonymView.setVisible(false);
+                }
+            }
+        });
+
+        desidentificationLayout.add(desidentification, profileDropDown);
 
         add(UIS.setWidthFull( //
                 new HorizontalLayout(description)));
@@ -187,10 +205,15 @@ public class DestinationStowForm extends VerticalLayout {
         add(UIS.setWidthFull( //
                 new HorizontalLayout(notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues,
                         notifyInterval)));
+
+        add(filterSopForm);
+
         add(UIS.setWidthFull( //
                 desidentificationLayout));
 
-        add(filterSopForm);
+        add(UIS.setWidthFull( //
+                new HorizontalLayout(externalPseudonymCheckbox, externalPseudonymView)));
+
 
         // Define the same validators as the Destination class, because the validation
         // bean doesn't work in Vaadin
@@ -205,20 +228,27 @@ public class DestinationStowForm extends VerticalLayout {
         binder.forField(desidentification) //
                 .bind(Destination::getDesidentification, Destination::setDesidentification);
 
+        binder.forField(externalPseudonymCheckbox)
+                .bind(Destination::hasExternalPseudonym, (Destination, value) -> {
+                    externalPseudonymCheckbox.setValue(value);
+                });
+
         binder.forField(profileDropDown)
                 .withValidator(profilePipe -> profilePipe != null || (profilePipe == null && desidentification.getValue() == false),
                         "Choose the de-identification profile\n")
                 .bind(Destination::getProfile, Destination::setProfile);
+
         binder.bindInstanceFields(this);
+        binderExternalPseudonym.bindInstanceFields(this);
 
 
         // enable/disable update button while editing
         binder.addStatusChangeListener(event -> {
-            boolean isValid = !event.hasValidationErrors();
-            boolean hasChanges = binder.hasChanges();
-            update.setEnabled(hasChanges && isValid);
-            discard.setEnabled(hasChanges);
-            remove.setEnabled(!hasChanges);
+            setButtonEnabled(!event.hasValidationErrors(), binder.hasChanges());
+        });
+
+        binderExternalPseudonym.addStatusChangeListener(event -> {
+            setButtonEnabled(!event.hasValidationErrors(), binderExternalPseudonym.hasChanges());
         });
 
         update = new Button("Save");
@@ -226,6 +256,7 @@ public class DestinationStowForm extends VerticalLayout {
         update.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         update.addClickListener(event -> {
             if (currentDestination != null && binder.writeBeanIfValid(currentDestination)) {
+                binderExternalPseudonym.writeBeanIfValid(currentDestination.getExternalPseudonym());
                 this.destinationLogic.saveDestination(currentDestination);
                 this.destinationLogic.getGatewayViewLogic().saveForwardNode();
             }
@@ -257,6 +288,12 @@ public class DestinationStowForm extends VerticalLayout {
                 new HorizontalLayout(update, remove, cancel)));
     }
 
+    private void setButtonEnabled(boolean isValid, boolean hasChanges) {
+        update.setEnabled(hasChanges && isValid);
+        discard.setEnabled(hasChanges);
+        remove.setEnabled(!hasChanges);
+    }
+
     public void editDestination(Destination data) {
         remove.setVisible(data != null);
         if (data == null) {
@@ -264,5 +301,6 @@ public class DestinationStowForm extends VerticalLayout {
         }
         currentDestination = data;
         binder.readBean(data);
+        binderExternalPseudonym.readBean(data.getExternalPseudonym());
     }
 }

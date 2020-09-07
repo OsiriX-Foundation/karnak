@@ -42,7 +42,7 @@ public class Destination {
     @JoinColumn(name="profile_pipe_id")
     private Profile profile;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="external_pseudonym_id")
     private ExternalPseudonym externalPseudonym;
 
@@ -404,5 +404,9 @@ public class Destination {
 
     public void setExternalPseudonym(ExternalPseudonym externalPseudonym) {
         this.externalPseudonym = externalPseudonym;
+    }
+
+    public boolean hasExternalPseudonym() {
+        return externalPseudonym != null;
     }
 }
