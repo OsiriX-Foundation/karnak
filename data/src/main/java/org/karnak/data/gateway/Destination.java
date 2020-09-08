@@ -32,6 +32,8 @@ public class Destination {
 
     private boolean filterBySOPClasses;
 
+    private IdTypes idTypes;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name="sop_class_filter",
             joinColumns = @JoinColumn(name = "destination_id"),
@@ -140,6 +142,7 @@ public class Destination {
 
     protected Destination() {
         this.type = null;
+        this.idTypes = IdTypes.PID;
         this.description = "";
         this.desidentification = true;
         this.filterBySOPClasses = true;
@@ -404,6 +407,15 @@ public class Destination {
 
     public void setExternalPseudonym(ExternalPseudonym externalPseudonym) {
         this.externalPseudonym = externalPseudonym;
+    }
+
+
+    public IdTypes getIdTypes() {
+        return idTypes;
+    }
+
+    public void setIdTypes(IdTypes idTypes) {
+        this.idTypes = idTypes;
     }
 
     public boolean hasExternalPseudonym() {

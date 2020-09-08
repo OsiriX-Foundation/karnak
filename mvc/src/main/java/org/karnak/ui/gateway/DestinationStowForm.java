@@ -3,7 +3,7 @@ package org.karnak.ui.gateway;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.data.gateway.Destination;
-import org.karnak.data.gateway.ExternalPseudonym;
+import org.karnak.data.gateway.IdTypes;
 import org.karnak.ui.component.converter.HStringToIntegerConverter;
 import org.karnak.ui.util.UIS;
 
@@ -47,7 +47,6 @@ public class DestinationStowForm extends VerticalLayout {
     private Button remove;
 
     private Binder<Destination> binder;
-    private Binder<ExternalPseudonym> binderExternalPseudonym;
     private Destination currentDestination;
     private DataService dataService;
     private FilterBySOPClassesForm filterSopForm;
@@ -61,7 +60,6 @@ public class DestinationStowForm extends VerticalLayout {
         this.destinationLogic = destinationLogic;
         this.dataService = dataService;
         this.binder = new BeanValidationBinder<>(Destination.class);
-        this.binderExternalPseudonym = new BeanValidationBinder<>(ExternalPseudonym.class);
 
         description = new TextField("Description");
         description.setWidth("100%");
@@ -179,16 +177,12 @@ public class DestinationStowForm extends VerticalLayout {
 
         filterSopForm = new FilterBySOPClassesForm(this.dataService, this.binder);
 
-        externalPseudonymView = new ExternalPseudonymView(binderExternalPseudonym);
+        externalPseudonymView = new ExternalPseudonymView(binder);
         externalPseudonymCheckbox = new Checkbox();
         externalPseudonymCheckbox.setLabel("Use an external pseudonym");
         externalPseudonymCheckbox.addValueChangeListener(event -> {
             if (event != null) {
-                if (event.getValue() == true) {
-                    externalPseudonymView.setVisible(true);
-                } else {
-                    externalPseudonymView.setVisible(false);
-                }
+                externalPseudonymView.setVisible(event.getValue());
             }
         });
 
@@ -229,8 +223,20 @@ public class DestinationStowForm extends VerticalLayout {
                 .bind(Destination::getDesidentification, Destination::setDesidentification);
 
         binder.forField(externalPseudonymCheckbox)
-                .bind(Destination::hasExternalPseudonym, (Destination, value) -> {
-                    externalPseudonymCheckbox.setValue(value);
+                .bind(destination -> {
+                    if (destination.getIdTypes().equals(IdTypes.PID)) {
+                        externalPseudonymView.setVisible(false);
+                        return false;
+                    } else {
+                        externalPseudonymView.setVisible(true);
+                        return true;
+                    }
+                }, (destination, value) -> {
+                    if (value) {
+                        destination.setIdTypes(externalPseudonymView.getIdTypes());
+                    } else {
+                        destination.setIdTypes(IdTypes.PID);
+                    }
                 });
 
         binder.forField(profileDropDown)
@@ -239,7 +245,6 @@ public class DestinationStowForm extends VerticalLayout {
                 .bind(Destination::getProfile, Destination::setProfile);
 
         binder.bindInstanceFields(this);
-        binderExternalPseudonym.bindInstanceFields(this);
 
 
         // enable/disable update button while editing
@@ -247,16 +252,12 @@ public class DestinationStowForm extends VerticalLayout {
             setButtonEnabled(!event.hasValidationErrors(), binder.hasChanges());
         });
 
-        binderExternalPseudonym.addStatusChangeListener(event -> {
-            setButtonEnabled(!event.hasValidationErrors(), binderExternalPseudonym.hasChanges());
-        });
 
         update = new Button("Save");
         update.setWidthFull();
         update.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         update.addClickListener(event -> {
             if (currentDestination != null && binder.writeBeanIfValid(currentDestination)) {
-                binderExternalPseudonym.writeBeanIfValid(currentDestination.getExternalPseudonym());
                 this.destinationLogic.saveDestination(currentDestination);
                 this.destinationLogic.getGatewayViewLogic().saveForwardNode();
             }
@@ -301,6 +302,5 @@ public class DestinationStowForm extends VerticalLayout {
         }
         currentDestination = data;
         binder.readBean(data);
-        binderExternalPseudonym.readBean(data.getExternalPseudonym());
     }
 }

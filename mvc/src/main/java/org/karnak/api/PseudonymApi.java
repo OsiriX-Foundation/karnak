@@ -277,12 +277,11 @@ public class PseudonymApi {
     private String createJsonRequest(Fields patientFields, IdTypes idTypes) {
         final Fields field = patientFields;
         final String [] pid = {ID_TYPES};    //pseudonymisation type
-        final String [] extidInDicom = {ID_TYPES, EXTERNAL_ID};
-        final String [] extid = {EXTERNAL_ID};
+        final String [] extid = {ID_TYPES, EXTERNAL_ID};
 
         Data data; // = new Data(externalPseudonym == null ? idTypes : idTypesExternal, field, externalPseudonym == null ? null : new Ids(externalPseudonym));
         switch (idTypes) {
-            case ADD_EXTID: data = new Data(extidInDicom, field, new Ids(externalPseudonym));
+            case ADD_EXTID: data = new Data(extid, field, new Ids(externalPseudonym));
             break;
             case EXTID: data = new Data(extid, field, null);
             break;

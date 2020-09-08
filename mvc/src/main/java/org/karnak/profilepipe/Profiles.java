@@ -73,7 +73,7 @@ public class Profiles {
         return null;
     }
 
-    public String getMainzellistePseudonym(DicomObject dcm, String externalPseudonym) {
+    public String getMainzellistePseudonym(DicomObject dcm, String externalPseudonym, Destination destination) {
         final String patientID = dcm.getString(Tag.PatientID).orElse(null);
         final String patientName = dcm.getString(Tag.PatientName).orElse(null);
         final String patientBirthDate = dcm.getString(Tag.PatientBirthDate).orElse(null);
@@ -84,8 +84,7 @@ public class Profiles {
         PseudonymApi pseudonymApi = new PseudonymApi(externalPseudonym);
         final Fields newPatientFields = new Fields(patientID, patientName, patientBirthDate, patientSex, issuerOfPatientID);
 
-        IdTypes idTypes = IdTypes.PID; //read destination db (temporary)
-        return pseudonymApi.createPatient(newPatientFields, idTypes);
+        return pseudonymApi.createPatient(newPatientFields, destination.getIdTypes());
     }
 
     private String getExternalPseudonym(DicomObject dcm, ExternalPseudonym externalPseudonym) {
@@ -141,7 +140,7 @@ public class Profiles {
         MDC.put("issuerOfPatientID", IssuerOfPatientID);
         MDC.put("PatientID", PatientID);
 
-        String mainzellistePseudonym = getMainzellistePseudonym(dcm, stringExternalPseudonym);
+        String mainzellistePseudonym = getMainzellistePseudonym(dcm, stringExternalPseudonym, destination);
         String profilesCodeName = String.join(
                 "-" , profiles.stream().map(profile -> profile.getCodeName()).collect(Collectors.toList())
         );
