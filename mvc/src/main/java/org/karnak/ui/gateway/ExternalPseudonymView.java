@@ -22,9 +22,8 @@ public class ExternalPseudonymView extends Div {
     private IdTypes idTypes;
 
     public ExternalPseudonymView(Binder<Destination> binder) {
+        setWidthFull();
         this.binder = binder;
-        this.setWidthFull();
-
         idTypes = IdTypes.EXTID;
 
         delimiter = new TextField("Delimiter");
@@ -46,8 +45,13 @@ public class ExternalPseudonymView extends Div {
                 showStoreInDicom(true);
             }
         });
+        fieldValidator();
 
+        add(extidListBox);
+        add(horizontalLayoutPseudonymInDicom);
+    }
 
+    public void fieldValidator() {
         binder.forField(tag)
                 .withValidator(tag -> {
                             if(extidListBox.getValue().equals(extidSentence[0])){
@@ -117,9 +121,6 @@ public class ExternalPseudonymView extends Div {
                         destination.setIdTypes(IdTypes.EXTID);
                     }
                 });
-
-        add(extidListBox);
-        add(horizontalLayoutPseudonymInDicom);
     }
 
     public void showStoreInDicom(boolean show){
