@@ -74,6 +74,8 @@ public class DestinationDataProvider extends ListDataProvider<Destination> {
     public void delete(Destination data) {
         dataService.deleteDestination(forwardNode, data);
         refreshAll();
+        destinationPersistence.deleteById(data.getId());
+        destinationPersistence.saveAndFlush(data);
     }
 
     /**
