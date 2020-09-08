@@ -25,8 +25,8 @@ public class ForwardNodeView extends HorizontalLayout implements HasUrlParameter
         layoutNewGridForwardNode = new LayoutNewGridForwardNode(forwardNodeViewLogic, forwardNodeAPI);
         layoutEditForwardNode = new LayoutEditForwardNode(forwardNodeViewLogic, forwardNodeAPI);
 
-        layoutNewGridForwardNode.setWidth("25%");
-        layoutEditForwardNode.setWidth("75%");
+        layoutNewGridForwardNode.setWidth("30%");
+        layoutEditForwardNode.setWidth("70%");
         add(layoutNewGridForwardNode, layoutEditForwardNode);
     }
 

@@ -5,20 +5,16 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.textfield.TextFieldVariant;
-import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.value.ValueChangeMode;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.data.gateway.Destination;
 import org.karnak.ui.component.converter.HStringToIntegerConverter;
-import org.karnak.ui.gateway.ProfileDropDown;
 import org.karnak.ui.util.UIS;
 
 import java.util.Objects;
 
 public class FormDICOM extends VerticalLayout {
     private Binder<Destination> binder;
-    private Destination currentDestination;
 
     private final TextField aeTitle;
     private final TextField description;
