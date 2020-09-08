@@ -20,12 +20,17 @@ public class ExternalPseudonym {
     private Boolean useExternalPseudonym;
 
     public ExternalPseudonym() {
+        this.tag = "";
+        this.delimiter = "";
+        this.position = 0;
+        this.useExternalPseudonym = false;
     }
 
-    public ExternalPseudonym(String tag, String delimiter, Integer position) {
+    public ExternalPseudonym(String tag, String delimiter, Integer position, Boolean useExternalPseudonym) {
         this.tag = tag;
         this.delimiter = delimiter;
         this.position = position;
+        this.useExternalPseudonym = useExternalPseudonym;
     }
 
     public Long getId() {

@@ -143,6 +143,7 @@ public class Destination {
     protected Destination() {
         this.type = null;
         this.idTypes = IdTypes.PID;
+        this.externalPseudonym = new ExternalPseudonym();
         this.description = "";
         this.desidentification = true;
         this.filterBySOPClasses = true;
