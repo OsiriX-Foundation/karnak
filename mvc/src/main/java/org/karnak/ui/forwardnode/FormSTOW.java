@@ -1,6 +1,5 @@
 package org.karnak.ui.forwardnode;
 
-import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
@@ -9,9 +8,7 @@ import com.vaadin.flow.component.textfield.TextFieldVariant;
 import com.vaadin.flow.data.binder.Binder;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.data.gateway.Destination;
-import org.karnak.data.profile.Profile;
 import org.karnak.ui.component.converter.HStringToIntegerConverter;
-import org.karnak.ui.gateway.ProfileDropDown;
 import org.karnak.ui.util.UIS;
 
 public class FormSTOW extends VerticalLayout  {
@@ -27,6 +24,7 @@ public class FormSTOW extends VerticalLayout  {
     private final TextField notifyObjectValues;
     private final TextField notifyInterval;
     private final LayoutDesidentification layoutDesidentification;
+    private final FilterBySOPClassesForm filterBySOPClassesForm;
 
     public FormSTOW(Binder<Destination> binder) {
         setSizeFull();
@@ -42,6 +40,7 @@ public class FormSTOW extends VerticalLayout  {
         notifyObjectValues = new TextField("Notif.: subject values");
         notifyInterval = new TextField("Notif.: interval");
         layoutDesidentification = new LayoutDesidentification(binder);
+        filterBySOPClassesForm = new FilterBySOPClassesForm(binder);
 
         add(UIS.setWidthFull( //
                 new HorizontalLayout(description)));
@@ -55,6 +54,7 @@ public class FormSTOW extends VerticalLayout  {
                 new HorizontalLayout(notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues,
                         notifyInterval)));
         add(UIS.setWidthFull(layoutDesidentification));
+        add(UIS.setWidthFull(filterBySOPClassesForm));
 
         setElements();
         setBinder();

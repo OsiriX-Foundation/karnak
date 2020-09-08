@@ -28,6 +28,7 @@ public class FormDICOM extends VerticalLayout {
     private final TextField notifyObjectValues;
     private final TextField notifyInterval;
     private final LayoutDesidentification layoutDesidentification;
+    private final FilterBySOPClassesForm filterBySOPClassesForm;
 
     public FormDICOM(Binder<Destination> binder) {
         setSizeFull();
@@ -44,13 +45,15 @@ public class FormDICOM extends VerticalLayout {
         notifyObjectValues = new TextField("Notif.: subject values");
         notifyInterval = new TextField("Notif.: interval");
         layoutDesidentification = new LayoutDesidentification(binder);
+        filterBySOPClassesForm = new FilterBySOPClassesForm(binder);
 
         add(UIS.setWidthFull(new HorizontalLayout(aeTitle, description)),
                 UIS.setWidthFull(new HorizontalLayout(hostname, port)),
                 UIS.setWidthFull(new HorizontalLayout(useaetdest)),
                 UIS.setWidthFull(new HorizontalLayout(notify)),
                 UIS.setWidthFull(new HorizontalLayout(notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues, notifyInterval)),
-                UIS.setWidthFull(layoutDesidentification));
+                UIS.setWidthFull(layoutDesidentification),
+                UIS.setWidthFull(filterBySOPClassesForm));
         setElements();
         setBinder();
     }
