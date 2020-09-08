@@ -70,6 +70,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
 
     public void load(ForwardNode forwardNode) {
         currentForwardNode = forwardNode;
+        destinationViewLogic.setApplicationEventPublisher(forwardNodeAPI.getApplicationEventPublisher());
         editAETitleDescription.setForwardNode(forwardNode);
         destinationsView.setForwardNode(forwardNode);
         destinationDataProvider.setForwardNode(forwardNode);
