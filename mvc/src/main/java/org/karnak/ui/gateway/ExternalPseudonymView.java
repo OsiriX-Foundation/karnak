@@ -30,7 +30,7 @@ public class ExternalPseudonymView extends Div {
         delimiter = new TextField("Delimiter");
         tag = new TextField("Tag");
         position = new TextField("Position");
-        horizontalLayoutPseudonymInDicom = new HorizontalLayout(tag, position, delimiter);
+        horizontalLayoutPseudonymInDicom = new HorizontalLayout(tag, delimiter, position);
 
         extidListBox = new Select<>();
         extidListBox.setWidthFull();
@@ -50,7 +50,10 @@ public class ExternalPseudonymView extends Div {
 
         binder.forField(tag)
                 .withValidator(tag -> {
-                            String cleanTag = tag.replaceAll("[(),]", "").toUpperCase();
+                            if(extidListBox.getValue().equals(extidSentence[0])){
+                                return true;
+                            }
+                            final String cleanTag = tag.replaceAll("[(),]", "").toUpperCase();
                             try {
                                 TagUtils.intFromHexString(cleanTag);
                             } catch (Exception e) {
@@ -70,7 +73,7 @@ public class ExternalPseudonymView extends Div {
                 });
 
         binder.forField(delimiter)
-                .withValidator(delimiter -> !(delimiter.equals("") && !position.getValue().equals("")),
+                .withValidator(delimiter -> !(delimiter.equals("") && !position.getValue().equals("")) || (extidListBox.getValue().equals(extidSentence[0])),
                         "Choose a delimiter when a position is defined\n")
                 .bind(destination -> {
                     if(destination.getExternalPseudonym() != null) {
@@ -84,7 +87,7 @@ public class ExternalPseudonymView extends Div {
 
         binder.forField(position)
                 .withConverter(new StringToIntegerConverter("Must be a numeric value"))
-                .withValidator(position ->  !(position == null && !delimiter.equals("")),
+                .withValidator(position -> (extidListBox.getValue().equals(extidSentence[0])) || !(position == null && !delimiter.equals("")),
                         "Choose a position when a delimiter is defined\n")
                 .bind(destination -> {
                     if(destination.getExternalPseudonym() != null) {

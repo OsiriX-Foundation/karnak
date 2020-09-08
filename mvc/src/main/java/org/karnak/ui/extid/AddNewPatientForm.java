@@ -154,8 +154,7 @@ public class AddNewPatientForm extends VerticalLayout {
                 .bind("patientName");
 
         binder.forField(issuerOfPatientIdField)
-                .withValidator(StringUtils::isNotBlank, "Issuer of patient ID is empty")
-                .withValidator(new StringLengthValidator("Length must be between 1 and 50.", 1, 50))
+                .withValidator(new StringLengthValidator("Length must be between 0 and 50.", 0, 50))
                 .bind("issuerOfPatientId");
 
         binder.forField(patientBirthDateField)
