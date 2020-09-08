@@ -32,7 +32,6 @@ public class NewUpdateDestination extends VerticalLayout {
         currentDestination = null;
         buttonDestinationSaveDeleteCancel = new ButtonSaveDeleteCancel();
 
-        setBinderEvent();
         setButtonSaveEvent();
         setButtonDeleteEvent();
     }
@@ -58,22 +57,6 @@ public class NewUpdateDestination extends VerticalLayout {
             binderFormDICOM.readBean(currentDestination);
         }
         add(UIS.setWidthFull(buttonDestinationSaveDeleteCancel));
-    }
-
-    private void setBinderEvent() {
-        /*
-        binderFormDICOM.addStatusChangeListener(event -> {
-            boolean isValid = !event.hasValidationErrors();
-            boolean hasChanges = binderFormDICOM.hasChanges();
-            buttonDestinationSaveDeleteCancel.getSave().setEnabled(hasChanges && isValid);
-        });
-
-        binderFormSTOW.addStatusChangeListener(event -> {
-            boolean isValid = !event.hasValidationErrors();
-            boolean hasChanges = binderFormDICOM.hasChanges();
-            buttonDestinationSaveDeleteCancel.getSave().setEnabled(hasChanges && isValid);
-        });
-        */
     }
 
     private void setButtonSaveEvent() {
