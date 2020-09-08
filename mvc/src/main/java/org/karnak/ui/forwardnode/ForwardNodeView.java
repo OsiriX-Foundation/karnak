@@ -6,6 +6,8 @@ import org.karnak.data.gateway.ForwardNode;
 import org.karnak.ui.MainLayout;
 import org.karnak.ui.api.ForwardNodeAPI;
 import org.karnak.ui.gateway.ForwardNodeDataProvider;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 
 @Route(value = "forwardnode", layout = MainLayout.class)
 @RouteAlias(value = "", layout = MainLayout.class)
@@ -39,5 +41,10 @@ public class ForwardNodeView extends HorizontalLayout implements HasUrlParameter
         }
         layoutNewGridForwardNode.load(currentForwardNode);
         layoutEditForwardNode.load(currentForwardNode);
+    }
+
+    @Autowired
+    private void addEventManager(ApplicationEventPublisher publisher) {
+        forwardNodeAPI.setApplicationEventPublisher(publisher);
     }
 }
