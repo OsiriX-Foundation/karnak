@@ -8,6 +8,7 @@ import org.karnak.data.NodeEvent;
 import org.karnak.data.NodeEventType;
 import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.DestinationType;
+import org.karnak.ui.component.ConfirmDialog;
 import org.karnak.ui.gateway.DestinationDataProvider;
 import org.karnak.ui.util.UIS;
 
@@ -78,10 +79,19 @@ public class NewUpdateDestination extends VerticalLayout {
 
     private void setButtonDeleteEvent() {
         buttonDestinationSaveDeleteCancel.getDelete().addClickListener(event -> {
-            NodeEvent nodeEvent = new NodeEvent(currentDestination, NodeEventType.REMOVE);
-            destinationDataProvider.delete(currentDestination);
-            destinationViewLogic.getApplicationEventPublisher().publishEvent(nodeEvent);
-            destinationViewLogic.updateForwardNodeInEditView();
+
+            if (currentDestination != null) {
+                ConfirmDialog dialog = new ConfirmDialog(
+                        "Are you sure to delete the forward node " + currentDestination.getDescription() +
+                                " [" + currentDestination.getType() + "] ?");
+                dialog.addConfirmationListener(componentEvent -> {
+                    NodeEvent nodeEvent = new NodeEvent(currentDestination, NodeEventType.REMOVE);
+                    destinationDataProvider.delete(currentDestination);
+                    destinationViewLogic.getApplicationEventPublisher().publishEvent(nodeEvent);
+                    destinationViewLogic.updateForwardNodeInEditView();
+                });
+                dialog.open();
+            }
         });
     }
 
