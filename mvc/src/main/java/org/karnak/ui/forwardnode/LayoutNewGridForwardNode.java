@@ -1,5 +1,6 @@
 package org.karnak.ui.forwardnode;
 
+import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -44,11 +45,17 @@ public class LayoutNewGridForwardNode extends VerticalLayout {
 
     private void eventNewForwardNode() {
         buttonAddNewForwardNode.addClickListener(click -> {
-            final ForwardNode forwardNode = new ForwardNode(textFieldNewAETitleForwardNode.getValue());
-            forwardNodeAPI.addForwardNode(forwardNode);
-            gridForwardNode.getSelectionModel().select(forwardNode);
-            forwardNodeViewLogic.editForwardNode(forwardNode);
+            eventAddForwardNode(new ForwardNode(textFieldNewAETitleForwardNode.getValue()));
         });
+        textFieldNewAETitleForwardNode.addKeyDownListener(Key.ENTER, keyDownEvent -> {
+            eventAddForwardNode(new ForwardNode(textFieldNewAETitleForwardNode.getValue()));
+        });
+    }
+
+    private void eventAddForwardNode(ForwardNode forwardNode) {
+        forwardNodeAPI.addForwardNode(forwardNode);
+        gridForwardNode.getSelectionModel().select(forwardNode);
+        forwardNodeViewLogic.editForwardNode(forwardNode);
     }
 
     private void eventGridSelection() {

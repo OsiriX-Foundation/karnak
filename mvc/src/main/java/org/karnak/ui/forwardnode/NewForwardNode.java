@@ -32,6 +32,10 @@ public class NewForwardNode extends HorizontalLayout {
 
     private void setNewAETitleForwardNode() {
         newAETitleForwardNode.setPlaceholder("Forward AETitle");
+        newAETitleForwardNode.addKeyDownListener(Key.ENTER, keyDownEvent -> {
+            removeAll();
+            add(newForwardNode);
+        });
     }
 
     private void setAddNewForwardNode() {
