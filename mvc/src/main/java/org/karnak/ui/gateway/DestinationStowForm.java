@@ -172,8 +172,10 @@ public class DestinationStowForm extends VerticalLayout {
         filterSopForm = new FilterBySOPClassesForm(this.dataService, this.binder);
 
         externalPseudonymView = new ExternalPseudonymView(binder);
+        externalPseudonymView.setMinWidth("70%");
         externalPseudonymCheckbox = new Checkbox();
         externalPseudonymCheckbox.setLabel("Use an external pseudonym");
+        externalPseudonymCheckbox.setMinWidth("25%");
         externalPseudonymCheckbox.addValueChangeListener(event -> {
             if (event != null) {
                 showExternalPeusdonymView(event.getValue());

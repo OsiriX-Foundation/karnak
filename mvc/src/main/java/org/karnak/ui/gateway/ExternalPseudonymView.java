@@ -24,7 +24,6 @@ public class ExternalPseudonymView extends Div {
     private boolean unBindAllFields;
 
     public ExternalPseudonymView(Binder<Destination> binder) {
-        setWidthFull();
         this.binder = binder;
         idTypes = IdTypes.EXTID;
         unBindAllFields = false;
