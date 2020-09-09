@@ -169,12 +169,6 @@ public class DestinationStowForm extends VerticalLayout {
         profileDropDown = new ProfileDropDown();
         profileDropDown.setMinWidth("70%");
 
-        desidentification.addValueChangeListener(event -> {
-            if (event.getValue() != null) {
-                profileDropDown.setEnabled(event.getValue());
-            }
-        });
-
         filterSopForm = new FilterBySOPClassesForm(this.dataService, this.binder);
 
         externalPseudonymView = new ExternalPseudonymView(binder);
@@ -182,7 +176,15 @@ public class DestinationStowForm extends VerticalLayout {
         externalPseudonymCheckbox.setLabel("Use an external pseudonym");
         externalPseudonymCheckbox.addValueChangeListener(event -> {
             if (event != null) {
-                externalPseudonymView.setVisible(event.getValue());
+                showExternalPeusdonymView(event.getValue());
+            }
+        });
+
+        desidentification.addValueChangeListener(event -> {
+            if (event.getValue() != null) {
+                profileDropDown.setEnabled(event.getValue());
+                externalPseudonymCheckbox.setVisible(event.getValue());
+                showExternalPeusdonymView(event.getValue());
             }
         });
 
@@ -220,16 +222,20 @@ public class DestinationStowForm extends VerticalLayout {
                 .withConverter(new HStringToIntegerConverter()) //
                 .bind(Destination::getNotifyInterval, Destination::setNotifyInterval);
         binder.forField(desidentification) //
-                .bind(Destination::getDesidentification, Destination::setDesidentification);
+                .bind(destination -> {
+                    externalPseudonymCheckbox.setVisible(destination.getDesidentification());
+                    showExternalPeusdonymView(destination.getDesidentification());
+                    return destination.getDesidentification();
+                }, Destination::setDesidentification);
 
         binder.forField(externalPseudonymCheckbox)
                 .bind(destination -> {
-                    if (destination.getIdTypes().equals(IdTypes.PID)) {
-                        externalPseudonymView.setVisible(false);
-                        return false;
-                    } else {
-                        externalPseudonymView.setVisible(true);
+                    if (!destination.getIdTypes().equals(IdTypes.PID) && desidentification.getValue() == true) {
+                        showExternalPeusdonymView(true);
                         return true;
+                    } else {
+                        showExternalPeusdonymView(false);
+                        return false;
                     }
                 }, (destination, value) -> {
                     if (value) {
@@ -302,5 +308,10 @@ public class DestinationStowForm extends VerticalLayout {
         }
         currentDestination = data;
         binder.readBean(data);
+    }
+
+    public void showExternalPeusdonymView(boolean show){
+        externalPseudonymView.setVisible(show);
+        externalPseudonymView.unBindAll(!show);
     }
 }

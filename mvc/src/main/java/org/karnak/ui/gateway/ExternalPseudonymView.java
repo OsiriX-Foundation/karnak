@@ -21,10 +21,13 @@ public class ExternalPseudonymView extends Div {
     final String [] extidSentence = {"Pseudonym is already store in KARNAK", "Pseudonym is in a DICOM tag"};
     private IdTypes idTypes;
 
+    private boolean unBindAllFields;
+
     public ExternalPseudonymView(Binder<Destination> binder) {
         setWidthFull();
         this.binder = binder;
         idTypes = IdTypes.EXTID;
+        unBindAllFields = false;
 
         delimiter = new TextField("Delimiter");
         tag = new TextField("Tag");
@@ -54,16 +57,13 @@ public class ExternalPseudonymView extends Div {
     public void fieldValidator() {
         binder.forField(tag)
                 .withValidator(tag -> {
-                            if(extidListBox.getValue().equals(extidSentence[0])){
-                                return true;
-                            }
                             final String cleanTag = tag.replaceAll("[(),]", "").toUpperCase();
                             try {
                                 TagUtils.intFromHexString(cleanTag);
                             } catch (Exception e) {
                                 return false;
                             }
-                            return tag != null && !tag.equals("") && cleanTag.length() == 8;
+                            return unBindAllFields || unBindSoreInDicomFields() || (tag != null && !tag.equals("") && cleanTag.length() == 8);
                         },
                         "Choose a valid tag\n")
                 .bind(destination -> {
@@ -77,7 +77,7 @@ public class ExternalPseudonymView extends Div {
                 });
 
         binder.forField(delimiter)
-                .withValidator(delimiter -> !(delimiter.equals("") && !position.getValue().equals("")) || (extidListBox.getValue().equals(extidSentence[0])),
+                .withValidator(delimiter -> unBindAllFields || unBindSoreInDicomFields() || !(delimiter.equals("") && !position.getValue().equals("")),
                         "Choose a delimiter when a position is defined\n")
                 .bind(destination -> {
                     if(destination.getExternalPseudonym() != null) {
@@ -91,7 +91,7 @@ public class ExternalPseudonymView extends Div {
 
         binder.forField(position)
                 .withConverter(new StringToIntegerConverter("Must be a numeric value"))
-                .withValidator(position -> (extidListBox.getValue().equals(extidSentence[0])) || !(position == null && !delimiter.equals("")),
+                .withValidator(position -> unBindAllFields || unBindSoreInDicomFields() || !(position == null && !delimiter.equals("")),
                         "Choose a position when a delimiter is defined\n")
                 .bind(destination -> {
                     if(destination.getExternalPseudonym() != null) {
@@ -121,6 +121,14 @@ public class ExternalPseudonymView extends Div {
                         destination.setIdTypes(IdTypes.EXTID);
                     }
                 });
+    }
+
+    public boolean unBindSoreInDicomFields(){
+        return (extidListBox.getValue().equals(extidSentence[0]));
+    }
+
+    public void unBindAll(boolean value){
+        unBindAllFields = value;
     }
 
     public void showStoreInDicom(boolean show){
