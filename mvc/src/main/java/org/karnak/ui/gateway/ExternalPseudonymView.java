@@ -1,4 +1,5 @@
 package org.karnak.ui.gateway;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.select.Select;
@@ -12,6 +13,7 @@ import org.karnak.data.gateway.IdTypes;
 public class ExternalPseudonymView extends Div {
 
     private Binder<Destination> binder;
+    private Checkbox pseudonymAsPatientName;
     private TextField delimiter;
     private TextField tag;
     private TextField position;
@@ -28,6 +30,7 @@ public class ExternalPseudonymView extends Div {
         idTypes = IdTypes.EXTID;
         unBindAllFields = false;
 
+        pseudonymAsPatientName = new Checkbox("Use external pseudonym as Patient Name");
         delimiter = new TextField("Delimiter");
         tag = new TextField("Tag");
         position = new TextField("Position");
@@ -49,11 +52,17 @@ public class ExternalPseudonymView extends Div {
         });
         fieldValidator();
 
+        add(pseudonymAsPatientName);
         add(extidListBox);
         add(horizontalLayoutPseudonymInDicom);
     }
 
     public void fieldValidator() {
+        binder.forField(pseudonymAsPatientName)
+                .bind(destination -> destination.getExternalPseudonym().getPseudonymAsPatientName(),
+                        (destination, value) -> destination.getExternalPseudonym().setPseudonymAsPatientName(value));
+
+
         binder.forField(tag)
                 .withValidator(tag -> {
                             final String cleanTag = tag.replaceAll("[(),]", "").toUpperCase();

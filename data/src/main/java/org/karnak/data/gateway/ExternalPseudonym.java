@@ -1,7 +1,5 @@
 package org.karnak.data.gateway;
 
-import org.karnak.data.profile.ProfileElement;
-
 import javax.persistence.*;
 
 @Entity(name = "ExternalPseudonym")
@@ -17,20 +15,20 @@ public class ExternalPseudonym {
 
     private Integer position;
 
-    private Boolean useExternalPseudonym;
+    private Boolean pseudonymAsPatientName;
 
     public ExternalPseudonym() {
         this.tag = "";
         this.delimiter = "";
         this.position = 0;
-        this.useExternalPseudonym = false;
+        this.pseudonymAsPatientName = false;
     }
 
-    public ExternalPseudonym(String tag, String delimiter, Integer position, Boolean useExternalPseudonym) {
+    public ExternalPseudonym(String tag, String delimiter, Integer position, Boolean pseudonymAsPatientName) {
         this.tag = tag;
         this.delimiter = delimiter;
         this.position = position;
-        this.useExternalPseudonym = useExternalPseudonym;
+        this.pseudonymAsPatientName = pseudonymAsPatientName;
     }
 
     public Long getId() {
@@ -61,11 +59,11 @@ public class ExternalPseudonym {
         this.position = position;
     }
 
-    public Boolean getUseExternalPseudonym() {
-        return useExternalPseudonym;
+    public Boolean getPseudonymAsPatientName() {
+        return pseudonymAsPatientName;
     }
 
-    public void setUseExternalPseudonym(Boolean useExternalPseudonym) {
-        this.useExternalPseudonym = useExternalPseudonym;
+    public void setPseudonymAsPatientName(Boolean useExternalPseudonym) {
+        this.pseudonymAsPatientName = useExternalPseudonym;
     }
 }
