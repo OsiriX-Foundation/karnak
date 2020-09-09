@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.data.gateway.Destination;
+import org.karnak.data.gateway.IdTypes;
 import org.karnak.ui.component.converter.HStringToIntegerConverter;
 import org.karnak.ui.util.UIS;
 
@@ -40,6 +41,8 @@ public class DestinationDicomForm extends VerticalLayout {
     private final TextField notifyInterval;
 
     private final Checkbox desidentification;
+    private final Checkbox externalPseudonymCheckbox;
+    private final ExternalPseudonymView externalPseudonymView;
     private final ProfileDropDown profileDropDown;
 
     private Button update;
@@ -171,31 +174,38 @@ public class DestinationDicomForm extends VerticalLayout {
         profileDropDown = new ProfileDropDown();
         profileDropDown.setMinWidth("70%");
 
+        filterSopForm = new FilterBySOPClassesForm(this.dataService, this.binder);
+
+        externalPseudonymView = new ExternalPseudonymView(binder);
+        externalPseudonymView.setMinWidth("70%");
+        externalPseudonymCheckbox = new Checkbox();
+        externalPseudonymCheckbox.setLabel("Use an external pseudonym");
+        externalPseudonymCheckbox.setMinWidth("25%");
+        externalPseudonymCheckbox.addValueChangeListener(event -> {
+            if (event != null) {
+                showExternalPeusdonymView(event.getValue());
+            }
+        });
+
         desidentification.addValueChangeListener(event -> {
             if (event.getValue() != null) {
                 profileDropDown.setEnabled(event.getValue());
+                externalPseudonymCheckbox.setVisible(event.getValue());
+                showExternalPeusdonymView(event.getValue());
             }
         });
 
         desidentificationLayout.add(desidentification, profileDropDown);
 
-        filterSopForm = new FilterBySOPClassesForm(this.dataService, this.binder);
-
-        add(UIS.setWidthFull( //
-                new HorizontalLayout(aeTitle, description)));
-        add(UIS.setWidthFull( //
-                new HorizontalLayout(hostname, port)));
-        add(UIS.setWidthFull( //
-                useaetdest));
-        add(UIS.setWidthFull( //
-                new HorizontalLayout(notify)));
-        add(UIS.setWidthFull( //
-                new HorizontalLayout(notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues,
-                        notifyInterval)));
-        add(UIS.setWidthFull( //
-                desidentificationLayout));
-
+        add(UIS.setWidthFull(new HorizontalLayout(aeTitle, description)));
+        add(UIS.setWidthFull(new HorizontalLayout(hostname, port)));
+        add(UIS.setWidthFull(useaetdest));
+        add(UIS.setWidthFull(new HorizontalLayout(notify)));
+        add(UIS.setWidthFull(new HorizontalLayout(notifyObjectErrorPrefix,
+                notifyObjectPattern, notifyObjectValues, notifyInterval)));
         add(filterSopForm);
+        add(UIS.setWidthFull(desidentificationLayout));
+        add(UIS.setWidthFull(new HorizontalLayout(externalPseudonymCheckbox, externalPseudonymView)));
 
         binder.forField(aeTitle) //
                 .withValidator( //
@@ -231,15 +241,29 @@ public class DestinationDicomForm extends VerticalLayout {
                 .withValidator(profilePipe -> profilePipe != null || (profilePipe == null && desidentification.getValue() == false),
                         "Choose the de-identification profile\n")
                 .bind(Destination::getProfile, Destination::setProfile);
+
+        binder.forField(externalPseudonymCheckbox)
+                .bind(destination -> {
+                    if (!destination.getIdTypes().equals(IdTypes.PID) && desidentification.getValue() == true) {
+                        showExternalPeusdonymView(true);
+                        return true;
+                    } else {
+                        showExternalPeusdonymView(false);
+                        return false;
+                    }
+                }, (destination, value) -> {
+                    if (value) {
+                        destination.setIdTypes(externalPseudonymView.getIdTypes());
+                    } else {
+                        destination.setIdTypes(IdTypes.PID);
+                    }
+                });
+
         binder.bindInstanceFields(this);
 
         // enable/disable update button while editing
         binder.addStatusChangeListener(event -> {
-            boolean isValid = !event.hasValidationErrors();
-            boolean hasChanges = binder.hasChanges();
-            update.setEnabled(hasChanges && isValid);
-            discard.setEnabled(hasChanges);
-            remove.setEnabled(!hasChanges);
+            setButtonEnabled(!event.hasValidationErrors(), binder.hasChanges());
         });
 
         update = new Button("Save");
@@ -278,6 +302,12 @@ public class DestinationDicomForm extends VerticalLayout {
                 new HorizontalLayout(update, remove, cancel)));
     }
 
+    private void setButtonEnabled(boolean isValid, boolean hasChanges) {
+        update.setEnabled(hasChanges && isValid);
+        discard.setEnabled(hasChanges);
+        remove.setEnabled(!hasChanges);
+    }
+
     public void editDestination(Destination data) {
         remove.setVisible(data != null);
         if (data == null) {
@@ -285,5 +315,10 @@ public class DestinationDicomForm extends VerticalLayout {
         }
         currentDestination = data;
         binder.readBean(data);
+    }
+
+    public void showExternalPeusdonymView(boolean show){
+        externalPseudonymView.setVisible(show);
+        externalPseudonymView.unBindAll(!show);
     }
 }

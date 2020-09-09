@@ -192,25 +192,15 @@ public class DestinationStowForm extends VerticalLayout {
 
         desidentificationLayout.add(desidentification, profileDropDown);
 
-        add(UIS.setWidthFull( //
-                new HorizontalLayout(description)));
-        add(UIS.setWidthFull( //
-                new HorizontalLayout(url, urlCredentials)));
-        add(UIS.setWidthFull( //
-                headers));
-        add(UIS.setWidthFull( //
-                new HorizontalLayout(notify)));
-        add(UIS.setWidthFull( //
-                new HorizontalLayout(notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues,
+        add(UIS.setWidthFull(new HorizontalLayout(description)));
+        add(UIS.setWidthFull(new HorizontalLayout(url, urlCredentials)));
+        add(UIS.setWidthFull(headers));
+        add(UIS.setWidthFull(new HorizontalLayout(notify)));
+        add(UIS.setWidthFull(new HorizontalLayout(notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues,
                         notifyInterval)));
-
         add(filterSopForm);
-
-        add(UIS.setWidthFull( //
-                desidentificationLayout));
-
-        add(UIS.setWidthFull( //
-                new HorizontalLayout(externalPseudonymCheckbox, externalPseudonymView)));
+        add(UIS.setWidthFull(desidentificationLayout));
+        add(UIS.setWidthFull(new HorizontalLayout(externalPseudonymCheckbox, externalPseudonymView)));
 
 
         // Define the same validators as the Destination class, because the validation
