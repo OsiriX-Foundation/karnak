@@ -10,26 +10,39 @@ import org.dcm4che6.util.TagUtils;
 import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.IdTypes;
 
-public class ExternalPseudonymView extends Div {
+public class ExternalPseudonymView extends HorizontalLayout {
 
     private Binder<Destination> binder;
     private Checkbox pseudonymAsPatientName;
+    private Checkbox externalPseudonymCheckbox;
     private TextField delimiter;
     private TextField tag;
     private TextField position;
     private HorizontalLayout horizontalLayoutPseudonymInDicom;
+    private Div verticalLayoutExeternalPseudonym;
     private Select<String> extidListBox;
 
     final String [] extidSentence = {"Pseudonym is already store in KARNAK", "Pseudonym is in a DICOM tag"};
     private IdTypes idTypes;
 
-    private boolean unBindAllFields;
-
     public ExternalPseudonymView(Binder<Destination> binder) {
         this.binder = binder;
         idTypes = IdTypes.EXTID;
-        unBindAllFields = false;
 
+        externalPseudonymCheckbox = new Checkbox();
+        externalPseudonymCheckbox.setLabel("Use an external pseudonym");
+        externalPseudonymCheckbox.setMinWidth("25%");
+        externalPseudonymCheckbox.addValueChangeListener(event -> {
+            if (event != null) {
+                if(event.getValue()) {
+                    add(verticalLayoutExeternalPseudonym);
+                } else {
+                    remove(verticalLayoutExeternalPseudonym);
+                }
+            }
+        });
+
+        verticalLayoutExeternalPseudonym = new Div();
         pseudonymAsPatientName = new Checkbox("Use external pseudonym as Patient Name");
         delimiter = new TextField("Delimiter");
         tag = new TextField("Tag");
@@ -40,24 +53,43 @@ public class ExternalPseudonymView extends Div {
         extidListBox.setWidthFull();
         extidListBox.setItems(extidSentence);
         extidListBox.setValue(extidSentence[0]);
-        showStoreInDicom(false);
+
+        verticalLayoutExeternalPseudonym.add(pseudonymAsPatientName);
+        verticalLayoutExeternalPseudonym.add(extidListBox);
+
         extidListBox.addValueChangeListener(valueChangeEvent -> {
             if(valueChangeEvent.getValue().equals(extidSentence[0])){
                 idTypes = IdTypes.EXTID;
-                showStoreInDicom(false);
+                verticalLayoutExeternalPseudonym.remove(horizontalLayoutPseudonymInDicom);
             }else{
                 idTypes = IdTypes.ADD_EXTID;
-                showStoreInDicom(true);
+                verticalLayoutExeternalPseudonym.add(horizontalLayoutPseudonymInDicom);
             }
         });
+
+
         fieldValidator();
 
-        add(pseudonymAsPatientName);
-        add(extidListBox);
-        add(horizontalLayoutPseudonymInDicom);
+        add(externalPseudonymCheckbox);
     }
 
     public void fieldValidator() {
+
+        binder.forField(externalPseudonymCheckbox)
+                .bind(destination -> {
+                    if (!destination.getIdTypes().equals(IdTypes.PID)) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }, (destination, value) -> {
+                    if (value) {
+                        destination.setIdTypes(idTypes);
+                    } else {
+                        destination.setIdTypes(IdTypes.PID);
+                    }
+                });
+
         binder.forField(pseudonymAsPatientName)
                 .bind(destination -> destination.getExternalPseudonym().getPseudonymAsPatientName(),
                         (destination, value) -> destination.getExternalPseudonym().setPseudonymAsPatientName(value));
@@ -71,7 +103,7 @@ public class ExternalPseudonymView extends Div {
                             } catch (Exception e) {
                                 return false;
                             }
-                            return unBindAllFields || unBindSoreInDicomFields() || (tag != null && !tag.equals("") && cleanTag.length() == 8);
+                            return (tag != null && !tag.equals("") && cleanTag.length() == 8);
                         },
                         "Choose a valid tag\n")
                 .bind(destination -> {
@@ -85,7 +117,7 @@ public class ExternalPseudonymView extends Div {
                 });
 
         binder.forField(delimiter)
-                .withValidator(delimiter -> unBindAllFields || unBindSoreInDicomFields() || !(delimiter.equals("") && !position.getValue().equals("")),
+                .withValidator(delimiter -> !(delimiter.equals("") && !position.getValue().equals("")),
                         "Choose a delimiter when a position is defined\n")
                 .bind(destination -> {
                     if(destination.getExternalPseudonym() != null) {
@@ -99,7 +131,7 @@ public class ExternalPseudonymView extends Div {
 
         binder.forField(position)
                 .withConverter(new StringToIntegerConverter("Must be a numeric value"))
-                .withValidator(position -> unBindAllFields || unBindSoreInDicomFields() || !(position == null && !delimiter.equals("")),
+                .withValidator(position -> !(position == null && !delimiter.equals("")),
                         "Choose a position when a delimiter is defined\n")
                 .bind(destination -> {
                     if(destination.getExternalPseudonym() != null) {
@@ -131,18 +163,21 @@ public class ExternalPseudonymView extends Div {
                 });
     }
 
-    public boolean unBindSoreInDicomFields(){
-        return (extidListBox.getValue().equals(extidSentence[0]));
-    }
-
     public void unBindAll(boolean value){
-        unBindAllFields = value;
-    }
-
-    public void showStoreInDicom(boolean show){
-        tag.setVisible(show);
-        position.setVisible(show);
-        delimiter.setVisible(show);
+        if (value) {
+            binder.removeBinding(tag);
+            binder.removeBinding(delimiter);
+            binder.removeBinding(position);
+            tag.setValue("");
+            delimiter.setValue("");
+            position.setValue("");
+            pseudonymAsPatientName.setValue(false);
+        } else {
+            boolean exist = binder.getFields().anyMatch(field -> field.equals(tag));
+            if(exist) {
+                fieldValidator();
+            }
+        }
     }
 
     public IdTypes getIdTypes() {

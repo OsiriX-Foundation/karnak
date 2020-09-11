@@ -3,7 +3,6 @@ package org.karnak.ui.gateway;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.data.gateway.Destination;
-import org.karnak.data.gateway.IdTypes;
 import org.karnak.ui.component.converter.HStringToIntegerConverter;
 import org.karnak.ui.util.UIS;
 
@@ -39,7 +38,6 @@ public class DestinationStowForm extends VerticalLayout {
     private final TextField notifyInterval;
 
     private final Checkbox desidentification;
-    private final Checkbox externalPseudonymCheckbox;
 
     private Button update;
     private Button discard;
@@ -161,7 +159,7 @@ public class DestinationStowForm extends VerticalLayout {
         UIS.setTooltip(notifyInterval,
                 "Interval in seconds for sending a notification (when no new image is arrived in the archive folder). Default value: 45");
 
-        HorizontalLayout desidentificationLayout = new HorizontalLayout();
+
         desidentification = new Checkbox();
         desidentification.setLabel("Activate de-identification");
         desidentification.setValue(true);
@@ -171,36 +169,30 @@ public class DestinationStowForm extends VerticalLayout {
 
         filterSopForm = new FilterBySOPClassesForm(this.dataService, this.binder);
 
+        HorizontalLayout externalPseudonymLayout = new HorizontalLayout();
         externalPseudonymView = new ExternalPseudonymView(binder);
         externalPseudonymView.setMinWidth("70%");
-        externalPseudonymCheckbox = new Checkbox();
-        externalPseudonymCheckbox.setLabel("Use an external pseudonym");
-        externalPseudonymCheckbox.setMinWidth("25%");
-        externalPseudonymCheckbox.addValueChangeListener(event -> {
-            if (event != null) {
-                showExternalPeusdonymView(event.getValue());
-            }
-        });
 
         desidentification.addValueChangeListener(event -> {
             if (event.getValue() != null) {
                 profileDropDown.setEnabled(event.getValue());
-                externalPseudonymCheckbox.setVisible(event.getValue());
-                showExternalPeusdonymView(event.getValue());
+                if (event.getValue()){
+                    externalPseudonymLayout.add(externalPseudonymView);
+                } else {
+                    externalPseudonymLayout.remove(externalPseudonymView);
+                }
             }
         });
 
-        desidentificationLayout.add(desidentification, profileDropDown);
 
         add(UIS.setWidthFull(new HorizontalLayout(description)));
         add(UIS.setWidthFull(new HorizontalLayout(url, urlCredentials)));
         add(UIS.setWidthFull(headers));
         add(UIS.setWidthFull(new HorizontalLayout(notify)));
-        add(UIS.setWidthFull(new HorizontalLayout(notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues,
-                        notifyInterval)));
+        add(UIS.setWidthFull(new HorizontalLayout(notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues, notifyInterval)));
         add(filterSopForm);
-        add(UIS.setWidthFull(desidentificationLayout));
-        add(UIS.setWidthFull(new HorizontalLayout(externalPseudonymCheckbox, externalPseudonymView)));
+        add(UIS.setWidthFull(new HorizontalLayout(desidentification, profileDropDown)));
+        add(UIS.setWidthFull(externalPseudonymLayout));
 
 
         // Define the same validators as the Destination class, because the validation
@@ -213,29 +205,10 @@ public class DestinationStowForm extends VerticalLayout {
         binder.forField(notifyInterval) //
                 .withConverter(new HStringToIntegerConverter()) //
                 .bind(Destination::getNotifyInterval, Destination::setNotifyInterval);
-        binder.forField(desidentification) //
-                .bind(destination -> {
-                    externalPseudonymCheckbox.setVisible(destination.getDesidentification());
-                    showExternalPeusdonymView(destination.getDesidentification());
-                    return destination.getDesidentification();
-                }, Destination::setDesidentification);
 
-        binder.forField(externalPseudonymCheckbox)
-                .bind(destination -> {
-                    if (!destination.getIdTypes().equals(IdTypes.PID) && desidentification.getValue() == true) {
-                        showExternalPeusdonymView(true);
-                        return true;
-                    } else {
-                        showExternalPeusdonymView(false);
-                        return false;
-                    }
-                }, (destination, value) -> {
-                    if (value) {
-                        destination.setIdTypes(externalPseudonymView.getIdTypes());
-                    } else {
-                        destination.setIdTypes(IdTypes.PID);
-                    }
-                });
+        binder.forField(desidentification)
+                .bind(Destination::getDesidentification, Destination::setDesidentification);
+
 
         binder.forField(profileDropDown)
                 .withValidator(profilePipe -> profilePipe != null || (profilePipe == null && desidentification.getValue() == false),
@@ -300,10 +273,5 @@ public class DestinationStowForm extends VerticalLayout {
         }
         currentDestination = data;
         binder.readBean(data);
-    }
-
-    public void showExternalPeusdonymView(boolean show){
-        externalPseudonymView.setVisible(show);
-        externalPseudonymView.unBindAll(!show);
     }
 }
