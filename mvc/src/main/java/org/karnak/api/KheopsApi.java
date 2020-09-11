@@ -1,9 +1,11 @@
 package org.karnak.api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -16,7 +18,9 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.http.HttpRequest;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 // Link used:
@@ -25,11 +29,11 @@ import java.util.List;
 
 public class KheopsApi {
     private final CloseableHttpClient client = HttpClientBuilder.create().build();
-    private final String SERVER_URL;
+    private final String API_URL;
     private final String X_AUTHORIZATION_SOURCE = "X-Authorization-Source";
 
-    public KheopsApi(String SERVER_URL) {
-        this.SERVER_URL = SERVER_URL;
+    public KheopsApi(String API_URL) {
+        this.API_URL = API_URL;
     }
     // https://github.com/OsiriX-Foundation/KheopsAuthorization/wiki/Add-a-study
     // /studies/{StudyInstanceIUD}/albums/{album_id}
@@ -38,7 +42,7 @@ public class KheopsApi {
     // Authorization: album destination token
     public int shareStudy(String albumID, String studyInstanceUID,
                           String authorizationSource, String authorizationDestination) throws IOException {
-        final String stringURI = String.format("%s/studies/%s/albums/%s", SERVER_URL, studyInstanceUID, albumID);
+        final String stringURI = String.format("%s/studies/%s/albums/%s", API_URL, studyInstanceUID, albumID);
         final URI uri = URI.create(stringURI);
 
         HttpPut request = new HttpPut(uri);
@@ -60,7 +64,7 @@ public class KheopsApi {
     // Authorization: album destination token
     public int shareSerie(String albumID, String studyInstanceUID, String seriesInstanceUID,
                            String authorizationSource, String authorizationDestination) throws IOException {
-        final String stringURI = String.format("%s/studies/%s/series/%s/albums/%s", SERVER_URL, studyInstanceUID, seriesInstanceUID, albumID);
+        final String stringURI = String.format("%s/studies/%s/series/%s/albums/%s", API_URL, studyInstanceUID, seriesInstanceUID, albumID);
         final URI uri = URI.create(stringURI);
 
         HttpPut request = new HttpPut(uri);
@@ -82,26 +86,35 @@ public class KheopsApi {
     // content-type: application/x-www-form-urlencoded
     // Form Data: token: 7GtWvR6XdbvEmtThvxy1my
     public JSONObject introspect(String authorizationToken, String introspectToken) throws IOException {
-        final String stringURI = String.format("%s/api/token/introspect", SERVER_URL);
+        // final String stringURI = String.format("%s/token/introspect", API_URL);
+        final String stringURI = API_URL;
         final URI uri = URI.create(stringURI);
 
         HttpPost request = new HttpPost(uri);
+
+        List<NameValuePair> form = new ArrayList<NameValuePair>();
+        form.add(new BasicNameValuePair("token", introspectToken));
+        UrlEncodedFormEntity formEntity = new UrlEncodedFormEntity(form, Consts.UTF_8);
+        request.setEntity(formEntity);
+
         request.setHeader(HttpHeaders.ACCEPT, "application/json");
         request.setHeader(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded");
         request.setHeader(HttpHeaders.AUTHORIZATION, authorizationToken);
 
-        List<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("token", introspectToken));
-        request.setEntity(new UrlEncodedFormEntity(params, Consts.UTF_8));
-
         CloseableHttpResponse response = client.execute(request);
         try {
-            // Convert HttpEntity to JSONObject
-            // https://stackoverflow.com/questions/10804466/how-to-convert-httpentity-into-json
-            HttpEntity entity = response.getEntity();
-            if (entity != null) {
-                String retSrc = EntityUtils.toString(entity);
-                return new JSONObject(retSrc);
+            int status = response.getStatusLine().getStatusCode();
+            if (status >= 200 && status <= 300) {
+                // Convert HttpEntity to JSONObject
+                // https://stackoverflow.com/questions/10804466/how-to-convert-httpentity-into-json
+                HttpEntity responseEntity = response.getEntity();
+                if (responseEntity != null) {
+                    System.out.println(EntityUtils.toString(responseEntity));
+                    String retSrc = EntityUtils.toString(responseEntity);
+                    return new JSONObject(retSrc);
+                }
+            } else {
+                throw new ClientProtocolException(String.format("Unexpected response status: %d", status));
             }
         } finally {
             response.close();

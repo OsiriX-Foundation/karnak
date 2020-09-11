@@ -1,6 +1,7 @@
 package org.karnak.data;
 
 import org.karnak.data.profile.ProfilePersistence;
+import org.karnak.kheops.SharingAlbum;
 import org.karnak.profilepipe.Profiles;
 import org.karnak.profilepipe.profilebody.ProfilePipeBody;
 import org.karnak.standard.ConfidentialityProfiles;
@@ -106,6 +107,11 @@ public class AppConfig {
             }
         }
 
+    }
+
+    @EventListener(ApplicationReadyEvent.class)
+    public void launchSwitchingKHEOPS() {
+        SharingAlbum sharingAlbum = new SharingAlbum();
     }
     /*
     @Bean("StandardDICOM")
