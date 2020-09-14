@@ -13,6 +13,7 @@ import org.karnak.data.gateway.DestinationGroupSequenceProvider.DestinationStowG
 import org.karnak.data.profile.Profile;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @GroupSequenceProvider(value = DestinationGroupSequenceProvider.class)
@@ -41,6 +42,10 @@ public class Destination {
     @ManyToOne
     @JoinColumn(name="profile_pipe_id")
     private Profile profile;
+
+    @OneToMany
+    @JoinColumn(name="destination_id")
+    private List<KheopsAlbums> kheopsAlbums;
 
     // list of emails (comma separated) used when the images have been sent (or
     // partially sent) to the final destination. Note: if an issue appears before
