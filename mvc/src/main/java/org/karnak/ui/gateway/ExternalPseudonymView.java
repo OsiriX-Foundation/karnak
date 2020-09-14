@@ -38,7 +38,6 @@ public class ExternalPseudonymView extends HorizontalLayout {
             if (event != null) {
                 if(event.getValue()) {
                     add(verticalLayoutExeternalPseudonym);
-                    unBindAll(false);
                 } else {
                     remove(verticalLayoutExeternalPseudonym);
                     unBindAll(true);
@@ -65,19 +64,21 @@ public class ExternalPseudonymView extends HorizontalLayout {
             if(valueChangeEvent.getValue().equals(extidSentence[0])){
                 idTypes = IdTypes.EXTID;
                 verticalLayoutExeternalPseudonym.remove(horizontalLayoutPseudonymInDicom);
+                unBindAll(true);
             }else{
                 idTypes = IdTypes.ADD_EXTID;
                 verticalLayoutExeternalPseudonym.add(horizontalLayoutPseudonymInDicom);
+                unBindAll(false);
             }
         });
 
 
-        fieldValidator();
+        setBinder();
 
         add(externalPseudonymCheckbox);
     }
 
-    public void fieldValidator() {
+    public void setBinder() {
 
         binder.forField(pseudonymAsPatientName)
                 .bind(destination -> destination.getExternalPseudonym().getPseudonymAsPatientName(),

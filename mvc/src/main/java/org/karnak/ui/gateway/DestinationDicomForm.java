@@ -41,7 +41,6 @@ public class DestinationDicomForm extends VerticalLayout {
     private final TextField notifyInterval;
 
     private final Checkbox desidentification;
-    private final Checkbox externalPseudonymCheckbox;
     private final ExternalPseudonymView externalPseudonymView;
     private final ProfileDropDown profileDropDown;
 
@@ -166,7 +165,6 @@ public class DestinationDicomForm extends VerticalLayout {
         UIS.setTooltip(notifyInterval,
                 "Interval in seconds for sending a notification (when no new image is arrived in the archive folder). Default value: 45");
 
-        HorizontalLayout desidentificationLayout = new HorizontalLayout();
         desidentification = new Checkbox();
         desidentification.setLabel("Activate de-identification");
         desidentification.setValue(true);
@@ -176,26 +174,22 @@ public class DestinationDicomForm extends VerticalLayout {
 
         filterSopForm = new FilterBySOPClassesForm(this.dataService, this.binder);
 
+        HorizontalLayout externalPseudonymLayout = new HorizontalLayout();
         externalPseudonymView = new ExternalPseudonymView(binder);
         externalPseudonymView.setMinWidth("70%");
-        externalPseudonymCheckbox = new Checkbox();
-        externalPseudonymCheckbox.setLabel("Use an external pseudonym");
-        externalPseudonymCheckbox.setMinWidth("25%");
-        externalPseudonymCheckbox.addValueChangeListener(event -> {
-            if (event != null) {
-                showExternalPeusdonymView(event.getValue());
-            }
-        });
 
         desidentification.addValueChangeListener(event -> {
             if (event.getValue() != null) {
                 profileDropDown.setEnabled(event.getValue());
-                externalPseudonymCheckbox.setVisible(event.getValue());
-                showExternalPeusdonymView(event.getValue());
+                if (event.getValue()){
+                    externalPseudonymLayout.add(externalPseudonymView);
+                } else {
+                    externalPseudonymLayout.remove(externalPseudonymView);
+                    externalPseudonymView.unBindAll(true);
+                }
             }
         });
 
-        desidentificationLayout.add(desidentification, profileDropDown);
 
         add(UIS.setWidthFull(new HorizontalLayout(aeTitle, description)));
         add(UIS.setWidthFull(new HorizontalLayout(hostname, port)));
@@ -204,60 +198,44 @@ public class DestinationDicomForm extends VerticalLayout {
         add(UIS.setWidthFull(new HorizontalLayout(notifyObjectErrorPrefix,
                 notifyObjectPattern, notifyObjectValues, notifyInterval)));
         add(filterSopForm);
-        add(UIS.setWidthFull(desidentificationLayout));
-        add(UIS.setWidthFull(new HorizontalLayout(externalPseudonymCheckbox, externalPseudonymView)));
+        add(UIS.setWidthFull(new HorizontalLayout(desidentification, profileDropDown)));
+        add(UIS.setWidthFull(externalPseudonymLayout));
 
-        binder.forField(aeTitle) //
-                .withValidator( //
-                        StringUtils::isNotBlank, //
-                        "AETitle is mandatory") //
-                .withValidator( //
-                        value -> value.length() <= 16, //
-                        "AETitle has more than 16 characters") //
-                .withValidator( //
-                        UIS::containsNoWhitespace, //
-                        "AETitle contains white spaces") //
+        binder.forField(aeTitle)
+                .withValidator(StringUtils::isNotBlank, "AETitle is mandatory")
+                .withValidator(value -> value.length() <= 16,"AETitle has more than 16 characters")
+                .withValidator(UIS::containsNoWhitespace,"AETitle contains white spaces")
                 .bind(Destination::getAeTitle, Destination::setAeTitle);
-        binder.forField(hostname) //
-                .withValidator( //
-                        StringUtils::isNotBlank, //
-                        "Hostname is mandatory") //
+
+        binder.forField(hostname)
+                .withValidator(StringUtils::isNotBlank,"Hostname is mandatory")
                 .bind(Destination::getHostname, Destination::setHostname);
-        binder.forField(port) //
-                .withConverter(new HStringToIntegerConverter()) //
-                .withValidator( //
-                        Objects::nonNull, //
-                        "Port is mandatory") //
-                .withValidator( //
-                        value -> 1 <= value && value <= 65535, //
-                        "Port should be between 1 and 65535") //
+
+        binder.forField(port)
+                .withConverter(new HStringToIntegerConverter())
+                .withValidator(Objects::nonNull, "Port is mandatory")
+                .withValidator(value -> 1 <= value && value <= 65535,"Port should be between 1 and 65535") //
                 .bind(Destination::getPort, Destination::setPort);
-        binder.forField(notifyInterval) //
-                .withConverter(new HStringToIntegerConverter()) //
+
+        binder.forField(notifyInterval)
+                .withConverter(new HStringToIntegerConverter())
                 .bind(Destination::getNotifyInterval, Destination::setNotifyInterval);
-        binder.forField(desidentification) //
-                .bind(Destination::getDesidentification, Destination::setDesidentification);
+
+        binder.forField(desidentification)
+                .bind(destination -> {
+                    final boolean desidentification = destination.getDesidentification();
+                    if (desidentification){
+                        externalPseudonymLayout.add(externalPseudonymView);
+                    } else {
+                        externalPseudonymView.unBindAll(true);
+                    }
+                    return desidentification;
+                }, Destination::setDesidentification);
+
         binder.forField(profileDropDown)
                 .withValidator(profilePipe -> profilePipe != null || (profilePipe == null && desidentification.getValue() == false),
                         "Choose the de-identification profile\n")
                 .bind(Destination::getProfile, Destination::setProfile);
-
-        binder.forField(externalPseudonymCheckbox)
-                .bind(destination -> {
-                    if (!destination.getIdTypes().equals(IdTypes.PID) && desidentification.getValue() == true) {
-                        showExternalPeusdonymView(true);
-                        return true;
-                    } else {
-                        showExternalPeusdonymView(false);
-                        return false;
-                    }
-                }, (destination, value) -> {
-                    if (value) {
-                        destination.setIdTypes(externalPseudonymView.getIdTypes());
-                    } else {
-                        destination.setIdTypes(IdTypes.PID);
-                    }
-                });
 
         binder.bindInstanceFields(this);
 
@@ -315,10 +293,5 @@ public class DestinationDicomForm extends VerticalLayout {
         }
         currentDestination = data;
         binder.readBean(data);
-    }
-
-    public void showExternalPeusdonymView(boolean show){
-        externalPseudonymView.setVisible(show);
-        externalPseudonymView.unBindAll(!show);
     }
 }

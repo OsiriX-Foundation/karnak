@@ -198,13 +198,12 @@ public class DestinationStowForm extends VerticalLayout {
 
         // Define the same validators as the Destination class, because the validation
         // bean doesn't work in Vaadin
-        binder.forField(url) //
-                .withValidator( //
-                        StringUtils::isNotBlank, //
-                        "URL is mandatory") //
+        binder.forField(url)
+                .withValidator(StringUtils::isNotBlank,"URL is mandatory")
                 .bind(Destination::getUrl, Destination::setUrl);
-        binder.forField(notifyInterval) //
-                .withConverter(new HStringToIntegerConverter()) //
+
+        binder.forField(notifyInterval)
+                .withConverter(new HStringToIntegerConverter())
                 .bind(Destination::getNotifyInterval, Destination::setNotifyInterval);
 
         binder.forField(desidentification)
@@ -225,7 +224,6 @@ public class DestinationStowForm extends VerticalLayout {
                 .bind(Destination::getProfile, Destination::setProfile);
 
         binder.bindInstanceFields(this);
-
 
         // enable/disable update button while editing
         binder.addStatusChangeListener(event -> {
