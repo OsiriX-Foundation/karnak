@@ -109,10 +109,6 @@ public class AppConfig {
 
     }
 
-    @EventListener(ApplicationReadyEvent.class)
-    public void launchSwitchingKHEOPS() {
-        SharingAlbum sharingAlbum = new SharingAlbum();
-    }
     /*
     @Bean("StandardDICOM")
     public StandardDICOM getStandardDICOM() {
