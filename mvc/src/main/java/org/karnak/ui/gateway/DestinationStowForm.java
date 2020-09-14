@@ -180,6 +180,7 @@ public class DestinationStowForm extends VerticalLayout {
                     externalPseudonymLayout.add(externalPseudonymView);
                 } else {
                     externalPseudonymLayout.remove(externalPseudonymView);
+                    externalPseudonymView.unBindAll(true);
                 }
             }
         });
@@ -207,7 +208,15 @@ public class DestinationStowForm extends VerticalLayout {
                 .bind(Destination::getNotifyInterval, Destination::setNotifyInterval);
 
         binder.forField(desidentification)
-                .bind(Destination::getDesidentification, Destination::setDesidentification);
+                .bind(destination -> {
+                    final boolean desidentification = destination.getDesidentification();
+                    if (desidentification){
+                        externalPseudonymLayout.add(externalPseudonymView);
+                    } else {
+                        externalPseudonymView.unBindAll(true);
+                    }
+                    return desidentification;
+                }, Destination::setDesidentification);
 
 
         binder.forField(profileDropDown)

@@ -21,6 +21,8 @@ public class ExternalPseudonymView extends HorizontalLayout {
     private HorizontalLayout horizontalLayoutPseudonymInDicom;
     private Div verticalLayoutExeternalPseudonym;
     private Select<String> extidListBox;
+    private boolean unBindAllFields;
+
 
     final String [] extidSentence = {"Pseudonym is already store in KARNAK", "Pseudonym is in a DICOM tag"};
     private IdTypes idTypes;
@@ -36,8 +38,10 @@ public class ExternalPseudonymView extends HorizontalLayout {
             if (event != null) {
                 if(event.getValue()) {
                     add(verticalLayoutExeternalPseudonym);
+                    unBindAll(false);
                 } else {
                     remove(verticalLayoutExeternalPseudonym);
+                    unBindAll(true);
                 }
             }
         });
@@ -75,21 +79,6 @@ public class ExternalPseudonymView extends HorizontalLayout {
 
     public void fieldValidator() {
 
-        binder.forField(externalPseudonymCheckbox)
-                .bind(destination -> {
-                    if (!destination.getIdTypes().equals(IdTypes.PID)) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }, (destination, value) -> {
-                    if (value) {
-                        destination.setIdTypes(idTypes);
-                    } else {
-                        destination.setIdTypes(IdTypes.PID);
-                    }
-                });
-
         binder.forField(pseudonymAsPatientName)
                 .bind(destination -> destination.getExternalPseudonym().getPseudonymAsPatientName(),
                         (destination, value) -> destination.getExternalPseudonym().setPseudonymAsPatientName(value));
@@ -103,7 +92,7 @@ public class ExternalPseudonymView extends HorizontalLayout {
                             } catch (Exception e) {
                                 return false;
                             }
-                            return (tag != null && !tag.equals("") && cleanTag.length() == 8);
+                            return unBindAllFields || unBindSoreInDicomFields() || (tag != null && !tag.equals("") && cleanTag.length() == 8);
                         },
                         "Choose a valid tag\n")
                 .bind(destination -> {
@@ -117,7 +106,7 @@ public class ExternalPseudonymView extends HorizontalLayout {
                 });
 
         binder.forField(delimiter)
-                .withValidator(delimiter -> !(delimiter.equals("") && !position.getValue().equals("")),
+                .withValidator(delimiter -> unBindAllFields || unBindSoreInDicomFields() || !(delimiter.equals("") && !position.getValue().equals("")),
                         "Choose a delimiter when a position is defined\n")
                 .bind(destination -> {
                     if(destination.getExternalPseudonym() != null) {
@@ -131,7 +120,7 @@ public class ExternalPseudonymView extends HorizontalLayout {
 
         binder.forField(position)
                 .withConverter(new StringToIntegerConverter("Must be a numeric value"))
-                .withValidator(position -> !(position == null && !delimiter.equals("")),
+                .withValidator(position -> unBindAllFields || unBindSoreInDicomFields() || !(position == null && !delimiter.equals("")),
                         "Choose a position when a delimiter is defined\n")
                 .bind(destination -> {
                     if(destination.getExternalPseudonym() != null) {
@@ -161,23 +150,32 @@ public class ExternalPseudonymView extends HorizontalLayout {
                         destination.setIdTypes(IdTypes.EXTID);
                     }
                 });
+
+        binder.forField(externalPseudonymCheckbox)
+                .bind(destination -> {
+                    if (destination.getIdTypes().equals(IdTypes.PID)) {
+                        unBindAll(true);
+                        return false;
+                    } else {
+                        add(verticalLayoutExeternalPseudonym);
+                        unBindAll(false);
+                        return true;
+                    }
+                }, (destination, value) -> {
+                    if (value) {
+                        destination.setIdTypes(idTypes);
+                    } else {
+                        destination.setIdTypes(IdTypes.PID);
+                    }
+                });
+    }
+
+    public boolean unBindSoreInDicomFields(){
+        return (extidListBox.getValue().equals(extidSentence[0]));
     }
 
     public void unBindAll(boolean value){
-        if (value) {
-            binder.removeBinding(tag);
-            binder.removeBinding(delimiter);
-            binder.removeBinding(position);
-            tag.setValue("");
-            delimiter.setValue("");
-            position.setValue("");
-            pseudonymAsPatientName.setValue(false);
-        } else {
-            boolean exist = binder.getFields().anyMatch(field -> field.equals(tag));
-            if(exist) {
-                fieldValidator();
-            }
-        }
+        unBindAllFields = value;
     }
 
     public IdTypes getIdTypes() {
