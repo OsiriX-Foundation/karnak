@@ -75,7 +75,7 @@ public class KheopsApi {
         } catch (Exception e) {
             System.err.println(e);
         }
-        return null;
+        return new JSONObject();
     }
 
 }
