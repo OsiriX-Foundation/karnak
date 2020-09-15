@@ -1,12 +1,16 @@
 package org.karnak.kheops;
 
 import com.google.common.collect.ImmutableList;
+import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.Tag;
 import org.json.JSONObject;
 import org.karnak.api.KheopsApi;
 import org.karnak.data.gateway.KheopsAlbums;
+import org.karnak.profilepipe.Profiles;
+import org.karnak.profilepipe.utils.MyDCMElem;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.WeakHashMap;
 
@@ -24,19 +28,31 @@ public class SwitchingAlbum {
     public void apply(KheopsAlbums kheopsAlbums, DicomObject dcm) {
         String authorizationSource = kheopsAlbums.getAuthorizationSource();
         String authorizationDestination = kheopsAlbums.getAuthorizationDestination();
+        String condition = kheopsAlbums.getCondition();
         String studyInstanceUID = dcm.getStringOrElseThrow(Tag.StudyInstanceUID);
         String seriesInstanceUID = dcm.getStringOrElseThrow(Tag.SeriesInstanceUID);
         String API_URL = kheopsAlbums.getUrlAPI();
-
-        if (seriesUIDHashMap.containsKey(seriesInstanceUID) == false) {
+        if (condition == null || condition.length() == 0 || validateCondition(condition, dcm) &&
+                seriesUIDHashMap.containsKey(seriesInstanceUID) == false) {
             final boolean validAuthorizationSource = validateToken(MIN_SCOPE_SOURCE, API_URL, authorizationSource);
             final boolean validDestinationSource = validateToken(MIN_SCOPE_DESTINATION, API_URL, authorizationDestination);
 
             if (validAuthorizationSource && validDestinationSource) {
-            //TODO: If condition is true { ... }
+                //TODO: If condition is true { ... }
                 shareSerie(API_URL, studyInstanceUID, seriesInstanceUID, authorizationSource, authorizationDestination);
             }
         }
+    }
+
+    private boolean validateCondition(String condition, DicomObject dcm) {
+        boolean valid = true;
+
+        for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext(); ) {
+            final DicomElement dcmEl = iterator.next();
+            final MyDCMElem myDCMElem = new MyDCMElem(dcmEl.tag(), dcmEl.vr(), dcm);
+            valid = Profiles.getResultCondition(condition, myDCMElem) && valid;
+        }
+        return false;
     }
 
     private boolean validateToken(List<String> validMinScope, String API_URL, String introspectToken) {
