@@ -1,7 +1,6 @@
 package org.karnak.data;
 
 import org.karnak.data.profile.ProfilePersistence;
-import org.karnak.kheops.SharingAlbum;
 import org.karnak.profilepipe.Profiles;
 import org.karnak.profilepipe.profilebody.ProfilePipeBody;
 import org.karnak.standard.ConfidentialityProfiles;
