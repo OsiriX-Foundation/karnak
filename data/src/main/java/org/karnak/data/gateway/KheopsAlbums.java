@@ -15,6 +15,7 @@ public class KheopsAlbums {
     private String condition;
 
     @ManyToOne
+    @JoinColumn(name="destination_id")
     private Destination destination = new Destination();
 
     public KheopsAlbums() {}

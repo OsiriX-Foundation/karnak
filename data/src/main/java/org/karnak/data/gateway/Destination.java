@@ -7,6 +7,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.validator.group.GroupSequenceProvider;
 import org.karnak.data.gateway.DestinationGroupSequenceProvider.DestinationDicomGroup;
 import org.karnak.data.gateway.DestinationGroupSequenceProvider.DestinationStowGroup;
@@ -39,13 +41,13 @@ public class Destination {
             inverseJoinColumns = @JoinColumn(name = "sop_class_uid_id"))
     private Set<SOPClassUID> SOPClassUIDFilters = new HashSet<>();
 
+    @OneToMany(mappedBy="destination")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<KheopsAlbums> kheopsAlbums;
+
     @ManyToOne
     @JoinColumn(name="profile_pipe_id")
     private Profile profile;
-
-    @OneToMany
-    @JoinColumn(name="destination_id")
-    private List<KheopsAlbums> kheopsAlbums;
 
     // list of emails (comma separated) used when the images have been sent (or
     // partially sent) to the final destination. Note: if an issue appears before
@@ -397,5 +399,9 @@ public class Destination {
 
     public void setProfile(Profile profile) {
         this.profile = profile;
+    }
+
+    public List<KheopsAlbums> getKheopsAlbums() {
+        return kheopsAlbums;
     }
 }
