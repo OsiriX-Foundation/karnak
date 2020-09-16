@@ -30,6 +30,14 @@ public class Destination {
 
     private boolean desidentification;
 
+    private String tag;
+
+    private String delimiter;
+
+    private Integer position;
+
+    private Boolean pseudonymAsPatientName;
+
     private boolean filterBySOPClasses;
 
     private IdTypes idTypes;
@@ -43,10 +51,6 @@ public class Destination {
     @ManyToOne
     @JoinColumn(name="profile_pipe_id")
     private Profile profile;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="external_pseudonym_id")
-    private ExternalPseudonym externalPseudonym;
 
     // list of emails (comma separated) used when the images have been sent (or
     // partially sent) to the final destination. Note: if an issue appears before
@@ -143,9 +147,12 @@ public class Destination {
     protected Destination() {
         this.type = null;
         this.idTypes = IdTypes.PID;
-        this.externalPseudonym = new ExternalPseudonym();
         this.description = "";
         this.desidentification = true;
+        this.pseudonymAsPatientName = false;
+        this.tag = "";
+        this.delimiter = "";
+        this.position = Integer.valueOf(0);
         this.filterBySOPClasses = true;
         this.notify = "";
         this.notifyObjectErrorPrefix = "";
@@ -402,15 +409,6 @@ public class Destination {
         this.profile = profile;
     }
 
-    public ExternalPseudonym getExternalPseudonym() {
-        return externalPseudonym;
-    }
-
-    public void setExternalPseudonym(ExternalPseudonym externalPseudonym) {
-        this.externalPseudonym = externalPseudonym;
-    }
-
-
     public IdTypes getIdTypes() {
         return idTypes;
     }
@@ -419,7 +417,35 @@ public class Destination {
         this.idTypes = idTypes;
     }
 
-    public boolean hasExternalPseudonym() {
-        return externalPseudonym != null;
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    public String getDelimiter() {
+        return delimiter;
+    }
+
+    public void setDelimiter(String delimiter) {
+        this.delimiter = delimiter;
+    }
+
+    public Integer getPosition() {
+        return position;
+    }
+
+    public void setPosition(Integer position) {
+        this.position = position;
+    }
+
+    public Boolean getPseudonymAsPatientName() {
+        return pseudonymAsPatientName;
+    }
+
+    public void setPseudonymAsPatientName(Boolean useExternalPseudonym) {
+        this.pseudonymAsPatientName = useExternalPseudonym;
     }
 }

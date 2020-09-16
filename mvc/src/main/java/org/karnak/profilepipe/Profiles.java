@@ -9,7 +9,6 @@ import org.karnak.api.PseudonymApi;
 import org.karnak.api.rqbody.Fields;
 import org.karnak.data.AppConfig;
 import org.karnak.data.gateway.Destination;
-import org.karnak.data.gateway.ExternalPseudonym;
 import org.karnak.data.gateway.IdTypes;
 import org.karnak.data.profile.ProfileElement;
 import org.karnak.data.profile.Profile;
@@ -87,14 +86,14 @@ public class Profiles {
         return pseudonymApi.createPatient(newPatientFields, idTypes);
     }
 
-    private String getExtIDInDicom(DicomObject dcm, ExternalPseudonym externalPseudonym) {
-        if (externalPseudonym != null) {
-            String cleanTag = externalPseudonym.getTag().replaceAll("[(),]", "").toUpperCase();
+    private String getExtIDInDicom(DicomObject dcm, Destination destination) {
+        if (destination.getIdTypes().equals(IdTypes.ADD_EXTID)) {
+            String cleanTag = destination.getTag().replaceAll("[(),]", "").toUpperCase();
             final String tagValue = dcm.getString(TagUtils.intFromHexString(cleanTag)).orElse(null);
-            if (tagValue != null && externalPseudonym.getDelimiter() != null && externalPseudonym.getPosition() != null) {
-                String delimiterSpec = SpecialCharacter.escapeSpecialRegexChars(externalPseudonym.getDelimiter());
+            if (tagValue != null && destination.getDelimiter() != null && destination.getPosition() != null) {
+                String delimiterSpec = SpecialCharacter.escapeSpecialRegexChars(destination.getDelimiter());
                 try {
-                    return tagValue.split(delimiterSpec)[externalPseudonym.getPosition()];
+                    return tagValue.split(delimiterSpec)[destination.getPosition()];
                 } catch (ArrayIndexOutOfBoundsException e) {
                     LOGGER.error("Can not split the external pseudonym", e);
                     return null;
@@ -134,8 +133,7 @@ public class Profiles {
         final String SOPinstanceUID = dcm.getString(Tag.SOPInstanceUID).orElse(null);
         final String IssuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID).orElse(null);
         final String PatientID = dcm.getString(Tag.PatientID).orElse(null);
-        final ExternalPseudonym externalPseudonym = destination.getExternalPseudonym();
-        final String stringExtIDInDicom = getExtIDInDicom(dcm, externalPseudonym);
+        final String stringExtIDInDicom = getExtIDInDicom(dcm, destination);
         final IdTypes idTypes = destination.getIdTypes();
 
         MDC.put("SOPInstanceUID", SOPinstanceUID);
@@ -147,7 +145,7 @@ public class Profiles {
                 "-" , profiles.stream().map(profile -> profile.getCodeName()).collect(Collectors.toList())
         );
         BigInteger patientValue = generatePatientID(mainzellistePseudonym, profilesCodeName);
-        String patientName = !idTypes.equals(IdTypes.PID) && externalPseudonym.getPseudonymAsPatientName() == true ?
+        String patientName = !idTypes.equals(IdTypes.PID) && destination.getPseudonymAsPatientName() == true ?
                 mainzellistePseudonym : patientValue.toString(16).toUpperCase();
         String patientID = patientValue.toString();
 

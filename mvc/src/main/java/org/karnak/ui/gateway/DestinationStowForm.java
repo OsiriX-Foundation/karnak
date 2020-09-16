@@ -50,6 +50,7 @@ public class DestinationStowForm extends VerticalLayout {
     private FilterBySOPClassesForm filterSopForm;
     private ProfileDropDown profileDropDown;
     private ExternalPseudonymView externalPseudonymView;
+    private HorizontalLayout externalPseudonymLayout;
 
     public DestinationStowForm(DestinationLogic destinationLogic, DataService dataService) {
         setClassName("destination-form");
@@ -169,7 +170,7 @@ public class DestinationStowForm extends VerticalLayout {
 
         filterSopForm = new FilterBySOPClassesForm(this.dataService, this.binder);
 
-        HorizontalLayout externalPseudonymLayout = new HorizontalLayout();
+        externalPseudonymLayout = new HorizontalLayout();
         externalPseudonymView = new ExternalPseudonymView(binder);
         externalPseudonymView.setMinWidth("70%");
 
@@ -177,15 +178,15 @@ public class DestinationStowForm extends VerticalLayout {
             if (event.getValue() != null) {
                 profileDropDown.setEnabled(event.getValue());
                 if (event.getValue()){
-                    externalPseudonymLayout.add(externalPseudonymView);
+                    externalPseudonymLayout.setVisible(true);
                 } else {
-                    externalPseudonymLayout.remove(externalPseudonymView);
-                    externalPseudonymView.unBindAll(true);
+                    externalPseudonymLayout.setVisible(false);
+                    externalPseudonymView.disableDesidentification();
                 }
             }
         });
 
-
+        externalPseudonymLayout.add(externalPseudonymView);
         add(UIS.setWidthFull(new HorizontalLayout(description)));
         add(UIS.setWidthFull(new HorizontalLayout(url, urlCredentials)));
         add(UIS.setWidthFull(headers));
@@ -210,9 +211,7 @@ public class DestinationStowForm extends VerticalLayout {
                 .bind(destination -> {
                     final boolean desidentification = destination.getDesidentification();
                     if (desidentification){
-                        externalPseudonymLayout.add(externalPseudonymView);
-                    } else {
-                        externalPseudonymView.unBindAll(true);
+                        externalPseudonymLayout.setVisible(true);
                     }
                     return desidentification;
                 }, Destination::setDesidentification);

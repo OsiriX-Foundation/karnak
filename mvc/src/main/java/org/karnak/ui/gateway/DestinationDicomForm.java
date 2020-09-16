@@ -41,8 +41,6 @@ public class DestinationDicomForm extends VerticalLayout {
     private final TextField notifyInterval;
 
     private final Checkbox desidentification;
-    private final ExternalPseudonymView externalPseudonymView;
-    private final ProfileDropDown profileDropDown;
 
     private Button update;
     private Button discard;
@@ -53,6 +51,9 @@ public class DestinationDicomForm extends VerticalLayout {
     private Destination currentDestination;
     private DataService dataService;
     private FilterBySOPClassesForm filterSopForm;
+    private final ProfileDropDown profileDropDown;
+    private final ExternalPseudonymView externalPseudonymView;
+    private HorizontalLayout externalPseudonymLayout;
 
     public DestinationDicomForm(DestinationLogic destinationLogic, DataService dataService) {
         setClassName("destination-form");
@@ -61,8 +62,6 @@ public class DestinationDicomForm extends VerticalLayout {
         this.destinationLogic = destinationLogic;
         this.dataService = dataService;
         this.binder = new BeanValidationBinder<>(Destination.class);
-
-
 
         aeTitle = new TextField("AETitle");
         aeTitle.setWidth("30%");
@@ -174,7 +173,7 @@ public class DestinationDicomForm extends VerticalLayout {
 
         filterSopForm = new FilterBySOPClassesForm(this.dataService, this.binder);
 
-        HorizontalLayout externalPseudonymLayout = new HorizontalLayout();
+        externalPseudonymLayout = new HorizontalLayout();
         externalPseudonymView = new ExternalPseudonymView(binder);
         externalPseudonymView.setMinWidth("70%");
 
@@ -182,21 +181,20 @@ public class DestinationDicomForm extends VerticalLayout {
             if (event.getValue() != null) {
                 profileDropDown.setEnabled(event.getValue());
                 if (event.getValue()){
-                    externalPseudonymLayout.add(externalPseudonymView);
+                    externalPseudonymLayout.setVisible(true);
                 } else {
-                    externalPseudonymLayout.remove(externalPseudonymView);
-                    externalPseudonymView.unBindAll(true);
+                    externalPseudonymLayout.setVisible(false);
+                    externalPseudonymView.disableDesidentification();
                 }
             }
         });
 
-
+        externalPseudonymLayout.add(externalPseudonymView);
         add(UIS.setWidthFull(new HorizontalLayout(aeTitle, description)));
         add(UIS.setWidthFull(new HorizontalLayout(hostname, port)));
         add(UIS.setWidthFull(useaetdest));
         add(UIS.setWidthFull(new HorizontalLayout(notify)));
-        add(UIS.setWidthFull(new HorizontalLayout(notifyObjectErrorPrefix,
-                notifyObjectPattern, notifyObjectValues, notifyInterval)));
+        add(UIS.setWidthFull(new HorizontalLayout(notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues, notifyInterval)));
         add(filterSopForm);
         add(UIS.setWidthFull(new HorizontalLayout(desidentification, profileDropDown)));
         add(UIS.setWidthFull(externalPseudonymLayout));
@@ -225,9 +223,7 @@ public class DestinationDicomForm extends VerticalLayout {
                 .bind(destination -> {
                     final boolean desidentification = destination.getDesidentification();
                     if (desidentification){
-                        externalPseudonymLayout.add(externalPseudonymView);
-                    } else {
-                        externalPseudonymView.unBindAll(true);
+                        externalPseudonymLayout.setVisible(true);
                     }
                     return desidentification;
                 }, Destination::setDesidentification);
