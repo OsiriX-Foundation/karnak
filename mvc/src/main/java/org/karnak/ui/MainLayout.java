@@ -5,8 +5,12 @@ import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.component.icon.IronIcon;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.PWA;
+import org.karnak.data.gateway.ForwardNode;
+import org.karnak.ui.about.AboutView;
+import org.karnak.ui.admin.AdminView;
 import org.karnak.ui.authentication.AccessControlFactory;
 import org.karnak.ui.dicom.DicomMainView;
+import org.karnak.ui.forwardnode.ForwardNodeView;
 import org.karnak.ui.extid.ExternalIDView;
 import org.karnak.ui.gateway.GatewayView;
 
@@ -40,7 +44,7 @@ public class MainLayout extends FlexLayout implements RouterLayout {
         setClassName("main-layout");
 
         menu = new Menu();
-        menu.addView(GatewayView.class, GatewayView.VIEW_NAME, new IronIcon("icons", "settings"));
+        menu.addView(ForwardNodeView.class, ForwardNodeView.VIEW_NAME, new IronIcon("icons", "settings"));
         menu.addView(ProfileView.class, ProfileView.VIEW_NAME, new IronIcon("icons", "assignment"));
         menu.addView(ExternalIDView.class, ExternalIDView.VIEW_NAME, new IronIcon("icons", "social:person-add"));
         menu.addView(DicomMainView.class, DicomMainView.VIEW_NAME, new IronIcon("icons", "build"));

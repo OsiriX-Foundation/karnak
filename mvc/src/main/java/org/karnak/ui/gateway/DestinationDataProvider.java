@@ -6,12 +6,19 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.karnak.data.gateway.Destination;
+import org.karnak.data.gateway.DestinationPersistence;
 import org.karnak.data.gateway.ForwardNode;
 
 import com.vaadin.flow.data.provider.ListDataProvider;
 
 @SuppressWarnings("serial")
 public class DestinationDataProvider extends ListDataProvider<Destination> {
+
+    private DestinationPersistence destinationPersistence;
+    {
+        destinationPersistence = GatewayConfiguration.getInstance().getDestinationPersistence();
+    }
+
     private final DataService dataService;
     private Set<Destination> backend;
     private boolean hasChanges;
@@ -49,13 +56,14 @@ public class DestinationDataProvider extends ListDataProvider<Destination> {
     public void save(Destination data) {
         boolean newData = data.isNewData();
 
-        Destination dataUpdated = this.dataService.updateDestination(forwardNode, data);
+        Destination dataUpdated = dataService.updateDestination(forwardNode, data);
         if (newData) {
             refreshAll();
         } else {
             refreshItem(dataUpdated);
         }
         hasChanges = true;
+        destinationPersistence.saveAndFlush(dataUpdated);
     }
 
     /**
@@ -64,9 +72,10 @@ public class DestinationDataProvider extends ListDataProvider<Destination> {
      * @param data the data to be deleted
      */
     public void delete(Destination data) {
-        this.dataService.deleteDestination(forwardNode, data);
+        dataService.deleteDestination(forwardNode, data);
         refreshAll();
-        hasChanges = true;
+        destinationPersistence.deleteById(data.getId());
+        destinationPersistence.saveAndFlush(data);
     }
 
     /**

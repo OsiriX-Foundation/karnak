@@ -43,4 +43,5 @@ public abstract class DataService implements Serializable {
 
     public abstract SOPClassUID getSOPClassUIDByName(String name);
 
+    public abstract SOPClassUID getSOPClassUIDById(Long dataId);
 }
