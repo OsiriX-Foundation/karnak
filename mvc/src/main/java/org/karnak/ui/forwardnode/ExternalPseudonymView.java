@@ -76,7 +76,6 @@ public class ExternalPseudonymView extends HorizontalLayout {
         extidListBox = new Select<>();
         extidListBox.setWidthFull();
         extidListBox.setItems(extidSentence);
-        extidListBox.setValue(extidSentence[0]);
 
         delimiter = new TextField("Delimiter");
         tag = new TextField("Tag");
@@ -90,10 +89,8 @@ public class ExternalPseudonymView extends HorizontalLayout {
 
         binder.forField(extidListBox).bind(destination -> {
             if (destination.getIdTypes().equals(IdTypes.ADD_EXTID)) {
-                useADD_EXTID();
                 return extidSentence[1];
             } else {
-                dontUseADD_EXTID();
                 return extidSentence[0];
             }
         }, (destination, value) -> {
@@ -119,8 +116,6 @@ public class ExternalPseudonymView extends HorizontalLayout {
                 destination.setIdTypes(IdTypes.PID);
             }
         });
-
-
 
         binder.forField(tag)
                 .withValidator(tag -> {
@@ -166,6 +161,9 @@ public class ExternalPseudonymView extends HorizontalLayout {
     }
 
     public void dontUseADD_EXTID() {
+        tag.setValue("");
+        delimiter.setValue("");
+        position.setValue("0");
         horizontalLayoutPseudonymInDicom.setVisible(false);
         enableValidatorADD_EXTID = false;
     }
