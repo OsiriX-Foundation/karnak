@@ -1,16 +1,18 @@
 package org.karnak.kheops;
 
 import com.google.common.collect.ImmutableList;
-import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.Tag;
+import org.dcm4che6.data.VR;
 import org.json.JSONObject;
 import org.karnak.api.KheopsApi;
 import org.karnak.data.gateway.KheopsAlbums;
-import org.karnak.profilepipe.Profiles;
-import org.karnak.profilepipe.utils.MyDCMElem;
+import org.springframework.expression.EvaluationContext;
+import org.springframework.expression.Expression;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.WeakHashMap;
 
@@ -38,21 +40,30 @@ public class SwitchingAlbum {
             final boolean validDestinationSource = validateToken(MIN_SCOPE_DESTINATION, API_URL, authorizationDestination);
 
             if (validAuthorizationSource && validDestinationSource) {
-                //TODO: If condition is true { ... }
                 shareSerie(API_URL, studyInstanceUID, seriesInstanceUID, authorizationSource, authorizationDestination);
             }
         }
     }
 
     private boolean validateCondition(String condition, DicomObject dcm) {
-        boolean valid = true;
+        final ExprConditionKheops conditionKheops = new ExprConditionKheops(dcm);
+        return getResultCondition(condition, conditionKheops);
+    }
 
-        for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext(); ) {
-            final DicomElement dcmEl = iterator.next();
-            final MyDCMElem myDCMElem = new MyDCMElem(dcmEl.tag(), dcmEl.vr(), dcm);
-            valid = Profiles.getResultCondition(condition, myDCMElem) && valid;
+    private static boolean getResultCondition(String condition, ExprConditionKheops exprConditionKheops){
+        try {
+            //https://docs.spring.io/spring/docs/3.0.x/reference/expressions.html
+            final ExpressionParser parser = new SpelExpressionParser();
+            final EvaluationContext context = new StandardEvaluationContext(exprConditionKheops);
+            final String cleanCondition = exprConditionKheops.conditionInterpreter(condition);
+            context.setVariable("VR", VR.class);
+            context.setVariable("Tag", Tag.class);
+            final Expression exp = parser.parseExpression(cleanCondition);
+            boolean valid = exp.getValue(context, Boolean.class);
+            return valid;
+        } catch (final Exception e) {
+            return false;
         }
-        return false;
     }
 
     private boolean validateToken(List<String> validMinScope, String API_URL, String introspectToken) {

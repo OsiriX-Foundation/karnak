@@ -247,13 +247,15 @@ public class GatewayConfig {
             if(filterBySOPClassesEnable) {
                 editors.add(new FilterEditor(dstNode.getSOPClassUIDFilters()));
             }
-            final boolean desidentificationEnable = dstNode.getDesidentification();
-            if(desidentificationEnable && dstNode.getProfile() != null){ //TODO add an option in destination model
-                editors.add(new DeidentifyEditor(dstNode.getProfile()));
-            }
+
             final List<KheopsAlbums> listKheopsAlbums = dstNode.getKheopsAlbums();
             if (listKheopsAlbums != null) {
                 editors.add(new SwitchingAlbumEditor(listKheopsAlbums));
+            }
+
+            final boolean desidentificationEnable = dstNode.getDesidentification();
+            if(desidentificationEnable && dstNode.getProfile() != null){ //TODO add an option in destination model
+                editors.add(new DeidentifyEditor(dstNode.getProfile()));
             }
 
             DicomProgress progress = new DicomProgress();
