@@ -18,8 +18,8 @@ public class SwitchingAlbum {
     private final KheopsApi kheopsAPI;
     private WeakHashMap seriesUIDHashMap = new WeakHashMap<String, String>();
 
-    private static final ImmutableList<String> MIN_SCOPE_SOURCE = ImmutableList.of("read", "send");
-    private static final ImmutableList<String> MIN_SCOPE_DESTINATION = ImmutableList.of("write");
+    public static final ImmutableList<String> MIN_SCOPE_SOURCE = ImmutableList.of("read", "send");
+    public static final ImmutableList<String> MIN_SCOPE_DESTINATION = ImmutableList.of("write");
 
     public SwitchingAlbum() {
         kheopsAPI = new KheopsApi();
@@ -56,23 +56,26 @@ public class SwitchingAlbum {
     }
 
     private boolean validateToken(List<String> validMinScope, String API_URL, String introspectToken) {
-        boolean valid = true;
         try {
             final JSONObject responseIntrospect = kheopsAPI.tokenIntrospect(API_URL, introspectToken, introspectToken);
 
-            if (responseIntrospect.getBoolean("active") == false) {
-                return false;
-            }
-
-            final String scope = responseIntrospect.getString("scope");
-            for (String minScope : validMinScope) {
-                valid = scope.contains(minScope) && valid;
-            }
-            return valid;
+            return validateIntrospectedToken(responseIntrospect, validMinScope);
         } catch (Exception e) {
             System.err.println(e);
             return false;
         }
+    }
+
+    public static boolean validateIntrospectedToken(JSONObject introspectObject, List<String> validMinScope) {
+        boolean valid = true;
+        if (!introspectObject.getBoolean("active")) {
+            return false;
+        }
+        final String scope = introspectObject.getString("scope");
+        for (String minScope : validMinScope) {
+            valid = scope.contains(minScope) && valid;
+        }
+        return valid;
     }
 
     private void shareSerie(String API_URL, String studyInstanceUID, String seriesInstanceUID,
