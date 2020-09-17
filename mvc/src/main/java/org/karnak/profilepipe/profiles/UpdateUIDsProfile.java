@@ -17,7 +17,7 @@ public class UpdateUIDsProfile extends AbstractProfileItem {
     }
 
     @Override
-    public ActionItem getAction(DicomObject dcmCopy, DicomElement dcmElem, String PatientID) {
+    public ActionItem getAction(DicomObject dcm, DicomObject dcmCopy, DicomElement dcmElem, String PatientID) {
         ActionItem val = tagMap.get(dcmElem.tag());
         if (val != null) {
             return val;

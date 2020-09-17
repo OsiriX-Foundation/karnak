@@ -22,12 +22,12 @@ public class BasicProfile extends AbstractProfileItem {
     }
 
     @Override
-    public ActionItem getAction(DicomObject dcmCopy, DicomElement dcmElem, String PatientID) {
+    public ActionItem getAction(DicomObject dcm, DicomObject dcmCopy, DicomElement dcmElem, String PatientID) {
         int tag = dcmElem.tag();
         ActionItem action = actionMap.get(tag);
         if (action == null) {
             for (ProfileItem p : listProfiles) {
-                ActionItem val = p.getAction(dcmCopy, dcmElem, PatientID);
+                ActionItem val = p.getAction(dcm, dcmCopy, dcmElem, PatientID);
                 if(val != null){
                     return val;
                 }

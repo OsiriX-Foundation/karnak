@@ -8,7 +8,7 @@ import org.karnak.profilepipe.action.ActionItem;
 import java.util.List;
 
 public interface ProfileItem {
-    ActionItem getAction(DicomObject dcmCopy, DicomElement dcmElem, String PatientID);
+    ActionItem getAction(DicomObject dcm, DicomObject dcmCopy, DicomElement dcmElem, String PatientID);
 
     ActionItem put(int tag, ActionItem action);
 
