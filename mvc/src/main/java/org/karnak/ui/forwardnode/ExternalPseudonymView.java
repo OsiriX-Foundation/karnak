@@ -3,12 +3,13 @@ import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.select.Select;
+import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.converter.StringToIntegerConverter;
 import org.dcm4che6.util.TagUtils;
 import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.IdTypes;
+import org.karnak.util.DoubleToIntegerConverter;
 
 public class ExternalPseudonymView extends HorizontalLayout {
 
@@ -17,7 +18,7 @@ public class ExternalPseudonymView extends HorizontalLayout {
     private Checkbox externalPseudonymCheckbox;
     private TextField delimiter;
     private TextField tag;
-    private TextField position;
+    private NumberField position;
     private HorizontalLayout horizontalLayoutPseudonymInDicom;
     private Div verticalLayoutExeternalPseudonym;
     private Select<String> extidListBox;
@@ -79,7 +80,10 @@ public class ExternalPseudonymView extends HorizontalLayout {
 
         delimiter = new TextField("Delimiter");
         tag = new TextField("Tag");
-        position = new TextField("Position");
+        position = new NumberField("Position");
+        position.setHasControls(true);
+        position.setMin(0);
+        position.setStep(1);
 
 
     }
@@ -118,6 +122,7 @@ public class ExternalPseudonymView extends HorizontalLayout {
         });
 
         binder.forField(tag)
+                .withConverter(String::valueOf, value -> (value == null) ? "" : String.valueOf(value), "Must be a tag")
                 .withValidator(tag -> {
                             final String cleanTag = tag.replaceAll("[(),]", "").toUpperCase();
                             try {
@@ -129,22 +134,35 @@ public class ExternalPseudonymView extends HorizontalLayout {
                         },
                         "Choose a valid tag\n")
                 .bind(Destination::getTag, (destination, value) -> {
-                    destination.setTag(value);
+                    if(value.equals("")){
+                        destination.setTag(null);
+                    } else {
+                        destination.setTag(value);
+                    }
                 });
 
         binder.forField(delimiter)
+                .withConverter(String::valueOf, value -> (value == null) ? "" : String.valueOf(value), "Must be a delimiter")
                 .withValidator(delimiter -> !enableValidatorADD_EXTID || !(delimiter.equals("") && !position.getValue().equals("")),
                         "Choose a delimiter when a position is defined\n")
                 .bind(Destination::getDelimiter, (destination, value) -> {
-                    destination.setDelimiter(value);
+                    if(value.equals("")){
+                        destination.setDelimiter(null);
+                    } else {
+                        destination.setDelimiter(value);
+                    }
                 });
 
         binder.forField(position)
-                .withConverter(new StringToIntegerConverter("Must be a numeric value"))
-                .withValidator(position -> !enableValidatorADD_EXTID || !(position == null && !delimiter.equals("")),
+                .withConverter(new DoubleToIntegerConverter())
+                .withValidator(position -> !enableValidatorADD_EXTID || !(position == null && !delimiter.equals("") && position < 0),
                         "Choose a position when a delimiter is defined\n")
-                .bind(Destination::getPosition, (destination, integer) -> {
-                    destination.setPosition(integer);
+                .bind(Destination::getPosition, (destination, value) -> {
+                    if(value < 0){
+                        destination.setPosition(null);
+                    } else {
+                        destination.setPosition(value);
+                    }
                 });
     }
 
@@ -158,12 +176,15 @@ public class ExternalPseudonymView extends HorizontalLayout {
     public void useADD_EXTID() {
         horizontalLayoutPseudonymInDicom.setVisible(true);
         enableValidatorADD_EXTID = true;
+        position.setValue(0d); //set 0 value by default
     }
 
     public void dontUseADD_EXTID() {
+        //allows you to know when to set a null in the db
         tag.setValue("");
         delimiter.setValue("");
-        position.setValue("0");
+        position.setValue(-1d);
+
         horizontalLayoutPseudonymInDicom.setVisible(false);
         enableValidatorADD_EXTID = false;
     }

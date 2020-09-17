@@ -150,9 +150,9 @@ public class Destination {
         this.description = "";
         this.desidentification = true;
         this.pseudonymAsPatientName = false;
-        this.tag = "";
-        this.delimiter = "";
-        this.position = Integer.valueOf(0);
+        this.tag = null;
+        this.delimiter = null;
+        this.position = null;
         this.filterBySOPClasses = true;
         this.notify = "";
         this.notifyObjectErrorPrefix = "";
