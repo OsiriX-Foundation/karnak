@@ -4,6 +4,7 @@ import com.vaadin.flow.component.checkbox.Checkbox;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.data.gateway.Destination;
 import org.karnak.ui.component.converter.HStringToIntegerConverter;
+import org.karnak.ui.kheops.SwitchingAlbumsView;
 import org.karnak.ui.util.UIS;
 
 import com.vaadin.flow.component.Key;
@@ -176,6 +177,8 @@ public class DestinationStowForm extends VerticalLayout {
 
         filterSopForm = new FilterBySOPClassesForm(this.dataService, this.binder);
 
+        SwitchingAlbumsView switchingAlbumsView = new SwitchingAlbumsView(currentDestination);
+
         add(UIS.setWidthFull( //
                 new HorizontalLayout(description)));
         add(UIS.setWidthFull( //
@@ -189,6 +192,7 @@ public class DestinationStowForm extends VerticalLayout {
                         notifyInterval)));
         add(UIS.setWidthFull( //
                 desidentificationLayout));
+        add(UIS.setWidthFull(switchingAlbumsView));
 
         add(filterSopForm);
 
