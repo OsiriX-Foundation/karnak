@@ -39,9 +39,11 @@ public class ExternalPseudonymView extends HorizontalLayout {
             if (event != null) {
                 if(event.getValue()) {
                     verticalLayoutExeternalPseudonym.setVisible(true);
+                    idTypes = extidListBox.getValue().equals(extidSentence[0]) ?  IdTypes.EXTID : IdTypes.ADD_EXTID;
                 } else {
                     verticalLayoutExeternalPseudonym.setVisible(false);
                     pseudonymAsPatientName.setValue(false);
+                    idTypes = IdTypes.PID;
                     dontUseADD_EXTID();
                 }
             }
@@ -89,24 +91,33 @@ public class ExternalPseudonymView extends HorizontalLayout {
     }
 
     public void setBinder() {
-        binder.forField(pseudonymAsPatientName).bind(Destination::getPseudonymAsPatientName, Destination::setPseudonymAsPatientName);
+        binder.forField(pseudonymAsPatientName).bind(destination -> {
+                    if (destination.getPseudonymAsPatientName() == null) {
+                        return false;
+                    } else {
+                        return destination.getPseudonymAsPatientName();
+                    }
+                },
+                (destination, aBoolean) -> {
+                    if (idTypes == null || idTypes.equals(IdTypes.PID)) {
+                        destination.setPseudonymAsPatientName(null);
+                    } else {
+                        destination.setPseudonymAsPatientName(aBoolean);
+                    }
+        });
 
         binder.forField(extidListBox).bind(destination -> {
-            if (destination.getIdTypes().equals(IdTypes.ADD_EXTID)) {
-                return extidSentence[1];
-            } else {
+            if (destination.getIdTypes() == null || !destination.getIdTypes().equals(IdTypes.ADD_EXTID)) {
                 return extidSentence[0];
+            } else {
+                return extidSentence[1];
             }
         }, (destination, value) -> {
-            if (value.equals(extidSentence[1])) {
-                destination.setIdTypes(IdTypes.ADD_EXTID);
-            } else {
-                destination.setIdTypes(IdTypes.EXTID);
-            }
+            destination.setIdTypes(idTypes);
         });
 
         binder.forField(externalPseudonymCheckbox).bind(destination -> {
-            if (destination.getIdTypes().equals(IdTypes.PID)) {
+            if (destination.getIdTypes() == null || destination.getIdTypes().equals(IdTypes.PID)) {
                 verticalLayoutExeternalPseudonym.setVisible(false);
                 return false;
             } else {
@@ -114,11 +125,7 @@ public class ExternalPseudonymView extends HorizontalLayout {
                 return true;
             }
         }, (destination, value) -> {
-            if (value) {
-                destination.setIdTypes(idTypes);
-            } else {
-                destination.setIdTypes(IdTypes.PID);
-            }
+            destination.setIdTypes(idTypes);
         });
 
         binder.forField(tag)
@@ -167,10 +174,10 @@ public class ExternalPseudonymView extends HorizontalLayout {
     }
 
     public void disableDesidentification() {
-        idTypes = IdTypes.PID;
         pseudonymAsPatientName.setValue(false);
         externalPseudonymCheckbox.setValue(false);
         dontUseADD_EXTID();
+        idTypes = null;
     }
 
     public void useADD_EXTID() {
