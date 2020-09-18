@@ -21,6 +21,20 @@ public class ExprConditionKheops {
         return dcmValue != null ? dcmValue.equals(value) : false;
     }
 
+    public boolean tagValueContains(int tag, String value) {
+        String dcmValue = dcm.getString(tag).orElse(null);
+        return dcmValue != null ? dcmValue.contains(value) : false;
+    }
+
+    public boolean tagValueBeginWith(int tag, String value) {
+        String dcmValue = dcm.getString(tag).orElse(null);
+        return dcmValue != null ? dcmValue.startsWith(value) : false;
+    }
+
+    public boolean tagValueEndWith(int tag, String value) {
+        String dcmValue = dcm.getString(tag).orElse(null);
+        return dcmValue != null ? dcmValue.endsWith(value) : false;
+    }
 
     public String conditionInterpreter(String condition) {
         String[] conditionArray = condition.split(" ");
