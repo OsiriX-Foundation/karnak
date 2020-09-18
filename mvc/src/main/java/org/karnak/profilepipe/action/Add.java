@@ -8,33 +8,30 @@ import org.dcm4che6.util.TagUtils;
 import java.util.Iterator;
 
 public class Add extends AbstractAction{
-    public Add(String symbol) {
-        super(symbol);
-    }
 
-    public Add(String symbol, String dummyValue, VR vr) {
-        super(symbol, dummyValue, vr);
+    public Add(String symbol, int newTag, VR vr, String dummyValue) {
+        super(symbol, newTag, vr, dummyValue);
     }
 
     @Override
     public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, String patientID) {
-        final String tagValueIn = dcm.getString(tag).orElse(null);
+        final String tagValueIn = dcm.getString(newTag).orElse(null);
 
-        dcm.get(tag).ifPresentOrElse(dcmEl -> {
+        dcm.get(newTag).ifPresentOrElse(dcmEl -> {
             if (dummyValue != null) {
-                dcm.setString(tag, dcmEl.vr(), dummyValue);
+                dcm.setString(newTag, dcmEl.vr(), dummyValue);
             } else {
-                dcm.setNull(tag, dcmEl.vr());
+                dcm.setNull(newTag, dcmEl.vr());
             }
         }, () -> {
             if (dummyValue != null) {
-                dcm.setString(tag, vr, dummyValue);
+                dcm.setString(newTag, vr, dummyValue);
             } else {
-                dcm.setNull(tag, vr);
+                dcm.setNull(newTag, vr);
             }
         });
 
-        final String tagValueOut = dcm.getString(tag).orElse(null);
-        LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_INOUT, TagUtils.toString(tag), tag, symbol, tagValueIn, tagValueOut);
+        final String tagValueOut = dcm.getString(newTag).orElse(null);
+        LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_INOUT, TagUtils.toString(newTag), newTag, symbol, tagValueIn, tagValueOut);
     }
 }
