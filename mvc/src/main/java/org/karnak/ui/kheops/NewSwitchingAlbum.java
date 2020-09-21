@@ -55,7 +55,7 @@ public class NewSwitchingAlbum extends Div {
                         return validateToken(value, textUrlAPI.getValue(), SwitchingAlbum.MIN_SCOPE_DESTINATION);
                     }
                     return true;
-                }, "Token can't be validate")
+                }, "Token can't be validate, minimum permissions: [write]")
                 .bind(KheopsAlbums::getAuthorizationDestination, KheopsAlbums::setAuthorizationDestination);
         binder.forField(textAuthorizationSource)
                 .withValidator(StringUtils::isNotBlank,"Token source is mandatory")
@@ -64,7 +64,7 @@ public class NewSwitchingAlbum extends Div {
                         return validateToken(value, textUrlAPI.getValue(), SwitchingAlbum.MIN_SCOPE_SOURCE);
                     }
                     return true;
-                }, "Token can't be validate")
+                }, "Token can't be validate, minimum permissions: [read, send]")
                 .bind(KheopsAlbums::getAuthorizationSource, KheopsAlbums::setAuthorizationSource);
         binder.forField(textUrlAPI)
                 .withValidator(StringUtils::isNotBlank,"Url API is mandatory")
