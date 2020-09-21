@@ -61,7 +61,7 @@ public class ActionDates extends AbstractProfileItem {
     }
 
     @Override
-    public ActionItem getAction(DicomObject dcmCopy, DicomElement dcmElem, String PatientID) {
+    public ActionItem getAction(DicomObject dcm, DicomObject dcmCopy, DicomElement dcmElem, String PatientID) {
         final int tag = dcmElem.tag();
         final VR vr = dcmElem.vr();
 
