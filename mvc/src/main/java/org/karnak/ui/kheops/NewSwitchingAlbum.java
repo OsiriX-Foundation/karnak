@@ -85,4 +85,11 @@ public class NewSwitchingAlbum extends Div {
     public Button getButtonAdd() {
         return buttonAdd;
     }
+
+    public void clear() {
+        textUrlAPI.clear();
+        textAuthorizationDestination.clear();
+        textAuthorizationSource.clear();
+        textCondition.clear();
+    }
 }

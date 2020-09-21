@@ -194,16 +194,8 @@ public class DestinationStowForm extends VerticalLayout {
         add(filterSopForm);
 
         SwitchingAlbumsView switchingAlbumsView = new SwitchingAlbumsView();
-        Checkbox checkboxSwitchingAlbums = new Checkbox("Swithing in different KHEOPS albums");
 
-        checkboxSwitchingAlbums.addValueChangeListener(event -> {
-            if (event.getValue() != null) {
-                switchingAlbumsView.addComponent(event.getValue());
-            }
-        });
-
-        add(UIS.setWidthFull(checkboxSwitchingAlbums));
-        add(UIS.setWidthFull(switchingAlbumsView.getComponent()));
+        add(UIS.setWidthFull(switchingAlbumsView));
 
         // Define the same validators as the Destination class, because the validation
         // bean doesn't work in Vaadin
