@@ -404,4 +404,8 @@ public class Destination {
     public List<KheopsAlbums> getKheopsAlbums() {
         return kheopsAlbums;
     }
+
+    public void setKheopsAlbums(List<KheopsAlbums> kheopsAlbums) {
+        this.kheopsAlbums = kheopsAlbums;
+    }
 }

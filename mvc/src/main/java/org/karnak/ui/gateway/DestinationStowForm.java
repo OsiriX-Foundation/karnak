@@ -54,6 +54,7 @@ public class DestinationStowForm extends VerticalLayout {
     public DestinationStowForm(DestinationLogic destinationLogic, DataService dataService) {
         setClassName("destination-form");
         setSizeFull();
+        getStyle().set("overflow-y", "auto");
 
         this.destinationLogic = destinationLogic;
         this.dataService = dataService;
@@ -177,8 +178,6 @@ public class DestinationStowForm extends VerticalLayout {
 
         filterSopForm = new FilterBySOPClassesForm(this.dataService, this.binder);
 
-        SwitchingAlbumsView switchingAlbumsView = new SwitchingAlbumsView(currentDestination);
-
         add(UIS.setWidthFull( //
                 new HorizontalLayout(description)));
         add(UIS.setWidthFull( //
@@ -192,9 +191,19 @@ public class DestinationStowForm extends VerticalLayout {
                         notifyInterval)));
         add(UIS.setWidthFull( //
                 desidentificationLayout));
-        add(UIS.setWidthFull(switchingAlbumsView));
-
         add(filterSopForm);
+
+        SwitchingAlbumsView switchingAlbumsView = new SwitchingAlbumsView();
+        Checkbox checkboxSwitchingAlbums = new Checkbox("Swithing in different KHEOPS albums");
+
+        checkboxSwitchingAlbums.addValueChangeListener(event -> {
+            if (event.getValue() != null) {
+                switchingAlbumsView.addComponent(event.getValue());
+            }
+        });
+
+        add(UIS.setWidthFull(checkboxSwitchingAlbums));
+        add(UIS.setWidthFull(switchingAlbumsView.getComponent()));
 
         // Define the same validators as the Destination class, because the validation
         // bean doesn't work in Vaadin
@@ -213,6 +222,10 @@ public class DestinationStowForm extends VerticalLayout {
                 .withValidator(profilePipe -> profilePipe != null || (profilePipe == null && desidentification.getValue() == false),
                         "Choose the de-identification profile\n")
                 .bind(Destination::getProfile, Destination::setProfile);
+
+        binder.forField(switchingAlbumsView)
+                .bind(Destination::getKheopsAlbums, Destination::setKheopsAlbums);
+
         binder.bindInstanceFields(this);
 
 
