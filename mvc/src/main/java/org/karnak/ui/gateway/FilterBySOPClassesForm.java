@@ -24,7 +24,7 @@ public class FilterBySOPClassesForm extends HorizontalLayout {
         this.binder = binder;
         setClassName("filters-form");
 
-        setSizeFull();
+        setWidthFull();
 
         filterBySOPClassesCheckbox = new Checkbox();
         filterBySOPClassesCheckbox.setLabel("Authorized SOPs");
