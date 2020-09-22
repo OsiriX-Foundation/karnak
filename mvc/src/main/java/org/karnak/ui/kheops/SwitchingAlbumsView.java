@@ -62,6 +62,7 @@ public class SwitchingAlbumsView extends CustomField<List<KheopsAlbums>> {
             if (newSwitchingAlbumBinder.writeBeanIfValid(newKheopsAlbums)) {
                 kheopsAlbumsList.add(newKheopsAlbums);
                 gridSwitchingAlbums.setItems(kheopsAlbumsList);
+                newSwitchingAlbum.clear();
             }
         });
     }
