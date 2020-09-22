@@ -7,6 +7,7 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.DestinationType;
+import org.karnak.data.gateway.DicomSourceNode;
 import org.karnak.data.gateway.ForwardNode;
 import org.karnak.ui.api.ForwardNodeAPI;
 import org.karnak.ui.component.ConfirmDialog;
@@ -28,6 +29,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
     private SourceNodesView sourceNodesView;
     private NewUpdateDestination newUpdateDestination;
     private ButtonSaveDeleteCancel buttonForwardNodeSaveDeleteCancel;
+    private NewUpdateSourceNode newUpdateSourceNode;
 
     public LayoutEditForwardNode(ForwardNodeViewLogic forwardNodeViewLogic, ForwardNodeAPI forwardNodeAPI) {
         this.forwardNodeViewLogic = forwardNodeViewLogic;
@@ -47,6 +49,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
         buttonForwardNodeSaveDeleteCancel = new ButtonSaveDeleteCancel();
 
         newUpdateDestination = new NewUpdateDestination(destinationDataProvider, destinationViewLogic);
+        newUpdateSourceNode = new NewUpdateSourceNode();
         setEditView();
 
         setLayoutDestinationsSources(tabSourcesDestination.getSelectedTab().getLabel());
@@ -60,6 +63,9 @@ public class LayoutEditForwardNode extends VerticalLayout {
         setEventDestinationsViewDICOM();
         setEventDestinationsViewSTOW();
         setEventDestinationCancelButton();
+
+        setEventNewSourceNode();
+        setEventGridSourceNode();
     }
 
     public void setEditView() {
@@ -120,6 +126,13 @@ public class LayoutEditForwardNode extends VerticalLayout {
         });
     }
 
+    private void setEventNewSourceNode() {
+        sourceNodesView.getNewSourceNode().addClickListener(event -> {
+            newUpdateSourceNode.load(null);
+            addFormView(newUpdateSourceNode);
+        });
+    }
+
     private void addFormView(Component form) {
         removeAll();
         add(form);
@@ -173,6 +186,14 @@ public class LayoutEditForwardNode extends VerticalLayout {
     private void setEventDestinationCancelButton() {
         newUpdateDestination.getButtonCancel().addClickListener(event -> {
             setEditView();
+        });
+    }
+
+    private void setEventGridSourceNode() {
+        sourceNodesView.getGridSourceNode().addItemClickListener(event -> {
+            DicomSourceNode dicomSourceNode = event.getItem();
+            newUpdateSourceNode.load(dicomSourceNode);
+            addFormView(newUpdateSourceNode);
         });
     }
 }
