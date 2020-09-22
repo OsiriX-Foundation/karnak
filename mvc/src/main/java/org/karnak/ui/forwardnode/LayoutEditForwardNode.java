@@ -12,15 +12,17 @@ import org.karnak.data.gateway.ForwardNode;
 import org.karnak.ui.api.ForwardNodeAPI;
 import org.karnak.ui.component.ConfirmDialog;
 import org.karnak.ui.gateway.DestinationDataProvider;
+import org.karnak.ui.gateway.SourceNodeDataProvider;
 import org.karnak.ui.util.UIS;
 
 public class LayoutEditForwardNode extends VerticalLayout {
     private ForwardNodeViewLogic forwardNodeViewLogic;
-    private DestinationViewLogic destinationViewLogic;
+    private ViewLogic viewLogic;
     private ForwardNodeAPI forwardNodeAPI;
     public ForwardNode currentForwardNode;
     private Binder<ForwardNode> binderForwardNode;
     DestinationDataProvider destinationDataProvider;
+    SourceNodeDataProvider sourceNodeDataProvider;
 
     private EditAETitleDescription editAETitleDescription;
     private TabSourcesDestination tabSourcesDestination;
@@ -33,7 +35,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
 
     public LayoutEditForwardNode(ForwardNodeViewLogic forwardNodeViewLogic, ForwardNodeAPI forwardNodeAPI) {
         this.forwardNodeViewLogic = forwardNodeViewLogic;
-        this.destinationViewLogic = new DestinationViewLogic(this);
+        this.viewLogic = new ViewLogic(this);
         this.forwardNodeAPI = forwardNodeAPI;
         this.currentForwardNode = null;
         binderForwardNode = new BeanValidationBinder<>(ForwardNode.class);
@@ -45,11 +47,13 @@ public class LayoutEditForwardNode extends VerticalLayout {
         layoutDestinationsSources.setSizeFull();
         destinationsView = new DestinationsView(forwardNodeAPI.getDataProvider().getDataService());
         sourceNodesView = new SourceNodesView(forwardNodeAPI.getDataProvider().getDataService());
-        destinationDataProvider = new DestinationDataProvider(forwardNodeAPI.getDataProvider().getDataService());
         buttonForwardNodeSaveDeleteCancel = new ButtonSaveDeleteCancel();
 
-        newUpdateDestination = new NewUpdateDestination(destinationDataProvider, destinationViewLogic);
-        newUpdateSourceNode = new NewUpdateSourceNode();
+        destinationDataProvider = new DestinationDataProvider(forwardNodeAPI.getDataProvider().getDataService());
+        newUpdateDestination = new NewUpdateDestination(destinationDataProvider, viewLogic);
+
+        sourceNodeDataProvider = new SourceNodeDataProvider(forwardNodeAPI.getDataProvider().getDataService());
+        newUpdateSourceNode = new NewUpdateSourceNode(sourceNodeDataProvider, viewLogic);
         setEditView();
 
         setLayoutDestinationsSources(tabSourcesDestination.getSelectedTab().getLabel());
@@ -81,11 +85,12 @@ public class LayoutEditForwardNode extends VerticalLayout {
         currentForwardNode = forwardNode;
         editAETitleDescription.setForwardNode(forwardNode);
 
-        destinationViewLogic.setApplicationEventPublisher(forwardNodeAPI.getApplicationEventPublisher());
+        viewLogic.setApplicationEventPublisher(forwardNodeAPI.getApplicationEventPublisher());
         destinationsView.setForwardNode(forwardNode);
         destinationDataProvider.setForwardNode(forwardNode);
 
         sourceNodesView.setForwardNode(forwardNode);
+        sourceNodeDataProvider.setForwardNode(forwardNode);
 
         setEditView();
         if (forwardNode == null) {

@@ -2,11 +2,11 @@ package org.karnak.ui.forwardnode;
 
 import org.springframework.context.ApplicationEventPublisher;
 
-public class DestinationViewLogic {
+public class ViewLogic {
     LayoutEditForwardNode currentLayout;
     private ApplicationEventPublisher applicationEventPublisher;
 
-    public DestinationViewLogic(LayoutEditForwardNode currentLayout) {
+    public ViewLogic(LayoutEditForwardNode currentLayout) {
         this.currentLayout = currentLayout;
     }
 
