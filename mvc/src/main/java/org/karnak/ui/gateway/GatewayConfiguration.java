@@ -2,10 +2,7 @@ package org.karnak.ui.gateway;
 
 import javax.annotation.PostConstruct;
 
-import org.karnak.data.gateway.DestinationPersistence;
-import org.karnak.data.gateway.GatewayPersistence;
-import org.karnak.data.gateway.SOPClassUID;
-import org.karnak.data.gateway.SOPClassUIDPersistence;
+import org.karnak.data.gateway.*;
 import org.karnak.standard.dicominnolitics.StandardSOPS;
 import org.karnak.standard.dicominnolitics.jsonSOP;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +27,9 @@ public class GatewayConfiguration {
 
     @Autowired
     private DestinationPersistence destinationPersistence;
+
+    @Autowired
+    private DicomSourceNodePersistence dicomSourceNodePersistence;
 
     @Autowired
     private SOPClassUIDPersistence sopClassUIDPersistence;
@@ -61,6 +61,10 @@ public class GatewayConfiguration {
 
     public DestinationPersistence getDestinationPersistence() {
         return destinationPersistence;
+    }
+
+    public DicomSourceNodePersistence getDicomSourceNodePersistence() {
+        return dicomSourceNodePersistence;
     }
 
     public SOPClassUIDPersistence getSopClassUIDPersistence() {return sopClassUIDPersistence; }
