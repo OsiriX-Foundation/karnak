@@ -20,8 +20,8 @@ public class SwitchingAlbumsView extends CustomField<List<KheopsAlbums>> {
     private VerticalLayout layout;
 
     public SwitchingAlbumsView() {
-        newSwitchingAlbumBinder = new BeanValidationBinder<>(KheopsAlbums.class);
-        newSwitchingAlbum = new NewSwitchingAlbum(newSwitchingAlbumBinder);
+        newSwitchingAlbum = new NewSwitchingAlbum();
+        newSwitchingAlbumBinder = newSwitchingAlbum.getBinder();
         gridSwitchingAlbums = new GridSwitchingAlbums();
         kheopsAlbumsList = new ArrayList<>();
         layout = new VerticalLayout();
@@ -57,10 +57,11 @@ public class SwitchingAlbumsView extends CustomField<List<KheopsAlbums>> {
     }
 
     private void setEventButtonAdd() {
-        KheopsAlbums newKheopsAlbums = new KheopsAlbums();
         newSwitchingAlbum.getButtonAdd().addClickListener(event -> {
+            KheopsAlbums newKheopsAlbums = new KheopsAlbums();
             if (newSwitchingAlbumBinder.writeBeanIfValid(newKheopsAlbums)) {
                 kheopsAlbumsList.add(newKheopsAlbums);
+                gridSwitchingAlbums.setItems(kheopsAlbumsList);
             }
         });
     }

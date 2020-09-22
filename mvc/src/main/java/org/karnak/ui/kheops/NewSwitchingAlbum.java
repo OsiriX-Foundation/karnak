@@ -22,19 +22,19 @@ public class NewSwitchingAlbum extends Div {
     private TextField textCondition;
     private TextField textUrlAPI;
 
-    public NewSwitchingAlbum(Binder<KheopsAlbums> binder) {
+    public NewSwitchingAlbum() {
         setWidthFull();
 
-        this.binder = binder;
+        TextFieldsBindSwitchingAlbum textFieldsBindSwitchingAlbum = new TextFieldsBindSwitchingAlbum();
+        binder = textFieldsBindSwitchingAlbum.getBinder();
         kheopsApi = new KheopsApi();
         buttonAdd = new Button("Add");
-        textAuthorizationDestination = new TextField("Valid token of destination");
-        textAuthorizationSource = new TextField("Valid token of source");
-        textCondition = new TextField("Condtion");
-        textUrlAPI = new TextField("Url API");
+        textAuthorizationDestination = textFieldsBindSwitchingAlbum.getTextAuthorizationDestination();
+        textAuthorizationSource = textFieldsBindSwitchingAlbum.getTextAuthorizationSource();
+        textCondition = textFieldsBindSwitchingAlbum.getTextCondition();
+        textUrlAPI = textFieldsBindSwitchingAlbum.getTextUrlAPI();
 
         setElements();
-        setBinder();
 
         add(textUrlAPI, textAuthorizationDestination, textAuthorizationSource, textCondition, buttonAdd);
         binder.bindInstanceFields(this);
@@ -42,44 +42,13 @@ public class NewSwitchingAlbum extends Div {
 
     private void setElements() {
         textAuthorizationDestination.setWidth("20%");
+        textAuthorizationDestination.setPlaceholder("Valid token of destination");
         textAuthorizationSource.setWidth("20%");
+        textAuthorizationSource.setPlaceholder("Valid token of source");
         textCondition.setWidth("20%");
+        textCondition.setPlaceholder("Condition");
         textUrlAPI.setWidth("20%");
-    }
-
-    private void setBinder() {
-        binder.forField(textAuthorizationDestination)
-                .withValidator(StringUtils::isNotBlank,"Token destination is mandatory")
-                .withValidator(value -> {
-                    if (textUrlAPI.getValue() != "") {
-                        return validateToken(value, textUrlAPI.getValue(), SwitchingAlbum.MIN_SCOPE_DESTINATION);
-                    }
-                    return true;
-                }, "Token can't be validate, minimum permissions: [write]")
-                .bind(KheopsAlbums::getAuthorizationDestination, KheopsAlbums::setAuthorizationDestination);
-        binder.forField(textAuthorizationSource)
-                .withValidator(StringUtils::isNotBlank,"Token source is mandatory")
-                .withValidator(value -> {
-                    if (textUrlAPI.getValue() != "") {
-                        return validateToken(value, textUrlAPI.getValue(), SwitchingAlbum.MIN_SCOPE_SOURCE);
-                    }
-                    return true;
-                }, "Token can't be validate, minimum permissions: [read, send]")
-                .bind(KheopsAlbums::getAuthorizationSource, KheopsAlbums::setAuthorizationSource);
-        binder.forField(textUrlAPI)
-                .withValidator(StringUtils::isNotBlank,"Url API is mandatory")
-                .bind(KheopsAlbums::getUrlAPI, KheopsAlbums::setUrlAPI);
-        binder.forField(textCondition)
-                .bind(KheopsAlbums::getCondition, KheopsAlbums::setCondition);
-    }
-
-    private boolean validateToken(String token, String urlAPI, List<String> validMinScope) {
-        try {
-            JSONObject responseIntrospect = kheopsApi.tokenIntrospect(urlAPI, token, token);
-            return SwitchingAlbum.validateIntrospectedToken(responseIntrospect, validMinScope);
-        } catch (Exception e) {
-            return false;
-        }
+        textUrlAPI.setPlaceholder("Url API");
     }
 
     public Button getButtonAdd() {
@@ -91,5 +60,9 @@ public class NewSwitchingAlbum extends Div {
         textAuthorizationDestination.clear();
         textAuthorizationSource.clear();
         textCondition.clear();
+    }
+
+    public Binder<KheopsAlbums> getBinder() {
+        return binder;
     }
 }
