@@ -6,8 +6,8 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import org.karnak.data.NodeEvent;
 import org.karnak.data.NodeEventType;
-import org.karnak.data.gateway.DestinationType;
 import org.karnak.data.gateway.DicomSourceNode;
+import org.karnak.ui.component.ConfirmDialog;
 import org.karnak.ui.gateway.SourceNodeDataProvider;
 import org.karnak.ui.util.UIS;
 
@@ -28,6 +28,7 @@ public class NewUpdateSourceNode extends VerticalLayout {
         buttonSaveDeleteCancel = new ButtonSaveDeleteCancel();
 
         setButtonSaveEvent();
+        setButtonDeleteEvent();
     }
 
     public void setView() {
@@ -55,6 +56,22 @@ public class NewUpdateSourceNode extends VerticalLayout {
                 dataProvider.save(currentSourceNode);
                 viewLogic.updateForwardNodeInEditView();
                 viewLogic.getApplicationEventPublisher().publishEvent(new NodeEvent(currentSourceNode, nodeEventType));
+            }
+        });
+    }
+
+    private void setButtonDeleteEvent() {
+        buttonSaveDeleteCancel.getDelete().addClickListener(event -> {
+            if (currentSourceNode != null) {
+                ConfirmDialog dialog = new ConfirmDialog(
+                        "Are you sure to delete the DICOM source node " + currentSourceNode.getAeTitle() + "?");
+                dialog.addConfirmationListener(componentEvent -> {
+                    NodeEvent nodeEvent = new NodeEvent(currentSourceNode, NodeEventType.REMOVE);
+                    dataProvider.delete(currentSourceNode);
+                    viewLogic.updateForwardNodeInEditView();
+                    viewLogic.getApplicationEventPublisher().publishEvent(nodeEvent);
+                });
+                dialog.open();
             }
         });
     }

@@ -74,6 +74,8 @@ public class SourceNodeDataProvider extends ListDataProvider<DicomSourceNode> {
         this.dataService.deleteSourceNode(forwardNode, data);
         refreshAll();
         hasChanges = true;
+        dicomSourceNodePersistence.deleteById(data.getId());
+        dicomSourceNodePersistence.saveAndFlush(data);
     }
 
     /**
