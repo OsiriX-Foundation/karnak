@@ -1,0 +1,164 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.0.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+    <changeSet author="karnak" id="1.0-1">
+        <createTable tableName="arguments">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="arguments_pkey"/>
+            </column>
+            <column name="key" type="VARCHAR(255)"/>
+            <column name="value" type="VARCHAR(255)"/>
+            <column name="profile_element_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="karnak" id="1.0-2">
+        <createTable tableName="destination">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="destination_pkey"/>
+            </column>
+            <column name="ae_title" type="VARCHAR(255)"/>
+            <column name="delimiter" type="VARCHAR(255)"/>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="desidentification" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="filter_bysopclasses" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="headers" type="VARCHAR(4096)"/>
+            <column name="hostname" type="VARCHAR(255)"/>
+            <column name="id_types" type="INTEGER"/>
+            <column name="notify" type="VARCHAR(255)"/>
+            <column name="notify_interval" type="INTEGER"/>
+            <column name="notify_object_error_prefix" type="VARCHAR(255)"/>
+            <column name="notify_object_pattern" type="VARCHAR(255)"/>
+            <column name="notify_object_values" type="VARCHAR(255)"/>
+            <column name="port" type="INTEGER"/>
+            <column name="position" type="INTEGER"/>
+            <column name="pseudonym_as_patient_name" type="BOOLEAN"/>
+            <column name="tag" type="VARCHAR(255)"/>
+            <column name="type" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="url" type="VARCHAR(255)"/>
+            <column name="url_credentials" type="VARCHAR(255)"/>
+            <column name="useaetdest" type="BOOLEAN"/>
+            <column name="forward_node_id" type="BIGINT"/>
+            <column name="profile_pipe_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="karnak" id="1.0-3">
+        <createTable tableName="dicom_source_node">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="dicom_source_node_pkey"/>
+            </column>
+            <column name="ae_title" type="VARCHAR(16)"/>
+            <column name="check_hostname" type="BOOLEAN"/>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="hostname" type="VARCHAR(255)"/>
+            <column name="forward_node_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="karnak" id="1.0-4">
+        <createTable tableName="profile_element">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="profile_element_pkey"/>
+            </column>
+            <column name="action" type="VARCHAR(255)"/>
+            <column name="codename" type="VARCHAR(255)"/>
+            <column name="condition" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="option" type="VARCHAR(255)"/>
+            <column name="position" type="INTEGER"/>
+            <column name="profile_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="karnak" id="1.0-5">
+        <createTable tableName="tag">
+            <column name="tag_type" type="VARCHAR(31)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="tag_pkey"/>
+            </column>
+            <column name="tag_value" type="VARCHAR(255)"/>
+            <column name="profile_element_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="karnak" id="1.0-6">
+        <createTable tableName="sop_class_filter">
+            <column name="destination_id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="sop_class_filter_pkey"/>
+            </column>
+            <column name="sop_class_uid_id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="sop_class_filter_pkey"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="karnak" id="1.0-7">
+        <createTable tableName="sop_class_uid">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="sop_class_uid_pkey"/>
+            </column>
+            <column name="ciod" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="uid" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="karnak" id="1.0-8">
+        <createTable tableName="forward_node">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="forward_node_pkey"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="fwd_ae_title" type="VARCHAR(16)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="karnak" id="1.0-9">
+        <createTable tableName="profile">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="profile_pkey"/>
+            </column>
+            <column name="bydefault" type="BOOLEAN"/>
+            <column name="defaultissueropatientid" type="VARCHAR(255)"/>
+            <column name="minimum_karnak_version" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="version" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="karnak" id="1.0-11">
+        <addForeignKeyConstraint baseColumnNames="destination_id" baseTableName="sop_class_filter" constraintName="fk5q6u0t9gsa0xgch664mrh1kg" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="destination" validate="true"/>
+    </changeSet>
+    <changeSet author="karnak" id="1.0-12">
+        <addForeignKeyConstraint baseColumnNames="profile_element_id" baseTableName="tag" constraintName="fk53cdl3kg03kjp62fahec8106u" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="profile_element" validate="true"/>
+    </changeSet>
+    <changeSet author="karnak" id="1.0-13">
+        <addForeignKeyConstraint baseColumnNames="profile_element_id" baseTableName="arguments" constraintName="fkrd2fm3ap513t4f7dpvk8cq6fd" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="profile_element" validate="true"/>
+    </changeSet>
+    <changeSet author="karnak" id="1.0-14">
+        <addForeignKeyConstraint baseColumnNames="profile_pipe_id" baseTableName="destination" constraintName="fkgluf3h0sldfwk9c4ditki4g0i" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="profile" validate="true"/>
+    </changeSet>
+    <changeSet author="karnak" id="1.0-15">
+        <addForeignKeyConstraint baseColumnNames="forward_node_id" baseTableName="destination" constraintName="fkp3a8vsvewjod5lj16mtp9ji8q" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="forward_node" validate="true"/>
+    </changeSet>
+    <changeSet author="karnak" id="1.0-16">
+        <addForeignKeyConstraint baseColumnNames="forward_node_id" baseTableName="dicom_source_node" constraintName="fk6e16j73lsh216q3fgcejrnqoy" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="forward_node" validate="true"/>
+    </changeSet>
+    <changeSet author="karnak" id="1.0-17">
+        <addForeignKeyConstraint baseColumnNames="profile_id" baseTableName="profile_element" constraintName="fkfr5ypt1htxm7ulllfxr2xpff9" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="profile" validate="true"/>
+    </changeSet>
+    <changeSet author="karnak" id="1.0-18">
+        <addForeignKeyConstraint baseColumnNames="sop_class_uid_id" baseTableName="sop_class_filter" constraintName="fk5651kr0ivu6ybhsyl46xfevuc" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="sop_class_uid" validate="true"/>
+    </changeSet>
+    <changeSet author="karnak" id="1.0-19">
+        <createSequence cacheSize="1" cycle="false" dataType="bigint" incrementBy="1" maxValue="9223372036854775807" minValue="1" sequenceName="hibernate_sequence" startValue="1"/>
+    </changeSet>
+    <changeSet author="karnak" id="1.0-20">
+        <tagDatabase  tag="v1.0"/>
+    </changeSet>
+</databaseChangeLog>
