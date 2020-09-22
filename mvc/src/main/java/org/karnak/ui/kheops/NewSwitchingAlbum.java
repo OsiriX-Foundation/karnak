@@ -4,17 +4,10 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
-import org.apache.commons.lang3.StringUtils;
-import org.json.JSONObject;
-import org.karnak.api.KheopsApi;
 import org.karnak.data.gateway.KheopsAlbums;
-import org.karnak.kheops.SwitchingAlbum;
-
-import java.util.List;
 
 public class NewSwitchingAlbum extends Div {
     private Binder<KheopsAlbums> binder;
-    private KheopsApi kheopsApi;
 
     private Button buttonAdd;
     private TextField textAuthorizationDestination;
@@ -27,7 +20,6 @@ public class NewSwitchingAlbum extends Div {
 
         TextFieldsBindSwitchingAlbum textFieldsBindSwitchingAlbum = new TextFieldsBindSwitchingAlbum();
         binder = textFieldsBindSwitchingAlbum.getBinder();
-        kheopsApi = new KheopsApi();
         buttonAdd = new Button("Add");
         textAuthorizationDestination = textFieldsBindSwitchingAlbum.getTextAuthorizationDestination();
         textAuthorizationSource = textFieldsBindSwitchingAlbum.getTextAuthorizationSource();
