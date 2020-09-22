@@ -66,6 +66,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
 
         setEventNewSourceNode();
         setEventGridSourceNode();
+        setEventSourceNodeCancelButton();
     }
 
     public void setEditView() {
@@ -194,6 +195,12 @@ public class LayoutEditForwardNode extends VerticalLayout {
             DicomSourceNode dicomSourceNode = event.getItem();
             newUpdateSourceNode.load(dicomSourceNode);
             addFormView(newUpdateSourceNode);
+        });
+    }
+
+    private void setEventSourceNodeCancelButton() {
+        newUpdateSourceNode.getButtonCancel().addClickListener(event -> {
+            setEditView();
         });
     }
 }

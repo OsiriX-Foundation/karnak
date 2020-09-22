@@ -1,5 +1,6 @@
 package org.karnak.ui.forwardnode;
 
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
@@ -34,5 +35,9 @@ public class NewUpdateSourceNode extends VerticalLayout {
             buttonSaveDeleteCancel.getDelete().setEnabled(false);
         }
         setView();
+    }
+
+    public Button getButtonCancel() {
+        return buttonSaveDeleteCancel.getCancel();
     }
 }
