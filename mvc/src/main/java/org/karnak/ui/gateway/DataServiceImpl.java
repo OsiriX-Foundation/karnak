@@ -132,5 +132,8 @@ public class DataServiceImpl extends DataService {
         return sopClassUIDPersistence.getSOPClassUIDByName(name);
     }
 
-
+    @Override
+    public SOPClassUID getSOPClassUIDById(Long dataId) {
+        return sopClassUIDPersistence.getSOPClassUIDById(dataId);
+    }
 }
