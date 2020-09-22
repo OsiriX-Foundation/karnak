@@ -1,8 +1,6 @@
 package org.karnak.ui.forwardnode;
 
 import com.vaadin.flow.component.grid.Grid;
-import org.karnak.data.SourceNode;
-import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.DicomSourceNode;
 
 public class GridSourceNode extends Grid<DicomSourceNode> {
