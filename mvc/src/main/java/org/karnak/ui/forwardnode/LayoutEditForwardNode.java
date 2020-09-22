@@ -25,6 +25,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
     private TabSourcesDestination tabSourcesDestination;
     private VerticalLayout layoutDestinationsSources;
     private DestinationsView destinationsView;
+    private SourceNodesView sourceNodesView;
     private NewUpdateDestination newUpdateDestination;
     private ButtonSaveDeleteCancel buttonForwardNodeSaveDeleteCancel;
 
@@ -41,6 +42,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
         layoutDestinationsSources = new VerticalLayout();
         layoutDestinationsSources.setSizeFull();
         destinationsView = new DestinationsView(forwardNodeAPI.getDataProvider().getDataService());
+        sourceNodesView = new SourceNodesView(forwardNodeAPI.getDataProvider().getDataService());
         destinationDataProvider = new DestinationDataProvider(forwardNodeAPI.getDataProvider().getDataService());
         buttonForwardNodeSaveDeleteCancel = new ButtonSaveDeleteCancel();
 
@@ -70,10 +72,14 @@ public class LayoutEditForwardNode extends VerticalLayout {
 
     public void load(ForwardNode forwardNode) {
         currentForwardNode = forwardNode;
-        destinationViewLogic.setApplicationEventPublisher(forwardNodeAPI.getApplicationEventPublisher());
         editAETitleDescription.setForwardNode(forwardNode);
+
+        destinationViewLogic.setApplicationEventPublisher(forwardNodeAPI.getApplicationEventPublisher());
         destinationsView.setForwardNode(forwardNode);
         destinationDataProvider.setForwardNode(forwardNode);
+
+        sourceNodesView.setForwardNode(forwardNode);
+
         setEditView();
         if (forwardNode == null) {
             tabSourcesDestination.setEnabled(false);
@@ -94,7 +100,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
     private void setLayoutDestinationsSources(String currentTab) {
         layoutDestinationsSources.removeAll();
         if (currentTab.equals(tabSourcesDestination.LABEL_SOURCES)) {
-            System.out.println("SOURCE");
+            layoutDestinationsSources.add(sourceNodesView);
         } else if (currentTab.equals(tabSourcesDestination.LABEL_DESTINATIONS)) {
             layoutDestinationsSources.add(destinationsView);
         }
