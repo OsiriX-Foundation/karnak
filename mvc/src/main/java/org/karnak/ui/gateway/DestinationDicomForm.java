@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.data.gateway.Destination;
+import org.karnak.data.gateway.IdTypes;
 import org.karnak.ui.component.converter.HStringToIntegerConverter;
 import org.karnak.ui.util.UIS;
 
@@ -40,7 +41,6 @@ public class DestinationDicomForm extends VerticalLayout {
     private final TextField notifyInterval;
 
     private final Checkbox desidentification;
-    private final ProfileDropDown profileDropDown;
 
     private Button update;
     private Button discard;
@@ -51,6 +51,9 @@ public class DestinationDicomForm extends VerticalLayout {
     private Destination currentDestination;
     private DataService dataService;
     private FilterBySOPClassesForm filterSopForm;
+    private final ProfileDropDown profileDropDown;
+    private final ExternalPseudonymView externalPseudonymView;
+    private HorizontalLayout externalPseudonymLayout;
 
     public DestinationDicomForm(DestinationLogic destinationLogic, DataService dataService) {
         setClassName("destination-form");
@@ -59,8 +62,6 @@ public class DestinationDicomForm extends VerticalLayout {
         this.destinationLogic = destinationLogic;
         this.dataService = dataService;
         this.binder = new BeanValidationBinder<>(Destination.class);
-
-
 
         aeTitle = new TextField("AETitle");
         aeTitle.setWidth("30%");
@@ -163,7 +164,6 @@ public class DestinationDicomForm extends VerticalLayout {
         UIS.setTooltip(notifyInterval,
                 "Interval in seconds for sending a notification (when no new image is arrived in the archive folder). Default value: 45");
 
-        HorizontalLayout desidentificationLayout = new HorizontalLayout();
         desidentification = new Checkbox();
         desidentification.setLabel("Activate de-identification");
         desidentification.setValue(true);
@@ -171,75 +171,73 @@ public class DestinationDicomForm extends VerticalLayout {
         profileDropDown = new ProfileDropDown();
         profileDropDown.setMinWidth("70%");
 
+        filterSopForm = new FilterBySOPClassesForm(this.dataService, this.binder);
+
+        externalPseudonymLayout = new HorizontalLayout();
+        externalPseudonymView = new ExternalPseudonymView(binder);
+        externalPseudonymView.setMinWidth("70%");
+
         desidentification.addValueChangeListener(event -> {
             if (event.getValue() != null) {
                 profileDropDown.setEnabled(event.getValue());
+                if (event.getValue()){
+                    externalPseudonymLayout.setVisible(true);
+                } else {
+                    externalPseudonymLayout.setVisible(false);
+                    externalPseudonymView.disableDesidentification();
+                }
             }
         });
 
-        desidentificationLayout.add(desidentification, profileDropDown);
-
-        filterSopForm = new FilterBySOPClassesForm(this.dataService, this.binder);
-
-        add(UIS.setWidthFull( //
-                new HorizontalLayout(aeTitle, description)));
-        add(UIS.setWidthFull( //
-                new HorizontalLayout(hostname, port)));
-        add(UIS.setWidthFull( //
-                useaetdest));
-        add(UIS.setWidthFull( //
-                new HorizontalLayout(notify)));
-        add(UIS.setWidthFull( //
-                new HorizontalLayout(notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues,
-                        notifyInterval)));
-        add(UIS.setWidthFull( //
-                desidentificationLayout));
-
+        externalPseudonymLayout.add(externalPseudonymView);
+        add(UIS.setWidthFull(new HorizontalLayout(aeTitle, description)));
+        add(UIS.setWidthFull(new HorizontalLayout(hostname, port)));
+        add(UIS.setWidthFull(useaetdest));
+        add(UIS.setWidthFull(new HorizontalLayout(notify)));
+        add(UIS.setWidthFull(new HorizontalLayout(notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues, notifyInterval)));
         add(filterSopForm);
+        add(UIS.setWidthFull(new HorizontalLayout(desidentification, profileDropDown)));
+        add(UIS.setWidthFull(externalPseudonymLayout));
 
-        binder.forField(aeTitle) //
-                .withValidator( //
-                        StringUtils::isNotBlank, //
-                        "AETitle is mandatory") //
-                .withValidator( //
-                        value -> value.length() <= 16, //
-                        "AETitle has more than 16 characters") //
-                .withValidator( //
-                        UIS::containsNoWhitespace, //
-                        "AETitle contains white spaces") //
+        binder.forField(aeTitle)
+                .withValidator(StringUtils::isNotBlank, "AETitle is mandatory")
+                .withValidator(value -> value.length() <= 16,"AETitle has more than 16 characters")
+                .withValidator(UIS::containsNoWhitespace,"AETitle contains white spaces")
                 .bind(Destination::getAeTitle, Destination::setAeTitle);
-        binder.forField(hostname) //
-                .withValidator( //
-                        StringUtils::isNotBlank, //
-                        "Hostname is mandatory") //
+
+        binder.forField(hostname)
+                .withValidator(StringUtils::isNotBlank,"Hostname is mandatory")
                 .bind(Destination::getHostname, Destination::setHostname);
-        binder.forField(port) //
-                .withConverter(new HStringToIntegerConverter()) //
-                .withValidator( //
-                        Objects::nonNull, //
-                        "Port is mandatory") //
-                .withValidator( //
-                        value -> 1 <= value && value <= 65535, //
-                        "Port should be between 1 and 65535") //
+
+        binder.forField(port)
+                .withConverter(new HStringToIntegerConverter())
+                .withValidator(Objects::nonNull, "Port is mandatory")
+                .withValidator(value -> 1 <= value && value <= 65535,"Port should be between 1 and 65535") //
                 .bind(Destination::getPort, Destination::setPort);
-        binder.forField(notifyInterval) //
-                .withConverter(new HStringToIntegerConverter()) //
+
+        binder.forField(notifyInterval)
+                .withConverter(new HStringToIntegerConverter())
                 .bind(Destination::getNotifyInterval, Destination::setNotifyInterval);
-        binder.forField(desidentification) //
-                .bind(Destination::getDesidentification, Destination::setDesidentification);
+
+        binder.forField(desidentification)
+                .bind(destination -> {
+                    final boolean desidentification = destination.getDesidentification();
+                    if (desidentification){
+                        externalPseudonymLayout.setVisible(true);
+                    }
+                    return desidentification;
+                }, Destination::setDesidentification);
+
         binder.forField(profileDropDown)
                 .withValidator(profilePipe -> profilePipe != null || (profilePipe == null && desidentification.getValue() == false),
                         "Choose the de-identification profile\n")
                 .bind(Destination::getProfile, Destination::setProfile);
+
         binder.bindInstanceFields(this);
 
         // enable/disable update button while editing
         binder.addStatusChangeListener(event -> {
-            boolean isValid = !event.hasValidationErrors();
-            boolean hasChanges = binder.hasChanges();
-            update.setEnabled(hasChanges && isValid);
-            discard.setEnabled(hasChanges);
-            remove.setEnabled(!hasChanges);
+            setButtonEnabled(!event.hasValidationErrors(), binder.hasChanges());
         });
 
         update = new Button("Save");
@@ -276,6 +274,12 @@ public class DestinationDicomForm extends VerticalLayout {
 
         add(UIS.setWidthFull( //
                 new HorizontalLayout(update, remove, cancel)));
+    }
+
+    private void setButtonEnabled(boolean isValid, boolean hasChanges) {
+        update.setEnabled(hasChanges && isValid);
+        discard.setEnabled(hasChanges);
+        remove.setEnabled(!hasChanges);
     }
 
     public void editDestination(Destination data) {
