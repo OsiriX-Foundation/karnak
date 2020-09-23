@@ -38,7 +38,6 @@ import com.vaadin.flow.server.StreamResource;
  * events from outside.
  */
 @Route(value = "gateway", layout = MainLayout.class)
-@RouteAlias(value = "", layout = MainLayout.class)
 @PageTitle("KARNAK - Gateway")
 @SuppressWarnings("serial")
 public class GatewayView extends HorizontalLayout implements HasUrlParameter<String> {
