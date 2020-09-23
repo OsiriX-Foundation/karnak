@@ -162,7 +162,7 @@ public class DestinationStowForm extends VerticalLayout {
         UIS.setTooltip(notifyInterval,
                 "Interval in seconds for sending a notification (when no new image is arrived in the archive folder). Default value: 45");
 
-
+        HorizontalLayout desidentificationLayout = new HorizontalLayout();
         desidentification = new Checkbox();
         desidentification.setLabel("Activate de-identification");
         desidentification.setValue(true);
