@@ -57,7 +57,7 @@ public class AddNewPatientForm extends VerticalLayout {
 
         binder = new BeanValidationBinder<>(Patient.class);
 
-        externalIdField = new TextField("External ID");
+        externalIdField = new TextField("External Pseudonym");
         externalIdField.setWidth("33%");
         patientIdField = new TextField("Patient ID");
         patientIdField.setWidth("33%");
@@ -139,7 +139,7 @@ public class AddNewPatientForm extends VerticalLayout {
 
     public void fieldValidator(){
         binder.forField(externalIdField)
-                .withValidator(StringUtils::isNotBlank, "External ID is empty")
+                .withValidator(StringUtils::isNotBlank, "External Pseudonym is empty")
                 .withValidator(new StringLengthValidator("Length must be between 1 and 50.", 1, 50))
                 .bind("extid");
 
