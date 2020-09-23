@@ -150,7 +150,7 @@ public class ExternalPseudonymView extends HorizontalLayout {
 
         binder.forField(delimiter)
                 .withConverter(String::valueOf, value -> (value == null) ? "" : String.valueOf(value), "Must be a delimiter")
-                .withValidator(delimiter -> !enableValidatorADD_EXTID || !(delimiter.equals("") && !position.getValue().equals("")),
+                .withValidator(delimiter -> (!enableValidatorADD_EXTID || !(delimiter.equals("") && position.getValue() > 0d)),
                         "Choose a delimiter when a position is defined\n")
                 .bind(Destination::getDelimiter, (destination, value) -> {
                     if(value.equals("")){
