@@ -18,7 +18,7 @@ import org.karnak.data.gateway.DestinationType;
 import org.karnak.data.gateway.DicomSourceNode;
 import org.karnak.data.gateway.ForwardNode;
 import org.karnak.data.gateway.GatewayPersistence;
-import org.karnak.ui.gateway.GatewayConfiguration;
+import org.karnak.ui.data.GatewayConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;

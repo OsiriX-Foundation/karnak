@@ -9,7 +9,7 @@ import org.karnak.data.NodeEventType;
 import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.DestinationType;
 import org.karnak.ui.component.ConfirmDialog;
-import org.karnak.ui.gateway.DestinationDataProvider;
+import org.karnak.ui.data.DestinationDataProvider;
 import org.karnak.ui.util.UIS;
 
 public class NewUpdateDestination extends VerticalLayout {

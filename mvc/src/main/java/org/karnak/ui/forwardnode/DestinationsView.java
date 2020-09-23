@@ -1,7 +1,5 @@
 package org.karnak.ui.forwardnode;
 
-import com.vaadin.flow.component.Key;
-import com.vaadin.flow.component.KeyModifier;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -9,8 +7,8 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import org.karnak.data.gateway.ForwardNode;
-import org.karnak.ui.gateway.DataService;
-import org.karnak.ui.gateway.DestinationDataProvider;
+import org.karnak.ui.data.DataService;
+import org.karnak.ui.data.DestinationDataProvider;
 import org.karnak.ui.util.UIS;
 
 public class DestinationsView extends VerticalLayout {

@@ -8,7 +8,7 @@ import org.karnak.data.NodeEvent;
 import org.karnak.data.NodeEventType;
 import org.karnak.data.gateway.DicomSourceNode;
 import org.karnak.ui.component.ConfirmDialog;
-import org.karnak.ui.gateway.SourceNodeDataProvider;
+import org.karnak.ui.data.SourceNodeDataProvider;
 import org.karnak.ui.util.UIS;
 
 public class NewUpdateSourceNode extends VerticalLayout {

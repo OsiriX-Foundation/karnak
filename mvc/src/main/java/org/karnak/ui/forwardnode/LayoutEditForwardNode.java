@@ -11,8 +11,8 @@ import org.karnak.data.gateway.DicomSourceNode;
 import org.karnak.data.gateway.ForwardNode;
 import org.karnak.ui.api.ForwardNodeAPI;
 import org.karnak.ui.component.ConfirmDialog;
-import org.karnak.ui.gateway.DestinationDataProvider;
-import org.karnak.ui.gateway.SourceNodeDataProvider;
+import org.karnak.ui.data.DestinationDataProvider;
+import org.karnak.ui.data.SourceNodeDataProvider;
 import org.karnak.ui.util.UIS;
 
 public class LayoutEditForwardNode extends VerticalLayout {
