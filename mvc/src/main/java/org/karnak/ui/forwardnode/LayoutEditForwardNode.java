@@ -34,6 +34,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
     private NewUpdateSourceNode newUpdateSourceNode;
 
     public LayoutEditForwardNode(ForwardNodeViewLogic forwardNodeViewLogic, ForwardNodeAPI forwardNodeAPI) {
+        getStyle().set("overflow-y", "auto");
         this.forwardNodeViewLogic = forwardNodeViewLogic;
         this.viewLogic = new ViewLogic(this);
         this.forwardNodeAPI = forwardNodeAPI;
