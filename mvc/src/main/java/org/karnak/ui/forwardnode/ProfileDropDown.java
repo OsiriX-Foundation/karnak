@@ -1,4 +1,4 @@
-package org.karnak.ui.gateway;
+package org.karnak.ui.forwardnode;
 
 import com.vaadin.flow.component.combobox.ComboBox;
 import org.karnak.data.profile.Profile;
