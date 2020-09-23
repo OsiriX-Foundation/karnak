@@ -50,6 +50,8 @@ public class DestinationStowForm extends VerticalLayout {
     private DataService dataService;
     private FilterBySOPClassesForm filterSopForm;
     private ProfileDropDown profileDropDown;
+    private ExternalPseudonymView externalPseudonymView;
+    private HorizontalLayout externalPseudonymLayout;
 
     public DestinationStowForm(DestinationLogic destinationLogic, DataService dataService) {
         setClassName("destination-form");
@@ -160,7 +162,7 @@ public class DestinationStowForm extends VerticalLayout {
         UIS.setTooltip(notifyInterval,
                 "Interval in seconds for sending a notification (when no new image is arrived in the archive folder). Default value: 45");
 
-        HorizontalLayout desidentificationLayout = new HorizontalLayout();
+
         desidentification = new Checkbox();
         desidentification.setLabel("Activate de-identification");
         desidentification.setValue(true);
@@ -168,9 +170,21 @@ public class DestinationStowForm extends VerticalLayout {
         profileDropDown = new ProfileDropDown();
         profileDropDown.setMinWidth("70%");
 
+        filterSopForm = new FilterBySOPClassesForm(this.dataService, this.binder);
+
+        externalPseudonymLayout = new HorizontalLayout();
+        externalPseudonymView = new ExternalPseudonymView(binder);
+        externalPseudonymView.setMinWidth("70%");
+
         desidentification.addValueChangeListener(event -> {
             if (event.getValue() != null) {
                 profileDropDown.setEnabled(event.getValue());
+                if (event.getValue()){
+                    externalPseudonymLayout.setVisible(true);
+                } else {
+                    externalPseudonymLayout.setVisible(false);
+                    externalPseudonymView.disableDesidentification();
+                }
             }
         });
 
@@ -191,7 +205,16 @@ public class DestinationStowForm extends VerticalLayout {
                         notifyInterval)));
         add(UIS.setWidthFull( //
                 desidentificationLayout));
+        externalPseudonymLayout.add(externalPseudonymView);
+        add(UIS.setWidthFull(new HorizontalLayout(description)));
+        add(UIS.setWidthFull(new HorizontalLayout(url, urlCredentials)));
+        add(UIS.setWidthFull(headers));
+        add(UIS.setWidthFull(new HorizontalLayout(notify)));
+        add(UIS.setWidthFull(new HorizontalLayout(notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues, notifyInterval)));
         add(filterSopForm);
+        add(UIS.setWidthFull(new HorizontalLayout(desidentification, profileDropDown)));
+        add(UIS.setWidthFull(externalPseudonymLayout));
+
 
         SwitchingAlbumsView switchingAlbumsView = new SwitchingAlbumsView();
 
@@ -199,16 +222,23 @@ public class DestinationStowForm extends VerticalLayout {
 
         // Define the same validators as the Destination class, because the validation
         // bean doesn't work in Vaadin
-        binder.forField(url) //
-                .withValidator( //
-                        StringUtils::isNotBlank, //
-                        "URL is mandatory") //
+        binder.forField(url)
+                .withValidator(StringUtils::isNotBlank,"URL is mandatory")
                 .bind(Destination::getUrl, Destination::setUrl);
-        binder.forField(notifyInterval) //
-                .withConverter(new HStringToIntegerConverter()) //
+
+        binder.forField(notifyInterval)
+                .withConverter(new HStringToIntegerConverter())
                 .bind(Destination::getNotifyInterval, Destination::setNotifyInterval);
-        binder.forField(desidentification) //
-                .bind(Destination::getDesidentification, Destination::setDesidentification);
+
+        binder.forField(desidentification)
+                .bind(destination -> {
+                    final boolean desidentification = destination.getDesidentification();
+                    if (desidentification){
+                        externalPseudonymLayout.setVisible(true);
+                    }
+                    return desidentification;
+                }, Destination::setDesidentification);
+
 
         binder.forField(profileDropDown)
                 .withValidator(profilePipe -> profilePipe != null || (profilePipe == null && desidentification.getValue() == false),
@@ -218,17 +248,14 @@ public class DestinationStowForm extends VerticalLayout {
         binder.forField(switchingAlbumsView)
                 .bind(Destination::getKheopsAlbums, Destination::setKheopsAlbums);
 
-        binder.bindInstanceFields(this);
 
+        binder.bindInstanceFields(this);
 
         // enable/disable update button while editing
         binder.addStatusChangeListener(event -> {
-            boolean isValid = !event.hasValidationErrors();
-            boolean hasChanges = binder.hasChanges();
-            update.setEnabled(hasChanges && isValid);
-            discard.setEnabled(hasChanges);
-            remove.setEnabled(!hasChanges);
+            setButtonEnabled(!event.hasValidationErrors(), binder.hasChanges());
         });
+
 
         update = new Button("Save");
         update.setWidthFull();
@@ -264,6 +291,12 @@ public class DestinationStowForm extends VerticalLayout {
 
         add(UIS.setWidthFull( //
                 new HorizontalLayout(update, remove, cancel)));
+    }
+
+    private void setButtonEnabled(boolean isValid, boolean hasChanges) {
+        update.setEnabled(hasChanges && isValid);
+        discard.setEnabled(hasChanges);
+        remove.setEnabled(!hasChanges);
     }
 
     public void editDestination(Destination data) {

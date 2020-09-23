@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import org.karnak.data.gateway.DestinationPersistence;
+import org.karnak.data.gateway.DicomSourceNodePersistence;
 import org.karnak.data.gateway.ForwardNode;
 import org.karnak.data.gateway.DicomSourceNode;
 
@@ -12,6 +14,10 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 
 @SuppressWarnings("serial")
 public class SourceNodeDataProvider extends ListDataProvider<DicomSourceNode> {
+    private DicomSourceNodePersistence dicomSourceNodePersistence;
+    {
+        dicomSourceNodePersistence = GatewayConfiguration.getInstance().getDicomSourceNodePersistence();
+    }
     private final DataService dataService;
     private Set<DicomSourceNode> backend;
     private boolean hasChanges;
@@ -56,6 +62,7 @@ public class SourceNodeDataProvider extends ListDataProvider<DicomSourceNode> {
             refreshItem(dataUpdated);
         }
         hasChanges = true;
+        dicomSourceNodePersistence.saveAndFlush(dataUpdated);
     }
 
     /**
@@ -67,6 +74,8 @@ public class SourceNodeDataProvider extends ListDataProvider<DicomSourceNode> {
         this.dataService.deleteSourceNode(forwardNode, data);
         refreshAll();
         hasChanges = true;
+        dicomSourceNodePersistence.deleteById(data.getId());
+        dicomSourceNodePersistence.saveAndFlush(data);
     }
 
     /**

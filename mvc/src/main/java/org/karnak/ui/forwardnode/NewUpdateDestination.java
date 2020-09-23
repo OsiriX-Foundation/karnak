@@ -14,7 +14,7 @@ import org.karnak.ui.util.UIS;
 
 public class NewUpdateDestination extends VerticalLayout {
     private DestinationDataProvider destinationDataProvider;
-    private DestinationViewLogic destinationViewLogic;
+    private ViewLogic viewLogic;
     private FormDICOM formDICOM;
     private FormSTOW formSTOW;
     private Destination currentDestination;
@@ -22,9 +22,9 @@ public class NewUpdateDestination extends VerticalLayout {
     private Binder<Destination> binderFormSTOW;
     private ButtonSaveDeleteCancel buttonDestinationSaveDeleteCancel;
 
-    public NewUpdateDestination(DestinationDataProvider destinationDataProvider, DestinationViewLogic destinationViewLogic) {
+    public NewUpdateDestination(DestinationDataProvider destinationDataProvider, ViewLogic viewLogic) {
         this.destinationDataProvider = destinationDataProvider;
-        this.destinationViewLogic = destinationViewLogic;
+        this.viewLogic = viewLogic;
         setSizeFull();
         binderFormDICOM = new BeanValidationBinder<>(Destination.class);
         binderFormSTOW = new BeanValidationBinder<>(Destination.class);
@@ -65,14 +65,14 @@ public class NewUpdateDestination extends VerticalLayout {
             NodeEventType nodeEventType = currentDestination.isNewData() == true ? NodeEventType.ADD : NodeEventType.UPDATE;
             if (currentDestination.getType() == DestinationType.stow && binderFormSTOW.writeBeanIfValid(currentDestination)) {
                 destinationDataProvider.save(currentDestination);
-                destinationViewLogic.updateForwardNodeInEditView();
-                destinationViewLogic.getApplicationEventPublisher().publishEvent(new NodeEvent(currentDestination, nodeEventType));
+                viewLogic.updateForwardNodeInEditView();
+                viewLogic.getApplicationEventPublisher().publishEvent(new NodeEvent(currentDestination, nodeEventType));
             }
 
             if (currentDestination.getType() == DestinationType.dicom && binderFormDICOM.writeBeanIfValid(currentDestination)) {
                 destinationDataProvider.save(currentDestination);
-                destinationViewLogic.updateForwardNodeInEditView();
-                destinationViewLogic.getApplicationEventPublisher().publishEvent(new NodeEvent(currentDestination, nodeEventType));
+                viewLogic.updateForwardNodeInEditView();
+                viewLogic.getApplicationEventPublisher().publishEvent(new NodeEvent(currentDestination, nodeEventType));
             }
         });
     }
@@ -87,8 +87,8 @@ public class NewUpdateDestination extends VerticalLayout {
                 dialog.addConfirmationListener(componentEvent -> {
                     NodeEvent nodeEvent = new NodeEvent(currentDestination, NodeEventType.REMOVE);
                     destinationDataProvider.delete(currentDestination);
-                    destinationViewLogic.getApplicationEventPublisher().publishEvent(nodeEvent);
-                    destinationViewLogic.updateForwardNodeInEditView();
+                    viewLogic.getApplicationEventPublisher().publishEvent(nodeEvent);
+                    viewLogic.updateForwardNodeInEditView();
                 });
                 dialog.open();
             }
