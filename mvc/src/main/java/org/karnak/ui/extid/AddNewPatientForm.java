@@ -4,7 +4,6 @@ import com.vaadin.flow.component.button.Button;
 
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.datepicker.DatePicker;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.IronIcon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -41,7 +40,6 @@ public class AddNewPatientForm extends VerticalLayout {
     private Button sendInMainzellisteButton;
     private Button clearFieldsButton;
 
-    private Div validationStatus;
     private HorizontalLayout horizontalLayoutAddClear;
     private HorizontalLayout horizontalLayout1;
     private HorizontalLayout horizontalLayout2;
@@ -52,31 +50,12 @@ public class AddNewPatientForm extends VerticalLayout {
         getElement().addEventListener("keydown", event -> {
             addPatientFieldsInGrid();
         }).setFilter("event.key == 'Enter'");
-
         this.dataProvider = dataProvider;
-
         binder = new BeanValidationBinder<>(Patient.class);
 
-        externalIdField = new TextField("External ID");
-        externalIdField.setWidth("33%");
-        patientIdField = new TextField("Patient ID");
-        patientIdField.setWidth("33%");
-        patientNameField = new TextField("Patient Name");
-        patientNameField.setWidth("33%");
-        issuerOfPatientIdField = new TextField("Issuer of patient ID");
-        issuerOfPatientIdField.setWidth("33%");
-        patientBirthDateField = new DatePicker("Patient Birth Date");
-        patientBirthDateField.setWidth("33%");
-        patientSexField = new Select<>();
-        patientSexField.setLabel("Patient Sex");
-        patientSexField.setItems("M", "F", "O");
-        patientSexField.setWidth("33%");
+        setElements();
+        setBinder();
 
-
-        sendInMainzellisteButton = new Button("Send patients in database");
-        sendInMainzellisteButton.setEnabled(false);
-        sendInMainzellisteButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        sendInMainzellisteButton.setIcon(new IronIcon("icons", "icons:send"));
         sendInMainzellisteButton.addClickListener( click -> {
             ConfirmDialog dialog = new ConfirmDialog("Are you sure to send in database all patients in grid?");
             dialog.addConfirmationListener(componentEvent -> {
@@ -88,23 +67,13 @@ public class AddNewPatientForm extends VerticalLayout {
             dialog.open();
         });
 
-
-        horizontalLayoutAddClear = new HorizontalLayout();
-        horizontalLayoutAddClear.getStyle().set("margin-left", "auto");
-
-        clearFieldsButton = new Button("Clear");
         clearFieldsButton.addClickListener( click -> {
             clearPatientFields();
         });
 
-        addNewPatientButton = new Button("Add");
-        addNewPatientButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        addNewPatientButton.setIcon(VaadinIcon.PLUS_CIRCLE.create());
         addNewPatientButton.addClickListener(click -> {
             addPatientFieldsInGrid();
         });
-        horizontalLayoutAddClear.add(clearFieldsButton, addNewPatientButton);
-
 
         // enable/disable update button while editing
         binder.addStatusChangeListener(event -> {
@@ -121,9 +90,42 @@ public class AddNewPatientForm extends VerticalLayout {
             }
         });
 
-        validationStatus = new Div();
-        validationStatus.setId("validation");
-        fieldValidator();
+        horizontalLayoutAddClear.add(clearFieldsButton, addNewPatientButton);
+        horizontalLayout1.add(externalIdField, patientIdField, patientNameField);
+        horizontalLayout2.add(issuerOfPatientIdField, patientBirthDateField, patientSexField);
+        horizontalLayout3.add(sendInMainzellisteButton, horizontalLayoutAddClear);
+        add(horizontalLayout1, horizontalLayout2, horizontalLayout3);
+    }
+
+    private void setElements() {
+        externalIdField = new TextField("External Pseudonym");
+        externalIdField.setWidth("33%");
+        patientIdField = new TextField("Patient ID");
+        patientIdField.setWidth("33%");
+        patientNameField = new TextField("Patient Name");
+        patientNameField.setWidth("33%");
+        issuerOfPatientIdField = new TextField("Issuer of patient ID");
+        issuerOfPatientIdField.setWidth("33%");
+        patientBirthDateField = new DatePicker("Patient Birth Date");
+        patientBirthDateField.setWidth("33%");
+        patientSexField = new Select<>();
+        patientSexField.setLabel("Patient Sex");
+        patientSexField.setItems("M", "F", "O");
+        patientSexField.setWidth("33%");
+
+        sendInMainzellisteButton = new Button("Send patients in database");
+        sendInMainzellisteButton.setEnabled(false);
+        sendInMainzellisteButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        sendInMainzellisteButton.setIcon(new IronIcon("icons", "icons:send"));
+
+        horizontalLayoutAddClear = new HorizontalLayout();
+        horizontalLayoutAddClear.getStyle().set("margin-left", "auto");
+
+        clearFieldsButton = new Button("Clear");
+
+        addNewPatientButton = new Button("Add");
+        addNewPatientButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        addNewPatientButton.setIcon(VaadinIcon.PLUS_CIRCLE.create());
 
         horizontalLayout1 = new HorizontalLayout();
         horizontalLayout2 = new HorizontalLayout();
@@ -131,15 +133,11 @@ public class AddNewPatientForm extends VerticalLayout {
         horizontalLayout1.setSizeFull();
         horizontalLayout2.setSizeFull();
         horizontalLayout3.setSizeFull();
-        horizontalLayout1.add(externalIdField, patientIdField, patientNameField);
-        horizontalLayout2.add(issuerOfPatientIdField, patientBirthDateField, patientSexField);
-        horizontalLayout3.add(sendInMainzellisteButton, horizontalLayoutAddClear);
-        add(horizontalLayout1, horizontalLayout2, horizontalLayout3);
     }
 
-    public void fieldValidator(){
+    public void setBinder(){
         binder.forField(externalIdField)
-                .withValidator(StringUtils::isNotBlank, "External ID is empty")
+                .withValidator(StringUtils::isNotBlank, "External Pseudonym is empty")
                 .withValidator(new StringLengthValidator("Length must be between 1 and 50.", 1, 50))
                 .bind("extid");
 
@@ -214,7 +212,6 @@ public class AddNewPatientForm extends VerticalLayout {
             }
         });
     }
-
 
     public Button getAddNewPatientButton() {
         return addNewPatientButton;

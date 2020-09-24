@@ -44,60 +44,22 @@ public class ExternalIDGrid extends Grid<Patient> {
 
     private Grid.Column<Patient> deleteColumn;
 
-    private AddNewPatientForm addNewPatientForm;
+    private String LABEL_SAVE = "Save";
+    private String LABEL_CANCEL = "Cancel";
+    private String LABEL_DELETE = "Delete";
 
     public ExternalIDGrid(){
-        setSizeFull();
         binder = new Binder<>(Patient.class);
         patientList = new ArrayList<>();
-
-        setHeightByRows(true);
-        setItems(patientList);
-
         dataProvider = (ListDataProvider<Patient>) getDataProvider();
 
-        extidColumn = addColumn(Patient::getExtid).setHeader("External ID");
-        patientIdColumn = addColumn(Patient::getPatientId).setHeader("Patient ID");
-        patientNameColumn = addColumn(Patient::getPatientName).setHeader("Patient Name");
-        issuerOfPatientIDColumn = addColumn(Patient::getIssuerOfPatientId).setHeader("Issuer of patient ID");
-        patientBirthDateColumn = addColumn(Patient::getPatientBirthDate).setHeader("Patient Birth Date");
-        patientSexColumn = addColumn(Patient::getPatientSex).setHeader("Patient Sex");
-
-
-        editButtons = Collections.newSetFromMap(new WeakHashMap<>());
-        editor = getEditor();
-        editor.setBinder(binder);
-        editor.setBuffered(true);
-        editorColumn = addComponentColumn(patient -> {
-            Button edit = new Button("Edit");
-            edit.addClassName("edit");
-            edit.addClickListener(e -> {
-                editor.editItem(patient);
-                externalIdField.focus();
-            });
-            edit.setEnabled(!editor.isOpen());
-            editButtons.add(edit);
-            return edit;
-        });
-
-        externalIdField = new TextField();
-        patientIdField = new TextField();
-        patientNameField = new TextField();
-        issuerOfPatientIdField = new TextField();
-        patientBirthDateField = new DatePicker();
-        patientSexField = new Select<>();
-        patientSexField.setItems("M", "F", "O");
-
-
-
-        fieldValidator();
-
-        extidColumn.setEditorComponent(externalIdField);
-        patientIdColumn.setEditorComponent(patientIdField);
-        patientNameColumn.setEditorComponent(patientNameField);
-        issuerOfPatientIDColumn.setEditorComponent(issuerOfPatientIdField);
-        patientBirthDateColumn.setEditorComponent(patientBirthDateField);
-        patientSexColumn.setEditorComponent(patientSexField);
+        setSizeFull();
+        getElement().addEventListener("keyup", event -> editor.cancel())
+                .setFilter("event.key === 'Escape' || event.key === 'Esc'");
+        setHeightByRows(true);
+        setItems(patientList);
+        setElements();
+        setBinder();
 
         editor.addOpenListener(e -> {
             editButtons.stream()
@@ -113,25 +75,53 @@ public class ExternalIDGrid extends Grid<Patient> {
             addNewPatientButton.setVisible(true);
         });
 
-
-
-        saveEditPatientButton = new Button("Save", e -> {
+        saveEditPatientButton.addClickListener(e -> {
             editor.save();
         });
         saveEditPatientButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
-        cancelEditPatientButton = new Button("Cancel", e -> {
-            editor.cancel();
+        cancelEditPatientButton.addClickListener(e -> editor.cancel());
+    }
+
+    private void setElements() {
+        extidColumn = addColumn(Patient::getExtid).setHeader("External Pseudonym");
+        patientIdColumn = addColumn(Patient::getPatientId).setHeader("Patient ID");
+        patientNameColumn = addColumn(Patient::getPatientName).setHeader("Patient Name");
+        issuerOfPatientIDColumn = addColumn(Patient::getIssuerOfPatientId).setHeader("Issuer of patient ID");
+        patientBirthDateColumn = addColumn(Patient::getPatientBirthDate).setHeader("Patient Birth Date");
+        patientSexColumn = addColumn(Patient::getPatientSex).setHeader("Patient Sex");
+
+        editButtons = Collections.newSetFromMap(new WeakHashMap<>());
+        editor = getEditor();
+        editor.setBinder(binder);
+        editor.setBuffered(true);
+
+        externalIdField = new TextField();
+        patientIdField = new TextField();
+        patientNameField = new TextField();
+        issuerOfPatientIdField = new TextField();
+        patientBirthDateField = new DatePicker();
+        patientSexField = new Select<>();
+        patientSexField.setItems("M", "F", "O");
+
+        extidColumn.setEditorComponent(externalIdField);
+        patientIdColumn.setEditorComponent(patientIdField);
+        patientNameColumn.setEditorComponent(patientNameField);
+        issuerOfPatientIDColumn.setEditorComponent(issuerOfPatientIdField);
+        patientBirthDateColumn.setEditorComponent(patientBirthDateField);
+        patientSexColumn.setEditorComponent(patientSexField);
+
+        editorColumn = addComponentColumn(patient -> {
+            Button edit = new Button("Edit");
+            edit.addClassName("edit");
+            edit.addClickListener(e -> {
+                editor.editItem(patient);
+                externalIdField.focus();
+            });
+            edit.setEnabled(!editor.isOpen());
+            editButtons.add(edit);
+            return edit;
         });
-
-
-
-        getElement().addEventListener("keyup", event -> editor.cancel())
-                .setFilter("event.key === 'Escape' || event.key === 'Esc'");
-
-        Div buttons = new Div(saveEditPatientButton, cancelEditPatientButton);
-        editorColumn.setEditorComponent(buttons);
-
 
         deleteColumn = addComponentColumn(patient -> {
             deletePatientButton = new Button("Delete");
@@ -142,14 +132,20 @@ public class ExternalIDGrid extends Grid<Patient> {
             });
             return deletePatientButton;
         });
+
+        saveEditPatientButton = new Button(LABEL_SAVE);
+        cancelEditPatientButton = new Button(LABEL_CANCEL);
+
+        Div buttons = new Div(saveEditPatientButton, cancelEditPatientButton);
+        editorColumn.setEditorComponent(buttons);
     }
 
-    public Div fieldValidator(){
+    public Div setBinder(){
         Div validationStatus = new Div();
         validationStatus.setId("validation");
         validationStatus.getStyle().set("color", "var(--theme-color, red)");
         binder.forField(externalIdField)
-                .withValidator(StringUtils::isNotBlank, "External ID is empty")
+                .withValidator(StringUtils::isNotBlank, "External Pseudonym is empty")
                 .withValidator(new StringLengthValidator("Length must be between 1 and 50.", 1, 50))
                 .withStatusLabel(validationStatus).bind("extid");
 
@@ -164,8 +160,7 @@ public class ExternalIDGrid extends Grid<Patient> {
                 .withStatusLabel(validationStatus).bind("patientName");
 
         binder.forField(issuerOfPatientIdField)
-                .withValidator(StringUtils::isNotBlank, "Issuer of patient ID is empty")
-                .withValidator(new StringLengthValidator("Length must be between 1 and 50.", 1, 50))
+                .withValidator(new StringLengthValidator("Length must be between 0 and 50.", 0, 50))
                 .withStatusLabel(validationStatus).bind("issuerOfPatientId");
 
         binder.forField(patientBirthDateField)
