@@ -20,7 +20,7 @@ public class NewUpdateDestination extends VerticalLayout {
     private Destination currentDestination;
     private Binder<Destination> binderFormDICOM;
     private Binder<Destination> binderFormSTOW;
-    private ButtonSaveDeleteCancel buttonDestinationSaveDeleteCancel;
+    private ButtonSaveDeleteCancel buttonDestinationDICOMSaveDeleteCancel;
 
     public NewUpdateDestination(DestinationDataProvider destinationDataProvider, ViewLogic viewLogic) {
         this.destinationDataProvider = destinationDataProvider;
@@ -28,10 +28,10 @@ public class NewUpdateDestination extends VerticalLayout {
         setSizeFull();
         binderFormDICOM = new BeanValidationBinder<>(Destination.class);
         binderFormSTOW = new BeanValidationBinder<>(Destination.class);
-        formDICOM = new FormDICOM(binderFormDICOM);
+        buttonDestinationDICOMSaveDeleteCancel = new ButtonSaveDeleteCancel();
+        formDICOM = new FormDICOM(binderFormDICOM, buttonDestinationDICOMSaveDeleteCancel);
         formSTOW = new FormSTOW(binderFormSTOW);
         currentDestination = null;
-        buttonDestinationSaveDeleteCancel = new ButtonSaveDeleteCancel();
 
         setButtonSaveEvent();
         setButtonDeleteEvent();
@@ -40,10 +40,10 @@ public class NewUpdateDestination extends VerticalLayout {
     public void load(Destination destination, DestinationType type) {
         if (destination != null) {
             currentDestination = destination;
-            buttonDestinationSaveDeleteCancel.getDelete().setEnabled(true);
+            buttonDestinationDICOMSaveDeleteCancel.getDelete().setEnabled(true);
         } else {
             currentDestination = type == DestinationType.stow ? Destination.ofStowEmpty() : Destination.ofDicomEmpty();
-            buttonDestinationSaveDeleteCancel.getDelete().setEnabled(false);
+            buttonDestinationDICOMSaveDeleteCancel.getDelete().setEnabled(false);
         }
         setView(type);
     }
@@ -57,11 +57,10 @@ public class NewUpdateDestination extends VerticalLayout {
             add(formDICOM);
             binderFormDICOM.readBean(currentDestination);
         }
-        add(UIS.setWidthFull(buttonDestinationSaveDeleteCancel));
     }
 
     private void setButtonSaveEvent() {
-        buttonDestinationSaveDeleteCancel.getSave().addClickListener(event -> {
+        buttonDestinationDICOMSaveDeleteCancel.getSave().addClickListener(event -> {
             NodeEventType nodeEventType = currentDestination.isNewData() == true ? NodeEventType.ADD : NodeEventType.UPDATE;
             if (currentDestination.getType() == DestinationType.stow && binderFormSTOW.writeBeanIfValid(currentDestination)) {
                 destinationDataProvider.save(currentDestination);
@@ -78,7 +77,7 @@ public class NewUpdateDestination extends VerticalLayout {
     }
 
     private void setButtonDeleteEvent() {
-        buttonDestinationSaveDeleteCancel.getDelete().addClickListener(event -> {
+        buttonDestinationDICOMSaveDeleteCancel.getDelete().addClickListener(event -> {
 
             if (currentDestination != null) {
                 ConfirmDialog dialog = new ConfirmDialog(
@@ -95,7 +94,7 @@ public class NewUpdateDestination extends VerticalLayout {
         });
     }
 
-    public Button getButtonCancel() {
-        return buttonDestinationSaveDeleteCancel.getCancel();
+    public Button getButtonDICOMCancel() {
+        return buttonDestinationDICOMSaveDeleteCancel.getCancel();
     }
 }

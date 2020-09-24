@@ -191,7 +191,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
     }
 
     private void setEventDestinationCancelButton() {
-        newUpdateDestination.getButtonCancel().addClickListener(event -> {
+        newUpdateDestination.getButtonDICOMCancel().addClickListener(event -> {
             setEditView();
         });
     }
