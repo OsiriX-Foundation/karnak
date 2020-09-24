@@ -41,6 +41,7 @@ public class ExternalPseudonymView extends HorizontalLayout {
                     verticalLayoutExeternalPseudonym.setVisible(true);
                     idTypes = extidListBox.getValue().equals(extidSentence[0]) ?  IdTypes.EXTID : IdTypes.ADD_EXTID;
                 } else {
+                    extidListBox.setValue(extidSentence[0]);
                     verticalLayoutExeternalPseudonym.setVisible(false);
                     pseudonymAsPatientName.setValue(false);
                     idTypes = IdTypes.PID;
