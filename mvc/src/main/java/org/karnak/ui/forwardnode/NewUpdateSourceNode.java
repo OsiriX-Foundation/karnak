@@ -24,8 +24,8 @@ public class NewUpdateSourceNode extends VerticalLayout {
         dataProvider = sourceNodeDataProvider;
         this.viewLogic = viewLogic;
         binderFormSourceNode = new BeanValidationBinder<>(DicomSourceNode.class);
-        formSourceNode = new FormSourceNode(binderFormSourceNode);
         buttonSaveDeleteCancel = new ButtonSaveDeleteCancel();
+        formSourceNode = new FormSourceNode(binderFormSourceNode, buttonSaveDeleteCancel);
 
         setButtonSaveEvent();
         setButtonDeleteEvent();
@@ -34,7 +34,7 @@ public class NewUpdateSourceNode extends VerticalLayout {
     public void setView() {
         removeAll();
         binderFormSourceNode.readBean(currentSourceNode);
-        add(formSourceNode, UIS.setWidthFull(buttonSaveDeleteCancel));
+        add(formSourceNode);
     }
 
     public void load(DicomSourceNode sourceNode) {
