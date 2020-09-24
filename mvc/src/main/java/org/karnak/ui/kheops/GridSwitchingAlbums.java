@@ -20,6 +20,7 @@ public class GridSwitchingAlbums extends Grid<KheopsAlbums> {
 
     public GridSwitchingAlbums() {
         setWidthFull();
+        setHeightByRows(true);
 
         TextFieldsBindSwitchingAlbum textFieldsBindSwitchingAlbum = new TextFieldsBindSwitchingAlbum();
         binder = textFieldsBindSwitchingAlbum.getBinder();
