@@ -26,7 +26,7 @@ public class FormSTOW extends VerticalLayout  {
     private final LayoutDesidentification layoutDesidentification;
     private final FilterBySOPClassesForm filterBySOPClassesForm;
 
-    public FormSTOW(Binder<Destination> binder) {
+    public FormSTOW(Binder<Destination> binder, ButtonSaveDeleteCancel buttonSaveDeleteCancel) {
         setSizeFull();
         this.binder = binder;
 
@@ -55,6 +55,7 @@ public class FormSTOW extends VerticalLayout  {
                         notifyInterval)));
         add(UIS.setWidthFull(layoutDesidentification));
         add(UIS.setWidthFull(filterBySOPClassesForm));
+        add(UIS.setWidthFull(buttonSaveDeleteCancel));
 
         setElements();
         setBinder();
