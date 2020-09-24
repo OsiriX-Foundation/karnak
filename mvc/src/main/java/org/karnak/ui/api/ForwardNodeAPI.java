@@ -6,7 +6,7 @@ package org.karnak.ui.api;
 import org.karnak.data.NodeEvent;
 import org.karnak.data.NodeEventType;
 import org.karnak.data.gateway.ForwardNode;
-import org.karnak.ui.gateway.ForwardNodeDataProvider;
+import org.karnak.ui.data.ForwardNodeDataProvider;
 import org.springframework.context.ApplicationEventPublisher;
 
 import java.io.Serializable;

@@ -3,9 +3,9 @@ package org.karnak.ui.forwardnode;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import org.karnak.data.gateway.SOPClassUID;
 import org.karnak.data.gateway.SOPClassUIDPersistence;
-import org.karnak.ui.gateway.DataService;
-import org.karnak.ui.gateway.DataServiceImpl;
-import org.karnak.ui.gateway.GatewayConfiguration;
+import org.karnak.ui.data.DataService;
+import org.karnak.ui.data.DataServiceImpl;
+import org.karnak.ui.data.GatewayConfiguration;
 
 import java.util.ArrayList;
 import java.util.Collection;

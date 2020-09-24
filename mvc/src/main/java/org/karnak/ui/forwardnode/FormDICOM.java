@@ -30,7 +30,7 @@ public class FormDICOM extends VerticalLayout {
     private final LayoutDesidentification layoutDesidentification;
     private final FilterBySOPClassesForm filterBySOPClassesForm;
 
-    public FormDICOM(Binder<Destination> binder) {
+    public FormDICOM(Binder<Destination> binder, ButtonSaveDeleteCancel buttonSaveDeleteCancel) {
         setSizeFull();
         this.binder = binder;
 
@@ -53,7 +53,8 @@ public class FormDICOM extends VerticalLayout {
                 UIS.setWidthFull(new HorizontalLayout(notify)),
                 UIS.setWidthFull(new HorizontalLayout(notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues, notifyInterval)),
                 UIS.setWidthFull(layoutDesidentification),
-                UIS.setWidthFull(filterBySOPClassesForm));
+                UIS.setWidthFull(filterBySOPClassesForm),
+                UIS.setWidthFull(buttonSaveDeleteCancel));
         setElements();
         setBinder();
     }

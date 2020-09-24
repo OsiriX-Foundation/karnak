@@ -1,11 +1,10 @@
-package org.karnak.ui.gateway;
+package org.karnak.ui.data;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-import org.karnak.data.gateway.DestinationPersistence;
 import org.karnak.data.gateway.DicomSourceNodePersistence;
 import org.karnak.data.gateway.ForwardNode;
 import org.karnak.data.gateway.DicomSourceNode;
