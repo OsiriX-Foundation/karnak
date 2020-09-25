@@ -1,4 +1,4 @@
-package org.karnak.ui.gateway;
+package org.karnak.ui.data;
 
 import java.io.Serializable;
 import java.util.Collection;

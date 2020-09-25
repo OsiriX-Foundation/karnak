@@ -6,10 +6,9 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
-import org.karnak.data.gateway.DestinationType;
 import org.karnak.data.gateway.ForwardNode;
-import org.karnak.ui.gateway.DataService;
-import org.karnak.ui.gateway.SourceNodeDataProvider;
+import org.karnak.ui.data.DataService;
+import org.karnak.ui.data.SourceNodeDataProvider;
 import org.karnak.ui.util.UIS;
 
 public class SourceNodesView extends VerticalLayout {

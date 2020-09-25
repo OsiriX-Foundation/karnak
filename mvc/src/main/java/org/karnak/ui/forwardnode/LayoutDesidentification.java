@@ -5,8 +5,6 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.data.binder.Binder;
 import org.karnak.data.gateway.Destination;
-import org.karnak.ui.forwardnode.ExternalPseudonymView;
-import org.karnak.ui.gateway.ProfileDropDown;
 import org.karnak.ui.util.UIS;
 
 public class LayoutDesidentification extends Div {

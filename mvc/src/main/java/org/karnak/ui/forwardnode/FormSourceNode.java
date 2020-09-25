@@ -11,15 +11,16 @@ import org.karnak.ui.util.UIS;
 
 public class FormSourceNode extends VerticalLayout {
     private Binder<DicomSourceNode> binder;
-
     private final TextField aeTitle;
     private final TextField description;
     private final TextField hostname;
     private final Checkbox checkHostname;
+    private final ButtonSaveDeleteCancel buttonSaveDeleteCancel;
 
-    public FormSourceNode(Binder<DicomSourceNode> binder) {
+    public FormSourceNode(Binder<DicomSourceNode> binder, ButtonSaveDeleteCancel buttonSaveDeleteCancel) {
         setSizeFull();
         this.binder = binder;
+        this.buttonSaveDeleteCancel = buttonSaveDeleteCancel;
         aeTitle = new TextField("AETitle");
         description = new TextField("Description");
         hostname = new TextField("Hostname");
@@ -30,7 +31,8 @@ public class FormSourceNode extends VerticalLayout {
 
         add(UIS.setWidthFull(new HorizontalLayout(aeTitle, description)),
                 UIS.setWidthFull(new HorizontalLayout(hostname)),
-                UIS.setWidthFull(checkHostname));
+                UIS.setWidthFull(checkHostname),
+                UIS.setWidthFull(buttonSaveDeleteCancel));
     }
 
     private void setElements() {
