@@ -77,10 +77,4 @@ public class GridSwitchingAlbums extends Grid<KheopsAlbums> {
     public void refresh(KheopsAlbums data) {
         getDataCommunicator().refresh(data);
     }
-
-    public void initialize(List<KheopsAlbums> data) {
-        if (data != null) {
-            setItems(data);
-        }
-    }
 }

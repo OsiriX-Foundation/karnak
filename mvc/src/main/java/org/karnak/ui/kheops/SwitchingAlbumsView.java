@@ -3,7 +3,6 @@ package org.karnak.ui.kheops;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.customfield.CustomField;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import org.karnak.data.gateway.KheopsAlbums;
 import org.karnak.ui.util.UIS;
@@ -78,11 +77,16 @@ public class SwitchingAlbumsView extends CustomField<List<KheopsAlbums>> {
     }
 
     @Override
-    protected void setPresentationValue(List<KheopsAlbums> kheopsAlbums) {
+    public void setValue(List<KheopsAlbums> kheopsAlbums) {
+        super.setValue(kheopsAlbums);
         kheopsAlbumsList = kheopsAlbums;
         if (kheopsAlbums != null) {
             setCheckboxSwitchingAlbumsValue();
-            gridSwitchingAlbums.initialize(kheopsAlbums);
+            gridSwitchingAlbums.setItems(kheopsAlbums);
         }
+    }
+
+    @Override
+    protected void setPresentationValue(List<KheopsAlbums> kheopsAlbums) {
     }
 }
