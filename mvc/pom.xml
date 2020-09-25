@@ -214,6 +214,13 @@
 			<artifactId>togglebutton</artifactId>
 			<version>1.0.0</version>
 		</dependency>
+		<dependency>
+			<groupId>com.vaadin</groupId>
+			<artifactId>vaadin-bom</artifactId>
+			<version>17.0.0</version>
+			<type>pom</type>
+			<scope>import</scope>
+		</dependency>
 	</dependencies>
 
 	<build>

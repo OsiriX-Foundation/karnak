@@ -1,17 +1,11 @@
-package org.karnak.ui.gateway;
-
-import org.karnak.data.gateway.ForwardNode;
+package org.karnak.ui.forwardnode;
 
 import com.vaadin.flow.component.grid.Grid;
+import org.karnak.data.gateway.ForwardNode;
 
-/**
- * Grid of forward nodes, handling the visual presentation and filtering of a
- * set of items. This version uses an in-memory data source that is suitable for
- * small data sets.
- */
-@SuppressWarnings("serial")
-public class ForwardNodeGrid extends Grid<ForwardNode> {
-    public ForwardNodeGrid() {
+public class GridForwardNode extends Grid<ForwardNode> {
+
+    public GridForwardNode() {
         setSizeFull();
 
         addColumn(ForwardNode::getFwdAeTitle).setHeader("Forward AETitle").setFlexGrow(20).setSortable(true);
@@ -26,4 +20,9 @@ public class ForwardNodeGrid extends Grid<ForwardNode> {
     public void refresh(ForwardNode data) {
         getDataCommunicator().refresh(data);
     }
+
+    public void selectRow(ForwardNode row) {
+        getSelectionModel().select(row);
+    }
+
 }

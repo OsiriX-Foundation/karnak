@@ -1,4 +1,4 @@
-package org.karnak.ui.gateway;
+package org.karnak.ui.data;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -43,4 +43,5 @@ public abstract class DataService implements Serializable {
 
     public abstract SOPClassUID getSOPClassUIDByName(String name);
 
+    public abstract SOPClassUID getSOPClassUIDById(Long dataId);
 }
