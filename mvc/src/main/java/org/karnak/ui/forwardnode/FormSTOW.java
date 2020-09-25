@@ -9,6 +9,7 @@ import com.vaadin.flow.data.binder.Binder;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.data.gateway.Destination;
 import org.karnak.ui.component.converter.HStringToIntegerConverter;
+import org.karnak.ui.kheops.SwitchingAlbumsView;
 import org.karnak.ui.util.UIS;
 
 public class FormSTOW extends VerticalLayout  {
@@ -25,6 +26,7 @@ public class FormSTOW extends VerticalLayout  {
     private final TextField notifyInterval;
     private final LayoutDesidentification layoutDesidentification;
     private final FilterBySOPClassesForm filterBySOPClassesForm;
+    private final SwitchingAlbumsView switchingAlbumsView;
 
     public FormSTOW(Binder<Destination> binder, ButtonSaveDeleteCancel buttonSaveDeleteCancel) {
         setSizeFull();
@@ -41,6 +43,7 @@ public class FormSTOW extends VerticalLayout  {
         notifyInterval = new TextField("Notif.: interval");
         layoutDesidentification = new LayoutDesidentification(binder);
         filterBySOPClassesForm = new FilterBySOPClassesForm(binder);
+        switchingAlbumsView = new SwitchingAlbumsView();
 
         add(UIS.setWidthFull( //
                 new HorizontalLayout(description)));
@@ -55,6 +58,7 @@ public class FormSTOW extends VerticalLayout  {
                         notifyInterval)));
         add(UIS.setWidthFull(layoutDesidentification));
         add(UIS.setWidthFull(filterBySOPClassesForm));
+        add(UIS.setWidthFull(switchingAlbumsView));
         add(UIS.setWidthFull(buttonSaveDeleteCancel));
 
         setElements();
@@ -102,7 +106,8 @@ public class FormSTOW extends VerticalLayout  {
         binder.forField(notifyInterval)
                 .withConverter(new HStringToIntegerConverter())
                 .bind(Destination::getNotifyInterval, Destination::setNotifyInterval);
-
+        binder.forField(switchingAlbumsView)
+                .bind(Destination::getKheopsAlbums, Destination::setKheopsAlbums);
         binder.bindInstanceFields(this);
     }
 }
