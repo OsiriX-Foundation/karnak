@@ -75,9 +75,8 @@ public class DestinationDataProvider extends ListDataProvider<Destination> {
         dataService.deleteDestination(forwardNode, data);
         refreshAll();
         destinationPersistence.deleteById(data.getId());
+        data.setKheopsAlbums(null);
         destinationPersistence.saveAndFlush(data);
-        KheopsAlbumsDataProvider kheopsAlbumsDataProvider = new KheopsAlbumsDataProvider();
-        kheopsAlbumsDataProvider.deleteListSwitchingAlbums(data.getKheopsAlbums());
     }
 
     /**

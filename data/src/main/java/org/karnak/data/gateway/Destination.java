@@ -51,7 +51,7 @@ public class Destination {
             inverseJoinColumns = @JoinColumn(name = "sop_class_uid_id"))
     private Set<SOPClassUID> SOPClassUIDFilters = new HashSet<>();
 
-    @OneToMany(mappedBy="destination")
+    @OneToMany(mappedBy="destination", cascade = CascadeType.REMOVE)
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<KheopsAlbums> kheopsAlbums;
 
