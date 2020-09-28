@@ -119,12 +119,6 @@ public class ExprDCMElem {
         return new ReplaceNull("Z");
     }
 
-    /*public ActionItem Add(int newTag, VR newVr, String newValue){
-        Add add = new Add("A", newTag, newVr, newValue);
-        add.execute(dcm, newTag, null, null);
-        return null;
-    }*/
-
     public String getString(int tag){
         return dcmCopy.getString(tag).orElse(null);
     }
