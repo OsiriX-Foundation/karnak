@@ -47,6 +47,12 @@ public class Profiles {
         this.profiles = createProfilesList();
     }
 
+    public Profiles(Profile profile, HMAC hmac) {
+        this.hmac = hmac;
+        this.profile = profile;
+        this.profiles = createProfilesList();
+    }
+
     public ArrayList<ProfileItem> createProfilesList() {
         if (profile != null) {
             final List<ProfileElement> listProfileElement = profile.getProfileElements();
