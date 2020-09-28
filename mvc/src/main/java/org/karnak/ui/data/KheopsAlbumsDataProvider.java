@@ -2,6 +2,8 @@ package org.karnak.ui.data;
 
 import org.karnak.data.gateway.*;
 
+import java.util.List;
+
 public class KheopsAlbumsDataProvider {
     private KheopsAlbumsPersistence kheopsAlbumsPersistence;
     {
@@ -23,5 +25,17 @@ public class KheopsAlbumsDataProvider {
             }
             kheopsAlbumsPersistence.saveAndFlush(kheopsAlbum);
         }
+    }
+
+    public void deleteSwitchingAlbums(KheopsAlbums kheopsAlbums) {
+        kheopsAlbumsPersistence.deleteById(kheopsAlbums.getId());
+        kheopsAlbumsPersistence.flush();
+    }
+
+    public void deleteListSwitchingAlbums(List<KheopsAlbums> kheopsAlbumsList) {
+        kheopsAlbumsList.forEach(kheopsAlbums -> {
+            kheopsAlbumsPersistence.deleteById(kheopsAlbums.getId());
+        });
+        kheopsAlbumsPersistence.flush();
     }
 }
