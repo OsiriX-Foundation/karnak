@@ -17,11 +17,6 @@ public class DestinationDataProvider extends ListDataProvider<Destination> {
         destinationPersistence = GatewayConfiguration.getInstance().getDestinationPersistence();
     }
 
-    private KheopsAlbumsPersistence kheopsAlbumsPersistence;
-    {
-        kheopsAlbumsPersistence = GatewayConfiguration.getInstance().getKheopsAlbumsPersistence();
-    }
-
     private final DataService dataService;
     private Set<Destination> backend;
     private boolean hasChanges;
@@ -57,10 +52,10 @@ public class DestinationDataProvider extends ListDataProvider<Destination> {
      * @param data the updated or new data
      */
     public void save(Destination data) {
+        KheopsAlbumsDataProvider kheopsAlbumsDataProvider = new KheopsAlbumsDataProvider();
         boolean newData = data.isNewData();
 
         Destination dataUpdated = dataService.updateDestination(forwardNode, data);
-        updateSwitchingAlbums(data);
         if (newData) {
             refreshAll();
         } else {
@@ -68,16 +63,7 @@ public class DestinationDataProvider extends ListDataProvider<Destination> {
         }
         hasChanges = true;
         destinationPersistence.saveAndFlush(dataUpdated);
-    }
-
-    public void updateSwitchingAlbums(Destination destination) {
-        for (KheopsAlbums kheopsAlbum : destination.getKheopsAlbums()) {
-            Long destinationID = kheopsAlbum.getDestination() != null ? kheopsAlbum.getDestination().getId() : null;
-            if (destinationID == null) {
-                kheopsAlbum.setDestination(destination);
-            }
-            kheopsAlbumsPersistence.saveAndFlush(kheopsAlbum);
-        }
+        kheopsAlbumsDataProvider.updateSwitchingAlbumsFromDestination(data);
     }
 
     /**
