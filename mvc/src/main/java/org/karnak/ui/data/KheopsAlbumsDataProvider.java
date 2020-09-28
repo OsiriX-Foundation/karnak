@@ -18,12 +18,14 @@ public class KheopsAlbumsDataProvider {
     }
 
     public void updateSwitchingAlbumsFromDestination(Destination destination) {
-        for (KheopsAlbums kheopsAlbum : destination.getKheopsAlbums()) {
-            Long destinationID = kheopsAlbum.getDestination() != null ? kheopsAlbum.getDestination().getId() : null;
-            if (destinationID == null) {
-                kheopsAlbum.setDestination(destination);
+        if (destination.getKheopsAlbums() != null) {
+            for (KheopsAlbums kheopsAlbum : destination.getKheopsAlbums()) {
+                Long destinationID = kheopsAlbum.getDestination() != null ? kheopsAlbum.getDestination().getId() : null;
+                if (destinationID == null) {
+                    kheopsAlbum.setDestination(destination);
+                }
+                kheopsAlbumsPersistence.saveAndFlush(kheopsAlbum);
             }
-            kheopsAlbumsPersistence.saveAndFlush(kheopsAlbum);
         }
     }
 
@@ -33,9 +35,11 @@ public class KheopsAlbumsDataProvider {
     }
 
     public void deleteListSwitchingAlbums(List<KheopsAlbums> kheopsAlbumsList) {
-        kheopsAlbumsList.forEach(kheopsAlbums -> {
-            kheopsAlbumsPersistence.deleteById(kheopsAlbums.getId());
-        });
-        kheopsAlbumsPersistence.flush();
+        if (kheopsAlbumsList != null) {
+            kheopsAlbumsList.forEach(kheopsAlbums -> {
+                kheopsAlbumsPersistence.deleteById(kheopsAlbums.getId());
+            });
+            kheopsAlbumsPersistence.flush();
+        }
     }
 }
