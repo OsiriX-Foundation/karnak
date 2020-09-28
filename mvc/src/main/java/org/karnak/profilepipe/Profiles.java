@@ -112,21 +112,28 @@ public class Profiles {
             final DicomElement dcmEl = iterator.next();
             final ExprDCMElem exprDCMElem = new ExprDCMElem(dcmEl.tag(), dcmEl.vr(), dcm, dcmCopy);
 
+            ActionItem action = null;
+            boolean conditionIsOk = true;
             for (ProfileItem profile : profiles) {
-                final boolean conditionIsOk = getResultCondition(profile.getCondition(), exprDCMElem);
-                final ActionItem action = profile.getAction(dcm, dcmCopy, dcmEl, patientID);
-                if (action != null && conditionIsOk) {
-                    try {
-                        action.execute(dcm, dcmEl.tag(), iterator, patientID);
-                    } catch (final Exception e) {
-                        LOGGER.error("Cannot execute the action {} for tag: {}", action,  TagUtils.toString(dcmEl.tag()), e);
-                    }
+                conditionIsOk = getResultCondition(profile.getCondition(), exprDCMElem);
+                action = profile.getAction(dcm, dcmCopy, dcmEl, patientID);
+                if (action != null) {
                     break;
                 }
-                if (!(Remove.class.isInstance(action)) && dcmEl.vr() == VR.SQ) {
-                    dcmEl.itemStream().forEach(d -> applyAction(d, dcmCopy, patientID));
+            }
+
+            if (action != null && conditionIsOk) {
+                try {
+                    action.execute(dcm, dcmEl.tag(), iterator, patientID);
+                } catch (final Exception e) {
+                    LOGGER.error("Cannot execute the action {} for tag: {}", action,  TagUtils.toString(dcmEl.tag()), e);
                 }
             }
+
+            if (!(Remove.class.isInstance(action)) && dcmEl.vr() == VR.SQ) {
+                dcmEl.itemStream().forEach(d -> applyAction(d, dcmCopy, patientID));
+            }
+
         }
     }
 
