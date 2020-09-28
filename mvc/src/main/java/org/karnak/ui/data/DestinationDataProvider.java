@@ -5,9 +5,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-import org.karnak.data.gateway.Destination;
-import org.karnak.data.gateway.DestinationPersistence;
-import org.karnak.data.gateway.ForwardNode;
+import org.karnak.data.gateway.*;
 
 import com.vaadin.flow.data.provider.ListDataProvider;
 
@@ -17,6 +15,11 @@ public class DestinationDataProvider extends ListDataProvider<Destination> {
     private DestinationPersistence destinationPersistence;
     {
         destinationPersistence = GatewayConfiguration.getInstance().getDestinationPersistence();
+    }
+
+    private KheopsAlbumsPersistence kheopsAlbumsPersistence;
+    {
+        kheopsAlbumsPersistence = GatewayConfiguration.getInstance().getKheopsAlbumsPersistence();
     }
 
     private final DataService dataService;
@@ -57,6 +60,7 @@ public class DestinationDataProvider extends ListDataProvider<Destination> {
         boolean newData = data.isNewData();
 
         Destination dataUpdated = dataService.updateDestination(forwardNode, data);
+        updateSwitchingAlbums(data);
         if (newData) {
             refreshAll();
         } else {
@@ -64,6 +68,16 @@ public class DestinationDataProvider extends ListDataProvider<Destination> {
         }
         hasChanges = true;
         destinationPersistence.saveAndFlush(dataUpdated);
+    }
+
+    public void updateSwitchingAlbums(Destination destination) {
+        for (KheopsAlbums kheopsAlbum : destination.getKheopsAlbums()) {
+            Long destinationID = kheopsAlbum.getDestination() != null ? kheopsAlbum.getDestination().getId() : null;
+            if (destinationID == null) {
+                kheopsAlbum.setDestination(destination);
+            }
+            kheopsAlbumsPersistence.saveAndFlush(kheopsAlbum);
+        }
     }
 
     /**

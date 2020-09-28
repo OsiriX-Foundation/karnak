@@ -63,4 +63,12 @@ public class KheopsAlbums {
     public void setCondition(String condition) {
         this.condition = condition;
     }
+
+    public Destination getDestination() {
+        return destination;
+    }
+
+    public void setDestination(Destination destination) {
+        this.destination = destination;
+    }
 }

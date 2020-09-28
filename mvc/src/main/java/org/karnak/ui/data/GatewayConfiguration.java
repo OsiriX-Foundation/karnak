@@ -29,6 +29,9 @@ public class GatewayConfiguration {
     private DestinationPersistence destinationPersistence;
 
     @Autowired
+    private KheopsAlbumsPersistence kheopsAlbumsPersistence;
+
+    @Autowired
     private DicomSourceNodePersistence dicomSourceNodePersistence;
 
     @Autowired
@@ -61,6 +64,10 @@ public class GatewayConfiguration {
 
     public DestinationPersistence getDestinationPersistence() {
         return destinationPersistence;
+    }
+
+    public KheopsAlbumsPersistence getKheopsAlbumsPersistence() {
+        return kheopsAlbumsPersistence;
     }
 
     public DicomSourceNodePersistence getDicomSourceNodePersistence() {
