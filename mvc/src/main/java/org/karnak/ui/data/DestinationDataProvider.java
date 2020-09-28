@@ -75,6 +75,7 @@ public class DestinationDataProvider extends ListDataProvider<Destination> {
         dataService.deleteDestination(forwardNode, data);
         refreshAll();
         destinationPersistence.deleteById(data.getId());
+        // TODO: Le jours où la suprresion d'une destination se passera correctement SUPPRIMER cette ligne
         data.setKheopsAlbums(null);
         destinationPersistence.saveAndFlush(data);
     }
