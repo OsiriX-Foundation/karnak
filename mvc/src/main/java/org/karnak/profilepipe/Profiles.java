@@ -111,38 +111,35 @@ public class Profiles {
         return null;
     }
 
-    public void applyAction(DicomObject dcm, DicomObject dcmCopy, String patientID, ActionItem actionByDefault) {
+    public void applyAction(DicomObject dcm, DicomObject dcmCopy, String patientID, ProfileItem profilePassedInSequence) {
         for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext(); ) {
             final DicomElement dcmEl = iterator.next();
             final ExprDCMElem exprDCMElem = new ExprDCMElem(dcmEl.tag(), dcmEl.vr(), dcm, dcmCopy);
 
-            ActionItem action = null;
-            boolean conditionIsOk = true;
+            ActionItem currentAction = null;
+            ProfileItem currentProfile = null;
             for (ProfileItem profile : profiles) {
-                conditionIsOk = getResultCondition(profile.getCondition(), exprDCMElem);
-                action = profile.getAction(dcm, dcmCopy, dcmEl, patientID);
-                if (action != null) {
+                currentProfile = profile;
+
+                boolean conditionIsOk = getResultCondition(profile.getCondition(), exprDCMElem);
+                if (conditionIsOk) {
+                    currentAction = profile.getAction(dcm, dcmCopy, dcmEl, patientID);
+                }
+
+                if (currentAction != null || profile.equals(profilePassedInSequence)) {
                     break;
                 }
             }
 
-            if ( (!(Remove.class.isInstance(action)) || !(ReplaceNull.class.isInstance(action))) && dcmEl.vr() == VR.SQ) {
-                final ActionItem finalAction = action;
-                dcmEl.itemStream().forEach(d -> applyAction(d, dcmCopy, patientID, finalAction));
+            if ( (!(Remove.class.isInstance(currentAction)) || !(ReplaceNull.class.isInstance(currentAction))) && dcmEl.vr() == VR.SQ) {
+                final ProfileItem finalCurrentProfile = currentProfile;
+                dcmEl.itemStream().forEach(d -> applyAction(d, dcmCopy, patientID, finalCurrentProfile));
             } else {
-                if (action != null && conditionIsOk) {
+                if (currentAction != null) {
                     try {
-                        action.execute(dcm, dcmEl.tag(), iterator, patientID);
+                        currentAction.execute(dcm, dcmEl.tag(), iterator, patientID);
                     } catch (final Exception e) {
-                        LOGGER.error("Cannot execute the action {} for tag: {}", action,  TagUtils.toString(dcmEl.tag()), e);
-                    }
-                }
-
-                if (action == null && actionByDefault!=null && conditionIsOk){
-                    try {
-                        actionByDefault.execute(dcm, dcmEl.tag(), iterator, patientID);
-                    } catch (final Exception e) {
-                        LOGGER.error("Cannot execute the action {} for tag: {}", actionByDefault,  TagUtils.toString(dcmEl.tag()), e);
+                        LOGGER.error("Cannot execute the currentAction {} for tag: {}", currentAction,  TagUtils.toString(dcmEl.tag()), e);
                     }
                 }
             }

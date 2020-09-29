@@ -1,5 +1,6 @@
 package org.karnak.profilepipe;
 
+import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.Tag;
 import org.dcm4che6.data.VR;
@@ -23,6 +24,147 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class ProfilesTest {
     private static final HMAC hmacTest = new HMAC("HmacKeyToTEST");
+
+    @Test
+    void propagationInSequence1(){
+        final DicomObject dataset1 = DicomObject.newDicomObject();
+        final DicomObject dataset2 = DicomObject.newDicomObject();
+
+        dataset1.setString(Tag.PatientAge, VR.AS, "075Y");
+        DicomElement dicomElemSeq1 = dataset1.newDicomSequence(Tag.GroupOfPatientsIdentificationSequence);
+        final DicomObject datasetSeq1 = DicomObject.newDicomObject();
+        datasetSeq1.setString(Tag.PatientID, VR.LO, "1234");
+        DicomElement dicomElemSeq12 = datasetSeq1.newDicomSequence(Tag.IssuerOfPatientIDQualifiersSequence);
+        final DicomObject datasetSeq12 = DicomObject.newDicomObject();
+        datasetSeq12.setString(Tag.UniversalEntityID, VR.UT, "UT");
+        dicomElemSeq12.addItem(datasetSeq12);
+        dicomElemSeq1.addItem(datasetSeq1);
+
+
+        DicomElement dicomElemSeq2 = dataset2.newDicomSequence(Tag.GroupOfPatientsIdentificationSequence);
+        final DicomObject datasetSeq2 = DicomObject.newDicomObject();
+        datasetSeq2.setString(Tag.PatientID, VR.LO, "1234");
+        DicomElement dicomElemSeq22 = datasetSeq2.newDicomSequence(Tag.IssuerOfPatientIDQualifiersSequence);
+        final DicomObject datasetSeq22 = DicomObject.newDicomObject();
+        datasetSeq22.setString(Tag.UniversalEntityID, VR.UT, "UT");
+        dicomElemSeq22.addItem(datasetSeq22);
+        dicomElemSeq2.addItem(datasetSeq2);
+
+
+        final Profile profile = new Profile("TEST", "0.9.1", "0.9.1", "DPA");
+        final ProfileElement profileElement1 = new ProfileElement("Remove tag", "action.on.specific.tags", null, "X", null, 0, profile);
+        profileElement1.addIncludedTag(new IncludedTag("(0010,1010)", profileElement1));
+        final ProfileElement profileElement2 = new ProfileElement("Keep tag", "action.on.specific.tags", null, "K", null, 0, profile);
+        profileElement2.addIncludedTag(new IncludedTag("(0010,0027)", profileElement2));
+        final ProfileElement profileElement3 = new ProfileElement("Remove tag", "action.on.specific.tags", null, "X", null, 0, profile);
+        profileElement3.addIncludedTag(new IncludedTag("(xxxx,xxxx)", profileElement3));
+
+        profile.addProfilePipe(profileElement1);
+        profile.addProfilePipe(profileElement2);
+        profile.addProfilePipe(profileElement3);
+        final Profiles profiles = new Profiles(profile, hmacTest);
+        profiles.applyAction(dataset1, dataset1, "pseudonym", null);
+        assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
+    }
+
+    @Test
+    void propagationInSequence2(){
+        final DicomObject dataset1 = DicomObject.newDicomObject();
+        final DicomObject dataset2 = DicomObject.newDicomObject();
+
+        dataset1.setString(Tag.PatientAge, VR.AS, "075Y");
+        DicomElement dicomElemSeq1 = dataset1.newDicomSequence(Tag.GroupOfPatientsIdentificationSequence);
+        final DicomObject datasetSeq1 = DicomObject.newDicomObject();
+        datasetSeq1.setString(Tag.PatientID, VR.LO, "1234");
+
+        DicomElement dicomElemSeq12 = datasetSeq1.newDicomSequence(Tag.IssuerOfPatientIDQualifiersSequence);
+        final DicomObject datasetSeq12 = DicomObject.newDicomObject();
+        datasetSeq12.setString(Tag.UniversalEntityID, VR.UT, "UT");
+        dicomElemSeq12.addItem(datasetSeq12);
+        dicomElemSeq1.addItem(datasetSeq1);
+
+
+        DicomElement dicomElemSeq2 = dataset2.newDicomSequence(Tag.GroupOfPatientsIdentificationSequence);
+        final DicomObject datasetSeq2 = DicomObject.newDicomObject();
+        datasetSeq2.setString(Tag.PatientID, VR.LO, "1234");
+        DicomElement dicomElemSeq22 = datasetSeq2.newDicomSequence(Tag.IssuerOfPatientIDQualifiersSequence);
+        final DicomObject datasetSeq22 = DicomObject.newDicomObject();
+        dicomElemSeq22.addItem(datasetSeq22);
+        dicomElemSeq2.addItem(datasetSeq2);
+
+
+        final Profile profile = new Profile("TEST", "0.9.1", "0.9.1", "DPA");
+        final ProfileElement profileElement1 = new ProfileElement("Remove tag", "action.on.specific.tags", null, "X", null, 0, profile);
+        profileElement1.addIncludedTag(new IncludedTag("(0010,1010)", profileElement1));
+        profileElement1.addIncludedTag(new IncludedTag("(0040,0032)", profileElement1));
+        final ProfileElement profileElement2 = new ProfileElement("Keep tag", "action.on.specific.tags", null, "K", null, 0, profile);
+        profileElement2.addIncludedTag(new IncludedTag("(0010,0027)", profileElement2));
+        final ProfileElement profileElement3 = new ProfileElement("Remove tag", "action.on.specific.tags", null, "X", null, 0, profile);
+        profileElement3.addIncludedTag(new IncludedTag("(xxxx,xxxx)", profileElement3));
+
+        profile.addProfilePipe(profileElement1);
+        profile.addProfilePipe(profileElement2);
+        profile.addProfilePipe(profileElement3);
+        final Profiles profiles = new Profiles(profile, hmacTest);
+        profiles.applyAction(dataset1, dataset1, "pseudonym", null);
+        assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
+    }
+
+    @Test
+    void propagationInSequence3(){
+        final DicomObject dataset1 = DicomObject.newDicomObject();
+        final DicomObject dataset2 = DicomObject.newDicomObject();
+
+        dataset1.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
+        dataset1.setString(Tag.StudyInstanceUID, VR.UI, "12345");
+        dataset1.setString(Tag.PatientAge, VR.AS, "075Y");
+        DicomElement dicomElemSeq1 = dataset1.newDicomSequence(Tag.CTExposureSequence);
+        final DicomObject datasetSeq1 = DicomObject.newDicomObject();
+        datasetSeq1.setDouble(Tag.EstimatedDoseSaving, VR.FD, 0d);
+        datasetSeq1.setDouble(Tag.ExposureTimeInms, VR.FD, 2.099d);
+        datasetSeq1.setDouble(Tag.XRayTubeCurrentInmA, VR.FD, 381d);
+        datasetSeq1.setDouble(Tag.ExposureInmAs, VR.FD, 800d);
+        datasetSeq1.setDouble(Tag.CTDIvol, VR.FD, 47d);
+        dicomElemSeq1.addItem(datasetSeq1);
+
+        dataset2.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
+        dataset2.setString(Tag.StudyInstanceUID, VR.UI, "12345");
+        dataset2.setString(Tag.PatientAge, VR.AS, "076Y");
+        DicomElement dicomElemSeq2 = dataset2.newDicomSequence(Tag.CTExposureSequence);
+        final DicomObject datasetSeq2 = DicomObject.newDicomObject();
+        datasetSeq2.setDouble(Tag.ExposureTimeInms, VR.FD, 2.099d);
+        datasetSeq2.setDouble(Tag.XRayTubeCurrentInmA, VR.FD, 381d);
+        datasetSeq2.setDouble(Tag.ExposureInmAs, VR.FD, 800d);
+        datasetSeq2.setDouble(Tag.CTDIvol, VR.FD, 47d);
+        dicomElemSeq2.addItem(datasetSeq2);
+
+        final Profile profile = new Profile("TEST", "0.9.1", "0.9.1", "DPA");
+
+
+        final ProfileElement profileElement1 = new ProfileElement("Shift Date with arguments", "action.on.dates", null, null, "shift", 0, profile);
+        profileElement1.addIncludedTag(new IncludedTag("(xxxx,xxxx)", profileElement1));
+        profileElement1.addArgument(new Argument("seconds", "60", profileElement1));
+        profileElement1.addArgument(new Argument("days", "365", profileElement1));
+
+        final ProfileElement profileElement2 = new ProfileElement("Remove tag", "action.on.specific.tags", null, "X", null, 0, profile);
+        profileElement2.addIncludedTag(new IncludedTag("(0018,9324)", profileElement2));
+
+        final ProfileElement profileElement3 = new ProfileElement("Keep tag", "action.on.specific.tags", null, "K", null, 0, profile);
+        profileElement3.addIncludedTag(new IncludedTag("(0018,9321)", profileElement3));
+
+        final ProfileElement profileElement4 = new ProfileElement("Replace null", "action.on.specific.tags", null, "Z", null, 0, profile);
+        profileElement4.addIncludedTag(new IncludedTag("(0018,9330)", profileElement2));
+
+        profile.addProfilePipe(profileElement1);
+        profile.addProfilePipe(profileElement2);
+        profile.addProfilePipe(profileElement3);
+        profile.addProfilePipe(profileElement4);
+        final Profiles profiles = new Profiles(profile, hmacTest);
+        profiles.applyAction(dataset1, dataset1, "pseudonym", null);
+        assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
+    }
+
+
     @Test
     void XactionTagsProfile(){
         final DicomObject dataset1 = DicomObject.newDicomObject();
