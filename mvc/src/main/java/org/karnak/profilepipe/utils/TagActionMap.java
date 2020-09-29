@@ -1,22 +1,22 @@
 package org.karnak.profilepipe.utils;
 
 import org.dcm4che6.util.TagUtils;
-import org.karnak.profilepipe.action.Action;
+import org.karnak.profilepipe.action.ActionItem;
 import org.weasis.core.util.StringUtil;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class TagActionMap {
-    private HashMap<Integer, Action> tagAction;
-    private HashMap<String, Action> tagPatternAction;
+    private HashMap<Integer, ActionItem> tagAction;
+    private HashMap<String, ActionItem> tagPatternAction;
 
     public TagActionMap() {
         tagAction = new HashMap<>();
         tagPatternAction = new HashMap<>();
     }
 
-    public void put(String tag, Action action) {
+    public void put(String tag, ActionItem action) {
         String cleanTag = tag.replaceAll("[(),]", "").toUpperCase();
         if (isValidPattern(cleanTag)) {
             tagPatternAction.put(cleanTag, action);
@@ -25,10 +25,10 @@ public class TagActionMap {
         }
     }
 
-    public Action get(Integer tag) {
-        Action action = tagAction.get(tag);
+    public ActionItem get(Integer tag) {
+        ActionItem action = tagAction.get(tag);
         if (action == null) {
-            for (Map.Entry<String, Action> entry: tagPatternAction.entrySet()) {
+            for (Map.Entry<String, ActionItem> entry: tagPatternAction.entrySet()) {
                 String currentTagPattern = entry.getKey();
                 int patternTag = TagUtils.intFromHexString(currentTagPattern.replace("X", "0"));
                 int patternMask = TagUtils.intFromHexString(getMask(currentTagPattern));
@@ -49,7 +49,7 @@ public class TagActionMap {
         return this.tagAction.isEmpty() && this.tagPatternAction.isEmpty();
     }
 
-    private static boolean isValidPattern(String tagPattern) {
+    public static boolean isValidPattern(String tagPattern) {
         if (!StringUtil.hasText(tagPattern) || tagPattern.length() != 8) {
             return false;
         }
@@ -57,7 +57,7 @@ public class TagActionMap {
         return p.matches("[0-9A-FX]+") && p.contains("X");
     }
 
-    private static String getMask(String tagPattern) {
+    public static String getMask(String tagPattern) {
         char[] chars = tagPattern.toUpperCase().toCharArray();
         for (int i = 0; i < chars.length; i++) {
             if (chars[i] == 'X') {

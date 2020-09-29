@@ -5,44 +5,38 @@ import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.Tag;
 import org.dcm4che6.data.VR;
 import org.dcm4che6.img.op.MaskArea;
+import org.dcm4che6.img.util.DicomObjectUtil;
+import org.dcm4che6.internal.DicomObjectImpl;
 import org.dcm4che6.util.TagUtils;
 import org.karnak.api.PseudonymApi;
 import org.karnak.api.rqbody.Fields;
 import org.karnak.data.AppConfig;
+import org.karnak.data.gateway.Destination;
+import org.karnak.data.gateway.IdTypes;
 import org.karnak.data.profile.ProfileElement;
 import org.karnak.data.profile.Profile;
-import org.karnak.profilepipe.action.Action;
-import org.karnak.profilepipe.action.ActionStrategy;
+import org.karnak.profilepipe.action.ActionItem;
+import org.karnak.profilepipe.action.Add;
+import org.karnak.profilepipe.action.Remove;
 import org.karnak.profilepipe.profiles.AbstractProfileItem;
 import org.karnak.profilepipe.profiles.ProfileItem;
+import org.karnak.profilepipe.utils.ExprDCMElem;
 import org.karnak.profilepipe.utils.HMAC;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Marker;
-import org.slf4j.MarkerFactory;
-import org.slf4j.MDC;
+import org.karnak.util.SpecialCharacter;
+import org.slf4j.*;
+import org.springframework.expression.EvaluationContext;
+import org.springframework.expression.Expression;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.weasis.core.util.StringUtil;
-import org.weasis.dicom.param.AttributeEditorContext;
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.constructor.Constructor;
 
-import java.awt.*;
-import java.awt.geom.RectangularShape;
-import java.io.InputStream;
 import java.math.BigInteger;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Profiles {
     private final Logger LOGGER = LoggerFactory.getLogger(Profiles.class);
-    private final Marker CLINICAL_MARKER = MarkerFactory.getMarker("CLINICAL");
-    private final String PATTERN_WITH_INOUT = "TAGHEX={} TAGINT={} DEIDENTACTION={} TAGVALUEIN={} TAGOUT={}";
-    private final String PATTERN_WITH_IN = "TAGHEX={} TAGINT={} DEIDENTACTION={} TAGVALUEIN={}";
-    private final String DUMMY_DEIDENT_METHOD = "dDeidentMethod";
 
     private Profile profile;
     private final ArrayList<ProfileItem> profiles;
@@ -50,6 +44,12 @@ public class Profiles {
 
     public Profiles(Profile profile) {
         this.hmac = AppConfig.getInstance().getHmac();
+        this.profile = profile;
+        this.profiles = createProfilesList();
+    }
+
+    public Profiles(Profile profile, HMAC hmac) {
+        this.hmac = hmac;
         this.profile = profile;
         this.profiles = createProfilesList();
     }
@@ -75,12 +75,13 @@ public class Profiles {
                     }
                 }
             }
+            profiles.sort(Comparator.comparing(ProfileItem::getPosition));
             return profiles;
         }
         return null;
     }
 
-    public String getMainzellistePseudonym(DicomObject dcm) {
+    public String getMainzellistePseudonym(DicomObject dcm, String externalPseudonym, IdTypes idTypes) {
         final String patientID = dcm.getString(Tag.PatientID).orElse(null);
         final String patientName = dcm.getString(Tag.PatientName).orElse(null);
         final String patientBirthDate = dcm.getString(Tag.PatientBirthDate).orElse(null);
@@ -88,118 +89,124 @@ public class Profiles {
         // Issuer of patientID is recommended to make the patientID universally unique. Can be defined in profile if missing.
         final String issuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID).orElse(profile.getDefaultissueropatientid());
 
-        PseudonymApi pseudonymApi = new PseudonymApi();
+        PseudonymApi pseudonymApi = new PseudonymApi(externalPseudonym);
         final Fields newPatientFields = new Fields(patientID, patientName, patientBirthDate, patientSex, issuerOfPatientID);
-        final String pseudonym = pseudonymApi.createPatient(newPatientFields);
-        return pseudonym;
+
+        return pseudonymApi.createPatient(newPatientFields, idTypes);
     }
 
-    public void applyAction(DicomObject dcm, String patientID, AttributeEditorContext context) {
+    private String getExtIDInDicom(DicomObject dcm, Destination destination) {
+        if (destination.getIdTypes().equals(IdTypes.ADD_EXTID)) {
+            String cleanTag = destination.getTag().replaceAll("[(),]", "").toUpperCase();
+            final String tagValue = dcm.getString(TagUtils.intFromHexString(cleanTag)).orElse(null);
+            if (tagValue != null && destination.getDelimiter() != null && destination.getPosition() != null) {
+                String delimiterSpec = SpecialCharacter.escapeSpecialRegexChars(destination.getDelimiter());
+                try {
+                    return tagValue.split(delimiterSpec)[destination.getPosition()];
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    LOGGER.error("Can not split the external pseudonym", e);
+                    return null;
+                }
+            } else if (tagValue != null) {
+                return tagValue;
+            }
+        }
+        return null;
+    }
+
+    public void applyAction(DicomObject dcm, DicomObject dcmCopy, String patientID) {
         for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext(); ) {
-            DicomElement dcmEl = iterator.next();
+            final DicomElement dcmEl = iterator.next();
+            final ExprDCMElem exprDCMElem = new ExprDCMElem(dcmEl.tag(), dcmEl.vr(), dcm, dcmCopy);
+
             for (ProfileItem profile : profiles) {
-                final Action action = profile.getAction(dcmEl);
-                if (action != null) {
+                final boolean conditionIsOk = getResultCondition(profile.getCondition(), exprDCMElem);
+                final ActionItem action = profile.getAction(dcm, dcmCopy, dcmEl, patientID);
+                if (action != null && conditionIsOk) {
                     try {
-                        final String tagValueIn = dcm.getString(dcmEl.tag()).orElse(null);
-                        ActionStrategy.Output out = action.execute(dcm, dcmEl.tag(), patientID, null);
-                        final String tagValueOut = dcm.getString(dcmEl.tag()).orElse(null);
-                        if (out == ActionStrategy.Output.TO_REMOVE) {
-                            iterator.remove();
-                            LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_IN, TagUtils.toString(dcmEl.tag()), dcmEl.tag(), action.getSymbol(), tagValueIn);
-                        } else if(out == ActionStrategy.Output.CLEAN_PIXEL){
-                            List<Shape> shapeList = new ArrayList<>();
-                            shapeList.add(new Rectangle(25, 15 , 150, 70));
-                            shapeList.add(new Rectangle(340, 15 , 150, 50));
-                            MaskArea mask = new MaskArea(shapeList, Color.RED);
-                            context.setMaskArea(mask);
-                            LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_IN, TagUtils.toString(dcmEl.tag()), dcmEl.tag(), action.getSymbol(), tagValueIn);
-                        } else {
-                            LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_INOUT, TagUtils.toString(dcmEl.tag()), dcmEl.tag(), action.getSymbol(), tagValueIn, tagValueOut);
-                        }
+                        action.execute(dcm, dcmEl.tag(), iterator, patientID);
                     } catch (final Exception e) {
-                        LOGGER.error("Cannot execute the action {}", action, e);
+                        LOGGER.error("Cannot execute the action {} for tag: {}", action,  TagUtils.toString(dcmEl.tag()), e);
                     }
                     break;
                 }
-                else if (dcmEl.vr() == VR.SQ) {
-                    dcmEl.itemStream().forEach(d -> applyAction(d, patientID, context));
+                if (!(Remove.class.isInstance(action)) && dcmEl.vr() == VR.SQ) {
+                    dcmEl.itemStream().forEach(d -> applyAction(d, dcmCopy, patientID));
                 }
             }
         }
     }
 
-    public void apply(DicomObject dcm, AttributeEditorContext context) {
+    public void apply(DicomObject dcm, Destination destination) {
         final String SOPinstanceUID = dcm.getString(Tag.SOPInstanceUID).orElse(null);
         final String IssuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID).orElse(null);
         final String PatientID = dcm.getString(Tag.PatientID).orElse(null);
+        final String stringExtIDInDicom = getExtIDInDicom(dcm, destination);
+        final IdTypes idTypes = destination.getIdTypes();
+
         MDC.put("SOPInstanceUID", SOPinstanceUID);
         MDC.put("issuerOfPatientID", IssuerOfPatientID);
         MDC.put("PatientID", PatientID);
 
-        String pseudonym = getMainzellistePseudonym(dcm);
+        String mainzellistePseudonym = getMainzellistePseudonym(dcm, stringExtIDInDicom, idTypes);
         String profilesCodeName = String.join(
                 "-" , profiles.stream().map(profile -> profile.getCodeName()).collect(Collectors.toList())
         );
-        BigInteger patientValue = generatePatientID(pseudonym, profilesCodeName);
-        String patientName = patientValue.toString(16).toUpperCase();
+        BigInteger patientValue = generatePatientID(mainzellistePseudonym, profilesCodeName);
+        String patientName = !idTypes.equals(IdTypes.PID) && destination.getPseudonymAsPatientName() == true ?
+                mainzellistePseudonym : patientValue.toString(16).toUpperCase();
         String patientID = patientValue.toString();
 
-        if (!StringUtil.hasText(pseudonym)) {
+        if (!StringUtil.hasText(mainzellistePseudonym)) {
             throw new IllegalStateException("Cannot build a pseudonym");
         }
 
-        applyAction(dcm, patientID, context);
+        DicomObject dcmCopy = new DicomObjectImpl();
+        DicomObjectUtil.copyDataset(dcm, dcmCopy);
+        applyAction(dcm, dcmCopy, patientID);
 
-        setDefaultDeidentTagValue(dcm, patientID, patientName, profilesCodeName, pseudonym);
+        setDefaultDeidentTagValue(dcm, patientID, patientName, profilesCodeName, mainzellistePseudonym);
     }
 
     public void setDefaultDeidentTagValue(DicomObject dcm, String patientID, String patientName, String profilePipeCodeName, String pseudonym){
         final String profileFilename = profile.getName();
-
-        final String tagValueInPatientID = dcm.getString(Tag.PatientID).orElse(null);
-        dcm.setString(Tag.PatientID, VR.LO,  patientID);
-        LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_INOUT, TagUtils.toString(Tag.PatientID), Tag.PatientID, DUMMY_DEIDENT_METHOD, tagValueInPatientID, patientID);
-
-        final String tagValueInPatientName= dcm.getString(Tag.PatientID).orElse(null);
-        dcm.setString(Tag.PatientName, VR.PN,  patientName);
-        LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_INOUT, TagUtils.toString(Tag.PatientName), Tag.PatientName, DUMMY_DEIDENT_METHOD, tagValueInPatientName, patientName);
-
-        final String tagValueInPatientIdentityRemoved = dcm.getString(Tag.PatientID).orElse(null);
-        dcm.setString(Tag.PatientIdentityRemoved, VR.CS,  "YES");
-        LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_INOUT, TagUtils.toString(Tag.PatientIdentityRemoved), Tag.PatientIdentityRemoved, DUMMY_DEIDENT_METHOD, tagValueInPatientIdentityRemoved, "YES");
-
+        final ArrayList<ExprDCMElem> defaultDeidentTagValue = new ArrayList<>();
+        defaultDeidentTagValue.add(new ExprDCMElem(Tag.PatientID, VR.LO, patientID));
+        defaultDeidentTagValue.add(new ExprDCMElem(Tag.PatientName, VR.PN, patientName));
+        defaultDeidentTagValue.add(new ExprDCMElem(Tag.PatientIdentityRemoved, VR.CS, "YES"));
         // 0012,0063 -> module patient
         // A description or label of the mechanism or method use to remove the Patient's identity
-        final String tagValueInDeidentificationMethod = dcm.getString(Tag.PatientID).orElse(null);
-        dcm.setString(Tag.DeidentificationMethod, VR.LO, profilePipeCodeName);
-        LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_INOUT, TagUtils.toString(Tag.DeidentificationMethod), Tag.DeidentificationMethod, DUMMY_DEIDENT_METHOD, tagValueInDeidentificationMethod, profilePipeCodeName);
+        defaultDeidentTagValue.add(new ExprDCMElem(Tag.DeidentificationMethod, VR.LO, profilePipeCodeName));
+        defaultDeidentTagValue.add(new ExprDCMElem(Tag.ClinicalTrialSponsorName, VR.LO, profilePipeCodeName));
+        defaultDeidentTagValue.add(new ExprDCMElem(Tag.ClinicalTrialProtocolID, VR.LO, profileFilename));
+        defaultDeidentTagValue.add(new ExprDCMElem(Tag.ClinicalTrialSubjectID, VR.LO, pseudonym));
+        defaultDeidentTagValue.add(new ExprDCMElem(Tag.ClinicalTrialProtocolName, VR.LO, (String) null));
+        defaultDeidentTagValue.add(new ExprDCMElem(Tag.ClinicalTrialSiteID, VR.LO, (String) null));
+        defaultDeidentTagValue.add(new ExprDCMElem(Tag.ClinicalTrialSiteName, VR.LO, (String) null));
 
-        final String tagValueInClinicalTrialSponsorName = dcm.getString(Tag.PatientID).orElse(null);
-        dcm.setString(Tag.ClinicalTrialSponsorName, VR.LO, profilePipeCodeName);
-        LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_INOUT, TagUtils.toString(Tag.ClinicalTrialSponsorName), Tag.ClinicalTrialSponsorName, DUMMY_DEIDENT_METHOD, tagValueInClinicalTrialSponsorName, profilePipeCodeName);
+        defaultDeidentTagValue.forEach(newElem -> {
+            final ActionItem add = new Add("A", newElem.getTag(), newElem.getVr(), newElem.getStringValue());
+            add.execute(dcm, newElem.getTag(), null, patientID);
+        });
+    }
 
-        final String tagValueInClinicalTrialProtocolID = dcm.getString(Tag.PatientID).orElse(null);
-        dcm.setString(Tag.ClinicalTrialProtocolID, VR.LO, profileFilename);
-        LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_INOUT, TagUtils.toString(Tag.ClinicalTrialProtocolID), Tag.ClinicalTrialProtocolID, DUMMY_DEIDENT_METHOD, tagValueInClinicalTrialProtocolID, profileFilename);
-
-        final String tagValueInClinicalTrialSubjectID = dcm.getString(Tag.PatientID).orElse(null);
-        dcm.setString(Tag.ClinicalTrialSubjectID, VR.LO, pseudonym);
-        LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_INOUT, TagUtils.toString(Tag.ClinicalTrialSubjectID), Tag.ClinicalTrialSubjectID, DUMMY_DEIDENT_METHOD, tagValueInClinicalTrialSubjectID, pseudonym);
-
-        final String tagValueInClinicalTrialProtocolName = dcm.getString(Tag.PatientID).orElse(null);
-        dcm.setString(Tag.ClinicalTrialProtocolName, VR.LO);
-        LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_IN, TagUtils.toString(Tag.ClinicalTrialProtocolName), Tag.ClinicalTrialProtocolName, DUMMY_DEIDENT_METHOD, tagValueInClinicalTrialProtocolName);
-
-        final String tagValueInClinicalTrialSiteID = dcm.getString(Tag.PatientID).orElse(null);
-        dcm.setString(Tag.ClinicalTrialSiteID, VR.LO);
-        LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_IN, TagUtils.toString(Tag.ClinicalTrialSiteID), Tag.ClinicalTrialSiteID, DUMMY_DEIDENT_METHOD, tagValueInClinicalTrialSiteID);
-
-        final String tagValueInClinicalTrialSiteName = dcm.getString(Tag.PatientID).orElse(null);
-        dcm.setString(Tag.ClinicalTrialSiteName, VR.LO);
-        LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_IN, TagUtils.toString(Tag.ClinicalTrialSiteName), Tag.ClinicalTrialSiteName, DUMMY_DEIDENT_METHOD, tagValueInClinicalTrialSiteName);
-
-
+    public static boolean getResultCondition(String condition, ExprDCMElem exprDCMElem){
+        final Logger LOGGER = LoggerFactory.getLogger(Profiles.class);
+        if (condition!=null) {
+            try {
+                //https://docs.spring.io/spring/docs/3.0.x/reference/expressions.html
+                final ExpressionParser parser = new SpelExpressionParser();
+                final EvaluationContext context = new StandardEvaluationContext(exprDCMElem);
+                final String cleanCondition = exprDCMElem.conditionInterpreter(condition);
+                context.setVariable("VR", VR.class);
+                context.setVariable("Tag", Tag.class);
+                final Expression exp = parser.parseExpression(cleanCondition);
+                return exp.getValue(context, Boolean.class);
+            } catch (final Exception e) {
+                LOGGER.error("Cannot execute the parser expression for this expression: {}", condition, e);
+            }
+        }
+        return true; // if there is no condition we return true by default
     }
 
     public BigInteger generatePatientID(String pseudonym, String profiles) {

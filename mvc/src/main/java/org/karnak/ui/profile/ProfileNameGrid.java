@@ -21,4 +21,8 @@ public class ProfileNameGrid extends Grid<Profile> {
         profiles = profilePipeService.getAllProfiles();
         setItems(profiles);
     }
+
+    public void selectRow(Profile row) {
+        getSelectionModel().select(row);
+    }
 }

@@ -1,5 +1,8 @@
 package org.karnak.data.profile;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +17,9 @@ public class ProfileElement {
 
     private String name;
     private String codename;
+    private String condition;
     private String action;
+    private String option;
     private Integer position;
 
     @ManyToOne()
@@ -27,13 +32,30 @@ public class ProfileElement {
     @OneToMany(mappedBy = "profileElement", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<ExcludedTag> exceptedtags = new ArrayList<>();
 
+    @OneToMany(mappedBy = "profileElement", cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<Argument> arguments = new ArrayList<>();
+
     public ProfileElement() {
     }
 
-    public ProfileElement(String name, String codename, String action, Integer position, Profile profile) {
+    public ProfileElement(String name, String codename, String condition, String action, String option, Integer position, Profile profile) {
         this.name = name;
         this.codename = codename;
+        this.condition = condition;
         this.action = action;
+        this.option = option;
+        this.position = position;
+        this.profile = profile;
+    }
+
+    public ProfileElement(String name, String codename, String condition, String action, String option, List<Argument> arguments, Integer position, Profile profile) {
+        this.name = name;
+        this.codename = codename;
+        this.condition = condition;
+        this.action = action;
+        this.option = option;
+        this.arguments = arguments;
         this.position = position;
         this.profile = profile;
     }
@@ -45,6 +67,8 @@ public class ProfileElement {
     public void addExceptedtags(ExcludedTag exceptedtags){
         this.exceptedtags.add(exceptedtags);
     }
+
+    public void addArgument(Argument argument) { this.arguments.add(argument); }
 
     public String getName() {
         return name;
@@ -62,12 +86,36 @@ public class ProfileElement {
         this.codename = codename;
     }
 
+    public String getCondition() {
+        return condition;
+    }
+
+    public void setCondition(String condition) {
+        this.condition = condition;
+    }
+
     public String getAction() {
         return action;
     }
 
     public void setAction(String action) {
         this.action = action;
+    }
+
+    public String getOption() {
+        return option;
+    }
+
+    public void setOption(String option) {
+        this.option = option;
+    }
+
+    public List<Argument> getArguments() {
+        return arguments;
+    }
+
+    public void setArguments(List<Argument> arguments) {
+        this.arguments = arguments;
     }
 
     public Integer getPosition() {

@@ -16,6 +16,8 @@ import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.function.Predicate;
 
 @Route(value = "profile", layout = MainLayout.class)
 @PageTitle("KARNAK - Profile")
@@ -24,24 +26,25 @@ public class ProfileView extends HorizontalLayout {
     public static final String VIEW_NAME = "Profile";
 
     private ProfileComponent profileComponent;
-    private ProfilesMetadata profilesMetadata;
+    private ProfileElementMainView profileElementMainView;
     private Upload uploadProfile;
     private ProfileNameGrid profileNameGrid;
+    private ProfileErrorView profileErrorView;
     private final ProfilePipeService profilePipeService;
 
     public ProfileView() {
         profilePipeService = new ProfilePipeServiceImpl();
         profileNameGrid = new ProfileNameGrid();
         profileComponent = new ProfileComponent(profilePipeService, profileNameGrid);
-        profilesMetadata = new ProfilesMetadata();
+        profileElementMainView = new ProfileElementMainView();
+        profileErrorView = new ProfileErrorView();
         setSizeFull();
         VerticalLayout barAndGridLayout = createTopLayoutGrid();
         barAndGridLayout.setWidth("25%");
         profileComponent.setWidth("30%");
-        profilesMetadata.setWidth("45%");
+        profileElementMainView.setWidth("45%");
+        profileErrorView.setWidth("75%");
         add(barAndGridLayout);
-        add(profileComponent);
-        add(profilesMetadata);
     }
 
     private VerticalLayout createTopLayoutGrid() {
@@ -53,7 +56,10 @@ public class ProfileView extends HorizontalLayout {
             Profile profileSelected = e.getValue();
             if (profileSelected != null) {
                 profileComponent.setProfile(profileSelected);
-                profilesMetadata.setProfiles(profileSelected.getProfileElements());
+                profileElementMainView.setProfiles(profileSelected.getProfileElements());
+                remove(profileErrorView);
+                add(profileComponent);
+                add(profileElementMainView);
             }
         });
 
@@ -80,14 +86,24 @@ public class ProfileView extends HorizontalLayout {
         return layout;
     }
 
-    private void setProfileComponent(String mimeType,
-                                      InputStream stream) {
+    private void setProfileComponent(String mimeType, InputStream stream) {
+        remove(profileComponent);
+        remove(profileElementMainView);
+        add(profileErrorView);
         if (mimeType.equals("application/x-yaml")) {
             ProfilePipeBody profilePipe = readProfileYaml(stream);
-            profilePipeService.saveProfilePipe(profilePipe, false);
-            profileNameGrid.updatedProfilePipesView();
+            ArrayList<ProfileError> profileErrors = profilePipeService.validateProfile(profilePipe);
+            Predicate<ProfileError> errorPredicate = profileError -> profileError.getError() != null;
+            if (!profileErrors.stream().anyMatch(errorPredicate)) {
+                remove(profileErrorView);
+                Profile newProfile = profilePipeService.saveProfilePipe(profilePipe, false);
+                profileNameGrid.updatedProfilePipesView();
+                profileNameGrid.selectRow(newProfile);
+            } else {
+                profileErrorView.setView(profileErrors);
+            }
         } else {
-            profileComponent.setError();
+            profileErrorView.setView("mimeType must be 'application/x-yaml'");
         }
     }
 

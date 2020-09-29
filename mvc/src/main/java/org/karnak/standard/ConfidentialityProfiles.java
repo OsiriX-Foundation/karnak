@@ -1,7 +1,7 @@
 package org.karnak.standard;
 
 import org.karnak.data.profile.ProfileElement;
-import org.karnak.profilepipe.action.Action;
+import org.karnak.profilepipe.action.ActionItem;
 import org.karnak.profilepipe.profiles.AbstractProfileItem;
 import org.karnak.profilepipe.profiles.PrivateTags;
 import org.karnak.profilepipe.profiles.ProfileItem;
@@ -27,12 +27,12 @@ public class ConfidentialityProfiles {
 
         for (jsonConfidentialityProfiles confidentialityProfilesTag : confidentialityProfiles) {
             String tag = confidentialityProfilesTag.getTag();
-            Action action = confidentialityProfilesTag.getBasicProfile();
+            ActionItem action = confidentialityProfilesTag.getBasicProfile();
             String name = confidentialityProfilesTag.getName();
             AbstractProfileItem item;
             if (PrivateTagPattern.TAG_PATTERN.equals(tag)) {
                 try {
-                    final ProfileElement profileElement = new ProfileElement(name, AbstractProfileItem.Type.ACTION_PRIVATETAGS.getClassAlias(), "X", null, null);
+                    final ProfileElement profileElement = new ProfileElement(name, AbstractProfileItem.Type.ACTION_PRIVATETAGS.getClassAlias(), null, "X", null, null, null);
                     item = new PrivateTags(profileElement);
                 } catch (Exception e) {
                     item = null;
