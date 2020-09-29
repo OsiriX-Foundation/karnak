@@ -1,6 +1,7 @@
 package org.karnak.ui.kheops;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.editor.Editor;
 import com.vaadin.flow.component.html.Div;
@@ -62,21 +63,28 @@ public class GridSwitchingAlbums extends Grid<KheopsAlbums> {
                 editor.editItem(kheopsAlbums);
             });
             edit.setEnabled(!editor.isOpen());
+
             Button remove = new Button("Remove");
+            remove.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
             remove.addClickListener(e -> {
                 dataProvider.getItems().remove(kheopsAlbums);
                 dataProvider.refreshAll();
             });
             remove.setEnabled(!editor.isOpen());
+
             editButtons.add(edit);
             editButtons.add(remove);
             return new Div(edit, remove);
         }).setFlexGrow(15);
+
         editor.addOpenListener(e -> editButtons.stream()
             .forEach(button -> button.setEnabled(!editor.isOpen())));
         editor.addCloseListener(e -> editButtons.stream()
             .forEach(button -> button.setEnabled(!editor.isOpen())));
-        Button save = new Button("Save", e -> editor.save());
+
+        Button save = new Button("Validate", e -> editor.save());
+        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+
         Button cancel = new Button("Cancel", e -> editor.cancel());
 
         Div buttons = new Div(save, cancel);
