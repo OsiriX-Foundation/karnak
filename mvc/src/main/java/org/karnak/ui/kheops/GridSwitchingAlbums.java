@@ -73,8 +73,9 @@ public class GridSwitchingAlbums extends Grid<KheopsAlbums> {
         editorColumn.setEditorComponent(buttons);
     }
 
-    public void clearEditButtons() {
+    public void clearEditorEditButtons() {
         editButtons.clear();
+        editor.cancel();
     }
 
     public KheopsAlbums getSelectedRow() {
