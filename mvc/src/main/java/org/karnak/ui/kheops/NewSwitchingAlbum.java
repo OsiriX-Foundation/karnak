@@ -33,14 +33,18 @@ public class NewSwitchingAlbum extends Div {
     }
 
     private void setElements() {
+        textUrlAPI.setWidth("20%");
+        textUrlAPI.getStyle().set("padding-right", "10px");
+        textUrlAPI.setPlaceholder("Url API");
         textAuthorizationDestination.setWidth("20%");
+        textAuthorizationDestination.getStyle().set("padding-right", "10px");
         textAuthorizationDestination.setPlaceholder("Valid token of destination");
         textAuthorizationSource.setWidth("20%");
+        textAuthorizationSource.getStyle().set("padding-right", "10px");
         textAuthorizationSource.setPlaceholder("Valid token of source");
         textCondition.setWidth("20%");
+        textCondition.getStyle().set("padding-right", "10px");
         textCondition.setPlaceholder("Condition");
-        textUrlAPI.setWidth("20%");
-        textUrlAPI.setPlaceholder("Url API");
     }
 
     public Button getButtonAdd() {
