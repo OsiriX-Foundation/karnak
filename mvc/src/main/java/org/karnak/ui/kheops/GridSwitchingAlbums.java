@@ -13,6 +13,7 @@ import java.util.*;
 public class GridSwitchingAlbums extends Grid<KheopsAlbums> {
     private Binder<KheopsAlbums> binder;
 
+    private Editor<KheopsAlbums> editor;
     private Collection<Button> editButtons;
     private TextField textUrlAPI;
     private TextField textAuthorizationDestination;
@@ -22,6 +23,7 @@ public class GridSwitchingAlbums extends Grid<KheopsAlbums> {
     public GridSwitchingAlbums() {
         setWidthFull();
         setHeightByRows(true);
+        setItems(new ArrayList<>());
 
         TextFieldsBindSwitchingAlbum textFieldsBindSwitchingAlbum = new TextFieldsBindSwitchingAlbum();
         binder = textFieldsBindSwitchingAlbum.getBinder();
@@ -47,8 +49,9 @@ public class GridSwitchingAlbums extends Grid<KheopsAlbums> {
     }
 
     private void setEditorColumn() {
-        Editor<KheopsAlbums> editor = getEditor();
+        editor = getEditor();
         editor.setBinder(binder);
+        editor.setBuffered(true);
 
         Column<KheopsAlbums> editorColumn = addComponentColumn(kheopsAlbums -> {
             Button edit = new Button("Edit");
@@ -68,6 +71,10 @@ public class GridSwitchingAlbums extends Grid<KheopsAlbums> {
 
         Div buttons = new Div(save, cancel);
         editorColumn.setEditorComponent(buttons);
+    }
+
+    public void clearEditButtons() {
+        editButtons.clear();
     }
 
     public KheopsAlbums getSelectedRow() {

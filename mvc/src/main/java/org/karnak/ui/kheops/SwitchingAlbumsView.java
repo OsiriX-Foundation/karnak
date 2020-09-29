@@ -4,6 +4,7 @@ import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.customfield.CustomField;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.provider.ListDataProvider;
 import org.karnak.data.gateway.KheopsAlbums;
 import org.karnak.ui.util.UIS;
 
@@ -14,14 +15,16 @@ public class SwitchingAlbumsView extends CustomField<List<KheopsAlbums>> {
     private NewSwitchingAlbum newSwitchingAlbum;
     private GridSwitchingAlbums gridSwitchingAlbums;
     private Binder<KheopsAlbums> newSwitchingAlbumBinder;
+    private ListDataProvider<KheopsAlbums> dataProviderSwitchingAlbums;
     private List<KheopsAlbums> kheopsAlbumsList;
     private Checkbox checkboxSwitchingAlbums;
     private VerticalLayout layout;
 
     public SwitchingAlbumsView() {
+        gridSwitchingAlbums = new GridSwitchingAlbums();
+        dataProviderSwitchingAlbums = (ListDataProvider<KheopsAlbums>) gridSwitchingAlbums.getDataProvider();
         newSwitchingAlbum = new NewSwitchingAlbum();
         newSwitchingAlbumBinder = newSwitchingAlbum.getBinder();
-        gridSwitchingAlbums = new GridSwitchingAlbums();
         kheopsAlbumsList = new ArrayList<>();
         layout = new VerticalLayout();
         checkboxSwitchingAlbums = new Checkbox("Swithing in different KHEOPS albums");
@@ -39,7 +42,7 @@ public class SwitchingAlbumsView extends CustomField<List<KheopsAlbums>> {
     }
 
     private void setCheckboxSwitchingAlbumsValue() {
-        checkboxSwitchingAlbums.setValue(!kheopsAlbumsList.isEmpty());
+        checkboxSwitchingAlbums.setValue(!dataProviderSwitchingAlbums.getItems().isEmpty());
     }
 
     public void addComponent(Boolean value) {
@@ -59,8 +62,8 @@ public class SwitchingAlbumsView extends CustomField<List<KheopsAlbums>> {
         newSwitchingAlbum.getButtonAdd().addClickListener(event -> {
             KheopsAlbums newKheopsAlbums = new KheopsAlbums();
             if (newSwitchingAlbumBinder.writeBeanIfValid(newKheopsAlbums)) {
-                kheopsAlbumsList.add(newKheopsAlbums);
-                gridSwitchingAlbums.setItems(kheopsAlbumsList);
+                dataProviderSwitchingAlbums.getItems().add(newKheopsAlbums);
+                dataProviderSwitchingAlbums.refreshAll();
                 newSwitchingAlbum.clear();
             }
         });
@@ -73,15 +76,16 @@ public class SwitchingAlbumsView extends CustomField<List<KheopsAlbums>> {
 
     @Override
     public List<KheopsAlbums> getValue() {
-        return checkboxSwitchingAlbums.getValue() ? super.getValue() : null;
+        return checkboxSwitchingAlbums.getValue() ? new ArrayList<>(dataProviderSwitchingAlbums.getItems()) : null;
     }
 
     @Override
     public void setValue(List<KheopsAlbums> kheopsAlbums) {
-        super.setValue(kheopsAlbums);
-        kheopsAlbumsList = kheopsAlbums != null ? kheopsAlbums : new ArrayList<>();
+        dataProviderSwitchingAlbums.getItems().removeAll(dataProviderSwitchingAlbums.getItems());
+        gridSwitchingAlbums.clearEditButtons();
+        dataProviderSwitchingAlbums.getItems().addAll(kheopsAlbums != null ? kheopsAlbums : new ArrayList<>());
+        dataProviderSwitchingAlbums.refreshAll();
         setCheckboxSwitchingAlbumsValue();
-        gridSwitchingAlbums.setItems(kheopsAlbumsList);
     }
 
     @Override
