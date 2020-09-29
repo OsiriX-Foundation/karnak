@@ -6,12 +6,14 @@ import com.vaadin.flow.component.grid.editor.Editor;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.provider.ListDataProvider;
 import org.karnak.data.gateway.KheopsAlbums;
 
 import java.util.*;
 
 public class GridSwitchingAlbums extends Grid<KheopsAlbums> {
     private Binder<KheopsAlbums> binder;
+    private ListDataProvider<KheopsAlbums> dataProvider;
 
     private Editor<KheopsAlbums> editor;
     private Collection<Button> editButtons;
@@ -24,6 +26,7 @@ public class GridSwitchingAlbums extends Grid<KheopsAlbums> {
         setWidthFull();
         setHeightByRows(true);
         setItems(new ArrayList<>());
+        dataProvider = (ListDataProvider<KheopsAlbums>) getDataProvider();
 
         TextFieldsBindSwitchingAlbum textFieldsBindSwitchingAlbum = new TextFieldsBindSwitchingAlbum();
         binder = textFieldsBindSwitchingAlbum.getBinder();
@@ -33,16 +36,16 @@ public class GridSwitchingAlbums extends Grid<KheopsAlbums> {
         textCondition = textFieldsBindSwitchingAlbum.getTextCondition();
         editButtons = Collections.newSetFromMap(new WeakHashMap<>());
 
-        addColumn(KheopsAlbums::getUrlAPI).setHeader("URL API").setFlexGrow(20)
+        addColumn(KheopsAlbums::getUrlAPI).setHeader("URL API").setFlexGrow(15)
                 .setSortable(true).setEditorComponent(textUrlAPI);
 
-        addColumn(KheopsAlbums::getAuthorizationDestination).setHeader("Token destination").setFlexGrow(20)
+        addColumn(KheopsAlbums::getAuthorizationDestination).setHeader("Token destination").setFlexGrow(15)
                 .setSortable(true).setEditorComponent(textAuthorizationDestination);
 
-        addColumn(KheopsAlbums::getAuthorizationSource).setHeader("Token source").setFlexGrow(20)
+        addColumn(KheopsAlbums::getAuthorizationSource).setHeader("Token source").setFlexGrow(15)
                 .setSortable(true).setEditorComponent(textAuthorizationSource);
 
-        addColumn(KheopsAlbums::getCondition).setHeader("Condition").setFlexGrow(20)
+        addColumn(KheopsAlbums::getCondition).setHeader("Condition").setFlexGrow(15)
                 .setSortable(true).setEditorComponent(textCondition);
 
         setEditorColumn();
@@ -59,9 +62,16 @@ public class GridSwitchingAlbums extends Grid<KheopsAlbums> {
                 editor.editItem(kheopsAlbums);
             });
             edit.setEnabled(!editor.isOpen());
+            Button remove = new Button("Remove");
+            remove.addClickListener(e -> {
+                dataProvider.getItems().remove(kheopsAlbums);
+                dataProvider.refreshAll();
+            });
+            remove.setEnabled(!editor.isOpen());
             editButtons.add(edit);
-            return edit;
-        });
+            editButtons.add(remove);
+            return new Div(edit, remove);
+        }).setFlexGrow(15);
         editor.addOpenListener(e -> editButtons.stream()
             .forEach(button -> button.setEnabled(!editor.isOpen())));
         editor.addCloseListener(e -> editButtons.stream()
