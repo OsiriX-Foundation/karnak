@@ -3,6 +3,7 @@ package org.karnak.ui.kheops;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.editor.Editor;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import org.karnak.data.gateway.KheopsAlbums;
@@ -46,28 +47,27 @@ public class GridSwitchingAlbums extends Grid<KheopsAlbums> {
     }
 
     private void setEditorColumn() {
-        Editor<KheopsAlbums> editorColumn = getEditor();
-        editorColumn.setBinder(binder);
+        Editor<KheopsAlbums> editor = getEditor();
+        editor.setBinder(binder);
 
-        addComponentColumn(kheopsAlbums -> {
+        Column<KheopsAlbums> editorColumn = addComponentColumn(kheopsAlbums -> {
             Button edit = new Button("Edit");
             edit.addClickListener(e -> {
-                editorColumn.editItem(kheopsAlbums);
+                editor.editItem(kheopsAlbums);
             });
-            edit.setEnabled(!editorColumn.isOpen());
+            edit.setEnabled(!editor.isOpen());
             editButtons.add(edit);
             return edit;
-        }).setFlexGrow(10);
+        });
+        editor.addOpenListener(e -> editButtons.stream()
+            .forEach(button -> button.setEnabled(!editor.isOpen())));
+        editor.addCloseListener(e -> editButtons.stream()
+            .forEach(button -> button.setEnabled(!editor.isOpen())));
+        Button save = new Button("Save", e -> editor.save());
+        Button cancel = new Button("Cancel", e -> editor.cancel());
 
-        addComponentColumn(kheopsAlbums -> {
-            Button edit = new Button("Delete");
-            edit.addClickListener(e -> {
-                editorColumn.editItem(kheopsAlbums);
-            });
-            edit.setEnabled(!editorColumn.isOpen());
-            editButtons.add(edit);
-            return edit;
-        }).setFlexGrow(10);
+        Div buttons = new Div(save, cancel);
+        editorColumn.setEditorComponent(buttons);
     }
 
     public KheopsAlbums getSelectedRow() {
