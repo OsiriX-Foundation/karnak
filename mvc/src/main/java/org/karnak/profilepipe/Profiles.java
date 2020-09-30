@@ -4,9 +4,7 @@ import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.Tag;
 import org.dcm4che6.data.VR;
-import org.dcm4che6.img.op.MaskArea;
 import org.dcm4che6.img.util.DicomObjectUtil;
-import org.dcm4che6.internal.DicomObjectImpl;
 import org.dcm4che6.util.TagUtils;
 import org.karnak.api.PseudonymApi;
 import org.karnak.api.rqbody.Fields;
@@ -34,6 +32,7 @@ import org.weasis.core.util.StringUtil;
 import java.math.BigInteger;
 import java.util.*;
 import java.util.stream.Collectors;
+import org.weasis.dicom.param.AttributeEditorContext;
 
 public class Profiles {
     private final Logger LOGGER = LoggerFactory.getLogger(Profiles.class);
@@ -114,7 +113,7 @@ public class Profiles {
         return null;
     }
 
-    public void applyAction(DicomObject dcm, DicomObject dcmCopy, String patientID) {
+    public void applyAction(DicomObject dcm, DicomObject dcmCopy, String patientID, AttributeEditorContext context) {
         for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext(); ) {
             final DicomElement dcmEl = iterator.next();
             final ExprDCMElem exprDCMElem = new ExprDCMElem(dcmEl.tag(), dcmEl.vr(), dcm, dcmCopy);
@@ -124,20 +123,20 @@ public class Profiles {
                 final ActionItem action = profile.getAction(dcm, dcmCopy, dcmEl, patientID);
                 if (action != null && conditionIsOk) {
                     try {
-                        action.execute(dcm, dcmEl.tag(), iterator, patientID);
+                        action.execute(dcm, dcmEl.tag(), iterator, patientID, context);
                     } catch (final Exception e) {
                         LOGGER.error("Cannot execute the action {} for tag: {}", action,  TagUtils.toString(dcmEl.tag()), e);
                     }
                     break;
                 }
                 if (!(Remove.class.isInstance(action)) && dcmEl.vr() == VR.SQ) {
-                    dcmEl.itemStream().forEach(d -> applyAction(d, dcmCopy, patientID));
+                    dcmEl.itemStream().forEach(d -> applyAction(d, dcmCopy, patientID, context));
                 }
             }
         }
     }
 
-    public void apply(DicomObject dcm, Destination destination) {
+    public void apply(DicomObject dcm, Destination destination, AttributeEditorContext context) {
         final String SOPinstanceUID = dcm.getString(Tag.SOPInstanceUID).orElse(null);
         final String IssuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID).orElse(null);
         final String PatientID = dcm.getString(Tag.PatientID).orElse(null);
@@ -161,9 +160,9 @@ public class Profiles {
             throw new IllegalStateException("Cannot build a pseudonym");
         }
 
-        DicomObject dcmCopy = new DicomObjectImpl();
+        DicomObject dcmCopy = DicomObject.newDicomObject();
         DicomObjectUtil.copyDataset(dcm, dcmCopy);
-        applyAction(dcm, dcmCopy, patientID);
+        applyAction(dcm, dcmCopy, patientID, context);
 
         setDefaultDeidentTagValue(dcm, patientID, patientName, profilesCodeName, mainzellistePseudonym);
     }
@@ -186,7 +185,7 @@ public class Profiles {
 
         defaultDeidentTagValue.forEach(newElem -> {
             final ActionItem add = new Add("A", newElem.getTag(), newElem.getVr(), newElem.getStringValue());
-            add.execute(dcm, newElem.getTag(), null, patientID);
+            add.execute(dcm, newElem.getTag(), null, patientID, null);
         });
     }
 

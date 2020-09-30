@@ -6,6 +6,7 @@ import org.dcm4che6.data.VR;
 import org.dcm4che6.util.TagUtils;
 
 import java.util.Iterator;
+import org.weasis.dicom.param.AttributeEditorContext;
 
 public class Add extends AbstractAction{
 
@@ -14,7 +15,8 @@ public class Add extends AbstractAction{
     }
 
     @Override
-    public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, String patientID) {
+    public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, String patientID,
+        AttributeEditorContext context) {
         final String tagValueIn = dcm.getString(newTag).orElse(null);
 
         dcm.get(newTag).ifPresentOrElse(dcmEl -> {

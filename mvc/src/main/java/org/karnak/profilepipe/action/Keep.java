@@ -5,6 +5,7 @@ import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.util.TagUtils;
 
 import java.util.Iterator;
+import org.weasis.dicom.param.AttributeEditorContext;
 
 public class Keep extends AbstractAction {
 
@@ -13,7 +14,8 @@ public class Keep extends AbstractAction {
     }
 
     @Override
-    public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, String patientID) {
+    public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, String patientID,
+        AttributeEditorContext context) {
         final String tagValueIn = dcm.getString(tag).orElse(null);
         LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_INOUT, TagUtils.toString(tag), tag, symbol, tagValueIn, tagValueIn);
     }

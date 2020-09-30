@@ -7,6 +7,7 @@ import org.dcm4che6.util.TagUtils;
 import org.karnak.data.AppConfig;
 
 import java.util.Iterator;
+import org.weasis.dicom.param.AttributeEditorContext;
 
 public class UID extends AbstractAction {
 
@@ -15,7 +16,8 @@ public class UID extends AbstractAction {
     }
 
     @Override
-    public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, String patientID) {
+    public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, String patientID,
+        AttributeEditorContext context) {
         final String tagValueIn = dcm.getString(tag).orElse(null);
 
         String uidValue = dcm.getString(tag).orElse(null);

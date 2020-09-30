@@ -54,6 +54,7 @@ public abstract class AbstractAction implements ActionItem {
             case "U" -> new UID("U");
             case "DDum" -> new DefaultDummy("DDum");
             case "D" -> new Replace("D");
+            case "P" -> new CleanPixelData("P");
             default -> null;
         };
     }
