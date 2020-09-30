@@ -162,6 +162,7 @@ public class Profiles {
         applyAction(dcm, dcmCopy, patientID);
 
         setDefaultDeidentTagValue(dcm, patientID, patientName, profilesCodeName, mainzellistePseudonym);
+        MDC.clear();
     }
 
     public void setDefaultDeidentTagValue(DicomObject dcm, String patientID, String patientName, String profilePipeCodeName, String pseudonym){
