@@ -29,7 +29,7 @@ public class ExternalPseudonymView extends HorizontalLayout {
 
     public ExternalPseudonymView(Binder<Destination> binder) {
         this.binder = binder;
-        idTypes = IdTypes.EXTID;
+        idTypes = IdTypes.PID;
 
         setElements();
 
@@ -51,7 +51,7 @@ public class ExternalPseudonymView extends HorizontalLayout {
         });
 
         extidListBox.addValueChangeListener(valueChangeEvent -> {
-            if (valueChangeEvent.getValue() != null) {
+            if (valueChangeEvent.getValue() != null && externalPseudonymCheckbox.getValue() == true) {
                 if(valueChangeEvent.getValue().equals(extidSentence[0])){
                     idTypes = IdTypes.EXTID;
                     dontUseADD_EXTID();
