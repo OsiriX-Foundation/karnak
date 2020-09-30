@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class ProfilesTest {
-    private static final HMAC hmacTest = new HMAC("HmacKeyToTEST");
+
     @Test
     void XactionTagsProfile(){
         final DicomObject dataset1 = DicomObject.newDicomObject();
@@ -39,7 +39,7 @@ class ProfilesTest {
         final ProfileElement profileElement = new ProfileElement("Remove tag", "action.on.specific.tags", null, "X", null, 0, profile);
         profileElement.addIncludedTag(new IncludedTag("(0010,1010)", profileElement));
         profile.addProfilePipe(profileElement);
-        final Profiles profiles = new Profiles(profile, hmacTest);
+        final Profiles profiles = new Profiles(profile);
         profiles.applyAction(dataset1, dataset1, "pseudonym");
         assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
@@ -61,7 +61,7 @@ class ProfilesTest {
         ProfileElement profileElement = new ProfileElement("Replace tag by null", "action.on.specific.tags", null, "Z", null, 0, profile);
         profileElement.addIncludedTag(new IncludedTag("(0010,1010)", profileElement));
         profile.addProfilePipe(profileElement);
-        final Profiles profiles = new Profiles(profile, hmacTest);
+        final Profiles profiles = new Profiles(profile);
         profiles.applyAction(dataset1, dataset1, "pseudonym");
         assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
@@ -93,7 +93,7 @@ class ProfilesTest {
             profileElement.addArgument(new Argument("seconds", "60", profileElement));
             profileElement.addArgument(new Argument("days", "365", profileElement));
             profile.addProfilePipe(profileElement);
-            final Profiles profiles = new Profiles(profile, hmacTest);
+            final Profiles profiles = new Profiles(profile);
             profiles.applyAction(dataset1, dataset1, "pseudonym");
             assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
         }
@@ -126,7 +126,7 @@ class ProfilesTest {
         profileElement.addArgument(new Argument("max_days", "100", profileElement));
 
         profile.addProfilePipe(profileElement);
-        final Profiles profiles = new Profiles(profile, hmacTest);
+        final Profiles profiles = new Profiles(profile);
         profiles.applyAction(dataset1, dataset1, "pseudonym");
         assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
@@ -150,7 +150,7 @@ void XZactionTagsProfile(){
     final ProfileElement profileElement2 = new ProfileElement("Replace by null", "action.on.specific.tags", null, "Z", null, 0, profile);
     profileElement2.addIncludedTag(new IncludedTag("(xxxx,xxxx)", profileElement));
     profile.addProfilePipe(profileElement2);
-    final Profiles profiles = new Profiles(profile, hmacTest);
+    final Profiles profiles = new Profiles(profile);
     profiles.applyAction(dataset1, dataset1, "pseudonym");
     assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
 }
@@ -185,7 +185,7 @@ void XZactionTagsProfile(){
         final ProfileElement profileElement2 = new ProfileElement("Replace by null", "action.on.specific.tags", null, "X", null, 0, profile);
         profileElement2.addIncludedTag(new IncludedTag("(xxxx,xxxx)", profileElement));
         profile.addProfilePipe(profileElement2);
-        final Profiles profiles = new Profiles(profile, hmacTest);
+        final Profiles profiles = new Profiles(profile);
         profiles.applyAction(dataset1, dataset1, "pseudonym");
         assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
@@ -210,7 +210,7 @@ void XZactionTagsProfile(){
         profileElement.addIncludedTag(new IncludedTag("(xxxx,xxxx)", profileElement));
 
         profile.addProfilePipe(profileElement);
-        final Profiles profiles = new Profiles(profile, hmacTest);
+        final Profiles profiles = new Profiles(profile);
         profiles.applyAction(dataset1, dataset1, "pseudonym");
         assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
