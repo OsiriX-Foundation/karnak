@@ -26,6 +26,56 @@ class ProfilesTest {
     private static final HMAC hmacTest = new HMAC("HmacKeyToTEST");
 
     @Test
+    void propagationInSequenceDeletePatientIDButNotInSequence(){
+        final DicomObject dataset1 = DicomObject.newDicomObject();
+        final DicomObject dataset2 = DicomObject.newDicomObject();
+
+        dataset1.setString(Tag.PatientAge, VR.AS, "075Y");
+        dataset1.setString(Tag.StudyInstanceUID, VR.UI, "12345");
+        dataset1.setString(Tag.PatientID, VR.LO, "10987654321");
+        dataset1.setString(Tag.PatientName, VR.PN, "toto");
+        dataset1.setString(Tag.PatientBirthDate, VR.DA, "20200101");
+        dataset1.setString(Tag.PatientSex, VR.CS, "M");
+        dataset1.setString(Tag.IssuerOfPatientID, VR.LO, "12345678910");
+        DicomElement dicomElemSeq1 = dataset1.newDicomSequence(Tag.GroupOfPatientsIdentificationSequence);
+        final DicomObject datasetSeq1 = DicomObject.newDicomObject();
+        datasetSeq1.setString(Tag.PatientID, VR.LO, "12345");
+        DicomElement dicomElemSeq12 = datasetSeq1.newDicomSequence(Tag.IssuerOfPatientIDQualifiersSequence);
+        final DicomObject datasetSeq12 = DicomObject.newDicomObject();
+        datasetSeq12.setString(Tag.UniversalEntityID, VR.UT, "UT");
+        dicomElemSeq12.addItem(datasetSeq12);
+        dicomElemSeq1.addItem(datasetSeq1);
+
+
+        dataset2.setString(Tag.PatientAge, VR.AS, "075Y");
+        dataset2.setString(Tag.StudyInstanceUID, VR.UI, "12345");
+        dataset2.setString(Tag.PatientName, VR.PN, "toto");
+        dataset2.setString(Tag.PatientBirthDate, VR.DA, "20200101");
+        dataset2.setString(Tag.PatientSex, VR.CS, "M");
+        dataset2.setString(Tag.IssuerOfPatientID, VR.LO, "12345678910");
+        DicomElement dicomElemSeq2 = dataset2.newDicomSequence(Tag.GroupOfPatientsIdentificationSequence);
+        final DicomObject datasetSeq2 = DicomObject.newDicomObject();
+        datasetSeq2.setString(Tag.PatientID, VR.LO, "12345");
+        DicomElement dicomElemSeq22 = datasetSeq2.newDicomSequence(Tag.IssuerOfPatientIDQualifiersSequence);
+        final DicomObject datasetSeq22 = DicomObject.newDicomObject();
+        datasetSeq22.setString(Tag.UniversalEntityID, VR.UT, "UT");
+        dicomElemSeq22.addItem(datasetSeq22);
+        dicomElemSeq2.addItem(datasetSeq2);
+
+        final Profile profile = new Profile("TEST", "0.9.1", "0.9.1", "DPA");
+        final ProfileElement profileElement1 = new ProfileElement("Keep tag Source Group..", "action.on.specific.tags", null, "K", null, 0, profile);
+        profileElement1.addIncludedTag(new IncludedTag("(0010,0027)", profileElement1));
+        final ProfileElement profileElement2 = new ProfileElement("Remove tag PatientID", "action.on.specific.tags", null, "X", null, 0, profile);
+        profileElement2.addIncludedTag(new IncludedTag("(0010,0020)", profileElement2));
+
+        profile.addProfilePipe(profileElement1);
+        profile.addProfilePipe(profileElement2);
+        final Profiles profiles = new Profiles(profile, hmacTest);
+        profiles.applyAction(dataset1, dataset1, "pseudonym", null);
+        assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
+    }
+
+    @Test
     void propagationInSequence1(){
         final DicomObject dataset1 = DicomObject.newDicomObject();
         final DicomObject dataset2 = DicomObject.newDicomObject();
@@ -39,7 +89,7 @@ class ProfilesTest {
         dataset1.setString(Tag.IssuerOfPatientID, VR.LO, "12345678910");
         DicomElement dicomElemSeq1 = dataset1.newDicomSequence(Tag.GroupOfPatientsIdentificationSequence);
         final DicomObject datasetSeq1 = DicomObject.newDicomObject();
-        datasetSeq1.setString(Tag.PatientID, VR.LO, "1234");
+        datasetSeq1.setString(Tag.PatientID, VR.LO, "12345");
         DicomElement dicomElemSeq12 = datasetSeq1.newDicomSequence(Tag.IssuerOfPatientIDQualifiersSequence);
         final DicomObject datasetSeq12 = DicomObject.newDicomObject();
         datasetSeq12.setString(Tag.UniversalEntityID, VR.UT, "UT");
@@ -49,7 +99,7 @@ class ProfilesTest {
 
         DicomElement dicomElemSeq2 = dataset2.newDicomSequence(Tag.GroupOfPatientsIdentificationSequence);
         final DicomObject datasetSeq2 = DicomObject.newDicomObject();
-        datasetSeq2.setString(Tag.PatientID, VR.LO, "1234");
+        datasetSeq2.setString(Tag.PatientID, VR.LO, "12345");
         DicomElement dicomElemSeq22 = datasetSeq2.newDicomSequence(Tag.IssuerOfPatientIDQualifiersSequence);
         final DicomObject datasetSeq22 = DicomObject.newDicomObject();
         datasetSeq22.setString(Tag.UniversalEntityID, VR.UT, "UT");
@@ -87,7 +137,7 @@ class ProfilesTest {
         dataset1.setString(Tag.IssuerOfPatientID, VR.LO, "12345678910");
         DicomElement dicomElemSeq1 = dataset1.newDicomSequence(Tag.GroupOfPatientsIdentificationSequence);
         final DicomObject datasetSeq1 = DicomObject.newDicomObject();
-        datasetSeq1.setString(Tag.PatientID, VR.LO, "1234");
+        datasetSeq1.setString(Tag.PatientID, VR.LO, "12345");
 
         DicomElement dicomElemSeq12 = datasetSeq1.newDicomSequence(Tag.IssuerOfPatientIDQualifiersSequence);
         final DicomObject datasetSeq12 = DicomObject.newDicomObject();
@@ -98,7 +148,7 @@ class ProfilesTest {
 
         DicomElement dicomElemSeq2 = dataset2.newDicomSequence(Tag.GroupOfPatientsIdentificationSequence);
         final DicomObject datasetSeq2 = DicomObject.newDicomObject();
-        datasetSeq2.setString(Tag.PatientID, VR.LO, "1234");
+        datasetSeq2.setString(Tag.PatientID, VR.LO, "12345");
         DicomElement dicomElemSeq22 = datasetSeq2.newDicomSequence(Tag.IssuerOfPatientIDQualifiersSequence);
         final DicomObject datasetSeq22 = DicomObject.newDicomObject();
         dicomElemSeq22.addItem(datasetSeq22);
