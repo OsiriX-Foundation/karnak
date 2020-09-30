@@ -78,7 +78,10 @@ public class Profiles {
         final String patientID = dcm.getString(Tag.PatientID).orElse(null);
         final String patientName = dcm.getString(Tag.PatientName).orElse(null);
         final String patientBirthDate = dcm.getString(Tag.PatientBirthDate).orElse(null);
-        final String patientSex = dcm.getString(Tag.PatientSex).orElse(null);
+        String patientSex = dcm.getString(Tag.PatientSex).orElse(null);
+        if (!patientSex.equals("M") && !patientSex.equals("F") && !patientSex.equals("O")) {
+           patientSex = "O";
+        }
         // Issuer of patientID is recommended to make the patientID universally unique. Can be defined in profile if missing.
         final String issuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID).orElse(profile.getDefaultissueropatientid());
 
