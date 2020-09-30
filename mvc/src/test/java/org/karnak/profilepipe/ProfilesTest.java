@@ -31,6 +31,12 @@ class ProfilesTest {
         final DicomObject dataset2 = DicomObject.newDicomObject();
 
         dataset1.setString(Tag.PatientAge, VR.AS, "075Y");
+        dataset1.setString(Tag.StudyInstanceUID, VR.UI, "12345");
+        dataset1.setString(Tag.PatientID, VR.LO, "10987654321");
+        dataset1.setString(Tag.PatientName, VR.PN, "toto");
+        dataset1.setString(Tag.PatientBirthDate, VR.DA, "20200101");
+        dataset1.setString(Tag.PatientSex, VR.CS, "M");
+        dataset1.setString(Tag.IssuerOfPatientID, VR.LO, "12345678910");
         DicomElement dicomElemSeq1 = dataset1.newDicomSequence(Tag.GroupOfPatientsIdentificationSequence);
         final DicomObject datasetSeq1 = DicomObject.newDicomObject();
         datasetSeq1.setString(Tag.PatientID, VR.LO, "1234");
@@ -73,6 +79,12 @@ class ProfilesTest {
         final DicomObject dataset2 = DicomObject.newDicomObject();
 
         dataset1.setString(Tag.PatientAge, VR.AS, "075Y");
+        dataset1.setString(Tag.StudyInstanceUID, VR.UI, "12345");
+        dataset1.setString(Tag.PatientID, VR.LO, "10987654321");
+        dataset1.setString(Tag.PatientName, VR.PN, "toto");
+        dataset1.setString(Tag.PatientBirthDate, VR.DA, "20200101");
+        dataset1.setString(Tag.PatientSex, VR.CS, "M");
+        dataset1.setString(Tag.IssuerOfPatientID, VR.LO, "12345678910");
         DicomElement dicomElemSeq1 = dataset1.newDicomSequence(Tag.GroupOfPatientsIdentificationSequence);
         final DicomObject datasetSeq1 = DicomObject.newDicomObject();
         datasetSeq1.setString(Tag.PatientID, VR.LO, "1234");
@@ -115,8 +127,12 @@ class ProfilesTest {
         final DicomObject dataset1 = DicomObject.newDicomObject();
         final DicomObject dataset2 = DicomObject.newDicomObject();
 
-        dataset1.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
         dataset1.setString(Tag.StudyInstanceUID, VR.UI, "12345");
+        dataset1.setString(Tag.PatientID, VR.LO, "10987654321");
+        dataset1.setString(Tag.PatientName, VR.PN, "toto");
+        dataset1.setString(Tag.PatientBirthDate, VR.DA, "20200101");
+        dataset1.setString(Tag.PatientSex, VR.CS, "M");
+        dataset1.setString(Tag.IssuerOfPatientID, VR.LO, "12345678910");
         dataset1.setString(Tag.PatientAge, VR.AS, "075Y");
         DicomElement dicomElemSeq1 = dataset1.newDicomSequence(Tag.CTExposureSequence);
         final DicomObject datasetSeq1 = DicomObject.newDicomObject();
@@ -127,8 +143,12 @@ class ProfilesTest {
         datasetSeq1.setDouble(Tag.CTDIvol, VR.FD, 47d);
         dicomElemSeq1.addItem(datasetSeq1);
 
-        dataset2.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
         dataset2.setString(Tag.StudyInstanceUID, VR.UI, "12345");
+        dataset2.setString(Tag.PatientID, VR.LO, "10987654321");
+        dataset2.setString(Tag.PatientName, VR.PN, "toto");
+        dataset2.setString(Tag.PatientBirthDate, VR.DA, "20190101");
+        dataset2.setString(Tag.PatientSex, VR.CS, "M");
+        dataset2.setString(Tag.IssuerOfPatientID, VR.LO, "12345678910");
         dataset2.setString(Tag.PatientAge, VR.AS, "076Y");
         DicomElement dicomElemSeq2 = dataset2.newDicomSequence(Tag.CTExposureSequence);
         final DicomObject datasetSeq2 = DicomObject.newDicomObject();
