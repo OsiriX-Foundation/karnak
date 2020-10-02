@@ -111,7 +111,7 @@ public class Profiles {
         return null;
     }
 
-    public void applyAction(DicomObject dcm, DicomObject dcmCopy, String patientID, ProfileItem profilePassedInSequence) {
+    public void applyAction(DicomObject dcm, DicomObject dcmCopy, String patientID, ProfileItem profilePassedInSequence, ActionItem actionPassedInSequence) {
         for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext(); ) {
             final DicomElement dcmEl = iterator.next();
             final ExprDCMElem exprDCMElem = new ExprDCMElem(dcmEl.tag(), dcmEl.vr(), dcm, dcmCopy);
@@ -126,14 +126,20 @@ public class Profiles {
                     currentAction = profile.getAction(dcm, dcmCopy, dcmEl, patientID);
                 }
 
-                if (currentAction != null || profile.equals(profilePassedInSequence)) {
+                if (currentAction != null) {
+                    break;
+                }
+
+                if (profile.equals(profilePassedInSequence)){
+                    currentAction = actionPassedInSequence;
                     break;
                 }
             }
 
             if ( (!(Remove.class.isInstance(currentAction)) || !(ReplaceNull.class.isInstance(currentAction))) && dcmEl.vr() == VR.SQ) {
                 final ProfileItem finalCurrentProfile = currentProfile;
-                dcmEl.itemStream().forEach(d -> applyAction(d, dcmCopy, patientID, finalCurrentProfile));
+                final ActionItem finalCurrentAction = currentAction;
+                dcmEl.itemStream().forEach(d -> applyAction(d, dcmCopy, patientID, finalCurrentProfile, finalCurrentAction));
             } else {
                 if (currentAction != null) {
                     try {
@@ -172,7 +178,7 @@ public class Profiles {
 
         DicomObject dcmCopy = new DicomObjectImpl();
         DicomObjectUtil.copyDataset(dcm, dcmCopy);
-        applyAction(dcm, dcmCopy, patientID, null);
+        applyAction(dcm, dcmCopy, patientID, null, null);
 
         setDefaultDeidentTagValue(dcm, patientID, patientName, profilesCodeName, mainzellistePseudonym);
     }

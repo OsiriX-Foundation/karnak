@@ -71,7 +71,7 @@ class ProfilesTest {
         profile.addProfilePipe(profileElement1);
         profile.addProfilePipe(profileElement2);
         final Profiles profiles = new Profiles(profile, hmacTest);
-        profiles.applyAction(dataset1, dataset1, "pseudonym", null);
+        profiles.applyAction(dataset1, dataset1, "pseudonym", null, null);
         assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
 
@@ -119,7 +119,7 @@ class ProfilesTest {
         profile.addProfilePipe(profileElement2);
         profile.addProfilePipe(profileElement3);
         final Profiles profiles = new Profiles(profile, hmacTest);
-        profiles.applyAction(dataset1, dataset1, "pseudonym", null);
+        profiles.applyAction(dataset1, dataset1, "pseudonym", null, null);
         assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
 
@@ -168,7 +168,7 @@ class ProfilesTest {
         profile.addProfilePipe(profileElement2);
         profile.addProfilePipe(profileElement3);
         final Profiles profiles = new Profiles(profile, hmacTest);
-        profiles.applyAction(dataset1, dataset1, "pseudonym", null);
+        profiles.applyAction(dataset1, dataset1, "pseudonym", null, null);
         assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
 
@@ -230,7 +230,59 @@ class ProfilesTest {
         profile.addProfilePipe(profileElement3);
         profile.addProfilePipe(profileElement4);
         final Profiles profiles = new Profiles(profile, hmacTest);
-        profiles.applyAction(dataset1, dataset1, "pseudonym", null);
+        profiles.applyAction(dataset1, dataset1, "pseudonym", null, null);
+        assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
+    }
+
+    @Test
+    void propagationInSequence4(){
+        final DicomObject dataset1 = DicomObject.newDicomObject();
+        final DicomObject dataset2 = DicomObject.newDicomObject();
+
+        dataset1.setString(Tag.StudyInstanceUID, VR.UI, "12345");
+        dataset1.setString(Tag.PatientID, VR.LO, "10987654321");
+        dataset1.setString(Tag.PatientName, VR.PN, "toto");
+        dataset1.setString(Tag.PatientBirthDate, VR.DA, "20200101");
+        dataset1.setString(Tag.PatientSex, VR.CS, "M");
+        dataset1.setString(Tag.IssuerOfPatientID, VR.LO, "12345678910");
+        dataset1.setString(Tag.PatientAge, VR.AS, "075Y");
+        DicomElement dicomElemSeq1 = dataset1.newDicomSequence(Tag.ReferencedImageSequence);
+        final DicomObject datasetSeq1 = DicomObject.newDicomObject();
+        datasetSeq1.setString(Tag.ReferencedSOPClassUID, VR.UI, "12345");
+        datasetSeq1.setString(Tag.ReferencedFrameNumber, VR.UI, "12345");
+        DicomElement dicomElemSeq12 = datasetSeq1.newDicomSequence(Tag.PurposeOfReferenceCodeSequence);
+        dicomElemSeq1.addItem(datasetSeq1);
+        final DicomObject datasetSeq12 = DicomObject.newDicomObject();
+        datasetSeq12.setString(Tag.CodeValue, VR.SH, "1111");
+        datasetSeq12.setString(Tag.CodingSchemeDesignator, VR.SH, "1111");
+        dicomElemSeq12.addItem(datasetSeq12);
+
+        dataset2.setString(Tag.StudyInstanceUID, VR.UI, "12345");
+        dataset2.setString(Tag.PatientID, VR.LO, "10987654321");
+        dataset2.setString(Tag.PatientName, VR.PN, "toto");
+        dataset2.setString(Tag.PatientBirthDate, VR.DA, "20200101");
+        dataset2.setString(Tag.PatientSex, VR.CS, "M");
+        dataset2.setString(Tag.IssuerOfPatientID, VR.LO, "12345678910");
+        dataset2.setString(Tag.PatientAge, VR.AS, "075Y");
+        DicomElement dicomElemSeq2 = dataset2.newDicomSequence(Tag.ReferencedImageSequence);
+        final DicomObject datasetSeq2 = DicomObject.newDicomObject();
+        datasetSeq2.setString(Tag.ReferencedSOPClassUID, VR.UI, "2.25.80882554847489547679668826866750604810");
+        datasetSeq2.setString(Tag.ReferencedFrameNumber, VR.UI, "2.25.80882554847489547679668826866750604810");
+        DicomElement dicomElemSeq22 = datasetSeq2.newDicomSequence(Tag.PurposeOfReferenceCodeSequence);
+        dicomElemSeq2.addItem(datasetSeq2);
+        final DicomObject datasetSeq22 = DicomObject.newDicomObject();
+        datasetSeq22.setString(Tag.CodeValue, VR.UI, "2.25.13029046442428981513793633037919132006");
+        datasetSeq22.setString(Tag.CodingSchemeDesignator, VR.UI, "2.25.13029046442428981513793633037919132006");
+        dicomElemSeq22.addItem(datasetSeq22);
+
+        final Profile profile = new Profile("TEST", "0.9.1", "0.9.1", "DPA");
+
+        final ProfileElement profileElement1 = new ProfileElement("UID", "action.on.specific.tags", null, "U", null, 0, profile);
+        profileElement1.addIncludedTag(new IncludedTag("(0008,1140)", profileElement1));
+
+        profile.addProfilePipe(profileElement1);
+        final Profiles profiles = new Profiles(profile, hmacTest);
+        profiles.applyAction(dataset1, dataset1, "pseudonym", null, null);
         assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
 
@@ -252,7 +304,7 @@ class ProfilesTest {
         profileElement.addIncludedTag(new IncludedTag("(0010,1010)", profileElement));
         profile.addProfilePipe(profileElement);
         final Profiles profiles = new Profiles(profile, hmacTest);
-        profiles.applyAction(dataset1, dataset1, "pseudonym", null);
+        profiles.applyAction(dataset1, dataset1, "pseudonym", null, null);
         assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
 
@@ -274,7 +326,7 @@ class ProfilesTest {
         profileElement.addIncludedTag(new IncludedTag("(0010,1010)", profileElement));
         profile.addProfilePipe(profileElement);
         final Profiles profiles = new Profiles(profile, hmacTest);
-        profiles.applyAction(dataset1, dataset1, "pseudonym", null);
+        profiles.applyAction(dataset1, dataset1, "pseudonym", null, null);
         assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
 
@@ -306,7 +358,7 @@ class ProfilesTest {
             profileElement.addArgument(new Argument("days", "365", profileElement));
             profile.addProfilePipe(profileElement);
             final Profiles profiles = new Profiles(profile, hmacTest);
-            profiles.applyAction(dataset1, dataset1, "pseudonym", null);
+            profiles.applyAction(dataset1, dataset1, "pseudonym", null, null);
             assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
         }
 
@@ -339,7 +391,7 @@ class ProfilesTest {
 
         profile.addProfilePipe(profileElement);
         final Profiles profiles = new Profiles(profile, hmacTest);
-        profiles.applyAction(dataset1, dataset1, "pseudonym", null);
+        profiles.applyAction(dataset1, dataset1, "pseudonym", null, null);
         assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
 
@@ -363,7 +415,7 @@ void XZactionTagsProfile(){
     profileElement2.addIncludedTag(new IncludedTag("(xxxx,xxxx)", profileElement));
     profile.addProfilePipe(profileElement2);
     final Profiles profiles = new Profiles(profile, hmacTest);
-    profiles.applyAction(dataset1, dataset1, "pseudonym", null);
+    profiles.applyAction(dataset1, dataset1, "pseudonym", null, null);
     assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
 }
 
@@ -398,7 +450,7 @@ void XZactionTagsProfile(){
         profileElement2.addIncludedTag(new IncludedTag("(xxxx,xxxx)", profileElement));
         profile.addProfilePipe(profileElement2);
         final Profiles profiles = new Profiles(profile, hmacTest);
-        profiles.applyAction(dataset1, dataset1, "pseudonym", null);
+        profiles.applyAction(dataset1, dataset1, "pseudonym", null, null);
         assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
 
@@ -423,7 +475,7 @@ void XZactionTagsProfile(){
 
         profile.addProfilePipe(profileElement);
         final Profiles profiles = new Profiles(profile, hmacTest);
-        profiles.applyAction(dataset1, dataset1, "pseudonym", null);
+        profiles.applyAction(dataset1, dataset1, "pseudonym", null, null);
         assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
 
