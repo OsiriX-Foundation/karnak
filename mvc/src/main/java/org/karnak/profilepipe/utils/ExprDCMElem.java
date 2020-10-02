@@ -119,21 +119,17 @@ public class ExprDCMElem {
         return new ReplaceNull("Z");
     }
 
-    /*public ActionItem Add(int newTag, VR newVr, String newValue){
-        Add add = new Add("A", newTag, newVr, newValue);
-        add.execute(dcm, newTag, null, null);
-        return null;
-    }*/
-
     public String getString(int tag){
         return dcmCopy.getString(tag).orElse(null);
     }
 
     public boolean tagIsPresent(int tag){
-        if( dcm.getString(tag).orElse(null) != null){
-            return true;
-        }else{
-            return false;
-        }
+        return DicomObjectTools.tagIsInDicomObject(tag, dcmCopy);
     }
+
+    /*public ActionItem Add(int newTag, VR newVr, String newValue){
+        Add add = new Add("A", newTag, newVr, newValue);
+        add.execute(dcm, newTag, null, null);
+        return null;
+    }*/
 }

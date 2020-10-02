@@ -10,6 +10,7 @@ import org.karnak.profilepipe.action.ActionItem;
 import org.karnak.profilepipe.action.Replace;
 import org.karnak.profilepipe.option.datemanager.ShiftDate;
 import org.karnak.profilepipe.option.datemanager.ShiftRangeDate;
+import org.karnak.profilepipe.utils.HMAC;
 import org.karnak.profilepipe.utils.TagActionMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
