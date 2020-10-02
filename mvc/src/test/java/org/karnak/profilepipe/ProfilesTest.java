@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class ProfilesTest {
-    private static final HMAC hmacTest = new HMAC("HmacKeyToTEST");
+
     @Test
     void XactionTagsProfile(){
         final DicomObject dataset1 = DicomObject.newDicomObject();

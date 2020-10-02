@@ -7,7 +7,6 @@ import org.karnak.data.AppConfig;
 
 import java.util.Iterator;
 import java.util.Optional;
-import org.weasis.dicom.param.AttributeEditorContext;
 
 public class DefaultDummy extends AbstractAction {
 
@@ -20,8 +19,7 @@ public class DefaultDummy extends AbstractAction {
     }
 
     @Override
-    public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, String patientID,
-        AttributeEditorContext context) {
+    public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, String patientID) {
         final String tagValueIn = dcm.getString(tag).orElse(null);
 
         final Optional<DicomElement> dcmItem = dcm.get(tag);
@@ -38,6 +36,6 @@ public class DefaultDummy extends AbstractAction {
             default -> null;
         };
         final ActionItem replace = new Replace(symbol, defaultDummyValue);
-        replace.execute(dcm, tag, iterator, patientID, context);
+        replace.execute(dcm, tag, iterator, patientID);
     }
 }

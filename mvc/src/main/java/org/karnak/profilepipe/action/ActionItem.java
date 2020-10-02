@@ -5,7 +5,6 @@ import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.VR;
 
 import java.util.Iterator;
-import org.weasis.dicom.param.AttributeEditorContext;
 
 public interface ActionItem {
 
@@ -19,6 +18,5 @@ public interface ActionItem {
 
     void setVr(VR vr);
 
-    void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, String patientID,
-        AttributeEditorContext context);
+    void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, String patientID);
 }

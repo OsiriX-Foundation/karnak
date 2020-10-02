@@ -54,15 +54,5 @@ profileElements:
     excludedTags:
       - "0011,0010"
 
-  - name: "Clean pixel data"
-    codename: "action.on.specific.tags"
-    action: "P"
-    tags:
-      - "7FE0,0010"
-    color:
-    rectangles:
-      - "25, 15, 150, 50"
-      - "350, 15, 150, 50"
-
   - name: "DICOM basic profile"
     codename: "basic.dicom.profile"

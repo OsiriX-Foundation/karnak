@@ -5,7 +5,6 @@ import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.util.TagUtils;
 
 import java.util.Iterator;
-import org.weasis.dicom.param.AttributeEditorContext;
 
 public class ReplaceNull extends AbstractAction {
 
@@ -15,8 +14,7 @@ public class ReplaceNull extends AbstractAction {
     }
 
     @Override
-    public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, String patientID,
-        AttributeEditorContext context) {
+    public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, String patientID) {
         final String tagValueIn = dcm.getString(tag).orElse(null);
 
         dcm.get(tag).ifPresent(dcmEl -> {
