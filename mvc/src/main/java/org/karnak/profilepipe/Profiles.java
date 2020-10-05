@@ -213,11 +213,12 @@ public class Profiles {
 
         DicomObject dcmCopy = DicomObject.newDicomObject();
         DicomObjectUtil.copyDataset(dcm, dcmCopy);
+        final String PatientIDProfile = HMAC.generatePatientIDProfile(PatientID, destination);
 
         // Apply clean pixel data
         Optional<DicomElement> pix = dcm.get(Tag.PixelData);
         if (pix.isPresent() && !profile.getMasks().isEmpty() && profiles.stream()
-            .anyMatch(p -> CleanPixelData.class.isInstance(p.getAction(dcm, dcmCopy, pix.get(), patientID)))) {
+            .anyMatch(p -> CleanPixelData.class.isInstance(p.getAction(dcm, dcmCopy, pix.get(), PatientIDProfile)))) {
             String sopClassUID = dcm.getString(Tag.SOPClassUID)
                 .orElseThrow(() -> new IllegalStateException("DICOM Object does not contain sopClassUID"));
             MaskArea mask = getMask(dcm.getString(Tag.StationName).orElse(null));
@@ -233,7 +234,6 @@ public class Profiles {
             }
         }
 
-        final String PatientIDProfile = HMAC.generatePatientIDProfile(PatientID, destination);
         applyAction(dcm, dcmCopy, PatientIDProfile, null, null, context);
 
         setDefaultDeidentTagValue(dcm, newPatientID, newPatientName, profilesCodeName, mainzellistePseudonym);
