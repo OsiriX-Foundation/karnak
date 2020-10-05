@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.dcm4che6.data.DicomObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.karnak.data.*;
@@ -19,6 +20,7 @@ import org.karnak.data.gateway.DestinationType;
 import org.karnak.data.gateway.DicomSourceNode;
 import org.karnak.data.gateway.ForwardNode;
 import org.karnak.data.gateway.GatewayPersistence;
+import org.karnak.kheops.SwitchingAlbum;
 import org.karnak.ui.data.GatewayConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -254,9 +256,12 @@ public class GatewayConfig {
             }
 
             final List<KheopsAlbums> listKheopsAlbums = dstNode.getKheopsAlbums();
-            if (listKheopsAlbums != null) {
-                editors.add(new SwitchingAlbumEditor(listKheopsAlbums));
-            }
+            SwitchingAlbum switchingAlbum = new SwitchingAlbum();
+            editors.add((DicomObject dcm, AttributeEditorContext context) -> {
+                listKheopsAlbums.forEach(kheopsAlbums -> {
+                    switchingAlbum.apply(dstNode, kheopsAlbums, dcm);
+                });
+            });
 
             final boolean desidentificationEnable = dstNode.getDesidentification();
             if(desidentificationEnable && dstNode.getProfile() != null){ //TODO add an option in destination model
@@ -305,6 +310,12 @@ public class GatewayConfig {
                 WebForwardDestination fwd = new WebForwardDestination(dstNode.getId(), fwdSrcNode, dstNode.getUrl(),
                         map, progress, editors);
                 progress.addProgressListener(new EmailNotifyProgress(streamRegistry, fwd, emails, this, notifConfig));
+                progress.addProgressListener((DicomProgress dicomProgress) -> {
+                    DicomObject dcm = dicomProgress.getAttributes();
+                    listKheopsAlbums.forEach(kheopsAlbums -> {
+                        switchingAlbum.applyAfterTransfer(kheopsAlbums, dcm);
+                    });
+                });
                 dstList.add(fwd);
             } else {
                 DicomNode destinationNode =

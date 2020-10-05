@@ -6,19 +6,25 @@ import org.dcm4che6.data.Tag;
 import org.dcm4che6.data.VR;
 import org.json.JSONObject;
 import org.karnak.api.KheopsApi;
+import org.karnak.data.AppConfig;
+import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.KheopsAlbums;
+import org.karnak.standard.SOP;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
-import java.util.List;
-import java.util.WeakHashMap;
+import java.util.*;
 
 public class SwitchingAlbum {
     private final KheopsApi kheopsAPI;
-    private WeakHashMap seriesUIDHashMap = new WeakHashMap<String, String>();
+    private Map<Long, Map<String, String>> switchingAlbumHashMap = new WeakHashMap<>();
+    private Map<Long, List> switchingAlbumToDo = new WeakHashMap<>();
+
+    private final String KEY_SERIES_INSTANCE_UID = "seriesInstanceUID";
+    private final String KEY_SOP_INSTANCE_UID = "SOPInstanceUID";
 
     public static final ImmutableList<String> MIN_SCOPE_SOURCE = ImmutableList.of("read", "send");
     public static final ImmutableList<String> MIN_SCOPE_DESTINATION = ImmutableList.of("write");
@@ -27,25 +33,40 @@ public class SwitchingAlbum {
         kheopsAPI = new KheopsApi();
     }
 
-    public void apply(KheopsAlbums kheopsAlbums, DicomObject dcm) {
+    public void apply(Destination destination, KheopsAlbums kheopsAlbums, DicomObject dcm) {
         String authorizationSource = kheopsAlbums.getAuthorizationSource();
         String authorizationDestination = kheopsAlbums.getAuthorizationDestination();
         String condition = kheopsAlbums.getCondition();
-        String studyInstanceUID = dcm.getStringOrElseThrow(Tag.StudyInstanceUID);
-        String seriesInstanceUID = dcm.getStringOrElseThrow(Tag.SeriesInstanceUID);
+        String patientID = dcm.getStringOrElseThrow(Tag.PatientID);
+        String studyInstanceUID = hashUIDonDeidentification(destination, patientID, dcm.getStringOrElseThrow(Tag.StudyInstanceUID));
+        String seriesInstanceUID = hashUIDonDeidentification(destination, patientID, dcm.getStringOrElseThrow(Tag.SeriesInstanceUID));
+        String SOPInstanceUID = hashUIDonDeidentification(destination, patientID, dcm.getStringOrElseThrow(Tag.SOPInstanceUID));
         String API_URL = kheopsAlbums.getUrlAPI();
-        if (condition == null || condition.length() == 0 || validateCondition(condition, dcm) &&
-                seriesUIDHashMap.containsKey(seriesInstanceUID) == false) {
+        Long id = kheopsAlbums.getId();
+        if (!switchingAlbumToDo.containsKey(id)) {
+            switchingAlbumToDo.put(id, new ArrayList());
+        }
+        ArrayList<MetadataSwitching> metadataToDo = (ArrayList<MetadataSwitching>) switchingAlbumToDo.get(id);
+
+        if ((condition == null || condition.length() == 0 || validateCondition(condition, dcm)) &&
+            metadataToDo.stream().noneMatch(metadataSwitching -> metadataSwitching.getSeriesInstanceUID().equals(seriesInstanceUID))) {
             final boolean validAuthorizationSource = validateToken(MIN_SCOPE_SOURCE, API_URL, authorizationSource);
             final boolean validDestinationSource = validateToken(MIN_SCOPE_DESTINATION, API_URL, authorizationDestination);
 
             if (validAuthorizationSource && validDestinationSource) {
-                shareSerie(API_URL, studyInstanceUID, seriesInstanceUID, authorizationSource, authorizationDestination);
+                metadataToDo.add(new MetadataSwitching(studyInstanceUID, seriesInstanceUID, SOPInstanceUID));
             }
         }
     }
 
-    private boolean validateCondition(String condition, DicomObject dcm) {
+    private static String hashUIDonDeidentification(Destination destination, String inputPatientID, String inputUID) {
+        if (destination.getDesidentification()) {
+            return AppConfig.getInstance().getHmac().uidHash(inputPatientID, inputUID);
+        }
+        return inputUID;
+    }
+
+    private static boolean validateCondition(String condition, DicomObject dcm) {
         final ExprConditionKheops conditionKheops = new ExprConditionKheops(dcm);
         return getResultCondition(condition, conditionKheops);
     }
@@ -89,12 +110,39 @@ public class SwitchingAlbum {
         return valid;
     }
 
+    public void applyAfterTransfer(KheopsAlbums kheopsAlbums, DicomObject dcm) {
+        String SOPInstanceUID = dcm.getStringOrElseThrow(Tag.AffectedSOPInstanceUID);
+        Long id = kheopsAlbums.getId();
+        String authorizationSource = kheopsAlbums.getAuthorizationSource();
+        String authorizationDestination = kheopsAlbums.getAuthorizationDestination();
+        String API_URL = kheopsAlbums.getUrlAPI();
+
+        ArrayList<MetadataSwitching> metadataToDo = (ArrayList<MetadataSwitching>) switchingAlbumToDo.get(id);
+        metadataToDo.forEach(metadataSwitching -> {
+            if (metadataSwitching.getSOPinstanceUID().equals(SOPInstanceUID) &&
+                metadataSwitching.isApplied() == false) {
+                metadataSwitching.setApplied(true);
+                shareSerie(API_URL, metadataSwitching.getStudyInstanceUID(), metadataSwitching.getSeriesInstanceUID(),
+                        authorizationSource, authorizationDestination);
+            }
+        });
+        /*
+        HashMap<String, String> metadataSwitchingAlbum = (HashMap<String, String>) switchingAlbumHashMap.get(id);
+        seriesUIDHashMap.forEach((key, value) -> {
+            String seriesInstanceUIDHashed = AppConfig.getInstance().getHmac().uidHash(patientID, key);
+            if (seriesInstanceUID.equals(seriesInstanceUIDHashed) && seriesUIDHashMap.get(key) == false) {
+                seriesUIDHashMap.put(key, true);
+                shareSerie(API_URL, studyInstanceUID, seriesInstanceUID, authorizationSource, authorizationDestination);
+            }
+        });
+        */
+    }
+
     private void shareSerie(String API_URL, String studyInstanceUID, String seriesInstanceUID,
                            String authorizationSource, String authorizationDestination) {
         try {
             int status = kheopsAPI.shareSerie(studyInstanceUID, seriesInstanceUID, API_URL,
                     authorizationSource, authorizationDestination);
-            seriesUIDHashMap.put(seriesInstanceUID, "send");
         } catch (Exception e) {
             System.err.println(e);
         }
