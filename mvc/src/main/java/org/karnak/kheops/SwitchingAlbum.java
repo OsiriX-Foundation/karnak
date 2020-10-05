@@ -10,6 +10,8 @@ import org.karnak.data.AppConfig;
 import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.KheopsAlbums;
 import org.karnak.profilepipe.utils.HMAC;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
@@ -19,6 +21,8 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
 import java.util.*;
 
 public class SwitchingAlbum {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SwitchingAlbum.class);
+
     private final KheopsApi kheopsAPI;
     private Map<Long, List> switchingAlbumToDo = new WeakHashMap<>();
 
@@ -54,6 +58,9 @@ public class SwitchingAlbum {
 
             if (validAuthorizationSource && validDestinationSource) {
                 metadataToDo.add(new MetadataSwitching(studyInstanceUID, seriesInstanceUID, SOPInstanceUID));
+            } else {
+                LOGGER.warn("Can't validate a token for switching KHEOPS album [{}]. The series [{}] won't be shared.",
+                        kheopsAlbums.getId(), seriesInstanceUID);
             }
         }
     }
@@ -122,19 +129,24 @@ public class SwitchingAlbum {
             if (metadataSwitching.getSOPinstanceUID().equals(SOPInstanceUID) &&
                 metadataSwitching.isApplied() == false) {
                 metadataSwitching.setApplied(true);
-                shareSerie(API_URL, metadataSwitching.getStudyInstanceUID(), metadataSwitching.getSeriesInstanceUID(),
+                int status = shareSerie(API_URL, metadataSwitching.getStudyInstanceUID(), metadataSwitching.getSeriesInstanceUID(),
                         authorizationSource, authorizationDestination);
+                if (status > 299) {
+                    LOGGER.warn("Can't share the serie [{}] for switching KHEOPS album [{}]. The response status is {}",
+                            metadataSwitching.getSeriesInstanceUID(), id, status);
+                }
             }
         });
     }
 
-    private void shareSerie(String API_URL, String studyInstanceUID, String seriesInstanceUID,
+    private int shareSerie(String API_URL, String studyInstanceUID, String seriesInstanceUID,
                            String authorizationSource, String authorizationDestination) {
         try {
-            int status = kheopsAPI.shareSerie(studyInstanceUID, seriesInstanceUID, API_URL,
+            return kheopsAPI.shareSerie(studyInstanceUID, seriesInstanceUID, API_URL,
                     authorizationSource, authorizationDestination);
         } catch (Exception e) {
             System.err.println(e);
         }
+        return -1;
     }
 }
