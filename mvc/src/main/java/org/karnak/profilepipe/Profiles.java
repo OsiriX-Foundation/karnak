@@ -14,9 +14,7 @@ import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.IdTypes;
 import org.karnak.data.profile.ProfileElement;
 import org.karnak.data.profile.Profile;
-import org.karnak.profilepipe.action.ActionItem;
-import org.karnak.profilepipe.action.Add;
-import org.karnak.profilepipe.action.Remove;
+import org.karnak.profilepipe.action.*;
 import org.karnak.profilepipe.profiles.AbstractProfileItem;
 import org.karnak.profilepipe.profiles.ProfileItem;
 import org.karnak.profilepipe.utils.ExprDCMElem;
@@ -110,24 +108,42 @@ public class Profiles {
         return null;
     }
 
-    public void applyAction(DicomObject dcm, DicomObject dcmCopy, String patientID) {
+    public void applyAction(DicomObject dcm, DicomObject dcmCopy, String patientID, ProfileItem profilePassedInSequence, ActionItem actionPassedInSequence) {
         for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext(); ) {
             final DicomElement dcmEl = iterator.next();
             final ExprDCMElem exprDCMElem = new ExprDCMElem(dcmEl.tag(), dcmEl.vr(), dcm, dcmCopy);
 
+            ActionItem currentAction = null;
+            ProfileItem currentProfile = null;
             for (ProfileItem profile : profiles) {
-                final boolean conditionIsOk = getResultCondition(profile.getCondition(), exprDCMElem);
-                final ActionItem action = profile.getAction(dcm, dcmCopy, dcmEl, patientID);
-                if (action != null && conditionIsOk) {
-                    try {
-                        action.execute(dcm, dcmEl.tag(), iterator, patientID);
-                    } catch (final Exception e) {
-                        LOGGER.error("Cannot execute the action {} for tag: {}", action,  TagUtils.toString(dcmEl.tag()), e);
-                    }
+                currentProfile = profile;
+
+                boolean conditionIsOk = getResultCondition(profile.getCondition(), exprDCMElem);
+                if (conditionIsOk) {
+                    currentAction = profile.getAction(dcm, dcmCopy, dcmEl, patientID);
+                }
+
+                if (currentAction != null) {
                     break;
                 }
-                if (!(Remove.class.isInstance(action)) && dcmEl.vr() == VR.SQ) {
-                    dcmEl.itemStream().forEach(d -> applyAction(d, dcmCopy, patientID));
+
+                if (profile.equals(profilePassedInSequence)){
+                    currentAction = actionPassedInSequence;
+                    break;
+                }
+            }
+
+            if ( (!(Remove.class.isInstance(currentAction)) || !(ReplaceNull.class.isInstance(currentAction))) && dcmEl.vr() == VR.SQ) {
+                final ProfileItem finalCurrentProfile = currentProfile;
+                final ActionItem finalCurrentAction = currentAction;
+                dcmEl.itemStream().forEach(d -> applyAction(d, dcmCopy, patientID, finalCurrentProfile, finalCurrentAction));
+            } else {
+                if (currentAction != null) {
+                    try {
+                        currentAction.execute(dcm, dcmEl.tag(), iterator, patientID);
+                    } catch (final Exception e) {
+                        LOGGER.error("Cannot execute the currentAction {} for tag: {}", currentAction,  TagUtils.toString(dcmEl.tag()), e);
+                    }
                 }
             }
         }
@@ -159,7 +175,7 @@ public class Profiles {
 
         DicomObject dcmCopy = new DicomObjectImpl();
         DicomObjectUtil.copyDataset(dcm, dcmCopy);
-        applyAction(dcm, dcmCopy, patientID);
+        applyAction(dcm, dcmCopy, patientID, null, null);
 
         setDefaultDeidentTagValue(dcm, patientID, patientName, profilesCodeName, mainzellistePseudonym);
         MDC.clear();
