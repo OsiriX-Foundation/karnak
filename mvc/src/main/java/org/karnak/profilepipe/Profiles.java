@@ -25,10 +25,6 @@ import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.IdTypes;
 import org.karnak.data.profile.Profile;
 import org.karnak.data.profile.ProfileElement;
-import org.karnak.profilepipe.action.ActionItem;
-import org.karnak.profilepipe.action.Add;
-import org.karnak.profilepipe.action.CleanPixelData;
-import org.karnak.profilepipe.action.Remove;
 import org.karnak.profilepipe.profiles.AbstractProfileItem;
 import org.karnak.profilepipe.profiles.ActionTags;
 import org.karnak.profilepipe.profiles.ProfileItem;
@@ -149,24 +145,42 @@ public class Profiles {
         return null;
     }
 
-    public void applyAction(DicomObject dcm, DicomObject dcmCopy, String patientID, AttributeEditorContext context) {
+    public void applyAction(DicomObject dcm, DicomObject dcmCopy, String patientID, ProfileItem profilePassedInSequence, ActionItem actionPassedInSequence, AttributeEditorContext context) {
         for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext(); ) {
             final DicomElement dcmEl = iterator.next();
             final ExprDCMElem exprDCMElem = new ExprDCMElem(dcmEl.tag(), dcmEl.vr(), dcm, dcmCopy);
 
+            ActionItem currentAction = null;
+            ProfileItem currentProfile = null;
             for (ProfileItem profile : profiles) {
-                final boolean conditionIsOk = getResultCondition(profile.getCondition(), exprDCMElem);
-                final ActionItem action = profile.getAction(dcm, dcmCopy, dcmEl, patientID);
-                if (action != null && conditionIsOk) {
-                    try {
-                        action.execute(dcm, dcmEl.tag(), iterator, patientID);
-                    } catch (final Exception e) {
-                        LOGGER.error("Cannot execute the action {} for tag: {}", action,  TagUtils.toString(dcmEl.tag()), e);
-                    }
+                currentProfile = profile;
+
+                boolean conditionIsOk = getResultCondition(profile.getCondition(), exprDCMElem);
+                if (conditionIsOk) {
+                    currentAction = profile.getAction(dcm, dcmCopy, dcmEl, patientID);
+                }
+
+                if (currentAction != null) {
                     break;
                 }
-                if (!(Remove.class.isInstance(action)) && dcmEl.vr() == VR.SQ) {
-                    dcmEl.itemStream().forEach(d -> applyAction(d, dcmCopy, patientID, context));
+
+                if (profile.equals(profilePassedInSequence)){
+                    currentAction = actionPassedInSequence;
+                    break;
+                }
+            }
+
+            if ( (!(Remove.class.isInstance(currentAction)) || !(ReplaceNull.class.isInstance(currentAction))) && dcmEl.vr() == VR.SQ) {
+                final ProfileItem finalCurrentProfile = currentProfile;
+                final ActionItem finalCurrentAction = currentAction;
+                dcmEl.itemStream().forEach(d -> applyAction(d, dcmCopy, patientID, finalCurrentProfile, finalCurrentAction, context));
+            } else {
+                if (currentAction != null) {
+                    try {
+                        currentAction.execute(dcm, dcmEl.tag(), iterator, patientID);
+                    } catch (final Exception e) {
+                        LOGGER.error("Cannot execute the currentAction {} for tag: {}", currentAction,  TagUtils.toString(dcmEl.tag()), e);
+                    }
                 }
             }
         }
@@ -218,7 +232,7 @@ public class Profiles {
             }
         }
 
-        applyAction(dcm, dcmCopy, patientID, context);
+        applyAction(dcm, dcmCopy, patientID, null, null, context);
 
         setDefaultDeidentTagValue(dcm, patientID, patientName, profilesCodeName, mainzellistePseudonym);
         MDC.clear();

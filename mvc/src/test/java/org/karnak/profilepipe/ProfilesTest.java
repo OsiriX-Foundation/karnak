@@ -40,7 +40,7 @@ class ProfilesTest {
         profileElement.addIncludedTag(new IncludedTag("(0010,1010)", profileElement));
         profile.addProfilePipe(profileElement);
         final Profiles profiles = new Profiles(profile);
-        profiles.applyAction(dataset1, dataset1, "pseudonym", null);
+        profiles.applyAction(dataset1, dataset1, "pseudonym", null, null, null);
         assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
 
@@ -62,7 +62,7 @@ class ProfilesTest {
         profileElement.addIncludedTag(new IncludedTag("(0010,1010)", profileElement));
         profile.addProfilePipe(profileElement);
         final Profiles profiles = new Profiles(profile);
-        profiles.applyAction(dataset1, dataset1, "pseudonym", null);
+        profiles.applyAction(dataset1, dataset1, "pseudonym", null, null, null);
         assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
 
@@ -94,7 +94,7 @@ class ProfilesTest {
             profileElement.addArgument(new Argument("days", "365", profileElement));
             profile.addProfilePipe(profileElement);
             final Profiles profiles = new Profiles(profile);
-            profiles.applyAction(dataset1, dataset1, "pseudonym", null);
+            profiles.applyAction(dataset1, dataset1, "pseudonym", null, null, null);
             assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
         }
 
@@ -127,7 +127,7 @@ class ProfilesTest {
 
         profile.addProfilePipe(profileElement);
         final Profiles profiles = new Profiles(profile);
-        profiles.applyAction(dataset1, dataset1, "pseudonym", null);
+        profiles.applyAction(dataset1, dataset1, "pseudonym", null, null, null);
         assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
 
@@ -151,7 +151,7 @@ void XZactionTagsProfile(){
     profileElement2.addIncludedTag(new IncludedTag("(xxxx,xxxx)", profileElement));
     profile.addProfilePipe(profileElement2);
     final Profiles profiles = new Profiles(profile);
-    profiles.applyAction(dataset1, dataset1, "pseudonym", null);
+    profiles.applyAction(dataset1, dataset1, "pseudonym", null, null, null);
     assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
 }
 
@@ -186,7 +186,7 @@ void XZactionTagsProfile(){
         profileElement2.addIncludedTag(new IncludedTag("(xxxx,xxxx)", profileElement));
         profile.addProfilePipe(profileElement2);
         final Profiles profiles = new Profiles(profile);
-        profiles.applyAction(dataset1, dataset1, "pseudonym", null);
+        profiles.applyAction(dataset1, dataset1, "pseudonym", null, null, null);
         assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
 
@@ -211,7 +211,7 @@ void XZactionTagsProfile(){
 
         profile.addProfilePipe(profileElement);
         final Profiles profiles = new Profiles(profile);
-        profiles.applyAction(dataset1, dataset1, "pseudonym", null);
+        profiles.applyAction(dataset1, dataset1, "pseudonym", null, null, null);
         assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
 
