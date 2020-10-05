@@ -1,0 +1,27 @@
+name: "Clean pixel data"
+version: "0.9.0"
+minimumKarnakVersion: "0.1"
+defaultIssuerOfPatientID: "DPA"
+profileElements:
+  - name: "Clean pixel data"
+    codename: "action.on.specific.tags"
+    action: "P"
+    tags:
+      - "7FE0,0010"
+    arguments:
+      apply: "mask"
+
+  - name: "DICOM basic profile"
+    codename: "basic.dicom.profile"
+
+masks:
+  - stationName: "mvme87"
+    color: "ff0000"
+    rectangles:
+      - "25 15 150 50"
+      - "350 15 150 50"
+  - stationName: "VIVID7-003467"
+    color: "00ff00"
+    rectangles:
+      - "25 25 150 50"
+      - "350 15 150 50"

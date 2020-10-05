@@ -1,5 +1,7 @@
 package org.karnak.data.profile;
 
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +22,9 @@ public class Profile {
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<ProfileElement> profileElements = new ArrayList<>();
 
+    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<Mask> masks = new HashSet<>();
+
     public Profile() {
     }
 
@@ -39,8 +44,15 @@ public class Profile {
         this.bydefault = bydefault;
     }
 
+    public Long getId() {
+        return id;
+    }
     public void addProfilePipe(ProfileElement profileElement){
         this.profileElements.add(profileElement);
+    }
+
+    public void addMask(Mask mask){
+        this.masks.add(mask);
     }
 
     public String getName() {
@@ -91,7 +103,12 @@ public class Profile {
         this.bydefault = bydefault;
     }
 
-    public Long getId() {
-        return id;
+    public Set<Mask> getMasks() {
+        return masks;
     }
+
+    public void setMasks(Set<Mask> masks) {
+        this.masks = masks;
+    }
+
 }
