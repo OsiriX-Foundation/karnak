@@ -8,6 +8,11 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.karnak.data.gateway.Destination;
+import org.karnak.data.profile.ProfileElement;
 import org.slf4j.*;
 
 public class HMAC {
@@ -72,5 +77,16 @@ public class HMAC {
         uuid[8] &= 0x3F;
         uuid[8] |= 0x80;
         return "2.25." + new BigInteger(1, uuid).toString();
+    }
+
+    public static String generatePatientIDProfile(String PatientID, Destination destination) {
+        if (destination.getProfile() != null) {
+            final List<ProfileElement> listProfileElement = destination.getProfile().getProfileElements();
+            String profilesCodeName = String.join(
+                    "-" , listProfileElement.stream().map(profile -> profile.getCodename()).collect(Collectors.toList())
+            );
+            return PatientID.concat(profilesCodeName);
+        }
+        return PatientID;
     }
 }

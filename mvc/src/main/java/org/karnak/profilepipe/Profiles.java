@@ -165,9 +165,9 @@ public class Profiles {
                 "-" , profiles.stream().map(profile -> profile.getCodeName()).collect(Collectors.toList())
         );
         BigInteger patientValue = generatePatientID(mainzellistePseudonym, profilesCodeName);
-        String patientName = !idTypes.equals(IdTypes.PID) && destination.getPseudonymAsPatientName() == true ?
+        String newPatientName = !idTypes.equals(IdTypes.PID) && destination.getPseudonymAsPatientName() == true ?
                 mainzellistePseudonym : patientValue.toString(16).toUpperCase();
-        String patientID = patientValue.toString();
+        String newPatientID = patientValue.toString();
 
         if (!StringUtil.hasText(mainzellistePseudonym)) {
             throw new IllegalStateException("Cannot build a pseudonym");
@@ -175,9 +175,10 @@ public class Profiles {
 
         DicomObject dcmCopy = new DicomObjectImpl();
         DicomObjectUtil.copyDataset(dcm, dcmCopy);
-        applyAction(dcm, dcmCopy, patientID, null, null);
+        final String PatientIDProfile = HMAC.generatePatientIDProfile(PatientID, destination);
+        applyAction(dcm, dcmCopy, PatientIDProfile, null, null);
 
-        setDefaultDeidentTagValue(dcm, patientID, patientName, profilesCodeName, mainzellistePseudonym);
+        setDefaultDeidentTagValue(dcm, newPatientID, newPatientName, profilesCodeName, mainzellistePseudonym);
         MDC.clear();
     }
 

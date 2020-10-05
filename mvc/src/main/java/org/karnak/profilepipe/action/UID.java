@@ -20,7 +20,6 @@ public class UID extends AbstractAction {
 
         String uidValue = dcm.getString(tag).orElse(null);
         String uidHashed = AppConfig.getInstance().getHmac().uidHash(patientID, uidValue);
-        System.out.println(uidValue + " - " + uidHashed);
         dcm.setString(tag, VR.UI, uidHashed);
 
         final String tagValueOut = dcm.getString(tag).orElse(null);
