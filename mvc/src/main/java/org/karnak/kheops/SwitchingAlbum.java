@@ -26,9 +26,6 @@ public class SwitchingAlbum {
     private final KheopsApi kheopsAPI;
     private Map<Long, List> switchingAlbumToDo = new WeakHashMap<>();
 
-    private final String KEY_SERIES_INSTANCE_UID = "seriesInstanceUID";
-    private final String KEY_SOP_INSTANCE_UID = "SOPInstanceUID";
-
     public static final ImmutableList<String> MIN_SCOPE_SOURCE = ImmutableList.of("read", "send");
     public static final ImmutableList<String> MIN_SCOPE_DESTINATION = ImmutableList.of("write");
 
