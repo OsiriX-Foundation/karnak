@@ -258,9 +258,11 @@ public class GatewayConfig {
             final List<KheopsAlbums> listKheopsAlbums = dstNode.getKheopsAlbums();
             SwitchingAlbum switchingAlbum = new SwitchingAlbum();
             editors.add((DicomObject dcm, AttributeEditorContext context) -> {
-                listKheopsAlbums.forEach(kheopsAlbums -> {
-                    switchingAlbum.apply(dstNode, kheopsAlbums, dcm);
-                });
+                if (listKheopsAlbums != null) {
+                    listKheopsAlbums.forEach(kheopsAlbums -> {
+                        switchingAlbum.apply(dstNode, kheopsAlbums, dcm);
+                    });
+                }
             });
 
             final boolean desidentificationEnable = dstNode.getDesidentification();

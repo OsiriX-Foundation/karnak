@@ -9,7 +9,7 @@ import org.karnak.api.KheopsApi;
 import org.karnak.data.AppConfig;
 import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.KheopsAlbums;
-import org.karnak.standard.SOP;
+import org.karnak.profilepipe.utils.HMAC;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
@@ -20,7 +20,6 @@ import java.util.*;
 
 public class SwitchingAlbum {
     private final KheopsApi kheopsAPI;
-    private Map<Long, Map<String, String>> switchingAlbumHashMap = new WeakHashMap<>();
     private Map<Long, List> switchingAlbumToDo = new WeakHashMap<>();
 
     private final String KEY_SERIES_INSTANCE_UID = "seriesInstanceUID";
@@ -40,7 +39,7 @@ public class SwitchingAlbum {
         String patientID = dcm.getStringOrElseThrow(Tag.PatientID);
         String studyInstanceUID = hashUIDonDeidentification(destination, patientID, dcm.getStringOrElseThrow(Tag.StudyInstanceUID));
         String seriesInstanceUID = hashUIDonDeidentification(destination, patientID, dcm.getStringOrElseThrow(Tag.SeriesInstanceUID));
-        String SOPInstanceUID = hashUIDonDeidentification(destination, patientID, dcm.getStringOrElseThrow(Tag.SOPInstanceUID));
+        String SOPInstanceUID = dcm.getStringOrElseThrow(Tag.SOPInstanceUID);
         String API_URL = kheopsAlbums.getUrlAPI();
         Long id = kheopsAlbums.getId();
         if (!switchingAlbumToDo.containsKey(id)) {
@@ -61,7 +60,8 @@ public class SwitchingAlbum {
 
     private static String hashUIDonDeidentification(Destination destination, String inputPatientID, String inputUID) {
         if (destination.getDesidentification()) {
-            return AppConfig.getInstance().getHmac().uidHash(inputPatientID, inputUID);
+            final String PatientIDProfile = HMAC.generatePatientIDProfile(inputPatientID, destination);
+            return AppConfig.getInstance().getHmac().uidHash(PatientIDProfile, inputUID);
         }
         return inputUID;
     }
@@ -126,16 +126,6 @@ public class SwitchingAlbum {
                         authorizationSource, authorizationDestination);
             }
         });
-        /*
-        HashMap<String, String> metadataSwitchingAlbum = (HashMap<String, String>) switchingAlbumHashMap.get(id);
-        seriesUIDHashMap.forEach((key, value) -> {
-            String seriesInstanceUIDHashed = AppConfig.getInstance().getHmac().uidHash(patientID, key);
-            if (seriesInstanceUID.equals(seriesInstanceUIDHashed) && seriesUIDHashMap.get(key) == false) {
-                seriesUIDHashMap.put(key, true);
-                shareSerie(API_URL, studyInstanceUID, seriesInstanceUID, authorizationSource, authorizationDestination);
-            }
-        });
-        */
     }
 
     private void shareSerie(String API_URL, String studyInstanceUID, String seriesInstanceUID,
