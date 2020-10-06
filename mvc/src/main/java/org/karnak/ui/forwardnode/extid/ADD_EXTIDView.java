@@ -1,8 +1,10 @@
 package org.karnak.ui.forwardnode.extid;
 
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
+import org.karnak.ui.util.UIS;
 
 public class ADD_EXTIDView extends Div {
     private TextField delimiter;
@@ -12,7 +14,7 @@ public class ADD_EXTIDView extends Div {
 
     public ADD_EXTIDView() {
         setElements();
-        add(tag, delimiter, position);
+        add(UIS.setWidthFull(new HorizontalLayout(tag, delimiter, position)));
     }
 
     public void setElements() {
