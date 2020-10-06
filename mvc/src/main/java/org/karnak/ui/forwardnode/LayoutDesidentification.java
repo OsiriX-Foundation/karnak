@@ -42,7 +42,7 @@ public class LayoutDesidentification extends Div {
         profileDropDown.setMinWidth("75%");
 
         checkboxUsePseudonym = new Checkbox(LABEL_CHECKBOX_EXTERNAL_PSEUDONYM);
-        checkboxUsePseudonym.setMinWidth("25%");
+        checkboxUsePseudonym.setMinWidth("26.5%");
 
         externalPseudonymView = new ExternalPseudonymView();
         externalPseudonymView.setMinWidth("70%");
