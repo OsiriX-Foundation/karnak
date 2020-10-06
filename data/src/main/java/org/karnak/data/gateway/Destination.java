@@ -33,8 +33,15 @@ public class Destination {
 
     private boolean desidentification;
 
-    @OneToOne()
-    private ExternalPseudonym externalPseudonym;
+    private IdTypes idTypes;
+
+    private String tag;
+
+    private String delimiter;
+
+    private Integer position;
+
+    private Boolean pseudonymAsPatientName;
 
     private boolean filterBySOPClasses;
 
@@ -145,6 +152,11 @@ public class Destination {
         this.type = null;
         this.description = "";
         this.desidentification = true;
+        this.idTypes = IdTypes.PID;
+        this.pseudonymAsPatientName = null;
+        this.tag = null;
+        this.delimiter = null;
+        this.position = null;
         this.filterBySOPClasses = true;
         this.notify = "";
         this.notifyObjectErrorPrefix = "";
@@ -402,12 +414,43 @@ public class Destination {
     }
 
 
-    public ExternalPseudonym getExternalPseudonym() {
-        return externalPseudonym;
+    public IdTypes getIdTypes() {
+        return idTypes;
     }
 
-    public void setExternalPseudonym(ExternalPseudonym externalPseudonym) {
-        this.externalPseudonym = externalPseudonym;
+    public void setIdTypes(IdTypes idTypes) {
+        this.idTypes = idTypes;
     }
 
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    public String getDelimiter() {
+        return delimiter;
+    }
+
+    public void setDelimiter(String delimiter) {
+        this.delimiter = delimiter;
+    }
+
+    public Integer getPosition() {
+        return position;
+    }
+
+    public void setPosition(Integer position) {
+        this.position = position;
+    }
+
+    public Boolean getPseudonymAsPatientName() {
+        return pseudonymAsPatientName;
+    }
+
+    public void setPseudonymAsPatientName(Boolean pseudonymAsPatientName) {
+        this.pseudonymAsPatientName = pseudonymAsPatientName;
+    }
 }

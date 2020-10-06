@@ -90,13 +90,13 @@ public class Profiles {
     }
 
     private String getExtIDInDicom(DicomObject dcm, Destination destination) {
-        if (destination.getExternalPseudonym().getIdTypes().equals(IdTypes.ADD_EXTID)) {
-            String cleanTag = destination.getExternalPseudonym().getTag().replaceAll("[(),]", "").toUpperCase();
+        if (destination.getIdTypes().equals(IdTypes.ADD_EXTID)) {
+            String cleanTag = destination.getTag().replaceAll("[(),]", "").toUpperCase();
             final String tagValue = dcm.getString(TagUtils.intFromHexString(cleanTag)).orElse(null);
-            if (tagValue != null && destination.getExternalPseudonym().getDelimiter() != null && destination.getExternalPseudonym().getPosition() != null) {
-                String delimiterSpec = SpecialCharacter.escapeSpecialRegexChars(destination.getExternalPseudonym().getDelimiter());
+            if (tagValue != null && destination.getDelimiter() != null && destination.getPosition() != null) {
+                String delimiterSpec = SpecialCharacter.escapeSpecialRegexChars(destination.getDelimiter());
                 try {
-                    return tagValue.split(delimiterSpec)[destination.getExternalPseudonym().getPosition()];
+                    return tagValue.split(delimiterSpec)[destination.getPosition()];
                 } catch (ArrayIndexOutOfBoundsException e) {
                     LOGGER.error("Can not split the external pseudonym", e);
                     return null;
@@ -154,7 +154,7 @@ public class Profiles {
         final String IssuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID).orElse(null);
         final String PatientID = dcm.getString(Tag.PatientID).orElse(null);
         final String stringExtIDInDicom = getExtIDInDicom(dcm, destination);
-        final IdTypes idTypes = destination.getExternalPseudonym().getIdTypes();
+        final IdTypes idTypes = destination.getIdTypes();
 
         MDC.put("SOPInstanceUID", SOPinstanceUID);
         MDC.put("issuerOfPatientID", IssuerOfPatientID);
@@ -165,7 +165,7 @@ public class Profiles {
                 "-" , profiles.stream().map(profile -> profile.getCodeName()).collect(Collectors.toList())
         );
         BigInteger patientValue = generatePatientID(mainzellistePseudonym, profilesCodeName);
-        String newPatientName = !idTypes.equals(IdTypes.PID) && destination.getExternalPseudonym().getPseudonymAsPatientName() == true ?
+        String newPatientName = !idTypes.equals(IdTypes.PID) && destination.getPseudonymAsPatientName() == true ?
                 mainzellistePseudonym : patientValue.toString(16).toUpperCase();
         String newPatientID = patientValue.toString();
 
