@@ -3,20 +3,15 @@ package org.karnak.kheops;
 import com.google.common.collect.ImmutableList;
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.Tag;
-import org.dcm4che6.data.VR;
 import org.json.JSONObject;
 import org.karnak.api.KheopsApi;
 import org.karnak.data.AppConfig;
 import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.KheopsAlbums;
 import org.karnak.profilepipe.utils.HMAC;
+import org.karnak.util.ExpressionResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.expression.EvaluationContext;
-import org.springframework.expression.Expression;
-import org.springframework.expression.ExpressionParser;
-import org.springframework.expression.spel.standard.SpelExpressionParser;
-import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 import java.util.*;
 
@@ -72,23 +67,7 @@ public class SwitchingAlbum {
 
     private static boolean validateCondition(String condition, DicomObject dcm) {
         final ExprConditionKheops conditionKheops = new ExprConditionKheops(dcm);
-        return getResultCondition(condition, conditionKheops);
-    }
-
-    private static boolean getResultCondition(String condition, ExprConditionKheops exprConditionKheops){
-        try {
-            //https://docs.spring.io/spring/docs/3.0.x/reference/expressions.html
-            final ExpressionParser parser = new SpelExpressionParser();
-            final EvaluationContext context = new StandardEvaluationContext(exprConditionKheops);
-            final String cleanCondition = exprConditionKheops.conditionInterpreter(condition);
-            context.setVariable("VR", VR.class);
-            context.setVariable("Tag", Tag.class);
-            final Expression exp = parser.parseExpression(cleanCondition);
-            boolean valid = exp.getValue(context, Boolean.class);
-            return valid;
-        } catch (final Exception e) {
-            return false;
-        }
+        return ExpressionResult.getBoolean(condition, conditionKheops);
     }
 
     private boolean validateToken(List<String> validMinScope, String API_URL, String introspectToken) {
