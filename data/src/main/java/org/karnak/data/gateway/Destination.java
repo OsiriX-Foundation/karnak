@@ -7,12 +7,15 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.validator.group.GroupSequenceProvider;
 import org.karnak.data.gateway.DestinationGroupSequenceProvider.DestinationDicomGroup;
 import org.karnak.data.gateway.DestinationGroupSequenceProvider.DestinationStowGroup;
 import org.karnak.data.profile.Profile;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @GroupSequenceProvider(value = DestinationGroupSequenceProvider.class)
@@ -30,17 +33,11 @@ public class Destination {
 
     private boolean desidentification;
 
-    private String tag;
-
-    private String delimiter;
-
-    private Integer position;
-
-    private Boolean pseudonymAsPatientName;
+    @OneToOne()
+    private ExternalPseudonym externalPseudonym;
 
     private boolean filterBySOPClasses;
 
-    private IdTypes idTypes;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name="sop_class_filter",
@@ -146,13 +143,8 @@ public class Destination {
 
     protected Destination() {
         this.type = null;
-        this.idTypes = IdTypes.PID;
         this.description = "";
         this.desidentification = true;
-        this.pseudonymAsPatientName = false;
-        this.tag = null;
-        this.delimiter = null;
-        this.position = null;
         this.filterBySOPClasses = true;
         this.notify = "";
         this.notifyObjectErrorPrefix = "";
@@ -409,43 +401,13 @@ public class Destination {
         this.profile = profile;
     }
 
-    public IdTypes getIdTypes() {
-        return idTypes;
+
+    public ExternalPseudonym getExternalPseudonym() {
+        return externalPseudonym;
     }
 
-    public void setIdTypes(IdTypes idTypes) {
-        this.idTypes = idTypes;
+    public void setExternalPseudonym(ExternalPseudonym externalPseudonym) {
+        this.externalPseudonym = externalPseudonym;
     }
 
-    public String getTag() {
-        return tag;
-    }
-
-    public void setTag(String tag) {
-        this.tag = tag;
-    }
-
-    public String getDelimiter() {
-        return delimiter;
-    }
-
-    public void setDelimiter(String delimiter) {
-        this.delimiter = delimiter;
-    }
-
-    public Integer getPosition() {
-        return position;
-    }
-
-    public void setPosition(Integer position) {
-        this.position = position;
-    }
-
-    public Boolean getPseudonymAsPatientName() {
-        return pseudonymAsPatientName;
-    }
-
-    public void setPseudonymAsPatientName(Boolean useExternalPseudonym) {
-        this.pseudonymAsPatientName = useExternalPseudonym;
-    }
 }

@@ -5,44 +5,73 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.data.binder.Binder;
 import org.karnak.data.gateway.Destination;
+import org.karnak.ui.forwardnode.extid.ExternalPseudonymView;
 import org.karnak.ui.util.UIS;
 
 public class LayoutDesidentification extends Div {
     private final Binder<Destination> destinationBinder;
 
-    private final Checkbox checkboxDesidentification;
-    private final ProfileDropDown profileDropDown;
+    private Checkbox checkboxDesidentification;
+    private Checkbox checkboxUsePseudonym;
+    private ProfileDropDown profileDropDown;
     private ExternalPseudonymView externalPseudonymView;
 
     private final String LABEL_CHECKBOX_DESIDENTIFICATION = "Activate de-identification";
+    private final String LABEL_CHECKBOX_EXTERNAL_PSEUDONYM = "Use external pseudonym";
 
     public LayoutDesidentification(Binder<Destination> destinationBinder) {
         this.destinationBinder = destinationBinder;
-        checkboxDesidentification = new Checkbox(LABEL_CHECKBOX_DESIDENTIFICATION);
-        profileDropDown = new ProfileDropDown();
+
         setElements();
         setBinder();
+        setEventCheckboxDesidentification();
+        setEventCheckboxExternalPseudonym();
         add(UIS.setWidthFull(new HorizontalLayout(checkboxDesidentification, profileDropDown)));
-        add(externalPseudonymView);
+
+        if (checkboxDesidentification.getValue()) {
+            add(checkboxUsePseudonym);
+        }
     }
 
     private void setElements() {
+        checkboxDesidentification = new Checkbox(LABEL_CHECKBOX_DESIDENTIFICATION);
+        profileDropDown = new ProfileDropDown();
         checkboxDesidentification.setValue(true);
         checkboxDesidentification.setMinWidth("25%");
 
         profileDropDown.setMinWidth("75%");
 
-        externalPseudonymView = new ExternalPseudonymView(destinationBinder);
-        externalPseudonymView.setMinWidth("70%");
+        checkboxUsePseudonym = new Checkbox(LABEL_CHECKBOX_EXTERNAL_PSEUDONYM);
+        checkboxUsePseudonym.setMinWidth("25%");
 
+        externalPseudonymView = new ExternalPseudonymView();
+        externalPseudonymView.setMinWidth("70%");
+    }
+
+    private void setEventCheckboxDesidentification(){
         checkboxDesidentification.addValueChangeListener(event -> {
             if (event.getValue() != null) {
                 profileDropDown.setEnabled(event.getValue());
                 if (event.getValue()){
-                    externalPseudonymView.setVisible(true);
+                    add(checkboxUsePseudonym);
                 } else {
-                    externalPseudonymView.setVisible(false);
-                    externalPseudonymView.disableDesidentification();
+                    checkboxUsePseudonym.clear();
+                    externalPseudonymView.clear();
+                    remove(checkboxUsePseudonym);
+                    remove(externalPseudonymView);
+                }
+            }
+        });
+    }
+
+    private void setEventCheckboxExternalPseudonym(){
+        checkboxUsePseudonym.addValueChangeListener(event -> {
+            if (event.getValue() != null) {
+                if (event.getValue()){
+                    add(externalPseudonymView);
+                } else {
+                    externalPseudonymView.clear();
+                    remove(externalPseudonymView);
                 }
             }
         });
