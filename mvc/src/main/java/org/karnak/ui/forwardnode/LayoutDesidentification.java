@@ -86,10 +86,10 @@ public class LayoutDesidentification extends Div {
                 if (event.getValue().equals(extidSentence[0])) {
                     checkboxUseAsPatientName.clear();
                     extidPresentInDicomTagView.clear();
-                    remove(checkboxUseAsPatientName);
+                    div.remove(checkboxUseAsPatientName);
                     div.remove(extidPresentInDicomTagView);
                 } else {
-                    add(checkboxUseAsPatientName);
+                    div.add(UIS.setWidthFull(checkboxUseAsPatientName));
                     if (event.getValue().equals(extidSentence[1])) {
                         extidPresentInDicomTagView.clear();
                         div.remove(extidPresentInDicomTagView);
