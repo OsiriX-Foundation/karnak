@@ -61,10 +61,10 @@ public class ExprConditionKheops {
         return cleanElem.matches("[0-9A-FX]+");
     }
 
+    /*
     public static boolean validateCondition(String condition) {
-        final String cleanCondition = conditionInterpreter(condition);
-        if (!cleanCondition.contains("tagValueIsPresent") && !cleanCondition.contains("tagValueContains") &&
-            !cleanCondition.contains("tagValueBeginWith") && !cleanCondition.contains("tagValueEndWith")) {
+        if (!condition.contains("tagValueIsPresent") && !condition.contains("tagValueContains") &&
+            !condition.contains("tagValueBeginWith") && !condition.contains("tagValueEndWith")) {
             return false;
         }
 
@@ -104,4 +104,5 @@ public class ExprConditionKheops {
         }
         return "";
     }
+     */
 }

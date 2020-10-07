@@ -327,7 +327,7 @@ class ExprConditionKheopsTest {
                 Arguments.of("", "")
         );
     }
-
+    /*
     @Test
     void validateCondition() {
         assertTrue(exprConditionKheops.validateCondition("tagValueIsPresent(Tag.PatientName)"));
@@ -345,4 +345,5 @@ class ExprConditionKheopsTest {
         assertTrue(exprConditionKheops.validateCondition("tagValueBeginWith((FFFF,FFFF))"));
         assertTrue(exprConditionKheops.validateCondition("tagValueEndWith((FFFF,FFFF))"));
     }
+     */
 }
