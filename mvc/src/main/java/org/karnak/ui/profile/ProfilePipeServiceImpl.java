@@ -54,9 +54,14 @@ public class ProfilePipeServiceImpl extends ProfilePipeService {
     }
 
     private Profile createNewProfile(ProfilePipeBody profilePipeYml, Boolean byDefault) {
-        Profile newProfile;
-
-        newProfile = new Profile(profilePipeYml.getName(), profilePipeYml.getVersion(), profilePipeYml.getMinimumKarnakVersion(), profilePipeYml.getDefaultIssuerOfPatientID(), byDefault);
+        final Profile newProfile = new Profile(profilePipeYml.getName(), profilePipeYml.getVersion(), profilePipeYml.getMinimumKarnakVersion(), profilePipeYml.getDefaultIssuerOfPatientID(), byDefault);
+        if(profilePipeYml.getMasks() != null){
+            profilePipeYml.getMasks().forEach(m -> {
+                Mask mask = new Mask(m.getStationName(), m.getColor(), newProfile );
+                m.getRectangles().forEach(mask::addRectangle);
+                newProfile.addMask(mask);
+            });
+        }
 
         AtomicInteger profilePosition = new AtomicInteger(0);
         profilePipeYml.getProfileElements().forEach(profileBody -> {

@@ -1,48 +1,77 @@
 package org.karnak.profilepipe;
 
+import java.awt.Color;
+import java.awt.Shape;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.Tag;
 import org.dcm4che6.data.VR;
+import org.dcm4che6.img.op.MaskArea;
 import org.dcm4che6.img.util.DicomObjectUtil;
-import org.dcm4che6.internal.DicomObjectImpl;
 import org.dcm4che6.util.TagUtils;
 import org.karnak.api.PseudonymApi;
 import org.karnak.api.rqbody.Fields;
 import org.karnak.data.AppConfig;
 import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.IdTypes;
-import org.karnak.data.profile.ProfileElement;
 import org.karnak.data.profile.Profile;
+import org.karnak.data.profile.ProfileElement;
 import org.karnak.profilepipe.action.*;
 import org.karnak.profilepipe.profiles.AbstractProfileItem;
+import org.karnak.profilepipe.profiles.ActionTags;
 import org.karnak.profilepipe.profiles.ProfileItem;
 import org.karnak.profilepipe.utils.ExprDCMElem;
 import org.karnak.profilepipe.utils.HMAC;
 import org.karnak.util.SpecialCharacter;
-import org.slf4j.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.weasis.core.util.StringUtil;
-
-import java.math.BigInteger;
-import java.util.*;
-import java.util.stream.Collectors;
+import org.weasis.dicom.param.AttributeEditorContext;
 
 public class Profiles {
     private final Logger LOGGER = LoggerFactory.getLogger(Profiles.class);
 
     private Profile profile;
     private final ArrayList<ProfileItem> profiles;
+    private final Map<String, MaskArea> maskMap;
     private final HMAC hmac;
 
     public Profiles(Profile profile) {
+        this.maskMap = new HashMap<>();
         this.hmac = AppConfig.getInstance().getHmac();
         this.profile = profile;
         this.profiles = createProfilesList();
+    }
+
+    public void addMaskMap(Map<? extends String, ? extends MaskArea> maskMap){
+        this.maskMap.putAll(maskMap);
+    }
+
+    public MaskArea getMask(String key) {
+        MaskArea mask = maskMap.get(key);
+        if (mask == null) {
+            mask = maskMap.get("*");
+        }
+        return mask;
+    }
+
+    public void addMask(String stationName, MaskArea maskArea){
+        this.maskMap.put(stationName, maskArea);
     }
 
     public ArrayList<ProfileItem> createProfilesList() {
@@ -67,6 +96,15 @@ public class Profiles {
                 }
             }
             profiles.sort(Comparator.comparing(ProfileItem::getPosition));
+            profile.getMasks().forEach(
+                m -> {
+                    Color color = null;
+                    if(StringUtil.hasText(m.getColor())) {
+                        color = ActionTags.hexadecimal2Color(m.getColor());
+                    }
+                    List<Shape> shapeList = m.getRectangles().stream().map(Shape.class::cast).collect(Collectors.toList());
+                    addMask(m.getStationName(), new MaskArea(shapeList, color));
+                });
             return profiles;
         }
         return null;
@@ -108,7 +146,7 @@ public class Profiles {
         return null;
     }
 
-    public void applyAction(DicomObject dcm, DicomObject dcmCopy, String patientID, ProfileItem profilePassedInSequence, ActionItem actionPassedInSequence) {
+    public void applyAction(DicomObject dcm, DicomObject dcmCopy, String patientID, ProfileItem profilePassedInSequence, ActionItem actionPassedInSequence, AttributeEditorContext context) {
         for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext(); ) {
             final DicomElement dcmEl = iterator.next();
             final ExprDCMElem exprDCMElem = new ExprDCMElem(dcmEl.tag(), dcmEl.vr(), dcm, dcmCopy);
@@ -136,7 +174,7 @@ public class Profiles {
             if ( (!(Remove.class.isInstance(currentAction)) || !(ReplaceNull.class.isInstance(currentAction))) && dcmEl.vr() == VR.SQ) {
                 final ProfileItem finalCurrentProfile = currentProfile;
                 final ActionItem finalCurrentAction = currentAction;
-                dcmEl.itemStream().forEach(d -> applyAction(d, dcmCopy, patientID, finalCurrentProfile, finalCurrentAction));
+                dcmEl.itemStream().forEach(d -> applyAction(d, dcmCopy, patientID, finalCurrentProfile, finalCurrentAction, context));
             } else {
                 if (currentAction != null) {
                     try {
@@ -149,7 +187,7 @@ public class Profiles {
         }
     }
 
-    public void apply(DicomObject dcm, Destination destination) {
+    public void apply(DicomObject dcm, Destination destination, AttributeEditorContext context) {
         final String SOPinstanceUID = dcm.getString(Tag.SOPInstanceUID).orElse(null);
         final String IssuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID).orElse(null);
         final String PatientID = dcm.getString(Tag.PatientID).orElse(null);
@@ -173,10 +211,30 @@ public class Profiles {
             throw new IllegalStateException("Cannot build a pseudonym");
         }
 
-        DicomObject dcmCopy = new DicomObjectImpl();
+        DicomObject dcmCopy = DicomObject.newDicomObject();
         DicomObjectUtil.copyDataset(dcm, dcmCopy);
         final String PatientIDProfile = HMAC.generatePatientIDProfile(PatientID, destination);
-        applyAction(dcm, dcmCopy, PatientIDProfile, null, null);
+
+        // Apply clean pixel data
+        Optional<DicomElement> pix = dcm.get(Tag.PixelData);
+        if (pix.isPresent() && !profile.getMasks().isEmpty() && profiles.stream()
+            .anyMatch(p -> CleanPixelData.class.isInstance(p.getAction(dcm, dcmCopy, pix.get(), PatientIDProfile)))) {
+            String sopClassUID = dcm.getString(Tag.SOPClassUID)
+                .orElseThrow(() -> new IllegalStateException("DICOM Object does not contain sopClassUID"));
+            MaskArea mask = getMask(dcm.getString(Tag.StationName).orElse(null));
+            // A mask must be applied with all the US and Secondary Capture sopClassUID, and with BurnedInAnnotation
+            if (sopClassUID.startsWith("1.2.840.10008.5.1.4.1.1.6") || sopClassUID.startsWith("1.2.840.10008.5.1.4.1.1.7")
+                || sopClassUID.startsWith("1.2.840.10008.5.1.4.1.1.3") || "YES"
+                .equalsIgnoreCase(dcm.getString(Tag.BurnedInAnnotation).orElse(null))) {
+                if (mask == null) {
+                    throw new IllegalStateException("Cannot clean pixel data to sopClassUID " + sopClassUID);
+                } else {
+                    context.setMaskArea(mask);
+                }
+            }
+        }
+
+        applyAction(dcm, dcmCopy, PatientIDProfile, null, null, context);
 
         setDefaultDeidentTagValue(dcm, newPatientID, newPatientName, profilesCodeName, mainzellistePseudonym);
         MDC.clear();

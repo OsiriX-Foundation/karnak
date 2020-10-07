@@ -21,6 +21,6 @@ public class DeidentifyEditor implements AttributeEditor {
 
     @Override
     public void apply(DicomObject dcm, AttributeEditorContext context) {
-        profiles.apply(dcm, destination);
+        profiles.apply(dcm, destination, context);
     }
 }
