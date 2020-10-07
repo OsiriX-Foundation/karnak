@@ -77,14 +77,15 @@ public class ADD_EXTIDView extends Div {
 
         destinationBinder.forField(delimiter)
                 .withConverter(String::valueOf, value -> (value == null) ? "" : String.valueOf(value), "Must be a delimiter")
-                .withValidator(delimiter -> (!(delimiter.equals("") && position.getValue() > 0d)),
-                        "Choose a delimiter when a position is defined\n")
+                .withValidator(delimiter -> tag.getValue() != null || !tag.getValue().equals(""),"The tag must be present when a delimiter is defined\n")
+                .withValidator(delimiter -> position.getValue()!= null && position.getValue() >= 0,"Position must be greater than or equal to zero when delimiter is defined")
                 .bind(Destination::getDelimiter, Destination::setDelimiter);
 
         destinationBinder.forField(position)
                 .withConverter(new DoubleToIntegerConverter())
-                .withValidator(position -> !(position == null && !delimiter.equals("") && position < 0),
-                        "Choose a position when a delimiter is defined\n")
+                .withValidator(position -> tag.getValue() != null || !tag.getValue().equals(""),"The tag must be present when a position is defined")
+                .withValidator(position -> (delimiter.getValue() != null || !delimiter.getValue().equals("")) && (position != null && position >= 0),"If delimiter is present, position must be defined")
+                //.withValidator(position -> (delimiter.getValue() == null || delimiter.getValue().equals("")) && (position == null || position == 0),"If there is no delimiter, position must be 0 or empty")
                 .bind(Destination::getPosition, Destination::setPosition);
 
     }
@@ -95,8 +96,7 @@ public class ADD_EXTIDView extends Div {
 
         destinationBinder.forField(delimiter).bind(Destination::getDelimiter, (destination, s) -> destination.setDelimiter(null));
 
-        destinationBinder.forField(position)
-                .withConverter(new DoubleToIntegerConverter())
+        destinationBinder.forField(position).withConverter(new DoubleToIntegerConverter())
                 .bind(Destination::getPosition, (destination, s) -> destination.setPosition(null));
     }
 }
