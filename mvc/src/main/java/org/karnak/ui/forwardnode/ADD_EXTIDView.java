@@ -16,14 +16,12 @@ public class ADD_EXTIDView extends Div {
     private TextField delimiter;
     private TextField tag;
     private NumberField position;
-    private boolean setAllValidator;
 
     public ADD_EXTIDView(Binder<Destination> destinationBinder) {
         this.destinationBinder = destinationBinder;
         setWidthFull();
         setElements();
-        setBinder();
-        setAllValidator = false;
+        setBinderWithValidator();
         add(UIS.setWidthFull(new HorizontalLayout(tag, delimiter, position)));
     }
 
@@ -37,18 +35,32 @@ public class ADD_EXTIDView extends Div {
     }
 
     public void clear() {
-        tag.setValue("");
-        delimiter.setValue("");
-        position.setValue(-1d);
-        setAllValidator = false;
+        removeAllBinding();
+        setBinderWithoutValidator();
+        tag.clear();
+        delimiter.clear();
+        position.clear();
     }
 
     public void enableComponent(){
-        setAllValidator = true;
+        removeAllBinding();
+        setBinderWithValidator();
+
     }
 
-    private void setBinder() {
+    private void removeAllBinding(){
+        final boolean tagExist = destinationBinder.getFields().anyMatch(field -> field.equals(tag));
+        final boolean positionExist = destinationBinder.getFields().anyMatch(field -> field.equals(position));
+        final boolean delimiterExist = destinationBinder.getFields().anyMatch(field -> field.equals(delimiter));
 
+        if(tagExist && positionExist && delimiterExist){
+            destinationBinder.removeBinding(tag);
+            destinationBinder.removeBinding(delimiter);
+            destinationBinder.removeBinding(position);
+        }
+    }
+
+    private void setBinderWithValidator() {
         destinationBinder.forField(tag)
                 .withConverter(String::valueOf, value -> (value == null) ? "" : String.valueOf(value), "Must be a tag")
                 .withValidator(tag -> {
@@ -58,40 +70,33 @@ public class ADD_EXTIDView extends Div {
                             } catch (Exception e) {
                                 return false;
                             }
-                            return !setAllValidator || (tag != null && !tag.equals("") && cleanTag.length() == 8);
+                            return (tag != null && !tag.equals("") && cleanTag.length() == 8);
                         },
                         "Choose a valid tag\n")
-                .bind(Destination::getTag, (destination, value) -> {
-                    if(value.equals("")){
-                        destination.setTag(null);
-                    } else {
-                        destination.setTag(value);
-                    }
-                });
+                .bind(Destination::getTag, Destination::setTag);
 
         destinationBinder.forField(delimiter)
                 .withConverter(String::valueOf, value -> (value == null) ? "" : String.valueOf(value), "Must be a delimiter")
-                .withValidator(delimiter -> (!setAllValidator || !(delimiter.equals("") && position.getValue() > 0d)),
+                .withValidator(delimiter -> (!(delimiter.equals("") && position.getValue() > 0d)),
                         "Choose a delimiter when a position is defined\n")
-                .bind(Destination::getDelimiter, (destination, value) -> {
-                    if(value.equals("")){
-                        destination.setDelimiter(null);
-                    } else {
-                        destination.setDelimiter(value);
-                    }
-                });
+                .bind(Destination::getDelimiter, Destination::setDelimiter);
 
         destinationBinder.forField(position)
                 .withConverter(new DoubleToIntegerConverter())
-                .withValidator(position -> !setAllValidator || !(position == null && !delimiter.equals("") && position < 0),
+                .withValidator(position -> !(position == null && !delimiter.equals("") && position < 0),
                         "Choose a position when a delimiter is defined\n")
-                .bind(Destination::getPosition, (destination, value) -> {
-                    if(value < 0){
-                        destination.setPosition(null);
-                    } else {
-                        destination.setPosition(value);
-                    }
-                });
+                .bind(Destination::getPosition, Destination::setPosition);
 
+    }
+
+
+    private void setBinderWithoutValidator() {
+        destinationBinder.forField(tag).bind(Destination::getTag, (destination, s) -> destination.setTag(null));
+
+        destinationBinder.forField(delimiter).bind(Destination::getDelimiter, (destination, s) -> destination.setDelimiter(null));
+
+        destinationBinder.forField(position)
+                .withConverter(new DoubleToIntegerConverter())
+                .bind(Destination::getPosition, (destination, s) -> destination.setPosition(null));
     }
 }
