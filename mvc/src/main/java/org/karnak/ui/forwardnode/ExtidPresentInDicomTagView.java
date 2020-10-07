@@ -10,14 +10,14 @@ import org.karnak.data.gateway.Destination;
 import org.karnak.ui.util.UIS;
 import org.karnak.util.DoubleToIntegerConverter;
 
-public class ADD_EXTIDView extends Div {
+public class ExtidPresentInDicomTagView extends Div {
 
     private Binder<Destination> destinationBinder;
     private TextField delimiter;
     private TextField tag;
     private NumberField position;
 
-    public ADD_EXTIDView(Binder<Destination> destinationBinder) {
+    public ExtidPresentInDicomTagView(Binder<Destination> destinationBinder) {
         this.destinationBinder = destinationBinder;
         setWidthFull();
         setElements();

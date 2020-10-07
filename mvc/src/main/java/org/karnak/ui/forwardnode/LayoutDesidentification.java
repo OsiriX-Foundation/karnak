@@ -15,7 +15,7 @@ public class LayoutDesidentification extends Div {
     private Checkbox checkboxDesidentification;
     private Checkbox checkboxUseAsPatientName;
     private ProfileDropDown profileDropDown;
-    private ADD_EXTIDView add_extidView;
+    private ExtidPresentInDicomTagView extidPresentInDicomTagView;
     private Div div;
 
     private final String LABEL_CHECKBOX_DESIDENTIFICATION = "Activate de-identification";
@@ -56,7 +56,7 @@ public class LayoutDesidentification extends Div {
 
         checkboxUseAsPatientName = new Checkbox("Use as Patient Name");
 
-        add_extidView = new ADD_EXTIDView(destinationBinder);
+        extidPresentInDicomTagView = new ExtidPresentInDicomTagView(destinationBinder);
         div = new Div();
         div.setMinWidth("98%");
 
@@ -71,10 +71,10 @@ public class LayoutDesidentification extends Div {
                 } else {
                     extidListBox.setValue(extidSentence[0]);
                     checkboxUseAsPatientName.clear();
-                    add_extidView.clear();
+                    extidPresentInDicomTagView.clear();
                     div.remove(extidListBox);
                     remove(checkboxUseAsPatientName);
-                    div.remove(add_extidView);
+                    div.remove(extidPresentInDicomTagView);
                 }
             }
         });
@@ -85,17 +85,17 @@ public class LayoutDesidentification extends Div {
             if (event.getValue() != null) {
                 if (event.getValue().equals(extidSentence[0])) {
                     checkboxUseAsPatientName.clear();
-                    add_extidView.clear();
+                    extidPresentInDicomTagView.clear();
                     remove(checkboxUseAsPatientName);
-                    div.remove(add_extidView);
+                    div.remove(extidPresentInDicomTagView);
                 } else {
                     add(checkboxUseAsPatientName);
                     if (event.getValue().equals(extidSentence[1])) {
-                        add_extidView.clear();
-                        div.remove(add_extidView);
+                        extidPresentInDicomTagView.clear();
+                        div.remove(extidPresentInDicomTagView);
                     } else {
-                        add_extidView.enableComponent();
-                        div.add(add_extidView);
+                        extidPresentInDicomTagView.enableComponent();
+                        div.add(extidPresentInDicomTagView);
                     }
                 }
             }
