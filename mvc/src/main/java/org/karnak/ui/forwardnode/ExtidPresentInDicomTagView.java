@@ -89,7 +89,7 @@ public class ExtidPresentInDicomTagView extends Div {
                 .withConverter(new DoubleToIntegerConverter())
                 .withValidator(position -> {
                     if (delimiter.getValue() != null && !delimiter.getValue().equals("")) {
-                        return position != null && position > 0;
+                        return position != null && position >= 0;
                     }
                     return true;
                 },"A position must be defined, when a delimiter is present")
