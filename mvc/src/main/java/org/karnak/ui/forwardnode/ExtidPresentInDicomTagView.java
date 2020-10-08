@@ -77,15 +77,22 @@ public class ExtidPresentInDicomTagView extends Div {
 
         destinationBinder.forField(delimiter)
                 .withConverter(String::valueOf, value -> (value == null) ? "" : String.valueOf(value), "Must be a delimiter")
-                .withValidator(delimiter -> tag.getValue() != null || !tag.getValue().equals(""),"The tag must be present when a delimiter is defined\n")
-                .withValidator(delimiter -> position.getValue()!= null && position.getValue() >= 0,"Position must be greater than or equal to zero when delimiter is defined")
+                .withValidator(delimiter -> {
+                    if (position.getValue() != null && position.getValue() > 0) {
+                        return delimiter != null && !delimiter.equals("");
+                    }
+                    return true;
+                },"A delimiter must be defined, when a position is present")
                 .bind(Destination::getDelimiter, Destination::setDelimiter);
 
         destinationBinder.forField(position)
                 .withConverter(new DoubleToIntegerConverter())
-                .withValidator(position -> tag.getValue() != null || !tag.getValue().equals(""),"The tag must be present when a position is defined")
-                .withValidator(position -> (delimiter.getValue() != null || !delimiter.getValue().equals("")) && (position != null && position >= 0),"If delimiter is present, position must be defined")
-                //.withValidator(position -> (delimiter.getValue() == null || delimiter.getValue().equals("")) && (position == null || position == 0),"If there is no delimiter, position must be 0 or empty")
+                .withValidator(position -> {
+                    if (delimiter.getValue() != null && !delimiter.getValue().equals("")) {
+                        return position != null && position > 0;
+                    }
+                    return true;
+                },"A position must be defined, when a delimiter is present")
                 .bind(Destination::getPosition, Destination::setPosition);
 
     }
