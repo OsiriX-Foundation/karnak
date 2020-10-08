@@ -46,11 +46,11 @@ public class LayoutDesidentification extends Div {
         checkboxDesidentification.setMinWidth("25%");
 
         profileDropDown.setLabel("Choose a de-identification profile");
-        profileDropDown.setMinWidth("75%");
+        profileDropDown.setWidth("100%");
 
         extidListBox = new Select<>();
         extidListBox.setLabel("Pseudonym type");
-        extidListBox.setMinWidth("75%");
+        extidListBox.setWidth("100%");
         extidListBox.getStyle().set("right", "0px");
         extidListBox.setItems(extidSentence);
 
@@ -58,7 +58,7 @@ public class LayoutDesidentification extends Div {
 
         extidPresentInDicomTagView = new ExtidPresentInDicomTagView(destinationBinder);
         div = new Div();
-        div.setMinWidth("98%");
+        div.setWidth("100%");
 
     }
 
