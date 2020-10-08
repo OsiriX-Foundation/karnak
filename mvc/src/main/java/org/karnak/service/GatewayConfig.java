@@ -314,9 +314,11 @@ public class GatewayConfig {
                 progress.addProgressListener(new EmailNotifyProgress(streamRegistry, fwd, emails, this, notifConfig));
                 progress.addProgressListener((DicomProgress dicomProgress) -> {
                     DicomObject dcm = dicomProgress.getAttributes();
-                    listKheopsAlbums.forEach(kheopsAlbums -> {
-                        switchingAlbum.applyAfterTransfer(kheopsAlbums, dcm);
-                    });
+                    if (listKheopsAlbums != null) {
+                        listKheopsAlbums.forEach(kheopsAlbums -> {
+                            switchingAlbum.applyAfterTransfer(kheopsAlbums, dcm);
+                        });
+                    }
                 });
                 dstList.add(fwd);
             } else {
