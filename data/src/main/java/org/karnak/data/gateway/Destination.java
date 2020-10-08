@@ -33,6 +33,8 @@ public class Destination {
 
     private boolean desidentification;
 
+    private IdTypes idTypes;
+
     private String tag;
 
     private String delimiter;
@@ -43,7 +45,6 @@ public class Destination {
 
     private boolean filterBySOPClasses;
 
-    private IdTypes idTypes;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name="sop_class_filter",
@@ -153,10 +154,10 @@ public class Destination {
 
     protected Destination() {
         this.type = null;
-        this.idTypes = IdTypes.PID;
         this.description = "";
         this.desidentification = true;
-        this.pseudonymAsPatientName = false;
+        this.idTypes = IdTypes.PID;
+        this.pseudonymAsPatientName = null;
         this.tag = null;
         this.delimiter = null;
         this.position = null;
@@ -416,6 +417,7 @@ public class Destination {
         this.profile = profile;
     }
 
+
     public IdTypes getIdTypes() {
         return idTypes;
     }
@@ -452,8 +454,8 @@ public class Destination {
         return pseudonymAsPatientName;
     }
 
-    public void setPseudonymAsPatientName(Boolean useExternalPseudonym) {
-        this.pseudonymAsPatientName = useExternalPseudonym;
+    public void setPseudonymAsPatientName(Boolean pseudonymAsPatientName) {
+        this.pseudonymAsPatientName = pseudonymAsPatientName;
     }
 
     public List<KheopsAlbums> getKheopsAlbums() {
