@@ -200,15 +200,19 @@ public class AddNewPatientForm extends VerticalLayout {
                     patient.getPatientBirthDate().format(DateTimeFormatter.ofPattern("YYYYMMdd")),
                     patient.getPatientSex(),
                     patient.getIssuerOfPatientId());
-            final String pseudonym = pseudonymApi.createPatient(newPatientFields, IdTypes.ADD_EXTID);
-            if (pseudonym != null) {
-                final String strPatient = "ExternalID: " + patient.getExtid() + " "
-                        + "PatientID:" + patient.getPatientId() + " "
-                        + "PatientName:" + patient.getPatientName() + " "
-                        + "IssuerOfPatientID:" + patient.getIssuerOfPatientId() + " "
-                        + "PatientSex:" + patient.getPatientSex() + " "
-                        + "PatientBirthDate:" + patient.getPatientBirthDate().format(DateTimeFormatter.ofPattern("YYYYMMdd"));
-                LOGGER.info("Added a new patient in mainzelliste: " + strPatient);
+            try {
+                final String pseudonym = pseudonymApi.createPatient(newPatientFields, IdTypes.ADD_EXTID);
+                if (pseudonym != null) {
+                    final String strPatient = "ExternalID: " + patient.getExtid() + " "
+                            + "PatientID:" + patient.getPatientId() + " "
+                            + "PatientName:" + patient.getPatientName() + " "
+                            + "IssuerOfPatientID:" + patient.getIssuerOfPatientId() + " "
+                            + "PatientSex:" + patient.getPatientSex() + " "
+                            + "PatientBirthDate:" + patient.getPatientBirthDate().format(DateTimeFormatter.ofPattern("YYYYMMdd"));
+                    LOGGER.info("Added a new patient in Mainzelliste: " + strPatient);
+                }
+            } catch (Exception e) {
+                LOGGER.error("Cannot create a new patient with Mainzelliste API {}", e);
             }
         });
     }

@@ -2,6 +2,7 @@ package org.karnak.profilepipe;
 
 import java.awt.Color;
 import java.awt.Shape;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -110,7 +111,7 @@ public class Profiles {
         return null;
     }
 
-    public String getMainzellistePseudonym(DicomObject dcm, String externalPseudonym, IdTypes idTypes) {
+    public String getMainzellistePseudonym(DicomObject dcm, String externalPseudonym, IdTypes idTypes) throws IOException, InterruptedException {
         final String patientID = dcm.getString(Tag.PatientID).orElse(null);
         final String patientName = dcm.getString(Tag.PatientName).orElse(null);
         final String patientBirthDate = dcm.getString(Tag.PatientBirthDate).orElse(null);
@@ -198,11 +199,19 @@ public class Profiles {
         MDC.put("issuerOfPatientID", IssuerOfPatientID);
         MDC.put("PatientID", PatientID);
 
-        String pseudonym;
+        String pseudonym = null;
         if (destination.getSavePseudonym() != null && destination.getSavePseudonym() == false) {
             pseudonym = stringExtIDInDicom;
+            if (pseudonym == null) {
+                throw new IllegalStateException("Cannot get a pseudonym in a DICOM tag");
+            }
         } else {
-            pseudonym = getMainzellistePseudonym(dcm, stringExtIDInDicom, idTypes);
+            try {
+                pseudonym = getMainzellistePseudonym(dcm, stringExtIDInDicom, idTypes);
+            } catch (Exception e) {
+                LOGGER.error("Cannot get a pseudonym with Mainzelliste API {}", e);
+                throw new IllegalStateException("Cannot get a pseudonym with Mainzelliste API");
+            }
         }
 
         String profilesCodeName = String.join(
@@ -212,10 +221,6 @@ public class Profiles {
         String newPatientName = !idTypes.equals(IdTypes.PID) && destination.getPseudonymAsPatientName() == true ?
                 pseudonym : patientValue.toString(16).toUpperCase();
         String newPatientID = patientValue.toString();
-
-        if (!StringUtil.hasText(pseudonym)) {
-            throw new IllegalStateException("Cannot build a pseudonym");
-        }
 
         DicomObject dcmCopy = DicomObject.newDicomObject();
         DicomObjectUtil.copyDataset(dcm, dcmCopy);
