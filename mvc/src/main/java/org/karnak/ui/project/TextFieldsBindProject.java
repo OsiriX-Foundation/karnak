@@ -1,36 +1,36 @@
-package org.karnak.ui.research;
+package org.karnak.ui.project;
 
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import org.apache.commons.lang3.StringUtils;
-import org.karnak.data.gateway.Research;
+import org.karnak.data.gateway.Project;
 
-public class TextFieldsBindResearch {
-    private Binder<Research> binder;
+public class TextFieldsBindProject {
+    private Binder<Project> binder;
 
     private TextField textResearchName;
     private TextField textSecret;
 
-    public TextFieldsBindResearch() {
+    public TextFieldsBindProject() {
         textResearchName = new TextField();
         textSecret = new TextField();
 
         binder = setBinder();
     }
 
-    private Binder<Research> setBinder() {
-        Binder<Research> binder = new BeanValidationBinder<>(Research.class);
+    private Binder<Project> setBinder() {
+        Binder<Project> binder = new BeanValidationBinder<>(Project.class);
         binder.forField(textResearchName)
                 .withValidator(StringUtils::isNotBlank,"Research name is mandatory")
-                .bind(Research::getName, Research::setName);
+                .bind(Project::getName, Project::setName);
         binder.forField(textSecret)
                 .withValidator(StringUtils::isNotBlank,"Secret is mandatory")
-                .bind(Research::getSecret, Research::setSecret);
+                .bind(Project::getSecret, Project::setSecret);
         return binder;
     }
 
-    public Binder<Research> getBinder() {
+    public Binder<Project> getBinder() {
         return binder;
     }
 

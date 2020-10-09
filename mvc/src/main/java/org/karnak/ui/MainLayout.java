@@ -5,8 +5,6 @@ import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.component.icon.IronIcon;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.PWA;
-import org.karnak.ui.about.AboutView;
-import org.karnak.ui.admin.AdminView;
 import org.karnak.ui.authentication.AccessControlFactory;
 import org.karnak.ui.dicom.DicomMainView;
 import org.karnak.ui.forwardnode.ForwardNodeView;
@@ -22,7 +20,7 @@ import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
 import org.karnak.ui.help.HelpView;
 import org.karnak.ui.profile.ProfileView;
-import org.karnak.ui.research.ResearchView;
+import org.karnak.ui.project.ProjectView;
 
 
 /**
@@ -46,7 +44,7 @@ public class MainLayout extends FlexLayout implements RouterLayout {
         menu.addView(ForwardNodeView.class, ForwardNodeView.VIEW_NAME, new IronIcon("icons", "settings"));
         menu.addView(ProfileView.class, ProfileView.VIEW_NAME, new IronIcon("icons", "assignment"));
         menu.addView(ExternalIDView.class, ExternalIDView.VIEW_NAME, new IronIcon("icons", "social:person-add"));
-        menu.addView(ResearchView.class, ResearchView.VIEW_NAME, new IronIcon("icons", "social:person-add"));
+        menu.addView(ProjectView.class, ProjectView.VIEW_NAME, new IronIcon("icons", "social:person-add"));
         menu.addView(DicomMainView.class, DicomMainView.VIEW_NAME, new IronIcon("icons", "build"));
         menu.addView(HelpView.class, HelpView.VIEW_NAME, new IronIcon("icons", "help"));
         //menu.addView(AboutView.class, AboutView.VIEW_NAME, new IronIcon("icons", "info"));

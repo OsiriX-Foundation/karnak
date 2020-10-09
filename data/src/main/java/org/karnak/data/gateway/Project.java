@@ -2,9 +2,9 @@ package org.karnak.data.gateway;
 
 import javax.persistence.*;
 
-@Entity(name = "Research")
-@Table(name = "research")
-public class Research {
+@Entity(name = "Project")
+@Table(name = "project")
+public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -16,9 +16,9 @@ public class Research {
     @JoinColumn(name="destination_id")
     private Destination destination = new Destination();
 
-    public Research() {}
+    public Project() {}
 
-    public Research(String name, String secret) {
+    public Project(String name, String secret) {
         this.name = name;
         this.secret = secret;
     }

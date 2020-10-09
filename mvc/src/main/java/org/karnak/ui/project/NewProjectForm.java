@@ -1,25 +1,25 @@
-package org.karnak.ui.research;
+package org.karnak.ui.project;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
-import org.karnak.data.gateway.Research;
+import org.karnak.data.gateway.Project;
 
-public class NewResearchForm extends HorizontalLayout {
-    private Binder<Research> binder;
+public class NewProjectForm extends HorizontalLayout {
+    private Binder<Project> binder;
 
     private Button buttonAdd;
     private TextField textResearchName;
     private TextField textSecret;
 
-    public NewResearchForm() {
+    public NewProjectForm() {
         setWidthFull();
-        TextFieldsBindResearch textFieldsBindResearch = new TextFieldsBindResearch();
-        binder = textFieldsBindResearch.getBinder();
+        TextFieldsBindProject textFieldsBindProject = new TextFieldsBindProject();
+        binder = textFieldsBindProject.getBinder();
         buttonAdd = new Button("Add");
-        textResearchName = textFieldsBindResearch.getTextResearchName();
-        textSecret = textFieldsBindResearch.getTextSecret();
+        textResearchName = textFieldsBindProject.getTextResearchName();
+        textSecret = textFieldsBindProject.getTextSecret();
         setElements();
 
         add(textResearchName, textSecret, buttonAdd);
@@ -44,7 +44,7 @@ public class NewResearchForm extends HorizontalLayout {
         textSecret.clear();
     }
 
-    public Binder<Research> getBinder() {
+    public Binder<Project> getBinder() {
         return binder;
     }
 }
