@@ -1,6 +1,10 @@
 package org.karnak.data.gateway;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import javax.persistence.*;
+import java.util.List;
 
 @Entity(name = "Project")
 @Table(name = "project")
@@ -11,6 +15,10 @@ public class Project {
 
     private String name;
     private String secret;
+
+    @OneToMany(mappedBy="project")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<Destination> destinations;
 
     public Project() {}
 

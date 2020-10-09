@@ -57,6 +57,7 @@ public class Destination {
     private List<KheopsAlbums> kheopsAlbums;
 
     @ManyToOne
+    @JoinColumn(name="project_id")
     private Project project;
 
     @ManyToOne
