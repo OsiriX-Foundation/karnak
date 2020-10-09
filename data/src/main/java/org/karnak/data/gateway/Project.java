@@ -34,4 +34,8 @@ public class Project {
     public void setSecret(String secret) {
         this.secret = secret;
     }
+
+    public boolean isNewData() {
+        return id == null;
+    }
 }
