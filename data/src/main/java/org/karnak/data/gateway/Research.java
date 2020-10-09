@@ -12,6 +12,10 @@ public class Research {
     private String name;
     private String secret;
 
+    @ManyToOne
+    @JoinColumn(name="destination_id")
+    private Destination destination = new Destination();
+
     public Research() {}
 
     public Research(String name, String secret) {
