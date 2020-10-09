@@ -33,6 +33,12 @@ public class ProjectDataProvider extends ListDataProvider<Project> {
         projectPersistence.saveAndFlush(project);
     }
 
+    public void update(Project project) {
+        if (!project.isNewData()) {
+            projectPersistence.saveAndFlush(project);
+        }
+    }
+
     public List<Project> getAllProjects() {
         return projectPersistence.findAll();
     }
