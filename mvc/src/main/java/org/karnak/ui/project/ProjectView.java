@@ -29,6 +29,7 @@ public class ProjectView extends VerticalLayout {
 
     private void setEventButtonAdd() {
         newProjectForm.getButtonAdd().addClickListener(event -> {
+            gridProject.clear();
             Project newProject = new Project();
             if (newResearchBinder.writeBeanIfValid(newProject)) {
                 projectDataProvider.save(newProject);

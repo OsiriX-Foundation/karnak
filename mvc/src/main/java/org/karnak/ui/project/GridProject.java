@@ -84,4 +84,9 @@ public class GridProject extends Grid<Project> {
         Div buttons = new Div(save, cancel);
         editorColumn.setEditorComponent(buttons);
     }
+
+    public void clear() {
+        editButtons.clear();
+        editor.cancel();
+    }
 }
