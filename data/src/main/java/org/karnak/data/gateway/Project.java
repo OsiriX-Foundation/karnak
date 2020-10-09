@@ -12,10 +12,6 @@ public class Project {
     private String name;
     private String secret;
 
-    @ManyToOne
-    @JoinColumn(name="destination_id")
-    private Destination destination = new Destination();
-
     public Project() {}
 
     public Project(String name, String secret) {

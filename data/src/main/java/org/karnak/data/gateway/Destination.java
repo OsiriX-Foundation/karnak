@@ -56,9 +56,8 @@ public class Destination {
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<KheopsAlbums> kheopsAlbums;
 
-    @OneToMany(mappedBy="destination", cascade = CascadeType.REMOVE)
-    @LazyCollection(LazyCollectionOption.FALSE)
-    private List<Project> projects;
+    @ManyToOne
+    private Project project;
 
     @ManyToOne
     @JoinColumn(name="profile_pipe_id")
@@ -470,11 +469,11 @@ public class Destination {
         this.kheopsAlbums = kheopsAlbums;
     }
 
-    public List<Project> getProjects() {
-        return projects;
+    public Project getProject() {
+        return project;
     }
 
-    public void setProjects(List<Project> projects) {
-        this.projects = projects;
+    public void setProject(Project project) {
+        this.project = project;
     }
 }
