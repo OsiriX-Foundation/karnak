@@ -20,9 +20,8 @@ public class ProjectView extends VerticalLayout {
 
     public ProjectView() {
         newProjectForm = new NewProjectForm();
-        gridProject = new GridProject();
         projectDataProvider = new ProjectDataProvider();
-        gridProject.setDataProvider(projectDataProvider);
+        gridProject = new GridProject(projectDataProvider);
         newResearchBinder = newProjectForm.getBinder();
         add(newProjectForm, gridProject);
         setEventButtonAdd();
