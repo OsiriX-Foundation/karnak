@@ -9,6 +9,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.Project;
+import org.karnak.ui.component.ConfirmDialog;
 import org.karnak.ui.data.ProjectDataProvider;
 
 import java.util.Collection;
@@ -24,7 +25,7 @@ public class GridProject extends Grid<Project> {
     private Collection<Button> editButtons;
     private TextField textProjectName;
     private TextField textProjectSecret;
-    private WarningProjectUsed dialogWarning;
+    private WarningRemoveProjectUsed dialogWarning;
 
     public GridProject(ProjectDataProvider projectDataProvider) {
         this.projectDataProvider = projectDataProvider;
@@ -32,7 +33,7 @@ public class GridProject extends Grid<Project> {
         setWidthFull();
         setHeightByRows(true);
 
-        dialogWarning = new WarningProjectUsed();
+        dialogWarning = new WarningRemoveProjectUsed();
         TextFieldsBindProject textFieldsBindProject = new TextFieldsBindProject();
         binder = textFieldsBindProject.getBinder();
         textProjectName = textFieldsBindProject.getTextResearchName();
@@ -83,7 +84,19 @@ public class GridProject extends Grid<Project> {
         editor.addCloseListener(e -> editButtons.stream()
                 .forEach(button -> button.setEnabled(!editor.isOpen())));
 
-        Button save = new Button("Save", e -> editor.save());
+        Button save = new Button("Save", e -> {
+            Project project = editor.getItem();
+            if (project.getDestinations() != null && project.getDestinations().size() > 0) {
+                ConfirmDialog dialog = new ConfirmDialog(
+                        String.format("The project %s is used, are you sure you want to updated ?", project.getName()));
+                dialog.addConfirmationListener(componentEvent -> {
+                    editor.save();
+                });
+                dialog.open();
+            } else {
+                editor.save();
+            }
+        });
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
         editor.addSaveListener(

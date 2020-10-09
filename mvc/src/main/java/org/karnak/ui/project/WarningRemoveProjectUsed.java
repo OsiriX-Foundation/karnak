@@ -6,7 +6,7 @@ import com.vaadin.flow.component.html.Div;
 import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.Project;
 
-public class WarningProjectUsed extends Dialog {
+public class WarningRemoveProjectUsed extends Dialog {
     public void setText(Project project) {
         removeAll();
         Div divTitle = new Div();
