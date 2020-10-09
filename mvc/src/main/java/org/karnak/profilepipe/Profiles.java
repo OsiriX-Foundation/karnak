@@ -198,16 +198,22 @@ public class Profiles {
         MDC.put("issuerOfPatientID", IssuerOfPatientID);
         MDC.put("PatientID", PatientID);
 
-        String mainzellistePseudonym = getMainzellistePseudonym(dcm, stringExtIDInDicom, idTypes);
+        String pseudonym;
+        if (destination.getSavePseudonym() != null && destination.getSavePseudonym() == false) {
+            pseudonym = stringExtIDInDicom;
+        } else {
+            pseudonym = getMainzellistePseudonym(dcm, stringExtIDInDicom, idTypes);
+        }
+
         String profilesCodeName = String.join(
                 "-" , profiles.stream().map(profile -> profile.getCodeName()).collect(Collectors.toList())
         );
-        BigInteger patientValue = generatePatientID(mainzellistePseudonym, profilesCodeName);
+        BigInteger patientValue = generatePatientID(pseudonym, profilesCodeName);
         String newPatientName = !idTypes.equals(IdTypes.PID) && destination.getPseudonymAsPatientName() == true ?
-                mainzellistePseudonym : patientValue.toString(16).toUpperCase();
+                pseudonym : patientValue.toString(16).toUpperCase();
         String newPatientID = patientValue.toString();
 
-        if (!StringUtil.hasText(mainzellistePseudonym)) {
+        if (!StringUtil.hasText(pseudonym)) {
             throw new IllegalStateException("Cannot build a pseudonym");
         }
 
@@ -236,7 +242,7 @@ public class Profiles {
 
         applyAction(dcm, dcmCopy, PatientIDProfile, null, null, context);
 
-        setDefaultDeidentTagValue(dcm, newPatientID, newPatientName, profilesCodeName, mainzellistePseudonym);
+        setDefaultDeidentTagValue(dcm, newPatientID, newPatientName, profilesCodeName, pseudonym);
         MDC.clear();
     }
 

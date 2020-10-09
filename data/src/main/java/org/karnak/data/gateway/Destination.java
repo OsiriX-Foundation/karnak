@@ -41,6 +41,8 @@ public class Destination {
 
     private Integer position;
 
+    private Boolean savePseudonym;
+
     private Boolean pseudonymAsPatientName;
 
     private boolean filterBySOPClasses;
@@ -161,6 +163,7 @@ public class Destination {
         this.tag = null;
         this.delimiter = null;
         this.position = null;
+        this.savePseudonym = null;
         this.filterBySOPClasses = true;
         this.notify = "";
         this.notifyObjectErrorPrefix = "";
@@ -456,6 +459,14 @@ public class Destination {
 
     public void setPseudonymAsPatientName(Boolean pseudonymAsPatientName) {
         this.pseudonymAsPatientName = pseudonymAsPatientName;
+    }
+
+    public Boolean getSavePseudonym() {
+        return savePseudonym;
+    }
+
+    public void setSavePseudonym(Boolean savePseudonym) {
+        this.savePseudonym = savePseudonym;
     }
 
     public List<KheopsAlbums> getKheopsAlbums() {
