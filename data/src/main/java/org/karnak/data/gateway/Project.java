@@ -26,6 +26,9 @@ public class Project {
         this.name = name;
         this.secret = secret;
     }
+    public Long getId() {
+        return id;
+    }
 
     public String getName() {
         return name;
@@ -41,6 +44,14 @@ public class Project {
 
     public void setSecret(String secret) {
         this.secret = secret;
+    }
+
+    public List<Destination> getDestinations() {
+        return destinations;
+    }
+
+    public void setDestinations(List<Destination> destinations) {
+        this.destinations = destinations;
     }
 
     public boolean isNewData() {

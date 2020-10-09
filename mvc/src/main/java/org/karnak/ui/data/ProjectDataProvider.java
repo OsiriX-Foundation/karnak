@@ -39,6 +39,13 @@ public class ProjectDataProvider extends ListDataProvider<Project> {
         }
     }
 
+    public void remove(Project project) {
+        projectPersistence.deleteById(project.getId());
+        projectPersistence.flush();
+        getItems().remove(project);
+        refreshAll();
+    }
+
     public List<Project> getAllProjects() {
         return projectPersistence.findAll();
     }

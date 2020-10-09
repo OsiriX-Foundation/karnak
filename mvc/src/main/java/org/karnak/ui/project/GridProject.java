@@ -7,11 +7,13 @@ import com.vaadin.flow.component.grid.editor.Editor;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
+import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.Project;
 import org.karnak.ui.data.ProjectDataProvider;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.WeakHashMap;
 
 public class GridProject extends Grid<Project> {
@@ -22,6 +24,7 @@ public class GridProject extends Grid<Project> {
     private Collection<Button> editButtons;
     private TextField textProjectName;
     private TextField textProjectSecret;
+    private WarningProjectUsed dialogWarning;
 
     public GridProject(ProjectDataProvider projectDataProvider) {
         this.projectDataProvider = projectDataProvider;
@@ -29,6 +32,7 @@ public class GridProject extends Grid<Project> {
         setWidthFull();
         setHeightByRows(true);
 
+        dialogWarning = new WarningProjectUsed();
         TextFieldsBindProject textFieldsBindProject = new TextFieldsBindProject();
         binder = textFieldsBindProject.getBinder();
         textProjectName = textFieldsBindProject.getTextResearchName();
@@ -58,7 +62,14 @@ public class GridProject extends Grid<Project> {
             Button remove = new Button("Remove");
             remove.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
             remove.addClickListener(e -> {
+                List<Destination> destinations = project.getDestinations();
+                if (destinations != null && destinations.size() > 0) {
+                    dialogWarning.setText(project);
+                    dialogWarning.open();
 
+                } else {
+                    projectDataProvider.remove(project);
+                }
             });
             remove.setEnabled(!editor.isOpen());
 
