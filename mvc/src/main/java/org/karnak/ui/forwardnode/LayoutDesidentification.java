@@ -15,6 +15,7 @@ public class LayoutDesidentification extends Div {
     private Checkbox checkboxDesidentification;
     private Checkbox checkboxUseAsPatientName;
     private ProfileDropDown profileDropDown;
+    private ProjectDropDown projectDropDown;
     private ExtidPresentInDicomTagView extidPresentInDicomTagView;
     private Div div;
 
@@ -25,6 +26,8 @@ public class LayoutDesidentification extends Div {
 
     public LayoutDesidentification(Binder<Destination> destinationBinder) {
         this.destinationBinder = destinationBinder;
+        profileDropDown = new ProfileDropDown();
+        projectDropDown = new ProjectDropDown();
 
         setElements();
         setBinder();
@@ -35,18 +38,20 @@ public class LayoutDesidentification extends Div {
         add(UIS.setWidthFull(new HorizontalLayout(checkboxDesidentification, div)));
 
         if (checkboxDesidentification.getValue()) {
-            div.add(extidListBox);
+            div.add(projectDropDown, extidListBox);
         }
     }
 
     private void setElements() {
         checkboxDesidentification = new Checkbox(LABEL_CHECKBOX_DESIDENTIFICATION);
-        profileDropDown = new ProfileDropDown();
         checkboxDesidentification.setValue(true);
         checkboxDesidentification.setMinWidth("25%");
 
         profileDropDown.setLabel("Choose a de-identification profile");
         profileDropDown.setWidth("100%");
+
+        projectDropDown.setLabel("Choose a project");
+        projectDropDown.setWidth("100%");
 
         extidListBox = new Select<>();
         extidListBox.setLabel("Pseudonym type");
@@ -67,8 +72,9 @@ public class LayoutDesidentification extends Div {
             if (event.getValue() != null) {
                 profileDropDown.setEnabled(event.getValue());
                 if (event.getValue()){
-                    div.add(extidListBox);
+                    div.add(projectDropDown, extidListBox);
                 } else {
+                    div.remove(projectDropDown);
                     extidListBox.setValue(extidSentence[0]);
                     checkboxUseAsPatientName.clear();
                     extidPresentInDicomTagView.clear();
@@ -111,6 +117,12 @@ public class LayoutDesidentification extends Div {
                                 (profilePipe == null && checkboxDesidentification.getValue() == false),
                         "Choose the de-identification profile\n")
                 .bind(Destination::getProfile, Destination::setProfile);
+        destinationBinder.forField(projectDropDown)
+                .withValidator(project ->
+                        project != null || (project == null && checkboxDesidentification.getValue() == false),
+                        "Choose a project")
+                .bind(Destination::getProject, Destination::setProject);
+
         destinationBinder.forField(extidListBox)
                 .withValidator(type -> type != null,"Choose pseudonym type\n")
                 .bind(destination -> {
