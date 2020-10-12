@@ -21,6 +21,7 @@ public class HMAC {
 
     private static final String HMAC_SHA256 = "HmacSHA256";
     private String hmackey;
+    private HashContext hashContext;
 
     public HMAC() {
         hmackey = DcmProfileConfig.getInstance().getHmackey();
@@ -29,6 +30,11 @@ public class HMAC {
 
     public HMAC(String hmackey) {
         initHMAC(hmackey);
+    }
+
+    public HMAC(HashContext hashContext) {
+        this.hashContext = hashContext;
+        initHMAC(hashContext.getSecret());
     }
 
     private void initHMAC(String keyValue) {
@@ -72,8 +78,12 @@ public class HMAC {
         byte[] uuid = new byte[16];
         String value = inputPseudonym+inputUID;
         System.arraycopy(byteHash(value), 0 , uuid, 0, 16);
+        // https://en.wikipedia.org/wiki/Universally_unique_identifier
+        // GUID type 4
+        // Version -> 4
         uuid[6] &= 0x0F;
         uuid[6] |= 0x40;
+        // Variant 1 -> 10b
         uuid[8] &= 0x3F;
         uuid[8] |= 0x80;
         return "2.25." + new BigInteger(1, uuid).toString();

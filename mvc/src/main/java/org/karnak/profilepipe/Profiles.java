@@ -23,6 +23,7 @@ import org.karnak.api.rqbody.Fields;
 import org.karnak.data.AppConfig;
 import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.IdTypes;
+import org.karnak.data.gateway.Project;
 import org.karnak.data.profile.Profile;
 import org.karnak.data.profile.ProfileElement;
 import org.karnak.profilepipe.action.*;
@@ -31,6 +32,7 @@ import org.karnak.profilepipe.profiles.ActionTags;
 import org.karnak.profilepipe.profiles.ProfileItem;
 import org.karnak.profilepipe.utils.ExprDCMElem;
 import org.karnak.profilepipe.utils.HMAC;
+import org.karnak.profilepipe.utils.HashContext;
 import org.karnak.util.SpecialCharacter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -146,7 +148,8 @@ public class Profiles {
         return null;
     }
 
-    public void applyAction(DicomObject dcm, DicomObject dcmCopy, String patientID, ProfileItem profilePassedInSequence, ActionItem actionPassedInSequence, AttributeEditorContext context) {
+    public void applyAction(DicomObject dcm, DicomObject dcmCopy, String patientID,
+                            ProfileItem profilePassedInSequence, ActionItem actionPassedInSequence, AttributeEditorContext context) {
         for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext(); ) {
             final DicomElement dcmEl = iterator.next();
             final ExprDCMElem exprDCMElem = new ExprDCMElem(dcmEl.tag(), dcmEl.vr(), dcm, dcmCopy);
@@ -193,6 +196,7 @@ public class Profiles {
         final String PatientID = dcm.getString(Tag.PatientID).orElse(null);
         final String stringExtIDInDicom = getExtIDInDicom(dcm, destination);
         final IdTypes idTypes = destination.getIdTypes();
+        final HMAC hmac = generateHMAC(destination, PatientID);
 
         MDC.put("SOPInstanceUID", SOPinstanceUID);
         MDC.put("issuerOfPatientID", IssuerOfPatientID);
@@ -238,6 +242,25 @@ public class Profiles {
 
         setDefaultDeidentTagValue(dcm, newPatientID, newPatientName, profilesCodeName, mainzellistePseudonym);
         MDC.clear();
+    }
+
+    private HMAC generateHMAC(Destination destination, String PatientID) {
+        Project project = destination.getProject();
+        if (project == null) {
+            throw new IllegalStateException("Cannot build the HMAC a project is not associate at the destination");
+        }
+
+        String secret = project.getSecret();
+        if (secret == null || secret.equals("")) {
+            throw new IllegalStateException("Cannot build the HMAC no secret defined in the project associate at the destination");
+        }
+
+        if (PatientID == null) {
+            throw new IllegalStateException("Cannot build the HMAC no PatientID given");
+        }
+
+        HashContext hashContext = new HashContext(secret, PatientID);
+        return new HMAC(hashContext);
     }
 
     public void setDefaultDeidentTagValue(DicomObject dcm, String patientID, String patientName, String profilePipeCodeName, String pseudonym){
