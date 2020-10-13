@@ -14,6 +14,7 @@ import org.karnak.data.profile.ProfileElement;
 import org.karnak.profilepipe.utils.DicomObjectTools;
 import org.karnak.profilepipe.utils.ExprDCMElem;
 import org.karnak.profilepipe.utils.HMAC;
+import org.karnak.profilepipe.utils.HashContext;
 import org.springframework.boot.test.context.SpringBootTest;
 
 
@@ -22,7 +23,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class ProfilesTest {
-    /*
+    private final HMAC defaultHMAC = new HMAC("hmackey");
+
     @Test
     void XactionTagsProfile(){
         final DicomObject dataset1 = DicomObject.newDicomObject();
@@ -40,7 +42,7 @@ class ProfilesTest {
         profileElement.addIncludedTag(new IncludedTag("(0010,1010)", profileElement));
         profile.addProfilePipe(profileElement);
         final Profiles profiles = new Profiles(profile);
-        profiles.applyAction(dataset1, dataset1, "pseudonym", null, null, null);
+        profiles.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
         assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
 
@@ -62,45 +64,48 @@ class ProfilesTest {
         profileElement.addIncludedTag(new IncludedTag("(0010,1010)", profileElement));
         profile.addProfilePipe(profileElement);
         final Profiles profiles = new Profiles(profile);
-        profiles.applyAction(dataset1, dataset1, "pseudonym", null, null, null);
+        profiles.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
         assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
 
+    @Test
+    void shiftDateProfileOptionShift(){
+        //SHIFT days: 365, seconds:60
+        final DicomObject dataset1 = DicomObject.newDicomObject();
+        final DicomObject dataset2 = DicomObject.newDicomObject();
 
-        @Test
-        void shiftDateProfileOptionShift(){
-            //SHIFT days: 365, seconds:60
-            final DicomObject dataset1 = DicomObject.newDicomObject();
-            final DicomObject dataset2 = DicomObject.newDicomObject();
+        dataset1.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
+        dataset1.setString(Tag.StudyInstanceUID, VR.UI, "12345");
+        dataset1.setString(Tag.PatientAge, VR.AS, "069Y");
+        dataset1.setString(Tag.PatientBirthDate, VR.DA, "20080822");
+        dataset1.setString(Tag.AcquisitionDateTime, VR.DT, "20080729131503");
+        dataset1.setString(Tag.InstanceCreationTime, VR.TM, "131735.000000");
 
-            dataset1.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
-            dataset1.setString(Tag.StudyInstanceUID, VR.UI, "12345");
-            dataset1.setString(Tag.PatientAge, VR.AS, "069Y");
-            dataset1.setString(Tag.PatientBirthDate, VR.DA, "20080822");
-            dataset1.setString(Tag.AcquisitionDateTime, VR.DT, "20080729131503");
-            dataset1.setString(Tag.InstanceCreationTime, VR.TM, "131735.000000");
+        dataset2.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
+        dataset2.setString(Tag.StudyInstanceUID, VR.UI, "12345");
+        dataset2.setString(Tag.PatientAge, VR.AS, "070Y");
+        dataset2.setString(Tag.PatientBirthDate, VR.DA, "20070823");
+        dataset2.setString(Tag.AcquisitionDateTime, VR.DT, "20070730131403.000000");
+        dataset2.setString(Tag.InstanceCreationTime, VR.TM, "131635.000000");
 
-            dataset2.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
-            dataset2.setString(Tag.StudyInstanceUID, VR.UI, "12345");
-            dataset2.setString(Tag.PatientAge, VR.AS, "070Y");
-            dataset2.setString(Tag.PatientBirthDate, VR.DA, "20070823");
-            dataset2.setString(Tag.AcquisitionDateTime, VR.DT, "20070730131403.000000");
-            dataset2.setString(Tag.InstanceCreationTime, VR.TM, "131635.000000");
-
-            Profile profile = new Profile("TEST", "0.9.1", "0.9.1", "DPA");
-            ProfileElement profileElement = new ProfileElement("Shift Date with arguments", "action.on.dates", null, null, "shift", 0, profile);
-            profileElement.addIncludedTag(new IncludedTag("(xxxx,xxxx)", profileElement));
-            profileElement.addArgument(new Argument("seconds", "60", profileElement));
-            profileElement.addArgument(new Argument("days", "365", profileElement));
-            profile.addProfilePipe(profileElement);
-            final Profiles profiles = new Profiles(profile);
-            profiles.applyAction(dataset1, dataset1, "pseudonym", null, null, null);
-            assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
-        }
+        Profile profile = new Profile("TEST", "0.9.1", "0.9.1", "DPA");
+        ProfileElement profileElement = new ProfileElement("Shift Date with arguments", "action.on.dates", null, null, "shift", 0, profile);
+        profileElement.addIncludedTag(new IncludedTag("(xxxx,xxxx)", profileElement));
+        profileElement.addArgument(new Argument("seconds", "60", profileElement));
+        profileElement.addArgument(new Argument("days", "365", profileElement));
+        profile.addProfilePipe(profileElement);
+        final Profiles profiles = new Profiles(profile);
+        profiles.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
+        assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
+    }
 
     @Test
     void shiftDateProfileOptionShiftRange(){
-        //SHIFT range with hmackey: HmacKeyToTEST -> days: 80, seconds:36
+        //SHIFT range with hmackey: HmacKeyToTEST -> days: 96, seconds: 56
+        final String projectSecret = "xN[LtKL!H5RUuQ}6";
+        final String PatientID = "TEST-SHIFT-RANGE";
+        final HashContext hashContext = new HashContext(projectSecret, PatientID);
+        final HMAC hmac = new HMAC(hashContext);
         final DicomObject dataset1 = DicomObject.newDicomObject();
         final DicomObject dataset2 = DicomObject.newDicomObject();
 
@@ -114,9 +119,9 @@ class ProfilesTest {
         dataset2.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
         dataset2.setString(Tag.StudyInstanceUID, VR.UI, "12345");
         dataset2.setString(Tag.PatientAge, VR.AS, "069Y");
-        dataset2.setString(Tag.PatientBirthDate, VR.DA, "20080703");
-        dataset2.setString(Tag.AcquisitionDateTime, VR.DT, "20080609131503.000000");
-        dataset2.setString(Tag.InstanceCreationTime, VR.TM, "131735.000000");
+        dataset2.setString(Tag.PatientBirthDate, VR.DA, "20080518");
+        dataset2.setString(Tag.AcquisitionDateTime, VR.DT, "20080424131407.000000");
+        dataset2.setString(Tag.InstanceCreationTime, VR.TM, "131639.000000");
 
         Profile profile = new Profile("TEST", "0.9.1", "0.9.1", "DPA");
         ProfileElement profileElement = new ProfileElement("Shift Date with arguments", "action.on.dates", null, null, "shift_range", 0, profile);
@@ -127,33 +132,33 @@ class ProfilesTest {
 
         profile.addProfilePipe(profileElement);
         final Profiles profiles = new Profiles(profile);
-        profiles.applyAction(dataset1, dataset1, "pseudonym", null, null, null);
+        profiles.applyAction(dataset1, dataset1, hmac, null, null, null);
         assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
 
-@Test
-void XZactionTagsProfile(){
-    final DicomObject dataset1 = DicomObject.newDicomObject();
-    final DicomObject dataset2 = DicomObject.newDicomObject();
+    @Test
+    void XZactionTagsProfile(){
+        final DicomObject dataset1 = DicomObject.newDicomObject();
+        final DicomObject dataset2 = DicomObject.newDicomObject();
 
-    dataset1.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
-    dataset1.setString(Tag.StudyInstanceUID, VR.UI, "12345");
-    dataset1.setString(Tag.PatientAge, VR.AS, "075Y");
+        dataset1.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
+        dataset1.setString(Tag.StudyInstanceUID, VR.UI, "12345");
+        dataset1.setString(Tag.PatientAge, VR.AS, "075Y");
 
-    dataset2.setNull(Tag.PatientName, VR.PN);
-    dataset2.setNull(Tag.StudyInstanceUID, VR.UI);
+        dataset2.setNull(Tag.PatientName, VR.PN);
+        dataset2.setNull(Tag.StudyInstanceUID, VR.UI);
 
-    final Profile profile = new Profile("TEST", "0.9.1", "0.9.1", "DPA");
-    final ProfileElement profileElement = new ProfileElement("Remove tag", "action.on.specific.tags", null, "X", null, 0, profile);
-    profileElement.addIncludedTag(new IncludedTag("(0010,1010)", profileElement));
-    profile.addProfilePipe(profileElement);
-    final ProfileElement profileElement2 = new ProfileElement("Replace by null", "action.on.specific.tags", null, "Z", null, 0, profile);
-    profileElement2.addIncludedTag(new IncludedTag("(xxxx,xxxx)", profileElement));
-    profile.addProfilePipe(profileElement2);
-    final Profiles profiles = new Profiles(profile);
-    profiles.applyAction(dataset1, dataset1, "pseudonym", null, null, null);
-    assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
-}
+        final Profile profile = new Profile("TEST", "0.9.1", "0.9.1", "DPA");
+        final ProfileElement profileElement = new ProfileElement("Remove tag", "action.on.specific.tags", null, "X", null, 0, profile);
+        profileElement.addIncludedTag(new IncludedTag("(0010,1010)", profileElement));
+        profile.addProfilePipe(profileElement);
+        final ProfileElement profileElement2 = new ProfileElement("Replace by null", "action.on.specific.tags", null, "Z", null, 0, profile);
+        profileElement2.addIncludedTag(new IncludedTag("(xxxx,xxxx)", profileElement));
+        profile.addProfilePipe(profileElement2);
+        final Profiles profiles = new Profiles(profile);
+        profiles.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
+        assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
+    }
 
     @Test
     void KprivateTagsAndXRestProfile(){
@@ -186,7 +191,7 @@ void XZactionTagsProfile(){
         profileElement2.addIncludedTag(new IncludedTag("(xxxx,xxxx)", profileElement));
         profile.addProfilePipe(profileElement2);
         final Profiles profiles = new Profiles(profile);
-        profiles.applyAction(dataset1, dataset1, "pseudonym", null, null, null);
+        profiles.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
         assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
 
@@ -211,10 +216,9 @@ void XZactionTagsProfile(){
 
         profile.addProfilePipe(profileElement);
         final Profiles profiles = new Profiles(profile);
-        profiles.applyAction(dataset1, dataset1, "pseudonym", null, null, null);
+        profiles.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
         assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
-    */
 
     //#######################   TEST getResultCondition ############################################
     @ParameterizedTest
