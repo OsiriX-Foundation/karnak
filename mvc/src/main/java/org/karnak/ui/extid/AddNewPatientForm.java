@@ -1,10 +1,6 @@
 package org.karnak.ui.extid;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 import com.vaadin.flow.component.button.Button;
-
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.icon.IronIcon;
@@ -15,24 +11,20 @@ import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.validator.StringLengthValidator;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.api.PseudonymApi;
 import org.karnak.api.rqbody.Fields;
+import org.karnak.data.AppConfig;
 import org.karnak.data.gateway.IdTypes;
 import org.karnak.ui.component.ConfirmDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.cache.Cache;
-import javax.cache.CacheManager;
-import javax.cache.Caching;
-import javax.cache.configuration.MutableConfiguration;
-import javax.cache.spi.CachingProvider;
 import java.time.format.DateTimeFormatter;
-import java.util.Collection;
+import java.util.Iterator;
 
 
 public class AddNewPatientForm extends VerticalLayout {
@@ -56,33 +48,24 @@ public class AddNewPatientForm extends VerticalLayout {
     private HorizontalLayout horizontalLayout2;
     private HorizontalLayout horizontalLayout3;
 
-    private Cache<String, Collection<Patient>> cache;
+    private Cache<String, Patient> cache;
 
     public AddNewPatientForm(ListDataProvider<Patient> dataProvider){
         setSizeFull();
         getElement().addEventListener("keydown", event -> {
             addPatientFieldsInGrid();
         }).setFilter("event.key == 'Enter'");
+        this.cache = AppConfig.getInstance().getCache();
         this.dataProvider = dataProvider;
         binder = new BeanValidationBinder<>(Patient.class);
 
         setElements();
         setBinder();
 
-        //CachingProvider cachingProvider = Caching.getCachingProvider();
-        //CacheManager cacheManager = cachingProvider.getCacheManager();
-        //MutableConfiguration<String, Collection<Patient>> config = new MutableConfiguration<>();
-        //cache = cacheManager.createCache("simpleCache", config);
-
-        /*Collection<Patient> patientList = cache.get("patientList");
-        if(patientList != null) {
-            patientList.forEach(patient -> {
-                dataProvider.getItems().add(patient);
-            });
-        }*/
+        readAllCacheValue();
 
         saveInMainzellisteButton.addClickListener(click -> {
-            ConfirmDialog dialog = new ConfirmDialog("Are you sure to send in database all patients in grid?");
+            ConfirmDialog dialog = new ConfirmDialog("Are you sure to send a patient in Mainzelliste database ?");
             dialog.open();
             dialog.addConfirmationListener(componentEvent -> {
                 saveInMainzelliste();
@@ -106,11 +89,22 @@ public class AddNewPatientForm extends VerticalLayout {
             saveInMainzellisteButton.setEnabled(hasChanges && isValid);
         });
 
-        horizontalLayoutAddClear.add(clearFieldsButton, addNewPatientButton);
+        horizontalLayoutAddClear.add(clearFieldsButton, saveInMainzellisteButton, addNewPatientButton);
         horizontalLayout1.add(externalIdField, patientIdField, patientNameField);
         horizontalLayout2.add(issuerOfPatientIdField, patientBirthDateField, patientSexField);
-        horizontalLayout3.add(saveInMainzellisteButton, horizontalLayoutAddClear);
+        horizontalLayout3.add(horizontalLayoutAddClear);
         add(horizontalLayout1, horizontalLayout2, horizontalLayout3);
+    }
+
+    private void readAllCacheValue(){
+        if (cache != null){
+            for(Iterator<Cache.Entry<String, Patient>> cacheElem = cache.iterator(); cacheElem.hasNext();){
+                final Cache.Entry<String, Patient> cacheEntry = cacheElem.next();
+                final Patient patient= cacheEntry.getValue();
+                final String key = cacheEntry.getKey();
+                dataProvider.getItems().add(patient);
+            }
+        }
     }
 
     private void setElements() {
@@ -129,7 +123,7 @@ public class AddNewPatientForm extends VerticalLayout {
         patientSexField.setItems("M", "F", "O");
         patientSexField.setWidth("33%");
 
-        saveInMainzellisteButton = new Button("Save patient in database");
+        saveInMainzellisteButton = new Button("Save patient in Mainzelliste");
         saveInMainzellisteButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         saveInMainzellisteButton.setIcon(new IronIcon("icons", "icons:send"));
 
@@ -138,7 +132,7 @@ public class AddNewPatientForm extends VerticalLayout {
 
         clearFieldsButton = new Button("Clear");
 
-        addNewPatientButton = new Button("Save patient in cach");
+        addNewPatientButton = new Button("Save patient temporary");
         addNewPatientButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         addNewPatientButton.setIcon(VaadinIcon.PLUS_CIRCLE.create());
 
@@ -191,7 +185,7 @@ public class AddNewPatientForm extends VerticalLayout {
         if(binder.isValid()){
             dataProvider.getItems().add(newPatient);
             dataProvider.refreshAll();
-            cache.put("patientList", dataProvider.getItems());
+            cache.put(newPatient.getExtid(), newPatient);
             binder.readBean(null);
         }
     }

@@ -1,9 +1,9 @@
 package org.karnak.ui.extid;
 
+import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.LocalTime;
 
-public class Patient {
+public class Patient implements Serializable {
 
     private String extid;
     private String patientId;

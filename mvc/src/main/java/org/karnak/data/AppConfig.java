@@ -5,6 +5,7 @@ import org.karnak.profilepipe.Profiles;
 import org.karnak.profilepipe.profilebody.ProfilePipeBody;
 import org.karnak.standard.ConfidentialityProfiles;
 import org.karnak.profilepipe.utils.HMAC;
+import org.karnak.ui.extid.Patient;
 import org.karnak.ui.profile.ProfilePipeService;
 import org.karnak.ui.profile.ProfilePipeServiceImpl;
 import org.slf4j.Logger;
@@ -19,6 +20,11 @@ import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
 import javax.annotation.PostConstruct;
+import javax.cache.Cache;
+import javax.cache.CacheManager;
+import javax.cache.Caching;
+import javax.cache.configuration.MutableConfiguration;
+import javax.cache.spi.CachingProvider;
 import java.io.InputStream;
 import java.net.URL;
 
@@ -89,6 +95,14 @@ public class AppConfig {
     @Bean("HMAC")
     public HMAC getHmac(){
         return new HMAC();
+    }
+
+    @Bean("CachePatient")
+    public Cache<String, Patient> getCache(){
+        final CachingProvider cachingProvider = Caching.getCachingProvider();
+        final CacheManager cacheManager = cachingProvider.getCacheManager();
+        final MutableConfiguration<String, Patient> config = new MutableConfiguration<>();
+        return cacheManager.createCache("simpleCache", config);
     }
 
     // https://stackoverflow.com/questions/27405713/running-code-after-spring-boot-starts
