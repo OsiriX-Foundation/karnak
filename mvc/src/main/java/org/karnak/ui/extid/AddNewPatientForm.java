@@ -55,8 +55,8 @@ public class AddNewPatientForm extends VerticalLayout {
         getElement().addEventListener("keydown", event -> {
             addPatientFieldsInGrid();
         }).setFilter("event.key == 'Enter'");
-        this.cache = AppConfig.getInstance().getCache();
         this.dataProvider = dataProvider;
+        cache = AppConfig.getInstance().getCache();
         binder = new BeanValidationBinder<>(Patient.class);
 
         setElements();
@@ -174,6 +174,17 @@ public class AddNewPatientForm extends VerticalLayout {
                 .bind("patientSex");
     }
 
+    public boolean patientExist(Patient patient, ListDataProvider<Patient> dataProvider) {
+        for (Patient patientElem : dataProvider.getItems()) {
+            if (patientElem.getExtid().equals(patient.getExtid()) ||
+                    (patientElem.getPatientId().equals(patient.getPatientId()) &&
+                            patientElem.getIssuerOfPatientId().equals(patient.getIssuerOfPatientId()))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void addPatientFieldsInGrid(){
         final Patient newPatient = new Patient(externalIdField.getValue(),
                 patientIdField.getValue(),
@@ -182,11 +193,16 @@ public class AddNewPatientForm extends VerticalLayout {
                 patientSexField.getValue(),
                 issuerOfPatientIdField.getValue());
         binder.validate();
-        if(binder.isValid()){
-            dataProvider.getItems().add(newPatient);
-            dataProvider.refreshAll();
-            cache.put(newPatient.getExtid(), newPatient);
-            binder.readBean(null);
+        if (binder.isValid()){
+            if (patientExist(newPatient, dataProvider)){
+                WarningDialog warningDialog = new WarningDialog("Duplicate data", "You are trying to insert two equivalent pseudonyms or two potentially identical patients.", "ok");
+                warningDialog.open();
+            } else {
+                dataProvider.getItems().add(newPatient);
+                dataProvider.refreshAll();
+                cache.put(newPatient.getExtid(), newPatient);
+                binder.readBean(null);
+            }
         }
     }
 

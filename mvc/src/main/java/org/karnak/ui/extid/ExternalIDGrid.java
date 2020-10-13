@@ -12,7 +12,9 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.validator.StringLengthValidator;
 import org.apache.commons.lang3.StringUtils;
+import org.karnak.data.AppConfig;
 
+import javax.cache.Cache;
 import java.util.*;
 
 public class ExternalIDGrid extends Grid<Patient> {
@@ -47,11 +49,13 @@ public class ExternalIDGrid extends Grid<Patient> {
     private String LABEL_SAVE = "Save";
     private String LABEL_CANCEL = "Cancel";
     private String LABEL_DELETE = "Delete";
+    private Cache<String, Patient> cache;
 
     public ExternalIDGrid(){
         binder = new Binder<>(Patient.class);
         patientList = new ArrayList<>();
         dataProvider = (ListDataProvider<Patient>) getDataProvider();
+        cache = AppConfig.getInstance().getCache();
 
         setSizeFull();
         getElement().addEventListener("keyup", event -> editor.cancel())
@@ -129,6 +133,7 @@ public class ExternalIDGrid extends Grid<Patient> {
             deletePatientButton.addClickListener( e -> {
                 patientList.remove(patient);
                 getDataProvider().refreshAll();
+                cache.remove(patient.getExtid());
             });
             return deletePatientButton;
         });
