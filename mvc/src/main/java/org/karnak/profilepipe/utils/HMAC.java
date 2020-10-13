@@ -28,6 +28,10 @@ public class HMAC {
         initHMAC(hmackey);
     }
 
+    public HMAC(String hmackey) {
+        initHMAC(hmackey);
+    }
+
     public HMAC(HashContext hashContext) {
         this.hashContext = hashContext;
         initHMAC(hashContext.getSecret());
