@@ -1,5 +1,8 @@
 package org.karnak.ui.extid;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.vaadin.flow.component.button.Button;
 
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -12,6 +15,7 @@ import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.validator.StringLengthValidator;
 import org.apache.commons.lang3.StringUtils;
@@ -21,7 +25,14 @@ import org.karnak.data.gateway.IdTypes;
 import org.karnak.ui.component.ConfirmDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.cache.Cache;
+import javax.cache.CacheManager;
+import javax.cache.Caching;
+import javax.cache.configuration.MutableConfiguration;
+import javax.cache.spi.CachingProvider;
 import java.time.format.DateTimeFormatter;
+import java.util.Collection;
 
 
 public class AddNewPatientForm extends VerticalLayout {
@@ -37,13 +48,15 @@ public class AddNewPatientForm extends VerticalLayout {
     private DatePicker patientBirthDateField;
     private Select<String> patientSexField;
     private Button addNewPatientButton;
-    private Button sendInMainzellisteButton;
+    private Button saveInMainzellisteButton;
     private Button clearFieldsButton;
 
     private HorizontalLayout horizontalLayoutAddClear;
     private HorizontalLayout horizontalLayout1;
     private HorizontalLayout horizontalLayout2;
     private HorizontalLayout horizontalLayout3;
+
+    private Cache<String, Collection<Patient>> cache;
 
     public AddNewPatientForm(ListDataProvider<Patient> dataProvider){
         setSizeFull();
@@ -56,15 +69,24 @@ public class AddNewPatientForm extends VerticalLayout {
         setElements();
         setBinder();
 
-        sendInMainzellisteButton.addClickListener( click -> {
-            ConfirmDialog dialog = new ConfirmDialog("Are you sure to send in database all patients in grid?");
-            dialog.addConfirmationListener(componentEvent -> {
-                sendInMainzellisteButton.setEnabled(false);
-                sendInMainzelliste();
-                dataProvider.getItems().clear();
-                dataProvider.refreshAll();
+        //CachingProvider cachingProvider = Caching.getCachingProvider();
+        //CacheManager cacheManager = cachingProvider.getCacheManager();
+        //MutableConfiguration<String, Collection<Patient>> config = new MutableConfiguration<>();
+        //cache = cacheManager.createCache("simpleCache", config);
+
+        /*Collection<Patient> patientList = cache.get("patientList");
+        if(patientList != null) {
+            patientList.forEach(patient -> {
+                dataProvider.getItems().add(patient);
             });
+        }*/
+
+        saveInMainzellisteButton.addClickListener(click -> {
+            ConfirmDialog dialog = new ConfirmDialog("Are you sure to send in database all patients in grid?");
             dialog.open();
+            dialog.addConfirmationListener(componentEvent -> {
+                saveInMainzelliste();
+            });
         });
 
         clearFieldsButton.addClickListener( click -> {
@@ -73,6 +95,7 @@ public class AddNewPatientForm extends VerticalLayout {
 
         addNewPatientButton.addClickListener(click -> {
             addPatientFieldsInGrid();
+
         });
 
         // enable/disable update button while editing
@@ -80,20 +103,13 @@ public class AddNewPatientForm extends VerticalLayout {
             boolean isValid = !event.hasValidationErrors();
             boolean hasChanges = binder.hasChanges();
             addNewPatientButton.setEnabled(hasChanges && isValid);
-        });
-
-        dataProvider.addDataProviderListener( dataChangeEvent -> {
-            if(dataProvider.getItems().isEmpty()){
-                sendInMainzellisteButton.setEnabled(false);
-            }else{
-                sendInMainzellisteButton.setEnabled(true);
-            }
+            saveInMainzellisteButton.setEnabled(hasChanges && isValid);
         });
 
         horizontalLayoutAddClear.add(clearFieldsButton, addNewPatientButton);
         horizontalLayout1.add(externalIdField, patientIdField, patientNameField);
         horizontalLayout2.add(issuerOfPatientIdField, patientBirthDateField, patientSexField);
-        horizontalLayout3.add(sendInMainzellisteButton, horizontalLayoutAddClear);
+        horizontalLayout3.add(saveInMainzellisteButton, horizontalLayoutAddClear);
         add(horizontalLayout1, horizontalLayout2, horizontalLayout3);
     }
 
@@ -113,17 +129,16 @@ public class AddNewPatientForm extends VerticalLayout {
         patientSexField.setItems("M", "F", "O");
         patientSexField.setWidth("33%");
 
-        sendInMainzellisteButton = new Button("Send patients in database");
-        sendInMainzellisteButton.setEnabled(false);
-        sendInMainzellisteButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        sendInMainzellisteButton.setIcon(new IronIcon("icons", "icons:send"));
+        saveInMainzellisteButton = new Button("Save patient in database");
+        saveInMainzellisteButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        saveInMainzellisteButton.setIcon(new IronIcon("icons", "icons:send"));
 
         horizontalLayoutAddClear = new HorizontalLayout();
         horizontalLayoutAddClear.getStyle().set("margin-left", "auto");
 
         clearFieldsButton = new Button("Clear");
 
-        addNewPatientButton = new Button("Add");
+        addNewPatientButton = new Button("Save patient in cach");
         addNewPatientButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         addNewPatientButton.setIcon(VaadinIcon.PLUS_CIRCLE.create());
 
@@ -176,6 +191,7 @@ public class AddNewPatientForm extends VerticalLayout {
         if(binder.isValid()){
             dataProvider.getItems().add(newPatient);
             dataProvider.refreshAll();
+            cache.put("patientList", dataProvider.getItems());
             binder.readBean(null);
         }
     }
@@ -190,31 +206,34 @@ public class AddNewPatientForm extends VerticalLayout {
         binder.readBean(null);
     }
 
-    public void sendInMainzelliste(){
-
-        dataProvider.getItems().forEach( patient -> {
-            final PseudonymApi pseudonymApi = new PseudonymApi(patient.getExtid());
+    public void saveInMainzelliste(){
+        binder.validate();
+        if(binder.isValid()){
             final Fields newPatientFields = new Fields(
-                    patient.getPatientId(),
-                    patient.getPatientName(),
-                    patient.getPatientBirthDate().format(DateTimeFormatter.ofPattern("YYYYMMdd")),
-                    patient.getPatientSex(),
-                    patient.getIssuerOfPatientId());
+                    patientIdField.getValue(),
+                    patientNameField.getValue(),
+                    patientBirthDateField.getValue().format(DateTimeFormatter.ofPattern("YYYYMMdd")),
+                    patientSexField.getValue(),
+                    issuerOfPatientIdField.getValue());
+
+
             try {
+                final PseudonymApi pseudonymApi = new PseudonymApi(externalIdField.getValue());
                 final String pseudonym = pseudonymApi.createPatient(newPatientFields, IdTypes.ADD_EXTID);
                 if (pseudonym != null) {
-                    final String strPatient = "ExternalID: " + patient.getExtid() + " "
-                            + "PatientID:" + patient.getPatientId() + " "
-                            + "PatientName:" + patient.getPatientName() + " "
-                            + "IssuerOfPatientID:" + patient.getIssuerOfPatientId() + " "
-                            + "PatientSex:" + patient.getPatientSex() + " "
-                            + "PatientBirthDate:" + patient.getPatientBirthDate().format(DateTimeFormatter.ofPattern("YYYYMMdd"));
+                    final String strPatient = "ExternalID: " + externalIdField.getValue() + " "
+                            + "PatientID:" + newPatientFields.get_patientID() + " "
+                            + "PatientName:" + newPatientFields.get_patientName() + " "
+                            + "IssuerOfPatientID:" + newPatientFields.get_issuerOfPatientID() + " "
+                            + "PatientSex:" + newPatientFields.get_patientSex() + " "
+                            + "PatientBirthDate:" + newPatientFields.get_patientBirthDate().format(DateTimeFormatter.ofPattern("YYYYMMdd").toString());
                     LOGGER.info("Added a new patient in Mainzelliste: " + strPatient);
                 }
             } catch (Exception e) {
                 LOGGER.error("Cannot create a new patient with Mainzelliste API {}", e);
             }
-        });
+            binder.readBean(null);
+        }
     }
 
     public Button getAddNewPatientButton() {
