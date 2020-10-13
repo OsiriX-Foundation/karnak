@@ -8,6 +8,7 @@ import org.karnak.data.profile.IncludedTag;
 import org.karnak.data.profile.ProfileElement;
 import org.karnak.profilepipe.action.AbstractAction;
 import org.karnak.profilepipe.action.ActionItem;
+import org.karnak.profilepipe.utils.HMAC;
 import org.karnak.profilepipe.utils.TagActionMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +41,7 @@ public class ActionTags extends AbstractProfileItem {
     }
 
     @Override
-    public ActionItem getAction(DicomObject dcm, DicomObject dcmCopy, DicomElement dcmElem, String PatientID) {
+    public ActionItem getAction(DicomObject dcm, DicomObject dcmCopy, DicomElement dcmElem, HMAC hmac) {
         if (exceptedTagsAction.get(dcmElem.tag()) == null) {
             return tagsAction.get(dcmElem.tag());
         }

@@ -20,7 +20,6 @@ import org.dcm4che6.img.util.DicomObjectUtil;
 import org.dcm4che6.util.TagUtils;
 import org.karnak.api.PseudonymApi;
 import org.karnak.api.rqbody.Fields;
-import org.karnak.data.AppConfig;
 import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.IdTypes;
 import org.karnak.data.gateway.Project;
@@ -146,7 +145,7 @@ public class Profiles {
         return null;
     }
 
-    public void applyAction(DicomObject dcm, DicomObject dcmCopy, String patientID, HMAC hmac,
+    public void applyAction(DicomObject dcm, DicomObject dcmCopy, HMAC hmac,
                             ProfileItem profilePassedInSequence, ActionItem actionPassedInSequence, AttributeEditorContext context) {
         for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext(); ) {
             final DicomElement dcmEl = iterator.next();
@@ -159,7 +158,7 @@ public class Profiles {
 
                 boolean conditionIsOk = getResultCondition(profile.getCondition(), exprDCMElem);
                 if (conditionIsOk) {
-                    currentAction = profile.getAction(dcm, dcmCopy, dcmEl, patientID);
+                    currentAction = profile.getAction(dcm, dcmCopy, dcmEl, hmac);
                 }
 
                 if (currentAction != null) {
@@ -175,7 +174,7 @@ public class Profiles {
             if ( (!(Remove.class.isInstance(currentAction)) || !(ReplaceNull.class.isInstance(currentAction))) && dcmEl.vr() == VR.SQ) {
                 final ProfileItem finalCurrentProfile = currentProfile;
                 final ActionItem finalCurrentAction = currentAction;
-                dcmEl.itemStream().forEach(d -> applyAction(d, dcmCopy, patientID, hmac, finalCurrentProfile, finalCurrentAction, context));
+                dcmEl.itemStream().forEach(d -> applyAction(d, dcmCopy, hmac, finalCurrentProfile, finalCurrentAction, context));
             } else {
                 if (currentAction != null) {
                     try {
@@ -215,12 +214,11 @@ public class Profiles {
 
         DicomObject dcmCopy = DicomObject.newDicomObject();
         DicomObjectUtil.copyDataset(dcm, dcmCopy);
-        final String PatientIDProfile = HMAC.generatePatientIDProfile(PatientID, destination);
 
         // Apply clean pixel data
         Optional<DicomElement> pix = dcm.get(Tag.PixelData);
         if (pix.isPresent() && !profile.getMasks().isEmpty() && profiles.stream()
-            .anyMatch(p -> CleanPixelData.class.isInstance(p.getAction(dcm, dcmCopy, pix.get(), PatientIDProfile)))) {
+            .anyMatch(p -> CleanPixelData.class.isInstance(p.getAction(dcm, dcmCopy, pix.get(), hmac)))) {
             String sopClassUID = dcm.getString(Tag.SOPClassUID)
                 .orElseThrow(() -> new IllegalStateException("DICOM Object does not contain sopClassUID"));
             MaskArea mask = getMask(dcm.getString(Tag.StationName).orElse(null));
@@ -236,7 +234,7 @@ public class Profiles {
             }
         }
 
-        applyAction(dcm, dcmCopy, PatientIDProfile, hmac, null, null, context);
+        applyAction(dcm, dcmCopy, hmac, null, null, context);
 
         setDefaultDeidentTagValue(dcm, newPatientID, newPatientName, profilesCodeName, mainzellistePseudonym, hmac);
         MDC.clear();

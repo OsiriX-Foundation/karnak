@@ -5,6 +5,7 @@ import org.dcm4che6.data.DicomObject;
 import org.karnak.data.AppConfig;
 import org.karnak.data.profile.ProfileElement;
 import org.karnak.profilepipe.action.ActionItem;
+import org.karnak.profilepipe.utils.HMAC;
 import org.karnak.profilepipe.utils.TagActionMap;
 import org.karnak.standard.ConfidentialityProfiles;
 
@@ -22,12 +23,12 @@ public class BasicProfile extends AbstractProfileItem {
     }
 
     @Override
-    public ActionItem getAction(DicomObject dcm, DicomObject dcmCopy, DicomElement dcmElem, String PatientID) {
+    public ActionItem getAction(DicomObject dcm, DicomObject dcmCopy, DicomElement dcmElem, HMAC hmac) {
         int tag = dcmElem.tag();
         ActionItem action = actionMap.get(tag);
         if (action == null) {
             for (ProfileItem p : listProfiles) {
-                ActionItem val = p.getAction(dcm, dcmCopy, dcmElem, PatientID);
+                ActionItem val = p.getAction(dcm, dcmCopy, dcmElem, hmac);
                 if(val != null){
                     return val;
                 }

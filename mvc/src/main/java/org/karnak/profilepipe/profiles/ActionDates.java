@@ -62,7 +62,7 @@ public class ActionDates extends AbstractProfileItem {
     }
 
     @Override
-    public ActionItem getAction(DicomObject dcm, DicomObject dcmCopy, DicomElement dcmElem, String PatientID) {
+    public ActionItem getAction(DicomObject dcm, DicomObject dcmCopy, DicomElement dcmElem, HMAC hmac) {
         final int tag = dcmElem.tag();
         final VR vr = dcmElem.vr();
 
@@ -74,7 +74,7 @@ public class ActionDates extends AbstractProfileItem {
             if (tagsAction.isEmpty() == false && tagsAction.get(tag) == null) {
                 return null;
             }
-            String dummyValue = applyOption(dcmCopy, dcmElem, PatientID);
+            String dummyValue = applyOption(dcmCopy, dcmElem, hmac);
             if (dummyValue != null) {
                 actionByDefault.setDummyValue(dummyValue);
                 return actionByDefault;
@@ -83,10 +83,10 @@ public class ActionDates extends AbstractProfileItem {
         return null;
     }
 
-    private String applyOption(DicomObject dcmCopy, DicomElement dcmElem, String PatientID) {
+    private String applyOption(DicomObject dcmCopy, DicomElement dcmElem, HMAC hmac) {
         return switch (option) {
             case "shift" -> ShiftDate.shift(dcmCopy, dcmElem, arguments);
-            case "shift_range" -> shiftRangeDate.shift(dcmCopy, dcmElem, arguments, PatientID);
+            case "shift_range" -> shiftRangeDate.shift(dcmCopy, dcmElem, arguments, hmac);
             default -> null;
         };
     }

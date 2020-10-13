@@ -86,11 +86,6 @@ public class AppConfig {
         return new ConfidentialityProfiles();
     }
 
-    @Bean("HMAC")
-    public HMAC getHmac(){
-        return new HMAC();
-    }
-
     // https://stackoverflow.com/questions/27405713/running-code-after-spring-boot-starts
     @EventListener(ApplicationReadyEvent.class)
     public void setProfilesByDefault() {

@@ -20,13 +20,7 @@ public class HMAC {
     private Mac mac;
 
     private static final String HMAC_SHA256 = "HmacSHA256";
-    private String hmackey;
     private HashContext hashContext;
-
-    public HMAC() {
-        hmackey = DcmProfileConfig.getInstance().getHmackey();
-        initHMAC(hmackey);
-    }
 
     public HMAC(String hmackey) {
         initHMAC(hmackey);
@@ -97,5 +91,9 @@ public class HMAC {
             return PatientID.concat(profilesCodeName);
         }
         return PatientID;
+    }
+
+    public HashContext getHashContext() {
+        return hashContext;
     }
 }

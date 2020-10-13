@@ -11,6 +11,7 @@ import org.karnak.profilepipe.Profiles;
 import org.karnak.profilepipe.action.AbstractAction;
 import org.karnak.profilepipe.action.ActionItem;
 import org.karnak.profilepipe.utils.ExprDCMElem;
+import org.karnak.profilepipe.utils.HMAC;
 import org.karnak.profilepipe.utils.TagActionMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +51,7 @@ public class Expression extends AbstractProfileItem {
     }
 
     @Override
-    public ActionItem getAction(DicomObject dcm, DicomObject dcmCopy, DicomElement dcmElem, String PatientID) {
+    public ActionItem getAction(DicomObject dcm, DicomObject dcmCopy, DicomElement dcmElem, HMAC hmac) {
         if (exceptedTagsAction.get(dcmElem.tag()) == null && tagsAction.get(dcmElem.tag()) != null) {
             final String expr = arguments.get(0).getValue();
             final ExprDCMElem exprDCMElem = new ExprDCMElem(dcmElem.tag(), dcmElem.vr(), dcm, dcmCopy);
