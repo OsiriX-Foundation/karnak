@@ -80,6 +80,14 @@ public class ExternalIDGrid extends Grid<Patient> {
         });
 
         saveEditPatientButton.addClickListener(e -> {
+            final Patient patientEdit = new Patient(externalIdField.getValue(),
+                    patientIdField.getValue(),
+                    patientNameField.getValue(),
+                    patientBirthDateField.getValue(),
+                    patientSexField.getValue(),
+                    issuerOfPatientIdField.getValue());
+            cache.remove(editor.getItem().getExtid()); //old extid
+            cache.put(patientEdit.getExtid(), patientEdit); //new extid
             editor.save();
         });
         saveEditPatientButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
