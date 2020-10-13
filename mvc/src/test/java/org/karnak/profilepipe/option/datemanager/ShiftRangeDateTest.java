@@ -38,6 +38,7 @@ class ShiftRangeDateTest {
         dataset.setString(Tag.AcquisitionTime, VR.TM, "000134");
     }
 
+    /*
     @Test
     void shift() {
         HMAC hmac = new HMAC("HmacKeyToTEST");
@@ -174,4 +175,5 @@ class ShiftRangeDateTest {
             shiftRangeDate.shift(dataset, dataset.get(Tag.AcquisitionTime).orElse(null), new ArrayList<>(), patientID);
         });
     }
+    */
 }

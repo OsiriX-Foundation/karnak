@@ -3,7 +3,7 @@ package org.karnak.profilepipe.action;
 import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.VR;
-import org.karnak.data.AppConfig;
+import org.karnak.profilepipe.utils.HMAC;
 
 import java.util.Iterator;
 import java.util.Optional;
@@ -19,7 +19,7 @@ public class DefaultDummy extends AbstractAction {
     }
 
     @Override
-    public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, String patientID) {
+    public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, HMAC hmac) {
         final String tagValueIn = dcm.getString(tag).orElse(null);
 
         final Optional<DicomElement> dcmItem = dcm.get(tag);
@@ -32,10 +32,10 @@ public class DefaultDummy extends AbstractAction {
             case DA -> "19991111";
             case DT -> "19991111111111";
             case TM -> "111111";
-            case UI -> AppConfig.getInstance().getHmac().uidHash(patientID, tagValueIn);
+            case UI -> hmac.uidHash(tagValueIn);
             default -> null;
         };
         final ActionItem replace = new Replace(symbol, defaultDummyValue);
-        replace.execute(dcm, tag, iterator, patientID);
+        replace.execute(dcm, tag, iterator, hmac);
     }
 }

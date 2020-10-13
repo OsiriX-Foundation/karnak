@@ -51,11 +51,9 @@ public class Profiles {
     private Profile profile;
     private final ArrayList<ProfileItem> profiles;
     private final Map<String, MaskArea> maskMap;
-    private final HMAC hmac;
 
     public Profiles(Profile profile) {
         this.maskMap = new HashMap<>();
-        this.hmac = AppConfig.getInstance().getHmac();
         this.profile = profile;
         this.profiles = createProfilesList();
     }
@@ -148,7 +146,7 @@ public class Profiles {
         return null;
     }
 
-    public void applyAction(DicomObject dcm, DicomObject dcmCopy, String patientID,
+    public void applyAction(DicomObject dcm, DicomObject dcmCopy, String patientID, HMAC hmac,
                             ProfileItem profilePassedInSequence, ActionItem actionPassedInSequence, AttributeEditorContext context) {
         for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext(); ) {
             final DicomElement dcmEl = iterator.next();
@@ -177,11 +175,11 @@ public class Profiles {
             if ( (!(Remove.class.isInstance(currentAction)) || !(ReplaceNull.class.isInstance(currentAction))) && dcmEl.vr() == VR.SQ) {
                 final ProfileItem finalCurrentProfile = currentProfile;
                 final ActionItem finalCurrentAction = currentAction;
-                dcmEl.itemStream().forEach(d -> applyAction(d, dcmCopy, patientID, finalCurrentProfile, finalCurrentAction, context));
+                dcmEl.itemStream().forEach(d -> applyAction(d, dcmCopy, patientID, hmac, finalCurrentProfile, finalCurrentAction, context));
             } else {
                 if (currentAction != null) {
                     try {
-                        currentAction.execute(dcm, dcmEl.tag(), iterator, patientID);
+                        currentAction.execute(dcm, dcmEl.tag(), iterator, hmac);
                     } catch (final Exception e) {
                         LOGGER.error("Cannot execute the currentAction {} for tag: {}", currentAction,  TagUtils.toString(dcmEl.tag()), e);
                     }
@@ -206,7 +204,7 @@ public class Profiles {
         String profilesCodeName = String.join(
                 "-" , profiles.stream().map(profile -> profile.getCodeName()).collect(Collectors.toList())
         );
-        BigInteger patientValue = generatePatientID(mainzellistePseudonym, profilesCodeName);
+        BigInteger patientValue = generatePatientID(mainzellistePseudonym, profilesCodeName, hmac);
         String newPatientName = !idTypes.equals(IdTypes.PID) && destination.getPseudonymAsPatientName() == true ?
                 mainzellistePseudonym : patientValue.toString(16).toUpperCase();
         String newPatientID = patientValue.toString();
@@ -238,9 +236,9 @@ public class Profiles {
             }
         }
 
-        applyAction(dcm, dcmCopy, PatientIDProfile, null, null, context);
+        applyAction(dcm, dcmCopy, PatientIDProfile, hmac, null, null, context);
 
-        setDefaultDeidentTagValue(dcm, newPatientID, newPatientName, profilesCodeName, mainzellistePseudonym);
+        setDefaultDeidentTagValue(dcm, newPatientID, newPatientName, profilesCodeName, mainzellistePseudonym, hmac);
         MDC.clear();
     }
 
@@ -263,7 +261,8 @@ public class Profiles {
         return new HMAC(hashContext);
     }
 
-    public void setDefaultDeidentTagValue(DicomObject dcm, String patientID, String patientName, String profilePipeCodeName, String pseudonym){
+    public void setDefaultDeidentTagValue(DicomObject dcm, String patientID, String patientName, String profilePipeCodeName,
+                                          String pseudonym, HMAC hmac){
         final String profileFilename = profile.getName();
         final ArrayList<ExprDCMElem> defaultDeidentTagValue = new ArrayList<>();
         defaultDeidentTagValue.add(new ExprDCMElem(Tag.PatientID, VR.LO, patientID));
@@ -281,7 +280,7 @@ public class Profiles {
 
         defaultDeidentTagValue.forEach(newElem -> {
             final ActionItem add = new Add("A", newElem.getTag(), newElem.getVr(), newElem.getStringValue());
-            add.execute(dcm, newElem.getTag(), null, patientID);
+            add.execute(dcm, newElem.getTag(), null, hmac);
         });
     }
 
@@ -304,7 +303,7 @@ public class Profiles {
         return true; // if there is no condition we return true by default
     }
 
-    public BigInteger generatePatientID(String pseudonym, String profiles) {
+    public BigInteger generatePatientID(String pseudonym, String profiles, HMAC hmac) {
         byte[] bytes = new byte[16];
         System.arraycopy(hmac.byteHash(pseudonym + profiles), 0, bytes, 0, 16);
         return new BigInteger(1, bytes);

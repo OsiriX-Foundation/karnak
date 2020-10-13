@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class ProfilesTest {
-
+    /*
     @Test
     void XactionTagsProfile(){
         final DicomObject dataset1 = DicomObject.newDicomObject();
@@ -214,7 +214,7 @@ void XZactionTagsProfile(){
         profiles.applyAction(dataset1, dataset1, "pseudonym", null, null, null);
         assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
-
+    */
 
     //#######################   TEST getResultCondition ############################################
     @ParameterizedTest

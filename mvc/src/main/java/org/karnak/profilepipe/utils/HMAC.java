@@ -28,10 +28,6 @@ public class HMAC {
         initHMAC(hmackey);
     }
 
-    public HMAC(String hmackey) {
-        initHMAC(hmackey);
-    }
-
     public HMAC(HashContext hashContext) {
         this.hashContext = hashContext;
         initHMAC(hashContext.getSecret());
@@ -74,10 +70,9 @@ public class HMAC {
         return (int)(fraction * scale) + scaledMin;
     }
 
-    public String uidHash(String inputPseudonym, String inputUID) {
+    public String uidHash(String inputUID) {
         byte[] uuid = new byte[16];
-        String value = inputPseudonym+inputUID;
-        System.arraycopy(byteHash(value), 0 , uuid, 0, 16);
+        System.arraycopy(byteHash(inputUID), 0 , uuid, 0, 16);
         // https://en.wikipedia.org/wiki/Universally_unique_identifier
         // GUID type 4
         // Version -> 4
