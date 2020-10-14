@@ -52,9 +52,6 @@ public class AddNewPatientForm extends VerticalLayout {
 
     public AddNewPatientForm(ListDataProvider<Patient> dataProvider){
         setSizeFull();
-        getElement().addEventListener("keydown", event -> {
-            addPatientFieldsInGrid();
-        }).setFilter("event.key == 'Enter'");
         this.dataProvider = dataProvider;
         cache = AppConfig.getInstance().getCache();
         binder = new BeanValidationBinder<>(Patient.class);
