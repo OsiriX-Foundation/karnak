@@ -5,6 +5,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import org.karnak.data.gateway.Project;
+import org.karnak.ui.forwardnode.ProfileDropDown;
 
 public class NewProjectForm extends HorizontalLayout {
     private Binder<Project> binder;
@@ -12,6 +13,7 @@ public class NewProjectForm extends HorizontalLayout {
     private Button buttonAdd;
     private TextField textResearchName;
     private TextField textSecret;
+    private ProfileDropDown profileDropDown;
 
     public NewProjectForm() {
         setWidthFull();
@@ -20,9 +22,10 @@ public class NewProjectForm extends HorizontalLayout {
         buttonAdd = new Button("Add");
         textResearchName = textFieldsBindProject.getTextResearchName();
         textSecret = textFieldsBindProject.getTextSecret();
+        profileDropDown = textFieldsBindProject.getProfileDropDown();
         setElements();
 
-        add(textResearchName, textSecret, buttonAdd);
+        add(textResearchName, textSecret, profileDropDown, buttonAdd);
         binder.bindInstanceFields(this);
     }
 

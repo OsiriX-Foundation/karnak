@@ -5,16 +5,19 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.data.gateway.Project;
+import org.karnak.ui.forwardnode.ProfileDropDown;
 
 public class TextFieldsBindProject {
     private Binder<Project> binder;
 
     private TextField textResearchName;
     private TextField textSecret;
+    private ProfileDropDown profileDropDown;
 
     public TextFieldsBindProject() {
         textResearchName = new TextField();
         textSecret = new TextField();
+        profileDropDown = new ProfileDropDown();
 
         binder = setBinder();
     }
@@ -27,6 +30,10 @@ public class TextFieldsBindProject {
         binder.forField(textSecret)
                 .withValidator(StringUtils::isNotBlank,"Secret is mandatory")
                 .bind(Project::getSecret, Project::setSecret);
+        binder.forField(profileDropDown)
+                .withValidator(profilePipe -> profilePipe != null,
+                        "Choose the de-identification profile\n")
+                .bind(Project::getProfile, Project::setProfile);
         return binder;
     }
 
@@ -40,5 +47,9 @@ public class TextFieldsBindProject {
 
     public TextField getTextSecret() {
         return textSecret;
+    }
+
+    public ProfileDropDown getProfileDropDown() {
+        return profileDropDown;
     }
 }

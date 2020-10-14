@@ -11,6 +11,7 @@ import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.Project;
 import org.karnak.ui.component.ConfirmDialog;
 import org.karnak.ui.data.ProjectDataProvider;
+import org.karnak.ui.forwardnode.ProfileDropDown;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -25,6 +26,7 @@ public class GridProject extends Grid<Project> {
     private Collection<Button> editButtons;
     private TextField textProjectName;
     private TextField textProjectSecret;
+    private ProfileDropDown profileDropDown;
     private WarningRemoveProjectUsed dialogWarning;
 
     public GridProject(ProjectDataProvider projectDataProvider) {
@@ -38,12 +40,15 @@ public class GridProject extends Grid<Project> {
         binder = textFieldsBindProject.getBinder();
         textProjectName = textFieldsBindProject.getTextResearchName();
         textProjectSecret = textFieldsBindProject.getTextSecret();
+        profileDropDown = textFieldsBindProject.getProfileDropDown();
         editButtons = Collections.newSetFromMap(new WeakHashMap<>());
 
         addColumn(Project::getName).setHeader("Project Name").setFlexGrow(15)
                 .setSortable(true).setEditorComponent(textProjectName);
         addColumn(Project::getSecret).setHeader("Project Secret").setFlexGrow(15)
                 .setSortable(true).setEditorComponent(textProjectSecret);
+        addColumn(project -> project.getProfile().getName()).setHeader("Desidenfication profile").setFlexGrow(15)
+                .setSortable(true).setEditorComponent(profileDropDown);
 
         setEditorColumn();
     }

@@ -2,6 +2,7 @@ package org.karnak.data.gateway;
 
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.karnak.data.profile.Profile;
 
 import javax.persistence.*;
 import java.util.List;
@@ -19,6 +20,10 @@ public class Project {
     @OneToMany(mappedBy="project")
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Destination> destinations;
+
+    @ManyToOne
+    @JoinColumn(name="profile_pipe_id")
+    private Profile profile;
 
     public Project() {}
 
@@ -52,6 +57,14 @@ public class Project {
 
     public void setDestinations(List<Destination> destinations) {
         this.destinations = destinations;
+    }
+
+    public Profile getProfile() {
+        return profile;
+    }
+
+    public void setProfile(Profile profile) {
+        this.profile = profile;
     }
 
     public boolean isNewData() {
