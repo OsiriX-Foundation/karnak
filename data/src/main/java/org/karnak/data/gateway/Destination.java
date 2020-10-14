@@ -60,10 +60,6 @@ public class Destination {
     @JoinColumn(name="project_id")
     private Project project;
 
-    @ManyToOne
-    @JoinColumn(name="profile_pipe_id")
-    private Profile profile;
-
     // list of emails (comma separated) used when the images have been sent (or
     // partially sent) to the final destination. Note: if an issue appears before
     // sending to the final destination then no email is delivered.
@@ -408,19 +404,6 @@ public class Destination {
             + ", notifyObjectErrorPrefix=" + notifyObjectErrorPrefix + ", notifyObjectPattern=" + notifyObjectPattern
             + ", notifyObjectValues=" + notifyObjectValues + ", notifyInterval=" + notifyInterval + "]";
     }
-
-    public Profile getProfile() {
-        return profile;
-    }
-
-    public String getProfilePipeName() {
-        return profile.getName();
-    }
-
-    public void setProfile(Profile profile) {
-        this.profile = profile;
-    }
-
 
     public IdTypes getIdTypes() {
         return idTypes;

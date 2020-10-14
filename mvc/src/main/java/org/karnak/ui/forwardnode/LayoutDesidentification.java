@@ -14,7 +14,6 @@ public class LayoutDesidentification extends Div {
 
     private Checkbox checkboxDesidentification;
     private Checkbox checkboxUseAsPatientName;
-    private ProfileDropDown profileDropDown;
     private ProjectDropDown projectDropDown;
     private ExtidPresentInDicomTagView extidPresentInDicomTagView;
     private Div div;
@@ -26,7 +25,6 @@ public class LayoutDesidentification extends Div {
 
     public LayoutDesidentification(Binder<Destination> destinationBinder) {
         this.destinationBinder = destinationBinder;
-        profileDropDown = new ProfileDropDown();
         projectDropDown = new ProjectDropDown();
 
         setElements();
@@ -34,7 +32,6 @@ public class LayoutDesidentification extends Div {
         setEventCheckboxDesidentification();
         setEventExtidListBox();
 
-        div.add(profileDropDown);
         add(UIS.setWidthFull(new HorizontalLayout(checkboxDesidentification, div)));
 
         if (checkboxDesidentification.getValue()) {
@@ -46,9 +43,6 @@ public class LayoutDesidentification extends Div {
         checkboxDesidentification = new Checkbox(LABEL_CHECKBOX_DESIDENTIFICATION);
         checkboxDesidentification.setValue(true);
         checkboxDesidentification.setMinWidth("25%");
-
-        profileDropDown.setLabel("Choose a de-identification profile");
-        profileDropDown.setWidth("100%");
 
         projectDropDown.setLabel("Choose a project");
         projectDropDown.setWidth("100%");
@@ -70,7 +64,6 @@ public class LayoutDesidentification extends Div {
     private void setEventCheckboxDesidentification(){
         checkboxDesidentification.addValueChangeListener(event -> {
             if (event.getValue() != null) {
-                profileDropDown.setEnabled(event.getValue());
                 if (event.getValue()){
                     div.add(projectDropDown, extidListBox);
                 } else {
@@ -112,11 +105,6 @@ public class LayoutDesidentification extends Div {
     private void setBinder() {
         destinationBinder.forField(checkboxDesidentification)
                 .bind(Destination::getDesidentification, Destination::setDesidentification);
-        destinationBinder.forField(profileDropDown)
-                .withValidator(profilePipe -> profilePipe != null ||
-                                (profilePipe == null && checkboxDesidentification.getValue() == false),
-                        "Choose the de-identification profile\n")
-                .bind(Destination::getProfile, Destination::setProfile);
         destinationBinder.forField(projectDropDown)
                 .withValidator(project ->
                         project != null || (project == null && checkboxDesidentification.getValue() == false),
