@@ -7,6 +7,7 @@ import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.data.binder.Binder;
 import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.IdTypes;
+import org.karnak.data.gateway.Project;
 import org.karnak.ui.util.UIS;
 
 public class LayoutDesidentification extends Div {
@@ -16,6 +17,7 @@ public class LayoutDesidentification extends Div {
     private Checkbox checkboxUseAsPatientName;
     private ProjectDropDown projectDropDown;
     private ExtidPresentInDicomTagView extidPresentInDicomTagView;
+    private DesidentificationName desidentificationName;
     private Div div;
 
     private final String LABEL_CHECKBOX_DESIDENTIFICATION = "Activate de-identification";
@@ -26,6 +28,7 @@ public class LayoutDesidentification extends Div {
     public LayoutDesidentification(Binder<Destination> destinationBinder) {
         this.destinationBinder = destinationBinder;
         projectDropDown = new ProjectDropDown();
+        desidentificationName = new DesidentificationName();
 
         setElements();
         setBinder();
@@ -35,8 +38,12 @@ public class LayoutDesidentification extends Div {
         add(UIS.setWidthFull(new HorizontalLayout(checkboxDesidentification, div)));
 
         if (checkboxDesidentification.getValue()) {
-            div.add(projectDropDown, extidListBox);
+            div.add(projectDropDown, desidentificationName, extidListBox);
         }
+
+        projectDropDown.addValueChangeListener(event -> {
+            setTextOnSelectionProject(event.getValue());
+        });
     }
 
     private void setElements() {
@@ -65,9 +72,10 @@ public class LayoutDesidentification extends Div {
         checkboxDesidentification.addValueChangeListener(event -> {
             if (event.getValue() != null) {
                 if (event.getValue()){
-                    div.add(projectDropDown, extidListBox);
+                    div.add(projectDropDown, desidentificationName, extidListBox);
+                    setTextOnSelectionProject(projectDropDown.getValue());
                 } else {
-                    div.remove(projectDropDown);
+                    div.remove(projectDropDown, desidentificationName);
                     extidListBox.setValue(extidSentence[0]);
                     checkboxUseAsPatientName.clear();
                     extidPresentInDicomTagView.clear();
@@ -77,6 +85,16 @@ public class LayoutDesidentification extends Div {
                 }
             }
         });
+    }
+
+    private void setTextOnSelectionProject(Project project) {
+        if (project != null && project.getProfile() != null) {
+            desidentificationName.setShowValue(String.format("The profile %s will be used", project.getProfile().getName()));
+        } else if (project != null && project.getProfile() == null) {
+            desidentificationName.setShowValue("No profiles defined in the project");
+        } else {
+            desidentificationName.removeAll();
+        }
     }
 
     private void setEventExtidListBox() {
