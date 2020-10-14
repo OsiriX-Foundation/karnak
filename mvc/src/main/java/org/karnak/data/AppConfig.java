@@ -30,6 +30,7 @@ import javax.cache.expiry.Duration;
 import javax.cache.spi.CachingProvider;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.concurrent.TimeUnit;
 
 @Configuration
 @EnableConfigurationProperties
@@ -104,7 +105,8 @@ public class AppConfig {
     public Cache<String, Patient> getCache(){
         final CachingProvider cachingProvider = Caching.getCachingProvider();
         final CacheManager cacheManager = cachingProvider.getCacheManager();
-        final Factory expiryPolicyFactory = CreatedExpiryPolicy.factoryOf(Duration.ONE_MINUTE);
+        final Duration duration = new Duration(TimeUnit.DAYS, 7L);
+        final Factory expiryPolicyFactory = CreatedExpiryPolicy.factoryOf(duration);
         final MutableConfiguration<String, Patient> config = new MutableConfiguration<>();
         config.setExpiryPolicyFactory(expiryPolicyFactory);
         return cacheManager.createCache("simpleCache", config);
