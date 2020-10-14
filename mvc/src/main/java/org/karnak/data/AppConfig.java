@@ -23,7 +23,10 @@ import javax.annotation.PostConstruct;
 import javax.cache.Cache;
 import javax.cache.CacheManager;
 import javax.cache.Caching;
+import javax.cache.configuration.Factory;
 import javax.cache.configuration.MutableConfiguration;
+import javax.cache.expiry.CreatedExpiryPolicy;
+import javax.cache.expiry.Duration;
 import javax.cache.spi.CachingProvider;
 import java.io.InputStream;
 import java.net.URL;
@@ -101,7 +104,9 @@ public class AppConfig {
     public Cache<String, Patient> getCache(){
         final CachingProvider cachingProvider = Caching.getCachingProvider();
         final CacheManager cacheManager = cachingProvider.getCacheManager();
+        final Factory expiryPolicyFactory = CreatedExpiryPolicy.factoryOf(Duration.ONE_MINUTE);
         final MutableConfiguration<String, Patient> config = new MutableConfiguration<>();
+        config.setExpiryPolicyFactory(expiryPolicyFactory);
         return cacheManager.createCache("simpleCache", config);
     }
 
