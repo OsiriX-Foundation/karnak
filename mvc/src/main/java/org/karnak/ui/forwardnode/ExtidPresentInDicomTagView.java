@@ -1,5 +1,6 @@
 package org.karnak.ui.forwardnode;
 
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
@@ -16,13 +17,14 @@ public class ExtidPresentInDicomTagView extends Div {
     private TextField delimiter;
     private TextField tag;
     private NumberField position;
+    private Checkbox savePseudonym;
 
     public ExtidPresentInDicomTagView(Binder<Destination> destinationBinder) {
         this.destinationBinder = destinationBinder;
         setWidthFull();
         setElements();
         setBinderWithValidator();
-        add(UIS.setWidthFull(new HorizontalLayout(tag, delimiter, position)));
+        add(UIS.setWidthFull(new HorizontalLayout(tag, delimiter, position, savePseudonym)));
     }
 
     public void setElements() {
@@ -32,6 +34,9 @@ public class ExtidPresentInDicomTagView extends Div {
         position.setHasControls(true);
         position.setMin(0);
         position.setStep(1);
+        savePseudonym = new Checkbox("Save pseudonym");
+        savePseudonym.getStyle().set("margin-top", "30px");
+        savePseudonym.setValue(true);
     }
 
     public void clear() {
@@ -40,6 +45,7 @@ public class ExtidPresentInDicomTagView extends Div {
         tag.clear();
         delimiter.clear();
         position.clear();
+        savePseudonym.clear();
     }
 
     public void enableComponent(){
@@ -52,11 +58,13 @@ public class ExtidPresentInDicomTagView extends Div {
         final boolean tagExist = destinationBinder.getFields().anyMatch(field -> field.equals(tag));
         final boolean positionExist = destinationBinder.getFields().anyMatch(field -> field.equals(position));
         final boolean delimiterExist = destinationBinder.getFields().anyMatch(field -> field.equals(delimiter));
+        final boolean savePseudonymExist = destinationBinder.getFields().anyMatch(field -> field.equals(savePseudonym));
 
-        if(tagExist && positionExist && delimiterExist){
+        if(tagExist && positionExist && delimiterExist && savePseudonymExist){
             destinationBinder.removeBinding(tag);
             destinationBinder.removeBinding(delimiter);
             destinationBinder.removeBinding(position);
+            destinationBinder.removeBinding(savePseudonym);
         }
     }
 
@@ -95,6 +103,7 @@ public class ExtidPresentInDicomTagView extends Div {
                 },"A position must be defined, when a delimiter is present")
                 .bind(Destination::getPosition, Destination::setPosition);
 
+        destinationBinder.forField(savePseudonym).bind(Destination::getSavePseudonym, Destination::setSavePseudonym);
     }
 
 
@@ -105,5 +114,7 @@ public class ExtidPresentInDicomTagView extends Div {
 
         destinationBinder.forField(position).withConverter(new DoubleToIntegerConverter())
                 .bind(Destination::getPosition, (destination, s) -> destination.setPosition(null));
+
+        destinationBinder.forField(savePseudonym).bind(Destination::getSavePseudonym, (destination, s) -> destination.setSavePseudonym(null));
     }
 }
