@@ -2,8 +2,8 @@ package org.karnak.expression;
 
 import org.dcm4che6.data.Tag;
 import org.dcm4che6.data.VR;
-import org.karnak.expression.ExprConditionKheops;
 import org.karnak.profilepipe.Profiles;
+import org.karnak.profilepipe.action.ActionItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.expression.EvaluationContext;
@@ -29,7 +29,7 @@ public class ExpressionResult {
         }
     }
 
-    public static boolean getResultCondition(String condition, ExprDCMElem exprDCMElem){
+    public static boolean getCondition(String condition, ExprDCMElem exprDCMElem){
         final Logger LOGGER = LoggerFactory.getLogger(Profiles.class);
         if (condition!=null) {
             try {
@@ -46,5 +46,23 @@ public class ExpressionResult {
             }
         }
         return true; // if there is no condition we return true by default
+    }
+
+    public static ActionItem getAction(String expr, ExprDCMElem exprDCMElem){
+        final Logger LOGGER = LoggerFactory.getLogger(Profiles.class);
+        if (expr!=null) {
+            try {
+                final ExpressionParser parser = new SpelExpressionParser();
+                final EvaluationContext context = new StandardEvaluationContext(exprDCMElem);
+                final String cleanCondition = exprDCMElem.conditionInterpreter(expr);
+                context.setVariable("VR", VR.class);
+                context.setVariable("Tag", Tag.class);
+                final org.springframework.expression.Expression exp = parser.parseExpression(cleanCondition);
+                return exp.getValue(context, ActionItem.class);
+            } catch (final Exception e) {
+                LOGGER.error("Cannot execute the parser expression for this expression: {}", expr, e);
+            }
+        }
+        return null; // if there is no action we return null by default
     }
 }

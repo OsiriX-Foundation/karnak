@@ -37,11 +37,6 @@ import org.karnak.util.SpecialCharacter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
-import org.springframework.expression.EvaluationContext;
-import org.springframework.expression.Expression;
-import org.springframework.expression.ExpressionParser;
-import org.springframework.expression.spel.standard.SpelExpressionParser;
-import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.weasis.core.util.StringUtil;
 import org.weasis.dicom.param.AttributeEditorContext;
 
@@ -158,7 +153,7 @@ public class Profiles {
             for (ProfileItem profile : profiles) {
                 currentProfile = profile;
 
-                boolean conditionIsOk = ExpressionResult.getResultCondition(profile.getCondition(), exprDCMElem);
+                boolean conditionIsOk = ExpressionResult.getCondition(profile.getCondition(), exprDCMElem);
                 if (conditionIsOk) {
                     currentAction = profile.getAction(dcm, dcmCopy, dcmEl, patientID);
                 }

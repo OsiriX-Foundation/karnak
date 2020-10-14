@@ -222,7 +222,7 @@ void XZactionTagsProfile(){
             "tag == 0010,00x0) and stringValue == 'CARDIX'", "tag == (00x0,0010", "tag == 001x00x0", "tag == (00x0,0010 and vr == #VR.PN"})
     void getResultConditionTrue1(String input){
         final ExprDCMElem exprDCMElem1 = new ExprDCMElem(TagUtils.intFromHexString("00100010"), VR.PN, "CARDIX");
-        assertTrue(ExpressionResult.getResultCondition(input, exprDCMElem1)); // generate an exception
+        assertTrue(ExpressionResult.getCondition(input, exprDCMElem1)); // generate an exception
     }
 
     @ParameterizedTest
@@ -231,7 +231,7 @@ void XZactionTagsProfile(){
             "tag == (00x0,0020) and tag == #Tag.PatientID and vr == #VR.AE"})
     void getResultConditionTrue2(String input){
         final ExprDCMElem exprDCMElem2 = new ExprDCMElem(TagUtils.intFromHexString("00100020"), VR.AE, "AE_TITLE"); //tag decimal = 1048608
-        assertTrue(ExpressionResult.getResultCondition(input, exprDCMElem2)); // generate an exception
+        assertTrue(ExpressionResult.getCondition(input, exprDCMElem2)); // generate an exception
     }
 
     @ParameterizedTest
@@ -239,7 +239,7 @@ void XZactionTagsProfile(){
             "tag == 0210,0220 and stringValue == '1M' and vr == #VR.DA", "tag == 0210,0220)"})
     void getResultConditionTrue3(String input){
         final ExprDCMElem exprDCMElem3 = new ExprDCMElem(TagUtils.intFromHexString("02100220"), VR.DA, "1M");
-        assertTrue(ExpressionResult.getResultCondition(input, exprDCMElem3)); // generate an exception
+        assertTrue(ExpressionResult.getCondition(input, exprDCMElem3)); // generate an exception
     }
 
     @ParameterizedTest
@@ -247,20 +247,20 @@ void XZactionTagsProfile(){
             "tag == (00x0,0010 and vr == #VR.AE", "tag == 1" })
     void getResultConditionFalse1(String input){
         final ExprDCMElem exprDCMElem1 = new ExprDCMElem(TagUtils.intFromHexString("00100010"), VR.PN, "CARDIX");
-        assertFalse(ExpressionResult.getResultCondition(input, exprDCMElem1)); // generate an exception
+        assertFalse(ExpressionResult.getCondition(input, exprDCMElem1)); // generate an exception
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"tag == (00x0,0020) and tag == #Tag.PatientName", "tag == (0010,0010) or tag == #Tag.PatientName", "tag < 1048608" })
     void getResultConditionFalse2(String input){
         final ExprDCMElem exprDCMElem2 = new ExprDCMElem(TagUtils.intFromHexString("00100020"), VR.AE, "AE_TITLE"); //tag decimal = 1048608
-        assertFalse(ExpressionResult.getResultCondition(input, exprDCMElem2)); // generate an exception
+        assertFalse(ExpressionResult.getCondition(input, exprDCMElem2)); // generate an exception
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"tag == 12100220)", "tag == 12100220)", "tag == 0210,0220 and stringValue == '1'", "tag == 2210,0220 and stringValue == '1' and vr == #VR.PN"})
     void getResultConditionFalse3(String input){
         final ExprDCMElem exprDCMElem3 = new ExprDCMElem(TagUtils.intFromHexString("02100220"), VR.DA, "1M");
-        assertFalse(ExpressionResult.getResultCondition(input, exprDCMElem3)); // generate an exception
+        assertFalse(ExpressionResult.getCondition(input, exprDCMElem3)); // generate an exception
     }
 }
