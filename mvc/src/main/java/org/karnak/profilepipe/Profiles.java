@@ -26,11 +26,12 @@ import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.IdTypes;
 import org.karnak.data.profile.Profile;
 import org.karnak.data.profile.ProfileElement;
+import org.karnak.expression.ExpressionResult;
 import org.karnak.profilepipe.action.*;
 import org.karnak.profilepipe.profiles.AbstractProfileItem;
 import org.karnak.profilepipe.profiles.ActionTags;
 import org.karnak.profilepipe.profiles.ProfileItem;
-import org.karnak.profilepipe.utils.ExprDCMElem;
+import org.karnak.expression.ExprDCMElem;
 import org.karnak.profilepipe.utils.HMAC;
 import org.karnak.util.SpecialCharacter;
 import org.slf4j.Logger;
@@ -157,7 +158,7 @@ public class Profiles {
             for (ProfileItem profile : profiles) {
                 currentProfile = profile;
 
-                boolean conditionIsOk = getResultCondition(profile.getCondition(), exprDCMElem);
+                boolean conditionIsOk = ExpressionResult.getResultCondition(profile.getCondition(), exprDCMElem);
                 if (conditionIsOk) {
                     currentAction = profile.getAction(dcm, dcmCopy, dcmEl, patientID);
                 }
@@ -273,24 +274,6 @@ public class Profiles {
         });
     }
 
-    public static boolean getResultCondition(String condition, ExprDCMElem exprDCMElem){
-        final Logger LOGGER = LoggerFactory.getLogger(Profiles.class);
-        if (condition!=null) {
-            try {
-                //https://docs.spring.io/spring/docs/3.0.x/reference/expressions.html
-                final ExpressionParser parser = new SpelExpressionParser();
-                final EvaluationContext context = new StandardEvaluationContext(exprDCMElem);
-                final String cleanCondition = exprDCMElem.conditionInterpreter(condition);
-                context.setVariable("VR", VR.class);
-                context.setVariable("Tag", Tag.class);
-                final Expression exp = parser.parseExpression(cleanCondition);
-                return exp.getValue(context, Boolean.class);
-            } catch (final Exception e) {
-                LOGGER.error("Cannot execute the parser expression for this expression: {}", condition, e);
-            }
-        }
-        return true; // if there is no condition we return true by default
-    }
 
     public BigInteger generatePatientID(String pseudonym, String profiles) {
         byte[] bytes = new byte[16];

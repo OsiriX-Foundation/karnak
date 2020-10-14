@@ -3,6 +3,7 @@ package org.karnak.profilepipe.utils;
 import org.dcm4che6.data.VR;
 import org.dcm4che6.util.TagUtils;
 import org.junit.jupiter.api.Test;
+import org.karnak.expression.ExprDCMElem;
 
 import static org.junit.jupiter.api.Assertions.*;
 

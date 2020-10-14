@@ -1,4 +1,4 @@
-package org.karnak.kheops;
+package org.karnak.expression;
 
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.Tag;

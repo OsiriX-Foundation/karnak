@@ -10,7 +10,7 @@ import org.karnak.data.profile.ProfileElement;
 import org.karnak.profilepipe.Profiles;
 import org.karnak.profilepipe.action.AbstractAction;
 import org.karnak.profilepipe.action.ActionItem;
-import org.karnak.profilepipe.utils.ExprDCMElem;
+import org.karnak.expression.ExprDCMElem;
 import org.karnak.profilepipe.utils.TagActionMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

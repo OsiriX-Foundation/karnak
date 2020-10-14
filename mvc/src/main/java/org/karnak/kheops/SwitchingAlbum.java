@@ -8,8 +8,9 @@ import org.karnak.api.KheopsApi;
 import org.karnak.data.AppConfig;
 import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.KheopsAlbums;
+import org.karnak.expression.ExprConditionKheops;
 import org.karnak.profilepipe.utils.HMAC;
-import org.karnak.util.ExpressionResult;
+import org.karnak.expression.ExpressionResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
