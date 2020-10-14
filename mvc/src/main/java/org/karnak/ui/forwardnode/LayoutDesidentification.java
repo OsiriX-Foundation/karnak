@@ -8,10 +8,11 @@ import com.vaadin.flow.data.binder.Binder;
 import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.IdTypes;
 import org.karnak.data.gateway.Project;
+import org.karnak.ui.data.ProjectDataProvider;
 import org.karnak.ui.util.UIS;
 
 public class LayoutDesidentification extends Div {
-    private final Binder<Destination> destinationBinder;
+    private Binder<Destination> destinationBinder;
 
     private Checkbox checkboxDesidentification;
     private Checkbox checkboxUseAsPatientName;
@@ -19,6 +20,7 @@ public class LayoutDesidentification extends Div {
     private ExtidPresentInDicomTagView extidPresentInDicomTagView;
     private DesidentificationName desidentificationName;
     private Div div;
+    private ProjectDataProvider projectDataProvider;
 
     private final String LABEL_CHECKBOX_DESIDENTIFICATION = "Activate de-identification";
 
@@ -26,24 +28,27 @@ public class LayoutDesidentification extends Div {
     final String [] extidSentence = {"Pseudonym are generate automatically","Pseudonym is already store in KARNAK", "Pseudonym is in a DICOM tag"};
 
     public LayoutDesidentification(Binder<Destination> destinationBinder) {
-        this.destinationBinder = destinationBinder;
-        projectDropDown = new ProjectDropDown();
-        desidentificationName = new DesidentificationName();
+        projectDataProvider = new ProjectDataProvider();
+        if (projectDataProvider.getAllProjects().size() > 0) {
+            this.destinationBinder = destinationBinder;
+            projectDropDown = new ProjectDropDown();
+            desidentificationName = new DesidentificationName();
 
-        setElements();
-        setBinder();
-        setEventCheckboxDesidentification();
-        setEventExtidListBox();
+            setElements();
+            setBinder();
+            setEventCheckboxDesidentification();
+            setEventExtidListBox();
 
-        add(UIS.setWidthFull(new HorizontalLayout(checkboxDesidentification, div)));
+            add(UIS.setWidthFull(new HorizontalLayout(checkboxDesidentification, div)));
 
-        if (checkboxDesidentification.getValue()) {
-            div.add(projectDropDown, desidentificationName, extidListBox);
+            if (checkboxDesidentification.getValue()) {
+                div.add(projectDropDown, desidentificationName, extidListBox);
+            }
+
+            projectDropDown.addValueChangeListener(event -> {
+                setTextOnSelectionProject(event.getValue());
+            });
         }
-
-        projectDropDown.addValueChangeListener(event -> {
-            setTextOnSelectionProject(event.getValue());
-        });
     }
 
     private void setElements() {
@@ -122,7 +127,12 @@ public class LayoutDesidentification extends Div {
 
     private void setBinder() {
         destinationBinder.forField(checkboxDesidentification)
-                .bind(Destination::getDesidentification, Destination::setDesidentification);
+                .bind(destination -> {
+                    if (destination.isNewData()) {
+                        return true;
+                    }
+                    return destination.getDesidentification();
+                }, Destination::setDesidentification);
         destinationBinder.forField(projectDropDown)
                 .withValidator(project ->
                         project != null || (project == null && checkboxDesidentification.getValue() == false),

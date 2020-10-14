@@ -157,7 +157,7 @@ public class Destination {
     protected Destination() {
         this.type = null;
         this.description = "";
-        this.desidentification = true;
+        this.desidentification = false;
         this.idTypes = IdTypes.PID;
         this.pseudonymAsPatientName = null;
         this.tag = null;
