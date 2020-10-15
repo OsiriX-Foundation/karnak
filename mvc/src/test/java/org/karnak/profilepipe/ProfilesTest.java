@@ -215,7 +215,7 @@ void XZactionTagsProfile(){
         assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
 
-
+    /*
     //#######################   TEST getResultCondition ############################################
     @ParameterizedTest
     @ValueSource(strings = {"tag == (0010,0010) and stringValue == 'CARDIX'", "tag == (0010,00xx)",
@@ -263,4 +263,5 @@ void XZactionTagsProfile(){
         final ExprDCMElem exprDCMElem3 = new ExprDCMElem(TagUtils.intFromHexString("02100220"), VR.DA, "1M");
         assertFalse((Boolean) ExpressionResult.get(input, exprDCMElem3, Boolean.class)); // generate an exception
     }
+    */
 }

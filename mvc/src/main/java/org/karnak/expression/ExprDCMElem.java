@@ -58,38 +58,6 @@ public class ExprDCMElem implements ExpressionItem{
         this.stringValue = stringValue;
     }
 
-    public String conditionInterpreter(String condition){
-        String[] conditionArray;
-
-        conditionArray = condition.split(" ");
-
-        List<String> newConditionList = Arrays.stream(conditionArray).map( elem -> {
-
-            if (isHexTag(elem)) {
-                String cleanTag = elem.replaceAll("[(),]", "").toUpperCase();
-                if ( (TagActionMap.isValidPattern(cleanTag))) {
-                    String currentTagPattern = cleanTag;
-                    int patternTag = TagUtils.intFromHexString(currentTagPattern.replace("X", "0"));
-                    int patternMask = TagUtils.intFromHexString(TagActionMap.getMask(currentTagPattern));
-
-                    if ((tag & patternMask) == patternTag) {
-                        return String.valueOf(tag);
-                    } else {
-                        return "null";
-                    }
-                }else{
-                    return String.valueOf(TagUtils.intFromHexString(cleanTag));
-                }
-
-            } else {
-                return elem;
-            }
-
-        }).collect(Collectors.toList());
-        final String delim = " ";
-        return String.join(delim, newConditionList);
-    }
-
     public static boolean isHexTag(String elem){
         String cleanElem = elem.replaceAll("[(),]", "").toUpperCase();
 

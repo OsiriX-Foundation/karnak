@@ -18,10 +18,9 @@ public class ExpressionResult {
         try {
             final ExpressionParser parser = new SpelExpressionParser();
             final EvaluationContext context = new StandardEvaluationContext(expressionItem);
-            final String cleanCondition = expressionItem.conditionInterpreter(condition);
             context.setVariable("VR", VR.class);
             context.setVariable("Tag", Tag.class);
-            final Expression exp = parser.parseExpression(cleanCondition);
+            final Expression exp = parser.parseExpression(condition);
             return exp.getValue(context, typeOfReturn);
         } catch (final Exception e) {
             throw new IllegalStateException(String.format("Cannot execute the parser expression for this expression: %s", condition));

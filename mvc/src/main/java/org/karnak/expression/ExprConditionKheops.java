@@ -38,29 +38,6 @@ public class ExprConditionKheops implements ExpressionItem{
         return dcmValue != null ? dcmValue.endsWith(value) : false;
     }
 
-    public String conditionInterpreter(String condition) {
-        String[] conditionArray = condition.split(" ");
-
-        List<String> newConditionList = Arrays.stream(conditionArray).map( elem -> {
-            if (isHexTag(elem)) {
-                String cleanTag = elem.replaceAll("[(),]", "").toUpperCase();
-                return String.valueOf(TagUtils.intFromHexString(cleanTag));
-            } else {
-                return elem;
-            }
-        }).collect(Collectors.toList());
-        return String.join(" ", newConditionList);
-    }
-
-    public static boolean isHexTag(String elem){
-        String cleanElem = elem.replaceAll("[(),]", "").toUpperCase();
-
-        if (!StringUtil.hasText(cleanElem) || cleanElem.length() != 8) {
-            return false;
-        }
-        return cleanElem.matches("[0-9A-FX]+");
-    }
-
     /*
     public static boolean validateCondition(String condition) {
         if (!condition.contains("tagValueIsPresent") && !condition.contains("tagValueContains") &&

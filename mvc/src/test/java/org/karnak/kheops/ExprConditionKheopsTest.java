@@ -291,43 +291,6 @@ class ExprConditionKheopsTest {
         );
     }
 
-    @Test
-    void isHexTag() {
-        assertEquals(true, exprConditionKheops.isHexTag("(0221,0000)"));
-        assertEquals(true, exprConditionKheops.isHexTag("0xx1,0000)"));
-        assertEquals(true, exprConditionKheops.isHexTag("0xx1,0000"));
-        assertEquals(true, exprConditionKheops.isHexTag("(0xx1,0000"));
-
-        assertEquals(true, exprConditionKheops.isHexTag("(02210000)"));
-        assertEquals(true, exprConditionKheops.isHexTag("0xx10000)"));
-        assertEquals(true, exprConditionKheops.isHexTag("0xx10000"));
-        assertEquals(true, exprConditionKheops.isHexTag("(0xx10000"));
-
-        assertEquals(true, exprConditionKheops.isHexTag("02210000)"));
-        assertEquals(true, exprConditionKheops.isHexTag("0x010000)"));
-        assertEquals(true, exprConditionKheops.isHexTag("00010000"));
-        assertEquals(true, exprConditionKheops.isHexTag("(00010000"));
-
-
-        assertEquals(true, exprConditionKheops.isHexTag("0201,0000"));
-
-        assertEquals(false, exprConditionKheops.isHexTag("ef00)"));
-        assertEquals(false, exprConditionKheops.isHexTag("(e,0000)"));
-        assertEquals(false, exprConditionKheops.isHexTag("xx1,0000)"));
-        assertEquals(false, exprConditionKheops.isHexTag("xx1,00 00)"));
-    }
-
-    @ParameterizedTest
-    @MethodSource("providerConditions")
-    void conditionInterpreter(String input, String expected){
-        assertEquals(expected, exprConditionKheops.conditionInterpreter(input)); // generate an exception
-    }
-
-    private static Stream<Arguments> providerConditions() {
-        return Stream.of(
-                Arguments.of("", "")
-        );
-    }
     /*
     @Test
     void validateCondition() {
