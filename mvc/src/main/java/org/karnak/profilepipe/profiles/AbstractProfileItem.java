@@ -15,6 +15,7 @@ public abstract class AbstractProfileItem implements ProfileItem {
 
     public enum Type {
         BASIC_DICOM(BasicProfile.class, "basic.dicom.profile"),
+        CLEAN_PIXEL_DATA(CleanPixelData.class, "clean.pixel.data"),
         REPLACE_UID(UpdateUIDsProfile.class, "replace.uid"),
         ACTION_TAGS(ActionTags.class, "action.on.specific.tags"),
         ACTION_PRIVATETAGS(PrivateTags.class, "action.on.privatetags"),

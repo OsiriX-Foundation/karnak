@@ -1,6 +1,7 @@
 package org.karnak.profilepipe.action;
 
 import org.dcm4che6.data.VR;
+import org.karnak.profilepipe.profiles.CleanPixelData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
@@ -54,7 +55,6 @@ public abstract class AbstractAction implements ActionItem {
             case "U" -> new UID("U");
             case "DDum" -> new DefaultDummy("DDum");
             case "D" -> new Replace("D");
-            case "P" -> new CleanPixelData("P");
             default -> null;
         };
     }

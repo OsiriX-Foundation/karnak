@@ -29,6 +29,7 @@ import org.karnak.data.profile.ProfileElement;
 import org.karnak.profilepipe.action.*;
 import org.karnak.profilepipe.profiles.AbstractProfileItem;
 import org.karnak.profilepipe.profiles.ActionTags;
+import org.karnak.profilepipe.profiles.CleanPixelData;
 import org.karnak.profilepipe.profiles.ProfileItem;
 import org.karnak.profilepipe.utils.ExprDCMElem;
 import org.karnak.profilepipe.utils.HMAC;
@@ -154,7 +155,8 @@ public class Profiles {
 
             ActionItem currentAction = null;
             ProfileItem currentProfile = null;
-            for (ProfileItem profile : profiles) {
+            for (ProfileItem profile : profiles.stream().filter(p -> !CleanPixelData.class.isInstance(p)).collect(
+                Collectors.toList())) {
                 currentProfile = profile;
 
                 boolean conditionIsOk = getResultCondition(profile.getCondition(), exprDCMElem);
@@ -229,7 +231,7 @@ public class Profiles {
         // Apply clean pixel data
         Optional<DicomElement> pix = dcm.get(Tag.PixelData);
         if (pix.isPresent() && !profile.getMasks().isEmpty() && profiles.stream()
-            .anyMatch(p -> CleanPixelData.class.isInstance(p.getAction(dcm, dcmCopy, pix.get(), PatientIDProfile)))) {
+            .anyMatch(p -> CleanPixelData.class.isInstance(p))) {
             String sopClassUID = dcm.getString(Tag.SOPClassUID)
                 .orElseThrow(() -> new IllegalStateException("DICOM Object does not contain sopClassUID"));
             MaskArea mask = getMask(dcm.getString(Tag.StationName).orElse(null));

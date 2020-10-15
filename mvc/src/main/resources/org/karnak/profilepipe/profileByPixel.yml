@@ -4,18 +4,13 @@ minimumKarnakVersion: "0.1"
 defaultIssuerOfPatientID: "DPA"
 profileElements:
   - name: "Clean pixel data"
-    codename: "action.on.specific.tags"
-    action: "P"
-    tags:
-      - "7FE0,0010"
-    arguments:
-      apply: "mask"
+    codename: "clean.pixel.data"
 
   - name: "DICOM basic profile"
     codename: "basic.dicom.profile"
 
 masks:
-  - stationName: "mvme87"
+  - stationName: "*"
     color: "ff0000"
     rectangles:
       - "25 15 150 50"
