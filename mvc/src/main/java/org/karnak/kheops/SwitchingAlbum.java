@@ -68,7 +68,7 @@ public class SwitchingAlbum {
 
     private static boolean validateCondition(String condition, DicomObject dcm) {
         final ExprConditionKheops conditionKheops = new ExprConditionKheops(dcm);
-        return ExpressionResult.getBoolean(condition, conditionKheops);
+        return (Boolean) ExpressionResult.get(condition, conditionKheops, Boolean.class);
     }
 
     private boolean validateToken(List<String> validMinScope, String API_URL, String introspectToken) {
