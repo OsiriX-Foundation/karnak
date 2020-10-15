@@ -153,9 +153,13 @@ public class Profiles {
             for (ProfileItem profile : profiles) {
                 currentProfile = profile;
 
-                boolean conditionIsOk = ExpressionResult.getCondition(profile.getCondition(), exprDCMElem);
-                if (conditionIsOk) {
+                if(profile.getCondition() == null){
                     currentAction = profile.getAction(dcm, dcmCopy, dcmEl, patientID);
+                } else {
+                    boolean conditionIsOk = (Boolean) ExpressionResult.get(profile.getCondition(), exprDCMElem, Boolean.class);
+                    if (conditionIsOk) {
+                        currentAction = profile.getAction(dcm, dcmCopy, dcmEl, patientID);
+                    }
                 }
 
                 if (currentAction != null) {

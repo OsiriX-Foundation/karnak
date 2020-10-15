@@ -11,7 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class ExprConditionKheops {
+public class ExprConditionKheops implements ExpressionItem{
     private DicomObject dcm;
 
     public ExprConditionKheops(DicomObject dcm) {
@@ -38,7 +38,7 @@ public class ExprConditionKheops {
         return dcmValue != null ? dcmValue.endsWith(value) : false;
     }
 
-    public static String conditionInterpreter(String condition) {
+    public String conditionInterpreter(String condition) {
         String[] conditionArray = condition.split(" ");
 
         List<String> newConditionList = Arrays.stream(conditionArray).map( elem -> {

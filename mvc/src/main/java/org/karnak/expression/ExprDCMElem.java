@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class ExprDCMElem {
+public class ExprDCMElem implements ExpressionItem{
 
     private int tag;
     private VR vr;

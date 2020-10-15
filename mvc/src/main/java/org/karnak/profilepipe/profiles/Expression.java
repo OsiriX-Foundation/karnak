@@ -46,7 +46,7 @@ public class Expression extends AbstractProfileItem {
         if (exceptedTagsAction.get(dcmElem.tag()) == null && tagsAction.get(dcmElem.tag()) != null) {
             final String expr = arguments.get(0).getValue();
             final ExprDCMElem exprDCMElem = new ExprDCMElem(dcmElem.tag(), dcmElem.vr(), dcm, dcmCopy);
-            return ExpressionResult.getAction(expr, exprDCMElem);
+            return (ActionItem) ExpressionResult.get(expr, exprDCMElem, ActionItem.class);
         }
         return null;
     }

@@ -12,7 +12,27 @@ import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
+//https://docs.spring.io/spring/docs/3.0.x/reference/expressions.html
 public class ExpressionResult {
+    public static Object get(String condition, ExpressionItem expressionItem, Class<?> typeOfReturn){
+        final Logger LOGGER = LoggerFactory.getLogger(ExpressionResult.class);
+        try {
+            final ExpressionParser parser = new SpelExpressionParser();
+            final EvaluationContext context = new StandardEvaluationContext(expressionItem);
+            final String cleanCondition = expressionItem.conditionInterpreter(condition);
+            context.setVariable("VR", VR.class);
+            context.setVariable("Tag", Tag.class);
+            final Expression exp = parser.parseExpression(cleanCondition);
+            return exp.getValue(context, typeOfReturn);
+        } catch (final Exception e) {
+            throw new IllegalStateException(String.format("Cannot execute the parser expression for this expression: %s", condition));
+        }
+    }
+
+
+
+
+
     public static boolean getBoolean(String condition, ExprConditionKheops exprConditionKheops){
         try {
             //https://docs.spring.io/spring/docs/3.0.x/reference/expressions.html
@@ -29,40 +49,4 @@ public class ExpressionResult {
         }
     }
 
-    public static boolean getCondition(String condition, ExprDCMElem exprDCMElem){
-        final Logger LOGGER = LoggerFactory.getLogger(Profiles.class);
-        if (condition!=null) {
-            try {
-                //https://docs.spring.io/spring/docs/3.0.x/reference/expressions.html
-                final ExpressionParser parser = new SpelExpressionParser();
-                final EvaluationContext context = new StandardEvaluationContext(exprDCMElem);
-                final String cleanCondition = exprDCMElem.conditionInterpreter(condition);
-                context.setVariable("VR", VR.class);
-                context.setVariable("Tag", Tag.class);
-                final Expression exp = parser.parseExpression(cleanCondition);
-                return exp.getValue(context, Boolean.class);
-            } catch (final Exception e) {
-                LOGGER.error("Cannot execute the parser expression for this expression: {}", condition, e);
-            }
-        }
-        return true; // if there is no condition we return true by default
-    }
-
-    public static ActionItem getAction(String expr, ExprDCMElem exprDCMElem){
-        final Logger LOGGER = LoggerFactory.getLogger(Profiles.class);
-        if (expr!=null) {
-            try {
-                final ExpressionParser parser = new SpelExpressionParser();
-                final EvaluationContext context = new StandardEvaluationContext(exprDCMElem);
-                final String cleanCondition = exprDCMElem.conditionInterpreter(expr);
-                context.setVariable("VR", VR.class);
-                context.setVariable("Tag", Tag.class);
-                final org.springframework.expression.Expression exp = parser.parseExpression(cleanCondition);
-                return exp.getValue(context, ActionItem.class);
-            } catch (final Exception e) {
-                LOGGER.error("Cannot execute the parser expression for this expression: {}", expr, e);
-            }
-        }
-        return null; // if there is no action we return null by default
-    }
 }
