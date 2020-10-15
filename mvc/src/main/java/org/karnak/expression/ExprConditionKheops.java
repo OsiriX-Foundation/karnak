@@ -38,6 +38,12 @@ public class ExprConditionKheops implements ExpressionItem{
         return dcmValue != null ? dcmValue.endsWith(value) : false;
     }
 
+    public static void expressionValidation(String condition) throws Exception {
+        ExprConditionKheops exprConditionKheops = new ExprConditionKheops(DicomObject.newDicomObject());
+        ExpressionResult.get(condition, exprConditionKheops, Boolean.class);
+
+    }
+
     /*
     public static boolean validateCondition(String condition) {
         if (!condition.contains("tagValueIsPresent") && !condition.contains("tagValueContains") &&

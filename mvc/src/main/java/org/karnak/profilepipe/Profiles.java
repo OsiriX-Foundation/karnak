@@ -26,12 +26,13 @@ import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.IdTypes;
 import org.karnak.data.profile.Profile;
 import org.karnak.data.profile.ProfileElement;
+import org.karnak.expression.ExprConditionDestination;
 import org.karnak.expression.ExpressionResult;
 import org.karnak.profilepipe.action.*;
 import org.karnak.profilepipe.profiles.AbstractProfileItem;
 import org.karnak.profilepipe.profiles.ActionTags;
 import org.karnak.profilepipe.profiles.ProfileItem;
-import org.karnak.expression.ExprDCMElem;
+import org.karnak.expression.ExprAction;
 import org.karnak.profilepipe.utils.HMAC;
 import org.karnak.util.SpecialCharacter;
 import org.slf4j.Logger;
@@ -146,7 +147,7 @@ public class Profiles {
     public void applyAction(DicomObject dcm, DicomObject dcmCopy, String patientID, ProfileItem profilePassedInSequence, ActionItem actionPassedInSequence, AttributeEditorContext context) {
         for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext(); ) {
             final DicomElement dcmEl = iterator.next();
-            final ExprDCMElem exprDCMElem = new ExprDCMElem(dcmEl.tag(), dcmEl.vr(), dcm, dcmCopy);
+            final ExprConditionDestination exprConditionDestination = new ExprConditionDestination(dcmEl.tag(), dcmEl.vr(), dcm, dcmCopy);
 
             ActionItem currentAction = null;
             ProfileItem currentProfile = null;
@@ -156,7 +157,7 @@ public class Profiles {
                 if(profile.getCondition() == null){
                     currentAction = profile.getAction(dcm, dcmCopy, dcmEl, patientID);
                 } else {
-                    boolean conditionIsOk = (Boolean) ExpressionResult.get(profile.getCondition(), exprDCMElem, Boolean.class);
+                    boolean conditionIsOk = (Boolean) ExpressionResult.get(profile.getCondition(), exprConditionDestination, Boolean.class);
                     if (conditionIsOk) {
                         currentAction = profile.getAction(dcm, dcmCopy, dcmEl, patientID);
                     }
@@ -253,19 +254,19 @@ public class Profiles {
 
     public void setDefaultDeidentTagValue(DicomObject dcm, String patientID, String patientName, String profilePipeCodeName, String pseudonym){
         final String profileFilename = profile.getName();
-        final ArrayList<ExprDCMElem> defaultDeidentTagValue = new ArrayList<>();
-        defaultDeidentTagValue.add(new ExprDCMElem(Tag.PatientID, VR.LO, patientID));
-        defaultDeidentTagValue.add(new ExprDCMElem(Tag.PatientName, VR.PN, patientName));
-        defaultDeidentTagValue.add(new ExprDCMElem(Tag.PatientIdentityRemoved, VR.CS, "YES"));
+        final ArrayList<ExprAction> defaultDeidentTagValue = new ArrayList<>();
+        defaultDeidentTagValue.add(new ExprAction(Tag.PatientID, VR.LO, patientID));
+        defaultDeidentTagValue.add(new ExprAction(Tag.PatientName, VR.PN, patientName));
+        defaultDeidentTagValue.add(new ExprAction(Tag.PatientIdentityRemoved, VR.CS, "YES"));
         // 0012,0063 -> module patient
         // A description or label of the mechanism or method use to remove the Patient's identity
-        defaultDeidentTagValue.add(new ExprDCMElem(Tag.DeidentificationMethod, VR.LO, profilePipeCodeName));
-        defaultDeidentTagValue.add(new ExprDCMElem(Tag.ClinicalTrialSponsorName, VR.LO, profilePipeCodeName));
-        defaultDeidentTagValue.add(new ExprDCMElem(Tag.ClinicalTrialProtocolID, VR.LO, profileFilename));
-        defaultDeidentTagValue.add(new ExprDCMElem(Tag.ClinicalTrialSubjectID, VR.LO, pseudonym));
-        defaultDeidentTagValue.add(new ExprDCMElem(Tag.ClinicalTrialProtocolName, VR.LO, (String) null));
-        defaultDeidentTagValue.add(new ExprDCMElem(Tag.ClinicalTrialSiteID, VR.LO, (String) null));
-        defaultDeidentTagValue.add(new ExprDCMElem(Tag.ClinicalTrialSiteName, VR.LO, (String) null));
+        defaultDeidentTagValue.add(new ExprAction(Tag.DeidentificationMethod, VR.LO, profilePipeCodeName));
+        defaultDeidentTagValue.add(new ExprAction(Tag.ClinicalTrialSponsorName, VR.LO, profilePipeCodeName));
+        defaultDeidentTagValue.add(new ExprAction(Tag.ClinicalTrialProtocolID, VR.LO, profileFilename));
+        defaultDeidentTagValue.add(new ExprAction(Tag.ClinicalTrialSubjectID, VR.LO, pseudonym));
+        defaultDeidentTagValue.add(new ExprAction(Tag.ClinicalTrialProtocolName, VR.LO, (String) null));
+        defaultDeidentTagValue.add(new ExprAction(Tag.ClinicalTrialSiteID, VR.LO, (String) null));
+        defaultDeidentTagValue.add(new ExprAction(Tag.ClinicalTrialSiteName, VR.LO, (String) null));
 
         defaultDeidentTagValue.forEach(newElem -> {
             final ActionItem add = new Add("A", newElem.getTag(), newElem.getVr(), newElem.getStringValue());

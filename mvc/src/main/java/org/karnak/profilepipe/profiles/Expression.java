@@ -8,7 +8,7 @@ import org.karnak.data.profile.ProfileElement;
 import org.karnak.expression.ExpressionResult;
 import org.karnak.profilepipe.action.AbstractAction;
 import org.karnak.profilepipe.action.ActionItem;
-import org.karnak.expression.ExprDCMElem;
+import org.karnak.expression.ExprAction;
 import org.karnak.profilepipe.utils.TagActionMap;
 
 import java.util.List;
@@ -45,8 +45,8 @@ public class Expression extends AbstractProfileItem {
     public ActionItem getAction(DicomObject dcm, DicomObject dcmCopy, DicomElement dcmElem, String PatientID) {
         if (exceptedTagsAction.get(dcmElem.tag()) == null && tagsAction.get(dcmElem.tag()) != null) {
             final String expr = arguments.get(0).getValue();
-            final ExprDCMElem exprDCMElem = new ExprDCMElem(dcmElem.tag(), dcmElem.vr(), dcm, dcmCopy);
-            return (ActionItem) ExpressionResult.get(expr, exprDCMElem, ActionItem.class);
+            final ExprAction exprAction = new ExprAction(dcmElem.tag(), dcmElem.vr(), dcm, dcmCopy);
+            return (ActionItem) ExpressionResult.get(expr, exprAction, ActionItem.class);
         }
         return null;
     }

@@ -3,17 +3,12 @@ package org.karnak.profilepipe;
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.Tag;
 import org.dcm4che6.data.VR;
-import org.dcm4che6.util.TagUtils;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.karnak.data.profile.Argument;
 import org.karnak.data.profile.IncludedTag;
 import org.karnak.data.profile.Profile;
 import org.karnak.data.profile.ProfileElement;
-import org.karnak.expression.ExpressionResult;
 import org.karnak.profilepipe.utils.DicomObjectTools;
-import org.karnak.expression.ExprDCMElem;
 import org.springframework.boot.test.context.SpringBootTest;
 
 
