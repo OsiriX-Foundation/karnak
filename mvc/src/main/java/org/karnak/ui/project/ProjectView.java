@@ -7,6 +7,8 @@ import com.vaadin.flow.router.Route;
 import org.karnak.data.gateway.Project;
 import org.karnak.ui.MainLayout;
 import org.karnak.ui.data.ProjectDataProvider;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 
 @Route(value = "project", layout = MainLayout.class)
 @PageTitle("KARNAK - Project")
@@ -36,5 +38,10 @@ public class ProjectView extends VerticalLayout {
                 newProjectForm.clear();
             }
         });
+    }
+
+    @Autowired
+    private void addEventManager(ApplicationEventPublisher publisher) {
+        projectDataProvider.setApplicationEventPublisher(publisher);
     }
 }
