@@ -7,6 +7,7 @@ import com.vaadin.flow.component.grid.editor.Editor;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
+import org.apache.commons.codec.binary.Hex;
 import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.Project;
 import org.karnak.ui.component.ConfirmDialog;
@@ -45,7 +46,7 @@ public class GridProject extends Grid<Project> {
 
         addColumn(Project::getName).setHeader("Project Name").setFlexGrow(15)
                 .setSortable(true).setEditorComponent(textProjectName);
-        addColumn(Project::getSecret).setHeader("Project Secret").setFlexGrow(15)
+        addColumn(project -> Hex.encodeHexString(project.getSecret())).setHeader("Project Secret").setFlexGrow(15)
                 .setSortable(true).setEditorComponent(textProjectSecret);
         addColumn(project -> project.getProfile().getName()).setHeader("Desidenfication profile").setFlexGrow(15)
                 .setSortable(true).setEditorComponent(profileDropDown);

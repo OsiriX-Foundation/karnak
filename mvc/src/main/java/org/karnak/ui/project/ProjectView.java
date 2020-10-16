@@ -5,6 +5,7 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.karnak.data.gateway.Project;
+import org.karnak.profilepipe.utils.HMAC;
 import org.karnak.ui.MainLayout;
 import org.karnak.ui.data.ProjectDataProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,7 @@ public class ProjectView extends VerticalLayout {
             gridProject.clear();
             Project newProject = new Project();
             if (newResearchBinder.writeBeanIfValid(newProject)) {
+                newProject.setSecret(HMAC.generateRandomKey());
                 projectDataProvider.save(newProject);
                 newProjectForm.clear();
             }

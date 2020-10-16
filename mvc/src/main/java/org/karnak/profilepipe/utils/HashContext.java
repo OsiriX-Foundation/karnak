@@ -1,15 +1,15 @@
 package org.karnak.profilepipe.utils;
 
 public class HashContext {
-    private String secret;
+    private byte[] secret;
     private String PatientID;
 
-    public HashContext(String secret, String PatientID) {
+    public HashContext(byte[] secret, String PatientID) {
         this.secret = secret;
         this.PatientID = PatientID;
     }
 
-    public String getSecret() {
+    public byte[] getSecret() {
         return secret;
     }
 

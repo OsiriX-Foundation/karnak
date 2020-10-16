@@ -16,7 +16,7 @@ public class Project {
     private Long id;
 
     private String name;
-    private String secret;
+    private byte[] secret;
 
     @OneToMany(mappedBy="project")
     @LazyCollection(LazyCollectionOption.FALSE)
@@ -30,7 +30,7 @@ public class Project {
         this.destinations = new ArrayList<>();
     }
 
-    public Project(String name, String secret) {
+    public Project(String name, byte[] secret) {
         this.name = name;
         this.secret = secret;
         this.destinations = new ArrayList<>();
@@ -47,11 +47,11 @@ public class Project {
         this.name = name;
     }
 
-    public String getSecret() {
+    public byte[] getSecret() {
         return secret;
     }
 
-    public void setSecret(String secret) {
+    public void setSecret(byte[] secret) {
         this.secret = secret;
     }
 

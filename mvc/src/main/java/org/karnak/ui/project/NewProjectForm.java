@@ -12,7 +12,6 @@ public class NewProjectForm extends HorizontalLayout {
 
     private Button buttonAdd;
     private TextField textResearchName;
-    private TextField textSecret;
     private ProfileDropDown profileDropDown;
 
     public NewProjectForm() {
@@ -21,11 +20,11 @@ public class NewProjectForm extends HorizontalLayout {
         binder = textFieldsBindProject.getBinder();
         buttonAdd = new Button("Add");
         textResearchName = textFieldsBindProject.getTextResearchName();
-        textSecret = textFieldsBindProject.getTextSecret();
         profileDropDown = textFieldsBindProject.getProfileDropDown();
         setElements();
 
-        add(textResearchName, textSecret, profileDropDown, buttonAdd);
+        add(textResearchName, profileDropDown, buttonAdd);
+        binder.removeBinding(textFieldsBindProject.getTextSecret());
         binder.bindInstanceFields(this);
     }
 
@@ -33,9 +32,6 @@ public class NewProjectForm extends HorizontalLayout {
         textResearchName.setWidth("20%");
         textResearchName.getStyle().set("padding-right", "10px");
         textResearchName.setPlaceholder("Research Name");
-        textSecret.setWidth("20%");
-        textSecret.getStyle().set("padding-right", "10px");
-        textSecret.setPlaceholder("Secret");
     }
 
     public Button getButtonAdd() {
@@ -44,7 +40,6 @@ public class NewProjectForm extends HorizontalLayout {
 
     public void clear() {
         textResearchName.clear();
-        textSecret.clear();
     }
 
     public Binder<Project> getBinder() {

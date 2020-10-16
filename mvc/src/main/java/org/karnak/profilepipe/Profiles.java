@@ -257,8 +257,8 @@ public class Profiles {
             throw new IllegalStateException("Cannot build the HMAC a project is not associate at the destination");
         }
 
-        String secret = project.getSecret();
-        if (secret == null || secret.equals("")) {
+        byte[] secret = project.getSecret();
+        if (secret == null || secret.length != HMAC.KEY_BYTE_LENGTH) {
             throw new IllegalStateException("Cannot build the HMAC no secret defined in the project associate at the destination");
         }
 

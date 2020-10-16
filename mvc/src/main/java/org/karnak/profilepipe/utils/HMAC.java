@@ -7,18 +7,20 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 
 import org.slf4j.*;
 
 public class HMAC {
+    public static final int KEY_BYTE_LENGTH = 32;
     private final Logger LOGGER = LoggerFactory.getLogger(HMAC.class);
     private Mac mac;
 
     private static final String HMAC_SHA256 = "HmacSHA256";
     private HashContext hashContext;
 
-    public HMAC(String hmackey) {
-        initHMAC(hmackey);
+    public HMAC(byte[] hmacKey) {
+        initHMAC(hmacKey);
     }
 
     public HMAC(HashContext hashContext) {
@@ -26,13 +28,11 @@ public class HMAC {
         initHMAC(hashContext.getSecret());
     }
 
-    private void initHMAC(String keyValue) {
+    private void initHMAC(byte[] keyValue) {
         try {
-            SecretKeySpec key = new SecretKeySpec((keyValue).getBytes("UTF-8"), this.HMAC_SHA256);
+            SecretKeySpec key = new SecretKeySpec(keyValue, this.HMAC_SHA256);
             this.mac = Mac.getInstance(this.HMAC_SHA256);
             this.mac.init(key);
-        } catch (UnsupportedEncodingException e) {
-            LOGGER.error("Unsupported Encoding exception for the HMACkey", e);
         } catch (NoSuchAlgorithmException e) {
             LOGGER.error("Invalid algorithm for the HMAC", e);
         } catch (InvalidKeyException e) {
@@ -78,5 +78,15 @@ public class HMAC {
 
     public HashContext getHashContext() {
         return hashContext;
+    }
+
+    /*
+    * Generate a random secret key of 32bytes
+    * */
+    public static byte[] generateRandomKey() {
+        SecureRandom random = new SecureRandom();
+        byte bytes[] = new byte[KEY_BYTE_LENGTH];
+        random.nextBytes(bytes);
+        return bytes;
     }
 }
