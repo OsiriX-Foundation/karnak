@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Shape;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -18,6 +20,7 @@ import org.dcm4che6.data.Tag;
 import org.dcm4che6.data.VR;
 import org.dcm4che6.img.op.MaskArea;
 import org.dcm4che6.img.util.DicomObjectUtil;
+import org.dcm4che6.util.DateTimeUtils;
 import org.dcm4che6.util.TagUtils;
 import org.karnak.api.PseudonymApi;
 import org.karnak.api.rqbody.Fields;
@@ -119,7 +122,12 @@ public class Profiles {
     public String getMainzellistePseudonym(DicomObject dcm, String externalPseudonym, IdTypes idTypes) throws IOException, InterruptedException {
         final String patientID = dcm.getString(Tag.PatientID).orElse(null);
         final String patientName = dcm.getString(Tag.PatientName).orElse(null);
-        final String patientBirthDate = dcm.getString(Tag.PatientBirthDate).orElse(null);
+        final String rawPatientBirthDate = dcm.getString(Tag.PatientBirthDate).orElse(null);
+        String patientBirthDate = null;
+        if (rawPatientBirthDate != null) {
+            final LocalDate patientBirthDateLocalDate = DateTimeUtils.parseDA(rawPatientBirthDate);
+            patientBirthDate = patientBirthDateLocalDate.format(DateTimeFormatter.ofPattern("YYYYMMdd"));
+        }
         String patientSex = dcm.getString(Tag.PatientSex).orElse(null);
         if (!patientSex.equals("M") && !patientSex.equals("F") && !patientSex.equals("O")) {
            patientSex = "O";
