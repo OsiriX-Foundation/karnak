@@ -12,7 +12,7 @@ import java.security.SecureRandom;
 import org.slf4j.*;
 
 public class HMAC {
-    public static final int KEY_BYTE_LENGTH = 32;
+    public static final int KEY_BYTE_LENGTH = 16;
     private final Logger LOGGER = LoggerFactory.getLogger(HMAC.class);
     private Mac mac;
 
