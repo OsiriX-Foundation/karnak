@@ -20,7 +20,6 @@ public class LayoutEditForwardNode extends VerticalLayout {
     private ForwardNodeAPI forwardNodeAPI;
     public ForwardNode currentForwardNode;
     private Binder<ForwardNode> binderForwardNode;
-    private ProjectDataProvider projectDataProvider;
     DestinationDataProvider destinationDataProvider;
     SourceNodeDataProvider sourceNodeDataProvider;
 
@@ -32,8 +31,6 @@ public class LayoutEditForwardNode extends VerticalLayout {
     private NewUpdateDestination newUpdateDestination;
     private ButtonSaveDeleteCancel buttonForwardNodeSaveDeleteCancel;
     private NewUpdateSourceNode newUpdateSourceNode;
-    private WarningNoProjectsDefined warningSTOWNoProjectsDefined;
-    private WarningNoProjectsDefined warningDICOMNoProjectsDefined;
 
     public LayoutEditForwardNode(ForwardNodeViewLogic forwardNodeViewLogic, ForwardNodeAPI forwardNodeAPI) {
         getStyle().set("overflow-y", "auto");
@@ -42,7 +39,6 @@ public class LayoutEditForwardNode extends VerticalLayout {
         this.forwardNodeAPI = forwardNodeAPI;
         this.currentForwardNode = null;
         binderForwardNode = new BeanValidationBinder<>(ForwardNode.class);
-        projectDataProvider = new ProjectDataProvider();
 
         setSizeFull();
         editAETitleDescription = new EditAETitleDescription(binderForwardNode);
@@ -52,12 +48,6 @@ public class LayoutEditForwardNode extends VerticalLayout {
         destinationsView = new DestinationsView(forwardNodeAPI.getDataProvider().getDataService());
         sourceNodesView = new SourceNodesView(forwardNodeAPI.getDataProvider().getDataService());
         buttonForwardNodeSaveDeleteCancel = new ButtonSaveDeleteCancel();
-        warningSTOWNoProjectsDefined = new WarningNoProjectsDefined();
-        warningSTOWNoProjectsDefined.setTextBtnCancel("Continue");
-        warningSTOWNoProjectsDefined.setTextBtnValidate("Create a project");
-        warningDICOMNoProjectsDefined = new WarningNoProjectsDefined();
-        warningDICOMNoProjectsDefined.setTextBtnCancel("Continue");
-        warningDICOMNoProjectsDefined.setTextBtnValidate("Create a project");
 
         destinationDataProvider = new DestinationDataProvider(forwardNodeAPI.getDataProvider().getDataService());
         newUpdateDestination = new NewUpdateDestination(destinationDataProvider, viewLogic);
@@ -75,9 +65,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
         setEventDestination();
 
         setEventDestinationsViewDICOM();
-        setEventWarningDICOM();
         setEventDestinationsViewSTOW();
-        setEventWarningSTOW();
         setEventDestinationCancelButton();
 
         setEventNewSourceNode();
@@ -132,53 +120,15 @@ public class LayoutEditForwardNode extends VerticalLayout {
 
     private void setEventDestinationsViewDICOM() {
         destinationsView.getNewDestinationDICOM().addClickListener(event -> {
-            if (projectDataProvider.getAllProjects().size() > 0) {
-                newUpdateDestination.load(null, DestinationType.dicom);
-                addFormView(newUpdateDestination);
-            } else {
-                warningDICOMNoProjectsDefined.open();
-            }
-        });
-    }
-
-    private void setEventWarningDICOM() {
-        warningDICOMNoProjectsDefined.getBtnCancel().addClickListener(btnEvent -> {
             newUpdateDestination.load(null, DestinationType.dicom);
-            warningDICOMNoProjectsDefined.close();
             addFormView(newUpdateDestination);
-        });
-        warningDICOMNoProjectsDefined.getBtnValidate().addClickListener(btnEvent -> {
-            warningDICOMNoProjectsDefined.close();
-            navigateToProject();
         });
     }
 
     private void setEventDestinationsViewSTOW() {
         destinationsView.getNewDestinationSTOW().addClickListener(event -> {
-            if (projectDataProvider.getAllProjects().size() > 0) {
-                newUpdateDestination.load(null, DestinationType.stow);
-                addFormView(newUpdateDestination);
-            } else {
-                warningSTOWNoProjectsDefined.open();
-            }
-        });
-    }
-
-    private void setEventWarningSTOW() {
-        warningSTOWNoProjectsDefined.getBtnCancel().addClickListener(btnEvent -> {
             newUpdateDestination.load(null, DestinationType.stow);
-            warningSTOWNoProjectsDefined.close();
             addFormView(newUpdateDestination);
-        });
-        warningSTOWNoProjectsDefined.getBtnValidate().addClickListener(btnEvent -> {
-            warningSTOWNoProjectsDefined.close();
-            navigateToProject();
-        });
-    }
-
-    private void navigateToProject() {
-        getUI().ifPresent(nav -> {
-            nav.navigate(ProjectView.VIEW_NAME.toLowerCase());
         });
     }
 
