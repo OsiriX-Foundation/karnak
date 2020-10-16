@@ -9,6 +9,7 @@ import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.IdTypes;
 import org.karnak.data.gateway.Project;
 import org.karnak.ui.data.ProjectDataProvider;
+import org.karnak.ui.project.ProjectView;
 import org.karnak.ui.util.UIS;
 
 public class LayoutDesidentification extends Div {
@@ -21,6 +22,7 @@ public class LayoutDesidentification extends Div {
     private DesidentificationName desidentificationName;
     private Div div;
     private ProjectDataProvider projectDataProvider;
+    private WarningNoProjectsDefined warningNoProjectsDefined;
 
     private final String LABEL_CHECKBOX_DESIDENTIFICATION = "Activate de-identification";
 
@@ -29,26 +31,29 @@ public class LayoutDesidentification extends Div {
 
     public LayoutDesidentification(Binder<Destination> destinationBinder) {
         projectDataProvider = new ProjectDataProvider();
-        if (projectDataProvider.getAllProjects().size() > 0) {
-            this.destinationBinder = destinationBinder;
-            projectDropDown = new ProjectDropDown();
-            desidentificationName = new DesidentificationName();
+        this.destinationBinder = destinationBinder;
+        projectDropDown = new ProjectDropDown();
+        desidentificationName = new DesidentificationName();
 
-            setElements();
-            setBinder();
-            setEventCheckboxDesidentification();
-            setEventExtidListBox();
+        warningNoProjectsDefined = new WarningNoProjectsDefined();
+        warningNoProjectsDefined.setTextBtnCancel("Continue");
+        warningNoProjectsDefined.setTextBtnValidate("Create a project");
 
-            add(UIS.setWidthFull(new HorizontalLayout(checkboxDesidentification, div)));
+        setElements();
+        setBinder();
+        setEventCheckboxDesidentification();
+        setEventExtidListBox();
+        setEventWarningDICOM();
 
-            if (checkboxDesidentification.getValue()) {
-                div.add(projectDropDown, desidentificationName, extidListBox);
-            }
+        add(UIS.setWidthFull(new HorizontalLayout(checkboxDesidentification, div)));
 
-            projectDropDown.addValueChangeListener(event -> {
-                setTextOnSelectionProject(event.getValue());
-            });
+        if (checkboxDesidentification.getValue()) {
+            div.add(projectDropDown, desidentificationName, extidListBox);
         }
+
+        projectDropDown.addValueChangeListener(event -> {
+            setTextOnSelectionProject(event.getValue());
+        });
     }
 
     private void setElements() {
@@ -73,12 +78,33 @@ public class LayoutDesidentification extends Div {
 
     }
 
+    private void setEventWarningDICOM() {
+        warningNoProjectsDefined.getBtnCancel().addClickListener(btnEvent -> {
+            checkboxDesidentification.setValue(false);
+            warningNoProjectsDefined.close();
+        });
+        warningNoProjectsDefined.getBtnValidate().addClickListener(btnEvent -> {
+            warningNoProjectsDefined.close();
+            navigateToProject();
+        });
+    }
+
+    private void navigateToProject() {
+        getUI().ifPresent(nav -> {
+            nav.navigate(ProjectView.VIEW_NAME.toLowerCase());
+        });
+    }
+
     private void setEventCheckboxDesidentification(){
         checkboxDesidentification.addValueChangeListener(event -> {
             if (event.getValue() != null) {
-                if (event.getValue()){
-                    div.add(projectDropDown, desidentificationName, extidListBox);
-                    setTextOnSelectionProject(projectDropDown.getValue());
+                if (event.getValue()) {
+                    if (projectDataProvider.getAllProjects().size() > 0) {
+                        div.add(projectDropDown, desidentificationName, extidListBox);
+                        setTextOnSelectionProject(projectDropDown.getValue());
+                    } else {
+                        warningNoProjectsDefined.open();
+                    }
                 } else {
                     div.remove(projectDropDown, desidentificationName);
                     extidListBox.setValue(extidSentence[0]);
@@ -127,12 +153,7 @@ public class LayoutDesidentification extends Div {
 
     private void setBinder() {
         destinationBinder.forField(checkboxDesidentification)
-                .bind(destination -> {
-                    if (destination.isNewData()) {
-                        return true;
-                    }
-                    return destination.getDesidentification();
-                }, Destination::setDesidentification);
+                .bind(Destination::getDesidentification, Destination::setDesidentification);
         destinationBinder.forField(projectDropDown)
                 .withValidator(project ->
                         project != null || (project == null && checkboxDesidentification.getValue() == false),
