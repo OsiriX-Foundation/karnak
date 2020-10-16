@@ -5,6 +5,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 import org.karnak.data.profile.Profile;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity(name = "Project")
@@ -25,11 +26,14 @@ public class Project {
     @JoinColumn(name="profile_pipe_id")
     private Profile profile;
 
-    public Project() {}
+    public Project() {
+        this.destinations = new ArrayList<>();
+    }
 
     public Project(String name, String secret) {
         this.name = name;
         this.secret = secret;
+        this.destinations = new ArrayList<>();
     }
     public Long getId() {
         return id;
