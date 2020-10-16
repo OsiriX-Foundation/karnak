@@ -17,7 +17,7 @@ class HMACTest {
     private static HMAC hmac2_same;
     private static HMAC hmac3;
     private static HMAC hmac3_same;
-
+    /*
     @BeforeAll
     static void beforeAll() {
         final String HMAC_KEY1 = "0123456789";
@@ -122,6 +122,9 @@ class HMACTest {
                 Arguments.of(hmac3, "2.25.138226508601833892075134918123442900169", "2.25.200484660542020411291635770434115741618")
         );
     }
+     */
+
+
     /*
     @ParameterizedTest
     @MethodSource("providerScaleHash")
