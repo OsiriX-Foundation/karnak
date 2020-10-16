@@ -211,7 +211,7 @@ public class Profiles {
                 throw new IllegalStateException("Cannot get a pseudonym in a DICOM tag");
             }
         } else {
-            pseudonym = CachingUtil.getPseudonym(dcm, profile, cache);
+            pseudonym = CachingUtil.getPseudonym(dcm, cache);
 
             if(pseudonym == null){
                 try {

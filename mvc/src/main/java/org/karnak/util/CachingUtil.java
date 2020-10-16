@@ -14,12 +14,12 @@ public class CachingUtil {
     public CachingUtil() {
     }
 
-    public static String getPseudonym(DicomObject dcm, Profile profile, Cache<String, Patient> cache) {
+    public static String getPseudonym(DicomObject dcm, Cache<String, Patient> cache) {
         if (cache != null){
             final String patientID = dcm.getString(Tag.PatientID).orElse(null);
             final String patientName = dcm.getString(Tag.PatientName).orElse(null);
             final String patientBirthDate = dcm.getString(Tag.PatientBirthDate).orElse(null);
-            final String issuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID).orElse(profile.getDefaultissueropatientid());
+            final String issuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID).orElse("");
             String patientSex = dcm.getString(Tag.PatientSex).orElse(null);
             if (!patientSex.equals("M") && !patientSex.equals("F") && !patientSex.equals("O")) {
                 patientSex = "O";
