@@ -1,13 +1,14 @@
 package org.karnak.ui.extid;
 
+import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.LocalTime;
 
-public class Patient {
+public class Patient implements Serializable {
 
     private String extid;
     private String patientId;
-    private String patientName;
+    private String patientFirstName;
+    private String patientLastName;
     private LocalDate patientBirthDate;
     private String patientSex;
     private String issuerOfPatientId;
@@ -28,12 +29,20 @@ public class Patient {
         this.patientId = patientId;
     }
 
-    public String getPatientName() {
-        return patientName;
+    public String getPatientFirstName() {
+        return patientFirstName;
     }
 
-    public void setPatientName(String patientName) {
-        this.patientName = patientName;
+    public void setPatientFirstName(String patientFirstName) {
+        this.patientFirstName = patientFirstName;
+    }
+
+    public String getPatientLastName() {
+        return patientLastName;
+    }
+
+    public void setPatientLastName(String patientLastName) {
+        this.patientLastName = patientLastName;
     }
 
     public LocalDate getPatientBirthDate() {
@@ -60,11 +69,16 @@ public class Patient {
         this.issuerOfPatientId = issuerOfPatientId;
     }
 
-    public Patient(String extid, String patientId, String patientName, LocalDate patientBirthDate, String patientSex, String issuerOfPatientId)
+    public String getPatientNameDicomFormat(){
+        return String.format("%s^%s", patientLastName, patientFirstName);
+    }
+
+    public Patient(String extid, String patientId, String patientFirstName, String patientLastName, LocalDate patientBirthDate, String patientSex, String issuerOfPatientId)
     {
         this.extid = extid;
         this.patientId = patientId;
-        this.patientName =patientName;
+        this.patientFirstName = patientFirstName;
+        this.patientLastName = patientLastName;
         this.patientBirthDate= patientBirthDate;
         this.patientSex = patientSex;
         this.issuerOfPatientId = issuerOfPatientId;

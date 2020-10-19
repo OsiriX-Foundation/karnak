@@ -12,7 +12,9 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.validator.StringLengthValidator;
 import org.apache.commons.lang3.StringUtils;
+import org.karnak.data.AppConfig;
 
+import javax.cache.Cache;
 import java.util.*;
 
 public class ExternalIDGrid extends Grid<Patient> {
@@ -26,7 +28,8 @@ public class ExternalIDGrid extends Grid<Patient> {
 
     private Grid.Column<Patient> extidColumn;
     private Grid.Column<Patient> patientIdColumn;
-    private Grid.Column<Patient> patientNameColumn;
+    private Grid.Column<Patient> patientFirstNameColumn;
+    private Grid.Column<Patient> patientLastNameColumn;
     private Grid.Column<Patient> issuerOfPatientIDColumn;
     private Grid.Column<Patient> patientBirthDateColumn;
     private Grid.Column<Patient> patientSexColumn;
@@ -37,7 +40,8 @@ public class ExternalIDGrid extends Grid<Patient> {
 
     private TextField externalIdField;
     private TextField patientIdField;
-    private TextField patientNameField;
+    private TextField patientFirstNameField;
+    private TextField patientLastNameField;
     private TextField issuerOfPatientIdField;
     private DatePicker patientBirthDateField;
     private Select<String> patientSexField;
@@ -47,11 +51,13 @@ public class ExternalIDGrid extends Grid<Patient> {
     private String LABEL_SAVE = "Save";
     private String LABEL_CANCEL = "Cancel";
     private String LABEL_DELETE = "Delete";
+    private Cache<String, Patient> cache;
 
     public ExternalIDGrid(){
         binder = new Binder<>(Patient.class);
         patientList = new ArrayList<>();
         dataProvider = (ListDataProvider<Patient>) getDataProvider();
+        cache = AppConfig.getInstance().getCache();
 
         setSizeFull();
         getElement().addEventListener("keyup", event -> editor.cancel())
@@ -76,6 +82,15 @@ public class ExternalIDGrid extends Grid<Patient> {
         });
 
         saveEditPatientButton.addClickListener(e -> {
+            final Patient patientEdit = new Patient(externalIdField.getValue(),
+                    patientIdField.getValue(),
+                    patientFirstNameField.getValue(),
+                    patientLastNameField.getValue(),
+                    patientBirthDateField.getValue(),
+                    patientSexField.getValue(),
+                    issuerOfPatientIdField.getValue());
+            cache.remove(editor.getItem().getExtid()); //old extid
+            cache.put(patientEdit.getExtid(), patientEdit); //new extid
             editor.save();
         });
         saveEditPatientButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -86,7 +101,8 @@ public class ExternalIDGrid extends Grid<Patient> {
     private void setElements() {
         extidColumn = addColumn(Patient::getExtid).setHeader("External Pseudonym");
         patientIdColumn = addColumn(Patient::getPatientId).setHeader("Patient ID");
-        patientNameColumn = addColumn(Patient::getPatientName).setHeader("Patient Name");
+        patientFirstNameColumn = addColumn(Patient::getPatientFirstName).setHeader("Patient fisrt name");
+        patientLastNameColumn = addColumn(Patient::getPatientLastName).setHeader("Patient last name");
         issuerOfPatientIDColumn = addColumn(Patient::getIssuerOfPatientId).setHeader("Issuer of patient ID");
         patientBirthDateColumn = addColumn(Patient::getPatientBirthDate).setHeader("Patient Birth Date");
         patientSexColumn = addColumn(Patient::getPatientSex).setHeader("Patient Sex");
@@ -98,7 +114,8 @@ public class ExternalIDGrid extends Grid<Patient> {
 
         externalIdField = new TextField();
         patientIdField = new TextField();
-        patientNameField = new TextField();
+        patientFirstNameField = new TextField();
+        patientLastNameField = new TextField();
         issuerOfPatientIdField = new TextField();
         patientBirthDateField = new DatePicker();
         patientSexField = new Select<>();
@@ -106,7 +123,8 @@ public class ExternalIDGrid extends Grid<Patient> {
 
         extidColumn.setEditorComponent(externalIdField);
         patientIdColumn.setEditorComponent(patientIdField);
-        patientNameColumn.setEditorComponent(patientNameField);
+        patientFirstNameColumn.setEditorComponent(patientFirstNameField);
+        patientLastNameColumn.setEditorComponent(patientLastNameField);
         issuerOfPatientIDColumn.setEditorComponent(issuerOfPatientIdField);
         patientBirthDateColumn.setEditorComponent(patientBirthDateField);
         patientSexColumn.setEditorComponent(patientSexField);
@@ -129,6 +147,7 @@ public class ExternalIDGrid extends Grid<Patient> {
             deletePatientButton.addClickListener( e -> {
                 patientList.remove(patient);
                 getDataProvider().refreshAll();
+                cache.remove(patient.getExtid());
             });
             return deletePatientButton;
         });
@@ -154,10 +173,15 @@ public class ExternalIDGrid extends Grid<Patient> {
                 .withValidator(new StringLengthValidator("Length must be between 1 and 50.", 1, 50))
                 .withStatusLabel(validationStatus).bind("patientId");
 
-        binder.forField(patientNameField)
-                .withValidator(StringUtils::isNotBlank, "Patient Name is empty")
+        binder.forField(patientFirstNameField)
+                .withValidator(StringUtils::isNotBlank, "Patient first name is empty")
                 .withValidator(new StringLengthValidator("Length must be between 1 and 50.", 1, 50))
-                .withStatusLabel(validationStatus).bind("patientName");
+                .withStatusLabel(validationStatus).bind("patientFirstName");
+
+        binder.forField(patientLastNameField)
+                .withValidator(StringUtils::isNotBlank, "Patient last name is empty")
+                .withValidator(new StringLengthValidator("Length must be between 1 and 50.", 1, 50))
+                .withStatusLabel(validationStatus).bind("patientLastName");
 
         binder.forField(issuerOfPatientIdField)
                 .withValidator(new StringLengthValidator("Length must be between 0 and 50.", 0, 50))

@@ -56,3 +56,7 @@ spring:
       jdbc:
         lob:
           non_contextual_creation: true
+  cache:
+    type: jcache
+    jcache:
+      provider: com.hazelcast.cache.impl.HazelcastServerCachingProvider
