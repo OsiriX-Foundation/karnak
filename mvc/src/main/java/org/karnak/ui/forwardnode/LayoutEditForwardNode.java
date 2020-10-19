@@ -9,9 +9,7 @@ import org.karnak.data.gateway.*;
 import org.karnak.ui.api.ForwardNodeAPI;
 import org.karnak.ui.component.ConfirmDialog;
 import org.karnak.ui.data.DestinationDataProvider;
-import org.karnak.ui.data.ProjectDataProvider;
 import org.karnak.ui.data.SourceNodeDataProvider;
-import org.karnak.ui.project.ProjectView;
 import org.karnak.ui.util.UIS;
 
 public class LayoutEditForwardNode extends VerticalLayout {
