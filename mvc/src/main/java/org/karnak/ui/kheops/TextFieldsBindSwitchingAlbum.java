@@ -4,6 +4,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import org.apache.commons.lang3.StringUtils;
+import org.dcm4che6.data.DicomObject;
 import org.json.JSONObject;
 import org.karnak.api.KheopsApi;
 import org.karnak.data.gateway.KheopsAlbums;
@@ -60,7 +61,7 @@ public class TextFieldsBindSwitchingAlbum {
                 .withValidator(value -> {
                     if (textCondition.getValue() != "") {
                         return (Boolean) ExpressionResult.isValid(textCondition.getValue(),
-                                new ExprConditionKheops(null),
+                                new ExprConditionKheops(DicomObject.newDicomObject()),
                                 Boolean.class);
                     }
                     return true;
