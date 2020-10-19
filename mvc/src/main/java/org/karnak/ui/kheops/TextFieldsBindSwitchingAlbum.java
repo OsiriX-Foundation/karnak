@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import org.karnak.api.KheopsApi;
 import org.karnak.data.gateway.KheopsAlbums;
 import org.karnak.expression.ExprConditionKheops;
+import org.karnak.expression.ExpressionError;
 import org.karnak.expression.ExpressionResult;
 import org.karnak.kheops.SwitchingAlbum;
 
@@ -22,6 +23,7 @@ public class TextFieldsBindSwitchingAlbum {
     private TextField textAuthorizationDestination;
     private TextField textAuthorizationSource;
     private TextField textCondition;
+    private ExpressionError expressionError;
 
     public TextFieldsBindSwitchingAlbum() {
         kheopsApi = new KheopsApi();
@@ -29,7 +31,7 @@ public class TextFieldsBindSwitchingAlbum {
         textAuthorizationDestination = new TextField();
         textAuthorizationSource = new TextField();
         textCondition = new TextField();
-
+        expressionError = new ExpressionError(true, "Condition is not valid");
         binder = setBinder();
 
     }
@@ -60,9 +62,11 @@ public class TextFieldsBindSwitchingAlbum {
         binder.forField(textCondition)
                 .withValidator(value -> {
                     if (textCondition.getValue() != "") {
-                        return (Boolean) ExpressionResult.isValid(textCondition.getValue(),
+                         expressionError = ExpressionResult.isValid(textCondition.getValue(),
                                 new ExprConditionKheops(DicomObject.newDicomObject()),
                                 Boolean.class);
+                         return expressionError.isValid();
+
                     }
                     return true;
                 }, "Condition is not valid")

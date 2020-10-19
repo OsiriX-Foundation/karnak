@@ -6,6 +6,7 @@ import org.dcm4che6.data.VR;
 import org.karnak.data.profile.ExcludedTag;
 import org.karnak.data.profile.IncludedTag;
 import org.karnak.data.profile.ProfileElement;
+import org.karnak.expression.ExpressionError;
 import org.karnak.expression.ExpressionResult;
 import org.karnak.profilepipe.action.AbstractAction;
 import org.karnak.profilepipe.action.ActionItem;
@@ -64,12 +65,12 @@ public class Expression extends AbstractProfileItem {
         }
 
         final String expr = arguments.get(0).getValue();
-        final boolean expressionIsValid = (Boolean) ExpressionResult.isValid(expr, new ExprAction(1, VR.AE,
+        final ExpressionError expressionError = ExpressionResult.isValid(expr, new ExprAction(1, VR.AE,
                 DicomObject.newDicomObject(), DicomObject.newDicomObject()), ActionItem.class);
 
-        if (!expressionIsValid) {
+        if (!expressionError.isValid()) {
             IllegalArgumentException expressionNotValid = new IllegalArgumentException(
-                    String.format("Expression is not valid: %s",  expr)
+                    String.format("Expression is not valid: \n\r%s", expressionError.getMsg())
             );
             throw expressionNotValid;
         }

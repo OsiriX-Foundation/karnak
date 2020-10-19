@@ -27,7 +27,7 @@ public class ExpressionResult {
         }
     }
 
-    public static Boolean isValid(String condition, ExpressionItem expressionItem, Class<?> typeOfReturn){
+    public static ExpressionError isValid(String condition, ExpressionItem expressionItem, Class<?> typeOfReturn){
         try {
             final ExpressionParser parser = new SpelExpressionParser();
             final EvaluationContext context = new StandardEvaluationContext(expressionItem);
@@ -35,9 +35,9 @@ public class ExpressionResult {
             context.setVariable("Tag", Tag.class);
             final Expression exp = parser.parseExpression(condition);
             Object o = exp.getValue(context, typeOfReturn);
-            return true;
+            return new ExpressionError(true, null);
         } catch (final Exception e) {
-            return false;
+            return new ExpressionError(false, e.getMessage());
         }
     }
 }
