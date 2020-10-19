@@ -4,6 +4,7 @@ import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.Tag;
 import org.dcm4che6.data.VR;
 import org.dcm4che6.util.TagUtils;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -23,8 +24,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class ProfilesTest {
-    /*
-    private final HMAC defaultHMAC = new HMAC();
+    private static HMAC defaultHMAC;
+
+    @BeforeAll
+    static void beforeAll() {
+        final byte[] HMAC_KEY = {121, -7, 104, 11, 126, -39, -128, -126, 114, -94, 40, -67, 61, -45, 59, -53};
+        defaultHMAC = new HMAC(HMAC_KEY);
+    }
 
     @Test
     void XactionTagsProfile(){
@@ -102,10 +108,11 @@ class ProfilesTest {
 
     @Test
     void shiftDateProfileOptionShiftRange(){
-        //SHIFT range with hmackey: HmacKeyToTEST -> days: 96, seconds: 56
+        //SHIFT range with hmackey: HmacKeyToTEST -> days: 57, seconds: 9
         final String projectSecret = "xN[LtKL!H5RUuQ}6";
+        byte[] HMAC_KEY = {85, 55, -40, -90, -102, 57, -5, -89, -77, -86, 22, -64, 89, -36, 2, 50};
         final String PatientID = "TEST-SHIFT-RANGE";
-        final HashContext hashContext = new HashContext(projectSecret, PatientID);
+        final HashContext hashContext = new HashContext(HMAC_KEY, PatientID);
         final HMAC hmac = new HMAC(hashContext);
         final DicomObject dataset1 = DicomObject.newDicomObject();
         final DicomObject dataset2 = DicomObject.newDicomObject();
@@ -120,9 +127,9 @@ class ProfilesTest {
         dataset2.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
         dataset2.setString(Tag.StudyInstanceUID, VR.UI, "12345");
         dataset2.setString(Tag.PatientAge, VR.AS, "069Y");
-        dataset2.setString(Tag.PatientBirthDate, VR.DA, "20080518");
-        dataset2.setString(Tag.AcquisitionDateTime, VR.DT, "20080424131407.000000");
-        dataset2.setString(Tag.InstanceCreationTime, VR.TM, "131639.000000");
+        dataset2.setString(Tag.PatientBirthDate, VR.DA, "20080626");
+        dataset2.setString(Tag.AcquisitionDateTime, VR.DT, "20080602131454.000000");
+        dataset2.setString(Tag.InstanceCreationTime, VR.TM, "131726.000000");
 
         Profile profile = new Profile("TEST", "0.9.1", "0.9.1", "DPA");
         ProfileElement profileElement = new ProfileElement("Shift Date with arguments", "action.on.dates", null, null, "shift_range", 0, profile);
@@ -268,5 +275,4 @@ class ProfilesTest {
         final ExprDCMElem exprDCMElem3 = new ExprDCMElem(TagUtils.intFromHexString("02100220"), VR.DA, "1M");
         assertFalse(Profiles.getResultCondition(input, exprDCMElem3)); // generate an exception
     }
-     */
 }
