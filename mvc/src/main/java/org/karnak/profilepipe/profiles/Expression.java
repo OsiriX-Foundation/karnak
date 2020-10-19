@@ -2,6 +2,7 @@ package org.karnak.profilepipe.profiles;
 
 import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
+import org.dcm4che6.data.VR;
 import org.karnak.data.profile.ExcludedTag;
 import org.karnak.data.profile.IncludedTag;
 import org.karnak.data.profile.ProfileElement;
@@ -60,6 +61,17 @@ public class Expression extends AbstractProfileItem {
                     "Cannot build the expression: Missing argument, the class need [expr] as parameters. Parameters given " + args
             );
             throw missingParameters;
+        }
+
+        final String expr = arguments.get(0).getValue();
+        final boolean expressionIsValid = (Boolean) ExpressionResult.isValid(expr, new ExprAction(1, VR.AE,
+                DicomObject.newDicomObject(), DicomObject.newDicomObject()), ActionItem.class);
+
+        if (!expressionIsValid) {
+            IllegalArgumentException expressionNotValid = new IllegalArgumentException(
+                    String.format("Expression is not valid: %s",  expr)
+            );
+            throw expressionNotValid;
         }
     }
 
