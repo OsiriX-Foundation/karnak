@@ -79,7 +79,7 @@ class ProfilesTest {
         profile.addProfilePipe(profileElement1);
         profile.addProfilePipe(profileElement2);
         final Profiles profiles = new Profiles(profile);
-        profiles.applyAction(dataset1, dataset1, "pseudonym", null, null, null);
+        profiles.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
         assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
 
@@ -127,7 +127,7 @@ class ProfilesTest {
         profile.addProfilePipe(profileElement2);
         profile.addProfilePipe(profileElement3);
         final Profiles profiles = new Profiles(profile);
-        profiles.applyAction(dataset1, dataset1, "pseudonym", null, null, null);
+        profiles.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
         assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
 
@@ -176,7 +176,7 @@ class ProfilesTest {
         profile.addProfilePipe(profileElement2);
         profile.addProfilePipe(profileElement3);
         final Profiles profiles = new Profiles(profile);
-        profiles.applyAction(dataset1, dataset1, "pseudonym", null, null, null);
+        profiles.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
         assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
 
@@ -238,7 +238,7 @@ class ProfilesTest {
         profile.addProfilePipe(profileElement3);
         profile.addProfilePipe(profileElement4);
         final Profiles profiles = new Profiles(profile);
-        profiles.applyAction(dataset1, dataset1, "pseudonym", null, null, null);
+        profiles.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
         assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
 
@@ -274,13 +274,13 @@ class ProfilesTest {
         dataset2.setString(Tag.PatientAge, VR.AS, "075Y");
         DicomElement dicomElemSeq2 = dataset2.newDicomSequence(Tag.ReferencedImageSequence);
         final DicomObject datasetSeq2 = DicomObject.newDicomObject();
-        datasetSeq2.setString(Tag.ReferencedSOPClassUID, VR.UI, "2.25.80882554847489547679668826866750604810");
-        datasetSeq2.setString(Tag.ReferencedFrameNumber, VR.UI, "2.25.80882554847489547679668826866750604810");
+        datasetSeq2.setString(Tag.ReferencedSOPClassUID, VR.UI, "2.25.278659998382609075216063956388837522977");
+        datasetSeq2.setString(Tag.ReferencedFrameNumber, VR.UI, "2.25.278659998382609075216063956388837522977");
         DicomElement dicomElemSeq22 = datasetSeq2.newDicomSequence(Tag.PurposeOfReferenceCodeSequence);
         dicomElemSeq2.addItem(datasetSeq2);
         final DicomObject datasetSeq22 = DicomObject.newDicomObject();
-        datasetSeq22.setString(Tag.CodeValue, VR.UI, "2.25.13029046442428981513793633037919132006");
-        datasetSeq22.setString(Tag.CodingSchemeDesignator, VR.UI, "2.25.13029046442428981513793633037919132006");
+        datasetSeq22.setString(Tag.CodeValue, VR.UI, "2.25.313557030369376654019214873435380124495");
+        datasetSeq22.setString(Tag.CodingSchemeDesignator, VR.UI, "2.25.313557030369376654019214873435380124495");
         dicomElemSeq22.addItem(datasetSeq22);
 
         final Profile profile = new Profile("TEST", "0.9.1", "0.9.1", "DPA");
@@ -290,11 +290,9 @@ class ProfilesTest {
 
         profile.addProfilePipe(profileElement1);
         final Profiles profiles = new Profiles(profile);
-        profiles.applyAction(dataset1, dataset1, "pseudonym", null, null, null);
+        profiles.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
         assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
-
-
 
     @Test
     void XactionTagsProfile(){
