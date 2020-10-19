@@ -35,7 +35,8 @@ public class AddNewPatientForm extends VerticalLayout {
 
     private TextField externalIdField;
     private TextField patientIdField;
-    private TextField patientNameField;
+    private TextField patientFirstNameField;
+    private TextField patientLastNameField;
     private TextField issuerOfPatientIdField;
     private DatePicker patientBirthDateField;
     private Select<String> patientSexField;
@@ -87,7 +88,7 @@ public class AddNewPatientForm extends VerticalLayout {
         });
 
         horizontalLayoutAddClear.add(clearFieldsButton, saveInMainzellisteButton, addNewPatientButton);
-        horizontalLayout1.add(externalIdField, patientIdField, patientNameField);
+        horizontalLayout1.add(externalIdField, patientIdField, patientFirstNameField, patientLastNameField);
         horizontalLayout2.add(issuerOfPatientIdField, patientBirthDateField, patientSexField);
         horizontalLayout3.add(horizontalLayoutAddClear);
         add(horizontalLayout1, horizontalLayout2, horizontalLayout3);
@@ -106,11 +107,13 @@ public class AddNewPatientForm extends VerticalLayout {
 
     private void setElements() {
         externalIdField = new TextField("External Pseudonym");
-        externalIdField.setWidth("33%");
+        externalIdField.setWidth("25%");
         patientIdField = new TextField("Patient ID");
-        patientIdField.setWidth("33%");
-        patientNameField = new TextField("Patient Name");
-        patientNameField.setWidth("33%");
+        patientIdField.setWidth("25%");
+        patientFirstNameField = new TextField("Patient first name");
+        patientFirstNameField.setWidth("25%");
+        patientLastNameField = new TextField("Patient last name");
+        patientLastNameField.setWidth("25%");
         issuerOfPatientIdField = new TextField("Issuer of patient ID");
         issuerOfPatientIdField.setWidth("33%");
         patientBirthDateField = new DatePicker("Patient Birth Date");
@@ -152,10 +155,15 @@ public class AddNewPatientForm extends VerticalLayout {
                 .withValidator(new StringLengthValidator("Length must be between 1 and 50.", 1, 50))
                 .bind("patientId");
 
-        binder.forField(patientNameField)
-                .withValidator(StringUtils::isNotBlank, "Patient Name is empty")
+        binder.forField(patientFirstNameField)
+                .withValidator(StringUtils::isNotBlank, "Patient first name is empty")
                 .withValidator(new StringLengthValidator("Length must be between 1 and 50.", 1, 50))
-                .bind("patientName");
+                .bind("patientFirstName");
+
+        binder.forField(patientLastNameField)
+                .withValidator(StringUtils::isNotBlank, "Patient last name is empty")
+                .withValidator(new StringLengthValidator("Length must be between 1 and 50.", 1, 50))
+                .bind("patientLastName");
 
         binder.forField(issuerOfPatientIdField)
                 .withValidator(new StringLengthValidator("Length must be between 0 and 50.", 0, 50))
@@ -185,7 +193,8 @@ public class AddNewPatientForm extends VerticalLayout {
     public void addPatientFieldsInGrid(){
         final Patient newPatient = new Patient(externalIdField.getValue(),
                 patientIdField.getValue(),
-                patientNameField.getValue(),
+                patientFirstNameField.getValue(),
+                patientLastNameField.getValue(),
                 patientBirthDateField.getValue(),
                 patientSexField.getValue(),
                 issuerOfPatientIdField.getValue());
@@ -206,7 +215,7 @@ public class AddNewPatientForm extends VerticalLayout {
     public void clearPatientFields(){
         externalIdField.clear();
         patientIdField.clear();
-        patientNameField.clear();
+        patientLastNameField.clear();
         issuerOfPatientIdField.clear();
         patientBirthDateField.clear();
         patientSexField.clear();
@@ -218,7 +227,7 @@ public class AddNewPatientForm extends VerticalLayout {
         if(binder.isValid()){
             final Fields newPatientFields = new Fields(
                     patientIdField.getValue(),
-                    patientNameField.getValue(),
+                    String.format("%s^%s", patientLastNameField.getValue(), patientFirstNameField.getValue()),
                     patientBirthDateField.getValue().format(DateTimeFormatter.ofPattern("YYYYMMdd")),
                     patientSexField.getValue(),
                     issuerOfPatientIdField.getValue());

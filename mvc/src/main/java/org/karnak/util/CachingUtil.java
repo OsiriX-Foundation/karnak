@@ -35,7 +35,7 @@ public class CachingUtil {
                 final Patient patient= cacheEntry.getValue();
                 final String key = cacheEntry.getKey();
                 final String patientBirthDateFormat = patient.getPatientBirthDate().format(DateTimeFormatter.ofPattern("YYYYMMdd"));
-                if (patient.getPatientId().equals(patientID) && patient.getPatientName().equals(patientName) &&
+                if (patient.getPatientId().equals(patientID) && patient.getPatientNameDicomFormat().equals(patientName) &&
                         patientBirthDateFormat.equals(patientBirthDate) &&
                         patient.getIssuerOfPatientId().equals(issuerOfPatientID) &&
                         patient.getPatientSex().equals(patientSex)) {
