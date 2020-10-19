@@ -13,7 +13,7 @@ import org.springframework.context.ApplicationEventPublisher;
 
 @Route(value = "project", layout = MainLayout.class)
 @PageTitle("KARNAK - Project")
-public class ProjectView extends VerticalLayout {
+public class MainViewProjects extends VerticalLayout {
     public static final String VIEW_NAME = "Project";
 
     private ProjectDataProvider projectDataProvider;
@@ -21,7 +21,7 @@ public class ProjectView extends VerticalLayout {
     private GridProject gridProject;
     private Binder<Project> newResearchBinder;
 
-    public ProjectView() {
+    public MainViewProjects() {
         newProjectForm = new NewProjectForm();
         projectDataProvider = new ProjectDataProvider();
         gridProject = new GridProject(projectDataProvider);

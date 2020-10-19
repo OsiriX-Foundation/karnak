@@ -9,7 +9,7 @@ import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.IdTypes;
 import org.karnak.data.gateway.Project;
 import org.karnak.ui.data.ProjectDataProvider;
-import org.karnak.ui.project.ProjectView;
+import org.karnak.ui.project.MainViewProjects;
 import org.karnak.ui.util.UIS;
 
 public class LayoutDesidentification extends Div {
@@ -91,7 +91,7 @@ public class LayoutDesidentification extends Div {
 
     private void navigateToProject() {
         getUI().ifPresent(nav -> {
-            nav.navigate(ProjectView.VIEW_NAME.toLowerCase());
+            nav.navigate(MainViewProjects.VIEW_NAME.toLowerCase());
         });
     }
 
