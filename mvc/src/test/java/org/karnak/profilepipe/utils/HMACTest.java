@@ -33,8 +33,8 @@ class HMACTest {
 
     @ParameterizedTest
     @MethodSource("providerByteHash")
-    void byteHash(HMAC hmac, String input, byte[] excepted) {
-        assertArrayEquals(excepted, hmac.byteHash(input));
+    void byteHash(HMAC hmac, String input, byte[] expected) {
+        assertArrayEquals(expected, hmac.byteHash(input));
     }
 
     private static Stream<Arguments> providerByteHash() {
@@ -108,8 +108,8 @@ class HMACTest {
 
     @ParameterizedTest
     @MethodSource("providerUIDHash")
-    void UIDHash(HMAC hmac, String input, String excepted) {
-        assertEquals(excepted, hmac.uidHash(input));
+    void UIDHash(HMAC hmac, String input, String expected) {
+        assertEquals(expected, hmac.uidHash(input));
     }
 
     private static Stream<Arguments> providerUIDHash() {
