@@ -7,6 +7,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.karnak.api.KheopsApi;
 import org.karnak.data.gateway.KheopsAlbums;
+import org.karnak.expression.ExprConditionKheops;
+import org.karnak.expression.ExpressionResult;
 import org.karnak.kheops.SwitchingAlbum;
 
 import java.util.List;
@@ -55,6 +57,14 @@ public class TextFieldsBindSwitchingAlbum {
                 .withValidator(StringUtils::isNotBlank,"Url API is mandatory")
                 .bind(KheopsAlbums::getUrlAPI, KheopsAlbums::setUrlAPI);
         binder.forField(textCondition)
+                .withValidator(value -> {
+                    if (textCondition.getValue() != "") {
+                        return (Boolean) ExpressionResult.isValid(textCondition.getValue(),
+                                new ExprConditionKheops(null),
+                                Boolean.class);
+                    }
+                    return true;
+                }, "Condition is not valid")
                 .bind(KheopsAlbums::getCondition, KheopsAlbums::setCondition);
         return binder;
     }

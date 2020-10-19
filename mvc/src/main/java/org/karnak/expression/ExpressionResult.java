@@ -26,4 +26,18 @@ public class ExpressionResult {
             throw new IllegalStateException(String.format("Cannot execute the parser expression for this expression: %s", condition));
         }
     }
+
+    public static Boolean isValid(String condition, ExpressionItem expressionItem, Class<?> typeOfReturn){
+        try {
+            final ExpressionParser parser = new SpelExpressionParser();
+            final EvaluationContext context = new StandardEvaluationContext(expressionItem);
+            context.setVariable("VR", VR.class);
+            context.setVariable("Tag", Tag.class);
+            final Expression exp = parser.parseExpression(condition);
+            Object o = exp.getValue(context, typeOfReturn);
+            return true;
+        } catch (final Exception e) {
+            return false;
+        }
+    }
 }

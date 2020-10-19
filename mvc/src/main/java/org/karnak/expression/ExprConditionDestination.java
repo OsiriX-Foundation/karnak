@@ -17,7 +17,11 @@ public class ExprConditionDestination implements ExpressionItem{
     public ExprConditionDestination(int tag, VR vr, DicomObject dcm, DicomObject dcmCopy){
         this.tag = Objects.requireNonNull(tag);
         this.vr = Objects.requireNonNull(vr);
-        this.stringValue = dcmCopy.getString(this.tag).orElse(null);
+        if (dcmCopy != null) {
+            this.stringValue = dcmCopy.getString(this.tag).orElse(null);
+        } else {
+            this.stringValue = null;
+        }
         this.dcmCopy = dcmCopy;
         this.dcm = dcm;
     }
