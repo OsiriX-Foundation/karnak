@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Shape;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -18,9 +20,11 @@ import org.dcm4che6.data.Tag;
 import org.dcm4che6.data.VR;
 import org.dcm4che6.img.op.MaskArea;
 import org.dcm4che6.img.util.DicomObjectUtil;
+import org.dcm4che6.util.DateTimeUtils;
 import org.dcm4che6.util.TagUtils;
 import org.karnak.api.PseudonymApi;
 import org.karnak.api.rqbody.Fields;
+import org.karnak.data.AppConfig;
 import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.IdTypes;
 import org.karnak.data.gateway.Project;
@@ -29,9 +33,12 @@ import org.karnak.data.profile.ProfileElement;
 import org.karnak.profilepipe.action.*;
 import org.karnak.profilepipe.profiles.AbstractProfileItem;
 import org.karnak.profilepipe.profiles.ActionTags;
+import org.karnak.profilepipe.profiles.CleanPixelData;
 import org.karnak.profilepipe.profiles.ProfileItem;
 import org.karnak.profilepipe.utils.ExprDCMElem;
 import org.karnak.profilepipe.utils.HMAC;
+import org.karnak.ui.extid.Patient;
+import org.karnak.util.CachingUtil;
 import org.karnak.profilepipe.utils.HashContext;
 import org.karnak.util.SpecialCharacter;
 import org.slf4j.Logger;
@@ -44,6 +51,7 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.weasis.core.util.StringUtil;
 import org.weasis.dicom.param.AttributeEditorContext;
+import javax.cache.Cache;
 
 public class Profiles {
     private final Logger LOGGER = LoggerFactory.getLogger(Profiles.class);
@@ -51,9 +59,11 @@ public class Profiles {
     private Profile profile;
     private final ArrayList<ProfileItem> profiles;
     private final Map<String, MaskArea> maskMap;
+    private Cache<String, Patient> cache;
 
     public Profiles(Profile profile) {
         this.maskMap = new HashMap<>();
+        this.cache = AppConfig.getInstance().getCache();
         this.profile = profile;
         this.profiles = createProfilesList();
     }
@@ -113,7 +123,12 @@ public class Profiles {
     public String getMainzellistePseudonym(DicomObject dcm, String externalPseudonym, IdTypes idTypes) throws IOException, InterruptedException {
         final String patientID = dcm.getString(Tag.PatientID).orElse(null);
         final String patientName = dcm.getString(Tag.PatientName).orElse(null);
-        final String patientBirthDate = dcm.getString(Tag.PatientBirthDate).orElse(null);
+        final String rawPatientBirthDate = dcm.getString(Tag.PatientBirthDate).orElse(null);
+        String patientBirthDate = null;
+        if (rawPatientBirthDate != null) {
+            final LocalDate patientBirthDateLocalDate = DateTimeUtils.parseDA(rawPatientBirthDate);
+            patientBirthDate = patientBirthDateLocalDate.format(DateTimeFormatter.ofPattern("YYYYMMdd"));
+        }
         String patientSex = dcm.getString(Tag.PatientSex).orElse(null);
         if (!patientSex.equals("M") && !patientSex.equals("F") && !patientSex.equals("O")) {
            patientSex = "O";
@@ -154,7 +169,8 @@ public class Profiles {
 
             ActionItem currentAction = null;
             ProfileItem currentProfile = null;
-            for (ProfileItem profile : profiles) {
+            for (ProfileItem profile : profiles.stream().filter(p -> !CleanPixelData.class.isInstance(p)).collect(
+                Collectors.toList())) {
                 currentProfile = profile;
 
                 boolean conditionIsOk = getResultCondition(profile.getCondition(), exprDCMElem);
@@ -207,11 +223,15 @@ public class Profiles {
                 throw new IllegalStateException("Cannot get a pseudonym in a DICOM tag");
             }
         } else {
-            try {
-                pseudonym = getMainzellistePseudonym(dcm, stringExtIDInDicom, idTypes);
-            } catch (Exception e) {
-                LOGGER.error("Cannot get a pseudonym with Mainzelliste API {}", e);
-                throw new IllegalStateException("Cannot get a pseudonym with Mainzelliste API");
+            pseudonym = CachingUtil.getPseudonym(dcm, cache);
+
+            if(pseudonym == null){
+                try {
+                    pseudonym = getMainzellistePseudonym(dcm, stringExtIDInDicom, idTypes);
+                } catch (Exception e) {
+                    LOGGER.error("Cannot get a pseudonym with Mainzelliste API {}", e);
+                    throw new IllegalStateException("Cannot get a pseudonym in cache or with Mainzelliste API");
+                }
             }
         }
 
@@ -229,7 +249,7 @@ public class Profiles {
         // Apply clean pixel data
         Optional<DicomElement> pix = dcm.get(Tag.PixelData);
         if (pix.isPresent() && !profile.getMasks().isEmpty() && profiles.stream()
-            .anyMatch(p -> CleanPixelData.class.isInstance(p.getAction(dcm, dcmCopy, pix.get(), hmac)))) {
+            .anyMatch(p -> CleanPixelData.class.isInstance(p))) {
             String sopClassUID = dcm.getString(Tag.SOPClassUID)
                 .orElseThrow(() -> new IllegalStateException("DICOM Object does not contain sopClassUID"));
             MaskArea mask = getMask(dcm.getString(Tag.StationName).orElse(null));
