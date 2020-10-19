@@ -40,6 +40,7 @@ public class NewProjectForm extends HorizontalLayout {
 
     public void clear() {
         textResearchName.clear();
+        profileDropDown.clear();
     }
 
     public Binder<Project> getBinder() {
