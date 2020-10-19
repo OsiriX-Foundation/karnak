@@ -9,6 +9,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
+import org.apache.commons.codec.binary.Hex;
 import org.slf4j.*;
 
 public class HMAC {
@@ -88,5 +89,20 @@ public class HMAC {
         byte bytes[] = new byte[KEY_BYTE_LENGTH];
         random.nextBytes(bytes);
         return bytes;
+    }
+
+    public static String formatKey(byte[] key) {
+        String hex_key = Hex.encodeHexString(key);
+        return formatKey(hex_key);
+    }
+
+    public static String formatKey(String key) {
+        return String.format("%s-%s-%s-%s-%s",
+                key.substring(0,8),
+                key.substring(8,12),
+                key.substring(12, 16),
+                key.substring(16, 20),
+                key.substring(20));
+
     }
 }

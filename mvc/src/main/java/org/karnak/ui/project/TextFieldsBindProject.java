@@ -6,6 +6,7 @@ import com.vaadin.flow.data.binder.Binder;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.data.gateway.Project;
+import org.karnak.profilepipe.utils.HMAC;
 import org.karnak.ui.forwardnode.ProfileDropDown;
 
 public class TextFieldsBindProject {
@@ -30,7 +31,7 @@ public class TextFieldsBindProject {
                 .bind(Project::getName, Project::setName);
         binder.forField(textSecret)
                 .withValidator(StringUtils::isNotBlank,"Secret is mandatory")
-                .bind(project -> Hex.encodeHexString(project.getSecret()), null);
+                .bind(project -> HMAC.formatKey(project.getSecret()), null);
         binder.forField(profileDropDown)
                 .withValidator(profilePipe -> profilePipe != null,
                         "Choose the de-identification profile\n")

@@ -137,4 +137,30 @@ class HMACTest {
                 Arguments.of(hmac1, "PatientID", 10, 100, 79)
         );
     }
+
+    @ParameterizedTest
+    @MethodSource("providerFormatKey")
+    void formatKey(String key, String expected){
+        assertEquals(expected, HMAC.formatKey(key));
+    }
+
+    private static Stream<Arguments> providerFormatKey() {
+        return Stream.of(
+                Arguments.of("43243243213412341234111111111111", "43243243-2134-1234-1234-111111111111"),
+                Arguments.of("23731831da23daf33e83123456789012", "23731831-da23-daf3-3e83-123456789012")
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("providerFormatKeyReplace")
+    void formatKeyReplace(String key){
+        assertEquals(key, HMAC.formatKey(key).replace("-", ""));
+    }
+
+    private static Stream<Arguments> providerFormatKeyReplace() {
+        return Stream.of(
+                Arguments.of("43243243213412341234111111111111"),
+                Arguments.of("23731831da23daf33e83123456789012")
+        );
+    }
 }
