@@ -30,8 +30,11 @@ public class TextFieldsBindProject {
                 .bind(Project::getName, Project::setName);
         binder.forField(textSecret)
                 .withValidator(StringUtils::isNotBlank,"Secret is mandatory")
-                .withValidator(HMAC::validKey, "Secret is not valid")
-                .bind(project -> HMAC.formatKey(project.getSecret()), (project, s) -> {
+                .withValidator(HMAC::validateKey, "Secret is not valid")
+                .bind(project -> {
+                    String hexKey = HMAC.byteToHex(project.getSecret());
+                    return HMAC.showHexKey(hexKey);
+                }, (project, s) -> {
                     project.setSecret(HMAC.hexToByte(s.replaceAll("-", "")));
                 });
         binder.forField(profileDropDown)

@@ -92,12 +92,11 @@ public class HMAC {
         return bytes;
     }
 
-    public static String formatKey(byte[] key) {
-        String hex_key = Hex.encodeHexString(key);
-        return formatKey(hex_key);
+    public static String byteToHex(byte[] key) {
+        return Hex.encodeHexString(key);
     }
 
-    public static String formatKey(String key) {
+    public static String showHexKey(String key) {
         return String.format("%s-%s-%s-%s-%s",
                 key.substring(0,8),
                 key.substring(8,12),
@@ -114,7 +113,7 @@ public class HMAC {
         }
     }
 
-    public static boolean validKey(String hexKey) {
+    public static boolean validateKey(String hexKey) {
         String cleanHexKey = hexKey.replaceAll("-", "");
         if (cleanHexKey.length() == 32) {
             return hexToByte(cleanHexKey) != null;

@@ -39,8 +39,8 @@ public class ProjectSecret extends Div {
 
     private void eventRegenerateSecret() {
         generateButton.addClickListener(event -> {
-            String generateSecret = HMAC.formatKey(HMAC.generateRandomKey());
-            textProjectSecret.setValue(generateSecret);
+            String generateSecret = HMAC.byteToHex(HMAC.generateRandomKey());
+            textProjectSecret.setValue(HMAC.showHexKey(generateSecret));
         });
     }
 }

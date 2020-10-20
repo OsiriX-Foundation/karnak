@@ -139,12 +139,28 @@ class HMACTest {
     }
 
     @ParameterizedTest
-    @MethodSource("providerFormatKey")
-    void formatKey(String key, String expected){
-        assertEquals(expected, HMAC.formatKey(key));
+    @MethodSource("providerByteToHex")
+    void byteToHex(String expected, byte[] key){
+        assertEquals(expected, HMAC.byteToHex(key));
     }
 
-    private static Stream<Arguments> providerFormatKey() {
+    private static Stream<Arguments> providerByteToHex() {
+        byte[] key1 = {-95, 96, 86, 89, 63, 27, -82, -2, -58, -51, -109, 32, 126, 87, 67, -92};
+        byte[] key2 = {35, 115, 24, 49, -38, 35, -38, -13, 62, -125, 18, 52, 86, 120, -112, 18};
+
+        return Stream.of(
+                Arguments.of("a16056593f1baefec6cd93207e5743a4", key1),
+                Arguments.of("23731831da23daf33e83123456789012", key2)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("providerShowHexKey")
+    void showHexKey(String key, String expected){
+        assertEquals(expected, HMAC.showHexKey(key));
+    }
+
+    private static Stream<Arguments> providerShowHexKey() {
         return Stream.of(
                 Arguments.of("43243243213412341234111111111111", "43243243-2134-1234-1234-111111111111"),
                 Arguments.of("23731831da23daf33e83123456789012", "23731831-da23-daf3-3e83-123456789012")
@@ -152,12 +168,12 @@ class HMACTest {
     }
 
     @ParameterizedTest
-    @MethodSource("providerFormatKeyReplace")
-    void formatKeyReplace(String key){
-        assertEquals(key, HMAC.formatKey(key).replace("-", ""));
+    @MethodSource("providerShowHexKeyReplace")
+    void showHexKeyReplace(String key){
+        assertEquals(key, HMAC.showHexKey(key).replace("-", ""));
     }
 
-    private static Stream<Arguments> providerFormatKeyReplace() {
+    private static Stream<Arguments> providerShowHexKeyReplace() {
         return Stream.of(
                 Arguments.of("43243243213412341234111111111111"),
                 Arguments.of("23731831da23daf33e83123456789012")
@@ -186,7 +202,7 @@ class HMACTest {
     @ParameterizedTest
     @MethodSource("providerSameResult")
     void sameResult(byte[] key){
-        assertArrayEquals(key, HMAC.hexToByte(HMAC.formatKey(key)));
+        assertArrayEquals(key, HMAC.hexToByte(HMAC.byteToHex(key)));
     }
 
     private static Stream<Arguments> providerSameResult() {
@@ -201,7 +217,7 @@ class HMACTest {
     @ParameterizedTest
     @MethodSource("providerValidKey")
     void validKey(String key){
-        assertTrue(HMAC.validKey(key));
+        assertTrue(HMAC.validateKey(key));
     }
 
     private static Stream<Arguments> providerValidKey() {
@@ -214,7 +230,7 @@ class HMACTest {
     @ParameterizedTest
     @MethodSource("providerNotValidKey")
     void notValidKey(String key){
-        assertFalse(HMAC.validKey(key));
+        assertFalse(HMAC.validateKey(key));
     }
 
     private static Stream<Arguments> providerNotValidKey() {
