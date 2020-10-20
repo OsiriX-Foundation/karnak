@@ -60,6 +60,10 @@ public class ProjectDataProvider extends ListDataProvider<Project> {
         refreshAll();
     }
 
+    public Project getProjectById(Long dataId) {
+        return projectPersistence.findById(dataId).orElse(null);
+    }
+
     public List<Project> getAllProjects() {
         return projectPersistence.findAll();
     }
