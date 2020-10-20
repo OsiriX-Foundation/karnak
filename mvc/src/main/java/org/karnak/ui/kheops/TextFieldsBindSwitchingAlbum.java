@@ -1,5 +1,6 @@
 package org.karnak.ui.kheops;
 
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
@@ -24,6 +25,7 @@ public class TextFieldsBindSwitchingAlbum {
     private TextField textAuthorizationSource;
     private TextField textCondition;
     private ExpressionError expressionError;
+    private Span textErrorConditionMsg;
 
     public TextFieldsBindSwitchingAlbum() {
         kheopsApi = new KheopsApi();
@@ -31,7 +33,8 @@ public class TextFieldsBindSwitchingAlbum {
         textAuthorizationDestination = new TextField();
         textAuthorizationSource = new TextField();
         textCondition = new TextField();
-        expressionError = new ExpressionError(true, "Condition is not valid");
+        textErrorConditionMsg = new Span();
+        expressionError = new ExpressionError(true, "");
         binder = setBinder();
 
     }
@@ -61,13 +64,14 @@ public class TextFieldsBindSwitchingAlbum {
                 .bind(KheopsAlbums::getUrlAPI, KheopsAlbums::setUrlAPI);
         binder.forField(textCondition)
                 .withValidator(value -> {
-                    if (textCondition.getValue() != "") {
+                    if (!textCondition.getValue().equals("")) {
                          expressionError = ExpressionResult.isValid(textCondition.getValue(),
                                 new ExprConditionKheops(DicomObject.newDicomObject()),
                                 Boolean.class);
+                         textErrorConditionMsg.setText(expressionError.getMsg());
                          return expressionError.isValid();
-
                     }
+                    textErrorConditionMsg.setText("");
                     return true;
                 }, "Condition is not valid")
                 .bind(KheopsAlbums::getCondition, KheopsAlbums::setCondition);
@@ -101,5 +105,9 @@ public class TextFieldsBindSwitchingAlbum {
 
     public TextField getTextCondition() {
         return textCondition;
+    }
+
+    public Span getTextErrorConditionMsg() {
+        return textErrorConditionMsg;
     }
 }
