@@ -18,7 +18,7 @@ public class EditProject extends VerticalLayout {
     private ProjectDataProvider projectDataProvider;
     private Binder<Project> binder;
     private TextField textProjectName;
-    private TextField textProjectSecret;
+    private ProjectSecret projectSecret;
     private ProfileDropDown profileDropDown;
     private HorizontalLayout horizontalLayoutButtons;
     private Button buttonUpdate;
@@ -34,7 +34,7 @@ public class EditProject extends VerticalLayout {
         setElements();
         setEventButtonAdd();
         setEventButtonRemove();
-        add(textProjectName, profileDropDown, textProjectSecret, horizontalLayoutButtons);
+        add(textProjectName, profileDropDown, projectSecret, horizontalLayoutButtons);
     }
 
     public void setProject(Project project) {
@@ -51,7 +51,7 @@ public class EditProject extends VerticalLayout {
 
     private void setEventButtonAdd() {
         buttonUpdate.addClickListener(event -> {
-            if (project != null){
+            if (project != null && binder.writeBeanIfValid(project)){
                 if (project.getDestinations()!=null && project.getDestinations().size()>0) {
                     ConfirmDialog dialog = new ConfirmDialog(
                     String.format("The project %s is used, are you sure you want to updated ?", project.getName()));
@@ -86,16 +86,13 @@ public class EditProject extends VerticalLayout {
         binder = textFieldsBindProject.getBinder();
         textProjectName = textFieldsBindProject.getTextResearchName();
         profileDropDown = textFieldsBindProject.getProfileDropDown();
-        textProjectSecret = textFieldsBindProject.getTextSecret();
+        projectSecret = new ProjectSecret(textFieldsBindProject.getTextSecret());
 
         textProjectName.setLabel("Project Name");
         textProjectName.setWidthFull();
 
         profileDropDown.setLabel("De-identification Profile");
         profileDropDown.setWidthFull();
-
-        textProjectSecret.setLabel("Project Secret");
-        textProjectSecret.setWidthFull();
 
         buttonUpdate = new Button("Update");
         buttonRemove = new Button("Remove");
@@ -105,7 +102,7 @@ public class EditProject extends VerticalLayout {
 
     private void clear() {
         textProjectName.clear();
-        textProjectSecret.clear();
         profileDropDown.clear();
+        projectSecret.clear();
     }
 }

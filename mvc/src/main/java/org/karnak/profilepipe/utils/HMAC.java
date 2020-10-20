@@ -9,6 +9,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
+import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.slf4j.*;
 
@@ -103,6 +104,21 @@ public class HMAC {
                 key.substring(12, 16),
                 key.substring(16, 20),
                 key.substring(20));
+    }
 
+    public static byte[] hexToByte(String hexKey) {
+        try {
+            return Hex.decodeHex(hexKey.replaceAll("-", ""));
+        } catch (DecoderException e) {
+            return null;
+        }
+    }
+
+    public static boolean validKey(String hexKey) {
+        String cleanHexKey = hexKey.replaceAll("-", "");
+        if (cleanHexKey.length() == 32) {
+            return hexToByte(cleanHexKey) != null;
+        }
+        return false;
     }
 }

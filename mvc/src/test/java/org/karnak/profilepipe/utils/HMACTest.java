@@ -163,4 +163,67 @@ class HMACTest {
                 Arguments.of("23731831da23daf33e83123456789012")
         );
     }
+
+    @ParameterizedTest
+    @MethodSource("providerHexToByte")
+    void hexToByte(String key, byte[] expected){
+        assertArrayEquals(expected, HMAC.hexToByte(key));
+    }
+
+    private static Stream<Arguments> providerHexToByte() {
+        byte[] outputExpected1 = {-95, 96, 86, 89, 63, 27, -82, -2, -58, -51, -109, 32, 126, 87, 67, -92};
+        byte[] outputExpected2 = {35, 115, 24, 49, -38, 35, -38, -13, 62, -125, 18, 52, 86, 120, -112, 18};
+
+        return Stream.of(
+                Arguments.of("a16056593f1baefec6cd93207e5743a4", outputExpected1),
+                Arguments.of("a1605659-3f1b-aefe-c6cd-93207e5743a4", outputExpected1),
+                Arguments.of("23731831da23daf33e83123456789012", outputExpected2),
+                Arguments.of("23731831-da23-daf3-3e83-123456789012", outputExpected2)
+        );
+    }
+
+
+    @ParameterizedTest
+    @MethodSource("providerSameResult")
+    void sameResult(byte[] key){
+        assertArrayEquals(key, HMAC.hexToByte(HMAC.formatKey(key)));
+    }
+
+    private static Stream<Arguments> providerSameResult() {
+        byte[] outputExpected1 = {-95, 96, 86, 89, 63, 27, -82, -2, -58, -51, -109, 32, 126, 87, 67, -92};
+        byte[] outputExpected2 = {35, 115, 24, 49, -38, 35, -38, -13, 62, -125, 18, 52, 86, 120, -112, 18};
+        return Stream.of(
+                Arguments.of(outputExpected1),
+                Arguments.of(outputExpected2)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("providerValidKey")
+    void validKey(String key){
+        assertTrue(HMAC.validKey(key));
+    }
+
+    private static Stream<Arguments> providerValidKey() {
+        return Stream.of(
+                Arguments.of("a1605659-3f1b-aefe-c6cd-93207e5743a4"),
+                Arguments.of("a16056593f1baefec6cd93207e5743a4")
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("providerNotValidKey")
+    void notValidKey(String key){
+        assertFalse(HMAC.validKey(key));
+    }
+
+    private static Stream<Arguments> providerNotValidKey() {
+        return Stream.of(
+                Arguments.of("a1605659-3f1b-aefe-c6cd-93207e5743"),
+                Arguments.of("a16056593f1baefec6cd93207e5743"),
+                Arguments.of("a1605659-3f1b-aefe-c6cd-93207e5743aG"),
+                Arguments.of("a16056593f1baefec6cd93207e5743aG"),
+                Arguments.of("")
+        );
+    }
 }
