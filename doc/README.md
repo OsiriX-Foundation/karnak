@@ -51,7 +51,7 @@ For each U action, KARNAK will hash the input value. A one-way function is creat
 
 It’s possible for a DICOM study to be de-identified several times and in different ways. This means that if a study is de-identified with specific characteristics, it will not be the same as if it is de-identified with other characteristics. So for each way to de-identified, a new UID will be generated even if it is the same input study.
 
-To ensure UID generation by de-identification method, a project will be associate to the destination. In KARNAK, a project must be create to use the de-idenfication. A project will be associate to a de-idenfication method and a secret generate randomly or import by the user. **The project's secret will be use has key for the HMAC.**
+To ensure UID generation by de-identification method, a project will be associate to the destination. In KARNAK, a project must be create to use the de-idenfication. A project defined a de-idenfication method and a secret generate randomly or import by the user. **The project's secret will be use as key for the HMAC.**
 
 #### Project secret
 
