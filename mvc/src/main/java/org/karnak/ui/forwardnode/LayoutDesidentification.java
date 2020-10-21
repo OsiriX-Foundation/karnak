@@ -7,16 +7,22 @@ import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.data.binder.Binder;
 import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.IdTypes;
+import org.karnak.data.gateway.Project;
+import org.karnak.ui.data.ProjectDataProvider;
+import org.karnak.ui.project.MainViewProjects;
 import org.karnak.ui.util.UIS;
 
 public class LayoutDesidentification extends Div {
-    private final Binder<Destination> destinationBinder;
+    private Binder<Destination> destinationBinder;
 
     private Checkbox checkboxDesidentification;
     private Checkbox checkboxUseAsPatientName;
-    private ProfileDropDown profileDropDown;
+    private ProjectDropDown projectDropDown;
     private ExtidPresentInDicomTagView extidPresentInDicomTagView;
+    private DesidentificationName desidentificationName;
     private Div div;
+    private ProjectDataProvider projectDataProvider;
+    private WarningNoProjectsDefined warningNoProjectsDefined;
 
     private final String LABEL_CHECKBOX_DESIDENTIFICATION = "Activate de-identification";
 
@@ -24,29 +30,39 @@ public class LayoutDesidentification extends Div {
     final String [] extidSentence = {"Pseudonym are generate automatically","Pseudonym is already store in KARNAK", "Pseudonym is in a DICOM tag"};
 
     public LayoutDesidentification(Binder<Destination> destinationBinder) {
+        projectDataProvider = new ProjectDataProvider();
         this.destinationBinder = destinationBinder;
+        projectDropDown = new ProjectDropDown();
+        desidentificationName = new DesidentificationName();
+
+        warningNoProjectsDefined = new WarningNoProjectsDefined();
+        warningNoProjectsDefined.setTextBtnCancel("Continue");
+        warningNoProjectsDefined.setTextBtnValidate("Create a project");
 
         setElements();
         setBinder();
         setEventCheckboxDesidentification();
         setEventExtidListBox();
+        setEventWarningDICOM();
 
-        div.add(profileDropDown);
         add(UIS.setWidthFull(new HorizontalLayout(checkboxDesidentification, div)));
 
         if (checkboxDesidentification.getValue()) {
-            div.add(extidListBox);
+            div.add(projectDropDown, desidentificationName, extidListBox);
         }
+
+        projectDropDown.addValueChangeListener(event -> {
+            setTextOnSelectionProject(event.getValue());
+        });
     }
 
     private void setElements() {
         checkboxDesidentification = new Checkbox(LABEL_CHECKBOX_DESIDENTIFICATION);
-        profileDropDown = new ProfileDropDown();
         checkboxDesidentification.setValue(true);
         checkboxDesidentification.setMinWidth("25%");
 
-        profileDropDown.setLabel("Choose a de-identification profile");
-        profileDropDown.setWidth("100%");
+        projectDropDown.setLabel("Choose a project");
+        projectDropDown.setWidth("100%");
 
         extidListBox = new Select<>();
         extidListBox.setLabel("Pseudonym type");
@@ -62,13 +78,35 @@ public class LayoutDesidentification extends Div {
 
     }
 
+    private void setEventWarningDICOM() {
+        warningNoProjectsDefined.getBtnCancel().addClickListener(btnEvent -> {
+            checkboxDesidentification.setValue(false);
+            warningNoProjectsDefined.close();
+        });
+        warningNoProjectsDefined.getBtnValidate().addClickListener(btnEvent -> {
+            warningNoProjectsDefined.close();
+            navigateToProject();
+        });
+    }
+
+    private void navigateToProject() {
+        getUI().ifPresent(nav -> {
+            nav.navigate(MainViewProjects.VIEW_NAME.toLowerCase());
+        });
+    }
+
     private void setEventCheckboxDesidentification(){
         checkboxDesidentification.addValueChangeListener(event -> {
             if (event.getValue() != null) {
-                profileDropDown.setEnabled(event.getValue());
-                if (event.getValue()){
-                    div.add(extidListBox);
+                if (event.getValue()) {
+                    if (projectDataProvider.getAllProjects().size() > 0) {
+                        div.add(projectDropDown, desidentificationName, extidListBox);
+                        setTextOnSelectionProject(projectDropDown.getValue());
+                    } else {
+                        warningNoProjectsDefined.open();
+                    }
                 } else {
+                    div.remove(projectDropDown, desidentificationName);
                     extidListBox.setValue(extidSentence[0]);
                     checkboxUseAsPatientName.clear();
                     extidPresentInDicomTagView.clear();
@@ -78,6 +116,16 @@ public class LayoutDesidentification extends Div {
                 }
             }
         });
+    }
+
+    private void setTextOnSelectionProject(Project project) {
+        if (project != null && project.getProfile() != null) {
+            desidentificationName.setShowValue(String.format("The profile %s will be used", project.getProfile().getName()));
+        } else if (project != null && project.getProfile() == null) {
+            desidentificationName.setShowValue("No profiles defined in the project");
+        } else {
+            desidentificationName.removeAll();
+        }
     }
 
     private void setEventExtidListBox() {
@@ -106,11 +154,12 @@ public class LayoutDesidentification extends Div {
     private void setBinder() {
         destinationBinder.forField(checkboxDesidentification)
                 .bind(Destination::getDesidentification, Destination::setDesidentification);
-        destinationBinder.forField(profileDropDown)
-                .withValidator(profilePipe -> profilePipe != null ||
-                                (profilePipe == null && checkboxDesidentification.getValue() == false),
-                        "Choose the de-identification profile\n")
-                .bind(Destination::getProfile, Destination::setProfile);
+        destinationBinder.forField(projectDropDown)
+                .withValidator(project ->
+                        project != null || (project == null && checkboxDesidentification.getValue() == false),
+                        "Choose a project")
+                .bind(Destination::getProject, Destination::setProject);
+
         destinationBinder.forField(extidListBox)
                 .withValidator(type -> type != null,"Choose pseudonym type\n")
                 .bind(destination -> {

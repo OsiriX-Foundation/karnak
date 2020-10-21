@@ -5,9 +5,9 @@ import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.Tag;
 import org.json.JSONObject;
 import org.karnak.api.KheopsApi;
-import org.karnak.data.AppConfig;
 import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.KheopsAlbums;
+import org.karnak.data.gateway.Project;
 import org.karnak.profilepipe.utils.HMAC;
 import org.karnak.util.ExpressionResult;
 import org.slf4j.Logger;
@@ -32,9 +32,9 @@ public class SwitchingAlbum {
         String authorizationSource = kheopsAlbums.getAuthorizationSource();
         String authorizationDestination = kheopsAlbums.getAuthorizationDestination();
         String condition = kheopsAlbums.getCondition();
-        String patientID = dcm.getStringOrElseThrow(Tag.PatientID);
-        String studyInstanceUID = hashUIDonDeidentification(destination, patientID, dcm.getStringOrElseThrow(Tag.StudyInstanceUID));
-        String seriesInstanceUID = hashUIDonDeidentification(destination, patientID, dcm.getStringOrElseThrow(Tag.SeriesInstanceUID));
+        HMAC hmac = generateHMAC(destination);
+        String studyInstanceUID = hashUIDonDeidentification(destination, dcm.getStringOrElseThrow(Tag.StudyInstanceUID), hmac);
+        String seriesInstanceUID = hashUIDonDeidentification(destination, dcm.getStringOrElseThrow(Tag.SeriesInstanceUID), hmac);
         String SOPInstanceUID = dcm.getStringOrElseThrow(Tag.SOPInstanceUID);
         String API_URL = kheopsAlbums.getUrlAPI();
         Long id = kheopsAlbums.getId();
@@ -57,10 +57,17 @@ public class SwitchingAlbum {
         }
     }
 
-    private static String hashUIDonDeidentification(Destination destination, String inputPatientID, String inputUID) {
+    private static HMAC generateHMAC(Destination destination) {
         if (destination.getDesidentification()) {
-            final String PatientIDProfile = HMAC.generatePatientIDProfile(inputPatientID, destination);
-            return AppConfig.getInstance().getHmac().uidHash(PatientIDProfile, inputUID);
+            Project project = destination.getProject();
+            return new HMAC(project.getSecret());
+        }
+        return null;
+    }
+
+    private static String hashUIDonDeidentification(Destination destination, String inputUID, HMAC hmac) {
+        if (destination.getDesidentification()) {
+            return hmac.uidHash(inputUID);
         }
         return inputUID;
     }

@@ -59,11 +59,19 @@ public class DestinationDataProvider extends ListDataProvider<Destination> {
         if (newData) {
             refreshAll();
         } else {
+            dataUpdated = removeValuesOnDisabledDesidentification(data);
             refreshItem(dataUpdated);
         }
         hasChanges = true;
         destinationPersistence.saveAndFlush(dataUpdated);
         kheopsAlbumsDataProvider.updateSwitchingAlbumsFromDestination(data);
+    }
+
+    private Destination removeValuesOnDisabledDesidentification(Destination data) {
+        if (data.getDesidentification() == false) {
+            data.setProject(null);
+        }
+        return data;
     }
 
     /**
@@ -77,6 +85,7 @@ public class DestinationDataProvider extends ListDataProvider<Destination> {
         destinationPersistence.deleteById(data.getId());
         // TODO: Le jours où la suprresion d'une destination se passera correctement SUPPRIMER cette ligne
         data.setKheopsAlbums(null);
+        data.setProject(null);
         destinationPersistence.saveAndFlush(data);
     }
 

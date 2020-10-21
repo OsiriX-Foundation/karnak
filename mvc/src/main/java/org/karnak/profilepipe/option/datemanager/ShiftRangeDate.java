@@ -14,18 +14,13 @@ import java.util.stream.Collectors;
 public class ShiftRangeDate {
     private static final Logger LOGGER = LoggerFactory.getLogger(ShiftRangeDate.class);
 
-    private final ShiftDate shiftDate = new ShiftDate();
-    private final HMAC hmac;
+    private final ShiftDate shiftDate;
 
     public ShiftRangeDate() {
-        this.hmac = AppConfig.getInstance().getHmac();
+        shiftDate = new ShiftDate();
     }
 
-    public ShiftRangeDate(HMAC hmac) {
-        this.hmac = hmac;
-    }
-
-    public String shift(DicomObject dcm, DicomElement dcmEl, List<Argument> arguments, String PatientID) {
+    public String shift(DicomObject dcm, DicomElement dcmEl, List<Argument> arguments, HMAC hmac) {
         try {
             verifyShiftArguments(arguments);
         } catch(IllegalArgumentException e) {
@@ -57,6 +52,7 @@ public class ShiftRangeDate {
             }
         }
         String dcmElValue = dcm.getString(dcmEl.tag()).orElse(null);
+        String PatientID = hmac.getHashContext().getPatientID();
         int shiftDays = (int) hmac.scaleHash(PatientID, shiftMinDays, shiftMaxDays);
         int shiftSeconds = (int) hmac.scaleHash(PatientID, shiftMinSeconds, shiftMaxSeconds);
 

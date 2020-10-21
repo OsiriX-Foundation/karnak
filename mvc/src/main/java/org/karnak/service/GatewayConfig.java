@@ -266,7 +266,8 @@ public class GatewayConfig {
             });
 
             final boolean desidentificationEnable = dstNode.getDesidentification();
-            if(desidentificationEnable && dstNode.getProfile() != null){ //TODO add an option in destination model
+            final boolean profileDefined = dstNode.getProject() != null && dstNode.getProject().getProfile() != null;
+            if(desidentificationEnable && profileDefined){ //TODO add an option in destination model
                 editors.add(new DeidentifyEditor(dstNode));
             }
 

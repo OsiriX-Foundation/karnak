@@ -5,6 +5,7 @@ import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.VR;
 import org.dcm4che6.util.TagUtils;
 import org.karnak.data.AppConfig;
+import org.karnak.profilepipe.utils.HMAC;
 
 import java.util.Iterator;
 
@@ -15,11 +16,11 @@ public class UID extends AbstractAction {
     }
 
     @Override
-    public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, String patientID) {
+    public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, HMAC hmac) {
         final String tagValueIn = dcm.getString(tag).orElse(null);
 
         String uidValue = dcm.getString(tag).orElse(null);
-        String uidHashed = AppConfig.getInstance().getHmac().uidHash(patientID, uidValue);
+        String uidHashed = hmac.uidHash(uidValue);
         dcm.setString(tag, VR.UI, uidHashed);
 
         final String tagValueOut = dcm.getString(tag).orElse(null);

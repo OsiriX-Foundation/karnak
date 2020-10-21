@@ -59,8 +59,8 @@ public class Destination {
     private List<KheopsAlbums> kheopsAlbums;
 
     @ManyToOne
-    @JoinColumn(name="profile_pipe_id")
-    private Profile profile;
+    @JoinColumn(name="project_id")
+    private Project project;
 
     // list of emails (comma separated) used when the images have been sent (or
     // partially sent) to the final destination. Note: if an issue appears before
@@ -157,7 +157,7 @@ public class Destination {
     protected Destination() {
         this.type = null;
         this.description = "";
-        this.desidentification = true;
+        this.desidentification = false;
         this.idTypes = IdTypes.PID;
         this.pseudonymAsPatientName = null;
         this.tag = null;
@@ -408,19 +408,6 @@ public class Destination {
             + ", notifyObjectValues=" + notifyObjectValues + ", notifyInterval=" + notifyInterval + "]";
     }
 
-    public Profile getProfile() {
-        return profile;
-    }
-
-    public String getProfilePipeName() {
-        return profile.getName();
-    }
-
-    public void setProfile(Profile profile) {
-        this.profile = profile;
-    }
-
-
     public IdTypes getIdTypes() {
         return idTypes;
     }
@@ -475,5 +462,13 @@ public class Destination {
 
     public void setKheopsAlbums(List<KheopsAlbums> kheopsAlbums) {
         this.kheopsAlbums = kheopsAlbums;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
     }
 }

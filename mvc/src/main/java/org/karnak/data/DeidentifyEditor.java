@@ -2,6 +2,7 @@ package org.karnak.data;
 
 import org.dcm4che6.data.DicomObject;
 import org.karnak.data.gateway.Destination;
+import org.karnak.data.gateway.Project;
 import org.karnak.profilepipe.Profiles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +17,8 @@ public class DeidentifyEditor implements AttributeEditor {
 
     public DeidentifyEditor(Destination destination) {
         this.destination = destination;
-        profiles = new Profiles(destination.getProfile());
+        Project project = destination.getProject();
+        profiles = new Profiles(project.getProfile());
     }
 
     @Override

@@ -27,6 +27,7 @@ import org.karnak.api.rqbody.Fields;
 import org.karnak.data.AppConfig;
 import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.IdTypes;
+import org.karnak.data.gateway.Project;
 import org.karnak.data.profile.Profile;
 import org.karnak.data.profile.ProfileElement;
 import org.karnak.profilepipe.action.*;
@@ -38,6 +39,7 @@ import org.karnak.profilepipe.utils.ExprDCMElem;
 import org.karnak.profilepipe.utils.HMAC;
 import org.karnak.ui.extid.Patient;
 import org.karnak.util.CachingUtil;
+import org.karnak.profilepipe.utils.HashContext;
 import org.karnak.util.SpecialCharacter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,12 +59,10 @@ public class Profiles {
     private Profile profile;
     private final ArrayList<ProfileItem> profiles;
     private final Map<String, MaskArea> maskMap;
-    private final HMAC hmac;
     private Cache<String, Patient> cache;
 
     public Profiles(Profile profile) {
         this.maskMap = new HashMap<>();
-        this.hmac = AppConfig.getInstance().getHmac();
         this.cache = AppConfig.getInstance().getCache();
         this.profile = profile;
         this.profiles = createProfilesList();
@@ -161,7 +161,8 @@ public class Profiles {
         return null;
     }
 
-    public void applyAction(DicomObject dcm, DicomObject dcmCopy, String patientID, ProfileItem profilePassedInSequence, ActionItem actionPassedInSequence, AttributeEditorContext context) {
+    public void applyAction(DicomObject dcm, DicomObject dcmCopy, HMAC hmac,
+                            ProfileItem profilePassedInSequence, ActionItem actionPassedInSequence, AttributeEditorContext context) {
         for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext(); ) {
             final DicomElement dcmEl = iterator.next();
             final ExprDCMElem exprDCMElem = new ExprDCMElem(dcmEl.tag(), dcmEl.vr(), dcm, dcmCopy);
@@ -174,7 +175,7 @@ public class Profiles {
 
                 boolean conditionIsOk = getResultCondition(profile.getCondition(), exprDCMElem);
                 if (conditionIsOk) {
-                    currentAction = profile.getAction(dcm, dcmCopy, dcmEl, patientID);
+                    currentAction = profile.getAction(dcm, dcmCopy, dcmEl, hmac);
                 }
 
                 if (currentAction != null) {
@@ -190,11 +191,11 @@ public class Profiles {
             if ( (!(Remove.class.isInstance(currentAction)) || !(ReplaceNull.class.isInstance(currentAction))) && dcmEl.vr() == VR.SQ) {
                 final ProfileItem finalCurrentProfile = currentProfile;
                 final ActionItem finalCurrentAction = currentAction;
-                dcmEl.itemStream().forEach(d -> applyAction(d, dcmCopy, patientID, finalCurrentProfile, finalCurrentAction, context));
+                dcmEl.itemStream().forEach(d -> applyAction(d, dcmCopy, hmac, finalCurrentProfile, finalCurrentAction, context));
             } else {
                 if (currentAction != null) {
                     try {
-                        currentAction.execute(dcm, dcmEl.tag(), iterator, patientID);
+                        currentAction.execute(dcm, dcmEl.tag(), iterator, hmac);
                     } catch (final Exception e) {
                         LOGGER.error("Cannot execute the currentAction {} for tag: {}", currentAction,  TagUtils.toString(dcmEl.tag()), e);
                     }
@@ -209,6 +210,7 @@ public class Profiles {
         final String PatientID = dcm.getString(Tag.PatientID).orElse(null);
         final String stringExtIDInDicom = getExtIDInDicom(dcm, destination);
         final IdTypes idTypes = destination.getIdTypes();
+        final HMAC hmac = generateHMAC(destination, PatientID);
 
         MDC.put("SOPInstanceUID", SOPinstanceUID);
         MDC.put("issuerOfPatientID", IssuerOfPatientID);
@@ -236,14 +238,13 @@ public class Profiles {
         String profilesCodeName = String.join(
                 "-" , profiles.stream().map(profile -> profile.getCodeName()).collect(Collectors.toList())
         );
-        BigInteger patientValue = generatePatientID(pseudonym, profilesCodeName);
+        BigInteger patientValue = generatePatientID(pseudonym, profilesCodeName, hmac);
         String newPatientName = !idTypes.equals(IdTypes.PID) && destination.getPseudonymAsPatientName() == true ?
                 pseudonym : patientValue.toString(16).toUpperCase();
         String newPatientID = patientValue.toString();
 
         DicomObject dcmCopy = DicomObject.newDicomObject();
         DicomObjectUtil.copyDataset(dcm, dcmCopy);
-        final String PatientIDProfile = HMAC.generatePatientIDProfile(PatientID, destination);
 
         // Apply clean pixel data
         Optional<DicomElement> pix = dcm.get(Tag.PixelData);
@@ -264,13 +265,33 @@ public class Profiles {
             }
         }
 
-        applyAction(dcm, dcmCopy, PatientIDProfile, null, null, context);
+        applyAction(dcm, dcmCopy, hmac, null, null, context);
 
-        setDefaultDeidentTagValue(dcm, newPatientID, newPatientName, profilesCodeName, pseudonym);
+        setDefaultDeidentTagValue(dcm, newPatientID, newPatientName, profilesCodeName, pseudonym, hmac);
         MDC.clear();
     }
 
-    public void setDefaultDeidentTagValue(DicomObject dcm, String patientID, String patientName, String profilePipeCodeName, String pseudonym){
+    private HMAC generateHMAC(Destination destination, String PatientID) {
+        Project project = destination.getProject();
+        if (project == null) {
+            throw new IllegalStateException("Cannot build the HMAC a project is not associate at the destination");
+        }
+
+        byte[] secret = project.getSecret();
+        if (secret == null || secret.length != HMAC.KEY_BYTE_LENGTH) {
+            throw new IllegalStateException("Cannot build the HMAC no secret defined in the project associate at the destination");
+        }
+
+        if (PatientID == null) {
+            throw new IllegalStateException("Cannot build the HMAC no PatientID given");
+        }
+
+        HashContext hashContext = new HashContext(secret, PatientID);
+        return new HMAC(hashContext);
+    }
+
+    public void setDefaultDeidentTagValue(DicomObject dcm, String patientID, String patientName, String profilePipeCodeName,
+                                          String pseudonym, HMAC hmac){
         final String profileFilename = profile.getName();
         final ArrayList<ExprDCMElem> defaultDeidentTagValue = new ArrayList<>();
         defaultDeidentTagValue.add(new ExprDCMElem(Tag.PatientID, VR.LO, patientID));
@@ -288,7 +309,7 @@ public class Profiles {
 
         defaultDeidentTagValue.forEach(newElem -> {
             final ActionItem add = new Add("A", newElem.getTag(), newElem.getVr(), newElem.getStringValue());
-            add.execute(dcm, newElem.getTag(), null, patientID);
+            add.execute(dcm, newElem.getTag(), null, hmac);
         });
     }
 
@@ -311,7 +332,7 @@ public class Profiles {
         return true; // if there is no condition we return true by default
     }
 
-    public BigInteger generatePatientID(String pseudonym, String profiles) {
+    public BigInteger generatePatientID(String pseudonym, String profiles, HMAC hmac) {
         byte[] bytes = new byte[16];
         System.arraycopy(hmac.byteHash(pseudonym + profiles), 0, bytes, 0, 16);
         return new BigInteger(1, bytes);

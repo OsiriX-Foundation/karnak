@@ -96,11 +96,6 @@ public class AppConfig {
         return new ConfidentialityProfiles();
     }
 
-    @Bean("HMAC")
-    public HMAC getHmac(){
-        return new HMAC();
-    }
-
     @Bean("CachePatient")
     public Cache<String, Patient> getCache(){
         final CachingProvider cachingProvider = Caching.getCachingProvider();

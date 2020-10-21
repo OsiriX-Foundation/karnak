@@ -4,6 +4,7 @@ import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.VR;
 import org.dcm4che6.util.TagUtils;
+import org.karnak.profilepipe.utils.HMAC;
 
 import java.util.Iterator;
 
@@ -14,7 +15,7 @@ public class Add extends AbstractAction{
     }
 
     @Override
-    public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, String patientID) {
+    public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, HMAC hmac) {
         final String tagValueIn = dcm.getString(newTag).orElse(null);
 
         dcm.get(newTag).ifPresentOrElse(dcmEl -> {
