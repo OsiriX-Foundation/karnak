@@ -25,7 +25,7 @@ public class CachingUtil {
                 patientBirthDate = patientBirthDateLocalDate.format(DateTimeFormatter.ofPattern("YYYYMMdd"));
             }
             final String issuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID).orElse("");
-            String patientSex = dcm.getString(Tag.PatientSex).orElse(null);
+            String patientSex = dcm.getString(Tag.PatientSex).orElse("O");
             if (!patientSex.equals("M") && !patientSex.equals("F") && !patientSex.equals("O")) {
                 patientSex = "O";
             }

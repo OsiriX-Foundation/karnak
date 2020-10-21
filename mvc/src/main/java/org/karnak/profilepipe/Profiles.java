@@ -126,7 +126,7 @@ public class Profiles {
             final LocalDate patientBirthDateLocalDate = DateTimeUtils.parseDA(rawPatientBirthDate);
             patientBirthDate = patientBirthDateLocalDate.format(DateTimeFormatter.ofPattern("YYYYMMdd"));
         }
-        String patientSex = dcm.getString(Tag.PatientSex).orElse(null);
+        String patientSex = dcm.getString(Tag.PatientSex).orElse("O");
         if (!patientSex.equals("M") && !patientSex.equals("F") && !patientSex.equals("O")) {
            patientSex = "O";
         }
