@@ -1,7 +1,9 @@
 KARNAK is a gateway for sending DICOM files to one or multiple Application Entity Title (AET).KARNAK offers the possibility to configure multiple destination for an AET.
 These destinations can communicate with the DICOM or DICOM WEB protocol.
 
-Besides different configurations of the destination like the DICOM endpoint or the credentials, it’s possible to assign a de-identification profile to a destination.
+Besides different configurations of the destination like the DICOM endpoint or the credentials, it’s possible to assign a project to a destination.
+
+A project defined the de-idenfication method and a secret that will be used for generate random values as UID or the shift date.
 
 The reference profile of de-identification is given by the [DICOM standard](hehttp://dicom.nema.org/medical/dicom/current/output/chtml/part15/chapter_E.html). This profile offer an exhaustive list of DICOM tags to manage to allow the de-identification of the instance.
 
@@ -43,21 +45,29 @@ KARNAK will use a default value by VR in this case.
 
 ## Action U, Generate a new UID
 
-For each U action, KARNAK will hash the input value. An one-way function is created to ensure that it is not possible to revert to the original UID. This function will hash the input UID and generate a UID from the hashed input.
+For each U action, KARNAK will hash the input value. A one-way function is created to ensure that it is not possible to revert to the original UID. This function will hash the input UID and generate a UID from the hashed input.
 
 ### Context
 
-...
+It’s possible for a DICOM study to be de-identified several times and in different ways. This means that if a study is de-identified with specific characteristics, it will not be the same as if it is de-identified with other characteristics. So for each way to de-identified, a new UID will be generated even if it is the same input study.
+
+To ensure UID generation by de-identification method, a project will be associate to the destination. In KARNAK, a project must be create to use the de-idenfication. A project will be associate to a de-idenfication method and a secret generate randomly or import by the user. **The project's secret will be use has key for the HMAC.**
+
+#### Project secret
+
+**The secret is 16 bytes** defined randomly when the project is created.
+
+An user can upload his own secret, but the uploaded secret must be 16 bytes. To allow easy uploading of secrets to the user, KARNAK offers to upload it in hexadecimal.
 
 ### Hash function
 
-The algorithm used for hashing is the “Message Authentication Code” (MAC). KARNAK used the MAC, not as message authentication, but as an one-way function. A definition, coming from the [JAVA Mac class](https://docs.oracle.com/pls/rdman/handle404?X_ORCL_404path=%2fen%2fjava%2fjavase%2f14%2fdocs%2fapi%2fjava.base%2fjavax%2fcrypto%2fMac.html)) used, is proposed to you here below:
+The algorithm used for hashing is the “Message Authentication Code” (MAC). KARNAK used the MAC, not as message authentication, but as a one-way function. A definition, coming from the [JAVA Mac class](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/javax/crypto/Mac.html) used, is proposed to you here below:
 
 « *A MAC provides a way to check the integrity of information transmitted over or stored in an unreliable medium, based on a secret key. Typically, message authentication codes are used between two parties that share a secret key in order to validate information transmitted between these parties.*
 
 *A MAC mechanism that is based on cryptographic hash functions is referred to as HMAC. HMAC can be used with any cryptographic hash function, e.g., SHA256 or SHA384, in combination with a secret shared key. HMAC is specified in RFC 2104.* »
 
-For each use of the HMAC, it uses the **SHA256** hash function **with a secret given at startup**.
+For each use of the HMAC, it uses the **SHA256** hash function **with a project's secret given**.
 
 ### Generate UID
 
