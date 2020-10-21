@@ -92,9 +92,23 @@ The hashed value will be converted in a positive decimal and added at the root o
 
 ```
 OID_ROOT = “2.25”
-uuid = HashedValue[0:16].toPositiveDecimal()
-
-uid = OID_ROOT + “.” + uuid
+uuid = OID_ROOT + “.” + HashedValue[0:16].toPositiveDecimal()
 ```
 
 ## Shift Date, Generate a random date
+
+KARNAK offer the possibility of shifting a date randomly. This shift must be the same in the context of the project and **for the patient**. For example, if a random shift is made for the birthdate of the patient "José Santos", it must be the same for each instance associate to "José Santos", even if the instance is loaded later.
+
+The random shift date will use the HMAC defined above and a scale days or seconds given by the user. If the scaled minimum isn't given, it will be set to 0.
+
+As the HMAC needs a value for the hash, the patientID will be used to ensure date consistency by patient.
+
+See the code below to show how KARNAK will generate a random value between a minimum (inclusive) and maximum (exclusive) given.
+
+```
+scaleHash(PatientID, scaledMin, scaledMax):
+    patientHashed = hmac.hash(PatientID)
+    scale = scaledMax - scaledMin
+
+    shift = (patientHashed[0:6].toPositiveDecimal() * scale) + scaledMin
+```
