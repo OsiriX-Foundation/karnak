@@ -12,7 +12,6 @@ import org.karnak.data.profile.IncludedTag;
 import org.karnak.data.profile.Profile;
 import org.karnak.data.profile.ProfileElement;
 import org.karnak.profilepipe.utils.DicomObjectTools;
-import org.karnak.profilepipe.utils.ExprDCMElem;
 import org.karnak.profilepipe.utils.HMAC;
 import org.karnak.profilepipe.utils.HashContext;
 import org.springframework.boot.test.context.SpringBootTest;
