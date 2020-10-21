@@ -6,6 +6,9 @@ import org.dcm4che6.data.VR;
 import org.karnak.data.profile.ExcludedTag;
 import org.karnak.data.profile.IncludedTag;
 import org.karnak.data.profile.ProfileElement;
+import org.karnak.expression.ExprConditionDestination;
+import org.karnak.expression.ExpressionError;
+import org.karnak.expression.ExpressionResult;
 import org.karnak.profilepipe.action.ActionItem;
 import org.karnak.profilepipe.action.Replace;
 import org.karnak.profilepipe.option.datemanager.ShiftDate;
@@ -58,6 +61,12 @@ public class ActionDates extends AbstractProfileItem {
             }
         } catch (Exception e) {
             throw e;
+        }
+
+        final ExpressionError expressionError = ExpressionResult.isValid(condition, new ExprConditionDestination(1, VR.AE,
+                DicomObject.newDicomObject(), DicomObject.newDicomObject()), Boolean.class);
+        if (condition != null && !expressionError.isValid()) {
+            throw new Exception(expressionError.getMsg());
         }
     }
 

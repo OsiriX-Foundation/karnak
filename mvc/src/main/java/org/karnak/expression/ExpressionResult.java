@@ -37,7 +37,7 @@ public class ExpressionResult {
             Object o = exp.getValue(context, typeOfReturn);
             return new ExpressionError(true, null);
         } catch (final Exception e) {
-            return new ExpressionError(false, e.getMessage());
+            return new ExpressionError(false, String.format("Expression is not valid: \n\r%s", e.getMessage()));
         }
     }
 }

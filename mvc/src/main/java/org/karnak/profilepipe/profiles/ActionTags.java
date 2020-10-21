@@ -3,9 +3,14 @@ package org.karnak.profilepipe.profiles;
 import java.awt.Color;
 import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
+import org.dcm4che6.data.VR;
 import org.karnak.data.profile.ExcludedTag;
 import org.karnak.data.profile.IncludedTag;
 import org.karnak.data.profile.ProfileElement;
+import org.karnak.expression.ExprAction;
+import org.karnak.expression.ExprConditionDestination;
+import org.karnak.expression.ExpressionError;
+import org.karnak.expression.ExpressionResult;
 import org.karnak.profilepipe.action.AbstractAction;
 import org.karnak.profilepipe.action.ActionItem;
 import org.karnak.profilepipe.utils.TagActionMap;
@@ -58,6 +63,12 @@ public class ActionTags extends AbstractProfileItem {
 
         if (tags == null || tags.size() <= 0) {
             throw new Exception("Cannot build the profile " + codeName + ": No tags defined");
+        }
+
+        final ExpressionError expressionError = ExpressionResult.isValid(condition, new ExprConditionDestination(1, VR.AE,
+                DicomObject.newDicomObject(), DicomObject.newDicomObject()), Boolean.class);
+        if (condition != null && !expressionError.isValid()) {
+            throw new Exception(expressionError.getMsg());
         }
     }
 

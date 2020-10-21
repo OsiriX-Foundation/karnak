@@ -34,4 +34,28 @@ public class ExprConditionDestination implements ExpressionItem{
         return DicomObjectTools.tagIsInDicomObject(tag, dcmCopy);
     }
 
+
+    public int getTag() {
+        return tag;
+    }
+
+    public void setTag(int tag) {
+        this.tag = tag;
+    }
+
+    public VR getVr() {
+        return vr;
+    }
+
+    public void setVr(VR vr) {
+        this.vr = vr;
+    }
+
+    public String getStringValue() {
+        return stringValue;
+    }
+
+    public void setStringValue(String stringValue) {
+        this.stringValue = stringValue;
+    }
 }
