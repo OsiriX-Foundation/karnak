@@ -30,12 +30,14 @@ import org.karnak.data.gateway.IdTypes;
 import org.karnak.data.gateway.Project;
 import org.karnak.data.profile.Profile;
 import org.karnak.data.profile.ProfileElement;
+import org.karnak.expression.ExprConditionDestination;
+import org.karnak.expression.ExpressionResult;
 import org.karnak.profilepipe.action.*;
 import org.karnak.profilepipe.profiles.AbstractProfileItem;
 import org.karnak.profilepipe.profiles.ActionTags;
 import org.karnak.profilepipe.profiles.CleanPixelData;
 import org.karnak.profilepipe.profiles.ProfileItem;
-import org.karnak.profilepipe.utils.ExprDCMElem;
+import org.karnak.expression.ExprAction;
 import org.karnak.profilepipe.utils.HMAC;
 import org.karnak.ui.extid.Patient;
 import org.karnak.util.CachingUtil;
@@ -44,11 +46,6 @@ import org.karnak.util.SpecialCharacter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
-import org.springframework.expression.EvaluationContext;
-import org.springframework.expression.Expression;
-import org.springframework.expression.ExpressionParser;
-import org.springframework.expression.spel.standard.SpelExpressionParser;
-import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.weasis.core.util.StringUtil;
 import org.weasis.dicom.param.AttributeEditorContext;
 import javax.cache.Cache;
@@ -165,7 +162,7 @@ public class Profiles {
                             ProfileItem profilePassedInSequence, ActionItem actionPassedInSequence, AttributeEditorContext context) {
         for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext(); ) {
             final DicomElement dcmEl = iterator.next();
-            final ExprDCMElem exprDCMElem = new ExprDCMElem(dcmEl.tag(), dcmEl.vr(), dcm, dcmCopy);
+            final ExprConditionDestination exprConditionDestination = new ExprConditionDestination(dcmEl.tag(), dcmEl.vr(), dcm, dcmCopy);
 
             ActionItem currentAction = null;
             ProfileItem currentProfile = null;
@@ -173,9 +170,13 @@ public class Profiles {
                 Collectors.toList())) {
                 currentProfile = profile;
 
-                boolean conditionIsOk = getResultCondition(profile.getCondition(), exprDCMElem);
-                if (conditionIsOk) {
+                if(profile.getCondition() == null){
                     currentAction = profile.getAction(dcm, dcmCopy, dcmEl, hmac);
+                } else {
+                    boolean conditionIsOk = (Boolean) ExpressionResult.get(profile.getCondition(), exprConditionDestination, Boolean.class);
+                    if (conditionIsOk) {
+                        currentAction = profile.getAction(dcm, dcmCopy, dcmEl, hmac);
+                    }
                 }
 
                 if (currentAction != null) {
@@ -293,19 +294,19 @@ public class Profiles {
     public void setDefaultDeidentTagValue(DicomObject dcm, String patientID, String patientName, String profilePipeCodeName,
                                           String pseudonym, HMAC hmac){
         final String profileFilename = profile.getName();
-        final ArrayList<ExprDCMElem> defaultDeidentTagValue = new ArrayList<>();
-        defaultDeidentTagValue.add(new ExprDCMElem(Tag.PatientID, VR.LO, patientID));
-        defaultDeidentTagValue.add(new ExprDCMElem(Tag.PatientName, VR.PN, patientName));
-        defaultDeidentTagValue.add(new ExprDCMElem(Tag.PatientIdentityRemoved, VR.CS, "YES"));
+        final ArrayList<ExprAction> defaultDeidentTagValue = new ArrayList<>();
+        defaultDeidentTagValue.add(new ExprAction(Tag.PatientID, VR.LO, patientID));
+        defaultDeidentTagValue.add(new ExprAction(Tag.PatientName, VR.PN, patientName));
+        defaultDeidentTagValue.add(new ExprAction(Tag.PatientIdentityRemoved, VR.CS, "YES"));
         // 0012,0063 -> module patient
         // A description or label of the mechanism or method use to remove the Patient's identity
-        defaultDeidentTagValue.add(new ExprDCMElem(Tag.DeidentificationMethod, VR.LO, profilePipeCodeName));
-        defaultDeidentTagValue.add(new ExprDCMElem(Tag.ClinicalTrialSponsorName, VR.LO, profilePipeCodeName));
-        defaultDeidentTagValue.add(new ExprDCMElem(Tag.ClinicalTrialProtocolID, VR.LO, profileFilename));
-        defaultDeidentTagValue.add(new ExprDCMElem(Tag.ClinicalTrialSubjectID, VR.LO, pseudonym));
-        defaultDeidentTagValue.add(new ExprDCMElem(Tag.ClinicalTrialProtocolName, VR.LO, (String) null));
-        defaultDeidentTagValue.add(new ExprDCMElem(Tag.ClinicalTrialSiteID, VR.LO, (String) null));
-        defaultDeidentTagValue.add(new ExprDCMElem(Tag.ClinicalTrialSiteName, VR.LO, (String) null));
+        defaultDeidentTagValue.add(new ExprAction(Tag.DeidentificationMethod, VR.LO, profilePipeCodeName));
+        defaultDeidentTagValue.add(new ExprAction(Tag.ClinicalTrialSponsorName, VR.LO, profilePipeCodeName));
+        defaultDeidentTagValue.add(new ExprAction(Tag.ClinicalTrialProtocolID, VR.LO, profileFilename));
+        defaultDeidentTagValue.add(new ExprAction(Tag.ClinicalTrialSubjectID, VR.LO, pseudonym));
+        defaultDeidentTagValue.add(new ExprAction(Tag.ClinicalTrialProtocolName, VR.LO, (String) null));
+        defaultDeidentTagValue.add(new ExprAction(Tag.ClinicalTrialSiteID, VR.LO, (String) null));
+        defaultDeidentTagValue.add(new ExprAction(Tag.ClinicalTrialSiteName, VR.LO, (String) null));
 
         defaultDeidentTagValue.forEach(newElem -> {
             final ActionItem add = new Add("A", newElem.getTag(), newElem.getVr(), newElem.getStringValue());
@@ -313,24 +314,6 @@ public class Profiles {
         });
     }
 
-    public static boolean getResultCondition(String condition, ExprDCMElem exprDCMElem){
-        final Logger LOGGER = LoggerFactory.getLogger(Profiles.class);
-        if (condition!=null) {
-            try {
-                //https://docs.spring.io/spring/docs/3.0.x/reference/expressions.html
-                final ExpressionParser parser = new SpelExpressionParser();
-                final EvaluationContext context = new StandardEvaluationContext(exprDCMElem);
-                final String cleanCondition = exprDCMElem.conditionInterpreter(condition);
-                context.setVariable("VR", VR.class);
-                context.setVariable("Tag", Tag.class);
-                final Expression exp = parser.parseExpression(cleanCondition);
-                return exp.getValue(context, Boolean.class);
-            } catch (final Exception e) {
-                LOGGER.error("Cannot execute the parser expression for this expression: {}", condition, e);
-            }
-        }
-        return true; // if there is no condition we return true by default
-    }
 
     public BigInteger generatePatientID(String pseudonym, String profiles, HMAC hmac) {
         byte[] bytes = new byte[16];

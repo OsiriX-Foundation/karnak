@@ -1,12 +1,17 @@
 package org.karnak.ui.kheops;
 
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import org.apache.commons.lang3.StringUtils;
+import org.dcm4che6.data.DicomObject;
 import org.json.JSONObject;
 import org.karnak.api.KheopsApi;
 import org.karnak.data.gateway.KheopsAlbums;
+import org.karnak.expression.ExprConditionKheops;
+import org.karnak.expression.ExpressionError;
+import org.karnak.expression.ExpressionResult;
 import org.karnak.kheops.SwitchingAlbum;
 
 import java.util.List;
@@ -19,6 +24,8 @@ public class TextFieldsBindSwitchingAlbum {
     private TextField textAuthorizationDestination;
     private TextField textAuthorizationSource;
     private TextField textCondition;
+    private ExpressionError expressionError;
+    private Span textErrorConditionMsg;
 
     public TextFieldsBindSwitchingAlbum() {
         kheopsApi = new KheopsApi();
@@ -26,7 +33,8 @@ public class TextFieldsBindSwitchingAlbum {
         textAuthorizationDestination = new TextField();
         textAuthorizationSource = new TextField();
         textCondition = new TextField();
-
+        textErrorConditionMsg = new Span();
+        expressionError = new ExpressionError(true, "");
         binder = setBinder();
 
     }
@@ -55,6 +63,17 @@ public class TextFieldsBindSwitchingAlbum {
                 .withValidator(StringUtils::isNotBlank,"Url API is mandatory")
                 .bind(KheopsAlbums::getUrlAPI, KheopsAlbums::setUrlAPI);
         binder.forField(textCondition)
+                .withValidator(value -> {
+                    if (!textCondition.getValue().equals("")) {
+                         expressionError = ExpressionResult.isValid(textCondition.getValue(),
+                                new ExprConditionKheops(DicomObject.newDicomObject()),
+                                Boolean.class);
+                         textErrorConditionMsg.setText(expressionError.getMsg());
+                         return expressionError.isValid();
+                    }
+                    textErrorConditionMsg.setText("");
+                    return true;
+                }, "Condition is not valid")
                 .bind(KheopsAlbums::getCondition, KheopsAlbums::setCondition);
         return binder;
     }
@@ -86,5 +105,9 @@ public class TextFieldsBindSwitchingAlbum {
 
     public TextField getTextCondition() {
         return textCondition;
+    }
+
+    public Span getTextErrorConditionMsg() {
+        return textErrorConditionMsg;
     }
 }

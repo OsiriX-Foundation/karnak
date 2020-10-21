@@ -1,8 +1,10 @@
-package org.karnak.profilepipe.utils;
+package org.karnak.expression;
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.VR;
 import org.dcm4che6.util.TagUtils;
 import org.karnak.profilepipe.action.*;
+import org.karnak.profilepipe.utils.DicomObjectTools;
+import org.karnak.profilepipe.utils.TagActionMap;
 import org.weasis.core.util.StringUtil;
 
 import java.util.Arrays;
@@ -10,7 +12,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class ExprDCMElem {
+public class ExprAction implements ExpressionItem{
 
     private int tag;
     private VR vr;
@@ -18,7 +20,7 @@ public class ExprDCMElem {
     private DicomObject dcm;
     private DicomObject dcmCopy;
 
-    public ExprDCMElem(int tag, VR vr, DicomObject dcm, DicomObject dcmCopy){
+    public ExprAction(int tag, VR vr, DicomObject dcm, DicomObject dcmCopy){
         this.tag = Objects.requireNonNull(tag);
         this.vr = Objects.requireNonNull(vr);
         this.stringValue = dcmCopy.getString(this.tag).orElse(null);
@@ -26,7 +28,7 @@ public class ExprDCMElem {
         this.dcm = dcm;
     }
 
-    public ExprDCMElem(int tag, VR vr, String stringValue){
+    public ExprAction(int tag, VR vr, String stringValue){
         this.tag = Objects.requireNonNull(tag);
         this.vr = Objects.requireNonNull(vr);
         this.stringValue = stringValue;
@@ -54,38 +56,6 @@ public class ExprDCMElem {
 
     public void setStringValue(String stringValue) {
         this.stringValue = stringValue;
-    }
-
-    public String conditionInterpreter(String condition){
-        String[] conditionArray;
-
-        conditionArray = condition.split(" ");
-
-        List<String> newConditionList = Arrays.stream(conditionArray).map( elem -> {
-
-            if (isHexTag(elem)) {
-                String cleanTag = elem.replaceAll("[(),]", "").toUpperCase();
-                if ( (TagActionMap.isValidPattern(cleanTag))) {
-                    String currentTagPattern = cleanTag;
-                    int patternTag = TagUtils.intFromHexString(currentTagPattern.replace("X", "0"));
-                    int patternMask = TagUtils.intFromHexString(TagActionMap.getMask(currentTagPattern));
-
-                    if ((tag & patternMask) == patternTag) {
-                        return String.valueOf(tag);
-                    } else {
-                        return "null";
-                    }
-                }else{
-                    return String.valueOf(TagUtils.intFromHexString(cleanTag));
-                }
-
-            } else {
-                return elem;
-            }
-
-        }).collect(Collectors.toList());
-        final String delim = " ";
-        return String.join(delim, newConditionList);
     }
 
     public static boolean isHexTag(String elem){

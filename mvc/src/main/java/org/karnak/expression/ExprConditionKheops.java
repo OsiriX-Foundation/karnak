@@ -1,4 +1,4 @@
-package org.karnak.kheops;
+package org.karnak.expression;
 
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.Tag;
@@ -11,7 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class ExprConditionKheops {
+public class ExprConditionKheops implements ExpressionItem{
     private DicomObject dcm;
 
     public ExprConditionKheops(DicomObject dcm) {
@@ -38,27 +38,10 @@ public class ExprConditionKheops {
         return dcmValue != null ? dcmValue.endsWith(value) : false;
     }
 
-    public static String conditionInterpreter(String condition) {
-        String[] conditionArray = condition.split(" ");
+    public static void expressionValidation(String condition) throws Exception {
+        ExprConditionKheops exprConditionKheops = new ExprConditionKheops(DicomObject.newDicomObject());
+        ExpressionResult.get(condition, exprConditionKheops, Boolean.class);
 
-        List<String> newConditionList = Arrays.stream(conditionArray).map( elem -> {
-            if (isHexTag(elem)) {
-                String cleanTag = elem.replaceAll("[(),]", "").toUpperCase();
-                return String.valueOf(TagUtils.intFromHexString(cleanTag));
-            } else {
-                return elem;
-            }
-        }).collect(Collectors.toList());
-        return String.join(" ", newConditionList);
-    }
-
-    public static boolean isHexTag(String elem){
-        String cleanElem = elem.replaceAll("[(),]", "").toUpperCase();
-
-        if (!StringUtil.hasText(cleanElem) || cleanElem.length() != 8) {
-            return false;
-        }
-        return cleanElem.matches("[0-9A-FX]+");
     }
 
     /*

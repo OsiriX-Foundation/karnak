@@ -27,7 +27,7 @@ public class SwitchingAlbumsView extends CustomField<List<KheopsAlbums>> {
         newSwitchingAlbumBinder = newSwitchingAlbum.getBinder();
         kheopsAlbumsList = new ArrayList<>();
         layout = new VerticalLayout();
-        checkboxSwitchingAlbums = new Checkbox("Swithing in different KHEOPS albums");
+        checkboxSwitchingAlbums = new Checkbox("Switching in different KHEOPS albums");
         add(UIS.setWidthFull(checkboxSwitchingAlbums), layout);
         setEventCheckBox();
         setEventButtonAdd();
