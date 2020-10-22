@@ -252,17 +252,20 @@ public class Profiles {
         if (pix.isPresent() && !profile.getMasks().isEmpty() && profiles.stream()
             .anyMatch(p -> CleanPixelData.class.isInstance(p))) {
             String sopClassUID = dcm.getString(Tag.SOPClassUID)
-                .orElseThrow(() -> new IllegalStateException("DICOM Object does not contain sopClassUID"));
+                .orElseThrow(() -> new IllegalStateException("DICOM Object does not contain sopClassUID")) ;
+            String scuPattern =  sopClassUID + ".";
             MaskArea mask = getMask(dcm.getString(Tag.StationName).orElse(null));
             // A mask must be applied with all the US and Secondary Capture sopClassUID, and with BurnedInAnnotation
-            if (sopClassUID.startsWith("1.2.840.10008.5.1.4.1.1.6") || sopClassUID.startsWith("1.2.840.10008.5.1.4.1.1.7")
-                || sopClassUID.startsWith("1.2.840.10008.5.1.4.1.1.3") || "YES"
+            if (scuPattern.startsWith("1.2.840.10008.5.1.4.1.1.6.") || scuPattern.startsWith("1.2.840.10008.5.1.4.1.1.7.")
+                || scuPattern.startsWith("1.2.840.10008.5.1.4.1.1.3.") || scuPattern.equals("1.2.840.10008.5.1.4.1.1.77.1.1") || "YES"
                 .equalsIgnoreCase(dcm.getString(Tag.BurnedInAnnotation).orElse(null))) {
+                context.setMaskArea(mask);
                 if (mask == null) {
                     throw new IllegalStateException("Cannot clean pixel data to sopClassUID " + sopClassUID);
-                } else {
-                    context.setMaskArea(mask);
                 }
+            }
+            else {
+                context.setMaskArea(null);
             }
         }
 

@@ -17,8 +17,7 @@ logging:
       zaxxer: INFO
     org:
       atmosphere: WARN
-      dcm4che3:
-        net: INFO
+      dcm4che6: DEBUG
       hibernate: WARN
       springframework: INFO
       springframework.core.io.support: INFO
