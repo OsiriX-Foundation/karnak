@@ -20,22 +20,20 @@ public class DefaultDummy extends AbstractAction {
 
     @Override
     public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, HMAC hmac) {
-        final String tagValueIn = dcm.getString(tag).orElse(null);
-
-        final Optional<DicomElement> dcmItem = dcm.get(tag);
-        final DicomElement dcmEl = dcmItem.get();
-        final VR vr = dcmEl.vr();
+        Optional<DicomElement> dcmItem = dcm.get(tag);
+        DicomElement dcmEl = dcmItem.get();
+        VR vr = dcmEl.vr();
         String defaultDummyValue = switch (vr) {
             case AE, CS, LO, LT, PN, SH, ST, UN, UT, UC, UR -> "UNKNOWN";
-            case DS, FL, FD, IS, SL, SS, UL, US -> "0";
+            case DS, IS -> "0";
             case AS -> "045Y";
             case DA -> "19991111";
             case DT -> "19991111111111";
             case TM -> "111111";
-            case UI -> hmac.uidHash(tagValueIn);
+            case UI -> hmac.uidHash(dcm.getString(tag).orElse(null));
             default -> null;
         };
-        final ActionItem replace = new Replace(symbol, defaultDummyValue);
+        ActionItem replace = new Replace(symbol, defaultDummyValue);
         replace.execute(dcm, tag, iterator, hmac);
     }
 }
