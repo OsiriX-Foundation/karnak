@@ -1,0 +1,58 @@
+#  --------------------------------------------------------
+#  Karnak Application Profiles
+#  --------------------------------------------------------
+name: test-YAML
+environment: LOCAL
+karnakadmin: admin
+karnakpassword: admin
+mainzelliste:
+  apikey: 'changeThisApiKey'
+  serverurl: 'http://localhost:8083'
+  idtypes: 'pid'
+dcmprofile:
+  hmackey: 'HmacKeyToTEST'
+logging:
+  level:
+    com:
+      zaxxer: INFO
+    org:
+      atmosphere: WARN
+      dcm4che3:
+        net: INFO
+      hibernate: WARN
+      springframework: INFO
+      springframework.core.io.support: INFO
+      weasis: DEBUG
+      karnak: DEBUG
+    root: INFO
+server:
+  port: 8081
+spring:
+  profiles:
+    active: '@activatedProperties@'
+  datasource:
+    password: 5!KAnN@%98%d
+    url: 'jdbc:postgresql://localhost:5433/karnak'
+    username: karnak
+    hikari:
+      leak-detection-threshold: 2000
+      minimum-idle: 5
+      maximum-pool-size: 10
+      connection-timeout: 10000
+      idle-timeout: 20000
+      max-lifetime: 1800000
+  jpa:
+    hibernate:
+      # First time to create the db the value must be: create
+      ddl-auto: update
+    generate-ddl: false
+    show-sql: false
+    open-in-view: false
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+    properties:
+      hibernate:
+        temp:
+          use_jdbc_metadata_defaults: false
+      jdbc:
+        lob:
+          non_contextual_creation: true

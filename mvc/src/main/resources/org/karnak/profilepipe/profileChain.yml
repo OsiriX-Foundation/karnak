@@ -1,0 +1,58 @@
+name: "My Favorite Chain"
+version: "0.9.4"
+minimumKarnakVersion: "0.1"
+defaultIssuerOfPatientID: "DPA"
+profileElements:
+  - name: "Keep tags"
+    codename: "action.on.specific.tags"
+    action: "K"
+    tags:
+      - "(0008,00Xx)"
+      - "0010,00xX"
+    excludedTags:
+      - "0008,0008"
+      - "0008,0013"
+
+  - name: "Remove tags"
+    codename: "action.on.specific.tags"
+    action: "X"
+    tags:
+      - "0008,0008"
+      - "0008,0013"
+
+  - name: "Missing tags (generate an error)"
+    codename: "action.on.specific.tags"
+    action: "X"
+
+  - name: "Missing action (generate an error)"
+    codename: "action.on.specific.tags"
+    tags:
+      - "0008,0008"
+      - "(0008,0012)"
+
+  - name: "Missing tags and action (generate an error)"
+    codename: "action.on.specific.tags"
+
+  - name: "Action D is not recognize in profile (generate an error)"
+    codename: "action.on.specific.tags"
+    action: "D"
+
+  - name: "Private tags"
+    codename: "action.on.privatetags"
+    action: "X"
+    tags:
+      - "001X,0010"
+      - "0009,0010"
+    excludedTags:
+      - "0011,0010"
+
+  - name: "Missing action (generate an error)"
+    codename: "action.on.privatetags"
+    tags:
+      - "001X,0010"
+      - "0009,0010"
+    excludedTags:
+      - "0011,0010"
+
+  - name: "DICOM basic profile"
+    codename: "basic.dicom.profile"

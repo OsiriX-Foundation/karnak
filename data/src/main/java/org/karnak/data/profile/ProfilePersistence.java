@@ -1,9 +1,11 @@
 package org.karnak.data.profile;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface ProfilePersistence extends JpaRepository<ProfileTable, Long> {
+@Repository
+public interface ProfilePersistence extends JpaRepository<Profile, Long> {
     Boolean existsByName(String name);
 
-    ProfileTable findByName(String name);
+    Boolean existsByNameAndBydefault(String name, Boolean bydefault);
 }

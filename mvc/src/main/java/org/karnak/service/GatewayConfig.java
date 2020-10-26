@@ -10,15 +10,18 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.dcm4che6.data.DicomObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.karnak.data.*;
+import org.karnak.data.gateway.*;
 import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.DestinationType;
 import org.karnak.data.gateway.DicomSourceNode;
 import org.karnak.data.gateway.ForwardNode;
 import org.karnak.data.gateway.GatewayPersistence;
-import org.karnak.ui.gateway.GatewayConfiguration;
+import org.karnak.kheops.SwitchingAlbum;
+import org.karnak.ui.data.GatewayConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
@@ -251,9 +254,21 @@ public class GatewayConfig {
             if(filterBySOPClassesEnable) {
                 editors.add(new FilterEditor(dstNode.getSOPClassUIDFilters()));
             }
+
+            final List<KheopsAlbums> listKheopsAlbums = dstNode.getKheopsAlbums();
+            SwitchingAlbum switchingAlbum = new SwitchingAlbum();
+            editors.add((DicomObject dcm, AttributeEditorContext context) -> {
+                if (listKheopsAlbums != null) {
+                    listKheopsAlbums.forEach(kheopsAlbums -> {
+                        switchingAlbum.apply(dstNode, kheopsAlbums, dcm);
+                    });
+                }
+            });
+
             final boolean desidentificationEnable = dstNode.getDesidentification();
-            if(desidentificationEnable){ //TODO add an option in destination model
-                editors.add(new DeidentifyEditor());
+            final boolean profileDefined = dstNode.getProject() != null && dstNode.getProject().getProfile() != null;
+            if(desidentificationEnable && profileDefined){ //TODO add an option in destination model
+                editors.add(new DeidentifyEditor(dstNode));
             }
 
             DicomProgress progress = new DicomProgress();
@@ -298,6 +313,14 @@ public class GatewayConfig {
                 WebForwardDestination fwd = new WebForwardDestination(dstNode.getId(), fwdSrcNode, dstNode.getUrl(),
                         map, progress, editors);
                 progress.addProgressListener(new EmailNotifyProgress(streamRegistry, fwd, emails, this, notifConfig));
+                progress.addProgressListener((DicomProgress dicomProgress) -> {
+                    DicomObject dcm = dicomProgress.getAttributes();
+                    if (listKheopsAlbums != null) {
+                        listKheopsAlbums.forEach(kheopsAlbums -> {
+                            switchingAlbum.applyAfterTransfer(kheopsAlbums, dcm);
+                        });
+                    }
+                });
                 dstList.add(fwd);
             } else {
                 DicomNode destinationNode =

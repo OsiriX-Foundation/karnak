@@ -8,13 +8,13 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
 @Route(value = "about", layout = MainLayout.class)
-@PageTitle("About")
+@PageTitle("KARNAK - About")
 @SuppressWarnings("serial")
 public class AboutView extends VerticalLayout {
     public static final String VIEW_NAME = "About";
 
     public AboutView() {
-        add(new H2("Karnak DICOM Gateway"));
+        add(new H2("About KARNAK"));
 
         setSizeFull();
     }

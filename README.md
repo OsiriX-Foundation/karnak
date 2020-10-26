@@ -1,11 +1,19 @@
-Karnak is a DICOM Gateway with normalization and de-identification capabilities.
+Karnak is a DICOM gateway for data de-identification and DICOM attribute normalization.
+
+Karnak manages a continuous DICOM flow with a DICOM listener as input and a DICOM and/or DICOMWeb as output.
 
 # Application Features
 
- - Allows a mapping between the AETitle of the DICOM Listener and the final DICOM destination  
- - Allows multiples destinations (DICOM StoreSCU and/or STWO-RS output)
- - Filter the images providers by AETitle and/or hostname (Guarantees the authenticity of the source)
+## Gateway
+- Allows to build mapping between a source and one or more destinations
+- Each destination can be DICOM or DICOMWeb
+- Filter the images providers by AETitle and/or hostname (ot ensure the authenticity of the source)
 
+## de-identification
+- Each destination can be configured with a specific de-identification profile
+- Configuration for sending only specific SopClassUIDs
+- [Build your own de-identification profile](https://github.com/OsiriX-Foundation/karnak-docker/blob/master/profileExample/README.md) or add modifications to the basic DICOM profile
+- Import and export the de-identification profiles
 
 # Build Karnak
 
@@ -59,6 +67,9 @@ To launch the UI, execute the maven command `mvn spring-boot:run -f mvc` in the 
         - `MAINZELLISTE_ID_TYPES=pid`
         - `MAINZELLISTE_API_KEY=changeThisApiKey`
         - `KARNAK_HMAC_KEY=changeThisHmacKey`
+        - `KARNAK_ADMIN=admin`
+        - `KARNAK_PASSWORD=admin`
+        - `KARNAK_WEB_PORT=8081`
 
     Note: the tmp folder must be adapted according to your system and the dicom-opencv must the last folder.
 <!--
@@ -96,6 +107,10 @@ Go on the root folder and launch the following command:
 `docker build -t karnak/locally:latest .`
 
 Run Karnak: `docker run -it -p8081:8081 -p11119:11119 karnak/locally:latest`
+
+## Run image from Docker Hub
+
+See [documentation](https://github.com/OsiriX-Foundation/karnak-docker)
 
 ## Docker environment variables
 
@@ -154,6 +169,23 @@ The key used for the HMAC. This HMAC will be used for all the hash created by ka
 `KARNAK_HMAC_KEY_FILE`
 
 The key used for the HMAC via file input. (alternative to `KARNAK_HMAC_KEY`).
+
+`KARNAK_LOGIN_ADMIN`
+
+Login used for Karnak. (optional, default is `admin`).
+
+`KARNAK_LOGIN_PASSWORD`
+
+Password used for Karnak. (optional, default is `undefined`).
+
+`KARNAK_LOGIN_PASSWORD_FILE`
+
+Password used for Karnak via file input. (alternative to `KARNAK_LOGIN_PASSWORD`).
+
+`KARNAK_WAIT_FOR`
+
+List of service to wait before start KARNAK.
+
 
 # Architecture
 

@@ -2,6 +2,7 @@ package org.karnak.ui.authentication;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.server.VaadinSession;
+import org.karnak.data.AppConfig;
 
 /**
  * Default mock implementation of {@link AccessControl}. This implementation
@@ -10,19 +11,18 @@ import com.vaadin.flow.server.VaadinSession;
  */
 @SuppressWarnings("serial")
 public class BasicAccessControl implements AccessControl {
+    private final String KARNAK_ADMIN = AppConfig.getInstance().getKarnakadmin();
+    private final String KARNAK_PASSWORD = AppConfig.getInstance().getKarnakpassword();
+
     @Override
     public boolean signIn(String username, String password) {
-        if (username == null || username.isEmpty())
-            return false;
-
-        if (!username.equals(password))
-            return false;
-
-        if (!"admin".equals(username))
-            return false;
-
         CurrentUser.set(username);
-        return true;
+
+        if(KARNAK_ADMIN.equals(username) && KARNAK_PASSWORD.equals(password)){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     @Override
@@ -34,7 +34,7 @@ public class BasicAccessControl implements AccessControl {
     public boolean isUserInRole(String role) {
         if ("admin".equals(role)) {
             // Only the "admin" user is in the "admin" role
-            return getPrincipalName().equals("admin");
+            return getPrincipalName().equals(KARNAK_ADMIN);
         }
 
         // All users are in all non-admin roles

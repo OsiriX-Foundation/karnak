@@ -1,0 +1,33 @@
+name: "Shift Date"
+version: "0.9.0"
+minimumKarnakVersion: "0.1"
+defaultIssuerOfPatientID: "DPA"
+profileElements:
+  - name: "Shift Range Date with arguments"
+    codename: "action.on.dates"
+    arguments:
+      max_seconds: 60
+      min_days: 50
+      max_days: 100
+    option: "shift_range"
+    tags:
+      - "0008,0012"
+      - "0008,002X"
+      - "0008,003X"
+    excludedTags:
+      - "0008,0030"
+      - "0008,0032"
+
+  - name: "Shift Date with arguments"
+    codename: "action.on.dates"
+    arguments:
+      seconds: 30
+      days: 10
+    option: "shift"
+    tags:
+      - "0010,XXXX"
+    excludedTags:
+      - "0010,1010"
+
+  - name: "DICOM basic profile"
+    codename: "basic.dicom.profile"
