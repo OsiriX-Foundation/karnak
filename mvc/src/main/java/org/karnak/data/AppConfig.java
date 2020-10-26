@@ -4,7 +4,7 @@ import org.karnak.data.profile.ProfilePersistence;
 import org.karnak.profilepipe.Profiles;
 import org.karnak.profilepipe.profilebody.ProfilePipeBody;
 import org.karnak.standard.ConfidentialityProfiles;
-import org.karnak.profilepipe.utils.HMAC;
+import org.karnak.standard.StandardDICOM;
 import org.karnak.ui.extid.Patient;
 import org.karnak.ui.profile.ProfilePipeService;
 import org.karnak.ui.profile.ProfilePipeServiceImpl;
