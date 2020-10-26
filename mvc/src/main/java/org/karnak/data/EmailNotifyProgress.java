@@ -79,35 +79,35 @@ public class EmailNotifyProgress implements ProgressListener {
 
                 if (notify) {
                     StringBuilder message = new StringBuilder("\nPatientID: ");
-                    message.append(study.getPatientID());
+                    write(message, study.getPatientID());
                     // Do not send by email patient name
                     if (study.getOtherPatientIDs() != null && study.getOtherPatientIDs().length > 0) {
                         message.append("\nOtherPatientIDs: ");
                         message.append(Arrays.toString(study.getOtherPatientIDs()));
                     }
                     message.append("\nStudy UID: ");
-                    message.append(study.getStudyInstanceUID());
+                    write(message, study.getStudyInstanceUID());
                     message.append("\nAccessionNumber: ");
-                    message.append(study.getAccessionNumber());
+                    write(message, study.getAccessionNumber());
                     message.append("\nStudy description: ");
-                    message.append(study.getStudyDescription());
+                    write(message, study.getStudyDescription());
                     message.append("\nStudy date: ");
-                    message.append(study.getStudyDate());
+                    write(message, study.getStudyDate());
                     message.append("\n\nList of Series transfered from [");
-                    message.append(forwardDestination.getForwardDicomNode());
+                    write(message, forwardDestination.getForwardDicomNode());
                     message.append("] to [");
-                    message.append(forwardDestination);
+                    write(message, forwardDestination);
                     message.append("]:");
                     boolean warn = false;
                     Collection<Series> seriesList = study.getSeries();
                     int msgLength = message.length();
                     for (Series series : seriesList) {
                         message.append("\n\n\tSeries UID: ");
-                        message.append(series.getSeriesInstanceUID());
+                        write(message, series.getSeriesInstanceUID());
                         message.append("\n\tSeries description: ");
-                        message.append(series.getSeriesDescription());
+                        write(message, series.getSeriesDescription());
                         message.append("\n\tSeries date: ");
-                        message.append(series.getSeriesDate());
+                        write(message, series.getSeriesDate());
                         message.append("\n\tNumber of transmitted DICOM files: ");
                         int unsent = (int) series.getSopInstances().stream().filter(s -> !s.isSent()).count();
                         message.append(series.getSopInstances().size() - unsent);
@@ -139,6 +139,12 @@ public class EmailNotifyProgress implements ProgressListener {
                     studyIt.remove();
                 }
             }
+        }
+    }
+
+    private void write(StringBuilder message, Object value){
+        if(value != null) {
+            message.append(value);
         }
     }
 

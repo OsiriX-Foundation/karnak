@@ -12,6 +12,7 @@ import org.weasis.dicom.param.AttributeEditorContext.Abort;
 
 public class FilterEditor  implements AttributeEditor {
     private Set<SOPClassUID> sopClassUIDSet;
+
     public FilterEditor(Set<SOPClassUID> sopClassUIDSet) {
         this.sopClassUIDSet = sopClassUIDSet;
     }
@@ -22,7 +23,7 @@ public class FilterEditor  implements AttributeEditor {
         Predicate<SOPClassUID> sopClassUIDPredicate = sopClassUID -> sopClassUID.getUid().equals(classUID);
         if (!sopClassUIDSet.stream().anyMatch(sopClassUIDPredicate)) {
             context.setAbort(Abort.FILE_EXCEPTION);
-            context.setAbortMessage(classUID + " is not in the SOPClassUID filter");
+            context.setAbortMessage(dcm.getString(Tag.SOPInstanceUID).orElse(null) + " is blocked because " + classUID + " is not in the SOPClassUID filter");
         }
     }
 }

@@ -14,6 +14,7 @@ public class CleanPixelData extends AbstractProfileItem {
 
     @Override
     public ActionItem getAction(DicomObject dcm, DicomObject dcmCopy, DicomElement dcmElem, HMAC hmac) {
+        // Action handles in the DICOM content not in metadata.
         return null;
     }
 }
