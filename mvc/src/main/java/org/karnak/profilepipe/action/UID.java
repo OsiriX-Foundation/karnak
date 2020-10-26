@@ -17,13 +17,9 @@ public class UID extends AbstractAction {
 
     @Override
     public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, HMAC hmac) {
-        final String tagValueIn = dcm.getString(tag).orElse(null);
-
         String uidValue = dcm.getString(tag).orElse(null);
         String uidHashed = hmac.uidHash(uidValue);
         dcm.setString(tag, VR.UI, uidHashed);
-
-        final String tagValueOut = dcm.getString(tag).orElse(null);
-        LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_INOUT, TagUtils.toString(tag), tag, symbol, tagValueIn, tagValueOut);
+        LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_INOUT, TagUtils.toString(tag), tag, symbol, uidValue, uidHashed);
     }
 }
