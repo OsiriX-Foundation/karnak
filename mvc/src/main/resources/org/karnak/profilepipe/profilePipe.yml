@@ -1,7 +1,7 @@
 name: "My Favorite Chain"
-version: "0.9.4"
-minimumKarnakVersion: "0.1"
-defaultIssuerOfPatientID: "DPA"
+version: "1.0"
+minimumKarnakVersion: "0.9.2"
+defaultIssuerOfPatientID:
 profileElements:
   - name: "Keep tags"
     codename: "action.on.specific.tags"
