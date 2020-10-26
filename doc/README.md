@@ -36,12 +36,13 @@ The action D must replace the Tag’s field with a dummy value. This field must 
 KARNAK will use a default value by VR in this case.
 
 * AE, CS, LO, LT, PN, SH, ST, UN, UT, UC, UR → “UNKNOWN”
-* DS, FL, FD, IS, SL, SS, UL, US → “0”
-* AS → “045Y”
-* DA → “19991111”
-* DT → “19991111111111”
-* TM → “111111”
+* DS, IS → “0”
+* AS, DA, DT, TM → shiftRange(), the generation of a date will be explained below, **Shift Date, Generate a random date**
 * UI → Action U, the generation of a new UID will be explained below, see **Action U, Generate a new UID**.
+
+The *shiftRange()* gives random value between a given max days and seconds. By default the max days defined is **365** and the max seconds is **86400**.
+
+The following VRs *FL, FD, SL, SS, UL, US* are of type Binary. By default KARNAK will set to null the value of this VR.
 
 ## Action U, Generate a new UID
 
