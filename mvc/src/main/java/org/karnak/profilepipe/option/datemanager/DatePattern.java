@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,18 +17,38 @@ public class DatePattern {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DatePattern.class);
 
-    public static String formatDA(String date, String format) {
+    public static String formatDA(String date, String option) {
+        LocalDate localDate = DateTimeUtils.parseDA(date);
 
-        final LocalDate localDate = DateTimeUtils.parseDA(date);
-        String newLocalDate = localDate.format(DateTimeFormatter.ofPattern("YYYYMM"));
+        switch (option) {
+            case "remove_day" :
+                localDate = localDate.minusDays(localDate.getDayOfMonth() - 1);
+                break;
+            case "remove_month_day" :
+                localDate = localDate.minusDays(localDate.getDayOfMonth() - 1);
+                localDate = localDate.minusMonths(localDate.getMonthValue() - 1);
+        };
+
+        String newLocalDate = localDate.format(DateTimeFormatter.ofPattern("YYYYMMdd"));
         return newLocalDate;
     }
 
 
 
-    public static String formatDT(String dateTime, String format) {
-        final LocalDate localDate = DateTimeUtils.parseDA(dateTime);
-        String newLocalDate = localDate.format(DateTimeFormatter.ofPattern("YYYYMM"));
+    public static String formatDT(String dateTime, String option) {
+
+        LocalDateTime localDateTime = LocalDateTime.from(DateTimeUtils.parseDT(dateTime));
+
+        switch (option) {
+            case "remove_day" :
+                localDateTime = localDateTime.minusDays(localDateTime.getDayOfMonth() - 1);
+                break;
+            case "remove_month_day" :
+                localDateTime = localDateTime.minusDays(localDateTime.getDayOfMonth() - 1);
+                localDateTime = localDateTime.minusMonths(localDateTime.getMonthValue() - 1);
+        };
+
+        String newLocalDate = DateTimeUtils.formatDT(localDateTime);
         return newLocalDate;
     }
 
@@ -75,5 +96,19 @@ public class DatePattern {
             LOGGER.error("Missing argument, the class need pattern as parameters", missingParameters);
             throw missingParameters;
         }
+
+/*
+        if (!arguments.stream().anyMatch(argument -> argument.getValue().equals("remove_day"))) {
+            List<String> args = arguments.stream()
+                    .map(argument -> argument.getValue())
+                    .collect(Collectors.toList());
+            IllegalArgumentException missingParameters = new IllegalArgumentException(
+                    "Cannot build the option DatePattern: Missing argument, the class doesn't know this value: " + args
+            );
+            LOGGER.error("Missing argument, the class need a correct value", missingParameters);
+            throw missingParameters;
+        }
+
+ */
     }
 }
