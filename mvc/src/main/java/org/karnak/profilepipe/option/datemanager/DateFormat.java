@@ -10,21 +10,20 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-public class DatePattern {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(DatePattern.class);
+public class DateFormat {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DateFormat.class);
 
     public static String formatDA(String date, String option) {
         LocalDate localDate = DateTimeUtils.parseDA(date);
 
         switch (option) {
-            case "remove_day" :
+            case "day" :
                 localDate = localDate.minusDays(localDate.getDayOfMonth() - 1);
                 break;
-            case "remove_month_day" :
+            case "month_day" :
                 localDate = localDate.minusDays(localDate.getDayOfMonth() - 1);
                 localDate = localDate.minusMonths(localDate.getMonthValue() - 1);
         };
@@ -40,10 +39,10 @@ public class DatePattern {
         LocalDateTime localDateTime = LocalDateTime.from(DateTimeUtils.parseDT(dateTime));
 
         switch (option) {
-            case "remove_day" :
+            case "day" :
                 localDateTime = localDateTime.minusDays(localDateTime.getDayOfMonth() - 1);
                 break;
-            case "remove_month_day" :
+            case "month_day" :
                 localDateTime = localDateTime.minusDays(localDateTime.getDayOfMonth() - 1);
                 localDateTime = localDateTime.minusMonths(localDateTime.getMonthValue() - 1);
         };
@@ -67,7 +66,7 @@ public class DatePattern {
             final String value = argument.getValue();
 
             try {
-                if (key.equals("pattern")) {
+                if (key.equals("remove")) {
                     format = value;
                 }
             } catch (Exception e) {
@@ -86,29 +85,16 @@ public class DatePattern {
     }
 
     public static void verifyPatternArguments(List<Argument> arguments) throws IllegalArgumentException {
-        if (!arguments.stream().anyMatch(argument -> argument.getKey().equals("pattern"))) {
-            List<String> args = arguments.stream()
-                    .map(argument -> argument.getKey())
-                    .collect(Collectors.toList());
+        List<String> listValue = new ArrayList<>();
+        listValue.add("day");
+        listValue.add("month_day");
+
+        if (!arguments.stream().anyMatch(argument -> argument.getKey().equals("remove") && listValue.contains(argument.getValue()) )) {
             IllegalArgumentException missingParameters = new IllegalArgumentException(
-                    "Cannot build the option DatePattern: Missing argument, the class need [pattern] as parameters. Parameters given " + args
+                    "Cannot build the option date_format, arguments are not correct"
             );
             LOGGER.error("Missing argument, the class need pattern as parameters", missingParameters);
             throw missingParameters;
         }
-
-/*
-        if (!arguments.stream().anyMatch(argument -> argument.getValue().equals("remove_day"))) {
-            List<String> args = arguments.stream()
-                    .map(argument -> argument.getValue())
-                    .collect(Collectors.toList());
-            IllegalArgumentException missingParameters = new IllegalArgumentException(
-                    "Cannot build the option DatePattern: Missing argument, the class doesn't know this value: " + args
-            );
-            LOGGER.error("Missing argument, the class need a correct value", missingParameters);
-            throw missingParameters;
-        }
-
- */
     }
 }
