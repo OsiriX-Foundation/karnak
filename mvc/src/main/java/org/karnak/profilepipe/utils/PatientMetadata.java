@@ -66,11 +66,14 @@ public class PatientMetadata {
     }
 
     public boolean compareCachedPatient(Patient patient) {
-        final String patientBirthDateFormat = patient.getPatientBirthDate().format(DateTimeFormatter.ofPattern("YYYYMMdd"));
-        return (patient.getPatientId().equals(patientID) && patient.getPatientNameDicomFormat().equals(patientName) &&
-                patientBirthDateFormat.equals(patientBirthDate) &&
-                patient.getIssuerOfPatientId().equals(issuerOfPatientID) &&
-                patient.getPatientSex().equals(patientSex));
+        if (patient != null) {
+            final String patientBirthDateFormat = patient.getPatientBirthDate().format(DateTimeFormatter.ofPattern("YYYYMMdd"));
+            return (patient.getPatientId().equals(patientID) && patient.getPatientNameDicomFormat().equals(patientName) &&
+                    patientBirthDateFormat.equals(patientBirthDate) &&
+                    patient.getIssuerOfPatientId().equals(issuerOfPatientID) &&
+                    patient.getPatientSex().equals(patientSex));
+        }
+        return false;
     }
 
     public Fields generateMainzellisteFields() {
