@@ -39,6 +39,7 @@ import org.karnak.profilepipe.profiles.CleanPixelData;
 import org.karnak.profilepipe.profiles.ProfileItem;
 import org.karnak.expression.ExprAction;
 import org.karnak.profilepipe.utils.HMAC;
+import org.karnak.profilepipe.utils.PatientMetadata;
 import org.karnak.ui.extid.Patient;
 import org.karnak.util.CachingUtil;
 import org.karnak.profilepipe.utils.HashContext;
@@ -117,24 +118,9 @@ public class Profiles {
         return null;
     }
 
-    public String getMainzellistePseudonym(DicomObject dcm, String externalPseudonym, IdTypes idTypes) throws IOException, InterruptedException {
-        final String patientID = dcm.getString(Tag.PatientID).orElse(null);
-        final String patientName = dcm.getString(Tag.PatientName).orElse(null);
-        final String rawPatientBirthDate = dcm.getString(Tag.PatientBirthDate).orElse(null);
-        String patientBirthDate = null;
-        if (rawPatientBirthDate != null) {
-            final LocalDate patientBirthDateLocalDate = DateTimeUtils.parseDA(rawPatientBirthDate);
-            patientBirthDate = patientBirthDateLocalDate.format(DateTimeFormatter.ofPattern("YYYYMMdd"));
-        }
-        String patientSex = dcm.getString(Tag.PatientSex).orElse("O");
-        if (!patientSex.equals("M") && !patientSex.equals("F") && !patientSex.equals("O")) {
-           patientSex = "O";
-        }
-        // Issuer of patientID is recommended to make the patientID universally unique. Can be defined in profile if missing.
-        final String issuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID).orElse(profile.getDefaultissueropatientid());
-
+    public String getMainzellistePseudonym(PatientMetadata patientMetadata, String externalPseudonym, IdTypes idTypes) throws IOException, InterruptedException {
         PseudonymApi pseudonymApi = new PseudonymApi(externalPseudonym);
-        final Fields newPatientFields = new Fields(patientID, patientName, patientBirthDate, patientSex, issuerOfPatientID);
+        final Fields newPatientFields = patientMetadata.generateMainzellisteFields();
 
         return pseudonymApi.createPatient(newPatientFields, idTypes);
     }
@@ -156,6 +142,33 @@ public class Profiles {
             }
         }
         return null;
+    }
+
+    private String generatePseudonym(Destination destination, DicomObject dcm) {
+        String pseudonym;
+        if (destination.getSavePseudonym() != null && destination.getSavePseudonym() == false) {
+            pseudonym = getExtIDInDicom(dcm, destination);
+            if (pseudonym == null) {
+                throw new IllegalStateException("Cannot get a pseudonym in a DICOM tag");
+            }
+        } else {
+            PatientMetadata patientMetadata = new PatientMetadata(dcm);
+            pseudonym = CachingUtil.getPseudonym(patientMetadata, cache);
+
+            if(pseudonym == null){
+                final String issuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID)
+                        .orElse(profile.getDefaultissueropatientid());
+                patientMetadata.setIssuerOfPatientID(issuerOfPatientID);
+                try {
+                    pseudonym = getMainzellistePseudonym(patientMetadata, getExtIDInDicom(dcm, destination),
+                            destination.getIdTypes());
+                } catch (Exception e) {
+                    LOGGER.error("Cannot get a pseudonym with Mainzelliste API {}", e);
+                    throw new IllegalStateException("Cannot get a pseudonym in cache or with Mainzelliste API");
+                }
+            }
+        }
+        return pseudonym;
     }
 
     public void applyAction(DicomObject dcm, DicomObject dcmCopy, HMAC hmac,
@@ -209,7 +222,6 @@ public class Profiles {
         final String SOPinstanceUID = dcm.getString(Tag.SOPInstanceUID).orElse(null);
         final String IssuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID).orElse(null);
         final String PatientID = dcm.getString(Tag.PatientID).orElse(null);
-        final String stringExtIDInDicom = getExtIDInDicom(dcm, destination);
         final IdTypes idTypes = destination.getIdTypes();
         final HMAC hmac = generateHMAC(destination, PatientID);
 
@@ -217,24 +229,7 @@ public class Profiles {
         MDC.put("issuerOfPatientID", IssuerOfPatientID);
         MDC.put("PatientID", PatientID);
 
-        String pseudonym = null;
-        if (destination.getSavePseudonym() != null && destination.getSavePseudonym() == false) {
-            pseudonym = stringExtIDInDicom;
-            if (pseudonym == null) {
-                throw new IllegalStateException("Cannot get a pseudonym in a DICOM tag");
-            }
-        } else {
-            pseudonym = CachingUtil.getPseudonym(dcm, cache);
-
-            if(pseudonym == null){
-                try {
-                    pseudonym = getMainzellistePseudonym(dcm, stringExtIDInDicom, idTypes);
-                } catch (Exception e) {
-                    LOGGER.error("Cannot get a pseudonym with Mainzelliste API {}", e);
-                    throw new IllegalStateException("Cannot get a pseudonym in cache or with Mainzelliste API");
-                }
-            }
-        }
+        String pseudonym = generatePseudonym(destination, dcm);
 
         String profilesCodeName = String.join(
                 "-" , profiles.stream().map(profile -> profile.getCodeName()).collect(Collectors.toList())
