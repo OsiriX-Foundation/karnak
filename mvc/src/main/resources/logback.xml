@@ -13,10 +13,10 @@
         <file>${LOGS}/all/alllogs.log</file>
 
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${LOGS}/all/alllogs.%d{yyyy-MM-dd-HH-mm}_%i.log</fileNamePattern>
+            <fileNamePattern>${LOGS}/all/alllogs.%d{yyyy-MM-dd}_%i.log</fileNamePattern>
             <maxFileSize>1GB</maxFileSize>
             <maxHistory>2</maxHistory>
-            <totalSizeCap>50GB</totalSizeCap>
+            <totalSizeCap>20GB</totalSizeCap>
         </rollingPolicy>
 
         <encoder>
