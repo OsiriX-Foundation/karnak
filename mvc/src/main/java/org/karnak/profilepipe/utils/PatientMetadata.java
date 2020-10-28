@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class PatientMetadata {
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("YYYYMMdd");
     private String patientID;
     private String patientName;
     private String patientBirthDate;
@@ -21,7 +22,7 @@ public class PatientMetadata {
     public PatientMetadata(DicomObject dcm) {
         patientID = dcm.getString(Tag.PatientID).orElse(null);
         patientName = dcm.getString(Tag.PatientName).orElse(null);
-        patientBirthDate = setPatientBirthDate(dcm.getString(Tag.PatientBirthDate).orElse(null));
+        patientBirthDate = setPatientBirthDate(dcm.getString(Tag.PatientBirthDate).orElse(""));
         issuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID).orElse("");
         patientSex = setPatientSex(dcm.getString(Tag.PatientSex).orElse("O"));
     }
@@ -34,11 +35,11 @@ public class PatientMetadata {
     }
 
     private String setPatientBirthDate(String rawPatientBirthDate) {
-        if (rawPatientBirthDate != null) {
+        if (rawPatientBirthDate != null && !rawPatientBirthDate.equals("")) {
             final LocalDate patientBirthDateLocalDate = DateTimeUtils.parseDA(rawPatientBirthDate);
             return patientBirthDateLocalDate.format(DateTimeFormatter.ofPattern("YYYYMMdd"));
         }
-        return null;
+        return "";
     }
 
     public String getPatientID() {
@@ -49,8 +50,27 @@ public class PatientMetadata {
         return patientName;
     }
 
+    public String getPatientLastName() {
+        return patientName.split("\\^")[0];
+    }
+
+    public String getPatientFirstName() {
+        String[] patientNameSplitted = patientName.split("\\^");
+        if (patientNameSplitted.length > 1) {
+            return patientNameSplitted[1];
+        }
+        return null;
+    }
+
     public String getPatientBirthDate() {
         return patientBirthDate;
+    }
+
+    public LocalDate getLocalDatePatientBirthDate() {
+        if (patientBirthDate != null && !patientBirthDate.equals("")) {
+            return DateTimeUtils.parseDA(patientBirthDate);
+        }
+        return null;
     }
 
     public String getIssuerOfPatientID() {
@@ -67,7 +87,11 @@ public class PatientMetadata {
 
     public boolean compareCachedPatient(Patient patient) {
         if (patient != null) {
-            final String patientBirthDateFormat = patient.getPatientBirthDate().format(DateTimeFormatter.ofPattern("YYYYMMdd"));
+            LocalDate localDatePatientBirthDate = patient.getPatientBirthDate();
+            String patientBirthDateFormat = "";
+            if (localDatePatientBirthDate != null) {
+                patientBirthDateFormat = localDatePatientBirthDate.format(formatter);
+            }
             return (patient.getPatientId().equals(patientID) && patient.getPatientNameDicomFormat().equals(patientName) &&
                     patientBirthDateFormat.equals(patientBirthDate) &&
                     patient.getIssuerOfPatientId().equals(issuerOfPatientID) &&

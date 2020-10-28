@@ -55,10 +55,12 @@ public class Profiles {
     private final ArrayList<ProfileItem> profiles;
     private final Map<String, MaskArea> maskMap;
     private Cache<String, Patient> cache;
+    private Cache<String, Patient> mainzellisteCache;
 
     public Profiles(Profile profile) {
         this.maskMap = new HashMap<>();
         this.cache = AppConfig.getInstance().getCache();
+        this.mainzellisteCache = AppConfig.getInstance().getMainzellisteCache();
         this.profile = profile;
         this.profiles = createProfilesList();
     }
@@ -115,11 +117,31 @@ public class Profiles {
         return null;
     }
 
+    private void cachingMainzellistePseudonym(String pseudonym, PatientMetadata patientMetadata) {
+        final Patient patient = new Patient(pseudonym,
+                patientMetadata.getPatientID(),
+                patientMetadata.getPatientFirstName(),
+                patientMetadata.getPatientLastName(),
+                patientMetadata.getLocalDatePatientBirthDate(),
+                patientMetadata.getPatientSex(),
+                patientMetadata.getIssuerOfPatientID());
+        mainzellisteCache.remove(PatientCachingUtil.generateKey(patientMetadata));
+        mainzellisteCache.put(PatientCachingUtil.generateKey(patientMetadata), patient); //new extid
+    }
+
     public String getMainzellistePseudonym(PatientMetadata patientMetadata, String externalPseudonym, IdTypes idTypes) throws IOException, InterruptedException {
+        final String cachedPseudonym = PatientCachingUtil.getPseudonym(patientMetadata, mainzellisteCache);
+        if (cachedPseudonym != null) {
+            cachingMainzellistePseudonym(cachedPseudonym, patientMetadata);
+            return cachedPseudonym;
+        }
+
         PseudonymApi pseudonymApi = new PseudonymApi(externalPseudonym);
         final Fields newPatientFields = patientMetadata.generateMainzellisteFields();
 
-        return pseudonymApi.createPatient(newPatientFields, idTypes);
+        String pseudonym = pseudonymApi.createPatient(newPatientFields, idTypes);
+        cachingMainzellistePseudonym(pseudonym, patientMetadata);
+        return pseudonym;
     }
 
     private String getExtIDInDicom(DicomObject dcm, Destination destination) {
