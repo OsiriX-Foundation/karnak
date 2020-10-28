@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- https://examples.javacodegeeks.com/enterprise-java/logback/logback-rollingfileappender-example/ -->
 <configuration>
     <property name="LOGS" value="logs" />
 
@@ -8,10 +9,18 @@
         </layout>
     </appender>
 
-    <appender name="AllFile" class="ch.qos.logback.core.FileAppender">
-        <file>${LOGS}/all.log</file>
-        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <Pattern>%d %p %marker %C{1.} [%t] %m%n</Pattern>
+    <appender name="AllFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOGS}/all/alllogs.log</file>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOGS}/all/alllogs.%d{yyyy-MM-dd-HH-mm}_%i.log</fileNamePattern>
+            <maxFileSize>1GB</maxFileSize>
+            <maxHistory>2</maxHistory>
+            <totalSizeCap>50GB</totalSizeCap>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>%d %p %marker %C{1.} [%t] %m%n</pattern>
         </encoder>
     </appender>
 
@@ -40,8 +49,7 @@
     <!-- LOG "org.karnak*" at TRACE level -->
     <logger name="org.karnak" level="trace" additivity="false">
         <appender-ref ref="AllFile" />
-        <appender-ref ref="ClinicalFile">
-        </appender-ref>
+        <appender-ref ref="ClinicalFile"/>
         <appender-ref ref="Console" />
     </logger>
 
