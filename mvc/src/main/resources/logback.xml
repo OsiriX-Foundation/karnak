@@ -11,7 +11,7 @@
     <appender name="AllFile" class="ch.qos.logback.core.FileAppender">
         <file>${LOGS}/all.log</file>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <Pattern>%p %marker %d %C{1.} [%t] %m%n</Pattern>
+            <Pattern>%d %p %marker %C{1.} [%t] %m%n</Pattern>
         </encoder>
     </appender>
 
