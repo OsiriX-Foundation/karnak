@@ -25,7 +25,7 @@
             <onMatch>NEUTRAL</onMatch>
         </filter>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <Pattern>%p %d %C{1.} [%t] %m%n</Pattern>
+            <Pattern>%d %m%n</Pattern>
         </encoder>
     </appender>
 
