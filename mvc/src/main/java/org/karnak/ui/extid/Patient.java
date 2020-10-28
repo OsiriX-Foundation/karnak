@@ -70,7 +70,7 @@ public class Patient implements Serializable {
     }
 
     public String getPatientNameDicomFormat(){
-        return String.format("%s^%s", patientLastName, patientFirstName);
+        return patientFirstName == null ? patientLastName : String.format("%s^%s", patientLastName, patientFirstName);
     }
 
     public Patient(String extid, String patientId, String patientFirstName, String patientLastName, LocalDate patientBirthDate, String patientSex, String issuerOfPatientId)
