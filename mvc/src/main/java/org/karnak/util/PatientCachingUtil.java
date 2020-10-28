@@ -5,8 +5,8 @@ import org.karnak.ui.extid.Patient;
 
 import javax.cache.Cache;
 
-public class CachingUtil {
-    public CachingUtil() {
+public class PatientCachingUtil {
+    public PatientCachingUtil() {
     }
 
     public static String getPseudonym(PatientMetadata patientMetadata, Cache<String, Patient> cache) {

@@ -13,7 +13,7 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.validator.StringLengthValidator;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.data.AppConfig;
-import org.karnak.util.CachingUtil;
+import org.karnak.util.PatientCachingUtil;
 
 import javax.cache.Cache;
 import java.util.*;
@@ -90,8 +90,8 @@ public class ExternalIDGrid extends Grid<Patient> {
                     patientBirthDateField.getValue(),
                     patientSexField.getValue(),
                     issuerOfPatientIdField.getValue());
-            cache.remove(CachingUtil.generateKey(editor.getItem())); //old extid
-            cache.put(CachingUtil.generateKey(patientEdit), patientEdit); //new extid
+            cache.remove(PatientCachingUtil.generateKey(editor.getItem())); //old extid
+            cache.put(PatientCachingUtil.generateKey(patientEdit), patientEdit); //new extid
             editor.save();
         });
         saveEditPatientButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -148,7 +148,7 @@ public class ExternalIDGrid extends Grid<Patient> {
             deletePatientButton.addClickListener( e -> {
                 patientList.remove(patient);
                 getDataProvider().refreshAll();
-                cache.remove(CachingUtil.generateKey(patient));
+                cache.remove(PatientCachingUtil.generateKey(patient));
             });
             return deletePatientButton;
         });
