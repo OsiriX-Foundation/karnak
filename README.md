@@ -189,17 +189,17 @@ Password used for Karnak via file input. (alternative to `KARNAK_LOGIN_PASSWORD`
 
 List of service to wait before start KARNAK.
 
-`KARNAK_ALLFILE_LOGS_MAX_FILE_SIZE=1GB`
+`KARNAK_LOGS_MAX_FILE_SIZE`
 
-Allows you to configure the maximum size of a single file for AllFile logs.
+Allows you to configure the maximum size of a single file for general logs. (optional, default is `1GB`).
 
-`KARNAK_ALLFILE_LOGS_MAX_HISTORY=2`
+`KARNAK_LOGS_MAX_HISTORY`
 
-Allows you to configure how many days you want to log for the AllFile logs.
+Allows you to configure how many days you want to log for the general logs. (optional, default is `2`).
 
-`KARNAK_ALLFILE_LOGS_TOTAL_SIZE_CAP=20GB`
+`KARNAK_LOGS_TOTAL_SIZE_CAP`
 
-Allows you to configure the maximum size of all log files for AllFile logs.
+Allows you to configure the maximum size of all log files for general logs. (optional, default is `20GB`).
 
 # Architecture
 
