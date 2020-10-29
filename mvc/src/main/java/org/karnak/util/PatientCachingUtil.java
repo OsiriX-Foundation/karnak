@@ -21,7 +21,7 @@ public class PatientCachingUtil {
     }
 
     public static String generateKey(String PatientID, String PatientName, String IssuerOfPatientID) {
-        return PatientID.concat(PatientName);
+        return PatientID.concat(PatientName).concat(IssuerOfPatientID);
     }
 
     public static String generateKey(Patient patient) {
