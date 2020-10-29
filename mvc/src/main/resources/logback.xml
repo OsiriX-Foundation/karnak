@@ -14,9 +14,9 @@
 
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>${LOGS}/all/alllogs.%d{yyyy-MM-dd}_%i.log</fileNamePattern>
-            <maxFileSize>1GB</maxFileSize>
-            <maxHistory>2</maxHistory>
-            <totalSizeCap>20GB</totalSizeCap>
+            <maxFileSize>${KARNAK_LOGS_MAX_FILE_SIZE}</maxFileSize>
+            <maxHistory>${KARNAK_LOGS_MAX_HISTORY}</maxHistory>
+            <totalSizeCap>${KARNAK_LOGS_TOTAL_SIZE_CAP}</totalSizeCap>
         </rollingPolicy>
 
         <encoder>
