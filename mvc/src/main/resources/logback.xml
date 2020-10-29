@@ -13,10 +13,10 @@
         <file>${LOGS}/all/alllogs.log</file>
 
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${LOGS}/all/alllogs.%d{yyyy-MM-dd}_%i.log</fileNamePattern>
-            <maxFileSize>${KARNAK_LOGS_MAX_FILE_SIZE}</maxFileSize>
-            <maxHistory>${KARNAK_LOGS_MAX_HISTORY}</maxHistory>
-            <totalSizeCap>${KARNAK_LOGS_TOTAL_SIZE_CAP}</totalSizeCap>
+            <fileNamePattern>${LOGS}/AllFileLogs/all_file_logs.%d{yyyy-MM-dd}_%i.log</fileNamePattern>
+            <maxFileSize>${KARNAK_ALLFILE_LOGS_MAX_FILE_SIZE}</maxFileSize>
+            <maxHistory>${KARNAK_ALLFILE_LOGS_MAX_HISTORY}</maxHistory>
+            <totalSizeCap>${KARNAK_ALLFILE_LOGS_TOTAL_SIZE_CAP}</totalSizeCap>
         </rollingPolicy>
 
         <encoder>

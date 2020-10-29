@@ -70,6 +70,9 @@ To launch the UI, execute the maven command `mvn spring-boot:run -f mvc` in the 
         - `KARNAK_ADMIN=admin`
         - `KARNAK_PASSWORD=admin`
         - `KARNAK_WEB_PORT=8081`
+        - `KARNAK_ALLFILE_LOGS_MAX_FILE_SIZE=1GB`
+        - `KARNAK_ALLFILE_LOGS_MAX_HISTORY=2`
+        - `KARNAK_ALLFILE_LOGS_TOTAL_SIZE_CAP=20GB`
 
     Note: the tmp folder must be adapted according to your system and the dicom-opencv must the last folder.
 <!--
@@ -186,6 +189,17 @@ Password used for Karnak via file input. (alternative to `KARNAK_LOGIN_PASSWORD`
 
 List of service to wait before start KARNAK.
 
+`KARNAK_ALLFILE_LOGS_MAX_FILE_SIZE=1GB`
+
+Allows you to configure the maximum size of a single file for AllFile logs.
+
+`KARNAK_ALLFILE_LOGS_MAX_HISTORY=2`
+
+Allows you to configure how many days you want to log for the AllFile logs.
+
+`KARNAK_ALLFILE_LOGS_TOTAL_SIZE_CAP=20GB`
+
+Allows you to configure the maximum size of all log files for AllFile logs.
 
 # Architecture
 
