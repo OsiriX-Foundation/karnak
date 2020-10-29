@@ -37,23 +37,24 @@ public class Pseudonym {
                 throw new IllegalStateException("Cannot get a pseudonym in a DICOM tag");
             }
             return pseudonym;
-        }
-        PatientMetadata patientMetadata = new PatientMetadata(dcm);
-        pseudonym = PatientCachingUtil.getPseudonym(patientMetadata, cache);
-
-        if (pseudonym == null) {
-            final String issuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID)
-                    .orElse(defaultIsserOfPatientID);
-            patientMetadata.setIssuerOfPatientID(issuerOfPatientID);
-            try {
-                pseudonym = getMainzellistePseudonym(patientMetadata, getExtIDInDicom(dcm, destination),
-                        destination.getIdTypes());
-            } catch (Exception e) {
-                LOGGER.error("Cannot get a pseudonym with Mainzelliste API {}", e);
-                throw new IllegalStateException("Cannot get a pseudonym in cache or with Mainzelliste API");
+        } else if (destination.getIdTypes().equals(IdTypes.EXTID)) {
+            pseudonym = PatientCachingUtil.getPseudonym(new PatientMetadata(dcm), cache);
+            if (pseudonym != null) {
+                return pseudonym;
             }
         }
-        return pseudonym;
+
+        PatientMetadata patientMetadata = new PatientMetadata(dcm);
+        final String issuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID)
+                .orElse(defaultIsserOfPatientID);
+        patientMetadata.setIssuerOfPatientID(issuerOfPatientID);
+        try {
+            return getMainzellistePseudonym(patientMetadata, getExtIDInDicom(dcm, destination),
+                    destination.getIdTypes());
+        } catch (Exception e) {
+            LOGGER.error("Cannot get a pseudonym with Mainzelliste API {}", e);
+            throw new IllegalStateException("Cannot get a pseudonym in cache or with Mainzelliste API");
+        }
     }
 
     private String getExtIDInDicom(DicomObject dcm, Destination destination) {
@@ -98,7 +99,8 @@ public class Pseudonym {
                 patientMetadata.getLocalDatePatientBirthDate(),
                 patientMetadata.getPatientSex(),
                 patientMetadata.getIssuerOfPatientID());
-        mainzellisteCache.remove(PatientCachingUtil.generateKey(patientMetadata));
-        mainzellisteCache.put(PatientCachingUtil.generateKey(patientMetadata), patient);
+        String cacheKey = PatientCachingUtil.generateKey(patientMetadata);
+        mainzellisteCache.remove(cacheKey);
+        mainzellisteCache.put(cacheKey, patient);
     }
 }

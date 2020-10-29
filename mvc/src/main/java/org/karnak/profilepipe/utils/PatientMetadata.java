@@ -20,8 +20,8 @@ public class PatientMetadata {
     private final String PATIENT_SEX_OTHER = "0";
 
     public PatientMetadata(DicomObject dcm) {
-        patientID = dcm.getString(Tag.PatientID).orElse(null);
-        patientName = dcm.getString(Tag.PatientName).orElse(null);
+        patientID = dcm.getString(Tag.PatientID).orElse("");
+        patientName = dcm.getString(Tag.PatientName).orElse("");
         patientBirthDate = setPatientBirthDate(dcm.getString(Tag.PatientBirthDate).orElse(""));
         issuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID).orElse("");
         patientSex = setPatientSex(dcm.getString(Tag.PatientSex).orElse("O"));
@@ -37,7 +37,7 @@ public class PatientMetadata {
     private String setPatientBirthDate(String rawPatientBirthDate) {
         if (rawPatientBirthDate != null && !rawPatientBirthDate.equals("")) {
             final LocalDate patientBirthDateLocalDate = DateTimeUtils.parseDA(rawPatientBirthDate);
-            return patientBirthDateLocalDate.format(DateTimeFormatter.ofPattern("YYYYMMdd"));
+            return DateTimeUtils.formatDA(patientBirthDateLocalDate);
         }
         return "";
     }
@@ -87,13 +87,8 @@ public class PatientMetadata {
 
     public boolean compareCachedPatient(Patient patient) {
         if (patient != null) {
-            LocalDate localDatePatientBirthDate = patient.getPatientBirthDate();
-            String patientBirthDateFormat = "";
-            if (localDatePatientBirthDate != null) {
-                patientBirthDateFormat = localDatePatientBirthDate.format(formatter);
-            }
             return (patient.getPatientId().equals(patientID) && patient.getPatientNameDicomFormat().equals(patientName) &&
-                    patientBirthDateFormat.equals(patientBirthDate) &&
+                    patient.getFormatPatientBirthDate().equals(patientBirthDate) &&
                     patient.getIssuerOfPatientId().equals(issuerOfPatientID) &&
                     patient.getPatientSex().equals(patientSex));
         }
