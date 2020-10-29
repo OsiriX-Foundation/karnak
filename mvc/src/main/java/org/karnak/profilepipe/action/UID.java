@@ -18,8 +18,11 @@ public class UID extends AbstractAction {
     @Override
     public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, HMAC hmac) {
         String uidValue = dcm.getString(tag).orElse(null);
-        String uidHashed = hmac.uidHash(uidValue);
-        dcm.setString(tag, VR.UI, uidHashed);
+        String uidHashed = null;
+        if (uidValue != null) {
+            uidHashed = hmac.uidHash(uidValue);
+            dcm.setString(tag, VR.UI, uidHashed);
+        }
         LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_INOUT, TagUtils.toString(tag), tag, symbol, uidValue, uidHashed);
     }
 }
