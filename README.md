@@ -191,15 +191,15 @@ List of service to wait before start KARNAK.
 
 `KARNAK_LOGS_MAX_FILE_SIZE`
 
-Allows you to configure the maximum size of a single file for general logs. (optional, default is `1GB`).
+Allows you to configure the maximum size of a single file for general logs. (default is `1GB`).
 
 `KARNAK_LOGS_MAX_HISTORY`
 
-Allows you to configure how many days you want to log for the general logs. (optional, default is `2`).
+Allows you to configure how many days you want to log for the general logs. (default is `2`).
 
 `KARNAK_LOGS_TOTAL_SIZE_CAP`
 
-Allows you to configure the maximum size of all log files for general logs. (optional, default is `20GB`).
+Allows you to configure the maximum size of all log files for general logs. (default is `20GB`).
 
 # Architecture
 
