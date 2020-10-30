@@ -10,22 +10,28 @@
     </appender>
 
     <appender name="AllFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOGS}/all/alllogs.log</file>
-
-        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${LOGS}/all/alllogs.%d{yyyy-MM-dd}_%i.log</fileNamePattern>
-            <maxFileSize>1GB</maxFileSize>
-            <maxHistory>2</maxHistory>
-            <totalSizeCap>20GB</totalSizeCap>
+        <file>${LOGS}/AllFileLogs/all_file_logs.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>${LOGS}/AllFileLogs/all_file_logs_%i.log</fileNamePattern>
+            <minIndex>${KARNAK_LOGS_MIN_INDEX}</minIndex>
+            <maxIndex>${KARNAK_LOGS_MAX_INDEX}</maxIndex>
         </rollingPolicy>
+
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>${KARNAK_LOGS_MAX_FILE_SIZE}</maxFileSize>
+        </triggeringPolicy>
 
         <encoder>
             <pattern>%d %p %marker %C{1.} [%t] %m%n</pattern>
         </encoder>
     </appender>
 
-    <appender name="ClinicalFile" class="ch.qos.logback.core.FileAppender">
-        <file>${LOGS}/clinical.log</file>
+    <appender name="ClinicalFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOGS}/Clinical/clinical.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOGS}/Clinical/clinical.%d{yyyy-MM-dd}.log</fileNamePattern>
+        </rollingPolicy>
+
         <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
             <evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
                 <marker>CLINICAL</marker>
