@@ -37,6 +37,7 @@
             <column name="port" type="INTEGER"/>
             <column name="position" type="INTEGER"/>
             <column name="pseudonym_as_patient_name" type="BOOLEAN"/>
+            <column name="save_pseudonym" type="BOOLEAN"/>
             <column name="tag" type="VARCHAR(255)"/>
             <column name="type" type="INTEGER">
                 <constraints nullable="false"/>
@@ -45,7 +46,7 @@
             <column name="url_credentials" type="VARCHAR(255)"/>
             <column name="useaetdest" type="BOOLEAN"/>
             <column name="forward_node_id" type="BIGINT"/>
-            <column name="profile_pipe_id" type="BIGINT"/>
+            <column name="project_id" type="BIGINT"/>
         </createTable>
     </changeSet>
     <changeSet author="karnak" id="1.0-3">
@@ -120,6 +121,28 @@
         </createTable>
     </changeSet>
     <changeSet author="karnak" id="1.0-9">
+        <createTable tableName="kheops_albums">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="kheops_albums_pkey"/>
+            </column>
+            <column name="authorization_destination" type="VARCHAR(255)"/>
+            <column name="authorization_source" type="VARCHAR(255)"/>
+            <column name="condition" type="VARCHAR(255)"/>
+            <column name="urlapi" type="VARCHAR(255)"/>
+            <column name="destination_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="karnak" id="1.0-10">
+        <createTable tableName="project">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="project_pkey"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="secret" type="BYTEA"/>
+            <column name="profile_pipe_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="karnak" id="1.0-11">
         <createTable tableName="profile">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="profile_pkey"/>
@@ -131,34 +154,53 @@
             <column name="version" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet author="karnak" id="1.0-11">
-        <addForeignKeyConstraint baseColumnNames="destination_id" baseTableName="sop_class_filter" constraintName="fk5q6u0t9gsa0xgch664mrh1kg" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="destination" validate="true"/>
-    </changeSet>
     <changeSet author="karnak" id="1.0-12">
-        <addForeignKeyConstraint baseColumnNames="profile_element_id" baseTableName="tag" constraintName="fk53cdl3kg03kjp62fahec8106u" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="profile_element" validate="true"/>
+        <createTable tableName="masks">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="masks_pkey"/>
+            </column>
+            <column name="color" type="VARCHAR(255)"/>
+            <column name="rectangles" type="VARCHAR(255)"/>
+            <column name="station_name" type="VARCHAR(255)"/>
+            <column name="profile_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
     </changeSet>
     <changeSet author="karnak" id="1.0-13">
-        <addForeignKeyConstraint baseColumnNames="profile_element_id" baseTableName="arguments" constraintName="fkrd2fm3ap513t4f7dpvk8cq6fd" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="profile_element" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="destination_id" baseTableName="sop_class_filter" constraintName="fk5q6u0t9gsa0xgch664mrh1kg" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="destination" validate="true"/>
     </changeSet>
     <changeSet author="karnak" id="1.0-14">
-        <addForeignKeyConstraint baseColumnNames="profile_pipe_id" baseTableName="destination" constraintName="fkgluf3h0sldfwk9c4ditki4g0i" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="profile" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="destination_id" baseTableName="kheops_albums" constraintName="fk7bm3ccslgjvcjfako3x5kb05p" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="destination" validate="true"/>
     </changeSet>
     <changeSet author="karnak" id="1.0-15">
-        <addForeignKeyConstraint baseColumnNames="forward_node_id" baseTableName="destination" constraintName="fkp3a8vsvewjod5lj16mtp9ji8q" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="forward_node" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="profile_element_id" baseTableName="tag" constraintName="fk53cdl3kg03kjp62fahec8106u" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="profile_element" validate="true"/>
     </changeSet>
     <changeSet author="karnak" id="1.0-16">
-        <addForeignKeyConstraint baseColumnNames="forward_node_id" baseTableName="dicom_source_node" constraintName="fk6e16j73lsh216q3fgcejrnqoy" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="forward_node" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="profile_id" baseTableName="masks" constraintName="fktq9qaviwfd97ue0hoaejegsdq" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="profile" validate="true"/>
     </changeSet>
     <changeSet author="karnak" id="1.0-17">
-        <addForeignKeyConstraint baseColumnNames="profile_id" baseTableName="profile_element" constraintName="fkfr5ypt1htxm7ulllfxr2xpff9" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="profile" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="profile_element_id" baseTableName="arguments" constraintName="fkrd2fm3ap513t4f7dpvk8cq6fd" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="profile_element" validate="true"/>
     </changeSet>
     <changeSet author="karnak" id="1.0-18">
-        <addForeignKeyConstraint baseColumnNames="sop_class_uid_id" baseTableName="sop_class_filter" constraintName="fk5651kr0ivu6ybhsyl46xfevuc" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="sop_class_uid" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="project_id" baseTableName="destination" constraintName="fk7dgdnyp63q8n3f887xhre5bru" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="project" validate="true"/>
     </changeSet>
     <changeSet author="karnak" id="1.0-19">
-        <createSequence cacheSize="1" cycle="false" dataType="bigint" incrementBy="1" maxValue="9223372036854775807" minValue="1" sequenceName="hibernate_sequence" startValue="1"/>
+        <addForeignKeyConstraint baseColumnNames="forward_node_id" baseTableName="destination" constraintName="fkp3a8vsvewjod5lj16mtp9ji8q" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="forward_node" validate="true"/>
     </changeSet>
     <changeSet author="karnak" id="1.0-20">
-        <tagDatabase  tag="v1.0"/>
+        <addForeignKeyConstraint baseColumnNames="forward_node_id" baseTableName="dicom_source_node" constraintName="fk6e16j73lsh216q3fgcejrnqoy" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="forward_node" validate="true"/>
+    </changeSet>
+    <changeSet author="karnak" id="1.0-21">
+        <addForeignKeyConstraint baseColumnNames="profile_id" baseTableName="profile_element" constraintName="fkfr5ypt1htxm7ulllfxr2xpff9" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="profile" validate="true"/>
+    </changeSet>
+    <changeSet author="karnak" id="1.0-22">
+        <addForeignKeyConstraint baseColumnNames="sop_class_uid_id" baseTableName="sop_class_filter" constraintName="fk5651kr0ivu6ybhsyl46xfevuc" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="sop_class_uid" validate="true"/>
+    </changeSet>
+    <changeSet author="karnak" id="1.0-23">
+        <addForeignKeyConstraint baseColumnNames="profile_pipe_id" baseTableName="project" constraintName="fktiirqsakvuw9caeol7q85yog" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="profile" validate="true"/>
+    </changeSet>
+    <changeSet author="karnak" id="1.0-24">
+        <createSequence cacheSize="1" cycle="false" dataType="bigint" incrementBy="1" maxValue="9223372036854775807" minValue="1" sequenceName="hibernate_sequence" startValue="1"/>
     </changeSet>
 </databaseChangeLog>

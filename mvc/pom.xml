@@ -207,10 +207,26 @@
 			<artifactId>junit-jupiter-api</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<version>2.3.0.RELEASE</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-params</artifactId>
+			<version>5.6.2</version>
+			<scope>test</scope>
+		</dependency>
+
 		<dependency>
 			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin-checkbox-flow</artifactId>
-			<version>3.0.1</version>
+			<version>3.1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vaadin.componentfactory</groupId>
@@ -220,7 +236,7 @@
 		<dependency>
 			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin-bom</artifactId>
-			<version>17.0.0</version>
+			<version>17.0.7</version>
 			<type>pom</type>
 			<scope>import</scope>
 		</dependency>
@@ -240,7 +256,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
-				<version>3.1.0</version>
+				<version>3.1.1</version>
 				<executions>
 					<execution>
 						<id>copy</id>
@@ -362,6 +378,9 @@
 								<phase>compile</phase>
 							</execution>
 						</executions>
+						<configuration>
+							<pnpmEnable>true</pnpmEnable>
+						</configuration>
 					</plugin>
 				</plugins>
 			</build>
