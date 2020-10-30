@@ -13,16 +13,10 @@ dcmprofile:
   hmackey: '${KARNAK_HMAC_KEY}'
 logging:
   level:
-    com:
-      zaxxer: INFO
     org:
-      atmosphere: WARN
-      dcm4che6: DEBUG
-      hibernate: WARN
       springframework: INFO
       springframework.core.io.support: INFO
       weasis: DEBUG
-    root: INFO
 server:
   port: 8081
 spring:

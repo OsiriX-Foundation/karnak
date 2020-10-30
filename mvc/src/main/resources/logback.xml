@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- https://examples.javacodegeeks.com/enterprise-java/logback/logback-rollingfileappender-example/ -->
 <configuration debug="true">
-    <logger name="org.karnak" level="warn" />
-    <logger name="org.karnak.profilepipe" level="info" />
     <property name="LOGS" value="logs" />
 
     <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
@@ -13,6 +11,7 @@
 
     <appender name="AllFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOGS}/all/all.log</file>
+        <immediateFlush>false</immediateFlush>
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
             <fileNamePattern>${LOGS}/all/all_%i.log</fileNamePattern>
             <minIndex>${KARNAK_LOGS_MIN_INDEX}</minIndex>
@@ -30,6 +29,7 @@
 
     <appender name="ClinicalFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOGS}/Clinical/clinical.log</file>
+        <immediateFlush>false</immediateFlush>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>${LOGS}/Clinical/clinical.%d{yyyy-MM-dd}.log</fileNamePattern>
         </rollingPolicy>
@@ -46,11 +46,12 @@
         </encoder>
     </appender>
 
-    <root level="info">
+    <root level="warn">
         <appender-ref ref="AllFile" />
-        <appender-ref ref="ClinicalFile">
-        </appender-ref>
         <appender-ref ref="Console" />
     </root>
 
+    <logger name="org.karnak.profilepipe" level="info">
+        <appender-ref ref="ClinicalFile"/>
+    </logger>
 </configuration>
