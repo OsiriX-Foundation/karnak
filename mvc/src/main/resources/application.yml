@@ -22,7 +22,6 @@ logging:
       springframework: INFO
       springframework.core.io.support: INFO
       weasis: DEBUG
-      karnak: DEBUG
     root: INFO
 server:
   port: 8081
