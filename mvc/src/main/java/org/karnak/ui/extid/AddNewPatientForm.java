@@ -19,7 +19,7 @@ import org.karnak.api.rqbody.Fields;
 import org.karnak.data.AppConfig;
 import org.karnak.data.gateway.IdTypes;
 import org.karnak.ui.component.ConfirmDialog;
-import org.karnak.util.CachingUtil;
+import org.karnak.util.PatientCachingUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -207,7 +207,7 @@ public class AddNewPatientForm extends VerticalLayout {
             } else {
                 dataProvider.getItems().add(newPatient);
                 dataProvider.refreshAll();
-                cache.put(CachingUtil.generateKey(newPatient), newPatient);
+                cache.put(PatientCachingUtil.generateKey(newPatient), newPatient);
                 binder.readBean(null);
             }
         }

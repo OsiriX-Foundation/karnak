@@ -4,8 +4,6 @@ import java.awt.Color;
 import java.awt.Shape;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -20,7 +18,6 @@ import org.dcm4che6.data.Tag;
 import org.dcm4che6.data.VR;
 import org.dcm4che6.img.op.MaskArea;
 import org.dcm4che6.img.util.DicomObjectUtil;
-import org.dcm4che6.util.DateTimeUtils;
 import org.dcm4che6.util.TagUtils;
 import org.karnak.api.PseudonymApi;
 import org.karnak.api.rqbody.Fields;
@@ -41,7 +38,7 @@ import org.karnak.expression.ExprAction;
 import org.karnak.profilepipe.utils.HMAC;
 import org.karnak.profilepipe.utils.PatientMetadata;
 import org.karnak.ui.extid.Patient;
-import org.karnak.util.CachingUtil;
+import org.karnak.util.PatientCachingUtil;
 import org.karnak.profilepipe.utils.HashContext;
 import org.karnak.util.SpecialCharacter;
 import org.slf4j.Logger;
@@ -55,13 +52,13 @@ public class Profiles {
     private final Logger LOGGER = LoggerFactory.getLogger(Profiles.class);
 
     private Profile profile;
+    private Pseudonym pseudonymUtil;
     private final ArrayList<ProfileItem> profiles;
     private final Map<String, MaskArea> maskMap;
-    private Cache<String, Patient> cache;
 
     public Profiles(Profile profile) {
         this.maskMap = new HashMap<>();
-        this.cache = AppConfig.getInstance().getCache();
+        this.pseudonymUtil = new Pseudonym();
         this.profile = profile;
         this.profiles = createProfilesList();
     }
@@ -116,59 +113,6 @@ public class Profiles {
             return profiles;
         }
         return null;
-    }
-
-    public String getMainzellistePseudonym(PatientMetadata patientMetadata, String externalPseudonym, IdTypes idTypes) throws IOException, InterruptedException {
-        PseudonymApi pseudonymApi = new PseudonymApi(externalPseudonym);
-        final Fields newPatientFields = patientMetadata.generateMainzellisteFields();
-
-        return pseudonymApi.createPatient(newPatientFields, idTypes);
-    }
-
-    private String getExtIDInDicom(DicomObject dcm, Destination destination) {
-        if (destination.getIdTypes().equals(IdTypes.ADD_EXTID)) {
-            String cleanTag = destination.getTag().replaceAll("[(),]", "").toUpperCase();
-            final String tagValue = dcm.getString(TagUtils.intFromHexString(cleanTag)).orElse(null);
-            if (tagValue != null && destination.getDelimiter() != null && destination.getPosition() != null) {
-                String delimiterSpec = SpecialCharacter.escapeSpecialRegexChars(destination.getDelimiter());
-                try {
-                    return tagValue.split(delimiterSpec)[destination.getPosition()];
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    LOGGER.error("Can not split the external pseudonym", e);
-                    return null;
-                }
-            } else if (tagValue != null) {
-                return tagValue;
-            }
-        }
-        return null;
-    }
-
-    private String generatePseudonym(Destination destination, DicomObject dcm) {
-        String pseudonym;
-        if (destination.getSavePseudonym() != null && destination.getSavePseudonym() == false) {
-            pseudonym = getExtIDInDicom(dcm, destination);
-            if (pseudonym == null) {
-                throw new IllegalStateException("Cannot get a pseudonym in a DICOM tag");
-            }
-        } else {
-            PatientMetadata patientMetadata = new PatientMetadata(dcm);
-            pseudonym = CachingUtil.getPseudonym(patientMetadata, cache);
-
-            if(pseudonym == null){
-                final String issuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID)
-                        .orElse(profile.getDefaultissueropatientid());
-                patientMetadata.setIssuerOfPatientID(issuerOfPatientID);
-                try {
-                    pseudonym = getMainzellistePseudonym(patientMetadata, getExtIDInDicom(dcm, destination),
-                            destination.getIdTypes());
-                } catch (Exception e) {
-                    LOGGER.error("Cannot get a pseudonym with Mainzelliste API {}", e);
-                    throw new IllegalStateException("Cannot get a pseudonym in cache or with Mainzelliste API");
-                }
-            }
-        }
-        return pseudonym;
     }
 
     public void applyAction(DicomObject dcm, DicomObject dcmCopy, HMAC hmac,
@@ -229,7 +173,7 @@ public class Profiles {
         MDC.put("issuerOfPatientID", IssuerOfPatientID);
         MDC.put("PatientID", PatientID);
 
-        String pseudonym = generatePseudonym(destination, dcm);
+        String pseudonym = pseudonymUtil.generatePseudonym(destination, dcm, profile.getDefaultissueropatientid());
 
         String profilesCodeName = String.join(
                 "-" , profiles.stream().map(profile -> profile.getCodeName()).collect(Collectors.toList())

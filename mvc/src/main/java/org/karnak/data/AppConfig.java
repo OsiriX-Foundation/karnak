@@ -4,7 +4,6 @@ import org.karnak.data.profile.ProfilePersistence;
 import org.karnak.profilepipe.Profiles;
 import org.karnak.profilepipe.profilebody.ProfilePipeBody;
 import org.karnak.standard.ConfidentialityProfiles;
-import org.karnak.profilepipe.utils.HMAC;
 import org.karnak.ui.extid.Patient;
 import org.karnak.ui.profile.ProfilePipeService;
 import org.karnak.ui.profile.ProfilePipeServiceImpl;
@@ -105,6 +104,16 @@ public class AppConfig {
         final MutableConfiguration<String, Patient> config = new MutableConfiguration<>();
         config.setExpiryPolicyFactory(expiryPolicyFactory);
         return cacheManager.createCache("simpleCache", config);
+    }
+
+    @Bean("CacheMainzelliste")
+    public Cache<String, Patient> getMainzellisteCache(){
+        final CacheManager cacheManager = Caching.getCachingProvider().getCacheManager();
+        final Duration duration = new Duration(TimeUnit.MINUTES, 15L);
+        final Factory expiryPolicyFactory = CreatedExpiryPolicy.factoryOf(duration);
+        final MutableConfiguration<String, Patient> config = new MutableConfiguration<>();
+        config.setExpiryPolicyFactory(expiryPolicyFactory);
+        return cacheManager.createCache("mainzelliste", config);
     }
 
     // https://stackoverflow.com/questions/27405713/running-code-after-spring-boot-starts
