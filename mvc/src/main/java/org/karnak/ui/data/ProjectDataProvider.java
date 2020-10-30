@@ -32,11 +32,11 @@ public class ProjectDataProvider extends ListDataProvider<Project> {
         boolean isNewProject = project.isNewData();
         if (isNewProject) {
             getItems().add(project);
-            refreshAll();
         } else {
             refreshItem(project);
         }
         projectPersistence.saveAndFlush(project);
+        refreshAll();
     }
 
     public void update(Project project) {
@@ -56,7 +56,6 @@ public class ProjectDataProvider extends ListDataProvider<Project> {
     public void remove(Project project) {
         projectPersistence.deleteById(project.getId());
         projectPersistence.flush();
-        getItems().remove(project);
         refreshAll();
     }
 
@@ -74,5 +73,12 @@ public class ProjectDataProvider extends ListDataProvider<Project> {
 
     public ApplicationEventPublisher getApplicationEventPublisher() {
         return applicationEventPublisher;
+    }
+
+    @Override
+    public void refreshAll() {
+        getItems().clear();
+        getItems().addAll(getAllProjects());
+        super.refreshAll();
     }
 }
