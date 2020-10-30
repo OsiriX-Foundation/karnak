@@ -1,14 +1,11 @@
 package org.karnak.standard;
 
-import org.karnak.data.gateway.SOPClassUID;
 import org.karnak.data.gateway.SOPClassUIDPersistence;
 import org.karnak.standard.dicominnolitics.*;
-import org.karnak.ui.gateway.GatewayConfiguration;
+import org.karnak.ui.data.GatewayConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.HashSet;
 
 public class StandardDICOM {
     private static StandardSOPS standardSOPS;

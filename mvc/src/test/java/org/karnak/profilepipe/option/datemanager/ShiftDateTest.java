@@ -41,8 +41,8 @@ class ShiftDateTest {
     void DAbyDays() {
         assertEquals("19930822", ShiftDate.DAbyDays("19930823", 1));
         assertEquals("20391231", ShiftDate.DAbyDays("20400120", 20));
-        assertEquals("19920102", ShiftDate.DAbyDays("1993", 365));
-        assertEquals("19940101", ShiftDate.DAbyDays("1993", -365));
+        assertEquals("19920102", ShiftDate.DAbyDays("19930101", 365));
+        assertEquals("19940101", ShiftDate.DAbyDays("19930101", -365));
 
         Assertions.assertThrows(DateTimeParseException.class, () -> {
             ShiftDate.DAbyDays("199", 365);
@@ -105,7 +105,7 @@ class ShiftDateTest {
 
     @Test
     void DTbyDays() {
-        assertEquals("20180301", ShiftDate.DTbyDays("20180302", 1, 60));
+        assertEquals("20180228235900.000000", ShiftDate.DTbyDays("20180302", 1, 60));
         assertEquals("20080728131403.000000", ShiftDate.DTbyDays("20080729131503", 1, 60));
         assertEquals("20201210235930.000000", ShiftDate.DTbyDays("20201212000030", 1, 60));
         assertEquals("20201211000030.000000", ShiftDate.DTbyDays("20201212000130", 1, 60));

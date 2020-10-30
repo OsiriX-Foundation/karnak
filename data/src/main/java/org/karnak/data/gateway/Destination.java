@@ -7,12 +7,15 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.validator.group.GroupSequenceProvider;
 import org.karnak.data.gateway.DestinationGroupSequenceProvider.DestinationDicomGroup;
 import org.karnak.data.gateway.DestinationGroupSequenceProvider.DestinationStowGroup;
 import org.karnak.data.profile.Profile;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @GroupSequenceProvider(value = DestinationGroupSequenceProvider.class)
@@ -30,17 +33,20 @@ public class Destination {
 
     private boolean desidentification;
 
+    private IdTypes idTypes;
+
     private String tag;
 
     private String delimiter;
 
     private Integer position;
 
+    private Boolean savePseudonym;
+
     private Boolean pseudonymAsPatientName;
 
     private boolean filterBySOPClasses;
 
-    private IdTypes idTypes;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name="sop_class_filter",
@@ -48,9 +54,13 @@ public class Destination {
             inverseJoinColumns = @JoinColumn(name = "sop_class_uid_id"))
     private Set<SOPClassUID> SOPClassUIDFilters = new HashSet<>();
 
+    @OneToMany(mappedBy="destination", cascade = CascadeType.REMOVE)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<KheopsAlbums> kheopsAlbums;
+
     @ManyToOne
-    @JoinColumn(name="profile_pipe_id")
-    private Profile profile;
+    @JoinColumn(name="project_id")
+    private Project project;
 
     // list of emails (comma separated) used when the images have been sent (or
     // partially sent) to the final destination. Note: if an issue appears before
@@ -146,13 +156,14 @@ public class Destination {
 
     protected Destination() {
         this.type = null;
-        this.idTypes = IdTypes.PID;
         this.description = "";
-        this.desidentification = true;
-        this.pseudonymAsPatientName = false;
+        this.desidentification = false;
+        this.idTypes = IdTypes.PID;
+        this.pseudonymAsPatientName = null;
         this.tag = null;
         this.delimiter = null;
         this.position = null;
+        this.savePseudonym = null;
         this.filterBySOPClasses = true;
         this.notify = "";
         this.notifyObjectErrorPrefix = "";
@@ -397,18 +408,6 @@ public class Destination {
             + ", notifyObjectValues=" + notifyObjectValues + ", notifyInterval=" + notifyInterval + "]";
     }
 
-    public Profile getProfile() {
-        return profile;
-    }
-
-    public String getProfilePipeName() {
-        return profile.getName();
-    }
-
-    public void setProfile(Profile profile) {
-        this.profile = profile;
-    }
-
     public IdTypes getIdTypes() {
         return idTypes;
     }
@@ -445,7 +444,31 @@ public class Destination {
         return pseudonymAsPatientName;
     }
 
-    public void setPseudonymAsPatientName(Boolean useExternalPseudonym) {
-        this.pseudonymAsPatientName = useExternalPseudonym;
+    public void setPseudonymAsPatientName(Boolean pseudonymAsPatientName) {
+        this.pseudonymAsPatientName = pseudonymAsPatientName;
+    }
+
+    public Boolean getSavePseudonym() {
+        return savePseudonym;
+    }
+
+    public void setSavePseudonym(Boolean savePseudonym) {
+        this.savePseudonym = savePseudonym;
+    }
+
+    public List<KheopsAlbums> getKheopsAlbums() {
+        return kheopsAlbums;
+    }
+
+    public void setKheopsAlbums(List<KheopsAlbums> kheopsAlbums) {
+        this.kheopsAlbums = kheopsAlbums;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
     }
 }

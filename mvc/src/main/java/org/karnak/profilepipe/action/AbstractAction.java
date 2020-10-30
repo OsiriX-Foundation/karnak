@@ -1,6 +1,7 @@
 package org.karnak.profilepipe.action;
 
 import org.dcm4che6.data.VR;
+import org.karnak.profilepipe.profiles.CleanPixelData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
@@ -10,6 +11,7 @@ public abstract class AbstractAction implements ActionItem {
 
     protected final String symbol;
     protected String dummyValue;
+    protected int newTag;
     protected VR vr;
     protected final Logger LOGGER = LoggerFactory.getLogger(AbstractAction.class);
     protected final Marker CLINICAL_MARKER = MarkerFactory.getMarker("CLINICAL");
@@ -29,10 +31,17 @@ public abstract class AbstractAction implements ActionItem {
         this.vr = null;
     }
 
-    public AbstractAction(String symbol, String dummyValue, VR vr){
+    public AbstractAction(String symbol, VR vr, String dummyValue){
         this.symbol = symbol;
-        this.dummyValue = dummyValue;
         this.vr = vr;
+        this.dummyValue = dummyValue;
+    }
+
+    public AbstractAction(String symbol, int newTag, VR vr, String dummyValue){
+        this.symbol = symbol;
+        this.newTag = newTag;
+        this.vr = vr;
+        this.dummyValue = dummyValue;
     }
 
     public static AbstractAction convertAction(String action) {

@@ -33,9 +33,9 @@ public class ExternalIDView extends HorizontalLayout {
         addNewPatientForm = new AddNewPatientForm(dataProvider);
         grid.setAddNewPatientButton(addNewPatientForm.getAddNewPatientButton());
 
-        validationStatus = grid.fieldValidator();
+        validationStatus = grid.setBinder();
 
-        verticalLayout.add(new H2("External ID"), addNewPatientForm, validationStatus, grid);
+        verticalLayout.add(new H2("External Pseudonym"), addNewPatientForm, validationStatus, grid);
 
         add(verticalLayout);
     }

@@ -9,29 +9,31 @@ import org.karnak.data.NodeEventType;
 import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.DestinationType;
 import org.karnak.ui.component.ConfirmDialog;
-import org.karnak.ui.gateway.DestinationDataProvider;
+import org.karnak.ui.data.DestinationDataProvider;
 import org.karnak.ui.util.UIS;
 
 public class NewUpdateDestination extends VerticalLayout {
     private DestinationDataProvider destinationDataProvider;
-    private DestinationViewLogic destinationViewLogic;
+    private ViewLogic viewLogic;
     private FormDICOM formDICOM;
     private FormSTOW formSTOW;
     private Destination currentDestination;
     private Binder<Destination> binderFormDICOM;
     private Binder<Destination> binderFormSTOW;
-    private ButtonSaveDeleteCancel buttonDestinationSaveDeleteCancel;
+    private ButtonSaveDeleteCancel buttonDestinationDICOMSaveDeleteCancel;
+    private ButtonSaveDeleteCancel buttonDestinationSTOWSaveDeleteCancel;
 
-    public NewUpdateDestination(DestinationDataProvider destinationDataProvider, DestinationViewLogic destinationViewLogic) {
+    public NewUpdateDestination(DestinationDataProvider destinationDataProvider, ViewLogic viewLogic) {
         this.destinationDataProvider = destinationDataProvider;
-        this.destinationViewLogic = destinationViewLogic;
+        this.viewLogic = viewLogic;
         setSizeFull();
         binderFormDICOM = new BeanValidationBinder<>(Destination.class);
         binderFormSTOW = new BeanValidationBinder<>(Destination.class);
-        formDICOM = new FormDICOM(binderFormDICOM);
-        formSTOW = new FormSTOW(binderFormSTOW);
+        buttonDestinationDICOMSaveDeleteCancel = new ButtonSaveDeleteCancel();
+        buttonDestinationSTOWSaveDeleteCancel = new ButtonSaveDeleteCancel();
+        formDICOM = new FormDICOM(binderFormDICOM, buttonDestinationDICOMSaveDeleteCancel);
+        formSTOW = new FormSTOW(binderFormSTOW, buttonDestinationSTOWSaveDeleteCancel);
         currentDestination = null;
-        buttonDestinationSaveDeleteCancel = new ButtonSaveDeleteCancel();
 
         setButtonSaveEvent();
         setButtonDeleteEvent();
@@ -40,10 +42,12 @@ public class NewUpdateDestination extends VerticalLayout {
     public void load(Destination destination, DestinationType type) {
         if (destination != null) {
             currentDestination = destination;
-            buttonDestinationSaveDeleteCancel.getDelete().setEnabled(true);
+            buttonDestinationDICOMSaveDeleteCancel.getDelete().setEnabled(true);
+            buttonDestinationSTOWSaveDeleteCancel.getDelete().setEnabled(true);
         } else {
             currentDestination = type == DestinationType.stow ? Destination.ofStowEmpty() : Destination.ofDicomEmpty();
-            buttonDestinationSaveDeleteCancel.getDelete().setEnabled(false);
+            buttonDestinationDICOMSaveDeleteCancel.getDelete().setEnabled(false);
+            buttonDestinationSTOWSaveDeleteCancel.getDelete().setEnabled(false);
         }
         setView(type);
     }
@@ -57,45 +61,59 @@ public class NewUpdateDestination extends VerticalLayout {
             add(formDICOM);
             binderFormDICOM.readBean(currentDestination);
         }
-        add(UIS.setWidthFull(buttonDestinationSaveDeleteCancel));
     }
 
     private void setButtonSaveEvent() {
-        buttonDestinationSaveDeleteCancel.getSave().addClickListener(event -> {
-            NodeEventType nodeEventType = currentDestination.isNewData() == true ? NodeEventType.ADD : NodeEventType.UPDATE;
-            if (currentDestination.getType() == DestinationType.stow && binderFormSTOW.writeBeanIfValid(currentDestination)) {
-                destinationDataProvider.save(currentDestination);
-                destinationViewLogic.updateForwardNodeInEditView();
-                destinationViewLogic.getApplicationEventPublisher().publishEvent(new NodeEvent(currentDestination, nodeEventType));
-            }
-
+        buttonDestinationDICOMSaveDeleteCancel.getSave().addClickListener(event -> {
             if (currentDestination.getType() == DestinationType.dicom && binderFormDICOM.writeBeanIfValid(currentDestination)) {
-                destinationDataProvider.save(currentDestination);
-                destinationViewLogic.updateForwardNodeInEditView();
-                destinationViewLogic.getApplicationEventPublisher().publishEvent(new NodeEvent(currentDestination, nodeEventType));
+                NodeEventType nodeEventType = currentDestination.isNewData() == true ? NodeEventType.ADD : NodeEventType.UPDATE;
+                saveCurrentDestination(nodeEventType);
             }
         });
+
+        buttonDestinationSTOWSaveDeleteCancel.getSave().addClickListener(event -> {
+            if (currentDestination.getType() == DestinationType.stow && binderFormSTOW.writeBeanIfValid(currentDestination)) {
+                NodeEventType nodeEventType = currentDestination.isNewData() == true ? NodeEventType.ADD : NodeEventType.UPDATE;
+                saveCurrentDestination(nodeEventType);
+            }
+        });
+    }
+
+    private void saveCurrentDestination(NodeEventType nodeEventType) {
+        destinationDataProvider.save(currentDestination);
+        viewLogic.updateForwardNodeInEditView();
+        viewLogic.getApplicationEventPublisher().publishEvent(new NodeEvent(currentDestination, nodeEventType));
     }
 
     private void setButtonDeleteEvent() {
-        buttonDestinationSaveDeleteCancel.getDelete().addClickListener(event -> {
-
-            if (currentDestination != null) {
-                ConfirmDialog dialog = new ConfirmDialog(
-                        "Are you sure to delete the forward node " + currentDestination.getDescription() +
-                                " [" + currentDestination.getType() + "] ?");
-                dialog.addConfirmationListener(componentEvent -> {
-                    NodeEvent nodeEvent = new NodeEvent(currentDestination, NodeEventType.REMOVE);
-                    destinationDataProvider.delete(currentDestination);
-                    destinationViewLogic.getApplicationEventPublisher().publishEvent(nodeEvent);
-                    destinationViewLogic.updateForwardNodeInEditView();
-                });
-                dialog.open();
-            }
+        buttonDestinationDICOMSaveDeleteCancel.getDelete().addClickListener(event -> {
+            removeCurrentDestination();
+        });
+        buttonDestinationSTOWSaveDeleteCancel.getDelete().addClickListener(event -> {
+            removeCurrentDestination();
         });
     }
 
-    public Button getButtonCancel() {
-        return buttonDestinationSaveDeleteCancel.getCancel();
+    private void removeCurrentDestination() {
+        if (currentDestination != null) {
+            ConfirmDialog dialog = new ConfirmDialog(
+                    "Are you sure to delete the forward node " + currentDestination.getDescription() +
+                            " [" + currentDestination.getType() + "] ?");
+            dialog.addConfirmationListener(componentEvent -> {
+                NodeEvent nodeEvent = new NodeEvent(currentDestination, NodeEventType.REMOVE);
+                destinationDataProvider.delete(currentDestination);
+                viewLogic.getApplicationEventPublisher().publishEvent(nodeEvent);
+                viewLogic.updateForwardNodeInEditView();
+            });
+            dialog.open();
+        }
+    }
+
+    public Button getButtonDICOMCancel() {
+        return buttonDestinationDICOMSaveDeleteCancel.getCancel();
+    }
+
+    public Button getButtonSTOWCancel() {
+        return buttonDestinationSTOWSaveDeleteCancel.getCancel();
     }
 }

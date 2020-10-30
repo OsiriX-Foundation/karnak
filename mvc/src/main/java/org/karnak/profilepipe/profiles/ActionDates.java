@@ -6,10 +6,15 @@ import org.dcm4che6.data.VR;
 import org.karnak.data.profile.ExcludedTag;
 import org.karnak.data.profile.IncludedTag;
 import org.karnak.data.profile.ProfileElement;
+import org.karnak.expression.ExprConditionDestination;
+import org.karnak.expression.ExpressionError;
+import org.karnak.expression.ExpressionResult;
 import org.karnak.profilepipe.action.ActionItem;
 import org.karnak.profilepipe.action.Replace;
+import org.karnak.profilepipe.option.datemanager.DateFormat;
 import org.karnak.profilepipe.option.datemanager.ShiftDate;
 import org.karnak.profilepipe.option.datemanager.ShiftRangeDate;
+import org.karnak.profilepipe.utils.HMAC;
 import org.karnak.profilepipe.utils.TagActionMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,15 +58,22 @@ public class ActionDates extends AbstractProfileItem {
             switch (option) {
                 case "shift" -> ShiftDate.verifyShiftArguments(arguments);
                 case "shift_range" -> shiftRangeDate.verifyShiftArguments(arguments);
+                case "date_format" -> DateFormat.verifyPatternArguments(arguments);
                 default -> throw new Exception("Cannot build the profile " + codeName + " with the option given " + option + " : Option available (shift, shift_range)");
             }
         } catch (Exception e) {
             throw e;
         }
+
+        final ExpressionError expressionError = ExpressionResult.isValid(condition, new ExprConditionDestination(1, VR.AE,
+                DicomObject.newDicomObject(), DicomObject.newDicomObject()), Boolean.class);
+        if (condition != null && !expressionError.isValid()) {
+            throw new Exception(expressionError.getMsg());
+        }
     }
 
     @Override
-    public ActionItem getAction(DicomObject dcmCopy, DicomElement dcmElem, String PatientID) {
+    public ActionItem getAction(DicomObject dcm, DicomObject dcmCopy, DicomElement dcmElem, HMAC hmac) {
         final int tag = dcmElem.tag();
         final VR vr = dcmElem.vr();
 
@@ -73,7 +85,7 @@ public class ActionDates extends AbstractProfileItem {
             if (tagsAction.isEmpty() == false && tagsAction.get(tag) == null) {
                 return null;
             }
-            String dummyValue = applyOption(dcmCopy, dcmElem, PatientID);
+            String dummyValue = applyOption(dcmCopy, dcmElem, hmac);
             if (dummyValue != null) {
                 actionByDefault.setDummyValue(dummyValue);
                 return actionByDefault;
@@ -82,10 +94,11 @@ public class ActionDates extends AbstractProfileItem {
         return null;
     }
 
-    private String applyOption(DicomObject dcmCopy, DicomElement dcmElem, String PatientID) {
+    private String applyOption(DicomObject dcmCopy, DicomElement dcmElem, HMAC hmac) {
         return switch (option) {
             case "shift" -> ShiftDate.shift(dcmCopy, dcmElem, arguments);
-            case "shift_range" -> shiftRangeDate.shift(dcmCopy, dcmElem, arguments, PatientID);
+            case "shift_range" -> shiftRangeDate.shift(dcmCopy, dcmElem, arguments, hmac);
+            case "date_format" -> DateFormat.format(dcmCopy, dcmElem, arguments);
             default -> null;
         };
     }

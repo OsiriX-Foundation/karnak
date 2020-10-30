@@ -10,13 +10,18 @@ public class DoubleToIntegerConverter implements Converter<Double, Integer> {
 
     @Override
     public Result<Integer> convertToModel(Double value, ValueContext valueContext) {
-        return Result.ok(value.intValue());
+        if(value != null){
+            return Result.ok(value.intValue());
+        } else {
+            return Result.ok(null);
+        }
+
     }
 
     @Override
     public Double convertToPresentation(Integer value, ValueContext valueContext) {
         if (value == null) {
-            return -1d;
+            return null;
         } else {
             return value.doubleValue();
         }

@@ -11,7 +11,6 @@ import javax.annotation.PostConstruct;
 @ConfigurationProperties(prefix="dcmprofile")
 public class DcmProfileConfig {
     private static DcmProfileConfig instance;
-    private String hmackey;
 
     @PostConstruct
     public void postConstruct() {
@@ -24,13 +23,5 @@ public class DcmProfileConfig {
 
     public static void setInstance(DcmProfileConfig instance) {
         DcmProfileConfig.instance = instance;
-    }
-
-    public String getHmackey() {
-        return hmackey;
-    }
-
-    public void setHmackey(String hmackey) {
-        this.hmackey = hmackey;
     }
 }

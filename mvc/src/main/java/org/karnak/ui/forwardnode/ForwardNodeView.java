@@ -5,7 +5,7 @@ import com.vaadin.flow.router.*;
 import org.karnak.data.gateway.ForwardNode;
 import org.karnak.ui.MainLayout;
 import org.karnak.ui.api.ForwardNodeAPI;
-import org.karnak.ui.gateway.ForwardNodeDataProvider;
+import org.karnak.ui.data.ForwardNodeDataProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 

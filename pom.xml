@@ -17,7 +17,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<weasis-dicom-tools.version>6.0.0-SNAPSHOT</weasis-dicom-tools.version>
 		<weasis.opencv.native.version>4.4.0-dcm</weasis.opencv.native.version>
-		<springframework.version>2.3.2.RELEASE</springframework.version>
+		<springframework.version>2.3.4.RELEASE</springframework.version>
 		<javax.el.version>3.0.0</javax.el.version>
 		<javax.mail.version>1.6.2</javax.mail.version>
 		<maven-surefire-plugin.version>3.0.0-M4</maven-surefire-plugin.version>

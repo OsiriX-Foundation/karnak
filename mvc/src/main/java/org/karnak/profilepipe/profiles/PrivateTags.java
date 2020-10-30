@@ -2,12 +2,17 @@ package org.karnak.profilepipe.profiles;
 
 import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
+import org.dcm4che6.data.VR;
 import org.dcm4che6.util.TagUtils;
 import org.karnak.data.profile.ExcludedTag;
 import org.karnak.data.profile.IncludedTag;
 import org.karnak.data.profile.ProfileElement;
+import org.karnak.expression.ExprConditionDestination;
+import org.karnak.expression.ExpressionError;
+import org.karnak.expression.ExpressionResult;
 import org.karnak.profilepipe.action.AbstractAction;
 import org.karnak.profilepipe.action.ActionItem;
+import org.karnak.profilepipe.utils.HMAC;
 import org.karnak.profilepipe.utils.TagActionMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +47,7 @@ public class PrivateTags extends AbstractProfileItem {
     }
 
     @Override
-    public ActionItem getAction(DicomObject dcmCopy, DicomElement dcmElem, String PatientID) {
+    public ActionItem getAction(DicomObject dcm, DicomObject dcmCopy, DicomElement dcmElem, HMAC hmac) {
         final int tag = dcmElem.tag();
         if (TagUtils.isPrivateGroup(tag)) {
             if (tagsAction.isEmpty() == false && exceptedTagsAction.isEmpty()) {
@@ -69,6 +74,12 @@ public class PrivateTags extends AbstractProfileItem {
     public void profileValidation() throws Exception{
         if (action == null) {
             throw new Exception("Cannot build the profile " + codeName + ": Unknown Action");
+        }
+
+        final ExpressionError expressionError = ExpressionResult.isValid(condition, new ExprConditionDestination(1, VR.AE,
+                DicomObject.newDicomObject(), DicomObject.newDicomObject()), Boolean.class);
+        if (condition != null && !expressionError.isValid()) {
+            throw new Exception(expressionError.getMsg());
         }
     }
 }

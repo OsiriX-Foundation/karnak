@@ -1,5 +1,6 @@
 package org.karnak.api;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
@@ -87,16 +88,11 @@ public class PseudonymApi {
      * @param patientFields 
      * @return Pseudonym
      */
-    public String createPatient(Fields patientFields, IdTypes idTypes) {
-        try{
-            String tokenId = rqCreateTokenAddPatient(patientFields, idTypes);
-            List<JSONObject> pseudonymList = rqCreatePatient(tokenId);
-            JSONObject jsonPseudonym = pseudonymList.stream().filter(p -> p.getString("idType").equals(idTypes.getValue())).findFirst().get();
-            return jsonPseudonym.getString("idString");
-        } catch (Exception e) {
-            log.error("Cannot create patient", e);
-        } 
-        return null;
+    public String createPatient(Fields patientFields, IdTypes idTypes) throws IOException, InterruptedException {
+        String tokenId = rqCreateTokenAddPatient(patientFields, idTypes);
+        List<JSONObject> pseudonymList = rqCreatePatient(tokenId);
+        JSONObject jsonPseudonym = pseudonymList.stream().filter(p -> p.getString("idType").equals(idTypes.getValue())).findFirst().get();
+        return jsonPseudonym.getString("idString");
     }
 
     /***
@@ -132,11 +128,11 @@ public class PseudonymApi {
         HttpResponse<String> response;
         try {
             response = httpClient.send(request, BodyHandlers.ofString());
-
+            controlErrorResponse(response);
             final JSONObject jsonResp = new JSONObject(response.body());
             this.sessionId = jsonResp.getString("sessionId");
         } catch (Exception e) {
-            log.error("Cannot get a sessionId request {}", e);
+            log.error("Cannot get a sessionId with Mainzelliste API {}", e);
         }
         return this.sessionId;
     }
@@ -145,7 +141,7 @@ public class PseudonymApi {
      * Make the request to have a token that allow to add a new patient
      * @return sessionID
      */
-    public String rqCreateTokenAddPatient(Fields patientFields, IdTypes idTypes) {
+    public String rqCreateTokenAddPatient(Fields patientFields, IdTypes idTypes) throws IOException, InterruptedException {
         String jsonBody = createJsonRequest(patientFields, idTypes);
         HttpRequest request = HttpRequest.newBuilder()
         .POST(BodyPublishers.ofString(jsonBody))
@@ -154,16 +150,11 @@ public class PseudonymApi {
         .header("mainzellisteApiKey", this.API_KEY)
         .build();
 
-        String tokenAddPatient="";
-        HttpResponse<String> response;
-        try {
-            response = httpClient.send(request, BodyHandlers.ofString());
+        HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
+        controlErrorResponse(response);
+        final JSONObject jsonResp = new JSONObject(response.body());
+        String tokenAddPatient = jsonResp.getString("tokenId");
 
-            final JSONObject jsonResp = new JSONObject(response.body());
-            tokenAddPatient = jsonResp.getString("tokenId");
-        } catch (Exception e) {
-            log.error("Cannot create a token request for addPatient {}", e);
-        }
         return tokenAddPatient;
     }
 
@@ -172,7 +163,7 @@ public class PseudonymApi {
      * @param searchIds
      * @return Patients
      */
-    public String rqCreateTokenReadPatient(SearchIds [] searchIds) {
+    public String rqCreateTokenReadPatient(SearchIds [] searchIds) throws IOException, InterruptedException {
         String jsonBody = createJsonReadPatient(searchIds);        
         HttpRequest request = HttpRequest.newBuilder()
         .POST(BodyPublishers.ofString(jsonBody))
@@ -181,16 +172,12 @@ public class PseudonymApi {
         .header("mainzellisteApiKey", this.API_KEY)
         .build();
 
-        String tokenReadPatient="";
-        HttpResponse<String> response;
-        try {
-            response = httpClient.send(request, BodyHandlers.ofString());
+        HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
+        controlErrorResponse(response);
 
-            final JSONObject jsonResp = new JSONObject(response.body());
-            tokenReadPatient = jsonResp.getString("tokenId");
-        } catch (Exception e) {
-            log.error("Cannot create a token request for addPatient {}", e);
-        }
+        final JSONObject jsonResp = new JSONObject(response.body());
+        String tokenReadPatient = jsonResp.getString("tokenId");
+
         return tokenReadPatient;
     }
 
@@ -199,7 +186,7 @@ public class PseudonymApi {
      * @param tokenId 
      * @return Pseudonym
      */
-    public List<JSONObject> rqCreatePatient(String tokenId) {
+    public List<JSONObject> rqCreatePatient(String tokenId) throws IOException, InterruptedException {
         Map<Object, Object> data = new HashMap<>();
         data.put("sureness", true);
         HttpRequest request = HttpRequest.newBuilder()
@@ -209,19 +196,16 @@ public class PseudonymApi {
         .header("mainzellisteApiKey", this.API_KEY)
         .build();
 
-        HttpResponse<String> response;
         List<JSONObject> newIds = new ArrayList<>();
-        try {
-            response = httpClient.send(request, BodyHandlers.ofString());
-            final JSONArray jsonResp = new JSONArray(response.body());
-            for (Object o: jsonResp) {
-                if ( o instanceof JSONObject ) {
-                    newIds.add((JSONObject)o);
-                }
+        HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
+        controlErrorResponse(response);
+        final JSONArray jsonResp = new JSONArray(response.body());
+        for (Object o: jsonResp) {
+            if ( o instanceof JSONObject ) {
+                newIds.add((JSONObject)o);
             }
-        } catch (Exception e) {
-            log.error("Cannot create patient request {}", e);
         }
+
         return newIds;
     }
 
@@ -230,7 +214,7 @@ public class PseudonymApi {
      * @param tokenId 
      * @return Pseudonym
      */
-    public JSONArray rqGetPatient(String tokenId) {
+    public JSONArray rqGetPatient(String tokenId) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
         .GET()
         .uri(URI.create(this.SERVER_URL + "/patients?tokenId="+tokenId))
@@ -238,14 +222,10 @@ public class PseudonymApi {
         .header("mainzellisteApiKey", this.API_KEY)
         .build();
 
-        JSONArray jsonResp = null;
-        HttpResponse<String> response;
-        try {
-            response = httpClient.send(request, BodyHandlers.ofString());
-            jsonResp = new JSONArray(response.body());
-        } catch (Exception e) {
-            log.error("Cannot create patient request {}", e);
-        }
+        HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
+        controlErrorResponse(response);
+        JSONArray jsonResp = new JSONArray(response.body());
+
         return jsonResp;
     }
 
@@ -307,6 +287,16 @@ public class PseudonymApi {
         Body bodyRequest= new Body("readPatients", data);
         Gson gson = new Gson();
         return gson.toJson(bodyRequest);
+    }
+
+    private void controlErrorResponse(HttpResponse<String> response) {
+        if(response.statusCode() > 299) {
+            final String errorMsg = "\n\tMainzelliste response : " +
+                    "\n\t\tstatus code: " + response.statusCode() +
+                    "\n\t\theaders:: " + response.headers() +
+                    "\n\t\tbody: " + response.body();
+            throw new IllegalStateException(errorMsg);
+        }
     }
 
 }

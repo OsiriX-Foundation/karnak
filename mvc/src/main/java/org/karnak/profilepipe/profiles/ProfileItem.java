@@ -4,11 +4,12 @@ import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
 import org.karnak.data.profile.Argument;
 import org.karnak.profilepipe.action.ActionItem;
+import org.karnak.profilepipe.utils.HMAC;
 
 import java.util.List;
 
 public interface ProfileItem {
-    ActionItem getAction(DicomObject dcmCopy, DicomElement dcmElem, String PatientID);
+    ActionItem getAction(DicomObject dcm, DicomObject dcmCopy, DicomElement dcmElem, HMAC hmac);
 
     ActionItem put(int tag, ActionItem action);
 

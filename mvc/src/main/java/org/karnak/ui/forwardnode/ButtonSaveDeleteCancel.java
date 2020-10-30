@@ -29,11 +29,9 @@ public class ButtonSaveDeleteCancel extends HorizontalLayout {
     private void setButtonSave() {
         save.setWidth("100%");
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        save.addClickShortcut(Key.KEY_S, KeyModifier.CONTROL);
     }
     private void setButtonCancel() {
         cancel.setWidth("100%");
-        cancel.addClickShortcut(Key.ESCAPE);
     }
 
     private void setButtonDelete() {

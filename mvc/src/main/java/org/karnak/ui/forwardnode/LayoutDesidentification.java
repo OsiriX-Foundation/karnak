@@ -3,48 +3,148 @@ package org.karnak.ui.forwardnode;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.data.binder.Binder;
 import org.karnak.data.gateway.Destination;
-import org.karnak.ui.forwardnode.ExternalPseudonymView;
-import org.karnak.ui.gateway.ProfileDropDown;
+import org.karnak.data.gateway.IdTypes;
+import org.karnak.data.gateway.Project;
+import org.karnak.ui.data.ProjectDataProvider;
+import org.karnak.ui.project.MainViewProjects;
 import org.karnak.ui.util.UIS;
 
 public class LayoutDesidentification extends Div {
-    private final Binder<Destination> destinationBinder;
+    private Binder<Destination> destinationBinder;
 
-    private final Checkbox checkboxDesidentification;
-    private final ProfileDropDown profileDropDown;
-    private ExternalPseudonymView externalPseudonymView;
+    private Checkbox checkboxDesidentification;
+    private Checkbox checkboxUseAsPatientName;
+    private ProjectDropDown projectDropDown;
+    private ExtidPresentInDicomTagView extidPresentInDicomTagView;
+    private DesidentificationName desidentificationName;
+    private Div div;
+    private ProjectDataProvider projectDataProvider;
+    private WarningNoProjectsDefined warningNoProjectsDefined;
 
     private final String LABEL_CHECKBOX_DESIDENTIFICATION = "Activate de-identification";
 
+    private Select<String> extidListBox;
+    final String [] extidSentence = {"Pseudonym are generate automatically","Pseudonym is already store in KARNAK", "Pseudonym is in a DICOM tag"};
+
     public LayoutDesidentification(Binder<Destination> destinationBinder) {
+        projectDataProvider = new ProjectDataProvider();
         this.destinationBinder = destinationBinder;
-        checkboxDesidentification = new Checkbox(LABEL_CHECKBOX_DESIDENTIFICATION);
-        profileDropDown = new ProfileDropDown();
+        projectDropDown = new ProjectDropDown();
+        desidentificationName = new DesidentificationName();
+
+        warningNoProjectsDefined = new WarningNoProjectsDefined();
+        warningNoProjectsDefined.setTextBtnCancel("Continue");
+        warningNoProjectsDefined.setTextBtnValidate("Create a project");
+
         setElements();
         setBinder();
-        add(UIS.setWidthFull(new HorizontalLayout(checkboxDesidentification, profileDropDown)));
-        add(externalPseudonymView);
+        setEventCheckboxDesidentification();
+        setEventExtidListBox();
+        setEventWarningDICOM();
+
+        add(UIS.setWidthFull(new HorizontalLayout(checkboxDesidentification, div)));
+
+        if (checkboxDesidentification.getValue()) {
+            div.add(projectDropDown, desidentificationName, extidListBox);
+        }
+
+        projectDropDown.addValueChangeListener(event -> {
+            setTextOnSelectionProject(event.getValue());
+        });
     }
 
     private void setElements() {
+        checkboxDesidentification = new Checkbox(LABEL_CHECKBOX_DESIDENTIFICATION);
         checkboxDesidentification.setValue(true);
         checkboxDesidentification.setMinWidth("25%");
 
-        profileDropDown.setMinWidth("75%");
+        projectDropDown.setLabel("Choose a project");
+        projectDropDown.setWidth("100%");
 
-        externalPseudonymView = new ExternalPseudonymView(destinationBinder);
-        externalPseudonymView.setMinWidth("70%");
+        extidListBox = new Select<>();
+        extidListBox.setLabel("Pseudonym type");
+        extidListBox.setWidth("100%");
+        extidListBox.getStyle().set("right", "0px");
+        extidListBox.setItems(extidSentence);
 
+        checkboxUseAsPatientName = new Checkbox("Use as Patient Name");
+
+        extidPresentInDicomTagView = new ExtidPresentInDicomTagView(destinationBinder);
+        div = new Div();
+        div.setWidth("100%");
+
+    }
+
+    private void setEventWarningDICOM() {
+        warningNoProjectsDefined.getBtnCancel().addClickListener(btnEvent -> {
+            checkboxDesidentification.setValue(false);
+            warningNoProjectsDefined.close();
+        });
+        warningNoProjectsDefined.getBtnValidate().addClickListener(btnEvent -> {
+            warningNoProjectsDefined.close();
+            navigateToProject();
+        });
+    }
+
+    private void navigateToProject() {
+        getUI().ifPresent(nav -> {
+            nav.navigate(MainViewProjects.VIEW_NAME.toLowerCase());
+        });
+    }
+
+    private void setEventCheckboxDesidentification(){
         checkboxDesidentification.addValueChangeListener(event -> {
             if (event.getValue() != null) {
-                profileDropDown.setEnabled(event.getValue());
-                if (event.getValue()){
-                    externalPseudonymView.setVisible(true);
+                if (event.getValue()) {
+                    if (projectDataProvider.getAllProjects().size() > 0) {
+                        div.add(projectDropDown, desidentificationName, extidListBox);
+                        setTextOnSelectionProject(projectDropDown.getValue());
+                    } else {
+                        warningNoProjectsDefined.open();
+                    }
                 } else {
-                    externalPseudonymView.setVisible(false);
-                    externalPseudonymView.disableDesidentification();
+                    div.remove(projectDropDown, desidentificationName);
+                    extidListBox.setValue(extidSentence[0]);
+                    checkboxUseAsPatientName.clear();
+                    extidPresentInDicomTagView.clear();
+                    div.remove(extidListBox);
+                    remove(checkboxUseAsPatientName);
+                    div.remove(extidPresentInDicomTagView);
+                }
+            }
+        });
+    }
+
+    private void setTextOnSelectionProject(Project project) {
+        if (project != null && project.getProfile() != null) {
+            desidentificationName.setShowValue(String.format("The profile %s will be used", project.getProfile().getName()));
+        } else if (project != null && project.getProfile() == null) {
+            desidentificationName.setShowValue("No profiles defined in the project");
+        } else {
+            desidentificationName.removeAll();
+        }
+    }
+
+    private void setEventExtidListBox() {
+        extidListBox.addValueChangeListener(event -> {
+            if (event.getValue() != null) {
+                if (event.getValue().equals(extidSentence[0])) {
+                    checkboxUseAsPatientName.clear();
+                    extidPresentInDicomTagView.clear();
+                    div.remove(checkboxUseAsPatientName);
+                    div.remove(extidPresentInDicomTagView);
+                } else {
+                    div.add(UIS.setWidthFull(checkboxUseAsPatientName));
+                    if (event.getValue().equals(extidSentence[1])) {
+                        extidPresentInDicomTagView.clear();
+                        div.remove(extidPresentInDicomTagView);
+                    } else {
+                        extidPresentInDicomTagView.enableComponent();
+                        div.add(extidPresentInDicomTagView);
+                    }
                 }
             }
         });
@@ -53,19 +153,34 @@ public class LayoutDesidentification extends Div {
 
     private void setBinder() {
         destinationBinder.forField(checkboxDesidentification)
+                .bind(Destination::getDesidentification, Destination::setDesidentification);
+        destinationBinder.forField(projectDropDown)
+                .withValidator(project ->
+                        project != null || (project == null && checkboxDesidentification.getValue() == false),
+                        "Choose a project")
+                .bind(Destination::getProject, Destination::setProject);
+
+        destinationBinder.forField(extidListBox)
+                .withValidator(type -> type != null,"Choose pseudonym type\n")
                 .bind(destination -> {
-                    final boolean desidentification = destination.getDesidentification();
-                    if (desidentification){
-                        externalPseudonymView.setVisible(true);
+                    if (destination.getIdTypes().equals(IdTypes.PID)){
+                        return extidSentence[0];
+                    } else if(destination.getIdTypes().equals(IdTypes.EXTID)) {
+                        return extidSentence[1];
                     } else {
-                        externalPseudonymView.setVisible(false);
+                        return extidSentence[2];
                     }
-                    return desidentification;
-                }, Destination::setDesidentification);
-        destinationBinder.forField(profileDropDown)
-                .withValidator(profilePipe -> profilePipe != null ||
-                                (profilePipe == null && checkboxDesidentification.getValue() == false),
-                        "Choose the de-identification profile\n")
-                .bind(Destination::getProfile, Destination::setProfile);
+                }, (destination, s) -> {
+                    if (s.equals(extidSentence[0])) {
+                        destination.setIdTypes(IdTypes.PID);
+                    } else if (s.equals(extidSentence[1])){
+                        destination.setIdTypes(IdTypes.EXTID);
+                    } else {
+                        destination.setIdTypes(IdTypes.ADD_EXTID);
+                    }
+                });
+
+        destinationBinder.forField(checkboxUseAsPatientName)
+                .bind(Destination::getPseudonymAsPatientName, Destination::setPseudonymAsPatientName);
     }
 }

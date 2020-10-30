@@ -4,6 +4,7 @@ import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
 import org.karnak.data.profile.ProfileElement;
 import org.karnak.profilepipe.action.*;
+import org.karnak.profilepipe.utils.HMAC;
 
 public class UpdateUIDsProfile extends AbstractProfileItem {
 
@@ -17,7 +18,7 @@ public class UpdateUIDsProfile extends AbstractProfileItem {
     }
 
     @Override
-    public ActionItem getAction(DicomObject dcmCopy, DicomElement dcmElem, String PatientID) {
+    public ActionItem getAction(DicomObject dcm, DicomObject dcmCopy, DicomElement dcmElem, HMAC hmac) {
         ActionItem val = tagMap.get(dcmElem.tag());
         if (val != null) {
             return val;

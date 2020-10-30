@@ -8,6 +8,7 @@ public class ProfilePipeBody {
     private String minimumKarnakVersion;
     private String defaultIssuerOfPatientID;
     private List<ProfileElementBody> profiles;
+    private List<MaskBody> masks;
 
     public String getName() {
         return name;
@@ -47,5 +48,13 @@ public class ProfilePipeBody {
 
     public void setDefaultIssuerOfPatientID(String defaultIssuerOfPatientID) {
         this.defaultIssuerOfPatientID = defaultIssuerOfPatientID;
+    }
+
+    public List<MaskBody> getMasks() {
+        return masks;
+    }
+
+    public void setMasks(List<MaskBody> masks) {
+        this.masks = masks;
     }
 }
