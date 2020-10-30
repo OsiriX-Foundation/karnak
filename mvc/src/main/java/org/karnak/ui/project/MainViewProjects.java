@@ -3,8 +3,7 @@ package org.karnak.ui.project;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.*;
 import org.karnak.data.gateway.Project;
 import org.karnak.profilepipe.utils.HMAC;
 import org.karnak.ui.MainLayout;
@@ -14,7 +13,7 @@ import org.springframework.context.ApplicationEventPublisher;
 
 @Route(value = "project", layout = MainLayout.class)
 @PageTitle("KARNAK - Project")
-public class MainViewProjects extends HorizontalLayout {
+public class MainViewProjects extends HorizontalLayout implements HasUrlParameter<String> {
     public static final String VIEW_NAME = "Project";
 
     private ProjectDataProvider projectDataProvider;
@@ -46,15 +45,26 @@ public class MainViewProjects extends HorizontalLayout {
                 newProject.setSecret(HMAC.generateRandomKey());
                 projectDataProvider.save(newProject);
                 newProjectForm.clear();
-                gridProject.selectRow(newProject);
+                ProjectViewLogic.navigateProject(newProject);
             }
         });
     }
 
     private void setEventGridSelection() {
         gridProject.asSingleSelect().addValueChangeListener(event -> {
-            editProject.setProject(event.getValue());
+            ProjectViewLogic.navigateProject(event.getValue());
         });
+    }
+
+    @Override
+    public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
+        Long idProject = ProjectViewLogic.enter(parameter);
+        Project currentProject = null;
+        if (idProject != null) {
+            currentProject = projectDataProvider.getProjectById(idProject);
+        }
+        editProject.setProject(currentProject);
+        gridProject.selectRow(currentProject);
     }
 
     @Autowired

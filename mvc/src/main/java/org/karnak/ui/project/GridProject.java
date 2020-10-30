@@ -20,6 +20,10 @@ public class GridProject extends Grid<Project> {
     }
 
     public void selectRow(Project row) {
-        getSelectionModel().select(row);
+        if (row != null) {
+            getSelectionModel().select(row);
+        } else {
+            getSelectionModel().deselectAll();
+        }
     }
 }
