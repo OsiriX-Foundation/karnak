@@ -70,9 +70,9 @@ To launch the UI, execute the maven command `mvn spring-boot:run -f mvc` in the 
         - `KARNAK_ADMIN=admin`
         - `KARNAK_PASSWORD=admin`
         - `KARNAK_WEB_PORT=8081`
-        - `KARNAK_ALLFILE_LOGS_MAX_FILE_SIZE=1GB`
-        - `KARNAK_ALLFILE_LOGS_MAX_HISTORY=2`
-        - `KARNAK_ALLFILE_LOGS_TOTAL_SIZE_CAP=20GB`
+        - `KARNAK_LOGS_MAX_FILE_SIZE=100MB`
+        - `KARNAK_LOGS_MIN_INDEX=1`
+        - `KARNAK_LOGS_MAX_INDEX=10`
 
     Note: the tmp folder must be adapted according to your system and the dicom-opencv must the last folder.
 <!--
@@ -191,15 +191,20 @@ List of service to wait before start KARNAK.
 
 `KARNAK_LOGS_MAX_FILE_SIZE`
 
-Allows you to configure the maximum size of a single file for general logs. (default is `1GB`).
+Maximum file size of general logs. Each time the current log file reaches maxFileSize before 
+the current time period ends, it will be archived with an increasing index, starting 
+at `KARNAK_LOGS_MIN_INDEX` value. The maxFileSize option can be specified in bytes, kilobytes, 
+megabytes or gigabytes by suffixing a numeric value with KB, MB and respectively GB. For example, 
+5000000, 5000KB, 5MB and 2GB are all valid values, with the first three being equivalent.
+(optional, default is `100MB`).
 
-`KARNAK_LOGS_MAX_HISTORY`
+`KARNAK_LOGS_MIN_INDEX`
 
-Allows you to configure how many days you want to log for the general logs. (default is `2`).
+This option represents the lower bound for the window's logs index. (optional, default is `1`).
 
-`KARNAK_LOGS_TOTAL_SIZE_CAP`
+`KARNAK_LOGS_MAX_INDEX`
 
-Allows you to configure the maximum size of all log files for general logs. (default is `20GB`).
+This option represents the upper bound for the window's logs index. (optional, default is `10`).
 
 # Architecture
 
