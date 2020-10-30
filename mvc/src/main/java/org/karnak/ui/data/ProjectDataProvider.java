@@ -41,9 +41,9 @@ public class ProjectDataProvider extends ListDataProvider<Project> {
 
     public void update(Project project) {
         if (!project.isNewData()) {
-            refreshItem(project);
             projectPersistence.saveAndFlush(project);
             updateDestinations(project);
+            refreshAll();
         }
     }
 
