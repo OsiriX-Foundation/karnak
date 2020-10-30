@@ -102,8 +102,6 @@ public class EditProject extends VerticalLayout {
     }
 
     private void clear() {
-        textProjectName.clear();
-        profileDropDown.clear();
-        projectSecret.clear();
+        binder.readBean(new Project());
     }
 }

@@ -39,8 +39,7 @@ public class NewProjectForm extends HorizontalLayout {
     }
 
     public void clear() {
-        textResearchName.clear();
-        profileDropDown.clear();
+        binder.readBean(new Project());
     }
 
     public Binder<Project> getBinder() {

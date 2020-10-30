@@ -32,8 +32,11 @@ public class TextFieldsBindProject {
                 .withValidator(StringUtils::isNotBlank,"Secret is mandatory")
                 .withValidator(HMAC::validateKey, "Secret is not valid")
                 .bind(project -> {
-                    String hexKey = HMAC.byteToHex(project.getSecret());
-                    return HMAC.showHexKey(hexKey);
+                    if (project.getSecret() != null) {
+                        String hexKey = HMAC.byteToHex(project.getSecret());
+                        return HMAC.showHexKey(hexKey);
+                    }
+                    return null;
                 }, (project, s) -> {
                     project.setSecret(HMAC.hexToByte(s.replaceAll("-", "")));
                 });
