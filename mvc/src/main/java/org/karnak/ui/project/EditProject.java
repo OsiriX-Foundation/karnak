@@ -38,12 +38,11 @@ public class EditProject extends VerticalLayout {
     }
 
     public void setProject(Project project) {
+        this.project = project;
         if (project != null) {
-            this.project = projectDataProvider.getProjectById(project.getId());
-            binder.setBean(this.project);
+            binder.setBean(project);
             setEnabled(true);
         } else {
-            this.project = null;
             binder.removeBean();
             clear();
             setEnabled(false);
