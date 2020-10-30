@@ -70,11 +70,7 @@ public class NewSwitchingAlbum extends Div {
     }
 
     public void clear() {
-        textUrlAPI.clear();
-        textAuthorizationDestination.clear();
-        textAuthorizationSource.clear();
-        textCondition.clear();
-        textErrorConditionMsg.setText("");
+        binder.readBean(new KheopsAlbums());
     }
 
     public Binder<KheopsAlbums> getBinder() {
