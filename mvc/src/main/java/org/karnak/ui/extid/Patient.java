@@ -1,5 +1,7 @@
 package org.karnak.ui.extid;
 
+import org.dcm4che6.util.DateTimeUtils;
+
 import java.io.Serializable;
 import java.time.LocalDate;
 
@@ -53,6 +55,13 @@ public class Patient implements Serializable {
         this.patientBirthDate = patientBirthDate;
     }
 
+    public String getFormatPatientBirthDate() {
+        if (patientBirthDate != null) {
+            return DateTimeUtils.formatDA(patientBirthDate);
+        }
+        return "";
+    }
+
     public String getPatientSex() {
         return patientSex;
     }
@@ -70,7 +79,7 @@ public class Patient implements Serializable {
     }
 
     public String getPatientNameDicomFormat(){
-        return String.format("%s^%s", patientLastName, patientFirstName);
+        return patientFirstName == null ? patientLastName : String.format("%s^%s", patientLastName, patientFirstName);
     }
 
     public Patient(String extid, String patientId, String patientFirstName, String patientLastName, LocalDate patientBirthDate, String patientSex, String issuerOfPatientId)
