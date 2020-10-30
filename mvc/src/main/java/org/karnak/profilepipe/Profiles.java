@@ -146,7 +146,7 @@ public class Profiles {
                 }
             }
 
-            if ( (!(Remove.class.isInstance(currentAction)) || !(ReplaceNull.class.isInstance(currentAction))) && dcmEl.vr() == VR.SQ) {
+            if ( !(Remove.class.isInstance(currentAction)) && !(ReplaceNull.class.isInstance(currentAction)) && dcmEl.vr() == VR.SQ) {
                 final ProfileItem finalCurrentProfile = currentProfile;
                 final ActionItem finalCurrentAction = currentAction;
                 dcmEl.itemStream().forEach(d -> applyAction(d, dcmCopy, hmac, finalCurrentProfile, finalCurrentAction, context));
