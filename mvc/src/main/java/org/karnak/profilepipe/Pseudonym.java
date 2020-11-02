@@ -38,16 +38,13 @@ public class Pseudonym {
             }
             return pseudonym;
         } else if (destination.getIdTypes().equals(IdTypes.EXTID)) {
-            pseudonym = PatientCachingUtil.getPseudonym(new PatientMetadata(dcm), cache);
+            pseudonym = PatientCachingUtil.getPseudonym(new PatientMetadata(dcm, defaultIsserOfPatientID), cache);
             if (pseudonym != null) {
                 return pseudonym;
             }
         }
 
-        PatientMetadata patientMetadata = new PatientMetadata(dcm);
-        final String issuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID)
-                .orElse(defaultIsserOfPatientID);
-        patientMetadata.setIssuerOfPatientID(issuerOfPatientID);
+        PatientMetadata patientMetadata = new PatientMetadata(dcm, defaultIsserOfPatientID);
         try {
             return getMainzellistePseudonym(patientMetadata, getExtIDInDicom(dcm, destination),
                     destination.getIdTypes());
