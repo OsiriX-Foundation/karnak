@@ -1,7 +1,7 @@
 #  --------------------------------------------------------
 #  Karnak Application Profiles
 #  --------------------------------------------------------
-name: dev-YAML
+name: KARNAK-Profile
 environment: LOCAL
 karnakadmin: ${KARNAK_ADMIN}
 karnakpassword: ${KARNAK_PASSWORD}
@@ -16,7 +16,6 @@ logging:
     org:
       springframework: INFO
       springframework.core.io.support: INFO
-      weasis: DEBUG
 server:
   port: 8081
 spring:
