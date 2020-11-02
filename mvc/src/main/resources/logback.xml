@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- https://examples.javacodegeeks.com/enterprise-java/logback/logback-rollingfileappender-example/ -->
-<configuration debug="true">
+<configuration>
     <property name="LOGS" value="logs" />
     <if condition='property("ENVIRONMENT").contains("DEV")'>
         <then>
@@ -28,9 +27,17 @@
                     <Pattern>%black(%d{ISO8601})  %highlight(%-5level) %marker %highlight(%X{SOPInstanceUID}) %highlight(%X{issuerOfPatientID}) %highlight(%X{PatientID}) [%yellow(%t)] %yellow(%C{1.}): %msg%n%throwable </Pattern>
                 </encoder>
             </appender>
+            <!--
+            immediateFlush to false ? to discuss http://logback.qos.ch/manual/appenders.html
+            "The default value for immediateFlush is 'true'. Immediate flushing of the output stream ensures
+            that logging events are immediately written out and will not be lost in case your application exits
+            without properly closing appenders. On the other hand, setting this property to 'false' is likely
+            to quadruple (your mileage may vary) logging throughput. Again, if immediateFlush is set to 'false'
+            and if appenders are not closed properly when your application exits,
+            then logging events not yet written to disk may be lost."
+            -->
             <appender name="ALL_LOGS" class="ch.qos.logback.core.rolling.RollingFileAppender">
                 <file>${LOGS}/all/all.log</file>
-                <immediateFlush>false</immediateFlush>
                 <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
                     <fileNamePattern>${LOGS}/all/all_%i.log</fileNamePattern>
                     <minIndex>${KARNAK_LOGS_MIN_INDEX}</minIndex>
@@ -40,8 +47,6 @@
                 <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
                     <maxFileSize>${KARNAK_LOGS_MAX_FILE_SIZE}</maxFileSize>
                 </triggeringPolicy>
-                <!--
-                Duplicate Clinical logs ?
                 <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
                     <evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
                         <marker>CLINICAL</marker>
@@ -49,14 +54,12 @@
                     <onMismatch>NEUTRAL</onMismatch>
                     <onMatch>DENY</onMatch>
                 </filter>
-                -->
                 <encoder>
                     <pattern>%d %p %marker %C{1.} [%t] %m%n</pattern>
                 </encoder>
             </appender>
             <appender name="CLINICAL_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
                 <file>${LOGS}/Clinical/clinical.log</file>
-                <immediateFlush>false</immediateFlush>
                 <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
                     <fileNamePattern>${LOGS}/Clinical/clinical.%d{yyyy-MM-dd}.log</fileNamePattern>
                 </rollingPolicy>
@@ -79,7 +82,6 @@
                 <appender-ref ref="WARNING_OUT" />
             </root>
             <logger name="org.weasis" level="debug" />
-            <logger name="org.dcm4che6" level="debug" />
             <logger name="org.karnak" level="info" />
         </else>
     </if>
