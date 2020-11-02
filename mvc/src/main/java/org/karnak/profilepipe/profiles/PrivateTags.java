@@ -18,10 +18,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PrivateTags extends AbstractProfileItem {
-    private final Logger LOGGER = LoggerFactory.getLogger(PrivateTags.class);
-    private TagActionMap tagsAction;
-    private TagActionMap exceptedTagsAction;
-    private ActionItem actionByDefault;
+    private static final Logger LOGGER = LoggerFactory.getLogger(PrivateTags.class);
+
+    private final TagActionMap tagsAction;
+    private final TagActionMap exceptedTagsAction;
+    private final ActionItem actionByDefault;
 
     public PrivateTags(ProfileElement profileElement) throws Exception{
         super(profileElement);

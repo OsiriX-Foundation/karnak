@@ -11,14 +11,14 @@ import java.time.format.DateTimeFormatter;
 import org.weasis.core.util.StringUtil;
 
 public class PatientMetadata {
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("YYYYMMdd");
+    private static final String PATIENT_SEX_OTHER = "O";
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("YYYYMMdd");
+
     private final String patientID;
     private final String patientName;
     private final String patientBirthDate;
     private final String issuerOfPatientID;
     private final String patientSex;
-
-    private final String PATIENT_SEX_OTHER = "O";
 
     public PatientMetadata(DicomObject dcm, String defaultIsserOfPatientID) {
         patientID = dcm.getString(Tag.PatientID).orElse("");

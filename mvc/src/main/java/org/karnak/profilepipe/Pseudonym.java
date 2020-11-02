@@ -19,10 +19,10 @@ import javax.cache.Cache;
 import java.io.IOException;
 
 public class Pseudonym {
+    private static final Logger LOGGER = LoggerFactory.getLogger( Pseudonym.class );
+
     private Cache<String, Patient> cache;
     private Cache<String, Patient> mainzellisteCache;
-
-    private final Logger LOGGER = LoggerFactory.getLogger(Pseudonym.class);
 
     public Pseudonym() {
         cache = AppConfig.getInstance().getCache();

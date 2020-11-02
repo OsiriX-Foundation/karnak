@@ -35,7 +35,8 @@ import java.util.concurrent.TimeUnit;
 @EnableConfigurationProperties
 @ConfigurationProperties
 public class AppConfig {
-    private final Logger LOGGER = LoggerFactory.getLogger(AppConfig.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppConfig.class);
+
     private static AppConfig instance;
     private String environment;
     private String name;

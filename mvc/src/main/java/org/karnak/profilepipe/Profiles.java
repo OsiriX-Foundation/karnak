@@ -49,7 +49,7 @@ import org.weasis.dicom.param.AttributeEditorContext;
 import javax.cache.Cache;
 
 public class Profiles {
-    private final Logger LOGGER = LoggerFactory.getLogger(Profiles.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Profiles.class);
 
     private Profile profile;
     private Pseudonym pseudonymUtil;
