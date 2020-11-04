@@ -16,11 +16,8 @@ import org.karnak.profilepipe.option.datemanager.ShiftDate;
 import org.karnak.profilepipe.option.datemanager.ShiftRangeDate;
 import org.karnak.profilepipe.utils.HMAC;
 import org.karnak.profilepipe.utils.TagActionMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ActionDates extends AbstractProfileItem {
-    private final Logger LOGGER = LoggerFactory.getLogger(ActionDates.class);
     private TagActionMap tagsAction;
     private TagActionMap exceptedTagsAction;
     private ActionItem actionByDefault;

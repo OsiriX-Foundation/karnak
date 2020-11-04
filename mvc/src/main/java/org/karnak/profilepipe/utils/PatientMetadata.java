@@ -8,34 +8,35 @@ import org.karnak.ui.extid.Patient;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import org.weasis.core.util.StringUtil;
 
 public class PatientMetadata {
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("YYYYMMdd");
-    private String patientID;
-    private String patientName;
-    private String patientBirthDate;
-    private String issuerOfPatientID;
-    private String patientSex;
+    private static final String PATIENT_SEX_OTHER = "O";
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("YYYYMMdd");
 
-    private final String PATIENT_SEX_OTHER = "0";
+    private final String patientID;
+    private final String patientName;
+    private final String patientBirthDate;
+    private final String issuerOfPatientID;
+    private final String patientSex;
 
-    public PatientMetadata(DicomObject dcm) {
+    public PatientMetadata(DicomObject dcm, String defaultIsserOfPatientID) {
         patientID = dcm.getString(Tag.PatientID).orElse("");
         patientName = dcm.getString(Tag.PatientName).orElse("");
         patientBirthDate = setPatientBirthDate(dcm.getString(Tag.PatientBirthDate).orElse(""));
-        issuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID).orElse("");
-        patientSex = setPatientSex(dcm.getString(Tag.PatientSex).orElse("O"));
+        issuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID).orElse(StringUtil.hasText(defaultIsserOfPatientID) ? defaultIsserOfPatientID : "");
+        patientSex = setPatientSex(dcm.getString(Tag.PatientSex).orElse(PATIENT_SEX_OTHER));
     }
 
     private String setPatientSex(String patientSex) {
-        if (!patientSex.equals("M") && !patientSex.equals("F") && !patientSex.equals("O")) {
+        if (!patientSex.equals("M") && !patientSex.equals("F")) {
             return PATIENT_SEX_OTHER;
         }
         return patientSex;
     }
 
     private String setPatientBirthDate(String rawPatientBirthDate) {
-        if (rawPatientBirthDate != null && !rawPatientBirthDate.equals("")) {
+        if (StringUtil.hasText(rawPatientBirthDate)) {
             final LocalDate patientBirthDateLocalDate = DateTimeUtils.parseDA(rawPatientBirthDate);
             return DateTimeUtils.formatDA(patientBirthDateLocalDate);
         }
@@ -75,10 +76,6 @@ public class PatientMetadata {
 
     public String getIssuerOfPatientID() {
         return issuerOfPatientID;
-    }
-
-    public void setIssuerOfPatientID(String issuerOfPatientID) {
-        this.issuerOfPatientID = issuerOfPatientID;
     }
 
     public String getPatientSex() {

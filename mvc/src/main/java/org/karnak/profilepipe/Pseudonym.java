@@ -19,14 +19,14 @@ import javax.cache.Cache;
 import java.io.IOException;
 
 public class Pseudonym {
-    private Cache<String, Patient> cache;
-    private Cache<String, Patient> mainzellisteCache;
+    private static final Logger LOGGER = LoggerFactory.getLogger( Pseudonym.class );
 
-    private final Logger LOGGER = LoggerFactory.getLogger(Pseudonym.class);
+    private Cache<String, Patient> cache;
+    // private Cache<String, Patient> mainzellisteCache;
 
     public Pseudonym() {
         cache = AppConfig.getInstance().getCache();
-        mainzellisteCache = AppConfig.getInstance().getMainzellisteCache();
+        // mainzellisteCache = AppConfig.getInstance().getMainzellisteCache();
     }
 
     public String generatePseudonym(Destination destination, DicomObject dcm, String defaultIsserOfPatientID) {
@@ -38,16 +38,13 @@ public class Pseudonym {
             }
             return pseudonym;
         } else if (destination.getIdTypes().equals(IdTypes.EXTID)) {
-            pseudonym = PatientCachingUtil.getPseudonym(new PatientMetadata(dcm), cache);
+            pseudonym = PatientCachingUtil.getPseudonym(new PatientMetadata(dcm, defaultIsserOfPatientID), cache);
             if (pseudonym != null) {
                 return pseudonym;
             }
         }
 
-        PatientMetadata patientMetadata = new PatientMetadata(dcm);
-        final String issuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID)
-                .orElse(defaultIsserOfPatientID);
-        patientMetadata.setIssuerOfPatientID(issuerOfPatientID);
+        PatientMetadata patientMetadata = new PatientMetadata(dcm, defaultIsserOfPatientID);
         try {
             return getMainzellistePseudonym(patientMetadata, getExtIDInDicom(dcm, destination),
                     destination.getIdTypes());
@@ -77,20 +74,22 @@ public class Pseudonym {
     }
 
     public String getMainzellistePseudonym(PatientMetadata patientMetadata, String externalPseudonym, IdTypes idTypes) throws IOException, InterruptedException {
+        /*
         final String cachedPseudonym = PatientCachingUtil.getPseudonym(patientMetadata, mainzellisteCache);
         if (cachedPseudonym != null) {
             cachingMainzellistePseudonym(cachedPseudonym, patientMetadata);
             return cachedPseudonym;
         }
+        */
 
         PseudonymApi pseudonymApi = new PseudonymApi(externalPseudonym);
         final Fields newPatientFields = patientMetadata.generateMainzellisteFields();
 
         String pseudonym = pseudonymApi.createPatient(newPatientFields, idTypes);
-        cachingMainzellistePseudonym(pseudonym, patientMetadata);
+        // cachingMainzellistePseudonym(pseudonym, patientMetadata);
         return pseudonym;
     }
-
+    /*
     private void cachingMainzellistePseudonym(String pseudonym, PatientMetadata patientMetadata) {
         final Patient patient = new Patient(pseudonym,
                 patientMetadata.getPatientID(),
@@ -103,4 +102,5 @@ public class Pseudonym {
         mainzellisteCache.remove(cacheKey);
         mainzellisteCache.put(cacheKey, patient);
     }
+     */
 }

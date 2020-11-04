@@ -49,7 +49,7 @@ import org.weasis.dicom.param.AttributeEditorContext;
 import javax.cache.Cache;
 
 public class Profiles {
-    private final Logger LOGGER = LoggerFactory.getLogger(Profiles.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Profiles.class);
 
     private Profile profile;
     private Pseudonym pseudonymUtil;
@@ -146,7 +146,7 @@ public class Profiles {
                 }
             }
 
-            if ( (!(Remove.class.isInstance(currentAction)) || !(ReplaceNull.class.isInstance(currentAction))) && dcmEl.vr() == VR.SQ) {
+            if ( !(Remove.class.isInstance(currentAction)) && !(ReplaceNull.class.isInstance(currentAction)) && dcmEl.vr() == VR.SQ) {
                 final ProfileItem finalCurrentProfile = currentProfile;
                 final ActionItem finalCurrentAction = currentAction;
                 dcmEl.itemStream().forEach(d -> applyAction(d, dcmCopy, hmac, finalCurrentProfile, finalCurrentAction, context));
