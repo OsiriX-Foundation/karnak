@@ -29,7 +29,7 @@ import java.util.Iterator;
 
 
 public class AddNewPatientForm extends VerticalLayout {
-    protected final Logger LOGGER = LoggerFactory.getLogger(AddNewPatientForm.class);
+    protected static final Logger LOGGER = LoggerFactory.getLogger(AddNewPatientForm.class);
 
     private Binder<Patient> binder;
     private ListDataProvider<Patient> dataProvider;

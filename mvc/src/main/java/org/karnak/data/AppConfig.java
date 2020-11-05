@@ -35,7 +35,8 @@ import java.util.concurrent.TimeUnit;
 @EnableConfigurationProperties
 @ConfigurationProperties
 public class AppConfig {
-    private final Logger LOGGER = LoggerFactory.getLogger(AppConfig.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppConfig.class);
+
     private static AppConfig instance;
     private String environment;
     private String name;
@@ -106,6 +107,7 @@ public class AppConfig {
         return cacheManager.createCache("simpleCache", config);
     }
 
+    /*
     @Bean("CacheMainzelliste")
     public Cache<String, Patient> getMainzellisteCache(){
         final CacheManager cacheManager = Caching.getCachingProvider().getCacheManager();
@@ -115,6 +117,7 @@ public class AppConfig {
         config.setExpiryPolicyFactory(expiryPolicyFactory);
         return cacheManager.createCache("mainzelliste", config);
     }
+    */
 
     // https://stackoverflow.com/questions/27405713/running-code-after-spring-boot-starts
     @EventListener(ApplicationReadyEvent.class)

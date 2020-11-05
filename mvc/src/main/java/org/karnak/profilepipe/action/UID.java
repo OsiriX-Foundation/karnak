@@ -23,6 +23,6 @@ public class UID extends AbstractAction {
             uidHashed = hmac.uidHash(uidValue);
             dcm.setString(tag, VR.UI, uidHashed);
         }
-        LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_INOUT, TagUtils.toString(tag), tag, symbol, uidValue, uidHashed);
+        LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_INOUT, TagUtils.toString(tag), symbol, uidValue, uidHashed);
     }
 }

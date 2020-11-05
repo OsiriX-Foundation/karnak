@@ -21,6 +21,6 @@ public class ReplaceNull extends AbstractAction {
         dcm.get(tag).ifPresent(dcmEl -> {
             dcm.setNull(tag, dcmEl.vr());
         });
-        LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_INOUT, TagUtils.toString(tag), tag, symbol, tagValueIn, null);
+        LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_INOUT, TagUtils.toString(tag), symbol, tagValueIn, null);
     }
 }

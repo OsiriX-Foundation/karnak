@@ -8,16 +8,16 @@ import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
 public abstract class AbstractAction implements ActionItem {
+    protected static final Logger LOGGER = LoggerFactory.getLogger(AbstractAction.class);
+    protected static final Marker CLINICAL_MARKER = MarkerFactory.getMarker("CLINICAL");
+    protected static final String PATTERN_WITH_INOUT = "TAG={} ACTION={} OLD={} NEW={}";
+    protected static final String PATTERN_WITH_IN = "TAG={} ACTION={} OLD={}";
+    protected static final String ADD_METHOD = "a";
 
     protected final String symbol;
     protected String dummyValue;
     protected int newTag;
     protected VR vr;
-    protected final Logger LOGGER = LoggerFactory.getLogger(AbstractAction.class);
-    protected final Marker CLINICAL_MARKER = MarkerFactory.getMarker("CLINICAL");
-    protected final String PATTERN_WITH_INOUT = "TAGHEX={} TAGINT={} DEIDENTACTION={} TAGVALUEIN={} TAGOUT={}";
-    protected final String PATTERN_WITH_IN = "TAGHEX={} TAGINT={} DEIDENTACTION={} TAGVALUEIN={}";
-    protected final String ADD_METHOD = "a";
 
     public AbstractAction(String symbol) {
         this.symbol = symbol;

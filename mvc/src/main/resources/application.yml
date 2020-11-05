@@ -19,6 +19,9 @@ logging:
 server:
   port: 8081
 spring:
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.yaml
   profiles:
     active: '@activatedProperties@'
   datasource:
@@ -26,7 +29,7 @@ spring:
     url: 'jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}'
     username: ${DB_USER}
     hikari:
-      leak-detection-threshold: 2000
+      leak-detection-threshold: 0
       minimum-idle: 5
       maximum-pool-size: 10
       connection-timeout: 10000
@@ -35,7 +38,7 @@ spring:
   jpa:
     hibernate:
       # First time to create the db the value must be: create
-      ddl-auto: update
+      ddl-auto: none
     generate-ddl: false
     show-sql: false
     open-in-view: false

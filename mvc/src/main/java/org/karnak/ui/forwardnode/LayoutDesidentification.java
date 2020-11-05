@@ -2,6 +2,7 @@ package org.karnak.ui.forwardnode;
 
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.data.binder.Binder;
@@ -16,6 +17,7 @@ public class LayoutDesidentification extends Div {
     private Binder<Destination> destinationBinder;
 
     private Checkbox checkboxDesidentification;
+    private Label labelDisclaimer;
     private Checkbox checkboxUseAsPatientName;
     private ProjectDropDown projectDropDown;
     private ExtidPresentInDicomTagView extidPresentInDicomTagView;
@@ -25,6 +27,7 @@ public class LayoutDesidentification extends Div {
     private WarningNoProjectsDefined warningNoProjectsDefined;
 
     private final String LABEL_CHECKBOX_DESIDENTIFICATION = "Activate de-identification";
+    private final String LABEL_DISCLAIMER_DEIDENTIFICATION = "In order to ensure complete de-identification, visual verification of metadata and images is necessary.";
 
     private Select<String> extidListBox;
     final String [] extidSentence = {"Pseudonym are generate automatically","Pseudonym is already store in KARNAK", "Pseudonym is in a DICOM tag"};
@@ -48,7 +51,7 @@ public class LayoutDesidentification extends Div {
         add(UIS.setWidthFull(new HorizontalLayout(checkboxDesidentification, div)));
 
         if (checkboxDesidentification.getValue()) {
-            div.add(projectDropDown, desidentificationName, extidListBox);
+            div.add(labelDisclaimer,projectDropDown, desidentificationName, extidListBox);
         }
 
         projectDropDown.addValueChangeListener(event -> {
@@ -60,6 +63,11 @@ public class LayoutDesidentification extends Div {
         checkboxDesidentification = new Checkbox(LABEL_CHECKBOX_DESIDENTIFICATION);
         checkboxDesidentification.setValue(true);
         checkboxDesidentification.setMinWidth("25%");
+
+        labelDisclaimer = new Label(LABEL_DISCLAIMER_DEIDENTIFICATION);
+        labelDisclaimer.getStyle().set("color", "red");
+        labelDisclaimer.setMinWidth("75%");
+        labelDisclaimer.getStyle().set("right", "0px");
 
         projectDropDown.setLabel("Choose a project");
         projectDropDown.setWidth("100%");
@@ -100,13 +108,13 @@ public class LayoutDesidentification extends Div {
             if (event.getValue() != null) {
                 if (event.getValue()) {
                     if (projectDataProvider.getAllProjects().size() > 0) {
-                        div.add(projectDropDown, desidentificationName, extidListBox);
+                        div.add(labelDisclaimer, projectDropDown, desidentificationName, extidListBox);
                         setTextOnSelectionProject(projectDropDown.getValue());
                     } else {
                         warningNoProjectsDefined.open();
                     }
                 } else {
-                    div.remove(projectDropDown, desidentificationName);
+                    div.remove(labelDisclaimer, projectDropDown, desidentificationName);
                     extidListBox.setValue(extidSentence[0]);
                     checkboxUseAsPatientName.clear();
                     extidPresentInDicomTagView.clear();
