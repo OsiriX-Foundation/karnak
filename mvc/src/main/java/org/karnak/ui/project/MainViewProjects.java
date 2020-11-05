@@ -12,9 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 
 @Route(value = "project", layout = MainLayout.class)
-@PageTitle("KARNAK - Project")
+@PageTitle("KARNAK - Projects")
 public class MainViewProjects extends HorizontalLayout implements HasUrlParameter<String> {
-    public static final String VIEW_NAME = "Project";
+    public static final String VIEW_NAME = "Projects";
 
     private ProjectDataProvider projectDataProvider;
     private NewProjectForm newProjectForm;

@@ -20,10 +20,10 @@ import java.util.ArrayList;
 import java.util.function.Predicate;
 
 @Route(value = "profile", layout = MainLayout.class)
-@PageTitle("KARNAK - Profile")
+@PageTitle("KARNAK - Profiles")
 @SuppressWarnings("serial")
 public class ProfileView extends HorizontalLayout {
-    public static final String VIEW_NAME = "Profile";
+    public static final String VIEW_NAME = "Profiles";
 
     private ProfileComponent profileComponent;
     private ProfileElementMainView profileElementMainView;

@@ -179,9 +179,8 @@ public class Profiles {
                 "-" , profiles.stream().map(profile -> profile.getCodeName()).collect(Collectors.toList())
         );
         BigInteger patientValue = generatePatientID(pseudonym, profilesCodeName, hmac);
-        String newPatientName = !idTypes.equals(IdTypes.PID) && destination.getPseudonymAsPatientName() == true ?
-                pseudonym : patientValue.toString(16).toUpperCase();
-        String newPatientID = patientValue.toString();
+        String newPatientID = patientValue.toString(16).toUpperCase();
+        String newPatientName = !idTypes.equals(IdTypes.PID) && destination.getPseudonymAsPatientName() ? pseudonym : newPatientID;
 
         DicomObject dcmCopy = DicomObject.newDicomObject();
         DicomObjectUtil.copyDataset(dcm, dcmCopy);
