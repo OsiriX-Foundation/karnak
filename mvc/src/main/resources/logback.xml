@@ -55,7 +55,7 @@
                     <onMatch>DENY</onMatch>
                 </filter>
                 <encoder>
-                    <pattern>%d %p %marker %C{1.} [%t] %m%n</pattern>
+                    <pattern>%d %m%n</pattern>
                 </encoder>
             </appender>
             <appender name="CLINICAL_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -72,7 +72,7 @@
                     <onMatch>NEUTRAL</onMatch>
                 </filter>
                 <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-                    <Pattern>%d %m%n</Pattern>
+                    <Pattern>%d %X{SOPInstanceUID} %m%n</Pattern>
                 </encoder>
             </appender>
 
