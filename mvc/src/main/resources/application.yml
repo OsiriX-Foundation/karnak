@@ -35,6 +35,8 @@ spring:
       connection-timeout: 10000
       idle-timeout: 20000
       max-lifetime: 1800000
+  mustache:
+    check-template-location: false
   jpa:
     hibernate:
       # First time to create the db the value must be: create
