@@ -178,7 +178,7 @@ public class Profiles {
         String profilesCodeName = String.join(
                 "-" , profiles.stream().map(profile -> profile.getCodeName()).collect(Collectors.toList())
         );
-        BigInteger patientValue = generatePatientID(pseudonym, profilesCodeName, hmac);
+        BigInteger patientValue = generatePatientID(pseudonym, hmac);
         String newPatientID = patientValue.toString(16).toUpperCase();
         String newPatientName = !idTypes.equals(IdTypes.PID) && destination.getPseudonymAsPatientName() ? pseudonym : newPatientID;
 
@@ -256,9 +256,9 @@ public class Profiles {
     }
 
 
-    public BigInteger generatePatientID(String pseudonym, String profiles, HMAC hmac) {
+    public BigInteger generatePatientID(String pseudonym, HMAC hmac) {
         byte[] bytes = new byte[16];
-        System.arraycopy(hmac.byteHash(pseudonym + profiles), 0, bytes, 0, 16);
+        System.arraycopy(hmac.byteHash(pseudonym), 0, bytes, 0, 16);
         return new BigInteger(1, bytes);
     }
 }
