@@ -38,6 +38,12 @@ services:
     secrets:
       - postgres_karnak_password
 
+  node-dicom:
+    image: dcm4che/dcm4che-tools:5.22.6
+    entrypoint: ["storescp", "-b", "NODE:4444"]
+    ports:
+      - 4444:4444
+
 secrets:
   postgres_karnak_password:
     file: secrets/karnak_postgres_password
