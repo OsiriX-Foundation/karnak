@@ -1,15 +1,13 @@
-package org.karnak.util;
+package org.karnak.cache;
 
 import org.karnak.profilepipe.utils.PatientMetadata;
 import org.karnak.ui.extid.Patient;
 
-import javax.cache.Cache;
-
-public class PatientCachingUtil {
-    public PatientCachingUtil() {
+public class PatientClientUtil {
+    public PatientClientUtil() {
     }
 
-    public static String getPseudonym(PatientMetadata patientMetadata, Cache<String, Patient> cache) {
+    public static String getPseudonym(PatientMetadata patientMetadata, PatientClient cache) {
         if (cache != null) {
             final String key = generateKey(patientMetadata);
             final Patient patient = cache.get(key);

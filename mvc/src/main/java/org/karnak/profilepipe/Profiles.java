@@ -2,7 +2,6 @@ package org.karnak.profilepipe;
 
 import java.awt.Color;
 import java.awt.Shape;
-import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -19,9 +18,6 @@ import org.dcm4che6.data.VR;
 import org.dcm4che6.img.op.MaskArea;
 import org.dcm4che6.img.util.DicomObjectUtil;
 import org.dcm4che6.util.TagUtils;
-import org.karnak.api.PseudonymApi;
-import org.karnak.api.rqbody.Fields;
-import org.karnak.data.AppConfig;
 import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.IdTypes;
 import org.karnak.data.gateway.Project;
@@ -36,17 +32,12 @@ import org.karnak.profilepipe.profiles.CleanPixelData;
 import org.karnak.profilepipe.profiles.ProfileItem;
 import org.karnak.expression.ExprAction;
 import org.karnak.profilepipe.utils.HMAC;
-import org.karnak.profilepipe.utils.PatientMetadata;
-import org.karnak.ui.extid.Patient;
-import org.karnak.util.PatientCachingUtil;
 import org.karnak.profilepipe.utils.HashContext;
-import org.karnak.util.SpecialCharacter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.weasis.core.util.StringUtil;
 import org.weasis.dicom.param.AttributeEditorContext;
-import javax.cache.Cache;
 
 public class Profiles {
     private static final Logger LOGGER = LoggerFactory.getLogger(Profiles.class);
