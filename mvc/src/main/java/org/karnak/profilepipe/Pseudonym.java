@@ -1,7 +1,6 @@
 package org.karnak.profilepipe;
 
 import org.dcm4che6.data.DicomObject;
-import org.dcm4che6.data.Tag;
 import org.dcm4che6.util.TagUtils;
 import org.karnak.api.PseudonymApi;
 import org.karnak.api.rqbody.Fields;
@@ -22,11 +21,11 @@ public class Pseudonym {
     private static final Logger LOGGER = LoggerFactory.getLogger( Pseudonym.class );
 
     private Cache<String, Patient> cache;
-    // private Cache<String, Patient> mainzellisteCache;
+    private Cache<String, Patient> mainzellisteCache;
 
     public Pseudonym() {
         cache = AppConfig.getInstance().getCache();
-        // mainzellisteCache = AppConfig.getInstance().getMainzellisteCache();
+        mainzellisteCache = AppConfig.getInstance().getMainzellisteCache();
     }
 
     public String generatePseudonym(Destination destination, DicomObject dcm, String defaultIsserOfPatientID) {
@@ -74,22 +73,20 @@ public class Pseudonym {
     }
 
     public String getMainzellistePseudonym(PatientMetadata patientMetadata, String externalPseudonym, IdTypes idTypes) throws IOException, InterruptedException {
-        /*
         final String cachedPseudonym = PatientCachingUtil.getPseudonym(patientMetadata, mainzellisteCache);
         if (cachedPseudonym != null) {
             cachingMainzellistePseudonym(cachedPseudonym, patientMetadata);
             return cachedPseudonym;
         }
-        */
 
         PseudonymApi pseudonymApi = new PseudonymApi(externalPseudonym);
         final Fields newPatientFields = patientMetadata.generateMainzellisteFields();
 
         String pseudonym = pseudonymApi.createPatient(newPatientFields, idTypes);
-        // cachingMainzellistePseudonym(pseudonym, patientMetadata);
+        cachingMainzellistePseudonym(pseudonym, patientMetadata);
         return pseudonym;
     }
-    /*
+
     private void cachingMainzellistePseudonym(String pseudonym, PatientMetadata patientMetadata) {
         final Patient patient = new Patient(pseudonym,
                 patientMetadata.getPatientID(),
@@ -102,5 +99,4 @@ public class Pseudonym {
         mainzellisteCache.remove(cacheKey);
         mainzellisteCache.put(cacheKey, patient);
     }
-     */
 }

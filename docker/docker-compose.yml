@@ -44,6 +44,11 @@ services:
     ports:
       - 4444:4444
 
+  hazelcast:
+    image: hazelcast/hazelcast:4.1
+    ports:
+      - 5701:5701
+
 secrets:
   postgres_karnak_password:
     file: secrets/karnak_postgres_password
