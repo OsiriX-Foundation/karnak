@@ -12,6 +12,7 @@ import java.util.Collection;
 public abstract class PatientClient {
     // https://docs.hazelcast.org/docs/latest/manual/html-single/#cp-subsystem
     private final static int CPMember = 3;
+    private final static String cluserName = "PatientClient";
     private final String name;
     private final HazelcastInstance hazelcastInstance;
 
@@ -24,8 +25,10 @@ public abstract class PatientClient {
         Config config = new Config();
         MapConfig mapConfig = new MapConfig(name);
         mapConfig.setTimeToLiveSeconds(ttlSeconds);
-        mapConfig.setMaxIdleSeconds(20);
+        // The method setMaxIdleSeconds defines how long the entry stays in the cache without being touched
+        // mapConfig.setMaxIdleSeconds(20);
         config.addMapConfig(mapConfig);
+        config.setClusterName(cluserName);
         config.getCPSubsystemConfig().setCPMemberCount(CPMember);
         config.setClassLoader(Patient.class.getClassLoader());
         return config;
