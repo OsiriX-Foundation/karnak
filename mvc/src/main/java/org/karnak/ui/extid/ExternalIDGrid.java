@@ -12,10 +12,10 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.validator.StringLengthValidator;
 import org.apache.commons.lang3.StringUtils;
+import org.karnak.cache.PatientClient;
 import org.karnak.data.AppConfig;
 import org.karnak.cache.PatientClientUtil;
 
-import javax.cache.Cache;
 import java.util.*;
 
 public class ExternalIDGrid extends Grid<Patient> {
@@ -52,13 +52,13 @@ public class ExternalIDGrid extends Grid<Patient> {
     private String LABEL_SAVE = "Save";
     private String LABEL_CANCEL = "Cancel";
     private String LABEL_DELETE = "Delete";
-    private Cache<String, Patient> cache;
+    private PatientClient externalIDCache;
 
     public ExternalIDGrid(){
         binder = new Binder<>(Patient.class);
         patientList = new ArrayList<>();
         dataProvider = (ListDataProvider<Patient>) getDataProvider();
-        cache = AppConfig.getInstance().getCache();
+        externalIDCache = AppConfig.getInstance().getExternalIDCache();
 
         setSizeFull();
         getElement().addEventListener("keyup", event -> editor.cancel())
@@ -90,8 +90,8 @@ public class ExternalIDGrid extends Grid<Patient> {
                     patientBirthDateField.getValue(),
                     patientSexField.getValue(),
                     issuerOfPatientIdField.getValue());
-            cache.remove(PatientClientUtil.generateKey(editor.getItem())); //old extid
-            cache.put(PatientClientUtil.generateKey(patientEdit), patientEdit); //new extid
+            externalIDCache.remove(PatientClientUtil.generateKey(editor.getItem())); //old extid
+            externalIDCache.put(PatientClientUtil.generateKey(patientEdit), patientEdit); //new extid
             editor.save();
         });
         saveEditPatientButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -148,7 +148,7 @@ public class ExternalIDGrid extends Grid<Patient> {
             deletePatientButton.addClickListener( e -> {
                 patientList.remove(patient);
                 getDataProvider().refreshAll();
-                cache.remove(PatientClientUtil.generateKey(patient));
+                externalIDCache.remove(PatientClientUtil.generateKey(patient));
             });
             return deletePatientButton;
         });

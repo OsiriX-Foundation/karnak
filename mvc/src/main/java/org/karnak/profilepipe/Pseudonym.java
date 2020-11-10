@@ -15,17 +15,16 @@ import org.karnak.util.SpecialCharacter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.cache.Cache;
 import java.io.IOException;
 
 public class Pseudonym {
     private static final Logger LOGGER = LoggerFactory.getLogger( Pseudonym.class );
 
-    private Cache<String, Patient> cache;
+    private PatientClient externalIdCache;
     private PatientClient mainzellisteCache;
 
     public Pseudonym() {
-        cache = AppConfig.getInstance().getCache();
+        externalIdCache = AppConfig.getInstance().getExternalIDCache();
         mainzellisteCache = AppConfig.getInstance().getMainzellisteCache();
     }
 
@@ -37,14 +36,12 @@ public class Pseudonym {
                 throw new IllegalStateException("Cannot get a pseudonym in a DICOM tag");
             }
             return pseudonym;
-        } /*
-        else if (destination.getIdTypes().equals(IdTypes.EXTID)) {
-            pseudonym = PatientCachingUtil.getPseudonym(new PatientMetadata(dcm, defaultIsserOfPatientID), cache);
+        } else if (destination.getIdTypes().equals(IdTypes.EXTID)) {
+            pseudonym = PatientClientUtil.getPseudonym(new PatientMetadata(dcm, defaultIsserOfPatientID), externalIdCache);
             if (pseudonym != null) {
                 return pseudonym;
             }
         }
-        */
         PatientMetadata patientMetadata = new PatientMetadata(dcm, defaultIsserOfPatientID);
         try {
             return getMainzellistePseudonym(patientMetadata, getExtIDInDicom(dcm, destination),

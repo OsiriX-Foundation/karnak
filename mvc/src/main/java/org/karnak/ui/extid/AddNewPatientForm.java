@@ -16,6 +16,7 @@ import com.vaadin.flow.data.validator.StringLengthValidator;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.api.PseudonymApi;
 import org.karnak.api.rqbody.Fields;
+import org.karnak.cache.PatientClient;
 import org.karnak.data.AppConfig;
 import org.karnak.data.gateway.IdTypes;
 import org.karnak.ui.component.ConfirmDialog;
@@ -23,8 +24,8 @@ import org.karnak.cache.PatientClientUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.cache.Cache;
 import java.time.format.DateTimeFormatter;
+import java.util.Collection;
 import java.util.Iterator;
 
 
@@ -50,12 +51,12 @@ public class AddNewPatientForm extends VerticalLayout {
     private HorizontalLayout horizontalLayout2;
     private HorizontalLayout horizontalLayout3;
 
-    private Cache<String, Patient> cache;
+    private PatientClient externalIDCache;
 
     public AddNewPatientForm(ListDataProvider<Patient> dataProvider){
         setSizeFull();
         this.dataProvider = dataProvider;
-        cache = AppConfig.getInstance().getCache();
+        externalIDCache = AppConfig.getInstance().getExternalIDCache();
         binder = new BeanValidationBinder<>(Patient.class);
 
         setElements();
@@ -96,11 +97,10 @@ public class AddNewPatientForm extends VerticalLayout {
     }
 
     private void readAllCacheValue(){
-        if (cache != null){
-            for(Iterator<Cache.Entry<String, Patient>> cacheElem = cache.iterator(); cacheElem.hasNext();){
-                final Cache.Entry<String, Patient> cacheEntry = cacheElem.next();
-                final Patient patient= cacheEntry.getValue();
-                final String key = cacheEntry.getKey();
+        if (externalIDCache != null) {
+            Collection<Patient> patients = externalIDCache.getAll();
+            for (Iterator<Patient> iterator = patients.iterator(); iterator.hasNext();) {
+                final Patient patient = iterator.next();
                 dataProvider.getItems().add(patient);
             }
         }
@@ -207,7 +207,7 @@ public class AddNewPatientForm extends VerticalLayout {
             } else {
                 dataProvider.getItems().add(newPatient);
                 dataProvider.refreshAll();
-                cache.put(PatientClientUtil.generateKey(newPatient), newPatient);
+                externalIDCache.put(PatientClientUtil.generateKey(newPatient), newPatient);
                 binder.readBean(null);
             }
         }

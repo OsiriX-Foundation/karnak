@@ -7,22 +7,26 @@ import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.map.IMap;
 import org.karnak.ui.extid.Patient;
 
+import java.util.Collection;
+
 public abstract class PatientClient {
-    private String name;
+    // https://docs.hazelcast.org/docs/latest/manual/html-single/#cp-subsystem
+    private final static int CPMember = 3;
+    private final String name;
     private final HazelcastInstance hazelcastInstance;
 
     public PatientClient(String name, int ttlSeconds) {
-        this.hazelcastInstance = Hazelcast.newHazelcastInstance(createConfig(name, ttlSeconds));
         this.name = name;
+        this.hazelcastInstance = Hazelcast.newHazelcastInstance(createConfig(ttlSeconds));
     }
 
-    private Config createConfig(String name, int ttlSeconds) {
+    private Config createConfig(int ttlSeconds) {
         Config config = new Config();
         MapConfig mapConfig = new MapConfig(name);
         mapConfig.setTimeToLiveSeconds(ttlSeconds);
         mapConfig.setMaxIdleSeconds(20);
         config.addMapConfig(mapConfig);
-        config.getCPSubsystemConfig().setCPMemberCount(3);
+        config.getCPSubsystemConfig().setCPMemberCount(CPMember);
         config.setClassLoader(Patient.class.getClassLoader());
         return config;
     }
@@ -35,5 +39,15 @@ public abstract class PatientClient {
     public Patient get(String key) {
         IMap<String, Patient> map = hazelcastInstance.getMap(name);
         return map.get(key);
+    }
+
+    public void remove(String key) {
+        IMap<String, Patient> map = hazelcastInstance.getMap(name);
+        map.remove(key);
+    }
+
+    public Collection<Patient> getAll() {
+        IMap<String, Patient> map = hazelcastInstance.getMap(name);
+        return map.values();
     }
 }

@@ -1,12 +1,12 @@
 package org.karnak.data;
 
+import org.karnak.cache.ExternalIDCache;
 import org.karnak.cache.MainzellisteCache;
 import org.karnak.cache.PatientClient;
 import org.karnak.data.profile.ProfilePersistence;
 import org.karnak.profilepipe.Profiles;
 import org.karnak.profilepipe.profilebody.ProfilePipeBody;
 import org.karnak.standard.ConfidentialityProfiles;
-import org.karnak.ui.extid.Patient;
 import org.karnak.ui.profile.ProfilePipeService;
 import org.karnak.ui.profile.ProfilePipeServiceImpl;
 import org.slf4j.Logger;
@@ -21,7 +21,6 @@ import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
 import javax.annotation.PostConstruct;
-import javax.cache.Cache;
 import java.io.InputStream;
 import java.net.URL;
 
@@ -93,18 +92,9 @@ public class AppConfig {
         return new ConfidentialityProfiles();
     }
 
-    @Bean("CachePatient")
-    public Cache<String, Patient> getCache(){
-        return null;
-        /*
-        final CachingProvider cachingProvider = Caching.getCachingProvider();
-        final CacheManager cacheManager = cachingProvider.getCacheManager();
-        final Duration duration = new Duration(TimeUnit.DAYS, 7L);
-        final Factory expiryPolicyFactory = CreatedExpiryPolicy.factoryOf(duration);
-        final MutableConfiguration<String, Patient> config = new MutableConfiguration<>();
-        config.setExpiryPolicyFactory(expiryPolicyFactory);
-        return cacheManager.createCache("simpleCache", config);
-         */
+    @Bean("ExternalIDPatient")
+    public PatientClient getExternalIDCache() {
+        return new ExternalIDCache();
     }
 
     @Bean("MainzellisteCache")
