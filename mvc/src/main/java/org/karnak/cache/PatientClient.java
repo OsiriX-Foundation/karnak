@@ -23,6 +23,7 @@ public abstract class PatientClient {
         mapConfig.setMaxIdleSeconds(20);
         config.addMapConfig(mapConfig);
         config.getCPSubsystemConfig().setCPMemberCount(3);
+        config.setClassLoader(Patient.class.getClassLoader());
         return config;
     }
 
