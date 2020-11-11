@@ -36,9 +36,6 @@ public class AppConfig {
     private String karnakadmin;
     private String karnakpassword;
 
-    private String nameMainzelliste = "mainzelliste";
-    private int ttlSeconds = 60*15;
-
     @Autowired
     private ProfilePersistence profilePersistence;
 
