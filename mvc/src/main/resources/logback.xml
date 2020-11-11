@@ -55,7 +55,7 @@
                     <onMatch>DENY</onMatch>
                 </filter>
                 <encoder>
-                    <pattern>%d %m%n</pattern>
+                    <pattern>%d %-5level %m%n</pattern>
                 </encoder>
             </appender>
             <appender name="CLINICAL_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
