@@ -113,3 +113,36 @@ scaleHash(PatientID, scaledMin, scaledMax):
 
     shift = (patientHashed[0:6].toPositiveDecimal() * scale) + scaledMin
 ```
+
+## Pseudonym
+
+To allow a patient to participate in several studies requiring different de-identification, KARNAK generates a PatientID depending on the context.
+
+Pseudonym generation is usually done for a patient, independent of de-identification. Depending on the project, the de-identification can ask to keep the year of birth or to delete it. In DICOM a patient is a module, so if the information of a patient is updated, like the birthdate, it will updated on every DICOM instances associated to this patient.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
