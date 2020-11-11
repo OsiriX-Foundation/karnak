@@ -1,10 +1,12 @@
 package org.karnak.data;
 
+import org.karnak.cache.ExternalIDCache;
+import org.karnak.cache.MainzellisteCache;
+import org.karnak.cache.PatientClient;
 import org.karnak.data.profile.ProfilePersistence;
 import org.karnak.profilepipe.Profiles;
 import org.karnak.profilepipe.profilebody.ProfilePipeBody;
 import org.karnak.standard.ConfidentialityProfiles;
-import org.karnak.ui.extid.Patient;
 import org.karnak.ui.profile.ProfilePipeService;
 import org.karnak.ui.profile.ProfilePipeServiceImpl;
 import org.slf4j.Logger;
@@ -19,17 +21,8 @@ import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
 import javax.annotation.PostConstruct;
-import javax.cache.Cache;
-import javax.cache.CacheManager;
-import javax.cache.Caching;
-import javax.cache.configuration.Factory;
-import javax.cache.configuration.MutableConfiguration;
-import javax.cache.expiry.CreatedExpiryPolicy;
-import javax.cache.expiry.Duration;
-import javax.cache.spi.CachingProvider;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.concurrent.TimeUnit;
 
 @Configuration
 @EnableConfigurationProperties
@@ -96,28 +89,15 @@ public class AppConfig {
         return new ConfidentialityProfiles();
     }
 
-    @Bean("CachePatient")
-    public Cache<String, Patient> getCache(){
-        final CachingProvider cachingProvider = Caching.getCachingProvider();
-        final CacheManager cacheManager = cachingProvider.getCacheManager();
-        final Duration duration = new Duration(TimeUnit.DAYS, 7L);
-        final Factory expiryPolicyFactory = CreatedExpiryPolicy.factoryOf(duration);
-        final MutableConfiguration<String, Patient> config = new MutableConfiguration<>();
-        config.setExpiryPolicyFactory(expiryPolicyFactory);
-        return cacheManager.createCache("simpleCache", config);
+    @Bean("ExternalIDPatient")
+    public PatientClient getExternalIDCache() {
+        return new ExternalIDCache();
     }
 
-    /*
-    @Bean("CacheMainzelliste")
-    public Cache<String, Patient> getMainzellisteCache(){
-        final CacheManager cacheManager = Caching.getCachingProvider().getCacheManager();
-        final Duration duration = new Duration(TimeUnit.MINUTES, 15L);
-        final Factory expiryPolicyFactory = CreatedExpiryPolicy.factoryOf(duration);
-        final MutableConfiguration<String, Patient> config = new MutableConfiguration<>();
-        config.setExpiryPolicyFactory(expiryPolicyFactory);
-        return cacheManager.createCache("mainzelliste", config);
+    @Bean("MainzellisteCache")
+    public PatientClient getMainzellisteCache() {
+        return new MainzellisteCache();
     }
-    */
 
     // https://stackoverflow.com/questions/27405713/running-code-after-spring-boot-starts
     @EventListener(ApplicationReadyEvent.class)
