@@ -19,7 +19,7 @@ public class Replace extends AbstractAction {
 
     @Override
     public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, HMAC hmac) {
-        final String tagValueIn = dcm.getString(tag).orElse(null);
+        String tagValueIn = dcm.getString(tag).orElse(null);
 
         dcm.get(tag).ifPresent(dcmEl -> {
             if (dummyValue != null) {
@@ -28,8 +28,6 @@ public class Replace extends AbstractAction {
                 dcm.setNull(tag, dcmEl.vr());
             }
         });
-
-        final String tagValueOut = dcm.getString(tag).orElse(null);
-        LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_INOUT, TagUtils.toString(tag), tag, symbol, tagValueIn, tagValueOut);
+        LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_INOUT, TagUtils.toString(tag), symbol, tagValueIn, dummyValue);
     }
 }

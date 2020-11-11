@@ -70,6 +70,10 @@ To launch the UI, execute the maven command `mvn spring-boot:run -f mvc` in the 
         - `KARNAK_ADMIN=admin`
         - `KARNAK_PASSWORD=admin`
         - `KARNAK_WEB_PORT=8081`
+        - `KARNAK_LOGS_MAX_FILE_SIZE=100MB`
+        - `KARNAK_LOGS_MIN_INDEX=1`
+        - `KARNAK_LOGS_MAX_INDEX=10`
+        - `ENVIRONMENT=DEV`
 
     Note: the tmp folder must be adapted according to your system and the dicom-opencv must the last folder.
 <!--
@@ -106,86 +110,15 @@ Go on the root folder and launch the following command:
 
 `docker build -t karnak/locally:latest .`
 
-Run Karnak: `docker run -it -p8081:8081 -p11119:11119 karnak/locally:latest`
+Run Karnak: `docker run -it -p8080:8081 -p11112:11119 karnak/locally:latest`
 
 ## Run image from Docker Hub
 
-See [documentation](https://github.com/OsiriX-Foundation/karnak-docker)
+See [karnak-docker documentation](https://github.com/OsiriX-Foundation/karnak-docker)
 
 ## Docker environment variables
 
-`DB_USER`
-
-User of the karnak database (optional, default is `karnak`).
-
-`DB_USER_FILE`
-
-User of the karnak database via file input (alternative to `DB_USER`).
-
-`DB_PASSWORD`
-
-Password of the karnak database (optional, default is `karnak`).
-
-`DB_PASSWORD_FILE`
-
-Password of the karnak database via file input (alternative to `DB_PASSWORD`).
-
-`DB_NAME`
-
-Name of the karnak database (optional, default is `karnak`).
-
-`DB_NAME_FILE`
-
-Name of the karnak database via file input (alternative to `DB_NAME`).
-
-`DB_HOST`
-
-Hostname/IP Address of the PostgreSQL host. (optional, default is `localhost`).
-
-`DB_PORT`
-
-Port of the PostgreSQL host (optional, default is `5432`)
-
-`MAINZELLISTE_HOSTNAME`
-
-Hostname/IP Address of the Mainzelliste host. (optional, default is `localhost`).
-
-`MAINZELLISTE_HTTP_PORT`
-
-Port of the Mainzelliste host. (optional, default is `8080`).
-
-`MAINZELLISTE_ID_TYPES`
-
-Type of pseudonym to be created and sent.
-
-`MAINZELLISTE_API_KEY`
-
-The api key used to connect to Mainzelliste host (optional, default is `undefined`)
-
-`KARNAK_HMAC_KEY`
-
-The key used for the HMAC. This HMAC will be used for all the hash created by karnak
-
-`KARNAK_HMAC_KEY_FILE`
-
-The key used for the HMAC via file input. (alternative to `KARNAK_HMAC_KEY`).
-
-`KARNAK_LOGIN_ADMIN`
-
-Login used for Karnak. (optional, default is `admin`).
-
-`KARNAK_LOGIN_PASSWORD`
-
-Password used for Karnak. (optional, default is `undefined`).
-
-`KARNAK_LOGIN_PASSWORD_FILE`
-
-Password used for Karnak via file input. (alternative to `KARNAK_LOGIN_PASSWORD`).
-
-`KARNAK_WAIT_FOR`
-
-List of service to wait before start KARNAK.
-
+See [environment variables](https://github.com/OsiriX-Foundation/karnak-docker#environment-variables)
 
 # Architecture
 

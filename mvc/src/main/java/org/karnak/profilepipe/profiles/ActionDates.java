@@ -11,15 +11,13 @@ import org.karnak.expression.ExpressionError;
 import org.karnak.expression.ExpressionResult;
 import org.karnak.profilepipe.action.ActionItem;
 import org.karnak.profilepipe.action.Replace;
+import org.karnak.profilepipe.option.datemanager.DateFormat;
 import org.karnak.profilepipe.option.datemanager.ShiftDate;
 import org.karnak.profilepipe.option.datemanager.ShiftRangeDate;
 import org.karnak.profilepipe.utils.HMAC;
 import org.karnak.profilepipe.utils.TagActionMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ActionDates extends AbstractProfileItem {
-    private final Logger LOGGER = LoggerFactory.getLogger(ActionDates.class);
     private TagActionMap tagsAction;
     private TagActionMap exceptedTagsAction;
     private ActionItem actionByDefault;
@@ -57,6 +55,7 @@ public class ActionDates extends AbstractProfileItem {
             switch (option) {
                 case "shift" -> ShiftDate.verifyShiftArguments(arguments);
                 case "shift_range" -> shiftRangeDate.verifyShiftArguments(arguments);
+                case "date_format" -> DateFormat.verifyPatternArguments(arguments);
                 default -> throw new Exception("Cannot build the profile " + codeName + " with the option given " + option + " : Option available (shift, shift_range)");
             }
         } catch (Exception e) {
@@ -96,6 +95,7 @@ public class ActionDates extends AbstractProfileItem {
         return switch (option) {
             case "shift" -> ShiftDate.shift(dcmCopy, dcmElem, arguments);
             case "shift_range" -> shiftRangeDate.shift(dcmCopy, dcmElem, arguments, hmac);
+            case "date_format" -> DateFormat.format(dcmCopy, dcmElem, arguments);
             default -> null;
         };
     }

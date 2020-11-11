@@ -19,6 +19,11 @@ public class Argument {
     public Argument() {
     }
 
+    public Argument(String key, String value) {
+        this.key = key;
+        this.value = value;
+    }
+
     public Argument(String key, String value, ProfileElement profileElement) {
         this.key = key;
         this.value = value;

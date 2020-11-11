@@ -26,7 +26,7 @@ services:
       - mainzelliste-db
 
   karnak-db:
-    image: postgres:12.1-alpine
+    image: postgres:12.4-alpine
     environment:
       - POSTGRES_DB=karnak
       - POSTGRES_USER=karnak
@@ -37,6 +37,12 @@ services:
       - karnak-db-data:/var/lib/postgresql/data
     secrets:
       - postgres_karnak_password
+
+  node-dicom:
+    image: dcm4che/dcm4che-tools:5.22.6
+    entrypoint: ["storescp", "-b", "NODE:4444"]
+    ports:
+      - 4444:4444
 
 secrets:
   postgres_karnak_password:

@@ -2,10 +2,7 @@ package org.karnak.profilepipe;
 
 import java.awt.Color;
 import java.awt.Shape;
-import java.io.IOException;
 import java.math.BigInteger;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -20,11 +17,7 @@ import org.dcm4che6.data.Tag;
 import org.dcm4che6.data.VR;
 import org.dcm4che6.img.op.MaskArea;
 import org.dcm4che6.img.util.DicomObjectUtil;
-import org.dcm4che6.util.DateTimeUtils;
 import org.dcm4che6.util.TagUtils;
-import org.karnak.api.PseudonymApi;
-import org.karnak.api.rqbody.Fields;
-import org.karnak.data.AppConfig;
 import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.IdTypes;
 import org.karnak.data.gateway.Project;
@@ -39,28 +32,24 @@ import org.karnak.profilepipe.profiles.CleanPixelData;
 import org.karnak.profilepipe.profiles.ProfileItem;
 import org.karnak.expression.ExprAction;
 import org.karnak.profilepipe.utils.HMAC;
-import org.karnak.ui.extid.Patient;
-import org.karnak.util.CachingUtil;
 import org.karnak.profilepipe.utils.HashContext;
-import org.karnak.util.SpecialCharacter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.weasis.core.util.StringUtil;
 import org.weasis.dicom.param.AttributeEditorContext;
-import javax.cache.Cache;
 
 public class Profiles {
-    private final Logger LOGGER = LoggerFactory.getLogger(Profiles.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Profiles.class);
 
     private Profile profile;
+    private Pseudonym pseudonymUtil;
     private final ArrayList<ProfileItem> profiles;
     private final Map<String, MaskArea> maskMap;
-    private Cache<String, Patient> cache;
 
     public Profiles(Profile profile) {
         this.maskMap = new HashMap<>();
-        this.cache = AppConfig.getInstance().getCache();
+        this.pseudonymUtil = new Pseudonym();
         this.profile = profile;
         this.profiles = createProfilesList();
     }
@@ -117,47 +106,6 @@ public class Profiles {
         return null;
     }
 
-    public String getMainzellistePseudonym(DicomObject dcm, String externalPseudonym, IdTypes idTypes) throws IOException, InterruptedException {
-        final String patientID = dcm.getString(Tag.PatientID).orElse(null);
-        final String patientName = dcm.getString(Tag.PatientName).orElse(null);
-        final String rawPatientBirthDate = dcm.getString(Tag.PatientBirthDate).orElse(null);
-        String patientBirthDate = null;
-        if (rawPatientBirthDate != null) {
-            final LocalDate patientBirthDateLocalDate = DateTimeUtils.parseDA(rawPatientBirthDate);
-            patientBirthDate = patientBirthDateLocalDate.format(DateTimeFormatter.ofPattern("YYYYMMdd"));
-        }
-        String patientSex = dcm.getString(Tag.PatientSex).orElse("O");
-        if (!patientSex.equals("M") && !patientSex.equals("F") && !patientSex.equals("O")) {
-           patientSex = "O";
-        }
-        // Issuer of patientID is recommended to make the patientID universally unique. Can be defined in profile if missing.
-        final String issuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID).orElse(profile.getDefaultissueropatientid());
-
-        PseudonymApi pseudonymApi = new PseudonymApi(externalPseudonym);
-        final Fields newPatientFields = new Fields(patientID, patientName, patientBirthDate, patientSex, issuerOfPatientID);
-
-        return pseudonymApi.createPatient(newPatientFields, idTypes);
-    }
-
-    private String getExtIDInDicom(DicomObject dcm, Destination destination) {
-        if (destination.getIdTypes().equals(IdTypes.ADD_EXTID)) {
-            String cleanTag = destination.getTag().replaceAll("[(),]", "").toUpperCase();
-            final String tagValue = dcm.getString(TagUtils.intFromHexString(cleanTag)).orElse(null);
-            if (tagValue != null && destination.getDelimiter() != null && destination.getPosition() != null) {
-                String delimiterSpec = SpecialCharacter.escapeSpecialRegexChars(destination.getDelimiter());
-                try {
-                    return tagValue.split(delimiterSpec)[destination.getPosition()];
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    LOGGER.error("Can not split the external pseudonym", e);
-                    return null;
-                }
-            } else if (tagValue != null) {
-                return tagValue;
-            }
-        }
-        return null;
-    }
-
     public void applyAction(DicomObject dcm, DicomObject dcmCopy, HMAC hmac,
                             ProfileItem profilePassedInSequence, ActionItem actionPassedInSequence, AttributeEditorContext context) {
         for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext(); ) {
@@ -189,7 +137,7 @@ public class Profiles {
                 }
             }
 
-            if ( (!(Remove.class.isInstance(currentAction)) || !(ReplaceNull.class.isInstance(currentAction))) && dcmEl.vr() == VR.SQ) {
+            if ( !(Remove.class.isInstance(currentAction)) && !(ReplaceNull.class.isInstance(currentAction)) && dcmEl.vr() == VR.SQ) {
                 final ProfileItem finalCurrentProfile = currentProfile;
                 final ActionItem finalCurrentAction = currentAction;
                 dcmEl.itemStream().forEach(d -> applyAction(d, dcmCopy, hmac, finalCurrentProfile, finalCurrentAction, context));
@@ -209,7 +157,6 @@ public class Profiles {
         final String SOPinstanceUID = dcm.getString(Tag.SOPInstanceUID).orElse(null);
         final String IssuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID).orElse(null);
         final String PatientID = dcm.getString(Tag.PatientID).orElse(null);
-        final String stringExtIDInDicom = getExtIDInDicom(dcm, destination);
         final IdTypes idTypes = destination.getIdTypes();
         final HMAC hmac = generateHMAC(destination, PatientID);
 
@@ -217,32 +164,14 @@ public class Profiles {
         MDC.put("issuerOfPatientID", IssuerOfPatientID);
         MDC.put("PatientID", PatientID);
 
-        String pseudonym = null;
-        if (destination.getSavePseudonym() != null && destination.getSavePseudonym() == false) {
-            pseudonym = stringExtIDInDicom;
-            if (pseudonym == null) {
-                throw new IllegalStateException("Cannot get a pseudonym in a DICOM tag");
-            }
-        } else {
-            pseudonym = CachingUtil.getPseudonym(dcm, cache);
-
-            if(pseudonym == null){
-                try {
-                    pseudonym = getMainzellistePseudonym(dcm, stringExtIDInDicom, idTypes);
-                } catch (Exception e) {
-                    LOGGER.error("Cannot get a pseudonym with Mainzelliste API {}", e);
-                    throw new IllegalStateException("Cannot get a pseudonym in cache or with Mainzelliste API");
-                }
-            }
-        }
+        String pseudonym = pseudonymUtil.generatePseudonym(destination, dcm, profile.getDefaultissueropatientid());
 
         String profilesCodeName = String.join(
                 "-" , profiles.stream().map(profile -> profile.getCodeName()).collect(Collectors.toList())
         );
-        BigInteger patientValue = generatePatientID(pseudonym, profilesCodeName, hmac);
-        String newPatientName = !idTypes.equals(IdTypes.PID) && destination.getPseudonymAsPatientName() == true ?
-                pseudonym : patientValue.toString(16).toUpperCase();
-        String newPatientID = patientValue.toString();
+        BigInteger patientValue = generatePatientID(pseudonym, hmac);
+        String newPatientID = patientValue.toString(16).toUpperCase();
+        String newPatientName = !idTypes.equals(IdTypes.PID) && destination.getPseudonymAsPatientName() ? pseudonym : newPatientID;
 
         DicomObject dcmCopy = DicomObject.newDicomObject();
         DicomObjectUtil.copyDataset(dcm, dcmCopy);
@@ -318,9 +247,9 @@ public class Profiles {
     }
 
 
-    public BigInteger generatePatientID(String pseudonym, String profiles, HMAC hmac) {
+    public BigInteger generatePatientID(String pseudonym, HMAC hmac) {
         byte[] bytes = new byte[16];
-        System.arraycopy(hmac.byteHash(pseudonym + profiles), 0, bytes, 0, 16);
+        System.arraycopy(hmac.byteHash(pseudonym), 0, bytes, 0, 16);
         return new BigInteger(1, bytes);
     }
 }

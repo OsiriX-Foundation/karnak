@@ -14,11 +14,12 @@ import org.apache.commons.codec.binary.Hex;
 import org.slf4j.*;
 
 public class HMAC {
-    public static final int KEY_BYTE_LENGTH = 16;
-    private final Logger LOGGER = LoggerFactory.getLogger(HMAC.class);
-    private Mac mac;
+    private static final Logger LOGGER = LoggerFactory.getLogger(HMAC.class);
 
+    public static final int KEY_BYTE_LENGTH = 16;
     private static final String HMAC_SHA256 = "HmacSHA256";
+
+    private Mac mac;
     private HashContext hashContext;
 
     public HMAC(byte[] hmacKey) {
