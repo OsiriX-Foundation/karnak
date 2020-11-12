@@ -136,17 +136,19 @@ The second illustration show the same de-identification for the patient, but the
 
 ### PatientID generation
 
-KARNAK will generate a PatientID to resolve the problem explain above. The PatientID generated will use the HMAC function defined in the context of a project, see chapter **Action U, Generate a new UID** for more details about the project and the HMAC function.
+KARNAK will generate a Patient ID to resolve the problem explain above. The Patient ID generated will use the HMAC function defined in the context of a project, see chapter **Action U, Generate a new UID** for more details about the project and the HMAC function.
 
-The Pseudonym given will be hashed and convert to Hexdecimal to be used as PatientID for the study DICOM de-identified.
+The Pseudonym given will be hashed and convert to hexadecimal to be used as Patient ID for the study DICOM de-identified.
 
-The generated PatientID will use the first 16 octet (128 bit) from the hashed pseudonym. The hashed pseudonym will be converted in a positive decimal and in hexadecimal.
+The generated Patient ID will use the first 16 octet (128 bit) from the hashed pseudonym. The hashed pseudonym will be converted in a positive decimal and in hexadecimal.
+
+The hexadecimal generated from the pseudonym hashed will be used for the attributes Patient ID and for the Patient Name (In case the user has not defined to use the pseudonym as Patient Name).
 
 ### Keep the correspondence between pseudonym and patient
 
 This part will explain which tags will be used to keep the correspondence between the pseudonym given and the patient. It's important for the user to know where he needs to look this information in the event that he needs to find the real patient.
 
-As explained above, the PatientID in the DICOM study de-identified won't be the pseudonym but will a hexadecimal generated from the pseudonym hashed. This ID does not allow the patient to be found in the patient / pseudonym correspondence table.
+As explained above, the Patient ID in the DICOM study de-identified won't be the pseudonym but will a hexadecimal generated from the pseudonym hashed. This ID does not allow the patient to be found in the patient / pseudonym correspondence table.
 
 The pseudonym will be stored in the attribute **Clinical Trial Subject ID** **(0012,0040)**
 
@@ -156,24 +158,50 @@ The pseudonym will be stored in the attribute **Clinical Trial Subject ID** **(0
 
 [3]: http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.7.html#sect_C.7.1.3.1.6
 
-### Attributes added
-
-Here it is presented which attributes will be changed or added by KARNAK regarding the patient.
-
-* **PatientID (0010,0020)**, this tag will contain a hexadecimal generated from the pseudonym hashed.
-* **PatientName (0010,0010)** this tag will contain the value of the PatientID or the pseudonym. (This choice is defined by the user)
-* **PatientIdentityRemoved (0012,0062)** this tag will contain the value "YES"
-* **ClinicalTrialSubjectID (0012,0040)** this tag will contain the pseudonym.
-
 The attribute *ClinicalTrialSubjectID* comes from the module [*Clinical Trial Subject Module*](http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.7.html#sect_C.7.1.3). To avoid generating invalid DICOMs, other attributes will be added for this module to be valid, see *Clinical Trial Subject Module* below.
 
-## Clinical Trial Subject Module
+## Attributes abbed by KARNAK
 
+This chapter explains which attributes are added by KARNAK during de-identification.
 
+### Patient Module
 
+This section lists the attributes changed or added by KARNAK in the [Patient Module](http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.7.html#sect_C.7.1.1). The way the Patient ID is generated is explained above in the *Pseudonym* chapter.
 
+* **Patient ID (0010,0020)**, this attribute will contain a **hexadecimal generated from the pseudonym hashed**.
 
+* **Patient Name (0010,0010)** this attribute will contain the value of the **PatientID or the pseudonym**. (This choice is defined by the user)
 
+* **Patient Identity Removed (0012,0062)** this attribute will contain the value **YES**
+* **De-identification Method (0012,0063)** this attribute will contain the **profile pipe codename**
+
+The profile pipe codename, is the codenames used in a profile concatenated by a "-". For example the profile that use the profile codename *clean.pixel.data* and *basic.dicom.profile*, the profile pipe codename will be *clean.pixel.data-basic.dicom.profile*.
+
+### Clinical Trial Subject Module
+
+This section will explain how KARNAK defined the attributes in the [*Clinical Trial Subject Module*](http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.7.html#sect_C.7.1.3).
+
+The following list, is the attribute added by KARNAK:
+
+* **Clinical Trial Sponsor Name (0012,0010)**, required
+* **Clinical Trial Protocol ID (0012,0020)**, required
+* **Clinical Trial Protocol Name (0012,0021**), required, empty if unknown
+* **Clinical Trial Site ID (0012,0030)**, required, empty if unknown
+* **Clinical Trial Site Name (0012,0031)**, required, empty if unknown
+* **Clinical Trial Subject ID (0012,0040)**, shall be present if Clinical Trial Subject Reading ID (0012,0042) is absent.
+
+In the near future this list of attributes could be managed by the user when initializing or editing a project, except for *Clinical Trial Subject ID* that will always contains the pseudonym.
+
+But currently these values are automatically filled in by KARNAK as below.
+
+* Clinical Trial Sponsor Name (0012,0010) will contain the **profile pipe codename**
+* Clinical Trial Protocol ID (0012,0020) will contain the **profile name**
+* Clinical Trial Protocol Name (0012,0021) will contain ***null***
+* Clinical Trial Site ID (0012,0030) will contain ***null***
+* Clinical Trial Site Name (0012,0031) will contain ***null***
+* Clinical Trial Subject ID (0012,0040) will contain the **pseudonym**.
+
+The profile pipe codename, is the codenames used in a profile concatenated by a "-". For example the profile that use the profile codename *clean.pixel.data* and *basic.dicom.profile*, the profile pipe codename will be *clean.pixel.data-basic.dicom.profile*.
 
 
 
