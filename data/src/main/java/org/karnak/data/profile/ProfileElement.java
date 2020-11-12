@@ -1,8 +1,10 @@
 package org.karnak.data.profile;
 
 import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.karnak.data.profile.converter.TagListToStringListConverter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -32,9 +34,11 @@ public class ProfileElement {
     private Profile profile;
 
     @OneToMany(mappedBy = "profileElement", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonSerialize(converter = TagListToStringListConverter.class)
     private List<IncludedTag> includedtag = new ArrayList<>();
 
     @OneToMany(mappedBy = "profileElement", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonSerialize(converter = TagListToStringListConverter.class)
     private List<ExcludedTag> exceptedtags = new ArrayList<>();
 
     @OneToMany(mappedBy = "profileElement", cascade = CascadeType.ALL)
