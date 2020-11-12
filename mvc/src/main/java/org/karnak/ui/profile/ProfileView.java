@@ -1,5 +1,8 @@
 package org.karnak.ui.profile;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -10,13 +13,17 @@ import com.vaadin.flow.data.selection.SingleSelect;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.karnak.data.profile.Profile;
+import org.karnak.data.profile.ProfileElement;
 import org.karnak.profilepipe.profilebody.ProfilePipeBody;
 import org.karnak.ui.MainLayout;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.function.Predicate;
 
 @Route(value = "profile", layout = MainLayout.class)
@@ -56,6 +63,13 @@ public class ProfileView extends HorizontalLayout {
             Profile profileSelected = e.getValue();
             if (profileSelected != null) {
                 profileComponent.setProfile(profileSelected);
+                //#########################################
+                try {
+                    exportProfile(profileSelected);
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+                //#########################################
                 profileElementMainView.setProfiles(profileSelected.getProfileElements());
                 remove(profileErrorView);
                 add(profileComponent);
@@ -110,5 +124,13 @@ public class ProfileView extends HorizontalLayout {
     private ProfilePipeBody readProfileYaml(InputStream stream) {
         final Yaml yaml = new Yaml(new Constructor(ProfilePipeBody.class));
         return yaml.load(stream);
+    }
+
+    public static  void exportProfile(Profile profile) throws IOException {
+
+        profile.getProfileElements().sort(Comparator.comparingInt(ProfileElement::getPosition));
+        //https://stackoverflow.com/questions/61506368/formatting-yaml-with-jackson
+        ObjectMapper mapper = new ObjectMapper(new YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
+        mapper.writeValue(new File("orderOutput.yaml"), profile);
     }
 }

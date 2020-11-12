@@ -1,5 +1,7 @@
 package org.karnak.data.profile;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +23,7 @@ public class Mask {
 
     @ManyToOne()
     @JoinColumn(name = "profile_id", nullable = false)
+    @JsonIgnore
     private Profile profile;
 
     private String stationName;

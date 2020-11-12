@@ -1,5 +1,10 @@
 package org.karnak.data.profile;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.*;
@@ -8,15 +13,20 @@ import java.util.List;
 
 @Entity(name = "Profile")
 @Table(name = "profile")
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonPropertyOrder({"name", "version", "minimumKarnakVersion", "defaultIssuerOfPatientID","profileElements", "masks"})
 public class Profile {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonIgnore
     private Long id;
 
     private String name;
     private String version;
     private String minimumKarnakVersion;
     private String defaultissueropatientid;
+
+    @JsonIgnore
     private Boolean bydefault;
 
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -71,6 +81,7 @@ public class Profile {
         this.version = version;
     }
 
+    @JsonProperty("minimumKarnakVersion")
     public String getMinimumkarnakversion() {
         return minimumKarnakVersion;
     }
@@ -79,6 +90,7 @@ public class Profile {
         this.minimumKarnakVersion = minimumKarnakVersion;
     }
 
+    @JsonProperty("defaultIssuerOfPatientID")
     public String getDefaultissueropatientid() {
         return defaultissueropatientid;
     }

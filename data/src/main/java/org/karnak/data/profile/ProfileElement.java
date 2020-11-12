@@ -1,5 +1,6 @@
 package org.karnak.data.profile;
 
+import com.fasterxml.jackson.annotation.*;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -9,10 +10,12 @@ import java.util.List;
 
 @Entity(name = "ProfileElement")
 @Table(name = "profile_element")
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ProfileElement {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonIgnore
     private Long id;
 
     private String name;
@@ -20,10 +23,12 @@ public class ProfileElement {
     private String condition;
     private String action;
     private String option;
+    @JsonIgnore
     private Integer position;
 
     @ManyToOne()
     @JoinColumn(name = "profile_id", nullable = false)
+    @JsonIgnore
     private Profile profile;
 
     @OneToMany(mappedBy = "profileElement", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -134,6 +139,7 @@ public class ProfileElement {
         this.profile = profile;
     }
 
+    @JsonProperty("tags")
     public List<IncludedTag> getIncludedtag() {
         return includedtag;
     }
@@ -142,6 +148,7 @@ public class ProfileElement {
         this.includedtag = includedtag;
     }
 
+    @JsonProperty("excludedTags")
     public List<ExcludedTag> getExceptedtags() {
         return exceptedtags;
     }
