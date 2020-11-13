@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.karnak.data.profile.converter.ArgumentToMapConverter;
 import org.karnak.data.profile.converter.TagListToStringListConverter;
 
 import javax.persistence.*;
@@ -43,6 +44,7 @@ public class ProfileElement {
 
     @OneToMany(mappedBy = "profileElement", cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonSerialize(converter = ArgumentToMapConverter.class)
     private List<Argument> arguments = new ArrayList<>();
 
     public ProfileElement() {
