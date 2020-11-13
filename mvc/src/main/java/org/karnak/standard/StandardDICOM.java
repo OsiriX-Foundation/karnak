@@ -1,13 +1,11 @@
 package org.karnak.standard;
 
+import org.dcm4che6.util.TagUtils;
 import org.karnak.data.gateway.SOPClassUIDPersistence;
 import org.karnak.standard.dicominnolitics.*;
 import org.karnak.ui.data.GatewayConfiguration;
-import org.w3c.dom.Attr;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,21 +26,34 @@ public class StandardDICOM {
         standardModuleToAttributes = new StandardModuleToAttributes();
         sops = new SOPS(standardSOPS.getSOPS(), standardCIODS.getCIODS(), standardCIODtoModules.getCIODToModules());
         moduleToAttributes = new ModuleToAttributes(standardModuleToAttributes.getModuleToAttributes());
+    }
 
-        ArrayList<String> allUIDs = sops.getAllUIDs();
-        SOP sop = sops.getSOP("1.2.840.10008.5.1.4.1.1.2");
-        String ciod = sops.getCIOD("1.2.840.10008.5.1.4.1.1.2");
-        String ciod_id = sops.getIdCIOD("1.2.840.10008.5.1.4.1.1.2");
-        ArrayList<Module> modules = sops.getSOPmodules("1.2.840.10008.5.1.4.1.1.2");
-        List<String> modulesName = sops.getSOPmodulesName("1.2.840.10008.5.1.4.1.1.2");
-        boolean notpresent = sops.moduleIsPresent("1.2.840.10008.5.1.4.1.1.2", "patient123");
-        boolean present = sops.moduleIsPresent("1.2.840.10008.5.1.4.1.1.2", "patient");
+    public List<String> getAllSOPuids() {
+        return sops.getAllUIDs();
+    }
 
-        List<Attribute> test = getAttributesBySOP("1.2.840.10008.5.1.4.1.1.2", "0008,0008");
+    public String getCIOD(String sopUID) {
+        return sops.getCIOD(sopUID);
+    }
+
+    public String getIdCIOD(String sopUID) {
+        return sops.getIdCIOD(sopUID);
+    }
+
+    public boolean moduleIsPresent(String sopUID, String moduleId) {
+        return sops.moduleIsPresent(sopUID, moduleId);
     }
 
     public Map<Module, Map<String, Attribute>> getModulesBySOP(String sopUID) {
         return sops.getModuleToAttribute(sopUID, moduleToAttributes);
+    }
+
+    public List<String> getModulesNameBySOP(String sopUID) {
+        return sops.getSOPmodulesName(sopUID);
+    }
+
+    public List<Attribute> getAttributesBySOP(String sopUID, int tagPath) {
+        return getAttributesBySOP(sopUID, TagUtils.toHexString(tagPath));
     }
 
     public List<Attribute> getAttributesBySOP(String sopUID, String tagPath) {
