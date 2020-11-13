@@ -99,11 +99,10 @@ public class SOPS {
         return sop.getModules().stream().anyMatch(modulePredicate);
     }
 
-    public Map<Module, List<Attribute>> getModuleToAttribute(String uid, ModuleToAttributes moduleToAttributes) {
-        Map<Module, List<Attribute>> HMapModuleAttributes = new HashMap<>();
+    public Map<Module, Map<String, Attribute>> getModuleToAttribute(String uid, ModuleToAttributes moduleToAttributes) {
+        Map<Module, Map<String, Attribute>> HMapModuleAttributes = new HashMap<>();
         getSOPmodules(uid).forEach(module -> {
-            List<Attribute> attributesList = moduleToAttributes.getAttributesByModule(module.getId());
-            HMapModuleAttributes.put(module, attributesList);
+            HMapModuleAttributes.put(module, moduleToAttributes.getAttributesByModule(module.getId()));
         });
         return HMapModuleAttributes;
     }

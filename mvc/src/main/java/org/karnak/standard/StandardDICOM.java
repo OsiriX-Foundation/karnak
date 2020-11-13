@@ -38,22 +38,19 @@ public class StandardDICOM {
         boolean notpresent = sops.moduleIsPresent("1.2.840.10008.5.1.4.1.1.2", "patient123");
         boolean present = sops.moduleIsPresent("1.2.840.10008.5.1.4.1.1.2", "patient");
 
-        List<Attribute> modulesAttributes = moduleToAttributes.getAttributesByModule("patient");
         List<Attribute> test = getAttributesBySOP("1.2.840.10008.5.1.4.1.1.2", "0008,0008");
     }
 
-    public Map<Module, List<Attribute>> getModulesBySOP(String sopUID) {
+    public Map<Module, Map<String, Attribute>> getModulesBySOP(String sopUID) {
         return sops.getModuleToAttribute(sopUID, moduleToAttributes);
     }
 
     public List<Attribute> getAttributesBySOP(String sopUID, String tagPath) {
         String tagPathCleaned = cleanTagPath(tagPath);
-        Map<Module, List<Attribute>> HMapModuleAttributes = getModulesBySOP(sopUID);
+        Map<Module, Map<String, Attribute>> HMapModuleAttributes = getModulesBySOP(sopUID);
         List<Attribute> attributes = new ArrayList<>();
-        HMapModuleAttributes.forEach((module, attributeList) -> {
-            Attribute attribute = attributeList.stream()
-                    .filter(attr -> attr.getTagPath().equals(tagPathCleaned))
-                    .findAny().orElse(null);
+        HMapModuleAttributes.forEach((module, attr) -> {
+            Attribute attribute = attr.get(tagPathCleaned);
             if (attribute != null) {
                 attributes.add(attribute);
             }
@@ -61,8 +58,12 @@ public class StandardDICOM {
         return attributes;
     }
 
-    public List<Attribute> getAttributesByModule(String moduleId) {
+    public Map<String, Attribute> getAttributesByModule(String moduleId) {
         return moduleToAttributes.getAttributesByModule(moduleId);
+    }
+
+    public List<Attribute> getAttributeListByModule(String moduleId) {
+        return new ArrayList<>(moduleToAttributes.getAttributesByModule(moduleId).values());
     }
 
     public static String cleanTagPath(String tagPath) {

@@ -2,19 +2,18 @@ package org.karnak.standard;
 
 import org.karnak.standard.dicominnolitics.jsonModuleToAttribute;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
 
 public class ModuleToAttributes {
-    private static HashMap<String, List<Attribute>> HMapAttributes;
+    private final Map<String, Map<String, Attribute>> HMapModuleAttributes;
 
     public ModuleToAttributes(jsonModuleToAttribute[] moduleToAttributes) {
-        HMapAttributes = initializeAttributes(moduleToAttributes);
+        HMapModuleAttributes = initializeAttributes(moduleToAttributes);
     }
 
-    private HashMap<String, List<Attribute>> initializeAttributes(jsonModuleToAttribute[] moduleToAttributes) {
-        HashMap<String, List<Attribute>> HMapAttributes = new HashMap<>();
+    private Map<String, Map<String, Attribute>> initializeAttributes(jsonModuleToAttribute[] moduleToAttributes) {
+        Map<String, Map<String, Attribute>> HMapModuleAttributes = new HashMap<>();
 
         for (jsonModuleToAttribute moduleToAttribute: moduleToAttributes) {
             Attribute attribute = new Attribute(
@@ -24,16 +23,16 @@ public class ModuleToAttributes {
             );
 
             String moduleKey = moduleToAttribute.getModuleId();
-            if (!HMapAttributes.containsKey(moduleKey)) {
-                HMapAttributes.put(moduleKey, new ArrayList<>());
+            if (!HMapModuleAttributes.containsKey(moduleKey)) {
+                HMapModuleAttributes.put(moduleKey, new HashMap<>());
             }
-            HMapAttributes.get(moduleKey).add(attribute);
+            HMapModuleAttributes.get(moduleKey).put(attribute.getTagPath(), attribute);
         }
 
-        return HMapAttributes;
+        return HMapModuleAttributes;
     }
 
-    public List<Attribute> getAttributesByModule(String moduleID) {
-        return HMapAttributes.get(moduleID);
+    public Map<String, Attribute> getAttributesByModule(String moduleID) {
+        return HMapModuleAttributes.get(moduleID);
     }
 }
