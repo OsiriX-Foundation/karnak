@@ -1,10 +1,12 @@
 package org.karnak.standard;
 
+import org.codehaus.janino.Mod;
 import org.karnak.standard.dicominnolitics.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -95,5 +97,14 @@ public class SOPS {
         SOP sop = HMapSOPS.get(uid);
         Predicate<Module> modulePredicate = module -> moduleId.equals(module.getId());
         return sop.getModules().stream().anyMatch(modulePredicate);
+    }
+
+    public Map<Module, List<Attribute>> getModuleToAttribute(String uid, ModuleToAttributes moduleToAttributes) {
+        Map<Module, List<Attribute>> HMapModuleAttributes = new HashMap<>();
+        getSOPmodules(uid).forEach(module -> {
+            List<Attribute> attributesList = moduleToAttributes.getAttributesByModule(module.getId());
+            HMapModuleAttributes.put(module, attributesList);
+        });
+        return HMapModuleAttributes;
     }
 }
