@@ -66,6 +66,10 @@ public class StandardDICOM {
         return new ArrayList<>(moduleToAttributes.getAttributesByModule(moduleId).values());
     }
 
+    public Map<String, Attribute> getModuleAttributesByType(String moduleId, String type) {
+        return moduleToAttributes.getModuleAttributesByType(moduleId, type);
+    }
+
     public static String cleanTagPath(String tagPath) {
         return tagPath.replaceAll("[(),]", "").toLowerCase();
     }

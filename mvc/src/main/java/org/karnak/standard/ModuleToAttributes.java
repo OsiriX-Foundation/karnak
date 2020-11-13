@@ -4,6 +4,7 @@ import org.karnak.standard.dicominnolitics.jsonModuleToAttribute;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ModuleToAttributes {
     private final Map<String, Map<String, Attribute>> HMapModuleAttributes;
@@ -34,5 +35,11 @@ public class ModuleToAttributes {
 
     public Map<String, Attribute> getAttributesByModule(String moduleID) {
         return HMapModuleAttributes.get(moduleID);
+    }
+
+    public Map<String, Attribute> getModuleAttributesByType(String moduleID, String type) {
+        return HMapModuleAttributes.get(moduleID).entrySet().stream()
+                .filter(entry -> type.equals(entry.getValue().getType()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 }
