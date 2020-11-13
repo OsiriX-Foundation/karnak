@@ -59,10 +59,7 @@ public class ProfileComponent extends VerticalLayout {
             updatedProfilePipes();
         });
 
-        final StreamResource profileStreamResourse = createStreamResource(profile);
-        download = new Anchor(profileStreamResourse, "");
-        download.getElement().setAttribute("download", true);
-        download.add(new Button("Download profile",new Icon(VaadinIcon.DOWNLOAD_ALT)));
+        createDownloadButton(profile);
 
         add(title, name, version, minVersion, defaultIssuerOfPatientID, download);
     }
@@ -70,6 +67,10 @@ public class ProfileComponent extends VerticalLayout {
     private void updatedProfilePipes() {
         profilePipeService.updateProfile(profile);
         profileNameGrid.updatedProfilePipesView();
+
+        remove(download);
+        createDownloadButton(profile);
+        add(download);
     }
 
     public void setEventValidate(ProfileMetadata metadata) {
@@ -87,6 +88,13 @@ public class ProfileComponent extends VerticalLayout {
             this.profile = profile;
             setProfile();
         }
+    }
+
+    public void createDownloadButton(Profile profile) {
+        final StreamResource profileStreamResourse = createStreamResource(profile);
+        download = new Anchor(profileStreamResourse, "");
+        download.getElement().setAttribute("download", true);
+        download.add(new Button("Download profile",new Icon(VaadinIcon.DOWNLOAD_ALT)));
     }
 
     public static StreamResource createStreamResource(Profile profile) {
