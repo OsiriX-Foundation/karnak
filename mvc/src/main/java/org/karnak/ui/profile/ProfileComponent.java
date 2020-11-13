@@ -8,6 +8,7 @@ import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.server.StreamResource;
 import org.karnak.data.profile.Profile;
@@ -34,7 +35,7 @@ public class ProfileComponent extends VerticalLayout {
 
     public void setProfile() {
         removeAll();
-        H2 title = new H2("Profile metadata");
+        H2 title = new H2("Profile");
         ProfileMetadata name = new ProfileMetadata("Name", profile.getName(), profile.getBydefault());
         name.getValidateEditButton().addClickListener(event -> {
             profile.setName(name.getValue());
@@ -61,16 +62,14 @@ public class ProfileComponent extends VerticalLayout {
 
         createDownloadButton(profile);
 
-        add(title, name, version, minVersion, defaultIssuerOfPatientID, download);
+        add(new HorizontalLayout(title, download), name, version, minVersion, defaultIssuerOfPatientID);
     }
 
     private void updatedProfilePipes() {
         profilePipeService.updateProfile(profile);
         profileNameGrid.updatedProfilePipesView();
-
-        remove(download);
-        createDownloadButton(profile);
-        add(download);
+        final StreamResource profileStreamResource = createStreamResource(profile);
+        download.setHref(profileStreamResource);
     }
 
     public void setEventValidate(ProfileMetadata metadata) {
@@ -91,10 +90,11 @@ public class ProfileComponent extends VerticalLayout {
     }
 
     public void createDownloadButton(Profile profile) {
-        final StreamResource profileStreamResourse = createStreamResource(profile);
-        download = new Anchor(profileStreamResourse, "");
+        final StreamResource profileStreamResource = createStreamResource(profile);
+        download = new Anchor(profileStreamResource, "");
         download.getElement().setAttribute("download", true);
-        download.add(new Button("Download profile",new Icon(VaadinIcon.DOWNLOAD_ALT)));
+        download.add(new Button(new Icon(VaadinIcon.DOWNLOAD_ALT)));
+        download.getStyle().set("margin-top","30px");
     }
 
     public static StreamResource createStreamResource(Profile profile) {
