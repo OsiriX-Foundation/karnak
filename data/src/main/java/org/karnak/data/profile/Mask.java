@@ -1,5 +1,9 @@
 package org.karnak.data.profile;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.karnak.data.profile.converter.RectangleListToStringListConverter;
+
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,16 +21,19 @@ import javax.persistence.Table;
 public class Mask {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonIgnore
     private Long id;
 
     @ManyToOne()
     @JoinColumn(name = "profile_id", nullable = false)
+    @JsonIgnore
     private Profile profile;
 
     private String stationName;
     private String color;
 
     @Convert(converter = RectangleListConverter.class)
+    @JsonSerialize(converter = RectangleListToStringListConverter.class)
     private List<Rectangle> rectangles = new ArrayList<>();
 
     public Mask() {

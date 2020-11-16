@@ -1,5 +1,7 @@
 package org.karnak.data.profile;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity(name = "Arguments")
@@ -7,6 +9,7 @@ import javax.persistence.*;
 public class Argument {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonIgnore
     private Long id;
 
     @ManyToOne()
