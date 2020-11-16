@@ -77,7 +77,7 @@ public class StandardDICOM {
         return new ArrayList<>(moduleToAttributes.getAttributesByModule(moduleId).values());
     }
 
-    public Map<String, Attribute> getModuleAttributesByType(String moduleId, String type) {
+    public Map<String, Attribute> getModuleAttributesByType(String moduleId, String type) throws ModuleNotFoundException {
         return moduleToAttributes.getModuleAttributesByType(moduleId, type);
     }
 

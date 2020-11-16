@@ -7,6 +7,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ModuleToAttributes {
+    /*
+    * <moduleID, <TagPath, Attribute>>
+    * */
     private final Map<String, Map<String, Attribute>> HMapModuleAttributes;
 
     public ModuleToAttributes(jsonModuleToAttribute[] moduleToAttributes) {
@@ -37,8 +40,12 @@ public class ModuleToAttributes {
         return HMapModuleAttributes.get(moduleID);
     }
 
-    public Map<String, Attribute> getModuleAttributesByType(String moduleID, String type) {
-        return HMapModuleAttributes.get(moduleID).entrySet().stream()
+    public Map<String, Attribute> getModuleAttributesByType(String moduleID, String type) throws ModuleNotFoundException {
+        Map<String, Attribute> attributes = HMapModuleAttributes.get(moduleID);
+        if (attributes == null) {
+            throw new ModuleNotFoundException(String.format("Unable to get module attributes. Could not find the module %s", moduleID));
+        }
+        return attributes.entrySet().stream()
                 .filter(entry -> type.equals(entry.getValue().getType()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
