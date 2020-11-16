@@ -59,10 +59,10 @@ public class ProfileComponent extends VerticalLayout {
             profile.setDefaultissueropatientid(defaultIssuerOfPatientID.getValue());
             updatedProfilePipes();
         });
-
         createDownloadButton(profile);
+        ProfileMasksView profileMasksView = new ProfileMasksView(profile.getMasks());
 
-        add(new HorizontalLayout(title, download), name, version, minVersion, defaultIssuerOfPatientID);
+        add(new HorizontalLayout(title, download), name, version, minVersion, defaultIssuerOfPatientID, profileMasksView);
     }
 
     private void updatedProfilePipes() {

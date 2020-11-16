@@ -14,7 +14,6 @@ public class ProfileElementMainView extends VerticalLayout {
     private List<ProfileElement> profilesOrder;
 
     ProfileElementMainView() {
-        getStyle().set("overflow-y", "auto");
     }
 
     private void profilesView() {

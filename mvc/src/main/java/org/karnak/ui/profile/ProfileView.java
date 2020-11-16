@@ -31,19 +31,27 @@ public class ProfileView extends HorizontalLayout {
     private ProfileNameGrid profileNameGrid;
     private ProfileErrorView profileErrorView;
     private final ProfilePipeService profilePipeService;
+    private HorizontalLayout profileHorizontalLayout;
 
     public ProfileView() {
+        setSizeFull();
         profilePipeService = new ProfilePipeServiceImpl();
         profileNameGrid = new ProfileNameGrid();
         profileComponent = new ProfileComponent(profilePipeService, profileNameGrid);
         profileElementMainView = new ProfileElementMainView();
         profileErrorView = new ProfileErrorView();
-        setSizeFull();
+        profileHorizontalLayout = new HorizontalLayout(profileComponent, profileElementMainView);
+
+        profileComponent.setWidth("45%");
+        profileElementMainView.setWidth("55%");
+        profileHorizontalLayout.getStyle().set("overflow-y", "auto");
+        profileHorizontalLayout.setWidth("75%");
+
+        profileErrorView.setWidth("75%");
+
+
         VerticalLayout barAndGridLayout = createTopLayoutGrid();
         barAndGridLayout.setWidth("25%");
-        profileComponent.setWidth("30%");
-        profileElementMainView.setWidth("45%");
-        profileErrorView.setWidth("75%");
         add(barAndGridLayout);
     }
 
@@ -58,8 +66,7 @@ public class ProfileView extends HorizontalLayout {
                 profileComponent.setProfile(profileSelected);
                 profileElementMainView.setProfiles(profileSelected.getProfileElements());
                 remove(profileErrorView);
-                add(profileComponent);
-                add(profileElementMainView);
+                add(profileHorizontalLayout);
             }
         });
 
@@ -87,8 +94,7 @@ public class ProfileView extends HorizontalLayout {
     }
 
     private void setProfileComponent(String mimeType, InputStream stream) {
-        remove(profileComponent);
-        remove(profileElementMainView);
+        remove(profileHorizontalLayout);
         add(profileErrorView);
         if (mimeType.equals("application/x-yaml")) {
             ProfilePipeBody profilePipe = readProfileYaml(stream);
