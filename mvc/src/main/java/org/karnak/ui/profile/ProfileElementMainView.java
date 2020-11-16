@@ -3,6 +3,7 @@ package org.karnak.ui.profile;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import org.karnak.data.profile.ProfileElement;
 
@@ -17,7 +18,7 @@ public class ProfileElementMainView extends VerticalLayout {
 
     private void profilesView() {
         removeAll();
-        add(new H2("Profile element(s)"));
+        add(new HorizontalLayout(new H2("Profile element(s)")));  //new horizontalelayout because fix padding
         for (ProfileElement profileElement : profilesOrder) {
             add(setProfileName((profileElement.getPosition()+1) + ". " + profileElement.getName()));
             add(new ProfileElementView(profileElement));
