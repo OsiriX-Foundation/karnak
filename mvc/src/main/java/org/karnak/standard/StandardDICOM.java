@@ -3,6 +3,8 @@ package org.karnak.standard;
 import org.dcm4che6.util.TagUtils;
 import org.karnak.data.gateway.SOPClassUIDPersistence;
 import org.karnak.standard.dicominnolitics.*;
+import org.karnak.standard.exceptions.ModuleNotFoundException;
+import org.karnak.standard.exceptions.SOPNotFoundException;
 import org.karnak.ui.data.GatewayConfiguration;
 
 import java.util.ArrayList;

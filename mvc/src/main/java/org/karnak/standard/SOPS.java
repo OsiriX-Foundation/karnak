@@ -1,6 +1,7 @@
 package org.karnak.standard;
 
 import org.karnak.standard.dicominnolitics.*;
+import org.karnak.standard.exceptions.SOPNotFoundException;
 
 import java.util.ArrayList;
 import java.util.HashMap;

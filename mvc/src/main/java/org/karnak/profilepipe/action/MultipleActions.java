@@ -6,8 +6,9 @@ import org.dcm4che6.data.Tag;
 import org.karnak.data.AppConfig;
 import org.karnak.profilepipe.utils.HMAC;
 import org.karnak.standard.Attribute;
-import org.karnak.standard.SOPNotFoundException;
+import org.karnak.standard.exceptions.SOPNotFoundException;
 import org.karnak.standard.StandardDICOM;
+import org.karnak.standard.exceptions.StandardDICOMException;
 
 import java.util.Iterator;
 import java.util.List;
@@ -44,8 +45,8 @@ public class MultipleActions extends AbstractAction {
                 ActionItem defaultDummy = new DefaultDummy(symbol);
                 defaultDummy.execute(dcm, tag, iterator, hmac);
             }
-        } catch (SOPNotFoundException sopNotFoundException) {
-            LOGGER.error("Could not execute an action with a unknown SOP", sopNotFoundException);
+        } catch (StandardDICOMException standardDICOMException) {
+            LOGGER.error("Could not execute an action with a unknown SOP", standardDICOMException);
         }
         // TODO: throw exception
         // Throw exception Tag NOT FOUND IN THE DICOM Standard ?

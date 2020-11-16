@@ -1,6 +1,7 @@
 package org.karnak.standard;
 
 import org.karnak.standard.dicominnolitics.jsonModuleToAttribute;
+import org.karnak.standard.exceptions.ModuleNotFoundException;
 
 import java.util.HashMap;
 import java.util.Map;
