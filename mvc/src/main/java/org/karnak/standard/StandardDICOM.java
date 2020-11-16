@@ -32,31 +32,31 @@ public class StandardDICOM {
         return sops.getAllUIDs();
     }
 
-    public String getCIOD(String sopUID) {
+    public String getCIOD(String sopUID) throws SOPNotFoundException {
         return sops.getCIOD(sopUID);
     }
 
-    public String getIdCIOD(String sopUID) {
+    public String getIdCIOD(String sopUID) throws SOPNotFoundException {
         return sops.getIdCIOD(sopUID);
     }
 
-    public boolean moduleIsPresent(String sopUID, String moduleId) {
+    public boolean moduleIsPresent(String sopUID, String moduleId) throws SOPNotFoundException {
         return sops.moduleIsPresent(sopUID, moduleId);
     }
 
-    public Map<Module, Map<String, Attribute>> getModulesBySOP(String sopUID) {
+    public Map<Module, Map<String, Attribute>> getModulesBySOP(String sopUID) throws SOPNotFoundException {
         return sops.getModuleToAttribute(sopUID, moduleToAttributes);
     }
 
-    public List<String> getModulesNameBySOP(String sopUID) {
+    public List<String> getModulesNameBySOP(String sopUID) throws SOPNotFoundException {
         return sops.getSOPmodulesName(sopUID);
     }
 
-    public List<Attribute> getAttributesBySOP(String sopUID, int tagPath) {
+    public List<Attribute> getAttributesBySOP(String sopUID, int tagPath) throws SOPNotFoundException {
         return getAttributesBySOP(sopUID, TagUtils.toHexString(tagPath));
     }
 
-    public List<Attribute> getAttributesBySOP(String sopUID, String tagPath) {
+    public List<Attribute> getAttributesBySOP(String sopUID, String tagPath) throws SOPNotFoundException {
         String tagPathCleaned = cleanTagPath(tagPath);
         Map<Module, Map<String, Attribute>> HMapModuleAttributes = getModulesBySOP(sopUID);
         List<Attribute> attributes = new ArrayList<>();

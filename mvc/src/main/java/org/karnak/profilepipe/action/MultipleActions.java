@@ -3,10 +3,10 @@ package org.karnak.profilepipe.action;
 import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.Tag;
-import org.dcm4che6.util.TagUtils;
 import org.karnak.data.AppConfig;
 import org.karnak.profilepipe.utils.HMAC;
 import org.karnak.standard.Attribute;
+import org.karnak.standard.SOPNotFoundException;
 import org.karnak.standard.StandardDICOM;
 
 import java.util.Iterator;
@@ -33,16 +33,19 @@ public class MultipleActions extends AbstractAction {
     @Override
     public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, HMAC hmac) {
         final String sopUID = dcm.getString(Tag.SOPClassUID).orElse(null);
-        List<Attribute> attributes = standardDICOM.getAttributesBySOP(sopUID, tag);
-        if (attributes.size() == 1) {
-            String currentType = attributes.get(0).getType();
-            ActionItem actionItem = chooseAction(sopUID, currentType);
-            actionItem.execute(dcm, tag, iterator, hmac);
-        } else if (attributes.size() > 1) {
-            // TODO: Choose the action by module ...
-            String tagString = TagUtils.toHexString(tag);
-            ActionItem defaultDummy = new DefaultDummy(symbol);
-            defaultDummy.execute(dcm, tag, iterator, hmac);
+        try {
+            List<Attribute> attributes = standardDICOM.getAttributesBySOP(sopUID, tag);
+            if (attributes.size() == 1) {
+                String currentType = attributes.get(0).getType();
+                ActionItem actionItem = chooseAction(sopUID, currentType);
+                actionItem.execute(dcm, tag, iterator, hmac);
+            } else if (attributes.size() > 1) {
+                // TODO: Choose the action by module ...
+                ActionItem defaultDummy = new DefaultDummy(symbol);
+                defaultDummy.execute(dcm, tag, iterator, hmac);
+            }
+        } catch (SOPNotFoundException sopNotFoundException) {
+            LOGGER.error("Could not execute an action with a unknown SOP", sopNotFoundException);
         }
         // TODO: throw exception
         // Throw exception Tag NOT FOUND IN THE DICOM Standard ?
