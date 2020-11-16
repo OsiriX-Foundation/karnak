@@ -42,7 +42,9 @@ public class ProfileComponent extends VerticalLayout {
             updatedProfilePipes();
         });
 
-        add(title, name, version, minVersion, defaultIssuerOfPatientID);
+        ProfileMasksView profileMasksView = new ProfileMasksView(profile.getMasks());
+
+        add(title, name, version, minVersion, defaultIssuerOfPatientID, profileMasksView);
     }
 
     private void updatedProfilePipes() {
