@@ -31,7 +31,6 @@ import org.karnak.ui.project.MainViewProjects;
 @CssImport(value ="./styles/shared-styles.css")
 @Theme(value = Lumo.class)
 @Route(value="mainLayout")
-@PWA(name = "Karnak Gateway", shortName = "karnak", iconPath = "icons/logo.png")
 @SuppressWarnings("serial")
 public class MainLayout extends FlexLayout implements RouterLayout {
     private Menu menu;
