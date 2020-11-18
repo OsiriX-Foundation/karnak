@@ -116,7 +116,7 @@ scaleHash(PatientID, scaledMin, scaledMax):
 
 ## Pseudonym
 
-This chapter will explain what problem KARNAK solves with a pseudonym defined for different de-identifications, how KARNAK generated a PatientID per project, where the pseudonym will be stored in the DICOM study and what tags will be added.
+This chapter will explain the problem with a pseudonym defined for different de-identifications method, how KARNAK generated a PatientID per project and where the pseudonym will be stored in the DICOM study.
 
 To allow a patient to participate in several studies requiring different de-identification, KARNAK generates a PatientID depending on the context.
 
