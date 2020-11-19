@@ -160,7 +160,7 @@ The pseudonym will be stored in the attribute **Clinical Trial Subject ID** **(0
 
 The attribute *ClinicalTrialSubjectID* comes from the module [*Clinical Trial Subject Module*](http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.7.html#sect_C.7.1.3). To avoid generating invalid DICOMs, other attributes will be added for this module to be valid, see *Clinical Trial Subject Module* below.
 
-## Attributes abbed by KARNAK
+## Attributes added by KARNAK
 
 This chapter explains which attributes are added by KARNAK during de-identification.
 
