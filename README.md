@@ -2,6 +2,8 @@ Karnak is a DICOM gateway for data de-identification and DICOM attribute normali
 
 Karnak manages a continuous DICOM flow with a DICOM listener as input and a DICOM and/or DICOMWeb as output.
 
+[Karnak documentation](https://osirix-foundation.github.io/karnak-documentation/) is available online.
+
 # Application Features
 
 ## Gateway
