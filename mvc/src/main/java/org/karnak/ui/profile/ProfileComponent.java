@@ -116,6 +116,8 @@ public class ProfileComponent extends VerticalLayout {
                 dialogWarning.setText(profile);
                 dialogWarning.open();
             } else {
+                profilePipeService.deleteProfile(profile);
+                remove();
             }
         });
     }
