@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.icon.Icon;
@@ -26,11 +27,16 @@ public class ProfileComponent extends VerticalLayout {
     private ProfilePipeService profilePipeService;
     private ProfileNameGrid profileNameGrid;
     private Anchor download;
+    private Button deleteButton;
+    private WarningDeleteProfileUsed dialogWarning;
+
+    private String LABEL_DELETE = "Delete";
 
     ProfileComponent(ProfilePipeService profilePipeService, ProfileNameGrid profileNameGrid) {
         setSizeFull();
         this.profilePipeService = profilePipeService;
         this.profileNameGrid = profileNameGrid;
+        dialogWarning = new WarningDeleteProfileUsed();
     }
 
     public void setProfile() {
@@ -60,9 +66,11 @@ public class ProfileComponent extends VerticalLayout {
             updatedProfilePipes();
         });
         createDownloadButton(profile);
+        createDeleteButton(profile);
+
         ProfileMasksView profileMasksView = new ProfileMasksView(profile.getMasks());
 
-        add(new HorizontalLayout(title, download), name, version, minVersion, defaultIssuerOfPatientID, profileMasksView);
+        add(new HorizontalLayout(title, download, deleteButton), name, version, minVersion, defaultIssuerOfPatientID, profileMasksView);
     }
 
     private void updatedProfilePipes() {
@@ -70,6 +78,7 @@ public class ProfileComponent extends VerticalLayout {
         profileNameGrid.updatedProfilePipesView();
         final StreamResource profileStreamResource = createStreamResource(profile);
         download.setHref(profileStreamResource);
+        createDeleteButton(profile);
     }
 
     public void setEventValidate(ProfileMetadata metadata) {
@@ -95,6 +104,20 @@ public class ProfileComponent extends VerticalLayout {
         download.getElement().setAttribute("download", true);
         download.add(new Button(new Icon(VaadinIcon.DOWNLOAD_ALT)));
         download.getStyle().set("margin-top","30px");
+    }
+
+    private void createDeleteButton(Profile profile){
+        deleteButton = new Button(LABEL_DELETE);
+        deleteButton.setWidth("100%");
+        deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
+        deleteButton.getStyle().set("margin-top","34px");
+        deleteButton.addClickListener(buttonClickEvent -> {
+            if (profile.getProject() != null && profile.getProject().size() > 0) {
+                dialogWarning.setText(profile);
+                dialogWarning.open();
+            } else {
+            }
+        });
     }
 
     public static StreamResource createStreamResource(Profile profile) {
