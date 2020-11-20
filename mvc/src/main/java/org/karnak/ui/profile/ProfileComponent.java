@@ -29,11 +29,11 @@ public class ProfileComponent extends VerticalLayout {
     private Anchor download;
     private Button deleteButton;
     private WarningDeleteProfileUsed dialogWarning;
+    private ProfileElementMainView profileElementMainView;
 
-    private String LABEL_DELETE = "Delete";
-
-    ProfileComponent(ProfilePipeService profilePipeService, ProfileNameGrid profileNameGrid) {
+    ProfileComponent(ProfilePipeService profilePipeService, ProfileNameGrid profileNameGrid, ProfileElementMainView profileElementMainView) {
         setSizeFull();
+        this.profileElementMainView = profileElementMainView;
         this.profilePipeService = profilePipeService;
         this.profileNameGrid = profileNameGrid;
         dialogWarning = new WarningDeleteProfileUsed();
@@ -107,7 +107,7 @@ public class ProfileComponent extends VerticalLayout {
     }
 
     private void createDeleteButton(Profile profile){
-        deleteButton = new Button(LABEL_DELETE);
+        deleteButton = new Button((new Icon(VaadinIcon.TRASH)));
         deleteButton.setWidth("100%");
         deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
         deleteButton.getStyle().set("margin-top","34px");
@@ -117,7 +117,8 @@ public class ProfileComponent extends VerticalLayout {
                 dialogWarning.open();
             } else {
                 profilePipeService.deleteProfile(profile);
-                remove();
+                profileNameGrid.updatedProfilePipesView();
+                removeProfileInView();
             }
         });
     }
@@ -135,5 +136,10 @@ public class ProfileComponent extends VerticalLayout {
             LOGGER.error("Cannot create the StreamResource for downloading the yaml profile", e);
         }
         return null;
+    }
+
+    public void removeProfileInView() {
+        profileElementMainView.removeAll();
+        removeAll();
     }
 }
