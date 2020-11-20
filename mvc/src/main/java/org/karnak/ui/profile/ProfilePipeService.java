@@ -16,4 +16,6 @@ public abstract class ProfilePipeService implements Serializable {
     public abstract Profile saveProfilePipe(ProfilePipeBody profilePipeYml, Boolean byDefault);
 
     public abstract Profile updateProfile(Profile profile);
+
+    public abstract void deleteProfile(Profile profile);
 }

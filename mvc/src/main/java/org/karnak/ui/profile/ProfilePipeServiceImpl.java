@@ -101,4 +101,10 @@ public class ProfilePipeServiceImpl extends ProfilePipeService {
     public Profile updateProfile(Profile profile) {
         return profilePersistence.saveAndFlush(profile);
     }
+
+    @Override
+    public void deleteProfile(Profile profile) {
+        profilePersistence.deleteById(profile.getId());
+        profilePersistence.flush();
+    }
 }
