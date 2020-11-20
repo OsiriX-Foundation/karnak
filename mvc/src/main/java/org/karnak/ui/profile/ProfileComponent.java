@@ -66,11 +66,17 @@ public class ProfileComponent extends VerticalLayout {
             updatedProfilePipes();
         });
         createDownloadButton(profile);
-        createDeleteButton(profile);
 
         ProfileMasksView profileMasksView = new ProfileMasksView(profile.getMasks());
 
-        add(new HorizontalLayout(title, download, deleteButton), name, version, minVersion, defaultIssuerOfPatientID, profileMasksView);
+        if (profile.getBydefault()) {
+            add(new HorizontalLayout(title, download), name, version, minVersion, defaultIssuerOfPatientID, profileMasksView);
+        } else {
+            createDeleteButton(profile);
+            add(new HorizontalLayout(title, download, deleteButton), name, version, minVersion, defaultIssuerOfPatientID, profileMasksView);
+        }
+
+
     }
 
     private void updatedProfilePipes() {
