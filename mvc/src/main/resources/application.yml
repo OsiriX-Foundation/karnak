@@ -9,8 +9,6 @@ mainzelliste:
   apikey: '${MAINZELLISTE_API_KEY}'
   serverurl: 'http://${MAINZELLISTE_HOSTNAME}:${MAINZELLISTE_HTTP_PORT}'
   idtypes: '${MAINZELLISTE_ID_TYPES}'
-dcmprofile:
-  hmackey: '${KARNAK_HMAC_KEY}'
 logging:
   level:
     org:

@@ -68,7 +68,6 @@ To launch the UI, execute the maven command `mvn spring-boot:run -f mvc` in the 
         - `MAINZELLISTE_HTTP_PORT=8083`
         - `MAINZELLISTE_ID_TYPES=pid`
         - `MAINZELLISTE_API_KEY=changeThisApiKey`
-        - `KARNAK_HMAC_KEY=changeThisHmacKey`
         - `KARNAK_ADMIN=admin`
         - `KARNAK_PASSWORD=admin`
         - `KARNAK_WEB_PORT=8081`
