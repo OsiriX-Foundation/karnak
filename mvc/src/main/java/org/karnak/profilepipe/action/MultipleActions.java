@@ -3,8 +3,10 @@ package org.karnak.profilepipe.action;
 import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.Tag;
+import org.dcm4che6.util.TagUtils;
 import org.karnak.data.AppConfig;
 import org.karnak.profilepipe.utils.HMAC;
+import org.karnak.profilepipe.utils.MetadataDICOMObject;
 import org.karnak.standard.Attribute;
 import org.karnak.standard.StandardDICOM;
 import org.karnak.standard.exceptions.StandardDICOMException;
@@ -32,9 +34,11 @@ public class MultipleActions extends AbstractAction {
 
     @Override
     public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, HMAC hmac) {
-        final String sopUID = dcm.getString(Tag.SOPClassUID).orElse(null);
+        final String sopUID = MetadataDICOMObject.getValue(dcm, Tag.SOPClassUID); // dcm.getString(Tag.SOPClassUID).orElse(null);
+        String test = TagUtils.toString(tag);
+        final String tagPath = MetadataDICOMObject.getTagPath(dcm, tag);
         try {
-            List<Attribute> attributes = standardDICOM.getAttributesBySOP(sopUID, tag);
+            List<Attribute> attributes = standardDICOM.getAttributesBySOP(sopUID, tagPath);
             if (attributes.size() == 1) {
                 String currentType = attributes.get(0).getType();
                 ActionItem actionItem = chooseAction(sopUID, currentType);
