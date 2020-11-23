@@ -43,7 +43,7 @@ public class MainLayout extends FlexLayout implements RouterLayout {
         menu.addView(ForwardNodeView.class, ForwardNodeView.VIEW_NAME, new IronIcon("icons", "settings"));
         menu.addView(ProfileView.class, ProfileView.VIEW_NAME, new IronIcon("icons", "assignment"));
         menu.addView(MainViewProjects.class, MainViewProjects.VIEW_NAME, new IronIcon("icons", "class"));
-        menu.addView(ExternalIDView.class, ExternalIDView.VIEW_NAME, new IronIcon("icons", "social:person-add"));
+        menu.addView(ExternalIDView.class, ExternalIDView.VIEW_NAME, new IronIcon("icons", "perm-identity"));
         menu.addView(DicomMainView.class, DicomMainView.VIEW_NAME, new IronIcon("icons", "build"));
         menu.addView(HelpView.class, HelpView.VIEW_NAME, new IronIcon("icons", "help"));
         //menu.addView(AboutView.class, AboutView.VIEW_NAME, new IronIcon("icons", "info"));
