@@ -6,7 +6,6 @@ import org.dcm4che6.data.Tag;
 import org.karnak.data.AppConfig;
 import org.karnak.profilepipe.utils.HMAC;
 import org.karnak.standard.Attribute;
-import org.karnak.standard.exceptions.SOPNotFoundException;
 import org.karnak.standard.StandardDICOM;
 import org.karnak.standard.exceptions.StandardDICOMException;
 
@@ -15,11 +14,11 @@ import java.util.List;
 
 public class MultipleActions extends AbstractAction {
     final StandardDICOM standardDICOM;
-    ActionItem defaultDummyValue;
-    ActionItem actionUID;
-    ActionItem actionReplaceNull;
-    ActionItem actionRemove;
-    ActionItem actionKeep;
+    final ActionItem defaultDummyValue;
+    final ActionItem actionUID;
+    final ActionItem actionReplaceNull;
+    final ActionItem actionRemove;
+    final ActionItem actionKeep;
 
     public MultipleActions(String symbol) {
         super(symbol);
