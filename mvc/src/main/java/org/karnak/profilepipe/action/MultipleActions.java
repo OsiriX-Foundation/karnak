@@ -34,8 +34,7 @@ public class MultipleActions extends AbstractAction {
 
     @Override
     public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, HMAC hmac) {
-        final String sopUID = MetadataDICOMObject.getValue(dcm, Tag.SOPClassUID); // dcm.getString(Tag.SOPClassUID).orElse(null);
-        String test = TagUtils.toString(tag);
+        final String sopUID = MetadataDICOMObject.getValue(dcm, Tag.SOPClassUID);
         final String tagPath = MetadataDICOMObject.getTagPath(dcm, tag);
         try {
             List<Attribute> attributes = standardDICOM.getAttributesBySOP(sopUID, tagPath);
