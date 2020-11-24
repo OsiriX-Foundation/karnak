@@ -31,7 +31,7 @@ public class Add extends AbstractAction{
             }
         });
 
-        LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_INOUT, TagUtils.toString(newTag), symbol, tagValueIn,
+        LOGGER.trace(CLINICAL_MARKER, PATTERN_WITH_INOUT, TagUtils.toString(newTag), symbol, tagValueIn,
             dcm.getString(newTag).orElse(null));
     }
 }

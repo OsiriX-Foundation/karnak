@@ -28,6 +28,6 @@ public class Replace extends AbstractAction {
                 dcm.setNull(tag, dcmEl.vr());
             }
         });
-        LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_INOUT, TagUtils.toString(tag), symbol, tagValueIn, dummyValue);
+        LOGGER.trace(CLINICAL_MARKER, PATTERN_WITH_INOUT, TagUtils.toString(tag), symbol, tagValueIn, dummyValue);
     }
 }
