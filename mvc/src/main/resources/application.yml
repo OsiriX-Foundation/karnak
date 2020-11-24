@@ -13,7 +13,6 @@ logging:
   level:
     org:
       springframework: INFO
-      springframework.core.io.support: INFO
 server:
   port: 8081
 spring:
