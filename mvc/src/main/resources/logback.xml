@@ -87,7 +87,7 @@
                 <appender-ref ref="CLINICAL_FILE" />
                 <appender-ref ref="WARNING_OUT" />
             </root>
-            <logger name="org.weasis" level="debug" />
+            <logger name="org.weasis" level="info" />
             <logger name="org.karnak" level="info" />
         </else>
     </if>
