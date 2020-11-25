@@ -206,9 +206,9 @@ public class Profiles {
         final Marker CLINICAL_MARKER = MarkerFactory.getMarker("CLINICAL");
         LOGGER.info(CLINICAL_MARKER, "SOPInstanceUID_OLD={} SOPInstanceUID_NEW={} SeriesInstanceUID_OLD={} " +
                         "SeriesInstanceUID_NEW={} ProjectName={} ProfileCodenames={}",
-                dcmCopy.getString(Tag.SOPInstanceUID).orElse(null),
+                SOPInstanceUID,
                 dcm.getString(Tag.SOPInstanceUID).orElse(null),
-                dcmCopy.getString(Tag.SeriesInstanceUID).orElse(null),
+                SeriesInstanceUID,
                 dcm.getString(Tag.SeriesInstanceUID).orElse(null),
                 destination.getProject().getName(),
                 profilesCodeName);
