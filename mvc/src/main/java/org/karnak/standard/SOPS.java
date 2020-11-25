@@ -3,10 +3,7 @@ package org.karnak.standard;
 import org.karnak.standard.dicominnolitics.*;
 import org.karnak.standard.exceptions.SOPNotFoundException;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -88,6 +85,16 @@ public class SOPS {
             throw new SOPNotFoundException(String.format("Unable to get ID CIOD. Could not find the SOP UID %s", uid));
         }
         return sop.getCiod_id();
+    }
+
+    public Optional<Module> getModuleByModuleID(String uid, String moduleId) throws SOPNotFoundException {
+        SOP sop = HMapSOPS.get(uid);
+        if (sop == null) {
+            throw new SOPNotFoundException(String.format("Unable to get if module %s is present. Could not find the SOP UID %s", moduleId, uid));
+        }
+        return sop.getModules().stream()
+                .filter(module -> moduleId.equals(module.getId()))
+                .findFirst();
     }
 
     public ArrayList<Module> getSOPmodules(String uid) throws SOPNotFoundException {

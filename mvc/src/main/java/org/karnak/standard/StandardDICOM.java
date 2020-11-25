@@ -10,6 +10,7 @@ import org.karnak.ui.data.GatewayConfiguration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class StandardDICOM {
     private final StandardSOPS standardSOPS;
@@ -40,6 +41,10 @@ public class StandardDICOM {
 
     public String getIdCIOD(String sopUID) throws SOPNotFoundException {
         return sops.getIdCIOD(sopUID);
+    }
+
+    public Optional<Module> getModuleByModuleID(String sopUID, String moduleId) throws SOPNotFoundException {
+        return sops.getModuleByModuleID(sopUID, moduleId);
     }
 
     public boolean moduleIsPresent(String sopUID, String moduleId) throws SOPNotFoundException {
