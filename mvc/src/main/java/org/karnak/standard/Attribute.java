@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Attribute {
+    private static final List<String> strictedTypes = Arrays.asList("1", "1C", "2", "2C", "3");
     private final String moduleTagPath;
     private final String tagPath;
     private final String type;
@@ -41,5 +42,15 @@ public class Attribute {
 
     public String getModuleId() {
         return moduleId;
+    }
+
+    public static String getStrictedType(List<Attribute> attributes) {
+        for (String strictedType : strictedTypes) {
+            if (attributes.stream()
+                    .anyMatch(attribute -> strictedType.equals(attribute.getType())) == true) {
+                return strictedType;
+            }
+        }
+        return null;
     }
 }
