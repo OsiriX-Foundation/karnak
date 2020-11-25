@@ -18,6 +18,6 @@ public class Remove extends AbstractAction {
     public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, HMAC hmac) {
         String tagValueIn = dcm.getString(tag).orElse(null);
         iterator.remove();
-        LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_IN, TagUtils.toString(tag), symbol, tagValueIn);
+        LOGGER.trace(CLINICAL_MARKER, PATTERN_WITH_IN, TagUtils.toString(tag), symbol, tagValueIn);
     }
 }

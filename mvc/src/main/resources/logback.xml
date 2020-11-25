@@ -78,7 +78,7 @@
                     <onMatch>NEUTRAL</onMatch>
                 </filter>
                 <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-                    <Pattern>%d %X{SOPInstanceUID} %m%n</Pattern>
+                    <Pattern>%d %m%n</Pattern>
                 </encoder>
             </appender>
 
