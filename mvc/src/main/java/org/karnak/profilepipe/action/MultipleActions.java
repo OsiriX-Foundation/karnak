@@ -63,7 +63,8 @@ public class MultipleActions extends AbstractAction {
                 .collect(Collectors.toList());
 
         if (modulesMandatory.size() == 0) {
-            return actionRemove;
+            String currentType = Attribute.getStrictedType(attributes);
+            return chooseAction(sopUID, currentType);
         }
 
         if (modulesMandatory.size() == 1) {
@@ -73,6 +74,7 @@ public class MultipleActions extends AbstractAction {
             return chooseAction(sopUID, currentType);
         }
 
+        // TODO: use mandatory attributes !!
         String currentType = Attribute.getStrictedType(attributes);
         return chooseAction(sopUID, currentType);
     }
