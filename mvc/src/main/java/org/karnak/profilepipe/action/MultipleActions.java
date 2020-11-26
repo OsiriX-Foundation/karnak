@@ -11,9 +11,9 @@ import org.karnak.standard.Module;
 import org.karnak.standard.StandardDICOM;
 import org.karnak.standard.exceptions.StandardDICOMException;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class MultipleActions extends AbstractAction {
     final StandardDICOM standardDICOM;
@@ -55,28 +55,31 @@ public class MultipleActions extends AbstractAction {
     }
 
     private ActionItem multipleAttributes(String sopUID, List<Attribute> attributes) {
-        List<Module> modules = attributes.stream()
-                .map(attribute -> standardDICOM.getModuleByModuleID(sopUID, attribute.getModuleId()).orElse(null))
-                .collect(Collectors.toList());
-        List<Module> modulesMandatory = modules.stream()
-                .filter(module -> Module.moduleIsMandatory(module))
-                .collect(Collectors.toList());
+        List<Attribute> mandatoryAttributes = getMandatoryAttributes(sopUID, attributes);
 
-        if (modulesMandatory.size() == 0) {
+        if (mandatoryAttributes.size() == 0) {
             String currentType = Attribute.getStrictedType(attributes);
             return chooseAction(sopUID, currentType);
         }
 
-        if (modulesMandatory.size() == 1) {
-            String currentType = attributes.stream()
-                    .filter(attr -> attr.getModuleId().equals(modulesMandatory.get(0).getId()))
-                    .findFirst().orElse(null).getType();
+        if (mandatoryAttributes.size() == 1) {
+            String currentType = mandatoryAttributes.get(0).getType();
             return chooseAction(sopUID, currentType);
         }
 
-        // TODO: use mandatory attributes !!
-        String currentType = Attribute.getStrictedType(attributes);
+        String currentType = Attribute.getStrictedType(mandatoryAttributes);
         return chooseAction(sopUID, currentType);
+    }
+
+    private List<Attribute> getMandatoryAttributes(String sopUID, List<Attribute> attributes) {
+        List<Attribute> mandatoryAttributes = new ArrayList<>();
+        attributes.forEach(attribute -> {
+            Module module = standardDICOM.getModuleByModuleID(sopUID, attribute.getModuleId()).orElse(null);
+            if (module != null && Module.moduleIsMandatory(module)) {
+                mandatoryAttributes.add(attribute);
+            }
+        });
+        return mandatoryAttributes;
     }
 
     private ActionItem chooseAction(String sopUID, String currentType) {
