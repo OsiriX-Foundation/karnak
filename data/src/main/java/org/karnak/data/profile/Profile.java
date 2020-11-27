@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+import org.karnak.data.gateway.Project;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -34,6 +37,11 @@ public class Profile {
 
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Mask> masks = new HashSet<>();
+
+    @OneToMany(mappedBy="profile")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonIgnore
+    private List<Project> project;
 
     public Profile() {
     }
@@ -123,4 +131,7 @@ public class Profile {
         this.masks = masks;
     }
 
+    public List<Project> getProject() {
+        return project;
+    }
 }

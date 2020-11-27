@@ -2,6 +2,8 @@ Karnak is a DICOM gateway for data de-identification and DICOM attribute normali
 
 Karnak manages a continuous DICOM flow with a DICOM listener as input and a DICOM and/or DICOMWeb as output.
 
+[Karnak documentation](https://osirix-foundation.github.io/karnak-documentation/) is available online.
+
 # Application Features
 
 ## Gateway
@@ -66,13 +68,15 @@ To launch the UI, execute the maven command `mvn spring-boot:run -f mvc` in the 
         - `MAINZELLISTE_HTTP_PORT=8083`
         - `MAINZELLISTE_ID_TYPES=pid`
         - `MAINZELLISTE_API_KEY=changeThisApiKey`
-        - `KARNAK_HMAC_KEY=changeThisHmacKey`
         - `KARNAK_ADMIN=admin`
         - `KARNAK_PASSWORD=admin`
         - `KARNAK_WEB_PORT=8081`
         - `KARNAK_LOGS_MAX_FILE_SIZE=100MB`
         - `KARNAK_LOGS_MIN_INDEX=1`
         - `KARNAK_LOGS_MAX_INDEX=10`
+        - `KARNAK_CLINICAL_LOGS_MAX_FILE_SIZE=100MB`
+        - `KARNAK_CLINICAL_LOGS_MIN_INDEX=1`
+        - `KARNAK_CLINICAL_LOGS_MAX_INDEX=10`
         - `ENVIRONMENT=DEV`
 
     Note: the tmp folder must be adapted according to your system and the dicom-opencv must the last folder.

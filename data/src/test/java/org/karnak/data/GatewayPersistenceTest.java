@@ -1,25 +1,24 @@
 package org.karnak.data;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.function.Consumer;
-
 import javax.validation.ConstraintViolationException;
-
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.karnak.data.gateway.*;
+import org.junit.jupiter.api.Test;
+import org.karnak.data.gateway.Destination;
+import org.karnak.data.gateway.DestinationType;
+import org.karnak.data.gateway.DicomSourceNode;
+import org.karnak.data.gateway.ForwardNode;
+import org.karnak.data.gateway.GatewayPersistence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.test.context.junit4.SpringRunner;
 
 @AutoConfigureTestDatabase(replace = Replace.NONE)
-@RunWith(SpringRunner.class)
 @DataJpaTest
 public class GatewayPersistenceTest {
     private Consumer<ForwardNode> forwardNodeConsumer = //
@@ -51,8 +50,6 @@ public class GatewayPersistenceTest {
                     .hasFieldOrPropertyWithValue("headers", "headers") //
                     .extracting(Object::toString).asString().matches("^Destination \\[.*");
 
-    @Rule
-    public ExpectedException expectedEx = ExpectedException.none();
 
     @Autowired
     private TestEntityManager entityManager;
@@ -62,29 +59,30 @@ public class GatewayPersistenceTest {
 
     @Test
     public void testInvalidForwardNode_Mandatory() {
-        expectedEx.expect(ConstraintViolationException.class);
-        expectedEx.expectMessage("Forward AETitle is mandatory");
-
         ForwardNode forwardNode = ForwardNode.ofEmpty();
         forwardNode.setFwdAeTitle(null);
-        entityManager.persistAndFlush(forwardNode);
+        String expectedMessage = "Forward AETitle is mandatory";
+        Exception exception = assertThrows(ConstraintViolationException.class, () -> {
+            entityManager.persistAndFlush(forwardNode);
+        });
+        String actualMessage = exception.getMessage();
+        assertTrue(actualMessage.contains(expectedMessage));
     }
 
     @Test
     public void testInvalidForwardNode_Size() {
-        expectedEx.expect(ConstraintViolationException.class);
-        expectedEx.expectMessage("Forward AETitle has more than 16 characters");
-
         ForwardNode forwardNode = ForwardNode.ofEmpty();
         forwardNode.setFwdAeTitle("ABCDEFGHIJ-ABCDEFGHIJ");
-        entityManager.persistAndFlush(forwardNode);
+        String expectedMessage = "Forward AETitle has more than 16 characters";
+        Exception exception = assertThrows(ConstraintViolationException.class, () -> {
+            entityManager.persistAndFlush(forwardNode);
+        });
+        String actualMessage = exception.getMessage();
+        assertTrue(actualMessage.contains(expectedMessage));
     }
 
     @Test
     public void testInvalidSourceNode_AETitle_mandatory() {
-        expectedEx.expect(ConstraintViolationException.class);
-        expectedEx.expectMessage("AETitle is mandatory");
-
         ForwardNode forwardNode = ForwardNode.ofEmpty();
         forwardNode.setDescription("description");
         forwardNode.setFwdAeTitle("fwdAeTitle");
@@ -93,33 +91,46 @@ public class GatewayPersistenceTest {
         sourceNode.setAeTitle(null);
         sourceNode.setHostname("hostname");
         forwardNode.addSourceNode(sourceNode);
-        entityManager.persistAndFlush(forwardNode);
+
+        String expectedMessage = "AETitle is mandatory";
+        Exception exception = assertThrows(ConstraintViolationException.class, () -> {
+            entityManager.persistAndFlush(forwardNode);
+        });
+        String actualMessage = exception.getMessage();
+        assertTrue(actualMessage.contains(expectedMessage));
     }
 
     @Test
     public void testInvalidDestinationDicom_AETitle_mandatory() {
-        expectedEx.expect(ConstraintViolationException.class);
-        expectedEx.expectMessage("AETitle is mandatory");
-
         ForwardNode forwardNode = ForwardNode.ofEmpty();
         forwardNode.setDescription("description");
         forwardNode.setFwdAeTitle("fwdAeTitle");
         Destination destination = Destination.ofDicom("description", null, "hostname", 123, null);
         forwardNode.addDestination(destination);
-        entityManager.persistAndFlush(forwardNode);
+
+
+        String expectedMessage = "AETitle is mandatory";
+        Exception exception = assertThrows(ConstraintViolationException.class, () -> {
+            entityManager.persistAndFlush(forwardNode);
+        });
+        String actualMessage = exception.getMessage();
+        assertTrue(actualMessage.contains(expectedMessage));
     }
 
     @Test
     public void testInvalidDestinationStow_URL_mandatory() {
-        expectedEx.expect(ConstraintViolationException.class);
-        expectedEx.expectMessage("URL is mandatory");
-
         ForwardNode forwardNode = ForwardNode.ofEmpty();
         forwardNode.setDescription("description");
         forwardNode.setFwdAeTitle("fwdAeTitle");
         Destination destination = Destination.ofStow("description", null, "urlCredentials", "headers");
         forwardNode.addDestination(destination);
-        entityManager.persistAndFlush(forwardNode);
+
+        String expectedMessage = "URL is mandatory";
+        Exception exception = assertThrows(ConstraintViolationException.class, () -> {
+            entityManager.persistAndFlush(forwardNode);
+        });
+        String actualMessage = exception.getMessage();
+        assertTrue(actualMessage.contains(expectedMessage));
     }
 
     @Test

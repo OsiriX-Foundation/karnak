@@ -20,13 +20,13 @@ public class HelpView extends VerticalLayout {
         setSizeFull();
         H1 heading = new H1( "Help" );
 
-        Anchor generalDoc = new Anchor( "https://github.com/OsiriX-Foundation/karnak-docker/blob/master/README.md" , "General documentation");
+        Anchor generalDoc = new Anchor( "https://osirix-foundation.github.io/karnak-documentation/" , "General documentation");
         generalDoc.setTarget( "_blank" );
 
-        Anchor installation = new Anchor( "https://github.com/OsiriX-Foundation/karnak-docker/blob/master/README.md" , "Installation and configuration with Docker");
+        Anchor installation = new Anchor( "https://osirix-foundation.github.io/karnak-documentation/docs/installation" , "Installation and configuration with Docker");
         installation.setTarget( "_blank" );
 
-        Anchor profile = new Anchor( "https://github.com/OsiriX-Foundation/karnak-docker/tree/master/profileExample" , "Build your own profile for de-identification or for tag morphing");
+        Anchor profile = new Anchor( "https://osirix-foundation.github.io/karnak-documentation/docs/deidentification/profiles" , "Build your own profile for de-identification or for tag morphing");
         profile.setTarget( "_blank" );
         VerticalLayout layout = new VerticalLayout();
         layout.add(heading, generalDoc,  installation, profile );

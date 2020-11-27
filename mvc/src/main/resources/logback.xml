@@ -60,9 +60,15 @@
             </appender>
             <appender name="CLINICAL_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
                 <file>${LOGS}/Clinical/clinical.log</file>
-                <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-                    <fileNamePattern>${LOGS}/Clinical/clinical.%d{yyyy-MM-dd}.log</fileNamePattern>
+                <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+                    <fileNamePattern>${LOGS}/Clinical/clinical_%i.log</fileNamePattern>
+                    <minIndex>${KARNAK_CLINICAL_LOGS_MIN_INDEX}</minIndex>
+                    <maxIndex>${KARNAK_CLINICAL_LOGS_MAX_INDEX}</maxIndex>
                 </rollingPolicy>
+
+                <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+                    <maxFileSize>${KARNAK_CLINICAL_LOGS_MAX_FILE_SIZE}</maxFileSize>
+                </triggeringPolicy>
 
                 <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
                     <evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
@@ -72,7 +78,7 @@
                     <onMatch>NEUTRAL</onMatch>
                 </filter>
                 <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-                    <Pattern>%d %X{SOPInstanceUID} %m%n</Pattern>
+                    <Pattern>%d %m%n</Pattern>
                 </encoder>
             </appender>
 
@@ -81,7 +87,7 @@
                 <appender-ref ref="CLINICAL_FILE" />
                 <appender-ref ref="WARNING_OUT" />
             </root>
-            <logger name="org.weasis" level="debug" />
+            <logger name="org.weasis" level="info" />
             <logger name="org.karnak" level="info" />
         </else>
     </if>

@@ -9,8 +9,6 @@ mainzelliste:
   apikey: 'changeThisApiKey'
   serverurl: 'http://localhost:8083'
   idtypes: 'pid'
-dcmprofile:
-  hmackey: 'HmacKeyToTEST'
 logging:
   level:
     com:

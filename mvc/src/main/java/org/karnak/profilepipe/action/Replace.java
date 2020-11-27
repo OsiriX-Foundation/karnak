@@ -4,6 +4,7 @@ import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.util.TagUtils;
 import org.karnak.profilepipe.utils.HMAC;
+import org.slf4j.MDC;
 
 import java.util.Iterator;
 
@@ -28,6 +29,6 @@ public class Replace extends AbstractAction {
                 dcm.setNull(tag, dcmEl.vr());
             }
         });
-        LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_INOUT, TagUtils.toString(tag), symbol, tagValueIn, dummyValue);
+        LOGGER.trace(CLINICAL_MARKER, PATTERN_WITH_INOUT, MDC.get("SOPInstanceUID"), TagUtils.toString(tag), symbol, tagValueIn, dummyValue);
     }
 }

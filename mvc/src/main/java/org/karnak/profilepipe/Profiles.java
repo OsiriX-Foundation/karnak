@@ -33,9 +33,7 @@ import org.karnak.profilepipe.profiles.ProfileItem;
 import org.karnak.expression.ExprAction;
 import org.karnak.profilepipe.utils.HMAC;
 import org.karnak.profilepipe.utils.HashContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
+import org.slf4j.*;
 import org.weasis.core.util.StringUtil;
 import org.weasis.dicom.param.AttributeEditorContext;
 
@@ -46,6 +44,7 @@ public class Profiles {
     private Pseudonym pseudonymUtil;
     private final ArrayList<ProfileItem> profiles;
     private final Map<String, MaskArea> maskMap;
+    private final Marker CLINICAL_MARKER = MarkerFactory.getMarker("CLINICAL");
 
     public Profiles(Profile profile) {
         this.maskMap = new HashMap<>();
@@ -154,13 +153,15 @@ public class Profiles {
     }
 
     public void apply(DicomObject dcm, Destination destination, AttributeEditorContext context) {
-        final String SOPinstanceUID = dcm.getString(Tag.SOPInstanceUID).orElse(null);
+        final String SOPInstanceUID = dcm.getString(Tag.SOPInstanceUID).orElse(null);
+        final String SeriesInstanceUID = dcm.getString(Tag.SeriesInstanceUID).orElse(null);
         final String IssuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID).orElse(null);
         final String PatientID = dcm.getString(Tag.PatientID).orElse(null);
         final IdTypes idTypes = destination.getIdTypes();
         final HMAC hmac = generateHMAC(destination, PatientID);
 
-        MDC.put("SOPInstanceUID", SOPinstanceUID);
+        MDC.put("SOPInstanceUID", SOPInstanceUID);
+        MDC.put("SeriesInstanceUID", SeriesInstanceUID);
         MDC.put("issuerOfPatientID", IssuerOfPatientID);
         MDC.put("PatientID", PatientID);
 
@@ -201,6 +202,17 @@ public class Profiles {
         applyAction(dcm, dcmCopy, hmac, null, null, context);
 
         setDefaultDeidentTagValue(dcm, newPatientID, newPatientName, profilesCodeName, pseudonym, hmac);
+
+        final Marker CLINICAL_MARKER = MarkerFactory.getMarker("CLINICAL");
+        LOGGER.info(CLINICAL_MARKER, "SOPInstanceUID_OLD={} SOPInstanceUID_NEW={} SeriesInstanceUID_OLD={} " +
+                        "SeriesInstanceUID_NEW={} ProjectName={} ProfileName={} ProfileCodenames={}",
+                SOPInstanceUID,
+                dcm.getString(Tag.SOPInstanceUID).orElse(null),
+                SeriesInstanceUID,
+                dcm.getString(Tag.SeriesInstanceUID).orElse(null),
+                destination.getProject().getName(),
+                profile.getName(),
+                profilesCodeName);
         MDC.clear();
     }
 

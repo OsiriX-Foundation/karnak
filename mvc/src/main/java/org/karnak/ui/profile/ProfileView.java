@@ -37,8 +37,8 @@ public class ProfileView extends HorizontalLayout {
         setSizeFull();
         profilePipeService = new ProfilePipeServiceImpl();
         profileNameGrid = new ProfileNameGrid();
-        profileComponent = new ProfileComponent(profilePipeService, profileNameGrid);
         profileElementMainView = new ProfileElementMainView();
+        profileComponent = new ProfileComponent(profilePipeService, profileNameGrid, profileElementMainView);
         profileErrorView = new ProfileErrorView();
         profileHorizontalLayout = new HorizontalLayout(profileComponent, profileElementMainView);
 

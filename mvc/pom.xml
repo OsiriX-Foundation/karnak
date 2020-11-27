@@ -15,7 +15,7 @@
 	<packaging>jar</packaging>
 
 	<properties>
-		<vaadin.version>16.0.2</vaadin.version>
+		<vaadin.version>16.0.5</vaadin.version>
 	</properties>
 
 	<dependencyManagement>
@@ -199,23 +199,9 @@
 
 		<!-- Tests -->
 		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-api</artifactId>
-			<scope>test</scope>
-		</dependency>
-
-
-		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
-			<version>2.3.0.RELEASE</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-params</artifactId>
-			<version>5.6.2</version>
+			<version>${springframework.version}</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -228,13 +214,6 @@
 			<groupId>com.vaadin.componentfactory</groupId>
 			<artifactId>togglebutton</artifactId>
 			<version>1.0.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.vaadin</groupId>
-			<artifactId>vaadin-bom</artifactId>
-			<version>17.0.7</version>
-			<type>pom</type>
-			<scope>import</scope>
 		</dependency>
 	</dependencies>
 

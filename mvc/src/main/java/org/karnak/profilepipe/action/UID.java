@@ -6,6 +6,7 @@ import org.dcm4che6.data.VR;
 import org.dcm4che6.util.TagUtils;
 import org.karnak.data.AppConfig;
 import org.karnak.profilepipe.utils.HMAC;
+import org.slf4j.MDC;
 
 import java.util.Iterator;
 
@@ -23,6 +24,6 @@ public class UID extends AbstractAction {
             uidHashed = hmac.uidHash(uidValue);
             dcm.setString(tag, VR.UI, uidHashed);
         }
-        LOGGER.info(CLINICAL_MARKER, PATTERN_WITH_INOUT, TagUtils.toString(tag), symbol, uidValue, uidHashed);
+        LOGGER.trace(CLINICAL_MARKER, PATTERN_WITH_INOUT, MDC.get("SOPInstanceUID"), TagUtils.toString(tag), symbol, uidValue, uidHashed);
     }
 }
