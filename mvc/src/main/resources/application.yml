@@ -16,6 +16,8 @@ logging:
 server:
   port: 8081
 spring:
+  application:
+    name: karnak
   liquibase:
     enabled: true
     change-log: classpath:db/changelog/db.changelog-master.yaml
@@ -49,3 +51,9 @@ spring:
       jdbc:
         lob:
           non_contextual_creation: true
+
+---
+spring:
+  profiles: docker
+logstash:
+  servers: logstash:9689

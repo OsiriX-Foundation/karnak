@@ -1,30 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <property name="LOGS" value="logs" />
+    <property name="LOGS" value="logs"/>
     <if condition='property("ENVIRONMENT").contains("DEV")'>
         <then>
-            <appender name="DEV_OUT" class="ch.qos.logback.core.ConsoleAppender">
-                <encoder>
-                    <Pattern>%black(%d{ISO8601})  %highlight(%-5level) %marker %highlight(%X{SOPInstanceUID}) %highlight(%X{issuerOfPatientID}) %highlight(%X{PatientID}) [%yellow(%t)] %yellow(%C{1.}): %msg%n%throwable </Pattern>
-                </encoder>
-            </appender>
-            <root level="info">
-                <appender-ref ref="DEV_OUT" />
+            <include resource="ch/hcuge/springcloud/logging/logback-spring.xml"/>
+            <root level="INFO">
+                <springProfile name="!docker">
+                    <appender-ref ref="console"/>
+                </springProfile>
+                <springProfile name="docker">
+                    <appender-ref ref="logstash"/>
+                </springProfile>
             </root>
-            <logger name="org.weasis" level="debug" />
-            <logger name="org.dcm4che6" level="debug" />
-            <logger name="org.karnak" level="debug" />
+            <!--            <logger name="org.weasis" level="debug"/>-->
+            <!--            <logger name="org.dcm4che6" level="debug"/>-->
+            <!--            <logger name="org.karnak" level="debug"/>-->
         </then>
         <!--
-        PRODUCTION LOGS
-        -->
+            PRODUCTION LOGS
+            -->
         <else>
             <appender name="WARNING_OUT" class="ch.qos.logback.core.ConsoleAppender">
                 <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
                     <level>WARN</level>
                 </filter>
                 <encoder>
-                    <Pattern>%black(%d{ISO8601})  %highlight(%-5level) %marker %highlight(%X{SOPInstanceUID}) %highlight(%X{issuerOfPatientID}) %highlight(%X{PatientID}) [%yellow(%t)] %yellow(%C{1.}): %msg%n%throwable </Pattern>
+                    <Pattern>%black(%d{ISO8601}) %highlight(%-5level) %marker %highlight(%X{SOPInstanceUID})
+                        %highlight(%X{issuerOfPatientID}) %highlight(%X{PatientID}) [%yellow(%t)] %yellow(%C{1.}):
+                        %msg%n%throwable
+                    </Pattern>
                 </encoder>
             </appender>
             <!--
@@ -43,7 +47,6 @@
                     <minIndex>${KARNAK_LOGS_MIN_INDEX}</minIndex>
                     <maxIndex>${KARNAK_LOGS_MAX_INDEX}</maxIndex>
                 </rollingPolicy>
-
                 <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
                     <maxFileSize>${KARNAK_LOGS_MAX_FILE_SIZE}</maxFileSize>
                 </triggeringPolicy>
@@ -65,11 +68,9 @@
                     <minIndex>${KARNAK_CLINICAL_LOGS_MIN_INDEX}</minIndex>
                     <maxIndex>${KARNAK_CLINICAL_LOGS_MAX_INDEX}</maxIndex>
                 </rollingPolicy>
-
                 <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
                     <maxFileSize>${KARNAK_CLINICAL_LOGS_MAX_FILE_SIZE}</maxFileSize>
                 </triggeringPolicy>
-
                 <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
                     <evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
                         <marker>CLINICAL</marker>
@@ -81,14 +82,13 @@
                     <Pattern>%d %m%n</Pattern>
                 </encoder>
             </appender>
-
             <root level="warn">
-                <appender-ref ref="ALL_LOGS" />
-                <appender-ref ref="CLINICAL_FILE" />
-                <appender-ref ref="WARNING_OUT" />
+                <appender-ref ref="ALL_LOGS"/>
+                <appender-ref ref="CLINICAL_FILE"/>
+                <appender-ref ref="WARNING_OUT"/>
             </root>
-            <logger name="org.weasis" level="info" />
-            <logger name="org.karnak" level="info" />
+            <logger name="org.weasis" level="info"/>
+            <logger name="org.karnak" level="info"/>
         </else>
     </if>
 </configuration>
