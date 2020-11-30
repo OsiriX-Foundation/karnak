@@ -46,12 +46,16 @@ public class MultipleActions extends AbstractAction {
             } else if (attributes.size() > 1) {
                 ActionItem action = multipleAttributes(sopUID, attributes);
                 action.execute(dcm, tag, iterator, hmac);
+            } else {
+                ActionItem action = defaultAction();
+                action.execute(dcm, tag, iterator, hmac);
+                LOGGER.warn(
+                        String.format("Could not found the attribute %s in the SOP %s. The most strictest action will be choose (%s).", tagPath, sopUID, symbol)
+                );
             }
         } catch (StandardDICOMException standardDICOMException) {
-            LOGGER.error("Could not execute an action with a unknown SOP", standardDICOMException);
+            LOGGER.error(String.format("Could not execute the action %s with the SOP %s and the attribute %s", symbol, sopUID, tagPath), standardDICOMException);
         }
-        // TODO: throw exception
-        // Throw exception Tag NOT FOUND IN THE DICOM Standard ?
     }
 
     private ActionItem multipleAttributes(String sopUID, List<Attribute> attributes) {
@@ -89,7 +93,15 @@ public class MultipleActions extends AbstractAction {
             case "X/Z/D" -> DummyOrReplaceNullOrRemove(currentType);
             case "X/Z" -> ReplaceNullOrRemove(currentType);
             case "X/Z/U", "X/Z/U*" -> UIDorReplaceNullOrRemove(currentType);
-            default -> new DefaultDummy(symbol);
+            default -> defaultDummyValue;
+        };
+    }
+
+    private ActionItem defaultAction() {
+        return switch (symbol) {
+            case "X/Z" -> actionReplaceNull;
+            case "X/Z/U", "X/Z/U*" -> actionUID;
+            default -> defaultDummyValue;
         };
     }
 
