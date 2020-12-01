@@ -12,6 +12,7 @@ import com.vaadin.flow.router.Route;
 import org.karnak.data.profile.Profile;
 import org.karnak.profilepipe.profilebody.ProfilePipeBody;
 import org.karnak.ui.MainLayout;
+import org.springframework.security.access.annotation.Secured;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
@@ -21,17 +22,18 @@ import java.util.function.Predicate;
 
 @Route(value = "profile", layout = MainLayout.class)
 @PageTitle("KARNAK - Profiles")
+@Secured({"ROLE_ADMIN"})
 @SuppressWarnings("serial")
 public class ProfileView extends HorizontalLayout {
     public static final String VIEW_NAME = "Profiles";
 
-    private ProfileComponent profileComponent;
-    private ProfileElementMainView profileElementMainView;
+    private final ProfileComponent profileComponent;
+    private final ProfileElementMainView profileElementMainView;
     private Upload uploadProfile;
-    private ProfileNameGrid profileNameGrid;
-    private ProfileErrorView profileErrorView;
+    private final ProfileNameGrid profileNameGrid;
+    private final ProfileErrorView profileErrorView;
     private final ProfilePipeService profilePipeService;
-    private HorizontalLayout profileHorizontalLayout;
+    private final HorizontalLayout profileHorizontalLayout;
 
     public ProfileView() {
         setSizeFull();

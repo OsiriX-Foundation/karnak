@@ -9,18 +9,20 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.karnak.ui.MainLayout;
+import org.springframework.security.access.annotation.Secured;
 
 @Route(value = "extid", layout = MainLayout.class)
 @PageTitle("KARNAK - External ID")
 @Tag("extid-view")
+@Secured({"ROLE_ADMIN"})
 @SuppressWarnings("serial")
 public class ExternalIDView extends HorizontalLayout {
     public static final String VIEW_NAME = "External pseudonym";
 
-    private ListDataProvider<Patient> dataProvider;
-    private ExternalIDGrid grid;
-    private AddNewPatientForm addNewPatientForm;
-    private Div validationStatus;
+    private final ListDataProvider<Patient> dataProvider;
+    private final ExternalIDGrid grid;
+    private final AddNewPatientForm addNewPatientForm;
+    private final Div validationStatus;
 
 
     //https://vaadin.com/components/vaadin-grid/java-examples/assigning-data

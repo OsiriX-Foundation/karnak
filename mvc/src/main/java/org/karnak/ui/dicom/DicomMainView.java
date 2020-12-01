@@ -1,23 +1,26 @@
 package org.karnak.ui.dicom;
 
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.tabs.Tab;
+import com.vaadin.flow.component.tabs.Tabs;
+import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.Route;
+import org.karnak.ui.MainLayout;
+import org.karnak.ui.dicom.echo.DicomEchoView;
+import org.karnak.ui.dicom.monitor.MonitorView;
+import org.karnak.ui.dicom.mwl.DicomWorkListView;
+import org.springframework.security.access.annotation.Secured;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.*;
-import org.karnak.ui.MainLayout;
-import org.karnak.ui.dicom.echo.DicomEchoView;
-import org.karnak.ui.dicom.mwl.DicomWorkListView;
-import org.karnak.ui.dicom.monitor.MonitorView;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.tabs.Tab;
-import com.vaadin.flow.component.tabs.Tabs;
-
 @Route(value = "dicom", layout = MainLayout.class)
 @PageTitle("KARNAK - DICOM Tools")
+@Secured({"ROLE_ADMIN"})
 public class DicomMainView extends VerticalLayout {
   public static final String VIEW_NAME = "DICOM Tools";
   private static final long serialVersionUID = 1L;

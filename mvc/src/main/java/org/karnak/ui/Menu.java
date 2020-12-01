@@ -1,23 +1,21 @@
 package org.karnak.ui;
 
-import com.vaadin.flow.component.dependency.JsModule;
-import com.vaadin.flow.component.dependency.NpmPackage;
-import com.vaadin.flow.component.icon.IronIcon;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
-import com.vaadin.flow.router.PreserveOnRefresh;
-import org.karnak.ui.authentication.AccessControlFactory;
-
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.dependency.JsModule;
+import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.IronIcon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.RouterLink;
+import org.karnak.ui.security.SecurityUtils;
 import org.karnak.ui.util.ToggleButtonTheme;
 
 @NpmPackage(value = "@polymer/iron-icons", version = "3.0.1")
@@ -28,7 +26,7 @@ public class Menu extends FlexLayout {
 
     private Tabs tabs;
     private RadioButtonGroup<String> radioGroup;
-    private ToggleButtonTheme toggleButtonTheme;
+    private final ToggleButtonTheme toggleButtonTheme;
 
     public Menu() {
         setClassName("menu-bar");
@@ -58,7 +56,7 @@ public class Menu extends FlexLayout {
 
         // logout menu item
         Button logoutButton = new Button("Logout", VaadinIcon.SIGN_OUT.create());
-        logoutButton.addClickListener(event -> AccessControlFactory.getInstance().createAccessControl().signOut());
+        logoutButton.addClickListener(event -> SecurityUtils.signOut());
 
         logoutButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
         add(logoutButton);

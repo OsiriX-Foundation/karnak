@@ -8,16 +8,18 @@ import org.karnak.ui.api.ForwardNodeAPI;
 import org.karnak.ui.data.ForwardNodeDataProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.access.annotation.Secured;
 
 @Route(value = "forwardnode", layout = MainLayout.class)
 @RouteAlias(value = "", layout = MainLayout.class)
 @PageTitle("KARNAK - Forward node")
+@Secured({"ROLE_ADMIN"})
 public class ForwardNodeView extends HorizontalLayout implements HasUrlParameter<String> {
     public static final String VIEW_NAME = "Gateway";
-    private ForwardNodeAPI forwardNodeAPI;
-    private LayoutNewGridForwardNode layoutNewGridForwardNode;
-    private LayoutEditForwardNode layoutEditForwardNode;
-    private ForwardNodeViewLogic forwardNodeViewLogic;
+    private final ForwardNodeAPI forwardNodeAPI;
+    private final LayoutNewGridForwardNode layoutNewGridForwardNode;
+    private final LayoutEditForwardNode layoutEditForwardNode;
+    private final ForwardNodeViewLogic forwardNodeViewLogic;
 
     public ForwardNodeView() {
         setSizeFull();
