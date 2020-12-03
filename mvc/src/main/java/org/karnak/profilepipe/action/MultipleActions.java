@@ -65,6 +65,11 @@ public class MultipleActions extends AbstractAction {
     private ActionItem multipleAttributes(String sopUID, List<Attribute> attributes) {
         List<Attribute> mandatoryAttributes = getMandatoryAttributes(sopUID, attributes);
 
+        if (mandatoryAttributes.size() == 0) {
+            String currentType = Attribute.getStrictedType(attributes);
+            return chooseAction(sopUID, currentType);
+        }
+
         if (mandatoryAttributes.size() == 1) {
             String currentType = mandatoryAttributes.get(0).getType();
             return chooseAction(sopUID, currentType);
