@@ -32,7 +32,7 @@ public class StandardSOPS {
             JsonReader reader = new JsonReader(new InputStreamReader(url.openStream(), StandardCharsets.UTF_8));
             return gson.fromJson(reader, jsonSOP[].class);
         } catch( Exception e) {
-            throw new JsonParseException("Cannot parse json sops.json correctly", e);
+            throw new JsonParseException(String.format("Cannot parse json %s correctly", sopsFileName), e);
         }
     }
 }

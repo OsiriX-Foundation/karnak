@@ -32,7 +32,7 @@ public class StandardModuleToAttributes {
             JsonReader reader = new JsonReader(new InputStreamReader(url.openStream(), StandardCharsets.UTF_8));
              return gson.fromJson(reader, jsonModuleToAttribute[].class);
         } catch( Exception e) {
-            throw new JsonParseException("Cannot parse json moduletoattributes.json correctly", e);
+            throw new JsonParseException(String.format("Cannot parse json %s correctly", moduleToAttributesFileName), e);
         }
     }
 }

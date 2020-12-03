@@ -32,7 +32,7 @@ public class StandardCIODtoModules {
             JsonReader reader = new JsonReader(new InputStreamReader(url.openStream(), StandardCharsets.UTF_8));
             return gson.fromJson(reader, jsonCIODtoModule[].class);
         } catch( Exception e) {
-            throw new JsonParseException("Cannot parse json ciodtomodules.json correctly", e);
+            throw new JsonParseException(String.format("Cannot parse json %s correctly", ciodToModulesFileName), e);
         }
     }
 }
