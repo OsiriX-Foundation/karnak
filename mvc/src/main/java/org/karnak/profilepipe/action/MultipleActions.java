@@ -61,11 +61,6 @@ public class MultipleActions extends AbstractAction {
     private ActionItem multipleAttributes(String sopUID, List<Attribute> attributes) {
         List<Attribute> mandatoryAttributes = getMandatoryAttributes(sopUID, attributes);
 
-        if (mandatoryAttributes.size() == 0) {
-            String currentType = Attribute.getStrictedType(attributes);
-            return chooseAction(sopUID, currentType);
-        }
-
         if (mandatoryAttributes.size() == 1) {
             String currentType = mandatoryAttributes.get(0).getType();
             return chooseAction(sopUID, currentType);
@@ -130,10 +125,11 @@ public class MultipleActions extends AbstractAction {
     }
 
     private ActionItem ReplaceNullOrRemove(String currentType) {
+        /* TODO: throw exception ?
         if (currentType.equals("1") || currentType.equals("1C")) {
-            // TODO: throw exception ?
-            // throw new Exception(For the current SOP, the tag must type 1. Impossible to execute and respect the standard);
+            throw new Exception(For the current SOP, the tag must type 1. Impossible to execute and respect the standard);
         }
+         */
         if (currentType.equals("2") || currentType.equals("2C")) {
             return actionReplaceNull;
         }
