@@ -10,12 +10,16 @@ import org.karnak.standard.Attribute;
 import org.karnak.standard.Module;
 import org.karnak.standard.StandardDICOM;
 import org.karnak.standard.exceptions.StandardDICOMException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 public class MultipleActions extends AbstractAction {
+    private static final Logger LOGGER = LoggerFactory.getLogger(MultipleActions.class);
+
     final StandardDICOM standardDICOM;
     final ActionItem defaultDummyValue;
     final ActionItem actionUID;
