@@ -14,16 +14,25 @@ public class StandardSOPS {
 
     public StandardSOPS() {
         URL url = this.getClass().getResource(sopsFileName);
+        sops = read(url);
+    }
+
+    public jsonSOP[] getSOPS() {
+        return sops;
+    }
+
+    public static jsonSOP[] readJsonSOPS() {
+        URL url = StandardSOPS.class.getResource(sopsFileName);
+        return read(url);
+    }
+
+    private static jsonSOP[] read(URL url) {
         Gson gson = new Gson();
         try {
             JsonReader reader = new JsonReader(new InputStreamReader(url.openStream(), StandardCharsets.UTF_8));
-            sops = gson.fromJson(reader, jsonSOP[].class);
+            return gson.fromJson(reader, jsonSOP[].class);
         } catch( Exception e) {
-            throw new JsonParseException("Cannot parse json SOPS correctly", e);
+            throw new JsonParseException("Cannot parse json sops.json correctly", e);
         }
-    }
-
-    public static jsonSOP[] getSOPS() {
-        return sops;
     }
 }
