@@ -10,10 +10,10 @@ import java.util.stream.Collectors;
 public class SOPS {
     private static HashMap<String, SOP> HMapSOPS;
 
-    public SOPS(jsonSOP[] sops, jsonCIOD[] ciods, jsonCIODtoModule[] ciodToModule) {
-        HashMap<String, String> HMapCIODS = initializeCIODS(ciods);
-        HashMap<String, ArrayList<Module>> HMapCIODModules = initializeHMapCIODModules(ciodToModule);
-        HMapSOPS = initializeSOPS(sops, HMapCIODS, HMapCIODModules);
+    public SOPS() {
+        HashMap<String, String> HMapCIODS = initializeCIODS(StandardCIODS.readJsonCIODS());
+        HashMap<String, ArrayList<Module>> HMapCIODModules = initializeHMapCIODModules(StandardCIODtoModules.readJsonCIODToModules());
+        HMapSOPS = initializeSOPS(StandardSOPS.readJsonSOPS(), HMapCIODS, HMapCIODModules);
     }
 
     private HashMap<String, SOP> initializeSOPS(jsonSOP[] sops, HashMap<String, String> HMapCIODS, HashMap<String, ArrayList<Module>> HMapCIODModules) {

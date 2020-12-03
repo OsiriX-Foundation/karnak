@@ -1,11 +1,8 @@
 package org.karnak.standard;
 
 import org.dcm4che6.util.TagUtils;
-import org.karnak.data.gateway.SOPClassUIDPersistence;
-import org.karnak.standard.dicominnolitics.*;
 import org.karnak.standard.exceptions.ModuleNotFoundException;
 import org.karnak.standard.exceptions.SOPNotFoundException;
-import org.karnak.ui.data.GatewayConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,22 +10,12 @@ import java.util.Map;
 import java.util.Optional;
 
 public class StandardDICOM {
-    private final StandardSOPS standardSOPS;
-    private final StandardCIODS standardCIODS;
-    private final StandardCIODtoModules standardCIODtoModules;
-    private final StandardModuleToAttributes standardModuleToAttributes;
     private final SOPS sops;
     private final ModuleToAttributes moduleToAttributes;
 
-    private SOPClassUIDPersistence sopClassUIDPersistence = GatewayConfiguration.getInstance().getSopClassUIDPersistence();
-
     public StandardDICOM() {
-        standardSOPS = new StandardSOPS();
-        standardCIODS = new StandardCIODS();
-        standardCIODtoModules = new StandardCIODtoModules();
-        standardModuleToAttributes = new StandardModuleToAttributes();
-        sops = new SOPS(standardSOPS.getSOPS(), standardCIODS.getCIODS(), standardCIODtoModules.getCIODToModules());
-        moduleToAttributes = new ModuleToAttributes(standardModuleToAttributes.getModuleToAttributes());
+        sops = new SOPS();
+        moduleToAttributes = new ModuleToAttributes();
     }
 
     public List<String> getAllSOPuids() {

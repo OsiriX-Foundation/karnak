@@ -1,5 +1,6 @@
 package org.karnak.standard;
 
+import org.karnak.standard.dicominnolitics.StandardModuleToAttributes;
 import org.karnak.standard.dicominnolitics.jsonModuleToAttribute;
 import org.karnak.standard.exceptions.ModuleNotFoundException;
 
@@ -13,8 +14,8 @@ public class ModuleToAttributes {
     * */
     private final Map<String, Map<String, Attribute>> HMapModuleAttributes;
 
-    public ModuleToAttributes(jsonModuleToAttribute[] moduleToAttributes) {
-        HMapModuleAttributes = initializeAttributes(moduleToAttributes);
+    public ModuleToAttributes() {
+        HMapModuleAttributes = initializeAttributes(StandardModuleToAttributes.readJsonModuleToAttributes());
     }
 
     private Map<String, Map<String, Attribute>> initializeAttributes(jsonModuleToAttribute[] moduleToAttributes) {
