@@ -36,11 +36,12 @@ public class jsonConfidentialityProfiles {
 
     private static ActionItem convertAction(String strAction) {
         return switch (strAction) {
-            case "D", "C", "Z/D", "X/D", "X/Z/D" -> new DefaultDummy("DDum");
-            case "Z", "X/Z" -> new ReplaceNull("Z");
+            case "D" -> new DefaultDummy("DDum");
+            case "Z" -> new ReplaceNull("Z");
             case "X" -> new Remove("X");
             case "K" -> new Keep("K");
-            case "U", "X/Z/U", "X/Z/U*" -> new UID("U");
+            case "U" -> new UID("U");
+            case "Z/D", "X/D", "X/Z/D", "X/Z", "X/Z/U", "X/Z/U*" -> new MultipleActions(strAction);
             default -> new Replace("D");
         };
     }
