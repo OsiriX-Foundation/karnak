@@ -1,6 +1,7 @@
 package org.karnak;
 
 
+import com.vaadin.flow.spring.annotation.EnableVaadin;
 import org.karnak.data.AppConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,8 +13,9 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
+@EnableVaadin({"org.karnak"})
+@EnableJpaRepositories(basePackages = {"org.karnak.data" })
 @EntityScan("org.karnak.data")
-@EnableJpaRepositories("org.karnak.data")
 public class StartApplication implements CommandLineRunner {
     private static final Logger log = LoggerFactory.getLogger(StartApplication.class);
 

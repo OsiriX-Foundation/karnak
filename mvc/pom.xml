@@ -14,10 +14,6 @@
 	<name>karnak services and UI</name>
 	<packaging>jar</packaging>
 
-	<properties>
-		<vaadin.version>16.0.5</vaadin.version>
-	</properties>
-
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -93,28 +89,28 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.springframework.boot</groupId>
-					<artifactId>spring-boot-starter-tomcat</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-jetty</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>com.vaadin</groupId>
-			<artifactId>vaadin-spring-boot-starter</artifactId>
-		</dependency>
+    <!-- Vaadin Spring -->
+    <dependency>
+      <groupId>com.vaadin</groupId>
+      <artifactId>vaadin-spring-boot-starter</artifactId>
+      <version>${vaadin.version}</version>
+      <exclusions>
+        <!-- Excluding so that webjars are not included. -->
+        <exclusion>
+          <groupId>com.vaadin</groupId>
+          <artifactId>vaadin-core</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
 
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<scope>provided</scope>
-		</dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-devtools</artifactId>
+      <version>${springframework.version}</version>
+      <optional>true</optional>
+    </dependency>
 
 		<!-- Bean validation implementation -->
 		<dependency>
@@ -170,21 +166,36 @@
 			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin-confirm-dialog-flow</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>com.flowingcode.addons</groupId>
-			<artifactId>iron-icons</artifactId>
-			<version>2.0.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.vaadin.gatanaso</groupId>
-			<artifactId>multiselect-combo-box-flow</artifactId>
-			<version>3.0.2</version> <!-- use appropriate version -->
-		</dependency>
+    <!-- Vaadin - Addons -->
+    <dependency>
+      <groupId>com.flowingcode.addons</groupId>
+      <artifactId>iron-icons</artifactId>
+      <version>2.0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.vaadin.gatanaso</groupId>
+      <artifactId>multiselect-combo-box-flow</artifactId>
+      <version>3.0.2</version> <!-- use appropriate version -->
+    </dependency>
+    <dependency>
+      <groupId>com.vaadin</groupId>
+      <artifactId>vaadin-checkbox-flow</artifactId>
+      <version>3.1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.vaadin.componentfactory</groupId>
+      <artifactId>togglebutton</artifactId>
+      <version>1.0.0</version>
+    </dependency>
 
 		<dependency>
 			<groupId>javax.validation</groupId>
 			<artifactId>validation-api</artifactId>
 		</dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jul-to-slf4j</artifactId>
+    </dependency>
 
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
@@ -205,16 +216,6 @@
 			<scope>test</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>com.vaadin</groupId>
-			<artifactId>vaadin-checkbox-flow</artifactId>
-			<version>3.1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.vaadin.componentfactory</groupId>
-			<artifactId>togglebutton</artifactId>
-			<version>1.0.0</version>
-		</dependency>
 	</dependencies>
 
 	<build>
@@ -280,6 +281,12 @@
 				<version>${springframework.version}</version>
 				<configuration>
 					<jvmArguments>-Djava.library.path="${java.io.tmpdir}/dicom-opencv-${weasis.opencv.native.version}"</jvmArguments>
+          <!-- Clean build and startup time for Vaadin apps sometimes may exceed the default Spring Boot's 30sec timeout.  -->
+          <wait>500</wait>
+          <maxAttempts>240</maxAttempts>
+          <layers>
+            <enabled>true</enabled>
+          </layers>
 				</configuration>
 				<executions>
 					<execution>
@@ -340,6 +347,9 @@
 						<artifactId>spring-boot-maven-plugin</artifactId>
 						<configuration>
 							<jvmArguments>-Dvaadin.productionMode</jvmArguments>
+              <layers>
+                <enabled>true</enabled>
+              </layers>
 						</configuration>
 					</plugin>
 					<plugin>
