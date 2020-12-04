@@ -1,6 +1,8 @@
 package org.karnak.standard;
 
 public class Module {
+    public static final String MANDATORY = "M";
+
     private String id;
     private String usage;
     private String informationEntity;
@@ -21,5 +23,9 @@ public class Module {
 
     public String getInformationEntity() {
         return informationEntity;
+    }
+
+    public static boolean moduleIsMandatory(Module module) {
+        return module.getUsage().equals(MANDATORY);
     }
 }

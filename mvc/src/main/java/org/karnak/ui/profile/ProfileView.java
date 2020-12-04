@@ -13,8 +13,11 @@ import org.karnak.data.profile.Profile;
 import org.karnak.profilepipe.profilebody.ProfilePipeBody;
 import org.karnak.ui.MainLayout;
 import org.springframework.security.access.annotation.Secured;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
+import org.yaml.snakeyaml.error.YAMLException;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -25,6 +28,7 @@ import java.util.function.Predicate;
 @Secured({"ROLE_ADMIN"})
 @SuppressWarnings("serial")
 public class ProfileView extends HorizontalLayout {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProfileView.class);
     public static final String VIEW_NAME = "Profiles";
 
     private final ProfileComponent profileComponent;
@@ -98,7 +102,7 @@ public class ProfileView extends HorizontalLayout {
     private void setProfileComponent(String mimeType, InputStream stream) {
         remove(profileHorizontalLayout);
         add(profileErrorView);
-        if (mimeType.equals("application/x-yaml")) {
+        try {
             ProfilePipeBody profilePipe = readProfileYaml(stream);
             ArrayList<ProfileError> profileErrors = profilePipeService.validateProfile(profilePipe);
             Predicate<ProfileError> errorPredicate = profileError -> profileError.getError() != null;
@@ -110,8 +114,10 @@ public class ProfileView extends HorizontalLayout {
             } else {
                 profileErrorView.setView(profileErrors);
             }
-        } else {
-            profileErrorView.setView("mimeType must be 'application/x-yaml'");
+        } catch (YAMLException e) {
+            LOGGER.error("Unable to read uploaded YAML" ,  e);
+            profileErrorView.setView("Unable to read uploaded YAML file.\n" +
+                    "Please make sure it is a YAML file and respects the YAML structure.");
         }
     }
 

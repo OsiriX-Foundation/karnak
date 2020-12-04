@@ -7,6 +7,8 @@ import org.karnak.data.profile.ProfilePersistence;
 import org.karnak.profilepipe.Profiles;
 import org.karnak.profilepipe.profilebody.ProfilePipeBody;
 import org.karnak.standard.ConfidentialityProfiles;
+import org.karnak.standard.StandardDICOM;
+import org.karnak.ui.extid.Patient;
 import org.karnak.ui.profile.ProfilePipeService;
 import org.karnak.ui.profile.ProfilePipeServiceImpl;
 import org.slf4j.Logger;
@@ -117,10 +119,8 @@ public class AppConfig {
 
     }
 
-    /*
     @Bean("StandardDICOM")
     public StandardDICOM getStandardDICOM() {
         return new StandardDICOM();
     }
-     */
 }

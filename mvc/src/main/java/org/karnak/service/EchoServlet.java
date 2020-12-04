@@ -2,6 +2,7 @@ package org.karnak.service;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Serial;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +29,7 @@ import org.weasis.dicom.web.WebForwardDestination;
 @WebServlet(urlPatterns = "/echo")
 public class EchoServlet extends HttpServlet {
 
+    @Serial
     private static final long serialVersionUID = -8349040600894140520L;
     private static final Logger LOGGER = LoggerFactory.getLogger(EchoServlet.class);
 

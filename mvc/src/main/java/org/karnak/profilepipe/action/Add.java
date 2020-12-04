@@ -6,6 +6,7 @@ import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.VR;
 import org.dcm4che6.util.TagUtils;
 import org.karnak.profilepipe.utils.HMAC;
+import org.slf4j.MDC;
 
 public class Add extends AbstractAction{
 
@@ -31,7 +32,7 @@ public class Add extends AbstractAction{
             }
         });
 
-        LOGGER.trace(CLINICAL_MARKER, PATTERN_WITH_INOUT, TagUtils.toString(newTag), symbol, tagValueIn,
+        LOGGER.trace(CLINICAL_MARKER, PATTERN_WITH_INOUT, MDC.get("SOPInstanceUID"), TagUtils.toString(newTag), symbol, tagValueIn,
             dcm.getString(newTag).orElse(null));
     }
 }

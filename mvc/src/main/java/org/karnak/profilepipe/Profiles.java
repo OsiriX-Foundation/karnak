@@ -3,6 +3,7 @@ package org.karnak.profilepipe;
 import java.awt.Color;
 import java.awt.Shape;
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -17,6 +18,7 @@ import org.dcm4che6.data.Tag;
 import org.dcm4che6.data.VR;
 import org.dcm4che6.img.op.MaskArea;
 import org.dcm4che6.img.util.DicomObjectUtil;
+import org.dcm4che6.util.DateTimeUtils;
 import org.dcm4che6.util.TagUtils;
 import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.IdTypes;
@@ -251,6 +253,10 @@ public class Profiles {
         defaultDeidentTagValue.add(new ExprAction(Tag.ClinicalTrialProtocolName, VR.LO, (String) null));
         defaultDeidentTagValue.add(new ExprAction(Tag.ClinicalTrialSiteID, VR.LO, (String) null));
         defaultDeidentTagValue.add(new ExprAction(Tag.ClinicalTrialSiteName, VR.LO, (String) null));
+
+        LocalDateTime now = LocalDateTime.now();
+        defaultDeidentTagValue.add(new ExprAction(Tag.InstanceCreationDate, VR.DA, DateTimeUtils.formatDA(now)));
+        defaultDeidentTagValue.add(new ExprAction(Tag.InstanceCreationTime, VR.TM, DateTimeUtils.formatTM(now)));
 
         defaultDeidentTagValue.forEach(newElem -> {
             final ActionItem add = new Add("A", newElem.getTag(), newElem.getVr(), newElem.getStringValue());
