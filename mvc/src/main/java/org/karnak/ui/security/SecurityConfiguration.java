@@ -1,5 +1,6 @@
 package org.karnak.ui.security;
 
+import org.karnak.data.AppConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -48,9 +49,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         // Configure users and roles in memory
         auth.inMemoryAuthentication()
-                .withUser("user").password("{noop}user").roles(SecurityRole.USER_ROLE.getType())
-                .and()
-                .withUser("admin").password("{noop}admin")
+                .withUser(AppConfig.getInstance().getKarnakadmin())
+                .password("{noop}" + AppConfig.getInstance().getKarnakpassword())
                 .roles(SecurityRole.ADMIN_ROLE.getType(), SecurityRole.USER_ROLE.getType());
     }
 
