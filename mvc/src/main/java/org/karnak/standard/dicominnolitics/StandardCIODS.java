@@ -14,16 +14,25 @@ public class StandardCIODS {
 
     public StandardCIODS() {
         URL url = this.getClass().getResource(ciodsFileName);
+        ciods = read(url);
+    }
+
+    public jsonCIOD[] getCIODS() {
+        return ciods;
+    }
+
+    public static jsonCIOD[] readJsonCIODS() {
+        URL url = StandardCIODS.class.getResource(ciodsFileName);
+        return read(url);
+    }
+
+    private static jsonCIOD[] read(URL url) {
         Gson gson = new Gson();
         try {
             JsonReader reader = new JsonReader(new InputStreamReader(url.openStream(), StandardCharsets.UTF_8));
-            ciods = gson.fromJson(reader, jsonCIOD[].class);
+            return gson.fromJson(reader, jsonCIOD[].class);
         } catch( Exception e) {
-            throw new JsonParseException("Cannot parse json SOPS correctly", e);
+            throw new JsonParseException(String.format("Cannot parse json %s correctly", ciodsFileName), e);
         }
-    }
-
-    public static jsonCIOD[] getCIODS() {
-        return ciods;
     }
 }

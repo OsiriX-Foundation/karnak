@@ -19,7 +19,7 @@ public class StandardConfidentialityProfiles {
             JsonReader reader = new JsonReader(new InputStreamReader(url.openStream(), StandardCharsets.UTF_8));
             confidentialityProfiles = gson.fromJson(reader, jsonConfidentialityProfiles[].class);
         } catch( Exception e) {
-            throw new JsonParseException("Cannot parse json Confidentiality Profiles correctly", e);
+            throw new JsonParseException(String.format("Cannot parse json %s correctly", confidentialityProfilesFileName), e);
         }
     }
 
