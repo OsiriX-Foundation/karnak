@@ -1,31 +1,36 @@
-FROM alpine/git:1.0.14 as download-stage
+# To build, run the following command from the top level project directory:
+#
+# docker build -t osirixfoundation/karnak:latest -f Dockerfile .
 
-WORKDIR /tmp
-
-RUN git clone https://github.com/nroduit/dcm4che20.git
-RUN git clone https://github.com/nroduit/weasis-dicom-tools.git
-RUN (cd dcm4che20 && git checkout image)
-RUN (cd weasis-dicom-tools && git checkout dcm4che6)
-
-FROM maven:3.6-openjdk-14 as build-stage
-
-WORKDIR /build
-
-COPY . .
-COPY --from=download-stage /tmp/dcm4che20 /dcm4che20
-COPY --from=download-stage /tmp/weasis-dicom-tools /weasis-dicom-tools
-
-RUN mvn com.github.eirslett:frontend-maven-plugin:1.7.6:install-node-and-npm -DnodeVersion="v12.14.0"
-RUN (cd /dcm4che20 && mvn source:jar install)
-RUN (cd /weasis-dicom-tools && mvn clean install)
-RUN mvn clean package -Pproduction
-
-FROM openjdk:14.0-jdk as production-stage
-
+# Based on build image containing maven, jdk and git
+FROM maven:3.6-adoptopenjdk-15 as builder
 WORKDIR /app
+# Build third-party libraries
+RUN git clone --depth 1 https://github.com/nroduit/dcm4che20.git --single-branch --branch image
+RUN mvn -B -f dcm4che20/pom.xml install
+RUN git clone --depth 1 https://github.com/nroduit/weasis-dicom-tools.git --single-branch --branch dcm4che6
+RUN mvn -B -f weasis-dicom-tools/pom.xml install
 
-COPY --from=build-stage /build/mvc/target/karnak-mvc-5.0.0-SNAPSHOT.jar /app/karnak-mvc-5.0.0-SNAPSHOT.jar
+# Build the Spring Boot application with layers
+COPY pom.xml .
+COPY data/src ./data/src
+COPY data/pom.xml ./data/
+COPY mvc/src ./mvc/src
+COPY mvc/pom.xml ./mvc/
+COPY mvc/frontend mvc/frontend
+RUN mvn -B package -P production
+WORKDIR /app/bin
+RUN cp ../mvc/target/karnak*.jar application.jar
+RUN java -Djarmode=layertools -jar application.jar extract
+
+# Build the final deployment image
+FROM adoptopenjdk:15-jre-hotspot
+WORKDIR app
+COPY --from=builder /app/bin/dependencies/ ./
+COPY --from=builder /app/bin/spring-boot-loader/ ./
+COPY --from=builder /app/bin/snapshot-dependencies/ ./
+COPY --from=builder /app/bin/application/ ./
 COPY tools/docker-entrypoint.sh .
 
-EXPOSE 8081
+EXPOSE 8080
 ENTRYPOINT ["/app/docker-entrypoint.sh"]
