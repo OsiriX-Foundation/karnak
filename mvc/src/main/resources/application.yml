@@ -13,6 +13,16 @@ logging:
   level:
     org:
       springframework: INFO
+
+    com:
+      vaadin:
+        flow:
+          server:
+            communication:
+              # Suppress WARN  c.v.f.s.c.ReturnChannelHandler - Ignoring update for disabled return channel
+              rpc:
+                MapSyncRpcHandler: ERROR
+              ReturnChannelHandler: ERROR
 server:
   port: 8081
 spring:
