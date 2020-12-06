@@ -22,13 +22,6 @@
 		<javax.el.version>3.0.0</javax.el.version>
 		<javax.mail.version>1.6.2</javax.mail.version>
 		<maven-surefire-plugin.version>3.0.0-M4</maven-surefire-plugin.version>
-
-		<sonar.projectKey>karnak</sonar.projectKey>
-		<sonar.organization>osirix-foundation-1</sonar.organization>
-		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
-		<sonar.java.source >${java.version}</sonar.java.source>
-		<sonar.java.target>${java.version}</sonar.java.target>
-		<sonar.sources>pom.xml,src/main</sonar.sources>
 	</properties>
 
 	<modules>
