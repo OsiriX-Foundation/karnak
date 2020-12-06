@@ -1,3 +1,7 @@
+[![License](https://img.shields.io/badge/License-EPL%202.0-blue.svg)](https://opensource.org/licenses/EPL-2.0) ![Maven build](https://github.com/OsiriX-Foundation/karnak/workflows/Build/badge.svg?branch=master)
+
+[![Sonar](https://sonarcloud.io/api/project_badges/measure?project=karnak&metric=ncloc)](https://sonarcloud.io/component_measures?id=karnak) [![Sonar](https://sonarcloud.io/api/project_badges/measure?project=karnak&metric=reliability_rating)](https://sonarcloud.io/component_measures?id=karnak) [![Sonar](https://sonarcloud.io/api/project_badges/measure?project=karnak&metric=sqale_rating)](https://sonarcloud.io/component_measures?id=karnak) [![Sonar](https://sonarcloud.io/api/project_badges/measure?project=karnak&metric=security_rating)](https://sonarcloud.io/component_measures?id=karnak) [![Sonar](https://sonarcloud.io/api/project_badges/measure?project=karnak&metric=alert_status)](https://sonarcloud.io/dashboard?id=karnak)
+
 Karnak is a DICOM gateway for data de-identification and DICOM attribute normalization.
 
 Karnak manages a continuous DICOM flow with a DICOM listener as input and a DICOM and/or DICOMWeb as output.
@@ -23,7 +27,8 @@ Prerequisites:
 - JDK 14
 - Maven 3
 - Package dcm4che20
-- Package weasis-dicom-tools
+- Package weasis-dicom-tools 
+- Code formatter: [google-java-format](https://github.com/google/google-java-format)
 
 Use the following commands to build the two dependencies (dcm4che20 and weasis-dicom-tools):
 
@@ -42,17 +47,17 @@ Use the following commands to build the two dependencies (dcm4che20 and weasis-d
 
 ##### Karnak
 
-Execute the maven command `mvn clean install` in the root directory of the project.
+Execute the maven command `mvn clean install -P production` in the root directory of the project.
 
 # Run Karnak
 
-To launch the UI, execute the maven command `mvn spring-boot:run -f mvc` in the root directory of the project.
+To configure and run Karnak with docker-compose, see [karnak-docker](https://github.com/OsiriX-Foundation/karnak-docker).
 
 # Debug Karnak
 
 ## Debug in IntelliJ
 
- - Launch the docker needed for Karnak (see "Configure locally Mainzelliste and Postgres database with docker-compose")
+ - Launch the components needed by Karnak (see below "Configure locally Mainzelliste and Postgres database with docker-compose")
  - Enable Spring and Spring Boot for the project
  - Create a Spring Boot launcher from main of StartApplication.java
     - Working Directory must be the mvc directory
@@ -97,10 +102,10 @@ To launch the UI, execute the maven command `mvn spring-boot:run -f mvc` in the 
 Minimum docker-compose version: **1.22**
 
 - Go in the `docker` folder located in the root project folder.
-- To configure the docker used by karnak, please refer to this links.
+- To configure third-party components used by karnak, please refer to these links:
     - [docker hub postgres](https://hub.docker.com/_/postgres)
     - [docker hub mainzelliste](https://hub.docker.com/r/osirixfoundation/karnak-mainzelliste)
-- Adapt the values if necessary
+- Adapt the values if necessary (copy `.env.example` into `.env` and modify it)
 - Execute command:
     - start: `docker-compose up -d`
     - show the logs: `docker-compose logs -f`
@@ -121,7 +126,7 @@ Go on the root folder and launch the following command:
   
 ## Run image from Docker Hub
 
-See [karnak-docker documentation](https://github.com/OsiriX-Foundation/karnak-docker)
+See [karnak-docker](https://github.com/OsiriX-Foundation/karnak-docker)
 
 ## Docker environment variables
 
