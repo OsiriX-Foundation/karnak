@@ -29,6 +29,13 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
+      - name: Build third-party libraries
+        shell: bash
+        run: |
+          git clone --depth 1 https://github.com/nroduit/dcm4che20.git --single-branch --branch image
+          mvn -B -f dcm4che20/pom.xml install
+          git clone --depth 1 https://github.com/nroduit/weasis-dicom-tools.git --single-branch --branch dcm4che6
+          mvn -B -f weasis-dicom-tools/pom.xml install
       - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
