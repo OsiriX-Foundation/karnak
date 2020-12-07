@@ -15,25 +15,25 @@ public abstract class AbstractAction implements ActionItem {
     protected int newTag;
     protected VR vr;
 
-    public AbstractAction(String symbol) {
+    protected AbstractAction(String symbol) {
         this.symbol = symbol;
         this.dummyValue = null;
         this.vr = null;
     }
 
-    public AbstractAction(String symbol, String dummyValue) {
+    protected AbstractAction(String symbol, String dummyValue) {
         this.symbol = symbol;
         this.dummyValue = dummyValue;
         this.vr = null;
     }
 
-    public AbstractAction(String symbol, VR vr, String dummyValue){
+    protected AbstractAction(String symbol, VR vr, String dummyValue){
         this.symbol = symbol;
         this.vr = vr;
         this.dummyValue = dummyValue;
     }
 
-    public AbstractAction(String symbol, int newTag, VR vr, String dummyValue){
+    protected AbstractAction(String symbol, int newTag, VR vr, String dummyValue){
         this.symbol = symbol;
         this.newTag = newTag;
         this.vr = vr;

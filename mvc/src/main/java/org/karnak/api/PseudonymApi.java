@@ -91,7 +91,7 @@ public class PseudonymApi {
     public String createPatient(Fields patientFields, IdTypes idTypes) throws IOException, InterruptedException {
         String tokenId = rqCreateTokenAddPatient(patientFields, idTypes);
         List<JSONObject> pseudonymList = rqCreatePatient(tokenId);
-        JSONObject jsonPseudonym = pseudonymList.stream().filter(p -> p.getString("idType").equals(idTypes.getValue())).findFirst().get();
+        JSONObject jsonPseudonym = pseudonymList.stream().filter(p -> p.getString("idType").equals(idTypes.getValue())).findFirst().orElseThrow();
         return jsonPseudonym.getString("idString");
     }
 

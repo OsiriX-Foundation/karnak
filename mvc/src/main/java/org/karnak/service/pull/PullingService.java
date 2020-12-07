@@ -22,6 +22,7 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManagerFactory;
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -63,7 +64,7 @@ public final class PullingService extends AbstractGateway {
     };
 
     private final Map<String, List<FileInfo>> downloadMap = new HashMap<>();
-    private volatile SSLSocketFactory sslFactory;
+    private SSLSocketFactory sslFactory;
 
     public PullingService(GatewayConfig config) {
         super(config);
@@ -76,7 +77,7 @@ public final class PullingService extends AbstractGateway {
             tmf.init(keyStore);
             SSLContext ctx = SSLContext.getInstance("TLS");
             ctx.init(null, tmf.getTrustManagers(), null);
-            sslFactory = ctx.getSocketFactory();
+            this.sslFactory = ctx.getSocketFactory();
             HttpsURLConnection.setDefaultSSLSocketFactory(sslFactory);
         } catch (Exception e) {
             LOGGER.debug("Getting sslFactory", e);
@@ -130,6 +131,8 @@ public final class PullingService extends AbstractGateway {
             }
             in = httpCon.getInputStream();
             DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+            docBuilderFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            docBuilderFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
             Document doc = docBuilder.parse(in);
             // normalize text representation

@@ -35,34 +35,34 @@ public class TextFieldsBindSwitchingAlbum {
         textCondition = new TextField();
         textErrorConditionMsg = new Span();
         expressionError = new ExpressionError(true, "");
-        binder = setBinder();
+        binder = buildBinder();
 
     }
 
-    private Binder<KheopsAlbums> setBinder() {
-        Binder<KheopsAlbums> binder = new BeanValidationBinder<>(KheopsAlbums.class);
-        binder.forField(textAuthorizationDestination)
+    private Binder<KheopsAlbums> buildBinder() {
+        Binder<KheopsAlbums> b = new BeanValidationBinder<>(KheopsAlbums.class);
+        b.forField(textAuthorizationDestination)
                 .withValidator(StringUtils::isNotBlank,"Token destination is mandatory")
                 .withValidator(value -> {
-                    if (textUrlAPI.getValue() != "") {
+                    if (!textUrlAPI.getValue().isBlank()) {
                         return validateToken(value, textUrlAPI.getValue(), SwitchingAlbum.MIN_SCOPE_DESTINATION);
                     }
                     return true;
                 }, "Token can't be validate, minimum permissions: [write]")
                 .bind(KheopsAlbums::getAuthorizationDestination, KheopsAlbums::setAuthorizationDestination);
-        binder.forField(textAuthorizationSource)
+        b.forField(textAuthorizationSource)
                 .withValidator(StringUtils::isNotBlank,"Token source is mandatory")
                 .withValidator(value -> {
-                    if (textUrlAPI.getValue() != "") {
+                    if (!textUrlAPI.getValue().isBlank()) {
                         return validateToken(value, textUrlAPI.getValue(), SwitchingAlbum.MIN_SCOPE_SOURCE);
                     }
                     return true;
                 }, "Token can't be validate, minimum permissions: [read, send]")
                 .bind(KheopsAlbums::getAuthorizationSource, KheopsAlbums::setAuthorizationSource);
-        binder.forField(textUrlAPI)
+        b.forField(textUrlAPI)
                 .withValidator(StringUtils::isNotBlank,"Url API is mandatory")
                 .bind(KheopsAlbums::getUrlAPI, KheopsAlbums::setUrlAPI);
-        binder.forField(textCondition)
+        b.forField(textCondition)
                 .withValidator(value -> {
                     if (!textCondition.getValue().equals("")) {
                          expressionError = ExpressionResult.isValid(textCondition.getValue(),
@@ -75,7 +75,7 @@ public class TextFieldsBindSwitchingAlbum {
                     return true;
                 }, "Condition is not valid")
                 .bind(KheopsAlbums::getCondition, KheopsAlbums::setCondition);
-        return binder;
+        return b;
     }
 
     private boolean validateToken(String token, String urlAPI, List<String> validMinScope) {

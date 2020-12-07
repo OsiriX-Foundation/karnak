@@ -182,6 +182,7 @@ public class EmailNotifyProgress implements ProgressListener {
                 props.setProperty("mail.smtp.auth", "true");
                 props.put("mail.smtp.socketFactory.port", config.getSmtpPort()); // SSL Port
                 props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory"); // SSL Factory Class
+                props.put("mail.smtp.ssl.checkserveridentity", true);
             } else {
                 props.put("mail.smtp.auth", "true"); // enable authentication
                 props.put("mail.smtp.starttls.enable", "true");
