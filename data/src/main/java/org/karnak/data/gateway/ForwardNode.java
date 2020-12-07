@@ -23,6 +23,8 @@ public class ForwardNode {
 
     private String description;
 
+    private boolean state;
+
     // AETitle which defined a mapping of the gateway. This AETitle is configured as
     // a destination in the DICOM component that sends images to the gateway.
     @NotBlank(message = "Forward AETitle is mandatory")
@@ -48,11 +50,21 @@ public class ForwardNode {
     protected ForwardNode() {
         this.fwdAeTitle = "";
         this.description = "";
+        this.state = true;
     }
 
     public ForwardNode(String fwdAeTitle) {
         this.fwdAeTitle = fwdAeTitle;
         this.description = "";
+        this.state = true;
+    }
+
+    public boolean isState() {
+        return state;
+    }
+
+    public void setState(boolean state) {
+        this.state = state;
     }
 
     public Long getId() {

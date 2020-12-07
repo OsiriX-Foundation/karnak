@@ -26,6 +26,8 @@ public class Destination {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    private boolean state;
+
     private String description;
 
     @NotNull(message = "Type is mandatory")
@@ -155,6 +157,7 @@ public class Destination {
     }
 
     protected Destination() {
+        this.state = true;
         this.type = null;
         this.description = "";
         this.desidentification = false;
@@ -202,6 +205,14 @@ public class Destination {
             }
         }
         return "Type of destination is unknown";
+    }
+
+    public boolean isState() {
+        return state;
+    }
+
+    public void setState(boolean state) {
+        this.state = state;
     }
 
     public String getDescription() {
