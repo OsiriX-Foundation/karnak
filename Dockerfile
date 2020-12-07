@@ -18,6 +18,7 @@ COPY data/pom.xml ./data/
 COPY mvc/src ./mvc/src
 COPY mvc/pom.xml ./mvc/
 COPY mvc/frontend mvc/frontend
+COPY parent ./parent
 RUN mvn -B package -P production
 WORKDIR /app/bin
 RUN cp ../mvc/target/karnak*.jar application.jar
