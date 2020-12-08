@@ -49,23 +49,17 @@ public class FormSTOW extends VerticalLayout  {
         switchingAlbumsView = new SwitchingAlbumsView();
 
 
-        add(UIS.setWidthFull(
-                new HorizontalLayout(state)));
-        add(UIS.setWidthFull( //
-                new HorizontalLayout(description)));
-        add(UIS.setWidthFull( //
-                new HorizontalLayout(url, urlCredentials)));
-        add(UIS.setWidthFull( //
-                headers));
-        add(UIS.setWidthFull( //
-                new HorizontalLayout(notify)));
-        add(UIS.setWidthFull( //
-                new HorizontalLayout(notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues,
-                        notifyInterval)));
-        add(UIS.setWidthFull(layoutDesidentification));
-        add(UIS.setWidthFull(filterBySOPClassesForm));
-        add(UIS.setWidthFull(switchingAlbumsView));
-        add(UIS.setWidthFull(buttonSaveDeleteCancel));
+        add(UIS.setWidthFull(new HorizontalLayout(description)),
+            UIS.setWidthFull(new HorizontalLayout(url, urlCredentials)),
+            UIS.setWidthFull(headers), UIS.setWidthFull( new HorizontalLayout(notify)),
+            UIS.setWidthFull(new HorizontalLayout(notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues,
+                        notifyInterval)),
+            UIS.setWidthFull(layoutDesidentification),
+            UIS.setWidthFull(filterBySOPClassesForm),
+            UIS.setWidthFull(switchingAlbumsView),
+            UIS.setWidthFull(state),
+            UIS.setWidthFull(buttonSaveDeleteCancel));
+
 
         setElements();
         setBinder();
