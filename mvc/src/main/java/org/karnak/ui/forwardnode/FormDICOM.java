@@ -16,6 +16,7 @@ import java.util.Objects;
 public class FormDICOM extends VerticalLayout {
     private Binder<Destination> binder;
 
+    private final Checkbox state;
     private final TextField aeTitle;
     private final TextField description;
     private final TextField hostname;
@@ -34,6 +35,7 @@ public class FormDICOM extends VerticalLayout {
         setSizeFull();
         this.binder = binder;
 
+        state = new Checkbox("Enable destination");
         aeTitle = new TextField("AETitle");
         description = new TextField("Description");
         hostname = new TextField("Hostname");
@@ -47,7 +49,8 @@ public class FormDICOM extends VerticalLayout {
         layoutDesidentification = new LayoutDesidentification(binder);
         filterBySOPClassesForm = new FilterBySOPClassesForm(binder);
 
-        add(UIS.setWidthFull(new HorizontalLayout(aeTitle, description)),
+        add(UIS.setWidthFull(new HorizontalLayout(state)),
+                UIS.setWidthFull(new HorizontalLayout(aeTitle, description)),
                 UIS.setWidthFull(new HorizontalLayout(hostname, port)),
                 UIS.setWidthFull(new HorizontalLayout(useaetdest)),
                 UIS.setWidthFull(new HorizontalLayout(notify)),

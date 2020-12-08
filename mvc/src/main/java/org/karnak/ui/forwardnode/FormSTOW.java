@@ -1,5 +1,6 @@
 package org.karnak.ui.forwardnode;
 
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
@@ -14,6 +15,7 @@ import org.karnak.ui.util.UIS;
 
 public class FormSTOW extends VerticalLayout  {
     private Binder<Destination> binder;
+    private final Checkbox state;
     private final TextField description;
     private final TextField url;
     private final TextField urlCredentials;
@@ -32,6 +34,7 @@ public class FormSTOW extends VerticalLayout  {
         setSizeFull();
         this.binder = binder;
 
+        state = new Checkbox("Enable destination");
         description = new TextField("Description");
         url = new TextField("URL");
         urlCredentials = new TextField("URL credentials");
@@ -45,6 +48,9 @@ public class FormSTOW extends VerticalLayout  {
         filterBySOPClassesForm = new FilterBySOPClassesForm(binder);
         switchingAlbumsView = new SwitchingAlbumsView();
 
+
+        add(UIS.setWidthFull(
+                new HorizontalLayout(state)));
         add(UIS.setWidthFull( //
                 new HorizontalLayout(description)));
         add(UIS.setWidthFull( //

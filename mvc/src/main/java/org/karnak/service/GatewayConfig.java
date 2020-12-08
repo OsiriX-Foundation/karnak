@@ -397,7 +397,9 @@ public class GatewayConfig {
                 destMap.get(fwdNode).removeIf(d -> dstNode.getId().equals(d.getId()));
             } else if (type == NodeEventType.UPDATE) {
                 destMap.get(fwdNode).removeIf(d -> dstNode.getId().equals(d.getId()));
-                addDestinationNode(destMap.get(fwdNode), fwdNode, dstNode);
+                if (dstNode.getState()) {
+                    addDestinationNode(destMap.get(fwdNode), fwdNode, dstNode);
+                }
             }
         } else if (src instanceof ForwardNode) {
             ForwardNode fw = (ForwardNode) src;
