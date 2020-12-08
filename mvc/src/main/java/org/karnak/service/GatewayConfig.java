@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.dcm4che6.data.DicomObject;
 import org.jsoup.Jsoup;
@@ -299,37 +300,39 @@ public class GatewayConfig {
                         notifyObjectValues, notifyInterval);
             }
 
-            if (dstNode.getType() == DestinationType.stow) {
-                // parse headers to hashmap
-                HashMap<String, String> map = new HashMap<>();
-                String headers = dstNode.getHeaders();
-                Document doc = Jsoup.parse(headers);
-                String key = doc.getElementsByTag("key").text();
-                String value = doc.getElementsByTag("value").text();
-                if (StringUtil.hasText(key)) {
-                    map.put(key, value);
-                }
-
-                WebForwardDestination fwd = new WebForwardDestination(dstNode.getId(), fwdSrcNode, dstNode.getUrl(),
-                        map, progress, editors);
-                progress.addProgressListener(new EmailNotifyProgress(streamRegistry, fwd, emails, this, notifConfig));
-                progress.addProgressListener((DicomProgress dicomProgress) -> {
-                    DicomObject dcm = dicomProgress.getAttributes();
-                    if (listKheopsAlbums != null) {
-                        listKheopsAlbums.forEach(kheopsAlbums -> {
-                            switchingAlbum.applyAfterTransfer(kheopsAlbums, dcm);
-                        });
+            if (dstNode.getState()) {
+                if (dstNode.getType() == DestinationType.stow) {
+                    // parse headers to hashmap
+                    HashMap<String, String> map = new HashMap<>();
+                    String headers = dstNode.getHeaders();
+                    Document doc = Jsoup.parse(headers);
+                    String key = doc.getElementsByTag("key").text();
+                    String value = doc.getElementsByTag("value").text();
+                    if (StringUtil.hasText(key)) {
+                        map.put(key, value);
                     }
-                });
-                dstList.add(fwd);
-            } else {
-                DicomNode destinationNode =
-                        new DicomNode(dstNode.getAeTitle(), dstNode.getHostname(), dstNode.getPort());
-                DicomForwardDestination dest =
-                        new DicomForwardDestination(dstNode.getId(), getDefaultAdvancedParameters(), fwdSrcNode,
-                                destinationNode, dstNode.getUseaetdest(), progress, editors);
-                progress.addProgressListener(new EmailNotifyProgress(streamRegistry, dest, emails, this, notifConfig));
-                dstList.add(dest);
+
+                    WebForwardDestination fwd = new WebForwardDestination(dstNode.getId(), fwdSrcNode, dstNode.getUrl(),
+                            map, progress, editors);
+                    progress.addProgressListener(new EmailNotifyProgress(streamRegistry, fwd, emails, this, notifConfig));
+                    progress.addProgressListener((DicomProgress dicomProgress) -> {
+                        DicomObject dcm = dicomProgress.getAttributes();
+                        if (listKheopsAlbums != null) {
+                            listKheopsAlbums.forEach(kheopsAlbums -> {
+                                switchingAlbum.applyAfterTransfer(kheopsAlbums, dcm);
+                            });
+                        }
+                    });
+                    dstList.add(fwd);
+                } else {
+                    DicomNode destinationNode =
+                            new DicomNode(dstNode.getAeTitle(), dstNode.getHostname(), dstNode.getPort());
+                    DicomForwardDestination dest =
+                            new DicomForwardDestination(dstNode.getId(), getDefaultAdvancedParameters(), fwdSrcNode,
+                                    destinationNode, dstNode.getUseaetdest(), progress, editors);
+                    progress.addProgressListener(new EmailNotifyProgress(streamRegistry, dest, emails, this, notifConfig));
+                    dstList.add(dest);
+                }
             }
         } catch (IOException e) {
             LOGGER.error("Cannot build ForwardDestination", e);
@@ -351,6 +354,7 @@ public class GatewayConfig {
     public void reloadGatewayPersistence() {
         GatewayPersistence gatewayPersistence = GatewayConfiguration.getInstance().getGatewayPersistence();
         List<ForwardNode> list = new ArrayList<>(gatewayPersistence.findAll());
+        list = list.stream().filter(forwardNode -> forwardNode.getState() == true).collect(Collectors.toList());
         for (ForwardNode forwardNode : list) {
             ForwardDicomNode fwdSrcNode = new ForwardDicomNode(forwardNode.getFwdAeTitle(), null, forwardNode.getId());
             addAcceptedSourceNodes(fwdSrcNode, forwardNode);

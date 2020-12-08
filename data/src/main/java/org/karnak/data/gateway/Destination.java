@@ -207,7 +207,7 @@ public class Destination {
         return "Type of destination is unknown";
     }
 
-    public boolean isState() {
+    public boolean getState() {
         return state;
     }
 

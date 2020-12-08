@@ -59,7 +59,7 @@ public class ForwardNode {
         this.state = true;
     }
 
-    public boolean isState() {
+    public boolean getState() {
         return state;
     }
 
