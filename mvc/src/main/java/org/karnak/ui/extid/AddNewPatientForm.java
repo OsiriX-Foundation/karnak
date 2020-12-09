@@ -2,29 +2,22 @@ package org.karnak.ui.extid;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.datepicker.DatePicker;
-import com.vaadin.flow.component.icon.IronIcon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.validator.StringLengthValidator;
 import org.apache.commons.lang3.StringUtils;
-import org.karnak.api.PseudonymApi;
-import org.karnak.api.rqbody.Fields;
+import org.karnak.cache.Patient;
 import org.karnak.cache.PatientClient;
 import org.karnak.data.AppConfig;
-import org.karnak.data.gateway.IdTypes;
-import org.karnak.ui.component.ConfirmDialog;
 import org.karnak.cache.PatientClientUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -37,18 +30,13 @@ public class AddNewPatientForm extends VerticalLayout {
 
     private TextField externalIdField;
     private TextField patientIdField;
-    private TextField patientFirstNameField;
-    private TextField patientLastNameField;
+    private TextField patientNameField;
     private TextField issuerOfPatientIdField;
-    private DatePicker patientBirthDateField;
-    private Select<String> patientSexField;
     private Button addNewPatientButton;
     private Button clearFieldsButton;
 
-    private HorizontalLayout horizontalLayoutAddClear;
     private HorizontalLayout horizontalLayout1;
     private HorizontalLayout horizontalLayout2;
-    private HorizontalLayout horizontalLayout3;
 
     private PatientClient externalIDCache;
 
@@ -69,7 +57,6 @@ public class AddNewPatientForm extends VerticalLayout {
 
         addNewPatientButton.addClickListener(click -> {
             addPatientFieldsInGrid();
-
         });
 
         // enable/disable update button while editing
@@ -78,12 +65,6 @@ public class AddNewPatientForm extends VerticalLayout {
             boolean hasChanges = binder.hasChanges();
             addNewPatientButton.setEnabled(hasChanges && isValid);
         });
-
-        horizontalLayoutAddClear.add(clearFieldsButton, addNewPatientButton);
-        horizontalLayout1.add(externalIdField, patientIdField, patientFirstNameField, patientLastNameField);
-        horizontalLayout2.add(issuerOfPatientIdField, patientBirthDateField, patientSexField);
-        horizontalLayout3.add(horizontalLayoutAddClear);
-        add(horizontalLayout1, horizontalLayout2, horizontalLayout3);
     }
 
     private void readAllCacheValue(){
@@ -101,23 +82,13 @@ public class AddNewPatientForm extends VerticalLayout {
         externalIdField.setWidth("25%");
         patientIdField = new TextField("Patient ID");
         patientIdField.setWidth("25%");
-        patientFirstNameField = new TextField("Patient first name");
-        patientFirstNameField.setWidth("25%");
-        patientLastNameField = new TextField("Patient last name");
-        patientLastNameField.setWidth("25%");
+        patientNameField = new TextField("Patient name");
+        patientNameField.setWidth("25%");
         issuerOfPatientIdField = new TextField("Issuer of patient ID");
-        issuerOfPatientIdField.setWidth("33%");
-        patientBirthDateField = new DatePicker("Patient Birth Date");
-        patientBirthDateField.setWidth("33%");
-        patientSexField = new Select<>();
-        patientSexField.setLabel("Patient Sex");
-        patientSexField.setItems("M", "F", "O");
-        patientSexField.setWidth("33%");
-
-        horizontalLayoutAddClear = new HorizontalLayout();
-        horizontalLayoutAddClear.getStyle().set("margin-left", "auto");
+        issuerOfPatientIdField.setWidth("25%");
 
         clearFieldsButton = new Button("Clear");
+        clearFieldsButton.getStyle().set("margin-left", "auto");
 
         addNewPatientButton = new Button("Save patient temporary");
         addNewPatientButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -125,10 +96,12 @@ public class AddNewPatientForm extends VerticalLayout {
 
         horizontalLayout1 = new HorizontalLayout();
         horizontalLayout2 = new HorizontalLayout();
-        horizontalLayout3 = new HorizontalLayout();
         horizontalLayout1.setSizeFull();
         horizontalLayout2.setSizeFull();
-        horizontalLayout3.setSizeFull();
+
+        horizontalLayout1.add(externalIdField, patientIdField, patientNameField, issuerOfPatientIdField);
+        horizontalLayout2.add(clearFieldsButton, addNewPatientButton);
+        add(horizontalLayout1, horizontalLayout2);
     }
 
     public void setBinder(){
@@ -142,28 +115,14 @@ public class AddNewPatientForm extends VerticalLayout {
                 .withValidator(new StringLengthValidator("Length must be between 1 and 50.", 1, 50))
                 .bind("patientId");
 
-        binder.forField(patientFirstNameField)
-                .withValidator(StringUtils::isNotBlank, "Patient first name is empty")
+        binder.forField(patientNameField)
+                .withValidator(StringUtils::isNotBlank, "Patient name is empty")
                 .withValidator(new StringLengthValidator("Length must be between 1 and 50.", 1, 50))
                 .bind("patientFirstName");
-
-        binder.forField(patientLastNameField)
-                .withValidator(StringUtils::isNotBlank, "Patient last name is empty")
-                .withValidator(new StringLengthValidator("Length must be between 1 and 50.", 1, 50))
-                .bind("patientLastName");
 
         binder.forField(issuerOfPatientIdField)
                 .withValidator(new StringLengthValidator("Length must be between 0 and 50.", 0, 50))
                 .bind("issuerOfPatientId");
-
-        binder.forField(patientBirthDateField)
-                .asRequired("Please choose a date")
-                .bind("patientBirthDate");
-
-        binder.forField(patientSexField)
-                .withValidator(StringUtils::isNotBlank, "Patient Sex is empty")
-                .withValidator(new StringLengthValidator("Length must be 1.", 1, 1))
-                .bind("patientSex");
     }
 
     public boolean patientExist(Patient patient, ListDataProvider<Patient> dataProvider) {
@@ -180,10 +139,10 @@ public class AddNewPatientForm extends VerticalLayout {
     public void addPatientFieldsInGrid(){
         final Patient newPatient = new Patient(externalIdField.getValue(),
                 patientIdField.getValue(),
-                patientFirstNameField.getValue(),
-                patientLastNameField.getValue(),
-                patientBirthDateField.getValue(),
-                patientSexField.getValue(),
+                patientNameField.getValue(),
+                null,
+                null,
+                null,
                 issuerOfPatientIdField.getValue());
         binder.validate();
         if (binder.isValid()){
@@ -202,10 +161,8 @@ public class AddNewPatientForm extends VerticalLayout {
     public void clearPatientFields(){
         externalIdField.clear();
         patientIdField.clear();
-        patientLastNameField.clear();
+        patientNameField.clear();
         issuerOfPatientIdField.clear();
-        patientBirthDateField.clear();
-        patientSexField.clear();
         binder.readBean(null);
     }
 
