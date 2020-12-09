@@ -29,27 +29,27 @@ public abstract class PatientClient {
         config.addMapConfig(mapConfig);
         config.setClusterName(cluserName);
         config.getCPSubsystemConfig().setCPMemberCount(CPMember);
-        config.setClassLoader(Patient.class.getClassLoader());
+        config.setClassLoader(PseudonymPatient.class.getClassLoader());
         return config;
     }
 
-    public Patient put(String key, Patient patient) {
-        IMap<String, Patient> map = hazelcastInstance.getMap(name);
+    public PseudonymPatient put(String key, PseudonymPatient patient) {
+        IMap<String, PseudonymPatient> map = hazelcastInstance.getMap(name);
         return map.putIfAbsent(key, patient);
     }
 
-    public Patient get(String key) {
-        IMap<String, Patient> map = hazelcastInstance.getMap(name);
+    public PseudonymPatient get(String key) {
+        IMap<String, PseudonymPatient> map = hazelcastInstance.getMap(name);
         return map.get(key);
     }
 
     public void remove(String key) {
-        IMap<String, Patient> map = hazelcastInstance.getMap(name);
+        IMap<String, PseudonymPatient> map = hazelcastInstance.getMap(name);
         map.remove(key);
     }
 
-    public Collection<Patient> getAll() {
-        IMap<String, Patient> map = hazelcastInstance.getMap(name);
+    public Collection<PseudonymPatient> getAll() {
+        IMap<String, PseudonymPatient> map = hazelcastInstance.getMap(name);
         return map.values();
     }
 }

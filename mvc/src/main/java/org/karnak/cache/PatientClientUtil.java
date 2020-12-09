@@ -9,7 +9,7 @@ public class PatientClientUtil {
     public static String getPseudonym(PatientMetadata patientMetadata, PatientClient cache) {
         if (cache != null) {
             final String key = generateKey(patientMetadata);
-            final Patient patient = cache.get(key);
+            final PseudonymPatient patient = cache.get(key);
             if (patient != null && patientMetadata.compareCachedPatient(patient)) {
                 return patient.getPseudonym();
             }
@@ -21,7 +21,7 @@ public class PatientClientUtil {
         return PatientID.concat(PatientName).concat(IssuerOfPatientID);
     }
 
-    public static String generateKey(Patient patient) {
+    public static String generateKey(PseudonymPatient patient) {
         String PatientID = patient.getPatientId();
         String PatientName = patient.getPatientName();
         String IssuerOfPatientID = patient.getIssuerOfPatientId();

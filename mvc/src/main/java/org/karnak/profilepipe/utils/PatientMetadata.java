@@ -4,10 +4,11 @@ import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.Tag;
 import org.dcm4che6.util.DateTimeUtils;
 import org.karnak.api.rqbody.Fields;
-import org.karnak.cache.Patient;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+
+import org.karnak.cache.PseudonymPatient;
 import org.weasis.core.util.StringUtil;
 
 public class PatientMetadata {
@@ -82,10 +83,10 @@ public class PatientMetadata {
         return patientSex;
     }
 
-    public boolean compareCachedPatient(Patient patient) {
+    public boolean compareCachedPatient(PseudonymPatient patient) {
         if (patient != null) {
             return (patient.getPatientId().equals(patientID) && patient.getPatientName().equals(patientName) &&
-                    patient.getFormatPatientBirthDate().equals(patientBirthDate) &&
+                    DateTimeUtils.formatDA(patient.getPatientBirthDate()).equals(patientBirthDate) &&
                     patient.getIssuerOfPatientId().equals(issuerOfPatientID) &&
                     patient.getPatientSex().equals(patientSex));
         }

@@ -11,10 +11,8 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.validator.StringLengthValidator;
 import org.apache.commons.lang3.StringUtils;
-import org.karnak.cache.Patient;
-import org.karnak.cache.PatientClient;
+import org.karnak.cache.*;
 import org.karnak.data.AppConfig;
-import org.karnak.cache.PatientClientUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,8 +23,8 @@ import java.util.Iterator;
 public class AddNewPatientForm extends VerticalLayout {
     protected static final Logger LOGGER = LoggerFactory.getLogger(AddNewPatientForm.class);
 
-    private Binder<Patient> binder;
-    private ListDataProvider<Patient> dataProvider;
+    private Binder<CachedPatient> binder;
+    private ListDataProvider<CachedPatient> dataProvider;
 
     private TextField externalIdField;
     private TextField patientIdField;
@@ -40,11 +38,11 @@ public class AddNewPatientForm extends VerticalLayout {
 
     private PatientClient externalIDCache;
 
-    public AddNewPatientForm(ListDataProvider<Patient> dataProvider){
+    public AddNewPatientForm(ListDataProvider<CachedPatient> dataProvider){
         setSizeFull();
         this.dataProvider = dataProvider;
         externalIDCache = AppConfig.getInstance().getExternalIDCache();
-        binder = new BeanValidationBinder<>(Patient.class);
+        binder = new BeanValidationBinder<>(CachedPatient.class);
 
         setElements();
         setBinder();
@@ -69,10 +67,10 @@ public class AddNewPatientForm extends VerticalLayout {
 
     private void readAllCacheValue(){
         if (externalIDCache != null) {
-            Collection<Patient> patients = externalIDCache.getAll();
-            for (Iterator<Patient> iterator = patients.iterator(); iterator.hasNext();) {
-                final Patient patient = iterator.next();
-                dataProvider.getItems().add(patient);
+            Collection<PseudonymPatient> patients = externalIDCache.getAll();
+            for (Iterator<PseudonymPatient> iterator = patients.iterator(); iterator.hasNext();) {
+                final PseudonymPatient patient = iterator.next();
+                dataProvider.getItems().add((CachedPatient) patient);
             }
         }
     }
@@ -118,15 +116,15 @@ public class AddNewPatientForm extends VerticalLayout {
         binder.forField(patientNameField)
                 .withValidator(StringUtils::isNotBlank, "Patient name is empty")
                 .withValidator(new StringLengthValidator("Length must be between 1 and 50.", 1, 50))
-                .bind("patientFirstName");
+                .bind("patientName");
 
         binder.forField(issuerOfPatientIdField)
                 .withValidator(new StringLengthValidator("Length must be between 0 and 50.", 0, 50))
                 .bind("issuerOfPatientId");
     }
 
-    public boolean patientExist(Patient patient, ListDataProvider<Patient> dataProvider) {
-        for (Patient patientElem : dataProvider.getItems()) {
+    public boolean patientExist(PseudonymPatient patient, ListDataProvider<CachedPatient> dataProvider) {
+        for (PseudonymPatient patientElem : dataProvider.getItems()) {
             if (patientElem.getPseudonym().equals(patient.getPseudonym()) ||
                     (patientElem.getPatientId().equals(patient.getPatientId()) &&
                             patientElem.getIssuerOfPatientId().equals(patient.getIssuerOfPatientId()))) {
@@ -137,12 +135,9 @@ public class AddNewPatientForm extends VerticalLayout {
     }
 
     public void addPatientFieldsInGrid(){
-        final Patient newPatient = new Patient(externalIdField.getValue(),
+        final CachedPatient newPatient = new CachedPatient(externalIdField.getValue(),
                 patientIdField.getValue(),
                 patientNameField.getValue(),
-                null,
-                null,
-                null,
                 issuerOfPatientIdField.getValue());
         binder.validate();
         if (binder.isValid()){
