@@ -392,7 +392,9 @@ public class GatewayConfig {
         } else if (src instanceof Destination) {
             Destination dstNode = (Destination) src;
             if (type == NodeEventType.ADD) {
-                addDestinationNode(destMap.get(fwdNode), fwdNode, dstNode);
+                if (dstNode.getState()) {
+                    addDestinationNode(destMap.get(fwdNode), fwdNode, dstNode);
+                }
             } else if (type == NodeEventType.REMOVE) {
                 destMap.get(fwdNode).removeIf(d -> dstNode.getId().equals(d.getId()));
             } else if (type == NodeEventType.UPDATE) {
