@@ -108,7 +108,7 @@ public class AddNewPatientForm extends VerticalLayout {
         binder.forField(externalIdField)
                 .withValidator(StringUtils::isNotBlank, "External Pseudonym is empty")
                 .withValidator(new StringLengthValidator("Length must be between 1 and 50.", 1, 50))
-                .bind("extid");
+                .bind("pseudonym");
 
         binder.forField(patientIdField)
                 .withValidator(StringUtils::isNotBlank, "Patient ID is empty")
@@ -127,7 +127,7 @@ public class AddNewPatientForm extends VerticalLayout {
 
     public boolean patientExist(Patient patient, ListDataProvider<Patient> dataProvider) {
         for (Patient patientElem : dataProvider.getItems()) {
-            if (patientElem.getExtid().equals(patient.getExtid()) ||
+            if (patientElem.getPseudonym().equals(patient.getPseudonym()) ||
                     (patientElem.getPatientId().equals(patient.getPatientId()) &&
                             patientElem.getIssuerOfPatientId().equals(patient.getIssuerOfPatientId()))) {
                 return true;

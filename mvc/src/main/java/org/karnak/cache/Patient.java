@@ -7,20 +7,21 @@ import java.time.LocalDate;
 
 public class Patient implements Serializable {
 
-    private String extid;
+    private String pseudonym;
     private String patientId;
+    private String patientName;
     private String patientFirstName;
     private String patientLastName;
     private LocalDate patientBirthDate;
     private String patientSex;
     private String issuerOfPatientId;
 
-    public String getExtid() {
-        return extid;
+    public String getPseudonym() {
+        return pseudonym;
     }
 
-    public void setExtid(String extid) {
-        this.extid = extid;
+    public void setPseudonym(String pseudonym) {
+        this.pseudonym = pseudonym;
     }
 
     public String getPatientId() {
@@ -29,6 +30,14 @@ public class Patient implements Serializable {
 
     public void setPatientId(String patientId) {
         this.patientId = patientId;
+    }
+
+    public String getPatientName() {
+        return patientFirstName == null ? patientLastName : String.format("%s^%s", patientLastName, patientFirstName);
+    }
+
+    public void setPatientName(String patientName) {
+        this.patientName = patientName;
     }
 
     public String getPatientFirstName() {
@@ -78,13 +87,9 @@ public class Patient implements Serializable {
         this.issuerOfPatientId = issuerOfPatientId;
     }
 
-    public String getPatientNameDicomFormat(){
-        return patientFirstName == null ? patientLastName : String.format("%s^%s", patientLastName, patientFirstName);
-    }
-
-    public Patient(String extid, String patientId, String patientFirstName, String patientLastName, LocalDate patientBirthDate, String patientSex, String issuerOfPatientId)
+    public Patient(String pseudonym, String patientId, String patientFirstName, String patientLastName, LocalDate patientBirthDate, String patientSex, String issuerOfPatientId)
     {
-        this.extid = extid;
+        this.pseudonym = pseudonym;
         this.patientId = patientId;
         this.patientFirstName = patientFirstName;
         this.patientLastName = patientLastName;

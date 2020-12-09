@@ -101,7 +101,7 @@ public class ExternalIDGrid extends Grid<Patient> {
     }
 
     private void setElements() {
-        extidColumn = addColumn(Patient::getExtid).setHeader("External Pseudonym");
+        extidColumn = addColumn(Patient::getPseudonym).setHeader("External Pseudonym");
         patientIdColumn = addColumn(Patient::getPatientId).setHeader("Patient ID");
         patientFirstNameColumn = addColumn(Patient::getPatientFirstName).setHeader("Patient fisrt name");
         patientLastNameColumn = addColumn(Patient::getPatientLastName).setHeader("Patient last name");
@@ -168,7 +168,7 @@ public class ExternalIDGrid extends Grid<Patient> {
         binder.forField(externalIdField)
                 .withValidator(StringUtils::isNotBlank, "External Pseudonym is empty")
                 .withValidator(new StringLengthValidator("Length must be between 1 and 50.", 1, 50))
-                .withStatusLabel(validationStatus).bind("extid");
+                .withStatusLabel(validationStatus).bind("pseudonym");
 
         binder.forField(patientIdField)
                 .withValidator(StringUtils::isNotBlank, "Patient ID is empty")

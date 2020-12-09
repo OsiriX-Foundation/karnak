@@ -11,7 +11,7 @@ public class PatientClientUtil {
             final String key = generateKey(patientMetadata);
             final Patient patient = cache.get(key);
             if (patient != null && patientMetadata.compareCachedPatient(patient)) {
-                return patient.getExtid();
+                return patient.getPseudonym();
             }
         }
         return null;
@@ -23,7 +23,7 @@ public class PatientClientUtil {
 
     public static String generateKey(Patient patient) {
         String PatientID = patient.getPatientId();
-        String PatientName = patient.getPatientNameDicomFormat();
+        String PatientName = patient.getPatientName();
         String IssuerOfPatientID = patient.getIssuerOfPatientId();
         return generateKey(PatientID, PatientName, IssuerOfPatientID);
     }
