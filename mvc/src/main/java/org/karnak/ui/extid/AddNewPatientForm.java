@@ -43,7 +43,6 @@ public class AddNewPatientForm extends VerticalLayout {
     private DatePicker patientBirthDateField;
     private Select<String> patientSexField;
     private Button addNewPatientButton;
-    private Button saveInMainzellisteButton;
     private Button clearFieldsButton;
 
     private HorizontalLayout horizontalLayoutAddClear;
@@ -64,14 +63,6 @@ public class AddNewPatientForm extends VerticalLayout {
 
         readAllCacheValue();
 
-        saveInMainzellisteButton.addClickListener(click -> {
-            ConfirmDialog dialog = new ConfirmDialog("Are you sure to send a patient in Mainzelliste database ?");
-            dialog.open();
-            dialog.addConfirmationListener(componentEvent -> {
-                saveInMainzelliste();
-            });
-        });
-
         clearFieldsButton.addClickListener( click -> {
             clearPatientFields();
         });
@@ -86,10 +77,9 @@ public class AddNewPatientForm extends VerticalLayout {
             boolean isValid = !event.hasValidationErrors();
             boolean hasChanges = binder.hasChanges();
             addNewPatientButton.setEnabled(hasChanges && isValid);
-            saveInMainzellisteButton.setEnabled(hasChanges && isValid);
         });
 
-        horizontalLayoutAddClear.add(clearFieldsButton, saveInMainzellisteButton, addNewPatientButton);
+        horizontalLayoutAddClear.add(clearFieldsButton, addNewPatientButton);
         horizontalLayout1.add(externalIdField, patientIdField, patientFirstNameField, patientLastNameField);
         horizontalLayout2.add(issuerOfPatientIdField, patientBirthDateField, patientSexField);
         horizontalLayout3.add(horizontalLayoutAddClear);
@@ -123,10 +113,6 @@ public class AddNewPatientForm extends VerticalLayout {
         patientSexField.setLabel("Patient Sex");
         patientSexField.setItems("M", "F", "O");
         patientSexField.setWidth("33%");
-
-        saveInMainzellisteButton = new Button("Save patient in Mainzelliste");
-        saveInMainzellisteButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        saveInMainzellisteButton.setIcon(new IronIcon("icons", "icons:send"));
 
         horizontalLayoutAddClear = new HorizontalLayout();
         horizontalLayoutAddClear.getStyle().set("margin-left", "auto");
@@ -221,36 +207,6 @@ public class AddNewPatientForm extends VerticalLayout {
         patientBirthDateField.clear();
         patientSexField.clear();
         binder.readBean(null);
-    }
-
-    public void saveInMainzelliste(){
-        binder.validate();
-        if(binder.isValid()){
-            final Fields newPatientFields = new Fields(
-                    patientIdField.getValue(),
-                    String.format("%s^%s", patientLastNameField.getValue(), patientFirstNameField.getValue()),
-                    patientBirthDateField.getValue().format(DateTimeFormatter.ofPattern("YYYYMMdd")),
-                    patientSexField.getValue(),
-                    issuerOfPatientIdField.getValue());
-
-
-            try {
-                final PseudonymApi pseudonymApi = new PseudonymApi(externalIdField.getValue());
-                final String pseudonym = pseudonymApi.createPatient(newPatientFields, IdTypes.ADD_EXTID);
-                if (pseudonym != null) {
-                    final String strPatient = "ExternalID: " + externalIdField.getValue() + " "
-                            + "PatientID:" + newPatientFields.get_patientID() + " "
-                            + "PatientName:" + newPatientFields.get_patientName() + " "
-                            + "IssuerOfPatientID:" + newPatientFields.get_issuerOfPatientID() + " "
-                            + "PatientSex:" + newPatientFields.get_patientSex() + " "
-                            + "PatientBirthDate:" + newPatientFields.get_patientBirthDate().format(DateTimeFormatter.ofPattern("YYYYMMdd").toString());
-                    LOGGER.info("Added a new patient in Mainzelliste: " + strPatient);
-                }
-            } catch (Exception e) {
-                LOGGER.error("Cannot create a new patient with Mainzelliste API {}", e);
-            }
-            binder.readBean(null);
-        }
     }
 
     public Button getAddNewPatientButton() {
