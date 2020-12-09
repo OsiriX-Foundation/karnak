@@ -5,8 +5,7 @@ import org.dcm4che6.util.DateTimeUtils;
 import java.io.Serializable;
 import java.time.LocalDate;
 
-public class Patient implements Serializable {
-
+public class Patient implements PseudonymPatient, Serializable {
     private String pseudonym;
     private String patientId;
     private String patientName;
@@ -16,6 +15,7 @@ public class Patient implements Serializable {
     private String patientSex;
     private String issuerOfPatientId;
 
+    @Override
     public String getPseudonym() {
         return pseudonym;
     }
@@ -24,6 +24,7 @@ public class Patient implements Serializable {
         this.pseudonym = pseudonym;
     }
 
+    @Override
     public String getPatientId() {
         return patientId;
     }
@@ -32,6 +33,7 @@ public class Patient implements Serializable {
         this.patientId = patientId;
     }
 
+    @Override
     public String getPatientName() {
         return patientFirstName == null ? patientLastName : String.format("%s^%s", patientLastName, patientFirstName);
     }
@@ -56,6 +58,7 @@ public class Patient implements Serializable {
         this.patientLastName = patientLastName;
     }
 
+    @Override
     public LocalDate getPatientBirthDate() {
         return patientBirthDate;
     }
@@ -71,6 +74,7 @@ public class Patient implements Serializable {
         return "";
     }
 
+    @Override
     public String getPatientSex() {
         return patientSex;
     }
@@ -79,6 +83,7 @@ public class Patient implements Serializable {
         this.patientSex = patientSex;
     }
 
+    @Override
     public String getIssuerOfPatientId() {
         return issuerOfPatientId;
     }
