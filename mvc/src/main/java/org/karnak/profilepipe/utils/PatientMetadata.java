@@ -84,7 +84,7 @@ public class PatientMetadata {
 
     public boolean compareCachedPatient(Patient patient) {
         if (patient != null) {
-            return (patient.getPatientId().equals(patientID) && patient.getPatientNameDicomFormat().equals(patientName) &&
+            return (patient.getPatientId().equals(patientID) && patient.getPatientName().equals(patientName) &&
                     patient.getFormatPatientBirthDate().equals(patientBirthDate) &&
                     patient.getIssuerOfPatientId().equals(issuerOfPatientID) &&
                     patient.getPatientSex().equals(patientSex));
