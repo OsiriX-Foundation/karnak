@@ -1,7 +1,6 @@
 package org.karnak.cache;
 
 import org.karnak.profilepipe.utils.PatientMetadata;
-import org.karnak.ui.extid.Patient;
 
 public class PatientClientUtil {
     public PatientClientUtil() {

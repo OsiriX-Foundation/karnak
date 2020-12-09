@@ -1,4 +1,4 @@
-package org.karnak.ui.extid;
+package org.karnak.cache;
 
 import org.dcm4che6.util.DateTimeUtils;
 

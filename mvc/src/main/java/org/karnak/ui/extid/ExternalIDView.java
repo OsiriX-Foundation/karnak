@@ -8,6 +8,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import org.karnak.cache.Patient;
 import org.karnak.ui.MainLayout;
 import org.springframework.security.access.annotation.Secured;
 

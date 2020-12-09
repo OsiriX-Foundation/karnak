@@ -5,7 +5,6 @@ import com.hazelcast.config.MapConfig;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.map.IMap;
-import org.karnak.ui.extid.Patient;
 
 import java.util.Collection;
 

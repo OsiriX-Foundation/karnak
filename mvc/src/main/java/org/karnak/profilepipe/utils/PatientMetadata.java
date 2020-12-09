@@ -4,7 +4,7 @@ import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.Tag;
 import org.dcm4che6.util.DateTimeUtils;
 import org.karnak.api.rqbody.Fields;
-import org.karnak.ui.extid.Patient;
+import org.karnak.cache.Patient;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

@@ -9,7 +9,7 @@ import org.karnak.data.AppConfig;
 import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.IdTypes;
 import org.karnak.profilepipe.utils.PatientMetadata;
-import org.karnak.ui.extid.Patient;
+import org.karnak.cache.Patient;
 import org.karnak.cache.PatientClientUtil;
 import org.karnak.util.SpecialCharacter;
 import org.slf4j.Logger;

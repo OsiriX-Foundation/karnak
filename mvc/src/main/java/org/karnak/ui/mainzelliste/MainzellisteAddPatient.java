@@ -4,7 +4,6 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.icon.IronIcon;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
@@ -17,7 +16,7 @@ import org.karnak.api.PseudonymApi;
 import org.karnak.api.rqbody.Fields;
 import org.karnak.data.gateway.IdTypes;
 import org.karnak.ui.component.ConfirmDialog;
-import org.karnak.ui.extid.Patient;
+import org.karnak.cache.Patient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -12,6 +12,7 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.validator.StringLengthValidator;
 import org.apache.commons.lang3.StringUtils;
+import org.karnak.cache.Patient;
 import org.karnak.cache.PatientClient;
 import org.karnak.data.AppConfig;
 import org.karnak.cache.PatientClientUtil;
