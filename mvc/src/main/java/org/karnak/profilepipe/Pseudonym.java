@@ -31,7 +31,7 @@ public class Pseudonym {
     public String generatePseudonym(Destination destination, DicomObject dcm, String defaultIsserOfPatientID) {
         String pseudonym;
         if (destination.getSavePseudonym() != null && destination.getSavePseudonym() == false) {
-            pseudonym = getExtIDInDicom(dcm, destination);
+            pseudonym = getPseudonymInDicom(dcm, destination);
             if (pseudonym == null) {
                 throw new IllegalStateException("Cannot get a pseudonym in a DICOM tag");
             }
@@ -44,7 +44,7 @@ public class Pseudonym {
         }
         PatientMetadata patientMetadata = new PatientMetadata(dcm, defaultIsserOfPatientID);
         try {
-            return getMainzellistePseudonym(patientMetadata, getExtIDInDicom(dcm, destination),
+            return getMainzellistePseudonym(patientMetadata, getPseudonymInDicom(dcm, destination),
                     destination.getIdTypes());
         } catch (Exception e) {
             LOGGER.error("Cannot get a pseudonym with Mainzelliste API {}", e);
@@ -52,7 +52,7 @@ public class Pseudonym {
         }
     }
 
-    private String getExtIDInDicom(DicomObject dcm, Destination destination) {
+    private String getPseudonymInDicom(DicomObject dcm, Destination destination) {
         if (destination.getIdTypes().equals(IdTypes.ADD_EXTID)) {
             String cleanTag = destination.getTag().replaceAll("[(),]", "").toUpperCase();
             final String tagValue = dcm.getString(TagUtils.intFromHexString(cleanTag)).orElse(null);
