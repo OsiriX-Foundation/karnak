@@ -4,12 +4,12 @@ import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.util.TagUtils;
 import org.karnak.api.PseudonymApi;
 import org.karnak.api.rqbody.Fields;
+import org.karnak.cache.MainzellistePatient;
 import org.karnak.cache.PatientClient;
 import org.karnak.data.AppConfig;
 import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.IdTypes;
 import org.karnak.profilepipe.utils.PatientMetadata;
-import org.karnak.cache.Patient;
 import org.karnak.cache.PatientClientUtil;
 import org.karnak.util.SpecialCharacter;
 import org.slf4j.Logger;
@@ -87,7 +87,7 @@ public class Pseudonym {
     }
 
     private void cachingMainzellistePseudonym(String pseudonym, PatientMetadata patientMetadata) {
-        final Patient patient = new Patient(pseudonym,
+        final MainzellistePatient mainzellistePatient = new MainzellistePatient(pseudonym,
                 patientMetadata.getPatientID(),
                 patientMetadata.getPatientFirstName(),
                 patientMetadata.getPatientLastName(),
@@ -95,6 +95,6 @@ public class Pseudonym {
                 patientMetadata.getPatientSex(),
                 patientMetadata.getIssuerOfPatientID());
         String cacheKey = PatientClientUtil.generateKey(patientMetadata);
-        mainzellisteCache.put(cacheKey, patient);
+        mainzellisteCache.put(cacheKey, mainzellistePatient);
     }
 }

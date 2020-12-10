@@ -16,7 +16,7 @@ import org.karnak.api.PseudonymApi;
 import org.karnak.api.rqbody.Fields;
 import org.karnak.data.gateway.IdTypes;
 import org.karnak.ui.component.ConfirmDialog;
-import org.karnak.cache.Patient;
+import org.karnak.cache.MainzellistePatient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +24,7 @@ import java.time.format.DateTimeFormatter;
 
 public class MainzellisteAddPatient extends VerticalLayout {
     protected static final Logger LOGGER = LoggerFactory.getLogger(MainzellisteAddPatient.class);
-    private Binder<Patient> binder;
+    private Binder<MainzellistePatient> binder;
 
     private TextField externalIdField;
     private TextField patientIdField;
@@ -43,7 +43,7 @@ public class MainzellisteAddPatient extends VerticalLayout {
 
     public MainzellisteAddPatient(){
         setSizeFull();
-        binder = new BeanValidationBinder<>(Patient.class);
+        binder = new BeanValidationBinder<>(MainzellistePatient.class);
 
         setElements();
         setBinder();
