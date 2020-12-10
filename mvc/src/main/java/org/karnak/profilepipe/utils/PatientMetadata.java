@@ -85,10 +85,13 @@ public class PatientMetadata {
 
     public boolean compareCachedPatient(PseudonymPatient patient) {
         if (patient != null) {
-            return (patient.getPatientId().equals(patientID) && patient.getPatientName().equals(patientName) &&
-                    DateTimeUtils.formatDA(patient.getPatientBirthDate()).equals(patientBirthDate) &&
-                    patient.getIssuerOfPatientId().equals(issuerOfPatientID) &&
-                    patient.getPatientSex().equals(patientSex));
+            boolean samePatient = true;
+            samePatient = samePatient && patient.getPatientId().equals(patientID);
+            samePatient = samePatient && patient.getPatientName().equals(patientName);
+            samePatient = samePatient && (patient.getPatientBirthDate() == null || DateTimeUtils.formatDA(patient.getPatientBirthDate()).equals(patientBirthDate));
+            samePatient = samePatient && (patient.getIssuerOfPatientId() == null || patient.getIssuerOfPatientId().equals(issuerOfPatientID));
+            samePatient = samePatient && (patient.getPatientSex() == null || patient.getPatientSex().equals(patientSex));
+            return samePatient;
         }
         return false;
     }
