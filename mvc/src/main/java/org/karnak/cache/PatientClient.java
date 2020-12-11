@@ -10,8 +10,8 @@ import java.util.Collection;
 
 public abstract class PatientClient {
     // https://docs.hazelcast.org/docs/latest/manual/html-single/#cp-subsystem
-    private final static int CPMember = 3;
-    private final static String cluserName = "PatientClient";
+    private static final String CLUSTER_NAME = "PatientClient";
+    private static final int CP_MEMBER = 3;
     private final String name;
     private final HazelcastInstance hazelcastInstance;
 
@@ -27,8 +27,8 @@ public abstract class PatientClient {
         // The method setMaxIdleSeconds defines how long the entry stays in the cache without being touched
         // mapConfig.setMaxIdleSeconds(20);
         config.addMapConfig(mapConfig);
-        config.setClusterName(cluserName);
-        config.getCPSubsystemConfig().setCPMemberCount(CPMember);
+        config.setClusterName(CLUSTER_NAME);
+        config.getCPSubsystemConfig().setCPMemberCount(CP_MEMBER);
         config.setClassLoader(PseudonymPatient.class.getClassLoader());
         return config;
     }

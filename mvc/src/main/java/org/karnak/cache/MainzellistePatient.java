@@ -1,11 +1,9 @@
 package org.karnak.cache;
 
-import org.dcm4che6.util.DateTimeUtils;
-
 import java.io.Serializable;
 import java.time.LocalDate;
 
-public class MainzellistePatient implements PseudonymPatient {
+public class MainzellistePatient implements PseudonymPatient, Serializable {
     private String pseudonym;
     private String patientId;
     private String patientFirstName;
@@ -34,7 +32,7 @@ public class MainzellistePatient implements PseudonymPatient {
 
     @Override
     public String getPatientName() {
-        return patientFirstName == null ? patientLastName : String.format("%s^%s", patientLastName, patientFirstName);
+        return patientFirstName == null || patientFirstName.equals("") ? patientLastName : String.format("%s^%s", patientLastName, patientFirstName);
     }
 
     public String getPatientFirstName() {
@@ -60,13 +58,6 @@ public class MainzellistePatient implements PseudonymPatient {
 
     public void setPatientBirthDate(LocalDate patientBirthDate) {
         this.patientBirthDate = patientBirthDate;
-    }
-
-    public String getFormatPatientBirthDate() {
-        if (patientBirthDate != null) {
-            return DateTimeUtils.formatDA(patientBirthDate);
-        }
-        return "";
     }
 
     @Override

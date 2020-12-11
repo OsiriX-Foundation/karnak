@@ -6,14 +6,12 @@ import org.dcm4che6.util.DateTimeUtils;
 import org.karnak.api.rqbody.Fields;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 import org.karnak.cache.PseudonymPatient;
 import org.weasis.core.util.StringUtil;
 
 public class PatientMetadata {
     private static final String PATIENT_SEX_OTHER = "O";
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("YYYYMMdd");
 
     private final String patientID;
     private final String patientName;
@@ -85,8 +83,7 @@ public class PatientMetadata {
 
     public boolean compareCachedPatient(PseudonymPatient patient) {
         if (patient != null) {
-            boolean samePatient = true;
-            samePatient = samePatient && patient.getPatientId().equals(patientID);
+            boolean samePatient = patient.getPatientId().equals(patientID);
             samePatient = samePatient && patient.getPatientName().equals(patientName);
             samePatient = samePatient && (patient.getPatientBirthDate() == null || DateTimeUtils.formatDA(patient.getPatientBirthDate()).equals(patientBirthDate));
             samePatient = samePatient && (patient.getIssuerOfPatientId() == null || patient.getIssuerOfPatientId().equals(issuerOfPatientID));
