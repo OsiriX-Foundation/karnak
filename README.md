@@ -6,7 +6,7 @@ Karnak is a DICOM gateway for data de-identification and DICOM attribute normali
 
 Karnak manages a continuous DICOM flow with a DICOM listener as input and a DICOM and/or DICOMWeb as output.
 
-[Karnak documentation](https://osirix-foundation.github.io/karnak-documentation/) is available online.
+For more information, see the online [Karnak user guide](https://osirix-foundation.github.io/karnak-documentation/)
 
 # Application Features
 
@@ -18,7 +18,7 @@ Karnak manages a continuous DICOM flow with a DICOM listener as input and a DICO
 ## de-identification
 - Each destination can be configured with a specific de-identification profile
 - Configuration for sending only specific SopClassUIDs
-- [Build your own de-identification profile](https://github.com/OsiriX-Foundation/karnak-docker/blob/master/profileExample/README.md) or add modifications to the basic DICOM profile
+- [Build your own de-identification profile](https://osirix-foundation.github.io/karnak-documentation/docs/deidentification/profiles) or add modifications to the basic DICOM profile
 - Import and export the de-identification profiles
 
 # Build Karnak
