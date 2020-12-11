@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.karnak</groupId>
+	<artifactId>karnak-parent</artifactId>
+	<packaging>pom</packaging>
+	<name>Karnak parent</name>
+	<version>0.9.3-SNAPSHOT</version>
+
+	<properties>
+		<java.version>14</java.version>
+		<enforcer.jdk-version>[${java.version},)</enforcer.jdk-version>
+		<enforcer.maven-version>[3.2.0,)</enforcer.maven-version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<weasis-dicom-tools.version>6.0.0-SNAPSHOT</weasis-dicom-tools.version>
+		<weasis.opencv.native.version>4.5.0-dcm</weasis.opencv.native.version>
+		<springframework.version>2.4.0</springframework.version>
+		<vaadin.version>17.0.10</vaadin.version>
+		<javax.el.version>3.0.0</javax.el.version>
+		<javax.mail.version>1.6.2</javax.mail.version>
+		<maven-surefire-plugin.version>3.0.0-M4</maven-surefire-plugin.version>
+	</properties>
+
+	<licenses>
+		<license>
+			<name>Eclipse Public License v2.0</name>
+			<url>http://www.eclipse.org/legal/epl-v20.html</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<repositories>
+		<repository>
+			<id>central</id>
+			<url>https://repo.maven.apache.org/maven2</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>vaadin-addons</id>
+			<url>http://maven.vaadin.com/vaadin-addons</url>
+		</repository>
+		<repository>
+			<id>mvn-repo-master</id>
+			<url>https://raw.github.com/nroduit/mvn-repo/master/</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>www.dcm4che.org</id>
+			<name>dcm4che Repository</name>
+			<url>http://maven.dcm4che.org</url>
+			<!-- <url>http://www.dcm4che.org/maven2</url> (which will redirected to 
+				https://www.dcm4che.org/maven2). -->
+		</repository>
+	</repositories>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-dependencies</artifactId>
+				<version>${springframework.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>javax.servlet-api</artifactId>
+				<version>3.1.0</version>
+				<scope>provided</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>3.0.0-M3</version>
+				<executions>
+					<execution>
+						<id>min-requirement</id>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<requireMavenVersion>
+									<version>${enforcer.maven-version}</version>
+								</requireMavenVersion>
+								<requireJavaVersion>
+									<version>${enforcer.jdk-version}</version>
+								</requireJavaVersion>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.1</version>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
+

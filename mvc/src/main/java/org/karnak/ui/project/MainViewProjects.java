@@ -10,17 +10,19 @@ import org.karnak.ui.MainLayout;
 import org.karnak.ui.data.ProjectDataProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.access.annotation.Secured;
 
 @Route(value = "projects", layout = MainLayout.class)
 @PageTitle("KARNAK - Projects")
+@Secured({"ROLE_ADMIN"})
 public class MainViewProjects extends HorizontalLayout implements HasUrlParameter<String> {
     public static final String VIEW_NAME = "Projects";
 
-    private ProjectDataProvider projectDataProvider;
-    private NewProjectForm newProjectForm;
-    private GridProject gridProject;
-    private EditProject editProject;
-    private Binder<Project> newResearchBinder;
+    private final ProjectDataProvider projectDataProvider;
+    private final NewProjectForm newProjectForm;
+    private final GridProject gridProject;
+    private final EditProject editProject;
+    private final Binder<Project> newResearchBinder;
 
     public MainViewProjects() {
         setWidthFull();

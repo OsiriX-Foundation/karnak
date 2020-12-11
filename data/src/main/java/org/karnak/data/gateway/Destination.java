@@ -367,7 +367,6 @@ public class Destination {
             || contains(notifyObjectValues, filterText) //
             || contains(aeTitle, filterText) //
             || contains(hostname, filterText) //
-            || contains(aeTitle, filterText) //
             || equals(port, filterText) //
             || contains(url, filterText) //
             || contains(urlCredentials, filterText) //

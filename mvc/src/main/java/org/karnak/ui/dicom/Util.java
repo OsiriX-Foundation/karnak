@@ -43,8 +43,7 @@ public class Util {
         return es.submit(new Callable<Boolean>() {
             @Override
             public Boolean call() {
-                try {
-                    Socket socket = new Socket();
+                try (Socket socket = new Socket()) {
                     socket.connect(new InetSocketAddress(host, port), timeout);
                     socket.close();
                     return true;

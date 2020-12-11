@@ -9,15 +9,15 @@ import java.util.Iterator;
 public class DicomObjectTools {
 
     public static boolean dicomObjectEquals(Object o1, Object o2){
-        if (o1 == null && o2 == null) return false;
+        if (o1 == o2)
+            return true;
+        else if (o1 == null || o2 == null)
+            return false;
 
         if (!(o1 instanceof DicomObject) && !(o2 instanceof DicomObject)) return false;
 
-        DicomObject dicomObject1 = (DicomObject) o1;
-        DicomObject dicomObject2 = (DicomObject) o2;
-
-        Iterator<DicomElement> dicomElementIterator1 = ((DicomObject) dicomObject1).iterator();
-        Iterator<DicomElement> dicomElementIterator2 = ((DicomObject) dicomObject2).iterator();
+        Iterator<DicomElement> dicomElementIterator1 = ((DicomObject) o1).iterator();
+        Iterator<DicomElement> dicomElementIterator2 = ((DicomObject) o2).iterator();
 
         if(dicomElementIterator1.hasNext() != dicomElementIterator2.hasNext() ){
             return false;
@@ -54,7 +54,7 @@ public class DicomObjectTools {
                     DicomObject dcmItem1 = dcmDicomElement1.getItem(i);
                     DicomObject dcmItem2 = dcmDicomElement2.getItem(i);
                     boolean resultSequence = dicomObjectEquals(dcmItem1, dcmItem2);
-                    if(resultSequence != true){
+                    if(!resultSequence){
                         return false;
                     }
                     i = i +1;

@@ -2,6 +2,7 @@ package org.karnak.service.archive;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Serial;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.stream.Stream;
@@ -23,6 +24,7 @@ import org.weasis.dicom.param.DicomFileStream;
 @WebServlet(urlPatterns = "/archive.xml")
 public class ShowArchiveServlet extends HttpServlet {
 
+    @Serial
     private static final long serialVersionUID = -4229230848823235305L;
     private static final Logger LOGGER = LoggerFactory.getLogger(ShowArchiveServlet.class);
 

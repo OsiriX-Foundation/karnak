@@ -1,26 +1,25 @@
 package org.karnak.ui;
 
-import com.vaadin.flow.component.dependency.JsModule;
-import com.vaadin.flow.component.dependency.NpmPackage;
-import com.vaadin.flow.component.icon.IronIcon;
-import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.PWA;
-import org.karnak.ui.authentication.AccessControlFactory;
-import org.karnak.ui.dicom.DicomMainView;
-import org.karnak.ui.forwardnode.ForwardNodeView;
-import org.karnak.ui.extid.ExternalIDView;
-
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.KeyModifier;
 import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.dependency.JsModule;
+import com.vaadin.flow.component.dependency.NpmPackage;
+import com.vaadin.flow.component.icon.IronIcon;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
+import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLayout;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
+import org.karnak.ui.dicom.DicomMainView;
+import org.karnak.ui.extid.ExternalIDView;
+import org.karnak.ui.forwardnode.ForwardNodeView;
 import org.karnak.ui.help.HelpView;
 import org.karnak.ui.profile.ProfileView;
 import org.karnak.ui.project.MainViewProjects;
+import org.karnak.ui.security.SecurityUtils;
+import org.springframework.security.access.annotation.Secured;
 
 
 /**
@@ -28,12 +27,13 @@ import org.karnak.ui.project.MainViewProjects;
  */
 @NpmPackage(value = "@polymer/iron-icons", version = "3.0.1")
 @JsModule("@polymer/iron-icons/iron-icons.js")
-@CssImport(value ="./styles/shared-styles.css")
+@CssImport(value = "./styles/shared-styles.css")
 @Theme(value = Lumo.class)
-@Route(value="mainLayout")
+@Route(value = "mainLayout")
+@Secured({"ROLE_ADMIN"})
 @SuppressWarnings("serial")
 public class MainLayout extends FlexLayout implements RouterLayout {
-    private Menu menu;
+    private final Menu menu;
 
     public MainLayout() {
         setSizeFull();
@@ -54,10 +54,7 @@ public class MainLayout extends FlexLayout implements RouterLayout {
     @Override
     protected void onAttach(AttachEvent attachEvent) {
         super.onAttach(attachEvent);
-
-        attachEvent.getUI().addShortcutListener(
-                () -> AccessControlFactory.getInstance().createAccessControl().signOut(), Key.KEY_L,
-                KeyModifier.CONTROL);
+        attachEvent.getUI().addShortcutListener(SecurityUtils::signOut, Key.KEY_L, KeyModifier.CONTROL);
 
         // add the admin view menu item if/when it is registered dynamically
         /*

@@ -54,7 +54,7 @@ public class ActionDates extends AbstractProfileItem {
             }
             switch (option) {
                 case "shift" -> ShiftDate.verifyShiftArguments(arguments);
-                case "shift_range" -> shiftRangeDate.verifyShiftArguments(arguments);
+                case "shift_range" -> ShiftRangeDate.verifyShiftArguments(arguments);
                 case "date_format" -> DateFormat.verifyPatternArguments(arguments);
                 default -> throw new Exception("Cannot build the profile " + codeName + " with the option given " + option + " : Option available (shift, shift_range)");
             }

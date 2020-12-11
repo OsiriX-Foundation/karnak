@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.Serial;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -26,6 +27,7 @@ import org.weasis.core.util.FileUtil;
 @WebServlet(urlPatterns = "/download")
 public class DownloadingServlet extends HttpServlet {
 
+    @Serial
     private static final long serialVersionUID = -3991470951272725755L;
     private static final Logger LOGGER = LoggerFactory.getLogger(DownloadingServlet.class);
 
@@ -72,7 +74,9 @@ public class DownloadingServlet extends HttpServlet {
         }
 
         try {
-            AbstractGateway.deleteOldFiles(archiveDir.toFile());
+            if(archiveDir != null) {
+                AbstractGateway.deleteOldFiles(archiveDir.toFile());
+            }
         } catch (SecurityException e) {
             LOGGER.error("SecurityException:", e);
         }
