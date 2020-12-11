@@ -12,42 +12,37 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.validator.StringLengthValidator;
 import org.apache.commons.lang3.StringUtils;
+import org.karnak.cache.CachedPatient;
 import org.karnak.cache.PatientClient;
 import org.karnak.data.AppConfig;
 import org.karnak.cache.PatientClientUtil;
 
 import java.util.*;
 
-public class ExternalIDGrid extends Grid<Patient> {
-    private Binder<Patient> binder;
-    private List<Patient> patientList;
+public class ExternalIDGrid extends Grid<CachedPatient> {
+    private Binder<CachedPatient> binder;
+    private List<CachedPatient> patientList;
     private Button addNewPatientButton;
-    private ListDataProvider<Patient> dataProvider;
+    private ListDataProvider<CachedPatient> dataProvider;
     private Button deletePatientButton;
     private Button saveEditPatientButton;
     private Button cancelEditPatientButton;
 
-    private Grid.Column<Patient> extidColumn;
-    private Grid.Column<Patient> patientIdColumn;
-    private Grid.Column<Patient> patientFirstNameColumn;
-    private Grid.Column<Patient> patientLastNameColumn;
-    private Grid.Column<Patient> issuerOfPatientIDColumn;
-    private Grid.Column<Patient> patientBirthDateColumn;
-    private Grid.Column<Patient> patientSexColumn;
-    private Grid.Column<Patient> editorColumn;
+    private Grid.Column<CachedPatient> extidColumn;
+    private Grid.Column<CachedPatient> patientIdColumn;
+    private Grid.Column<CachedPatient> patientNameColumn;
+    private Grid.Column<CachedPatient> issuerOfPatientIDColumn;
+    private Grid.Column<CachedPatient> editorColumn;
 
-    private Editor<Patient> editor;
+    private Editor<CachedPatient> editor;
     private Collection<Button> editButtons;
 
     private TextField externalIdField;
     private TextField patientIdField;
-    private TextField patientFirstNameField;
-    private TextField patientLastNameField;
+    private TextField patientNameField;
     private TextField issuerOfPatientIdField;
-    private DatePicker patientBirthDateField;
-    private Select<String> patientSexField;
 
-    private Grid.Column<Patient> deleteColumn;
+    private Grid.Column<CachedPatient> deleteColumn;
 
     private String LABEL_SAVE = "Save";
     private String LABEL_CANCEL = "Cancel";
@@ -55,9 +50,9 @@ public class ExternalIDGrid extends Grid<Patient> {
     private PatientClient externalIDCache;
 
     public ExternalIDGrid(){
-        binder = new Binder<>(Patient.class);
+        binder = new Binder<>(CachedPatient.class);
         patientList = new ArrayList<>();
-        dataProvider = (ListDataProvider<Patient>) getDataProvider();
+        dataProvider = (ListDataProvider<CachedPatient>) getDataProvider();
         externalIDCache = AppConfig.getInstance().getExternalIDCache();
 
         setSizeFull();
@@ -83,13 +78,12 @@ public class ExternalIDGrid extends Grid<Patient> {
         });
 
         saveEditPatientButton.addClickListener(e -> {
-            final Patient patientEdit = new Patient(externalIdField.getValue(),
+            final CachedPatient patientEdit = new CachedPatient(
+                    externalIdField.getValue(),
                     patientIdField.getValue(),
-                    patientFirstNameField.getValue(),
-                    patientLastNameField.getValue(),
-                    patientBirthDateField.getValue(),
-                    patientSexField.getValue(),
-                    issuerOfPatientIdField.getValue());
+                    patientNameField.getValue(),
+                    issuerOfPatientIdField.getValue()
+            );
             externalIDCache.remove(PatientClientUtil.generateKey(editor.getItem())); //old extid
             externalIDCache.put(PatientClientUtil.generateKey(patientEdit), patientEdit); //new extid
             editor.save();
@@ -100,13 +94,10 @@ public class ExternalIDGrid extends Grid<Patient> {
     }
 
     private void setElements() {
-        extidColumn = addColumn(Patient::getExtid).setHeader("External Pseudonym");
-        patientIdColumn = addColumn(Patient::getPatientId).setHeader("Patient ID");
-        patientFirstNameColumn = addColumn(Patient::getPatientFirstName).setHeader("Patient fisrt name");
-        patientLastNameColumn = addColumn(Patient::getPatientLastName).setHeader("Patient last name");
-        issuerOfPatientIDColumn = addColumn(Patient::getIssuerOfPatientId).setHeader("Issuer of patient ID");
-        patientBirthDateColumn = addColumn(Patient::getPatientBirthDate).setHeader("Patient Birth Date");
-        patientSexColumn = addColumn(Patient::getPatientSex).setHeader("Patient Sex");
+        extidColumn = addColumn(CachedPatient::getPseudonym).setHeader("External Pseudonym");
+        patientIdColumn = addColumn(CachedPatient::getPatientId).setHeader("Patient ID");
+        patientNameColumn = addColumn(CachedPatient::getPatientName).setHeader("Patient name");
+        issuerOfPatientIDColumn = addColumn(CachedPatient::getIssuerOfPatientId).setHeader("Issuer of patient ID");
 
         editButtons = Collections.newSetFromMap(new WeakHashMap<>());
         editor = getEditor();
@@ -115,20 +106,13 @@ public class ExternalIDGrid extends Grid<Patient> {
 
         externalIdField = new TextField();
         patientIdField = new TextField();
-        patientFirstNameField = new TextField();
-        patientLastNameField = new TextField();
+        patientNameField = new TextField();
         issuerOfPatientIdField = new TextField();
-        patientBirthDateField = new DatePicker();
-        patientSexField = new Select<>();
-        patientSexField.setItems("M", "F", "O");
 
         extidColumn.setEditorComponent(externalIdField);
         patientIdColumn.setEditorComponent(patientIdField);
-        patientFirstNameColumn.setEditorComponent(patientFirstNameField);
-        patientLastNameColumn.setEditorComponent(patientLastNameField);
+        patientNameColumn.setEditorComponent(patientNameField);
         issuerOfPatientIDColumn.setEditorComponent(issuerOfPatientIdField);
-        patientBirthDateColumn.setEditorComponent(patientBirthDateField);
-        patientSexColumn.setEditorComponent(patientSexField);
 
         editorColumn = addComponentColumn(patient -> {
             Button edit = new Button("Edit");
@@ -167,35 +151,22 @@ public class ExternalIDGrid extends Grid<Patient> {
         binder.forField(externalIdField)
                 .withValidator(StringUtils::isNotBlank, "External Pseudonym is empty")
                 .withValidator(new StringLengthValidator("Length must be between 1 and 50.", 1, 50))
-                .withStatusLabel(validationStatus).bind("extid");
+                .withStatusLabel(validationStatus).bind("pseudonym");
 
         binder.forField(patientIdField)
                 .withValidator(StringUtils::isNotBlank, "Patient ID is empty")
                 .withValidator(new StringLengthValidator("Length must be between 1 and 50.", 1, 50))
                 .withStatusLabel(validationStatus).bind("patientId");
 
-        binder.forField(patientFirstNameField)
-                .withValidator(StringUtils::isNotBlank, "Patient first name is empty")
+        binder.forField(patientNameField)
+                .withValidator(StringUtils::isNotBlank, "Patient name is empty")
                 .withValidator(new StringLengthValidator("Length must be between 1 and 50.", 1, 50))
-                .withStatusLabel(validationStatus).bind("patientFirstName");
-
-        binder.forField(patientLastNameField)
-                .withValidator(StringUtils::isNotBlank, "Patient last name is empty")
-                .withValidator(new StringLengthValidator("Length must be between 1 and 50.", 1, 50))
-                .withStatusLabel(validationStatus).bind("patientLastName");
+                .withStatusLabel(validationStatus).bind("patientName");
 
         binder.forField(issuerOfPatientIdField)
                 .withValidator(new StringLengthValidator("Length must be between 0 and 50.", 0, 50))
                 .withStatusLabel(validationStatus).bind("issuerOfPatientId");
 
-        binder.forField(patientBirthDateField)
-                .asRequired("Please choose a date")
-                .withStatusLabel(validationStatus).bind("patientBirthDate");
-
-        binder.forField(patientSexField)
-                .withValidator(StringUtils::isNotBlank, "Patient Sex is empty")
-                .withValidator(new StringLengthValidator("Length must be 1.", 1, 1))
-                .withStatusLabel(validationStatus).bind("patientSex");
         return validationStatus;
     }
 

@@ -5,14 +5,13 @@ import com.hazelcast.config.MapConfig;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.map.IMap;
-import org.karnak.ui.extid.Patient;
 
 import java.util.Collection;
 
 public abstract class PatientClient {
     // https://docs.hazelcast.org/docs/latest/manual/html-single/#cp-subsystem
-    private final static int CPMember = 3;
-    private final static String cluserName = "PatientClient";
+    private static final String CLUSTER_NAME = "PatientClient";
+    private static final int CP_MEMBER = 3;
     private final String name;
     private final HazelcastInstance hazelcastInstance;
 
@@ -28,29 +27,29 @@ public abstract class PatientClient {
         // The method setMaxIdleSeconds defines how long the entry stays in the cache without being touched
         // mapConfig.setMaxIdleSeconds(20);
         config.addMapConfig(mapConfig);
-        config.setClusterName(cluserName);
-        config.getCPSubsystemConfig().setCPMemberCount(CPMember);
-        config.setClassLoader(Patient.class.getClassLoader());
+        config.setClusterName(CLUSTER_NAME);
+        config.getCPSubsystemConfig().setCPMemberCount(CP_MEMBER);
+        config.setClassLoader(PseudonymPatient.class.getClassLoader());
         return config;
     }
 
-    public Patient put(String key, Patient patient) {
-        IMap<String, Patient> map = hazelcastInstance.getMap(name);
+    public PseudonymPatient put(String key, PseudonymPatient patient) {
+        IMap<String, PseudonymPatient> map = hazelcastInstance.getMap(name);
         return map.putIfAbsent(key, patient);
     }
 
-    public Patient get(String key) {
-        IMap<String, Patient> map = hazelcastInstance.getMap(name);
+    public PseudonymPatient get(String key) {
+        IMap<String, PseudonymPatient> map = hazelcastInstance.getMap(name);
         return map.get(key);
     }
 
     public void remove(String key) {
-        IMap<String, Patient> map = hazelcastInstance.getMap(name);
+        IMap<String, PseudonymPatient> map = hazelcastInstance.getMap(name);
         map.remove(key);
     }
 
-    public Collection<Patient> getAll() {
-        IMap<String, Patient> map = hazelcastInstance.getMap(name);
+    public Collection<PseudonymPatient> getAll() {
+        IMap<String, PseudonymPatient> map = hazelcastInstance.getMap(name);
         return map.values();
     }
 }

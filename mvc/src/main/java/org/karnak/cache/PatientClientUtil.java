@@ -1,38 +1,38 @@
 package org.karnak.cache;
 
 import org.karnak.profilepipe.utils.PatientMetadata;
-import org.karnak.ui.extid.Patient;
 
 public class PatientClientUtil {
-    public PatientClientUtil() {
+    private PatientClientUtil() {
+        throw new IllegalStateException("Utility class");
     }
 
     public static String getPseudonym(PatientMetadata patientMetadata, PatientClient cache) {
         if (cache != null) {
             final String key = generateKey(patientMetadata);
-            final Patient patient = cache.get(key);
+            final PseudonymPatient patient = cache.get(key);
             if (patient != null && patientMetadata.compareCachedPatient(patient)) {
-                return patient.getExtid();
+                return patient.getPseudonym();
             }
         }
         return null;
     }
 
-    public static String generateKey(String PatientID, String PatientName, String IssuerOfPatientID) {
-        return PatientID.concat(PatientName).concat(IssuerOfPatientID);
+    public static String generateKey(String patientID, String patientName, String issuerOfPatientID) {
+        return patientID.concat(patientName).concat(issuerOfPatientID);
     }
 
-    public static String generateKey(Patient patient) {
-        String PatientID = patient.getPatientId();
-        String PatientName = patient.getPatientNameDicomFormat();
-        String IssuerOfPatientID = patient.getIssuerOfPatientId();
-        return generateKey(PatientID, PatientName, IssuerOfPatientID);
+    public static String generateKey(PseudonymPatient patient) {
+        String patientID = patient.getPatientId();
+        String patientName = patient.getPatientName();
+        String issuerOfPatientID = patient.getIssuerOfPatientId();
+        return generateKey(patientID, patientName, issuerOfPatientID);
     }
 
     public static String generateKey(PatientMetadata patientMetadata) {
-        String PatientID = patientMetadata.getPatientID();
-        String PatientName = patientMetadata.getPatientName();
-        String IssuerOfPatientID = patientMetadata.getIssuerOfPatientID();
-        return generateKey(PatientID, PatientName, IssuerOfPatientID);
+        String patientID = patientMetadata.getPatientID();
+        String patientName = patientMetadata.getPatientName();
+        String issuerOfPatientID = patientMetadata.getIssuerOfPatientID();
+        return generateKey(patientID, patientName, issuerOfPatientID);
     }
 }
