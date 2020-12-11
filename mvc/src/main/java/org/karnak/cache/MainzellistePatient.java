@@ -32,7 +32,8 @@ public class MainzellistePatient implements PseudonymPatient, Serializable {
 
     @Override
     public String getPatientName() {
-        return patientFirstName == null || patientFirstName.equals("") ? patientLastName : String.format("%s^%s", patientLastName, patientFirstName);
+        return patientFirstName == null || patientFirstName.equals("") ?
+                patientLastName : String.format("%s^%s", patientLastName == null ? "" : patientLastName, patientFirstName);
     }
 
     public String getPatientFirstName() {
@@ -78,7 +79,8 @@ public class MainzellistePatient implements PseudonymPatient, Serializable {
         this.issuerOfPatientId = issuerOfPatientId;
     }
 
-    public MainzellistePatient(String pseudonym, String patientId, String patientFirstName, String patientLastName, LocalDate patientBirthDate, String patientSex, String issuerOfPatientId)
+    public MainzellistePatient(String pseudonym, String patientId, String patientFirstName, String patientLastName,
+                                LocalDate patientBirthDate, String patientSex, String issuerOfPatientId)
     {
         this.pseudonym = pseudonym;
         this.patientId = patientId;

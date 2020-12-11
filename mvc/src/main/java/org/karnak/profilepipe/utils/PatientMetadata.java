@@ -59,7 +59,7 @@ public class PatientMetadata {
         if (patientNameSplitted.length > 1) {
             return patientNameSplitted[1];
         }
-        return null;
+        return "";
     }
 
     public String getPatientBirthDate() {
