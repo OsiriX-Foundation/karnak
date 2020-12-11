@@ -155,7 +155,11 @@ public class Destination {
     }
 
     protected Destination() {
-        this.type = null;
+        this(null);
+    }
+
+    protected Destination(DestinationType type) {
+        this.type = type;
         this.description = "";
         this.desidentification = false;
         this.idTypes = IdTypes.PID;
@@ -177,11 +181,6 @@ public class Destination {
         this.url = "";
         this.urlCredentials = "";
         this.headers = "";
-    }
-
-    protected Destination(DestinationType type) {
-        this();
-        this.type = type;
     }
 
     public Long getId() {
