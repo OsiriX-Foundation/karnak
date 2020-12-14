@@ -58,11 +58,11 @@ public class HMAC {
     public double scaleHash(String value, int scaledMin, int scaledMax) {
         final byte[] hash = new byte[6];
         final double max = 0x1000000000000L;
-        final double scale = scaledMax - scaledMin;
+        final double scale = scaledMax - (double)scaledMin;
 
         System.arraycopy(byteHash(value), 0 , hash, 0, 6);
         double fraction = new BigInteger(1, hash).doubleValue()/max;
-        return (int)(fraction * scale) + scaledMin;
+        return (int)(fraction * scale) + (double)scaledMin;
     }
 
     public String uidHash(String inputUID) {

@@ -8,6 +8,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import org.karnak.cache.CachedPatient;
 import org.karnak.ui.MainLayout;
 import org.springframework.security.access.annotation.Secured;
 
@@ -18,11 +19,10 @@ import org.springframework.security.access.annotation.Secured;
 @SuppressWarnings("serial")
 public class ExternalIDView extends HorizontalLayout {
     public static final String VIEW_NAME = "External pseudonym";
-
-    private final ListDataProvider<Patient> dataProvider;
+    private final ListDataProvider<CachedPatient> dataProvider;
     private final ExternalIDGrid grid;
-    private final AddNewPatientForm addNewPatientForm;
     private final Div validationStatus;
+    private final AddNewPatientForm addNewPatientForm;
 
 
     //https://vaadin.com/components/vaadin-grid/java-examples/assigning-data
@@ -31,7 +31,7 @@ public class ExternalIDView extends HorizontalLayout {
         VerticalLayout verticalLayout = new VerticalLayout();
 
         grid = new ExternalIDGrid();
-        dataProvider = (ListDataProvider<Patient>) grid.getDataProvider();
+        dataProvider = (ListDataProvider<CachedPatient>) grid.getDataProvider();
         addNewPatientForm = new AddNewPatientForm(dataProvider);
         grid.setAddNewPatientButton(addNewPatientForm.getAddNewPatientButton());
 
