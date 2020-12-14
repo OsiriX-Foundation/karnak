@@ -14,7 +14,7 @@ public abstract class Patient implements PseudonymPatient, Serializable {
     protected String patientSex;
     protected String issuerOfPatientId;
 
-    public Patient(String pseudonym, String patientId, String patientName, LocalDate patientBirthDate,
+    protected Patient(String pseudonym, String patientId, String patientName, LocalDate patientBirthDate,
                    String patientSex, String issuerOfPatientId)
     {
         this.pseudonym = pseudonym;
@@ -27,7 +27,7 @@ public abstract class Patient implements PseudonymPatient, Serializable {
         this.issuerOfPatientId = issuerOfPatientId;
     }
 
-    public Patient(String pseudonym, String patientId, String patientFirstName, String patientLastName,
+    protected Patient(String pseudonym, String patientId, String patientFirstName, String patientLastName,
                    LocalDate patientBirthDate, String patientSex, String issuerOfPatientId)
     {
         this.pseudonym = pseudonym;
