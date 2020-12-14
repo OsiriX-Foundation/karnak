@@ -163,7 +163,6 @@ public class Destination {
     protected Destination(DestinationType type) {
         this.type = type;
         this.state = true;
-        this.type = null;
         this.description = "";
         this.desidentification = false;
         this.idTypes = IdTypes.PID;
