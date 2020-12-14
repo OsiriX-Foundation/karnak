@@ -354,7 +354,7 @@ public class GatewayConfig {
     public void reloadGatewayPersistence() {
         GatewayPersistence gatewayPersistence = GatewayConfiguration.getInstance().getGatewayPersistence();
         List<ForwardNode> list = new ArrayList<>(gatewayPersistence.findAll());
-        list = list.stream().filter(forwardNode -> forwardNode.getState() == true).collect(Collectors.toList());
+        list = list.stream().filter(forwardNode -> forwardNode.getState()).collect(Collectors.toList());
         for (ForwardNode forwardNode : list) {
             ForwardDicomNode fwdSrcNode = new ForwardDicomNode(forwardNode.getFwdAeTitle(), null, forwardNode.getId());
             addAcceptedSourceNodes(fwdSrcNode, forwardNode);
