@@ -33,8 +33,8 @@ public abstract class Patient implements PseudonymPatient, Serializable {
         this.pseudonym = pseudonym;
         this.patientId = patientId;
         this.patientName = createPatientName(patientFirstName, patientLastName);
-        this.patientFirstName = patientFirstName;
-        this.patientLastName = patientLastName;
+        this.patientFirstName = emptyStringIfNull(patientFirstName);
+        this.patientLastName = emptyStringIfNull(patientLastName);
         this.patientBirthDate= patientBirthDate;
         this.patientSex = patientSex;
         this.issuerOfPatientId = issuerOfPatientId;
@@ -66,13 +66,17 @@ public abstract class Patient implements PseudonymPatient, Serializable {
     }
 
     protected void updatePatientLastName(String patientLastName) {
-        this.patientLastName = patientLastName;
+        this.patientLastName = emptyStringIfNull(patientLastName);
         this.patientName = createPatientName(patientFirstName, patientLastName);
     }
 
     protected void updatePatientFirstName(String patientFirstName) {
-        this.patientFirstName = patientFirstName;
+        this.patientFirstName = emptyStringIfNull(patientFirstName);
         this.patientName = createPatientName(patientFirstName, patientLastName);
+    }
+
+    private static String emptyStringIfNull(String value) {
+        return value == null ? "" : value;
     }
 
     @Override
