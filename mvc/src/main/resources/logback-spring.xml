@@ -2,10 +2,12 @@
 <configuration>
     <include resource="ch/hcuge/springcloud/logging/logback-spring.xml"/>
     <root level="INFO">
-        <appender-ref ref="logstash"/>
-        <!--        <springProfile name="docker">-->
-        <!--            <appender-ref ref="logstash"/>-->
-        <!--        </springProfile>-->
+        <springProfile name="!docker">
+            <appender-ref ref="console"/>
+        </springProfile>
+        <springProfile name="docker">
+            <appender-ref ref="logstash"/>
+        </springProfile>
     </root>
 </configuration>
 
