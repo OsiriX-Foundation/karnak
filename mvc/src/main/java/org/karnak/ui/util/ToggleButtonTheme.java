@@ -29,7 +29,7 @@ public class ToggleButtonTheme extends HorizontalLayout {
         });
 
         toggleButton.addValueChangeListener(toggleButtonBooleanComponentValueChangeEvent -> {
-            if (toggleButtonBooleanComponentValueChangeEvent.getValue() == Boolean.TRUE) {
+            if (Boolean.TRUE.equals(toggleButtonBooleanComponentValueChangeEvent.getValue())) {
                 UI.getCurrent().getElement().setAttribute("theme", Lumo.DARK);
                 UI.getCurrent().getPage().executeJs("localStorage.setItem($0, $1)", THEME_COLOR_KEY,  Lumo.DARK);
             } else {

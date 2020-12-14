@@ -157,6 +157,11 @@ public class Destination {
     }
 
     protected Destination() {
+        this(null);
+    }
+
+    protected Destination(DestinationType type) {
+        this.type = type;
         this.state = true;
         this.type = null;
         this.description = "";
@@ -180,11 +185,6 @@ public class Destination {
         this.url = "";
         this.urlCredentials = "";
         this.headers = "";
-    }
-
-    protected Destination(DestinationType type) {
-        this();
-        this.type = type;
     }
 
     public Long getId() {
@@ -378,7 +378,6 @@ public class Destination {
             || contains(notifyObjectValues, filterText) //
             || contains(aeTitle, filterText) //
             || contains(hostname, filterText) //
-            || contains(aeTitle, filterText) //
             || equals(port, filterText) //
             || contains(url, filterText) //
             || contains(urlCredentials, filterText) //

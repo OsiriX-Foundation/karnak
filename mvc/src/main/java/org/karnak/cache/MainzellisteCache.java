@@ -4,10 +4,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class MainzellisteCache extends PatientClient {
-    private static final String name = "mainzelliste";
-    private static final int ttlSeconds = 15*60;
+    private static final String NAME = "mainzelliste";
+    private static final int TTL_SECONDS = 15*60;
 
     public MainzellisteCache() {
-        super(name, ttlSeconds);
+        super(NAME, TTL_SECONDS);
     }
 }

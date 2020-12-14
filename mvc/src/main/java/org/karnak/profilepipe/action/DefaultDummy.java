@@ -31,7 +31,7 @@ public class DefaultDummy extends AbstractAction {
     @Override
     public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, HMAC hmac) {
         Optional<DicomElement> dcmItem = dcm.get(tag);
-        DicomElement dcmEl = dcmItem.get();
+        DicomElement dcmEl = dcmItem.orElseThrow();
         VR vr = dcmEl.vr();
         String defaultDummyValue = switch (vr) {
             case AE, CS, LO, LT, PN, SH, ST, UN, UT, UC, UR -> "UNKNOWN";

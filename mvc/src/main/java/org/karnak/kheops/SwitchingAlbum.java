@@ -67,7 +67,7 @@ public class SwitchingAlbum {
     }
 
     private static String hashUIDonDeidentification(Destination destination, String inputUID, HMAC hmac) {
-        if (destination.getDesidentification()) {
+        if (destination.getDesidentification() && hmac != null) {
             return hmac.uidHash(inputUID);
         }
         return inputUID;
@@ -84,7 +84,7 @@ public class SwitchingAlbum {
 
             return validateIntrospectedToken(responseIntrospect, validMinScope);
         } catch (Exception e) {
-            System.err.println(e);
+            LOGGER.error("Invalid token", e);
             return false;
         }
     }
@@ -111,7 +111,7 @@ public class SwitchingAlbum {
         ArrayList<MetadataSwitching> metadataToDo = (ArrayList<MetadataSwitching>) switchingAlbumToDo.get(id);
         metadataToDo.forEach(metadataSwitching -> {
             if (metadataSwitching.getSOPinstanceUID().equals(SOPInstanceUID) &&
-                metadataSwitching.isApplied() == false) {
+                !metadataSwitching.isApplied()) {
                 metadataSwitching.setApplied(true);
                 int status = shareSerie(API_URL, metadataSwitching.getStudyInstanceUID(), metadataSwitching.getSeriesInstanceUID(),
                         authorizationSource, authorizationDestination);
@@ -129,7 +129,7 @@ public class SwitchingAlbum {
             return kheopsAPI.shareSerie(studyInstanceUID, seriesInstanceUID, API_URL,
                     authorizationSource, authorizationDestination);
         } catch (Exception e) {
-            System.err.println(e);
+            LOGGER.error("Can't share the serie {} in the study {}", seriesInstanceUID, studyInstanceUID, e);
         }
         return -1;
     }

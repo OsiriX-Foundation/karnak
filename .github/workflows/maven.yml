@@ -9,6 +9,8 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    env:
+      PUSH_PACKAGES: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -41,3 +43,29 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+      # Build Docker image and push it to Docker Hub
+      - name: Build the spring app
+        if: ${{ env.PUSH_PACKAGES }}
+        shell: bash
+        run: mvn -B clean install -P production
+      - name: Set up QEMU
+        if: ${{ env.PUSH_PACKAGES }}
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        if: ${{ env.PUSH_PACKAGES }}
+        uses: docker/setup-buildx-action@v1
+      - name: Login to DockerHub
+        if: ${{ env.PUSH_PACKAGES }}
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build and push
+        if: ${{ env.PUSH_PACKAGES }}
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: mvc/src/main/docker/Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: osirixfoundation/karnak:latest

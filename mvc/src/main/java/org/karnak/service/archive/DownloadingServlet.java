@@ -74,7 +74,9 @@ public class DownloadingServlet extends HttpServlet {
         }
 
         try {
-            AbstractGateway.deleteOldFiles(archiveDir.toFile());
+            if(archiveDir != null) {
+                AbstractGateway.deleteOldFiles(archiveDir.toFile());
+            }
         } catch (SecurityException e) {
             LOGGER.error("SecurityException:", e);
         }

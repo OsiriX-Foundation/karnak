@@ -4,12 +4,12 @@ import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.util.TagUtils;
 import org.karnak.api.PseudonymApi;
 import org.karnak.api.rqbody.Fields;
+import org.karnak.cache.MainzellistePatient;
 import org.karnak.cache.PatientClient;
 import org.karnak.data.AppConfig;
 import org.karnak.data.gateway.Destination;
 import org.karnak.data.gateway.IdTypes;
 import org.karnak.profilepipe.utils.PatientMetadata;
-import org.karnak.ui.extid.Patient;
 import org.karnak.cache.PatientClientUtil;
 import org.karnak.util.SpecialCharacter;
 import org.slf4j.Logger;
@@ -31,7 +31,7 @@ public class Pseudonym {
     public String generatePseudonym(Destination destination, DicomObject dcm, String defaultIsserOfPatientID) {
         String pseudonym;
         if (destination.getSavePseudonym() != null && destination.getSavePseudonym() == false) {
-            pseudonym = getExtIDInDicom(dcm, destination);
+            pseudonym = getPseudonymInDicom(dcm, destination);
             if (pseudonym == null) {
                 throw new IllegalStateException("Cannot get a pseudonym in a DICOM tag");
             }
@@ -44,7 +44,7 @@ public class Pseudonym {
         }
         PatientMetadata patientMetadata = new PatientMetadata(dcm, defaultIsserOfPatientID);
         try {
-            return getMainzellistePseudonym(patientMetadata, getExtIDInDicom(dcm, destination),
+            return getMainzellistePseudonym(patientMetadata, getPseudonymInDicom(dcm, destination),
                     destination.getIdTypes());
         } catch (Exception e) {
             LOGGER.error("Cannot get a pseudonym with Mainzelliste API {}", e);
@@ -52,7 +52,7 @@ public class Pseudonym {
         }
     }
 
-    private String getExtIDInDicom(DicomObject dcm, Destination destination) {
+    private String getPseudonymInDicom(DicomObject dcm, Destination destination) {
         if (destination.getIdTypes().equals(IdTypes.ADD_EXTID)) {
             String cleanTag = destination.getTag().replaceAll("[(),]", "").toUpperCase();
             final String tagValue = dcm.getString(TagUtils.intFromHexString(cleanTag)).orElse(null);
@@ -87,7 +87,7 @@ public class Pseudonym {
     }
 
     private void cachingMainzellistePseudonym(String pseudonym, PatientMetadata patientMetadata) {
-        final Patient patient = new Patient(pseudonym,
+        final MainzellistePatient mainzellistePatient = new MainzellistePatient(pseudonym,
                 patientMetadata.getPatientID(),
                 patientMetadata.getPatientFirstName(),
                 patientMetadata.getPatientLastName(),
@@ -95,6 +95,6 @@ public class Pseudonym {
                 patientMetadata.getPatientSex(),
                 patientMetadata.getIssuerOfPatientID());
         String cacheKey = PatientClientUtil.generateKey(patientMetadata);
-        mainzellisteCache.put(cacheKey, patient);
+        mainzellisteCache.put(cacheKey, mainzellistePatient);
     }
 }

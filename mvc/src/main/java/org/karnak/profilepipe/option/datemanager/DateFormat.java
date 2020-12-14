@@ -21,11 +21,11 @@ public class DateFormat {
 
         switch (option) {
             case "day" :
-                localDate = localDate.minusDays(localDate.getDayOfMonth() - 1);
+                localDate = localDate.minusDays(localDate.getDayOfMonth() - 1L);
                 break;
             case "month_day" :
-                localDate = localDate.minusDays(localDate.getDayOfMonth() - 1);
-                localDate = localDate.minusMonths(localDate.getMonthValue() - 1);
+                localDate = localDate.minusDays(localDate.getDayOfMonth() - 1L);
+                localDate = localDate.minusMonths(localDate.getMonthValue() - 1L);
         };
 
         String newLocalDate = localDate.format(DateTimeFormatter.ofPattern("YYYYMMdd"));
@@ -40,11 +40,11 @@ public class DateFormat {
 
         switch (option) {
             case "day" :
-                localDateTime = localDateTime.minusDays(localDateTime.getDayOfMonth() - 1);
+                localDateTime = localDateTime.minusDays(localDateTime.getDayOfMonth() - 1L);
                 break;
             case "month_day" :
-                localDateTime = localDateTime.minusDays(localDateTime.getDayOfMonth() - 1);
-                localDateTime = localDateTime.minusMonths(localDateTime.getMonthValue() - 1);
+                localDateTime = localDateTime.minusDays(localDateTime.getDayOfMonth() - 1L);
+                localDateTime = localDateTime.minusMonths(localDateTime.getMonthValue() - 1L);
         };
 
         String newLocalDate = DateTimeUtils.formatDT(localDateTime);

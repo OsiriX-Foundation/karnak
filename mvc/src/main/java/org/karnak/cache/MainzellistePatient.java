@@ -1,13 +1,10 @@
-package org.karnak.ui.extid;
-
-import org.dcm4che6.util.DateTimeUtils;
+package org.karnak.cache;
 
 import java.io.Serializable;
 import java.time.LocalDate;
 
-public class Patient implements Serializable {
-
-    private String extid;
+public class MainzellistePatient implements PseudonymPatient, Serializable {
+    private String pseudonym;
     private String patientId;
     private String patientFirstName;
     private String patientLastName;
@@ -15,20 +12,28 @@ public class Patient implements Serializable {
     private String patientSex;
     private String issuerOfPatientId;
 
-    public String getExtid() {
-        return extid;
+    @Override
+    public String getPseudonym() {
+        return pseudonym;
     }
 
-    public void setExtid(String extid) {
-        this.extid = extid;
+    public void setPseudonym(String pseudonym) {
+        this.pseudonym = pseudonym;
     }
 
+    @Override
     public String getPatientId() {
         return patientId;
     }
 
     public void setPatientId(String patientId) {
         this.patientId = patientId;
+    }
+
+    @Override
+    public String getPatientName() {
+        return patientFirstName == null || patientFirstName.equals("") ?
+                patientLastName : String.format("%s^%s", patientLastName == null ? "" : patientLastName, patientFirstName);
     }
 
     public String getPatientFirstName() {
@@ -47,6 +52,7 @@ public class Patient implements Serializable {
         this.patientLastName = patientLastName;
     }
 
+    @Override
     public LocalDate getPatientBirthDate() {
         return patientBirthDate;
     }
@@ -55,13 +61,7 @@ public class Patient implements Serializable {
         this.patientBirthDate = patientBirthDate;
     }
 
-    public String getFormatPatientBirthDate() {
-        if (patientBirthDate != null) {
-            return DateTimeUtils.formatDA(patientBirthDate);
-        }
-        return "";
-    }
-
+    @Override
     public String getPatientSex() {
         return patientSex;
     }
@@ -70,6 +70,7 @@ public class Patient implements Serializable {
         this.patientSex = patientSex;
     }
 
+    @Override
     public String getIssuerOfPatientId() {
         return issuerOfPatientId;
     }
@@ -78,13 +79,10 @@ public class Patient implements Serializable {
         this.issuerOfPatientId = issuerOfPatientId;
     }
 
-    public String getPatientNameDicomFormat(){
-        return patientFirstName == null ? patientLastName : String.format("%s^%s", patientLastName, patientFirstName);
-    }
-
-    public Patient(String extid, String patientId, String patientFirstName, String patientLastName, LocalDate patientBirthDate, String patientSex, String issuerOfPatientId)
+    public MainzellistePatient(String pseudonym, String patientId, String patientFirstName, String patientLastName,
+                                LocalDate patientBirthDate, String patientSex, String issuerOfPatientId)
     {
-        this.extid = extid;
+        this.pseudonym = pseudonym;
         this.patientId = patientId;
         this.patientFirstName = patientFirstName;
         this.patientLastName = patientLastName;

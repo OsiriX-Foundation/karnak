@@ -23,7 +23,7 @@ public abstract class AbstractGateway {
     private final ScheduledThreadPoolExecutor gatewayProcess;
     protected volatile long lastErrorNotification;
 
-    public AbstractGateway(GatewayConfig config) {
+    protected AbstractGateway(GatewayConfig config) {
         this.config = config;
         this.iterationCount = new Counter(config.getIntervalCheck());
         this.lastErrorNotification = 0;

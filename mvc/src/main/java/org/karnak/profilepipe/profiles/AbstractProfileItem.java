@@ -59,7 +59,7 @@ public abstract class AbstractProfileItem implements ProfileItem {
     protected final Map<Integer, ActionItem> tagMap;
     protected final Integer position;
 
-    public AbstractProfileItem(ProfileElement profileElement) {
+    protected AbstractProfileItem(ProfileElement profileElement) {
         this.name = Objects.requireNonNull(profileElement.getName());
         this.codeName = Objects.requireNonNull(profileElement.getCodename());
         this.condition = profileElement.getCondition();
@@ -108,12 +108,6 @@ public abstract class AbstractProfileItem implements ProfileItem {
     @Override
     public ActionItem put(int tag, ActionItem action) {
         Objects.requireNonNull(action);
-        /*
-        Garde fou
-        if ((policy == Policy.WHITELIST && action != Action.KEEP && action != Action.DEFAULT_DUMMY) || (policy == Policy.BLACKLIST && action == Action.KEEP)) {
-            throw new IllegalStateException(String.format("The action %s is not consistent with the profile policy %s!", action, policy));
-        }
-        */
         return tagMap.put(tag, action);
     }
 

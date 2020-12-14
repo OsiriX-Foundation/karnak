@@ -47,6 +47,7 @@ public class MonitorLogic {
     	} catch (InterruptedException e) {
     		Message message = new Message(MessageLevel.ERROR, MessageFormat.TEXT, "Execution was interrupted");
     		view.displayMessage(message);
+        Thread.currentThread().interrupt();
     	} catch (ExecutionException e) {
     		Message message = new Message(MessageLevel.ERROR, MessageFormat.TEXT, "Execution failed");
     		view.displayMessage(message);
@@ -60,6 +61,7 @@ public class MonitorLogic {
     	} catch (InterruptedException e) {
     		Message message = new Message(MessageLevel.ERROR, MessageFormat.TEXT, "Execution was interrupted");
     		view.displayMessage(message);
+        Thread.currentThread().interrupt();
     	} catch (ExecutionException e) {
     		Message message = new Message(MessageLevel.ERROR, MessageFormat.TEXT, "Execution failed");
     		view.displayMessage(message);
