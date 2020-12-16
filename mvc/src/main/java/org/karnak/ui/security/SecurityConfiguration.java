@@ -1,27 +1,36 @@
 package org.karnak.ui.security;
 
-import org.karnak.data.AppConfig;
+import org.keycloak.adapters.springsecurity.KeycloakConfiguration;
+import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.session.SessionRegistryImpl;
+import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
+import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 
+@KeycloakConfiguration
+public class SecurityConfiguration extends KeycloakWebSecurityConfigurerAdapter {
 
-@EnableWebSecurity
-@Configuration
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+    private static final String LOGOUT_SUCCESS_URL = "/mainLayout";
 
-    private static final String LOGIN_PROCESSING_URL = "/login";
-    private static final String LOGIN_FAILURE_URL = "/login?error";
-    private static final String LOGIN_URL = "/login";
-    private static final String LOGOUT_SUCCESS_URL = "/login";
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) {
+        auth.authenticationProvider(keycloakAuthenticationProvider());
+    }
+
+    @Bean
+    @Override
+    protected SessionAuthenticationStrategy sessionAuthenticationStrategy() {
+        return new RegisterSessionAuthenticationStrategy(new SessionRegistryImpl());
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        super.configure(http);
         // Disables cross-site request forgery (CSRF) protection, as Vaadin already has CSRF protection
         http.csrf().disable()
                 // Uses CustomRequestCache to track unauthorized requests so that users are redirected appropriately after login
@@ -31,28 +40,20 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 // Allows all internal traffic from the Vaadin framework
                 .requestMatchers(SecurityUtils::isFrameworkInternalRequest).permitAll()
                 // Allows all authenticated traffic
-                .antMatchers("/*").hasRole(SecurityRole.ADMIN_ROLE.getType())
+                .antMatchers("/*").hasAuthority(SecurityRole.ADMIN_ROLE.getType())
                 .anyRequest().authenticated()
-                // Enables form-based login and permits unauthenticated access to it
-                .and().formLogin()
-                // Configures the login page URLs
-                .loginPage(LOGIN_URL).permitAll()
-                .loginProcessingUrl(LOGIN_PROCESSING_URL)
-                .failureUrl(LOGIN_FAILURE_URL)
                 // Configures the logout URL
-                .and().logout().logoutSuccessUrl(LOGOUT_SUCCESS_URL)
-                .and()
-                .exceptionHandling().accessDeniedPage(LOGIN_URL);
+                .and().logout().logoutSuccessUrl(LOGOUT_SUCCESS_URL);
     }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        // Configure users and roles in memory
-        auth.inMemoryAuthentication()
-                .withUser(AppConfig.getInstance().getKarnakadmin())
-                .password("{noop}" + AppConfig.getInstance().getKarnakpassword())
-                .roles(SecurityRole.ADMIN_ROLE.getType(), SecurityRole.USER_ROLE.getType());
-    }
+//    @Override
+//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//        // Configure users and roles in memory
+//        auth.inMemoryAuthentication()
+//                .withUser(AppConfig.getInstance().getKarnakadmin())
+//                .password("{noop}" + AppConfig.getInstance().getKarnakpassword())
+//                .roles(SecurityRole.ADMIN_ROLE.getType(), SecurityRole.USER_ROLE.getType());
+//    }
 
     @Override
     public void configure(WebSecurity web) {

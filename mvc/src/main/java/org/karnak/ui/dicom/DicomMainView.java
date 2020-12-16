@@ -20,7 +20,7 @@ import java.util.stream.Stream;
 
 @Route(value = "dicom", layout = MainLayout.class)
 @PageTitle("KARNAK - DICOM Tools")
-@Secured({"ROLE_ADMIN"})
+@Secured({"ADMIN"})
 public class DicomMainView extends VerticalLayout {
   public static final String VIEW_NAME = "DICOM Tools";
   private static final long serialVersionUID = 1L;

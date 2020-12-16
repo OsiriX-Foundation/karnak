@@ -61,9 +61,12 @@ spring:
       jdbc:
         lob:
           non_contextual_creation: true
-
----
-spring:
-  profiles: docker
+keycloak:
+  realm: LocalRealM
+  auth-server-url: http://localhost:8080/auth/
+  ssl-required: external
+  resource: karnak
+  credentials.secret: f44d1932-aece-45df-bc25-ea8d40e9f39b
+  confidential-port: 0
 logstash:
   servers: logstash:9689
