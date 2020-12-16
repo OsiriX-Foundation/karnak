@@ -2,14 +2,11 @@ package org.karnak.ui.extid;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.editor.Editor;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.validator.StringLengthValidator;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.cache.CachedPatient;
@@ -20,19 +17,13 @@ import org.karnak.cache.PatientClientUtil;
 import java.util.*;
 
 public class ExternalIDGrid extends Grid<CachedPatient> {
+    private static final String ERROR_MESSAGE_PATIENT = "Length must be between 1 and 50.";
     private Binder<CachedPatient> binder;
     private List<CachedPatient> patientList;
     private Button addNewPatientButton;
-    private ListDataProvider<CachedPatient> dataProvider;
     private Button deletePatientButton;
     private Button saveEditPatientButton;
     private Button cancelEditPatientButton;
-
-    private Grid.Column<CachedPatient> extidColumn;
-    private Grid.Column<CachedPatient> patientIdColumn;
-    private Grid.Column<CachedPatient> patientNameColumn;
-    private Grid.Column<CachedPatient> issuerOfPatientIDColumn;
-    private Grid.Column<CachedPatient> editorColumn;
 
     private Editor<CachedPatient> editor;
     private Collection<Button> editButtons;
@@ -44,15 +35,13 @@ public class ExternalIDGrid extends Grid<CachedPatient> {
 
     private Grid.Column<CachedPatient> deleteColumn;
 
-    private String LABEL_SAVE = "Save";
-    private String LABEL_CANCEL = "Cancel";
-    private String LABEL_DELETE = "Delete";
-    private PatientClient externalIDCache;
+    private static final String LABEL_SAVE = "Save";
+    private static final String LABEL_CANCEL = "Cancel";
+    private transient PatientClient externalIDCache;
 
     public ExternalIDGrid(){
         binder = new Binder<>(CachedPatient.class);
         patientList = new ArrayList<>();
-        dataProvider = (ListDataProvider<CachedPatient>) getDataProvider();
         externalIDCache = AppConfig.getInstance().getExternalIDCache();
 
         setSizeFull();
@@ -94,10 +83,21 @@ public class ExternalIDGrid extends Grid<CachedPatient> {
     }
 
     private void setElements() {
-        extidColumn = addColumn(CachedPatient::getPseudonym).setHeader("External Pseudonym");
-        patientIdColumn = addColumn(CachedPatient::getPatientId).setHeader("Patient ID");
-        patientNameColumn = addColumn(CachedPatient::getPatientName).setHeader("Patient name");
-        issuerOfPatientIDColumn = addColumn(CachedPatient::getIssuerOfPatientId).setHeader("Issuer of patient ID");
+        Grid.Column<CachedPatient> extidColumn = addColumn(CachedPatient::getPseudonym).setHeader("External Pseudonym");
+        Grid.Column<CachedPatient> patientIdColumn = addColumn(CachedPatient::getPatientId).setHeader("Patient ID");
+        Grid.Column<CachedPatient> patientNameColumn = addColumn(CachedPatient::getPatientName).setHeader("Patient name");
+        Grid.Column<CachedPatient> issuerOfPatientIDColumn = addColumn(CachedPatient::getIssuerOfPatientId).setHeader("Issuer of patient ID");
+        Grid.Column<CachedPatient> editorColumn = addComponentColumn(patient -> {
+            Button edit = new Button("Edit");
+            edit.addClassName("edit");
+            edit.addClickListener(e -> {
+                editor.editItem(patient);
+                externalIdField.focus();
+            });
+            edit.setEnabled(!editor.isOpen());
+            editButtons.add(edit);
+            return edit;
+        });
 
         editButtons = Collections.newSetFromMap(new WeakHashMap<>());
         editor = getEditor();
@@ -113,18 +113,6 @@ public class ExternalIDGrid extends Grid<CachedPatient> {
         patientIdColumn.setEditorComponent(patientIdField);
         patientNameColumn.setEditorComponent(patientNameField);
         issuerOfPatientIDColumn.setEditorComponent(issuerOfPatientIdField);
-
-        editorColumn = addComponentColumn(patient -> {
-            Button edit = new Button("Edit");
-            edit.addClassName("edit");
-            edit.addClickListener(e -> {
-                editor.editItem(patient);
-                externalIdField.focus();
-            });
-            edit.setEnabled(!editor.isOpen());
-            editButtons.add(edit);
-            return edit;
-        });
 
         deleteColumn = addComponentColumn(patient -> {
             deletePatientButton = new Button("Delete");
@@ -150,17 +138,17 @@ public class ExternalIDGrid extends Grid<CachedPatient> {
         validationStatus.getStyle().set("color", "var(--theme-color, red)");
         binder.forField(externalIdField)
                 .withValidator(StringUtils::isNotBlank, "External Pseudonym is empty")
-                .withValidator(new StringLengthValidator("Length must be between 1 and 50.", 1, 50))
+                .withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
                 .withStatusLabel(validationStatus).bind("pseudonym");
 
         binder.forField(patientIdField)
                 .withValidator(StringUtils::isNotBlank, "Patient ID is empty")
-                .withValidator(new StringLengthValidator("Length must be between 1 and 50.", 1, 50))
+                .withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
                 .withStatusLabel(validationStatus).bind("patientId");
 
         binder.forField(patientNameField)
                 .withValidator(StringUtils::isNotBlank, "Patient name is empty")
-                .withValidator(new StringLengthValidator("Length must be between 1 and 50.", 1, 50))
+                .withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
                 .withStatusLabel(validationStatus).bind("patientName");
 
         binder.forField(issuerOfPatientIdField)

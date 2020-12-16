@@ -24,6 +24,7 @@ import java.time.format.DateTimeFormatter;
 
 public class MainzellisteAddPatient extends VerticalLayout {
     protected static final Logger LOGGER = LoggerFactory.getLogger(MainzellisteAddPatient.class);
+    private static final String ERROR_MESSAGE_PATIENT = "Length must be between 1 and 50.";
     private Binder<MainzellistePatient> binder;
 
     private TextField externalIdField;
@@ -51,14 +52,14 @@ public class MainzellisteAddPatient extends VerticalLayout {
         saveInMainzellisteButton.addClickListener(click -> {
             ConfirmDialog dialog = new ConfirmDialog("Are you sure to send a patient in Mainzelliste database ?");
             dialog.open();
-            dialog.addConfirmationListener(componentEvent -> {
-                saveInMainzelliste();
-            });
+            dialog.addConfirmationListener(componentEvent ->
+                saveInMainzelliste()
+            );
         });
 
-        clearFieldsButton.addClickListener( click -> {
-            clearPatientFields();
-        });
+        clearFieldsButton.addClickListener( click ->
+            clearPatientFields()
+        );
 
         // enable/disable update button while editing
         binder.addStatusChangeListener(event -> {
@@ -113,22 +114,22 @@ public class MainzellisteAddPatient extends VerticalLayout {
     public void setBinder(){
         binder.forField(externalIdField)
                 .withValidator(StringUtils::isNotBlank, "External Pseudonym is empty")
-                .withValidator(new StringLengthValidator("Length must be between 1 and 50.", 1, 50))
+                .withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
                 .bind("pseudonym");
 
         binder.forField(patientIdField)
                 .withValidator(StringUtils::isNotBlank, "Patient ID is empty")
-                .withValidator(new StringLengthValidator("Length must be between 1 and 50.", 1, 50))
+                .withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
                 .bind("patientId");
 
         binder.forField(patientFirstNameField)
                 .withValidator(StringUtils::isNotBlank, "Patient first name is empty")
-                .withValidator(new StringLengthValidator("Length must be between 1 and 50.", 1, 50))
+                .withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
                 .bind("patientFirstName");
 
         binder.forField(patientLastNameField)
                 .withValidator(StringUtils::isNotBlank, "Patient last name is empty")
-                .withValidator(new StringLengthValidator("Length must be between 1 and 50.", 1, 50))
+                .withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
                 .bind("patientLastName");
 
         binder.forField(issuerOfPatientIdField)
@@ -175,11 +176,11 @@ public class MainzellisteAddPatient extends VerticalLayout {
                             + "PatientName:" + newPatientFields.get_patientName() + " "
                             + "IssuerOfPatientID:" + newPatientFields.get_issuerOfPatientID() + " "
                             + "PatientSex:" + newPatientFields.get_patientSex() + " "
-                            + "PatientBirthDate:" + newPatientFields.get_patientBirthDate().format(DateTimeFormatter.ofPattern("YYYYMMdd").toString());
-                    LOGGER.info("Added a new patient in Mainzelliste: " + strPatient);
+                            + "PatientBirthDate:" + newPatientFields.get_patientBirthDate();
+                    LOGGER.info("Added a new patient in Mainzelliste: {}", strPatient);
                 }
             } catch (Exception e) {
-                LOGGER.error("Cannot create a new patient with Mainzelliste API {}", e);
+                LOGGER.error("Cannot create a new patient with Mainzelliste API", e);
             }
             binder.readBean(null);
         }

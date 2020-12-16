@@ -22,6 +22,7 @@ import java.util.Iterator;
 
 public class AddNewPatientForm extends VerticalLayout {
     protected static final Logger LOGGER = LoggerFactory.getLogger(AddNewPatientForm.class);
+    private static final String ERROR_MESSAGE_PATIENT = "Length must be between 1 and 50.";
 
     private Binder<CachedPatient> binder;
     private ListDataProvider<CachedPatient> dataProvider;
@@ -33,10 +34,7 @@ public class AddNewPatientForm extends VerticalLayout {
     private Button addNewPatientButton;
     private Button clearFieldsButton;
 
-    private HorizontalLayout horizontalLayout1;
-    private HorizontalLayout horizontalLayout2;
-
-    private PatientClient externalIDCache;
+    private transient PatientClient externalIDCache;
 
     public AddNewPatientForm(ListDataProvider<CachedPatient> dataProvider){
         setSizeFull();
@@ -49,13 +47,13 @@ public class AddNewPatientForm extends VerticalLayout {
 
         readAllCacheValue();
 
-        clearFieldsButton.addClickListener( click -> {
-            clearPatientFields();
-        });
+        clearFieldsButton.addClickListener( click ->
+            clearPatientFields()
+        );
 
-        addNewPatientButton.addClickListener(click -> {
-            addPatientFieldsInGrid();
-        });
+        addNewPatientButton.addClickListener(click ->
+            addPatientFieldsInGrid()
+        );
 
         // enable/disable update button while editing
         binder.addStatusChangeListener(event -> {
@@ -76,6 +74,9 @@ public class AddNewPatientForm extends VerticalLayout {
     }
 
     private void setElements() {
+        HorizontalLayout horizontalLayout1 = new HorizontalLayout();
+        HorizontalLayout horizontalLayout2 = new HorizontalLayout();
+
         externalIdField = new TextField("External Pseudonym");
         externalIdField.setWidth("25%");
         patientIdField = new TextField("Patient ID");
@@ -92,8 +93,6 @@ public class AddNewPatientForm extends VerticalLayout {
         addNewPatientButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         addNewPatientButton.setIcon(VaadinIcon.PLUS_CIRCLE.create());
 
-        horizontalLayout1 = new HorizontalLayout();
-        horizontalLayout2 = new HorizontalLayout();
         horizontalLayout1.setSizeFull();
         horizontalLayout2.setSizeFull();
 
@@ -105,17 +104,17 @@ public class AddNewPatientForm extends VerticalLayout {
     public void setBinder(){
         binder.forField(externalIdField)
                 .withValidator(StringUtils::isNotBlank, "External Pseudonym is empty")
-                .withValidator(new StringLengthValidator("Length must be between 1 and 50.", 1, 50))
+                .withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
                 .bind("pseudonym");
 
         binder.forField(patientIdField)
                 .withValidator(StringUtils::isNotBlank, "Patient ID is empty")
-                .withValidator(new StringLengthValidator("Length must be between 1 and 50.", 1, 50))
+                .withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
                 .bind("patientId");
 
         binder.forField(patientNameField)
                 .withValidator(StringUtils::isNotBlank, "Patient name is empty")
-                .withValidator(new StringLengthValidator("Length must be between 1 and 50.", 1, 50))
+                .withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
                 .bind("patientName");
 
         binder.forField(issuerOfPatientIdField)
