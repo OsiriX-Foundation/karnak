@@ -32,7 +32,7 @@ spring:
     enabled: true
     change-log: classpath:db/changelog/db.changelog-master.yaml
   profiles:
-    active: '@activatedProperties@'
+    active: '@activatedProperties@, docker'
   datasource:
     password: ${DB_PASSWORD:5!KAnN@%98%d}
     url: 'jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5433}/${DB_NAME:karnak}'

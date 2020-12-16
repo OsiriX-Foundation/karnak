@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <include resource="ch/hcuge/springcloud/logging/logback-spring.xml"/>
+    <include resource="ch/hcuge/springcloud/logging/logback-spring.xml" />
     <root level="INFO">
         <springProfile name="!docker">
-            <appender-ref ref="console"/>
+            <appender-ref ref="console" />
         </springProfile>
         <springProfile name="docker">
-            <appender-ref ref="logstash"/>
+            <appender-ref ref="logstash" />
         </springProfile>
     </root>
 </configuration>
