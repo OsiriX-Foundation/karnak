@@ -46,15 +46,6 @@ public class SecurityConfiguration extends KeycloakWebSecurityConfigurerAdapter 
                 .and().logout().logoutSuccessUrl(LOGOUT_SUCCESS_URL);
     }
 
-//    @Override
-//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        // Configure users and roles in memory
-//        auth.inMemoryAuthentication()
-//                .withUser(AppConfig.getInstance().getKarnakadmin())
-//                .password("{noop}" + AppConfig.getInstance().getKarnakpassword())
-//                .roles(SecurityRole.ADMIN_ROLE.getType(), SecurityRole.USER_ROLE.getType());
-//    }
-
     @Override
     public void configure(WebSecurity web) {
         // Access to static resources, bypassing Spring security.
