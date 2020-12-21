@@ -36,7 +36,7 @@ public class SwitchingAlbum {
         HMAC hmac = generateHMAC(destination);
         String studyInstanceUID = hashUIDonDeidentification(destination, dcm.getStringOrElseThrow(Tag.StudyInstanceUID), hmac);
         String seriesInstanceUID = hashUIDonDeidentification(destination, dcm.getStringOrElseThrow(Tag.SeriesInstanceUID), hmac);
-        String SOPInstanceUID = dcm.getStringOrElseThrow(Tag.SOPInstanceUID);
+        String SOPInstanceUID = hashUIDonDeidentification(destination, dcm.getStringOrElseThrow(Tag.SOPInstanceUID), hmac);
         String API_URL = kheopsAlbums.getUrlAPI();
         Long id = kheopsAlbums.getId();
         if (!switchingAlbumToDo.containsKey(id)) {
