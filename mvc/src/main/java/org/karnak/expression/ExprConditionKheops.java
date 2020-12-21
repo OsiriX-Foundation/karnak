@@ -18,9 +18,19 @@ public class ExprConditionKheops implements ExpressionItem{
         this.dcm = dcm;
     }
 
+    public boolean tagValueIsPresent(String tag, String value) {
+        int cleanTag = intFromHexString(tag);
+        return tagValueIsPresent(cleanTag, value);
+    }
+
     public boolean tagValueIsPresent(int tag, String value) {
         String dcmValue = dcm.getString(tag).orElse(null);
         return dcmValue != null ? dcmValue.equals(value) : false;
+    }
+
+    public boolean tagValueContains(String tag, String value) {
+        int cleanTag = intFromHexString(tag);
+        return tagValueContains(cleanTag, value);
     }
 
     public boolean tagValueContains(int tag, String value) {
@@ -28,9 +38,19 @@ public class ExprConditionKheops implements ExpressionItem{
         return dcmValue != null ? dcmValue.contains(value) : false;
     }
 
+    public boolean tagValueBeginWith(String tag, String value) {
+        int cleanTag = intFromHexString(tag);
+        return tagValueBeginWith(cleanTag, value);
+    }
+
     public boolean tagValueBeginWith(int tag, String value) {
         String dcmValue = dcm.getString(tag).orElse(null);
         return dcmValue != null ? dcmValue.startsWith(value) : false;
+    }
+
+    public boolean tagValueEndWith(String tag, String value) {
+        int cleanTag = intFromHexString(tag);
+        return tagValueEndWith(cleanTag, value);
     }
 
     public boolean tagValueEndWith(int tag, String value) {
@@ -41,7 +61,11 @@ public class ExprConditionKheops implements ExpressionItem{
     public static void expressionValidation(String condition) throws Exception {
         ExprConditionKheops exprConditionKheops = new ExprConditionKheops(DicomObject.newDicomObject());
         ExpressionResult.get(condition, exprConditionKheops, Boolean.class);
+    }
 
+    public static int intFromHexString(String tag) {
+        String cleanTag = tag.replaceAll("[(),]", "").toUpperCase();
+        return TagUtils.intFromHexString(cleanTag);
     }
 
     /*
