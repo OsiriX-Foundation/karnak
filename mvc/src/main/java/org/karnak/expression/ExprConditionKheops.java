@@ -38,22 +38,22 @@ public class ExprConditionKheops implements ExpressionItem{
         return dcmValue != null ? dcmValue.contains(value) : false;
     }
 
-    public boolean tagValueBeginWith(String tag, String value) {
+    public boolean tagValueBeginsWith(String tag, String value) {
         int cleanTag = intFromHexString(tag);
-        return tagValueBeginWith(cleanTag, value);
+        return tagValueBeginsWith(cleanTag, value);
     }
 
-    public boolean tagValueBeginWith(int tag, String value) {
+    public boolean tagValueBeginsWith(int tag, String value) {
         String dcmValue = dcm.getString(tag).orElse(null);
         return dcmValue != null ? dcmValue.startsWith(value) : false;
     }
 
-    public boolean tagValueEndWith(String tag, String value) {
+    public boolean tagValueEndsWith(String tag, String value) {
         int cleanTag = intFromHexString(tag);
-        return tagValueEndWith(cleanTag, value);
+        return tagValueEndsWith(cleanTag, value);
     }
 
-    public boolean tagValueEndWith(int tag, String value) {
+    public boolean tagValueEndsWith(int tag, String value) {
         String dcmValue = dcm.getString(tag).orElse(null);
         return dcmValue != null ? dcmValue.endsWith(value) : false;
     }
