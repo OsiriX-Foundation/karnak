@@ -163,7 +163,7 @@ class ExprConditionKheopsTest {
     @ParameterizedTest
     @MethodSource("providerBeginWith")
     void tagValueBeginWith(int tag, String input){
-        assertTrue(exprConditionKheops.tagValueBeginWith(tag, input));
+        assertTrue(exprConditionKheops.tagValueBeginsWith(tag, input));
     }
 
     private static Stream<Arguments> providerBeginWith() {
@@ -191,7 +191,7 @@ class ExprConditionKheopsTest {
     @ParameterizedTest
     @MethodSource("providerNotBeginWith")
     void tagValueNotBeginWith(int tag, String input){
-        assertFalse(exprConditionKheops.tagValueBeginWith(tag, input));
+        assertFalse(exprConditionKheops.tagValueBeginsWith(tag, input));
     }
 
     private static Stream<Arguments> providerNotBeginWith() {
@@ -229,7 +229,7 @@ class ExprConditionKheopsTest {
     @ParameterizedTest
     @MethodSource("providerEndWith")
     void tagValueEndWith(int tag, String input){
-        assertTrue(exprConditionKheops.tagValueEndWith(tag, input));
+        assertTrue(exprConditionKheops.tagValueEndsWith(tag, input));
     }
 
     private static Stream<Arguments> providerEndWith() {
@@ -257,7 +257,7 @@ class ExprConditionKheopsTest {
     @ParameterizedTest
     @MethodSource("providerNotEndWith")
     void tagValueNotEndWith(int tag, String input){
-        assertFalse(exprConditionKheops.tagValueEndWith(tag, input));
+        assertFalse(exprConditionKheops.tagValueEndsWith(tag, input));
     }
 
     private static Stream<Arguments> providerNotEndWith() {
