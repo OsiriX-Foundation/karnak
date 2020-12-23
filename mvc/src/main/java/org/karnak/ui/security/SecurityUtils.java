@@ -5,17 +5,12 @@ import com.vaadin.flow.server.VaadinServletService;
 import com.vaadin.flow.shared.ApplicationConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -69,22 +64,23 @@ public final class SecurityUtils {
     boolean isAccessGranted = false;
 
     if (isUserLoggedIn()) {
-      // get the secured annotation
-      Secured secured = AnnotationUtils.findAnnotation(securedClass, Secured.class);
-
-      // allow if no roles are required
-      if (secured == null) {
-        isAccessGranted = true;
-      } else {
-        // lookup needed role in user roles
-        List<String> allowedRoles = Arrays.asList(secured.value());
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        isAccessGranted =
-                authentication != null
-                        && authentication.getAuthorities().stream()
-                        .map(GrantedAuthority::getAuthority)
-                        .anyMatch(allowedRoles::contains);
-      }
+//      // get the secured annotation
+//      Secured secured = AnnotationUtils.findAnnotation(securedClass, Secured.class);
+//
+//      // allow if no roles are required
+//      if (secured == null) {
+//        isAccessGranted = true;
+//      } else {
+//        // lookup needed role in user roles
+//        List<String> allowedRoles = Arrays.asList(secured.value());
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        isAccessGranted =
+//                authentication != null
+//                        && authentication.getAuthorities().stream()
+//                        .map(GrantedAuthority::getAuthority)
+//                        .anyMatch(allowedRoles::contains);
+//      }
+      isAccessGranted = true;
     }
     return isAccessGranted;
   }

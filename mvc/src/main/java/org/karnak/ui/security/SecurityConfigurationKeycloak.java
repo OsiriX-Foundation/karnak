@@ -3,6 +3,7 @@ package org.karnak.ui.security;
 import org.keycloak.adapters.springsecurity.KeycloakConfiguration;
 import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -13,7 +14,8 @@ import org.springframework.security.web.authentication.session.RegisterSessionAu
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 
 @KeycloakConfiguration
-public class SecurityConfiguration extends KeycloakWebSecurityConfigurerAdapter {
+@ConditionalOnProperty(value = "IDP", havingValue = "keycloak")
+public class SecurityConfigurationKeycloak extends KeycloakWebSecurityConfigurerAdapter {
 
     private static final String LOGOUT_SUCCESS_URL = "/mainLayout";
 
@@ -40,7 +42,7 @@ public class SecurityConfiguration extends KeycloakWebSecurityConfigurerAdapter 
                 // Allows all internal traffic from the Vaadin framework
                 .requestMatchers(SecurityUtils::isFrameworkInternalRequest).permitAll()
                 // Allows all authenticated traffic
-                .antMatchers("/*").hasAuthority(SecurityRole.ADMIN_ROLE.getType())
+                // .antMatchers("/*").hasAuthority(SecurityRole.ADMIN_ROLE.getType())
                 .anyRequest().authenticated()
                 // Configures the logout URL
                 .and().logout().logoutSuccessUrl(LOGOUT_SUCCESS_URL);

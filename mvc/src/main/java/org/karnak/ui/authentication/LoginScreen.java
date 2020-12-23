@@ -10,6 +10,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.lumo.Lumo;
 import org.karnak.ui.image.LogoKarnak;
 import org.karnak.ui.security.CustomRequestCache;
@@ -26,7 +27,7 @@ import java.util.Objects;
 /**
  * UI content when the user is not logged in yet.
  */
-//@Route(LoginScreen.ROUTE)
+@Route(LoginScreen.ROUTE)
 @PageTitle("KARNAK - Login")
 @CssImport(value = "./styles/shared-styles.css")
 @SuppressWarnings("serial")

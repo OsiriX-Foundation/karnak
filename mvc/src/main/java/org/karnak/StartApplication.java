@@ -15,7 +15,7 @@ import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConf
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-@SpringBootApplication(exclude = ErrorMvcAutoConfiguration.class)
+@SpringBootApplication(exclude = {ErrorMvcAutoConfiguration.class})
 @EntityScan("org.karnak.data")
 @EnableJpaRepositories("org.karnak.data")
 @EnableVaadin(value = "org.karnak")
