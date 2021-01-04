@@ -1,0 +1,106 @@
+package org.karnak.ui.extid;
+
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.textfield.NumberField;
+import liquibase.util.csv.opencsv.CSVReader;
+import org.karnak.cache.CachedPatient;
+import org.karnak.cache.PatientClient;
+import org.karnak.cache.PatientClientUtil;
+import org.karnak.data.AppConfig;
+
+import java.io.IOException;
+import java.util.List;
+
+public class CSVDialog extends Dialog {
+
+    private NumberField externalPseudonymPos;
+    private NumberField patientIDPos;
+    private NumberField patientNamePos;
+    private NumberField issuerOfPatientIDPos;
+
+    private Button readCSVButton;
+    private Button cancelButton;
+    private Div divContent;
+    private Div divTitle;
+    private Div divIntro;
+
+    private transient PatientClient externalIDCache;
+
+    private List<String[]> allRows;
+
+    public CSVDialog(CSVReader csvReader) {
+        removeAll();
+        externalIDCache = AppConfig.getInstance().getExternalIDCache();
+        setElement();
+        allRows = null;
+
+        try {
+            allRows = csvReader.readAll();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        divContent.add(externalPseudonymPos);
+        divContent.add(patientIDPos);
+        divContent.add(patientNamePos);
+        divContent.add(issuerOfPatientIDPos);
+        add(divTitle, divIntro, divContent, readCSVButton, cancelButton);
+    }
+
+    private void setElement(){
+        divTitle = new Div();
+        divTitle.setText("Indicate position of clolumn");
+        divTitle.getStyle().set("font-size", "large").set("font-weight", "bolder").set("padding-bottom", "10px");
+
+        divContent = new Div();
+        divIntro = new Div();
+        divIntro.setText("Indicate the position of clumn for fields");
+        divIntro.getStyle().set("padding-bottom", "10px");
+
+        externalPseudonymPos = new NumberField("External Pseudonym column");
+        externalPseudonymPos.setValue(1d);
+        externalPseudonymPos.setHasControls(true);
+        externalPseudonymPos.setMin(0);
+        externalPseudonymPos.setMax(10);
+
+        patientIDPos = new NumberField("Patient ID column");
+        patientIDPos.setValue(1d);
+        patientIDPos.setHasControls(true);
+        patientIDPos.setMin(0);
+        patientIDPos.setMax(10);
+
+        patientNamePos = new NumberField("Patient name column");
+        patientNamePos.setValue(1d);
+        patientNamePos.setHasControls(true);
+        patientNamePos.setMin(0);
+        patientNamePos.setMax(10);
+
+        issuerOfPatientIDPos = new NumberField("Issuer of patient ID column");
+        issuerOfPatientIDPos.setValue(1d);
+        issuerOfPatientIDPos.setHasControls(true);
+        issuerOfPatientIDPos.setMin(0);
+        issuerOfPatientIDPos.setMax(10);
+
+        readCSVButton = new Button("Read CSV", event -> {
+            try {
+                //Read CSV line by line and use the string array as you want
+                for (String[] row : allRows) {
+                    final CachedPatient newPatient = new CachedPatient(row[externalPseudonymPos.getValue().intValue()],
+                            row[patientIDPos.getValue().intValue()],
+                            row[patientNamePos.getValue().intValue()],
+                            row[issuerOfPatientIDPos.getValue().intValue()]);
+                    externalIDCache.put(PatientClientUtil.generateKey(newPatient), newPatient);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            close();
+        });
+
+        cancelButton = new Button("Cancel", event -> close());
+
+        cancelButton.getStyle().set("margin-left", "75%");
+    }
+}

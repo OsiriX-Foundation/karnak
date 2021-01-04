@@ -2,22 +2,26 @@ package org.karnak.ui.extid;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.upload.Upload;
+import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.validator.StringLengthValidator;
+import liquibase.util.csv.opencsv.CSVReader;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.cache.*;
 import org.karnak.data.AppConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Collection;
-import java.util.Iterator;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.*;
 
 
 public class AddNewPatientForm extends VerticalLayout {
@@ -33,6 +37,7 @@ public class AddNewPatientForm extends VerticalLayout {
     private TextField issuerOfPatientIdField;
     private Button addNewPatientButton;
     private Button clearFieldsButton;
+    private transient InputStream inputStream;
 
     private transient PatientClient externalIDCache;
 
@@ -93,12 +98,22 @@ public class AddNewPatientForm extends VerticalLayout {
         addNewPatientButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         addNewPatientButton.setIcon(VaadinIcon.PLUS_CIRCLE.create());
 
+        MemoryBuffer memoryBuffer = new MemoryBuffer();
+        Upload uploadCsvButton = new Upload(memoryBuffer);
+        uploadCsvButton.setDropLabel(new Span("Drag and drop your CSV here"));
+        uploadCsvButton.addSucceededListener(event -> {
+            inputStream = memoryBuffer.getInputStream();
+            CSVReader csvReader = new CSVReader(new InputStreamReader(inputStream));
+            CSVDialog csvDialog = new CSVDialog(csvReader);
+            csvDialog.open();
+        });
+
         horizontalLayout1.setSizeFull();
         horizontalLayout2.setSizeFull();
 
         horizontalLayout1.add(externalIdField, patientIdField, patientNameField, issuerOfPatientIdField);
         horizontalLayout2.add(clearFieldsButton, addNewPatientButton);
-        add(horizontalLayout1, horizontalLayout2);
+        add(horizontalLayout1, uploadCsvButton, horizontalLayout2);
     }
 
     public void setBinder(){
