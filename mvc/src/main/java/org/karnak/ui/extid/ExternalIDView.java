@@ -15,7 +15,7 @@ import org.springframework.security.access.annotation.Secured;
 @Route(value = "extid", layout = MainLayout.class)
 @PageTitle("KARNAK - External ID")
 @Tag("extid-view")
-@Secured({"ROLE_ADMIN"})
+@Secured({"ADMIN"})
 @SuppressWarnings("serial")
 public class ExternalIDView extends HorizontalLayout {
     public static final String VIEW_NAME = "External pseudonym";

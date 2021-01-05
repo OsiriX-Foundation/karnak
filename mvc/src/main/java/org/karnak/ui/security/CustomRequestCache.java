@@ -2,7 +2,6 @@ package org.karnak.ui.security;
 
 import com.vaadin.flow.server.VaadinServletRequest;
 import com.vaadin.flow.server.VaadinServletResponse;
-import org.karnak.ui.authentication.LoginScreen;
 import org.springframework.security.web.savedrequest.DefaultSavedRequest;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
@@ -38,8 +37,8 @@ public class CustomRequestCache extends HttpSessionRequestCache {
                         .getCurrent().getHttpServletResponse());
         if (savedRequest instanceof DefaultSavedRequest) {
             final String requestURI = ((DefaultSavedRequest) savedRequest).getRequestURI(); //
-            // check for valid URI and prevent redirecting to the login view
-            if (requestURI != null && !requestURI.isEmpty() && !requestURI.contains(LoginScreen.ROUTE)) { //
+            // check for valid URI
+            if (requestURI != null && !requestURI.isEmpty()) { //
                 return requestURI.startsWith("/") ? requestURI.substring(1) : requestURI; //
             }
         }

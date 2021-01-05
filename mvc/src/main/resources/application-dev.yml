@@ -1,0 +1,11 @@
+#  --------------------------------------------------------
+#  Karnak Dev Application properties
+#  --------------------------------------------------------
+#Keycloak HUG dev
+keycloak:
+  realm: collaborator
+  auth-server-url: http://accounts-dev.hcuge.ch/auth/
+  ssl-required: external
+  resource: karnak
+  credentials.secret: c0fcd5a9-4f13-433c-a634-4b8e0bc484cd
+  confidential-port: 0

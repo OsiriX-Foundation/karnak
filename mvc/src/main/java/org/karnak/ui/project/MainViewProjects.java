@@ -14,7 +14,7 @@ import org.springframework.security.access.annotation.Secured;
 
 @Route(value = "projects", layout = MainLayout.class)
 @PageTitle("KARNAK - Projects")
-@Secured({"ROLE_ADMIN"})
+@Secured({"ADMIN"})
 public class MainViewProjects extends HorizontalLayout implements HasUrlParameter<String> {
     public static final String VIEW_NAME = "Projects";
 
