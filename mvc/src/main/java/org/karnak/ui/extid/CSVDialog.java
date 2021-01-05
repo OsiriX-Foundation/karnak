@@ -2,8 +2,10 @@ package org.karnak.ui.extid;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.textfield.NumberField;
+
 import liquibase.util.csv.opencsv.CSVReader;
 import org.karnak.cache.CachedPatient;
 import org.karnak.cache.PatientClient;
@@ -30,22 +32,27 @@ public class CSVDialog extends Dialog {
 
     private List<String[]> allRows;
 
+    private Grid<String[]> grid;
+
     public CSVDialog(CSVReader csvReader) {
         removeAll();
         externalIDCache = AppConfig.getInstance().getExternalIDCache();
-        setElement();
-        allRows = null;
 
+        allRows = null;
         try {
             allRows = csvReader.readAll();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+        setElement();
+        buildGrid();
+
         divContent.add(externalPseudonymPos);
         divContent.add(patientIDPos);
         divContent.add(patientNamePos);
         divContent.add(issuerOfPatientIDPos);
+        divContent.add(grid);
         add(divTitle, divIntro, divContent, readCSVButton, cancelButton);
     }
 
@@ -82,7 +89,6 @@ public class CSVDialog extends Dialog {
         issuerOfPatientIDPos.setHasControls(true);
         issuerOfPatientIDPos.setMin(0);
         issuerOfPatientIDPos.setMax(10);
-
         readCSVButton = new Button("Read CSV", event -> {
             try {
                 //Read CSV line by line and use the string array as you want
@@ -103,4 +109,17 @@ public class CSVDialog extends Dialog {
 
         cancelButton.getStyle().set("margin-left", "75%");
     }
+
+    public void buildGrid() {
+        grid = new Grid<>();
+
+        String[] headers = allRows.get(0);
+
+        for (int i = 0; i < headers.length; i++) {
+            int idx = i;
+            grid.addColumn(lineArray -> lineArray[idx]).setHeader(headers[idx]);
+        }
+        grid.setItems(allRows);
+    }
+
 }
