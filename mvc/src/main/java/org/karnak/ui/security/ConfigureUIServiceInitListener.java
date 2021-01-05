@@ -4,8 +4,9 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.server.ServiceInitEvent;
 import com.vaadin.flow.server.VaadinServiceInitListener;
-import org.karnak.ui.authentication.LoginScreen;
 import org.springframework.stereotype.Component;
+
+import java.util.Objects;
 
 @Component
 public class ConfigureUIServiceInitListener implements VaadinServiceInitListener {
@@ -30,8 +31,11 @@ public class ConfigureUIServiceInitListener implements VaadinServiceInitListener
      * @param event BeforeEnterEvent
      */
     private void beforeEnter(BeforeEnterEvent event) {
-        if (!SecurityUtils.isAccessGranted(event.getNavigationTarget())) {
-            event.rerouteTo(LoginScreen.class);
+        boolean isLoginScreen =
+                Objects.equals(event.getNavigationTarget().getName(), "org.karnak.ui.authentication.LoginScreen");
+
+        if (!SecurityUtils.isAccessGranted(event.getNavigationTarget()) && !isLoginScreen) {
+            SecurityUtils.signOut();
         }
     }
 

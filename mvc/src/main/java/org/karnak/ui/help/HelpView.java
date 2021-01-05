@@ -13,7 +13,7 @@ import org.springframework.security.access.annotation.Secured;
 @Route(value = "help", layout = MainLayout.class)
 @PageTitle("KARNAK - Help")
 @Tag("help-view")
-@Secured({"ROLE_ADMIN"})
+@Secured({"ADMIN"})
 public class HelpView extends VerticalLayout {
     public static final String VIEW_NAME = "Help";
 
