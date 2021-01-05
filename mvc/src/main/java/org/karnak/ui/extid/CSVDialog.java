@@ -21,6 +21,7 @@ public class CSVDialog extends Dialog {
     private NumberField patientIDPos;
     private NumberField patientNamePos;
     private NumberField issuerOfPatientIDPos;
+    private NumberField fromLine;
 
     private Button readCSVButton;
     private Button cancelButton;
@@ -53,7 +54,7 @@ public class CSVDialog extends Dialog {
         divContent.add(patientNamePos);
         divContent.add(issuerOfPatientIDPos);
         divContent.add(grid);
-        add(divTitle, divIntro, divContent, readCSVButton, cancelButton);
+        add(divTitle, divIntro, fromLine, divContent, readCSVButton, cancelButton);
     }
 
     private void setElement(){
@@ -66,29 +67,32 @@ public class CSVDialog extends Dialog {
         divIntro.setText("Indicate the position of clumn for fields");
         divIntro.getStyle().set("padding-bottom", "10px");
 
+        fromLine = new NumberField("From line ");
+        fromLine.setValue(1d);
+        fromLine.setHasControls(true);
+        fromLine.setMin(1);
+        fromLine.setMax((double) allRows.size() + 1);
+
         externalPseudonymPos = new NumberField("External Pseudonym column");
         externalPseudonymPos.setValue(1d);
         externalPseudonymPos.setHasControls(true);
         externalPseudonymPos.setMin(0);
-        externalPseudonymPos.setMax(10);
 
         patientIDPos = new NumberField("Patient ID column");
         patientIDPos.setValue(1d);
         patientIDPos.setHasControls(true);
         patientIDPos.setMin(0);
-        patientIDPos.setMax(10);
 
         patientNamePos = new NumberField("Patient name column");
         patientNamePos.setValue(1d);
         patientNamePos.setHasControls(true);
         patientNamePos.setMin(0);
-        patientNamePos.setMax(10);
 
         issuerOfPatientIDPos = new NumberField("Issuer of patient ID column");
         issuerOfPatientIDPos.setValue(1d);
         issuerOfPatientIDPos.setHasControls(true);
         issuerOfPatientIDPos.setMin(0);
-        issuerOfPatientIDPos.setMax(10);
+
         readCSVButton = new Button("Read CSV", event -> {
             try {
                 //Read CSV line by line and use the string array as you want
@@ -120,6 +124,15 @@ public class CSVDialog extends Dialog {
             grid.addColumn(lineArray -> lineArray[idx]).setHeader(headers[idx]);
         }
         grid.setItems(allRows);
+
+        fromLine.addValueChangeListener(numberValue -> {
+            if (numberValue.getValue().intValue() > allRows.size()) {
+                grid.setItems(allRows.subList(allRows.size(), allRows.size()));
+            } else {
+                grid.setItems(allRows.subList(numberValue.getValue().intValue()-1, allRows.size()));
+            }
+        });
+
     }
 
 }
