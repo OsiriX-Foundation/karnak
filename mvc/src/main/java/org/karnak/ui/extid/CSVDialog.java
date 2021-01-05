@@ -27,7 +27,6 @@ public class CSVDialog extends Dialog {
     private Button cancelButton;
     private Div divContent;
     private Div divTitle;
-    private Div divIntro;
 
     private transient PatientClient externalIDCache;
 
@@ -54,18 +53,15 @@ public class CSVDialog extends Dialog {
         divContent.add(patientNamePos);
         divContent.add(issuerOfPatientIDPos);
         divContent.add(grid);
-        add(divTitle, divIntro, fromLine, divContent, readCSVButton, cancelButton);
+        add(divTitle, fromLine, divContent, readCSVButton, cancelButton);
     }
 
     private void setElement(){
         divTitle = new Div();
-        divTitle.setText("Indicate position of clolumn");
+        divTitle.setText("Upload CSV for the table that contain external pseudonym");
         divTitle.getStyle().set("font-size", "large").set("font-weight", "bolder").set("padding-bottom", "10px");
 
         divContent = new Div();
-        divIntro = new Div();
-        divIntro.setText("Indicate the position of clumn for fields");
-        divIntro.getStyle().set("padding-bottom", "10px");
 
         fromLine = new NumberField("From line ");
         fromLine.setValue(1d);
@@ -73,34 +69,38 @@ public class CSVDialog extends Dialog {
         fromLine.setMin(1);
         fromLine.setMax((double) allRows.size() + 1);
 
-        externalPseudonymPos = new NumberField("External Pseudonym column");
+        externalPseudonymPos = new NumberField("Select the column number of the external pseudonym");
         externalPseudonymPos.setValue(1d);
         externalPseudonymPos.setHasControls(true);
-        externalPseudonymPos.setMin(0);
+        externalPseudonymPos.setMin(1);
+        externalPseudonymPos.setWidthFull();
 
-        patientIDPos = new NumberField("Patient ID column");
-        patientIDPos.setValue(1d);
+        patientIDPos = new NumberField("Select the column number of the patient ID");
+        patientIDPos.setValue(2d);
         patientIDPos.setHasControls(true);
-        patientIDPos.setMin(0);
+        patientIDPos.setMin(1);
+        patientIDPos.setWidthFull();
 
-        patientNamePos = new NumberField("Patient name column");
-        patientNamePos.setValue(1d);
+        patientNamePos = new NumberField("Select the column number of the patient name");
+        patientNamePos.setValue(3d);
         patientNamePos.setHasControls(true);
-        patientNamePos.setMin(0);
+        patientNamePos.setMin(1);
+        patientNamePos.setWidthFull();
 
-        issuerOfPatientIDPos = new NumberField("Issuer of patient ID column");
-        issuerOfPatientIDPos.setValue(1d);
+        issuerOfPatientIDPos = new NumberField("Select the column number of the issuer of patient ID");
+        issuerOfPatientIDPos.setValue(4d);
         issuerOfPatientIDPos.setHasControls(true);
-        issuerOfPatientIDPos.setMin(0);
+        issuerOfPatientIDPos.setMin(1);
+        issuerOfPatientIDPos.setWidthFull();
 
         readCSVButton = new Button("Read CSV", event -> {
             try {
                 //Read CSV line by line and use the string array as you want
-                for (String[] row : allRows) {
-                    final CachedPatient newPatient = new CachedPatient(row[externalPseudonymPos.getValue().intValue()],
-                            row[patientIDPos.getValue().intValue()],
-                            row[patientNamePos.getValue().intValue()],
-                            row[issuerOfPatientIDPos.getValue().intValue()]);
+                for (String[] row : allRows.subList(fromLine.getValue().intValue() - 1, allRows.size())) {
+                    final CachedPatient newPatient = new CachedPatient(row[externalPseudonymPos.getValue().intValue() - 1],
+                            row[patientIDPos.getValue().intValue() - 1],
+                            row[patientNamePos.getValue().intValue() - 1],
+                            row[issuerOfPatientIDPos.getValue().intValue() - 1]);
                     externalIDCache.put(PatientClientUtil.generateKey(newPatient), newPatient);
                 }
             } catch (Exception e) {
@@ -121,10 +121,11 @@ public class CSVDialog extends Dialog {
 
         for (int i = 0; i < headers.length; i++) {
             int idx = i;
-            grid.addColumn(lineArray -> lineArray[idx]).setHeader(headers[idx]);
+            grid.addColumn(lineArray -> lineArray[idx]).setHeader(String.format("Column %d", i + 1));
         }
-        grid.setItems(allRows);
 
+        grid.setItems(allRows);
+        grid.recalculateColumnWidths();
         fromLine.addValueChangeListener(numberValue -> {
             if (numberValue.getValue().intValue() > allRows.size()) {
                 grid.setItems(allRows.subList(allRows.size(), allRows.size()));
