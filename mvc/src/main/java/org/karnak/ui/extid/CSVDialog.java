@@ -1,9 +1,12 @@
 package org.karnak.ui.extid;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.NumberField;
 
@@ -51,6 +54,8 @@ public class CSVDialog extends Dialog {
 
     public CSVDialog(InputStream inputStream, char separator) {
         removeAll();
+
+        setWidth("50%");
         externalIDCache = AppConfig.getInstance().getExternalIDCache();
 
         allRows = null;
@@ -65,7 +70,8 @@ public class CSVDialog extends Dialog {
         buildGrid();
 
         divContent.add(grid);
-        add(divTitle, fromLine, divContent, errorMsg,readCSVButton, cancelButton);
+        HorizontalLayout horizontalLayout = new HorizontalLayout(cancelButton, readCSVButton);
+        add(divTitle, fromLine, divContent, errorMsg, horizontalLayout);
     }
 
     private void setElement(){
@@ -94,6 +100,8 @@ public class CSVDialog extends Dialog {
             }
 
         });
+        readCSVButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        readCSVButton.setIcon(VaadinIcon.PLUS_CIRCLE.create());
 
         cancelButton = new Button("Cancel", event -> close());
 
