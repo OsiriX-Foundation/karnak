@@ -4,6 +4,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.NumberField;
 
 import liquibase.util.csv.opencsv.CSVReader;
@@ -13,14 +14,14 @@ import org.karnak.cache.PatientClientUtil;
 import org.karnak.data.AppConfig;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
 
 public class CSVDialog extends Dialog {
 
-    private NumberField externalPseudonymPos;
-    private NumberField patientIDPos;
-    private NumberField patientNamePos;
-    private NumberField issuerOfPatientIDPos;
     private NumberField fromLine;
 
     private Button readCSVButton;
@@ -28,11 +29,15 @@ public class CSVDialog extends Dialog {
     private Div divContent;
     private Div divTitle;
 
+    private Grid<String[]> grid;
+
+    private List<Select<String>> listOfSelect;
+
     private transient PatientClient externalIDCache;
 
     private List<String[]> allRows;
-
-    private Grid<String[]> grid;
+    private final String[] selectValues = {"", "External Pseudonym", "Patient ID", "Patient name", "Issuer of patient ID"};
+    private HashMap<String, Integer> hashMap;
 
     public CSVDialog(CSVReader csvReader) {
         removeAll();
@@ -48,10 +53,6 @@ public class CSVDialog extends Dialog {
         setElement();
         buildGrid();
 
-        divContent.add(externalPseudonymPos);
-        divContent.add(patientIDPos);
-        divContent.add(patientNamePos);
-        divContent.add(issuerOfPatientIDPos);
         divContent.add(grid);
         add(divTitle, fromLine, divContent, readCSVButton, cancelButton);
     }
@@ -69,38 +70,15 @@ public class CSVDialog extends Dialog {
         fromLine.setMin(1);
         fromLine.setMax((double) allRows.size() + 1);
 
-        externalPseudonymPos = new NumberField("Select the column number of the external pseudonym");
-        externalPseudonymPos.setValue(1d);
-        externalPseudonymPos.setHasControls(true);
-        externalPseudonymPos.setMin(1);
-        externalPseudonymPos.setWidthFull();
-
-        patientIDPos = new NumberField("Select the column number of the patient ID");
-        patientIDPos.setValue(2d);
-        patientIDPos.setHasControls(true);
-        patientIDPos.setMin(1);
-        patientIDPos.setWidthFull();
-
-        patientNamePos = new NumberField("Select the column number of the patient name");
-        patientNamePos.setValue(3d);
-        patientNamePos.setHasControls(true);
-        patientNamePos.setMin(1);
-        patientNamePos.setWidthFull();
-
-        issuerOfPatientIDPos = new NumberField("Select the column number of the issuer of patient ID");
-        issuerOfPatientIDPos.setValue(4d);
-        issuerOfPatientIDPos.setHasControls(true);
-        issuerOfPatientIDPos.setMin(1);
-        issuerOfPatientIDPos.setWidthFull();
 
         readCSVButton = new Button("Read CSV", event -> {
             try {
                 //Read CSV line by line and use the string array as you want
                 for (String[] row : allRows.subList(fromLine.getValue().intValue() - 1, allRows.size())) {
-                    final CachedPatient newPatient = new CachedPatient(row[externalPseudonymPos.getValue().intValue() - 1],
-                            row[patientIDPos.getValue().intValue() - 1],
-                            row[patientNamePos.getValue().intValue() - 1],
-                            row[issuerOfPatientIDPos.getValue().intValue() - 1]);
+                    final CachedPatient newPatient = new CachedPatient(row[hashMap.get("External Pseudonym")],
+                            row[hashMap.get("Patient ID")],
+                            row[hashMap.get("Patient name")],
+                            row[hashMap.get("Issuer of patient ID")]);
                     externalIDCache.put(PatientClientUtil.generateKey(newPatient), newPatient);
                 }
             } catch (Exception e) {
@@ -118,14 +96,38 @@ public class CSVDialog extends Dialog {
         grid = new Grid<>();
 
         String[] headers = allRows.get(0);
+        listOfSelect = new ArrayList<>();
+
+        hashMap = new HashMap<>();
+
+        for(String val: selectValues) {
+            hashMap.put(val, -1);
+        }
 
         for (int i = 0; i < headers.length; i++) {
             int idx = i;
-            grid.addColumn(lineArray -> lineArray[idx]).setHeader(String.format("Column %d", i + 1));
+            Select<String> currentSelect = new Select<>();
+            currentSelect.setId(String.format("%d",i));
+            currentSelect.setItems(selectValues);
+            currentSelect.addValueChangeListener(value -> {
+                int currentPosition = Integer.parseInt(currentSelect.getId().orElse("-1"));
+                //reset value of old key
+                if (hashMap.containsValue(currentPosition)) {
+                    String valueInHashMap = getKey(hashMap, currentPosition);
+                    if (valueInHashMap != null) {
+                        hashMap.replace(valueInHashMap, -1);
+                    }
+                }
+                //update new key
+                hashMap.replace(value.getValue(), currentPosition);
+                updateSelectGrid();
+            });
+            listOfSelect.add(currentSelect);
+            grid.addColumn(lineArray -> lineArray[idx]).setHeader(currentSelect);
         }
 
+
         grid.setItems(allRows);
-        grid.recalculateColumnWidths();
         fromLine.addValueChangeListener(numberValue -> {
             if (numberValue.getValue().intValue() > allRows.size()) {
                 grid.setItems(allRows.subList(allRows.size(), allRows.size()));
@@ -134,6 +136,28 @@ public class CSVDialog extends Dialog {
             }
         });
 
+    }
+
+    private void updateSelectGrid() {
+        for(Select<String> currentSelect : listOfSelect) {
+            int currentPosition = Integer.parseInt(currentSelect.getId().orElse("-1"));
+
+            currentSelect.setItemEnabledProvider(item -> hashMap.get(item).equals(-1) ||
+                    hashMap.get(item).equals(currentPosition) || item.equals("")
+
+            );
+        }
+
+    }
+
+    public <K, V> String getKey(Map<K, V> map, V value) {
+        Stream<K> keyStream1 = map
+                .entrySet()
+                .stream()
+                .filter(entry -> value.equals(entry.getValue()))
+                .map(Map.Entry::getKey);
+
+        return (String) keyStream1.findFirst().orElse(null);
     }
 
 }
