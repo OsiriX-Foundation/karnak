@@ -13,14 +13,12 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.validator.StringLengthValidator;
-import liquibase.util.csv.opencsv.CSVReader;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.cache.*;
 import org.karnak.data.AppConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.*;
 
 
@@ -81,6 +79,7 @@ public class AddNewPatientForm extends VerticalLayout {
     private void setElements() {
         HorizontalLayout horizontalLayout1 = new HorizontalLayout();
         HorizontalLayout horizontalLayout2 = new HorizontalLayout();
+        HorizontalLayout horizontalLayout3 = new HorizontalLayout();
 
         externalIdField = new TextField("External Pseudonym");
         externalIdField.setWidth("25%");
@@ -90,6 +89,10 @@ public class AddNewPatientForm extends VerticalLayout {
         patientNameField.setWidth("25%");
         issuerOfPatientIdField = new TextField("Issuer of patient ID");
         issuerOfPatientIdField.setWidth("25%");
+
+        TextField separatorCSVField = new TextField("Separator");
+        separatorCSVField.setMaxLength(1);
+        separatorCSVField.setValue(",");
 
         clearFieldsButton = new Button("Clear");
         clearFieldsButton.getStyle().set("margin-left", "auto");
@@ -103,17 +106,24 @@ public class AddNewPatientForm extends VerticalLayout {
         uploadCsvButton.setDropLabel(new Span("Drag and drop your CSV here"));
         uploadCsvButton.addSucceededListener(event -> {
             inputStream = memoryBuffer.getInputStream();
-            CSVReader csvReader = new CSVReader(new InputStreamReader(inputStream));
-            CSVDialog csvDialog = new CSVDialog(csvReader);
+
+            char separator = ',';
+            if(!separatorCSVField.getValue().equals("")){
+                separator = separatorCSVField.getValue().charAt(0);
+            }
+
+            CSVDialog csvDialog = new CSVDialog(inputStream, separator);
             csvDialog.open();
         });
 
         horizontalLayout1.setSizeFull();
         horizontalLayout2.setSizeFull();
+        horizontalLayout3.setSizeFull();
 
         horizontalLayout1.add(externalIdField, patientIdField, patientNameField, issuerOfPatientIdField);
         horizontalLayout2.add(clearFieldsButton, addNewPatientButton);
-        add(horizontalLayout1, uploadCsvButton, horizontalLayout2);
+        horizontalLayout3.add(uploadCsvButton, separatorCSVField);
+        add(horizontalLayout1, horizontalLayout3, horizontalLayout2);
     }
 
     public void setBinder(){

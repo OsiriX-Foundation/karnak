@@ -14,6 +14,8 @@ import org.karnak.cache.PatientClientUtil;
 import org.karnak.data.AppConfig;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,17 +43,19 @@ public class CSVDialog extends Dialog {
     private List<Select<String>> listOfSelect;
 
     private transient PatientClient externalIDCache;
+    private transient CSVReader csvReader;
 
     private List<String[]> allRows;
     private final String[] selectValues = {"", EXTERNAL_PSEUDONYM, PATIENT_ID, PATIENT_NAME, ISSUER_OF_PATIENT_ID};
     private HashMap<String, Integer> hashMap;
 
-    public CSVDialog(CSVReader csvReader) {
+    public CSVDialog(InputStream inputStream, char separator) {
         removeAll();
         externalIDCache = AppConfig.getInstance().getExternalIDCache();
 
         allRows = null;
         try {
+            csvReader = new CSVReader(new InputStreamReader(inputStream), separator);
             allRows = csvReader.readAll();
         } catch (IOException e) {
             e.printStackTrace();
