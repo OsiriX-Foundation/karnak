@@ -1,5 +1,11 @@
 package org.karnak.profilepipe.utils;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.time.LocalDate;
+import java.util.stream.Stream;
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.Tag;
 import org.dcm4che6.data.VR;
@@ -7,14 +13,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.karnak.cache.CachedPatient;
-import org.karnak.cache.MainzellistePatient;
-import org.karnak.cache.PseudonymPatient;
-
-import java.time.LocalDate;
-import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.karnak.backend.cache.CachedPatient;
+import org.karnak.backend.cache.MainzellistePatient;
+import org.karnak.backend.cache.PseudonymPatient;
+import org.karnak.backend.model.profilepipe.PatientMetadata;
 
 class PatientMetadataTest {
     static PatientMetadata patientMetadata;

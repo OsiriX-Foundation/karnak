@@ -1,9 +1,9 @@
 package org.karnak.profilepipe.utils;
 
-import org.junit.jupiter.api.Test;
-import org.karnak.expression.ExprAction;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+import org.karnak.backend.model.expression.ExprAction;
 
 class ExprDCMElemTest {
 

@@ -1,12 +1,13 @@
 package org.karnak.profilepipe.option.datemanager;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.karnak.data.profile.Argument;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.karnak.backend.util.DateFormat;
+import org.karnak.data.profile.Argument;
 
 class DatePatternTest {
 

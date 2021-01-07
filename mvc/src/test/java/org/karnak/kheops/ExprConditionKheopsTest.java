@@ -1,18 +1,17 @@
 package org.karnak.kheops;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.stream.Stream;
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.Tag;
 import org.dcm4che6.data.VR;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.karnak.expression.ExprConditionKheops;
-
-import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.karnak.backend.model.expression.ExprConditionKheops;
 
 class ExprConditionKheopsTest {
     private static ExprConditionKheops exprConditionKheops;

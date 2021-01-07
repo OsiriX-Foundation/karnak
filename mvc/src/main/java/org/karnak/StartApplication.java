@@ -2,7 +2,7 @@ package org.karnak;
 
 
 import com.vaadin.flow.spring.annotation.EnableVaadin;
-import org.karnak.data.AppConfig;
+import org.karnak.backend.configuration.AppConfig;
 import org.keycloak.adapters.springsecurity.KeycloakSecurityComponents;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

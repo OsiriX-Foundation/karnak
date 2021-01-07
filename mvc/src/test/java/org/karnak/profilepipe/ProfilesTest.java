@@ -1,23 +1,22 @@
 package org.karnak.profilepipe;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.Tag;
 import org.dcm4che6.data.VR;
-import org.dcm4che6.util.TagUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.karnak.backend.model.profilepipe.HMAC;
+import org.karnak.backend.model.profilepipe.HashContext;
+import org.karnak.backend.service.profilepipe.Profiles;
+import org.karnak.backend.util.DicomObjectTools;
 import org.karnak.data.profile.Argument;
 import org.karnak.data.profile.IncludedTag;
 import org.karnak.data.profile.Profile;
 import org.karnak.data.profile.ProfileElement;
-import org.karnak.profilepipe.utils.DicomObjectTools;
-import org.karnak.profilepipe.utils.HMAC;
-import org.karnak.profilepipe.utils.HashContext;
 import org.springframework.boot.test.context.SpringBootTest;
-
-
-import static org.junit.jupiter.api.Assertions.*;
 
 
 @SpringBootTest

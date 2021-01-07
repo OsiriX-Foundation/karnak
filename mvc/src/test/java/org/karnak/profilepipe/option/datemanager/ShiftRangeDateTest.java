@@ -1,27 +1,28 @@
 package org.karnak.profilepipe.option.datemanager;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.ArrayList;
+import java.util.List;
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.Tag;
 import org.dcm4che6.data.VR;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.karnak.backend.model.profilepipe.HMAC;
+import org.karnak.backend.model.profilepipe.HashContext;
+import org.karnak.backend.util.ShiftRangeDate;
 import org.karnak.data.profile.Argument;
-import org.karnak.profilepipe.utils.HMAC;
-import org.karnak.profilepipe.utils.HashContext;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class ShiftRangeDateTest {
-    private static DicomObject dataset = DicomObject.newDicomObject();
-    private static List<Argument> arguments = new ArrayList<>();
-    private static Argument max_seconds = new Argument();
-    private static Argument max_days = new Argument();
-    private static Argument min_seconds = new Argument();
-    private static Argument min_days = new Argument();
+
+    private static final DicomObject dataset = DicomObject.newDicomObject();
+    private static final List<Argument> arguments = new ArrayList<>();
+    private static final Argument max_seconds = new Argument();
+    private static final Argument max_days = new Argument();
+    private static final Argument min_seconds = new Argument();
+    private static final Argument min_days = new Argument();
 
     @BeforeAll
     protected static void setUpBeforeClass() throws Exception {
