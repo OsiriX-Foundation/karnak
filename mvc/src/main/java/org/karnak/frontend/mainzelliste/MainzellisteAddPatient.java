@@ -16,7 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.karnak.backend.api.PseudonymApi;
 import org.karnak.backend.api.rqbody.Fields;
 import org.karnak.backend.cache.MainzellistePatient;
-import org.karnak.data.gateway.IdTypes;
+import org.karnak.backend.enums.IdTypes;
 import org.karnak.frontend.component.ConfirmDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

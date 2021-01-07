@@ -5,9 +5,9 @@ package org.karnak.backend.service;
 
 import java.io.Serializable;
 import java.util.Optional;
+import org.karnak.backend.data.entity.ForwardNode;
 import org.karnak.backend.enums.NodeEventType;
 import org.karnak.backend.model.NodeEvent;
-import org.karnak.data.gateway.ForwardNode;
 import org.springframework.context.ApplicationEventPublisher;
 
 public class ForwardNodeAPI implements Serializable {

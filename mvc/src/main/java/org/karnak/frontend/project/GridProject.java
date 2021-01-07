@@ -1,8 +1,8 @@
 package org.karnak.frontend.project;
 
 import com.vaadin.flow.component.grid.Grid;
+import org.karnak.backend.data.entity.Project;
 import org.karnak.backend.service.ProjectDataProvider;
-import org.karnak.data.gateway.Project;
 
 public class GridProject extends Grid<Project> {
 

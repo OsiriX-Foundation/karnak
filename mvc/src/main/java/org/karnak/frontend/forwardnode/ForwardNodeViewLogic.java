@@ -1,8 +1,8 @@
 package org.karnak.frontend.forwardnode;
 
 import com.vaadin.flow.component.UI;
+import org.karnak.backend.data.entity.ForwardNode;
 import org.karnak.backend.service.ForwardNodeAPI;
-import org.karnak.data.gateway.ForwardNode;
 
 public class ForwardNodeViewLogic {
     private final ForwardNodeAPI forwardNodeAPI;

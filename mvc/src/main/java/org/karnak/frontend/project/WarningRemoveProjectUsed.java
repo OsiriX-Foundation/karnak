@@ -3,8 +3,8 @@ package org.karnak.frontend.project;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
-import org.karnak.data.gateway.Destination;
-import org.karnak.data.gateway.Project;
+import org.karnak.backend.data.entity.Destination;
+import org.karnak.backend.data.entity.Project;
 
 public class WarningRemoveProjectUsed extends Dialog {
     public void setText(Project project) {

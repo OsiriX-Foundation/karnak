@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.karnak.backend.data.entity.Argument;
 import org.karnak.backend.util.DateFormat;
-import org.karnak.data.profile.Argument;
 
 class DatePatternTest {
 

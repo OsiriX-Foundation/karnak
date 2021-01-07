@@ -4,7 +4,7 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
-import org.karnak.data.gateway.ForwardNode;
+import org.karnak.backend.data.entity.ForwardNode;
 
 @SuppressWarnings("serial")
 public class ForwardNodeDataProvider extends ListDataProvider<ForwardNode> {

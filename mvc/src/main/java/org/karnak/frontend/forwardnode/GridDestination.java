@@ -1,7 +1,7 @@
 package org.karnak.frontend.forwardnode;
 
 import com.vaadin.flow.component.grid.Grid;
-import org.karnak.data.gateway.Destination;
+import org.karnak.backend.data.entity.Destination;
 
 public class GridDestination extends Grid<Destination> {
     public GridDestination() {

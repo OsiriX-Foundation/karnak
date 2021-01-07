@@ -7,8 +7,8 @@ import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import org.dcm4che6.util.TagUtils;
+import org.karnak.backend.data.entity.Destination;
 import org.karnak.backend.util.DoubleToIntegerConverter;
-import org.karnak.data.gateway.Destination;
 import org.karnak.frontend.util.UIS;
 
 public class ExtidPresentInDicomTagView extends Div {

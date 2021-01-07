@@ -7,7 +7,7 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import java.util.ArrayList;
 import java.util.List;
-import org.karnak.data.gateway.KheopsAlbums;
+import org.karnak.backend.data.entity.KheopsAlbums;
 import org.karnak.frontend.util.UIS;
 
 public class SwitchingAlbumsView extends CustomField<List<KheopsAlbums>> {

@@ -5,9 +5,9 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.data.binder.Binder;
 import java.util.HashSet;
 import java.util.Set;
+import org.karnak.backend.data.entity.Destination;
+import org.karnak.backend.data.entity.SOPClassUID;
 import org.karnak.backend.service.SOPClassUIDDataProvider;
-import org.karnak.data.gateway.Destination;
-import org.karnak.data.gateway.SOPClassUID;
 import org.vaadin.gatanaso.MultiselectComboBox;
 
 public class FilterBySOPClassesForm extends HorizontalLayout {

@@ -4,8 +4,8 @@ import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import org.karnak.backend.data.entity.ForwardNode;
 import org.karnak.backend.service.ForwardNodeAPI;
-import org.karnak.data.gateway.ForwardNode;
 
 public class LayoutNewGridForwardNode extends VerticalLayout {
 

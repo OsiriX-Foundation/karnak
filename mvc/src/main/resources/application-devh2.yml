@@ -11,9 +11,27 @@ spring:
     password: password
     url: 'jdbc:h2:mem:testdb'
     username: sa
+    hikari:
+      connectionTimeout: 20000
+      maximumPoolSize: 5
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: create
-
-
+    show-sql: false
+    properties:
+      hibernate:
+        temp:
+          use_jdbc_metadata_defaults: false
+logging:
+  level:
+    com:
+      zaxxer: WARN
+    root: WARN
+    org:
+      hibernate: INFO
+      springframework:
+        boot:
+          autoconfigure: ERROR
+  pattern:
+    console: %d %-5level %logger{36} - %msg%n

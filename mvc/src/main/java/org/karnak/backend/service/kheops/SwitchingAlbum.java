@@ -9,13 +9,13 @@ import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.Tag;
 import org.json.JSONObject;
 import org.karnak.backend.api.KheopsApi;
+import org.karnak.backend.data.entity.Destination;
+import org.karnak.backend.data.entity.KheopsAlbums;
+import org.karnak.backend.data.entity.Project;
 import org.karnak.backend.model.expression.ExprConditionKheops;
 import org.karnak.backend.model.expression.ExpressionResult;
 import org.karnak.backend.model.kheops.MetadataSwitching;
 import org.karnak.backend.model.profilepipe.HMAC;
-import org.karnak.data.gateway.Destination;
-import org.karnak.data.gateway.KheopsAlbums;
-import org.karnak.data.gateway.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

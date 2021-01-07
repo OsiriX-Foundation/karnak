@@ -6,7 +6,7 @@ import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.icon.IronIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import java.util.ArrayList;
-import org.karnak.data.profile.ProfileElement;
+import org.karnak.backend.data.entity.ProfileElement;
 
 public class ProfileErrorView extends VerticalLayout {
     ProfileErrorView() {

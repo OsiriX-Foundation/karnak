@@ -11,8 +11,8 @@ import org.dcm4che6.data.VR;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.karnak.backend.data.entity.Argument;
 import org.karnak.backend.util.ShiftDate;
-import org.karnak.data.profile.Argument;
 
 class ShiftDateTest {
 

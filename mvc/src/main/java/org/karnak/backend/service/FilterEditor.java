@@ -4,7 +4,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.Tag;
-import org.karnak.data.gateway.SOPClassUID;
+import org.karnak.backend.data.entity.SOPClassUID;
 import org.weasis.dicom.param.AttributeEditor;
 import org.weasis.dicom.param.AttributeEditorContext;
 import org.weasis.dicom.param.AttributeEditorContext.Abort;

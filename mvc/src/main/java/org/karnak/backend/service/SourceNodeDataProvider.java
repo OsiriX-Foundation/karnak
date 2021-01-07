@@ -6,9 +6,9 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import org.karnak.backend.configuration.GatewayConfiguration;
-import org.karnak.data.gateway.DicomSourceNode;
-import org.karnak.data.gateway.DicomSourceNodePersistence;
-import org.karnak.data.gateway.ForwardNode;
+import org.karnak.backend.data.entity.DicomSourceNode;
+import org.karnak.backend.data.entity.ForwardNode;
+import org.karnak.backend.data.repository.DicomSourceNodePersistence;
 
 @SuppressWarnings("serial")
 public class SourceNodeDataProvider extends ListDataProvider<DicomSourceNode> {

@@ -5,13 +5,13 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
+import org.karnak.backend.data.entity.Destination;
+import org.karnak.backend.data.entity.DicomSourceNode;
+import org.karnak.backend.data.entity.ForwardNode;
+import org.karnak.backend.enums.DestinationType;
 import org.karnak.backend.service.DestinationDataProvider;
 import org.karnak.backend.service.ForwardNodeAPI;
 import org.karnak.backend.service.SourceNodeDataProvider;
-import org.karnak.data.gateway.Destination;
-import org.karnak.data.gateway.DestinationType;
-import org.karnak.data.gateway.DicomSourceNode;
-import org.karnak.data.gateway.ForwardNode;
 import org.karnak.frontend.component.ConfirmDialog;
 import org.karnak.frontend.util.UIS;
 

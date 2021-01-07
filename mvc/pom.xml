@@ -1,83 +1,173 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <artifactId>karnak-mvc</artifactId>
 
-	<parent>
-		<groupId>org.karnak</groupId>
-		<artifactId>karnak-parent</artifactId>
-		<version>0.9.3-SNAPSHOT</version>
-		<relativePath>../parent/pom.xml</relativePath>
-	</parent>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <artifactItems>
+            <artifactItem>
+              <artifactId>libopencv_java</artifactId>
+              <classifier>linux-x86-64</classifier>
+              <destFileName>libopencv_java.so</destFileName>
+              <groupId>org.weasis.thirdparty.org.opencv</groupId>
+              <outputDirectory>${project.build.directory}/native-lib/lib/linux-x86-64
+              </outputDirectory>
+              <type>so</type>
+              <version>${weasis.opencv.native.version}</version>
+            </artifactItem>
+            <artifactItem>
+              <artifactId>libopencv_java</artifactId>
+              <classifier>macosx-x86-64</classifier>
+              <destFileName>libopencv_java.jnilib</destFileName>
+              <groupId>org.weasis.thirdparty.org.opencv</groupId>
+              <outputDirectory>${project.build.directory}/native-lib/lib/macosx-x86-64
+              </outputDirectory>
+              <type>jnilib</type>
+              <version>${weasis.opencv.native.version}</version>
+            </artifactItem>
+            <artifactItem>
+              <artifactId>opencv_java</artifactId>
+              <classifier>windows-x86-64</classifier>
+              <destFileName>opencv_java.dll</destFileName>
+              <groupId>org.weasis.thirdparty.org.opencv</groupId>
+              <outputDirectory>${project.build.directory}/native-lib/lib/windows-x86-64
+              </outputDirectory>
+              <type>dll</type>
+              <version>${weasis.opencv.native.version}</version>
+            </artifactItem>
+          </artifactItems>
+          <outputDirectory>${project.build.directory}</outputDirectory>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <id>copy</id>
+            <phase>generate-resources</phase>
+          </execution>
+        </executions>
+        <groupId>org.apache.maven.plugins</groupId>
+        <version>3.1.1</version>
+      </plugin>
+      <plugin>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+          <jvmArguments>
+            -Djava.library.path="${java.io.tmpdir}/dicom-opencv-${weasis.opencv.native.version}"
+          </jvmArguments>
+          <!-- Clean build and startup time for Vaadin apps sometimes may exceed the default Spring Boot's 30sec timeout.  -->
+          <wait>500</wait>
+          <maxAttempts>240</maxAttempts>
+          <layers>
+            <enabled>true</enabled>
+          </layers>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>repackage</goal>
+            </goals>
+          </execution>
+        </executions>
+        <groupId>org.springframework.boot</groupId>
+        <version>${springframework.version}</version>
+      </plugin>
+      <!-- Take care of synchronizing java dependencies and imports in package.json and main.js files. It also creates webpack.config.js
+        if not exists yet. -->
+      <plugin>
+        <artifactId>vaadin-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>prepare-frontend</goal>
+            </goals>
+          </execution>
+        </executions>
+        <groupId>com.vaadin</groupId>
+        <version>${vaadin.version}</version>
+      </plugin>
+    </plugins>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+      <resource>
+        <directory>${project.build.directory}/native-lib</directory>
+      </resource>
+    </resources>
+  </build>
 
-	<artifactId>karnak-mvc</artifactId>
-	<name>karnak services and UI</name>
-	<packaging>jar</packaging>
+  <dependencies>
 
-	<dependencies>
-		<dependency>
-			<groupId>javax.cache</groupId>
-			<artifactId>cache-api</artifactId>
-			<version>1.1.1</version>
-		</dependency>
+    <dependency>
+      <artifactId>spring-boot-starter</artifactId>
+      <groupId>org.springframework.boot</groupId>
+    </dependency>
 
-		<dependency>
-			<groupId>com.hazelcast</groupId>
-			<artifactId>hazelcast</artifactId>
-			<version>4.1</version>
-		</dependency>
+    <dependency>
+      <artifactId>cache-api</artifactId>
+      <groupId>javax.cache</groupId>
+      <version>1.1.1</version>
+    </dependency>
 
-		<dependency>
-			<groupId>org.liquibase</groupId>
-			<artifactId>liquibase-maven-plugin</artifactId>
-			<version>3.4.1</version>
-		</dependency>
+    <dependency>
+      <artifactId>hazelcast</artifactId>
+      <groupId>com.hazelcast</groupId>
+      <version>4.1</version>
+    </dependency>
 
-		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-			<version>20180813</version>
-		</dependency>
+    <dependency>
+      <artifactId>liquibase-maven-plugin</artifactId>
+      <groupId>org.liquibase</groupId>
+      <version>3.4.1</version>
+    </dependency>
 
-		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-			<version>2.8.6</version>
-		</dependency>
+    <dependency>
+      <artifactId>json</artifactId>
+      <groupId>org.json</groupId>
+      <version>20180813</version>
+    </dependency>
 
+    <dependency>
+      <artifactId>gson</artifactId>
+      <groupId>com.google.code.gson</groupId>
+      <version>2.8.6</version>
+    </dependency>
 
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>karnak-data</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.weasis</groupId>
-			<artifactId>weasis-dicom-tools</artifactId>
-			<version>${weasis-dicom-tools.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-log4j12</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>com.sun.mail</groupId>
-			<artifactId>javax.mail</artifactId>
-			<version>${javax.mail.version}</version>
-		</dependency>
+    <dependency>
+      <artifactId>weasis-dicom-tools</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>slf4j-log4j12</artifactId>
+          <groupId>org.slf4j</groupId>
+        </exclusion>
+      </exclusions>
+      <groupId>org.weasis</groupId>
+      <version>${weasis-dicom-tools.version}</version>
+    </dependency>
+    <dependency>
+      <artifactId>javax.mail</artifactId>
+      <groupId>com.sun.mail</groupId>
+      <version>${javax.mail.version}</version>
+    </dependency>
 
-		<!-- jpa, crud repository -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
-		</dependency>
+    <!-- jpa, crud repository -->
+    <dependency>
+      <artifactId>spring-boot-starter-data-jpa</artifactId>
+      <groupId>org.springframework.boot</groupId>
+    </dependency>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
+    <dependency>
+      <artifactId>spring-boot-starter-web</artifactId>
+      <groupId>org.springframework.boot</groupId>
+    </dependency>
 
     <!-- Vaadin Spring -->
     <dependency>
@@ -93,11 +183,11 @@
       </exclusions>
     </dependency>
 
-		<!-- Spring Security -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency>
+    <!-- Spring Security -->
+    <dependency>
+      <artifactId>spring-boot-starter-security</artifactId>
+      <groupId>org.springframework.boot</groupId>
+    </dependency>
 
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -106,60 +196,60 @@
       <optional>true</optional>
     </dependency>
 
-		<!-- Bean validation implementation -->
-		<dependency>
-			<groupId>org.hibernate.validator</groupId>
-			<artifactId>hibernate-validator</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.glassfish</groupId>
-			<artifactId>javax.el</artifactId>
-			<version>${javax.el.version}</version>
-		</dependency>
+    <!-- Bean validation implementation -->
+    <dependency>
+      <artifactId>hibernate-validator</artifactId>
+      <groupId>org.hibernate.validator</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>javax.el</artifactId>
+      <groupId>org.glassfish</groupId>
+      <version>${javax.el.version}</version>
+    </dependency>
 
-		<!-- PostgreSQL -->
-		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<scope>runtime</scope>
-		</dependency>
+    <!-- PostgreSQL -->
+    <dependency>
+      <artifactId>postgresql</artifactId>
+      <groupId>org.postgresql</groupId>
+      <scope>runtime</scope>
+    </dependency>
 
-		<dependency>
-			<groupId>com.vaadin</groupId>
-			<!-- Replace artifactId with vaadin-core to use only free components -->
-			<artifactId>vaadin</artifactId>
-			<exclusions>
-				<!-- Webjars are only needed when running in Vaadin 13 compatibility mode -->
-				<exclusion>
-					<groupId>com.vaadin.webjar</groupId>
-					<artifactId>*</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.webjars.bowergithub.insites</groupId>
-					<artifactId>*</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.webjars.bowergithub.polymer</groupId>
-					<artifactId>*</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.webjars.bowergithub.polymerelements</groupId>
-					<artifactId>*</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.webjars.bowergithub.vaadin</groupId>
-					<artifactId>*</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.webjars.bowergithub.webcomponents</groupId>
-					<artifactId>*</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>com.vaadin</groupId>
-			<artifactId>vaadin-confirm-dialog-flow</artifactId>
-		</dependency>
+    <dependency>
+      <artifactId>vaadin</artifactId>
+      <!-- Replace artifactId with vaadin-core to use only free components -->
+      <exclusions>
+        <!-- Webjars are only needed when running in Vaadin 13 compatibility mode -->
+        <exclusion>
+          <artifactId>*</artifactId>
+          <groupId>com.vaadin.webjar</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>*</artifactId>
+          <groupId>org.webjars.bowergithub.insites</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>*</artifactId>
+          <groupId>org.webjars.bowergithub.polymer</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>*</artifactId>
+          <groupId>org.webjars.bowergithub.polymerelements</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>*</artifactId>
+          <groupId>org.webjars.bowergithub.vaadin</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>*</artifactId>
+          <groupId>org.webjars.bowergithub.webcomponents</groupId>
+        </exclusion>
+      </exclusions>
+      <groupId>com.vaadin</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>vaadin-confirm-dialog-flow</artifactId>
+      <groupId>com.vaadin</groupId>
+    </dependency>
     <!-- Vaadin - Addons -->
     <dependency>
       <groupId>com.flowingcode.addons</groupId>
@@ -182,10 +272,10 @@
       <version>1.0.0</version>
     </dependency>
 
-		<dependency>
-			<groupId>javax.validation</groupId>
-			<artifactId>validation-api</artifactId>
-		</dependency>
+    <dependency>
+      <artifactId>validation-api</artifactId>
+      <groupId>javax.validation</groupId>
+    </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>jul-to-slf4j</artifactId>
@@ -203,6 +293,20 @@
       <version>11.0.3</version>
     </dependency>
 
+    <!--	Jackson -->
+    <dependency>
+      <artifactId>jackson-annotations</artifactId>
+      <groupId>com.fasterxml.jackson.core</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>jackson-databind</artifactId>
+      <groupId>com.fasterxml.jackson.core</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>jackson-module-jaxb-annotations</artifactId>
+      <groupId>com.fasterxml.jackson.module</groupId>
+    </dependency>
+
     <!-- Tests -->
     <dependency>
       <groupId>org.codehaus.janino</groupId>
@@ -218,6 +322,10 @@
     </dependency>
 
   </dependencies>
+  <modelVersion>4.0.0</modelVersion>
+  <name>karnak services and UI</name>
+
+  <packaging>jar</packaging>
 
   <dependencyManagement>
     <dependencies>
@@ -238,157 +346,69 @@
     </dependencies>
   </dependencyManagement>
 
-  <build>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>true</filtering>
-      </resource>
-      <resource>
-        <directory>${project.build.directory}/native-lib</directory>
-      </resource>
-		</resources>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>3.1.1</version>
-				<executions>
-					<execution>
-						<id>copy</id>
-						<phase>generate-resources</phase>
-						<goals>
-							<goal>copy</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<artifactItems>
-						<artifactItem>
-							<groupId>org.weasis.thirdparty.org.opencv</groupId>
-							<artifactId>libopencv_java</artifactId>
-							<version>${weasis.opencv.native.version}</version>
-							<type>so</type>
-							<classifier>linux-x86-64</classifier>
-							<outputDirectory>${project.build.directory}/native-lib/lib/linux-x86-64</outputDirectory>
-							<destFileName>libopencv_java.so</destFileName>
-						</artifactItem>
-						<artifactItem>
-							<groupId>org.weasis.thirdparty.org.opencv</groupId>
-							<artifactId>libopencv_java</artifactId>
-							<version>${weasis.opencv.native.version}</version>
-							<type>jnilib</type>
-							<classifier>macosx-x86-64</classifier>
-							<outputDirectory>${project.build.directory}/native-lib/lib/macosx-x86-64</outputDirectory>
-							<destFileName>libopencv_java.jnilib</destFileName>
-						</artifactItem>
-						<artifactItem>
-							<groupId>org.weasis.thirdparty.org.opencv</groupId>
-							<artifactId>opencv_java</artifactId>
-							<version>${weasis.opencv.native.version}</version>
-							<type>dll</type>
-							<classifier>windows-x86-64</classifier>
-							<outputDirectory>${project.build.directory}/native-lib/lib/windows-x86-64</outputDirectory>
-							<destFileName>opencv_java.dll</destFileName>
-						</artifactItem>
-					</artifactItems>
-					<outputDirectory>${project.build.directory}</outputDirectory>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<version>${springframework.version}</version>
-				<configuration>
-					<jvmArguments>-Djava.library.path="${java.io.tmpdir}/dicom-opencv-${weasis.opencv.native.version}"</jvmArguments>
-          <!-- Clean build and startup time for Vaadin apps sometimes may exceed the default Spring Boot's 30sec timeout.  -->
-          <wait>500</wait>
-          <maxAttempts>240</maxAttempts>
-          <layers>
-            <enabled>true</enabled>
-          </layers>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>repackage</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<!-- Take care of synchronizing java dependencies and imports in package.json and main.js files. It also creates webpack.config.js
-				if not exists yet. -->
-			<plugin>
-				<groupId>com.vaadin</groupId>
-				<artifactId>vaadin-maven-plugin</artifactId>
-				<version>${vaadin.version}</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>prepare-frontend</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
-	<profiles>
-		<profile>
-			<id>devh2</id>
-			<properties>
-				<activatedProperties>devh2</activatedProperties>
-			</properties>
-			<dependencies>
-				<dependency>
-					<groupId>com.h2database</groupId>
-					<artifactId>h2</artifactId>
-					<scope>runtime</scope>
-				</dependency>
-			</dependencies>
-		</profile>
-		<profile>
-			<!-- Production mode is activated using -Pproduction -->
-			<id>production</id>
-			<properties>
-				<vaadin.productionMode>true</vaadin.productionMode>
-			</properties>
-
-			<dependencies>
-				<dependency>
-					<groupId>com.vaadin</groupId>
-					<artifactId>flow-server-production-mode</artifactId>
-				</dependency>
-			</dependencies>
-
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.springframework.boot</groupId>
-						<artifactId>spring-boot-maven-plugin</artifactId>
-						<configuration>
-							<jvmArguments>-Dvaadin.productionMode</jvmArguments>
+  <parent>
+    <artifactId>karnak-parent</artifactId>
+    <groupId>org.karnak</groupId>
+    <relativePath>../parent/pom.xml</relativePath>
+    <version>0.9.3-SNAPSHOT</version>
+  </parent>
+  <profiles>
+    <profile>
+      <dependencies>
+        <dependency>
+          <artifactId>h2</artifactId>
+          <groupId>com.h2database</groupId>
+          <scope>runtime</scope>
+        </dependency>
+      </dependencies>
+      <id>devh2</id>
+      <properties>
+        <activatedProperties>devh2</activatedProperties>
+      </properties>
+    </profile>
+    <profile>
+      <!-- Production mode is activated using -Pproduction -->
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <configuration>
+              <jvmArguments>-Dvaadin.productionMode</jvmArguments>
               <layers>
                 <enabled>true</enabled>
               </layers>
-						</configuration>
-					</plugin>
-					<plugin>
-						<groupId>com.vaadin</groupId>
-						<artifactId>vaadin-maven-plugin</artifactId>
-						<executions>
-							<execution>
-								<goals>
-									<goal>build-frontend</goal>
-								</goals>
-								<phase>compile</phase>
-							</execution>
-						</executions>
-						<configuration>
-							<pnpmEnable>true</pnpmEnable>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
+            </configuration>
+            <groupId>org.springframework.boot</groupId>
+          </plugin>
+          <plugin>
+            <artifactId>vaadin-maven-plugin</artifactId>
+            <configuration>
+              <pnpmEnable>true</pnpmEnable>
+            </configuration>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>build-frontend</goal>
+                </goals>
+                <phase>compile</phase>
+              </execution>
+            </executions>
+            <groupId>com.vaadin</groupId>
+          </plugin>
+        </plugins>
+      </build>
+      <dependencies>
+        <dependency>
+          <artifactId>flow-server-production-mode</artifactId>
+          <groupId>com.vaadin</groupId>
+        </dependency>
+      </dependencies>
+
+      <id>production</id>
+
+      <properties>
+        <vaadin.productionMode>true</vaadin.productionMode>
+      </properties>
+    </profile>
+  </profiles>
 </project>

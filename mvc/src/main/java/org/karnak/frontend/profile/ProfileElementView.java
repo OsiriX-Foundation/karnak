@@ -4,9 +4,9 @@ import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import java.util.List;
-import org.karnak.data.profile.Argument;
-import org.karnak.data.profile.ProfileElement;
-import org.karnak.data.profile.Tag;
+import org.karnak.backend.data.entity.Argument;
+import org.karnak.backend.data.entity.ProfileElement;
+import org.karnak.backend.data.entity.Tag;
 
 public class ProfileElementView extends Div {
     ProfileElement profileElement;

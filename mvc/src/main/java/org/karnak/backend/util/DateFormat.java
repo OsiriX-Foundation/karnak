@@ -8,7 +8,7 @@ import java.util.List;
 import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.util.DateTimeUtils;
-import org.karnak.data.profile.Argument;
+import org.karnak.backend.data.entity.Argument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

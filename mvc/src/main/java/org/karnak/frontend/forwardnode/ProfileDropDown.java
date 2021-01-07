@@ -1,9 +1,9 @@
 package org.karnak.frontend.forwardnode;
 
 import com.vaadin.flow.component.combobox.ComboBox;
+import org.karnak.backend.data.entity.Profile;
 import org.karnak.backend.service.profilepipe.ProfilePipeService;
 import org.karnak.backend.service.profilepipe.ProfilePipeServiceImpl;
-import org.karnak.data.profile.Profile;
 
 public class ProfileDropDown extends ComboBox<Profile> {
 

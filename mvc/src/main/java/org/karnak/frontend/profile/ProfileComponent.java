@@ -14,9 +14,9 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.server.StreamResource;
 import java.io.ByteArrayInputStream;
 import java.util.Comparator;
+import org.karnak.backend.data.entity.Profile;
+import org.karnak.backend.data.entity.ProfileElement;
 import org.karnak.backend.service.profilepipe.ProfilePipeService;
-import org.karnak.data.profile.Profile;
-import org.karnak.data.profile.ProfileElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

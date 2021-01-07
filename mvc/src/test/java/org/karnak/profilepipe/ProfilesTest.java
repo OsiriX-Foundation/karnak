@@ -8,14 +8,14 @@ import org.dcm4che6.data.Tag;
 import org.dcm4che6.data.VR;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.karnak.backend.data.entity.Argument;
+import org.karnak.backend.data.entity.IncludedTag;
+import org.karnak.backend.data.entity.Profile;
+import org.karnak.backend.data.entity.ProfileElement;
 import org.karnak.backend.model.profilepipe.HMAC;
 import org.karnak.backend.model.profilepipe.HashContext;
 import org.karnak.backend.service.profilepipe.Profiles;
 import org.karnak.backend.util.DicomObjectTools;
-import org.karnak.data.profile.Argument;
-import org.karnak.data.profile.IncludedTag;
-import org.karnak.data.profile.Profile;
-import org.karnak.data.profile.ProfileElement;
 import org.springframework.boot.test.context.SpringBootTest;
 
 

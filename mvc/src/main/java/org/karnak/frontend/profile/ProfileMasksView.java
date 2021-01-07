@@ -6,7 +6,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import java.awt.Rectangle;
 import java.util.List;
 import java.util.Set;
-import org.karnak.data.profile.Mask;
+import org.karnak.backend.data.entity.Mask;
 
 public class ProfileMasksView extends VerticalLayout {
 

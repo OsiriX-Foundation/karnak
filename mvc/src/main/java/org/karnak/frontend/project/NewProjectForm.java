@@ -4,7 +4,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
-import org.karnak.data.gateway.Project;
+import org.karnak.backend.data.entity.Project;
 import org.karnak.frontend.forwardnode.ProfileDropDown;
 
 public class NewProjectForm extends HorizontalLayout {

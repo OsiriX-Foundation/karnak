@@ -4,8 +4,8 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import org.apache.commons.lang3.StringUtils;
+import org.karnak.backend.data.entity.Project;
 import org.karnak.backend.model.profilepipe.HMAC;
-import org.karnak.data.gateway.Project;
 import org.karnak.frontend.forwardnode.ProfileDropDown;
 
 public class TextFieldsBindProject {

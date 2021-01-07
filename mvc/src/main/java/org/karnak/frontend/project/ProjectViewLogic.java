@@ -1,7 +1,7 @@
 package org.karnak.frontend.project;
 
 import com.vaadin.flow.component.UI;
-import org.karnak.data.gateway.Project;
+import org.karnak.backend.data.entity.Project;
 
 public class ProjectViewLogic {
     public static Long enter(String dataIdStr) {

@@ -4,15 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.karnak.backend.configuration.AppConfig;
+import org.karnak.backend.data.entity.Argument;
+import org.karnak.backend.data.entity.ExcludedTag;
+import org.karnak.backend.data.entity.IncludedTag;
+import org.karnak.backend.data.entity.Mask;
+import org.karnak.backend.data.entity.Profile;
+import org.karnak.backend.data.entity.ProfileElement;
+import org.karnak.backend.data.repository.ProfilePersistence;
 import org.karnak.backend.enums.ProfileItemType;
 import org.karnak.backend.model.profilebody.ProfilePipeBody;
-import org.karnak.data.profile.Argument;
-import org.karnak.data.profile.ExcludedTag;
-import org.karnak.data.profile.IncludedTag;
-import org.karnak.data.profile.Mask;
-import org.karnak.data.profile.Profile;
-import org.karnak.data.profile.ProfileElement;
-import org.karnak.data.profile.ProfilePersistence;
 import org.karnak.frontend.profile.ProfileError;
 
 public class ProfilePipeServiceImpl extends ProfilePipeService {

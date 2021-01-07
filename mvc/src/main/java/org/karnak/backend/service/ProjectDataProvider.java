@@ -4,11 +4,11 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import java.util.ArrayList;
 import java.util.List;
 import org.karnak.backend.configuration.GatewayConfiguration;
+import org.karnak.backend.data.entity.Destination;
+import org.karnak.backend.data.entity.Project;
+import org.karnak.backend.data.repository.ProjectPersistence;
 import org.karnak.backend.enums.NodeEventType;
 import org.karnak.backend.model.NodeEvent;
-import org.karnak.data.gateway.Destination;
-import org.karnak.data.gateway.Project;
-import org.karnak.data.gateway.ProjectPersistence;
 import org.springframework.context.ApplicationEventPublisher;
 
 public class ProjectDataProvider extends ListDataProvider<Project> {

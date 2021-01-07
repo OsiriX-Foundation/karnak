@@ -6,9 +6,9 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import org.karnak.backend.data.entity.ForwardNode;
 import org.karnak.backend.service.DataService;
 import org.karnak.backend.service.DestinationDataProvider;
-import org.karnak.data.gateway.ForwardNode;
 import org.karnak.frontend.util.UIS;
 
 public class DestinationsView extends VerticalLayout {

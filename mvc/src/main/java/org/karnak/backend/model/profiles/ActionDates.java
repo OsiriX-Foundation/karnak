@@ -3,6 +3,9 @@ package org.karnak.backend.model.profiles;
 import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.VR;
+import org.karnak.backend.data.entity.ExcludedTag;
+import org.karnak.backend.data.entity.IncludedTag;
+import org.karnak.backend.data.entity.ProfileElement;
 import org.karnak.backend.model.action.ActionItem;
 import org.karnak.backend.model.action.Replace;
 import org.karnak.backend.model.expression.ExprConditionDestination;
@@ -13,9 +16,6 @@ import org.karnak.backend.model.profilepipe.TagActionMap;
 import org.karnak.backend.util.DateFormat;
 import org.karnak.backend.util.ShiftDate;
 import org.karnak.backend.util.ShiftRangeDate;
-import org.karnak.data.profile.ExcludedTag;
-import org.karnak.data.profile.IncludedTag;
-import org.karnak.data.profile.ProfileElement;
 
 public class ActionDates extends AbstractProfileItem {
 

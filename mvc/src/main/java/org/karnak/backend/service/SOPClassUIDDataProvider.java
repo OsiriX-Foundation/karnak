@@ -6,8 +6,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.karnak.backend.configuration.GatewayConfiguration;
-import org.karnak.data.gateway.SOPClassUID;
-import org.karnak.data.gateway.SOPClassUIDPersistence;
+import org.karnak.backend.data.entity.SOPClassUID;
+import org.karnak.backend.data.repository.SOPClassUIDPersistence;
 
 @SuppressWarnings("serial")
 public class SOPClassUIDDataProvider extends ListDataProvider<SOPClassUID> {

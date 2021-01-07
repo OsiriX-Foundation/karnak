@@ -6,9 +6,9 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import org.karnak.backend.configuration.GatewayConfiguration;
-import org.karnak.data.gateway.Destination;
-import org.karnak.data.gateway.DestinationPersistence;
-import org.karnak.data.gateway.ForwardNode;
+import org.karnak.backend.data.entity.Destination;
+import org.karnak.backend.data.entity.ForwardNode;
+import org.karnak.backend.data.repository.DestinationPersistence;
 
 @SuppressWarnings("serial")
 public class DestinationDataProvider extends ListDataProvider<Destination> {

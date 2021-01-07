@@ -8,11 +8,11 @@ import org.karnak.backend.api.rqbody.Fields;
 import org.karnak.backend.cache.MainzellistePatient;
 import org.karnak.backend.cache.PatientClient;
 import org.karnak.backend.configuration.AppConfig;
+import org.karnak.backend.data.entity.Destination;
+import org.karnak.backend.enums.IdTypes;
 import org.karnak.backend.model.profilepipe.PatientMetadata;
 import org.karnak.backend.util.PatientClientUtil;
 import org.karnak.backend.util.SpecialCharacter;
-import org.karnak.data.gateway.Destination;
-import org.karnak.data.gateway.IdTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

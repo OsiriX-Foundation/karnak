@@ -1,6 +1,6 @@
 package org.karnak.frontend.profile;
 
-import org.karnak.data.profile.ProfileElement;
+import org.karnak.backend.data.entity.ProfileElement;
 
 public class ProfileError {
     private ProfileElement profileElement;

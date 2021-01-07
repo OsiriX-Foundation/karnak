@@ -6,7 +6,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import org.apache.commons.lang3.StringUtils;
-import org.karnak.data.gateway.DicomSourceNode;
+import org.karnak.backend.data.entity.DicomSourceNode;
 import org.karnak.frontend.util.UIS;
 
 public class FormSourceNode extends VerticalLayout {

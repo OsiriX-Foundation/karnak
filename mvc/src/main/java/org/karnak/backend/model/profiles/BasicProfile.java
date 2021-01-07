@@ -4,11 +4,11 @@ import java.util.List;
 import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
 import org.karnak.backend.configuration.AppConfig;
+import org.karnak.backend.data.entity.ProfileElement;
 import org.karnak.backend.model.action.ActionItem;
 import org.karnak.backend.model.profilepipe.HMAC;
 import org.karnak.backend.model.profilepipe.TagActionMap;
 import org.karnak.backend.model.standard.ConfidentialityProfiles;
-import org.karnak.data.profile.ProfileElement;
 
 public class BasicProfile extends AbstractProfileItem {
     private final List<ProfileItem> listProfiles;

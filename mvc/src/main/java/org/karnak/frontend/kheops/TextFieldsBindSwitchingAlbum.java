@@ -9,11 +9,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.dcm4che6.data.DicomObject;
 import org.json.JSONObject;
 import org.karnak.backend.api.KheopsApi;
+import org.karnak.backend.data.entity.KheopsAlbums;
 import org.karnak.backend.model.expression.ExprConditionKheops;
 import org.karnak.backend.model.expression.ExpressionError;
 import org.karnak.backend.model.expression.ExpressionResult;
 import org.karnak.backend.service.kheops.SwitchingAlbum;
-import org.karnak.data.gateway.KheopsAlbums;
 
 public class TextFieldsBindSwitchingAlbum {
 

@@ -3,7 +3,7 @@ package org.karnak.frontend.forwardnode;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
-import org.karnak.data.gateway.ForwardNode;
+import org.karnak.backend.data.entity.ForwardNode;
 
 
 public class EditAETitleDescription extends HorizontalLayout {

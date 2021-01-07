@@ -7,9 +7,9 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import java.util.List;
+import org.karnak.backend.data.entity.Destination;
+import org.karnak.backend.data.entity.Project;
 import org.karnak.backend.service.ProjectDataProvider;
-import org.karnak.data.gateway.Destination;
-import org.karnak.data.gateway.Project;
 import org.karnak.frontend.component.ConfirmDialog;
 import org.karnak.frontend.forwardnode.ProfileDropDown;
 

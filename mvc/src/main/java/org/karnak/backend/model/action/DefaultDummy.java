@@ -7,9 +7,9 @@ import java.util.Optional;
 import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.VR;
+import org.karnak.backend.data.entity.Argument;
 import org.karnak.backend.model.profilepipe.HMAC;
 import org.karnak.backend.util.ShiftRangeDate;
-import org.karnak.data.profile.Argument;
 
 public class DefaultDummy extends AbstractAction {
     List<Argument> arguments;

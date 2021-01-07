@@ -4,11 +4,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import org.karnak.backend.data.entity.Argument;
+import org.karnak.backend.data.entity.ExcludedTag;
+import org.karnak.backend.data.entity.IncludedTag;
+import org.karnak.backend.data.entity.ProfileElement;
 import org.karnak.backend.model.action.ActionItem;
-import org.karnak.data.profile.Argument;
-import org.karnak.data.profile.ExcludedTag;
-import org.karnak.data.profile.IncludedTag;
-import org.karnak.data.profile.ProfileElement;
 
 public abstract class AbstractProfileItem implements ProfileItem {
 

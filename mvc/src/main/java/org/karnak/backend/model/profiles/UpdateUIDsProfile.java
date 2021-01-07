@@ -2,12 +2,12 @@ package org.karnak.backend.model.profiles;
 
 import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
+import org.karnak.backend.data.entity.ProfileElement;
 import org.karnak.backend.model.action.ActionItem;
 import org.karnak.backend.model.action.Remove;
 import org.karnak.backend.model.action.ReplaceNull;
 import org.karnak.backend.model.action.UID;
 import org.karnak.backend.model.profilepipe.HMAC;
-import org.karnak.data.profile.ProfileElement;
 
 public class UpdateUIDsProfile extends AbstractProfileItem {
 

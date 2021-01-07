@@ -16,8 +16,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication(exclude = ErrorMvcAutoConfiguration.class)
-@EntityScan("org.karnak.data")
-@EnableJpaRepositories("org.karnak.data")
+@EntityScan("org.karnak.backend.data.entity")
+@EnableJpaRepositories("org.karnak.backend.data.repository")
 @EnableVaadin(value = "org.karnak")
 @ComponentScan(basePackageClasses = KeycloakSecurityComponents.class, basePackages = "org.karnak")
 public class StartApplication implements CommandLineRunner {

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.WeakHashMap;
-import org.karnak.data.gateway.KheopsAlbums;
+import org.karnak.backend.data.entity.KheopsAlbums;
 
 public class GridSwitchingAlbums extends Grid<KheopsAlbums> {
 

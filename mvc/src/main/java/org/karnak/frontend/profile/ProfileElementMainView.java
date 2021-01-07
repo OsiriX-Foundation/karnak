@@ -7,7 +7,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import java.util.Comparator;
 import java.util.List;
-import org.karnak.data.profile.ProfileElement;
+import org.karnak.backend.data.entity.ProfileElement;
 
 public class ProfileElementMainView extends VerticalLayout {
     private List<ProfileElement> profilesOrder;

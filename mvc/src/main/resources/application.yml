@@ -13,7 +13,6 @@ logging:
   level:
     org:
       springframework: INFO
-
     com:
       vaadin:
         flow:

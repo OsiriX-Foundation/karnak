@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
+import org.karnak.backend.data.entity.Argument;
 import org.karnak.backend.model.profilepipe.HMAC;
-import org.karnak.data.profile.Argument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

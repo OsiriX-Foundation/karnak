@@ -4,11 +4,11 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
+import org.karnak.backend.data.entity.Destination;
+import org.karnak.backend.enums.DestinationType;
 import org.karnak.backend.enums.NodeEventType;
 import org.karnak.backend.model.NodeEvent;
 import org.karnak.backend.service.DestinationDataProvider;
-import org.karnak.data.gateway.Destination;
-import org.karnak.data.gateway.DestinationType;
 import org.karnak.frontend.component.ConfirmDialog;
 
 public class NewUpdateDestination extends VerticalLayout {

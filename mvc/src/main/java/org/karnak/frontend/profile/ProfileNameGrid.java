@@ -2,9 +2,9 @@ package org.karnak.frontend.profile;
 
 import com.vaadin.flow.component.grid.Grid;
 import java.util.List;
+import org.karnak.backend.data.entity.Profile;
 import org.karnak.backend.service.profilepipe.ProfilePipeService;
 import org.karnak.backend.service.profilepipe.ProfilePipeServiceImpl;
-import org.karnak.data.profile.Profile;
 
 public class ProfileNameGrid extends Grid<Profile> {
     List<Profile> profiles;

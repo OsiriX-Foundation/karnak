@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 import org.karnak.backend.configuration.GatewayConfiguration;
-import org.karnak.data.gateway.Destination;
-import org.karnak.data.gateway.KheopsAlbums;
-import org.karnak.data.gateway.KheopsAlbumsPersistence;
+import org.karnak.backend.data.entity.Destination;
+import org.karnak.backend.data.entity.KheopsAlbums;
+import org.karnak.backend.data.repository.KheopsAlbumsPersistence;
 
 public class KheopsAlbumsDataProvider {
 

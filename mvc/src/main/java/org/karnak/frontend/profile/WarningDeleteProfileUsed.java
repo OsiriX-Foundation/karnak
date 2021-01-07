@@ -3,8 +3,8 @@ package org.karnak.frontend.profile;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
-import org.karnak.data.gateway.Project;
-import org.karnak.data.profile.Profile;
+import org.karnak.backend.data.entity.Profile;
+import org.karnak.backend.data.entity.Project;
 
 public class WarningDeleteProfileUsed extends Dialog {
     public void setText(Profile profile) {

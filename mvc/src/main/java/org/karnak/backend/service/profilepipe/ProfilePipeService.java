@@ -3,8 +3,8 @@ package org.karnak.backend.service.profilepipe;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import org.karnak.backend.data.entity.Profile;
 import org.karnak.backend.model.profilebody.ProfilePipeBody;
-import org.karnak.data.profile.Profile;
 import org.karnak.frontend.profile.ProfileError;
 
 public abstract class ProfilePipeService implements Serializable {
