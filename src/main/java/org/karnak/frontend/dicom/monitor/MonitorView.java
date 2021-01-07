@@ -99,20 +99,22 @@ public class MonitorView extends AbstractView {
     
     @SuppressWarnings("serial")
     private void buildDicomNodeListSelector() {
-        dicomEchoNodeListSelector = new Select<>();
-        dicomEchoNodeListSelector.setEmptySelectionAllowed(false);
+      dicomEchoNodeListSelector = new Select<>();
+      dicomEchoNodeListSelector.setEmptySelectionAllowed(false);
 
-        DicomNodeList pacsProdDicomNodeList = Util.readnodes(this.getClass().getResource("/config/pacs-nodes-web.csv"), "PACS Public WEB");
-        DicomNodeList newPacsProdDicomNodeList = Util.readnodes(this.getClass().getResource("/config/workstations-nodes.csv"), "Workstations");
+      DicomNodeList pacsProdDicomNodeList = Util.readnodes(this.getClass().getResource(
+          "/config/pacs-nodes-web.csv"), "PACS Public WEB");
+      DicomNodeList newPacsProdDicomNodeList = Util.readnodes(this.getClass().getResource(
+          "/config/workstations-nodes.csv"), "Workstations");
 
-        
-        dicomEchoNodeListSelector.setItems(pacsProdDicomNodeList, newPacsProdDicomNodeList);
-        
-        dicomEchoNodeListSelector.addValueChangeListener(new ValueChangeListener<ValueChangeEvent<DicomNodeList>>() {
+      dicomEchoNodeListSelector.setItems(pacsProdDicomNodeList, newPacsProdDicomNodeList);
+
+      dicomEchoNodeListSelector
+          .addValueChangeListener(new ValueChangeListener<ValueChangeEvent<DicomNodeList>>() {
 
             @Override
             public void valueChanged(ValueChangeEvent<DicomNodeList> event) {
-                logic.dicomNodeListSelected(event.getValue());
+              logic.dicomNodeListSelected(event.getValue());
             }
         });
         
@@ -154,20 +156,22 @@ public class MonitorView extends AbstractView {
 
     @SuppressWarnings("serial")
     private void buildwadoNodeListSelector() {
-        wadoNodeListSelector = new Select<>();
-        wadoNodeListSelector.setEmptySelectionAllowed(false);
-        
-        WadoNodeList pacsProdWadoNodeList = Util.readWadoNodes(this.getClass().getResource("/config/pacs-wado-web.csv"), "Public web");
-        
-        wadoNodeListSelector.setItems(pacsProdWadoNodeList);
-        
-        wadoNodeListSelector.addValueChangeListener(new ValueChangeListener<ValueChangeEvent<WadoNodeList>>() {
+      wadoNodeListSelector = new Select<>();
+      wadoNodeListSelector.setEmptySelectionAllowed(false);
+
+      WadoNodeList pacsProdWadoNodeList = Util.readWadoNodes(this.getClass().getResource(
+          "/config/pacs-wado-web.csv"), "Public web");
+
+      wadoNodeListSelector.setItems(pacsProdWadoNodeList);
+
+      wadoNodeListSelector
+          .addValueChangeListener(new ValueChangeListener<ValueChangeEvent<WadoNodeList>>() {
 
             @Override
             public void valueChanged(ValueChangeEvent<WadoNodeList> event) {
-                logic.wadoNodeListSelected(event.getValue());
+              logic.wadoNodeListSelected(event.getValue());
             }
-        });
+          });
         
         if (!pacsProdWadoNodeList.isEmpty()) {
             wadoNodeListSelector.setValue(pacsProdWadoNodeList);
