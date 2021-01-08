@@ -21,4 +21,10 @@ public class CachedPatient extends Patient {
     public void setIssuerOfPatientId(String issuerOfPatientId) {
         this.issuerOfPatientId = issuerOfPatientId;
     }
+
+    @Override
+    public String toString() {
+        return String.format("External pseudonym: %s, Patient ID: %s, Patient name: %s, Issuer of patient ID: %s",
+                pseudonym, patientId, patientName, issuerOfPatientId);
+    }
 }

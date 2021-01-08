@@ -41,6 +41,10 @@ public class ExternalIDForm extends VerticalLayout {
 
     private transient PatientClient externalIDCache;
 
+    private Upload uploadCsvButton;
+    private Div AddedPatientLabelDiv;
+    private Div uploadCsvLabelDiv;
+
     public ExternalIDForm(ListDataProvider<CachedPatient> dataProvider){
         setSizeFull();
         this.dataProvider = dataProvider;
@@ -56,9 +60,14 @@ public class ExternalIDForm extends VerticalLayout {
             clearPatientFields()
         );
 
-        addPatientButton.addClickListener(click ->
-            addPatientFieldsInGrid()
-        );
+        addPatientButton.addClickListener(click -> {
+            CachedPatient newPatient = new CachedPatient(externalIdField.getValue(), patientIdField.getValue(),
+                    patientNameField.getValue(), issuerOfPatientIdField.getValue());
+            binder.validate();
+            if (binder.isValid()){
+                addPatientInGrid(newPatient);
+            }
+        });
 
         // enable/disable update button while editing
         binder.addStatusChangeListener(event -> {
@@ -66,6 +75,28 @@ public class ExternalIDForm extends VerticalLayout {
             boolean hasChanges = binder.hasChanges();
             addPatientButton.setEnabled(hasChanges && isValid);
         });
+
+        HorizontalLayout horizontalLayout1 = new HorizontalLayout();
+        HorizontalLayout horizontalLayout2 = new HorizontalLayout();
+        HorizontalLayout horizontalLayout3 = new HorizontalLayout();
+        HorizontalLayout horizontalLayout4 = new HorizontalLayout();
+        HorizontalLayout horizontalLayout5 = new HorizontalLayout();
+        Div addPatientDiv = new Div();
+
+        horizontalLayout1.setSizeFull();
+        horizontalLayout2.setSizeFull();
+        horizontalLayout3.setSizeFull();
+        horizontalLayout4.setSizeFull();
+
+        horizontalLayout1.add(uploadCsvLabelDiv);
+        horizontalLayout2.add(uploadCsvButton);
+        horizontalLayout3.add(AddedPatientLabelDiv);
+
+        horizontalLayout4.add(externalIdField, patientIdField, patientNameField, issuerOfPatientIdField);
+        horizontalLayout5.add(clearFieldsButton, addPatientButton);
+
+        addPatientDiv.add(horizontalLayout4, horizontalLayout5);
+        add(horizontalLayout1, horizontalLayout2, horizontalLayout3, addPatientDiv);
     }
 
     private void readAllCacheValue(){
@@ -79,22 +110,16 @@ public class ExternalIDForm extends VerticalLayout {
     }
 
     private void setElements() {
-        HorizontalLayout horizontalLayout1 = new HorizontalLayout();
-        HorizontalLayout horizontalLayout2 = new HorizontalLayout();
-        HorizontalLayout horizontalLayout3 = new HorizontalLayout();
-        HorizontalLayout horizontalLayout4 = new HorizontalLayout();
-        HorizontalLayout horizontalLayout5 = new HorizontalLayout();
-        Div addPatientDiv = new Div();
+        setElementUploadCSV();
 
-        Div uploadCsvLabelDiv = new Div();
         uploadCsvLabelDiv = new Div();
         uploadCsvLabelDiv.setText("Upload a CSV file to add your external ID correspondence: ");
         uploadCsvLabelDiv.getStyle().set("font-size", "large").set("font-weight", "bolder");
 
-        Div AddedPatientLabeltDiv = new Div();
-        AddedPatientLabeltDiv = new Div();
-        AddedPatientLabeltDiv.setText("Add one patient data to have the external ID correspondence: ");
-        AddedPatientLabeltDiv.getStyle().set("font-size", "large").set("font-weight", "bolder");
+        AddedPatientLabelDiv = new Div();
+        AddedPatientLabelDiv = new Div();
+        AddedPatientLabelDiv.setText("Add one patient data to have the external ID correspondence: ");
+        AddedPatientLabelDiv.getStyle().set("font-size", "large").set("font-weight", "bolder");
 
         externalIdField = new TextField("External Pseudonym");
         externalIdField.setWidth("25%");
@@ -111,9 +136,11 @@ public class ExternalIDForm extends VerticalLayout {
         addPatientButton = new Button("Add patient");
         addPatientButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         addPatientButton.setIcon(VaadinIcon.PLUS_CIRCLE.create());
+    }
 
+    public void setElementUploadCSV() {
         MemoryBuffer memoryBuffer = new MemoryBuffer();
-        Upload uploadCsvButton = new Upload(memoryBuffer);
+        uploadCsvButton = new Upload(memoryBuffer);
         uploadCsvButton.setDropLabel(new Span("Drag and drop your CSV here"));
         uploadCsvButton.addSucceededListener(event -> {
             inputStream = memoryBuffer.getInputStream();
@@ -132,27 +159,20 @@ public class ExternalIDForm extends VerticalLayout {
                 }
                 CSVDialog csvDialog = new CSVDialog(inputStream, separator);
                 csvDialog.open();
+
+                csvDialog.getReadCSVButton().addClickListener(buttonClickEvent1 -> {
+                    final List<CachedPatient> patientListInCSV = csvDialog.getPatientsList();
+                    patientListInCSV.forEach(cachedPatient -> {
+                        addPatientInGrid(cachedPatient);
+                    });
+                    csvDialog.resetPatientsList();
+                });
             });
 
             chooseSeparatorDialog.add(separatorCSVField, openCSVButton);
             chooseSeparatorDialog.open();
             separatorCSVField.focus();
         });
-
-        horizontalLayout1.setSizeFull();
-        horizontalLayout2.setSizeFull();
-        horizontalLayout3.setSizeFull();
-        horizontalLayout4.setSizeFull();
-
-        horizontalLayout1.add(uploadCsvLabelDiv);
-        horizontalLayout2.add(uploadCsvButton);
-        horizontalLayout3.add(AddedPatientLabeltDiv);
-
-        horizontalLayout4.add(externalIdField, patientIdField, patientNameField, issuerOfPatientIdField);
-        horizontalLayout5.add(clearFieldsButton, addPatientButton);
-
-        addPatientDiv.add(horizontalLayout4, horizontalLayout5);
-        add(horizontalLayout1, horizontalLayout2, horizontalLayout3, addPatientDiv);
     }
 
     public void setBinder(){
@@ -187,22 +207,18 @@ public class ExternalIDForm extends VerticalLayout {
         return false;
     }
 
-    public void addPatientFieldsInGrid(){
-        final CachedPatient newPatient = new CachedPatient(externalIdField.getValue(),
-                patientIdField.getValue(),
-                patientNameField.getValue(),
-                issuerOfPatientIdField.getValue());
-        binder.validate();
-        if (binder.isValid()){
-            if (patientExist(newPatient, dataProvider)){
-                WarningDialog warningDialog = new WarningDialog("Duplicate data", "You are trying to insert two equivalent pseudonyms or two potentially identical patients.", "ok");
-                warningDialog.open();
-            } else {
-                dataProvider.getItems().add(newPatient);
-                dataProvider.refreshAll();
-                externalIDCache.put(PatientClientUtil.generateKey(newPatient), newPatient);
-                binder.readBean(null);
-            }
+    public void addPatientInGrid(CachedPatient newPatient){
+        if (patientExist(newPatient, dataProvider)){
+            WarningDialog warningDialog = new WarningDialog("Duplicate data",
+                    String.format("You are trying to insert two equivalent pseudonyms or identical patients: {%s}",
+                            newPatient.toString()),
+                    "ok");
+            warningDialog.open();
+        } else {
+            dataProvider.getItems().add(newPatient);
+            dataProvider.refreshAll();
+            externalIDCache.put(PatientClientUtil.generateKey(newPatient), newPatient);
+            binder.readBean(null);
         }
     }
 

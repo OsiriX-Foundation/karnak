@@ -9,11 +9,9 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.NumberField;
-
 import liquibase.util.csv.opencsv.CSVReader;
 import org.karnak.cache.CachedPatient;
 import org.karnak.cache.PatientClient;
-import org.karnak.cache.PatientClientUtil;
 import org.karnak.data.AppConfig;
 
 import java.io.IOException;
@@ -50,6 +48,7 @@ public class CSVDialog extends Dialog {
     private List<String[]> allRows;
     private final String[] selectValues = {"", EXTERNAL_PSEUDONYM, PATIENT_ID, PATIENT_NAME, ISSUER_OF_PATIENT_ID};
     private HashMap<String, Integer> selectValuesPositionHashMap;
+    private List<CachedPatient> patientsList;
 
     public CSVDialog(InputStream inputStream, char separator) {
         removeAll();
@@ -57,6 +56,7 @@ public class CSVDialog extends Dialog {
         setWidth("50%");
         externalIDCache = AppConfig.getInstance().getExternalIDCache();
 
+        patientsList = new ArrayList<>();
         allRows = null;
         try {
             CSVReader csvReader = new CSVReader(new InputStreamReader(inputStream), separator);
@@ -94,7 +94,7 @@ public class CSVDialog extends Dialog {
                     selectValuesPositionHashMap.get(PATIENT_NAME).equals(-1)){
                 generateErrorMsg();
             } else {
-                readCSVAndPushInCache();
+                readCSVPatients();
                 close();
             }
 
@@ -188,7 +188,7 @@ public class CSVDialog extends Dialog {
         errorMsg.setText(String.format("This fields are not selected: %s", concatFieldNotSelected));
     }
 
-    private void readCSVAndPushInCache() {
+    private void readCSVPatients() {
         try {
             //Read CSV line by line and use the string array as you want
             for (String[] row : allRows.subList(fromLineField.getValue().intValue() - 1, allRows.size())) {
@@ -197,11 +197,22 @@ public class CSVDialog extends Dialog {
                         row[selectValuesPositionHashMap.get(PATIENT_ID)],
                         row[selectValuesPositionHashMap.get(PATIENT_NAME)],
                         issuerOfPatientID);
-                externalIDCache.put(PatientClientUtil.generateKey(newPatient), newPatient);
+                patientsList.add(newPatient);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    public Button getReadCSVButton() {
+        return readCSVButton;
+    }
+
+    public List<CachedPatient> getPatientsList() {
+        return patientsList;
+    }
+
+    public void resetPatientsList() {
+        patientsList.clear();
+    }
 }
