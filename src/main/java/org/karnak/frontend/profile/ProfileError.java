@@ -1,34 +1,35 @@
-package org.karnak.frontend.profile;
+package org.karnak.frontend.profileEntity;
 
-import org.karnak.backend.data.entity.ProfileElement;
+import org.karnak.backend.data.entity.ProfileElementEntity;
 
 public class ProfileError {
-    private ProfileElement profileElement;
-    private String error;
 
-    public ProfileError(ProfileElement profileElement) {
-        this.profileElement = profileElement;
-        this.error = null;
-    }
+  private ProfileElementEntity profileElementEntity;
+  private String error;
 
-    public ProfileError(ProfileElement profileElement, String error) {
-        this.profileElement = profileElement;
-        this.error = error;
-    }
+  public ProfileError(ProfileElementEntity profileElementEntity) {
+    this.profileElementEntity = profileElementEntity;
+    this.error = null;
+  }
 
-    public ProfileElement getProfileElement() {
-        return profileElement;
-    }
+  public ProfileError(ProfileElementEntity profileElementEntity, String error) {
+    this.profileElementEntity = profileElementEntity;
+    this.error = error;
+  }
 
-    public void setProfileElement(ProfileElement profileElement) {
-        this.profileElement = profileElement;
-    }
+  public ProfileElementEntity getProfileElement() {
+    return profileElementEntity;
+  }
 
-    public String getError() {
-        return error;
-    }
+  public void setProfileElement(ProfileElementEntity profileElementEntity) {
+    this.profileElementEntity = profileElementEntity;
+  }
 
-    public void setError(String error) {
-        this.error = error;
-    }
+  public String getError() {
+    return error;
+  }
+
+  public void setError(String error) {
+    this.error = error;
+  }
 }

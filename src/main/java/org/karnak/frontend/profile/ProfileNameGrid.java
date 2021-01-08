@@ -1,29 +1,30 @@
-package org.karnak.frontend.profile;
+package org.karnak.frontend.profileEntity;
 
 import com.vaadin.flow.component.grid.Grid;
 import java.util.List;
-import org.karnak.backend.data.entity.Profile;
+import org.karnak.backend.data.entity.ProfileEntity;
 import org.karnak.backend.service.profilepipe.ProfilePipeService;
 import org.karnak.backend.service.profilepipe.ProfilePipeServiceImpl;
 
-public class ProfileNameGrid extends Grid<Profile> {
-    List<Profile> profiles;
-    ProfilePipeService profilePipeService;
+public class ProfileNameGrid extends Grid<ProfileEntity> {
 
-    ProfileNameGrid() {
-        profilePipeService = new ProfilePipeServiceImpl();
-        setSelectionMode(SelectionMode.SINGLE);
-        updatedProfilePipesView();
-        addColumn(Profile::getName).setHeader("Name");
-        addColumn(Profile::getVersion).setHeader("Version");
+  List<ProfileEntity> profileEntities;
+  ProfilePipeService profilePipeService;
+
+  ProfileNameGrid() {
+    profilePipeService = new ProfilePipeServiceImpl();
+    setSelectionMode(SelectionMode.SINGLE);
+    updatedProfilePipesView();
+    addColumn(ProfileEntity::getName).setHeader("Name");
+    addColumn(ProfileEntity::getVersion).setHeader("Version");
+  }
+
+    public void updatedProfilePipesView() {
+      profileEntities = profilePipeService.getAllProfiles();
+      setItems(profileEntities);
     }
 
-    public void updatedProfilePipesView(){
-        profiles = profilePipeService.getAllProfiles();
-        setItems(profiles);
-    }
-
-    public void selectRow(Profile row) {
-        getSelectionModel().select(row);
-    }
+  public void selectRow(ProfileEntity row) {
+    getSelectionModel().select(row);
+  }
 }

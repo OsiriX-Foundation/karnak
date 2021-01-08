@@ -21,7 +21,7 @@ import org.karnak.backend.api.rqbody.Data;
 import org.karnak.backend.api.rqbody.Fields;
 import org.karnak.backend.api.rqbody.Ids;
 import org.karnak.backend.api.rqbody.SearchIds;
-import org.karnak.backend.configuration.MainzellisteConfig;
+import org.karnak.backend.config.MainzellisteConfig;
 import org.karnak.backend.enums.IdTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

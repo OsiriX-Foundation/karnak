@@ -4,14 +4,15 @@ import com.fasterxml.jackson.databind.util.StdConverter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.karnak.backend.data.entity.Argument;
+import org.karnak.backend.data.entity.ArgumentEntity;
 
-public class ArgumentToMapConverter extends StdConverter<List<Argument>, Map<String, String>> {
+public class ArgumentToMapConverter extends
+    StdConverter<List<ArgumentEntity>, Map<String, String>> {
 
     @Override
-    public Map<String, String> convert(List<Argument> arguments) {
+    public Map<String, String> convert(List<ArgumentEntity> argumentEntities) {
         Map<String, String> argumentMap = new HashMap<>();
-        arguments.forEach(argument -> {
+        argumentEntities.forEach(argument -> {
             argumentMap.put(argument.getKey(), argument.getValue());
         });
         return argumentMap;

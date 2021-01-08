@@ -20,10 +20,10 @@ import org.dcm4che6.img.op.MaskArea;
 import org.dcm4che6.img.util.DicomObjectUtil;
 import org.dcm4che6.util.DateTimeUtils;
 import org.dcm4che6.util.TagUtils;
-import org.karnak.backend.data.entity.Destination;
-import org.karnak.backend.data.entity.Profile;
-import org.karnak.backend.data.entity.ProfileElement;
-import org.karnak.backend.data.entity.Project;
+import org.karnak.backend.data.entity.DestinationEntity;
+import org.karnak.backend.data.entity.ProfileElementEntity;
+import org.karnak.backend.data.entity.ProfileEntity;
+import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.enums.IdTypes;
 import org.karnak.backend.enums.ProfileItemType;
 import org.karnak.backend.model.action.ActionItem;
@@ -50,16 +50,16 @@ public class Profiles {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Profiles.class);
 
-    private final Profile profile;
+    private final ProfileEntity profileEntity;
     private final Pseudonym pseudonymUtil;
     private final ArrayList<ProfileItem> profiles;
     private final Map<String, MaskArea> maskMap;
     private final Marker CLINICAL_MARKER = MarkerFactory.getMarker("CLINICAL");
 
-    public Profiles(Profile profile) {
+    public Profiles(ProfileEntity profileEntity) {
         this.maskMap = new HashMap<>();
         this.pseudonymUtil = new Pseudonym();
-        this.profile = profile;
+        this.profileEntity = profileEntity;
         this.profiles = createProfilesList();
     }
 
@@ -80,20 +80,22 @@ public class Profiles {
     }
 
     public ArrayList<ProfileItem> createProfilesList() {
-        if (profile != null) {
-            final List<ProfileElement> listProfileElement = profile.getProfileElements();
+        if (profileEntity != null) {
+            final List<ProfileElementEntity> listProfileElementEntity = profileEntity
+                .getProfileElementEntities();
             ArrayList<ProfileItem> profiles = new ArrayList<>();
 
-            for (ProfileElement profileElement : listProfileElement) {
-                ProfileItemType t = ProfileItemType.getType(profileElement.getCodename());
+            for (ProfileElementEntity profileElementEntity : listProfileElementEntity) {
+                ProfileItemType t = ProfileItemType.getType(profileElementEntity.getCodename());
                 if (t == null) {
-                    LOGGER.error("Cannot find the profile codename: {}", profileElement.getCodename());
+                    LOGGER.error("Cannot find the profile codename: {}",
+                        profileElementEntity.getCodename());
                 } else {
                     Object instanceProfileItem;
                     try {
                         instanceProfileItem = t.getProfileClass()
-                                .getConstructor(ProfileElement.class)
-                                .newInstance(profileElement);
+                            .getConstructor(ProfileElementEntity.class)
+                            .newInstance(profileElementEntity);
                         profiles.add((ProfileItem) instanceProfileItem);
                     } catch (Exception e) {
                         LOGGER.error("Cannot build the profile: {}", t.getProfileClass().getName(), e);
@@ -101,13 +103,14 @@ public class Profiles {
                 }
             }
             profiles.sort(Comparator.comparing(ProfileItem::getPosition));
-            profile.getMasks().forEach(
+            profileEntity.getMaskEntities().forEach(
                 m -> {
                     Color color = null;
-                    if(StringUtil.hasText(m.getColor())) {
+                    if (StringUtil.hasText(m.getColor())) {
                         color = ActionTags.hexadecimal2Color(m.getColor());
                     }
-                    List<Shape> shapeList = m.getRectangles().stream().map(Shape.class::cast).collect(Collectors.toList());
+                    List<Shape> shapeList = m.getRectangles().stream().map(Shape.class::cast)
+                        .collect(Collectors.toList());
                     addMask(m.getStationName(), new MaskArea(shapeList, color));
                 });
             return profiles;
@@ -123,18 +126,19 @@ public class Profiles {
 
             ActionItem currentAction = null;
             ProfileItem currentProfile = null;
-            for (ProfileItem profile : profiles.stream().filter(p -> !(p instanceof CleanPixelData))
+            for (ProfileItem profileEntity : profiles.stream()
+                .filter(p -> !(p instanceof CleanPixelData))
                 .collect(
                     Collectors.toList())) {
-                currentProfile = profile;
+                currentProfile = profileEntity;
 
-                if (profile.getCondition() == null) {
-                    currentAction = profile.getAction(dcm, dcmCopy, dcmEl, hmac);
+                if (profileEntity.getCondition() == null) {
+                    currentAction = profileEntity.getAction(dcm, dcmCopy, dcmEl, hmac);
                 } else {
                     boolean conditionIsOk = (Boolean) ExpressionResult
-                        .get(profile.getCondition(), exprConditionDestination, Boolean.class);
+                        .get(profileEntity.getCondition(), exprConditionDestination, Boolean.class);
                     if (conditionIsOk) {
-                        currentAction = profile.getAction(dcm, dcmCopy, dcmEl, hmac);
+                        currentAction = profileEntity.getAction(dcm, dcmCopy, dcmEl, hmac);
                     }
                 }
 
@@ -142,7 +146,7 @@ public class Profiles {
                     break;
                 }
 
-                if (profile.equals(profilePassedInSequence)){
+                if (profileEntity.equals(profilePassedInSequence)) {
                     currentAction = actionPassedInSequence;
                     break;
                 }
@@ -169,34 +173,39 @@ public class Profiles {
         }
     }
 
-    public void apply(DicomObject dcm, Destination destination, AttributeEditorContext context) {
+    public void apply(DicomObject dcm, DestinationEntity destinationEntity,
+        AttributeEditorContext context) {
         final String SOPInstanceUID = dcm.getString(Tag.SOPInstanceUID).orElse(null);
         final String SeriesInstanceUID = dcm.getString(Tag.SeriesInstanceUID).orElse(null);
         final String IssuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID).orElse(null);
         final String PatientID = dcm.getString(Tag.PatientID).orElse(null);
-        final IdTypes idTypes = destination.getIdTypes();
-        final HMAC hmac = generateHMAC(destination, PatientID);
+        final IdTypes idTypes = destinationEntity.getIdTypes();
+        final HMAC hmac = generateHMAC(destinationEntity, PatientID);
 
         MDC.put("SOPInstanceUID", SOPInstanceUID);
         MDC.put("SeriesInstanceUID", SeriesInstanceUID);
         MDC.put("issuerOfPatientID", IssuerOfPatientID);
         MDC.put("PatientID", PatientID);
 
-        String pseudonym = pseudonymUtil.generatePseudonym(destination, dcm, profile.getDefaultissueropatientid());
+        String pseudonym = pseudonymUtil
+            .generatePseudonym(destinationEntity, dcm, profileEntity.getDefaultissueropatientid());
 
         String profilesCodeName = String.join(
-                "-" , profiles.stream().map(profile -> profile.getCodeName()).collect(Collectors.toList())
+            "-", profiles.stream().map(profileEntity -> profileEntity.getCodeName())
+                .collect(Collectors.toList())
         );
         BigInteger patientValue = generatePatientID(pseudonym, hmac);
         String newPatientID = patientValue.toString(16).toUpperCase();
-        String newPatientName = !idTypes.equals(IdTypes.PID) && destination.getPseudonymAsPatientName() ? pseudonym : newPatientID;
+        String newPatientName =
+            !idTypes.equals(IdTypes.PID) && destinationEntity.getPseudonymAsPatientName()
+                ? pseudonym : newPatientID;
 
         DicomObject dcmCopy = DicomObject.newDicomObject();
         DicomObjectUtil.copyDataset(dcm, dcmCopy);
 
         // Apply clean pixel data
         Optional<DicomElement> pix = dcm.get(Tag.PixelData);
-        if (pix.isPresent() && !profile.getMasks().isEmpty() && profiles.stream()
+        if (pix.isPresent() && !profileEntity.getMaskEntities().isEmpty() && profiles.stream()
             .anyMatch(p -> p instanceof CleanPixelData)) {
             String sopClassUID = dcm.getString(Tag.SOPClassUID)
                 .orElseThrow(
@@ -224,27 +233,30 @@ public class Profiles {
         setDefaultDeidentTagValue(dcm, newPatientID, newPatientName, profilesCodeName, pseudonym, hmac);
 
         final Marker CLINICAL_MARKER = MarkerFactory.getMarker("CLINICAL");
-        LOGGER.info(CLINICAL_MARKER, "SOPInstanceUID_OLD={} SOPInstanceUID_NEW={} SeriesInstanceUID_OLD={} " +
-                        "SeriesInstanceUID_NEW={} ProjectName={} ProfileName={} ProfileCodenames={}",
-                SOPInstanceUID,
-                dcm.getString(Tag.SOPInstanceUID).orElse(null),
-                SeriesInstanceUID,
-                dcm.getString(Tag.SeriesInstanceUID).orElse(null),
-                destination.getProject().getName(),
-                profile.getName(),
-                profilesCodeName);
+        LOGGER.info(CLINICAL_MARKER,
+            "SOPInstanceUID_OLD={} SOPInstanceUID_NEW={} SeriesInstanceUID_OLD={} " +
+                "SeriesInstanceUID_NEW={} ProjectName={} ProfileName={} ProfileCodenames={}",
+            SOPInstanceUID,
+            dcm.getString(Tag.SOPInstanceUID).orElse(null),
+            SeriesInstanceUID,
+            dcm.getString(Tag.SeriesInstanceUID).orElse(null),
+            destinationEntity.getProjectEntity().getName(),
+            profileEntity.getName(),
+            profilesCodeName);
         MDC.clear();
     }
 
-    private HMAC generateHMAC(Destination destination, String PatientID) {
-        Project project = destination.getProject();
-        if (project == null) {
-            throw new IllegalStateException("Cannot build the HMAC a project is not associate at the destination");
+    private HMAC generateHMAC(DestinationEntity destinationEntity, String PatientID) {
+        ProjectEntity projectEntity = destinationEntity.getProjectEntity();
+        if (projectEntity == null) {
+            throw new IllegalStateException(
+                "Cannot build the HMAC a project is not associate at the destination");
         }
 
-        byte[] secret = project.getSecret();
+        byte[] secret = projectEntity.getSecret();
         if (secret == null || secret.length != HMAC.KEY_BYTE_LENGTH) {
-            throw new IllegalStateException("Cannot build the HMAC no secret defined in the project associate at the destination");
+            throw new IllegalStateException(
+                "Cannot build the HMAC no secret defined in the project associate at the destination");
         }
 
         if (PatientID == null) {
@@ -257,7 +269,7 @@ public class Profiles {
 
     public void setDefaultDeidentTagValue(DicomObject dcm, String patientID, String patientName, String profilePipeCodeName,
                                           String pseudonym, HMAC hmac){
-        final String profileFilename = profile.getName();
+        final String profileFilename = profileEntity.getName();
         final ArrayList<ExprAction> defaultDeidentTagValue = new ArrayList<>();
         defaultDeidentTagValue.add(new ExprAction(Tag.PatientID, VR.LO, patientID));
         defaultDeidentTagValue.add(new ExprAction(Tag.PatientName, VR.PN, patientName));

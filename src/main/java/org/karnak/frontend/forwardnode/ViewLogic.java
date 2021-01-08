@@ -19,6 +19,6 @@ public class ViewLogic {
     }
 
     public void updateForwardNodeInEditView() {
-        this.currentLayout.load(currentLayout.currentForwardNode);
+        this.currentLayout.load(currentLayout.currentForwardNodeEntity);
     }
 }

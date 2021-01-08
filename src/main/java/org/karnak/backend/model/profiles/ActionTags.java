@@ -4,9 +4,9 @@ import java.awt.Color;
 import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.VR;
-import org.karnak.backend.data.entity.ExcludedTag;
-import org.karnak.backend.data.entity.IncludedTag;
-import org.karnak.backend.data.entity.ProfileElement;
+import org.karnak.backend.data.entity.ExcludedTagEntity;
+import org.karnak.backend.data.entity.IncludedTagEntity;
+import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.model.action.AbstractAction;
 import org.karnak.backend.model.action.ActionItem;
 import org.karnak.backend.model.expression.ExprConditionDestination;
@@ -25,8 +25,8 @@ public class ActionTags extends AbstractProfileItem {
     private final TagActionMap exceptedTagsAction;
     private final ActionItem actionByDefault;
 
-    public ActionTags(ProfileElement profileElement) throws Exception {
-        super(profileElement);
+    public ActionTags(ProfileElementEntity profileElementEntity) throws Exception {
+        super(profileElementEntity);
         tagsAction = new TagActionMap();
         exceptedTagsAction = new TagActionMap();
         actionByDefault = AbstractAction.convertAction(this.action);
@@ -35,11 +35,11 @@ public class ActionTags extends AbstractProfileItem {
     }
 
     private void setActionHashMap() throws Exception {
-        for (IncludedTag tag: tags) {
+        for (IncludedTagEntity tag : tagEntities) {
             tagsAction.put(tag.getTagValue(), actionByDefault);
         }
-        if (excludedTags != null) {
-            for (ExcludedTag tag : excludedTags) {
+        if (excludedTagEntities != null) {
+            for (ExcludedTagEntity tag : excludedTagEntities) {
                 exceptedTagsAction.put(tag.getTagValue(), actionByDefault);
             }
         }
@@ -55,15 +55,16 @@ public class ActionTags extends AbstractProfileItem {
 
     @Override
     public void profileValidation() throws Exception{
-        if (action == null && (tags == null || tags.size() <= 0)) {
-            throw new Exception("Cannot build the profile " + codeName + ": Unknown Action and no tags defined");
+        if (action == null && (tagEntities == null || tagEntities.size() <= 0)) {
+            throw new Exception(
+                "Cannot build the profile " + codeName + ": Unknown Action and no tags defined");
         }
 
         if (action == null) {
             throw new Exception("Cannot build the profile " + codeName + ": Unknown Action");
         }
 
-        if (tags == null || tags.size() <= 0) {
+        if (tagEntities == null || tagEntities.size() <= 0) {
             throw new Exception("Cannot build the profile " + codeName + ": No tags defined");
         }
 

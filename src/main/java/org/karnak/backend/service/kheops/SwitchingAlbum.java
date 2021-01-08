@@ -9,9 +9,9 @@ import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.Tag;
 import org.json.JSONObject;
 import org.karnak.backend.api.KheopsApi;
-import org.karnak.backend.data.entity.Destination;
-import org.karnak.backend.data.entity.KheopsAlbums;
-import org.karnak.backend.data.entity.Project;
+import org.karnak.backend.data.entity.DestinationEntity;
+import org.karnak.backend.data.entity.KheopsAlbumsEntity;
+import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.model.expression.ExprConditionKheops;
 import org.karnak.backend.model.expression.ExpressionResult;
 import org.karnak.backend.model.kheops.MetadataSwitching;
@@ -32,48 +32,60 @@ public class SwitchingAlbum {
         kheopsAPI = new KheopsApi();
     }
 
-    public void apply(Destination destination, KheopsAlbums kheopsAlbums, DicomObject dcm) {
-        String authorizationSource = kheopsAlbums.getAuthorizationSource();
-        String authorizationDestination = kheopsAlbums.getAuthorizationDestination();
-        String condition = kheopsAlbums.getCondition();
-        HMAC hmac = generateHMAC(destination);
-        String studyInstanceUID = hashUIDonDeidentification(destination, dcm.getStringOrElseThrow(Tag.StudyInstanceUID), hmac);
-        String seriesInstanceUID = hashUIDonDeidentification(destination, dcm.getStringOrElseThrow(Tag.SeriesInstanceUID), hmac);
-        String sopInstanceUID = hashUIDonDeidentification(destination, dcm.getStringOrElseThrow(Tag.SOPInstanceUID), hmac);
-        String urlAPI = kheopsAlbums.getUrlAPI();
-        Long id = kheopsAlbums.getId();
-        if (!switchingAlbumToDo.containsKey(id)) {
-            switchingAlbumToDo.put(id, new ArrayList());
-        }
-        ArrayList<MetadataSwitching> metadataToDo = (ArrayList<MetadataSwitching>) switchingAlbumToDo.get(id);
-
-        if ((condition == null || condition.length() == 0 || validateCondition(condition, dcm)) &&
-            metadataToDo.stream().noneMatch(metadataSwitching -> metadataSwitching.getSeriesInstanceUID().equals(seriesInstanceUID))) {
-            final boolean validAuthorizationSource = validateToken(MIN_SCOPE_SOURCE, urlAPI, authorizationSource);
-            final boolean validDestinationSource = validateToken(MIN_SCOPE_DESTINATION, urlAPI, authorizationDestination);
-
-            if (validAuthorizationSource && validDestinationSource) {
-                metadataToDo.add(new MetadataSwitching(studyInstanceUID, seriesInstanceUID, sopInstanceUID));
-            } else {
-                LOGGER.warn("Can't validate a token for switching KHEOPS album [{}]. The series [{}] won't be shared.",
-                        kheopsAlbums.getId(), seriesInstanceUID);
-            }
-        }
-    }
-
-    private static HMAC generateHMAC(Destination destination) {
-        if (destination.getDesidentification()) {
-            Project project = destination.getProject();
-            return new HMAC(project.getSecret());
+    private static HMAC generateHMAC(DestinationEntity destinationEntity) {
+        if (destinationEntity.getDesidentification()) {
+            ProjectEntity projectEntity = destinationEntity.getProjectEntity();
+            return new HMAC(projectEntity.getSecret());
         }
         return null;
     }
 
-    private static String hashUIDonDeidentification(Destination destination, String inputUID, HMAC hmac) {
-        if (destination.getDesidentification() && hmac != null) {
+    private static String hashUIDonDeidentification(DestinationEntity destinationEntity,
+        String inputUID, HMAC hmac) {
+        if (destinationEntity.getDesidentification() && hmac != null) {
             return hmac.uidHash(inputUID);
         }
         return inputUID;
+    }
+
+    public void apply(DestinationEntity destinationEntity, KheopsAlbumsEntity kheopsAlbumsEntity,
+        DicomObject dcm) {
+        String authorizationSource = kheopsAlbumsEntity.getAuthorizationSource();
+        String authorizationDestination = kheopsAlbumsEntity.getAuthorizationDestination();
+        String condition = kheopsAlbumsEntity.getCondition();
+        HMAC hmac = generateHMAC(destinationEntity);
+        String studyInstanceUID = hashUIDonDeidentification(destinationEntity,
+            dcm.getStringOrElseThrow(Tag.StudyInstanceUID), hmac);
+        String seriesInstanceUID = hashUIDonDeidentification(destinationEntity,
+            dcm.getStringOrElseThrow(Tag.SeriesInstanceUID), hmac);
+        String sopInstanceUID = hashUIDonDeidentification(destinationEntity,
+            dcm.getStringOrElseThrow(Tag.SOPInstanceUID), hmac);
+        String urlAPI = kheopsAlbumsEntity.getUrlAPI();
+        Long id = kheopsAlbumsEntity.getId();
+        if (!switchingAlbumToDo.containsKey(id)) {
+            switchingAlbumToDo.put(id, new ArrayList());
+        }
+        ArrayList<MetadataSwitching> metadataToDo = (ArrayList<MetadataSwitching>) switchingAlbumToDo
+            .get(id);
+
+        if ((condition == null || condition.length() == 0 || validateCondition(condition, dcm)) &&
+            metadataToDo.stream().noneMatch(
+                metadataSwitching -> metadataSwitching.getSeriesInstanceUID()
+                    .equals(seriesInstanceUID))) {
+            final boolean validAuthorizationSource = validateToken(MIN_SCOPE_SOURCE, urlAPI,
+                authorizationSource);
+            final boolean validDestinationSource = validateToken(MIN_SCOPE_DESTINATION, urlAPI,
+                authorizationDestination);
+
+            if (validAuthorizationSource && validDestinationSource) {
+                metadataToDo.add(
+                    new MetadataSwitching(studyInstanceUID, seriesInstanceUID, sopInstanceUID));
+            } else {
+                LOGGER.warn(
+                    "Can't validate a token for switching KHEOPS album [{}]. The series [{}] won't be shared.",
+                    kheopsAlbumsEntity.getId(), seriesInstanceUID);
+            }
+        }
     }
 
     private static boolean validateCondition(String condition, DicomObject dcm) {
@@ -104,22 +116,25 @@ public class SwitchingAlbum {
         return valid;
     }
 
-    public void applyAfterTransfer(KheopsAlbums kheopsAlbums, DicomObject dcm) {
+    public void applyAfterTransfer(KheopsAlbumsEntity kheopsAlbumsEntity, DicomObject dcm) {
         String sopInstanceUID = dcm.getStringOrElseThrow(Tag.AffectedSOPInstanceUID);
-        Long id = kheopsAlbums.getId();
-        String authorizationSource = kheopsAlbums.getAuthorizationSource();
-        String authorizationDestination = kheopsAlbums.getAuthorizationDestination();
-        String urlAPI = kheopsAlbums.getUrlAPI();
+        Long id = kheopsAlbumsEntity.getId();
+        String authorizationSource = kheopsAlbumsEntity.getAuthorizationSource();
+        String authorizationDestination = kheopsAlbumsEntity.getAuthorizationDestination();
+        String urlAPI = kheopsAlbumsEntity.getUrlAPI();
 
-        ArrayList<MetadataSwitching> metadataToDo = (ArrayList<MetadataSwitching>) switchingAlbumToDo.get(id);
+        ArrayList<MetadataSwitching> metadataToDo = (ArrayList<MetadataSwitching>) switchingAlbumToDo
+            .get(id);
         metadataToDo.forEach(metadataSwitching -> {
             if (metadataSwitching.getSOPinstanceUID().equals(sopInstanceUID) &&
                 !metadataSwitching.isApplied()) {
                 metadataSwitching.setApplied(true);
-                int status = shareSerie(urlAPI, metadataSwitching.getStudyInstanceUID(), metadataSwitching.getSeriesInstanceUID(),
-                        authorizationSource, authorizationDestination);
+                int status = shareSerie(urlAPI, metadataSwitching.getStudyInstanceUID(),
+                    metadataSwitching.getSeriesInstanceUID(),
+                    authorizationSource, authorizationDestination);
                 if (status > 299) {
-                    LOGGER.warn("Can't share the serie [{}] for switching KHEOPS album [{}]. The response status is {}",
+                    LOGGER.warn(
+                        "Can't share the serie [{}] for switching KHEOPS album [{}]. The response status is {}",
                             metadataSwitching.getSeriesInstanceUID(), id, status);
                 }
             }

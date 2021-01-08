@@ -7,14 +7,14 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.textfield.TextFieldVariant;
 import com.vaadin.flow.data.binder.Binder;
 import org.apache.commons.lang3.StringUtils;
-import org.karnak.backend.data.entity.Destination;
+import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.frontend.component.converter.HStringToIntegerConverter;
 import org.karnak.frontend.kheops.SwitchingAlbumsView;
 import org.karnak.frontend.util.UIS;
 
 public class FormSTOW extends VerticalLayout  {
 
-  private final Binder<Destination> binder;
+  private final Binder<DestinationEntity> binder;
   private final TextField description;
     private final TextField url;
     private final TextField urlCredentials;
@@ -29,17 +29,17 @@ public class FormSTOW extends VerticalLayout  {
     private final FilterBySOPClassesForm filterBySOPClassesForm;
     private final SwitchingAlbumsView switchingAlbumsView;
 
-    public FormSTOW(Binder<Destination> binder, ButtonSaveDeleteCancel buttonSaveDeleteCancel) {
-        setSizeFull();
-        this.binder = binder;
+  public FormSTOW(Binder<DestinationEntity> binder, ButtonSaveDeleteCancel buttonSaveDeleteCancel) {
+    setSizeFull();
+    this.binder = binder;
 
-        description = new TextField("Description");
-        url = new TextField("URL");
-        urlCredentials = new TextField("URL credentials");
-        headers = new TextArea("Headers");
-        notify = new TextField("Notif.: list of emails");
-        notifyObjectErrorPrefix = new TextField("Notif.: error subject prefix");
-        notifyObjectPattern = new TextField("Notif.: subject pattern");
+    description = new TextField("Description");
+    url = new TextField("URL");
+    urlCredentials = new TextField("URL credentials");
+    headers = new TextArea("Headers");
+    notify = new TextField("Notif.: list of emails");
+    notifyObjectErrorPrefix = new TextField("Notif.: error subject prefix");
+    notifyObjectPattern = new TextField("Notif.: subject pattern");
         notifyObjectValues = new TextField("Notif.: subject values");
         notifyInterval = new TextField("Notif.: interval");
         layoutDesidentification = new LayoutDesidentification(binder);
@@ -101,14 +101,15 @@ public class FormSTOW extends VerticalLayout  {
     }
 
     private void setBinder() {
-        binder.forField(url)
-                .withValidator(StringUtils::isNotBlank, "URL is mandatory")
-                .bind(Destination::getUrl, Destination::setUrl);
-        binder.forField(notifyInterval)
-                .withConverter(new HStringToIntegerConverter())
-                .bind(Destination::getNotifyInterval, Destination::setNotifyInterval);
-        binder.forField(switchingAlbumsView)
-                .bind(Destination::getKheopsAlbums, Destination::setKheopsAlbums);
-        binder.bindInstanceFields(this);
+      binder.forField(url)
+          .withValidator(StringUtils::isNotBlank, "URL is mandatory")
+          .bind(DestinationEntity::getUrl, DestinationEntity::setUrl);
+      binder.forField(notifyInterval)
+          .withConverter(new HStringToIntegerConverter())
+          .bind(DestinationEntity::getNotifyInterval, DestinationEntity::setNotifyInterval);
+      binder.forField(switchingAlbumsView)
+          .bind(DestinationEntity::getKheopsAlbumEntities,
+              DestinationEntity::setKheopsAlbumEntities);
+      binder.bindInstanceFields(this);
     }
 }

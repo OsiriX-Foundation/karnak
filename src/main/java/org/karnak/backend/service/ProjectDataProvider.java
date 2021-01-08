@@ -3,19 +3,20 @@ package org.karnak.backend.service;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import java.util.ArrayList;
 import java.util.List;
-import org.karnak.backend.configuration.GatewayConfiguration;
-import org.karnak.backend.data.entity.Destination;
-import org.karnak.backend.data.entity.Project;
-import org.karnak.backend.data.repository.ProjectPersistence;
+import org.karnak.backend.config.GatewayConfig;
+import org.karnak.backend.data.entity.DestinationEntity;
+import org.karnak.backend.data.entity.ProjectEntity;
+import org.karnak.backend.data.repo.ProjectRepo;
 import org.karnak.backend.enums.NodeEventType;
 import org.karnak.backend.model.NodeEvent;
 import org.springframework.context.ApplicationEventPublisher;
 
-public class ProjectDataProvider extends ListDataProvider<Project> {
+public class ProjectDataProvider extends ListDataProvider<ProjectEntity> {
 
-    private final ProjectPersistence projectPersistence;
+    private final ProjectRepo projectRepo;
+
     {
-        projectPersistence = GatewayConfiguration.getInstance().getProjectPersistence();
+        projectRepo = GatewayConfig.getInstance().getProjectPersistence();
     }
 
     private ApplicationEventPublisher applicationEventPublisher;
@@ -24,51 +25,52 @@ public class ProjectDataProvider extends ListDataProvider<Project> {
         this(new ArrayList<>());
     }
 
-    public ProjectDataProvider(List<Project> items) {
+    public ProjectDataProvider(List<ProjectEntity> items) {
         super(items);
         getItems().addAll(getAllProjects());
     }
 
-    public void save(Project project) {
-        boolean isNewProject = project.isNewData();
+    public void save(ProjectEntity projectEntity) {
+        boolean isNewProject = projectEntity.isNewData();
         if (isNewProject) {
-            getItems().add(project);
+            getItems().add(projectEntity);
         } else {
-            refreshItem(project);
+            refreshItem(projectEntity);
         }
-        projectPersistence.saveAndFlush(project);
+        projectRepo.saveAndFlush(projectEntity);
         refreshAll();
     }
 
-    public void update(Project project) {
-        if (!project.isNewData()) {
-            projectPersistence.saveAndFlush(project);
-            updateDestinations(project);
+    public void update(ProjectEntity projectEntity) {
+        if (!projectEntity.isNewData()) {
+            projectRepo.saveAndFlush(projectEntity);
+            updateDestinations(projectEntity);
             refreshAll();
         }
     }
 
-    private void updateDestinations(Project project) {
-        for (Destination destination : project.getDestinations()) {
-            applicationEventPublisher.publishEvent(new NodeEvent(destination, NodeEventType.UPDATE));
+    private void updateDestinations(ProjectEntity projectEntity) {
+        for (DestinationEntity destinationEntity : projectEntity.getDestinationEntities()) {
+            applicationEventPublisher
+                .publishEvent(new NodeEvent(destinationEntity, NodeEventType.UPDATE));
         }
     }
 
-    public void remove(Project project) {
-        projectPersistence.deleteById(project.getId());
-        projectPersistence.flush();
+    public void remove(ProjectEntity projectEntity) {
+        projectRepo.deleteById(projectEntity.getId());
+        projectRepo.flush();
         refreshAll();
     }
 
-    public Project getProjectById(Long projectID) {
+    public ProjectEntity getProjectById(Long projectID) {
         refreshAll();
         return getItems().stream()
-                .filter(project -> project.getId().equals(projectID))
-                .findAny().orElse(null);
+            .filter(project -> project.getId().equals(projectID))
+            .findAny().orElse(null);
     }
 
-    public List<Project> getAllProjects() {
-        return projectPersistence.findAll();
+    public List<ProjectEntity> getAllProjects() {
+        return projectRepo.findAll();
     }
 
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {

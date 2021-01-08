@@ -7,7 +7,7 @@ import com.vaadin.flow.router.OptionalParameter;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
-import org.karnak.backend.data.entity.ForwardNode;
+import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.service.ForwardNodeAPI;
 import org.karnak.backend.service.ForwardNodeDataProvider;
 import org.karnak.frontend.MainLayout;
@@ -42,12 +42,12 @@ public class ForwardNodeView extends HorizontalLayout implements HasUrlParameter
     @Override
     public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
         Long idForwardNode = forwardNodeViewLogic.enter(parameter);
-        ForwardNode currentForwardNode = null;
+        ForwardNodeEntity currentForwardNodeEntity = null;
         if (idForwardNode != null) {
-            currentForwardNode = forwardNodeAPI.getForwardNodeById(idForwardNode);
+            currentForwardNodeEntity = forwardNodeAPI.getForwardNodeById(idForwardNode);
         }
-        layoutNewGridForwardNode.load(currentForwardNode);
-        layoutEditForwardNode.load(currentForwardNode);
+        layoutNewGridForwardNode.load(currentForwardNodeEntity);
+        layoutEditForwardNode.load(currentForwardNodeEntity);
     }
 
     @Autowired

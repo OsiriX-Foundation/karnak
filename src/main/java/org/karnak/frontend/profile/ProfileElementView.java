@@ -1,46 +1,49 @@
-package org.karnak.frontend.profile;
+package org.karnak.frontend.profileEntity;
 
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import java.util.List;
-import org.karnak.backend.data.entity.Argument;
-import org.karnak.backend.data.entity.ProfileElement;
-import org.karnak.backend.data.entity.Tag;
+import org.karnak.backend.data.entity.ArgumentEntity;
+import org.karnak.backend.data.entity.ProfileElementEntity;
+import org.karnak.backend.data.entity.TagEntity;
 
 public class ProfileElementView extends Div {
-    ProfileElement profileElement;
-    public ProfileElementView(ProfileElement profileElement) {
-        this.profileElement = profileElement;
+
+    ProfileElementEntity profileElementEntity;
+
+    public ProfileElementView(ProfileElementEntity profileElementEntity) {
+        this.profileElementEntity = profileElementEntity;
         getStyle().set("margin-top", "0px");
         setView();
     }
 
     public void setView() {
         removeAll();
-        if (profileElement.getCodename() != null) {
-            add(setProfileValue("Codename : " + profileElement.getCodename()));
+        if (profileElementEntity.getCodename() != null) {
+            add(setProfileValue("Codename : " + profileElementEntity.getCodename()));
         }
-        if (profileElement.getAction() != null) {
-            add(setProfileValue("Action : " + profileElement.getAction()));
+        if (profileElementEntity.getAction() != null) {
+            add(setProfileValue("Action : " + profileElementEntity.getAction()));
         }
-        if (profileElement.getOption() != null){
-            add(setProfileValue("Option : " + profileElement.getOption()));
+        if (profileElementEntity.getOption() != null) {
+            add(setProfileValue("Option : " + profileElementEntity.getOption()));
         }
-        if (profileElement.getArguments() != null && profileElement.getArguments().size() > 0){
+        if (profileElementEntity.getArgumentEntities() != null
+            && profileElementEntity.getArgumentEntities().size() > 0) {
             add(setProfileValue("Arguments"));
-            add(setProfileArguments(profileElement.getArguments()));
+            add(setProfileArguments(profileElementEntity.getArgumentEntities()));
         }
-        if (profileElement.getCondition() != null) {
-            add(setProfileValue("Condition : " + profileElement.getCondition()));
+        if (profileElementEntity.getCondition() != null) {
+            add(setProfileValue("Condition : " + profileElementEntity.getCondition()));
         }
-        if (profileElement.getIncludedtag().size() > 0) {
+        if (profileElementEntity.getIncludedTagEntities().size() > 0) {
             add(setProfileValue("Tags"));
-            add(setProfileTags(profileElement.getIncludedtag()));
+            add(setProfileTags(profileElementEntity.getIncludedTagEntities()));
         }
-        if (profileElement.getExceptedtags().size() > 0) {
+        if (profileElementEntity.getExcludedTagEntities().size() > 0) {
             add(setProfileValue("Excluded tags"));
-            add(setProfileTags(profileElement.getExceptedtags()));
+            add(setProfileTags(profileElementEntity.getExcludedTagEntities()));
         }
     }
 
@@ -51,25 +54,27 @@ public class ProfileElementView extends Div {
         return profileNameDiv;
     }
 
-    private VerticalLayout setProfileTags(List<? extends Tag> tags) {
+    private VerticalLayout setProfileTags(List<? extends TagEntity> tagEntities) {
         VerticalLayout verticalLayout = new VerticalLayout();
         verticalLayout.getStyle().set("margin-top", "0px");
-        for (Tag tag : tags) {
+        for (TagEntity tagEntity : tagEntities) {
             Div tagDiv = new Div();
-            tagDiv.add(new Text(tag.getTagValue()));
-            tagDiv.getStyle().set("color", "grey").set("padding-left", "15px").set("margin-top", "2px");
+            tagDiv.add(new Text(tagEntity.getTagValue()));
+            tagDiv.getStyle().set("color", "grey").set("padding-left", "15px")
+                .set("margin-top", "2px");
             verticalLayout.add(tagDiv);
         }
         return verticalLayout;
     }
 
-    private VerticalLayout setProfileArguments(List<Argument> arguments) {
+    private VerticalLayout setProfileArguments(List<ArgumentEntity> argumentEntities) {
         VerticalLayout verticalLayout = new VerticalLayout();
         verticalLayout.getStyle().set("margin-top", "0px");
-        for (Argument argument : arguments) {
+        for (ArgumentEntity argumentEntity : argumentEntities) {
             Div tagDiv = new Div();
-            tagDiv.add(new Text(argument.getKey() + " : "+ argument.getValue()));
-            tagDiv.getStyle().set("color", "grey").set("padding-left", "15px").set("margin-top", "2px");
+            tagDiv.add(new Text(argumentEntity.getKey() + " : " + argumentEntity.getValue()));
+            tagDiv.getStyle().set("color", "grey").set("padding-left", "15px")
+                .set("margin-top", "2px");
             verticalLayout.add(tagDiv);
         }
         return verticalLayout;

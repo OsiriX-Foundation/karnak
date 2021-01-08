@@ -5,145 +5,148 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import org.karnak.backend.configuration.GatewayConfiguration;
-import org.karnak.backend.data.entity.Destination;
-import org.karnak.backend.data.entity.DicomSourceNode;
-import org.karnak.backend.data.entity.ForwardNode;
-import org.karnak.backend.data.entity.SOPClassUID;
-import org.karnak.backend.data.repository.GatewayPersistence;
-import org.karnak.backend.data.repository.SOPClassUIDPersistence;
+import org.karnak.backend.config.GatewayConfig;
+import org.karnak.backend.data.entity.DestinationEntity;
+import org.karnak.backend.data.entity.DicomSourceNodeEntity;
+import org.karnak.backend.data.entity.ForwardNodeEntity;
+import org.karnak.backend.data.entity.SOPClassUIDEntity;
+import org.karnak.backend.data.repo.GatewayRepo;
+import org.karnak.backend.data.repo.SOPClassUIDRepo;
 
 @SuppressWarnings("serial")
 public class DataServiceImpl extends DataService {
 
-  private final GatewayPersistence gatewayPersistence;
-    {
-        gatewayPersistence = GatewayConfiguration.getInstance().getGatewayPersistence();
-    }
+  private final GatewayRepo gatewayRepo;
+  private final SOPClassUIDRepo sopClassUIDRepo;
 
-  private final SOPClassUIDPersistence sopClassUIDPersistence;
-    {
-        sopClassUIDPersistence = GatewayConfiguration.getInstance().getSopClassUIDPersistence();
-    }
+  {
+    gatewayRepo = GatewayConfig.getInstance().getGatewayPersistence();
+  }
+
+  {
+    sopClassUIDRepo = GatewayConfig.getInstance().getSopClassUIDPersistence();
+  }
 
 
-    @Override
-    public Collection<ForwardNode> getAllForwardNodes() {
-        List<ForwardNode> list = new ArrayList<>();
-        gatewayPersistence.findAll() //
-                .forEach(list::add);
-        return list;
-    }
+  @Override
+  public Collection<ForwardNodeEntity> getAllForwardNodes() {
+    List<ForwardNodeEntity> list = new ArrayList<>();
+    gatewayRepo.findAll() //
+        .forEach(list::add);
+    return list;
+  }
 
-    @Override
-    public ForwardNode getForwardNodeById(Long dataId) {
-        return gatewayPersistence.findById(dataId).orElse(null);
-    }
+  @Override
+  public ForwardNodeEntity getForwardNodeById(Long dataId) {
+    return gatewayRepo.findById(dataId).orElse(null);
+  }
 
-    @Override
-    public ForwardNode updateForwardNode(ForwardNode data) {
-        return gatewayPersistence.saveAndFlush(data);
-    }
+  @Override
+  public ForwardNodeEntity updateForwardNode(ForwardNodeEntity data) {
+    return gatewayRepo.saveAndFlush(data);
+  }
 
     @Override
     public void deleteForwardNode(Long dataId) {
-        gatewayPersistence.deleteById(dataId);
-        gatewayPersistence.flush();
+      gatewayRepo.deleteById(dataId);
+      gatewayRepo.flush();
     }
 
-    @Override
-    public Collection<Destination> getAllDestinations(ForwardNode forwardNode) {
-        if (forwardNode != null) {
-            return forwardNode.getDestinations();
-        }
-        return new HashSet<>();
+  @Override
+  public Collection<DestinationEntity> getAllDestinations(ForwardNodeEntity forwardNodeEntity) {
+    if (forwardNodeEntity != null) {
+      return forwardNodeEntity.getDestinationEntities();
     }
+    return new HashSet<>();
+  }
 
-    @Override
-    public Destination getDestinationById(ForwardNode forwardNode, Long dataId) {
-        Collection<Destination> destinations = getAllDestinations(forwardNode);
-        for (Destination destination : destinations) {
-            if (Objects.equals(destination.getId(), dataId)) {
-                return destination;
-            }
-        }
-        return null;
+  @Override
+  public DestinationEntity getDestinationById(ForwardNodeEntity forwardNodeEntity, Long dataId) {
+    Collection<DestinationEntity> destinationEntities = getAllDestinations(forwardNodeEntity);
+    for (DestinationEntity destinationEntity : destinationEntities) {
+      if (Objects.equals(destinationEntity.getId(), dataId)) {
+        return destinationEntity;
+      }
     }
+    return null;
+  }
 
-    @Override
-    public Destination updateDestination(ForwardNode forwardNode, Destination data) {
-        if (forwardNode == null || data == null) {
-            return null;
-        }
-        Collection<Destination> destinations = getAllDestinations(forwardNode);
-        if (!destinations.contains(data)) {
-            forwardNode.addDestination(data);
-        }
-        return data;
+  @Override
+  public DestinationEntity updateDestination(ForwardNodeEntity forwardNodeEntity,
+      DestinationEntity data) {
+    if (forwardNodeEntity == null || data == null) {
+      return null;
     }
+    Collection<DestinationEntity> destinationEntities = getAllDestinations(forwardNodeEntity);
+    if (!destinationEntities.contains(data)) {
+      forwardNodeEntity.addDestination(data);
+    }
+    return data;
+  }
 
-    @Override
-    public void deleteDestination(ForwardNode forwardNode, Destination data) {
-        if (forwardNode == null || data == null) {
-            return;
-        }
-        forwardNode.removeDestination(data);
+  @Override
+  public void deleteDestination(ForwardNodeEntity forwardNodeEntity, DestinationEntity data) {
+    if (forwardNodeEntity == null || data == null) {
+      return;
     }
+    forwardNodeEntity.removeDestination(data);
+  }
 
-    @Override
-    public Collection<DicomSourceNode> getAllSourceNodes(ForwardNode forwardNode) {
-        if (forwardNode != null) {
-            return forwardNode.getSourceNodes();
-        }
-        return new HashSet<>();
+  @Override
+  public Collection<DicomSourceNodeEntity> getAllSourceNodes(ForwardNodeEntity forwardNodeEntity) {
+    if (forwardNodeEntity != null) {
+      return forwardNodeEntity.getSourceNodes();
     }
+    return new HashSet<>();
+  }
 
-    @Override
-    public DicomSourceNode getSourceNodeById(ForwardNode forwardNode, Long dataId) {
-        Collection<DicomSourceNode> sourceNodes = getAllSourceNodes(forwardNode);
-        for (DicomSourceNode sourceNode : sourceNodes) {
-            if (Objects.equals(sourceNode.getId(), dataId)) {
-                return sourceNode;
-            }
-        }
-        return null;
+  @Override
+  public DicomSourceNodeEntity getSourceNodeById(ForwardNodeEntity forwardNodeEntity, Long dataId) {
+    Collection<DicomSourceNodeEntity> sourceNodes = getAllSourceNodes(forwardNodeEntity);
+    for (DicomSourceNodeEntity sourceNode : sourceNodes) {
+      if (Objects.equals(sourceNode.getId(), dataId)) {
+        return sourceNode;
+      }
     }
+    return null;
+  }
 
-    @Override
-    public DicomSourceNode updateSourceNode(ForwardNode forwardNode, DicomSourceNode data) {
-        if (forwardNode == null || data == null) {
-            return null;
-        }
-        Collection<DicomSourceNode> sourceNodes = getAllSourceNodes(forwardNode);
-        if (!sourceNodes.contains(data)) {
-            forwardNode.addSourceNode(data);
-        }
-        return data;
+  @Override
+  public DicomSourceNodeEntity updateSourceNode(ForwardNodeEntity forwardNodeEntity,
+      DicomSourceNodeEntity data) {
+    if (forwardNodeEntity == null || data == null) {
+      return null;
     }
+    Collection<DicomSourceNodeEntity> sourceNodes = getAllSourceNodes(forwardNodeEntity);
+    if (!sourceNodes.contains(data)) {
+      forwardNodeEntity.addSourceNode(data);
+    }
+    return data;
+  }
 
-    @Override
-    public void deleteSourceNode(ForwardNode forwardNode, DicomSourceNode data) {
-        if (forwardNode == null || data == null) {
-            return;
-        }
-        forwardNode.removeSourceNode(data);
+  @Override
+  public void deleteSourceNode(ForwardNodeEntity forwardNodeEntity, DicomSourceNodeEntity data) {
+    if (forwardNodeEntity == null || data == null) {
+      return;
     }
+    forwardNodeEntity.removeSourceNode(data);
+  }
 
-    @Override
-    public List<SOPClassUID> getAllSOPClassUIDs() {
-        List<SOPClassUID> list = new ArrayList<>();
-        sopClassUIDPersistence.findAll() //
-                .forEach(list::add);
-        return list;
-    }
+  @Override
+  public List<SOPClassUIDEntity> getAllSOPClassUIDs() {
+    List<SOPClassUIDEntity> list = new ArrayList<>();
+    sopClassUIDRepo.findAll() //
+        .forEach(list::add);
+    return list;
+  }
 
-    @Override
-    public SOPClassUID getSOPClassUIDByName(String name) {
-        return sopClassUIDPersistence.getSOPClassUIDByName(name);
-    }
+  @Override
+  public SOPClassUIDEntity getSOPClassUIDByName(String name) {
+    return sopClassUIDRepo.getSOPClassUIDByName(name);
+  }
 
-    @Override
-    public SOPClassUID getSOPClassUIDById(Long dataId) {
-        return sopClassUIDPersistence.getSOPClassUIDById(dataId);
-    }
+  @Override
+  public SOPClassUIDEntity getSOPClassUIDById(Long dataId) {
+    return sopClassUIDRepo.getSOPClassUIDById(dataId);
+  }
 }

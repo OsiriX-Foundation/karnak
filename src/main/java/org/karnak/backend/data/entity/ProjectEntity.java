@@ -15,7 +15,8 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 @Entity(name = "Project")
 @Table(name = "project")
-public class Project {
+public class ProjectEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -23,23 +24,24 @@ public class Project {
     private String name;
     private byte[] secret;
 
-    @OneToMany(mappedBy="project")
+    @OneToMany(mappedBy = "projectEntity")
     @LazyCollection(LazyCollectionOption.FALSE)
-    private List<Destination> destinations;
+    private List<DestinationEntity> destinationEntities;
 
     @ManyToOne
-    @JoinColumn(name="profile_pipe_id")
-    private Profile profile;
+    @JoinColumn(name = "profile_pipe_id")
+    private ProfileEntity profileEntity;
 
-    public Project() {
-        this.destinations = new ArrayList<>();
+    public ProjectEntity() {
+        this.destinationEntities = new ArrayList<>();
     }
 
-    public Project(String name, byte[] secret) {
+    public ProjectEntity(String name, byte[] secret) {
         this.name = name;
         this.secret = secret;
-        this.destinations = new ArrayList<>();
+        this.destinationEntities = new ArrayList<>();
     }
+
     public Long getId() {
         return id;
     }
@@ -60,20 +62,20 @@ public class Project {
         this.secret = secret;
     }
 
-    public List<Destination> getDestinations() {
-        return destinations;
+    public List<DestinationEntity> getDestinationEntities() {
+        return destinationEntities;
     }
 
-    public void setDestinations(List<Destination> destinations) {
-        this.destinations = destinations;
+    public void setDestinationEntities(List<DestinationEntity> destinationEntities) {
+        this.destinationEntities = destinationEntities;
     }
 
-    public Profile getProfile() {
-        return profile;
+    public ProfileEntity getProfileEntity() {
+        return profileEntity;
     }
 
-    public void setProfile(Profile profile) {
-        this.profile = profile;
+    public void setProfileEntity(ProfileEntity profileEntity) {
+        this.profileEntity = profileEntity;
     }
 
     public boolean isNewData() {

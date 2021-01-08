@@ -7,8 +7,8 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import java.util.List;
-import org.karnak.backend.data.entity.Destination;
-import org.karnak.backend.data.entity.Project;
+import org.karnak.backend.data.entity.DestinationEntity;
+import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.service.ProjectDataProvider;
 import org.karnak.frontend.component.ConfirmDialog;
 import org.karnak.frontend.forwardnode.ProfileDropDown;
@@ -16,7 +16,7 @@ import org.karnak.frontend.forwardnode.ProfileDropDown;
 public class EditProject extends VerticalLayout {
 
     private final ProjectDataProvider projectDataProvider;
-    private Binder<Project> binder;
+    private Binder<ProjectEntity> binder;
     private TextField textProjectName;
     private ProjectSecret projectSecret;
     private ProfileDropDown profileDropDown;
@@ -24,7 +24,7 @@ public class EditProject extends VerticalLayout {
     private Button buttonUpdate;
     private Button buttonRemove;
     private final WarningRemoveProjectUsed dialogWarning;
-    private Project project;
+    private ProjectEntity projectEntity;
 
     public EditProject(ProjectDataProvider projectDataProvider) {
         this.projectDataProvider = projectDataProvider;
@@ -37,10 +37,10 @@ public class EditProject extends VerticalLayout {
         add(textProjectName, profileDropDown, projectSecret, horizontalLayoutButtons);
     }
 
-    public void setProject(Project project) {
-        this.project = project;
-        if (project != null) {
-            binder.setBean(project);
+    public void setProject(ProjectEntity projectEntity) {
+        this.projectEntity = projectEntity;
+        if (projectEntity != null) {
+            binder.setBean(projectEntity);
             setEnabled(true);
         } else {
             binder.removeBean();
@@ -51,16 +51,19 @@ public class EditProject extends VerticalLayout {
 
     private void setEventButtonAdd() {
         buttonUpdate.addClickListener(event -> {
-            if (project != null && binder.writeBeanIfValid(project)){
-                if (project.getDestinations()!=null && project.getDestinations().size()>0) {
+            if (projectEntity != null && binder.writeBeanIfValid(projectEntity)) {
+                if (projectEntity.getDestinationEntities() != null
+                    && projectEntity.getDestinationEntities().size() > 0) {
                     ConfirmDialog dialog = new ConfirmDialog(
-                    String.format("The project %s is used, are you sure you want to updated ?", project.getName()));
+                        String.format("The project %s is used, are you sure you want to updated ?",
+                            projectEntity
+                                .getName()));
                     dialog.addConfirmationListener(componentEvent -> {
-                        projectDataProvider.update(project);
+                        projectDataProvider.update(projectEntity);
                     });
                     dialog.open();
                 } else {
-                    projectDataProvider.update(project);
+                    projectDataProvider.update(projectEntity);
                 }
             }
         });
@@ -68,13 +71,13 @@ public class EditProject extends VerticalLayout {
 
     private void setEventButtonRemove() {
         buttonRemove.addClickListener(e -> {
-            List<Destination> destinations = project.getDestinations();
-            if (destinations != null && destinations.size() > 0) {
-                dialogWarning.setText(project);
+            List<DestinationEntity> destinationEntities = projectEntity.getDestinationEntities();
+            if (destinationEntities != null && destinationEntities.size() > 0) {
+                dialogWarning.setText(projectEntity);
                 dialogWarning.open();
 
             } else {
-                projectDataProvider.remove(project);
+                projectDataProvider.remove(projectEntity);
                 clear();
                 setEnabled(false);
             }
@@ -101,6 +104,6 @@ public class EditProject extends VerticalLayout {
     }
 
     private void clear() {
-        binder.readBean(new Project());
+        binder.readBean(new ProjectEntity());
     }
 }

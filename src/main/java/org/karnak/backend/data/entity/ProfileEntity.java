@@ -22,8 +22,10 @@ import org.hibernate.annotations.LazyCollectionOption;
 @Entity(name = "Profile")
 @Table(name = "profile")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-@JsonPropertyOrder({"name", "version", "minimumKarnakVersion", "defaultIssuerOfPatientID","profileElements", "masks"})
-public class Profile {
+@JsonPropertyOrder({"name", "version", "minimumKarnakVersion", "defaultIssuerOfPatientID",
+    "profileElementEntities", "maskEntities"})
+public class ProfileEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @JsonIgnore
@@ -37,21 +39,22 @@ public class Profile {
     @JsonIgnore
     private Boolean bydefault;
 
-    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<ProfileElement> profileElements = new ArrayList<>();
+    @OneToMany(mappedBy = "profileEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<ProfileElementEntity> profileElementEntities = new ArrayList<>();
 
-    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<Mask> masks = new HashSet<>();
+    @OneToMany(mappedBy = "profileEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<MaskEntity> maskEntities = new HashSet<>();
 
-    @OneToMany(mappedBy="profile")
+    @OneToMany(mappedBy = "profileEntity")
     @LazyCollection(LazyCollectionOption.FALSE)
     @JsonIgnore
-    private List<Project> project;
+    private List<ProjectEntity> projectEntities;
 
-    public Profile() {
+    public ProfileEntity() {
     }
 
-    public Profile(String name, String version, String minimumKarnakVersion, String defaultissueropatientid) {
+    public ProfileEntity(String name, String version, String minimumKarnakVersion,
+        String defaultissueropatientid) {
         this.name = name;
         this.version = version;
         this.minimumKarnakVersion = minimumKarnakVersion;
@@ -59,7 +62,8 @@ public class Profile {
         this.bydefault = false;
     }
 
-    public Profile(String name, String version, String minimumKarnakVersion, String defaultissueropatientid, Boolean bydefault) {
+    public ProfileEntity(String name, String version, String minimumKarnakVersion,
+        String defaultissueropatientid, Boolean bydefault) {
         this.name = name;
         this.version = version;
         this.minimumKarnakVersion = minimumKarnakVersion;
@@ -70,12 +74,13 @@ public class Profile {
     public Long getId() {
         return id;
     }
-    public void addProfilePipe(ProfileElement profileElement){
-        this.profileElements.add(profileElement);
+
+    public void addProfilePipe(ProfileElementEntity profileElementEntity) {
+        this.profileElementEntities.add(profileElementEntity);
     }
 
-    public void addMask(Mask mask){
-        this.masks.add(mask);
+    public void addMask(MaskEntity maskEntity) {
+        this.maskEntities.add(maskEntity);
     }
 
     public String getName() {
@@ -112,12 +117,12 @@ public class Profile {
         this.defaultissueropatientid = defaultissueropatientid;
     }
 
-    public List<ProfileElement> getProfileElements() {
-        return profileElements;
+    public List<ProfileElementEntity> getProfileElementEntities() {
+        return profileElementEntities;
     }
 
-    public void setProfileElements(List<ProfileElement> profileElements) {
-        this.profileElements = profileElements;
+    public void setProfileElementEntities(List<ProfileElementEntity> profileElementEntities) {
+        this.profileElementEntities = profileElementEntities;
     }
 
     public Boolean getBydefault() {
@@ -128,15 +133,15 @@ public class Profile {
         this.bydefault = bydefault;
     }
 
-    public Set<Mask> getMasks() {
-        return masks;
+    public Set<MaskEntity> getMaskEntities() {
+        return maskEntities;
     }
 
-    public void setMasks(Set<Mask> masks) {
-        this.masks = masks;
+    public void setMaskEntities(Set<MaskEntity> maskEntities) {
+        this.maskEntities = maskEntities;
     }
 
-    public List<Project> getProject() {
-        return project;
+    public List<ProjectEntity> getProjectEntities() {
+        return projectEntities;
     }
 }

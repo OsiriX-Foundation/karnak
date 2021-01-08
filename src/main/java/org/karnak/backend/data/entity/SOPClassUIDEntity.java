@@ -8,7 +8,8 @@ import javax.persistence.Table;
 
 @Entity(name = "SOPClassUID")
 @Table(name = "sop_class_uid")
-public class SOPClassUID {
+public class SOPClassUIDEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -18,16 +19,16 @@ public class SOPClassUID {
     private String uid;
     private String name;
 
-    public SOPClassUID(){
+    public SOPClassUIDEntity() {
     }
 
-    public SOPClassUID(String ciod, String uid, String name){
+    public SOPClassUIDEntity(String ciod, String uid, String name) {
         this.ciod = ciod;
         this.uid = uid;
         this.name = name;
     }
 
-    public SOPClassUID(String ciod){
+    public SOPClassUIDEntity(String ciod) {
         this.ciod = ciod;
     }
 

@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.util.DateTimeUtils;
-import org.karnak.backend.data.entity.Argument;
+import org.karnak.backend.data.entity.ArgumentEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,10 +61,11 @@ public class ShiftDate {
         return addMissingZero(String.valueOf(intDummyAge), 3) + formatAge;
     }
 
-    public static String shift(DicomObject dcm, DicomElement dcmEl, List<Argument> arguments) {
+    public static String shift(DicomObject dcm, DicomElement dcmEl,
+        List<ArgumentEntity> argumentEntities) {
         try {
-            verifyShiftArguments(arguments);
-        } catch(IllegalArgumentException e) {
+            verifyShiftArguments(argumentEntities);
+        } catch (IllegalArgumentException e) {
             throw e;
         }
 
@@ -72,9 +73,9 @@ public class ShiftDate {
         int shiftDays = -1;
         int shiftSeconds = -1;
 
-        for (Argument argument: arguments) {
-            final String key = argument.getKey();
-            final String value = argument.getValue();
+        for (ArgumentEntity argumentEntity : argumentEntities) {
+            final String key = argumentEntity.getKey();
+            final String value = argumentEntity.getValue();
 
             try {
                 if (key.equals("seconds")) {
@@ -84,7 +85,7 @@ public class ShiftDate {
                     shiftDays = Integer.parseInt(value);
                 }
             } catch (Exception e) {
-                LOGGER.error("args {} is not correct" , value,  e);
+                LOGGER.error("args {} is not correct", value, e);
             }
         }
         if (dcmElValue != null) {
@@ -100,16 +101,19 @@ public class ShiftDate {
         }
     }
 
-    public static void verifyShiftArguments(List<Argument> arguments) throws IllegalArgumentException {
-        if (!arguments.stream().anyMatch(argument -> argument.getKey().equals("seconds")) ||
-                !arguments.stream().anyMatch(argument -> argument.getKey().equals("days"))) {
-            List<String> args = arguments.stream()
-                    .map(argument -> argument.getKey())
-                    .collect(Collectors.toList());
+    public static void verifyShiftArguments(List<ArgumentEntity> argumentEntities)
+        throws IllegalArgumentException {
+        if (!argumentEntities.stream().anyMatch(argument -> argument.getKey().equals("seconds")) ||
+            !argumentEntities.stream().anyMatch(argument -> argument.getKey().equals("days"))) {
+            List<String> args = argumentEntities.stream()
+                .map(argument -> argument.getKey())
+                .collect(Collectors.toList());
             IllegalArgumentException missingParameters = new IllegalArgumentException(
-                    "Cannot build the option ShiftDate: Missing argument, the class need [seconds, days] as parameters. Parameters given " + args
+                "Cannot build the option ShiftDate: Missing argument, the class need [seconds, days] as parameters. Parameters given "
+                    + args
             );
-            LOGGER.error("Missing argument, the class need seconds and days as parameters", missingParameters);
+            LOGGER.error("Missing argument, the class need seconds and days as parameters",
+                missingParameters);
             throw missingParameters;
         }
     }

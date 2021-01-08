@@ -3,47 +3,50 @@ package org.karnak.backend.service.profilepipe;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.karnak.backend.configuration.AppConfig;
-import org.karnak.backend.data.entity.Argument;
-import org.karnak.backend.data.entity.ExcludedTag;
-import org.karnak.backend.data.entity.IncludedTag;
-import org.karnak.backend.data.entity.Mask;
-import org.karnak.backend.data.entity.Profile;
-import org.karnak.backend.data.entity.ProfileElement;
-import org.karnak.backend.data.repository.ProfilePersistence;
+import org.karnak.backend.config.AppConfig;
+import org.karnak.backend.data.entity.ArgumentEntity;
+import org.karnak.backend.data.entity.ExcludedTagEntity;
+import org.karnak.backend.data.entity.IncludedTagEntity;
+import org.karnak.backend.data.entity.MaskEntity;
+import org.karnak.backend.data.entity.ProfileElementEntity;
+import org.karnak.backend.data.entity.ProfileEntity;
+import org.karnak.backend.data.repo.ProfileRepo;
 import org.karnak.backend.enums.ProfileItemType;
 import org.karnak.backend.model.profilebody.ProfilePipeBody;
-import org.karnak.frontend.profile.ProfileError;
+import org.karnak.frontend.profileEntity.ProfileError;
 
 public class ProfilePipeServiceImpl extends ProfilePipeService {
 
-    private final ProfilePersistence profilePersistence;
+    private final ProfileRepo profileRepo;
     {
-        profilePersistence = AppConfig.getInstance().getProfilePersistence();
+        profileRepo = AppConfig.getInstance().getProfilePersistence();
     }
 
 
     @Override
-    public List<Profile> getAllProfiles() {
-        List<Profile> list = new ArrayList<>();
-        profilePersistence.findAll() //
-                .forEach(list::add);
+    public List<ProfileEntity> getAllProfiles() {
+        List<ProfileEntity> list = new ArrayList<>();
+        profileRepo.findAll() //
+            .forEach(list::add);
         return list;
     }
 
     @Override
     public ArrayList<ProfileError> validateProfile(ProfilePipeBody profilePipeYml) {
-        Profile newProfile = createNewProfile(profilePipeYml, false);
+        ProfileEntity newProfileEntity = createNewProfile(profilePipeYml, false);
         ArrayList<ProfileError> profileErrors = new ArrayList<>();
-        for (ProfileElement profileElement : newProfile.getProfileElements()) {
-            ProfileError profileError = new ProfileError(profileElement);
+        for (ProfileElementEntity profileElementEntity : newProfileEntity
+            .getProfileElementEntities()) {
+            ProfileError profileError = new ProfileError(profileElementEntity);
             profileErrors.add(profileError);
-            ProfileItemType t = ProfileItemType.getType(profileElement.getCodename());
+            ProfileItemType t = ProfileItemType.getType(profileElementEntity.getCodename());
             if (t == null) {
-                profileError.setError("Cannot find the profile codename: " + profileElement.getCodename());
+                profileError.setError("Cannot find the profile codename: " + profileElementEntity
+                    .getCodename());
             } else {
                 try {
-                    t.getProfileClass().getConstructor(ProfileElement.class).newInstance(profileElement);
+                    t.getProfileClass().getConstructor(ProfileElementEntity.class).newInstance(
+                        profileElementEntity);
                 } catch (Exception e) {
                     profileError.setError(e.getCause().getMessage());
                     continue;
@@ -54,63 +57,71 @@ public class ProfilePipeServiceImpl extends ProfilePipeService {
     }
 
     @Override
-    public Profile saveProfilePipe(ProfilePipeBody profilePipeYml, Boolean byDefault) {
-        Profile newProfile = createNewProfile(profilePipeYml, byDefault);
-        return profilePersistence.saveAndFlush(newProfile);
+    public ProfileEntity saveProfilePipe(ProfilePipeBody profilePipeYml, Boolean byDefault) {
+        ProfileEntity newProfileEntity = createNewProfile(profilePipeYml, byDefault);
+        return profileRepo.saveAndFlush(newProfileEntity);
     }
 
-    private Profile createNewProfile(ProfilePipeBody profilePipeYml, Boolean byDefault) {
-        final Profile newProfile = new Profile(profilePipeYml.getName(), profilePipeYml.getVersion(), profilePipeYml.getMinimumKarnakVersion(), profilePipeYml.getDefaultIssuerOfPatientID(), byDefault);
-        if(profilePipeYml.getMasks() != null){
+    private ProfileEntity createNewProfile(ProfilePipeBody profilePipeYml, Boolean byDefault) {
+        final ProfileEntity newProfileEntity = new ProfileEntity(profilePipeYml.getName(),
+            profilePipeYml.getVersion(), profilePipeYml.getMinimumKarnakVersion(),
+            profilePipeYml.getDefaultIssuerOfPatientID(), byDefault);
+        if (profilePipeYml.getMasks() != null) {
             profilePipeYml.getMasks().forEach(m -> {
-                Mask mask = new Mask(m.getStationName(), m.getColor(), newProfile );
-                m.getRectangles().forEach(mask::addRectangle);
-                newProfile.addMask(mask);
+                MaskEntity maskEntity = new MaskEntity(m.getStationName(), m.getColor(),
+                    newProfileEntity);
+                m.getRectangles().forEach(maskEntity::addRectangle);
+                newProfileEntity.addMask(maskEntity);
             });
         }
 
         AtomicInteger profilePosition = new AtomicInteger(0);
         profilePipeYml.getProfileElements().forEach(profileBody -> {
-            ProfileElement profileElement = new ProfileElement(
-                    profileBody.getName(), profileBody.getCodename(), profileBody.getCondition(), profileBody.getAction(),
-                    profileBody.getOption(), profilePosition.get(), newProfile
+            ProfileElementEntity profileElementEntity = new ProfileElementEntity(
+                profileBody.getName(), profileBody.getCodename(), profileBody.getCondition(),
+                profileBody.getAction(),
+                profileBody.getOption(), profilePosition.get(), newProfileEntity
             );
 
             if (profileBody.getArguments() != null) {
                 profileBody.getArguments().forEach((key, value) -> {
-                    final Argument argument = new Argument(key, value, profileElement);
-                    profileElement.addArgument(argument);
+                    final ArgumentEntity argumentEntity = new ArgumentEntity(key, value,
+                        profileElementEntity);
+                    profileElementEntity.addArgument(argumentEntity);
                 });
             }
 
             if(profileBody.getTags()!=null){
-                profileBody.getTags().forEach(tag->{
-                    final IncludedTag includedTagValue = new IncludedTag(tag, profileElement);
-                    profileElement.addIncludedTag(includedTagValue);
+                profileBody.getTags().forEach(tag-> {
+                    final IncludedTagEntity includedTagEntityValue = new IncludedTagEntity(tag,
+                        profileElementEntity);
+                    profileElementEntity.addIncludedTag(includedTagEntityValue);
                 });
             }
 
             if(profileBody.getExcludedTags()!=null) {
                 profileBody.getExcludedTags().forEach(excludedTag -> {
-                    final ExcludedTag excludedTagValue = new ExcludedTag(excludedTag, profileElement);
-                    profileElement.addExceptedtags(excludedTagValue);
+                    final ExcludedTagEntity excludedTagEntityValue = new ExcludedTagEntity(
+                        excludedTag,
+                        profileElementEntity);
+                    profileElementEntity.addExceptedtags(excludedTagEntityValue);
                 });
             }
 
-            newProfile.addProfilePipe(profileElement);
+            newProfileEntity.addProfilePipe(profileElementEntity);
             profilePosition.getAndIncrement();
         });
-        return newProfile;
+        return newProfileEntity;
     }
 
     @Override
-    public Profile updateProfile(Profile profile) {
-        return profilePersistence.saveAndFlush(profile);
+    public ProfileEntity updateProfile(ProfileEntity profileEntity) {
+        return profileRepo.saveAndFlush(profileEntity);
     }
 
     @Override
-    public void deleteProfile(Profile profile) {
-        profilePersistence.deleteById(profile.getId());
-        profilePersistence.flush();
+    public void deleteProfile(ProfileEntity profileEntity) {
+        profileRepo.deleteById(profileEntity.getId());
+        profileRepo.flush();
     }
 }

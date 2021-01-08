@@ -32,7 +32,8 @@ import org.karnak.backend.enums.IdTypes;
 @GroupSequenceProvider(value = DestinationGroupSequenceProvider.class)
 @Entity(name = "Destination")
 @Table(name = "destination")
-public class Destination {
+public class DestinationEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -60,18 +61,18 @@ public class Destination {
 
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name="sop_class_filter",
-            joinColumns = @JoinColumn(name = "destination_id"),
-            inverseJoinColumns = @JoinColumn(name = "sop_class_uid_id"))
-    private Set<SOPClassUID> SOPClassUIDFilters = new HashSet<>();
+    @JoinTable(name = "sop_class_filter",
+        joinColumns = @JoinColumn(name = "destination_id"),
+        inverseJoinColumns = @JoinColumn(name = "sop_class_uid_id"))
+    private Set<SOPClassUIDEntity> SOPClassUIDEntityFilters = new HashSet<>();
 
-    @OneToMany(mappedBy="destination", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "destinationEntity", cascade = CascadeType.REMOVE)
     @LazyCollection(LazyCollectionOption.FALSE)
-    private List<KheopsAlbums> kheopsAlbums;
+    private List<KheopsAlbumsEntity> kheopsAlbumEntities;
 
     @ManyToOne
-    @JoinColumn(name="project_id")
-    private Project project;
+    @JoinColumn(name = "project_id")
+    private ProjectEntity projectEntity;
 
     // list of emails (comma separated) used when the images have been sent (or
     // partially sent) to the final destination. Note: if an issue appears before
@@ -134,42 +135,14 @@ public class Destination {
     private String headers;
 
     @ManyToOne
-    @JoinColumn
-    private ForwardNode forwardNode;
+    @JoinColumn(name = "forward_node_id")
+    private ForwardNodeEntity forwardNodeEntity;
 
-    public static Destination ofDicomEmpty() {
-        return new Destination(DestinationType.dicom);
-    }
-
-    public static Destination ofDicom(String description, String aeTitle, String hostname, int port,
-        Boolean useaetdest) {
-        Destination destination = new Destination(DestinationType.dicom);
-        destination.setDescription(description);
-        destination.setAeTitle(aeTitle);
-        destination.setHostname(hostname);
-        destination.setPort(Integer.valueOf(port));
-        destination.setUseaetdest(useaetdest);
-        return destination;
-    }
-
-    public static Destination ofStowEmpty() {
-        return new Destination(DestinationType.stow);
-    }
-
-    public static Destination ofStow(String description, String url, String urlCredentials, String headers) {
-        Destination destination = new Destination(DestinationType.stow);
-        destination.setDescription(description);
-        destination.setUrl(url);
-        destination.setUrlCredentials(urlCredentials);
-        destination.setHeaders(headers);
-        return destination;
-    }
-
-    protected Destination() {
+    protected DestinationEntity() {
         this(null);
     }
 
-    protected Destination(DestinationType type) {
+    protected DestinationEntity(DestinationType type) {
         this.type = type;
         this.description = "";
         this.desidentification = false;
@@ -194,24 +167,42 @@ public class Destination {
         this.headers = "";
     }
 
+    public static DestinationEntity ofDicomEmpty() {
+        return new DestinationEntity(DestinationType.dicom);
+    }
+
+    public static DestinationEntity ofDicom(String description, String aeTitle, String hostname,
+        int port,
+        Boolean useaetdest) {
+        DestinationEntity destinationEntity = new DestinationEntity(DestinationType.dicom);
+        destinationEntity.setDescription(description);
+        destinationEntity.setAeTitle(aeTitle);
+        destinationEntity.setHostname(hostname);
+        destinationEntity.setPort(Integer.valueOf(port));
+        destinationEntity.setUseaetdest(useaetdest);
+        return destinationEntity;
+    }
+
+    public static DestinationEntity ofStowEmpty() {
+        return new DestinationEntity(DestinationType.stow);
+    }
+
+    public static DestinationEntity ofStow(String description, String url, String urlCredentials,
+        String headers) {
+        DestinationEntity destinationEntity = new DestinationEntity(DestinationType.stow);
+        destinationEntity.setDescription(description);
+        destinationEntity.setUrl(url);
+        destinationEntity.setUrlCredentials(urlCredentials);
+        destinationEntity.setHeaders(headers);
+        return destinationEntity;
+    }
+
     public Long getId() {
         return id;
     }
 
     public boolean isNewData() {
         return id == null;
-    }
-
-    public String getStringReference() {
-        if (type != null) {
-            switch (type) {
-                case dicom:
-                    return getAeTitle();
-                case stow:
-                    return getUrl() + ":" + getPort();
-            }
-        }
-        return "Type of destination is unknown";
     }
 
     public String getDescription() {
@@ -339,79 +330,26 @@ public class Destination {
         this.headers = headers;
     }
 
-    public ForwardNode getForwardNode() {
-        return forwardNode;
+    public ForwardNodeEntity getForwardNodeEntity() {
+        return forwardNodeEntity;
     }
 
-    public void setForwardNode(ForwardNode forwardNode) {
-        this.forwardNode = forwardNode;
+    public void setForwardNodeEntity(ForwardNodeEntity forwardNodeEntity) {
+        this.forwardNodeEntity = forwardNodeEntity;
     }
 
-    public Set<SOPClassUID> getSOPClassUIDFilters(){
-        return this.SOPClassUIDFilters;
+    public Set<SOPClassUIDEntity> getSOPClassUIDFilters() {
+        return this.SOPClassUIDEntityFilters;
     }
 
-    public void setSOPClassUIDFilters(Set<SOPClassUID> sopClassUIDfilters) {
-        this.SOPClassUIDFilters = sopClassUIDfilters;
+    public void setSOPClassUIDFilters(Set<SOPClassUIDEntity> sopClassUIDfilterEntities) {
+        this.SOPClassUIDEntityFilters = sopClassUIDfilterEntities;
     }
 
-    public Set<String> getSOPClassUIDFiltersName(){
+    public Set<String> getSOPClassUIDFiltersName() {
         Set<String> sopList = new HashSet<>();
-        this.SOPClassUIDFilters.forEach(sopClassUID -> sopList.add(sopClassUID.getName()));
+        this.SOPClassUIDEntityFilters.forEach(sopClassUID -> sopList.add(sopClassUID.getName()));
         return sopList;
-    }
-
-
-    /**
-     * Informs if this object matches with the filter as text.
-     * 
-     * @param filterText
-     *            the filter as text.
-     * @return true if this object matches with the filter as text; false otherwise.
-     */
-    public boolean matchesFilter(String filterText) {
-        return contains(description, filterText) //
-            || contains(notify, filterText) //
-            || contains(notifyObjectErrorPrefix, filterText) //
-            || contains(notifyObjectPattern, filterText) //
-            || contains(notifyObjectValues, filterText) //
-            || contains(aeTitle, filterText) //
-            || contains(hostname, filterText) //
-            || equals(port, filterText) //
-            || contains(url, filterText) //
-            || contains(urlCredentials, filterText) //
-            || contains(headers, filterText);
-    }
-
-    private boolean contains(String value, String filterText) {
-        return value != null && value.contains(filterText);
-    }
-
-    private boolean equals(Integer value, String filterText) {
-        return value != null && value.toString().equals(filterText);
-    }
-
-    @Override
-    public String toString() {
-        if (type != null) {
-            switch (type) {
-                case dicom:
-                    return "Destination [id=" + id + ", description=" + description + ", type=" + type + ", notify="
-                        + notify + ", notifyObjectErrorPrefix=" + notifyObjectErrorPrefix + ", notifyObjectPattern="
-                        + notifyObjectPattern + ", notifyObjectValues=" + notifyObjectValues + ", notifyInterval="
-                        + notifyInterval + ", aeTitle=" + aeTitle + ", hostname=" + hostname + ", port=" + port
-                        + ", useaetdest=" + useaetdest + "]";
-                case stow:
-                    return "Destination [id=" + id + ", description=" + description + ", type=" + type + ", notify="
-                        + notify + ", notifyObjectErrorPrefix=" + notifyObjectErrorPrefix + ", notifyObjectPattern="
-                        + notifyObjectPattern + ", notifyObjectValues=" + notifyObjectValues + ", notifyInterval="
-                        + notifyInterval + ", url=" + url + ", urlCredentials=" + urlCredentials + ", headers="
-                        + headers + "]";
-            }
-        }
-        return "Destination [id=" + id + ", description=" + description + ", type=" + type + ", notify=" + notify
-            + ", notifyObjectErrorPrefix=" + notifyObjectErrorPrefix + ", notifyObjectPattern=" + notifyObjectPattern
-            + ", notifyObjectValues=" + notifyObjectValues + ", notifyInterval=" + notifyInterval + "]";
     }
 
     public IdTypes getIdTypes() {
@@ -462,19 +400,87 @@ public class Destination {
         this.savePseudonym = savePseudonym;
     }
 
-    public List<KheopsAlbums> getKheopsAlbums() {
-        return kheopsAlbums;
+    public List<KheopsAlbumsEntity> getKheopsAlbumEntities() {
+        return kheopsAlbumEntities;
     }
 
-    public void setKheopsAlbums(List<KheopsAlbums> kheopsAlbums) {
-        this.kheopsAlbums = kheopsAlbums;
+    public void setKheopsAlbumEntities(List<KheopsAlbumsEntity> kheopsAlbumEntities) {
+        this.kheopsAlbumEntities = kheopsAlbumEntities;
     }
 
-    public Project getProject() {
-        return project;
+    public ProjectEntity getProjectEntity() {
+        return projectEntity;
     }
 
-    public void setProject(Project project) {
-        this.project = project;
+    public void setProjectEntity(ProjectEntity projectEntity) {
+        this.projectEntity = projectEntity;
+    }
+
+    /**
+     * Informs if this object matches with the filter as text.
+     *
+     * @param filterText the filter as text.
+     * @return true if this object matches with the filter as text; false otherwise.
+     */
+    public boolean matchesFilter(String filterText) {
+        return contains(description, filterText) //
+            || contains(notify, filterText) //
+            || contains(notifyObjectErrorPrefix, filterText) //
+            || contains(notifyObjectPattern, filterText) //
+            || contains(notifyObjectValues, filterText) //
+            || contains(aeTitle, filterText) //
+            || contains(hostname, filterText) //
+            || equals(port, filterText) //
+            || contains(url, filterText) //
+            || contains(urlCredentials, filterText) //
+            || contains(headers, filterText);
+    }
+
+    private boolean contains(String value, String filterText) {
+        return value != null && value.contains(filterText);
+    }
+
+    private boolean equals(Integer value, String filterText) {
+        return value != null && value.toString().equals(filterText);
+    }
+
+    @Override
+    public String toString() {
+        if (type != null) {
+            switch (type) {
+                case dicom:
+                    return "Destination [id=" + id + ", description=" + description + ", type=" + type + ", notify="
+                        + notify + ", notifyObjectErrorPrefix=" + notifyObjectErrorPrefix + ", notifyObjectPattern="
+                        + notifyObjectPattern + ", notifyObjectValues=" + notifyObjectValues + ", notifyInterval="
+                        + notifyInterval + ", aeTitle=" + aeTitle + ", hostname=" + hostname + ", port=" + port
+                        + ", useaetdest=" + useaetdest + "]";
+                case stow:
+                    return "Destination [id=" + id + ", description=" + description + ", type=" + type + ", notify="
+                        + notify + ", notifyObjectErrorPrefix=" + notifyObjectErrorPrefix + ", notifyObjectPattern="
+                        + notifyObjectPattern + ", notifyObjectValues=" + notifyObjectValues
+                        + ", notifyInterval="
+                        + notifyInterval + ", url=" + url + ", urlCredentials=" + urlCredentials
+                        + ", headers="
+                        + headers + "]";
+            }
+        }
+        return "Destination [id=" + id + ", description=" + description + ", type=" + type
+            + ", notify=" + notify
+            + ", notifyObjectErrorPrefix=" + notifyObjectErrorPrefix + ", notifyObjectPattern="
+            + notifyObjectPattern
+            + ", notifyObjectValues=" + notifyObjectValues + ", notifyInterval=" + notifyInterval
+            + "]";
+    }
+
+    public String getStringReference() {
+        if (type != null) {
+            switch (type) {
+                case dicom:
+                    return getAeTitle();
+                case stow:
+                    return getUrl() + ":" + getPort();
+            }
+        }
+        return "Type of destination is unknown";
     }
 }

@@ -3,15 +3,15 @@ package org.karnak.frontend.forwardnode;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
-import org.karnak.backend.data.entity.ForwardNode;
+import org.karnak.backend.data.entity.ForwardNodeEntity;
 
 
 public class EditAETitleDescription extends HorizontalLayout {
     private final TextField textFieldAETitle;
     private final TextField textFieldDescription;
-    private final Binder<ForwardNode> binder;
+    private final Binder<ForwardNodeEntity> binder;
 
-    public EditAETitleDescription(Binder<ForwardNode> binder) {
+    public EditAETitleDescription(Binder<ForwardNodeEntity> binder) {
         this.binder = binder;
         textFieldAETitle = new TextField("Forward AETitle");
         textFieldDescription = new TextField("Description");
@@ -22,9 +22,9 @@ public class EditAETitleDescription extends HorizontalLayout {
         setBinder();
     }
 
-    public void setForwardNode(ForwardNode forwardNode) {
-        if (forwardNode != null) {
-            binder.readBean(forwardNode);
+    public void setForwardNode(ForwardNodeEntity forwardNodeEntity) {
+        if (forwardNodeEntity != null) {
+            binder.readBean(forwardNodeEntity);
             setEnabled(true);
         } else {
             binder.readBean(null);
@@ -41,10 +41,11 @@ public class EditAETitleDescription extends HorizontalLayout {
 
     private void setBinder() {
         binder.forField(textFieldAETitle)
-                .withValidator(value -> !value.equals(""), "Forward AE Title is mandatory")
-                .withValidator(value -> value.length() <= 16, "Forward AETitle has more than 16 characters")
-                .bind(ForwardNode::getFwdAeTitle, ForwardNode::setFwdAeTitle);
+            .withValidator(value -> !value.equals(""), "Forward AE Title is mandatory")
+            .withValidator(value -> value.length() <= 16,
+                "Forward AETitle has more than 16 characters")
+            .bind(ForwardNodeEntity::getFwdAeTitle, ForwardNodeEntity::setFwdAeTitle);
         binder.forField(textFieldDescription)
-                .bind(ForwardNode::getDescription, ForwardNode::setDescription);
+            .bind(ForwardNodeEntity::getDescription, ForwardNodeEntity::setDescription);
     }
 }

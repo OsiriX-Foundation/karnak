@@ -6,8 +6,8 @@ import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.data.binder.Binder;
-import org.karnak.backend.data.entity.Destination;
-import org.karnak.backend.data.entity.Project;
+import org.karnak.backend.data.entity.DestinationEntity;
+import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.enums.IdTypes;
 import org.karnak.backend.service.ProjectDataProvider;
 import org.karnak.frontend.project.MainViewProjects;
@@ -15,7 +15,7 @@ import org.karnak.frontend.util.UIS;
 
 public class LayoutDesidentification extends Div {
 
-    private final Binder<Destination> destinationBinder;
+    private final Binder<DestinationEntity> destinationBinder;
 
     private Checkbox checkboxDesidentification;
     private Label labelDisclaimer;
@@ -34,7 +34,7 @@ public class LayoutDesidentification extends Div {
     final String[] extidSentence = {"Pseudonym are generate automatically",
         "Pseudonym is already store in KARNAK", "Pseudonym is in a DICOM tag"};
 
-    public LayoutDesidentification(Binder<Destination> destinationBinder) {
+    public LayoutDesidentification(Binder<DestinationEntity> destinationBinder) {
         projectDataProvider = new ProjectDataProvider();
         this.destinationBinder = destinationBinder;
         projectDropDown = new ProjectDropDown();
@@ -128,10 +128,12 @@ public class LayoutDesidentification extends Div {
         });
     }
 
-    private void setTextOnSelectionProject(Project project) {
-        if (project != null && project.getProfile() != null) {
-            desidentificationName.setShowValue(String.format("The profile %s will be used", project.getProfile().getName()));
-        } else if (project != null && project.getProfile() == null) {
+    private void setTextOnSelectionProject(ProjectEntity projectEntity) {
+        if (projectEntity != null && projectEntity.getProfileEntity() != null) {
+            desidentificationName
+                .setShowValue(String.format("The profile %s will be used", projectEntity
+                    .getProfileEntity().getName()));
+        } else if (projectEntity != null && projectEntity.getProfileEntity() == null) {
             desidentificationName.setShowValue("No profiles defined in the project");
         } else {
             desidentificationName.removeAll();
@@ -163,12 +165,13 @@ public class LayoutDesidentification extends Div {
 
     private void setBinder() {
         destinationBinder.forField(checkboxDesidentification)
-                .bind(Destination::getDesidentification, Destination::setDesidentification);
+            .bind(DestinationEntity::getDesidentification, DestinationEntity::setDesidentification);
         destinationBinder.forField(projectDropDown)
-                .withValidator(project ->
-                        project != null || (project == null && checkboxDesidentification.getValue() == false),
-                        "Choose a project")
-                .bind(Destination::getProject, Destination::setProject);
+            .withValidator(project ->
+                    project != null || (project == null
+                        && checkboxDesidentification.getValue() == false),
+                "Choose a project")
+            .bind(DestinationEntity::getProjectEntity, DestinationEntity::setProjectEntity);
 
         destinationBinder.forField(extidListBox)
                 .withValidator(type -> type != null,"Choose pseudonym type\n")
@@ -191,6 +194,7 @@ public class LayoutDesidentification extends Div {
                 });
 
         destinationBinder.forField(checkboxUseAsPatientName)
-                .bind(Destination::getPseudonymAsPatientName, Destination::setPseudonymAsPatientName);
+            .bind(DestinationEntity::getPseudonymAsPatientName,
+                DestinationEntity::setPseudonymAsPatientName);
     }
 }

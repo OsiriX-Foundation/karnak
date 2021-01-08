@@ -1,22 +1,24 @@
 package org.karnak.frontend.forwardnode;
 
 import com.vaadin.flow.component.grid.Grid;
-import org.karnak.backend.data.entity.Destination;
+import org.karnak.backend.data.entity.DestinationEntity;
 
-public class GridDestination extends Grid<Destination> {
-    public GridDestination() {
-        setSizeFull();
+public class GridDestination extends Grid<DestinationEntity> {
 
-        addColumn(Destination::getDescription).setHeader("Description").setFlexGrow(20).setSortable(true);
+  public GridDestination() {
+    setSizeFull();
 
-        addColumn(Destination::getType).setHeader("Type").setFlexGrow(20).setSortable(true);
-    }
+    addColumn(DestinationEntity::getDescription).setHeader("Description").setFlexGrow(20)
+        .setSortable(true);
 
-    public Destination getSelectedRow() {
-        return asSingleSelect().getValue();
-    }
+    addColumn(DestinationEntity::getType).setHeader("Type").setFlexGrow(20).setSortable(true);
+  }
 
-    public void refresh(Destination data) {
-        getDataCommunicator().refresh(data);
-    }
+  public DestinationEntity getSelectedRow() {
+    return asSingleSelect().getValue();
+  }
+
+  public void refresh(DestinationEntity data) {
+    getDataCommunicator().refresh(data);
+  }
 }

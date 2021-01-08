@@ -2,7 +2,7 @@ package org.karnak.backend.model.standard;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.karnak.backend.data.entity.ProfileElement;
+import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.enums.ProfileItemType;
 import org.karnak.backend.model.action.ActionItem;
 import org.karnak.backend.model.dicominnolitics.StandardConfidentialityProfiles;
@@ -33,10 +33,10 @@ public class ConfidentialityProfiles {
             AbstractProfileItem item;
             if (PrivateTagPattern.TAG_PATTERN.equals(tag)) {
                 try {
-                  final ProfileElement profileElement = new ProfileElement(name,
+                  final ProfileElementEntity profileElementEntity = new ProfileElementEntity(name,
                       ProfileItemType.ACTION_PRIVATETAGS.getClassAlias(), null, "X", null, null,
                       null);
-                    item = new PrivateTags(profileElement);
+                  item = new PrivateTags(profileElementEntity);
                 } catch (Exception e) {
                     item = null;
                     LOGGER.error("Cannot build the profile: PrivateTags", e);

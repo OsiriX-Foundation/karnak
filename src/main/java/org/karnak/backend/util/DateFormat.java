@@ -8,7 +8,7 @@ import java.util.List;
 import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.util.DateTimeUtils;
-import org.karnak.backend.data.entity.Argument;
+import org.karnak.backend.data.entity.ArgumentEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,26 +50,27 @@ public class DateFormat {
         return newLocalDate;
     }
 
-    public static String format(DicomObject dcm, DicomElement dcmEl, List<Argument> arguments) {
+    public static String format(DicomObject dcm, DicomElement dcmEl,
+        List<ArgumentEntity> argumentEntities) {
         try {
-            verifyPatternArguments(arguments);
-        } catch(IllegalArgumentException e) {
+            verifyPatternArguments(argumentEntities);
+        } catch (IllegalArgumentException e) {
             throw e;
         }
 
         String dcmElValue = dcm.getString(dcmEl.tag()).orElse(null);
-        String format ="";
+        String format = "";
 
-        for (Argument argument: arguments) {
-            final String key = argument.getKey();
-            final String value = argument.getValue();
+        for (ArgumentEntity argumentEntity : argumentEntities) {
+            final String key = argumentEntity.getKey();
+            final String value = argumentEntity.getValue();
 
             try {
                 if (key.equals("remove")) {
                     format = value;
                 }
             } catch (Exception e) {
-                LOGGER.error("args {} is not correct" , value,  e);
+                LOGGER.error("args {} is not correct", value, e);
             }
         }
         if (dcmElValue != null) {
@@ -83,16 +84,20 @@ public class DateFormat {
         }
     }
 
-    public static void verifyPatternArguments(List<Argument> arguments) throws IllegalArgumentException {
+    public static void verifyPatternArguments(List<ArgumentEntity> argumentEntities)
+        throws IllegalArgumentException {
         List<String> listValue = new ArrayList<>();
         listValue.add("day");
         listValue.add("month_day");
 
-        if (!arguments.stream().anyMatch(argument -> argument.getKey().equals("remove") && listValue.contains(argument.getValue()) )) {
+        if (!argumentEntities.stream().anyMatch(
+            argument -> argument.getKey().equals("remove") && listValue
+                .contains(argument.getValue()))) {
             IllegalArgumentException missingParameters = new IllegalArgumentException(
-                    "Cannot build the option date_format, arguments are not correct"
+                "Cannot build the option date_format, arguments are not correct"
             );
-            LOGGER.error("Missing argument, the class need pattern as parameters", missingParameters);
+            LOGGER
+                .error("Missing argument, the class need pattern as parameters", missingParameters);
             throw missingParameters;
         }
     }

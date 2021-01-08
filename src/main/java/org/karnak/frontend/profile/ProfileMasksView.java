@@ -1,4 +1,4 @@
-package org.karnak.frontend.profile;
+package org.karnak.frontend.profileEntity;
 
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.html.Div;
@@ -6,34 +6,34 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import java.awt.Rectangle;
 import java.util.List;
 import java.util.Set;
-import org.karnak.backend.data.entity.Mask;
+import org.karnak.backend.data.entity.MaskEntity;
 
 public class ProfileMasksView extends VerticalLayout {
 
-    private final Set<Mask> masks;
+    private final Set<MaskEntity> maskEntities;
 
 
-    public ProfileMasksView(Set<Mask> masks) {
-        this.masks = masks;
+    public ProfileMasksView(Set<MaskEntity> maskEntities) {
+        this.maskEntities = maskEntities;
         getStyle().set("margin-top", "0px");
         setView();
     }
 
     public void setView() {
         removeAll();
-        if(!masks.isEmpty()){
+        if (!maskEntities.isEmpty()) {
             add(setTitleValue("Masks"));
-            masks.forEach(mask -> {
-                if (mask.getStationName() != null) {
-                    add(setMasksValue("Station name : " + mask.getStationName()));
+            maskEntities.forEach(maskEntity -> {
+                if (maskEntity.getStationName() != null) {
+                    add(setMasksValue("Station name : " + maskEntity.getStationName()));
                 }
-                if (mask.getColor() != null) {
-                    add(setMasksValue("Color : " + mask.getColor()));
+                if (maskEntity.getColor() != null) {
+                    add(setMasksValue("Color : " + maskEntity.getColor()));
                 }
 
-                if (mask.getRectangles().size() > 0) {
+                if (maskEntity.getRectangles().size() > 0) {
                     add(setMasksValue("Rectangles"));
-                    add(setMasksRectangles(mask.getRectangles()));
+                    add(setMasksRectangles(maskEntity.getRectangles()));
                 }
             });
         }

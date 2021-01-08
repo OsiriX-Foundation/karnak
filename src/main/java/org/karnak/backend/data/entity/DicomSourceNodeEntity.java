@@ -12,7 +12,8 @@ import javax.validation.constraints.Size;
 
 @Entity(name = "DicomSourceNode")
 @Table(name = "dicom_source_node")
-public class DicomSourceNode {
+public class DicomSourceNodeEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -31,21 +32,21 @@ public class DicomSourceNode {
     // if "true" check the hostname during the DICOM association and if not match
     // the connection is abort
     private Boolean checkHostname;
-    
+
     @ManyToOne
     @JoinColumn
-    private ForwardNode forwardNode;
+    private ForwardNodeEntity forwardNodeEntity;
 
-    public static DicomSourceNode ofEmpty() {
-        DicomSourceNode instance = new DicomSourceNode();
-        return instance;
-    }
-
-    protected DicomSourceNode() {
+    protected DicomSourceNodeEntity() {
         this.description = "";
         this.aeTitle = "";
         this.hostname = "";
         this.checkHostname = Boolean.FALSE;
+    }
+
+    public static DicomSourceNodeEntity ofEmpty() {
+        DicomSourceNodeEntity instance = new DicomSourceNodeEntity();
+        return instance;
     }
 
     public Long getId() {
@@ -84,14 +85,14 @@ public class DicomSourceNode {
         this.hostname = hostname;
     }
 
-    public ForwardNode getForwardNode() {
-        return forwardNode;
+    public ForwardNodeEntity getForwardNodeEntity() {
+        return forwardNodeEntity;
     }
 
-    public void setForwardNode(ForwardNode forwardNode) {
-        this.forwardNode = forwardNode;
+    public void setForwardNodeEntity(ForwardNodeEntity forwardNodeEntity) {
+        this.forwardNodeEntity = forwardNodeEntity;
     }
-    
+
     public Boolean getCheckHostname() {
         return checkHostname;
     }

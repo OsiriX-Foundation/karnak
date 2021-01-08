@@ -8,13 +8,13 @@ import com.vaadin.flow.component.textfield.TextFieldVariant;
 import com.vaadin.flow.data.binder.Binder;
 import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
-import org.karnak.backend.data.entity.Destination;
+import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.frontend.component.converter.HStringToIntegerConverter;
 import org.karnak.frontend.util.UIS;
 
 public class FormDICOM extends VerticalLayout {
 
-    private final Binder<Destination> binder;
+    private final Binder<DestinationEntity> binder;
 
     private final TextField aeTitle;
     private final TextField description;
@@ -30,7 +30,8 @@ public class FormDICOM extends VerticalLayout {
     private final LayoutDesidentification layoutDesidentification;
     private final FilterBySOPClassesForm filterBySOPClassesForm;
 
-    public FormDICOM(Binder<Destination> binder, ButtonSaveDeleteCancel buttonSaveDeleteCancel) {
+    public FormDICOM(Binder<DestinationEntity> binder,
+        ButtonSaveDeleteCancel buttonSaveDeleteCancel) {
         setSizeFull();
         this.binder = binder;
 
@@ -94,20 +95,21 @@ public class FormDICOM extends VerticalLayout {
     }
 
     private void setBinder() {
-        binder.forField(aeTitle).withValidator( StringUtils::isNotBlank, "AETitle is mandatory")
+        binder.forField(aeTitle).withValidator(StringUtils::isNotBlank, "AETitle is mandatory")
             .withValidator(value -> value.length() <= 16, "AETitle has more than 16 characters")
             .withValidator(UIS::containsNoWhitespace, "AETitle contains white spaces")
-            .bind(Destination::getAeTitle, Destination::setAeTitle);
+            .bind(DestinationEntity::getAeTitle, DestinationEntity::setAeTitle);
 
-        binder.forField(hostname).withValidator( StringUtils::isNotBlank, "Hostname is mandatory")
-                .bind(Destination::getHostname, Destination::setHostname);
+        binder.forField(hostname).withValidator(StringUtils::isNotBlank, "Hostname is mandatory")
+            .bind(DestinationEntity::getHostname, DestinationEntity::setHostname);
         binder.forField(port).withConverter(new HStringToIntegerConverter())
-            .withValidator(Objects::nonNull,"Port is mandatory")
-                .withValidator(value -> 1 <= value && value <= 65535, "Port should be between 1 and 65535")
-            .bind(Destination::getPort, Destination::setPort);
+            .withValidator(Objects::nonNull, "Port is mandatory")
+            .withValidator(value -> 1 <= value && value <= 65535,
+                "Port should be between 1 and 65535")
+            .bind(DestinationEntity::getPort, DestinationEntity::setPort);
         binder.forField(notifyInterval) //
             .withConverter(new HStringToIntegerConverter()) //
-            .bind(Destination::getNotifyInterval, Destination::setNotifyInterval);
+            .bind(DestinationEntity::getNotifyInterval, DestinationEntity::setNotifyInterval);
 
         binder.bindInstanceFields(this);
 

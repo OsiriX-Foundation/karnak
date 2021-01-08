@@ -1,4 +1,4 @@
-package org.karnak.frontend.profile;
+package org.karnak.frontend.profileEntity;
 
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.html.Div;
@@ -6,7 +6,7 @@ import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.icon.IronIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import java.util.ArrayList;
-import org.karnak.backend.data.entity.ProfileElement;
+import org.karnak.backend.data.entity.ProfileElementEntity;
 
 public class ProfileErrorView extends VerticalLayout {
     ProfileErrorView() {
@@ -17,8 +17,10 @@ public class ProfileErrorView extends VerticalLayout {
         removeAll();
         add(new H2("Errors occured in profile elements"));
         for (ProfileError profileError : profileErrors) {
-            ProfileElement profileElement = profileError.getProfileElement();
-            Div profileName = setProfileName((profileElement.getPosition()+1) + ". " + profileElement.getName());
+            ProfileElementEntity profileElementEntity = profileError.getProfileElement();
+            Div profileName = setProfileName(
+                (profileElementEntity.getPosition() + 1) + ". " + profileElementEntity
+                    .getName());
             add(profileName);
 
             if (profileError.getError() != null) {
@@ -27,7 +29,7 @@ public class ProfileErrorView extends VerticalLayout {
             } else {
                 profileName.add(setSuccessIcon());
             }
-            setProfileShowHide(profileElement);
+            setProfileShowHide(profileElementEntity);
         }
     }
 
@@ -37,8 +39,9 @@ public class ProfileErrorView extends VerticalLayout {
         add(setProfileError(text));
     }
 
-    public void setProfileShowHide(ProfileElement profileElement) {
-        ProfileShowHide profileShowHide = new ProfileShowHide(new ProfileElementView(profileElement), false);
+    public void setProfileShowHide(ProfileElementEntity profileElementEntity) {
+        ProfileShowHide profileShowHide = new ProfileShowHide(new ProfileElementView(
+            profileElementEntity), false);
         profileShowHide.setTextHide("Hide profile");
         profileShowHide.setTextShow("Show profile");
         add(profileShowHide);

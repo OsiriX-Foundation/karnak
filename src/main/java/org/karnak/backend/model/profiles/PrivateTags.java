@@ -4,9 +4,9 @@ import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.VR;
 import org.dcm4che6.util.TagUtils;
-import org.karnak.backend.data.entity.ExcludedTag;
-import org.karnak.backend.data.entity.IncludedTag;
-import org.karnak.backend.data.entity.ProfileElement;
+import org.karnak.backend.data.entity.ExcludedTagEntity;
+import org.karnak.backend.data.entity.IncludedTagEntity;
+import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.model.action.AbstractAction;
 import org.karnak.backend.model.action.ActionItem;
 import org.karnak.backend.model.expression.ExprConditionDestination;
@@ -18,34 +18,35 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PrivateTags extends AbstractProfileItem {
-    private static final Logger LOGGER = LoggerFactory.getLogger(PrivateTags.class);
 
-    private final TagActionMap tagsAction;
-    private final TagActionMap exceptedTagsAction;
-    private final ActionItem actionByDefault;
+  private static final Logger LOGGER = LoggerFactory.getLogger(PrivateTags.class);
 
-    public PrivateTags(ProfileElement profileElement) throws Exception{
-        super(profileElement);
-        tagsAction = new TagActionMap();
-        exceptedTagsAction = new TagActionMap();
-        actionByDefault = AbstractAction.convertAction(this.action);
-        profileValidation();
-        setActionHashMap();
+  private final TagActionMap tagsAction;
+  private final TagActionMap exceptedTagsAction;
+  private final ActionItem actionByDefault;
+
+  public PrivateTags(ProfileElementEntity profileElementEntity) throws Exception {
+    super(profileElementEntity);
+    tagsAction = new TagActionMap();
+    exceptedTagsAction = new TagActionMap();
+    actionByDefault = AbstractAction.convertAction(this.action);
+    profileValidation();
+    setActionHashMap();
+  }
+
+  private void setActionHashMap() throws Exception {
+
+    if (tagEntities != null && tagEntities.size() > 0) {
+      for (IncludedTagEntity tag : tagEntities) {
+        tagsAction.put(tag.getTagValue(), actionByDefault);
+      }
     }
-
-    private void setActionHashMap() throws Exception {
-
-        if(tags != null && tags.size() > 0) {
-            for (IncludedTag tag : tags) {
-                tagsAction.put(tag.getTagValue(), actionByDefault);
-            }
-        }
-        if (excludedTags != null && excludedTags.size() > 0) {
-            for (ExcludedTag tag : excludedTags) {
-                exceptedTagsAction.put(tag.getTagValue(), actionByDefault);
-            }
-        }
+    if (excludedTagEntities != null && excludedTagEntities.size() > 0) {
+      for (ExcludedTagEntity tag : excludedTagEntities) {
+        exceptedTagsAction.put(tag.getTagValue(), actionByDefault);
+      }
     }
+  }
 
     @Override
     public ActionItem getAction(DicomObject dcm, DicomObject dcmCopy, DicomElement dcmElem, HMAC hmac) {

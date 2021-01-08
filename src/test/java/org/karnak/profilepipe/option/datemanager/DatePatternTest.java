@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.karnak.backend.data.entity.Argument;
+import org.karnak.backend.data.entity.ArgumentEntity;
 import org.karnak.backend.util.DateFormat;
 
 class DatePatternTest {
@@ -25,11 +25,11 @@ class DatePatternTest {
 
     @Test
     void verifyPatternArguments() {
-        List<Argument> argsFalse = new ArrayList<>();
-        argsFalse.add(new Argument("second", "day", null));
+        List<ArgumentEntity> argsFalse = new ArrayList<>();
+        argsFalse.add(new ArgumentEntity("second", "day", null));
 
-        List<Argument> argsFalse2 = new ArrayList<>();
-        argsFalse.add(new Argument("remove", "daytt", null));
+        List<ArgumentEntity> argsFalse2 = new ArrayList<>();
+        argsFalse.add(new ArgumentEntity("remove", "daytt", null));
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
             DateFormat.verifyPatternArguments(argsFalse);

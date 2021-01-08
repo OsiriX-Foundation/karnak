@@ -1,4 +1,4 @@
-package org.karnak.frontend.profile;
+package org.karnak.frontend.profileEntity;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
@@ -14,8 +14,8 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.server.StreamResource;
 import java.io.ByteArrayInputStream;
 import java.util.Comparator;
-import org.karnak.backend.data.entity.Profile;
-import org.karnak.backend.data.entity.ProfileElement;
+import org.karnak.backend.data.entity.ProfileElementEntity;
+import org.karnak.backend.data.entity.ProfileEntity;
 import org.karnak.backend.service.profilepipe.ProfilePipeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +24,7 @@ public class ProfileComponent extends VerticalLayout {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProfileComponent.class);
 
-    private Profile profile;
+    private ProfileEntity profileEntity;
     private final ProfilePipeService profilePipeService;
     private final ProfileNameGrid profileNameGrid;
     private Anchor download;
@@ -41,109 +41,124 @@ public class ProfileComponent extends VerticalLayout {
         dialogWarning = new WarningDeleteProfileUsed();
     }
 
+    public static StreamResource createStreamResource(ProfileEntity profileEntity) {
+        try {
+            profileEntity.getProfileElementEntities()
+                .sort(Comparator.comparingInt(ProfileElementEntity::getPosition));
+            //https://stackoverflow.com/questions/61506368/formatting-yaml-with-jackson
+            ObjectMapper mapper = new ObjectMapper(
+                new YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
+
+            String strYaml = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(
+                profileEntity);
+            StreamResource streamResource = new StreamResource(String.format("%s.yml",
+                profileEntity.getName()).replace(" ", "-"),
+                () -> new ByteArrayInputStream(strYaml.getBytes()));
+            return streamResource;
+        } catch (final Exception e) {
+            LOGGER.error("Cannot create the StreamResource for downloading the yaml profile", e);
+        }
+        return null;
+    }
+
     public void setProfile() {
         removeAll();
         H2 title = new H2("Profile");
-        ProfileMetadata name = new ProfileMetadata("Name", profile.getName(), profile.getBydefault());
+        ProfileMetadata name = new ProfileMetadata("Name", profileEntity.getName(),
+            profileEntity.getBydefault());
         name.getValidateEditButton().addClickListener(event -> {
-            profile.setName(name.getValue());
+            profileEntity.setName(name.getValue());
             updatedProfilePipes();
         });
 
-        ProfileMetadata version = new ProfileMetadata("Profile version", profile.getVersion(), profile.getBydefault());
+        ProfileMetadata version = new ProfileMetadata("Profile version", profileEntity.getVersion(),
+            profileEntity
+                .getBydefault());
         version.getValidateEditButton().addClickListener(event -> {
-            profile.setVersion(version.getValue());
+            profileEntity.setVersion(version.getValue());
             updatedProfilePipes();
         });
 
-        ProfileMetadata minVersion = new ProfileMetadata("Min. version KARNAK required", profile.getMinimumkarnakversion(), profile.getBydefault());
+        ProfileMetadata minVersion = new ProfileMetadata("Min. version KARNAK required",
+            profileEntity
+                .getMinimumkarnakversion(), profileEntity.getBydefault());
         minVersion.getValidateEditButton().addClickListener(event -> {
-            profile.setMinimumkarnakversion(minVersion.getValue());
+            profileEntity.setMinimumkarnakversion(minVersion.getValue());
             updatedProfilePipes();
         });
 
-        ProfileMetadata defaultIssuerOfPatientID = new ProfileMetadata("Default issuer of PatientID", profile.getDefaultissueropatientid(), false);
+        ProfileMetadata defaultIssuerOfPatientID = new ProfileMetadata(
+            "Default issuer of PatientID", profileEntity
+            .getDefaultissueropatientid(), false);
         defaultIssuerOfPatientID.getValidateEditButton().addClickListener(event -> {
-            profile.setDefaultissueropatientid(defaultIssuerOfPatientID.getValue());
+            profileEntity.setDefaultissueropatientid(defaultIssuerOfPatientID.getValue());
             updatedProfilePipes();
         });
-        createDownloadButton(profile);
+        createDownloadButton(profileEntity);
 
-        ProfileMasksView profileMasksView = new ProfileMasksView(profile.getMasks());
+        ProfileMasksView profileMasksView = new ProfileMasksView(profileEntity.getMaskEntities());
 
-        if (profile.getBydefault()) {
-            add(new HorizontalLayout(title, download), name, version, minVersion, defaultIssuerOfPatientID, profileMasksView);
+        if (profileEntity.getBydefault()) {
+            add(new HorizontalLayout(title, download), name, version, minVersion,
+                defaultIssuerOfPatientID, profileMasksView);
         } else {
-            createDeleteButton(profile);
-            add(new HorizontalLayout(title, download, deleteButton), name, version, minVersion, defaultIssuerOfPatientID, profileMasksView);
+            createDeleteButton(profileEntity);
+            add(new HorizontalLayout(title, download, deleteButton), name, version, minVersion,
+                defaultIssuerOfPatientID, profileMasksView);
         }
 
 
     }
 
     private void updatedProfilePipes() {
-        profilePipeService.updateProfile(profile);
+        profilePipeService.updateProfile(profileEntity);
         profileNameGrid.updatedProfilePipesView();
-        final StreamResource profileStreamResource = createStreamResource(profile);
+        final StreamResource profileStreamResource = createStreamResource(profileEntity);
         download.setHref(profileStreamResource);
-        createDeleteButton(profile);
+        createDeleteButton(profileEntity);
     }
 
     public void setEventValidate(ProfileMetadata metadata) {
         metadata.getValidateEditButton().addClickListener(event -> {
-            profile.setName(metadata.getValue());
+            profileEntity.setName(metadata.getValue());
         });
     }
 
-    public Profile getProfile() {
-        return profile;
+    public ProfileEntity getProfile() {
+        return profileEntity;
     }
 
-    public void setProfile(Profile profile) {
-        if (profile != null) {
-            this.profile = profile;
+    public void setProfile(ProfileEntity profileEntity) {
+        if (profileEntity != null) {
+            this.profileEntity = profileEntity;
             setProfile();
         }
     }
 
-    public void createDownloadButton(Profile profile) {
-        final StreamResource profileStreamResource = createStreamResource(profile);
+    public void createDownloadButton(ProfileEntity profileEntity) {
+        final StreamResource profileStreamResource = createStreamResource(profileEntity);
         download = new Anchor(profileStreamResource, "");
         download.getElement().setAttribute("download", true);
         download.add(new Button(new Icon(VaadinIcon.DOWNLOAD_ALT)));
-        download.getStyle().set("margin-top","30px");
+        download.getStyle().set("margin-top", "30px");
     }
 
-    private void createDeleteButton(Profile profile){
+    private void createDeleteButton(ProfileEntity profileEntity) {
         deleteButton = new Button((new Icon(VaadinIcon.TRASH)));
         deleteButton.setWidth("100%");
         deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
-        deleteButton.getStyle().set("margin-top","34px");
+        deleteButton.getStyle().set("margin-top", "34px");
         deleteButton.addClickListener(buttonClickEvent -> {
-            if (profile.getProject() != null && profile.getProject().size() > 0) {
-                dialogWarning.setText(profile);
+            if (profileEntity.getProjectEntities() != null
+                && profileEntity.getProjectEntities().size() > 0) {
+                dialogWarning.setText(profileEntity);
                 dialogWarning.open();
             } else {
-                profilePipeService.deleteProfile(profile);
+                profilePipeService.deleteProfile(profileEntity);
                 profileNameGrid.updatedProfilePipesView();
                 removeProfileInView();
             }
         });
-    }
-
-    public static StreamResource createStreamResource(Profile profile) {
-        try{
-            profile.getProfileElements().sort(Comparator.comparingInt(ProfileElement::getPosition));
-            //https://stackoverflow.com/questions/61506368/formatting-yaml-with-jackson
-            ObjectMapper mapper = new ObjectMapper(new YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
-
-            String strYaml = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(profile);
-            StreamResource streamResource = new StreamResource(String.format("%s.yml",profile.getName()).replace(" ", "-"), () -> new ByteArrayInputStream(strYaml.getBytes()));
-            return streamResource;
-        } catch (final Exception e) {
-            LOGGER.error("Cannot create the StreamResource for downloading the yaml profile", e);
-        }
-        return null;
     }
 
     public void removeProfileInView() {

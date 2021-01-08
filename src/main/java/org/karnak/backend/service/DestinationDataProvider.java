@@ -5,58 +5,61 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import org.karnak.backend.configuration.GatewayConfiguration;
-import org.karnak.backend.data.entity.Destination;
-import org.karnak.backend.data.entity.ForwardNode;
-import org.karnak.backend.data.repository.DestinationPersistence;
+import org.karnak.backend.config.GatewayConfig;
+import org.karnak.backend.data.entity.DestinationEntity;
+import org.karnak.backend.data.entity.ForwardNodeEntity;
+import org.karnak.backend.data.repo.DestinationRepo;
 
 @SuppressWarnings("serial")
-public class DestinationDataProvider extends ListDataProvider<Destination> {
+public class DestinationDataProvider extends ListDataProvider<DestinationEntity> {
 
-    private final DestinationPersistence destinationPersistence;
-    {
-        destinationPersistence = GatewayConfiguration.getInstance().getDestinationPersistence();
-    }
+    private final DestinationRepo destinationRepo;
+    private final Set<DestinationEntity> backend;
 
     private final DataService dataService;
-    private final Set<Destination> backend;
+    private ForwardNodeEntity forwardNodeEntity; // Current forward node
     private boolean hasChanges;
 
-    private ForwardNode forwardNode; // Current forward node
+    {
+        destinationRepo = GatewayConfig.getInstance().getDestinationPersistence();
+    }
 
-    /** Text filter that can be changed separately. */
+    /**
+     * Text filter that can be changed separately.
+     */
     private String filterText = "";
 
     public DestinationDataProvider(DataService dataService) {
         this(dataService, new HashSet<>());
     }
 
-    private DestinationDataProvider(DataService dataService, Set<Destination> backend) {
+    private DestinationDataProvider(DataService dataService, Set<DestinationEntity> backend) {
         super(backend);
         this.dataService = dataService;
         this.backend = backend;
     }
 
-    public void setForwardNode(ForwardNode forwardNode) {
-        this.forwardNode = forwardNode;
-        Collection<Destination> destinations = this.dataService.getAllDestinations(forwardNode);
+    public void setForwardNode(ForwardNodeEntity forwardNodeEntity) {
+        this.forwardNodeEntity = forwardNodeEntity;
+        Collection<DestinationEntity> destinationEntities = this.dataService.getAllDestinations(
+            forwardNodeEntity);
 
         this.backend.clear();
-        this.backend.addAll(destinations);
+        this.backend.addAll(destinationEntities);
 
         hasChanges = false;
     }
 
     /**
      * Store given Destination to the backing data service.
-     * 
+     *
      * @param data the updated or new data
      */
-    public void save(Destination data) {
+    public void save(DestinationEntity data) {
         KheopsAlbumsDataProvider kheopsAlbumsDataProvider = new KheopsAlbumsDataProvider();
         boolean newData = data.isNewData();
 
-        Destination dataUpdated = dataService.updateDestination(forwardNode, data);
+        DestinationEntity dataUpdated = dataService.updateDestination(forwardNodeEntity, data);
         if (newData) {
             refreshAll();
         } else {
@@ -64,30 +67,30 @@ public class DestinationDataProvider extends ListDataProvider<Destination> {
             refreshItem(dataUpdated);
         }
         hasChanges = true;
-        destinationPersistence.saveAndFlush(dataUpdated);
+        destinationRepo.saveAndFlush(dataUpdated);
         kheopsAlbumsDataProvider.updateSwitchingAlbumsFromDestination(data);
     }
 
-    private Destination removeValuesOnDisabledDesidentification(Destination data) {
+    private DestinationEntity removeValuesOnDisabledDesidentification(DestinationEntity data) {
         if (data.getDesidentification() == false) {
-            data.setProject(null);
+            data.setProjectEntity(null);
         }
         return data;
     }
 
     /**
      * Delete given data from the backing data service.
-     * 
+     *
      * @param data the data to be deleted
      */
-    public void delete(Destination data) {
-        dataService.deleteDestination(forwardNode, data);
+    public void delete(DestinationEntity data) {
+        dataService.deleteDestination(forwardNodeEntity, data);
         refreshAll();
-        destinationPersistence.deleteById(data.getId());
+        destinationRepo.deleteById(data.getId());
         // TODO: Le jours où la suprresion d'une destination se passera correctement SUPPRIMER cette ligne
-        data.setKheopsAlbums(null);
-        data.setProject(null);
-        destinationPersistence.saveAndFlush(data);
+        data.setKheopsAlbumEntities(null);
+        data.setProjectEntity(null);
+        destinationRepo.saveAndFlush(data);
     }
 
     /**
@@ -111,21 +114,21 @@ public class DestinationDataProvider extends ListDataProvider<Destination> {
     }
 
     @Override
-    public Object getId(Destination data) {
+    public Object getId(DestinationEntity data) {
         Objects.requireNonNull(data, "Cannot provide an id for a null item.");
 
         return data.hashCode();
     }
 
-    private boolean matchesFilter(Destination data, String filterText) {
+    private boolean matchesFilter(DestinationEntity data, String filterText) {
         return data != null && data.matchesFilter(filterText);
     }
 
     @Override
     public void refreshAll() {
         backend.clear();
-        if (forwardNode != null) {
-            backend.addAll(forwardNode.getDestinations());
+        if (forwardNodeEntity != null) {
+            backend.addAll(forwardNodeEntity.getDestinationEntities());
         }
         super.refreshAll();
     }

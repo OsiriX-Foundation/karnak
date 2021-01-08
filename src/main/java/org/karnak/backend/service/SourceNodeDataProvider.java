@@ -5,41 +5,44 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import org.karnak.backend.configuration.GatewayConfiguration;
-import org.karnak.backend.data.entity.DicomSourceNode;
-import org.karnak.backend.data.entity.ForwardNode;
-import org.karnak.backend.data.repository.DicomSourceNodePersistence;
+import org.karnak.backend.config.GatewayConfig;
+import org.karnak.backend.data.entity.DicomSourceNodeEntity;
+import org.karnak.backend.data.entity.ForwardNodeEntity;
+import org.karnak.backend.data.repo.DicomSourceNodeRepo;
 
 @SuppressWarnings("serial")
-public class SourceNodeDataProvider extends ListDataProvider<DicomSourceNode> {
+public class SourceNodeDataProvider extends ListDataProvider<DicomSourceNodeEntity> {
 
-    private final DicomSourceNodePersistence dicomSourceNodePersistence;
-    {
-        dicomSourceNodePersistence = GatewayConfiguration.getInstance().getDicomSourceNodePersistence();
-    }
+    private final DicomSourceNodeRepo dicomSourceNodeRepo;
+    private final Set<DicomSourceNodeEntity> backend;
 
     private final DataService dataService;
-    private final Set<DicomSourceNode> backend;
+    private ForwardNodeEntity forwardNodeEntity; // Current forward node
     private boolean hasChanges;
 
-    private ForwardNode forwardNode; // Current forward node
+    {
+        dicomSourceNodeRepo = GatewayConfig.getInstance().getDicomSourceNodePersistence();
+    }
 
-    /** Text filter that can be changed separately. */
+    /**
+     * Text filter that can be changed separately.
+     */
     private String filterText = "";
 
     public SourceNodeDataProvider(DataService dataService) {
         this(dataService, new HashSet<>());
     }
 
-    private SourceNodeDataProvider(DataService dataService, Set<DicomSourceNode> backend) {
+    private SourceNodeDataProvider(DataService dataService, Set<DicomSourceNodeEntity> backend) {
         super(backend);
         this.dataService = dataService;
         this.backend = backend;
     }
 
-    public void setForwardNode(ForwardNode forwardNode) {
-        this.forwardNode = forwardNode;
-        Collection<DicomSourceNode> sourceNodes = this.dataService.getAllSourceNodes(forwardNode);
+    public void setForwardNode(ForwardNodeEntity forwardNodeEntity) {
+        this.forwardNodeEntity = forwardNodeEntity;
+        Collection<DicomSourceNodeEntity> sourceNodes = this.dataService.getAllSourceNodes(
+            forwardNodeEntity);
 
         this.backend.clear();
         this.backend.addAll(sourceNodes);
@@ -48,34 +51,35 @@ public class SourceNodeDataProvider extends ListDataProvider<DicomSourceNode> {
     }
 
     /**
-     * Store given DicomSourceNode to the backing data service.
-     * 
+     * Store given DicomSourceNodeEntity to the backing data service.
+     *
      * @param data the updated or new data
      */
-    public void save(DicomSourceNode data) {
+    public void save(DicomSourceNodeEntity data) {
         boolean newData = data.isNewData();
 
-        DicomSourceNode dataUpdated = this.dataService.updateSourceNode(forwardNode, data);
+        DicomSourceNodeEntity dataUpdated = this.dataService
+            .updateSourceNode(forwardNodeEntity, data);
         if (newData) {
             refreshAll();
         } else {
             refreshItem(dataUpdated);
         }
         hasChanges = true;
-        dicomSourceNodePersistence.saveAndFlush(dataUpdated);
+        dicomSourceNodeRepo.saveAndFlush(dataUpdated);
     }
 
     /**
      * Delete given data from the backing data service.
-     * 
+     *
      * @param data the data to be deleted
      */
-    public void delete(DicomSourceNode data) {
-        this.dataService.deleteSourceNode(forwardNode, data);
+    public void delete(DicomSourceNodeEntity data) {
+        this.dataService.deleteSourceNode(forwardNodeEntity, data);
         refreshAll();
         hasChanges = true;
-        dicomSourceNodePersistence.deleteById(data.getId());
-        dicomSourceNodePersistence.saveAndFlush(data);
+        dicomSourceNodeRepo.deleteById(data.getId());
+        dicomSourceNodeRepo.saveAndFlush(data);
     }
 
     /**
@@ -99,21 +103,21 @@ public class SourceNodeDataProvider extends ListDataProvider<DicomSourceNode> {
     }
 
     @Override
-    public Object getId(DicomSourceNode data) {
+    public Object getId(DicomSourceNodeEntity data) {
         Objects.requireNonNull(data, "Cannot provide an id for a null item.");
 
         return data.hashCode();
     }
 
-    private boolean matchesFilter(DicomSourceNode data, String filterText) {
+    private boolean matchesFilter(DicomSourceNodeEntity data, String filterText) {
         return data != null && data.matchesFilter(filterText);
     }
 
     @Override
     public void refreshAll() {
         backend.clear();
-        if (forwardNode != null) {
-            backend.addAll(forwardNode.getSourceNodes());
+        if (forwardNodeEntity != null) {
+            backend.addAll(forwardNodeEntity.getSourceNodes());
         }
         super.refreshAll();
     }

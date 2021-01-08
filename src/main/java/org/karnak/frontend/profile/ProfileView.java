@@ -1,4 +1,4 @@
-package org.karnak.frontend.profile;
+package org.karnak.frontend.profileEntity;
 
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Span;
@@ -12,7 +12,7 @@ import com.vaadin.flow.router.Route;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.function.Predicate;
-import org.karnak.backend.data.entity.Profile;
+import org.karnak.backend.data.entity.ProfileEntity;
 import org.karnak.backend.model.profilebody.ProfilePipeBody;
 import org.karnak.backend.service.profilepipe.ProfilePipeService;
 import org.karnak.backend.service.profilepipe.ProfilePipeServiceImpl;
@@ -64,14 +64,15 @@ public class ProfileView extends HorizontalLayout {
 
     private VerticalLayout createTopLayoutGrid() {
         HorizontalLayout topLayout = createTopBar();
-        SingleSelect<Grid<Profile>, Profile> profilePipeSingleSelect =
-                profileNameGrid.asSingleSelect();
+        SingleSelect<Grid<ProfileEntity>, ProfileEntity> profilePipeSingleSelect =
+            profileNameGrid.asSingleSelect();
 
         profilePipeSingleSelect.addValueChangeListener(e -> {
-            Profile profileSelected = e.getValue();
-            if (profileSelected != null) {
-                profileComponent.setProfile(profileSelected);
-                profileElementMainView.setProfiles(profileSelected.getProfileElements());
+            ProfileEntity profileEntitySelected = e.getValue();
+            if (profileEntitySelected != null) {
+                profileComponent.setProfile(profileEntitySelected);
+                profileElementMainView
+                    .setProfiles(profileEntitySelected.getProfileElementEntities());
                 remove(profileErrorView);
                 add(profileHorizontalLayout);
             }
@@ -109,9 +110,10 @@ public class ProfileView extends HorizontalLayout {
             Predicate<ProfileError> errorPredicate = profileError -> profileError.getError() != null;
             if (!profileErrors.stream().anyMatch(errorPredicate)) {
                 remove(profileErrorView);
-                Profile newProfile = profilePipeService.saveProfilePipe(profilePipe, false);
+                ProfileEntity newProfileEntity = profilePipeService
+                    .saveProfilePipe(profilePipe, false);
                 profileNameGrid.updatedProfilePipesView();
-                profileNameGrid.selectRow(newProfile);
+                profileNameGrid.selectRow(newProfileEntity);
             } else {
                 profileErrorView.setView(profileErrors);
             }

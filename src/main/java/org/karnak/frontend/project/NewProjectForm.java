@@ -4,12 +4,12 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
-import org.karnak.backend.data.entity.Project;
+import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.frontend.forwardnode.ProfileDropDown;
 
 public class NewProjectForm extends HorizontalLayout {
 
-  private final Binder<Project> binder;
+  private final Binder<ProjectEntity> binder;
 
   private final Button buttonAdd;
   private final TextField textResearchName;
@@ -40,10 +40,10 @@ public class NewProjectForm extends HorizontalLayout {
     }
 
     public void clear() {
-        binder.readBean(new Project());
+      binder.readBean(new ProjectEntity());
     }
 
-    public Binder<Project> getBinder() {
-        return binder;
-    }
+  public Binder<ProjectEntity> getBinder() {
+    return binder;
+  }
 }

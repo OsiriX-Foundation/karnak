@@ -7,26 +7,26 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import java.util.ArrayList;
 import java.util.List;
-import org.karnak.backend.data.entity.KheopsAlbums;
+import org.karnak.backend.data.entity.KheopsAlbumsEntity;
 import org.karnak.frontend.util.UIS;
 
-public class SwitchingAlbumsView extends CustomField<List<KheopsAlbums>> {
+public class SwitchingAlbumsView extends CustomField<List<KheopsAlbumsEntity>> {
 
     private final NewSwitchingAlbum newSwitchingAlbum;
     private final GridSwitchingAlbums gridSwitchingAlbums;
-    private final Binder<KheopsAlbums> newSwitchingAlbumBinder;
-    private final ListDataProvider<KheopsAlbums> dataProviderSwitchingAlbums;
-    private final List<KheopsAlbums> kheopsAlbumsList;
+    private final Binder<KheopsAlbumsEntity> newSwitchingAlbumBinder;
+    private final ListDataProvider<KheopsAlbumsEntity> dataProviderSwitchingAlbums;
+    private final List<KheopsAlbumsEntity> kheopsAlbumsEntityList;
     private final Checkbox checkboxSwitchingAlbums;
     private final VerticalLayout layout;
 
     public SwitchingAlbumsView() {
         gridSwitchingAlbums = new GridSwitchingAlbums();
-        dataProviderSwitchingAlbums = (ListDataProvider<KheopsAlbums>) gridSwitchingAlbums
+        dataProviderSwitchingAlbums = (ListDataProvider<KheopsAlbumsEntity>) gridSwitchingAlbums
             .getDataProvider();
         newSwitchingAlbum = new NewSwitchingAlbum();
         newSwitchingAlbumBinder = newSwitchingAlbum.getBinder();
-        kheopsAlbumsList = new ArrayList<>();
+        kheopsAlbumsEntityList = new ArrayList<>();
         layout = new VerticalLayout();
         checkboxSwitchingAlbums = new Checkbox("Switching in different KHEOPS albums");
         add(UIS.setWidthFull(checkboxSwitchingAlbums), layout);
@@ -61,9 +61,9 @@ public class SwitchingAlbumsView extends CustomField<List<KheopsAlbums>> {
 
     private void setEventButtonAdd() {
         newSwitchingAlbum.getButtonAdd().addClickListener(event -> {
-            KheopsAlbums newKheopsAlbums = new KheopsAlbums();
-            if (newSwitchingAlbumBinder.writeBeanIfValid(newKheopsAlbums)) {
-                dataProviderSwitchingAlbums.getItems().add(newKheopsAlbums);
+            KheopsAlbumsEntity newKheopsAlbumsEntity = new KheopsAlbumsEntity();
+            if (newSwitchingAlbumBinder.writeBeanIfValid(newKheopsAlbumsEntity)) {
+                dataProviderSwitchingAlbums.getItems().add(newKheopsAlbumsEntity);
                 dataProviderSwitchingAlbums.refreshAll();
                 newSwitchingAlbum.clear();
             }
@@ -71,25 +71,27 @@ public class SwitchingAlbumsView extends CustomField<List<KheopsAlbums>> {
     }
 
     @Override
-    protected List<KheopsAlbums> generateModelValue() {
-        return kheopsAlbumsList;
+    protected List<KheopsAlbumsEntity> generateModelValue() {
+        return kheopsAlbumsEntityList;
     }
 
     @Override
-    public List<KheopsAlbums> getValue() {
-        return checkboxSwitchingAlbums.getValue() ? new ArrayList<>(dataProviderSwitchingAlbums.getItems()) : null;
+    public List<KheopsAlbumsEntity> getValue() {
+        return checkboxSwitchingAlbums.getValue() ? new ArrayList<>(
+            dataProviderSwitchingAlbums.getItems()) : null;
     }
 
     @Override
-    public void setValue(List<KheopsAlbums> kheopsAlbums) {
+    public void setValue(List<KheopsAlbumsEntity> kheopsAlbumEntities) {
         dataProviderSwitchingAlbums.getItems().removeAll(dataProviderSwitchingAlbums.getItems());
         gridSwitchingAlbums.clearEditorEditButtons();
-        dataProviderSwitchingAlbums.getItems().addAll(kheopsAlbums != null ? kheopsAlbums : new ArrayList<>());
+        dataProviderSwitchingAlbums.getItems().addAll(
+            kheopsAlbumEntities != null ? kheopsAlbumEntities : new ArrayList<>());
         dataProviderSwitchingAlbums.refreshAll();
         setCheckboxSwitchingAlbumsValue();
     }
 
     @Override
-    protected void setPresentationValue(List<KheopsAlbums> kheopsAlbums) {
+    protected void setPresentationValue(List<KheopsAlbumsEntity> kheopsAlbumEntities) {
     }
 }

@@ -4,13 +4,13 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import org.apache.commons.lang3.StringUtils;
-import org.karnak.backend.data.entity.Project;
+import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.model.profilepipe.HMAC;
 import org.karnak.frontend.forwardnode.ProfileDropDown;
 
 public class TextFieldsBindProject {
 
-    private final Binder<Project> binder;
+    private final Binder<ProjectEntity> binder;
 
     private final TextField textResearchName;
     private final TextField textSecret;
@@ -24,31 +24,31 @@ public class TextFieldsBindProject {
         binder = setBinder();
     }
 
-    private Binder<Project> setBinder() {
-        Binder<Project> binder = new BeanValidationBinder<>(Project.class);
+    private Binder<ProjectEntity> setBinder() {
+        Binder<ProjectEntity> binder = new BeanValidationBinder<>(ProjectEntity.class);
         binder.forField(textResearchName)
-                .withValidator(StringUtils::isNotBlank,"Research name is mandatory")
-                .bind(Project::getName, Project::setName);
+            .withValidator(StringUtils::isNotBlank, "Research name is mandatory")
+            .bind(ProjectEntity::getName, ProjectEntity::setName);
         binder.forField(textSecret)
-                .withValidator(StringUtils::isNotBlank,"Secret is mandatory")
-                .withValidator(HMAC::validateKey, "Secret is not valid")
-                .bind(project -> {
-                    if (project.getSecret() != null) {
-                        String hexKey = HMAC.byteToHex(project.getSecret());
-                        return HMAC.showHexKey(hexKey);
-                    }
-                    return null;
-                }, (project, s) -> {
-                    project.setSecret(HMAC.hexToByte(s.replaceAll("-", "")));
-                });
+            .withValidator(StringUtils::isNotBlank, "Secret is mandatory")
+            .withValidator(HMAC::validateKey, "Secret is not valid")
+            .bind(project -> {
+                if (project.getSecret() != null) {
+                    String hexKey = HMAC.byteToHex(project.getSecret());
+                    return HMAC.showHexKey(hexKey);
+                }
+                return null;
+            }, (project, s) -> {
+                project.setSecret(HMAC.hexToByte(s.replaceAll("-", "")));
+            });
         binder.forField(profileDropDown)
-                .withValidator(profilePipe -> profilePipe != null,
-                        "Choose the de-identification profile\n")
-                .bind(Project::getProfile, Project::setProfile);
+            .withValidator(profilePipe -> profilePipe != null,
+                "Choose the de-identification profile\n")
+            .bind(ProjectEntity::getProfileEntity, ProjectEntity::setProfileEntity);
         return binder;
     }
 
-    public Binder<Project> getBinder() {
+    public Binder<ProjectEntity> getBinder() {
         return binder;
     }
 

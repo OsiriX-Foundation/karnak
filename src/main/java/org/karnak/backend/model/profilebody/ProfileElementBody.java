@@ -10,8 +10,8 @@ public class ProfileElementBody {
     private String action;
     private String option;
     private String args;
-    private List<String> tags;
-    private List<String> excludedTags;
+  private List<String> tagEntities;
+  private List<String> excludedTags;
     private Map<String, String> arguments;
 
     public String getName() {
@@ -66,23 +66,23 @@ public class ProfileElementBody {
         return arguments;
     }
 
-    public void setArguments(Map<String, String> arguments) {
-        this.arguments = arguments;
-    }
+  public void setArguments(Map<String, String> arguments) {
+    this.arguments = arguments;
+  }
 
-    public List<String> getTags() {
-        return tags;
-    }
+  public List<String> getTags() {
+    return tagEntities;
+  }
 
-    public void setTags(List<String> tags) {
-        this.tags = tags;
-    }
+  public void setTags(List<String> tagEntities) {
+    this.tagEntities = tagEntities;
+  }
 
-    public List<String> getExcludedTags() {
-        return excludedTags;
-    }
+  public List<String> getExcludedTags() {
+    return excludedTags;
+  }
 
-    public void setExcludedTags(List<String> excludedTags) {
-        this.excludedTags = excludedTags;
-    }
+  public void setExcludedTags(List<String> excludedTags) {
+    this.excludedTags = excludedTags;
+  }
 }

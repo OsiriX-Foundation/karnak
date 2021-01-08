@@ -6,7 +6,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
-import org.karnak.backend.data.entity.ForwardNode;
+import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.service.DataService;
 import org.karnak.backend.service.DestinationDataProvider;
 import org.karnak.frontend.util.UIS;
@@ -44,12 +44,12 @@ public class DestinationsView extends VerticalLayout {
         layoutFilterButton.expand(filter);
 
         add(UIS.setWidthFull(layoutFilterButton),
-                UIS.setWidthFull(gridDestination));
+            UIS.setWidthFull(gridDestination));
     }
 
-    protected void setForwardNode(ForwardNode forwardNode) {
-        setEnabled(forwardNode != null);
-        destinationDataProvider.setForwardNode(forwardNode);
+    protected void setForwardNode(ForwardNodeEntity forwardNodeEntity) {
+        setEnabled(forwardNodeEntity != null);
+        destinationDataProvider.setForwardNode(forwardNodeEntity);
         gridDestination.setDataProvider(destinationDataProvider);
     }
 

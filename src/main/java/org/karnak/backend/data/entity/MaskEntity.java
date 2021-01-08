@@ -18,16 +18,17 @@ import org.karnak.backend.data.converter.RectangleListToStringListConverter;
 
 @Entity(name = "Masks")
 @Table(name = "masks")
-public class Mask {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @JsonIgnore
-    private Long id;
+public class MaskEntity {
 
-    @ManyToOne()
-    @JoinColumn(name = "profile_id", nullable = false)
-    @JsonIgnore
-    private Profile profile;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @JsonIgnore
+  private Long id;
+
+  @ManyToOne()
+  @JoinColumn(name = "profile_id", nullable = false)
+  @JsonIgnore
+  private ProfileEntity profileEntity;
 
     private String stationName;
     private String color;
@@ -36,14 +37,14 @@ public class Mask {
     @JsonSerialize(converter = RectangleListToStringListConverter.class)
     private List<Rectangle> rectangles = new ArrayList<>();
 
-    public Mask() {
-    }
+  public MaskEntity() {
+  }
 
-    public Mask(String stationName, String color, Profile profile) {
-        this.stationName = stationName;
-        this.color = color;
-        this.profile = profile;
-    }
+  public MaskEntity(String stationName, String color, ProfileEntity profileEntity) {
+    this.stationName = stationName;
+    this.color = color;
+    this.profileEntity = profileEntity;
+  }
 
     public void addRectangle(String rectangle) {
         Rectangle rect = RectangleListConverter.stringToRectangle(rectangle);

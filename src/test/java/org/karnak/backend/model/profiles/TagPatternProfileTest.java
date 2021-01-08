@@ -12,12 +12,12 @@ class TagPatternProfileTest {
 
     @BeforeAll
     protected static void setUpBeforeClass() throws Exception {
-        dataset.setString(Tag.CurveLabel, VR.LO, "curve label");
-        dataset.newDicomSequence(Tag.CurveReferencedOverlaySequence);
-        dataset.setNull(Tag.OverlayData | (1 << 17), VR.OB);
-        dataset.setNull(Tag.OverlayData | (2 << 17), VR.OB);
-        dataset.setNull(Tag.OverlayData | (5 << 17), VR.OB);
-        dataset.setString(Tag.OverlayComments, VR.LT, "overlay comments");
+        dataset.setString(TagEntity.CurveLabel, VR.LO, "curve label");
+        dataset.newDicomSequence(TagEntity.CurveReferencedOverlaySequence);
+        dataset.setNull(TagEntity.OverlayData | (1 << 17), VR.OB);
+        dataset.setNull(TagEntity.OverlayData | (2 << 17), VR.OB);
+        dataset.setNull(TagEntity.OverlayData | (5 << 17), VR.OB);
+        dataset.setString(TagEntity.OverlayComments, VR.LT, "overlay comments");
     }
 
     @Test
@@ -42,43 +42,43 @@ class TagPatternProfileTest {
     void getAction() {
         // WHITELIST policy for curves pattern with an exception to keep (CurveReferencedOverlaySequence)
         TagPatternProfile curves = buildTagPatternProfile(CURVES);
-        curves.put(Tag.CurveReferencedOverlaySequence, Action.KEEP);
+        curves.put(TagEntity.CurveReferencedOverlaySequence, Action.KEEP);
         Assertions.assertThrows(IllegalStateException.class, () -> {
-            curves.put(Tag.CurveReferencedOverlaySequence, Action.REMOVE);
+            curves.put(TagEntity.CurveReferencedOverlaySequence, Action.REMOVE);
         });
         Assertions.assertThrows(IllegalStateException.class, () -> {
-            curves.put(Tag.CurveReferencedOverlaySequence, Action.REPLACE_NULL);
+            curves.put(TagEntity.CurveReferencedOverlaySequence, Action.REPLACE_NULL);
         });
-        assertEquals(Action.REMOVE, curves.getAction(dataset.get(Tag.CurveLabel).orElse(null)));
-        assertEquals(Action.KEEP, curves.getAction(dataset.get(Tag.CurveReferencedOverlaySequence).orElse(null)));
-        assertEquals(null, curves.getAction(dataset.get(Tag.OverlayData | (1 << 17)).orElse(null)));
+        assertEquals(Action.REMOVE, curves.getAction(dataset.get(TagEntity.CurveLabel).orElse(null)));
+        assertEquals(Action.KEEP, curves.getAction(dataset.get(TagEntity.CurveReferencedOverlaySequence).orElse(null)));
+        assertEquals(null, curves.getAction(dataset.get(TagEntity.OverlayData | (1 << 17)).orElse(null)));
 
         // WHITELIST policy for overlay pattern with an exception to keep (first layer of OverlayData)
         TagPatternProfile overlayData = buildTagPatternProfile(OVERLAYS_DATA);
-        overlayData.put(Tag.OverlayData | (1 << 17), Action.KEEP);
-        assertEquals(Action.KEEP, overlayData.getAction(dataset.get(Tag.OverlayData | (1 << 17)).orElse(null)));
-        assertEquals(Action.REMOVE, overlayData.getAction(dataset.get(Tag.OverlayData | (2 << 17)).orElse(null)));
-        assertEquals(Action.REMOVE, overlayData.getAction(dataset.get(Tag.OverlayData | (5 << 17)).orElse(null)));
-        assertEquals(null, overlayData.getAction(dataset.get(Tag.CurveLabel).orElse(null)));
+        overlayData.put(TagEntity.OverlayData | (1 << 17), Action.KEEP);
+        assertEquals(Action.KEEP, overlayData.getAction(dataset.get(TagEntity.OverlayData | (1 << 17)).orElse(null)));
+        assertEquals(Action.REMOVE, overlayData.getAction(dataset.get(TagEntity.OverlayData | (2 << 17)).orElse(null)));
+        assertEquals(Action.REMOVE, overlayData.getAction(dataset.get(TagEntity.OverlayData | (5 << 17)).orElse(null)));
+        assertEquals(null, overlayData.getAction(dataset.get(TagEntity.CurveLabel).orElse(null)));
 
-        assertEquals(Action.REMOVE, buildTagPatternProfile(OVERLAYS_COMMENTS).getAction(dataset.get(Tag.OverlayComments).orElse(null)));
+        assertEquals(Action.REMOVE, buildTagPatternProfile(OVERLAYS_COMMENTS).getAction(dataset.get(TagEntity.OverlayComments).orElse(null)));
 
-        // BLACKLIST policy for curves pattern with parent profile
+        // BLACKLIST policy for curves pattern with parent profileEntity
         TagPatternProfile curves2 = new TagPatternProfile("", CURVES, overlayData);
-        curves2.put(Tag.CurveReferencedOverlaySequence, Action.REMOVE);
-        curves2.put(Tag.CurveLabel, Action.DEFAULT_DUMMY);
+        curves2.put(TagEntity.CurveReferencedOverlaySequence, Action.REMOVE);
+        curves2.put(TagEntity.CurveLabel, Action.DEFAULT_DUMMY);
         Assertions.assertThrows(IllegalStateException.class, () -> {
-            curves2.put(Tag.CurveReferencedOverlaySequence, Action.KEEP);
+            curves2.put(TagEntity.CurveReferencedOverlaySequence, Action.KEEP);
         });
-        assertEquals(Action.DEFAULT_DUMMY, curves2.getAction(dataset.get(Tag.CurveLabel).orElse(null)));
-        assertEquals(Action.REMOVE, curves2.getAction(dataset.get(Tag.CurveReferencedOverlaySequence).orElse(null)));
-        assertEquals(Action.KEEP, curves2.getAction(dataset.get(Tag.OverlayData | (1 << 17)).orElse(null)));
+        assertEquals(Action.DEFAULT_DUMMY, curves2.getAction(dataset.get(TagEntity.CurveLabel).orElse(null)));
+        assertEquals(Action.REMOVE, curves2.getAction(dataset.get(TagEntity.CurveReferencedOverlaySequence).orElse(null)));
+        assertEquals(Action.KEEP, curves2.getAction(dataset.get(TagEntity.OverlayData | (1 << 17)).orElse(null)));
     }
 
     @Test
     void buildProfile() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            buildTagPatternProfile(Integer.toHexString(Tag.OverlayData));
+            buildTagPatternProfile(Integer.toHexString(TagEntity.OverlayData));
         });
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
             buildTagPatternProfile("5518100");

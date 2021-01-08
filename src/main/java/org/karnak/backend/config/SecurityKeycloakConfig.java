@@ -1,4 +1,4 @@
-package org.karnak.backend.configuration;
+package org.karnak.backend.config;
 
 import org.karnak.backend.cache.RequestCache;
 import org.karnak.backend.util.SecurityUtil;
@@ -18,7 +18,7 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 
 @KeycloakConfiguration
 @ConditionalOnProperty(value = "IDP", havingValue = "keycloak")
-public class SecurityKeycloakConfiguration extends KeycloakWebSecurityConfigurerAdapter {
+public class SecurityKeycloakConfig extends KeycloakWebSecurityConfigurerAdapter {
 
   private static final String LOGOUT_SUCCESS_URL = "/mainLayout";
 

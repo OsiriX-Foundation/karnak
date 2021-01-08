@@ -1,10 +1,10 @@
 package org.karnak.frontend.project;
 
 import com.vaadin.flow.component.grid.Grid;
-import org.karnak.backend.data.entity.Project;
+import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.service.ProjectDataProvider;
 
-public class GridProject extends Grid<Project> {
+public class GridProject extends Grid<ProjectEntity> {
 
     private final ProjectDataProvider projectDataProvider;
 
@@ -14,13 +14,14 @@ public class GridProject extends Grid<Project> {
         setWidthFull();
         setHeightByRows(true);
 
-        addColumn(Project::getName).setHeader("Project Name").setFlexGrow(15)
+        addColumn(ProjectEntity::getName).setHeader("Project Name").setFlexGrow(15)
                 .setSortable(true);
-        addColumn(project -> project.getProfile().getName()).setHeader("Desidenfication profile").setFlexGrow(15)
+        addColumn(project -> project.getProfileEntity().getName())
+            .setHeader("Desidenfication profile").setFlexGrow(15)
                 .setSortable(true);
     }
 
-    public void selectRow(Project row) {
+    public void selectRow(ProjectEntity row) {
         if (row != null) {
             getSelectionModel().select(row);
         } else {

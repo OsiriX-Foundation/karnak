@@ -8,7 +8,7 @@ import java.util.Objects;
 public class WadoNode {
 	private final String name;
     private final URL url;
-    private final List<String> tags = new ArrayList<String>(2);
+  private final List<String> tagEntities = new ArrayList<String>(2);
 
     public WadoNode(String name, URL url) {
         this.name = Objects.requireNonNull(name);
@@ -29,7 +29,7 @@ public class WadoNode {
     }
 
     public List<String> getTags() {
-        return tags;
+      return tagEntities;
     }
 
 }

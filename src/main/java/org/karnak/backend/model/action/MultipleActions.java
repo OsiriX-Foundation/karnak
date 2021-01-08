@@ -6,7 +6,7 @@ import java.util.List;
 import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.Tag;
-import org.karnak.backend.configuration.AppConfig;
+import org.karnak.backend.config.AppConfig;
 import org.karnak.backend.exception.StandardDICOMException;
 import org.karnak.backend.model.profilepipe.HMAC;
 import org.karnak.backend.model.standard.Attribute;

@@ -4,22 +4,26 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
-import org.karnak.backend.data.entity.ForwardNode;
+import org.karnak.backend.data.entity.ForwardNodeEntity;
 
 @SuppressWarnings("serial")
-public class ForwardNodeDataProvider extends ListDataProvider<ForwardNode> {
+public class ForwardNodeDataProvider extends ListDataProvider<ForwardNodeEntity> {
+
     private final DataService dataService;
 
-    private final Collection<ForwardNode> backend;
+    private final Collection<ForwardNodeEntity> backend;
 
-    /** Text filter that can be changed separately. */
+    /**
+     * Text filter that can be changed separately.
+     */
     private String filterText = "";
 
     public ForwardNodeDataProvider() {
         this(new DataServiceImpl(), new ArrayList<>());
     }
 
-    protected ForwardNodeDataProvider(DataService dataService, Collection<ForwardNode> backend) {
+    protected ForwardNodeDataProvider(DataService dataService,
+        Collection<ForwardNodeEntity> backend) {
         super(backend);
         this.dataService = dataService;
         this.backend = backend;
@@ -32,23 +36,23 @@ public class ForwardNodeDataProvider extends ListDataProvider<ForwardNode> {
 
     /**
      * Retrieves the ForwardNode according to its ID.
-     * 
+     *
      * @param dataId the data ID.
-     * @return the ForwardNode according to its ID; null if not found.
+     * @return the ForwardNodeEntity according to its ID; null if not found.
      */
-    public ForwardNode get(Long dataId) {
+    public ForwardNodeEntity get(Long dataId) {
         return dataService.getForwardNodeById(dataId);
     }
 
     /**
      * Store given ForwardNode to the backing data service.
-     * 
+     *
      * @param data the updated or new data
      */
-    public void save(ForwardNode data) {
+    public void save(ForwardNodeEntity data) {
         boolean newData = data.isNewData();
 
-        ForwardNode dataUpdated = this.dataService.updateForwardNode(data);
+        ForwardNodeEntity dataUpdated = this.dataService.updateForwardNode(data);
         if (newData) {
             refreshAll();
         } else {
@@ -58,10 +62,10 @@ public class ForwardNodeDataProvider extends ListDataProvider<ForwardNode> {
 
     /**
      * Delete given data from the backing data service.
-     * 
+     *
      * @param data the data to be deleted
      */
-    public void delete(ForwardNode data) {
+    public void delete(ForwardNodeEntity data) {
         this.dataService.deleteForwardNode(data.getId());
         refreshAll();
     }
@@ -87,13 +91,13 @@ public class ForwardNodeDataProvider extends ListDataProvider<ForwardNode> {
     }
 
     @Override
-    public Long getId(ForwardNode data) {
+    public Long getId(ForwardNodeEntity data) {
         Objects.requireNonNull(data, "Cannot provide an id for a null item.");
 
         return data.getId();
     }
 
-    private boolean matchesFilter(ForwardNode data, String filterText) {
+    private boolean matchesFilter(ForwardNodeEntity data, String filterText) {
         return data != null && data.matchesFilter(filterText);
     }
 

@@ -11,15 +11,15 @@ import org.dcm4che6.data.VR;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.karnak.backend.data.entity.Argument;
+import org.karnak.backend.data.entity.ArgumentEntity;
 import org.karnak.backend.util.ShiftDate;
 
 class ShiftDateTest {
 
     private static final DicomObject dataset = DicomObject.newDicomObject();
-    private static final List<Argument> arguments = new ArrayList<>();
-    private static final Argument seconds = new Argument();
-    private static final Argument days = new Argument();
+    private static final List<ArgumentEntity> argumentEntities = new ArrayList<>();
+    private static final ArgumentEntity seconds = new ArgumentEntity();
+    private static final ArgumentEntity days = new ArgumentEntity();
 
     @BeforeAll
     protected static void setUpBeforeClass() throws Exception {
@@ -28,8 +28,8 @@ class ShiftDateTest {
         days.setKey("days");
         days.setValue("40");
 
-        arguments.add(seconds);
-        arguments.add(days);
+        argumentEntities.add(seconds);
+        argumentEntities.add(days);
 
         dataset.setString(Tag.StudyDate, VR.DA, "20180209");
         dataset.setString(Tag.StudyTime, VR.TM, "120843");
@@ -136,37 +136,43 @@ class ShiftDateTest {
     void shift() {
 
         assertEquals("20171231",
-                ShiftDate.shift(dataset, dataset.get(Tag.StudyDate).orElse(null), arguments)
+            ShiftDate.shift(dataset, dataset.get(Tag.StudyDate).orElse(null), argumentEntities)
         );
         assertEquals("120023.000000",
-                ShiftDate.shift(dataset, dataset.get(Tag.StudyTime).orElse(null), arguments)
+            ShiftDate.shift(dataset, dataset.get(Tag.StudyTime).orElse(null), argumentEntities)
         );
         assertEquals("043Y",
-                ShiftDate.shift(dataset, dataset.get(Tag.PatientAge).orElse(null), arguments)
+            ShiftDate.shift(dataset, dataset.get(Tag.PatientAge).orElse(null),
+                argumentEntities)
         );
         assertEquals("20171231120034.354000",
-                ShiftDate.shift(dataset, dataset.get(Tag.AcquisitionDateTime).orElse(null), arguments)
+            ShiftDate.shift(dataset, dataset.get(Tag.AcquisitionDateTime).orElse(null),
+                argumentEntities)
         );
         assertEquals("235314.000000",
-                ShiftDate.shift(dataset, dataset.get(Tag.AcquisitionTime).orElse(null), arguments)
+            ShiftDate.shift(dataset, dataset.get(Tag.AcquisitionTime).orElse(null),
+                argumentEntities)
         );
 
         seconds.setKey("notseconds");
         days.setKey("days");
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            ShiftDate.shift(dataset, dataset.get(Tag.AcquisitionTime).orElse(null), arguments);
+            ShiftDate.shift(dataset, dataset.get(Tag.AcquisitionTime).orElse(null),
+                argumentEntities);
         });
 
         seconds.setKey("seconds");
         days.setKey("notdays");
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            ShiftDate.shift(dataset, dataset.get(Tag.AcquisitionTime).orElse(null), arguments);
+            ShiftDate.shift(dataset, dataset.get(Tag.AcquisitionTime).orElse(null),
+                argumentEntities);
         });
 
         seconds.setKey("notseconds");
         days.setKey("notdays");
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            ShiftDate.shift(dataset, dataset.get(Tag.AcquisitionTime).orElse(null), arguments);
+            ShiftDate.shift(dataset, dataset.get(Tag.AcquisitionTime).orElse(null),
+                argumentEntities);
         });
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> {

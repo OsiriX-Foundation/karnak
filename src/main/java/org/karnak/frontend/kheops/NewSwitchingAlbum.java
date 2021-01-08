@@ -7,11 +7,11 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
-import org.karnak.backend.data.entity.KheopsAlbums;
+import org.karnak.backend.data.entity.KheopsAlbumsEntity;
 
 public class NewSwitchingAlbum extends Div {
 
-  private final Binder<KheopsAlbums> binder;
+  private final Binder<KheopsAlbumsEntity> binder;
 
   private final Button buttonAdd;
   private final TextField textAuthorizationDestination;
@@ -70,10 +70,10 @@ public class NewSwitchingAlbum extends Div {
     }
 
     public void clear() {
-        binder.readBean(new KheopsAlbums());
+      binder.readBean(new KheopsAlbumsEntity());
     }
 
-    public Binder<KheopsAlbums> getBinder() {
-        return binder;
-    }
+  public Binder<KheopsAlbumsEntity> getBinder() {
+    return binder;
+  }
 }

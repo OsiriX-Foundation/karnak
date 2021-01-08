@@ -4,7 +4,7 @@ import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
-import org.karnak.backend.data.entity.ForwardNode;
+import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.service.ForwardNodeAPI;
 
 public class LayoutNewGridForwardNode extends VerticalLayout {
@@ -37,9 +37,9 @@ public class LayoutNewGridForwardNode extends VerticalLayout {
         eventGridSelection();
     }
 
-    public void load(ForwardNode forwardNode) {
-        if (forwardNode != null && forwardNode != gridForwardNode.getSelectedRow()) {
-            gridForwardNode.selectRow(forwardNode);
+    public void load(ForwardNodeEntity forwardNodeEntity) {
+        if (forwardNodeEntity != null && forwardNodeEntity != gridForwardNode.getSelectedRow()) {
+            gridForwardNode.selectRow(forwardNodeEntity);
         } else {
             gridForwardNode.getSelectionModel().deselectAll();
         }
@@ -47,17 +47,17 @@ public class LayoutNewGridForwardNode extends VerticalLayout {
 
     private void eventNewForwardNode() {
         buttonAddNewForwardNode.addClickListener(click -> {
-            eventAddForwardNode(new ForwardNode(textFieldNewAETitleForwardNode.getValue()));
+            eventAddForwardNode(new ForwardNodeEntity(textFieldNewAETitleForwardNode.getValue()));
         });
         textFieldNewAETitleForwardNode.addKeyDownListener(Key.ENTER, keyDownEvent -> {
-            eventAddForwardNode(new ForwardNode(textFieldNewAETitleForwardNode.getValue()));
+            eventAddForwardNode(new ForwardNodeEntity(textFieldNewAETitleForwardNode.getValue()));
         });
     }
 
-    private void eventAddForwardNode(ForwardNode forwardNode) {
-        forwardNodeAPI.addForwardNode(forwardNode);
-        gridForwardNode.getSelectionModel().select(forwardNode);
-        forwardNodeViewLogic.editForwardNode(forwardNode);
+    private void eventAddForwardNode(ForwardNodeEntity forwardNodeEntity) {
+        forwardNodeAPI.addForwardNode(forwardNodeEntity);
+        gridForwardNode.getSelectionModel().select(forwardNodeEntity);
+        forwardNodeViewLogic.editForwardNode(forwardNodeEntity);
     }
 
     private void eventGridSelection() {

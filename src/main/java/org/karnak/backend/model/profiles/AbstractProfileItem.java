@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import org.karnak.backend.data.entity.Argument;
-import org.karnak.backend.data.entity.ExcludedTag;
-import org.karnak.backend.data.entity.IncludedTag;
-import org.karnak.backend.data.entity.ProfileElement;
+import org.karnak.backend.data.entity.ArgumentEntity;
+import org.karnak.backend.data.entity.ExcludedTagEntity;
+import org.karnak.backend.data.entity.IncludedTagEntity;
+import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.model.action.ActionItem;
 
 public abstract class AbstractProfileItem implements ProfileItem {
@@ -17,22 +17,22 @@ public abstract class AbstractProfileItem implements ProfileItem {
     protected final String condition;
     protected final String action;
     protected final String option;
-    protected final List<Argument> arguments;
-    protected final List<IncludedTag> tags;
-    protected final List<ExcludedTag> excludedTags;
+    protected final List<ArgumentEntity> argumentEntities;
+    protected final List<IncludedTagEntity> tagEntities;
+    protected final List<ExcludedTagEntity> excludedTagEntities;
     protected final Map<Integer, ActionItem> tagMap;
     protected final Integer position;
 
-    protected AbstractProfileItem(ProfileElement profileElement) {
-        this.name = Objects.requireNonNull(profileElement.getName());
-        this.codeName = Objects.requireNonNull(profileElement.getCodename());
-        this.condition = profileElement.getCondition();
-        this.action = profileElement.getAction();
-        this.option = profileElement.getOption();
-        this.arguments = profileElement.getArguments();
-        this.tags = profileElement.getIncludedtag();
-        this.excludedTags = profileElement.getExceptedtags();
-        this.position = profileElement.getPosition();
+    protected AbstractProfileItem(ProfileElementEntity profileElementEntity) {
+        this.name = Objects.requireNonNull(profileElementEntity.getName());
+        this.codeName = Objects.requireNonNull(profileElementEntity.getCodename());
+        this.condition = profileElementEntity.getCondition();
+        this.action = profileElementEntity.getAction();
+        this.option = profileElementEntity.getOption();
+        this.argumentEntities = profileElementEntity.getArgumentEntities();
+        this.tagEntities = profileElementEntity.getIncludedTagEntities();
+        this.excludedTagEntities = profileElementEntity.getExcludedTagEntities();
+        this.position = profileElementEntity.getPosition();
         this.tagMap = new HashMap<>();
     }
 
@@ -48,7 +48,9 @@ public abstract class AbstractProfileItem implements ProfileItem {
 
     public String getOption() { return option; }
 
-    public List<Argument> getArguments() { return arguments; }
+    public List<ArgumentEntity> getArguments() {
+        return argumentEntities;
+    }
 
     public Integer getPosition() {
         return position;

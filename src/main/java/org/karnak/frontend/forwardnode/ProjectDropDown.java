@@ -1,16 +1,17 @@
 package org.karnak.frontend.forwardnode;
 
 import com.vaadin.flow.component.combobox.ComboBox;
-import org.karnak.backend.data.entity.Project;
+import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.service.ProjectDataProvider;
 
-public class ProjectDropDown extends ComboBox<Project> {
-    ProjectDataProvider projectDataProvider;
+public class ProjectDropDown extends ComboBox<ProjectEntity> {
 
-    public ProjectDropDown() {
-        projectDataProvider = new ProjectDataProvider();
+  ProjectDataProvider projectDataProvider;
 
-        setItems(projectDataProvider.getAllProjects());
-        setItemLabelGenerator(Project::getName);
-    }
+  public ProjectDropDown() {
+    projectDataProvider = new ProjectDataProvider();
+
+    setItems(projectDataProvider.getAllProjects());
+    setItemLabelGenerator(ProjectEntity::getName);
+  }
 }

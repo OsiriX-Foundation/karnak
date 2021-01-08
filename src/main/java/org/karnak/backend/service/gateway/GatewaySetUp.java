@@ -12,12 +12,12 @@ import java.util.Set;
 import org.dcm4che6.data.DicomObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.karnak.backend.configuration.GatewayConfiguration;
-import org.karnak.backend.data.entity.Destination;
-import org.karnak.backend.data.entity.DicomSourceNode;
-import org.karnak.backend.data.entity.ForwardNode;
-import org.karnak.backend.data.entity.KheopsAlbums;
-import org.karnak.backend.data.repository.GatewayPersistence;
+import org.karnak.backend.config.GatewayConfig;
+import org.karnak.backend.data.entity.DestinationEntity;
+import org.karnak.backend.data.entity.DicomSourceNodeEntity;
+import org.karnak.backend.data.entity.ForwardNodeEntity;
+import org.karnak.backend.data.entity.KheopsAlbumsEntity;
+import org.karnak.backend.data.repo.GatewayRepo;
 import org.karnak.backend.enums.DestinationType;
 import org.karnak.backend.enums.NodeEventType;
 import org.karnak.backend.model.NodeEvent;
@@ -262,26 +262,28 @@ public class GatewaySetUp {
     }
 
     private void addDestinationNode(List<ForwardDestination> dstList, ForwardDicomNode fwdSrcNode,
-                                    Destination dstNode) {
+        DestinationEntity dstNode) {
         try {
             List<AttributeEditor> editors = new ArrayList<>();
             final boolean filterBySOPClassesEnable = dstNode.getFilterBySOPClasses();
-            if(filterBySOPClassesEnable) {
+            if (filterBySOPClassesEnable) {
                 editors.add(new FilterEditor(dstNode.getSOPClassUIDFilters()));
             }
 
-            final List<KheopsAlbums> listKheopsAlbums = dstNode.getKheopsAlbums();
+            final List<KheopsAlbumsEntity> listKheopsAlbumEntities = dstNode
+                .getKheopsAlbumEntities();
             SwitchingAlbum switchingAlbum = new SwitchingAlbum();
             editors.add((DicomObject dcm, AttributeEditorContext context) -> {
-                if (listKheopsAlbums != null) {
-                    listKheopsAlbums.forEach(kheopsAlbums -> {
+                if (listKheopsAlbumEntities != null) {
+                    listKheopsAlbumEntities.forEach(kheopsAlbums -> {
                         switchingAlbum.apply(dstNode, kheopsAlbums, dcm);
                     });
                 }
             });
 
             final boolean desidentificationEnable = dstNode.getDesidentification();
-            final boolean profileDefined = dstNode.getProject() != null && dstNode.getProject().getProfile() != null;
+            final boolean profileDefined = dstNode.getProjectEntity() != null
+                && dstNode.getProjectEntity().getProfileEntity() != null;
             if(desidentificationEnable && profileDefined){ //TODO add an option in destination model
                 editors.add(new DeidentifyEditor(dstNode));
             }
@@ -330,8 +332,8 @@ public class GatewaySetUp {
                 progress.addProgressListener(new EmailNotifyProgress(streamRegistry, fwd, emails, this, notifConfig));
                 progress.addProgressListener((DicomProgress dicomProgress) -> {
                     DicomObject dcm = dicomProgress.getAttributes();
-                    if (listKheopsAlbums != null) {
-                        listKheopsAlbums.forEach(kheopsAlbums -> {
+                    if (listKheopsAlbumEntities != null) {
+                        listKheopsAlbumEntities.forEach(kheopsAlbums -> {
                             switchingAlbum.applyAfterTransfer(kheopsAlbums, dcm);
                         });
                     }
@@ -364,13 +366,16 @@ public class GatewaySetUp {
     }
 
     public void reloadGatewayPersistence() {
-        GatewayPersistence gatewayPersistence = GatewayConfiguration.getInstance().getGatewayPersistence();
-        List<ForwardNode> list = new ArrayList<>(gatewayPersistence.findAll());
-        for (ForwardNode forwardNode : list) {
-            ForwardDicomNode fwdSrcNode = new ForwardDicomNode(forwardNode.getFwdAeTitle(), null, forwardNode.getId());
-            addAcceptedSourceNodes(fwdSrcNode, forwardNode);
-            List<ForwardDestination> dstList = new ArrayList<>(forwardNode.getDestinations().size());
-            for (Destination dstNode : forwardNode.getDestinations()) {
+        GatewayRepo gatewayRepo = GatewayConfig.getInstance().getGatewayPersistence();
+        List<ForwardNodeEntity> list = new ArrayList<>(gatewayRepo.findAll());
+        for (ForwardNodeEntity forwardNodeEntity : list) {
+            ForwardDicomNode fwdSrcNode = new ForwardDicomNode(forwardNodeEntity.getFwdAeTitle(),
+                null, forwardNodeEntity
+                .getId());
+            addAcceptedSourceNodes(fwdSrcNode, forwardNodeEntity);
+            List<ForwardDestination> dstList = new ArrayList<>(
+                forwardNodeEntity.getDestinationEntities().size());
+            for (DestinationEntity dstNode : forwardNodeEntity.getDestinationEntities()) {
                 addDestinationNode(dstList, fwdSrcNode, dstNode);
             }
             destMap.put(fwdSrcNode, dstList);
@@ -382,7 +387,8 @@ public class GatewaySetUp {
         Object src = event.getSource();
         Long id = event.getForwardNode().getId();
         String aet = event.getForwardNode().getFwdAeTitle();
-        Optional<ForwardDicomNode> val = destMap.keySet().stream().filter(f -> id.equals(f.getId())).findFirst();
+        Optional<ForwardDicomNode> val = destMap.keySet().stream().filter(f -> id.equals(f.getId()))
+            .findFirst();
         ForwardDicomNode fwdNode;
         if (val.isEmpty()) {
             fwdNode = new ForwardDicomNode(aet, null, id);
@@ -390,18 +396,20 @@ public class GatewaySetUp {
         } else {
             fwdNode = val.get();
         }
-        if (src instanceof DicomSourceNode) {
-            DicomSourceNode srcNode = (DicomSourceNode) src;
+        if (src instanceof DicomSourceNodeEntity) {
+            DicomSourceNodeEntity srcNode = (DicomSourceNodeEntity) src;
             if (type == NodeEventType.ADD) {
-                fwdNode.addAcceptedSourceNode(srcNode.getId(), srcNode.getAeTitle(), srcNode.getHostname());
+                fwdNode.addAcceptedSourceNode(srcNode.getId(), srcNode.getAeTitle(),
+                    srcNode.getHostname());
             } else if (type == NodeEventType.REMOVE) {
                 fwdNode.getAcceptedSourceNodes().removeIf(s -> srcNode.getId().equals(s.getId()));
             } else if (type == NodeEventType.UPDATE) {
                 fwdNode.getAcceptedSourceNodes().removeIf(s -> srcNode.getId().equals(s.getId()));
-                fwdNode.addAcceptedSourceNode(srcNode.getId(), srcNode.getAeTitle(), srcNode.getHostname());
+                fwdNode.addAcceptedSourceNode(srcNode.getId(), srcNode.getAeTitle(),
+                    srcNode.getHostname());
             }
-        } else if (src instanceof Destination) {
-            Destination dstNode = (Destination) src;
+        } else if (src instanceof DestinationEntity) {
+            DestinationEntity dstNode = (DestinationEntity) src;
             if (type == NodeEventType.ADD) {
                 addDestinationNode(destMap.get(fwdNode), fwdNode, dstNode);
             } else if (type == NodeEventType.REMOVE) {
@@ -410,8 +418,8 @@ public class GatewaySetUp {
                 destMap.get(fwdNode).removeIf(d -> dstNode.getId().equals(d.getId()));
                 addDestinationNode(destMap.get(fwdNode), fwdNode, dstNode);
             }
-        } else if (src instanceof ForwardNode) {
-            ForwardNode fw = (ForwardNode) src;
+        } else if (src instanceof ForwardNodeEntity) {
+            ForwardNodeEntity fw = (ForwardNodeEntity) src;
             if (type == NodeEventType.ADD) {
                 addAcceptedSourceNodes(fwdNode, fw);
                 destMap.put(fwdNode, addDestinationNodes(fwdNode, fw));
@@ -431,15 +439,19 @@ public class GatewaySetUp {
         }
     }
 
-    private void addAcceptedSourceNodes(ForwardDicomNode fwdSrcNode, ForwardNode forwardNode) {
-        for (DicomSourceNode srcNode : forwardNode.getSourceNodes()) {
-            fwdSrcNode.addAcceptedSourceNode(srcNode.getId(), srcNode.getAeTitle(), srcNode.getHostname());
+    private void addAcceptedSourceNodes(ForwardDicomNode fwdSrcNode,
+        ForwardNodeEntity forwardNodeEntity) {
+        for (DicomSourceNodeEntity srcNode : forwardNodeEntity.getSourceNodes()) {
+            fwdSrcNode.addAcceptedSourceNode(srcNode.getId(), srcNode.getAeTitle(),
+                srcNode.getHostname());
         }
     }
 
-    private List<ForwardDestination> addDestinationNodes(ForwardDicomNode fwdSrcNode, ForwardNode forwardNode) {
-        List<ForwardDestination> dstList = new ArrayList<>(forwardNode.getDestinations().size());
-        for (Destination dstNode : forwardNode.getDestinations()) {
+    private List<ForwardDestination> addDestinationNodes(ForwardDicomNode fwdSrcNode,
+        ForwardNodeEntity forwardNodeEntity) {
+        List<ForwardDestination> dstList = new ArrayList<>(
+            forwardNodeEntity.getDestinationEntities().size());
+        for (DestinationEntity dstNode : forwardNodeEntity.getDestinationEntities()) {
             addDestinationNode(dstList, fwdSrcNode, dstNode);
         }
         return dstList;

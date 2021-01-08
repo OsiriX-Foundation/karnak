@@ -8,7 +8,7 @@ import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.OptionalParameter;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import org.karnak.backend.data.entity.Project;
+import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.model.profilepipe.HMAC;
 import org.karnak.backend.service.ProjectDataProvider;
 import org.karnak.frontend.MainLayout;
@@ -26,7 +26,7 @@ public class MainViewProjects extends HorizontalLayout implements HasUrlParamete
     private final NewProjectForm newProjectForm;
     private final GridProject gridProject;
     private final EditProject editProject;
-    private final Binder<Project> newResearchBinder;
+    private final Binder<ProjectEntity> newResearchBinder;
 
     public MainViewProjects() {
         setWidthFull();
@@ -46,12 +46,12 @@ public class MainViewProjects extends HorizontalLayout implements HasUrlParamete
 
     private void setEventButtonNewProject() {
         newProjectForm.getButtonAdd().addClickListener(event -> {
-            Project newProject = new Project();
-            if (newResearchBinder.writeBeanIfValid(newProject)) {
-                newProject.setSecret(HMAC.generateRandomKey());
-                projectDataProvider.save(newProject);
+            ProjectEntity newProjectEntity = new ProjectEntity();
+            if (newResearchBinder.writeBeanIfValid(newProjectEntity)) {
+                newProjectEntity.setSecret(HMAC.generateRandomKey());
+                projectDataProvider.save(newProjectEntity);
                 newProjectForm.clear();
-                ProjectViewLogic.navigateProject(newProject);
+                ProjectViewLogic.navigateProject(newProjectEntity);
             }
         });
     }
@@ -65,12 +65,12 @@ public class MainViewProjects extends HorizontalLayout implements HasUrlParamete
     @Override
     public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
         Long idProject = ProjectViewLogic.enter(parameter);
-        Project currentProject = null;
+        ProjectEntity currentProjectEntity = null;
         if (idProject != null) {
-            currentProject = projectDataProvider.getProjectById(idProject);
+            currentProjectEntity = projectDataProvider.getProjectById(idProject);
         }
-        editProject.setProject(currentProject);
-        gridProject.selectRow(currentProject);
+        editProject.setProject(currentProjectEntity);
+        gridProject.selectRow(currentProjectEntity);
     }
 
     @Autowired

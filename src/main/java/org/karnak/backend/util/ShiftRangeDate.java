@@ -4,12 +4,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
-import org.karnak.backend.data.entity.Argument;
+import org.karnak.backend.data.entity.ArgumentEntity;
 import org.karnak.backend.model.profilepipe.HMAC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ShiftRangeDate {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ShiftRangeDate.class);
 
     private final ShiftDate shiftDate;
@@ -18,19 +19,38 @@ public class ShiftRangeDate {
         shiftDate = new ShiftDate();
     }
 
-    public String shift(DicomObject dcm, DicomElement dcmEl, List<Argument> arguments, HMAC hmac) {
+    public static void verifyShiftArguments(List<ArgumentEntity> argumentEntities)
+        throws IllegalArgumentException {
+        if (!argumentEntities.stream().anyMatch(argument -> argument.getKey().equals("max_seconds"))
+            ||
+            !argumentEntities.stream().anyMatch(argument -> argument.getKey().equals("max_days"))) {
+            List<String> args = argumentEntities.stream()
+                .map(argument -> argument.getKey())
+                .collect(Collectors.toList());
+            String text =
+                "Cannot build the option ShiftRangeDate: Missing argument, the class minimum need [max_seconds, max_days] as parameters. Parameters given "
+                    + args;
+
+            IllegalArgumentException missingParameters = new IllegalArgumentException(text);
+            LOGGER.error(text, missingParameters);
+            throw missingParameters;
+        }
+    }
+
+    public String shift(DicomObject dcm, DicomElement dcmEl, List<ArgumentEntity> argumentEntities,
+        HMAC hmac) {
         try {
-            verifyShiftArguments(arguments);
-        } catch(IllegalArgumentException e) {
+            verifyShiftArguments(argumentEntities);
+        } catch (IllegalArgumentException e) {
             throw e;
         }
         int shiftMaxDays = -1;
         int shiftMaxSeconds = -1;
         int shiftMinDays = 0;
         int shiftMinSeconds = 0;
-        for (Argument argument: arguments) {
-            final String key = argument.getKey();
-            final String value = argument.getValue();
+        for (ArgumentEntity argumentEntity : argumentEntities) {
+            final String key = argumentEntity.getKey();
+            final String value = argumentEntity.getValue();
 
             try {
                 if (key.equals("max_seconds")) {
@@ -65,19 +85,5 @@ public class ShiftRangeDate {
         }
 
         return null;
-    }
-
-    public static void verifyShiftArguments(List<Argument> arguments) throws IllegalArgumentException {
-        if (!arguments.stream().anyMatch(argument -> argument.getKey().equals("max_seconds")) ||
-                !arguments.stream().anyMatch(argument -> argument.getKey().equals("max_days"))) {
-            List<String> args = arguments.stream()
-                    .map(argument -> argument.getKey())
-                    .collect(Collectors.toList());
-            String text = "Cannot build the option ShiftRangeDate: Missing argument, the class minimum need [max_seconds, max_days] as parameters. Parameters given " + args;
-
-            IllegalArgumentException missingParameters = new IllegalArgumentException(text);
-            LOGGER.error(text, missingParameters);
-            throw missingParameters;
-        }
     }
 }

@@ -1,4 +1,4 @@
-package org.karnak.backend.configuration;
+package org.karnak.backend.config;
 
 import javax.annotation.PostConstruct;
 import org.springframework.boot.context.properties.ConfigurationProperties;

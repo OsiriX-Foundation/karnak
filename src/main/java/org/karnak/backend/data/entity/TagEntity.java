@@ -18,8 +18,8 @@ import org.hibernate.annotations.DiscriminatorOptions;
 @Table(name = "tag")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "tag_type")
-@DiscriminatorOptions(force=true)
-public abstract class Tag {
+@DiscriminatorOptions(force = true)
+public abstract class TagEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -27,16 +27,16 @@ public abstract class Tag {
 
     @ManyToOne()
     @JoinColumn(name = "profile_element_id", nullable = false)
-    private ProfileElement profileElement;
+    private ProfileElementEntity profileElementEntity;
 
     String tagValue;
 
-    public Tag() {
+    public TagEntity() {
     }
 
-    public Tag(String tagValue, ProfileElement profileElement) {
+    public TagEntity(String tagValue, ProfileElementEntity profileElementEntity) {
         this.tagValue = tagValue;
-        this.profileElement = profileElement;
+        this.profileElementEntity = profileElementEntity;
     }
 
     public String getTagValue() {

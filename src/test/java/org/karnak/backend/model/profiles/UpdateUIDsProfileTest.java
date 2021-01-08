@@ -8,25 +8,25 @@ class UpdateUIDsProfileTest {
     @BeforeAll
     protected static void setUpBeforeClass() throws Exception {
         TagPatternProfile curves = new TagPatternProfile("", "50xxxxxx", null);
-        curves.put(Tag.CurveReferencedOverlaySequence, Action.KEEP);
+        curves.put(TagEntity.CurveReferencedOverlaySequence, Action.KEEP);
         uidProfile = new UpdateUIDsProfile("", AbstractProfileItem.Type.REPLACE_UID.getClassAlias(), curves);
-        dataset.setNull(Tag.OverlayData | (1 << 17), VR.OB);
-        dataset.setString(Tag.CurveLabel, VR.LO, "curve label");
-        dataset.newDicomSequence(Tag.CurveReferencedOverlaySequence);
-        dataset.setString(Tag.SOPInstanceUID, VR.UI, UIDUtils.randomUID());
-        dataset.setString(Tag.UID, VR.UI, UIDUtils.randomUID());
+        dataset.setNull(TagEntity.OverlayData | (1 << 17), VR.OB);
+        dataset.setString(TagEntity.CurveLabel, VR.LO, "curve label");
+        dataset.newDicomSequence(TagEntity.CurveReferencedOverlaySequence);
+        dataset.setString(TagEntity.SOPInstanceUID, VR.UI, UIDUtils.randomUID());
+        dataset.setString(TagEntity.UID, VR.UI, UIDUtils.randomUID());
     }
 
     @Test
     void getAction() {
         uidProfile.clearTagMap();
-        uidProfile.put(Tag.SOPInstanceUID, Action.UID);
-        assertEquals(Action.UID, uidProfile.getAction(dataset.get(Tag.SOPInstanceUID).orElse(null)));
-        assertEquals(null, uidProfile.getAction(dataset.get(Tag.UID).orElse(null)));
+        uidProfile.put(TagEntity.SOPInstanceUID, Action.UID);
+        assertEquals(Action.UID, uidProfile.getAction(dataset.get(TagEntity.SOPInstanceUID).orElse(null)));
+        assertEquals(null, uidProfile.getAction(dataset.get(TagEntity.UID).orElse(null)));
 
-        assertEquals(Action.KEEP, uidProfile.getAction(dataset.get(Tag.CurveReferencedOverlaySequence).orElse(null)));
-        assertEquals(Action.REMOVE, uidProfile.getAction(dataset.get(Tag.CurveLabel).orElse(null)));
-        assertEquals(null, uidProfile.getAction(dataset.get(Tag.OverlayData | (1 << 17)).orElse(null)));
+        assertEquals(Action.KEEP, uidProfile.getAction(dataset.get(TagEntity.CurveReferencedOverlaySequence).orElse(null)));
+        assertEquals(Action.REMOVE, uidProfile.getAction(dataset.get(TagEntity.CurveLabel).orElse(null)));
+        assertEquals(null, uidProfile.getAction(dataset.get(TagEntity.OverlayData | (1 << 17)).orElse(null)));
     }
 
     @Test
@@ -34,13 +34,13 @@ class UpdateUIDsProfileTest {
         uidProfile.clearTagMap();
         assertEquals(0, uidProfile.tagMap.size());
 
-        uidProfile.put(Tag.SOPInstanceUID, Action.UID);
-        uidProfile.put(Tag.UID, Action.REMOVE);
+        uidProfile.put(TagEntity.SOPInstanceUID, Action.UID);
+        uidProfile.put(TagEntity.UID, Action.REMOVE);
 
-        assertEquals(Action.REMOVE, uidProfile.remove(Tag.UID));
+        assertEquals(Action.REMOVE, uidProfile.remove(TagEntity.UID));
 
         Assertions.assertThrows(IllegalStateException.class, () -> {
-            uidProfile.put(Tag.StudyInstanceUID, Action.KEEP);
+            uidProfile.put(TagEntity.StudyInstanceUID, Action.KEEP);
         });
 
         // TODO UI options, should give the list of all UIDs and not allowed other tags

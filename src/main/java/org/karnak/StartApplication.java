@@ -2,7 +2,7 @@ package org.karnak;
 
 
 import com.vaadin.flow.spring.annotation.EnableVaadin;
-import org.karnak.backend.configuration.AppConfig;
+import org.karnak.backend.config.AppConfig;
 import org.keycloak.adapters.springsecurity.KeycloakSecurityComponents;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +17,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication(exclude = ErrorMvcAutoConfiguration.class)
 @EntityScan("org.karnak.backend.data.entity")
-@EnableJpaRepositories("org.karnak.backend.data.repository")
+@EnableJpaRepositories("org.karnak.backend.data.repo")
 @EnableVaadin(value = "org.karnak")
 @ComponentScan(basePackageClasses = KeycloakSecurityComponents.class, basePackages = "org.karnak")
 public class StartApplication implements CommandLineRunner {

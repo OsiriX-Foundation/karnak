@@ -24,7 +24,7 @@ import org.karnak.backend.data.converter.TagListToStringListConverter;
 @Entity(name = "ProfileElement")
 @Table(name = "profile_element")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class ProfileElement {
+public class ProfileElementEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -42,54 +42,60 @@ public class ProfileElement {
     @ManyToOne()
     @JoinColumn(name = "profile_id", nullable = false)
     @JsonIgnore
-    private Profile profile;
+    private ProfileEntity profileEntity;
 
-    @OneToMany(mappedBy = "profileElement", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "profileElementEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonSerialize(converter = TagListToStringListConverter.class)
-    private List<IncludedTag> includedtag = new ArrayList<>();
+    private List<IncludedTagEntity> includedTagEntities = new ArrayList<>();
 
-    @OneToMany(mappedBy = "profileElement", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "profileElementEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonSerialize(converter = TagListToStringListConverter.class)
-    private List<ExcludedTag> exceptedtags = new ArrayList<>();
+    private List<ExcludedTagEntity> excludedTagEntities = new ArrayList<>();
 
-    @OneToMany(mappedBy = "profileElement", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "profileElementEntity", cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
     @JsonSerialize(converter = ArgumentToMapConverter.class)
-    private List<Argument> arguments = new ArrayList<>();
+    private List<ArgumentEntity> argumentEntities = new ArrayList<>();
 
-    public ProfileElement() {
+    public ProfileElementEntity() {
     }
 
-    public ProfileElement(String name, String codename, String condition, String action, String option, Integer position, Profile profile) {
+    public ProfileElementEntity(String name, String codename, String condition, String action,
+        String option, Integer position, ProfileEntity profileEntity) {
         this.name = name;
         this.codename = codename;
         this.condition = condition;
         this.action = action;
         this.option = option;
         this.position = position;
-        this.profile = profile;
+        this.profileEntity = profileEntity;
     }
 
-    public ProfileElement(String name, String codename, String condition, String action, String option, List<Argument> arguments, Integer position, Profile profile) {
+    public ProfileElementEntity(String name, String codename, String condition, String action,
+        String option, List<ArgumentEntity> argumentEntities, Integer position,
+        ProfileEntity profileEntity) {
         this.name = name;
         this.codename = codename;
         this.condition = condition;
         this.action = action;
         this.option = option;
-        this.arguments = arguments;
+        this.argumentEntities = argumentEntities;
         this.position = position;
-        this.profile = profile;
+        this.profileEntity = profileEntity;
     }
 
-    public void addIncludedTag(IncludedTag includedtag){
-        this.includedtag.add(includedtag);
+    public void addIncludedTag(IncludedTagEntity includedtag) {
+        this.includedTagEntities.add(includedtag);
     }
 
-    public void addExceptedtags(ExcludedTag exceptedtags){
-        this.exceptedtags.add(exceptedtags);
+    public void addExceptedtags(ExcludedTagEntity exceptedtags) {
+        this.excludedTagEntities.add(exceptedtags);
     }
 
-    public void addArgument(Argument argument) { this.arguments.add(argument); }
+    public void addArgument(ArgumentEntity argumentEntity) {
+        this.argumentEntities
+            .add(argumentEntity);
+    }
 
     public String getName() {
         return name;
@@ -131,12 +137,12 @@ public class ProfileElement {
         this.option = option;
     }
 
-    public List<Argument> getArguments() {
-        return arguments;
+    public List<ArgumentEntity> getArgumentEntities() {
+        return argumentEntities;
     }
 
-    public void setArguments(List<Argument> arguments) {
-        this.arguments = arguments;
+    public void setArgumentEntities(List<ArgumentEntity> argumentEntities) {
+        this.argumentEntities = argumentEntities;
     }
 
     public Integer getPosition() {
@@ -147,29 +153,29 @@ public class ProfileElement {
         this.position = position;
     }
 
-    public Profile getProfile() {
-        return profile;
+    public ProfileEntity getProfileEntity() {
+        return profileEntity;
     }
 
-    public void setProfile(Profile profile) {
-        this.profile = profile;
+    public void setProfileEntity(ProfileEntity profileEntity) {
+        this.profileEntity = profileEntity;
     }
 
     @JsonProperty("tags")
-    public List<IncludedTag> getIncludedtag() {
-        return includedtag;
+    public List<IncludedTagEntity> getIncludedTagEntities() {
+        return includedTagEntities;
     }
 
-    public void setIncludedtag(List<IncludedTag> includedtag) {
-        this.includedtag = includedtag;
+    public void setIncludedTagEntities(List<IncludedTagEntity> includedTagEntities) {
+        this.includedTagEntities = includedTagEntities;
     }
 
     @JsonProperty("excludedTags")
-    public List<ExcludedTag> getExceptedtags() {
-        return exceptedtags;
+    public List<ExcludedTagEntity> getExcludedTagEntities() {
+        return excludedTagEntities;
     }
 
-    public void setExceptedtags(List<ExcludedTag> exceptedtags) {
-        this.exceptedtags = exceptedtags;
+    public void setExcludedTagEntities(List<ExcludedTagEntity> excludedTagEntities) {
+        this.excludedTagEntities = excludedTagEntities;
     }
 }

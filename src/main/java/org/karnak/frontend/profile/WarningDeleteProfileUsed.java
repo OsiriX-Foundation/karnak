@@ -1,17 +1,19 @@
-package org.karnak.frontend.profile;
+package org.karnak.frontend.profileEntity;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
-import org.karnak.backend.data.entity.Profile;
-import org.karnak.backend.data.entity.Project;
+import org.karnak.backend.data.entity.ProfileEntity;
+import org.karnak.backend.data.entity.ProjectEntity;
 
 public class WarningDeleteProfileUsed extends Dialog {
-    public void setText(Profile profile) {
+
+    public void setText(ProfileEntity profileEntity) {
         removeAll();
         Div divTitle = new Div();
-        divTitle.setText(String.format("The profile %s can't be remove", profile.getName()));
-        divTitle.getStyle().set("font-size", "large").set("font-weight", "bolder").set("padding-bottom", "10px").set("color", "red");
+        divTitle.setText(String.format("The profile %s can't be remove", profileEntity.getName()));
+        divTitle.getStyle().set("font-size", "large").set("font-weight", "bolder")
+            .set("padding-bottom", "10px").set("color", "red");
 
         Div divContent = new Div();
         Div divIntro = new Div();
@@ -19,10 +21,10 @@ public class WarningDeleteProfileUsed extends Dialog {
         divIntro.getStyle().set("padding-bottom", "10px");
 
         divContent.add(divIntro);
-        if (profile.getProject() != null) {
-            for (Project project : profile.getProject()) {
+        if (profileEntity.getProjectEntities() != null) {
+            for (ProjectEntity projectEntity : profileEntity.getProjectEntities()) {
                 Div divProject = new Div();
-                divProject.setText(String.format("Project: %s", project.getName()));
+                divProject.setText(String.format("Project: %s", projectEntity.getName()));
                 divProject.getStyle().set("padding-left", "20px").set("padding-bottom", "5px");
                 divContent.add(divProject);
             }

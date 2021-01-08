@@ -1,4 +1,4 @@
-package org.karnak.backend.configuration;
+package org.karnak.backend.config;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -6,7 +6,7 @@ import javax.annotation.PostConstruct;
 import org.karnak.backend.cache.ExternalIDCache;
 import org.karnak.backend.cache.MainzellisteCache;
 import org.karnak.backend.cache.PatientClient;
-import org.karnak.backend.data.repository.ProfilePersistence;
+import org.karnak.backend.data.repo.ProfileRepo;
 import org.karnak.backend.model.profilebody.ProfilePipeBody;
 import org.karnak.backend.model.standard.ConfidentialityProfiles;
 import org.karnak.backend.model.standard.StandardDICOM;
@@ -38,7 +38,7 @@ public class AppConfig {
     private String karnakpassword;
 
     @Autowired
-    private ProfilePersistence profilePersistence;
+    private ProfileRepo profileRepo;
 
     @PostConstruct
     public void postConstruct() {
@@ -81,8 +81,8 @@ public class AppConfig {
         this.karnakpassword = karnakpassword;
     }
 
-    public ProfilePersistence getProfilePersistence() {
-        return profilePersistence;
+    public ProfileRepo getProfilePersistence() {
+        return profileRepo;
     }
 
     @Bean("ConfidentialityProfiles")
@@ -104,7 +104,7 @@ public class AppConfig {
     @EventListener(ApplicationReadyEvent.class)
     public void setProfilesByDefault() {
         URL profileURL = Profiles.class.getResource("profileByDefault.yml");
-        if(profilePersistence.existsByNameAndBydefault("Dicom Basic Profile", true)==false){
+        if (profileRepo.existsByNameAndBydefault("Dicom Basic Profile", true) == false) {
             try (InputStream inputStream = profileURL.openStream()) {
                 final Yaml yaml = new Yaml(new Constructor(ProfilePipeBody.class));
                 final ProfilePipeBody profilePipeYml = yaml.load(inputStream);

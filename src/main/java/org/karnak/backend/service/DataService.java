@@ -3,44 +3,53 @@ package org.karnak.backend.service;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
-import org.karnak.backend.data.entity.Destination;
-import org.karnak.backend.data.entity.DicomSourceNode;
-import org.karnak.backend.data.entity.ForwardNode;
-import org.karnak.backend.data.entity.SOPClassUID;
+import org.karnak.backend.data.entity.DestinationEntity;
+import org.karnak.backend.data.entity.DicomSourceNodeEntity;
+import org.karnak.backend.data.entity.ForwardNodeEntity;
+import org.karnak.backend.data.entity.SOPClassUIDEntity;
 
 /**
  * Back-end service interface for retrieving and updating data.
  */
 public abstract class DataService implements Serializable {
-    private static final long serialVersionUID = -1402338736361739563L;
 
-    public abstract Collection<ForwardNode> getAllForwardNodes();
+  private static final long serialVersionUID = -1402338736361739563L;
 
-    public abstract ForwardNode getForwardNodeById(Long dataId);
+  public abstract Collection<ForwardNodeEntity> getAllForwardNodes();
 
-    public abstract ForwardNode updateForwardNode(ForwardNode data);
+  public abstract ForwardNodeEntity getForwardNodeById(Long dataId);
 
-    public abstract void deleteForwardNode(Long dataId);
+  public abstract ForwardNodeEntity updateForwardNode(ForwardNodeEntity data);
 
-    public abstract Collection<Destination> getAllDestinations(ForwardNode forwardNode);
+  public abstract void deleteForwardNode(Long dataId);
 
-    public abstract Destination getDestinationById(ForwardNode forwardNode, Long dataId);
+  public abstract Collection<DestinationEntity> getAllDestinations(
+      ForwardNodeEntity forwardNodeEntity);
 
-    public abstract Destination updateDestination(ForwardNode forwardNode, Destination data);
+  public abstract DestinationEntity getDestinationById(ForwardNodeEntity forwardNodeEntity,
+      Long dataId);
 
-    public abstract void deleteDestination(ForwardNode forwardNode, Destination data);
+  public abstract DestinationEntity updateDestination(ForwardNodeEntity forwardNodeEntity,
+      DestinationEntity data);
 
-    public abstract Collection<DicomSourceNode> getAllSourceNodes(ForwardNode forwardNode);
+  public abstract void deleteDestination(ForwardNodeEntity forwardNodeEntity,
+      DestinationEntity data);
 
-    public abstract DicomSourceNode getSourceNodeById(ForwardNode forwardNode, Long dataId);
+  public abstract Collection<DicomSourceNodeEntity> getAllSourceNodes(
+      ForwardNodeEntity forwardNodeEntity);
 
-    public abstract DicomSourceNode updateSourceNode(ForwardNode forwardNode, DicomSourceNode data);
+  public abstract DicomSourceNodeEntity getSourceNodeById(ForwardNodeEntity forwardNodeEntity,
+      Long dataId);
 
-    public abstract void deleteSourceNode(ForwardNode forwardNode, DicomSourceNode data);
+  public abstract DicomSourceNodeEntity updateSourceNode(ForwardNodeEntity forwardNodeEntity,
+      DicomSourceNodeEntity data);
 
-    public abstract List<SOPClassUID> getAllSOPClassUIDs();
+  public abstract void deleteSourceNode(ForwardNodeEntity forwardNodeEntity,
+      DicomSourceNodeEntity data);
 
-    public abstract SOPClassUID getSOPClassUIDByName(String name);
+  public abstract List<SOPClassUIDEntity> getAllSOPClassUIDs();
 
-    public abstract SOPClassUID getSOPClassUIDById(Long dataId);
+  public abstract SOPClassUIDEntity getSOPClassUIDByName(String name);
+
+  public abstract SOPClassUIDEntity getSOPClassUIDById(Long dataId);
 }

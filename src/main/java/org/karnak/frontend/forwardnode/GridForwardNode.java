@@ -1,28 +1,30 @@
 package org.karnak.frontend.forwardnode;
 
 import com.vaadin.flow.component.grid.Grid;
-import org.karnak.backend.data.entity.ForwardNode;
+import org.karnak.backend.data.entity.ForwardNodeEntity;
 
-public class GridForwardNode extends Grid<ForwardNode> {
+public class GridForwardNode extends Grid<ForwardNodeEntity> {
 
-    public GridForwardNode() {
-        setSizeFull();
+  public GridForwardNode() {
+    setSizeFull();
 
-        addColumn(ForwardNode::getFwdAeTitle).setHeader("Forward AETitle").setFlexGrow(20).setSortable(true);
+    addColumn(ForwardNodeEntity::getFwdAeTitle).setHeader("Forward AETitle").setFlexGrow(20)
+        .setSortable(true);
 
-        addColumn(ForwardNode::getDescription).setHeader("Description").setFlexGrow(20).setSortable(true);
-    }
+    addColumn(ForwardNodeEntity::getDescription).setHeader("Description").setFlexGrow(20)
+        .setSortable(true);
+  }
 
-    public ForwardNode getSelectedRow() {
-        return asSingleSelect().getValue();
-    }
+  public ForwardNodeEntity getSelectedRow() {
+    return asSingleSelect().getValue();
+  }
 
-    public void refresh(ForwardNode data) {
-        getDataCommunicator().refresh(data);
-    }
+  public void refresh(ForwardNodeEntity data) {
+    getDataCommunicator().refresh(data);
+  }
 
-    public void selectRow(ForwardNode row) {
-        getSelectionModel().select(row);
-    }
+  public void selectRow(ForwardNodeEntity row) {
+    getSelectionModel().select(row);
+  }
 
 }

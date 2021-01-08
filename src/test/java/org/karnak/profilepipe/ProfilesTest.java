@@ -8,10 +8,10 @@ import org.dcm4che6.data.Tag;
 import org.dcm4che6.data.VR;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.karnak.backend.data.entity.Argument;
-import org.karnak.backend.data.entity.IncludedTag;
-import org.karnak.backend.data.entity.Profile;
-import org.karnak.backend.data.entity.ProfileElement;
+import org.karnak.backend.data.entity.ArgumentEntity;
+import org.karnak.backend.data.entity.IncludedTagEntity;
+import org.karnak.backend.data.entity.ProfileElementEntity;
+import org.karnak.backend.data.entity.ProfileEntity;
 import org.karnak.backend.model.profilepipe.HMAC;
 import org.karnak.backend.model.profilepipe.HashContext;
 import org.karnak.backend.service.profilepipe.Profiles;
@@ -56,27 +56,35 @@ class ProfilesTest {
         dataset2.setString(Tag.PatientName, VR.PN, "toto");
         dataset2.setString(Tag.PatientBirthDate, VR.DA, "20200101");
         dataset2.setString(Tag.PatientSex, VR.CS, "M");
-        dataset2.setString(Tag.IssuerOfPatientID, VR.LO, "12345678910");
-        DicomElement dicomElemSeq2 = dataset2.newDicomSequence(Tag.GroupOfPatientsIdentificationSequence);
-        final DicomObject datasetSeq2 = DicomObject.newDicomObject();
-        datasetSeq2.setString(Tag.PatientID, VR.LO, "12345");
-        DicomElement dicomElemSeq22 = datasetSeq2.newDicomSequence(Tag.IssuerOfPatientIDQualifiersSequence);
-        final DicomObject datasetSeq22 = DicomObject.newDicomObject();
-        datasetSeq22.setString(Tag.UniversalEntityID, VR.UT, "UT");
-        dicomElemSeq22.addItem(datasetSeq22);
-        dicomElemSeq2.addItem(datasetSeq2);
+      dataset2.setString(Tag.IssuerOfPatientID, VR.LO, "12345678910");
+      DicomElement dicomElemSeq2 = dataset2
+          .newDicomSequence(Tag.GroupOfPatientsIdentificationSequence);
+      final DicomObject datasetSeq2 = DicomObject.newDicomObject();
+      datasetSeq2.setString(Tag.PatientID, VR.LO, "12345");
+      DicomElement dicomElemSeq22 = datasetSeq2
+          .newDicomSequence(Tag.IssuerOfPatientIDQualifiersSequence);
+      final DicomObject datasetSeq22 = DicomObject.newDicomObject();
+      datasetSeq22.setString(Tag.UniversalEntityID, VR.UT, "UT");
+      dicomElemSeq22.addItem(datasetSeq22);
+      dicomElemSeq2.addItem(datasetSeq2);
 
-        final Profile profile = new Profile("TEST", "0.9.1", "0.9.1", "DPA");
-        final ProfileElement profileElement1 = new ProfileElement("Keep tag Source Group..", "action.on.specific.tags", null, "K", null, 0, profile);
-        profileElement1.addIncludedTag(new IncludedTag("(0010,0027)", profileElement1));
-        final ProfileElement profileElement2 = new ProfileElement("Remove tag PatientID", "action.on.specific.tags", null, "X", null, 0, profile);
-        profileElement2.addIncludedTag(new IncludedTag("(0010,0020)", profileElement2));
+      final ProfileEntity profileEntity = new ProfileEntity("TEST", "0.9.1", "0.9.1", "DPA");
+      final ProfileElementEntity profileElementEntity1 = new ProfileElementEntity(
+          "Keep tag Source Group..", "action.on.specific.tags", null, "K", null, 0,
+          profileEntity);
+      profileElementEntity1
+          .addIncludedTag(new IncludedTagEntity("(0010,0027)", profileElementEntity1));
+      final ProfileElementEntity profileElementEntity2 = new ProfileElementEntity(
+          "Remove tag PatientID", "action.on.specific.tags", null, "X", null, 0,
+          profileEntity);
+      profileElementEntity2
+          .addIncludedTag(new IncludedTagEntity("(0010,0020)", profileElementEntity2));
 
-        profile.addProfilePipe(profileElement1);
-        profile.addProfilePipe(profileElement2);
-        final Profiles profiles = new Profiles(profile);
-        profiles.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
-        assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
+      profileEntity.addProfilePipe(profileElementEntity1);
+      profileEntity.addProfilePipe(profileElementEntity2);
+      final Profiles profiles = new Profiles(profileEntity);
+      profiles.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
+      assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
 
     @Test
@@ -100,31 +108,40 @@ class ProfilesTest {
         dicomElemSeq12.addItem(datasetSeq12);
         dicomElemSeq1.addItem(datasetSeq1);
 
+      DicomElement dicomElemSeq2 = dataset2
+          .newDicomSequence(Tag.GroupOfPatientsIdentificationSequence);
+      final DicomObject datasetSeq2 = DicomObject.newDicomObject();
+      datasetSeq2.setString(Tag.PatientID, VR.LO, "12345");
+      DicomElement dicomElemSeq22 = datasetSeq2
+          .newDicomSequence(Tag.IssuerOfPatientIDQualifiersSequence);
+      final DicomObject datasetSeq22 = DicomObject.newDicomObject();
+      datasetSeq22.setString(Tag.UniversalEntityID, VR.UT, "UT");
+      dicomElemSeq22.addItem(datasetSeq22);
+      dicomElemSeq2.addItem(datasetSeq2);
 
-        DicomElement dicomElemSeq2 = dataset2.newDicomSequence(Tag.GroupOfPatientsIdentificationSequence);
-        final DicomObject datasetSeq2 = DicomObject.newDicomObject();
-        datasetSeq2.setString(Tag.PatientID, VR.LO, "12345");
-        DicomElement dicomElemSeq22 = datasetSeq2.newDicomSequence(Tag.IssuerOfPatientIDQualifiersSequence);
-        final DicomObject datasetSeq22 = DicomObject.newDicomObject();
-        datasetSeq22.setString(Tag.UniversalEntityID, VR.UT, "UT");
-        dicomElemSeq22.addItem(datasetSeq22);
-        dicomElemSeq2.addItem(datasetSeq2);
+      final ProfileEntity profileEntity = new ProfileEntity("TEST", "0.9.1", "0.9.1", "DPA");
+      final ProfileElementEntity profileElementEntity1 = new ProfileElementEntity("Remove tag",
+          "action.on.specific.tags", null, "X", null, 0,
+          profileEntity);
+      profileElementEntity1
+          .addIncludedTag(new IncludedTagEntity("(0010,1010)", profileElementEntity1));
+      final ProfileElementEntity profileElementEntity2 = new ProfileElementEntity("Keep tag",
+          "action.on.specific.tags", null, "K", null, 0,
+          profileEntity);
+      profileElementEntity2
+          .addIncludedTag(new IncludedTagEntity("(0010,0027)", profileElementEntity2));
+      final ProfileElementEntity profileElementEntity3 = new ProfileElementEntity("Remove tag",
+          "action.on.specific.tags", null, "X", null, 0,
+          profileEntity);
+      profileElementEntity3
+          .addIncludedTag(new IncludedTagEntity("(xxxx,xxxx)", profileElementEntity3));
 
-
-        final Profile profile = new Profile("TEST", "0.9.1", "0.9.1", "DPA");
-        final ProfileElement profileElement1 = new ProfileElement("Remove tag", "action.on.specific.tags", null, "X", null, 0, profile);
-        profileElement1.addIncludedTag(new IncludedTag("(0010,1010)", profileElement1));
-        final ProfileElement profileElement2 = new ProfileElement("Keep tag", "action.on.specific.tags", null, "K", null, 0, profile);
-        profileElement2.addIncludedTag(new IncludedTag("(0010,0027)", profileElement2));
-        final ProfileElement profileElement3 = new ProfileElement("Remove tag", "action.on.specific.tags", null, "X", null, 0, profile);
-        profileElement3.addIncludedTag(new IncludedTag("(xxxx,xxxx)", profileElement3));
-
-        profile.addProfilePipe(profileElement1);
-        profile.addProfilePipe(profileElement2);
-        profile.addProfilePipe(profileElement3);
-        final Profiles profiles = new Profiles(profile);
-        profiles.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
-        assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
+      profileEntity.addProfilePipe(profileElementEntity1);
+      profileEntity.addProfilePipe(profileElementEntity2);
+      profileEntity.addProfilePipe(profileElementEntity3);
+      final Profiles profiles = new Profiles(profileEntity);
+      profiles.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
+      assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
 
     @Test
@@ -149,31 +166,41 @@ class ProfilesTest {
         dicomElemSeq12.addItem(datasetSeq12);
         dicomElemSeq1.addItem(datasetSeq1);
 
+      DicomElement dicomElemSeq2 = dataset2
+          .newDicomSequence(Tag.GroupOfPatientsIdentificationSequence);
+      final DicomObject datasetSeq2 = DicomObject.newDicomObject();
+      datasetSeq2.setString(Tag.PatientID, VR.LO, "12345");
+      DicomElement dicomElemSeq22 = datasetSeq2
+          .newDicomSequence(Tag.IssuerOfPatientIDQualifiersSequence);
+      final DicomObject datasetSeq22 = DicomObject.newDicomObject();
+      dicomElemSeq22.addItem(datasetSeq22);
+      dicomElemSeq2.addItem(datasetSeq2);
 
-        DicomElement dicomElemSeq2 = dataset2.newDicomSequence(Tag.GroupOfPatientsIdentificationSequence);
-        final DicomObject datasetSeq2 = DicomObject.newDicomObject();
-        datasetSeq2.setString(Tag.PatientID, VR.LO, "12345");
-        DicomElement dicomElemSeq22 = datasetSeq2.newDicomSequence(Tag.IssuerOfPatientIDQualifiersSequence);
-        final DicomObject datasetSeq22 = DicomObject.newDicomObject();
-        dicomElemSeq22.addItem(datasetSeq22);
-        dicomElemSeq2.addItem(datasetSeq2);
+      final ProfileEntity profileEntity = new ProfileEntity("TEST", "0.9.1", "0.9.1", "DPA");
+      final ProfileElementEntity profileElementEntity1 = new ProfileElementEntity("Remove tag",
+          "action.on.specific.tags", null, "X", null, 0,
+          profileEntity);
+      profileElementEntity1
+          .addIncludedTag(new IncludedTagEntity("(0010,1010)", profileElementEntity1));
+      profileElementEntity1
+          .addIncludedTag(new IncludedTagEntity("(0040,0032)", profileElementEntity1));
+      final ProfileElementEntity profileElementEntity2 = new ProfileElementEntity("Keep tag",
+          "action.on.specific.tags", null, "K", null, 0,
+          profileEntity);
+      profileElementEntity2
+          .addIncludedTag(new IncludedTagEntity("(0010,0027)", profileElementEntity2));
+      final ProfileElementEntity profileElementEntity3 = new ProfileElementEntity("Remove tag",
+          "action.on.specific.tags", null, "X", null, 0,
+          profileEntity);
+      profileElementEntity3
+          .addIncludedTag(new IncludedTagEntity("(xxxx,xxxx)", profileElementEntity3));
 
-
-        final Profile profile = new Profile("TEST", "0.9.1", "0.9.1", "DPA");
-        final ProfileElement profileElement1 = new ProfileElement("Remove tag", "action.on.specific.tags", null, "X", null, 0, profile);
-        profileElement1.addIncludedTag(new IncludedTag("(0010,1010)", profileElement1));
-        profileElement1.addIncludedTag(new IncludedTag("(0040,0032)", profileElement1));
-        final ProfileElement profileElement2 = new ProfileElement("Keep tag", "action.on.specific.tags", null, "K", null, 0, profile);
-        profileElement2.addIncludedTag(new IncludedTag("(0010,0027)", profileElement2));
-        final ProfileElement profileElement3 = new ProfileElement("Remove tag", "action.on.specific.tags", null, "X", null, 0, profile);
-        profileElement3.addIncludedTag(new IncludedTag("(xxxx,xxxx)", profileElement3));
-
-        profile.addProfilePipe(profileElement1);
-        profile.addProfilePipe(profileElement2);
-        profile.addProfilePipe(profileElement3);
-        final Profiles profiles = new Profiles(profile);
-        profiles.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
-        assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
+      profileEntity.addProfilePipe(profileElementEntity1);
+      profileEntity.addProfilePipe(profileElementEntity2);
+      profileEntity.addProfilePipe(profileElementEntity3);
+      final Profiles profiles = new Profiles(profileEntity);
+      profiles.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
+      assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
 
     @Test
@@ -205,37 +232,48 @@ class ProfilesTest {
         dataset2.setString(Tag.IssuerOfPatientID, VR.LO, "12345678910");
         dataset2.setString(Tag.PatientAge, VR.AS, "076Y");
         DicomElement dicomElemSeq2 = dataset2.newDicomSequence(Tag.CTExposureSequence);
-        final DicomObject datasetSeq2 = DicomObject.newDicomObject();
-        datasetSeq2.setDouble(Tag.ExposureTimeInms, VR.FD, 2.099d);
-        datasetSeq2.setDouble(Tag.XRayTubeCurrentInmA, VR.FD, 381d);
-        datasetSeq2.setDouble(Tag.ExposureInmAs, VR.FD, 800d);
-        datasetSeq2.setDouble(Tag.CTDIvol, VR.FD, 47d);
-        dicomElemSeq2.addItem(datasetSeq2);
+      final DicomObject datasetSeq2 = DicomObject.newDicomObject();
+      datasetSeq2.setDouble(Tag.ExposureTimeInms, VR.FD, 2.099d);
+      datasetSeq2.setDouble(Tag.XRayTubeCurrentInmA, VR.FD, 381d);
+      datasetSeq2.setDouble(Tag.ExposureInmAs, VR.FD, 800d);
+      datasetSeq2.setDouble(Tag.CTDIvol, VR.FD, 47d);
+      dicomElemSeq2.addItem(datasetSeq2);
 
-        final Profile profile = new Profile("TEST", "0.9.1", "0.9.1", "DPA");
+      final ProfileEntity profileEntity = new ProfileEntity("TEST", "0.9.1", "0.9.1", "DPA");
 
+      final ProfileElementEntity profileElementEntity1 = new ProfileElementEntity(
+          "Shift Date with argumentEntities", "action.on.dates", null, null, "shift", 0,
+          profileEntity);
+      profileElementEntity1
+          .addIncludedTag(new IncludedTagEntity("(xxxx,xxxx)", profileElementEntity1));
+      profileElementEntity1.addArgument(new ArgumentEntity("seconds", "60", profileElementEntity1));
+      profileElementEntity1.addArgument(new ArgumentEntity("days", "365", profileElementEntity1));
 
-        final ProfileElement profileElement1 = new ProfileElement("Shift Date with arguments", "action.on.dates", null, null, "shift", 0, profile);
-        profileElement1.addIncludedTag(new IncludedTag("(xxxx,xxxx)", profileElement1));
-        profileElement1.addArgument(new Argument("seconds", "60", profileElement1));
-        profileElement1.addArgument(new Argument("days", "365", profileElement1));
+      final ProfileElementEntity profileElementEntity2 = new ProfileElementEntity("Remove tag",
+          "action.on.specific.tags", null, "X", null, 0,
+          profileEntity);
+      profileElementEntity2
+          .addIncludedTag(new IncludedTagEntity("(0018,9324)", profileElementEntity2));
 
-        final ProfileElement profileElement2 = new ProfileElement("Remove tag", "action.on.specific.tags", null, "X", null, 0, profile);
-        profileElement2.addIncludedTag(new IncludedTag("(0018,9324)", profileElement2));
+      final ProfileElementEntity profileElementEntity3 = new ProfileElementEntity("Keep tag",
+          "action.on.specific.tags", null, "K", null, 0,
+          profileEntity);
+      profileElementEntity3
+          .addIncludedTag(new IncludedTagEntity("(0018,9321)", profileElementEntity3));
 
-        final ProfileElement profileElement3 = new ProfileElement("Keep tag", "action.on.specific.tags", null, "K", null, 0, profile);
-        profileElement3.addIncludedTag(new IncludedTag("(0018,9321)", profileElement3));
+      final ProfileElementEntity profileElementEntity4 = new ProfileElementEntity("Replace null",
+          "action.on.specific.tags", null, "Z", null, 0,
+          profileEntity);
+      profileElementEntity4
+          .addIncludedTag(new IncludedTagEntity("(0018,9330)", profileElementEntity2));
 
-        final ProfileElement profileElement4 = new ProfileElement("Replace null", "action.on.specific.tags", null, "Z", null, 0, profile);
-        profileElement4.addIncludedTag(new IncludedTag("(0018,9330)", profileElement2));
-
-        profile.addProfilePipe(profileElement1);
-        profile.addProfilePipe(profileElement2);
-        profile.addProfilePipe(profileElement3);
-        profile.addProfilePipe(profileElement4);
-        final Profiles profiles = new Profiles(profile);
-        profiles.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
-        assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
+      profileEntity.addProfilePipe(profileElementEntity1);
+      profileEntity.addProfilePipe(profileElementEntity2);
+      profileEntity.addProfilePipe(profileElementEntity3);
+      profileEntity.addProfilePipe(profileElementEntity4);
+      final Profiles profiles = new Profiles(profileEntity);
+      profiles.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
+      assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
 
     @Test
@@ -271,66 +309,78 @@ class ProfilesTest {
         DicomElement dicomElemSeq2 = dataset2.newDicomSequence(Tag.ReferencedImageSequence);
         final DicomObject datasetSeq2 = DicomObject.newDicomObject();
         datasetSeq2.setString(Tag.ReferencedSOPClassUID, VR.UI, "2.25.278659998382609075216063956388837522977");
-        datasetSeq2.setString(Tag.ReferencedFrameNumber, VR.UI, "2.25.278659998382609075216063956388837522977");
-        DicomElement dicomElemSeq22 = datasetSeq2.newDicomSequence(Tag.PurposeOfReferenceCodeSequence);
-        dicomElemSeq2.addItem(datasetSeq2);
-        final DicomObject datasetSeq22 = DicomObject.newDicomObject();
-        datasetSeq22.setString(Tag.CodeValue, VR.UI, "2.25.313557030369376654019214873435380124495");
-        datasetSeq22.setString(Tag.CodingSchemeDesignator, VR.UI, "2.25.313557030369376654019214873435380124495");
-        dicomElemSeq22.addItem(datasetSeq22);
+      datasetSeq2.setString(Tag.ReferencedFrameNumber, VR.UI,
+          "2.25.278659998382609075216063956388837522977");
+      DicomElement dicomElemSeq22 = datasetSeq2
+          .newDicomSequence(Tag.PurposeOfReferenceCodeSequence);
+      dicomElemSeq2.addItem(datasetSeq2);
+      final DicomObject datasetSeq22 = DicomObject.newDicomObject();
+      datasetSeq22.setString(Tag.CodeValue, VR.UI, "2.25.313557030369376654019214873435380124495");
+      datasetSeq22.setString(Tag.CodingSchemeDesignator, VR.UI,
+          "2.25.313557030369376654019214873435380124495");
+      dicomElemSeq22.addItem(datasetSeq22);
 
-        final Profile profile = new Profile("TEST", "0.9.1", "0.9.1", "DPA");
+      final ProfileEntity profileEntity = new ProfileEntity("TEST", "0.9.1", "0.9.1", "DPA");
 
-        final ProfileElement profileElement1 = new ProfileElement("UID", "action.on.specific.tags", null, "U", null, 0, profile);
-        profileElement1.addIncludedTag(new IncludedTag("(0008,1140)", profileElement1));
+      final ProfileElementEntity profileElementEntity1 = new ProfileElementEntity("UID",
+          "action.on.specific.tags", null, "U", null, 0,
+          profileEntity);
+      profileElementEntity1
+          .addIncludedTag(new IncludedTagEntity("(0008,1140)", profileElementEntity1));
 
-        profile.addProfilePipe(profileElement1);
-        final Profiles profiles = new Profiles(profile);
-        profiles.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
-        assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
+      profileEntity.addProfilePipe(profileElementEntity1);
+      final Profiles profiles = new Profiles(profileEntity);
+      profiles.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
+      assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
 
     @Test
     void XactionTagsProfile(){
-        final DicomObject dataset1 = DicomObject.newDicomObject();
-        final DicomObject dataset2 = DicomObject.newDicomObject();
+      final DicomObject dataset1 = DicomObject.newDicomObject();
+      final DicomObject dataset2 = DicomObject.newDicomObject();
 
-        dataset1.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
-        dataset1.setString(Tag.StudyInstanceUID, VR.UI, "12345");
-        dataset1.setString(Tag.PatientAge, VR.AS, "075Y");
+      dataset1.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
+      dataset1.setString(Tag.StudyInstanceUID, VR.UI, "12345");
+      dataset1.setString(Tag.PatientAge, VR.AS, "075Y");
 
-        dataset2.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
-        dataset2.setString(Tag.StudyInstanceUID, VR.UI, "12345");
+      dataset2.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
+      dataset2.setString(Tag.StudyInstanceUID, VR.UI, "12345");
 
-        final Profile profile = new Profile("TEST", "0.9.1", "0.9.1", "DPA");
-        final ProfileElement profileElement = new ProfileElement("Remove tag", "action.on.specific.tags", null, "X", null, 0, profile);
-        profileElement.addIncludedTag(new IncludedTag("(0010,1010)", profileElement));
-        profile.addProfilePipe(profileElement);
-        final Profiles profiles = new Profiles(profile);
-        profiles.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
-        assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
+      final ProfileEntity profileEntity = new ProfileEntity("TEST", "0.9.1", "0.9.1", "DPA");
+      final ProfileElementEntity profileElementEntity = new ProfileElementEntity("Remove tag",
+          "action.on.specific.tags", null, "X", null, 0,
+          profileEntity);
+      profileElementEntity
+          .addIncludedTag(new IncludedTagEntity("(0010,1010)", profileElementEntity));
+      profileEntity.addProfilePipe(profileElementEntity);
+      final Profiles profiles = new Profiles(profileEntity);
+      profiles.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
+      assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
 
     @Test
     void ZactionTagsProfile(){
         final DicomObject dataset1 = DicomObject.newDicomObject();
-        final DicomObject dataset2 = DicomObject.newDicomObject();
+      final DicomObject dataset2 = DicomObject.newDicomObject();
 
-        dataset1.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
-        dataset1.setString(Tag.StudyInstanceUID, VR.UI, "12345");
-        dataset1.setString(Tag.PatientAge, VR.AS, "075Y");
+      dataset1.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
+      dataset1.setString(Tag.StudyInstanceUID, VR.UI, "12345");
+      dataset1.setString(Tag.PatientAge, VR.AS, "075Y");
 
-        dataset2.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
-        dataset2.setString(Tag.StudyInstanceUID, VR.UI, "12345");
-        dataset2.setNull(Tag.PatientAge, VR.AS);
+      dataset2.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
+      dataset2.setString(Tag.StudyInstanceUID, VR.UI, "12345");
+      dataset2.setNull(Tag.PatientAge, VR.AS);
 
-        Profile profile = new Profile("TEST", "0.9.1", "0.9.1", "DPA");
-        ProfileElement profileElement = new ProfileElement("Replace tag by null", "action.on.specific.tags", null, "Z", null, 0, profile);
-        profileElement.addIncludedTag(new IncludedTag("(0010,1010)", profileElement));
-        profile.addProfilePipe(profileElement);
-        final Profiles profiles = new Profiles(profile);
-        profiles.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
-        assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
+      ProfileEntity profileEntity = new ProfileEntity("TEST", "0.9.1", "0.9.1", "DPA");
+      ProfileElementEntity profileElementEntity = new ProfileElementEntity("Replace tag by null",
+          "action.on.specific.tags", null, "Z", null, 0,
+          profileEntity);
+      profileElementEntity
+          .addIncludedTag(new IncludedTagEntity("(0010,1010)", profileElementEntity));
+      profileEntity.addProfilePipe(profileElementEntity);
+      final Profiles profiles = new Profiles(profileEntity);
+      profiles.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
+      assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
 
     @Test
@@ -343,25 +393,28 @@ class ProfilesTest {
         dataset1.setString(Tag.StudyInstanceUID, VR.UI, "12345");
         dataset1.setString(Tag.PatientAge, VR.AS, "069Y");
         dataset1.setString(Tag.PatientBirthDate, VR.DA, "20080822");
-        dataset1.setString(Tag.AcquisitionDateTime, VR.DT, "20080729131503");
-        dataset1.setString(Tag.InstanceCreationTime, VR.TM, "131735.000000");
+      dataset1.setString(Tag.AcquisitionDateTime, VR.DT, "20080729131503");
+      dataset1.setString(Tag.InstanceCreationTime, VR.TM, "131735.000000");
 
-        dataset2.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
-        dataset2.setString(Tag.StudyInstanceUID, VR.UI, "12345");
-        dataset2.setString(Tag.PatientAge, VR.AS, "070Y");
-        dataset2.setString(Tag.PatientBirthDate, VR.DA, "20070823");
-        dataset2.setString(Tag.AcquisitionDateTime, VR.DT, "20070730131403.000000");
-        dataset2.setString(Tag.InstanceCreationTime, VR.TM, "131635.000000");
+      dataset2.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
+      dataset2.setString(Tag.StudyInstanceUID, VR.UI, "12345");
+      dataset2.setString(Tag.PatientAge, VR.AS, "070Y");
+      dataset2.setString(Tag.PatientBirthDate, VR.DA, "20070823");
+      dataset2.setString(Tag.AcquisitionDateTime, VR.DT, "20070730131403.000000");
+      dataset2.setString(Tag.InstanceCreationTime, VR.TM, "131635.000000");
 
-        Profile profile = new Profile("TEST", "0.9.1", "0.9.1", "DPA");
-        ProfileElement profileElement = new ProfileElement("Shift Date with arguments", "action.on.dates", null, null, "shift", 0, profile);
-        profileElement.addIncludedTag(new IncludedTag("(xxxx,xxxx)", profileElement));
-        profileElement.addArgument(new Argument("seconds", "60", profileElement));
-        profileElement.addArgument(new Argument("days", "365", profileElement));
-        profile.addProfilePipe(profileElement);
-        final Profiles profiles = new Profiles(profile);
-        profiles.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
-        assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
+      ProfileEntity profileEntity = new ProfileEntity("TEST", "0.9.1", "0.9.1", "DPA");
+      ProfileElementEntity profileElementEntity = new ProfileElementEntity(
+          "Shift Date with argumentEntities", "action.on.dates", null, null, "shift", 0,
+          profileEntity);
+      profileElementEntity
+          .addIncludedTag(new IncludedTagEntity("(xxxx,xxxx)", profileElementEntity));
+      profileElementEntity.addArgument(new ArgumentEntity("seconds", "60", profileElementEntity));
+      profileElementEntity.addArgument(new ArgumentEntity("days", "365", profileElementEntity));
+      profileEntity.addProfilePipe(profileElementEntity);
+      final Profiles profiles = new Profiles(profileEntity);
+      profiles.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
+      assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
 
     @Test
@@ -379,111 +432,133 @@ class ProfilesTest {
         dataset1.setString(Tag.StudyInstanceUID, VR.UI, "12345");
         dataset1.setString(Tag.PatientAge, VR.AS, "069Y");
         dataset1.setString(Tag.PatientBirthDate, VR.DA, "20080822");
-        dataset1.setString(Tag.AcquisitionDateTime, VR.DT, "20080729131503");
-        dataset1.setString(Tag.InstanceCreationTime, VR.TM, "131735.000000");
+      dataset1.setString(Tag.AcquisitionDateTime, VR.DT, "20080729131503");
+      dataset1.setString(Tag.InstanceCreationTime, VR.TM, "131735.000000");
 
-        dataset2.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
-        dataset2.setString(Tag.StudyInstanceUID, VR.UI, "12345");
-        dataset2.setString(Tag.PatientAge, VR.AS, "069Y");
-        dataset2.setString(Tag.PatientBirthDate, VR.DA, "20080626");
-        dataset2.setString(Tag.AcquisitionDateTime, VR.DT, "20080602131454.000000");
-        dataset2.setString(Tag.InstanceCreationTime, VR.TM, "131726.000000");
+      dataset2.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
+      dataset2.setString(Tag.StudyInstanceUID, VR.UI, "12345");
+      dataset2.setString(Tag.PatientAge, VR.AS, "069Y");
+      dataset2.setString(Tag.PatientBirthDate, VR.DA, "20080626");
+      dataset2.setString(Tag.AcquisitionDateTime, VR.DT, "20080602131454.000000");
+      dataset2.setString(Tag.InstanceCreationTime, VR.TM, "131726.000000");
 
-        Profile profile = new Profile("TEST", "0.9.1", "0.9.1", "DPA");
-        ProfileElement profileElement = new ProfileElement("Shift Date with arguments", "action.on.dates", null, null, "shift_range", 0, profile);
-        profileElement.addIncludedTag(new IncludedTag("(xxxx,xxxx)", profileElement));
-        profileElement.addArgument(new Argument("max_seconds", "60", profileElement));
-        profileElement.addArgument(new Argument("min_days", "50", profileElement));
-        profileElement.addArgument(new Argument("max_days", "100", profileElement));
+      ProfileEntity profileEntity = new ProfileEntity("TEST", "0.9.1", "0.9.1", "DPA");
+      ProfileElementEntity profileElementEntity = new ProfileElementEntity(
+          "Shift Date with argumentEntities", "action.on.dates", null, null, "shift_range", 0,
+          profileEntity);
+      profileElementEntity
+          .addIncludedTag(new IncludedTagEntity("(xxxx,xxxx)", profileElementEntity));
+      profileElementEntity
+          .addArgument(new ArgumentEntity("max_seconds", "60", profileElementEntity));
+      profileElementEntity.addArgument(new ArgumentEntity("min_days", "50", profileElementEntity));
+      profileElementEntity.addArgument(new ArgumentEntity("max_days", "100", profileElementEntity));
 
-        profile.addProfilePipe(profileElement);
-        final Profiles profiles = new Profiles(profile);
-        profiles.applyAction(dataset1, dataset1, hmac, null, null, null);
-        assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
+      profileEntity.addProfilePipe(profileElementEntity);
+      final Profiles profiles = new Profiles(profileEntity);
+      profiles.applyAction(dataset1, dataset1, hmac, null, null, null);
+      assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
 
     @Test
     void XZactionTagsProfile(){
-        final DicomObject dataset1 = DicomObject.newDicomObject();
-        final DicomObject dataset2 = DicomObject.newDicomObject();
+      final DicomObject dataset1 = DicomObject.newDicomObject();
+      final DicomObject dataset2 = DicomObject.newDicomObject();
 
-        dataset1.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
-        dataset1.setString(Tag.StudyInstanceUID, VR.UI, "12345");
-        dataset1.setString(Tag.PatientAge, VR.AS, "075Y");
+      dataset1.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
+      dataset1.setString(Tag.StudyInstanceUID, VR.UI, "12345");
+      dataset1.setString(Tag.PatientAge, VR.AS, "075Y");
 
-        dataset2.setNull(Tag.PatientName, VR.PN);
-        dataset2.setNull(Tag.StudyInstanceUID, VR.UI);
+      dataset2.setNull(Tag.PatientName, VR.PN);
+      dataset2.setNull(Tag.StudyInstanceUID, VR.UI);
 
-        final Profile profile = new Profile("TEST", "0.9.1", "0.9.1", "DPA");
-        final ProfileElement profileElement = new ProfileElement("Remove tag", "action.on.specific.tags", null, "X", null, 0, profile);
-        profileElement.addIncludedTag(new IncludedTag("(0010,1010)", profileElement));
-        profile.addProfilePipe(profileElement);
-        final ProfileElement profileElement2 = new ProfileElement("Replace by null", "action.on.specific.tags", null, "Z", null, 0, profile);
-        profileElement2.addIncludedTag(new IncludedTag("(xxxx,xxxx)", profileElement));
-        profile.addProfilePipe(profileElement2);
-        final Profiles profiles = new Profiles(profile);
-        profiles.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
-        assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
+      final ProfileEntity profileEntity = new ProfileEntity("TEST", "0.9.1", "0.9.1", "DPA");
+      final ProfileElementEntity profileElementEntity = new ProfileElementEntity("Remove tag",
+          "action.on.specific.tags", null, "X", null, 0,
+          profileEntity);
+      profileElementEntity
+          .addIncludedTag(new IncludedTagEntity("(0010,1010)", profileElementEntity));
+      profileEntity.addProfilePipe(profileElementEntity);
+      final ProfileElementEntity profileElementEntity2 = new ProfileElementEntity("Replace by null",
+          "action.on.specific.tags", null, "Z", null, 0,
+          profileEntity);
+      profileElementEntity2
+          .addIncludedTag(new IncludedTagEntity("(xxxx,xxxx)", profileElementEntity));
+      profileEntity.addProfilePipe(profileElementEntity2);
+      final Profiles profiles = new Profiles(profileEntity);
+      profiles.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
+      assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
 
     @Test
-    void KprivateTagsAndXRestProfile(){
-        final DicomObject dataset1 = DicomObject.newDicomObject();
-        final DicomObject dataset2 = DicomObject.newDicomObject();
+    void KprivateTagsAndXRestProfile() {
+      final DicomObject dataset1 = DicomObject.newDicomObject();
+      final DicomObject dataset2 = DicomObject.newDicomObject();
 
-        dataset1.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
-        dataset1.setString(Tag.StudyInstanceUID, VR.UI, "12345");
-        dataset1.setString(Tag.PatientAge, VR.AS, "069Y");
-        dataset1.setString(Tag.PatientBirthDate, VR.DA, "20080822");
-        dataset1.setString(Tag.AcquisitionDateTime, VR.DT, "20080729131503");
-        dataset1.setString(Tag.InstanceCreationTime, VR.TM, "131735.000000");
-        dataset1.setString(0x70531200, VR.LO, "Private Tag");
-        dataset1.setString(0x70534200, VR.LO, "Private Tag");
-        dataset1.setString(0x70531209, VR.LO, "Private Tag");
-        dataset1.setString(0x70534209, VR.LO, "Private Tag");
-        dataset1.setString(0x70534205, VR.LO, "Private Tag"); //it's a private tag but it's not in scope
+      dataset1.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
+      dataset1.setString(Tag.StudyInstanceUID, VR.UI, "12345");
+      dataset1.setString(Tag.PatientAge, VR.AS, "069Y");
+      dataset1.setString(Tag.PatientBirthDate, VR.DA, "20080822");
+      dataset1.setString(Tag.AcquisitionDateTime, VR.DT, "20080729131503");
+      dataset1.setString(Tag.InstanceCreationTime, VR.TM, "131735.000000");
+      dataset1.setString(0x70531200, VR.LO, "Private TagEntity");
+      dataset1.setString(0x70534200, VR.LO, "Private TagEntity");
+      dataset1.setString(0x70531209, VR.LO, "Private TagEntity");
+      dataset1.setString(0x70534209, VR.LO, "Private TagEntity");
+      dataset1.setString(0x70534205, VR.LO,
+          "Private TagEntity"); //it's a private tag but it's not in scope
 
-        dataset2.setString(0x70531200, VR.LO, "Private Tag");
-        dataset2.setString(0x70534200, VR.LO, "Private Tag");
-        dataset2.setString(0x70531209, VR.LO, "Private Tag");
-        dataset2.setString(0x70534209, VR.LO, "Private Tag");
+      dataset2.setString(0x70531200, VR.LO, "Private TagEntity");
+      dataset2.setString(0x70534200, VR.LO, "Private TagEntity");
+      dataset2.setString(0x70531209, VR.LO, "Private TagEntity");
+      dataset2.setString(0x70534209, VR.LO, "Private TagEntity");
 
-        final Profile profile = new Profile("TEST", "0.9.1", "0.9.1", "DPA");
-        final ProfileElement profileElement = new ProfileElement("Remove tag", "action.on.privatetags", null, "K", null, 0, profile);
-        profileElement.addIncludedTag(new IncludedTag("(7053,xx00)", profileElement));
-        profileElement.addIncludedTag(new IncludedTag("(7053,xx09)", profileElement));
-        profile.addProfilePipe(profileElement);
-        final ProfileElement profileElement2 = new ProfileElement("Replace by null", "action.on.specific.tags", null, "X", null, 0, profile);
-        profileElement2.addIncludedTag(new IncludedTag("(xxxx,xxxx)", profileElement));
-        profile.addProfilePipe(profileElement2);
-        final Profiles profiles = new Profiles(profile);
-        profiles.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
-        assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
+      final ProfileEntity profileEntity = new ProfileEntity("TEST", "0.9.1", "0.9.1", "DPA");
+      final ProfileElementEntity profileElementEntity = new ProfileElementEntity("Remove tag",
+          "action.on.privatetags", null, "K", null, 0,
+          profileEntity);
+      profileElementEntity
+          .addIncludedTag(new IncludedTagEntity("(7053,xx00)", profileElementEntity));
+      profileElementEntity
+          .addIncludedTag(new IncludedTagEntity("(7053,xx09)", profileElementEntity));
+      profileEntity.addProfilePipe(profileElementEntity);
+      final ProfileElementEntity profileElementEntity2 = new ProfileElementEntity("Replace by null",
+          "action.on.specific.tags", null, "X", null, 0,
+          profileEntity);
+      profileElementEntity2
+          .addIncludedTag(new IncludedTagEntity("(xxxx,xxxx)", profileElementEntity));
+      profileEntity.addProfilePipe(profileElementEntity2);
+      final Profiles profiles = new Profiles(profileEntity);
+      profiles.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
+      assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
 
     @Test
     void expressionProfile() {
 
         final DicomObject dataset1 = DicomObject.newDicomObject();
-        final DicomObject dataset2 = DicomObject.newDicomObject();
+      final DicomObject dataset2 = DicomObject.newDicomObject();
 
-        dataset1.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
-        dataset1.setString(Tag.StudyInstanceUID, VR.UI, "12345");
-        dataset1.setString(Tag.PatientAge, VR.AS, "075Y");
+      dataset1.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
+      dataset1.setString(Tag.StudyInstanceUID, VR.UI, "12345");
+      dataset1.setString(Tag.PatientAge, VR.AS, "075Y");
 
-        dataset2.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
-        dataset2.setString(Tag.StudyInstanceUID, VR.UI, "12345");
+      dataset2.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
+      dataset2.setString(Tag.StudyInstanceUID, VR.UI, "12345");
 
+      ProfileEntity profileEntity = new ProfileEntity("TEST", "0.9.1", "0.9.1", "DPA");
+      ProfileElementEntity profileElementEntity = new ProfileElementEntity("Expr",
+          "expression.on.tags", null, null, null, 0,
+          profileEntity);
+      profileElementEntity
+          .addArgument(new ArgumentEntity("expr", "stringValue == '075Y'? Remove() : Keep()",
+              profileElementEntity));
+      profileElementEntity
+          .addIncludedTag(new IncludedTagEntity("(xxxx,xxxx)", profileElementEntity));
 
-        Profile profile = new Profile("TEST", "0.9.1", "0.9.1", "DPA");
-        ProfileElement profileElement = new ProfileElement("Expr", "expression.on.tags", null, null, null, 0, profile);
-        profileElement.addArgument(new Argument("expr", "stringValue == '075Y'? Remove() : Keep()", profileElement));
-        profileElement.addIncludedTag(new IncludedTag("(xxxx,xxxx)", profileElement));
-
-        profile.addProfilePipe(profileElement);
-        final Profiles profiles = new Profiles(profile);
-        profiles.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
-        assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
+      profileEntity.addProfilePipe(profileElementEntity);
+      final Profiles profiles = new Profiles(profileEntity);
+      profiles.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
+      assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
     }
 
     /*
@@ -497,9 +572,9 @@ class ProfilesTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"tag == (00x0,0020) and tag == #Tag.PatientID", "tag == 001xxx20 or #Tag.PatientName",
+    @ValueSource(strings = {"tag == (00x0,0020) and tag == #TagEntity.PatientID", "tag == 001xxx20 or #TagEntity.PatientName",
             "tag <= 2096928 and tag >= 1048608", "tag <= 001FFF20 and tag >= 00100020", "tag < 1048609",
-            "tag == (00x0,0020) and tag == #Tag.PatientID and vr == #VR.AE"})
+            "tag == (00x0,0020) and tag == #TagEntity.PatientID and vr == #VR.AE"})
     void getResultConditionTrue2(String input){
         final ExprDCMElem exprDCMElem2 = new ExprDCMElem(TagUtils.intFromHexString("00100020"), VR.AE, "AE_TITLE"); //tag decimal = 1048608
         assertTrue((Boolean) ExpressionResult.get(input, exprDCMElem2, Boolean.class)); // generate an exception
@@ -522,7 +597,7 @@ class ProfilesTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"tag == (00x0,0020) and tag == #Tag.PatientName", "tag == (0010,0010) or tag == #Tag.PatientName", "tag < 1048608" })
+    @ValueSource(strings = {"tag == (00x0,0020) and tag == #TagEntity.PatientName", "tag == (0010,0010) or tag == #TagEntity.PatientName", "tag < 1048608" })
     void getResultConditionFalse2(String input){
         final ExprDCMElem exprDCMElem2 = new ExprDCMElem(TagUtils.intFromHexString("00100020"), VR.AE, "AE_TITLE"); //tag decimal = 1048608
         assertFalse((Boolean) ExpressionResult.get(input, exprDCMElem2, Boolean.class)); // generate an exception

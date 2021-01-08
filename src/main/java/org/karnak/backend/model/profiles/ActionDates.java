@@ -3,9 +3,9 @@ package org.karnak.backend.model.profiles;
 import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.VR;
-import org.karnak.backend.data.entity.ExcludedTag;
-import org.karnak.backend.data.entity.IncludedTag;
-import org.karnak.backend.data.entity.ProfileElement;
+import org.karnak.backend.data.entity.ExcludedTagEntity;
+import org.karnak.backend.data.entity.IncludedTagEntity;
+import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.model.action.ActionItem;
 import org.karnak.backend.model.action.Replace;
 import org.karnak.backend.model.expression.ExprConditionDestination;
@@ -24,8 +24,8 @@ public class ActionDates extends AbstractProfileItem {
   private final ActionItem actionByDefault;
   private final ShiftRangeDate shiftRangeDate;
 
-  public ActionDates(ProfileElement profileElement) throws Exception {
-    super(profileElement);
+  public ActionDates(ProfileElementEntity profileElementEntity) throws Exception {
+    super(profileElementEntity);
     shiftRangeDate = new ShiftRangeDate();
     tagsAction = new TagActionMap();
     exceptedTagsAction = new TagActionMap();
@@ -34,18 +34,18 @@ public class ActionDates extends AbstractProfileItem {
     setActionHashMap();
   }
 
-    private void setActionHashMap() throws Exception {
-        if (tags != null && tags.size() > 0) {
-            for (IncludedTag tag : tags) {
-                tagsAction.put(tag.getTagValue(), actionByDefault);
-            }
-        }
-        if (excludedTags != null && excludedTags.size() > 0) {
-            for (ExcludedTag tag : excludedTags) {
-                exceptedTagsAction.put(tag.getTagValue(), actionByDefault);
-            }
-        }
+  private void setActionHashMap() throws Exception {
+    if (tagEntities != null && tagEntities.size() > 0) {
+      for (IncludedTagEntity tag : tagEntities) {
+        tagsAction.put(tag.getTagValue(), actionByDefault);
+      }
     }
+    if (excludedTagEntities != null && excludedTagEntities.size() > 0) {
+      for (ExcludedTagEntity tag : excludedTagEntities) {
+        exceptedTagsAction.put(tag.getTagValue(), actionByDefault);
+      }
+    }
+  }
 
     @Override
     public void profileValidation() throws Exception {
@@ -54,10 +54,12 @@ public class ActionDates extends AbstractProfileItem {
                 throw new Exception("Cannot build the profile " + codeName + " : An option must be given. Option available: [shift, shift_range]");
             }
             switch (option) {
-                case "shift" -> ShiftDate.verifyShiftArguments(arguments);
-                case "shift_range" -> ShiftRangeDate.verifyShiftArguments(arguments);
-                case "date_format" -> DateFormat.verifyPatternArguments(arguments);
-                default -> throw new Exception("Cannot build the profile " + codeName + " with the option given " + option + " : Option available (shift, shift_range)");
+              case "shift" -> ShiftDate.verifyShiftArguments(argumentEntities);
+              case "shift_range" -> ShiftRangeDate.verifyShiftArguments(argumentEntities);
+              case "date_format" -> DateFormat.verifyPatternArguments(argumentEntities);
+              default -> throw new Exception(
+                  "Cannot build the profile " + codeName + " with the option given " + option
+                      + " : Option available (shift, shift_range)");
             }
         } catch (Exception e) {
             throw e;
@@ -94,10 +96,10 @@ public class ActionDates extends AbstractProfileItem {
 
     private String applyOption(DicomObject dcmCopy, DicomElement dcmElem, HMAC hmac) {
         return switch (option) {
-            case "shift" -> ShiftDate.shift(dcmCopy, dcmElem, arguments);
-            case "shift_range" -> shiftRangeDate.shift(dcmCopy, dcmElem, arguments, hmac);
-            case "date_format" -> DateFormat.format(dcmCopy, dcmElem, arguments);
-            default -> null;
+          case "shift" -> ShiftDate.shift(dcmCopy, dcmElem, argumentEntities);
+          case "shift_range" -> shiftRangeDate.shift(dcmCopy, dcmElem, argumentEntities, hmac);
+          case "date_format" -> DateFormat.format(dcmCopy, dcmElem, argumentEntities);
+          default -> null;
         };
     }
 }

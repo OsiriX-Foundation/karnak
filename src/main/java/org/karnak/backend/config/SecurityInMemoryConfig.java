@@ -1,4 +1,4 @@
-package org.karnak.backend.configuration;
+package org.karnak.backend.config;
 
 import org.karnak.backend.cache.RequestCache;
 import org.karnak.backend.enums.SecurityRole;
@@ -17,17 +17,17 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @EnableWebSecurity
 @Configuration
 @Conditional(value = DefaultIdpLoadCondition.class)
-public class SecurityInMemoryConfiguration extends WebSecurityConfigurerAdapter {
+public class SecurityInMemoryConfig extends WebSecurityConfigurerAdapter {
 
-    private static final String LOGIN_PROCESSING_URL = "/login";
-    private static final String LOGIN_FAILURE_URL = "/login?error";
-    private static final String LOGIN_URL = "/login";
-    private static final String LOGOUT_SUCCESS_URL = "/login";
+  private static final String LOGIN_PROCESSING_URL = "/login";
+  private static final String LOGIN_FAILURE_URL = "/login?error";
+  private static final String LOGIN_URL = "/login";
+  private static final String LOGOUT_SUCCESS_URL = "/login";
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        // Disables cross-site request forgery (CSRF) protection, as Vaadin already has CSRF protection
-        http.csrf()
+  @Override
+  protected void configure(HttpSecurity http) throws Exception {
+    // Disables cross-site request forgery (CSRF) protection, as Vaadin already has CSRF protection
+    http.csrf()
             .disable()
             // Uses RequestCache to track unauthorized requests so that users are redirected
             // appropriately after login

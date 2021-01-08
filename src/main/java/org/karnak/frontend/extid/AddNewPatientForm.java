@@ -16,7 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.karnak.backend.cache.CachedPatient;
 import org.karnak.backend.cache.PatientClient;
 import org.karnak.backend.cache.PseudonymPatient;
-import org.karnak.backend.configuration.AppConfig;
+import org.karnak.backend.config.AppConfig;
 import org.karnak.backend.util.PatientClientUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

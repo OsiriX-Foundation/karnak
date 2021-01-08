@@ -6,7 +6,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
-import org.karnak.backend.data.entity.ForwardNode;
+import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.service.DataService;
 import org.karnak.backend.service.SourceNodeDataProvider;
 import org.karnak.frontend.util.UIS;
@@ -53,9 +53,9 @@ public class SourceNodesView extends VerticalLayout {
         newSourceNode.setIcon(VaadinIcon.PLUS_CIRCLE.create());
     }
 
-    protected void setForwardNode(ForwardNode forwardNode) {
-        setEnabled(forwardNode != null);
-        sourceNodeDataProvider.setForwardNode(forwardNode);
+    protected void setForwardNode(ForwardNodeEntity forwardNodeEntity) {
+        setEnabled(forwardNodeEntity != null);
+        sourceNodeDataProvider.setForwardNode(forwardNodeEntity);
         gridSourceNode.setDataProvider(sourceNodeDataProvider);
     }
 

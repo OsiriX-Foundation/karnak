@@ -3,7 +3,7 @@ package org.karnak.backend.model.profiles;
 import java.util.List;
 import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
-import org.karnak.backend.data.entity.Argument;
+import org.karnak.backend.data.entity.ArgumentEntity;
 import org.karnak.backend.model.action.ActionItem;
 import org.karnak.backend.model.profilepipe.HMAC;
 
@@ -24,7 +24,7 @@ public interface ProfileItem {
 
     String getOption();
 
-    List<Argument> getArguments();
+  List<ArgumentEntity> getArguments();
 
     Integer getPosition();
 

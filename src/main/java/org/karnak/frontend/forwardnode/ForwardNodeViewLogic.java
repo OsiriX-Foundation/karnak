@@ -1,7 +1,7 @@
 package org.karnak.frontend.forwardnode;
 
 import com.vaadin.flow.component.UI;
-import org.karnak.backend.data.entity.ForwardNode;
+import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.service.ForwardNodeAPI;
 
 public class ForwardNodeViewLogic {
@@ -37,7 +37,7 @@ public class ForwardNodeViewLogic {
             // Ensure this is selected even if coming directly here from login
             try {
                 Long dataId = Long.valueOf(dataIdStr);
-                ForwardNode data = findForwardNode(dataId);
+                ForwardNodeEntity data = findForwardNode(dataId);
                 gatewayView.selectRow(data);
             } catch (NumberFormatException e) {
             }
@@ -47,7 +47,7 @@ public class ForwardNodeViewLogic {
         */
     }
 
-    public void editForwardNode(ForwardNode data) {
+    public void editForwardNode(ForwardNodeEntity data) {
         if (data == null) {
             setFragmentParameter("");
         } else {
@@ -60,7 +60,7 @@ public class ForwardNodeViewLogic {
     }
 
 
-    public void saveForwardNode(ForwardNode data) {
+    public void saveForwardNode(ForwardNodeEntity data) {
         /*
         boolean newData = data.isNewData();
         gatewayView.clearSelection();
@@ -72,7 +72,7 @@ public class ForwardNodeViewLogic {
          */
     }
 
-    public void deleteForwardNode(ForwardNode data) {
+    public void deleteForwardNode(ForwardNodeEntity data) {
         /*
         gatewayView.clearSelection();
         gatewayView.removeForwardNode(data);

@@ -5,9 +5,9 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
-import org.karnak.backend.data.entity.Destination;
-import org.karnak.backend.data.entity.DicomSourceNode;
-import org.karnak.backend.data.entity.ForwardNode;
+import org.karnak.backend.data.entity.DestinationEntity;
+import org.karnak.backend.data.entity.DicomSourceNodeEntity;
+import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.enums.DestinationType;
 import org.karnak.backend.service.DestinationDataProvider;
 import org.karnak.backend.service.ForwardNodeAPI;
@@ -20,8 +20,8 @@ public class LayoutEditForwardNode extends VerticalLayout {
     private final ForwardNodeViewLogic forwardNodeViewLogic;
     private final ViewLogic viewLogic;
     private final ForwardNodeAPI forwardNodeAPI;
-    public ForwardNode currentForwardNode;
-    private final Binder<ForwardNode> binderForwardNode;
+    private final Binder<ForwardNodeEntity> binderForwardNode;
+    public ForwardNodeEntity currentForwardNodeEntity;
     DestinationDataProvider destinationDataProvider;
     SourceNodeDataProvider sourceNodeDataProvider;
 
@@ -40,8 +40,8 @@ public class LayoutEditForwardNode extends VerticalLayout {
         this.forwardNodeViewLogic = forwardNodeViewLogic;
         this.viewLogic = new ViewLogic(this);
         this.forwardNodeAPI = forwardNodeAPI;
-        this.currentForwardNode = null;
-        binderForwardNode = new BeanValidationBinder<>(ForwardNode.class);
+        this.currentForwardNodeEntity = null;
+        binderForwardNode = new BeanValidationBinder<>(ForwardNodeEntity.class);
 
         setSizeFull();
         editAETitleDescription = new EditAETitleDescription(binderForwardNode);
@@ -79,24 +79,24 @@ public class LayoutEditForwardNode extends VerticalLayout {
     public void setEditView() {
         removeAll();
         add(UIS.setWidthFull(editAETitleDescription),
-                UIS.setWidthFull(tabSourcesDestination),
-                UIS.setWidthFull(layoutDestinationsSources),
-                UIS.setWidthFull(buttonForwardNodeSaveDeleteCancel));
+            UIS.setWidthFull(tabSourcesDestination),
+            UIS.setWidthFull(layoutDestinationsSources),
+            UIS.setWidthFull(buttonForwardNodeSaveDeleteCancel));
     }
 
-    public void load(ForwardNode forwardNode) {
-        currentForwardNode = forwardNode;
-        editAETitleDescription.setForwardNode(forwardNode);
+    public void load(ForwardNodeEntity forwardNodeEntity) {
+        currentForwardNodeEntity = forwardNodeEntity;
+        editAETitleDescription.setForwardNode(forwardNodeEntity);
 
         viewLogic.setApplicationEventPublisher(forwardNodeAPI.getApplicationEventPublisher());
-        destinationsView.setForwardNode(forwardNode);
-        destinationDataProvider.setForwardNode(forwardNode);
+        destinationsView.setForwardNode(forwardNodeEntity);
+        destinationDataProvider.setForwardNode(forwardNodeEntity);
 
-        sourceNodesView.setForwardNode(forwardNode);
-        sourceNodeDataProvider.setForwardNode(forwardNode);
+        sourceNodesView.setForwardNode(forwardNodeEntity);
+        sourceNodeDataProvider.setForwardNode(forwardNodeEntity);
 
         setEditView();
-        if (forwardNode == null) {
+        if (forwardNodeEntity == null) {
             tabSourcesDestination.setEnabled(false);
             buttonForwardNodeSaveDeleteCancel.setEnabled(false);
         } else {
@@ -155,11 +155,12 @@ public class LayoutEditForwardNode extends VerticalLayout {
 
     private void setEventDeleteButton() {
         buttonForwardNodeSaveDeleteCancel.getDelete().addClickListener(event -> {
-            if (currentForwardNode != null) {
+            if (currentForwardNodeEntity != null) {
                 ConfirmDialog dialog = new ConfirmDialog(
-                        "Are you sure to delete the forward node " + currentForwardNode.getFwdAeTitle() + " ?");
+                    "Are you sure to delete the forward node " + currentForwardNodeEntity
+                        .getFwdAeTitle() + " ?");
                 dialog.addConfirmationListener(componentEvent -> {
-                    forwardNodeAPI.deleteForwardNode(currentForwardNode);
+                    forwardNodeAPI.deleteForwardNode(currentForwardNodeEntity);
                     forwardNodeViewLogic.cancelForwardNode();
                 });
                 dialog.open();
@@ -177,8 +178,8 @@ public class LayoutEditForwardNode extends VerticalLayout {
 
     private void setEventSaveButton() {
         buttonForwardNodeSaveDeleteCancel.getSave().addClickListener(event -> {
-            if (binderForwardNode.writeBeanIfValid(currentForwardNode)) {
-                forwardNodeAPI.updateForwardNode(currentForwardNode);
+            if (binderForwardNode.writeBeanIfValid(currentForwardNodeEntity)) {
+                forwardNodeAPI.updateForwardNode(currentForwardNodeEntity);
                 forwardNodeViewLogic.cancelForwardNode();
             }
         });
@@ -186,8 +187,8 @@ public class LayoutEditForwardNode extends VerticalLayout {
 
     private void setEventDestination() {
         destinationsView.getGridDestination().addItemClickListener(event -> {
-            Destination destination = event.getItem();
-            newUpdateDestination.load(destination, destination.getType());
+            DestinationEntity destinationEntity = event.getItem();
+            newUpdateDestination.load(destinationEntity, destinationEntity.getType());
             addFormView(newUpdateDestination);
         });
     }
@@ -203,8 +204,8 @@ public class LayoutEditForwardNode extends VerticalLayout {
 
     private void setEventGridSourceNode() {
         sourceNodesView.getGridSourceNode().addItemClickListener(event -> {
-            DicomSourceNode dicomSourceNode = event.getItem();
-            newUpdateSourceNode.load(dicomSourceNode);
+            DicomSourceNodeEntity dicomSourceNodeEntity = event.getItem();
+            newUpdateSourceNode.load(dicomSourceNodeEntity);
             addFormView(newUpdateSourceNode);
         });
     }

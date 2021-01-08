@@ -12,14 +12,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.WeakHashMap;
-import org.karnak.backend.data.entity.KheopsAlbums;
+import org.karnak.backend.data.entity.KheopsAlbumsEntity;
 
-public class GridSwitchingAlbums extends Grid<KheopsAlbums> {
+public class GridSwitchingAlbums extends Grid<KheopsAlbumsEntity> {
 
-    private final Binder<KheopsAlbums> binder;
-    private final ListDataProvider<KheopsAlbums> dataProvider;
+    private final Binder<KheopsAlbumsEntity> binder;
+    private final ListDataProvider<KheopsAlbumsEntity> dataProvider;
 
-    private Editor<KheopsAlbums> editor;
+    private Editor<KheopsAlbumsEntity> editor;
     private final Collection<Button> editButtons;
     private final TextField textUrlAPI;
     private final TextField textAuthorizationDestination;
@@ -30,7 +30,7 @@ public class GridSwitchingAlbums extends Grid<KheopsAlbums> {
         setWidthFull();
         setHeightByRows(true);
         setItems(new ArrayList<>());
-        dataProvider = (ListDataProvider<KheopsAlbums>) getDataProvider();
+        dataProvider = (ListDataProvider<KheopsAlbumsEntity>) getDataProvider();
 
         TextFieldsBindSwitchingAlbum textFieldsBindSwitchingAlbum = new TextFieldsBindSwitchingAlbum();
         binder = textFieldsBindSwitchingAlbum.getBinder();
@@ -40,16 +40,18 @@ public class GridSwitchingAlbums extends Grid<KheopsAlbums> {
         textCondition = textFieldsBindSwitchingAlbum.getTextCondition();
         editButtons = Collections.newSetFromMap(new WeakHashMap<>());
 
-        addColumn(KheopsAlbums::getUrlAPI).setHeader("URL API").setFlexGrow(15)
+        addColumn(KheopsAlbumsEntity::getUrlAPI).setHeader("URL API").setFlexGrow(15)
                 .setSortable(true).setEditorComponent(textUrlAPI);
 
-        addColumn(KheopsAlbums::getAuthorizationDestination).setHeader("Token destination").setFlexGrow(15)
+        addColumn(KheopsAlbumsEntity::getAuthorizationDestination).setHeader("Token destination")
+            .setFlexGrow(15)
                 .setSortable(true).setEditorComponent(textAuthorizationDestination);
 
-        addColumn(KheopsAlbums::getAuthorizationSource).setHeader("Token source").setFlexGrow(15)
+        addColumn(KheopsAlbumsEntity::getAuthorizationSource).setHeader("Token source")
+            .setFlexGrow(15)
                 .setSortable(true).setEditorComponent(textAuthorizationSource);
 
-        addColumn(KheopsAlbums::getCondition).setHeader("Condition").setFlexGrow(15)
+        addColumn(KheopsAlbumsEntity::getCondition).setHeader("Condition").setFlexGrow(15)
                 .setSortable(true).setEditorComponent(textCondition);
 
         setEditorColumn();
@@ -60,7 +62,7 @@ public class GridSwitchingAlbums extends Grid<KheopsAlbums> {
         editor.setBinder(binder);
         editor.setBuffered(true);
 
-        Column<KheopsAlbums> editorColumn = addComponentColumn(kheopsAlbums -> {
+        Column<KheopsAlbumsEntity> editorColumn = addComponentColumn(kheopsAlbums -> {
             Button edit = new Button("Edit");
             edit.addClickListener(e -> {
                 editor.editItem(kheopsAlbums);
@@ -99,11 +101,11 @@ public class GridSwitchingAlbums extends Grid<KheopsAlbums> {
         editor.cancel();
     }
 
-    public KheopsAlbums getSelectedRow() {
+    public KheopsAlbumsEntity getSelectedRow() {
         return asSingleSelect().getValue();
     }
 
-    public void refresh(KheopsAlbums data) {
+    public void refresh(KheopsAlbumsEntity data) {
         getDataCommunicator().refresh(data);
     }
 }

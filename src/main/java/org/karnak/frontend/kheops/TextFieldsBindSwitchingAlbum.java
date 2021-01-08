@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.dcm4che6.data.DicomObject;
 import org.json.JSONObject;
 import org.karnak.backend.api.KheopsApi;
-import org.karnak.backend.data.entity.KheopsAlbums;
+import org.karnak.backend.data.entity.KheopsAlbumsEntity;
 import org.karnak.backend.model.expression.ExprConditionKheops;
 import org.karnak.backend.model.expression.ExpressionError;
 import org.karnak.backend.model.expression.ExpressionResult;
@@ -18,7 +18,7 @@ import org.karnak.backend.service.kheops.SwitchingAlbum;
 public class TextFieldsBindSwitchingAlbum {
 
   private final KheopsApi kheopsApi;
-  private final Binder<KheopsAlbums> binder;
+  private final Binder<KheopsAlbumsEntity> binder;
 
   private final TextField textUrlAPI;
   private final TextField textAuthorizationDestination;
@@ -34,47 +34,50 @@ public class TextFieldsBindSwitchingAlbum {
     textAuthorizationSource = new TextField();
     textCondition = new TextField();
     textErrorConditionMsg = new Span();
-        expressionError = new ExpressionError(true, "");
-        binder = buildBinder();
+    expressionError = new ExpressionError(true, "");
+    binder = buildBinder();
 
-    }
+  }
 
-    private Binder<KheopsAlbums> buildBinder() {
-        Binder<KheopsAlbums> b = new BeanValidationBinder<>(KheopsAlbums.class);
-        b.forField(textAuthorizationDestination)
-                .withValidator(StringUtils::isNotBlank,"Token destination is mandatory")
-                .withValidator(value -> {
-                    if (!textUrlAPI.getValue().isBlank()) {
-                        return validateToken(value, textUrlAPI.getValue(), SwitchingAlbum.MIN_SCOPE_DESTINATION);
-                    }
-                    return true;
-                }, "Token can't be validate, minimum permissions: [write]")
-                .bind(KheopsAlbums::getAuthorizationDestination, KheopsAlbums::setAuthorizationDestination);
-        b.forField(textAuthorizationSource)
-                .withValidator(StringUtils::isNotBlank,"Token source is mandatory")
-                .withValidator(value -> {
-                    if (!textUrlAPI.getValue().isBlank()) {
-                        return validateToken(value, textUrlAPI.getValue(), SwitchingAlbum.MIN_SCOPE_SOURCE);
-                    }
-                    return true;
-                }, "Token can't be validate, minimum permissions: [read, send]")
-                .bind(KheopsAlbums::getAuthorizationSource, KheopsAlbums::setAuthorizationSource);
-        b.forField(textUrlAPI)
-                .withValidator(StringUtils::isNotBlank,"Url API is mandatory")
-                .bind(KheopsAlbums::getUrlAPI, KheopsAlbums::setUrlAPI);
-        b.forField(textCondition)
-                .withValidator(value -> {
-                    if (!textCondition.getValue().equals("")) {
-                         expressionError = ExpressionResult.isValid(textCondition.getValue(),
-                                new ExprConditionKheops(DicomObject.newDicomObject()),
-                                Boolean.class);
-                         textErrorConditionMsg.setText(expressionError.getMsg());
-                         return expressionError.isValid();
-                    }
-                    textErrorConditionMsg.setText("");
-                    return true;
-                }, "Condition is not valid")
-                .bind(KheopsAlbums::getCondition, KheopsAlbums::setCondition);
+  private Binder<KheopsAlbumsEntity> buildBinder() {
+    Binder<KheopsAlbumsEntity> b = new BeanValidationBinder<>(KheopsAlbumsEntity.class);
+    b.forField(textAuthorizationDestination)
+        .withValidator(StringUtils::isNotBlank, "Token destination is mandatory")
+        .withValidator(value -> {
+          if (!textUrlAPI.getValue().isBlank()) {
+            return validateToken(value, textUrlAPI.getValue(),
+                SwitchingAlbum.MIN_SCOPE_DESTINATION);
+          }
+          return true;
+        }, "Token can't be validate, minimum permissions: [write]")
+        .bind(KheopsAlbumsEntity::getAuthorizationDestination,
+            KheopsAlbumsEntity::setAuthorizationDestination);
+    b.forField(textAuthorizationSource)
+        .withValidator(StringUtils::isNotBlank, "Token source is mandatory")
+        .withValidator(value -> {
+          if (!textUrlAPI.getValue().isBlank()) {
+            return validateToken(value, textUrlAPI.getValue(), SwitchingAlbum.MIN_SCOPE_SOURCE);
+          }
+          return true;
+        }, "Token can't be validate, minimum permissions: [read, send]")
+        .bind(KheopsAlbumsEntity::getAuthorizationSource,
+            KheopsAlbumsEntity::setAuthorizationSource);
+    b.forField(textUrlAPI)
+        .withValidator(StringUtils::isNotBlank, "Url API is mandatory")
+        .bind(KheopsAlbumsEntity::getUrlAPI, KheopsAlbumsEntity::setUrlAPI);
+    b.forField(textCondition)
+        .withValidator(value -> {
+          if (!textCondition.getValue().equals("")) {
+            expressionError = ExpressionResult.isValid(textCondition.getValue(),
+                new ExprConditionKheops(DicomObject.newDicomObject()),
+                Boolean.class);
+            textErrorConditionMsg.setText(expressionError.getMsg());
+            return expressionError.isValid();
+          }
+          textErrorConditionMsg.setText("");
+          return true;
+        }, "Condition is not valid")
+        .bind(KheopsAlbumsEntity::getCondition, KheopsAlbumsEntity::setCondition);
         return b;
     }
 
@@ -87,9 +90,9 @@ public class TextFieldsBindSwitchingAlbum {
         }
     }
 
-    public Binder<KheopsAlbums> getBinder() {
-        return binder;
-    }
+  public Binder<KheopsAlbumsEntity> getBinder() {
+    return binder;
+  }
 
     public TextField getTextUrlAPI() {
         return textUrlAPI;
