@@ -2,6 +2,7 @@ package org.karnak.ui.extid;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -90,10 +91,6 @@ public class AddNewPatientForm extends VerticalLayout {
         issuerOfPatientIdField = new TextField("Issuer of patient ID");
         issuerOfPatientIdField.setWidth("25%");
 
-        TextField separatorCSVField = new TextField("Separator");
-        separatorCSVField.setMaxLength(1);
-        separatorCSVField.setValue(",");
-
         clearFieldsButton = new Button("Clear");
         clearFieldsButton.getStyle().set("margin-left", "auto");
 
@@ -107,13 +104,25 @@ public class AddNewPatientForm extends VerticalLayout {
         uploadCsvButton.addSucceededListener(event -> {
             inputStream = memoryBuffer.getInputStream();
 
-            char separator = ',';
-            if(!separatorCSVField.getValue().equals("")){
-                separator = separatorCSVField.getValue().charAt(0);
-            }
+            Dialog chooseSeparatorDialog = new Dialog();
+            TextField separatorCSVField = new TextField("Choose the separator for reading the CSV file");
+            separatorCSVField.setMaxLength(1);
+            separatorCSVField.setValue(",");
+            Button openCSVButton = new Button("Open CSV");
 
-            CSVDialog csvDialog = new CSVDialog(inputStream, separator);
-            csvDialog.open();
+            openCSVButton.addClickListener(buttonClickEvent -> {
+                chooseSeparatorDialog.close();
+                char separator = ',';
+                if(!separatorCSVField.getValue().equals("")){
+                    separator = separatorCSVField.getValue().charAt(0);
+                }
+                CSVDialog csvDialog = new CSVDialog(inputStream, separator);
+                csvDialog.open();
+            });
+
+            chooseSeparatorDialog.add(separatorCSVField, openCSVButton);
+            chooseSeparatorDialog.open();
+            separatorCSVField.focus();
         });
 
         horizontalLayout1.setSizeFull();
@@ -122,7 +131,7 @@ public class AddNewPatientForm extends VerticalLayout {
 
         horizontalLayout1.add(externalIdField, patientIdField, patientNameField, issuerOfPatientIdField);
         horizontalLayout2.add(clearFieldsButton, addNewPatientButton);
-        horizontalLayout3.add(uploadCsvButton, separatorCSVField);
+        horizontalLayout3.add(uploadCsvButton);
         add(horizontalLayout1, horizontalLayout3, horizontalLayout2);
     }
 
