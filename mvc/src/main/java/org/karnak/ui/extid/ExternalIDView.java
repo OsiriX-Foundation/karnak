@@ -3,6 +3,7 @@ package org.karnak.ui.extid;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.ListDataProvider;
@@ -23,6 +24,9 @@ public class ExternalIDView extends HorizontalLayout {
     private final ExternalIDGrid externalIDGrid;
     private final Div validationStatus;
     private final ExternalIDForm externalIDForm;
+    private final String LABEL_DISCLAIMER_EXTID = "WARNING: The data recorded in this grid is not guaranteed " +
+            "to be stored. The data is stored for a limited period of time. " +
+            "The data is deleted 7 days after addition or if the application is restarted. ";
 
 
     //https://vaadin.com/components/vaadin-grid/java-examples/assigning-data
@@ -30,14 +34,19 @@ public class ExternalIDView extends HorizontalLayout {
         setSizeFull();
         VerticalLayout verticalLayout = new VerticalLayout();
 
+        Label labelDisclaimer = new Label(LABEL_DISCLAIMER_EXTID);
+        labelDisclaimer.getStyle().set("color", "red");
+        labelDisclaimer.setMinWidth("75%");
+        labelDisclaimer.getStyle().set("right", "0px");
+
         externalIDGrid = new ExternalIDGrid();
         dataProvider = (ListDataProvider<CachedPatient>) externalIDGrid.getDataProvider();
         externalIDForm = new ExternalIDForm(dataProvider);
-        externalIDGrid.setSavePatientButton(externalIDForm.getSavePatientButton());
+        externalIDGrid.setAddPatientButton(externalIDForm.getAddPatientButton());
 
         validationStatus = externalIDGrid.setBinder();
 
-        verticalLayout.add(new H2("External Pseudonym"), externalIDForm, validationStatus, externalIDGrid);
+        verticalLayout.add(new H2("External Pseudonym"), labelDisclaimer, externalIDForm, validationStatus, externalIDGrid);
 
         add(verticalLayout);
     }

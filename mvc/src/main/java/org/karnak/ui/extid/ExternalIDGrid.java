@@ -20,7 +20,7 @@ public class ExternalIDGrid extends Grid<CachedPatient> {
     private static final String ERROR_MESSAGE_PATIENT = "Length must be between 1 and 50.";
     private Binder<CachedPatient> binder;
     private List<CachedPatient> patientList;
-    private Button savePatientButton;
+    private Button addPatientButton;
     private Button deletePatientButton;
     private Button saveEditPatientButton;
     private Button cancelEditPatientButton;
@@ -56,14 +56,14 @@ public class ExternalIDGrid extends Grid<CachedPatient> {
             editButtons.stream()
                     .forEach(button -> button.setEnabled(!editor.isOpen()));
             deleteColumn.setVisible(false);
-            savePatientButton.setVisible(false);
+            addPatientButton.setVisible(false);
         });
 
         editor.addCloseListener(e -> {
             editButtons.stream()
                     .forEach(button -> button.setEnabled(!editor.isOpen()));
             deleteColumn.setVisible(true);
-            savePatientButton.setVisible(true);
+            addPatientButton.setVisible(true);
         });
 
         saveEditPatientButton.addClickListener(e -> {
@@ -158,7 +158,7 @@ public class ExternalIDGrid extends Grid<CachedPatient> {
         return validationStatus;
     }
 
-    public void setSavePatientButton(Button savePatientButton) {
-        this.savePatientButton = savePatientButton;
+    public void setAddPatientButton(Button addPatientButton) {
+        this.addPatientButton = addPatientButton;
     }
 }

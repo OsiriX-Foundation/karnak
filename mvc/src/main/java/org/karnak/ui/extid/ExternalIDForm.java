@@ -3,6 +3,7 @@ package org.karnak.ui.extid;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -34,7 +35,7 @@ public class ExternalIDForm extends VerticalLayout {
     private TextField patientIdField;
     private TextField patientNameField;
     private TextField issuerOfPatientIdField;
-    private Button savePatientButton;
+    private Button addPatientButton;
     private Button clearFieldsButton;
     private transient InputStream inputStream;
 
@@ -55,7 +56,7 @@ public class ExternalIDForm extends VerticalLayout {
             clearPatientFields()
         );
 
-        savePatientButton.addClickListener(click ->
+        addPatientButton.addClickListener(click ->
             addPatientFieldsInGrid()
         );
 
@@ -63,7 +64,7 @@ public class ExternalIDForm extends VerticalLayout {
         binder.addStatusChangeListener(event -> {
             boolean isValid = !event.hasValidationErrors();
             boolean hasChanges = binder.hasChanges();
-            savePatientButton.setEnabled(hasChanges && isValid);
+            addPatientButton.setEnabled(hasChanges && isValid);
         });
     }
 
@@ -81,6 +82,19 @@ public class ExternalIDForm extends VerticalLayout {
         HorizontalLayout horizontalLayout1 = new HorizontalLayout();
         HorizontalLayout horizontalLayout2 = new HorizontalLayout();
         HorizontalLayout horizontalLayout3 = new HorizontalLayout();
+        HorizontalLayout horizontalLayout4 = new HorizontalLayout();
+        HorizontalLayout horizontalLayout5 = new HorizontalLayout();
+        Div addPatientDiv = new Div();
+
+        Div uploadCsvLabelDiv = new Div();
+        uploadCsvLabelDiv = new Div();
+        uploadCsvLabelDiv.setText("Upload a CSV file to add your external ID correspondence: ");
+        uploadCsvLabelDiv.getStyle().set("font-size", "large").set("font-weight", "bolder");
+
+        Div AddedPatientLabeltDiv = new Div();
+        AddedPatientLabeltDiv = new Div();
+        AddedPatientLabeltDiv.setText("Add one patient data to have the external ID correspondence: ");
+        AddedPatientLabeltDiv.getStyle().set("font-size", "large").set("font-weight", "bolder");
 
         externalIdField = new TextField("External Pseudonym");
         externalIdField.setWidth("25%");
@@ -92,11 +106,11 @@ public class ExternalIDForm extends VerticalLayout {
         issuerOfPatientIdField.setWidth("25%");
 
         clearFieldsButton = new Button("Clear");
-        clearFieldsButton.getStyle().set("margin-left", "auto");
+        //clearFieldsButton.getStyle().set("margin-left", "auto");
 
-        savePatientButton = new Button("Save patient temporary");
-        savePatientButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        savePatientButton.setIcon(VaadinIcon.PLUS_CIRCLE.create());
+        addPatientButton = new Button("Add patient");
+        addPatientButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        addPatientButton.setIcon(VaadinIcon.PLUS_CIRCLE.create());
 
         MemoryBuffer memoryBuffer = new MemoryBuffer();
         Upload uploadCsvButton = new Upload(memoryBuffer);
@@ -128,11 +142,17 @@ public class ExternalIDForm extends VerticalLayout {
         horizontalLayout1.setSizeFull();
         horizontalLayout2.setSizeFull();
         horizontalLayout3.setSizeFull();
+        horizontalLayout4.setSizeFull();
 
-        horizontalLayout1.add(externalIdField, patientIdField, patientNameField, issuerOfPatientIdField);
-        horizontalLayout2.add(clearFieldsButton, savePatientButton);
-        horizontalLayout3.add(uploadCsvButton);
-        add(horizontalLayout1, horizontalLayout3, horizontalLayout2);
+        horizontalLayout1.add(uploadCsvLabelDiv);
+        horizontalLayout2.add(uploadCsvButton);
+        horizontalLayout3.add(AddedPatientLabeltDiv);
+
+        horizontalLayout4.add(externalIdField, patientIdField, patientNameField, issuerOfPatientIdField);
+        horizontalLayout5.add(clearFieldsButton, addPatientButton);
+
+        addPatientDiv.add(horizontalLayout4, horizontalLayout5);
+        add(horizontalLayout1, horizontalLayout2, horizontalLayout3, addPatientDiv);
     }
 
     public void setBinder(){
@@ -194,7 +214,7 @@ public class ExternalIDForm extends VerticalLayout {
         binder.readBean(null);
     }
 
-    public Button getSavePatientButton() {
-        return savePatientButton;
+    public Button getAddPatientButton() {
+        return addPatientButton;
     }
 }
