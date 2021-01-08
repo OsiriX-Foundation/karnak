@@ -20,9 +20,9 @@ import org.springframework.security.access.annotation.Secured;
 public class ExternalIDView extends HorizontalLayout {
     public static final String VIEW_NAME = "External pseudonym";
     private final ListDataProvider<CachedPatient> dataProvider;
-    private final ExternalIDGrid grid;
+    private final ExternalIDGrid externalIDGrid;
     private final Div validationStatus;
-    private final AddNewPatientForm addNewPatientForm;
+    private final ExternalIDForm externalIDForm;
 
 
     //https://vaadin.com/components/vaadin-grid/java-examples/assigning-data
@@ -30,14 +30,14 @@ public class ExternalIDView extends HorizontalLayout {
         setSizeFull();
         VerticalLayout verticalLayout = new VerticalLayout();
 
-        grid = new ExternalIDGrid();
-        dataProvider = (ListDataProvider<CachedPatient>) grid.getDataProvider();
-        addNewPatientForm = new AddNewPatientForm(dataProvider);
-        grid.setAddNewPatientButton(addNewPatientForm.getAddNewPatientButton());
+        externalIDGrid = new ExternalIDGrid();
+        dataProvider = (ListDataProvider<CachedPatient>) externalIDGrid.getDataProvider();
+        externalIDForm = new ExternalIDForm(dataProvider);
+        externalIDGrid.setSavePatientButton(externalIDForm.getSavePatientButton());
 
-        validationStatus = grid.setBinder();
+        validationStatus = externalIDGrid.setBinder();
 
-        verticalLayout.add(new H2("External Pseudonym"), addNewPatientForm, validationStatus, grid);
+        verticalLayout.add(new H2("External Pseudonym"), externalIDForm, validationStatus, externalIDGrid);
 
         add(verticalLayout);
     }

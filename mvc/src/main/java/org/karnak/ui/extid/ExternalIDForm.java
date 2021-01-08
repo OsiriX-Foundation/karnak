@@ -23,8 +23,8 @@ import java.io.InputStream;
 import java.util.*;
 
 
-public class AddNewPatientForm extends VerticalLayout {
-    protected static final Logger LOGGER = LoggerFactory.getLogger(AddNewPatientForm.class);
+public class ExternalIDForm extends VerticalLayout {
+    protected static final Logger LOGGER = LoggerFactory.getLogger(ExternalIDForm.class);
     private static final String ERROR_MESSAGE_PATIENT = "Length must be between 1 and 50.";
 
     private Binder<CachedPatient> binder;
@@ -34,13 +34,13 @@ public class AddNewPatientForm extends VerticalLayout {
     private TextField patientIdField;
     private TextField patientNameField;
     private TextField issuerOfPatientIdField;
-    private Button addNewPatientButton;
+    private Button savePatientButton;
     private Button clearFieldsButton;
     private transient InputStream inputStream;
 
     private transient PatientClient externalIDCache;
 
-    public AddNewPatientForm(ListDataProvider<CachedPatient> dataProvider){
+    public ExternalIDForm(ListDataProvider<CachedPatient> dataProvider){
         setSizeFull();
         this.dataProvider = dataProvider;
         externalIDCache = AppConfig.getInstance().getExternalIDCache();
@@ -55,7 +55,7 @@ public class AddNewPatientForm extends VerticalLayout {
             clearPatientFields()
         );
 
-        addNewPatientButton.addClickListener(click ->
+        savePatientButton.addClickListener(click ->
             addPatientFieldsInGrid()
         );
 
@@ -63,7 +63,7 @@ public class AddNewPatientForm extends VerticalLayout {
         binder.addStatusChangeListener(event -> {
             boolean isValid = !event.hasValidationErrors();
             boolean hasChanges = binder.hasChanges();
-            addNewPatientButton.setEnabled(hasChanges && isValid);
+            savePatientButton.setEnabled(hasChanges && isValid);
         });
     }
 
@@ -94,9 +94,9 @@ public class AddNewPatientForm extends VerticalLayout {
         clearFieldsButton = new Button("Clear");
         clearFieldsButton.getStyle().set("margin-left", "auto");
 
-        addNewPatientButton = new Button("Save patient temporary");
-        addNewPatientButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        addNewPatientButton.setIcon(VaadinIcon.PLUS_CIRCLE.create());
+        savePatientButton = new Button("Save patient temporary");
+        savePatientButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        savePatientButton.setIcon(VaadinIcon.PLUS_CIRCLE.create());
 
         MemoryBuffer memoryBuffer = new MemoryBuffer();
         Upload uploadCsvButton = new Upload(memoryBuffer);
@@ -130,7 +130,7 @@ public class AddNewPatientForm extends VerticalLayout {
         horizontalLayout3.setSizeFull();
 
         horizontalLayout1.add(externalIdField, patientIdField, patientNameField, issuerOfPatientIdField);
-        horizontalLayout2.add(clearFieldsButton, addNewPatientButton);
+        horizontalLayout2.add(clearFieldsButton, savePatientButton);
         horizontalLayout3.add(uploadCsvButton);
         add(horizontalLayout1, horizontalLayout3, horizontalLayout2);
     }
@@ -194,7 +194,7 @@ public class AddNewPatientForm extends VerticalLayout {
         binder.readBean(null);
     }
 
-    public Button getAddNewPatientButton() {
-        return addNewPatientButton;
+    public Button getSavePatientButton() {
+        return savePatientButton;
     }
 }

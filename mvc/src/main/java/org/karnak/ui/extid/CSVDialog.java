@@ -33,15 +33,15 @@ public class CSVDialog extends Dialog {
     private static final String PATIENT_NAME = "Patient name";
     private static final String ISSUER_OF_PATIENT_ID = "Issuer of patient ID";
 
-    private NumberField fromLine;
+    private NumberField fromLineField;
 
     private Button readCSVButton;
     private Button cancelButton;
-    private Div divContent;
+    private Div divGridContent;
     private Div errorMsg;
     private Div divTitle;
 
-    private Grid<String[]> grid;
+    private Grid<String[]> csvGrid;
 
     private List<Select<String>> listOfSelect;
 
@@ -50,7 +50,7 @@ public class CSVDialog extends Dialog {
 
     private List<String[]> allRows;
     private final String[] selectValues = {"", EXTERNAL_PSEUDONYM, PATIENT_ID, PATIENT_NAME, ISSUER_OF_PATIENT_ID};
-    private HashMap<String, Integer> hashMap;
+    private HashMap<String, Integer> selectVeluesPositionHashMap;
 
     public CSVDialog(InputStream inputStream, char separator) {
         removeAll();
@@ -69,9 +69,9 @@ public class CSVDialog extends Dialog {
         setElement();
         buildGrid();
 
-        divContent.add(grid);
+        divGridContent.add(csvGrid);
         HorizontalLayout horizontalLayout = new HorizontalLayout(cancelButton, readCSVButton);
-        add(divTitle, fromLine, divContent, errorMsg, horizontalLayout);
+        add(divTitle, fromLineField, divGridContent, errorMsg, horizontalLayout);
     }
 
     private void setElement(){
@@ -79,20 +79,20 @@ public class CSVDialog extends Dialog {
         divTitle.setText("Upload CSV for the table that contain external pseudonym");
         divTitle.getStyle().set("font-size", "large").set("font-weight", "bolder").set("padding-bottom", "10px");
 
-        divContent = new Div();
+        divGridContent = new Div();
         errorMsg = new Div();
         errorMsg.getStyle().set("font-weight", "bolder").set("padding-bottom", "10px").set("color", "red");
 
-        fromLine = new NumberField("From line ");
-        fromLine.setValue(1d);
-        fromLine.setHasControls(true);
-        fromLine.setMin(1);
-        fromLine.setMax((double) allRows.size() + 1);
+        fromLineField = new NumberField("From line ");
+        fromLineField.setValue(1d);
+        fromLineField.setHasControls(true);
+        fromLineField.setMin(1);
+        fromLineField.setMax((double) allRows.size() + 1);
 
 
         readCSVButton = new Button("Read CSV", event -> {
-            if (hashMap.get(EXTERNAL_PSEUDONYM).equals(-1) || hashMap.get(PATIENT_ID).equals(-1) ||
-                    hashMap.get(PATIENT_NAME).equals(-1)){
+            if (selectVeluesPositionHashMap.get(EXTERNAL_PSEUDONYM).equals(-1) || selectVeluesPositionHashMap.get(PATIENT_ID).equals(-1) ||
+                    selectVeluesPositionHashMap.get(PATIENT_NAME).equals(-1)){
                 generateErrorMsg();
             } else {
                 readCSVAndPushInCache();
@@ -109,15 +109,15 @@ public class CSVDialog extends Dialog {
     }
 
     public void buildGrid() {
-        grid = new Grid<>();
+        csvGrid = new Grid<>();
 
         String[] headers = allRows.get(0);
         listOfSelect = new ArrayList<>();
 
-        hashMap = new HashMap<>();
+        selectVeluesPositionHashMap = new HashMap<>();
 
         for(String val: selectValues) {
-            hashMap.put(val, -1);
+            selectVeluesPositionHashMap.put(val, -1);
         }
 
         for (int i = 0; i < headers.length; i++) {
@@ -128,27 +128,27 @@ public class CSVDialog extends Dialog {
             currentSelect.addValueChangeListener(value -> {
                 int currentPosition = Integer.parseInt(currentSelect.getId().orElse("-1"));
                 //reset value of old key
-                if (hashMap.containsValue(currentPosition)) {
-                    String valueInHashMap = getValueWithKey(hashMap, currentPosition);
+                if (selectVeluesPositionHashMap.containsValue(currentPosition)) {
+                    String valueInHashMap = getValueWithKey(selectVeluesPositionHashMap, currentPosition);
                     if (valueInHashMap != null) {
-                        hashMap.replace(valueInHashMap, -1);
+                        selectVeluesPositionHashMap.replace(valueInHashMap, -1);
                     }
                 }
                 //update new key
-                hashMap.replace(value.getValue(), currentPosition);
+                selectVeluesPositionHashMap.replace(value.getValue(), currentPosition);
                 updateSelectGrid();
             });
             listOfSelect.add(currentSelect);
-            grid.addColumn(lineArray -> lineArray[idx]).setHeader(currentSelect);
+            csvGrid.addColumn(lineArray -> lineArray[idx]).setHeader(currentSelect);
         }
 
 
-        grid.setItems(allRows);
-        fromLine.addValueChangeListener(numberValue -> {
+        csvGrid.setItems(allRows);
+        fromLineField.addValueChangeListener(numberValue -> {
             if (numberValue.getValue().intValue() > allRows.size()) {
-                grid.setItems(allRows.subList(allRows.size(), allRows.size()));
+                csvGrid.setItems(allRows.subList(allRows.size(), allRows.size()));
             } else {
-                grid.setItems(allRows.subList(numberValue.getValue().intValue()-1, allRows.size()));
+                csvGrid.setItems(allRows.subList(numberValue.getValue().intValue()-1, allRows.size()));
             }
         });
 
@@ -158,8 +158,8 @@ public class CSVDialog extends Dialog {
         for(Select<String> currentSelect : listOfSelect) {
             int currentPosition = Integer.parseInt(currentSelect.getId().orElse("-1"));
 
-            currentSelect.setItemEnabledProvider(item -> hashMap.get(item).equals(-1) ||
-                    hashMap.get(item).equals(currentPosition) || item.equals("")
+            currentSelect.setItemEnabledProvider(item -> selectVeluesPositionHashMap.get(item).equals(-1) ||
+                    selectVeluesPositionHashMap.get(item).equals(currentPosition) || item.equals("")
 
             );
         }
@@ -177,7 +177,7 @@ public class CSVDialog extends Dialog {
     }
 
     private void generateErrorMsg() {
-        final Stream<String> streamFieldNotSelected = hashMap.entrySet().stream().map(stringIntegerEntry -> {
+        final Stream<String> streamFieldNotSelected = selectVeluesPositionHashMap.entrySet().stream().map(stringIntegerEntry -> {
             if(stringIntegerEntry.getValue().equals(-1) && !stringIntegerEntry.getKey().equals("") &&
                     !stringIntegerEntry.getKey().equals(ISSUER_OF_PATIENT_ID)) {
                 return stringIntegerEntry.getKey();
@@ -192,11 +192,11 @@ public class CSVDialog extends Dialog {
     private void readCSVAndPushInCache() {
         try {
             //Read CSV line by line and use the string array as you want
-            for (String[] row : allRows.subList(fromLine.getValue().intValue() - 1, allRows.size())) {
-                String issuerOfPatientID = hashMap.get(ISSUER_OF_PATIENT_ID).equals(-1) ? "" : row[hashMap.get(ISSUER_OF_PATIENT_ID)];
-                final CachedPatient newPatient = new CachedPatient(row[hashMap.get(EXTERNAL_PSEUDONYM)],
-                        row[hashMap.get(PATIENT_ID)],
-                        row[hashMap.get(PATIENT_NAME)],
+            for (String[] row : allRows.subList(fromLineField.getValue().intValue() - 1, allRows.size())) {
+                String issuerOfPatientID = selectVeluesPositionHashMap.get(ISSUER_OF_PATIENT_ID).equals(-1) ? "" : row[selectVeluesPositionHashMap.get(ISSUER_OF_PATIENT_ID)];
+                final CachedPatient newPatient = new CachedPatient(row[selectVeluesPositionHashMap.get(EXTERNAL_PSEUDONYM)],
+                        row[selectVeluesPositionHashMap.get(PATIENT_ID)],
+                        row[selectVeluesPositionHashMap.get(PATIENT_NAME)],
                         issuerOfPatientID);
                 externalIDCache.put(PatientClientUtil.generateKey(newPatient), newPatient);
             }
