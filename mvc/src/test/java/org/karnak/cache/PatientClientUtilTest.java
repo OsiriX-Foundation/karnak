@@ -36,16 +36,16 @@ class PatientClientUtilTest {
 
     @ParameterizedTest
     @MethodSource("providerGenerateKey")
-    void generateKey(String PatientID, String PatientName, String IssuerOfPatientID, String output){
-        assertEquals(PatientClientUtil.generateKey(PatientID, PatientName, IssuerOfPatientID), output);
+    void generateKey(String PatientID, String IssuerOfPatientID, String output){
+        assertEquals(PatientClientUtil.generateKey(PatientID, IssuerOfPatientID), output);
     }
 
     private static Stream<Arguments> providerGenerateKey() {
         return Stream.of(
-            Arguments.of("123", "456", "789", "123456789"),
-            Arguments.of("123", "456", "", "123456"),
-            Arguments.of("EREN", "Patient^Name", "PDA", "ERENPatient^NamePDA"),
-            Arguments.of("EREN", "Patient^Name", "", "ERENPatient^Name")
+            Arguments.of("123", "456", "789", "123789"),
+            Arguments.of("123", "456", "", "123"),
+            Arguments.of("EREN", "Patient^Name", "PDA", "ERENPDA"),
+            Arguments.of("EREN", "Patient^Name", "", "EREN")
         );
     }
 
@@ -57,18 +57,18 @@ class PatientClientUtilTest {
 
     private static Stream<Arguments> providerGenerateKeyPseudonymPatient() {
         return Stream.of(
-            /*Arguments.of(new CachedPatient("pseudo",  "123", "456", "789"), "123456789"),
-            Arguments.of(new CachedPatient("pseudo",  "123", "456", ""), "123456"),
-            Arguments.of(new CachedPatient("pseudo",  "EREN", "Patient^Name", "PDA"), "ERENPatient^NamePDA"),
-            Arguments.of(new CachedPatient("pseudo",  "EREN", "Patient^Name", ""), "ERENPatient^Name"),*/
+            Arguments.of(new CachedPatient("pseudo",  "123", "456", "789", "101112"), "123101112"),
+            Arguments.of(new CachedPatient("pseudo",  "123", "456", "789", ""), "123"),
+            Arguments.of(new CachedPatient("pseudo",  "EREN", "Patient","Name", "PDA"), "ERENPDA"),
+            Arguments.of(new CachedPatient("pseudo",  "EREN", "Patient","Name", ""), "EREN"),
             Arguments.of(new MainzellistePatient("pseudo",  "123", "", "456"
-                , LocalDate.of(1993, 02, 16), "M", ""), "123456"),
+                , LocalDate.of(1993, 02, 16), "M", ""), "123"),
             Arguments.of(new MainzellistePatient("pseudo",  "123", "", "456"
-                , LocalDate.of(1993, 02, 16), "M", "789"), "123456789"),
+                , LocalDate.of(1993, 02, 16), "M", "789"), "123789"),
             Arguments.of(new MainzellistePatient("pseudo",  "EREN", "Name", "Patient"
-                , LocalDate.of(1993, 02, 16), "M", "PDA"), "ERENPatient^NamePDA"),
+                , LocalDate.of(1993, 02, 16), "M", "PDA"), "ERENPDA"),
             Arguments.of(new MainzellistePatient("pseudo",  "EREN", "Name", "Patient"
-                , LocalDate.of(1993, 02, 16), "M", ""), "ERENPatient^Name")
+                , LocalDate.of(1993, 02, 16), "M", ""), "EREN")
         );
     }
 
@@ -80,10 +80,10 @@ class PatientClientUtilTest {
 
     private static Stream<Arguments> providerGenerateKeyPatientMetadata() {
         return Stream.of(
-            Arguments.of(new PatientMetadata(dataset, "PDA"), "ERENPatient^NamePDA"),
-            Arguments.of(new PatientMetadata(dataset, ""), "ERENPatient^Name"),
-            Arguments.of(new PatientMetadata(datasetWithIssuer, "TEST"), "ERENPatient^NamePDA"),
-            Arguments.of(new PatientMetadata(datasetWithIssuer, ""), "ERENPatient^NamePDA")
+            Arguments.of(new PatientMetadata(dataset, "PDA"), "ERENPDA"),
+            Arguments.of(new PatientMetadata(dataset, ""), "EREN"),
+            Arguments.of(new PatientMetadata(datasetWithIssuer, "TEST"), "ERENPDA"),
+            Arguments.of(new PatientMetadata(datasetWithIssuer, ""), "ERENPDA")
         );
     }
 }

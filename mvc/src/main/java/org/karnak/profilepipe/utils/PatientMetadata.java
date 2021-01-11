@@ -4,11 +4,10 @@ import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.Tag;
 import org.dcm4che6.util.DateTimeUtils;
 import org.karnak.api.rqbody.Fields;
-
-import java.time.LocalDate;
-
 import org.karnak.cache.PseudonymPatient;
 import org.weasis.core.util.StringUtil;
+
+import java.time.LocalDate;
 
 public class PatientMetadata {
     private static final String PATIENT_SEX_OTHER = "O";
@@ -84,10 +83,7 @@ public class PatientMetadata {
     public boolean compareCachedPatient(PseudonymPatient patient) {
         if (patient != null) {
             boolean samePatient = patient.getPatientId().equals(patientID);
-            samePatient = samePatient && patient.getPatientName().equals(patientName);
-            samePatient = samePatient && (patient.getPatientBirthDate() == null || DateTimeUtils.formatDA(patient.getPatientBirthDate()).equals(patientBirthDate));
-            samePatient = samePatient && (patient.getIssuerOfPatientId() == null || patient.getIssuerOfPatientId().equals(issuerOfPatientID));
-            samePatient = samePatient && (patient.getPatientSex() == null || patient.getPatientSex().equals(patientSex));
+            samePatient = samePatient && patient.getIssuerOfPatientId().equals(issuerOfPatientID);
             return samePatient;
         }
         return false;
