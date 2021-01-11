@@ -57,10 +57,10 @@ class PatientClientUtilTest {
 
     private static Stream<Arguments> providerGenerateKeyPseudonymPatient() {
         return Stream.of(
-            Arguments.of(new CachedPatient("pseudo",  "123", "456", "789"), "123456789"),
+            /*Arguments.of(new CachedPatient("pseudo",  "123", "456", "789"), "123456789"),
             Arguments.of(new CachedPatient("pseudo",  "123", "456", ""), "123456"),
             Arguments.of(new CachedPatient("pseudo",  "EREN", "Patient^Name", "PDA"), "ERENPatient^NamePDA"),
-            Arguments.of(new CachedPatient("pseudo",  "EREN", "Patient^Name", ""), "ERENPatient^Name"),
+            Arguments.of(new CachedPatient("pseudo",  "EREN", "Patient^Name", ""), "ERENPatient^Name"),*/
             Arguments.of(new MainzellistePatient("pseudo",  "123", "", "456"
                 , LocalDate.of(1993, 02, 16), "M", ""), "123456"),
             Arguments.of(new MainzellistePatient("pseudo",  "123", "", "456"

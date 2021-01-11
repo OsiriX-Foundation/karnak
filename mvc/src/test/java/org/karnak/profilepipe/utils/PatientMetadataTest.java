@@ -7,7 +7,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.karnak.cache.CachedPatient;
 import org.karnak.cache.MainzellistePatient;
 import org.karnak.cache.PseudonymPatient;
 
@@ -168,11 +167,11 @@ class PatientMetadataTest {
 
     private static Stream<Arguments> providerCompareCachedPatient() {
         return Stream.of(
-                Arguments.of(patientMetadata, new CachedPatient("TEST", "", "", "")),
+                /*Arguments.of(patientMetadata, new CachedPatient("TEST", "", "", "")),*/
                 Arguments.of(patientMetadata, new MainzellistePatient("TEST", "", "", "", null, "O", "")),
-                Arguments.of(patientMetadataDicomEmptyWithIssuer, new CachedPatient("TEST", "", "", "PDA")),
+                /*Arguments.of(patientMetadataDicomEmptyWithIssuer, new CachedPatient("TEST", "", "", "PDA")),*/
                 Arguments.of(patientMetadataDicomEmptyWithIssuer, new MainzellistePatient("TEST", "", "", "", null, "O", "PDA")),
-                Arguments.of(patientMetadataWithNotValidPatientSex, new CachedPatient("TEST", "EREN", "Patient^Name", "PDA")),
+                /*Arguments.of(patientMetadataWithNotValidPatientSex, new CachedPatient("TEST", "EREN", "Patient^Name", "PDA")),*/
                 Arguments.of(patientMetadataWithNotValidPatientSex, new MainzellistePatient("TEST", "EREN", "Name", "Patient", LocalDate.of(1993, 2, 16), "O", "PDA"))
         );
     }
@@ -185,28 +184,28 @@ class PatientMetadataTest {
 
     private static Stream<Arguments> providerCompareCachedPatientFalse() {
         return Stream.of(
-                Arguments.of(patientMetadata, new CachedPatient("TEST", "1", "", "")),
+                /*Arguments.of(patientMetadata, new CachedPatient("TEST", "1", "", "")),
                 Arguments.of(patientMetadata, new CachedPatient("TEST", "", "1", "")),
-                Arguments.of(patientMetadata, new CachedPatient("TEST", "", "", "1")),
+                Arguments.of(patientMetadata, new CachedPatient("TEST", "", "", "1")),*/
                 Arguments.of(patientMetadata, new MainzellistePatient("TEST", "1", "", "", null, "O", "")),
                 Arguments.of(patientMetadata, new MainzellistePatient("TEST", "", "1", "", null, "O", "")),
                 Arguments.of(patientMetadata, new MainzellistePatient("TEST", "", "", "1", null, "O", "")),
                 Arguments.of(patientMetadata, new MainzellistePatient("TEST", "", "", "", LocalDate.of(1940, 1, 1), "O", "")),
                 Arguments.of(patientMetadata, new MainzellistePatient("TEST", "", "", "", null, "F", "")),
                 Arguments.of(patientMetadata, new MainzellistePatient("TEST", "", "", "", null, "O", "1")),
-                Arguments.of(patientMetadataDicomEmptyWithIssuer, new CachedPatient("TEST", "1", "", "PDA")),
+                /*Arguments.of(patientMetadataDicomEmptyWithIssuer, new CachedPatient("TEST", "1", "", "PDA")),
                 Arguments.of(patientMetadataDicomEmptyWithIssuer, new CachedPatient("TEST", "", "1", "PDA")),
-                Arguments.of(patientMetadataDicomEmptyWithIssuer, new CachedPatient("TEST", "", "", "")),
+                Arguments.of(patientMetadataDicomEmptyWithIssuer, new CachedPatient("TEST", "", "", "")),*/
                 Arguments.of(patientMetadataDicomEmptyWithIssuer, new MainzellistePatient("TEST", "1", "", "", null, "O", "PDA")),
                 Arguments.of(patientMetadataDicomEmptyWithIssuer, new MainzellistePatient("TEST", "", "1", "", null, "O", "PDA")),
                 Arguments.of(patientMetadataDicomEmptyWithIssuer, new MainzellistePatient("TEST", "", "", "1", null, "O", "PDA")),
                 Arguments.of(patientMetadataDicomEmptyWithIssuer, new MainzellistePatient("TEST", "", "", "", LocalDate.of(1940, 1, 1), "O", "PDA")),
                 Arguments.of(patientMetadataDicomEmptyWithIssuer, new MainzellistePatient("TEST", "", "", "", null, "F", "PDA")),
                 Arguments.of(patientMetadataDicomEmptyWithIssuer, new MainzellistePatient("TEST", "", "", "", null, "O", "")),
-                Arguments.of(patientMetadataWithNotValidPatientSex, new CachedPatient("TEST", "", "Patient^Name", "PDA")),
+                /*Arguments.of(patientMetadataWithNotValidPatientSex, new CachedPatient("TEST", "", "Patient^Name", "PDA")),
                 Arguments.of(patientMetadataWithNotValidPatientSex, new CachedPatient("TEST", "EREN", "Patient", "PDA")),
                 Arguments.of(patientMetadataWithNotValidPatientSex, new CachedPatient("TEST", "", "^Name", "PDA")),
-                Arguments.of(patientMetadataWithNotValidPatientSex, new CachedPatient("TEST", "EREN", "Patient^Name", "")),
+                Arguments.of(patientMetadataWithNotValidPatientSex, new CachedPatient("TEST", "EREN", "Patient^Name", "")),*/
                 Arguments.of(patientMetadataWithNotValidPatientSex, new MainzellistePatient("TEST", "", "Name", "Patient", LocalDate.of(1993, 2, 16), "O", "PDA")),
                 Arguments.of(patientMetadataWithNotValidPatientSex, new MainzellistePatient("TEST", "EREN", "", "Patient", LocalDate.of(1993, 2, 16), "O", "PDA")),
                 Arguments.of(patientMetadataWithNotValidPatientSex, new MainzellistePatient("TEST", "EREN", "Name", "", LocalDate.of(1994, 2, 16), "O", "PDA")),

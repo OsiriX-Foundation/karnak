@@ -11,8 +11,6 @@ import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.NumberField;
 import liquibase.util.csv.opencsv.CSVReader;
 import org.karnak.cache.CachedPatient;
-import org.karnak.cache.PatientClient;
-import org.karnak.data.AppConfig;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,7 +26,8 @@ public class CSVDialog extends Dialog {
 
     private static final String EXTERNAL_PSEUDONYM = "External Pseudonym";
     private static final String PATIENT_ID = "Patient ID";
-    private static final String PATIENT_NAME = "Patient name";
+    private static final String PATIENT_FIRST_NAME = "Patient first name";
+    private static final String PATIENT_LAST_NAME = "Patient last name";
     private static final String ISSUER_OF_PATIENT_ID = "Issuer of patient ID";
 
     private NumberField fromLineField;
@@ -43,10 +42,9 @@ public class CSVDialog extends Dialog {
 
     private List<Select<String>> listOfSelect;
 
-    private final transient PatientClient externalIDCache;
-
     private List<String[]> allRows;
-    private final String[] selectValues = {"", EXTERNAL_PSEUDONYM, PATIENT_ID, PATIENT_NAME, ISSUER_OF_PATIENT_ID};
+    private final String[] selectValues = {"", EXTERNAL_PSEUDONYM, PATIENT_ID, PATIENT_FIRST_NAME,
+            PATIENT_LAST_NAME, ISSUER_OF_PATIENT_ID};
     private HashMap<String, Integer> selectValuesPositionHashMap;
     private List<CachedPatient> patientsList;
 
@@ -54,7 +52,6 @@ public class CSVDialog extends Dialog {
         removeAll();
 
         setWidth("50%");
-        externalIDCache = AppConfig.getInstance().getExternalIDCache();
 
         patientsList = new ArrayList<>();
         allRows = null;
@@ -90,8 +87,10 @@ public class CSVDialog extends Dialog {
 
 
         readCSVButton = new Button("Read CSV", event -> {
-            if (selectValuesPositionHashMap.get(EXTERNAL_PSEUDONYM).equals(-1) || selectValuesPositionHashMap.get(PATIENT_ID).equals(-1) ||
-                    selectValuesPositionHashMap.get(PATIENT_NAME).equals(-1)){
+            if (selectValuesPositionHashMap.get(EXTERNAL_PSEUDONYM).equals(-1) ||
+                    selectValuesPositionHashMap.get(PATIENT_ID).equals(-1) ||
+                    selectValuesPositionHashMap.get(PATIENT_FIRST_NAME).equals(-1) ||
+                    selectValuesPositionHashMap.get(PATIENT_LAST_NAME).equals(-1)){
                 generateErrorMsg();
             } else {
                 readCSVPatients();
@@ -195,7 +194,8 @@ public class CSVDialog extends Dialog {
                 String issuerOfPatientID = selectValuesPositionHashMap.get(ISSUER_OF_PATIENT_ID).equals(-1) ? "" : row[selectValuesPositionHashMap.get(ISSUER_OF_PATIENT_ID)];
                 final CachedPatient newPatient = new CachedPatient(row[selectValuesPositionHashMap.get(EXTERNAL_PSEUDONYM)],
                         row[selectValuesPositionHashMap.get(PATIENT_ID)],
-                        row[selectValuesPositionHashMap.get(PATIENT_NAME)],
+                        row[selectValuesPositionHashMap.get(PATIENT_FIRST_NAME)],
+                        row[selectValuesPositionHashMap.get(PATIENT_LAST_NAME)],
                         issuerOfPatientID);
                 patientsList.add(newPatient);
             }

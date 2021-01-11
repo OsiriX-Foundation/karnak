@@ -33,7 +33,8 @@ public class ExternalIDForm extends VerticalLayout {
 
     private TextField externalIdField;
     private TextField patientIdField;
-    private TextField patientNameField;
+    private TextField patientFirstNameField;
+    private TextField patientLastNameField;
     private TextField issuerOfPatientIdField;
     private Button addPatientButton;
     private Button clearFieldsButton;
@@ -61,8 +62,11 @@ public class ExternalIDForm extends VerticalLayout {
         );
 
         addPatientButton.addClickListener(click -> {
-            CachedPatient newPatient = new CachedPatient(externalIdField.getValue(), patientIdField.getValue(),
-                    patientNameField.getValue(), issuerOfPatientIdField.getValue());
+            CachedPatient newPatient = new CachedPatient(externalIdField.getValue(),
+                    patientIdField.getValue(),
+                    patientFirstNameField.getValue(),
+                    patientLastNameField.getValue(),
+                    issuerOfPatientIdField.getValue());
             binder.validate();
             if (binder.isValid()){
                 addPatientInGrid(newPatient);
@@ -92,7 +96,7 @@ public class ExternalIDForm extends VerticalLayout {
         horizontalLayout2.add(uploadCsvButton);
         horizontalLayout3.add(addedPatientLabelDiv);
 
-        horizontalLayout4.add(externalIdField, patientIdField, patientNameField, issuerOfPatientIdField);
+        horizontalLayout4.add(externalIdField, patientIdField, patientFirstNameField, patientLastNameField, issuerOfPatientIdField);
         horizontalLayout5.add(clearFieldsButton, addPatientButton);
 
         addPatientDiv.add(horizontalLayout4, horizontalLayout5);
@@ -122,13 +126,15 @@ public class ExternalIDForm extends VerticalLayout {
         addedPatientLabelDiv.getStyle().set("font-size", "large").set("font-weight", "bolder");
 
         externalIdField = new TextField("External Pseudonym");
-        externalIdField.setWidth("25%");
+        externalIdField.setWidth("20");
         patientIdField = new TextField("Patient ID");
-        patientIdField.setWidth("25%");
-        patientNameField = new TextField("Patient name");
-        patientNameField.setWidth("25%");
+        patientIdField.setWidth("20%");
+        patientFirstNameField = new TextField("Patient first name");
+        patientFirstNameField.setWidth("20%");
+        patientLastNameField = new TextField("Patient last name");
+        patientLastNameField.setWidth("20%");
         issuerOfPatientIdField = new TextField("Issuer of patient ID");
-        issuerOfPatientIdField.setWidth("25%");
+        issuerOfPatientIdField.setWidth("20%");
 
         clearFieldsButton = new Button("Clear");
 
@@ -183,10 +189,15 @@ public class ExternalIDForm extends VerticalLayout {
                 .withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
                 .bind("patientId");
 
-        binder.forField(patientNameField)
-                .withValidator(StringUtils::isNotBlank, "Patient name is empty")
+        binder.forField(patientFirstNameField)
+                .withValidator(StringUtils::isNotBlank, "Patient first name is empty")
                 .withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
-                .bind("patientName");
+                .bind("patientFirstName");
+
+        binder.forField(patientLastNameField)
+                .withValidator(StringUtils::isNotBlank, "Patient last name is empty")
+                .withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
+                .bind("patientLastName");
 
         binder.forField(issuerOfPatientIdField)
                 .withValidator(new StringLengthValidator("Length must be between 0 and 50.", 0, 50))
@@ -222,7 +233,8 @@ public class ExternalIDForm extends VerticalLayout {
     public void clearPatientFields(){
         externalIdField.clear();
         patientIdField.clear();
-        patientNameField.clear();
+        patientFirstNameField.clear();
+        patientLastNameField.clear();
         issuerOfPatientIdField.clear();
         binder.readBean(null);
     }

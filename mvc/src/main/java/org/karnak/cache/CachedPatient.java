@@ -2,8 +2,8 @@ package org.karnak.cache;
 
 public class CachedPatient extends Patient {
 
-    public CachedPatient(String pseudonym, String patientId, String patientName, String issuerOfPatientId) {
-        super(pseudonym, patientId, patientName, null, null, issuerOfPatientId);
+    public CachedPatient(String pseudonym, String patientId, String patientFirstName, String patientLastName, String issuerOfPatientId) {
+        super(pseudonym, patientId, patientFirstName, patientLastName, null, null, issuerOfPatientId);
     }
 
     public void setPseudonym(String pseudonym) {
@@ -14,8 +14,12 @@ public class CachedPatient extends Patient {
         this.patientId = patientId;
     }
 
-    public void setPatientName(String patientName) {
-        updatePatientName(patientName);
+    public void setPatientFirstName(String patientFirstName) {
+        updatePatientFirstName(patientFirstName);
+    }
+
+    public void setPatientLastName(String patientLastName) {
+        updatePatientLastName(patientLastName);
     }
 
     public void setIssuerOfPatientId(String issuerOfPatientId) {
