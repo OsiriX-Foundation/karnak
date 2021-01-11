@@ -3,7 +3,11 @@ package org.karnak.ui.project;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.router.*;
+import com.vaadin.flow.router.BeforeEvent;
+import com.vaadin.flow.router.HasUrlParameter;
+import com.vaadin.flow.router.OptionalParameter;
+import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.Route;
 import org.karnak.data.gateway.Project;
 import org.karnak.profilepipe.utils.HMAC;
 import org.karnak.ui.MainLayout;
@@ -14,7 +18,7 @@ import org.springframework.security.access.annotation.Secured;
 
 @Route(value = "projects", layout = MainLayout.class)
 @PageTitle("KARNAK - Projects")
-@Secured({"ROLE_ADMIN"})
+@Secured({"ADMIN"})
 public class MainViewProjects extends HorizontalLayout implements HasUrlParameter<String> {
     public static final String VIEW_NAME = "Projects";
 

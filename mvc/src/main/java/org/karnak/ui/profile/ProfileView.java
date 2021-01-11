@@ -9,23 +9,22 @@ import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 import com.vaadin.flow.data.selection.SingleSelect;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.function.Predicate;
 import org.karnak.data.profile.Profile;
 import org.karnak.profilepipe.profilebody.ProfilePipeBody;
 import org.karnak.ui.MainLayout;
-import org.springframework.security.access.annotation.Secured;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.annotation.Secured;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.error.YAMLException;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.function.Predicate;
-
 @Route(value = "profile", layout = MainLayout.class)
 @PageTitle("KARNAK - Profiles")
-@Secured({"ROLE_ADMIN"})
+@Secured({"ADMIN"})
 @SuppressWarnings("serial")
 public class ProfileView extends HorizontalLayout {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProfileView.class);

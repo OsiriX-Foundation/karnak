@@ -14,18 +14,6 @@
 	<name>karnak services and UI</name>
 	<packaging>jar</packaging>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>com.vaadin</groupId>
-				<artifactId>vaadin-bom</artifactId>
-				<version>${vaadin.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
-
 	<dependencies>
 		<dependency>
 			<groupId>javax.cache</groupId>
@@ -203,36 +191,62 @@
       <artifactId>jul-to-slf4j</artifactId>
     </dependency>
 
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+    </dependency>
 
-		<!-- Tests -->
-		<dependency>
-			<groupId>org.codehaus.janino</groupId>
-			<artifactId>janino</artifactId>
-		</dependency>
+    <!-- KeyCloack -->
+    <dependency>
+      <artifactId>keycloak-spring-boot-starter</artifactId>
+      <groupId>org.keycloak</groupId>
+      <version>11.0.3</version>
+    </dependency>
 
-		<!-- Tests -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<version>${springframework.version}</version>
-			<scope>test</scope>
-		</dependency>
+    <!-- Tests -->
+    <dependency>
+      <groupId>org.codehaus.janino</groupId>
+      <artifactId>janino</artifactId>
+    </dependency>
 
-	</dependencies>
+    <!-- Tests -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <version>${springframework.version}</version>
+      <scope>test</scope>
+    </dependency>
 
-	<build>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>true</filtering>
-			</resource>
-			<resource>
-				<directory>${project.build.directory}/native-lib</directory>
-			</resource>
+  </dependencies>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.vaadin</groupId>
+        <artifactId>vaadin-bom</artifactId>
+        <version>${vaadin.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <artifactId>keycloak-adapter-bom</artifactId>
+        <groupId>org.keycloak.bom</groupId>
+        <scope>import</scope>
+        <type>pom</type>
+        <version>11.0.3</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+      <resource>
+        <directory>${project.build.directory}/native-lib</directory>
+      </resource>
 		</resources>
 		<plugins>
 			<plugin>
