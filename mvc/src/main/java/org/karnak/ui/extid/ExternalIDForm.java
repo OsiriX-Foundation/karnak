@@ -42,7 +42,7 @@ public class ExternalIDForm extends VerticalLayout {
     private transient PatientClient externalIDCache;
 
     private Upload uploadCsvButton;
-    private Div AddedPatientLabelDiv;
+    private Div addedPatientLabelDiv;
     private Div uploadCsvLabelDiv;
 
     public ExternalIDForm(ListDataProvider<CachedPatient> dataProvider){
@@ -90,7 +90,7 @@ public class ExternalIDForm extends VerticalLayout {
 
         horizontalLayout1.add(uploadCsvLabelDiv);
         horizontalLayout2.add(uploadCsvButton);
-        horizontalLayout3.add(AddedPatientLabelDiv);
+        horizontalLayout3.add(addedPatientLabelDiv);
 
         horizontalLayout4.add(externalIdField, patientIdField, patientNameField, issuerOfPatientIdField);
         horizontalLayout5.add(clearFieldsButton, addPatientButton);
@@ -116,10 +116,10 @@ public class ExternalIDForm extends VerticalLayout {
         uploadCsvLabelDiv.setText("Upload a CSV file to add your external ID correspondence: ");
         uploadCsvLabelDiv.getStyle().set("font-size", "large").set("font-weight", "bolder");
 
-        AddedPatientLabelDiv = new Div();
-        AddedPatientLabelDiv = new Div();
-        AddedPatientLabelDiv.setText("Add one patient data to have the external ID correspondence: ");
-        AddedPatientLabelDiv.getStyle().set("font-size", "large").set("font-weight", "bolder");
+        addedPatientLabelDiv = new Div();
+        addedPatientLabelDiv = new Div();
+        addedPatientLabelDiv.setText("Add one patient data to have the external ID correspondence: ");
+        addedPatientLabelDiv.getStyle().set("font-size", "large").set("font-weight", "bolder");
 
         externalIdField = new TextField("External Pseudonym");
         externalIdField.setWidth("25%");
