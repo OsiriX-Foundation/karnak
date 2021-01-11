@@ -59,3 +59,8 @@ spring:
       jdbc:
         lob:
           non_contextual_creation: true
+# default keycloak config, if no profile activated
+keycloak:
+  realm: default
+  resource: default
+  auth-server-url: default

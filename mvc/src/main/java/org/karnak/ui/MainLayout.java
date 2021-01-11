@@ -31,7 +31,7 @@ import org.springframework.security.access.annotation.Secured;
 @CssImport(value = "./styles/shared-styles.css")
 @Theme(value = Lumo.class)
 @Route(value = "mainLayout")
-@Secured({"ROLE_ADMIN"})
+@Secured({"ADMIN"})
 @SuppressWarnings("serial")
 public class MainLayout extends FlexLayout implements RouterLayout {
     private final Menu menu;

@@ -1,7 +1,12 @@
 package org.karnak.ui.forwardnode;
 
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.router.*;
+import com.vaadin.flow.router.BeforeEvent;
+import com.vaadin.flow.router.HasUrlParameter;
+import com.vaadin.flow.router.OptionalParameter;
+import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.RouteAlias;
 import org.karnak.data.gateway.ForwardNode;
 import org.karnak.ui.MainLayout;
 import org.karnak.ui.api.ForwardNodeAPI;
@@ -13,7 +18,7 @@ import org.springframework.security.access.annotation.Secured;
 @Route(value = "forwardnode", layout = MainLayout.class)
 @RouteAlias(value = "", layout = MainLayout.class)
 @PageTitle("KARNAK - Forward node")
-@Secured({"ROLE_ADMIN"})
+@Secured({"ADMIN"})
 public class ForwardNodeView extends HorizontalLayout implements HasUrlParameter<String> {
     public static final String VIEW_NAME = "Gateway";
     private final ForwardNodeAPI forwardNodeAPI;
