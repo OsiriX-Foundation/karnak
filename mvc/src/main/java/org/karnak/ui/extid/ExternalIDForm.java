@@ -131,7 +131,6 @@ public class ExternalIDForm extends VerticalLayout {
         issuerOfPatientIdField.setWidth("25%");
 
         clearFieldsButton = new Button("Clear");
-        //clearFieldsButton.getStyle().set("margin-left", "auto");
 
         addPatientButton = new Button("Add patient");
         addPatientButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -162,9 +161,7 @@ public class ExternalIDForm extends VerticalLayout {
 
                 csvDialog.getReadCSVButton().addClickListener(buttonClickEvent1 -> {
                     final List<CachedPatient> patientListInCSV = csvDialog.getPatientsList();
-                    patientListInCSV.forEach(cachedPatient -> {
-                        addPatientInGrid(cachedPatient);
-                    });
+                    patientListInCSV.forEach(this::addPatientInGrid);
                     csvDialog.resetPatientsList();
                 });
             });
