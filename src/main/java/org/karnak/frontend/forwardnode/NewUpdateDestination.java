@@ -4,17 +4,23 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.spring.annotation.UIScope;
+import javax.annotation.PostConstruct;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.enums.DestinationType;
 import org.karnak.backend.enums.NodeEventType;
 import org.karnak.backend.model.NodeEvent;
 import org.karnak.backend.service.DestinationDataProvider;
 import org.karnak.frontend.component.ConfirmDialog;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
+@UIScope
 public class NewUpdateDestination extends VerticalLayout {
 
     private final DestinationDataProvider destinationDataProvider;
-    private final ViewLogic viewLogic;
+    private ViewLogic viewLogic;
     private final FormDICOM formDICOM;
     private final FormSTOW formSTOW;
     private final Binder<DestinationEntity> binderFormDICOM;
@@ -23,19 +29,25 @@ public class NewUpdateDestination extends VerticalLayout {
     private final ButtonSaveDeleteCancel buttonDestinationDICOMSaveDeleteCancel;
     private final ButtonSaveDeleteCancel buttonDestinationSTOWSaveDeleteCancel;
 
+    @Autowired
     public NewUpdateDestination(DestinationDataProvider destinationDataProvider,
-        ViewLogic viewLogic) {
-        this.destinationDataProvider = destinationDataProvider;
-        this.viewLogic = viewLogic;
+        FormDICOM formDICOM, FormSTOW formSTOW) {
         setSizeFull();
-        binderFormDICOM = new BeanValidationBinder<>(DestinationEntity.class);
-        binderFormSTOW = new BeanValidationBinder<>(DestinationEntity.class);
-        buttonDestinationDICOMSaveDeleteCancel = new ButtonSaveDeleteCancel();
-        buttonDestinationSTOWSaveDeleteCancel = new ButtonSaveDeleteCancel();
-        formDICOM = new FormDICOM(binderFormDICOM, buttonDestinationDICOMSaveDeleteCancel);
-        formSTOW = new FormSTOW(binderFormSTOW, buttonDestinationSTOWSaveDeleteCancel);
-        currentDestinationEntity = null;
 
+        this.formDICOM = formDICOM;
+        this.formSTOW = formSTOW;
+        this.destinationDataProvider = destinationDataProvider;
+        this.binderFormDICOM = new BeanValidationBinder<>(DestinationEntity.class);
+        this.binderFormSTOW = new BeanValidationBinder<>(DestinationEntity.class);
+        this.buttonDestinationDICOMSaveDeleteCancel = new ButtonSaveDeleteCancel();
+        this.buttonDestinationSTOWSaveDeleteCancel = new ButtonSaveDeleteCancel();
+        this.currentDestinationEntity = null;
+    }
+
+    @PostConstruct
+    public void init() {
+        this.formDICOM.init(binderFormDICOM, buttonDestinationDICOMSaveDeleteCancel);
+        this.formSTOW.init(binderFormSTOW, buttonDestinationSTOWSaveDeleteCancel);
         setButtonSaveEvent();
         setButtonDeleteEvent();
     }
@@ -128,5 +140,13 @@ public class NewUpdateDestination extends VerticalLayout {
 
     public Button getButtonSTOWCancel() {
         return buttonDestinationSTOWSaveDeleteCancel.getCancel();
+    }
+
+    public ViewLogic getViewLogic() {
+        return viewLogic;
+    }
+
+    public void setViewLogic(ViewLogic viewLogic) {
+        this.viewLogic = viewLogic;
     }
 }

@@ -1,4 +1,4 @@
-package org.karnak.frontend.profileEntity;
+package org.karnak.frontend.profile;
 
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.html.Div;

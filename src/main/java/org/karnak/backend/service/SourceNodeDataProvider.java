@@ -5,12 +5,14 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import org.karnak.backend.config.GatewayConfig;
 import org.karnak.backend.data.entity.DicomSourceNodeEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.data.repo.DicomSourceNodeRepo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @SuppressWarnings("serial")
+@Service
 public class SourceNodeDataProvider extends ListDataProvider<DicomSourceNodeEntity> {
 
     private final DicomSourceNodeRepo dicomSourceNodeRepo;
@@ -20,23 +22,18 @@ public class SourceNodeDataProvider extends ListDataProvider<DicomSourceNodeEnti
     private ForwardNodeEntity forwardNodeEntity; // Current forward node
     private boolean hasChanges;
 
-    {
-        dicomSourceNodeRepo = GatewayConfig.getInstance().getDicomSourceNodePersistence();
-    }
-
     /**
      * Text filter that can be changed separately.
      */
     private String filterText = "";
 
-    public SourceNodeDataProvider(DataService dataService) {
-        this(dataService, new HashSet<>());
-    }
-
-    private SourceNodeDataProvider(DataService dataService, Set<DicomSourceNodeEntity> backend) {
-        super(backend);
+    @Autowired
+    public SourceNodeDataProvider(final DicomSourceNodeRepo dicomSourceNodeRepo,
+        final DataService dataService) {
+        super(new HashSet<>());
+        this.backend = new HashSet<>();
+        this.dicomSourceNodeRepo = dicomSourceNodeRepo;
         this.dataService = dataService;
-        this.backend = backend;
     }
 
     public void setForwardNode(ForwardNodeEntity forwardNodeEntity) {

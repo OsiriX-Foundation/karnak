@@ -10,17 +10,19 @@ import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.DicomSourceNodeEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.data.entity.SOPClassUIDEntity;
-import org.karnak.backend.data.repo.GatewayRepo;
+import org.karnak.backend.data.repo.ForwardNodeRepo;
 import org.karnak.backend.data.repo.SOPClassUIDRepo;
+import org.springframework.stereotype.Service;
 
 @SuppressWarnings("serial")
+@Service
 public class DataServiceImpl extends DataService {
 
-  private final GatewayRepo gatewayRepo;
+  private final ForwardNodeRepo forwardNodeRepo;
   private final SOPClassUIDRepo sopClassUIDRepo;
 
   {
-    gatewayRepo = GatewayConfig.getInstance().getGatewayPersistence();
+    forwardNodeRepo = GatewayConfig.getInstance().getGatewayPersistence();
   }
 
   {
@@ -31,25 +33,25 @@ public class DataServiceImpl extends DataService {
   @Override
   public Collection<ForwardNodeEntity> getAllForwardNodes() {
     List<ForwardNodeEntity> list = new ArrayList<>();
-    gatewayRepo.findAll() //
+    forwardNodeRepo.findAll() //
         .forEach(list::add);
     return list;
   }
 
   @Override
   public ForwardNodeEntity getForwardNodeById(Long dataId) {
-    return gatewayRepo.findById(dataId).orElse(null);
+    return forwardNodeRepo.findById(dataId).orElse(null);
   }
 
   @Override
   public ForwardNodeEntity updateForwardNode(ForwardNodeEntity data) {
-    return gatewayRepo.saveAndFlush(data);
+    return forwardNodeRepo.saveAndFlush(data);
   }
 
     @Override
     public void deleteForwardNode(Long dataId) {
-      gatewayRepo.deleteById(dataId);
-      gatewayRepo.flush();
+      forwardNodeRepo.deleteById(dataId);
+      forwardNodeRepo.flush();
     }
 
   @Override

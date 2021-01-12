@@ -9,8 +9,11 @@ import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.enums.NodeEventType;
 import org.karnak.backend.model.NodeEvent;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ForwardNodeAPI implements Serializable {
+
     private final ForwardNodeDataProvider dataProvider;
     private ApplicationEventPublisher applicationEventPublisher;
 

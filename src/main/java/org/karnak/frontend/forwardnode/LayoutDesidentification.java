@@ -9,23 +9,26 @@ import com.vaadin.flow.data.binder.Binder;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.enums.IdTypes;
-import org.karnak.backend.service.ProjectDataProvider;
+import org.karnak.backend.service.ProjectService;
 import org.karnak.frontend.project.MainViewProjects;
 import org.karnak.frontend.util.UIS;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class LayoutDesidentification extends Div {
 
-    private final Binder<DestinationEntity> destinationBinder;
+    private final ProjectService projectService;
 
     private Checkbox checkboxDesidentification;
     private Label labelDisclaimer;
     private Checkbox checkboxUseAsPatientName;
     private final ProjectDropDown projectDropDown;
     private ExtidPresentInDicomTagView extidPresentInDicomTagView;
-    private final DesidentificationName desidentificationName;
+    private Binder<DestinationEntity> destinationBinder;
     private Div div;
-    private final ProjectDataProvider projectDataProvider;
-    private final WarningNoProjectsDefined warningNoProjectsDefined;
+    private DesidentificationName desidentificationName;
+    private WarningNoProjectsDefined warningNoProjectsDefined;
 
     private final String LABEL_CHECKBOX_DESIDENTIFICATION = "Activate de-identification";
     private final String LABEL_DISCLAIMER_DEIDENTIFICATION = "In order to ensure complete de-identification, visual verification of metadata and images is necessary.";
@@ -34,15 +37,21 @@ public class LayoutDesidentification extends Div {
     final String[] extidSentence = {"Pseudonym are generate automatically",
         "Pseudonym is already store in KARNAK", "Pseudonym is in a DICOM tag"};
 
-    public LayoutDesidentification(Binder<DestinationEntity> destinationBinder) {
-        projectDataProvider = new ProjectDataProvider();
-        this.destinationBinder = destinationBinder;
-        projectDropDown = new ProjectDropDown();
-        desidentificationName = new DesidentificationName();
+    @Autowired
+    public LayoutDesidentification(final ProjectService projectService,
+        final ProjectDropDown projectDropDown) {
+        this.projectService = projectService;
+        this.projectDropDown = projectDropDown;
 
-        warningNoProjectsDefined = new WarningNoProjectsDefined();
-        warningNoProjectsDefined.setTextBtnCancel("Continue");
-        warningNoProjectsDefined.setTextBtnValidate("Create a project");
+    }
+
+    public void init(final Binder<DestinationEntity> binder) {
+        this.desidentificationName = new DesidentificationName();
+        this.warningNoProjectsDefined = new WarningNoProjectsDefined();
+        this.warningNoProjectsDefined.setTextBtnCancel("Continue");
+        this.warningNoProjectsDefined.setTextBtnValidate("Create a project");
+
+        setDestinationBinder(binder);
 
         setElements();
         setBinder();
@@ -109,8 +118,9 @@ public class LayoutDesidentification extends Div {
         checkboxDesidentification.addValueChangeListener(event -> {
             if (event.getValue() != null) {
                 if (event.getValue()) {
-                    if (projectDataProvider.getAllProjects().size() > 0) {
-                        div.add(labelDisclaimer, projectDropDown, desidentificationName, extidListBox);
+                    if (projectService.getAllProjects().size() > 0) {
+                        div.add(labelDisclaimer, projectDropDown, desidentificationName,
+                            extidListBox);
                         setTextOnSelectionProject(projectDropDown.getValue());
                     } else {
                         warningNoProjectsDefined.open();
@@ -174,27 +184,36 @@ public class LayoutDesidentification extends Div {
             .bind(DestinationEntity::getProjectEntity, DestinationEntity::setProjectEntity);
 
         destinationBinder.forField(extidListBox)
-                .withValidator(type -> type != null,"Choose pseudonym type\n")
-                .bind(destination -> {
-                    if (destination.getIdTypes().equals(IdTypes.PID)){
-                        return extidSentence[0];
-                    } else if(destination.getIdTypes().equals(IdTypes.EXTID)) {
-                        return extidSentence[1];
-                    } else {
-                        return extidSentence[2];
-                    }
-                }, (destination, s) -> {
-                    if (s.equals(extidSentence[0])) {
-                        destination.setIdTypes(IdTypes.PID);
-                    } else if (s.equals(extidSentence[1])){
-                        destination.setIdTypes(IdTypes.EXTID);
-                    } else {
-                        destination.setIdTypes(IdTypes.ADD_EXTID);
-                    }
-                });
+            .withValidator(type -> type != null,"Choose pseudonym type\n")
+            .bind(destination -> {
+                if (destination.getIdTypes().equals(IdTypes.PID)){
+                    return extidSentence[0];
+                } else if(destination.getIdTypes().equals(IdTypes.EXTID)) {
+                    return extidSentence[1];
+                } else {
+                    return extidSentence[2];
+                }
+            }, (destination, s) -> {
+                if (s.equals(extidSentence[0])) {
+                    destination.setIdTypes(IdTypes.PID);
+                } else if (s.equals(extidSentence[1])){
+                    destination.setIdTypes(IdTypes.EXTID);
+                } else {
+                    destination.setIdTypes(IdTypes.ADD_EXTID);
+                }
+            });
 
         destinationBinder.forField(checkboxUseAsPatientName)
             .bind(DestinationEntity::getPseudonymAsPatientName,
                 DestinationEntity::setPseudonymAsPatientName);
+    }
+
+    public Binder<DestinationEntity> getDestinationBinder() {
+        return destinationBinder;
+    }
+
+    public void setDestinationBinder(
+        Binder<DestinationEntity> destinationBinder) {
+        this.destinationBinder = destinationBinder;
     }
 }

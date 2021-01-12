@@ -4,29 +4,38 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.spring.annotation.UIScope;
+import javax.annotation.PostConstruct;
 import org.karnak.backend.data.entity.DicomSourceNodeEntity;
 import org.karnak.backend.enums.NodeEventType;
 import org.karnak.backend.model.NodeEvent;
 import org.karnak.backend.service.SourceNodeDataProvider;
 import org.karnak.frontend.component.ConfirmDialog;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
+@UIScope
 public class NewUpdateSourceNode extends VerticalLayout {
 
     private final Binder<DicomSourceNodeEntity> binderFormSourceNode;
     private final SourceNodeDataProvider dataProvider;
-    private final ViewLogic viewLogic;
+    private ViewLogic viewLogic;
     private final FormSourceNode formSourceNode;
     private DicomSourceNodeEntity currentSourceNode;
     private final ButtonSaveDeleteCancel buttonSaveDeleteCancel;
 
-    public NewUpdateSourceNode(SourceNodeDataProvider sourceNodeDataProvider, ViewLogic viewLogic) {
+    @Autowired
+    public NewUpdateSourceNode(SourceNodeDataProvider sourceNodeDataProvider) {
         currentSourceNode = null;
         dataProvider = sourceNodeDataProvider;
-        this.viewLogic = viewLogic;
         binderFormSourceNode = new BeanValidationBinder<>(DicomSourceNodeEntity.class);
         buttonSaveDeleteCancel = new ButtonSaveDeleteCancel();
         formSourceNode = new FormSourceNode(binderFormSourceNode, buttonSaveDeleteCancel);
+    }
 
+    @PostConstruct
+    public void init() {
         setButtonSaveEvent();
         setButtonDeleteEvent();
     }
@@ -64,7 +73,7 @@ public class NewUpdateSourceNode extends VerticalLayout {
         buttonSaveDeleteCancel.getDelete().addClickListener(event -> {
             if (currentSourceNode != null) {
                 ConfirmDialog dialog = new ConfirmDialog(
-                        "Are you sure to delete the DICOM source node " + currentSourceNode.getAeTitle() + "?");
+                    "Are you sure to delete the DICOM source node " + currentSourceNode.getAeTitle() + "?");
                 dialog.addConfirmationListener(componentEvent -> {
                     NodeEvent nodeEvent = new NodeEvent(currentSourceNode, NodeEventType.REMOVE);
                     dataProvider.delete(currentSourceNode);
@@ -78,5 +87,13 @@ public class NewUpdateSourceNode extends VerticalLayout {
 
     public Button getButtonCancel() {
         return buttonSaveDeleteCancel.getCancel();
+    }
+
+    public ViewLogic getViewLogic() {
+        return viewLogic;
+    }
+
+    public void setViewLogic(ViewLogic viewLogic) {
+        this.viewLogic = viewLogic;
     }
 }

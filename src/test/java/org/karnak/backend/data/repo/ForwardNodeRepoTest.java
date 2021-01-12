@@ -19,7 +19,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 @DataJpaTest
-public class GatewayRepoTest {
+public class ForwardNodeRepoTest {
 
     private final Consumer<ForwardNodeEntity> forwardNodeConsumer = //
         x -> assertThat(x) //
@@ -55,7 +55,7 @@ public class GatewayRepoTest {
     private TestEntityManager entityManager;
 
     @Autowired
-    private GatewayRepo repository;
+    private ForwardNodeRepo repository;
 
     @Test
     public void testInvalidForwardNode_Mandatory() {

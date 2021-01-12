@@ -6,27 +6,37 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.spring.annotation.UIScope;
+import javax.annotation.PostConstruct;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
-import org.karnak.backend.service.DataService;
 import org.karnak.backend.service.SourceNodeDataProvider;
 import org.karnak.frontend.util.UIS;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
+@UIScope
 public class SourceNodesView extends VerticalLayout {
 
     private final SourceNodeDataProvider sourceNodeDataProvider;
 
-    private final HorizontalLayout layoutFilterButton;
-    private final TextField filter;
-    private final Button newSourceNode;
-    private final GridSourceNode gridSourceNode;
+    private HorizontalLayout layoutFilterButton;
+    private TextField filter;
+    private Button newSourceNode;
+    private GridSourceNode gridSourceNode;
 
     private final String LABEL_NEW_SOURCE_NODE = "Source";
     private final String PLACEHOLDER_FILTER = "Filter properties of sources";
 
-    public SourceNodesView(DataService dataService) {
+    @Autowired
+    public SourceNodesView(SourceNodeDataProvider sourceNodeDataProvider) {
+        this.sourceNodeDataProvider = sourceNodeDataProvider;
+    }
+
+    @PostConstruct
+    public void init() {
         setSizeFull();
-        sourceNodeDataProvider = new SourceNodeDataProvider(dataService);
-        gridSourceNode = new GridSourceNode();
+        this.gridSourceNode = new GridSourceNode();
         filter = new TextField();
         newSourceNode = new Button(LABEL_NEW_SOURCE_NODE);
         layoutFilterButton = new HorizontalLayout(filter, newSourceNode);
@@ -37,8 +47,7 @@ public class SourceNodesView extends VerticalLayout {
         setButtonNewDestinationDICOM();
 
         add(UIS.setWidthFull(layoutFilterButton),
-                UIS.setWidthFull(gridSourceNode));
-
+            UIS.setWidthFull(gridSourceNode));
     }
 
     private void setTextFieldFilter() {

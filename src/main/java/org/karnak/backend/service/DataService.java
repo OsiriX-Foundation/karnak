@@ -11,6 +11,7 @@ import org.karnak.backend.data.entity.SOPClassUIDEntity;
 /**
  * Back-end service interface for retrieving and updating data.
  */
+
 public abstract class DataService implements Serializable {
 
   private static final long serialVersionUID = -1402338736361739563L;

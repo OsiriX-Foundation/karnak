@@ -11,105 +11,115 @@ import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.frontend.component.converter.HStringToIntegerConverter;
 import org.karnak.frontend.kheops.SwitchingAlbumsView;
 import org.karnak.frontend.util.UIS;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-public class FormSTOW extends VerticalLayout  {
+@Component
+public class FormSTOW extends VerticalLayout {
 
-  private final Binder<DestinationEntity> binder;
-  private final TextField description;
-    private final TextField url;
-    private final TextField urlCredentials;
-    private final TextArea headers;
+  private final LayoutDesidentification layoutDesidentification;
+  private Binder<DestinationEntity> binder;
+  private TextField description;
+  private TextField url;
+  private TextField urlCredentials;
+  private TextArea headers;
+  private TextField notify;
+  private TextField notifyObjectErrorPrefix;
+  private TextField notifyObjectPattern;
+  private TextField notifyObjectValues;
+  private TextField notifyInterval;
+  private FilterBySOPClassesForm filterBySOPClassesForm;
+  private SwitchingAlbumsView switchingAlbumsView;
 
-    private final TextField notify;
-    private final TextField notifyObjectErrorPrefix;
-    private final TextField notifyObjectPattern;
-    private final TextField notifyObjectValues;
-    private final TextField notifyInterval;
-    private final LayoutDesidentification layoutDesidentification;
-    private final FilterBySOPClassesForm filterBySOPClassesForm;
-    private final SwitchingAlbumsView switchingAlbumsView;
 
-  public FormSTOW(Binder<DestinationEntity> binder, ButtonSaveDeleteCancel buttonSaveDeleteCancel) {
+  @Autowired
+  public FormSTOW(final LayoutDesidentification layoutDesidentification) {
+    this.layoutDesidentification = layoutDesidentification;
+  }
+
+  public void init(Binder<DestinationEntity> binder,
+      ButtonSaveDeleteCancel buttonSaveDeleteCancel) {
     setSizeFull();
     this.binder = binder;
+    this.layoutDesidentification.init(binder);
 
-    description = new TextField("Description");
-    url = new TextField("URL");
-    urlCredentials = new TextField("URL credentials");
-    headers = new TextArea("Headers");
-    notify = new TextField("Notif.: list of emails");
-    notifyObjectErrorPrefix = new TextField("Notif.: error subject prefix");
-    notifyObjectPattern = new TextField("Notif.: subject pattern");
-        notifyObjectValues = new TextField("Notif.: subject values");
-        notifyInterval = new TextField("Notif.: interval");
-        layoutDesidentification = new LayoutDesidentification(binder);
-        filterBySOPClassesForm = new FilterBySOPClassesForm(binder);
-        switchingAlbumsView = new SwitchingAlbumsView();
+    this.description = new TextField("Description");
+    this.url = new TextField("URL");
+    this.urlCredentials = new TextField("URL credentials");
+    this.headers = new TextArea("Headers");
+    this.notify = new TextField("Notif.: list of emails");
+    this.notifyObjectErrorPrefix = new TextField("Notif.: error subject prefix");
+    this.notifyObjectPattern = new TextField("Notif.: subject pattern");
+    this.notifyObjectValues = new TextField("Notif.: subject values");
+    this.notifyInterval = new TextField("Notif.: interval");
+    this.filterBySOPClassesForm = new FilterBySOPClassesForm(binder);
+    this.switchingAlbumsView = new SwitchingAlbumsView();
 
-        add(UIS.setWidthFull( //
-                new HorizontalLayout(description)));
-        add(UIS.setWidthFull( //
-                new HorizontalLayout(url, urlCredentials)));
-        add(UIS.setWidthFull( //
-                headers));
-        add(UIS.setWidthFull( //
-                new HorizontalLayout(notify)));
-        add(UIS.setWidthFull( //
-                new HorizontalLayout(notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues,
-                        notifyInterval)));
-        add(UIS.setWidthFull(layoutDesidentification));
-        add(UIS.setWidthFull(filterBySOPClassesForm));
-        add(UIS.setWidthFull(switchingAlbumsView));
-        add(UIS.setWidthFull(buttonSaveDeleteCancel));
+    add(UIS.setWidthFull( //
+        new HorizontalLayout(description)));
+    add(UIS.setWidthFull( //
+        new HorizontalLayout(url, urlCredentials)));
+    add(UIS.setWidthFull( //
+        headers));
+    add(UIS.setWidthFull( //
+        new HorizontalLayout(notify)));
+    add(UIS.setWidthFull( //
+        new HorizontalLayout(notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues,
+            notifyInterval)));
+    add(UIS.setWidthFull(layoutDesidentification));
+    add(UIS.setWidthFull(filterBySOPClassesForm));
+    add(UIS.setWidthFull(switchingAlbumsView));
+    add(UIS.setWidthFull(buttonSaveDeleteCancel));
 
-        setElements();
-        setBinder();
-    }
+    setElements();
+    setBinder();
+  }
 
-    private void setElements() {
-        description.setWidth("100%");
 
-        url.setWidth("50%");
-        UIS.setTooltip(url, "The destination STOW-RS URL");
+  private void setElements() {
+    description.setWidth("100%");
 
-        urlCredentials.setWidth("50%");
-        UIS.setTooltip(urlCredentials, "Credentials of the STOW-RS service (format is \"user:password\")");
+    url.setWidth("50%");
+    UIS.setTooltip(url, "The destination STOW-RS URL");
 
-        headers.setMinHeight("10em");
-        headers.setWidth("100%");
-        UIS.setTooltip(headers,
-                "Headers for HTTP request. Example of format:\n<key>Authorization</key>\n<value>Bearer 1v1pwxT4Ww4DCFzyaMt0NP</value>");
+    urlCredentials.setWidth("50%");
+    UIS.setTooltip(urlCredentials, "Credentials of the STOW-RS service (format is \"user:password\")");
 
-        notify.setWidth("100%");
+    headers.setMinHeight("10em");
+    headers.setWidth("100%");
+    UIS.setTooltip(headers,
+        "Headers for HTTP request. Example of format:\n<key>Authorization</key>\n<value>Bearer 1v1pwxT4Ww4DCFzyaMt0NP</value>");
 
-        notifyObjectErrorPrefix.setWidth("24%");
-        UIS.setTooltip(notifyObjectErrorPrefix,
-                "Prefix of the email object when containing an issue. Default value: **ERROR**");
+    notify.setWidth("100%");
 
-        notifyObjectPattern.setWidth("24%");
-        UIS.setTooltip(notifyObjectPattern,
-                "Pattern of the email object, see https://dzone.com/articles/java-string-format-examples. Default value: [Karnak Notification] %s %.30s");
+    notifyObjectErrorPrefix.setWidth("24%");
+    UIS.setTooltip(notifyObjectErrorPrefix,
+        "Prefix of the email object when containing an issue. Default value: **ERROR**");
 
-        notifyObjectValues.setWidth("24%");
-        UIS.setTooltip(notifyObjectValues,
-                "Values injected in the pattern [PatientID StudyDescription StudyDate StudyInstanceUID]. Default value: PatientID,StudyDescription");
+    notifyObjectPattern.setWidth("24%");
+    UIS.setTooltip(notifyObjectPattern,
+        "Pattern of the email object, see https://dzone.com/articles/java-string-format-examples. Default value: [Karnak Notification] %s %.30s");
 
-        notifyInterval.setWidth("18%");
-        notifyInterval.addThemeVariants(TextFieldVariant.LUMO_ALIGN_RIGHT);
-        UIS.setTooltip(notifyInterval,
-                "Interval in seconds for sending a notification (when no new image is arrived in the archive folder). Default value: 45");
-    }
+    notifyObjectValues.setWidth("24%");
+    UIS.setTooltip(notifyObjectValues,
+        "Values injected in the pattern [PatientID StudyDescription StudyDate StudyInstanceUID]. Default value: PatientID,StudyDescription");
 
-    private void setBinder() {
-      binder.forField(url)
-          .withValidator(StringUtils::isNotBlank, "URL is mandatory")
-          .bind(DestinationEntity::getUrl, DestinationEntity::setUrl);
-      binder.forField(notifyInterval)
-          .withConverter(new HStringToIntegerConverter())
-          .bind(DestinationEntity::getNotifyInterval, DestinationEntity::setNotifyInterval);
-      binder.forField(switchingAlbumsView)
-          .bind(DestinationEntity::getKheopsAlbumEntities,
-              DestinationEntity::setKheopsAlbumEntities);
-      binder.bindInstanceFields(this);
-    }
+    notifyInterval.setWidth("18%");
+    notifyInterval.addThemeVariants(TextFieldVariant.LUMO_ALIGN_RIGHT);
+    UIS.setTooltip(notifyInterval,
+        "Interval in seconds for sending a notification (when no new image is arrived in the archive folder). Default value: 45");
+  }
+
+  private void setBinder() {
+    binder.forField(url)
+        .withValidator(StringUtils::isNotBlank, "URL is mandatory")
+        .bind(DestinationEntity::getUrl, DestinationEntity::setUrl);
+    binder.forField(notifyInterval)
+        .withConverter(new HStringToIntegerConverter())
+        .bind(DestinationEntity::getNotifyInterval, DestinationEntity::setNotifyInterval);
+    binder.forField(switchingAlbumsView)
+        .bind(DestinationEntity::getKheopsAlbumEntities,
+            DestinationEntity::setKheopsAlbumEntities);
+    binder.bindInstanceFields(this);
+  }
 }

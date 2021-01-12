@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
+import org.springframework.stereotype.Service;
 
 @SuppressWarnings("serial")
+@Service
 public class ForwardNodeDataProvider extends ListDataProvider<ForwardNodeEntity> {
 
     private final DataService dataService;

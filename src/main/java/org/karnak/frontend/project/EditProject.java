@@ -9,13 +9,13 @@ import com.vaadin.flow.data.binder.Binder;
 import java.util.List;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
-import org.karnak.backend.service.ProjectDataProvider;
+import org.karnak.backend.service.ProjectService;
 import org.karnak.frontend.component.ConfirmDialog;
 import org.karnak.frontend.forwardnode.ProfileDropDown;
 
 public class EditProject extends VerticalLayout {
 
-    private final ProjectDataProvider projectDataProvider;
+    private final ProjectService projectService;
     private Binder<ProjectEntity> binder;
     private TextField textProjectName;
     private ProjectSecret projectSecret;
@@ -26,8 +26,8 @@ public class EditProject extends VerticalLayout {
     private final WarningRemoveProjectUsed dialogWarning;
     private ProjectEntity projectEntity;
 
-    public EditProject(ProjectDataProvider projectDataProvider) {
-        this.projectDataProvider = projectDataProvider;
+    public EditProject(ProjectService projectService) {
+        this.projectService = projectService;
         dialogWarning = new WarningRemoveProjectUsed();
 
         setEnabled(false);
@@ -59,11 +59,11 @@ public class EditProject extends VerticalLayout {
                             projectEntity
                                 .getName()));
                     dialog.addConfirmationListener(componentEvent -> {
-                        projectDataProvider.update(projectEntity);
+                        projectService.update(projectEntity);
                     });
                     dialog.open();
                 } else {
-                    projectDataProvider.update(projectEntity);
+                    projectService.update(projectEntity);
                 }
             }
         });
@@ -77,7 +77,7 @@ public class EditProject extends VerticalLayout {
                 dialogWarning.open();
 
             } else {
-                projectDataProvider.remove(projectEntity);
+                projectService.remove(projectEntity);
                 clear();
                 setEnabled(false);
             }

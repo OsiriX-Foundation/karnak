@@ -10,7 +10,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.model.profilepipe.HMAC;
-import org.karnak.backend.service.ProjectDataProvider;
+import org.karnak.backend.service.ProjectService;
 import org.karnak.frontend.MainLayout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -20,22 +20,24 @@ import org.springframework.security.access.annotation.Secured;
 @PageTitle("KARNAK - Projects")
 @Secured({"ADMIN"})
 public class MainViewProjects extends HorizontalLayout implements HasUrlParameter<String> {
+
     public static final String VIEW_NAME = "Projects";
 
-    private final ProjectDataProvider projectDataProvider;
+    private final ProjectService projectService;
     private final NewProjectForm newProjectForm;
     private final GridProject gridProject;
     private final EditProject editProject;
     private final Binder<ProjectEntity> newResearchBinder;
 
-    public MainViewProjects() {
+    @Autowired
+    public MainViewProjects(final ProjectService projectService) {
         setWidthFull();
         newProjectForm = new NewProjectForm();
-        projectDataProvider = new ProjectDataProvider();
-        gridProject = new GridProject(projectDataProvider);
+        this.projectService = projectService;
+        gridProject = new GridProject(projectService);
         VerticalLayout layoutNewProject = new VerticalLayout(newProjectForm, gridProject);
         layoutNewProject.setWidth("40%");
-        editProject = new EditProject(projectDataProvider);
+        editProject = new EditProject(projectService);
         editProject.setWidth("60%");
         newResearchBinder = newProjectForm.getBinder();
 
@@ -49,7 +51,7 @@ public class MainViewProjects extends HorizontalLayout implements HasUrlParamete
             ProjectEntity newProjectEntity = new ProjectEntity();
             if (newResearchBinder.writeBeanIfValid(newProjectEntity)) {
                 newProjectEntity.setSecret(HMAC.generateRandomKey());
-                projectDataProvider.save(newProjectEntity);
+                projectService.save(newProjectEntity);
                 newProjectForm.clear();
                 ProjectViewLogic.navigateProject(newProjectEntity);
             }
@@ -67,7 +69,7 @@ public class MainViewProjects extends HorizontalLayout implements HasUrlParamete
         Long idProject = ProjectViewLogic.enter(parameter);
         ProjectEntity currentProjectEntity = null;
         if (idProject != null) {
-            currentProjectEntity = projectDataProvider.getProjectById(idProject);
+            currentProjectEntity = projectService.getProjectById(idProject);
         }
         editProject.setProject(currentProjectEntity);
         gridProject.selectRow(currentProjectEntity);
@@ -75,6 +77,6 @@ public class MainViewProjects extends HorizontalLayout implements HasUrlParamete
 
     @Autowired
     private void addEventManager(ApplicationEventPublisher publisher) {
-        projectDataProvider.setApplicationEventPublisher(publisher);
+        projectService.setApplicationEventPublisher(publisher);
     }
 }

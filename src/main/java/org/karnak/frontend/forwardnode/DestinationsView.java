@@ -6,46 +6,58 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.spring.annotation.UIScope;
+import javax.annotation.PostConstruct;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
-import org.karnak.backend.service.DataService;
 import org.karnak.backend.service.DestinationDataProvider;
 import org.karnak.frontend.util.UIS;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
+@UIScope
 public class DestinationsView extends VerticalLayout {
 
     private final DestinationDataProvider destinationDataProvider;
 
-    private final TextField filter;
-    private final Button newDestinationDICOM;
-    private final Button newDestinationSTOW;
-    private final GridDestination gridDestination;
+    private TextField filter;
+    private Button newDestinationDICOM;
+    private Button newDestinationSTOW;
+    private GridDestination gridDestination;
 
-    private final HorizontalLayout layoutFilterButton;
+    private HorizontalLayout layoutFilterButton;
 
     private final String LABEL_NEW_DESTINATION_DICOM = "DICOM";
     private final String LABEL_NEW_DESTINATION_STOW = "STOW";
     private final String PLACEHOLDER_FILTER = "Filter properties of destination";
 
-    public DestinationsView(DataService dataService) {
+    @Autowired
+    public DestinationsView(final DestinationDataProvider destinationDataProvider) {
+        this.destinationDataProvider = destinationDataProvider;
+    }
+
+    @PostConstruct
+    public void init() {
         setSizeFull();
-        destinationDataProvider = new DestinationDataProvider(dataService);
-        filter = new TextField();
-        newDestinationDICOM = new Button(LABEL_NEW_DESTINATION_DICOM);
-        newDestinationSTOW = new Button(LABEL_NEW_DESTINATION_STOW);
-        gridDestination = new GridDestination();
+        this.filter = new TextField();
+        this.newDestinationDICOM = new Button(LABEL_NEW_DESTINATION_DICOM);
+        this.newDestinationSTOW = new Button(LABEL_NEW_DESTINATION_STOW);
+        this.gridDestination = new GridDestination();
 
         setTextFieldFilter();
         setButtonNewDestinationDICOM();
         setButtonNewDestinationSTOW();
         setForwardNode(null);
 
-        layoutFilterButton = new HorizontalLayout(filter, newDestinationDICOM, newDestinationSTOW);
-        layoutFilterButton.setVerticalComponentAlignment(Alignment.START, filter);
-        layoutFilterButton.expand(filter);
+        this.layoutFilterButton = new HorizontalLayout(this.filter, this.newDestinationDICOM,
+            this.newDestinationSTOW);
+        this.layoutFilterButton.setVerticalComponentAlignment(Alignment.START, this.filter);
+        this.layoutFilterButton.expand(this.filter);
 
-        add(UIS.setWidthFull(layoutFilterButton),
-            UIS.setWidthFull(gridDestination));
+        add(UIS.setWidthFull(this.layoutFilterButton),
+            UIS.setWidthFull(this.gridDestination));
     }
+
 
     protected void setForwardNode(ForwardNodeEntity forwardNodeEntity) {
         setEnabled(forwardNodeEntity != null);

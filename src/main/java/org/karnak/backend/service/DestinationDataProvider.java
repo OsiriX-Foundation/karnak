@@ -5,12 +5,14 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import org.karnak.backend.config.GatewayConfig;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.data.repo.DestinationRepo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @SuppressWarnings("serial")
+@Service
 public class DestinationDataProvider extends ListDataProvider<DestinationEntity> {
 
     private final DestinationRepo destinationRepo;
@@ -20,23 +22,18 @@ public class DestinationDataProvider extends ListDataProvider<DestinationEntity>
     private ForwardNodeEntity forwardNodeEntity; // Current forward node
     private boolean hasChanges;
 
-    {
-        destinationRepo = GatewayConfig.getInstance().getDestinationPersistence();
-    }
-
     /**
      * Text filter that can be changed separately.
      */
     private String filterText = "";
 
-    public DestinationDataProvider(DataService dataService) {
-        this(dataService, new HashSet<>());
-    }
-
-    private DestinationDataProvider(DataService dataService, Set<DestinationEntity> backend) {
-        super(backend);
+    @Autowired
+    public DestinationDataProvider(final DestinationRepo destinationRepo,
+        final DataService dataService) {
+        super(new HashSet<>());
+        this.backend = new HashSet<>();
+        this.destinationRepo = destinationRepo;
         this.dataService = dataService;
-        this.backend = backend;
     }
 
     public void setForwardNode(ForwardNodeEntity forwardNodeEntity) {

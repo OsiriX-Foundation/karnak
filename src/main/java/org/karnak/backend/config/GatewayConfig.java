@@ -6,7 +6,7 @@ import javax.annotation.PostConstruct;
 import org.karnak.backend.data.entity.SOPClassUIDEntity;
 import org.karnak.backend.data.repo.DestinationRepo;
 import org.karnak.backend.data.repo.DicomSourceNodeRepo;
-import org.karnak.backend.data.repo.GatewayRepo;
+import org.karnak.backend.data.repo.ForwardNodeRepo;
 import org.karnak.backend.data.repo.KheopsAlbumsRepo;
 import org.karnak.backend.data.repo.ProjectRepo;
 import org.karnak.backend.data.repo.SOPClassUIDRepo;
@@ -23,7 +23,7 @@ public class GatewayConfig {
 
     private static GatewayConfig instance;
     @Autowired
-    private GatewayRepo gatewayRepo;
+    private ForwardNodeRepo forwardNodeRepo;
     @Autowired
     private DestinationRepo destinationRepo;
     @Autowired
@@ -60,8 +60,8 @@ public class GatewayConfig {
     }
 
     @Bean("GatewayPersistence")
-    public GatewayRepo getGatewayPersistence() {
-        return gatewayRepo;
+    public ForwardNodeRepo getGatewayPersistence() {
+        return forwardNodeRepo;
     }
 
     public DestinationRepo getDestinationPersistence() {

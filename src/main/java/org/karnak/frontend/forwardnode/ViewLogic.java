@@ -1,9 +1,12 @@
 package org.karnak.frontend.forwardnode;
 
+import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.context.ApplicationEventPublisher;
 
+@UIScope
 public class ViewLogic {
-    LayoutEditForwardNode currentLayout;
+
+    private final LayoutEditForwardNode currentLayout;
     private ApplicationEventPublisher applicationEventPublisher;
 
     public ViewLogic(LayoutEditForwardNode currentLayout) {

@@ -18,7 +18,7 @@ import org.karnak.frontend.extid.ExternalIDView;
 import org.karnak.frontend.forwardnode.ForwardNodeView;
 import org.karnak.frontend.help.HelpView;
 import org.karnak.frontend.mainzelliste.MainzellisteView;
-import org.karnak.frontend.profileEntity.ProfileView;
+import org.karnak.frontend.profile.ProfileView;
 import org.karnak.frontend.project.MainViewProjects;
 import org.springframework.security.access.annotation.Secured;
 

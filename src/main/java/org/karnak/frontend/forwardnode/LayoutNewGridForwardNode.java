@@ -4,9 +4,11 @@ import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.spring.annotation.UIScope;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.service.ForwardNodeAPI;
 
+@UIScope
 public class LayoutNewGridForwardNode extends VerticalLayout {
 
     private final ForwardNodeViewLogic forwardNodeViewLogic;

@@ -11,29 +11,40 @@ import org.apache.commons.lang3.StringUtils;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.frontend.component.converter.HStringToIntegerConverter;
 import org.karnak.frontend.util.UIS;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class FormDICOM extends VerticalLayout {
 
-    private final Binder<DestinationEntity> binder;
+    private Binder<DestinationEntity> binder;
 
-    private final TextField aeTitle;
-    private final TextField description;
-    private final TextField hostname;
-    private final TextField port;
-    private final Checkbox useaetdest;
+    private TextField aeTitle;
+    private TextField description;
+    private TextField hostname;
+    private TextField port;
+    private Checkbox useaetdest;
 
-    private final TextField notify;
-    private final TextField notifyObjectErrorPrefix;
-    private final TextField notifyObjectPattern;
-    private final TextField notifyObjectValues;
-    private final TextField notifyInterval;
+    private TextField notify;
+    private TextField notifyObjectErrorPrefix;
+    private TextField notifyObjectPattern;
+    private TextField notifyObjectValues;
+    private TextField notifyInterval;
     private final LayoutDesidentification layoutDesidentification;
-    private final FilterBySOPClassesForm filterBySOPClassesForm;
+    private FilterBySOPClassesForm filterBySOPClassesForm;
 
-    public FormDICOM(Binder<DestinationEntity> binder,
+    @Autowired
+    public FormDICOM(final LayoutDesidentification layoutDesidentification) {
+        this.layoutDesidentification = layoutDesidentification;
+    }
+
+    public void init(Binder<DestinationEntity> binder,
         ButtonSaveDeleteCancel buttonSaveDeleteCancel) {
-        setSizeFull();
+
+        this.layoutDesidentification.init(binder);
         this.binder = binder;
+
+        setSizeFull();
 
         aeTitle = new TextField("AETitle");
         description = new TextField("Description");
@@ -45,17 +56,18 @@ public class FormDICOM extends VerticalLayout {
         notifyObjectPattern = new TextField("Notif.: subject pattern");
         notifyObjectValues = new TextField("Notif.: subject values");
         notifyInterval = new TextField("Notif.: interval");
-        layoutDesidentification = new LayoutDesidentification(binder);
         filterBySOPClassesForm = new FilterBySOPClassesForm(binder);
 
         add(UIS.setWidthFull(new HorizontalLayout(aeTitle, description)),
-                UIS.setWidthFull(new HorizontalLayout(hostname, port)),
-                UIS.setWidthFull(new HorizontalLayout(useaetdest)),
-                UIS.setWidthFull(new HorizontalLayout(notify)),
-                UIS.setWidthFull(new HorizontalLayout(notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues, notifyInterval)),
-                UIS.setWidthFull(layoutDesidentification),
-                UIS.setWidthFull(filterBySOPClassesForm),
-                UIS.setWidthFull(buttonSaveDeleteCancel));
+            UIS.setWidthFull(new HorizontalLayout(hostname, port)),
+            UIS.setWidthFull(new HorizontalLayout(useaetdest)),
+            UIS.setWidthFull(new HorizontalLayout(notify)),
+            UIS.setWidthFull(new HorizontalLayout(notifyObjectErrorPrefix, notifyObjectPattern,
+                notifyObjectValues, notifyInterval)),
+            UIS.setWidthFull(layoutDesidentification),
+            UIS.setWidthFull(filterBySOPClassesForm),
+            UIS.setWidthFull(buttonSaveDeleteCancel));
+
         setElements();
         setBinder();
     }
@@ -72,26 +84,26 @@ public class FormDICOM extends VerticalLayout {
         port.addThemeVariants(TextFieldVariant.LUMO_ALIGN_RIGHT);
 
         UIS.setTooltip(useaetdest,
-                "if \"true\" then use the destination AETitle as the calling  AETitle at the gateway side");
+            "if \"true\" then use the destination AETitle as the calling  AETitle at the gateway side");
 
         notify.setWidth("100%");
 
         notifyObjectErrorPrefix.setWidth("24%");
         UIS.setTooltip(notifyObjectErrorPrefix,
-                "Prefix of the email object when containing an issue. Default value: **ERROR**");
+            "Prefix of the email object when containing an issue. Default value: **ERROR**");
 
         notifyObjectPattern.setWidth("24%");
         UIS.setTooltip(notifyObjectPattern,
-                "Pattern of the email object, see https://dzone.com/articles/java-string-format-examples. Default value: [Karnak Notification] %s %.30s");
+            "Pattern of the email object, see https://dzone.com/articles/java-string-format-examples. Default value: [Karnak Notification] %s %.30s");
 
         notifyObjectValues.setWidth("24%");
         UIS.setTooltip(notifyObjectValues,
-                "Values injected in the pattern [PatientID StudyDescription StudyDate StudyInstanceUID]. Default value: PatientID,StudyDescription");
+            "Values injected in the pattern [PatientID StudyDescription StudyDate StudyInstanceUID]. Default value: PatientID,StudyDescription");
 
         notifyInterval.setWidth("18%");
         notifyInterval.addThemeVariants(TextFieldVariant.LUMO_ALIGN_RIGHT);
         UIS.setTooltip(notifyInterval,
-                "Interval in seconds for sending a notification (when no new image is arrived in the archive folder). Default value: 45");
+            "Interval in seconds for sending a notification (when no new image is arrived in the archive folder). Default value: 45");
     }
 
     private void setBinder() {

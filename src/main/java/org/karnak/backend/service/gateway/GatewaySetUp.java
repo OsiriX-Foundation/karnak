@@ -17,7 +17,7 @@ import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.DicomSourceNodeEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.data.entity.KheopsAlbumsEntity;
-import org.karnak.backend.data.repo.GatewayRepo;
+import org.karnak.backend.data.repo.ForwardNodeRepo;
 import org.karnak.backend.enums.DestinationType;
 import org.karnak.backend.enums.NodeEventType;
 import org.karnak.backend.model.NodeEvent;
@@ -366,8 +366,8 @@ public class GatewaySetUp {
     }
 
     public void reloadGatewayPersistence() {
-        GatewayRepo gatewayRepo = GatewayConfig.getInstance().getGatewayPersistence();
-        List<ForwardNodeEntity> list = new ArrayList<>(gatewayRepo.findAll());
+        ForwardNodeRepo forwardNodeRepo = GatewayConfig.getInstance().getGatewayPersistence();
+        List<ForwardNodeEntity> list = new ArrayList<>(forwardNodeRepo.findAll());
         for (ForwardNodeEntity forwardNodeEntity : list) {
             ForwardDicomNode fwdSrcNode = new ForwardDicomNode(forwardNodeEntity.getFwdAeTitle(),
                 null, forwardNodeEntity

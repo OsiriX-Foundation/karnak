@@ -2,16 +2,20 @@ package org.karnak.frontend.forwardnode;
 
 import com.vaadin.flow.component.combobox.ComboBox;
 import org.karnak.backend.data.entity.ProjectEntity;
-import org.karnak.backend.service.ProjectDataProvider;
+import org.karnak.backend.service.ProjectService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ProjectDropDown extends ComboBox<ProjectEntity> {
 
-  ProjectDataProvider projectDataProvider;
+  private final ProjectService projectService;
 
-  public ProjectDropDown() {
-    projectDataProvider = new ProjectDataProvider();
+  @Autowired
+  public ProjectDropDown(final ProjectService projectService) {
+    this.projectService = projectService;
 
-    setItems(projectDataProvider.getAllProjects());
+    setItems(projectService.getAllProjects());
     setItemLabelGenerator(ProjectEntity::getName);
   }
 }

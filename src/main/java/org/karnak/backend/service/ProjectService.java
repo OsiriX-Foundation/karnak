@@ -3,30 +3,27 @@ package org.karnak.backend.service;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import java.util.ArrayList;
 import java.util.List;
-import org.karnak.backend.config.GatewayConfig;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.data.repo.ProjectRepo;
 import org.karnak.backend.enums.NodeEventType;
 import org.karnak.backend.model.NodeEvent;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.stereotype.Service;
 
-public class ProjectDataProvider extends ListDataProvider<ProjectEntity> {
+@Service
+public class ProjectService extends ListDataProvider<ProjectEntity> {
 
+    // Repositories
     private final ProjectRepo projectRepo;
-
-    {
-        projectRepo = GatewayConfig.getInstance().getProjectPersistence();
-    }
 
     private ApplicationEventPublisher applicationEventPublisher;
 
-    public ProjectDataProvider() {
-        this(new ArrayList<>());
-    }
-
-    public ProjectDataProvider(List<ProjectEntity> items) {
-        super(items);
+    @Autowired
+    public ProjectService(final ProjectRepo projectRepo) {
+        super(new ArrayList<>());
+        this.projectRepo = projectRepo;
         getItems().addAll(getAllProjects());
     }
 

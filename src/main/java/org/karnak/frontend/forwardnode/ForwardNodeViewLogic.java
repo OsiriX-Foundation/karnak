@@ -3,8 +3,11 @@ package org.karnak.frontend.forwardnode;
 import com.vaadin.flow.component.UI;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.service.ForwardNodeAPI;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ForwardNodeViewLogic {
+
     private final ForwardNodeAPI forwardNodeAPI;
 
     public ForwardNodeViewLogic(ForwardNodeAPI forwardNodeAPI) {
