@@ -70,7 +70,7 @@ public class CSVDialog extends Dialog {
 
         divGridContent.add(csvGrid);
         HorizontalLayout horizontalLayout = new HorizontalLayout(cancelButton, readCSVButton);
-        horizontalLayout.setSizeFull();
+        horizontalLayout.setWidthFull();
         add(divTitle, fromLineField, divGridContent, errorMsg, horizontalLayout);
     }
 
