@@ -11,6 +11,8 @@ import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.NumberField;
 import liquibase.util.csv.opencsv.CSVReader;
 import org.karnak.cache.CachedPatient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,7 +25,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class CSVDialog extends Dialog {
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(CSVDialog.class);
     private static final String EXTERNAL_PSEUDONYM = "External Pseudonym";
     private static final String PATIENT_ID = "Patient ID";
     private static final String PATIENT_FIRST_NAME = "Patient first name";
@@ -60,7 +62,7 @@ public class CSVDialog extends Dialog {
             CSVReader csvReader = new CSVReader(new InputStreamReader(inputStream), separator);
             allRows = csvReader.readAll();
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("Error while reading the CSV", e);
         }
 
         setElement();
@@ -201,7 +203,7 @@ public class CSVDialog extends Dialog {
                 patientsList.add(newPatient);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("Error when reading selected columns", e);
         }
     }
 
