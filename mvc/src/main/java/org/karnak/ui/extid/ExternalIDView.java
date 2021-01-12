@@ -24,9 +24,8 @@ public class ExternalIDView extends HorizontalLayout {
     private final ExternalIDGrid externalIDGrid;
     private final Div validationStatus;
     private final ExternalIDForm externalIDForm;
-    private static final String LABEL_DISCLAIMER_EXTID = "WARNING: The data recorded in this grid is not guaranteed " +
-            "to be stored. The data is stored for a limited period of time. " +
-            "The data is deleted 7 days after addition or if the application is restarted. ";
+    private static final String LABEL_DISCLAIMER_EXTID = "WARNING: The data that is added to this grid will be stored" +
+            " temporally for a short period of time. If the machine restarts, the data will be deleted.";
 
 
     //https://vaadin.com/components/vaadin-grid/java-examples/assigning-data

@@ -117,12 +117,12 @@ public class ExternalIDForm extends VerticalLayout {
         setElementUploadCSV();
 
         uploadCsvLabelDiv = new Div();
-        uploadCsvLabelDiv.setText("Upload a CSV file to add your external ID correspondence: ");
+        uploadCsvLabelDiv.setText("Upload the CSV file containing the external ID associated with patient(s): ");
         uploadCsvLabelDiv.getStyle().set("font-size", "large").set("font-weight", "bolder");
 
         addedPatientLabelDiv = new Div();
         addedPatientLabelDiv = new Div();
-        addedPatientLabelDiv.setText("Add one patient data to have the external ID correspondence: ");
+        addedPatientLabelDiv.setText("Add a new patient: ");
         addedPatientLabelDiv.getStyle().set("font-size", "large").set("font-weight", "bolder");
 
         externalIdField = new TextField("External Pseudonym");
