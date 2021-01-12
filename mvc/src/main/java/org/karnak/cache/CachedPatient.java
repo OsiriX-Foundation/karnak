@@ -28,7 +28,8 @@ public class CachedPatient extends Patient {
 
     @Override
     public String toString() {
-        return String.format("External pseudonym: %s, Patient ID: %s, Patient name: %s, Issuer of patient ID: %s",
-                pseudonym, patientId, patientName, issuerOfPatientId);
+        return String.format("External pseudonym: %s, Patient ID: %s, Patient first name: %s, Patient last name: %s," +
+                        " Issuer of patient ID: %s",
+                pseudonym, patientId, patientFirstName, patientLastName, issuerOfPatientId);
     }
 }
