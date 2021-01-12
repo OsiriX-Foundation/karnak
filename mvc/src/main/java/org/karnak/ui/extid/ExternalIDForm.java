@@ -146,12 +146,13 @@ public class ExternalIDForm extends VerticalLayout {
     public void setElementUploadCSV() {
         MemoryBuffer memoryBuffer = new MemoryBuffer();
         uploadCsvButton = new Upload(memoryBuffer);
-        uploadCsvButton.setDropLabel(new Span("Drag and drop your CSV here"));
+        uploadCsvButton.setDropLabel(new Span("Drag and drop your CSV file here"));
         uploadCsvButton.addSucceededListener(event -> {
             inputStream = memoryBuffer.getInputStream();
 
             Dialog chooseSeparatorDialog = new Dialog();
             TextField separatorCSVField = new TextField("Choose the separator for reading the CSV file");
+            separatorCSVField.setWidthFull();
             separatorCSVField.setMaxLength(1);
             separatorCSVField.setValue(",");
             Button openCSVButton = new Button("Open CSV");

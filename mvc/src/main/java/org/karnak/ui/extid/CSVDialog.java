@@ -29,6 +29,7 @@ public class CSVDialog extends Dialog {
     private static final String PATIENT_FIRST_NAME = "Patient first name";
     private static final String PATIENT_LAST_NAME = "Patient last name";
     private static final String ISSUER_OF_PATIENT_ID = "Issuer of patient ID";
+    private static final String TITLE = "Upload CSV that contains the correspondence table with the externals pseudonyms";
 
     private NumberField fromLineField;
 
@@ -67,12 +68,13 @@ public class CSVDialog extends Dialog {
 
         divGridContent.add(csvGrid);
         HorizontalLayout horizontalLayout = new HorizontalLayout(cancelButton, readCSVButton);
+        horizontalLayout.setSizeFull();
         add(divTitle, fromLineField, divGridContent, errorMsg, horizontalLayout);
     }
 
     private void setElement(){
         divTitle = new Div();
-        divTitle.setText("Upload CSV for the table that contain external pseudonym");
+        divTitle.setText(TITLE);
         divTitle.getStyle().set("font-size", "large").set("font-weight", "bolder").set("padding-bottom", "10px");
 
         divGridContent = new Div();
@@ -86,7 +88,7 @@ public class CSVDialog extends Dialog {
         fromLineField.setMax((double) allRows.size() + 1);
 
 
-        readCSVButton = new Button("Read CSV", event -> {
+        readCSVButton = new Button("Upload CSV", event -> {
             if (selectValuesPositionHashMap.get(EXTERNAL_PSEUDONYM).equals(-1) ||
                     selectValuesPositionHashMap.get(PATIENT_ID).equals(-1) ||
                     selectValuesPositionHashMap.get(PATIENT_FIRST_NAME).equals(-1) ||
@@ -102,8 +104,6 @@ public class CSVDialog extends Dialog {
         readCSVButton.setIcon(VaadinIcon.PLUS_CIRCLE.create());
 
         cancelButton = new Button("Cancel", event -> close());
-
-        cancelButton.getStyle().set("margin-left", "75%");
     }
 
     public void buildGrid() {
@@ -123,6 +123,7 @@ public class CSVDialog extends Dialog {
             Select<String> currentSelect = new Select<>();
             currentSelect.setId(String.format("%d",i));
             currentSelect.setItems(selectValues);
+            currentSelect.setSizeFull();
             currentSelect.addValueChangeListener(value -> {
                 int currentPosition = Integer.parseInt(currentSelect.getId().orElse("-1"));
                 //reset value of old key
