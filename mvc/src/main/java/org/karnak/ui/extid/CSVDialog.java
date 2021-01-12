@@ -187,7 +187,7 @@ public class CSVDialog extends Dialog {
             }
         }).filter(s -> !s.equals(""));
         final String concatFieldNotSelected = streamFieldNotSelected.collect(Collectors.joining(", "));
-        errorMsg.setText(String.format("This fields are not selected: %s", concatFieldNotSelected));
+        errorMsg.setText(String.format("These fields are not selected: %s", concatFieldNotSelected));
     }
 
     private void readCSVPatients() {
