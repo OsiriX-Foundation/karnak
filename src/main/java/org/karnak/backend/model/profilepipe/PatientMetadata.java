@@ -8,8 +8,6 @@ import org.karnak.backend.api.rqbody.Fields;
 import org.karnak.backend.cache.PseudonymPatient;
 import org.weasis.core.util.StringUtil;
 
-import java.time.LocalDate;
-
 public class PatientMetadata {
     private static final String PATIENT_SEX_OTHER = "O";
 
@@ -84,7 +82,8 @@ public class PatientMetadata {
     public boolean compareCachedPatient(PseudonymPatient patient) {
         if (patient != null) {
             boolean samePatient = patient.getPatientId().equals(patientID);
-            samePatient = samePatient && patient.getIssuerOfPatientId().equals(issuerOfPatientID);
+            samePatient = samePatient && (patient.getIssuerOfPatientId() == null || patient
+                .getIssuerOfPatientId().equals(issuerOfPatientID));
             return samePatient;
         }
         return false;
