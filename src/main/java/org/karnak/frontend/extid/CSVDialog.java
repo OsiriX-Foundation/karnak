@@ -1,4 +1,4 @@
-package org.karnak.ui.extid;
+package org.karnak.frontend.extid;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -9,11 +9,6 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.NumberField;
-import liquibase.util.csv.opencsv.CSVReader;
-import org.karnak.cache.CachedPatient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -23,6 +18,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import liquibase.util.csv.opencsv.CSVReader;
+import org.karnak.backend.cache.CachedPatient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CSVDialog extends Dialog {
     private static final Logger LOGGER = LoggerFactory.getLogger(CSVDialog.class);
@@ -49,7 +48,7 @@ public class CSVDialog extends Dialog {
     private final String[] selectValues = {"", EXTERNAL_PSEUDONYM, PATIENT_ID, PATIENT_FIRST_NAME,
             PATIENT_LAST_NAME, ISSUER_OF_PATIENT_ID};
     private HashMap<String, Integer> selectValuesPositionHashMap;
-    private List<CachedPatient> patientsList;
+    private final List<CachedPatient> patientsList;
 
     public CSVDialog(InputStream inputStream, char separator) {
         removeAll();

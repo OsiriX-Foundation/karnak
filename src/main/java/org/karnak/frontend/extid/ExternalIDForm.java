@@ -1,4 +1,4 @@
-package org.karnak.ui.extid;
+package org.karnak.frontend.extid;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -15,21 +15,27 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.validator.StringLengthValidator;
+import java.io.InputStream;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 import org.apache.commons.lang3.StringUtils;
-import org.karnak.cache.*;
-import org.karnak.data.AppConfig;
+import org.karnak.backend.cache.CachedPatient;
+import org.karnak.backend.cache.PatientClient;
+import org.karnak.backend.cache.PseudonymPatient;
+import org.karnak.backend.config.AppConfig;
+import org.karnak.backend.util.PatientClientUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.io.InputStream;
-import java.util.*;
 
 
 public class ExternalIDForm extends VerticalLayout {
+
     protected static final Logger LOGGER = LoggerFactory.getLogger(ExternalIDForm.class);
     private static final String ERROR_MESSAGE_PATIENT = "Length must be between 1 and 50.";
 
-    private Binder<CachedPatient> binder;
-    private ListDataProvider<CachedPatient> dataProvider;
+    private final Binder<CachedPatient> binder;
+    private final ListDataProvider<CachedPatient> dataProvider;
 
     private TextField externalIdField;
     private TextField patientIdField;
@@ -40,7 +46,7 @@ public class ExternalIDForm extends VerticalLayout {
     private Button clearFieldsButton;
     private transient InputStream inputStream;
 
-    private transient PatientClient externalIDCache;
+    private final transient PatientClient externalIDCache;
 
     private Upload uploadCsvButton;
     private Div addedPatientLabelDiv;
