@@ -18,21 +18,19 @@ public class PatientClientUtil {
         return null;
     }
 
-    public static String generateKey(String patientID, String patientName, String issuerOfPatientID) {
-        return patientID.concat(patientName).concat(issuerOfPatientID);
+    public static String generateKey(String patientID,String issuerOfPatientID) {
+        return patientID.concat(issuerOfPatientID);
     }
 
     public static String generateKey(PseudonymPatient patient) {
         String patientID = patient.getPatientId();
-        String patientName = patient.getPatientName();
         String issuerOfPatientID = patient.getIssuerOfPatientId();
-        return generateKey(patientID, patientName, issuerOfPatientID);
+        return generateKey(patientID, issuerOfPatientID);
     }
 
     public static String generateKey(PatientMetadata patientMetadata) {
         String patientID = patientMetadata.getPatientID();
-        String patientName = patientMetadata.getPatientName();
         String issuerOfPatientID = patientMetadata.getIssuerOfPatientID();
-        return generateKey(patientID, patientName, issuerOfPatientID);
+        return generateKey(patientID, issuerOfPatientID);
     }
 }

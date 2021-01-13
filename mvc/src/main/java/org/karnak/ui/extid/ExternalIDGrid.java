@@ -20,7 +20,7 @@ public class ExternalIDGrid extends Grid<CachedPatient> {
     private static final String ERROR_MESSAGE_PATIENT = "Length must be between 1 and 50.";
     private Binder<CachedPatient> binder;
     private List<CachedPatient> patientList;
-    private Button addNewPatientButton;
+    private Button addPatientButton;
     private Button deletePatientButton;
     private Button saveEditPatientButton;
     private Button cancelEditPatientButton;
@@ -30,7 +30,8 @@ public class ExternalIDGrid extends Grid<CachedPatient> {
 
     private TextField externalIdField;
     private TextField patientIdField;
-    private TextField patientNameField;
+    private TextField patientFirstNameField;
+    private TextField patientLastNameField;
     private TextField issuerOfPatientIdField;
 
     private Grid.Column<CachedPatient> deleteColumn;
@@ -56,21 +57,22 @@ public class ExternalIDGrid extends Grid<CachedPatient> {
             editButtons.stream()
                     .forEach(button -> button.setEnabled(!editor.isOpen()));
             deleteColumn.setVisible(false);
-            addNewPatientButton.setVisible(false);
+            addPatientButton.setVisible(false);
         });
 
         editor.addCloseListener(e -> {
             editButtons.stream()
                     .forEach(button -> button.setEnabled(!editor.isOpen()));
             deleteColumn.setVisible(true);
-            addNewPatientButton.setVisible(true);
+            addPatientButton.setVisible(true);
         });
 
         saveEditPatientButton.addClickListener(e -> {
             final CachedPatient patientEdit = new CachedPatient(
                     externalIdField.getValue(),
                     patientIdField.getValue(),
-                    patientNameField.getValue(),
+                    patientFirstNameField.getValue(),
+                    patientLastNameField.getValue(),
                     issuerOfPatientIdField.getValue()
             );
             externalIDCache.remove(PatientClientUtil.generateKey(editor.getItem())); //old extid
@@ -85,7 +87,8 @@ public class ExternalIDGrid extends Grid<CachedPatient> {
     private void setElements() {
         Grid.Column<CachedPatient> extidColumn = addColumn(CachedPatient::getPseudonym).setHeader("External Pseudonym");
         Grid.Column<CachedPatient> patientIdColumn = addColumn(CachedPatient::getPatientId).setHeader("Patient ID");
-        Grid.Column<CachedPatient> patientNameColumn = addColumn(CachedPatient::getPatientName).setHeader("Patient name");
+        Grid.Column<CachedPatient> patientFirstNameColumn = addColumn(CachedPatient::getPatientFirstName).setHeader("Patient first name");
+        Grid.Column<CachedPatient> patientLastNameColumn = addColumn(CachedPatient::getPatientLastName).setHeader("Patient last name");
         Grid.Column<CachedPatient> issuerOfPatientIDColumn = addColumn(CachedPatient::getIssuerOfPatientId).setHeader("Issuer of patient ID");
         Grid.Column<CachedPatient> editorColumn = addComponentColumn(patient -> {
             Button edit = new Button("Edit");
@@ -106,12 +109,14 @@ public class ExternalIDGrid extends Grid<CachedPatient> {
 
         externalIdField = new TextField();
         patientIdField = new TextField();
-        patientNameField = new TextField();
+        patientFirstNameField = new TextField();
+        patientLastNameField = new TextField();
         issuerOfPatientIdField = new TextField();
 
         extidColumn.setEditorComponent(externalIdField);
         patientIdColumn.setEditorComponent(patientIdField);
-        patientNameColumn.setEditorComponent(patientNameField);
+        patientFirstNameColumn.setEditorComponent(patientFirstNameField);
+        patientLastNameColumn.setEditorComponent(patientLastNameField);
         issuerOfPatientIDColumn.setEditorComponent(issuerOfPatientIdField);
 
         deleteColumn = addComponentColumn(patient -> {
@@ -146,10 +151,15 @@ public class ExternalIDGrid extends Grid<CachedPatient> {
                 .withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
                 .withStatusLabel(validationStatus).bind("patientId");
 
-        binder.forField(patientNameField)
-                .withValidator(StringUtils::isNotBlank, "Patient name is empty")
+        binder.forField(patientFirstNameField)
+                .withValidator(StringUtils::isNotBlank, "Patient first name is empty")
                 .withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
-                .withStatusLabel(validationStatus).bind("patientName");
+                .bind("patientFirstName");
+
+        binder.forField(patientLastNameField)
+                .withValidator(StringUtils::isNotBlank, "Patient last name is empty")
+                .withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
+                .bind("patientLastName");
 
         binder.forField(issuerOfPatientIdField)
                 .withValidator(new StringLengthValidator("Length must be between 0 and 50.", 0, 50))
@@ -158,7 +168,7 @@ public class ExternalIDGrid extends Grid<CachedPatient> {
         return validationStatus;
     }
 
-    public void setAddNewPatientButton(Button addNewPatientButton) {
-        this.addNewPatientButton = addNewPatientButton;
+    public void setAddPatientButton(Button addPatientButton) {
+        this.addPatientButton = addPatientButton;
     }
 }
