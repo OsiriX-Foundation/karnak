@@ -8,7 +8,9 @@ public class GridDestination extends Grid<DestinationEntity> {
   public GridDestination() {
     setSizeFull();
 
-    addColumn(DestinationEntity::getDescription).setHeader("Description").setFlexGrow(20)
+    addColumn(DestinationEntity::getDescription)
+        .setHeader("Description")
+        .setFlexGrow(20)
         .setSortable(true);
 
     addColumn(DestinationEntity::getType).setHeader("Type").setFlexGrow(20).setSortable(true);

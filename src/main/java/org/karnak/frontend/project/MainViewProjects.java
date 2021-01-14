@@ -20,61 +20,68 @@ import org.springframework.security.access.annotation.Secured;
 @PageTitle("KARNAK - Projects")
 @Secured({"ADMIN"})
 public class MainViewProjects extends HorizontalLayout implements HasUrlParameter<String> {
-    public static final String VIEW_NAME = "Projects";
 
-    private final ProjectDataProvider projectDataProvider;
-    private final NewProjectForm newProjectForm;
-    private final GridProject gridProject;
-    private final EditProject editProject;
-    private final Binder<ProjectEntity> newResearchBinder;
+  public static final String VIEW_NAME = "Projects";
 
-    public MainViewProjects() {
-        setWidthFull();
-        newProjectForm = new NewProjectForm();
-        projectDataProvider = new ProjectDataProvider();
-        gridProject = new GridProject(projectDataProvider);
-        VerticalLayout layoutNewProject = new VerticalLayout(newProjectForm, gridProject);
-        layoutNewProject.setWidth("40%");
-        editProject = new EditProject(projectDataProvider);
-        editProject.setWidth("60%");
-        newResearchBinder = newProjectForm.getBinder();
+  private final ProjectDataProvider projectDataProvider;
+  private final NewProjectForm newProjectForm;
+  private final GridProject gridProject;
+  private final EditProject editProject;
+  private final Binder<ProjectEntity> newResearchBinder;
 
-        add(layoutNewProject, editProject);
-        setEventButtonNewProject();
-        setEventGridSelection();
-    }
+  public MainViewProjects() {
+    setWidthFull();
+    newProjectForm = new NewProjectForm();
+    projectDataProvider = new ProjectDataProvider();
+    gridProject = new GridProject(projectDataProvider);
+    VerticalLayout layoutNewProject = new VerticalLayout(newProjectForm, gridProject);
+    layoutNewProject.setWidth("40%");
+    editProject = new EditProject(projectDataProvider);
+    editProject.setWidth("60%");
+    newResearchBinder = newProjectForm.getBinder();
 
-    private void setEventButtonNewProject() {
-        newProjectForm.getButtonAdd().addClickListener(event -> {
-            ProjectEntity newProjectEntity = new ProjectEntity();
-            if (newResearchBinder.writeBeanIfValid(newProjectEntity)) {
+    add(layoutNewProject, editProject);
+    setEventButtonNewProject();
+    setEventGridSelection();
+  }
+
+  private void setEventButtonNewProject() {
+    newProjectForm
+        .getButtonAdd()
+        .addClickListener(
+            event -> {
+              ProjectEntity newProjectEntity = new ProjectEntity();
+              if (newResearchBinder.writeBeanIfValid(newProjectEntity)) {
                 newProjectEntity.setSecret(HMAC.generateRandomKey());
                 projectDataProvider.save(newProjectEntity);
                 newProjectForm.clear();
                 ProjectViewLogic.navigateProject(newProjectEntity);
-            }
-        });
-    }
+              }
+            });
+  }
 
-    private void setEventGridSelection() {
-        gridProject.asSingleSelect().addValueChangeListener(event -> {
-            ProjectViewLogic.navigateProject(event.getValue());
-        });
-    }
+  private void setEventGridSelection() {
+    gridProject
+        .asSingleSelect()
+        .addValueChangeListener(
+            event -> {
+              ProjectViewLogic.navigateProject(event.getValue());
+            });
+  }
 
-    @Override
-    public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
-        Long idProject = ProjectViewLogic.enter(parameter);
-        ProjectEntity currentProjectEntity = null;
-        if (idProject != null) {
-            currentProjectEntity = projectDataProvider.getProjectById(idProject);
-        }
-        editProject.setProject(currentProjectEntity);
-        gridProject.selectRow(currentProjectEntity);
+  @Override
+  public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
+    Long idProject = ProjectViewLogic.enter(parameter);
+    ProjectEntity currentProjectEntity = null;
+    if (idProject != null) {
+      currentProjectEntity = projectDataProvider.getProjectById(idProject);
     }
+    editProject.setProject(currentProjectEntity);
+    gridProject.selectRow(currentProjectEntity);
+  }
 
-    @Autowired
-    private void addEventManager(ApplicationEventPublisher publisher) {
-        projectDataProvider.setApplicationEventPublisher(publisher);
-    }
+  @Autowired
+  private void addEventManager(ApplicationEventPublisher publisher) {
+    projectDataProvider.setApplicationEventPublisher(publisher);
+  }
 }

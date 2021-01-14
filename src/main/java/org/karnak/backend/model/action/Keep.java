@@ -9,13 +9,20 @@ import org.slf4j.MDC;
 
 public class Keep extends AbstractAction {
 
-    public Keep(String symbol) {
-        super(symbol);
-    }
+  public Keep(String symbol) {
+    super(symbol);
+  }
 
-    @Override
-    public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, HMAC hmac) {
-        final String tagValueIn = dcm.getString(tag).orElse(null);
-        LOGGER.trace(CLINICAL_MARKER, PATTERN_WITH_INOUT, MDC.get("SOPInstanceUID"), TagUtils.toString(tag), symbol, tagValueIn, tagValueIn);
-    }
+  @Override
+  public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, HMAC hmac) {
+    final String tagValueIn = dcm.getString(tag).orElse(null);
+    LOGGER.trace(
+        CLINICAL_MARKER,
+        PATTERN_WITH_INOUT,
+        MDC.get("SOPInstanceUID"),
+        TagUtils.toString(tag),
+        symbol,
+        tagValueIn,
+        tagValueIn);
+  }
 }

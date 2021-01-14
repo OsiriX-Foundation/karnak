@@ -8,15 +8,15 @@ import org.karnak.backend.model.profilepipe.HMAC;
 
 public interface ActionItem {
 
-    String getSymbol();
+  String getSymbol();
 
-    String getDummyValue();
+  String getDummyValue();
 
-    void setDummyValue(String dummyValue);
+  void setDummyValue(String dummyValue);
 
-    VR getVr();
+  VR getVr();
 
-    void setVr(VR vr);
+  void setVr(VR vr);
 
-    void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, HMAC hmac);
+  void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, HMAC hmac);
 }

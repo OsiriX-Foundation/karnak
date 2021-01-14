@@ -26,26 +26,26 @@ public abstract class DataService implements Serializable {
   public abstract Collection<DestinationEntity> getAllDestinations(
       ForwardNodeEntity forwardNodeEntity);
 
-  public abstract DestinationEntity getDestinationById(ForwardNodeEntity forwardNodeEntity,
-      Long dataId);
+  public abstract DestinationEntity getDestinationById(
+      ForwardNodeEntity forwardNodeEntity, Long dataId);
 
-  public abstract DestinationEntity updateDestination(ForwardNodeEntity forwardNodeEntity,
-      DestinationEntity data);
+  public abstract DestinationEntity updateDestination(
+      ForwardNodeEntity forwardNodeEntity, DestinationEntity data);
 
-  public abstract void deleteDestination(ForwardNodeEntity forwardNodeEntity,
-      DestinationEntity data);
+  public abstract void deleteDestination(
+      ForwardNodeEntity forwardNodeEntity, DestinationEntity data);
 
   public abstract Collection<DicomSourceNodeEntity> getAllSourceNodes(
       ForwardNodeEntity forwardNodeEntity);
 
-  public abstract DicomSourceNodeEntity getSourceNodeById(ForwardNodeEntity forwardNodeEntity,
-      Long dataId);
+  public abstract DicomSourceNodeEntity getSourceNodeById(
+      ForwardNodeEntity forwardNodeEntity, Long dataId);
 
-  public abstract DicomSourceNodeEntity updateSourceNode(ForwardNodeEntity forwardNodeEntity,
-      DicomSourceNodeEntity data);
+  public abstract DicomSourceNodeEntity updateSourceNode(
+      ForwardNodeEntity forwardNodeEntity, DicomSourceNodeEntity data);
 
-  public abstract void deleteSourceNode(ForwardNodeEntity forwardNodeEntity,
-      DicomSourceNodeEntity data);
+  public abstract void deleteSourceNode(
+      ForwardNodeEntity forwardNodeEntity, DicomSourceNodeEntity data);
 
   public abstract List<SOPClassUIDEntity> getAllSOPClassUIDs();
 

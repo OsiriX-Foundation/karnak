@@ -15,12 +15,13 @@ import org.springframework.security.access.annotation.Secured;
 @Secured({"ADMIN"})
 @SuppressWarnings("serial")
 public class MainzellisteView extends HorizontalLayout {
-    public static final String VIEW_NAME = "Mainzelliste pseudonym";
 
-    public MainzellisteView() {
-        setSizeFull();
-        VerticalLayout verticalLayout = new VerticalLayout();
-        verticalLayout.add(new H2("Mainzelliste Pseudonym"), new MainzellisteAddPatient());
-        add(verticalLayout);
-    }
+  public static final String VIEW_NAME = "Mainzelliste pseudonym";
+
+  public MainzellisteView() {
+    setSizeFull();
+    VerticalLayout verticalLayout = new VerticalLayout();
+    verticalLayout.add(new H2("Mainzelliste Pseudonym"), new MainzellisteAddPatient());
+    add(verticalLayout);
+  }
 }

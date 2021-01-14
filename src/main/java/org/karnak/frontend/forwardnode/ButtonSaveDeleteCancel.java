@@ -23,36 +23,37 @@ public class ButtonSaveDeleteCancel extends HorizontalLayout {
     setButtonSave();
     setButtonCancel();
     setButtonDelete();
-    }
+  }
 
-    private void setButtonSave() {
-        save.setWidth("100%");
-        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-    }
-    private void setButtonCancel() {
-        cancel.setWidth("100%");
-    }
+  private void setButtonSave() {
+    save.setWidth("100%");
+    save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+  }
 
-    private void setButtonDelete() {
-        delete.setWidth("100%");
-        delete.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
-    }
+  private void setButtonCancel() {
+    cancel.setWidth("100%");
+  }
 
-    public void setEnabled(boolean enabled) {
-        save.setEnabled(enabled);
-        delete.setEnabled(enabled);
-        cancel.setEnabled(enabled);
-    }
+  private void setButtonDelete() {
+    delete.setWidth("100%");
+    delete.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
+  }
 
-    public Button getSave() {
-        return save;
-    }
+  public void setEnabled(boolean enabled) {
+    save.setEnabled(enabled);
+    delete.setEnabled(enabled);
+    cancel.setEnabled(enabled);
+  }
 
-    public Button getDelete() {
-        return delete;
-    }
+  public Button getSave() {
+    return save;
+  }
 
-    public Button getCancel() {
-        return cancel;
-    }
+  public Button getDelete() {
+    return delete;
+  }
+
+  public Button getCancel() {
+    return cancel;
+  }
 }

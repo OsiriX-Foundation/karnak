@@ -32,10 +32,9 @@ public class SOPClassUIDDataProvider extends ListDataProvider<SOPClassUIDEntity>
     backend.addAll(dataService.getAllSOPClassUIDs());
   }
 
-    public DataService getDataService() {
-        return dataService;
-    }
-
+  public DataService getDataService() {
+    return dataService;
+  }
 
   public SOPClassUIDEntity get(Long dataId) {
     return dataService.getSOPClassUIDById(dataId);
@@ -45,23 +44,24 @@ public class SOPClassUIDDataProvider extends ListDataProvider<SOPClassUIDEntity>
     return dataService.getSOPClassUIDByName(dataName);
   }
 
-
   public List<SOPClassUIDEntity> getAllSOPClassUIDs() {
     List<SOPClassUIDEntity> list = new ArrayList<>();
-    sopClassUIDRepo.findAll() //
+    sopClassUIDRepo
+        .findAll() //
         .forEach(list::add);
     return list;
   }
 
   public List<String> getAllSOPClassUIDsName() {
-    return sopClassUIDRepo.findAll().stream().map(SOPClassUIDEntity::getName)
+    return sopClassUIDRepo.findAll().stream()
+        .map(SOPClassUIDEntity::getName)
         .collect(Collectors.toList());
   }
 
   @Override
-    public void refreshAll() {
-        backend.clear();
-        backend.addAll(dataService.getAllSOPClassUIDs());
-        super.refreshAll();
-    }
+  public void refreshAll() {
+    backend.clear();
+    backend.addAll(dataService.getAllSOPClassUIDs());
+    super.refreshAll();
+  }
 }

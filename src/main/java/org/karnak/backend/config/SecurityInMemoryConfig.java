@@ -34,7 +34,8 @@ public class SecurityInMemoryConfig extends WebSecurityConfigurerAdapter {
         .requestCache(new RequestCache())
         // Disables cross-site request forgery (CSRF) protection for main route and login
         .and()
-        .csrf().ignoringAntMatchers("/", "/login")
+        .csrf()
+        .ignoringAntMatchers("/", "/login")
         // Turns on authorization
         .and()
         .authorizeRequests()
@@ -61,49 +62,48 @@ public class SecurityInMemoryConfig extends WebSecurityConfigurerAdapter {
         .and()
         .exceptionHandling()
         .accessDeniedPage(LOGIN_URL);
-
   }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        // Configure users and roles in memory
-        auth.inMemoryAuthentication()
-            .withUser(AppConfig.getInstance().getKarnakadmin())
-            .password("{noop}" + AppConfig.getInstance().getKarnakpassword())
-            .roles(SecurityRole.ADMIN_ROLE.getType(), SecurityRole.USER_ROLE.getType());
-    }
+  @Override
+  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    // Configure users and roles in memory
+    auth.inMemoryAuthentication()
+        .withUser(AppConfig.getInstance().getKarnakadmin())
+        .password("{noop}" + AppConfig.getInstance().getKarnakpassword())
+        .roles(SecurityRole.ADMIN_ROLE.getType(), SecurityRole.USER_ROLE.getType());
+  }
 
-    @Override
-    public void configure(WebSecurity web) {
-        // Access to static resources, bypassing Spring security.
-        web.ignoring()
-            .antMatchers(
-                "/VAADIN/**",
-                // the standard favicon URI
-                "/favicon.ico",
-                // the robots exclusion standard
-                "/robots.txt",
-                // web application manifest
-                "/manifest.webmanifest",
-                "/sw.js",
-                "/offline.html",
-                // icons and images
-                "/icons/**",
-                "/images/**",
-                "/styles/**",
-                "/img/**",
-                // (development mode) H2 debugging console
-                "/h2-console/**");
-    }
+  @Override
+  public void configure(WebSecurity web) {
+    // Access to static resources, bypassing Spring security.
+    web.ignoring()
+        .antMatchers(
+            "/VAADIN/**",
+            // the standard favicon URI
+            "/favicon.ico",
+            // the robots exclusion standard
+            "/robots.txt",
+            // web application manifest
+            "/manifest.webmanifest",
+            "/sw.js",
+            "/offline.html",
+            // icons and images
+            "/icons/**",
+            "/images/**",
+            "/styles/**",
+            "/img/**",
+            // (development mode) H2 debugging console
+            "/h2-console/**");
+  }
 
-    @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
+  @Bean
+  @Override
+  public AuthenticationManager authenticationManagerBean() throws Exception {
+    return super.authenticationManagerBean();
+  }
 
-    @Bean
-    public RequestCache requestCache() { //
-        return new RequestCache();
-    }
+  @Bean
+  public RequestCache requestCache() { //
+    return new RequestCache();
+  }
 }

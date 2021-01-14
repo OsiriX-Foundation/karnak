@@ -17,5 +17,5 @@ public class ProfileDropDown extends ComboBox<ProfileEntity> {
   public void updateList() {
     setItems(profilePipeService.getAllProfiles());
     setItemLabelGenerator(ProfileEntity::getName);
-    }
+  }
 }

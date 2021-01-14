@@ -22,7 +22,6 @@ import org.karnak.frontend.profile.ProfileView;
 import org.karnak.frontend.project.MainViewProjects;
 import org.springframework.security.access.annotation.Secured;
 
-
 /**
  * The main layout. Contains the navigation menu.
  */
@@ -34,47 +33,51 @@ import org.springframework.security.access.annotation.Secured;
 @Secured({"ADMIN"})
 @SuppressWarnings("serial")
 public class MainLayout extends FlexLayout implements RouterLayout {
-    private final Menu menu;
 
-    public MainLayout() {
-        setSizeFull();
-        setClassName("main-layout");
+  private final Menu menu;
 
-        menu = new Menu();
-        menu.addView(ForwardNodeView.class, ForwardNodeView.VIEW_NAME, new IronIcon("icons", "settings"));
-        menu.addView(ProfileView.class, ProfileView.VIEW_NAME, new IronIcon("icons", "assignment"));
-        menu.addView(MainViewProjects.class, MainViewProjects.VIEW_NAME, new IronIcon("icons", "class"));
-        menu.addView(ExternalIDView.class, ExternalIDView.VIEW_NAME, new IronIcon("icons", "perm-identity"));
-        menu.addView(MainzellisteView.class, MainzellisteView.VIEW_NAME, new IronIcon("icons", "perm-identity"));
-        menu.addView(DicomMainView.class, DicomMainView.VIEW_NAME, new IronIcon("icons", "build"));
-        menu.addView(HelpView.class, HelpView.VIEW_NAME, new IronIcon("icons", "help"));
-        //menu.addView(AboutView.class, AboutView.VIEW_NAME, new IronIcon("icons", "info"));
-        add(menu);
-    }
+  public MainLayout() {
+    setSizeFull();
+    setClassName("main-layout");
 
-    @SuppressWarnings("rawtypes")
-    @Override
-    protected void onAttach(AttachEvent attachEvent) {
-        super.onAttach(attachEvent);
-        attachEvent.getUI()
-            .addShortcutListener(SecurityUtil::signOut, Key.KEY_L, KeyModifier.CONTROL);
+    menu = new Menu();
+    menu.addView(
+        ForwardNodeView.class, ForwardNodeView.VIEW_NAME, new IronIcon("icons", "settings"));
+    menu.addView(ProfileView.class, ProfileView.VIEW_NAME, new IronIcon("icons", "assignment"));
+    menu.addView(
+        MainViewProjects.class, MainViewProjects.VIEW_NAME, new IronIcon("icons", "class"));
+    menu.addView(
+        ExternalIDView.class, ExternalIDView.VIEW_NAME, new IronIcon("icons", "perm-identity"));
+    menu.addView(
+        MainzellisteView.class, MainzellisteView.VIEW_NAME, new IronIcon("icons", "perm-identity"));
+    menu.addView(DicomMainView.class, DicomMainView.VIEW_NAME, new IronIcon("icons", "build"));
+    menu.addView(HelpView.class, HelpView.VIEW_NAME, new IronIcon("icons", "help"));
+    // menu.addView(AboutView.class, AboutView.VIEW_NAME, new IronIcon("icons", "info"));
+    add(menu);
+  }
 
-        // add the admin view menu item if/when it is registered dynamically
-        /*
-        Command addAdminMenuItemCommand = () -> menu.addView(AdminView.class, AdminView.VIEW_NAME,
-                new IronIcon("icons", "perm-identity"));
-        RouteConfiguration sessionScopedConfiguration = RouteConfiguration.forSessionScope();
-        if (sessionScopedConfiguration.isRouteRegistered(AdminView.class)) {
-            addAdminMenuItemCommand.execute();
-        } else {
-            sessionScopedConfiguration.addRoutesChangeListener(event -> {
-                for (RouteBaseData data : event.getAddedRoutes()) {
-                    if (data.getNavigationTarget().equals(AdminView.class)) {
-                        addAdminMenuItemCommand.execute();
-                    }
+  @SuppressWarnings("rawtypes")
+  @Override
+  protected void onAttach(AttachEvent attachEvent) {
+    super.onAttach(attachEvent);
+    attachEvent.getUI().addShortcutListener(SecurityUtil::signOut, Key.KEY_L, KeyModifier.CONTROL);
+
+    // add the admin view menu item if/when it is registered dynamically
+    /*
+    Command addAdminMenuItemCommand = () -> menu.addView(AdminView.class, AdminView.VIEW_NAME,
+            new IronIcon("icons", "perm-identity"));
+    RouteConfiguration sessionScopedConfiguration = RouteConfiguration.forSessionScope();
+    if (sessionScopedConfiguration.isRouteRegistered(AdminView.class)) {
+        addAdminMenuItemCommand.execute();
+    } else {
+        sessionScopedConfiguration.addRoutesChangeListener(event -> {
+            for (RouteBaseData data : event.getAddedRoutes()) {
+                if (data.getNavigationTarget().equals(AdminView.class)) {
+                    addAdminMenuItemCommand.execute();
                 }
-            });
-        }
-         */
+            }
+        });
     }
+     */
+  }
 }

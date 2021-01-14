@@ -21,15 +21,13 @@ import org.hibernate.annotations.DiscriminatorOptions;
 @DiscriminatorOptions(force = true)
 public abstract class TagEntity {
 
+    String tagValue;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
     @ManyToOne()
     @JoinColumn(name = "profile_element_id", nullable = false)
     private ProfileElementEntity profileElementEntity;
-
-    String tagValue;
 
     public TagEntity() {
     }

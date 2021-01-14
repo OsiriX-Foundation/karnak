@@ -16,10 +16,10 @@ public class Counter {
   }
 
   public void resetCount() {
-        this.count.set(0);
-    }
+    this.count.set(0);
+  }
 
-    public int increment() {
-        return this.count.addAndGet(interval);
-    }
+  public int increment() {
+    return this.count.addAndGet(interval);
+  }
 }

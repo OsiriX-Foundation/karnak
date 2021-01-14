@@ -18,18 +18,18 @@ import org.slf4j.LoggerFactory;
 
 public class Pseudonym {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Pseudonym.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(Pseudonym.class);
 
-    private final PatientClient externalIdCache;
-    private final PatientClient mainzellisteCache;
+  private final PatientClient externalIdCache;
+  private final PatientClient mainzellisteCache;
 
-    public Pseudonym() {
-        externalIdCache = AppConfig.getInstance().getExternalIDCache();
-        mainzellisteCache = AppConfig.getInstance().getMainzellisteCache();
-    }
+  public Pseudonym() {
+    externalIdCache = AppConfig.getInstance().getExternalIDCache();
+    mainzellisteCache = AppConfig.getInstance().getMainzellisteCache();
+  }
 
-  public String generatePseudonym(DestinationEntity destinationEntity, DicomObject dcm,
-      String defaultIsserOfPatientID) {
+  public String generatePseudonym(
+      DestinationEntity destinationEntity, DicomObject dcm, String defaultIsserOfPatientID) {
     String pseudonym;
     if (destinationEntity.getSavePseudonym() != null
         && destinationEntity.getSavePseudonym() == false) {
@@ -39,16 +39,18 @@ public class Pseudonym {
       }
       return pseudonym;
     } else if (destinationEntity.getIdTypes().equals(IdTypes.EXTID)) {
-      pseudonym = PatientClientUtil
-          .getPseudonym(new PatientMetadata(dcm, defaultIsserOfPatientID), externalIdCache);
+      pseudonym =
+          PatientClientUtil.getPseudonym(
+              new PatientMetadata(dcm, defaultIsserOfPatientID), externalIdCache);
       if (pseudonym != null) {
         return pseudonym;
       }
     }
-        PatientMetadata patientMetadata = new PatientMetadata(dcm, defaultIsserOfPatientID);
+    PatientMetadata patientMetadata = new PatientMetadata(dcm, defaultIsserOfPatientID);
     try {
-      return getMainzellistePseudonym(patientMetadata, getPseudonymInDicom(dcm,
-          destinationEntity),
+      return getMainzellistePseudonym(
+          patientMetadata,
+          getPseudonymInDicom(dcm, destinationEntity),
           destinationEntity.getIdTypes());
     } catch (Exception e) {
       LOGGER.error("Cannot get a pseudonym with Mainzelliste API {}", e);
@@ -60,10 +62,11 @@ public class Pseudonym {
     if (destinationEntity.getIdTypes().equals(IdTypes.ADD_EXTID)) {
       String cleanTag = destinationEntity.getTag().replaceAll("[(),]", "").toUpperCase();
       final String tagValue = dcm.getString(TagUtils.intFromHexString(cleanTag)).orElse(null);
-      if (tagValue != null && destinationEntity.getDelimiter() != null
+      if (tagValue != null
+          && destinationEntity.getDelimiter() != null
           && destinationEntity.getPosition() != null) {
-        String delimiterSpec = SpecialCharacter
-            .escapeSpecialRegexChars(destinationEntity.getDelimiter());
+        String delimiterSpec =
+            SpecialCharacter.escapeSpecialRegexChars(destinationEntity.getDelimiter());
         try {
           return tagValue.split(delimiterSpec)[destinationEntity.getPosition()];
         } catch (ArrayIndexOutOfBoundsException e) {
@@ -72,35 +75,40 @@ public class Pseudonym {
         }
       } else {
         return tagValue;
-            }
-        }
-        return null;
+      }
+    }
+    return null;
+  }
+
+  public String getMainzellistePseudonym(
+      PatientMetadata patientMetadata, String externalPseudonym, IdTypes idTypes)
+      throws IOException, InterruptedException {
+    final String cachedPseudonym =
+        PatientClientUtil.getPseudonym(patientMetadata, mainzellisteCache);
+    if (cachedPseudonym != null) {
+      cachingMainzellistePseudonym(cachedPseudonym, patientMetadata);
+      return cachedPseudonym;
     }
 
-    public String getMainzellistePseudonym(PatientMetadata patientMetadata, String externalPseudonym, IdTypes idTypes) throws IOException, InterruptedException {
-        final String cachedPseudonym = PatientClientUtil.getPseudonym(patientMetadata, mainzellisteCache);
-        if (cachedPseudonym != null) {
-            cachingMainzellistePseudonym(cachedPseudonym, patientMetadata);
-            return cachedPseudonym;
-        }
+    PseudonymApi pseudonymApi = new PseudonymApi(externalPseudonym);
+    final Fields newPatientFields = patientMetadata.generateMainzellisteFields();
 
-        PseudonymApi pseudonymApi = new PseudonymApi(externalPseudonym);
-        final Fields newPatientFields = patientMetadata.generateMainzellisteFields();
+    String pseudonym = pseudonymApi.createPatient(newPatientFields, idTypes);
+    cachingMainzellistePseudonym(pseudonym, patientMetadata);
+    return pseudonym;
+  }
 
-        String pseudonym = pseudonymApi.createPatient(newPatientFields, idTypes);
-        cachingMainzellistePseudonym(pseudonym, patientMetadata);
-        return pseudonym;
-    }
-
-    private void cachingMainzellistePseudonym(String pseudonym, PatientMetadata patientMetadata) {
-        final MainzellistePatient mainzellistePatient = new MainzellistePatient(pseudonym,
-                patientMetadata.getPatientID(),
-                patientMetadata.getPatientFirstName(),
-                patientMetadata.getPatientLastName(),
-                patientMetadata.getLocalDatePatientBirthDate(),
-                patientMetadata.getPatientSex(),
-                patientMetadata.getIssuerOfPatientID());
-        String cacheKey = PatientClientUtil.generateKey(patientMetadata);
-        mainzellisteCache.put(cacheKey, mainzellistePatient);
-    }
+  private void cachingMainzellistePseudonym(String pseudonym, PatientMetadata patientMetadata) {
+    final MainzellistePatient mainzellistePatient =
+        new MainzellistePatient(
+            pseudonym,
+            patientMetadata.getPatientID(),
+            patientMetadata.getPatientFirstName(),
+            patientMetadata.getPatientLastName(),
+            patientMetadata.getLocalDatePatientBirthDate(),
+            patientMetadata.getPatientSex(),
+            patientMetadata.getIssuerOfPatientID());
+    String cacheKey = PatientClientUtil.generateKey(patientMetadata);
+    mainzellisteCache.put(cacheKey, mainzellistePatient);
+  }
 }

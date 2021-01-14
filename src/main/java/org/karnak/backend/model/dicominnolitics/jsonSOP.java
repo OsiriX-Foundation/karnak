@@ -1,19 +1,20 @@
 package org.karnak.backend.model.dicominnolitics;
 
 public class jsonSOP {
-    private String name;
-    private String id;
-    private String ciod;
 
-    public String getName() {
-        return name;
-    }
+  private String name;
+  private String id;
+  private String ciod;
 
-    public String getId() {
-        return id;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public String getCiod() {
-        return ciod;
-    }
+  public String getId() {
+    return id;
+  }
+
+  public String getCiod() {
+    return ciod;
+  }
 }

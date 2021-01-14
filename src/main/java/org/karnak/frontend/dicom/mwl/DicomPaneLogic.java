@@ -11,40 +11,39 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DicomPaneLogic {
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(DicomPaneLogic.class);
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(DicomPaneLogic.class);
 
   // PANE
   private final DicomPane pane;
-	
-	
-	public DicomPaneLogic(DicomPane pane) {
-		this.pane = pane;
-	}
 
-	public InputStream getWorklistItemInputStreamInDicom(DicomObject attributes) {
-		InputStream inputStream = null;
-		
-        if (attributes != null) {
-            try (ByteArrayOutputStream tmp = new ByteArrayOutputStream(); DicomOutputStream out = new DicomOutputStream(tmp).withEncoding(DicomEncoding.EVR_LE)) {
-                out.writeDataSet(attributes);
-                inputStream = new ByteArrayInputStream(tmp.toByteArray());
-            } catch (IOException e) {
-                LOGGER.error("Cannot write dicom file: {}", e.getMessage()); //$NON-NLS-1$
-            }
-        }
-		
-		return inputStream;
-	}
-	
-	public InputStream getWorklistItemInputStreamText(DicomObject attributes) {
-		InputStream inputStream = null;
-		
-        if (attributes != null) {
-        	inputStream = new ByteArrayInputStream(attributes.toString(1500, 300).getBytes());
-        }
+  public DicomPaneLogic(DicomPane pane) {
+    this.pane = pane;
+  }
 
-        return inputStream;
-	}
+  public InputStream getWorklistItemInputStreamInDicom(DicomObject attributes) {
+    InputStream inputStream = null;
 
+    if (attributes != null) {
+      try (ByteArrayOutputStream tmp = new ByteArrayOutputStream();
+          DicomOutputStream out = new DicomOutputStream(tmp).withEncoding(DicomEncoding.EVR_LE)) {
+        out.writeDataSet(attributes);
+        inputStream = new ByteArrayInputStream(tmp.toByteArray());
+      } catch (IOException e) {
+        LOGGER.error("Cannot write dicom file: {}", e.getMessage()); // $NON-NLS-1$
+      }
+    }
+
+    return inputStream;
+  }
+
+  public InputStream getWorklistItemInputStreamText(DicomObject attributes) {
+    InputStream inputStream = null;
+
+    if (attributes != null) {
+      inputStream = new ByteArrayInputStream(attributes.toString(1500, 300).getBytes());
+    }
+
+    return inputStream;
+  }
 }

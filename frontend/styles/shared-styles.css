@@ -1,165 +1,196 @@
-<!-- The shared-styles.html is used instead of shared-styles.css so that
-  -- the styles are also used for browsers that do not support CSS Custom Properties
-  -- (mainly to support IE11)
-  -- for more information see: https://cdn.vaadin.com/vaadin-lumo-styles/1.3.1/demo/compatibility.html
-  -->
-<!-- Remember to import custom-style, which is included in the Polymer package -->
-<link rel="import"
-      href="../bower_components/polymer/lib/elements/custom-style.html">
+<!--
+The shared-styles.html is used instead of shared-styles.css so that
+-- the styles are also used for browsers that do not support CSS Custom Properties
+--
 
-<custom-style>
-    <style>
-        html {
-            font-size: var(--lumo-font-size-s);
-        }
+(
+mainly to support IE11
 
-        /* Stack login-screen vertically on narrow screen */
-        @media (max-width: 800px) {
-            .login-screen {
-                flex-direction: column;
-            }
+)
+-- for more information see: https:
 
-            .login-information {
-                display: block;
-            }
-        }
+/
+/
+cdn.vaadin.com /vaadin-lumo-styles/
 
-        .main-layout {
-            flex-direction: row;
+1.3
+.1
+/demo/ compatibility.html
 
-            /* Used by the menu and form overlays */
-            --overlay-box-shadow: 0 0 3px 2px var(--lumo-contrast-10pct);
-        }
+-->
+<!--
+Remember to import custom-style, which is included in the Polymer package
 
-        .menu-bar {
-            flex-direction: column;
-            flex-shrink: 0;
-            background: var(--lumo-base-color);
-            box-shadow: var(--overlay-box-shadow);
-        }
+-->
+<
+link rel
 
-        .menu-header {
-            padding: 11px 16px;
-        }
+=
+"import"
+href
 
-        .menu-bar vaadin-tabs {
-            align-items: flex-start;
-            transition: transform 300ms;
-        }
+=
+"../bower_components/polymer/lib/elements/custom-style.html"
+>
+< custom-style >
+< style >
+html {
+  font-size: var(--lumo-font-size-s);
+}
 
-        .menu-bar vaadin-tab {
-            padding: 0;
-        }
+/* Stack login-screen vertically on narrow screen */
+@media (max-width: 800px) {
+  .login-screen {
+    flex-direction: column;
+  }
 
-        .menu-link {
-            margin: 0 auto;
-            padding: 10px 37px;
-        }
+  .login-information {
+    display: block;
+  }
+}
 
-        .menu-link > span {
-            display: block;
-        }
+.main-layout {
+  flex-direction: row;
 
-        .menu-button {
-            display: none;
-        }
+  /* Used by the menu and form overlays */
+  --overlay-box-shadow: 0 0 3px 2px var(--lumo-contrast-10pct);
+}
 
-        .forwardnode-form {
-            height: 100%;
-            width: 300%;
-            background: var(--lumo-base-color);
-        }
+.menu-bar {
+  flex-direction: column;
+  flex-shrink: 0;
+  background: var(--lumo-base-color);
+  box-shadow: var(--overlay-box-shadow);
+}
 
-        .inputsourcenode-form {
-            height: 100%;
-            width: 250%;
-            background: var(--lumo-base-color);
-        }
+.menu-header {
+  padding: 11px 16px;
+}
 
-        /* On narrow screens, move the side bar to the top,
-         * except for the link-tabs, which are hidden but
-         * can be opened via a button.
-         */
-        @media (max-width: 800px) {
-            .main-layout {
-                flex-direction: column;
-                --top-bar-height: 50px;
-                --top-bar-margin: 5vw;
-            }
+.menu-bar vaadin-tabs {
+  align-items: flex-start;
+  transition: transform 300ms;
+}
 
-            .menu-bar {
-                flex-direction: row;
-                align-items: center;
-                justify-content: space-between;
-                height: var(--top-bar-height);
-                margin: 0 var(--top-bar-margin);
-                background: none;
-                box-shadow: none;
-            }
+.menu-bar vaadin-tab {
+  padding: 0;
+}
 
-            .menu-bar vaadin-tabs {
-                transform: translateX(calc(-100% - var(--top-bar-margin)));
-                position: absolute;
-                top: var(--top-bar-height);
-                height: calc(100% - var(--top-bar-height));
-                z-index: 100;
-                box-shadow: var(--overlay-box-shadow);
-                background: var(--lumo-base-color);
-            }
+.menu-link {
+  margin: 0 auto;
+  padding: 10px 37px;
+}
 
-            .menu-bar .show-tabs {
-                transform: translateX(calc(0% - var(--top-bar-margin)));
-            }
+.menu-link > span {
+  display: block;
+}
 
-            .menu-button {
-                display: block;
-            }
+.menu-button {
+  display: none;
+}
 
-            .forwardnode-form {
-                height: calc(100% - var(--top-bar-height));
-            }
+.forwardnode-form {
+  height: 100%;
+  width: 300%;
+  background: var(--lumo-base-color);
+}
 
-            .destination-form {
-                height: calc(100% - var(--top-bar-height));
-            }
+.inputsourcenode-form {
+  height: 100%;
+  width: 250%;
+  background: var(--lumo-base-color);
+}
 
-            .sourcenode-form {
-                height: calc(100% - var(--top-bar-height));
-            }
+/* On narrow screens, move the side bar to the top,
+ * except for the link-tabs, which are hidden but
+ * can be opened via a button.
+ */
+@media (max-width: 800px) {
+  .main-layout {
+    flex-direction: column;
+    --top-bar-height: 50px;
+    --top-bar-margin: 5vw;
+  }
 
-            .inputsourcenode-form {
-                height: calc(100% - var(--top-bar-height));
-            }
-        }
+  .menu-bar {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    height: var(--top-bar-height);
+    margin: 0 var(--top-bar-margin);
+    background: none;
+    box-shadow: none;
+  }
 
-        @media (max-width: 550px) {
-            .forwardnode-form {
-                width: 100%;
+  .menu-bar vaadin-tabs {
+    transform: translateX(calc(-100% - var(--top-bar-margin)));
+    position: absolute;
+    top: var(--top-bar-height);
+    height: calc(100% - var(--top-bar-height));
+    z-index: 100;
+    box-shadow: var(--overlay-box-shadow);
+    background: var(--lumo-base-color);
+  }
 
-                /* Prevent text-fields from overflowing on narrow screens */
-                --vaadin-text-field-default-width: 6em;
-            }
+  .menu-bar .show-tabs {
+    transform: translateX(calc(0% - var(--top-bar-margin)));
+  }
 
-            .destination-form {
-                width: 100%;
+  .menu-button {
+    display: block;
+  }
 
-                /* Prevent text-fields from overflowing on narrow screens */
-                --vaadin-text-field-default-width: 6em;
-            }
+  .forwardnode-form {
+    height: calc(100% - var(--top-bar-height));
+  }
 
-            .sourcenode-form {
-                width: 100%;
+  .destination-form {
+    height: calc(100% - var(--top-bar-height));
+  }
 
-                /* Prevent text-fields from overflowing on narrow screens */
-                --vaadin-text-field-default-width: 6em;
-            }
+  .sourcenode-form {
+    height: calc(100% - var(--top-bar-height));
+  }
 
-            .inputsourcenode-form {
-                width: 100%;
+  .inputsourcenode-form {
+    height: calc(100% - var(--top-bar-height));
+  }
+}
 
-                /* Prevent text-fields from overflowing on narrow screens */
-                --vaadin-text-field-default-width: 6em;
-            }
-        }
-    </style>
-</custom-style>
+@media (max-width: 550px) {
+  .forwardnode-form {
+    width: 100%;
+
+    /* Prevent text-fields from overflowing on narrow screens */
+    --vaadin-text-field-default-width: 6em;
+  }
+
+  .destination-form {
+    width: 100%;
+
+    /* Prevent text-fields from overflowing on narrow screens */
+    --vaadin-text-field-default-width: 6em;
+  }
+
+  .sourcenode-form {
+    width: 100%;
+
+    /* Prevent text-fields from overflowing on narrow screens */
+    --vaadin-text-field-default-width: 6em;
+  }
+
+  .inputsourcenode-form {
+    width: 100%;
+
+    /* Prevent text-fields from overflowing on narrow screens */
+    --vaadin-text-field-default-width: 6em;
+  }
+}
+
+<
+/
+style >
+<
+
+/
+custom-style >

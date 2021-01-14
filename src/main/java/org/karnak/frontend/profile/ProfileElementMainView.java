@@ -13,19 +13,21 @@ public class ProfileElementMainView extends VerticalLayout {
 
   private List<ProfileElementEntity> profilesOrder;
 
-    ProfileElementMainView() {
-    }
+  ProfileElementMainView() {
+  }
 
-    private void profilesView() {
-      removeAll();
-      add(new HorizontalLayout(
-          new H2("Profile element(s)")));  //new horizontalelayout because fix padding
-      for (ProfileElementEntity profileElementEntity : profilesOrder) {
-        add(setProfileName(
-            (profileElementEntity.getPosition() + 1) + ". " + profileElementEntity.getName()));
-        add(new ProfileElementView(profileElementEntity));
-      }
+  private void profilesView() {
+    removeAll();
+    add(
+        new HorizontalLayout(
+            new H2("Profile element(s)"))); // new horizontalelayout because fix padding
+    for (ProfileElementEntity profileElementEntity : profilesOrder) {
+      add(
+          setProfileName(
+              (profileElementEntity.getPosition() + 1) + ". " + profileElementEntity.getName()));
+      add(new ProfileElementView(profileElementEntity));
     }
+  }
 
   private Div setProfileName(String name) {
     Div profileNameDiv = new Div();

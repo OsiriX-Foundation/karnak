@@ -31,119 +31,122 @@ import org.springframework.security.core.context.SecurityContextHolder;
 @CssImport(value = "./styles/shared-styles.css")
 @SuppressWarnings("serial")
 public class LoginScreen extends FlexLayout implements BeforeEnterObserver {
-    // View route
-    public static final String ROUTE = "login";
 
-    // Theme
-    private final String THEME_COLOR_KEY = "theme-variant";
+  // View route
+  public static final String ROUTE = "login";
 
-    // Login form
-    private final LoginForm loginForm;
+  // Theme
+  private final String THEME_COLOR_KEY = "theme-variant";
 
-    // Authentication manager
-    private final AuthenticationManager authenticationManager;
+  // Login form
+  private final LoginForm loginForm;
 
-    // Request cache
-    private final RequestCache requestCache;
+  // Authentication manager
+  private final AuthenticationManager authenticationManager;
 
-    @Autowired
-    public LoginScreen(AuthenticationManager authenticationManager, RequestCache requestCache) {
-        this.loginForm = new LoginForm();
-        this.authenticationManager = authenticationManager;
-        this.requestCache = requestCache;
-        buildUI();
+  // Request cache
+  private final RequestCache requestCache;
+
+  @Autowired
+  public LoginScreen(AuthenticationManager authenticationManager, RequestCache requestCache) {
+    this.loginForm = new LoginForm();
+    this.authenticationManager = authenticationManager;
+    this.requestCache = requestCache;
+    buildUI();
+  }
+
+  @Override
+  public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
+    // inform the user about an authentication error
+    if (beforeEnterEvent.getLocation().getQueryParameters().getParameters().containsKey("error")) {
+      loginForm.setError(true);
     }
+  }
 
-    @Override
-    public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
-        // inform the user about an authentication error
-        if (beforeEnterEvent.getLocation()
-                .getQueryParameters()
-                .getParameters()
-                .containsKey("error")) {
-            loginForm.setError(true);
-        }
+  /** Build User Interface */
+  private void buildUI() {
+    setSizeFull();
+    setClassName("login-screen");
+
+    // read local storage theme
+    UI.getCurrent()
+        .getPage()
+        .executeJs("return localStorage.getItem($0)", THEME_COLOR_KEY)
+        .then(
+            String.class,
+            string -> {
+              final String themeColor = string;
+              if ((string != null) && (string.equals(Lumo.DARK) || string.equals(Lumo.LIGHT))) {
+                UI.getCurrent().getElement().setAttribute("theme", themeColor);
+                UI.getCurrent()
+                    .getPage()
+                    .executeJs("localStorage.setItem($0, $1)", THEME_COLOR_KEY, themeColor);
+              }
+            });
+
+    // Build component
+    add(buildLoginMainComponent());
+
+    // It's ugly but it works. @see
+    // https://github.com/vaadin/vaadin-login-flow/issues/53
+    UI.getCurrent()
+        .getPage()
+        .executeJavaScript("document.getElementById(\"vaadinLoginUsername\").focus();");
+  }
+
+  /**
+   * Build login component
+   *
+   * @return the built component
+   */
+  private Component buildLoginMainComponent() {
+
+    // sets the LoginForm action to "login" in order to post the login form to Spring Security
+    loginForm.setAction("login");
+
+    // deactivate forgot password button
+    loginForm.setForgotPasswordButtonVisible(false);
+
+    // Listener on login form
+    loginForm.addLoginListener(this::login);
+
+    // layout to center login form when there is sufficient screen space
+    VerticalLayout loginInformation = new VerticalLayout();
+    loginInformation.setJustifyContentMode(JustifyContentMode.CENTER);
+    loginInformation.setAlignItems(Alignment.CENTER);
+    LogoKarnak logoKarnak = new LogoKarnak("KARNAK", "225px");
+    loginInformation.add(logoKarnak);
+    loginInformation.add(new H1("KARNAK"));
+    loginInformation.add(loginForm);
+
+    return loginInformation;
+  }
+
+  /**
+   * Manage event on login form submit
+   *
+   * @param event Login Event
+   */
+  private void login(LoginForm.LoginEvent event) {
+    try {
+      // try to authenticate with given credentials,
+      // should always return not null or throw an {@link AuthenticationException}
+      final Authentication authentication =
+          authenticationManager.authenticate(
+              new UsernamePasswordAuthenticationToken(event.getUsername(), event.getPassword()));
+
+      // if the user is admin
+      if (authentication.getAuthorities().stream()
+          .anyMatch(ga -> Objects.equals(ga.getAuthority(), SecurityRole.ADMIN_ROLE.getRole()))) {
+
+        // if authentication was successful and user is admin,
+        // we will update the security context and redirect to the page requested first
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        UI.getCurrent().navigate(requestCache.resolveRedirectUrl());
+      }
+    } catch (AuthenticationException ex) { //
+      // show default error message
+      loginForm.setError(true);
     }
-
-    /**
-     * Build User Interface
-     */
-    private void buildUI() {
-        setSizeFull();
-        setClassName("login-screen");
-
-        //read local storage theme
-        UI.getCurrent().getPage().executeJs("return localStorage.getItem($0)", THEME_COLOR_KEY)
-                .then(String.class, string -> {
-                    final String themeColor = string;
-                    if ((string != null) && (string.equals(Lumo.DARK) || string.equals(Lumo.LIGHT))) {
-                        UI.getCurrent().getElement().setAttribute("theme", themeColor);
-                        UI.getCurrent().getPage()
-                                .executeJs("localStorage.setItem($0, $1)", THEME_COLOR_KEY, themeColor);
-                    }
-                });
-
-        // Build component
-        add(buildLoginMainComponent());
-
-        // It's ugly but it works. @see
-        // https://github.com/vaadin/vaadin-login-flow/issues/53
-        UI.getCurrent().getPage().executeJavaScript("document.getElementById(\"vaadinLoginUsername\").focus();");
-    }
-
-    /**
-     * Build login component
-     *
-     * @return the built component
-     */
-    private Component buildLoginMainComponent() {
-
-        // sets the LoginForm action to "login" in order to post the login form to Spring Security
-        loginForm.setAction("login");
-
-        // deactivate forgot password button
-        loginForm.setForgotPasswordButtonVisible(false);
-
-        // Listener on login form
-        loginForm.addLoginListener(this::login);
-
-        // layout to center login form when there is sufficient screen space
-        VerticalLayout loginInformation = new VerticalLayout();
-        loginInformation.setJustifyContentMode(JustifyContentMode.CENTER);
-        loginInformation.setAlignItems(Alignment.CENTER);
-        LogoKarnak logoKarnak = new LogoKarnak("KARNAK", "225px");
-        loginInformation.add(logoKarnak);
-        loginInformation.add(new H1("KARNAK"));
-        loginInformation.add(loginForm);
-
-        return loginInformation;
-    }
-
-    /**
-     * Manage event on login form submit
-     *
-     * @param event Login Event
-     */
-    private void login(LoginForm.LoginEvent event) {
-        try {
-            // try to authenticate with given credentials,
-            // should always return not null or throw an {@link AuthenticationException}
-            final Authentication authentication = authenticationManager
-                    .authenticate(new UsernamePasswordAuthenticationToken(event.getUsername(), event.getPassword()));
-
-            // if the user is admin
-            if (authentication.getAuthorities().stream()
-                    .anyMatch(ga -> Objects.equals(ga.getAuthority(), SecurityRole.ADMIN_ROLE.getRole()))) {
-
-                // if authentication was successful and user is admin,
-                // we will update the security context and redirect to the page requested first
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-                UI.getCurrent().navigate(requestCache.resolveRedirectUrl());
-            }
-        } catch (AuthenticationException ex) { //
-            // show default error message
-            loginForm.setError(true);
-        }
-    }
-
+  }
 }

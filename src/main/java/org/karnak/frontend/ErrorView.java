@@ -19,17 +19,18 @@ public class ErrorView extends VerticalLayout implements HasErrorParameter<NotFo
 
   private final Span explanation;
 
-    public ErrorView() {
-        H1 header = new H1("The view could not be found.");
-        add(header);
+  public ErrorView() {
+    H1 header = new H1("The view could not be found.");
+    add(header);
 
-        explanation = new Span();
-        add(explanation);
-    }
+    explanation = new Span();
+    add(explanation);
+  }
 
-    @Override
-    public int setErrorParameter(BeforeEnterEvent event, ErrorParameter<NotFoundException> parameter) {
-        explanation.setText("Could not navigate to '" + event.getLocation().getPath() + "'.");
-        return HttpServletResponse.SC_NOT_FOUND;
-    }
+  @Override
+  public int setErrorParameter(
+      BeforeEnterEvent event, ErrorParameter<NotFoundException> parameter) {
+    explanation.setText("Could not navigate to '" + event.getLocation().getPath() + "'.");
+    return HttpServletResponse.SC_NOT_FOUND;
+  }
 }

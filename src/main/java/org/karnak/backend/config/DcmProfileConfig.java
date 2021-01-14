@@ -7,20 +7,21 @@ import org.springframework.stereotype.Component;
 
 @Component
 @EnableConfigurationProperties
-@ConfigurationProperties(prefix="dcmprofile")
+@ConfigurationProperties(prefix = "dcmprofile")
 public class DcmProfileConfig {
-    private static DcmProfileConfig instance;
 
-    @PostConstruct
-    public void postConstruct() {
-        instance = this;
-    }
+  private static DcmProfileConfig instance;
 
-    public static DcmProfileConfig getInstance() {
-        return instance;
-    }
+  public static DcmProfileConfig getInstance() {
+    return instance;
+  }
 
-    public static void setInstance(DcmProfileConfig instance) {
-        DcmProfileConfig.instance = instance;
-    }
+  public static void setInstance(DcmProfileConfig instance) {
+    DcmProfileConfig.instance = instance;
+  }
+
+  @PostConstruct
+  public void postConstruct() {
+    instance = this;
+  }
 }

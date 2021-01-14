@@ -10,18 +10,25 @@ import org.slf4j.MDC;
 
 public class UID extends AbstractAction {
 
-    public UID(String symbol) {
-        super(symbol);
-    }
+  public UID(String symbol) {
+    super(symbol);
+  }
 
-    @Override
-    public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, HMAC hmac) {
-        String uidValue = dcm.getString(tag).orElse(null);
-        String uidHashed = null;
-        if (uidValue != null) {
-            uidHashed = hmac.uidHash(uidValue);
-            dcm.setString(tag, VR.UI, uidHashed);
-        }
-        LOGGER.trace(CLINICAL_MARKER, PATTERN_WITH_INOUT, MDC.get("SOPInstanceUID"), TagUtils.toString(tag), symbol, uidValue, uidHashed);
+  @Override
+  public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, HMAC hmac) {
+    String uidValue = dcm.getString(tag).orElse(null);
+    String uidHashed = null;
+    if (uidValue != null) {
+      uidHashed = hmac.uidHash(uidValue);
+      dcm.setString(tag, VR.UI, uidHashed);
     }
+    LOGGER.trace(
+        CLINICAL_MARKER,
+        PATTERN_WITH_INOUT,
+        MDC.get("SOPInstanceUID"),
+        TagUtils.toString(tag),
+        symbol,
+        uidValue,
+        uidHashed);
+  }
 }

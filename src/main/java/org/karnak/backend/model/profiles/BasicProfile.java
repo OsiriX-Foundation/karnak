@@ -17,26 +17,26 @@ public class BasicProfile extends AbstractProfileItem {
 
   public BasicProfile(ProfileElementEntity profileElementEntity) {
     super(profileElementEntity);
-    ConfidentialityProfiles confidentialityProfiles = AppConfig.getInstance()
-        .getConfidentialityProfile();
+    ConfidentialityProfiles confidentialityProfiles =
+        AppConfig.getInstance().getConfidentialityProfile();
     actionMap = confidentialityProfiles.getActionMap();
     listProfiles = confidentialityProfiles.getListProfiles();
   }
 
   @Override
-  public ActionItem getAction(DicomObject dcm, DicomObject dcmCopy, DicomElement dcmElem,
-      HMAC hmac) {
+  public ActionItem getAction(
+      DicomObject dcm, DicomObject dcmCopy, DicomElement dcmElem, HMAC hmac) {
     int tag = dcmElem.tag();
     ActionItem action = actionMap.get(tag);
     if (action == null) {
-            for (ProfileItem p : listProfiles) {
-                ActionItem val = p.getAction(dcm, dcmCopy, dcmElem, hmac);
-                if(val != null){
-                    return val;
-                }
-            }
-            return null;
+      for (ProfileItem p : listProfiles) {
+        ActionItem val = p.getAction(dcm, dcmCopy, dcmElem, hmac);
+        if (val != null) {
+          return val;
         }
-        return action;
+      }
+      return null;
     }
+    return action;
+  }
 }

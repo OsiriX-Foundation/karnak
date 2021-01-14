@@ -32,9 +32,10 @@ public class RequestCache extends HttpSessionRequestCache {
    * @return the path resolved
    */
   public String resolveRedirectUrl() {
-    SavedRequest savedRequest = getRequest(
-        VaadinServletRequest.getCurrent().getHttpServletRequest(),
-        VaadinServletResponse.getCurrent().getHttpServletResponse());
+    SavedRequest savedRequest =
+        getRequest(
+            VaadinServletRequest.getCurrent().getHttpServletRequest(),
+            VaadinServletResponse.getCurrent().getHttpServletResponse());
     if (savedRequest instanceof DefaultSavedRequest) {
       final String requestURI = ((DefaultSavedRequest) savedRequest).getRequestURI();
       // check for valid URI

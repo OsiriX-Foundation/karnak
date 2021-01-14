@@ -20,12 +20,14 @@ public class FilterEditor implements AttributeEditor {
   @Override
   public void apply(DicomObject dcm, AttributeEditorContext context) {
     String classUID = dcm.getString(Tag.SOPClassUID).orElse(null);
-    Predicate<SOPClassUIDEntity> sopClassUIDPredicate = sopClassUID -> sopClassUID.getUid()
-        .equals(classUID);
+    Predicate<SOPClassUIDEntity> sopClassUIDPredicate =
+        sopClassUID -> sopClassUID.getUid().equals(classUID);
     if (!sopClassUIDEntitySet.stream().anyMatch(sopClassUIDPredicate)) {
       context.setAbort(Abort.FILE_EXCEPTION);
       context.setAbortMessage(
-          dcm.getString(Tag.SOPInstanceUID).orElse(null) + " is blocked because " + classUID
+          dcm.getString(Tag.SOPInstanceUID).orElse(null)
+              + " is blocked because "
+              + classUID
               + " is not in the SOPClassUID filter");
     }
   }

@@ -22,39 +22,38 @@ public class ExprConditionDestination implements ExpressionItem {
       this.stringValue = null;
     }
     this.dcmCopy = dcmCopy;
-        this.dcm = dcm;
-    }
+    this.dcm = dcm;
+  }
 
-    public String getString(int tag){
-        return dcmCopy.getString(tag).orElse(null);
-    }
+  public String getString(int tag) {
+    return dcmCopy.getString(tag).orElse(null);
+  }
 
-    public boolean tagIsPresent(int tag){
-        return DicomObjectTools.tagIsInDicomObject(tag, dcmCopy);
-    }
+  public boolean tagIsPresent(int tag) {
+    return DicomObjectTools.tagIsInDicomObject(tag, dcmCopy);
+  }
 
+  public int getTag() {
+    return tag;
+  }
 
-    public int getTag() {
-        return tag;
-    }
+  public void setTag(int tag) {
+    this.tag = tag;
+  }
 
-    public void setTag(int tag) {
-        this.tag = tag;
-    }
+  public VR getVr() {
+    return vr;
+  }
 
-    public VR getVr() {
-        return vr;
-    }
+  public void setVr(VR vr) {
+    this.vr = vr;
+  }
 
-    public void setVr(VR vr) {
-        this.vr = vr;
-    }
+  public String getStringValue() {
+    return stringValue;
+  }
 
-    public String getStringValue() {
-        return stringValue;
-    }
-
-    public void setStringValue(String stringValue) {
-        this.stringValue = stringValue;
-    }
+  public void setStringValue(String stringValue) {
+    this.stringValue = stringValue;
+  }
 }

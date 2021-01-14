@@ -22,60 +22,63 @@ import org.karnak.frontend.util.ToggleButtonTheme;
 @JsModule("@polymer/iron-icons/iron-icons.js")
 @SuppressWarnings("serial")
 public class Menu extends FlexLayout {
-    private static final String SHOW_TABS = "show-tabs";
 
-    private Tabs tabs;
-    private RadioButtonGroup<String> radioGroup;
-    private final ToggleButtonTheme toggleButtonTheme;
+  private static final String SHOW_TABS = "show-tabs";
+  private final ToggleButtonTheme toggleButtonTheme;
+  private Tabs tabs;
+  private RadioButtonGroup<String> radioGroup;
 
-    public Menu() {
-        setClassName("menu-bar");
+  public Menu() {
+    setClassName("menu-bar");
 
-        // Button for toggling the menu visibility on small screens
-        final Button showMenu = new Button("Menu", event -> {
-            if (tabs.getClassNames().contains(SHOW_TABS)) {
+    // Button for toggling the menu visibility on small screens
+    final Button showMenu =
+        new Button(
+            "Menu",
+            event -> {
+              if (tabs.getClassNames().contains(SHOW_TABS)) {
                 tabs.removeClassName(SHOW_TABS);
-            } else {
+              } else {
                 tabs.addClassName(SHOW_TABS);
-            }
-        });
-        showMenu.setClassName("menu-button");
-        showMenu.addThemeVariants(ButtonVariant.LUMO_SMALL);
-        showMenu.setIcon(new Icon(VaadinIcon.MENU));
-        add(showMenu);
+              }
+            });
+    showMenu.setClassName("menu-button");
+    showMenu.addThemeVariants(ButtonVariant.LUMO_SMALL);
+    showMenu.setIcon(new Icon(VaadinIcon.MENU));
+    add(showMenu);
 
-        // container for the navigation buttons, which are added by addView()
-        tabs = new Tabs();
-        tabs.setOrientation(Tabs.Orientation.VERTICAL);
-        setFlexGrow(1, tabs);
-        add(tabs);
+    // container for the navigation buttons, which are added by addView()
+    tabs = new Tabs();
+    tabs.setOrientation(Tabs.Orientation.VERTICAL);
+    setFlexGrow(1, tabs);
+    add(tabs);
 
-        //theme
-        toggleButtonTheme = new ToggleButtonTheme();
-        add(new VerticalLayout(toggleButtonTheme));
+    // theme
+    toggleButtonTheme = new ToggleButtonTheme();
+    add(new VerticalLayout(toggleButtonTheme));
 
-        // logout menu item
-        Button logoutButton = new Button("Logout", VaadinIcon.SIGN_OUT.create());
-        logoutButton.addClickListener(event -> SecurityUtil.signOut());
+    // logout menu item
+    Button logoutButton = new Button("Logout", VaadinIcon.SIGN_OUT.create());
+    logoutButton.addClickListener(event -> SecurityUtil.signOut());
 
-        logoutButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
-        add(logoutButton);
-    }
+    logoutButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
+    add(logoutButton);
+  }
 
-    /**
-     * Add a view to the navigation menu
-     *
-     * @param viewClass that has a {@code Route} annotation
-     * @param caption   view caption in the menu
-     * @param icon      view icon in the menu
-     */
-    public void addView(Class<? extends Component> viewClass, String caption, IronIcon icon) {
-        Tab tab = new Tab();
-        RouterLink routerLink = new RouterLink(null, viewClass);
-        routerLink.setClassName("menu-link");
-        routerLink.add(icon);
-        routerLink.add(new Span(caption));
-        tab.add(routerLink);
-        tabs.add(tab);
-    }
+  /**
+   * Add a view to the navigation menu
+   *
+   * @param viewClass that has a {@code Route} annotation
+   * @param caption   view caption in the menu
+   * @param icon      view icon in the menu
+   */
+  public void addView(Class<? extends Component> viewClass, String caption, IronIcon icon) {
+    Tab tab = new Tab();
+    RouterLink routerLink = new RouterLink(null, viewClass);
+    routerLink.setClassName("menu-link");
+    routerLink.add(icon);
+    routerLink.add(new Span(caption));
+    tab.add(routerLink);
+    tabs.add(tab);
+  }
 }

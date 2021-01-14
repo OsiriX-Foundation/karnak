@@ -7,8 +7,11 @@ public class NotificationSetUp {
   private final String[] notifyObjectValues;
   private final int notifyInterval;
 
-  public NotificationSetUp(String notifyObjectErrorPrefix, String notifyObjectPattern,
-      String[] notifyObjectValues, int notifyInterval) {
+  public NotificationSetUp(
+      String notifyObjectErrorPrefix,
+      String notifyObjectPattern,
+      String[] notifyObjectValues,
+      int notifyInterval) {
     super();
     this.notifyObjectErrorPrefix = notifyObjectErrorPrefix;
     this.notifyObjectPattern = notifyObjectPattern;
@@ -16,20 +19,19 @@ public class NotificationSetUp {
     this.notifyInterval = notifyInterval;
   }
 
-    public String getNotifyObjectErrorPrefix() {
-        return notifyObjectErrorPrefix;
-    }
+  public String getNotifyObjectErrorPrefix() {
+    return notifyObjectErrorPrefix;
+  }
 
-    public String getNotifyObjectPattern() {
-        return notifyObjectPattern;
-    }
+  public String getNotifyObjectPattern() {
+    return notifyObjectPattern;
+  }
 
-    public String[] getNotifyObjectValues() {
-        return notifyObjectValues;
-    }
+  public String[] getNotifyObjectValues() {
+    return notifyObjectValues;
+  }
 
-    public int getNotifyInterval() {
-        return notifyInterval;
-    }
-
+  public int getNotifyInterval() {
+    return notifyInterval;
+  }
 }

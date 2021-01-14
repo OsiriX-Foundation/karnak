@@ -8,10 +8,14 @@ public class GridForwardNode extends Grid<ForwardNodeEntity> {
   public GridForwardNode() {
     setSizeFull();
 
-    addColumn(ForwardNodeEntity::getFwdAeTitle).setHeader("Forward AETitle").setFlexGrow(20)
+    addColumn(ForwardNodeEntity::getFwdAeTitle)
+        .setHeader("Forward AETitle")
+        .setFlexGrow(20)
         .setSortable(true);
 
-    addColumn(ForwardNodeEntity::getDescription).setHeader("Description").setFlexGrow(20)
+    addColumn(ForwardNodeEntity::getDescription)
+        .setHeader("Description")
+        .setFlexGrow(20)
         .setSortable(true);
   }
 
@@ -26,5 +30,4 @@ public class GridForwardNode extends Grid<ForwardNodeEntity> {
   public void selectRow(ForwardNodeEntity row) {
     getSelectionModel().select(row);
   }
-
 }

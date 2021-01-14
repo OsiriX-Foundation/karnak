@@ -8,31 +8,40 @@ import org.dcm4che6.util.TagUtils;
 import org.karnak.backend.model.profilepipe.HMAC;
 import org.slf4j.MDC;
 
-public class Add extends AbstractAction{
+public class Add extends AbstractAction {
 
-    public Add(String symbol, int newTag, VR vr, String dummyValue) {
-        super(symbol, newTag, vr, dummyValue);
-    }
+  public Add(String symbol, int newTag, VR vr, String dummyValue) {
+    super(symbol, newTag, vr, dummyValue);
+  }
 
-    @Override
-    public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, HMAC hmac) {
-        String tagValueIn = dcm.getString(newTag).orElse(null);
+  @Override
+  public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, HMAC hmac) {
+    String tagValueIn = dcm.getString(newTag).orElse(null);
 
-        dcm.get(newTag).ifPresentOrElse(dcmEl -> {
-            if (dummyValue != null) {
+    dcm.get(newTag)
+        .ifPresentOrElse(
+            dcmEl -> {
+              if (dummyValue != null) {
                 dcm.setString(newTag, dcmEl.vr(), dummyValue);
-            } else {
+              } else {
                 dcm.setNull(newTag, dcmEl.vr());
-            }
-        }, () -> {
-            if (dummyValue != null) {
+              }
+            },
+            () -> {
+              if (dummyValue != null) {
                 dcm.setString(newTag, vr, dummyValue);
-            } else {
+              } else {
                 dcm.setNull(newTag, vr);
-            }
-        });
+              }
+            });
 
-        LOGGER.trace(CLINICAL_MARKER, PATTERN_WITH_INOUT, MDC.get("SOPInstanceUID"), TagUtils.toString(newTag), symbol, tagValueIn,
-            dcm.getString(newTag).orElse(null));
-    }
+    LOGGER.trace(
+        CLINICAL_MARKER,
+        PATTERN_WITH_INOUT,
+        MDC.get("SOPInstanceUID"),
+        TagUtils.toString(newTag),
+        symbol,
+        tagValueIn,
+        dcm.getString(newTag).orElse(null));
+  }
 }

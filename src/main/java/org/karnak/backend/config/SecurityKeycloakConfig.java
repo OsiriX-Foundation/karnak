@@ -44,7 +44,8 @@ public class SecurityKeycloakConfig extends KeycloakWebSecurityConfigurerAdapter
         .requestCache(new RequestCache())
         // Disables cross-site request forgery (CSRF) protection for main route
         .and()
-        .csrf().ignoringAntMatchers("/")
+        .csrf()
+        .ignoringAntMatchers("/")
         // Turns on authorization
         .and()
         .authorizeRequests()

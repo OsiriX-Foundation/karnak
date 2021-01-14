@@ -1,94 +1,100 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <property name="LOGS" value="logs" />
-    <if condition='property("ENVIRONMENT").contains("DEV")'>
-        <then>
-            <appender name="DEV_OUT" class="ch.qos.logback.core.ConsoleAppender">
-                <encoder>
-                    <Pattern>%black(%d{ISO8601})  %highlight(%-5level) %marker %highlight(%X{SOPInstanceUID}) %highlight(%X{issuerOfPatientID}) %highlight(%X{PatientID}) [%yellow(%t)] %yellow(%C{1.}): %msg%n%throwable </Pattern>
-                </encoder>
-            </appender>
-            <root level="info">
-                <appender-ref ref="DEV_OUT" />
-            </root>
-            <logger name="org.weasis" level="debug" />
-            <logger name="org.dcm4che6" level="debug" />
-            <logger name="org.karnak" level="debug" />
-        </then>
-        <!--
-        PRODUCTION LOGS
-        -->
-        <else>
-            <appender name="WARNING_OUT" class="ch.qos.logback.core.ConsoleAppender">
-                <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-                    <level>WARN</level>
-                </filter>
-                <encoder>
-                    <Pattern>%black(%d{ISO8601})  %highlight(%-5level) %marker %highlight(%X{SOPInstanceUID}) %highlight(%X{issuerOfPatientID}) %highlight(%X{PatientID}) [%yellow(%t)] %yellow(%C{1.}): %msg%n%throwable </Pattern>
-                </encoder>
-            </appender>
-            <!--
-            immediateFlush to false ? to discuss http://logback.qos.ch/manual/appenders.html
-            "The default value for immediateFlush is 'true'. Immediate flushing of the output stream ensures
-            that logging events are immediately written out and will not be lost in case your application exits
-            without properly closing appenders. On the other hand, setting this property to 'false' is likely
-            to quadruple (your mileage may vary) logging throughput. Again, if immediateFlush is set to 'false'
-            and if appenders are not closed properly when your application exits,
-            then logging events not yet written to disk may be lost."
-            -->
-            <appender name="ALL_LOGS" class="ch.qos.logback.core.rolling.RollingFileAppender">
-                <file>${LOGS}/all/all.log</file>
-                <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-                    <fileNamePattern>${LOGS}/all/all_%i.log</fileNamePattern>
-                    <minIndex>${KARNAK_LOGS_MIN_INDEX:-1}</minIndex>
-                    <maxIndex>${KARNAK_LOGS_MAX_INDEX:-10}</maxIndex>
-                </rollingPolicy>
+  <if condition='property("ENVIRONMENT").contains("DEV")'>
+    <else>
+      <appender class="ch.qos.logback.core.ConsoleAppender" name="WARNING_OUT">
+        <encoder>
+          <Pattern>%black(%d{ISO8601}) %highlight(%-5level) %marker %highlight(%X{SOPInstanceUID})
+            %highlight(%X{issuerOfPatientID}) %highlight(%X{PatientID}) [%yellow(%t)]
+            %yellow(%C{1.}): %msg%n%throwable
+          </Pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+          <level>WARN</level>
+        </filter>
+      </appender>
+      <!--
+      immediateFlush to false ? to discuss http://logback.qos.ch/manual/appenders.html
+      "The default value for immediateFlush is 'true'. Immediate flushing of the output stream ensures
+      that logging events are immediately written out and will not be lost in case your application exits
+      without properly closing appenders. On the other hand, setting this property to 'false' is likely
+      to quadruple (your mileage may vary) logging throughput. Again, if immediateFlush is set to 'false'
+      and if appenders are not closed properly when your application exits,
+      then logging events not yet written to disk may be lost."
+      -->
+      <appender class="ch.qos.logback.core.rolling.RollingFileAppender" name="ALL_LOGS">
+        <encoder>
+          <pattern>%d %-5level %m%n</pattern>
+        </encoder>
+        <file>${LOGS}/all/all.log</file>
 
-                <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-                    <maxFileSize>${KARNAK_LOGS_MAX_FILE_SIZE:-50MB}</maxFileSize>
-                </triggeringPolicy>
-                <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
-                    <evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
-                        <marker>CLINICAL</marker>
-                    </evaluator>
-                    <onMismatch>NEUTRAL</onMismatch>
-                    <onMatch>DENY</onMatch>
-                </filter>
-                <encoder>
-                    <pattern>%d %-5level %m%n</pattern>
-                </encoder>
-            </appender>
-            <appender name="CLINICAL_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-                <file>${LOGS}/Clinical/clinical.log</file>
-                <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-                    <fileNamePattern>${LOGS}/Clinical/clinical_%i.log</fileNamePattern>
-                    <minIndex>${KARNAK_CLINICAL_LOGS_MIN_INDEX:-1}</minIndex>
-                    <maxIndex>${KARNAK_CLINICAL_LOGS_MAX_INDEX:-10}</maxIndex>
-                </rollingPolicy>
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+          <evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
+            <marker>CLINICAL</marker>
+          </evaluator>
+          <onMatch>DENY</onMatch>
+          <onMismatch>NEUTRAL</onMismatch>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+          <fileNamePattern>${LOGS}/all/all_%i.log</fileNamePattern>
+          <maxIndex>${KARNAK_LOGS_MAX_INDEX:-10}</maxIndex>
+          <minIndex>${KARNAK_LOGS_MIN_INDEX:-1}</minIndex>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+          <maxFileSize>${KARNAK_LOGS_MAX_FILE_SIZE:-50MB}</maxFileSize>
+        </triggeringPolicy>
+      </appender>
+      <appender class="ch.qos.logback.core.rolling.RollingFileAppender" name="CLINICAL_FILE">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+          <Pattern>%d %m%n</Pattern>
+        </encoder>
+        <file>${LOGS}/Clinical/clinical.log</file>
 
-                <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-                    <maxFileSize>${KARNAK_CLINICAL_LOGS_MAX_FILE_SIZE:-50MB}</maxFileSize>
-                </triggeringPolicy>
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+          <evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
+            <marker>CLINICAL</marker>
+          </evaluator>
+          <onMatch>NEUTRAL</onMatch>
+          <onMismatch>DENY</onMismatch>
+        </filter>
 
-                <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
-                    <evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
-                        <marker>CLINICAL</marker>
-                    </evaluator>
-                    <onMismatch>DENY</onMismatch>
-                    <onMatch>NEUTRAL</onMatch>
-                </filter>
-                <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-                    <Pattern>%d %m%n</Pattern>
-                </encoder>
-            </appender>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+          <fileNamePattern>${LOGS}/Clinical/clinical_%i.log</fileNamePattern>
+          <maxIndex>${KARNAK_CLINICAL_LOGS_MAX_INDEX:-10}</maxIndex>
+          <minIndex>${KARNAK_CLINICAL_LOGS_MIN_INDEX:-1}</minIndex>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+          <maxFileSize>${KARNAK_CLINICAL_LOGS_MAX_FILE_SIZE:-50MB}</maxFileSize>
+        </triggeringPolicy>
+      </appender>
 
-            <root level="warn">
-                <appender-ref ref="ALL_LOGS" />
-                <appender-ref ref="CLINICAL_FILE" />
-                <appender-ref ref="WARNING_OUT" />
-            </root>
-            <logger name="org.weasis" level="info" />
-            <logger name="org.karnak" level="info" />
-        </else>
-    </if>
+      <logger level="info" name="org.weasis"/>
+      <logger level="info" name="org.karnak"/>
+      <root level="warn">
+        <appender-ref ref="ALL_LOGS"/>
+        <appender-ref ref="CLINICAL_FILE"/>
+        <appender-ref ref="WARNING_OUT"/>
+      </root>
+    </else>
+    <!--
+    PRODUCTION LOGS
+    -->
+    <then>
+      <appender class="ch.qos.logback.core.ConsoleAppender" name="DEV_OUT">
+        <encoder>
+          <Pattern>%black(%d{ISO8601}) %highlight(%-5level) %marker %highlight(%X{SOPInstanceUID})
+            %highlight(%X{issuerOfPatientID}) %highlight(%X{PatientID}) [%yellow(%t)]
+            %yellow(%C{1.}): %msg%n%throwable
+          </Pattern>
+        </encoder>
+      </appender>
+      <logger level="debug" name="org.weasis"/>
+      <logger level="debug" name="org.dcm4che6"/>
+      <logger level="debug" name="org.karnak"/>
+      <root level="info">
+        <appender-ref ref="DEV_OUT"/>
+      </root>
+    </then>
+  </if>
+  <property name="LOGS" value="logs"/>
 </configuration>

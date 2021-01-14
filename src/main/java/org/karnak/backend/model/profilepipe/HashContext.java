@@ -14,7 +14,7 @@ public class HashContext {
     return secret;
   }
 
-    public String getPatientID() {
-        return PatientID;
-    }
+  public String getPatientID() {
+    return PatientID;
+  }
 }

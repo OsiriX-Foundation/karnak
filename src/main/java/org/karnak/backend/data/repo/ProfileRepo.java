@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ProfileRepo extends JpaRepository<ProfileEntity, Long> {
 
-    Boolean existsByName(String name);
+  Boolean existsByName(String name);
 
-    Boolean existsByNameAndBydefault(String name, Boolean bydefault);
+  Boolean existsByNameAndBydefault(String name, Boolean bydefault);
 }

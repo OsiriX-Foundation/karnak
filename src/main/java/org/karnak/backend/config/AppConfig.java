@@ -29,96 +29,96 @@ import org.yaml.snakeyaml.constructor.Constructor;
 @EnableConfigurationProperties
 @ConfigurationProperties
 public class AppConfig {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AppConfig.class);
 
-    private static AppConfig instance;
-    private String environment;
-    private String name;
-    private String karnakadmin;
-    private String karnakpassword;
+  private static final Logger LOGGER = LoggerFactory.getLogger(AppConfig.class);
 
-    @Autowired
-    private ProfileRepo profileRepo;
+  private static AppConfig instance;
+  private String environment;
+  private String name;
+  private String karnakadmin;
+  private String karnakpassword;
 
-    @PostConstruct
-    public void postConstruct() {
-        instance = this;
+  @Autowired
+  private ProfileRepo profileRepo;
+
+  public static AppConfig getInstance() {
+    return instance;
+  }
+
+  @PostConstruct
+  public void postConstruct() {
+    instance = this;
+  }
+
+  public String getEnvironment() {
+    return environment;
+  }
+
+  public void setEnvironment(String environment) {
+    this.environment = environment;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public String getKarnakadmin() {
+    return karnakadmin;
+  }
+
+  public void setKarnakadmin(String karnakadmin) {
+    this.karnakadmin = karnakadmin;
+  }
+
+  public String getKarnakpassword() {
+    return karnakpassword;
+  }
+
+  public void setKarnakpassword(String karnakpassword) {
+    this.karnakpassword = karnakpassword;
+  }
+
+  public ProfileRepo getProfilePersistence() {
+    return profileRepo;
+  }
+
+  @Bean("ConfidentialityProfiles")
+  public ConfidentialityProfiles getConfidentialityProfile() {
+    return new ConfidentialityProfiles();
+  }
+
+  @Bean("ExternalIDPatient")
+  public PatientClient getExternalIDCache() {
+    return new ExternalIDCache();
+  }
+
+  @Bean("MainzellisteCache")
+  public PatientClient getMainzellisteCache() {
+    return new MainzellisteCache();
+  }
+
+  // https://stackoverflow.com/questions/27405713/running-code-after-spring-boot-starts
+  @EventListener(ApplicationReadyEvent.class)
+  public void setProfilesByDefault() {
+    URL profileURL = Profiles.class.getResource("profileByDefault.yml");
+    if (profileRepo.existsByNameAndBydefault("Dicom Basic Profile", true) == false) {
+      try (InputStream inputStream = profileURL.openStream()) {
+        final Yaml yaml = new Yaml(new Constructor(ProfilePipeBody.class));
+        final ProfilePipeBody profilePipeYml = yaml.load(inputStream);
+        final ProfilePipeService profilePipeService = new ProfilePipeServiceImpl();
+        profilePipeService.saveProfilePipe(profilePipeYml, true);
+      } catch (final Exception e) {
+        LOGGER.error("Cannot persist default profile {}", profileURL, e);
+      }
     }
+  }
 
-    public static AppConfig getInstance() {
-        return instance;
-    }
-
-    public String getEnvironment() {
-        return environment;
-    }
-
-    public void setEnvironment(String environment) {
-        this.environment = environment;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getKarnakadmin() {
-        return karnakadmin;
-    }
-
-    public void setKarnakadmin(String karnakadmin) {
-        this.karnakadmin = karnakadmin;
-    }
-
-    public String getKarnakpassword() {
-        return karnakpassword;
-    }
-
-    public void setKarnakpassword(String karnakpassword) {
-        this.karnakpassword = karnakpassword;
-    }
-
-    public ProfileRepo getProfilePersistence() {
-        return profileRepo;
-    }
-
-    @Bean("ConfidentialityProfiles")
-    public ConfidentialityProfiles getConfidentialityProfile() {
-        return new ConfidentialityProfiles();
-    }
-
-    @Bean("ExternalIDPatient")
-    public PatientClient getExternalIDCache() {
-        return new ExternalIDCache();
-    }
-
-    @Bean("MainzellisteCache")
-    public PatientClient getMainzellisteCache() {
-        return new MainzellisteCache();
-    }
-
-    // https://stackoverflow.com/questions/27405713/running-code-after-spring-boot-starts
-    @EventListener(ApplicationReadyEvent.class)
-    public void setProfilesByDefault() {
-        URL profileURL = Profiles.class.getResource("profileByDefault.yml");
-        if (profileRepo.existsByNameAndBydefault("Dicom Basic Profile", true) == false) {
-            try (InputStream inputStream = profileURL.openStream()) {
-                final Yaml yaml = new Yaml(new Constructor(ProfilePipeBody.class));
-                final ProfilePipeBody profilePipeYml = yaml.load(inputStream);
-                final ProfilePipeService profilePipeService = new ProfilePipeServiceImpl();
-                profilePipeService.saveProfilePipe(profilePipeYml, true);
-            } catch (final Exception e) {
-                LOGGER.error("Cannot persist default profile {}", profileURL, e);
-            }
-        }
-
-    }
-
-    @Bean("StandardDICOM")
-    public StandardDICOM getStandardDICOM() {
-        return new StandardDICOM();
-    }
+  @Bean("StandardDICOM")
+  public StandardDICOM getStandardDICOM() {
+    return new StandardDICOM();
+  }
 }

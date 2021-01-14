@@ -9,18 +9,26 @@ import org.slf4j.MDC;
 
 public class ReplaceNull extends AbstractAction {
 
+  public ReplaceNull(String symbol) {
+    super(symbol);
+  }
 
-    public ReplaceNull(String symbol) {
-        super(symbol);
-    }
+  @Override
+  public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, HMAC hmac) {
+    String tagValueIn = dcm.getString(tag).orElse(null);
 
-    @Override
-    public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, HMAC hmac) {
-        String tagValueIn = dcm.getString(tag).orElse(null);
-
-        dcm.get(tag).ifPresent(dcmEl -> {
-            dcm.setNull(tag, dcmEl.vr());
-        });
-        LOGGER.trace(CLINICAL_MARKER, PATTERN_WITH_INOUT, MDC.get("SOPInstanceUID"), TagUtils.toString(tag), symbol, tagValueIn, null);
-    }
+    dcm.get(tag)
+        .ifPresent(
+            dcmEl -> {
+              dcm.setNull(tag, dcmEl.vr());
+            });
+    LOGGER.trace(
+        CLINICAL_MARKER,
+        PATTERN_WITH_INOUT,
+        MDC.get("SOPInstanceUID"),
+        TagUtils.toString(tag),
+        symbol,
+        tagValueIn,
+        null);
+  }
 }

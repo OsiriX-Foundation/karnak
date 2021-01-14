@@ -48,40 +48,45 @@ public class PrivateTags extends AbstractProfileItem {
     }
   }
 
-    @Override
-    public ActionItem getAction(DicomObject dcm, DicomObject dcmCopy, DicomElement dcmElem, HMAC hmac) {
-        final int tag = dcmElem.tag();
-        if (TagUtils.isPrivateGroup(tag)) {
-            if (tagsAction.isEmpty() == false && exceptedTagsAction.isEmpty()) {
-                return tagsAction.get(tag);
-            }
+  @Override
+  public ActionItem getAction(
+      DicomObject dcm, DicomObject dcmCopy, DicomElement dcmElem, HMAC hmac) {
+    final int tag = dcmElem.tag();
+    if (TagUtils.isPrivateGroup(tag)) {
+      if (tagsAction.isEmpty() == false && exceptedTagsAction.isEmpty()) {
+        return tagsAction.get(tag);
+      }
 
-            if (tagsAction.isEmpty() && exceptedTagsAction.isEmpty() == false) {
-                if(exceptedTagsAction.get(tag) != null){
-                    return null;
-                }
-            }
+      if (tagsAction.isEmpty() && exceptedTagsAction.isEmpty() == false) {
+        if (exceptedTagsAction.get(tag) != null) {
+          return null;
+        }
+      }
 
-            if (tagsAction.isEmpty() == false && exceptedTagsAction.isEmpty() == false) {
-                if (exceptedTagsAction.get(dcmElem.tag()) == null) {
-                    return tagsAction.get(dcmElem.tag());
-                }
-                return null;
-            }
-            return actionByDefault;
+      if (tagsAction.isEmpty() == false && exceptedTagsAction.isEmpty() == false) {
+        if (exceptedTagsAction.get(dcmElem.tag()) == null) {
+          return tagsAction.get(dcmElem.tag());
         }
         return null;
+      }
+      return actionByDefault;
+    }
+    return null;
+  }
+
+  public void profileValidation() throws Exception {
+    if (action == null) {
+      throw new Exception("Cannot build the profile " + codeName + ": Unknown Action");
     }
 
-    public void profileValidation() throws Exception{
-        if (action == null) {
-            throw new Exception("Cannot build the profile " + codeName + ": Unknown Action");
-        }
-
-        final ExpressionError expressionError = ExpressionResult.isValid(condition, new ExprConditionDestination(1, VR.AE,
-                DicomObject.newDicomObject(), DicomObject.newDicomObject()), Boolean.class);
-        if (condition != null && !expressionError.isValid()) {
-            throw new Exception(expressionError.getMsg());
-        }
+    final ExpressionError expressionError =
+        ExpressionResult.isValid(
+            condition,
+            new ExprConditionDestination(
+                1, VR.AE, DicomObject.newDicomObject(), DicomObject.newDicomObject()),
+            Boolean.class);
+    if (condition != null && !expressionError.isValid()) {
+      throw new Exception(expressionError.getMsg());
     }
+  }
 }

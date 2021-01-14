@@ -7,7 +7,6 @@ import org.karnak.backend.data.entity.ProfileEntity;
 import org.karnak.backend.model.profilebody.ProfilePipeBody;
 import org.karnak.frontend.profile.ProfileError;
 
-
 public abstract class ProfilePipeService implements Serializable {
 
   public abstract List<ProfileEntity> getAllProfiles();

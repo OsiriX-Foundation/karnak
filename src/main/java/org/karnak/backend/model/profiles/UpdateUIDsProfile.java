@@ -13,26 +13,27 @@ public class UpdateUIDsProfile extends AbstractProfileItem {
 
   public UpdateUIDsProfile(ProfileElementEntity profileElementEntity) {
     super(profileElementEntity);
-        /*
-        if (not BlackList) {
-            throw new IllegalStateException(String.format("The policy %s is not consistent with the profile %s!", policy, codeName));
-        }
-        */
+    /*
+    if (not BlackList) {
+        throw new IllegalStateException(String.format("The policy %s is not consistent with the profile %s!", policy, codeName));
+    }
+    */
   }
 
   @Override
-  public ActionItem getAction(DicomObject dcm, DicomObject dcmCopy, DicomElement dcmElem,
-      HMAC hmac) {
+  public ActionItem getAction(
+      DicomObject dcm, DicomObject dcmCopy, DicomElement dcmElem, HMAC hmac) {
     ActionItem val = tagMap.get(dcmElem.tag());
-      return val;
-    }
+    return val;
+  }
 
-    @Override
-    public ActionItem put(int tag, ActionItem action) {
-      if (!(action instanceof UID) && !(action instanceof Remove)
-          && !(action instanceof ReplaceNull)) {
-        throw new IllegalStateException(String.format("The action %s is not consistent !", action));
-      }
-        return tagMap.put(tag, action);
+  @Override
+  public ActionItem put(int tag, ActionItem action) {
+    if (!(action instanceof UID)
+        && !(action instanceof Remove)
+        && !(action instanceof ReplaceNull)) {
+      throw new IllegalStateException(String.format("The action %s is not consistent !", action));
     }
+    return tagMap.put(tag, action);
+  }
 }

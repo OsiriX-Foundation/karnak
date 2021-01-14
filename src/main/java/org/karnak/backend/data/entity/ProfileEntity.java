@@ -22,126 +22,136 @@ import org.hibernate.annotations.LazyCollectionOption;
 @Entity(name = "Profile")
 @Table(name = "profile")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-@JsonPropertyOrder({"name", "version", "minimumKarnakVersion", "defaultIssuerOfPatientID",
-    "profileElementEntities", "maskEntities"})
+@JsonPropertyOrder({
+    "name",
+    "version",
+    "minimumKarnakVersion",
+    "defaultIssuerOfPatientID",
+    "profileElementEntities",
+    "maskEntities"
+})
 public class ProfileEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @JsonIgnore
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @JsonIgnore
+  private Long id;
 
-    private String name;
-    private String version;
-    private String minimumKarnakVersion;
-    private String defaultissueropatientid;
+  private String name;
+  private String version;
+  private String minimumKarnakVersion;
+  private String defaultissueropatientid;
 
-    @JsonIgnore
-    private Boolean bydefault;
+  @JsonIgnore
+  private Boolean bydefault;
 
-    @OneToMany(mappedBy = "profileEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<ProfileElementEntity> profileElementEntities = new ArrayList<>();
+  @OneToMany(mappedBy = "profileEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  private List<ProfileElementEntity> profileElementEntities = new ArrayList<>();
 
-    @OneToMany(mappedBy = "profileEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<MaskEntity> maskEntities = new HashSet<>();
+  @OneToMany(mappedBy = "profileEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  private Set<MaskEntity> maskEntities = new HashSet<>();
 
-    @OneToMany(mappedBy = "profileEntity")
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @JsonIgnore
-    private List<ProjectEntity> projectEntities;
+  @OneToMany(mappedBy = "profileEntity")
+  @LazyCollection(LazyCollectionOption.FALSE)
+  @JsonIgnore
+  private List<ProjectEntity> projectEntities;
 
-    public ProfileEntity() {
-    }
+  public ProfileEntity() {
+  }
 
-    public ProfileEntity(String name, String version, String minimumKarnakVersion,
-        String defaultissueropatientid) {
-        this.name = name;
-        this.version = version;
-        this.minimumKarnakVersion = minimumKarnakVersion;
-        this.defaultissueropatientid = defaultissueropatientid;
-        this.bydefault = false;
-    }
+  public ProfileEntity(
+      String name, String version, String minimumKarnakVersion, String defaultissueropatientid) {
+    this.name = name;
+    this.version = version;
+    this.minimumKarnakVersion = minimumKarnakVersion;
+    this.defaultissueropatientid = defaultissueropatientid;
+    this.bydefault = false;
+  }
 
-    public ProfileEntity(String name, String version, String minimumKarnakVersion,
-        String defaultissueropatientid, Boolean bydefault) {
-        this.name = name;
-        this.version = version;
-        this.minimumKarnakVersion = minimumKarnakVersion;
-        this.defaultissueropatientid = defaultissueropatientid;
-        this.bydefault = bydefault;
-    }
+  public ProfileEntity(
+      String name,
+      String version,
+      String minimumKarnakVersion,
+      String defaultissueropatientid,
+      Boolean bydefault) {
+    this.name = name;
+    this.version = version;
+    this.minimumKarnakVersion = minimumKarnakVersion;
+    this.defaultissueropatientid = defaultissueropatientid;
+    this.bydefault = bydefault;
+  }
 
-    public Long getId() {
-        return id;
-    }
+  public Long getId() {
+    return id;
+  }
 
-    public void addProfilePipe(ProfileElementEntity profileElementEntity) {
-        this.profileElementEntities.add(profileElementEntity);
-    }
+  public void addProfilePipe(ProfileElementEntity profileElementEntity) {
+    this.profileElementEntities.add(profileElementEntity);
+  }
 
-    public void addMask(MaskEntity maskEntity) {
-        this.maskEntities.add(maskEntity);
-    }
+  public void addMask(MaskEntity maskEntity) {
+    this.maskEntities.add(maskEntity);
+  }
 
-    public String getName() {
-        return name;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public String getVersion() {
-        return version;
-    }
+  public String getVersion() {
+    return version;
+  }
 
-    public void setVersion(String version) {
-        this.version = version;
-    }
+  public void setVersion(String version) {
+    this.version = version;
+  }
 
-    @JsonProperty("minimumKarnakVersion")
-    public String getMinimumkarnakversion() {
-        return minimumKarnakVersion;
-    }
+  @JsonProperty("minimumKarnakVersion")
+  public String getMinimumkarnakversion() {
+    return minimumKarnakVersion;
+  }
 
-    public void setMinimumkarnakversion(String minimumKarnakVersion) {
-        this.minimumKarnakVersion = minimumKarnakVersion;
-    }
+  public void setMinimumkarnakversion(String minimumKarnakVersion) {
+    this.minimumKarnakVersion = minimumKarnakVersion;
+  }
 
-    @JsonProperty("defaultIssuerOfPatientID")
-    public String getDefaultissueropatientid() {
-        return defaultissueropatientid;
-    }
+  @JsonProperty("defaultIssuerOfPatientID")
+  public String getDefaultissueropatientid() {
+    return defaultissueropatientid;
+  }
 
-    public void setDefaultissueropatientid(String defaultissueropatientid) {
-        this.defaultissueropatientid = defaultissueropatientid;
-    }
+  public void setDefaultissueropatientid(String defaultissueropatientid) {
+    this.defaultissueropatientid = defaultissueropatientid;
+  }
 
-    public List<ProfileElementEntity> getProfileElementEntities() {
-        return profileElementEntities;
-    }
+  public List<ProfileElementEntity> getProfileElementEntities() {
+    return profileElementEntities;
+  }
 
-    public void setProfileElementEntities(List<ProfileElementEntity> profileElementEntities) {
-        this.profileElementEntities = profileElementEntities;
-    }
+  public void setProfileElementEntities(List<ProfileElementEntity> profileElementEntities) {
+    this.profileElementEntities = profileElementEntities;
+  }
 
-    public Boolean getBydefault() {
-        return bydefault;
-    }
+  public Boolean getBydefault() {
+    return bydefault;
+  }
 
-    public void setBydefault(Boolean bydefault) {
-        this.bydefault = bydefault;
-    }
+  public void setBydefault(Boolean bydefault) {
+    this.bydefault = bydefault;
+  }
 
-    public Set<MaskEntity> getMaskEntities() {
-        return maskEntities;
-    }
+  public Set<MaskEntity> getMaskEntities() {
+    return maskEntities;
+  }
 
-    public void setMaskEntities(Set<MaskEntity> maskEntities) {
-        this.maskEntities = maskEntities;
-    }
+  public void setMaskEntities(Set<MaskEntity> maskEntities) {
+    this.maskEntities = maskEntities;
+  }
 
-    public List<ProjectEntity> getProjectEntities() {
-        return projectEntities;
-    }
+  public List<ProjectEntity> getProjectEntities() {
+    return projectEntities;
+  }
 }

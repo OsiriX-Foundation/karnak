@@ -6,10 +6,10 @@ public class LogoKarnak extends Image {
 
   private final String logoPath = "img/karnak.png";
 
-    public LogoKarnak(String alt, String maxSize) {
-        setSrc(logoPath);
-        setAlt(alt);
-        setMaxHeight(maxSize);
-        setMaxWidth(maxSize);
-    }
+  public LogoKarnak(String alt, String maxSize) {
+    setSrc(logoPath);
+    setAlt(alt);
+    setMaxHeight(maxSize);
+    setMaxWidth(maxSize);
+  }
 }

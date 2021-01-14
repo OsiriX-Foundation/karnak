@@ -17,68 +17,68 @@ import org.hibernate.annotations.LazyCollectionOption;
 @Table(name = "project")
 public class ProjectEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
 
-    private String name;
-    private byte[] secret;
+  private String name;
+  private byte[] secret;
 
-    @OneToMany(mappedBy = "projectEntity")
-    @LazyCollection(LazyCollectionOption.FALSE)
-    private List<DestinationEntity> destinationEntities;
+  @OneToMany(mappedBy = "projectEntity")
+  @LazyCollection(LazyCollectionOption.FALSE)
+  private List<DestinationEntity> destinationEntities;
 
-    @ManyToOne
-    @JoinColumn(name = "profile_pipe_id")
-    private ProfileEntity profileEntity;
+  @ManyToOne
+  @JoinColumn(name = "profile_pipe_id")
+  private ProfileEntity profileEntity;
 
-    public ProjectEntity() {
-        this.destinationEntities = new ArrayList<>();
-    }
+  public ProjectEntity() {
+    this.destinationEntities = new ArrayList<>();
+  }
 
-    public ProjectEntity(String name, byte[] secret) {
-        this.name = name;
-        this.secret = secret;
-        this.destinationEntities = new ArrayList<>();
-    }
+  public ProjectEntity(String name, byte[] secret) {
+    this.name = name;
+    this.secret = secret;
+    this.destinationEntities = new ArrayList<>();
+  }
 
-    public Long getId() {
-        return id;
-    }
+  public Long getId() {
+    return id;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public byte[] getSecret() {
-        return secret;
-    }
+  public byte[] getSecret() {
+    return secret;
+  }
 
-    public void setSecret(byte[] secret) {
-        this.secret = secret;
-    }
+  public void setSecret(byte[] secret) {
+    this.secret = secret;
+  }
 
-    public List<DestinationEntity> getDestinationEntities() {
-        return destinationEntities;
-    }
+  public List<DestinationEntity> getDestinationEntities() {
+    return destinationEntities;
+  }
 
-    public void setDestinationEntities(List<DestinationEntity> destinationEntities) {
-        this.destinationEntities = destinationEntities;
-    }
+  public void setDestinationEntities(List<DestinationEntity> destinationEntities) {
+    this.destinationEntities = destinationEntities;
+  }
 
-    public ProfileEntity getProfileEntity() {
-        return profileEntity;
-    }
+  public ProfileEntity getProfileEntity() {
+    return profileEntity;
+  }
 
-    public void setProfileEntity(ProfileEntity profileEntity) {
-        this.profileEntity = profileEntity;
-    }
+  public void setProfileEntity(ProfileEntity profileEntity) {
+    this.profileEntity = profileEntity;
+  }
 
-    public boolean isNewData() {
-        return id == null;
-    }
+  public boolean isNewData() {
+    return id == null;
+  }
 }

@@ -10,23 +10,8 @@ import org.karnak.backend.enums.DestinationType;
 /**
  * @see https://stackoverflow.com/questions/27173960/jsr303-apply-all-validation-groups-defined-in-sequence
  */
-public class DestinationGroupSequenceProvider implements
-    DefaultGroupSequenceProvider<DestinationEntity> {
-
-  public interface DestinationDicomGroup {
-
-  }
-
-  public interface DestinationStowGroup {
-
-  }
-
-  private static final List<Class<?>> DEFAULT_GROUPS = //
-      Collections.singletonList(DestinationEntity.class);
-  private static final List<Class<?>> TYPE_DICOM_GROUPS = //
-      Arrays.asList(DestinationEntity.class, DestinationDicomGroup.class);
-  private static final List<Class<?>> TYPE_STOW_GROUPS = //
-      Arrays.asList(DestinationEntity.class, DestinationStowGroup.class);
+public class DestinationGroupSequenceProvider
+    implements DefaultGroupSequenceProvider<DestinationEntity> {
 
   @Override
   public List<Class<?>> getValidationGroups(DestinationEntity destinationEntity) {
@@ -42,6 +27,21 @@ public class DestinationGroupSequenceProvider implements
       }
     }
 
-        return DEFAULT_GROUPS;
-    }
+    return DEFAULT_GROUPS;
+  }
+
+  public interface DestinationDicomGroup {
+
+  }
+
+  private static final List<Class<?>> DEFAULT_GROUPS = //
+      Collections.singletonList(DestinationEntity.class);
+  private static final List<Class<?>> TYPE_DICOM_GROUPS = //
+      Arrays.asList(DestinationEntity.class, DestinationDicomGroup.class);
+  private static final List<Class<?>> TYPE_STOW_GROUPS = //
+      Arrays.asList(DestinationEntity.class, DestinationStowGroup.class);
+
+  public interface DestinationStowGroup {
+
+  }
 }

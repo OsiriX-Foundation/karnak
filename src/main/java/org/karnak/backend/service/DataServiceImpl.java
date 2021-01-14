@@ -27,11 +27,11 @@ public class DataServiceImpl extends DataService {
     sopClassUIDRepo = GatewayConfig.getInstance().getSopClassUIDPersistence();
   }
 
-
   @Override
   public Collection<ForwardNodeEntity> getAllForwardNodes() {
     List<ForwardNodeEntity> list = new ArrayList<>();
-    gatewayRepo.findAll() //
+    gatewayRepo
+        .findAll() //
         .forEach(list::add);
     return list;
   }
@@ -46,11 +46,11 @@ public class DataServiceImpl extends DataService {
     return gatewayRepo.saveAndFlush(data);
   }
 
-    @Override
-    public void deleteForwardNode(Long dataId) {
-      gatewayRepo.deleteById(dataId);
-      gatewayRepo.flush();
-    }
+  @Override
+  public void deleteForwardNode(Long dataId) {
+    gatewayRepo.deleteById(dataId);
+    gatewayRepo.flush();
+  }
 
   @Override
   public Collection<DestinationEntity> getAllDestinations(ForwardNodeEntity forwardNodeEntity) {
@@ -72,8 +72,8 @@ public class DataServiceImpl extends DataService {
   }
 
   @Override
-  public DestinationEntity updateDestination(ForwardNodeEntity forwardNodeEntity,
-      DestinationEntity data) {
+  public DestinationEntity updateDestination(
+      ForwardNodeEntity forwardNodeEntity, DestinationEntity data) {
     if (forwardNodeEntity == null || data == null) {
       return null;
     }
@@ -112,8 +112,8 @@ public class DataServiceImpl extends DataService {
   }
 
   @Override
-  public DicomSourceNodeEntity updateSourceNode(ForwardNodeEntity forwardNodeEntity,
-      DicomSourceNodeEntity data) {
+  public DicomSourceNodeEntity updateSourceNode(
+      ForwardNodeEntity forwardNodeEntity, DicomSourceNodeEntity data) {
     if (forwardNodeEntity == null || data == null) {
       return null;
     }
@@ -135,7 +135,8 @@ public class DataServiceImpl extends DataService {
   @Override
   public List<SOPClassUIDEntity> getAllSOPClassUIDs() {
     List<SOPClassUIDEntity> list = new ArrayList<>();
-    sopClassUIDRepo.findAll() //
+    sopClassUIDRepo
+        .findAll() //
         .forEach(list::add);
     return list;
   }

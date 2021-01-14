@@ -7,22 +7,24 @@ import org.karnak.frontend.dicom.Util;
 
 public class DicomNodeManager {
 
-    private DicomNodeManager() {
-    }
+  private DicomNodeManager() {
+  }
 
-    public static List<DicomNodeList> getAllDicomNodeTypesDefinedLocally() {
-        List<DicomNodeList> dicomNodeTypes = new ArrayList<>();
+  public static List<DicomNodeList> getAllDicomNodeTypesDefinedLocally() {
+    List<DicomNodeList> dicomNodeTypes = new ArrayList<>();
 
-        dicomNodeTypes
-            .add(Util.readnodes(DicomNodeManager.class.getResource("/config/workstations-nodes.csv"), "Workstations"));
-        dicomNodeTypes
-            .add(Util.readnodes(DicomNodeManager.class.getResource("/config/pacs-nodes-web.csv"), "PACS Public WEB"));
+    dicomNodeTypes.add(
+        Util.readnodes(
+            DicomNodeManager.class.getResource("/config/workstations-nodes.csv"), "Workstations"));
+    dicomNodeTypes.add(
+        Util.readnodes(
+            DicomNodeManager.class.getResource("/config/pacs-nodes-web.csv"), "PACS Public WEB"));
 
-        return dicomNodeTypes;
-    }
+    return dicomNodeTypes;
+  }
 
-    public static DicomNodeList getAllWorkListNodesDefinedLocally() {
-        return Util.readnodes(DicomNodeManager.class.getResource("/config/worklist-nodes.csv"), "Worklists");
-    }
-
+  public static DicomNodeList getAllWorkListNodesDefinedLocally() {
+    return Util.readnodes(
+        DicomNodeManager.class.getResource("/config/worklist-nodes.csv"), "Worklists");
+  }
 }

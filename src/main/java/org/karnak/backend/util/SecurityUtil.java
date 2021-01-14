@@ -16,85 +16,85 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 public final class SecurityUtil {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SecurityUtil.class);
+  private static final Logger LOG = LoggerFactory.getLogger(SecurityUtil.class);
 
-    /**
-     * Determines if a request is internal to Vaadin
-     *
-     * @param request Request
-     * @return true if it is a internal request
-     */
-    public static boolean isFrameworkInternalRequest(HttpServletRequest request) {
-        final String parameterValue = request
-            .getParameter(ApplicationConstants.REQUEST_TYPE_PARAMETER);
-        return parameterValue != null
-            && Stream.of(HandlerHelper.RequestType.values())
-            .anyMatch(r -> r.getIdentifier().equals(parameterValue));
+  /**
+   * Determines if a request is internal to Vaadin
+   *
+   * @param request Request
+   * @return true if it is a internal request
+   */
+  public static boolean isFrameworkInternalRequest(HttpServletRequest request) {
+    final String parameterValue = request.getParameter(ApplicationConstants.REQUEST_TYPE_PARAMETER);
+    return parameterValue != null
+        && Stream.of(HandlerHelper.RequestType.values())
+        .anyMatch(r -> r.getIdentifier().equals(parameterValue));
+  }
+
+  /**
+   * Checks if the current user is logged in
+   *
+   * @return true if the current user is logged in
+   */
+  public static boolean isUserLoggedIn() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    return authentication != null
+        && !(authentication instanceof AnonymousAuthenticationToken)
+        && authentication.isAuthenticated();
+  }
+
+  /**
+   * Checks if the user is logged and is an admin
+   *
+   * @return true if the user is logged and is an admin
+   */
+  public static boolean isUserAdmin() {
+    return SecurityUtil.isUserLoggedIn()
+        && SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+        .anyMatch(ga -> Objects.equals(ga.getAuthority(), SecurityRole.ADMIN_ROLE.getRole()));
+  }
+
+  /**
+   * Check if the role of the user can access the view
+   *
+   * @param securedClass Secured Class
+   * @return true if access is granted
+   */
+  public static boolean isAccessGranted(Class<?> securedClass) {
+    boolean isAccessGranted = false;
+
+    if (isUserLoggedIn()) {
+      // // TODO: currently deactivated: to uncomment when managing views by role
+      //      // get the secured annotation
+      //      Secured secured = AnnotationUtils.findAnnotation(securedClass, Secured.class);
+      //
+      //      // allow if no roles are required
+      //      if (secured == null) {
+      //        isAccessGranted = true;
+      //      } else {
+      //        // lookup needed role in user roles
+      //        List<String> allowedRoles = Arrays.asList(secured.value());
+      //        Authentication authentication =
+      // SecurityContextHolder.getContext().getAuthentication();
+      //        isAccessGranted =
+      //                authentication != null
+      //                        && authentication.getAuthorities().stream()
+      //                        .map(GrantedAuthority::getAuthority)
+      //                        .anyMatch(allowedRoles::contains);
+      //      }
+      isAccessGranted = true;
     }
+    return isAccessGranted;
+  }
 
-    /**
-     * Checks if the current user is logged in
-     *
-     * @return true if the current user is logged in
-     */
-    public static boolean isUserLoggedIn() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return authentication != null
-            && !(authentication instanceof AnonymousAuthenticationToken)
-            && authentication.isAuthenticated();
+  /**
+   * Sign out method
+   */
+  public static void signOut() {
+    try {
+      VaadinServletService.getCurrentServletRequest().logout();
+    } catch (ServletException e) {
+      LOG.error("Error during logout");
     }
-
-    /**
-     * Checks if the user is logged and is an admin
-     *
-     * @return true if the user is logged and is an admin
-     */
-    public static boolean isUserAdmin() {
-        return SecurityUtil.isUserLoggedIn()
-            && SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
-            .anyMatch(ga -> Objects.equals(ga.getAuthority(), SecurityRole.ADMIN_ROLE.getRole()));
-    }
-
-    /**
-     * Check if the role of the user can access the view
-     *
-     * @param securedClass Secured Class
-     * @return true if access is granted
-     */
-    public static boolean isAccessGranted(Class<?> securedClass) {
-        boolean isAccessGranted = false;
-
-        if (isUserLoggedIn()) {
-// // TODO: currently deactivated: to uncomment when managing views by role
-//      // get the secured annotation
-//      Secured secured = AnnotationUtils.findAnnotation(securedClass, Secured.class);
-//
-//      // allow if no roles are required
-//      if (secured == null) {
-//        isAccessGranted = true;
-//      } else {
-//        // lookup needed role in user roles
-//        List<String> allowedRoles = Arrays.asList(secured.value());
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        isAccessGranted =
-//                authentication != null
-//                        && authentication.getAuthorities().stream()
-//                        .map(GrantedAuthority::getAuthority)
-//                        .anyMatch(allowedRoles::contains);
-//      }
-            isAccessGranted = true;
-        }
-        return isAccessGranted;
-    }
-
-    /**
-     * Sign out method
-     */
-    public static void signOut() {
-        try {
-            VaadinServletService.getCurrentServletRequest().logout();
-        } catch (ServletException e) {
-            LOG.error("Error during logout");
-        }
-    }
+  }
 }

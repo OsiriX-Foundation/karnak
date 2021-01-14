@@ -18,15 +18,15 @@ public class Module {
     return id;
   }
 
-    public String getUsage() {
-        return usage;
-    }
+  public static boolean moduleIsMandatory(Module module) {
+    return module.getUsage().equals(MANDATORY);
+  }
 
-    public String getInformationEntity() {
-        return informationEntity;
-    }
+  public String getUsage() {
+    return usage;
+  }
 
-    public static boolean moduleIsMandatory(Module module) {
-        return module.getUsage().equals(MANDATORY);
-    }
+  public String getInformationEntity() {
+    return informationEntity;
+  }
 }

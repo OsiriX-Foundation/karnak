@@ -37,481 +37,515 @@ import org.karnak.frontend.dicom.PortField;
 import org.karnak.frontend.dicom.mwl.DicomWorkListSelectionDialog.WorkListSelectionEvent;
 
 /**
- * Calling Order 
- * 1) constructor
- * 2) setParameter
- * 3) beforeEnter
- *
+ * Calling Order 1) constructor 2) setParameter 3) beforeEnter
  */
-
-
 public class DicomWorkListView extends AbstractView implements HasUrlParameter<String> {
 
-    private static final long serialVersionUID = 1L;
-    
-    private static final String PARAMETER_CALLING_AET = "callingAET";
-    private static final String PARAMETER_WORKLIST_AET = "worklistAet";
-    private static final String PARAMETER_WORKLIST_HOSTNAME = "worklistHostname";
-    private static final String PARAMETER_WORKLIST_PORT = "worklistPort";
-    private static final String PARAMETER_ACTION = "action";
-    
-    private static final String ACTION_QUERY = "query";
+  private static final long serialVersionUID = 1L;
+
+  private static final String PARAMETER_CALLING_AET = "callingAET";
+  private static final String PARAMETER_WORKLIST_AET = "worklistAet";
+  private static final String PARAMETER_WORKLIST_HOSTNAME = "worklistHostname";
+  private static final String PARAMETER_WORKLIST_PORT = "worklistPort";
+  private static final String PARAMETER_ACTION = "action";
+
+  private static final String ACTION_QUERY = "query";
 
   // CONTROLLER
   private final DicomWorkListLogic logic = new DicomWorkListLogic(this);
-    
-    // DIALOGS
-    private DicomWorkListSelectionDialog dicomWorklistSelectionDialog;
 
-    // UI COMPONENTS
-    private VerticalLayout wlConfigurationAndQueryLayout;
-    // WL Configuration
-    private H6 wlConfigurationTitle;
-    private FormLayout wlConfigurationForm;
-    private TextField callingAetFld;
-    private TextField workListAetFld;
-    private TextField workListHostnameFld;
-    private PortField workListPortFld;
-    // WL Query
-    private H6 wlQueryTitle;
-    private FormLayout wlQueryForm;
-    private TextField scheduledStationAetFld;
-    private Select<Modality> scheduledModalitySelector;
-    private TextField patientIdfld;
-    private TextField admissionIdFld;
-    private DatePicker scheduledFromFld;
-    private DatePicker scheduledToFld;
-    private TextField patientNameFld;
-    private TextField accessionNumberFld;
-    private HorizontalLayout buttonBar;
-    private Button clearBtn;
-    private Button selectWorkListBtn;
-    private Button queryBtn;
-    // Query Result
-    private VerticalLayout queryResultLayout;
-    private H6 queryResultTitle;
-    private DicomWorkListGrid queryResultGrid;
+  // DIALOGS
+  private DicomWorkListSelectionDialog dicomWorklistSelectionDialog;
 
-    private DicomPane dicomPane;
+  // UI COMPONENTS
+  private VerticalLayout wlConfigurationAndQueryLayout;
+  // WL Configuration
+  private H6 wlConfigurationTitle;
+  private FormLayout wlConfigurationForm;
+  private TextField callingAetFld;
+  private TextField workListAetFld;
+  private TextField workListHostnameFld;
+  private PortField workListPortFld;
+  // WL Query
+  private H6 wlQueryTitle;
+  private FormLayout wlQueryForm;
+  private TextField scheduledStationAetFld;
+  private Select<Modality> scheduledModalitySelector;
+  private TextField patientIdfld;
+  private TextField admissionIdFld;
+  private DatePicker scheduledFromFld;
+  private DatePicker scheduledToFld;
+  private TextField patientNameFld;
+  private TextField accessionNumberFld;
+  private HorizontalLayout buttonBar;
+  private Button clearBtn;
+  private Button selectWorkListBtn;
+  private Button queryBtn;
+  // Query Result
+  private VerticalLayout queryResultLayout;
+  private H6 queryResultTitle;
+  private DicomWorkListGrid queryResultGrid;
 
-    // DATA
-    private WorkListQueryData workListQueryData;
-    private Binder<WorkListQueryData> binderForWorkListQuery;
-    private List<DicomObject> attributes;
-    private ListDataProvider<DicomObject> dataProviderForAttributes;
-    
-    // PARAMETERS
-    private String callingAetParam;
-    private String worklistAetParam;
-    private String worklistHostnameParam;
-    private String worklistPortParam;
-    private String actionParam;
+  private DicomPane dicomPane;
 
-    
-    public DicomWorkListView() {
-        init();
-        createView();
-        createMainLayout();
+  // DATA
+  private WorkListQueryData workListQueryData;
+  private Binder<WorkListQueryData> binderForWorkListQuery;
+  private List<DicomObject> attributes;
+  private ListDataProvider<DicomObject> dataProviderForAttributes;
 
-        add(mainLayout);
+  // PARAMETERS
+  private String callingAetParam;
+  private String worklistAetParam;
+  private String worklistHostnameParam;
+  private String worklistPortParam;
+  private String actionParam;
 
-        bindFields();
-    }
-    
-    
-    public void loadAttributes(List<DicomObject> attributes) {
-        this.attributes.clear();
-        this.attributes.addAll(attributes);
-        dataProviderForAttributes.refreshAll();
-        
-        queryResultLayout.setVisible(true);
-    }
+  public DicomWorkListView() {
+    init();
+    createView();
+    createMainLayout();
 
-    public void openDicomPane(DicomObject attributes) {
-        dicomPane = new DicomPane(attributes);
+    add(mainLayout);
 
-        dicomPane.open();
-    }
+    bindFields();
+  }
 
-    @Override
-    public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
-        readParameters(parameter);
-        
-        fillFieldsFromParameters();
-        
-        executeAction();
-    }
+  public void loadAttributes(List<DicomObject> attributes) {
+    this.attributes.clear();
+    this.attributes.addAll(attributes);
+    dataProviderForAttributes.refreshAll();
 
-    private void init() {
-        workListQueryData = new WorkListQueryData();
-        binderForWorkListQuery = new Binder<WorkListQueryData>();
-        
-        attributes = new ArrayList<>();
-        dataProviderForAttributes = new ListDataProvider<DicomObject>(attributes);
-    }
-    
-    private void createView() {
-        setSizeFull();
-    }
+    queryResultLayout.setVisible(true);
+  }
 
-    private void createMainLayout() {
-        mainLayout = new VerticalLayout();
-        mainLayout.setPadding(true);
-        mainLayout.setSpacing(true);
-        mainLayout.setWidthFull();
+  public void openDicomPane(DicomObject attributes) {
+    dicomPane = new DicomPane(attributes);
 
-        buildWlConfigurationLayout();
-        buildQueryResultLayout();
+    dicomPane.open();
+  }
 
-        mainLayout.add(wlConfigurationAndQueryLayout, queryResultLayout);
-    }
+  @Override
+  public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
+    readParameters(parameter);
 
-    private void buildWlConfigurationLayout() {
-        wlConfigurationAndQueryLayout = new VerticalLayout();
-        wlConfigurationAndQueryLayout.setWidthFull();
-        wlConfigurationAndQueryLayout.setPadding(true);
-        wlConfigurationAndQueryLayout.setSpacing(false);
-        wlConfigurationAndQueryLayout.getStyle().set("box-shadow", "0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12)");
-        wlConfigurationAndQueryLayout.getStyle().set("border-radius", "4px");
+    fillFieldsFromParameters();
 
-        buildWlConfigurationTitle();
-        buildWlConfigurationForm();
-        buildWlQueryTitle();
-        buildWlQueryForm();
-        buildButtonBar();
+    executeAction();
+  }
 
-        wlConfigurationAndQueryLayout.add(wlConfigurationTitle, wlConfigurationForm, wlQueryTitle, wlQueryForm, buttonBar);
-    }
+  private void init() {
+    workListQueryData = new WorkListQueryData();
+    binderForWorkListQuery = new Binder<WorkListQueryData>();
 
-    private void buildWlConfigurationTitle() {
-        wlConfigurationTitle = new H6("Worklist Configuration");
-        wlConfigurationTitle.getStyle().set("margin-top", "0px");
-    }
+    attributes = new ArrayList<>();
+    dataProviderForAttributes = new ListDataProvider<DicomObject>(attributes);
+  }
 
-    private void buildWlConfigurationForm() {
-        wlConfigurationForm = new FormLayout();
+  private void createView() {
+    setSizeFull();
+  }
 
-        buildCallingAETitleFld();
-        
-        buildWlAetFld();
-        buildWlHostnameFld();
-        buildWlPortFld();
+  private void createMainLayout() {
+    mainLayout = new VerticalLayout();
+    mainLayout.setPadding(true);
+    mainLayout.setSpacing(true);
+    mainLayout.setWidthFull();
 
-        wlConfigurationForm.add(callingAetFld, workListAetFld, workListHostnameFld, workListPortFld);
+    buildWlConfigurationLayout();
+    buildQueryResultLayout();
 
-        setFormResponsive(wlConfigurationForm);
-    }
+    mainLayout.add(wlConfigurationAndQueryLayout, queryResultLayout);
+  }
 
-    private void buildCallingAETitleFld() {
-        callingAetFld = new TextField();
-        callingAetFld.setLabel("Calling AETitle");
-        callingAetFld.setRequired(true);
-        callingAetFld.setRequiredIndicatorVisible(true);
-        callingAetFld.setValueChangeMode(ValueChangeMode.EAGER);
-    }
-    
-    private void buildWlAetFld() {
-        workListAetFld = new TextField("Worklist AET");
-        workListAetFld.setValueChangeMode(ValueChangeMode.EAGER);
-    }
-    
-    private void buildWlHostnameFld() {
-        workListHostnameFld = new TextField("Worklist Hostname");
-        workListHostnameFld.setValueChangeMode(ValueChangeMode.EAGER);
-    }
-    
-    private void buildWlPortFld() {
-        workListPortFld = new PortField();
-        workListPortFld.setLabel("Worklist Port");
-        workListPortFld.setValueChangeMode(ValueChangeMode.EAGER);
-    }
-    
-    @SuppressWarnings("serial")
-    private void buildSelectWorkListBtn() {
-        selectWorkListBtn = new Button("Select Worklist");
-        selectWorkListBtn.getStyle().set("cursor", "pointer");
-        
-        selectWorkListBtn.addClickListener(new ComponentEventListener<ClickEvent<Button>>() {
-            
-            @Override
-            public void onComponentEvent(ClickEvent<Button> event) {
-                openDicomWorklistSelectionDialog();
-            }
+  private void buildWlConfigurationLayout() {
+    wlConfigurationAndQueryLayout = new VerticalLayout();
+    wlConfigurationAndQueryLayout.setWidthFull();
+    wlConfigurationAndQueryLayout.setPadding(true);
+    wlConfigurationAndQueryLayout.setSpacing(false);
+    wlConfigurationAndQueryLayout
+        .getStyle()
+        .set(
+            "box-shadow",
+            "0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12)");
+    wlConfigurationAndQueryLayout.getStyle().set("border-radius", "4px");
+
+    buildWlConfigurationTitle();
+    buildWlConfigurationForm();
+    buildWlQueryTitle();
+    buildWlQueryForm();
+    buildButtonBar();
+
+    wlConfigurationAndQueryLayout.add(
+        wlConfigurationTitle, wlConfigurationForm, wlQueryTitle, wlQueryForm, buttonBar);
+  }
+
+  private void buildWlConfigurationTitle() {
+    wlConfigurationTitle = new H6("Worklist Configuration");
+    wlConfigurationTitle.getStyle().set("margin-top", "0px");
+  }
+
+  private void buildWlConfigurationForm() {
+    wlConfigurationForm = new FormLayout();
+
+    buildCallingAETitleFld();
+
+    buildWlAetFld();
+    buildWlHostnameFld();
+    buildWlPortFld();
+
+    wlConfigurationForm.add(callingAetFld, workListAetFld, workListHostnameFld, workListPortFld);
+
+    setFormResponsive(wlConfigurationForm);
+  }
+
+  private void buildCallingAETitleFld() {
+    callingAetFld = new TextField();
+    callingAetFld.setLabel("Calling AETitle");
+    callingAetFld.setRequired(true);
+    callingAetFld.setRequiredIndicatorVisible(true);
+    callingAetFld.setValueChangeMode(ValueChangeMode.EAGER);
+  }
+
+  private void buildWlAetFld() {
+    workListAetFld = new TextField("Worklist AET");
+    workListAetFld.setValueChangeMode(ValueChangeMode.EAGER);
+  }
+
+  private void buildWlHostnameFld() {
+    workListHostnameFld = new TextField("Worklist Hostname");
+    workListHostnameFld.setValueChangeMode(ValueChangeMode.EAGER);
+  }
+
+  private void buildWlPortFld() {
+    workListPortFld = new PortField();
+    workListPortFld.setLabel("Worklist Port");
+    workListPortFld.setValueChangeMode(ValueChangeMode.EAGER);
+  }
+
+  @SuppressWarnings("serial")
+  private void buildSelectWorkListBtn() {
+    selectWorkListBtn = new Button("Select Worklist");
+    selectWorkListBtn.getStyle().set("cursor", "pointer");
+
+    selectWorkListBtn.addClickListener(
+        new ComponentEventListener<ClickEvent<Button>>() {
+
+          @Override
+          public void onComponentEvent(ClickEvent<Button> event) {
+            openDicomWorklistSelectionDialog();
+          }
         });
-    }
-    
-    @SuppressWarnings("serial")
-    private void openDicomWorklistSelectionDialog() {
-        dicomWorklistSelectionDialog = new DicomWorkListSelectionDialog();
-        
-        dicomWorklistSelectionDialog.addWorkListSelectionListener(new ComponentEventListener<DicomWorkListSelectionDialog.WorkListSelectionEvent>() {
-            
-            @Override
-            public void onComponentEvent(WorkListSelectionEvent event) {
-                ConfigNode selectedWorkList = event.getSelectedWorkList();
-                
-                workListAetFld.setValue(selectedWorkList.getAet());
-                workListHostnameFld.setValue(selectedWorkList.getHostname());
-                workListPortFld.setValue(selectedWorkList.getPort());
-            }
+  }
+
+  @SuppressWarnings("serial")
+  private void openDicomWorklistSelectionDialog() {
+    dicomWorklistSelectionDialog = new DicomWorkListSelectionDialog();
+
+    dicomWorklistSelectionDialog.addWorkListSelectionListener(
+        new ComponentEventListener<DicomWorkListSelectionDialog.WorkListSelectionEvent>() {
+
+          @Override
+          public void onComponentEvent(WorkListSelectionEvent event) {
+            ConfigNode selectedWorkList = event.getSelectedWorkList();
+
+            workListAetFld.setValue(selectedWorkList.getAet());
+            workListHostnameFld.setValue(selectedWorkList.getHostname());
+            workListPortFld.setValue(selectedWorkList.getPort());
+          }
         });
-        
-        dicomWorklistSelectionDialog.open();
-    }
 
-    private void buildWlQueryTitle() {
-        wlQueryTitle = new H6("Worklist Query");
-    }
+    dicomWorklistSelectionDialog.open();
+  }
 
-    private void buildWlQueryForm() {
-        wlQueryForm = new FormLayout();
+  private void buildWlQueryTitle() {
+    wlQueryTitle = new H6("Worklist Query");
+  }
 
-        buildScheduledStationAetFld();
-        buildScheduledModalitySelector();
-        buildPatientIdfld();
-        buildAdmissionIdFld();
-        buildScheduledFromFld();
-        buildScheduledToFld();
-        buildPatientNameFld();
-        buildAccessionNumberFld();
+  private void buildWlQueryForm() {
+    wlQueryForm = new FormLayout();
 
-        wlQueryForm.add(scheduledStationAetFld, scheduledModalitySelector, patientIdfld, admissionIdFld, scheduledFromFld, scheduledToFld, patientNameFld,
-                accessionNumberFld);
+    buildScheduledStationAetFld();
+    buildScheduledModalitySelector();
+    buildPatientIdfld();
+    buildAdmissionIdFld();
+    buildScheduledFromFld();
+    buildScheduledToFld();
+    buildPatientNameFld();
+    buildAccessionNumberFld();
 
-        setFormResponsive(wlQueryForm);
-    }
+    wlQueryForm.add(
+        scheduledStationAetFld,
+        scheduledModalitySelector,
+        patientIdfld,
+        admissionIdFld,
+        scheduledFromFld,
+        scheduledToFld,
+        patientNameFld,
+        accessionNumberFld);
 
-    private void buildScheduledStationAetFld() {
-        scheduledStationAetFld = new TextField("Scheduled Station AET");
-    }
+    setFormResponsive(wlQueryForm);
+  }
 
-    private void buildScheduledModalitySelector() {
-        scheduledModalitySelector = new Select<Modality>();
-        scheduledModalitySelector.setLabel("Scheduled Modality");
-        scheduledModalitySelector.setItems(Modality.values());
-        scheduledModalitySelector.setValue(Modality.ALL);
-    }
+  private void buildScheduledStationAetFld() {
+    scheduledStationAetFld = new TextField("Scheduled Station AET");
+  }
 
-    private void buildPatientIdfld() {
-        patientIdfld = new TextField("Patient ID");
-    }
+  private void buildScheduledModalitySelector() {
+    scheduledModalitySelector = new Select<Modality>();
+    scheduledModalitySelector.setLabel("Scheduled Modality");
+    scheduledModalitySelector.setItems(Modality.values());
+    scheduledModalitySelector.setValue(Modality.ALL);
+  }
 
-    private void buildAdmissionIdFld() {
-        admissionIdFld = new TextField("Admission ID");
-    }
+  private void buildPatientIdfld() {
+    patientIdfld = new TextField("Patient ID");
+  }
 
-    private void buildScheduledFromFld() {
-        scheduledFromFld = new DatePicker("Scheduled from");
-    }
+  private void buildAdmissionIdFld() {
+    admissionIdFld = new TextField("Admission ID");
+  }
 
-    private void buildScheduledToFld() {
-        scheduledToFld = new DatePicker("Scheduled to");
-    }
+  private void buildScheduledFromFld() {
+    scheduledFromFld = new DatePicker("Scheduled from");
+  }
 
-    private void buildPatientNameFld() {
-        patientNameFld = new TextField("Patient Name");
-    }
+  private void buildScheduledToFld() {
+    scheduledToFld = new DatePicker("Scheduled to");
+  }
 
-    private void buildAccessionNumberFld() {
-        accessionNumberFld = new TextField("Accession Number");
-    }
+  private void buildPatientNameFld() {
+    patientNameFld = new TextField("Patient Name");
+  }
 
-    private void buildButtonBar() {
-        buttonBar = new HorizontalLayout();
-        buttonBar.setWidthFull();
-        buttonBar.getStyle().set("margin-top", "1em");
+  private void buildAccessionNumberFld() {
+    accessionNumberFld = new TextField("Accession Number");
+  }
 
-        buildClearBtn();
-        buildSelectWorkListBtn();
-        buildQueryBtn();
+  private void buildButtonBar() {
+    buttonBar = new HorizontalLayout();
+    buttonBar.setWidthFull();
+    buttonBar.getStyle().set("margin-top", "1em");
 
-        buttonBar.add(clearBtn, selectWorkListBtn, queryBtn);
-    }
+    buildClearBtn();
+    buildSelectWorkListBtn();
+    buildQueryBtn();
 
-    @SuppressWarnings("serial")
-    private void buildClearBtn() {
-        clearBtn = new Button("Clear");
-        clearBtn.getStyle().set("cursor", "pointer");
+    buttonBar.add(clearBtn, selectWorkListBtn, queryBtn);
+  }
 
-        clearBtn.addClickListener(new ComponentEventListener<ClickEvent<Button>>() {
+  @SuppressWarnings("serial")
+  private void buildClearBtn() {
+    clearBtn = new Button("Clear");
+    clearBtn.getStyle().set("cursor", "pointer");
 
-            @Override
-            public void onComponentEvent(ClickEvent<Button> event) {
-                binderForWorkListQuery.readBean(workListQueryData);
-            }
+    clearBtn.addClickListener(
+        new ComponentEventListener<ClickEvent<Button>>() {
+
+          @Override
+          public void onComponentEvent(ClickEvent<Button> event) {
+            binderForWorkListQuery.readBean(workListQueryData);
+          }
         });
-    }
+  }
 
-    @SuppressWarnings("serial")
-    private void buildQueryBtn() {
-        queryBtn = new Button("Query");
-        queryBtn.getStyle().set("cursor", "pointer");
-        queryBtn.setEnabled(false);
-        queryBtn.addClassName("stroked-button");
+  @SuppressWarnings("serial")
+  private void buildQueryBtn() {
+    queryBtn = new Button("Query");
+    queryBtn.getStyle().set("cursor", "pointer");
+    queryBtn.setEnabled(false);
+    queryBtn.addClassName("stroked-button");
 
-        queryBtn.addClickListener(new ComponentEventListener<ClickEvent<Button>>() {
+    queryBtn.addClickListener(
+        new ComponentEventListener<ClickEvent<Button>>() {
 
-            @Override
-            public void onComponentEvent(ClickEvent<Button> event) {
-                executeQuery();
-            }
+          @Override
+          public void onComponentEvent(ClickEvent<Button> event) {
+            executeQuery();
+          }
         });
-    }
+  }
 
-    private void buildQueryResultLayout() {
-        queryResultLayout = new VerticalLayout();
-        queryResultLayout.setSizeFull();
-        queryResultLayout.setPadding(true);
-        queryResultLayout.setSpacing(false);
-        queryResultLayout.getStyle().set("box-shadow", "0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12)");
-        queryResultLayout.getStyle().set("border-radius", "4px");
-        queryResultLayout.setVisible(false);
+  private void buildQueryResultLayout() {
+    queryResultLayout = new VerticalLayout();
+    queryResultLayout.setSizeFull();
+    queryResultLayout.setPadding(true);
+    queryResultLayout.setSpacing(false);
+    queryResultLayout
+        .getStyle()
+        .set(
+            "box-shadow",
+            "0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12)");
+    queryResultLayout.getStyle().set("border-radius", "4px");
+    queryResultLayout.setVisible(false);
 
-        buildQueryResultTitleBar();
-        buildGrid();
+    buildQueryResultTitleBar();
+    buildGrid();
 
-        queryResultLayout.add(queryResultTitle, queryResultGrid);
-    }
+    queryResultLayout.add(queryResultTitle, queryResultGrid);
+  }
 
-    private void buildQueryResultTitleBar() {
-        queryResultTitle = new H6("Query Result");
-        queryResultTitle.getStyle().set("margin-top", "0px");
-        queryResultTitle.getStyle().set("padding-bottom", "var(--lumo-space-m)");
-    }
+  private void buildQueryResultTitleBar() {
+    queryResultTitle = new H6("Query Result");
+    queryResultTitle.getStyle().set("margin-top", "0px");
+    queryResultTitle.getStyle().set("padding-bottom", "var(--lumo-space-m)");
+  }
 
-    @SuppressWarnings("serial")
-    private void buildGrid() {
-        queryResultGrid = new DicomWorkListGrid();
-        queryResultGrid.setWidthFull();
+  @SuppressWarnings("serial")
+  private void buildGrid() {
+    queryResultGrid = new DicomWorkListGrid();
+    queryResultGrid.setWidthFull();
 
-        queryResultGrid.setDataProvider(dataProviderForAttributes);
+    queryResultGrid.setDataProvider(dataProviderForAttributes);
 
-        queryResultGrid.addItemClickListener(new ComponentEventListener<ItemClickEvent<DicomObject>>() {
+    queryResultGrid.addItemClickListener(
+        new ComponentEventListener<ItemClickEvent<DicomObject>>() {
 
-            @Override
-            public void onComponentEvent(ItemClickEvent<DicomObject> event) {
-                logic.itemSelected(event.getItem());
-            }
+          @Override
+          public void onComponentEvent(ItemClickEvent<DicomObject> event) {
+            logic.itemSelected(event.getItem());
+          }
         });
-    }
+  }
 
-    @SuppressWarnings("serial")
-    private void bindFields() {
-        binderForWorkListQuery.forField(callingAetFld)
+  @SuppressWarnings("serial")
+  private void bindFields() {
+    binderForWorkListQuery
+        .forField(callingAetFld)
         .asRequired("Ce champ est obligatoire")
         .bind(WorkListQueryData::getCallingAet, WorkListQueryData::setCallingAet);
-        
-        binderForWorkListQuery.forField(workListAetFld)
+
+    binderForWorkListQuery
+        .forField(workListAetFld)
         .asRequired("Ce champ est obligatoire")
         .bind(WorkListQueryData::getWorkListAet, WorkListQueryData::setWorkListAet);
-        
-        binderForWorkListQuery.forField(workListHostnameFld)
+
+    binderForWorkListQuery
+        .forField(workListHostnameFld)
         .asRequired("Ce champ est obligatoire")
         .bind(WorkListQueryData::getWorkListHostname, WorkListQueryData::setWorkListHostname);
-        
-        binderForWorkListQuery.forField(workListPortFld)
+
+    binderForWorkListQuery
+        .forField(workListPortFld)
         .asRequired("Ce champ est obligatoire")
         .withValidator(new IntegerRangeValidator("Le port est invalide", 1, 65535))
         .bind(WorkListQueryData::getWorkListPort, WorkListQueryData::setWorkListPort);
-        
-        binderForWorkListQuery.bind(scheduledStationAetFld, WorkListQueryData::getScheduledStationAet, WorkListQueryData::setScheduledStationAet);
-        binderForWorkListQuery.bind(scheduledModalitySelector, WorkListQueryData::getScheduledModality, WorkListQueryData::setScheduledModality);
-        binderForWorkListQuery.bind(patientIdfld, WorkListQueryData::getPatientId, WorkListQueryData::setPatientId);
-        binderForWorkListQuery.bind(admissionIdFld, WorkListQueryData::getAdmissionId, WorkListQueryData::setAdmissionId);
-        binderForWorkListQuery.bind(scheduledFromFld, WorkListQueryData::getScheduledFrom, WorkListQueryData::setScheduledFrom);
-        binderForWorkListQuery.bind(scheduledToFld, WorkListQueryData::getScheduledTo, WorkListQueryData::setScheduledTo);
-        binderForWorkListQuery.bind(patientNameFld, WorkListQueryData::getPatientName, WorkListQueryData::setPatientName);
-        binderForWorkListQuery.bind(accessionNumberFld, WorkListQueryData::getAccessionNumber, WorkListQueryData::setAccessionNumber);
-        
-        binderForWorkListQuery.readBean(workListQueryData);
 
-        binderForWorkListQuery.addStatusChangeListener(new StatusChangeListener() {
+    binderForWorkListQuery.bind(
+        scheduledStationAetFld,
+        WorkListQueryData::getScheduledStationAet,
+        WorkListQueryData::setScheduledStationAet);
+    binderForWorkListQuery.bind(
+        scheduledModalitySelector,
+        WorkListQueryData::getScheduledModality,
+        WorkListQueryData::setScheduledModality);
+    binderForWorkListQuery.bind(
+        patientIdfld, WorkListQueryData::getPatientId, WorkListQueryData::setPatientId);
+    binderForWorkListQuery.bind(
+        admissionIdFld, WorkListQueryData::getAdmissionId, WorkListQueryData::setAdmissionId);
+    binderForWorkListQuery.bind(
+        scheduledFromFld, WorkListQueryData::getScheduledFrom, WorkListQueryData::setScheduledFrom);
+    binderForWorkListQuery.bind(
+        scheduledToFld, WorkListQueryData::getScheduledTo, WorkListQueryData::setScheduledTo);
+    binderForWorkListQuery.bind(
+        patientNameFld, WorkListQueryData::getPatientName, WorkListQueryData::setPatientName);
+    binderForWorkListQuery.bind(
+        accessionNumberFld,
+        WorkListQueryData::getAccessionNumber,
+        WorkListQueryData::setAccessionNumber);
 
-            @Override
-            public void statusChange(StatusChangeEvent event) {
-                if (callingAetFld.isEmpty() || workListAetFld.isEmpty() || workListHostnameFld.isEmpty() || workListPortFld.isEmpty()) {
-                    queryBtn.setEnabled(false);
-                } else {
-                    queryBtn.setEnabled(!event.hasValidationErrors());
-                }
-                
-                attributes.clear();
-                dataProviderForAttributes.refreshAll();
-                queryResultLayout.setVisible(false);
+    binderForWorkListQuery.readBean(workListQueryData);
+
+    binderForWorkListQuery.addStatusChangeListener(
+        new StatusChangeListener() {
+
+          @Override
+          public void statusChange(StatusChangeEvent event) {
+            if (callingAetFld.isEmpty()
+                || workListAetFld.isEmpty()
+                || workListHostnameFld.isEmpty()
+                || workListPortFld.isEmpty()) {
+              queryBtn.setEnabled(false);
+            } else {
+              queryBtn.setEnabled(!event.hasValidationErrors());
             }
-        });
-    }
-    
-    private void readParameters(String queryParameter) {
-        if (queryParameter!=null && !queryParameter.trim().isEmpty()) {
 
-          String queryParameterDecoded = URLDecoder.decode(queryParameter, StandardCharsets.UTF_8);
-
-          String[] parametersArray = queryParameterDecoded.split("&");
-
-          String[] parametersList = parametersArray;
-
-          for (String parameter : parametersList) {
-            String[] parameterArray = parameter.split("=");
-            String parameterName = parameterArray[0];
-            String parameterValue = parameterArray[1];
-
-            switch (parameterName) {
-              case PARAMETER_CALLING_AET:
-                callingAetParam = parameterValue;
-                break;
-              case PARAMETER_WORKLIST_AET:
-                worklistAetParam = parameterValue;
-                break;
-              case PARAMETER_WORKLIST_HOSTNAME:
-                worklistHostnameParam = parameterValue;
-                break;
-              case PARAMETER_WORKLIST_PORT:
-                worklistPortParam = parameterValue;
-                break;
-              case PARAMETER_ACTION:
-                actionParam = parameterValue;
-                break;
-              default:
-                break;
-            }
+            attributes.clear();
+            dataProviderForAttributes.refreshAll();
+            queryResultLayout.setVisible(false);
           }
+        });
+  }
+
+  private void readParameters(String queryParameter) {
+    if (queryParameter != null && !queryParameter.trim().isEmpty()) {
+
+      String queryParameterDecoded = URLDecoder.decode(queryParameter, StandardCharsets.UTF_8);
+
+      String[] parametersArray = queryParameterDecoded.split("&");
+
+      String[] parametersList = parametersArray;
+
+      for (String parameter : parametersList) {
+        String[] parameterArray = parameter.split("=");
+        String parameterName = parameterArray[0];
+        String parameterValue = parameterArray[1];
+
+        switch (parameterName) {
+          case PARAMETER_CALLING_AET:
+            callingAetParam = parameterValue;
+            break;
+          case PARAMETER_WORKLIST_AET:
+            worklistAetParam = parameterValue;
+            break;
+          case PARAMETER_WORKLIST_HOSTNAME:
+            worklistHostnameParam = parameterValue;
+            break;
+          case PARAMETER_WORKLIST_PORT:
+            worklistPortParam = parameterValue;
+            break;
+          case PARAMETER_ACTION:
+            actionParam = parameterValue;
+            break;
+          default:
+            break;
         }
+      }
     }
-    
-    private void fillFieldsFromParameters() {
-        if (callingAetParam != null && !callingAetParam.isEmpty()) {
-            callingAetFld.setValue(callingAetParam);
-        }
-        
-        if (worklistAetParam != null && !worklistAetParam.isEmpty()) {
-            workListAetFld.setValue(worklistAetParam);
-        }
-        
-        if (worklistHostnameParam != null && !worklistHostnameParam.isEmpty()) {
-            workListHostnameFld.setValue(worklistHostnameParam);
-        }
-        
-        if (worklistPortParam != null && !worklistPortParam.isEmpty()) {
-            workListPortFld.setValue(Integer.valueOf(worklistPortParam));
-        }
-    }
-    
-    private void executeAction() {
-        if (actionParam != null && actionParam.equals(ACTION_QUERY)) {
-            executeQuery();
-        }
-    }
-    
-    private void executeQuery() {
-        WorkListQueryData data = new WorkListQueryData();
-        try {
-            binderForWorkListQuery.writeBean(data);
-            logic.query(data);
-        } catch (ValidationException e) {
-            Message message = new Message(MessageLevel.ERROR, MessageFormat.TEXT, e.getMessage());
-            displayMessage(message);
-        }
+  }
+
+  private void fillFieldsFromParameters() {
+    if (callingAetParam != null && !callingAetParam.isEmpty()) {
+      callingAetFld.setValue(callingAetParam);
     }
 
+    if (worklistAetParam != null && !worklistAetParam.isEmpty()) {
+      workListAetFld.setValue(worklistAetParam);
+    }
+
+    if (worklistHostnameParam != null && !worklistHostnameParam.isEmpty()) {
+      workListHostnameFld.setValue(worklistHostnameParam);
+    }
+
+    if (worklistPortParam != null && !worklistPortParam.isEmpty()) {
+      workListPortFld.setValue(Integer.valueOf(worklistPortParam));
+    }
+  }
+
+  private void executeAction() {
+    if (actionParam != null && actionParam.equals(ACTION_QUERY)) {
+      executeQuery();
+    }
+  }
+
+  private void executeQuery() {
+    WorkListQueryData data = new WorkListQueryData();
+    try {
+      binderForWorkListQuery.writeBean(data);
+      logic.query(data);
+    } catch (ValidationException e) {
+      Message message = new Message(MessageLevel.ERROR, MessageFormat.TEXT, e.getMessage());
+      displayMessage(message);
+    }
+  }
 }

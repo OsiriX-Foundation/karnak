@@ -13,78 +13,78 @@ import org.springframework.context.ApplicationEventPublisher;
 
 public class ProjectDataProvider extends ListDataProvider<ProjectEntity> {
 
-    private final ProjectRepo projectRepo;
+  private final ProjectRepo projectRepo;
+  private ApplicationEventPublisher applicationEventPublisher;
 
-    {
-        projectRepo = GatewayConfig.getInstance().getProjectPersistence();
+  {
+    projectRepo = GatewayConfig.getInstance().getProjectPersistence();
+  }
+
+  public ProjectDataProvider() {
+    this(new ArrayList<>());
+  }
+
+  public ProjectDataProvider(List<ProjectEntity> items) {
+    super(items);
+    getItems().addAll(getAllProjects());
+  }
+
+  public void save(ProjectEntity projectEntity) {
+    boolean isNewProject = projectEntity.isNewData();
+    if (isNewProject) {
+      getItems().add(projectEntity);
+    } else {
+      refreshItem(projectEntity);
     }
+    projectRepo.saveAndFlush(projectEntity);
+    refreshAll();
+  }
 
-    private ApplicationEventPublisher applicationEventPublisher;
-
-    public ProjectDataProvider() {
-        this(new ArrayList<>());
+  public void update(ProjectEntity projectEntity) {
+    if (!projectEntity.isNewData()) {
+      projectRepo.saveAndFlush(projectEntity);
+      updateDestinations(projectEntity);
+      refreshAll();
     }
+  }
 
-    public ProjectDataProvider(List<ProjectEntity> items) {
-        super(items);
-        getItems().addAll(getAllProjects());
+  private void updateDestinations(ProjectEntity projectEntity) {
+    for (DestinationEntity destinationEntity : projectEntity.getDestinationEntities()) {
+      applicationEventPublisher.publishEvent(
+          new NodeEvent(destinationEntity, NodeEventType.UPDATE));
     }
+  }
 
-    public void save(ProjectEntity projectEntity) {
-        boolean isNewProject = projectEntity.isNewData();
-        if (isNewProject) {
-            getItems().add(projectEntity);
-        } else {
-            refreshItem(projectEntity);
-        }
-        projectRepo.saveAndFlush(projectEntity);
-        refreshAll();
-    }
+  public void remove(ProjectEntity projectEntity) {
+    projectRepo.deleteById(projectEntity.getId());
+    projectRepo.flush();
+    refreshAll();
+  }
 
-    public void update(ProjectEntity projectEntity) {
-        if (!projectEntity.isNewData()) {
-            projectRepo.saveAndFlush(projectEntity);
-            updateDestinations(projectEntity);
-            refreshAll();
-        }
-    }
+  public ProjectEntity getProjectById(Long projectID) {
+    refreshAll();
+    return getItems().stream()
+        .filter(project -> project.getId().equals(projectID))
+        .findAny()
+        .orElse(null);
+  }
 
-    private void updateDestinations(ProjectEntity projectEntity) {
-        for (DestinationEntity destinationEntity : projectEntity.getDestinationEntities()) {
-            applicationEventPublisher
-                .publishEvent(new NodeEvent(destinationEntity, NodeEventType.UPDATE));
-        }
-    }
+  public List<ProjectEntity> getAllProjects() {
+    return projectRepo.findAll();
+  }
 
-    public void remove(ProjectEntity projectEntity) {
-        projectRepo.deleteById(projectEntity.getId());
-        projectRepo.flush();
-        refreshAll();
-    }
+  public ApplicationEventPublisher getApplicationEventPublisher() {
+    return applicationEventPublisher;
+  }
 
-    public ProjectEntity getProjectById(Long projectID) {
-        refreshAll();
-        return getItems().stream()
-            .filter(project -> project.getId().equals(projectID))
-            .findAny().orElse(null);
-    }
+  public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+    this.applicationEventPublisher = applicationEventPublisher;
+  }
 
-    public List<ProjectEntity> getAllProjects() {
-        return projectRepo.findAll();
-    }
-
-    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
-        this.applicationEventPublisher = applicationEventPublisher;
-    }
-
-    public ApplicationEventPublisher getApplicationEventPublisher() {
-        return applicationEventPublisher;
-    }
-
-    @Override
-    public void refreshAll() {
-        getItems().clear();
-        getItems().addAll(getAllProjects());
-        super.refreshAll();
-    }
+  @Override
+  public void refreshAll() {
+    getItems().clear();
+    getItems().addAll(getAllProjects());
+    super.refreshAll();
+  }
 }

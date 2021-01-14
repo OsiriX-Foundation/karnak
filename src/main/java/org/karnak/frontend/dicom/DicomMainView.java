@@ -74,13 +74,14 @@ public class DicomMainView extends VerticalLayout {
     pagesShown = Stream.of(pageDicomEchoView).collect(Collectors.toSet());
 
     add(pageDicomEchoView);
-    menu.addSelectedChangeListener(event -> {
-      pagesShown.forEach(page -> page.setVisible(false));
-      pagesShown.clear();
-      Component selectedPage = tabsToPages.get(menu.getSelectedTab());
-      selectedPage.setVisible(true);
-      pagesShown.add(selectedPage);
-      add(selectedPage);
-    });
+    menu.addSelectedChangeListener(
+        event -> {
+          pagesShown.forEach(page -> page.setVisible(false));
+          pagesShown.clear();
+          Component selectedPage = tabsToPages.get(menu.getSelectedTab());
+          selectedPage.setVisible(true);
+          pagesShown.add(selectedPage);
+          add(selectedPage);
+        });
   }
 }

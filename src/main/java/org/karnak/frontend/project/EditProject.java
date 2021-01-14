@@ -15,95 +15,99 @@ import org.karnak.frontend.forwardnode.ProfileDropDown;
 
 public class EditProject extends VerticalLayout {
 
-    private final ProjectDataProvider projectDataProvider;
-    private Binder<ProjectEntity> binder;
-    private TextField textProjectName;
-    private ProjectSecret projectSecret;
-    private ProfileDropDown profileDropDown;
-    private HorizontalLayout horizontalLayoutButtons;
-    private Button buttonUpdate;
-    private Button buttonRemove;
-    private final WarningRemoveProjectUsed dialogWarning;
-    private ProjectEntity projectEntity;
+  private final ProjectDataProvider projectDataProvider;
+  private final WarningRemoveProjectUsed dialogWarning;
+  private Binder<ProjectEntity> binder;
+  private TextField textProjectName;
+  private ProjectSecret projectSecret;
+  private ProfileDropDown profileDropDown;
+  private HorizontalLayout horizontalLayoutButtons;
+  private Button buttonUpdate;
+  private Button buttonRemove;
+  private ProjectEntity projectEntity;
 
-    public EditProject(ProjectDataProvider projectDataProvider) {
-        this.projectDataProvider = projectDataProvider;
-        dialogWarning = new WarningRemoveProjectUsed();
+  public EditProject(ProjectDataProvider projectDataProvider) {
+    this.projectDataProvider = projectDataProvider;
+    dialogWarning = new WarningRemoveProjectUsed();
 
-        setEnabled(false);
-        setElements();
-        setEventButtonAdd();
-        setEventButtonRemove();
-        add(textProjectName, profileDropDown, projectSecret, horizontalLayoutButtons);
+    setEnabled(false);
+    setElements();
+    setEventButtonAdd();
+    setEventButtonRemove();
+    add(textProjectName, profileDropDown, projectSecret, horizontalLayoutButtons);
+  }
+
+  public void setProject(ProjectEntity projectEntity) {
+    this.projectEntity = projectEntity;
+    if (projectEntity != null) {
+      binder.setBean(projectEntity);
+      setEnabled(true);
+    } else {
+      binder.removeBean();
+      clear();
+      setEnabled(false);
     }
+  }
 
-    public void setProject(ProjectEntity projectEntity) {
-        this.projectEntity = projectEntity;
-        if (projectEntity != null) {
-            binder.setBean(projectEntity);
-            setEnabled(true);
-        } else {
-            binder.removeBean();
+  private void setEventButtonAdd() {
+    buttonUpdate.addClickListener(
+        event -> {
+          if (projectEntity != null && binder.writeBeanIfValid(projectEntity)) {
+            if (projectEntity.getDestinationEntities() != null
+                && projectEntity.getDestinationEntities().size() > 0) {
+              ConfirmDialog dialog =
+                  new ConfirmDialog(
+                      String.format(
+                          "The project %s is used, are you sure you want to updated ?",
+                          projectEntity.getName()));
+              dialog.addConfirmationListener(
+                  componentEvent -> {
+                    projectDataProvider.update(projectEntity);
+                  });
+              dialog.open();
+            } else {
+              projectDataProvider.update(projectEntity);
+            }
+          }
+        });
+  }
+
+  private void setEventButtonRemove() {
+    buttonRemove.addClickListener(
+        e -> {
+          List<DestinationEntity> destinationEntities = projectEntity.getDestinationEntities();
+          if (destinationEntities != null && destinationEntities.size() > 0) {
+            dialogWarning.setText(projectEntity);
+            dialogWarning.open();
+
+          } else {
+            projectDataProvider.remove(projectEntity);
             clear();
             setEnabled(false);
-        }
-    }
-
-    private void setEventButtonAdd() {
-        buttonUpdate.addClickListener(event -> {
-            if (projectEntity != null && binder.writeBeanIfValid(projectEntity)) {
-                if (projectEntity.getDestinationEntities() != null
-                    && projectEntity.getDestinationEntities().size() > 0) {
-                    ConfirmDialog dialog = new ConfirmDialog(
-                        String.format("The project %s is used, are you sure you want to updated ?",
-                            projectEntity
-                                .getName()));
-                    dialog.addConfirmationListener(componentEvent -> {
-                        projectDataProvider.update(projectEntity);
-                    });
-                    dialog.open();
-                } else {
-                    projectDataProvider.update(projectEntity);
-                }
-            }
+          }
         });
-    }
+  }
 
-    private void setEventButtonRemove() {
-        buttonRemove.addClickListener(e -> {
-            List<DestinationEntity> destinationEntities = projectEntity.getDestinationEntities();
-            if (destinationEntities != null && destinationEntities.size() > 0) {
-                dialogWarning.setText(projectEntity);
-                dialogWarning.open();
+  private void setElements() {
+    TextFieldsBindProject textFieldsBindProject = new TextFieldsBindProject();
+    binder = textFieldsBindProject.getBinder();
+    textProjectName = textFieldsBindProject.getTextResearchName();
+    profileDropDown = textFieldsBindProject.getProfileDropDown();
+    projectSecret = new ProjectSecret(textFieldsBindProject.getTextSecret());
 
-            } else {
-                projectDataProvider.remove(projectEntity);
-                clear();
-                setEnabled(false);
-            }
-        });
-    }
+    textProjectName.setLabel("Project Name");
+    textProjectName.setWidthFull();
 
-    private void setElements() {
-        TextFieldsBindProject textFieldsBindProject = new TextFieldsBindProject();
-        binder = textFieldsBindProject.getBinder();
-        textProjectName = textFieldsBindProject.getTextResearchName();
-        profileDropDown = textFieldsBindProject.getProfileDropDown();
-        projectSecret = new ProjectSecret(textFieldsBindProject.getTextSecret());
+    profileDropDown.setLabel("De-identification Profile");
+    profileDropDown.setWidthFull();
 
-        textProjectName.setLabel("Project Name");
-        textProjectName.setWidthFull();
+    buttonUpdate = new Button("Update");
+    buttonRemove = new Button("Remove");
+    buttonRemove.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
+    horizontalLayoutButtons = new HorizontalLayout(buttonUpdate, buttonRemove);
+  }
 
-        profileDropDown.setLabel("De-identification Profile");
-        profileDropDown.setWidthFull();
-
-        buttonUpdate = new Button("Update");
-        buttonRemove = new Button("Remove");
-        buttonRemove.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
-        horizontalLayoutButtons = new HorizontalLayout(buttonUpdate, buttonRemove);
-    }
-
-    private void clear() {
-        binder.readBean(new ProjectEntity());
-    }
+  private void clear() {
+    binder.readBean(new ProjectEntity());
+  }
 }

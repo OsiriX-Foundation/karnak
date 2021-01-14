@@ -8,25 +8,25 @@ import org.karnak.backend.model.action.ActionItem;
 import org.karnak.backend.model.profilepipe.HMAC;
 
 public interface ProfileItem {
-    ActionItem getAction(DicomObject dcm, DicomObject dcmCopy, DicomElement dcmElem, HMAC hmac);
+  ActionItem getAction(DicomObject dcm, DicomObject dcmCopy, DicomElement dcmElem, HMAC hmac);
 
-    ActionItem put(int tag, ActionItem action);
+  ActionItem put(int tag, ActionItem action);
 
-    ActionItem remove(int tag);
+  ActionItem remove(int tag);
 
-    void clearTagMap();
+  void clearTagMap();
 
-    String getName();
+  String getName();
 
-    String getCodeName();
+  String getCodeName();
 
-    String getCondition();
+  String getCondition();
 
-    String getOption();
+  String getOption();
 
   List<ArgumentEntity> getArguments();
 
-    Integer getPosition();
+  Integer getPosition();
 
-    void profileValidation() throws Exception;
+  void profileValidation() throws Exception;
 }

@@ -19,10 +19,10 @@ public class ProfileNameGrid extends Grid<ProfileEntity> {
     addColumn(ProfileEntity::getVersion).setHeader("Version");
   }
 
-    public void updatedProfilePipesView() {
-      profileEntities = profilePipeService.getAllProfiles();
-      setItems(profileEntities);
-    }
+  public void updatedProfilePipesView() {
+    profileEntities = profilePipeService.getAllProfiles();
+    setItems(profileEntities);
+  }
 
   public void selectRow(ProfileEntity row) {
     getSelectionModel().select(row);

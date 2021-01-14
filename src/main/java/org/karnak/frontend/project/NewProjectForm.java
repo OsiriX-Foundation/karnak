@@ -24,24 +24,24 @@ public class NewProjectForm extends HorizontalLayout {
     profileDropDown = textFieldsBindProject.getProfileDropDown();
     setElements();
 
-        add(textResearchName, profileDropDown, buttonAdd);
-        binder.removeBinding(textFieldsBindProject.getTextSecret());
-        binder.bindInstanceFields(this);
-    }
+    add(textResearchName, profileDropDown, buttonAdd);
+    binder.removeBinding(textFieldsBindProject.getTextSecret());
+    binder.bindInstanceFields(this);
+  }
 
-    private void setElements() {
-        textResearchName.setWidth("20%");
-        textResearchName.getStyle().set("padding-right", "10px");
-        textResearchName.setPlaceholder("Research Name");
-    }
+  private void setElements() {
+    textResearchName.setWidth("20%");
+    textResearchName.getStyle().set("padding-right", "10px");
+    textResearchName.setPlaceholder("Research Name");
+  }
 
-    public Button getButtonAdd() {
-        return buttonAdd;
-    }
+  public Button getButtonAdd() {
+    return buttonAdd;
+  }
 
-    public void clear() {
-      binder.readBean(new ProjectEntity());
-    }
+  public void clear() {
+    binder.readBean(new ProjectEntity());
+  }
 
   public Binder<ProjectEntity> getBinder() {
     return binder;

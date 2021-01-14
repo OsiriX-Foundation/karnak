@@ -12,11 +12,12 @@ import org.springframework.security.access.annotation.Secured;
 @Secured({"ADMIN"})
 @SuppressWarnings("serial")
 public class AboutView extends VerticalLayout {
-    public static final String VIEW_NAME = "About";
 
-    public AboutView() {
-        add(new H2("About KARNAK"));
+  public static final String VIEW_NAME = "About";
 
-        setSizeFull();
-    }
+  public AboutView() {
+    add(new H2("About KARNAK"));
+
+    setSizeFull();
+  }
 }

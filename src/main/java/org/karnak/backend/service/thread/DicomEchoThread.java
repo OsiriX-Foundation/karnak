@@ -18,22 +18,22 @@ public class DicomEchoThread implements Callable<String> {
     StringBuilder result = new StringBuilder();
 
     result.append("<P>");
-        DicomNode dcmNode = node.getCalledNode();
-        result.append("<h6>DICOM Echo: ");
-        result.append(node.toString());
-        result.append("</h6>");
-        result.append(dcmNode.toString());
-        result.append("<br>");
-        result.append("<small>");
-        boolean success = Util.getEchoResponse(result, "PACSMONITOR", dcmNode, true, "HTML", 3000);
-        if (!success) {
-            Util.getNetworkResponse(result, dcmNode.getAet(), dcmNode.getHostname(), dcmNode.getPort(), true);
-        }
-        result.append("</small>");
-        result.append("</P>");
-        result.append("<hr>");
-        
-        return result.toString();
-	}
+    DicomNode dcmNode = node.getCalledNode();
+    result.append("<h6>DICOM Echo: ");
+    result.append(node.toString());
+    result.append("</h6>");
+    result.append(dcmNode.toString());
+    result.append("<br>");
+    result.append("<small>");
+    boolean success = Util.getEchoResponse(result, "PACSMONITOR", dcmNode, true, "HTML", 3000);
+    if (!success) {
+      Util.getNetworkResponse(
+          result, dcmNode.getAet(), dcmNode.getHostname(), dcmNode.getPort(), true);
+    }
+    result.append("</small>");
+    result.append("</P>");
+    result.append("<hr>");
 
+    return result.toString();
+  }
 }

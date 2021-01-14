@@ -28,41 +28,44 @@ public class KheopsAlbumsEntity {
   public KheopsAlbumsEntity() {
   }
 
-  public KheopsAlbumsEntity(String urlAPI, String authorizationDestination,
-      String authorizationSource, String condition) {
+  public KheopsAlbumsEntity(
+      String urlAPI,
+      String authorizationDestination,
+      String authorizationSource,
+      String condition) {
     this.urlAPI = urlAPI;
     this.authorizationDestination = authorizationDestination;
     this.authorizationSource = authorizationSource;
     this.condition = condition;
   }
 
-    public Long getId() {
-        return id;
-    }
+  public Long getId() {
+    return id;
+  }
 
-    public String getUrlAPI() {
-        return urlAPI;
-    }
+  public String getUrlAPI() {
+    return urlAPI;
+  }
 
-    public void setUrlAPI(String urlAPI) {
-        this.urlAPI = urlAPI;
-    }
+  public void setUrlAPI(String urlAPI) {
+    this.urlAPI = urlAPI;
+  }
 
-    public String getAuthorizationDestination() {
-        return authorizationDestination;
-    }
+  public String getAuthorizationDestination() {
+    return authorizationDestination;
+  }
 
-    public void setAuthorizationDestination(String authorizationDestination) {
-        this.authorizationDestination = authorizationDestination;
-    }
+  public void setAuthorizationDestination(String authorizationDestination) {
+    this.authorizationDestination = authorizationDestination;
+  }
 
-    public String getAuthorizationSource() {
-        return authorizationSource;
-    }
+  public String getAuthorizationSource() {
+    return authorizationSource;
+  }
 
-    public void setAuthorizationSource(String authorizationSource) {
-        this.authorizationSource = authorizationSource;
-    }
+  public void setAuthorizationSource(String authorizationSource) {
+    this.authorizationSource = authorizationSource;
+  }
 
   public String getCondition() {
     return condition;

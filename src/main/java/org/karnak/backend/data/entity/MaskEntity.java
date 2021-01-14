@@ -30,12 +30,12 @@ public class MaskEntity {
   @JsonIgnore
   private ProfileEntity profileEntity;
 
-    private String stationName;
-    private String color;
+  private String stationName;
+  private String color;
 
-    @Convert(converter = RectangleListConverter.class)
-    @JsonSerialize(converter = RectangleListToStringListConverter.class)
-    private List<Rectangle> rectangles = new ArrayList<>();
+  @Convert(converter = RectangleListConverter.class)
+  @JsonSerialize(converter = RectangleListToStringListConverter.class)
+  private List<Rectangle> rectangles = new ArrayList<>();
 
   public MaskEntity() {
   }
@@ -46,42 +46,42 @@ public class MaskEntity {
     this.profileEntity = profileEntity;
   }
 
-    public void addRectangle(String rectangle) {
-        Rectangle rect = RectangleListConverter.stringToRectangle(rectangle);
-        if (rect != null) {
-            rectangles.add(rect);
-        }
+  public void addRectangle(String rectangle) {
+    Rectangle rect = RectangleListConverter.stringToRectangle(rectangle);
+    if (rect != null) {
+      rectangles.add(rect);
     }
+  }
 
-    public void addRectangle(Rectangle rect) {
-        rectangles.add(rect);
-    }
+  public void addRectangle(Rectangle rect) {
+    rectangles.add(rect);
+  }
 
-    public List<Rectangle> getRectangles() {
-        return rectangles;
-    }
+  public List<Rectangle> getRectangles() {
+    return rectangles;
+  }
 
-    public void setRectangles(List<Rectangle> rectangles) {
-        this.rectangles = rectangles;
-    }
+  public void setRectangles(List<Rectangle> rectangles) {
+    this.rectangles = rectangles;
+  }
 
-    public Long getId() {
-        return id;
-    }
+  public Long getId() {
+    return id;
+  }
 
-    public String getStationName() {
-        return stationName;
-    }
+  public String getStationName() {
+    return stationName;
+  }
 
-    public void setStationName(String stationName) {
-        this.stationName = stationName;
-    }
+  public void setStationName(String stationName) {
+    this.stationName = stationName;
+  }
 
-    public String getColor() {
-        return color;
-    }
+  public String getColor() {
+    return color;
+  }
 
-    public void setColor(String color) {
-        this.color = color;
-    }
+  public void setColor(String color) {
+    this.color = color;
+  }
 }

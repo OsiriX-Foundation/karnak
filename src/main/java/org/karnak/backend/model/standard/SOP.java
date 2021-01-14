@@ -19,22 +19,22 @@ public class SOP {
   }
 
   public String getUID() {
-        return UID;
-    }
+    return UID;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public String getCiod() {
-        return ciod;
-    }
+  public String getCiod() {
+    return ciod;
+  }
 
-    public String getCiod_id() {
-        return ciod_id;
-    }
+  public String getCiod_id() {
+    return ciod_id;
+  }
 
-    public ArrayList<Module> getModules() {
-        return modules;
-    }
+  public ArrayList<Module> getModules() {
+    return modules;
+  }
 }

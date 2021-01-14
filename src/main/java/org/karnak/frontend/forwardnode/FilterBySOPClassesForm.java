@@ -11,52 +11,57 @@ import org.karnak.backend.service.SOPClassUIDDataProvider;
 import org.vaadin.gatanaso.MultiselectComboBox;
 
 public class FilterBySOPClassesForm extends HorizontalLayout {
-    private final SOPClassUIDDataProvider sopClassUIDDataProvider;
-    private final MultiselectComboBox<String> sopFilter;
-    private final Checkbox filterBySOPClassesCheckbox;
-    private final Binder<DestinationEntity> binder;
 
-    public FilterBySOPClassesForm(Binder<DestinationEntity> binder) {
-        this.binder = binder;
-        sopClassUIDDataProvider = new SOPClassUIDDataProvider();
-        filterBySOPClassesCheckbox = new Checkbox("Authorized SOPs");
-        sopFilter = new MultiselectComboBox<>();
-        setElements();
-        setBinder();
-        add(filterBySOPClassesCheckbox, sopFilter);
-    }
+  private final SOPClassUIDDataProvider sopClassUIDDataProvider;
+  private final MultiselectComboBox<String> sopFilter;
+  private final Checkbox filterBySOPClassesCheckbox;
+  private final Binder<DestinationEntity> binder;
 
-    private void setElements() {
-        filterBySOPClassesCheckbox.setMinWidth("25%");
-        sopFilter.setMinWidth("70%");
+  public FilterBySOPClassesForm(Binder<DestinationEntity> binder) {
+    this.binder = binder;
+    sopClassUIDDataProvider = new SOPClassUIDDataProvider();
+    filterBySOPClassesCheckbox = new Checkbox("Authorized SOPs");
+    sopFilter = new MultiselectComboBox<>();
+    setElements();
+    setBinder();
+    add(filterBySOPClassesCheckbox, sopFilter);
+  }
 
-        filterBySOPClassesCheckbox.setValue(false);
-        sopFilter.onEnabledStateChanged(false);
+  private void setElements() {
+    filterBySOPClassesCheckbox.setMinWidth("25%");
+    sopFilter.setMinWidth("70%");
 
-        filterBySOPClassesCheckbox.addValueChangeListener(checkboxBooleanComponentValueChangeEvent ->
-            sopFilter.onEnabledStateChanged(checkboxBooleanComponentValueChangeEvent.getValue())
-        );
+    filterBySOPClassesCheckbox.setValue(false);
+    sopFilter.onEnabledStateChanged(false);
 
-        sopFilter.setItems(sopClassUIDDataProvider.getAllSOPClassUIDsName());
-    }
+    filterBySOPClassesCheckbox.addValueChangeListener(
+        checkboxBooleanComponentValueChangeEvent ->
+            sopFilter.onEnabledStateChanged(checkboxBooleanComponentValueChangeEvent.getValue()));
 
-    private void setBinder() {
-        binder.forField(sopFilter)
-            .withValidator(listOfSOPFilter ->
-                    !listOfSOPFilter.isEmpty() || !filterBySOPClassesCheckbox.getValue(),
-                "No filter are applied\n")
-            .bind(DestinationEntity::getSOPClassUIDFiltersName, (destination, sopClassNames) -> {
-                Set<SOPClassUIDEntity> newSOPClassUIDEntities = new HashSet<>();
-                sopClassNames.forEach(sopClasseName -> {
-                    SOPClassUIDEntity sopClassUIDEntity = sopClassUIDDataProvider
-                        .getByName(sopClasseName);
+    sopFilter.setItems(sopClassUIDDataProvider.getAllSOPClassUIDsName());
+  }
+
+  private void setBinder() {
+    binder
+        .forField(sopFilter)
+        .withValidator(
+            listOfSOPFilter -> !listOfSOPFilter.isEmpty() || !filterBySOPClassesCheckbox.getValue(),
+            "No filter are applied\n")
+        .bind(
+            DestinationEntity::getSOPClassUIDFiltersName,
+            (destination, sopClassNames) -> {
+              Set<SOPClassUIDEntity> newSOPClassUIDEntities = new HashSet<>();
+              sopClassNames.forEach(
+                  sopClasseName -> {
+                    SOPClassUIDEntity sopClassUIDEntity =
+                        sopClassUIDDataProvider.getByName(sopClasseName);
                     newSOPClassUIDEntities.add(sopClassUIDEntity);
-                });
-                destination.setSOPClassUIDFilters(newSOPClassUIDEntities);
+                  });
+              destination.setSOPClassUIDFilters(newSOPClassUIDEntities);
             });
 
-        binder.forField(filterBySOPClassesCheckbox) //
-            .bind(DestinationEntity::getFilterBySOPClasses,
-                DestinationEntity::setFilterBySOPClasses);
-    }
+    binder
+        .forField(filterBySOPClassesCheckbox) //
+        .bind(DestinationEntity::getFilterBySOPClasses, DestinationEntity::setFilterBySOPClasses);
+  }
 }

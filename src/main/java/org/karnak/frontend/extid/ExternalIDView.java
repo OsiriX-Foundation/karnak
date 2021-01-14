@@ -19,35 +19,40 @@ import org.springframework.security.access.annotation.Secured;
 @Secured({"ADMIN"})
 @SuppressWarnings("serial")
 public class ExternalIDView extends HorizontalLayout {
-    public static final String VIEW_NAME = "External pseudonym";
-    private final ListDataProvider<CachedPatient> dataProvider;
-    private final ExternalIDGrid externalIDGrid;
-    private final Div validationStatus;
-    private final ExternalIDForm externalIDForm;
-    private static final String LABEL_DISCLAIMER_EXTID = "WARNING: The data that is added to this grid will be stored" +
-            " temporally for a short period of time. If the machine restarts, the data will be deleted.";
 
+  public static final String VIEW_NAME = "External pseudonym";
+  private static final String LABEL_DISCLAIMER_EXTID =
+      "WARNING: The data that is added to this grid will be stored"
+          + " temporally for a short period of time. If the machine restarts, the data will be deleted.";
+  private final ListDataProvider<CachedPatient> dataProvider;
+  private final ExternalIDGrid externalIDGrid;
+  private final Div validationStatus;
+  private final ExternalIDForm externalIDForm;
 
-    //https://vaadin.com/components/vaadin-grid/java-examples/assigning-data
-    public ExternalIDView() {
-        setSizeFull();
-        VerticalLayout verticalLayout = new VerticalLayout();
+  // https://vaadin.com/components/vaadin-grid/java-examples/assigning-data
+  public ExternalIDView() {
+    setSizeFull();
+    VerticalLayout verticalLayout = new VerticalLayout();
 
-        Label labelDisclaimer = new Label(LABEL_DISCLAIMER_EXTID);
-        labelDisclaimer.getStyle().set("color", "red");
-        labelDisclaimer.setMinWidth("75%");
-        labelDisclaimer.getStyle().set("right", "0px");
+    Label labelDisclaimer = new Label(LABEL_DISCLAIMER_EXTID);
+    labelDisclaimer.getStyle().set("color", "red");
+    labelDisclaimer.setMinWidth("75%");
+    labelDisclaimer.getStyle().set("right", "0px");
 
-        externalIDGrid = new ExternalIDGrid();
-        dataProvider = (ListDataProvider<CachedPatient>) externalIDGrid.getDataProvider();
-        externalIDForm = new ExternalIDForm(dataProvider);
-        externalIDGrid.setAddPatientButton(externalIDForm.getAddPatientButton());
+    externalIDGrid = new ExternalIDGrid();
+    dataProvider = (ListDataProvider<CachedPatient>) externalIDGrid.getDataProvider();
+    externalIDForm = new ExternalIDForm(dataProvider);
+    externalIDGrid.setAddPatientButton(externalIDForm.getAddPatientButton());
 
-        validationStatus = externalIDGrid.setBinder();
+    validationStatus = externalIDGrid.setBinder();
 
-        verticalLayout.add(new H2("External Pseudonym"), labelDisclaimer, externalIDForm, validationStatus, externalIDGrid);
+    verticalLayout.add(
+        new H2("External Pseudonym"),
+        labelDisclaimer,
+        externalIDForm,
+        validationStatus,
+        externalIDGrid);
 
-        add(verticalLayout);
-    }
-
+    add(verticalLayout);
+  }
 }

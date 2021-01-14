@@ -22,49 +22,48 @@ public class MonitorLogic {
   private DicomNodeList dicomNodeListSelected;
   private WadoNodeList wadoNodeListSelected;
 
-
   public MonitorLogic(MonitorView view) {
     this.view = view;
 
     dicomEchoService = new DicomEchoService();
-        wadoService = new WadoService();
-    }
-    
-    
-    public void dicomNodeListSelected(DicomNodeList dicomNodeList) {
-        this.dicomNodeListSelected = dicomNodeList;
-    }
-    
-    public void wadoNodeListSelected(WadoNodeList wadoNodeList) {
-        this.wadoNodeListSelected = wadoNodeList;
-    }
-    
-    public void dicomEcho() {
-    	try {
-    		String result = dicomEchoService.dicomEcho(dicomNodeListSelected);
-            view.displayStatus(result);
-    	} catch (InterruptedException e) {
-    		Message message = new Message(MessageLevel.ERROR, MessageFormat.TEXT, "Execution was interrupted");
-    		view.displayMessage(message);
-        Thread.currentThread().interrupt();
-    	} catch (ExecutionException e) {
-    		Message message = new Message(MessageLevel.ERROR, MessageFormat.TEXT, "Execution failed");
-    		view.displayMessage(message);
-    	}
-    }
-    
-    public void wado() {
-    	try {
-	        String result = wadoService.checkWado(wadoNodeListSelected);
-	        view.displayStatus(result);
-    	} catch (InterruptedException e) {
-    		Message message = new Message(MessageLevel.ERROR, MessageFormat.TEXT, "Execution was interrupted");
-    		view.displayMessage(message);
-        Thread.currentThread().interrupt();
-    	} catch (ExecutionException e) {
-    		Message message = new Message(MessageLevel.ERROR, MessageFormat.TEXT, "Execution failed");
-    		view.displayMessage(message);
-    	}
-    }
+    wadoService = new WadoService();
+  }
 
+  public void dicomNodeListSelected(DicomNodeList dicomNodeList) {
+    this.dicomNodeListSelected = dicomNodeList;
+  }
+
+  public void wadoNodeListSelected(WadoNodeList wadoNodeList) {
+    this.wadoNodeListSelected = wadoNodeList;
+  }
+
+  public void dicomEcho() {
+    try {
+      String result = dicomEchoService.dicomEcho(dicomNodeListSelected);
+      view.displayStatus(result);
+    } catch (InterruptedException e) {
+      Message message =
+          new Message(MessageLevel.ERROR, MessageFormat.TEXT, "Execution was interrupted");
+      view.displayMessage(message);
+      Thread.currentThread().interrupt();
+    } catch (ExecutionException e) {
+      Message message = new Message(MessageLevel.ERROR, MessageFormat.TEXT, "Execution failed");
+      view.displayMessage(message);
+    }
+  }
+
+  public void wado() {
+    try {
+      String result = wadoService.checkWado(wadoNodeListSelected);
+      view.displayStatus(result);
+    } catch (InterruptedException e) {
+      Message message =
+          new Message(MessageLevel.ERROR, MessageFormat.TEXT, "Execution was interrupted");
+      view.displayMessage(message);
+      Thread.currentThread().interrupt();
+    } catch (ExecutionException e) {
+      Message message = new Message(MessageLevel.ERROR, MessageFormat.TEXT, "Execution failed");
+      view.displayMessage(message);
+    }
+  }
 }

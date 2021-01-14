@@ -3,15 +3,15 @@ package org.karnak.backend.cache;
 import java.time.LocalDate;
 
 public interface PseudonymPatient {
-    String getPseudonym();
+  String getPseudonym();
 
-    String getPatientId();
+  String getPatientId();
 
-    String getPatientName();
+  String getPatientName();
 
-    String getIssuerOfPatientId();
+  String getIssuerOfPatientId();
 
-    LocalDate getPatientBirthDate();
+  LocalDate getPatientBirthDate();
 
-    String getPatientSex();
+  String getPatientSex();
 }

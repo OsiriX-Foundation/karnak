@@ -8,30 +8,33 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 public class StandardModuleToAttributes {
-    private static final String moduleToAttributesFileName = "moduletoattributes.json";
-    private static jsonModuleToAttribute[] moduleToAttributes;
 
-    public StandardModuleToAttributes() {
-        URL url = this.getClass().getResource(moduleToAttributesFileName);
-        moduleToAttributes = read(url);
-    }
+  private static final String moduleToAttributesFileName = "moduletoattributes.json";
+  private static jsonModuleToAttribute[] moduleToAttributes;
 
-    public jsonModuleToAttribute[] getModuleToAttributes() {
-        return moduleToAttributes;
-    }
+  public StandardModuleToAttributes() {
+    URL url = this.getClass().getResource(moduleToAttributesFileName);
+    moduleToAttributes = read(url);
+  }
 
-    public static jsonModuleToAttribute[] readJsonModuleToAttributes() {
-        URL url = StandardModuleToAttributes.class.getResource(moduleToAttributesFileName);
-        return read(url);
-    }
+  public static jsonModuleToAttribute[] readJsonModuleToAttributes() {
+    URL url = StandardModuleToAttributes.class.getResource(moduleToAttributesFileName);
+    return read(url);
+  }
 
-    private static jsonModuleToAttribute[] read(URL url) {
-        Gson gson = new Gson();
-        try {
-            JsonReader reader = new JsonReader(new InputStreamReader(url.openStream(), StandardCharsets.UTF_8));
-             return gson.fromJson(reader, jsonModuleToAttribute[].class);
-        } catch( Exception e) {
-            throw new JsonParseException(String.format("Cannot parse json %s correctly", moduleToAttributesFileName), e);
-        }
+  private static jsonModuleToAttribute[] read(URL url) {
+    Gson gson = new Gson();
+    try {
+      JsonReader reader =
+          new JsonReader(new InputStreamReader(url.openStream(), StandardCharsets.UTF_8));
+      return gson.fromJson(reader, jsonModuleToAttribute[].class);
+    } catch (Exception e) {
+      throw new JsonParseException(
+          String.format("Cannot parse json %s correctly", moduleToAttributesFileName), e);
     }
+  }
+
+  public jsonModuleToAttribute[] getModuleToAttributes() {
+    return moduleToAttributes;
+  }
 }

@@ -17,14 +17,13 @@ public class CheckWadoThread implements Callable<String> {
     StringBuilder result = new StringBuilder();
 
     result.append("<h6>WADO HTTP-GET: ");
-        result.append(node.toString());
-        result.append("</h6>");
-        result.append("<small>");
-        Util.getWadoResponse(result, node, true, "HTML", 3000, 5000);
-        result.append("</small>");
-        result.append("<hr>");
-        
-        return result.toString();
-	}
+    result.append(node.toString());
+    result.append("</h6>");
+    result.append("<small>");
+    Util.getWadoResponse(result, node, true, "HTML", 3000, 5000);
+    result.append("</small>");
+    result.append("<hr>");
 
+    return result.toString();
+  }
 }
