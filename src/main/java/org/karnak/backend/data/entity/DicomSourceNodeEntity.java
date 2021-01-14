@@ -34,7 +34,7 @@ public class DicomSourceNodeEntity {
     private Boolean checkHostname;
 
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(name = "forward_node_id")
     private ForwardNodeEntity forwardNodeEntity;
 
     protected DicomSourceNodeEntity() {
