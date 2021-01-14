@@ -26,40 +26,43 @@ public class SecurityInMemoryConfig extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
-    // Disables cross-site request forgery (CSRF) protection, as Vaadin already has CSRF protection
-    http.csrf()
-            .disable()
-            // Uses RequestCache to track unauthorized requests so that users are redirected
-            // appropriately after login
-            .requestCache()
-            .requestCache(new RequestCache())
-            // Turns on authorization
-            .and()
-            .authorizeRequests()
-            // Allows all internal traffic from the Vaadin framework
-            .requestMatchers(SecurityUtil::isFrameworkInternalRequest)
-            .permitAll()
-            // Allows all authenticated traffic
-            .antMatchers("/*")
-            .hasRole(SecurityRole.ADMIN_ROLE.getType())
-            .anyRequest()
-            .authenticated()
-            // Enables form-based login and permits unauthenticated access to it
-            .and()
-            .formLogin()
-            // Configures the login page URLs
-            .loginPage(LOGIN_URL)
-            .permitAll()
-            .loginProcessingUrl(LOGIN_PROCESSING_URL)
-            .failureUrl(LOGIN_FAILURE_URL)
-            // Configures the logout URL
-            .and()
-            .logout()
-            .logoutSuccessUrl(LOGOUT_SUCCESS_URL)
-            .and()
-            .exceptionHandling()
-            .accessDeniedPage(LOGIN_URL);
-    }
+
+    http
+        // Uses RequestCache to track unauthorized requests so that users are redirected
+        // appropriately after login
+        .requestCache()
+        .requestCache(new RequestCache())
+        // Disables cross-site request forgery (CSRF) protection for main route and login
+        .and()
+        .csrf().ignoringAntMatchers("/", "/login")
+        // Turns on authorization
+        .and()
+        .authorizeRequests()
+        // Allows all internal traffic from the Vaadin framework
+        .requestMatchers(SecurityUtil::isFrameworkInternalRequest)
+        .permitAll()
+        // Allows all authenticated traffic
+        .antMatchers("/*")
+        .hasRole(SecurityRole.ADMIN_ROLE.getType())
+        .anyRequest()
+        .authenticated()
+        // Enables form-based login and permits unauthenticated access to it
+        .and()
+        .formLogin()
+        // Configures the login page URLs
+        .loginPage(LOGIN_URL)
+        .permitAll()
+        .loginProcessingUrl(LOGIN_PROCESSING_URL)
+        .failureUrl(LOGIN_FAILURE_URL)
+        // Configures the logout URL
+        .and()
+        .logout()
+        .logoutSuccessUrl(LOGOUT_SUCCESS_URL)
+        .and()
+        .exceptionHandling()
+        .accessDeniedPage(LOGIN_URL);
+
+  }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {

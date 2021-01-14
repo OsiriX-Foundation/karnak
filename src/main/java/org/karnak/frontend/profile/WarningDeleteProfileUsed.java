@@ -1,4 +1,4 @@
-package org.karnak.frontend.profileEntity;
+package org.karnak.frontend.profile;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;

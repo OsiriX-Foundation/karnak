@@ -36,13 +36,15 @@ public class SecurityKeycloakConfig extends KeycloakWebSecurityConfigurerAdapter
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     super.configure(http);
-    // Disables cross-site request forgery (CSRF) protection, as Vaadin already has CSRF protection
-    http.csrf()
-        .disable()
+
+    http
         // Uses RequestCache to track unauthorized requests so that users are redirected
         // appropriately after login
         .requestCache()
         .requestCache(new RequestCache())
+        // Disables cross-site request forgery (CSRF) protection for main route
+        .and()
+        .csrf().ignoringAntMatchers("/")
         // Turns on authorization
         .and()
         .authorizeRequests()

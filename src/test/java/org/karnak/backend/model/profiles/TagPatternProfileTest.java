@@ -63,7 +63,7 @@ class TagPatternProfileTest {
 
         assertEquals(Action.REMOVE, buildTagPatternProfile(OVERLAYS_COMMENTS).getAction(dataset.get(TagEntity.OverlayComments).orElse(null)));
 
-        // BLACKLIST policy for curves pattern with parent profileEntity
+        // BLACKLIST policy for curves pattern with parent profile
         TagPatternProfile curves2 = new TagPatternProfile("", CURVES, overlayData);
         curves2.put(TagEntity.CurveReferencedOverlaySequence, Action.REMOVE);
         curves2.put(TagEntity.CurveLabel, Action.DEFAULT_DUMMY);
