@@ -6,6 +6,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.textfield.TextFieldVariant;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.spring.annotation.UIScope;
 import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.backend.data.entity.DestinationEntity;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@UIScope
 public class FormDICOM extends VerticalLayout {
 
     private Binder<DestinationEntity> binder;
@@ -31,18 +33,21 @@ public class FormDICOM extends VerticalLayout {
     private TextField notifyObjectValues;
     private TextField notifyInterval;
     private final LayoutDesidentification layoutDesidentification;
-    private FilterBySOPClassesForm filterBySOPClassesForm;
+    private final FilterBySOPClassesForm filterBySOPClassesForm;
 
     @Autowired
-    public FormDICOM(final LayoutDesidentification layoutDesidentification) {
+    public FormDICOM(final LayoutDesidentification layoutDesidentification,
+        final FilterBySOPClassesForm filterBySOPClassesForm) {
         this.layoutDesidentification = layoutDesidentification;
+        this.filterBySOPClassesForm = filterBySOPClassesForm;
     }
 
     public void init(Binder<DestinationEntity> binder,
         ButtonSaveDeleteCancel buttonSaveDeleteCancel) {
 
-        this.layoutDesidentification.init(binder);
         this.binder = binder;
+        this.layoutDesidentification.init(this.binder);
+        this.filterBySOPClassesForm.init(this.binder);
 
         setSizeFull();
 
@@ -56,7 +61,6 @@ public class FormDICOM extends VerticalLayout {
         notifyObjectPattern = new TextField("Notif.: subject pattern");
         notifyObjectValues = new TextField("Notif.: subject values");
         notifyInterval = new TextField("Notif.: interval");
-        filterBySOPClassesForm = new FilterBySOPClassesForm(binder);
 
         add(UIS.setWidthFull(new HorizontalLayout(aeTitle, description)),
             UIS.setWidthFull(new HorizontalLayout(hostname, port)),

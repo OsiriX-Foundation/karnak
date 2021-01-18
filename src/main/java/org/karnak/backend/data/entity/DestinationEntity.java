@@ -1,7 +1,9 @@
 package org.karnak.backend.data.entity;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -32,7 +34,9 @@ import org.karnak.backend.enums.IdTypes;
 @GroupSequenceProvider(value = DestinationGroupSequenceProvider.class)
 @Entity(name = "Destination")
 @Table(name = "destination")
-public class DestinationEntity {
+public class DestinationEntity implements Serializable {
+
+    private static final long serialVersionUID = 4835879567037810171L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -482,5 +486,55 @@ public class DestinationEntity {
             }
         }
         return "Type of destination is unknown";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        DestinationEntity that = (DestinationEntity) o;
+        return desidentification == that.desidentification &&
+            filterBySOPClasses == that.filterBySOPClasses &&
+            Objects.equals(id, that.id) &&
+            Objects.equals(description, that.description) &&
+            type == that.type &&
+            idTypes == that.idTypes &&
+            Objects.equals(tag, that.tag) &&
+            Objects.equals(delimiter, that.delimiter) &&
+            Objects.equals(position, that.position) &&
+            Objects.equals(savePseudonym, that.savePseudonym) &&
+            Objects.equals(pseudonymAsPatientName, that.pseudonymAsPatientName) &&
+            Objects.equals(SOPClassUIDEntityFilters, that.SOPClassUIDEntityFilters) &&
+            Objects.equals(kheopsAlbumEntities, that.kheopsAlbumEntities) &&
+            Objects.equals(projectEntity, that.projectEntity) &&
+            Objects.equals(notify, that.notify) &&
+            Objects.equals(notifyObjectErrorPrefix, that.notifyObjectErrorPrefix) &&
+            Objects.equals(notifyObjectPattern, that.notifyObjectPattern) &&
+            Objects.equals(notifyObjectValues, that.notifyObjectValues) &&
+            Objects.equals(notifyInterval, that.notifyInterval) &&
+            Objects.equals(aeTitle, that.aeTitle) &&
+            Objects.equals(hostname, that.hostname) &&
+            Objects.equals(port, that.port) &&
+            Objects.equals(useaetdest, that.useaetdest) &&
+            Objects.equals(url, that.url) &&
+            Objects.equals(urlCredentials, that.urlCredentials) &&
+            Objects.equals(headers, that.headers) &&
+            Objects.equals(forwardNodeEntity, that.forwardNodeEntity);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects
+            .hash(id, description, type, desidentification, idTypes, tag, delimiter, position,
+                savePseudonym, pseudonymAsPatientName, filterBySOPClasses, SOPClassUIDEntityFilters,
+                kheopsAlbumEntities, projectEntity, notify, notifyObjectErrorPrefix,
+                notifyObjectPattern,
+                notifyObjectValues, notifyInterval, aeTitle, hostname, port, useaetdest, url,
+                urlCredentials,
+                headers, forwardNodeEntity);
     }
 }

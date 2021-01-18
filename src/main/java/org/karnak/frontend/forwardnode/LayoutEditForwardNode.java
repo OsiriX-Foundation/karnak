@@ -11,9 +11,9 @@ import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.DicomSourceNodeEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.enums.DestinationType;
-import org.karnak.backend.service.DestinationDataProvider;
+import org.karnak.backend.service.DestinationService;
 import org.karnak.backend.service.ForwardNodeAPI;
-import org.karnak.backend.service.SourceNodeDataProvider;
+import org.karnak.backend.service.SourceNodeService;
 import org.karnak.frontend.component.ConfirmDialog;
 import org.karnak.frontend.util.UIS;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +27,8 @@ public class LayoutEditForwardNode extends VerticalLayout {
     private final ViewLogic viewLogic;
     private final ForwardNodeAPI forwardNodeAPI;
     private final Binder<ForwardNodeEntity> binderForwardNode;
-    private final DestinationDataProvider destinationDataProvider;
-    private final SourceNodeDataProvider sourceNodeDataProvider;
+    private final DestinationService destinationService;
+    private final SourceNodeService sourceNodeService;
     public ForwardNodeEntity currentForwardNodeEntity;
     private EditAETitleDescription editAETitleDescription;
     private final TabSourcesDestination tabSourcesDestination;
@@ -43,8 +43,8 @@ public class LayoutEditForwardNode extends VerticalLayout {
     @Autowired
     public LayoutEditForwardNode(ForwardNodeViewLogic forwardNodeViewLogic,
         ForwardNodeAPI forwardNodeAPI, NewUpdateDestination newUpdateDestination,
-        NewUpdateSourceNode newUpdateSourceNode, SourceNodeDataProvider sourceNodeDataProvider,
-        SourceNodesView sourceNodesView, DestinationDataProvider destinationDataProvider,
+        NewUpdateSourceNode newUpdateSourceNode, SourceNodeService sourceNodeService,
+        SourceNodesView sourceNodesView, DestinationService destinationService,
         DestinationsView destinationsView) {
 
         this.forwardNodeViewLogic = forwardNodeViewLogic;
@@ -57,9 +57,9 @@ public class LayoutEditForwardNode extends VerticalLayout {
         this.buttonForwardNodeSaveDeleteCancel = new ButtonSaveDeleteCancel();
         this.newUpdateDestination = newUpdateDestination;
         this.newUpdateSourceNode = newUpdateSourceNode;
-        this.sourceNodeDataProvider = sourceNodeDataProvider;
+        this.sourceNodeService = sourceNodeService;
         this.sourceNodesView = sourceNodesView;
-        this.destinationDataProvider = destinationDataProvider;
+        this.destinationService = destinationService;
         this.destinationsView = destinationsView;
     }
 
@@ -102,10 +102,10 @@ public class LayoutEditForwardNode extends VerticalLayout {
         this.editAETitleDescription.setForwardNode(forwardNodeEntity);
         setApplicationEventPublisher(forwardNodeAPI.getApplicationEventPublisher());
         this.destinationsView.setForwardNode(forwardNodeEntity);
-        this.destinationDataProvider.setForwardNode(forwardNodeEntity);
+        this.destinationService.setForwardNode(forwardNodeEntity);
 
         this.sourceNodesView.setForwardNode(forwardNodeEntity);
-        this.sourceNodeDataProvider.setForwardNode(forwardNodeEntity);
+        this.sourceNodeService.setForwardNode(forwardNodeEntity);
 
         setEditView();
         if (forwardNodeEntity == null) {

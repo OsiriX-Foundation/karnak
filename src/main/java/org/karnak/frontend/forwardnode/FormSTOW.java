@@ -6,6 +6,7 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.textfield.TextFieldVariant;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.spring.annotation.UIScope;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.frontend.component.converter.HStringToIntegerConverter;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@UIScope
 public class FormSTOW extends VerticalLayout {
 
   private final LayoutDesidentification layoutDesidentification;
@@ -28,20 +30,23 @@ public class FormSTOW extends VerticalLayout {
   private TextField notifyObjectPattern;
   private TextField notifyObjectValues;
   private TextField notifyInterval;
-  private FilterBySOPClassesForm filterBySOPClassesForm;
+  private final FilterBySOPClassesForm filterBySOPClassesForm;
   private SwitchingAlbumsView switchingAlbumsView;
 
 
   @Autowired
-  public FormSTOW(final LayoutDesidentification layoutDesidentification) {
+  public FormSTOW(final LayoutDesidentification layoutDesidentification,
+      final FilterBySOPClassesForm filterBySOPClassesForm) {
     this.layoutDesidentification = layoutDesidentification;
+    this.filterBySOPClassesForm = filterBySOPClassesForm;
   }
 
   public void init(Binder<DestinationEntity> binder,
       ButtonSaveDeleteCancel buttonSaveDeleteCancel) {
     setSizeFull();
     this.binder = binder;
-    this.layoutDesidentification.init(binder);
+    this.layoutDesidentification.init(this.binder);
+    this.filterBySOPClassesForm.init(this.binder);
 
     this.description = new TextField("Description");
     this.url = new TextField("URL");
@@ -52,7 +57,7 @@ public class FormSTOW extends VerticalLayout {
     this.notifyObjectPattern = new TextField("Notif.: subject pattern");
     this.notifyObjectValues = new TextField("Notif.: subject values");
     this.notifyInterval = new TextField("Notif.: interval");
-    this.filterBySOPClassesForm = new FilterBySOPClassesForm(binder);
+
     this.switchingAlbumsView = new SwitchingAlbumsView();
 
     add(UIS.setWidthFull( //

@@ -10,7 +10,7 @@ import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.enums.DestinationType;
 import org.karnak.backend.enums.NodeEventType;
 import org.karnak.backend.model.NodeEvent;
-import org.karnak.backend.service.DestinationDataProvider;
+import org.karnak.backend.service.DestinationService;
 import org.karnak.frontend.component.ConfirmDialog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 @UIScope
 public class NewUpdateDestination extends VerticalLayout {
 
-    private final DestinationDataProvider destinationDataProvider;
+    private final DestinationService destinationService;
     private ViewLogic viewLogic;
     private final FormDICOM formDICOM;
     private final FormSTOW formSTOW;
@@ -30,13 +30,13 @@ public class NewUpdateDestination extends VerticalLayout {
     private final ButtonSaveDeleteCancel buttonDestinationSTOWSaveDeleteCancel;
 
     @Autowired
-    public NewUpdateDestination(DestinationDataProvider destinationDataProvider,
+    public NewUpdateDestination(DestinationService destinationService,
         FormDICOM formDICOM, FormSTOW formSTOW) {
         setSizeFull();
 
         this.formDICOM = formDICOM;
         this.formSTOW = formSTOW;
-        this.destinationDataProvider = destinationDataProvider;
+        this.destinationService = destinationService;
         this.binderFormDICOM = new BeanValidationBinder<>(DestinationEntity.class);
         this.binderFormSTOW = new BeanValidationBinder<>(DestinationEntity.class);
         this.buttonDestinationDICOMSaveDeleteCancel = new ButtonSaveDeleteCancel();
@@ -103,7 +103,7 @@ public class NewUpdateDestination extends VerticalLayout {
     }
 
     private void saveCurrentDestination(NodeEventType nodeEventType) {
-        destinationDataProvider.save(currentDestinationEntity);
+        destinationService.save(currentDestinationEntity);
         viewLogic.updateForwardNodeInEditView();
         viewLogic.getApplicationEventPublisher().publishEvent(new NodeEvent(
             currentDestinationEntity, nodeEventType));
@@ -126,7 +126,7 @@ public class NewUpdateDestination extends VerticalLayout {
                     " [" + currentDestinationEntity.getType() + "] ?");
             dialog.addConfirmationListener(componentEvent -> {
                 NodeEvent nodeEvent = new NodeEvent(currentDestinationEntity, NodeEventType.REMOVE);
-                destinationDataProvider.delete(currentDestinationEntity);
+                destinationService.delete(currentDestinationEntity);
                 viewLogic.getApplicationEventPublisher().publishEvent(nodeEvent);
                 viewLogic.updateForwardNodeInEditView();
             });

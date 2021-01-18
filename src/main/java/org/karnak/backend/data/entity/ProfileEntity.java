@@ -4,9 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -24,7 +26,9 @@ import org.hibernate.annotations.LazyCollectionOption;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonPropertyOrder({"name", "version", "minimumKarnakVersion", "defaultIssuerOfPatientID",
     "profileElementEntities", "maskEntities"})
-public class ProfileEntity {
+public class ProfileEntity implements Serializable {
+
+    private static final long serialVersionUID = -7178858361090900170L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -143,5 +147,32 @@ public class ProfileEntity {
 
     public List<ProjectEntity> getProjectEntities() {
         return projectEntities;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ProfileEntity that = (ProfileEntity) o;
+        return Objects.equals(id, that.id) &&
+            Objects.equals(name, that.name) &&
+            Objects.equals(version, that.version) &&
+            Objects.equals(minimumKarnakVersion, that.minimumKarnakVersion) &&
+            Objects.equals(defaultissueropatientid, that.defaultissueropatientid) &&
+            Objects.equals(bydefault, that.bydefault) &&
+            Objects.equals(profileElementEntities, that.profileElementEntities) &&
+            Objects.equals(maskEntities, that.maskEntities) &&
+            Objects.equals(projectEntities, that.projectEntities);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects
+            .hash(id, name, version, minimumKarnakVersion, defaultissueropatientid, bydefault,
+                profileElementEntities, maskEntities, projectEntities);
     }
 }

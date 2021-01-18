@@ -9,7 +9,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.spring.annotation.UIScope;
 import javax.annotation.PostConstruct;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
-import org.karnak.backend.service.SourceNodeDataProvider;
+import org.karnak.backend.service.SourceNodeService;
 import org.karnak.frontend.util.UIS;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 @UIScope
 public class SourceNodesView extends VerticalLayout {
 
-    private final SourceNodeDataProvider sourceNodeDataProvider;
+    private final SourceNodeService sourceNodeService;
 
     private HorizontalLayout layoutFilterButton;
     private TextField filter;
@@ -29,8 +29,8 @@ public class SourceNodesView extends VerticalLayout {
     private final String PLACEHOLDER_FILTER = "Filter properties of sources";
 
     @Autowired
-    public SourceNodesView(SourceNodeDataProvider sourceNodeDataProvider) {
-        this.sourceNodeDataProvider = sourceNodeDataProvider;
+    public SourceNodesView(SourceNodeService sourceNodeService) {
+        this.sourceNodeService = sourceNodeService;
     }
 
     @PostConstruct
@@ -53,7 +53,7 @@ public class SourceNodesView extends VerticalLayout {
     private void setTextFieldFilter() {
         filter.setPlaceholder(PLACEHOLDER_FILTER);
         // Apply the filter to grid's data provider. TextField value is never null
-        filter.addValueChangeListener(event -> sourceNodeDataProvider.setFilter(event.getValue()));
+        filter.addValueChangeListener(event -> sourceNodeService.setFilter(event.getValue()));
     }
 
     private void setButtonNewDestinationDICOM() {
@@ -64,8 +64,8 @@ public class SourceNodesView extends VerticalLayout {
 
     protected void setForwardNode(ForwardNodeEntity forwardNodeEntity) {
         setEnabled(forwardNodeEntity != null);
-        sourceNodeDataProvider.setForwardNode(forwardNodeEntity);
-        gridSourceNode.setDataProvider(sourceNodeDataProvider);
+        sourceNodeService.setForwardNode(forwardNodeEntity);
+        gridSourceNode.setDataProvider(sourceNodeService);
     }
 
     public Button getNewSourceNode() {

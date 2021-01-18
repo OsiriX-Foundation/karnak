@@ -1,5 +1,7 @@
 package org.karnak.backend.data.entity;
 
+import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,7 +21,9 @@ import org.hibernate.annotations.DiscriminatorOptions;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "tag_type")
 @DiscriminatorOptions(force = true)
-public abstract class TagEntity {
+public abstract class TagEntity implements Serializable {
+
+    private static final long serialVersionUID = -1172918773653197764L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -45,5 +49,24 @@ public abstract class TagEntity {
 
     public void setTagValue(String tagValue) {
         this.tagValue = tagValue;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        TagEntity tagEntity = (TagEntity) o;
+        return Objects.equals(id, tagEntity.id) &&
+            Objects.equals(profileElementEntity, tagEntity.profileElementEntity) &&
+            Objects.equals(tagValue, tagEntity.tagValue);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, profileElementEntity, tagValue);
     }
 }

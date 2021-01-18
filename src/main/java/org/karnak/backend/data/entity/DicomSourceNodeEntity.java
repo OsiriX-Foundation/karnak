@@ -1,5 +1,7 @@
 package org.karnak.backend.data.entity;
 
+import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,7 +14,9 @@ import javax.validation.constraints.Size;
 
 @Entity(name = "DicomSourceNode")
 @Table(name = "dicom_source_node")
-public class DicomSourceNodeEntity {
+public class DicomSourceNodeEntity implements Serializable {
+
+    private static final long serialVersionUID = -4917273057619947934L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -34,7 +38,7 @@ public class DicomSourceNodeEntity {
     private Boolean checkHostname;
 
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(name = "forward_node_id")
     private ForwardNodeEntity forwardNodeEntity;
 
     protected DicomSourceNodeEntity() {
@@ -121,7 +125,30 @@ public class DicomSourceNodeEntity {
 
     @Override
     public String toString() {
-        return "DicomSourceNode [id=" + id + ", description=" + description + ", aeTitle=" + aeTitle + ", hostname="
-            + hostname + ", checkHostname=" + checkHostname +"]";
+        return "DicomSourceNode [id=" + id + ", description=" + description + ", aeTitle=" + aeTitle
+            + ", hostname="
+            + hostname + ", checkHostname=" + checkHostname + "]";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        DicomSourceNodeEntity that = (DicomSourceNodeEntity) o;
+        return Objects.equals(id, that.id) &&
+            Objects.equals(description, that.description) &&
+            Objects.equals(aeTitle, that.aeTitle) &&
+            Objects.equals(hostname, that.hostname) &&
+            Objects.equals(checkHostname, that.checkHostname) &&
+            Objects.equals(forwardNodeEntity, that.forwardNodeEntity);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, description, aeTitle, hostname, checkHostname, forwardNodeEntity);
     }
 }

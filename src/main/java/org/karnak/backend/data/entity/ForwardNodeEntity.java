@@ -1,5 +1,6 @@
 package org.karnak.backend.data.entity;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -15,7 +16,9 @@ import javax.validation.constraints.Size;
 
 @Entity(name = "ForwardNode")
 @Table(name = "forward_node")
-public class ForwardNodeEntity {
+public class ForwardNodeEntity implements Serializable {
+
+    private static final long serialVersionUID = 2095439136652046994L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

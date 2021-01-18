@@ -8,27 +8,29 @@ import java.util.Optional;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.enums.NodeEventType;
 import org.karnak.backend.model.NodeEvent;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ForwardNodeAPI implements Serializable {
 
-    private final ForwardNodeDataProvider dataProvider;
+    private final ForwardNodeService forwardNodeService;
     private ApplicationEventPublisher applicationEventPublisher;
 
-    public ForwardNodeAPI(ForwardNodeDataProvider dataProvider) {
-        this.dataProvider = dataProvider;
+    @Autowired
+    public ForwardNodeAPI(final ForwardNodeService forwardNodeService) {
+        this.forwardNodeService = forwardNodeService;
     }
 
-    public ForwardNodeDataProvider getDataProvider() {
-        return dataProvider;
+    public ForwardNodeService getDataProvider() {
+        return forwardNodeService;
     }
 
     public void addForwardNode(ForwardNodeEntity data) {
         NodeEventType eventType = data.isNewData() ? NodeEventType.ADD : NodeEventType.UPDATE;
         if (eventType == NodeEventType.ADD) {
-            Optional<ForwardNodeEntity> val = dataProvider.getDataService().getAllForwardNodes()
+            Optional<ForwardNodeEntity> val = forwardNodeService.getAllForwardNodes()
                 .stream()
                 .filter(f -> f.getFwdAeTitle().equals(data.getFwdAeTitle())).findFirst();
             if (val.isPresent()) {
@@ -36,22 +38,22 @@ public class ForwardNodeAPI implements Serializable {
                 return;
             }
         }
-        dataProvider.save(data);
+        forwardNodeService.save(data);
         applicationEventPublisher.publishEvent(new NodeEvent(data, eventType));
     }
 
     public void updateForwardNode(ForwardNodeEntity data) {
-        dataProvider.save(data);
+        forwardNodeService.save(data);
         applicationEventPublisher.publishEvent(new NodeEvent(data, NodeEventType.UPDATE));
     }
 
     public void deleteForwardNode(ForwardNodeEntity data) {
-        dataProvider.delete(data);
+        forwardNodeService.delete(data);
         applicationEventPublisher.publishEvent(new NodeEvent(data, NodeEventType.REMOVE));
     }
 
     public ForwardNodeEntity getForwardNodeById(Long dataId) {
-        return dataProvider.get(dataId);
+        return forwardNodeService.get(dataId);
     }
 
 

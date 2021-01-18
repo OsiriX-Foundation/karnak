@@ -9,7 +9,7 @@ import javax.annotation.PostConstruct;
 import org.karnak.backend.data.entity.DicomSourceNodeEntity;
 import org.karnak.backend.enums.NodeEventType;
 import org.karnak.backend.model.NodeEvent;
-import org.karnak.backend.service.SourceNodeDataProvider;
+import org.karnak.backend.service.SourceNodeService;
 import org.karnak.frontend.component.ConfirmDialog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,16 +19,16 @@ import org.springframework.stereotype.Component;
 public class NewUpdateSourceNode extends VerticalLayout {
 
     private final Binder<DicomSourceNodeEntity> binderFormSourceNode;
-    private final SourceNodeDataProvider dataProvider;
+    private final SourceNodeService sourceNodeService;
     private ViewLogic viewLogic;
     private final FormSourceNode formSourceNode;
     private DicomSourceNodeEntity currentSourceNode;
     private final ButtonSaveDeleteCancel buttonSaveDeleteCancel;
 
     @Autowired
-    public NewUpdateSourceNode(SourceNodeDataProvider sourceNodeDataProvider) {
+    public NewUpdateSourceNode(SourceNodeService sourceNodeService) {
         currentSourceNode = null;
-        dataProvider = sourceNodeDataProvider;
+        this.sourceNodeService = sourceNodeService;
         binderFormSourceNode = new BeanValidationBinder<>(DicomSourceNodeEntity.class);
         buttonSaveDeleteCancel = new ButtonSaveDeleteCancel();
         formSourceNode = new FormSourceNode(binderFormSourceNode, buttonSaveDeleteCancel);
@@ -62,7 +62,7 @@ public class NewUpdateSourceNode extends VerticalLayout {
         buttonSaveDeleteCancel.getSave().addClickListener(event -> {
             NodeEventType nodeEventType = currentSourceNode.isNewData() == true ? NodeEventType.ADD : NodeEventType.UPDATE;
             if (binderFormSourceNode.writeBeanIfValid(currentSourceNode)) {
-                dataProvider.save(currentSourceNode);
+                sourceNodeService.save(currentSourceNode);
                 viewLogic.updateForwardNodeInEditView();
                 viewLogic.getApplicationEventPublisher().publishEvent(new NodeEvent(currentSourceNode, nodeEventType));
             }
@@ -76,7 +76,7 @@ public class NewUpdateSourceNode extends VerticalLayout {
                     "Are you sure to delete the DICOM source node " + currentSourceNode.getAeTitle() + "?");
                 dialog.addConfirmationListener(componentEvent -> {
                     NodeEvent nodeEvent = new NodeEvent(currentSourceNode, NodeEventType.REMOVE);
-                    dataProvider.delete(currentSourceNode);
+                    sourceNodeService.delete(currentSourceNode);
                     viewLogic.updateForwardNodeInEditView();
                     viewLogic.getApplicationEventPublisher().publishEvent(nodeEvent);
                 });

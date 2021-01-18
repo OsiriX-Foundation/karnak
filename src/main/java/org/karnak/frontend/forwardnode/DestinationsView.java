@@ -9,7 +9,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.spring.annotation.UIScope;
 import javax.annotation.PostConstruct;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
-import org.karnak.backend.service.DestinationDataProvider;
+import org.karnak.backend.service.DestinationService;
 import org.karnak.frontend.util.UIS;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 @UIScope
 public class DestinationsView extends VerticalLayout {
 
-    private final DestinationDataProvider destinationDataProvider;
+    private final DestinationService destinationService;
 
     private TextField filter;
     private Button newDestinationDICOM;
@@ -32,8 +32,8 @@ public class DestinationsView extends VerticalLayout {
     private final String PLACEHOLDER_FILTER = "Filter properties of destination";
 
     @Autowired
-    public DestinationsView(final DestinationDataProvider destinationDataProvider) {
-        this.destinationDataProvider = destinationDataProvider;
+    public DestinationsView(final DestinationService destinationService) {
+        this.destinationService = destinationService;
     }
 
     @PostConstruct
@@ -61,14 +61,14 @@ public class DestinationsView extends VerticalLayout {
 
     protected void setForwardNode(ForwardNodeEntity forwardNodeEntity) {
         setEnabled(forwardNodeEntity != null);
-        destinationDataProvider.setForwardNode(forwardNodeEntity);
-        gridDestination.setDataProvider(destinationDataProvider);
+        destinationService.setForwardNode(forwardNodeEntity);
+        gridDestination.setDataProvider(destinationService);
     }
 
     private void setTextFieldFilter() {
         filter.setPlaceholder(PLACEHOLDER_FILTER);
         // Apply the filter to grid's data provider. TextField value is never null
-        filter.addValueChangeListener(event -> destinationDataProvider.setFilter(event.getValue()));
+        filter.addValueChangeListener(event -> destinationService.setFilter(event.getValue()));
     }
 
     private void setButtonNewDestinationDICOM() {

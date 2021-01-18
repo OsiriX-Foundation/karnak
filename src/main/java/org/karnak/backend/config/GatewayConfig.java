@@ -8,7 +8,6 @@ import org.karnak.backend.data.repo.DestinationRepo;
 import org.karnak.backend.data.repo.DicomSourceNodeRepo;
 import org.karnak.backend.data.repo.ForwardNodeRepo;
 import org.karnak.backend.data.repo.KheopsAlbumsRepo;
-import org.karnak.backend.data.repo.ProjectRepo;
 import org.karnak.backend.data.repo.SOPClassUIDRepo;
 import org.karnak.backend.model.dicominnolitics.StandardSOPS;
 import org.karnak.backend.model.dicominnolitics.jsonSOP;
@@ -28,8 +27,6 @@ public class GatewayConfig {
     private DestinationRepo destinationRepo;
     @Autowired
     private KheopsAlbumsRepo kheopsAlbumsRepo;
-    @Autowired
-    private ProjectRepo projectRepo;
     @Autowired
     private DicomSourceNodeRepo dicomSourceNodeRepo;
     @Autowired
@@ -72,15 +69,9 @@ public class GatewayConfig {
         return kheopsAlbumsRepo;
     }
 
-    public ProjectRepo getProjectPersistence() {
-        return projectRepo;
-    }
-
     public DicomSourceNodeRepo getDicomSourceNodePersistence() {
         return dicomSourceNodeRepo;
     }
 
-    public SOPClassUIDRepo getSopClassUIDPersistence() {
-        return sopClassUIDRepo;
-    }
+
 }

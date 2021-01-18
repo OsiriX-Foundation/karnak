@@ -4,7 +4,6 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 import org.karnak.backend.data.entity.DicomSourceNodeEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.data.repo.DicomSourceNodeRepo;
@@ -13,12 +12,14 @@ import org.springframework.stereotype.Service;
 
 @SuppressWarnings("serial")
 @Service
-public class SourceNodeDataProvider extends ListDataProvider<DicomSourceNodeEntity> {
+public class SourceNodeService extends ListDataProvider<DicomSourceNodeEntity> {
 
+    // Repositories
     private final DicomSourceNodeRepo dicomSourceNodeRepo;
-    private final Set<DicomSourceNodeEntity> backend;
 
-    private final DataService dataService;
+    // Services
+    private final ForwardNodeService forwardNodeService;
+
     private ForwardNodeEntity forwardNodeEntity; // Current forward node
     private boolean hasChanges;
 
@@ -28,21 +29,36 @@ public class SourceNodeDataProvider extends ListDataProvider<DicomSourceNodeEnti
     private String filterText = "";
 
     @Autowired
-    public SourceNodeDataProvider(final DicomSourceNodeRepo dicomSourceNodeRepo,
-        final DataService dataService) {
+    public SourceNodeService(final DicomSourceNodeRepo dicomSourceNodeRepo,
+        final ForwardNodeService forwardNodeService) {
         super(new HashSet<>());
-        this.backend = new HashSet<>();
         this.dicomSourceNodeRepo = dicomSourceNodeRepo;
-        this.dataService = dataService;
+        this.forwardNodeService = forwardNodeService;
     }
+
+    @Override
+    public Object getId(DicomSourceNodeEntity data) {
+        Objects.requireNonNull(data, "Cannot provide an id for a null item.");
+        return data.hashCode();
+    }
+
+    @Override
+    public void refreshAll() {
+        getItems().clear();
+        if (forwardNodeEntity != null) {
+            getItems().addAll(forwardNodeEntity.getSourceNodes());
+        }
+        super.refreshAll();
+    }
+
 
     public void setForwardNode(ForwardNodeEntity forwardNodeEntity) {
         this.forwardNodeEntity = forwardNodeEntity;
-        Collection<DicomSourceNodeEntity> sourceNodes = this.dataService.getAllSourceNodes(
+        Collection<DicomSourceNodeEntity> sourceNodes = this.forwardNodeService.getAllSourceNodes(
             forwardNodeEntity);
 
-        this.backend.clear();
-        this.backend.addAll(sourceNodes);
+        this.getItems().clear();
+        this.getItems().addAll(sourceNodes);
 
         hasChanges = false;
     }
@@ -55,7 +71,7 @@ public class SourceNodeDataProvider extends ListDataProvider<DicomSourceNodeEnti
     public void save(DicomSourceNodeEntity data) {
         boolean newData = data.isNewData();
 
-        DicomSourceNodeEntity dataUpdated = this.dataService
+        DicomSourceNodeEntity dataUpdated = this.forwardNodeService
             .updateSourceNode(forwardNodeEntity, data);
         if (newData) {
             refreshAll();
@@ -72,7 +88,7 @@ public class SourceNodeDataProvider extends ListDataProvider<DicomSourceNodeEnti
      * @param data the data to be deleted
      */
     public void delete(DicomSourceNodeEntity data) {
-        this.dataService.deleteSourceNode(forwardNodeEntity, data);
+        this.forwardNodeService.deleteSourceNode(forwardNodeEntity, data);
         refreshAll();
         hasChanges = true;
         dicomSourceNodeRepo.deleteById(data.getId());
@@ -99,24 +115,8 @@ public class SourceNodeDataProvider extends ListDataProvider<DicomSourceNodeEnti
         setFilter(data -> matchesFilter(data, filterText));
     }
 
-    @Override
-    public Object getId(DicomSourceNodeEntity data) {
-        Objects.requireNonNull(data, "Cannot provide an id for a null item.");
-
-        return data.hashCode();
-    }
-
     private boolean matchesFilter(DicomSourceNodeEntity data, String filterText) {
         return data != null && data.matchesFilter(filterText);
-    }
-
-    @Override
-    public void refreshAll() {
-        backend.clear();
-        if (forwardNodeEntity != null) {
-            backend.addAll(forwardNodeEntity.getSourceNodes());
-        }
-        super.refreshAll();
     }
 
     public boolean hasChanges() {

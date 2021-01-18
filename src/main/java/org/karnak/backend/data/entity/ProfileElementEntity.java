@@ -4,8 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -24,7 +26,9 @@ import org.karnak.backend.data.converter.TagListToStringListConverter;
 @Entity(name = "ProfileElement")
 @Table(name = "profile_element")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class ProfileElementEntity {
+public class ProfileElementEntity implements Serializable {
+
+    private static final long serialVersionUID = 818925943276758147L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -177,5 +181,33 @@ public class ProfileElementEntity {
 
     public void setExcludedTagEntities(List<ExcludedTagEntity> excludedTagEntities) {
         this.excludedTagEntities = excludedTagEntities;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ProfileElementEntity that = (ProfileElementEntity) o;
+        return Objects.equals(id, that.id) &&
+            Objects.equals(name, that.name) &&
+            Objects.equals(codename, that.codename) &&
+            Objects.equals(condition, that.condition) &&
+            Objects.equals(action, that.action) &&
+            Objects.equals(option, that.option) &&
+            Objects.equals(position, that.position) &&
+            Objects.equals(profileEntity, that.profileEntity) &&
+            Objects.equals(includedTagEntities, that.includedTagEntities) &&
+            Objects.equals(excludedTagEntities, that.excludedTagEntities) &&
+            Objects.equals(argumentEntities, that.argumentEntities);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, codename, condition, action, option, position, profileEntity,
+            includedTagEntities, excludedTagEntities, argumentEntities);
     }
 }

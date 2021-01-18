@@ -10,7 +10,6 @@ import com.vaadin.flow.router.RouteAlias;
 import javax.annotation.PostConstruct;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.service.ForwardNodeAPI;
-import org.karnak.backend.service.ForwardNodeDataProvider;
 import org.karnak.frontend.MainLayout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -29,15 +28,15 @@ public class ForwardNodeView extends HorizontalLayout implements HasUrlParameter
     private final ForwardNodeViewLogic forwardNodeViewLogic;
 
     @Autowired
-    public ForwardNodeView(LayoutEditForwardNode layoutEditForwardNode) {
-        setSizeFull();
-        ForwardNodeDataProvider dataProvider = new ForwardNodeDataProvider();
-        forwardNodeAPI = new ForwardNodeAPI(dataProvider);
-        forwardNodeViewLogic = new ForwardNodeViewLogic(forwardNodeAPI);
-        layoutNewGridForwardNode = new LayoutNewGridForwardNode(forwardNodeViewLogic,
-            forwardNodeAPI);
+    public ForwardNodeView(LayoutEditForwardNode layoutEditForwardNode,
+        final ForwardNodeAPI forwardNodeAPI) {
+      setSizeFull();
+      this.forwardNodeAPI = forwardNodeAPI;
+      this.forwardNodeViewLogic = new ForwardNodeViewLogic(forwardNodeAPI);
+      this.layoutNewGridForwardNode = new LayoutNewGridForwardNode(forwardNodeViewLogic,
+          forwardNodeAPI);
 
-        this.layoutEditForwardNode = layoutEditForwardNode;
+      this.layoutEditForwardNode = layoutEditForwardNode;
     }
 
     @PostConstruct

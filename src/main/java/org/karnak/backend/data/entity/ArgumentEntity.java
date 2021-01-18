@@ -1,6 +1,7 @@
 package org.karnak.backend.data.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,7 +13,9 @@ import javax.persistence.Table;
 
 @Entity(name = "Arguments")
 @Table(name = "arguments")
-public class ArgumentEntity {
+public class ArgumentEntity implements Serializable {
+
+    private static final long serialVersionUID = -839421871919135822L;
 
     private Long id;
     private ProfileElementEntity profileElementEntity;

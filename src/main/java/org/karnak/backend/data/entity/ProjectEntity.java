@@ -1,7 +1,10 @@
 package org.karnak.backend.data.entity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,7 +18,9 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 @Entity(name = "Project")
 @Table(name = "project")
-public class ProjectEntity {
+public class ProjectEntity implements Serializable {
+
+    private static final long serialVersionUID = 8809562914582842501L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -80,5 +85,28 @@ public class ProjectEntity {
 
     public boolean isNewData() {
         return id == null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ProjectEntity that = (ProjectEntity) o;
+        return Objects.equals(id, that.id) &&
+            Objects.equals(name, that.name) &&
+            Arrays.equals(secret, that.secret) &&
+            Objects.equals(destinationEntities, that.destinationEntities) &&
+            Objects.equals(profileEntity, that.profileEntity);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(id, name, destinationEntities, profileEntity);
+        result = 31 * result + Arrays.hashCode(secret);
+        return result;
     }
 }
