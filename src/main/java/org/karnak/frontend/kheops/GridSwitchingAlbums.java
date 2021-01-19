@@ -1,3 +1,12 @@
+/*
+* Copyright (c) 2021 Weasis Team and other contributors.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+* License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+*
+* SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+*/
 package org.karnak.frontend.kheops;
 
 import com.vaadin.flow.component.button.Button;
@@ -73,27 +82,27 @@ public class GridSwitchingAlbums extends Grid<KheopsAlbumsEntity> {
 
     Column<KheopsAlbumsEntity> editorColumn =
         addComponentColumn(
-            kheopsAlbums -> {
-              Button edit = new Button("Edit");
-              edit.addClickListener(
-                  e -> {
-                    editor.editItem(kheopsAlbums);
-                  });
-              edit.setEnabled(!editor.isOpen());
+                kheopsAlbums -> {
+                  Button edit = new Button("Edit");
+                  edit.addClickListener(
+                      e -> {
+                        editor.editItem(kheopsAlbums);
+                      });
+                  edit.setEnabled(!editor.isOpen());
 
-              Button remove = new Button("Remove");
-              remove.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
-              remove.addClickListener(
-                  e -> {
-                    dataProvider.getItems().remove(kheopsAlbums);
-                    dataProvider.refreshAll();
-                  });
-              remove.setEnabled(!editor.isOpen());
+                  Button remove = new Button("Remove");
+                  remove.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
+                  remove.addClickListener(
+                      e -> {
+                        dataProvider.getItems().remove(kheopsAlbums);
+                        dataProvider.refreshAll();
+                      });
+                  remove.setEnabled(!editor.isOpen());
 
-              editButtons.add(edit);
-              editButtons.add(remove);
-              return new Div(edit, remove);
-            })
+                  editButtons.add(edit);
+                  editButtons.add(remove);
+                  return new Div(edit, remove);
+                })
             .setFlexGrow(15);
 
     editor.addOpenListener(

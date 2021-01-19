@@ -1,3 +1,12 @@
+/*
+* Copyright (c) 2021 Weasis Team and other contributors.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+* License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+*
+* SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+*/
 package org.karnak.backend.api;
 
 import com.google.gson.Gson;
@@ -26,9 +35,7 @@ import org.karnak.backend.enums.IdTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * API model
- */
+/** API model */
 public class PseudonymApi {
 
   // ---------------------------------------------------------------
@@ -276,8 +283,7 @@ public class PseudonymApi {
     final String[] pid = {ID_TYPES}; // pseudonymisation type
     final String[] extid = {ID_TYPES, EXTERNAL_ID};
 
-    Data
-        data; // = new Data(externalPseudonym == null ? idTypes : idTypesExternal, field,
+    Data data; // = new Data(externalPseudonym == null ? idTypes : idTypesExternal, field,
     // externalPseudonym == null ? null : new Ids(externalPseudonym));
     switch (idTypes) {
       case ADD_EXTID:
@@ -305,7 +311,7 @@ public class PseudonymApi {
    */
   private String createJsonReadPatient(SearchIds[] searchIds) {
     String[] resultFields = {
-        "patientID", "patientName", "patientBirthDate", "patientSex", "issuerOfPatientID"
+      "patientID", "patientName", "patientBirthDate", "patientSex", "issuerOfPatientID"
     }; // fields returns
     Data data = new Data(searchIds, resultFields);
 

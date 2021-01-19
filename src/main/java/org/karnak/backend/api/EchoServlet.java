@@ -1,3 +1,12 @@
+/*
+* Copyright (c) 2021 Weasis Team and other contributors.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+* License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+*
+* SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+*/
 package org.karnak.backend.api;
 
 import java.io.IOException;
@@ -28,12 +37,10 @@ import org.weasis.dicom.web.WebForwardDestination;
 @WebServlet(urlPatterns = "/echo")
 public class EchoServlet extends HttpServlet {
 
-  @Serial
-  private static final long serialVersionUID = -8349040600894140520L;
+  @Serial private static final long serialVersionUID = -8349040600894140520L;
   private static final Logger LOGGER = LoggerFactory.getLogger(EchoServlet.class);
 
-  @Autowired
-  private GatewaySetUp globalConfig;
+  @Autowired private GatewaySetUp globalConfig;
 
   @Override
   public final void init() throws ServletException {

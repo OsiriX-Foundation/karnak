@@ -1,3 +1,12 @@
+/*
+* Copyright (c) 2021 Weasis Team and other contributors.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+* License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+*
+* SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+*/
 package org.karnak.backend.util;
 
 import com.vaadin.flow.server.HandlerHelper;
@@ -28,7 +37,7 @@ public final class SecurityUtil {
     final String parameterValue = request.getParameter(ApplicationConstants.REQUEST_TYPE_PARAMETER);
     return parameterValue != null
         && Stream.of(HandlerHelper.RequestType.values())
-        .anyMatch(r -> r.getIdentifier().equals(parameterValue));
+            .anyMatch(r -> r.getIdentifier().equals(parameterValue));
   }
 
   /**
@@ -51,7 +60,7 @@ public final class SecurityUtil {
   public static boolean isUserAdmin() {
     return SecurityUtil.isUserLoggedIn()
         && SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
-        .anyMatch(ga -> Objects.equals(ga.getAuthority(), SecurityRole.ADMIN_ROLE.getRole()));
+            .anyMatch(ga -> Objects.equals(ga.getAuthority(), SecurityRole.ADMIN_ROLE.getRole()));
   }
 
   /**
@@ -87,9 +96,7 @@ public final class SecurityUtil {
     return isAccessGranted;
   }
 
-  /**
-   * Sign out method
-   */
+  /** Sign out method */
   public static void signOut() {
     try {
       VaadinServletService.getCurrentServletRequest().logout();

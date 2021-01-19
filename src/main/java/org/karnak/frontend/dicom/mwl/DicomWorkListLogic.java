@@ -1,3 +1,12 @@
+/*
+* Copyright (c) 2021 Weasis Team and other contributors.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+* License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+*
+* SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+*/
 package org.karnak.frontend.dicom.mwl;
 
 import java.time.LocalDate;
@@ -36,49 +45,49 @@ public class DicomWorkListLogic {
     int[] sps = {Tag.ScheduledProcedureStepSequence};
 
     DicomParam[] RETURN_KEYS = {
-        new DicomParam(Tag.AccessionNumber, queryData.getAccessionNumber()),
-        CFind.IssuerOfAccessionNumberSequence,
-        CFind.ReferringPhysicianName,
-        new DicomParam(Tag.PatientName, queryData.getPatientName()),
-        new DicomParam(Tag.PatientID, queryData.getPatientId()),
-        CFind.IssuerOfPatientID,
-        CFind.PatientBirthDate,
-        CFind.PatientSex,
-        ModalityWorklist.PatientWeight,
-        ModalityWorklist.MedicalAlerts,
-        ModalityWorklist.Allergies,
-        ModalityWorklist.PregnancyStatus,
-        CFind.StudyInstanceUID,
-        ModalityWorklist.RequestingPhysician,
-        ModalityWorklist.RequestingService,
-        ModalityWorklist.RequestedProcedureDescription,
-        ModalityWorklist.RequestedProcedureCodeSequence,
-        new DicomParam(Tag.AdmissionID, queryData.getAdmissionId()),
-        ModalityWorklist.IssuerOfAdmissionIDSequence,
-        ModalityWorklist.SpecialNeeds,
-        ModalityWorklist.CurrentPatientLocation,
-        ModalityWorklist.PatientState,
-        ModalityWorklist.RequestedProcedureID,
-        ModalityWorklist.RequestedProcedurePriority,
-        ModalityWorklist.PatientTransportArrangements,
-        ModalityWorklist.PlacerOrderNumberImagingServiceRequest,
-        ModalityWorklist.FillerOrderNumberImagingServiceRequest,
-        ModalityWorklist.ConfidentialityConstraintOnPatientDataDescription,
-        // Scheduled Procedure Step Sequence
-        new DicomParam(sps, Tag.Modality, modalityStr),
-        ModalityWorklist.RequestedContrastAgent,
-        new DicomParam(sps, Tag.ScheduledStationAETitle, queryData.getScheduledStationAet()),
-        new DicomParam(
-            sps, Tag.ScheduledProcedureStepStartDate, getDate(queryData.getScheduledFrom())),
-        new DicomParam(sps, Tag.ScheduledProcedureStepEndDate, getDate(queryData.getScheduledTo())),
-        ModalityWorklist.ScheduledPerformingPhysicianName,
-        ModalityWorklist.ScheduledProcedureStepDescription,
-        ModalityWorklist.ScheduledProcedureStepID,
-        ModalityWorklist.ScheduledStationName,
-        ModalityWorklist.ScheduledProcedureStepLocation,
-        ModalityWorklist.PreMedication,
-        ModalityWorklist.ScheduledProcedureStepStatus,
-        ModalityWorklist.ScheduledProtocolCodeSequence
+      new DicomParam(Tag.AccessionNumber, queryData.getAccessionNumber()),
+      CFind.IssuerOfAccessionNumberSequence,
+      CFind.ReferringPhysicianName,
+      new DicomParam(Tag.PatientName, queryData.getPatientName()),
+      new DicomParam(Tag.PatientID, queryData.getPatientId()),
+      CFind.IssuerOfPatientID,
+      CFind.PatientBirthDate,
+      CFind.PatientSex,
+      ModalityWorklist.PatientWeight,
+      ModalityWorklist.MedicalAlerts,
+      ModalityWorklist.Allergies,
+      ModalityWorklist.PregnancyStatus,
+      CFind.StudyInstanceUID,
+      ModalityWorklist.RequestingPhysician,
+      ModalityWorklist.RequestingService,
+      ModalityWorklist.RequestedProcedureDescription,
+      ModalityWorklist.RequestedProcedureCodeSequence,
+      new DicomParam(Tag.AdmissionID, queryData.getAdmissionId()),
+      ModalityWorklist.IssuerOfAdmissionIDSequence,
+      ModalityWorklist.SpecialNeeds,
+      ModalityWorklist.CurrentPatientLocation,
+      ModalityWorklist.PatientState,
+      ModalityWorklist.RequestedProcedureID,
+      ModalityWorklist.RequestedProcedurePriority,
+      ModalityWorklist.PatientTransportArrangements,
+      ModalityWorklist.PlacerOrderNumberImagingServiceRequest,
+      ModalityWorklist.FillerOrderNumberImagingServiceRequest,
+      ModalityWorklist.ConfidentialityConstraintOnPatientDataDescription,
+      // Scheduled Procedure Step Sequence
+      new DicomParam(sps, Tag.Modality, modalityStr),
+      ModalityWorklist.RequestedContrastAgent,
+      new DicomParam(sps, Tag.ScheduledStationAETitle, queryData.getScheduledStationAet()),
+      new DicomParam(
+          sps, Tag.ScheduledProcedureStepStartDate, getDate(queryData.getScheduledFrom())),
+      new DicomParam(sps, Tag.ScheduledProcedureStepEndDate, getDate(queryData.getScheduledTo())),
+      ModalityWorklist.ScheduledPerformingPhysicianName,
+      ModalityWorklist.ScheduledProcedureStepDescription,
+      ModalityWorklist.ScheduledProcedureStepID,
+      ModalityWorklist.ScheduledStationName,
+      ModalityWorklist.ScheduledProcedureStepLocation,
+      ModalityWorklist.PreMedication,
+      ModalityWorklist.ScheduledProcedureStepStatus,
+      ModalityWorklist.ScheduledProtocolCodeSequence
     };
 
     DicomNode workListNode =

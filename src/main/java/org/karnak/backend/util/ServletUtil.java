@@ -1,13 +1,12 @@
-/*******************************************************************************
- * Copyright (c) 2014 Weasis Team.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     Nicolas Roduit - initial API and implementation
- *******************************************************************************/
+/*
+* Copyright (c) 2021 Weasis Team and other contributors.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+* License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+*
+* SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+*/
 package org.karnak.backend.util;
 
 import java.io.IOException;
@@ -26,8 +25,7 @@ public class ServletUtil {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ServletUtil.class);
 
-  private ServletUtil() {
-  }
+  private ServletUtil() {}
 
   public static String getFirstParameter(Object val) {
     if (val instanceof String[]) {
@@ -45,7 +43,7 @@ public class ServletUtil {
     if (val instanceof String[]) {
       return (String[]) val;
     } else if (val != null) {
-      return new String[]{val.toString()};
+      return new String[] {val.toString()};
     }
     return null;
   }
@@ -57,7 +55,7 @@ public class ServletUtil {
       arr[array.length] = arg;
       return arr;
     } else if (val != null) {
-      return new String[]{val.toString(), arg};
+      return new String[] {val.toString(), arg};
     }
     return arg;
   }
@@ -130,9 +128,9 @@ public class ServletUtil {
         ignoreException =
             message != null
                 && (message.indexOf("Connection reset") != -1
-                || message.indexOf("Broken pipe") != -1
-                || message.indexOf("Socket closed") != -1
-                || message.indexOf("connection abort") != -1);
+                    || message.indexOf("Broken pipe") != -1
+                    || message.indexOf("Socket closed") != -1
+                    || message.indexOf("connection abort") != -1);
       } else {
         ignoreException =
             throwable.getClass().getName().indexOf("ClientAbortException") >= 0

@@ -1,3 +1,12 @@
+/*
+* Copyright (c) 2021 Weasis Team and other contributors.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+* License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+*
+* SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+*/
 package org.karnak.frontend.extid;
 
 import com.vaadin.flow.component.button.Button;
@@ -231,7 +240,7 @@ public class ExternalIDForm extends VerticalLayout {
     for (PseudonymPatient patientElem : dataProvider.getItems()) {
       if (patientElem.getPseudonym().equals(patient.getPseudonym())
           || (patientElem.getPatientId().equals(patient.getPatientId())
-          && patientElem.getIssuerOfPatientId().equals(patient.getIssuerOfPatientId()))) {
+              && patientElem.getIssuerOfPatientId().equals(patient.getIssuerOfPatientId()))) {
         return true;
       }
     }

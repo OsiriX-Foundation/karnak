@@ -1,3 +1,12 @@
+/*
+* Copyright (c) 2021 Weasis Team and other contributors.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+* License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+*
+* SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+*/
 package org.karnak.frontend.dicom.mwl;
 
 import com.vaadin.flow.component.ClickEvent;
@@ -36,9 +45,7 @@ import org.karnak.frontend.dicom.AbstractView;
 import org.karnak.frontend.dicom.PortField;
 import org.karnak.frontend.dicom.mwl.DicomWorkListSelectionDialog.WorkListSelectionEvent;
 
-/**
- * Calling Order 1) constructor 2) setParameter 3) beforeEnter
- */
+/** Calling Order 1) constructor 2) setParameter 3) beforeEnter */
 public class DicomWorkListView extends AbstractView implements HasUrlParameter<String> {
 
   private static final long serialVersionUID = 1L;

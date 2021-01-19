@@ -1,3 +1,12 @@
+/*
+* Copyright (c) 2021 Weasis Team and other contributors.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+* License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+*
+* SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+*/
 package org.karnak.frontend.authentication;
 
 import com.vaadin.flow.server.VaadinRequest;
@@ -12,14 +21,11 @@ import com.vaadin.flow.server.VaadinService;
  */
 public final class CurrentUser {
 
-  /**
-   * The attribute key used to store the username in the session.
-   */
+  /** The attribute key used to store the username in the session. */
   public static final String CURRENT_USER_SESSION_ATTRIBUTE_KEY =
       CurrentUser.class.getCanonicalName();
 
-  private CurrentUser() {
-  }
+  private CurrentUser() {}
 
   /**
    * Returns the name of the current user stored in the current session, or an empty string if no

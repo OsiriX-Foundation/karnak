@@ -1,3 +1,12 @@
+/*
+* Copyright (c) 2021 Weasis Team and other contributors.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+* License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+*
+* SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+*/
 package org.karnak.backend.data.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -36,8 +45,7 @@ public class ProfileElementEntity {
   private String condition;
   private String action;
   private String option;
-  @JsonIgnore
-  private Integer position;
+  @JsonIgnore private Integer position;
 
   @ManyToOne()
   @JoinColumn(name = "profile_id", nullable = false)
@@ -57,8 +65,7 @@ public class ProfileElementEntity {
   @JsonSerialize(converter = ArgumentToMapConverter.class)
   private List<ArgumentEntity> argumentEntities = new ArrayList<>();
 
-  public ProfileElementEntity() {
-  }
+  public ProfileElementEntity() {}
 
   public ProfileElementEntity(
       String name,

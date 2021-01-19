@@ -1,3 +1,12 @@
+/*
+* Copyright (c) 2021 Weasis Team and other contributors.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+* License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+*
+* SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+*/
 package org.karnak.backend.data.entity;
 
 import java.util.HashSet;
@@ -34,9 +43,11 @@ public class ForwardNodeEntity {
       fetch = FetchType.EAGER,
       orphanRemoval = true)
   private final Set<DestinationEntity> destinationEntities = new HashSet<>();
+
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
+
   private String description;
   // AETitle which defined a mapping of the gateway. This AETitle is configured as
   // a destination in the DICOM component that sends images to the gateway.

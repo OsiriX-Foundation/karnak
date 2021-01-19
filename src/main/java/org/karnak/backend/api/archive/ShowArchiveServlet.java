@@ -1,3 +1,12 @@
+/*
+* Copyright (c) 2021 Weasis Team and other contributors.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+* License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+*
+* SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+*/
 package org.karnak.backend.api.archive;
 
 import java.io.IOException;
@@ -22,12 +31,10 @@ import org.weasis.dicom.param.DicomFileStream;
 @WebServlet(urlPatterns = "/archive.xml")
 public class ShowArchiveServlet extends HttpServlet {
 
-  @Serial
-  private static final long serialVersionUID = -4229230848823235305L;
+  @Serial private static final long serialVersionUID = -4229230848823235305L;
   private static final Logger LOGGER = LoggerFactory.getLogger(ShowArchiveServlet.class);
 
-  @Autowired
-  private GatewaySetUp globalConfig;
+  @Autowired private GatewaySetUp globalConfig;
 
   private static void scanFiles(Path aStartingDir, StringBuilder sb) {
     try (Stream<Path> walk = Files.walk(aStartingDir)) {

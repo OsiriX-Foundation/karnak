@@ -1,24 +1,35 @@
-//package org.karnak.backend.config;
+/*
+* Copyright (c) 2021 Weasis Team and other contributors.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+* License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+*
+* SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+*/
+package org.karnak.backend.config;
 //
-//import org.karnak.backend.cache.RequestCache;
-//import org.karnak.backend.util.SecurityUtil;
-//import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
-//import org.keycloak.adapters.springsecurity.KeycloakConfiguration;
-//import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-//import org.springframework.context.annotation.Bean;
-//import org.springframework.security.authentication.AuthenticationManager;
-//import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-//import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-//import org.springframework.security.config.annotation.web.builders.WebSecurity;
-//import org.springframework.security.core.session.SessionRegistryImpl;
-//import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
-//import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
+// import org.karnak.backend.cache.RequestCache;
+// import org.karnak.backend.util.SecurityUtil;
+// import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
+// import org.keycloak.adapters.springsecurity.KeycloakConfiguration;
+// import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter;
+// import org.springframework.beans.factory.annotation.Autowired;
+// import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+// import org.springframework.context.annotation.Bean;
+// import org.springframework.security.authentication.AuthenticationManager;
+// import
+// org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+// import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+// import org.springframework.security.config.annotation.web.builders.WebSecurity;
+// import org.springframework.security.core.session.SessionRegistryImpl;
+// import
+// org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
+// import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 //
-//@KeycloakConfiguration
-//@ConditionalOnProperty(value = "IDP", havingValue = "keycloak")
-//public class SecurityKeycloakConfig extends KeycloakWebSecurityConfigurerAdapter {
+// @KeycloakConfiguration
+// @ConditionalOnProperty(value = "IDP", havingValue = "keycloak")
+// public class SecurityKeycloakConfig extends KeycloakWebSecurityConfigurerAdapter {
 //
 //  private static final String LOGOUT_SUCCESS_URL = "/mainLayout";
 //
@@ -100,4 +111,4 @@
 //  public KeycloakSpringBootConfigResolver keycloakConfigResolver() {
 //    return new KeycloakSpringBootConfigResolver();
 //  }
-//}
+// }

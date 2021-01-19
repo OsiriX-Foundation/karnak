@@ -1,3 +1,12 @@
+/*
+* Copyright (c) 2021 Weasis Team and other contributors.
+*
+* This program and the accompanying materials are made available under the terms of the Eclipse
+* Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+* License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+*
+* SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+*/
 package org.karnak.backend.api.archive;
 
 import java.io.DataInputStream;
@@ -22,12 +31,10 @@ import org.weasis.core.util.FileUtil;
 @WebServlet(urlPatterns = "/download")
 public class DownloadingServlet extends HttpServlet {
 
-  @Serial
-  private static final long serialVersionUID = -3991470951272725755L;
+  @Serial private static final long serialVersionUID = -3991470951272725755L;
   private static final Logger LOGGER = LoggerFactory.getLogger(DownloadingServlet.class);
 
-  @Autowired
-  private GatewaySetUp globalConfig;
+  @Autowired private GatewaySetUp globalConfig;
 
   @Override
   public final void init() throws ServletException {
@@ -84,9 +91,9 @@ public class DownloadingServlet extends HttpServlet {
    * different name than the name the file has been saved in your local database, since your local
    * names need to be unique.
    *
-   * @param req               The request
-   * @param resp              The response
-   * @param filename          The name of the file you want to download.
+   * @param req The request
+   * @param resp The response
+   * @param filename The name of the file you want to download.
    * @param original_filename The name the browser should receive.
    * @throws IOException
    */
