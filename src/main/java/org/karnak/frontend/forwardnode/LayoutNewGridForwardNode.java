@@ -6,13 +6,13 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
-import org.karnak.backend.service.ForwardNodeAPI;
+import org.karnak.backend.service.ForwardNodeAPIService;
 
 @UIScope
 public class LayoutNewGridForwardNode extends VerticalLayout {
 
     private final ForwardNodeViewLogic forwardNodeViewLogic;
-    private final ForwardNodeAPI forwardNodeAPI;
+    private final ForwardNodeAPIService forwardNodeAPIService;
 
     private final NewForwardNode newForwardNode;
     private final GridForwardNode gridForwardNode;
@@ -23,12 +23,12 @@ public class LayoutNewGridForwardNode extends VerticalLayout {
     private Button buttonCancelNewForwardNode;
 
     public LayoutNewGridForwardNode(ForwardNodeViewLogic forwardNodeViewLogic,
-        ForwardNodeAPI forwardNodeAPI) {
+        ForwardNodeAPIService forwardNodeAPIService) {
         this.forwardNodeViewLogic = forwardNodeViewLogic;
-        this.forwardNodeAPI = forwardNodeAPI;
+        this.forwardNodeAPIService = forwardNodeAPIService;
         newForwardNode = new NewForwardNode();
         gridForwardNode = new GridForwardNode();
-        gridForwardNode.setDataProvider(forwardNodeAPI.getDataProvider());
+        gridForwardNode.setDataProvider(forwardNodeAPIService.getDataProvider());
         add(newForwardNode, gridForwardNode);
 
         buttonNewForwardNode = newForwardNode.getNewForwardNode();
@@ -57,7 +57,7 @@ public class LayoutNewGridForwardNode extends VerticalLayout {
     }
 
     private void eventAddForwardNode(ForwardNodeEntity forwardNodeEntity) {
-        forwardNodeAPI.addForwardNode(forwardNodeEntity);
+        forwardNodeAPIService.addForwardNode(forwardNodeEntity);
         gridForwardNode.getSelectionModel().select(forwardNodeEntity);
         forwardNodeViewLogic.editForwardNode(forwardNodeEntity);
     }

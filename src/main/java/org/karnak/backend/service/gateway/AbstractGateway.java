@@ -17,12 +17,12 @@ public abstract class AbstractGateway {
     public static final Marker notifyAdmin = MarkerFactory.getMarker("NOTIFY_ADMIN");
 
     protected final Counter iterationCount;
-    protected final GatewaySetUp config;
+    protected final GatewaySetUpService config;
 
     private final ScheduledThreadPoolExecutor gatewayProcess;
     protected volatile long lastErrorNotification;
 
-    protected AbstractGateway(GatewaySetUp config) {
+    protected AbstractGateway(GatewaySetUpService config) {
         this.config = config;
         this.iterationCount = new Counter(config.getIntervalCheck());
         this.lastErrorNotification = 0;

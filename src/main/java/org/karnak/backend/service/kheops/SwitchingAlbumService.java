@@ -18,9 +18,13 @@ import org.karnak.backend.model.kheops.MetadataSwitching;
 import org.karnak.backend.model.profilepipe.HMAC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-public class SwitchingAlbum {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SwitchingAlbum.class);
+@Service
+public class SwitchingAlbumService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SwitchingAlbumService.class);
 
     private final KheopsApi kheopsAPI;
     private final Map<Long, List> switchingAlbumToDo = new WeakHashMap<>();
@@ -28,12 +32,13 @@ public class SwitchingAlbum {
     public static final ImmutableList<String> MIN_SCOPE_SOURCE = ImmutableList.of("read", "send");
     public static final ImmutableList<String> MIN_SCOPE_DESTINATION = ImmutableList.of("write");
 
-    public SwitchingAlbum() {
+    @Autowired
+    public SwitchingAlbumService() {
         kheopsAPI = new KheopsApi();
     }
 
     private static HMAC generateHMAC(DestinationEntity destinationEntity) {
-        if (destinationEntity.getDesidentification()) {
+        if (destinationEntity.isDesidentification()) {
             ProjectEntity projectEntity = destinationEntity.getProjectEntity();
             return new HMAC(projectEntity.getSecret());
         }
@@ -42,7 +47,7 @@ public class SwitchingAlbum {
 
     private static String hashUIDonDeidentification(DestinationEntity destinationEntity,
         String inputUID, HMAC hmac) {
-        if (destinationEntity.getDesidentification() && hmac != null) {
+        if (destinationEntity.isDesidentification() && hmac != null) {
             return hmac.uidHash(inputUID);
         }
         return inputUID;

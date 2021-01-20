@@ -9,7 +9,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 import javax.annotation.PostConstruct;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
-import org.karnak.backend.service.ForwardNodeAPI;
+import org.karnak.backend.service.ForwardNodeAPIService;
 import org.karnak.frontend.MainLayout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -22,21 +22,21 @@ import org.springframework.security.access.annotation.Secured;
 public class ForwardNodeView extends HorizontalLayout implements HasUrlParameter<String> {
 
     public static final String VIEW_NAME = "Gateway";
-    private final ForwardNodeAPI forwardNodeAPI;
+    private final ForwardNodeAPIService forwardNodeAPIService;
     private final LayoutNewGridForwardNode layoutNewGridForwardNode;
     private final LayoutEditForwardNode layoutEditForwardNode;
     private final ForwardNodeViewLogic forwardNodeViewLogic;
 
     @Autowired
     public ForwardNodeView(LayoutEditForwardNode layoutEditForwardNode,
-        final ForwardNodeAPI forwardNodeAPI) {
-      setSizeFull();
-      this.forwardNodeAPI = forwardNodeAPI;
-      this.forwardNodeViewLogic = new ForwardNodeViewLogic(forwardNodeAPI);
-      this.layoutNewGridForwardNode = new LayoutNewGridForwardNode(forwardNodeViewLogic,
-          forwardNodeAPI);
+        final ForwardNodeAPIService forwardNodeAPIService) {
+        setSizeFull();
+        this.forwardNodeAPIService = forwardNodeAPIService;
+        this.forwardNodeViewLogic = new ForwardNodeViewLogic(forwardNodeAPIService);
+        this.layoutNewGridForwardNode = new LayoutNewGridForwardNode(forwardNodeViewLogic,
+            forwardNodeAPIService);
 
-      this.layoutEditForwardNode = layoutEditForwardNode;
+        this.layoutEditForwardNode = layoutEditForwardNode;
     }
 
     @PostConstruct
@@ -51,7 +51,7 @@ public class ForwardNodeView extends HorizontalLayout implements HasUrlParameter
         Long idForwardNode = forwardNodeViewLogic.enter(parameter);
         ForwardNodeEntity currentForwardNodeEntity = null;
         if (idForwardNode != null) {
-            currentForwardNodeEntity = forwardNodeAPI.getForwardNodeById(idForwardNode);
+            currentForwardNodeEntity = forwardNodeAPIService.getForwardNodeById(idForwardNode);
         }
         layoutNewGridForwardNode.load(currentForwardNodeEntity);
         layoutEditForwardNode.load(currentForwardNodeEntity);
@@ -59,6 +59,6 @@ public class ForwardNodeView extends HorizontalLayout implements HasUrlParameter
 
     @Autowired
     private void addEventManager(ApplicationEventPublisher publisher) {
-        forwardNodeAPI.setApplicationEventPublisher(publisher);
+        forwardNodeAPIService.setApplicationEventPublisher(publisher);
     }
 }

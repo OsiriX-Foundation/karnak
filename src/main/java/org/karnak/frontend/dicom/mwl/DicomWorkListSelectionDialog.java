@@ -22,7 +22,7 @@ import org.karnak.backend.enums.MessageLevel;
 import org.karnak.backend.model.dicom.ConfigNode;
 import org.karnak.backend.model.dicom.DicomNodeList;
 import org.karnak.backend.model.dicom.Message;
-import org.karnak.backend.service.dicom.DicomNodeManager;
+import org.karnak.backend.util.DicomNodeUtil;
 import org.karnak.frontend.component.AbstractDialog;
 
 public class DicomWorkListSelectionDialog extends AbstractDialog {
@@ -46,7 +46,7 @@ public class DicomWorkListSelectionDialog extends AbstractDialog {
 
     public DicomWorkListSelectionDialog() {
         init();
-        selectDicomNodeList(DicomNodeManager.getAllWorkListNodesDefinedLocally());
+        selectDicomNodeList(DicomNodeUtil.getAllWorkListNodesDefinedLocally());
         createMainLayout();
         dataProviderForWorkListNodes.refreshAll();
         selectFirstItemInWorkListNodes();

@@ -30,18 +30,18 @@ public class MainViewProjects extends HorizontalLayout implements HasUrlParamete
     private final Binder<ProjectEntity> newResearchBinder;
 
     @Autowired
-    public MainViewProjects(final ProjectService projectService) {
-        setWidthFull();
-        newProjectForm = new NewProjectForm();
+    public MainViewProjects(final ProjectService projectService, final EditProject editProject,
+        final NewProjectForm newProjectForm) {
         this.projectService = projectService;
-        gridProject = new GridProject(projectService);
-        VerticalLayout layoutNewProject = new VerticalLayout(newProjectForm, gridProject);
+        this.editProject = editProject;
+        this.newProjectForm = newProjectForm;
+        this.gridProject = new GridProject(projectService);
+        this.newResearchBinder = this.newProjectForm.getBinder();
+        VerticalLayout layoutNewProject = new VerticalLayout(this.newProjectForm, this.gridProject);
+        setWidthFull();
         layoutNewProject.setWidth("40%");
-        editProject = new EditProject(projectService);
-        editProject.setWidth("60%");
-        newResearchBinder = newProjectForm.getBinder();
-
-        add(layoutNewProject, editProject);
+        this.editProject.setWidth("60%");
+        add(layoutNewProject, this.editProject);
         setEventButtonNewProject();
         setEventGridSelection();
     }

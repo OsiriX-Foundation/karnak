@@ -1,8 +1,9 @@
 package org.karnak.backend.data.entity;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -30,35 +31,16 @@ public class ProfileElementEntity implements Serializable {
 
     private static final long serialVersionUID = 818925943276758147L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @JsonIgnore
     private Long id;
-
     private String name;
     private String codename;
     private String condition;
     private String action;
     private String option;
-    @JsonIgnore
     private Integer position;
-
-    @ManyToOne()
-    @JoinColumn(name = "profile_id", nullable = false)
-    @JsonIgnore
     private ProfileEntity profileEntity;
-
-    @OneToMany(mappedBy = "profileElementEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonSerialize(converter = TagListToStringListConverter.class)
     private List<IncludedTagEntity> includedTagEntities = new ArrayList<>();
-
-    @OneToMany(mappedBy = "profileElementEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonSerialize(converter = TagListToStringListConverter.class)
     private List<ExcludedTagEntity> excludedTagEntities = new ArrayList<>();
-
-    @OneToMany(mappedBy = "profileElementEntity", cascade = CascadeType.ALL)
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @JsonSerialize(converter = ArgumentToMapConverter.class)
     private List<ArgumentEntity> argumentEntities = new ArrayList<>();
 
     public ProfileElementEntity() {
@@ -101,6 +83,17 @@ public class ProfileElementEntity implements Serializable {
             .add(argumentEntity);
     }
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonIgnore
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }
@@ -141,6 +134,9 @@ public class ProfileElementEntity implements Serializable {
         this.option = option;
     }
 
+    @OneToMany(mappedBy = "profileElementEntity", cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonSerialize(converter = ArgumentToMapConverter.class)
     public List<ArgumentEntity> getArgumentEntities() {
         return argumentEntities;
     }
@@ -149,6 +145,7 @@ public class ProfileElementEntity implements Serializable {
         this.argumentEntities = argumentEntities;
     }
 
+    @JsonIgnore
     public Integer getPosition() {
         return position;
     }
@@ -157,6 +154,9 @@ public class ProfileElementEntity implements Serializable {
         this.position = position;
     }
 
+    @ManyToOne()
+    @JoinColumn(name = "profile_id", nullable = false)
+    @JsonIgnore
     public ProfileEntity getProfileEntity() {
         return profileEntity;
     }
@@ -165,20 +165,26 @@ public class ProfileElementEntity implements Serializable {
         this.profileEntity = profileEntity;
     }
 
-    @JsonProperty("tags")
+    @JsonGetter("tags")
+    @OneToMany(mappedBy = "profileElementEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonSerialize(converter = TagListToStringListConverter.class)
     public List<IncludedTagEntity> getIncludedTagEntities() {
         return includedTagEntities;
     }
 
+    @JsonSetter("tags")
     public void setIncludedTagEntities(List<IncludedTagEntity> includedTagEntities) {
         this.includedTagEntities = includedTagEntities;
     }
 
-    @JsonProperty("excludedTags")
+    @JsonGetter("excludedTags")
+    @OneToMany(mappedBy = "profileElementEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonSerialize(converter = TagListToStringListConverter.class)
     public List<ExcludedTagEntity> getExcludedTagEntities() {
         return excludedTagEntities;
     }
 
+    @JsonSetter("excludedTags")
     public void setExcludedTagEntities(List<ExcludedTagEntity> excludedTagEntities) {
         this.excludedTagEntities = excludedTagEntities;
     }

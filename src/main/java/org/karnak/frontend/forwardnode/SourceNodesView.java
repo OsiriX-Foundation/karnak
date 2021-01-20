@@ -7,7 +7,6 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.spring.annotation.UIScope;
-import javax.annotation.PostConstruct;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.service.SourceNodeService;
 import org.karnak.frontend.util.UIS;
@@ -20,10 +19,10 @@ public class SourceNodesView extends VerticalLayout {
 
     private final SourceNodeService sourceNodeService;
 
-    private HorizontalLayout layoutFilterButton;
-    private TextField filter;
-    private Button newSourceNode;
-    private GridSourceNode gridSourceNode;
+    private final HorizontalLayout layoutFilterButton;
+    private final TextField filter;
+    private final Button newSourceNode;
+    private final GridSourceNode gridSourceNode;
 
     private final String LABEL_NEW_SOURCE_NODE = "Source";
     private final String PLACEHOLDER_FILTER = "Filter properties of sources";
@@ -31,10 +30,6 @@ public class SourceNodesView extends VerticalLayout {
     @Autowired
     public SourceNodesView(SourceNodeService sourceNodeService) {
         this.sourceNodeService = sourceNodeService;
-    }
-
-    @PostConstruct
-    public void init() {
         setSizeFull();
         this.gridSourceNode = new GridSourceNode();
         filter = new TextField();

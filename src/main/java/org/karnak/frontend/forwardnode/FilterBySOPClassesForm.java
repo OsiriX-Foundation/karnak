@@ -55,18 +55,19 @@ public class FilterBySOPClassesForm extends HorizontalLayout {
             .withValidator(listOfSOPFilter ->
                     !listOfSOPFilter.isEmpty() || !filterBySOPClassesCheckbox.getValue(),
                 "No filter are applied\n")
-            .bind(DestinationEntity::getSOPClassUIDFiltersName, (destination, sopClassNames) -> {
-                Set<SOPClassUIDEntity> newSOPClassUIDEntities = new HashSet<>();
-                sopClassNames.forEach(sopClasseName -> {
-                    SOPClassUIDEntity sopClassUIDEntity = sopClassUIDService
-                        .getByName(sopClasseName);
-                    newSOPClassUIDEntities.add(sopClassUIDEntity);
+            .bind(DestinationEntity::retrieveSOPClassUIDFiltersName,
+                (destination, sopClassNames) -> {
+                    Set<SOPClassUIDEntity> newSOPClassUIDEntities = new HashSet<>();
+                    sopClassNames.forEach(sopClasseName -> {
+                        SOPClassUIDEntity sopClassUIDEntity = sopClassUIDService
+                            .getByName(sopClasseName);
+                        newSOPClassUIDEntities.add(sopClassUIDEntity);
+                    });
+                    destination.setSOPClassUIDEntityFilters(newSOPClassUIDEntities);
                 });
-                destination.setSOPClassUIDFilters(newSOPClassUIDEntities);
-            });
 
         binder.forField(filterBySOPClassesCheckbox) //
-            .bind(DestinationEntity::getFilterBySOPClasses,
+            .bind(DestinationEntity::isFilterBySOPClasses,
                 DestinationEntity::setFilterBySOPClasses);
     }
 }

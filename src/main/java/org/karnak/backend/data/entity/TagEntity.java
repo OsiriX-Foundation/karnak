@@ -25,21 +25,36 @@ public abstract class TagEntity implements Serializable {
 
     private static final long serialVersionUID = -1172918773653197764L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
-    @ManyToOne()
-    @JoinColumn(name = "profile_element_id", nullable = false)
     private ProfileElementEntity profileElementEntity;
-
-    String tagValue;
+    private String tagValue;
 
     public TagEntity() {
     }
 
     public TagEntity(String tagValue, ProfileElementEntity profileElementEntity) {
         this.tagValue = tagValue;
+        this.profileElementEntity = profileElementEntity;
+    }
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    @ManyToOne()
+    @JoinColumn(name = "profile_element_id", nullable = false)
+    public ProfileElementEntity getProfileElementEntity() {
+        return profileElementEntity;
+    }
+
+    public void setProfileElementEntity(
+        ProfileElementEntity profileElementEntity) {
         this.profileElementEntity = profileElementEntity;
     }
 

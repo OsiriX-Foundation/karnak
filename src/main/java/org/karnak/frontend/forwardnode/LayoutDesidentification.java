@@ -175,7 +175,7 @@ public class LayoutDesidentification extends Div {
 
     private void setBinder() {
         destinationBinder.forField(checkboxDesidentification)
-            .bind(DestinationEntity::getDesidentification, DestinationEntity::setDesidentification);
+            .bind(DestinationEntity::isDesidentification, DestinationEntity::setDesidentification);
         destinationBinder.forField(projectDropDown)
             .withValidator(project ->
                     project != null || (project == null

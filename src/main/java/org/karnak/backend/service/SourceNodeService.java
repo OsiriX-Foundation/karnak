@@ -64,16 +64,14 @@ public class SourceNodeService extends ListDataProvider<DicomSourceNodeEntity> {
     }
 
     /**
-     * Store given DicomSourceNodeEntity to the backing data service.
+     * Store given DicomSourceNodeEntity.
      *
-     * @param data the updated or new data
+     * @param dicomSourceNodeEntity the updated or new dicomSourceNodeEntity
      */
-    public void save(DicomSourceNodeEntity data) {
-        boolean newData = data.isNewData();
-
+    public void save(DicomSourceNodeEntity dicomSourceNodeEntity) {
         DicomSourceNodeEntity dataUpdated = this.forwardNodeService
-            .updateSourceNode(forwardNodeEntity, data);
-        if (newData) {
+            .updateSourceNode(forwardNodeEntity, dicomSourceNodeEntity);
+        if (dicomSourceNodeEntity.getId() == null) {
             refreshAll();
         } else {
             refreshItem(dataUpdated);

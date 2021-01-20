@@ -5,15 +5,22 @@ import java.util.function.Predicate;
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.Tag;
 import org.karnak.backend.data.entity.SOPClassUIDEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.weasis.dicom.param.AttributeEditor;
 import org.weasis.dicom.param.AttributeEditorContext;
 import org.weasis.dicom.param.AttributeEditorContext.Abort;
 
-public class FilterEditor implements AttributeEditor {
+@Service
+public class FilterEditorService implements AttributeEditor {
 
-  private final Set<SOPClassUIDEntity> sopClassUIDEntitySet;
+  private Set<SOPClassUIDEntity> sopClassUIDEntitySet;
 
-  public FilterEditor(Set<SOPClassUIDEntity> sopClassUIDEntitySet) {
+  @Autowired
+  public FilterEditorService() {
+  }
+
+  public void init(Set<SOPClassUIDEntity> sopClassUIDEntitySet) {
     this.sopClassUIDEntitySet = sopClassUIDEntitySet;
   }
 

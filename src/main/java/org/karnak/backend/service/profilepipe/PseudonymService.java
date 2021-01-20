@@ -5,9 +5,10 @@ import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.util.TagUtils;
 import org.karnak.backend.api.PseudonymApi;
 import org.karnak.backend.api.rqbody.Fields;
+import org.karnak.backend.cache.ExternalIDCache;
+import org.karnak.backend.cache.MainzellisteCache;
 import org.karnak.backend.cache.MainzellistePatient;
 import org.karnak.backend.cache.PatientClient;
-import org.karnak.backend.config.AppConfig;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.enums.IdTypes;
 import org.karnak.backend.model.profilepipe.PatientMetadata;
@@ -15,18 +16,23 @@ import org.karnak.backend.util.PatientClientUtil;
 import org.karnak.backend.util.SpecialCharacter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-public class Pseudonym {
+@Service
+public class PseudonymService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Pseudonym.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(PseudonymService.class);
 
-    private final PatientClient externalIdCache;
-    private final PatientClient mainzellisteCache;
+  private final PatientClient externalIdCache;
+  private final PatientClient mainzellisteCache;
 
-    public Pseudonym() {
-        externalIdCache = AppConfig.getInstance().getExternalIDCache();
-        mainzellisteCache = AppConfig.getInstance().getMainzellisteCache();
-    }
+  @Autowired
+  public PseudonymService(final ExternalIDCache externalIDCache,
+      final MainzellisteCache mainzellisteCache) {
+    this.externalIdCache = externalIDCache;
+    this.mainzellisteCache = mainzellisteCache;
+  }
 
   public String generatePseudonym(DestinationEntity destinationEntity, DicomObject dcm,
       String defaultIsserOfPatientID) {

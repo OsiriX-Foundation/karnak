@@ -7,7 +7,6 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.spring.annotation.UIScope;
-import javax.annotation.PostConstruct;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.service.DestinationService;
 import org.karnak.frontend.util.UIS;
@@ -20,12 +19,12 @@ public class DestinationsView extends VerticalLayout {
 
     private final DestinationService destinationService;
 
-    private TextField filter;
-    private Button newDestinationDICOM;
-    private Button newDestinationSTOW;
-    private GridDestination gridDestination;
+    private final TextField filter;
+    private final Button newDestinationDICOM;
+    private final Button newDestinationSTOW;
+    private final GridDestination gridDestination;
 
-    private HorizontalLayout layoutFilterButton;
+    private final HorizontalLayout layoutFilterButton;
 
     private final String LABEL_NEW_DESTINATION_DICOM = "DICOM";
     private final String LABEL_NEW_DESTINATION_STOW = "STOW";
@@ -34,10 +33,7 @@ public class DestinationsView extends VerticalLayout {
     @Autowired
     public DestinationsView(final DestinationService destinationService) {
         this.destinationService = destinationService;
-    }
 
-    @PostConstruct
-    public void init() {
         setSizeFull();
         this.filter = new TextField();
         this.newDestinationDICOM = new Button(LABEL_NEW_DESTINATION_DICOM);

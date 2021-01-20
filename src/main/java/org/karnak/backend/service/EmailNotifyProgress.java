@@ -18,7 +18,7 @@ import javax.mail.internet.MimeMessage;
 import org.karnak.backend.model.NotificationSetUp;
 import org.karnak.backend.model.Series;
 import org.karnak.backend.model.Study;
-import org.karnak.backend.service.gateway.GatewaySetUp;
+import org.karnak.backend.service.gateway.GatewaySetUpService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.weasis.core.util.StringUtil;
@@ -31,22 +31,23 @@ public class EmailNotifyProgress implements ProgressListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(EmailNotifyProgress.class);
 
     private final ScheduledThreadPoolExecutor checkProcess;
-    private final StreamRegistry streamRegistry;
+    private final StreamRegistryService streamRegistryService;
     private final ForwardDestination forwardDestination;
     private final String[] emailList;
-    private final GatewaySetUp config;
+    private final GatewaySetUpService config;
     private final NotificationSetUp notificationSetUp;
 
-    public EmailNotifyProgress(StreamRegistry streamRegistry, ForwardDestination forwardDestination,
+    public EmailNotifyProgress(StreamRegistryService streamRegistryService,
+        ForwardDestination forwardDestination,
         String[] emails,
-        GatewaySetUp config, NotificationSetUp notificationSetUp) {
-        this.streamRegistry = Objects.requireNonNull(streamRegistry);
+        GatewaySetUpService config, NotificationSetUp notificationSetUp) {
+        this.streamRegistryService = Objects.requireNonNull(streamRegistryService);
         this.forwardDestination = Objects.requireNonNull(forwardDestination);
         this.config = Objects.requireNonNull(config);
         this.emailList = emails;
         this.notificationSetUp = notificationSetUp;
         if (emails != null && emails.length > 0) {
-            this.streamRegistry.setEnable(true);
+            this.streamRegistryService.setEnable(true);
             this.checkProcess = new ScheduledThreadPoolExecutor(1);
             int interval =
                 notificationSetUp == null ? config.getNotificationSetUp().getNotifyInterval()
@@ -60,7 +61,7 @@ public class EmailNotifyProgress implements ProgressListener {
 
     @Override
     public void handleProgression(DicomProgress progress) {
-        streamRegistry.update(progress);
+        streamRegistryService.update(progress);
     }
 
     public ForwardDestination getForwardDestination() {
@@ -72,8 +73,8 @@ public class EmailNotifyProgress implements ProgressListener {
     }
 
     protected void checkNotification() {
-        if (streamRegistry.isEnable()) {
-            Iterator<Entry<String, Study>> studyIt = streamRegistry.getEntrySet().iterator();
+        if (streamRegistryService.isEnable()) {
+            Iterator<Entry<String, Study>> studyIt = streamRegistryService.getEntrySet().iterator();
             while (studyIt.hasNext()) {
                 Study study = studyIt.next().getValue();
                 long currentTime = System.currentTimeMillis();

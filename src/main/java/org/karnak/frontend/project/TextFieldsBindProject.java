@@ -3,25 +3,35 @@ package org.karnak.frontend.project;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.spring.annotation.UIScope;
+import javax.annotation.PostConstruct;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.model.profilepipe.HMAC;
 import org.karnak.frontend.forwardnode.ProfileDropDown;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
+@UIScope
 public class TextFieldsBindProject {
 
-    private final Binder<ProjectEntity> binder;
+    private Binder<ProjectEntity> binder;
 
     private final TextField textResearchName;
     private final TextField textSecret;
     private final ProfileDropDown profileDropDown;
 
-    public TextFieldsBindProject() {
-        textResearchName = new TextField();
-        textSecret = new TextField();
-        profileDropDown = new ProfileDropDown();
+    @Autowired
+    public TextFieldsBindProject(final ProfileDropDown profileDropDown) {
+        this.profileDropDown = profileDropDown;
+        this.textResearchName = new TextField();
+        this.textSecret = new TextField();
+    }
 
-        binder = setBinder();
+    @PostConstruct
+    public void init() {
+        this.binder = setBinder();
     }
 
     private Binder<ProjectEntity> setBinder() {
@@ -58,9 +68,5 @@ public class TextFieldsBindProject {
 
     public TextField getTextSecret() {
         return textSecret;
-    }
-
-    public ProfileDropDown getProfileDropDown() {
-        return profileDropDown;
     }
 }

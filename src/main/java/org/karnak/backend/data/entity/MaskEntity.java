@@ -24,22 +24,11 @@ public class MaskEntity implements Serializable {
 
   private static final long serialVersionUID = 1833858684629178458L;
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  @JsonIgnore
   private Long id;
-
-  @ManyToOne()
-  @JoinColumn(name = "profile_id", nullable = false)
-  @JsonIgnore
   private ProfileEntity profileEntity;
-
-    private String stationName;
-    private String color;
-
-    @Convert(converter = RectangleListConverter.class)
-    @JsonSerialize(converter = RectangleListToStringListConverter.class)
-    private List<Rectangle> rectangles = new ArrayList<>();
+  private String stationName;
+  private String color;
+  private List<Rectangle> rectangles = new ArrayList<>();
 
   public MaskEntity() {
   }
@@ -50,36 +39,56 @@ public class MaskEntity implements Serializable {
     this.profileEntity = profileEntity;
   }
 
-    public void addRectangle(String rectangle) {
-        Rectangle rect = RectangleListConverter.stringToRectangle(rectangle);
-        if (rect != null) {
-            rectangles.add(rect);
-        }
+  public void addRectangle(String rectangle) {
+    Rectangle rect = RectangleListConverter.stringToRectangle(rectangle);
+    if (rect != null) {
+      rectangles.add(rect);
     }
+  }
 
-    public void addRectangle(Rectangle rect) {
-        rectangles.add(rect);
-    }
+  public void addRectangle(Rectangle rect) {
+    rectangles.add(rect);
+  }
 
-    public List<Rectangle> getRectangles() {
-        return rectangles;
-    }
+  @Convert(converter = RectangleListConverter.class)
+  @JsonSerialize(converter = RectangleListToStringListConverter.class)
+  public List<Rectangle> getRectangles() {
+    return rectangles;
+  }
 
-    public void setRectangles(List<Rectangle> rectangles) {
-        this.rectangles = rectangles;
-    }
+  public void setRectangles(List<Rectangle> rectangles) {
+    this.rectangles = rectangles;
+  }
 
-    public Long getId() {
-        return id;
-    }
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @JsonIgnore
+  public Long getId() {
+    return id;
+  }
 
-    public String getStationName() {
-        return stationName;
-    }
+  public void setId(Long id) {
+    this.id = id;
+  }
 
-    public void setStationName(String stationName) {
-      this.stationName = stationName;
-    }
+  @ManyToOne
+  @JoinColumn(name = "profile_id", nullable = false)
+  @JsonIgnore
+  public ProfileEntity getProfileEntity() {
+    return profileEntity;
+  }
+
+  public void setProfileEntity(ProfileEntity profileEntity) {
+    this.profileEntity = profileEntity;
+  }
+
+  public String getStationName() {
+    return stationName;
+  }
+
+  public void setStationName(String stationName) {
+    this.stationName = stationName;
+  }
 
   public String getColor() {
     return color;
@@ -98,11 +107,11 @@ public class MaskEntity implements Serializable {
       return false;
     }
     MaskEntity that = (MaskEntity) o;
-    return Objects.equals(id, that.id) &&
-        Objects.equals(profileEntity, that.profileEntity) &&
-        Objects.equals(stationName, that.stationName) &&
-        Objects.equals(color, that.color) &&
-        Objects.equals(rectangles, that.rectangles);
+    return Objects.equals(id, that.id)
+        && Objects.equals(profileEntity, that.profileEntity)
+        && Objects.equals(stationName, that.stationName)
+        && Objects.equals(color, that.color)
+        && Objects.equals(rectangles, that.rectangles);
   }
 
   @Override

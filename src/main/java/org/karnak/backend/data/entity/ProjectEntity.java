@@ -22,19 +22,10 @@ public class ProjectEntity implements Serializable {
 
     private static final long serialVersionUID = 8809562914582842501L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
     private String name;
     private byte[] secret;
-
-    @OneToMany(mappedBy = "projectEntity")
-    @LazyCollection(LazyCollectionOption.FALSE)
     private List<DestinationEntity> destinationEntities;
-
-    @ManyToOne
-    @JoinColumn(name = "profile_pipe_id")
     private ProfileEntity profileEntity;
 
     public ProjectEntity() {
@@ -47,8 +38,14 @@ public class ProjectEntity implements Serializable {
         this.destinationEntities = new ArrayList<>();
     }
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -67,6 +64,8 @@ public class ProjectEntity implements Serializable {
         this.secret = secret;
     }
 
+    @OneToMany(mappedBy = "projectEntity")
+    @LazyCollection(LazyCollectionOption.FALSE)
     public List<DestinationEntity> getDestinationEntities() {
         return destinationEntities;
     }
@@ -75,16 +74,14 @@ public class ProjectEntity implements Serializable {
         this.destinationEntities = destinationEntities;
     }
 
+    @ManyToOne
+    @JoinColumn(name = "profile_pipe_id")
     public ProfileEntity getProfileEntity() {
         return profileEntity;
     }
 
     public void setProfileEntity(ProfileEntity profileEntity) {
         this.profileEntity = profileEntity;
-    }
-
-    public boolean isNewData() {
-        return id == null;
     }
 
     @Override

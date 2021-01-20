@@ -10,25 +10,29 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.validator.StringLengthValidator;
+import com.vaadin.flow.spring.annotation.UIScope;
 import java.util.Collection;
 import java.util.Iterator;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.backend.cache.CachedPatient;
+import org.karnak.backend.cache.ExternalIDCache;
 import org.karnak.backend.cache.PatientClient;
 import org.karnak.backend.cache.PseudonymPatient;
-import org.karnak.backend.config.AppConfig;
 import org.karnak.backend.util.PatientClientUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-
+@Component
+@UIScope
 public class AddNewPatientForm extends VerticalLayout {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(AddNewPatientForm.class);
     private static final String ERROR_MESSAGE_PATIENT = "Length must be between 1 and 50.";
 
     private final Binder<CachedPatient> binder;
-    private final ListDataProvider<CachedPatient> dataProvider;
+    private ListDataProvider<CachedPatient> dataProvider;
 
     private TextField externalIdField;
     private TextField patientIdField;
@@ -39,18 +43,16 @@ public class AddNewPatientForm extends VerticalLayout {
 
     private final transient PatientClient externalIDCache;
 
-    public AddNewPatientForm(ListDataProvider<CachedPatient> dataProvider){
+    @Autowired
+    public AddNewPatientForm(final ExternalIDCache externalIDCache) {
         setSizeFull();
-        this.dataProvider = dataProvider;
-        externalIDCache = AppConfig.getInstance().getExternalIDCache();
+        this.externalIDCache = externalIDCache;
         binder = new BeanValidationBinder<>(CachedPatient.class);
 
         setElements();
         setBinder();
 
-        readAllCacheValue();
-
-        clearFieldsButton.addClickListener( click ->
+        clearFieldsButton.addClickListener(click ->
             clearPatientFields()
         );
 
@@ -66,10 +68,15 @@ public class AddNewPatientForm extends VerticalLayout {
         });
     }
 
-    private void readAllCacheValue(){
+    public void init(ListDataProvider<CachedPatient> dataProvider) {
+        this.dataProvider = dataProvider;
+        readAllCacheValue();
+    }
+
+    private void readAllCacheValue() {
         if (externalIDCache != null) {
             Collection<PseudonymPatient> patients = externalIDCache.getAll();
-            for (Iterator<PseudonymPatient> iterator = patients.iterator(); iterator.hasNext();) {
+            for (Iterator<PseudonymPatient> iterator = patients.iterator(); iterator.hasNext(); ) {
                 final PseudonymPatient patient = iterator.next();
                 dataProvider.getItems().add((CachedPatient) patient);
             }

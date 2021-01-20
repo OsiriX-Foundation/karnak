@@ -2,26 +2,26 @@ package org.karnak.frontend.forwardnode;
 
 import com.vaadin.flow.component.UI;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
-import org.karnak.backend.service.ForwardNodeAPI;
+import org.karnak.backend.service.ForwardNodeAPIService;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ForwardNodeViewLogic {
 
-    private final ForwardNodeAPI forwardNodeAPI;
+  private final ForwardNodeAPIService forwardNodeAPIService;
 
-    public ForwardNodeViewLogic(ForwardNodeAPI forwardNodeAPI) {
-        this.forwardNodeAPI = forwardNodeAPI;
-    }
+  public ForwardNodeViewLogic(ForwardNodeAPIService forwardNodeAPIService) {
+    this.forwardNodeAPIService = forwardNodeAPIService;
+  }
 
-    /**
-     * Update the fragment without causing navigator to change view
-     */
-    private void setFragmentParameter(String dataIdStr) {
-        final String fragmentParameter;
-        if (dataIdStr == null || dataIdStr.isEmpty()) {
-            fragmentParameter = "";
-        } else {
+  /**
+   * Update the fragment without causing navigator to change view
+   */
+  private void setFragmentParameter(String dataIdStr) {
+    final String fragmentParameter;
+    if (dataIdStr == null || dataIdStr.isEmpty()) {
+      fragmentParameter = "";
+    } else {
             fragmentParameter = dataIdStr;
         }
         UI.getCurrent().navigate(ForwardNodeView.class, fragmentParameter);

@@ -6,104 +6,116 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.spring.annotation.UIScope;
 import java.util.List;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.service.ProjectService;
 import org.karnak.frontend.component.ConfirmDialog;
 import org.karnak.frontend.forwardnode.ProfileDropDown;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
+@UIScope
 public class EditProject extends VerticalLayout {
 
-    private final ProjectService projectService;
-    private Binder<ProjectEntity> binder;
-    private TextField textProjectName;
-    private ProjectSecret projectSecret;
-    private ProfileDropDown profileDropDown;
-    private HorizontalLayout horizontalLayoutButtons;
-    private Button buttonUpdate;
-    private Button buttonRemove;
-    private final WarningRemoveProjectUsed dialogWarning;
-    private ProjectEntity projectEntity;
+  private final ProjectService projectService;
+  private final ProfileDropDown profileDropDown;
+  private final WarningRemoveProjectUsed dialogWarning;
+  private final TextFieldsBindProject textFieldsBindProject;
+  private Binder<ProjectEntity> binder;
+  private TextField textProjectName;
+  private ProjectSecret projectSecret;
+  private HorizontalLayout horizontalLayoutButtons;
+  private Button buttonUpdate;
+  private Button buttonRemove;
+  private ProjectEntity projectEntity;
 
-    public EditProject(ProjectService projectService) {
-        this.projectService = projectService;
-        dialogWarning = new WarningRemoveProjectUsed();
+  @Autowired
+  public EditProject(final ProjectService projectService, final ProfileDropDown profileDropDown,
+      final TextFieldsBindProject textFieldsBindProject) {
+    this.projectService = projectService;
+    this.profileDropDown = profileDropDown;
+    this.textFieldsBindProject = textFieldsBindProject;
+    this.dialogWarning = new WarningRemoveProjectUsed();
+    setEnabled(false);
+    setElements();
+    setEventButtonAdd();
+    setEventButtonRemove();
+    add(this.textProjectName, this.profileDropDown, this.projectSecret,
+        this.horizontalLayoutButtons);
+  }
 
-        setEnabled(false);
-        setElements();
-        setEventButtonAdd();
-        setEventButtonRemove();
-        add(textProjectName, profileDropDown, projectSecret, horizontalLayoutButtons);
+  public void setProject(ProjectEntity projectEntity) {
+    this.projectEntity = projectEntity;
+    if (projectEntity != null) {
+      binder.setBean(projectEntity);
+      setEnabled(true);
+    } else {
+      binder.removeBean();
+      clear();
+      setEnabled(false);
     }
+  }
 
-    public void setProject(ProjectEntity projectEntity) {
-        this.projectEntity = projectEntity;
-        if (projectEntity != null) {
-            binder.setBean(projectEntity);
-            setEnabled(true);
-        } else {
-            binder.removeBean();
+  private void setEventButtonAdd() {
+    buttonUpdate.addClickListener(
+        event -> {
+          if (projectEntity != null && binder.writeBeanIfValid(projectEntity)) {
+            if (projectEntity.getDestinationEntities() != null
+                && projectEntity.getDestinationEntities().size() > 0) {
+              ConfirmDialog dialog =
+                  new ConfirmDialog(
+                      String.format(
+                          "The project %s is used, are you sure you want to updated ?",
+                          projectEntity.getName()));
+              dialog.addConfirmationListener(
+                  componentEvent -> {
+                    projectService.update(projectEntity);
+                  });
+              dialog.open();
+            } else {
+              projectService.update(projectEntity);
+            }
+          }
+        });
+  }
+
+  private void setEventButtonRemove() {
+    buttonRemove.addClickListener(
+        e -> {
+          List<DestinationEntity> destinationEntities = projectEntity.getDestinationEntities();
+          if (destinationEntities != null && destinationEntities.size() > 0) {
+            dialogWarning.setText(projectEntity);
+            dialogWarning.open();
+
+          } else {
+            projectService.remove(projectEntity);
             clear();
             setEnabled(false);
-        }
-    }
-
-    private void setEventButtonAdd() {
-        buttonUpdate.addClickListener(event -> {
-            if (projectEntity != null && binder.writeBeanIfValid(projectEntity)) {
-                if (projectEntity.getDestinationEntities() != null
-                    && projectEntity.getDestinationEntities().size() > 0) {
-                    ConfirmDialog dialog = new ConfirmDialog(
-                        String.format("The project %s is used, are you sure you want to updated ?",
-                            projectEntity
-                                .getName()));
-                    dialog.addConfirmationListener(componentEvent -> {
-                        projectService.update(projectEntity);
-                    });
-                    dialog.open();
-                } else {
-                    projectService.update(projectEntity);
-                }
-            }
+          }
         });
-    }
+  }
 
-    private void setEventButtonRemove() {
-        buttonRemove.addClickListener(e -> {
-            List<DestinationEntity> destinationEntities = projectEntity.getDestinationEntities();
-            if (destinationEntities != null && destinationEntities.size() > 0) {
-                dialogWarning.setText(projectEntity);
-                dialogWarning.open();
+  private void setElements() {
+    binder = textFieldsBindProject.getBinder();
+    textProjectName = textFieldsBindProject.getTextResearchName();
+    projectSecret = new ProjectSecret(textFieldsBindProject.getTextSecret());
 
-            } else {
-                projectService.remove(projectEntity);
-                clear();
-                setEnabled(false);
-            }
-        });
-    }
+    textProjectName.setLabel("Project Name");
+    textProjectName.setWidthFull();
 
-    private void setElements() {
-        TextFieldsBindProject textFieldsBindProject = new TextFieldsBindProject();
-        binder = textFieldsBindProject.getBinder();
-        textProjectName = textFieldsBindProject.getTextResearchName();
-        profileDropDown = textFieldsBindProject.getProfileDropDown();
-        projectSecret = new ProjectSecret(textFieldsBindProject.getTextSecret());
+    profileDropDown.setLabel("De-identification Profile");
+    profileDropDown.setWidthFull();
 
-        textProjectName.setLabel("Project Name");
-        textProjectName.setWidthFull();
+    buttonUpdate = new Button("Update");
+    buttonRemove = new Button("Remove");
+    buttonRemove.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
+    horizontalLayoutButtons = new HorizontalLayout(buttonUpdate, buttonRemove);
+  }
 
-        profileDropDown.setLabel("De-identification Profile");
-        profileDropDown.setWidthFull();
-
-        buttonUpdate = new Button("Update");
-        buttonRemove = new Button("Remove");
-        buttonRemove.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
-        horizontalLayoutButtons = new HorizontalLayout(buttonUpdate, buttonRemove);
-    }
-
-    private void clear() {
-        binder.readBean(new ProjectEntity());
-    }
+  private void clear() {
+    binder.readBean(new ProjectEntity());
+  }
 }

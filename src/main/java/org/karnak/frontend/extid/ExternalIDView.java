@@ -10,6 +10,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.karnak.backend.cache.CachedPatient;
 import org.karnak.frontend.MainLayout;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 
 @Route(value = "extid", layout = MainLayout.class)
@@ -20,24 +21,30 @@ import org.springframework.security.access.annotation.Secured;
 public class ExternalIDView extends HorizontalLayout {
     public static final String VIEW_NAME = "External pseudonym";
     private final ListDataProvider<CachedPatient> dataProvider;
-    private final ExternalIDGrid grid;
+    private final ExternalIDGrid externalIDGrid;
     private final Div validationStatus;
     private final AddNewPatientForm addNewPatientForm;
 
 
     //https://vaadin.com/components/vaadin-grid/java-examples/assigning-data
-    public ExternalIDView() {
+    @Autowired
+    public ExternalIDView(final ExternalIDGrid externalIDGrid,
+        final AddNewPatientForm addNewPatientForm) {
+        this.externalIDGrid = externalIDGrid;
+
         setSizeFull();
         VerticalLayout verticalLayout = new VerticalLayout();
 
-        grid = new ExternalIDGrid();
-        dataProvider = (ListDataProvider<CachedPatient>) grid.getDataProvider();
-        addNewPatientForm = new AddNewPatientForm(dataProvider);
-        grid.setAddNewPatientButton(addNewPatientForm.getAddNewPatientButton());
+        this.dataProvider = (ListDataProvider<CachedPatient>) this.externalIDGrid.getDataProvider();
+        this.addNewPatientForm = addNewPatientForm;
+        this.addNewPatientForm.init(dataProvider);
 
-        validationStatus = grid.setBinder();
+        this.externalIDGrid.setAddNewPatientButton(addNewPatientForm.getAddNewPatientButton());
 
-        verticalLayout.add(new H2("External Pseudonym"), addNewPatientForm, validationStatus, grid);
+        validationStatus = this.externalIDGrid.setBinder();
+
+        verticalLayout.add(new H2("External Pseudonym"), addNewPatientForm, validationStatus,
+            this.externalIDGrid);
 
         add(verticalLayout);
     }

@@ -56,15 +56,13 @@ public class ForwardNodeService extends ListDataProvider<ForwardNodeEntity> {
     }
 
     /**
-     * Store given ForwardNode to the backing data service.
+     * Store given ForwardNode.
      *
-     * @param data the updated or new data
+     * @param forwardNodeEntity the updated or new forwardNodeEntity
      */
-    public void save(ForwardNodeEntity data) {
-        boolean newData = data.isNewData();
-
-        ForwardNodeEntity dataUpdated = this.forwardNodeRepo.saveAndFlush(data);
-        if (newData) {
+    public void save(ForwardNodeEntity forwardNodeEntity) {
+        ForwardNodeEntity dataUpdated = this.forwardNodeRepo.saveAndFlush(forwardNodeEntity);
+        if (forwardNodeEntity.getId() == null) {
             refreshAll();
         } else {
             refreshItem(dataUpdated);

@@ -3,17 +3,20 @@ package org.karnak.backend.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
-import org.karnak.backend.config.GatewayConfig;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.KheopsAlbumsEntity;
 import org.karnak.backend.data.repo.KheopsAlbumsRepo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-public class KheopsAlbumsDataProvider {
+@Service
+public class KheopsAlbumsService {
 
     private final KheopsAlbumsRepo kheopsAlbumsRepo;
 
-    {
-        kheopsAlbumsRepo = GatewayConfig.getInstance().getKheopsAlbumsPersistence();
+    @Autowired
+    public KheopsAlbumsService(final KheopsAlbumsRepo kheopsAlbumsRepo) {
+        this.kheopsAlbumsRepo = kheopsAlbumsRepo;
     }
 
     public void newSwitchingAlbum(KheopsAlbumsEntity kheopsAlbum) {

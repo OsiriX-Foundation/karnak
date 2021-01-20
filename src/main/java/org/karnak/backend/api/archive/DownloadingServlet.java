@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.karnak.backend.service.gateway.AbstractGateway;
-import org.karnak.backend.service.gateway.GatewaySetUp;
+import org.karnak.backend.service.gateway.GatewaySetUpService;
 import org.karnak.backend.util.ServletUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,12 +28,13 @@ public class DownloadingServlet extends HttpServlet {
     private static final Logger LOGGER = LoggerFactory.getLogger(DownloadingServlet.class);
 
     @Autowired
-    private GatewaySetUp globalConfig;
+    private GatewaySetUpService globalConfig;
     
     @Override
     public final void init() throws ServletException {
         if (globalConfig == null) {
-            LOGGER.error("DownloadingServlet service cannot start: GatewaySetUp is missing.");
+            LOGGER
+                .error("DownloadingServlet service cannot start: GatewaySetUpService is missing.");
             destroy();
         }
     }

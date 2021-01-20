@@ -11,7 +11,8 @@ public class GridDestination extends Grid<DestinationEntity> {
     addColumn(DestinationEntity::getDescription).setHeader("Description").setFlexGrow(20)
         .setSortable(true);
 
-    addColumn(DestinationEntity::getType).setHeader("Type").setFlexGrow(20).setSortable(true);
+    addColumn(DestinationEntity::getDestinationType).setHeader("Type").setFlexGrow(20)
+        .setSortable(true);
   }
 
   public DestinationEntity getSelectedRow() {

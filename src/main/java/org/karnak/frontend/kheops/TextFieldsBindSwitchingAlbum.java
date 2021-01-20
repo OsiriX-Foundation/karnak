@@ -13,7 +13,7 @@ import org.karnak.backend.data.entity.KheopsAlbumsEntity;
 import org.karnak.backend.model.expression.ExprConditionKheops;
 import org.karnak.backend.model.expression.ExpressionError;
 import org.karnak.backend.model.expression.ExpressionResult;
-import org.karnak.backend.service.kheops.SwitchingAlbum;
+import org.karnak.backend.service.kheops.SwitchingAlbumService;
 
 public class TextFieldsBindSwitchingAlbum {
 
@@ -46,7 +46,7 @@ public class TextFieldsBindSwitchingAlbum {
         .withValidator(value -> {
           if (!textUrlAPI.getValue().isBlank()) {
             return validateToken(value, textUrlAPI.getValue(),
-                SwitchingAlbum.MIN_SCOPE_DESTINATION);
+                SwitchingAlbumService.MIN_SCOPE_DESTINATION);
           }
           return true;
         }, "Token can't be validate, minimum permissions: [write]")
@@ -56,7 +56,8 @@ public class TextFieldsBindSwitchingAlbum {
         .withValidator(StringUtils::isNotBlank, "Token source is mandatory")
         .withValidator(value -> {
           if (!textUrlAPI.getValue().isBlank()) {
-            return validateToken(value, textUrlAPI.getValue(), SwitchingAlbum.MIN_SCOPE_SOURCE);
+            return validateToken(value, textUrlAPI.getValue(),
+                SwitchingAlbumService.MIN_SCOPE_SOURCE);
           }
           return true;
         }, "Token can't be validate, minimum permissions: [read, send]")
@@ -84,7 +85,7 @@ public class TextFieldsBindSwitchingAlbum {
     private boolean validateToken(String token, String urlAPI, List<String> validMinScope) {
         try {
             JSONObject responseIntrospect = kheopsApi.tokenIntrospect(urlAPI, token, token);
-            return SwitchingAlbum.validateIntrospectedToken(responseIntrospect, validMinScope);
+          return SwitchingAlbumService.validateIntrospectedToken(responseIntrospect, validMinScope);
         } catch (Exception e) {
             return false;
         }

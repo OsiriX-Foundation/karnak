@@ -27,7 +27,7 @@ import org.karnak.backend.enums.MessageLevel;
 import org.karnak.backend.model.dicom.ConfigNode;
 import org.karnak.backend.model.dicom.DicomNodeList;
 import org.karnak.backend.model.dicom.Message;
-import org.karnak.backend.service.dicom.DicomNodeManager;
+import org.karnak.backend.util.DicomNodeUtil;
 import org.karnak.frontend.component.AbstractDialog;
 
 public class DicomEchoSelectionDialog extends AbstractDialog {
@@ -56,7 +56,7 @@ public class DicomEchoSelectionDialog extends AbstractDialog {
         init();
         createMainLayout();
         dialog.add(mainLayout);
-        selectDicomNoldeList(DicomNodeManager.getAllDicomNodeTypesDefinedLocally());
+        selectDicomNoldeList(DicomNodeUtil.getAllDicomNodeTypesDefinedLocally());
     }
 
     public void selectDicomNoldeList(List<DicomNodeList> nodeLists) {

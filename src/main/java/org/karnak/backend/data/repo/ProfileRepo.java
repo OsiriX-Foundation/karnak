@@ -9,5 +9,5 @@ public interface ProfileRepo extends JpaRepository<ProfileEntity, Long> {
 
     Boolean existsByName(String name);
 
-    Boolean existsByNameAndBydefault(String name, Boolean bydefault);
+    Boolean existsByNameAndByDefault(String name, Boolean byDefault);
 }

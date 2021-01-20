@@ -8,6 +8,7 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.validator.StringLengthValidator;
+import com.vaadin.flow.spring.annotation.UIScope;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -15,10 +16,14 @@ import java.util.List;
 import java.util.WeakHashMap;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.backend.cache.CachedPatient;
+import org.karnak.backend.cache.ExternalIDCache;
 import org.karnak.backend.cache.PatientClient;
-import org.karnak.backend.config.AppConfig;
 import org.karnak.backend.util.PatientClientUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
+@UIScope
 public class ExternalIDGrid extends Grid<CachedPatient> {
 
     private static final String ERROR_MESSAGE_PATIENT = "Length must be between 1 and 50.";
@@ -43,14 +48,15 @@ public class ExternalIDGrid extends Grid<CachedPatient> {
     private static final String LABEL_CANCEL = "Cancel";
     private final transient PatientClient externalIDCache;
 
-    public ExternalIDGrid(){
+    @Autowired
+    public ExternalIDGrid(final ExternalIDCache externalIDCache) {
         binder = new Binder<>(CachedPatient.class);
         patientList = new ArrayList<>();
-        externalIDCache = AppConfig.getInstance().getExternalIDCache();
+        this.externalIDCache = externalIDCache;
 
         setSizeFull();
         getElement().addEventListener("keyup", event -> editor.cancel())
-                .setFilter("event.key === 'Escape' || event.key === 'Esc'");
+            .setFilter("event.key === 'Escape' || event.key === 'Esc'");
         setHeightByRows(true);
         setItems(patientList);
         setElements();
@@ -58,24 +64,24 @@ public class ExternalIDGrid extends Grid<CachedPatient> {
 
         editor.addOpenListener(e -> {
             editButtons.stream()
-                    .forEach(button -> button.setEnabled(!editor.isOpen()));
+                .forEach(button -> button.setEnabled(!editor.isOpen()));
             deleteColumn.setVisible(false);
             addNewPatientButton.setVisible(false);
         });
 
         editor.addCloseListener(e -> {
             editButtons.stream()
-                    .forEach(button -> button.setEnabled(!editor.isOpen()));
+                .forEach(button -> button.setEnabled(!editor.isOpen()));
             deleteColumn.setVisible(true);
             addNewPatientButton.setVisible(true);
         });
 
         saveEditPatientButton.addClickListener(e -> {
             final CachedPatient patientEdit = new CachedPatient(
-                    externalIdField.getValue(),
-                    patientIdField.getValue(),
-                    patientNameField.getValue(),
-                    issuerOfPatientIdField.getValue()
+                externalIdField.getValue(),
+                patientIdField.getValue(),
+                patientNameField.getValue(),
+                issuerOfPatientIdField.getValue()
             );
             externalIDCache.remove(PatientClientUtil.generateKey(editor.getItem())); //old extid
             externalIDCache.put(PatientClientUtil.generateKey(patientEdit), patientEdit); //new extid
@@ -141,23 +147,23 @@ public class ExternalIDGrid extends Grid<CachedPatient> {
         validationStatus.setId("validation");
         validationStatus.getStyle().set("color", "var(--theme-color, red)");
         binder.forField(externalIdField)
-                .withValidator(StringUtils::isNotBlank, "External Pseudonym is empty")
-                .withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
-                .withStatusLabel(validationStatus).bind("pseudonym");
+            .withValidator(StringUtils::isNotBlank, "External Pseudonym is empty")
+            .withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
+            .withStatusLabel(validationStatus).bind("pseudonym");
 
         binder.forField(patientIdField)
-                .withValidator(StringUtils::isNotBlank, "Patient ID is empty")
-                .withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
-                .withStatusLabel(validationStatus).bind("patientId");
+            .withValidator(StringUtils::isNotBlank, "Patient ID is empty")
+            .withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
+            .withStatusLabel(validationStatus).bind("patientId");
 
         binder.forField(patientNameField)
-                .withValidator(StringUtils::isNotBlank, "Patient name is empty")
-                .withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
-                .withStatusLabel(validationStatus).bind("patientName");
+            .withValidator(StringUtils::isNotBlank, "Patient name is empty")
+            .withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
+            .withStatusLabel(validationStatus).bind("patientName");
 
         binder.forField(issuerOfPatientIdField)
-                .withValidator(new StringLengthValidator("Length must be between 0 and 50.", 0, 50))
-                .withStatusLabel(validationStatus).bind("issuerOfPatientId");
+            .withValidator(new StringLengthValidator("Length must be between 0 and 50.", 0, 50))
+            .withStatusLabel(validationStatus).bind("issuerOfPatientId");
 
         return validationStatus;
     }

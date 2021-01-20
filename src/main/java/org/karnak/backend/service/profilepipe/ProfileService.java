@@ -43,27 +43,28 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.weasis.core.util.StringUtil;
 import org.weasis.dicom.param.AttributeEditorContext;
 
-public class Profiles {
+@Service
+public class ProfileService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Profiles.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProfileService.class);
 
-    private final ProfileEntity profileEntity;
-    private final Pseudonym pseudonymUtil;
-    private final ArrayList<ProfileItem> profiles;
+    private final PseudonymService pseudonymService;
+    private ArrayList<ProfileItem> profiles;
     private final Map<String, MaskArea> maskMap;
     private final Marker CLINICAL_MARKER = MarkerFactory.getMarker("CLINICAL");
 
-    public Profiles(ProfileEntity profileEntity) {
+    @Autowired
+    public ProfileService(final PseudonymService pseudonymService) {
         this.maskMap = new HashMap<>();
-        this.pseudonymUtil = new Pseudonym();
-        this.profileEntity = profileEntity;
-        this.profiles = createProfilesList();
+        this.pseudonymService = pseudonymService;
     }
 
-    public void addMaskMap(Map<? extends String, ? extends MaskArea> maskMap){
+    public void addMaskMap(Map<? extends String, ? extends MaskArea> maskMap) {
         this.maskMap.putAll(maskMap);
     }
 
@@ -79,7 +80,7 @@ public class Profiles {
         this.maskMap.put(stationName, maskArea);
     }
 
-    public ArrayList<ProfileItem> createProfilesList() {
+    public ArrayList<ProfileItem> createProfilesList(final ProfileEntity profileEntity) {
         if (profileEntity != null) {
             final List<ProfileElementEntity> listProfileElementEntity = profileEntity
                 .getProfileElementEntities();
@@ -174,6 +175,7 @@ public class Profiles {
     }
 
     public void apply(DicomObject dcm, DestinationEntity destinationEntity,
+        ProfileEntity profileEntity,
         AttributeEditorContext context) {
         final String SOPInstanceUID = dcm.getString(Tag.SOPInstanceUID).orElse(null);
         final String SeriesInstanceUID = dcm.getString(Tag.SeriesInstanceUID).orElse(null);
@@ -187,11 +189,11 @@ public class Profiles {
         MDC.put("issuerOfPatientID", IssuerOfPatientID);
         MDC.put("PatientID", PatientID);
 
-        String pseudonym = pseudonymUtil
-            .generatePseudonym(destinationEntity, dcm, profileEntity.getDefaultissueropatientid());
+        String pseudonym = pseudonymService
+            .generatePseudonym(destinationEntity, dcm, profileEntity.getDefaultIssuerOfPatientId());
 
         String profilesCodeName = String.join(
-            "-", profiles.stream().map(profileEntity -> profileEntity.getCodeName())
+            "-", profiles.stream().map(p -> p.getCodeName())
                 .collect(Collectors.toList())
         );
         BigInteger patientValue = generatePatientID(pseudonym, hmac);
@@ -230,7 +232,8 @@ public class Profiles {
 
         applyAction(dcm, dcmCopy, hmac, null, null, context);
 
-        setDefaultDeidentTagValue(dcm, newPatientID, newPatientName, profilesCodeName, pseudonym, hmac);
+        setDefaultDeidentTagValue(dcm, newPatientID, newPatientName, profilesCodeName, pseudonym,
+            hmac, profileEntity);
 
         final Marker CLINICAL_MARKER = MarkerFactory.getMarker("CLINICAL");
         LOGGER.info(CLINICAL_MARKER,
@@ -267,8 +270,9 @@ public class Profiles {
         return new HMAC(hashContext);
     }
 
-    public void setDefaultDeidentTagValue(DicomObject dcm, String patientID, String patientName, String profilePipeCodeName,
-                                          String pseudonym, HMAC hmac){
+    public void setDefaultDeidentTagValue(DicomObject dcm, String patientID, String patientName,
+        String profilePipeCodeName,
+        String pseudonym, HMAC hmac, ProfileEntity profileEntity) {
         final String profileFilename = profileEntity.getName();
         final ArrayList<ExprAction> defaultDeidentTagValue = new ArrayList<>();
         defaultDeidentTagValue.add(new ExprAction(Tag.PatientID, VR.LO, patientID));
@@ -300,10 +304,13 @@ public class Profiles {
         });
     }
 
-
     public BigInteger generatePatientID(String pseudonym, HMAC hmac) {
         byte[] bytes = new byte[16];
         System.arraycopy(hmac.byteHash(pseudonym), 0, bytes, 0, 16);
         return new BigInteger(1, bytes);
+    }
+
+    public void init(ProfileEntity profileEntity) {
+        this.profiles = createProfilesList(profileEntity);
     }
 }

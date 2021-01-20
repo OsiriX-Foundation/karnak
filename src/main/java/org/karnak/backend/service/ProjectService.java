@@ -28,7 +28,7 @@ public class ProjectService extends ListDataProvider<ProjectEntity> {
     }
 
     public void save(ProjectEntity projectEntity) {
-        boolean isNewProject = projectEntity.isNewData();
+        boolean isNewProject = projectEntity.getId() == null;
         if (isNewProject) {
             getItems().add(projectEntity);
         } else {
@@ -39,7 +39,7 @@ public class ProjectService extends ListDataProvider<ProjectEntity> {
     }
 
     public void update(ProjectEntity projectEntity) {
-        if (!projectEntity.isNewData()) {
+        if (projectEntity.getId() != null) {
             projectRepo.saveAndFlush(projectEntity);
             updateDestinations(projectEntity);
             refreshAll();

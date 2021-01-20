@@ -15,16 +15,24 @@ import org.karnak.backend.model.SopInstance;
 import org.karnak.backend.model.Study;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.weasis.dicom.param.AttributeEditor;
 import org.weasis.dicom.param.AttributeEditorContext;
 import org.weasis.dicom.param.AttributeEditorContext.Abort;
 import org.weasis.dicom.param.DicomProgress;
 
-public class StreamRegistry implements AttributeEditor {
-    private static final Logger LOGGER = LoggerFactory.getLogger(StreamRegistry.class);
+@Service
+public class StreamRegistryService implements AttributeEditor {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(StreamRegistryService.class);
 
     private boolean enable = false;
     private final Map<String, Study> studyMap = new HashMap<>();
+
+    @Autowired
+    public StreamRegistryService() {
+    }
 
     @Override
     public void apply(DicomObject dcm, AttributeEditorContext context) {

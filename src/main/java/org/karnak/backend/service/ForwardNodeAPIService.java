@@ -13,13 +13,13 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ForwardNodeAPI implements Serializable {
+public class ForwardNodeAPIService implements Serializable {
 
     private final ForwardNodeService forwardNodeService;
     private ApplicationEventPublisher applicationEventPublisher;
 
     @Autowired
-    public ForwardNodeAPI(final ForwardNodeService forwardNodeService) {
+    public ForwardNodeAPIService(final ForwardNodeService forwardNodeService) {
         this.forwardNodeService = forwardNodeService;
     }
 
@@ -27,19 +27,21 @@ public class ForwardNodeAPI implements Serializable {
         return forwardNodeService;
     }
 
-    public void addForwardNode(ForwardNodeEntity data) {
-        NodeEventType eventType = data.isNewData() ? NodeEventType.ADD : NodeEventType.UPDATE;
+    public void addForwardNode(ForwardNodeEntity forwardNodeEntity) {
+        NodeEventType eventType =
+            forwardNodeEntity.getId() == null ? NodeEventType.ADD : NodeEventType.UPDATE;
         if (eventType == NodeEventType.ADD) {
             Optional<ForwardNodeEntity> val = forwardNodeService.getAllForwardNodes()
                 .stream()
-                .filter(f -> f.getFwdAeTitle().equals(data.getFwdAeTitle())).findFirst();
+                .filter(f -> f.getFwdAeTitle().equals(forwardNodeEntity.getFwdAeTitle()))
+                .findFirst();
             if (val.isPresent()) {
                 // showError("Cannot add this new node because the AE-Title already exists!");
                 return;
             }
         }
-        forwardNodeService.save(data);
-        applicationEventPublisher.publishEvent(new NodeEvent(data, eventType));
+        forwardNodeService.save(forwardNodeEntity);
+        applicationEventPublisher.publishEvent(new NodeEvent(forwardNodeEntity, eventType));
     }
 
     public void updateForwardNode(ForwardNodeEntity data) {

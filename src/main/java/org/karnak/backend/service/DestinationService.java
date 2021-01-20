@@ -19,6 +19,7 @@ public class DestinationService extends ListDataProvider<DestinationEntity> {
 
     // Services
     private final ForwardNodeService forwardNodeService;
+    private final KheopsAlbumsService kheopsAlbumsService;
 
     private ForwardNodeEntity forwardNodeEntity; // Current forward node
     private boolean hasChanges;
@@ -30,10 +31,12 @@ public class DestinationService extends ListDataProvider<DestinationEntity> {
 
     @Autowired
     public DestinationService(final DestinationRepo destinationRepo,
-        final ForwardNodeService forwardNodeService) {
+        final ForwardNodeService forwardNodeService,
+        final KheopsAlbumsService kheopsAlbumsService) {
         super(new HashSet<>());
         this.destinationRepo = destinationRepo;
         this.forwardNodeService = forwardNodeService;
+        this.kheopsAlbumsService = kheopsAlbumsService;
     }
 
     @Override
@@ -64,32 +67,30 @@ public class DestinationService extends ListDataProvider<DestinationEntity> {
     }
 
     /**
-     * Store given Destination to the backing data service.
+     * Store given Destination to the backing destinationEntity service.
      *
-     * @param data the updated or new data
+     * @param destinationEntity the updated or new destinationEntity
      */
-    public void save(DestinationEntity data) {
-        KheopsAlbumsDataProvider kheopsAlbumsDataProvider = new KheopsAlbumsDataProvider();
-        boolean newData = data.isNewData();
-
+    public void save(DestinationEntity destinationEntity) {
         DestinationEntity dataUpdated = forwardNodeService
-            .updateDestination(forwardNodeEntity, data);
-        if (newData) {
+            .updateDestination(forwardNodeEntity, destinationEntity);
+        if (destinationEntity.getId() == null) {
             refreshAll();
         } else {
-            dataUpdated = removeValuesOnDisabledDesidentification(data);
+            dataUpdated = removeValuesOnDisabledDesidentification(destinationEntity);
             refreshItem(dataUpdated);
         }
         hasChanges = true;
         destinationRepo.saveAndFlush(dataUpdated);
-        kheopsAlbumsDataProvider.updateSwitchingAlbumsFromDestination(data);
+        kheopsAlbumsService.updateSwitchingAlbumsFromDestination(destinationEntity);
     }
 
-    private DestinationEntity removeValuesOnDisabledDesidentification(DestinationEntity data) {
-        if (data.getDesidentification() == false) {
-            data.setProjectEntity(null);
+    private DestinationEntity removeValuesOnDisabledDesidentification(
+        DestinationEntity destinationEntity) {
+        if (!destinationEntity.isDesidentification()) {
+            destinationEntity.setProjectEntity(null);
         }
-        return data;
+        return destinationEntity;
     }
 
     /**

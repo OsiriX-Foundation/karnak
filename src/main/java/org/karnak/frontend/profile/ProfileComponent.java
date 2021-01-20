@@ -12,6 +12,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.server.StreamResource;
+import com.vaadin.flow.spring.annotation.UIScope;
 import java.io.ByteArrayInputStream;
 import java.util.Comparator;
 import org.karnak.backend.data.entity.ProfileElementEntity;
@@ -19,7 +20,11 @@ import org.karnak.backend.data.entity.ProfileEntity;
 import org.karnak.backend.service.profilepipe.ProfilePipeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
+@UIScope
 public class ProfileComponent extends VerticalLayout {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProfileComponent.class);
@@ -32,13 +37,14 @@ public class ProfileComponent extends VerticalLayout {
     private final WarningDeleteProfileUsed dialogWarning;
     private final ProfileElementMainView profileElementMainView;
 
-    ProfileComponent(ProfilePipeService profilePipeService, ProfileNameGrid profileNameGrid,
-        ProfileElementMainView profileElementMainView) {
+    @Autowired
+    public ProfileComponent(final ProfilePipeService profilePipeService,
+        final ProfileNameGrid profileNameGrid) {
         setSizeFull();
-        this.profileElementMainView = profileElementMainView;
         this.profilePipeService = profilePipeService;
         this.profileNameGrid = profileNameGrid;
-        dialogWarning = new WarningDeleteProfileUsed();
+        this.profileElementMainView = new ProfileElementMainView();
+        this.dialogWarning = new WarningDeleteProfileUsed();
     }
 
     public static StreamResource createStreamResource(ProfileEntity profileEntity) {
@@ -65,7 +71,7 @@ public class ProfileComponent extends VerticalLayout {
         removeAll();
         H2 title = new H2("Profile");
         ProfileMetadata name = new ProfileMetadata("Name", profileEntity.getName(),
-            profileEntity.getBydefault());
+            profileEntity.getByDefault());
         name.getValidateEditButton().addClickListener(event -> {
             profileEntity.setName(name.getValue());
             updatedProfilePipes();
@@ -73,7 +79,7 @@ public class ProfileComponent extends VerticalLayout {
 
         ProfileMetadata version = new ProfileMetadata("Profile version", profileEntity.getVersion(),
             profileEntity
-                .getBydefault());
+                .getByDefault());
         version.getValidateEditButton().addClickListener(event -> {
             profileEntity.setVersion(version.getValue());
             updatedProfilePipes();
@@ -81,24 +87,24 @@ public class ProfileComponent extends VerticalLayout {
 
         ProfileMetadata minVersion = new ProfileMetadata("Min. version KARNAK required",
             profileEntity
-                .getMinimumkarnakversion(), profileEntity.getBydefault());
+                .getMinimumKarnakVersion(), profileEntity.getByDefault());
         minVersion.getValidateEditButton().addClickListener(event -> {
-            profileEntity.setMinimumkarnakversion(minVersion.getValue());
+            profileEntity.setMinimumKarnakVersion(minVersion.getValue());
             updatedProfilePipes();
         });
 
         ProfileMetadata defaultIssuerOfPatientID = new ProfileMetadata(
             "Default issuer of PatientID", profileEntity
-            .getDefaultissueropatientid(), false);
+            .getDefaultIssuerOfPatientId(), false);
         defaultIssuerOfPatientID.getValidateEditButton().addClickListener(event -> {
-            profileEntity.setDefaultissueropatientid(defaultIssuerOfPatientID.getValue());
+            profileEntity.setDefaultIssuerOfPatientId(defaultIssuerOfPatientID.getValue());
             updatedProfilePipes();
         });
         createDownloadButton(profileEntity);
 
         ProfileMasksView profileMasksView = new ProfileMasksView(profileEntity.getMaskEntities());
 
-        if (profileEntity.getBydefault()) {
+        if (profileEntity.getByDefault()) {
             add(new HorizontalLayout(title, download), name, version, minVersion,
                 defaultIssuerOfPatientID, profileMasksView);
         } else {
@@ -164,5 +170,9 @@ public class ProfileComponent extends VerticalLayout {
     public void removeProfileInView() {
         profileElementMainView.removeAll();
         removeAll();
+    }
+
+    public ProfileElementMainView getProfileElementMainView() {
+        return profileElementMainView;
     }
 }

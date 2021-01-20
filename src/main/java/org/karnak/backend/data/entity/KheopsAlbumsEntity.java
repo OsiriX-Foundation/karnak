@@ -16,57 +16,60 @@ public class KheopsAlbumsEntity implements Serializable {
 
   private static final long serialVersionUID = -3315720301354286325L;
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
-
   private String urlAPI;
   private String authorizationDestination;
   private String authorizationSource;
   private String condition;
-
-  @ManyToOne
-  @JoinColumn(name = "destination_id")
   private DestinationEntity destinationEntity = new DestinationEntity();
 
   public KheopsAlbumsEntity() {
   }
 
-  public KheopsAlbumsEntity(String urlAPI, String authorizationDestination,
-      String authorizationSource, String condition) {
+  public KheopsAlbumsEntity(
+      String urlAPI,
+      String authorizationDestination,
+      String authorizationSource,
+      String condition) {
     this.urlAPI = urlAPI;
     this.authorizationDestination = authorizationDestination;
     this.authorizationSource = authorizationSource;
     this.condition = condition;
   }
 
-    public Long getId() {
-        return id;
-    }
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  public Long getId() {
+    return id;
+  }
 
-    public String getUrlAPI() {
-        return urlAPI;
-    }
+  public void setId(Long id) {
+    this.id = id;
+  }
 
-    public void setUrlAPI(String urlAPI) {
-        this.urlAPI = urlAPI;
-    }
+  public String getUrlAPI() {
+    return urlAPI;
+  }
 
-    public String getAuthorizationDestination() {
-        return authorizationDestination;
-    }
+  public void setUrlAPI(String urlAPI) {
+    this.urlAPI = urlAPI;
+  }
 
-    public void setAuthorizationDestination(String authorizationDestination) {
-        this.authorizationDestination = authorizationDestination;
-    }
+  public String getAuthorizationDestination() {
+    return authorizationDestination;
+  }
 
-    public String getAuthorizationSource() {
-        return authorizationSource;
-    }
+  public void setAuthorizationDestination(String authorizationDestination) {
+    this.authorizationDestination = authorizationDestination;
+  }
 
-    public void setAuthorizationSource(String authorizationSource) {
-        this.authorizationSource = authorizationSource;
-    }
+  public String getAuthorizationSource() {
+    return authorizationSource;
+  }
+
+  public void setAuthorizationSource(String authorizationSource) {
+    this.authorizationSource = authorizationSource;
+  }
 
   public String getCondition() {
     return condition;
@@ -76,6 +79,8 @@ public class KheopsAlbumsEntity implements Serializable {
     this.condition = condition;
   }
 
+  @ManyToOne
+  @JoinColumn(name = "destination_id")
   public DestinationEntity getDestinationEntity() {
     return destinationEntity;
   }
@@ -93,17 +98,17 @@ public class KheopsAlbumsEntity implements Serializable {
       return false;
     }
     KheopsAlbumsEntity that = (KheopsAlbumsEntity) o;
-    return Objects.equals(id, that.id) &&
-        Objects.equals(urlAPI, that.urlAPI) &&
-        Objects.equals(authorizationDestination, that.authorizationDestination) &&
-        Objects.equals(authorizationSource, that.authorizationSource) &&
-        Objects.equals(condition, that.condition) &&
-        Objects.equals(destinationEntity, that.destinationEntity);
+    return Objects.equals(id, that.id)
+        && Objects.equals(urlAPI, that.urlAPI)
+        && Objects.equals(authorizationDestination, that.authorizationDestination)
+        && Objects.equals(authorizationSource, that.authorizationSource)
+        && Objects.equals(condition, that.condition)
+        && Objects.equals(destinationEntity, that.destinationEntity);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, urlAPI, authorizationDestination, authorizationSource, condition,
-        destinationEntity);
+    return Objects.hash(
+        id, urlAPI, authorizationDestination, authorizationSource, condition, destinationEntity);
   }
 }

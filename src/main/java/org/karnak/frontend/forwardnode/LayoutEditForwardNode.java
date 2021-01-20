@@ -6,13 +6,12 @@ import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.spring.annotation.UIScope;
-import javax.annotation.PostConstruct;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.DicomSourceNodeEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.enums.DestinationType;
 import org.karnak.backend.service.DestinationService;
-import org.karnak.backend.service.ForwardNodeAPI;
+import org.karnak.backend.service.ForwardNodeAPIService;
 import org.karnak.backend.service.SourceNodeService;
 import org.karnak.frontend.component.ConfirmDialog;
 import org.karnak.frontend.util.UIS;
@@ -25,12 +24,12 @@ public class LayoutEditForwardNode extends VerticalLayout {
 
     private final ForwardNodeViewLogic forwardNodeViewLogic;
     private final ViewLogic viewLogic;
-    private final ForwardNodeAPI forwardNodeAPI;
+    private final ForwardNodeAPIService forwardNodeAPIService;
     private final Binder<ForwardNodeEntity> binderForwardNode;
     private final DestinationService destinationService;
     private final SourceNodeService sourceNodeService;
     public ForwardNodeEntity currentForwardNodeEntity;
-    private EditAETitleDescription editAETitleDescription;
+    private final EditAETitleDescription editAETitleDescription;
     private final TabSourcesDestination tabSourcesDestination;
     private final VerticalLayout layoutDestinationsSources;
     private final DestinationsView destinationsView;
@@ -42,14 +41,14 @@ public class LayoutEditForwardNode extends VerticalLayout {
 
     @Autowired
     public LayoutEditForwardNode(ForwardNodeViewLogic forwardNodeViewLogic,
-        ForwardNodeAPI forwardNodeAPI, NewUpdateDestination newUpdateDestination,
+        ForwardNodeAPIService forwardNodeAPIService, NewUpdateDestination newUpdateDestination,
         NewUpdateSourceNode newUpdateSourceNode, SourceNodeService sourceNodeService,
         SourceNodesView sourceNodesView, DestinationService destinationService,
         DestinationsView destinationsView) {
 
         this.forwardNodeViewLogic = forwardNodeViewLogic;
         this.viewLogic = new ViewLogic(this);
-        this.forwardNodeAPI = forwardNodeAPI;
+        this.forwardNodeAPIService = forwardNodeAPIService;
         this.currentForwardNodeEntity = null;
         this.binderForwardNode = new BeanValidationBinder<>(ForwardNodeEntity.class);
         this.tabSourcesDestination = new TabSourcesDestination();
@@ -61,10 +60,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
         this.sourceNodesView = sourceNodesView;
         this.destinationService = destinationService;
         this.destinationsView = destinationsView;
-    }
 
-    @PostConstruct
-    public void init() {
         this.layoutDestinationsSources.setSizeFull();
         this.editAETitleDescription = new EditAETitleDescription(binderForwardNode);
 
@@ -100,7 +96,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
     public void load(ForwardNodeEntity forwardNodeEntity) {
         this.currentForwardNodeEntity = forwardNodeEntity;
         this.editAETitleDescription.setForwardNode(forwardNodeEntity);
-        setApplicationEventPublisher(forwardNodeAPI.getApplicationEventPublisher());
+        setApplicationEventPublisher(forwardNodeAPIService.getApplicationEventPublisher());
         this.destinationsView.setForwardNode(forwardNodeEntity);
         this.destinationService.setForwardNode(forwardNodeEntity);
 
@@ -172,7 +168,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
                     "Are you sure to delete the forward node " + this.currentForwardNodeEntity
                         .getFwdAeTitle() + " ?");
                 dialog.addConfirmationListener(componentEvent -> {
-                    this.forwardNodeAPI.deleteForwardNode(this.currentForwardNodeEntity);
+                    this.forwardNodeAPIService.deleteForwardNode(this.currentForwardNodeEntity);
                     this.forwardNodeViewLogic.cancelForwardNode();
                 });
                 dialog.open();
@@ -191,7 +187,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
     private void setEventSaveButton() {
         this.buttonForwardNodeSaveDeleteCancel.getSave().addClickListener(event -> {
             if (binderForwardNode.writeBeanIfValid(this.currentForwardNodeEntity)) {
-                this.forwardNodeAPI.updateForwardNode(this.currentForwardNodeEntity);
+                this.forwardNodeAPIService.updateForwardNode(this.currentForwardNodeEntity);
                 this.forwardNodeViewLogic.cancelForwardNode();
             }
         });
@@ -200,7 +196,8 @@ public class LayoutEditForwardNode extends VerticalLayout {
     private void setEventDestination() {
         this.destinationsView.getGridDestination().addItemClickListener(event -> {
             DestinationEntity destinationEntity = event.getItem();
-            this.newUpdateDestination.load(destinationEntity, destinationEntity.getType());
+            this.newUpdateDestination
+                .load(destinationEntity, destinationEntity.getDestinationType());
             addFormView(this.newUpdateDestination);
         });
     }

@@ -5,7 +5,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.spring.annotation.UIScope;
-import javax.annotation.PostConstruct;
 import org.karnak.backend.data.entity.DicomSourceNodeEntity;
 import org.karnak.backend.enums.NodeEventType;
 import org.karnak.backend.model.NodeEvent;
@@ -32,10 +31,6 @@ public class NewUpdateSourceNode extends VerticalLayout {
         binderFormSourceNode = new BeanValidationBinder<>(DicomSourceNodeEntity.class);
         buttonSaveDeleteCancel = new ButtonSaveDeleteCancel();
         formSourceNode = new FormSourceNode(binderFormSourceNode, buttonSaveDeleteCancel);
-    }
-
-    @PostConstruct
-    public void init() {
         setButtonSaveEvent();
         setButtonDeleteEvent();
     }
@@ -60,7 +55,8 @@ public class NewUpdateSourceNode extends VerticalLayout {
 
     private void setButtonSaveEvent() {
         buttonSaveDeleteCancel.getSave().addClickListener(event -> {
-            NodeEventType nodeEventType = currentSourceNode.isNewData() == true ? NodeEventType.ADD : NodeEventType.UPDATE;
+            NodeEventType nodeEventType =
+                currentSourceNode.getId() == null ? NodeEventType.ADD : NodeEventType.UPDATE;
             if (binderFormSourceNode.writeBeanIfValid(currentSourceNode)) {
                 sourceNodeService.save(currentSourceNode);
                 viewLogic.updateForwardNodeInEditView();

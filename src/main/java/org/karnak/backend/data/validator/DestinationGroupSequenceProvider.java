@@ -31,7 +31,7 @@ public class DestinationGroupSequenceProvider implements
   @Override
   public List<Class<?>> getValidationGroups(DestinationEntity destinationEntity) {
     if (destinationEntity != null) {
-      DestinationType type = destinationEntity.getType();
+      DestinationType type = destinationEntity.getDestinationType();
       if (type != null) {
         switch (type) {
           case dicom:
