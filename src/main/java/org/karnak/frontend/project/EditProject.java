@@ -9,8 +9,10 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.spring.annotation.UIScope;
 import java.util.List;
 import org.karnak.backend.data.entity.DestinationEntity;
+import org.karnak.backend.data.entity.ProfileEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.service.ProjectService;
+import org.karnak.backend.service.profilepipe.ProfilePipeService;
 import org.karnak.frontend.component.ConfirmDialog;
 import org.karnak.frontend.forwardnode.ProfileDropDown;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +22,12 @@ import org.springframework.stereotype.Component;
 @UIScope
 public class EditProject extends VerticalLayout {
 
+  // Services
   private final ProjectService projectService;
-  private final ProfileDropDown profileDropDown;
+  private final ProfilePipeService profilePipeService;
+
+  private ProfileDropDown profileDropDown;
   private final WarningRemoveProjectUsed dialogWarning;
-  private final TextFieldsBindProject textFieldsBindProject;
   private Binder<ProjectEntity> binder;
   private TextField textProjectName;
   private ProjectSecret projectSecret;
@@ -33,11 +37,11 @@ public class EditProject extends VerticalLayout {
   private ProjectEntity projectEntity;
 
   @Autowired
-  public EditProject(final ProjectService projectService, final ProfileDropDown profileDropDown,
-      final TextFieldsBindProject textFieldsBindProject) {
+  public EditProject(final ProjectService projectService,
+      final ProfilePipeService profilePipeService) {
     this.projectService = projectService;
-    this.profileDropDown = profileDropDown;
-    this.textFieldsBindProject = textFieldsBindProject;
+    this.profilePipeService = profilePipeService;
+
     this.dialogWarning = new WarningRemoveProjectUsed();
     setEnabled(false);
     setElements();
@@ -99,16 +103,17 @@ public class EditProject extends VerticalLayout {
   }
 
   private void setElements() {
+    TextFieldsBindProject textFieldsBindProject = new TextFieldsBindProject();
     binder = textFieldsBindProject.getBinder();
     textProjectName = textFieldsBindProject.getTextResearchName();
+    profileDropDown = textFieldsBindProject.getProfileDropDown();
     projectSecret = new ProjectSecret(textFieldsBindProject.getTextSecret());
-
+    profileDropDown.setItems(profilePipeService.getAllProfiles());
+    profileDropDown.setItemLabelGenerator(ProfileEntity::getName);
     textProjectName.setLabel("Project Name");
     textProjectName.setWidthFull();
-
     profileDropDown.setLabel("De-identification Profile");
     profileDropDown.setWidthFull();
-
     buttonUpdate = new Button("Update");
     buttonRemove = new Button("Remove");
     buttonRemove.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
