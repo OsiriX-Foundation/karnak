@@ -44,14 +44,16 @@ public class ForwardNodeAPIService implements Serializable {
         applicationEventPublisher.publishEvent(new NodeEvent(forwardNodeEntity, eventType));
     }
 
-    public void updateForwardNode(ForwardNodeEntity data) {
-        forwardNodeService.save(data);
-        applicationEventPublisher.publishEvent(new NodeEvent(data, NodeEventType.UPDATE));
+    public void updateForwardNode(ForwardNodeEntity forwardNodeEntity) {
+        forwardNodeService.save(forwardNodeEntity);
+        applicationEventPublisher
+            .publishEvent(new NodeEvent(forwardNodeEntity, NodeEventType.UPDATE));
     }
 
-    public void deleteForwardNode(ForwardNodeEntity data) {
-        forwardNodeService.delete(data);
-        applicationEventPublisher.publishEvent(new NodeEvent(data, NodeEventType.REMOVE));
+    public void deleteForwardNode(ForwardNodeEntity forwardNodeEntity) {
+        forwardNodeService.delete(forwardNodeEntity);
+        applicationEventPublisher
+            .publishEvent(new NodeEvent(forwardNodeEntity, NodeEventType.REMOVE));
     }
 
     public ForwardNodeEntity getForwardNodeById(Long dataId) {

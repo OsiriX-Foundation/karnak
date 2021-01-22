@@ -44,10 +44,12 @@ public class LayoutEditForwardNode extends VerticalLayout {
         ForwardNodeAPIService forwardNodeAPIService, NewUpdateDestination newUpdateDestination,
         NewUpdateSourceNode newUpdateSourceNode, SourceNodeService sourceNodeService,
         SourceNodesView sourceNodesView, DestinationService destinationService,
-        DestinationsView destinationsView) {
+        DestinationsView destinationsView,
+        final ApplicationEventPublisher applicationEventPublisher) {
 
         this.forwardNodeViewLogic = forwardNodeViewLogic;
         this.viewLogic = new ViewLogic(this);
+        this.viewLogic.setApplicationEventPublisher(applicationEventPublisher);
         this.forwardNodeAPIService = forwardNodeAPIService;
         this.currentForwardNodeEntity = null;
         this.binderForwardNode = new BeanValidationBinder<>(ForwardNodeEntity.class);
