@@ -6,21 +6,17 @@ import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.spring.annotation.UIScope;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.enums.IdTypes;
 import org.karnak.backend.service.ProjectService;
 import org.karnak.frontend.project.MainViewProjects;
 import org.karnak.frontend.util.UIS;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
-@UIScope
+
 public class LayoutDesidentification extends Div {
 
-    private final ProjectService projectService;
+    private ProjectService projectService;
 
     private Checkbox checkboxDesidentification;
     private Label labelDisclaimer;
@@ -39,12 +35,12 @@ public class LayoutDesidentification extends Div {
     final String[] extidSentence = {"Pseudonym are generate automatically",
         "Pseudonym is already store in KARNAK", "Pseudonym is in a DICOM tag"};
 
-    @Autowired
-    public LayoutDesidentification(final ProjectService projectService) {
-        this.projectService = projectService;
+
+    public LayoutDesidentification() {
     }
 
-    public void init(final Binder<DestinationEntity> binder) {
+    public void init(final Binder<DestinationEntity> binder, final ProjectService projectService) {
+        this.projectService = projectService;
         this.projectDropDown = new ProjectDropDown();
         this.projectDropDown.setItems(projectService.getAllProjects());
         this.projectDropDown.setItemLabelGenerator(ProjectEntity::getName);

@@ -10,6 +10,8 @@ import com.vaadin.flow.spring.annotation.UIScope;
 import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.backend.data.entity.DestinationEntity;
+import org.karnak.backend.service.ProjectService;
+import org.karnak.backend.service.SOPClassUIDService;
 import org.karnak.frontend.component.converter.HStringToIntegerConverter;
 import org.karnak.frontend.util.UIS;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,19 +37,24 @@ public class FormDICOM extends VerticalLayout {
     private final LayoutDesidentification layoutDesidentification;
     private final FilterBySOPClassesForm filterBySOPClassesForm;
 
+    private final SOPClassUIDService sopClassUIDService;
+    private final ProjectService projectService;
+
     @Autowired
-    public FormDICOM(final LayoutDesidentification layoutDesidentification,
-        final FilterBySOPClassesForm filterBySOPClassesForm) {
-        this.layoutDesidentification = layoutDesidentification;
-        this.filterBySOPClassesForm = filterBySOPClassesForm;
+    public FormDICOM(final SOPClassUIDService sopClassUIDService,
+        final ProjectService projectService) {
+        this.sopClassUIDService = sopClassUIDService;
+        this.projectService = projectService;
+        this.layoutDesidentification = new LayoutDesidentification();
+        this.filterBySOPClassesForm = new FilterBySOPClassesForm();
     }
 
     public void init(Binder<DestinationEntity> binder,
         ButtonSaveDeleteCancel buttonSaveDeleteCancel) {
 
         this.binder = binder;
-        this.layoutDesidentification.init(this.binder);
-        this.filterBySOPClassesForm.init(this.binder);
+        this.layoutDesidentification.init(this.binder, projectService);
+        this.filterBySOPClassesForm.init(this.binder, sopClassUIDService);
 
         setSizeFull();
 
