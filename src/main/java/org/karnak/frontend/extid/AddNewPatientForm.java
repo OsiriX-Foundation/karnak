@@ -10,22 +10,18 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.validator.StringLengthValidator;
-import com.vaadin.flow.spring.annotation.UIScope;
 import java.util.Collection;
 import java.util.Iterator;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.backend.cache.CachedPatient;
-import org.karnak.backend.cache.ExternalIDCache;
 import org.karnak.backend.cache.PatientClient;
 import org.karnak.backend.cache.PseudonymPatient;
+import org.karnak.backend.config.AppConfig;
 import org.karnak.backend.util.PatientClientUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
-@UIScope
+
 public class AddNewPatientForm extends VerticalLayout {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(AddNewPatientForm.class);
@@ -43,10 +39,9 @@ public class AddNewPatientForm extends VerticalLayout {
 
     private final transient PatientClient externalIDCache;
 
-    @Autowired
-    public AddNewPatientForm(final ExternalIDCache externalIDCache) {
+    public AddNewPatientForm() {
         setSizeFull();
-        this.externalIDCache = externalIDCache;
+        this.externalIDCache = AppConfig.getInstance().getExternalIDCache();
         binder = new BeanValidationBinder<>(CachedPatient.class);
 
         setElements();

@@ -8,7 +8,6 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.validator.StringLengthValidator;
-import com.vaadin.flow.spring.annotation.UIScope;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -16,14 +15,11 @@ import java.util.List;
 import java.util.WeakHashMap;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.backend.cache.CachedPatient;
-import org.karnak.backend.cache.ExternalIDCache;
 import org.karnak.backend.cache.PatientClient;
+import org.karnak.backend.config.AppConfig;
 import org.karnak.backend.util.PatientClientUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
-@UIScope
+
 public class ExternalIDGrid extends Grid<CachedPatient> {
 
     private static final String ERROR_MESSAGE_PATIENT = "Length must be between 1 and 50.";
@@ -48,11 +44,10 @@ public class ExternalIDGrid extends Grid<CachedPatient> {
     private static final String LABEL_CANCEL = "Cancel";
     private final transient PatientClient externalIDCache;
 
-    @Autowired
-    public ExternalIDGrid(final ExternalIDCache externalIDCache) {
+    public ExternalIDGrid() {
         binder = new Binder<>(CachedPatient.class);
         patientList = new ArrayList<>();
-        this.externalIDCache = externalIDCache;
+        this.externalIDCache = AppConfig.getInstance().getExternalIDCache();
 
         setSizeFull();
         getElement().addEventListener("keyup", event -> editor.cancel())

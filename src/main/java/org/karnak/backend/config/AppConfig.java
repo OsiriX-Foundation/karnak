@@ -3,6 +3,9 @@ package org.karnak.backend.config;
 import java.io.InputStream;
 import java.net.URL;
 import javax.annotation.PostConstruct;
+import org.karnak.backend.cache.ExternalIDCache;
+import org.karnak.backend.cache.MainzellisteCache;
+import org.karnak.backend.cache.PatientClient;
 import org.karnak.backend.data.repo.ProfileRepo;
 import org.karnak.backend.model.profilebody.ProfilePipeBody;
 import org.karnak.backend.model.standard.ConfidentialityProfiles;
@@ -89,6 +92,15 @@ public class AppConfig {
         return new ConfidentialityProfiles();
     }
 
+    @Bean("ExternalIDPatient")
+    public PatientClient getExternalIDCache() {
+        return new ExternalIDCache();
+    }
+
+    @Bean("MainzellisteCache")
+    public PatientClient getMainzellisteCache() {
+        return new MainzellisteCache();
+    }
 
     // https://stackoverflow.com/questions/27405713/running-code-after-spring-boot-starts
     @EventListener(ApplicationReadyEvent.class)

@@ -10,7 +10,6 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.karnak.backend.cache.CachedPatient;
 import org.karnak.frontend.MainLayout;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 
 @Route(value = "extid", layout = MainLayout.class)
@@ -27,16 +26,13 @@ public class ExternalIDView extends HorizontalLayout {
 
 
     //https://vaadin.com/components/vaadin-grid/java-examples/assigning-data
-    @Autowired
-    public ExternalIDView(final ExternalIDGrid externalIDGrid,
-        final AddNewPatientForm addNewPatientForm) {
-        this.externalIDGrid = externalIDGrid;
-
+    public ExternalIDView() {
         setSizeFull();
         VerticalLayout verticalLayout = new VerticalLayout();
 
+        this.externalIDGrid = new ExternalIDGrid();
         this.dataProvider = (ListDataProvider<CachedPatient>) this.externalIDGrid.getDataProvider();
-        this.addNewPatientForm = addNewPatientForm;
+        this.addNewPatientForm = new AddNewPatientForm();
         this.addNewPatientForm.init(dataProvider);
 
         this.externalIDGrid.setAddNewPatientButton(addNewPatientForm.getAddNewPatientButton());

@@ -5,10 +5,9 @@ import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.util.TagUtils;
 import org.karnak.backend.api.PseudonymApi;
 import org.karnak.backend.api.rqbody.Fields;
-import org.karnak.backend.cache.ExternalIDCache;
-import org.karnak.backend.cache.MainzellisteCache;
 import org.karnak.backend.cache.MainzellistePatient;
 import org.karnak.backend.cache.PatientClient;
+import org.karnak.backend.config.AppConfig;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.enums.IdTypes;
 import org.karnak.backend.model.profilepipe.PatientMetadata;
@@ -28,10 +27,9 @@ public class PseudonymService {
   private final PatientClient mainzellisteCache;
 
   @Autowired
-  public PseudonymService(final ExternalIDCache externalIDCache,
-      final MainzellisteCache mainzellisteCache) {
-    this.externalIdCache = externalIDCache;
-    this.mainzellisteCache = mainzellisteCache;
+  public PseudonymService() {
+    this.externalIdCache = AppConfig.getInstance().getExternalIDCache();
+    this.mainzellisteCache = AppConfig.getInstance().getMainzellisteCache();
   }
 
   public String generatePseudonym(DestinationEntity destinationEntity, DicomObject dcm,

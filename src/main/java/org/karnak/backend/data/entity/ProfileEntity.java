@@ -119,11 +119,13 @@ public class ProfileEntity implements Serializable {
         this.defaultIssuerOfPatientId = defaultIssuerOfPatientId;
     }
 
+    @JsonGetter("profileElements")
     @OneToMany(mappedBy = "profileEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     public List<ProfileElementEntity> getProfileElementEntities() {
         return profileElementEntities;
     }
 
+    @JsonSetter("profileElements")
     public void setProfileElementEntities(List<ProfileElementEntity> profileElementEntities) {
         this.profileElementEntities = profileElementEntities;
     }
