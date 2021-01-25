@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2020-2021 Karnak Team and other contributors.
+ *
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ */
 package org.karnak.frontend.forwardnode;
 
 import com.vaadin.flow.component.button.Button;
@@ -17,87 +26,84 @@ import org.springframework.stereotype.Component;
 @UIScope
 public class DestinationsView extends VerticalLayout {
 
-    private final DestinationService destinationService;
+  private final DestinationService destinationService;
 
-    private final TextField filter;
-    private final Button newDestinationDICOM;
-    private final Button newDestinationSTOW;
-    private final GridDestination gridDestination;
+  private final TextField filter;
+  private final Button newDestinationDICOM;
+  private final Button newDestinationSTOW;
+  private final GridDestination gridDestination;
 
-    private final HorizontalLayout layoutFilterButton;
+  private final HorizontalLayout layoutFilterButton;
 
-    private final String LABEL_NEW_DESTINATION_DICOM = "DICOM";
-    private final String LABEL_NEW_DESTINATION_STOW = "STOW";
-    private final String PLACEHOLDER_FILTER = "Filter properties of destination";
+  private final String LABEL_NEW_DESTINATION_DICOM = "DICOM";
+  private final String LABEL_NEW_DESTINATION_STOW = "STOW";
+  private final String PLACEHOLDER_FILTER = "Filter properties of destination";
 
-    @Autowired
+  @Autowired
     public DestinationsView(final DestinationService destinationService) {
         this.destinationService = destinationService;
 
         setSizeFull();
         this.filter = new TextField();
         this.newDestinationDICOM = new Button(LABEL_NEW_DESTINATION_DICOM);
-        this.newDestinationSTOW = new Button(LABEL_NEW_DESTINATION_STOW);
-        this.gridDestination = new GridDestination();
+    this.newDestinationSTOW = new Button(LABEL_NEW_DESTINATION_STOW);
+    this.gridDestination = new GridDestination();
 
-        setTextFieldFilter();
-        setButtonNewDestinationDICOM();
-        setButtonNewDestinationSTOW();
-        setForwardNode(null);
+    setTextFieldFilter();
+    setButtonNewDestinationDICOM();
+    setButtonNewDestinationSTOW();
+    setForwardNode(null);
 
-        this.layoutFilterButton = new HorizontalLayout(this.filter, this.newDestinationDICOM,
+    this.layoutFilterButton = new HorizontalLayout(this.filter, this.newDestinationDICOM,
             this.newDestinationSTOW);
-        this.layoutFilterButton.setVerticalComponentAlignment(Alignment.START, this.filter);
-        this.layoutFilterButton.expand(this.filter);
+    this.layoutFilterButton.setVerticalComponentAlignment(Alignment.START, this.filter);
+    this.layoutFilterButton.expand(this.filter);
 
-        add(UIS.setWidthFull(this.layoutFilterButton),
-            UIS.setWidthFull(this.gridDestination));
-    }
+    add(UIS.setWidthFull(this.layoutFilterButton), UIS.setWidthFull(this.gridDestination));
+  }
 
+  protected void setForwardNode(ForwardNodeEntity forwardNodeEntity) {
+    setEnabled(forwardNodeEntity != null);
+    destinationService.setForwardNode(forwardNodeEntity);
+    gridDestination.setDataProvider(destinationService);
+  }
 
-    protected void setForwardNode(ForwardNodeEntity forwardNodeEntity) {
-        setEnabled(forwardNodeEntity != null);
-        destinationService.setForwardNode(forwardNodeEntity);
-        gridDestination.setDataProvider(destinationService);
-    }
+  private void setTextFieldFilter() {
+    filter.setPlaceholder(PLACEHOLDER_FILTER);
+    // Apply the filter to grid's data provider. TextField value is never null
+    filter.addValueChangeListener(event -> destinationService.setFilter(event.getValue()));
+  }
 
-    private void setTextFieldFilter() {
-        filter.setPlaceholder(PLACEHOLDER_FILTER);
-        // Apply the filter to grid's data provider. TextField value is never null
-        filter.addValueChangeListener(event -> destinationService.setFilter(event.getValue()));
-    }
+  private void setButtonNewDestinationDICOM() {
+    newDestinationDICOM.getElement().setAttribute("title", "New destination of type dicom");
+    newDestinationDICOM.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+    newDestinationDICOM.setIcon(VaadinIcon.PLUS_CIRCLE.create());
+    // newDestinationDICOM.addClickListener(click -> destinationLogic.newDestinationDicom());
+  }
 
-    private void setButtonNewDestinationDICOM() {
-        newDestinationDICOM.getElement().setAttribute("title", "New destination of type dicom");
-        newDestinationDICOM.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        newDestinationDICOM.setIcon(VaadinIcon.PLUS_CIRCLE.create());
-        // newDestinationDICOM.addClickListener(click -> destinationLogic.newDestinationDicom());
-    }
+  private void setButtonNewDestinationSTOW() {
+    newDestinationSTOW.getElement().setAttribute("title", "New destination of type stow");
+    newDestinationSTOW.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+    newDestinationSTOW.setIcon(VaadinIcon.PLUS_CIRCLE.create());
+    // newDestinationStow.addClickListener(click -> destinationLogic.newDestinationStow());
+  }
 
-    private void setButtonNewDestinationSTOW() {
-        newDestinationSTOW.getElement().setAttribute("title", "New destination of type stow");
-        newDestinationSTOW.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        newDestinationSTOW.setIcon(VaadinIcon.PLUS_CIRCLE.create());
-        // newDestinationStow.addClickListener(click -> destinationLogic.newDestinationStow());
-    }
+  public void setEnabled(boolean enabled) {
+    filter.setEnabled(enabled);
+    newDestinationDICOM.setEnabled(enabled);
+    newDestinationSTOW.setEnabled(enabled);
+    gridDestination.setEnabled(enabled);
+  }
 
+  public Button getNewDestinationDICOM() {
+    return newDestinationDICOM;
+  }
 
-    public void setEnabled(boolean enabled) {
-        filter.setEnabled(enabled);
-        newDestinationDICOM.setEnabled(enabled);
-        newDestinationSTOW.setEnabled(enabled);
-        gridDestination.setEnabled(enabled);
-    }
+  public Button getNewDestinationSTOW() {
+    return newDestinationSTOW;
+  }
 
-    public Button getNewDestinationDICOM() {
-        return newDestinationDICOM;
-    }
-
-    public Button getNewDestinationSTOW() {
-        return newDestinationSTOW;
-    }
-
-    public GridDestination getGridDestination() {
-        return gridDestination;
-    }
+  public GridDestination getGridDestination() {
+    return gridDestination;
+  }
 }

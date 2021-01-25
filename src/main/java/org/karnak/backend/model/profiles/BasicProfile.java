@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2020-2021 Karnak Team and other contributors.
+ *
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ */
 package org.karnak.backend.model.profiles;
 
 import java.util.List;
@@ -17,26 +26,26 @@ public class BasicProfile extends AbstractProfileItem {
 
   public BasicProfile(ProfileElementEntity profileElementEntity) {
     super(profileElementEntity);
-    ConfidentialityProfiles confidentialityProfiles = AppConfig.getInstance()
-        .getConfidentialityProfile();
+    ConfidentialityProfiles confidentialityProfiles =
+        AppConfig.getInstance().getConfidentialityProfile();
     actionMap = confidentialityProfiles.getActionMap();
     listProfiles = confidentialityProfiles.getListProfiles();
   }
 
   @Override
-  public ActionItem getAction(DicomObject dcm, DicomObject dcmCopy, DicomElement dcmElem,
-      HMAC hmac) {
+  public ActionItem getAction(
+      DicomObject dcm, DicomObject dcmCopy, DicomElement dcmElem, HMAC hmac) {
     int tag = dcmElem.tag();
     ActionItem action = actionMap.get(tag);
     if (action == null) {
-            for (ProfileItem p : listProfiles) {
-                ActionItem val = p.getAction(dcm, dcmCopy, dcmElem, hmac);
-                if(val != null){
-                    return val;
-                }
-            }
-            return null;
+      for (ProfileItem p : listProfiles) {
+        ActionItem val = p.getAction(dcm, dcmCopy, dcmElem, hmac);
+        if (val != null) {
+          return val;
         }
-        return action;
+      }
+      return null;
     }
+    return action;
+  }
 }

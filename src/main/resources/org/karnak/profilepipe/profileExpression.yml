@@ -7,7 +7,7 @@ profileElements:
     codename: "expression.on.tags"
     arguments:
       expr: "getString(#Tag.PatientAge) == null? Keep() : null"
-    tags: 
+    tags:
       - "(xxxx,xxxx)"
 
   - name: "DICOM basic profile"

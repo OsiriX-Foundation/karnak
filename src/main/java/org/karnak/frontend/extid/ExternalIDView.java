@@ -1,8 +1,18 @@
+/*
+ * Copyright (c) 2020-2021 Karnak Team and other contributors.
+ *
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ */
 package org.karnak.frontend.extid;
 
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.ListDataProvider;
@@ -18,31 +28,46 @@ import org.springframework.security.access.annotation.Secured;
 @Secured({"ADMIN"})
 @SuppressWarnings("serial")
 public class ExternalIDView extends HorizontalLayout {
-    public static final String VIEW_NAME = "External pseudonym";
-    private final ListDataProvider<CachedPatient> dataProvider;
-    private final ExternalIDGrid externalIDGrid;
-    private final Div validationStatus;
-    private final AddNewPatientForm addNewPatientForm;
 
+  public static final String VIEW_NAME = "External pseudonym";
+  private static final String LABEL_DISCLAIMER_EXTID =
+      "WARNING: The data that is added to this grid will be stored"
+          + " temporally for a short period of time. If the machine restarts, the data will be deleted.";
+  private final ListDataProvider<CachedPatient> dataProvider;
+  private final ExternalIDGrid externalIDGrid;
+  private final Div validationStatus;
+  private final ExternalIDForm externalIDForm;
+  // TODO JO
+    //  private final AddNewPatientForm addNewPatientForm; à remplacer par ExternalIDForm
 
-    //https://vaadin.com/components/vaadin-grid/java-examples/assigning-data
-    public ExternalIDView() {
-        setSizeFull();
-        VerticalLayout verticalLayout = new VerticalLayout();
+  // https://vaadin.com/components/vaadin-grid/java-examples/assigning-data
+  public ExternalIDView() {
+    setSizeFull();
+    VerticalLayout verticalLayout = new VerticalLayout();
 
-        this.externalIDGrid = new ExternalIDGrid();
-        this.dataProvider = (ListDataProvider<CachedPatient>) this.externalIDGrid.getDataProvider();
-        this.addNewPatientForm = new AddNewPatientForm();
-        this.addNewPatientForm.init(dataProvider);
+    Label labelDisclaimer = new Label(LABEL_DISCLAIMER_EXTID);
+    labelDisclaimer.getStyle().set("color", "red");
+    labelDisclaimer.setMinWidth("75%");
+    labelDisclaimer.getStyle().set("right", "0px");
 
-        this.externalIDGrid.setAddNewPatientButton(addNewPatientForm.getAddNewPatientButton());
+    externalIDGrid = new ExternalIDGrid();
+    dataProvider = (ListDataProvider<CachedPatient>) externalIDGrid.getDataProvider();
+    // TODO JO
+    // this.addNewPatientForm = new AddNewPatientForm();
+    //        this.addNewPatientForm.init(dataProvider);
+    externalIDForm = new ExternalIDForm();
+      externalIDForm.init(dataProvider);
+    externalIDGrid.setAddPatientButton(externalIDForm.getAddPatientButton());
 
-        validationStatus = this.externalIDGrid.setBinder();
+    validationStatus = externalIDGrid.setBinder();
 
-        verticalLayout.add(new H2("External Pseudonym"), addNewPatientForm, validationStatus,
-            this.externalIDGrid);
+    verticalLayout.add(
+        new H2("External Pseudonym"),
+        labelDisclaimer,
+        externalIDForm,
+        validationStatus,
+        externalIDGrid);
 
-        add(verticalLayout);
-    }
-
+    add(verticalLayout);
+  }
 }

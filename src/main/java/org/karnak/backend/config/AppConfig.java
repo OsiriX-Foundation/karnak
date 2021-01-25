@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2020-2021 Karnak Team and other contributors.
+ *
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ */
 package org.karnak.backend.config;
 
 import java.io.InputStream;
@@ -31,11 +40,11 @@ public class AppConfig {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AppConfig.class);
 
-    private static AppConfig instance;
-    private String environment;
-    private String name;
-    private String karnakadmin;
-    private String karnakpassword;
+  private static AppConfig instance;
+  private String environment;
+  private String name;
+  private String karnakadmin;
+  private String karnakpassword;
     private final ProfileRepo profileRepo;
     private final ProfilePipeService profilePipeService;
 
@@ -46,80 +55,75 @@ public class AppConfig {
         this.profilePipeService = profilePipeService;
     }
 
-    @PostConstruct
-    public void postConstruct() {
-        instance = this;
-    }
+  @PostConstruct
+  public void postConstruct() {
+    instance = this;
+  }
 
-    public static AppConfig getInstance() {
-        return instance;
-    }
+  public String getEnvironment() {
+    return environment;
+  }
 
-    public String getEnvironment() {
-        return environment;
-    }
+  public void setEnvironment(String environment) {
+    this.environment = environment;
+  }
 
-    public void setEnvironment(String environment) {
-        this.environment = environment;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public String getKarnakadmin() {
+    return karnakadmin;
+  }
 
-    public String getKarnakadmin() {
-        return karnakadmin;
-    }
+  public void setKarnakadmin(String karnakadmin) {
+    this.karnakadmin = karnakadmin;
+  }
 
-    public void setKarnakadmin(String karnakadmin) {
-        this.karnakadmin = karnakadmin;
-    }
+  public String getKarnakpassword() {
+    return karnakpassword;
+  }
 
-    public String getKarnakpassword() {
-        return karnakpassword;
-    }
-
-    public void setKarnakpassword(String karnakpassword) {
-        this.karnakpassword = karnakpassword;
-    }
+  public void setKarnakpassword(String karnakpassword) {
+    this.karnakpassword = karnakpassword;
+  }
 
     @Bean("ConfidentialityProfiles")
     public ConfidentialityProfiles getConfidentialityProfile() {
         return new ConfidentialityProfiles();
     }
 
-    @Bean("ExternalIDPatient")
-    public PatientClient getExternalIDCache() {
-        return new ExternalIDCache();
-    }
+  @Bean("ExternalIDPatient")
+  public PatientClient getExternalIDCache() {
+    return new ExternalIDCache();
+  }
 
-    @Bean("MainzellisteCache")
-    public PatientClient getMainzellisteCache() {
-        return new MainzellisteCache();
-    }
+  @Bean("MainzellisteCache")
+  public PatientClient getMainzellisteCache() {
+    return new MainzellisteCache();
+  }
 
-    // https://stackoverflow.com/questions/27405713/running-code-after-spring-boot-starts
-    @EventListener(ApplicationReadyEvent.class)
-    public void setProfilesByDefault() {
-        URL profileURL = ProfileService.class.getResource("profileByDefault.yml");
-        if (profileRepo.existsByNameAndByDefault("Dicom Basic Profile", true) == false) {
+  // https://stackoverflow.com/questions/27405713/running-code-after-spring-boot-starts
+  @EventListener(ApplicationReadyEvent.class)
+  public void setProfilesByDefault() {
+    URL profileURL = ProfileService.class.getResource("profileByDefault.yml");
+    if (profileRepo.existsByNameAndByDefault("Dicom Basic Profile", true) == false) {
             try (InputStream inputStream = profileURL.openStream()) {
                 final Yaml yaml = new Yaml(new Constructor(ProfilePipeBody.class));
                 final ProfilePipeBody profilePipeYml = yaml.load(inputStream);
-                profilePipeService.saveProfilePipe(profilePipeYml, true);
-            } catch (final Exception e) {
-                LOGGER.error("Cannot persist default profile {}", profileURL, e);
-            }
-        }
-
+        profilePipeService.saveProfilePipe(profilePipeYml, true);
+      } catch (final Exception e) {
+        LOGGER.error("Cannot persist default profile {}", profileURL, e);
+      }
     }
+  }
 
-    @Bean("StandardDICOM")
-    public StandardDICOM getStandardDICOM() {
-        return new StandardDICOM();
-    }
+  @Bean("StandardDICOM")
+  public StandardDICOM getStandardDICOM() {
+    return new StandardDICOM();
+  }
 }

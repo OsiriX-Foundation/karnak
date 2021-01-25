@@ -13,15 +13,12 @@ RUN mvn -B -f weasis-dicom-tools/pom.xml install
 
 # Build the Spring Boot application with layers
 COPY pom.xml .
-COPY data/src ./data/src
-COPY data/pom.xml ./data/
-COPY mvc/src ./mvc/src
-COPY mvc/pom.xml ./mvc/
-COPY mvc/frontend mvc/frontend
+COPY src ./src
+COPY frontend frontend
 COPY parent ./parent
 RUN mvn -B package -P production
 WORKDIR /app/bin
-RUN cp ../mvc/target/karnak*.jar application.jar
+RUN cp ../target/karnak*.jar application.jar
 RUN java -Djarmode=layertools -jar application.jar extract
 
 # Build the final deployment image

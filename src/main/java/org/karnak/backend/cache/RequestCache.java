@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2020-2021 Karnak Team and other contributors.
+ *
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ */
 package org.karnak.backend.cache;
 
 import com.vaadin.flow.server.VaadinServletRequest;
@@ -15,7 +24,7 @@ public class RequestCache extends HttpSessionRequestCache {
    * Saves unauthenticated requests so we can redirect the user to the page they were trying to
    * access once they’re logged in
    *
-   * @param request  Request
+   * @param request Request
    * @param response Response
    */
   @Override
@@ -32,9 +41,10 @@ public class RequestCache extends HttpSessionRequestCache {
    * @return the path resolved
    */
   public String resolveRedirectUrl() {
-    SavedRequest savedRequest = getRequest(
-        VaadinServletRequest.getCurrent().getHttpServletRequest(),
-        VaadinServletResponse.getCurrent().getHttpServletResponse());
+    SavedRequest savedRequest =
+        getRequest(
+            VaadinServletRequest.getCurrent().getHttpServletRequest(),
+            VaadinServletResponse.getCurrent().getHttpServletResponse());
     if (savedRequest instanceof DefaultSavedRequest) {
       final String requestURI = ((DefaultSavedRequest) savedRequest).getRequestURI();
       // check for valid URI

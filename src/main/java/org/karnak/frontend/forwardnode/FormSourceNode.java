@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2020-2021 Karnak Team and other contributors.
+ *
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ */
 package org.karnak.frontend.forwardnode;
 
 import com.vaadin.flow.component.checkbox.Checkbox;
@@ -13,13 +22,13 @@ public class FormSourceNode extends VerticalLayout {
 
   private final Binder<DicomSourceNodeEntity> binder;
   private final TextField aeTitle;
-    private final TextField description;
-    private final TextField hostname;
-    private final Checkbox checkHostname;
-    private final ButtonSaveDeleteCancel buttonSaveDeleteCancel;
+  private final TextField description;
+  private final TextField hostname;
+  private final Checkbox checkHostname;
+  private final ButtonSaveDeleteCancel buttonSaveDeleteCancel;
 
-  public FormSourceNode(Binder<DicomSourceNodeEntity> binder,
-      ButtonSaveDeleteCancel buttonSaveDeleteCancel) {
+  public FormSourceNode(
+      Binder<DicomSourceNodeEntity> binder, ButtonSaveDeleteCancel buttonSaveDeleteCancel) {
     setSizeFull();
     this.binder = binder;
     this.buttonSaveDeleteCancel = buttonSaveDeleteCancel;
@@ -31,23 +40,27 @@ public class FormSourceNode extends VerticalLayout {
     setElements();
     setBinder();
 
-        add(UIS.setWidthFull(new HorizontalLayout(aeTitle, description)),
-                UIS.setWidthFull(new HorizontalLayout(hostname)),
-                UIS.setWidthFull(checkHostname),
-                UIS.setWidthFull(buttonSaveDeleteCancel));
-    }
+    add(
+        UIS.setWidthFull(new HorizontalLayout(aeTitle, description)),
+        UIS.setWidthFull(new HorizontalLayout(hostname)),
+        UIS.setWidthFull(checkHostname),
+        UIS.setWidthFull(buttonSaveDeleteCancel));
+  }
 
-    private void setElements() {
-        aeTitle.setWidth("30%");
-        description.setWidth("70%");
-        hostname.setWidth("70%");
-        UIS.setTooltip(checkHostname,
-                "if checked, check the hostname during the DICOM association and if not match the connection is abort");
-    }
+  private void setElements() {
+    aeTitle.setWidth("30%");
+    description.setWidth("70%");
+    hostname.setWidth("70%");
+    UIS.setTooltip(
+        checkHostname,
+        "if checked, check the hostname during the DICOM association and if not match the connection is abort");
+  }
 
-    private void setBinder() {
-      binder.forField(aeTitle).withValidator(StringUtils::isNotBlank, "AETitle is mandatory")
-          .bind(DicomSourceNodeEntity::getAeTitle, DicomSourceNodeEntity::setAeTitle);
-      binder.bindInstanceFields(this);
-    }
+  private void setBinder() {
+    binder
+        .forField(aeTitle)
+        .withValidator(StringUtils::isNotBlank, "AETitle is mandatory")
+        .bind(DicomSourceNodeEntity::getAeTitle, DicomSourceNodeEntity::setAeTitle);
+    binder.bindInstanceFields(this);
+  }
 }

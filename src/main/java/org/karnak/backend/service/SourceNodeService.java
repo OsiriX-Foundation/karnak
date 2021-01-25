@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2020-2021 Karnak Team and other contributors.
+ *
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ */
 package org.karnak.backend.service;
 
 import com.vaadin.flow.data.provider.ListDataProvider;
@@ -14,7 +23,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class SourceNodeService extends ListDataProvider<DicomSourceNodeEntity> {
 
-    // Repositories
+  // Repositories
     private final DicomSourceNodeRepo dicomSourceNodeRepo;
 
     // Services
@@ -42,76 +51,74 @@ public class SourceNodeService extends ListDataProvider<DicomSourceNodeEntity> {
         return data.hashCode();
     }
 
-    @Override
+  @Override
     public void refreshAll() {
-        getItems().clear();
+    getItems().clear();
         if (forwardNodeEntity != null) {
             getItems().addAll(forwardNodeEntity.getSourceNodes());
-        }
-        super.refreshAll();
+    }
+    super.refreshAll();
     }
 
+  public void setForwardNode(ForwardNodeEntity forwardNodeEntity) {
+    this.forwardNodeEntity = forwardNodeEntity;
+    Collection<DicomSourceNodeEntity> sourceNodes =
+        this.forwardNodeService.getAllSourceNodes(forwardNodeEntity);
 
-    public void setForwardNode(ForwardNodeEntity forwardNodeEntity) {
-        this.forwardNodeEntity = forwardNodeEntity;
-        Collection<DicomSourceNodeEntity> sourceNodes = this.forwardNodeService.getAllSourceNodes(
-            forwardNodeEntity);
+    this.getItems().clear();
+    this.getItems().addAll(sourceNodes);
 
-        this.getItems().clear();
-        this.getItems().addAll(sourceNodes);
-
-        hasChanges = false;
-    }
+    hasChanges = false;
+  }
 
     /**
      * Store given DicomSourceNodeEntity.
-     *
-     * @param dicomSourceNodeEntity the updated or new dicomSourceNodeEntity
-     */
-    public void save(DicomSourceNodeEntity dicomSourceNodeEntity) {
-        DicomSourceNodeEntity dataUpdated = this.forwardNodeService
-            .updateSourceNode(forwardNodeEntity, dicomSourceNodeEntity);
-        if (dicomSourceNodeEntity.getId() == null) {
-            refreshAll();
-        } else {
-            refreshItem(dataUpdated);
-        }
-        hasChanges = true;
-        dicomSourceNodeRepo.saveAndFlush(dataUpdated);
+   *
+   * @param dicomSourceNodeEntity the updated or new dicomSourceNodeEntity
+   */
+  public void save(DicomSourceNodeEntity dicomSourceNodeEntity) {
+        DicomSourceNodeEntity dataUpdated = this.forwardNodeService.updateSourceNode(forwardNodeEntity, dicomSourceNodeEntity);
+    if (dicomSourceNodeEntity.getId() == null) {
+      refreshAll();
+    } else {
+      refreshItem(dataUpdated);
     }
+    hasChanges = true;
+    dicomSourceNodeRepo.saveAndFlush(dataUpdated);
+  }
 
-    /**
-     * Delete given data from the backing data service.
-     *
-     * @param data the data to be deleted
-     */
-    public void delete(DicomSourceNodeEntity data) {
-        this.forwardNodeService.deleteSourceNode(forwardNodeEntity, data);
-        refreshAll();
-        hasChanges = true;
-        dicomSourceNodeRepo.deleteById(data.getId());
-        dicomSourceNodeRepo.saveAndFlush(data);
+  /**
+   * Delete given data from the backing data service.
+   *
+   * @param data the data to be deleted
+   */
+  public void delete(DicomSourceNodeEntity data) {
+    this.forwardNodeService.deleteSourceNode(forwardNodeEntity, data);
+    refreshAll();
+    hasChanges = true;
+    dicomSourceNodeRepo.deleteById(data.getId());
+    dicomSourceNodeRepo.saveAndFlush(data);
+  }
+
+  /**
+   * Sets the filter to use for this data provider and refreshes data.
+   *
+   * <p>Filter is compared for allowed properties.
+   *
+   * @param filterTextInput the text to filter by, never null.
+   */
+  public void setFilter(String filterTextInput) {
+    Objects.requireNonNull(filterText, "Filter text cannot be null.");
+
+    final String filterText = filterTextInput.trim();
+
+    if (Objects.equals(this.filterText, filterText)) {
+      return;
     }
+    this.filterText = filterText;
 
-    /**
-     * Sets the filter to use for this data provider and refreshes data.
-     * <p>
-     * Filter is compared for allowed properties.
-     * 
-     * @param filterTextInput the text to filter by, never null.
-     */
-    public void setFilter(String filterTextInput) {
-        Objects.requireNonNull(filterText, "Filter text cannot be null.");
-
-        final String filterText = filterTextInput.trim();
-
-        if (Objects.equals(this.filterText, filterText)) {
-            return;
-        }
-        this.filterText = filterText;
-
-        setFilter(data -> matchesFilter(data, filterText));
-    }
+    setFilter(data -> matchesFilter(data, filterText));
+  }
 
     private boolean matchesFilter(DicomSourceNodeEntity data, String filterText) {
         return data != null && data.matchesFilter(filterText);

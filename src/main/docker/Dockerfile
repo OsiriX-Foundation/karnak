@@ -1,10 +1,10 @@
 # To build, run the following command from the top level project directory:
 #
-# docker build -t osirixfoundation/karnak:latest -f mvc/src/main/docker/Dockerfile .
+# docker build -t osirixfoundation/karnak:latest -f src/main/docker/Dockerfile .
 
 # Based on build image containing maven, jdk and git
 FROM adoptopenjdk:15-jre-hotspot as builder
-ARG JAR_FILE=mvc/target/karnak*.jar
+ARG JAR_FILE=target/karnak*.jar
 WORKDIR /app
 COPY ${JAR_FILE} application.jar
 RUN java -Djarmode=layertools -jar application.jar extract

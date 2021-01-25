@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2020-2021 Karnak Team and other contributors.
+ *
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ */
 package org.karnak.backend.model.action;
 
 import java.util.Iterator;
@@ -10,18 +19,25 @@ import org.slf4j.MDC;
 
 public class UID extends AbstractAction {
 
-    public UID(String symbol) {
-        super(symbol);
-    }
+  public UID(String symbol) {
+    super(symbol);
+  }
 
-    @Override
-    public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, HMAC hmac) {
-        String uidValue = dcm.getString(tag).orElse(null);
-        String uidHashed = null;
-        if (uidValue != null) {
-            uidHashed = hmac.uidHash(uidValue);
-            dcm.setString(tag, VR.UI, uidHashed);
-        }
-        LOGGER.trace(CLINICAL_MARKER, PATTERN_WITH_INOUT, MDC.get("SOPInstanceUID"), TagUtils.toString(tag), symbol, uidValue, uidHashed);
+  @Override
+  public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, HMAC hmac) {
+    String uidValue = dcm.getString(tag).orElse(null);
+    String uidHashed = null;
+    if (uidValue != null) {
+      uidHashed = hmac.uidHash(uidValue);
+      dcm.setString(tag, VR.UI, uidHashed);
     }
+    LOGGER.trace(
+        CLINICAL_MARKER,
+        PATTERN_WITH_INOUT,
+        MDC.get("SOPInstanceUID"),
+        TagUtils.toString(tag),
+        symbol,
+        uidValue,
+        uidHashed);
+  }
 }

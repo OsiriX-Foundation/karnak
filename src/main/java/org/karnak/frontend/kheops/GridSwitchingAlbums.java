@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2020-2021 Karnak Team and other contributors.
+ *
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ */
 package org.karnak.frontend.kheops;
 
 import com.vaadin.flow.component.button.Button;
@@ -16,96 +25,110 @@ import org.karnak.backend.data.entity.KheopsAlbumsEntity;
 
 public class GridSwitchingAlbums extends Grid<KheopsAlbumsEntity> {
 
-    private final Binder<KheopsAlbumsEntity> binder;
-    private final ListDataProvider<KheopsAlbumsEntity> dataProvider;
+  private final Binder<KheopsAlbumsEntity> binder;
+  private final ListDataProvider<KheopsAlbumsEntity> dataProvider;
+  private final Collection<Button> editButtons;
+  private final TextField textUrlAPI;
+  private final TextField textAuthorizationDestination;
+  private final TextField textAuthorizationSource;
+  private final TextField textCondition;
+  private Editor<KheopsAlbumsEntity> editor;
 
-    private Editor<KheopsAlbumsEntity> editor;
-    private final Collection<Button> editButtons;
-    private final TextField textUrlAPI;
-    private final TextField textAuthorizationDestination;
-    private final TextField textAuthorizationSource;
-    private final TextField textCondition;
+  public GridSwitchingAlbums() {
+    setWidthFull();
+    setHeightByRows(true);
+    setItems(new ArrayList<>());
+    dataProvider = (ListDataProvider<KheopsAlbumsEntity>) getDataProvider();
 
-    public GridSwitchingAlbums() {
-        setWidthFull();
-        setHeightByRows(true);
-        setItems(new ArrayList<>());
-        dataProvider = (ListDataProvider<KheopsAlbumsEntity>) getDataProvider();
+    TextFieldsBindSwitchingAlbum textFieldsBindSwitchingAlbum = new TextFieldsBindSwitchingAlbum();
+    binder = textFieldsBindSwitchingAlbum.getBinder();
+    textUrlAPI = textFieldsBindSwitchingAlbum.getTextUrlAPI();
+    textAuthorizationDestination = textFieldsBindSwitchingAlbum.getTextAuthorizationDestination();
+    textAuthorizationSource = textFieldsBindSwitchingAlbum.getTextAuthorizationSource();
+    textCondition = textFieldsBindSwitchingAlbum.getTextCondition();
+    editButtons = Collections.newSetFromMap(new WeakHashMap<>());
 
-        TextFieldsBindSwitchingAlbum textFieldsBindSwitchingAlbum = new TextFieldsBindSwitchingAlbum();
-        binder = textFieldsBindSwitchingAlbum.getBinder();
-        textUrlAPI = textFieldsBindSwitchingAlbum.getTextUrlAPI();
-        textAuthorizationDestination = textFieldsBindSwitchingAlbum.getTextAuthorizationDestination();
-        textAuthorizationSource = textFieldsBindSwitchingAlbum.getTextAuthorizationSource();
-        textCondition = textFieldsBindSwitchingAlbum.getTextCondition();
-        editButtons = Collections.newSetFromMap(new WeakHashMap<>());
+    addColumn(KheopsAlbumsEntity::getUrlAPI)
+        .setHeader("URL API")
+        .setFlexGrow(15)
+        .setSortable(true)
+        .setEditorComponent(textUrlAPI);
 
-        addColumn(KheopsAlbumsEntity::getUrlAPI).setHeader("URL API").setFlexGrow(15)
-                .setSortable(true).setEditorComponent(textUrlAPI);
+    addColumn(KheopsAlbumsEntity::getAuthorizationDestination)
+        .setHeader("Token destination")
+        .setFlexGrow(15)
+        .setSortable(true)
+        .setEditorComponent(textAuthorizationDestination);
 
-        addColumn(KheopsAlbumsEntity::getAuthorizationDestination).setHeader("Token destination")
-            .setFlexGrow(15)
-                .setSortable(true).setEditorComponent(textAuthorizationDestination);
+    addColumn(KheopsAlbumsEntity::getAuthorizationSource)
+        .setHeader("Token source")
+        .setFlexGrow(15)
+        .setSortable(true)
+        .setEditorComponent(textAuthorizationSource);
 
-        addColumn(KheopsAlbumsEntity::getAuthorizationSource).setHeader("Token source")
-            .setFlexGrow(15)
-                .setSortable(true).setEditorComponent(textAuthorizationSource);
+    addColumn(KheopsAlbumsEntity::getCondition)
+        .setHeader("Condition")
+        .setFlexGrow(15)
+        .setSortable(true)
+        .setEditorComponent(textCondition);
 
-        addColumn(KheopsAlbumsEntity::getCondition).setHeader("Condition").setFlexGrow(15)
-                .setSortable(true).setEditorComponent(textCondition);
+    setEditorColumn();
+  }
 
-        setEditorColumn();
-    }
+  private void setEditorColumn() {
+    editor = getEditor();
+    editor.setBinder(binder);
+    editor.setBuffered(true);
 
-    private void setEditorColumn() {
-        editor = getEditor();
-        editor.setBinder(binder);
-        editor.setBuffered(true);
+    Column<KheopsAlbumsEntity> editorColumn =
+        addComponentColumn(
+                kheopsAlbums -> {
+                  Button edit = new Button("Edit");
+                  edit.addClickListener(
+                      e -> {
+                        editor.editItem(kheopsAlbums);
+                      });
+                  edit.setEnabled(!editor.isOpen());
 
-        Column<KheopsAlbumsEntity> editorColumn = addComponentColumn(kheopsAlbums -> {
-            Button edit = new Button("Edit");
-            edit.addClickListener(e -> {
-                editor.editItem(kheopsAlbums);
-            });
-            edit.setEnabled(!editor.isOpen());
+                  Button remove = new Button("Remove");
+                  remove.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
+                  remove.addClickListener(
+                      e -> {
+                        dataProvider.getItems().remove(kheopsAlbums);
+                        dataProvider.refreshAll();
+                      });
+                  remove.setEnabled(!editor.isOpen());
 
-            Button remove = new Button("Remove");
-            remove.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
-            remove.addClickListener(e -> {
-                dataProvider.getItems().remove(kheopsAlbums);
-                dataProvider.refreshAll();
-            });
-            remove.setEnabled(!editor.isOpen());
+                  editButtons.add(edit);
+                  editButtons.add(remove);
+                  return new Div(edit, remove);
+                })
+            .setFlexGrow(15);
 
-            editButtons.add(edit);
-            editButtons.add(remove);
-            return new Div(edit, remove);
-        }).setFlexGrow(15);
+    editor.addOpenListener(
+        e -> editButtons.stream().forEach(button -> button.setEnabled(!editor.isOpen())));
+    editor.addCloseListener(
+        e -> editButtons.stream().forEach(button -> button.setEnabled(!editor.isOpen())));
 
-        editor.addOpenListener(e -> editButtons.stream()
-            .forEach(button -> button.setEnabled(!editor.isOpen())));
-        editor.addCloseListener(e -> editButtons.stream()
-            .forEach(button -> button.setEnabled(!editor.isOpen())));
+    Button save = new Button("Validate", e -> editor.save());
+    save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
-        Button save = new Button("Validate", e -> editor.save());
-        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+    Button cancel = new Button("Cancel", e -> editor.cancel());
 
-        Button cancel = new Button("Cancel", e -> editor.cancel());
+    Div buttons = new Div(save, cancel);
+    editorColumn.setEditorComponent(buttons);
+  }
 
-        Div buttons = new Div(save, cancel);
-        editorColumn.setEditorComponent(buttons);
-    }
+  public void clearEditorEditButtons() {
+    editButtons.clear();
+    editor.cancel();
+  }
 
-    public void clearEditorEditButtons() {
-        editButtons.clear();
-        editor.cancel();
-    }
+  public KheopsAlbumsEntity getSelectedRow() {
+    return asSingleSelect().getValue();
+  }
 
-    public KheopsAlbumsEntity getSelectedRow() {
-        return asSingleSelect().getValue();
-    }
-
-    public void refresh(KheopsAlbumsEntity data) {
-        getDataCommunicator().refresh(data);
-    }
+  public void refresh(KheopsAlbumsEntity data) {
+    getDataCommunicator().refresh(data);
+  }
 }

@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2020-2021 Karnak Team and other contributors.
+ *
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ */
 package org.karnak.backend.data.entity;
 
 import java.io.Serializable;
@@ -32,12 +41,12 @@ public abstract class TagEntity implements Serializable {
     public TagEntity() {
     }
 
-    public TagEntity(String tagValue, ProfileElementEntity profileElementEntity) {
-        this.tagValue = tagValue;
-        this.profileElementEntity = profileElementEntity;
-    }
+  public TagEntity(String tagValue, ProfileElementEntity profileElementEntity) {
+    this.tagValue = tagValue;
+    this.profileElementEntity = profileElementEntity;
+  }
 
-    @Id
+  @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public Long getId() {
         return id;
@@ -62,9 +71,9 @@ public abstract class TagEntity implements Serializable {
         return tagValue;
     }
 
-    public void setTagValue(String tagValue) {
-        this.tagValue = tagValue;
-    }
+  public void setTagValue(String tagValue) {
+    this.tagValue = tagValue;
+  }
 
     @Override
     public boolean equals(Object o) {

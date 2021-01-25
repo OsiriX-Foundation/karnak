@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2020-2021 Karnak Team and other contributors.
+ *
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ */
 package org.karnak.frontend.forwardnode;
 
 import com.vaadin.flow.component.checkbox.Checkbox;
@@ -21,23 +30,23 @@ import org.springframework.stereotype.Component;
 @UIScope
 public class FormDICOM extends VerticalLayout {
 
-    private Binder<DestinationEntity> binder;
+  private Binder<DestinationEntity> binder;
 
-    private TextField aeTitle;
-    private TextField description;
-    private TextField hostname;
-    private TextField port;
-    private Checkbox useaetdest;
+  private TextField aeTitle;
+  private TextField description;
+  private TextField hostname;
+  private TextField port;
+  private Checkbox useaetdest;
 
-    private TextField notify;
-    private TextField notifyObjectErrorPrefix;
-    private TextField notifyObjectPattern;
-    private TextField notifyObjectValues;
-    private TextField notifyInterval;
-    private final LayoutDesidentification layoutDesidentification;
-    private final FilterBySOPClassesForm filterBySOPClassesForm;
+  private TextField notify;
+  private TextField notifyObjectErrorPrefix;
+  private TextField notifyObjectPattern;
+  private TextField notifyObjectValues;
+  private TextField notifyInterval;
+  private final LayoutDesidentification layoutDesidentification;
+  private final FilterBySOPClassesForm filterBySOPClassesForm;
 
-    private final SOPClassUIDService sopClassUIDService;
+  private final SOPClassUIDService sopClassUIDService;
     private final ProjectService projectService;
 
     @Autowired
@@ -53,7 +62,7 @@ public class FormDICOM extends VerticalLayout {
         ButtonSaveDeleteCancel buttonSaveDeleteCancel) {
 
         this.binder = binder;
-        this.layoutDesidentification.init(this.binder, projectService);
+    this.layoutDesidentification.init(this.binder, projectService);
         this.filterBySOPClassesForm.init(this.binder, sopClassUIDService);
 
         setSizeFull();
@@ -83,21 +92,21 @@ public class FormDICOM extends VerticalLayout {
         setBinder();
     }
 
-    private void setElements() {
-        aeTitle.setWidth("30%");
+  private void setElements() {
+    aeTitle.setWidth("30%");
 
-        description.setWidth("70%");
+    description.setWidth("70%");
 
-        hostname.setWidth("70%");
-        hostname.setRequired(true);
+    hostname.setWidth("70%");
+    hostname.setRequired(true);
 
-        port.setWidth("30%");
-        port.addThemeVariants(TextFieldVariant.LUMO_ALIGN_RIGHT);
+    port.setWidth("30%");
+    port.addThemeVariants(TextFieldVariant.LUMO_ALIGN_RIGHT);
 
         UIS.setTooltip(useaetdest,
             "if \"true\" then use the destination AETitle as the calling  AETitle at the gateway side");
 
-        notify.setWidth("100%");
+    notify.setWidth("100%");
 
         notifyObjectErrorPrefix.setWidth("24%");
         UIS.setTooltip(notifyObjectErrorPrefix,
@@ -117,24 +126,29 @@ public class FormDICOM extends VerticalLayout {
             "Interval in seconds for sending a notification (when no new image is arrived in the archive folder). Default value: 45");
     }
 
-    private void setBinder() {
-        binder.forField(aeTitle).withValidator(StringUtils::isNotBlank, "AETitle is mandatory")
-            .withValidator(value -> value.length() <= 16, "AETitle has more than 16 characters")
-            .withValidator(UIS::containsNoWhitespace, "AETitle contains white spaces")
-            .bind(DestinationEntity::getAeTitle, DestinationEntity::setAeTitle);
+  private void setBinder() {
+    binder
+        .forField(aeTitle)
+        .withValidator(StringUtils::isNotBlank, "AETitle is mandatory")
+        .withValidator(value -> value.length() <= 16, "AETitle has more than 16 characters")
+        .withValidator(UIS::containsNoWhitespace, "AETitle contains white spaces")
+        .bind(DestinationEntity::getAeTitle, DestinationEntity::setAeTitle);
 
-        binder.forField(hostname).withValidator(StringUtils::isNotBlank, "Hostname is mandatory")
-            .bind(DestinationEntity::getHostname, DestinationEntity::setHostname);
-        binder.forField(port).withConverter(new HStringToIntegerConverter())
-            .withValidator(Objects::nonNull, "Port is mandatory")
-            .withValidator(value -> 1 <= value && value <= 65535,
-                "Port should be between 1 and 65535")
-            .bind(DestinationEntity::getPort, DestinationEntity::setPort);
-        binder.forField(notifyInterval) //
-            .withConverter(new HStringToIntegerConverter()) //
-            .bind(DestinationEntity::getNotifyInterval, DestinationEntity::setNotifyInterval);
+    binder
+        .forField(hostname)
+        .withValidator(StringUtils::isNotBlank, "Hostname is mandatory")
+        .bind(DestinationEntity::getHostname, DestinationEntity::setHostname);
+    binder
+        .forField(port)
+        .withConverter(new HStringToIntegerConverter())
+        .withValidator(Objects::nonNull, "Port is mandatory")
+        .withValidator(value -> 1 <= value && value <= 65535, "Port should be between 1 and 65535")
+        .bind(DestinationEntity::getPort, DestinationEntity::setPort);
+    binder
+        .forField(notifyInterval) //
+        .withConverter(new HStringToIntegerConverter()) //
+        .bind(DestinationEntity::getNotifyInterval, DestinationEntity::setNotifyInterval);
 
-        binder.bindInstanceFields(this);
-
-    }
+    binder.bindInstanceFields(this);
+  }
 }

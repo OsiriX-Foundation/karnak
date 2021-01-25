@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2020-2021 Karnak Team and other contributors.
+ *
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ */
 package org.karnak.frontend.extid;
 
 import com.vaadin.flow.component.button.Button;
@@ -22,27 +31,26 @@ import org.karnak.backend.util.PatientClientUtil;
 
 public class ExternalIDGrid extends Grid<CachedPatient> {
 
-    private static final String ERROR_MESSAGE_PATIENT = "Length must be between 1 and 50.";
-    private final Binder<CachedPatient> binder;
-    private final List<CachedPatient> patientList;
-    private Button addNewPatientButton;
-    private Button deletePatientButton;
-    private Button saveEditPatientButton;
-    private Button cancelEditPatientButton;
+  private static final String ERROR_MESSAGE_PATIENT = "Length must be between 1 and 50.";
+  private static final String LABEL_SAVE = "Save";
+  private static final String LABEL_CANCEL = "Cancel";
+  private final Binder<CachedPatient> binder;
+  private final List<CachedPatient> patientList;
+  private final transient PatientClient externalIDCache;
+  private Button addPatientButton;
+  private Button deletePatientButton;
+  private Button saveEditPatientButton;
+  private Button cancelEditPatientButton;
+  private Editor<CachedPatient> editor;
+  private Collection<Button> editButtons;
+  private TextField externalIdField;
+  private TextField patientIdField;
+  private TextField patientFirstNameField;
+  private TextField patientLastNameField;
+  private TextField issuerOfPatientIdField;
+  private Grid.Column<CachedPatient> deleteColumn;
 
-    private Editor<CachedPatient> editor;
-    private Collection<Button> editButtons;
 
-    private TextField externalIdField;
-    private TextField patientIdField;
-    private TextField patientNameField;
-    private TextField issuerOfPatientIdField;
-
-    private Grid.Column<CachedPatient> deleteColumn;
-
-    private static final String LABEL_SAVE = "Save";
-    private static final String LABEL_CANCEL = "Cancel";
-    private final transient PatientClient externalIDCache;
 
     public ExternalIDGrid() {
         binder = new Binder<>(CachedPatient.class);
@@ -61,81 +69,97 @@ public class ExternalIDGrid extends Grid<CachedPatient> {
             editButtons.stream()
                 .forEach(button -> button.setEnabled(!editor.isOpen()));
             deleteColumn.setVisible(false);
-            addNewPatientButton.setVisible(false);
+            addPatientButton.setVisible(false);
         });
 
         editor.addCloseListener(e -> {
             editButtons.stream()
                 .forEach(button -> button.setEnabled(!editor.isOpen()));
             deleteColumn.setVisible(true);
-            addNewPatientButton.setVisible(true);
+            addPatientButton.setVisible(true);
         });
 
         saveEditPatientButton.addClickListener(e -> {
             final CachedPatient patientEdit = new CachedPatient(
                 externalIdField.getValue(),
                 patientIdField.getValue(),
-                patientNameField.getValue(),
+                patientFirstNameField.getValue(),
+                  patientLastNameField.getValue(),
                 issuerOfPatientIdField.getValue()
             );
             externalIDCache.remove(PatientClientUtil.generateKey(editor.getItem())); //old extid
             externalIDCache.put(PatientClientUtil.generateKey(patientEdit), patientEdit); //new extid
             editor.save();
         });
-        saveEditPatientButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+    saveEditPatientButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
-        cancelEditPatientButton.addClickListener(e -> editor.cancel());
-    }
+    cancelEditPatientButton.addClickListener(e -> editor.cancel());
+  }
 
-    private void setElements() {
-        Grid.Column<CachedPatient> extidColumn = addColumn(CachedPatient::getPseudonym).setHeader("External Pseudonym");
-        Grid.Column<CachedPatient> patientIdColumn = addColumn(CachedPatient::getPatientId).setHeader("Patient ID");
-        Grid.Column<CachedPatient> patientNameColumn = addColumn(CachedPatient::getPatientName).setHeader("Patient name");
-        Grid.Column<CachedPatient> issuerOfPatientIDColumn = addColumn(CachedPatient::getIssuerOfPatientId).setHeader("Issuer of patient ID");
-        Grid.Column<CachedPatient> editorColumn = addComponentColumn(patient -> {
-            Button edit = new Button("Edit");
-            edit.addClassName("edit");
-            edit.addClickListener(e -> {
-                editor.editItem(patient);
-                externalIdField.focus();
+  private void setElements() {
+    Grid.Column<CachedPatient> extidColumn =
+        addColumn(CachedPatient::getPseudonym).setHeader("External Pseudonym");
+    Grid.Column<CachedPatient> patientIdColumn =
+        addColumn(CachedPatient::getPatientId).setHeader("Patient ID");
+    Grid.Column<CachedPatient> patientFirstNameColumn =
+        addColumn(CachedPatient::getPatientFirstName).setHeader("Patient first name");
+    Grid.Column<CachedPatient> patientLastNameColumn =
+        addColumn(CachedPatient::getPatientLastName).setHeader("Patient last name");
+    Grid.Column<CachedPatient> issuerOfPatientIDColumn =
+        addColumn(CachedPatient::getIssuerOfPatientId).setHeader("Issuer of patient ID");
+    Grid.Column<CachedPatient> editorColumn =
+        addComponentColumn(
+            patient -> {
+              Button edit = new Button("Edit");
+              edit.addClassName("edit");
+              edit.addClickListener(
+                  e -> {
+                    editor.editItem(patient);
+                    externalIdField.focus();
+                  });
+              edit.setEnabled(!editor.isOpen());
+              editButtons.add(edit);
+              return edit;
             });
-            edit.setEnabled(!editor.isOpen());
-            editButtons.add(edit);
-            return edit;
-        });
 
-        editButtons = Collections.newSetFromMap(new WeakHashMap<>());
-        editor = getEditor();
-        editor.setBinder(binder);
-        editor.setBuffered(true);
+    editButtons = Collections.newSetFromMap(new WeakHashMap<>());
+    editor = getEditor();
+    editor.setBinder(binder);
+    editor.setBuffered(true);
 
-        externalIdField = new TextField();
-        patientIdField = new TextField();
-        patientNameField = new TextField();
-        issuerOfPatientIdField = new TextField();
+    externalIdField = new TextField();
+    patientIdField = new TextField();
+    patientFirstNameField = new TextField();
+    patientLastNameField = new TextField();
+    issuerOfPatientIdField = new TextField();
 
-        extidColumn.setEditorComponent(externalIdField);
-        patientIdColumn.setEditorComponent(patientIdField);
-        patientNameColumn.setEditorComponent(patientNameField);
-        issuerOfPatientIDColumn.setEditorComponent(issuerOfPatientIdField);
+    extidColumn.setEditorComponent(externalIdField);
+    patientIdColumn.setEditorComponent(patientIdField);
+    patientFirstNameColumn.setEditorComponent(patientFirstNameField);
+    patientLastNameColumn.setEditorComponent(patientLastNameField);
+    issuerOfPatientIDColumn.setEditorComponent(issuerOfPatientIdField);
 
-        deleteColumn = addComponentColumn(patient -> {
-            deletePatientButton = new Button("Delete");
-            deletePatientButton.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
-            deletePatientButton.addClickListener( e -> {
-                patientList.remove(patient);
-                getDataProvider().refreshAll();
-                externalIDCache.remove(PatientClientUtil.generateKey(patient));
+    deleteColumn =
+        addComponentColumn(
+            patient -> {
+              deletePatientButton = new Button("Delete");
+              deletePatientButton.addThemeVariants(
+                  ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
+              deletePatientButton.addClickListener(
+                  e -> {
+                    patientList.remove(patient);
+                    getDataProvider().refreshAll();
+                    externalIDCache.remove(PatientClientUtil.generateKey(patient));
+                  });
+              return deletePatientButton;
             });
-            return deletePatientButton;
-        });
 
-        saveEditPatientButton = new Button(LABEL_SAVE);
-        cancelEditPatientButton = new Button(LABEL_CANCEL);
+    saveEditPatientButton = new Button(LABEL_SAVE);
+    cancelEditPatientButton = new Button(LABEL_CANCEL);
 
-        Div buttons = new Div(saveEditPatientButton, cancelEditPatientButton);
-        editorColumn.setEditorComponent(buttons);
-    }
+    Div buttons = new Div(saveEditPatientButton, cancelEditPatientButton);
+    editorColumn.setEditorComponent(buttons);
+  }
 
     public Div setBinder(){
         Div validationStatus = new Div();
@@ -151,19 +175,26 @@ public class ExternalIDGrid extends Grid<CachedPatient> {
             .withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
             .withStatusLabel(validationStatus).bind("patientId");
 
-        binder.forField(patientNameField)
-            .withValidator(StringUtils::isNotBlank, "Patient name is empty")
+    binder
+        .forField(patientFirstNameField)
+            .withValidator(StringUtils::isNotBlank, "Patient firstname is empty")
             .withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
-            .withStatusLabel(validationStatus).bind("patientName");
+            .bind("patientFirstName");
 
-        binder.forField(issuerOfPatientIdField)
+    binder
+        .forField(patientLastNameField)
+        .withValidator(StringUtils::isNotBlank, "Patient last name is empty")
+        .withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
+        .bind("patientLastName");
+
+    binder.forField(issuerOfPatientIdField)
             .withValidator(new StringLengthValidator("Length must be between 0 and 50.", 0, 50))
             .withStatusLabel(validationStatus).bind("issuerOfPatientId");
 
-        return validationStatus;
-    }
+    return validationStatus;
+  }
 
-    public void setAddNewPatientButton(Button addNewPatientButton) {
-        this.addNewPatientButton = addNewPatientButton;
-    }
+  public void setAddPatientButton(Button addPatientButton) {
+    this.addPatientButton = addPatientButton;
+  }
 }

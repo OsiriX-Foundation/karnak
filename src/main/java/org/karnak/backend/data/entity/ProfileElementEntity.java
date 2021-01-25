@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2020-2021 Karnak Team and other contributors.
+ *
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ */
 package org.karnak.backend.data.entity;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
@@ -29,7 +38,7 @@ import org.karnak.backend.data.converter.TagListToStringListConverter;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ProfileElementEntity implements Serializable {
 
-    private static final long serialVersionUID = 818925943276758147L;
+  private static final long serialVersionUID = 818925943276758147L;
 
     private Long id;
     private String name;
@@ -41,49 +50,59 @@ public class ProfileElementEntity implements Serializable {
     private ProfileEntity profileEntity;
     private List<IncludedTagEntity> includedTagEntities = new ArrayList<>();
     private List<ExcludedTagEntity> excludedTagEntities = new ArrayList<>();
-    private List<ArgumentEntity> argumentEntities = new ArrayList<>();
+  private List<ArgumentEntity> argumentEntities = new ArrayList<>();
 
-    public ProfileElementEntity() {
-    }
+  public ProfileElementEntity() {}
 
-    public ProfileElementEntity(String name, String codename, String condition, String action,
-        String option, Integer position, ProfileEntity profileEntity) {
-        this.name = name;
-        this.codename = codename;
-        this.condition = condition;
-        this.action = action;
-        this.option = option;
-        this.position = position;
-        this.profileEntity = profileEntity;
-    }
+  public ProfileElementEntity(
+      String name,
+      String codename,
+      String condition,
+      String action,
+      String option,
+      Integer position,
+      ProfileEntity profileEntity) {
+    this.name = name;
+    this.codename = codename;
+    this.condition = condition;
+    this.action = action;
+    this.option = option;
+    this.position = position;
+    this.profileEntity = profileEntity;
+  }
 
-    public ProfileElementEntity(String name, String codename, String condition, String action,
-        String option, List<ArgumentEntity> argumentEntities, Integer position,
-        ProfileEntity profileEntity) {
-        this.name = name;
-        this.codename = codename;
-        this.condition = condition;
-        this.action = action;
-        this.option = option;
-        this.argumentEntities = argumentEntities;
-        this.position = position;
-        this.profileEntity = profileEntity;
-    }
+  public ProfileElementEntity(
+      String name,
+      String codename,
+      String condition,
+      String action,
+      String option,
+      List<ArgumentEntity> argumentEntities,
+      Integer position,
+      ProfileEntity profileEntity) {
+    this.name = name;
+    this.codename = codename;
+    this.condition = condition;
+    this.action = action;
+    this.option = option;
+    this.argumentEntities = argumentEntities;
+    this.position = position;
+    this.profileEntity = profileEntity;
+  }
 
-    public void addIncludedTag(IncludedTagEntity includedtag) {
-        this.includedTagEntities.add(includedtag);
-    }
+  public void addIncludedTag(IncludedTagEntity includedtag) {
+    this.includedTagEntities.add(includedtag);
+  }
 
-    public void addExceptedtags(ExcludedTagEntity exceptedtags) {
-        this.excludedTagEntities.add(exceptedtags);
-    }
+  public void addExceptedtags(ExcludedTagEntity exceptedtags) {
+    this.excludedTagEntities.add(exceptedtags);
+  }
 
-    public void addArgument(ArgumentEntity argumentEntity) {
-        this.argumentEntities
-            .add(argumentEntity);
-    }
+  public void addArgument(ArgumentEntity argumentEntity) {
+    this.argumentEntities.add(argumentEntity);
+  }
 
-    @Id
+  @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @JsonIgnore
     public Long getId() {
@@ -98,93 +117,93 @@ public class ProfileElementEntity implements Serializable {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public String getCodename() {
-        return codename;
-    }
+  public String getCodename() {
+    return codename;
+  }
 
-    public void setCodename(String codename) {
-        this.codename = codename;
-    }
+  public void setCodename(String codename) {
+    this.codename = codename;
+  }
 
-    public String getCondition() {
-        return condition;
-    }
+  public String getCondition() {
+    return condition;
+  }
 
-    public void setCondition(String condition) {
-        this.condition = condition;
-    }
+  public void setCondition(String condition) {
+    this.condition = condition;
+  }
 
-    public String getAction() {
-        return action;
-    }
+  public String getAction() {
+    return action;
+  }
 
-    public void setAction(String action) {
-        this.action = action;
-    }
+  public void setAction(String action) {
+    this.action = action;
+  }
 
-    public String getOption() {
-        return option;
-    }
+  public String getOption() {
+    return option;
+  }
 
-    public void setOption(String option) {
-        this.option = option;
-    }
+  public void setOption(String option) {
+    this.option = option;
+  }
 
-    @OneToMany(mappedBy = "profileElementEntity", cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "profileElementEntity", cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
     @JsonSerialize(converter = ArgumentToMapConverter.class)
     public List<ArgumentEntity> getArgumentEntities() {
         return argumentEntities;
     }
 
-    public void setArgumentEntities(List<ArgumentEntity> argumentEntities) {
-        this.argumentEntities = argumentEntities;
-    }
+  public void setArgumentEntities(List<ArgumentEntity> argumentEntities) {
+    this.argumentEntities = argumentEntities;
+  }
 
-    @JsonIgnore
+  @JsonIgnore
     public Integer getPosition() {
         return position;
     }
 
-    public void setPosition(Integer position) {
-        this.position = position;
-    }
+  public void setPosition(Integer position) {
+    this.position = position;
+  }
 
-    @ManyToOne()
+  @ManyToOne()
     @JoinColumn(name = "profile_id", nullable = false)
     @JsonIgnore
     public ProfileEntity getProfileEntity() {
         return profileEntity;
     }
 
-    public void setProfileEntity(ProfileEntity profileEntity) {
-        this.profileEntity = profileEntity;
-    }
+  public void setProfileEntity(ProfileEntity profileEntity) {
+    this.profileEntity = profileEntity;
+  }
 
-    @JsonGetter("tags")
+  @JsonGetter("tags")
     @OneToMany(mappedBy = "profileElementEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonSerialize(converter = TagListToStringListConverter.class)
-    public List<IncludedTagEntity> getIncludedTagEntities() {
-        return includedTagEntities;
-    }
+  public List<IncludedTagEntity> getIncludedTagEntities() {
+    return includedTagEntities;
+  }
 
-    @JsonSetter("tags")
+  @JsonSetter("tags")
     public void setIncludedTagEntities(List<IncludedTagEntity> includedTagEntities) {
         this.includedTagEntities = includedTagEntities;
     }
 
-    @JsonGetter("excludedTags")
+  @JsonGetter("excludedTags")
     @OneToMany(mappedBy = "profileElementEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonSerialize(converter = TagListToStringListConverter.class)
-    public List<ExcludedTagEntity> getExcludedTagEntities() {
-        return excludedTagEntities;
-    }
+  public List<ExcludedTagEntity> getExcludedTagEntities() {
+    return excludedTagEntities;
+  }
 
-    @JsonSetter("excludedTags")
+  @JsonSetter("excludedTags")
     public void setExcludedTagEntities(List<ExcludedTagEntity> excludedTagEntities) {
         this.excludedTagEntities = excludedTagEntities;
     }

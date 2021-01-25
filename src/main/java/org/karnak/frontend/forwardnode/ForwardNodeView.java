@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2020-2021 Karnak Team and other contributors.
+ *
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ */
 package org.karnak.frontend.forwardnode;
 
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -23,42 +32,42 @@ public class ForwardNodeView extends HorizontalLayout implements HasUrlParameter
 
     public static final String VIEW_NAME = "Gateway";
     private final ForwardNodeAPIService forwardNodeAPIService;
-    private final LayoutNewGridForwardNode layoutNewGridForwardNode;
-    private final LayoutEditForwardNode layoutEditForwardNode;
-    private final ForwardNodeViewLogic forwardNodeViewLogic;
+  private final LayoutNewGridForwardNode layoutNewGridForwardNode;
+  private final LayoutEditForwardNode layoutEditForwardNode;
+  private final ForwardNodeViewLogic forwardNodeViewLogic;
 
-    @Autowired
+  @Autowired
     public ForwardNodeView(LayoutEditForwardNode layoutEditForwardNode,
         final ForwardNodeAPIService forwardNodeAPIService) {
-        setSizeFull();
-        this.forwardNodeAPIService = forwardNodeAPIService;
-        this.forwardNodeViewLogic = new ForwardNodeViewLogic(forwardNodeAPIService);
-        this.layoutNewGridForwardNode = new LayoutNewGridForwardNode(forwardNodeViewLogic,
+    setSizeFull();
+    this.forwardNodeAPIService = forwardNodeAPIService;
+    this.forwardNodeViewLogic = new ForwardNodeViewLogic(forwardNodeAPIService);
+    this.layoutNewGridForwardNode = new LayoutNewGridForwardNode(forwardNodeViewLogic,
             forwardNodeAPIService);
 
-        this.layoutEditForwardNode = layoutEditForwardNode;
+    this.layoutEditForwardNode = layoutEditForwardNode;
     }
 
     @PostConstruct
     public void init() {
         layoutNewGridForwardNode.setWidth("30%");
         this.layoutEditForwardNode.setWidth("70%");
-        add(layoutNewGridForwardNode, this.layoutEditForwardNode);
-    }
+    add(layoutNewGridForwardNode, this.layoutEditForwardNode);
+  }
 
-    @Override
-    public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
-        Long idForwardNode = forwardNodeViewLogic.enter(parameter);
-        ForwardNodeEntity currentForwardNodeEntity = null;
-        if (idForwardNode != null) {
-            currentForwardNodeEntity = forwardNodeAPIService.getForwardNodeById(idForwardNode);
-        }
-        layoutNewGridForwardNode.load(currentForwardNodeEntity);
-        layoutEditForwardNode.load(currentForwardNodeEntity);
+  @Override
+  public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
+    Long idForwardNode = forwardNodeViewLogic.enter(parameter);
+    ForwardNodeEntity currentForwardNodeEntity = null;
+    if (idForwardNode != null) {
+      currentForwardNodeEntity = forwardNodeAPIService.getForwardNodeById(idForwardNode);
     }
+    layoutNewGridForwardNode.load(currentForwardNodeEntity);
+    layoutEditForwardNode.load(currentForwardNodeEntity);
+  }
 
-    @Autowired
-    private void addEventManager(ApplicationEventPublisher publisher) {
-        forwardNodeAPIService.setApplicationEventPublisher(publisher);
-    }
+  @Autowired
+  private void addEventManager(ApplicationEventPublisher publisher) {
+    forwardNodeAPIService.setApplicationEventPublisher(publisher);
+  }
 }

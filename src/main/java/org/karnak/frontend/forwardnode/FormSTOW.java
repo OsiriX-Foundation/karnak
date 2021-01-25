@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2020-2021 Karnak Team and other contributors.
+ *
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ */
 package org.karnak.frontend.forwardnode;
 
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -94,30 +103,36 @@ public class FormSTOW extends VerticalLayout {
     UIS.setTooltip(url, "The destination STOW-RS URL");
 
     urlCredentials.setWidth("50%");
-    UIS.setTooltip(urlCredentials, "Credentials of the STOW-RS service (format is \"user:password\")");
+    UIS.setTooltip(
+        urlCredentials, "Credentials of the STOW-RS service (format is \"user:password\")");
 
     headers.setMinHeight("10em");
     headers.setWidth("100%");
-    UIS.setTooltip(headers,
+    UIS.setTooltip(
+        headers,
         "Headers for HTTP request. Example of format:\n<key>Authorization</key>\n<value>Bearer 1v1pwxT4Ww4DCFzyaMt0NP</value>");
 
     notify.setWidth("100%");
 
     notifyObjectErrorPrefix.setWidth("24%");
-    UIS.setTooltip(notifyObjectErrorPrefix,
+    UIS.setTooltip(
+        notifyObjectErrorPrefix,
         "Prefix of the email object when containing an issue. Default value: **ERROR**");
 
     notifyObjectPattern.setWidth("24%");
-    UIS.setTooltip(notifyObjectPattern,
+    UIS.setTooltip(
+        notifyObjectPattern,
         "Pattern of the email object, see https://dzone.com/articles/java-string-format-examples. Default value: [Karnak Notification] %s %.30s");
 
     notifyObjectValues.setWidth("24%");
-    UIS.setTooltip(notifyObjectValues,
+    UIS.setTooltip(
+        notifyObjectValues,
         "Values injected in the pattern [PatientID StudyDescription StudyDate StudyInstanceUID]. Default value: PatientID,StudyDescription");
 
     notifyInterval.setWidth("18%");
     notifyInterval.addThemeVariants(TextFieldVariant.LUMO_ALIGN_RIGHT);
-    UIS.setTooltip(notifyInterval,
+    UIS.setTooltip(
+        notifyInterval,
         "Interval in seconds for sending a notification (when no new image is arrived in the archive folder). Default value: 45");
   }
 

@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2020-2021 Karnak Team and other contributors.
+ *
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ */
 package org.karnak.backend.model.standard;
 
 import java.util.ArrayList;
@@ -16,131 +25,154 @@ import org.karnak.backend.model.dicominnolitics.jsonCIODtoModule;
 import org.karnak.backend.model.dicominnolitics.jsonSOP;
 
 public class SOPS {
-    private static HashMap<String, SOP> HMapSOPS;
 
-    public SOPS() {
-        HashMap<String, String> HMapCIODS = initializeCIODS(StandardCIODS.readJsonCIODS());
-        HashMap<String, ArrayList<Module>> HMapCIODModules = initializeHMapCIODModules(StandardCIODtoModules.readJsonCIODToModules());
-        HMapSOPS = initializeSOPS(StandardSOPS.readJsonSOPS(), HMapCIODS, HMapCIODModules);
+  private static HashMap<String, SOP> HMapSOPS;
+
+  public SOPS() {
+    HashMap<String, String> HMapCIODS = initializeCIODS(StandardCIODS.readJsonCIODS());
+    HashMap<String, ArrayList<Module>> HMapCIODModules =
+        initializeHMapCIODModules(StandardCIODtoModules.readJsonCIODToModules());
+    HMapSOPS = initializeSOPS(StandardSOPS.readJsonSOPS(), HMapCIODS, HMapCIODModules);
+  }
+
+  private HashMap<String, SOP> initializeSOPS(
+      jsonSOP[] sops,
+      HashMap<String, String> HMapCIODS,
+      HashMap<String, ArrayList<Module>> HMapCIODModules) {
+    HashMap<String, SOP> HMapSOPS = new HashMap<>();
+    for (jsonSOP sop : sops) {
+      String ciod_id = HMapCIODS.get(sop.getCiod());
+      ArrayList<Module> modules = HMapCIODModules.get(ciod_id);
+      SOP newSOP = new SOP(sop.getId(), sop.getName(), sop.getCiod(), ciod_id, modules);
+      HMapSOPS.put(sop.getId(), newSOP);
     }
+    return HMapSOPS;
+  }
 
-    private HashMap<String, SOP> initializeSOPS(jsonSOP[] sops, HashMap<String, String> HMapCIODS, HashMap<String, ArrayList<Module>> HMapCIODModules) {
-        HashMap<String, SOP> HMapSOPS = new HashMap<>();
-        for (jsonSOP sop: sops) {
-            String ciod_id = HMapCIODS.get(sop.getCiod());
-            ArrayList<Module> modules = HMapCIODModules.get(ciod_id);
-            SOP newSOP = new SOP(sop.getId(), sop.getName(), sop.getCiod(), ciod_id, modules);
-            HMapSOPS.put(sop.getId(), newSOP);
-        }
-        return HMapSOPS;
+  private HashMap<String, String> initializeCIODS(jsonCIOD[] ciods) {
+    HashMap<String, String> HMapCIODS = new HashMap<>();
+    for (jsonCIOD ciod : ciods) {
+      HMapCIODS.put(ciod.getName(), ciod.getId());
     }
+    return HMapCIODS;
+  }
 
-    private HashMap<String, String> initializeCIODS(jsonCIOD[] ciods) {
-        HashMap<String, String> HMapCIODS = new HashMap<>();
-        for (jsonCIOD ciod: ciods) {
-            HMapCIODS.put(ciod.getName(), ciod.getId());
-        }
-        return HMapCIODS;
+  private HashMap<String, ArrayList<Module>> initializeHMapCIODModules(
+      jsonCIODtoModule[] ciodToModules) {
+    HashMap<String, ArrayList<Module>> HMapCIODModules = new HashMap<>();
+
+    for (jsonCIODtoModule ciodToModule : ciodToModules) {
+      String ciod_id = ciodToModule.getCiodId();
+      Module module =
+          new Module(
+              ciodToModule.getModuleId(),
+              ciodToModule.getUsage(),
+              ciodToModule.getInformationEntity());
+      if (HMapCIODModules.containsKey(ciod_id)) {
+        ArrayList<Module> ListModules = HMapCIODModules.get(ciod_id);
+        ListModules.add(module);
+      } else {
+        ArrayList<Module> ListModules = new ArrayList<>();
+        ListModules.add(module);
+        HMapCIODModules.put(ciod_id, ListModules);
+      }
     }
+    return HMapCIODModules;
+  }
 
-    private HashMap<String, ArrayList<Module>> initializeHMapCIODModules(jsonCIODtoModule[] ciodToModules) {
-        HashMap<String, ArrayList<Module>> HMapCIODModules = new HashMap<>();
+  public ArrayList<String> getAllUIDs() {
+    ArrayList<String> uidList = new ArrayList<>(HMapSOPS.keySet());
+    return uidList;
+  }
 
-        for (jsonCIODtoModule ciodToModule: ciodToModules) {
-            String ciod_id = ciodToModule.getCiodId();
-            Module module = new Module(ciodToModule.getModuleId(), ciodToModule.getUsage(), ciodToModule.getInformationEntity());
-            if (HMapCIODModules.containsKey(ciod_id)) {
-                ArrayList<Module> ListModules = HMapCIODModules.get(ciod_id);
-                ListModules.add(module);
-            } else {
-                ArrayList<Module> ListModules = new ArrayList<>();
-                ListModules.add(module);
-                HMapCIODModules.put(ciod_id, ListModules);
-            }
-        }
-        return HMapCIODModules;
+  public SOP getSOP(String uid) {
+    SOP sop = HMapSOPS.get(uid);
+    return sop;
+  }
+
+  public String getName(String uid) throws SOPNotFoundException {
+    SOP sop = HMapSOPS.get(uid);
+    if (sop == null) {
+      throw new SOPNotFoundException(
+          String.format("Unable to get name. Could not find the SOP UID %s", uid));
     }
+    return sop.getName();
+  }
 
-    public ArrayList<String> getAllUIDs() {
-        ArrayList<String> uidList = new ArrayList<>(HMapSOPS.keySet());
-        return uidList;
+  public String getCIOD(String uid) throws SOPNotFoundException {
+    SOP sop = HMapSOPS.get(uid);
+    if (sop == null) {
+      throw new SOPNotFoundException(
+          String.format("Unable to get CIOD. Could not find the SOP UID %s", uid));
     }
+    return sop.getCiod();
+  }
 
-    public SOP getSOP(String uid) {
-        SOP sop = HMapSOPS.get(uid);
-        return sop;
+  public String getIdCIOD(String uid) throws SOPNotFoundException {
+    SOP sop = HMapSOPS.get(uid);
+    if (sop == null) {
+      throw new SOPNotFoundException(
+          String.format("Unable to get ID CIOD. Could not find the SOP UID %s", uid));
     }
+    return sop.getCiod_id();
+  }
 
-    public String getName(String uid) throws SOPNotFoundException {
-        SOP sop = HMapSOPS.get(uid);
-        if (sop == null) {
-            throw new SOPNotFoundException(String.format("Unable to get name. Could not find the SOP UID %s", uid));
-        }
-        return sop.getName();
+  public Optional<Module> getModuleByModuleID(String uid, String moduleId)
+      throws SOPNotFoundException {
+    SOP sop = HMapSOPS.get(uid);
+    if (sop == null) {
+      throw new SOPNotFoundException(
+          String.format(
+              "Unable to get if module %s is present. Could not find the SOP UID %s",
+              moduleId, uid));
     }
+    return sop.getModules().stream().filter(module -> moduleId.equals(module.getId())).findFirst();
+  }
 
-    public String getCIOD(String uid) throws SOPNotFoundException {
-        SOP sop = HMapSOPS.get(uid);
-        if (sop == null) {
-            throw new SOPNotFoundException(String.format("Unable to get CIOD. Could not find the SOP UID %s", uid));
-        }
-        return sop.getCiod();
+  public ArrayList<Module> getSOPmodules(String uid) throws SOPNotFoundException {
+    SOP sop = HMapSOPS.get(uid);
+    if (sop == null) {
+      throw new SOPNotFoundException(
+          String.format("Unable to get SOP modules. Could not find the SOP UID %s", uid));
     }
+    return sop.getModules();
+  }
 
-    public String getIdCIOD(String uid) throws SOPNotFoundException {
-        SOP sop = HMapSOPS.get(uid);
-        if (sop == null) {
-            throw new SOPNotFoundException(String.format("Unable to get ID CIOD. Could not find the SOP UID %s", uid));
-        }
-        return sop.getCiod_id();
+  public List<String> getSOPmodulesName(String uid) throws SOPNotFoundException {
+    SOP sop = HMapSOPS.get(uid);
+    if (sop == null) {
+      throw new SOPNotFoundException(
+          String.format("Unable to get SOP modules name. Could not find the SOP UID %s", uid));
     }
+    return sop.getModules().stream().map(module -> module.getId()).collect(Collectors.toList());
+  }
 
-    public Optional<Module> getModuleByModuleID(String uid, String moduleId) throws SOPNotFoundException {
-        SOP sop = HMapSOPS.get(uid);
-        if (sop == null) {
-            throw new SOPNotFoundException(String.format("Unable to get if module %s is present. Could not find the SOP UID %s", moduleId, uid));
-        }
-        return sop.getModules().stream()
-                .filter(module -> moduleId.equals(module.getId()))
-                .findFirst();
+  public Boolean moduleIsPresent(String uid, String moduleId) throws SOPNotFoundException {
+    SOP sop = HMapSOPS.get(uid);
+    if (sop == null) {
+      throw new SOPNotFoundException(
+          String.format(
+              "Unable to get if module %s is present. Could not find the SOP UID %s",
+              moduleId, uid));
     }
+    Predicate<Module> modulePredicate = module -> moduleId.equals(module.getId());
+    return sop.getModules().stream().anyMatch(modulePredicate);
+  }
 
-    public ArrayList<Module> getSOPmodules(String uid) throws SOPNotFoundException {
-        SOP sop = HMapSOPS.get(uid);
-        if (sop == null) {
-            throw new SOPNotFoundException(String.format("Unable to get SOP modules. Could not find the SOP UID %s", uid));
-        }
-        return sop.getModules();
+  public Map<Module, Map<String, Attribute>> getModuleToAttribute(
+      String uid, ModuleToAttributes moduleToAttributes) throws SOPNotFoundException {
+    Map<Module, Map<String, Attribute>> HMapModuleAttributes = new HashMap<>();
+    try {
+      getSOPmodules(uid)
+          .forEach(
+              module -> {
+                HMapModuleAttributes.put(
+                    module, moduleToAttributes.getAttributesByModule(module.getId()));
+              });
+    } catch (SOPNotFoundException sopNotFoundException) {
+      throw new SOPNotFoundException(
+          String.format("Unable to get module attributes. Could not find the SOP UID %s", uid));
     }
-
-    public List<String> getSOPmodulesName(String uid) throws SOPNotFoundException {
-        SOP sop = HMapSOPS.get(uid);
-        if (sop == null) {
-            throw new SOPNotFoundException(String.format("Unable to get SOP modules name. Could not find the SOP UID %s", uid));
-        }
-        return sop.getModules().stream()
-                .map(module -> module.getId())
-                .collect(Collectors.toList());
-    }
-
-    public Boolean moduleIsPresent(String uid, String moduleId) throws SOPNotFoundException {
-        SOP sop = HMapSOPS.get(uid);
-        if (sop == null) {
-            throw new SOPNotFoundException(String.format("Unable to get if module %s is present. Could not find the SOP UID %s", moduleId, uid));
-        }
-        Predicate<Module> modulePredicate = module -> moduleId.equals(module.getId());
-        return sop.getModules().stream().anyMatch(modulePredicate);
-    }
-
-    public Map<Module, Map<String, Attribute>> getModuleToAttribute(String uid, ModuleToAttributes moduleToAttributes) throws SOPNotFoundException {
-        Map<Module, Map<String, Attribute>> HMapModuleAttributes = new HashMap<>();
-        try {
-            getSOPmodules(uid).forEach(module -> {
-                HMapModuleAttributes.put(module, moduleToAttributes.getAttributesByModule(module.getId()));
-            });
-        } catch (SOPNotFoundException sopNotFoundException) {
-            throw new SOPNotFoundException(String.format("Unable to get module attributes. Could not find the SOP UID %s", uid));
-        }
-        return HMapModuleAttributes;
-    }
+    return HMapModuleAttributes;
+  }
 }

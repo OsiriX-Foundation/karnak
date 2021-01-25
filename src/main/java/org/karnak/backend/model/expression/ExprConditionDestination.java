@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2020-2021 Karnak Team and other contributors.
+ *
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ */
 package org.karnak.backend.model.expression;
 
 import java.util.Objects;
@@ -22,39 +31,38 @@ public class ExprConditionDestination implements ExpressionItem {
       this.stringValue = null;
     }
     this.dcmCopy = dcmCopy;
-        this.dcm = dcm;
-    }
+    this.dcm = dcm;
+  }
 
-    public String getString(int tag){
-        return dcmCopy.getString(tag).orElse(null);
-    }
+  public String getString(int tag) {
+    return dcmCopy.getString(tag).orElse(null);
+  }
 
-    public boolean tagIsPresent(int tag){
-        return DicomObjectTools.tagIsInDicomObject(tag, dcmCopy);
-    }
+  public boolean tagIsPresent(int tag) {
+    return DicomObjectTools.tagIsInDicomObject(tag, dcmCopy);
+  }
 
+  public int getTag() {
+    return tag;
+  }
 
-    public int getTag() {
-        return tag;
-    }
+  public void setTag(int tag) {
+    this.tag = tag;
+  }
 
-    public void setTag(int tag) {
-        this.tag = tag;
-    }
+  public VR getVr() {
+    return vr;
+  }
 
-    public VR getVr() {
-        return vr;
-    }
+  public void setVr(VR vr) {
+    this.vr = vr;
+  }
 
-    public void setVr(VR vr) {
-        this.vr = vr;
-    }
+  public String getStringValue() {
+    return stringValue;
+  }
 
-    public String getStringValue() {
-        return stringValue;
-    }
-
-    public void setStringValue(String stringValue) {
-        this.stringValue = stringValue;
-    }
+  public void setStringValue(String stringValue) {
+    this.stringValue = stringValue;
+  }
 }

@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2020-2021 Karnak Team and other contributors.
+ *
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ */
 package org.karnak.backend.data.repo;
 
 import org.karnak.backend.data.entity.SOPClassUIDEntity;
@@ -7,9 +16,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SOPClassUIDRepo extends JpaRepository<SOPClassUIDEntity, Long> {
 
-    SOPClassUIDEntity getSOPClassUIDByName(String name);
+  SOPClassUIDEntity getSOPClassUIDByName(String name);
 
-    SOPClassUIDEntity getSOPClassUIDById(Long id);
+  SOPClassUIDEntity getSOPClassUIDById(Long id);
 
-    Boolean existsByCiodAndUidAndName(String ciod, String uid, String name);
+  Boolean existsByCiodAndUidAndName(String ciod, String uid, String name);
 }

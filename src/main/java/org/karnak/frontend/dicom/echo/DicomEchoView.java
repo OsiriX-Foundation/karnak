@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2020-2021 Karnak Team and other contributors.
+ *
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ */
 package org.karnak.frontend.dicom.echo;
 
 import com.vaadin.flow.component.ClickEvent;
@@ -30,365 +39,375 @@ import org.karnak.frontend.dicom.AbstractView;
 import org.karnak.frontend.dicom.PortField;
 import org.karnak.frontend.dicom.echo.DicomEchoSelectionDialog.DicomNodeSelectionEvent;
 
-/**
- * Calling Order 
- * 1) constructor 
- * 2) setParameter 
- * 3) beforeEnter
- * 
- */
-
+/** Calling Order 1) constructor 2) setParameter 3) beforeEnter */
 @SuppressWarnings("serial")
 public class DicomEchoView extends AbstractView implements HasUrlParameter<String> {
 
-    public static final String VIEW_NAME = "Dicom Echo";
-    private static final long serialVersionUID = 1L;
+  public static final String VIEW_NAME = "Dicom Echo";
+  private static final long serialVersionUID = 1L;
 
-    private static final String PARAMETER_CALLING_AET = "callingAET";
-    private static final String PARAMETER_CALLED_AET = "calledAET";
-    private static final String PARAMETER_CALLED_HOSTNAME = "calledHostname";
-    private static final String PARAMETER_CALLED_PORT = "calledPort";
-    private static final String PARAMETER_ACTION = "action";
-    
-    private static final String ACTION_ECHO = "echo";
+  private static final String PARAMETER_CALLING_AET = "callingAET";
+  private static final String PARAMETER_CALLED_AET = "calledAET";
+  private static final String PARAMETER_CALLED_HOSTNAME = "calledHostname";
+  private static final String PARAMETER_CALLED_PORT = "calledPort";
+  private static final String PARAMETER_ACTION = "action";
+
+  private static final String ACTION_ECHO = "echo";
 
   // CONTROLLER
   private final DicomEchoLogic logic = new DicomEchoLogic(this);
-    
-    // DIALOGS
-    private DicomEchoSelectionDialog dicomEchoSelectionDialog;
 
-    // UI COMPONENTS
-    // Dicom Echo Query
-    private VerticalLayout dicomEchoQueryLayout;
-    private FormLayout formLayout;
-    private H6 formLayoutTitle;
-    private TextField callingAetFld;
-    private TextField calledAetFld;
-    private TextField calledHostnameFld;
-    private PortField calledPortFld;
-    private HorizontalLayout buttonBar;
-    private Button clearBtn;
-    private Button selectDicomNodeBtn;
-    private Button dicomEchoBtn;
-    // Dicom Echo Status
-    private Div dicomEchoStatusLayout;
+  // DIALOGS
+  private DicomEchoSelectionDialog dicomEchoSelectionDialog;
 
-    // DATA
-    private DicomEchoQueryData dicomEchoQueryData;
-    private Binder<DicomEchoQueryData> binder;
+  // UI COMPONENTS
+  // Dicom Echo Query
+  private VerticalLayout dicomEchoQueryLayout;
+  private FormLayout formLayout;
+  private H6 formLayoutTitle;
+  private TextField callingAetFld;
+  private TextField calledAetFld;
+  private TextField calledHostnameFld;
+  private PortField calledPortFld;
+  private HorizontalLayout buttonBar;
+  private Button clearBtn;
+  private Button selectDicomNodeBtn;
+  private Button dicomEchoBtn;
+  // Dicom Echo Status
+  private Div dicomEchoStatusLayout;
 
-    // PARAMETERS
-    private String callingAetParam;
-    private String dicomNodeAetParam;
-    private String dicomNodeHostnameParam;
-    private String dicomNodePortParam;
-    private String actionParam;
+  // DATA
+  private DicomEchoQueryData dicomEchoQueryData;
+  private Binder<DicomEchoQueryData> binder;
 
-    
-    public DicomEchoView() {
-        init();
-        createView();
-        createMainLayout();
+  // PARAMETERS
+  private String callingAetParam;
+  private String dicomNodeAetParam;
+  private String dicomNodeHostnameParam;
+  private String dicomNodePortParam;
+  private String actionParam;
 
-        add(mainLayout);
+  public DicomEchoView() {
+    init();
+    createView();
+    createMainLayout();
 
-        bindFields();
-    }
-    
+    add(mainLayout);
 
-    @Override
-    public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
-        readParameters(parameter);
-        
-        fillFieldsFromParameters();
-        
-        executeAction();
-    }
+    bindFields();
+  }
 
-    /*
-     * https://vaadin.com/forum/thread/17072019/inject-an-html-into-a-flow-compoment
-     */
-    public void displayStatus(String status) {
-        dicomEchoStatusLayout.removeAll();
-        dicomEchoStatusLayout.add(new Html("<span>" + status + "</span>"));
-        dicomEchoStatusLayout.setVisible(true);
-    }
+  @Override
+  public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
+    readParameters(parameter);
 
-    private void init() {
-        dicomEchoQueryData = new DicomEchoQueryData();
-        binder = new Binder<DicomEchoQueryData>();
-    }
-    
-    private void createView() {
-    	setSizeFull();
-    }
+    fillFieldsFromParameters();
 
-    private void createMainLayout() {
-        mainLayout = new VerticalLayout();
-        mainLayout.setPadding(true);
-        mainLayout.setSpacing(true);
-        mainLayout.setWidthFull();
+    executeAction();
+  }
 
-        buildDicomEchoQueryLayout();
-        buildDicomEchoStatusLayout();
+  /*
+   * https://vaadin.com/forum/thread/17072019/inject-an-html-into-a-flow-compoment
+   */
+  public void displayStatus(String status) {
+    dicomEchoStatusLayout.removeAll();
+    dicomEchoStatusLayout.add(new Html("<span>" + status + "</span>"));
+    dicomEchoStatusLayout.setVisible(true);
+  }
 
-        mainLayout.add(dicomEchoQueryLayout, dicomEchoStatusLayout);
-    }
-    
-    private void buildDicomEchoQueryLayout() {
-        dicomEchoQueryLayout = new VerticalLayout();
-        dicomEchoQueryLayout.setWidthFull();
-        dicomEchoQueryLayout.setPadding(true);
-        dicomEchoQueryLayout.setSpacing(false);
-        dicomEchoQueryLayout.getStyle().set("box-shadow", "0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12)");
-        dicomEchoQueryLayout.getStyle().set("border-radius", "4px");
-        
-        buildFormLayoutTitle();
-        buildFormLayout();
-        buildButtonBar();
+  private void init() {
+    dicomEchoQueryData = new DicomEchoQueryData();
+    binder = new Binder<DicomEchoQueryData>();
+  }
 
-        dicomEchoQueryLayout.add(formLayoutTitle, formLayout, buttonBar);
-    }
+  private void createView() {
+    setSizeFull();
+  }
 
-    private void buildFormLayoutTitle() {
-        formLayoutTitle = new H6("Dicom Echo");
-        formLayoutTitle.getStyle().set("margin-top", "0px");
-    }
+  private void createMainLayout() {
+    mainLayout = new VerticalLayout();
+    mainLayout.setPadding(true);
+    mainLayout.setSpacing(true);
+    mainLayout.setWidthFull();
 
-    private void buildFormLayout() {
-        formLayout = new FormLayout();
+    buildDicomEchoQueryLayout();
+    buildDicomEchoStatusLayout();
 
-        buildCallingAetFld();
-        buildCalledAetFld();
-        buildCalledHostnameFld();
-        buildCalledPortFld();
+    mainLayout.add(dicomEchoQueryLayout, dicomEchoStatusLayout);
+  }
 
-        formLayout.add(callingAetFld, calledAetFld, calledHostnameFld, calledPortFld);
+  private void buildDicomEchoQueryLayout() {
+    dicomEchoQueryLayout = new VerticalLayout();
+    dicomEchoQueryLayout.setWidthFull();
+    dicomEchoQueryLayout.setPadding(true);
+    dicomEchoQueryLayout.setSpacing(false);
+    dicomEchoQueryLayout
+        .getStyle()
+        .set(
+            "box-shadow",
+            "0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12)");
+    dicomEchoQueryLayout.getStyle().set("border-radius", "4px");
 
-        setFormResponsive(formLayout);
-    }
+    buildFormLayoutTitle();
+    buildFormLayout();
+    buildButtonBar();
 
-    private void buildCallingAetFld() {
-        callingAetFld = new TextField();
-        callingAetFld.setLabel("Calling AETitle");
-        callingAetFld.setRequired(true);
-        callingAetFld.setRequiredIndicatorVisible(true);
-        callingAetFld.setValueChangeMode(ValueChangeMode.EAGER);
-    }
-    
-    private void buildCalledAetFld() {
-        calledAetFld = new TextField("Called AET");
-        calledAetFld.setValueChangeMode(ValueChangeMode.EAGER);
-    }
-    
-    private void buildCalledHostnameFld() {
-        calledHostnameFld = new TextField("Called Hostname");
-        calledHostnameFld.setValueChangeMode(ValueChangeMode.EAGER);
-    }
-    
-    private void buildCalledPortFld() {
-        calledPortFld = new PortField();
-        calledPortFld.setLabel("Called Port");
-        calledPortFld.setValueChangeMode(ValueChangeMode.EAGER);
-    }
+    dicomEchoQueryLayout.add(formLayoutTitle, formLayout, buttonBar);
+  }
 
-    private void buildButtonBar() {
-        buttonBar = new HorizontalLayout();
-        buttonBar.setWidthFull();
-        buttonBar.setPadding(false);
-        buttonBar.setMargin(false);
-        buttonBar.getStyle().set("margin-top", "1em");
+  private void buildFormLayoutTitle() {
+    formLayoutTitle = new H6("Dicom Echo");
+    formLayoutTitle.getStyle().set("margin-top", "0px");
+  }
 
-        buildClearBtn();
-        buildSelectDicomNodeBtn();
-        buildDicomEchoBtn();
+  private void buildFormLayout() {
+    formLayout = new FormLayout();
 
-        buttonBar.add(clearBtn, selectDicomNodeBtn, dicomEchoBtn);
-    }
+    buildCallingAetFld();
+    buildCalledAetFld();
+    buildCalledHostnameFld();
+    buildCalledPortFld();
 
-    @SuppressWarnings("serial")
-    private void buildClearBtn() {
-        clearBtn = new Button("Clear");
-        clearBtn.getStyle().set("cursor", "pointer");
-        
-        clearBtn.addClickListener(new ComponentEventListener<ClickEvent<Button>>() {
-            
-            @Override
-            public void onComponentEvent(ClickEvent<Button> event) {
-                binder.readBean(dicomEchoQueryData);
-            }
+    formLayout.add(callingAetFld, calledAetFld, calledHostnameFld, calledPortFld);
+
+    setFormResponsive(formLayout);
+  }
+
+  private void buildCallingAetFld() {
+    callingAetFld = new TextField();
+    callingAetFld.setLabel("Calling AETitle");
+    callingAetFld.setRequired(true);
+    callingAetFld.setRequiredIndicatorVisible(true);
+    callingAetFld.setValueChangeMode(ValueChangeMode.EAGER);
+  }
+
+  private void buildCalledAetFld() {
+    calledAetFld = new TextField("Called AET");
+    calledAetFld.setValueChangeMode(ValueChangeMode.EAGER);
+  }
+
+  private void buildCalledHostnameFld() {
+    calledHostnameFld = new TextField("Called Hostname");
+    calledHostnameFld.setValueChangeMode(ValueChangeMode.EAGER);
+  }
+
+  private void buildCalledPortFld() {
+    calledPortFld = new PortField();
+    calledPortFld.setLabel("Called Port");
+    calledPortFld.setValueChangeMode(ValueChangeMode.EAGER);
+  }
+
+  private void buildButtonBar() {
+    buttonBar = new HorizontalLayout();
+    buttonBar.setWidthFull();
+    buttonBar.setPadding(false);
+    buttonBar.setMargin(false);
+    buttonBar.getStyle().set("margin-top", "1em");
+
+    buildClearBtn();
+    buildSelectDicomNodeBtn();
+    buildDicomEchoBtn();
+
+    buttonBar.add(clearBtn, selectDicomNodeBtn, dicomEchoBtn);
+  }
+
+  @SuppressWarnings("serial")
+  private void buildClearBtn() {
+    clearBtn = new Button("Clear");
+    clearBtn.getStyle().set("cursor", "pointer");
+
+    clearBtn.addClickListener(
+        new ComponentEventListener<ClickEvent<Button>>() {
+
+          @Override
+          public void onComponentEvent(ClickEvent<Button> event) {
+            binder.readBean(dicomEchoQueryData);
+          }
         });
-    }
-    
-    @SuppressWarnings("serial")
-    private void buildSelectDicomNodeBtn() {
-        selectDicomNodeBtn = new Button("Select Node");
-        selectDicomNodeBtn.getStyle().set("cursor", "pointer");
-        
-        selectDicomNodeBtn.addClickListener(new ComponentEventListener<ClickEvent<Button>>() {
-            
-            @Override
-            public void onComponentEvent(ClickEvent<Button> event) {
-                openDicomEchoSelectionDialog();
-            }
+  }
+
+  @SuppressWarnings("serial")
+  private void buildSelectDicomNodeBtn() {
+    selectDicomNodeBtn = new Button("Select Node");
+    selectDicomNodeBtn.getStyle().set("cursor", "pointer");
+
+    selectDicomNodeBtn.addClickListener(
+        new ComponentEventListener<ClickEvent<Button>>() {
+
+          @Override
+          public void onComponentEvent(ClickEvent<Button> event) {
+            openDicomEchoSelectionDialog();
+          }
         });
-    }
-    
-    @SuppressWarnings("serial")
-    private void openDicomEchoSelectionDialog() {
-        dicomEchoSelectionDialog = new DicomEchoSelectionDialog();
-        
-        dicomEchoSelectionDialog.addDicomNodeSelectionListener(new ComponentEventListener<DicomEchoSelectionDialog.DicomNodeSelectionEvent>() {
-            
-            @Override
-            public void onComponentEvent(DicomNodeSelectionEvent event) {
-                ConfigNode selectedDicomNode = event.getSelectedDicomNode();
-                
-                calledAetFld.setValue(selectedDicomNode.getAet());
-                calledHostnameFld.setValue(selectedDicomNode.getHostname());
-                calledPortFld.setValue(selectedDicomNode.getPort());
-            }
+  }
+
+  @SuppressWarnings("serial")
+  private void openDicomEchoSelectionDialog() {
+    dicomEchoSelectionDialog = new DicomEchoSelectionDialog();
+
+    dicomEchoSelectionDialog.addDicomNodeSelectionListener(
+        new ComponentEventListener<DicomEchoSelectionDialog.DicomNodeSelectionEvent>() {
+
+          @Override
+          public void onComponentEvent(DicomNodeSelectionEvent event) {
+            ConfigNode selectedDicomNode = event.getSelectedDicomNode();
+
+            calledAetFld.setValue(selectedDicomNode.getAet());
+            calledHostnameFld.setValue(selectedDicomNode.getHostname());
+            calledPortFld.setValue(selectedDicomNode.getPort());
+          }
         });
-        
-        dicomEchoSelectionDialog.open();
-    }
-    
-    @SuppressWarnings("serial")
-    private void buildDicomEchoBtn() {
-        dicomEchoBtn = new Button("Echo");
-        dicomEchoBtn.getStyle().set("cursor", "pointer");
-        dicomEchoBtn.addClassName("stroked-button");
-        dicomEchoBtn.setEnabled(false);
 
-        dicomEchoBtn.addClickListener(new ComponentEventListener<ClickEvent<Button>>() {
+    dicomEchoSelectionDialog.open();
+  }
 
-            @Override
-            public void onComponentEvent(ClickEvent<Button> event) {
-                executeEcho();
-            }
+  @SuppressWarnings("serial")
+  private void buildDicomEchoBtn() {
+    dicomEchoBtn = new Button("Echo");
+    dicomEchoBtn.getStyle().set("cursor", "pointer");
+    dicomEchoBtn.addClassName("stroked-button");
+    dicomEchoBtn.setEnabled(false);
+
+    dicomEchoBtn.addClickListener(
+        new ComponentEventListener<ClickEvent<Button>>() {
+
+          @Override
+          public void onComponentEvent(ClickEvent<Button> event) {
+            executeEcho();
+          }
         });
-    }
+  }
 
-    private void buildDicomEchoStatusLayout() {
-        dicomEchoStatusLayout = new Div();
-        dicomEchoStatusLayout.setWidth("-webkit-fill-available");
-        dicomEchoStatusLayout.getStyle().set("padding", "1em");
-        dicomEchoStatusLayout.getStyle().set("box-shadow", "0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12)");
-        dicomEchoStatusLayout.getStyle().set("border-radius", "4px");
-        
-        dicomEchoStatusLayout.setVisible(false);
-    }
+  private void buildDicomEchoStatusLayout() {
+    dicomEchoStatusLayout = new Div();
+    dicomEchoStatusLayout.setWidth("-webkit-fill-available");
+    dicomEchoStatusLayout.getStyle().set("padding", "1em");
+    dicomEchoStatusLayout
+        .getStyle()
+        .set(
+            "box-shadow",
+            "0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12)");
+    dicomEchoStatusLayout.getStyle().set("border-radius", "4px");
 
-    @SuppressWarnings("serial")
-    private void bindFields() {
-        binder.forField(callingAetFld)
+    dicomEchoStatusLayout.setVisible(false);
+  }
+
+  @SuppressWarnings("serial")
+  private void bindFields() {
+    binder
+        .forField(callingAetFld)
         .asRequired("This filed is mandatory")
         .bind(DicomEchoQueryData::getCallingAet, DicomEchoQueryData::setCallingAet);
-        
-        binder.forField(calledAetFld)
+
+    binder
+        .forField(calledAetFld)
         .asRequired("This filed is mandatory")
         .bind(DicomEchoQueryData::getCalledAet, DicomEchoQueryData::setCalledAet);
-        
-        binder.forField(calledHostnameFld)
+
+    binder
+        .forField(calledHostnameFld)
         .asRequired("This filed is mandatory")
         .bind(DicomEchoQueryData::getCalledHostname, DicomEchoQueryData::setCalledHostname);
-        
-        binder.forField(calledPortFld)
+
+    binder
+        .forField(calledPortFld)
         .asRequired("This filed is mandatory")
         .withValidator(new IntegerRangeValidator("Invalid port number", 1, 65535))
         .bind(DicomEchoQueryData::getCalledPort, DicomEchoQueryData::setCalledPort);
-        
-        binder.readBean(dicomEchoQueryData);
 
-        binder.addStatusChangeListener(new StatusChangeListener() {
+    binder.readBean(dicomEchoQueryData);
 
-            @Override
-            public void statusChange(StatusChangeEvent event) {
-                if (callingAetFld.isEmpty() || calledAetFld.isEmpty() || calledHostnameFld.isEmpty() || calledPortFld.isEmpty()) {
-                    dicomEchoBtn.setEnabled(false);
-                } else {
-                    dicomEchoBtn.setEnabled(!event.hasValidationErrors());
-                }
+    binder.addStatusChangeListener(
+        new StatusChangeListener() {
 
-                dicomEchoStatusLayout.removeAll();
-                dicomEchoStatusLayout.setVisible(false);
+          @Override
+          public void statusChange(StatusChangeEvent event) {
+            if (callingAetFld.isEmpty()
+                || calledAetFld.isEmpty()
+                || calledHostnameFld.isEmpty()
+                || calledPortFld.isEmpty()) {
+              dicomEchoBtn.setEnabled(false);
+            } else {
+              dicomEchoBtn.setEnabled(!event.hasValidationErrors());
             }
-        });
-    }
 
-    private void readParameters(String queryParameter) {
-        if (queryParameter!=null && !queryParameter.trim().isEmpty()) {
-
-          String queryParameterDecoded = URLDecoder.decode(queryParameter, StandardCharsets.UTF_8);
-
-          String[] parametersArray = queryParameterDecoded.split("&");
-
-          String[] parametersList = parametersArray;
-
-          for (String parameter : parametersList) {
-            String[] parameterArray = parameter.split("=");
-            String parameterName = parameterArray[0];
-            String parameterValue = parameterArray[1];
-
-            switch (parameterName) {
-              case PARAMETER_CALLING_AET:
-                callingAetParam = parameterValue;
-                break;
-              case PARAMETER_CALLED_AET:
-                dicomNodeAetParam = parameterValue;
-                break;
-              case PARAMETER_CALLED_HOSTNAME:
-                dicomNodeHostnameParam = parameterValue;
-                break;
-              case PARAMETER_CALLED_PORT:
-                dicomNodePortParam = parameterValue;
-                break;
-              case PARAMETER_ACTION:
-                actionParam = parameterValue;
-                break;
-              default:
-                break;
-            }
+            dicomEchoStatusLayout.removeAll();
+            dicomEchoStatusLayout.setVisible(false);
           }
+        });
+  }
+
+  private void readParameters(String queryParameter) {
+    if (queryParameter != null && !queryParameter.trim().isEmpty()) {
+
+      String queryParameterDecoded = URLDecoder.decode(queryParameter, StandardCharsets.UTF_8);
+
+      String[] parametersArray = queryParameterDecoded.split("&");
+
+      String[] parametersList = parametersArray;
+
+      for (String parameter : parametersList) {
+        String[] parameterArray = parameter.split("=");
+        String parameterName = parameterArray[0];
+        String parameterValue = parameterArray[1];
+
+        switch (parameterName) {
+          case PARAMETER_CALLING_AET:
+            callingAetParam = parameterValue;
+            break;
+          case PARAMETER_CALLED_AET:
+            dicomNodeAetParam = parameterValue;
+            break;
+          case PARAMETER_CALLED_HOSTNAME:
+            dicomNodeHostnameParam = parameterValue;
+            break;
+          case PARAMETER_CALLED_PORT:
+            dicomNodePortParam = parameterValue;
+            break;
+          case PARAMETER_ACTION:
+            actionParam = parameterValue;
+            break;
+          default:
+            break;
         }
+      }
     }
-    
-    private void fillFieldsFromParameters() {
-        if (callingAetParam != null && !callingAetParam.isEmpty()) {
-            callingAetFld.setValue(callingAetParam);
-        }
-        
-        if (dicomNodeAetParam != null && !dicomNodeAetParam.isEmpty()) {
-            calledAetFld.setValue(dicomNodeAetParam);
-        }
-        
-        if (dicomNodeHostnameParam != null && !dicomNodeHostnameParam.isEmpty()) {
-            calledHostnameFld.setValue(dicomNodeHostnameParam);
-        }
-        
-        if (dicomNodePortParam != null && !dicomNodePortParam.isEmpty()) {
-            calledPortFld.setValue(Integer.valueOf(dicomNodePortParam));
-        }
+  }
+
+  private void fillFieldsFromParameters() {
+    if (callingAetParam != null && !callingAetParam.isEmpty()) {
+      callingAetFld.setValue(callingAetParam);
     }
-    
-    private void executeAction() {
-        if (actionParam != null) {
-            if (actionParam.equals(ACTION_ECHO)) {
-                executeEcho();
-            }
-        }
+
+    if (dicomNodeAetParam != null && !dicomNodeAetParam.isEmpty()) {
+      calledAetFld.setValue(dicomNodeAetParam);
     }
-    
-    private void executeEcho() {
-        DicomEchoQueryData data = new DicomEchoQueryData();
-        try {
-            binder.writeBean(data);
-            logic.dicomEcho(data);
-        } catch (ValidationException e) {
-            Message message = new Message(MessageLevel.ERROR, MessageFormat.TEXT, e.getMessage());
-            displayMessage(message);
-        }
+
+    if (dicomNodeHostnameParam != null && !dicomNodeHostnameParam.isEmpty()) {
+      calledHostnameFld.setValue(dicomNodeHostnameParam);
     }
-    
+
+    if (dicomNodePortParam != null && !dicomNodePortParam.isEmpty()) {
+      calledPortFld.setValue(Integer.valueOf(dicomNodePortParam));
+    }
+  }
+
+  private void executeAction() {
+    if (actionParam != null) {
+      if (actionParam.equals(ACTION_ECHO)) {
+        executeEcho();
+      }
+    }
+  }
+
+  private void executeEcho() {
+    DicomEchoQueryData data = new DicomEchoQueryData();
+    try {
+      binder.writeBean(data);
+      logic.dicomEcho(data);
+    } catch (ValidationException e) {
+      Message message = new Message(MessageLevel.ERROR, MessageFormat.TEXT, e.getMessage());
+      displayMessage(message);
+    }
+  }
 }

@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2020-2021 Karnak Team and other contributors.
+ *
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ */
 package org.karnak.backend.model.profiles;
 
 import java.util.List;
@@ -8,25 +17,25 @@ import org.karnak.backend.model.action.ActionItem;
 import org.karnak.backend.model.profilepipe.HMAC;
 
 public interface ProfileItem {
-    ActionItem getAction(DicomObject dcm, DicomObject dcmCopy, DicomElement dcmElem, HMAC hmac);
+  ActionItem getAction(DicomObject dcm, DicomObject dcmCopy, DicomElement dcmElem, HMAC hmac);
 
-    ActionItem put(int tag, ActionItem action);
+  ActionItem put(int tag, ActionItem action);
 
-    ActionItem remove(int tag);
+  ActionItem remove(int tag);
 
-    void clearTagMap();
+  void clearTagMap();
 
-    String getName();
+  String getName();
 
-    String getCodeName();
+  String getCodeName();
 
-    String getCondition();
+  String getCondition();
 
-    String getOption();
+  String getOption();
 
   List<ArgumentEntity> getArguments();
 
-    Integer getPosition();
+  Integer getPosition();
 
-    void profileValidation() throws Exception;
+  void profileValidation() throws Exception;
 }

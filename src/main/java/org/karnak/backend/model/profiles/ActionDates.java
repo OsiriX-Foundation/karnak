@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2020-2021 Karnak Team and other contributors.
+ *
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ */
 package org.karnak.backend.model.profiles;
 
 import org.dcm4che6.data.DicomElement;
@@ -47,59 +56,70 @@ public class ActionDates extends AbstractProfileItem {
     }
   }
 
-    @Override
-    public void profileValidation() throws Exception {
-        try {
-            if (option == null) {
-                throw new Exception("Cannot build the profile " + codeName + " : An option must be given. Option available: [shift, shift_range]");
-            }
-            switch (option) {
-              case "shift" -> ShiftDate.verifyShiftArguments(argumentEntities);
-              case "shift_range" -> ShiftRangeDate.verifyShiftArguments(argumentEntities);
-              case "date_format" -> DateFormat.verifyPatternArguments(argumentEntities);
-              default -> throw new Exception(
-                  "Cannot build the profile " + codeName + " with the option given " + option
-                      + " : Option available (shift, shift_range)");
-            }
-        } catch (Exception e) {
-            throw e;
-        }
-
-        final ExpressionError expressionError = ExpressionResult.isValid(condition, new ExprConditionDestination(1, VR.AE,
-                DicomObject.newDicomObject(), DicomObject.newDicomObject()), Boolean.class);
-        if (condition != null && !expressionError.isValid()) {
-            throw new Exception(expressionError.getMsg());
-        }
+  @Override
+  public void profileValidation() throws Exception {
+    try {
+      if (option == null) {
+        throw new Exception(
+            "Cannot build the profile "
+                + codeName
+                + " : An option must be given. Option available: [shift, shift_range]");
+      }
+      switch (option) {
+        case "shift" -> ShiftDate.verifyShiftArguments(argumentEntities);
+        case "shift_range" -> ShiftRangeDate.verifyShiftArguments(argumentEntities);
+        case "date_format" -> DateFormat.verifyPatternArguments(argumentEntities);
+        default -> throw new Exception(
+            "Cannot build the profile "
+                + codeName
+                + " with the option given "
+                + option
+                + " : Option available (shift, shift_range)");
+      }
+    } catch (Exception e) {
+      throw e;
     }
 
-    @Override
-    public ActionItem getAction(DicomObject dcm, DicomObject dcmCopy, DicomElement dcmElem, HMAC hmac) {
-        final int tag = dcmElem.tag();
-        final VR vr = dcmElem.vr();
+    final ExpressionError expressionError =
+        ExpressionResult.isValid(
+            condition,
+            new ExprConditionDestination(
+                1, VR.AE, DicomObject.newDicomObject(), DicomObject.newDicomObject()),
+            Boolean.class);
+    if (condition != null && !expressionError.isValid()) {
+      throw new Exception(expressionError.getMsg());
+    }
+  }
 
-        if (vr == VR.AS || vr == VR.DA || vr == VR.DT || vr == VR.TM) {
-            if (exceptedTagsAction.get(tag) != null) {
-                return null;
-            }
+  @Override
+  public ActionItem getAction(
+      DicomObject dcm, DicomObject dcmCopy, DicomElement dcmElem, HMAC hmac) {
+    final int tag = dcmElem.tag();
+    final VR vr = dcmElem.vr();
 
-            if (tagsAction.isEmpty() == false && tagsAction.get(tag) == null) {
-                return null;
-            }
-            String dummyValue = applyOption(dcmCopy, dcmElem, hmac);
-            if (dummyValue != null) {
-                actionByDefault.setDummyValue(dummyValue);
-                return actionByDefault;
-            }
-        }
+    if (vr == VR.AS || vr == VR.DA || vr == VR.DT || vr == VR.TM) {
+      if (exceptedTagsAction.get(tag) != null) {
         return null;
-    }
+      }
 
-    private String applyOption(DicomObject dcmCopy, DicomElement dcmElem, HMAC hmac) {
-        return switch (option) {
-          case "shift" -> ShiftDate.shift(dcmCopy, dcmElem, argumentEntities);
-          case "shift_range" -> shiftRangeDate.shift(dcmCopy, dcmElem, argumentEntities, hmac);
-          case "date_format" -> DateFormat.format(dcmCopy, dcmElem, argumentEntities);
-          default -> null;
-        };
+      if (tagsAction.isEmpty() == false && tagsAction.get(tag) == null) {
+        return null;
+      }
+      String dummyValue = applyOption(dcmCopy, dcmElem, hmac);
+      if (dummyValue != null) {
+        actionByDefault.setDummyValue(dummyValue);
+        return actionByDefault;
+      }
     }
+    return null;
+  }
+
+  private String applyOption(DicomObject dcmCopy, DicomElement dcmElem, HMAC hmac) {
+    return switch (option) {
+      case "shift" -> ShiftDate.shift(dcmCopy, dcmElem, argumentEntities);
+      case "shift_range" -> shiftRangeDate.shift(dcmCopy, dcmElem, argumentEntities, hmac);
+      case "date_format" -> DateFormat.format(dcmCopy, dcmElem, argumentEntities);
+      default -> null;
+    };
+  }
 }

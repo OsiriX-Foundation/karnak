@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2020-2021 Karnak Team and other contributors.
+ *
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ */
 package org.karnak.backend.config;
 
 import org.karnak.backend.cache.RequestCache;
@@ -26,81 +35,84 @@ public class SecurityInMemoryConfig extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
-    // Disables cross-site request forgery (CSRF) protection, as Vaadin already has CSRF protection
-    http.csrf()
-            .disable()
-            // Uses RequestCache to track unauthorized requests so that users are redirected
-            // appropriately after login
-            .requestCache()
-            .requestCache(new RequestCache())
-            // Turns on authorization
-            .and()
-            .authorizeRequests()
-            // Allows all internal traffic from the Vaadin framework
-            .requestMatchers(SecurityUtil::isFrameworkInternalRequest)
-            .permitAll()
-            // Allows all authenticated traffic
-            .antMatchers("/*")
-            .hasRole(SecurityRole.ADMIN_ROLE.getType())
-            .anyRequest()
-            .authenticated()
-            // Enables form-based login and permits unauthenticated access to it
-            .and()
-            .formLogin()
-            // Configures the login page URLs
-            .loginPage(LOGIN_URL)
-            .permitAll()
-            .loginProcessingUrl(LOGIN_PROCESSING_URL)
-            .failureUrl(LOGIN_FAILURE_URL)
-            // Configures the logout URL
-            .and()
-            .logout()
-            .logoutSuccessUrl(LOGOUT_SUCCESS_URL)
-            .and()
-            .exceptionHandling()
-            .accessDeniedPage(LOGIN_URL);
-    }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        // Configure users and roles in memory
-        auth.inMemoryAuthentication()
-            .withUser(AppConfig.getInstance().getKarnakadmin())
-            .password("{noop}" + AppConfig.getInstance().getKarnakpassword())
-            .roles(SecurityRole.ADMIN_ROLE.getType(), SecurityRole.USER_ROLE.getType());
-    }
+    http
+        // Uses RequestCache to track unauthorized requests so that users are redirected
+        // appropriately after login
+        .requestCache()
+        .requestCache(new RequestCache())
+        // Disables cross-site request forgery (CSRF) protection for main route and login
+        .and()
+        .csrf()
+        .ignoringAntMatchers("/", "/login")
+        // Turns on authorization
+        .and()
+        .authorizeRequests()
+        // Allows all internal traffic from the Vaadin framework
+        .requestMatchers(SecurityUtil::isFrameworkInternalRequest)
+        .permitAll()
+        // Allows all authenticated traffic
+        .antMatchers("/*")
+        .hasRole(SecurityRole.ADMIN_ROLE.getType())
+        .anyRequest()
+        .authenticated()
+        // Enables form-based login and permits unauthenticated access to it
+        .and()
+        .formLogin()
+        // Configures the login page URLs
+        .loginPage(LOGIN_URL)
+        .permitAll()
+        .loginProcessingUrl(LOGIN_PROCESSING_URL)
+        .failureUrl(LOGIN_FAILURE_URL)
+        // Configures the logout URL
+        .and()
+        .logout()
+        .logoutSuccessUrl(LOGOUT_SUCCESS_URL)
+        .and()
+        .exceptionHandling()
+        .accessDeniedPage(LOGIN_URL);
+  }
 
-    @Override
-    public void configure(WebSecurity web) {
-        // Access to static resources, bypassing Spring security.
-        web.ignoring()
-            .antMatchers(
-                "/VAADIN/**",
-                // the standard favicon URI
-                "/favicon.ico",
-                // the robots exclusion standard
-                "/robots.txt",
-                // web application manifest
-                "/manifest.webmanifest",
-                "/sw.js",
-                "/offline.html",
-                // icons and images
-                "/icons/**",
-                "/images/**",
-                "/styles/**",
-                "/img/**",
-                // (development mode) H2 debugging console
-                "/h2-console/**");
-    }
+  @Override
+  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    // Configure users and roles in memory
+    auth.inMemoryAuthentication()
+        .withUser(AppConfig.getInstance().getKarnakadmin())
+        .password("{noop}" + AppConfig.getInstance().getKarnakpassword())
+        .roles(SecurityRole.ADMIN_ROLE.getType(), SecurityRole.USER_ROLE.getType());
+  }
 
-    @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
+  @Override
+  public void configure(WebSecurity web) {
+    // Access to static resources, bypassing Spring security.
+    web.ignoring()
+        .antMatchers(
+            "/VAADIN/**",
+            // the standard favicon URI
+            "/favicon.ico",
+            // the robots exclusion standard
+            "/robots.txt",
+            // web application manifest
+            "/manifest.webmanifest",
+            "/sw.js",
+            "/offline.html",
+            // icons and images
+            "/icons/**",
+            "/images/**",
+            "/styles/**",
+            "/img/**",
+            // (development mode) H2 debugging console
+            "/h2-console/**");
+  }
 
-    @Bean
-    public RequestCache requestCache() { //
-        return new RequestCache();
-    }
+  @Bean
+  @Override
+  public AuthenticationManager authenticationManagerBean() throws Exception {
+    return super.authenticationManagerBean();
+  }
+
+  @Bean
+  public RequestCache requestCache() { //
+    return new RequestCache();
+  }
 }

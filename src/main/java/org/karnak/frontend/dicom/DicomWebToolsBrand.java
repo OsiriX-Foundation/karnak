@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2020-2021 Karnak Team and other contributors.
+ *
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ */
 package org.karnak.frontend.dicom;
 
 import com.vaadin.flow.component.Composite;
@@ -6,27 +15,26 @@ import com.vaadin.flow.component.html.Span;
 
 public class DicomWebToolsBrand extends Composite<Div> {
 
-	private static final long serialVersionUID = 5833252271846713700L;
-	
-	private static final String TEXT = "Dicom Web Tools";
+  private static final long serialVersionUID = 5833252271846713700L;
+
+  private static final String TEXT = "Dicom Web Tools";
 
   private final Div div;
   private Span text;
 
-    public DicomWebToolsBrand() {
-        div = getContent();
-        div.getStyle().set("display", "contents");
-        
-        createText();
-        
-        div.add(text);
-    }
-    
-    private void createText() {
-    	text = new Span(TEXT);
-    	text.getStyle().set("padding-left", "1em");
-    	text.getStyle().set("padding-right", "1em");
-    	text.getStyle().set("white-space", "nowrap");
-    }
-	
+  public DicomWebToolsBrand() {
+    div = getContent();
+    div.getStyle().set("display", "contents");
+
+    createText();
+
+    div.add(text);
+  }
+
+  private void createText() {
+    text = new Span(TEXT);
+    text.getStyle().set("padding-left", "1em");
+    text.getStyle().set("padding-right", "1em");
+    text.getStyle().set("white-space", "nowrap");
+  }
 }
