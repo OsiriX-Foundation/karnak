@@ -19,7 +19,6 @@ public class ForwardNodeViewLogic {
 
   private final ForwardNodeAPIService forwardNodeAPIService;
 
-  // TODO JO: pas de Autowired?
   public ForwardNodeViewLogic(ForwardNodeAPIService forwardNodeAPIService) {
     this.forwardNodeAPIService = forwardNodeAPIService;
   }

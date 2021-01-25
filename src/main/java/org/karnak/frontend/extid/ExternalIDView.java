@@ -37,8 +37,6 @@ public class ExternalIDView extends HorizontalLayout {
   private final ExternalIDGrid externalIDGrid;
   private final Div validationStatus;
   private final ExternalIDForm externalIDForm;
-  // TODO JO
-    //  private final AddNewPatientForm addNewPatientForm; à remplacer par ExternalIDForm
 
   // https://vaadin.com/components/vaadin-grid/java-examples/assigning-data
   public ExternalIDView() {
@@ -52,11 +50,8 @@ public class ExternalIDView extends HorizontalLayout {
 
     externalIDGrid = new ExternalIDGrid();
     dataProvider = (ListDataProvider<CachedPatient>) externalIDGrid.getDataProvider();
-    // TODO JO
-    // this.addNewPatientForm = new AddNewPatientForm();
-    //        this.addNewPatientForm.init(dataProvider);
     externalIDForm = new ExternalIDForm();
-      externalIDForm.init(dataProvider);
+    externalIDForm.init(dataProvider);
     externalIDGrid.setAddPatientButton(externalIDForm.getAddPatientButton());
 
     validationStatus = externalIDGrid.setBinder();

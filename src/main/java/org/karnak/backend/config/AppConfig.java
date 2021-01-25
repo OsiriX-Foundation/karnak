@@ -51,13 +51,17 @@ public class AppConfig {
     @Autowired
     public AppConfig(final ProfileRepo profileRepo,
         final ProfilePipeService profilePipeService) {
-        this.profileRepo = profileRepo;
-        this.profilePipeService = profilePipeService;
+      this.profileRepo = profileRepo;
+      this.profilePipeService = profilePipeService;
     }
 
   @PostConstruct
   public void postConstruct() {
     instance = this;
+  }
+
+  public static AppConfig getInstance() {
+    return instance;
   }
 
   public String getEnvironment() {

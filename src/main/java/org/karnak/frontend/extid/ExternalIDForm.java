@@ -43,7 +43,7 @@ public class ExternalIDForm extends VerticalLayout {
   private static final String ERROR_MESSAGE_PATIENT = "Length must be between 1 and 50.";
 
   private final Binder<CachedPatient> binder;
-  private final ListDataProvider<CachedPatient> dataProvider;
+  private ListDataProvider<CachedPatient> dataProvider;
   private final transient PatientClient externalIDCache;
   private TextField externalIdField;
   private TextField patientIdField;
@@ -57,16 +57,13 @@ public class ExternalIDForm extends VerticalLayout {
   private Div addedPatientLabelDiv;
   private Div uploadCsvLabelDiv;
 
-  public ExternalIDForm(ListDataProvider<CachedPatient> dataProvider) {
+  public ExternalIDForm() {
     setSizeFull();
-    this.dataProvider = dataProvider;
     externalIDCache = AppConfig.getInstance().getExternalIDCache();
     binder = new BeanValidationBinder<>(CachedPatient.class);
 
     setElements();
     setBinder();
-
-    readAllCacheValue();
 
     clearFieldsButton.addClickListener(click -> clearPatientFields());
 
@@ -119,6 +116,11 @@ public class ExternalIDForm extends VerticalLayout {
 
     addPatientDiv.add(horizontalLayout4, horizontalLayout5);
     add(horizontalLayout1, horizontalLayout2, horizontalLayout3, addPatientDiv);
+  }
+
+  public void init(ListDataProvider<CachedPatient> dataProvider) {
+    this.dataProvider = dataProvider;
+    readAllCacheValue();
   }
 
   private void readAllCacheValue() {
