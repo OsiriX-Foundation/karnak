@@ -26,8 +26,7 @@ public class FilterEditorService implements AttributeEditor {
   private Set<SOPClassUIDEntity> sopClassUIDEntitySet;
 
   @Autowired
-  public FilterEditorService() {
-  }
+  public FilterEditorService() {}
 
   public void init(Set<SOPClassUIDEntity> sopClassUIDEntitySet) {
     this.sopClassUIDEntitySet = sopClassUIDEntitySet;

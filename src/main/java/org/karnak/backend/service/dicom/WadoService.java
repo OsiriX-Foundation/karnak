@@ -24,8 +24,7 @@ import org.springframework.stereotype.Service;
 public class WadoService {
 
   @Autowired
-  public WadoService() {
-  }
+  public WadoService() {}
 
   public String checkWado(List<WadoNode> nodes) throws InterruptedException, ExecutionException {
     StringBuilder result = new StringBuilder();

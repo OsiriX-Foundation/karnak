@@ -23,9 +23,7 @@ public class ForwardNodeViewLogic {
     this.forwardNodeAPIService = forwardNodeAPIService;
   }
 
-  /**
-   * Update the fragment without causing navigator to change view
-   */
+  /** Update the fragment without causing navigator to change view */
   private void setFragmentParameter(String dataIdStr) {
     final String fragmentParameter;
     if (dataIdStr == null || dataIdStr.isEmpty()) {

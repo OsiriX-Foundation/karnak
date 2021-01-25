@@ -38,8 +38,7 @@ public abstract class TagEntity implements Serializable {
   private ProfileElementEntity profileElementEntity;
   private String tagValue;
 
-  public TagEntity() {
-  }
+  public TagEntity() {}
 
   public TagEntity(String tagValue, ProfileElementEntity profileElementEntity) {
     this.tagValue = tagValue;

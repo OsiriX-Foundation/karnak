@@ -29,9 +29,7 @@ public class ForwardNodeService extends ListDataProvider<ForwardNodeEntity> {
   // Repositories
   private final ForwardNodeRepo forwardNodeRepo;
 
-  /**
-   * Text filter that can be changed separately.
-   */
+  /** Text filter that can be changed separately. */
   private String filterText = "";
 
   @Autowired

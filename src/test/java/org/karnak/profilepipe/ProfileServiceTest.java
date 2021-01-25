@@ -33,13 +33,12 @@ class ProfileServiceTest {
 
   private static HMAC defaultHMAC;
 
-  @Autowired
-  private ProfileService profileService;
+  @Autowired private ProfileService profileService;
 
   @BeforeAll
   static void beforeAll() {
     final byte[] HMAC_KEY = {
-        121, -7, 104, 11, 126, -39, -128, -126, 114, -94, 40, -67, 61, -45, 59, -53
+      121, -7, 104, 11, 126, -39, -128, -126, 114, -94, 40, -67, 61, -45, 59, -53
     };
     defaultHMAC = new HMAC(HMAC_KEY);
   }

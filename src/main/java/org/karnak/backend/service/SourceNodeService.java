@@ -32,9 +32,7 @@ public class SourceNodeService extends ListDataProvider<DicomSourceNodeEntity> {
   private ForwardNodeEntity forwardNodeEntity; // Current forward node
   private boolean hasChanges;
 
-  /**
-   * Text filter that can be changed separately.
-   */
+  /** Text filter that can be changed separately. */
   private String filterText = "";
 
   @Autowired

@@ -39,8 +39,7 @@ public class StreamRegistryService implements AttributeEditor {
   private boolean enable = false;
 
   @Autowired
-  public StreamRegistryService() {
-  }
+  public StreamRegistryService() {}
 
   private static LocalDateTime getDateTime(DicomObject dicom, int date, int time) {
     Optional<String> od = dicom.getString(date);

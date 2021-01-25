@@ -52,8 +52,7 @@ public class ProfileElementEntity implements Serializable {
   private List<ExcludedTagEntity> excludedTagEntities = new ArrayList<>();
   private List<ArgumentEntity> argumentEntities = new ArrayList<>();
 
-  public ProfileElementEntity() {
-  }
+  public ProfileElementEntity() {}
 
   public ProfileElementEntity(
       String name,
