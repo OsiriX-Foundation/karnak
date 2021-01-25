@@ -22,7 +22,9 @@ public class GridDestination extends Grid<DestinationEntity> {
         .setFlexGrow(20)
         .setSortable(true);
 
-    addColumn(DestinationEntity::getDestinationType).setHeader("Type").setFlexGrow(20)
+    addColumn(DestinationEntity::getDestinationType)
+        .setHeader("Type")
+        .setFlexGrow(20)
         .setSortable(true);
   }
 

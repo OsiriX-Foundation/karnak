@@ -48,9 +48,9 @@ public class EmailNotifyProgress implements ProgressListener {
 
   public EmailNotifyProgress(
       StreamRegistryService streamRegistryService,
-        ForwardDestination forwardDestination,
-        String[] emails,
-        GatewaySetUpService config,
+      ForwardDestination forwardDestination,
+      String[] emails,
+      GatewaySetUpService config,
       NotificationSetUp notificationSetUp) {
     this.streamRegistryService = Objects.requireNonNull(streamRegistryService);
     this.forwardDestination = Objects.requireNonNull(forwardDestination);

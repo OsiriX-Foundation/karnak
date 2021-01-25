@@ -34,15 +34,15 @@ public class NewUpdateSourceNode extends VerticalLayout {
   private DicomSourceNodeEntity currentSourceNode;
 
   @Autowired
-    public NewUpdateSourceNode(SourceNodeService sourceNodeService) {
-        currentSourceNode = null;
-        this.sourceNodeService = sourceNodeService;
-        binderFormSourceNode = new BeanValidationBinder<>(DicomSourceNodeEntity.class);
-        buttonSaveDeleteCancel = new ButtonSaveDeleteCancel();
-        formSourceNode = new FormSourceNode(binderFormSourceNode, buttonSaveDeleteCancel);
-        setButtonSaveEvent();
-        setButtonDeleteEvent();
-    }
+  public NewUpdateSourceNode(SourceNodeService sourceNodeService) {
+      currentSourceNode = null;
+      this.sourceNodeService = sourceNodeService;
+      binderFormSourceNode = new BeanValidationBinder<>(DicomSourceNodeEntity.class);
+      buttonSaveDeleteCancel = new ButtonSaveDeleteCancel();
+      formSourceNode = new FormSourceNode(binderFormSourceNode, buttonSaveDeleteCancel);
+      setButtonSaveEvent();
+      setButtonDeleteEvent();
+  }
 
   public void setView() {
     removeAll();
@@ -51,52 +51,61 @@ public class NewUpdateSourceNode extends VerticalLayout {
   }
 
   public void load(DicomSourceNodeEntity sourceNode) {
-    if (sourceNode != null) {
-      currentSourceNode = sourceNode;
-      buttonSaveDeleteCancel.getDelete().setEnabled(true);
-    } else {
-      currentSourceNode = DicomSourceNodeEntity.ofEmpty();
-      buttonSaveDeleteCancel.getDelete().setEnabled(false);
-    }
-    setView();
+      if (sourceNode != null) {
+          currentSourceNode = sourceNode;
+          buttonSaveDeleteCancel.getDelete().setEnabled(true);
+      } else {
+          currentSourceNode = DicomSourceNodeEntity.ofEmpty();
+          buttonSaveDeleteCancel.getDelete().setEnabled(false);
+      }
+      setView();
   }
-
 
     private void setButtonSaveEvent() {
-        buttonSaveDeleteCancel.getSave().addClickListener(event -> {
-            NodeEventType nodeEventType =
-                currentSourceNode.getId() == null ? NodeEventType.ADD : NodeEventType.UPDATE;
-              if (binderFormSourceNode.writeBeanIfValid(currentSourceNode)) {
-                sourceNodeService.save(currentSourceNode);
-                viewLogic.updateForwardNodeInEditView();
-                viewLogic
-                    .getApplicationEventPublisher()
-                    .publishEvent(new NodeEvent(currentSourceNode, nodeEventType));
-              }
-            });
-  }
+        buttonSaveDeleteCancel
+            .getSave()
+            .addClickListener(
+                event -> {
+                    NodeEventType nodeEventType =
+                        currentSourceNode.getId() == null ? NodeEventType.ADD
+                            : NodeEventType.UPDATE;
+                    if (binderFormSourceNode.writeBeanIfValid(currentSourceNode)) {
+                        sourceNodeService.save(currentSourceNode);
+                        viewLogic.updateForwardNodeInEditView();
+                        viewLogic
+                            .getApplicationEventPublisher()
+                            .publishEvent(new NodeEvent(currentSourceNode, nodeEventType));
+                    }
+                });
+    }
 
     private void setButtonDeleteEvent() {
-        buttonSaveDeleteCancel.getDelete().addClickListener(event -> {
-            if (currentSourceNode != null) {
-                ConfirmDialog dialog = new ConfirmDialog(
-                    "Are you sure to delete the DICOM source node " + currentSourceNode.getAeTitle()
-                            + "?");
-                dialog.addConfirmationListener(
-                    componentEvent -> {
-                      NodeEvent nodeEvent = new NodeEvent(currentSourceNode, NodeEventType.REMOVE);
-                      sourceNodeService.delete(currentSourceNode);
-                      viewLogic.updateForwardNodeInEditView();
-                      viewLogic.getApplicationEventPublisher().publishEvent(nodeEvent);
-                    });
-                dialog.open();
-              }
-            });
-  }
+        buttonSaveDeleteCancel
+            .getDelete()
+            .addClickListener(
+                event -> {
+                    if (currentSourceNode != null) {
+                        ConfirmDialog dialog =
+                            new ConfirmDialog(
+                                "Are you sure to delete the DICOM source node "
+                                    + currentSourceNode.getAeTitle()
+                                    + "?");
+                        dialog.addConfirmationListener(
+                            componentEvent -> {
+                                NodeEvent nodeEvent = new NodeEvent(currentSourceNode,
+                                    NodeEventType.REMOVE);
+                                sourceNodeService.delete(currentSourceNode);
+                                viewLogic.updateForwardNodeInEditView();
+                                viewLogic.getApplicationEventPublisher().publishEvent(nodeEvent);
+                            });
+                        dialog.open();
+                    }
+                });
+    }
 
-  public Button getButtonCancel() {
-    return buttonSaveDeleteCancel.getCancel();
-  }
+    public Button getButtonCancel() {
+        return buttonSaveDeleteCancel.getCancel();
+    }
 
     public ViewLogic getViewLogic() {
         return viewLogic;

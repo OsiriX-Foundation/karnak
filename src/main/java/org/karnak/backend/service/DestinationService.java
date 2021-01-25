@@ -24,41 +24,42 @@ import org.springframework.stereotype.Service;
 public class DestinationService extends ListDataProvider<DestinationEntity> {
 
   // Repositories
-    private final DestinationRepo destinationRepo;
+  private final DestinationRepo destinationRepo;
 
-    // Services
-    private final ForwardNodeService forwardNodeService;
-    private final KheopsAlbumsService kheopsAlbumsService;
+  // Services
+  private final ForwardNodeService forwardNodeService;
+  private final KheopsAlbumsService kheopsAlbumsService;
 
-    private ForwardNodeEntity forwardNodeEntity; // Current forward node
-    private boolean hasChanges;
+  private ForwardNodeEntity forwardNodeEntity; // Current forward node
+  private boolean hasChanges;
 
-    /**
-     * Text filter that can be changed separately.
-     */
-    private String filterText = "";
+  /**
+   * Text filter that can be changed separately.
+   */
+  private String filterText = "";
 
-    @Autowired
-    public DestinationService(final DestinationRepo destinationRepo,
-        final ForwardNodeService forwardNodeService,
-        final KheopsAlbumsService kheopsAlbumsService) {
-        super(new HashSet<>());
-        this.destinationRepo = destinationRepo;
-        this.forwardNodeService = forwardNodeService;
-        this.kheopsAlbumsService = kheopsAlbumsService;
-    }
-
-    @Override
-    public Object getId(DestinationEntity data) {
-        Objects.requireNonNull(data, "Cannot provide an id for a null item.");
-        return data.hashCode();
-    }
+  @Autowired
+  public DestinationService(
+      final DestinationRepo destinationRepo,
+      final ForwardNodeService forwardNodeService,
+      final KheopsAlbumsService kheopsAlbumsService) {
+    super(new HashSet<>());
+    this.destinationRepo = destinationRepo;
+    this.forwardNodeService = forwardNodeService;
+    this.kheopsAlbumsService = kheopsAlbumsService;
+  }
 
   @Override
-    public void refreshAll() {
+  public Object getId(DestinationEntity data) {
+    Objects.requireNonNull(data, "Cannot provide an id for a null item.");
+    return data.hashCode();
+  }
+
+  @Override
+  public void refreshAll() {
     getItems().clear();
-        if (forwardNodeEntity != null) {
-            getItems().addAll(forwardNodeEntity.getDestinationEntities());
+    if (forwardNodeEntity != null) {
+      getItems().addAll(forwardNodeEntity.getDestinationEntities());
     }
     super.refreshAll();
   }
@@ -66,9 +67,7 @@ public class DestinationService extends ListDataProvider<DestinationEntity> {
   public void setForwardNode(ForwardNodeEntity forwardNodeEntity) {
     this.forwardNodeEntity = forwardNodeEntity;
     Collection<DestinationEntity> destinationEntities =
-        this.forwardNodeService
-            .getAllDestinations(
-                forwardNodeEntity);
+        this.forwardNodeService.getAllDestinations(forwardNodeEntity);
 
     getItems().clear();
     getItems().addAll(destinationEntities);
@@ -82,8 +81,8 @@ public class DestinationService extends ListDataProvider<DestinationEntity> {
    * @param destinationEntity the updated or new destinationEntity
    */
   public void save(DestinationEntity destinationEntity) {
-        DestinationEntity dataUpdated = forwardNodeService
-            .updateDestination(forwardNodeEntity, destinationEntity);
+    DestinationEntity dataUpdated =
+        forwardNodeService.updateDestination(forwardNodeEntity, destinationEntity);
     if (destinationEntity.getId() == null) {
       refreshAll();
     } else {
@@ -95,8 +94,8 @@ public class DestinationService extends ListDataProvider<DestinationEntity> {
     kheopsAlbumsService.updateSwitchingAlbumsFromDestination(destinationEntity);
   }
 
-    private DestinationEntity removeValuesOnDisabledDesidentification(
-        DestinationEntity destinationEntity) {
+  private DestinationEntity removeValuesOnDisabledDesidentification(
+      DestinationEntity destinationEntity) {
     if (!destinationEntity.isDesidentification()) {
       destinationEntity.setProjectEntity(null);
     }
@@ -139,11 +138,11 @@ public class DestinationService extends ListDataProvider<DestinationEntity> {
     setFilter(data -> matchesFilter(data, filterText));
   }
 
-    private boolean matchesFilter(DestinationEntity data, String filterText) {
-        return data != null && data.matchesFilter(filterText);
-    }
+  private boolean matchesFilter(DestinationEntity data, String filterText) {
+    return data != null && data.matchesFilter(filterText);
+  }
 
-    public boolean hasChanges() {
-        return hasChanges;
-    }
+  public boolean hasChanges() {
+    return hasChanges;
+  }
 }

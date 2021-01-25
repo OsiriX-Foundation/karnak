@@ -38,23 +38,23 @@ public class NewUpdateDestination extends VerticalLayout {
   private DestinationEntity currentDestinationEntity;
 
   @Autowired
-    public NewUpdateDestination(DestinationService destinationService,
-        FormDICOM formDICOM, FormSTOW formSTOW) {
+  public NewUpdateDestination(
+      DestinationService destinationService, FormDICOM formDICOM, FormSTOW formSTOW) {
     setSizeFull();
 
     this.formDICOM = formDICOM;
-        this.formSTOW = formSTOW;
-        this.destinationService = destinationService;
-        this.binderFormDICOM = new BeanValidationBinder<>(DestinationEntity.class);
-        this.binderFormSTOW = new BeanValidationBinder<>(DestinationEntity.class);
-        this.buttonDestinationDICOMSaveDeleteCancel = new ButtonSaveDeleteCancel();
-        this.buttonDestinationSTOWSaveDeleteCancel = new ButtonSaveDeleteCancel();
-        this.currentDestinationEntity = null;
-        this.formDICOM.init(binderFormDICOM, buttonDestinationDICOMSaveDeleteCancel);
-        this.formSTOW.init(binderFormSTOW, buttonDestinationSTOWSaveDeleteCancel);
-        setButtonSaveEvent();
-        setButtonDeleteEvent();
-    }
+    this.formSTOW = formSTOW;
+    this.destinationService = destinationService;
+    this.binderFormDICOM = new BeanValidationBinder<>(DestinationEntity.class);
+    this.binderFormSTOW = new BeanValidationBinder<>(DestinationEntity.class);
+    this.buttonDestinationDICOMSaveDeleteCancel = new ButtonSaveDeleteCancel();
+    this.buttonDestinationSTOWSaveDeleteCancel = new ButtonSaveDeleteCancel();
+    this.currentDestinationEntity = null;
+    this.formDICOM.init(binderFormDICOM, buttonDestinationDICOMSaveDeleteCancel);
+    this.formSTOW.init(binderFormSTOW, buttonDestinationSTOWSaveDeleteCancel);
+    setButtonSaveEvent();
+    setButtonDeleteEvent();
+  }
 
   public void load(DestinationEntity destinationEntity, DestinationType type) {
     if (destinationEntity != null) {
@@ -89,7 +89,6 @@ public class NewUpdateDestination extends VerticalLayout {
         .addClickListener(
             event -> {
               if (currentDestinationEntity.getDestinationType() == DestinationType.dicom
-
                   && binderFormDICOM.writeBeanIfValid(currentDestinationEntity)) {
                 NodeEventType nodeEventType =
                     currentDestinationEntity.getId() == null
@@ -104,7 +103,6 @@ public class NewUpdateDestination extends VerticalLayout {
         .addClickListener(
             event -> {
               if (currentDestinationEntity.getDestinationType() == DestinationType.stow
-
                   && binderFormSTOW.writeBeanIfValid(currentDestinationEntity)) {
                 NodeEventType nodeEventType =
                     currentDestinationEntity.getId() == null
@@ -166,11 +164,11 @@ public class NewUpdateDestination extends VerticalLayout {
     return buttonDestinationSTOWSaveDeleteCancel.getCancel();
   }
 
-    public ViewLogic getViewLogic() {
-        return viewLogic;
-    }
+  public ViewLogic getViewLogic() {
+    return viewLogic;
+  }
 
-    public void setViewLogic(ViewLogic viewLogic) {
-        this.viewLogic = viewLogic;
-    }
+  public void setViewLogic(ViewLogic viewLogic) {
+    this.viewLogic = viewLogic;
+  }
 }

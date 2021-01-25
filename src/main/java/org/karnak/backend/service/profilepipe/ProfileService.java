@@ -64,11 +64,11 @@ public class ProfileService {
 
   private final PseudonymService pseudonymService;
   private ArrayList<ProfileItem> profiles;
-    private final Map<String, MaskArea> maskMap;
-    private final Marker CLINICAL_MARKER = MarkerFactory.getMarker("CLINICAL");
+  private final Map<String, MaskArea> maskMap;
+  private final Marker CLINICAL_MARKER = MarkerFactory.getMarker("CLINICAL");
 
   @Autowired
-    public ProfileService(final PseudonymService pseudonymService) {
+  public ProfileService(final PseudonymService pseudonymService) {
     this.maskMap = new HashMap<>();
     this.pseudonymService = pseudonymService;
   }
@@ -199,30 +199,29 @@ public class ProfileService {
     }
   }
 
-    public void apply(DicomObject dcm, DestinationEntity destinationEntity,
-        ProfileEntity profileEntity,
-        AttributeEditorContext context) {
-        final String SOPInstanceUID = dcm.getString(Tag.SOPInstanceUID).orElse(null);
-        final String SeriesInstanceUID = dcm.getString(Tag.SeriesInstanceUID).orElse(null);
-        final String IssuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID).orElse(null);
-        final String PatientID = dcm.getString(Tag.PatientID).orElse(null);
-        final IdTypes idTypes = destinationEntity.getIdTypes();
-        final HMAC hmac = generateHMAC(destinationEntity, PatientID);
+  public void apply(
+      DicomObject dcm,
+      DestinationEntity destinationEntity,
+      ProfileEntity profileEntity,
+      AttributeEditorContext context) {
+    final String SOPInstanceUID = dcm.getString(Tag.SOPInstanceUID).orElse(null);
+    final String SeriesInstanceUID = dcm.getString(Tag.SeriesInstanceUID).orElse(null);
+    final String IssuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID).orElse(null);
+    final String PatientID = dcm.getString(Tag.PatientID).orElse(null);
+    final IdTypes idTypes = destinationEntity.getIdTypes();
+    final HMAC hmac = generateHMAC(destinationEntity, PatientID);
 
     MDC.put("SOPInstanceUID", SOPInstanceUID);
     MDC.put("SeriesInstanceUID", SeriesInstanceUID);
     MDC.put("issuerOfPatientID", IssuerOfPatientID);
     MDC.put("PatientID", PatientID);
 
-        String pseudonym = pseudonymService
-            .generatePseudonym(destinationEntity, dcm, profileEntity.getDefaultIssuerOfPatientId());
+    String pseudonym =
+        pseudonymService.generatePseudonym(
+            destinationEntity, dcm, profileEntity.getDefaultIssuerOfPatientId());
 
     String profilesCodeName =
-        String.join(
-            "-",
-            profiles.stream()
-                .map(p -> p.getCodeName())
-                .collect(Collectors.toList()));
+        String.join("-", profiles.stream().map(p -> p.getCodeName()).collect(Collectors.toList()));
     BigInteger patientValue = generatePatientID(pseudonym, hmac);
     String newPatientID = patientValue.toString(16).toUpperCase();
     String newPatientName =
@@ -262,8 +261,8 @@ public class ProfileService {
 
     applyAction(dcm, dcmCopy, hmac, null, null, context);
 
-    setDefaultDeidentTagValue(dcm, newPatientID, newPatientName, profilesCodeName, pseudonym,
-            hmac, profileEntity);
+    setDefaultDeidentTagValue(
+        dcm, newPatientID, newPatientName, profilesCodeName, pseudonym, hmac, profileEntity);
 
     final Marker CLINICAL_MARKER = MarkerFactory.getMarker("CLINICAL");
     LOGGER.info(
@@ -301,19 +300,24 @@ public class ProfileService {
     return new HMAC(hashContext);
   }
 
-    public void setDefaultDeidentTagValue(DicomObject dcm, String patientID, String patientName,
-        String profilePipeCodeName,
-        String pseudonym, HMAC hmac, ProfileEntity profileEntity) {
-        final String profileFilename = profileEntity.getName();
-        final ArrayList<ExprAction> defaultDeidentTagValue = new ArrayList<>();
-        defaultDeidentTagValue.add(new ExprAction(Tag.PatientID, VR.LO, patientID));
-        defaultDeidentTagValue.add(new ExprAction(Tag.PatientName, VR.PN, patientName));
-        defaultDeidentTagValue.add(new ExprAction(Tag.PatientIdentityRemoved, VR.CS, "YES"));
-        // 0012,0063 -> module patient
-        // A description or label of the mechanism or method use to remove the Patient's identity
-        defaultDeidentTagValue
-            .add(new ExprAction(Tag.DeidentificationMethod, VR.LO, profilePipeCodeName));
-        defaultDeidentTagValue.add(
+  public void setDefaultDeidentTagValue(
+      DicomObject dcm,
+      String patientID,
+      String patientName,
+      String profilePipeCodeName,
+      String pseudonym,
+      HMAC hmac,
+      ProfileEntity profileEntity) {
+    final String profileFilename = profileEntity.getName();
+    final ArrayList<ExprAction> defaultDeidentTagValue = new ArrayList<>();
+    defaultDeidentTagValue.add(new ExprAction(Tag.PatientID, VR.LO, patientID));
+    defaultDeidentTagValue.add(new ExprAction(Tag.PatientName, VR.PN, patientName));
+    defaultDeidentTagValue.add(new ExprAction(Tag.PatientIdentityRemoved, VR.CS, "YES"));
+    // 0012,0063 -> module patient
+    // A description or label of the mechanism or method use to remove the Patient's identity
+    defaultDeidentTagValue.add(
+        new ExprAction(Tag.DeidentificationMethod, VR.LO, profilePipeCodeName));
+    defaultDeidentTagValue.add(
         new ExprAction(Tag.ClinicalTrialSponsorName, VR.LO, profilePipeCodeName));
     defaultDeidentTagValue.add(new ExprAction(Tag.ClinicalTrialProtocolID, VR.LO, profileFilename));
     defaultDeidentTagValue.add(new ExprAction(Tag.ClinicalTrialSubjectID, VR.LO, pseudonym));
@@ -335,13 +339,13 @@ public class ProfileService {
         });
   }
 
-    public BigInteger generatePatientID(String pseudonym, HMAC hmac) {
-        byte[] bytes = new byte[16];
-        System.arraycopy(hmac.byteHash(pseudonym), 0, bytes, 0, 16);
-        return new BigInteger(1, bytes);
-    }
+  public BigInteger generatePatientID(String pseudonym, HMAC hmac) {
+    byte[] bytes = new byte[16];
+    System.arraycopy(hmac.byteHash(pseudonym), 0, bytes, 0, 16);
+    return new BigInteger(1, bytes);
+  }
 
-    public void init(ProfileEntity profileEntity) {
-        this.profiles = createProfilesList(profileEntity);
-    }
+  public void init(ProfileEntity profileEntity) {
+    this.profiles = createProfilesList(profileEntity);
+  }
 }

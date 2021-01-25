@@ -24,7 +24,7 @@ import javax.persistence.Table;
 @Table(name = "arguments")
 public class ArgumentEntity implements Serializable {
 
-    private static final long serialVersionUID = -839421871919135822L;
+  private static final long serialVersionUID = -839421871919135822L;
 
   private Long id;
   private ProfileElementEntity profileElementEntity;

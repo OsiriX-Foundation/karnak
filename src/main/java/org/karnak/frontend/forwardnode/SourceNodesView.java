@@ -37,22 +37,21 @@ public class SourceNodesView extends VerticalLayout {
   private final String PLACEHOLDER_FILTER = "Filter properties of sources";
 
   @Autowired
-    public SourceNodesView(SourceNodeService sourceNodeService) {
-        this.sourceNodeService = sourceNodeService;
+  public SourceNodesView(SourceNodeService sourceNodeService) {
+    this.sourceNodeService = sourceNodeService;
     setSizeFull();
     this.gridSourceNode = new GridSourceNode();
-        filter = new TextField();
-        newSourceNode = new Button(LABEL_NEW_SOURCE_NODE);
-        layoutFilterButton = new HorizontalLayout(filter, newSourceNode);
-        layoutFilterButton.setVerticalComponentAlignment(Alignment.START, filter);
-        layoutFilterButton.expand(filter);
+    filter = new TextField();
+    newSourceNode = new Button(LABEL_NEW_SOURCE_NODE);
+    layoutFilterButton = new HorizontalLayout(filter, newSourceNode);
+    layoutFilterButton.setVerticalComponentAlignment(Alignment.START, filter);
+    layoutFilterButton.expand(filter);
 
     setTextFieldFilter();
     setButtonNewDestinationDICOM();
 
-        add(UIS.setWidthFull(layoutFilterButton),
-            UIS.setWidthFull(gridSourceNode));
-    }
+    add(UIS.setWidthFull(layoutFilterButton), UIS.setWidthFull(gridSourceNode));
+  }
 
   private void setTextFieldFilter() {
     filter.setPlaceholder(PLACEHOLDER_FILTER);

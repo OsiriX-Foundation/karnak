@@ -37,8 +37,7 @@ public class EditProject extends VerticalLayout {
 
   private ProfileDropDown profileDropDown;
   private final WarningRemoveProjectUsed dialogWarning;
-  private final WarningRemoveProjectUsed dialogWarning;
-  privateBinder<ProjectEntity> binder;
+  private Binder<ProjectEntity> binder;
   private TextField textProjectName;
   private ProjectSecret projectSecret;
   private HorizontalLayout horizontalLayoutButtons;
@@ -47,8 +46,8 @@ public class EditProject extends VerticalLayout {
   private ProjectEntity projectEntity;
 
   @Autowired
-  public EditProject(final ProjectService projectService,
-      final ProfilePipeService profilePipeService) {
+  public EditProject(
+      final ProjectService projectService, final ProfilePipeService profilePipeService) {
     this.projectService = projectService;
     this.profilePipeService = profilePipeService;
 
@@ -57,7 +56,10 @@ public class EditProject extends VerticalLayout {
     setElements();
     setEventButtonAdd();
     setEventButtonRemove();
-    add(this.textProjectName, this.profileDropDown, this.projectSecret,
+    add(
+        this.textProjectName,
+        this.profileDropDown,
+        this.projectSecret,
         this.horizontalLayoutButtons);
   }
 

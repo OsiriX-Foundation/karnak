@@ -33,17 +33,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class SwitchingAlbumService {
 
-
   public static final ImmutableList<String> MIN_SCOPE_SOURCE = ImmutableList.of("read", "send");
   public static final ImmutableList<String> MIN_SCOPE_DESTINATION = ImmutableList.of("write");
   private static final Logger LOGGER = LoggerFactory.getLogger(SwitchingAlbumService.class);
   private final KheopsApi kheopsAPI;
   private final Map<Long, List> switchingAlbumToDo = new WeakHashMap<>();
 
-    @Autowired
-    public SwitchingAlbumService() {
-        kheopsAPI = new KheopsApi();
-    }
+  @Autowired
+  public SwitchingAlbumService() {
+    kheopsAPI = new KheopsApi();
+  }
 
   private static HMAC generateHMAC(DestinationEntity destinationEntity) {
     if (destinationEntity.isDesidentification()) {

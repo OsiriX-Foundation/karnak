@@ -30,11 +30,10 @@ import org.weasis.dicom.param.ListenerParams;
 import org.weasis.dicom.tool.DicomGateway;
 import org.weasis.dicom.tool.DicomListener;
 
-
 @Service
 public class GatewayService implements ApplicationListener<ContextRefreshedEvent> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GatewayService.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(GatewayService.class);
 
   private NativeLibraryManager manager;
   private final GatewaySetUpService gatewaySetUpService;
@@ -44,52 +43,29 @@ public class GatewayService implements ApplicationListener<ContextRefreshedEvent
   private DicomListener dicomListenerOut;
   private PullingService httpPullIn;
 
-    @Autowired
-    public GatewayService(final GatewaySetUpService gatewaySetUpService) {
-        this.gatewaySetUpService = gatewaySetUpService;
-    }
+  @Autowired
+  public GatewayService(final GatewaySetUpService gatewaySetUpService) {
+    this.gatewaySetUpService = gatewaySetUpService;
+  }
 
-    @Override
-    public void onApplicationEvent(ContextRefreshedEvent event) {
-        LOGGER.info("Application Event:" + event.toString());
+  private static DicomGateway buildDicomGateway(GatewaySetUpService config) {
+    DicomGateway gateway;
+    try {
+      String[] acceptedCallingAETitles =
+          GatewayParams.getAcceptedCallingAETitles(config.getDestinations());
+      GatewayParams gparams =
+          new GatewayParams(config.getAdvancedParams(), false, null, acceptedCallingAETitles);
+      gateway = new DicomGateway(config.getDestinations());
+      gateway.start(config.getCallingDicomNode(), gparams);
+      LOGGER.info("Karnak DICOM gateway servlet is running: {}", config);
+      return gateway;
+    } catch (Exception e) {
+      LOGGER.error("Cannot start DICOM gateway", e);
+      return null;
     }
+  }
 
-    private static DicomGateway buildDicomGateway(GatewaySetUpService config) {
-        DicomGateway gateway;
-        try {
-            String[] acceptedCallingAETitles = GatewayParams
-                .getAcceptedCallingAETitles(config.getDestinations());
-            GatewayParams gparams = new GatewayParams(config.getAdvancedParams(), false, null,
-                acceptedCallingAETitles);
-            gateway = new DicomGateway(config.getDestinations());
-            gateway.start(config.getCallingDicomNode(), gparams);
-            LOGGER.info("Karnak DICOM gateway servlet is running: {}", config);
-            return gateway;
-        } catch (Exception e) {
-            LOGGER.error("Cannot start DICOM gateway", e);
-            return null;
-        }
-    }
-
-    private static DicomListener buildDicomListener(GatewaySetUpService config) {
-        DicomListener dicomListener;
-        try {
-            dicomListener = new DicomListener(config.getStorePath());
-            String[] acceptedCallingAETitles = GatewayParams
-                .getAcceptedCallingAETitles(config.getDestinations());
-            ListenerParams params = new ListenerParams(config.getAdvancedParams(), false,
-                "{00020016}/{00020003}", null,
-                acceptedCallingAETitles);
-            dicomListener.start(config.getCallingDicomNode(), params);
-            LOGGER.info("Gateway DICOM listener is running: {}", config);
-            return dicomListener;
-        } catch (Exception e) {
-            LOGGER.error("Cannot start {}-stream DICOM listener", e);
-            return null;
-        }
-    }
-
-  private static DicomListener buildDicomListener(GatewaySetUp config) {
+  private static DicomListener buildDicomListener(GatewaySetUpService config) {
     DicomListener dicomListener;
     try {
       dicomListener = new DicomListener(config.getStorePath());
@@ -119,7 +95,7 @@ public class GatewayService implements ApplicationListener<ContextRefreshedEvent
   @EventListener
   public void reloadOutboundNodes(NodeEvent event) {
     gatewaySetUpService.update(event);
-    }
+  }
 
   @PreDestroy
   public void destroy() {
@@ -148,27 +124,27 @@ public class GatewayService implements ApplicationListener<ContextRefreshedEvent
     }
   }
 
-    private void initGateway() {
-        dicomForwardOut = buildDicomGateway(gatewaySetUpService);
-        // } else if (Mode.ARCHIVE.equals(outMode)) {
-        // dicomListenerOut = buildDicomListener(configOut);
-        // }
+  private void initGateway() {
+    dicomForwardOut = buildDicomGateway(gatewaySetUpService);
+    // } else if (Mode.ARCHIVE.equals(outMode)) {
+    // dicomListenerOut = buildDicomListener(configOut);
+    // }
 
-        // httpPullIn = new PullingService(configIn);
-        // httpPullIn.start();
+    // httpPullIn = new PullingService(configIn);
+    // httpPullIn.start();
 
+  }
+
+  @PostConstruct
+  public void init() {
+    LOGGER.info("{}", "Start the gateway manager running as a background process");
+    try {
+      URL resource = this.getClass().getResource("/lib");
+      manager = new NativeLibraryManager(resource);
+
+    } catch (Exception e1) {
+      throw new IllegalStateException("Cannot register DICOM native librairies", e1);
     }
-
-    @PostConstruct
-    public void init() {
-        LOGGER.info("{}", "Start the gateway manager running as a background process");
-        try {
-            URL resource = this.getClass().getResource("/lib");
-            manager = new NativeLibraryManager(resource);
-
-        } catch (Exception e1) {
-            throw new IllegalStateException("Cannot register DICOM native librairies", e1);
-        }
-        initGateway();
-    }
+    initGateway();
+  }
 }

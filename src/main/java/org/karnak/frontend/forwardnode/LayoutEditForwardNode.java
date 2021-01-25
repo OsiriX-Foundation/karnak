@@ -31,70 +31,74 @@ import org.springframework.context.ApplicationEventPublisher;
 @UIScope
 public class LayoutEditForwardNode extends VerticalLayout {
 
-    private final ForwardNodeViewLogic forwardNodeViewLogic;
-    private final ViewLogic viewLogic;
-    private final ForwardNodeAPIService forwardNodeAPIService;
-    private final Binder<ForwardNodeEntity> binderForwardNode;
-    private final DestinationService destinationService;
-    private final SourceNodeService sourceNodeService;
-    public ForwardNodeEntity currentForwardNodeEntity;
-    private final EditAETitleDescription editAETitleDescription;
-    private final TabSourcesDestination tabSourcesDestination;
-    private final VerticalLayout layoutDestinationsSources;
-    private final DestinationsView destinationsView;
-    private final SourceNodesView sourceNodesView;
-    private final NewUpdateDestination newUpdateDestination;
-    private final ButtonSaveDeleteCancel buttonForwardNodeSaveDeleteCancel;
-    private final NewUpdateSourceNode newUpdateSourceNode;
-    private ApplicationEventPublisher applicationEventPublisher;
+  private final ForwardNodeViewLogic forwardNodeViewLogic;
+  private final ViewLogic viewLogic;
+  private final ForwardNodeAPIService forwardNodeAPIService;
+  private final Binder<ForwardNodeEntity> binderForwardNode;
+  private final DestinationService destinationService;
+  private final SourceNodeService sourceNodeService;
+  private final EditAETitleDescription editAETitleDescription;
+  private final TabSourcesDestination tabSourcesDestination;
+  private final VerticalLayout layoutDestinationsSources;
+  private final DestinationsView destinationsView;
+  private final SourceNodesView sourceNodesView;
+  private final NewUpdateDestination newUpdateDestination;
+  private final ButtonSaveDeleteCancel buttonForwardNodeSaveDeleteCancel;
+  private final NewUpdateSourceNode newUpdateSourceNode;
+  public ForwardNodeEntity currentForwardNodeEntity;
+  private ApplicationEventPublisher applicationEventPublisher;
 
   @Autowired
-    public LayoutEditForwardNode(ForwardNodeViewLogic forwardNodeViewLogic,
-        ForwardNodeAPIService forwardNodeAPIService, NewUpdateDestination newUpdateDestination,
-        NewUpdateSourceNode newUpdateSourceNode, SourceNodeService sourceNodeService,
-        SourceNodesView sourceNodesView, DestinationService destinationService,
-        DestinationsView destinationsView,
-        final ApplicationEventPublisher applicationEventPublisher) {
+  public LayoutEditForwardNode(
+      ForwardNodeViewLogic forwardNodeViewLogic,
+      ForwardNodeAPIService forwardNodeAPIService,
+      NewUpdateDestination newUpdateDestination,
+      NewUpdateSourceNode newUpdateSourceNode,
+      SourceNodeService sourceNodeService,
+      SourceNodesView sourceNodesView,
+      DestinationService destinationService,
+      DestinationsView destinationsView,
+      final ApplicationEventPublisher applicationEventPublisher) {
 
     this.forwardNodeViewLogic = forwardNodeViewLogic;
     this.viewLogic = new ViewLogic(this);
     this.viewLogic.setApplicationEventPublisher(applicationEventPublisher);
-        this.forwardNodeAPIService = forwardNodeAPIService;
+    this.forwardNodeAPIService = forwardNodeAPIService;
     this.currentForwardNodeEntity = null;
     this.binderForwardNode = new BeanValidationBinder<>(ForwardNodeEntity.class);
-        this.tabSourcesDestination = new TabSourcesDestination();
-        this.layoutDestinationsSources = new VerticalLayout();
-        this.buttonForwardNodeSaveDeleteCancel = new ButtonSaveDeleteCancel();
-        this.newUpdateDestination = newUpdateDestination;
-        this.newUpdateSourceNode = newUpdateSourceNode;
-        this.sourceNodeService = sourceNodeService;
-        this.sourceNodesView = sourceNodesView;
-        this.destinationService = destinationService;
-        this.destinationsView = destinationsView;
+    this.tabSourcesDestination = new TabSourcesDestination();
+    this.layoutDestinationsSources = new VerticalLayout();
+    this.buttonForwardNodeSaveDeleteCancel = new ButtonSaveDeleteCancel();
+    this.newUpdateDestination = newUpdateDestination;
+    this.newUpdateSourceNode = newUpdateSourceNode;
+    this.sourceNodeService = sourceNodeService;
+    this.sourceNodesView = sourceNodesView;
+    this.destinationService = destinationService;
+    this.destinationsView = destinationsView;
 
-        this.layoutDestinationsSources.setSizeFull();
-        this.editAETitleDescription = new EditAETitleDescription(binderForwardNode);
+    this.layoutDestinationsSources.setSizeFull();
+    this.editAETitleDescription = new EditAETitleDescription(binderForwardNode);
 
     this.newUpdateDestination.setViewLogic(this.viewLogic);
-        this.newUpdateSourceNode.setViewLogic(this.viewLogic);
+    this.newUpdateSourceNode.setViewLogic(this.viewLogic);
 
-        getStyle().set("overflow-y", "auto");
+    getStyle().set("overflow-y", "auto");
     setSizeFull();
-        setEditView();
-        setLayoutDestinationsSources(tabSourcesDestination.getSelectedTab().getLabel());
-        setEventChangeTabValue();
-        setEventCancelButton();
-        setEventDeleteButton();
-        setEventSaveButton();
-        setEventBinderForwardNode();
-        setEventDestination();
-        setEventDestinationsViewDICOM();
-        setEventDestinationsViewSTOW();
-        setEventDestinationCancelButton();
-        setEventNewSourceNode();
-        setEventGridSourceNode();
-        setEventSourceNodeCancelButton();
-    }
+    setEditView();
+    setLayoutDestinationsSources(tabSourcesDestination.getSelectedTab().getLabel());
+    setEventChangeTabValue();
+    setEventCancelButton();
+    setEventDeleteButton();
+    setEventSaveButton();
+    setEventBinderForwardNode();
+    setEventDestination();
+    setEventDestinationsViewDICOM();
+    setEventDestinationsViewSTOW();
+    setEventDestinationCancelButton();
+    setEventNewSourceNode();
+    setEventGridSourceNode();
+    setEventSourceNodeCancelButton();
+  }
 
   public void setEditView() {
     removeAll();
@@ -108,12 +112,12 @@ public class LayoutEditForwardNode extends VerticalLayout {
   public void load(ForwardNodeEntity forwardNodeEntity) {
     this.currentForwardNodeEntity = forwardNodeEntity;
     this.editAETitleDescription.setForwardNode(forwardNodeEntity);
-        setApplicationEventPublisher(forwardNodeAPIService.getApplicationEventPublisher());
-        this.destinationsView.setForwardNode(forwardNodeEntity);
-        this.destinationService.setForwardNode(forwardNodeEntity);
+    setApplicationEventPublisher(forwardNodeAPIService.getApplicationEventPublisher());
+    this.destinationsView.setForwardNode(forwardNodeEntity);
+    this.destinationService.setForwardNode(forwardNodeEntity);
 
     this.sourceNodesView.setForwardNode(forwardNodeEntity);
-        this.sourceNodeService.setForwardNode(forwardNodeEntity);
+    this.sourceNodeService.setForwardNode(forwardNodeEntity);
 
     setEditView();
     if (forwardNodeEntity == null) {
@@ -186,16 +190,22 @@ public class LayoutEditForwardNode extends VerticalLayout {
             });
   }
 
-    private void setEventDeleteButton() {
-        this.buttonForwardNodeSaveDeleteCancel.getDelete().addClickListener(event -> {
-            if (this.currentForwardNodeEntity != null) {
-                ConfirmDialog dialog = new ConfirmDialog(
-                    "Are you sure to delete the forward node " + this.currentForwardNodeEntity
-                        .getFwdAeTitle() + " ?");
-                dialog.addConfirmationListener(componentEvent -> {
-                    this.forwardNodeAPIService.deleteForwardNode(this.currentForwardNodeEntity);
-                    this.forwardNodeViewLogic.cancelForwardNode();
-                });
+  private void setEventDeleteButton() {
+    this.buttonForwardNodeSaveDeleteCancel
+        .getDelete()
+        .addClickListener(
+            event -> {
+              if (this.currentForwardNodeEntity != null) {
+                ConfirmDialog dialog =
+                    new ConfirmDialog(
+                        "Are you sure to delete the forward node "
+                            + this.currentForwardNodeEntity.getFwdAeTitle()
+                            + " ?");
+                dialog.addConfirmationListener(
+                    componentEvent -> {
+                      this.forwardNodeAPIService.deleteForwardNode(this.currentForwardNodeEntity);
+                      this.forwardNodeViewLogic.cancelForwardNode();
+                    });
                 dialog.open();
               }
             });
@@ -228,8 +238,8 @@ public class LayoutEditForwardNode extends VerticalLayout {
         .addItemClickListener(
             event -> {
               DestinationEntity destinationEntity = event.getItem();
-              this.newUpdateDestination
-                .load(destinationEntity, destinationEntity.getDestinationType());
+              this.newUpdateDestination.load(
+                  destinationEntity, destinationEntity.getDestinationType());
               addFormView(this.newUpdateDestination);
             });
   }
@@ -261,20 +271,23 @@ public class LayoutEditForwardNode extends VerticalLayout {
   }
 
   private void setEventSourceNodeCancelButton() {
-    this.newUpdateSourceNode.getButtonCancel().addClickListener(event -> {
-            setEditView();
-        });
-    }
+    this.newUpdateSourceNode
+        .getButtonCancel()
+        .addClickListener(
+            event -> {
+              setEditView();
+            });
+  }
 
-    public ApplicationEventPublisher getApplicationEventPublisher() {
-        return applicationEventPublisher;
-    }
+  public ApplicationEventPublisher getApplicationEventPublisher() {
+    return applicationEventPublisher;
+  }
 
-    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
-        this.applicationEventPublisher = applicationEventPublisher;
-    }
+  public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+    this.applicationEventPublisher = applicationEventPublisher;
+  }
 
-    public void updateForwardNodeInEditView() {
-        this.load(currentForwardNodeEntity);
-    }
+  public void updateForwardNodeInEditView() {
+    this.load(currentForwardNodeEntity);
+  }
 }

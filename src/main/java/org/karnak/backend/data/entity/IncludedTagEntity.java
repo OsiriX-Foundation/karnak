@@ -24,6 +24,4 @@ public class IncludedTagEntity extends TagEntity implements Serializable {
   public IncludedTagEntity(String tagValue, ProfileElementEntity profileElementEntity) {
     super(tagValue, profileElementEntity);
   }
-
-
 }

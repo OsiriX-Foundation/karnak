@@ -48,16 +48,16 @@ public class FormSTOW extends VerticalLayout {
   private final ProjectService projectService;
 
   @Autowired
-  public FormSTOW(final SOPClassUIDService sopClassUIDService,
-      final ProjectService projectService) {
+  public FormSTOW(
+      final SOPClassUIDService sopClassUIDService, final ProjectService projectService) {
     this.sopClassUIDService = sopClassUIDService;
     this.projectService = projectService;
     this.layoutDesidentification = new LayoutDesidentification();
     this.filterBySOPClassesForm = new FilterBySOPClassesForm();
   }
 
-  public void init(Binder<DestinationEntity> binder,
-      ButtonSaveDeleteCancel buttonSaveDeleteCancel) {
+  public void init(
+      Binder<DestinationEntity> binder, ButtonSaveDeleteCancel buttonSaveDeleteCancel) {
     setSizeFull();
     this.binder = binder;
     this.layoutDesidentification.init(this.binder, projectService);
@@ -75,17 +75,22 @@ public class FormSTOW extends VerticalLayout {
 
     this.switchingAlbumsView = new SwitchingAlbumsView();
 
-    add(UIS.setWidthFull( //
-        new HorizontalLayout(description)));
-    add(UIS.setWidthFull( //
-        new HorizontalLayout(url, urlCredentials)));
-    add(UIS.setWidthFull( //
-        headers));
-    add(UIS.setWidthFull( //
-        new HorizontalLayout(notify)));
-    add(UIS.setWidthFull( //
-        new HorizontalLayout(notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues,
-            notifyInterval)));
+    add(
+        UIS.setWidthFull( //
+            new HorizontalLayout(description)));
+    add(
+        UIS.setWidthFull( //
+            new HorizontalLayout(url, urlCredentials)));
+    add(
+        UIS.setWidthFull( //
+            headers));
+    add(
+        UIS.setWidthFull( //
+            new HorizontalLayout(notify)));
+    add(
+        UIS.setWidthFull( //
+            new HorizontalLayout(
+                notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues, notifyInterval)));
     add(UIS.setWidthFull(layoutDesidentification));
     add(UIS.setWidthFull(filterBySOPClassesForm));
     add(UIS.setWidthFull(switchingAlbumsView));
@@ -94,7 +99,6 @@ public class FormSTOW extends VerticalLayout {
     setElements();
     setBinder();
   }
-
 
   private void setElements() {
     description.setWidth("100%");
@@ -137,15 +141,17 @@ public class FormSTOW extends VerticalLayout {
   }
 
   private void setBinder() {
-    binder.forField(url)
+    binder
+        .forField(url)
         .withValidator(StringUtils::isNotBlank, "URL is mandatory")
         .bind(DestinationEntity::getUrl, DestinationEntity::setUrl);
-    binder.forField(notifyInterval)
+    binder
+        .forField(notifyInterval)
         .withConverter(new HStringToIntegerConverter())
         .bind(DestinationEntity::getNotifyInterval, DestinationEntity::setNotifyInterval);
-    binder.forField(switchingAlbumsView)
-        .bind(DestinationEntity::getKheopsAlbumEntities,
-            DestinationEntity::setKheopsAlbumEntities);
+    binder
+        .forField(switchingAlbumsView)
+        .bind(DestinationEntity::getKheopsAlbumEntities, DestinationEntity::setKheopsAlbumEntities);
     binder.bindInstanceFields(this);
   }
 }

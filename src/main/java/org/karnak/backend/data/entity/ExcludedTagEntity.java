@@ -24,5 +24,4 @@ public class ExcludedTagEntity extends TagEntity implements Serializable {
   public ExcludedTagEntity(String tagValue, ProfileElementEntity profileElementEntity) {
     super(tagValue, profileElementEntity);
   }
-
 }

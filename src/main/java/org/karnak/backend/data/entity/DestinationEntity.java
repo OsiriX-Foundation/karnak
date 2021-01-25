@@ -479,13 +479,12 @@ public class DestinationEntity implements Serializable {
               + port
               + ", useaetdest="
               + useaetdest
-
-        + "]";case stow:
+              + "]";
+        case stow:
           return "Destination [id="
               + id
               + ", description="
               + description
-
               + ", type="
               + destinationType
               + ", notify="
@@ -504,10 +503,10 @@ public class DestinationEntity implements Serializable {
               + urlCredentials
               + ", headers="
               + headers
-
-      + "]";
+              + "]";
+      }
     }
-    }return "Destination [id="
+    return "Destination [id="
         + id
         + ", description="
         + description

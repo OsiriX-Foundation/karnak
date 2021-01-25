@@ -60,8 +60,7 @@ public class ShowArchiveServlet extends HttpServlet {
   @Override
   public final void init() throws ServletException {
     if (globalConfig == null) {
-      LOGGER
-                .error("ShowArchiveServlet service cannot start: GatewaySetUpService is missing.");
+      LOGGER.error("ShowArchiveServlet service cannot start: GatewaySetUpService is missing.");
       destroy();
     }
   }

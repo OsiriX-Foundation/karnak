@@ -40,12 +40,12 @@ public class DestinationsView extends VerticalLayout {
   private final String PLACEHOLDER_FILTER = "Filter properties of destination";
 
   @Autowired
-    public DestinationsView(final DestinationService destinationService) {
-        this.destinationService = destinationService;
+  public DestinationsView(final DestinationService destinationService) {
+    this.destinationService = destinationService;
 
-        setSizeFull();
-        this.filter = new TextField();
-        this.newDestinationDICOM = new Button(LABEL_NEW_DESTINATION_DICOM);
+    setSizeFull();
+    this.filter = new TextField();
+    this.newDestinationDICOM = new Button(LABEL_NEW_DESTINATION_DICOM);
     this.newDestinationSTOW = new Button(LABEL_NEW_DESTINATION_STOW);
     this.gridDestination = new GridDestination();
 
@@ -54,8 +54,8 @@ public class DestinationsView extends VerticalLayout {
     setButtonNewDestinationSTOW();
     setForwardNode(null);
 
-    this.layoutFilterButton = new HorizontalLayout(this.filter, this.newDestinationDICOM,
-            this.newDestinationSTOW);
+    this.layoutFilterButton =
+        new HorizontalLayout(this.filter, this.newDestinationDICOM, this.newDestinationSTOW);
     this.layoutFilterButton.setVerticalComponentAlignment(Alignment.START, this.filter);
     this.layoutFilterButton.expand(this.filter);
 

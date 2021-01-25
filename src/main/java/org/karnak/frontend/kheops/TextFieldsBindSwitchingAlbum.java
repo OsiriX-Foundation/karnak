@@ -68,8 +68,8 @@ public class TextFieldsBindSwitchingAlbum {
         .withValidator(
             value -> {
               if (!textUrlAPI.getValue().isBlank()) {
-                return validateToken(value, textUrlAPI.getValue(),
-                SwitchingAlbumService.MIN_SCOPE_SOURCE);
+                return validateToken(
+                    value, textUrlAPI.getValue(), SwitchingAlbumService.MIN_SCOPE_SOURCE);
               }
               return true;
             },
@@ -99,10 +99,10 @@ public class TextFieldsBindSwitchingAlbum {
     return b;
   }
 
-    private boolean validateToken(String token, String urlAPI, List<String> validMinScope) {
-        try {
-            JSONObject responseIntrospect = kheopsApi.tokenIntrospect(urlAPI, token, token);
-          return SwitchingAlbumService.validateIntrospectedToken(responseIntrospect, validMinScope);
+  private boolean validateToken(String token, String urlAPI, List<String> validMinScope) {
+    try {
+      JSONObject responseIntrospect = kheopsApi.tokenIntrospect(urlAPI, token, token);
+      return SwitchingAlbumService.validateIntrospectedToken(responseIntrospect, validMinScope);
     } catch (Exception e) {
       return false;
     }

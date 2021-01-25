@@ -24,17 +24,17 @@ public class ForwardNodeViewLogic {
   }
 
   /**
-    Update the fragment without causing navigator to change view
+   * Update the fragment without causing navigator to change view
    */
   private void setFragmentParameter(String dataIdStr) {
     final String fragmentParameter;
     if (dataIdStr == null || dataIdStr.isEmpty()) {
       fragmentParameter = "";
     } else {
-            fragmentParameter = dataIdStr;
-        }
-        UI.getCurrent().navigate(ForwardNodeView.class, fragmentParameter);
+      fragmentParameter = dataIdStr;
     }
+    UI.getCurrent().navigate(ForwardNodeView.class, fragmentParameter);
+  }
 
   public Long enter(String dataIdStr) {
     // TODO: On enter, go to dataIdStr

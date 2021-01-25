@@ -23,12 +23,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class WadoService {
 
-	@Autowired
-	public WadoService() {
-	}
+  @Autowired
+  public WadoService() {
+  }
 
-	public String checkWado(List<WadoNode> nodes) throws InterruptedException, ExecutionException {
-		StringBuilder result = new StringBuilder();
+  public String checkWado(List<WadoNode> nodes) throws InterruptedException, ExecutionException {
+    StringBuilder result = new StringBuilder();
 
     List<Future<String>> threadsResult = createThreadsResult(nodes);
     for (Future<String> threadResult : threadsResult) {

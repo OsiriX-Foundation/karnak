@@ -39,8 +39,7 @@ class ProfileServiceTest {
   @BeforeAll
   static void beforeAll() {
     final byte[] HMAC_KEY = {
-      121, -7, 104, 11, 126, -39, -128, -126, 114, -94, 40, -67, 61, -45, 59,
-        -53
+        121, -7, 104, 11, 126, -39, -128, -126, 114, -94, 40, -67, 61, -45, 59, -53
     };
     defaultHMAC = new HMAC(HMAC_KEY);
   }
@@ -85,15 +84,21 @@ class ProfileServiceTest {
     dicomElemSeq22.addItem(datasetSeq22);
     dicomElemSeq2.addItem(datasetSeq2);
 
-      final ProfileEntity profileEntity = new ProfileEntity("TEST", "0.9.1", "0.9.1", "DPA");
-      final ProfileElementEntity profileElementEntity1 = new ProfileElementEntity(
-          "Keep tag Source Group..", "action.on.specific.tags", null, "K", null, 0,
-          profileEntity);
-    profileElementEntity1
-        .addIncludedTag(new IncludedTagEntity("(0010,0027)", profileElementEntity1));
-    final ProfileElementEntity profileElementEntity2 = new ProfileElementEntity(
-        "Remove tag PatientID", "action.on.specific.tags", null, "X", null, 0,
-        profileEntity);
+    final ProfileEntity profileEntity = new ProfileEntity("TEST", "0.9.1", "0.9.1", "DPA");
+    final ProfileElementEntity profileElementEntity1 =
+        new ProfileElementEntity(
+            "Keep tag Source Group..",
+            "action.on.specific.tags",
+            null,
+            "K",
+            null,
+            0,
+            profileEntity);
+    profileElementEntity1.addIncludedTag(
+        new IncludedTagEntity("(0010,0027)", profileElementEntity1));
+    final ProfileElementEntity profileElementEntity2 =
+        new ProfileElementEntity(
+            "Remove tag PatientID", "action.on.specific.tags", null, "X", null, 0, profileEntity);
     profileElementEntity2.addIncludedTag(
         new IncludedTagEntity("(0010,0020)", profileElementEntity2));
 

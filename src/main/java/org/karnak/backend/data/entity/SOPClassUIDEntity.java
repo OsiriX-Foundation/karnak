@@ -23,12 +23,13 @@ public class SOPClassUIDEntity implements Serializable {
 
   private static final long serialVersionUID = 2885426916053925842L;
 
-    private Long id;
-    private String ciod;
-    private String uid;
-    private String name;
+  private Long id;
+  private String ciod;
+  private String uid;
+  private String name;
 
-  public SOPClassUIDEntity() {}
+  public SOPClassUIDEntity() {
+  }
 
   public SOPClassUIDEntity(String ciod, String uid, String name) {
     this.ciod = ciod;
@@ -41,18 +42,18 @@ public class SOPClassUIDEntity implements Serializable {
   }
 
   @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    public Long getId() {
-        return id;
-    }
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  public Long getId() {
+    return id;
+  }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+  public void setId(Long id) {
+    this.id = id;
+  }
 
-    public String getCiod() {
-        return ciod;
-    }
+  public String getCiod() {
+    return ciod;
+  }
 
   public void setCiod(String ciod) {
     this.ciod = ciod;
@@ -74,23 +75,23 @@ public class SOPClassUIDEntity implements Serializable {
     this.name = name;
   }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        SOPClassUIDEntity that = (SOPClassUIDEntity) o;
-        return Objects.equals(id, that.id) &&
-            Objects.equals(ciod, that.ciod) &&
-            Objects.equals(uid, that.uid) &&
-            Objects.equals(name, that.name);
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
     }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    SOPClassUIDEntity that = (SOPClassUIDEntity) o;
+    return Objects.equals(id, that.id)
+        && Objects.equals(ciod, that.ciod)
+        && Objects.equals(uid, that.uid)
+        && Objects.equals(name, that.name);
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, ciod, uid, name);
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, ciod, uid, name);
+  }
 }

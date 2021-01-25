@@ -30,7 +30,7 @@ import org.springframework.security.access.annotation.Secured;
 @Secured({"ADMIN"})
 public class MainViewProjects extends HorizontalLayout implements HasUrlParameter<String> {
 
-    public static final String VIEW_NAME = "Projects";
+  public static final String VIEW_NAME = "Projects";
 
   private final ProjectService projectService;
   private final NewProjectForm newProjectForm;
@@ -39,18 +39,20 @@ public class MainViewProjects extends HorizontalLayout implements HasUrlParamete
   private final Binder<ProjectEntity> newResearchBinder;
 
   @Autowired
-    public MainViewProjects(final ProjectService projectService, final EditProject editProject,
-        final NewProjectForm newProjectForm) {
-        this.projectService = projectService;
+  public MainViewProjects(
+      final ProjectService projectService,
+      final EditProject editProject,
+      final NewProjectForm newProjectForm) {
+    this.projectService = projectService;
     this.editProject = editProject;
     this.newProjectForm = newProjectForm;
     this.gridProject = new GridProject(projectService);
-        this.newResearchBinder = this.newProjectForm.getBinder();
+    this.newResearchBinder = this.newProjectForm.getBinder();
     VerticalLayout layoutNewProject = new VerticalLayout(this.newProjectForm, this.gridProject);
-        setWidthFull();
+    setWidthFull();
     layoutNewProject.setWidth("40%");
     this.editProject.setWidth("60%");
-        add(layoutNewProject, this.editProject);
+    add(layoutNewProject, this.editProject);
     setEventButtonNewProject();
     setEventGridSelection();
   }

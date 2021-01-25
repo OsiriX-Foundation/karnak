@@ -31,10 +31,10 @@ public class ProjectEntity implements Serializable {
 
   private static final long serialVersionUID = 8809562914582842501L;
 
-    private Long id;
-    private String name;
-    private byte[] secret;
-    private List<DestinationEntity> destinationEntities;
+  private Long id;
+  private String name;
+  private byte[] secret;
+  private List<DestinationEntity> destinationEntities;
   private ProfileEntity profileEntity;
 
   public ProjectEntity() {
@@ -48,18 +48,18 @@ public class ProjectEntity implements Serializable {
   }
 
   @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    public Long getId() {
-        return id;
-    }
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  public Long getId() {
+    return id;
+  }
 
   public void setId(Long id) {
-        this.id = id;
-    }
+    this.id = id;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public String getName() {
+    return name;
+  }
 
   public void setName(String name) {
     this.name = name;
@@ -74,45 +74,45 @@ public class ProjectEntity implements Serializable {
   }
 
   @OneToMany(mappedBy = "projectEntity")
-    @LazyCollection(LazyCollectionOption.FALSE)
-    public List<DestinationEntity> getDestinationEntities() {
-        return destinationEntities;
-    }
+  @LazyCollection(LazyCollectionOption.FALSE)
+  public List<DestinationEntity> getDestinationEntities() {
+    return destinationEntities;
+  }
 
   public void setDestinationEntities(List<DestinationEntity> destinationEntities) {
     this.destinationEntities = destinationEntities;
   }
 
   @ManyToOne
-    @JoinColumn(name = "profile_pipe_id")
-    public ProfileEntity getProfileEntity() {
-        return profileEntity;
-    }
+  @JoinColumn(name = "profile_pipe_id")
+  public ProfileEntity getProfileEntity() {
+    return profileEntity;
+  }
 
   public void setProfileEntity(ProfileEntity profileEntity) {
     this.profileEntity = profileEntity;
   }
 
   @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        ProjectEntity that = (ProjectEntity) o;
-    return Objects.equals(id, that.id) &&
-            Objects.equals(name, that.name) &&
-            Arrays.equals(secret, that.secret) &&
-            Objects.equals(destinationEntities, that.destinationEntities) &&
-            Objects.equals(profileEntity, that.profileEntity);
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
     }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    ProjectEntity that = (ProjectEntity) o;
+    return Objects.equals(id, that.id)
+        && Objects.equals(name, that.name)
+        && Arrays.equals(secret, that.secret)
+        && Objects.equals(destinationEntities, that.destinationEntities)
+        && Objects.equals(profileEntity, that.profileEntity);
+  }
 
-    @Override
-    public int hashCode() {
-        int result = Objects.hash(id, name, destinationEntities, profileEntity);
-        result = 31 * result + Arrays.hashCode(secret);
-        return result;
+  @Override
+  public int hashCode() {
+    int result = Objects.hash(id, name, destinationEntities, profileEntity);
+    result = 31 * result + Arrays.hashCode(secret);
+    return result;
   }
 }

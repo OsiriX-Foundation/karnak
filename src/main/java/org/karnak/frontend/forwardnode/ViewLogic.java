@@ -15,7 +15,7 @@ import org.springframework.context.ApplicationEventPublisher;
 @UIScope
 public class ViewLogic {
 
-    private final LayoutEditForwardNode currentLayout;
+  private final LayoutEditForwardNode currentLayout;
   private ApplicationEventPublisher applicationEventPublisher;
 
   public ViewLogic(LayoutEditForwardNode currentLayout) {

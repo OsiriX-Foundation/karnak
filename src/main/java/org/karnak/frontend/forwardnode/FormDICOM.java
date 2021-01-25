@@ -47,50 +47,52 @@ public class FormDICOM extends VerticalLayout {
   private final FilterBySOPClassesForm filterBySOPClassesForm;
 
   private final SOPClassUIDService sopClassUIDService;
-    private final ProjectService projectService;
+  private final ProjectService projectService;
 
-    @Autowired
-    public FormDICOM(final SOPClassUIDService sopClassUIDService,
-        final ProjectService projectService) {
-        this.sopClassUIDService = sopClassUIDService;
-        this.projectService = projectService;
-        this.layoutDesidentification = new LayoutDesidentification();
-        this.filterBySOPClassesForm = new FilterBySOPClassesForm();
-    }
+  @Autowired
+  public FormDICOM(
+      final SOPClassUIDService sopClassUIDService, final ProjectService projectService) {
+    this.sopClassUIDService = sopClassUIDService;
+    this.projectService = projectService;
+    this.layoutDesidentification = new LayoutDesidentification();
+    this.filterBySOPClassesForm = new FilterBySOPClassesForm();
+  }
 
-    public void init(Binder<DestinationEntity> binder,
-        ButtonSaveDeleteCancel buttonSaveDeleteCancel) {
+  public void init(
+      Binder<DestinationEntity> binder, ButtonSaveDeleteCancel buttonSaveDeleteCancel) {
 
-        this.binder = binder;
+    this.binder = binder;
     this.layoutDesidentification.init(this.binder, projectService);
-        this.filterBySOPClassesForm.init(this.binder, sopClassUIDService);
+    this.filterBySOPClassesForm.init(this.binder, sopClassUIDService);
 
-        setSizeFull();
+    setSizeFull();
 
-        aeTitle = new TextField("AETitle");
-        description = new TextField("Description");
-        hostname = new TextField("Hostname");
-        port = new TextField("Port");
-        useaetdest = new Checkbox("Use AETitle destination");
-        notify = new TextField("Notif.: list of emails");
-        notifyObjectErrorPrefix = new TextField("Notif.: error subject prefix");
-        notifyObjectPattern = new TextField("Notif.: subject pattern");
-        notifyObjectValues = new TextField("Notif.: subject values");
-        notifyInterval = new TextField("Notif.: interval");
+    aeTitle = new TextField("AETitle");
+    description = new TextField("Description");
+    hostname = new TextField("Hostname");
+    port = new TextField("Port");
+    useaetdest = new Checkbox("Use AETitle destination");
+    notify = new TextField("Notif.: list of emails");
+    notifyObjectErrorPrefix = new TextField("Notif.: error subject prefix");
+    notifyObjectPattern = new TextField("Notif.: subject pattern");
+    notifyObjectValues = new TextField("Notif.: subject values");
+    notifyInterval = new TextField("Notif.: interval");
 
-        add(UIS.setWidthFull(new HorizontalLayout(aeTitle, description)),
-            UIS.setWidthFull(new HorizontalLayout(hostname, port)),
-            UIS.setWidthFull(new HorizontalLayout(useaetdest)),
-            UIS.setWidthFull(new HorizontalLayout(notify)),
-            UIS.setWidthFull(new HorizontalLayout(notifyObjectErrorPrefix, notifyObjectPattern,
-                notifyObjectValues, notifyInterval)),
-            UIS.setWidthFull(layoutDesidentification),
-            UIS.setWidthFull(filterBySOPClassesForm),
-            UIS.setWidthFull(buttonSaveDeleteCancel));
+    add(
+        UIS.setWidthFull(new HorizontalLayout(aeTitle, description)),
+        UIS.setWidthFull(new HorizontalLayout(hostname, port)),
+        UIS.setWidthFull(new HorizontalLayout(useaetdest)),
+        UIS.setWidthFull(new HorizontalLayout(notify)),
+        UIS.setWidthFull(
+            new HorizontalLayout(
+                notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues, notifyInterval)),
+        UIS.setWidthFull(layoutDesidentification),
+        UIS.setWidthFull(filterBySOPClassesForm),
+        UIS.setWidthFull(buttonSaveDeleteCancel));
 
-        setElements();
-        setBinder();
-    }
+    setElements();
+    setBinder();
+  }
 
   private void setElements() {
     aeTitle.setWidth("30%");
@@ -103,28 +105,33 @@ public class FormDICOM extends VerticalLayout {
     port.setWidth("30%");
     port.addThemeVariants(TextFieldVariant.LUMO_ALIGN_RIGHT);
 
-        UIS.setTooltip(useaetdest,
-            "if \"true\" then use the destination AETitle as the calling  AETitle at the gateway side");
+    UIS.setTooltip(
+        useaetdest,
+        "if \"true\" then use the destination AETitle as the calling  AETitle at the gateway side");
 
     notify.setWidth("100%");
 
-        notifyObjectErrorPrefix.setWidth("24%");
-        UIS.setTooltip(notifyObjectErrorPrefix,
-            "Prefix of the email object when containing an issue. Default value: **ERROR**");
+    notifyObjectErrorPrefix.setWidth("24%");
+    UIS.setTooltip(
+        notifyObjectErrorPrefix,
+        "Prefix of the email object when containing an issue. Default value: **ERROR**");
 
-        notifyObjectPattern.setWidth("24%");
-        UIS.setTooltip(notifyObjectPattern,
-            "Pattern of the email object, see https://dzone.com/articles/java-string-format-examples. Default value: [Karnak Notification] %s %.30s");
+    notifyObjectPattern.setWidth("24%");
+    UIS.setTooltip(
+        notifyObjectPattern,
+        "Pattern of the email object, see https://dzone.com/articles/java-string-format-examples. Default value: [Karnak Notification] %s %.30s");
 
-        notifyObjectValues.setWidth("24%");
-        UIS.setTooltip(notifyObjectValues,
-            "Values injected in the pattern [PatientID StudyDescription StudyDate StudyInstanceUID]. Default value: PatientID,StudyDescription");
+    notifyObjectValues.setWidth("24%");
+    UIS.setTooltip(
+        notifyObjectValues,
+        "Values injected in the pattern [PatientID StudyDescription StudyDate StudyInstanceUID]. Default value: PatientID,StudyDescription");
 
-        notifyInterval.setWidth("18%");
-        notifyInterval.addThemeVariants(TextFieldVariant.LUMO_ALIGN_RIGHT);
-        UIS.setTooltip(notifyInterval,
-            "Interval in seconds for sending a notification (when no new image is arrived in the archive folder). Default value: 45");
-    }
+    notifyInterval.setWidth("18%");
+    notifyInterval.addThemeVariants(TextFieldVariant.LUMO_ALIGN_RIGHT);
+    UIS.setTooltip(
+        notifyInterval,
+        "Interval in seconds for sending a notification (when no new image is arrived in the archive folder). Default value: 45");
+  }
 
   private void setBinder() {
     binder

@@ -23,12 +23,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class DicomEchoService {
 
-	@Autowired
-	public DicomEchoService() {
-	}
+  @Autowired
+  public DicomEchoService() {
+  }
 
-	public String dicomEcho(List<ConfigNode> nodes) throws InterruptedException, ExecutionException {
-		StringBuilder result = new StringBuilder();
+  public String dicomEcho(List<ConfigNode> nodes) throws InterruptedException, ExecutionException {
+    StringBuilder result = new StringBuilder();
 
     List<Future<String>> threadsResult = createThreadsResult(nodes);
     for (Future<String> threadResult : threadsResult) {

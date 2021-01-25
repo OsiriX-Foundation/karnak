@@ -38,22 +38,21 @@ import org.yaml.snakeyaml.constructor.Constructor;
 @ConfigurationProperties
 public class AppConfig {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AppConfig.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(AppConfig.class);
 
   private static AppConfig instance;
   private String environment;
   private String name;
   private String karnakadmin;
   private String karnakpassword;
-    private final ProfileRepo profileRepo;
-    private final ProfilePipeService profilePipeService;
+  private final ProfileRepo profileRepo;
+  private final ProfilePipeService profilePipeService;
 
-    @Autowired
-    public AppConfig(final ProfileRepo profileRepo,
-        final ProfilePipeService profilePipeService) {
-      this.profileRepo = profileRepo;
-      this.profilePipeService = profilePipeService;
-    }
+  @Autowired
+  public AppConfig(final ProfileRepo profileRepo, final ProfilePipeService profilePipeService) {
+    this.profileRepo = profileRepo;
+    this.profilePipeService = profilePipeService;
+  }
 
   @PostConstruct
   public void postConstruct() {
@@ -96,10 +95,10 @@ public class AppConfig {
     this.karnakpassword = karnakpassword;
   }
 
-    @Bean("ConfidentialityProfiles")
-    public ConfidentialityProfiles getConfidentialityProfile() {
-        return new ConfidentialityProfiles();
-    }
+  @Bean("ConfidentialityProfiles")
+  public ConfidentialityProfiles getConfidentialityProfile() {
+    return new ConfidentialityProfiles();
+  }
 
   @Bean("ExternalIDPatient")
   public PatientClient getExternalIDCache() {
@@ -116,9 +115,9 @@ public class AppConfig {
   public void setProfilesByDefault() {
     URL profileURL = ProfileService.class.getResource("profileByDefault.yml");
     if (profileRepo.existsByNameAndByDefault("Dicom Basic Profile", true) == false) {
-            try (InputStream inputStream = profileURL.openStream()) {
-                final Yaml yaml = new Yaml(new Constructor(ProfilePipeBody.class));
-                final ProfilePipeBody profilePipeYml = yaml.load(inputStream);
+      try (InputStream inputStream = profileURL.openStream()) {
+        final Yaml yaml = new Yaml(new Constructor(ProfilePipeBody.class));
+        final ProfilePipeBody profilePipeYml = yaml.load(inputStream);
         profilePipeService.saveProfilePipe(profilePipeYml, true);
       } catch (final Exception e) {
         LOGGER.error("Cannot persist default profile {}", profileURL, e);

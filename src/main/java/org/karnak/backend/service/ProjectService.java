@@ -25,16 +25,16 @@ import org.springframework.stereotype.Service;
 public class ProjectService extends ListDataProvider<ProjectEntity> {
 
   // Repositories
-    private final ProjectRepo projectRepo;
+  private final ProjectRepo projectRepo;
 
-    private ApplicationEventPublisher applicationEventPublisher;
+  private ApplicationEventPublisher applicationEventPublisher;
 
-    @Autowired
-    public ProjectService(final ProjectRepo projectRepo) {
-        super(new ArrayList<>());
-        this.projectRepo = projectRepo;
-        getItems().addAll(getAllProjects());
-    }
+  @Autowired
+  public ProjectService(final ProjectRepo projectRepo) {
+    super(new ArrayList<>());
+    this.projectRepo = projectRepo;
+    getItems().addAll(getAllProjects());
+  }
 
   public void save(ProjectEntity projectEntity) {
     boolean isNewProject = projectEntity.getId() == null;

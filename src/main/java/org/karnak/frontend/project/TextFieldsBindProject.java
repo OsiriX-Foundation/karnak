@@ -29,7 +29,7 @@ public class TextFieldsBindProject {
     this.textResearchName = new TextField();
     this.textSecret = new TextField();
     this.profileDropDown = new ProfileDropDown();
-        this.binder = setBinder();
+    this.binder = setBinder();
   }
 
   private Binder<ProjectEntity> setBinder() {

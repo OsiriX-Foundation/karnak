@@ -30,28 +30,29 @@ import org.springframework.security.access.annotation.Secured;
 @Secured({"ADMIN"})
 public class ForwardNodeView extends HorizontalLayout implements HasUrlParameter<String> {
 
-    public static final String VIEW_NAME = "Gateway";
-    private final ForwardNodeAPIService forwardNodeAPIService;
+  public static final String VIEW_NAME = "Gateway";
+  private final ForwardNodeAPIService forwardNodeAPIService;
   private final LayoutNewGridForwardNode layoutNewGridForwardNode;
   private final LayoutEditForwardNode layoutEditForwardNode;
   private final ForwardNodeViewLogic forwardNodeViewLogic;
 
   @Autowired
-    public ForwardNodeView(LayoutEditForwardNode layoutEditForwardNode,
-        final ForwardNodeAPIService forwardNodeAPIService) {
+  public ForwardNodeView(
+      LayoutEditForwardNode layoutEditForwardNode,
+      final ForwardNodeAPIService forwardNodeAPIService) {
     setSizeFull();
     this.forwardNodeAPIService = forwardNodeAPIService;
     this.forwardNodeViewLogic = new ForwardNodeViewLogic(forwardNodeAPIService);
-    this.layoutNewGridForwardNode = new LayoutNewGridForwardNode(forwardNodeViewLogic,
-            forwardNodeAPIService);
+    this.layoutNewGridForwardNode =
+        new LayoutNewGridForwardNode(forwardNodeViewLogic, forwardNodeAPIService);
 
     this.layoutEditForwardNode = layoutEditForwardNode;
-    }
+  }
 
-    @PostConstruct
-    public void init() {
-        layoutNewGridForwardNode.setWidth("30%");
-        this.layoutEditForwardNode.setWidth("70%");
+  @PostConstruct
+  public void init() {
+    layoutNewGridForwardNode.setWidth("30%");
+    this.layoutEditForwardNode.setWidth("70%");
     add(layoutNewGridForwardNode, this.layoutEditForwardNode);
   }
 

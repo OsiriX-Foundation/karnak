@@ -46,13 +46,13 @@ public class ProfileComponent extends VerticalLayout {
   private Button deleteButton;
 
   @Autowired
-    public ProfileComponent(final ProfilePipeService profilePipeService,
-        final ProfileNameGrid profileNameGrid) {
-        setSizeFull();
+  public ProfileComponent(
+      final ProfilePipeService profilePipeService, final ProfileNameGrid profileNameGrid) {
+    setSizeFull();
     this.profilePipeService = profilePipeService;
     this.profileNameGrid = profileNameGrid;
     this.profileElementMainView = new ProfileElementMainView();
-        this.dialogWarning = new WarningDeleteProfileUsed();
+    this.dialogWarning = new WarningDeleteProfileUsed();
   }
 
   public static StreamResource createStreamResource(ProfileEntity profileEntity) {
@@ -206,7 +206,7 @@ public class ProfileComponent extends VerticalLayout {
     removeAll();
   }
 
-    public ProfileElementMainView getProfileElementMainView() {
-        return profileElementMainView;
-    }
+  public ProfileElementMainView getProfileElementMainView() {
+    return profileElementMainView;
+  }
 }

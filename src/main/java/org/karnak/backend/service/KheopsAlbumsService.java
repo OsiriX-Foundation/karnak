@@ -24,8 +24,8 @@ public class KheopsAlbumsService {
   private final KheopsAlbumsRepo kheopsAlbumsRepo;
 
   @Autowired
-    public KheopsAlbumsService(final KheopsAlbumsRepo kheopsAlbumsRepo) {
-        this.kheopsAlbumsRepo = kheopsAlbumsRepo;
+  public KheopsAlbumsService(final KheopsAlbumsRepo kheopsAlbumsRepo) {
+    this.kheopsAlbumsRepo = kheopsAlbumsRepo;
   }
 
   public void newSwitchingAlbum(KheopsAlbumsEntity kheopsAlbum) {

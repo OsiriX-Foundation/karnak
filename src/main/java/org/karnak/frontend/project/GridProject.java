@@ -23,12 +23,12 @@ public class GridProject extends Grid<ProjectEntity> {
     setWidthFull();
     setHeightByRows(true);
 
-        addColumn(ProjectEntity::getName).setHeader("Project Name").setFlexGrow(15)
-            .setSortable(true);
-        addColumn(project -> project.getProfileEntity().getName())
-            .setHeader("Desidenfication profile").setFlexGrow(15)
-            .setSortable(true);
-    }
+    addColumn(ProjectEntity::getName).setHeader("Project Name").setFlexGrow(15).setSortable(true);
+    addColumn(project -> project.getProfileEntity().getName())
+        .setHeader("Desidenfication profile")
+        .setFlexGrow(15)
+        .setSortable(true);
+  }
 
   public void selectRow(ProjectEntity row) {
     if (row != null) {

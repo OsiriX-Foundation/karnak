@@ -24,41 +24,41 @@ import org.springframework.stereotype.Service;
 public class SourceNodeService extends ListDataProvider<DicomSourceNodeEntity> {
 
   // Repositories
-    private final DicomSourceNodeRepo dicomSourceNodeRepo;
+  private final DicomSourceNodeRepo dicomSourceNodeRepo;
 
-    // Services
-    private final ForwardNodeService forwardNodeService;
+  // Services
+  private final ForwardNodeService forwardNodeService;
 
-    private ForwardNodeEntity forwardNodeEntity; // Current forward node
-    private boolean hasChanges;
+  private ForwardNodeEntity forwardNodeEntity; // Current forward node
+  private boolean hasChanges;
 
-    /**
-     * Text filter that can be changed separately.
-     */
-    private String filterText = "";
+  /**
+   * Text filter that can be changed separately.
+   */
+  private String filterText = "";
 
-    @Autowired
-    public SourceNodeService(final DicomSourceNodeRepo dicomSourceNodeRepo,
-        final ForwardNodeService forwardNodeService) {
-        super(new HashSet<>());
-        this.dicomSourceNodeRepo = dicomSourceNodeRepo;
-        this.forwardNodeService = forwardNodeService;
-    }
-
-    @Override
-    public Object getId(DicomSourceNodeEntity data) {
-        Objects.requireNonNull(data, "Cannot provide an id for a null item.");
-        return data.hashCode();
-    }
+  @Autowired
+  public SourceNodeService(
+      final DicomSourceNodeRepo dicomSourceNodeRepo, final ForwardNodeService forwardNodeService) {
+    super(new HashSet<>());
+    this.dicomSourceNodeRepo = dicomSourceNodeRepo;
+    this.forwardNodeService = forwardNodeService;
+  }
 
   @Override
-    public void refreshAll() {
+  public Object getId(DicomSourceNodeEntity data) {
+    Objects.requireNonNull(data, "Cannot provide an id for a null item.");
+    return data.hashCode();
+  }
+
+  @Override
+  public void refreshAll() {
     getItems().clear();
-        if (forwardNodeEntity != null) {
-            getItems().addAll(forwardNodeEntity.getSourceNodes());
+    if (forwardNodeEntity != null) {
+      getItems().addAll(forwardNodeEntity.getSourceNodes());
     }
     super.refreshAll();
-    }
+  }
 
   public void setForwardNode(ForwardNodeEntity forwardNodeEntity) {
     this.forwardNodeEntity = forwardNodeEntity;
@@ -71,13 +71,14 @@ public class SourceNodeService extends ListDataProvider<DicomSourceNodeEntity> {
     hasChanges = false;
   }
 
-    /**
-     * Store given DicomSourceNodeEntity.
+  /**
+   * Store given DicomSourceNodeEntity.
    *
    * @param dicomSourceNodeEntity the updated or new dicomSourceNodeEntity
    */
   public void save(DicomSourceNodeEntity dicomSourceNodeEntity) {
-        DicomSourceNodeEntity dataUpdated = this.forwardNodeService.updateSourceNode(forwardNodeEntity, dicomSourceNodeEntity);
+    DicomSourceNodeEntity dataUpdated =
+        this.forwardNodeService.updateSourceNode(forwardNodeEntity, dicomSourceNodeEntity);
     if (dicomSourceNodeEntity.getId() == null) {
       refreshAll();
     } else {
@@ -120,11 +121,11 @@ public class SourceNodeService extends ListDataProvider<DicomSourceNodeEntity> {
     setFilter(data -> matchesFilter(data, filterText));
   }
 
-    private boolean matchesFilter(DicomSourceNodeEntity data, String filterText) {
-        return data != null && data.matchesFilter(filterText);
-    }
+  private boolean matchesFilter(DicomSourceNodeEntity data, String filterText) {
+    return data != null && data.matchesFilter(filterText);
+  }
 
-    public boolean hasChanges() {
-        return hasChanges;
-    }
+  public boolean hasChanges() {
+    return hasChanges;
+  }
 }

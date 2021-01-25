@@ -37,26 +37,28 @@ import org.hibernate.annotations.LazyCollectionOption;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonPropertyOrder({
   "name",
-  "version",
-  "minimumKarnakVersion",
-  "defaultIssuerOfPatientID",
-  "profileElementEntities",
-  "maskEntities"
+    "version",
+    "minimumKarnakVersion",
+    "defaultIssuerOfPatientID",
+    "profileElementEntities",
+    "maskEntities"
 })
 public class ProfileEntity implements Serializable {
 
   private static final long serialVersionUID = -7178858361090900170L;
 
-    private Long id;
-    private String name;
-    private String version;
-    private String minimumKarnakVersion;
-    private String defaultIssuerOfPatientId; private Boolean byDefault;
-    private List<ProfileElementEntity> profileElementEntities = new ArrayList<>();
-    private Set<MaskEntity> maskEntities = new HashSet<>();
+  private Long id;
+  private String name;
+  private String version;
+  private String minimumKarnakVersion;
+  private String defaultIssuerOfPatientId;
+  private Boolean byDefault;
+  private List<ProfileElementEntity> profileElementEntities = new ArrayList<>();
+  private Set<MaskEntity> maskEntities = new HashSet<>();
   private List<ProjectEntity> projectEntities;
 
-  public ProfileEntity() {}
+  public ProfileEntity() {
+  }
 
   public ProfileEntity(
       String name, String version, String minimumKarnakVersion, String defaultIssuerOfPatientId) {
@@ -81,19 +83,19 @@ public class ProfileEntity implements Serializable {
   }
 
   @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @JsonIgnore
-    public Long getId() {
-        return id;
-    }
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @JsonIgnore
+  public Long getId() {
+    return id;
+  }
 
   public void setId(Long id) {
-        this.id = id;
-    }
+    this.id = id;
+  }
 
-    public void addProfilePipe(ProfileElementEntity profileElementEntity) {
-        this.profileElementEntities.add(profileElementEntity);
-    }
+  public void addProfilePipe(ProfileElementEntity profileElementEntity) {
+    this.profileElementEntities.add(profileElementEntity);
+  }
 
   public void addMask(MaskEntity maskEntity) {
     this.maskEntities.add(maskEntity);
@@ -121,35 +123,35 @@ public class ProfileEntity implements Serializable {
   }
 
   @JsonSetter("minimumKarnakVersion")
-    public void setMinimumKarnakVersion(String minimumKarnakVersion) {
+  public void setMinimumKarnakVersion(String minimumKarnakVersion) {
     this.minimumKarnakVersion = minimumKarnakVersion;
   }
 
   @JsonGetter("defaultIssuerOfPatientID")
-    @Column(name = "defaultissueropatientid")
+  @Column(name = "defaultissueropatientid")
   public String getDefaultIssuerOfPatientId() {
     return defaultIssuerOfPatientId;
   }
 
   @JsonSetter("defaultIssuerOfPatientID")
-    public void setDefaultIssuerOfPatientId(String defaultIssuerOfPatientId) {
+  public void setDefaultIssuerOfPatientId(String defaultIssuerOfPatientId) {
     this.defaultIssuerOfPatientId = defaultIssuerOfPatientId;
   }
 
   @JsonGetter("profileElements")
-    @OneToMany(mappedBy = "profileEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    public List<ProfileElementEntity> getProfileElementEntities() {
-        return profileElementEntities;
-    }
+  @OneToMany(mappedBy = "profileEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  public List<ProfileElementEntity> getProfileElementEntities() {
+    return profileElementEntities;
+  }
 
   @JsonSetter("profileElements")
-    public void setProfileElementEntities(List<ProfileElementEntity> profileElementEntities) {
-        this.profileElementEntities = profileElementEntities;
-    }
+  public void setProfileElementEntities(List<ProfileElementEntity> profileElementEntities) {
+    this.profileElementEntities = profileElementEntities;
+  }
 
   @JsonIgnore
-    @Column(name = "bydefault")
-    public Boolean getByDefault() {
+  @Column(name = "bydefault")
+  public Boolean getByDefault() {
     return byDefault;
   }
 
@@ -158,49 +160,56 @@ public class ProfileEntity implements Serializable {
   }
 
   @OneToMany(mappedBy = "profileEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    public Set<MaskEntity> getMaskEntities() {
-        return maskEntities;
-    }
+  public Set<MaskEntity> getMaskEntities() {
+    return maskEntities;
+  }
 
   public void setMaskEntities(Set<MaskEntity> maskEntities) {
     this.maskEntities = maskEntities;
   }
 
   @OneToMany(mappedBy = "profileEntity")
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @JsonIgnore
-    public List<ProjectEntity> getProjectEntities() {
-        return projectEntities;
-    }
+  @LazyCollection(LazyCollectionOption.FALSE)
+  @JsonIgnore
+  public List<ProjectEntity> getProjectEntities() {
+    return projectEntities;
+  }
 
-    public void setProjectEntities(List<ProjectEntity> projectEntities) {
-        this.projectEntities = projectEntities;
-    }
+  public void setProjectEntities(List<ProjectEntity> projectEntities) {
+    this.projectEntities = projectEntities;
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        ProfileEntity that = (ProfileEntity) o;
-        return Objects.equals(id, that.id) &&
-            Objects.equals(name, that.name) &&
-            Objects.equals(version, that.version) &&
-            Objects.equals(minimumKarnakVersion, that.minimumKarnakVersion) &&
-            Objects.equals(defaultIssuerOfPatientId, that.defaultIssuerOfPatientId) &&
-            Objects.equals(byDefault, that.byDefault) &&
-            Objects.equals(profileElementEntities, that.profileElementEntities) &&
-            Objects.equals(maskEntities, that.maskEntities) &&
-            Objects.equals(projectEntities, that.projectEntities);
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
     }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    ProfileEntity that = (ProfileEntity) o;
+    return Objects.equals(id, that.id)
+        && Objects.equals(name, that.name)
+        && Objects.equals(version, that.version)
+        && Objects.equals(minimumKarnakVersion, that.minimumKarnakVersion)
+        && Objects.equals(defaultIssuerOfPatientId, that.defaultIssuerOfPatientId)
+        && Objects.equals(byDefault, that.byDefault)
+        && Objects.equals(profileElementEntities, that.profileElementEntities)
+        && Objects.equals(maskEntities, that.maskEntities)
+        && Objects.equals(projectEntities, that.projectEntities);
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects
-            .hash(id, name, version, minimumKarnakVersion, defaultIssuerOfPatientId, byDefault,
-                profileElementEntities, maskEntities, projectEntities);
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+        id,
+        name,
+        version,
+        minimumKarnakVersion,
+        defaultIssuerOfPatientId,
+        byDefault,
+        profileElementEntities,
+        maskEntities,
+        projectEntities);
+  }
 }

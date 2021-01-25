@@ -40,19 +40,20 @@ public class ProfileElementEntity implements Serializable {
 
   private static final long serialVersionUID = 818925943276758147L;
 
-    private Long id;
-    private String name;
-    private String codename;
-    private String condition;
-    private String action;
-    private String option;
-    private Integer position;
-    private ProfileEntity profileEntity;
-    private List<IncludedTagEntity> includedTagEntities = new ArrayList<>();
-    private List<ExcludedTagEntity> excludedTagEntities = new ArrayList<>();
+  private Long id;
+  private String name;
+  private String codename;
+  private String condition;
+  private String action;
+  private String option;
+  private Integer position;
+  private ProfileEntity profileEntity;
+  private List<IncludedTagEntity> includedTagEntities = new ArrayList<>();
+  private List<ExcludedTagEntity> excludedTagEntities = new ArrayList<>();
   private List<ArgumentEntity> argumentEntities = new ArrayList<>();
 
-  public ProfileElementEntity() {}
+  public ProfileElementEntity() {
+  }
 
   public ProfileElementEntity(
       String name,
@@ -103,19 +104,19 @@ public class ProfileElementEntity implements Serializable {
   }
 
   @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @JsonIgnore
-    public Long getId() {
-        return id;
-    }
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @JsonIgnore
+  public Long getId() {
+    return id;
+  }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+  public void setId(Long id) {
+    this.id = id;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public String getName() {
+    return name;
+  }
 
   public void setName(String name) {
     this.name = name;
@@ -154,85 +155,95 @@ public class ProfileElementEntity implements Serializable {
   }
 
   @OneToMany(mappedBy = "profileElementEntity", cascade = CascadeType.ALL)
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @JsonSerialize(converter = ArgumentToMapConverter.class)
-    public List<ArgumentEntity> getArgumentEntities() {
-        return argumentEntities;
-    }
+  @LazyCollection(LazyCollectionOption.FALSE)
+  @JsonSerialize(converter = ArgumentToMapConverter.class)
+  public List<ArgumentEntity> getArgumentEntities() {
+    return argumentEntities;
+  }
 
   public void setArgumentEntities(List<ArgumentEntity> argumentEntities) {
     this.argumentEntities = argumentEntities;
   }
 
   @JsonIgnore
-    public Integer getPosition() {
-        return position;
-    }
+  public Integer getPosition() {
+    return position;
+  }
 
   public void setPosition(Integer position) {
     this.position = position;
   }
 
   @ManyToOne()
-    @JoinColumn(name = "profile_id", nullable = false)
-    @JsonIgnore
-    public ProfileEntity getProfileEntity() {
-        return profileEntity;
-    }
+  @JoinColumn(name = "profile_id", nullable = false)
+  @JsonIgnore
+  public ProfileEntity getProfileEntity() {
+    return profileEntity;
+  }
 
   public void setProfileEntity(ProfileEntity profileEntity) {
     this.profileEntity = profileEntity;
   }
 
   @JsonGetter("tags")
-    @OneToMany(mappedBy = "profileElementEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonSerialize(converter = TagListToStringListConverter.class)
+  @OneToMany(mappedBy = "profileElementEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  @JsonSerialize(converter = TagListToStringListConverter.class)
   public List<IncludedTagEntity> getIncludedTagEntities() {
     return includedTagEntities;
   }
 
   @JsonSetter("tags")
-    public void setIncludedTagEntities(List<IncludedTagEntity> includedTagEntities) {
-        this.includedTagEntities = includedTagEntities;
-    }
+  public void setIncludedTagEntities(List<IncludedTagEntity> includedTagEntities) {
+    this.includedTagEntities = includedTagEntities;
+  }
 
   @JsonGetter("excludedTags")
-    @OneToMany(mappedBy = "profileElementEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonSerialize(converter = TagListToStringListConverter.class)
+  @OneToMany(mappedBy = "profileElementEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  @JsonSerialize(converter = TagListToStringListConverter.class)
   public List<ExcludedTagEntity> getExcludedTagEntities() {
     return excludedTagEntities;
   }
 
   @JsonSetter("excludedTags")
-    public void setExcludedTagEntities(List<ExcludedTagEntity> excludedTagEntities) {
-        this.excludedTagEntities = excludedTagEntities;
-    }
+  public void setExcludedTagEntities(List<ExcludedTagEntity> excludedTagEntities) {
+    this.excludedTagEntities = excludedTagEntities;
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        ProfileElementEntity that = (ProfileElementEntity) o;
-        return Objects.equals(id, that.id) &&
-            Objects.equals(name, that.name) &&
-            Objects.equals(codename, that.codename) &&
-            Objects.equals(condition, that.condition) &&
-            Objects.equals(action, that.action) &&
-            Objects.equals(option, that.option) &&
-            Objects.equals(position, that.position) &&
-            Objects.equals(profileEntity, that.profileEntity) &&
-            Objects.equals(includedTagEntities, that.includedTagEntities) &&
-            Objects.equals(excludedTagEntities, that.excludedTagEntities) &&
-            Objects.equals(argumentEntities, that.argumentEntities);
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
     }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    ProfileElementEntity that = (ProfileElementEntity) o;
+    return Objects.equals(id, that.id)
+        && Objects.equals(name, that.name)
+        && Objects.equals(codename, that.codename)
+        && Objects.equals(condition, that.condition)
+        && Objects.equals(action, that.action)
+        && Objects.equals(option, that.option)
+        && Objects.equals(position, that.position)
+        && Objects.equals(profileEntity, that.profileEntity)
+        && Objects.equals(includedTagEntities, that.includedTagEntities)
+        && Objects.equals(excludedTagEntities, that.excludedTagEntities)
+        && Objects.equals(argumentEntities, that.argumentEntities);
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, codename, condition, action, option, position, profileEntity,
-            includedTagEntities, excludedTagEntities, argumentEntities);
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+        id,
+        name,
+        codename,
+        condition,
+        action,
+        option,
+        position,
+        profileEntity,
+        includedTagEntities,
+        excludedTagEntities,
+        argumentEntities);
+  }
 }

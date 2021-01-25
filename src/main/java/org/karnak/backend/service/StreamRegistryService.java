@@ -34,7 +34,7 @@ import org.weasis.dicom.param.DicomProgress;
 @Service
 public class StreamRegistryService implements AttributeEditor {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(StreamRegistryService.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(StreamRegistryService.class);
   private final Map<String, Study> studyMap = new HashMap<>();
   private boolean enable = false;
 
@@ -52,9 +52,7 @@ public class StreamRegistryService implements AttributeEditor {
     return LocalDateTime.from(DateTimeUtils.parseDT(od.get() + ot.orElse("")));
   }
 
-
-
-    @Override
+  @Override
   public void apply(DicomObject dcm, AttributeEditorContext context) {
     if (enable) {
       String studyUID = dcm.getString(Tag.StudyInstanceUID).orElseThrow();
