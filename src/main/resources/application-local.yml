@@ -1,0 +1,11 @@
+#  --------------------------------------------------------
+#  Karnak Local Application properties
+#  --------------------------------------------------------
+#Keycloak local
+keycloak:
+  realm: LocalRealM
+  auth-server-url: http://localhost:8080/auth/
+  ssl-required: external
+  resource: karnak
+  credentials.secret: f44d1932-aece-45df-bc25-ea8d40e9f39b
+  confidential-port: 0
