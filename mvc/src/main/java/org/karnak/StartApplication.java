@@ -19,7 +19,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EntityScan("org.karnak.data")
 @EnableJpaRepositories("org.karnak.data")
 @EnableVaadin(value = "org.karnak")
-@ComponentScan(basePackageClasses = KeycloakSecurityComponents.class, basePackages = "org.karnak")
+//@ComponentScan(basePackageClasses = KeycloakSecurityComponents.class, basePackages = "org.karnak")
 public class StartApplication implements CommandLineRunner {
     private static final Logger log = LoggerFactory.getLogger(StartApplication.class);
 
