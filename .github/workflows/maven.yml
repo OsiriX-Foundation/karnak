@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - master
+    tags:
+      - 'v*'
   pull_request:
     types: [ opened, synchronize, reopened ]
 jobs:
@@ -10,7 +12,7 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     env:
-      PUSH_PACKAGES: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+      PUSH_PACKAGES: ${{ github.event_name == 'push' }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -41,6 +43,11 @@ jobs:
         if: ${{ env.PUSH_PACKAGES }}
         shell: bash
         run: mvn -B clean install -P production
+      - name: Docker meta
+        id: docker_meta
+        uses: crazy-max/ghaction-docker-meta@v1
+        with:
+          images: osirixfoundation/karnak
       - name: Set up QEMU
         if: ${{ env.PUSH_PACKAGES }}
         uses: docker/setup-qemu-action@v1
@@ -60,5 +67,6 @@ jobs:
           context: .
           file: src/main/docker/Dockerfile
           platforms: linux/amd64
-          push: true
-          tags: osirixfoundation/karnak:latest
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.docker_meta.outputs.tags }}
+          labels: ${{ steps.docker_meta.outputs.labels }}
