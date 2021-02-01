@@ -142,10 +142,21 @@ See [environment variables](https://github.com/OsiriX-Foundation/karnak-docker#e
 
 # Architecture
 
-This project provides two modules:
+This project is divided in two parts:
 
-- karnak-data: the data model for persistence of the gateway configuration
-- karnak-mvc: the services and UI for updating the data model
+- backend: spring data (entities, repositories, converters, validators), enums, 
+        spring configurations, spring security, cache, spring services, models...
+- frontend : Vaadin components:  logic services, graphic components, views
+
+# Logs Kibana
+
+In order to activate the logs in Kibana, activate the profile docker (from application-docker.yml)
+in the pom.xml : spring.profiles.active
+
+The logs can be seen here: 
+- https://kibana-cert/s/spring/app/kibana#/discover
+- with the filter springAppName : karnak
+
 
 # Workflow
 

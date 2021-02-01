@@ -328,6 +328,19 @@
       <groupId>ch.qos.logback</groupId>
     </dependency>
 
+    <dependency>
+      <groupId>net.logstash.logback</groupId>
+      <artifactId>logstash-logback-encoder</artifactId>
+      <version>6.4</version>
+    </dependency>
+
+    <!--  Logstash-->
+    <dependency>
+      <groupId>ch.hcuge.springcloud</groupId>
+      <artifactId>spring-cloud-logging</artifactId>
+      <version>2.3.6-HSR9-1.0</version>
+    </dependency>
+
     <!--	Jackson -->
     <dependency>
       <artifactId>jackson-annotations</artifactId>
