@@ -1,0 +1,24 @@
+#  --------------------------------------------------------
+#  Karnak Local Application properties
+#  --------------------------------------------------------
+#Keycloak HUG local
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: karnak
+            client-secret: f44d1932-aece-45df-bc25-ea8d40e9f39b
+            authorization-grant-type: authorization_code
+            redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
+            scope:
+              - openid
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8080/auth/realms/LocalRealM
+#            authorization-uri: http://localhost:8080/auth/realms/LocalRealM/protocol/openid-connect/auth
+#            token-uri: http://localhost:8080/auth/realms/LocalRealM/protocol/openid-connect/token
+#            user-info-uri: http://localhost:8080/auth/realms/LocalRealM/protocol/openid-connect/userinfo
+#            jwk-set-uri: http://localhost:8080/auth/realms/LocalRealM/protocol/openid-connect/certs
+#            user-name-attribute: preferred_username

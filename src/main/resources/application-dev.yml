@@ -1,0 +1,24 @@
+#  --------------------------------------------------------
+#  Karnak Dev Application properties
+#  --------------------------------------------------------
+#Keycloak HUG dev
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: karnak
+            client-secret: c0fcd5a9-4f13-433c-a634-4b8e0bc484cd
+            authorization-grant-type: authorization_code
+            redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
+            scope:
+              - openid
+        provider:
+          keycloak:
+            issuer-uri: https://accounts-dev.hcuge.ch/auth/realms/collaborator
+#            authorization-uri: https://accounts-dev.hcuge.ch/auth/realms/collaborator/protocol/openid-connect/auth
+#            token-uri: https://accounts-dev.hcuge.ch/auth/realms/collaborator/protocol/openid-connect/token
+#            user-info-uri: https://accounts-dev.hcuge.ch/auth/realms/collaborator/protocol/openid-connect/userinfo
+#            jwk-set-uri: https://accounts-dev.hcuge.ch/auth/realms/collaborator/protocol/openid-connect/certs
+#            user-name-attribute: preferred_username
