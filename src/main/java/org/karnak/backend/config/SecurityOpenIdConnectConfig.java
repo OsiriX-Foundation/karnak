@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-2021 Karnak Team and other contributors.
+ * Copyright (c) 2021 Karnak Team and other contributors.
  *
  * This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
@@ -10,14 +10,10 @@
 package org.karnak.backend.config;
 
 import org.karnak.backend.cache.RequestCache;
-import org.karnak.backend.enums.SecurityRole;
-import org.karnak.backend.security.DefaultIdpLoadCondition;
+import org.karnak.backend.security.OpenIdConnectLogoutHandler;
 import org.karnak.backend.util.SecurityUtil;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Conditional;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -25,24 +21,20 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 @EnableWebSecurity
 @Configuration
-@Conditional(value = DefaultIdpLoadCondition.class)
-public class SecurityInMemoryConfig extends WebSecurityConfigurerAdapter {
-
-  private static final String LOGIN_FAILURE_URL = "/login?error";
-  private static final String LOGIN_URL = "/login";
+@ConditionalOnProperty(value = "IDP", havingValue = "oidc")
+public class SecurityOpenIdConnectConfig extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
-
     http
         // Uses RequestCache to track unauthorized requests so that users are redirected
         // appropriately after login
         .requestCache()
         .requestCache(new RequestCache())
-        // Disables cross-site request forgery (CSRF) protection for main route and login
+        // Disables cross-site request forgery (CSRF) protection for main route
         .and()
         .csrf()
-        .ignoringAntMatchers("/", LOGIN_URL)
+        .ignoringAntMatchers("/")
         // Turns on authorization
         .and()
         .authorizeRequests()
@@ -50,34 +42,16 @@ public class SecurityInMemoryConfig extends WebSecurityConfigurerAdapter {
         .requestMatchers(SecurityUtil::isFrameworkInternalRequest)
         .permitAll()
         // Allows all authenticated traffic
-        .antMatchers("/*")
-        .hasRole(SecurityRole.ADMIN_ROLE.getType())
+        // .antMatchers("/*").hasAuthority(SecurityRole.ADMIN_ROLE.getType())
         .anyRequest()
         .authenticated()
-        // Enables form-based login and permits unauthenticated access to it
+        // OpenId connect login
         .and()
-        .formLogin()
-        // Configures the login page URLs
-        .loginPage(LOGIN_URL)
-        .permitAll()
-        .loginProcessingUrl(LOGIN_URL)
-        .failureUrl(LOGIN_FAILURE_URL)
-        // Configures the logout URL
+        .oauth2Login()
+        // Handle logout
         .and()
         .logout()
-        .logoutSuccessUrl(LOGIN_URL)
-        .and()
-        .exceptionHandling()
-        .accessDeniedPage(LOGIN_URL);
-  }
-
-  @Override
-  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-    // Configure users and roles in memory
-    auth.inMemoryAuthentication()
-        .withUser(AppConfig.getInstance().getKarnakadmin())
-        .password("{noop}" + AppConfig.getInstance().getKarnakpassword())
-        .roles(SecurityRole.ADMIN_ROLE.getType(), SecurityRole.USER_ROLE.getType());
+        .addLogoutHandler(new OpenIdConnectLogoutHandler());
   }
 
   @Override
@@ -101,16 +75,5 @@ public class SecurityInMemoryConfig extends WebSecurityConfigurerAdapter {
             "/img/**",
             // (development mode) H2 debugging console
             "/h2-console/**");
-  }
-
-  @Bean
-  @Override
-  public AuthenticationManager authenticationManagerBean() throws Exception {
-    return super.authenticationManagerBean();
-  }
-
-  @Bean
-  public RequestCache requestCache() { //
-    return new RequestCache();
   }
 }

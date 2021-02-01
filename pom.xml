@@ -224,6 +224,13 @@
       <groupId>org.springframework.boot</groupId>
     </dependency>
 
+    <!-- Oauth2 -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-oauth2-client</artifactId>
+      <version>2.2.6.RELEASE</version>
+    </dependency>
+
     <dependency>
       <artifactId>spring-boot-devtools</artifactId>
       <groupId>org.springframework.boot</groupId>
@@ -321,13 +328,6 @@
       <groupId>ch.qos.logback</groupId>
     </dependency>
 
-    <!-- KeyCloack -->
-<!--    <dependency>-->
-<!--      <artifactId>keycloak-spring-boot-starter</artifactId>-->
-<!--      <groupId>org.keycloak</groupId>-->
-<!--      <version>11.0.3</version>-->
-<!--    </dependency>-->
-
     <!--	Jackson -->
     <dependency>
       <artifactId>jackson-annotations</artifactId>
@@ -366,13 +366,6 @@
         <type>pom</type>
         <version>${vaadin.version}</version>
       </dependency>
-<!--      <dependency>-->
-<!--        <artifactId>keycloak-adapter-bom</artifactId>-->
-<!--        <groupId>org.keycloak.bom</groupId>-->
-<!--        <scope>import</scope>-->
-<!--        <type>pom</type>-->
-<!--        <version>11.0.3</version>-->
-<!--      </dependency>-->
     </dependencies>
   </dependencyManagement>
   <modelVersion>4.0.0</modelVersion>
