@@ -1,6 +1,6 @@
 # Changelog
 
-## [v0.9.3](https://github.com/OsiriX-Foundation/karnak/tree/v0.9.3) (2021-01-26)
+## [v0.9.3](https://github.com/OsiriX-Foundation/karnak/tree/v0.9.3) (2021-02-01)
 
 [Full Changelog](https://github.com/OsiriX-Foundation/karnak/compare/0.9.2...v0.9.3)
 
@@ -20,6 +20,7 @@
 - Export a profile [\#60](https://github.com/OsiriX-Foundation/karnak/issues/60)
 - Reformat the code with google-java-format [\#40](https://github.com/OsiriX-Foundation/karnak/issues/40)
 - Upgrade of version [\#23](https://github.com/OsiriX-Foundation/karnak/issues/23)
+- Use of the DICOM structure according to Information Object Definition \(IOD\) [\#11](https://github.com/OsiriX-Foundation/karnak/issues/11)
 
 **Fixed bugs:**
 
