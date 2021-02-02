@@ -158,11 +158,13 @@ public class ProfileEntity implements Serializable {
     this.byDefault = bydefault;
   }
 
+  @JsonGetter("masks")
   @OneToMany(mappedBy = "profileEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   public Set<MaskEntity> getMaskEntities() {
     return maskEntities;
   }
 
+  @JsonSetter("masks")
   public void setMaskEntities(Set<MaskEntity> maskEntities) {
     this.maskEntities = maskEntities;
   }
@@ -192,23 +194,12 @@ public class ProfileEntity implements Serializable {
         && Objects.equals(version, that.version)
         && Objects.equals(minimumKarnakVersion, that.minimumKarnakVersion)
         && Objects.equals(defaultIssuerOfPatientId, that.defaultIssuerOfPatientId)
-        && Objects.equals(byDefault, that.byDefault)
-        && Objects.equals(profileElementEntities, that.profileElementEntities)
-        && Objects.equals(maskEntities, that.maskEntities)
-        && Objects.equals(projectEntities, that.projectEntities);
+        && Objects.equals(byDefault, that.byDefault);
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(
-        id,
-        name,
-        version,
-        minimumKarnakVersion,
-        defaultIssuerOfPatientId,
-        byDefault,
-        profileElementEntities,
-        maskEntities,
-        projectEntities);
+        id, name, version, minimumKarnakVersion, defaultIssuerOfPatientId, byDefault);
   }
 }

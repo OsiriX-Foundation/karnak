@@ -91,6 +91,10 @@ see [karnak-docker](https://github.com/OsiriX-Foundation/karnak-docker).
             - `KARNAK_CLINICAL_LOGS_MAX_FILE_SIZE=100MB`
             - `KARNAK_CLINICAL_LOGS_MIN_INDEX=1`
             - `KARNAK_CLINICAL_LOGS_MAX_INDEX=10`
+            - `IDP=undefined`
+            - `OIDC_CLIENT_ID=undefined`
+            - `OIDC_CLIENT_SECRET=undefined`
+            - `OIDC_ISSUER_URI=undefined`
 
     Note: the tmp folder must be adapted according to your system and the dicom-opencv must the last folder.
 
