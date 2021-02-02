@@ -153,6 +153,7 @@ public class ProfileElementEntity implements Serializable {
     this.option = option;
   }
 
+  @JsonGetter("arguments")
   @OneToMany(mappedBy = "profileElementEntity", cascade = CascadeType.ALL)
   @LazyCollection(LazyCollectionOption.FALSE)
   @JsonSerialize(converter = ArgumentToMapConverter.class)
@@ -160,6 +161,7 @@ public class ProfileElementEntity implements Serializable {
     return argumentEntities;
   }
 
+  @JsonSetter("arguments")
   public void setArgumentEntities(List<ArgumentEntity> argumentEntities) {
     this.argumentEntities = argumentEntities;
   }
