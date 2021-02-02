@@ -47,6 +47,8 @@ services:
 secrets:
   postgres_karnak_password:
     file: secrets/karnak_postgres_password
+  oidc_client_secret:
+    file: secrets/oidc_client_secret
   mainzellisteDbPassword:
     file: secrets/mainzelliste_postgres_password
   mainzellisteApiKey:
