@@ -9,6 +9,9 @@
             <appender-ref ref="logstash" />
         </springProfile>
     </root>
+    <logger name="org.dcm4che6" level="warn">
+        <appender-ref ref="logstash" />
+    </logger>
 </configuration>
 
         <!--<?xml version="1.0" encoding="UTF-8"?>-->
