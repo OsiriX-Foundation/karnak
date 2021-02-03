@@ -9,6 +9,8 @@
  */
 package org.karnak.backend.data.entity;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
@@ -402,12 +404,14 @@ public class DestinationEntity implements Serializable {
     this.savePseudonym = savePseudonym;
   }
 
+  @JsonGetter("kheopsAlbums")
   @OneToMany(mappedBy = "destinationEntity", cascade = CascadeType.REMOVE)
   @LazyCollection(LazyCollectionOption.FALSE)
   public List<KheopsAlbumsEntity> getKheopsAlbumEntities() {
     return kheopsAlbumEntities;
   }
 
+  @JsonSetter("kheopsAlbums")
   public void setKheopsAlbumEntities(List<KheopsAlbumsEntity> kheopsAlbumEntities) {
     this.kheopsAlbumEntities = kheopsAlbumEntities;
   }
@@ -558,7 +562,6 @@ public class DestinationEntity implements Serializable {
         && Objects.equals(savePseudonym, that.savePseudonym)
         && Objects.equals(pseudonymAsPatientName, that.pseudonymAsPatientName)
         && Objects.equals(SOPClassUIDEntityFilters, that.SOPClassUIDEntityFilters)
-        && Objects.equals(kheopsAlbumEntities, that.kheopsAlbumEntities)
         && Objects.equals(projectEntity, that.projectEntity)
         && Objects.equals(notify, that.notify)
         && Objects.equals(notifyObjectErrorPrefix, that.notifyObjectErrorPrefix)
@@ -590,7 +593,6 @@ public class DestinationEntity implements Serializable {
         pseudonymAsPatientName,
         filterBySOPClasses,
         SOPClassUIDEntityFilters,
-        kheopsAlbumEntities,
         projectEntity,
         notify,
         notifyObjectErrorPrefix,
