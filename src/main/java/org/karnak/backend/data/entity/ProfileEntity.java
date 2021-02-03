@@ -200,11 +200,6 @@ public class ProfileEntity implements Serializable {
   @Override
   public int hashCode() {
     return Objects.hash(
-        id,
-        name,
-        version,
-        minimumKarnakVersion,
-        defaultIssuerOfPatientId,
-        byDefault);
+        id, name, version, minimumKarnakVersion, defaultIssuerOfPatientId, byDefault);
   }
 }
