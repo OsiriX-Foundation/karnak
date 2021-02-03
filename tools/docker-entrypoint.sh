@@ -42,7 +42,6 @@ SYS_PROPS+=" -Djava.library.path='/tmp/dicom-opencv'"
 # KARNAK ENVIRONMENT #
 ########################
 file_env 'KARNAK_LOGIN_PASSWORD'
-file_env 'OIDC_CLIENT_SECRET'
 : "${KARNAK_LOGIN_PASSWORD:=undefined}"
 : "${OIDC_CLIENT_ID:=undefined}"
 : "${OIDC_CLIENT_SECRET:=undefined}"
