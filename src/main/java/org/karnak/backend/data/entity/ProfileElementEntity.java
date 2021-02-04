@@ -9,9 +9,10 @@
  */
 package org.karnak.backend.data.entity;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.ArrayList;
 import java.util.List;
@@ -155,10 +156,12 @@ public class ProfileElementEntity {
     this.option = option;
   }
 
+  @JsonGetter("arguments")
   public List<ArgumentEntity> getArgumentEntities() {
     return argumentEntities;
   }
 
+  @JsonSetter("arguments")
   public void setArgumentEntities(List<ArgumentEntity> argumentEntities) {
     this.argumentEntities = argumentEntities;
   }
@@ -179,20 +182,22 @@ public class ProfileElementEntity {
     this.profileEntity = profileEntity;
   }
 
-  @JsonProperty("tags")
+  @JsonGetter("tags")
   public List<IncludedTagEntity> getIncludedTagEntities() {
     return includedTagEntities;
   }
 
+  @JsonSetter("tags")
   public void setIncludedTagEntities(List<IncludedTagEntity> includedTagEntities) {
     this.includedTagEntities = includedTagEntities;
   }
 
-  @JsonProperty("excludedTags")
+  @JsonGetter("excludedTags")
   public List<ExcludedTagEntity> getExcludedTagEntities() {
     return excludedTagEntities;
   }
 
+  @JsonSetter("excludedTags")
   public void setExcludedTagEntities(List<ExcludedTagEntity> excludedTagEntities) {
     this.excludedTagEntities = excludedTagEntities;
   }
