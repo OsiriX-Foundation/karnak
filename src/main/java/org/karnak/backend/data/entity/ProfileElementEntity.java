@@ -225,26 +225,11 @@ public class ProfileElementEntity implements Serializable {
         && Objects.equals(condition, that.condition)
         && Objects.equals(action, that.action)
         && Objects.equals(option, that.option)
-        && Objects.equals(position, that.position)
-        && Objects.equals(profileEntity, that.profileEntity)
-        && Objects.equals(includedTagEntities, that.includedTagEntities)
-        && Objects.equals(excludedTagEntities, that.excludedTagEntities)
-        && Objects.equals(argumentEntities, that.argumentEntities);
+        && Objects.equals(position, that.position);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        id,
-        name,
-        codename,
-        condition,
-        action,
-        option,
-        position,
-        profileEntity,
-        includedTagEntities,
-        excludedTagEntities,
-        argumentEntities);
+    return Objects.hash(id, name, codename, condition, action, option, position);
   }
 }

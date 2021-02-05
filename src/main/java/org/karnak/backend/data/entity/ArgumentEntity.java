@@ -91,13 +91,12 @@ public class ArgumentEntity implements Serializable {
     }
     ArgumentEntity that = (ArgumentEntity) o;
     return Objects.equals(id, that.id)
-        && Objects.equals(profileElementEntity, that.profileElementEntity)
         && Objects.equals(key, that.key)
         && Objects.equals(value, that.value);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, profileElementEntity, key, value);
+    return Objects.hash(id, key, value);
   }
 }

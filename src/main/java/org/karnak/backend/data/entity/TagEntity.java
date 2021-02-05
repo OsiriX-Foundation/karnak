@@ -82,13 +82,11 @@ public abstract class TagEntity implements Serializable {
       return false;
     }
     TagEntity tagEntity = (TagEntity) o;
-    return Objects.equals(id, tagEntity.id)
-        && Objects.equals(profileElementEntity, tagEntity.profileElementEntity)
-        && Objects.equals(tagValue, tagEntity.tagValue);
+    return Objects.equals(id, tagEntity.id) && Objects.equals(tagValue, tagEntity.tagValue);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, profileElementEntity, tagValue);
+    return Objects.hash(id, tagValue);
   }
 }
