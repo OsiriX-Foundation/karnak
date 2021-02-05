@@ -9,6 +9,8 @@
  */
 package org.karnak.backend.data.entity;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -346,10 +348,12 @@ public class DestinationEntity {
     this.headers = headers;
   }
 
+  @JsonGetter("forwardNode")
   public ForwardNodeEntity getForwardNodeEntity() {
     return forwardNodeEntity;
   }
 
+  @JsonSetter("forwardNode")
   public void setForwardNodeEntity(ForwardNodeEntity forwardNodeEntity) {
     this.forwardNodeEntity = forwardNodeEntity;
   }
@@ -416,18 +420,22 @@ public class DestinationEntity {
     this.savePseudonym = savePseudonym;
   }
 
+  @JsonGetter("kheopsAlbums")
   public List<KheopsAlbumsEntity> getKheopsAlbumEntities() {
     return kheopsAlbumEntities;
   }
 
+  @JsonSetter("kheopsAlbums")
   public void setKheopsAlbumEntities(List<KheopsAlbumsEntity> kheopsAlbumEntities) {
     this.kheopsAlbumEntities = kheopsAlbumEntities;
   }
 
+  @JsonGetter("project")
   public ProjectEntity getProjectEntity() {
     return projectEntity;
   }
 
+  @JsonSetter("project")
   public void setProjectEntity(ProjectEntity projectEntity) {
     this.projectEntity = projectEntity;
   }

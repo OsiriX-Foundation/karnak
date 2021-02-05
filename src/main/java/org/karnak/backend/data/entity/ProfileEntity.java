@@ -9,10 +9,11 @@
  */
 package org.karnak.backend.data.entity;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -116,28 +117,32 @@ public class ProfileEntity {
     this.version = version;
   }
 
-  @JsonProperty("minimumKarnakVersion")
+  @JsonGetter("minimumKarnakVersion")
   public String getMinimumkarnakversion() {
     return minimumKarnakVersion;
   }
 
+  @JsonSetter("minimumKarnakVersion")
   public void setMinimumkarnakversion(String minimumKarnakVersion) {
     this.minimumKarnakVersion = minimumKarnakVersion;
   }
 
-  @JsonProperty("defaultIssuerOfPatientID")
+  @JsonGetter("defaultIssuerOfPatientID")
   public String getDefaultissueropatientid() {
     return defaultissueropatientid;
   }
 
+  @JsonSetter("defaultIssuerOfPatientID")
   public void setDefaultissueropatientid(String defaultissueropatientid) {
     this.defaultissueropatientid = defaultissueropatientid;
   }
 
+  @JsonGetter("profileElements")
   public List<ProfileElementEntity> getProfileElementEntities() {
     return profileElementEntities;
   }
 
+  @JsonSetter("profileElements")
   public void setProfileElementEntities(List<ProfileElementEntity> profileElementEntities) {
     this.profileElementEntities = profileElementEntities;
   }
@@ -150,10 +155,12 @@ public class ProfileEntity {
     this.bydefault = bydefault;
   }
 
+  @JsonGetter("masks")
   public Set<MaskEntity> getMaskEntities() {
     return maskEntities;
   }
 
+  @JsonSetter("masks")
   public void setMaskEntities(Set<MaskEntity> maskEntities) {
     this.maskEntities = maskEntities;
   }
