@@ -10,6 +10,8 @@
         </springProfile>
     </root>
     <logger name="org.dcm4che6" level="warn">
-        <appender-ref ref="logstash" />
+        <springProfile name="docker">
+            <appender-ref ref="logstash" />
+        </springProfile>
     </logger>
 </configuration>
