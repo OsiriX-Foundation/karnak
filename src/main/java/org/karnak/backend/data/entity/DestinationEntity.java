@@ -327,12 +327,14 @@ public class DestinationEntity implements Serializable {
     this.headers = headers;
   }
 
+  @JsonGetter("forwardNode")
   @ManyToOne
   @JoinColumn(name = "forward_node_id")
   public ForwardNodeEntity getForwardNodeEntity() {
     return forwardNodeEntity;
   }
 
+  @JsonSetter("forwardNode")
   public void setForwardNodeEntity(ForwardNodeEntity forwardNodeEntity) {
     this.forwardNodeEntity = forwardNodeEntity;
   }
@@ -416,12 +418,14 @@ public class DestinationEntity implements Serializable {
     this.kheopsAlbumEntities = kheopsAlbumEntities;
   }
 
+  @JsonGetter("project")
   @ManyToOne
   @JoinColumn(name = "project_id")
   public ProjectEntity getProjectEntity() {
     return projectEntity;
   }
 
+  @JsonSetter("project")
   public void setProjectEntity(ProjectEntity projectEntity) {
     this.projectEntity = projectEntity;
   }
