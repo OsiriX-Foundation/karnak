@@ -561,8 +561,6 @@ public class DestinationEntity implements Serializable {
         && Objects.equals(position, that.position)
         && Objects.equals(savePseudonym, that.savePseudonym)
         && Objects.equals(pseudonymAsPatientName, that.pseudonymAsPatientName)
-        && Objects.equals(SOPClassUIDEntityFilters, that.SOPClassUIDEntityFilters)
-        && Objects.equals(projectEntity, that.projectEntity)
         && Objects.equals(notify, that.notify)
         && Objects.equals(notifyObjectErrorPrefix, that.notifyObjectErrorPrefix)
         && Objects.equals(notifyObjectPattern, that.notifyObjectPattern)
@@ -574,8 +572,7 @@ public class DestinationEntity implements Serializable {
         && Objects.equals(useaetdest, that.useaetdest)
         && Objects.equals(url, that.url)
         && Objects.equals(urlCredentials, that.urlCredentials)
-        && Objects.equals(headers, that.headers)
-        && Objects.equals(forwardNodeEntity, that.forwardNodeEntity);
+        && Objects.equals(headers, that.headers);
   }
 
   @Override
@@ -592,8 +589,6 @@ public class DestinationEntity implements Serializable {
         savePseudonym,
         pseudonymAsPatientName,
         filterBySOPClasses,
-        SOPClassUIDEntityFilters,
-        projectEntity,
         notify,
         notifyObjectErrorPrefix,
         notifyObjectPattern,
@@ -605,7 +600,6 @@ public class DestinationEntity implements Serializable {
         useaetdest,
         url,
         urlCredentials,
-        headers,
-        forwardNodeEntity);
+        headers);
   }
 }

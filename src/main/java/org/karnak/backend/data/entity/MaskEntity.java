@@ -116,7 +116,6 @@ public class MaskEntity implements Serializable {
     }
     MaskEntity that = (MaskEntity) o;
     return Objects.equals(id, that.id)
-        && Objects.equals(profileEntity, that.profileEntity)
         && Objects.equals(stationName, that.stationName)
         && Objects.equals(color, that.color)
         && Objects.equals(rectangles, that.rectangles);
@@ -124,6 +123,6 @@ public class MaskEntity implements Serializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, profileEntity, stationName, color, rectangles);
+    return Objects.hash(id, stationName, color, rectangles);
   }
 }

@@ -149,12 +149,11 @@ public class DicomSourceNodeEntity implements Serializable {
         && Objects.equals(description, that.description)
         && Objects.equals(aeTitle, that.aeTitle)
         && Objects.equals(hostname, that.hostname)
-        && Objects.equals(checkHostname, that.checkHostname)
-        && Objects.equals(forwardNodeEntity, that.forwardNodeEntity);
+        && Objects.equals(checkHostname, that.checkHostname);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, description, aeTitle, hostname, checkHostname, forwardNodeEntity);
+    return Objects.hash(id, description, aeTitle, hostname, checkHostname);
   }
 }
