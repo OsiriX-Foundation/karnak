@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.9.3.1](https://github.com/OsiriX-Foundation/karnak/tree/v0.9.3.1) (2021-02-05)
+
+[Full Changelog](https://github.com/OsiriX-Foundation/karnak/compare/v0.9.3...v0.9.3.1)
+
 ## [v0.9.3](https://github.com/OsiriX-Foundation/karnak/tree/v0.9.3) (2021-02-01)
 
 [Full Changelog](https://github.com/OsiriX-Foundation/karnak/compare/0.9.2...v0.9.3)
