@@ -4,6 +4,10 @@
 
 [Full Changelog](https://github.com/OsiriX-Foundation/karnak/compare/v0.9.3...v0.9.3.1)
 
+**Fixed bugs:**
+
+- Profile format is not correct when it exported [\#111](https://github.com/OsiriX-Foundation/karnak/issues/111)
+
 ## [v0.9.3](https://github.com/OsiriX-Foundation/karnak/tree/v0.9.3) (2021-02-01)
 
 [Full Changelog](https://github.com/OsiriX-Foundation/karnak/compare/0.9.2...v0.9.3)
