@@ -110,7 +110,13 @@ public class GridSwitchingAlbums extends Grid<KheopsAlbumsEntity> {
     editor.addCloseListener(
         e -> editButtons.stream().forEach(button -> button.setEnabled(!editor.isOpen())));
 
-    Button save = new Button("Validate", e -> editor.save());
+    Button save =
+        new Button(
+            "Validate",
+            e -> {
+              editor.save();
+              setDataProvider(dataProvider);
+            });
     save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
     Button cancel = new Button("Cancel", e -> editor.cancel());
