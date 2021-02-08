@@ -106,15 +106,18 @@
             <licenseHeader>
               <!-- @formatter:off -->
               <content>
-/*
- * Copyright (c) $YEAR Karnak Team and other contributors.
- *
- * This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
- * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
- */
+                /*
+                * Copyright (c) $YEAR Karnak Team and other contributors.
+                *
+                * This program and the accompanying materials are made available under the terms of
+                the Eclipse
+                * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or
+                the Apache
+                * License, Version 2.0 which is available at
+                https://www.apache.org/licenses/LICENSE-2.0.
+                *
+                * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+                */
               </content>
               <!-- @formatter:on -->
             </licenseHeader>
@@ -306,6 +309,12 @@
       <groupId>com.vaadin.componentfactory</groupId>
       <version>1.0.0</version>
     </dependency>
+    <dependency>
+      <groupId>org.vaadin.klaudeta</groupId>
+      <artifactId>grid-pagination</artifactId>
+      <version>2.0.10</version>
+    </dependency>
+
 
     <dependency>
       <artifactId>validation-api</artifactId>
@@ -322,11 +331,11 @@
     </dependency>
 
     <!-- KeyCloack -->
-<!--    <dependency>-->
-<!--      <artifactId>keycloak-spring-boot-starter</artifactId>-->
-<!--      <groupId>org.keycloak</groupId>-->
-<!--      <version>11.0.3</version>-->
-<!--    </dependency>-->
+    <!--    <dependency>-->
+    <!--      <artifactId>keycloak-spring-boot-starter</artifactId>-->
+    <!--      <groupId>org.keycloak</groupId>-->
+    <!--      <version>11.0.3</version>-->
+    <!--    </dependency>-->
 
     <!--	Jackson -->
     <dependency>
@@ -366,13 +375,13 @@
         <type>pom</type>
         <version>${vaadin.version}</version>
       </dependency>
-<!--      <dependency>-->
-<!--        <artifactId>keycloak-adapter-bom</artifactId>-->
-<!--        <groupId>org.keycloak.bom</groupId>-->
-<!--        <scope>import</scope>-->
-<!--        <type>pom</type>-->
-<!--        <version>11.0.3</version>-->
-<!--      </dependency>-->
+      <!--      <dependency>-->
+      <!--        <artifactId>keycloak-adapter-bom</artifactId>-->
+      <!--        <groupId>org.keycloak.bom</groupId>-->
+      <!--        <scope>import</scope>-->
+      <!--        <type>pom</type>-->
+      <!--        <version>11.0.3</version>-->
+      <!--      </dependency>-->
     </dependencies>
   </dependencyManagement>
   <modelVersion>4.0.0</modelVersion>

@@ -16,19 +16,23 @@ import com.vaadin.flow.component.grid.editor.Editor;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.validator.StringLengthValidator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.WeakHashMap;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.backend.cache.CachedPatient;
 import org.karnak.backend.cache.PatientClient;
+import org.karnak.backend.cache.PseudonymPatient;
 import org.karnak.backend.config.AppConfig;
 import org.karnak.backend.util.PatientClientUtil;
+import org.vaadin.klaudeta.PaginatedGrid;
 
-public class ExternalIDGrid extends Grid<CachedPatient> {
+public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
 
   private static final String ERROR_MESSAGE_PATIENT = "Length must be between 1 and 50.";
   private static final String LABEL_SAVE = "Save";
@@ -53,6 +57,8 @@ public class ExternalIDGrid extends Grid<CachedPatient> {
     binder = new Binder<>(CachedPatient.class);
     patientList = new ArrayList<>();
     externalIDCache = AppConfig.getInstance().getExternalIDCache();
+    setPageSize(4);
+    setPaginatorSize(2);
 
     setSizeFull();
     getElement()
@@ -62,7 +68,7 @@ public class ExternalIDGrid extends Grid<CachedPatient> {
     setItems(patientList);
     setElements();
     setBinder();
-
+    readAllCacheValue();
     editor.addOpenListener(
         e -> {
           editButtons.stream().forEach(button -> button.setEnabled(!editor.isOpen()));
@@ -97,15 +103,21 @@ public class ExternalIDGrid extends Grid<CachedPatient> {
 
   private void setElements() {
     Grid.Column<CachedPatient> extidColumn =
-        addColumn(CachedPatient::getPseudonym).setHeader("External Pseudonym");
+        addColumn(CachedPatient::getPseudonym).setHeader("External Pseudonym").setSortable(true);
     Grid.Column<CachedPatient> patientIdColumn =
-        addColumn(CachedPatient::getPatientId).setHeader("Patient ID");
+        addColumn(CachedPatient::getPatientId).setHeader("Patient ID").setSortable(true);
     Grid.Column<CachedPatient> patientFirstNameColumn =
-        addColumn(CachedPatient::getPatientFirstName).setHeader("Patient first name");
+        addColumn(CachedPatient::getPatientFirstName)
+            .setHeader("Patient first name")
+            .setSortable(true);
     Grid.Column<CachedPatient> patientLastNameColumn =
-        addColumn(CachedPatient::getPatientLastName).setHeader("Patient last name");
+        addColumn(CachedPatient::getPatientLastName)
+            .setHeader("Patient last name")
+            .setSortable(true);
     Grid.Column<CachedPatient> issuerOfPatientIDColumn =
-        addColumn(CachedPatient::getIssuerOfPatientId).setHeader("Issuer of patient ID");
+        addColumn(CachedPatient::getIssuerOfPatientId)
+            .setHeader("Issuer of patient ID")
+            .setSortable(true);
     Grid.Column<CachedPatient> editorColumn =
         addComponentColumn(
             patient -> {
@@ -201,5 +213,52 @@ public class ExternalIDGrid extends Grid<CachedPatient> {
 
   public void setAddPatientButton(Button addPatientButton) {
     this.addPatientButton = addPatientButton;
+  }
+
+  private void readAllCacheValue() {
+    if (externalIDCache != null) {
+      Collection<PseudonymPatient> pseudonymPatients = externalIDCache.getAll();
+      Collection<CachedPatient> cachedPatients = new ArrayList<>();
+      for (Iterator<PseudonymPatient> iterator = pseudonymPatients.iterator();
+          iterator.hasNext(); ) {
+        final CachedPatient patient = (CachedPatient) iterator.next();
+        cachedPatients.add(patient);
+      }
+      setItems(cachedPatients);
+    }
+    refreshPaginator();
+  }
+
+  public void addPatientInGrid(CachedPatient newPatient) {
+    ListDataProvider<CachedPatient> dataProvider =
+        (ListDataProvider<CachedPatient>) getDataProvider();
+    if (patientExist(newPatient, dataProvider)) {
+      WarningDialog warningDialog =
+          new WarningDialog(
+              "Duplicate data",
+              String.format(
+                  "You are trying to insert two equivalent pseudonyms or identical patients: {%s}",
+                  newPatient.toString()),
+              "ok");
+      warningDialog.open();
+    } else {
+      externalIDCache.put(PatientClientUtil.generateKey(newPatient), newPatient);
+      dataProvider.getItems().add(newPatient);
+      dataProvider.refreshAll();
+      refreshPaginator();
+      binder.readBean(null);
+    }
+  }
+
+  public boolean patientExist(
+      PseudonymPatient patient, ListDataProvider<CachedPatient> dataProvider) {
+    for (PseudonymPatient patientElem : dataProvider.getItems()) {
+      if (patientElem.getPseudonym().equals(patient.getPseudonym())
+          || (patientElem.getPatientId().equals(patient.getPatientId())
+              && patientElem.getIssuerOfPatientId().equals(patient.getIssuerOfPatientId()))) {
+        return true;
+      }
+    }
+    return false;
   }
 }

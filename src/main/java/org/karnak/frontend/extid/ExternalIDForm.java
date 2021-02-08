@@ -22,18 +22,11 @@ import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.validator.StringLengthValidator;
 import java.io.InputStream;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.backend.cache.CachedPatient;
-import org.karnak.backend.cache.PatientClient;
-import org.karnak.backend.cache.PseudonymPatient;
-import org.karnak.backend.config.AppConfig;
-import org.karnak.backend.util.PatientClientUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,8 +36,7 @@ public class ExternalIDForm extends VerticalLayout {
   private static final String ERROR_MESSAGE_PATIENT = "Length must be between 1 and 50.";
 
   private final Binder<CachedPatient> binder;
-  private final ListDataProvider<CachedPatient> dataProvider;
-  private final transient PatientClient externalIDCache;
+
   private TextField externalIdField;
   private TextField patientIdField;
   private TextField patientFirstNameField;
@@ -56,17 +48,16 @@ public class ExternalIDForm extends VerticalLayout {
   private Upload uploadCsvButton;
   private Div addedPatientLabelDiv;
   private Div uploadCsvLabelDiv;
+  private ExternalIDGrid externalIDGrid;
 
-  public ExternalIDForm(ListDataProvider<CachedPatient> dataProvider) {
+  public ExternalIDForm(ExternalIDGrid externalIDGrid) {
     setSizeFull();
-    this.dataProvider = dataProvider;
-    externalIDCache = AppConfig.getInstance().getExternalIDCache();
+    this.externalIDGrid = externalIDGrid;
+
     binder = new BeanValidationBinder<>(CachedPatient.class);
 
     setElements();
     setBinder();
-
-    readAllCacheValue();
 
     clearFieldsButton.addClickListener(click -> clearPatientFields());
 
@@ -81,7 +72,7 @@ public class ExternalIDForm extends VerticalLayout {
                   issuerOfPatientIdField.getValue());
           binder.validate();
           if (binder.isValid()) {
-            addPatientInGrid(newPatient);
+            externalIDGrid.addPatientInGrid(newPatient);
           }
         });
 
@@ -119,16 +110,6 @@ public class ExternalIDForm extends VerticalLayout {
 
     addPatientDiv.add(horizontalLayout4, horizontalLayout5);
     add(horizontalLayout1, horizontalLayout2, horizontalLayout3, addPatientDiv);
-  }
-
-  private void readAllCacheValue() {
-    if (externalIDCache != null) {
-      Collection<PseudonymPatient> patients = externalIDCache.getAll();
-      for (Iterator<PseudonymPatient> iterator = patients.iterator(); iterator.hasNext(); ) {
-        final PseudonymPatient patient = iterator.next();
-        dataProvider.getItems().add((CachedPatient) patient);
-      }
-    }
   }
 
   private void setElements() {
@@ -193,7 +174,7 @@ public class ExternalIDForm extends VerticalLayout {
                     .addClickListener(
                         buttonClickEvent1 -> {
                           final List<CachedPatient> patientListInCSV = csvDialog.getPatientsList();
-                          patientListInCSV.forEach(this::addPatientInGrid);
+                          patientListInCSV.forEach(externalIDGrid::addPatientInGrid);
                           csvDialog.resetPatientsList();
                         });
               });
@@ -233,36 +214,6 @@ public class ExternalIDForm extends VerticalLayout {
         .forField(issuerOfPatientIdField)
         .withValidator(new StringLengthValidator("Length must be between 0 and 50.", 0, 50))
         .bind("issuerOfPatientId");
-  }
-
-  public boolean patientExist(
-      PseudonymPatient patient, ListDataProvider<CachedPatient> dataProvider) {
-    for (PseudonymPatient patientElem : dataProvider.getItems()) {
-      if (patientElem.getPseudonym().equals(patient.getPseudonym())
-          || (patientElem.getPatientId().equals(patient.getPatientId())
-              && patientElem.getIssuerOfPatientId().equals(patient.getIssuerOfPatientId()))) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  public void addPatientInGrid(CachedPatient newPatient) {
-    if (patientExist(newPatient, dataProvider)) {
-      WarningDialog warningDialog =
-          new WarningDialog(
-              "Duplicate data",
-              String.format(
-                  "You are trying to insert two equivalent pseudonyms or identical patients: {%s}",
-                  newPatient.toString()),
-              "ok");
-      warningDialog.open();
-    } else {
-      dataProvider.getItems().add(newPatient);
-      dataProvider.refreshAll();
-      externalIDCache.put(PatientClientUtil.generateKey(newPatient), newPatient);
-      binder.readBean(null);
-    }
   }
 
   public void clearPatientFields() {
