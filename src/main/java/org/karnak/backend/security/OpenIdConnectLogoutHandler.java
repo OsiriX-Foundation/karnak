@@ -33,8 +33,11 @@ public class OpenIdConnectLogoutHandler extends SecurityContextLogoutHandler {
       HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
     // Security context logout
     super.logout(request, response, authentication);
-    // Idp logout
-    propagateLogoutToIdp((OidcUser) authentication.getPrincipal());
+
+    if (authentication != null && authentication.getPrincipal() instanceof OidcUser) {
+      // Idp logout
+      propagateLogoutToIdp((OidcUser) authentication.getPrincipal());
+    }
   }
 
   /**
