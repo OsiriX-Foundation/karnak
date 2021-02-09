@@ -47,6 +47,22 @@ public class ExternalIDView extends HorizontalLayout {
 
     externalIDGrid = new ExternalIDGrid();
     externalIDForm = new ExternalIDForm(externalIDGrid);
+
+    externalIDGrid
+        .getEditor()
+        .addOpenListener(
+            editorOpenEvent -> {
+              externalIDForm.setEnabled(false);
+              externalIDForm.getUploadCsvButton().setMaxFiles(0);
+            });
+    externalIDGrid
+        .getEditor()
+        .addCloseListener(
+            editorOpenEvent -> {
+              externalIDForm.setEnabled(true);
+              externalIDForm.getUploadCsvButton().setMaxFiles(1);
+            });
+
     validationStatus = externalIDGrid.setBinder();
 
     verticalLayout.add(

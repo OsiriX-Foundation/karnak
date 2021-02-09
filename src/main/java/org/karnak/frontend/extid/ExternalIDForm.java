@@ -224,7 +224,7 @@ public class ExternalIDForm extends VerticalLayout {
     binder.readBean(null);
   }
 
-  public Button getAddPatientButton() {
-    return addPatientButton;
+  public Upload getUploadCsvButton() {
+    return uploadCsvButton;
   }
 }
