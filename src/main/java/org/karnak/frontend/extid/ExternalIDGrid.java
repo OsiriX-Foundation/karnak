@@ -40,7 +40,6 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
   private final Binder<CachedPatient> binder;
   private final List<CachedPatient> patientList;
   private final transient PatientClient externalIDCache;
-  private Button addPatientButton;
   private Button deletePatientButton;
   private Button saveEditPatientButton;
   private Button cancelEditPatientButton;
@@ -73,14 +72,12 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
         e -> {
           editButtons.stream().forEach(button -> button.setEnabled(!editor.isOpen()));
           deleteColumn.setVisible(false);
-          addPatientButton.setVisible(false);
         });
 
     editor.addCloseListener(
         e -> {
           editButtons.stream().forEach(button -> button.setEnabled(!editor.isOpen()));
           deleteColumn.setVisible(true);
-          addPatientButton.setVisible(true);
         });
 
     saveEditPatientButton.addClickListener(
@@ -158,9 +155,8 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
                   ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
               deletePatientButton.addClickListener(
                   e -> {
-                    patientList.remove(patient);
-                    getDataProvider().refreshAll();
                     externalIDCache.remove(PatientClientUtil.generateKey(patient));
+                    readAllCacheValue();
                   });
               return deletePatientButton;
             });
