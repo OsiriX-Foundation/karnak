@@ -11,25 +11,19 @@ package org.karnak.frontend.extid;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.component.upload.Upload;
-import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.validator.StringLengthValidator;
-import java.io.InputStream;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.backend.cache.CachedPatient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ExternalIDForm extends VerticalLayout {
+public class ExternalIDForm extends Div {
 
   protected static final Logger LOGGER = LoggerFactory.getLogger(ExternalIDForm.class);
   private static final String ERROR_MESSAGE_PATIENT = "Length must be between 1 and 50.";
@@ -43,15 +37,10 @@ public class ExternalIDForm extends VerticalLayout {
   private TextField issuerOfPatientIdField;
   private Button addPatientButton;
   private Button clearFieldsButton;
-  private transient InputStream inputStream;
-  private Upload uploadCsvButton;
   private Div addedPatientLabelDiv;
-  private Div uploadCsvLabelDiv;
-  private ExternalIDGrid externalIDGrid;
 
-  public ExternalIDForm(ExternalIDGrid externalIDGrid) {
+  public ExternalIDForm() {
     setSizeFull();
-    this.externalIDGrid = externalIDGrid;
 
     binder = new BeanValidationBinder<>(CachedPatient.class);
 
@@ -59,22 +48,6 @@ public class ExternalIDForm extends VerticalLayout {
     setBinder();
 
     clearFieldsButton.addClickListener(click -> clearPatientFields());
-
-    addPatientButton.addClickListener(
-        click -> {
-          CachedPatient newPatient =
-              new CachedPatient(
-                  externalIdField.getValue(),
-                  patientIdField.getValue(),
-                  patientFirstNameField.getValue(),
-                  patientLastNameField.getValue(),
-                  issuerOfPatientIdField.getValue());
-          binder.validate();
-          if (binder.isValid()) {
-            externalIDGrid.addPatient(newPatient);
-            binder.readBean(null);
-          }
-        });
 
     // enable/disable update button while editing
     binder.addStatusChangeListener(
@@ -96,8 +69,6 @@ public class ExternalIDForm extends VerticalLayout {
     horizontalLayout3.setSizeFull();
     horizontalLayout4.setSizeFull();
 
-    horizontalLayout1.add(uploadCsvLabelDiv);
-    horizontalLayout2.add(uploadCsvButton);
     horizontalLayout3.add(addedPatientLabelDiv);
 
     horizontalLayout4.add(
@@ -113,13 +84,6 @@ public class ExternalIDForm extends VerticalLayout {
   }
 
   private void setElements() {
-    setElementUploadCSV();
-
-    uploadCsvLabelDiv = new Div();
-    uploadCsvLabelDiv.setText(
-        "Upload the CSV file containing the external ID associated with patient(s): ");
-    uploadCsvLabelDiv.getStyle().set("font-size", "large").set("font-weight", "bolder");
-
     addedPatientLabelDiv = new Div();
     addedPatientLabelDiv = new Div();
     addedPatientLabelDiv.setText("Add a new patient: ");
@@ -141,47 +105,6 @@ public class ExternalIDForm extends VerticalLayout {
     addPatientButton = new Button("Add patient");
     addPatientButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
     addPatientButton.setIcon(VaadinIcon.PLUS_CIRCLE.create());
-  }
-
-  public void setElementUploadCSV() {
-    MemoryBuffer memoryBuffer = new MemoryBuffer();
-    uploadCsvButton = new Upload(memoryBuffer);
-    uploadCsvButton.setDropLabel(new Span("Drag and drop your CSV file here"));
-    uploadCsvButton.addSucceededListener(
-        event -> {
-          inputStream = memoryBuffer.getInputStream();
-
-          Dialog chooseSeparatorDialog = new Dialog();
-          TextField separatorCSVField =
-              new TextField("Choose the separator for reading the CSV file");
-          separatorCSVField.setWidthFull();
-          separatorCSVField.setMaxLength(1);
-          separatorCSVField.setValue(",");
-          Button openCSVButton = new Button("Open CSV");
-
-          openCSVButton.addClickListener(
-              buttonClickEvent -> {
-                chooseSeparatorDialog.close();
-                char separator = ',';
-                if (!separatorCSVField.getValue().equals("")) {
-                  separator = separatorCSVField.getValue().charAt(0);
-                }
-                CSVDialog csvDialog = new CSVDialog(inputStream, separator);
-                csvDialog.open();
-
-                csvDialog
-                    .getReadCSVButton()
-                    .addClickListener(
-                        buttonClickEvent1 -> {
-                          externalIDGrid.addPatientList(csvDialog.getPatientsList());
-                          csvDialog.resetPatientsList();
-                        });
-              });
-
-          chooseSeparatorDialog.add(separatorCSVField, openCSVButton);
-          chooseSeparatorDialog.open();
-          separatorCSVField.focus();
-        });
   }
 
   public void setBinder() {
@@ -215,6 +138,22 @@ public class ExternalIDForm extends VerticalLayout {
         .bind("issuerOfPatientId");
   }
 
+  public CachedPatient getNewPatient() {
+    CachedPatient newPatient =
+        new CachedPatient(
+            externalIdField.getValue(),
+            patientIdField.getValue(),
+            patientFirstNameField.getValue(),
+            patientLastNameField.getValue(),
+            issuerOfPatientIdField.getValue());
+    binder.validate();
+    if (binder.isValid()) {
+      binder.readBean(null);
+      return newPatient;
+    }
+    return null;
+  }
+
   public void clearPatientFields() {
     externalIdField.clear();
     patientIdField.clear();
@@ -224,7 +163,7 @@ public class ExternalIDForm extends VerticalLayout {
     binder.readBean(null);
   }
 
-  public Upload getUploadCsvButton() {
-    return uploadCsvButton;
+  public Button getAddPatientButton() {
+    return addPatientButton;
   }
 }
