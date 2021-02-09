@@ -211,11 +211,7 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
     return validationStatus;
   }
 
-  public void setAddPatientButton(Button addPatientButton) {
-    this.addPatientButton = addPatientButton;
-  }
-
-  private void readAllCacheValue() {
+  public void readAllCacheValue() {
     if (externalIDCache != null) {
       Collection<PseudonymPatient> pseudonymPatients = externalIDCache.getAll();
       Collection<CachedPatient> cachedPatients = new ArrayList<>();
@@ -229,10 +225,8 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
     refreshPaginator();
   }
 
-  public void addPatientInGrid(CachedPatient newPatient) {
-    ListDataProvider<CachedPatient> dataProvider =
-        (ListDataProvider<CachedPatient>) getDataProvider();
-    if (patientExist(newPatient, dataProvider)) {
+  public void addPatient(CachedPatient newPatient) {
+    if (patientExist(newPatient)) {
       WarningDialog warningDialog =
           new WarningDialog(
               "Duplicate data",
@@ -243,15 +237,18 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
       warningDialog.open();
     } else {
       externalIDCache.put(PatientClientUtil.generateKey(newPatient), newPatient);
-      dataProvider.getItems().add(newPatient);
-      dataProvider.refreshAll();
-      refreshPaginator();
-      binder.readBean(null);
+      readAllCacheValue();
     }
   }
 
-  public boolean patientExist(
-      PseudonymPatient patient, ListDataProvider<CachedPatient> dataProvider) {
+  public void addPatientList(List<CachedPatient> patientList) {
+    patientList.forEach(this::addPatient);
+    readAllCacheValue();
+  }
+
+  public boolean patientExist(PseudonymPatient patient) {
+    ListDataProvider<CachedPatient> dataProvider =
+        (ListDataProvider<CachedPatient>) getDataProvider();
     for (PseudonymPatient patientElem : dataProvider.getItems()) {
       if (patientElem.getPseudonym().equals(patient.getPseudonym())
           || (patientElem.getPatientId().equals(patient.getPatientId())

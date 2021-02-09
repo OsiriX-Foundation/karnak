@@ -24,7 +24,6 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.validator.StringLengthValidator;
 import java.io.InputStream;
-import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.backend.cache.CachedPatient;
 import org.slf4j.Logger;
@@ -72,7 +71,8 @@ public class ExternalIDForm extends VerticalLayout {
                   issuerOfPatientIdField.getValue());
           binder.validate();
           if (binder.isValid()) {
-            externalIDGrid.addPatientInGrid(newPatient);
+            externalIDGrid.addPatient(newPatient);
+            binder.readBean(null);
           }
         });
 
@@ -173,8 +173,7 @@ public class ExternalIDForm extends VerticalLayout {
                     .getReadCSVButton()
                     .addClickListener(
                         buttonClickEvent1 -> {
-                          final List<CachedPatient> patientListInCSV = csvDialog.getPatientsList();
-                          patientListInCSV.forEach(externalIDGrid::addPatientInGrid);
+                          externalIDGrid.addPatientList(csvDialog.getPatientsList());
                           csvDialog.resetPatientsList();
                         });
               });
