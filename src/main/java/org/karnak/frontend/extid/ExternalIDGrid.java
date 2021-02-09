@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.WeakHashMap;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.backend.cache.CachedPatient;
@@ -40,6 +41,7 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
   private static final String ERROR_MESSAGE_PATIENT = "Length must be between 1 and 50.";
   private static final String LABEL_SAVE = "Save";
   private static final String LABEL_CANCEL = "Cancel";
+  private static final String LABEL_FILTER = "Filter";
   private final Binder<CachedPatient> binder;
   private final List<CachedPatient> patientList;
   private final transient PatientClient externalIDCache;
@@ -60,7 +62,6 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
   private Grid.Column<CachedPatient> patientFirstNameColumn;
   private Grid.Column<CachedPatient> patientLastNameColumn;
   private Grid.Column<CachedPatient> issuerOfPatientIDColumn;
-  private Grid.Column<CachedPatient> editorColumn;
 
   private Collection<CachedPatient> patientsListInCache = new ArrayList<>();
 
@@ -131,7 +132,7 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
         addColumn(CachedPatient::getIssuerOfPatientId)
             .setHeader("Issuer of patient ID")
             .setSortable(true);
-    editorColumn =
+    Grid.Column<CachedPatient> editorColumn =
         addComponentColumn(
             patient -> {
               Button edit = new Button("Edit");
@@ -192,98 +193,70 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
     TextField extidFilter = new TextField();
 
     extidFilter.addValueChangeListener(
-        event -> {
-          final List<CachedPatient> filterList =
-              patientsListInCache.stream()
-                  .filter(
-                      cachedPatient ->
-                          cachedPatient.getPseudonym().contains(extidFilter.getValue()))
-                  .collect(Collectors.toList());
-          setItems(filterList);
-        });
+        event ->
+            filterByField(
+                cachedPatient -> cachedPatient.getPseudonym().contains(extidFilter.getValue())));
 
     extidFilter.setValueChangeMode(ValueChangeMode.EAGER);
     filterRow.getCell(extidColumn).setComponent(extidFilter);
     extidFilter.setSizeFull();
-    extidFilter.setPlaceholder("Filter");
+    extidFilter.setPlaceholder(LABEL_FILTER);
 
     TextField patientIdFilter = new TextField();
 
     patientIdFilter.addValueChangeListener(
-        event -> {
-          final List<CachedPatient> filterList =
-              patientsListInCache.stream()
-                  .filter(
-                      cachedPatient ->
-                          cachedPatient.getPatientId().contains(patientIdFilter.getValue()))
-                  .collect(Collectors.toList());
-          setItems(filterList);
-        });
+        event ->
+            filterByField(
+                cachedPatient ->
+                    cachedPatient.getPatientId().contains(patientIdFilter.getValue())));
 
     patientIdFilter.setValueChangeMode(ValueChangeMode.EAGER);
     filterRow.getCell(patientIdColumn).setComponent(patientIdFilter);
     patientIdFilter.setSizeFull();
-    patientIdFilter.setPlaceholder("Filter");
+    patientIdFilter.setPlaceholder(LABEL_FILTER);
 
     TextField patientFirstNameFilter = new TextField();
 
     patientFirstNameFilter.addValueChangeListener(
-        event -> {
-          final List<CachedPatient> filterList =
-              patientsListInCache.stream()
-                  .filter(
-                      cachedPatient ->
-                          cachedPatient
-                              .getPatientFirstName()
-                              .contains(patientFirstNameFilter.getValue()))
-                  .collect(Collectors.toList());
-          setItems(filterList);
-        });
+        event ->
+            filterByField(
+                cachedPatient ->
+                    cachedPatient
+                        .getPatientFirstName()
+                        .contains(patientFirstNameFilter.getValue())));
 
     patientFirstNameFilter.setValueChangeMode(ValueChangeMode.EAGER);
     filterRow.getCell(patientFirstNameColumn).setComponent(patientFirstNameFilter);
     patientFirstNameFilter.setSizeFull();
-    patientFirstNameFilter.setPlaceholder("Filter");
+    patientFirstNameFilter.setPlaceholder(LABEL_FILTER);
 
     TextField patientLastNameFilter = new TextField();
 
     patientLastNameFilter.addValueChangeListener(
-        event -> {
-          final List<CachedPatient> filterList =
-              patientsListInCache.stream()
-                  .filter(
-                      cachedPatient ->
-                          cachedPatient
-                              .getPatientLastName()
-                              .contains(patientLastNameFilter.getValue()))
-                  .collect(Collectors.toList());
-          setItems(filterList);
-        });
+        event ->
+            filterByField(
+                cachedPatient ->
+                    cachedPatient.getPatientLastName().contains(patientLastNameFilter.getValue())));
 
     patientLastNameFilter.setValueChangeMode(ValueChangeMode.EAGER);
     filterRow.getCell(patientLastNameColumn).setComponent(patientLastNameFilter);
     patientLastNameFilter.setSizeFull();
-    patientLastNameFilter.setPlaceholder("Filter");
+    patientLastNameFilter.setPlaceholder(LABEL_FILTER);
 
     TextField issuerOfPatientIDFilter = new TextField();
 
     issuerOfPatientIDFilter.addValueChangeListener(
-        event -> {
-          final List<CachedPatient> filterList =
-              patientsListInCache.stream()
-                  .filter(
-                      cachedPatient ->
-                          cachedPatient
-                              .getIssuerOfPatientId()
-                              .contains(issuerOfPatientIDFilter.getValue()))
-                  .collect(Collectors.toList());
-          setItems(filterList);
-        });
+        event ->
+            filterByField(
+                cachedPatient ->
+                    cachedPatient
+                        .getIssuerOfPatientId()
+                        .contains(issuerOfPatientIDFilter.getValue())));
 
     issuerOfPatientIDFilter.setValueChangeMode(ValueChangeMode.EAGER);
     filterRow.getCell(issuerOfPatientIDColumn).setComponent(issuerOfPatientIDFilter);
     issuerOfPatientIDFilter.setSizeFull();
-    issuerOfPatientIDFilter.setPlaceholder("Filter");
+    issuerOfPatientIDFilter.setPlaceholder(LABEL_FILTER);
   }
 
   public Div setBinder() {
@@ -370,5 +343,11 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
       }
     }
     return false;
+  }
+
+  public void filterByField(Predicate<CachedPatient> predicate) {
+    final List<CachedPatient> filterList =
+        patientsListInCache.stream().filter(predicate).collect(Collectors.toList());
+    setItems(filterList);
   }
 }
