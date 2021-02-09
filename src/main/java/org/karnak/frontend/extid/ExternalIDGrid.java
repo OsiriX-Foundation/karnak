@@ -26,7 +26,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.WeakHashMap;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.backend.cache.CachedPatient;
@@ -62,6 +61,12 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
   private Grid.Column<CachedPatient> patientFirstNameColumn;
   private Grid.Column<CachedPatient> patientLastNameColumn;
   private Grid.Column<CachedPatient> issuerOfPatientIDColumn;
+
+  private TextField patientIdFilter;
+  private TextField extidFilter;
+  private TextField patientFirstNameFilter;
+  private TextField patientLastNameFilter;
+  private TextField issuerOfPatientIDFilter;
 
   private Collection<CachedPatient> patientsListInCache = new ArrayList<>();
 
@@ -190,69 +195,37 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
   public void addFilterElements() {
     HeaderRow filterRow = appendHeaderRow();
 
-    TextField extidFilter = new TextField();
+    extidFilter = new TextField();
 
-    extidFilter.addValueChangeListener(
-        event ->
-            filterByField(
-                cachedPatient -> cachedPatient.getPseudonym().contains(extidFilter.getValue())));
-
+    extidFilter.addValueChangeListener(event -> checkAndUpdateAllFilters());
     extidFilter.setValueChangeMode(ValueChangeMode.EAGER);
     filterRow.getCell(extidColumn).setComponent(extidFilter);
     extidFilter.setSizeFull();
     extidFilter.setPlaceholder(LABEL_FILTER);
 
-    TextField patientIdFilter = new TextField();
-
-    patientIdFilter.addValueChangeListener(
-        event ->
-            filterByField(
-                cachedPatient ->
-                    cachedPatient.getPatientId().contains(patientIdFilter.getValue())));
-
+    patientIdFilter = new TextField();
+    patientIdFilter.addValueChangeListener(event -> checkAndUpdateAllFilters());
     patientIdFilter.setValueChangeMode(ValueChangeMode.EAGER);
     filterRow.getCell(patientIdColumn).setComponent(patientIdFilter);
     patientIdFilter.setSizeFull();
     patientIdFilter.setPlaceholder(LABEL_FILTER);
 
-    TextField patientFirstNameFilter = new TextField();
-
-    patientFirstNameFilter.addValueChangeListener(
-        event ->
-            filterByField(
-                cachedPatient ->
-                    cachedPatient
-                        .getPatientFirstName()
-                        .contains(patientFirstNameFilter.getValue())));
-
+    patientFirstNameFilter = new TextField();
+    patientFirstNameFilter.addValueChangeListener(event -> checkAndUpdateAllFilters());
     patientFirstNameFilter.setValueChangeMode(ValueChangeMode.EAGER);
     filterRow.getCell(patientFirstNameColumn).setComponent(patientFirstNameFilter);
     patientFirstNameFilter.setSizeFull();
     patientFirstNameFilter.setPlaceholder(LABEL_FILTER);
 
-    TextField patientLastNameFilter = new TextField();
-
-    patientLastNameFilter.addValueChangeListener(
-        event ->
-            filterByField(
-                cachedPatient ->
-                    cachedPatient.getPatientLastName().contains(patientLastNameFilter.getValue())));
-
+    patientLastNameFilter = new TextField();
+    patientLastNameFilter.addValueChangeListener(event -> checkAndUpdateAllFilters());
     patientLastNameFilter.setValueChangeMode(ValueChangeMode.EAGER);
     filterRow.getCell(patientLastNameColumn).setComponent(patientLastNameFilter);
     patientLastNameFilter.setSizeFull();
     patientLastNameFilter.setPlaceholder(LABEL_FILTER);
 
-    TextField issuerOfPatientIDFilter = new TextField();
-
-    issuerOfPatientIDFilter.addValueChangeListener(
-        event ->
-            filterByField(
-                cachedPatient ->
-                    cachedPatient
-                        .getIssuerOfPatientId()
-                        .contains(issuerOfPatientIDFilter.getValue())));
-
+    issuerOfPatientIDFilter = new TextField();
+    issuerOfPatientIDFilter.addValueChangeListener(event -> checkAndUpdateAllFilters());
     issuerOfPatientIDFilter.setValueChangeMode(ValueChangeMode.EAGER);
     filterRow.getCell(issuerOfPatientIDColumn).setComponent(issuerOfPatientIDFilter);
     issuerOfPatientIDFilter.setSizeFull();
@@ -345,9 +318,57 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
     return false;
   }
 
-  public void filterByField(Predicate<CachedPatient> predicate) {
-    final List<CachedPatient> filterList =
-        patientsListInCache.stream().filter(predicate).collect(Collectors.toList());
+  public void checkAndUpdateAllFilters() {
+    List<CachedPatient> filterList = patientsListInCache.stream().collect(Collectors.toList());
+
+    if (!extidFilter.getValue().equals("")) {
+      filterList =
+          filterList.stream()
+              .filter(
+                  cachedPatient -> cachedPatient.getPseudonym().contains(extidFilter.getValue()))
+              .collect(Collectors.toList());
+    }
+
+    if (!patientIdFilter.getValue().equals("")) {
+      filterList =
+          filterList.stream()
+              .filter(
+                  cachedPatient ->
+                      cachedPatient.getPatientId().contains(patientIdFilter.getValue()))
+              .collect(Collectors.toList());
+    }
+
+    if (!patientFirstNameFilter.getValue().equals("")) {
+      filterList =
+          filterList.stream()
+              .filter(
+                  cachedPatient ->
+                      cachedPatient
+                          .getPatientFirstName()
+                          .contains(patientFirstNameFilter.getValue()))
+              .collect(Collectors.toList());
+    }
+
+    if (!patientLastNameFilter.getValue().equals("")) {
+      filterList =
+          filterList.stream()
+              .filter(
+                  cachedPatient ->
+                      cachedPatient.getPatientLastName().contains(patientLastNameFilter.getValue()))
+              .collect(Collectors.toList());
+    }
+
+    if (!issuerOfPatientIDFilter.getValue().equals("")) {
+      filterList =
+          filterList.stream()
+              .filter(
+                  cachedPatient ->
+                      cachedPatient
+                          .getIssuerOfPatientId()
+                          .contains(issuerOfPatientIDFilter.getValue()))
+              .collect(Collectors.toList());
+    }
+
     setItems(filterList);
   }
 }
