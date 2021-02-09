@@ -106,8 +106,7 @@ public class KheopsAlbumsEntity implements Serializable {
       return false;
     }
     KheopsAlbumsEntity that = (KheopsAlbumsEntity) o;
-    return Objects.equals(id, that.id)
-        && Objects.equals(urlAPI, that.urlAPI)
+    return Objects.equals(urlAPI, that.urlAPI)
         && Objects.equals(authorizationDestination, that.authorizationDestination)
         && Objects.equals(authorizationSource, that.authorizationSource)
         && Objects.equals(condition, that.condition);
@@ -115,6 +114,6 @@ public class KheopsAlbumsEntity implements Serializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, urlAPI, authorizationDestination, authorizationSource, condition);
+    return Objects.hash(urlAPI, authorizationDestination, authorizationSource, condition);
   }
 }

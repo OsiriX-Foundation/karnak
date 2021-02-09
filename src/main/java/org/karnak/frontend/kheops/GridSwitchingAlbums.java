@@ -14,6 +14,9 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.editor.Editor;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.provider.ListDataProvider;
@@ -110,13 +113,27 @@ public class GridSwitchingAlbums extends Grid<KheopsAlbumsEntity> {
     editor.addCloseListener(
         e -> editButtons.stream().forEach(button -> button.setEnabled(!editor.isOpen())));
 
-    Button save =
-        new Button(
-            "Validate",
-            e -> {
+    Button save = new Button("Validate");
+    save.addClickListener(
+        event -> {
+          // Get the current edited Kheops album
+          KheopsAlbumsEntity currentEditedKheopsAlbumsEntity = new KheopsAlbumsEntity();
+          if (binder.writeBeanIfValid(currentEditedKheopsAlbumsEntity)) {
+            // Save only if not already existing in table
+            if (!dataProvider.getItems().contains(currentEditedKheopsAlbumsEntity)) {
               editor.save();
               setDataProvider(dataProvider);
-            });
+            } else {
+              // Show a notification
+              Span content = new Span("Already existing");
+              content.getStyle().set("color", "var(--lumo-error-text-color)");
+              Notification notification = new Notification(content);
+              notification.setDuration(3000);
+              notification.setPosition(Position.BOTTOM_END);
+              notification.open();
+            }
+          }
+        });
     save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
     Button cancel = new Button("Cancel", e -> editor.cancel());
