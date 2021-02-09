@@ -12,18 +12,21 @@ package org.karnak.frontend.extid;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.grid.editor.Editor;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.validator.StringLengthValidator;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.WeakHashMap;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.backend.cache.CachedPatient;
 import org.karnak.backend.cache.PatientClient;
@@ -52,11 +55,24 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
   private TextField issuerOfPatientIdField;
   private Grid.Column<CachedPatient> deleteColumn;
 
+  private Grid.Column<CachedPatient> extidColumn;
+  private Grid.Column<CachedPatient> patientIdColumn;
+  private Grid.Column<CachedPatient> patientFirstNameColumn;
+  private Grid.Column<CachedPatient> patientLastNameColumn;
+  private Grid.Column<CachedPatient> issuerOfPatientIDColumn;
+  private Grid.Column<CachedPatient> editorColumn;
+
+  private Collection<CachedPatient> patientsListInCache = new ArrayList<>();
+
+  private ListDataProvider<CachedPatient> dataProvider;
+
   public ExternalIDGrid() {
     binder = new Binder<>(CachedPatient.class);
     patientList = new ArrayList<>();
     externalIDCache = AppConfig.getInstance().getExternalIDCache();
-    setPageSize(4);
+    dataProvider = (ListDataProvider<CachedPatient>) getDataProvider();
+
+    setPageSize(10);
     setPaginatorSize(2);
 
     setSizeFull();
@@ -99,23 +115,23 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
   }
 
   private void setElements() {
-    Grid.Column<CachedPatient> extidColumn =
+    extidColumn =
         addColumn(CachedPatient::getPseudonym).setHeader("External Pseudonym").setSortable(true);
-    Grid.Column<CachedPatient> patientIdColumn =
+    patientIdColumn =
         addColumn(CachedPatient::getPatientId).setHeader("Patient ID").setSortable(true);
-    Grid.Column<CachedPatient> patientFirstNameColumn =
+    patientFirstNameColumn =
         addColumn(CachedPatient::getPatientFirstName)
             .setHeader("Patient first name")
             .setSortable(true);
-    Grid.Column<CachedPatient> patientLastNameColumn =
+    patientLastNameColumn =
         addColumn(CachedPatient::getPatientLastName)
             .setHeader("Patient last name")
             .setSortable(true);
-    Grid.Column<CachedPatient> issuerOfPatientIDColumn =
+    issuerOfPatientIDColumn =
         addColumn(CachedPatient::getIssuerOfPatientId)
             .setHeader("Issuer of patient ID")
             .setSortable(true);
-    Grid.Column<CachedPatient> editorColumn =
+    editorColumn =
         addComponentColumn(
             patient -> {
               Button edit = new Button("Edit");
@@ -129,6 +145,8 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
               editButtons.add(edit);
               return edit;
             });
+
+    addFilterElements();
 
     editButtons = Collections.newSetFromMap(new WeakHashMap<>());
     editor = getEditor();
@@ -166,6 +184,106 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
 
     Div buttons = new Div(saveEditPatientButton, cancelEditPatientButton);
     editorColumn.setEditorComponent(buttons);
+  }
+
+  public void addFilterElements() {
+    HeaderRow filterRow = appendHeaderRow();
+
+    TextField extidFilter = new TextField();
+
+    extidFilter.addValueChangeListener(
+        event -> {
+          final List<CachedPatient> filterList =
+              patientsListInCache.stream()
+                  .filter(
+                      cachedPatient ->
+                          cachedPatient.getPseudonym().contains(extidFilter.getValue()))
+                  .collect(Collectors.toList());
+          setItems(filterList);
+        });
+
+    extidFilter.setValueChangeMode(ValueChangeMode.EAGER);
+    filterRow.getCell(extidColumn).setComponent(extidFilter);
+    extidFilter.setSizeFull();
+    extidFilter.setPlaceholder("Filter");
+
+    TextField patientIdFilter = new TextField();
+
+    patientIdFilter.addValueChangeListener(
+        event -> {
+          final List<CachedPatient> filterList =
+              patientsListInCache.stream()
+                  .filter(
+                      cachedPatient ->
+                          cachedPatient.getPatientId().contains(patientIdFilter.getValue()))
+                  .collect(Collectors.toList());
+          setItems(filterList);
+        });
+
+    patientIdFilter.setValueChangeMode(ValueChangeMode.EAGER);
+    filterRow.getCell(patientIdColumn).setComponent(patientIdFilter);
+    patientIdFilter.setSizeFull();
+    patientIdFilter.setPlaceholder("Filter");
+
+    TextField patientFirstNameFilter = new TextField();
+
+    patientFirstNameFilter.addValueChangeListener(
+        event -> {
+          final List<CachedPatient> filterList =
+              patientsListInCache.stream()
+                  .filter(
+                      cachedPatient ->
+                          cachedPatient
+                              .getPatientFirstName()
+                              .contains(patientFirstNameFilter.getValue()))
+                  .collect(Collectors.toList());
+          setItems(filterList);
+        });
+
+    patientFirstNameFilter.setValueChangeMode(ValueChangeMode.EAGER);
+    filterRow.getCell(patientFirstNameColumn).setComponent(patientFirstNameFilter);
+    patientFirstNameFilter.setSizeFull();
+    patientFirstNameFilter.setPlaceholder("Filter");
+
+    TextField patientLastNameFilter = new TextField();
+
+    patientLastNameFilter.addValueChangeListener(
+        event -> {
+          final List<CachedPatient> filterList =
+              patientsListInCache.stream()
+                  .filter(
+                      cachedPatient ->
+                          cachedPatient
+                              .getPatientLastName()
+                              .contains(patientLastNameFilter.getValue()))
+                  .collect(Collectors.toList());
+          setItems(filterList);
+        });
+
+    patientLastNameFilter.setValueChangeMode(ValueChangeMode.EAGER);
+    filterRow.getCell(patientLastNameColumn).setComponent(patientLastNameFilter);
+    patientLastNameFilter.setSizeFull();
+    patientLastNameFilter.setPlaceholder("Filter");
+
+    TextField issuerOfPatientIDFilter = new TextField();
+
+    issuerOfPatientIDFilter.addValueChangeListener(
+        event -> {
+          final List<CachedPatient> filterList =
+              patientsListInCache.stream()
+                  .filter(
+                      cachedPatient ->
+                          cachedPatient
+                              .getIssuerOfPatientId()
+                              .contains(issuerOfPatientIDFilter.getValue()))
+                  .collect(Collectors.toList());
+          setItems(filterList);
+        });
+
+    issuerOfPatientIDFilter.setValueChangeMode(ValueChangeMode.EAGER);
+    filterRow.getCell(issuerOfPatientIDColumn).setComponent(issuerOfPatientIDFilter);
+    issuerOfPatientIDFilter.setSizeFull();
+    issuerOfPatientIDFilter.setPlaceholder("Filter");
   }
 
   public Div setBinder() {
@@ -210,13 +328,13 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
   public void readAllCacheValue() {
     if (externalIDCache != null) {
       Collection<PseudonymPatient> pseudonymPatients = externalIDCache.getAll();
-      Collection<CachedPatient> cachedPatients = new ArrayList<>();
+      patientsListInCache = new ArrayList<>();
       for (Iterator<PseudonymPatient> iterator = pseudonymPatients.iterator();
           iterator.hasNext(); ) {
         final CachedPatient patient = (CachedPatient) iterator.next();
-        cachedPatients.add(patient);
+        patientsListInCache.add(patient);
       }
-      setItems(cachedPatients);
+      setItems(patientsListInCache);
     }
     refreshPaginator();
   }
@@ -243,8 +361,7 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
   }
 
   public boolean patientExist(PseudonymPatient patient) {
-    ListDataProvider<CachedPatient> dataProvider =
-        (ListDataProvider<CachedPatient>) getDataProvider();
+    dataProvider = (ListDataProvider<CachedPatient>) getDataProvider();
     for (PseudonymPatient patientElem : dataProvider.getItems()) {
       if (patientElem.getPseudonym().equals(patient.getPseudonym())
           || (patientElem.getPatientId().equals(patient.getPatientId())
