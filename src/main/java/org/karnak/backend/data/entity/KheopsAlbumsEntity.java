@@ -109,17 +109,11 @@ public class KheopsAlbumsEntity implements Serializable {
     return Objects.equals(urlAPI, that.urlAPI)
         && Objects.equals(authorizationDestination, that.authorizationDestination)
         && Objects.equals(authorizationSource, that.authorizationSource)
-        && Objects.equals(condition, that.condition)
-        && Objects.equals(destinationEntity.getId(), that.destinationEntity.getId());
+        && Objects.equals(condition, that.condition);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        urlAPI,
-        authorizationDestination,
-        authorizationSource,
-        condition,
-        destinationEntity.getId());
+    return Objects.hash(urlAPI, authorizationDestination, authorizationSource, condition);
   }
 }
