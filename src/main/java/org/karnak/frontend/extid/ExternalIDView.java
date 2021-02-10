@@ -24,7 +24,11 @@ import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.stream.Collectors;
 import org.karnak.backend.cache.CachedPatient;
+import org.karnak.backend.cache.PseudonymPatient;
 import org.karnak.frontend.MainLayout;
 import org.springframework.security.access.annotation.Secured;
 
@@ -69,6 +73,7 @@ public class ExternalIDView extends HorizontalLayout {
               final CachedPatient newPatient = externalIDForm.getNewPatient();
               if (newPatient != null) {
                 externalIDGrid.addPatient(newPatient);
+                checkDuplicatePatient();
                 externalIDGrid.readAllCacheValue();
               }
             });
@@ -137,6 +142,7 @@ public class ExternalIDView extends HorizontalLayout {
                     .addClickListener(
                         buttonClickEvent1 -> {
                           externalIDGrid.addPatientList(csvDialog.getPatientsList());
+                          checkDuplicatePatient();
                           csvDialog.resetPatientsList();
                         });
               });
@@ -145,5 +151,23 @@ public class ExternalIDView extends HorizontalLayout {
           chooseSeparatorDialog.open();
           separatorCSVField.focus();
         });
+  }
+
+  public void checkDuplicatePatient() {
+    final Collection<PseudonymPatient> duplicateList = externalIDGrid.getDuplicatePatientsList();
+    if (!duplicateList.isEmpty()) {
+      String duplicateString =
+          duplicateList.stream().map(PseudonymPatient::toString).collect(Collectors.joining());
+
+      WarningDialog warningDialog =
+          new WarningDialog(
+              "Duplicate data",
+              String.format(
+                  "You are trying to insert two equivalent pseudonyms or identical patients: {%s}",
+                  duplicateString),
+              "ok");
+      warningDialog.open();
+      externalIDGrid.setDuplicatePatientsList(new ArrayList<>());
+    }
   }
 }

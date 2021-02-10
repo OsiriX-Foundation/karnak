@@ -17,7 +17,6 @@ import com.vaadin.flow.component.grid.editor.Editor;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.validator.StringLengthValidator;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import java.util.ArrayList;
@@ -69,14 +68,12 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
   private TextField issuerOfPatientIDFilter;
 
   private Collection<CachedPatient> patientsListInCache = new ArrayList<>();
-
-  private ListDataProvider<CachedPatient> dataProvider;
+  private transient Collection<PseudonymPatient> duplicatePatientsList = new ArrayList<>();
 
   public ExternalIDGrid() {
     binder = new Binder<>(CachedPatient.class);
     patientList = new ArrayList<>();
     externalIDCache = AppConfig.getInstance().getExternalIDCache();
-    dataProvider = (ListDataProvider<CachedPatient>) getDataProvider();
 
     setPageSize(10);
     setPaginatorSize(2);
@@ -286,16 +283,7 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
   }
 
   public void addPatient(CachedPatient newPatient) {
-    if (patientExist(newPatient)) {
-      WarningDialog warningDialog =
-          new WarningDialog(
-              "Duplicate data",
-              String.format(
-                  "You are trying to insert two equivalent pseudonyms or identical patients: {%s}",
-                  newPatient.toString()),
-              "ok");
-      warningDialog.open();
-    } else {
+    if (!patientExist(newPatient)) {
       externalIDCache.put(PatientClientUtil.generateKey(newPatient), newPatient);
     }
   }
@@ -306,15 +294,22 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
   }
 
   public boolean patientExist(PseudonymPatient patient) {
-    dataProvider = (ListDataProvider<CachedPatient>) getDataProvider();
-    for (PseudonymPatient patientElem : dataProvider.getItems()) {
-      if (patientElem.getPseudonym().equals(patient.getPseudonym())
-          || (patientElem.getPatientId().equals(patient.getPatientId())
-              && patientElem.getIssuerOfPatientId().equals(patient.getIssuerOfPatientId()))) {
-        return true;
-      }
+    final PseudonymPatient duplicatePatient =
+        externalIDCache.getAll().stream()
+            .filter(cachedPatient -> patientIsSame(patient, cachedPatient))
+            .findFirst()
+            .orElse(null);
+    if (duplicatePatient != null) {
+      duplicatePatientsList.add(duplicatePatient);
+      return true;
     }
     return false;
+  }
+
+  public boolean patientIsSame(PseudonymPatient patient1, PseudonymPatient patient2) {
+    return patient1.getPatientId().equals(patient2.getPatientId())
+        && patient1.getIssuerOfPatientId().equals(patient2.getIssuerOfPatientId());
+
   }
 
   public void checkAndUpdateAllFilters() {
@@ -369,5 +364,13 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
     }
 
     setItems(filterList);
+  }
+
+  public Collection<PseudonymPatient> getDuplicatePatientsList() {
+    return duplicatePatientsList;
+  }
+
+  public void setDuplicatePatientsList(Collection<PseudonymPatient> duplicatePatientsList) {
+    this.duplicatePatientsList = duplicatePatientsList;
   }
 }
