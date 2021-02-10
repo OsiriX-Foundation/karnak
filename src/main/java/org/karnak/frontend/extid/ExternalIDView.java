@@ -69,6 +69,7 @@ public class ExternalIDView extends HorizontalLayout {
               final CachedPatient newPatient = externalIDForm.getNewPatient();
               if (newPatient != null) {
                 externalIDGrid.addPatient(newPatient);
+                externalIDGrid.readAllCacheValue();
               }
             });
 

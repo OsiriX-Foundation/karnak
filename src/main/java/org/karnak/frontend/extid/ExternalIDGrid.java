@@ -297,7 +297,6 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
       warningDialog.open();
     } else {
       externalIDCache.put(PatientClientUtil.generateKey(newPatient), newPatient);
-      readAllCacheValue();
     }
   }
 
