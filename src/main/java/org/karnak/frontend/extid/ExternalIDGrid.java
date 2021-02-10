@@ -295,21 +295,12 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
 
   public boolean patientExist(PseudonymPatient patient) {
     final PseudonymPatient duplicatePatient =
-        externalIDCache.getAll().stream()
-            .filter(cachedPatient -> patientIsSame(patient, cachedPatient))
-            .findFirst()
-            .orElse(null);
+        externalIDCache.get(PatientClientUtil.generateKey(patient));
     if (duplicatePatient != null) {
       duplicatePatientsList.add(duplicatePatient);
       return true;
     }
     return false;
-  }
-
-  public boolean patientIsSame(PseudonymPatient patient1, PseudonymPatient patient2) {
-    return patient1.getPatientId().equals(patient2.getPatientId())
-        && patient1.getIssuerOfPatientId().equals(patient2.getIssuerOfPatientId());
-
   }
 
   public void checkAndUpdateAllFilters() {

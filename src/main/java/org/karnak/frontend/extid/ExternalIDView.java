@@ -25,10 +25,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.stream.Collectors;
 import org.karnak.backend.cache.CachedPatient;
-import org.karnak.backend.cache.PseudonymPatient;
 import org.karnak.frontend.MainLayout;
 import org.springframework.security.access.annotation.Secured;
 
@@ -135,6 +132,7 @@ public class ExternalIDView extends HorizontalLayout {
                   separator = separatorCSVField.getValue().charAt(0);
                 }
                 CSVDialog csvDialog = new CSVDialog(inputStream, separator);
+                csvDialog.setWidth("80%");
                 csvDialog.open();
 
                 csvDialog
@@ -154,19 +152,15 @@ public class ExternalIDView extends HorizontalLayout {
   }
 
   public void checkDuplicatePatient() {
-    final Collection<PseudonymPatient> duplicateList = externalIDGrid.getDuplicatePatientsList();
-    if (!duplicateList.isEmpty()) {
-      String duplicateString =
-          duplicateList.stream().map(PseudonymPatient::toString).collect(Collectors.joining());
-
-      WarningDialog warningDialog =
-          new WarningDialog(
-              "Duplicate data",
-              String.format(
-                  "You are trying to insert two equivalent pseudonyms or identical patients: {%s}",
-                  duplicateString),
+    if (!externalIDGrid.getDuplicatePatientsList().isEmpty()) {
+      DuplicateDialog duplicateDialog =
+          new DuplicateDialog(
+              "WARNING Duplicate data",
+              "You are trying to insert two equivalent patients. Here is the list of duplicate patients.",
+              externalIDGrid.getDuplicatePatientsList(),
               "ok");
-      warningDialog.open();
+      duplicateDialog.setWidth("80%");
+      duplicateDialog.open();
       externalIDGrid.setDuplicatePatientsList(new ArrayList<>());
     }
   }
