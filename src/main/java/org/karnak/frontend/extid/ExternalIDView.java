@@ -158,7 +158,7 @@ public class ExternalIDView extends HorizontalLayout {
               "WARNING Duplicate data",
               "You are trying to insert two equivalent patients. Here is the list of duplicate patients.",
               externalIDGrid.getDuplicatePatientsList(),
-              "ok");
+              "close");
       duplicateDialog.setWidth("80%");
       duplicateDialog.open();
       externalIDGrid.setDuplicatePatientsList(new ArrayList<>());
