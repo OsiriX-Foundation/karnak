@@ -306,6 +306,12 @@
       <groupId>com.vaadin.componentfactory</groupId>
       <version>1.0.0</version>
     </dependency>
+    <dependency>
+      <groupId>org.vaadin.klaudeta</groupId>
+      <artifactId>grid-pagination</artifactId>
+      <version>2.0.10</version>
+    </dependency>
+
 
     <dependency>
       <artifactId>validation-api</artifactId>
@@ -322,11 +328,11 @@
     </dependency>
 
     <!-- KeyCloack -->
-<!--    <dependency>-->
-<!--      <artifactId>keycloak-spring-boot-starter</artifactId>-->
-<!--      <groupId>org.keycloak</groupId>-->
-<!--      <version>11.0.3</version>-->
-<!--    </dependency>-->
+    <!--    <dependency>-->
+    <!--      <artifactId>keycloak-spring-boot-starter</artifactId>-->
+    <!--      <groupId>org.keycloak</groupId>-->
+    <!--      <version>11.0.3</version>-->
+    <!--    </dependency>-->
 
     <!--	Jackson -->
     <dependency>
@@ -366,13 +372,13 @@
         <type>pom</type>
         <version>${vaadin.version}</version>
       </dependency>
-<!--      <dependency>-->
-<!--        <artifactId>keycloak-adapter-bom</artifactId>-->
-<!--        <groupId>org.keycloak.bom</groupId>-->
-<!--        <scope>import</scope>-->
-<!--        <type>pom</type>-->
-<!--        <version>11.0.3</version>-->
-<!--      </dependency>-->
+      <!--      <dependency>-->
+      <!--        <artifactId>keycloak-adapter-bom</artifactId>-->
+      <!--        <groupId>org.keycloak.bom</groupId>-->
+      <!--        <scope>import</scope>-->
+      <!--        <type>pom</type>-->
+      <!--        <version>11.0.3</version>-->
+      <!--      </dependency>-->
     </dependencies>
   </dependencyManagement>
   <modelVersion>4.0.0</modelVersion>
