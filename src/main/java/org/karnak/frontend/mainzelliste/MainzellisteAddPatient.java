@@ -179,7 +179,7 @@ public class MainzellisteAddPatient extends VerticalLayout {
               patientIdField.getValue(),
               String.format(
                   "%s^%s", patientLastNameField.getValue(), patientFirstNameField.getValue()),
-              patientBirthDateField.getValue().format(DateTimeFormatter.ofPattern("YYYYMMdd")),
+              patientBirthDateField.getValue().format(DateTimeFormatter.ofPattern("yyyyMMdd")),
               patientSexField.getValue(),
               issuerOfPatientIdField.getValue());
 
