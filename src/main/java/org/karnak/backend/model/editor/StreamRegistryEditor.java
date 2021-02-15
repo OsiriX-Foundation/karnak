@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  */
-package org.karnak.backend.service;
+package org.karnak.backend.model.editor;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -24,22 +24,18 @@ import org.karnak.backend.model.SopInstance;
 import org.karnak.backend.model.Study;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.weasis.dicom.param.AttributeEditor;
 import org.weasis.dicom.param.AttributeEditorContext;
 import org.weasis.dicom.param.AttributeEditorContext.Abort;
 import org.weasis.dicom.param.DicomProgress;
 
-@Service
-public class StreamRegistryService implements AttributeEditor {
+public class StreamRegistryEditor implements AttributeEditor {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(StreamRegistryService.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(StreamRegistryEditor.class);
   private final Map<String, Study> studyMap = new HashMap<>();
   private boolean enable = false;
 
-  @Autowired
-  public StreamRegistryService() {}
+  public StreamRegistryEditor() {}
 
   private static LocalDateTime getDateTime(DicomObject dicom, int date, int time) {
     Optional<String> od = dicom.getString(date);

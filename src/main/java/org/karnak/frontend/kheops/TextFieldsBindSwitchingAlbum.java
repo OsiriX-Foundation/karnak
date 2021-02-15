@@ -22,7 +22,7 @@ import org.karnak.backend.data.entity.KheopsAlbumsEntity;
 import org.karnak.backend.model.expression.ExprConditionKheops;
 import org.karnak.backend.model.expression.ExpressionError;
 import org.karnak.backend.model.expression.ExpressionResult;
-import org.karnak.backend.service.kheops.SwitchingAlbumService;
+import org.karnak.backend.service.kheops.SwitchingAlbum;
 
 public class TextFieldsBindSwitchingAlbum {
 
@@ -55,7 +55,7 @@ public class TextFieldsBindSwitchingAlbum {
             value -> {
               if (!textUrlAPI.getValue().isBlank()) {
                 return validateToken(
-                    value, textUrlAPI.getValue(), SwitchingAlbumService.MIN_SCOPE_DESTINATION);
+                    value, textUrlAPI.getValue(), SwitchingAlbum.MIN_SCOPE_DESTINATION);
               }
               return true;
             },
@@ -68,8 +68,7 @@ public class TextFieldsBindSwitchingAlbum {
         .withValidator(
             value -> {
               if (!textUrlAPI.getValue().isBlank()) {
-                return validateToken(
-                    value, textUrlAPI.getValue(), SwitchingAlbumService.MIN_SCOPE_SOURCE);
+                return validateToken(value, textUrlAPI.getValue(), SwitchingAlbum.MIN_SCOPE_SOURCE);
               }
               return true;
             },
@@ -102,7 +101,7 @@ public class TextFieldsBindSwitchingAlbum {
   private boolean validateToken(String token, String urlAPI, List<String> validMinScope) {
     try {
       JSONObject responseIntrospect = kheopsApi.tokenIntrospect(urlAPI, token, token);
-      return SwitchingAlbumService.validateIntrospectedToken(responseIntrospect, validMinScope);
+      return SwitchingAlbum.validateIntrospectedToken(responseIntrospect, validMinScope);
     } catch (Exception e) {
       return false;
     }

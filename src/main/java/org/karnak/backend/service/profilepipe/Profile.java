@@ -52,25 +52,22 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.weasis.core.util.StringUtil;
 import org.weasis.dicom.param.AttributeEditorContext;
 
-@Service
-public class ProfileService {
+public class Profile {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ProfileService.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(Profile.class);
 
-  private final PseudonymService pseudonymService;
+  private final Pseudonym pseudonym;
   private ArrayList<ProfileItem> profiles;
   private final Map<String, MaskArea> maskMap;
   private final Marker CLINICAL_MARKER = MarkerFactory.getMarker("CLINICAL");
 
-  @Autowired
-  public ProfileService(final PseudonymService pseudonymService) {
+  public Profile(ProfileEntity profileEntity) {
     this.maskMap = new HashMap<>();
-    this.pseudonymService = pseudonymService;
+    this.pseudonym = new Pseudonym();
+    this.profiles = createProfilesList(profileEntity);
   }
 
   public void addMaskMap(Map<? extends String, ? extends MaskArea> maskMap) {
@@ -217,7 +214,7 @@ public class ProfileService {
     MDC.put("PatientID", PatientID);
 
     String pseudonym =
-        pseudonymService.generatePseudonym(
+        this.pseudonym.generatePseudonym(
             destinationEntity, dcm, profileEntity.getDefaultIssuerOfPatientId());
 
     String profilesCodeName =
@@ -343,9 +340,5 @@ public class ProfileService {
     byte[] bytes = new byte[16];
     System.arraycopy(hmac.byteHash(pseudonym), 0, bytes, 0, 16);
     return new BigInteger(1, bytes);
-  }
-
-  public void init(ProfileEntity profileEntity) {
-    this.profiles = createProfilesList(profileEntity);
   }
 }

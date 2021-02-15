@@ -27,20 +27,16 @@ import org.karnak.backend.model.kheops.MetadataSwitching;
 import org.karnak.backend.model.profilepipe.HMAC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-@Service
-public class SwitchingAlbumService {
+public class SwitchingAlbum {
 
   public static final ImmutableList<String> MIN_SCOPE_SOURCE = ImmutableList.of("read", "send");
   public static final ImmutableList<String> MIN_SCOPE_DESTINATION = ImmutableList.of("write");
-  private static final Logger LOGGER = LoggerFactory.getLogger(SwitchingAlbumService.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(SwitchingAlbum.class);
   private final KheopsApi kheopsAPI;
   private final Map<Long, List> switchingAlbumToDo = new WeakHashMap<>();
 
-  @Autowired
-  public SwitchingAlbumService() {
+  public SwitchingAlbum() {
     kheopsAPI = new KheopsApi();
   }
 

@@ -7,28 +7,22 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  */
-package org.karnak.backend.service;
+package org.karnak.backend.model.editor;
 
 import java.util.Set;
 import java.util.function.Predicate;
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.Tag;
 import org.karnak.backend.data.entity.SOPClassUIDEntity;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.weasis.dicom.param.AttributeEditor;
 import org.weasis.dicom.param.AttributeEditorContext;
 import org.weasis.dicom.param.AttributeEditorContext.Abort;
 
-@Service
-public class FilterEditorService implements AttributeEditor {
+public class FilterEditor implements AttributeEditor {
 
   private Set<SOPClassUIDEntity> sopClassUIDEntitySet;
 
-  @Autowired
-  public FilterEditorService() {}
-
-  public void init(Set<SOPClassUIDEntity> sopClassUIDEntitySet) {
+  public FilterEditor(Set<SOPClassUIDEntity> sopClassUIDEntitySet) {
     this.sopClassUIDEntitySet = sopClassUIDEntitySet;
   }
 

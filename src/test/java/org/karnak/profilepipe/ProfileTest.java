@@ -23,17 +23,14 @@ import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.data.entity.ProfileEntity;
 import org.karnak.backend.model.profilepipe.HMAC;
 import org.karnak.backend.model.profilepipe.HashContext;
-import org.karnak.backend.service.profilepipe.ProfileService;
+import org.karnak.backend.service.profilepipe.Profile;
 import org.karnak.backend.util.DicomObjectTools;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ProfileServiceTest {
+class ProfileTest {
 
   private static HMAC defaultHMAC;
-
-  @Autowired private ProfileService profileService;
 
   @BeforeAll
   static void beforeAll() {
@@ -103,8 +100,8 @@ class ProfileServiceTest {
 
     profileEntity.addProfilePipe(profileElementEntity1);
     profileEntity.addProfilePipe(profileElementEntity2);
-    profileService.init(profileEntity);
-    profileService.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
+    Profile profile = new Profile(profileEntity);
+    profile.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
     assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
   }
 
@@ -162,8 +159,8 @@ class ProfileServiceTest {
     profileEntity.addProfilePipe(profileElementEntity1);
     profileEntity.addProfilePipe(profileElementEntity2);
     profileEntity.addProfilePipe(profileElementEntity3);
-    profileService.init(profileEntity);
-    profileService.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
+    Profile profile = new Profile(profileEntity);
+    profile.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
     assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
   }
 
@@ -223,8 +220,8 @@ class ProfileServiceTest {
     profileEntity.addProfilePipe(profileElementEntity1);
     profileEntity.addProfilePipe(profileElementEntity2);
     profileEntity.addProfilePipe(profileElementEntity3);
-    profileService.init(profileEntity);
-    profileService.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
+    Profile profile = new Profile(profileEntity);
+    profile.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
     assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
   }
 
@@ -302,8 +299,8 @@ class ProfileServiceTest {
     profileEntity.addProfilePipe(profileElementEntity2);
     profileEntity.addProfilePipe(profileElementEntity3);
     profileEntity.addProfilePipe(profileElementEntity4);
-    profileService.init(profileEntity);
-    profileService.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
+    Profile profile = new Profile(profileEntity);
+    profile.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
     assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
   }
 
@@ -360,8 +357,8 @@ class ProfileServiceTest {
         new IncludedTagEntity("(0008,1140)", profileElementEntity1));
 
     profileEntity.addProfilePipe(profileElementEntity1);
-    profileService.init(profileEntity);
-    profileService.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
+    Profile profile = new Profile(profileEntity);
+    profile.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
     assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
   }
 
@@ -383,8 +380,8 @@ class ProfileServiceTest {
             "Remove tag", "action.on.specific.tags", null, "X", null, 0, profileEntity);
     profileElementEntity.addIncludedTag(new IncludedTagEntity("(0010,1010)", profileElementEntity));
     profileEntity.addProfilePipe(profileElementEntity);
-    profileService.init(profileEntity);
-    profileService.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
+    Profile profile = new Profile(profileEntity);
+    profile.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
     assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
   }
 
@@ -407,8 +404,8 @@ class ProfileServiceTest {
             "Replace tag by null", "action.on.specific.tags", null, "Z", null, 0, profileEntity);
     profileElementEntity.addIncludedTag(new IncludedTagEntity("(0010,1010)", profileElementEntity));
     profileEntity.addProfilePipe(profileElementEntity);
-    profileService.init(profileEntity);
-    profileService.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
+    Profile profile = new Profile(profileEntity);
+    profile.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
     assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
   }
 
@@ -446,8 +443,8 @@ class ProfileServiceTest {
     profileElementEntity.addArgument(new ArgumentEntity("seconds", "60", profileElementEntity));
     profileElementEntity.addArgument(new ArgumentEntity("days", "365", profileElementEntity));
     profileEntity.addProfilePipe(profileElementEntity);
-    profileService.init(profileEntity);
-    profileService.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
+    Profile profile = new Profile(profileEntity);
+    profile.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
     assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
   }
 
@@ -492,8 +489,8 @@ class ProfileServiceTest {
     profileElementEntity.addArgument(new ArgumentEntity("max_days", "100", profileElementEntity));
 
     profileEntity.addProfilePipe(profileElementEntity);
-    profileService.init(profileEntity);
-    profileService.applyAction(dataset1, dataset1, hmac, null, null, null);
+    Profile profile = new Profile(profileEntity);
+    profile.applyAction(dataset1, dataset1, hmac, null, null, null);
     assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
   }
 
@@ -521,8 +518,8 @@ class ProfileServiceTest {
     profileElementEntity2.addIncludedTag(
         new IncludedTagEntity("(xxxx,xxxx)", profileElementEntity));
     profileEntity.addProfilePipe(profileElementEntity2);
-    profileService.init(profileEntity);
-    profileService.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
+    Profile profile = new Profile(profileEntity);
+    profile.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
     assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
   }
 
@@ -562,8 +559,8 @@ class ProfileServiceTest {
     profileElementEntity2.addIncludedTag(
         new IncludedTagEntity("(xxxx,xxxx)", profileElementEntity));
     profileEntity.addProfilePipe(profileElementEntity2);
-    profileService.init(profileEntity);
-    profileService.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
+    Profile profile = new Profile(profileEntity);
+    profile.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
     assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
   }
 
@@ -589,8 +586,8 @@ class ProfileServiceTest {
     profileElementEntity.addIncludedTag(new IncludedTagEntity("(xxxx,xxxx)", profileElementEntity));
 
     profileEntity.addProfilePipe(profileElementEntity);
-    profileService.init(profileEntity);
-    profileService.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
+    Profile profile = new Profile(profileEntity);
+    profile.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
     assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
   }
 

@@ -30,11 +30,11 @@ import org.karnak.backend.enums.DestinationType;
 import org.karnak.backend.enums.NodeEventType;
 import org.karnak.backend.model.NodeEvent;
 import org.karnak.backend.model.NotificationSetUp;
-import org.karnak.backend.service.DeIdentifyEditorService;
+import org.karnak.backend.model.editor.DeIdentifyEditor;
+import org.karnak.backend.model.editor.FilterEditor;
+import org.karnak.backend.model.editor.StreamRegistryEditor;
 import org.karnak.backend.service.EmailNotifyProgress;
-import org.karnak.backend.service.FilterEditorService;
-import org.karnak.backend.service.StreamRegistryService;
-import org.karnak.backend.service.kheops.SwitchingAlbumService;
+import org.karnak.backend.service.kheops.SwitchingAlbum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,11 +75,7 @@ public class GatewaySetUpService {
   private static final Logger LOGGER = LoggerFactory.getLogger(GatewaySetUpService.class);
   // Repositories
   private final ForwardNodeRepo forwardNodeRepo;
-  // Services
-  private final SwitchingAlbumService switchingAlbumService;
-  private final DeIdentifyEditorService deidentifyEditorService;
-  private final StreamRegistryService streamRegistryService;
-  private final FilterEditorService filterEditorService;
+
   private final Map<ForwardDicomNode, List<ForwardDestination>> destMap = new HashMap<>();
 
   private final Path storePath;
@@ -104,19 +100,8 @@ public class GatewaySetUpService {
   private final String truststore;
 
   @Autowired
-  public GatewaySetUpService(
-      final ForwardNodeRepo forwardNodeRepo,
-      final SwitchingAlbumService switchingAlbumService,
-      final DeIdentifyEditorService deidentifyEditorService,
-      final StreamRegistryService streamRegistryService,
-      final FilterEditorService filterEditorService)
-      throws Exception {
+  public GatewaySetUpService(final ForwardNodeRepo forwardNodeRepo) throws Exception {
     this.forwardNodeRepo = forwardNodeRepo;
-    this.switchingAlbumService = switchingAlbumService;
-    this.deidentifyEditorService = deidentifyEditorService;
-    this.streamRegistryService = streamRegistryService;
-    this.filterEditorService = filterEditorService;
-
     String path = getProperty("GATEWAY_ARCHIVE_PATH", null); // Only Archive and Pull mode
     storePath = StringUtil.hasText(path) ? Path.of(path) : null;
     intervalCheck =
@@ -316,18 +301,18 @@ public class GatewaySetUpService {
       List<AttributeEditor> editors = new ArrayList<>();
       final boolean filterBySOPClassesEnable = dstNode.isFilterBySOPClasses();
       if (filterBySOPClassesEnable) {
-        filterEditorService.init(dstNode.getSOPClassUIDEntityFilters());
-        editors.add(filterEditorService);
+        editors.add(new FilterEditor(dstNode.getSOPClassUIDEntityFilters()));
       }
 
       final List<KheopsAlbumsEntity> listKheopsAlbumEntities = dstNode.getKheopsAlbumEntities();
 
+      SwitchingAlbum switchingAlbum = new SwitchingAlbum();
       editors.add(
           (DicomObject dcm, AttributeEditorContext context) -> {
             if (listKheopsAlbumEntities != null) {
               listKheopsAlbumEntities.forEach(
                   kheopsAlbums -> {
-                    switchingAlbumService.apply(dstNode, kheopsAlbums, dcm);
+                    switchingAlbum.apply(dstNode, kheopsAlbums, dcm);
                   });
             }
           });
@@ -337,13 +322,13 @@ public class GatewaySetUpService {
           dstNode.getProjectEntity() != null
               && dstNode.getProjectEntity().getProfileEntity() != null;
       if (desidentificationEnable && profileDefined) { // TODO add an option in destination model
-        deidentifyEditorService.init(dstNode);
-        editors.add(deidentifyEditorService);
+        editors.add(new DeIdentifyEditor(dstNode));
       }
 
       DicomProgress progress = new DicomProgress();
 
-      editors.add(streamRegistryService);
+      StreamRegistryEditor streamRegistryEditor = new StreamRegistryEditor();
+      editors.add(streamRegistryEditor);
       String[] emails = dstNode.getNotify().split(",");
       NotificationSetUp notifConfig = null;
       String notifyObjectErrorPrefix = dstNode.getNotifyObjectErrorPrefix();
@@ -387,14 +372,14 @@ public class GatewaySetUpService {
             new WebForwardDestination(
                 dstNode.getId(), fwdSrcNode, dstNode.getUrl(), map, progress, editors);
         progress.addProgressListener(
-            new EmailNotifyProgress(streamRegistryService, fwd, emails, this, notifConfig));
+            new EmailNotifyProgress(streamRegistryEditor, fwd, emails, this, notifConfig));
         progress.addProgressListener(
             (DicomProgress dicomProgress) -> {
               DicomObject dcm = dicomProgress.getAttributes();
               if (listKheopsAlbumEntities != null) {
                 listKheopsAlbumEntities.forEach(
                     kheopsAlbums -> {
-                      switchingAlbumService.applyAfterTransfer(kheopsAlbums, dcm);
+                      switchingAlbum.applyAfterTransfer(kheopsAlbums, dcm);
                     });
               }
             });
@@ -412,7 +397,7 @@ public class GatewaySetUpService {
                 progress,
                 editors);
         progress.addProgressListener(
-            new EmailNotifyProgress(streamRegistryService, dest, emails, this, notifConfig));
+            new EmailNotifyProgress(streamRegistryEditor, dest, emails, this, notifConfig));
         dstList.add(dest);
       }
     } catch (IOException e) {

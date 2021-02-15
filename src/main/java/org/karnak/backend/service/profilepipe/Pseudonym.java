@@ -24,19 +24,15 @@ import org.karnak.backend.util.PatientClientUtil;
 import org.karnak.backend.util.SpecialCharacter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-@Service
-public class PseudonymService {
+public class Pseudonym {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(PseudonymService.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(Pseudonym.class);
 
   private final PatientClient externalIdCache;
   private final PatientClient mainzellisteCache;
 
-  @Autowired
-  public PseudonymService() {
+  public Pseudonym() {
     this.externalIdCache = AppConfig.getInstance().getExternalIDCache();
     this.mainzellisteCache = AppConfig.getInstance().getMainzellisteCache();
   }

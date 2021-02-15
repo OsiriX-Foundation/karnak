@@ -27,6 +27,7 @@ import javax.mail.internet.MimeMessage;
 import org.karnak.backend.model.NotificationSetUp;
 import org.karnak.backend.model.Series;
 import org.karnak.backend.model.Study;
+import org.karnak.backend.model.editor.StreamRegistryEditor;
 import org.karnak.backend.service.gateway.GatewaySetUpService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,25 +41,25 @@ public class EmailNotifyProgress implements ProgressListener {
   private static final Logger LOGGER = LoggerFactory.getLogger(EmailNotifyProgress.class);
 
   private final ScheduledThreadPoolExecutor checkProcess;
-  private final StreamRegistryService streamRegistryService;
+  private final StreamRegistryEditor streamRegistryEditor;
   private final ForwardDestination forwardDestination;
   private final String[] emailList;
   private final GatewaySetUpService config;
   private final NotificationSetUp notificationSetUp;
 
   public EmailNotifyProgress(
-      StreamRegistryService streamRegistryService,
+      StreamRegistryEditor streamRegistryEditor,
       ForwardDestination forwardDestination,
       String[] emails,
       GatewaySetUpService config,
       NotificationSetUp notificationSetUp) {
-    this.streamRegistryService = Objects.requireNonNull(streamRegistryService);
+    this.streamRegistryEditor = Objects.requireNonNull(streamRegistryEditor);
     this.forwardDestination = Objects.requireNonNull(forwardDestination);
     this.config = Objects.requireNonNull(config);
     this.emailList = emails;
     this.notificationSetUp = notificationSetUp;
     if (emails != null && emails.length > 0) {
-      this.streamRegistryService.setEnable(true);
+      this.streamRegistryEditor.setEnable(true);
       this.checkProcess = new ScheduledThreadPoolExecutor(1);
       int interval =
           notificationSetUp == null
@@ -73,7 +74,7 @@ public class EmailNotifyProgress implements ProgressListener {
 
   @Override
   public void handleProgression(DicomProgress progress) {
-    streamRegistryService.update(progress);
+    streamRegistryEditor.update(progress);
   }
 
   public ForwardDestination getForwardDestination() {
@@ -85,8 +86,8 @@ public class EmailNotifyProgress implements ProgressListener {
   }
 
   protected void checkNotification() {
-    if (streamRegistryService.isEnable()) {
-      Iterator<Entry<String, Study>> studyIt = streamRegistryService.getEntrySet().iterator();
+    if (streamRegistryEditor.isEnable()) {
+      Iterator<Entry<String, Study>> studyIt = streamRegistryEditor.getEntrySet().iterator();
       while (studyIt.hasNext()) {
         Study study = studyIt.next().getValue();
         long currentTime = System.currentTimeMillis();
