@@ -19,7 +19,7 @@ import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.enums.IdTypes;
 import org.karnak.backend.service.ProjectService;
-import org.karnak.frontend.project.MainViewProjects;
+import org.karnak.frontend.project.ProjectView;
 import org.karnak.frontend.util.UIS;
 
 public class LayoutDesidentification extends Div {
@@ -123,7 +123,7 @@ public class LayoutDesidentification extends Div {
     getUI()
         .ifPresent(
             nav -> {
-              nav.navigate(MainViewProjects.VIEW_NAME.toLowerCase());
+              nav.navigate(ProjectView.VIEW_NAME.toLowerCase());
             });
   }
 

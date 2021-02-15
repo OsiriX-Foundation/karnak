@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  */
-package org.karnak.frontend.project;
+package org.karnak.frontend.project.components;
 
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
