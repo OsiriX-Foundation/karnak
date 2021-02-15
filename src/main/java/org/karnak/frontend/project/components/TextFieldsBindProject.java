@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  */
-package org.karnak.frontend.project;
+package org.karnak.frontend.project.components;
 
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;

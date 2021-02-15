@@ -9,8 +9,6 @@
  */
 package org.karnak.backend.service;
 
-import com.vaadin.flow.data.provider.ListDataProvider;
-import java.util.ArrayList;
 import java.util.List;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
@@ -21,40 +19,55 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
+/** Project service */
 @Service
-public class ProjectService extends ListDataProvider<ProjectEntity> {
+public class ProjectService {
 
   // Repositories
   private final ProjectRepo projectRepo;
 
-  private ApplicationEventPublisher applicationEventPublisher;
+  // Event publisher
+  private final ApplicationEventPublisher applicationEventPublisher;
 
+  /**
+   * Autowired constructor
+   *
+   * @param projectRepo Project repository
+   * @param applicationEventPublisher Application Event Publisher
+   */
   @Autowired
-  public ProjectService(final ProjectRepo projectRepo) {
-    super(new ArrayList<>());
+  public ProjectService(
+      final ProjectRepo projectRepo, final ApplicationEventPublisher applicationEventPublisher) {
     this.projectRepo = projectRepo;
-    getItems().addAll(getAllProjects());
+    this.applicationEventPublisher = applicationEventPublisher;
   }
 
+  /**
+   * Save in DB the project in parameter
+   *
+   * @param projectEntity Project to save
+   */
   public void save(ProjectEntity projectEntity) {
-    boolean isNewProject = projectEntity.getId() == null;
-    if (isNewProject) {
-      getItems().add(projectEntity);
-    } else {
-      refreshItem(projectEntity);
-    }
     projectRepo.saveAndFlush(projectEntity);
-    refreshAll();
   }
 
+  /**
+   * Update project and destinations
+   *
+   * @param projectEntity Project to updated
+   */
   public void update(ProjectEntity projectEntity) {
     if (projectEntity.getId() != null) {
       projectRepo.saveAndFlush(projectEntity);
       updateDestinations(projectEntity);
-      refreshAll();
     }
   }
 
+  /**
+   * Update destinations
+   *
+   * @param projectEntity Project destinations to update
+   */
   private void updateDestinations(ProjectEntity projectEntity) {
     for (DestinationEntity destinationEntity : projectEntity.getDestinationEntities()) {
       applicationEventPublisher.publishEvent(
@@ -62,36 +75,22 @@ public class ProjectService extends ListDataProvider<ProjectEntity> {
     }
   }
 
+  /**
+   * Remove project
+   *
+   * @param projectEntity Project to remove
+   */
   public void remove(ProjectEntity projectEntity) {
     projectRepo.deleteById(projectEntity.getId());
     projectRepo.flush();
-    refreshAll();
   }
 
-  public ProjectEntity getProjectById(Long projectID) {
-    refreshAll();
-    return getItems().stream()
-        .filter(project -> project.getId().equals(projectID))
-        .findAny()
-        .orElse(null);
-  }
-
+  /**
+   * Retrieve all projects
+   *
+   * @return projects found
+   */
   public List<ProjectEntity> getAllProjects() {
     return projectRepo.findAll();
-  }
-
-  public ApplicationEventPublisher getApplicationEventPublisher() {
-    return applicationEventPublisher;
-  }
-
-  public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
-    this.applicationEventPublisher = applicationEventPublisher;
-  }
-
-  @Override
-  public void refreshAll() {
-    getItems().clear();
-    getItems().addAll(getAllProjects());
-    super.refreshAll();
   }
 }
