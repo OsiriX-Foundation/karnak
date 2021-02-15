@@ -7,19 +7,14 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  */
-package org.karnak.frontend.project;
+package org.karnak.frontend.project.components;
 
 import com.vaadin.flow.component.grid.Grid;
 import org.karnak.backend.data.entity.ProjectEntity;
-import org.karnak.backend.service.ProjectService;
 
 public class GridProject extends Grid<ProjectEntity> {
 
-  private final ProjectService projectService;
-
-  public GridProject(ProjectService projectService) {
-    this.projectService = projectService;
-    setDataProvider(this.projectService);
+  public GridProject() {
     setWidthFull();
     setHeightByRows(true);
 
