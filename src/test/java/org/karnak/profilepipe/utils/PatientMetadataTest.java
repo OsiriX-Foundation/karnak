@@ -168,9 +168,7 @@ class PatientMetadataTest {
     dataset.setString(Tag.PatientName, VR.PN, "");
     dataset.setString(Tag.PatientBirthDate, VR.DA, "NULL");
     dataset.setString(Tag.PatientSex, VR.CS, "");
-    return Stream.of(
-        Arguments.of(new PatientMetadata(dataset, ""))
-    );
+    return Stream.of(Arguments.of(new PatientMetadata(dataset, "")));
   }
 
   @ParameterizedTest

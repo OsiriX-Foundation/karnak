@@ -50,7 +50,7 @@ public class PatientMetadata {
       try {
         final LocalDate patientBirthDateLocalDate = DateTimeUtils.parseDA(rawPatientBirthDate);
         return DateTimeUtils.formatDA(patientBirthDateLocalDate);
-      } catch(DateTimeParseException dateTimeParseException) {
+      } catch (DateTimeParseException dateTimeParseException) {
         return "";
       }
     }
@@ -85,7 +85,7 @@ public class PatientMetadata {
     if (patientBirthDate != null && !patientBirthDate.equals("")) {
       try {
         return DateTimeUtils.parseDA(patientBirthDate);
-      } catch(DateTimeParseException dateTimeParseException) {
+      } catch (DateTimeParseException dateTimeParseException) {
         return null;
       }
     }
