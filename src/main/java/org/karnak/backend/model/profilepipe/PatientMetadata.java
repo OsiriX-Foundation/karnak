@@ -10,6 +10,7 @@
 package org.karnak.backend.model.profilepipe;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.Tag;
 import org.dcm4che6.util.DateTimeUtils;
@@ -46,8 +47,12 @@ public class PatientMetadata {
 
   private String setPatientBirthDate(String rawPatientBirthDate) {
     if (StringUtil.hasText(rawPatientBirthDate)) {
-      final LocalDate patientBirthDateLocalDate = DateTimeUtils.parseDA(rawPatientBirthDate);
-      return DateTimeUtils.formatDA(patientBirthDateLocalDate);
+      try {
+        final LocalDate patientBirthDateLocalDate = DateTimeUtils.parseDA(rawPatientBirthDate);
+        return DateTimeUtils.formatDA(patientBirthDateLocalDate);
+      } catch(DateTimeParseException dateTimeParseException) {
+        return "";
+      }
     }
     return "";
   }
@@ -78,7 +83,11 @@ public class PatientMetadata {
 
   public LocalDate getLocalDatePatientBirthDate() {
     if (patientBirthDate != null && !patientBirthDate.equals("")) {
-      return DateTimeUtils.parseDA(patientBirthDate);
+      try {
+        return DateTimeUtils.parseDA(patientBirthDate);
+      } catch(DateTimeParseException dateTimeParseException) {
+        return null;
+      }
     }
     return null;
   }
