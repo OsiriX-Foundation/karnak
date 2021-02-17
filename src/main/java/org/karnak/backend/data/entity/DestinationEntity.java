@@ -166,7 +166,7 @@ public class DestinationEntity {
     this.type = type;
     this.description = "";
     this.desidentification = false;
-    this.idTypes = IdTypes.PID;
+    this.idTypes = IdTypes.MAINZELLISTE_PID;
     this.pseudonymAsPatientName = null;
     this.tag = null;
     this.delimiter = null;

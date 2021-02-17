@@ -185,7 +185,7 @@ public class MainzellisteAddPatient extends VerticalLayout {
 
       try {
         final PseudonymApi pseudonymApi = new PseudonymApi(externalIdField.getValue());
-        final String pseudonym = pseudonymApi.createPatient(newPatientFields, IdTypes.ADD_EXTID);
+        final String pseudonym = pseudonymApi.createPatient(newPatientFields, IdTypes.EXTID_IN_TAG);
         if (pseudonym != null) {
           final String strPatient =
               "ExternalID: "

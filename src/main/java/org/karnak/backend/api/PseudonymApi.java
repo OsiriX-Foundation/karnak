@@ -283,16 +283,15 @@ public class PseudonymApi {
     final String[] pid = {ID_TYPES}; // pseudonymisation type
     final String[] extid = {ID_TYPES, EXTERNAL_ID};
 
-    Data data; // = new Data(externalPseudonym == null ? idTypes : idTypesExternal, field,
-    // externalPseudonym == null ? null : new Ids(externalPseudonym));
+    Data data;
     switch (idTypes) {
-      case ADD_EXTID:
+      case EXTID_IN_TAG:
         data = new Data(extid, field, new Ids(externalPseudonym));
         break;
-      case EXTID:
+      case MAINZELLISTE_EXTID:
         data = new Data(extid, field, null);
         break;
-      case PID:
+      case MAINZELLISTE_PID:
         data = new Data(pid, field, null);
         break;
       default:

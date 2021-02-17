@@ -25,7 +25,8 @@ import org.karnak.frontend.util.UIS;
 public class LayoutDesidentification extends Div {
 
   final String[] extidSentence = {
-    "Pseudonym are generate automatically",
+    "Pseudonym are generate automatically with Mainzelliste",
+    "Pseudonym is already store in Mainzelliste",
     "Pseudonym is already store in KARNAK",
     "Pseudonym is in a DICOM tag"
   };
@@ -140,7 +141,7 @@ public class LayoutDesidentification extends Div {
               checkboxUseAsPatientName.clear();
               extidPresentInDicomTagView.clear();
               div.remove(extidListBox);
-              remove(checkboxUseAsPatientName);
+              div.remove(checkboxUseAsPatientName);
               div.remove(extidPresentInDicomTagView);
             }
           }
@@ -167,15 +168,15 @@ public class LayoutDesidentification extends Div {
               extidPresentInDicomTagView.clear();
               div.remove(checkboxUseAsPatientName);
               div.remove(extidPresentInDicomTagView);
+            } else if (event.getValue().equals(extidSentence[1])
+                || event.getValue().equals(extidSentence[2])) {
+              div.add(UIS.setWidthFull(checkboxUseAsPatientName));
+              extidPresentInDicomTagView.clear();
+              div.remove(extidPresentInDicomTagView);
             } else {
               div.add(UIS.setWidthFull(checkboxUseAsPatientName));
-              if (event.getValue().equals(extidSentence[1])) {
-                extidPresentInDicomTagView.clear();
-                div.remove(extidPresentInDicomTagView);
-              } else {
-                extidPresentInDicomTagView.enableComponent();
-                div.add(extidPresentInDicomTagView);
-              }
+              extidPresentInDicomTagView.enableComponent();
+              div.add(extidPresentInDicomTagView);
             }
           }
         });
@@ -199,21 +200,25 @@ public class LayoutDesidentification extends Div {
         .withValidator(type -> type != null, "Choose pseudonym type\n")
         .bind(
             destination -> {
-              if (destination.getIdTypes().equals(IdTypes.PID)) {
+              if (destination.getIdTypes().equals(IdTypes.MAINZELLISTE_PID)) {
                 return extidSentence[0];
-              } else if (destination.getIdTypes().equals(IdTypes.EXTID)) {
+              } else if (destination.getIdTypes().equals(IdTypes.MAINZELLISTE_EXTID)) {
                 return extidSentence[1];
-              } else {
+              } else if (destination.getIdTypes().equals(IdTypes.CACHE_EXTID)) {
                 return extidSentence[2];
+              } else {
+                return extidSentence[3];
               }
             },
             (destination, s) -> {
               if (s.equals(extidSentence[0])) {
-                destination.setIdTypes(IdTypes.PID);
+                destination.setIdTypes(IdTypes.MAINZELLISTE_PID);
               } else if (s.equals(extidSentence[1])) {
-                destination.setIdTypes(IdTypes.EXTID);
+                destination.setIdTypes(IdTypes.MAINZELLISTE_EXTID);
+              } else if (s.equals(extidSentence[2])) {
+                destination.setIdTypes(IdTypes.CACHE_EXTID);
               } else {
-                destination.setIdTypes(IdTypes.ADD_EXTID);
+                destination.setIdTypes(IdTypes.EXTID_IN_TAG);
               }
             });
 

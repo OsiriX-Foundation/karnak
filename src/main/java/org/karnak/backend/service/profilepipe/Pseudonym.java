@@ -39,36 +39,39 @@ public class Pseudonym {
 
   public String generatePseudonym(
       DestinationEntity destinationEntity, DicomObject dcm, String defaultIsserOfPatientID) {
-    String pseudonym;
-    if (destinationEntity.getSavePseudonym() != null
-        && destinationEntity.getSavePseudonym() == false) {
+    String pseudonym = null;
+    if (destinationEntity.getIdTypes().equals(IdTypes.EXTID_IN_TAG)) {
       pseudonym = getPseudonymInDicom(dcm, destinationEntity);
       if (pseudonym == null) {
         throw new IllegalStateException("Cannot get a pseudonym in a DICOM tag");
       }
       return pseudonym;
-    } else if (destinationEntity.getIdTypes().equals(IdTypes.EXTID)) {
+    } else if (destinationEntity.getIdTypes().equals(IdTypes.CACHE_EXTID)) {
       pseudonym =
           PatientClientUtil.getPseudonym(
               new PatientMetadata(dcm, defaultIsserOfPatientID), externalIdCache);
-      if (pseudonym != null) {
-        return pseudonym;
+      if (pseudonym == null) {
+        throw new IllegalStateException("Cannot get a pseudonym in cache");
+      }
+    } else if (destinationEntity.getIdTypes().equals(IdTypes.MAINZELLISTE_EXTID)
+        || destinationEntity.getIdTypes().equals(IdTypes.MAINZELLISTE_PID)) {
+      try {
+        PatientMetadata patientMetadata = new PatientMetadata(dcm, defaultIsserOfPatientID);
+        pseudonym =
+            getMainzellistePseudonym(
+                patientMetadata,
+                getPseudonymInDicom(dcm, destinationEntity),
+                destinationEntity.getIdTypes());
+      } catch (Exception e) {
+        LOGGER.error("Cannot get a pseudonym with Mainzelliste API {}", e);
+        throw new IllegalStateException("Cannot get a pseudonym in Mainzelliste API");
       }
     }
-    PatientMetadata patientMetadata = new PatientMetadata(dcm, defaultIsserOfPatientID);
-    try {
-      return getMainzellistePseudonym(
-          patientMetadata,
-          getPseudonymInDicom(dcm, destinationEntity),
-          destinationEntity.getIdTypes());
-    } catch (Exception e) {
-      LOGGER.error("Cannot get a pseudonym with Mainzelliste API {}", e);
-      throw new IllegalStateException("Cannot get a pseudonym in cache or with Mainzelliste API");
-    }
+    return pseudonym;
   }
 
   private String getPseudonymInDicom(DicomObject dcm, DestinationEntity destinationEntity) {
-    if (destinationEntity.getIdTypes().equals(IdTypes.ADD_EXTID)) {
+    if (destinationEntity.getIdTypes().equals(IdTypes.EXTID_IN_TAG)) {
       String cleanTag = destinationEntity.getTag().replaceAll("[(),]", "").toUpperCase();
       final String tagValue = dcm.getString(TagUtils.intFromHexString(cleanTag)).orElse(null);
       if (tagValue != null

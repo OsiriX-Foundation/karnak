@@ -225,7 +225,7 @@ public class Profiles {
     BigInteger patientValue = generatePatientID(pseudonym, hmac);
     String newPatientID = patientValue.toString(16).toUpperCase();
     String newPatientName =
-        !idTypes.equals(IdTypes.PID) && destinationEntity.getPseudonymAsPatientName()
+        !idTypes.equals(IdTypes.MAINZELLISTE_PID) && destinationEntity.getPseudonymAsPatientName()
             ? pseudonym
             : newPatientID;
 
