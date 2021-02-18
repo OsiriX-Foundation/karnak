@@ -18,8 +18,8 @@ import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.service.ProjectService;
 import org.karnak.backend.service.profilepipe.ProfilePipeService;
 import org.karnak.frontend.component.ConfirmDialog;
-import org.karnak.frontend.project.components.EditProject;
-import org.karnak.frontend.project.components.NewProject;
+import org.karnak.frontend.project.component.EditProject;
+import org.karnak.frontend.project.component.NewProject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
