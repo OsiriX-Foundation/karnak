@@ -102,14 +102,12 @@ public class ProjectEntity implements Serializable {
       return false;
     }
     ProjectEntity that = (ProjectEntity) o;
-    return Objects.equals(id, that.id)
-        && Objects.equals(name, that.name)
-        && Arrays.equals(secret, that.secret);
+    return Objects.equals(name, that.name) && Arrays.equals(secret, that.secret);
   }
 
   @Override
   public int hashCode() {
-    int result = Objects.hash(id, name);
+    int result = Objects.hash(name);
     result = 31 * result + Arrays.hashCode(secret);
     return result;
   }

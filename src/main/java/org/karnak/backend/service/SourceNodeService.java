@@ -9,19 +9,16 @@
  */
 package org.karnak.backend.service;
 
-import com.vaadin.flow.data.provider.ListDataProvider;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Objects;
 import org.karnak.backend.data.entity.DicomSourceNodeEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.data.repo.DicomSourceNodeRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
-@SuppressWarnings("serial")
 @Service
-public class SourceNodeService extends ListDataProvider<DicomSourceNodeEntity> {
+public class SourceNodeService {
 
   // Repositories
   private final DicomSourceNodeRepo dicomSourceNodeRepo;
@@ -29,101 +26,51 @@ public class SourceNodeService extends ListDataProvider<DicomSourceNodeEntity> {
   // Services
   private final ForwardNodeService forwardNodeService;
 
-  private ForwardNodeEntity forwardNodeEntity; // Current forward node
-  private boolean hasChanges;
-
-  /** Text filter that can be changed separately. */
-  private String filterText = "";
+  // Event publisher
+  private final ApplicationEventPublisher applicationEventPublisher;
 
   @Autowired
   public SourceNodeService(
-      final DicomSourceNodeRepo dicomSourceNodeRepo, final ForwardNodeService forwardNodeService) {
-    super(new HashSet<>());
+      final DicomSourceNodeRepo dicomSourceNodeRepo,
+      final ForwardNodeService forwardNodeService,
+      final ApplicationEventPublisher applicationEventPublisher) {
     this.dicomSourceNodeRepo = dicomSourceNodeRepo;
     this.forwardNodeService = forwardNodeService;
+    this.applicationEventPublisher = applicationEventPublisher;
   }
 
-  @Override
-  public Object getId(DicomSourceNodeEntity data) {
-    Objects.requireNonNull(data, "Cannot provide an id for a null item.");
-    return data.hashCode();
-  }
-
-  @Override
-  public void refreshAll() {
-    getItems().clear();
-    if (forwardNodeEntity != null) {
-      getItems().addAll(forwardNodeEntity.getSourceNodes());
-    }
-    super.refreshAll();
-  }
-
-  public void setForwardNode(ForwardNodeEntity forwardNodeEntity) {
-    this.forwardNodeEntity = forwardNodeEntity;
-    Collection<DicomSourceNodeEntity> sourceNodes =
-        this.forwardNodeService.getAllSourceNodes(forwardNodeEntity);
-
-    this.getItems().clear();
-    this.getItems().addAll(sourceNodes);
-
-    hasChanges = false;
+  public Collection<DicomSourceNodeEntity> retrieveSourceNodes(
+      ForwardNodeEntity forwardNodeEntity) {
+    return forwardNodeService.getAllSourceNodes(forwardNodeEntity);
   }
 
   /**
    * Store given DicomSourceNodeEntity.
    *
+   * @param forwardNodeEntity
    * @param dicomSourceNodeEntity the updated or new dicomSourceNodeEntity
    */
-  public void save(DicomSourceNodeEntity dicomSourceNodeEntity) {
+  public DicomSourceNodeEntity save(
+      ForwardNodeEntity forwardNodeEntity, DicomSourceNodeEntity dicomSourceNodeEntity) {
     DicomSourceNodeEntity dataUpdated =
         this.forwardNodeService.updateSourceNode(forwardNodeEntity, dicomSourceNodeEntity);
-    if (dicomSourceNodeEntity.getId() == null) {
-      refreshAll();
-    } else {
-      refreshItem(dataUpdated);
-    }
-    hasChanges = true;
     dicomSourceNodeRepo.saveAndFlush(dataUpdated);
+    return dataUpdated;
   }
 
   /**
    * Delete given data from the backing data service.
    *
+   * @param forwardNodeEntity
    * @param data the data to be deleted
    */
-  public void delete(DicomSourceNodeEntity data) {
+  public void delete(ForwardNodeEntity forwardNodeEntity, DicomSourceNodeEntity data) {
     this.forwardNodeService.deleteSourceNode(forwardNodeEntity, data);
-    refreshAll();
-    hasChanges = true;
     dicomSourceNodeRepo.deleteById(data.getId());
     dicomSourceNodeRepo.saveAndFlush(data);
   }
 
-  /**
-   * Sets the filter to use for this data provider and refreshes data.
-   *
-   * <p>Filter is compared for allowed properties.
-   *
-   * @param filterTextInput the text to filter by, never null.
-   */
-  public void setFilter(String filterTextInput) {
-    Objects.requireNonNull(filterText, "Filter text cannot be null.");
-
-    final String filterText = filterTextInput.trim();
-
-    if (Objects.equals(this.filterText, filterText)) {
-      return;
-    }
-    this.filterText = filterText;
-
-    setFilter(data -> matchesFilter(data, filterText));
-  }
-
-  private boolean matchesFilter(DicomSourceNodeEntity data, String filterText) {
-    return data != null && data.matchesFilter(filterText);
-  }
-
-  public boolean hasChanges() {
-    return hasChanges;
+  public ApplicationEventPublisher getApplicationEventPublisher() {
+    return applicationEventPublisher;
   }
 }

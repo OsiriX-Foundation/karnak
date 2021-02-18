@@ -9,19 +9,17 @@
  */
 package org.karnak.backend.service;
 
-import com.vaadin.flow.data.provider.ListDataProvider;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Objects;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.data.repo.DestinationRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
-@SuppressWarnings("serial")
+/** Service managing destinations */
 @Service
-public class DestinationService extends ListDataProvider<DestinationEntity> {
+public class DestinationService {
 
   // Repositories
   private final DestinationRepo destinationRepo;
@@ -30,66 +28,46 @@ public class DestinationService extends ListDataProvider<DestinationEntity> {
   private final ForwardNodeService forwardNodeService;
   private final KheopsAlbumsService kheopsAlbumsService;
 
-  private ForwardNodeEntity forwardNodeEntity; // Current forward node
-  private boolean hasChanges;
+  // Event publisher
+  private final ApplicationEventPublisher applicationEventPublisher;
 
-  /** Text filter that can be changed separately. */
-  private String filterText = "";
-
+  /**
+   * Autowired constructor
+   *
+   * @param destinationRepo Destination repository
+   * @param forwardNodeService ForwardNode Service
+   * @param kheopsAlbumsService Kheops Albums Service
+   * @param applicationEventPublisher ApplicationEventPublisher
+   */
   @Autowired
   public DestinationService(
       final DestinationRepo destinationRepo,
       final ForwardNodeService forwardNodeService,
-      final KheopsAlbumsService kheopsAlbumsService) {
-    super(new HashSet<>());
+      final KheopsAlbumsService kheopsAlbumsService,
+      final ApplicationEventPublisher applicationEventPublisher) {
     this.destinationRepo = destinationRepo;
     this.forwardNodeService = forwardNodeService;
     this.kheopsAlbumsService = kheopsAlbumsService;
-  }
-
-  @Override
-  public Object getId(DestinationEntity data) {
-    Objects.requireNonNull(data, "Cannot provide an id for a null item.");
-    return data.hashCode();
-  }
-
-  @Override
-  public void refreshAll() {
-    getItems().clear();
-    if (forwardNodeEntity != null) {
-      getItems().addAll(forwardNodeEntity.getDestinationEntities());
-    }
-    super.refreshAll();
-  }
-
-  public void setForwardNode(ForwardNodeEntity forwardNodeEntity) {
-    this.forwardNodeEntity = forwardNodeEntity;
-    Collection<DestinationEntity> destinationEntities =
-        this.forwardNodeService.getAllDestinations(forwardNodeEntity);
-
-    getItems().clear();
-    getItems().addAll(destinationEntities);
-
-    hasChanges = false;
+    this.applicationEventPublisher = applicationEventPublisher;
   }
 
   /**
    * Store given Destination to the backing destinationEntity service.
    *
+   * @param forwardNodeEntity
    * @param destinationEntity the updated or new destinationEntity
    */
-  public void save(DestinationEntity destinationEntity) {
+  public DestinationEntity save(
+      ForwardNodeEntity forwardNodeEntity, DestinationEntity destinationEntity) {
     DestinationEntity dataUpdated =
         forwardNodeService.updateDestination(forwardNodeEntity, destinationEntity);
-    if (destinationEntity.getId() == null) {
-      refreshAll();
-    } else {
+
+    if (destinationEntity.getId() != null) {
       dataUpdated = removeValuesOnDisabledDesidentification(destinationEntity);
-      refreshItem(dataUpdated);
     }
-    hasChanges = true;
     destinationRepo.saveAndFlush(dataUpdated);
     kheopsAlbumsService.updateSwitchingAlbumsFromDestination(destinationEntity);
+    return dataUpdated;
   }
 
   private DestinationEntity removeValuesOnDisabledDesidentification(
@@ -103,11 +81,11 @@ public class DestinationService extends ListDataProvider<DestinationEntity> {
   /**
    * Delete given data from the backing data service.
    *
+   * @param forwardNodeEntity
    * @param data the data to be deleted
    */
-  public void delete(DestinationEntity data) {
+  public void delete(ForwardNodeEntity forwardNodeEntity, DestinationEntity data) {
     forwardNodeService.deleteDestination(forwardNodeEntity, data);
-    refreshAll();
     destinationRepo.deleteById(data.getId());
     // TODO: Le jours où la suprresion d'une destination se passera correctement SUPPRIMER cette
     // ligne
@@ -116,31 +94,17 @@ public class DestinationService extends ListDataProvider<DestinationEntity> {
     destinationRepo.saveAndFlush(data);
   }
 
+  public ApplicationEventPublisher getApplicationEventPublisher() {
+    return applicationEventPublisher;
+  }
+
   /**
-   * Sets the filter to use for this data provider and refreshes data.
+   * Retrieve destinations of a forward node
    *
-   * <p>Filter is compared for allowed properties.
-   *
-   * @param filterTextInput the text to filter by, never null.
+   * @param forwardNodeEntity forward node
+   * @return destinations found
    */
-  public void setFilter(String filterTextInput) {
-    Objects.requireNonNull(filterText, "Filter text cannot be null.");
-
-    final String filterText = filterTextInput.trim();
-
-    if (Objects.equals(this.filterText, filterText)) {
-      return;
-    }
-    this.filterText = filterText;
-
-    setFilter(data -> matchesFilter(data, filterText));
-  }
-
-  private boolean matchesFilter(DestinationEntity data, String filterText) {
-    return data != null && data.matchesFilter(filterText);
-  }
-
-  public boolean hasChanges() {
-    return hasChanges;
+  public Collection<DestinationEntity> retrieveDestinations(ForwardNodeEntity forwardNodeEntity) {
+    return forwardNodeService.getAllDestinations(forwardNodeEntity);
   }
 }
