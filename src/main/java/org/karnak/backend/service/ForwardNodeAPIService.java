@@ -18,15 +18,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
+/** Forward Node API Service */
 @Service
 public class ForwardNodeAPIService implements Serializable {
 
+  // Services
   private final ForwardNodeService forwardNodeService;
-  private ApplicationEventPublisher applicationEventPublisher;
+
+  // Event publisher
+  private final ApplicationEventPublisher applicationEventPublisher;
 
   @Autowired
-  public ForwardNodeAPIService(final ForwardNodeService forwardNodeService) {
+  public ForwardNodeAPIService(
+      final ForwardNodeService forwardNodeService,
+      final ApplicationEventPublisher applicationEventPublisher) {
     this.forwardNodeService = forwardNodeService;
+    this.applicationEventPublisher = applicationEventPublisher;
   }
 
   public ForwardNodeService getDataProvider() {
@@ -62,13 +69,5 @@ public class ForwardNodeAPIService implements Serializable {
 
   public ForwardNodeEntity getForwardNodeById(Long dataId) {
     return forwardNodeService.get(dataId);
-  }
-
-  public ApplicationEventPublisher getApplicationEventPublisher() {
-    return applicationEventPublisher;
-  }
-
-  public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
-    this.applicationEventPublisher = applicationEventPublisher;
   }
 }

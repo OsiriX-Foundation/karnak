@@ -9,8 +9,6 @@
  */
 package org.karnak.backend.service;
 
-import com.vaadin.flow.data.provider.ListDataProvider;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -22,34 +20,15 @@ import org.karnak.backend.data.repo.ForwardNodeRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-@SuppressWarnings("serial")
 @Service
-public class ForwardNodeService extends ListDataProvider<ForwardNodeEntity> {
+public class ForwardNodeService {
 
   // Repositories
   private final ForwardNodeRepo forwardNodeRepo;
 
-  /** Text filter that can be changed separately. */
-  private String filterText = "";
-
   @Autowired
   public ForwardNodeService(final ForwardNodeRepo forwardNodeRepo) {
-    super(new ArrayList<>());
     this.forwardNodeRepo = forwardNodeRepo;
-    getItems().addAll(getAllForwardNodes());
-  }
-
-  @Override
-  public void refreshAll() {
-    getItems().clear();
-    getItems().addAll(getAllForwardNodes());
-    super.refreshAll();
-  }
-
-  @Override
-  public Long getId(ForwardNodeEntity data) {
-    Objects.requireNonNull(data, "Cannot provide an id for a null item.");
-    return data.getId();
   }
 
   /**
@@ -69,8 +48,6 @@ public class ForwardNodeService extends ListDataProvider<ForwardNodeEntity> {
    */
   public void save(ForwardNodeEntity forwardNodeEntity) {
     forwardNodeRepo.saveAndFlush(forwardNodeEntity);
-    refreshItem(forwardNodeEntity);
-    refreshAll();
   }
 
   /**
@@ -81,31 +58,6 @@ public class ForwardNodeService extends ListDataProvider<ForwardNodeEntity> {
   public void delete(ForwardNodeEntity data) {
     forwardNodeRepo.deleteById(data.getId());
     forwardNodeRepo.flush();
-    refreshAll();
-  }
-
-  /**
-   * Sets the filter to use for this data provider and refreshes data.
-   *
-   * <p>Filter is compared for allowed properties.
-   *
-   * @param filterTextInput the text to filter by, never null.
-   */
-  public void setFilter(String filterTextInput) {
-    Objects.requireNonNull(filterText, "Filter text cannot be null.");
-
-    final String filterText = filterTextInput.trim();
-
-    if (Objects.equals(this.filterText, filterText)) {
-      return;
-    }
-    this.filterText = filterText;
-
-    setFilter(data -> matchesFilter(data, filterText));
-  }
-
-  private boolean matchesFilter(ForwardNodeEntity data, String filterText) {
-    return data != null && data.matchesFilter(filterText);
   }
 
   public List<ForwardNodeEntity> getAllForwardNodes() {

@@ -21,9 +21,9 @@ import com.vaadin.flow.router.Route;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.model.profilepipe.HMAC;
 import org.karnak.frontend.MainLayout;
-import org.karnak.frontend.project.components.EditProject;
-import org.karnak.frontend.project.components.GridProject;
-import org.karnak.frontend.project.components.NewProject;
+import org.karnak.frontend.project.component.EditProject;
+import org.karnak.frontend.project.component.GridProject;
+import org.karnak.frontend.project.component.NewProject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 
@@ -31,6 +31,7 @@ import org.springframework.security.access.annotation.Secured;
 @Route(value = "projects", layout = MainLayout.class)
 @PageTitle("KARNAK - Projects")
 @Secured({"ADMIN"})
+@SuppressWarnings("serial")
 public class ProjectView extends HorizontalLayout implements HasUrlParameter<String> {
 
   public static final String VIEW_NAME = "Projects";
