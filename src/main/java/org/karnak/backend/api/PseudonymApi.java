@@ -31,32 +31,26 @@ import org.karnak.backend.api.rqbody.Fields;
 import org.karnak.backend.api.rqbody.Ids;
 import org.karnak.backend.api.rqbody.SearchIds;
 import org.karnak.backend.config.MainzellisteConfig;
-import org.karnak.backend.enums.IdTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 
 /** API model */
 public class PseudonymApi {
 
-  // ---------------------------------------------------------------
-  // Constants -----------------------------------------------------
-  // ---------------------------------------------------------------
-  private static final Logger log = LoggerFactory.getLogger(PseudonymApi.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(PseudonymApi.class);
 
-  private final String SERVER_URL = MainzellisteConfig.getInstance().getServerurl();
-  private final String API_KEY = MainzellisteConfig.getInstance().getApikey();
-  private final String ID_TYPES = MainzellisteConfig.getInstance().getIdtypes();
-  private final String EXTERNAL_ID = "extid";
-  private final String externalPseudonym;
+  private static final String SERVER_URL = MainzellisteConfig.getInstance().getServerurl();
+  private static final String API_KEY = MainzellisteConfig.getInstance().getApikey();
+
+  private static final String MAINZELLISTE_HEADER = "mainzellisteApiKey";
+  private static final String CONTENT_TYPE_HEADER = "Content-Type";
 
   private final HttpClient httpClient =
       HttpClient.newBuilder() // one instance, reuse
           .version(HttpClient.Version.HTTP_2)
           .build();
 
-  // ---------------------------------------------------------------
-  // Fields --------------------------------------------------------
-  // ---------------------------------------------------------------
   private String sessionId;
 
   /***
@@ -64,12 +58,51 @@ public class PseudonymApi {
    */
   public PseudonymApi() {
     this.sessionId = rqGetSessionId();
-    this.externalPseudonym = null;
   }
 
-  public PseudonymApi(String externalPseudonym) {
-    this.sessionId = rqGetSessionId();
-    this.externalPseudonym = externalPseudonym;
+  public String addExtID(Fields patientFields, String externalPseudonym) {
+    final String[] extid = {"pid", "extid"};
+    final Data data = new Data(extid, patientFields, new Ids(externalPseudonym));
+    try {
+      return getPseudonym(data);
+    } catch (Exception e) {
+      LOGGER.error("Cannot add a extid {} in Mainzellise {}", externalPseudonym, e);
+    }
+    return null;
+  }
+
+  public String getExistingExtID(Fields patientFields) {
+    final String[] extid = {"pid", "extid"};
+    final Data data = new Data(extid, patientFields, null);
+    try {
+      return getPseudonym(data);
+    } catch (Exception e) {
+      LOGGER.error("Cannot get an existing extid in Mainzelliste", e);
+    }
+    return null;
+  }
+
+  public String generatePID(Fields patientFields) {
+    final String[] extid = {"pid"};
+    final Data data = new Data(extid, patientFields, null);
+    try {
+      return getPseudonym(data);
+    } catch (Exception e) {
+      LOGGER.error("Cannot generate pid in Mainzelliste", e);
+    }
+    return null;
+  }
+
+  private String getPseudonym(Data data) throws IOException, InterruptedException {
+    final String tokenIDAddPatient = rqCreateTokenAddPatient(data);
+    final List<JSONObject> pseudonymList = rqCreatePatient(tokenIDAddPatient);
+    final String idTypes = data.get_idtypes()[data.get_idtypes().length - 1];
+    final JSONObject jsonPseudonym =
+        pseudonymList.stream()
+            .filter(p -> p.getString("idType").equals(idTypes))
+            .findFirst()
+            .orElseThrow();
+    return jsonPseudonym.getString("idString");
   }
 
   /***
@@ -105,27 +138,9 @@ public class PseudonymApi {
    * @param pseudonym
    * @return patient
    */
-  public JSONArray searchPatient(String pseudonym) {
-    SearchIds[] searchIds = {new SearchIds(ID_TYPES, pseudonym)}; // search example
-    JSONArray patientsReturns = getPatients(searchIds);
-    return patientsReturns;
-  }
-
-  /***
-   * Create patient in pseudonym api
-   * @param patientFields
-   * @return Pseudonym
-   */
-  public String createPatient(Fields patientFields, IdTypes idTypes)
-      throws IOException, InterruptedException {
-    String tokenId = rqCreateTokenAddPatient(patientFields, idTypes);
-    List<JSONObject> pseudonymList = rqCreatePatient(tokenId);
-    JSONObject jsonPseudonym =
-        pseudonymList.stream()
-            .filter(p -> p.getString("idType").equals(idTypes.getValue()))
-            .findFirst()
-            .orElseThrow();
-    return jsonPseudonym.getString("idString");
+  public JSONArray searchPatient(String pseudonym, String idTypes) {
+    SearchIds[] searchIds = {new SearchIds(idTypes, pseudonym)}; // search example
+    return getPatients(searchIds);
   }
 
   /***
@@ -139,7 +154,7 @@ public class PseudonymApi {
       String tokenId = rqCreateTokenReadPatient(searchIds);
       patientArray = rqGetPatient(tokenId);
     } catch (Exception e) {
-      log.error("Cannot create patient", e);
+      LOGGER.error("Cannot create patient", e);
     }
     return patientArray;
   }
@@ -153,9 +168,9 @@ public class PseudonymApi {
     HttpRequest request =
         HttpRequest.newBuilder()
             .POST(buildFormDataFromMap(data))
-            .uri(URI.create(this.SERVER_URL + "/sessions"))
-            .header("Content-Type", "application/json")
-            .header("mainzellisteApiKey", this.API_KEY)
+            .uri(URI.create(SERVER_URL + "/sessions"))
+            .header(CONTENT_TYPE_HEADER, MediaType.APPLICATION_JSON_VALUE)
+            .header(MAINZELLISTE_HEADER, API_KEY)
             .build();
 
     HttpResponse<String> response;
@@ -165,7 +180,7 @@ public class PseudonymApi {
       final JSONObject jsonResp = new JSONObject(response.body());
       this.sessionId = jsonResp.getString("sessionId");
     } catch (Exception e) {
-      log.error("Cannot get a sessionId with Mainzelliste API {}", e);
+      LOGGER.error("Cannot get a sessionId with Mainzelliste API", e);
     }
     return this.sessionId;
   }
@@ -174,23 +189,23 @@ public class PseudonymApi {
    * Make the request to have a token that allow to add a new patient
    * @return sessionID
    */
-  public String rqCreateTokenAddPatient(Fields patientFields, IdTypes idTypes)
-      throws IOException, InterruptedException {
-    String jsonBody = createJsonRequest(patientFields, idTypes);
+  public String rqCreateTokenAddPatient(Data data) throws IOException, InterruptedException {
+    final Body bodyRequest = new Body("addPatient", data);
+    final Gson gson = new Gson();
+    final String jsonBody = gson.toJson(bodyRequest);
+
     HttpRequest request =
         HttpRequest.newBuilder()
             .POST(BodyPublishers.ofString(jsonBody))
-            .uri(URI.create(this.SERVER_URL + "/sessions/" + this.sessionId + "/tokens"))
-            .header("Content-Type", "application/json")
-            .header("mainzellisteApiKey", this.API_KEY)
+            .uri(URI.create(SERVER_URL + "/sessions/" + this.sessionId + "/tokens"))
+            .header(CONTENT_TYPE_HEADER, MediaType.APPLICATION_JSON_VALUE)
+            .header(MAINZELLISTE_HEADER, API_KEY)
             .build();
 
-    HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
+    final HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
     controlErrorResponse(response);
     final JSONObject jsonResp = new JSONObject(response.body());
-    String tokenAddPatient = jsonResp.getString("tokenId");
-
-    return tokenAddPatient;
+    return jsonResp.getString("tokenId");
   }
 
   /***
@@ -204,18 +219,16 @@ public class PseudonymApi {
     HttpRequest request =
         HttpRequest.newBuilder()
             .POST(BodyPublishers.ofString(jsonBody))
-            .uri(URI.create(this.SERVER_URL + "/sessions/" + this.sessionId + "/tokens"))
-            .header("Content-Type", "application/json")
-            .header("mainzellisteApiKey", this.API_KEY)
+            .uri(URI.create(SERVER_URL + "/sessions/" + this.sessionId + "/tokens"))
+            .header(CONTENT_TYPE_HEADER, MediaType.APPLICATION_JSON_VALUE)
+            .header(MAINZELLISTE_HEADER, API_KEY)
             .build();
 
     HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
     controlErrorResponse(response);
 
     final JSONObject jsonResp = new JSONObject(response.body());
-    String tokenReadPatient = jsonResp.getString("tokenId");
-
-    return tokenReadPatient;
+    return jsonResp.getString("tokenId");
   }
 
   /***
@@ -231,12 +244,9 @@ public class PseudonymApi {
             .POST(buildFormDataFromMap(data))
             .uri(
                 URI.create(
-                    this.SERVER_URL
-                        + "/patients?tokenId="
-                        + tokenId
-                        + "&mainzellisteApiVersion=2.0"))
-            .header("Content-Type", "application/x-www-form-urlencoded")
-            .header("mainzellisteApiKey", this.API_KEY)
+                    SERVER_URL + "/patients?tokenId=" + tokenId + "&mainzellisteApiVersion=2.0"))
+            .header(CONTENT_TYPE_HEADER, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+            .header(MAINZELLISTE_HEADER, API_KEY)
             .build();
 
     List<JSONObject> newIds = new ArrayList<>();
@@ -261,46 +271,14 @@ public class PseudonymApi {
     HttpRequest request =
         HttpRequest.newBuilder()
             .GET()
-            .uri(URI.create(this.SERVER_URL + "/patients?tokenId=" + tokenId))
-            .header("Content-Type", "application/x-www-form-urlencoded")
-            .header("mainzellisteApiKey", this.API_KEY)
+            .uri(URI.create(SERVER_URL + "/patients?tokenId=" + tokenId))
+            .header(CONTENT_TYPE_HEADER, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+            .header(MAINZELLISTE_HEADER, API_KEY)
             .build();
 
     HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
     controlErrorResponse(response);
-    JSONArray jsonResp = new JSONArray(response.body());
-
-    return jsonResp;
-  }
-
-  /***
-   * This method allow to create a json body for addPatient in pseudonym api
-   * @param patientFields Patient that we want to add in pseudonym api.
-   * @return String json body
-   */
-  private String createJsonRequest(Fields patientFields, IdTypes idTypes) {
-    final Fields field = patientFields;
-    final String[] pid = {ID_TYPES}; // pseudonymisation type
-    final String[] extid = {ID_TYPES, EXTERNAL_ID};
-
-    Data data;
-    switch (idTypes) {
-      case EXTID_IN_TAG:
-        data = new Data(extid, field, new Ids(externalPseudonym));
-        break;
-      case MAINZELLISTE_EXTID:
-        data = new Data(extid, field, null);
-        break;
-      case MAINZELLISTE_PID:
-        data = new Data(pid, field, null);
-        break;
-      default:
-        data = new Data(pid, field, null);
-    }
-
-    final Body bodyRequest = new Body("addPatient", data);
-    final Gson gson = new Gson();
-    return gson.toJson(bodyRequest);
+    return new JSONArray(response.body());
   }
 
   /***

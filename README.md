@@ -65,7 +65,6 @@ see [karnak-docker](https://github.com/OsiriX-Foundation/karnak-docker).
             - `DB_HOST=localhost`
             - `MAINZELLISTE_HOSTNAME=localhost`
             - `MAINZELLISTE_HTTP_PORT=8083`
-            - `MAINZELLISTE_ID_TYPES=pid`
             - `MAINZELLISTE_API_KEY=changeThisApiKey`
             - `KARNAK_ADMIN=admin`
             - `KARNAK_PASSWORD=admin`
