@@ -9,6 +9,7 @@
  */
 package org.karnak.backend.util;
 
+import java.time.DateTimeException;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.dcm4che6.data.DicomElement;
@@ -45,7 +46,8 @@ public class ShiftRangeDate {
   }
 
   public String shift(
-      DicomObject dcm, DicomElement dcmEl, List<ArgumentEntity> argumentEntities, HMAC hmac) {
+      DicomObject dcm, DicomElement dcmEl, List<ArgumentEntity> argumentEntities, HMAC hmac)
+      throws DateTimeException {
     try {
       verifyShiftArguments(argumentEntities);
     } catch (IllegalArgumentException e) {
@@ -82,13 +84,18 @@ public class ShiftRangeDate {
     int shiftSeconds = (int) hmac.scaleHash(PatientID, shiftMinSeconds, shiftMaxSeconds);
 
     if (dcmElValue != null) {
-      return switch (dcmEl.vr()) {
-        case AS -> ShiftDate.ASbyDays(dcmElValue, shiftDays);
-        case DA -> ShiftDate.DAbyDays(dcmElValue, shiftDays);
-        case DT -> ShiftDate.DTbyDays(dcmElValue, shiftDays, shiftSeconds);
-        case TM -> ShiftDate.TMbySeconds(dcmElValue, shiftSeconds);
-        default -> null;
-      };
+      try {
+        return switch (dcmEl.vr()) {
+          case AS -> ShiftDate.ASbyDays(dcmElValue, shiftDays);
+          case DA -> ShiftDate.DAbyDays(dcmElValue, shiftDays);
+          case DT -> ShiftDate.DTbyDays(dcmElValue, shiftDays, shiftSeconds);
+          case TM -> ShiftDate.TMbySeconds(dcmElValue, shiftSeconds);
+          default -> null;
+        };
+
+      } catch (DateTimeException dateTimeException) {
+        throw dateTimeException;
+      }
     }
 
     return null;
