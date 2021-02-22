@@ -226,7 +226,7 @@ public class Profiles {
     String newPatientID = patientValue.toString(16).toUpperCase();
     String newPatientName =
         !pseudonymType.equals(PseudonymType.MAINZELLISTE_PID)
-                && destinationEntity.getPseudonymAsPatientName()
+                && destinationEntity.getPseudonymAsPatientName().booleanValue()
             ? pseudonym
             : newPatientID;
 
