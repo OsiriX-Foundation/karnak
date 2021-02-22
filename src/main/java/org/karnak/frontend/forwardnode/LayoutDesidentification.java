@@ -10,6 +10,7 @@
 package org.karnak.frontend.forwardnode;
 
 import static org.karnak.backend.enums.PseudonymType.*;
+
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
