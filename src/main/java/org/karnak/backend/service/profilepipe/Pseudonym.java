@@ -36,9 +36,9 @@ public class Pseudonym {
   }
 
   public String generatePseudonym(
-      DestinationEntity destinationEntity, DicomObject dcm, String defaultIsserOfPatientID) {
+      DestinationEntity destinationEntity, DicomObject dcm, String defaultIssuerOfPatientID) {
 
-    final PatientMetadata patientMetadata = new PatientMetadata(dcm, defaultIsserOfPatientID);
+    final PatientMetadata patientMetadata = new PatientMetadata(dcm, defaultIssuerOfPatientID);
 
     if (destinationEntity.getIdTypes().equals(IdTypes.CACHE_EXTID)) {
       return getCacheExtid(patientMetadata);
