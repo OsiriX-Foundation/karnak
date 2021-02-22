@@ -60,9 +60,9 @@ public class PseudonymApi {
     try {
       return getPseudonym(data);
     } catch (Exception e) {
-      LOGGER.error("Cannot add a extid {} in Mainzellise {}", externalPseudonym, e);
+      throw new IllegalStateException(
+          String.format("Cannot add a extid %s in Mainzellise %s", externalPseudonym, e));
     }
-    return null;
   }
 
   public String getExistingExtID(Fields patientFields) {
@@ -72,9 +72,8 @@ public class PseudonymApi {
     try {
       return getPseudonym(data);
     } catch (Exception e) {
-      LOGGER.error("Cannot get an existing extid in Mainzelliste", e);
+      throw new IllegalStateException("Cannot get an existing extid in Mainzelliste API", e);
     }
-    return null;
   }
 
   public String generatePID(Fields patientFields) {
@@ -84,9 +83,8 @@ public class PseudonymApi {
     try {
       return getPseudonym(data);
     } catch (Exception e) {
-      LOGGER.error("Cannot generate pid in Mainzelliste", e);
+      throw new IllegalStateException("Cannot generate pid in Mainzelliste", e);
     }
-    return null;
   }
 
   public JSONArray searchPatient(String pseudonym, String idTypes) {
@@ -228,7 +226,8 @@ public class PseudonymApi {
    * @param tokenId
    * @return Pseudonym
    */
-  private List<JSONObject> rqCreatePatient(String tokenId) throws IOException, InterruptedException {
+  private List<JSONObject> rqCreatePatient(String tokenId)
+      throws IOException, InterruptedException {
     Map<Object, Object> data = new HashMap<>();
     data.put("sureness", true);
     HttpRequest request =
