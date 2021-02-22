@@ -53,14 +53,8 @@ public class PseudonymApi {
 
   private String sessionId;
 
-  /***
-   * This classe allow the communcation betwen karnak and pseudonym api. Get sessionId at initialization.
-   */
-  public PseudonymApi() {
-    this.sessionId = rqGetSessionId();
-  }
-
   public String addExtID(Fields patientFields, String externalPseudonym) {
+    this.sessionId = rqGetSessionId();
     final String[] extid = {"pid", "extid"};
     final Data data = new Data(extid, patientFields, new Ids(externalPseudonym));
     try {
@@ -72,6 +66,7 @@ public class PseudonymApi {
   }
 
   public String getExistingExtID(Fields patientFields) {
+    this.sessionId = rqGetSessionId();
     final String[] extid = {"pid", "extid"};
     final Data data = new Data(extid, patientFields, null);
     try {
@@ -83,6 +78,7 @@ public class PseudonymApi {
   }
 
   public String generatePID(Fields patientFields) {
+    this.sessionId = rqGetSessionId();
     final String[] extid = {"pid"};
     final Data data = new Data(extid, patientFields, null);
     try {
@@ -91,6 +87,12 @@ public class PseudonymApi {
       LOGGER.error("Cannot generate pid in Mainzelliste", e);
     }
     return null;
+  }
+
+  public JSONArray searchPatient(String pseudonym, String idTypes) {
+    this.sessionId = rqGetSessionId();
+    SearchIds[] searchIds = {new SearchIds(idTypes, pseudonym)}; // search example
+    return getPatients(searchIds);
   }
 
   private String getPseudonym(Data data) throws IOException, InterruptedException {
@@ -134,21 +136,11 @@ public class PseudonymApi {
   }
 
   /***
-   * Get patient info with pseudonym
-   * @param pseudonym
-   * @return patient
-   */
-  public JSONArray searchPatient(String pseudonym, String idTypes) {
-    SearchIds[] searchIds = {new SearchIds(idTypes, pseudonym)}; // search example
-    return getPatients(searchIds);
-  }
-
-  /***
    * Get patient in pseudonym api
    * @param searchIds
    * @return Pseudonym
    */
-  public JSONArray getPatients(SearchIds[] searchIds) {
+  private JSONArray getPatients(SearchIds[] searchIds) {
     JSONArray patientArray = null;
     try {
       String tokenId = rqCreateTokenReadPatient(searchIds);
@@ -163,7 +155,7 @@ public class PseudonymApi {
    * Make the request to have an id session to the API that manages the pseudonyms
    * @return sessionID
    */
-  public String rqGetSessionId() {
+  private String rqGetSessionId() {
     Map<Object, Object> data = new HashMap<>();
     HttpRequest request =
         HttpRequest.newBuilder()
@@ -189,7 +181,7 @@ public class PseudonymApi {
    * Make the request to have a token that allow to add a new patient
    * @return sessionID
    */
-  public String rqCreateTokenAddPatient(Data data) throws IOException, InterruptedException {
+  private String rqCreateTokenAddPatient(Data data) throws IOException, InterruptedException {
     final Body bodyRequest = new Body("addPatient", data);
     final Gson gson = new Gson();
     final String jsonBody = gson.toJson(bodyRequest);
@@ -213,7 +205,7 @@ public class PseudonymApi {
    * @param searchIds
    * @return Patients
    */
-  public String rqCreateTokenReadPatient(SearchIds[] searchIds)
+  private String rqCreateTokenReadPatient(SearchIds[] searchIds)
       throws IOException, InterruptedException {
     String jsonBody = createJsonReadPatient(searchIds);
     HttpRequest request =
@@ -236,7 +228,7 @@ public class PseudonymApi {
    * @param tokenId
    * @return Pseudonym
    */
-  public List<JSONObject> rqCreatePatient(String tokenId) throws IOException, InterruptedException {
+  private List<JSONObject> rqCreatePatient(String tokenId) throws IOException, InterruptedException {
     Map<Object, Object> data = new HashMap<>();
     data.put("sureness", true);
     HttpRequest request =
@@ -267,7 +259,7 @@ public class PseudonymApi {
    * @param tokenId
    * @return Pseudonym
    */
-  public JSONArray rqGetPatient(String tokenId) throws IOException, InterruptedException {
+  private JSONArray rqGetPatient(String tokenId) throws IOException, InterruptedException {
     HttpRequest request =
         HttpRequest.newBuilder()
             .GET()
