@@ -8,7 +8,6 @@ karnakpassword: admin
 mainzelliste:
   apikey: 'changeThisApiKey'
   serverurl: 'http://localhost:8083'
-  idtypes: 'pid'
 logging:
   level:
     com:

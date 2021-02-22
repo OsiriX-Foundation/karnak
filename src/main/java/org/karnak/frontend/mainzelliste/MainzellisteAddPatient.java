@@ -25,7 +25,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.karnak.backend.api.PseudonymApi;
 import org.karnak.backend.api.rqbody.Fields;
 import org.karnak.backend.cache.MainzellistePatient;
-import org.karnak.backend.enums.IdTypes;
 import org.karnak.frontend.component.ConfirmDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -184,8 +183,9 @@ public class MainzellisteAddPatient extends VerticalLayout {
               issuerOfPatientIdField.getValue());
 
       try {
-        final PseudonymApi pseudonymApi = new PseudonymApi(externalIdField.getValue());
-        final String pseudonym = pseudonymApi.createPatient(newPatientFields, IdTypes.ADD_EXTID);
+        final PseudonymApi pseudonymApi = new PseudonymApi();
+        final String pseudonym =
+            pseudonymApi.addExtID(newPatientFields, externalIdField.getValue());
         if (pseudonym != null) {
           final String strPatient =
               "ExternalID: "
