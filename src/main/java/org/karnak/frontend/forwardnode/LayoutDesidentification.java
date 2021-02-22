@@ -87,7 +87,7 @@ public class LayoutDesidentification extends Div {
         CACHE_EXTID.getValue(),
         EXTID_IN_TAG.getValue());
 
-    checkboxUseAsPatientName = new Checkbox("Use as Patient Name");
+    checkboxUseAsPatientName = new Checkbox("Uses the pseudonym as Patient Name");
 
     extidPresentInDicomTagView = new ExtidPresentInDicomTagView(destinationBinder);
     div = new Div();
