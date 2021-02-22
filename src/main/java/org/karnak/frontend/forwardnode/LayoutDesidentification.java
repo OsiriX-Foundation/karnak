@@ -9,7 +9,7 @@
  */
 package org.karnak.frontend.forwardnode;
 
-import static org.karnak.backend.enums.IdTypes.*;
+import static org.karnak.backend.enums.PseudonymType.*;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
@@ -190,11 +190,11 @@ public class LayoutDesidentification extends Div {
         .withValidator(type -> type != null, "Choose pseudonym type\n")
         .bind(
             destination -> {
-              if (destination.getIdTypes().equals(MAINZELLISTE_PID)) {
+              if (destination.getPseudonymType().equals(MAINZELLISTE_PID)) {
                 return MAINZELLISTE_PID.getValue();
-              } else if (destination.getIdTypes().equals(MAINZELLISTE_EXTID)) {
+              } else if (destination.getPseudonymType().equals(MAINZELLISTE_EXTID)) {
                 return MAINZELLISTE_EXTID.getValue();
-              } else if (destination.getIdTypes().equals(CACHE_EXTID)) {
+              } else if (destination.getPseudonymType().equals(CACHE_EXTID)) {
                 return CACHE_EXTID.getValue();
               } else {
                 return EXTID_IN_TAG.getValue();
@@ -202,13 +202,13 @@ public class LayoutDesidentification extends Div {
             },
             (destination, s) -> {
               if (s.equals(MAINZELLISTE_PID.getValue())) {
-                destination.setIdTypes(MAINZELLISTE_PID);
+                destination.setPseudonymType(MAINZELLISTE_PID);
               } else if (s.equals(MAINZELLISTE_EXTID.getValue())) {
-                destination.setIdTypes(MAINZELLISTE_EXTID);
+                destination.setPseudonymType(MAINZELLISTE_EXTID);
               } else if (s.equals(CACHE_EXTID.getValue())) {
-                destination.setIdTypes(CACHE_EXTID);
+                destination.setPseudonymType(CACHE_EXTID);
               } else {
-                destination.setIdTypes(EXTID_IN_TAG);
+                destination.setPseudonymType(EXTID_IN_TAG);
               }
             });
 

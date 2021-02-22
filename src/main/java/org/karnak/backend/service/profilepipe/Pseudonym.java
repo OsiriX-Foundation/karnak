@@ -16,7 +16,7 @@ import org.karnak.backend.cache.MainzellistePatient;
 import org.karnak.backend.cache.PatientClient;
 import org.karnak.backend.config.AppConfig;
 import org.karnak.backend.data.entity.DestinationEntity;
-import org.karnak.backend.enums.IdTypes;
+import org.karnak.backend.enums.PseudonymType;
 import org.karnak.backend.model.profilepipe.PatientMetadata;
 import org.karnak.backend.util.PatientClientUtil;
 import org.karnak.backend.util.SpecialCharacter;
@@ -40,11 +40,11 @@ public class Pseudonym {
 
     final PatientMetadata patientMetadata = new PatientMetadata(dcm, defaultIssuerOfPatientID);
 
-    if (destinationEntity.getIdTypes().equals(IdTypes.CACHE_EXTID)) {
+    if (destinationEntity.getPseudonymType().equals(PseudonymType.CACHE_EXTID)) {
       return getCacheExtid(patientMetadata);
     }
 
-    if (destinationEntity.getIdTypes().equals(IdTypes.EXTID_IN_TAG)) {
+    if (destinationEntity.getPseudonymType().equals(PseudonymType.EXTID_IN_TAG)) {
       return getPseudonymInDicom(dcm, destinationEntity, patientMetadata);
     }
 
@@ -55,11 +55,13 @@ public class Pseudonym {
       return cachedMainezllistePseudonym;
     }
 
-    if (destinationEntity.getIdTypes().equals(IdTypes.MAINZELLISTE_PID)) { // MAINZELLISTE
+    if (destinationEntity
+        .getPseudonymType()
+        .equals(PseudonymType.MAINZELLISTE_PID)) { // MAINZELLISTE
       return getMainzellistePID(patientMetadata);
     }
 
-    if (destinationEntity.getIdTypes().equals(IdTypes.MAINZELLISTE_EXTID)) {
+    if (destinationEntity.getPseudonymType().equals(PseudonymType.MAINZELLISTE_EXTID)) {
       return getMainzellisteExtID(patientMetadata);
     }
 

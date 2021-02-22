@@ -9,7 +9,7 @@
  */
 package org.karnak.backend.enums;
 
-public enum IdTypes {
+public enum PseudonymType {
   MAINZELLISTE_PID("Pseudonym are generate automatically with Mainzelliste"),
   MAINZELLISTE_EXTID("Pseudonym is already store in Mainzelliste"),
   CACHE_EXTID("External pseudonym is already store in KARNAK"),
@@ -17,7 +17,7 @@ public enum IdTypes {
 
   private final String value;
 
-  IdTypes(String value) {
+  PseudonymType(String value) {
     this.value = value;
   }
 

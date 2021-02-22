@@ -38,7 +38,7 @@ import org.karnak.backend.data.validator.DestinationGroupSequenceProvider;
 import org.karnak.backend.data.validator.DestinationGroupSequenceProvider.DestinationDicomGroup;
 import org.karnak.backend.data.validator.DestinationGroupSequenceProvider.DestinationStowGroup;
 import org.karnak.backend.enums.DestinationType;
-import org.karnak.backend.enums.IdTypes;
+import org.karnak.backend.enums.PseudonymType;
 
 @GroupSequenceProvider(value = DestinationGroupSequenceProvider.class)
 @Entity(name = "Destination")
@@ -55,7 +55,7 @@ public class DestinationEntity {
   private String description;
   private boolean desidentification;
 
-  private IdTypes idTypes;
+  private PseudonymType pseudonymType;
 
   private String tag;
 
@@ -166,7 +166,7 @@ public class DestinationEntity {
     this.type = type;
     this.description = "";
     this.desidentification = false;
-    this.idTypes = IdTypes.MAINZELLISTE_PID;
+    this.pseudonymType = PseudonymType.MAINZELLISTE_PID;
     this.pseudonymAsPatientName = null;
     this.tag = null;
     this.delimiter = null;
@@ -372,12 +372,12 @@ public class DestinationEntity {
     return sopList;
   }
 
-  public IdTypes getIdTypes() {
-    return idTypes;
+  public PseudonymType getPseudonymType() {
+    return pseudonymType;
   }
 
-  public void setIdTypes(IdTypes idTypes) {
-    this.idTypes = idTypes;
+  public void setPseudonymType(PseudonymType pseudonymType) {
+    this.pseudonymType = pseudonymType;
   }
 
   public String getTag() {

@@ -33,7 +33,7 @@ import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.data.entity.ProfileEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
-import org.karnak.backend.enums.IdTypes;
+import org.karnak.backend.enums.PseudonymType;
 import org.karnak.backend.enums.ProfileItemType;
 import org.karnak.backend.model.action.ActionItem;
 import org.karnak.backend.model.action.Add;
@@ -204,7 +204,7 @@ public class Profiles {
     final String SeriesInstanceUID = dcm.getString(Tag.SeriesInstanceUID).orElse(null);
     final String IssuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID).orElse(null);
     final String PatientID = dcm.getString(Tag.PatientID).orElse(null);
-    final IdTypes idTypes = destinationEntity.getIdTypes();
+    final PseudonymType pseudonymType = destinationEntity.getPseudonymType();
     final HMAC hmac = generateHMAC(destinationEntity, PatientID);
 
     MDC.put("SOPInstanceUID", SOPInstanceUID);
@@ -225,7 +225,8 @@ public class Profiles {
     BigInteger patientValue = generatePatientID(pseudonym, hmac);
     String newPatientID = patientValue.toString(16).toUpperCase();
     String newPatientName =
-        !idTypes.equals(IdTypes.MAINZELLISTE_PID) && destinationEntity.getPseudonymAsPatientName()
+        !pseudonymType.equals(PseudonymType.MAINZELLISTE_PID)
+                && destinationEntity.getPseudonymAsPatientName()
             ? pseudonym
             : newPatientID;
 
