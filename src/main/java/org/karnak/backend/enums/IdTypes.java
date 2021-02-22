@@ -10,10 +10,10 @@
 package org.karnak.backend.enums;
 
 public enum IdTypes {
-  MAINZELLISTE_PID("pid"),
-  MAINZELLISTE_EXTID("extid"),
-  CACHE_EXTID("cache_extid"),
-  EXTID_IN_TAG("extid_in_tag");
+  MAINZELLISTE_PID("Pseudonym are generate automatically with Mainzelliste"),
+  MAINZELLISTE_EXTID("Pseudonym is already store in Mainzelliste"),
+  CACHE_EXTID("External pseudonym is already store in KARNAK"),
+  EXTID_IN_TAG("Pseudonym is in a DICOM tag");
 
   private final String value;
 
