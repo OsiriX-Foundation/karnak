@@ -48,7 +48,6 @@ public class Pseudonym {
       return getPseudonymInDicom(dcm, destinationEntity, patientMetadata);
     }
 
-    /*################## MAINZELLISTE ############*/
     final String cachedMainezllistePseudonym =
         PatientClientUtil.getPseudonym(patientMetadata, mainzellisteCache);
     if (cachedMainezllistePseudonym != null) {
@@ -56,25 +55,12 @@ public class Pseudonym {
       return cachedMainezllistePseudonym;
     }
 
-    final PseudonymApi pseudonymApi = new PseudonymApi();
     if (destinationEntity.getIdTypes().equals(IdTypes.MAINZELLISTE_PID)) { // MAINZELLISTE
-      final String pseudonymMainzellistePID =
-          pseudonymApi.generatePID(patientMetadata.generateMainzellisteFields());
-      if (pseudonymMainzellistePID == null) {
-        throw new IllegalStateException("Cannot get a pseudonym in cache");
-      }
-      cachingMainzellistePseudonym(pseudonymMainzellistePID, patientMetadata);
-      return pseudonymMainzellistePID;
+      return getMainzellistePID(patientMetadata);
     }
 
     if (destinationEntity.getIdTypes().equals(IdTypes.MAINZELLISTE_EXTID)) {
-      final String pseudonymMainzellisteExtID =
-          pseudonymApi.getExistingExtID(patientMetadata.generateMainzellisteFields());
-      if (pseudonymMainzellisteExtID == null) {
-        throw new IllegalStateException("Cannot get a pseudonym in Mainzelliste API");
-      }
-      cachingMainzellistePseudonym(pseudonymMainzellisteExtID, patientMetadata);
-      return pseudonymMainzellisteExtID;
+      return getMainzellisteExtID(patientMetadata);
     }
 
     return null;
@@ -116,9 +102,31 @@ public class Pseudonym {
     final String pseudonymCacheExtID =
         PatientClientUtil.getPseudonym(patientMetadata, externalIdCache);
     if (pseudonymCacheExtID == null) {
-      throw new IllegalStateException("Cannot get a pseudonym in cache");
+      throw new IllegalStateException("Cannot get an external pseudonym in cache");
     }
     return pseudonymCacheExtID;
+  }
+
+  public String getMainzellistePID(PatientMetadata patientMetadata) {
+    final PseudonymApi pseudonymApi = new PseudonymApi();
+    final String pseudonymMainzellistePID =
+        pseudonymApi.generatePID(patientMetadata.generateMainzellisteFields());
+    if (pseudonymMainzellistePID == null) {
+      throw new IllegalStateException("Cannot get pseudonym of type pid in Mainzelliste API");
+    }
+    cachingMainzellistePseudonym(pseudonymMainzellistePID, patientMetadata);
+    return pseudonymMainzellistePID;
+  }
+
+  public String getMainzellisteExtID(PatientMetadata patientMetadata) {
+    final PseudonymApi pseudonymApi = new PseudonymApi();
+    final String pseudonymMainzellisteExtID =
+        pseudonymApi.getExistingExtID(patientMetadata.generateMainzellisteFields());
+    if (pseudonymMainzellisteExtID == null) {
+      throw new IllegalStateException("Cannot get pseudonym of type extid in Mainzelliste API");
+    }
+    cachingMainzellistePseudonym(pseudonymMainzellisteExtID, patientMetadata);
+    return pseudonymMainzellisteExtID;
   }
 
   private void cachingMainzellistePseudonym(String pseudonym, PatientMetadata patientMetadata) {
