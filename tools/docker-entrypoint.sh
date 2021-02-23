@@ -77,13 +77,11 @@ SYS_PROPS+=" -Dspring.datasource.url=$DB_URL"
 file_env 'MAINZELLISTE_API_KEY'
 : "${MAINZELLISTE_HOSTNAME:=localhost}"
 : "${MAINZELLISTE_HTTP_PORT:=8080}"
-: "${MAINZELLISTE_ID_TYPES:=pid}"
 : "${MAINZELLISTE_API_KEY:=undefined}"
 
 MAINZELLISTE_SERVER_URL=http://$MAINZELLISTE_HOSTNAME:$MAINZELLISTE_HTTP_PORT
 
 SYS_PROPS+=" -Dmainzelliste.serverurl=$MAINZELLISTE_SERVER_URL"
-SYS_PROPS+=" -Dmainzelliste.idtypes=$MAINZELLISTE_ID_TYPES"
 SYS_PROPS+=" -Dmainzelliste.apikey=$MAINZELLISTE_API_KEY"
 
 # https://docs.hazelcast.org/docs/4.1/manual/html-single/index.html#running-in-modular-java

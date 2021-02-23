@@ -9,6 +9,7 @@
  */
 package org.karnak.backend.util;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -58,7 +59,8 @@ public class DateFormat {
   }
 
   public static String format(
-      DicomObject dcm, DicomElement dcmEl, List<ArgumentEntity> argumentEntities) {
+      DicomObject dcm, DicomElement dcmEl, List<ArgumentEntity> argumentEntities)
+      throws DateTimeException {
     try {
       verifyPatternArguments(argumentEntities);
     } catch (IllegalArgumentException e) {
@@ -81,11 +83,15 @@ public class DateFormat {
       }
     }
     if (dcmElValue != null) {
-      return switch (dcmEl.vr()) {
-        case DA -> formatDA(dcmElValue, format);
-        case DT -> formatDT(dcmElValue, format);
-        default -> null;
-      };
+      try {
+        return switch (dcmEl.vr()) {
+          case DA -> formatDA(dcmElValue, format);
+          case DT -> formatDT(dcmElValue, format);
+          default -> null;
+        };
+      } catch (DateTimeException DateTimeException) {
+        throw DateTimeException;
+      }
     } else {
       return null;
     }

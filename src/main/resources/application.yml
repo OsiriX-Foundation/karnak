@@ -8,7 +8,6 @@ karnakpassword: ${KARNAK_PASSWORD:admin}
 mainzelliste:
   apikey: '${MAINZELLISTE_API_KEY:changeThisApiKey}'
   serverurl: 'http://${MAINZELLISTE_HOSTNAME:localhost}:${MAINZELLISTE_HTTP_PORT:8083}'
-  idtypes: '${MAINZELLISTE_ID_TYPES:pid}'
 logging:
   level:
     org:
