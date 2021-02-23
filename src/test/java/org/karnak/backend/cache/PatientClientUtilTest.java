@@ -46,18 +46,19 @@ class PatientClientUtilTest {
 
   private static Stream<Arguments> providerGenerateKey() {
     return Stream.of(
-        Arguments.of("123", "456", "789", "123789"),
-        Arguments.of("123", "456", "", "123"),
-        Arguments.of("EREN", "Patient^Name", "PDA", "ERENPDA"),
-        Arguments.of("EREN", "Patient^Name", "", "EREN"));
+        Arguments.of("123", "456", "123456"),
+        Arguments.of("123", "", "123"),
+        Arguments.of("EREN", "Patient^Name", "ERENPatient^Name"),
+        Arguments.of("EREN", "", "EREN"));
   }
 
   private static Stream<Arguments> providerGenerateKeyPseudonymPatient() {
     return Stream.of(
-        Arguments.of(new CachedPatient("pseudo", "123", "456", "789", "101112"), "123101112"),
-        Arguments.of(new CachedPatient("pseudo", "123", "456", "789", ""), "123"),
-        Arguments.of(new CachedPatient("pseudo", "EREN", "Patient", "Name", "PDA"), "ERENPDA"),
-        Arguments.of(new CachedPatient("pseudo", "EREN", "Patient", "Name", ""), "EREN"),
+        Arguments.of(new CachedPatient("pseudo", "123", "456", "789", "101112", null), "123101112"),
+        Arguments.of(new CachedPatient("pseudo", "123", "456", "789", "", null), "123", null),
+        Arguments.of(
+            new CachedPatient("pseudo", "EREN", "Patient", "Name", "PDA", null), "ERENPDA"),
+        Arguments.of(new CachedPatient("pseudo", "EREN", "Patient", "Name", "", null), "EREN"),
         Arguments.of(
             new MainzellistePatient(
                 "pseudo", "123", "", "456", LocalDate.of(1993, 02, 16), "M", ""),

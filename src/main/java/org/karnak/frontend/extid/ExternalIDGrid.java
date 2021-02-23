@@ -31,6 +31,7 @@ import org.karnak.backend.cache.CachedPatient;
 import org.karnak.backend.cache.PatientClient;
 import org.karnak.backend.cache.PseudonymPatient;
 import org.karnak.backend.config.AppConfig;
+import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.util.PatientClientUtil;
 import org.vaadin.klaudeta.PaginatedGrid;
 
@@ -43,6 +44,7 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
   private final Binder<CachedPatient> binder;
   private final List<CachedPatient> patientList;
   private final transient PatientClient externalIDCache;
+  private transient ProjectEntity projectEntity;
   private Button deletePatientButton;
   private Button saveEditPatientButton;
   private Button cancelEditPatientButton;
@@ -107,7 +109,8 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
                   patientIdField.getValue(),
                   patientFirstNameField.getValue(),
                   patientLastNameField.getValue(),
-                  issuerOfPatientIdField.getValue());
+                  issuerOfPatientIdField.getValue(),
+                  projectEntity.getId());
           externalIDCache.remove(PatientClientUtil.generateKey(editor.getItem())); // old extid
           externalIDCache.put(PatientClientUtil.generateKey(patientEdit), patientEdit); // new extid
           editor.save();
@@ -275,7 +278,11 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
       for (Iterator<PseudonymPatient> iterator = pseudonymPatients.iterator();
           iterator.hasNext(); ) {
         final CachedPatient patient = (CachedPatient) iterator.next();
-        patientsListInCache.add(patient);
+        if (projectEntity != null
+            && patient.getProjectID() != null
+            && patient.getProjectID().equals(projectEntity.getId())) {
+          patientsListInCache.add(patient);
+        }
       }
       setItems(patientsListInCache);
     }
@@ -363,5 +370,13 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
 
   public void setDuplicatePatientsList(Collection<PseudonymPatient> duplicatePatientsList) {
     this.duplicatePatientsList = duplicatePatientsList;
+  }
+
+  public ProjectEntity getProjectEntity() {
+    return projectEntity;
+  }
+
+  public void setProjectEntity(ProjectEntity projectEntity) {
+    this.projectEntity = projectEntity;
   }
 }
