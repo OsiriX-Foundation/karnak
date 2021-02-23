@@ -9,7 +9,10 @@
  */
 package org.karnak.frontend.forwardnode.edit.destination.component;
 
-import static org.karnak.backend.enums.PseudonymType.*;
+import static org.karnak.backend.enums.PseudonymType.CACHE_EXTID;
+import static org.karnak.backend.enums.PseudonymType.EXTID_IN_TAG;
+import static org.karnak.backend.enums.PseudonymType.MAINZELLISTE_EXTID;
+import static org.karnak.backend.enums.PseudonymType.MAINZELLISTE_PID;
 
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.html.Div;
@@ -19,7 +22,6 @@ import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.data.binder.Binder;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
-
 import org.karnak.frontend.component.ProjectDropDown;
 import org.karnak.frontend.project.ProjectView;
 import org.karnak.frontend.util.UIS;

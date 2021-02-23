@@ -561,7 +561,7 @@ public class DestinationEntity implements Serializable {
         && Objects.equals(id, that.id)
         && Objects.equals(description, that.description)
         && destinationType == that.destinationType
-        && idTypes == that.idTypes
+        && pseudonymType == that.pseudonymType
         && Objects.equals(tag, that.tag)
         && Objects.equals(delimiter, that.delimiter)
         && Objects.equals(position, that.position)
@@ -588,7 +588,7 @@ public class DestinationEntity implements Serializable {
         description,
         destinationType,
         desidentification,
-        idTypes,
+        pseudonymType,
         tag,
         delimiter,
         position,

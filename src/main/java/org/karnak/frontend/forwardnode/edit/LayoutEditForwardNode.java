@@ -9,6 +9,8 @@
  */
 package org.karnak.frontend.forwardnode.edit;
 
+import static org.karnak.backend.enums.PseudonymType.MAINZELLISTE_PID;
+
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
@@ -470,9 +472,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
                           layoutDesidentification.getLabelDisclaimer(),
                           layoutDesidentification.getProjectDropDown(),
                           layoutDesidentification.getDesidentificationName());
-                  layoutDesidentification
-                      .getExtidListBox()
-                      .setValue(layoutDesidentification.getExtidSentence()[0]);
+                  layoutDesidentification.getExtidListBox().setValue(MAINZELLISTE_PID.getValue());
                   layoutDesidentification.getCheckboxUseAsPatientName().clear();
                   layoutDesidentification.getExtidPresentInDicomTagView().clear();
                   layoutDesidentification
