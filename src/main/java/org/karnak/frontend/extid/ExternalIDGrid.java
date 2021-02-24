@@ -111,8 +111,10 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
                   patientLastNameField.getValue(),
                   issuerOfPatientIdField.getValue(),
                   projectEntity.getId());
-          externalIDCache.remove(PatientClientUtil.generateKey(editor.getItem())); // old extid
-          externalIDCache.put(PatientClientUtil.generateKey(patientEdit), patientEdit); // new extid
+          externalIDCache.remove(
+              PatientClientUtil.generateKey(editor.getItem(), projectEntity.getId()));
+          externalIDCache.put(
+              PatientClientUtil.generateKey(patientEdit, projectEntity.getId()), patientEdit);
           editor.save();
         });
     saveEditPatientButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -179,7 +181,8 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
                   ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
               deletePatientButton.addClickListener(
                   e -> {
-                    externalIDCache.remove(PatientClientUtil.generateKey(patient));
+                    externalIDCache.remove(
+                        PatientClientUtil.generateKey(patient, projectEntity.getId()));
                     readAllCacheValue();
                   });
               return deletePatientButton;
@@ -291,7 +294,8 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
 
   public void addPatient(CachedPatient newPatient) {
     if (!patientExist(newPatient)) {
-      externalIDCache.put(PatientClientUtil.generateKey(newPatient), newPatient);
+      externalIDCache.put(
+          PatientClientUtil.generateKey(newPatient, projectEntity.getId()), newPatient);
     }
   }
 
@@ -302,7 +306,7 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
 
   public boolean patientExist(PseudonymPatient patient) {
     final PseudonymPatient duplicatePatient =
-        externalIDCache.get(PatientClientUtil.generateKey(patient));
+        externalIDCache.get(PatientClientUtil.generateKey(patient, projectEntity.getId()));
     if (duplicatePatient != null) {
       duplicatePatientsList.add(duplicatePatient);
       return true;

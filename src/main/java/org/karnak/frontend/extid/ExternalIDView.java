@@ -100,6 +100,7 @@ public class ExternalIDView extends HorizontalLayout {
               externalIDForm.setEnabled(false);
               uploadCsvButton.setMaxFiles(0);
             });
+
     externalIDGrid
         .getEditor()
         .addCloseListener(

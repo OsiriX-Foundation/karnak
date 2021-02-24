@@ -41,7 +41,7 @@ public class Pseudonym {
     final PatientMetadata patientMetadata = new PatientMetadata(dcm, defaultIssuerOfPatientID);
 
     if (destinationEntity.getPseudonymType().equals(PseudonymType.CACHE_EXTID)) {
-      return getCacheExtid(patientMetadata);
+      return getCacheExtid(patientMetadata, destinationEntity.getProjectEntity().getId());
     }
 
     if (destinationEntity.getPseudonymType().equals(PseudonymType.EXTID_IN_TAG)) {
@@ -100,9 +100,9 @@ public class Pseudonym {
     return pseudonymExtidInTag;
   }
 
-  public String getCacheExtid(PatientMetadata patientMetadata) {
+  public String getCacheExtid(PatientMetadata patientMetadata, Long projectID) {
     final String pseudonymCacheExtID =
-        PatientClientUtil.getPseudonym(patientMetadata, externalIdCache);
+        PatientClientUtil.getPseudonym(patientMetadata, externalIdCache, projectID);
     if (pseudonymCacheExtID == null) {
       throw new IllegalStateException("Cannot get an external pseudonym in cache");
     }
