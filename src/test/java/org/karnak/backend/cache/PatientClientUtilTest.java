@@ -77,6 +77,15 @@ class PatientClientUtilTest {
             "EREN"));
   }
 
+  private static Stream<Arguments> providerGenerateKeyPseudonymPatientAndProjectID() {
+    return Stream.of(
+        Arguments.of(
+            new CachedPatient("pseudo", "123", "456", "789", "101112", 900L), "123101112900"),
+        Arguments.of(new CachedPatient("pseudo", "123", "456", "789", "", 128L), "123128"),
+        Arguments.of(
+            new CachedPatient("pseudo", "EREN", "Patient", "Name", "PDA", 524L), "ERENPDA524"));
+  }
+
   private static Stream<Arguments> providerGenerateKeyPatientMetadata() {
     return Stream.of(
         Arguments.of(new PatientMetadata(dataset, "PDA"), "ERENPDA"),
@@ -95,6 +104,13 @@ class PatientClientUtilTest {
   @MethodSource("providerGenerateKeyPseudonymPatient")
   void generateKeyPseudonymPatient(PseudonymPatient patient, String output) {
     assertEquals(PatientClientUtil.generateKey(patient), output);
+  }
+
+  @ParameterizedTest
+  @MethodSource("providerGenerateKeyPseudonymPatientAndProjectID")
+  void providerGenerateKeyPseudonymPatientAndProjectID(CachedPatient cachedPatient, String output) {
+    assertEquals(
+        PatientClientUtil.generateKey(cachedPatient, cachedPatient.getProjectID()), output);
   }
 
   @ParameterizedTest
