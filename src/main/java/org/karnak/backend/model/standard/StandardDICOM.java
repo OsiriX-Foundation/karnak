@@ -52,7 +52,11 @@ public class StandardDICOM {
     return sops.moduleIsPresent(sopUID, moduleId);
   }
 
-  public Map<Module, Map<String, Attribute>> getModulesBySOP(String sopUID)
+  public ArrayList<Module> getModulesBySOP(String sopUID) throws SOPNotFoundException {
+    return sops.getSOPmodules(sopUID);
+  }
+
+  public Map<Module, Map<String, Attribute>> getModulesAttributesBySOP(String sopUID)
       throws SOPNotFoundException {
     return sops.getModuleToAttribute(sopUID, moduleToAttributes);
   }
@@ -69,7 +73,7 @@ public class StandardDICOM {
   public List<Attribute> getAttributesBySOP(String sopUID, String tagPath)
       throws SOPNotFoundException {
     String tagPathCleaned = cleanTagPath(tagPath);
-    Map<Module, Map<String, Attribute>> HMapModuleAttributes = getModulesBySOP(sopUID);
+    Map<Module, Map<String, Attribute>> HMapModuleAttributes = getModulesAttributesBySOP(sopUID);
     List<Attribute> attributes = new ArrayList<>();
     HMapModuleAttributes.forEach(
         (module, attr) -> {
