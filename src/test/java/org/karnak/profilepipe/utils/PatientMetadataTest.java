@@ -111,16 +111,17 @@ class PatientMetadataTest {
 
   private static Stream<Arguments> providerCompareCachedPatient() {
     return Stream.of(
-        Arguments.of(patientMetadata, new CachedPatient("TEST", "", "", "", "")),
+        Arguments.of(patientMetadata, new CachedPatient("TEST", "", "", "", "", null)),
         Arguments.of(patientMetadata, new MainzellistePatient("TEST", "", "", "", null, "O", "")),
         Arguments.of(
-            patientMetadataDicomEmptyWithIssuer, new CachedPatient("TEST", "", "", "", "PDA")),
+            patientMetadataDicomEmptyWithIssuer,
+            new CachedPatient("TEST", "", "", "", "PDA", null)),
         Arguments.of(
             patientMetadataDicomEmptyWithIssuer,
             new MainzellistePatient("TEST", "", "", "", null, "O", "PDA")),
         Arguments.of(
             patientMetadataWithNotValidPatientSex,
-            new CachedPatient("TEST", "EREN", "Name", "Patient", "PDA")),
+            new CachedPatient("TEST", "EREN", "Name", "Patient", "PDA", null)),
         Arguments.of(
             patientMetadataWithNotValidPatientSex,
             new MainzellistePatient(
@@ -129,14 +130,15 @@ class PatientMetadataTest {
 
   private static Stream<Arguments> providerCompareCachedPatientFalse() {
     return Stream.of(
-        Arguments.of(patientMetadata, new CachedPatient("TEST", "1", "", "", "")),
-        Arguments.of(patientMetadata, new CachedPatient("TEST", "", "", "", "1")),
+        Arguments.of(patientMetadata, new CachedPatient("TEST", "1", "", "", "", null)),
+        Arguments.of(patientMetadata, new CachedPatient("TEST", "", "", "", "1", null)),
         Arguments.of(patientMetadata, new MainzellistePatient("TEST", "1", "", "", null, "O", "")),
         Arguments.of(patientMetadata, new MainzellistePatient("TEST", "", "", "", null, "O", "1")),
         Arguments.of(
-            patientMetadataDicomEmptyWithIssuer, new CachedPatient("TEST", "1", "", "", "PDA")),
+            patientMetadataDicomEmptyWithIssuer,
+            new CachedPatient("TEST", "1", "", "", "PDA", null)),
         Arguments.of(
-            patientMetadataDicomEmptyWithIssuer, new CachedPatient("TEST", "", "", "", "")),
+            patientMetadataDicomEmptyWithIssuer, new CachedPatient("TEST", "", "", "", "", null)),
         Arguments.of(
             patientMetadataDicomEmptyWithIssuer,
             new MainzellistePatient("TEST", "1", "", "", null, "O", "PDA")),
@@ -145,13 +147,13 @@ class PatientMetadataTest {
             new MainzellistePatient("TEST", "", "", "", null, "O", "")),
         Arguments.of(
             patientMetadataWithNotValidPatientSex,
-            new CachedPatient("TEST", "", "Name", "Patient", "PDA")),
+            new CachedPatient("TEST", "", "Name", "Patient", "PDA", null)),
         Arguments.of(
             patientMetadataWithNotValidPatientSex,
-            new CachedPatient("TEST", "", "^Name", "", "PDA")),
+            new CachedPatient("TEST", "", "^Name", "", "PDA", null)),
         Arguments.of(
             patientMetadataWithNotValidPatientSex,
-            new CachedPatient("TEST", "EREN", "Patient^Name", "", "")),
+            new CachedPatient("TEST", "EREN", "Patient^Name", "", "", null)),
         Arguments.of(
             patientMetadataWithNotValidPatientSex,
             new MainzellistePatient(

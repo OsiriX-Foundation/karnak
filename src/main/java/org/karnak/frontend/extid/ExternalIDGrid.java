@@ -31,6 +31,7 @@ import org.karnak.backend.cache.CachedPatient;
 import org.karnak.backend.cache.PatientClient;
 import org.karnak.backend.cache.PseudonymPatient;
 import org.karnak.backend.config.AppConfig;
+import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.util.PatientClientUtil;
 import org.vaadin.klaudeta.PaginatedGrid;
 
@@ -43,6 +44,7 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
   private final Binder<CachedPatient> binder;
   private final List<CachedPatient> patientList;
   private final transient PatientClient externalIDCache;
+  private transient ProjectEntity projectEntity;
   private Button deletePatientButton;
   private Button saveEditPatientButton;
   private Button cancelEditPatientButton;
@@ -107,9 +109,12 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
                   patientIdField.getValue(),
                   patientFirstNameField.getValue(),
                   patientLastNameField.getValue(),
-                  issuerOfPatientIdField.getValue());
-          externalIDCache.remove(PatientClientUtil.generateKey(editor.getItem())); // old extid
-          externalIDCache.put(PatientClientUtil.generateKey(patientEdit), patientEdit); // new extid
+                  issuerOfPatientIdField.getValue(),
+                  projectEntity.getId());
+          externalIDCache.remove(
+              PatientClientUtil.generateKey(editor.getItem(), projectEntity.getId()));
+          externalIDCache.put(
+              PatientClientUtil.generateKey(patientEdit, projectEntity.getId()), patientEdit);
           editor.save();
         });
     saveEditPatientButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -176,7 +181,8 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
                   ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
               deletePatientButton.addClickListener(
                   e -> {
-                    externalIDCache.remove(PatientClientUtil.generateKey(patient));
+                    externalIDCache.remove(
+                        PatientClientUtil.generateKey(patient, projectEntity.getId()));
                     readAllCacheValue();
                   });
               return deletePatientButton;
@@ -275,7 +281,11 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
       for (Iterator<PseudonymPatient> iterator = pseudonymPatients.iterator();
           iterator.hasNext(); ) {
         final CachedPatient patient = (CachedPatient) iterator.next();
-        patientsListInCache.add(patient);
+        if (projectEntity != null
+            && patient.getProjectID() != null
+            && patient.getProjectID().equals(projectEntity.getId())) {
+          patientsListInCache.add(patient);
+        }
       }
       setItems(patientsListInCache);
     }
@@ -284,7 +294,8 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
 
   public void addPatient(CachedPatient newPatient) {
     if (!patientExist(newPatient)) {
-      externalIDCache.put(PatientClientUtil.generateKey(newPatient), newPatient);
+      externalIDCache.put(
+          PatientClientUtil.generateKey(newPatient, projectEntity.getId()), newPatient);
     }
   }
 
@@ -295,7 +306,7 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
 
   public boolean patientExist(PseudonymPatient patient) {
     final PseudonymPatient duplicatePatient =
-        externalIDCache.get(PatientClientUtil.generateKey(patient));
+        externalIDCache.get(PatientClientUtil.generateKey(patient, projectEntity.getId()));
     if (duplicatePatient != null) {
       duplicatePatientsList.add(duplicatePatient);
       return true;
@@ -363,5 +374,13 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
 
   public void setDuplicatePatientsList(Collection<PseudonymPatient> duplicatePatientsList) {
     this.duplicatePatientsList = duplicatePatientsList;
+  }
+
+  public ProjectEntity getProjectEntity() {
+    return projectEntity;
+  }
+
+  public void setProjectEntity(ProjectEntity projectEntity) {
+    this.projectEntity = projectEntity;
   }
 }
