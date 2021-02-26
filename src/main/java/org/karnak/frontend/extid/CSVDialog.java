@@ -29,7 +29,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import liquibase.util.csv.opencsv.CSVReader;
 import org.karnak.backend.cache.CachedPatient;
-import org.karnak.backend.data.entity.ProjectEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,14 +56,12 @@ public class CSVDialog extends Dialog {
   private List<Select<String>> listOfSelect;
   private List<String[]> allRows;
   private HashMap<String, Integer> selectValuesPositionHashMap;
-  private transient ProjectEntity projectEntity;
 
-  public CSVDialog(InputStream inputStream, char separator, ProjectEntity projectEntity) {
+  public CSVDialog(InputStream inputStream, char separator) {
     removeAll();
 
     setWidth("50%");
 
-    this.projectEntity = projectEntity;
     patientsList = new ArrayList<>();
     allRows = null;
     try {
@@ -228,8 +225,7 @@ public class CSVDialog extends Dialog {
                 row[selectValuesPositionHashMap.get(PATIENT_ID)],
                 row[selectValuesPositionHashMap.get(PATIENT_FIRST_NAME)],
                 row[selectValuesPositionHashMap.get(PATIENT_LAST_NAME)],
-                issuerOfPatientID,
-                projectEntity.getId());
+                issuerOfPatientID);
         patientsList.add(newPatient);
       }
     } catch (Exception e) {

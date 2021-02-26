@@ -9,7 +9,10 @@
  */
 package org.karnak.frontend.forwardnode.edit.destination.component;
 
-import static org.karnak.backend.enums.PseudonymType.*;
+import static org.karnak.backend.enums.PseudonymType.CACHE_EXTID;
+import static org.karnak.backend.enums.PseudonymType.EXTID_IN_TAG;
+import static org.karnak.backend.enums.PseudonymType.MAINZELLISTE_EXTID;
+import static org.karnak.backend.enums.PseudonymType.MAINZELLISTE_PID;
 
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.html.Div;
@@ -25,17 +28,14 @@ import org.karnak.frontend.util.UIS;
 
 public class LayoutDesidentification extends Div {
 
-  private final Binder<DestinationEntity> destinationBinder;
-  private final ProjectDropDown projectDropDown;
-  private final DesidentificationName desidentificationName;
-  private final ProjectDataProvider projectDataProvider;
-  private final WarningNoProjectsDefined warningNoProjectsDefined;
   private static final String LABEL_CHECKBOX_DESIDENTIFICATION = "Activate de-identification";
   private static final String LABEL_DISCLAIMER_DEIDENTIFICATION =
       "In order to ensure complete de-identification, visual verification of metadata and images is necessary.";
+
   private Checkbox checkboxDesidentification;
   private Label labelDisclaimer;
   private Checkbox checkboxUseAsPatientName;
+
   private ProjectDropDown projectDropDown;
   private ExtidPresentInDicomTagView extidPresentInDicomTagView;
   private Binder<DestinationEntity> destinationBinder;
@@ -124,8 +124,6 @@ public class LayoutDesidentification extends Div {
               nav.navigate(ProjectView.VIEW_NAME.toLowerCase());
             });
   }
-
-
 
   public void setTextOnSelectionProject(ProjectEntity projectEntity) {
     if (projectEntity != null && projectEntity.getProfileEntity() != null) {

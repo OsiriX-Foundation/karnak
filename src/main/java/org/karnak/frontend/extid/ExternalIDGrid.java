@@ -109,12 +109,9 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
                   patientIdField.getValue(),
                   patientFirstNameField.getValue(),
                   patientLastNameField.getValue(),
-                  issuerOfPatientIdField.getValue(),
-                  projectEntity.getId());
-          externalIDCache.remove(
-              PatientClientUtil.generateKey(editor.getItem(), projectEntity.getId()));
-          externalIDCache.put(
-              PatientClientUtil.generateKey(patientEdit, projectEntity.getId()), patientEdit);
+                  issuerOfPatientIdField.getValue());
+          externalIDCache.remove(PatientClientUtil.generateKey(editor.getItem())); // old extid
+          externalIDCache.put(PatientClientUtil.generateKey(patientEdit), patientEdit); // new extid
           editor.save();
         });
     saveEditPatientButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -181,8 +178,7 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
                   ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
               deletePatientButton.addClickListener(
                   e -> {
-                    externalIDCache.remove(
-                        PatientClientUtil.generateKey(patient, projectEntity.getId()));
+                    externalIDCache.remove(PatientClientUtil.generateKey(patient));
                     readAllCacheValue();
                   });
               return deletePatientButton;
@@ -281,11 +277,7 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
       for (Iterator<PseudonymPatient> iterator = pseudonymPatients.iterator();
           iterator.hasNext(); ) {
         final CachedPatient patient = (CachedPatient) iterator.next();
-        if (projectEntity != null
-            && patient.getProjectID() != null
-            && patient.getProjectID().equals(projectEntity.getId())) {
-          patientsListInCache.add(patient);
-        }
+        patientsListInCache.add(patient);
       }
       setItems(patientsListInCache);
     }
@@ -294,8 +286,7 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
 
   public void addPatient(CachedPatient newPatient) {
     if (!patientExist(newPatient)) {
-      externalIDCache.put(
-          PatientClientUtil.generateKey(newPatient, projectEntity.getId()), newPatient);
+      externalIDCache.put(PatientClientUtil.generateKey(newPatient), newPatient);
     }
   }
 
@@ -306,7 +297,7 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
 
   public boolean patientExist(PseudonymPatient patient) {
     final PseudonymPatient duplicatePatient =
-        externalIDCache.get(PatientClientUtil.generateKey(patient, projectEntity.getId()));
+        externalIDCache.get(PatientClientUtil.generateKey(patient));
     if (duplicatePatient != null) {
       duplicatePatientsList.add(duplicatePatient);
       return true;
@@ -374,13 +365,5 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
 
   public void setDuplicatePatientsList(Collection<PseudonymPatient> duplicatePatientsList) {
     this.duplicatePatientsList = duplicatePatientsList;
-  }
-
-  public ProjectEntity getProjectEntity() {
-    return projectEntity;
-  }
-
-  public void setProjectEntity(ProjectEntity projectEntity) {
-    this.projectEntity = projectEntity;
   }
 }
