@@ -9,16 +9,14 @@
  */
 package org.karnak.backend.service.profilepipe;
 
-import java.io.IOException;
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.util.TagUtils;
 import org.karnak.backend.api.PseudonymApi;
-import org.karnak.backend.api.rqbody.Fields;
 import org.karnak.backend.cache.MainzellistePatient;
 import org.karnak.backend.cache.PatientClient;
 import org.karnak.backend.config.AppConfig;
 import org.karnak.backend.data.entity.DestinationEntity;
-import org.karnak.backend.enums.IdTypes;
+import org.karnak.backend.enums.PseudonymType;
 import org.karnak.backend.model.profilepipe.PatientMetadata;
 import org.karnak.backend.util.PatientClientUtil;
 import org.karnak.backend.util.SpecialCharacter;
@@ -42,73 +40,99 @@ public class PseudonymService {
   }
 
   public String generatePseudonym(
-      DestinationEntity destinationEntity, DicomObject dcm, String defaultIsserOfPatientID) {
-    String pseudonym;
-    if (destinationEntity.getSavePseudonym() != null
-        && destinationEntity.getSavePseudonym() == false) {
-      pseudonym = getPseudonymInDicom(dcm, destinationEntity);
-      if (pseudonym == null) {
-        throw new IllegalStateException("Cannot get a pseudonym in a DICOM tag");
-      }
-      return pseudonym;
-    } else if (destinationEntity.getIdTypes().equals(IdTypes.EXTID)) {
-      pseudonym =
-          PatientClientUtil.getPseudonym(
-              new PatientMetadata(dcm, defaultIsserOfPatientID), externalIdCache);
-      if (pseudonym != null) {
-        return pseudonym;
-      }
-    }
-    PatientMetadata patientMetadata = new PatientMetadata(dcm, defaultIsserOfPatientID);
-    try {
-      return getMainzellistePseudonym(
-          patientMetadata,
-          getPseudonymInDicom(dcm, destinationEntity),
-          destinationEntity.getIdTypes());
-    } catch (Exception e) {
-      LOGGER.error("Cannot get a pseudonym with Mainzelliste API {}", e);
-      throw new IllegalStateException("Cannot get a pseudonym in cache or with Mainzelliste API");
-    }
-  }
+      DestinationEntity destinationEntity, DicomObject dcm, String defaultIssuerOfPatientID) {
 
-  private String getPseudonymInDicom(DicomObject dcm, DestinationEntity destinationEntity) {
-    if (destinationEntity.getIdTypes().equals(IdTypes.ADD_EXTID)) {
-      String cleanTag = destinationEntity.getTag().replaceAll("[(),]", "").toUpperCase();
-      final String tagValue = dcm.getString(TagUtils.intFromHexString(cleanTag)).orElse(null);
-      if (tagValue != null
-          && destinationEntity.getDelimiter() != null
-          && destinationEntity.getPosition() != null) {
-        String delimiterSpec =
-            SpecialCharacter.escapeSpecialRegexChars(destinationEntity.getDelimiter());
-        try {
-          return tagValue.split(delimiterSpec)[destinationEntity.getPosition()];
-        } catch (ArrayIndexOutOfBoundsException e) {
-          LOGGER.error("Can not split the external pseudonym", e);
-          return null;
-        }
-      } else {
-        return tagValue;
-      }
+    final PatientMetadata patientMetadata = new PatientMetadata(dcm, defaultIssuerOfPatientID);
+
+    if (destinationEntity.getPseudonymType().equals(PseudonymType.CACHE_EXTID)) {
+      return getCacheExtid(patientMetadata, destinationEntity.getProjectEntity().getId());
     }
+
+    if (destinationEntity.getPseudonymType().equals(PseudonymType.EXTID_IN_TAG)) {
+      return getPseudonymInDicom(dcm, destinationEntity, patientMetadata);
+    }
+
+    final String cachedMainezllistePseudonym =
+        PatientClientUtil.getPseudonym(patientMetadata, mainzellisteCache);
+    if (cachedMainezllistePseudonym != null) {
+      cachingMainzellistePseudonym(cachedMainezllistePseudonym, patientMetadata);
+      return cachedMainezllistePseudonym;
+    }
+
+    if (destinationEntity
+        .getPseudonymType()
+        .equals(PseudonymType.MAINZELLISTE_PID)) { // MAINZELLISTE
+      return getMainzellistePID(patientMetadata);
+    }
+
+    if (destinationEntity.getPseudonymType().equals(PseudonymType.MAINZELLISTE_EXTID)) {
+      return getMainzellisteExtID(patientMetadata);
+    }
+
     return null;
   }
 
-  public String getMainzellistePseudonym(
-      PatientMetadata patientMetadata, String externalPseudonym, IdTypes idTypes)
-      throws IOException, InterruptedException {
-    final String cachedPseudonym =
-        PatientClientUtil.getPseudonym(patientMetadata, mainzellisteCache);
-    if (cachedPseudonym != null) {
-      cachingMainzellistePseudonym(cachedPseudonym, patientMetadata);
-      return cachedPseudonym;
+  private String getPseudonymInDicom(
+      DicomObject dcm, DestinationEntity destinationEntity, PatientMetadata patientMetadata) {
+    final String cleanTag = destinationEntity.getTag().replaceAll("[(),]", "").toUpperCase();
+    final String tagValue = dcm.getString(TagUtils.intFromHexString(cleanTag)).orElse(null);
+    String pseudonymExtidInTag = null;
+
+    if (tagValue != null
+        && destinationEntity.getDelimiter() != null
+        && destinationEntity.getPosition() != null
+        && !destinationEntity.getDelimiter().equals("")) {
+      String delimiterSpec =
+          SpecialCharacter.escapeSpecialRegexChars(destinationEntity.getDelimiter());
+      try {
+        pseudonymExtidInTag = tagValue.split(delimiterSpec)[destinationEntity.getPosition()];
+      } catch (ArrayIndexOutOfBoundsException e) {
+        LOGGER.error("Can not split the external pseudonym", e);
+      }
+    } else {
+      pseudonymExtidInTag = tagValue;
     }
 
-    PseudonymApi pseudonymApi = new PseudonymApi(externalPseudonym);
-    final Fields newPatientFields = patientMetadata.generateMainzellisteFields();
+    if (pseudonymExtidInTag == null) {
+      throw new IllegalStateException("Cannot get a pseudonym in a DICOM tag");
+    } else {
+      if (destinationEntity.getSavePseudonym().booleanValue()) {
+        final PseudonymApi pseudonymApi = new PseudonymApi();
+        pseudonymApi.addExtID(patientMetadata.generateMainzellisteFields(), pseudonymExtidInTag);
+      }
+    }
+    return pseudonymExtidInTag;
+  }
 
-    String pseudonym = pseudonymApi.createPatient(newPatientFields, idTypes);
-    cachingMainzellistePseudonym(pseudonym, patientMetadata);
-    return pseudonym;
+  public String getCacheExtid(PatientMetadata patientMetadata, Long projectID) {
+    final String pseudonymCacheExtID =
+        PatientClientUtil.getPseudonym(patientMetadata, externalIdCache, projectID);
+    if (pseudonymCacheExtID == null) {
+      throw new IllegalStateException("Cannot get an external pseudonym in cache");
+    }
+    return pseudonymCacheExtID;
+  }
+
+  public String getMainzellistePID(PatientMetadata patientMetadata) {
+    final PseudonymApi pseudonymApi = new PseudonymApi();
+    final String pseudonymMainzellistePID =
+        pseudonymApi.generatePID(patientMetadata.generateMainzellisteFields());
+    if (pseudonymMainzellistePID == null) {
+      throw new IllegalStateException("Cannot get pseudonym of type pid in Mainzelliste API");
+    }
+    cachingMainzellistePseudonym(pseudonymMainzellistePID, patientMetadata);
+    return pseudonymMainzellistePID;
+  }
+
+  public String getMainzellisteExtID(PatientMetadata patientMetadata) {
+    final PseudonymApi pseudonymApi = new PseudonymApi();
+    final String pseudonymMainzellisteExtID =
+        pseudonymApi.getExistingExtID(patientMetadata.generateMainzellisteFields());
+    if (pseudonymMainzellisteExtID == null) {
+      throw new IllegalStateException("Cannot get pseudonym of type extid in Mainzelliste API");
+    }
+    cachingMainzellistePseudonym(pseudonymMainzellisteExtID, patientMetadata);
+    return pseudonymMainzellisteExtID;
   }
 
   private void cachingMainzellistePseudonym(String pseudonym, PatientMetadata patientMetadata) {

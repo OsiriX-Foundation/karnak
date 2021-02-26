@@ -9,6 +9,7 @@
  */
 package org.karnak.backend.model.profiles;
 
+import java.time.DateTimeException;
 import org.dcm4che6.data.DicomElement;
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.VR;
@@ -16,6 +17,7 @@ import org.karnak.backend.data.entity.ExcludedTagEntity;
 import org.karnak.backend.data.entity.IncludedTagEntity;
 import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.model.action.ActionItem;
+import org.karnak.backend.model.action.MultipleActions;
 import org.karnak.backend.model.action.Replace;
 import org.karnak.backend.model.expression.ExprConditionDestination;
 import org.karnak.backend.model.expression.ExpressionError;
@@ -25,8 +27,12 @@ import org.karnak.backend.model.profilepipe.TagActionMap;
 import org.karnak.backend.util.DateFormat;
 import org.karnak.backend.util.ShiftDate;
 import org.karnak.backend.util.ShiftRangeDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ActionDates extends AbstractProfileItem {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(ActionDates.class);
 
   private final TagActionMap tagsAction;
   private final TagActionMap exceptedTagsAction;
@@ -105,16 +111,27 @@ public class ActionDates extends AbstractProfileItem {
       if (tagsAction.isEmpty() == false && tagsAction.get(tag) == null) {
         return null;
       }
-      String dummyValue = applyOption(dcmCopy, dcmElem, hmac);
-      if (dummyValue != null) {
-        actionByDefault.setDummyValue(dummyValue);
-        return actionByDefault;
+      try {
+        String dummyValue = applyOption(dcmCopy, dcmElem, hmac);
+        if (dummyValue != null) {
+          actionByDefault.setDummyValue(dummyValue);
+          return actionByDefault;
+        }
+      } catch (DateTimeException dateTimeException) {
+        String dcmElValue = dcmCopy.getString(dcmElem.tag()).orElse(null);
+        LOGGER.warn(
+            String.format(
+                "Invalid date %s, the most strictest action will be choose between X/Z/D",
+                dcmElValue),
+            dateTimeException);
+        return new MultipleActions("X/Z/D");
       }
     }
     return null;
   }
 
-  private String applyOption(DicomObject dcmCopy, DicomElement dcmElem, HMAC hmac) {
+  private String applyOption(DicomObject dcmCopy, DicomElement dcmElem, HMAC hmac)
+      throws DateTimeException {
     return switch (option) {
       case "shift" -> ShiftDate.shift(dcmCopy, dcmElem, argumentEntities);
       case "shift_range" -> shiftRangeDate.shift(dcmCopy, dcmElem, argumentEntities, hmac);

@@ -31,23 +31,7 @@ Prerequisites:
 
 - JDK 14
 - Maven 3
-- Package dcm4che20
-- Package weasis-dicom-tools
 - Code formatter: [google-java-format](https://github.com/google/google-java-format)
-
-Use the following commands to build the two dependencies (dcm4che20 and weasis-dicom-tools):
-
-##### dcm4che20
-
-1. `git clone https://github.com/nroduit/dcm4che20.git`
-1. `git checkout image`
-1. `mvn source:jar install`
-
-##### weasis-dicom-tools
-
-1. `git clone https://github.com/nroduit/weasis-dicom-tools.git`
-1. `git checkout dcm4che6`
-1. `mvn clean install`
 
 ##### Karnak
 
@@ -81,7 +65,6 @@ see [karnak-docker](https://github.com/OsiriX-Foundation/karnak-docker).
             - `DB_HOST=localhost`
             - `MAINZELLISTE_HOSTNAME=localhost`
             - `MAINZELLISTE_HTTP_PORT=8083`
-            - `MAINZELLISTE_ID_TYPES=pid`
             - `MAINZELLISTE_API_KEY=changeThisApiKey`
             - `KARNAK_ADMIN=admin`
             - `KARNAK_PASSWORD=admin`

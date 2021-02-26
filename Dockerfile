@@ -5,6 +5,7 @@
 # Based on build image containing maven, jdk and git
 FROM maven:3.6-adoptopenjdk-15 as builder
 WORKDIR /app
+
 # Build third-party libraries
 RUN git clone --depth 1 https://github.com/nroduit/dcm4che20.git --single-branch --branch image
 RUN mvn -B -f dcm4che20/pom.xml install

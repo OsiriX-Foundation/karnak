@@ -413,7 +413,7 @@ public class Util {
             continue;
           }
 
-          String[] line = val.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1); // $NON-NLS-1$
+          String[] line = val.split(",(?=([^\"]*\"[^\"]*\")*+[^\"]*$)", -1); // $NON-NLS-1$
           if (line.length >= 4) {
             try {
               ConfigNode node =
@@ -454,7 +454,7 @@ public class Util {
             continue;
           }
 
-          String[] line = val.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1); // $NON-NLS-1$
+          String[] line = val.split(",(?=([^\"]*\"[^\"]*\")*+[^\"]*$)", -1); // $NON-NLS-1$
           if (line.length >= 2) {
             try {
               WadoNode node = new WadoNode(trimSplit(line[0]), new URL(trimSplit(line[1])));
