@@ -10,11 +10,9 @@
 package org.karnak.backend.model.action;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import org.dcm4che6.data.DicomElement;
-import org.dcm4che6.data.DicomObject;
-import org.dcm4che6.data.Tag;
+import org.dcm4che3.data.Attributes;
+import org.dcm4che3.data.Tag;
 import org.karnak.backend.config.AppConfig;
 import org.karnak.backend.exception.StandardDICOMException;
 import org.karnak.backend.model.profilepipe.HMAC;
@@ -46,7 +44,7 @@ public class MultipleActions extends AbstractAction {
   }
 
   @Override
-  public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, HMAC hmac) {
+  public void execute(Attributes dcm, int tag, HMAC hmac) {
     final String sopUID = MetadataDICOMObject.getValue(dcm, Tag.SOPClassUID);
     final String tagPath = MetadataDICOMObject.getTagPath(dcm, tag);
     try {
@@ -54,13 +52,13 @@ public class MultipleActions extends AbstractAction {
       if (attributes.size() == 1) {
         String currentType = attributes.get(0).getType();
         ActionItem actionItem = chooseAction(sopUID, currentType);
-        actionItem.execute(dcm, tag, iterator, hmac);
+        actionItem.execute(dcm, tag, hmac);
       } else if (attributes.size() > 1) {
         ActionItem action = multipleAttributes(sopUID, attributes);
-        action.execute(dcm, tag, iterator, hmac);
+        action.execute(dcm, tag, hmac);
       } else {
         ActionItem action = defaultAction();
-        action.execute(dcm, tag, iterator, hmac);
+        action.execute(dcm, tag, hmac);
         LOGGER.warn(
             String.format(
                 "Could not found the attribute %s in the SOP %s. The most strictest action will be choose (%s).",

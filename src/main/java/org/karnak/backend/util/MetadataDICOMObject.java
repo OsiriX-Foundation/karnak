@@ -9,9 +9,8 @@
  */
 package org.karnak.backend.util;
 
-import org.dcm4che6.data.DicomElement;
-import org.dcm4che6.data.DicomObject;
-import org.dcm4che6.util.TagUtils;
+import org.dcm4che3.data.Attributes;
+import org.dcm4che3.util.TagUtils;
 
 public class MetadataDICOMObject {
 
@@ -19,13 +18,13 @@ public class MetadataDICOMObject {
    * Search a tagValue in the current DicomObject and his parent
    * Will loop in the parent of the DicomObject until the last parent or the tagValue
    * */
-  public static String getValue(DicomObject dcm, int tag) {
+  public static String getValue(Attributes dcm, int tag) {
     return getValueRec(dcm, tag);
   }
 
-  private static String getValueRec(DicomObject dcm, int tag) {
-    String tagValue = dcm.getString(tag).orElse(null);
-    DicomObject dcmParent = dcm.getParent().orElse(null);
+  private static String getValueRec(Attributes dcm, int tag) {
+    String tagValue = dcm.getString(tag);
+    Attributes dcmParent = dcm.getParent();
     if (dcmParent != null && tagValue == null) {
       return getValueRec(dcmParent, tag);
     }
@@ -36,16 +35,16 @@ public class MetadataDICOMObject {
    * Generate the tag Path as needed in the class StandardDICOM
    * Will loop in the parent of the DicomObject until the last parent
    * */
-  public static String getTagPath(DicomObject dcm, int currentTag) {
+  public static String getTagPath(Attributes dcm, int currentTag) {
     return getTagPathRec(dcm, TagUtils.toString(currentTag));
   }
 
-  private static String getTagPathRec(DicomObject dcm, String tagPath) {
-    DicomObject dcmParent = dcm.getParent().orElse(null);
-    DicomElement dcmElemParent = dcm.containedBy().orElse(null);
-    if (dcmElemParent != null) {
+  private static String getTagPathRec(Attributes dcm, String tagPath) {
+    Attributes dcmParent = dcm.getParent();
+    if (dcmParent != null) {
       return getTagPathRec(
-          dcmParent, String.format("%s:%s", TagUtils.toHexString(dcmElemParent.tag()), tagPath));
+          dcmParent,
+          String.format("%s:%s", TagUtils.toHexString(dcm.getParentSequenceTag()), tagPath));
     }
     return tagPath;
   }

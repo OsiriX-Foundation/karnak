@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
-import org.dcm4che6.data.DicomObject;
-import org.dcm4che6.data.Tag;
+import org.dcm4che3.data.Attributes;
+import org.dcm4che3.data.Tag;
 import org.json.JSONObject;
 import org.karnak.backend.api.KheopsApi;
 import org.karnak.backend.data.entity.DestinationEntity;
@@ -56,7 +56,7 @@ public class SwitchingAlbum {
     return inputUID;
   }
 
-  private static boolean validateCondition(String condition, DicomObject dcm) {
+  private static boolean validateCondition(String condition, Attributes dcm) {
     final ExprConditionKheops conditionKheops = new ExprConditionKheops(dcm);
     return (Boolean) ExpressionResult.get(condition, conditionKheops, Boolean.class);
   }
@@ -75,20 +75,17 @@ public class SwitchingAlbum {
   }
 
   public void apply(
-      DestinationEntity destinationEntity, KheopsAlbumsEntity kheopsAlbumsEntity, DicomObject dcm) {
+      DestinationEntity destinationEntity, KheopsAlbumsEntity kheopsAlbumsEntity, Attributes dcm) {
     String authorizationSource = kheopsAlbumsEntity.getAuthorizationSource();
     String authorizationDestination = kheopsAlbumsEntity.getAuthorizationDestination();
     String condition = kheopsAlbumsEntity.getCondition();
     HMAC hmac = generateHMAC(destinationEntity);
     String studyInstanceUID =
-        hashUIDonDeidentification(
-            destinationEntity, dcm.getStringOrElseThrow(Tag.StudyInstanceUID), hmac);
+        hashUIDonDeidentification(destinationEntity, dcm.getString(Tag.StudyInstanceUID), hmac);
     String seriesInstanceUID =
-        hashUIDonDeidentification(
-            destinationEntity, dcm.getStringOrElseThrow(Tag.SeriesInstanceUID), hmac);
+        hashUIDonDeidentification(destinationEntity, dcm.getString(Tag.SeriesInstanceUID), hmac);
     String sopInstanceUID =
-        hashUIDonDeidentification(
-            destinationEntity, dcm.getStringOrElseThrow(Tag.SOPInstanceUID), hmac);
+        hashUIDonDeidentification(destinationEntity, dcm.getString(Tag.SOPInstanceUID), hmac);
     String urlAPI = kheopsAlbumsEntity.getUrlAPI();
     Long id = kheopsAlbumsEntity.getId();
     if (!switchingAlbumToDo.containsKey(id)) {
@@ -131,8 +128,11 @@ public class SwitchingAlbum {
     }
   }
 
-  public void applyAfterTransfer(KheopsAlbumsEntity kheopsAlbumsEntity, DicomObject dcm) {
-    String sopInstanceUID = dcm.getStringOrElseThrow(Tag.AffectedSOPInstanceUID);
+  public void applyAfterTransfer(KheopsAlbumsEntity kheopsAlbumsEntity, Attributes dcm) {
+    String sopInstanceUID = dcm.getString(Tag.AffectedSOPInstanceUID);
+    if (sopInstanceUID == null) {
+      throw new IllegalStateException("AffectedSOPInstanceUID not found");
+    }
     Long id = kheopsAlbumsEntity.getId();
     String authorizationSource = kheopsAlbumsEntity.getAuthorizationSource();
     String authorizationDestination = kheopsAlbumsEntity.getAuthorizationDestination();

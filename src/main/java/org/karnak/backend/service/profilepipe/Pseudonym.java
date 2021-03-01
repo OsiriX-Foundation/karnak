@@ -9,8 +9,8 @@
  */
 package org.karnak.backend.service.profilepipe;
 
-import org.dcm4che6.data.DicomObject;
-import org.dcm4che6.util.TagUtils;
+import org.dcm4che3.data.Attributes;
+import org.dcm4che3.util.TagUtils;
 import org.karnak.backend.api.PseudonymApi;
 import org.karnak.backend.cache.MainzellistePatient;
 import org.karnak.backend.cache.PatientClient;
@@ -36,12 +36,12 @@ public class Pseudonym {
   }
 
   public String generatePseudonym(
-      DestinationEntity destinationEntity, DicomObject dcm, String defaultIssuerOfPatientID) {
+      DestinationEntity destinationEntity, Attributes dcm, String defaultIssuerOfPatientID) {
 
     final PatientMetadata patientMetadata = new PatientMetadata(dcm, defaultIssuerOfPatientID);
 
     if (destinationEntity.getPseudonymType().equals(PseudonymType.CACHE_EXTID)) {
-      return getCacheExtid(patientMetadata);
+      return getCacheExtid(patientMetadata, destinationEntity.getProjectEntity().getId());
     }
 
     if (destinationEntity.getPseudonymType().equals(PseudonymType.EXTID_IN_TAG)) {
@@ -69,9 +69,9 @@ public class Pseudonym {
   }
 
   private String getPseudonymInDicom(
-      DicomObject dcm, DestinationEntity destinationEntity, PatientMetadata patientMetadata) {
+      Attributes dcm, DestinationEntity destinationEntity, PatientMetadata patientMetadata) {
     final String cleanTag = destinationEntity.getTag().replaceAll("[(),]", "").toUpperCase();
-    final String tagValue = dcm.getString(TagUtils.intFromHexString(cleanTag)).orElse(null);
+    final String tagValue = dcm.getString(TagUtils.intFromHexString(cleanTag));
     String pseudonymExtidInTag = null;
 
     if (tagValue != null
@@ -100,9 +100,9 @@ public class Pseudonym {
     return pseudonymExtidInTag;
   }
 
-  public String getCacheExtid(PatientMetadata patientMetadata) {
+  public String getCacheExtid(PatientMetadata patientMetadata, Long projectID) {
     final String pseudonymCacheExtID =
-        PatientClientUtil.getPseudonym(patientMetadata, externalIdCache);
+        PatientClientUtil.getPseudonym(patientMetadata, externalIdCache, projectID);
     if (pseudonymCacheExtID == null) {
       throw new IllegalStateException("Cannot get an external pseudonym in cache");
     }

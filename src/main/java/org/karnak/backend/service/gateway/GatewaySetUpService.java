@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import org.dcm4che6.data.DicomObject;
+import org.dcm4che3.data.Attributes;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.karnak.backend.data.entity.DestinationEntity;
@@ -26,6 +26,10 @@ import org.karnak.backend.data.entity.DicomSourceNodeEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.data.entity.KheopsAlbumsEntity;
 import org.karnak.backend.data.repo.ForwardNodeRepo;
+import org.karnak.backend.dicom.DicomForwardDestination;
+import org.karnak.backend.dicom.ForwardDestination;
+import org.karnak.backend.dicom.ForwardDicomNode;
+import org.karnak.backend.dicom.web.WebForwardDestination;
 import org.karnak.backend.enums.DestinationType;
 import org.karnak.backend.enums.NodeEventType;
 import org.karnak.backend.model.NodeEvent;
@@ -45,13 +49,9 @@ import org.weasis.dicom.param.AdvancedParams;
 import org.weasis.dicom.param.AttributeEditor;
 import org.weasis.dicom.param.AttributeEditorContext;
 import org.weasis.dicom.param.ConnectOptions;
-import org.weasis.dicom.param.DicomForwardDestination;
 import org.weasis.dicom.param.DicomNode;
 import org.weasis.dicom.param.DicomProgress;
-import org.weasis.dicom.param.ForwardDestination;
-import org.weasis.dicom.param.ForwardDicomNode;
 import org.weasis.dicom.param.TlsOptions;
-import org.weasis.dicom.web.WebForwardDestination;
 
 @Service
 public class GatewaySetUpService {
@@ -308,7 +308,7 @@ public class GatewaySetUpService {
 
       SwitchingAlbum switchingAlbum = new SwitchingAlbum();
       editors.add(
-          (DicomObject dcm, AttributeEditorContext context) -> {
+          (Attributes dcm, AttributeEditorContext context) -> {
             if (listKheopsAlbumEntities != null) {
               listKheopsAlbumEntities.forEach(
                   kheopsAlbums -> {
@@ -336,26 +336,21 @@ public class GatewaySetUpService {
       String[] notifyObjectValues = dstNode.getNotifyObjectValues().split(",");
       Integer notifyInterval = dstNode.getNotifyInterval();
 
-      if (notifyObjectErrorPrefix != null
-          || notifyObjectPattern != null
-          || notifyObjectValues != null
-          || notifyInterval != null) {
-        if (notifyObjectErrorPrefix == null) {
-          notifyObjectErrorPrefix = getNotificationSetUp().getNotifyObjectErrorPrefix();
-        }
-        if (notifyObjectPattern == null) {
-          notifyObjectPattern = getNotificationSetUp().getNotifyObjectPattern();
-        }
-        if (notifyObjectValues == null) {
-          notifyObjectValues = getNotificationSetUp().getNotifyObjectValues();
-        }
-        if (notifyInterval == null || notifyInterval <= 0) {
-          notifyInterval = getNotificationSetUp().getNotifyInterval();
-        }
-        notifConfig =
-            new NotificationSetUp(
-                notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues, notifyInterval);
+      if (notifyObjectErrorPrefix == null) {
+        notifyObjectErrorPrefix = getNotificationSetUp().getNotifyObjectErrorPrefix();
       }
+      if (notifyObjectPattern == null) {
+        notifyObjectPattern = getNotificationSetUp().getNotifyObjectPattern();
+      }
+      if (notifyObjectValues == null) {
+        notifyObjectValues = getNotificationSetUp().getNotifyObjectValues();
+      }
+      if (notifyInterval == null || notifyInterval <= 0) {
+        notifyInterval = getNotificationSetUp().getNotifyInterval();
+      }
+      notifConfig =
+          new NotificationSetUp(
+              notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues, notifyInterval);
 
       if (dstNode.getDestinationType() == DestinationType.stow) {
         // parse headers to hashmap
@@ -375,7 +370,7 @@ public class GatewaySetUpService {
             new EmailNotifyProgress(streamRegistryEditor, fwd, emails, this, notifConfig));
         progress.addProgressListener(
             (DicomProgress dicomProgress) -> {
-              DicomObject dcm = dicomProgress.getAttributes();
+              Attributes dcm = dicomProgress.getAttributes();
               if (listKheopsAlbumEntities != null) {
                 listKheopsAlbumEntities.forEach(
                     kheopsAlbums -> {

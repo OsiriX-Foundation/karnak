@@ -24,6 +24,7 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import org.karnak.backend.dicom.ForwardDestination;
 import org.karnak.backend.model.NotificationSetUp;
 import org.karnak.backend.model.Series;
 import org.karnak.backend.model.Study;
@@ -33,7 +34,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.weasis.core.util.StringUtil;
 import org.weasis.dicom.param.DicomProgress;
-import org.weasis.dicom.param.ForwardDestination;
 import org.weasis.dicom.param.ProgressListener;
 
 public class EmailNotifyProgress implements ProgressListener {

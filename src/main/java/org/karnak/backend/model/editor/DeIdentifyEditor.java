@@ -9,9 +9,11 @@
  */
 package org.karnak.backend.model.editor;
 
+import org.dcm4che3.data.Attributes;
 import org.dcm4che6.data.DicomObject;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ProfileEntity;
+import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.service.profilepipe.Profile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

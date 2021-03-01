@@ -16,23 +16,21 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
-import org.dcm4che6.data.DicomElement;
-import org.dcm4che6.data.DicomObject;
-import org.dcm4che6.data.Tag;
-import org.dcm4che6.data.VR;
-import org.dcm4che6.img.op.MaskArea;
-import org.dcm4che6.img.util.DicomObjectUtil;
-import org.dcm4che6.util.DateTimeUtils;
-import org.dcm4che6.util.TagUtils;
+import org.dcm4che3.data.Attributes;
+import org.dcm4che3.data.BulkData;
+import org.dcm4che3.data.Fragments;
+import org.dcm4che3.data.Sequence;
+import org.dcm4che3.data.Tag;
+import org.dcm4che3.data.VR;
+import org.dcm4che3.util.TagUtils;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.data.entity.ProfileEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
+import org.karnak.backend.dicom.DateTimeUtils;
 import org.karnak.backend.enums.ProfileItemType;
 import org.karnak.backend.enums.PseudonymType;
 import org.karnak.backend.model.action.ActionItem;
@@ -54,6 +52,7 @@ import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 import org.weasis.core.util.StringUtil;
 import org.weasis.dicom.param.AttributeEditorContext;
+import org.weasis.dicom.param.MaskArea;
 
 public class Profile {
 
@@ -128,16 +127,16 @@ public class Profile {
   }
 
   public void applyAction(
-      DicomObject dcm,
-      DicomObject dcmCopy,
+      Attributes dcm,
+      Attributes dcmCopy,
       HMAC hmac,
       ProfileItem profilePassedInSequence,
       ActionItem actionPassedInSequence,
       AttributeEditorContext context) {
-    for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext(); ) {
-      final DicomElement dcmEl = iterator.next();
+    for (int tag : dcm.tags()) {
+      VR vr = dcm.getVR(tag);
       final ExprConditionDestination exprConditionDestination =
-          new ExprConditionDestination(dcmEl.tag(), dcmEl.vr(), dcm, dcmCopy);
+          new ExprConditionDestination(tag, vr, dcm, dcmCopy);
 
       ActionItem currentAction = null;
       ProfileItem currentProfile = null;
@@ -148,14 +147,14 @@ public class Profile {
         currentProfile = profileEntity;
 
         if (profileEntity.getCondition() == null) {
-          currentAction = profileEntity.getAction(dcm, dcmCopy, dcmEl, hmac);
+          currentAction = profileEntity.getAction(dcm, dcmCopy, tag, hmac);
         } else {
           boolean conditionIsOk =
               (Boolean)
                   ExpressionResult.get(
                       profileEntity.getCondition(), exprConditionDestination, Boolean.class);
           if (conditionIsOk) {
-            currentAction = profileEntity.getAction(dcm, dcmCopy, dcmEl, hmac);
+            currentAction = profileEntity.getAction(dcm, dcmCopy, tag, hmac);
           }
         }
 
@@ -171,24 +170,24 @@ public class Profile {
 
       if (!(currentAction instanceof Remove)
           && !(currentAction instanceof ReplaceNull)
-          && dcmEl.vr() == VR.SQ) {
+          && vr == VR.SQ) {
         final ProfileItem finalCurrentProfile = currentProfile;
         final ActionItem finalCurrentAction = currentAction;
-        dcmEl
-            .itemStream()
-            .forEach(
-                d ->
-                    applyAction(
-                        d, dcmCopy, hmac, finalCurrentProfile, finalCurrentAction, context));
+        Sequence seq = dcm.getSequence(tag);
+        if (seq != null) {
+          for (Attributes d : seq) {
+            applyAction(d, dcmCopy, hmac, finalCurrentProfile, finalCurrentAction, context);
+          }
+        }
       } else {
         if (currentAction != null) {
           try {
-            currentAction.execute(dcm, dcmEl.tag(), iterator, hmac);
+            currentAction.execute(dcm, tag, hmac);
           } catch (final Exception e) {
             LOGGER.error(
                 "Cannot execute the currentAction {} for tag: {}",
                 currentAction,
-                TagUtils.toString(dcmEl.tag()),
+                TagUtils.toString(tag),
                 e);
           }
         }
@@ -197,14 +196,14 @@ public class Profile {
   }
 
   public void apply(
-      DicomObject dcm,
+      Attributes dcm,
       DestinationEntity destinationEntity,
       ProfileEntity profileEntity,
       AttributeEditorContext context) {
-    final String SOPInstanceUID = dcm.getString(Tag.SOPInstanceUID).orElse(null);
-    final String SeriesInstanceUID = dcm.getString(Tag.SeriesInstanceUID).orElse(null);
-    final String IssuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID).orElse(null);
-    final String PatientID = dcm.getString(Tag.PatientID).orElse(null);
+    final String SOPInstanceUID = dcm.getString(Tag.SOPInstanceUID);
+    final String SeriesInstanceUID = dcm.getString(Tag.SeriesInstanceUID);
+    final String IssuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID);
+    final String PatientID = dcm.getString(Tag.PatientID);
     final PseudonymType pseudonymType = destinationEntity.getPseudonymType();
     final HMAC hmac = generateHMAC(destinationEntity, PatientID);
 
@@ -218,7 +217,7 @@ public class Profile {
             destinationEntity, dcm, profileEntity.getDefaultIssuerOfPatientId());
 
     String profilesCodeName =
-        String.join("-", profiles.stream().map(p -> p.getCodeName()).collect(Collectors.toList()));
+        profiles.stream().map(ProfileItem::getCodeName).collect(Collectors.joining("-"));
     BigInteger patientValue = generatePatientID(pseudonym, hmac);
     String newPatientID = patientValue.toString(16).toUpperCase();
     String newPatientName =
@@ -227,27 +226,25 @@ public class Profile {
             ? pseudonym
             : newPatientID;
 
-    DicomObject dcmCopy = DicomObject.newDicomObject();
-    DicomObjectUtil.copyDataset(dcm, dcmCopy);
-
+    Attributes dcmCopy = new Attributes(dcm);
     // Apply clean pixel data
-    Optional<DicomElement> pix = dcm.get(Tag.PixelData);
-    if (pix.isPresent()
+    Object pix = dcm.getValue(Tag.PixelData);
+    if ((pix instanceof BulkData || pix instanceof Fragments)
         && !profileEntity.getMaskEntities().isEmpty()
         && profiles.stream().anyMatch(p -> p instanceof CleanPixelData)) {
-      String sopClassUID =
-          dcm.getString(Tag.SOPClassUID)
-              .orElseThrow(
-                  () -> new IllegalStateException("DICOM Object does not contain sopClassUID"));
+      String sopClassUID = dcm.getString(Tag.SOPClassUID);
+      if (!StringUtil.hasText(sopClassUID)) {
+        throw new IllegalStateException("DICOM Object does not contain sopClassUID");
+      }
       String scuPattern = sopClassUID + ".";
-      MaskArea mask = getMask(dcm.getString(Tag.StationName).orElse(null));
+      MaskArea mask = getMask(dcm.getString(Tag.StationName));
       // A mask must be applied with all the US and Secondary Capture sopClassUID, and with
       // BurnedInAnnotation
       if (scuPattern.startsWith("1.2.840.10008.5.1.4.1.1.6.")
           || scuPattern.startsWith("1.2.840.10008.5.1.4.1.1.7.")
           || scuPattern.startsWith("1.2.840.10008.5.1.4.1.1.3.")
           || scuPattern.equals("1.2.840.10008.5.1.4.1.1.77.1.1")
-          || "YES".equalsIgnoreCase(dcm.getString(Tag.BurnedInAnnotation).orElse(null))) {
+          || "YES".equalsIgnoreCase(dcm.getString(Tag.BurnedInAnnotation))) {
         context.setMaskArea(mask);
         if (mask == null) {
           throw new IllegalStateException("Cannot clean pixel data to sopClassUID " + sopClassUID);
@@ -268,9 +265,9 @@ public class Profile {
         "SOPInstanceUID_OLD={} SOPInstanceUID_NEW={} SeriesInstanceUID_OLD={} "
             + "SeriesInstanceUID_NEW={} ProjectName={} ProfileName={} ProfileCodenames={}",
         SOPInstanceUID,
-        dcm.getString(Tag.SOPInstanceUID).orElse(null),
+        dcm.getString(Tag.SOPInstanceUID),
         SeriesInstanceUID,
-        dcm.getString(Tag.SeriesInstanceUID).orElse(null),
+        dcm.getString(Tag.SeriesInstanceUID),
         destinationEntity.getProjectEntity().getName(),
         profileEntity.getName(),
         profilesCodeName);
@@ -299,7 +296,7 @@ public class Profile {
   }
 
   public void setDefaultDeidentTagValue(
-      DicomObject dcm,
+      Attributes dcm,
       String patientID,
       String patientName,
       String profilePipeCodeName,
@@ -333,7 +330,7 @@ public class Profile {
         newElem -> {
           final ActionItem add =
               new Add("A", newElem.getTag(), newElem.getVr(), newElem.getStringValue());
-          add.execute(dcm, newElem.getTag(), null, hmac);
+          add.execute(dcm, newElem.getTag(), hmac);
         });
   }
 

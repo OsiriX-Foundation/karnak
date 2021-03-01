@@ -91,10 +91,8 @@ public class DownloadingServlet extends HttpServlet {
    * different name than the name the file has been saved in your local database, since your local
    * names need to be unique.
    *
-   * @param req The request
    * @param resp The response
-   * @param filename The name of the file you want to download.
-   * @param original_filename The name the browser should receive.
+   * @param path The path of the file you want to download.
    * @throws IOException
    */
   private boolean download(HttpServletResponse resp, Path path) throws IOException {

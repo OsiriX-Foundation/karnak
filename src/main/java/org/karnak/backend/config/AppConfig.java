@@ -114,7 +114,7 @@ public class AppConfig {
   @EventListener(ApplicationReadyEvent.class)
   public void setProfilesByDefault() {
     URL profileURL = Profile.class.getResource("profileByDefault.yml");
-    if (profileRepo.existsByNameAndByDefault("Dicom Basic Profile", true) == false) {
+    if (!profileRepo.existsByNameAndByDefault("Dicom Basic Profile", true)) {
       try (InputStream inputStream = profileURL.openStream()) {
         final Yaml yaml = new Yaml(new Constructor(ProfilePipeBody.class));
         final ProfilePipeBody profilePipeYml = yaml.load(inputStream);

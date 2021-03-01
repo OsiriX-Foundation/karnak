@@ -9,10 +9,8 @@
  */
 package org.karnak.backend.model.action;
 
-import java.util.Iterator;
-import org.dcm4che6.data.DicomElement;
-import org.dcm4che6.data.DicomObject;
-import org.dcm4che6.data.VR;
+import org.dcm4che3.data.Attributes;
+import org.dcm4che3.data.VR;
 import org.karnak.backend.model.profilepipe.HMAC;
 
 public interface ActionItem {
@@ -27,5 +25,5 @@ public interface ActionItem {
 
   void setVr(VR vr);
 
-  void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, HMAC hmac);
+  void execute(Attributes dcm, int tag, HMAC hmac);
 }

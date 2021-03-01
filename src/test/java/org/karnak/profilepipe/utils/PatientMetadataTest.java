@@ -15,9 +15,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
 import java.util.stream.Stream;
-import org.dcm4che6.data.DicomObject;
-import org.dcm4che6.data.Tag;
-import org.dcm4che6.data.VR;
+import org.dcm4che3.data.Attributes;
+import org.dcm4che3.data.Tag;
+import org.dcm4che3.data.VR;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -35,13 +35,13 @@ class PatientMetadataTest {
 
   @BeforeAll
   protected static void setUpBeforeClass() {
-    DicomObject dataset = DicomObject.newDicomObject();
+    Attributes dataset = new Attributes();
     dataset.setString(Tag.PatientID, VR.LO, "");
     dataset.setString(Tag.PatientName, VR.PN, "");
     dataset.setString(Tag.PatientBirthDate, VR.DA, "");
     dataset.setString(Tag.PatientSex, VR.CS, "");
 
-    DicomObject datasetWithNotValidPatientSex = DicomObject.newDicomObject();
+    Attributes datasetWithNotValidPatientSex = new Attributes();
     datasetWithNotValidPatientSex.setString(Tag.PatientID, VR.LO, "EREN");
     datasetWithNotValidPatientSex.setString(Tag.PatientName, VR.PN, "Patient^Name");
     datasetWithNotValidPatientSex.setString(Tag.PatientBirthDate, VR.DA, "19930216");
@@ -49,7 +49,7 @@ class PatientMetadataTest {
     datasetWithNotValidPatientSex.setString(Tag.IssuerOfPatientID, VR.LO, "PDA");
 
     patientMetadata = new PatientMetadata(dataset, "");
-    patientMetadataDicomEmptyWithIssuer = new PatientMetadata(DicomObject.newDicomObject(), "PDA");
+    patientMetadataDicomEmptyWithIssuer = new PatientMetadata(new Attributes(), "PDA");
     patientMetadataWithNotValidPatientSex = new PatientMetadata(datasetWithNotValidPatientSex, "");
   }
 
@@ -111,16 +111,17 @@ class PatientMetadataTest {
 
   private static Stream<Arguments> providerCompareCachedPatient() {
     return Stream.of(
-        Arguments.of(patientMetadata, new CachedPatient("TEST", "", "", "", "")),
+        Arguments.of(patientMetadata, new CachedPatient("TEST", "", "", "", "", null)),
         Arguments.of(patientMetadata, new MainzellistePatient("TEST", "", "", "", null, "O", "")),
         Arguments.of(
-            patientMetadataDicomEmptyWithIssuer, new CachedPatient("TEST", "", "", "", "PDA")),
+            patientMetadataDicomEmptyWithIssuer,
+            new CachedPatient("TEST", "", "", "", "PDA", null)),
         Arguments.of(
             patientMetadataDicomEmptyWithIssuer,
             new MainzellistePatient("TEST", "", "", "", null, "O", "PDA")),
         Arguments.of(
             patientMetadataWithNotValidPatientSex,
-            new CachedPatient("TEST", "EREN", "Name", "Patient", "PDA")),
+            new CachedPatient("TEST", "EREN", "Name", "Patient", "PDA", null)),
         Arguments.of(
             patientMetadataWithNotValidPatientSex,
             new MainzellistePatient(
@@ -129,14 +130,15 @@ class PatientMetadataTest {
 
   private static Stream<Arguments> providerCompareCachedPatientFalse() {
     return Stream.of(
-        Arguments.of(patientMetadata, new CachedPatient("TEST", "1", "", "", "")),
-        Arguments.of(patientMetadata, new CachedPatient("TEST", "", "", "", "1")),
+        Arguments.of(patientMetadata, new CachedPatient("TEST", "1", "", "", "", null)),
+        Arguments.of(patientMetadata, new CachedPatient("TEST", "", "", "", "1", null)),
         Arguments.of(patientMetadata, new MainzellistePatient("TEST", "1", "", "", null, "O", "")),
         Arguments.of(patientMetadata, new MainzellistePatient("TEST", "", "", "", null, "O", "1")),
         Arguments.of(
-            patientMetadataDicomEmptyWithIssuer, new CachedPatient("TEST", "1", "", "", "PDA")),
+            patientMetadataDicomEmptyWithIssuer,
+            new CachedPatient("TEST", "1", "", "", "PDA", null)),
         Arguments.of(
-            patientMetadataDicomEmptyWithIssuer, new CachedPatient("TEST", "", "", "", "")),
+            patientMetadataDicomEmptyWithIssuer, new CachedPatient("TEST", "", "", "", "", null)),
         Arguments.of(
             patientMetadataDicomEmptyWithIssuer,
             new MainzellistePatient("TEST", "1", "", "", null, "O", "PDA")),
@@ -145,13 +147,13 @@ class PatientMetadataTest {
             new MainzellistePatient("TEST", "", "", "", null, "O", "")),
         Arguments.of(
             patientMetadataWithNotValidPatientSex,
-            new CachedPatient("TEST", "", "Name", "Patient", "PDA")),
+            new CachedPatient("TEST", "", "Name", "Patient", "PDA", null)),
         Arguments.of(
             patientMetadataWithNotValidPatientSex,
-            new CachedPatient("TEST", "", "^Name", "", "PDA")),
+            new CachedPatient("TEST", "", "^Name", "", "PDA", null)),
         Arguments.of(
             patientMetadataWithNotValidPatientSex,
-            new CachedPatient("TEST", "EREN", "Patient^Name", "", "")),
+            new CachedPatient("TEST", "EREN", "Patient^Name", "", "", null)),
         Arguments.of(
             patientMetadataWithNotValidPatientSex,
             new MainzellistePatient(
@@ -163,7 +165,7 @@ class PatientMetadataTest {
   }
 
   private static Stream<Arguments> providerPatientBirthdateInvalid() {
-    DicomObject dataset = DicomObject.newDicomObject();
+    Attributes dataset = new Attributes();
     dataset.setString(Tag.PatientID, VR.LO, "");
     dataset.setString(Tag.PatientName, VR.PN, "");
     dataset.setString(Tag.PatientBirthDate, VR.DA, "NULL");

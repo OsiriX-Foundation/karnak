@@ -22,16 +22,31 @@ public class PatientClientUtil {
   public static String getPseudonym(PatientMetadata patientMetadata, PatientClient cache) {
     if (cache != null) {
       final String key = generateKey(patientMetadata);
-      final PseudonymPatient patient = cache.get(key);
-      if (patient != null && patientMetadata.compareCachedPatient(patient)) {
-        return patient.getPseudonym();
-      }
+      return getCachedKey(key, patientMetadata, cache);
+    }
+    return null;
+  }
+
+  public static String getPseudonym(
+      PatientMetadata patientMetadata, PatientClient cache, Long projectID) {
+    if (cache != null) {
+      final String key = generateKey(patientMetadata, projectID);
+      return getCachedKey(key, patientMetadata, cache);
+    }
+    return null;
+  }
+
+  private static String getCachedKey(
+      String key, PatientMetadata patientMetadata, PatientClient cache) {
+    final PseudonymPatient patient = cache.get(key);
+    if (patient != null && patientMetadata.compareCachedPatient(patient)) {
+      return patient.getPseudonym();
     }
     return null;
   }
 
   public static String generateKey(String patientID, String issuerOfPatientID) {
-    return patientID.concat(issuerOfPatientID);
+    return patientID.concat(issuerOfPatientID == null ? "" : issuerOfPatientID);
   }
 
   public static String generateKey(PseudonymPatient patient) {
@@ -44,5 +59,15 @@ public class PatientClientUtil {
     String patientID = patientMetadata.getPatientID();
     String issuerOfPatientID = patientMetadata.getIssuerOfPatientID();
     return generateKey(patientID, issuerOfPatientID);
+  }
+
+  public static String generateKey(PatientMetadata patientMetadata, Long projectID) {
+    final String key = generateKey(patientMetadata);
+    return key.concat(projectID == null ? "" : projectID.toString());
+  }
+
+  public static String generateKey(PseudonymPatient pseudonymPatient, Long projectID) {
+    final String key = generateKey(pseudonymPatient);
+    return key.concat(projectID == null ? "" : projectID.toString());
   }
 }

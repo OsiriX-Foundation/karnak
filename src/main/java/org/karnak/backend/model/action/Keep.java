@@ -9,10 +9,8 @@
  */
 package org.karnak.backend.model.action;
 
-import java.util.Iterator;
-import org.dcm4che6.data.DicomElement;
-import org.dcm4che6.data.DicomObject;
-import org.dcm4che6.util.TagUtils;
+import org.dcm4che3.data.Attributes;
+import org.dcm4che3.util.TagUtils;
 import org.karnak.backend.model.profilepipe.HMAC;
 import org.slf4j.MDC;
 
@@ -23,8 +21,8 @@ public class Keep extends AbstractAction {
   }
 
   @Override
-  public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, HMAC hmac) {
-    final String tagValueIn = dcm.getString(tag).orElse(null);
+  public void execute(Attributes dcm, int tag, HMAC hmac) {
+    final String tagValueIn = dcm.getString(tag);
     LOGGER.trace(
         CLINICAL_MARKER,
         PATTERN_WITH_INOUT,

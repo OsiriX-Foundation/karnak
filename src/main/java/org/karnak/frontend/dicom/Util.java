@@ -31,7 +31,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import org.dcm4che6.net.Status;
+import org.dcm4che3.net.Status;
 import org.karnak.backend.model.dicom.ConfigNode;
 import org.karnak.backend.model.dicom.DicomNodeList;
 import org.karnak.backend.model.dicom.WadoNode;
@@ -266,7 +266,7 @@ public class Util {
       } else {
         state = Echo.process(callingAET, calledNode);
       }
-      success = state.getStatus().orElse(Status.Pending) == Status.Success;
+      success = state.getStatus() == Status.Success;
 
       if ("XML".equals(format.toUpperCase())) {
         result.append("<DcmStatus>");
@@ -280,7 +280,7 @@ public class Util {
         } else {
           result
               .append("Error ")
-              .append(Integer.toHexString(state.getStatus().orElse(Status.Pending)))
+              .append(Integer.toHexString(state.getStatus()))
               .append("</DcmStatus>");
           result
               .append("<DcmStatusMessage>")
@@ -299,7 +299,7 @@ public class Util {
           result.append("Success");
         } else {
           result.append("error code ");
-          result.append(Integer.toHexString(state.getStatus().orElse(Status.Pending)));
+          result.append(Integer.toHexString(state.getStatus()));
         }
         result.append("<br>DICOM Message: ");
         result.append(state.getMessage());

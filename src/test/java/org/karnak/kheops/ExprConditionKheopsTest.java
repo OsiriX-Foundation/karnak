@@ -13,9 +13,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.stream.Stream;
-import org.dcm4che6.data.DicomObject;
-import org.dcm4che6.data.Tag;
-import org.dcm4che6.data.VR;
+import org.dcm4che3.data.Attributes;
+import org.dcm4che3.data.Tag;
+import org.dcm4che3.data.VR;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -28,7 +28,7 @@ class ExprConditionKheopsTest {
 
   @BeforeAll
   protected static void setUpBeforeClass() throws Exception {
-    final DicomObject dataset = DicomObject.newDicomObject();
+    final Attributes dataset = new Attributes();
     dataset.setString(Tag.StudyDate, VR.DA, "20180209");
     dataset.setString(Tag.PatientAge, VR.AS, "043Y");
     dataset.setString(Tag.SeriesInstanceUID, VR.UI, "2.25.1234567890123456");

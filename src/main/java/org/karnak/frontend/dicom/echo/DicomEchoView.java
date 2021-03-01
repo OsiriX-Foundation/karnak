@@ -9,7 +9,6 @@
  */
 package org.karnak.frontend.dicom.echo;
 
-import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.button.Button;
@@ -20,7 +19,6 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.binder.StatusChangeEvent;
 import com.vaadin.flow.data.binder.StatusChangeListener;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.validator.IntegerRangeValidator;
@@ -53,6 +51,7 @@ public class DicomEchoView extends AbstractView implements HasUrlParameter<Strin
   private static final String PARAMETER_ACTION = "action";
 
   private static final String ACTION_ECHO = "echo";
+  public static final String ERROR_MESSAGE = "This filed is mandatory";
 
   // CONTROLLER
   private final DicomEchoLogic logic = new DicomEchoLogic(this);
@@ -117,7 +116,7 @@ public class DicomEchoView extends AbstractView implements HasUrlParameter<Strin
 
   private void init() {
     dicomEchoQueryData = new DicomEchoQueryData();
-    binder = new Binder<DicomEchoQueryData>();
+    binder = new Binder<>();
   }
 
   private void createView() {
@@ -211,71 +210,43 @@ public class DicomEchoView extends AbstractView implements HasUrlParameter<Strin
     buttonBar.add(clearBtn, selectDicomNodeBtn, dicomEchoBtn);
   }
 
-  @SuppressWarnings("serial")
   private void buildClearBtn() {
     clearBtn = new Button("Clear");
     clearBtn.getStyle().set("cursor", "pointer");
 
-    clearBtn.addClickListener(
-        new ComponentEventListener<ClickEvent<Button>>() {
-
-          @Override
-          public void onComponentEvent(ClickEvent<Button> event) {
-            binder.readBean(dicomEchoQueryData);
-          }
-        });
+    clearBtn.addClickListener(event -> binder.readBean(dicomEchoQueryData));
   }
 
-  @SuppressWarnings("serial")
   private void buildSelectDicomNodeBtn() {
     selectDicomNodeBtn = new Button("Select Node");
     selectDicomNodeBtn.getStyle().set("cursor", "pointer");
 
-    selectDicomNodeBtn.addClickListener(
-        new ComponentEventListener<ClickEvent<Button>>() {
-
-          @Override
-          public void onComponentEvent(ClickEvent<Button> event) {
-            openDicomEchoSelectionDialog();
-          }
-        });
+    selectDicomNodeBtn.addClickListener(event -> openDicomEchoSelectionDialog());
   }
 
-  @SuppressWarnings("serial")
   private void openDicomEchoSelectionDialog() {
     dicomEchoSelectionDialog = new DicomEchoSelectionDialog();
 
     dicomEchoSelectionDialog.addDicomNodeSelectionListener(
-        new ComponentEventListener<DicomEchoSelectionDialog.DicomNodeSelectionEvent>() {
+        (ComponentEventListener<DicomNodeSelectionEvent>)
+            event -> {
+              ConfigNode selectedDicomNode = event.getSelectedDicomNode();
 
-          @Override
-          public void onComponentEvent(DicomNodeSelectionEvent event) {
-            ConfigNode selectedDicomNode = event.getSelectedDicomNode();
-
-            calledAetFld.setValue(selectedDicomNode.getAet());
-            calledHostnameFld.setValue(selectedDicomNode.getHostname());
-            calledPortFld.setValue(selectedDicomNode.getPort());
-          }
-        });
+              calledAetFld.setValue(selectedDicomNode.getAet());
+              calledHostnameFld.setValue(selectedDicomNode.getHostname());
+              calledPortFld.setValue(selectedDicomNode.getPort());
+            });
 
     dicomEchoSelectionDialog.open();
   }
 
-  @SuppressWarnings("serial")
   private void buildDicomEchoBtn() {
     dicomEchoBtn = new Button("Echo");
     dicomEchoBtn.getStyle().set("cursor", "pointer");
     dicomEchoBtn.addClassName("stroked-button");
     dicomEchoBtn.setEnabled(false);
 
-    dicomEchoBtn.addClickListener(
-        new ComponentEventListener<ClickEvent<Button>>() {
-
-          @Override
-          public void onComponentEvent(ClickEvent<Button> event) {
-            executeEcho();
-          }
-        });
+    dicomEchoBtn.addClickListener(event -> executeEcho());
   }
 
   private void buildDicomEchoStatusLayout() {
@@ -296,45 +267,42 @@ public class DicomEchoView extends AbstractView implements HasUrlParameter<Strin
   private void bindFields() {
     binder
         .forField(callingAetFld)
-        .asRequired("This filed is mandatory")
+        .asRequired(ERROR_MESSAGE)
         .bind(DicomEchoQueryData::getCallingAet, DicomEchoQueryData::setCallingAet);
 
     binder
         .forField(calledAetFld)
-        .asRequired("This filed is mandatory")
+        .asRequired(ERROR_MESSAGE)
         .bind(DicomEchoQueryData::getCalledAet, DicomEchoQueryData::setCalledAet);
 
     binder
         .forField(calledHostnameFld)
-        .asRequired("This filed is mandatory")
+        .asRequired(ERROR_MESSAGE)
         .bind(DicomEchoQueryData::getCalledHostname, DicomEchoQueryData::setCalledHostname);
 
     binder
         .forField(calledPortFld)
-        .asRequired("This filed is mandatory")
+        .asRequired(ERROR_MESSAGE)
         .withValidator(new IntegerRangeValidator("Invalid port number", 1, 65535))
         .bind(DicomEchoQueryData::getCalledPort, DicomEchoQueryData::setCalledPort);
 
     binder.readBean(dicomEchoQueryData);
 
     binder.addStatusChangeListener(
-        new StatusChangeListener() {
+        (StatusChangeListener)
+            event -> {
+              if (callingAetFld.isEmpty()
+                  || calledAetFld.isEmpty()
+                  || calledHostnameFld.isEmpty()
+                  || calledPortFld.isEmpty()) {
+                dicomEchoBtn.setEnabled(false);
+              } else {
+                dicomEchoBtn.setEnabled(!event.hasValidationErrors());
+              }
 
-          @Override
-          public void statusChange(StatusChangeEvent event) {
-            if (callingAetFld.isEmpty()
-                || calledAetFld.isEmpty()
-                || calledHostnameFld.isEmpty()
-                || calledPortFld.isEmpty()) {
-              dicomEchoBtn.setEnabled(false);
-            } else {
-              dicomEchoBtn.setEnabled(!event.hasValidationErrors());
-            }
-
-            dicomEchoStatusLayout.removeAll();
-            dicomEchoStatusLayout.setVisible(false);
-          }
-        });
+              dicomEchoStatusLayout.removeAll();
+              dicomEchoStatusLayout.setVisible(false);
+            });
   }
 
   private void readParameters(String queryParameter) {
@@ -344,9 +312,7 @@ public class DicomEchoView extends AbstractView implements HasUrlParameter<Strin
 
       String[] parametersArray = queryParameterDecoded.split("&");
 
-      String[] parametersList = parametersArray;
-
-      for (String parameter : parametersList) {
+      for (String parameter : parametersArray) {
         String[] parameterArray = parameter.split("=");
         String parameterName = parameterArray[0];
         String parameterValue = parameterArray[1];
