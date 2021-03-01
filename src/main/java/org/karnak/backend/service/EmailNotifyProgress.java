@@ -24,15 +24,16 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import org.karnak.backend.dicom.ForwardDestination;
 import org.karnak.backend.model.NotificationSetUp;
 import org.karnak.backend.model.Series;
 import org.karnak.backend.model.Study;
-import org.karnak.backend.service.gateway.GatewaySetUp;
+import org.karnak.backend.model.editor.StreamRegistryEditor;
+import org.karnak.backend.service.gateway.GatewaySetUpService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.weasis.core.util.StringUtil;
 import org.weasis.dicom.param.DicomProgress;
-import org.weasis.dicom.param.ForwardDestination;
 import org.weasis.dicom.param.ProgressListener;
 
 public class EmailNotifyProgress implements ProgressListener {
@@ -40,17 +41,17 @@ public class EmailNotifyProgress implements ProgressListener {
   private static final Logger LOGGER = LoggerFactory.getLogger(EmailNotifyProgress.class);
 
   private final ScheduledThreadPoolExecutor checkProcess;
-  private final StreamRegistry streamRegistry;
+  private final StreamRegistryEditor streamRegistry;
   private final ForwardDestination forwardDestination;
   private final String[] emailList;
-  private final GatewaySetUp config;
+  private final GatewaySetUpService config;
   private final NotificationSetUp notificationSetUp;
 
   public EmailNotifyProgress(
-      StreamRegistry streamRegistry,
+      StreamRegistryEditor streamRegistry,
       ForwardDestination forwardDestination,
       String[] emails,
-      GatewaySetUp config,
+      GatewaySetUpService config,
       NotificationSetUp notificationSetUp) {
     this.streamRegistry = Objects.requireNonNull(streamRegistry);
     this.forwardDestination = Objects.requireNonNull(forwardDestination);

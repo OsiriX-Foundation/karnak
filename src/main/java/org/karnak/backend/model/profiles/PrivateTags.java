@@ -9,10 +9,9 @@
  */
 package org.karnak.backend.model.profiles;
 
-import org.dcm4che6.data.DicomElement;
-import org.dcm4che6.data.DicomObject;
-import org.dcm4che6.data.VR;
-import org.dcm4che6.util.TagUtils;
+import org.dcm4che3.data.Attributes;
+import org.dcm4che3.data.VR;
+import org.dcm4che3.util.TagUtils;
 import org.karnak.backend.data.entity.ExcludedTagEntity;
 import org.karnak.backend.data.entity.IncludedTagEntity;
 import org.karnak.backend.data.entity.ProfileElementEntity;
@@ -58,23 +57,22 @@ public class PrivateTags extends AbstractProfileItem {
   }
 
   @Override
-  public ActionItem getAction(
-      DicomObject dcm, DicomObject dcmCopy, DicomElement dcmElem, HMAC hmac) {
-    final int tag = dcmElem.tag();
+  public ActionItem getAction(Attributes dcm, Attributes dcmCopy, int tag, HMAC hmac) {
     if (TagUtils.isPrivateGroup(tag)) {
-      if (tagsAction.isEmpty() == false && exceptedTagsAction.isEmpty()) {
+      if (!tagsAction.isEmpty() && exceptedTagsAction.isEmpty()) {
         return tagsAction.get(tag);
       }
 
-      if (tagsAction.isEmpty() && exceptedTagsAction.isEmpty() == false) {
+      if (tagsAction.isEmpty() && !exceptedTagsAction.isEmpty()) {
         if (exceptedTagsAction.get(tag) != null) {
           return null;
         }
       }
 
-      if (tagsAction.isEmpty() == false && exceptedTagsAction.isEmpty() == false) {
-        if (exceptedTagsAction.get(dcmElem.tag()) == null) {
-          return tagsAction.get(dcmElem.tag());
+      if (!tagsAction.isEmpty() && !exceptedTagsAction.isEmpty()) {
+        // TODO check tag value?
+        if (exceptedTagsAction.get(tag) == null) {
+          return tagsAction.get(tag);
         }
         return null;
       }
@@ -91,8 +89,7 @@ public class PrivateTags extends AbstractProfileItem {
     final ExpressionError expressionError =
         ExpressionResult.isValid(
             condition,
-            new ExprConditionDestination(
-                1, VR.AE, DicomObject.newDicomObject(), DicomObject.newDicomObject()),
+            new ExprConditionDestination(1, VR.AE, new Attributes(), new Attributes()),
             Boolean.class);
     if (condition != null && !expressionError.isValid()) {
       throw new Exception(expressionError.getMsg());

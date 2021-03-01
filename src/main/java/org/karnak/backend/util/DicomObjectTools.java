@@ -9,90 +9,119 @@
  */
 package org.karnak.backend.util;
 
-import java.util.Iterator;
-import org.dcm4che6.data.DicomElement;
-import org.dcm4che6.data.DicomObject;
-import org.dcm4che6.data.VR;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import org.dcm4che3.data.Attributes;
+import org.dcm4che3.data.ElementDictionary;
+import org.dcm4che3.data.Sequence;
+import org.dcm4che3.data.VR;
+import org.dcm4che3.util.StringUtils;
+import org.weasis.core.util.StringUtil;
 
 public class DicomObjectTools {
 
-  public static boolean dicomObjectEquals(Object o1, Object o2) {
-    if (o1 == o2) {
-      return true;
-    } else if (o1 == null || o2 == null) {
-      return false;
+  public static boolean dicomObjectEquals(Attributes o1, Attributes o2) {
+    return Objects.equals(o1, o2);
+  }
+
+  public static boolean containsTagFromPath(String path, Attributes dcm) {
+    if (!StringUtil.hasText(path)) {
+      throw new IllegalArgumentException("path cannot be empty!");
     }
 
-    if (!(o1 instanceof DicomObject) && !(o2 instanceof DicomObject)) {
-      return false;
+    List<Integer> tags = toTags(StringUtils.split(path, '.'));
+    int size = tags.size();
+    if (size == 1) {
+      return dcm.contains(tags.get(0));
+    } else if (size > 1) {
+
     }
 
-    Iterator<DicomElement> dicomElementIterator1 = ((DicomObject) o1).iterator();
-    Iterator<DicomElement> dicomElementIterator2 = ((DicomObject) o2).iterator();
+    return false;
+  }
 
-    if (dicomElementIterator1.hasNext() != dicomElementIterator2.hasNext()) {
-      return false;
+  public static List<Integer> toTags(String[] tagOrKeywords) {
+    List<Integer> tags = new ArrayList<>(tagOrKeywords.length);
+    for (int i = 0; i < tagOrKeywords.length; i++) {
+      tags.add(toTag(tagOrKeywords[i]));
+    }
+    return tags;
+  }
+
+  public static int toTag(String tagOrKeyword) {
+    try {
+      return Integer.parseInt(tagOrKeyword, 16);
+    } catch (IllegalArgumentException e) {
+      int tag = ElementDictionary.tagForKeyword(tagOrKeyword, null);
+      if (tag == -1) {
+        throw new IllegalArgumentException(tagOrKeyword);
+      }
+      return tag;
+    }
+  }
+
+  public static boolean containsTagInPath(List<Integer> path, Attributes dcm) {
+    int size = path.size();
+    if (size == 1) {
+      return dcm.contains(path.get(0));
     }
 
-    while (dicomElementIterator1.hasNext() || dicomElementIterator2.hasNext()) {
-      if (!dicomElementIterator1.hasNext() || !dicomElementIterator2.hasNext()) {
+    List<Attributes> list = new ArrayList<>();
+
+    for (int i = 0; i < size; i++) {
+      int tag = path.get(i);
+      if (i == size - 1) {
+        for (Attributes item : list) {
+          if (item.contains(tag)) {
+            return true;
+          }
+        }
         return false;
       }
 
-      final DicomElement dcmDicomElement1 = dicomElementIterator1.next();
-      final DicomElement dcmDicomElement2 = dicomElementIterator2.next();
-      final String stringValue1 = dcmDicomElement1.stringValue(0).orElse(null);
-      final String stringValue2 = dcmDicomElement2.stringValue(0).orElse(null);
-      final int tag1 = dcmDicomElement1.tag();
-      final int tag2 = dcmDicomElement2.tag();
-      final VR vr1 = dcmDicomElement1.vr();
-      final VR vr2 = dcmDicomElement2.vr();
-
-      if (stringValue1 != null && stringValue2 != null) {
-        if (!stringValue1.equals(stringValue2) || tag1 != tag2 || vr1 != vr2) {
-          return false;
-        }
+      if (list.isEmpty()) {
+        list = dcm.getSequence(tag);
       } else {
-        if ((stringValue1 == null && stringValue2 != null)
-            || (stringValue1 != null && stringValue2 == null)) {
-          return false;
-        }
+        list = getChildSequences(list, tag);
       }
 
-      // SEQUENCES
-      if (vr1 == VR.SQ && vr2 == VR.SQ) {
-        int i = 0;
-        while (dcmDicomElement1.getItem(i) != null && dcmDicomElement2.getItem(i) != null) {
-          DicomObject dcmItem1 = dcmDicomElement1.getItem(i);
-          DicomObject dcmItem2 = dcmDicomElement2.getItem(i);
-          boolean resultSequence = dicomObjectEquals(dcmItem1, dcmItem2);
-          if (!resultSequence) {
-            return false;
-          }
-          i = i + 1;
-        }
+      if (list == null || list.isEmpty()) {
+        return false;
       }
     }
-    return true;
+
+    return false;
   }
 
-  public static boolean tagIsInDicomObject(int tag, DicomObject dcm) {
-    for (Iterator<DicomElement> iterator = dcm.iterator(); iterator.hasNext(); ) {
-      final DicomElement dcmEl = iterator.next();
-
-      if (dcmEl.tag() == tag) {
-        return true;
+  private static List<Attributes> getChildSequences(List<Attributes> seq, int seqTag) {
+    if (seq != null) {
+      List<Attributes> items = new ArrayList<>();
+      for (Attributes item : seq) {
+        Sequence childSeq = item.getSequence(seqTag);
+        if (childSeq != null) {
+          items.addAll(childSeq);
+        }
       }
+      return items;
+    }
+    return null;
+  }
 
-      if (dcmEl.vr() == VR.SQ) {
-        int i = 0;
-        while (dcmEl.getItem(i) != null) {
-          DicomObject dcmItem1 = dcmEl.getItem(i);
-          boolean resultSequence = tagIsInDicomObject(tag, dcmItem1);
-          if (resultSequence == true) {
-            return true;
+  public static boolean containsTagInAllAttributes(int tag, Attributes dcm) {
+    if (dcm.contains(tag)) {
+      return true;
+    }
+    for (int t : dcm.tags()) {
+      if (dcm.getVR(t) == VR.SQ) {
+        Sequence seq = dcm.getSequence(t);
+        if (seq != null) {
+          for (Attributes item : seq) {
+            boolean result = containsTagInAllAttributes(tag, item);
+            if (result) {
+              return true;
+            }
           }
-          i = i + 1;
         }
       }
     }

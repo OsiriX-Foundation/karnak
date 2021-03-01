@@ -20,13 +20,16 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.dcm4che3.data.Attributes;
+import org.dcm4che3.data.Tag;
+import org.dcm4che3.io.DicomInputStream;
+import org.dcm4che3.io.DicomInputStream.IncludeBulkData;
 import org.karnak.backend.service.gateway.AbstractGateway;
-import org.karnak.backend.service.gateway.GatewaySetUp;
+import org.karnak.backend.service.gateway.GatewaySetUpService;
 import org.karnak.backend.util.ServletUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.weasis.dicom.param.DicomFileStream;
 
 @WebServlet(urlPatterns = "/archive.xml")
 public class ShowArchiveServlet extends HttpServlet {
@@ -34,33 +37,46 @@ public class ShowArchiveServlet extends HttpServlet {
   @Serial private static final long serialVersionUID = -4229230848823235305L;
   private static final Logger LOGGER = LoggerFactory.getLogger(ShowArchiveServlet.class);
 
-  @Autowired private GatewaySetUp globalConfig;
+  @Autowired private GatewaySetUpService globalConfig;
 
   private static void scanFiles(Path aStartingDir, StringBuilder sb) {
     try (Stream<Path> walk = Files.walk(aStartingDir)) {
       walk.filter(p -> !Files.isDirectory(p) && Files.isReadable(p) && !p.endsWith(".part"))
-          .forEach(
-              p -> {
-                DicomFileStream info = new DicomFileStream(p);
-                sb.append("<file tsuid=\"");
-                sb.append(info.getTransferSyntax());
-                sb.append("\" cuid\"");
-                sb.append(info.getSopClassUID());
-                sb.append("\" iuid\"");
-                sb.append(info.getSopInstanceUID());
-                sb.append("\">\n");
-                sb.append(p.getFileName());
-                sb.append("</file>\n");
-              });
+          .forEach(p -> writeInfo(p, sb));
     } catch (IOException e) {
       LOGGER.error("Cannot check archive", e);
+    }
+  }
+
+  private static void writeInfo(Path file, StringBuilder sb) {
+    try (DicomInputStream in = new DicomInputStream(file.toFile())) {
+      in.setIncludeBulkData(IncludeBulkData.NO);
+      Attributes fmi = in.readFileMetaInformation();
+      if (fmi == null
+          || !fmi.containsValue(Tag.TransferSyntaxUID)
+          || !fmi.containsValue(Tag.MediaStorageSOPClassUID)
+          || !fmi.containsValue(Tag.MediaStorageSOPInstanceUID)) {
+        Attributes ds = in.readDataset(-1, Tag.PixelData);
+        fmi = ds.createFileMetaInformation(in.getTransferSyntax());
+      }
+      sb.append("<file tsuid=\"");
+      sb.append(fmi.getString(Tag.TransferSyntaxUID));
+      sb.append("\" cuid\"");
+      sb.append(fmi.getString(Tag.MediaStorageSOPClassUID));
+      sb.append("\" iuid\"");
+      sb.append(fmi.getString(Tag.MediaStorageSOPInstanceUID));
+      sb.append("\">\n");
+      sb.append(file.getFileName());
+      sb.append("</file>\n");
+    } catch (Exception e) {
+      LOGGER.error("Cannot write fmi attributes", e);
     }
   }
 
   @Override
   public final void init() throws ServletException {
     if (globalConfig == null) {
-      LOGGER.error("ShowArchiveServlet service cannot start: GatewaySetUp is missing.");
+      LOGGER.error("ShowArchiveServlet service cannot start: GatewaySetUpService is missing.");
       destroy();
     }
   }

@@ -18,42 +18,43 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import org.dcm4che6.data.DicomObject;
+import org.dcm4che3.data.Attributes;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.karnak.backend.config.GatewayConfig;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.DicomSourceNodeEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.data.entity.KheopsAlbumsEntity;
 import org.karnak.backend.data.repo.GatewayRepo;
+import org.karnak.backend.dicom.DicomForwardDestination;
+import org.karnak.backend.dicom.ForwardDestination;
+import org.karnak.backend.dicom.ForwardDicomNode;
+import org.karnak.backend.dicom.web.WebForwardDestination;
 import org.karnak.backend.enums.DestinationType;
 import org.karnak.backend.enums.NodeEventType;
 import org.karnak.backend.model.NodeEvent;
 import org.karnak.backend.model.NotificationSetUp;
-import org.karnak.backend.service.DeidentifyEditor;
+import org.karnak.backend.model.editor.DeIdentifyEditor;
+import org.karnak.backend.model.editor.FilterEditor;
+import org.karnak.backend.model.editor.StreamRegistryEditor;
 import org.karnak.backend.service.EmailNotifyProgress;
-import org.karnak.backend.service.FilterEditor;
-import org.karnak.backend.service.StreamRegistry;
 import org.karnak.backend.service.kheops.SwitchingAlbum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.env.Environment;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.weasis.core.util.LangUtil;
 import org.weasis.core.util.StringUtil;
 import org.weasis.dicom.param.AdvancedParams;
 import org.weasis.dicom.param.AttributeEditor;
 import org.weasis.dicom.param.AttributeEditorContext;
 import org.weasis.dicom.param.ConnectOptions;
-import org.weasis.dicom.param.DicomForwardDestination;
 import org.weasis.dicom.param.DicomNode;
 import org.weasis.dicom.param.DicomProgress;
-import org.weasis.dicom.param.ForwardDestination;
-import org.weasis.dicom.param.ForwardDicomNode;
 import org.weasis.dicom.param.TlsOptions;
-import org.weasis.dicom.web.WebForwardDestination;
 
-public class GatewaySetUp {
+@Service
+public class GatewaySetUpService {
 
   protected static final String T_NODES = "forwardNodes";
   protected static final String T_NODE = "forwardNode";
@@ -71,7 +72,10 @@ public class GatewaySetUp {
   protected static final String T_PORT = "port";
   protected static final String T_TYPE = "type";
   protected static final String T_URL = "url";
-  private static final Logger LOGGER = LoggerFactory.getLogger(GatewaySetUp.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(GatewaySetUpService.class);
+  // Repositories
+  private final GatewayRepo forwardNodeRepo;
+
   private final Map<ForwardDicomNode, List<ForwardDestination>> destMap = new HashMap<>();
 
   private final Path storePath;
@@ -95,7 +99,9 @@ public class GatewaySetUp {
   private final String truststorePwd;
   private final String truststore;
 
-  public GatewaySetUp(Environment env) throws Exception {
+  @Autowired
+  public GatewaySetUpService(final GatewayRepo gatewayRepo) throws Exception {
+    this.forwardNodeRepo = gatewayRepo;
     String path = getProperty("GATEWAY_ARCHIVE_PATH", null); // Only Archive and Pull mode
     storePath = StringUtil.hasText(path) ? Path.of(path) : null;
     intervalCheck =
@@ -301,7 +307,7 @@ public class GatewaySetUp {
       final List<KheopsAlbumsEntity> listKheopsAlbumEntities = dstNode.getKheopsAlbumEntities();
       SwitchingAlbum switchingAlbum = new SwitchingAlbum();
       editors.add(
-          (DicomObject dcm, AttributeEditorContext context) -> {
+          (Attributes dcm, AttributeEditorContext context) -> {
             if (listKheopsAlbumEntities != null) {
               listKheopsAlbumEntities.forEach(
                   kheopsAlbums -> {
@@ -315,12 +321,12 @@ public class GatewaySetUp {
           dstNode.getProjectEntity() != null
               && dstNode.getProjectEntity().getProfileEntity() != null;
       if (desidentificationEnable && profileDefined) { // TODO add an option in destination model
-        editors.add(new DeidentifyEditor(dstNode));
+        editors.add(new DeIdentifyEditor(dstNode));
       }
 
       DicomProgress progress = new DicomProgress();
-      StreamRegistry streamRegistry = new StreamRegistry();
-      editors.add(streamRegistry);
+      StreamRegistryEditor streamRegistryEditor = new StreamRegistryEditor();
+      editors.add(streamRegistryEditor);
       String[] emails = dstNode.getNotify().split(",");
       NotificationSetUp notifConfig = null;
       String notifyObjectErrorPrefix = dstNode.getNotifyObjectErrorPrefix();
@@ -328,26 +334,21 @@ public class GatewaySetUp {
       String[] notifyObjectValues = dstNode.getNotifyObjectValues().split(",");
       Integer notifyInterval = dstNode.getNotifyInterval();
 
-      if (notifyObjectErrorPrefix != null
-          || notifyObjectPattern != null
-          || notifyObjectValues != null
-          || notifyInterval != null) {
-        if (notifyObjectErrorPrefix == null) {
-          notifyObjectErrorPrefix = getNotificationSetUp().getNotifyObjectErrorPrefix();
-        }
-        if (notifyObjectPattern == null) {
-          notifyObjectPattern = getNotificationSetUp().getNotifyObjectPattern();
-        }
-        if (notifyObjectValues == null) {
-          notifyObjectValues = getNotificationSetUp().getNotifyObjectValues();
-        }
-        if (notifyInterval == null || notifyInterval <= 0) {
-          notifyInterval = getNotificationSetUp().getNotifyInterval();
-        }
-        notifConfig =
-            new NotificationSetUp(
-                notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues, notifyInterval);
+      if (notifyObjectErrorPrefix == null) {
+        notifyObjectErrorPrefix = getNotificationSetUp().getNotifyObjectErrorPrefix();
       }
+      if (notifyObjectPattern == null) {
+        notifyObjectPattern = getNotificationSetUp().getNotifyObjectPattern();
+      }
+      if (notifyObjectValues == null) {
+        notifyObjectValues = getNotificationSetUp().getNotifyObjectValues();
+      }
+      if (notifyInterval == null || notifyInterval <= 0) {
+        notifyInterval = getNotificationSetUp().getNotifyInterval();
+      }
+      notifConfig =
+          new NotificationSetUp(
+              notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues, notifyInterval);
 
       if (dstNode.getType() == DestinationType.stow) {
         // parse headers to hashmap
@@ -364,10 +365,10 @@ public class GatewaySetUp {
             new WebForwardDestination(
                 dstNode.getId(), fwdSrcNode, dstNode.getUrl(), map, progress, editors);
         progress.addProgressListener(
-            new EmailNotifyProgress(streamRegistry, fwd, emails, this, notifConfig));
+            new EmailNotifyProgress(streamRegistryEditor, fwd, emails, this, notifConfig));
         progress.addProgressListener(
             (DicomProgress dicomProgress) -> {
-              DicomObject dcm = dicomProgress.getAttributes();
+              Attributes dcm = dicomProgress.getAttributes();
               if (listKheopsAlbumEntities != null) {
                 listKheopsAlbumEntities.forEach(
                     kheopsAlbums -> {
@@ -389,7 +390,7 @@ public class GatewaySetUp {
                 progress,
                 editors);
         progress.addProgressListener(
-            new EmailNotifyProgress(streamRegistry, dest, emails, this, notifConfig));
+            new EmailNotifyProgress(streamRegistryEditor, dest, emails, this, notifConfig));
         dstList.add(dest);
       }
     } catch (IOException e) {
@@ -398,8 +399,8 @@ public class GatewaySetUp {
   }
 
   public void reloadGatewayPersistence() {
-    GatewayRepo gatewayRepo = GatewayConfig.getInstance().getGatewayPersistence();
-    List<ForwardNodeEntity> list = new ArrayList<>(gatewayRepo.findAll());
+
+    List<ForwardNodeEntity> list = new ArrayList<>(forwardNodeRepo.findAll());
     for (ForwardNodeEntity forwardNodeEntity : list) {
       ForwardDicomNode fwdSrcNode =
           new ForwardDicomNode(forwardNodeEntity.getFwdAeTitle(), null, forwardNodeEntity.getId());

@@ -10,14 +10,13 @@
 package org.karnak.backend.model.profiles;
 
 import java.util.List;
-import org.dcm4che6.data.DicomElement;
-import org.dcm4che6.data.DicomObject;
+import org.dcm4che3.data.Attributes;
 import org.karnak.backend.data.entity.ArgumentEntity;
 import org.karnak.backend.model.action.ActionItem;
 import org.karnak.backend.model.profilepipe.HMAC;
 
 public interface ProfileItem {
-  ActionItem getAction(DicomObject dcm, DicomObject dcmCopy, DicomElement dcmElem, HMAC hmac);
+  ActionItem getAction(Attributes dcm, Attributes dcmCopy, int tag, HMAC hmac);
 
   ActionItem put(int tag, ActionItem action);
 

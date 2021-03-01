@@ -33,26 +33,29 @@ import javax.net.ssl.TrustManagerFactory;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import org.dcm4che6.net.DicomServiceException;
-import org.dcm4che6.net.Status;
+import org.dcm4che3.net.Priority;
+import org.dcm4che3.net.Status;
+import org.dcm4che3.net.service.DicomServiceException;
+import org.karnak.backend.dicom.DicomForwardDestination;
+import org.karnak.backend.dicom.ForwardDestination;
+import org.karnak.backend.dicom.ForwardDicomNode;
+import org.karnak.backend.dicom.ForwardUtil;
+import org.karnak.backend.dicom.ForwardUtil.Params;
 import org.karnak.backend.model.FileInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.weasis.core.util.FileUtil;
-import org.weasis.dicom.param.DicomForwardDestination;
-import org.weasis.dicom.param.ForwardDestination;
-import org.weasis.dicom.param.ForwardDicomNode;
-import org.weasis.dicom.util.ForwardUtil;
-import org.weasis.dicom.util.ForwardUtil.Params;
 
+@Service
 public final class PullingService extends AbstractGateway {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(PullingService.class);
-
   private static final HostnameVerifier HostnameVerifier =
       (hostname, sslSession) -> {
         try {
@@ -68,27 +71,33 @@ public final class PullingService extends AbstractGateway {
         LOGGER.warn("No matching hostname for SSL:{} != {}", hostname, sslSession.getPeerHost());
         return false;
       };
-
+  // Services
+  private final GatewaySetUpService gatewaySetUpService;
   private final Map<String, List<FileInfo>> downloadMap = new HashMap<>();
-  private SSLSocketFactory sslFactory;
+  private volatile SSLSocketFactory sslFactory;
 
-  public PullingService(GatewaySetUp config) {
-    super(config);
-    try (InputStream trustStore =
-        PullingService.class.getResourceAsStream(config.getTruststore())) {
-      /* Load the keyStore that includes self-signed cert as a "trusted" entry. */
-      KeyStore keyStore = KeyStore.getInstance("JKS");
-      keyStore.load(trustStore, config.getTruststorePwd().toCharArray());
-      trustStore.close();
-      TrustManagerFactory tmf =
-          TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-      tmf.init(keyStore);
-      SSLContext ctx = SSLContext.getInstance("TLS");
-      ctx.init(null, tmf.getTrustManagers(), null);
-      this.sslFactory = ctx.getSocketFactory();
-      HttpsURLConnection.setDefaultSSLSocketFactory(sslFactory);
-    } catch (Exception e) {
-      LOGGER.debug("Getting sslFactory", e);
+  @Autowired
+  public PullingService(final GatewaySetUpService gatewaySetUpService) {
+    super(gatewaySetUpService);
+    this.gatewaySetUpService = gatewaySetUpService;
+
+    if (this.gatewaySetUpService.getTruststore() != null) {
+      try (InputStream trustStore =
+          PullingService.class.getResourceAsStream(this.gatewaySetUpService.getTruststore())) {
+        /* Load the keyStore that includes self-signed cert as a "trusted" entry. */
+        KeyStore keyStore = KeyStore.getInstance("JKS");
+        keyStore.load(trustStore, this.gatewaySetUpService.getTruststorePwd().toCharArray());
+        trustStore.close();
+        TrustManagerFactory tmf =
+            TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+        tmf.init(keyStore);
+        SSLContext ctx = SSLContext.getInstance("TLS");
+        ctx.init(null, tmf.getTrustManagers(), null);
+        this.sslFactory = ctx.getSocketFactory();
+        HttpsURLConnection.setDefaultSSLSocketFactory(sslFactory);
+      } catch (Exception e) {
+        LOGGER.debug("Getting sslFactory", e);
+      }
     }
   }
 
@@ -216,8 +225,7 @@ public final class PullingService extends AbstractGateway {
             httpCon.connect();
             // Make sure response code is in the 200 range.
             if (httpCon.getResponseCode() / 100 != 2) {
-              LOGGER.error(
-                  "Http Response error {} for {}", httpCon.getResponseCode(), url); // $NON-NLS-1$
+              LOGGER.error("Http Response error {} for {}", httpCon.getResponseCode(), url);
               continue;
             }
 
@@ -225,7 +233,8 @@ public final class PullingService extends AbstractGateway {
                 new Params(
                     info.getIuid(),
                     info.getCuid(),
-                    (byte) 0,
+                    info.getTsuid(),
+                    Priority.NORMAL,
                     new BufferedInputStream(httpCon.getInputStream()),
                     null);
             ForwardDicomNode srcNode = new ForwardDicomNode(name);
@@ -264,7 +273,7 @@ public final class PullingService extends AbstractGateway {
 
         deleteRemoteImage = true;
         for (DicomForwardDestination f : dicomDest) {
-          if (f.getStreamSCU().getState().getStatus().orElse(Status.Pending) != Status.Success) {
+          if (f.getStreamSCU().getState().getStatus() != Status.Success) {
             deleteRemoteImage = false;
             break;
           }
@@ -272,8 +281,7 @@ public final class PullingService extends AbstractGateway {
       } else {
         DicomForwardDestination d = dicomDest.get(0);
         ForwardUtil.storeOneDestination(sourceNode, d, p);
-        deleteRemoteImage =
-            d.getStreamSCU().getState().getStatus().orElse(Status.Pending) == Status.Success;
+        deleteRemoteImage = d.getStreamSCU().getState().getStatus() == Status.Success;
       }
 
       if (deleteRemoteImage) {
@@ -284,7 +292,7 @@ public final class PullingService extends AbstractGateway {
       }
 
     } catch (Exception e) {
-      throw new DicomServiceException(Status.ProcessingFailure);
+      throw new DicomServiceException(Status.ProcessingFailure, e);
     }
   }
 
