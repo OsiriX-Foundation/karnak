@@ -19,6 +19,7 @@ import org.karnak.backend.service.ProjectService;
 import org.karnak.backend.service.profilepipe.ProfilePipeService;
 import org.karnak.frontend.component.ConfirmDialog;
 import org.karnak.frontend.project.component.EditProject;
+import org.karnak.frontend.project.component.GridProject;
 import org.karnak.frontend.project.component.NewProject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -106,8 +107,9 @@ public class ProjectLogic extends ListDataProvider<ProjectEntity> {
    * Add event on button update on the edit component
    *
    * @param editProject Edit project component
+   * @param gridProject
    */
-  public void addEditEventButtonUpdate(EditProject editProject) {
+  public void addEditEventButtonUpdate(EditProject editProject, GridProject gridProject) {
     editProject
         .getButtonUpdate()
         .addClickListener(
@@ -125,11 +127,13 @@ public class ProjectLogic extends ListDataProvider<ProjectEntity> {
                       componentEvent -> {
                         projectService.update(editProject.getProjectEntity());
                         refreshAll();
+                        gridProject.deselectAll();
                       });
                   dialog.open();
                 } else {
                   projectService.update(editProject.getProjectEntity());
                   refreshAll();
+                  gridProject.deselectAll();
                 }
               }
             });

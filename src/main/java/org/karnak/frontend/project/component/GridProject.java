@@ -10,6 +10,9 @@
 package org.karnak.frontend.project.component;
 
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridSortOrder;
+import com.vaadin.flow.data.provider.SortDirection;
+import java.util.Arrays;
 import org.karnak.backend.data.entity.ProjectEntity;
 
 public class GridProject extends Grid<ProjectEntity> {
@@ -18,11 +21,20 @@ public class GridProject extends Grid<ProjectEntity> {
     setWidthFull();
     setHeightByRows(true);
 
-    addColumn(ProjectEntity::getName).setHeader("Project Name").setFlexGrow(15).setSortable(true);
+    Column<ProjectEntity> projectNameColumn =
+        addColumn(ProjectEntity::getName)
+            .setHeader("Project Name")
+            .setFlexGrow(15)
+            .setSortable(true);
     addColumn(project -> project.getProfileEntity().getName())
         .setHeader("Desidenfication profile")
         .setFlexGrow(15)
         .setSortable(true);
+
+    // Set by default the order on the name of the column
+    GridSortOrder<ProjectEntity> order =
+        new GridSortOrder<>(projectNameColumn, SortDirection.ASCENDING);
+    sort(Arrays.asList(order));
   }
 
   public void selectRow(ProjectEntity row) {
