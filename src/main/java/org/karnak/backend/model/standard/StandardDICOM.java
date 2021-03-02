@@ -52,7 +52,7 @@ public class StandardDICOM {
     return sops.moduleIsPresent(sopUID, moduleId);
   }
 
-  public Map<Module, Map<String, Attribute>> getModulesBySOP(String sopUID)
+  public Map<Module, Map<String, ModuleAttribute>> getModulesBySOP(String sopUID)
       throws SOPNotFoundException {
     return sops.getModuleToAttribute(sopUID, moduleToAttributes);
   }
@@ -61,35 +61,35 @@ public class StandardDICOM {
     return sops.getSOPmodulesName(sopUID);
   }
 
-  public List<Attribute> getAttributesBySOP(String sopUID, int tagPath)
+  public List<ModuleAttribute> getAttributesBySOP(String sopUID, int tagPath)
       throws SOPNotFoundException {
     return getAttributesBySOP(sopUID, TagUtils.toHexString(tagPath));
   }
 
-  public List<Attribute> getAttributesBySOP(String sopUID, String tagPath)
+  public List<ModuleAttribute> getAttributesBySOP(String sopUID, String tagPath)
       throws SOPNotFoundException {
     String tagPathCleaned = cleanTagPath(tagPath);
-    Map<Module, Map<String, Attribute>> HMapModuleAttributes = getModulesBySOP(sopUID);
-    List<Attribute> attributes = new ArrayList<>();
+    Map<Module, Map<String, ModuleAttribute>> HMapModuleAttributes = getModulesBySOP(sopUID);
+    List<ModuleAttribute> moduleAttributes = new ArrayList<>();
     HMapModuleAttributes.forEach(
         (module, attr) -> {
-          Attribute attribute = attr.get(tagPathCleaned);
-          if (attribute != null) {
-            attributes.add(attribute);
+          ModuleAttribute moduleAttribute = attr.get(tagPathCleaned);
+          if (moduleAttribute != null) {
+            moduleAttributes.add(moduleAttribute);
           }
         });
-    return attributes;
+    return moduleAttributes;
   }
 
-  public Map<String, Attribute> getAttributesByModule(String moduleId) {
+  public Map<String, ModuleAttribute> getAttributesByModule(String moduleId) {
     return moduleToAttributes.getAttributesByModule(moduleId);
   }
 
-  public List<Attribute> getAttributeListByModule(String moduleId) {
+  public List<ModuleAttribute> getAttributeListByModule(String moduleId) {
     return new ArrayList<>(moduleToAttributes.getAttributesByModule(moduleId).values());
   }
 
-  public Map<String, Attribute> getModuleAttributesByType(String moduleId, String type)
+  public Map<String, ModuleAttribute> getModuleAttributesByType(String moduleId, String type)
       throws ModuleNotFoundException {
     return moduleToAttributes.getModuleAttributesByType(moduleId, type);
   }

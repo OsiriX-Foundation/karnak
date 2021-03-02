@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
-public class Attribute {
+public class ModuleAttribute {
 
   private static final List<String> strictedTypes = Arrays.asList("1", "1C", "2", "2C", "3");
   private final String moduleTagPath;
@@ -22,16 +22,16 @@ public class Attribute {
   private final String type;
   private final String moduleId;
 
-  public Attribute(String moduleTagPath, String type, String moduleId) {
+  public ModuleAttribute(String moduleTagPath, String type, String moduleId) {
     this.moduleTagPath = moduleTagPath;
     this.type = type;
     this.moduleId = moduleId;
     this.tagPath = generateTagPath(moduleTagPath, moduleId);
   }
 
-  public static String getStrictedType(List<Attribute> attributes) {
+  public static String getStrictedType(List<ModuleAttribute> moduleAttributes) {
     for (String strictedType : strictedTypes) {
-      if (attributes.stream().anyMatch(attribute -> strictedType.equals(attribute.getType()))
+      if (moduleAttributes.stream().anyMatch(attribute -> strictedType.equals(attribute.getType()))
           == true) {
         return strictedType;
       }
