@@ -18,8 +18,8 @@ import org.dcm4che6.data.Tag;
 import org.karnak.backend.config.AppConfig;
 import org.karnak.backend.exception.StandardDICOMException;
 import org.karnak.backend.model.profilepipe.HMAC;
-import org.karnak.backend.model.standard.ModuleAttribute;
 import org.karnak.backend.model.standard.Module;
+import org.karnak.backend.model.standard.ModuleAttribute;
 import org.karnak.backend.model.standard.StandardDICOM;
 import org.karnak.backend.util.MetadataDICOMObject;
 import org.slf4j.Logger;
@@ -76,8 +76,8 @@ public class MultipleActions extends AbstractAction {
   }
 
   private ActionItem multipleAttributes(String sopUID, List<ModuleAttribute> moduleAttributes) {
-    List<ModuleAttribute> mandatoryModuleAttributes = getMandatoryAttributes(sopUID,
-        moduleAttributes);
+    List<ModuleAttribute> mandatoryModuleAttributes =
+        getMandatoryAttributes(sopUID, moduleAttributes);
 
     if (mandatoryModuleAttributes.size() == 0) {
       String currentType = ModuleAttribute.getStrictedType(moduleAttributes);
@@ -93,7 +93,8 @@ public class MultipleActions extends AbstractAction {
     return chooseAction(sopUID, currentType);
   }
 
-  private List<ModuleAttribute> getMandatoryAttributes(String sopUID, List<ModuleAttribute> moduleAttributes) {
+  private List<ModuleAttribute> getMandatoryAttributes(
+      String sopUID, List<ModuleAttribute> moduleAttributes) {
     List<ModuleAttribute> mandatoryModuleAttributes = new ArrayList<>();
     moduleAttributes.forEach(
         attribute -> {
