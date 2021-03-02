@@ -155,7 +155,7 @@ public class ForwardUtil {
           if (fistDest instanceof DicomForwardDestination) {
             files = transfer(fwdNode, (DicomForwardDestination) fistDest, attributes, p);
           } else if (fistDest instanceof WebForwardDestination) {
-            files = transfer(fwdNode, (WebForwardDestination) fistDest, null, p);
+            files = transfer(fwdNode, (WebForwardDestination) fistDest, attributes, p);
           }
           if (!attributes.isEmpty()) {
             for (int i = 1; i < destConList.size(); i++) {
