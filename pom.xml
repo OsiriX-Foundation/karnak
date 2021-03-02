@@ -147,6 +147,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.pseudonym.spi</groupId>
+      <artifactId>PseudonymSPI</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
       <artifactId>cache-api</artifactId>
       <groupId>javax.cache</groupId>
       <version>1.1.1</version>
