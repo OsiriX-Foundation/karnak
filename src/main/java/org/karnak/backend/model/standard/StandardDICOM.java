@@ -21,10 +21,12 @@ public class StandardDICOM {
 
   private final SOPS sops;
   private final ModuleToAttributes moduleToAttributes;
+  private final AttributeDetails attributeDetails;
 
   public StandardDICOM() {
     sops = new SOPS();
     moduleToAttributes = new ModuleToAttributes();
+    attributeDetails = new AttributeDetails();
   }
 
   public static String cleanTagPath(String tagPath) {
@@ -92,5 +94,13 @@ public class StandardDICOM {
   public Map<String, ModuleAttribute> getModuleAttributesByType(String moduleId, String type)
       throws ModuleNotFoundException {
     return moduleToAttributes.getModuleAttributesByType(moduleId, type);
+  }
+
+  public AttributeDetail getAttributeDetail(String tag) {
+    return attributeDetails.getAttributeDetail(tag);
+  }
+
+  public List<AttributeDetail> getListAttributeDetail(List<String> tag) {
+    return attributeDetails.getListAttributeDetail(tag);
   }
 }
