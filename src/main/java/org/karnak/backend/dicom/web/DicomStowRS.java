@@ -183,6 +183,11 @@ public class DicomStowRS implements AutoCloseable {
       LOGGER.debug("< {} response code: {}", response.version(), response.statusCode());
       promptHeaders("< ", response.headers());
     }
+
+    if (response.statusCode() >= 400 && response.statusCode() <= 599) {
+      throw new HttpException("Error response, status code " + response.statusCode());
+    }
+
     return response;
   }
 
@@ -212,7 +217,7 @@ public class DicomStowRS implements AutoCloseable {
     return photo;
   }
 
-  public void uploadDicom(Path path) {
+  public void uploadDicom(Path path) throws HttpException {
     Payload playload =
         new Payload() {
           @Override
@@ -233,7 +238,7 @@ public class DicomStowRS implements AutoCloseable {
     uploadPayload(playload);
   }
 
-  public void uploadDicom(InputStream in, Attributes fmi) {
+  public void uploadDicom(InputStream in, Attributes fmi) throws HttpException {
     Payload playload =
         new Payload() {
           @Override
@@ -260,7 +265,7 @@ public class DicomStowRS implements AutoCloseable {
     uploadPayload(playload);
   }
 
-  public void uploadDicom(Attributes metadata, String tsuid) {
+  public void uploadDicom(Attributes metadata, String tsuid) throws HttpException {
     Payload playload =
         new Payload() {
           @Override
@@ -284,7 +289,7 @@ public class DicomStowRS implements AutoCloseable {
     uploadPayload(playload);
   }
 
-  public void uploadPayload(Payload playload) {
+  public void uploadPayload(Payload playload) throws HttpException {
     multipartBody.reset();
     try {
       HttpRequest request =
@@ -312,7 +317,8 @@ public class DicomStowRS implements AutoCloseable {
       //                promptHeaders("< ", response.headers());
       //            }
       //            response.body().forEach(LOGGER::info);
-
+    } catch (HttpException httpException) {
+      throw httpException;
     } catch (Exception e) {
       LOGGER.error("Cannot post DICOM", e);
     }
