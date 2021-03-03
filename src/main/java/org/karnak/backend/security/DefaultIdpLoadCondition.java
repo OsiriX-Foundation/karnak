@@ -10,6 +10,8 @@
 package org.karnak.backend.security;
 
 import java.util.Objects;
+import org.karnak.backend.enums.ApplicationProfile;
+import org.karnak.backend.enums.EnvironmentVariable;
 import org.springframework.context.annotation.Condition;
 import org.springframework.context.annotation.ConditionContext;
 import org.springframework.core.type.AnnotatedTypeMetadata;
@@ -20,14 +22,11 @@ import org.springframework.core.type.AnnotatedTypeMetadata;
  */
 public class DefaultIdpLoadCondition implements Condition {
 
-  // Environment properties defining IDP method chosen
-  private static final String PROPERTY_IDP = "IDP";
-  private static final String PROPERTY_IDP_OIDC_VALUE = "oidc";
-
   @Override
   public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
     // Define default IDP
     return !Objects.equals(
-        context.getEnvironment().getProperty(PROPERTY_IDP), PROPERTY_IDP_OIDC_VALUE);
+        context.getEnvironment().getProperty(EnvironmentVariable.IDP.getCode()),
+        ApplicationProfile.OIDC.getCode());
   }
 }

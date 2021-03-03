@@ -24,12 +24,13 @@ logging:
 server:
   port: 8081
 spring:
+  application:
+    name: karnak
   liquibase:
     enabled: true
     change-log: classpath:db/changelog/db.changelog-master.yaml
   profiles:
-#TODO: Better way to handle dynamic activation of oidc profile?
-    active: '@activatedProperties@, ${IDP:}'
+    active: '@activatedProperties@'
   datasource:
     password: ${DB_PASSWORD:5!KAnN@%98%d}
     url: 'jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5433}/${DB_NAME:karnak}'
