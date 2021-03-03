@@ -9,6 +9,7 @@
  */
 package org.karnak.frontend.forwardnode;
 
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
@@ -37,10 +38,12 @@ public class FormSTOW extends VerticalLayout {
   private final LayoutDesidentification layoutDesidentification;
   private final FilterBySOPClassesForm filterBySOPClassesForm;
   private final SwitchingAlbumsView switchingAlbumsView;
+  private final Checkbox activate;
 
   public FormSTOW(Binder<DestinationEntity> binder, ButtonSaveDeleteCancel buttonSaveDeleteCancel) {
     setSizeFull();
     this.binder = binder;
+
 
     description = new TextField("Description");
     url = new TextField("URL");
@@ -54,6 +57,7 @@ public class FormSTOW extends VerticalLayout {
     layoutDesidentification = new LayoutDesidentification(binder);
     filterBySOPClassesForm = new FilterBySOPClassesForm(binder);
     switchingAlbumsView = new SwitchingAlbumsView();
+    activate = new Checkbox("Enable destination");
 
     add(
         UIS.setWidthFull( //
@@ -74,6 +78,7 @@ public class FormSTOW extends VerticalLayout {
     add(UIS.setWidthFull(layoutDesidentification));
     add(UIS.setWidthFull(filterBySOPClassesForm));
     add(UIS.setWidthFull(switchingAlbumsView));
+    add(UIS.setWidthFull(activate));
     add(UIS.setWidthFull(buttonSaveDeleteCancel));
 
     setElements();
