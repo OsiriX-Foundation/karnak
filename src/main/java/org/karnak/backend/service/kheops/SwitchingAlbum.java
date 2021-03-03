@@ -84,8 +84,7 @@ public class SwitchingAlbum {
         hashUIDonDeidentification(destinationEntity, dcm.getString(Tag.StudyInstanceUID), hmac);
     String seriesInstanceUID =
         hashUIDonDeidentification(destinationEntity, dcm.getString(Tag.SeriesInstanceUID), hmac);
-    String sopInstanceUID =
-        hashUIDonDeidentification(destinationEntity, dcm.getString(Tag.SOPInstanceUID), hmac);
+    String sopInstanceUID = dcm.getString(Tag.SOPInstanceUID);
     String urlAPI = kheopsAlbumsEntity.getUrlAPI();
     Long id = kheopsAlbumsEntity.getId();
     if (!switchingAlbumToDo.containsKey(id)) {
