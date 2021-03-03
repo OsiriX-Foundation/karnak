@@ -53,6 +53,9 @@ public class DestinationEntity {
   private Long id;
 
   private String description;
+
+  private boolean activate;
+
   private boolean desidentification;
 
   private PseudonymType pseudonymType;
@@ -164,6 +167,7 @@ public class DestinationEntity {
 
   protected DestinationEntity(DestinationType type) {
     this.type = type;
+    this.activate = true;
     this.description = "";
     this.desidentification = false;
     this.pseudonymType = PseudonymType.MAINZELLISTE_PID;
@@ -222,6 +226,14 @@ public class DestinationEntity {
 
   public boolean isNewData() {
     return id == null;
+  }
+
+  public boolean isActivate() {
+    return activate;
+  }
+
+  public void setActivate(boolean activate) {
+    this.activate = activate;
   }
 
   public String getDescription() {
