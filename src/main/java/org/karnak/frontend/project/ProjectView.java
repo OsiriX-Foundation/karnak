@@ -97,7 +97,7 @@ public class ProjectView extends HorizontalLayout implements HasUrlParameter<Str
 
   /** Init components */
   private void initComponents() {
-    initEditProject(editProject);
+    initEditProject(editProject, gridProject);
     initNewProjectForm(newProject);
     gridProject.setDataProvider(projectLogic);
     newResearchBinder = newProject.getBinder();
@@ -116,9 +116,10 @@ public class ProjectView extends HorizontalLayout implements HasUrlParameter<Str
    * Init the component edit project
    *
    * @param editProject Component to initialize
+   * @param gridProject Link to the grid for element selection
    */
-  private void initEditProject(EditProject editProject) {
-    projectLogic.addEditEventButtonUpdate(editProject);
+  private void initEditProject(EditProject editProject, GridProject gridProject) {
+    projectLogic.addEditEventButtonUpdate(editProject, gridProject);
     projectLogic.addEditEventButtonRemove(editProject);
     projectLogic.initEditProfileDropDown(editProject);
   }
@@ -134,6 +135,7 @@ public class ProjectView extends HorizontalLayout implements HasUrlParameter<Str
                 newProjectEntity.setSecret(HMAC.generateRandomKey());
                 projectLogic.createProject(newProjectEntity);
                 newProject.clear();
+                gridProject.select(newProjectEntity);
                 navigateProject(newProjectEntity);
               }
             });
