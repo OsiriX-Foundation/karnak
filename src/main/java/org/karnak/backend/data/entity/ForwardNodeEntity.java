@@ -42,7 +42,7 @@ public class ForwardNodeEntity implements Serializable {
   // defined either as a DICOM or DICOMWeb type.
   private Set<DestinationEntity> destinationEntities = new HashSet<>();
 
-  protected ForwardNodeEntity() {
+  public ForwardNodeEntity() {
     this.fwdAeTitle = "";
     this.description = "";
   }
