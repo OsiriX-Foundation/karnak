@@ -280,7 +280,7 @@ public class ForwardUtil {
       }
 
       streamSCU.cstore(cuid, iuid, p.getPriority(), dataWriter, supportedTsuid);
-      progressNotify(destination, iuid, cuid, false, streamSCU.getNumberOfSuboperations());
+      progressNotify(destination, p.getIuid(), p.getCuid(), false, streamSCU.getNumberOfSuboperations());
     } catch (AbortException e) {
       progressNotify(
           destination, p.getIuid(), p.getCuid(), true, streamSCU.getNumberOfSuboperations());
@@ -350,7 +350,7 @@ public class ForwardUtil {
       }
 
       streamSCU.cstore(cuid, iuid, p.getPriority(), dataWriter, supportedTsuid);
-      progressNotify(destination, iuid, cuid, false, streamSCU.getNumberOfSuboperations());
+      progressNotify(destination, p.getIuid(), p.getCuid(), false, streamSCU.getNumberOfSuboperations());
     } catch (AbortException e) {
       progressNotify(
           destination, p.getIuid(), p.getCuid(), true, streamSCU.getNumberOfSuboperations());
@@ -401,7 +401,6 @@ public class ForwardUtil {
         }
         if (!editors.isEmpty()) {
           editors.forEach(e -> e.apply(attributes, context));
-          iuid = attributes.getString(Tag.SOPInstanceUID);
         }
 
         if (context.getAbort() == Abort.FILE_EXCEPTION) {
@@ -451,7 +450,6 @@ public class ForwardUtil {
         AttributeEditorContext context = new AttributeEditorContext(outputTsuid, fwdNode, null);
         Attributes attributes = new Attributes(copy);
         editors.forEach(e -> e.apply(attributes, context));
-        iuid = attributes.getString(Tag.SOPInstanceUID);
 
         if (context.getAbort() == Abort.FILE_EXCEPTION) {
           throw new AbortException(context.getAbort(), context.getAbortMessage());
@@ -461,7 +459,7 @@ public class ForwardUtil {
         }
 
         stow.uploadDicom(attributes, outputTsuid);
-        progressNotify(destination, iuid, p.getCuid(), false, 0);
+        progressNotify(destination, p.getIuid(), p.getCuid(), false, 0);
       }
     } catch (HttpException httpException) {
       progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
