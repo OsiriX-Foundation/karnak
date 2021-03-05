@@ -26,22 +26,37 @@ public class ProfileMetadata extends VerticalLayout {
   private final Button validateEditButton = new Button(new Icon(VaadinIcon.CHECK));
   private final Button disabledEditButton = new Button(new Icon(VaadinIcon.CLOSE));
 
-  private final String title;
-  private final boolean inputEnable = false;
+  private String title;
   private String value;
+  private String profileByDefault;
+
+  public ProfileMetadata() {
+    this.title = "";
+    this.value = "";
+    this.titleDiv.setText("");
+    this.valueDiv.setText("");
+  }
 
   public ProfileMetadata(String title, String value, Boolean profileByDefault) {
     this.title = title;
     this.value = value;
 
-    setTitleText();
-    setValueText();
-
-    setStyle();
     if (profileByDefault != true) {
       titleDiv.add(editButton);
     }
 
+    setTitleText();
+    setValueText();
+
+    setElements();
+
+
+    addEvents();
+
+    add(titleDiv, valueDiv);
+  }
+
+  private void addEvents() {
     editButton.addClickListener(
         event -> {
           editOnClick();
@@ -56,11 +71,9 @@ public class ProfileMetadata extends VerticalLayout {
         event -> {
           validateEditButton();
         });
-
-    add(titleDiv, valueDiv);
   }
 
-  private void setStyle() {
+  private void setElements() {
     titleDiv
         .getStyle()
         .set("font-weight", "bold")
@@ -106,7 +119,7 @@ public class ProfileMetadata extends VerticalLayout {
 
   private void validateEditButton() {
     titleDiv.add(editButton);
-    this.value = valueField.getValue();
+    value = valueField.getValue();
     valueDiv.removeAll();
     setValueText();
   }

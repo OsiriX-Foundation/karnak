@@ -20,38 +20,26 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.server.StreamResource;
-import com.vaadin.flow.spring.annotation.UIScope;
 import java.io.ByteArrayInputStream;
 import java.util.Comparator;
 import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.data.entity.ProfileEntity;
-import org.karnak.backend.service.profilepipe.ProfilePipeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
-@UIScope
 public class ProfileComponent extends VerticalLayout {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ProfileComponent.class);
-  private final ProfilePipeService profilePipeService;
-  private final ProfileNameGrid profileNameGrid;
   private final WarningDeleteProfileUsed dialogWarning;
-  private final ProfileElementMainView profileElementMainView;
   private ProfileEntity profileEntity;
   private Anchor download;
   private Button deleteButton;
+  private Binder<ProfileEntity> binder;
 
-  @Autowired
-  public ProfileComponent(
-      final ProfilePipeService profilePipeService, final ProfileNameGrid profileNameGrid) {
+  public ProfileComponent() {
     setSizeFull();
-    this.profilePipeService = profilePipeService;
-    this.profileNameGrid = profileNameGrid;
-    this.profileElementMainView = new ProfileElementMainView();
     this.dialogWarning = new WarningDeleteProfileUsed();
   }
 
@@ -147,8 +135,6 @@ public class ProfileComponent extends VerticalLayout {
   }
 
   private void updatedProfilePipes() {
-    profilePipeService.updateProfile(profileEntity);
-    profileNameGrid.updatedProfilePipesView();
     final StreamResource profileStreamResource = createStreamResource(profileEntity);
     download.setHref(profileStreamResource);
     createDeleteButton(profileEntity);
@@ -168,9 +154,13 @@ public class ProfileComponent extends VerticalLayout {
   }
 
   public void setProfile(ProfileEntity profileEntity) {
+    this.profileEntity = profileEntity;
     if (profileEntity != null) {
-      this.profileEntity = profileEntity;
       setProfile();
+      setEnabled(true);
+    } else {
+      removeAll();
+      setEnabled(false);
     }
   }
 
@@ -194,19 +184,8 @@ public class ProfileComponent extends VerticalLayout {
             dialogWarning.setText(profileEntity);
             dialogWarning.open();
           } else {
-            profilePipeService.deleteProfile(profileEntity);
-            profileNameGrid.updatedProfilePipesView();
-            removeProfileInView();
+            removeAll();
           }
         });
-  }
-
-  public void removeProfileInView() {
-    profileElementMainView.removeAll();
-    removeAll();
-  }
-
-  public ProfileElementMainView getProfileElementMainView() {
-    return profileElementMainView;
   }
 }
