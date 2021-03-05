@@ -44,7 +44,6 @@ public class FormSTOW extends VerticalLayout {
     setSizeFull();
     this.binder = binder;
 
-
     description = new TextField("Description");
     url = new TextField("URL");
     urlCredentials = new TextField("URL credentials");

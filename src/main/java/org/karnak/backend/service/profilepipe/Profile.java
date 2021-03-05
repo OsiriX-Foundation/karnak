@@ -25,6 +25,7 @@ import org.dcm4che3.data.Fragments;
 import org.dcm4che3.data.Sequence;
 import org.dcm4che3.data.Tag;
 import org.dcm4che3.data.VR;
+import org.dcm4che3.img.op.MaskArea;
 import org.dcm4che3.util.TagUtils;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ProfileElementEntity;
@@ -52,7 +53,6 @@ import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 import org.weasis.core.util.StringUtil;
 import org.weasis.dicom.param.AttributeEditorContext;
-import org.weasis.dicom.param.MaskArea;
 
 public class Profile {
 

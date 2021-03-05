@@ -18,7 +18,7 @@ import java.util.Set;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.dcm4che3.data.UID;
-import org.dcm4che3.imageio.codec.Decompressor;
+import org.dcm4che3.img.stream.BytesWithImageDescriptor;
 import org.dcm4che3.io.DicomInputStream;
 import org.dcm4che3.io.DicomInputStream.IncludeBulkData;
 import org.dcm4che3.net.Association;
@@ -44,7 +44,6 @@ public class ForwardUtil {
   private static final String ERROR_WHEN_FORWARDING =
       "Error when forwarding to the final destination";
   private static final Logger LOGGER = LoggerFactory.getLogger(ForwardUtil.class);
-  protected static final byte[] EMPTY_BYTES = {};
 
   public static final class Params {
     private final String iuid;
@@ -273,14 +272,14 @@ public class ForwardUtil {
               context.getAbort(), "DICOM association abort: " + context.getAbortMessage());
         }
 
-        if (!supportedTsuid.equals(tsuid)) {
-          Decompressor.decompress(attributes, tsuid);
-        }
-        dataWriter = new DataWriterAdapter(attributes);
+        BytesWithImageDescriptor desc =
+            ImageAdapter.imageTranscode(attributes, tsuid, supportedTsuid, context);
+        dataWriter = ImageAdapter.buildDataWriter(attributes, supportedTsuid, context, desc);
       }
 
       streamSCU.cstore(cuid, iuid, p.getPriority(), dataWriter, supportedTsuid);
-      progressNotify(destination, p.getIuid(), p.getCuid(), false, streamSCU.getNumberOfSuboperations());
+      progressNotify(
+          destination, p.getIuid(), p.getCuid(), false, streamSCU.getNumberOfSuboperations());
     } catch (AbortException e) {
       progressNotify(
           destination, p.getIuid(), p.getCuid(), true, streamSCU.getNumberOfSuboperations());
@@ -343,14 +342,15 @@ public class ForwardUtil {
           throw new AbortException(
               context.getAbort(), "DICOM associtation abort. " + context.getAbortMessage());
         }
-        if (!supportedTsuid.equals(tsuid)) {
-          Decompressor.decompress(attributes, tsuid);
-        }
-        dataWriter = new DataWriterAdapter(attributes);
+
+        BytesWithImageDescriptor desc =
+            ImageAdapter.imageTranscode(attributes, tsuid, supportedTsuid, context);
+        dataWriter = ImageAdapter.buildDataWriter(attributes, supportedTsuid, context, desc);
       }
 
       streamSCU.cstore(cuid, iuid, p.getPriority(), dataWriter, supportedTsuid);
-      progressNotify(destination, p.getIuid(), p.getCuid(), false, streamSCU.getNumberOfSuboperations());
+      progressNotify(
+          destination, p.getIuid(), p.getCuid(), false, streamSCU.getNumberOfSuboperations());
     } catch (AbortException e) {
       progressNotify(
           destination, p.getIuid(), p.getCuid(), true, streamSCU.getNumberOfSuboperations());
