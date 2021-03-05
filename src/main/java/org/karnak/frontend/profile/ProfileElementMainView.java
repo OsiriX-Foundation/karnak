@@ -62,6 +62,5 @@ public class ProfileElementMainView extends VerticalLayout {
       removeAll();
       setEnabled(false);
     }
-
   }
 }

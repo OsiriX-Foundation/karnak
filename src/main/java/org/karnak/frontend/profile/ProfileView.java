@@ -51,30 +51,25 @@ public class ProfileView extends HorizontalLayout implements HasUrlParameter<Str
   private final ProfileElementMainView profileElementMainView;
   private final ProfileGrid profileGrid;
   private final ProfileErrorView profileErrorView;
-  private final ProfilePipeService profilePipeService;
+  private final transient ProfilePipeService profilePipeService;
   private VerticalLayout barAndGridLayout;
   private HorizontalLayout profileHorizontalLayout;
   private Upload uploadProfile;
   private MemoryBuffer memoryBuffer;
 
   @Autowired
-  public ProfileView(
-      final ProfileLogic profileLogic,
-      final ProfilePipeService profilePipeService) {
+  public ProfileView(final ProfileLogic profileLogic, final ProfilePipeService profilePipeService) {
     this.profileLogic = profileLogic;
     this.profileLogic.setProfileView(this);
     this.profilePipeService = profilePipeService;
 
-    this.profileGrid = new ProfileGrid();
-    this.profileComponent = new ProfileComponent();
-    this.profileElementMainView = new ProfileElementMainView();
-    this.profileErrorView = new ProfileErrorView();
-
-    this.profileHorizontalLayout = new HorizontalLayout(profileComponent, profileElementMainView);
-
+    profileGrid = new ProfileGrid();
+    profileComponent = new ProfileComponent();
+    profileElementMainView = new ProfileElementMainView();
+    profileErrorView = new ProfileErrorView();
+    profileHorizontalLayout = new HorizontalLayout(profileComponent, profileElementMainView);
 
     initComponents();
-
     buildLayout();
 
     addEventUploadProfile();
@@ -93,6 +88,8 @@ public class ProfileView extends HorizontalLayout implements HasUrlParameter<Str
     profileGrid.selectRow(currentProfileEntity);
     profileComponent.setProfile(currentProfileEntity);
     profileElementMainView.setProfile(currentProfileEntity);
+    remove(profileErrorView);
+    add(profileHorizontalLayout);
   }
 
   private void buildLayout() {
@@ -124,10 +121,7 @@ public class ProfileView extends HorizontalLayout implements HasUrlParameter<Str
   }
 
   private void addEventUploadProfile() {
-    uploadProfile.addSucceededListener(
-        e -> {
-          setProfileComponent(e.getMIMEType(), memoryBuffer.getInputStream());
-        });
+    uploadProfile.addSucceededListener(e -> setProfileComponent(memoryBuffer.getInputStream()));
   }
 
   private void addEventGridSelection() {
@@ -148,18 +142,22 @@ public class ProfileView extends HorizontalLayout implements HasUrlParameter<Str
     }
   }
 
-  private void setProfileComponent(String mimeType, InputStream stream) {
-    add(profileErrorView);
+  private void setProfileComponent(InputStream stream) {
     try {
       ProfilePipeBody profilePipe = readProfileYaml(stream);
       ArrayList<ProfileError> profileErrors = profilePipeService.validateProfile(profilePipe);
       Predicate<ProfileError> errorPredicate = profileError -> profileError.getError() != null;
-      if (!profileErrors.stream().anyMatch(errorPredicate)) {
-        remove(profileErrorView);
+      if (profileErrors.stream().noneMatch(errorPredicate)) {
+        profileErrorView.removeAll();
         ProfileEntity newProfileEntity = profilePipeService.saveProfilePipe(profilePipe, false);
         profileGrid.selectRow(newProfileEntity);
+        profileComponent.setProfile(newProfileEntity);
+        profileElementMainView.setProfile(newProfileEntity);
       } else {
+        profileGrid.deselectAll();
+        remove(profileHorizontalLayout);
         profileErrorView.setView(profileErrors);
+        add(profileErrorView);
       }
     } catch (YAMLException e) {
       LOGGER.error("Unable to read uploaded YAML", e);
