@@ -39,7 +39,7 @@ public class DicomSourceNodeEntity implements Serializable {
   private Boolean checkHostname;
   private ForwardNodeEntity forwardNodeEntity;
 
-  protected DicomSourceNodeEntity() {
+  public DicomSourceNodeEntity() {
     this.description = "";
     this.aeTitle = "";
     this.hostname = "";
