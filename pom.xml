@@ -362,6 +362,13 @@
       <version>${springframework.version}</version>
     </dependency>
 
+    <!-- DB H2 for tests -->
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <version>${h2.version}</version>
+    </dependency>
+
   </dependencies>
   <dependencyManagement>
     <dependencies>
@@ -388,19 +395,6 @@
   </parent>
 
   <profiles>
-    <profile>
-      <dependencies>
-        <dependency>
-          <artifactId>h2</artifactId>
-          <groupId>com.h2database</groupId>
-          <scope>runtime</scope>
-        </dependency>
-      </dependencies>
-      <id>devh2</id>
-      <properties>
-        <activatedProperties>devh2</activatedProperties>
-      </properties>
-    </profile>
     <profile>
       <!-- Production mode is activated using -Pproduction -->
       <build>
@@ -453,6 +447,7 @@
     <sonar.java.target>${java.version}</sonar.java.target>
     <sonar.organization>osirix-foundation-1</sonar.organization>
     <sonar.projectKey>karnak</sonar.projectKey>
+    <h2.version>1.4.200</h2.version>
   </properties>
 
 </project>

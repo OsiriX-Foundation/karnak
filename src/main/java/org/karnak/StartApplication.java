@@ -32,9 +32,8 @@ public class StartApplication implements CommandLineRunner {
 
   private static final Logger log = LoggerFactory.getLogger(StartApplication.class);
 
-  @Autowired private AppConfig myConfig;
-
-  //
+  @Autowired(required = false)
+  private AppConfig myConfig;
 
   public static void main(String[] args) {
     SpringApplicationBuilder application = new SpringApplicationBuilder(StartApplication.class);
@@ -55,7 +54,7 @@ public class StartApplication implements CommandLineRunner {
   @Override
   public void run(String... args) {
     log.info("StartApplication...");
-    log.info("using environment: " + myConfig.getEnvironment());
-    log.info("name: " + myConfig.getName());
+    log.info("using environment: " + (myConfig != null ? myConfig.getEnvironment() : ""));
+    log.info("name: " + (myConfig != null ? myConfig.getName() : ""));
   }
 }

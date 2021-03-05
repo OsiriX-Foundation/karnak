@@ -13,22 +13,27 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import javax.validation.ConstraintViolationException;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.DicomSourceNodeEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.enums.DestinationType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
-@AutoConfigureTestDatabase(replace = Replace.NONE)
+// @AutoConfigureTestDatabase(replace = Replace.NONE)
 @DataJpaTest
-public class ForwardNodeRepoTest {
+class ForwardNodeRepoTest {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(ForwardNodeRepoTest.class);
 
   private final Consumer<ForwardNodeEntity> forwardNodeConsumer = //
       x ->
@@ -76,7 +81,7 @@ public class ForwardNodeRepoTest {
   @Autowired private ForwardNodeRepo repository;
 
   @Test
-  public void testInvalidForwardNode_Mandatory() {
+  void testInvalidForwardNode_Mandatory() {
     ForwardNodeEntity forwardNodeEntity = ForwardNodeEntity.ofEmpty();
     forwardNodeEntity.setFwdAeTitle(null);
     String expectedMessage = "Forward AETitle is mandatory";
@@ -91,7 +96,7 @@ public class ForwardNodeRepoTest {
   }
 
   @Test
-  public void testInvalidForwardNode_Size() {
+  void testInvalidForwardNode_Size() {
     ForwardNodeEntity forwardNodeEntity = ForwardNodeEntity.ofEmpty();
     forwardNodeEntity.setFwdAeTitle("ABCDEFGHIJ-ABCDEFGHIJ");
     String expectedMessage = "Forward AETitle has more than 16 characters";
@@ -106,7 +111,7 @@ public class ForwardNodeRepoTest {
   }
 
   @Test
-  public void testInvalidSourceNode_AETitle_mandatory() {
+  void testInvalidSourceNode_AETitle_mandatory() {
     ForwardNodeEntity forwardNodeEntity = ForwardNodeEntity.ofEmpty();
     forwardNodeEntity.setDescription("description");
     forwardNodeEntity.setFwdAeTitle("fwdAeTitle");
@@ -128,7 +133,7 @@ public class ForwardNodeRepoTest {
   }
 
   @Test
-  public void testInvalidDestinationDicom_AETitle_mandatory() {
+  void testInvalidDestinationDicom_AETitle_mandatory() {
     ForwardNodeEntity forwardNodeEntity = ForwardNodeEntity.ofEmpty();
     forwardNodeEntity.setDescription("description");
     forwardNodeEntity.setFwdAeTitle("fwdAeTitle");
@@ -148,7 +153,7 @@ public class ForwardNodeRepoTest {
   }
 
   @Test
-  public void testInvalidDestinationStow_URL_mandatory() {
+  void testInvalidDestinationStow_URL_mandatory() {
     ForwardNodeEntity forwardNodeEntity = ForwardNodeEntity.ofEmpty();
     forwardNodeEntity.setDescription("description");
     forwardNodeEntity.setFwdAeTitle("fwdAeTitle");
@@ -168,7 +173,7 @@ public class ForwardNodeRepoTest {
   }
 
   @Test
-  public void testForwardNode() {
+  void testForwardNode() {
     ForwardNodeEntity forwardNodeEntity = ForwardNodeEntity.ofEmpty();
     forwardNodeEntity.setDescription("description");
     forwardNodeEntity.setFwdAeTitle("fwdAeTitle");
@@ -182,7 +187,7 @@ public class ForwardNodeRepoTest {
   }
 
   @Test
-  public void testWithSourceNode() {
+  void testWithSourceNode() {
     ForwardNodeEntity forwardNodeEntity = ForwardNodeEntity.ofEmpty();
     forwardNodeEntity.setDescription("description");
     forwardNodeEntity.setFwdAeTitle("fwdAeTitle");
@@ -214,7 +219,7 @@ public class ForwardNodeRepoTest {
   }
 
   @Test
-  public void testWithDestinationDicom() {
+  void testWithDestinationDicom() {
     ForwardNodeEntity forwardNodeEntity = ForwardNodeEntity.ofEmpty();
     forwardNodeEntity.setDescription("description");
     forwardNodeEntity.setFwdAeTitle("fwdAeTitle");
@@ -243,7 +248,7 @@ public class ForwardNodeRepoTest {
   }
 
   @Test
-  public void testWithDestinationStow() {
+  void testWithDestinationStow() {
     ForwardNodeEntity forwardNodeEntity = ForwardNodeEntity.ofEmpty();
     forwardNodeEntity.setDescription("description");
     forwardNodeEntity.setFwdAeTitle("fwdAeTitle");
@@ -272,7 +277,7 @@ public class ForwardNodeRepoTest {
   }
 
   @Test
-  public void testWithSourceNodeAndDestinationDicom() {
+  void testWithSourceNodeAndDestinationDicom() {
     ForwardNodeEntity forwardNodeEntity = ForwardNodeEntity.ofEmpty();
     forwardNodeEntity.setDescription("description");
     forwardNodeEntity.setFwdAeTitle("fwdAeTitle");
@@ -306,5 +311,121 @@ public class ForwardNodeRepoTest {
         .hasSize(1) //
         .first() //
         .satisfies(destinationDicomConsumer);
+  }
+
+  /** Test save and find record. */
+  @Test
+  void shouldSaveAndFindARecord() {
+    // Create an entity to save
+    ForwardNodeEntity entity = new ForwardNodeEntity();
+    entity.setDescription("Description");
+
+    // Save the entity
+    LOGGER.info("Saving entity with Description [{}]", entity.getDescription());
+    entity = repository.save(entity);
+
+    // Test Save
+    Assert.assertEquals("Description", entity.getDescription());
+    Assert.assertNotNull(entity.getId());
+    LOGGER.info(
+        "Entity with Description [{}] and id [{}] saved", entity.getDescription(), entity.getId());
+
+    // Find By Id
+    Optional<ForwardNodeEntity> foundByIdOpt = repository.findById(entity.getId());
+
+    // Test Find by Id
+    Assert.assertTrue(foundByIdOpt.isPresent());
+    LOGGER.info(
+        "Entity found with Description [{}] and id [{}]",
+        foundByIdOpt.get().getDescription(),
+        foundByIdOpt.get().getId());
+    Assert.assertEquals(entity.getId(), foundByIdOpt.get().getId());
+  }
+
+  /** Test find all. */
+  @Test
+  void shouldFindAllRecords() {
+    // Create an entity to save
+    ForwardNodeEntity entity = new ForwardNodeEntity();
+    entity.setDescription("Description");
+    entity.setFwdAeTitle("AeTitle");
+
+    // Save the entity
+    LOGGER.info("Saving entity with Description [{}]", entity.getDescription());
+    repository.saveAndFlush(entity);
+
+    // Find all
+    List<ForwardNodeEntity> all = repository.findAll();
+
+    // Test find all
+    Assert.assertNotNull(all);
+    Assert.assertTrue(all.size() > 0);
+    Assert.assertEquals(1, all.size());
+    LOGGER.info("Number of entities found [{}]", all.size());
+  }
+
+  /** Test modification of a record. */
+  @Test
+  void shouldModifyRecord() {
+
+    String initialText = "InitialText";
+    String modifiedText = "ModifiedText";
+
+    // Create an entity to save
+    ForwardNodeEntity entity = new ForwardNodeEntity();
+    entity.setDescription(initialText);
+
+    // Save the entity
+    LOGGER.info("Saving entity with Description [{}]", entity.getDescription());
+    entity = repository.save(entity);
+    LOGGER.info("Id of the entity with Description [{}]", entity.getId());
+
+    // Test Save
+    Assert.assertNotNull(entity);
+    Assert.assertEquals(initialText, entity.getDescription());
+
+    // Modify the record
+    entity.setDescription(modifiedText);
+    LOGGER.info("Modify entity Description [{}] to [{}]", initialText, modifiedText);
+    ForwardNodeEntity entityModified = repository.save(entity);
+
+    // Test Modify
+    Assert.assertNotNull(entityModified);
+    Assert.assertEquals(entity.getId(), entityModified.getId());
+    Assert.assertEquals(modifiedText, entityModified.getDescription());
+    LOGGER.info(
+        "Description of the entity with id [{}]: [{}]",
+        entityModified.getId(),
+        entityModified.getDescription());
+  }
+
+  /** Test delete record. */
+  @Test
+  void shouldDeleteRecord() {
+    // Create an entity to save
+    ForwardNodeEntity entity = new ForwardNodeEntity();
+    String description = "Description";
+    entity.setDescription(description);
+
+    // Save the entity
+    LOGGER.info("Saving entity with Description [{}]", entity.getDescription());
+    entity = repository.save(entity);
+
+    // Retrieve the entity
+    Optional<ForwardNodeEntity> foundByIdOpt = repository.findById(entity.getId());
+
+    // Test Find by Id
+    Assert.assertTrue(foundByIdOpt.isPresent());
+
+    // Delete the entity
+    entity = foundByIdOpt.get();
+    Long id = entity.getId();
+    LOGGER.info("Deleting entity with id [{}]", id);
+    repository.delete(entity);
+
+    // Test Delete
+    foundByIdOpt = repository.findById(id);
+    LOGGER.info("Is deleted entity with id [{}] present: [{}]", id, foundByIdOpt.isPresent());
+    Assert.assertFalse(foundByIdOpt.isPresent());
   }
 }
