@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  */
-package org.karnak.frontend.profile;
+package org.karnak.frontend.profile.component.editprofile;
 
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.html.Div;
@@ -23,7 +23,7 @@ public class ProfileElementMainView extends VerticalLayout {
 
   private List<ProfileElementEntity> profilesOrder;
 
-  ProfileElementMainView() {}
+  public ProfileElementMainView() {}
 
   private void profilesView() {
     removeAll();
@@ -46,7 +46,7 @@ public class ProfileElementMainView extends VerticalLayout {
   }
 
   public void setProfile(ProfileEntity profileEntity) {
-    if( profileEntity != null) {
+    if (profileEntity != null) {
       List<ProfileElementEntity> profileElementEntities = profileEntity.getProfileElementEntities();
 
       if (profileElementEntities != null) {

@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  */
-package org.karnak.frontend.profile;
+package org.karnak.frontend.profile.component.errorprofile;
 
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.html.Div;
@@ -16,10 +16,12 @@ import com.vaadin.flow.component.icon.IronIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import java.util.ArrayList;
 import org.karnak.backend.data.entity.ProfileElementEntity;
+import org.karnak.frontend.profile.component.editprofile.ProfileElementView;
+import org.karnak.frontend.profile.component.editprofile.ProfileShowHide;
 
 public class ProfileErrorView extends VerticalLayout {
 
-  ProfileErrorView() {
+  public ProfileErrorView() {
     getStyle().set("overflow-y", "auto");
   }
 

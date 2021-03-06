@@ -21,7 +21,7 @@ import org.karnak.backend.data.entity.ProfileEntity;
 import org.karnak.backend.data.repo.ProfileRepo;
 import org.karnak.backend.enums.ProfileItemType;
 import org.karnak.backend.model.profilebody.ProfilePipeBody;
-import org.karnak.frontend.profile.ProfileError;
+import org.karnak.frontend.profile.component.errorprofile.ProfileError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

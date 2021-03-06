@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  */
-package org.karnak.frontend.profile;
+package org.karnak.frontend.profile.component.editprofile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
@@ -26,6 +26,7 @@ import java.io.ByteArrayInputStream;
 import java.util.Comparator;
 import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.data.entity.ProfileEntity;
+import org.karnak.frontend.profile.ProfileLogic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

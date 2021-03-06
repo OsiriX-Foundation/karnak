@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  */
-package org.karnak.frontend.profile;
+package org.karnak.frontend.profile.component.editprofile;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
@@ -42,7 +42,7 @@ public class ProfileShowHide extends Div {
   }
 
   private void setTextButtonShowHide() {
-    btnShowHide.setText(show ? textHide : textShow);
+    btnShowHide.setText(show.booleanValue() ? textHide : textShow);
   }
 
   public void setView() {

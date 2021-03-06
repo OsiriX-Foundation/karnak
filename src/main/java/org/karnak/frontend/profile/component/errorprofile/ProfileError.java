@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  */
-package org.karnak.frontend.profile;
+package org.karnak.frontend.profile.component.errorprofile;
 
 import org.karnak.backend.data.entity.ProfileElementEntity;
 
