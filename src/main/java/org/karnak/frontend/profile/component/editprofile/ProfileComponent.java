@@ -137,6 +137,7 @@ public class ProfileComponent extends VerticalLayout {
   }
 
   private void updatedProfilePipes() {
+    profileEntity = profileLogic.updateProfile(profileEntity);
     final StreamResource profileStreamResource = createStreamResource(profileEntity);
     download.setHref(profileStreamResource);
     createDeleteButton(profileEntity);

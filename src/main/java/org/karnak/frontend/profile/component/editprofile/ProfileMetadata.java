@@ -28,7 +28,6 @@ public class ProfileMetadata extends VerticalLayout {
 
   private String title;
   private String value;
-  private String profileByDefault;
 
   public ProfileMetadata() {
     this.title = "";
@@ -41,36 +40,24 @@ public class ProfileMetadata extends VerticalLayout {
     this.title = title;
     this.value = value;
 
-    if (profileByDefault != true) {
-      titleDiv.add(editButton);
-    }
-
     setTitleText();
     setValueText();
-
     setElements();
-
-
     addEvents();
+
+    if (!profileByDefault.booleanValue()) {
+      titleDiv.add(editButton);
+    }
 
     add(titleDiv, valueDiv);
   }
 
   private void addEvents() {
-    editButton.addClickListener(
-        event -> {
-          editOnClick();
-        });
+    editButton.addClickListener(event -> editOnClick());
 
-    disabledEditButton.addClickListener(
-        event -> {
-          disabledEditButton();
-        });
+    disabledEditButton.addClickListener(event -> disabledEditButton());
 
-    validateEditButton.addClickListener(
-        event -> {
-          validateEditButton();
-        });
+    validateEditButton.addClickListener(event -> validateEditButton());
   }
 
   private void setElements() {

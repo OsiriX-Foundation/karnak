@@ -80,4 +80,10 @@ public class ProfileLogic extends ListDataProvider<ProfileEntity> {
     profileView.remove(profileView.getProfileHorizontalLayout());
     refreshAll();
   }
+
+  public ProfileEntity updateProfile(ProfileEntity profileEntity) {
+    profilePipeService.updateProfile(profileEntity);
+    refreshAll();
+    return profileEntity;
+  }
 }
