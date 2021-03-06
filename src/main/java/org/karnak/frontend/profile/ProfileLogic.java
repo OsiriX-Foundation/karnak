@@ -4,17 +4,21 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import java.util.ArrayList;
 import org.karnak.backend.data.entity.ProfileEntity;
 import org.karnak.backend.service.profilepipe.ProfilePipeService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ProfileLogic extends ListDataProvider<ProfileEntity> {
 
-  //view
+  private static final Logger LOGGER = LoggerFactory.getLogger(ProfileLogic.class);
+
+  // view
   private ProfileView profileView;
 
-  //services
-  private final ProfilePipeService profilePipeService;
+  // services
+  private final transient ProfilePipeService profilePipeService;
 
   /**
    * Autowired constructor
@@ -42,14 +46,12 @@ public class ProfileLogic extends ListDataProvider<ProfileEntity> {
 
   public Long enter(String dataIdStr) {
     try {
-      Long dataId = Long.valueOf(dataIdStr);
-      return dataId;
+      return Long.valueOf(dataIdStr);
     } catch (NumberFormatException e) {
+      LOGGER.error("Cannot get valueOf {}", dataIdStr, e);
     }
     return null;
   }
-
-
 
   /**
    * Retrieve a profile depending of its id
@@ -71,5 +73,11 @@ public class ProfileLogic extends ListDataProvider<ProfileEntity> {
 
   public void setProfileView(ProfileView profileView) {
     this.profileView = profileView;
+  }
+
+  public void deleteProfile(ProfileEntity profileEntity) {
+    profilePipeService.deleteProfile(profileEntity);
+    profileView.remove(profileView.getProfileHorizontalLayout());
+    refreshAll();
   }
 }

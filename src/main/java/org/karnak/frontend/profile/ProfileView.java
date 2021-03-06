@@ -64,7 +64,7 @@ public class ProfileView extends HorizontalLayout implements HasUrlParameter<Str
     this.profilePipeService = profilePipeService;
 
     profileGrid = new ProfileGrid();
-    profileComponent = new ProfileComponent();
+    profileComponent = new ProfileComponent(profileLogic);
     profileElementMainView = new ProfileElementMainView();
     profileErrorView = new ProfileErrorView();
     profileHorizontalLayout = new HorizontalLayout(profileComponent, profileElementMainView);
@@ -80,16 +80,18 @@ public class ProfileView extends HorizontalLayout implements HasUrlParameter<Str
 
   @Override
   public void setParameter(BeforeEvent beforeEvent, @OptionalParameter String parameter) {
-    Long idProfilePipe = profileLogic.enter(parameter);
-    ProfileEntity currentProfileEntity = null;
-    if (idProfilePipe != null) {
-      currentProfileEntity = profileLogic.retrieveProfile(idProfilePipe);
+    if (parameter != null) {
+      final Long idProfilePipe = profileLogic.enter(parameter);
+      ProfileEntity currentProfileEntity = null;
+      if (idProfilePipe != null) {
+        currentProfileEntity = profileLogic.retrieveProfile(idProfilePipe);
+      }
+      profileGrid.selectRow(currentProfileEntity);
+      profileComponent.setProfile(currentProfileEntity);
+      profileElementMainView.setProfile(currentProfileEntity);
+      remove(profileErrorView);
+      add(profileHorizontalLayout);
     }
-    profileGrid.selectRow(currentProfileEntity);
-    profileComponent.setProfile(currentProfileEntity);
-    profileElementMainView.setProfile(currentProfileEntity);
-    remove(profileErrorView);
-    add(profileHorizontalLayout);
   }
 
   private void buildLayout() {
@@ -148,15 +150,16 @@ public class ProfileView extends HorizontalLayout implements HasUrlParameter<Str
       ArrayList<ProfileError> profileErrors = profilePipeService.validateProfile(profilePipe);
       Predicate<ProfileError> errorPredicate = profileError -> profileError.getError() != null;
       if (profileErrors.stream().noneMatch(errorPredicate)) {
+        final ProfileEntity newProfileEntity =
+            profilePipeService.saveProfilePipe(profilePipe, false);
         profileErrorView.removeAll();
-        ProfileEntity newProfileEntity = profilePipeService.saveProfilePipe(profilePipe, false);
         profileGrid.selectRow(newProfileEntity);
         profileComponent.setProfile(newProfileEntity);
         profileElementMainView.setProfile(newProfileEntity);
       } else {
         profileGrid.deselectAll();
-        remove(profileHorizontalLayout);
         profileErrorView.setView(profileErrors);
+        remove(profileHorizontalLayout);
         add(profileErrorView);
       }
     } catch (YAMLException e) {
@@ -170,5 +173,13 @@ public class ProfileView extends HorizontalLayout implements HasUrlParameter<Str
   private ProfilePipeBody readProfileYaml(InputStream stream) {
     final Yaml yaml = new Yaml(new Constructor(ProfilePipeBody.class));
     return yaml.load(stream);
+  }
+
+  public ProfileErrorView getProfileErrorView() {
+    return profileErrorView;
+  }
+
+  public HorizontalLayout getProfileHorizontalLayout() {
+    return profileHorizontalLayout;
   }
 }
