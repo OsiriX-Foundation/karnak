@@ -77,13 +77,15 @@ public class ProjectView extends HorizontalLayout implements HasUrlParameter<Str
 
   @Override
   public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
-    Long idProject = projectLogic.enter(parameter);
-    ProjectEntity currentProjectEntity = null;
-    if (idProject != null) {
-      currentProjectEntity = projectLogic.retrieveProject(idProject);
+    if (parameter != null) {
+      Long idProject = projectLogic.enter(parameter);
+      ProjectEntity currentProjectEntity = null;
+      if (idProject != null) {
+        currentProjectEntity = projectLogic.retrieveProject(idProject);
+      }
+      editProject.setProject(currentProjectEntity);
+      gridProject.selectRow(currentProjectEntity);
     }
-    editProject.setProject(currentProjectEntity);
-    gridProject.selectRow(currentProjectEntity);
   }
 
   /** Create and add the layout of the view */

@@ -21,6 +21,8 @@ import org.karnak.frontend.component.ConfirmDialog;
 import org.karnak.frontend.project.component.EditProject;
 import org.karnak.frontend.project.component.GridProject;
 import org.karnak.frontend.project.component.NewProject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,12 +32,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProjectLogic extends ListDataProvider<ProjectEntity> {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(ProjectLogic.class);
+
   // View
   private ProjectView projectView;
 
   // Services
-  private final ProjectService projectService;
-  private final ProfilePipeService profilePipeService;
+  private final transient ProjectService projectService;
+  private final transient ProfilePipeService profilePipeService;
 
   /**
    * Autowired constructor
@@ -69,6 +73,7 @@ public class ProjectLogic extends ListDataProvider<ProjectEntity> {
       Long dataId = Long.valueOf(dataIdStr);
       return dataId;
     } catch (NumberFormatException e) {
+      LOGGER.error("Cannot get valueOf {}", dataIdStr, e);
     }
     return null;
   }
