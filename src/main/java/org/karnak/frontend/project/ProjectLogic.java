@@ -70,8 +70,7 @@ public class ProjectLogic extends ListDataProvider<ProjectEntity> {
 
   public Long enter(String dataIdStr) {
     try {
-      Long dataId = Long.valueOf(dataIdStr);
-      return dataId;
+      return Long.valueOf(dataIdStr);
     } catch (NumberFormatException e) {
       LOGGER.error("Cannot get valueOf {}", dataIdStr, e);
     }

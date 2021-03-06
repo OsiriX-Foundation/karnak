@@ -101,7 +101,7 @@ public class ProjectView extends HorizontalLayout implements HasUrlParameter<Str
   private void initComponents() {
     initEditProject(editProject, gridProject);
     initNewProjectForm(newProject);
-    gridProject.setDataProvider(projectLogic);
+    gridProject.setItems(projectLogic);
     newResearchBinder = newProject.getBinder();
   }
 

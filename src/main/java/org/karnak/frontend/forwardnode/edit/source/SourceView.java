@@ -91,7 +91,7 @@ public class SourceView extends VerticalLayout {
   public void loadForwardNode(ForwardNodeEntity forwardNodeEntity) {
     setEnabled(forwardNodeEntity != null);
     sourceLogic.loadForwardNode(forwardNodeEntity);
-    gridSourceNode.setDataProvider(sourceLogic);
+    gridSourceNode.setItems(sourceLogic);
   }
 
   public SourceLogic getSourceLogic() {

@@ -120,6 +120,6 @@ public class DestinationView extends VerticalLayout {
   public void loadForwardNode(ForwardNodeEntity forwardNodeEntity) {
     setEnabled(forwardNodeEntity != null);
     destinationLogic.loadForwardNode(forwardNodeEntity);
-    gridDestination.setDataProvider(destinationLogic);
+    gridDestination.setItems(destinationLogic);
   }
 }
