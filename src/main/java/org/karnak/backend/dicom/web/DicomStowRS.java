@@ -74,7 +74,6 @@ public class DicomStowRS implements AutoCloseable {
   private final Map<String, String> headers;
   private boolean photo = false;
   private final HttpContentType type = HttpContentType.XML;
-  private final MultipartBody multipartBody;
   private final HttpClient client;
   private final ExecutorService executorService;
 
@@ -91,7 +90,6 @@ public class DicomStowRS implements AutoCloseable {
     this.requestURL = Objects.requireNonNull(getFinalUrl(requestURL), "requestURL cannot be null");
     this.headers = headers;
     this.agentName = agentName;
-    this.multipartBody = new MultipartBody(ContentType.APPLICATION_DICOM, MULTIPART_BOUNDARY);
     this.executorService = Executors.newFixedThreadPool(5);
     this.client =
         HttpClient.newBuilder()
@@ -151,7 +149,10 @@ public class DicomStowRS implements AutoCloseable {
   }
 
   protected HttpRequest buildConnection(
-      Payload firstPlayLoad, Supplier<? extends InputStream> streamSupplier) throws Exception {
+      MultipartBody multipartBody,
+      Payload firstPlayLoad,
+      Supplier<? extends InputStream> streamSupplier)
+      throws Exception {
     ContentType partType = ContentType.APPLICATION_DICOM;
     multipartBody.addPart(partType.type, firstPlayLoad, null);
 
@@ -290,10 +291,12 @@ public class DicomStowRS implements AutoCloseable {
   }
 
   public void uploadPayload(Payload playload) throws HttpException {
-    multipartBody.reset();
     try {
+      MultipartBody multipartBody =
+          new MultipartBody(ContentType.APPLICATION_DICOM, MULTIPART_BOUNDARY);
       HttpRequest request =
-          buildConnection(playload, () -> new SequenceInputStream(multipartBody.enumeration()));
+          buildConnection(
+              multipartBody, playload, () -> new SequenceInputStream(multipartBody.enumeration()));
       send(client, request, HttpResponse.BodyHandlers.ofLines()).body().forEach(LOGGER::info);
 
       //            MultipartBody.Part part = new MultipartBody.Part(playload,
