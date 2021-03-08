@@ -9,8 +9,10 @@
  */
 package org.karnak.backend.dicom;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +36,7 @@ import org.dcm4che3.img.stream.ImageDescriptor;
 import org.dcm4che3.img.util.DicomUtils;
 import org.dcm4che3.io.DicomOutputStream;
 import org.dcm4che3.net.DataWriter;
+import org.karnak.backend.dicom.web.Payload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.weasis.dicom.param.AttributeEditorContext;
@@ -43,6 +46,48 @@ public class ImageAdapter {
   private static final Logger LOGGER = LoggerFactory.getLogger(ImageAdapter.class);
 
   protected static final byte[] EMPTY_BYTES = {};
+
+  public static Payload preparePlayload(
+      Attributes data,
+      String outputTsuid,
+      BytesWithImageDescriptor desc,
+      AttributeEditorContext context)
+      throws IOException {
+    DicomTranscodeParam tparams = new DicomTranscodeParam(outputTsuid);
+    DicomOutputData imgData = geDicomOutputData(tparams, desc, context);
+    Attributes dataSet = new Attributes(data);
+    dataSet.remove(Tag.PixelData);
+
+    return new Payload() {
+      @Override
+      public long size() {
+        return -1;
+      }
+
+      @Override
+      public InputStream newInputStream() {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        try (DicomOutputStream dos = new DicomOutputStream(out, outputTsuid)) {
+          dos.writeFileMetaInformation(dataSet.createFileMetaInformation(outputTsuid));
+          if (DicomOutputData.isNativeSyntax(outputTsuid)) {
+            imgData.writRawImageData(dos, dataSet);
+          } else {
+            int[] jpegWriteParams =
+                imgData.adaptTagsToCompressedImage(
+                    dataSet,
+                    imgData.getImages().get(0),
+                    desc.getImageDescriptor(),
+                    tparams.getWriteJpegParam());
+            imgData.writCompressedImageData(dos, dataSet, jpegWriteParams);
+          }
+        } catch (IOException e) {
+          LOGGER.error("Cannot write DICOM", e);
+          return new ByteArrayInputStream(new byte[] {});
+        }
+        return new ByteArrayInputStream(out.toByteArray());
+      }
+    };
+  }
 
   public static DataWriter buildDataWriter(
       Attributes data,
