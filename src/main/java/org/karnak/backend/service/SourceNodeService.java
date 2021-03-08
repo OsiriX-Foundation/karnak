@@ -54,7 +54,6 @@ public class SourceNodeService {
       ForwardNodeEntity forwardNodeEntity, DicomSourceNodeEntity dicomSourceNodeEntity) {
     DicomSourceNodeEntity dataUpdated =
         this.forwardNodeService.updateSourceNode(forwardNodeEntity, dicomSourceNodeEntity);
-    dicomSourceNodeRepo.saveAndFlush(dataUpdated);
     return dataUpdated;
   }
 

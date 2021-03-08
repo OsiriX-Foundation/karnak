@@ -104,13 +104,8 @@ public class SourceLogic extends ListDataProvider<DicomSourceNodeEntity> {
    * @param dicomSourceNodeEntity source to save
    */
   public void saveSourceNode(DicomSourceNodeEntity dicomSourceNodeEntity) {
-    DicomSourceNodeEntity dataUpdated =
-        sourceNodeService.save(forwardNodeEntity, dicomSourceNodeEntity);
-    if (dicomSourceNodeEntity.getId() == null) {
-      refreshAll();
-    } else {
-      refreshItem(dataUpdated);
-    }
+    sourceNodeService.save(forwardNodeEntity, dicomSourceNodeEntity);
+    refreshAll();
   }
 
   public void publishEvent(NodeEvent nodeEvent) {

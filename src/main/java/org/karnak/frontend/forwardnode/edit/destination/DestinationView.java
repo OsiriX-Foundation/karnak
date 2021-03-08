@@ -16,6 +16,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
+import org.karnak.frontend.forwardnode.ForwardNodeLogic;
 import org.karnak.frontend.forwardnode.edit.destination.component.GridDestination;
 import org.karnak.frontend.util.UIS;
 
@@ -25,6 +26,7 @@ public class DestinationView extends VerticalLayout {
 
   // Destination Logic
   private final DestinationLogic destinationLogic;
+  private final ForwardNodeLogic forwardNodeLogic;
 
   // UI components
   private TextField filter;
@@ -40,12 +42,13 @@ public class DestinationView extends VerticalLayout {
   /**
    * Destination view constructor
    *
-   * @param destinationLogic Logic service of the view
+   * @param forwardNodeLogic Logic service of the view
    */
-  public DestinationView(final DestinationLogic destinationLogic) {
+  public DestinationView(final ForwardNodeLogic forwardNodeLogic) {
 
     // Bind the autowired service
-    this.destinationLogic = destinationLogic;
+    this.destinationLogic = forwardNodeLogic.getDestinationLogic();
+    this.forwardNodeLogic = forwardNodeLogic;
 
     // Set the view in the service
     this.destinationLogic.setDestinationsView(this);
@@ -118,8 +121,13 @@ public class DestinationView extends VerticalLayout {
   }
 
   public void loadForwardNode(ForwardNodeEntity forwardNodeEntity) {
+    if (forwardNodeEntity != null) {
+      ForwardNodeEntity forwardNodeEntityReload =
+          forwardNodeLogic.retrieveForwardNodeById(forwardNodeEntity.getId());
+      setEnabled(forwardNodeEntityReload != null);
+      destinationLogic.loadForwardNode(forwardNodeEntityReload);
+      gridDestination.setItems(destinationLogic);
+    }
     setEnabled(forwardNodeEntity != null);
-    destinationLogic.loadForwardNode(forwardNodeEntity);
-    gridDestination.setItems(destinationLogic);
   }
 }

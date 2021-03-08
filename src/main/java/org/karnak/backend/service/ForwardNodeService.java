@@ -90,6 +90,7 @@ public class ForwardNodeService {
     if (!destinationEntities.contains(data)) {
       forwardNodeEntity.addDestination(data);
     }
+    forwardNodeRepo.saveAndFlush(forwardNodeEntity);
     return data;
   }
 
@@ -127,6 +128,7 @@ public class ForwardNodeService {
     if (!sourceNodes.contains(data)) {
       forwardNodeEntity.addSourceNode(data);
     }
+    forwardNodeRepo.saveAndFlush(forwardNodeEntity);
     return data;
   }
 

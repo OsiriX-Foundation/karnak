@@ -109,12 +109,8 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
    * @param destinationEntity destination to save
    */
   public void saveDestination(DestinationEntity destinationEntity) {
-    DestinationEntity dataUpdated = destinationService.save(forwardNodeEntity, destinationEntity);
-    if (destinationEntity.getId() == null) {
-      refreshAll();
-    } else {
-      refreshItem(dataUpdated);
-    }
+    destinationService.save(forwardNodeEntity, destinationEntity);
+    loadForwardNode(forwardNodeEntity);
   }
 
   public void publishEvent(NodeEvent nodeEvent) {

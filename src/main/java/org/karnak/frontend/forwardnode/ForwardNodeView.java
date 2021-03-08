@@ -59,12 +59,7 @@ public class ForwardNodeView extends HorizontalLayout implements HasUrlParameter
 
     // Build components
     this.layoutNewGridForwardNode = new LayoutNewGridForwardNode();
-    this.layoutEditForwardNode =
-        new LayoutEditForwardNode(
-            forwardNodeLogic.getProjectService(),
-            forwardNodeLogic.getSopClassUIDService(),
-            forwardNodeLogic.getSourceLogic(),
-            forwardNodeLogic.getDestinationLogic());
+    this.layoutEditForwardNode = new LayoutEditForwardNode(forwardNodeLogic);
 
     // Init components
     initComponents();
