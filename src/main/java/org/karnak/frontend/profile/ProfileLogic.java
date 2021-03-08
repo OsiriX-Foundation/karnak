@@ -89,8 +89,9 @@ public class ProfileLogic extends ListDataProvider<ProfileEntity> {
   }
 
   public ProfileEntity updateProfile(ProfileEntity profileEntity) {
-    profilePipeService.updateProfile(profileEntity);
+    final ProfileEntity profileUpdate = profilePipeService.updateProfile(profileEntity);
     refreshAll();
+    profileView.getProfileGrid().selectRow(profileUpdate);
     return profileEntity;
   }
 
