@@ -27,7 +27,7 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
   private DestinationView destinationView;
 
   // Services
-  private final DestinationService destinationService;
+  private final transient DestinationService destinationService;
 
   /** Text filter that can be changed separately. */
   private String filterText = "";
@@ -70,14 +70,14 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
   public void setFilter(String filterTextInput) {
     Objects.requireNonNull(filterText, "Filter text cannot be null.");
 
-    final String filterText = filterTextInput.trim();
+    final String filterTextInputTrim = filterTextInput.trim();
 
-    if (Objects.equals(this.filterText, filterText)) {
+    if (Objects.equals(this.filterText, filterTextInputTrim)) {
       return;
     }
-    this.filterText = filterText;
+    this.filterText = filterTextInputTrim;
 
-    setFilter(data -> matchesFilter(data, filterText));
+    setFilter(data -> matchesFilter(data, filterTextInputTrim));
   }
 
   private boolean matchesFilter(DestinationEntity data, String filterText) {
@@ -127,7 +127,7 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
    * @param destinationEntity destination to delete
    */
   public void deleteDestination(DestinationEntity destinationEntity) {
-    destinationService.delete(forwardNodeEntity, destinationEntity);
+    destinationService.delete(destinationEntity);
     refreshAll();
   }
 }

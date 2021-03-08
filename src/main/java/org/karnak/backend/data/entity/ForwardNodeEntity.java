@@ -53,8 +53,7 @@ public class ForwardNodeEntity implements Serializable {
   }
 
   public static ForwardNodeEntity ofEmpty() {
-    ForwardNodeEntity instance = new ForwardNodeEntity();
-    return instance;
+    return new ForwardNodeEntity();
   }
 
   @Id
@@ -104,9 +103,7 @@ public class ForwardNodeEntity implements Serializable {
   }
 
   public void removeSourceNode(DicomSourceNodeEntity sourceNode) {
-    if (this.sourceNodes.remove(sourceNode)) {
-      sourceNode.setForwardNodeEntity(null);
-    }
+    this.sourceNodes.remove(sourceNode);
   }
 
   @OneToMany(
@@ -128,9 +125,7 @@ public class ForwardNodeEntity implements Serializable {
   }
 
   public void removeDestination(DestinationEntity destinationEntity) {
-    if (this.destinationEntities.remove(destinationEntity)) {
-      destinationEntity.setForwardNodeEntity(null);
-    }
+    this.destinationEntities.remove(destinationEntity);
   }
 
   /**

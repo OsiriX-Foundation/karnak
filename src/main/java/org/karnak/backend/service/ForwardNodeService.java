@@ -98,6 +98,7 @@ public class ForwardNodeService {
       return;
     }
     forwardNodeEntity.removeDestination(data);
+    forwardNodeRepo.saveAndFlush(forwardNodeEntity);
   }
 
   public Collection<DicomSourceNodeEntity> getAllSourceNodes(ForwardNodeEntity forwardNodeEntity) {
@@ -129,10 +130,11 @@ public class ForwardNodeService {
     return data;
   }
 
-  public void deleteSourceNode(ForwardNodeEntity forwardNodeEntity, DicomSourceNodeEntity data) {
-    if (forwardNodeEntity == null || data == null) {
+  public void deleteSourceNode(ForwardNodeEntity forwardNodeEntity, DicomSourceNodeEntity dicomSourceNodeEntity) {
+    if (forwardNodeEntity == null || dicomSourceNodeEntity == null) {
       return;
     }
-    forwardNodeEntity.removeSourceNode(data);
+    forwardNodeEntity.removeSourceNode(dicomSourceNodeEntity);
+    forwardNodeRepo.saveAndFlush(forwardNodeEntity);
   }
 }

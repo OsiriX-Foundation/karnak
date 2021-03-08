@@ -27,7 +27,7 @@ public class SourceLogic extends ListDataProvider<DicomSourceNodeEntity> {
   private SourceView sourceView;
 
   // Services
-  private final SourceNodeService sourceNodeService;
+  private final transient SourceNodeService sourceNodeService;
 
   /** Text filter that can be changed separately. */
   private String filterText = "";
@@ -70,14 +70,14 @@ public class SourceLogic extends ListDataProvider<DicomSourceNodeEntity> {
   public void setFilter(String filterTextInput) {
     Objects.requireNonNull(filterText, "Filter text cannot be null.");
 
-    final String filterText = filterTextInput.trim();
+    final String filterTextInputTrim = filterTextInput.trim();
 
-    if (Objects.equals(this.filterText, filterText)) {
+    if (Objects.equals(this.filterText, filterTextInputTrim)) {
       return;
     }
-    this.filterText = filterText;
+    this.filterText = filterTextInputTrim;
 
-    setFilter(data -> matchesFilter(data, filterText));
+    setFilter(data -> matchesFilter(data, filterTextInputTrim));
   }
 
   private boolean matchesFilter(DicomSourceNodeEntity data, String filterText) {
@@ -123,7 +123,7 @@ public class SourceLogic extends ListDataProvider<DicomSourceNodeEntity> {
    * @param dicomSourceNodeEntity source to delete
    */
   public void deleteSourceNode(DicomSourceNodeEntity dicomSourceNodeEntity) {
-    sourceNodeService.delete(forwardNodeEntity, dicomSourceNodeEntity);
+    sourceNodeService.delete(dicomSourceNodeEntity);
     refreshAll();
   }
 }
