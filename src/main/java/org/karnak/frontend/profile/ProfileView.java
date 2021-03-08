@@ -20,25 +20,16 @@ import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.OptionalParameter;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.function.Predicate;
 import org.karnak.backend.data.entity.ProfileEntity;
-import org.karnak.backend.model.profilebody.ProfilePipeBody;
-import org.karnak.backend.service.profilepipe.ProfilePipeService;
 import org.karnak.frontend.MainLayout;
+import org.karnak.frontend.profile.component.ProfileGrid;
 import org.karnak.frontend.profile.component.editprofile.ProfileComponent;
 import org.karnak.frontend.profile.component.editprofile.ProfileElementMainView;
-import org.karnak.frontend.profile.component.errorprofile.ProfileError;
 import org.karnak.frontend.profile.component.errorprofile.ProfileErrorView;
-import org.karnak.frontend.profile.component.ProfileGrid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.constructor.Constructor;
-import org.yaml.snakeyaml.error.YAMLException;
 
 @Route(value = "profile", layout = MainLayout.class)
 @PageTitle("KARNAK - Profiles")
@@ -56,17 +47,15 @@ public class ProfileView extends HorizontalLayout implements HasUrlParameter<Str
   private final ProfileElementMainView profileElementMainView;
   private final ProfileGrid profileGrid;
   private final ProfileErrorView profileErrorView;
-  private final transient ProfilePipeService profilePipeService;
   private VerticalLayout barAndGridLayout;
   private HorizontalLayout profileHorizontalLayout;
   private Upload uploadProfile;
   private MemoryBuffer memoryBuffer;
 
   @Autowired
-  public ProfileView(final ProfileLogic profileLogic, final ProfilePipeService profilePipeService) {
+  public ProfileView(final ProfileLogic profileLogic) {
     this.profileLogic = profileLogic;
     this.profileLogic.setProfileView(this);
-    this.profilePipeService = profilePipeService;
 
     profileGrid = new ProfileGrid();
     profileComponent = new ProfileComponent(profileLogic);
@@ -128,7 +117,7 @@ public class ProfileView extends HorizontalLayout implements HasUrlParameter<Str
   }
 
   private void addEventUploadProfile() {
-    uploadProfile.addSucceededListener(e -> setProfileComponent(memoryBuffer.getInputStream()));
+    uploadProfile.addSucceededListener(e -> profileLogic.setProfileComponent(memoryBuffer.getInputStream()));
   }
 
   private void addEventGridSelection() {
@@ -149,35 +138,16 @@ public class ProfileView extends HorizontalLayout implements HasUrlParameter<Str
     }
   }
 
-  private void setProfileComponent(InputStream stream) {
-    try {
-      ProfilePipeBody profilePipe = readProfileYaml(stream);
-      ArrayList<ProfileError> profileErrors = profilePipeService.validateProfile(profilePipe);
-      Predicate<ProfileError> errorPredicate = profileError -> profileError.getError() != null;
-      if (profileErrors.stream().noneMatch(errorPredicate)) {
-        final ProfileEntity newProfileEntity =
-            profilePipeService.saveProfilePipe(profilePipe, false);
-        profileErrorView.removeAll();
-        profileGrid.selectRow(newProfileEntity);
-        profileComponent.setProfile(newProfileEntity);
-        profileElementMainView.setProfile(newProfileEntity);
-      } else {
-        profileGrid.deselectAll();
-        profileErrorView.setView(profileErrors);
-        remove(profileHorizontalLayout);
-        add(profileErrorView);
-      }
-    } catch (YAMLException e) {
-      LOGGER.error("Unable to read uploaded YAML", e);
-      profileErrorView.setView(
-          "Unable to read uploaded YAML file.\n"
-              + "Please make sure it is a YAML file and respects the YAML structure.");
-    }
+  public ProfileComponent getProfileComponent() {
+    return profileComponent;
   }
 
-  private ProfilePipeBody readProfileYaml(InputStream stream) {
-    final Yaml yaml = new Yaml(new Constructor(ProfilePipeBody.class));
-    return yaml.load(stream);
+  public ProfileElementMainView getProfileElementMainView() {
+    return profileElementMainView;
+  }
+
+  public ProfileGrid getProfileGrid() {
+    return profileGrid;
   }
 
   public ProfileErrorView getProfileErrorView() {

@@ -20,7 +20,6 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.server.StreamResource;
 import java.io.ByteArrayInputStream;
 import java.util.Comparator;
@@ -37,7 +36,6 @@ public class ProfileComponent extends VerticalLayout {
   private ProfileEntity profileEntity;
   private Anchor download;
   private Button deleteButton;
-  private Binder<ProfileEntity> binder;
   private ProfileLogic profileLogic;
 
   public ProfileComponent(final ProfileLogic profileLogic) {

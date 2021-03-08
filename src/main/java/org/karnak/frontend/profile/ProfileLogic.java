@@ -1,13 +1,20 @@
 package org.karnak.frontend.profile;
 
 import com.vaadin.flow.data.provider.ListDataProvider;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.function.Predicate;
 import org.karnak.backend.data.entity.ProfileEntity;
+import org.karnak.backend.model.profilebody.ProfilePipeBody;
 import org.karnak.backend.service.profilepipe.ProfilePipeService;
+import org.karnak.frontend.profile.component.errorprofile.ProfileError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.Constructor;
+import org.yaml.snakeyaml.error.YAMLException;
 
 @Service
 public class ProfileLogic extends ListDataProvider<ProfileEntity> {
@@ -85,5 +92,36 @@ public class ProfileLogic extends ListDataProvider<ProfileEntity> {
     profilePipeService.updateProfile(profileEntity);
     refreshAll();
     return profileEntity;
+  }
+
+  private ProfilePipeBody readProfileYaml(InputStream stream) {
+    final Yaml yaml = new Yaml(new Constructor(ProfilePipeBody.class));
+    return yaml.load(stream);
+  }
+
+  public void setProfileComponent(InputStream stream) {
+    try {
+      ProfilePipeBody profilePipe = readProfileYaml(stream);
+      ArrayList<ProfileError> profileErrors = profilePipeService.validateProfile(profilePipe);
+      Predicate<ProfileError> errorPredicate = profileError -> profileError.getError() != null;
+      if (profileErrors.stream().noneMatch(errorPredicate)) {
+        final ProfileEntity newProfileEntity =
+            profilePipeService.saveProfilePipe(profilePipe, false);
+        profileView.getProfileErrorView().removeAll();
+        profileView.getProfileGrid().selectRow(newProfileEntity);
+        profileView.getProfileComponent().setProfile(newProfileEntity);
+        profileView.getProfileElementMainView().setProfile(newProfileEntity);
+      } else {
+        profileView.getProfileGrid().deselectAll();
+        profileView.getProfileErrorView().setView(profileErrors);
+        profileView.remove(profileView.getProfileHorizontalLayout());
+        profileView.add(profileView.getProfileErrorView());
+      }
+    } catch (YAMLException e) {
+      LOGGER.error("Unable to read uploaded YAML", e);
+      profileView.getProfileErrorView().setView(
+          "Unable to read uploaded YAML file.\n"
+              + "Please make sure it is a YAML file and respects the YAML structure.");
+    }
   }
 }
