@@ -117,7 +117,8 @@ public class ProfileView extends HorizontalLayout implements HasUrlParameter<Str
   }
 
   private void addEventUploadProfile() {
-    uploadProfile.addSucceededListener(e -> profileLogic.setProfileComponent(memoryBuffer.getInputStream()));
+    uploadProfile.addSucceededListener(
+        e -> profileLogic.setProfileComponent(memoryBuffer.getInputStream()));
   }
 
   private void addEventGridSelection() {

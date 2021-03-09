@@ -12,7 +12,6 @@ package org.karnak.frontend.profile.component;
 import com.vaadin.flow.component.grid.Grid;
 import org.karnak.backend.data.entity.ProfileEntity;
 
-
 public class ProfileGrid extends Grid<ProfileEntity> {
 
   public ProfileGrid() {

@@ -131,7 +131,8 @@ public class ForwardNodeService {
     return data;
   }
 
-  public void deleteSourceNode(ForwardNodeEntity forwardNodeEntity, DicomSourceNodeEntity dicomSourceNodeEntity) {
+  public void deleteSourceNode(
+      ForwardNodeEntity forwardNodeEntity, DicomSourceNodeEntity dicomSourceNodeEntity) {
     if (forwardNodeEntity == null || dicomSourceNodeEntity == null) {
       return;
     }
