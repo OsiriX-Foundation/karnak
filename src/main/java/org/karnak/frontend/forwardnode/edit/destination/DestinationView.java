@@ -123,8 +123,7 @@ public class DestinationView extends VerticalLayout {
   public void loadForwardNode(ForwardNodeEntity forwardNodeEntity) {
     ForwardNodeEntity forwardNodeEntityReload = null;
     if (forwardNodeEntity != null) {
-      forwardNodeEntityReload =
-          forwardNodeLogic.retrieveForwardNodeById(forwardNodeEntity.getId());
+      forwardNodeEntityReload = forwardNodeLogic.retrieveForwardNodeById(forwardNodeEntity.getId());
       setEnabled(forwardNodeEntityReload != null);
     }
     destinationLogic.loadForwardNode(forwardNodeEntityReload);
