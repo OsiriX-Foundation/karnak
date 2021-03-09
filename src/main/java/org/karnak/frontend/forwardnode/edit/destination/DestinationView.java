@@ -121,13 +121,14 @@ public class DestinationView extends VerticalLayout {
   }
 
   public void loadForwardNode(ForwardNodeEntity forwardNodeEntity) {
+    ForwardNodeEntity forwardNodeEntityReload = null;
     if (forwardNodeEntity != null) {
-      ForwardNodeEntity forwardNodeEntityReload =
+      forwardNodeEntityReload =
           forwardNodeLogic.retrieveForwardNodeById(forwardNodeEntity.getId());
       setEnabled(forwardNodeEntityReload != null);
-      destinationLogic.loadForwardNode(forwardNodeEntityReload);
-      gridDestination.setItems(destinationLogic);
     }
+    destinationLogic.loadForwardNode(forwardNodeEntityReload);
+    gridDestination.setItems(destinationLogic);
     setEnabled(forwardNodeEntity != null);
   }
 }

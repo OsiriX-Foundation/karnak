@@ -79,15 +79,15 @@ public class ForwardNodeView extends HorizontalLayout implements HasUrlParameter
 
   @Override
   public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
+    ForwardNodeEntity currentForwardNodeEntity = null;
     if (parameter != null) {
       Long idForwardNode = forwardNodeLogic.enter(parameter);
-      ForwardNodeEntity currentForwardNodeEntity = null;
       if (idForwardNode != null) {
         currentForwardNodeEntity = forwardNodeLogic.retrieveForwardNodeById(idForwardNode);
       }
-      layoutNewGridForwardNode.load(currentForwardNodeEntity);
-      layoutEditForwardNode.load(currentForwardNodeEntity);
     }
+    layoutNewGridForwardNode.load(currentForwardNodeEntity);
+    layoutEditForwardNode.load(currentForwardNodeEntity);
   }
 
   /** Init components */
