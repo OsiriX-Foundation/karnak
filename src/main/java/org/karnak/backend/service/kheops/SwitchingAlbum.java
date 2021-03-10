@@ -84,8 +84,7 @@ public class SwitchingAlbum {
         hashUIDonDeidentification(destinationEntity, dcm.getString(Tag.StudyInstanceUID), hmac);
     String seriesInstanceUID =
         hashUIDonDeidentification(destinationEntity, dcm.getString(Tag.SeriesInstanceUID), hmac);
-    String sopInstanceUID =
-        hashUIDonDeidentification(destinationEntity, dcm.getString(Tag.SOPInstanceUID), hmac);
+    String sopInstanceUID = dcm.getString(Tag.SOPInstanceUID);
     String urlAPI = kheopsAlbumsEntity.getUrlAPI();
     Long id = kheopsAlbumsEntity.getId();
     if (!switchingAlbumToDo.containsKey(id)) {
@@ -144,7 +143,6 @@ public class SwitchingAlbum {
         metadataSwitching -> {
           if (metadataSwitching.getSOPinstanceUID().equals(sopInstanceUID)
               && !metadataSwitching.isApplied()) {
-            metadataSwitching.setApplied(true);
             int status =
                 shareSerie(
                     urlAPI,
@@ -152,12 +150,15 @@ public class SwitchingAlbum {
                     metadataSwitching.getSeriesInstanceUID(),
                     authorizationSource,
                     authorizationDestination);
-            if (status > 299) {
+            if (status >= 400 && status <= 599) {
               LOGGER.warn(
                   "Can't share the serie [{}] for switching KHEOPS album [{}]. The response status is {}",
                   metadataSwitching.getSeriesInstanceUID(),
                   id,
                   status);
+              metadataSwitching.setApplied(false);
+            } else {
+              metadataSwitching.setApplied(true);
             }
           }
         });

@@ -351,49 +351,50 @@ public class GatewaySetUpService {
       notifConfig =
           new NotificationSetUp(
               notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues, notifyInterval);
+      if (dstNode.isActivate()) {
+        if (dstNode.getDestinationType() == DestinationType.stow) {
+          // parse headers to hashmap
+          HashMap<String, String> map = new HashMap<>();
+          String headers = dstNode.getHeaders();
+          Document doc = Jsoup.parse(headers);
+          String key = doc.getElementsByTag("key").text();
+          String value = doc.getElementsByTag("value").text();
+          if (StringUtil.hasText(key)) {
+            map.put(key, value);
+          }
 
-      if (dstNode.getDestinationType() == DestinationType.stow) {
-        // parse headers to hashmap
-        HashMap<String, String> map = new HashMap<>();
-        String headers = dstNode.getHeaders();
-        Document doc = Jsoup.parse(headers);
-        String key = doc.getElementsByTag("key").text();
-        String value = doc.getElementsByTag("value").text();
-        if (StringUtil.hasText(key)) {
-          map.put(key, value);
+          WebForwardDestination fwd =
+              new WebForwardDestination(
+                  dstNode.getId(), fwdSrcNode, dstNode.getUrl(), map, progress, editors);
+          progress.addProgressListener(
+              new EmailNotifyProgress(streamRegistryEditor, fwd, emails, this, notifConfig));
+          progress.addProgressListener(
+              (DicomProgress dicomProgress) -> {
+                Attributes dcm = dicomProgress.getAttributes();
+                if (listKheopsAlbumEntities != null) {
+                  listKheopsAlbumEntities.forEach(
+                      kheopsAlbums -> {
+                        switchingAlbum.applyAfterTransfer(kheopsAlbums, dcm);
+                      });
+                }
+              });
+          dstList.add(fwd);
+        } else {
+          DicomNode destinationNode =
+              new DicomNode(dstNode.getAeTitle(), dstNode.getHostname(), dstNode.getPort());
+          DicomForwardDestination dest =
+              new DicomForwardDestination(
+                  dstNode.getId(),
+                  getDefaultAdvancedParameters(),
+                  fwdSrcNode,
+                  destinationNode,
+                  dstNode.getUseaetdest(),
+                  progress,
+                  editors);
+          progress.addProgressListener(
+              new EmailNotifyProgress(streamRegistryEditor, dest, emails, this, notifConfig));
+          dstList.add(dest);
         }
-
-        WebForwardDestination fwd =
-            new WebForwardDestination(
-                dstNode.getId(), fwdSrcNode, dstNode.getUrl(), map, progress, editors);
-        progress.addProgressListener(
-            new EmailNotifyProgress(streamRegistryEditor, fwd, emails, this, notifConfig));
-        progress.addProgressListener(
-            (DicomProgress dicomProgress) -> {
-              Attributes dcm = dicomProgress.getAttributes();
-              if (listKheopsAlbumEntities != null) {
-                listKheopsAlbumEntities.forEach(
-                    kheopsAlbums -> {
-                      switchingAlbum.applyAfterTransfer(kheopsAlbums, dcm);
-                    });
-              }
-            });
-        dstList.add(fwd);
-      } else {
-        DicomNode destinationNode =
-            new DicomNode(dstNode.getAeTitle(), dstNode.getHostname(), dstNode.getPort());
-        DicomForwardDestination dest =
-            new DicomForwardDestination(
-                dstNode.getId(),
-                getDefaultAdvancedParameters(),
-                fwdSrcNode,
-                destinationNode,
-                dstNode.getUseaetdest(),
-                progress,
-                editors);
-        progress.addProgressListener(
-            new EmailNotifyProgress(streamRegistryEditor, dest, emails, this, notifConfig));
-        dstList.add(dest);
       }
     } catch (IOException e) {
       LOGGER.error("Cannot build ForwardDestination", e);

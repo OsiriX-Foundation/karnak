@@ -10,6 +10,7 @@
 package org.karnak.frontend.forwardnode.edit.destination.component;
 
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Span;
 import org.karnak.backend.data.entity.DestinationEntity;
 
 public class GridDestination extends Grid<DestinationEntity> {
@@ -24,6 +25,25 @@ public class GridDestination extends Grid<DestinationEntity> {
 
     addColumn(DestinationEntity::getDestinationType)
         .setHeader("Type")
+        .setFlexGrow(20)
+        .setSortable(true);
+    addColumn(DestinationEntity::getType).setHeader("Type").setFlexGrow(20).setSortable(true);
+
+    addComponentColumn(
+            destination -> {
+              Span spanDot = new Span();
+              spanDot.getStyle().set("height", "25px");
+              spanDot.getStyle().set("width", "25px");
+              spanDot.getStyle().set("border-radius", "50%");
+              spanDot.getStyle().set("display", "inline-block");
+              if (destination.isActivate()) {
+                spanDot.getStyle().set("background-color", "#5FC04C");
+              } else {
+                spanDot.getStyle().set("background-color", "#FC4848");
+              }
+              return spanDot;
+            })
+        .setHeader("Enabled")
         .setFlexGrow(20)
         .setSortable(true);
   }

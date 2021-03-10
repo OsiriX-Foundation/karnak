@@ -9,6 +9,7 @@
  */
 package org.karnak.frontend.forwardnode.edit.destination.component;
 
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
@@ -37,6 +38,7 @@ public class FormSTOW extends VerticalLayout {
   private TextField notifyInterval;
   private final FilterBySOPClassesForm filterBySOPClassesForm;
   private SwitchingAlbumsView switchingAlbumsView;
+  private Checkbox activate;
 
   public FormSTOW() {
     this.layoutDesidentification = new LayoutDesidentification();
@@ -61,6 +63,7 @@ public class FormSTOW extends VerticalLayout {
     this.notifyInterval = new TextField("Notif.: interval");
 
     this.switchingAlbumsView = new SwitchingAlbumsView();
+    this.activate = new Checkbox("Enable destination");
 
     add(
         UIS.setWidthFull( //
@@ -81,6 +84,7 @@ public class FormSTOW extends VerticalLayout {
     add(UIS.setWidthFull(layoutDesidentification));
     add(UIS.setWidthFull(filterBySOPClassesForm));
     add(UIS.setWidthFull(switchingAlbumsView));
+    add(UIS.setWidthFull(activate));
     add(UIS.setWidthFull(buttonSaveDeleteCancel));
 
     setElements();

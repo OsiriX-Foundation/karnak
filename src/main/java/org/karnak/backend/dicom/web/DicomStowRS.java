@@ -74,7 +74,6 @@ public class DicomStowRS implements AutoCloseable {
   private final Map<String, String> headers;
   private boolean photo = false;
   private final HttpContentType type = HttpContentType.XML;
-  private final MultipartBody multipartBody;
   private final HttpClient client;
   private final ExecutorService executorService;
 
@@ -91,7 +90,6 @@ public class DicomStowRS implements AutoCloseable {
     this.requestURL = Objects.requireNonNull(getFinalUrl(requestURL), "requestURL cannot be null");
     this.headers = headers;
     this.agentName = agentName;
-    this.multipartBody = new MultipartBody(ContentType.APPLICATION_DICOM, MULTIPART_BOUNDARY);
     this.executorService = Executors.newFixedThreadPool(5);
     this.client =
         HttpClient.newBuilder()
@@ -151,7 +149,10 @@ public class DicomStowRS implements AutoCloseable {
   }
 
   protected HttpRequest buildConnection(
-      Payload firstPlayLoad, Supplier<? extends InputStream> streamSupplier) throws Exception {
+      MultipartBody multipartBody,
+      Payload firstPlayLoad,
+      Supplier<? extends InputStream> streamSupplier)
+      throws Exception {
     ContentType partType = ContentType.APPLICATION_DICOM;
     multipartBody.addPart(partType.type, firstPlayLoad, null);
 
@@ -183,6 +184,11 @@ public class DicomStowRS implements AutoCloseable {
       LOGGER.debug("< {} response code: {}", response.version(), response.statusCode());
       promptHeaders("< ", response.headers());
     }
+
+    if (response.statusCode() >= 400 && response.statusCode() <= 599) {
+      throw new HttpException("Error response, status code " + response.statusCode());
+    }
+
     return response;
   }
 
@@ -212,7 +218,7 @@ public class DicomStowRS implements AutoCloseable {
     return photo;
   }
 
-  public void uploadDicom(Path path) {
+  public void uploadDicom(Path path) throws HttpException {
     Payload playload =
         new Payload() {
           @Override
@@ -233,7 +239,7 @@ public class DicomStowRS implements AutoCloseable {
     uploadPayload(playload);
   }
 
-  public void uploadDicom(InputStream in, Attributes fmi) {
+  public void uploadDicom(InputStream in, Attributes fmi) throws HttpException {
     Payload playload =
         new Payload() {
           @Override
@@ -260,7 +266,7 @@ public class DicomStowRS implements AutoCloseable {
     uploadPayload(playload);
   }
 
-  public void uploadDicom(Attributes metadata, String tsuid) {
+  public void uploadDicom(Attributes metadata, String tsuid) throws HttpException {
     Payload playload =
         new Payload() {
           @Override
@@ -284,11 +290,13 @@ public class DicomStowRS implements AutoCloseable {
     uploadPayload(playload);
   }
 
-  public void uploadPayload(Payload playload) {
-    multipartBody.reset();
+  public void uploadPayload(Payload playload) throws HttpException {
     try {
+      MultipartBody multipartBody =
+          new MultipartBody(ContentType.APPLICATION_DICOM, MULTIPART_BOUNDARY);
       HttpRequest request =
-          buildConnection(playload, () -> new SequenceInputStream(multipartBody.enumeration()));
+          buildConnection(
+              multipartBody, playload, () -> new SequenceInputStream(multipartBody.enumeration()));
       send(client, request, HttpResponse.BodyHandlers.ofLines()).body().forEach(LOGGER::info);
 
       //            MultipartBody.Part part = new MultipartBody.Part(playload,
@@ -312,7 +320,8 @@ public class DicomStowRS implements AutoCloseable {
       //                promptHeaders("< ", response.headers());
       //            }
       //            response.body().forEach(LOGGER::info);
-
+    } catch (HttpException httpException) {
+      throw httpException;
     } catch (Exception e) {
       LOGGER.error("Cannot post DICOM", e);
     }

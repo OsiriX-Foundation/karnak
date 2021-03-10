@@ -18,7 +18,7 @@ import java.util.Set;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.dcm4che3.data.UID;
-import org.dcm4che3.imageio.codec.Decompressor;
+import org.dcm4che3.img.stream.BytesWithImageDescriptor;
 import org.dcm4che3.io.DicomInputStream;
 import org.dcm4che3.io.DicomInputStream.IncludeBulkData;
 import org.dcm4che3.net.Association;
@@ -44,7 +44,6 @@ public class ForwardUtil {
   private static final String ERROR_WHEN_FORWARDING =
       "Error when forwarding to the final destination";
   private static final Logger LOGGER = LoggerFactory.getLogger(ForwardUtil.class);
-  protected static final byte[] EMPTY_BYTES = {};
 
   public static final class Params {
     private final String iuid;
@@ -155,7 +154,7 @@ public class ForwardUtil {
           if (fistDest instanceof DicomForwardDestination) {
             files = transfer(fwdNode, (DicomForwardDestination) fistDest, attributes, p);
           } else if (fistDest instanceof WebForwardDestination) {
-            files = transfer(fwdNode, (WebForwardDestination) fistDest, null, p);
+            files = transfer(fwdNode, (WebForwardDestination) fistDest, attributes, p);
           }
           if (!attributes.isEmpty()) {
             for (int i = 1; i < destConList.size(); i++) {
@@ -273,14 +272,14 @@ public class ForwardUtil {
               context.getAbort(), "DICOM association abort: " + context.getAbortMessage());
         }
 
-        if (!supportedTsuid.equals(tsuid)) {
-          Decompressor.decompress(attributes, tsuid);
-        }
-        dataWriter = new DataWriterAdapter(attributes);
+        BytesWithImageDescriptor desc =
+            ImageAdapter.imageTranscode(attributes, tsuid, supportedTsuid, context);
+        dataWriter = ImageAdapter.buildDataWriter(attributes, supportedTsuid, context, desc);
       }
 
       streamSCU.cstore(cuid, iuid, p.getPriority(), dataWriter, supportedTsuid);
-      progressNotify(destination, iuid, cuid, false, streamSCU.getNumberOfSuboperations());
+      progressNotify(
+          destination, p.getIuid(), p.getCuid(), false, streamSCU.getNumberOfSuboperations());
     } catch (AbortException e) {
       progressNotify(
           destination, p.getIuid(), p.getCuid(), true, streamSCU.getNumberOfSuboperations());
@@ -343,14 +342,15 @@ public class ForwardUtil {
           throw new AbortException(
               context.getAbort(), "DICOM associtation abort. " + context.getAbortMessage());
         }
-        if (!supportedTsuid.equals(tsuid)) {
-          Decompressor.decompress(attributes, tsuid);
-        }
-        dataWriter = new DataWriterAdapter(attributes);
+
+        BytesWithImageDescriptor desc =
+            ImageAdapter.imageTranscode(attributes, tsuid, supportedTsuid, context);
+        dataWriter = ImageAdapter.buildDataWriter(attributes, supportedTsuid, context, desc);
       }
 
       streamSCU.cstore(cuid, iuid, p.getPriority(), dataWriter, supportedTsuid);
-      progressNotify(destination, iuid, cuid, false, streamSCU.getNumberOfSuboperations());
+      progressNotify(
+          destination, p.getIuid(), p.getCuid(), false, streamSCU.getNumberOfSuboperations());
     } catch (AbortException e) {
       progressNotify(
           destination, p.getIuid(), p.getCuid(), true, streamSCU.getNumberOfSuboperations());
@@ -369,8 +369,9 @@ public class ForwardUtil {
   public static List<File> transfer(
       ForwardDicomNode fwdNode, WebForwardDestination destination, Attributes copy, Params p) {
     String iuid = p.getIuid();
+    String cuid = p.getCuid();
     DicomInputStream in = null;
-    List<File> files = null;
+    List<File> files;
     try {
       List<AttributeEditor> editors = destination.getDicomEditors();
       DicomStowRS stow = destination.getStowrsSingleFile();
@@ -402,6 +403,7 @@ public class ForwardUtil {
         if (!editors.isEmpty()) {
           editors.forEach(e -> e.apply(attributes, context));
           iuid = attributes.getString(Tag.SOPInstanceUID);
+          cuid = attributes.getString(Tag.SOPClassUID);
         }
 
         if (context.getAbort() == Abort.FILE_EXCEPTION) {
@@ -417,16 +419,26 @@ public class ForwardUtil {
               context.getAbort(), "STOW-RS abort: " + context.getAbortMessage());
         }
 
-        stow.uploadDicom(attributes, outputTsuid);
+        if (UID.RLELossless.equals(outputTsuid)) { // Missing RLE writer
+          outputTsuid = UID.ExplicitVRLittleEndian;
+        }
+        // Do not set original TSUID to avoid RLE transcoding when there is no mask to apply
+        BytesWithImageDescriptor desc =
+            ImageAdapter.imageTranscode(attributes, outputTsuid, outputTsuid, context);
+        if (desc == null) {
+          stow.uploadDicom(attributes, outputTsuid);
+        } else {
+          stow.uploadPayload(ImageAdapter.preparePlayload(attributes, outputTsuid, desc, context));
+        }
       }
-      progressNotify(destination, p.getIuid(), p.getCuid(), false, 0);
+      progressNotify(destination, iuid, cuid, false, 0);
     } catch (AbortException e) {
-      progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
+      progressNotify(destination, iuid, cuid, true, 0);
       if (e.getAbort() == Abort.CONNECTION_EXCEPTION) {
         throw e;
       }
     } catch (Exception e) {
-      progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
+      progressNotify(destination, iuid, cuid, true, 0);
       LOGGER.error(ERROR_WHEN_FORWARDING, e);
     } finally {
       files = cleanOrGetBulkDataFiles(in, copy == null);
@@ -437,6 +449,7 @@ public class ForwardUtil {
   public static void transferOther(
       ForwardDicomNode fwdNode, WebForwardDestination destination, Attributes copy, Params p) {
     String iuid = p.getIuid();
+    String cuid = p.getCuid();
     try {
       List<AttributeEditor> editors = destination.getDicomEditors();
       DicomStowRS stow = destination.getStowrsSingleFile();
@@ -452,6 +465,7 @@ public class ForwardUtil {
         Attributes attributes = new Attributes(copy);
         editors.forEach(e -> e.apply(attributes, context));
         iuid = attributes.getString(Tag.SOPInstanceUID);
+        cuid = attributes.getString(Tag.SOPClassUID);
 
         if (context.getAbort() == Abort.FILE_EXCEPTION) {
           throw new AbortException(context.getAbort(), context.getAbortMessage());
@@ -460,20 +474,29 @@ public class ForwardUtil {
               context.getAbort(), "DICOM associtation abort. " + context.getAbortMessage());
         }
 
-        stow.uploadDicom(attributes, outputTsuid);
-        progressNotify(destination, iuid, p.getCuid(), false, 0);
+        if (UID.RLELossless.equals(outputTsuid)) { // Missing RLE writer
+          outputTsuid = UID.ExplicitVRLittleEndian;
+        }
+        BytesWithImageDescriptor desc =
+            ImageAdapter.imageTranscode(attributes, outputTsuid, outputTsuid, context);
+        if (desc == null) {
+          stow.uploadDicom(attributes, outputTsuid);
+        } else {
+          stow.uploadPayload(ImageAdapter.preparePlayload(attributes, outputTsuid, desc, context));
+        }
+        progressNotify(destination, iuid, cuid, false, 0);
       }
     } catch (HttpException httpException) {
-      progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
+      progressNotify(destination, iuid, cuid, true, 0);
       LOGGER.error(httpException.getMessage(), httpException);
       throw new AbortException(Abort.FILE_EXCEPTION, httpException.getMessage());
     } catch (AbortException e) {
-      progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
+      progressNotify(destination, iuid, cuid, true, 0);
       if (e.getAbort() == Abort.CONNECTION_EXCEPTION) {
         throw e;
       }
     } catch (Exception e) {
-      progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
+      progressNotify(destination, iuid, cuid, true, 0);
       LOGGER.error(ERROR_WHEN_FORWARDING, e);
     }
   }

@@ -39,6 +39,7 @@ public class FormDICOM extends VerticalLayout {
   private TextField notifyInterval;
   private final LayoutDesidentification layoutDesidentification;
   private final FilterBySOPClassesForm filterBySOPClassesForm;
+  private Checkbox activate;
 
   public FormDICOM() {
     this.layoutDesidentification = new LayoutDesidentification();
@@ -64,6 +65,7 @@ public class FormDICOM extends VerticalLayout {
     notifyObjectPattern = new TextField("Notif.: subject pattern");
     notifyObjectValues = new TextField("Notif.: subject values");
     notifyInterval = new TextField("Notif.: interval");
+    activate = new Checkbox("Enable destination");
 
     add(
         UIS.setWidthFull(new HorizontalLayout(aeTitle, description)),
@@ -75,6 +77,7 @@ public class FormDICOM extends VerticalLayout {
                 notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues, notifyInterval)),
         UIS.setWidthFull(layoutDesidentification),
         UIS.setWidthFull(filterBySOPClassesForm),
+        UIS.setWidthFull(activate),
         UIS.setWidthFull(buttonSaveDeleteCancel));
 
     setElements();
