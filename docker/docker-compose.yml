@@ -21,7 +21,7 @@ services:
       - postgres_karnak_password
       - mainzellisteApiKey
 #      - karnak_hmac_key
-      - karnak_login_password
+#      - karnak_login_password
 
   karnak-db:
     container_name: karnak-db
