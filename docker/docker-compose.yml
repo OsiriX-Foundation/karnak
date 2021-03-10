@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   karnak:
-    container_name: karnak
+#    container_name: karnak
     image: registry-docker.hcuge.ch:8083/karnak:1.0.0
     environment:
       JAVA_OPTS: -XX:MaxRAM=512m -XX:MaxRAMPercentage=75 -XX:+UseContainerSupport -XX:MetaspaceSize=64M -XX:MaxMetaspaceSize=162M
@@ -24,7 +24,7 @@ services:
 #      - karnak_login_password
 
   karnak-db:
-    container_name: karnak-db
+#    container_name: karnak-db
     image: postgres:12.4-alpine
     ports:
       - ${KARNAK_PG_PORT}:5432
@@ -50,7 +50,7 @@ services:
           cpus: '3'
           memory: 500M
   mainzelliste-db:
-    container_name: mainzelliste-db
+#    container_name: mainzelliste-db
     image: registry-docker.hcuge.ch:8083/postgres:9.6-alpine
     environment:
       - POSTGRES_DB=mainzelliste
@@ -64,7 +64,7 @@ services:
       network:
       infra_network:
   mainzelliste:
-    container_name: mainzelliste
+#    container_name: mainzelliste
     image: osirixfoundation/karnak-mainzelliste:extid
     env_file: mainzelliste.env
     ports:
