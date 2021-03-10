@@ -423,7 +423,8 @@ public class ForwardUtil {
           outputTsuid = UID.ExplicitVRLittleEndian;
         }
         // Do not set original TSUID to avoid RLE transcoding when there is no mask to apply
-        BytesWithImageDescriptor desc = ImageAdapter.imageTranscode(attributes, outputTsuid, outputTsuid, context);
+        BytesWithImageDescriptor desc =
+            ImageAdapter.imageTranscode(attributes, outputTsuid, outputTsuid, context);
         if (desc == null) {
           stow.uploadDicom(attributes, outputTsuid);
         } else {
@@ -476,7 +477,8 @@ public class ForwardUtil {
         if (UID.RLELossless.equals(outputTsuid)) { // Missing RLE writer
           outputTsuid = UID.ExplicitVRLittleEndian;
         }
-        BytesWithImageDescriptor desc = ImageAdapter.imageTranscode(attributes, outputTsuid, outputTsuid, context);
+        BytesWithImageDescriptor desc =
+            ImageAdapter.imageTranscode(attributes, outputTsuid, outputTsuid, context);
         if (desc == null) {
           stow.uploadDicom(attributes, outputTsuid);
         } else {
