@@ -2,173 +2,31 @@ version: '3.7'
 
 services:
   karnak:
-#    container_name: karnak
     image: registry-docker.hcuge.ch:8083/karnak:1.0.0
     environment:
       JAVA_OPTS: -XX:MaxRAM=512m -XX:MaxRAMPercentage=75 -XX:+UseContainerSupport -XX:MetaspaceSize=64M -XX:MaxMetaspaceSize=162M
       KARNAK_WAIT_FOR: karnak-db:5432
-    ports:
-      - "11112:11119"
-      - "13081:8081"
-    networks:
-      network:
-      traefik_network:
-      infra_network:
-    env_file: karnak.env
     depends_on:
       - karnak-db
-    secrets:
-      - postgres_karnak_password
-      - mainzellisteApiKey
-#      - karnak_hmac_key
-#      - karnak_login_password
 
   karnak-db:
-#    container_name: karnak-db
     image: postgres:12.4-alpine
-    ports:
-      - ${KARNAK_PG_PORT}:5432
     environment:
       - POSTGRES_DB=karnak
       - POSTGRES_USER=karnak
       - POSTGRES_PASSWORD_FILE=/run/secrets/postgres_karnak_password
-    volumes:
-      - karnak-db-data:/var/lib/postgresql/data
-    secrets:
-      - postgres_karnak_password
-    networks:
-      network:
-      infra_network:
-    deploy:
-      replicas: 1
-      placement:
-        constraints:
-          - node.role == worker
-          - node.labels.serial == vmware
-      resources:
-        limits:
-          cpus: '3'
-          memory: 500M
+
   mainzelliste-db:
-#    container_name: mainzelliste-db
     image: registry-docker.hcuge.ch:8083/postgres:9.6-alpine
     environment:
       - POSTGRES_DB=mainzelliste
       - POSTGRES_USER=mainzelliste
       - POSTGRES_PASSWORD_FILE=/run/secrets/mainzellisteDbPassword
-    volumes:
-      - mainzelliste-db-data:/var/lib/postgresql/data
-    secrets:
-      - mainzellisteDbPassword
-    networks:
-      network:
-      infra_network:
+
   mainzelliste:
-#    container_name: mainzelliste
     image: osirixfoundation/karnak-mainzelliste:extid
     env_file: mainzelliste.env
     ports:
       - ${MAINZELLISTE_WEB_PORT}:8080
-    secrets:
-      - mainzellisteDbPassword
-      - mainzellisteApiKey
-      - mainzellistePIDK1
-      - mainzellistePIDK2
-      - mainzellistePIDK3
     depends_on:
       - mainzelliste-db
-    networks:
-      network:
-      infra_network:
-
-
-secrets:
-  postgres_karnak_password:
-    file: secrets/karnak_postgres_password
-  mainzellisteDbPassword:
-    file: secrets/mainzelliste_postgres_password
-  mainzellisteApiKey:
-    file: secrets/mainzelliste_api_key
-  mainzellistePIDK1:
-    file: secrets/mainzelliste_pid_k1
-  mainzellistePIDK2:
-    file: secrets/mainzelliste_pid_k2
-  mainzellistePIDK3:
-    file: secrets/mainzelliste_pid_k3
-
-volumes:
-  mainzelliste-db-data:
-    name: ${MAINZELLISTE_DB_VOLUME}
-  karnak-db-data:
-    name: ${KARNAK_DB_VOLUME}
-
-
-
-
-
-#
-#version: "3.1"
-#services:
-#  mainzelliste-db:
-#    image: postgres:9.5-alpine
-#    environment:
-#      - POSTGRES_DB=mainzelliste
-#      - POSTGRES_USER=mainzelliste
-#      - POSTGRES_PASSWORD_FILE=/run/secrets/mainzellisteDbPassword
-#    volumes:
-#      - mainzelliste-db-data:/var/lib/postgresql/data
-#    secrets:
-#      - mainzellisteDbPassword
-#
-#  mainzelliste:
-#    image: osirixfoundation/karnak-mainzelliste:extid
-#    ports:
-#      - ${MAINZELLISTE_WEB_PORT}:8080
-#    env_file: mainzelliste.env
-#    secrets:
-#      - mainzellisteDbPassword
-#      - mainzellisteApiKey
-#      - mainzellistePIDK1
-#      - mainzellistePIDK2
-#      - mainzellistePIDK3
-#    depends_on:
-#      - mainzelliste-db
-#
-#  karnak-db:
-#    image: postgres:12.4-alpine
-#    environment:
-#      - POSTGRES_DB=karnak
-#      - POSTGRES_USER=karnak
-#      - POSTGRES_PASSWORD_FILE=/run/secrets/postgres_karnak_password
-#    ports:
-#      - ${KARNAK_PG_PORT}:5432
-#    volumes:
-#      - karnak-db-data:/var/lib/postgresql/data
-#    secrets:
-#      - postgres_karnak_password
-#
-#  node-dicom:
-#    image: dcm4che/dcm4che-tools:5.22.6
-#    entrypoint: [ "storescp", "-b", "NODE:4444" ]
-#    ports:
-#      - 4444:4444
-#
-#secrets:
-#  postgres_karnak_password:
-#    file: secrets/karnak_postgres_password
-#  mainzellisteDbPassword:
-#    file: secrets/mainzelliste_postgres_password
-#  mainzellisteApiKey:
-#    file: secrets/mainzelliste_api_key
-#  mainzellistePIDK1:
-#    file: secrets/mainzelliste_pid_k1
-#  mainzellistePIDK2:
-#    file: secrets/mainzelliste_pid_k2
-#  mainzellistePIDK3:
-#    file: secrets/mainzelliste_pid_k3
-#
-#volumes:
-#  mainzelliste-db-data:
-#  karnak-db-data:
-
-
