@@ -10,31 +10,33 @@
 package org.karnak.frontend.dicom.mwl;
 
 import com.vaadin.flow.component.grid.Grid;
-import java.util.Optional;
-import org.dcm4che6.data.DicomElement;
-import org.dcm4che6.data.DicomObject;
-import org.dcm4che6.util.TagUtils;
+import java.io.Serial;
+import java.util.List;
+import org.dcm4che3.data.Attributes;
+import org.dcm4che3.util.TagUtils;
+import org.weasis.core.util.StringUtil;
 import org.weasis.dicom.op.CFind;
 import org.weasis.dicom.param.DicomParam;
 import org.weasis.dicom.tool.ModalityWorklist;
 
-public class DicomWorkListGrid extends Grid<DicomObject> {
+public class DicomWorkListGrid extends Grid<Attributes> {
 
-  private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
+
+  List<DicomParam> params =
+      List.of(
+          CFind.PatientName,
+          CFind.PatientID,
+          CFind.PatientBirthDate,
+          CFind.PatientSex,
+          CFind.AccessionNumber,
+          ModalityWorklist.ScheduledProcedureStepDescription,
+          ModalityWorklist.Modality,
+          ModalityWorklist.ScheduledStationName);
 
   public DicomWorkListGrid() {
     init();
     buildColumns();
-  }
-
-  public static DicomObject getNestedDataset(DicomObject dicom, int tagSeq, int index) {
-    if (dicom != null) {
-      Optional<DicomElement> item = dicom.get(tagSeq);
-      if (item.isPresent() && !item.get().isEmpty()) {
-        return item.get().getItem(index);
-      }
-    }
-    return null;
   }
 
   private void init() {
@@ -42,18 +44,7 @@ public class DicomWorkListGrid extends Grid<DicomObject> {
   }
 
   private void buildColumns() {
-    DicomParam[] COLS = {
-      CFind.PatientName,
-      CFind.PatientID,
-      CFind.PatientBirthDate,
-      CFind.PatientSex,
-      CFind.AccessionNumber,
-      ModalityWorklist.ScheduledProcedureStepDescription,
-      ModalityWorklist.Modality,
-      ModalityWorklist.ScheduledStationName
-    };
-
-    for (DicomParam p : COLS) {
+    for (DicomParam p : params) {
       addColumn(p);
     }
   }
@@ -62,26 +53,34 @@ public class DicomWorkListGrid extends Grid<DicomObject> {
     int tag = p.getTag();
     int[] pSeq = p.getParentSeqTags();
     if (pSeq == null || pSeq.length == 0) {
-      addColumn(a -> a.get(tag).orElse(null))
+      addColumn(a -> getText(a, tag))
           .setHeader(TagUtils.toString(tag)) // TODO set name
           .setSortable(true)
           .setKey(String.valueOf(tag));
     } else {
       addColumn(
               a -> {
-                DicomObject parent = a;
+                Attributes parent = a;
                 for (int k = 0; k < pSeq.length; k++) {
-                  DicomObject pn = getNestedDataset(parent, pSeq[k], 0);
+                  Attributes pn = parent.getNestedDataset(pSeq[k]);
                   if (pn == null) {
                     break;
                   }
                   parent = pn;
                 }
-                return parent.get(tag).orElse(null);
+                return getText(parent, tag);
               })
           .setHeader(TagUtils.toString(tag)) // TODO set name
           .setSortable(true)
           .setKey(String.valueOf(tag));
     }
+  }
+
+  private String getText(Attributes attributes, int tag) {
+    Object value = attributes.getValue(tag);
+    if (value == null) {
+      return StringUtil.EMPTY_STRING;
+    }
+    return value.toString();
   }
 }

@@ -9,8 +9,8 @@
  */
 package org.karnak.backend.model.expression;
 
-import org.dcm4che6.data.Tag;
-import org.dcm4che6.data.VR;
+import org.dcm4che3.data.Tag;
+import org.dcm4che3.data.VR;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;

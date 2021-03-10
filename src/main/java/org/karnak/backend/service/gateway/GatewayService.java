@@ -10,45 +10,44 @@
 package org.karnak.backend.service.gateway;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import org.karnak.backend.dicom.DicomGateway;
+import org.karnak.backend.dicom.GatewayParams;
 import org.karnak.backend.model.NodeEvent;
 import org.karnak.backend.util.NativeLibraryManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.weasis.core.util.FileUtil;
 import org.weasis.core.util.StringUtil;
-import org.weasis.dicom.param.GatewayParams;
 import org.weasis.dicom.param.ListenerParams;
-import org.weasis.dicom.tool.DicomGateway;
 import org.weasis.dicom.tool.DicomListener;
 
-@DependsOn({"GatewayPersistence"})
-@Component
-public class GatewayManager implements ApplicationListener<ContextRefreshedEvent> {
+@Service
+public class GatewayService implements ApplicationListener<ContextRefreshedEvent> {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(GatewayManager.class);
-
-  @Autowired private Environment environment;
+  private static final Logger LOGGER = LoggerFactory.getLogger(GatewayService.class);
 
   private NativeLibraryManager manager;
-  private GatewaySetUp globalConfig;
+  private final GatewaySetUpService gatewaySetUpService;
 
   private DicomGateway dicomForwardOut;
 
   private DicomListener dicomListenerOut;
   private PullingService httpPullIn;
 
-  private static DicomGateway buildDicomGateway(GatewaySetUp config) {
+  @Autowired
+  public GatewayService(final GatewaySetUpService gatewaySetUpService) {
+    this.gatewaySetUpService = gatewaySetUpService;
+  }
+
+  private static DicomGateway buildDicomGateway(GatewaySetUpService config) {
     DicomGateway gateway;
     try {
       String[] acceptedCallingAETitles =
@@ -65,10 +64,10 @@ public class GatewayManager implements ApplicationListener<ContextRefreshedEvent
     }
   }
 
-  private static DicomListener buildDicomListener(GatewaySetUp config) {
+  private static DicomListener buildDicomListener(GatewaySetUpService config) {
     DicomListener dicomListener;
     try {
-      dicomListener = new DicomListener(config.getStorePath());
+      dicomListener = new DicomListener(config.getStorePath().toFile());
       String[] acceptedCallingAETitles =
           GatewayParams.getAcceptedCallingAETitles(config.getDestinations());
       ListenerParams params =
@@ -94,35 +93,16 @@ public class GatewayManager implements ApplicationListener<ContextRefreshedEvent
 
   @EventListener
   public void reloadOutboundNodes(NodeEvent event) {
-    globalConfig.update(event);
-  }
-
-  private void initGateway() {
-    dicomForwardOut = buildDicomGateway(globalConfig);
-    // } else if (Mode.ARCHIVE.equals(outMode)) {
-    // dicomListenerOut = buildDicomListener(configOut);
-    // }
-
-    // httpPullIn = new PullingService(configIn);
-    // httpPullIn.start();
-
+    gatewaySetUpService.update(event);
   }
 
   @PreDestroy
   public void destroy() {
     if (dicomListenerOut != null) {
-      try {
-        dicomListenerOut.stop();
-      } catch (IOException e) {
-        LOGGER.error("Cannot stop DICOM listener", e);
-      }
+      dicomListenerOut.stop();
     }
     if (dicomForwardOut != null) {
-      try {
-        dicomForwardOut.stop();
-      } catch (IOException e) {
-        LOGGER.error("Cannot stop gateway", e);
-      }
+      dicomForwardOut.stop();
     }
     if (httpPullIn != null) {
       httpPullIn.stop();
@@ -135,13 +115,24 @@ public class GatewayManager implements ApplicationListener<ContextRefreshedEvent
     }
   }
 
+  private void initGateway() {
+    dicomForwardOut = buildDicomGateway(gatewaySetUpService);
+    // } else if (Mode.ARCHIVE.equals(outMode)) {
+    // dicomListenerOut = buildDicomListener(configOut);
+    // }
+
+    // httpPullIn = new PullingService(configIn);
+    // httpPullIn.start();
+
+  }
+
   @PostConstruct
   public void init() {
     LOGGER.info("{}", "Start the gateway manager running as a background process");
     try {
       URL resource = this.getClass().getResource("/lib");
       manager = new NativeLibraryManager(resource);
-      globalConfig = new GatewaySetUp(environment);
+
     } catch (Exception e1) {
       throw new IllegalStateException("Cannot register DICOM native librairies", e1);
     }

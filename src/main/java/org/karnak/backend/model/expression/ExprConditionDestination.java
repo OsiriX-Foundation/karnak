@@ -10,8 +10,8 @@
 package org.karnak.backend.model.expression;
 
 import java.util.Objects;
-import org.dcm4che6.data.DicomObject;
-import org.dcm4che6.data.VR;
+import org.dcm4che3.data.Attributes;
+import org.dcm4che3.data.VR;
 import org.karnak.backend.util.DicomObjectTools;
 
 public class ExprConditionDestination implements ExpressionItem {
@@ -19,14 +19,18 @@ public class ExprConditionDestination implements ExpressionItem {
   private int tag;
   private VR vr;
   private String stringValue;
-  private final DicomObject dcm;
-  private final DicomObject dcmCopy;
+  private final Attributes dcm;
+  private final Attributes dcmCopy;
 
-  public ExprConditionDestination(int tag, VR vr, DicomObject dcm, DicomObject dcmCopy) {
+  public ExprConditionDestination(int tag, VR vr) {
+    this(tag, vr, new Attributes(), new Attributes());
+  }
+
+  public ExprConditionDestination(int tag, VR vr, Attributes dcm, Attributes dcmCopy) {
     this.tag = Objects.requireNonNull(tag);
     this.vr = Objects.requireNonNull(vr);
     if (dcmCopy != null) {
-      this.stringValue = dcmCopy.getString(this.tag).orElse(null);
+      this.stringValue = dcmCopy.getString(this.tag);
     } else {
       this.stringValue = null;
     }
@@ -35,11 +39,11 @@ public class ExprConditionDestination implements ExpressionItem {
   }
 
   public String getString(int tag) {
-    return dcmCopy.getString(tag).orElse(null);
+    return dcmCopy.getString(tag);
   }
 
   public boolean tagIsPresent(int tag) {
-    return DicomObjectTools.tagIsInDicomObject(tag, dcmCopy);
+    return DicomObjectTools.containsTagInAllAttributes(tag, dcmCopy);
   }
 
   public int getTag() {

@@ -9,8 +9,7 @@
  */
 package org.karnak.backend.model.profiles;
 
-import org.dcm4che6.data.DicomElement;
-import org.dcm4che6.data.DicomObject;
+import org.dcm4che3.data.Attributes;
 import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.model.action.ActionItem;
 import org.karnak.backend.model.action.Remove;
@@ -22,18 +21,11 @@ public class UpdateUIDsProfile extends AbstractProfileItem {
 
   public UpdateUIDsProfile(ProfileElementEntity profileElementEntity) {
     super(profileElementEntity);
-    /*
-    if (not BlackList) {
-        throw new IllegalStateException(String.format("The policy %s is not consistent with the profile %s!", policy, codeName));
-    }
-    */
   }
 
   @Override
-  public ActionItem getAction(
-      DicomObject dcm, DicomObject dcmCopy, DicomElement dcmElem, HMAC hmac) {
-    ActionItem val = tagMap.get(dcmElem.tag());
-    return val;
+  public ActionItem getAction(Attributes dcm, Attributes dcmCopy, int tag, HMAC hmac) {
+    return tagMap.get(tag);
   }
 
   @Override

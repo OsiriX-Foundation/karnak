@@ -13,9 +13,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import org.dcm4che6.data.DicomObject;
-import org.dcm4che6.io.DicomEncoding;
-import org.dcm4che6.io.DicomOutputStream;
+import org.dcm4che3.data.Attributes;
+import org.dcm4che3.data.UID;
+import org.dcm4che3.io.DicomOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,13 +30,13 @@ public class DicomPaneLogic {
     this.pane = pane;
   }
 
-  public InputStream getWorklistItemInputStreamInDicom(DicomObject attributes) {
+  public InputStream getWorklistItemInputStreamInDicom(Attributes attributes) {
     InputStream inputStream = null;
 
     if (attributes != null) {
       try (ByteArrayOutputStream tmp = new ByteArrayOutputStream();
-          DicomOutputStream out = new DicomOutputStream(tmp).withEncoding(DicomEncoding.EVR_LE)) {
-        out.writeDataSet(attributes);
+          DicomOutputStream out = new DicomOutputStream(tmp, UID.ImplicitVRLittleEndian)) {
+        out.writeDataset(null, attributes);
         inputStream = new ByteArrayInputStream(tmp.toByteArray());
       } catch (IOException e) {
         LOGGER.error("Cannot write dicom file: {}", e.getMessage()); // $NON-NLS-1$
@@ -46,7 +46,7 @@ public class DicomPaneLogic {
     return inputStream;
   }
 
-  public InputStream getWorklistItemInputStreamText(DicomObject attributes) {
+  public InputStream getWorklistItemInputStreamText(Attributes attributes) {
     InputStream inputStream = null;
 
     if (attributes != null) {

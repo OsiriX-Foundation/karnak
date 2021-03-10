@@ -9,7 +9,7 @@
  */
 package org.karnak.backend.model.action;
 
-import org.dcm4che6.data.VR;
+import org.dcm4che3.data.VR;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;

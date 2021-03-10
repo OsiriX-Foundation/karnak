@@ -13,35 +13,38 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
-import org.dcm4che6.data.DicomElement;
-import org.dcm4che6.data.DicomObject;
-import org.dcm4che6.util.DateTimeUtils;
+import org.dcm4che3.data.Attributes;
 import org.karnak.backend.data.entity.ArgumentEntity;
+import org.karnak.backend.dicom.DateTimeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.weasis.dicom.util.DateUtil;
 
 public class ShiftDate {
   private static final Logger LOGGER = LoggerFactory.getLogger(ShiftDate.class);
 
-  public ShiftDate() {}
+  private ShiftDate() {}
 
-  public static String DAbyDays(String date, int shiftDays) {
+  public static String dateByDays(String date, int shiftDays) {
     LocalDate localDate = DateTimeUtils.parseDA(date);
     LocalDate dummyLocalDate = localDate.minusDays(shiftDays);
-    return DateTimeUtils.formatDA(dummyLocalDate);
+    return DateUtil.formatDicomDate(dummyLocalDate);
   }
 
-  public static String TMbySeconds(String time, int shiftSeconds) {
+  public static String timeBySeconds(String time, int shiftSeconds) {
     LocalTime localTime = DateTimeUtils.parseTM(time);
     LocalTime dummyLocalTime = localTime.minusSeconds(shiftSeconds);
-    return DateTimeUtils.formatTM(dummyLocalTime);
+    return DateUtil.formatDicomTime(dummyLocalTime);
   }
 
-  public static String DTbyDays(String dateTime, int shiftDays, int shiftSeconds) {
-    LocalDateTime localDateTime = LocalDateTime.from(DateTimeUtils.parseDT(dateTime));
+  public static String datetimeByDays(Date dateTime, int shiftDays, int shiftSeconds) {
+    LocalDateTime localDateTime =
+        LocalDateTime.ofInstant(dateTime.toInstant(), ZoneId.systemDefault());
     LocalDateTime dummyLocalDateTime = localDateTime.minusDays(shiftDays);
     dummyLocalDateTime = dummyLocalDateTime.minusSeconds(shiftSeconds);
     return DateTimeUtils.formatDT(dummyLocalDateTime);
@@ -49,11 +52,10 @@ public class ShiftDate {
 
   private static String addMissingZero(String age, int nMissingValue) {
     int n = nMissingValue - age.length();
-    String missingZero = StringUtils.repeat('0', n) + age;
-    return missingZero;
+    return StringUtils.repeat('0', n) + age;
   }
 
-  public static String ASbyDays(String age, int shiftDays) {
+  public static String ageByDays(String age, int shiftDays) {
     String valueAge = age.substring(0, 3);
     int intAge = Integer.parseInt(valueAge);
 
@@ -71,16 +73,11 @@ public class ShiftDate {
     return addMissingZero(String.valueOf(intDummyAge), 3) + formatAge;
   }
 
-  public static String shift(
-      DicomObject dcm, DicomElement dcmEl, List<ArgumentEntity> argumentEntities)
+  public static String shift(Attributes dcm, int tag, List<ArgumentEntity> argumentEntities)
       throws DateTimeException {
-    try {
-      verifyShiftArguments(argumentEntities);
-    } catch (IllegalArgumentException e) {
-      throw e;
-    }
+    verifyShiftArguments(argumentEntities);
 
-    String dcmElValue = dcm.getString(dcmEl.tag()).orElse(null);
+    String dcmElValue = dcm.getString(tag);
     int shiftDays = -1;
     int shiftSeconds = -1;
 
@@ -100,17 +97,13 @@ public class ShiftDate {
       }
     }
     if (dcmElValue != null) {
-      try {
-        return switch (dcmEl.vr()) {
-          case AS -> ASbyDays(dcmElValue, shiftDays);
-          case DA -> DAbyDays(dcmElValue, shiftDays);
-          case DT -> DTbyDays(dcmElValue, shiftDays, shiftSeconds);
-          case TM -> TMbySeconds(dcmElValue, shiftSeconds);
-          default -> null;
-        };
-      } catch (DateTimeException dateTimeException) {
-        throw dateTimeException;
-      }
+      return switch (dcm.getVR(tag)) {
+        case AS -> ageByDays(dcmElValue, shiftDays);
+        case DA -> dateByDays(dcmElValue, shiftDays);
+        case DT -> datetimeByDays(dcm.getDate(tag), shiftDays, shiftSeconds);
+        case TM -> timeBySeconds(dcmElValue, shiftSeconds);
+        default -> null;
+      };
     } else {
       return null;
     }
@@ -118,10 +111,10 @@ public class ShiftDate {
 
   public static void verifyShiftArguments(List<ArgumentEntity> argumentEntities)
       throws IllegalArgumentException {
-    if (!argumentEntities.stream().anyMatch(argument -> argument.getKey().equals("seconds"))
-        || !argumentEntities.stream().anyMatch(argument -> argument.getKey().equals("days"))) {
+    if (argumentEntities.stream().noneMatch(argument -> argument.getKey().equals("seconds"))
+        || argumentEntities.stream().noneMatch(argument -> argument.getKey().equals("days"))) {
       List<String> args =
-          argumentEntities.stream().map(argument -> argument.getKey()).collect(Collectors.toList());
+          argumentEntities.stream().map(ArgumentEntity::getKey).collect(Collectors.toList());
       IllegalArgumentException missingParameters =
           new IllegalArgumentException(
               "Cannot build the option ShiftDate: Missing argument, the class need [seconds, days] as parameters. Parameters given "

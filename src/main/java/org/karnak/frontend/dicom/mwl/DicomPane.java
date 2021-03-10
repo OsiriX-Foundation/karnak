@@ -18,7 +18,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.server.StreamResource;
-import org.dcm4che6.data.DicomObject;
+import org.dcm4che3.data.Attributes;
 
 public class DicomPane extends Composite<Dialog> {
 
@@ -27,7 +27,7 @@ public class DicomPane extends Composite<Dialog> {
   // CONTROLLER
   private final DicomPaneLogic logic = new DicomPaneLogic(this);
   // DATA
-  private final DicomObject dcm;
+  private final Attributes dcm;
   // UI COMPONENTS
   private Dialog currentDialog;
   private VerticalLayout mainLayout;
@@ -37,7 +37,7 @@ public class DicomPane extends Composite<Dialog> {
   private Anchor downloadDicomAnchor;
   private Anchor downloadTextAnchor;
 
-  public DicomPane(DicomObject dcm) {
+  public DicomPane(Attributes dcm) {
     this.dcm = dcm;
 
     init();
