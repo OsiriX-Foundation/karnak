@@ -10,19 +10,13 @@
 package org.karnak.backend.model.editor;
 
 import org.dcm4che3.data.Attributes;
-import org.dcm4che6.data.DicomObject;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ProfileEntity;
-import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.service.profilepipe.Profile;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.weasis.dicom.param.AttributeEditor;
 import org.weasis.dicom.param.AttributeEditorContext;
 
 public class DeIdentifyEditor implements AttributeEditor {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(DeIdentifyEditor.class);
 
   private final Profile profile;
   private DestinationEntity destinationEntity;
@@ -35,7 +29,7 @@ public class DeIdentifyEditor implements AttributeEditor {
   }
 
   @Override
-  public void apply(DicomObject dcm, AttributeEditorContext context) {
+  public void apply(Attributes dcm, AttributeEditorContext context) {
     profile.apply(dcm, destinationEntity, profileEntity, context);
   }
 }

@@ -27,7 +27,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import org.karnak.backend.cache.CachedPatient;
 import org.karnak.frontend.MainLayout;
-import org.karnak.frontend.forwardnode.ProjectDropDown;
+import org.karnak.frontend.component.ProjectDropDown;
 import org.springframework.security.access.annotation.Secured;
 
 @Route(value = "extid", layout = MainLayout.class)
