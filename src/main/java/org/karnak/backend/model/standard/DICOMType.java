@@ -10,8 +10,8 @@
 package org.karnak.backend.model.standard;
 
 import java.util.List;
-import org.dcm4che6.data.DicomObject;
-import org.dcm4che6.data.Tag;
+import org.dcm4che3.data.Attributes;
+import org.dcm4che3.data.Tag;
 import org.karnak.backend.config.AppConfig;
 import org.karnak.backend.exception.StandardDICOMException;
 import org.karnak.backend.util.MetadataDICOMObject;
@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 public class DICOMType {
   private static final Logger LOGGER = LoggerFactory.getLogger(DICOMType.class);
 
-  public static String getBySOP(DicomObject dcm, int tag) {
+  public static String getBySOP(Attributes dcm, int tag) {
     final StandardDICOM standardDICOM = AppConfig.getInstance().getStandardDICOM();
     final String sopUID = MetadataDICOMObject.getValue(dcm, Tag.SOPClassUID);
     final String tagPath = MetadataDICOMObject.getTagPath(dcm, tag);
