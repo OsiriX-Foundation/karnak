@@ -6,17 +6,11 @@ services:
     environment:
       JAVA_OPTS: -XX:MaxRAM=512m -XX:MaxRAMPercentage=75 -XX:+UseContainerSupport -XX:MetaspaceSize=64M -XX:MaxMetaspaceSize=162M
       KARNAK_WAIT_FOR: karnak-db:5432
-    ports:
-      - "11112:11119"
-      - "13081:8081"
-    env_file: karnak.env
     depends_on:
       - karnak-db
 
   karnak-db:
     image: postgres:12.4-alpine
-    ports:
-      - ${KARNAK_PG_PORT}:5432
     environment:
       - POSTGRES_DB=karnak
       - POSTGRES_USER=karnak
