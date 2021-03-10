@@ -20,7 +20,7 @@ services:
     secrets:
       - postgres_karnak_password
       - mainzellisteApiKey
-      - karnak_hmac_key
+#      - karnak_hmac_key
       - karnak_login_password
 
   karnak-db:
