@@ -77,10 +77,12 @@ public class ProjectView extends HorizontalLayout implements HasUrlParameter<Str
 
   @Override
   public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
-    Long idProject = projectLogic.enter(parameter);
     ProjectEntity currentProjectEntity = null;
-    if (idProject != null) {
-      currentProjectEntity = projectLogic.retrieveProject(idProject);
+    if (parameter != null) {
+      Long idProject = projectLogic.enter(parameter);
+      if (idProject != null) {
+        currentProjectEntity = projectLogic.retrieveProject(idProject);
+      }
     }
     editProject.setProject(currentProjectEntity);
     gridProject.selectRow(currentProjectEntity);
@@ -97,9 +99,9 @@ public class ProjectView extends HorizontalLayout implements HasUrlParameter<Str
 
   /** Init components */
   private void initComponents() {
-    initEditProject(editProject);
+    initEditProject(editProject, gridProject);
     initNewProjectForm(newProject);
-    gridProject.setDataProvider(projectLogic);
+    gridProject.setItems(projectLogic);
     newResearchBinder = newProject.getBinder();
   }
 
@@ -116,9 +118,10 @@ public class ProjectView extends HorizontalLayout implements HasUrlParameter<Str
    * Init the component edit project
    *
    * @param editProject Component to initialize
+   * @param gridProject Link to the grid for element selection
    */
-  private void initEditProject(EditProject editProject) {
-    projectLogic.addEditEventButtonUpdate(editProject);
+  private void initEditProject(EditProject editProject, GridProject gridProject) {
+    projectLogic.addEditEventButtonUpdate(editProject, gridProject);
     projectLogic.addEditEventButtonRemove(editProject);
     projectLogic.initEditProfileDropDown(editProject);
   }
@@ -134,6 +137,7 @@ public class ProjectView extends HorizontalLayout implements HasUrlParameter<Str
                 newProjectEntity.setSecret(HMAC.generateRandomKey());
                 projectLogic.createProject(newProjectEntity);
                 newProject.clear();
+                gridProject.select(newProjectEntity);
                 navigateProject(newProjectEntity);
               }
             });

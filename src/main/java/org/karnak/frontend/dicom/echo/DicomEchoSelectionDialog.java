@@ -170,7 +170,7 @@ public class DicomEchoSelectionDialog extends AbstractDialog {
   private void buildDicomNodeTypeSelector() {
     dicomNodeTypeSelector = new Select<>();
     dicomNodeTypeSelector.setLabel("Dicom Nodes Type");
-    dicomNodeTypeSelector.setDataProvider(dataProviderForDicomNodeTypes);
+    dicomNodeTypeSelector.setItems(dataProviderForDicomNodeTypes);
 
     dicomNodeTypeSelector.addValueChangeListener(
         (ValueChangeListener<ValueChangeEvent<DicomNodeList>>)

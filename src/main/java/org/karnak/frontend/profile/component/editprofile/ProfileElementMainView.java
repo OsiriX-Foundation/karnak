@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  */
-package org.karnak.frontend.profile;
+package org.karnak.frontend.profile.component.editprofile;
 
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.html.Div;
@@ -17,12 +17,13 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import java.util.Comparator;
 import java.util.List;
 import org.karnak.backend.data.entity.ProfileElementEntity;
+import org.karnak.backend.data.entity.ProfileEntity;
 
 public class ProfileElementMainView extends VerticalLayout {
 
   private List<ProfileElementEntity> profilesOrder;
 
-  ProfileElementMainView() {}
+  public ProfileElementMainView() {}
 
   private void profilesView() {
     removeAll();
@@ -44,11 +45,22 @@ public class ProfileElementMainView extends VerticalLayout {
     return profileNameDiv;
   }
 
-  public void setProfiles(List<ProfileElementEntity> profileElementEntities) {
-    if (profileElementEntities != null) {
-      profileElementEntities.sort(Comparator.comparingInt(ProfileElementEntity::getPosition));
-      profilesOrder = profileElementEntities;
-      profilesView();
+  public void setProfile(ProfileEntity profileEntity) {
+    if (profileEntity != null) {
+      List<ProfileElementEntity> profileElementEntities = profileEntity.getProfileElementEntities();
+
+      if (profileElementEntities != null) {
+        profileElementEntities.sort(Comparator.comparingInt(ProfileElementEntity::getPosition));
+        profilesOrder = profileElementEntities;
+        profilesView();
+        setEnabled(true);
+      } else {
+        removeAll();
+        setEnabled(false);
+      }
+    } else {
+      removeAll();
+      setEnabled(false);
     }
   }
 }

@@ -114,7 +114,7 @@ public class DestinationEntity implements Serializable {
   // headers for HTTP request.
   private String headers;
 
-  protected DestinationEntity() {
+  public DestinationEntity() {
     this(null);
   }
 

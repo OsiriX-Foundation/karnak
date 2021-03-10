@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  */
-package org.karnak.frontend.profile;
+package org.karnak.frontend.profile.component.editprofile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
@@ -21,37 +21,26 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.server.StreamResource;
-import com.vaadin.flow.spring.annotation.UIScope;
 import java.io.ByteArrayInputStream;
 import java.util.Comparator;
 import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.data.entity.ProfileEntity;
-import org.karnak.backend.service.profilepipe.ProfilePipeService;
+import org.karnak.frontend.profile.ProfileLogic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
-@UIScope
 public class ProfileComponent extends VerticalLayout {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ProfileComponent.class);
-  private final ProfilePipeService profilePipeService;
-  private final ProfileNameGrid profileNameGrid;
   private final WarningDeleteProfileUsed dialogWarning;
-  private final ProfileElementMainView profileElementMainView;
   private ProfileEntity profileEntity;
   private Anchor download;
   private Button deleteButton;
+  private ProfileLogic profileLogic;
 
-  @Autowired
-  public ProfileComponent(
-      final ProfilePipeService profilePipeService, final ProfileNameGrid profileNameGrid) {
+  public ProfileComponent(final ProfileLogic profileLogic) {
     setSizeFull();
-    this.profilePipeService = profilePipeService;
-    this.profileNameGrid = profileNameGrid;
-    this.profileElementMainView = new ProfileElementMainView();
+    this.profileLogic = profileLogic;
     this.dialogWarning = new WarningDeleteProfileUsed();
   }
 
@@ -65,11 +54,10 @@ public class ProfileComponent extends VerticalLayout {
           new ObjectMapper(new YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
 
       String strYaml = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(profileEntity);
-      StreamResource streamResource =
-          new StreamResource(
-              String.format("%s.yml", profileEntity.getName()).replace(" ", "-"),
-              () -> new ByteArrayInputStream(strYaml.getBytes()));
-      return streamResource;
+      return new StreamResource(
+          String.format("%s.yml", profileEntity.getName()).replace(" ", "-"),
+          () -> new ByteArrayInputStream(strYaml.getBytes()));
+
     } catch (final Exception e) {
       LOGGER.error("Cannot create the StreamResource for downloading the yaml profile", e);
     }
@@ -126,7 +114,7 @@ public class ProfileComponent extends VerticalLayout {
 
     ProfileMasksView profileMasksView = new ProfileMasksView(profileEntity.getMaskEntities());
 
-    if (profileEntity.getByDefault()) {
+    if (profileEntity.getByDefault().booleanValue()) {
       add(
           new HorizontalLayout(title, download),
           name,
@@ -147,8 +135,7 @@ public class ProfileComponent extends VerticalLayout {
   }
 
   private void updatedProfilePipes() {
-    profilePipeService.updateProfile(profileEntity);
-    profileNameGrid.updatedProfilePipesView();
+    profileEntity = profileLogic.updateProfile(profileEntity);
     final StreamResource profileStreamResource = createStreamResource(profileEntity);
     download.setHref(profileStreamResource);
     createDeleteButton(profileEntity);
@@ -157,10 +144,7 @@ public class ProfileComponent extends VerticalLayout {
   public void setEventValidate(ProfileMetadata metadata) {
     metadata
         .getValidateEditButton()
-        .addClickListener(
-            event -> {
-              profileEntity.setName(metadata.getValue());
-            });
+        .addClickListener(event -> profileEntity.setName(metadata.getValue()));
   }
 
   public ProfileEntity getProfile() {
@@ -168,9 +152,13 @@ public class ProfileComponent extends VerticalLayout {
   }
 
   public void setProfile(ProfileEntity profileEntity) {
+    this.profileEntity = profileEntity;
     if (profileEntity != null) {
-      this.profileEntity = profileEntity;
       setProfile();
+      setEnabled(true);
+    } else {
+      removeAll();
+      setEnabled(false);
     }
   }
 
@@ -190,23 +178,13 @@ public class ProfileComponent extends VerticalLayout {
     deleteButton.addClickListener(
         buttonClickEvent -> {
           if (profileEntity.getProjectEntities() != null
-              && profileEntity.getProjectEntities().size() > 0) {
+              && !profileEntity.getProjectEntities().isEmpty()) {
             dialogWarning.setText(profileEntity);
             dialogWarning.open();
           } else {
-            profilePipeService.deleteProfile(profileEntity);
-            profileNameGrid.updatedProfilePipesView();
-            removeProfileInView();
+            profileLogic.deleteProfile(profileEntity);
+            removeAll();
           }
         });
-  }
-
-  public void removeProfileInView() {
-    profileElementMainView.removeAll();
-    removeAll();
-  }
-
-  public ProfileElementMainView getProfileElementMainView() {
-    return profileElementMainView;
   }
 }

@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  */
-package org.karnak.frontend.profile;
+package org.karnak.frontend.profile.component.editprofile;
 
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
@@ -26,9 +26,15 @@ public class ProfileMetadata extends VerticalLayout {
   private final Button validateEditButton = new Button(new Icon(VaadinIcon.CHECK));
   private final Button disabledEditButton = new Button(new Icon(VaadinIcon.CLOSE));
 
-  private final String title;
-  private final boolean inputEnable = false;
+  private String title;
   private String value;
+
+  public ProfileMetadata() {
+    this.title = "";
+    this.value = "";
+    this.titleDiv.setText("");
+    this.valueDiv.setText("");
+  }
 
   public ProfileMetadata(String title, String value, Boolean profileByDefault) {
     this.title = title;
@@ -36,31 +42,25 @@ public class ProfileMetadata extends VerticalLayout {
 
     setTitleText();
     setValueText();
+    setElements();
+    addEvents();
 
-    setStyle();
-    if (profileByDefault != true) {
+    if (!profileByDefault.booleanValue()) {
       titleDiv.add(editButton);
     }
-
-    editButton.addClickListener(
-        event -> {
-          editOnClick();
-        });
-
-    disabledEditButton.addClickListener(
-        event -> {
-          disabledEditButton();
-        });
-
-    validateEditButton.addClickListener(
-        event -> {
-          validateEditButton();
-        });
 
     add(titleDiv, valueDiv);
   }
 
-  private void setStyle() {
+  private void addEvents() {
+    editButton.addClickListener(event -> editOnClick());
+
+    disabledEditButton.addClickListener(event -> disabledEditButton());
+
+    validateEditButton.addClickListener(event -> validateEditButton());
+  }
+
+  private void setElements() {
     titleDiv
         .getStyle()
         .set("font-weight", "bold")
@@ -106,7 +106,7 @@ public class ProfileMetadata extends VerticalLayout {
 
   private void validateEditButton() {
     titleDiv.add(editButton);
-    this.value = valueField.getValue();
+    value = valueField.getValue();
     valueDiv.removeAll();
     setValueText();
   }

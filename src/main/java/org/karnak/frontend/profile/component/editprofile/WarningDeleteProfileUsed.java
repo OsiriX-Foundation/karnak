@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  */
-package org.karnak.frontend.profile;
+package org.karnak.frontend.profile.component.editprofile;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -43,12 +43,7 @@ public class WarningDeleteProfileUsed extends Dialog {
       }
     }
 
-    Button cancelButton =
-        new Button(
-            "Cancel",
-            event -> {
-              close();
-            });
+    Button cancelButton = new Button("Cancel", event -> close());
 
     cancelButton.getStyle().set("margin-left", "75%");
     add(divTitle, divContent, cancelButton);
