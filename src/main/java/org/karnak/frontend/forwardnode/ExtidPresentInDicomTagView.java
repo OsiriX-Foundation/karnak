@@ -43,7 +43,7 @@ public class ExtidPresentInDicomTagView extends Div {
     position.setHasControls(true);
     position.setMin(0);
     position.setStep(1);
-    savePseudonym = new Checkbox("Save pseudonym");
+    savePseudonym = new Checkbox("Save pseudonym in Mainzelliste");
     savePseudonym.getStyle().set("margin-top", "30px");
     savePseudonym.setValue(true);
   }

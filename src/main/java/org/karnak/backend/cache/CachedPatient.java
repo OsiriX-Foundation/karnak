@@ -11,13 +11,17 @@ package org.karnak.backend.cache;
 
 public class CachedPatient extends Patient {
 
+  private Long projectID;
+
   public CachedPatient(
       String pseudonym,
       String patientId,
       String patientFirstName,
       String patientLastName,
-      String issuerOfPatientId) {
+      String issuerOfPatientId,
+      Long projectID) {
     super(pseudonym, patientId, patientFirstName, patientLastName, null, null, issuerOfPatientId);
+    this.projectID = projectID;
   }
 
   public void setPseudonym(String pseudonym) {
@@ -38,6 +42,14 @@ public class CachedPatient extends Patient {
 
   public void setIssuerOfPatientId(String issuerOfPatientId) {
     this.issuerOfPatientId = issuerOfPatientId;
+  }
+
+  public Long getProjectID() {
+    return projectID;
+  }
+
+  public void setProjectID(Long projectID) {
+    this.projectID = projectID;
   }
 
   @Override

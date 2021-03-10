@@ -9,6 +9,7 @@
  */
 package org.karnak.backend.util;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -71,7 +72,8 @@ public class ShiftDate {
   }
 
   public static String shift(
-      DicomObject dcm, DicomElement dcmEl, List<ArgumentEntity> argumentEntities) {
+      DicomObject dcm, DicomElement dcmEl, List<ArgumentEntity> argumentEntities)
+      throws DateTimeException {
     try {
       verifyShiftArguments(argumentEntities);
     } catch (IllegalArgumentException e) {
@@ -98,13 +100,17 @@ public class ShiftDate {
       }
     }
     if (dcmElValue != null) {
-      return switch (dcmEl.vr()) {
-        case AS -> ASbyDays(dcmElValue, shiftDays);
-        case DA -> DAbyDays(dcmElValue, shiftDays);
-        case DT -> DTbyDays(dcmElValue, shiftDays, shiftSeconds);
-        case TM -> TMbySeconds(dcmElValue, shiftSeconds);
-        default -> null;
-      };
+      try {
+        return switch (dcmEl.vr()) {
+          case AS -> ASbyDays(dcmElValue, shiftDays);
+          case DA -> DAbyDays(dcmElValue, shiftDays);
+          case DT -> DTbyDays(dcmElValue, shiftDays, shiftSeconds);
+          case TM -> TMbySeconds(dcmElValue, shiftSeconds);
+          default -> null;
+        };
+      } catch (DateTimeException dateTimeException) {
+        throw dateTimeException;
+      }
     } else {
       return null;
     }

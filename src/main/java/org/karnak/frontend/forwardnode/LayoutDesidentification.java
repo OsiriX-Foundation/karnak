@@ -9,6 +9,8 @@
  */
 package org.karnak.frontend.forwardnode;
 
+import static org.karnak.backend.enums.PseudonymType.*;
+
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
@@ -17,25 +19,19 @@ import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.data.binder.Binder;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
-import org.karnak.backend.enums.IdTypes;
 import org.karnak.backend.service.ProjectDataProvider;
 import org.karnak.frontend.project.MainViewProjects;
 import org.karnak.frontend.util.UIS;
 
 public class LayoutDesidentification extends Div {
 
-  final String[] extidSentence = {
-    "Pseudonym are generate automatically",
-    "Pseudonym is already store in KARNAK",
-    "Pseudonym is in a DICOM tag"
-  };
   private final Binder<DestinationEntity> destinationBinder;
   private final ProjectDropDown projectDropDown;
   private final DesidentificationName desidentificationName;
   private final ProjectDataProvider projectDataProvider;
   private final WarningNoProjectsDefined warningNoProjectsDefined;
-  private final String LABEL_CHECKBOX_DESIDENTIFICATION = "Activate de-identification";
-  private final String LABEL_DISCLAIMER_DEIDENTIFICATION =
+  private static final String LABEL_CHECKBOX_DESIDENTIFICATION = "Activate de-identification";
+  private static final String LABEL_DISCLAIMER_DEIDENTIFICATION =
       "In order to ensure complete de-identification, visual verification of metadata and images is necessary.";
   private Checkbox checkboxDesidentification;
   private Label labelDisclaimer;
@@ -66,10 +62,7 @@ public class LayoutDesidentification extends Div {
       div.add(labelDisclaimer, projectDropDown, desidentificationName, extidListBox);
     }
 
-    projectDropDown.addValueChangeListener(
-        event -> {
-          setTextOnSelectionProject(event.getValue());
-        });
+    projectDropDown.addValueChangeListener(event -> setTextOnSelectionProject(event.getValue()));
   }
 
   private void setElements() {
@@ -89,9 +82,13 @@ public class LayoutDesidentification extends Div {
     extidListBox.setLabel("Pseudonym type");
     extidListBox.setWidth("100%");
     extidListBox.getStyle().set("right", "0px");
-    extidListBox.setItems(extidSentence);
+    extidListBox.setItems(
+        MAINZELLISTE_PID.getValue(),
+        MAINZELLISTE_EXTID.getValue(),
+        CACHE_EXTID.getValue(),
+        EXTID_IN_TAG.getValue());
 
-    checkboxUseAsPatientName = new Checkbox("Use as Patient Name");
+    checkboxUseAsPatientName = new Checkbox("Uses the pseudonym as Patient Name");
 
     extidPresentInDicomTagView = new ExtidPresentInDicomTagView(destinationBinder);
     div = new Div();
@@ -116,11 +113,7 @@ public class LayoutDesidentification extends Div {
   }
 
   private void navigateToProject() {
-    getUI()
-        .ifPresent(
-            nav -> {
-              nav.navigate(MainViewProjects.VIEW_NAME.toLowerCase());
-            });
+    getUI().ifPresent(nav -> nav.navigate(MainViewProjects.VIEW_NAME.toLowerCase()));
   }
 
   private void setEventCheckboxDesidentification() {
@@ -136,11 +129,11 @@ public class LayoutDesidentification extends Div {
               }
             } else {
               div.remove(labelDisclaimer, projectDropDown, desidentificationName);
-              extidListBox.setValue(extidSentence[0]);
+              extidListBox.setValue(MAINZELLISTE_PID.getValue());
               checkboxUseAsPatientName.clear();
               extidPresentInDicomTagView.clear();
               div.remove(extidListBox);
-              remove(checkboxUseAsPatientName);
+              div.remove(checkboxUseAsPatientName);
               div.remove(extidPresentInDicomTagView);
             }
           }
@@ -162,20 +155,20 @@ public class LayoutDesidentification extends Div {
     extidListBox.addValueChangeListener(
         event -> {
           if (event.getValue() != null) {
-            if (event.getValue().equals(extidSentence[0])) {
+            if (event.getValue().equals(MAINZELLISTE_PID.getValue())) {
               checkboxUseAsPatientName.clear();
               extidPresentInDicomTagView.clear();
               div.remove(checkboxUseAsPatientName);
               div.remove(extidPresentInDicomTagView);
+            } else if (event.getValue().equals(MAINZELLISTE_EXTID.getValue())
+                || event.getValue().equals(CACHE_EXTID.getValue())) {
+              div.add(UIS.setWidthFull(checkboxUseAsPatientName));
+              extidPresentInDicomTagView.clear();
+              div.remove(extidPresentInDicomTagView);
             } else {
               div.add(UIS.setWidthFull(checkboxUseAsPatientName));
-              if (event.getValue().equals(extidSentence[1])) {
-                extidPresentInDicomTagView.clear();
-                div.remove(extidPresentInDicomTagView);
-              } else {
-                extidPresentInDicomTagView.enableComponent();
-                div.add(extidPresentInDicomTagView);
-              }
+              extidPresentInDicomTagView.enableComponent();
+              div.add(extidPresentInDicomTagView);
             }
           }
         });
@@ -189,8 +182,7 @@ public class LayoutDesidentification extends Div {
         .forField(projectDropDown)
         .withValidator(
             project ->
-                project != null
-                    || (project == null && checkboxDesidentification.getValue() == false),
+                project != null || (project == null && !checkboxDesidentification.getValue()),
             "Choose a project")
         .bind(DestinationEntity::getProjectEntity, DestinationEntity::setProjectEntity);
 
@@ -199,21 +191,25 @@ public class LayoutDesidentification extends Div {
         .withValidator(type -> type != null, "Choose pseudonym type\n")
         .bind(
             destination -> {
-              if (destination.getIdTypes().equals(IdTypes.PID)) {
-                return extidSentence[0];
-              } else if (destination.getIdTypes().equals(IdTypes.EXTID)) {
-                return extidSentence[1];
+              if (destination.getPseudonymType().equals(MAINZELLISTE_PID)) {
+                return MAINZELLISTE_PID.getValue();
+              } else if (destination.getPseudonymType().equals(MAINZELLISTE_EXTID)) {
+                return MAINZELLISTE_EXTID.getValue();
+              } else if (destination.getPseudonymType().equals(CACHE_EXTID)) {
+                return CACHE_EXTID.getValue();
               } else {
-                return extidSentence[2];
+                return EXTID_IN_TAG.getValue();
               }
             },
             (destination, s) -> {
-              if (s.equals(extidSentence[0])) {
-                destination.setIdTypes(IdTypes.PID);
-              } else if (s.equals(extidSentence[1])) {
-                destination.setIdTypes(IdTypes.EXTID);
+              if (s.equals(MAINZELLISTE_PID.getValue())) {
+                destination.setPseudonymType(MAINZELLISTE_PID);
+              } else if (s.equals(MAINZELLISTE_EXTID.getValue())) {
+                destination.setPseudonymType(MAINZELLISTE_EXTID);
+              } else if (s.equals(CACHE_EXTID.getValue())) {
+                destination.setPseudonymType(CACHE_EXTID);
               } else {
-                destination.setIdTypes(IdTypes.ADD_EXTID);
+                destination.setPseudonymType(EXTID_IN_TAG);
               }
             });
 
