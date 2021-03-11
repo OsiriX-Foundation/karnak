@@ -6,10 +6,6 @@
 FROM maven:3.6-adoptopenjdk-15 as builder
 WORKDIR /app
 
-# Build third-party libraries
-RUN git clone --depth 1 https://github.com/nroduit/weasis-dicom-tools.git --single-branch --branch master
-RUN mvn -B -f weasis-dicom-tools/pom.xml install
-
 # Build the Spring Boot application with layers
 COPY pom.xml .
 COPY src ./src
