@@ -9,8 +9,6 @@
  */
 package org.karnak.frontend.dicom.monitor;
 
-import com.vaadin.flow.component.ClickEvent;
-import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.HasValue.ValueChangeEvent;
 import com.vaadin.flow.component.HasValue.ValueChangeListener;
 import com.vaadin.flow.component.Html;
@@ -102,7 +100,6 @@ public class MonitorView extends AbstractView {
     dicomEchoLayout.add(dicomEchoNodeListSelector, dicomEchoBtn);
   }
 
-  @SuppressWarnings("serial")
   private void buildDicomNodeListSelector() {
     dicomEchoNodeListSelector = new Select<>();
     dicomEchoNodeListSelector.setEmptySelectionAllowed(false);
@@ -117,31 +114,17 @@ public class MonitorView extends AbstractView {
     dicomEchoNodeListSelector.setItems(pacsProdDicomNodeList, newPacsProdDicomNodeList);
 
     dicomEchoNodeListSelector.addValueChangeListener(
-        new ValueChangeListener<ValueChangeEvent<DicomNodeList>>() {
-
-          @Override
-          public void valueChanged(ValueChangeEvent<DicomNodeList> event) {
-            logic.dicomNodeListSelected(event.getValue());
-          }
-        });
+        (ValueChangeListener<ValueChangeEvent<DicomNodeList>>)
+            event -> logic.dicomNodeListSelected(event.getValue()));
 
     if (!pacsProdDicomNodeList.isEmpty()) {
       dicomEchoNodeListSelector.setValue(pacsProdDicomNodeList);
     }
   }
 
-  @SuppressWarnings("serial")
   private void buildDicomEchoBtn() {
     dicomEchoBtn = new Button("Check!");
-
-    dicomEchoBtn.addClickListener(
-        new ComponentEventListener<ClickEvent<Button>>() {
-
-          @Override
-          public void onComponentEvent(ClickEvent<Button> event) {
-            logic.dicomEcho();
-          }
-        });
+    dicomEchoBtn.addClickListener(event -> logic.dicomEcho());
   }
 
   private void buildWadoLayoutTitle() {
@@ -161,7 +144,6 @@ public class MonitorView extends AbstractView {
     wadoLayout.add(wadoNodeListSelector, wadoBtn);
   }
 
-  @SuppressWarnings("serial")
   private void buildwadoNodeListSelector() {
     wadoNodeListSelector = new Select<>();
     wadoNodeListSelector.setEmptySelectionAllowed(false);
@@ -172,31 +154,18 @@ public class MonitorView extends AbstractView {
     wadoNodeListSelector.setItems(pacsProdWadoNodeList);
 
     wadoNodeListSelector.addValueChangeListener(
-        new ValueChangeListener<ValueChangeEvent<WadoNodeList>>() {
-
-          @Override
-          public void valueChanged(ValueChangeEvent<WadoNodeList> event) {
-            logic.wadoNodeListSelected(event.getValue());
-          }
-        });
+        (ValueChangeListener<ValueChangeEvent<WadoNodeList>>)
+            event -> logic.wadoNodeListSelected(event.getValue()));
 
     if (!pacsProdWadoNodeList.isEmpty()) {
       wadoNodeListSelector.setValue(pacsProdWadoNodeList);
     }
   }
 
-  @SuppressWarnings("serial")
   private void buildWadoBtn() {
     wadoBtn = new Button("Check!");
 
-    wadoBtn.addClickListener(
-        new ComponentEventListener<ClickEvent<Button>>() {
-
-          @Override
-          public void onComponentEvent(ClickEvent<Button> event) {
-            logic.wado();
-          }
-        });
+    wadoBtn.addClickListener(event -> logic.wado());
   }
 
   private void buildDicomAndWadoLayout() {

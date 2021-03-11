@@ -15,7 +15,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
-import org.dcm4che6.util.TagUtils;
+import org.dcm4che3.util.TagUtils;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.util.DoubleToIntegerConverter;
 import org.karnak.frontend.util.UIS;

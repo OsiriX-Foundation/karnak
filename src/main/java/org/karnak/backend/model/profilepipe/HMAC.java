@@ -20,6 +20,7 @@ import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.weasis.core.util.StringUtil;
 
 public class HMAC {
 
@@ -103,6 +104,9 @@ public class HMAC {
   }
 
   public String uidHash(String inputUID) {
+    if (!StringUtil.hasText(inputUID)) {
+      throw new IllegalArgumentException();
+    }
     byte[] uuid = new byte[16];
     System.arraycopy(byteHash(inputUID), 0, uuid, 0, 16);
     // https://en.wikipedia.org/wiki/Universally_unique_identifier

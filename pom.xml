@@ -33,7 +33,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <springframework.version>2.4.0</springframework.version>
     <vaadin.version>17.0.10</vaadin.version>
-    <weasis-dicom-tools.version>6.0.0-SNAPSHOT</weasis-dicom-tools.version>
+    <weasis-dicom-tools.version>5.23.1-SNAPSHOT</weasis-dicom-tools.version>
     <weasis.opencv.native.version>4.5.0-dcm</weasis.opencv.native.version>
     <jacoco-maven-plugin.version>0.8.6</jacoco-maven-plugin.version>
     <sonar-maven-plugin.version>3.8.0.2131</sonar-maven-plugin.version>
@@ -64,13 +64,13 @@
       <id>mvn-repo-master</id>
       <url>https://raw.github.com/nroduit/mvn-repo/master/</url>
     </repository>
-    <!--    <repository>-->
-    <!--      <id>www.dcm4che.org</id>-->
-    <!--      <name>dcm4che Repository</name>-->
-    <!--      <url>http://maven.dcm4che.org</url>-->
-    <!--      &lt;!&ndash; <url>http://www.dcm4che.org/maven2</url> (which will redirected to-->
-    <!--        https://www.dcm4che.org/maven2). &ndash;&gt;-->
-    <!--    </repository>-->
+    <repository>
+      <id>www.dcm4che.org</id>
+      <name>dcm4che Repository</name>
+      <url>http://maven.dcm4che.org</url>
+      <!-- <url>http://www.dcm4che.org/maven2</url> (which will redirected to
+        https://www.dcm4che.org/maven2). -->
+    </repository>
   </repositories>
 
   <!-- Build-->

@@ -10,9 +10,8 @@
 package org.karnak.backend.model.profiles;
 
 import java.time.DateTimeException;
-import org.dcm4che6.data.DicomElement;
-import org.dcm4che6.data.DicomObject;
-import org.dcm4che6.data.VR;
+import org.dcm4che3.data.Attributes;
+import org.dcm4che3.data.VR;
 import org.karnak.backend.data.entity.ExcludedTagEntity;
 import org.karnak.backend.data.entity.IncludedTagEntity;
 import org.karnak.backend.data.entity.ProfileElementEntity;
@@ -37,11 +36,9 @@ public class ActionDates extends AbstractProfileItem {
   private final TagActionMap tagsAction;
   private final TagActionMap exceptedTagsAction;
   private final ActionItem actionByDefault;
-  private final ShiftRangeDate shiftRangeDate;
 
   public ActionDates(ProfileElementEntity profileElementEntity) throws Exception {
     super(profileElementEntity);
-    shiftRangeDate = new ShiftRangeDate();
     tagsAction = new TagActionMap();
     exceptedTagsAction = new TagActionMap();
     actionByDefault = new Replace("D");
@@ -87,38 +84,32 @@ public class ActionDates extends AbstractProfileItem {
     }
 
     final ExpressionError expressionError =
-        ExpressionResult.isValid(
-            condition,
-            new ExprConditionDestination(
-                1, VR.AE, DicomObject.newDicomObject(), DicomObject.newDicomObject()),
-            Boolean.class);
+        ExpressionResult.isValid(condition, new ExprConditionDestination(1, VR.AE), Boolean.class);
     if (condition != null && !expressionError.isValid()) {
       throw new Exception(expressionError.getMsg());
     }
   }
 
   @Override
-  public ActionItem getAction(
-      DicomObject dcm, DicomObject dcmCopy, DicomElement dcmElem, HMAC hmac) {
-    final int tag = dcmElem.tag();
-    final VR vr = dcmElem.vr();
+  public ActionItem getAction(Attributes dcm, Attributes dcmCopy, int tag, HMAC hmac) {
+    final VR vr = dcm.getVR(tag);
 
     if (vr == VR.AS || vr == VR.DA || vr == VR.DT || vr == VR.TM) {
       if (exceptedTagsAction.get(tag) != null) {
         return null;
       }
 
-      if (tagsAction.isEmpty() == false && tagsAction.get(tag) == null) {
+      if (!tagsAction.isEmpty() && tagsAction.get(tag) == null) {
         return null;
       }
       try {
-        String dummyValue = applyOption(dcmCopy, dcmElem, hmac);
+        String dummyValue = applyOption(dcmCopy, tag, hmac);
         if (dummyValue != null) {
           actionByDefault.setDummyValue(dummyValue);
           return actionByDefault;
         }
       } catch (DateTimeException dateTimeException) {
-        String dcmElValue = dcmCopy.getString(dcmElem.tag()).orElse(null);
+        String dcmElValue = dcmCopy.getString(tag);
         LOGGER.warn(
             String.format(
                 "Invalid date %s, the most strictest action will be choose between X/Z/D",
@@ -130,12 +121,11 @@ public class ActionDates extends AbstractProfileItem {
     return null;
   }
 
-  private String applyOption(DicomObject dcmCopy, DicomElement dcmElem, HMAC hmac)
-      throws DateTimeException {
+  private String applyOption(Attributes dcmCopy, int tag, HMAC hmac) throws DateTimeException {
     return switch (option) {
-      case "shift" -> ShiftDate.shift(dcmCopy, dcmElem, argumentEntities);
-      case "shift_range" -> shiftRangeDate.shift(dcmCopy, dcmElem, argumentEntities, hmac);
-      case "date_format" -> DateFormat.format(dcmCopy, dcmElem, argumentEntities);
+      case "shift" -> ShiftDate.shift(dcmCopy, tag, argumentEntities);
+      case "shift_range" -> ShiftRangeDate.shift(dcmCopy, tag, argumentEntities, hmac);
+      case "date_format" -> DateFormat.format(dcmCopy, tag, argumentEntities);
       default -> null;
     };
   }

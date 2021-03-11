@@ -10,10 +10,10 @@
 package org.karnak.frontend.dicom.mwl;
 
 import java.time.LocalDate;
-import org.dcm4che6.data.DicomObject;
-import org.dcm4che6.data.Tag;
-import org.dcm4che6.net.Status;
-import org.dcm4che6.util.DateTimeUtils;
+import org.dcm4che3.data.Attributes;
+import org.dcm4che3.data.Tag;
+import org.dcm4che3.net.Status;
+import org.karnak.backend.dicom.DateTimeUtils;
 import org.karnak.backend.enums.MessageFormat;
 import org.karnak.backend.enums.MessageLevel;
 import org.karnak.backend.enums.Modality;
@@ -102,16 +102,15 @@ public class DicomWorkListLogic {
 
     view.loadAttributes(state.getDicomRSP());
 
-    if (state != null && state.getStatus().orElse(Status.Pending) != Status.Success) {
+    if (state != null && state.getStatus() != Status.Success) {
       String errorMsg =
-          "Cannot get a worklist! DICOM error status: "
-              + Integer.toHexString(state.getStatus().orElse(Status.Pending));
+          "Cannot get a worklist! DICOM error status: " + Integer.toHexString(state.getStatus());
       Message message = new Message(MessageLevel.ERROR, MessageFormat.TEXT, errorMsg);
       view.displayMessage(message);
     }
   }
 
-  public void itemSelected(DicomObject attributes) {
+  public void itemSelected(Attributes attributes) {
     view.openDicomPane(attributes);
   }
 
