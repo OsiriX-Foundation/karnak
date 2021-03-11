@@ -14,7 +14,6 @@ RUN mvn -B -f weasis-dicom-tools/pom.xml install
 COPY pom.xml .
 COPY src ./src
 COPY frontend frontend
-COPY parent ./parent
 RUN mvn -B package -P production
 WORKDIR /app/bin
 RUN cp ../target/karnak*.jar application.jar
