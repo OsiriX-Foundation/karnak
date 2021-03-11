@@ -64,13 +64,13 @@
       <id>mvn-repo-master</id>
       <url>https://raw.github.com/nroduit/mvn-repo/master/</url>
     </repository>
-    <!--    <repository>-->
-    <!--      <id>www.dcm4che.org</id>-->
-    <!--      <name>dcm4che Repository</name>-->
-    <!--      <url>http://maven.dcm4che.org</url>-->
-    <!--      &lt;!&ndash; <url>http://www.dcm4che.org/maven2</url> (which will redirected to-->
-    <!--        https://www.dcm4che.org/maven2). &ndash;&gt;-->
-    <!--    </repository>-->
+    <repository>
+      <id>www.dcm4che.org</id>
+      <name>dcm4che Repository</name>
+      <url>http://maven.dcm4che.org</url>
+      <!-- <url>http://www.dcm4che.org/maven2</url> (which will redirected to
+        https://www.dcm4che.org/maven2). -->
+    </repository>
   </repositories>
 
   <!-- Build-->
