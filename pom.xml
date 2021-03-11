@@ -3,6 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <artifactId>karnak</artifactId>
+  <version>1.0.0</version>
   <build>
     <plugins>
       <plugin>
@@ -455,10 +456,10 @@
   </profiles>
 
   <properties>
-    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+<!--    <sonar.host.url>https://sonarcloud.io</sonar.host.url>-->
     <sonar.java.source>${java.version}</sonar.java.source>
     <sonar.java.target>${java.version}</sonar.java.target>
-    <sonar.organization>osirix-foundation-1</sonar.organization>
+<!--    <sonar.organization>osirix-foundation-1</sonar.organization>-->
     <sonar.projectKey>karnak</sonar.projectKey>
     <h2.version>1.4.200</h2.version>
   </properties>
