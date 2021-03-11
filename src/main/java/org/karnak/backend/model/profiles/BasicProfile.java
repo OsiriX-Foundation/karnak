@@ -10,8 +10,7 @@
 package org.karnak.backend.model.profiles;
 
 import java.util.List;
-import org.dcm4che6.data.DicomElement;
-import org.dcm4che6.data.DicomObject;
+import org.dcm4che3.data.Attributes;
 import org.karnak.backend.config.AppConfig;
 import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.model.action.ActionItem;
@@ -33,13 +32,11 @@ public class BasicProfile extends AbstractProfileItem {
   }
 
   @Override
-  public ActionItem getAction(
-      DicomObject dcm, DicomObject dcmCopy, DicomElement dcmElem, HMAC hmac) {
-    int tag = dcmElem.tag();
+  public ActionItem getAction(Attributes dcm, Attributes dcmCopy, int tag, HMAC hmac) {
     ActionItem action = actionMap.get(tag);
     if (action == null) {
       for (ProfileItem p : listProfiles) {
-        ActionItem val = p.getAction(dcm, dcmCopy, dcmElem, hmac);
+        ActionItem val = p.getAction(dcm, dcmCopy, tag, hmac);
         if (val != null) {
           return val;
         }

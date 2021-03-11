@@ -11,7 +11,7 @@ package org.karnak.backend.model.profilepipe;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.dcm4che6.util.TagUtils;
+import org.dcm4che3.util.TagUtils;
 import org.karnak.backend.model.action.ActionItem;
 import org.weasis.core.util.StringUtil;
 

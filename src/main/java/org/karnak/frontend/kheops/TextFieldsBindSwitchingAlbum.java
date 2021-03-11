@@ -15,7 +15,6 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
-import org.dcm4che6.data.DicomObject;
 import org.json.JSONObject;
 import org.karnak.backend.api.KheopsApi;
 import org.karnak.backend.data.entity.KheopsAlbumsEntity;
@@ -84,9 +83,7 @@ public class TextFieldsBindSwitchingAlbum {
               if (!textCondition.getValue().equals("")) {
                 expressionError =
                     ExpressionResult.isValid(
-                        textCondition.getValue(),
-                        new ExprConditionKheops(DicomObject.newDicomObject()),
-                        Boolean.class);
+                        textCondition.getValue(), new ExprConditionKheops(), Boolean.class);
                 textErrorConditionMsg.setText(expressionError.getMsg());
                 return expressionError.isValid();
               }

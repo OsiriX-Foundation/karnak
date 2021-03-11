@@ -26,17 +26,17 @@ import com.vaadin.flow.data.provider.DataProviderListener;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.shared.Registration;
-import org.karnak.backend.enums.MessageFormat;
-import org.karnak.backend.enums.MessageLevel;
+import java.util.Comparator;
 import org.karnak.backend.model.dicom.ConfigNode;
 import org.karnak.backend.model.dicom.DicomNodeList;
-import org.karnak.backend.model.dicom.Message;
-import org.karnak.backend.service.dicom.DicomNodeManager;
 import org.karnak.frontend.component.AbstractDialog;
 
 public class DicomWorkListSelectionDialog extends AbstractDialog {
 
   private static final long serialVersionUID = 1L;
+
+  // CONTROLLER
+  private DicomWorkListSelectionLogic logic = new DicomWorkListSelectionLogic(this);
 
   // UI COMPONENTS
   private Dialog dialog;
@@ -54,7 +54,7 @@ public class DicomWorkListSelectionDialog extends AbstractDialog {
 
   public DicomWorkListSelectionDialog() {
     init();
-    selectDicomNodeList(DicomNodeManager.getAllWorkListNodesDefinedLocally());
+    logic.loadDicomNodeList();
     createMainLayout();
     dataProviderForWorkListNodes.refreshAll();
     selectFirstItemInWorkListNodes();
@@ -84,7 +84,7 @@ public class DicomWorkListSelectionDialog extends AbstractDialog {
 
     if (workListNodes != null && !workListNodes.isEmpty()) {
       this.workListNodes.addAll(workListNodes);
-      this.workListNodes.sort((wl1, wl2) -> wl1.getName().compareTo(wl2.getName()));
+      this.workListNodes.sort(Comparator.comparing(ConfigNode::getName));
     }
   }
 
@@ -166,17 +166,6 @@ public class DicomWorkListSelectionDialog extends AbstractDialog {
 
           return div;
         });
-  }
-
-  public void selectDicomNodeList(DicomNodeList originSelected) {
-    try {
-      this.removeMessage();
-      this.loadWorkListNodes(originSelected);
-    } catch (Exception e) {
-      Message message =
-          new Message(MessageLevel.ERROR, MessageFormat.TEXT, "Cannot read the set of worklists");
-      this.displayMessage(message);
-    }
   }
 
   private void selectFirstItemInWorkListNodes() {

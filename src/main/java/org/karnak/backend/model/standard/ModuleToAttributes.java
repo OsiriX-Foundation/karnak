@@ -21,20 +21,20 @@ public class ModuleToAttributes {
   /*
    * <moduleID, <TagPath, Attribute>>
    * */
-  private final Map<String, Map<String, Attribute>> HMapModuleAttributes;
+  private final Map<String, Map<String, ModuleAttribute>> HMapModuleAttributes;
 
   public ModuleToAttributes() {
     HMapModuleAttributes =
         initializeAttributes(StandardModuleToAttributes.readJsonModuleToAttributes());
   }
 
-  private Map<String, Map<String, Attribute>> initializeAttributes(
+  private Map<String, Map<String, ModuleAttribute>> initializeAttributes(
       jsonModuleToAttribute[] moduleToAttributes) {
-    Map<String, Map<String, Attribute>> HMapModuleAttributes = new HashMap<>();
+    Map<String, Map<String, ModuleAttribute>> HMapModuleAttributes = new HashMap<>();
 
     for (jsonModuleToAttribute moduleToAttribute : moduleToAttributes) {
-      Attribute attribute =
-          new Attribute(
+      ModuleAttribute moduleAttribute =
+          new ModuleAttribute(
               moduleToAttribute.getPath(),
               moduleToAttribute.getType(),
               moduleToAttribute.getModuleId());
@@ -43,19 +43,19 @@ public class ModuleToAttributes {
       if (!HMapModuleAttributes.containsKey(moduleKey)) {
         HMapModuleAttributes.put(moduleKey, new HashMap<>());
       }
-      HMapModuleAttributes.get(moduleKey).put(attribute.getTagPath(), attribute);
+      HMapModuleAttributes.get(moduleKey).put(moduleAttribute.getTagPath(), moduleAttribute);
     }
 
     return HMapModuleAttributes;
   }
 
-  public Map<String, Attribute> getAttributesByModule(String moduleID) {
+  public Map<String, ModuleAttribute> getAttributesByModule(String moduleID) {
     return HMapModuleAttributes.get(moduleID);
   }
 
-  public Map<String, Attribute> getModuleAttributesByType(String moduleID, String type)
+  public Map<String, ModuleAttribute> getModuleAttributesByType(String moduleID, String type)
       throws ModuleNotFoundException {
-    Map<String, Attribute> attributes = HMapModuleAttributes.get(moduleID);
+    Map<String, ModuleAttribute> attributes = HMapModuleAttributes.get(moduleID);
     if (attributes == null) {
       throw new ModuleNotFoundException(
           String.format("Unable to get module attributes. Could not find the module %s", moduleID));

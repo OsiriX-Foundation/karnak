@@ -34,7 +34,7 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import org.dcm4che6.data.DicomObject;
+import org.dcm4che3.data.Attributes;
 import org.karnak.backend.enums.MessageFormat;
 import org.karnak.backend.enums.MessageLevel;
 import org.karnak.backend.enums.Modality;
@@ -98,8 +98,8 @@ public class DicomWorkListView extends AbstractView implements HasUrlParameter<S
   // DATA
   private WorkListQueryData workListQueryData;
   private Binder<WorkListQueryData> binderForWorkListQuery;
-  private List<DicomObject> attributes;
-  private ListDataProvider<DicomObject> dataProviderForAttributes;
+  private List<Attributes> attributes;
+  private ListDataProvider<Attributes> dataProviderForAttributes;
 
   // PARAMETERS
   private String callingAetParam;
@@ -118,7 +118,7 @@ public class DicomWorkListView extends AbstractView implements HasUrlParameter<S
     bindFields();
   }
 
-  public void loadAttributes(List<DicomObject> attributes) {
+  public void loadAttributes(List<Attributes> attributes) {
     this.attributes.clear();
     this.attributes.addAll(attributes);
     dataProviderForAttributes.refreshAll();
@@ -126,7 +126,7 @@ public class DicomWorkListView extends AbstractView implements HasUrlParameter<S
     queryResultLayout.setVisible(true);
   }
 
-  public void openDicomPane(DicomObject attributes) {
+  public void openDicomPane(Attributes attributes) {
     dicomPane = new DicomPane(attributes);
 
     dicomPane.open();
@@ -146,7 +146,7 @@ public class DicomWorkListView extends AbstractView implements HasUrlParameter<S
     binderForWorkListQuery = new Binder<WorkListQueryData>();
 
     attributes = new ArrayList<>();
-    dataProviderForAttributes = new ListDataProvider<DicomObject>(attributes);
+    dataProviderForAttributes = new ListDataProvider<>(attributes);
   }
 
   private void createView() {
@@ -406,13 +406,8 @@ public class DicomWorkListView extends AbstractView implements HasUrlParameter<S
     queryResultGrid.setDataProvider(dataProviderForAttributes);
 
     queryResultGrid.addItemClickListener(
-        new ComponentEventListener<ItemClickEvent<DicomObject>>() {
-
-          @Override
-          public void onComponentEvent(ItemClickEvent<DicomObject> event) {
-            logic.itemSelected(event.getItem());
-          }
-        });
+        (ComponentEventListener<ItemClickEvent<Attributes>>)
+            event -> logic.itemSelected(event.getItem()));
   }
 
   @SuppressWarnings("serial")
@@ -491,9 +486,7 @@ public class DicomWorkListView extends AbstractView implements HasUrlParameter<S
 
       String[] parametersArray = queryParameterDecoded.split("&");
 
-      String[] parametersList = parametersArray;
-
-      for (String parameter : parametersList) {
+      for (String parameter : parametersArray) {
         String[] parameterArray = parameter.split("=");
         String parameterName = parameterArray[0];
         String parameterValue = parameterArray[1];

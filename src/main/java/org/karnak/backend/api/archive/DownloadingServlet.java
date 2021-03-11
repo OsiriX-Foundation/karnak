@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.karnak.backend.service.gateway.AbstractGateway;
-import org.karnak.backend.service.gateway.GatewaySetUp;
+import org.karnak.backend.service.gateway.GatewaySetUpService;
 import org.karnak.backend.util.ServletUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,12 +34,12 @@ public class DownloadingServlet extends HttpServlet {
   @Serial private static final long serialVersionUID = -3991470951272725755L;
   private static final Logger LOGGER = LoggerFactory.getLogger(DownloadingServlet.class);
 
-  @Autowired private GatewaySetUp globalConfig;
+  @Autowired private GatewaySetUpService globalConfig;
 
   @Override
   public final void init() throws ServletException {
     if (globalConfig == null) {
-      LOGGER.error("DownloadingServlet service cannot start: GatewaySetUp is missing.");
+      LOGGER.error("DownloadingServlet service cannot start: GatewaySetUpService is missing.");
       destroy();
     }
   }
@@ -91,10 +91,8 @@ public class DownloadingServlet extends HttpServlet {
    * different name than the name the file has been saved in your local database, since your local
    * names need to be unique.
    *
-   * @param req The request
    * @param resp The response
-   * @param filename The name of the file you want to download.
-   * @param original_filename The name the browser should receive.
+   * @param path The path of the file you want to download.
    * @throws IOException
    */
   private boolean download(HttpServletResponse resp, Path path) throws IOException {
