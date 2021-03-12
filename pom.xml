@@ -40,6 +40,7 @@
     <sonar.java.target>${java.version}</sonar.java.target>
     <sonar.organization>osirix-foundation-1</sonar.organization>
     <sonar.projectKey>karnak</sonar.projectKey>
+    <h2.version>1.4.200</h2.version>
   </properties>
 
   <!-- Repositories -->
@@ -543,15 +544,6 @@
       </properties>
     </profile>
   </profiles>
-
-  <properties>
-    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-    <sonar.java.source>${java.version}</sonar.java.source>
-    <sonar.java.target>${java.version}</sonar.java.target>
-    <sonar.organization>osirix-foundation-1</sonar.organization>
-    <sonar.projectKey>karnak</sonar.projectKey>
-    <h2.version>1.4.200</h2.version>
-  </properties>
 
 </project>
 
