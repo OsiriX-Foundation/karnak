@@ -11,7 +11,7 @@ services:
       - karnak-db
 
   karnak-db:
-    image: postgres:12.4-alpine
+    image: registry-docker.hcuge.ch:8083/postgres:9.6-alpine
     environment:
       - POSTGRES_DB=karnak
       - POSTGRES_USER=karnak
