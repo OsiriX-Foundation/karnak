@@ -431,14 +431,14 @@ public class ForwardUtil {
           stow.uploadPayload(ImageAdapter.preparePlayload(attributes, outputTsuid, desc, context));
         }
       }
-      progressNotify(destination, iuid, cuid, false, 0);
+      progressNotify(destination, p.getIuid(), p.getCuid(), false, 0);
     } catch (AbortException e) {
-      progressNotify(destination, iuid, cuid, true, 0);
+      progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
       if (e.getAbort() == Abort.CONNECTION_EXCEPTION) {
         throw e;
       }
     } catch (Exception e) {
-      progressNotify(destination, iuid, cuid, true, 0);
+      progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
       LOGGER.error(ERROR_WHEN_FORWARDING, e);
     } finally {
       files = cleanOrGetBulkDataFiles(in, copy == null);
@@ -484,19 +484,19 @@ public class ForwardUtil {
         } else {
           stow.uploadPayload(ImageAdapter.preparePlayload(attributes, outputTsuid, desc, context));
         }
-        progressNotify(destination, iuid, cuid, false, 0);
+        progressNotify(destination, p.getIuid(), p.getCuid(), false, 0);
       }
     } catch (HttpException httpException) {
-      progressNotify(destination, iuid, cuid, true, 0);
+      progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
       LOGGER.error(httpException.getMessage(), httpException);
       throw new AbortException(Abort.FILE_EXCEPTION, httpException.getMessage());
     } catch (AbortException e) {
-      progressNotify(destination, iuid, cuid, true, 0);
+      progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
       if (e.getAbort() == Abort.CONNECTION_EXCEPTION) {
         throw e;
       }
     } catch (Exception e) {
-      progressNotify(destination, iuid, cuid, true, 0);
+      progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
       LOGGER.error(ERROR_WHEN_FORWARDING, e);
     }
   }
