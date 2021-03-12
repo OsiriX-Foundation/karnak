@@ -27,7 +27,5 @@ services:
   mainzelliste:
     image: osirixfoundation/karnak-mainzelliste:extid
     env_file: mainzelliste.env
-    ports:
-      - ${MAINZELLISTE_WEB_PORT}:8080
     depends_on:
       - mainzelliste-db
