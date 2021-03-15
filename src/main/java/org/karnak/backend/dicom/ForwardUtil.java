@@ -19,6 +19,7 @@ import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.dcm4che3.data.UID;
 import org.dcm4che3.img.stream.BytesWithImageDescriptor;
+import org.dcm4che3.img.stream.ImageAdapter;
 import org.dcm4che3.io.DicomInputStream;
 import org.dcm4che3.io.DicomInputStream.IncludeBulkData;
 import org.dcm4che3.net.Association;
@@ -27,9 +28,6 @@ import org.dcm4che3.net.DataWriterAdapter;
 import org.dcm4che3.net.InputStreamDataWriter;
 import org.dcm4che3.net.PDVInputStream;
 import org.dcm4che3.net.Status;
-import org.karnak.backend.dicom.web.DicomStowRS;
-import org.karnak.backend.dicom.web.HttpException;
-import org.karnak.backend.dicom.web.WebForwardDestination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.weasis.core.util.FileUtil;
@@ -39,6 +37,8 @@ import org.weasis.dicom.param.AttributeEditorContext.Abort;
 import org.weasis.dicom.util.ServiceUtil;
 import org.weasis.dicom.util.ServiceUtil.ProgressStatus;
 import org.weasis.dicom.util.StoreFromStreamSCU;
+import org.weasis.dicom.web.DicomStowRS;
+import org.weasis.dicom.web.HttpException;
 
 public class ForwardUtil {
   private static final String ERROR_WHEN_FORWARDING =
