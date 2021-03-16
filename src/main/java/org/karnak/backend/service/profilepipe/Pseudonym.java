@@ -106,11 +106,11 @@ public class Pseudonym {
       LOGGER.info("getCacheExtid, patientMetadata:" + patientMetadata.toString());
     }
 
-    if(externalIdCache != null){
+    if (externalIdCache != null) {
       LOGGER.info("getCacheExtid, externalIdCache:" + externalIdCache.toString());
     }
 
-    if(externalIdCache != null){
+    if (externalIdCache != null) {
       LOGGER.info("getCacheExtid, projectID:" + projectID);
     }
 

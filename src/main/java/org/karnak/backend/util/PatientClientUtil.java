@@ -35,10 +35,9 @@ public class PatientClientUtil {
       PatientMetadata patientMetadata, PatientClient cache, Long projectID) {
     if (cache != null) {
       final String key = generateKey(patientMetadata, projectID);
-      LOGGER.info("getPseudonym, key generated:"+key);
+      LOGGER.info("getPseudonym, key generated:" + key);
       return getCachedKey(key, patientMetadata, cache);
-    }
-    else {
+    } else {
       LOGGER.info("getPseudonym, cache null");
     }
     return null;
