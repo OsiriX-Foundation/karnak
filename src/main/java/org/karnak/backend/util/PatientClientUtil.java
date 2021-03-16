@@ -12,12 +12,8 @@ package org.karnak.backend.util;
 import org.karnak.backend.cache.PatientClient;
 import org.karnak.backend.cache.PseudonymPatient;
 import org.karnak.backend.model.profilepipe.PatientMetadata;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class PatientClientUtil {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(PatientClientUtil.class);
 
   private PatientClientUtil() {
     throw new IllegalStateException("Utility class");
@@ -35,11 +31,7 @@ public class PatientClientUtil {
       PatientMetadata patientMetadata, PatientClient cache, Long projectID) {
     if (cache != null) {
       final String key = generateKey(patientMetadata, projectID);
-      LOGGER.info("getPseudonym, key generated:"+key);
       return getCachedKey(key, patientMetadata, cache);
-    }
-    else {
-      LOGGER.info("getPseudonym, cache null");
     }
     return null;
   }

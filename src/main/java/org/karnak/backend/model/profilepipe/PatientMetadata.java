@@ -100,15 +100,4 @@ public class PatientMetadata {
   public Fields generateMainzellisteFields() {
     return new Fields(patientID, patientName, patientBirthDate, patientSex, issuerOfPatientID);
   }
-
-  @Override
-  public String toString() {
-    return "PatientMetadata{" +
-        "patientID='" + patientID + '\'' +
-        ", patientName='" + patientName + '\'' +
-        ", patientBirthDate='" + patientBirthDate + '\'' +
-        ", issuerOfPatientID='" + issuerOfPatientID + '\'' +
-        ", patientSex='" + patientSex + '\'' +
-        '}';
-  }
 }
