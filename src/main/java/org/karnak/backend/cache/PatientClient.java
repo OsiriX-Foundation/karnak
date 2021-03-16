@@ -62,4 +62,12 @@ public abstract class PatientClient {
     IMap<String, PseudonymPatient> map = hazelcastInstance.getMap(name);
     return map.values();
   }
+
+  @Override
+  public String toString() {
+    return "PatientClient{" +
+        "name='" + name + '\'' +
+        ", hazelcastInstance=" + hazelcastInstance +
+        '}';
+  }
 }

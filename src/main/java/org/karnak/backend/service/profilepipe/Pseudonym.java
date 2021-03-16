@@ -101,6 +101,19 @@ public class Pseudonym {
   }
 
   public String getCacheExtid(PatientMetadata patientMetadata, Long projectID) {
+
+    if (patientMetadata != null) {
+      LOGGER.info("getCacheExtid, patientMetadata:" + patientMetadata.toString());
+    }
+
+    if(externalIdCache != null){
+      LOGGER.info("getCacheExtid, externalIdCache:" + externalIdCache.toString());
+    }
+
+    if(externalIdCache != null){
+      LOGGER.info("getCacheExtid, projectID:" + projectID);
+    }
+
     final String pseudonymCacheExtID =
         PatientClientUtil.getPseudonym(patientMetadata, externalIdCache, projectID);
     if (pseudonymCacheExtID == null) {
