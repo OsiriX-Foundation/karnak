@@ -65,12 +65,9 @@ public abstract class PatientClient {
 
   @Override
   public String toString() {
-    return "PatientClient{"
-        + "name='"
-        + name
-        + '\''
-        + ", hazelcastInstance="
-        + hazelcastInstance
-        + '}';
+    return "PatientClient{" +
+        "name='" + name + '\'' +
+        ", hazelcastInstance=" + hazelcastInstance +
+        '}';
   }
 }

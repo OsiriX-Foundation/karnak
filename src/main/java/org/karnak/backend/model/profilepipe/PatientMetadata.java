@@ -103,22 +103,12 @@ public class PatientMetadata {
 
   @Override
   public String toString() {
-    return "PatientMetadata{"
-        + "patientID='"
-        + patientID
-        + '\''
-        + ", patientName='"
-        + patientName
-        + '\''
-        + ", patientBirthDate='"
-        + patientBirthDate
-        + '\''
-        + ", issuerOfPatientID='"
-        + issuerOfPatientID
-        + '\''
-        + ", patientSex='"
-        + patientSex
-        + '\''
-        + '}';
+    return "PatientMetadata{" +
+        "patientID='" + patientID + '\'' +
+        ", patientName='" + patientName + '\'' +
+        ", patientBirthDate='" + patientBirthDate + '\'' +
+        ", issuerOfPatientID='" + issuerOfPatientID + '\'' +
+        ", patientSex='" + patientSex + '\'' +
+        '}';
   }
 }
