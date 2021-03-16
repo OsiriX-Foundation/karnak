@@ -7,15 +7,15 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  */
-package org.karnak.backend.dicom.web;
+package org.karnak.backend.dicom;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import org.karnak.backend.dicom.ForwardDestination;
-import org.karnak.backend.dicom.ForwardDicomNode;
 import org.weasis.core.util.FileUtil;
 import org.weasis.dicom.param.*;
+import org.weasis.dicom.web.ContentType;
+import org.weasis.dicom.web.DicomStowRS;
 
 public class WebForwardDestination extends ForwardDestination {
 
