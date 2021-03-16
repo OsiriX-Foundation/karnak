@@ -40,4 +40,22 @@ public class Add extends AbstractAction {
         tagValueIn,
         dcm.getString(newTag));
   }
+
+  public static void newTag(Attributes dcm, int tag, VR vr, String newValue) {
+    String tagValueIn = "";
+    if (dcm.getString(tag) != null) {
+      tagValueIn = dcm.getString(tag);
+    }
+
+    dcm.setString(tag, vr, newValue);
+
+    LOGGER.trace(
+        CLINICAL_MARKER,
+        PATTERN_WITH_INOUT,
+        MDC.get("SOPInstanceUID"),
+        TagUtils.toString(tag),
+        "A",
+        tagValueIn,
+        newValue);
+  }
 }

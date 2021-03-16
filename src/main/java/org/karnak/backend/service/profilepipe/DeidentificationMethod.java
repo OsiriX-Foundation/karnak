@@ -9,7 +9,9 @@
  */
 package org.karnak.backend.service.profilepipe;
 
+import java.time.LocalDateTime;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Sequence;
 import org.dcm4che3.data.Tag;
@@ -17,6 +19,8 @@ import org.dcm4che3.data.VR;
 import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.data.entity.ProfileEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
+import org.karnak.backend.dicom.DateTimeUtils;
+import org.karnak.backend.enums.ProfileItemType;
 import org.karnak.backend.model.profilepipe.HMAC;
 
 public class DeidentificationMethod {
@@ -27,13 +31,12 @@ public class DeidentificationMethod {
     return hmac.intHash(profileElementEntity.getCodename());
   }
 
-  public static Attributes setDefaultDeidentTagValue(
+  public static void setDefaultDeidentTagValue(
       Attributes dcm,
       String patientID,
       String patientName,
       ProjectEntity projectEntity,
-      String pseudonym,
-      HMAC hmac) {
+      String pseudonym) {
     final ProfileEntity profileEntity = projectEntity.getProfileEntity();
 
     dcm.setString(Tag.PatientID, VR.LO, patientID);
@@ -42,6 +45,7 @@ public class DeidentificationMethod {
     dcm.setString(Tag.PatientIdentityRemoved, VR.CS, "YES");
 
     // DeidentificationMethodCodeSequence
+    dcm.setString(Tag.DeidentificationMethod, VR.LO, projectEntity.getName());
     final Set<ProfileElementEntity> profileElementEntities =
         profileEntity.getProfileElementEntities();
     Sequence deidentificationMethodSequence =
@@ -49,12 +53,35 @@ public class DeidentificationMethod {
     profileElementEntities.forEach(
         profileElementEntity -> {
           final Attributes attributes = new Attributes();
-          attributes.setString(Tag.CodeValue, VR.SH, "1234");
-          attributes.setString(Tag.CodingSchemeDesignator, VR.SH, "DCM");
-          attributes.setString(Tag.CodeMeaning, VR.LO, profileElementEntity.getCodename());
-          deidentificationMethodSequence.add(attributes);
+          final String codeValue = ProfileItemType.getCodeValue(profileElementEntity.getCodename());
+          final String codeMeaning =
+              ProfileItemType.getCodeMeaning(profileElementEntity.getCodename());
+          if (codeValue != null) {
+            attributes.setString(Tag.CodeValue, VR.SH, codeValue);
+            attributes.setString(Tag.CodingSchemeDesignator, VR.SH, "DCM");
+            attributes.setString(Tag.CodeMeaning, VR.LO, codeMeaning);
+            deidentificationMethodSequence.add(attributes);
+          }
         });
 
-    return dcm;
+    final String allCodeNames = getAllCodeNames(profileEntity);
+    // 0012,0063 -> module patient
+    // A description or label of the mechanism or method use to remove the Patient's identity
+    dcm.setString(Tag.ClinicalTrialSponsorName, VR.LO, allCodeNames);
+    dcm.setString(Tag.ClinicalTrialProtocolID, VR.LO, profileEntity.getName());
+    dcm.setString(Tag.ClinicalTrialSubjectID, VR.LO, pseudonym);
+    dcm.setNull(Tag.ClinicalTrialProtocolName, VR.LO);
+    dcm.setNull(Tag.ClinicalTrialSiteID, VR.LO);
+    dcm.setNull(Tag.ClinicalTrialSiteName, VR.LO);
+
+    final LocalDateTime now = LocalDateTime.now();
+    dcm.setString(Tag.InstanceCreationDate, VR.DA, DateTimeUtils.formatDA(now));
+    dcm.setString(Tag.InstanceCreationTime, VR.TM, DateTimeUtils.formatTM(now));
+  }
+
+  public static String getAllCodeNames(ProfileEntity profileEntity) {
+    return profileEntity.getProfileElementEntities().stream()
+        .map(ProfileElementEntity::getCodename)
+        .collect(Collectors.joining("-"));
   }
 }

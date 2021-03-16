@@ -12,7 +12,6 @@ package org.karnak.backend.service.profilepipe;
 import java.awt.Color;
 import java.awt.Shape;
 import java.math.BigInteger;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -32,14 +31,11 @@ import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.data.entity.ProfileEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
-import org.karnak.backend.dicom.DateTimeUtils;
 import org.karnak.backend.enums.ProfileItemType;
 import org.karnak.backend.enums.PseudonymType;
 import org.karnak.backend.model.action.ActionItem;
-import org.karnak.backend.model.action.Add;
 import org.karnak.backend.model.action.Remove;
 import org.karnak.backend.model.action.ReplaceNull;
-import org.karnak.backend.model.expression.ExprAction;
 import org.karnak.backend.model.expression.ExprConditionDestination;
 import org.karnak.backend.model.expression.ExpressionResult;
 import org.karnak.backend.model.profilepipe.HMAC;
@@ -256,7 +252,8 @@ public class Profile {
 
     applyAction(dcm, dcmCopy, hmac, null, null, context);
 
-    setDefaultDeidentTagValue(dcm, newPatientID, newPatientName, profilesCodeName, pseudonym, hmac);
+    DeidentificationMethod.setDefaultDeidentTagValue(
+        dcm, newPatientID, newPatientName, destinationEntity.getProjectEntity(), pseudonym);
 
     final Marker CLINICAL_MARKER = MarkerFactory.getMarker("CLINICAL");
     LOGGER.info(
@@ -292,44 +289,6 @@ public class Profile {
 
     HashContext hashContext = new HashContext(secret, PatientID);
     return new HMAC(hashContext);
-  }
-
-  public void setDefaultDeidentTagValue(
-      Attributes dcm,
-      String patientID,
-      String patientName,
-      String profilePipeCodeName,
-      String pseudonym,
-      HMAC hmac) {
-    final String profileFilename = profileEntity.getName();
-    final ArrayList<ExprAction> defaultDeidentTagValue = new ArrayList<>();
-    defaultDeidentTagValue.add(new ExprAction(Tag.PatientID, VR.LO, patientID));
-    defaultDeidentTagValue.add(new ExprAction(Tag.PatientName, VR.PN, patientName));
-    defaultDeidentTagValue.add(new ExprAction(Tag.PatientIdentityRemoved, VR.CS, "YES"));
-    // 0012,0063 -> module patient
-    // A description or label of the mechanism or method use to remove the Patient's identity
-    defaultDeidentTagValue.add(
-        new ExprAction(Tag.DeidentificationMethod, VR.LO, profilePipeCodeName));
-    defaultDeidentTagValue.add(
-        new ExprAction(Tag.ClinicalTrialSponsorName, VR.LO, profilePipeCodeName));
-    defaultDeidentTagValue.add(new ExprAction(Tag.ClinicalTrialProtocolID, VR.LO, profileFilename));
-    defaultDeidentTagValue.add(new ExprAction(Tag.ClinicalTrialSubjectID, VR.LO, pseudonym));
-    defaultDeidentTagValue.add(new ExprAction(Tag.ClinicalTrialProtocolName, VR.LO, null));
-    defaultDeidentTagValue.add(new ExprAction(Tag.ClinicalTrialSiteID, VR.LO, null));
-    defaultDeidentTagValue.add(new ExprAction(Tag.ClinicalTrialSiteName, VR.LO, null));
-
-    LocalDateTime now = LocalDateTime.now();
-    defaultDeidentTagValue.add(
-        new ExprAction(Tag.InstanceCreationDate, VR.DA, DateTimeUtils.formatDA(now)));
-    defaultDeidentTagValue.add(
-        new ExprAction(Tag.InstanceCreationTime, VR.TM, DateTimeUtils.formatTM(now)));
-
-    defaultDeidentTagValue.forEach(
-        newElem -> {
-          final ActionItem add =
-              new Add("A", newElem.getTag(), newElem.getVr(), newElem.getStringValue());
-          add.execute(dcm, newElem.getTag(), hmac);
-        });
   }
 
   public BigInteger generatePatientID(String pseudonym, HMAC hmac) {
