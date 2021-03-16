@@ -18,6 +18,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.BulkData;
@@ -89,7 +90,7 @@ public class Profile {
 
   public ArrayList<ProfileItem> createProfilesList() {
     if (profileEntity != null) {
-      final List<ProfileElementEntity> listProfileElementEntity =
+      final Set<ProfileElementEntity> listProfileElementEntity =
           profileEntity.getProfileElementEntities();
       ArrayList<ProfileItem> profiles = new ArrayList<>();
 

@@ -14,7 +14,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -55,7 +54,7 @@ public class ProfileEntity {
   @JsonIgnore private Boolean bydefault;
 
   @OneToMany(mappedBy = "profileEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-  private List<ProfileElementEntity> profileElementEntities = new ArrayList<>();
+  private Set<ProfileElementEntity> profileElementEntities = new HashSet<>();
 
   @OneToMany(mappedBy = "profileEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private Set<MaskEntity> maskEntities = new HashSet<>();
@@ -138,12 +137,12 @@ public class ProfileEntity {
   }
 
   @JsonGetter("profileElements")
-  public List<ProfileElementEntity> getProfileElementEntities() {
+  public Set<ProfileElementEntity> getProfileElementEntities() {
     return profileElementEntities;
   }
 
   @JsonSetter("profileElements")
-  public void setProfileElementEntities(List<ProfileElementEntity> profileElementEntities) {
+  public void setProfileElementEntities(Set<ProfileElementEntity> profileElementEntities) {
     this.profileElementEntities = profileElementEntities;
   }
 
