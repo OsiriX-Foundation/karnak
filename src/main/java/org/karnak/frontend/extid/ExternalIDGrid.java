@@ -75,7 +75,7 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
   public ExternalIDGrid() {
     binder = new Binder<>(CachedPatient.class);
     patientList = new ArrayList<>();
-    externalIDCache = AppConfig.getInstance().getExternalIDCache();
+    this.externalIDCache = AppConfig.getInstance().getExternalIDCache();
 
     setPageSize(10);
     setPaginatorSize(2);
@@ -255,7 +255,7 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
 
     binder
         .forField(patientFirstNameField)
-        .withValidator(StringUtils::isNotBlank, "Patient first name is empty")
+        .withValidator(StringUtils::isNotBlank, "Patient firstname is empty")
         .withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
         .bind("patientFirstName");
 

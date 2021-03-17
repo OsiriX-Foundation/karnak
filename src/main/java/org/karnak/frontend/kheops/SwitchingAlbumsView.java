@@ -74,11 +74,18 @@ public class SwitchingAlbumsView extends CustomField<List<KheopsAlbumsEntity>> {
         .getButtonAdd()
         .addClickListener(
             event -> {
+              newSwitchingAlbum.getTextErrorConditionMsg().setText("");
               KheopsAlbumsEntity newKheopsAlbumsEntity = new KheopsAlbumsEntity();
               if (newSwitchingAlbumBinder.writeBeanIfValid(newKheopsAlbumsEntity)) {
-                dataProviderSwitchingAlbums.getItems().add(newKheopsAlbumsEntity);
-                dataProviderSwitchingAlbums.refreshAll();
-                newSwitchingAlbum.clear();
+                // Add only if not already existing in table
+                if (!dataProviderSwitchingAlbums.getItems().contains(newKheopsAlbumsEntity)) {
+                  dataProviderSwitchingAlbums.getItems().add(newKheopsAlbumsEntity);
+                  dataProviderSwitchingAlbums.refreshAll();
+                  newSwitchingAlbum.clear();
+                } else {
+                  // Otherwise error message already existing
+                  newSwitchingAlbum.getTextErrorConditionMsg().setText("Already existing");
+                }
               }
             });
   }

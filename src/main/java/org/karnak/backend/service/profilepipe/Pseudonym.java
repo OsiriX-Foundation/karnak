@@ -31,8 +31,8 @@ public class Pseudonym {
   private final PatientClient mainzellisteCache;
 
   public Pseudonym() {
-    externalIdCache = AppConfig.getInstance().getExternalIDCache();
-    mainzellisteCache = AppConfig.getInstance().getMainzellisteCache();
+    this.externalIdCache = AppConfig.getInstance().getExternalIDCache();
+    this.mainzellisteCache = AppConfig.getInstance().getMainzellisteCache();
   }
 
   public String generatePseudonym(

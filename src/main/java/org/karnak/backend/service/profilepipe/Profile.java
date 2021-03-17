@@ -59,13 +59,13 @@ public class Profile {
   private final ProfileEntity profileEntity;
   private final Pseudonym pseudonymUtil;
   private final List<ProfileItem> profiles;
+  private final Pseudonym pseudonym;
   private final Map<String, MaskArea> maskMap;
 
   public Profile(ProfileEntity profileEntity) {
     this.maskMap = new HashMap<>();
-    this.pseudonymUtil = new Pseudonym();
-    this.profileEntity = profileEntity;
-    this.profiles = createProfilesList();
+    this.pseudonym = new Pseudonym();
+    this.profiles = createProfilesList(profileEntity);
   }
 
   public void addMaskMap(Map<? extends String, ? extends MaskArea> maskMap) {
@@ -84,7 +84,7 @@ public class Profile {
     this.maskMap.put(stationName, maskArea);
   }
 
-  public List<ProfileItem> createProfilesList() {
+  public List<ProfileItem> createProfilesList(final ProfileEntity profileEntity) {
     if (profileEntity != null) {
       final Set<ProfileElementEntity> listProfileElementEntity =
           profileEntity.getProfileElementEntities();
@@ -195,7 +195,10 @@ public class Profile {
   }
 
   public void apply(
-      Attributes dcm, DestinationEntity destinationEntity, AttributeEditorContext context) {
+      Attributes dcm,
+      DestinationEntity destinationEntity,
+      ProfileEntity profileEntity,
+      AttributeEditorContext context) {
     final String SOPInstanceUID = dcm.getString(Tag.SOPInstanceUID);
     final String SeriesInstanceUID = dcm.getString(Tag.SeriesInstanceUID);
     final String IssuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID);
@@ -209,8 +212,8 @@ public class Profile {
     MDC.put("PatientID", PatientID);
 
     String pseudonym =
-        pseudonymUtil.generatePseudonym(
-            destinationEntity, dcm, profileEntity.getDefaultissueropatientid());
+        this.pseudonym.generatePseudonym(
+            destinationEntity, dcm, profileEntity.getDefaultIssuerOfPatientId());
 
     String profilesCodeName =
         profiles.stream().map(ProfileItem::getCodeName).collect(Collectors.joining("-"));

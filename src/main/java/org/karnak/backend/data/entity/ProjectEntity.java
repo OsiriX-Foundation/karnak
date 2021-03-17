@@ -9,8 +9,11 @@
  */
 package org.karnak.backend.data.entity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,21 +27,14 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 @Entity(name = "Project")
 @Table(name = "project")
-public class ProjectEntity {
+public class ProjectEntity implements Serializable {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  private static final long serialVersionUID = 8809562914582842501L;
+
   private Long id;
-
   private String name;
   private byte[] secret;
-
-  @OneToMany(mappedBy = "projectEntity")
-  @LazyCollection(LazyCollectionOption.FALSE)
   private List<DestinationEntity> destinationEntities;
-
-  @ManyToOne
-  @JoinColumn(name = "profile_pipe_id")
   private ProfileEntity profileEntity;
 
   public ProjectEntity() {
@@ -51,8 +47,14 @@ public class ProjectEntity {
     this.destinationEntities = new ArrayList<>();
   }
 
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
   public Long getId() {
     return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
   }
 
   public String getName() {
@@ -71,6 +73,8 @@ public class ProjectEntity {
     this.secret = secret;
   }
 
+  @OneToMany(mappedBy = "projectEntity")
+  @LazyCollection(LazyCollectionOption.FALSE)
   public List<DestinationEntity> getDestinationEntities() {
     return destinationEntities;
   }
@@ -79,6 +83,8 @@ public class ProjectEntity {
     this.destinationEntities = destinationEntities;
   }
 
+  @ManyToOne
+  @JoinColumn(name = "profile_pipe_id")
   public ProfileEntity getProfileEntity() {
     return profileEntity;
   }
@@ -87,7 +93,22 @@ public class ProjectEntity {
     this.profileEntity = profileEntity;
   }
 
-  public boolean isNewData() {
-    return id == null;
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    ProjectEntity that = (ProjectEntity) o;
+    return Objects.equals(name, that.name) && Arrays.equals(secret, that.secret);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = Objects.hash(name);
+    result = 31 * result + Arrays.hashCode(secret);
+    return result;
   }
 }

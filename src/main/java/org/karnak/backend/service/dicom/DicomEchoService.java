@@ -17,8 +17,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import org.karnak.backend.model.dicom.ConfigNode;
 import org.karnak.backend.service.thread.DicomEchoThread;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class DicomEchoService {
+
+  @Autowired
+  public DicomEchoService() {}
 
   public String dicomEcho(List<ConfigNode> nodes) throws InterruptedException, ExecutionException {
     StringBuilder result = new StringBuilder();
