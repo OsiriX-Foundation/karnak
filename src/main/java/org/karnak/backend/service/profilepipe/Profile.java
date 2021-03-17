@@ -13,6 +13,7 @@ import java.awt.Color;
 import java.awt.Shape;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -57,9 +58,8 @@ public class Profile {
 
   private final ProfileEntity profileEntity;
   private final Pseudonym pseudonymUtil;
-  private final ArrayList<ProfileItem> profiles;
+  private final List<ProfileItem> profiles;
   private final Map<String, MaskArea> maskMap;
-  private final Marker CLINICAL_MARKER = MarkerFactory.getMarker("CLINICAL");
 
   public Profile(ProfileEntity profileEntity) {
     this.maskMap = new HashMap<>();
@@ -84,11 +84,11 @@ public class Profile {
     this.maskMap.put(stationName, maskArea);
   }
 
-  public ArrayList<ProfileItem> createProfilesList() {
+  public List<ProfileItem> createProfilesList() {
     if (profileEntity != null) {
       final Set<ProfileElementEntity> listProfileElementEntity =
           profileEntity.getProfileElementEntities();
-      ArrayList<ProfileItem> profiles = new ArrayList<>();
+      List<ProfileItem> profileItems = new ArrayList<>();
 
       for (ProfileElementEntity profileElementEntity : listProfileElementEntity) {
         ProfileItemType t = ProfileItemType.getType(profileElementEntity.getCodename());
@@ -101,13 +101,13 @@ public class Profile {
                 t.getProfileClass()
                     .getConstructor(ProfileElementEntity.class)
                     .newInstance(profileElementEntity);
-            profiles.add((ProfileItem) instanceProfileItem);
+            profileItems.add((ProfileItem) instanceProfileItem);
           } catch (Exception e) {
             LOGGER.error("Cannot build the profile: {}", t.getProfileClass().getName(), e);
           }
         }
       }
-      profiles.sort(Comparator.comparing(ProfileItem::getPosition));
+      profileItems.sort(Comparator.comparing(ProfileItem::getPosition));
       profileEntity
           .getMaskEntities()
           .forEach(
@@ -120,9 +120,9 @@ public class Profile {
                     m.getRectangles().stream().map(Shape.class::cast).collect(Collectors.toList());
                 addMask(m.getStationName(), new MaskArea(shapeList, color));
               });
-      return profiles;
+      return profileItems;
     }
-    return null;
+    return Collections.emptyList();
   }
 
   public void applyAction(
@@ -259,9 +259,9 @@ public class Profile {
     DeidentificationTags.setNullTags(dcm);
     DeidentificationTags.removeTags(dcm);
 
-    final Marker CLINICAL_MARKER = MarkerFactory.getMarker("CLINICAL");
+    final Marker clincalMarker = MarkerFactory.getMarker("CLINICAL");
     LOGGER.info(
-        CLINICAL_MARKER,
+        clincalMarker,
         "SOPInstanceUID_OLD={} SOPInstanceUID_NEW={} SeriesInstanceUID_OLD={} "
             + "SeriesInstanceUID_NEW={} ProjectName={} ProfileName={} ProfileCodenames={}",
         SOPInstanceUID,
@@ -274,7 +274,7 @@ public class Profile {
     MDC.clear();
   }
 
-  private HMAC generateHMAC(DestinationEntity destinationEntity, String PatientID) {
+  private HMAC generateHMAC(DestinationEntity destinationEntity, String patientID) {
     ProjectEntity projectEntity = destinationEntity.getProjectEntity();
     if (projectEntity == null) {
       throw new IllegalStateException(
@@ -287,11 +287,11 @@ public class Profile {
           "Cannot build the HMAC no secret defined in the project associate at the destination");
     }
 
-    if (PatientID == null) {
+    if (patientID == null) {
       throw new IllegalStateException("Cannot build the HMAC no PatientID given");
     }
 
-    HashContext hashContext = new HashContext(secret, PatientID);
+    HashContext hashContext = new HashContext(secret, patientID);
     return new HMAC(hashContext);
   }
 
