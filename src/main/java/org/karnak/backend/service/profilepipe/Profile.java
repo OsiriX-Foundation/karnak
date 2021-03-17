@@ -56,8 +56,6 @@ public class Profile {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(Profile.class);
 
-  private final ProfileEntity profileEntity;
-  private final Pseudonym pseudonymUtil;
   private final List<ProfileItem> profiles;
   private final Pseudonym pseudonym;
   private final Map<String, MaskArea> maskMap;

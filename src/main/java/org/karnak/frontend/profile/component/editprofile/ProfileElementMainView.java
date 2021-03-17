@@ -48,7 +48,7 @@ public class ProfileElementMainView extends VerticalLayout {
 
   public void setProfile(ProfileEntity profileEntity) {
     if (profileEntity != null) {
-      List<ProfileElementEntity> profileElementEntities = profileEntity.getProfileElementEntities();
+      Set<ProfileElementEntity> profileElementEntities = profileEntity.getProfileElementEntities();
 
       if (profileElementEntities != null) {
         profileElementEntities.stream()
