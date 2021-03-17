@@ -27,7 +27,7 @@ import org.karnak.backend.enums.ProfileItemType;
 
 public class DeidentificationTags {
 
-  private DeidentificationTags () {}
+  private DeidentificationTags() {}
 
   public static void setDeidentificationMethodCodeSequence(
       Attributes dcm, ProjectEntity projectEntity) {
@@ -58,38 +58,40 @@ public class DeidentificationTags {
   }
 
   public static void removeTags(Attributes dcm) {
+    dcm.remove(Tag.ClinicalTrialProtocolEthicsCommitteeName);
+    dcm.remove(Tag.ClinicalTrialProtocolEthicsCommitteeApprovalNumber);
+    dcm.remove(Tag.DeidentificationMethod);
+    dcm.remove(Tag.ClinicalTrialTimePointID);
+    dcm.remove(Tag.ClinicalTrialTimePointDescription);
+  }
+
+  public static void setNullTags(Attributes dcm) {
+    dcm.setNull(Tag.ClinicalTrialCoordinatingCenterName, VR.LO);
     dcm.setNull(Tag.ClinicalTrialProtocolName, VR.LO);
     dcm.setNull(Tag.ClinicalTrialSiteID, VR.LO);
     dcm.setNull(Tag.ClinicalTrialSiteName, VR.LO);
-    dcm.remove(Tag.DeidentificationMethod);
+    dcm.setNull(Tag.ClinicalTrialSubjectReadingID, VR.LO);
   }
 
   public static void setTags(
       Attributes dcm,
-      String patientID,
-      String patientName,
+      String newPatientID,
+      String newPatientName,
       ProjectEntity projectEntity,
       String pseudonym) {
     final ProfileEntity profileEntity = projectEntity.getProfileEntity();
-    final String allCodeNames = getAllCodeNames(profileEntity);
     final LocalDateTime now = LocalDateTime.now();
 
-    dcm.setString(Tag.PatientID, VR.LO, patientID);
-    dcm.setString(Tag.PatientName, VR.PN, patientName);
+    dcm.setString(Tag.PatientID, VR.LO, newPatientID);
+    dcm.setString(Tag.PatientName, VR.PN, newPatientName);
 
     dcm.setString(Tag.PatientIdentityRemoved, VR.CS, "YES");
 
-    dcm.setString(Tag.ClinicalTrialSponsorName, VR.LO, allCodeNames);
+    dcm.setString(Tag.ClinicalTrialSponsorName, VR.LO, projectEntity.getName());
     dcm.setString(Tag.ClinicalTrialProtocolID, VR.LO, profileEntity.getName());
     dcm.setString(Tag.ClinicalTrialSubjectID, VR.LO, pseudonym);
 
     dcm.setString(Tag.InstanceCreationDate, VR.DA, DateTimeUtils.formatDA(now));
     dcm.setString(Tag.InstanceCreationTime, VR.TM, DateTimeUtils.formatTM(now));
-  }
-
-  public static String getAllCodeNames(ProfileEntity profileEntity) {
-    return profileEntity.getProfileElementEntities().stream()
-        .map(ProfileElementEntity::getCodename)
-        .collect(Collectors.joining("-"));
   }
 }

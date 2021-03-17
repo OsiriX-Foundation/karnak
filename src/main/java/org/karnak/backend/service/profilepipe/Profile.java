@@ -256,6 +256,7 @@ public class Profile {
         dcm, newPatientID, newPatientName, destinationEntity.getProjectEntity(), pseudonym);
     DeidentificationTags.setDeidentificationMethodCodeSequence(
         dcm, destinationEntity.getProjectEntity());
+    DeidentificationTags.setNullTags(dcm);
     DeidentificationTags.removeTags(dcm);
 
     final Marker CLINICAL_MARKER = MarkerFactory.getMarker("CLINICAL");
