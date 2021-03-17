@@ -29,7 +29,7 @@ import org.karnak.backend.data.repo.ForwardNodeRepo;
 import org.karnak.backend.dicom.DicomForwardDestination;
 import org.karnak.backend.dicom.ForwardDestination;
 import org.karnak.backend.dicom.ForwardDicomNode;
-import org.karnak.backend.dicom.web.WebForwardDestination;
+import org.karnak.backend.dicom.WebForwardDestination;
 import org.karnak.backend.enums.DestinationType;
 import org.karnak.backend.enums.NodeEventType;
 import org.karnak.backend.model.NodeEvent;

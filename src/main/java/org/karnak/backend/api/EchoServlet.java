@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.karnak.backend.dicom.DicomForwardDestination;
 import org.karnak.backend.dicom.ForwardDestination;
 import org.karnak.backend.dicom.ForwardDicomNode;
-import org.karnak.backend.dicom.web.WebForwardDestination;
+import org.karnak.backend.dicom.WebForwardDestination;
 import org.karnak.backend.service.gateway.GatewaySetUpService;
 import org.karnak.backend.util.ServletUtil;
 import org.slf4j.Logger;
