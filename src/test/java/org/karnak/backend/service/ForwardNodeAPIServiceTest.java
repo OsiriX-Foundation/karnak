@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2021 Karnak Team and other contributors.
+ *
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ */
 package org.karnak.backend.service;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -23,11 +32,12 @@ class ForwardNodeAPIServiceTest {
   public void setUp() {
 
     // Build mocked service
-    forwardNodeAPIService = new ForwardNodeAPIService(forwardNodeServiceMock, applicationEventPublisherMock);
+    forwardNodeAPIService =
+        new ForwardNodeAPIService(forwardNodeServiceMock, applicationEventPublisherMock);
   }
 
   @Test
-  void should_add_new_forward_node() {
+  void should_add_forward_node_node_type_add() {
     // Init data
     ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
 
@@ -35,8 +45,24 @@ class ForwardNodeAPIServiceTest {
     forwardNodeAPIService.addForwardNode(forwardNodeEntity);
 
     // Test results
+    Mockito.verify(forwardNodeServiceMock, Mockito.times(1)).getAllForwardNodes();
     Mockito.verify(forwardNodeServiceMock, Mockito.times(1))
-        .getAllForwardNodes();
+        .save(Mockito.any(ForwardNodeEntity.class));
+    Mockito.verify(applicationEventPublisherMock, Mockito.times(1))
+        .publishEvent(Mockito.any(NodeEvent.class));
+  }
+
+  @Test
+  void should_add_forward_node_node_type_update() {
+    // Init data
+    ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
+    forwardNodeEntity.setId(1L);
+
+    // Call service
+    forwardNodeAPIService.addForwardNode(forwardNodeEntity);
+
+    // Test results
+    Mockito.verify(forwardNodeServiceMock, Mockito.times(0)).getAllForwardNodes();
     Mockito.verify(forwardNodeServiceMock, Mockito.times(1))
         .save(Mockito.any(ForwardNodeEntity.class));
     Mockito.verify(applicationEventPublisherMock, Mockito.times(1))
@@ -50,15 +76,38 @@ class ForwardNodeAPIServiceTest {
     forwardNodeEntity.setId(1L);
 
     // Call service
-    forwardNodeAPIService.addForwardNode(forwardNodeEntity);
+    forwardNodeAPIService.updateForwardNode(forwardNodeEntity);
 
     // Test results
-    Mockito.verify(forwardNodeServiceMock, Mockito.times(0))
-        .getAllForwardNodes();
     Mockito.verify(forwardNodeServiceMock, Mockito.times(1))
         .save(Mockito.any(ForwardNodeEntity.class));
     Mockito.verify(applicationEventPublisherMock, Mockito.times(1))
         .publishEvent(Mockito.any(NodeEvent.class));
   }
 
+  @Test
+  void should_delete_forward_node() {
+    // Init data
+    ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
+    forwardNodeEntity.setId(1L);
+
+    // Call service
+    forwardNodeAPIService.deleteForwardNode(forwardNodeEntity);
+
+    // Test results
+    Mockito.verify(forwardNodeServiceMock, Mockito.times(1))
+        .delete(Mockito.any(ForwardNodeEntity.class));
+    Mockito.verify(applicationEventPublisherMock, Mockito.times(1))
+        .publishEvent(Mockito.any(NodeEvent.class));
+  }
+
+  @Test
+  void should_retrieve_forward_node_by_id() {
+    // Call service
+    forwardNodeAPIService.getForwardNodeById(1L);
+
+    // Test results
+    Mockito.verify(forwardNodeServiceMock, Mockito.times(1))
+        .get(Mockito.anyLong());
+  }
 }

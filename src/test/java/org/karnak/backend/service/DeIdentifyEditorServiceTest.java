@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2021 Karnak Team and other contributors.
+ *
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ */
 package org.karnak.backend.service;
 
 import org.dcm4che6.data.DicomObject;
@@ -37,8 +46,7 @@ class DeIdentifyEditorServiceTest {
     deIdentifyEditorService.init(destinationEntity);
 
     // Test results
-    Mockito.verify(profileServiceMock, Mockito.times(1))
-        .init(Mockito.any(ProfileEntity.class));
+    Mockito.verify(profileServiceMock, Mockito.times(1)).init(Mockito.any(ProfileEntity.class));
   }
 
   @Test
@@ -59,8 +67,10 @@ class DeIdentifyEditorServiceTest {
 
     // Test results
     Mockito.verify(profileServiceMock, Mockito.times(1))
-        .apply(Mockito.any(DicomObject.class), Mockito.any(DestinationEntity.class), Mockito.any(ProfileEntity.class), Mockito.any(AttributeEditorContext.class));
-
+        .apply(
+            Mockito.any(DicomObject.class),
+            Mockito.any(DestinationEntity.class),
+            Mockito.any(ProfileEntity.class),
+            Mockito.any(AttributeEditorContext.class));
   }
-
 }
