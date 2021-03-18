@@ -253,12 +253,10 @@ public class Profile {
 
     applyAction(dcm, dcmCopy, hmac, null, null, context);
 
-    DeidentificationTags.setTags(
+    DeidentificationTags.setClinicalTrialAttributes(
         dcm, newPatientID, newPatientName, destinationEntity.getProjectEntity(), pseudonym);
     DeidentificationTags.setDeidentificationMethodCodeSequence(
         dcm, destinationEntity.getProjectEntity());
-    DeidentificationTags.setNullTags(dcm);
-    DeidentificationTags.removeTags(dcm);
 
     final Marker clincalMarker = MarkerFactory.getMarker("CLINICAL");
     LOGGER.info(

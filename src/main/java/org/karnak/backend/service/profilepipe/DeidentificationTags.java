@@ -57,23 +57,7 @@ public class DeidentificationTags {
         });
   }
 
-  public static void removeTags(Attributes dcm) {
-    dcm.remove(Tag.ClinicalTrialProtocolEthicsCommitteeName);
-    dcm.remove(Tag.ClinicalTrialProtocolEthicsCommitteeApprovalNumber);
-    dcm.remove(Tag.DeidentificationMethod);
-    dcm.remove(Tag.ClinicalTrialTimePointID);
-    dcm.remove(Tag.ClinicalTrialTimePointDescription);
-  }
-
-  public static void setNullTags(Attributes dcm) {
-    dcm.setNull(Tag.ClinicalTrialCoordinatingCenterName, VR.LO);
-    dcm.setNull(Tag.ClinicalTrialProtocolName, VR.LO);
-    dcm.setNull(Tag.ClinicalTrialSiteID, VR.LO);
-    dcm.setNull(Tag.ClinicalTrialSiteName, VR.LO);
-    dcm.setNull(Tag.ClinicalTrialSubjectReadingID, VR.LO);
-  }
-
-  public static void setTags(
+  public static void setClinicalTrialAttributes(
       Attributes dcm,
       String newPatientID,
       String newPatientName,
@@ -82,10 +66,16 @@ public class DeidentificationTags {
     final ProfileEntity profileEntity = projectEntity.getProfileEntity();
     final LocalDateTime now = LocalDateTime.now();
 
+    // D IN BASIC DICOM PROFILE
     dcm.setString(Tag.PatientID, VR.LO, newPatientID);
     dcm.setString(Tag.PatientName, VR.PN, newPatientName);
 
     dcm.setString(Tag.PatientIdentityRemoved, VR.CS, "YES");
+
+    // ???
+    dcm.setString(Tag.ClinicalTrialProtocolEthicsCommitteeName, VR.LO, projectEntity.getName());
+    dcm.setString(Tag.ClinicalTrialSubjectReadingID, VR.LO, projectEntity.getName());
+    // ???
 
     dcm.setString(Tag.ClinicalTrialSponsorName, VR.LO, projectEntity.getName());
     dcm.setString(Tag.ClinicalTrialProtocolID, VR.LO, profileEntity.getName());
@@ -93,5 +83,19 @@ public class DeidentificationTags {
 
     dcm.setString(Tag.InstanceCreationDate, VR.DA, DateTimeUtils.formatDA(now));
     dcm.setString(Tag.InstanceCreationTime, VR.TM, DateTimeUtils.formatTM(now));
+
+    // X NOT IN BASIC DICOM PROFILE
+    dcm.remove(Tag.DeidentificationMethod);
+
+    // X IN BASIC DICOM PROFILE
+    // dcm.remove(Tag.ClinicalTrialProtocolEthicsCommitteeApprovalNumber);
+    // dcm.remove(Tag.ClinicalTrialTimePointDescription);
+
+    // Z IN BASIC DICOM PROFILE
+    // dcm.setNull(Tag.ClinicalTrialCoordinatingCenterName, VR.LO);
+    // dcm.setNull(Tag.ClinicalTrialProtocolName, VR.LO);
+    // dcm.setNull(Tag.ClinicalTrialSiteID, VR.LO);
+    // dcm.setNull(Tag.ClinicalTrialSiteName, VR.LO);
+    // dcm.setNull(Tag.ClinicalTrialTimePointID, VR.LO);
   }
 }
