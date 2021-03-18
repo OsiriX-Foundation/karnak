@@ -40,7 +40,7 @@ services:
 
   node-dicom:
     image: dcm4che/dcm4che-tools:5.22.6
-    entrypoint: ["storescp", "-b", "NODE:4444"]
+    entrypoint: ["storescp", "-b", "NODE:4444", "--directory", "/home/images"]
     ports:
       - 4444:4444
 
