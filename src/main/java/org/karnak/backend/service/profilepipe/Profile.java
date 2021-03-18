@@ -253,8 +253,10 @@ public class Profile {
 
     applyAction(dcm, dcmCopy, hmac, null, null, context);
 
+    // Set tags by default
+    DeidentificationTags.setTagsByDefault(dcm, newPatientID, newPatientName);
     DeidentificationTags.setClinicalTrialAttributes(
-        dcm, newPatientID, newPatientName, destinationEntity.getProjectEntity(), pseudonym);
+        dcm, destinationEntity.getProjectEntity(), pseudonym);
     DeidentificationTags.setDeidentificationMethodCodeSequence(
         dcm, destinationEntity.getProjectEntity());
 

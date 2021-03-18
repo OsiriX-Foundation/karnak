@@ -57,45 +57,37 @@ public class DeidentificationTags {
         });
   }
 
-  public static void setClinicalTrialAttributes(
-      Attributes dcm,
-      String newPatientID,
-      String newPatientName,
-      ProjectEntity projectEntity,
-      String pseudonym) {
-    final ProfileEntity profileEntity = projectEntity.getProfileEntity();
+  public static void setTagsByDefault(Attributes dcm, String newPatientID, String newPatientName) {
     final LocalDateTime now = LocalDateTime.now();
-
-    // D IN BASIC DICOM PROFILE
     dcm.setString(Tag.PatientID, VR.LO, newPatientID);
     dcm.setString(Tag.PatientName, VR.PN, newPatientName);
-
+    dcm.setString(Tag.InstanceCreationDate, VR.DA, DateTimeUtils.formatDA(now));
+    dcm.setString(Tag.InstanceCreationTime, VR.TM, DateTimeUtils.formatTM(now));
     dcm.setString(Tag.PatientIdentityRemoved, VR.CS, "YES");
+    dcm.remove(Tag.DeidentificationMethod);
+  }
+
+  public static void setClinicalTrialAttributes(
+      Attributes dcm, ProjectEntity projectEntity, String pseudonym) {
+    final ProfileEntity profileEntity = projectEntity.getProfileEntity();
 
     // ???
     dcm.setString(Tag.ClinicalTrialProtocolEthicsCommitteeName, VR.LO, projectEntity.getName());
     dcm.setString(Tag.ClinicalTrialSubjectReadingID, VR.LO, projectEntity.getName());
-    // ???
 
     dcm.setString(Tag.ClinicalTrialSponsorName, VR.LO, projectEntity.getName());
     dcm.setString(Tag.ClinicalTrialProtocolID, VR.LO, profileEntity.getName());
     dcm.setString(Tag.ClinicalTrialSubjectID, VR.LO, pseudonym);
 
-    dcm.setString(Tag.InstanceCreationDate, VR.DA, DateTimeUtils.formatDA(now));
-    dcm.setString(Tag.InstanceCreationTime, VR.TM, DateTimeUtils.formatTM(now));
-
-    // X NOT IN BASIC DICOM PROFILE
-    dcm.remove(Tag.DeidentificationMethod);
-
     // X IN BASIC DICOM PROFILE
-    // dcm.remove(Tag.ClinicalTrialProtocolEthicsCommitteeApprovalNumber);
-    // dcm.remove(Tag.ClinicalTrialTimePointDescription);
+    dcm.remove(Tag.ClinicalTrialProtocolEthicsCommitteeApprovalNumber);
+    dcm.remove(Tag.ClinicalTrialTimePointDescription);
 
     // Z IN BASIC DICOM PROFILE
-    // dcm.setNull(Tag.ClinicalTrialCoordinatingCenterName, VR.LO);
-    // dcm.setNull(Tag.ClinicalTrialProtocolName, VR.LO);
-    // dcm.setNull(Tag.ClinicalTrialSiteID, VR.LO);
-    // dcm.setNull(Tag.ClinicalTrialSiteName, VR.LO);
-    // dcm.setNull(Tag.ClinicalTrialTimePointID, VR.LO);
+    dcm.setNull(Tag.ClinicalTrialCoordinatingCenterName, VR.LO);
+    dcm.setNull(Tag.ClinicalTrialProtocolName, VR.LO);
+    dcm.setNull(Tag.ClinicalTrialSiteID, VR.LO);
+    dcm.setNull(Tag.ClinicalTrialSiteName, VR.LO);
+    dcm.setNull(Tag.ClinicalTrialTimePointID, VR.LO);
   }
 }
