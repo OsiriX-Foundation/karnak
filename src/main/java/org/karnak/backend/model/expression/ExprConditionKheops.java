@@ -9,19 +9,23 @@
  */
 package org.karnak.backend.model.expression;
 
-import org.dcm4che6.data.DicomObject;
-import org.dcm4che6.util.TagUtils;
+import org.dcm4che3.data.Attributes;
+import org.dcm4che3.util.TagUtils;
 
 public class ExprConditionKheops implements ExpressionItem {
 
-  private final DicomObject dcm;
+  private final Attributes dcm;
 
-  public ExprConditionKheops(DicomObject dcm) {
+  public ExprConditionKheops() {
+    this(new Attributes());
+  }
+
+  public ExprConditionKheops(Attributes dcm) {
     this.dcm = dcm;
   }
 
   public static void expressionValidation(String condition) {
-    ExprConditionKheops exprConditionKheops = new ExprConditionKheops(DicomObject.newDicomObject());
+    ExprConditionKheops exprConditionKheops = new ExprConditionKheops();
     ExpressionResult.get(condition, exprConditionKheops, Boolean.class);
   }
 
@@ -36,7 +40,7 @@ public class ExprConditionKheops implements ExpressionItem {
   }
 
   public boolean tagValueIsPresent(int tag, String value) {
-    String dcmValue = dcm.getString(tag).orElse(null);
+    String dcmValue = dcm.getString(tag);
     return dcmValue != null && dcmValue.equals(value);
   }
 
@@ -46,7 +50,7 @@ public class ExprConditionKheops implements ExpressionItem {
   }
 
   public boolean tagValueContains(int tag, String value) {
-    String dcmValue = dcm.getString(tag).orElse(null);
+    String dcmValue = dcm.getString(tag);
     return dcmValue != null && dcmValue.contains(value);
   }
 
@@ -56,7 +60,7 @@ public class ExprConditionKheops implements ExpressionItem {
   }
 
   public boolean tagValueBeginsWith(int tag, String value) {
-    String dcmValue = dcm.getString(tag).orElse(null);
+    String dcmValue = dcm.getString(tag);
     return dcmValue != null && dcmValue.startsWith(value);
   }
 
@@ -66,7 +70,7 @@ public class ExprConditionKheops implements ExpressionItem {
   }
 
   public boolean tagValueEndsWith(int tag, String value) {
-    String dcmValue = dcm.getString(tag).orElse(null);
+    String dcmValue = dcm.getString(tag);
     return dcmValue != null && dcmValue.endsWith(value);
   }
 }

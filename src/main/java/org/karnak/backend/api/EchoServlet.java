@@ -19,7 +19,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.karnak.backend.service.gateway.GatewaySetUp;
+import org.karnak.backend.dicom.DicomForwardDestination;
+import org.karnak.backend.dicom.ForwardDestination;
+import org.karnak.backend.dicom.ForwardDicomNode;
+import org.karnak.backend.dicom.WebForwardDestination;
+import org.karnak.backend.service.gateway.GatewaySetUpService;
 import org.karnak.backend.util.ServletUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,12 +31,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.weasis.dicom.op.Echo;
 import org.weasis.dicom.param.AdvancedParams;
 import org.weasis.dicom.param.ConnectOptions;
-import org.weasis.dicom.param.DicomForwardDestination;
 import org.weasis.dicom.param.DicomNode;
 import org.weasis.dicom.param.DicomState;
-import org.weasis.dicom.param.ForwardDestination;
-import org.weasis.dicom.param.ForwardDicomNode;
-import org.weasis.dicom.web.WebForwardDestination;
 
 @WebServlet(urlPatterns = "/echo")
 public class EchoServlet extends HttpServlet {
@@ -40,12 +40,12 @@ public class EchoServlet extends HttpServlet {
   @Serial private static final long serialVersionUID = -8349040600894140520L;
   private static final Logger LOGGER = LoggerFactory.getLogger(EchoServlet.class);
 
-  @Autowired private GatewaySetUp globalConfig;
+  @Autowired private GatewaySetUpService globalConfig;
 
   @Override
   public final void init() throws ServletException {
     if (globalConfig == null) {
-      LOGGER.error("EchoServlet service cannot start: GatewaySetUp is missing.");
+      LOGGER.error("EchoServlet service cannot start: GatewaySetUpService is missing.");
       destroy();
     }
   }

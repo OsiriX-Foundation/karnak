@@ -9,6 +9,7 @@
  */
 package org.karnak.backend.data.entity;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -24,38 +25,24 @@ import javax.validation.constraints.Size;
 
 @Entity(name = "ForwardNode")
 @Table(name = "forward_node")
-public class ForwardNodeEntity {
+public class ForwardNodeEntity implements Serializable {
 
-  // Specification of a DICOM source node (the one which sends images to the
-  // gateway). When no source node is defined all the DICOM nodes are accepted by
-  // the gateway.
-  @OneToMany(
-      mappedBy = "forwardNodeEntity",
-      cascade = CascadeType.ALL,
-      fetch = FetchType.EAGER,
-      orphanRemoval = true)
-  private final Set<DicomSourceNodeEntity> sourceNodes = new HashSet<>();
-  // Specification of a final DICOM destination node. Multiple destinations can be
-  // defined either as a DICOM or DICOMWeb type.
-  @OneToMany(
-      mappedBy = "forwardNodeEntity",
-      cascade = CascadeType.ALL,
-      fetch = FetchType.EAGER,
-      orphanRemoval = true)
-  private final Set<DestinationEntity> destinationEntities = new HashSet<>();
+  private static final long serialVersionUID = 2095439136652046994L;
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
-
   private String description;
   // AETitle which defined a mapping of the gateway. This AETitle is configured as
   // a destination in the DICOM component that sends images to the gateway.
-  @NotBlank(message = "Forward AETitle is mandatory")
-  @Size(max = 16, message = "Forward AETitle has more than 16 characters")
   private String fwdAeTitle;
+  // Specification of a DICOM source node (the one which sends images to the
+  // gateway). When no source node is defined all the DICOM nodes are accepted by
+  // the gateway.
+  private Set<DicomSourceNodeEntity> sourceNodes = new HashSet<>();
+  // Specification of a final DICOM destination node. Multiple destinations can be
+  // defined either as a DICOM or DICOMWeb type.
+  private Set<DestinationEntity> destinationEntities = new HashSet<>();
 
-  protected ForwardNodeEntity() {
+  public ForwardNodeEntity() {
     this.fwdAeTitle = "";
     this.description = "";
   }
@@ -66,16 +53,17 @@ public class ForwardNodeEntity {
   }
 
   public static ForwardNodeEntity ofEmpty() {
-    ForwardNodeEntity instance = new ForwardNodeEntity();
-    return instance;
+    return new ForwardNodeEntity();
   }
 
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
   public Long getId() {
     return id;
   }
 
-  public boolean isNewData() {
-    return id == null;
+  public void setId(Long id) {
+    this.id = id;
   }
 
   public String getDescription() {
@@ -86,6 +74,8 @@ public class ForwardNodeEntity {
     this.description = description;
   }
 
+  @NotBlank(message = "Forward AETitle is mandatory")
+  @Size(max = 16, message = "Forward AETitle has more than 16 characters")
   public String getFwdAeTitle() {
     return this.fwdAeTitle;
   }
@@ -94,8 +84,17 @@ public class ForwardNodeEntity {
     this.fwdAeTitle = fwdAeTitle;
   }
 
+  @OneToMany(
+      mappedBy = "forwardNodeEntity",
+      cascade = CascadeType.ALL,
+      fetch = FetchType.EAGER,
+      orphanRemoval = true)
   public Set<DicomSourceNodeEntity> getSourceNodes() {
     return this.sourceNodes;
+  }
+
+  public void setSourceNodes(Set<DicomSourceNodeEntity> sourceNodes) {
+    this.sourceNodes = sourceNodes;
   }
 
   public void addSourceNode(DicomSourceNodeEntity sourceNode) {
@@ -104,13 +103,20 @@ public class ForwardNodeEntity {
   }
 
   public void removeSourceNode(DicomSourceNodeEntity sourceNode) {
-    if (this.sourceNodes.remove(sourceNode)) {
-      sourceNode.setForwardNodeEntity(null);
-    }
+    this.sourceNodes.remove(sourceNode);
   }
 
+  @OneToMany(
+      mappedBy = "forwardNodeEntity",
+      cascade = CascadeType.ALL,
+      fetch = FetchType.EAGER,
+      orphanRemoval = true)
   public Set<DestinationEntity> getDestinationEntities() {
     return destinationEntities;
+  }
+
+  public void setDestinationEntities(Set<DestinationEntity> destinationEntities) {
+    this.destinationEntities = destinationEntities;
   }
 
   public void addDestination(DestinationEntity destinationEntity) {
@@ -119,9 +125,7 @@ public class ForwardNodeEntity {
   }
 
   public void removeDestination(DestinationEntity destinationEntity) {
-    if (this.destinationEntities.remove(destinationEntity)) {
-      destinationEntity.setForwardNodeEntity(null);
-    }
+    this.destinationEntities.remove(destinationEntity);
   }
 
   /**

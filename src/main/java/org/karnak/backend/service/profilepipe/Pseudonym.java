@@ -12,8 +12,8 @@ package org.karnak.backend.service.profilepipe;
 import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.net.URLClassLoader;
-import org.dcm4che6.data.DicomObject;
-import org.dcm4che6.util.TagUtils;
+import org.dcm4che3.data.Attributes;
+import org.dcm4che3.util.TagUtils;
 import org.karnak.backend.api.PseudonymApi;
 import org.karnak.backend.cache.MainzellistePatient;
 import org.karnak.backend.cache.PatientClient;
@@ -35,12 +35,12 @@ public class Pseudonym {
   private final PatientClient mainzellisteCache;
 
   public Pseudonym() {
-    externalIdCache = AppConfig.getInstance().getExternalIDCache();
-    mainzellisteCache = AppConfig.getInstance().getMainzellisteCache();
+    this.externalIdCache = AppConfig.getInstance().getExternalIDCache();
+    this.mainzellisteCache = AppConfig.getInstance().getMainzellisteCache();
   }
 
   public String generatePseudonym(
-      DestinationEntity destinationEntity, DicomObject dcm, String defaultIssuerOfPatientID) {
+      DestinationEntity destinationEntity, Attributes dcm, String defaultIssuerOfPatientID) {
 
     final PatientMetadata patientMetadata = new PatientMetadata(dcm, defaultIssuerOfPatientID);
 
@@ -81,9 +81,9 @@ public class Pseudonym {
   }
 
   private String getPseudonymInDicom(
-      DicomObject dcm, DestinationEntity destinationEntity, PatientMetadata patientMetadata) {
+      Attributes dcm, DestinationEntity destinationEntity, PatientMetadata patientMetadata) {
     final String cleanTag = destinationEntity.getTag().replaceAll("[(),]", "").toUpperCase();
-    final String tagValue = dcm.getString(TagUtils.intFromHexString(cleanTag)).orElse(null);
+    final String tagValue = dcm.getString(TagUtils.intFromHexString(cleanTag));
     String pseudonymExtidInTag = null;
 
     if (tagValue != null

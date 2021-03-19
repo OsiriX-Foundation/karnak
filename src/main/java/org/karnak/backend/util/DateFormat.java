@@ -11,14 +11,15 @@ package org.karnak.backend.util;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.List;
-import org.dcm4che6.data.DicomElement;
-import org.dcm4che6.data.DicomObject;
-import org.dcm4che6.util.DateTimeUtils;
+import org.dcm4che3.data.Attributes;
 import org.karnak.backend.data.entity.ArgumentEntity;
+import org.karnak.backend.dicom.DateTimeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +28,6 @@ public class DateFormat {
 
   public static String formatDA(String date, String option) {
     LocalDate localDate = DateTimeUtils.parseDA(date);
-
     switch (option) {
       case "day":
         localDate = localDate.minusDays(localDate.getDayOfMonth() - 1L);
@@ -37,29 +37,30 @@ public class DateFormat {
         localDate = localDate.minusMonths(localDate.getMonthValue() - 1L);
     }
 
-    String newLocalDate = localDate.format(DateTimeFormatter.ofPattern("YYYYMMdd"));
-    return newLocalDate;
+    return localDate.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
   }
 
   public static String formatDT(String dateTime, String option) {
 
-    LocalDateTime localDateTime = LocalDateTime.from(DateTimeUtils.parseDT(dateTime));
+    Temporal localDateTime = DateTimeUtils.parseDT(dateTime);
 
     switch (option) {
       case "day":
-        localDateTime = localDateTime.minusDays(localDateTime.getDayOfMonth() - 1L);
+        localDateTime =
+            localDateTime.minus(localDateTime.get(ChronoField.DAY_OF_MONTH) - 1L, ChronoUnit.DAYS);
         break;
       case "month_day":
-        localDateTime = localDateTime.minusDays(localDateTime.getDayOfMonth() - 1L);
-        localDateTime = localDateTime.minusMonths(localDateTime.getMonthValue() - 1L);
+        localDateTime =
+            localDateTime.minus(localDateTime.get(ChronoField.DAY_OF_MONTH) - 1L, ChronoUnit.DAYS);
+        localDateTime =
+            localDateTime.minus(
+                localDateTime.get(ChronoField.MONTH_OF_YEAR) - 1L, ChronoUnit.MONTHS);
     }
 
-    String newLocalDate = DateTimeUtils.formatDT(localDateTime);
-    return newLocalDate;
+    return DateTimeUtils.formatDT(localDateTime);
   }
 
-  public static String format(
-      DicomObject dcm, DicomElement dcmEl, List<ArgumentEntity> argumentEntities)
+  public static String format(Attributes dcm, int tag, List<ArgumentEntity> argumentEntities)
       throws DateTimeException {
     try {
       verifyPatternArguments(argumentEntities);
@@ -67,7 +68,7 @@ public class DateFormat {
       throw e;
     }
 
-    String dcmElValue = dcm.getString(dcmEl.tag()).orElse(null);
+    String dcmElValue = dcm.getString(tag);
     String format = "";
 
     for (ArgumentEntity argumentEntity : argumentEntities) {
@@ -83,15 +84,11 @@ public class DateFormat {
       }
     }
     if (dcmElValue != null) {
-      try {
-        return switch (dcmEl.vr()) {
-          case DA -> formatDA(dcmElValue, format);
-          case DT -> formatDT(dcmElValue, format);
-          default -> null;
-        };
-      } catch (DateTimeException DateTimeException) {
-        throw DateTimeException;
-      }
+      return switch (dcm.getVR(tag)) {
+        case DA -> formatDA(dcmElValue, format);
+        case DT -> formatDT(dcmElValue, format);
+        default -> null;
+      };
     } else {
       return null;
     }
@@ -103,8 +100,8 @@ public class DateFormat {
     listValue.add("day");
     listValue.add("month_day");
 
-    if (!argumentEntities.stream()
-        .anyMatch(
+    if (argumentEntities.stream()
+        .noneMatch(
             argument ->
                 argument.getKey().equals("remove") && listValue.contains(argument.getValue()))) {
       IllegalArgumentException missingParameters =

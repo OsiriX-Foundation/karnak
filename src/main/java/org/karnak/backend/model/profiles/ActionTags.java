@@ -10,9 +10,8 @@
 package org.karnak.backend.model.profiles;
 
 import java.awt.Color;
-import org.dcm4che6.data.DicomElement;
-import org.dcm4che6.data.DicomObject;
-import org.dcm4che6.data.VR;
+import org.dcm4che3.data.Attributes;
+import org.dcm4che3.data.VR;
 import org.karnak.backend.data.entity.ExcludedTagEntity;
 import org.karnak.backend.data.entity.IncludedTagEntity;
 import org.karnak.backend.data.entity.ProfileElementEntity;
@@ -75,10 +74,9 @@ public class ActionTags extends AbstractProfileItem {
   }
 
   @Override
-  public ActionItem getAction(
-      DicomObject dcm, DicomObject dcmCopy, DicomElement dcmElem, HMAC hmac) {
-    if (exceptedTagsAction.get(dcmElem.tag()) == null) {
-      return tagsAction.get(dcmElem.tag());
+  public ActionItem getAction(Attributes dcm, Attributes dcmCopy, int tag, HMAC hmac) {
+    if (exceptedTagsAction.get(tag) == null) {
+      return tagsAction.get(tag);
     }
     return null;
   }
@@ -99,11 +97,7 @@ public class ActionTags extends AbstractProfileItem {
     }
 
     final ExpressionError expressionError =
-        ExpressionResult.isValid(
-            condition,
-            new ExprConditionDestination(
-                1, VR.AE, DicomObject.newDicomObject(), DicomObject.newDicomObject()),
-            Boolean.class);
+        ExpressionResult.isValid(condition, new ExprConditionDestination(1, VR.AE), Boolean.class);
     if (condition != null && !expressionError.isValid()) {
       throw new Exception(expressionError.getMsg());
     }

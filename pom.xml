@@ -2,9 +2,108 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
   <artifactId>karnak</artifactId>
+  <name>${project.artifactId}</name>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.karnak</groupId>
+  <licenses>
+    <license>
+      <distribution>repo</distribution>
+      <name>Eclipse Public License v2.0</name>
+      <url>http://www.eclipse.org/legal/epl-v20.html</url>
+    </license>
+  </licenses>
+
+  <!-- Version -->
+  <version>0.9.3-SNAPSHOT</version>
+
+  <!-- Packaging -->
+  <packaging>jar</packaging>
+
+  <!-- Properties -->
+  <properties>
+    <enforcer.jdk-version>[${java.version},)</enforcer.jdk-version>
+    <enforcer.maven-version>[3.2.0,)</enforcer.maven-version>
+    <java.version>14</java.version>
+    <javax.el.version>3.0.0</javax.el.version>
+    <javax.mail.version>1.6.2</javax.mail.version>
+    <maven-surefire-plugin.version>3.0.0-M4</maven-surefire-plugin.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <springframework.version>2.4.0</springframework.version>
+    <vaadin.version>17.0.10</vaadin.version>
+    <weasis-dicom-tools.version>5.23.1-IMG-RELEASE</weasis-dicom-tools.version>
+    <weasis.opencv.native.version>4.5.0-dcm</weasis.opencv.native.version>
+    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+    <sonar.java.source>${java.version}</sonar.java.source>
+    <sonar.java.target>${java.version}</sonar.java.target>
+    <sonar.organization>osirix-foundation-1</sonar.organization>
+    <sonar.projectKey>karnak</sonar.projectKey>
+    <h2.version>1.4.200</h2.version>
+  </properties>
+
+  <!-- Repositories -->
+  <repositories>
+    <repository>
+      <id>central</id>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <url>https://repo.maven.apache.org/maven2</url>
+    </repository>
+    <repository>
+      <id>vaadin-addons</id>
+      <url>http://maven.vaadin.com/vaadin-addons</url>
+    </repository>
+    <repository>
+      <id>mvn-repo-master</id>
+      <url>https://raw.github.com/nroduit/mvn-repo/master/</url>
+    </repository>
+    <repository>
+      <id>www.dcm4che.org</id>
+      <name>dcm4che Repository</name>
+      <url>http://maven.dcm4che.org</url>
+      <!-- <url>http://www.dcm4che.org/maven2</url> (which will redirected to
+        https://www.dcm4che.org/maven2). -->
+    </repository>
+  </repositories>
+
+  <!-- Build-->
   <build>
     <plugins>
+      <plugin>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <configuration>
+              <rules>
+                <requireJavaVersion>
+                  <version>${enforcer.jdk-version}</version>
+                </requireJavaVersion>
+                <requireMavenVersion>
+                  <version>${enforcer.maven-version}</version>
+                </requireMavenVersion>
+              </rules>
+            </configuration>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <id>min-requirement</id>
+          </execution>
+        </executions>
+        <groupId>org.apache.maven.plugins</groupId>
+        <version>3.0.0-M3</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+        </configuration>
+        <groupId>org.apache.maven.plugins</groupId>
+        <version>3.8.1</version>
+      </plugin>
       <plugin>
         <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
@@ -140,6 +239,8 @@
       </resource>
     </resources>
   </build>
+
+  <!-- Dependencies -->
   <dependencies>
     <dependency>
       <artifactId>spring-boot-starter</artifactId>
@@ -230,6 +331,13 @@
       <groupId>org.springframework.boot</groupId>
     </dependency>
 
+    <!-- Oauth2 -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-oauth2-client</artifactId>
+      <version>2.2.6.RELEASE</version>
+    </dependency>
+
     <dependency>
       <artifactId>spring-boot-devtools</artifactId>
       <groupId>org.springframework.boot</groupId>
@@ -318,7 +426,6 @@
       <version>2.0.10</version>
     </dependency>
 
-
     <dependency>
       <artifactId>validation-api</artifactId>
       <groupId>javax.validation</groupId>
@@ -332,13 +439,6 @@
       <artifactId>logback-classic</artifactId>
       <groupId>ch.qos.logback</groupId>
     </dependency>
-
-    <!-- KeyCloack -->
-    <!--    <dependency>-->
-    <!--      <artifactId>keycloak-spring-boot-starter</artifactId>-->
-    <!--      <groupId>org.keycloak</groupId>-->
-    <!--      <version>11.0.3</version>-->
-    <!--    </dependency>-->
 
     <!--	Jackson -->
     <dependency>
@@ -368,9 +468,31 @@
       <version>${springframework.version}</version>
     </dependency>
 
+    <!-- DB H2 for tests -->
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <version>${h2.version}</version>
+    </dependency>
+
   </dependencies>
+
+  <!-- Dependency Management -->
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <groupId>org.springframework.boot</groupId>
+        <scope>import</scope>
+        <type>pom</type>
+        <version>${springframework.version}</version>
+      </dependency>
+      <dependency>
+        <artifactId>javax.servlet-api</artifactId>
+        <groupId>javax.servlet</groupId>
+        <scope>provided</scope>
+        <version>3.1.0</version>
+      </dependency>
       <dependency>
         <artifactId>vaadin-bom</artifactId>
         <groupId>com.vaadin</groupId>
@@ -378,42 +500,11 @@
         <type>pom</type>
         <version>${vaadin.version}</version>
       </dependency>
-      <!--      <dependency>-->
-      <!--        <artifactId>keycloak-adapter-bom</artifactId>-->
-      <!--        <groupId>org.keycloak.bom</groupId>-->
-      <!--        <scope>import</scope>-->
-      <!--        <type>pom</type>-->
-      <!--        <version>11.0.3</version>-->
-      <!--      </dependency>-->
     </dependencies>
   </dependencyManagement>
-  <modelVersion>4.0.0</modelVersion>
 
-  <name>${project.artifactId}</name>
-
-  <packaging>jar</packaging>
-
-  <parent>
-    <artifactId>karnak-parent</artifactId>
-    <groupId>org.karnak</groupId>
-    <relativePath>parent/pom.xml</relativePath>
-    <version>0.9.3-SNAPSHOT</version>
-  </parent>
-
+  <!-- Profiles -->
   <profiles>
-    <profile>
-      <dependencies>
-        <dependency>
-          <artifactId>h2</artifactId>
-          <groupId>com.h2database</groupId>
-          <scope>runtime</scope>
-        </dependency>
-      </dependencies>
-      <id>devh2</id>
-      <properties>
-        <activatedProperties>devh2</activatedProperties>
-      </properties>
-    </profile>
     <profile>
       <!-- Production mode is activated using -Pproduction -->
       <build>
@@ -459,14 +550,6 @@
       </properties>
     </profile>
   </profiles>
-
-  <properties>
-    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-    <sonar.java.source>${java.version}</sonar.java.source>
-    <sonar.java.target>${java.version}</sonar.java.target>
-    <sonar.organization>osirix-foundation-1</sonar.organization>
-    <sonar.projectKey>karnak</sonar.projectKey>
-  </properties>
 
 </project>
 

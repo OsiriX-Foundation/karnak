@@ -9,6 +9,8 @@
  */
 package org.karnak.backend.data.entity;
 
+import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -28,22 +30,38 @@ import org.hibernate.annotations.DiscriminatorOptions;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "tag_type")
 @DiscriminatorOptions(force = true)
-public abstract class TagEntity {
+public abstract class TagEntity implements Serializable {
 
-  String tagValue;
+  private static final long serialVersionUID = -1172918773653197764L;
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
-
-  @ManyToOne()
-  @JoinColumn(name = "profile_element_id", nullable = false)
   private ProfileElementEntity profileElementEntity;
+  private String tagValue;
 
   public TagEntity() {}
 
   public TagEntity(String tagValue, ProfileElementEntity profileElementEntity) {
     this.tagValue = tagValue;
+    this.profileElementEntity = profileElementEntity;
+  }
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  @ManyToOne()
+  @JoinColumn(name = "profile_element_id", nullable = false)
+  public ProfileElementEntity getProfileElementEntity() {
+    return profileElementEntity;
+  }
+
+  public void setProfileElementEntity(ProfileElementEntity profileElementEntity) {
     this.profileElementEntity = profileElementEntity;
   }
 
@@ -53,5 +71,22 @@ public abstract class TagEntity {
 
   public void setTagValue(String tagValue) {
     this.tagValue = tagValue;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    TagEntity tagEntity = (TagEntity) o;
+    return Objects.equals(id, tagEntity.id) && Objects.equals(tagValue, tagEntity.tagValue);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, tagValue);
   }
 }

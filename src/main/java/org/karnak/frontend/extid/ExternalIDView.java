@@ -27,7 +27,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import org.karnak.backend.cache.CachedPatient;
 import org.karnak.frontend.MainLayout;
-import org.karnak.frontend.forwardnode.ProjectDropDown;
+import org.karnak.frontend.component.ProjectDropDown;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 
 @Route(value = "extid", layout = MainLayout.class)
@@ -50,10 +51,13 @@ public class ExternalIDView extends HorizontalLayout {
   private transient InputStream inputStream;
   private Upload uploadCsvButton;
   private Div uploadCsvLabelDiv;
+  private final transient ExternalIDLogic externalIDLogic;
 
-  // https://vaadin.com/components/vaadin-grid/java-examples/assigning-data
-  public ExternalIDView() {
+  @Autowired
+  public ExternalIDView(final ExternalIDLogic externalIDLogic) {
     setSizeFull();
+    this.externalIDLogic = externalIDLogic;
+    this.externalIDLogic.setExternalIDView(this);
     getStyle().set("overflow-y", "auto");
     VerticalLayout verticalLayout = new VerticalLayout();
 
@@ -69,6 +73,7 @@ public class ExternalIDView extends HorizontalLayout {
     setUploadCSVElement();
     projectDropDown = new ProjectDropDown();
     projectDropDown.setWidth("50%");
+    projectDropDown.setItems(externalIDLogic.retrieveProject());
     externalIDGrid = new ExternalIDGrid();
     externalIDForm = new ExternalIDForm();
 

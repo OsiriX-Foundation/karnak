@@ -9,7 +9,6 @@
  */
 package org.karnak.frontend.dicom.echo;
 
-import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.HasValue.ValueChangeEvent;
@@ -24,7 +23,6 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
-import com.vaadin.flow.data.provider.DataChangeEvent;
 import com.vaadin.flow.data.provider.DataProviderListener;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
@@ -36,12 +34,15 @@ import org.karnak.backend.enums.MessageLevel;
 import org.karnak.backend.model.dicom.ConfigNode;
 import org.karnak.backend.model.dicom.DicomNodeList;
 import org.karnak.backend.model.dicom.Message;
-import org.karnak.backend.service.dicom.DicomNodeManager;
+import org.karnak.backend.util.DicomNodeUtil;
 import org.karnak.frontend.component.AbstractDialog;
 
 public class DicomEchoSelectionDialog extends AbstractDialog {
 
   private static final long serialVersionUID = 1L;
+
+  // CONTROLLER
+  private DicomEchoSelectionLogic logic = new DicomEchoSelectionLogic(this);
 
   // UI COMPONENTS
   private Dialog dialog;
@@ -64,7 +65,7 @@ public class DicomEchoSelectionDialog extends AbstractDialog {
     init();
     createMainLayout();
     dialog.add(mainLayout);
-    selectDicomNoldeList(DicomNodeManager.getAllDicomNodeTypesDefinedLocally());
+    selectDicomNoldeList(DicomNodeUtil.getAllDicomNodeTypesDefinedLocally());
   }
 
   public void selectDicomNoldeList(List<DicomNodeList> nodeLists) {
@@ -138,29 +139,16 @@ public class DicomEchoSelectionDialog extends AbstractDialog {
     buildDataProviders();
   }
 
-  @SuppressWarnings("serial")
   private void buildDataProviders() {
     dataProviderForDicomNodeTypes = new ListDataProvider<>(dicomNodeTypes);
 
     dataProviderForDicomNodeTypes.addDataProviderListener(
-        new DataProviderListener<DicomNodeList>() {
-
-          @Override
-          public void onDataChange(DataChangeEvent<DicomNodeList> event) {
-            selectFirstItemInDicomNodeTypes();
-          }
-        });
+        (DataProviderListener<DicomNodeList>) event -> selectFirstItemInDicomNodeTypes());
 
     dataProviderForDicomNodes = new ListDataProvider<>(dicomNodes);
 
     dataProviderForDicomNodes.addDataProviderListener(
-        new DataProviderListener<ConfigNode>() {
-
-          @Override
-          public void onDataChange(DataChangeEvent<ConfigNode> event) {
-            selectFirstItemInDicomNodes();
-          }
-        });
+        (DataProviderListener<ConfigNode>) event -> selectFirstItemInDicomNodes());
   }
 
   private void buildTitleBar() {
@@ -179,22 +167,18 @@ public class DicomEchoSelectionDialog extends AbstractDialog {
     formLayout.add(dicomNodeTypeSelector, dicomNodeSelector);
   }
 
-  @SuppressWarnings("serial")
   private void buildDicomNodeTypeSelector() {
     dicomNodeTypeSelector = new Select<>();
     dicomNodeTypeSelector.setLabel("Dicom Nodes Type");
-    dicomNodeTypeSelector.setDataProvider(dataProviderForDicomNodeTypes);
+    dicomNodeTypeSelector.setItems(dataProviderForDicomNodeTypes);
 
     dicomNodeTypeSelector.addValueChangeListener(
-        new ValueChangeListener<ValueChangeEvent<DicomNodeList>>() {
+        (ValueChangeListener<ValueChangeEvent<DicomNodeList>>)
+            event -> {
+              DicomNodeList selectedNodeType = event.getValue();
 
-          @Override
-          public void valueChanged(ValueChangeEvent<DicomNodeList> event) {
-            DicomNodeList selectedNodeType = event.getValue();
-
-            loadDicomNodes(selectedNodeType);
-          }
-        });
+              loadDicomNodes(selectedNodeType);
+            });
   }
 
   private void buildDicomNodeSelector() {
@@ -216,7 +200,7 @@ public class DicomEchoSelectionDialog extends AbstractDialog {
   }
 
   private ComponentRenderer<Div, ConfigNode> buildDicomNodeRenderer() {
-    return new ComponentRenderer<Div, ConfigNode>(
+    return new ComponentRenderer<>(
         item -> {
           Div div = new Div();
           div.getStyle().set("line-height", "92%");
@@ -260,33 +244,20 @@ public class DicomEchoSelectionDialog extends AbstractDialog {
     buttonBar.add(cancelBtn, selectBtn);
   }
 
-  @SuppressWarnings("serial")
   private void buildCancelBtn() {
     cancelBtn = new Button("Cancel");
 
-    cancelBtn.addClickListener(
-        new ComponentEventListener<ClickEvent<Button>>() {
-
-          @Override
-          public void onComponentEvent(ClickEvent<Button> event) {
-            dialog.close();
-          }
-        });
+    cancelBtn.addClickListener(event -> dialog.close());
   }
 
-  @SuppressWarnings("serial")
   private void buildSelectBtn() {
     selectBtn = new Button("Select");
     selectBtn.addClassName("stroked-button");
 
     selectBtn.addClickListener(
-        new ComponentEventListener<ClickEvent<Button>>() {
-
-          @Override
-          public void onComponentEvent(ClickEvent<Button> event) {
-            fireDicomNodeSelectionEvent();
-            dialog.close();
-          }
+        event -> {
+          fireDicomNodeSelectionEvent();
+          dialog.close();
         });
   }
 
@@ -295,7 +266,7 @@ public class DicomEchoSelectionDialog extends AbstractDialog {
     fireEvent(new DicomNodeSelectionEvent(this, false, selectedDicomNode));
   }
 
-  public class DicomNodeSelectionEvent extends ComponentEvent<DicomEchoSelectionDialog> {
+  public static class DicomNodeSelectionEvent extends ComponentEvent<DicomEchoSelectionDialog> {
 
     private static final long serialVersionUID = 1L;
 
