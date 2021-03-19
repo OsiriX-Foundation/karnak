@@ -135,27 +135,6 @@ This project is divided in two parts:
         spring configurations, spring security, cache, spring services, models...
 - frontend : Vaadin components:  logic services, graphic components, views
 
-# Logs Kibana
-
-In order to activate the logs in Kibana, activate the profile docker (from application-docker.yml)
-in the pom.xml : spring.profiles.active
-
-The logs can be seen here: 
-- https://kibana-cert/s/spring/app/kibana#/discover
-- with the filter springAppName : karnak
-
-# Identity provider
-
-An OpenID Connect identity provider can be configured by using the environment variables:
- - `IDP`:  when this environment variable has the value 'oidc', the following environment 
- variables will configure the OpenID Connect identity provider. Any other value will load the in 
- memory user configuration. 
- - `OIDC_CLIENT_ID`: client id of the identity provider 
- - `OIDC_CLIENT_SECRET`: client secret of the identity provider
- - `OIDC_ISSUER_URI`: issuer URI of the identity provider
-
-
-
 # Workflow
 
 ![Workflow](doc/karnak-workflow.svg)
