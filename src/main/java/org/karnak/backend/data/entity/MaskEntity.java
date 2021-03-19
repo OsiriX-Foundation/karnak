@@ -12,8 +12,10 @@ package org.karnak.backend.data.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.awt.Rectangle;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -27,23 +29,14 @@ import org.karnak.backend.data.converter.RectangleListToStringListConverter;
 
 @Entity(name = "Masks")
 @Table(name = "masks")
-public class MaskEntity {
+public class MaskEntity implements Serializable {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  @JsonIgnore
+  private static final long serialVersionUID = 1833858684629178458L;
+
   private Long id;
-
-  @ManyToOne()
-  @JoinColumn(name = "profile_id", nullable = false)
-  @JsonIgnore
   private ProfileEntity profileEntity;
-
   private String stationName;
   private String color;
-
-  @Convert(converter = RectangleListConverter.class)
-  @JsonSerialize(converter = RectangleListToStringListConverter.class)
   private List<Rectangle> rectangles = new ArrayList<>();
 
   public MaskEntity() {}
@@ -65,6 +58,8 @@ public class MaskEntity {
     rectangles.add(rect);
   }
 
+  @Convert(converter = RectangleListConverter.class)
+  @JsonSerialize(converter = RectangleListToStringListConverter.class)
   public List<Rectangle> getRectangles() {
     return rectangles;
   }
@@ -73,8 +68,26 @@ public class MaskEntity {
     this.rectangles = rectangles;
   }
 
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @JsonIgnore
   public Long getId() {
     return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  @ManyToOne
+  @JoinColumn(name = "profile_id", nullable = false)
+  @JsonIgnore
+  public ProfileEntity getProfileEntity() {
+    return profileEntity;
+  }
+
+  public void setProfileEntity(ProfileEntity profileEntity) {
+    this.profileEntity = profileEntity;
   }
 
   public String getStationName() {
@@ -91,5 +104,25 @@ public class MaskEntity {
 
   public void setColor(String color) {
     this.color = color;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    MaskEntity that = (MaskEntity) o;
+    return Objects.equals(id, that.id)
+        && Objects.equals(stationName, that.stationName)
+        && Objects.equals(color, that.color)
+        && Objects.equals(rectangles, that.rectangles);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, stationName, color, rectangles);
   }
 }

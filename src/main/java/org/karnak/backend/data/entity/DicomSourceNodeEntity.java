@@ -9,6 +9,8 @@
  */
 package org.karnak.backend.data.entity;
 
+import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -21,32 +23,23 @@ import javax.validation.constraints.Size;
 
 @Entity(name = "DicomSourceNode")
 @Table(name = "dicom_source_node")
-public class DicomSourceNodeEntity {
+public class DicomSourceNodeEntity implements Serializable {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  private static final long serialVersionUID = -4917273057619947934L;
+
   private Long id;
-
   private String description;
-
   // AETitle of the source node.
-  @NotBlank(message = "AETitle is mandatory")
-  @Size(max = 16, message = "AETitle has more than 16 characters")
   private String aeTitle;
-
   // the host or IP of the source node. If the hostname exists then it is checked
   // (allows a restriction on the host not only in the AETitle).
   private String hostname;
-
   // if "true" check the hostname during the DICOM association and if not match
   // the connection is abort
   private Boolean checkHostname;
-
-  @ManyToOne
-  @JoinColumn(name = "forward_node_id")
   private ForwardNodeEntity forwardNodeEntity;
 
-  protected DicomSourceNodeEntity() {
+  public DicomSourceNodeEntity() {
     this.description = "";
     this.aeTitle = "";
     this.hostname = "";
@@ -58,16 +51,14 @@ public class DicomSourceNodeEntity {
     return instance;
   }
 
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
   public Long getId() {
     return id;
   }
 
-  public boolean isNewData() {
-    return id == null;
-  }
-
-  public String getStringReference() {
-    return getAeTitle();
+  public void setId(Long id) {
+    this.id = id;
   }
 
   public String getDescription() {
@@ -78,6 +69,8 @@ public class DicomSourceNodeEntity {
     this.description = description;
   }
 
+  @NotBlank(message = "AETitle is mandatory")
+  @Size(max = 16, message = "AETitle has more than 16 characters")
   public String getAeTitle() {
     return aeTitle;
   }
@@ -94,6 +87,8 @@ public class DicomSourceNodeEntity {
     this.hostname = hostname;
   }
 
+  @ManyToOne
+  @JoinColumn(name = "forward_node_id")
   public ForwardNodeEntity getForwardNodeEntity() {
     return forwardNodeEntity;
   }
@@ -139,5 +134,26 @@ public class DicomSourceNodeEntity {
         + ", checkHostname="
         + checkHostname
         + "]";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    DicomSourceNodeEntity that = (DicomSourceNodeEntity) o;
+    return Objects.equals(id, that.id)
+        && Objects.equals(description, that.description)
+        && Objects.equals(aeTitle, that.aeTitle)
+        && Objects.equals(hostname, that.hostname)
+        && Objects.equals(checkHostname, that.checkHostname);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, description, aeTitle, hostname, checkHostname);
   }
 }

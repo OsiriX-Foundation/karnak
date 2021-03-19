@@ -10,6 +10,7 @@
 package org.karnak.backend.model.profilepipe;
 
 import java.math.BigInteger;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -128,5 +129,10 @@ public class HMAC {
     byte[] bytes = null;
     bytes = mac.doFinal(value.getBytes(StandardCharsets.US_ASCII));
     return bytes;
+  }
+
+  public int intHash(String value) {
+    byte[] byteArray = mac.doFinal(value.getBytes(StandardCharsets.US_ASCII));
+    return ByteBuffer.wrap(byteArray).getInt();
   }
 }

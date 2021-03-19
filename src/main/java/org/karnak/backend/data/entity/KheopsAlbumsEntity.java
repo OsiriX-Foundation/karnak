@@ -9,6 +9,8 @@
  */
 package org.karnak.backend.data.entity;
 
+import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,19 +21,15 @@ import javax.persistence.Table;
 
 @Entity(name = "KheopsAlbums")
 @Table(name = "kheops_albums")
-public class KheopsAlbumsEntity {
+public class KheopsAlbumsEntity implements Serializable {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  private static final long serialVersionUID = -3315720301354286325L;
+
   private Long id;
-
   private String urlAPI;
   private String authorizationDestination;
   private String authorizationSource;
   private String condition;
-
-  @ManyToOne
-  @JoinColumn(name = "destination_id")
   private DestinationEntity destinationEntity = new DestinationEntity();
 
   public KheopsAlbumsEntity() {}
@@ -47,8 +45,14 @@ public class KheopsAlbumsEntity {
     this.condition = condition;
   }
 
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
   public Long getId() {
     return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
   }
 
   public String getUrlAPI() {
@@ -83,11 +87,33 @@ public class KheopsAlbumsEntity {
     this.condition = condition;
   }
 
+  @ManyToOne
+  @JoinColumn(name = "destination_id")
   public DestinationEntity getDestinationEntity() {
     return destinationEntity;
   }
 
   public void setDestinationEntity(DestinationEntity destinationEntity) {
     this.destinationEntity = destinationEntity;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    KheopsAlbumsEntity that = (KheopsAlbumsEntity) o;
+    return Objects.equals(urlAPI, that.urlAPI)
+        && Objects.equals(authorizationDestination, that.authorizationDestination)
+        && Objects.equals(authorizationSource, that.authorizationSource)
+        && Objects.equals(condition, that.condition);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(urlAPI, authorizationDestination, authorizationSource, condition);
   }
 }
