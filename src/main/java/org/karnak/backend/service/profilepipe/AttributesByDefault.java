@@ -57,7 +57,8 @@ public class AttributesByDefault {
         });
   }
 
-  public static void setPatientModule(Attributes dcm, String newPatientID, String newPatientName, ProjectEntity projectEntity) {
+  public static void setPatientModule(
+      Attributes dcm, String newPatientID, String newPatientName, ProjectEntity projectEntity) {
     dcm.setString(Tag.PatientID, VR.LO, newPatientID);
     dcm.setString(Tag.PatientName, VR.PN, newPatientName);
     dcm.setString(Tag.PatientIdentityRemoved, VR.CS, "YES");
