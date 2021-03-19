@@ -254,11 +254,11 @@ public class Profile {
     applyAction(dcm, dcmCopy, hmac, null, null, context);
 
     // Set tags by default
-    DeidentByDefault.setTags(dcm, newPatientID, newPatientName);
-    DeidentByDefault.setClinicalTrialAttributes(
+    AttributesByDefault.setPatientModule(
+        dcm, newPatientID, newPatientName, destinationEntity.getProjectEntity());
+    AttributesByDefault.setSOPCommonModule(dcm);
+    AttributesByDefault.setClinicalTrialAttributes(
         dcm, destinationEntity.getProjectEntity(), pseudonym);
-    DeidentByDefault.setDeidentificationMethodCodeSequence(
-        dcm, destinationEntity.getProjectEntity());
 
     final Marker clincalMarker = MarkerFactory.getMarker("CLINICAL");
     LOGGER.info(

@@ -25,9 +25,9 @@ import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.dicom.DateTimeUtils;
 import org.karnak.backend.enums.ProfileItemType;
 
-public class DeidentByDefault {
+public class AttributesByDefault {
 
-  private DeidentByDefault() {}
+  private AttributesByDefault() {}
 
   public static void setDeidentificationMethodCodeSequence(
       Attributes dcm, ProjectEntity projectEntity) {
@@ -57,14 +57,18 @@ public class DeidentByDefault {
         });
   }
 
-  public static void setTags(Attributes dcm, String newPatientID, String newPatientName) {
-    final LocalDateTime now = LocalDateTime.now();
+  public static void setPatientModule(Attributes dcm, String newPatientID, String newPatientName, ProjectEntity projectEntity) {
     dcm.setString(Tag.PatientID, VR.LO, newPatientID);
     dcm.setString(Tag.PatientName, VR.PN, newPatientName);
-    dcm.setString(Tag.InstanceCreationDate, VR.DA, DateTimeUtils.formatDA(now));
-    dcm.setString(Tag.InstanceCreationTime, VR.TM, DateTimeUtils.formatTM(now));
     dcm.setString(Tag.PatientIdentityRemoved, VR.CS, "YES");
     dcm.remove(Tag.DeidentificationMethod);
+    setDeidentificationMethodCodeSequence(dcm, projectEntity);
+  }
+
+  public static void setSOPCommonModule(Attributes dcm) {
+    final LocalDateTime now = LocalDateTime.now();
+    dcm.setString(Tag.InstanceCreationDate, VR.DA, DateTimeUtils.formatDA(now));
+    dcm.setString(Tag.InstanceCreationTime, VR.TM, DateTimeUtils.formatTM(now));
   }
 
   public static void setClinicalTrialAttributes(
