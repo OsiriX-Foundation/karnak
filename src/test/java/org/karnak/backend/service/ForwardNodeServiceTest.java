@@ -22,7 +22,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class ForwardNodeServiceTest {
 
-
   // Repositories
   private final ForwardNodeRepo forwardNodeRepoMock = Mockito.mock(ForwardNodeRepo.class);
 
@@ -184,8 +183,25 @@ class ForwardNodeServiceTest {
     Assert.assertTrue(forwardNodeEntity.getSourceNodes().contains(sourceAdded));
   }
 
+  @Test
+  void should_delete_source() {
+    // Init data
+    ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
+    DicomSourceNodeEntity dicomSourceNodeEntity = new DicomSourceNodeEntity();
+    dicomSourceNodeEntity.setId(1L);
+    forwardNodeEntity.addSourceNode(dicomSourceNodeEntity);
+    // Source to add
+    DicomSourceNodeEntity sourceEntityToDelete = new DicomSourceNodeEntity();
+    sourceEntityToDelete.setId(2L);
+    forwardNodeEntity.addSourceNode(sourceEntityToDelete);
 
-//  deleteSourceNode
+    // Call service
+    forwardNodeService
+        .deleteSourceNode(forwardNodeEntity, sourceEntityToDelete);
 
+    // Test result
+    Assert.assertEquals(1, forwardNodeEntity.getSourceNodes().size());
+    Assert.assertFalse(forwardNodeEntity.getSourceNodes().contains(sourceEntityToDelete));
+  }
 
 }

@@ -51,4 +51,25 @@ class SOPClassUIDServiceTest {
         .getSOPClassUIDByName(Mockito.anyString());
   }
 
+  @Test
+  void should_retrieve_all_sopClassUID() {
+    // Call service
+    sopClassUIDService.getAllSOPClassUIDs();
+
+    // Test results
+    Mockito.verify(sopClassUIDRepoMock, Mockito.atLeast(1))
+        .findAll();
+  }
+
+  @Test
+  void should_retrieve_all_names_from_sopClassUID() {
+    // Call service
+    sopClassUIDService.getAllSOPClassUIDsName();
+
+    // Test results
+    Mockito.verify(sopClassUIDRepoMock, Mockito.atLeast(1))
+        .findAll();
+  }
+
+
 }
