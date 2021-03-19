@@ -23,6 +23,9 @@ logging:
               ReturnChannelHandler: ERROR
 server:
   port: 8081
+  servlet:
+    session:
+      persistent: false
 spring:
   application:
     name: karnak
