@@ -25,9 +25,9 @@ import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.dicom.DateTimeUtils;
 import org.karnak.backend.enums.ProfileItemType;
 
-public class DeidentificationTags {
+public class DeidentByDefault {
 
-  private DeidentificationTags() {}
+  private DeidentByDefault() {}
 
   public static void setDeidentificationMethodCodeSequence(
       Attributes dcm, ProjectEntity projectEntity) {
@@ -57,7 +57,7 @@ public class DeidentificationTags {
         });
   }
 
-  public static void setTagsByDefault(Attributes dcm, String newPatientID, String newPatientName) {
+  public static void setTags(Attributes dcm, String newPatientID, String newPatientName) {
     final LocalDateTime now = LocalDateTime.now();
     dcm.setString(Tag.PatientID, VR.LO, newPatientID);
     dcm.setString(Tag.PatientName, VR.PN, newPatientName);
