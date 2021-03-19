@@ -15,7 +15,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -53,7 +52,7 @@ public class ProfileEntity implements Serializable {
   private String minimumKarnakVersion;
   private String defaultIssuerOfPatientId;
   private Boolean byDefault;
-  private List<ProfileElementEntity> profileElementEntities = new ArrayList<>();
+  private Set<ProfileElementEntity> profileElementEntities = new HashSet<>();
   private Set<MaskEntity> maskEntities = new HashSet<>();
   private List<ProjectEntity> projectEntities;
 
@@ -139,12 +138,12 @@ public class ProfileEntity implements Serializable {
 
   @JsonGetter("profileElements")
   @OneToMany(mappedBy = "profileEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-  public List<ProfileElementEntity> getProfileElementEntities() {
+  public Set<ProfileElementEntity> getProfileElementEntities() {
     return profileElementEntities;
   }
 
   @JsonSetter("profileElements")
-  public void setProfileElementEntities(List<ProfileElementEntity> profileElementEntities) {
+  public void setProfileElementEntities(Set<ProfileElementEntity> profileElementEntities) {
     this.profileElementEntities = profileElementEntities;
   }
 

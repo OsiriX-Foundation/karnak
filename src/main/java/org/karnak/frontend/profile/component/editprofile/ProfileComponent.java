@@ -23,6 +23,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.server.StreamResource;
 import java.io.ByteArrayInputStream;
 import java.util.Comparator;
+import java.util.stream.Collectors;
 import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.data.entity.ProfileEntity;
 import org.karnak.frontend.profile.ProfileLogic;
@@ -46,8 +47,8 @@ public class ProfileComponent extends VerticalLayout {
 
   public static StreamResource createStreamResource(ProfileEntity profileEntity) {
     try {
-      profileEntity
-          .getProfileElementEntities()
+      profileEntity.getProfileElementEntities().stream()
+          .collect(Collectors.toList())
           .sort(Comparator.comparingInt(ProfileElementEntity::getPosition));
       // https://stackoverflow.com/questions/61506368/formatting-yaml-with-jackson
       ObjectMapper mapper =

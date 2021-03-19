@@ -15,13 +15,14 @@ import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import java.util.Comparator;
-import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.data.entity.ProfileEntity;
 
 public class ProfileElementMainView extends VerticalLayout {
 
-  private List<ProfileElementEntity> profilesOrder;
+  private Set<ProfileElementEntity> profilesOrder;
 
   public ProfileElementMainView() {}
 
@@ -47,10 +48,12 @@ public class ProfileElementMainView extends VerticalLayout {
 
   public void setProfile(ProfileEntity profileEntity) {
     if (profileEntity != null) {
-      List<ProfileElementEntity> profileElementEntities = profileEntity.getProfileElementEntities();
+      Set<ProfileElementEntity> profileElementEntities = profileEntity.getProfileElementEntities();
 
       if (profileElementEntities != null) {
-        profileElementEntities.sort(Comparator.comparingInt(ProfileElementEntity::getPosition));
+        profileElementEntities.stream()
+            .collect(Collectors.toList())
+            .sort(Comparator.comparingInt(ProfileElementEntity::getPosition));
         profilesOrder = profileElementEntities;
         profilesView();
         setEnabled(true);
