@@ -16,6 +16,8 @@ import org.dcm4che6.internal.DicomObjectImpl;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.karnak.backend.model.Series;
+import org.karnak.backend.model.SopInstance;
 import org.karnak.backend.model.Study;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.weasis.dicom.param.AttributeEditorContext;
@@ -59,7 +61,6 @@ class StreamRegistryServiceTest {
             .getSopInstance("sopInstanceUID"));
   }
 
-
   @Test
   void should_remove_study() {
 
@@ -77,19 +78,25 @@ class StreamRegistryServiceTest {
   }
 
   @Test
-  void should_update() {
+  void should_update_sopInstance() {
     // Init data
     DicomProgress dicomProgress = new DicomProgress();
     DicomObject dicomObject = new DicomObjectImpl();
     dicomObject.setString(Tag.AffectedSOPInstanceUID, VR.SH, "affectedSOPInstanceUID");
     dicomProgress.setAttributes(dicomObject);
+    Study study = new Study("studyInstanceUID", "patientId");
+    Series serie = new Series("seriesInstantUID");
+    SopInstance sopInstance = new SopInstance("affectedSOPInstanceUID");
+    serie.addSopInstance(sopInstance);
+    study.addSeries(serie);
 
     // Call service
     streamRegistryService.setEnable(true);
+    streamRegistryService.addStudy(study);
     streamRegistryService.update(dicomProgress);
-// TODO
 
+    // Test result
+    Assert.assertTrue(sopInstance.isSent());
   }
-
 
 }
