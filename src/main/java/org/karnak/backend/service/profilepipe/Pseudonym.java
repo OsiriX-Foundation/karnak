@@ -9,9 +9,6 @@
  */
 package org.karnak.backend.service.profilepipe;
 
-import java.lang.reflect.Constructor;
-import java.net.URL;
-import java.net.URLClassLoader;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.util.TagUtils;
 import org.karnak.backend.api.PseudonymApi;
@@ -23,7 +20,6 @@ import org.karnak.backend.enums.PseudonymType;
 import org.karnak.backend.model.profilepipe.PatientMetadata;
 import org.karnak.backend.util.PatientClientUtil;
 import org.karnak.backend.util.SpecialCharacter;
-import org.pseudonym.spi.PseudonymService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,22 +55,15 @@ public class Pseudonym {
       return cachedMainezllistePseudonym;
     }
 
-    PseudonymService serviceImpl =
-        classLoader(
-            "file:/home/ciccius/Documents/OsiriX-Foundation/karnak/pseudonym_jar/MainzellisteImplExtid.jar");
-
-    if (serviceImpl != null) {
-      return serviceImpl.getPseudonym(dcm);
-    }
-
+    ExternalIDImpl externalID = new ExternalIDImpl();
     if (destinationEntity
         .getPseudonymType()
         .equals(PseudonymType.MAINZELLISTE_PID)) { // MAINZELLISTE
-      return getMainzellistePID(patientMetadata);
+      return externalID.getExternalID(dcm, "Generate external id with mainzelliste");
     }
 
     if (destinationEntity.getPseudonymType().equals(PseudonymType.MAINZELLISTE_EXTID)) {
-      return getMainzellisteExtID(patientMetadata);
+      return externalID.getExternalID(dcm, "Get external id with mainzelliste");
     }
 
     return null;
@@ -155,19 +144,5 @@ public class Pseudonym {
             patientMetadata.getIssuerOfPatientID());
     String cacheKey = PatientClientUtil.generateKey(patientMetadata);
     mainzellisteCache.put(cacheKey, mainzellistePatient);
-  }
-
-  private static PseudonymService classLoader(String path) {
-    try {
-      URLClassLoader urlClassLoader = URLClassLoader.newInstance(new URL[] {new URL(path)});
-      Class<?> clazz = urlClassLoader.loadClass("org.pseudonym.mainzelliste.MainzellisteApi");
-      Class<? extends PseudonymService> pseudonymServiceClass =
-          clazz.asSubclass(PseudonymService.class);
-      Constructor<? extends PseudonymService> constructor = pseudonymServiceClass.getConstructor();
-      return constructor.newInstance();
-    } catch (Exception e) {
-      LOGGER.error("Cannot not load correctly the jar", e);
-    }
-    return null;
   }
 }

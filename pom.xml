@@ -240,17 +240,16 @@
     </resources>
   </build>
 
-  <!-- Dependencies -->
   <dependencies>
     <dependency>
-      <artifactId>spring-boot-starter</artifactId>
-      <groupId>org.springframework.boot</groupId>
+      <groupId>org.externalid</groupId>
+      <artifactId>ExternalIDProvider</artifactId>
+      <version>1.0</version>
     </dependency>
 
     <dependency>
-      <groupId>org.pseudonym.spi</groupId>
-      <artifactId>PseudonymSPI</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <artifactId>spring-boot-starter</artifactId>
+      <groupId>org.springframework.boot</groupId>
     </dependency>
 
     <dependency>

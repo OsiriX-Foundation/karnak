@@ -133,8 +133,7 @@ public class MainzellisteAddPatient extends VerticalLayout {
 
     binder
         .forField(patientFirstNameField)
-        .withValidator(StringUtils::isNotBlank, "Patient first name is empty")
-        .withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
+        .withValidator(new StringLengthValidator("Length must be between 0 and 50.", 0, 50))
         .bind("patientFirstName");
 
     binder
