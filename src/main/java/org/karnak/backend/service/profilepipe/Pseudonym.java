@@ -55,7 +55,7 @@ public class Pseudonym {
       return cachedMainezllistePseudonym;
     }
 
-    ExternalIDImpl externalID = new ExternalIDImpl();
+    ExternalIDImpl externalID = new ExternalIDImpl(destinationEntity);
     if (destinationEntity
         .getPseudonymType()
         .equals(PseudonymType.MAINZELLISTE_PID)) { // MAINZELLISTE

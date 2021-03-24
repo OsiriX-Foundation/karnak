@@ -28,6 +28,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -70,6 +71,7 @@ public class DestinationEntity implements Serializable {
   private List<KheopsAlbumsEntity> kheopsAlbumEntities;
   private ProjectEntity projectEntity;
   private ForwardNodeEntity forwardNodeEntity;
+  private ExternalIDProviderEntity externalIDProviderEntity;
 
   // list of emails (comma separated) used when the images have been sent (or
   // partially sent) to the final destination. Note: if an issue appears before
@@ -430,6 +432,17 @@ public class DestinationEntity implements Serializable {
   @JsonSetter("kheopsAlbums")
   public void setKheopsAlbumEntities(List<KheopsAlbumsEntity> kheopsAlbumEntities) {
     this.kheopsAlbumEntities = kheopsAlbumEntities;
+  }
+
+  @OneToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "externalid_provider_id", referencedColumnName = "id")
+  public ExternalIDProviderEntity getExternalIDProviderEntity() {
+    return externalIDProviderEntity;
+  }
+
+  public void setExternalIDProviderEntity(
+      ExternalIDProviderEntity externalIDProviderEntity) {
+    this.externalIDProviderEntity = externalIDProviderEntity;
   }
 
   @ManyToOne

@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.dcm4che3.data.Attributes;
 import org.externalid.ExternalIDProvider;
+import org.karnak.backend.data.entity.DestinationEntity;
+import org.karnak.backend.data.entity.ExternalIDProviderEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +26,9 @@ public class ExternalIDImpl {
 
   private List<ExternalIDProvider> externalIDProviderList;
 
-  public ExternalIDImpl() {
+  public ExternalIDImpl(DestinationEntity destinationEntity) {
+
+    ExternalIDProviderEntity externalIDProviderEntity = destinationEntity.getExternalIDProviderEntity();
 
     ExternalIDProvider externalIDImplPID =
         classLoader(
