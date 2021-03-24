@@ -17,7 +17,7 @@
         <constraints nullable="false" primaryKey="true" primaryKeyName="externalid_provider_pkey"/>
       </column>
       <column name="bydefault" type="BOOLEAN"/>
-      <column name="type" type="INTEGER"/>
+      <column name="externalid_provider_type" type="VARCHAR(255)"/>
       <column name="file_path" type="VARCHAR(255)"/>
       <column name="class_path" type="VARCHAR(255)"/>
     </createTable>
@@ -43,7 +43,7 @@
       schemaName="public"
       tableName="externalid_provider">
       <column name="bydefault" value="true"/>
-      <column name="type" value="0"/>
+      <column name="externalid_provider_type" value="EXTID_CACHE"/>
     </insert>
   </changeSet>
 
@@ -52,7 +52,7 @@
       schemaName="public"
       tableName="externalid_provider">
       <column name="bydefault" value="true"/>
-      <column name="type" value="1"/>
+      <column name="externalid_provider_type" value="EXTID_IN_TAG"/>
     </insert>
   </changeSet>
 
@@ -61,7 +61,7 @@
       schemaName="public"
       tableName="externalid_provider">
       <column name="bydefault" value="true"/>
-      <column name="type" value="2"/>
+      <column name="externalid_provider_type" value="EXTID_IMPLEMENTATION"/>
       <column name="file_path"
         value="file:/home/ciccius/Documents/OsiriX-Foundation/karnak/pseudonym_jar/MainzellisteImplPID-1.0.jar"/>
       <column name="class_path" value="org.mainzelliste.pid.MainzellisteApi"/>
@@ -73,7 +73,7 @@
       schemaName="public"
       tableName="externalid_provider">
       <column name="bydefault" value="true"/>
-      <column name="type" value="2"/>
+      <column name="externalid_provider_type" value="EXTID_IMPLEMENTATION"/>
       <column name="file_path"
         value="file:/home/ciccius/Documents/OsiriX-Foundation/karnak/pseudonym_jar/MainzellisteImplExtid-1.0.jar"/>
       <column name="class_path" value="org.mainzelliste.extid.MainzellisteApi"/>
@@ -87,7 +87,7 @@
       schemaName="public"
       tableName="destination">
       <column name="externalid_provider_id"
-        valueComputed="(select id from externalid_provider where type='2' and file_path='file:/home/ciccius/Documents/OsiriX-Foundation/karnak/pseudonym_jar/MainzellisteImplPID-1.0.jar' and class_path='org.mainzelliste.pid.MainzellisteApi')"/>
+        valueComputed="(select id from externalid_provider where externalid_provider_type='EXTID_IMPLEMENTATION' and file_path='file:/home/ciccius/Documents/OsiriX-Foundation/karnak/pseudonym_jar/MainzellisteImplPID-1.0.jar' and class_path='org.mainzelliste.pid.MainzellisteApi')"/>
       <where>pseudonym_type='0'</where>
     </update>
   </changeSet>
@@ -98,7 +98,7 @@
       schemaName="public"
       tableName="destination">
       <column name="externalid_provider_id"
-        valueComputed="(select id from externalid_provider where type='2' and file_path='file:/home/ciccius/Documents/OsiriX-Foundation/karnak/pseudonym_jar/MainzellisteImplExtid-1.0.jar' and class_path='org.mainzelliste.extid.MainzellisteApi')"/>
+        valueComputed="(select id from externalid_provider where externalid_provider_type='EXTID_IMPLEMENTATION' and file_path='file:/home/ciccius/Documents/OsiriX-Foundation/karnak/pseudonym_jar/MainzellisteImplExtid-1.0.jar' and class_path='org.mainzelliste.extid.MainzellisteApi')"/>
       <where>pseudonym_type='1'</where>
     </update>
   </changeSet>
@@ -109,7 +109,7 @@
       schemaName="public"
       tableName="destination">
       <column name="externalid_provider_id"
-        valueComputed="(select id from externalid_provider where type='0' and file_path=null and class_path=null)"/>
+        valueComputed="(select id from externalid_provider where externalid_provider_type='EXTID_CACHE' and file_path=null and class_path=null)"/>
       <where>pseudonym_type='2'</where>
     </update>
   </changeSet>
@@ -120,7 +120,7 @@
       schemaName="public"
       tableName="destination">
       <column name="externalid_provider_id"
-        valueComputed="(select id from externalid_provider where type='1' and file_path=null and class_path=null)"/>
+        valueComputed="(select id from externalid_provider where externalid_provider_type='EXTID_IN_TAG' and file_path=null and class_path=null)"/>
       <where>pseudonym_type='3'</where>
     </update>
   </changeSet>
