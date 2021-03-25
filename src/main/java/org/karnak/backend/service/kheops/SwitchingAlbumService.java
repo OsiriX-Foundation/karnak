@@ -40,8 +40,8 @@ public class SwitchingAlbumService {
   private final Map<Long, List> switchingAlbumToDo = new WeakHashMap<>();
 
   @Autowired
-  public SwitchingAlbumService() {
-    kheopsAPI = new KheopsApi();
+  public SwitchingAlbumService(final KheopsApi kheopsApi) {
+    this.kheopsAPI = kheopsApi;
   }
 
   private static HMAC generateHMAC(DestinationEntity destinationEntity) {
@@ -185,5 +185,9 @@ public class SwitchingAlbumService {
           "Can't share the serie {} in the study {}", seriesInstanceUID, studyInstanceUID, e);
     }
     return -1;
+  }
+
+  public Map<Long, List> getSwitchingAlbumToDo() {
+    return switchingAlbumToDo;
   }
 }
