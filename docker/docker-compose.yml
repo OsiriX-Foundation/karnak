@@ -15,7 +15,6 @@ services:
     environment:
       - POSTGRES_DB=karnak
       - POSTGRES_USER=karnak
-#      - POSTGRES_PASSWORD_FILE=/run/secrets/postgres_karnak_password
       - POSTGRES_PASSWORD=H2srvXJcHbBUhBafn2BK5I9oSbaQ1rw8697V8ESs/2o=
 
   mainzelliste-db:
@@ -23,7 +22,6 @@ services:
     environment:
       - POSTGRES_DB=mainzelliste
       - POSTGRES_USER=mainzelliste
-#      - POSTGRES_PASSWORD_FILE=/run/secrets/mainzellisteDbPassword
       - POSTGRES_PASSWORD=LCqWpeyJi6uStLdJq93tD+NHxJ+yVYDgOknet5slIIk=
 
   mainzelliste:
