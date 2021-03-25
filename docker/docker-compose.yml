@@ -15,14 +15,15 @@ services:
     environment:
       - POSTGRES_DB=karnak
       - POSTGRES_USER=karnak
-      - POSTGRES_PASSWORD_FILE=/run/secrets/postgres_karnak_password
-
+      #      - POSTGRES_PASSWORD_FILE=/run/secrets/postgres_karnak_password
+      - POSTGRES_PASSWORD=H2srmXJbHaBUhBafn2BK5I9oSbaQ1rw8697V8ESs/2o=
   mainzelliste-db:
     image: registry-docker.hcuge.ch:8083/postgres:9.6-alpine
     environment:
       - POSTGRES_DB=mainzelliste
       - POSTGRES_USER=mainzelliste
-      - POSTGRES_PASSWORD_FILE=/run/secrets/mainzellisteDbPassword
+      #      - POSTGRES_PASSWORD_FILE=/run/secrets/mainzellisteDbPassword
+      - POSTGRES_PASSWORD=LCqWpeyJi6uStLdIq98tD+NHvJ+yVYDgOknet5slIIk=
 
   mainzelliste:
     image: osirixfoundation/karnak-mainzelliste:extid
