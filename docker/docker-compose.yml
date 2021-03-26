@@ -16,6 +16,7 @@ services:
       - POSTGRES_DB=karnak
       - POSTGRES_USER=karnak
       - POSTGRES_PASSWORD=H2srmXJbHaBUhBafn2BK5I9oSbaQ1rw8697V8ESs/2o=
+
   mainzelliste-db:
     image: registry-docker.hcuge.ch:8083/postgres:9.6-alpine
     environment:
