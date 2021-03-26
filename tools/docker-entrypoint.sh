@@ -39,7 +39,7 @@ SYS_PROPS=""
 SYS_PROPS+=" -Djava.library.path='/tmp/dicom-opencv'"
 
 ########################
-# KARNAK ENVIRONMENT #
+#  KARNAK ENVIRONMENT  #
 ########################
 file_env 'KARNAK_LOGIN_PASSWORD'
 : "${KARNAK_LOGIN_PASSWORD:=undefined}"
@@ -51,6 +51,21 @@ SYS_PROPS+=" -Dkarnakpassword='$KARNAK_LOGIN_PASSWORD'"
 SYS_PROPS+=" -Dspring.security.oauth2.client.registration.keycloak.client-id='$OIDC_CLIENT_ID'"
 SYS_PROPS+=" -Dspring.security.oauth2.client.registration.keycloak.client-secret='$OIDC_CLIENT_SECRET'"
 SYS_PROPS+=" -Dspring.security.oauth2.client.provider.keycloak.issuer-uri='$OIDC_ISSUER_URI'"
+
+##########################
+# KARNAK OPENID PROVIDER #
+##########################
+: "${IDP:=undefined}"
+if [[ "$IDP" == "oidc" ]]
+then
+  file_env 'OIDC_CLIENT_SECRET'
+  : "${OIDC_CLIENT_ID:=undefined}"
+  : "${OIDC_CLIENT_SECRET:=undefined}"
+  : "${OIDC_ISSUER_URI:=undefined}"
+  SYS_PROPS+=" -Dspring.security.oauth2.client.registration.keycloak.client-id='$OIDC_CLIENT_ID'"
+  SYS_PROPS+=" -Dspring.security.oauth2.client.registration.keycloak.client-secret='$OIDC_CLIENT_SECRET'"
+  SYS_PROPS+=" -Dspring.security.oauth2.client.provider.keycloak.issuer-uri='$OIDC_ISSUER_URI'"
+fi
 
 ########################
 # DATABASE ENVIRONMENT #

@@ -15,9 +15,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
 import java.util.stream.Stream;
-import org.dcm4che6.data.DicomObject;
-import org.dcm4che6.data.Tag;
-import org.dcm4che6.data.VR;
+import org.dcm4che3.data.Attributes;
+import org.dcm4che3.data.Tag;
+import org.dcm4che3.data.VR;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -35,13 +35,13 @@ class PatientMetadataTest {
 
   @BeforeAll
   protected static void setUpBeforeClass() {
-    DicomObject dataset = DicomObject.newDicomObject();
+    Attributes dataset = new Attributes();
     dataset.setString(Tag.PatientID, VR.LO, "");
     dataset.setString(Tag.PatientName, VR.PN, "");
     dataset.setString(Tag.PatientBirthDate, VR.DA, "");
     dataset.setString(Tag.PatientSex, VR.CS, "");
 
-    DicomObject datasetWithNotValidPatientSex = DicomObject.newDicomObject();
+    Attributes datasetWithNotValidPatientSex = new Attributes();
     datasetWithNotValidPatientSex.setString(Tag.PatientID, VR.LO, "EREN");
     datasetWithNotValidPatientSex.setString(Tag.PatientName, VR.PN, "Patient^Name");
     datasetWithNotValidPatientSex.setString(Tag.PatientBirthDate, VR.DA, "19930216");
@@ -49,7 +49,7 @@ class PatientMetadataTest {
     datasetWithNotValidPatientSex.setString(Tag.IssuerOfPatientID, VR.LO, "PDA");
 
     patientMetadata = new PatientMetadata(dataset, "");
-    patientMetadataDicomEmptyWithIssuer = new PatientMetadata(DicomObject.newDicomObject(), "PDA");
+    patientMetadataDicomEmptyWithIssuer = new PatientMetadata(new Attributes(), "PDA");
     patientMetadataWithNotValidPatientSex = new PatientMetadata(datasetWithNotValidPatientSex, "");
   }
 
@@ -163,7 +163,7 @@ class PatientMetadataTest {
   }
 
   private static Stream<Arguments> providerPatientBirthdateInvalid() {
-    DicomObject dataset = DicomObject.newDicomObject();
+    Attributes dataset = new Attributes();
     dataset.setString(Tag.PatientID, VR.LO, "");
     dataset.setString(Tag.PatientName, VR.PN, "");
     dataset.setString(Tag.PatientBirthDate, VR.DA, "NULL");

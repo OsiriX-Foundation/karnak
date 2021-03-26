@@ -81,17 +81,13 @@ public class DestinationService {
   /**
    * Delete given data from the backing data service.
    *
-   * @param forwardNodeEntity
-   * @param data the data to be deleted
+   * @param destinationEntity the data to be deleted
    */
-  public void delete(ForwardNodeEntity forwardNodeEntity, DestinationEntity data) {
-    forwardNodeService.deleteDestination(forwardNodeEntity, data);
-    destinationRepo.deleteById(data.getId());
-    // TODO: Le jours où la suprresion d'une destination se passera correctement SUPPRIMER cette
-    // ligne
-    data.setKheopsAlbumEntities(null);
-    data.setProjectEntity(null);
-    destinationRepo.saveAndFlush(data);
+  public void delete(DestinationEntity destinationEntity) {
+    ForwardNodeEntity forwardNodeEntityOfDest = destinationEntity.getForwardNodeEntity();
+    if (forwardNodeEntityOfDest != null) {
+      forwardNodeService.deleteDestination(forwardNodeEntityOfDest, destinationEntity);
+    }
   }
 
   public ApplicationEventPublisher getApplicationEventPublisher() {

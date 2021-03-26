@@ -10,16 +10,14 @@
 package org.karnak.backend.model.action;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import org.dcm4che6.data.DicomElement;
-import org.dcm4che6.data.DicomObject;
-import org.dcm4che6.data.Tag;
+import org.dcm4che3.data.Attributes;
+import org.dcm4che3.data.Tag;
 import org.karnak.backend.config.AppConfig;
 import org.karnak.backend.exception.StandardDICOMException;
 import org.karnak.backend.model.profilepipe.HMAC;
-import org.karnak.backend.model.standard.Attribute;
 import org.karnak.backend.model.standard.Module;
+import org.karnak.backend.model.standard.ModuleAttribute;
 import org.karnak.backend.model.standard.StandardDICOM;
 import org.karnak.backend.util.MetadataDICOMObject;
 import org.slf4j.Logger;
@@ -46,21 +44,21 @@ public class MultipleActions extends AbstractAction {
   }
 
   @Override
-  public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, HMAC hmac) {
+  public void execute(Attributes dcm, int tag, HMAC hmac) {
     final String sopUID = MetadataDICOMObject.getValue(dcm, Tag.SOPClassUID);
     final String tagPath = MetadataDICOMObject.getTagPath(dcm, tag);
     try {
-      List<Attribute> attributes = standardDICOM.getAttributesBySOP(sopUID, tagPath);
-      if (attributes.size() == 1) {
-        String currentType = attributes.get(0).getType();
+      List<ModuleAttribute> moduleAttributes = standardDICOM.getAttributesBySOP(sopUID, tagPath);
+      if (moduleAttributes.size() == 1) {
+        String currentType = moduleAttributes.get(0).getType();
         ActionItem actionItem = chooseAction(sopUID, currentType);
-        actionItem.execute(dcm, tag, iterator, hmac);
-      } else if (attributes.size() > 1) {
-        ActionItem action = multipleAttributes(sopUID, attributes);
-        action.execute(dcm, tag, iterator, hmac);
+        actionItem.execute(dcm, tag, hmac);
+      } else if (moduleAttributes.size() > 1) {
+        ActionItem action = multipleAttributes(sopUID, moduleAttributes);
+        action.execute(dcm, tag, hmac);
       } else {
         ActionItem action = defaultAction();
-        action.execute(dcm, tag, iterator, hmac);
+        action.execute(dcm, tag, hmac);
         LOGGER.warn(
             String.format(
                 "Could not found the attribute %s in the SOP %s. The most strictest action will be choose (%s).",
@@ -75,34 +73,36 @@ public class MultipleActions extends AbstractAction {
     }
   }
 
-  private ActionItem multipleAttributes(String sopUID, List<Attribute> attributes) {
-    List<Attribute> mandatoryAttributes = getMandatoryAttributes(sopUID, attributes);
+  private ActionItem multipleAttributes(String sopUID, List<ModuleAttribute> moduleAttributes) {
+    List<ModuleAttribute> mandatoryModuleAttributes =
+        getMandatoryAttributes(sopUID, moduleAttributes);
 
-    if (mandatoryAttributes.size() == 0) {
-      String currentType = Attribute.getStrictedType(attributes);
+    if (mandatoryModuleAttributes.size() == 0) {
+      String currentType = ModuleAttribute.getStrictedType(moduleAttributes);
       return chooseAction(sopUID, currentType);
     }
 
-    if (mandatoryAttributes.size() == 1) {
-      String currentType = mandatoryAttributes.get(0).getType();
+    if (mandatoryModuleAttributes.size() == 1) {
+      String currentType = mandatoryModuleAttributes.get(0).getType();
       return chooseAction(sopUID, currentType);
     }
 
-    String currentType = Attribute.getStrictedType(mandatoryAttributes);
+    String currentType = ModuleAttribute.getStrictedType(mandatoryModuleAttributes);
     return chooseAction(sopUID, currentType);
   }
 
-  private List<Attribute> getMandatoryAttributes(String sopUID, List<Attribute> attributes) {
-    List<Attribute> mandatoryAttributes = new ArrayList<>();
-    attributes.forEach(
+  private List<ModuleAttribute> getMandatoryAttributes(
+      String sopUID, List<ModuleAttribute> moduleAttributes) {
+    List<ModuleAttribute> mandatoryModuleAttributes = new ArrayList<>();
+    moduleAttributes.forEach(
         attribute -> {
           Module module =
               standardDICOM.getModuleByModuleID(sopUID, attribute.getModuleId()).orElse(null);
           if (module != null && Module.moduleIsMandatory(module)) {
-            mandatoryAttributes.add(attribute);
+            mandatoryModuleAttributes.add(attribute);
           }
         });
-    return mandatoryAttributes;
+    return mandatoryModuleAttributes;
   }
 
   private ActionItem chooseAction(String sopUID, String currentType) {

@@ -19,6 +19,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.karnak.backend.dicom.DicomForwardDestination;
+import org.karnak.backend.dicom.ForwardDestination;
+import org.karnak.backend.dicom.ForwardDicomNode;
+import org.karnak.backend.dicom.WebForwardDestination;
 import org.karnak.backend.service.gateway.GatewaySetUpService;
 import org.karnak.backend.util.ServletUtil;
 import org.slf4j.Logger;
@@ -27,12 +31,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.weasis.dicom.op.Echo;
 import org.weasis.dicom.param.AdvancedParams;
 import org.weasis.dicom.param.ConnectOptions;
-import org.weasis.dicom.param.DicomForwardDestination;
 import org.weasis.dicom.param.DicomNode;
 import org.weasis.dicom.param.DicomState;
-import org.weasis.dicom.param.ForwardDestination;
-import org.weasis.dicom.param.ForwardDicomNode;
-import org.weasis.dicom.web.WebForwardDestination;
 
 @WebServlet(urlPatterns = "/echo")
 public class EchoServlet extends HttpServlet {

@@ -87,10 +87,7 @@ public class GridSwitchingAlbums extends Grid<KheopsAlbumsEntity> {
         addComponentColumn(
                 kheopsAlbums -> {
                   Button edit = new Button("Edit");
-                  edit.addClickListener(
-                      e -> {
-                        editor.editItem(kheopsAlbums);
-                      });
+                  edit.addClickListener(e -> editor.editItem(kheopsAlbums));
                   edit.setEnabled(!editor.isOpen());
 
                   Button remove = new Button("Remove");
@@ -122,7 +119,7 @@ public class GridSwitchingAlbums extends Grid<KheopsAlbumsEntity> {
             // Save only if not already existing in table
             if (!dataProvider.getItems().contains(currentEditedKheopsAlbumsEntity)) {
               editor.save();
-              setDataProvider(dataProvider);
+              setItems(dataProvider);
             } else {
               // Show a notification
               Span content = new Span("Already existing");

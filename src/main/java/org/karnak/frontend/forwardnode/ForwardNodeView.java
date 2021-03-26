@@ -59,12 +59,7 @@ public class ForwardNodeView extends HorizontalLayout implements HasUrlParameter
 
     // Build components
     this.layoutNewGridForwardNode = new LayoutNewGridForwardNode();
-    this.layoutEditForwardNode =
-        new LayoutEditForwardNode(
-            forwardNodeLogic.getProjectService(),
-            forwardNodeLogic.getSopClassUIDService(),
-            forwardNodeLogic.getSourceLogic(),
-            forwardNodeLogic.getDestinationLogic());
+    this.layoutEditForwardNode = new LayoutEditForwardNode(forwardNodeLogic);
 
     // Init components
     initComponents();
@@ -84,10 +79,12 @@ public class ForwardNodeView extends HorizontalLayout implements HasUrlParameter
 
   @Override
   public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
-    Long idForwardNode = forwardNodeLogic.enter(parameter);
     ForwardNodeEntity currentForwardNodeEntity = null;
-    if (idForwardNode != null) {
-      currentForwardNodeEntity = forwardNodeLogic.retrieveForwardNodeById(idForwardNode);
+    if (parameter != null) {
+      Long idForwardNode = forwardNodeLogic.enter(parameter);
+      if (idForwardNode != null) {
+        currentForwardNodeEntity = forwardNodeLogic.retrieveForwardNodeById(idForwardNode);
+      }
     }
     layoutNewGridForwardNode.load(currentForwardNodeEntity);
     layoutEditForwardNode.load(currentForwardNodeEntity);
@@ -95,7 +92,7 @@ public class ForwardNodeView extends HorizontalLayout implements HasUrlParameter
 
   /** Init components */
   private void initComponents() {
-    layoutNewGridForwardNode.getGridForwardNode().setDataProvider(forwardNodeLogic);
+    layoutNewGridForwardNode.getGridForwardNode().setItems(forwardNodeLogic);
   }
 
   /** Create and add the layout of the view */
@@ -111,20 +108,18 @@ public class ForwardNodeView extends HorizontalLayout implements HasUrlParameter
     layoutNewGridForwardNode
         .getButtonAddNewForwardNode()
         .addClickListener(
-            click -> {
-              eventAddForwardNodeLayoutNewGrid(
-                  new ForwardNodeEntity(
-                      layoutNewGridForwardNode.getTextFieldNewAETitleForwardNode().getValue()));
-            });
+            click ->
+                eventAddForwardNodeLayoutNewGrid(
+                    new ForwardNodeEntity(
+                        layoutNewGridForwardNode.getTextFieldNewAETitleForwardNode().getValue())));
     layoutNewGridForwardNode
         .getTextFieldNewAETitleForwardNode()
         .addKeyDownListener(
             Key.ENTER,
-            keyDownEvent -> {
-              eventAddForwardNodeLayoutNewGrid(
-                  new ForwardNodeEntity(
-                      layoutNewGridForwardNode.getTextFieldNewAETitleForwardNode().getValue()));
-            });
+            keyDownEvent ->
+                eventAddForwardNodeLayoutNewGrid(
+                    new ForwardNodeEntity(
+                        layoutNewGridForwardNode.getTextFieldNewAETitleForwardNode().getValue())));
   }
 
   /**
@@ -143,10 +138,7 @@ public class ForwardNodeView extends HorizontalLayout implements HasUrlParameter
     layoutNewGridForwardNode
         .getGridForwardNode()
         .asSingleSelect()
-        .addValueChangeListener(
-            event -> {
-              forwardNodeLogic.editForwardNode(event.getValue());
-            });
+        .addValueChangeListener(event -> forwardNodeLogic.editForwardNode(event.getValue()));
   }
 
   /** Add event when click on cancel button in LayoutEditForwardNode */
@@ -154,10 +146,7 @@ public class ForwardNodeView extends HorizontalLayout implements HasUrlParameter
     layoutEditForwardNode
         .getButtonForwardNodeSaveDeleteCancel()
         .getCancel()
-        .addClickListener(
-            event -> {
-              forwardNodeLogic.cancelForwardNode();
-            });
+        .addClickListener(event -> forwardNodeLogic.cancelForwardNode());
   }
 
   /** Add event when click on delete button in LayoutEditForwardNode */

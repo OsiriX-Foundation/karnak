@@ -10,10 +10,11 @@
 package org.karnak.backend.service.gateway;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import org.karnak.backend.dicom.DicomGateway;
+import org.karnak.backend.dicom.GatewayParams;
 import org.karnak.backend.model.NodeEvent;
 import org.karnak.backend.util.NativeLibraryManager;
 import org.slf4j.Logger;
@@ -25,9 +26,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.weasis.core.util.FileUtil;
 import org.weasis.core.util.StringUtil;
-import org.weasis.dicom.param.GatewayParams;
 import org.weasis.dicom.param.ListenerParams;
-import org.weasis.dicom.tool.DicomGateway;
 import org.weasis.dicom.tool.DicomListener;
 
 @Service
@@ -68,7 +67,7 @@ public class GatewayService implements ApplicationListener<ContextRefreshedEvent
   private static DicomListener buildDicomListener(GatewaySetUpService config) {
     DicomListener dicomListener;
     try {
-      dicomListener = new DicomListener(config.getStorePath());
+      dicomListener = new DicomListener(config.getStorePath().toFile());
       String[] acceptedCallingAETitles =
           GatewayParams.getAcceptedCallingAETitles(config.getDestinations());
       ListenerParams params =
@@ -100,18 +99,10 @@ public class GatewayService implements ApplicationListener<ContextRefreshedEvent
   @PreDestroy
   public void destroy() {
     if (dicomListenerOut != null) {
-      try {
-        dicomListenerOut.stop();
-      } catch (IOException e) {
-        LOGGER.error("Cannot stop DICOM listener", e);
-      }
+      dicomListenerOut.stop();
     }
     if (dicomForwardOut != null) {
-      try {
-        dicomForwardOut.stop();
-      } catch (IOException e) {
-        LOGGER.error("Cannot stop gateway", e);
-      }
+      dicomForwardOut.stop();
     }
     if (httpPullIn != null) {
       httpPullIn.stop();

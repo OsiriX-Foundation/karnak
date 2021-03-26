@@ -16,6 +16,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
+import org.karnak.frontend.forwardnode.ForwardNodeLogic;
 import org.karnak.frontend.forwardnode.edit.source.component.GridSourceNode;
 import org.karnak.frontend.util.UIS;
 
@@ -25,6 +26,7 @@ public class SourceView extends VerticalLayout {
 
   // Source Logic
   private final SourceLogic sourceLogic;
+  private final ForwardNodeLogic forwardNodeLogic;
 
   // UI components
   private HorizontalLayout layoutFilterButton;
@@ -32,18 +34,19 @@ public class SourceView extends VerticalLayout {
   private Button newSourceNode;
   private GridSourceNode gridSourceNode;
 
-  private final String LABEL_NEW_SOURCE_NODE = "Source";
-  private final String PLACEHOLDER_FILTER = "Filter properties of sources";
+  private static final String LABEL_NEW_SOURCE_NODE = "Source";
+  private static final String PLACEHOLDER_FILTER = "Filter properties of sources";
 
   /**
    * Source view constructor
    *
-   * @param sourceLogic Logic service of the view
+   * @param forwardNodeLogic Logic service of the view
    */
-  public SourceView(final SourceLogic sourceLogic) {
+  public SourceView(final ForwardNodeLogic forwardNodeLogic) {
 
     // Bind the autowired service
-    this.sourceLogic = sourceLogic;
+    this.sourceLogic = forwardNodeLogic.getSourceLogic();
+    this.forwardNodeLogic = forwardNodeLogic;
 
     // Set the view in the service
     this.sourceLogic.setSourceNodesView(this);
@@ -89,9 +92,14 @@ public class SourceView extends VerticalLayout {
   }
 
   public void loadForwardNode(ForwardNodeEntity forwardNodeEntity) {
+    ForwardNodeEntity forwardNodeEntityReload = null;
+    if (forwardNodeEntity != null) {
+      forwardNodeEntityReload = forwardNodeLogic.retrieveForwardNodeById(forwardNodeEntity.getId());
+      setEnabled(forwardNodeEntityReload != null);
+    }
+    sourceLogic.loadForwardNode(forwardNodeEntityReload);
+    gridSourceNode.setItems(sourceLogic);
     setEnabled(forwardNodeEntity != null);
-    sourceLogic.loadForwardNode(forwardNodeEntity);
-    gridSourceNode.setDataProvider(sourceLogic);
   }
 
   public SourceLogic getSourceLogic() {

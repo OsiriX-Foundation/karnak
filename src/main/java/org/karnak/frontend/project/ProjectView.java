@@ -77,10 +77,12 @@ public class ProjectView extends HorizontalLayout implements HasUrlParameter<Str
 
   @Override
   public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
-    Long idProject = projectLogic.enter(parameter);
     ProjectEntity currentProjectEntity = null;
-    if (idProject != null) {
-      currentProjectEntity = projectLogic.retrieveProject(idProject);
+    if (parameter != null) {
+      Long idProject = projectLogic.enter(parameter);
+      if (idProject != null) {
+        currentProjectEntity = projectLogic.retrieveProject(idProject);
+      }
     }
     editProject.setProject(currentProjectEntity);
     gridProject.selectRow(currentProjectEntity);
@@ -99,7 +101,7 @@ public class ProjectView extends HorizontalLayout implements HasUrlParameter<Str
   private void initComponents() {
     initEditProject(editProject, gridProject);
     initNewProjectForm(newProject);
-    gridProject.setDataProvider(projectLogic);
+    gridProject.setItems(projectLogic);
     newResearchBinder = newProject.getBinder();
   }
 

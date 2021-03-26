@@ -13,9 +13,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.dcm4che6.data.DicomObject;
-import org.dcm4che6.data.Tag;
-import org.dcm4che6.data.VR;
+import org.dcm4che3.data.Attributes;
+import org.dcm4che3.data.Tag;
+import org.dcm4che3.data.VR;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -25,8 +25,7 @@ import org.karnak.backend.model.profilepipe.HashContext;
 import org.karnak.backend.util.ShiftRangeDate;
 
 class ShiftRangeDateTest {
-
-  private static final DicomObject dataset = DicomObject.newDicomObject();
+  private static final Attributes dataset = new Attributes();
   private static final List<ArgumentEntity> argumentEntities = new ArrayList<>();
   private static final ArgumentEntity max_seconds = new ArgumentEntity();
   private static final ArgumentEntity max_days = new ArgumentEntity();
@@ -61,49 +60,28 @@ class ShiftRangeDateTest {
     HashContext hashContext_2 = new HashContext(HMAC_KEY_2, Patient_ID_2);
     HMAC hmac_2 = new HMAC(hashContext_2);
 
-    ShiftRangeDate shiftRangeDate = new ShiftRangeDate();
-
+    assertEquals("20171001", ShiftRangeDate.shift(dataset, Tag.StudyDate, argumentEntities, hmac));
     assertEquals(
-        "20171001",
-        shiftRangeDate.shift(
-            dataset, dataset.get(Tag.StudyDate).orElse(null), argumentEntities, hmac));
-    assertEquals(
-        "115745.000000",
-        shiftRangeDate.shift(
-            dataset, dataset.get(Tag.StudyTime).orElse(null), argumentEntities, hmac));
-    assertEquals(
-        "043Y",
-        shiftRangeDate.shift(
-            dataset, dataset.get(Tag.PatientAge).orElse(null), argumentEntities, hmac));
+        "115745.000000", ShiftRangeDate.shift(dataset, Tag.StudyTime, argumentEntities, hmac));
+    assertEquals("043Y", ShiftRangeDate.shift(dataset, Tag.PatientAge, argumentEntities, hmac));
     assertEquals(
         "20171001115756.354000",
-        shiftRangeDate.shift(
-            dataset, dataset.get(Tag.AcquisitionDateTime).orElse(null), argumentEntities, hmac));
+        ShiftRangeDate.shift(dataset, Tag.AcquisitionDateTime, argumentEntities, hmac));
     assertEquals(
         "235036.000000",
-        shiftRangeDate.shift(
-            dataset, dataset.get(Tag.AcquisitionTime).orElse(null), argumentEntities, hmac));
+        ShiftRangeDate.shift(dataset, Tag.AcquisitionTime, argumentEntities, hmac));
 
     assertEquals(
-        "20171114",
-        shiftRangeDate.shift(
-            dataset, dataset.get(Tag.StudyDate).orElse(null), argumentEntities, hmac_2));
+        "20171114", ShiftRangeDate.shift(dataset, Tag.StudyDate, argumentEntities, hmac_2));
     assertEquals(
-        "120126.000000",
-        shiftRangeDate.shift(
-            dataset, dataset.get(Tag.StudyTime).orElse(null), argumentEntities, hmac_2));
-    assertEquals(
-        "043Y",
-        shiftRangeDate.shift(
-            dataset, dataset.get(Tag.PatientAge).orElse(null), argumentEntities, hmac_2));
+        "120126.000000", ShiftRangeDate.shift(dataset, Tag.StudyTime, argumentEntities, hmac_2));
+    assertEquals("043Y", ShiftRangeDate.shift(dataset, Tag.PatientAge, argumentEntities, hmac_2));
     assertEquals(
         "20171114120137.354000",
-        shiftRangeDate.shift(
-            dataset, dataset.get(Tag.AcquisitionDateTime).orElse(null), argumentEntities, hmac_2));
+        ShiftRangeDate.shift(dataset, Tag.AcquisitionDateTime, argumentEntities, hmac_2));
     assertEquals(
         "235417.000000",
-        shiftRangeDate.shift(
-            dataset, dataset.get(Tag.AcquisitionTime).orElse(null), argumentEntities, hmac_2));
+        ShiftRangeDate.shift(dataset, Tag.AcquisitionTime, argumentEntities, hmac_2));
 
     min_seconds.setKey("min_seconds");
     min_seconds.setValue("500");
@@ -113,55 +91,35 @@ class ShiftRangeDateTest {
     argumentEntities.add(min_seconds);
     argumentEntities.add(min_days);
 
+    assertEquals("20170828", ShiftRangeDate.shift(dataset, Tag.StudyDate, argumentEntities, hmac));
     assertEquals(
-        "20170828",
-        shiftRangeDate.shift(
-            dataset, dataset.get(Tag.StudyDate).orElse(null), argumentEntities, hmac));
-    assertEquals(
-        "115454.000000",
-        shiftRangeDate.shift(
-            dataset, dataset.get(Tag.StudyTime).orElse(null), argumentEntities, hmac));
-    assertEquals(
-        "043Y",
-        shiftRangeDate.shift(
-            dataset, dataset.get(Tag.PatientAge).orElse(null), argumentEntities, hmac));
+        "115454.000000", ShiftRangeDate.shift(dataset, Tag.StudyTime, argumentEntities, hmac));
+    assertEquals("043Y", ShiftRangeDate.shift(dataset, Tag.PatientAge, argumentEntities, hmac));
     assertEquals(
         "20170828115505.354000",
-        shiftRangeDate.shift(
-            dataset, dataset.get(Tag.AcquisitionDateTime).orElse(null), argumentEntities, hmac));
+        ShiftRangeDate.shift(dataset, Tag.AcquisitionDateTime, argumentEntities, hmac));
     assertEquals(
         "234745.000000",
-        shiftRangeDate.shift(
-            dataset, dataset.get(Tag.AcquisitionTime).orElse(null), argumentEntities, hmac));
+        ShiftRangeDate.shift(dataset, Tag.AcquisitionTime, argumentEntities, hmac));
 
     assertEquals(
-        "20170919",
-        shiftRangeDate.shift(
-            dataset, dataset.get(Tag.StudyDate).orElse(null), argumentEntities, hmac_2));
+        "20170919", ShiftRangeDate.shift(dataset, Tag.StudyDate, argumentEntities, hmac_2));
     assertEquals(
-        "115645.000000",
-        shiftRangeDate.shift(
-            dataset, dataset.get(Tag.StudyTime).orElse(null), argumentEntities, hmac_2));
-    assertEquals(
-        "043Y",
-        shiftRangeDate.shift(
-            dataset, dataset.get(Tag.PatientAge).orElse(null), argumentEntities, hmac_2));
+        "115645.000000", ShiftRangeDate.shift(dataset, Tag.StudyTime, argumentEntities, hmac_2));
+    assertEquals("043Y", ShiftRangeDate.shift(dataset, Tag.PatientAge, argumentEntities, hmac_2));
     assertEquals(
         "20170919115656.354000",
-        shiftRangeDate.shift(
-            dataset, dataset.get(Tag.AcquisitionDateTime).orElse(null), argumentEntities, hmac_2));
+        ShiftRangeDate.shift(dataset, Tag.AcquisitionDateTime, argumentEntities, hmac_2));
     assertEquals(
         "234936.000000",
-        shiftRangeDate.shift(
-            dataset, dataset.get(Tag.AcquisitionTime).orElse(null), argumentEntities, hmac_2));
+        ShiftRangeDate.shift(dataset, Tag.AcquisitionTime, argumentEntities, hmac_2));
 
     max_seconds.setKey("test_max_seconds");
     max_days.setKey("max_days");
     Assertions.assertThrows(
         IllegalArgumentException.class,
         () -> {
-          shiftRangeDate.shift(
-              dataset, dataset.get(Tag.AcquisitionTime).orElse(null), argumentEntities, hmac);
+          ShiftRangeDate.shift(dataset, Tag.AcquisitionTime, argumentEntities, hmac);
         });
 
     max_seconds.setKey("test_max_seconds");
@@ -169,8 +127,7 @@ class ShiftRangeDateTest {
     Assertions.assertThrows(
         IllegalArgumentException.class,
         () -> {
-          shiftRangeDate.shift(
-              dataset, dataset.get(Tag.AcquisitionTime).orElse(null), argumentEntities, hmac);
+          ShiftRangeDate.shift(dataset, Tag.AcquisitionTime, argumentEntities, hmac);
         });
 
     max_seconds.setKey("max_seconds");
@@ -178,8 +135,7 @@ class ShiftRangeDateTest {
     Assertions.assertThrows(
         IllegalArgumentException.class,
         () -> {
-          shiftRangeDate.shift(
-              dataset, dataset.get(Tag.AcquisitionTime).orElse(null), argumentEntities, hmac);
+          ShiftRangeDate.shift(dataset, Tag.AcquisitionTime, argumentEntities, hmac);
         });
 
     max_seconds.setKey("test_max_seconds");
@@ -187,8 +143,7 @@ class ShiftRangeDateTest {
     Assertions.assertThrows(
         IllegalArgumentException.class,
         () -> {
-          shiftRangeDate.shift(
-              dataset, dataset.get(Tag.AcquisitionTime).orElse(null), argumentEntities, hmac);
+          ShiftRangeDate.shift(dataset, Tag.AcquisitionTime, argumentEntities, hmac);
         });
 
     List<ArgumentEntity> arguments_2 = new ArrayList<>();
@@ -200,39 +155,34 @@ class ShiftRangeDateTest {
     Assertions.assertThrows(
         IllegalArgumentException.class,
         () -> {
-          shiftRangeDate.shift(
-              dataset, dataset.get(Tag.AcquisitionTime).orElse(null), arguments_2, hmac);
+          ShiftRangeDate.shift(dataset, Tag.AcquisitionTime, arguments_2, hmac);
         });
 
     arg_1.setKey("max_days");
     Assertions.assertThrows(
         IllegalArgumentException.class,
         () -> {
-          shiftRangeDate.shift(
-              dataset, dataset.get(Tag.AcquisitionTime).orElse(null), arguments_2, hmac);
+          ShiftRangeDate.shift(dataset, Tag.AcquisitionTime, arguments_2, hmac);
         });
 
     arg_1.setKey("min_seconds");
     Assertions.assertThrows(
         IllegalArgumentException.class,
         () -> {
-          shiftRangeDate.shift(
-              dataset, dataset.get(Tag.AcquisitionTime).orElse(null), arguments_2, hmac);
+          ShiftRangeDate.shift(dataset, Tag.AcquisitionTime, arguments_2, hmac);
         });
 
     arg_1.setKey("min_days");
     Assertions.assertThrows(
         IllegalArgumentException.class,
         () -> {
-          shiftRangeDate.shift(
-              dataset, dataset.get(Tag.AcquisitionTime).orElse(null), arguments_2, hmac);
+          ShiftRangeDate.shift(dataset, Tag.AcquisitionTime, arguments_2, hmac);
         });
 
     Assertions.assertThrows(
         IllegalArgumentException.class,
         () -> {
-          shiftRangeDate.shift(
-              dataset, dataset.get(Tag.AcquisitionTime).orElse(null), new ArrayList<>(), hmac);
+          ShiftRangeDate.shift(dataset, Tag.AcquisitionTime, new ArrayList<>(), hmac);
         });
   }
 }

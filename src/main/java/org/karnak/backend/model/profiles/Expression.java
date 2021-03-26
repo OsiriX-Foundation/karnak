@@ -11,9 +11,9 @@ package org.karnak.backend.model.profiles;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import org.dcm4che6.data.DicomElement;
-import org.dcm4che6.data.DicomObject;
-import org.dcm4che6.data.VR;
+import org.dcm4che3.data.Attributes;
+import org.dcm4che3.data.VR;
+import org.karnak.backend.data.entity.ArgumentEntity;
 import org.karnak.backend.data.entity.ExcludedTagEntity;
 import org.karnak.backend.data.entity.IncludedTagEntity;
 import org.karnak.backend.data.entity.ProfileElementEntity;
@@ -54,11 +54,10 @@ public class Expression extends AbstractProfileItem {
   }
 
   @Override
-  public ActionItem getAction(
-      DicomObject dcm, DicomObject dcmCopy, DicomElement dcmElem, HMAC hmac) {
-    if (exceptedTagsAction.get(dcmElem.tag()) == null && tagsAction.get(dcmElem.tag()) != null) {
+  public ActionItem getAction(Attributes dcm, Attributes dcmCopy, int tag, HMAC hmac) {
+    if (exceptedTagsAction.get(tag) == null && tagsAction.get(tag) != null) {
       final String expr = argumentEntities.get(0).getValue();
-      final ExprAction exprAction = new ExprAction(dcmElem.tag(), dcmElem.vr(), dcm, dcmCopy);
+      final ExprAction exprAction = new ExprAction(tag, dcm.getVR(tag), dcm, dcmCopy);
       return (ActionItem) ExpressionResult.get(expr, exprAction, ActionItem.class);
     }
     return null;
@@ -67,26 +66,20 @@ public class Expression extends AbstractProfileItem {
   public void profileValidation() throws Exception {
     if (!argumentEntities.stream().anyMatch(argument -> argument.getKey().equals("expr"))) {
       List<String> args =
-          argumentEntities.stream().map(argument -> argument.getKey()).collect(Collectors.toList());
-      IllegalArgumentException missingParameters =
-          new IllegalArgumentException(
-              "Cannot build the expression: Missing argument, the class need [expr] as parameters. Parameters given "
-                  + args);
-      throw missingParameters;
+          argumentEntities.stream().map(ArgumentEntity::getKey).collect(Collectors.toList());
+      throw new IllegalArgumentException(
+          "Cannot build the expression: Missing argument, the class need [expr] as parameters. Parameters given "
+              + args);
     }
 
     final String expr = argumentEntities.get(0).getValue();
     final ExpressionError expressionError =
         ExpressionResult.isValid(
-            expr,
-            new ExprAction(1, VR.AE, DicomObject.newDicomObject(), DicomObject.newDicomObject()),
-            ActionItem.class);
+            expr, new ExprAction(1, VR.AE, new Attributes(), new Attributes()), ActionItem.class);
 
     if (!expressionError.isValid()) {
-      IllegalArgumentException expressionNotValid =
-          new IllegalArgumentException(
-              String.format("Expression is not valid: \n\r%s", expressionError.getMsg()));
-      throw expressionNotValid;
+      throw new IllegalArgumentException(
+          String.format("Expression is not valid: \n\r%s", expressionError.getMsg()));
     }
   }
 }

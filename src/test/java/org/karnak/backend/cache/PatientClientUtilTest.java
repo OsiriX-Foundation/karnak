@@ -13,9 +13,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.LocalDate;
 import java.util.stream.Stream;
-import org.dcm4che6.data.DicomObject;
-import org.dcm4che6.data.Tag;
-import org.dcm4che6.data.VR;
+import org.dcm4che3.data.Attributes;
+import org.dcm4che3.data.Tag;
+import org.dcm4che3.data.VR;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -25,18 +25,18 @@ import org.karnak.backend.util.PatientClientUtil;
 
 class PatientClientUtilTest {
 
-  static DicomObject dataset;
-  static DicomObject datasetWithIssuer;
+  static Attributes dataset;
+  static Attributes datasetWithIssuer;
 
   @BeforeAll
   protected static void setUpBeforeClass() throws Exception {
-    dataset = DicomObject.newDicomObject();
+    dataset = new Attributes();
     dataset.setString(Tag.PatientID, VR.LO, "EREN");
     dataset.setString(Tag.PatientName, VR.PN, "Patient^Name");
     dataset.setString(Tag.PatientBirthDate, VR.DA, "19930216");
     dataset.setString(Tag.PatientSex, VR.CS, "M");
 
-    datasetWithIssuer = DicomObject.newDicomObject();
+    datasetWithIssuer = new Attributes();
     datasetWithIssuer.setString(Tag.PatientID, VR.LO, "EREN");
     datasetWithIssuer.setString(Tag.PatientName, VR.PN, "Patient^Name");
     datasetWithIssuer.setString(Tag.PatientBirthDate, VR.DA, "19930216");

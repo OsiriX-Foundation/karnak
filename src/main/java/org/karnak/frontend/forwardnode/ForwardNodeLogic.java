@@ -20,20 +20,23 @@ import org.karnak.backend.service.ProjectService;
 import org.karnak.backend.service.SOPClassUIDService;
 import org.karnak.frontend.forwardnode.edit.destination.DestinationLogic;
 import org.karnak.frontend.forwardnode.edit.source.SourceLogic;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /** Logic service use to make calls to backend and implement logic linked to the view */
 @Service
 public class ForwardNodeLogic extends ListDataProvider<ForwardNodeEntity> {
+  private static final Logger LOGGER = LoggerFactory.getLogger(ForwardNodeLogic.class);
 
   // View
   private ForwardNodeView forwardNodeView;
 
   // Services
   private final ForwardNodeAPIService forwardNodeAPIService;
-  private final ForwardNodeService forwardNodeService;
-  private final ProjectService projectService;
+  private final transient ForwardNodeService forwardNodeService;
+  private final transient ProjectService projectService;
   private final SOPClassUIDService sopClassUIDService;
   private final SourceLogic sourceLogic;
   private final DestinationLogic destinationLogic;
@@ -92,9 +95,9 @@ public class ForwardNodeLogic extends ListDataProvider<ForwardNodeEntity> {
   public Long enter(String dataIdStr) {
     // TODO: On enter, go to dataIdStr
     try {
-      Long dataId = Long.valueOf(dataIdStr);
-      return dataId;
+      return Long.valueOf(dataIdStr);
     } catch (NumberFormatException e) {
+      LOGGER.error("Cannot get valueOf {}", dataIdStr, e);
     }
     return null;
     /*
@@ -185,14 +188,14 @@ public class ForwardNodeLogic extends ListDataProvider<ForwardNodeEntity> {
   public void setFilter(String filterTextInput) {
     Objects.requireNonNull(filterText, "Filter text cannot be null.");
 
-    final String filterText = filterTextInput.trim();
+    final String filterTextTrim = filterTextInput.trim();
 
-    if (Objects.equals(this.filterText, filterText)) {
+    if (Objects.equals(this.filterText, filterTextTrim)) {
       return;
     }
-    this.filterText = filterText;
+    this.filterText = filterTextTrim;
 
-    setFilter(data -> matchesFilter(data, filterText));
+    setFilter(data -> matchesFilter(data, filterTextTrim));
   }
 
   private boolean matchesFilter(ForwardNodeEntity data, String filterText) {
