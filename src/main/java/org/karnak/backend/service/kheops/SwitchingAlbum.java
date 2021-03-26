@@ -41,7 +41,7 @@ public class SwitchingAlbum {
   }
 
   private static HMAC generateHMAC(DestinationEntity destinationEntity) {
-    if (destinationEntity.getDesidentification()) {
+    if (destinationEntity.isDesidentification()) {
       ProjectEntity projectEntity = destinationEntity.getProjectEntity();
       return new HMAC(projectEntity.getSecret());
     }
@@ -50,7 +50,7 @@ public class SwitchingAlbum {
 
   private static String hashUIDonDeidentification(
       DestinationEntity destinationEntity, String inputUID, HMAC hmac) {
-    if (destinationEntity.getDesidentification() && hmac != null) {
+    if (destinationEntity.isDesidentification() && hmac != null) {
       return hmac.uidHash(inputUID);
     }
     return inputUID;

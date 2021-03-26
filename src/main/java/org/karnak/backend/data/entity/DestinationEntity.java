@@ -11,10 +11,13 @@ package org.karnak.backend.data.entity;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -43,16 +46,13 @@ import org.karnak.backend.enums.PseudonymType;
 @GroupSequenceProvider(value = DestinationGroupSequenceProvider.class)
 @Entity(name = "Destination")
 @Table(name = "destination")
-public class DestinationEntity {
+public class DestinationEntity implements Serializable {
 
-  @NotNull(message = "Type is mandatory")
-  private final DestinationType type;
+  private static final long serialVersionUID = 4835879567037810171L;
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
-
   private String description;
+  private DestinationType destinationType;
 
   private boolean activate;
 
@@ -61,31 +61,15 @@ public class DestinationEntity {
   private PseudonymType pseudonymType;
 
   private String tag;
-
   private String delimiter;
-
   private Integer position;
-
   private Boolean savePseudonym;
-
   private Boolean pseudonymAsPatientName;
-
   private boolean filterBySOPClasses;
-
-  @ManyToMany(fetch = FetchType.EAGER)
-  @JoinTable(
-      name = "sop_class_filter",
-      joinColumns = @JoinColumn(name = "destination_id"),
-      inverseJoinColumns = @JoinColumn(name = "sop_class_uid_id"))
   private Set<SOPClassUIDEntity> SOPClassUIDEntityFilters = new HashSet<>();
-
-  @OneToMany(mappedBy = "destinationEntity", cascade = CascadeType.REMOVE)
-  @LazyCollection(LazyCollectionOption.FALSE)
   private List<KheopsAlbumsEntity> kheopsAlbumEntities;
-
-  @ManyToOne
-  @JoinColumn(name = "project_id")
   private ProjectEntity projectEntity;
+  private ForwardNodeEntity forwardNodeEntity;
 
   // list of emails (comma separated) used when the images have been sent (or
   // partially sent) to the final destination. Note: if an issue appears before
@@ -109,34 +93,15 @@ public class DestinationEntity {
   private Integer notifyInterval;
 
   // DICOM properties
-
   // the AETitle of the destination node.
   // mandatory[type=dicom]
-  @NotBlank(groups = DestinationDicomGroup.class, message = "AETitle is mandatory")
-  @Size(
-      groups = DestinationDicomGroup.class,
-      max = 16,
-      message = "AETitle has more than 16 characters")
   private String aeTitle;
-
   // the host or IP of the destination node.
   // mandatory[type=dicom]
-  @NotBlank(groups = DestinationDicomGroup.class, message = "Hostname is mandatory")
   private String hostname;
-
   // the port of the destination node.
   // mandatory[type=dicom]
-  @NotNull(groups = DestinationDicomGroup.class, message = "Port is mandatory")
-  @Min(
-      groups = DestinationDicomGroup.class,
-      value = 1,
-      message = "Port should be between 1 and 65535")
-  @Max(
-      groups = DestinationDicomGroup.class,
-      value = 65535,
-      message = "Port should be between 1 and 65535")
   private Integer port;
-
   // false by default; if "true" then use the destination AETitle as the calling
   // AETitle at the gateway side. Otherwise with "false" the calling AETitle is
   // the AETitle defined in the property "listener.aet" of the file
@@ -144,29 +109,20 @@ public class DestinationEntity {
   private Boolean useaetdest;
 
   // STOW properties
-
   // the destination STOW-RS URL.
   // mandatory[type=stow]
-  @NotBlank(groups = DestinationStowGroup.class, message = "URL is mandatory")
   private String url;
-
   // credentials of the STOW-RS service (format is "user:password").
   private String urlCredentials;
-
   // headers for HTTP request.
-  @Size(max = 4096, message = "Headers has more than 4096 characters")
   private String headers;
 
-  @ManyToOne
-  @JoinColumn(name = "forward_node_id")
-  private ForwardNodeEntity forwardNodeEntity;
-
-  protected DestinationEntity() {
+  public DestinationEntity() {
     this(null);
   }
 
-  protected DestinationEntity(DestinationType type) {
-    this.type = type;
+  protected DestinationEntity(DestinationType destinationType) {
+    this.destinationType = destinationType;
     this.activate = true;
     this.description = "";
     this.desidentification = false;
@@ -220,12 +176,14 @@ public class DestinationEntity {
     return destinationEntity;
   }
 
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
   public Long getId() {
     return id;
   }
 
-  public boolean isNewData() {
-    return id == null;
+  public void setId(Long id) {
+    this.id = id;
   }
 
   public boolean isActivate() {
@@ -244,11 +202,17 @@ public class DestinationEntity {
     this.description = description;
   }
 
-  public DestinationType getType() {
-    return type;
+  @NotNull(message = "Type is mandatory")
+  @Column(name = "type")
+  public DestinationType getDestinationType() {
+    return destinationType;
   }
 
-  public boolean getDesidentification() {
+  public void setDestinationType(DestinationType destinationType) {
+    this.destinationType = destinationType;
+  }
+
+  public boolean isDesidentification() {
     return desidentification;
   }
 
@@ -256,7 +220,7 @@ public class DestinationEntity {
     this.desidentification = desidentification;
   }
 
-  public boolean getFilterBySOPClasses() {
+  public boolean isFilterBySOPClasses() {
     return filterBySOPClasses;
   }
 
@@ -304,6 +268,11 @@ public class DestinationEntity {
     this.notifyInterval = notifyInterval;
   }
 
+  @NotBlank(groups = DestinationDicomGroup.class, message = "AETitle is mandatory")
+  @Size(
+      groups = DestinationDicomGroup.class,
+      max = 16,
+      message = "AETitle has more than 16 characters")
   public String getAeTitle() {
     return aeTitle;
   }
@@ -312,6 +281,7 @@ public class DestinationEntity {
     this.aeTitle = aeTitle;
   }
 
+  @NotBlank(groups = DestinationDicomGroup.class, message = "Hostname is mandatory")
   public String getHostname() {
     return hostname;
   }
@@ -320,6 +290,15 @@ public class DestinationEntity {
     this.hostname = hostname;
   }
 
+  @NotNull(groups = DestinationDicomGroup.class, message = "Port is mandatory")
+  @Min(
+      groups = DestinationDicomGroup.class,
+      value = 1,
+      message = "Port should be between 1 and 65535")
+  @Max(
+      groups = DestinationDicomGroup.class,
+      value = 65535,
+      message = "Port should be between 1 and 65535")
   public Integer getPort() {
     return port;
   }
@@ -336,6 +315,7 @@ public class DestinationEntity {
     this.useaetdest = useaetdest;
   }
 
+  @NotBlank(groups = DestinationStowGroup.class, message = "URL is mandatory")
   public String getUrl() {
     return url;
   }
@@ -352,6 +332,7 @@ public class DestinationEntity {
     this.urlCredentials = urlCredentials;
   }
 
+  @Size(max = 4096, message = "Headers has more than 4096 characters")
   public String getHeaders() {
     return headers;
   }
@@ -361,6 +342,8 @@ public class DestinationEntity {
   }
 
   @JsonGetter("forwardNode")
+  @ManyToOne
+  @JoinColumn(name = "forward_node_id")
   public ForwardNodeEntity getForwardNodeEntity() {
     return forwardNodeEntity;
   }
@@ -370,15 +353,20 @@ public class DestinationEntity {
     this.forwardNodeEntity = forwardNodeEntity;
   }
 
-  public Set<SOPClassUIDEntity> getSOPClassUIDFilters() {
+  @ManyToMany(fetch = FetchType.EAGER)
+  @JoinTable(
+      name = "sop_class_filter",
+      joinColumns = @JoinColumn(name = "destination_id"),
+      inverseJoinColumns = @JoinColumn(name = "sop_class_uid_id"))
+  public Set<SOPClassUIDEntity> getSOPClassUIDEntityFilters() {
     return this.SOPClassUIDEntityFilters;
   }
 
-  public void setSOPClassUIDFilters(Set<SOPClassUIDEntity> sopClassUIDfilterEntities) {
-    this.SOPClassUIDEntityFilters = sopClassUIDfilterEntities;
+  public void setSOPClassUIDEntityFilters(Set<SOPClassUIDEntity> sopClassUIDEntities) {
+    this.SOPClassUIDEntityFilters = sopClassUIDEntities;
   }
 
-  public Set<String> getSOPClassUIDFiltersName() {
+  public Set<String> retrieveSOPClassUIDFiltersName() {
     Set<String> sopList = new HashSet<>();
     this.SOPClassUIDEntityFilters.forEach(sopClassUID -> sopList.add(sopClassUID.getName()));
     return sopList;
@@ -433,6 +421,8 @@ public class DestinationEntity {
   }
 
   @JsonGetter("kheopsAlbums")
+  @OneToMany(mappedBy = "destinationEntity", cascade = CascadeType.REMOVE)
+  @LazyCollection(LazyCollectionOption.FALSE)
   public List<KheopsAlbumsEntity> getKheopsAlbumEntities() {
     return kheopsAlbumEntities;
   }
@@ -443,6 +433,8 @@ public class DestinationEntity {
   }
 
   @JsonGetter("project")
+  @ManyToOne
+  @JoinColumn(name = "project_id")
   public ProjectEntity getProjectEntity() {
     return projectEntity;
   }
@@ -482,15 +474,15 @@ public class DestinationEntity {
 
   @Override
   public String toString() {
-    if (type != null) {
-      switch (type) {
+    if (destinationType != null) {
+      switch (destinationType) {
         case dicom:
           return "Destination [id="
               + id
               + ", description="
               + description
               + ", type="
-              + type
+              + destinationType
               + ", notify="
               + notify
               + ", notifyObjectErrorPrefix="
@@ -516,7 +508,7 @@ public class DestinationEntity {
               + ", description="
               + description
               + ", type="
-              + type
+              + destinationType
               + ", notify="
               + notify
               + ", notifyObjectErrorPrefix="
@@ -541,7 +533,7 @@ public class DestinationEntity {
         + ", description="
         + description
         + ", type="
-        + type
+        + destinationType
         + ", notify="
         + notify
         + ", notifyObjectErrorPrefix="
@@ -555,9 +547,9 @@ public class DestinationEntity {
         + "]";
   }
 
-  public String getStringReference() {
-    if (type != null) {
-      switch (type) {
+  public String retrieveStringReference() {
+    if (destinationType != null) {
+      switch (destinationType) {
         case dicom:
           return getAeTitle();
         case stow:
@@ -565,5 +557,67 @@ public class DestinationEntity {
       }
     }
     return "Type of destination is unknown";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    DestinationEntity that = (DestinationEntity) o;
+    return desidentification == that.desidentification
+        && filterBySOPClasses == that.filterBySOPClasses
+        && Objects.equals(id, that.id)
+        && Objects.equals(description, that.description)
+        && destinationType == that.destinationType
+        && pseudonymType == that.pseudonymType
+        && Objects.equals(tag, that.tag)
+        && Objects.equals(delimiter, that.delimiter)
+        && Objects.equals(position, that.position)
+        && Objects.equals(savePseudonym, that.savePseudonym)
+        && Objects.equals(pseudonymAsPatientName, that.pseudonymAsPatientName)
+        && Objects.equals(notify, that.notify)
+        && Objects.equals(notifyObjectErrorPrefix, that.notifyObjectErrorPrefix)
+        && Objects.equals(notifyObjectPattern, that.notifyObjectPattern)
+        && Objects.equals(notifyObjectValues, that.notifyObjectValues)
+        && Objects.equals(notifyInterval, that.notifyInterval)
+        && Objects.equals(aeTitle, that.aeTitle)
+        && Objects.equals(hostname, that.hostname)
+        && Objects.equals(port, that.port)
+        && Objects.equals(useaetdest, that.useaetdest)
+        && Objects.equals(url, that.url)
+        && Objects.equals(urlCredentials, that.urlCredentials)
+        && Objects.equals(headers, that.headers);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+        id,
+        description,
+        destinationType,
+        desidentification,
+        pseudonymType,
+        tag,
+        delimiter,
+        position,
+        savePseudonym,
+        pseudonymAsPatientName,
+        filterBySOPClasses,
+        notify,
+        notifyObjectErrorPrefix,
+        notifyObjectPattern,
+        notifyObjectValues,
+        notifyInterval,
+        aeTitle,
+        hostname,
+        port,
+        useaetdest,
+        url,
+        urlCredentials,
+        headers);
   }
 }

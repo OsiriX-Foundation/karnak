@@ -28,10 +28,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @Conditional(value = DefaultIdpLoadCondition.class)
 public class SecurityInMemoryConfig extends WebSecurityConfigurerAdapter {
 
-  private static final String LOGIN_PROCESSING_URL = "/login";
   private static final String LOGIN_FAILURE_URL = "/login?error";
   private static final String LOGIN_URL = "/login";
-  private static final String LOGOUT_SUCCESS_URL = "/login";
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
@@ -44,7 +42,7 @@ public class SecurityInMemoryConfig extends WebSecurityConfigurerAdapter {
         // Disables cross-site request forgery (CSRF) protection for main route and login
         .and()
         .csrf()
-        .ignoringAntMatchers("/", "/login")
+        .ignoringAntMatchers("/", LOGIN_URL)
         // Turns on authorization
         .and()
         .authorizeRequests()
@@ -62,12 +60,12 @@ public class SecurityInMemoryConfig extends WebSecurityConfigurerAdapter {
         // Configures the login page URLs
         .loginPage(LOGIN_URL)
         .permitAll()
-        .loginProcessingUrl(LOGIN_PROCESSING_URL)
+        .loginProcessingUrl(LOGIN_URL)
         .failureUrl(LOGIN_FAILURE_URL)
         // Configures the logout URL
         .and()
         .logout()
-        .logoutSuccessUrl(LOGOUT_SUCCESS_URL)
+        .logoutSuccessUrl(LOGIN_URL)
         .and()
         .exceptionHandling()
         .accessDeniedPage(LOGIN_URL);

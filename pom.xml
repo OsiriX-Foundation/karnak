@@ -40,6 +40,7 @@
     <sonar.java.source>${java.version}</sonar.java.source>
     <sonar.java.target>${java.version}</sonar.java.target>
     <sonar.projectKey>karnak</sonar.projectKey>
+    <h2.version>1.4.200</h2.version>
   </properties>
 
   <!-- Repositories -->
@@ -241,7 +242,7 @@
             <licenseHeader>
               <!-- @formatter:off -->
               <content>
- /*
+/*
  * Copyright (c) $YEAR Karnak Team and other contributors.
  *
  * This program and the accompanying materials are made available under the terms of the Eclipse
@@ -359,6 +360,13 @@
     <dependency>
       <artifactId>spring-boot-starter-security</artifactId>
       <groupId>org.springframework.boot</groupId>
+    </dependency>
+
+    <!-- Oauth2 -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-oauth2-client</artifactId>
+      <version>2.2.6.RELEASE</version>
     </dependency>
 
     <dependency>
@@ -503,6 +511,13 @@
       <scope>test</scope>
       <version>${springframework.version}</version>
     </dependency>
+
+    <!-- DB H2 for tests -->
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <version>${h2.version}</version>
+    </dependency>
   </dependencies>
 
   <!-- Dependency Management -->
@@ -533,19 +548,6 @@
 
   <!-- Profiles -->
   <profiles>
-    <profile>
-      <dependencies>
-        <dependency>
-          <artifactId>h2</artifactId>
-          <groupId>com.h2database</groupId>
-          <scope>runtime</scope>
-        </dependency>
-      </dependencies>
-      <id>devh2</id>
-      <properties>
-        <activatedProperties>devh2</activatedProperties>
-      </properties>
-    </profile>
     <profile>
       <!-- Production mode is activated using -Pproduction -->
       <build>

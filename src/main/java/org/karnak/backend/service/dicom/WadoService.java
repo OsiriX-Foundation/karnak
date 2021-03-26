@@ -17,8 +17,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import org.karnak.backend.model.dicom.WadoNode;
 import org.karnak.backend.service.thread.CheckWadoThread;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class WadoService {
+
+  @Autowired
+  public WadoService() {}
 
   public String checkWado(List<WadoNode> nodes) throws InterruptedException, ExecutionException {
     StringBuilder result = new StringBuilder();

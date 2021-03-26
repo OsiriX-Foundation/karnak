@@ -41,25 +41,25 @@ public class EmailNotifyProgress implements ProgressListener {
   private static final Logger LOGGER = LoggerFactory.getLogger(EmailNotifyProgress.class);
 
   private final ScheduledThreadPoolExecutor checkProcess;
-  private final StreamRegistryEditor streamRegistry;
+  private final StreamRegistryEditor streamRegistryEditor;
   private final ForwardDestination forwardDestination;
   private final String[] emailList;
   private final GatewaySetUpService config;
   private final NotificationSetUp notificationSetUp;
 
   public EmailNotifyProgress(
-      StreamRegistryEditor streamRegistry,
+      StreamRegistryEditor streamRegistryEditor,
       ForwardDestination forwardDestination,
       String[] emails,
       GatewaySetUpService config,
       NotificationSetUp notificationSetUp) {
-    this.streamRegistry = Objects.requireNonNull(streamRegistry);
+    this.streamRegistryEditor = Objects.requireNonNull(streamRegistryEditor);
     this.forwardDestination = Objects.requireNonNull(forwardDestination);
     this.config = Objects.requireNonNull(config);
     this.emailList = emails;
     this.notificationSetUp = notificationSetUp;
     if (emails != null && emails.length > 0) {
-      this.streamRegistry.setEnable(true);
+      this.streamRegistryEditor.setEnable(true);
       this.checkProcess = new ScheduledThreadPoolExecutor(1);
       int interval =
           notificationSetUp == null
@@ -74,7 +74,7 @@ public class EmailNotifyProgress implements ProgressListener {
 
   @Override
   public void handleProgression(DicomProgress progress) {
-    streamRegistry.update(progress);
+    streamRegistryEditor.update(progress);
   }
 
   public ForwardDestination getForwardDestination() {
@@ -86,8 +86,8 @@ public class EmailNotifyProgress implements ProgressListener {
   }
 
   protected void checkNotification() {
-    if (streamRegistry.isEnable()) {
-      Iterator<Entry<String, Study>> studyIt = streamRegistry.getEntrySet().iterator();
+    if (streamRegistryEditor.isEnable()) {
+      Iterator<Entry<String, Study>> studyIt = streamRegistryEditor.getEntrySet().iterator();
       while (studyIt.hasNext()) {
         Study study = studyIt.next().getValue();
         long currentTime = System.currentTimeMillis();

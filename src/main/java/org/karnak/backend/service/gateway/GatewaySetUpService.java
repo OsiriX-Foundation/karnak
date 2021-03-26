@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-2021 Karnak Team and other contributors.
+ * Copyright (c) 2021 Karnak Team and other contributors.
  *
  * This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
@@ -25,7 +25,7 @@ import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.DicomSourceNodeEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.data.entity.KheopsAlbumsEntity;
-import org.karnak.backend.data.repo.GatewayRepo;
+import org.karnak.backend.data.repo.ForwardNodeRepo;
 import org.karnak.backend.dicom.DicomForwardDestination;
 import org.karnak.backend.dicom.ForwardDestination;
 import org.karnak.backend.dicom.ForwardDicomNode;
@@ -74,7 +74,7 @@ public class GatewaySetUpService {
   protected static final String T_URL = "url";
   private static final Logger LOGGER = LoggerFactory.getLogger(GatewaySetUpService.class);
   // Repositories
-  private final GatewayRepo forwardNodeRepo;
+  private final ForwardNodeRepo forwardNodeRepo;
 
   private final Map<ForwardDicomNode, List<ForwardDestination>> destMap = new HashMap<>();
 
@@ -100,8 +100,8 @@ public class GatewaySetUpService {
   private final String truststore;
 
   @Autowired
-  public GatewaySetUpService(final GatewayRepo gatewayRepo) throws Exception {
-    this.forwardNodeRepo = gatewayRepo;
+  public GatewaySetUpService(final ForwardNodeRepo forwardNodeRepo) throws Exception {
+    this.forwardNodeRepo = forwardNodeRepo;
     String path = getProperty("GATEWAY_ARCHIVE_PATH", null); // Only Archive and Pull mode
     storePath = StringUtil.hasText(path) ? Path.of(path) : null;
     intervalCheck =
@@ -299,12 +299,13 @@ public class GatewaySetUpService {
       List<ForwardDestination> dstList, ForwardDicomNode fwdSrcNode, DestinationEntity dstNode) {
     try {
       List<AttributeEditor> editors = new ArrayList<>();
-      final boolean filterBySOPClassesEnable = dstNode.getFilterBySOPClasses();
+      final boolean filterBySOPClassesEnable = dstNode.isFilterBySOPClasses();
       if (filterBySOPClassesEnable) {
-        editors.add(new FilterEditor(dstNode.getSOPClassUIDFilters()));
+        editors.add(new FilterEditor(dstNode.getSOPClassUIDEntityFilters()));
       }
 
       final List<KheopsAlbumsEntity> listKheopsAlbumEntities = dstNode.getKheopsAlbumEntities();
+
       SwitchingAlbum switchingAlbum = new SwitchingAlbum();
       editors.add(
           (Attributes dcm, AttributeEditorContext context) -> {
@@ -316,7 +317,7 @@ public class GatewaySetUpService {
             }
           });
 
-      final boolean desidentificationEnable = dstNode.getDesidentification();
+      final boolean desidentificationEnable = dstNode.isDesidentification();
       final boolean profileDefined =
           dstNode.getProjectEntity() != null
               && dstNode.getProjectEntity().getProfileEntity() != null;
@@ -325,6 +326,7 @@ public class GatewaySetUpService {
       }
 
       DicomProgress progress = new DicomProgress();
+
       StreamRegistryEditor streamRegistryEditor = new StreamRegistryEditor();
       editors.add(streamRegistryEditor);
       String[] emails = dstNode.getNotify().split(",");
@@ -350,7 +352,7 @@ public class GatewaySetUpService {
           new NotificationSetUp(
               notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues, notifyInterval);
       if (dstNode.isActivate()) {
-        if (dstNode.getType() == DestinationType.stow) {
+        if (dstNode.getDestinationType() == DestinationType.stow) {
           // parse headers to hashmap
           HashMap<String, String> map = new HashMap<>();
           String headers = dstNode.getHeaders();
