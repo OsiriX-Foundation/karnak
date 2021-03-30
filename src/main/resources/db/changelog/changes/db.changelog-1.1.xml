@@ -57,13 +57,4 @@
       </column>
     </addColumn>
   </changeSet>
-
-  <changeSet author="karnak" id="1.1-6">
-    <delete
-      schemaName="public"
-      tableName="destination">
-      <where>forward_node_id is null</where>
-    </delete>
-  </changeSet>
-
 </databaseChangeLog>
