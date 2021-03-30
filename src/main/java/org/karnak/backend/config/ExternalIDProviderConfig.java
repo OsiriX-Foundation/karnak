@@ -9,6 +9,7 @@
  */
 package org.karnak.backend.config;
 
+import java.io.File;
 import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -38,70 +39,29 @@ public class ExternalIDProviderConfig {
     instance = this;
   }
 
-  private static ExternalIDProvider classLoader(String path, String packagePath) {
-    try (URLClassLoader urlClassLoader = URLClassLoader.newInstance(new URL[] {new URL(path)})) {
-      urlClassLoader.toString();
-      System.out.println("1");
-      Class<?> clazz = urlClassLoader.loadClass(packagePath);
-      System.out.println("2");
-      Class<? extends ExternalIDProvider> pseudonymServiceClass =
-          clazz.asSubclass(ExternalIDProvider.class);
-      System.out.println("3");
-      Constructor<? extends ExternalIDProvider> constructor =
-          pseudonymServiceClass.getConstructor();
-      System.out.println("4");
-      return constructor.newInstance();
-    } catch (Exception e) {
-      LOGGER.error("Cannot not load correctly the jar", e);
+  public void loadExternalIDImplClass(String directory, String classpath) {
+    externalIDProviderList = new ArrayList<>();
+    File pluginsDir = new File(System.getProperty("user.dir") + directory);
+    for (File jar : pluginsDir.listFiles()) {
+      try {
+        ClassLoader loader =
+            URLClassLoader.newInstance(
+                new URL[] {jar.toURI().toURL()}, getClass().getClassLoader());
+        Class<?> clazz = Class.forName(classpath, true, loader);
+        Class<? extends ExternalIDProvider> newClass = clazz.asSubclass(ExternalIDProvider.class);
+        Constructor<? extends ExternalIDProvider> constructor = newClass.getConstructor();
+        externalIDProviderList.add(constructor.newInstance());
+      } catch (Exception e) {
+        LOGGER.error("Cannot not load correctly the jar", e);
+      }
     }
-    return null;
-  }
-
-  private ExternalIDProvider load(String path, String packagePath) {
-    try (URLClassLoader child =
-        new URLClassLoader(new URL[] {new URL(path)}, this.getClass().getClassLoader())) {
-
-      System.out.println("1");
-
-      Class classToLoad = Class.forName(packagePath, true, child);
-      Class<?> instance = classToLoad.getClass();
-      System.out.println("2");
-
-      Class<? extends ExternalIDProvider> pseudonymServiceClass =
-          instance.asSubclass(ExternalIDProvider.class);
-      Constructor<? extends ExternalIDProvider> constructor =
-          pseudonymServiceClass.getConstructor();
-      System.out.println("4");
-      return constructor.newInstance();
-    } catch (Exception e) {
-      LOGGER.error("Cannot not load correctly the jar", e);
-    }
-    return null;
   }
 
   @Bean
   public List<ExternalIDProvider> externalIDProviderList() {
-    /*ExternalIDProvider externalIDImplPID =
-        classLoader(
-            "file:/home/ciccius/Documents/OsiriX-Foundation/karnak/pseudonym_jar/MainzellisteImplPID-1.0.jar",
-            "org.mainzelliste.pid.MainzellisteApi");
-    ExternalIDProvider externalIDImplEXTID =
-        classLoader(
-            "file:/home/ciccius/Documents/OsiriX-Foundation/karnak/pseudonym_jar/MainzellisteImplExtid-1.0.jar",
-            "org.mainzelliste.extid.MainzellisteApi");*/
-    System.out.println("Working Directory = " + System.getProperty("user.dir"));
-    ExternalIDProvider externalIDImplPID =
-        load(
-            "file:pseudonym_jar/MainzellisteImplPID-1.0.jar",
-            "org.mainzelliste.pid.MainzellisteApi");
-    ExternalIDProvider externalIDImplEXTID =
-        load(
-            "file:pseudonym_jar/MainzellisteImplExtid-1.0.jar",
-            "org.mainzelliste.extid.MainzellisteApi");
-    System.out.println("YEAHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
-    externalIDProviderList = new ArrayList<>();
-    externalIDProviderList.add(externalIDImplPID);
-    externalIDProviderList.add(externalIDImplEXTID);
+    loadExternalIDImplClass("/externalid_providers", "org.karnak.externalid.Implementation");
+    externalIDProviderList.forEach(
+        externalIDProvider -> System.out.println(externalIDProvider.getExternalIDType()));
     return externalIDProviderList;
   }
 }
