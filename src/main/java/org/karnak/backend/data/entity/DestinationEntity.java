@@ -440,8 +440,7 @@ public class DestinationEntity implements Serializable {
     return externalIDProviderEntity;
   }
 
-  public void setExternalIDProviderEntity(
-      ExternalIDProviderEntity externalIDProviderEntity) {
+  public void setExternalIDProviderEntity(ExternalIDProviderEntity externalIDProviderEntity) {
     this.externalIDProviderEntity = externalIDProviderEntity;
   }
 

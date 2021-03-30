@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2021 Karnak Team and other contributors.
+ *
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ */
 package org.karnak.backend.data.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -26,7 +35,10 @@ public class ExternalIDProviderEntity {
   public ExternalIDProviderEntity() {}
 
   public ExternalIDProviderEntity(
-      boolean bydefault, ExternalIDProviderType externalIDProviderType, String filePath, String classPath) {
+      boolean bydefault,
+      ExternalIDProviderType externalIDProviderType,
+      String filePath,
+      String classPath) {
     this.bydefault = bydefault;
     this.externalIDProviderType = externalIDProviderType;
     this.filePath = filePath;
@@ -58,8 +70,7 @@ public class ExternalIDProviderEntity {
     return externalIDProviderType;
   }
 
-  public void setExternalIDProviderType(
-      ExternalIDProviderType externalIDProviderType) {
+  public void setExternalIDProviderType(ExternalIDProviderType externalIDProviderType) {
     this.externalIDProviderType = externalIDProviderType;
   }
 
@@ -78,5 +89,4 @@ public class ExternalIDProviderEntity {
   public void setClassPath(String classPath) {
     this.classPath = classPath;
   }
-
 }

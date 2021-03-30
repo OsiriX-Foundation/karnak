@@ -28,7 +28,8 @@ public class ExternalIDImpl {
 
   public ExternalIDImpl(DestinationEntity destinationEntity) {
 
-    ExternalIDProviderEntity externalIDProviderEntity = destinationEntity.getExternalIDProviderEntity();
+    ExternalIDProviderEntity externalIDProviderEntity =
+        destinationEntity.getExternalIDProviderEntity();
 
     ExternalIDProvider externalIDImplPID =
         classLoader(
