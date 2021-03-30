@@ -38,6 +38,8 @@ SYS_PROPS=""
 
 SYS_PROPS+=" -Djava.library.path='/tmp/dicom-opencv'"
 
+[[ ! -z "$JAVA_OPTS" ]] && SYS_PROPS+=" $JAVA_OPTS"
+
 ########################
 #  KARNAK ENVIRONMENT  #
 ########################
