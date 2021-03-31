@@ -41,10 +41,6 @@ class ProfileServiceTest {
 
   @BeforeEach
   public void setUp() {
-    // Init data
-
-    // Mock repositories
-
     // Build mocked service
     profileService = new ProfileService(pseudonymServiceMock);
   }

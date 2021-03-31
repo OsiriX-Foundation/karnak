@@ -37,10 +37,6 @@ class ProfilePipeServiceTest {
 
   @BeforeEach
   public void setUp() {
-    // Init data
-
-    // Mock repositories
-
     // Build mocked service
     profilePipeService = new ProfilePipeService(profileRepositoryMock);
   }
