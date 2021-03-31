@@ -32,6 +32,9 @@ import org.karnak.backend.service.StreamRegistryService;
 import org.karnak.backend.service.kheops.SwitchingAlbumService;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.weasis.dicom.param.DicomForwardDestination;
+import org.weasis.dicom.param.DicomNode;
+import org.weasis.dicom.param.ForwardDestination;
 
 @SpringBootTest
 class GatewaySetUpServiceTest {
@@ -100,7 +103,7 @@ class GatewaySetUpServiceTest {
     // Test results
     Assert.assertNotNull(gatewaySetUpService.getDestinations());
     Assert.assertEquals(1, gatewaySetUpService.getDestinations().size());
-    // TODO: add more asserts
+    Assert.assertTrue(gatewaySetUpService.getDestinationNode("fwdAeTitle").isPresent());
   }
 
   @Test
@@ -142,10 +145,14 @@ class GatewaySetUpServiceTest {
     // Call service
     gatewaySetUpService.reloadGatewayPersistence();
 
+    // Retrieve values
+    List<List<ForwardDestination>> values = new ArrayList<>(gatewaySetUpService.getDestinations().values());
+
     // Test results
     Assert.assertNotNull(gatewaySetUpService.getDestinations());
     Assert.assertEquals(1, gatewaySetUpService.getDestinations().size());
-    // TODO: add more asserts
+    Assert.assertTrue(gatewaySetUpService.getDestinationNode("fwdAeTitle").isPresent());
+    Assert.assertEquals("aeTitle", ((DicomForwardDestination)values.get(0).get(0)).getDestinationNode().getAet());
   }
 
   @Test
@@ -167,9 +174,12 @@ class GatewaySetUpServiceTest {
 
     // Test results
     Assert.assertTrue(gatewaySetUpService.getDestinationNode("fwdAeTitle").isPresent());
+    DicomNode dicomNode = gatewaySetUpService.getDestinationNode("fwdAeTitle").get()
+        .getAcceptedSourceNodes().iterator().next();
+    Assert.assertEquals("aeTitle", dicomNode.getAet());
 
     // Modify aeTitle
-    forwardNodeEntity.setFwdAeTitle("aeTitleModified");
+    dicomSourceNodeEntity.setAeTitle("aeTitleModified");
     // Set Update
     nodeEvent = new NodeEvent(dicomSourceNodeEntity, NodeEventType.UPDATE);
 
@@ -178,14 +188,120 @@ class GatewaySetUpServiceTest {
 
     // Test results
     Assert.assertTrue(gatewaySetUpService.getDestinationNode("fwdAeTitle").isPresent());
-    // TODO modify this assert
-    Assert.assertEquals("aeTitleModified",gatewaySetUpService.getDestinationNode("fwdAeTitle").get().getAet());
+    dicomNode = gatewaySetUpService.getDestinationNode("fwdAeTitle").get()
+        .getAcceptedSourceNodes().iterator().next();
+    Assert.assertEquals("aeTitleModified", dicomNode.getAet());
 
+    // Set Remove
+    nodeEvent = new NodeEvent(dicomSourceNodeEntity, NodeEventType.REMOVE);
 
+    // Call service REMOVE
+    gatewaySetUpService.update(nodeEvent);
 
-    // TODO: add more asserts
+    // Test results
+    Assert.assertTrue(gatewaySetUpService.getDestinationNode("fwdAeTitle").isPresent());
+    Assert.assertEquals(0, gatewaySetUpService.getDestinationNode("fwdAeTitle").get()
+        .getAcceptedSourceNodes().size());
+  }
 
+  @Test
+  void should_update_destination() {
+    // Init data
+    DestinationEntity destinationEntity = new DestinationEntity();
+    destinationEntity.setFilterBySOPClasses(true);
+    destinationEntity.setAeTitle("aeTitle");
+    destinationEntity.setNotifyInterval(1);
+    destinationEntity.setPort(11112);
+    destinationEntity.setId(1L);
+    destinationEntity.setDestinationType(DestinationType.dicom);
+    ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
+    forwardNodeEntity.setFwdAeTitle("fwdAeTitle");
+    forwardNodeEntity.setId(2L);
+    destinationEntity.setForwardNodeEntity(forwardNodeEntity);
 
+    NodeEvent nodeEvent = new NodeEvent(destinationEntity, NodeEventType.ADD);
 
+    // Call service ADD
+    gatewaySetUpService.update(nodeEvent);
+
+    // Retrieve values
+    List<List<ForwardDestination>> values = new ArrayList<>(gatewaySetUpService.getDestinations().values());
+
+    // Test results
+    Assert.assertTrue(gatewaySetUpService.getDestinationNode("fwdAeTitle").isPresent());
+    Assert.assertEquals("aeTitle", ((DicomForwardDestination)values.get(0).get(0)).getDestinationNode().getAet());
+
+    // Modify aeTitle
+    destinationEntity.setAeTitle("aeTitleModified");
+    // Set Update
+    nodeEvent = new NodeEvent(destinationEntity, NodeEventType.UPDATE);
+
+    // Call service UPDATE
+    gatewaySetUpService.update(nodeEvent);
+
+    // Test results
+    Assert.assertTrue(gatewaySetUpService.getDestinationNode("fwdAeTitle").isPresent());
+    Assert.assertEquals("aeTitleModified", ((DicomForwardDestination)values.get(0).get(0)).getDestinationNode().getAet());
+
+    // Set Remove
+    nodeEvent = new NodeEvent(destinationEntity, NodeEventType.REMOVE);
+
+    // Call service REMOVE
+    gatewaySetUpService.update(nodeEvent);
+
+    // Test results
+    Assert.assertTrue(gatewaySetUpService.getDestinationNode("fwdAeTitle").isPresent());
+    Assert.assertEquals(0, values.get(0).size());
+  }
+
+  @Test
+  void should_update_forward_node() {
+    // Init data
+    ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
+    forwardNodeEntity.setFwdAeTitle("fwdAeTitle");
+    forwardNodeEntity.setId(1L);
+    forwardNodeEntity.setDescription("description");
+    DestinationEntity destinationEntity = new DestinationEntity();
+    destinationEntity.setFilterBySOPClasses(true);
+    destinationEntity.setAeTitle("aeTitle");
+    destinationEntity.setNotifyInterval(1);
+    destinationEntity.setPort(11112);
+    destinationEntity.setId(1L);
+    destinationEntity.setDestinationType(DestinationType.dicom);
+    forwardNodeEntity.addDestination(destinationEntity);
+
+    NodeEvent nodeEvent = new NodeEvent(forwardNodeEntity, NodeEventType.ADD);
+
+    // Call service ADD
+    gatewaySetUpService.update(nodeEvent);
+
+    // Retrieve values
+    List<List<ForwardDestination>> values = new ArrayList<>(gatewaySetUpService.getDestinations().values());
+
+    // Test results
+    Assert.assertTrue(gatewaySetUpService.getDestinationNode("fwdAeTitle").isPresent());
+    Assert.assertEquals("aeTitle", ((DicomForwardDestination)values.get(0).get(0)).getDestinationNode().getAet());
+
+    // Modify forward nod
+    forwardNodeEntity.setFwdAeTitle("aeTitleModified");
+
+    // Set Update
+    nodeEvent = new NodeEvent(forwardNodeEntity, NodeEventType.UPDATE);
+
+    // Call service UPDATE
+    gatewaySetUpService.update(nodeEvent);
+
+    // Test results
+    Assert.assertTrue(gatewaySetUpService.getDestinationNode("aeTitleModified").isPresent());
+    Assert.assertEquals("aeTitle", ((DicomForwardDestination)values.get(0).get(0)).getDestinationNode().getAet());
+
+    // Set Remove
+    nodeEvent = new NodeEvent(forwardNodeEntity, NodeEventType.REMOVE);
+
+    // Call service REMOVE
+    gatewaySetUpService.update(nodeEvent);
+
+    // Test results
+    Assert.assertFalse(gatewaySetUpService.getDestinationNode("aeTitleModified").isPresent());
   }
 }
