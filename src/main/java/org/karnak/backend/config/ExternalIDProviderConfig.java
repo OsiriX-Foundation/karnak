@@ -17,18 +17,30 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import org.externalid.ExternalIDProvider;
+import org.karnak.backend.data.entity.ExternalIDProviderEntity;
+import org.karnak.backend.enums.ExternalIDProviderType;
+import org.karnak.backend.service.ExternalIDProviderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.event.EventListener;
 
 @Configuration
 public class ExternalIDProviderConfig {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ExternalIDProvider.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ExternalIDProviderConfig.class);
 
   private static ExternalIDProviderConfig instance;
   private List<ExternalIDProvider> externalIDProviderList;
+  private ExternalIDProviderService externalIDProviderService;
+
+  @Autowired
+  public ExternalIDProviderConfig(final ExternalIDProviderService externalIDProviderService) {
+    this.externalIDProviderService = externalIDProviderService;
+  }
 
   public static ExternalIDProviderConfig getInstance() {
     return instance;
@@ -50,10 +62,38 @@ public class ExternalIDProviderConfig {
         Class<?> clazz = Class.forName(classpath, true, loader);
         Class<? extends ExternalIDProvider> newClass = clazz.asSubclass(ExternalIDProvider.class);
         Constructor<? extends ExternalIDProvider> constructor = newClass.getConstructor();
-        externalIDProviderList.add(constructor.newInstance());
+        final ExternalIDProvider externalIDProvider = constructor.newInstance();
+        externalIDProviderList.add(externalIDProvider);
+        final String jarName = jar.getName();
+        addExternalIDProviderImplInDb(jarName);
       } catch (Exception e) {
         LOGGER.error("Cannot not load correctly the jar", e);
       }
+    }
+  }
+
+  @EventListener(ApplicationReadyEvent.class)
+  public void setExternalIDProviderByDefault() {
+    if (!externalIDProviderService.externalIDProviderTypeExist(
+        ExternalIDProviderType.EXTID_CACHE)) {
+      final ExternalIDProviderEntity newExternalIDProviderEntity =
+          new ExternalIDProviderEntity(true, ExternalIDProviderType.EXTID_CACHE, null);
+      externalIDProviderService.saveExternalIDProvider(newExternalIDProviderEntity);
+    }
+
+    if (!externalIDProviderService.externalIDProviderTypeExist(
+        ExternalIDProviderType.EXTID_IN_TAG)) {
+      final ExternalIDProviderEntity newExternalIDProviderEntity =
+          new ExternalIDProviderEntity(true, ExternalIDProviderType.EXTID_IN_TAG, null);
+      externalIDProviderService.saveExternalIDProvider(newExternalIDProviderEntity);
+    }
+  }
+
+  private void addExternalIDProviderImplInDb(String jarName) {
+    if (!externalIDProviderService.jarNameExist(jarName)) {
+      final ExternalIDProviderEntity newExternalIDProviderEntity =
+          new ExternalIDProviderEntity(false, ExternalIDProviderType.EXTID_IMPLEMENTATION, jarName);
+      externalIDProviderService.saveExternalIDProvider(newExternalIDProviderEntity);
     }
   }
 
@@ -61,7 +101,7 @@ public class ExternalIDProviderConfig {
   public List<ExternalIDProvider> externalIDProviderList() {
     loadExternalIDImplClass("/externalid_providers", "org.karnak.externalid.Implementation");
     externalIDProviderList.forEach(
-        externalIDProvider -> System.out.println(externalIDProvider.getExternalIDType()));
+        externalIDProvider -> LOGGER.warn(externalIDProvider.getExternalIDType()));
     return externalIDProviderList;
   }
 }

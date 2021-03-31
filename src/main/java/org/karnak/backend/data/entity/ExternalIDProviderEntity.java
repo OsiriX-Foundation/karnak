@@ -29,20 +29,15 @@ public class ExternalIDProviderEntity {
   private Long id;
   private boolean bydefault;
   private ExternalIDProviderType externalIDProviderType;
-  private String filePath;
-  private String classPath;
+  private String jarName;
 
   public ExternalIDProviderEntity() {}
 
   public ExternalIDProviderEntity(
-      boolean bydefault,
-      ExternalIDProviderType externalIDProviderType,
-      String filePath,
-      String classPath) {
+      boolean bydefault, ExternalIDProviderType externalIDProviderType, String jarName) {
     this.bydefault = bydefault;
     this.externalIDProviderType = externalIDProviderType;
-    this.filePath = filePath;
-    this.classPath = classPath;
+    this.jarName = jarName;
   }
 
   @Id
@@ -74,19 +69,11 @@ public class ExternalIDProviderEntity {
     this.externalIDProviderType = externalIDProviderType;
   }
 
-  public String getFilePath() {
-    return filePath;
+  public String getJarName() {
+    return jarName;
   }
 
-  public void setFilePath(String filePath) {
-    this.filePath = filePath;
-  }
-
-  public String getClassPath() {
-    return classPath;
-  }
-
-  public void setClassPath(String classPath) {
-    this.classPath = classPath;
+  public void setJarName(String filePath) {
+    this.jarName = filePath;
   }
 }

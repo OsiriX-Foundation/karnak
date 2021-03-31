@@ -10,8 +10,13 @@
 package org.karnak.backend.data.repo;
 
 import org.karnak.backend.data.entity.ExternalIDProviderEntity;
+import org.karnak.backend.enums.ExternalIDProviderType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ExternalIDProviderRepo extends JpaRepository<ExternalIDProviderEntity, Long> {}
+public interface ExternalIDProviderRepo extends JpaRepository<ExternalIDProviderEntity, Long> {
+  Boolean existsByJarName(String jarNAme);
+
+  Boolean existsByExternalIDProviderType(ExternalIDProviderType externalIDProviderType);
+}
