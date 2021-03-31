@@ -41,8 +41,7 @@ class ForwardNodeServiceTest {
     forwardNodeService.get(1L);
 
     // Test results
-    Mockito.verify(forwardNodeRepoMock, Mockito.times(1))
-        .findById(Mockito.anyLong());
+    Mockito.verify(forwardNodeRepoMock, Mockito.times(1)).findById(Mockito.anyLong());
   }
 
   @Test
@@ -68,8 +67,7 @@ class ForwardNodeServiceTest {
     forwardNodeService.delete(forwardNodeEntity);
 
     // Test results
-    Mockito.verify(forwardNodeRepoMock, Mockito.times(1))
-        .deleteById(Mockito.anyLong());
+    Mockito.verify(forwardNodeRepoMock, Mockito.times(1)).deleteById(Mockito.anyLong());
   }
 
   @Test
@@ -78,8 +76,7 @@ class ForwardNodeServiceTest {
     forwardNodeService.getAllForwardNodes();
 
     // Test results
-    Mockito.verify(forwardNodeRepoMock, Mockito.times(1))
-        .findAll();
+    Mockito.verify(forwardNodeRepoMock, Mockito.times(1)).findAll();
   }
 
   @Test
@@ -91,8 +88,8 @@ class ForwardNodeServiceTest {
     forwardNodeEntity.addDestination(destinationEntity);
 
     // Call service
-    DestinationEntity destinationFound = forwardNodeService
-        .getDestinationById(forwardNodeEntity, 1L);
+    DestinationEntity destinationFound =
+        forwardNodeService.getDestinationById(forwardNodeEntity, 1L);
 
     // Test result
     Assert.assertNotNull(destinationFound);
@@ -111,8 +108,8 @@ class ForwardNodeServiceTest {
     destinationEntityToAdd.setId(2L);
 
     // Call service
-    DestinationEntity destinationAdded = forwardNodeService
-        .updateDestination(forwardNodeEntity, destinationEntityToAdd);
+    DestinationEntity destinationAdded =
+        forwardNodeService.updateDestination(forwardNodeEntity, destinationEntityToAdd);
 
     // Test result
     Assert.assertNotNull(destinationAdded);
@@ -135,25 +132,24 @@ class ForwardNodeServiceTest {
     forwardNodeEntity.addDestination(destinationEntityToDelete);
 
     // Call service
-   forwardNodeService
-        .deleteDestination(forwardNodeEntity, destinationEntityToDelete);
+    forwardNodeService.deleteDestination(forwardNodeEntity, destinationEntityToDelete);
 
     // Test result
     Assert.assertEquals(1, forwardNodeEntity.getDestinationEntities().size());
-    Assert.assertFalse(forwardNodeEntity.getDestinationEntities().contains(destinationEntityToDelete));
+    Assert.assertFalse(
+        forwardNodeEntity.getDestinationEntities().contains(destinationEntityToDelete));
   }
 
   @Test
   void should_retrieve_source_by_id() {
     // Init data
     ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
-    DicomSourceNodeEntity  dicomSourceNodeEntity = new DicomSourceNodeEntity();
+    DicomSourceNodeEntity dicomSourceNodeEntity = new DicomSourceNodeEntity();
     dicomSourceNodeEntity.setId(1L);
     forwardNodeEntity.addSourceNode(dicomSourceNodeEntity);
 
     // Call service
-    DicomSourceNodeEntity sourceFound = forwardNodeService
-        .getSourceNodeById(forwardNodeEntity, 1L);
+    DicomSourceNodeEntity sourceFound = forwardNodeService.getSourceNodeById(forwardNodeEntity, 1L);
 
     // Test result
     Assert.assertNotNull(sourceFound);
@@ -172,8 +168,8 @@ class ForwardNodeServiceTest {
     dicomSourceNodeEntityToAdd.setId(2L);
 
     // Call service
-    DicomSourceNodeEntity sourceAdded = forwardNodeService
-        .updateSourceNode(forwardNodeEntity, dicomSourceNodeEntityToAdd);
+    DicomSourceNodeEntity sourceAdded =
+        forwardNodeService.updateSourceNode(forwardNodeEntity, dicomSourceNodeEntityToAdd);
 
     // Test result
     Assert.assertNotNull(sourceAdded);
@@ -196,12 +192,10 @@ class ForwardNodeServiceTest {
     forwardNodeEntity.addSourceNode(sourceEntityToDelete);
 
     // Call service
-    forwardNodeService
-        .deleteSourceNode(forwardNodeEntity, sourceEntityToDelete);
+    forwardNodeService.deleteSourceNode(forwardNodeEntity, sourceEntityToDelete);
 
     // Test result
     Assert.assertEquals(1, forwardNodeEntity.getSourceNodes().size());
     Assert.assertFalse(forwardNodeEntity.getSourceNodes().contains(sourceEntityToDelete));
   }
-
 }

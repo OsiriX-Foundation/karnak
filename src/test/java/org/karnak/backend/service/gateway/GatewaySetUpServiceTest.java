@@ -146,13 +146,15 @@ class GatewaySetUpServiceTest {
     gatewaySetUpService.reloadGatewayPersistence();
 
     // Retrieve values
-    List<List<ForwardDestination>> values = new ArrayList<>(gatewaySetUpService.getDestinations().values());
+    List<List<ForwardDestination>> values =
+        new ArrayList<>(gatewaySetUpService.getDestinations().values());
 
     // Test results
     Assert.assertNotNull(gatewaySetUpService.getDestinations());
     Assert.assertEquals(1, gatewaySetUpService.getDestinations().size());
     Assert.assertTrue(gatewaySetUpService.getDestinationNode("fwdAeTitle").isPresent());
-    Assert.assertEquals("aeTitle", ((DicomForwardDestination)values.get(0).get(0)).getDestinationNode().getAet());
+    Assert.assertEquals(
+        "aeTitle", ((DicomForwardDestination) values.get(0).get(0)).getDestinationNode().getAet());
   }
 
   @Test
@@ -174,8 +176,13 @@ class GatewaySetUpServiceTest {
 
     // Test results
     Assert.assertTrue(gatewaySetUpService.getDestinationNode("fwdAeTitle").isPresent());
-    DicomNode dicomNode = gatewaySetUpService.getDestinationNode("fwdAeTitle").get()
-        .getAcceptedSourceNodes().iterator().next();
+    DicomNode dicomNode =
+        gatewaySetUpService
+            .getDestinationNode("fwdAeTitle")
+            .get()
+            .getAcceptedSourceNodes()
+            .iterator()
+            .next();
     Assert.assertEquals("aeTitle", dicomNode.getAet());
 
     // Modify aeTitle
@@ -188,8 +195,13 @@ class GatewaySetUpServiceTest {
 
     // Test results
     Assert.assertTrue(gatewaySetUpService.getDestinationNode("fwdAeTitle").isPresent());
-    dicomNode = gatewaySetUpService.getDestinationNode("fwdAeTitle").get()
-        .getAcceptedSourceNodes().iterator().next();
+    dicomNode =
+        gatewaySetUpService
+            .getDestinationNode("fwdAeTitle")
+            .get()
+            .getAcceptedSourceNodes()
+            .iterator()
+            .next();
     Assert.assertEquals("aeTitleModified", dicomNode.getAet());
 
     // Set Remove
@@ -200,8 +212,9 @@ class GatewaySetUpServiceTest {
 
     // Test results
     Assert.assertTrue(gatewaySetUpService.getDestinationNode("fwdAeTitle").isPresent());
-    Assert.assertEquals(0, gatewaySetUpService.getDestinationNode("fwdAeTitle").get()
-        .getAcceptedSourceNodes().size());
+    Assert.assertEquals(
+        0,
+        gatewaySetUpService.getDestinationNode("fwdAeTitle").get().getAcceptedSourceNodes().size());
   }
 
   @Test
@@ -225,11 +238,13 @@ class GatewaySetUpServiceTest {
     gatewaySetUpService.update(nodeEvent);
 
     // Retrieve values
-    List<List<ForwardDestination>> values = new ArrayList<>(gatewaySetUpService.getDestinations().values());
+    List<List<ForwardDestination>> values =
+        new ArrayList<>(gatewaySetUpService.getDestinations().values());
 
     // Test results
     Assert.assertTrue(gatewaySetUpService.getDestinationNode("fwdAeTitle").isPresent());
-    Assert.assertEquals("aeTitle", ((DicomForwardDestination)values.get(0).get(0)).getDestinationNode().getAet());
+    Assert.assertEquals(
+        "aeTitle", ((DicomForwardDestination) values.get(0).get(0)).getDestinationNode().getAet());
 
     // Modify aeTitle
     destinationEntity.setAeTitle("aeTitleModified");
@@ -241,7 +256,9 @@ class GatewaySetUpServiceTest {
 
     // Test results
     Assert.assertTrue(gatewaySetUpService.getDestinationNode("fwdAeTitle").isPresent());
-    Assert.assertEquals("aeTitleModified", ((DicomForwardDestination)values.get(0).get(0)).getDestinationNode().getAet());
+    Assert.assertEquals(
+        "aeTitleModified",
+        ((DicomForwardDestination) values.get(0).get(0)).getDestinationNode().getAet());
 
     // Set Remove
     nodeEvent = new NodeEvent(destinationEntity, NodeEventType.REMOVE);
@@ -276,11 +293,13 @@ class GatewaySetUpServiceTest {
     gatewaySetUpService.update(nodeEvent);
 
     // Retrieve values
-    List<List<ForwardDestination>> values = new ArrayList<>(gatewaySetUpService.getDestinations().values());
+    List<List<ForwardDestination>> values =
+        new ArrayList<>(gatewaySetUpService.getDestinations().values());
 
     // Test results
     Assert.assertTrue(gatewaySetUpService.getDestinationNode("fwdAeTitle").isPresent());
-    Assert.assertEquals("aeTitle", ((DicomForwardDestination)values.get(0).get(0)).getDestinationNode().getAet());
+    Assert.assertEquals(
+        "aeTitle", ((DicomForwardDestination) values.get(0).get(0)).getDestinationNode().getAet());
 
     // Modify forward nod
     forwardNodeEntity.setFwdAeTitle("aeTitleModified");
@@ -293,7 +312,8 @@ class GatewaySetUpServiceTest {
 
     // Test results
     Assert.assertTrue(gatewaySetUpService.getDestinationNode("aeTitleModified").isPresent());
-    Assert.assertEquals("aeTitle", ((DicomForwardDestination)values.get(0).get(0)).getDestinationNode().getAet());
+    Assert.assertEquals(
+        "aeTitle", ((DicomForwardDestination) values.get(0).get(0)).getDestinationNode().getAet());
 
     // Set Remove
     nodeEvent = new NodeEvent(forwardNodeEntity, NodeEventType.REMOVE);

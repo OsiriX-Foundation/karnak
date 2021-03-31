@@ -18,7 +18,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class SOPClassUIDServiceTest {
 
-
   // Repositories
   private final SOPClassUIDRepo sopClassUIDRepoMock = Mockito.mock(SOPClassUIDRepo.class);
 
@@ -37,8 +36,7 @@ class SOPClassUIDServiceTest {
     sopClassUIDService.get(1L);
 
     // Test results
-    Mockito.verify(sopClassUIDRepoMock, Mockito.times(1))
-        .getSOPClassUIDById(Mockito.anyLong());
+    Mockito.verify(sopClassUIDRepoMock, Mockito.times(1)).getSOPClassUIDById(Mockito.anyLong());
   }
 
   @Test
@@ -47,8 +45,7 @@ class SOPClassUIDServiceTest {
     sopClassUIDService.getByName("name");
 
     // Test results
-    Mockito.verify(sopClassUIDRepoMock, Mockito.times(1))
-        .getSOPClassUIDByName(Mockito.anyString());
+    Mockito.verify(sopClassUIDRepoMock, Mockito.times(1)).getSOPClassUIDByName(Mockito.anyString());
   }
 
   @Test
@@ -57,8 +54,7 @@ class SOPClassUIDServiceTest {
     sopClassUIDService.getAllSOPClassUIDs();
 
     // Test results
-    Mockito.verify(sopClassUIDRepoMock, Mockito.atLeast(1))
-        .findAll();
+    Mockito.verify(sopClassUIDRepoMock, Mockito.atLeast(1)).findAll();
   }
 
   @Test
@@ -67,9 +63,6 @@ class SOPClassUIDServiceTest {
     sopClassUIDService.getAllSOPClassUIDsName();
 
     // Test results
-    Mockito.verify(sopClassUIDRepoMock, Mockito.atLeast(1))
-        .findAll();
+    Mockito.verify(sopClassUIDRepoMock, Mockito.atLeast(1)).findAll();
   }
-
-
 }

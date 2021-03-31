@@ -89,6 +89,4 @@ class FilterEditorServiceTest {
     // Test results
     Assert.assertNotEquals(Abort.FILE_EXCEPTION, context.getAbort());
   }
-
-
 }

@@ -114,7 +114,6 @@ class ProfilePipeServiceTest {
     profilePipeService.deleteProfile(profileEntity);
 
     // Test results
-    Mockito.verify(profileRepositoryMock, Mockito.times(1))
-        .deleteById(Mockito.anyLong());
+    Mockito.verify(profileRepositoryMock, Mockito.times(1)).deleteById(Mockito.anyLong());
   }
 }

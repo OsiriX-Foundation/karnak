@@ -38,7 +38,7 @@ class KheopsAlbumsServiceTest {
   @Test
   void should_add_new_album() {
     // Init data
-    KheopsAlbumsEntity kheopsAlbumsEntity= new KheopsAlbumsEntity();
+    KheopsAlbumsEntity kheopsAlbumsEntity = new KheopsAlbumsEntity();
     DestinationEntity destinationEntity = new DestinationEntity();
     destinationEntity.setId(1L);
     kheopsAlbumsEntity.setDestinationEntity(destinationEntity);
@@ -58,7 +58,8 @@ class KheopsAlbumsServiceTest {
     destinationEntity.setId(1L);
     KheopsAlbumsEntity kheopsAlbumsEntityFromDestination = new KheopsAlbumsEntity();
     kheopsAlbumsEntityFromDestination.setId(2L);
-    destinationEntity.setKheopsAlbumEntities(Collections.singletonList(kheopsAlbumsEntityFromDestination));
+    destinationEntity.setKheopsAlbumEntities(
+        Collections.singletonList(kheopsAlbumsEntityFromDestination));
     DestinationEntity destinationEntityFromKheopsAlbum = new DestinationEntity();
     destinationEntityFromKheopsAlbum.setId(3L);
     kheopsAlbumsEntityFromDestination.setDestinationEntity(destinationEntityFromKheopsAlbum);
@@ -72,7 +73,8 @@ class KheopsAlbumsServiceTest {
     kheopsAlbumsEntityFirst.setId(99L);
     kheopsAlbumsEntities.add(kheopsAlbumsEntityFirst);
     kheopsAlbumsEntities.add(kheopsAlbumsEntitySecond);
-    Mockito.when(kheopsAlbumsRepoMock.findAllByDestinationEntity(Mockito.any(DestinationEntity.class)))
+    Mockito.when(
+            kheopsAlbumsRepoMock.findAllByDestinationEntity(Mockito.any(DestinationEntity.class)))
         .thenReturn(kheopsAlbumsEntities);
 
     // Call service
@@ -83,8 +85,7 @@ class KheopsAlbumsServiceTest {
         .saveAndFlush(Mockito.any(KheopsAlbumsEntity.class));
     Mockito.verify(kheopsAlbumsRepoMock, Mockito.times(1))
         .findAllByDestinationEntity(Mockito.any(DestinationEntity.class));
-    Mockito.verify(kheopsAlbumsRepoMock, Mockito.times(1))
-        .deleteById(Mockito.anyLong());
+    Mockito.verify(kheopsAlbumsRepoMock, Mockito.times(1)).deleteById(Mockito.anyLong());
   }
 
   @Test
@@ -104,7 +105,8 @@ class KheopsAlbumsServiceTest {
     KheopsAlbumsEntity kheopsAlbumsEntityFirst = new KheopsAlbumsEntity();
     kheopsAlbumsEntityFirst.setId(88L);
     kheopsAlbumsEntities.add(kheopsAlbumsEntityFirst);
-    Mockito.when(kheopsAlbumsRepoMock.findAllByDestinationEntity(Mockito.any(DestinationEntity.class)))
+    Mockito.when(
+            kheopsAlbumsRepoMock.findAllByDestinationEntity(Mockito.any(DestinationEntity.class)))
         .thenReturn(kheopsAlbumsEntities);
 
     // Call service
@@ -113,8 +115,6 @@ class KheopsAlbumsServiceTest {
     // Test results
     Mockito.verify(kheopsAlbumsRepoMock, Mockito.times(1))
         .findAllByDestinationEntity(Mockito.any(DestinationEntity.class));
-    Mockito.verify(kheopsAlbumsRepoMock, Mockito.times(1))
-        .deleteById(Mockito.anyLong());
+    Mockito.verify(kheopsAlbumsRepoMock, Mockito.times(1)).deleteById(Mockito.anyLong());
   }
-
 }

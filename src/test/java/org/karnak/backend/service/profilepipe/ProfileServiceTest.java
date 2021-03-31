@@ -88,7 +88,7 @@ class ProfileServiceTest {
     dicomObject.setString(Tag.IssuerOfPatientID, VR.SH, "issuerOfPatientID");
     dicomObject.setString(Tag.PixelData, VR.SH, "pixelData");
     dicomObject.setString(Tag.SOPClassUID, VR.SH, "sopClassUID");
-    dicomObject.setString(Tag.BurnedInAnnotation,  VR.SH,"YES");
+    dicomObject.setString(Tag.BurnedInAnnotation, VR.SH, "YES");
     dicomObject.setString(Tag.StationName, VR.SH, "stationName");
 
     // Mock

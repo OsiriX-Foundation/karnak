@@ -98,5 +98,4 @@ class StreamRegistryServiceTest {
     // Test result
     Assert.assertTrue(sopInstance.isSent());
   }
-
 }

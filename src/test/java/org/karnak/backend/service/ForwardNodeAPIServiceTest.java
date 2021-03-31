@@ -107,7 +107,6 @@ class ForwardNodeAPIServiceTest {
     forwardNodeAPIService.getForwardNodeById(1L);
 
     // Test results
-    Mockito.verify(forwardNodeServiceMock, Mockito.times(1))
-        .get(Mockito.anyLong());
+    Mockito.verify(forwardNodeServiceMock, Mockito.times(1)).get(Mockito.anyLong());
   }
 }
