@@ -10,6 +10,8 @@
 package org.karnak.backend.service.kheops;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import org.dcm4che6.data.DicomObject;
 import org.dcm4che6.data.Tag;
 import org.dcm4che6.data.VR;
@@ -131,25 +133,39 @@ class SwitchingAlbumServiceTest {
         ((MetadataSwitching) switchingAlbumService.getSwitchingAlbumToDo().get(1L).get(0))
             .getSOPinstanceUID());
   }
-// TODO
-//  @Test
-//  void when_should_() {
-//
-//    // Init data
-//    KheopsAlbumsEntity kheopsAlbumsEntity = new KheopsAlbumsEntity();
-//    kheopsAlbumsEntity.setId(1L);
-//    DicomObject dicomObject = new DicomObjectImpl();
-//    dicomObject.setString(Tag.AffectedSOPInstanceUID, VR.SH, "affectedSOPInstanceUID");
-//    kheopsAlbumsEntity.setAuthorizationSource("authorizationSource");
-//    kheopsAlbumsEntity.setAuthorizationDestination("authorizationDestination");
-//    kheopsAlbumsEntity.setUrlAPI("http://karnak.com");
-//    List<MetadataSwitching> metadataSwitchings = new ArrayList<>();
-//    MetadataSwitching metadataSwitching = new MetadataSwitching(studyInstanceUID, seriesInstanceUID, "affectedSOPInstanceUID");
-//    switchingAlbumService.getSwitchingAlbumToDo().putIfAbsent(1L, metadataSwitching);
-//
-//    // Mock
-//
-//    // Call service
-//    switchingAlbumService.applyAfterTransfer(kheopsAlbumsEntity, dicomObject);
-//  }
+
+  @Test
+  void should_apply_metadata_switching() throws IOException, InterruptedException {
+
+    // Init data
+    KheopsAlbumsEntity kheopsAlbumsEntity = new KheopsAlbumsEntity();
+    kheopsAlbumsEntity.setId(1L);
+    DicomObject dicomObject = new DicomObjectImpl();
+    dicomObject.setString(Tag.AffectedSOPInstanceUID, VR.SH, "affectedSOPInstanceUID");
+    kheopsAlbumsEntity.setAuthorizationSource("authorizationSource");
+    kheopsAlbumsEntity.setAuthorizationDestination("authorizationDestination");
+    kheopsAlbumsEntity.setUrlAPI("http://karnak.com");
+    List<MetadataSwitching> metadataSwitchings = new ArrayList<>();
+    MetadataSwitching metadataSwitching =
+        new MetadataSwitching("studyInstanceUID", "seriesInstanceUID", "affectedSOPInstanceUID");
+    metadataSwitchings.add(metadataSwitching);
+
+    switchingAlbumService.getSwitchingAlbumToDo().putIfAbsent(1L, metadataSwitchings);
+
+    // Mock
+    Mockito.when(
+            kheopsApiMock.shareSerie(
+                Mockito.anyString(),
+                Mockito.anyString(),
+                Mockito.anyString(),
+                Mockito.anyString(),
+                Mockito.anyString()))
+        .thenReturn(300);
+
+    // Call service
+    switchingAlbumService.applyAfterTransfer(kheopsAlbumsEntity, dicomObject);
+
+    // Test result
+    Assert.assertTrue(metadataSwitching.isApplied());
+  }
 }
