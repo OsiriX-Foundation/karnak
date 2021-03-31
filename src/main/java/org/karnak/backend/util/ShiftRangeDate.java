@@ -12,8 +12,7 @@ package org.karnak.backend.util;
 import java.time.DateTimeException;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.dcm4che6.data.DicomElement;
-import org.dcm4che6.data.DicomObject;
+import org.dcm4che3.data.Attributes;
 import org.karnak.backend.data.entity.ArgumentEntity;
 import org.karnak.backend.model.profilepipe.HMAC;
 import org.slf4j.Logger;
@@ -23,18 +22,14 @@ public class ShiftRangeDate {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ShiftRangeDate.class);
 
-  private final ShiftDate shiftDate;
-
-  public ShiftRangeDate() {
-    shiftDate = new ShiftDate();
-  }
+  private ShiftRangeDate() {}
 
   public static void verifyShiftArguments(List<ArgumentEntity> argumentEntities)
       throws IllegalArgumentException {
-    if (!argumentEntities.stream().anyMatch(argument -> argument.getKey().equals("max_seconds"))
-        || !argumentEntities.stream().anyMatch(argument -> argument.getKey().equals("max_days"))) {
+    if (argumentEntities.stream().noneMatch(argument -> argument.getKey().equals("max_seconds"))
+        || argumentEntities.stream().noneMatch(argument -> argument.getKey().equals("max_days"))) {
       List<String> args =
-          argumentEntities.stream().map(argument -> argument.getKey()).collect(Collectors.toList());
+          argumentEntities.stream().map(ArgumentEntity::getKey).collect(Collectors.toList());
       String text =
           "Cannot build the option ShiftRangeDate: Missing argument, the class minimum need [max_seconds, max_days] as parameters. Parameters given "
               + args;
@@ -45,8 +40,8 @@ public class ShiftRangeDate {
     }
   }
 
-  public String shift(
-      DicomObject dcm, DicomElement dcmEl, List<ArgumentEntity> argumentEntities, HMAC hmac)
+  public static String shift(
+      Attributes dcm, int tag, List<ArgumentEntity> argumentEntities, HMAC hmac)
       throws DateTimeException {
     try {
       verifyShiftArguments(argumentEntities);
@@ -78,24 +73,19 @@ public class ShiftRangeDate {
         LOGGER.error("args {} is not correct", value, e);
       }
     }
-    String dcmElValue = dcm.getString(dcmEl.tag()).orElse(null);
-    String PatientID = hmac.getHashContext().getPatientID();
-    int shiftDays = (int) hmac.scaleHash(PatientID, shiftMinDays, shiftMaxDays);
-    int shiftSeconds = (int) hmac.scaleHash(PatientID, shiftMinSeconds, shiftMaxSeconds);
+    String dcmElValue = dcm.getString(tag);
+    String patientID = hmac.getHashContext().getPatientID();
+    int shiftDays = (int) hmac.scaleHash(patientID, shiftMinDays, shiftMaxDays);
+    int shiftSeconds = (int) hmac.scaleHash(patientID, shiftMinSeconds, shiftMaxSeconds);
 
     if (dcmElValue != null) {
-      try {
-        return switch (dcmEl.vr()) {
-          case AS -> ShiftDate.ASbyDays(dcmElValue, shiftDays);
-          case DA -> ShiftDate.DAbyDays(dcmElValue, shiftDays);
-          case DT -> ShiftDate.DTbyDays(dcmElValue, shiftDays, shiftSeconds);
-          case TM -> ShiftDate.TMbySeconds(dcmElValue, shiftSeconds);
-          default -> null;
-        };
-
-      } catch (DateTimeException dateTimeException) {
-        throw dateTimeException;
-      }
+      return switch (dcm.getVR(tag)) {
+        case AS -> ShiftDate.ageByDays(dcmElValue, shiftDays);
+        case DA -> ShiftDate.dateByDays(dcmElValue, shiftDays);
+        case DT -> ShiftDate.datetimeByDays(dcm.getDate(tag), shiftDays, shiftSeconds);
+        case TM -> ShiftDate.timeBySeconds(dcmElValue, shiftSeconds);
+        default -> null;
+      };
     }
 
     return null;

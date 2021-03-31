@@ -54,20 +54,19 @@ public class SourceNodeService {
       ForwardNodeEntity forwardNodeEntity, DicomSourceNodeEntity dicomSourceNodeEntity) {
     DicomSourceNodeEntity dataUpdated =
         this.forwardNodeService.updateSourceNode(forwardNodeEntity, dicomSourceNodeEntity);
-    dicomSourceNodeRepo.saveAndFlush(dataUpdated);
     return dataUpdated;
   }
 
   /**
    * Delete given data from the backing data service.
    *
-   * @param forwardNodeEntity
-   * @param data the data to be deleted
+   * @param dicomSourceNodeEntity the data to be deleted
    */
-  public void delete(ForwardNodeEntity forwardNodeEntity, DicomSourceNodeEntity data) {
-    this.forwardNodeService.deleteSourceNode(forwardNodeEntity, data);
-    dicomSourceNodeRepo.deleteById(data.getId());
-    dicomSourceNodeRepo.saveAndFlush(data);
+  public void delete(DicomSourceNodeEntity dicomSourceNodeEntity) {
+    ForwardNodeEntity forwardNodeEntityOfDest = dicomSourceNodeEntity.getForwardNodeEntity();
+    if (forwardNodeEntityOfDest != null) {
+      forwardNodeService.deleteSourceNode(forwardNodeEntityOfDest, dicomSourceNodeEntity);
+    }
   }
 
   public ApplicationEventPublisher getApplicationEventPublisher() {

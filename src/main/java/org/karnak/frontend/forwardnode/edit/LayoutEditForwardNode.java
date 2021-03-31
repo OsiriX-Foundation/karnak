@@ -28,15 +28,14 @@ import org.karnak.backend.model.NodeEvent;
 import org.karnak.backend.service.ProjectService;
 import org.karnak.backend.service.SOPClassUIDService;
 import org.karnak.frontend.component.ConfirmDialog;
+import org.karnak.frontend.forwardnode.ForwardNodeLogic;
 import org.karnak.frontend.forwardnode.edit.component.ButtonSaveDeleteCancel;
 import org.karnak.frontend.forwardnode.edit.component.EditAETitleDescription;
 import org.karnak.frontend.forwardnode.edit.component.TabSourcesDestination;
-import org.karnak.frontend.forwardnode.edit.destination.DestinationLogic;
 import org.karnak.frontend.forwardnode.edit.destination.DestinationView;
 import org.karnak.frontend.forwardnode.edit.destination.component.FilterBySOPClassesForm;
 import org.karnak.frontend.forwardnode.edit.destination.component.LayoutDesidentification;
 import org.karnak.frontend.forwardnode.edit.destination.component.NewUpdateDestination;
-import org.karnak.frontend.forwardnode.edit.source.SourceLogic;
 import org.karnak.frontend.forwardnode.edit.source.SourceView;
 import org.karnak.frontend.forwardnode.edit.source.component.NewUpdateSourceNode;
 import org.karnak.frontend.util.UIS;
@@ -46,10 +45,8 @@ import org.karnak.frontend.util.UIS;
 public class LayoutEditForwardNode extends VerticalLayout {
 
   // Services
-  private final ProjectService projectService;
+  private final transient ProjectService projectService;
   private final SOPClassUIDService sopClassUIDService;
-  private final SourceLogic sourceLogic;
-  private final DestinationLogic destinationLogic;
 
   // UI components
   private final Binder<ForwardNodeEntity> binderForwardNode;
@@ -66,20 +63,11 @@ public class LayoutEditForwardNode extends VerticalLayout {
   /**
    * Autowired constructor
    *
-   * @param projectService Project Service
-   * @param sopClassUIDService SopClassUID Service
-   * @param sourceLogic Source Logic
-   * @param destinationLogic Destination Logic
+   * @param forwardNodeLogic
    */
-  public LayoutEditForwardNode(
-      final ProjectService projectService,
-      final SOPClassUIDService sopClassUIDService,
-      final SourceLogic sourceLogic,
-      final DestinationLogic destinationLogic) {
-    this.sourceLogic = sourceLogic;
-    this.destinationLogic = destinationLogic;
-    this.projectService = projectService;
-    this.sopClassUIDService = sopClassUIDService;
+  public LayoutEditForwardNode(final ForwardNodeLogic forwardNodeLogic) {
+    this.projectService = forwardNodeLogic.getProjectService();
+    this.sopClassUIDService = forwardNodeLogic.getSopClassUIDService();
     this.currentForwardNodeEntity = null;
     this.binderForwardNode = new BeanValidationBinder<>(ForwardNodeEntity.class);
     this.tabSourcesDestination = new TabSourcesDestination();
@@ -87,8 +75,8 @@ public class LayoutEditForwardNode extends VerticalLayout {
     this.buttonForwardNodeSaveDeleteCancel = new ButtonSaveDeleteCancel();
     this.newUpdateDestination = new NewUpdateDestination();
     this.newUpdateSourceNode = new NewUpdateSourceNode();
-    this.sourceView = new SourceView(this.sourceLogic);
-    this.destinationView = new DestinationView(this.destinationLogic);
+    this.sourceView = new SourceView(forwardNodeLogic);
+    this.destinationView = new DestinationView(forwardNodeLogic);
     this.editAETitleDescription = new EditAETitleDescription(binderForwardNode);
 
     // Init components

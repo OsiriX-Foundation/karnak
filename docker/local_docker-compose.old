@@ -1,0 +1,63 @@
+version: "3.1"
+services:
+  mainzelliste-db:
+    image: postgres:9.5-alpine
+    environment:
+      - POSTGRES_DB=mainzelliste
+      - POSTGRES_USER=mainzelliste
+      - POSTGRES_PASSWORD_FILE=/run/secrets/mainzellisteDbPassword
+    volumes:
+      - mainzelliste-db-data:/var/lib/postgresql/data
+    secrets:
+      - mainzellisteDbPassword
+
+  mainzelliste:
+    image: osirixfoundation/karnak-mainzelliste:extid
+    ports:
+      - ${MAINZELLISTE_WEB_PORT}:8080
+    env_file: mainzelliste.env
+    secrets:
+      - mainzellisteDbPassword
+      - mainzellisteApiKey
+      - mainzellistePIDK1
+      - mainzellistePIDK2
+      - mainzellistePIDK3
+    depends_on:
+      - mainzelliste-db
+
+  karnak-db:
+    image: postgres:12.4-alpine
+    environment:
+      - POSTGRES_DB=karnak
+      - POSTGRES_USER=karnak
+      - POSTGRES_PASSWORD_FILE=/run/secrets/postgres_karnak_password
+    ports:
+      - ${KARNAK_PG_PORT}:5432
+    volumes:
+      - karnak-db-data:/var/lib/postgresql/data
+    secrets:
+      - postgres_karnak_password
+
+  node-dicom:
+    image: dcm4che/dcm4che-tools:5.22.6
+    entrypoint: ["storescp", "-b", "NODE:4444", "--directory", "/home/images"]
+    ports:
+      - 4444:4444
+
+secrets:
+  postgres_karnak_password:
+    file: secrets/karnak_postgres_password
+  mainzellisteDbPassword:
+    file: secrets/mainzelliste_postgres_password
+  mainzellisteApiKey:
+    file: secrets/mainzelliste_api_key
+  mainzellistePIDK1:
+    file: secrets/mainzelliste_pid_k1
+  mainzellistePIDK2:
+    file: secrets/mainzelliste_pid_k2
+  mainzellistePIDK3:
+    file: secrets/mainzelliste_pid_k3
+
+volumes:
+  mainzelliste-db-data:
+  karnak-db-data:

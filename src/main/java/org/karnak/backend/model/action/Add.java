@@ -9,11 +9,9 @@
  */
 package org.karnak.backend.model.action;
 
-import java.util.Iterator;
-import org.dcm4che6.data.DicomElement;
-import org.dcm4che6.data.DicomObject;
-import org.dcm4che6.data.VR;
-import org.dcm4che6.util.TagUtils;
+import org.dcm4che3.data.Attributes;
+import org.dcm4che3.data.VR;
+import org.dcm4che3.util.TagUtils;
 import org.karnak.backend.model.profilepipe.HMAC;
 import org.slf4j.MDC;
 
@@ -24,25 +22,14 @@ public class Add extends AbstractAction {
   }
 
   @Override
-  public void execute(DicomObject dcm, int tag, Iterator<DicomElement> iterator, HMAC hmac) {
-    String tagValueIn = dcm.getString(newTag).orElse(null);
+  public void execute(Attributes dcm, int tag, HMAC hmac) {
+    String tagValueIn = dcm.getString(newTag);
 
-    dcm.get(newTag)
-        .ifPresentOrElse(
-            dcmEl -> {
-              if (dummyValue != null) {
-                dcm.setString(newTag, dcmEl.vr(), dummyValue);
-              } else {
-                dcm.setNull(newTag, dcmEl.vr());
-              }
-            },
-            () -> {
-              if (dummyValue != null) {
-                dcm.setString(newTag, vr, dummyValue);
-              } else {
-                dcm.setNull(newTag, vr);
-              }
-            });
+    if (dummyValue != null) {
+      dcm.setString(newTag, vr, dummyValue);
+    } else {
+      dcm.setNull(newTag, vr);
+    }
 
     LOGGER.trace(
         CLINICAL_MARKER,
@@ -51,6 +38,6 @@ public class Add extends AbstractAction {
         TagUtils.toString(newTag),
         symbol,
         tagValueIn,
-        dcm.getString(newTag).orElse(null));
+        dcm.getString(newTag));
   }
 }

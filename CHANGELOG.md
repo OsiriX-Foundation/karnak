@@ -1,5 +1,22 @@
 # Changelog
 
+## [v0.9.4](https://github.com/OsiriX-Foundation/karnak/tree/v0.9.4) (2021-03-17)
+
+[Full Changelog](https://github.com/OsiriX-Foundation/karnak/compare/v0.9.3.1...v0.9.4)
+
+**Implemented enhancements:**
+
+- Reorganization in the types of pseudonyms and improvement the management of pseudonyms [\#118](https://github.com/OsiriX-Foundation/karnak/issues/118)
+- Display a unique message when we add multiple  same external pseudonym via the csv file [\#108](https://github.com/OsiriX-Foundation/karnak/issues/108)
+- Linking external pseudonym to a project [\#107](https://github.com/OsiriX-Foundation/karnak/issues/107)
+- Pagination to visualize the External Pseudonym view [\#106](https://github.com/OsiriX-Foundation/karnak/issues/106)
+
+**Fixed bugs:**
+
+- Manage exception if status code is not SUCCESSFUL for a dicom stow [\#117](https://github.com/OsiriX-Foundation/karnak/issues/117)
+- Manage exception on parsing datetime [\#116](https://github.com/OsiriX-Foundation/karnak/issues/116)
+- Incorrect trailing \(FFFE,E00D\) Item Delimitation Item in outgoing C-STORE RQs. [\#109](https://github.com/OsiriX-Foundation/karnak/issues/109)
+
 ## [v0.9.3.1](https://github.com/OsiriX-Foundation/karnak/tree/v0.9.3.1) (2021-02-05)
 
 [Full Changelog](https://github.com/OsiriX-Foundation/karnak/compare/v0.9.3...v0.9.3.1)

@@ -10,8 +10,8 @@
 package org.karnak.backend.model.expression;
 
 import java.util.Objects;
-import org.dcm4che6.data.DicomObject;
-import org.dcm4che6.data.VR;
+import org.dcm4che3.data.Attributes;
+import org.dcm4che3.data.VR;
 import org.karnak.backend.model.action.ActionItem;
 import org.karnak.backend.model.action.Keep;
 import org.karnak.backend.model.action.Remove;
@@ -26,13 +26,13 @@ public class ExprAction implements ExpressionItem {
   private int tag;
   private VR vr;
   private String stringValue;
-  private DicomObject dcm;
-  private DicomObject dcmCopy;
+  private Attributes dcm;
+  private Attributes dcmCopy;
 
-  public ExprAction(int tag, VR vr, DicomObject dcm, DicomObject dcmCopy) {
+  public ExprAction(int tag, VR vr, Attributes dcm, Attributes dcmCopy) {
     this.tag = Objects.requireNonNull(tag);
     this.vr = Objects.requireNonNull(vr);
-    this.stringValue = dcmCopy.getString(this.tag).orElse(null);
+    this.stringValue = dcmCopy.getString(this.tag);
     this.dcmCopy = dcmCopy;
     this.dcm = dcm;
   }
@@ -99,11 +99,11 @@ public class ExprAction implements ExpressionItem {
   }
 
   public String getString(int tag) {
-    return dcmCopy.getString(tag).orElse(null);
+    return dcmCopy.getString(tag);
   }
 
   public boolean tagIsPresent(int tag) {
-    return DicomObjectTools.tagIsInDicomObject(tag, dcmCopy);
+    return DicomObjectTools.containsTagInAllAttributes(tag, dcmCopy);
   }
 
   /*public ActionItem Add(int newTag, VR newVr, String newValue){

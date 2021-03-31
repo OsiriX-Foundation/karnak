@@ -15,14 +15,13 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
-import org.dcm4che6.data.DicomObject;
 import org.json.JSONObject;
 import org.karnak.backend.api.KheopsApi;
 import org.karnak.backend.data.entity.KheopsAlbumsEntity;
 import org.karnak.backend.model.expression.ExprConditionKheops;
 import org.karnak.backend.model.expression.ExpressionError;
 import org.karnak.backend.model.expression.ExpressionResult;
-import org.karnak.backend.service.kheops.SwitchingAlbumService;
+import org.karnak.backend.service.kheops.SwitchingAlbum;
 
 public class TextFieldsBindSwitchingAlbum {
 
@@ -55,7 +54,7 @@ public class TextFieldsBindSwitchingAlbum {
             value -> {
               if (!textUrlAPI.getValue().isBlank()) {
                 return validateToken(
-                    value, textUrlAPI.getValue(), SwitchingAlbumService.MIN_SCOPE_DESTINATION);
+                    value, textUrlAPI.getValue(), SwitchingAlbum.MIN_SCOPE_DESTINATION);
               }
               return true;
             },
@@ -68,8 +67,7 @@ public class TextFieldsBindSwitchingAlbum {
         .withValidator(
             value -> {
               if (!textUrlAPI.getValue().isBlank()) {
-                return validateToken(
-                    value, textUrlAPI.getValue(), SwitchingAlbumService.MIN_SCOPE_SOURCE);
+                return validateToken(value, textUrlAPI.getValue(), SwitchingAlbum.MIN_SCOPE_SOURCE);
               }
               return true;
             },
@@ -85,9 +83,7 @@ public class TextFieldsBindSwitchingAlbum {
               if (!textCondition.getValue().equals("")) {
                 expressionError =
                     ExpressionResult.isValid(
-                        textCondition.getValue(),
-                        new ExprConditionKheops(DicomObject.newDicomObject()),
-                        Boolean.class);
+                        textCondition.getValue(), new ExprConditionKheops(), Boolean.class);
                 textErrorConditionMsg.setText(expressionError.getMsg());
                 return expressionError.isValid();
               }
@@ -102,7 +98,7 @@ public class TextFieldsBindSwitchingAlbum {
   private boolean validateToken(String token, String urlAPI, List<String> validMinScope) {
     try {
       JSONObject responseIntrospect = kheopsApi.tokenIntrospect(urlAPI, token, token);
-      return SwitchingAlbumService.validateIntrospectedToken(responseIntrospect, validMinScope);
+      return SwitchingAlbum.validateIntrospectedToken(responseIntrospect, validMinScope);
     } catch (Exception e) {
       return false;
     }

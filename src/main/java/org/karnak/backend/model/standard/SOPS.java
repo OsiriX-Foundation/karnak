@@ -159,9 +159,9 @@ public class SOPS {
     return sop.getModules().stream().anyMatch(modulePredicate);
   }
 
-  public Map<Module, Map<String, Attribute>> getModuleToAttribute(
+  public Map<Module, Map<String, ModuleAttribute>> getModuleToAttribute(
       String uid, ModuleToAttributes moduleToAttributes) throws SOPNotFoundException {
-    Map<Module, Map<String, Attribute>> HMapModuleAttributes = new HashMap<>();
+    Map<Module, Map<String, ModuleAttribute>> HMapModuleAttributes = new HashMap<>();
     try {
       getSOPmodules(uid)
           .forEach(

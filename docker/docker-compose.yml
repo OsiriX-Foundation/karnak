@@ -11,23 +11,21 @@ services:
       - karnak-db
 
   karnak-db:
-    image: postgres:12.4-alpine
+    image: registry-docker.hcuge.ch:8083/postgres:9.6-alpine
     environment:
       - POSTGRES_DB=karnak
       - POSTGRES_USER=karnak
-      - POSTGRES_PASSWORD_FILE=/run/secrets/postgres_karnak_password
+      - POSTGRES_PASSWORD=H2srmXJbHaBUhBafn2BK5I9oSbaQ1rw8697V8ESs/2o=
 
   mainzelliste-db:
     image: registry-docker.hcuge.ch:8083/postgres:9.6-alpine
     environment:
       - POSTGRES_DB=mainzelliste
       - POSTGRES_USER=mainzelliste
-      - POSTGRES_PASSWORD_FILE=/run/secrets/mainzellisteDbPassword
+      - POSTGRES_PASSWORD=LCqWpeyJi6uStLdIq98tD+NHvJ+yVYDgOknet5slIIk=
 
   mainzelliste:
     image: osirixfoundation/karnak-mainzelliste:extid
     env_file: mainzelliste.env
-    ports:
-      - ${MAINZELLISTE_WEB_PORT}:8080
     depends_on:
       - mainzelliste-db

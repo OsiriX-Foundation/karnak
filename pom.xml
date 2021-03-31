@@ -33,14 +33,12 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <springframework.version>2.4.0</springframework.version>
     <vaadin.version>17.0.10</vaadin.version>
-    <weasis-dicom-tools.version>6.0.0-SNAPSHOT</weasis-dicom-tools.version>
+    <weasis-dicom-tools.version>5.23.2-IMG-RELEASE</weasis-dicom-tools.version>
     <weasis.opencv.native.version>4.5.0-dcm</weasis.opencv.native.version>
     <jacoco-maven-plugin.version>0.8.6</jacoco-maven-plugin.version>
     <sonar-maven-plugin.version>3.8.0.2131</sonar-maven-plugin.version>
-    <!--    <sonar.host.url>https://sonarcloud.io</sonar.host.url>-->
     <sonar.java.source>${java.version}</sonar.java.source>
     <sonar.java.target>${java.version}</sonar.java.target>
-    <!--    <sonar.organization>osirix-foundation-1</sonar.organization>-->
     <sonar.projectKey>karnak</sonar.projectKey>
     <h2.version>1.4.200</h2.version>
   </properties>

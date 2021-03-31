@@ -18,7 +18,7 @@ import java.nio.charset.StandardCharsets;
 
 public class StandardModuleToAttributes {
 
-  private static final String moduleToAttributesFileName = "moduletoattributes.json";
+  private static final String moduleToAttributesFileName = "module_to_attributes.json";
   private static jsonModuleToAttribute[] moduleToAttributes;
 
   public StandardModuleToAttributes() {
