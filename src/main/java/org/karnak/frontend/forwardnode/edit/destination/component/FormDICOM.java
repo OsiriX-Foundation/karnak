@@ -20,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.frontend.component.converter.HStringToIntegerConverter;
 import org.karnak.frontend.forwardnode.edit.component.ButtonSaveDeleteCancel;
+import org.karnak.frontend.forwardnode.edit.destination.DestinationLogic;
 import org.karnak.frontend.util.UIS;
 
 public class FormDICOM extends VerticalLayout {
@@ -41,8 +42,8 @@ public class FormDICOM extends VerticalLayout {
   private final FilterBySOPClassesForm filterBySOPClassesForm;
   private Checkbox activate;
 
-  public FormDICOM() {
-    this.layoutDesidentification = new LayoutDesidentification();
+  public FormDICOM(DestinationLogic destinationLogic) {
+    this.layoutDesidentification = new LayoutDesidentification(destinationLogic);
     this.filterBySOPClassesForm = new FilterBySOPClassesForm();
   }
 

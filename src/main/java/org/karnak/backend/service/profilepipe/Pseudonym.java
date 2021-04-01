@@ -9,7 +9,7 @@
  */
 package org.karnak.backend.service.profilepipe;
 
-import java.util.List;
+import java.util.HashMap;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.util.TagUtils;
 import org.externalid.ExternalIDProvider;
@@ -21,7 +21,6 @@ import org.karnak.backend.config.ExternalIDProviderConfig;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ExternalIDProviderEntity;
 import org.karnak.backend.enums.ExternalIDProviderType;
-import org.karnak.backend.enums.PseudonymType;
 import org.karnak.backend.model.profilepipe.PatientMetadata;
 import org.karnak.backend.util.PatientClientUtil;
 import org.karnak.backend.util.SpecialCharacter;
@@ -34,12 +33,13 @@ public class Pseudonym {
 
   private final PatientClient externalIdCache;
   private final PatientClient mainzellisteCache;
-  private final List<ExternalIDProvider> externalIDProviderList;
+  private final HashMap<String, ExternalIDProvider> externalIDProviderImplMap;
 
   public Pseudonym() {
     this.externalIdCache = AppConfig.getInstance().getExternalIDCache();
     this.mainzellisteCache = AppConfig.getInstance().getMainzellisteCache();
-    this.externalIDProviderList = ExternalIDProviderConfig.getInstance().externalIDProviderList();
+    this.externalIDProviderImplMap =
+        ExternalIDProviderConfig.getInstance().externalIDProviderImplMap();
   }
 
   public String generatePseudonym(
@@ -66,16 +66,17 @@ public class Pseudonym {
       return cachedMainezllistePseudonym;
     }
 
-    if (destinationEntity
-        .getPseudonymType()
-        .equals(PseudonymType.MAINZELLISTE_PID)) { // MAINZELLISTE
-      return getExternalIDProvider(dcm, "Generate external id with mainzelliste");
+    if (externalIDProviderEntity
+        .getExternalIDProviderType()
+        .equals(ExternalIDProviderType.EXTID_IMPLEMENTATION)) {
+      final ExternalIDProvider externalIDProviderImpl =
+          externalIDProviderImplMap.get(externalIDProviderEntity.getJarName());
+      if (externalIDProviderImpl != null) {
+        final String externalID = externalIDProviderImpl.getExternalID(dcm);
+        cachingMainzellistePseudonym(externalID, patientMetadata);
+        return externalID;
+      }
     }
-
-    if (destinationEntity.getPseudonymType().equals(PseudonymType.MAINZELLISTE_EXTID)) {
-      return getExternalIDProvider(dcm, "Get external id with mainzelliste");
-    }
-
     return null;
   }
 
@@ -132,19 +133,5 @@ public class Pseudonym {
             patientMetadata.getIssuerOfPatientID());
     String cacheKey = PatientClientUtil.generateKey(patientMetadata);
     mainzellisteCache.put(cacheKey, mainzellistePatient);
-  }
-
-  public String getExternalIDProvider(Attributes dcm, String extertnalIDType) {
-    ExternalIDProvider implementation =
-        externalIDProviderList.stream()
-            .filter(
-                externalIDProvider1 ->
-                    externalIDProvider1.getExternalIDType().equals(extertnalIDType))
-            .findAny()
-            .orElse(null);
-    if (implementation != null) {
-      return implementation.getExternalID(dcm);
-    }
-    return null;
   }
 }

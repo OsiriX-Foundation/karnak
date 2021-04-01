@@ -9,10 +9,9 @@
  */
 package org.karnak.frontend.forwardnode.edit.destination.component;
 
-import static org.karnak.backend.enums.PseudonymType.CACHE_EXTID;
-import static org.karnak.backend.enums.PseudonymType.EXTID_IN_TAG;
-import static org.karnak.backend.enums.PseudonymType.MAINZELLISTE_EXTID;
-import static org.karnak.backend.enums.PseudonymType.MAINZELLISTE_PID;
+import static org.karnak.backend.enums.ExternalIDProviderType.EXTID_CACHE;
+import static org.karnak.backend.enums.ExternalIDProviderType.EXTID_IMPLEMENTATION;
+import static org.karnak.backend.enums.ExternalIDProviderType.EXTID_IN_TAG;
 
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.html.Div;
@@ -20,9 +19,18 @@ import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.data.binder.Binder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import org.externalid.ExternalIDProvider;
+import org.karnak.backend.config.ExternalIDProviderConfig;
 import org.karnak.backend.data.entity.DestinationEntity;
+import org.karnak.backend.data.entity.ExternalIDProviderEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
+import org.karnak.backend.enums.ExternalIDProviderType;
+import org.karnak.backend.service.ExternalIDProviderService;
 import org.karnak.frontend.component.ProjectDropDown;
+import org.karnak.frontend.forwardnode.edit.destination.DestinationLogic;
 import org.karnak.frontend.project.ProjectView;
 import org.karnak.frontend.util.UIS;
 
@@ -43,8 +51,15 @@ public class LayoutDesidentification extends Div {
   private DesidentificationName desidentificationName;
   private WarningNoProjectsDefined warningNoProjectsDefined;
   private Select<String> extidListBox;
+  private HashMap<String, ExternalIDProvider> externalIDProviderImplMap;
 
-  public LayoutDesidentification() {}
+  private ExternalIDProviderService externalIDProviderService;
+
+  public LayoutDesidentification(DestinationLogic destinationLogic) {
+    this.externalIDProviderImplMap =
+        ExternalIDProviderConfig.getInstance().externalIDProviderImplMap();
+    this.externalIDProviderService = destinationLogic.getExternalIDProviderService();
+  }
 
   public void init(final Binder<DestinationEntity> binder) {
     this.projectDropDown = new ProjectDropDown();
@@ -87,11 +102,15 @@ public class LayoutDesidentification extends Div {
     extidListBox.setLabel("Pseudonym type");
     extidListBox.setWidth("100%");
     extidListBox.getStyle().set("right", "0px");
-    extidListBox.setItems(
-        MAINZELLISTE_PID.getValue(),
-        MAINZELLISTE_EXTID.getValue(),
-        CACHE_EXTID.getValue(),
-        EXTID_IN_TAG.getValue());
+    final List<String> externalIDProviderTypeSentenceList = new ArrayList<>();
+
+    externalIDProviderTypeSentenceList.add(EXTID_CACHE.getValue());
+    externalIDProviderTypeSentenceList.add(EXTID_IN_TAG.getValue());
+    externalIDProviderImplMap.forEach(
+        (s, externalIDProvider) -> {
+          externalIDProviderTypeSentenceList.add(externalIDProvider.getExternalIDType());
+        });
+    extidListBox.setItems(externalIDProviderTypeSentenceList);
 
     checkboxUseAsPatientName = new Checkbox("Uses the pseudonym as Patient Name");
 
@@ -140,21 +159,16 @@ public class LayoutDesidentification extends Div {
     extidListBox.addValueChangeListener(
         event -> {
           if (event.getValue() != null) {
-            if (event.getValue().equals(MAINZELLISTE_PID.getValue())) {
-              checkboxUseAsPatientName.clear();
-              extidPresentInDicomTagView.clear();
-              div.remove(checkboxUseAsPatientName);
-              div.remove(extidPresentInDicomTagView);
-            } else if (event.getValue().equals(MAINZELLISTE_EXTID.getValue())
-                || event.getValue().equals(CACHE_EXTID.getValue())) {
-              div.add(UIS.setWidthFull(checkboxUseAsPatientName));
-              extidPresentInDicomTagView.clear();
-              div.remove(extidPresentInDicomTagView);
-            } else {
-              div.add(UIS.setWidthFull(checkboxUseAsPatientName));
+            div.add(UIS.setWidthFull(checkboxUseAsPatientName));
+            if (event.getValue().equals(EXTID_IN_TAG.getValue())) {
               extidPresentInDicomTagView.enableComponent();
               div.add(extidPresentInDicomTagView);
+            } else {
+              extidPresentInDicomTagView.clear();
+              div.remove(extidPresentInDicomTagView);
             }
+          } else {
+            div.remove(checkboxUseAsPatientName);
           }
         });
   }
@@ -176,25 +190,45 @@ public class LayoutDesidentification extends Div {
         .withValidator(type -> type != null, "Choose pseudonym type\n")
         .bind(
             destination -> {
-              if (destination.getPseudonymType().equals(MAINZELLISTE_PID)) {
-                return MAINZELLISTE_PID.getValue();
-              } else if (destination.getPseudonymType().equals(MAINZELLISTE_EXTID)) {
-                return MAINZELLISTE_EXTID.getValue();
-              } else if (destination.getPseudonymType().equals(CACHE_EXTID)) {
-                return CACHE_EXTID.getValue();
+              if (destination.getExternalIDProviderEntity() != null) {
+                final ExternalIDProviderType externalIDProviderType =
+                    destination.getExternalIDProviderEntity().getExternalIDProviderType();
+                if (externalIDProviderType.equals(EXTID_CACHE)) {
+                  return EXTID_CACHE.getValue();
+                } else if (externalIDProviderType.equals(EXTID_IN_TAG)) {
+                  return EXTID_CACHE.getValue();
+                } else if (externalIDProviderType.equals(EXTID_IMPLEMENTATION)) {
+                  // foreach impl
+                  final String jarName = destination.getExternalIDProviderEntity().getJarName();
+                  final ExternalIDProvider externalIDProvider =
+                      externalIDProviderImplMap.get(jarName);
+                  return externalIDProvider.getExternalIDType();
+                } else {
+                  return EXTID_IN_TAG.getValue();
+                }
               } else {
-                return EXTID_IN_TAG.getValue();
+                return null;
               }
             },
-            (destination, s) -> {
-              if (s.equals(MAINZELLISTE_PID.getValue())) {
-                destination.setPseudonymType(MAINZELLISTE_PID);
-              } else if (s.equals(MAINZELLISTE_EXTID.getValue())) {
-                destination.setPseudonymType(MAINZELLISTE_EXTID);
-              } else if (s.equals(CACHE_EXTID.getValue())) {
-                destination.setPseudonymType(CACHE_EXTID);
+            (destination, stringExternalIDType) -> {
+              if (stringExternalIDType.equals(EXTID_CACHE.getValue())) {
+                final ExternalIDProviderEntity externalIDProviderEntity =
+                    externalIDProviderService.getExternalIDProvider(EXTID_CACHE, null);
+                destination.setExternalIDProviderEntity(externalIDProviderEntity);
+              } else if (stringExternalIDType.equals(EXTID_IN_TAG.getValue())) {
+                final ExternalIDProviderEntity externalIDProviderEntity =
+                    externalIDProviderService.getExternalIDProvider(EXTID_IN_TAG, null);
+                destination.setExternalIDProviderEntity(externalIDProviderEntity);
               } else {
-                destination.setPseudonymType(EXTID_IN_TAG);
+                externalIDProviderImplMap.forEach(
+                    (jarNameKey, externalIDProvider) -> {
+                      if (externalIDProvider.getExternalIDType().equals(stringExternalIDType)) {
+                        final ExternalIDProviderEntity externalIDProviderEntity =
+                            externalIDProviderService.getExternalIDProvider(
+                                EXTID_IMPLEMENTATION, jarNameKey);
+                        destination.setExternalIDProviderEntity(externalIDProviderEntity);
+                      }
+                    });
               }
             });
 

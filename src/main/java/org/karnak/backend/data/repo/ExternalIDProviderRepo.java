@@ -19,4 +19,7 @@ public interface ExternalIDProviderRepo extends JpaRepository<ExternalIDProvider
   Boolean existsByJarName(String jarNAme);
 
   Boolean existsByExternalIDProviderType(ExternalIDProviderType externalIDProviderType);
+
+  ExternalIDProviderEntity getByExternalIDProviderTypeAndJarName(
+      ExternalIDProviderType externalIDProviderType, String jarName);
 }

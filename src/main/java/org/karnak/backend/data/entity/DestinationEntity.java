@@ -434,7 +434,7 @@ public class DestinationEntity implements Serializable {
     this.kheopsAlbumEntities = kheopsAlbumEntities;
   }
 
-  @OneToOne(cascade = CascadeType.ALL)
+  @OneToOne(cascade = CascadeType.MERGE)
   @JoinColumn(name = "externalid_provider_id", referencedColumnName = "id")
   public ExternalIDProviderEntity getExternalIDProviderEntity() {
     return externalIDProviderEntity;

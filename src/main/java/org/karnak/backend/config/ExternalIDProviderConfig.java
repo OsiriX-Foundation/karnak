@@ -13,8 +13,7 @@ import java.io.File;
 import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import javax.annotation.PostConstruct;
 import org.externalid.ExternalIDProvider;
 import org.karnak.backend.data.entity.ExternalIDProviderEntity;
@@ -34,7 +33,7 @@ public class ExternalIDProviderConfig {
   private static final Logger LOGGER = LoggerFactory.getLogger(ExternalIDProviderConfig.class);
 
   private static ExternalIDProviderConfig instance;
-  private List<ExternalIDProvider> externalIDProviderList;
+  private HashMap<String, ExternalIDProvider> externalIDProviderImplMap;
   private ExternalIDProviderService externalIDProviderService;
 
   @Autowired
@@ -52,7 +51,7 @@ public class ExternalIDProviderConfig {
   }
 
   public void loadExternalIDImplClass(String directory, String classpath) {
-    externalIDProviderList = new ArrayList<>();
+    externalIDProviderImplMap = new HashMap<>();
     File pluginsDir = new File(System.getProperty("user.dir") + directory);
     for (File jar : pluginsDir.listFiles()) {
       try {
@@ -63,8 +62,8 @@ public class ExternalIDProviderConfig {
         Class<? extends ExternalIDProvider> newClass = clazz.asSubclass(ExternalIDProvider.class);
         Constructor<? extends ExternalIDProvider> constructor = newClass.getConstructor();
         final ExternalIDProvider externalIDProvider = constructor.newInstance();
-        externalIDProviderList.add(externalIDProvider);
         final String jarName = jar.getName();
+        externalIDProviderImplMap.put(jarName, externalIDProvider);
         addExternalIDProviderImplInDb(jarName);
       } catch (Exception e) {
         LOGGER.error("Cannot not load correctly the jar", e);
@@ -98,10 +97,10 @@ public class ExternalIDProviderConfig {
   }
 
   @Bean
-  public List<ExternalIDProvider> externalIDProviderList() {
+  public HashMap<String, ExternalIDProvider> externalIDProviderImplMap() {
     loadExternalIDImplClass("/externalid_providers", "org.karnak.externalid.Implementation");
-    externalIDProviderList.forEach(
-        externalIDProvider -> LOGGER.warn(externalIDProvider.getExternalIDType()));
-    return externalIDProviderList;
+    externalIDProviderImplMap.forEach(
+        (key, externalIDProvider) -> LOGGER.warn(externalIDProvider.getExternalIDType()));
+    return externalIDProviderImplMap;
   }
 }

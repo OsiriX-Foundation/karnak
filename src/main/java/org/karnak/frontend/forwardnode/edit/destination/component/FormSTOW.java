@@ -20,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.frontend.component.converter.HStringToIntegerConverter;
 import org.karnak.frontend.forwardnode.edit.component.ButtonSaveDeleteCancel;
+import org.karnak.frontend.forwardnode.edit.destination.DestinationLogic;
 import org.karnak.frontend.kheops.SwitchingAlbumsView;
 import org.karnak.frontend.util.UIS;
 
@@ -40,8 +41,8 @@ public class FormSTOW extends VerticalLayout {
   private SwitchingAlbumsView switchingAlbumsView;
   private Checkbox activate;
 
-  public FormSTOW() {
-    this.layoutDesidentification = new LayoutDesidentification();
+  public FormSTOW(DestinationLogic destinationLogic) {
+    this.layoutDesidentification = new LayoutDesidentification(destinationLogic);
     this.filterBySOPClassesForm = new FilterBySOPClassesForm();
   }
 

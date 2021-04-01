@@ -73,7 +73,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
     this.tabSourcesDestination = new TabSourcesDestination();
     this.layoutDestinationsSources = new VerticalLayout();
     this.buttonForwardNodeSaveDeleteCancel = new ButtonSaveDeleteCancel();
-    this.newUpdateDestination = new NewUpdateDestination();
+    this.newUpdateDestination = new NewUpdateDestination(forwardNodeLogic.getDestinationLogic());
     this.newUpdateSourceNode = new NewUpdateSourceNode();
     this.sourceView = new SourceView(forwardNodeLogic);
     this.destinationView = new DestinationView(forwardNodeLogic);
@@ -466,7 +466,9 @@ public class LayoutEditForwardNode extends VerticalLayout {
                   layoutDesidentification
                       .getDiv()
                       .remove(layoutDesidentification.getExtidListBox());
-                  remove(layoutDesidentification.getCheckboxUseAsPatientName());
+                  layoutDesidentification
+                      .getDiv()
+                      .remove(layoutDesidentification.getCheckboxUseAsPatientName());
                   layoutDesidentification
                       .getDiv()
                       .remove(layoutDesidentification.getExtidPresentInDicomTagView());

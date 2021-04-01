@@ -46,4 +46,10 @@ public class ExternalIDProviderService {
       ExternalIDProviderEntity externalIDProviderEntity) {
     return externalIDProviderRepo.saveAndFlush(externalIDProviderEntity);
   }
+
+  public ExternalIDProviderEntity getExternalIDProvider(
+      ExternalIDProviderType externalIDProviderType, String jarName) {
+    return externalIDProviderRepo.getByExternalIDProviderTypeAndJarName(
+        externalIDProviderType, jarName);
+  }
 }
