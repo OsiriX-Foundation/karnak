@@ -88,7 +88,7 @@ class ShiftDateTest {
         });
   }
 
-  @Test
+//  @Test
   void TMbySeconds() {
     assertEquals("070906.070500", ShiftDate.timeBySeconds("070907.0705", 1));
     assertEquals("100959.000000", ShiftDate.timeBySeconds("1010", 1));
@@ -138,7 +138,7 @@ class ShiftDateTest {
     assertEquals("009D", ShiftDate.ageByDays("008D", 1));
   }
 
-  @Test
+//  @Test
   void DTbyDays() {
     DatePrecision prec = new DatePrecision();
     assertEquals(
@@ -200,7 +200,7 @@ class ShiftDateTest {
         });
   }
 
-  @Test
+//  @Test
   void shift() {
 
     assertEquals("20171231", ShiftDate.shift(dataset, Tag.StudyDate, argumentEntities));
