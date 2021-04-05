@@ -25,14 +25,11 @@ class ProfileItemTypeTest {
         ProfileItemType.getCodeMeaning("basic.dicom.profile"),
         "Basic Application Confidentiality Profile");
     Assert.assertEquals(
-        ProfileItemType.getCodeMeaning("clean.pixel.data"),
-        "Clean Pixel Data Option");
+        ProfileItemType.getCodeMeaning("clean.pixel.data"), "Clean Pixel Data Option");
     Assert.assertEquals(ProfileItemType.getCodeMeaning("replace.uid"), null);
+    Assert.assertEquals(ProfileItemType.getCodeMeaning("action.on.specific.tags"), null);
     Assert.assertEquals(
-        ProfileItemType.getCodeMeaning("action.on.specific.tags"), null);
-    Assert.assertEquals(
-        ProfileItemType.getCodeMeaning("action.on.privatetags"),
-        "Retain Safe Private Option");
+        ProfileItemType.getCodeMeaning("action.on.privatetags"), "Retain Safe Private Option");
     Assert.assertEquals(
         ProfileItemType.getCodeMeaning("action.on.dates"),
         "Retain Longitudinal Temporal Information Modified Dates Option");
