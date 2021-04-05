@@ -73,8 +73,6 @@ class SourceNodeServiceTest {
     Mockito.verify(forwardNodeServiceMock, Mockito.times(1))
         .updateSourceNode(
             Mockito.any(ForwardNodeEntity.class), Mockito.any(DicomSourceNodeEntity.class));
-    Mockito.verify(dicomSourceNodeRepoMock, Mockito.times(1))
-        .saveAndFlush(Mockito.any(DicomSourceNodeEntity.class));
   }
 
   @Test
@@ -83,14 +81,14 @@ class SourceNodeServiceTest {
     ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
     DicomSourceNodeEntity dicomSourceNodeEntity = new DicomSourceNodeEntity();
     dicomSourceNodeEntity.setId(1L);
+    dicomSourceNodeEntity.setForwardNodeEntity(forwardNodeEntity);
 
     // Call service
-    sourceNodeService.delete(forwardNodeEntity, dicomSourceNodeEntity);
+    sourceNodeService.delete(dicomSourceNodeEntity);
 
     // Test results
     Mockito.verify(forwardNodeServiceMock, Mockito.times(1))
         .deleteSourceNode(
             Mockito.any(ForwardNodeEntity.class), Mockito.any(DicomSourceNodeEntity.class));
-    Mockito.verify(dicomSourceNodeRepoMock, Mockito.times(1)).deleteById(Mockito.anyLong());
   }
 }

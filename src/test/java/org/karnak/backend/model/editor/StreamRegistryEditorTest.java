@@ -7,12 +7,11 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  */
-package org.karnak.backend.service;
+package org.karnak.backend.model.editor;
 
-import org.dcm4che6.data.DicomObject;
-import org.dcm4che6.data.Tag;
-import org.dcm4che6.data.VR;
-import org.dcm4che6.internal.DicomObjectImpl;
+import org.dcm4che3.data.Attributes;
+import org.dcm4che3.data.Tag;
+import org.dcm4che3.data.VR;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,41 +20,44 @@ import org.karnak.backend.model.SopInstance;
 import org.karnak.backend.model.Study;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.weasis.dicom.param.AttributeEditorContext;
+import org.weasis.dicom.param.DicomNode;
 import org.weasis.dicom.param.DicomProgress;
 
 @SpringBootTest
-class StreamRegistryServiceTest {
+class StreamRegistryEditorTest {
 
-  // Service
-  private StreamRegistryService streamRegistryService;
+  // Create streamRegistryEditor
+  private StreamRegistryEditor streamRegistryEditor;
 
   @BeforeEach
   public void setUp() {
-
-    // Build mocked service
-    streamRegistryService = new StreamRegistryService();
+    streamRegistryEditor = new StreamRegistryEditor();
   }
 
   @Test
   void should_add_study_serie_sop() {
     // Init data
-    DicomObject dcm = new DicomObjectImpl();
+    Attributes dcm = new Attributes();
     dcm.setString(Tag.StudyInstanceUID, VR.SH, "studyInstanceUID");
     dcm.setString(Tag.SeriesInstanceUID, VR.SH, "seriesInstanceUID");
     dcm.setString(Tag.SOPInstanceUID, VR.SH, "sopInstanceUID");
 
-    AttributeEditorContext context = new AttributeEditorContext(null);
+    // AttributeEditorContext
+    DicomNode source = new DicomNode("source");
+    DicomNode destination = new DicomNode("destination");
+    AttributeEditorContext attributeEditorContext =
+        new AttributeEditorContext("tsuid", source, destination);
 
     // Call service
-    streamRegistryService.setEnable(true);
-    streamRegistryService.apply(dcm, context);
+    streamRegistryEditor.setEnable(true);
+    streamRegistryEditor.apply(dcm, attributeEditorContext);
 
     // Test results
-    Assert.assertNotNull(streamRegistryService.getStudy("studyInstanceUID"));
+    Assert.assertNotNull(streamRegistryEditor.getStudy("studyInstanceUID"));
     Assert.assertNotNull(
-        streamRegistryService.getStudy("studyInstanceUID").getSeries("seriesInstanceUID"));
+        streamRegistryEditor.getStudy("studyInstanceUID").getSeries("seriesInstanceUID"));
     Assert.assertNotNull(
-        streamRegistryService
+        streamRegistryEditor
             .getStudy("studyInstanceUID")
             .getSeries("seriesInstanceUID")
             .getSopInstance("sopInstanceUID"));
@@ -65,25 +67,25 @@ class StreamRegistryServiceTest {
   void should_remove_study() {
 
     // Call service
-    streamRegistryService.addStudy(new Study("studyInstanceUID", "patientId"));
+    streamRegistryEditor.addStudy(new Study("studyInstanceUID", "patientId"));
 
     // Test study added
-    Assert.assertNotNull(streamRegistryService.getStudy("studyInstanceUID"));
+    Assert.assertNotNull(streamRegistryEditor.getStudy("studyInstanceUID"));
 
     // Call service
-    streamRegistryService.removeStudy("studyInstanceUID");
+    streamRegistryEditor.removeStudy("studyInstanceUID");
 
     // Test result
-    Assert.assertNull(streamRegistryService.getStudy("studyInstanceUID"));
+    Assert.assertNull(streamRegistryEditor.getStudy("studyInstanceUID"));
   }
 
   @Test
   void should_update_sopInstance() {
     // Init data
     DicomProgress dicomProgress = new DicomProgress();
-    DicomObject dicomObject = new DicomObjectImpl();
-    dicomObject.setString(Tag.AffectedSOPInstanceUID, VR.SH, "affectedSOPInstanceUID");
-    dicomProgress.setAttributes(dicomObject);
+    Attributes attributes = new Attributes();
+    attributes.setString(Tag.AffectedSOPInstanceUID, VR.SH, "affectedSOPInstanceUID");
+    dicomProgress.setAttributes(attributes);
     Study study = new Study("studyInstanceUID", "patientId");
     Series serie = new Series("seriesInstantUID");
     SopInstance sopInstance = new SopInstance("affectedSOPInstanceUID");
@@ -91,9 +93,9 @@ class StreamRegistryServiceTest {
     study.addSeries(serie);
 
     // Call service
-    streamRegistryService.setEnable(true);
-    streamRegistryService.addStudy(study);
-    streamRegistryService.update(dicomProgress);
+    streamRegistryEditor.setEnable(true);
+    streamRegistryEditor.addStudy(study);
+    streamRegistryEditor.update(dicomProgress);
 
     // Test result
     Assert.assertTrue(sopInstance.isSent());

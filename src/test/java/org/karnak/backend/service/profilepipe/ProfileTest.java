@@ -10,17 +10,13 @@
 package org.karnak.backend.service.profilepipe;
 
 import java.awt.Rectangle;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import org.dcm4che6.data.DicomObject;
-import org.dcm4che6.data.Tag;
-import org.dcm4che6.data.VR;
-import org.dcm4che6.internal.DicomObjectImpl;
+import org.dcm4che3.data.Attributes;
+import org.dcm4che3.data.Tag;
+import org.dcm4che3.data.VR;
 import org.junit.Assert;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.MaskEntity;
@@ -28,37 +24,33 @@ import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.data.entity.ProfileEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.enums.DestinationType;
-import org.mockito.Mockito;
+import org.karnak.backend.enums.PseudonymType;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.weasis.dicom.param.AttributeEditorContext;
 
 @SpringBootTest
-class ProfileServiceTest {
-
-  // Services
-  private ProfileService profileService;
-  private final PseudonymService pseudonymServiceMock = Mockito.mock(PseudonymService.class);
-
-  @BeforeEach
-  public void setUp() {
-    // Build mocked service
-    profileService = new ProfileService(pseudonymServiceMock);
-  }
+class ProfileTest {
 
   @Test
   void should_apply() {
 
     // Init data
-    DicomObject dicomObject = new DicomObjectImpl();
+    Attributes attributes = new Attributes();
     DestinationEntity destinationEntity = new DestinationEntity();
     destinationEntity.setDestinationType(DestinationType.dicom);
     ProjectEntity projectEntity = new ProjectEntity();
+    ProfileEntity profileEntityProject = new ProfileEntity();
+    projectEntity.setProfileEntity(profileEntityProject);
     byte[] tabByte = new byte[16];
     tabByte[0] = 1;
     projectEntity.setSecret(tabByte);
     destinationEntity.setProjectEntity(projectEntity);
+    destinationEntity.setPseudonymType(PseudonymType.EXTID_IN_TAG);
+    destinationEntity.setTag("0008,0080");
+    destinationEntity.setSavePseudonym(false);
+    destinationEntity.setPseudonymAsPatientName(true);
     ProfileEntity profileEntity = new ProfileEntity();
-    List<ProfileElementEntity> profileElementEntities = new ArrayList<>();
+    Set<ProfileElementEntity> profileElementEntities = new HashSet<>();
     ProfileElementEntity profileElementEntityBasic = new ProfileElementEntity();
     profileElementEntityBasic.setCodename("basic.dicom.profile");
     profileElementEntityBasic.setName("nameBasic");
@@ -81,30 +73,24 @@ class ProfileServiceTest {
     maskEntity.setStationName("stationName");
     maskEntity.setRectangles(Arrays.asList(new Rectangle()));
     profileEntity.setMaskEntities(maskEntities);
-    AttributeEditorContext context = new AttributeEditorContext(null);
-    dicomObject.setString(Tag.PatientID, VR.SH, "patientID");
-    dicomObject.setString(Tag.SeriesInstanceUID, VR.SH, "seriesInstanceUID");
-    dicomObject.setString(Tag.SOPInstanceUID, VR.SH, "sopInstanceUID");
-    dicomObject.setString(Tag.IssuerOfPatientID, VR.SH, "issuerOfPatientID");
-    dicomObject.setString(Tag.PixelData, VR.SH, "pixelData");
-    dicomObject.setString(Tag.SOPClassUID, VR.SH, "sopClassUID");
-    dicomObject.setString(Tag.BurnedInAnnotation, VR.SH, "YES");
-    dicomObject.setString(Tag.StationName, VR.SH, "stationName");
+    AttributeEditorContext context = new AttributeEditorContext("tsuid", null, null);
+    attributes.setString(Tag.PatientID, VR.SH, "patientID");
+    attributes.setString(Tag.SeriesInstanceUID, VR.SH, "seriesInstanceUID");
+    attributes.setString(Tag.SOPInstanceUID, VR.SH, "sopInstanceUID");
+    attributes.setString(Tag.IssuerOfPatientID, VR.SH, "issuerOfPatientID");
+    attributes.setString(Tag.PixelData, VR.SH, "pixelData");
+    attributes.setString(Tag.SOPClassUID, VR.SH, "1.2.840.10008.5.1.4.1.1.88.74");
+    attributes.setString(Tag.BurnedInAnnotation, VR.SH, "YES");
+    attributes.setString(Tag.StationName, VR.SH, "stationName");
+    attributes.setString(524416, VR.SH, "pseudonym");
 
-    // Mock
-    Mockito.when(
-            pseudonymServiceMock.generatePseudonym(
-                Mockito.any(DestinationEntity.class),
-                Mockito.any(DicomObject.class),
-                Mockito.anyString()))
-        .thenReturn("pseudonym");
-
-    // Call service
-    profileService.init(profileEntity);
-    profileService.apply(dicomObject, destinationEntity, profileEntity, context);
+    // Call method
+    Profile profile = new Profile(profileEntity);
+    // profile.init(profileEntity);
+    profile.apply(attributes, destinationEntity, profileEntity, context);
 
     // Test results
-    Assert.assertNotNull(context.getMaskArea().getColor());
-    Assert.assertEquals(1, context.getMaskArea().getShapeList().size());
+    Assert.assertEquals("NONE", context.getAbort().name());
+    Assert.assertNull(context.getMaskArea());
   }
 }

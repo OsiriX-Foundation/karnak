@@ -73,15 +73,15 @@ class DestinationServiceTest {
     ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
     DestinationEntity destinationEntity = new DestinationEntity();
     destinationEntity.setId(1L);
+    destinationEntity.setForwardNodeEntity(forwardNodeEntity);
 
     // Call service
-    destinationService.delete(forwardNodeEntity, destinationEntity);
+    destinationService.delete(destinationEntity);
 
     // Test results
     Mockito.verify(forwardNodeServiceMock, Mockito.times(1))
         .deleteDestination(
             Mockito.any(ForwardNodeEntity.class), Mockito.any(DestinationEntity.class));
-    Mockito.verify(destinationRepoMock, Mockito.times(1)).deleteById(Mockito.anyLong());
   }
 
   @Test

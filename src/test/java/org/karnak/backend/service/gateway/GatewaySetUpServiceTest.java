@@ -23,18 +23,14 @@ import org.karnak.backend.data.entity.KheopsAlbumsEntity;
 import org.karnak.backend.data.entity.ProfileEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.data.repo.ForwardNodeRepo;
+import org.karnak.backend.dicom.DicomForwardDestination;
+import org.karnak.backend.dicom.ForwardDestination;
 import org.karnak.backend.enums.DestinationType;
 import org.karnak.backend.enums.NodeEventType;
 import org.karnak.backend.model.NodeEvent;
-import org.karnak.backend.service.DeIdentifyEditorService;
-import org.karnak.backend.service.FilterEditorService;
-import org.karnak.backend.service.StreamRegistryService;
-import org.karnak.backend.service.kheops.SwitchingAlbumService;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.weasis.dicom.param.DicomForwardDestination;
 import org.weasis.dicom.param.DicomNode;
-import org.weasis.dicom.param.ForwardDestination;
 
 @SpringBootTest
 class GatewaySetUpServiceTest {
@@ -44,23 +40,12 @@ class GatewaySetUpServiceTest {
 
   // Service
   private GatewaySetUpService gatewaySetUpService;
-  final SwitchingAlbumService switchingAlbumServiceMock = Mockito.mock(SwitchingAlbumService.class);
-  final DeIdentifyEditorService deIdentifyEditorServiceMock =
-      Mockito.mock(DeIdentifyEditorService.class);
-  final StreamRegistryService streamRegistryServiceMock = Mockito.mock(StreamRegistryService.class);
-  final FilterEditorService filterEditorServiceMock = Mockito.mock(FilterEditorService.class);
 
   @BeforeEach
   public void setUp() throws Exception {
 
     // Build mocked service
-    gatewaySetUpService =
-        new GatewaySetUpService(
-            forwardNodeRepoMock,
-            switchingAlbumServiceMock,
-            deIdentifyEditorServiceMock,
-            streamRegistryServiceMock,
-            filterEditorServiceMock);
+    gatewaySetUpService = new GatewaySetUpService(forwardNodeRepoMock);
   }
 
   @Test

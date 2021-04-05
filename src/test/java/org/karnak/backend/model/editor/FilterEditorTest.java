@@ -7,34 +7,23 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  */
-package org.karnak.backend.service;
+package org.karnak.backend.model.editor;
 
 import java.util.HashSet;
 import java.util.Set;
-import org.dcm4che6.data.DicomObject;
-import org.dcm4che6.data.Tag;
-import org.dcm4che6.data.VR;
-import org.dcm4che6.internal.DicomObjectImpl;
+import org.dcm4che3.data.Attributes;
+import org.dcm4che3.data.Tag;
+import org.dcm4che3.data.VR;
 import org.junit.Assert;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.data.entity.SOPClassUIDEntity;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.weasis.dicom.param.AttributeEditorContext;
 import org.weasis.dicom.param.AttributeEditorContext.Abort;
+import org.weasis.dicom.param.DicomNode;
 
 @SpringBootTest
-class FilterEditorServiceTest {
-
-  // Service
-  private FilterEditorService filterEditorService;
-
-  @BeforeEach
-  public void setUp() {
-
-    // Build mocked service
-    filterEditorService = new FilterEditorService();
-  }
+class FilterEditorTest {
 
   @Test
   void when_no_class_uid_found_should_modify_context() {
@@ -48,19 +37,24 @@ class FilterEditorServiceTest {
     sopClassUIDEntities.add(sopClassUIDEntityFirst);
     sopClassUIDEntities.add(sopClassUIDEntitySecond);
 
-    // DicomObject
-    DicomObject dcm = new DicomObjectImpl();
-    dcm.setString(Tag.SOPClassUID, VR.SH, "TEST NOT FOUND");
+    // Attributes
+    Attributes attributes = new Attributes();
+    attributes.setString(Tag.SOPClassUID, VR.SH, "TEST NOT FOUND");
 
     // AttributeEditorContext
-    AttributeEditorContext context = new AttributeEditorContext(null);
+    DicomNode source = new DicomNode("source");
+    DicomNode destination = new DicomNode("destination");
+    AttributeEditorContext attributeEditorContext =
+        new AttributeEditorContext("tsuid", source, destination);
+
+    // Create filterEditor
+    FilterEditor filterEditor = new FilterEditor(sopClassUIDEntities);
 
     // Call service
-    filterEditorService.init(sopClassUIDEntities);
-    filterEditorService.apply(dcm, context);
+    filterEditor.apply(attributes, attributeEditorContext);
 
     // Test results
-    Assert.assertEquals(Abort.FILE_EXCEPTION, context.getAbort());
+    Assert.assertEquals(Abort.FILE_EXCEPTION, attributeEditorContext.getAbort());
   }
 
   @Test
@@ -75,18 +69,23 @@ class FilterEditorServiceTest {
     sopClassUIDEntities.add(sopClassUIDEntityFirst);
     sopClassUIDEntities.add(sopClassUIDEntitySecond);
 
-    // DicomObject
-    DicomObject dcm = new DicomObjectImpl();
-    dcm.setString(Tag.SOPClassUID, VR.SH, "TEST FIRST");
+    // Attributes
+    Attributes attributes = new Attributes();
+    attributes.setString(Tag.SOPClassUID, VR.SH, "TEST FIRST");
 
     // AttributeEditorContext
-    AttributeEditorContext context = new AttributeEditorContext(null);
+    DicomNode source = new DicomNode("source");
+    DicomNode destination = new DicomNode("destination");
+    AttributeEditorContext attributeEditorContext =
+        new AttributeEditorContext("tsuid", source, destination);
+
+    // Create filterEditor
+    FilterEditor filterEditor = new FilterEditor(sopClassUIDEntities);
 
     // Call service
-    filterEditorService.init(sopClassUIDEntities);
-    filterEditorService.apply(dcm, context);
+    filterEditor.apply(attributes, attributeEditorContext);
 
     // Test results
-    Assert.assertNotEquals(Abort.FILE_EXCEPTION, context.getAbort());
+    Assert.assertNotEquals(Abort.FILE_EXCEPTION, attributeEditorContext.getAbort());
   }
 }
