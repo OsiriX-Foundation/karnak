@@ -60,6 +60,8 @@ class ExternalIDGridTest {
 
     // Test results
     Assert.assertNotNull(externalIDGrid);
+    Assert.assertNotNull(externalIDGrid.getExternalIDCache());
+    Assert.assertNotNull(externalIDGrid.getProjectEntity());
     Assert.assertEquals("pseudonym", externalIDGrid.getPatientsListInCache().get(0).getPseudonym());
   }
 
