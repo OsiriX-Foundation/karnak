@@ -40,7 +40,7 @@ class ProfileTest {
     defaultHMAC = new HMAC(HMAC_KEY);
   }
 
-//  @Test
+  //  @Test
   void propagationInSequenceDeletePatientIDButNotInSequence() {
     final Attributes dataset1 = new Attributes();
     final Attributes dataset2 = new Attributes();
@@ -101,7 +101,7 @@ class ProfileTest {
     assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
   }
 
-//  @Test
+  //  @Test
   void propagationInSequence1() {
     final Attributes dataset1 = new Attributes();
     final Attributes dataset2 = new Attributes();
@@ -156,7 +156,7 @@ class ProfileTest {
     assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
   }
 
-//  @Test
+  //  @Test
   void propagationInSequence2() {
     final Attributes dataset1 = new Attributes();
     final Attributes dataset2 = new Attributes();
@@ -213,7 +213,7 @@ class ProfileTest {
     assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
   }
 
-//  @Test
+  //  @Test
   void propagationInSequence3() {
     final Attributes dataset1 = new Attributes();
     final Attributes dataset2 = new Attributes();
@@ -397,7 +397,7 @@ class ProfileTest {
     assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
   }
 
-//  @Test
+  //  @Test
   void shiftDateProfileOptionShift() {
     // SHIFT days: 365, seconds:60
     final Attributes dataset1 = new Attributes();
@@ -436,7 +436,7 @@ class ProfileTest {
     assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
   }
 
-//  @Test
+  //  @Test
   void shiftDateProfileOptionShiftRange() {
     // SHIFT range with hmackey: HmacKeyToTEST -> days: 57, seconds: 9
     final String projectSecret = "xN[LtKL!H5RUuQ}6";
@@ -482,7 +482,7 @@ class ProfileTest {
     assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
   }
 
-//  @Test
+  //  @Test
   void XZactionTagsProfile() {
     final Attributes dataset1 = new Attributes();
     final Attributes dataset2 = new Attributes();
@@ -511,7 +511,7 @@ class ProfileTest {
     assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
   }
 
-//  @Test
+  //  @Test
   void KprivateTagsAndXRestProfile() {
     final Attributes dataset1 = new Attributes();
     final Attributes dataset2 = new Attributes();
