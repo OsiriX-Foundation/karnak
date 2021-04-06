@@ -27,7 +27,7 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
   private DestinationView destinationView;
 
   // Services
-  private final transient DestinationService destinationService;
+  private final DestinationService destinationService;
 
   /** Text filter that can be changed separately. */
   private String filterText = "";

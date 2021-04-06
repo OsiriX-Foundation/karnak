@@ -43,7 +43,7 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
   private static final String LABEL_FILTER = "Filter";
   private final Binder<CachedPatient> binder;
   private final List<CachedPatient> patientList;
-  private final transient PatientClient externalIDCache;
+  private PatientClient externalIDCache;
   private transient ProjectEntity projectEntity;
   private Button deletePatientButton;
   private Button saveEditPatientButton;
@@ -69,7 +69,7 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
   private TextField patientLastNameFilter;
   private TextField issuerOfPatientIDFilter;
 
-  private Collection<CachedPatient> patientsListInCache = new ArrayList<>();
+  private List<CachedPatient> patientsListInCache = new ArrayList<>();
   private transient Collection<PseudonymPatient> duplicatePatientsList = new ArrayList<>();
 
   public ExternalIDGrid() {
@@ -382,5 +382,17 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
 
   public void setProjectEntity(ProjectEntity projectEntity) {
     this.projectEntity = projectEntity;
+  }
+
+  public PatientClient getExternalIDCache() {
+    return externalIDCache;
+  }
+
+  public void setExternalIDCache(PatientClient externalIDCache) {
+    this.externalIDCache = externalIDCache;
+  }
+
+  public List<CachedPatient> getPatientsListInCache() {
+    return patientsListInCache;
   }
 }
