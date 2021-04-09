@@ -43,7 +43,7 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
   private static final String LABEL_FILTER = "Filter";
   private final Binder<CachedPatient> binder;
   private final List<CachedPatient> patientList;
-  private PatientClient externalIDCache;
+  private transient PatientClient externalIDCache;
   private transient ProjectEntity projectEntity;
   private Button deletePatientButton;
   private Button saveEditPatientButton;
