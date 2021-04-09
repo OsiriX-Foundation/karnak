@@ -16,6 +16,7 @@ import org.karnak.backend.util.SecurityUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -30,6 +31,7 @@ public class SecurityInMemoryConfig extends WebSecurityConfigurerAdapter {
 
   private static final String LOGIN_FAILURE_URL = "/login?error";
   private static final String LOGIN_URL = "/login";
+  private static final String USER_PWD_DEFAULT = "admin";
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
@@ -48,6 +50,9 @@ public class SecurityInMemoryConfig extends WebSecurityConfigurerAdapter {
         .authorizeRequests()
         // Allows all internal traffic from the Vaadin framework
         .requestMatchers(SecurityUtil::isFrameworkInternalRequest)
+        .permitAll()
+        // Allow all get endpoints
+        .antMatchers(HttpMethod.GET, "/api/**")
         .permitAll()
         // Allows all authenticated traffic
         .antMatchers("/*")
@@ -75,8 +80,15 @@ public class SecurityInMemoryConfig extends WebSecurityConfigurerAdapter {
   protected void configure(AuthenticationManagerBuilder auth) throws Exception {
     // Configure users and roles in memory
     auth.inMemoryAuthentication()
-        .withUser(AppConfig.getInstance().getKarnakadmin())
-        .password("{noop}" + AppConfig.getInstance().getKarnakpassword())
+        .withUser(
+            AppConfig.getInstance().getKarnakadmin() != null
+                ? AppConfig.getInstance().getKarnakadmin()
+                : USER_PWD_DEFAULT)
+        .password(
+            "{noop}"
+                + (AppConfig.getInstance().getKarnakpassword() != null
+                    ? AppConfig.getInstance().getKarnakpassword()
+                    : USER_PWD_DEFAULT))
         .roles(SecurityRole.ADMIN_ROLE.getType(), SecurityRole.USER_ROLE.getType());
   }
 

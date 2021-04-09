@@ -43,8 +43,9 @@
     <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
     <h2.version>1.4.200</h2.version>
-    <junit-platform-maven-plugin.version>1.1.1</junit-platform-maven-plugin.version>
     <junit.jupiter.version>5.0.3</junit.jupiter.version>
+    <mockito.version>3.9.0</mockito.version>
+    <springdoc.version>1.5.6</springdoc.version>
   </properties>
 
   <!-- Repositories -->
@@ -140,39 +141,10 @@
           </execution>
         </executions>
       </plugin>
-  <!--      <plugin>-->
-  <!--        <groupId>org.jacoco</groupId>-->
-  <!--        <artifactId>jacoco-maven-plugin</artifactId>-->
-  <!--        <version>${jacoco-maven-plugin.version}</version>-->
-  <!--        <executions>-->
-  <!--          <execution>-->
-  <!--            <id>pre-unit-test</id>-->
-  <!--            <goals>-->
-  <!--              <goal>prepare-agent</goal>-->
-  <!--            </goals>-->
-  <!--            <configuration>-->
-  <!--              <propertyName>jacoco.java.option</propertyName>-->
-  <!--            </configuration>-->
-  <!--          </execution>-->
-  <!--          <execution>-->
-  <!--            <id>post-unit-test</id>-->
-  <!--            <phase>test</phase>-->
-  <!--            <goals>-->
-  <!--              <goal>report</goal>-->
-  <!--            </goals>-->
-  <!--          </execution>-->
-  <!--        </executions>-->
-  <!--      </plugin>-->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.0.0-M5</version>
-<!--        <configuration>-->
-<!--          <forkCount>0</forkCount>-->
-<!--          <testFailureIgnore>true</testFailureIgnore>-->
-<!--          <argLine>@{argLine} -Djava.library.path='C:\Tools\dicom-opencv'</argLine>-->
-<!--          <useSystemClassLoader>false</useSystemClassLoader>-->
-<!--        </configuration>-->
         <dependencies>
           <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -181,23 +153,6 @@
           </dependency>
         </dependencies>
       </plugin>
-<!--      <plugin>-->
-<!--        <groupId>de.sormuras.junit</groupId>-->
-<!--        <artifactId>junit-platform-maven-plugin</artifactId>-->
-<!--        <version>${junit-platform-maven-plugin.version}</version>-->
-<!--        <extensions>true</extensions> &lt;!&ndash; Necessary to execute it in 'test' phase. &ndash;&gt;-->
-<!--        <configuration>-->
-<!--          <executor>JAVA</executor>-->
-<!--          <javaOptions>-->
-<!--            <additionalOptions>-->
-<!--              <jacoco>${jacoco.java.option}</jacoco>-->
-<!--            </additionalOptions>-->
-<!--          </javaOptions>-->
-<!--        </configuration>-->
-<!--      </plugin>-->
-
-
-
       <plugin>
         <groupId>org.sonarsource.scanner.maven</groupId>
         <artifactId>sonar-maven-plugin</artifactId>
@@ -359,8 +314,14 @@
 
   <!-- Dependencies -->
   <dependencies>
+
+    <!-- Springboot starters -->
     <dependency>
       <artifactId>spring-boot-starter</artifactId>
+      <groupId>org.springframework.boot</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>spring-boot-starter-web</artifactId>
       <groupId>org.springframework.boot</groupId>
     </dependency>
 
@@ -417,10 +378,6 @@
       <groupId>org.springframework.boot</groupId>
     </dependency>
 
-    <dependency>
-      <artifactId>spring-boot-starter-web</artifactId>
-      <groupId>org.springframework.boot</groupId>
-    </dependency>
 
     <!-- Vaadin Spring -->
     <dependency>
@@ -430,6 +387,10 @@
         <exclusion>
           <artifactId>vaadin-core</artifactId>
           <groupId>com.vaadin</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>spring-boot-starter-web</artifactId>
+          <groupId>org.springframework.boot</groupId>
         </exclusion>
       </exclusions>
       <groupId>com.vaadin</groupId>
@@ -577,6 +538,11 @@
       <artifactId>jackson-module-jaxb-annotations</artifactId>
       <groupId>com.fasterxml.jackson.module</groupId>
     </dependency>
+    <!-- Jackson Xml -->
+    <dependency>
+      <artifactId>jackson-dataformat-xml</artifactId>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+    </dependency>
 
     <!-- Tests -->
     <dependency>
@@ -592,41 +558,26 @@
       <version>${springframework.version}</version>
     </dependency>
 
-
-<!--    <dependency>-->
-<!--      &lt;!&ndash; this is needed or IntelliJ gives junit.jar or junit-platform-launcher:1.3.2 not found errors &ndash;&gt;-->
-<!--      <groupId>org.junit.platform</groupId>-->
-<!--      <artifactId>junit-platform-launcher</artifactId>-->
-<!--      <scope>test</scope>-->
-<!--    </dependency>-->
-
-<!--    <dependency>-->
-<!--      <groupId>org.junit.jupiter</groupId>-->
-<!--      <artifactId>junit-jupiter-engine</artifactId>-->
-<!--      <version>${junit.jupiter.version}</version>-->
-<!--      <scope>test</scope>-->
-<!--    </dependency>-->
-
-<!--    <dependency>-->
-<!--      <groupId>org.junit.jupiter</groupId>-->
-<!--      <artifactId>junit-jupiter-params</artifactId>-->
-<!--      <version>${junit.jupiter.version}</version>-->
-<!--      <scope>test</scope>-->
-<!--    </dependency>-->
-
-<!--    <dependency>-->
-<!--      <groupId>org.junit.jupiter</groupId>-->
-<!--      <artifactId>junit-jupiter-api</artifactId>-->
-<!--      <version>${junit.jupiter.version}</version>-->
-<!--      <scope>test</scope>-->
-<!--    </dependency>-->
-
+    <!-- Mockito inline -->
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-inline</artifactId>
+      <version>${mockito.version}</version>
+      <scope>test</scope>
+    </dependency>
 
     <!-- DB H2 for tests -->
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
       <version>${h2.version}</version>
+    </dependency>
+
+    <!-- Spring doc / Open Api -->
+    <dependency>
+      <groupId>org.springdoc</groupId>
+      <artifactId>springdoc-openapi-ui</artifactId>
+      <version>${springdoc.version}</version>
     </dependency>
   </dependencies>
 
@@ -701,32 +652,6 @@
       <properties>
         <vaadin.productionMode>true</vaadin.productionMode>
       </properties>
-    </profile>
-    <profile>
-      <id>coverage</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.jacoco</groupId>
-            <artifactId>jacoco-maven-plugin</artifactId>
-            <version>${jacoco-maven-plugin.version}</version>
-            <executions>
-              <execution>
-                <id>prepare-agent</id>
-                <goals>
-                  <goal>prepare-agent</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>report</id>
-                <goals>
-                  <goal>report</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
     </profile>
   </profiles>
 

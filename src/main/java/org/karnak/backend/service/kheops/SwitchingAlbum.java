@@ -183,8 +183,4 @@ public class SwitchingAlbum {
     }
     return -1;
   }
-
-  public Map<Long, List> getSwitchingAlbumToDo() {
-    return switchingAlbumToDo;
-  }
 }
