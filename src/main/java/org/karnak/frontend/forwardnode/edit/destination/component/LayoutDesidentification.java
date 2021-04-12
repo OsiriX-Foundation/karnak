@@ -28,7 +28,6 @@ import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ExternalIDProviderEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.enums.ExternalIDProviderType;
-import org.karnak.backend.service.ExternalIDProviderService;
 import org.karnak.frontend.component.ProjectDropDown;
 import org.karnak.frontend.forwardnode.edit.destination.DestinationLogic;
 import org.karnak.frontend.project.ProjectView;
@@ -53,12 +52,11 @@ public class LayoutDesidentification extends Div {
   private Select<String> extidListBox;
   private HashMap<String, ExternalIDProvider> externalIDProviderImplMap;
 
-  private ExternalIDProviderService externalIDProviderService;
+  private DestinationLogic destinationLogic;
 
-  public LayoutDesidentification(DestinationLogic destinationLogic) {
+  public LayoutDesidentification() {
     this.externalIDProviderImplMap =
         ExternalIDProviderConfig.getInstance().externalIDProviderImplMap();
-    this.externalIDProviderService = destinationLogic.getExternalIDProviderService();
   }
 
   public void init(final Binder<DestinationEntity> binder) {
@@ -198,7 +196,6 @@ public class LayoutDesidentification extends Div {
                 } else if (externalIDProviderType.equals(EXTID_IN_TAG)) {
                   return EXTID_CACHE.getValue();
                 } else if (externalIDProviderType.equals(EXTID_IMPLEMENTATION)) {
-                  // foreach impl
                   final String jarName = destination.getExternalIDProviderEntity().getJarName();
                   final ExternalIDProvider externalIDProvider =
                       externalIDProviderImplMap.get(jarName);
@@ -213,18 +210,18 @@ public class LayoutDesidentification extends Div {
             (destination, stringExternalIDType) -> {
               if (stringExternalIDType.equals(EXTID_CACHE.getValue())) {
                 final ExternalIDProviderEntity externalIDProviderEntity =
-                    externalIDProviderService.getExternalIDProvider(EXTID_CACHE, null);
+                    destinationLogic.getExteralIDProviderEntity(EXTID_CACHE, null);
                 destination.setExternalIDProviderEntity(externalIDProviderEntity);
               } else if (stringExternalIDType.equals(EXTID_IN_TAG.getValue())) {
                 final ExternalIDProviderEntity externalIDProviderEntity =
-                    externalIDProviderService.getExternalIDProvider(EXTID_IN_TAG, null);
+                    destinationLogic.getExteralIDProviderEntity(EXTID_IN_TAG, null);
                 destination.setExternalIDProviderEntity(externalIDProviderEntity);
               } else {
                 externalIDProviderImplMap.forEach(
                     (jarNameKey, externalIDProvider) -> {
                       if (externalIDProvider.getExternalIDType().equals(stringExternalIDType)) {
                         final ExternalIDProviderEntity externalIDProviderEntity =
-                            externalIDProviderService.getExternalIDProvider(
+                            destinationLogic.getExteralIDProviderEntity(
                                 EXTID_IMPLEMENTATION, jarNameKey);
                         destination.setExternalIDProviderEntity(externalIDProviderEntity);
                       }
@@ -281,5 +278,9 @@ public class LayoutDesidentification extends Div {
 
   public Select<String> getExtidListBox() {
     return extidListBox;
+  }
+
+  public void setDestinationLogic(DestinationLogic destinationLogic) {
+    this.destinationLogic = destinationLogic;
   }
 }

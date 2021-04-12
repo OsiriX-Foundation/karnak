@@ -40,9 +40,10 @@ public class FormSTOW extends VerticalLayout {
   private final FilterBySOPClassesForm filterBySOPClassesForm;
   private SwitchingAlbumsView switchingAlbumsView;
   private Checkbox activate;
+  private DestinationLogic destinationLogic;
 
-  public FormSTOW(DestinationLogic destinationLogic) {
-    this.layoutDesidentification = new LayoutDesidentification(destinationLogic);
+  public FormSTOW() {
+    this.layoutDesidentification = new LayoutDesidentification();
     this.filterBySOPClassesForm = new FilterBySOPClassesForm();
   }
 
@@ -50,6 +51,7 @@ public class FormSTOW extends VerticalLayout {
       Binder<DestinationEntity> binder, ButtonSaveDeleteCancel buttonSaveDeleteCancel) {
     setSizeFull();
     this.binder = binder;
+    this.layoutDesidentification.setDestinationLogic(destinationLogic);
     this.layoutDesidentification.init(this.binder);
     this.filterBySOPClassesForm.init(this.binder);
 
@@ -153,5 +155,9 @@ public class FormSTOW extends VerticalLayout {
 
   public FilterBySOPClassesForm getFilterBySOPClassesForm() {
     return filterBySOPClassesForm;
+  }
+
+  public void setDestinationLogic(DestinationLogic destinationLogic) {
+    this.destinationLogic = destinationLogic;
   }
 }

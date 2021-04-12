@@ -28,17 +28,25 @@ public class NewUpdateDestination extends VerticalLayout {
   private final ButtonSaveDeleteCancel buttonDestinationDICOMSaveDeleteCancel;
   private final ButtonSaveDeleteCancel buttonDestinationSTOWSaveDeleteCancel;
   private DestinationEntity currentDestinationEntity;
+  private DestinationLogic destinationLogic;
 
-  public NewUpdateDestination(DestinationLogic destinationLogic) {
+  public NewUpdateDestination() {
     setSizeFull();
 
-    this.formDICOM = new FormDICOM(destinationLogic);
-    this.formSTOW = new FormSTOW(destinationLogic);
+    this.formDICOM = new FormDICOM();
+    this.formSTOW = new FormSTOW();
+
     this.binderFormDICOM = new BeanValidationBinder<>(DestinationEntity.class);
     this.binderFormSTOW = new BeanValidationBinder<>(DestinationEntity.class);
     this.buttonDestinationDICOMSaveDeleteCancel = new ButtonSaveDeleteCancel();
     this.buttonDestinationSTOWSaveDeleteCancel = new ButtonSaveDeleteCancel();
     this.currentDestinationEntity = null;
+  }
+
+  public void init() {
+    this.formDICOM.setDestinationLogic(destinationLogic);
+    this.formSTOW.setDestinationLogic(destinationLogic);
+
     this.formDICOM.init(binderFormDICOM, buttonDestinationDICOMSaveDeleteCancel);
     this.formSTOW.init(binderFormSTOW, buttonDestinationSTOWSaveDeleteCancel);
   }
@@ -108,5 +116,9 @@ public class NewUpdateDestination extends VerticalLayout {
 
   public FormSTOW getFormSTOW() {
     return formSTOW;
+  }
+
+  public void setDestinationLogic(DestinationLogic destinationLogic) {
+    this.destinationLogic = destinationLogic;
   }
 }

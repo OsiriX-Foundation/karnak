@@ -59,6 +59,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
   private final ButtonSaveDeleteCancel buttonForwardNodeSaveDeleteCancel;
   private final NewUpdateSourceNode newUpdateSourceNode;
   private ForwardNodeEntity currentForwardNodeEntity;
+  private final ForwardNodeLogic forwardNodeLogic;
 
   /**
    * Autowired constructor
@@ -66,6 +67,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
    * @param forwardNodeLogic
    */
   public LayoutEditForwardNode(final ForwardNodeLogic forwardNodeLogic) {
+    this.forwardNodeLogic = forwardNodeLogic;
     this.projectService = forwardNodeLogic.getProjectService();
     this.sopClassUIDService = forwardNodeLogic.getSopClassUIDService();
     this.currentForwardNodeEntity = null;
@@ -73,7 +75,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
     this.tabSourcesDestination = new TabSourcesDestination();
     this.layoutDestinationsSources = new VerticalLayout();
     this.buttonForwardNodeSaveDeleteCancel = new ButtonSaveDeleteCancel();
-    this.newUpdateDestination = new NewUpdateDestination(forwardNodeLogic.getDestinationLogic());
+    this.newUpdateDestination = new NewUpdateDestination();
     this.newUpdateSourceNode = new NewUpdateSourceNode();
     this.sourceView = new SourceView(forwardNodeLogic);
     this.destinationView = new DestinationView(forwardNodeLogic);
@@ -131,6 +133,9 @@ public class LayoutEditForwardNode extends VerticalLayout {
   }
 
   private void initComponents() {
+    newUpdateDestination.setDestinationLogic(forwardNodeLogic.getDestinationLogic());
+    newUpdateDestination.init();
+
     // FormDicom
     newUpdateDestination
         .getFormDICOM()

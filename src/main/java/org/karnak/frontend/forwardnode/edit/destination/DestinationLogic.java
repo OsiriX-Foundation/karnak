@@ -46,7 +46,7 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
   @Autowired
   public DestinationLogic(
       final DestinationService destinationService,
-      ExternalIDProviderService externalIDProviderService) {
+      final ExternalIDProviderService externalIDProviderService) {
     super(new HashSet<>());
     this.destinationService = destinationService;
     this.externalIDProviderService = externalIDProviderService;
@@ -134,11 +134,8 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
     refreshAll();
   }
 
-  public ExternalIDProviderService getExternalIDProviderService() {
-    return externalIDProviderService;
-  }
-
-  public ExternalIDProviderEntity getExteralIDProviderEntity(ExternalIDProviderType externalIDProviderType, String jarName) {
+  public ExternalIDProviderEntity getExteralIDProviderEntity(
+      ExternalIDProviderType externalIDProviderType, String jarName) {
     return externalIDProviderService.getExternalIDProvider(externalIDProviderType, jarName);
   }
 }

@@ -41,9 +41,10 @@ public class FormDICOM extends VerticalLayout {
   private final LayoutDesidentification layoutDesidentification;
   private final FilterBySOPClassesForm filterBySOPClassesForm;
   private Checkbox activate;
+  private DestinationLogic destinationLogic;
 
-  public FormDICOM(DestinationLogic destinationLogic) {
-    this.layoutDesidentification = new LayoutDesidentification(destinationLogic);
+  public FormDICOM() {
+    this.layoutDesidentification = new LayoutDesidentification();
     this.filterBySOPClassesForm = new FilterBySOPClassesForm();
   }
 
@@ -51,6 +52,7 @@ public class FormDICOM extends VerticalLayout {
       Binder<DestinationEntity> binder, ButtonSaveDeleteCancel buttonSaveDeleteCancel) {
 
     this.binder = binder;
+    this.layoutDesidentification.setDestinationLogic(destinationLogic);
     this.layoutDesidentification.init(this.binder);
     this.filterBySOPClassesForm.init(this.binder);
 
@@ -156,5 +158,9 @@ public class FormDICOM extends VerticalLayout {
 
   public FilterBySOPClassesForm getFilterBySOPClassesForm() {
     return filterBySOPClassesForm;
+  }
+
+  public void setDestinationLogic(DestinationLogic destinationLogic) {
+    this.destinationLogic = destinationLogic;
   }
 }
