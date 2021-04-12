@@ -52,7 +52,6 @@ public class FormDICOM extends VerticalLayout {
       Binder<DestinationEntity> binder, ButtonSaveDeleteCancel buttonSaveDeleteCancel) {
 
     this.binder = binder;
-    this.layoutDesidentification.setDestinationLogic(destinationLogic);
     this.layoutDesidentification.init(this.binder);
     this.filterBySOPClassesForm.init(this.binder);
 

@@ -9,6 +9,9 @@
  */
 package org.karnak.frontend.forwardnode.edit;
 
+import static org.karnak.backend.enums.ExternalIDProviderType.EXTID_CACHE;
+import static org.karnak.backend.enums.ExternalIDProviderType.EXTID_IMPLEMENTATION;
+import static org.karnak.backend.enums.ExternalIDProviderType.EXTID_IN_TAG;
 import static org.karnak.backend.enums.PseudonymType.MAINZELLISTE_PID;
 
 import com.vaadin.flow.component.Component;
@@ -18,11 +21,14 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import java.util.HashSet;
 import java.util.Set;
+import org.externalid.ExternalIDProvider;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.DicomSourceNodeEntity;
+import org.karnak.backend.data.entity.ExternalIDProviderEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.data.entity.SOPClassUIDEntity;
 import org.karnak.backend.enums.DestinationType;
+import org.karnak.backend.enums.ExternalIDProviderType;
 import org.karnak.backend.enums.NodeEventType;
 import org.karnak.backend.model.NodeEvent;
 import org.karnak.backend.service.ProjectService;
@@ -109,6 +115,9 @@ public class LayoutEditForwardNode extends VerticalLayout {
         newUpdateDestination.getFormDICOM().getFilterBySOPClassesForm());
     addBindersFilterBySOPClassesForm(
         newUpdateDestination.getFormSTOW().getFilterBySOPClassesForm());
+
+    addBinderExtidListBox(newUpdateDestination.getFormSTOW().getLayoutDesidentification());
+    addBinderExtidListBox(newUpdateDestination.getFormDICOM().getLayoutDesidentification());
   }
 
   /** Add events on components */
@@ -133,9 +142,6 @@ public class LayoutEditForwardNode extends VerticalLayout {
   }
 
   private void initComponents() {
-    newUpdateDestination.setDestinationLogic(forwardNodeLogic.getDestinationLogic());
-    newUpdateDestination.init();
-
     // FormDicom
     newUpdateDestination
         .getFormDICOM()
@@ -508,5 +514,53 @@ public class LayoutEditForwardNode extends VerticalLayout {
         .getBinder()
         .forField(filterBySOPClassesForm.getFilterBySOPClassesCheckbox()) //
         .bind(DestinationEntity::isFilterBySOPClasses, DestinationEntity::setFilterBySOPClasses);
+  }
+
+  public void addBinderExtidListBox(LayoutDesidentification layoutDesidentification) {
+    layoutDesidentification.getDestinationBinder()
+        .forField(layoutDesidentification.getExtidListBox())
+        .withValidator(type -> type != null, "Choose pseudonym type\n")
+        .bind(
+            destination -> {
+              if (destination.getExternalIDProviderEntity() != null) {
+                final ExternalIDProviderType externalIDProviderType =
+                    destination.getExternalIDProviderEntity().getExternalIDProviderType();
+                if (externalIDProviderType.equals(EXTID_CACHE)) {
+                  return EXTID_CACHE.getValue();
+                } else if (externalIDProviderType.equals(EXTID_IN_TAG)) {
+                  return EXTID_CACHE.getValue();
+                } else if (externalIDProviderType.equals(EXTID_IMPLEMENTATION)) {
+                  final String jarName = destination.getExternalIDProviderEntity().getJarName();
+                  final ExternalIDProvider externalIDProvider =
+                      layoutDesidentification.getExternalIDProviderImplMap().get(jarName);
+                  return externalIDProvider.getExternalIDType();
+                } else {
+                  return EXTID_IN_TAG.getValue();
+                }
+              } else {
+                return null;
+              }
+            },
+            (destination, stringExternalIDType) -> {
+              if (stringExternalIDType.equals(EXTID_CACHE.getValue())) {
+                final ExternalIDProviderEntity externalIDProviderEntity =
+                    forwardNodeLogic.getDestinationLogic().getExteralIDProviderEntity(EXTID_CACHE, null);
+                destination.setExternalIDProviderEntity(externalIDProviderEntity);
+              } else if (stringExternalIDType.equals(EXTID_IN_TAG.getValue())) {
+                final ExternalIDProviderEntity externalIDProviderEntity =
+                    forwardNodeLogic.getDestinationLogic().getExteralIDProviderEntity(EXTID_IN_TAG, null);
+                destination.setExternalIDProviderEntity(externalIDProviderEntity);
+              } else {
+                layoutDesidentification.getExternalIDProviderImplMap().forEach(
+                    (jarNameKey, externalIDProvider) -> {
+                      if (externalIDProvider.getExternalIDType().equals(stringExternalIDType)) {
+                        final ExternalIDProviderEntity externalIDProviderEntity =
+                            forwardNodeLogic.getDestinationLogic().getExteralIDProviderEntity(
+                                EXTID_IMPLEMENTATION, jarNameKey);
+                        destination.setExternalIDProviderEntity(externalIDProviderEntity);
+                      }
+                    });
+              }
+            });
   }
 }

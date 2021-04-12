@@ -41,11 +41,6 @@ public class NewUpdateDestination extends VerticalLayout {
     this.buttonDestinationDICOMSaveDeleteCancel = new ButtonSaveDeleteCancel();
     this.buttonDestinationSTOWSaveDeleteCancel = new ButtonSaveDeleteCancel();
     this.currentDestinationEntity = null;
-  }
-
-  public void init() {
-    this.formDICOM.setDestinationLogic(destinationLogic);
-    this.formSTOW.setDestinationLogic(destinationLogic);
 
     this.formDICOM.init(binderFormDICOM, buttonDestinationDICOMSaveDeleteCancel);
     this.formSTOW.init(binderFormSTOW, buttonDestinationSTOWSaveDeleteCancel);
@@ -116,9 +111,5 @@ public class NewUpdateDestination extends VerticalLayout {
 
   public FormSTOW getFormSTOW() {
     return formSTOW;
-  }
-
-  public void setDestinationLogic(DestinationLogic destinationLogic) {
-    this.destinationLogic = destinationLogic;
   }
 }

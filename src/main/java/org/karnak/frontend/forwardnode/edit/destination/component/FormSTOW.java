@@ -51,7 +51,6 @@ public class FormSTOW extends VerticalLayout {
       Binder<DestinationEntity> binder, ButtonSaveDeleteCancel buttonSaveDeleteCancel) {
     setSizeFull();
     this.binder = binder;
-    this.layoutDesidentification.setDestinationLogic(destinationLogic);
     this.layoutDesidentification.init(this.binder);
     this.filterBySOPClassesForm.init(this.binder);
 
