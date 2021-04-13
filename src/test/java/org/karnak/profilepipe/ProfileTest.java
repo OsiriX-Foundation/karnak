@@ -511,8 +511,8 @@ class ProfileTest {
     assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
   }
 
-  //  @Test
-  void KprivateTagsAndXRestProfile() {
+  @Test
+  void KprivateTagsAndXOtherProfile() {
     final Attributes dataset1 = new Attributes();
     final Attributes dataset2 = new Attributes();
 
@@ -529,23 +529,35 @@ class ProfileTest {
     dataset1.setString(
         0x70534205, VR.LO, "Private TagEntity"); // it's a private tag but it's not in scope
 
+    dataset2.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
+    dataset2.setString(Tag.StudyInstanceUID, VR.UI, "12345");
+    dataset2.setString(Tag.PatientAge, VR.AS, "069Y");
+    dataset2.setString(Tag.PatientBirthDate, VR.DA, "20080822");
+    dataset2.setString(Tag.AcquisitionDateTime, VR.DT, "20080729131503");
+    dataset2.setString(Tag.InstanceCreationTime, VR.TM, "131735.000000");
     dataset2.setString(0x70531200, VR.LO, "Private TagEntity");
     dataset2.setString(0x70534200, VR.LO, "Private TagEntity");
     dataset2.setString(0x70531209, VR.LO, "Private TagEntity");
     dataset2.setString(0x70534209, VR.LO, "Private TagEntity");
+    dataset2.remove(Tag.PatientName);
+    dataset2.remove(Tag.StudyInstanceUID);
+    dataset2.remove(Tag.PatientAge);
+    dataset2.remove(Tag.PatientBirthDate);
+    dataset2.remove(Tag.AcquisitionDateTime);
+    dataset2.remove(Tag.InstanceCreationTime);
 
     final ProfileEntity profileEntity = new ProfileEntity("TEST", "0.9.1", "0.9.1", "DPA");
     final ProfileElementEntity profileElementEntity =
         new ProfileElementEntity(
-            "Remove tag", "action.on.privatetags", null, "K", null, 0, profileEntity);
+            "Keep tag", "action.on.privatetags", null, "K", null, 0, profileEntity);
     profileElementEntity.addIncludedTag(new IncludedTagEntity("(7053,xx00)", profileElementEntity));
     profileElementEntity.addIncludedTag(new IncludedTagEntity("(7053,xx09)", profileElementEntity));
     profileEntity.addProfilePipe(profileElementEntity);
     final ProfileElementEntity profileElementEntity2 =
         new ProfileElementEntity(
-            "Replace by null", "action.on.specific.tags", null, "X", null, 0, profileEntity);
+            "Remove tag", "action.on.specific.tags", null, "X", null, 0, profileEntity);
     profileElementEntity2.addIncludedTag(
-        new IncludedTagEntity("(xxxx,xxxx)", profileElementEntity));
+        new IncludedTagEntity("(xxxx,xxxx)", profileElementEntity2));
     profileEntity.addProfilePipe(profileElementEntity2);
     Profile profile = new Profile(profileEntity);
     profile.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
