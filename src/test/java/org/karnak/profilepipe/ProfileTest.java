@@ -482,8 +482,8 @@ class ProfileTest {
     assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
   }
 
-  //  @Test
-  void XZactionTagsProfile() {
+  @Test
+  void XandZTagsProfile() {
     final Attributes dataset1 = new Attributes();
     final Attributes dataset2 = new Attributes();
 
@@ -493,6 +493,8 @@ class ProfileTest {
 
     dataset2.setNull(Tag.PatientName, VR.PN);
     dataset2.setNull(Tag.StudyInstanceUID, VR.UI);
+    dataset2.setString(Tag.PatientAge, VR.AS, "075Y");
+    dataset2.remove(Tag.PatientAge);
 
     final ProfileEntity profileEntity = new ProfileEntity("TEST", "0.9.1", "0.9.1", "DPA");
     final ProfileElementEntity profileElementEntity =
@@ -502,9 +504,9 @@ class ProfileTest {
     profileEntity.addProfilePipe(profileElementEntity);
     final ProfileElementEntity profileElementEntity2 =
         new ProfileElementEntity(
-            "Replace by null", "action.on.specific.tags", null, "Z", null, 0, profileEntity);
+            "Replace by null", "action.on.specific.tags", null, "Z", null, 1, profileEntity);
     profileElementEntity2.addIncludedTag(
-        new IncludedTagEntity("(xxxx,xxxx)", profileElementEntity));
+        new IncludedTagEntity("(xxxx,xxxx)", profileElementEntity2));
     profileEntity.addProfilePipe(profileElementEntity2);
     Profile profile = new Profile(profileEntity);
     profile.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
@@ -555,7 +557,7 @@ class ProfileTest {
     profileEntity.addProfilePipe(profileElementEntity);
     final ProfileElementEntity profileElementEntity2 =
         new ProfileElementEntity(
-            "Remove tag", "action.on.specific.tags", null, "X", null, 0, profileEntity);
+            "Remove tag", "action.on.specific.tags", null, "X", null, 1, profileEntity);
     profileElementEntity2.addIncludedTag(
         new IncludedTagEntity("(xxxx,xxxx)", profileElementEntity2));
     profileEntity.addProfilePipe(profileElementEntity2);
