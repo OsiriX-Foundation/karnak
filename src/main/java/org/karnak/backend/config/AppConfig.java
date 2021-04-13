@@ -47,7 +47,6 @@ public class AppConfig {
   private String karnakpassword;
   private final ProfileRepo profileRepo;
   private final ProfilePipeService profilePipeService;
-  private static final String USER_PWD_DEFAULT = "admin";
 
   @Autowired
   public AppConfig(final ProfileRepo profileRepo, final ProfilePipeService profilePipeService) {
@@ -81,7 +80,7 @@ public class AppConfig {
   }
 
   public String getKarnakadmin() {
-    return karnakadmin != null ? karnakadmin : USER_PWD_DEFAULT;
+    return karnakadmin != null ? karnakadmin : "";
   }
 
   public void setKarnakadmin(String karnakadmin) {
@@ -89,7 +88,7 @@ public class AppConfig {
   }
 
   public String getKarnakpassword() {
-    return karnakpassword != null ? karnakpassword : USER_PWD_DEFAULT;
+    return karnakpassword != null ? karnakpassword : "";
   }
 
   public void setKarnakpassword(String karnakpassword) {
