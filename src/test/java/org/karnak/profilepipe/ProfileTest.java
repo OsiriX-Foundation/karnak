@@ -245,7 +245,7 @@ class ProfileTest {
     assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
   }
 
-  //  @Test
+  @Test
   void propagationInSequence3() {
     final Attributes dataset1 = new Attributes();
     final Attributes dataset2 = new Attributes();
@@ -275,6 +275,8 @@ class ProfileTest {
     dataset2.setString(Tag.PatientAge, VR.AS, "076Y");
     Sequence dicomElemSeq2 = dataset2.newSequence(Tag.CTExposureSequence, 1);
     final Attributes datasetSeq2 = new Attributes();
+    datasetSeq2.setDouble(Tag.EstimatedDoseSaving, VR.FD, 0d);
+    datasetSeq2.remove(Tag.EstimatedDoseSaving);
     datasetSeq2.setDouble(Tag.ExposureTimeInms, VR.FD, 2.099d);
     datasetSeq2.setDouble(Tag.XRayTubeCurrentInmA, VR.FD, 381d);
     datasetSeq2.setDouble(Tag.ExposureInmAs, VR.FD, 800d);
@@ -299,19 +301,19 @@ class ProfileTest {
 
     final ProfileElementEntity profileElementEntity2 =
         new ProfileElementEntity(
-            "Remove tag", "action.on.specific.tags", null, "X", null, 0, profileEntity);
+            "Remove tag", "action.on.specific.tags", null, "X", null, 1, profileEntity);
     profileElementEntity2.addIncludedTag(
         new IncludedTagEntity("(0018,9324)", profileElementEntity2));
 
     final ProfileElementEntity profileElementEntity3 =
         new ProfileElementEntity(
-            "Keep tag", "action.on.specific.tags", null, "K", null, 0, profileEntity);
+            "Keep tag", "action.on.specific.tags", null, "K", null, 2, profileEntity);
     profileElementEntity3.addIncludedTag(
         new IncludedTagEntity("(0018,9321)", profileElementEntity3));
 
     final ProfileElementEntity profileElementEntity4 =
         new ProfileElementEntity(
-            "Replace null", "action.on.specific.tags", null, "Z", null, 0, profileEntity);
+            "Replace null", "action.on.specific.tags", null, "Z", null, 3, profileEntity);
     profileElementEntity4.addIncludedTag(
         new IncludedTagEntity("(0018,9330)", profileElementEntity2));
 
