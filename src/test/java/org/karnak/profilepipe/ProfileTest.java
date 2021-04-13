@@ -101,7 +101,7 @@ class ProfileTest {
     assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
   }
 
-  //  @Test
+  @Test
   void propagationInSequence1() {
     final Attributes dataset1 = new Attributes();
     final Attributes dataset2 = new Attributes();
@@ -122,6 +122,20 @@ class ProfileTest {
     dicomElemSeq12.add(datasetSeq12);
     dicomElemSeq1.add(datasetSeq1);
 
+    dataset2.setString(Tag.PatientAge, VR.AS, "075Y");
+    dataset2.setString(Tag.StudyInstanceUID, VR.UI, "12345");
+    dataset2.setString(Tag.PatientID, VR.LO, "10987654321");
+    dataset2.setString(Tag.PatientName, VR.PN, "toto");
+    dataset2.setString(Tag.PatientBirthDate, VR.DA, "20200101");
+    dataset2.setString(Tag.PatientSex, VR.CS, "M");
+    dataset2.setString(Tag.IssuerOfPatientID, VR.LO, "12345678910");
+    dataset2.remove(Tag.PatientAge);
+    dataset2.remove(Tag.StudyInstanceUID);
+    dataset2.remove(Tag.PatientID);
+    dataset2.remove(Tag.PatientName);
+    dataset2.remove(Tag.PatientBirthDate);
+    dataset2.remove(Tag.PatientSex);
+    dataset2.remove(Tag.IssuerOfPatientID);
     Sequence dicomElemSeq2 = dataset2.newSequence(Tag.GroupOfPatientsIdentificationSequence, 1);
     final Attributes datasetSeq2 = new Attributes();
     datasetSeq2.setString(Tag.PatientID, VR.LO, "12345");
@@ -139,12 +153,12 @@ class ProfileTest {
         new IncludedTagEntity("(0010,1010)", profileElementEntity1));
     final ProfileElementEntity profileElementEntity2 =
         new ProfileElementEntity(
-            "Keep tag", "action.on.specific.tags", null, "K", null, 0, profileEntity);
+            "Keep tag", "action.on.specific.tags", null, "K", null, 1, profileEntity);
     profileElementEntity2.addIncludedTag(
         new IncludedTagEntity("(0010,0027)", profileElementEntity2));
     final ProfileElementEntity profileElementEntity3 =
         new ProfileElementEntity(
-            "Remove tag", "action.on.specific.tags", null, "X", null, 0, profileEntity);
+            "Remove tag", "action.on.specific.tags", null, "X", null, 2, profileEntity);
     profileElementEntity3.addIncludedTag(
         new IncludedTagEntity("(xxxx,xxxx)", profileElementEntity3));
 
