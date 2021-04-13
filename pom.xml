@@ -172,16 +172,16 @@
               <type>so</type>
               <version>${weasis.opencv.native.version}</version>
             </artifactItem>
-            <artifactItem>
-              <artifactId>libopencv_java</artifactId>
-              <classifier>macosx-x86-64</classifier>
-              <destFileName>libopencv_java.jnilib</destFileName>
-              <groupId>org.weasis.thirdparty.org.opencv</groupId>
-              <outputDirectory>${project.build.directory}/native-lib/lib/macosx-x86-64
-              </outputDirectory>
-              <type>jnilib</type>
-              <version>${weasis.opencv.native.version}</version>
-            </artifactItem>
+<!--            <artifactItem>-->
+<!--              <artifactId>libopencv_java</artifactId>-->
+<!--              <classifier>macosx-x86-64</classifier>-->
+<!--              <destFileName>libopencv_java.jnilib</destFileName>-->
+<!--              <groupId>org.weasis.thirdparty.org.opencv</groupId>-->
+<!--              <outputDirectory>${project.build.directory}/native-lib/lib/macosx-x86-64-->
+<!--              </outputDirectory>-->
+<!--              <type>jnilib</type>-->
+<!--              <version>${weasis.opencv.native.version}</version>-->
+<!--            </artifactItem>-->
             <artifactItem>
               <artifactId>opencv_java</artifactId>
               <classifier>windows-x86-64</classifier>
