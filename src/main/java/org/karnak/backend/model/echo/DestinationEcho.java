@@ -23,6 +23,9 @@ public class DestinationEcho {
   // Status
   private int status;
 
+  /** Constructor without parameter */
+  public DestinationEcho() {}
+
   /**
    * Constructor with parameters
    *

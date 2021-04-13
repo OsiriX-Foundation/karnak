@@ -31,7 +31,6 @@ public class SecurityInMemoryConfig extends WebSecurityConfigurerAdapter {
 
   private static final String LOGIN_FAILURE_URL = "/login?error";
   private static final String LOGIN_URL = "/login";
-  private static final String USER_PWD_DEFAULT = "admin";
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
@@ -80,15 +79,8 @@ public class SecurityInMemoryConfig extends WebSecurityConfigurerAdapter {
   protected void configure(AuthenticationManagerBuilder auth) throws Exception {
     // Configure users and roles in memory
     auth.inMemoryAuthentication()
-        .withUser(
-            AppConfig.getInstance().getKarnakadmin() != null
-                ? AppConfig.getInstance().getKarnakadmin()
-                : USER_PWD_DEFAULT)
-        .password(
-            "{noop}"
-                + (AppConfig.getInstance().getKarnakpassword() != null
-                    ? AppConfig.getInstance().getKarnakpassword()
-                    : USER_PWD_DEFAULT))
+        .withUser(AppConfig.getInstance().getKarnakadmin())
+        .password("{noop}" + AppConfig.getInstance().getKarnakpassword())
         .roles(SecurityRole.ADMIN_ROLE.getType(), SecurityRole.USER_ROLE.getType());
   }
 
