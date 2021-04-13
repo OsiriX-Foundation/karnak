@@ -40,18 +40,14 @@ class ProfileTest {
     defaultHMAC = new HMAC(HMAC_KEY);
   }
 
-  //  @Test
-  void propagationInSequenceDeletePatientIDButNotInSequence() {
+  @Test
+  void xPatientIDWithSequenceProfile() {
     final Attributes dataset1 = new Attributes();
     final Attributes dataset2 = new Attributes();
 
     dataset1.setString(Tag.PatientAge, VR.AS, "075Y");
     dataset1.setString(Tag.StudyInstanceUID, VR.UI, "12345");
     dataset1.setString(Tag.PatientID, VR.LO, "10987654321");
-    dataset1.setString(Tag.PatientName, VR.PN, "toto");
-    dataset1.setString(Tag.PatientBirthDate, VR.DA, "20200101");
-    dataset1.setString(Tag.PatientSex, VR.CS, "M");
-    dataset1.setString(Tag.IssuerOfPatientID, VR.LO, "12345678910");
     Sequence dicomElemSeq1 = dataset1.newSequence(Tag.GroupOfPatientsIdentificationSequence, 1);
     final Attributes datasetSeq1 = new Attributes();
     datasetSeq1.setString(Tag.PatientID, VR.LO, "12345");
@@ -63,13 +59,12 @@ class ProfileTest {
 
     dataset2.setString(Tag.PatientAge, VR.AS, "075Y");
     dataset2.setString(Tag.StudyInstanceUID, VR.UI, "12345");
-    dataset2.setString(Tag.PatientName, VR.PN, "toto");
-    dataset2.setString(Tag.PatientBirthDate, VR.DA, "20200101");
-    dataset2.setString(Tag.PatientSex, VR.CS, "M");
-    dataset2.setString(Tag.IssuerOfPatientID, VR.LO, "12345678910");
+    dataset2.setString(Tag.PatientID, VR.LO, "10987654321");
+    dataset2.remove(Tag.PatientID);
     Sequence dicomElemSeq2 = dataset2.newSequence(Tag.GroupOfPatientsIdentificationSequence, 1);
     final Attributes datasetSeq2 = new Attributes();
     datasetSeq2.setString(Tag.PatientID, VR.LO, "12345");
+    datasetSeq2.remove(Tag.PatientID);
     Sequence dicomElemSeq22 = datasetSeq2.newSequence(Tag.IssuerOfPatientIDQualifiersSequence, 1);
     final Attributes datasetSeq22 = new Attributes();
     datasetSeq22.setString(Tag.UniversalEntityID, VR.UT, "UT");
@@ -385,7 +380,7 @@ class ProfileTest {
   }
 
   @Test
-  void XactionTagsProfile() {
+  void xProfile() {
     final Attributes dataset1 = new Attributes();
     final Attributes dataset2 = new Attributes();
 
@@ -408,7 +403,7 @@ class ProfileTest {
   }
 
   @Test
-  void ZactionTagsProfile() {
+  void zProfile() {
     final Attributes dataset1 = new Attributes();
     final Attributes dataset2 = new Attributes();
 
@@ -431,8 +426,8 @@ class ProfileTest {
     assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
   }
 
-  //  @Test
-  void shiftDateProfileOptionShift() {
+  @Test
+  void shiftDateProfile() {
     // SHIFT days: 365, seconds:60
     final Attributes dataset1 = new Attributes();
     final Attributes dataset2 = new Attributes();
@@ -449,7 +444,7 @@ class ProfileTest {
     dataset2.setString(Tag.PatientAge, VR.AS, "070Y");
     dataset2.setString(Tag.PatientBirthDate, VR.DA, "20070823");
     dataset2.setString(Tag.AcquisitionDateTime, VR.DT, "20070730131403.000000");
-    dataset2.setString(Tag.InstanceCreationTime, VR.TM, "131635.000000");
+    dataset2.setString(Tag.InstanceCreationTime, VR.TM, "131635");
 
     ProfileEntity profileEntity = new ProfileEntity("TEST", "0.9.1", "0.9.1", "DPA");
     ProfileElementEntity profileElementEntity =
@@ -470,8 +465,8 @@ class ProfileTest {
     assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
   }
 
-  //  @Test
-  void shiftDateProfileOptionShiftRange() {
+  @Test
+  void shiftRangeProfile() {
     // SHIFT range with hmackey: HmacKeyToTEST -> days: 57, seconds: 9
     final String projectSecret = "xN[LtKL!H5RUuQ}6";
     byte[] HMAC_KEY = {85, 55, -40, -90, -102, 57, -5, -89, -77, -86, 22, -64, 89, -36, 2, 50};
@@ -493,7 +488,7 @@ class ProfileTest {
     dataset2.setString(Tag.PatientAge, VR.AS, "069Y");
     dataset2.setString(Tag.PatientBirthDate, VR.DA, "20080626");
     dataset2.setString(Tag.AcquisitionDateTime, VR.DT, "20080602131454.000000");
-    dataset2.setString(Tag.InstanceCreationTime, VR.TM, "131726.000000");
+    dataset2.setString(Tag.InstanceCreationTime, VR.TM, "131726");
 
     ProfileEntity profileEntity = new ProfileEntity("TEST", "0.9.1", "0.9.1", "DPA");
     ProfileElementEntity profileElementEntity =
@@ -517,7 +512,7 @@ class ProfileTest {
   }
 
   @Test
-  void XandZTagsProfile() {
+  void xandZProfile() {
     final Attributes dataset1 = new Attributes();
     final Attributes dataset2 = new Attributes();
 
@@ -548,7 +543,7 @@ class ProfileTest {
   }
 
   @Test
-  void KprivateTagsAndXOtherProfile() {
+  void kPrivateTagsAndXProfile() {
     final Attributes dataset1 = new Attributes();
     final Attributes dataset2 = new Attributes();
 
@@ -602,7 +597,6 @@ class ProfileTest {
 
   @Test
   void expressionProfile() {
-
     final Attributes dataset1 = new Attributes();
     final Attributes dataset2 = new Attributes();
 
@@ -626,54 +620,4 @@ class ProfileTest {
     profile.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
     assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
   }
-
-  /*
-  //#######################   TEST getResultCondition ############################################
-  @ParameterizedTest
-  @ValueSource(strings = {"tag == (0010,0010) and stringValue == 'CARDIX'", "tag == (0010,00xx)",
-          "tag == 0010,00x0) and stringValue == 'CARDIX'", "tag == (00x0,0010", "tag == 001x00x0", "tag == (00x0,0010 and vr == #VR.PN"})
-  void getResultConditionTrue1(String input){
-      final ExprDCMElem exprDCMElem1 = new ExprDCMElem(TagUtils.intFromHexString("00100010"), VR.PN, "CARDIX");
-      assertTrue((Boolean) ExpressionResult.get(input, exprDCMElem1, Boolean.class)); // generate an exception
-  }
-
-  @ParameterizedTest
-  @ValueSource(strings = {"tag == (00x0,0020) and tag == #TagEntity.PatientID", "tag == 001xxx20 or #TagEntity.PatientName",
-          "tag <= 2096928 and tag >= 1048608", "tag <= 001FFF20 and tag >= 00100020", "tag < 1048609",
-          "tag == (00x0,0020) and tag == #TagEntity.PatientID and vr == #VR.AE"})
-  void getResultConditionTrue2(String input){
-      final ExprDCMElem exprDCMElem2 = new ExprDCMElem(TagUtils.intFromHexString("00100020"), VR.AE, "AE_TITLE"); //tag decimal = 1048608
-      assertTrue((Boolean) ExpressionResult.get(input, exprDCMElem2, Boolean.class)); // generate an exception
-  }
-
-  @ParameterizedTest
-  @ValueSource(strings = {"tag == 02100220)", "tag == (02100220 and vr == #VR.DA", "tag == 0210,0220 and stringValue == '1M'",
-          "tag == 0210,0220 and stringValue == '1M' and vr == #VR.DA", "tag == 0210,0220)"})
-  void getResultConditionTrue3(String input){
-      final ExprDCMElem exprDCMElem3 = new ExprDCMElem(TagUtils.intFromHexString("02100220"), VR.DA, "1M");
-      assertTrue((Boolean) ExpressionResult.get(input, exprDCMElem3, Boolean.class)); // generate an exception
-  }
-
-  @ParameterizedTest
-  @ValueSource(strings = {"tag == (0010,0010) and stringValue == 'PANORAMIX'", "tag == 2222,00x0) and stringValue == 'CARDIX'",
-          "tag == (00x0,0010 and vr == #VR.AE", "tag == 1" })
-  void getResultConditionFalse1(String input){
-      final ExprDCMElem exprDCMElem1 = new ExprDCMElem(TagUtils.intFromHexString("00100010"), VR.PN, "CARDIX");
-      assertFalse((Boolean) ExpressionResult.get(input, exprDCMElem1, Boolean.class)); // generate an exception
-  }
-
-  @ParameterizedTest
-  @ValueSource(strings = {"tag == (00x0,0020) and tag == #TagEntity.PatientName", "tag == (0010,0010) or tag == #TagEntity.PatientName", "tag < 1048608" })
-  void getResultConditionFalse2(String input){
-      final ExprDCMElem exprDCMElem2 = new ExprDCMElem(TagUtils.intFromHexString("00100020"), VR.AE, "AE_TITLE"); //tag decimal = 1048608
-      assertFalse((Boolean) ExpressionResult.get(input, exprDCMElem2, Boolean.class)); // generate an exception
-  }
-
-  @ParameterizedTest
-  @ValueSource(strings = {"tag == 12100220)", "tag == 12100220)", "tag == 0210,0220 and stringValue == '1'", "tag == 2210,0220 and stringValue == '1' and vr == #VR.PN"})
-  void getResultConditionFalse3(String input){
-      final ExprDCMElem exprDCMElem3 = new ExprDCMElem(TagUtils.intFromHexString("02100220"), VR.DA, "1M");
-      assertFalse((Boolean) ExpressionResult.get(input, exprDCMElem3, Boolean.class)); // generate an exception
-  }
-  */
 }
