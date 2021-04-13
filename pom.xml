@@ -34,7 +34,7 @@
     <springframework.version>2.4.0</springframework.version>
     <vaadin.version>17.0.10</vaadin.version>
     <weasis-dicom-tools.version>5.23.2-IMG-RELEASE</weasis-dicom-tools.version>
-    <weasis.opencv.native.version>4.5.0-dcm</weasis.opencv.native.version>
+    <weasis.opencv.native.version>4.5.1-dcm</weasis.opencv.native.version>
     <jacoco-maven-plugin.version>0.8.6</jacoco-maven-plugin.version>
     <sonar-maven-plugin.version>3.8.0.2131</sonar-maven-plugin.version>
     <sonar.java.source>${java.version}</sonar.java.source>
@@ -67,14 +67,6 @@
     <repository>
       <id>mvn-repo-master</id>
       <url>https://raw.github.com/nroduit/mvn-repo/master/</url>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>always</updatePolicy>
-      </snapshots>
-      <releases>
-        <enabled>true</enabled>
-        <updatePolicy>always</updatePolicy>
-      </releases>
     </repository>
     <repository>
       <id>www.dcm4che.org</id>
