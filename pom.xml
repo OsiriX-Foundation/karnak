@@ -40,14 +40,27 @@
     <sonar.java.source>${java.version}</sonar.java.source>
     <sonar.java.target>${java.version}</sonar.java.target>
     <sonar.projectKey>karnak</sonar.projectKey>
-    <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/target/site/jacoco/jacoco.xml
-    </sonar.coverage.jacoco.xmlReportPaths>
+    <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
     <h2.version>1.4.200</h2.version>
     <junit.jupiter.version>5.0.3</junit.jupiter.version>
     <mockito.version>3.9.0</mockito.version>
     <springdoc.version>1.5.6</springdoc.version>
   </properties>
+
+  <!-- Distribution management for releases/snapshots -->
+  <distributionManagement>
+    <repository>
+      <id>dsi-releases</id>
+      <name>Nexus3-hug - release</name>
+      <url>http://nxrm.hcuge.ch:8091/repository/maven-releases/</url>
+    </repository>
+    <snapshotRepository>
+      <id>dsi-snapshots</id>
+      <name>Nexus3-hug - snapshot</name>
+      <url>http://nxrm.hcuge.ch:8091/repository/maven-snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
 
   <!-- Repositories -->
   <repositories>
@@ -173,26 +186,6 @@
               <type>so</type>
               <version>${weasis.opencv.native.version}</version>
             </artifactItem>
-            <!--            <artifactItem>-->
-            <!--              <artifactId>libopencv_java</artifactId>-->
-            <!--              <classifier>macosx-x86-64</classifier>-->
-            <!--              <destFileName>libopencv_java.jnilib</destFileName>-->
-            <!--              <groupId>org.weasis.thirdparty.org.opencv</groupId>-->
-            <!--              <outputDirectory>${project.build.directory}/native-lib/lib/macosx-x86-64-->
-            <!--              </outputDirectory>-->
-            <!--              <type>jnilib</type>-->
-            <!--              <version>${weasis.opencv.native.version}</version>-->
-            <!--            </artifactItem>-->
-            <!--            <artifactItem>-->
-            <!--              <artifactId>opencv_java</artifactId>-->
-            <!--              <classifier>windows-x86-64</classifier>-->
-            <!--              <destFileName>opencv_java.dll</destFileName>-->
-            <!--              <groupId>org.weasis.thirdparty.org.opencv</groupId>-->
-            <!--              <outputDirectory>${project.build.directory}/native-lib/lib/windows-x86-64-->
-            <!--              </outputDirectory>-->
-            <!--              <type>dll</type>-->
-            <!--              <version>${weasis.opencv.native.version}</version>-->
-            <!--            </artifactItem>-->
           </artifactItems>
           <outputDirectory>${project.build.directory}</outputDirectory>
         </configuration>

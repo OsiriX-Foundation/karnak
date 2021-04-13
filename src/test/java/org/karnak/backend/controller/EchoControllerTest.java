@@ -56,8 +56,14 @@ class EchoControllerTest {
   void when_data_found_should_retrieve_status_destinations() throws Exception {
     // Init data
     List<DestinationEcho> destinationEchos = new ArrayList<>();
-    DestinationEcho destinationEchoDicom = new DestinationEcho("aet", null, 111);
-    DestinationEcho destinationEchoStow = new DestinationEcho(null, "http://test.com", 222);
+    DestinationEcho destinationEchoDicom = new DestinationEcho();
+    destinationEchoDicom.setAet("aet");
+    destinationEchoDicom.setStatus(111);
+    destinationEchoDicom.setUrl(null);
+    DestinationEcho destinationEchoStow = new DestinationEcho();
+    destinationEchoStow.setAet(null);
+    destinationEchoStow.setStatus(222);
+    destinationEchoStow.setUrl("http://test.com");
     destinationEchos.add(destinationEchoDicom);
     destinationEchos.add(destinationEchoStow);
 
