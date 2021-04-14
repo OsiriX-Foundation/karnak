@@ -529,17 +529,17 @@ public class LayoutEditForwardNode extends VerticalLayout {
                   final String jarName = destination.getExternalIDProviderEntity().getJarName();
                   final ExternalIDProvider externalIDProvider =
                       layoutDesidentification.getExternalIDProviderImplMap().get(jarName);
-                  return externalIDProvider.getExternalIDType();
+                  return externalIDProvider.getDescription();
                 } else {
-                  return externalIDProviderType.getSentence();
+                  return externalIDProviderType.getDescription();
                 }
               } else {
                 return null;
               }
             },
-            (destination, sentenceSelected) -> {
+            (destination, descriptionSelected) -> {
               final ExternalIDProviderType externalIDProviderTypeSelected =
-                  ExternalIDProviderUtil.getType(sentenceSelected);
+                  ExternalIDProviderUtil.getType(descriptionSelected);
               if (externalIDProviderTypeSelected != null) {
                 final ExternalIDProviderEntity externalIDProviderEntity =
                     forwardNodeLogic
@@ -548,10 +548,10 @@ public class LayoutEditForwardNode extends VerticalLayout {
                 destination.setExternalIDProviderEntity(externalIDProviderEntity);
               } else {
                 final ExternalIDProviderEntity externalIDProviderEntity =
-                    ExternalIDProviderUtil.getExternalIDProviderEntityWithSentence(
+                    ExternalIDProviderUtil.getExternalIDProviderEntityWithDescription(
                         forwardNodeLogic.getDestinationLogic(),
                         layoutDesidentification,
-                        sentenceSelected);
+                        descriptionSelected);
                 if (externalIDProviderEntity != null) {
                   destination.setExternalIDProviderEntity(externalIDProviderEntity);
                 } else {

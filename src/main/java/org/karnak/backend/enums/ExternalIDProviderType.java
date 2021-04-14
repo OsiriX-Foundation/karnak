@@ -16,16 +16,16 @@ public enum ExternalIDProviderType {
   EXTID_IN_TAG("Pseudonym is in a DICOM tag", true),
   EXTID_PROVIDER_IMPLEMENTATION("", false);
 
-  private final String sentence;
+  private final String description;
   private final boolean byDefault;
 
-  ExternalIDProviderType(String sentence, boolean byDefault) {
-    this.sentence = sentence;
+  ExternalIDProviderType(String description, boolean byDefault) {
+    this.description = description;
     this.byDefault = byDefault;
   }
 
-  public String getSentence() {
-    return sentence;
+  public String getDescription() {
+    return description;
   }
 
   public boolean isByDefault() {

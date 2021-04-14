@@ -22,16 +22,16 @@ import org.karnak.backend.service.ExternalIDProviderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.event.EventListener;
 
 @Configuration
 public class ExternalIDProviderConfig {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ExternalIDProviderConfig.class);
 
+  private static String EXTERNALID_PROVIDERS_DIRECTORY = "/externalid-providers";
+  private static String CLASH_PATH = "org.karnak.ExternalIDImpl";
   private static ExternalIDProviderConfig instance;
   private HashMap<String, ExternalIDProvider> externalIDProviderImplMap;
   private ExternalIDProviderService externalIDProviderService;
@@ -71,23 +71,6 @@ public class ExternalIDProviderConfig {
     }
   }
 
-  @EventListener(ApplicationReadyEvent.class)
-  public void setExternalIDProviderByDefault() {
-    if (!externalIDProviderService.externalIDProviderTypeExist(
-        ExternalIDProviderType.EXTID_IN_CACHE)) {
-      final ExternalIDProviderEntity newExternalIDProviderEntity =
-          new ExternalIDProviderEntity(true, ExternalIDProviderType.EXTID_IN_CACHE, null);
-      externalIDProviderService.saveExternalIDProvider(newExternalIDProviderEntity);
-    }
-
-    if (!externalIDProviderService.externalIDProviderTypeExist(
-        ExternalIDProviderType.EXTID_IN_TAG)) {
-      final ExternalIDProviderEntity newExternalIDProviderEntity =
-          new ExternalIDProviderEntity(true, ExternalIDProviderType.EXTID_IN_TAG, null);
-      externalIDProviderService.saveExternalIDProvider(newExternalIDProviderEntity);
-    }
-  }
-
   private void addExternalIDProviderImplInDb(String jarName) {
     if (!externalIDProviderService.jarNameExist(jarName)) {
       final ExternalIDProviderEntity newExternalIDProviderEntity =
@@ -99,9 +82,9 @@ public class ExternalIDProviderConfig {
 
   @Bean
   public HashMap<String, ExternalIDProvider> externalIDProviderImplMap() {
-    loadExternalIDImplClass("/externalid_providers", "org.karnak.externalid.Implementation");
+    loadExternalIDImplClass(EXTERNALID_PROVIDERS_DIRECTORY, CLASH_PATH);
     externalIDProviderImplMap.forEach(
-        (key, externalIDProvider) -> LOGGER.warn(externalIDProvider.getExternalIDType()));
+        (key, externalIDProvider) -> LOGGER.warn(externalIDProvider.getDescription()));
     return externalIDProviderImplMap;
   }
 }

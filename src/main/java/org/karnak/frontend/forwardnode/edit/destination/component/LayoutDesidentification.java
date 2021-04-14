@@ -96,15 +96,15 @@ public class LayoutDesidentification extends Div {
     extidListBox.getStyle().set("right", "0px");
     final List<String> externalIDProviderTypeSentenceList = new ArrayList<>();
 
-    for (ExternalIDProviderType type : ExternalIDProviderType.values()) {
-      if (type.isByDefault()) {
-        externalIDProviderTypeSentenceList.add(type.getSentence());
+    for (ExternalIDProviderType enumType : ExternalIDProviderType.values()) {
+      if (enumType.isByDefault()) {
+        externalIDProviderTypeSentenceList.add(enumType.getDescription());
       }
     }
 
     externalIDProviderImplMap.forEach(
         (s, externalIDProvider) -> {
-          externalIDProviderTypeSentenceList.add(externalIDProvider.getExternalIDType());
+          externalIDProviderTypeSentenceList.add(externalIDProvider.getDescription());
         });
     extidListBox.setItems(externalIDProviderTypeSentenceList);
 
@@ -156,7 +156,7 @@ public class LayoutDesidentification extends Div {
         event -> {
           if (event.getValue() != null) {
             div.add(UIS.setWidthFull(checkboxUseAsPatientName));
-            if (event.getValue().equals(EXTID_IN_TAG.getSentence())) {
+            if (event.getValue().equals(EXTID_IN_TAG.getDescription())) {
               extidPresentInDicomTagView.enableComponent();
               div.add(extidPresentInDicomTagView);
             } else {

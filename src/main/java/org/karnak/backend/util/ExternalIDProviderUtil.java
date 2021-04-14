@@ -20,24 +20,24 @@ import org.karnak.frontend.forwardnode.edit.destination.component.LayoutDesident
 
 public class ExternalIDProviderUtil {
 
-  public static ExternalIDProviderType getType(String sentence) {
+  public static ExternalIDProviderType getType(String description) {
     for (ExternalIDProviderType type : ExternalIDProviderType.values()) {
-      if (type.getSentence().equals(sentence)) {
+      if (type.getDescription().equals(description)) {
         return type;
       }
     }
     return null;
   }
 
-  public static ExternalIDProviderEntity getExternalIDProviderEntityWithSentence(
+  public static ExternalIDProviderEntity getExternalIDProviderEntityWithDescription(
       DestinationLogic destinationLogic,
       LayoutDesidentification layoutDesidentification,
-      String externalIDProviderSentence) {
+      String externalIDProviderDescription) {
     for (Map.Entry<String, ExternalIDProvider> entry :
         layoutDesidentification.getExternalIDProviderImplMap().entrySet()) {
       final ExternalIDProvider externalIDProviderImpl = entry.getValue();
       final String jarName = entry.getKey();
-      if (externalIDProviderImpl.getExternalIDType().equals(externalIDProviderSentence)) {
+      if (externalIDProviderImpl.getDescription().equals(externalIDProviderDescription)) {
         return destinationLogic.getExteralIDProviderEntity(EXTID_PROVIDER_IMPLEMENTATION, jarName);
       }
     }
