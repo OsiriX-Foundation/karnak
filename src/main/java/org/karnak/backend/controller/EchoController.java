@@ -10,7 +10,6 @@
 package org.karnak.backend.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -65,11 +64,12 @@ public class EchoController {
             description = "Status and configured destinations found from an AeTitle",
             content =
                 @Content(
-                    array = @ArraySchema(schema = @Schema(implementation = DestinationEcho.class)),
+                    schema = @Schema(implementation = DestinationEchos.class),
                     examples =
                         @ExampleObject(
+                            name = "Example values status destinations",
                             value = SpringDocUtil.EXAMPLE_VALUES_STATUS_DESTINATIONS_ECHO))),
-        @ApiResponse(responseCode = "204", description = "No Content")
+        @ApiResponse(responseCode = "204", description = "No Content", content = @Content)
       })
   /**
    * Retrieve the status of the configured destinations from the source AeTitle in parameter
