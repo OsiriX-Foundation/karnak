@@ -10,22 +10,10 @@
 package org.karnak.backend.config;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.method.HandlerTypePredicate;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /** Configuration for the Spring MVC part */
 @Configuration
 @EnableWebMvc
-public class WebConfig implements WebMvcConfigurer {
-
-  // Prefix for each call of Controllers or RestControllers
-  public static final String PREFIX = "/api";
-
-  @Override
-  public void configurePathMatch(PathMatchConfigurer configurer) {
-    configurer.addPathPrefix(PREFIX, HandlerTypePredicate.forAnnotation(RestController.class));
-  }
-}
+public class WebConfig implements WebMvcConfigurer {}

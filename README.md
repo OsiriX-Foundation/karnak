@@ -153,8 +153,12 @@ An OpenID Connect identity provider can be configured by using the environment v
  - `OIDC_CLIENT_ID`: client id of the identity provider 
  - `OIDC_CLIENT_SECRET`: client secret of the identity provider
  - `OIDC_ISSUER_URI`: issuer URI of the identity provider
+ 
+# Documentation for API/Endpoints 
 
-
+In order to see the documentation for API/Endpoints:
+- Local: http://localhost:8081/swagger-ui/index.html?url=/v3/api-docs
+- Dev: https://karnak-dev.hcuge.ch/swagger-ui/index.html?url=/v3/api-docs
 
 # Workflow
 

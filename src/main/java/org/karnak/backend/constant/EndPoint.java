@@ -12,7 +12,7 @@ package org.karnak.backend.constant;
 public class EndPoint {
 
   // Paths
-  public static final String ECHO_PATH = "/echo";
+  public static final String ECHO_PATH = "/api/echo";
   public static final String DESTINATIONS_PATH = "/destinations";
   //  public static final String FILE_PATH = "/file";
   //  public static final String DOWNLOAD_SOPUID_PATH = "/download/aet/sopuid";
