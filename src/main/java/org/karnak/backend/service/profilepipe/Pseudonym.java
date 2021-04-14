@@ -51,7 +51,7 @@ public class Pseudonym {
     final ExternalIDProviderType externalIDProviderType =
         externalIDProviderEntity.getExternalIDProviderType();
 
-    if (externalIDProviderType.equals(ExternalIDProviderType.EXTID_CACHE)) {
+    if (externalIDProviderType.equals(ExternalIDProviderType.EXTID_IN_CACHE)) {
       return getCacheExtid(patientMetadata, destinationEntity.getProjectEntity().getId());
     }
 
@@ -68,7 +68,7 @@ public class Pseudonym {
 
     if (externalIDProviderEntity
         .getExternalIDProviderType()
-        .equals(ExternalIDProviderType.EXTID_IMPLEMENTATION)) {
+        .equals(ExternalIDProviderType.EXTID_PROVIDER_IMPLEMENTATION)) {
       final ExternalIDProvider externalIDProviderImpl =
           externalIDProviderImplMap.get(externalIDProviderEntity.getJarName());
       if (externalIDProviderImpl != null) {

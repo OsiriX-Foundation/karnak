@@ -29,8 +29,8 @@
       </not>
     </preConditions>
     <addColumn tableName="destination">
-      <column name="externalid_provider_id" type="INTEGER" defaultValue='0'>
-        <constraints nullable="false"/>
+      <column name="externalid_provider_id" type="INTEGER" defaultValue='null'>
+        <constraints nullable="true"/>
       </column>
     </addColumn>
   </changeSet>
@@ -42,7 +42,7 @@
       schemaName="public"
       tableName="externalid_provider">
       <column name="bydefault" value="true"/>
-      <column name="externalid_provider_type" value="EXTID_CACHE"/>
+      <column name="externalid_provider_type" value="ID_GENERATED_BY_MAINZELLISTE"/>
     </insert>
   </changeSet>
 
@@ -51,7 +51,7 @@
       schemaName="public"
       tableName="externalid_provider">
       <column name="bydefault" value="true"/>
-      <column name="externalid_provider_type" value="EXTID_IN_TAG"/>
+      <column name="externalid_provider_type" value="EXTID_IN_MAINTELLISTE"/>
     </insert>
   </changeSet>
 
@@ -60,8 +60,7 @@
       schemaName="public"
       tableName="externalid_provider">
       <column name="bydefault" value="true"/>
-      <column name="externalid_provider_type" value="EXTID_IMPLEMENTATION"/>
-      <column name="jar_name" value="MainzellisteImplPID-1.0.jar"/>
+      <column name="externalid_provider_type" value="EXTID_IN_CACHE"/>
     </insert>
   </changeSet>
 
@@ -70,8 +69,7 @@
       schemaName="public"
       tableName="externalid_provider">
       <column name="bydefault" value="true"/>
-      <column name="externalid_provider_type" value="EXTID_IMPLEMENTATION"/>
-      <column name="jar_name" value="MainzellisteImplExtid-1.0.jar"/>
+      <column name="externalid_provider_type" value="EXTID_IN_TAG"/>
     </insert>
   </changeSet>
 
@@ -82,7 +80,7 @@
       schemaName="public"
       tableName="destination">
       <column name="externalid_provider_id"
-        valueComputed="(select id from externalid_provider where externalid_provider_type='EXTID_IMPLEMENTATION' and jar_name='MainzellisteImplPID-1.0.jar')"/>
+        valueComputed="(select id from externalid_provider where externalid_provider_type='ID_GENERATED_BY_MAINZELLISTE')"/>
       <where>pseudonym_type='0'</where>
     </update>
   </changeSet>
@@ -93,7 +91,7 @@
       schemaName="public"
       tableName="destination">
       <column name="externalid_provider_id"
-        valueComputed="(select id from externalid_provider where externalid_provider_type='EXTID_IMPLEMENTATION' and jar_name='MainzellisteImplExtid-1.0.jar')"/>
+        valueComputed="(select id from externalid_provider where externalid_provider_type='EXTID_IN_MAINTELLISTE')"/>
       <where>pseudonym_type='1'</where>
     </update>
   </changeSet>
@@ -104,7 +102,7 @@
       schemaName="public"
       tableName="destination">
       <column name="externalid_provider_id"
-        valueComputed="(select id from externalid_provider where externalid_provider_type='EXTID_CACHE' and jar_name=null)"/>
+        valueComputed="(select id from externalid_provider where externalid_provider_type='EXTID_IN_CACHE')"/>
       <where>pseudonym_type='2'</where>
     </update>
   </changeSet>
@@ -115,14 +113,21 @@
       schemaName="public"
       tableName="destination">
       <column name="externalid_provider_id"
-        valueComputed="(select id from externalid_provider where externalid_provider_type='EXTID_IN_TAG' and jar_name=null)"/>
+        valueComputed="(select id from externalid_provider where externalid_provider_type='EXTID_IN_TAG')"/>
       <where>pseudonym_type='3'</where>
+    </update>
+  </changeSet>
+
+  <changeSet author="karnak" id="1.2-11">
+    <update schemaName="public" tableName="destination">
+      <column name="externalid_provider_id" value="null"/>
+      <where>pseudonym_type is null</where>
     </update>
   </changeSet>
 
 
   <!-- CREATE FOREIGN KEY FOR externalid_provider_id -->
-  <changeSet author="karnak" id="1.2-11">
+  <changeSet author="karnak" id="1.2-12">
     <preConditions onFail="MARK_RAN">
       <not>
         <foreignKeyConstraintExists foreignKeyName="fk5idsjfos5f4gv8efgEeSss512"

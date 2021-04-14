@@ -9,7 +9,6 @@
  */
 package org.karnak.frontend.forwardnode.edit.destination.component;
 
-import static org.karnak.backend.enums.ExternalIDProviderType.EXTID_CACHE;
 import static org.karnak.backend.enums.ExternalIDProviderType.EXTID_IN_TAG;
 
 import com.vaadin.flow.component.checkbox.Checkbox;
@@ -25,6 +24,7 @@ import org.externalid.ExternalIDProvider;
 import org.karnak.backend.config.ExternalIDProviderConfig;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
+import org.karnak.backend.enums.ExternalIDProviderType;
 import org.karnak.frontend.component.ProjectDropDown;
 import org.karnak.frontend.project.ProjectView;
 import org.karnak.frontend.util.UIS;
@@ -96,8 +96,12 @@ public class LayoutDesidentification extends Div {
     extidListBox.getStyle().set("right", "0px");
     final List<String> externalIDProviderTypeSentenceList = new ArrayList<>();
 
-    externalIDProviderTypeSentenceList.add(EXTID_CACHE.getValue());
-    externalIDProviderTypeSentenceList.add(EXTID_IN_TAG.getValue());
+    for (ExternalIDProviderType type : ExternalIDProviderType.values()) {
+      if (type.isByDefault()) {
+        externalIDProviderTypeSentenceList.add(type.getSentence());
+      }
+    }
+
     externalIDProviderImplMap.forEach(
         (s, externalIDProvider) -> {
           externalIDProviderTypeSentenceList.add(externalIDProvider.getExternalIDType());
@@ -152,7 +156,7 @@ public class LayoutDesidentification extends Div {
         event -> {
           if (event.getValue() != null) {
             div.add(UIS.setWidthFull(checkboxUseAsPatientName));
-            if (event.getValue().equals(EXTID_IN_TAG.getValue())) {
+            if (event.getValue().equals(EXTID_IN_TAG.getSentence())) {
               extidPresentInDicomTagView.enableComponent();
               div.add(extidPresentInDicomTagView);
             } else {

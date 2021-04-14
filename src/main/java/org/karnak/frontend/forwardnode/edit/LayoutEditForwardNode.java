@@ -9,9 +9,6 @@
  */
 package org.karnak.frontend.forwardnode.edit;
 
-import static org.karnak.backend.enums.ExternalIDProviderType.EXTID_CACHE;
-import static org.karnak.backend.enums.ExternalIDProviderType.EXTID_IMPLEMENTATION;
-import static org.karnak.backend.enums.ExternalIDProviderType.EXTID_IN_TAG;
 import static org.karnak.backend.enums.PseudonymType.MAINZELLISTE_PID;
 
 import com.vaadin.flow.component.Component;
@@ -33,6 +30,7 @@ import org.karnak.backend.enums.NodeEventType;
 import org.karnak.backend.model.NodeEvent;
 import org.karnak.backend.service.ProjectService;
 import org.karnak.backend.service.SOPClassUIDService;
+import org.karnak.backend.util.ExternalIDProviderUtil;
 import org.karnak.frontend.component.ConfirmDialog;
 import org.karnak.frontend.forwardnode.ForwardNodeLogic;
 import org.karnak.frontend.forwardnode.edit.component.ButtonSaveDeleteCancel;
@@ -517,7 +515,8 @@ public class LayoutEditForwardNode extends VerticalLayout {
   }
 
   public void addBinderExtidListBox(LayoutDesidentification layoutDesidentification) {
-    layoutDesidentification.getDestinationBinder()
+    layoutDesidentification
+        .getDestinationBinder()
         .forField(layoutDesidentification.getExtidListBox())
         .withValidator(type -> type != null, "Choose pseudonym type\n")
         .bind(
@@ -525,41 +524,39 @@ public class LayoutEditForwardNode extends VerticalLayout {
               if (destination.getExternalIDProviderEntity() != null) {
                 final ExternalIDProviderType externalIDProviderType =
                     destination.getExternalIDProviderEntity().getExternalIDProviderType();
-                if (externalIDProviderType.equals(EXTID_CACHE)) {
-                  return EXTID_CACHE.getValue();
-                } else if (externalIDProviderType.equals(EXTID_IN_TAG)) {
-                  return EXTID_CACHE.getValue();
-                } else if (externalIDProviderType.equals(EXTID_IMPLEMENTATION)) {
+                if (externalIDProviderType.equals(
+                    ExternalIDProviderType.EXTID_PROVIDER_IMPLEMENTATION)) {
                   final String jarName = destination.getExternalIDProviderEntity().getJarName();
                   final ExternalIDProvider externalIDProvider =
                       layoutDesidentification.getExternalIDProviderImplMap().get(jarName);
                   return externalIDProvider.getExternalIDType();
                 } else {
-                  return EXTID_IN_TAG.getValue();
+                  return externalIDProviderType.getSentence();
                 }
               } else {
                 return null;
               }
             },
-            (destination, stringExternalIDType) -> {
-              if (stringExternalIDType.equals(EXTID_CACHE.getValue())) {
+            (destination, sentenceSelected) -> {
+              final ExternalIDProviderType externalIDProviderTypeSelected =
+                  ExternalIDProviderUtil.getType(sentenceSelected);
+              if (externalIDProviderTypeSelected != null) {
                 final ExternalIDProviderEntity externalIDProviderEntity =
-                    forwardNodeLogic.getDestinationLogic().getExteralIDProviderEntity(EXTID_CACHE, null);
-                destination.setExternalIDProviderEntity(externalIDProviderEntity);
-              } else if (stringExternalIDType.equals(EXTID_IN_TAG.getValue())) {
-                final ExternalIDProviderEntity externalIDProviderEntity =
-                    forwardNodeLogic.getDestinationLogic().getExteralIDProviderEntity(EXTID_IN_TAG, null);
+                    forwardNodeLogic
+                        .getDestinationLogic()
+                        .getExteralIDProviderEntity(externalIDProviderTypeSelected, null);
                 destination.setExternalIDProviderEntity(externalIDProviderEntity);
               } else {
-                layoutDesidentification.getExternalIDProviderImplMap().forEach(
-                    (jarNameKey, externalIDProvider) -> {
-                      if (externalIDProvider.getExternalIDType().equals(stringExternalIDType)) {
-                        final ExternalIDProviderEntity externalIDProviderEntity =
-                            forwardNodeLogic.getDestinationLogic().getExteralIDProviderEntity(
-                                EXTID_IMPLEMENTATION, jarNameKey);
-                        destination.setExternalIDProviderEntity(externalIDProviderEntity);
-                      }
-                    });
+                final ExternalIDProviderEntity externalIDProviderEntity =
+                    ExternalIDProviderUtil.getExternalIDProviderEntityWithSentence(
+                        forwardNodeLogic.getDestinationLogic(),
+                        layoutDesidentification,
+                        sentenceSelected);
+                if (externalIDProviderEntity != null) {
+                  destination.setExternalIDProviderEntity(externalIDProviderEntity);
+                } else {
+                  destination.setExternalIDProviderEntity(null);
+                }
               }
             });
   }

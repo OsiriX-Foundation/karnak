@@ -74,9 +74,9 @@ public class ExternalIDProviderConfig {
   @EventListener(ApplicationReadyEvent.class)
   public void setExternalIDProviderByDefault() {
     if (!externalIDProviderService.externalIDProviderTypeExist(
-        ExternalIDProviderType.EXTID_CACHE)) {
+        ExternalIDProviderType.EXTID_IN_CACHE)) {
       final ExternalIDProviderEntity newExternalIDProviderEntity =
-          new ExternalIDProviderEntity(true, ExternalIDProviderType.EXTID_CACHE, null);
+          new ExternalIDProviderEntity(true, ExternalIDProviderType.EXTID_IN_CACHE, null);
       externalIDProviderService.saveExternalIDProvider(newExternalIDProviderEntity);
     }
 
@@ -91,7 +91,8 @@ public class ExternalIDProviderConfig {
   private void addExternalIDProviderImplInDb(String jarName) {
     if (!externalIDProviderService.jarNameExist(jarName)) {
       final ExternalIDProviderEntity newExternalIDProviderEntity =
-          new ExternalIDProviderEntity(false, ExternalIDProviderType.EXTID_IMPLEMENTATION, jarName);
+          new ExternalIDProviderEntity(
+              false, ExternalIDProviderType.EXTID_PROVIDER_IMPLEMENTATION, jarName);
       externalIDProviderService.saveExternalIDProvider(newExternalIDProviderEntity);
     }
   }
