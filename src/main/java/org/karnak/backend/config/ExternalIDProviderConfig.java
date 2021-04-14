@@ -31,7 +31,7 @@ public class ExternalIDProviderConfig {
   private static final Logger LOGGER = LoggerFactory.getLogger(ExternalIDProviderConfig.class);
 
   private static String EXTERNALID_PROVIDERS_DIRECTORY = "/externalid-providers";
-  private static String CLASH_PATH = "org.karnak.ExternalIDImpl";
+  private static String CLASH_PATH = "org.karnak.ExternalIDProviderImpl";
   private static ExternalIDProviderConfig instance;
   private HashMap<String, ExternalIDProvider> externalIDProviderImplMap;
   private ExternalIDProviderService externalIDProviderService;
