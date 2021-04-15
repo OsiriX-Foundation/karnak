@@ -12,7 +12,7 @@ package org.karnak.backend.util;
 import static org.karnak.backend.enums.ExternalIDProviderType.EXTID_PROVIDER_IMPLEMENTATION;
 
 import java.util.Map;
-import org.externalid.ExternalIDProvider;
+import org.karnak.ExternalIDProvider;
 import org.karnak.backend.data.entity.ExternalIDProviderEntity;
 import org.karnak.backend.enums.ExternalIDProviderType;
 import org.karnak.frontend.forwardnode.edit.destination.DestinationLogic;

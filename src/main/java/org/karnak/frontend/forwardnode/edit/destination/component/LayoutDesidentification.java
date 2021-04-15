@@ -20,7 +20,7 @@ import com.vaadin.flow.data.binder.Binder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import org.externalid.ExternalIDProvider;
+import org.karnak.ExternalIDProvider;
 import org.karnak.backend.config.ExternalIDProviderConfig;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ProjectEntity;

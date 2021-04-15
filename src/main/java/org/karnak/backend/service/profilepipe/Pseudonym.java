@@ -12,7 +12,7 @@ package org.karnak.backend.service.profilepipe;
 import java.util.HashMap;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.util.TagUtils;
-import org.externalid.ExternalIDProvider;
+import org.karnak.ExternalIDProvider;
 import org.karnak.backend.api.PseudonymApi;
 import org.karnak.backend.cache.MainzellistePatient;
 import org.karnak.backend.cache.PatientClient;

@@ -18,7 +18,7 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import java.util.HashSet;
 import java.util.Set;
-import org.externalid.ExternalIDProvider;
+import org.karnak.ExternalIDProvider;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.DicomSourceNodeEntity;
 import org.karnak.backend.data.entity.ExternalIDProviderEntity;
