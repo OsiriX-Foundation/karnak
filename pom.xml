@@ -34,7 +34,7 @@
     <springframework.version>2.4.0</springframework.version>
     <vaadin.version>17.0.10</vaadin.version>
     <weasis-dicom-tools.version>5.23.2-IMG-RELEASE</weasis-dicom-tools.version>
-    <weasis.opencv.native.version>4.5.0-dcm</weasis.opencv.native.version>
+    <weasis.opencv.native.version>4.5.1-dcm</weasis.opencv.native.version>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <sonar.java.source>${java.version}</sonar.java.source>
     <sonar.java.target>${java.version}</sonar.java.target>
@@ -45,6 +45,8 @@
     <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
     <h2.version>1.4.200</h2.version>
+    <mockito.version>3.9.0</mockito.version>
+    <springdoc.version>1.5.6</springdoc.version>
   </properties>
 
   <!-- Repositories -->
@@ -299,8 +301,14 @@
 
   <!-- Dependencies -->
   <dependencies>
+
+    <!-- Springboot starters -->
     <dependency>
       <artifactId>spring-boot-starter</artifactId>
+      <groupId>org.springframework.boot</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>spring-boot-starter-web</artifactId>
       <groupId>org.springframework.boot</groupId>
     </dependency>
 
@@ -341,6 +349,14 @@
           <artifactId>slf4j-log4j12</artifactId>
           <groupId>org.slf4j</groupId>
         </exclusion>
+        <exclusion>
+          <artifactId>libopencv_java</artifactId>
+          <groupId>org.weasis.thirdparty.org.opencv</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>opencv_java</artifactId>
+          <groupId>org.weasis.thirdparty.org.opencv</groupId>
+        </exclusion>
       </exclusions>
       <groupId>org.weasis</groupId>
       <version>${weasis-dicom-tools.version}</version>
@@ -370,6 +386,10 @@
         <exclusion>
           <artifactId>vaadin-core</artifactId>
           <groupId>com.vaadin</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>spring-boot-starter-web</artifactId>
+          <groupId>org.springframework.boot</groupId>
         </exclusion>
       </exclusions>
       <groupId>com.vaadin</groupId>
@@ -504,6 +524,11 @@
       <artifactId>jackson-module-jaxb-annotations</artifactId>
       <groupId>com.fasterxml.jackson.module</groupId>
     </dependency>
+    <!-- Jackson Xml -->
+    <dependency>
+      <artifactId>jackson-dataformat-xml</artifactId>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+    </dependency>
 
     <!-- Tests -->
     <dependency>
@@ -519,6 +544,14 @@
       <version>${springframework.version}</version>
     </dependency>
 
+    <!-- Mockito inline -->
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-inline</artifactId>
+      <version>${mockito.version}</version>
+      <scope>test</scope>
+    </dependency>
+
     <!-- DB H2 for tests -->
     <dependency>
       <groupId>com.h2database</groupId>
@@ -526,6 +559,12 @@
       <version>${h2.version}</version>
     </dependency>
 
+    <!-- Spring doc / Open Api -->
+    <dependency>
+      <groupId>org.springdoc</groupId>
+      <artifactId>springdoc-openapi-ui</artifactId>
+      <version>${springdoc.version}</version>
+    </dependency>
   </dependencies>
 
   <!-- Dependency Management -->

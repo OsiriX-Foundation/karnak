@@ -80,7 +80,7 @@ public class AppConfig {
   }
 
   public String getKarnakadmin() {
-    return karnakadmin;
+    return karnakadmin != null ? karnakadmin : "admin";
   }
 
   public void setKarnakadmin(String karnakadmin) {
@@ -88,7 +88,7 @@ public class AppConfig {
   }
 
   public String getKarnakpassword() {
-    return karnakpassword;
+    return karnakpassword != null ? karnakpassword : "admin";
   }
 
   public void setKarnakpassword(String karnakpassword) {
