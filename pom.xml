@@ -16,7 +16,7 @@
   </licenses>
 
   <!-- Version -->
-  <version>0.9.6-SNAPSHOT</version>
+  <version>0.9.3-SNAPSHOT</version>
 
   <!-- Packaging -->
   <packaging>jar</packaging>
