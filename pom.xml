@@ -16,7 +16,7 @@
   </licenses>
 
   <!-- Version -->
-  <version>0.9.3-SNAPSHOT</version>
+  <version>0.9.5</version>
 
   <!-- Packaging -->
   <packaging>jar</packaging>
@@ -34,7 +34,7 @@
     <springframework.version>2.4.0</springframework.version>
     <vaadin.version>17.0.10</vaadin.version>
     <weasis-dicom-tools.version>5.23.2-IMG-RELEASE</weasis-dicom-tools.version>
-    <weasis.opencv.native.version>4.5.0-dcm</weasis.opencv.native.version>
+    <weasis.opencv.native.version>4.5.1-dcm</weasis.opencv.native.version>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <sonar.java.source>${java.version}</sonar.java.source>
     <sonar.java.target>${java.version}</sonar.java.target>
@@ -120,26 +120,6 @@
               <outputDirectory>${project.build.directory}/native-lib/lib/linux-x86-64
               </outputDirectory>
               <type>so</type>
-              <version>${weasis.opencv.native.version}</version>
-            </artifactItem>
-            <artifactItem>
-              <artifactId>libopencv_java</artifactId>
-              <classifier>macosx-x86-64</classifier>
-              <destFileName>libopencv_java.jnilib</destFileName>
-              <groupId>org.weasis.thirdparty.org.opencv</groupId>
-              <outputDirectory>${project.build.directory}/native-lib/lib/macosx-x86-64
-              </outputDirectory>
-              <type>jnilib</type>
-              <version>${weasis.opencv.native.version}</version>
-            </artifactItem>
-            <artifactItem>
-              <artifactId>opencv_java</artifactId>
-              <classifier>windows-x86-64</classifier>
-              <destFileName>opencv_java.dll</destFileName>
-              <groupId>org.weasis.thirdparty.org.opencv</groupId>
-              <outputDirectory>${project.build.directory}/native-lib/lib/windows-x86-64
-              </outputDirectory>
-              <type>dll</type>
               <version>${weasis.opencv.native.version}</version>
             </artifactItem>
           </artifactItems>
@@ -340,6 +320,14 @@
         <exclusion>
           <artifactId>slf4j-log4j12</artifactId>
           <groupId>org.slf4j</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>libopencv_java</artifactId>
+          <groupId>org.weasis.thirdparty.org.opencv</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>opencv_java</artifactId>
+          <groupId>org.weasis.thirdparty.org.opencv</groupId>
         </exclusion>
       </exclusions>
       <groupId>org.weasis</groupId>
