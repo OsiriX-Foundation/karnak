@@ -27,7 +27,7 @@ class ExternalIDProviderTypeTest {
   }
 
   @Test
-  void isByDefault() {
+  void shouldRetrieveIsByDefault() {
     Assert.assertTrue(ExternalIDProviderType.ID_GENERATED_BY_MAINZELLISTE.isByDefault());
     Assert.assertTrue(ExternalIDProviderType.EXTID_IN_MAINTELLISTE.isByDefault());
     Assert.assertTrue(ExternalIDProviderType.EXTID_IN_CACHE.isByDefault());
