@@ -16,7 +16,7 @@
   </licenses>
 
   <!-- Version -->
-  <version>0.9.3-SNAPSHOT</version>
+  <version>0.9.6-SNAPSHOT</version>
 
   <!-- Packaging -->
   <packaging>jar</packaging>
@@ -370,11 +370,6 @@
     <!-- jpa, crud repository -->
     <dependency>
       <artifactId>spring-boot-starter-data-jpa</artifactId>
-      <groupId>org.springframework.boot</groupId>
-    </dependency>
-
-    <dependency>
-      <artifactId>spring-boot-starter-web</artifactId>
       <groupId>org.springframework.boot</groupId>
     </dependency>
 

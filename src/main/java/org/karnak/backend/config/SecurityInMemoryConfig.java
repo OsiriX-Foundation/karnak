@@ -16,7 +16,6 @@ import org.karnak.backend.util.SecurityUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -49,9 +48,6 @@ public class SecurityInMemoryConfig extends WebSecurityConfigurerAdapter {
         .authorizeRequests()
         // Allows all internal traffic from the Vaadin framework
         .requestMatchers(SecurityUtil::isFrameworkInternalRequest)
-        .permitAll()
-        // Allow all get endpoints
-        .antMatchers(HttpMethod.GET, "/api/**")
         .permitAll()
         // Allows all authenticated traffic
         .antMatchers("/*")
