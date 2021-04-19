@@ -16,6 +16,30 @@ class ExternalIDProviderRepoTest {
 
   @Autowired private ExternalIDProviderRepo repository;
 
+  /** Test instanciateEntity. */
+  @Test
+  void shouldInstanciate() {
+
+    // Create an entity to save
+    ExternalIDProviderEntity entity = new ExternalIDProviderEntity(true, ExternalIDProviderType.EXTID_IN_TAG, null);
+
+    // Save the entity
+    entity = repository.saveAndFlush(entity);
+
+    // Check if
+
+    Assert.assertTrue(repository.existsById(entity.getId()));
+    ExternalIDProviderEntity entityFind = repository.findById(entity.getId()).get();
+    Assert.assertTrue(entityFind.isBydefault());
+
+    // Delete the profile
+    entity.setBydefault(false);
+    entity = repository.saveAndFlush(entity);
+
+
+    Assert.assertFalse(repository.findById(entity.getId()).get().isBydefault());
+  }
+
   /** Test existsByJarName method. */
   @Test
   void shouldExistsByJarName() {
