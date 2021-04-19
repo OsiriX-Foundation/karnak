@@ -57,7 +57,7 @@ public class CSVDialog extends Dialog {
   private List<Select<String>> listOfSelect;
   private List<String[]> allRows;
   private HashMap<String, Integer> selectValuesPositionHashMap;
-  private transient ProjectEntity projectEntity;
+  private final transient ProjectEntity projectEntity;
 
   public CSVDialog(InputStream inputStream, char separator, ProjectEntity projectEntity) {
     removeAll();
@@ -129,7 +129,7 @@ public class CSVDialog extends Dialog {
   public void buildGrid() {
     csvGrid = new Grid<>();
 
-    String[] headers = allRows.get(0);
+    String[] headers = allRows.isEmpty() ? new String[0] : allRows.get(0);
     listOfSelect = new ArrayList<>();
 
     selectValuesPositionHashMap = new HashMap<>();

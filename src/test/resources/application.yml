@@ -27,3 +27,5 @@ server:
 spring:
   profiles:
     active: '@activatedProperties@'
+  liquibase:
+    enabled: false
