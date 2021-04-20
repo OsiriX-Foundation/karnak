@@ -197,6 +197,8 @@ public class Profile {
       DestinationEntity destinationEntity,
       ProfileEntity profileEntity,
       AttributeEditorContext context) {
+    Attributes dcmCopy = new Attributes(dcm);
+    dcmCopy.setReadOnly();
     final String SOPInstanceUID = dcm.getString(Tag.SOPInstanceUID);
     final String SeriesInstanceUID = dcm.getString(Tag.SeriesInstanceUID);
     final String IssuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID);
@@ -224,7 +226,6 @@ public class Profile {
             ? pseudonym
             : newPatientID;
 
-    Attributes dcmCopy = new Attributes(dcm);
     // Apply clean pixel data
     Object pix = dcm.getValue(Tag.PixelData);
     if ((pix instanceof BulkData || pix instanceof Fragments)
