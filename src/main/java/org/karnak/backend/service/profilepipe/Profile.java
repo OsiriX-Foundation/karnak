@@ -32,8 +32,8 @@ import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.data.entity.ProfileEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
+import org.karnak.backend.enums.ExternalIDProviderType;
 import org.karnak.backend.enums.ProfileItemType;
-import org.karnak.backend.enums.PseudonymType;
 import org.karnak.backend.model.action.ActionItem;
 import org.karnak.backend.model.action.Remove;
 import org.karnak.backend.model.action.ReplaceNull;
@@ -201,7 +201,7 @@ public class Profile {
     final String SeriesInstanceUID = dcm.getString(Tag.SeriesInstanceUID);
     final String IssuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID);
     final String PatientID = dcm.getString(Tag.PatientID);
-    final PseudonymType pseudonymType = destinationEntity.getPseudonymType();
+    final ExternalIDProviderType externalIDProviderType = destinationEntity.getExternalIDProviderEntity().getExternalIDProviderType();
     final HMAC hmac = generateHMAC(destinationEntity, PatientID);
 
     MDC.put("SOPInstanceUID", SOPInstanceUID);
@@ -218,7 +218,7 @@ public class Profile {
     BigInteger patientValue = generatePatientID(pseudonym, hmac);
     String newPatientID = patientValue.toString(16).toUpperCase();
     String newPatientName =
-        !pseudonymType.equals(PseudonymType.MAINZELLISTE_PID)
+        !externalIDProviderType.equals(ExternalIDProviderType.ID_GENERATED_BY_MAINZELLISTE)
                 && destinationEntity.getPseudonymAsPatientName().booleanValue()
             ? pseudonym
             : newPatientID;

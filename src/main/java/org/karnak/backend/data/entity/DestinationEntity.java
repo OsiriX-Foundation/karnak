@@ -42,7 +42,6 @@ import org.karnak.backend.data.validator.DestinationGroupSequenceProvider;
 import org.karnak.backend.data.validator.DestinationGroupSequenceProvider.DestinationDicomGroup;
 import org.karnak.backend.data.validator.DestinationGroupSequenceProvider.DestinationStowGroup;
 import org.karnak.backend.enums.DestinationType;
-import org.karnak.backend.enums.PseudonymType;
 
 @GroupSequenceProvider(value = DestinationGroupSequenceProvider.class)
 @Entity(name = "Destination")
@@ -58,8 +57,6 @@ public class DestinationEntity implements Serializable {
   private boolean activate;
 
   private boolean desidentification;
-
-  private PseudonymType pseudonymType;
 
   private String tag;
   private String delimiter;
@@ -128,7 +125,6 @@ public class DestinationEntity implements Serializable {
     this.activate = true;
     this.description = "";
     this.desidentification = false;
-    this.pseudonymType = PseudonymType.MAINZELLISTE_PID;
     this.pseudonymAsPatientName = null;
     this.tag = null;
     this.delimiter = null;
@@ -374,14 +370,6 @@ public class DestinationEntity implements Serializable {
     return sopList;
   }
 
-  public PseudonymType getPseudonymType() {
-    return pseudonymType;
-  }
-
-  public void setPseudonymType(PseudonymType pseudonymType) {
-    this.pseudonymType = pseudonymType;
-  }
-
   public String getTag() {
     return tag;
   }
@@ -585,7 +573,6 @@ public class DestinationEntity implements Serializable {
         && Objects.equals(id, that.id)
         && Objects.equals(description, that.description)
         && destinationType == that.destinationType
-        && pseudonymType == that.pseudonymType
         && Objects.equals(tag, that.tag)
         && Objects.equals(delimiter, that.delimiter)
         && Objects.equals(position, that.position)
@@ -612,7 +599,6 @@ public class DestinationEntity implements Serializable {
         description,
         destinationType,
         desidentification,
-        pseudonymType,
         tag,
         delimiter,
         position,
