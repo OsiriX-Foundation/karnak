@@ -15,15 +15,20 @@ import org.karnak.backend.data.entity.ExternalIDProviderEntity;
 import org.karnak.backend.data.repo.ExternalIDProviderRepo;
 import org.karnak.backend.enums.ExternalIDProviderType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ExternalIDProviderService {
   private final ExternalIDProviderRepo externalIDProviderRepo;
 
+  // Event publisher
+  private final ApplicationEventPublisher applicationEventPublisher;
+
   @Autowired
-  public ExternalIDProviderService(final ExternalIDProviderRepo externalIDProviderRepo) {
+  public ExternalIDProviderService(final ExternalIDProviderRepo externalIDProviderRepo, final ApplicationEventPublisher applicationEventPublisher) {
     this.externalIDProviderRepo = externalIDProviderRepo;
+    this.applicationEventPublisher = applicationEventPublisher;
   }
 
   public Set<ExternalIDProviderEntity> getAllExternalIDProvider() {
