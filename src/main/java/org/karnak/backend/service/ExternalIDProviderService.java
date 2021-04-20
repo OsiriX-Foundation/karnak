@@ -26,7 +26,9 @@ public class ExternalIDProviderService {
   private final ApplicationEventPublisher applicationEventPublisher;
 
   @Autowired
-  public ExternalIDProviderService(final ExternalIDProviderRepo externalIDProviderRepo, final ApplicationEventPublisher applicationEventPublisher) {
+  public ExternalIDProviderService(
+      final ExternalIDProviderRepo externalIDProviderRepo,
+      final ApplicationEventPublisher applicationEventPublisher) {
     this.externalIDProviderRepo = externalIDProviderRepo;
     this.applicationEventPublisher = applicationEventPublisher;
   }

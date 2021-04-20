@@ -12,12 +12,12 @@ package org.karnak.backend.cache;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ExternalIDCache extends PatientClient {
+public class ExternalIDCSVCache extends PatientClient {
 
   private static final String NAME = "externalid";
   private static final int TTL_SECONDS = 60 * 60 * 24 * 7;
 
-  public ExternalIDCache() {
+  public ExternalIDCSVCache() {
     super(NAME, TTL_SECONDS);
   }
 }

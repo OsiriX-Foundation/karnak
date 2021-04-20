@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2021 Karnak Team and other contributors.
+ *
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ */
 package org.karnak.backend.data.repo;
 
 import org.junit.Assert;
@@ -21,7 +30,8 @@ class ExternalIDProviderRepoTest {
   void shouldInstanciate() {
 
     // Create an entity to save
-    ExternalIDProviderEntity entity = new ExternalIDProviderEntity(true, ExternalIDProviderType.EXTID_IN_TAG, null);
+    ExternalIDProviderEntity entity =
+        new ExternalIDProviderEntity(true, ExternalIDProviderType.EXTID_IN_TAG, null);
 
     // Save the entity
     entity = repository.saveAndFlush(entity);
@@ -35,7 +45,6 @@ class ExternalIDProviderRepoTest {
     // Delete the profile
     entity.setBydefault(false);
     entity = repository.saveAndFlush(entity);
-
 
     Assert.assertFalse(repository.findById(entity.getId()).get().isBydefault());
   }

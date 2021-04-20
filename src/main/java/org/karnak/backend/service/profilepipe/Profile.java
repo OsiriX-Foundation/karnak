@@ -201,7 +201,8 @@ public class Profile {
     final String SeriesInstanceUID = dcm.getString(Tag.SeriesInstanceUID);
     final String IssuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID);
     final String PatientID = dcm.getString(Tag.PatientID);
-    final ExternalIDProviderType externalIDProviderType = destinationEntity.getExternalIDProviderEntity().getExternalIDProviderType();
+    final ExternalIDProviderType externalIDProviderType =
+        destinationEntity.getExternalIDProviderEntity().getExternalIDProviderType();
     final HMAC hmac = generateHMAC(destinationEntity, PatientID);
 
     MDC.put("SOPInstanceUID", SOPInstanceUID);

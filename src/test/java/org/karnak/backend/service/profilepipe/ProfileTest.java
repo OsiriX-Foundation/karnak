@@ -37,7 +37,8 @@ class ProfileTest {
 
     // Init data
     Attributes attributes = new Attributes();
-    ExternalIDProviderEntity externalIDProviderEntity = new ExternalIDProviderEntity(true, ExternalIDProviderType.EXTID_IN_TAG, null);
+    ExternalIDProviderEntity externalIDProviderEntity =
+        new ExternalIDProviderEntity(true, ExternalIDProviderType.EXTID_IN_TAG, null);
     DestinationEntity destinationEntity = new DestinationEntity();
     destinationEntity.setDestinationType(DestinationType.dicom);
     ProjectEntity projectEntity = new ProjectEntity();
