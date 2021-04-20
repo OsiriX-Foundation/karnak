@@ -13,7 +13,7 @@ import java.util.HashMap;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.util.TagUtils;
 import org.karnak.ExternalIDProvider;
-import org.karnak.backend.api.PseudonymApi;
+import org.karnak.backend.api.MainzellisteApi;
 import org.karnak.backend.cache.MainzellistePatient;
 import org.karnak.backend.cache.PatientClient;
 import org.karnak.backend.config.AppConfig;
@@ -52,11 +52,11 @@ public class Pseudonym {
         externalIDProviderEntity.getExternalIDProviderType();
 
     if (externalIDProviderType.equals(ExternalIDProviderType.EXTID_IN_CACHE)) {
-      return getCacheExtid(patientMetadata, destinationEntity.getProjectEntity().getId());
+      return getExternalIDInCache(patientMetadata, destinationEntity.getProjectEntity().getId());
     }
 
     if (externalIDProviderType.equals(ExternalIDProviderType.EXTID_IN_TAG)) {
-      return getPseudonymInDicom(dcm, destinationEntity, patientMetadata);
+      return getExternalIDInDicomTag(dcm, destinationEntity, patientMetadata);
     }
 
     final String cachedMainezllistePseudonym =
@@ -66,6 +66,15 @@ public class Pseudonym {
       return cachedMainezllistePseudonym;
     }
 
+    if (externalIDProviderType.equals(ExternalIDProviderType.ID_GENERATED_BY_MAINZELLISTE)) {
+      return getIDGeneratedByMainzelliste(patientMetadata);
+    }
+
+    if (externalIDProviderType.equals(ExternalIDProviderType.EXTID_IN_MAINTELLISTE)) {
+      return getExternalIDInMainzelliste(patientMetadata);
+    }
+
+    // browse the implement of the exertnal id provider
     if (externalIDProviderEntity
         .getExternalIDProviderType()
         .equals(ExternalIDProviderType.EXTID_PROVIDER_IMPLEMENTATION)) {
@@ -80,7 +89,7 @@ public class Pseudonym {
     return null;
   }
 
-  private String getPseudonymInDicom(
+  private String getExternalIDInDicomTag(
       Attributes dcm, DestinationEntity destinationEntity, PatientMetadata patientMetadata) {
     final String cleanTag = destinationEntity.getTag().replaceAll("[(),]", "").toUpperCase();
     final String tagValue = dcm.getString(TagUtils.intFromHexString(cleanTag));
@@ -105,20 +114,42 @@ public class Pseudonym {
       throw new IllegalStateException("Cannot get a pseudonym in a DICOM tag");
     } else {
       if (destinationEntity.getSavePseudonym().booleanValue()) {
-        final PseudonymApi pseudonymApi = new PseudonymApi();
-        pseudonymApi.addExtID(patientMetadata.generateMainzellisteFields(), pseudonymExtidInTag);
+        final MainzellisteApi mainzellisteApi = new MainzellisteApi();
+        mainzellisteApi.addExternalID(patientMetadata.generateMainzellisteFields(), pseudonymExtidInTag);
       }
     }
     return pseudonymExtidInTag;
   }
 
-  public String getCacheExtid(PatientMetadata patientMetadata, Long projectID) {
+  public String getExternalIDInCache(PatientMetadata patientMetadata, Long projectID) {
     final String pseudonymCacheExtID =
         PatientClientUtil.getPseudonym(patientMetadata, externalIdCache, projectID);
     if (pseudonymCacheExtID == null) {
       throw new IllegalStateException("Cannot get an external pseudonym in cache");
     }
     return pseudonymCacheExtID;
+  }
+
+  public String getIDGeneratedByMainzelliste(PatientMetadata patientMetadata) {
+    final MainzellisteApi mainzellisteApi = new MainzellisteApi();
+    final String idGeneratedByMainzelliste =
+        mainzellisteApi.generatePID(patientMetadata.generateMainzellisteFields());
+    if (idGeneratedByMainzelliste == null) {
+      throw new IllegalStateException("Cannot get pseudonym of type pid in Mainzelliste API");
+    }
+    cachingMainzellistePseudonym(idGeneratedByMainzelliste, patientMetadata);
+    return idGeneratedByMainzelliste;
+  }
+
+  public String getExternalIDInMainzelliste(PatientMetadata patientMetadata) {
+    final MainzellisteApi mainzellisteApi = new MainzellisteApi();
+    final String externalIDInMainzelliste =
+        mainzellisteApi.getExistingExternalID(patientMetadata.generateMainzellisteFields());
+    if (externalIDInMainzelliste == null) {
+      throw new IllegalStateException("Cannot get pseudonym of type extid in Mainzelliste API");
+    }
+    cachingMainzellistePseudonym(externalIDInMainzelliste, patientMetadata);
+    return externalIDInMainzelliste;
   }
 
   private void cachingMainzellistePseudonym(String pseudonym, PatientMetadata patientMetadata) {
