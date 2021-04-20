@@ -104,7 +104,7 @@ public class Pseudonym {
     }
 
     if (pseudonymExtidInTag == null) {
-      throw new IllegalStateException("Cannot get a pseudonym in a DICOM tag");
+      throw new IllegalStateException("Cannot get an external pseudonym of type EXTID_IN_TAG");
     } else {
       if (destinationEntity.getSavePseudonym().booleanValue()) {
         final MainzellisteApi mainzellisteApi = new MainzellisteApi();
@@ -119,7 +119,7 @@ public class Pseudonym {
     final String pseudonymCacheExtID =
         PatientClientUtil.getPseudonym(patientMetadata, externalIdCSVCache, projectID);
     if (pseudonymCacheExtID == null) {
-      throw new IllegalStateException("Cannot get an external pseudonym in cache");
+      throw new IllegalStateException("Cannot get an external pseudonym of type EXTID_IN_CACHE");
     }
     return pseudonymCacheExtID;
   }
@@ -129,7 +129,7 @@ public class Pseudonym {
     final String idGeneratedByMainzelliste =
         mainzellisteApi.generatePID(patientMetadata.generateMainzellisteFields());
     if (idGeneratedByMainzelliste == null) {
-      throw new IllegalStateException("Cannot get pseudonym of type pid in Mainzelliste API");
+      throw new IllegalStateException("Cannot get an external pseudonym of type ID_GENERATED_BY_MAINZELLISTE");
     }
     cachingExternalIDProvider(idGeneratedByMainzelliste, patientMetadata, destinationID);
     return idGeneratedByMainzelliste;
@@ -140,7 +140,7 @@ public class Pseudonym {
     final String externalIDInMainzelliste =
         mainzellisteApi.getExistingExternalID(patientMetadata.generateMainzellisteFields());
     if (externalIDInMainzelliste == null) {
-      throw new IllegalStateException("Cannot get pseudonym of type extid in Mainzelliste API");
+      throw new IllegalStateException("Cannot get an external pseudonym of type EXTID_IN_MAINTELLISTE");
     }
     cachingExternalIDProvider(externalIDInMainzelliste, patientMetadata, destinationID);
     return externalIDInMainzelliste;
@@ -159,7 +159,7 @@ public class Pseudonym {
       cachingExternalIDProvider(externalID, patientMetadata, destinationEntity.getId());
       return externalID;
     }
-    return null;
+    throw new IllegalStateException("Cannot get an external pseudonym of type EXTID_PROVIDER_IMPLEMENTATION");
   }
 
   public String getExternalIDProviderCache(PatientMetadata patientMetadata, Long destinationID) {
