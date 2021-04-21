@@ -140,4 +140,12 @@
       referencedTableName="externalid_provider" validate="true"/>
   </changeSet>
 
+  <changeSet author="karnak" id="1.2-13">
+    <dropColumn
+      schemaName="public"
+      tableName="destination">
+      <column name="pseudonym_type"/>
+    </dropColumn>
+  </changeSet>
+
 </databaseChangeLog>
