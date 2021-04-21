@@ -129,7 +129,8 @@ public class Pseudonym {
     final String idGeneratedByMainzelliste =
         mainzellisteApi.generatePID(patientMetadata.generateMainzellisteFields());
     if (idGeneratedByMainzelliste == null) {
-      throw new IllegalStateException("Cannot get an external pseudonym of type ID_GENERATED_BY_MAINZELLISTE");
+      throw new IllegalStateException(
+          "Cannot get an external pseudonym of type ID_GENERATED_BY_MAINZELLISTE");
     }
     cachingExternalIDProvider(idGeneratedByMainzelliste, patientMetadata, destinationID);
     return idGeneratedByMainzelliste;
@@ -140,7 +141,8 @@ public class Pseudonym {
     final String externalIDInMainzelliste =
         mainzellisteApi.getExistingExternalID(patientMetadata.generateMainzellisteFields());
     if (externalIDInMainzelliste == null) {
-      throw new IllegalStateException("Cannot get an external pseudonym of type EXTID_IN_MAINTELLISTE");
+      throw new IllegalStateException(
+          "Cannot get an external pseudonym of type EXTID_IN_MAINTELLISTE");
     }
     cachingExternalIDProvider(externalIDInMainzelliste, patientMetadata, destinationID);
     return externalIDInMainzelliste;
@@ -159,7 +161,8 @@ public class Pseudonym {
       cachingExternalIDProvider(externalID, patientMetadata, destinationEntity.getId());
       return externalID;
     }
-    throw new IllegalStateException("Cannot get an external pseudonym of type EXTID_PROVIDER_IMPLEMENTATION");
+    throw new IllegalStateException(
+        "Cannot get an external pseudonym of type EXTID_PROVIDER_IMPLEMENTATION");
   }
 
   public String getExternalIDProviderCache(PatientMetadata patientMetadata, Long destinationID) {
