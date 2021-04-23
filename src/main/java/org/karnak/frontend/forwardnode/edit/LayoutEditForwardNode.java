@@ -467,6 +467,8 @@ public class LayoutEditForwardNode extends VerticalLayout {
                           layoutDesidentification.getLabelDisclaimer(),
                           layoutDesidentification.getProjectDropDown(),
                           layoutDesidentification.getDesidentificationName());
+                  layoutDesidentification.getProjectDropDown().clear();
+                  layoutDesidentification.getExtidListBox().clear();
                   layoutDesidentification.getCheckboxUseAsPatientName().clear();
                   layoutDesidentification.getExtidPresentInDicomTagView().clear();
                   layoutDesidentification
@@ -515,7 +517,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
     layoutDesidentification
         .getDestinationBinder()
         .forField(layoutDesidentification.getExtidListBox())
-        .withValidator(type -> type != null, "Choose pseudonym type\n")
+        .withValidator(type -> type != null || (type == null && !layoutDesidentification.getCheckboxDesidentification().getValue()), "Choose pseudonym type\n")
         .bind(
             destination -> {
               if (destination.getExternalIDProviderEntity() != null) {
