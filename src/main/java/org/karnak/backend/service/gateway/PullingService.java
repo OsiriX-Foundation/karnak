@@ -74,7 +74,7 @@ public final class PullingService extends AbstractGateway {
   // Services
   private final GatewaySetUpService gatewaySetUpService;
   private final Map<String, List<FileInfo>> downloadMap = new HashMap<>();
-  private volatile SSLSocketFactory sslFactory;
+  private SSLSocketFactory sslFactory;
 
   @Autowired
   public PullingService(final GatewaySetUpService gatewaySetUpService) {

@@ -28,11 +28,11 @@
     <java.version>14</java.version>
     <javax.el.version>3.0.0</javax.el.version>
     <javax.mail.version>1.6.2</javax.mail.version>
-    <maven-surefire-plugin.version>3.0.0-M4</maven-surefire-plugin.version>
+    <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <springframework.version>2.4.0</springframework.version>
-    <vaadin.version>17.0.10</vaadin.version>
+    <vaadin.version>17.0.11</vaadin.version>
     <weasis-dicom-tools.version>5.23.2-IMG-RELEASE</weasis-dicom-tools.version>
     <weasis.opencv.native.version>4.5.1-dcm</weasis.opencv.native.version>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
@@ -40,10 +40,8 @@
     <sonar.java.target>${java.version}</sonar.java.target>
     <sonar.organization>osirix-foundation-1</sonar.organization>
     <sonar.projectKey>karnak</sonar.projectKey>
+    <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     <jacoco-maven-plugin.version>0.8.6</jacoco-maven-plugin.version>
-    <sonar-maven-plugin.version>3.8.0.2131</sonar-maven-plugin.version>
-    <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
-    <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
     <h2.version>1.4.200</h2.version>
     <mockito.version>3.9.0</mockito.version>
     <springdoc.version>1.5.6</springdoc.version>
@@ -249,24 +247,13 @@
             </goals>
           </execution>
           <execution>
-            <id>prepare-agent-integration</id>
-            <goals>
-              <goal>prepare-agent-integration</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>jacoco-site</id>
-            <phase>verify</phase>
+            <id>report</id>
+            <phase>prepare-package</phase>
             <goals>
               <goal>report</goal>
             </goals>
           </execution>
         </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.sonarsource.scanner.maven</groupId>
-        <artifactId>sonar-maven-plugin</artifactId>
-        <version>${sonar-maven-plugin.version}</version>
       </plugin>
     </plugins>
     <resources>
