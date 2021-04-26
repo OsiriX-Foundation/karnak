@@ -303,7 +303,7 @@
   <dependencies>
     <dependency>
       <groupId>org.karnak</groupId>
-      <artifactId>ExternalIDProvider</artifactId>
+      <artifactId>externalid-provider-interface</artifactId>
       <version>1.0</version>
     </dependency>
 

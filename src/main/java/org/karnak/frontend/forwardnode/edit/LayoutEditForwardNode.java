@@ -517,7 +517,12 @@ public class LayoutEditForwardNode extends VerticalLayout {
     layoutDesidentification
         .getDestinationBinder()
         .forField(layoutDesidentification.getExtidListBox())
-        .withValidator(type -> type != null || (type == null && !layoutDesidentification.getCheckboxDesidentification().getValue()), "Choose pseudonym type\n")
+        .withValidator(
+            type ->
+                type != null
+                    || (type == null
+                        && !layoutDesidentification.getCheckboxDesidentification().getValue()),
+            "Choose pseudonym type\n")
         .bind(
             destination -> {
               if (destination.getExternalIDProviderEntity() != null) {

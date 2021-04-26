@@ -125,7 +125,6 @@
     </update>
   </changeSet>
 
-
   <!-- CREATE FOREIGN KEY FOR externalid_provider_id -->
   <changeSet author="karnak" id="1.2-12">
     <preConditions onFail="MARK_RAN">
