@@ -287,6 +287,9 @@ public class ForwardUtil {
         throw e;
       }
     } catch (Exception e) {
+      if (e instanceof InterruptedException) {
+        Thread.currentThread().interrupt();
+      }
       progressNotify(
           destination, p.getIuid(), p.getCuid(), true, streamSCU.getNumberOfSuboperations());
       LOGGER.error(ERROR_WHEN_FORWARDING, e);
@@ -358,6 +361,9 @@ public class ForwardUtil {
         throw e;
       }
     } catch (Exception e) {
+      if (e instanceof InterruptedException) {
+        Thread.currentThread().interrupt();
+      }
       progressNotify(
           destination, p.getIuid(), p.getCuid(), true, streamSCU.getNumberOfSuboperations());
       LOGGER.error(ERROR_WHEN_FORWARDING, e);
@@ -368,8 +374,6 @@ public class ForwardUtil {
 
   public static List<File> transfer(
       ForwardDicomNode fwdNode, WebForwardDestination destination, Attributes copy, Params p) {
-    String iuid = p.getIuid();
-    String cuid = p.getCuid();
     DicomInputStream in = null;
     List<File> files;
     try {
@@ -389,7 +393,6 @@ public class ForwardUtil {
         try (InputStream stream = p.getData()) {
           stow.uploadDicom(stream, fmi);
         } catch (HttpException httpException) {
-          LOGGER.error(httpException.getMessage(), httpException);
           throw new AbortException(Abort.FILE_EXCEPTION, httpException.getMessage());
         }
       } else {
@@ -402,8 +405,6 @@ public class ForwardUtil {
         }
         if (!editors.isEmpty()) {
           editors.forEach(e -> e.apply(attributes, context));
-          iuid = attributes.getString(Tag.SOPInstanceUID);
-          cuid = attributes.getString(Tag.SOPClassUID);
         }
 
         if (context.getAbort() == Abort.FILE_EXCEPTION) {
@@ -448,8 +449,6 @@ public class ForwardUtil {
 
   public static void transferOther(
       ForwardDicomNode fwdNode, WebForwardDestination destination, Attributes copy, Params p) {
-    String iuid = p.getIuid();
-    String cuid = p.getCuid();
     try {
       List<AttributeEditor> editors = destination.getDicomEditors();
       DicomStowRS stow = destination.getStowrsSingleFile();
@@ -464,8 +463,6 @@ public class ForwardUtil {
         AttributeEditorContext context = new AttributeEditorContext(outputTsuid, fwdNode, null);
         Attributes attributes = new Attributes(copy);
         editors.forEach(e -> e.apply(attributes, context));
-        iuid = attributes.getString(Tag.SOPInstanceUID);
-        cuid = attributes.getString(Tag.SOPClassUID);
 
         if (context.getAbort() == Abort.FILE_EXCEPTION) {
           throw new AbortException(context.getAbort(), context.getAbortMessage());
@@ -488,8 +485,7 @@ public class ForwardUtil {
       }
     } catch (HttpException httpException) {
       progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
-      LOGGER.error(httpException.getMessage(), httpException);
-      throw new AbortException(Abort.FILE_EXCEPTION, httpException.getMessage());
+      throw new AbortException(Abort.FILE_EXCEPTION, "DICOMWeb forward", httpException);
     } catch (AbortException e) {
       progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
       if (e.getAbort() == Abort.CONNECTION_EXCEPTION) {

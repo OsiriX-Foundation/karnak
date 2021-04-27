@@ -66,7 +66,6 @@ public class MainzellisteAddPatient extends VerticalLayout {
         });
 
     clearFieldsButton.addClickListener(click -> clearPatientFields());
-
     // enable/disable update button while editing
     binder.addStatusChangeListener(
         event -> {

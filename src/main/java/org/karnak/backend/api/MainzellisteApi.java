@@ -11,6 +11,7 @@ package org.karnak.backend.api;
 
 import com.google.gson.Gson;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
@@ -55,8 +56,8 @@ public class MainzellisteApi {
 
   public String addExternalID(Fields patientFields, String externalID) {
     this.sessionId = rqGetSessionId();
-    final String[] extid = {"pid", "extid"};
-    final Data data = new Data(extid, patientFields, new Ids(externalID));
+    String[] extid = {"pid", "extid"};
+    Data data = new Data(extid, patientFields, new Ids(externalID));
     try {
       return getRequest(data);
     } catch (Exception e) {
@@ -67,8 +68,8 @@ public class MainzellisteApi {
 
   public String getExistingExternalID(Fields patientFields) {
     this.sessionId = rqGetSessionId();
-    final String[] extid = {"pid", "extid"};
-    final Data data = new Data(extid, patientFields, null);
+    String[] extid = {"pid", "extid"};
+    Data data = new Data(extid, patientFields, null);
     try {
       return getRequest(data);
     } catch (Exception e) {
@@ -78,8 +79,8 @@ public class MainzellisteApi {
 
   public String generatePID(Fields patientFields) {
     this.sessionId = rqGetSessionId();
-    final String[] extid = {"pid"};
-    final Data data = new Data(extid, patientFields, null);
+    String[] extid = {"pid"};
+    Data data = new Data(extid, patientFields, null);
     try {
       return getRequest(data);
     } catch (Exception e) {
@@ -93,16 +94,22 @@ public class MainzellisteApi {
     return getPatients(searchIds);
   }
 
-  private String getRequest(Data data) throws IOException, InterruptedException {
-    final String tokenIDAddPatient = rqCreateTokenAddPatient(data);
-    final List<JSONObject> pseudonymList = rqCreatePatient(tokenIDAddPatient);
-    final String idTypes = data.get_idtypes()[data.get_idtypes().length - 1];
-    final JSONObject jsonPseudonym =
-        pseudonymList.stream()
-            .filter(p -> p.getString("idType").equals(idTypes))
-            .findFirst()
-            .orElseThrow();
-    return jsonPseudonym.getString("idString");
+  private String getRequest(Data data) throws IOException {
+    String tokenIDAddPatient;
+    try {
+      tokenIDAddPatient = rqCreateTokenAddPatient(data);
+      List<JSONObject> pseudonymList = rqCreatePatient(tokenIDAddPatient);
+      String idTypes = data.get_idtypes()[data.get_idtypes().length - 1];
+      JSONObject jsonPseudonym =
+          pseudonymList.stream()
+              .filter(p -> p.getString("idType").equals(idTypes))
+              .findFirst()
+              .orElseThrow();
+      return jsonPseudonym.getString("idString");
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw new IOException(e);
+    }
   }
 
   /***
@@ -143,6 +150,9 @@ public class MainzellisteApi {
     try {
       String tokenId = rqCreateTokenReadPatient(searchIds);
       patientArray = rqGetPatient(tokenId);
+    } catch (InterruptedException e) {
+      LOGGER.warn("Session interrupted. Cannot create patient", e);
+      Thread.currentThread().interrupt();
     } catch (Exception e) {
       LOGGER.error("Cannot create patient", e);
     }
@@ -167,8 +177,11 @@ public class MainzellisteApi {
     try {
       response = httpClient.send(request, BodyHandlers.ofString());
       controlErrorResponse(response);
-      final JSONObject jsonResp = new JSONObject(response.body());
+      JSONObject jsonResp = new JSONObject(response.body());
       this.sessionId = jsonResp.getString("sessionId");
+    } catch (InterruptedException e) {
+      LOGGER.warn("Session interrupted with Mainzelliste API", e);
+      Thread.currentThread().interrupt();
     } catch (Exception e) {
       LOGGER.error("Cannot get a sessionId with Mainzelliste API", e);
     }
@@ -180,9 +193,9 @@ public class MainzellisteApi {
    * @return sessionID
    */
   private String rqCreateTokenAddPatient(Data data) throws IOException, InterruptedException {
-    final Body bodyRequest = new Body("addPatient", data);
-    final Gson gson = new Gson();
-    final String jsonBody = gson.toJson(bodyRequest);
+    Body bodyRequest = new Body("addPatient", data);
+    Gson gson = new Gson();
+    String jsonBody = gson.toJson(bodyRequest);
 
     HttpRequest request =
         HttpRequest.newBuilder()
@@ -217,7 +230,7 @@ public class MainzellisteApi {
     HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
     controlErrorResponse(response);
 
-    final JSONObject jsonResp = new JSONObject(response.body());
+    JSONObject jsonResp = new JSONObject(response.body());
     return jsonResp.getString("tokenId");
   }
 
@@ -243,7 +256,7 @@ public class MainzellisteApi {
     List<JSONObject> newIds = new ArrayList<>();
     HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
     controlErrorResponse(response);
-    final JSONArray jsonResp = new JSONArray(response.body());
+    JSONArray jsonResp = new JSONArray(response.body());
     for (Object o : jsonResp) {
       if (o instanceof JSONObject) {
         newIds.add((JSONObject) o);
@@ -289,7 +302,7 @@ public class MainzellisteApi {
   }
 
   private void controlErrorResponse(HttpResponse<String> response) {
-    if (response.statusCode() > 299) {
+    if (response.statusCode() >= HttpURLConnection.HTTP_BAD_REQUEST) {
       final String errorMsg =
           "\n\tMainzelliste response : "
               + "\n\t\tstatus code: "

@@ -93,9 +93,8 @@ public class DownloadingServlet extends HttpServlet {
    *
    * @param resp The response
    * @param path The path of the file you want to download.
-   * @throws IOException
    */
-  private boolean download(HttpServletResponse resp, Path path) throws IOException {
+  private boolean download(HttpServletResponse resp, Path path) {
     if (path == null || !Files.isReadable(path)) {
       LOGGER.warn("Cannot get this file for downloading: {}", path);
       return false;
@@ -114,6 +113,9 @@ public class DownloadingServlet extends HttpServlet {
       }
       op.flush();
       return true;
+    } catch (IOException e) {
+      LOGGER.error("Downloading", e);
     }
+    return false;
   }
 }
