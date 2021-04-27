@@ -120,8 +120,8 @@
 
   <changeSet author="karnak" id="1.2-11">
     <update schemaName="public" tableName="destination">
-      <column name="externalid_provider_id" value="null"/>
-      <where>pseudonym_type is null</where>
+      <column name="externalid_provider_id" value="NULL"/>
+      <where>desidentification='false'</where>
     </update>
   </changeSet>
 
