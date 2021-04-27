@@ -157,7 +157,6 @@ public class LayoutDesidentification extends Div {
           if (event.getValue() != null) {
             div.add(UIS.setWidthFull(checkboxUseAsPatientName));
             if (event.getValue().equals(EXTID_IN_TAG.getDescription())) {
-              extidPresentInDicomTagView.enableComponent();
               div.add(extidPresentInDicomTagView);
             } else {
               extidPresentInDicomTagView.clear();
