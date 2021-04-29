@@ -142,11 +142,11 @@ public class GatewaySetUpService {
   private static AdvancedParams getDefaultAdvancedParameters() {
     AdvancedParams params = new AdvancedParams();
     ConnectOptions connectOptions = new ConnectOptions();
-    connectOptions.setConnectTimeout(3000);
-    connectOptions.setAcceptTimeout(5000);
+    connectOptions.setConnectTimeout(5000);
+    connectOptions.setAcceptTimeout(7000);
     // Concurrent DICOM operations
-    connectOptions.setMaxOpsInvoked(3);
-    connectOptions.setMaxOpsPerformed(3);
+    connectOptions.setMaxOpsInvoked(50);
+    connectOptions.setMaxOpsPerformed(50);
     params.setConnectOptions(connectOptions);
     return params;
   }
@@ -239,13 +239,8 @@ public class GatewaySetUpService {
   }
 
   public AdvancedParams getAdvancedParams() {
-    AdvancedParams options = new AdvancedParams();
-    ConnectOptions connectOptions = new ConnectOptions();
-    connectOptions.setConnectTimeout(3000);
-    connectOptions.setAcceptTimeout(5000);
-    // Concurrent DICOM operations
-    connectOptions.setMaxOpsInvoked(15);
-    connectOptions.setMaxOpsPerformed(15);
+    AdvancedParams options = getDefaultAdvancedParameters();
+    ConnectOptions connectOptions = options.getConnectOptions();
     if (getListenerTLS()) {
       TlsOptions tls =
           new TlsOptions(
@@ -273,9 +268,7 @@ public class GatewaySetUpService {
 
   public List<ForwardDestination> getDestination(String fwdAET) {
     Optional<ForwardDicomNode> node = getDestinationNode(fwdAET);
-    if (node.isPresent()) {
-      getDestinations(node.get());
-    }
+    node.ifPresent(this::getDestinations);
     return Collections.emptyList();
   }
 
@@ -384,8 +377,8 @@ public class GatewaySetUpService {
                       kheopsAlbums -> {
                         switchingAlbum.applyAfterTransfer(kheopsAlbums, dcm);
                       });
-                }
-              });
+                });
+          }
           dstList.add(fwd);
         } else {
           DicomNode destinationNode =
