@@ -237,7 +237,7 @@ public class ForwardUtil {
       DataWriter dataWriter;
       String tsuid = p.getTsuid();
       String iuid = p.getIuid();
-      String cuid = p.getIuid();
+      String cuid = p.getCuid();
       String supportedTsuid = streamSCU.selectTransferSyntax(cuid, tsuid);
       List<AttributeEditor> editors = destination.getDicomEditors();
 
@@ -248,7 +248,7 @@ public class ForwardUtil {
             new AttributeEditorContext(tsuid, sourceNode, streamSCU.getRemoteDicomNode());
         in = new DicomInputStream(p.getData(), tsuid);
         in.setIncludeBulkData(IncludeBulkData.URI);
-        Attributes attributes = in.readDataset(-1, -1);
+        Attributes attributes = in.readDataset();
         if (copy != null) {
           copy.addAll(attributes);
         }
@@ -324,7 +324,7 @@ public class ForwardUtil {
       DataWriter dataWriter;
       String tsuid = p.getTsuid();
       String iuid = p.getIuid();
-      String cuid = p.getIuid();
+      String cuid = p.getCuid();
       String supportedTsuid = streamSCU.selectTransferSyntax(cuid, tsuid);
       List<AttributeEditor> editors = destination.getDicomEditors();
       if (editors.isEmpty() && supportedTsuid.equals(tsuid)) {
@@ -343,7 +343,7 @@ public class ForwardUtil {
           throw new AbortException(context.getAbort(), context.getAbortMessage());
         } else if (context.getAbort() == Abort.CONNECTION_EXCEPTION) {
           throw new AbortException(
-              context.getAbort(), "DICOM associtation abort. " + context.getAbortMessage());
+              context.getAbort(), "DICOM association abort. " + context.getAbortMessage());
         }
 
         BytesWithImageDescriptor desc =
@@ -399,7 +399,7 @@ public class ForwardUtil {
         AttributeEditorContext context = new AttributeEditorContext(outputTsuid, fwdNode, null);
         in = new DicomInputStream(p.getData(), p.getTsuid());
         in.setIncludeBulkData(IncludeBulkData.URI);
-        Attributes attributes = in.readDataset(-1, -1);
+        Attributes attributes = in.readDataset();
         if (copy != null) {
           copy.addAll(attributes);
         }
