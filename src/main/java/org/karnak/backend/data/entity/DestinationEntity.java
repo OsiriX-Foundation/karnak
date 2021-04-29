@@ -137,10 +137,10 @@ public class DestinationEntity implements Serializable {
     this.notifyObjectErrorPrefix = "";
     this.notifyObjectPattern = "";
     this.notifyObjectValues = "";
-    this.notifyInterval = Integer.valueOf(0);
+    this.notifyInterval = 0;
     this.aeTitle = "";
     this.hostname = "";
-    this.port = Integer.valueOf(0);
+    this.port = 0;
     this.useaetdest = Boolean.FALSE;
     this.url = "";
     this.urlCredentials = "";
