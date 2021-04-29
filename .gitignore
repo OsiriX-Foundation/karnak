@@ -49,3 +49,4 @@ pnpm-lock.yaml
 .vscode
 
 logs/
+externalid-providers/

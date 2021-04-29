@@ -84,26 +84,28 @@ public class ExternalIDProviderConfig {
   public void loadExternalIDImplClass(String directory, String classpath) {
     externalIDProviderImplMap = new HashMap<>();
     File pluginsDir = new File(System.getProperty("user.dir") + directory);
-    for (File jar : pluginsDir.listFiles()) {
-      try {
-        ClassLoader loader =
-            URLClassLoader.newInstance(
-                new URL[] {jar.toURI().toURL()}, getClass().getClassLoader());
-        Class<?> clazz = Class.forName(classpath, true, loader);
-        Class<? extends ExternalIDProvider> newClass = clazz.asSubclass(ExternalIDProvider.class);
-        Constructor<? extends ExternalIDProvider> constructor = newClass.getConstructor();
-        final ExternalIDProvider externalIDProvider = constructor.newInstance();
-        final String jarName = jar.getName();
-        externalIDProviderImplMap.put(jarName, externalIDProvider);
-        addExternalIDProviderImplInDb(jarName);
-        LOGGER.warn(
-            "Implementation of an external id provider are loaded in {}{}/{}",
-            System.getProperty("user.dir"),
-            EXTERNALID_PROVIDERS_DIRECTORY,
-            jarName);
-      } catch (Exception e) {
-        LOGGER.error(
-            "Cannot not load correctly the externalID provider implementationthe with jar", e);
+    if (pluginsDir.listFiles() != null) {
+      for (File jar : pluginsDir.listFiles()) {
+        try {
+          ClassLoader loader =
+              URLClassLoader.newInstance(
+                  new URL[] {jar.toURI().toURL()}, getClass().getClassLoader());
+          Class<?> clazz = Class.forName(classpath, true, loader);
+          Class<? extends ExternalIDProvider> newClass = clazz.asSubclass(ExternalIDProvider.class);
+          Constructor<? extends ExternalIDProvider> constructor = newClass.getConstructor();
+          final ExternalIDProvider externalIDProvider = constructor.newInstance();
+          final String jarName = jar.getName();
+          externalIDProviderImplMap.put(jarName, externalIDProvider);
+          addExternalIDProviderImplInDb(jarName);
+          LOGGER.warn(
+              "Implementation of an external id provider are loaded in {}{}/{}",
+              System.getProperty("user.dir"),
+              EXTERNALID_PROVIDERS_DIRECTORY,
+              jarName);
+        } catch (Exception e) {
+          LOGGER.error(
+              "Cannot not load correctly the externalID provider implementationthe with jar", e);
+        }
       }
     }
   }
