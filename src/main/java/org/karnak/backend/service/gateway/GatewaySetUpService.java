@@ -12,12 +12,15 @@ package org.karnak.backend.service.gateway;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.dcm4che3.data.Attributes;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -126,8 +129,8 @@ public class GatewaySetUpService {
     String notifyObjectErrorPrefix = getProperty("NOTIFY_OBJECT_ERROR_PREFIX", "**ERROR**");
     String notifyObjectPattern =
         getProperty("NOTIFY_OBJECT_PATTERN", "[Karnak Notification] %s %.30s");
-    String[] notifyObjectValues =
-        getProperty("NOTIFY_OBJECT_VALUES", "PatientID,StudyDescription").split(",");
+    List<String> notifyObjectValues =
+        Arrays.asList(getProperty("NOTIFY_OBJECT_VALUES", "PatientID,StudyDescription").split(","));
     int notifyInterval = StringUtil.getInt(getProperty("NOTIFY_INTERNAL", "45"));
     this.notificationSetUp =
         new NotificationSetUp(
@@ -317,38 +320,43 @@ public class GatewaySetUpService {
             }
           });
 
-      final boolean desidentificationEnable = dstNode.isDesidentification();
-      final boolean profileDefined =
+      StreamRegistryEditor streamRegistryEditor = new StreamRegistryEditor();
+      editors.add(streamRegistryEditor);
+
+      boolean deidentificationEnable = dstNode.isDesidentification();
+      boolean profileDefined =
           dstNode.getProjectEntity() != null
               && dstNode.getProjectEntity().getProfileEntity() != null;
-      if (desidentificationEnable && profileDefined) { // TODO add an option in destination model
+      if (deidentificationEnable && profileDefined) { // TODO add an option in destination model
         editors.add(new DeIdentifyEditor(dstNode));
       }
 
       DicomProgress progress = new DicomProgress();
-
-      StreamRegistryEditor streamRegistryEditor = new StreamRegistryEditor();
-      editors.add(streamRegistryEditor);
-      String[] emails = dstNode.getNotify().split(",");
-      NotificationSetUp notifConfig = null;
+      List<String> emails =
+          Stream.of(dstNode.getNotify().split(","))
+              .filter(item -> !item.trim().isEmpty())
+              .collect(Collectors.toList());
       String notifyObjectErrorPrefix = dstNode.getNotifyObjectErrorPrefix();
       String notifyObjectPattern = dstNode.getNotifyObjectPattern();
-      String[] notifyObjectValues = dstNode.getNotifyObjectValues().split(",");
+      List<String> notifyObjectValues =
+          Stream.of(dstNode.getNotifyObjectValues().split(","))
+              .filter(item -> !item.trim().isEmpty())
+              .collect(Collectors.toList());
       Integer notifyInterval = dstNode.getNotifyInterval();
 
-      if (notifyObjectErrorPrefix == null) {
+      if (!StringUtil.hasText(notifyObjectErrorPrefix)) {
         notifyObjectErrorPrefix = getNotificationSetUp().getNotifyObjectErrorPrefix();
       }
-      if (notifyObjectPattern == null) {
+      if (!StringUtil.hasText(notifyObjectPattern)) {
         notifyObjectPattern = getNotificationSetUp().getNotifyObjectPattern();
       }
-      if (notifyObjectValues == null) {
+      if (notifyObjectValues.isEmpty()) {
         notifyObjectValues = getNotificationSetUp().getNotifyObjectValues();
       }
       if (notifyInterval == null || notifyInterval <= 0) {
         notifyInterval = getNotificationSetUp().getNotifyInterval();
       }
-      notifConfig =
+      NotificationSetUp notifConfig =
           new NotificationSetUp(
               notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues, notifyInterval);
       if (dstNode.isActivate()) {
