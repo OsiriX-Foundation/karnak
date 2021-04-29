@@ -9,11 +9,13 @@
  */
 package org.karnak.backend.model.action;
 
+import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.VR;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
+import org.weasis.core.util.StringUtil;
 
 public abstract class AbstractAction implements ActionItem {
   protected static final Logger LOGGER = LoggerFactory.getLogger(AbstractAction.class);
@@ -86,5 +88,19 @@ public abstract class AbstractAction implements ActionItem {
 
   public void setVr(VR vr) {
     this.vr = vr;
+  }
+
+  public static String getStringValue(Attributes dcm, int tag) {
+    if (dcm != null) {
+      VR vr = dcm.getVR(tag);
+      if (vr.isInlineBinary()) {
+        return "Binary Data";
+      } else if (vr == VR.SQ) {
+        return "Sequence Data";
+      } else {
+        return dcm.getString(tag, StringUtil.EMPTY_STRING);
+      }
+    }
+    return StringUtil.EMPTY_STRING;
   }
 }
