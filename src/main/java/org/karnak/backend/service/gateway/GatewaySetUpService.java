@@ -300,18 +300,18 @@ public class GatewaySetUpService {
         editors.add(new FilterEditor(dstNode.getSOPClassUIDEntityFilters()));
       }
 
-      final List<KheopsAlbumsEntity> listKheopsAlbumEntities = dstNode.getKheopsAlbumEntities();
+      final List<KheopsAlbumsEntity> kheopsAlbumEntities = dstNode.getKheopsAlbumEntities();
 
       SwitchingAlbum switchingAlbum = new SwitchingAlbum();
-      editors.add(
-          (Attributes dcm, AttributeEditorContext context) -> {
-            if (listKheopsAlbumEntities != null) {
-              listKheopsAlbumEntities.forEach(
+      if (kheopsAlbumEntities != null && !kheopsAlbumEntities.isEmpty()) {
+        editors.add(
+            (Attributes dcm, AttributeEditorContext context) -> {
+              kheopsAlbumEntities.forEach(
                   kheopsAlbums -> {
                     switchingAlbum.apply(dstNode, kheopsAlbums, dcm);
                   });
-            }
-          });
+            });
+      }
 
       StreamRegistryEditor streamRegistryEditor = new StreamRegistryEditor();
       editors.add(streamRegistryEditor);
@@ -369,11 +369,11 @@ public class GatewaySetUpService {
                   dstNode.getId(), fwdSrcNode, dstNode.getUrl(), map, progress, editors);
           progress.addProgressListener(
               new EmailNotifyProgress(streamRegistryEditor, fwd, emails, this, notifConfig));
-          progress.addProgressListener(
-              (DicomProgress dicomProgress) -> {
-                Attributes dcm = dicomProgress.getAttributes();
-                if (listKheopsAlbumEntities != null) {
-                  listKheopsAlbumEntities.forEach(
+          if (kheopsAlbumEntities != null && !kheopsAlbumEntities.isEmpty()) {
+            progress.addProgressListener(
+                (DicomProgress dicomProgress) -> {
+                  Attributes dcm = dicomProgress.getAttributes();
+                  kheopsAlbumEntities.forEach(
                       kheopsAlbums -> {
                         switchingAlbum.applyAfterTransfer(kheopsAlbums, dcm);
                       });
