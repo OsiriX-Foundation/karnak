@@ -18,8 +18,12 @@ import java.util.Set;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.dcm4che3.data.UID;
+import org.dcm4che3.img.DicomOutputData;
+import org.dcm4che3.img.op.MaskArea;
 import org.dcm4che3.img.stream.BytesWithImageDescriptor;
 import org.dcm4che3.img.stream.ImageAdapter;
+import org.dcm4che3.img.stream.ImageAdapter.AdaptTransferSyntax;
+import org.dcm4che3.img.util.Editable;
 import org.dcm4che3.io.DicomInputStream;
 import org.dcm4che3.io.DicomInputStream.IncludeBulkData;
 import org.dcm4che3.net.Association;
@@ -31,6 +35,7 @@ import org.dcm4che3.net.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.weasis.core.util.FileUtil;
+import org.weasis.core.util.LangUtil;
 import org.weasis.dicom.param.AttributeEditor;
 import org.weasis.dicom.param.AttributeEditorContext;
 import org.weasis.dicom.param.AttributeEditorContext.Abort;
@@ -39,6 +44,7 @@ import org.weasis.dicom.util.ServiceUtil.ProgressStatus;
 import org.weasis.dicom.util.StoreFromStreamSCU;
 import org.weasis.dicom.web.DicomStowRS;
 import org.weasis.dicom.web.HttpException;
+import org.weasis.opencv.data.PlanarImage;
 
 public class ForwardUtil {
   private static final String ERROR_WHEN_FORWARDING =
@@ -134,7 +140,7 @@ public class ForwardUtil {
       for (ForwardDestination fwDest : destList) {
         try {
           if (fwDest instanceof DicomForwardDestination) {
-            prepareTransfer((DicomForwardDestination) fwDest, p.getCuid(), p.getTsuid());
+            prepareTransfer((DicomForwardDestination) fwDest, p);
           }
           destConList.add(fwDest);
         } catch (Exception e) {
@@ -182,7 +188,7 @@ public class ForwardUtil {
       ForwardDicomNode fwdNode, ForwardDestination destination, Params p) throws IOException {
     if (destination instanceof DicomForwardDestination) {
       DicomForwardDestination dest = (DicomForwardDestination) destination;
-      prepareTransfer(dest, p.getCuid(), p.getTsuid());
+      prepareTransfer(dest, p);
       transfer(fwdNode, dest, null, p);
     } else if (destination instanceof WebForwardDestination) {
       transfer(fwdNode, (WebForwardDestination) destination, null, p);
@@ -190,23 +196,23 @@ public class ForwardUtil {
   }
 
   public static synchronized StoreFromStreamSCU prepareTransfer(
-      DicomForwardDestination destination, String cuid, String tsuid) throws IOException {
-    String outTsuid =
-        tsuid.equals(UID.RLELossless)
-                || tsuid.equals(UID.ImplicitVRLittleEndian)
-                || tsuid.equals(UID.ExplicitVRBigEndian)
-            ? UID.ExplicitVRLittleEndian
-            : tsuid;
+      DicomForwardDestination destination, Params p) throws IOException {
+    String cuid = p.getCuid();
+    String tsuid = p.getTsuid();
+    String dstTsuid = destination.getOutputTransferSyntax(tsuid);
     StoreFromStreamSCU streamSCU = destination.getStreamSCU();
     if (streamSCU.hasAssociation()) {
       // Handle dynamically new SOPClassUID
       Set<String> tss = streamSCU.getTransferSyntaxesFor(cuid);
-      if (!tss.contains(tsuid)) {
+      if (!tss.contains(dstTsuid)) {
         streamSCU.close(true);
       }
 
       // Add Presentation Context for the association
-      streamSCU.addData(cuid, tsuid);
+      streamSCU.addData(cuid, dstTsuid);
+      if (DicomOutputData.isAdaptableSyntax(dstTsuid)) {
+        streamSCU.addData(cuid, UID.JPEGLosslessSV1);
+      }
 
       if (!streamSCU.isReadyForDataTransfer()) {
         // If connection has been closed just reopen
@@ -215,9 +221,12 @@ public class ForwardUtil {
     } else {
       destination.getStreamSCUService().start();
       // Add Presentation Context for the association
-      streamSCU.addData(cuid, outTsuid);
-      if (!outTsuid.equals(UID.ExplicitVRLittleEndian)) {
+      streamSCU.addData(cuid, dstTsuid);
+      if (!dstTsuid.equals(UID.ExplicitVRLittleEndian)) {
         streamSCU.addData(cuid, UID.ExplicitVRLittleEndian);
+      }
+      if (DicomOutputData.isAdaptableSyntax(dstTsuid)) {
+        streamSCU.addData(cuid, UID.JPEGLosslessSV1);
       }
       streamSCU.open();
     }
@@ -229,19 +238,22 @@ public class ForwardUtil {
       throws IOException {
     StoreFromStreamSCU streamSCU = destination.getStreamSCU();
     DicomInputStream in = null;
-    List<File> files = null;
+    List<File> files;
     try {
       if (!streamSCU.isReadyForDataTransfer()) {
         throw new IllegalStateException("Association not ready for transfer.");
       }
       DataWriter dataWriter;
-      String tsuid = p.getTsuid();
-      String iuid = p.getIuid();
       String cuid = p.getCuid();
-      String supportedTsuid = streamSCU.selectTransferSyntax(cuid, tsuid);
+      String iuid = p.getIuid();
+      String tsuid = p.getTsuid();
+      var syntax =
+          new AdaptTransferSyntax(
+              tsuid,
+              streamSCU.selectTransferSyntax(cuid, destination.getOutputTransferSyntax(tsuid)));
       List<AttributeEditor> editors = destination.getDicomEditors();
 
-      if (copy == null && editors.isEmpty() && supportedTsuid.equals(tsuid)) {
+      if (copy == null && editors.isEmpty() && syntax.getRequested().equals(tsuid)) {
         dataWriter = new InputStreamDataWriter(p.getData());
       } else {
         AttributeEditorContext context =
@@ -272,12 +284,12 @@ public class ForwardUtil {
               context.getAbort(), "DICOM association abort: " + context.getAbortMessage());
         }
 
-        BytesWithImageDescriptor desc =
-            ImageAdapter.imageTranscode(attributes, tsuid, supportedTsuid, context);
-        dataWriter = ImageAdapter.buildDataWriter(attributes, supportedTsuid, context, desc);
+        BytesWithImageDescriptor desc = ImageAdapter.imageTranscode(attributes, syntax, context);
+        Editable<PlanarImage> editable = transformImage(attributes, context);
+        dataWriter = ImageAdapter.buildDataWriter(attributes, syntax, editable, desc);
       }
 
-      streamSCU.cstore(cuid, iuid, p.getPriority(), dataWriter, supportedTsuid);
+      streamSCU.cstore(cuid, iuid, p.getPriority(), dataWriter, syntax.getSuitable());
       progressNotify(
           destination, p.getIuid(), p.getCuid(), false, streamSCU.getNumberOfSuboperations());
     } catch (AbortException e) {
@@ -298,6 +310,26 @@ public class ForwardUtil {
       files = cleanOrGetBulkDataFiles(in, copy == null);
     }
     return files;
+  }
+
+  private static Editable<PlanarImage> transformImage(
+      Attributes attributes, AttributeEditorContext context) {
+    MaskArea m = context.getMaskArea();
+    boolean defacing =
+        LangUtil.getEmptytoFalse(context.getProperties().getProperty(Defacer.APPLY_DEFACING));
+    if (m != null || defacing) {
+      return img -> {
+        PlanarImage image = img;
+        if (defacing) {
+          image = Defacer.apply(attributes, image);
+        }
+        if (m != null) {
+          image = MaskArea.drawShape(image.toMat(), m);
+        }
+        return image;
+      };
+    }
+    return null;
   }
 
   private static List<File> cleanOrGetBulkDataFiles(DicomInputStream in, boolean clean) {
@@ -325,9 +357,12 @@ public class ForwardUtil {
       String tsuid = p.getTsuid();
       String iuid = p.getIuid();
       String cuid = p.getCuid();
-      String supportedTsuid = streamSCU.selectTransferSyntax(cuid, tsuid);
+      var syntax =
+          new AdaptTransferSyntax(
+              tsuid,
+              streamSCU.selectTransferSyntax(cuid, destination.getOutputTransferSyntax(tsuid)));
       List<AttributeEditor> editors = destination.getDicomEditors();
-      if (editors.isEmpty() && supportedTsuid.equals(tsuid)) {
+      if (editors.isEmpty() && syntax.getRequested().equals(tsuid)) {
         dataWriter = new DataWriterAdapter(copy);
       } else {
         AttributeEditorContext context =
@@ -346,12 +381,12 @@ public class ForwardUtil {
               context.getAbort(), "DICOM association abort. " + context.getAbortMessage());
         }
 
-        BytesWithImageDescriptor desc =
-            ImageAdapter.imageTranscode(attributes, tsuid, supportedTsuid, context);
-        dataWriter = ImageAdapter.buildDataWriter(attributes, supportedTsuid, context, desc);
+        BytesWithImageDescriptor desc = ImageAdapter.imageTranscode(attributes, syntax, context);
+        Editable<PlanarImage> editable = transformImage(attributes, context);
+        dataWriter = ImageAdapter.buildDataWriter(attributes, syntax, editable, desc);
       }
 
-      streamSCU.cstore(cuid, iuid, p.getPriority(), dataWriter, supportedTsuid);
+      streamSCU.cstore(cuid, iuid, p.getPriority(), dataWriter, syntax.getSuitable());
       progressNotify(
           destination, p.getIuid(), p.getCuid(), false, streamSCU.getNumberOfSuboperations());
     } catch (AbortException e) {
@@ -379,24 +414,19 @@ public class ForwardUtil {
     try {
       List<AttributeEditor> editors = destination.getDicomEditors();
       DicomStowRS stow = destination.getStowrsSingleFile();
-      String outputTsuid = p.getTsuid();
-      boolean originalTsuid =
-          !(UID.ImplicitVRLittleEndian.equals(outputTsuid)
-              || UID.ExplicitVRBigEndian.equals(outputTsuid));
-      if (!originalTsuid) {
-        outputTsuid = UID.ExplicitVRLittleEndian;
-      }
+      var syntax =
+          new AdaptTransferSyntax(p.getTsuid(), destination.getOutputTransferSyntax(p.getTsuid()));
 
-      if (originalTsuid && copy == null && editors.isEmpty()) {
+      if (syntax.getRequested().equals(p.getTsuid()) && copy == null && editors.isEmpty()) {
         Attributes fmi =
-            Attributes.createFileMetaInformation(p.getIuid(), p.getCuid(), outputTsuid);
+            Attributes.createFileMetaInformation(p.getIuid(), p.getCuid(), syntax.getRequested());
         try (InputStream stream = p.getData()) {
           stow.uploadDicom(stream, fmi);
         } catch (HttpException httpException) {
           throw new AbortException(Abort.FILE_EXCEPTION, httpException.getMessage());
         }
       } else {
-        AttributeEditorContext context = new AttributeEditorContext(outputTsuid, fwdNode, null);
+        AttributeEditorContext context = new AttributeEditorContext(p.getTsuid(), fwdNode, null);
         in = new DicomInputStream(p.getData(), p.getTsuid());
         in.setIncludeBulkData(IncludeBulkData.URI);
         Attributes attributes = in.readDataset();
@@ -420,16 +450,12 @@ public class ForwardUtil {
               context.getAbort(), "STOW-RS abort: " + context.getAbortMessage());
         }
 
-        if (UID.RLELossless.equals(outputTsuid)) { // Missing RLE writer
-          outputTsuid = UID.ExplicitVRLittleEndian;
-        }
-        // Do not set original TSUID to avoid RLE transcoding when there is no mask to apply
-        BytesWithImageDescriptor desc =
-            ImageAdapter.imageTranscode(attributes, outputTsuid, outputTsuid, context);
+        BytesWithImageDescriptor desc = ImageAdapter.imageTranscode(attributes, syntax, context);
         if (desc == null) {
-          stow.uploadDicom(attributes, outputTsuid);
+          stow.uploadDicom(attributes, syntax.getOriginal());
         } else {
-          stow.uploadPayload(ImageAdapter.preparePlayload(attributes, outputTsuid, desc, context));
+          Editable<PlanarImage> editable = transformImage(attributes, context);
+          stow.uploadPayload(ImageAdapter.preparePlayload(attributes, syntax, desc, editable));
         }
       }
       progressNotify(destination, p.getIuid(), p.getCuid(), false, 0);
@@ -452,15 +478,12 @@ public class ForwardUtil {
     try {
       List<AttributeEditor> editors = destination.getDicomEditors();
       DicomStowRS stow = destination.getStowrsSingleFile();
-      String outputTsuid = p.getTsuid();
-      if (UID.ImplicitVRLittleEndian.equals(outputTsuid)
-          || UID.ExplicitVRBigEndian.equals(outputTsuid)) {
-        outputTsuid = UID.ExplicitVRLittleEndian;
-      }
-      if (editors.isEmpty()) {
-        stow.uploadDicom(copy, outputTsuid);
+      var syntax =
+          new AdaptTransferSyntax(p.getTsuid(), destination.getOutputTransferSyntax(p.getTsuid()));
+      if (syntax.getRequested().equals(p.getTsuid()) && editors.isEmpty()) {
+        stow.uploadDicom(copy, syntax.getRequested());
       } else {
-        AttributeEditorContext context = new AttributeEditorContext(outputTsuid, fwdNode, null);
+        AttributeEditorContext context = new AttributeEditorContext(p.getTsuid(), fwdNode, null);
         Attributes attributes = new Attributes(copy);
         editors.forEach(e -> e.apply(attributes, context));
 
@@ -471,15 +494,12 @@ public class ForwardUtil {
               context.getAbort(), "DICOM associtation abort. " + context.getAbortMessage());
         }
 
-        if (UID.RLELossless.equals(outputTsuid)) { // Missing RLE writer
-          outputTsuid = UID.ExplicitVRLittleEndian;
-        }
-        BytesWithImageDescriptor desc =
-            ImageAdapter.imageTranscode(attributes, outputTsuid, outputTsuid, context);
+        BytesWithImageDescriptor desc = ImageAdapter.imageTranscode(attributes, syntax, context);
         if (desc == null) {
-          stow.uploadDicom(attributes, outputTsuid);
+          stow.uploadDicom(attributes, syntax.getOriginal());
         } else {
-          stow.uploadPayload(ImageAdapter.preparePlayload(attributes, outputTsuid, desc, context));
+          Editable<PlanarImage> editable = transformImage(attributes, context);
+          stow.uploadPayload(ImageAdapter.preparePlayload(attributes, syntax, desc, editable));
         }
         progressNotify(destination, p.getIuid(), p.getCuid(), false, 0);
       }
