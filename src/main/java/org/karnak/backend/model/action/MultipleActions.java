@@ -60,14 +60,16 @@ public class MultipleActions extends AbstractAction {
         ActionItem action = defaultAction();
         action.execute(dcm, tag, hmac);
         LOGGER.warn(
-            "Could not found the attribute {} in the SOP {}. The most strictest action will be choose ({}).",
+            "Cannot find the attribute {} in the SOP {}.  The strictest action will be chosen ({}).",
             tagPath,
             sopUID,
             symbol);
       }
     } catch (StandardDICOMException standardDICOMException) {
-      LOGGER.error(
-          "Could not execute the action {} with the SOP {} and the attribute {}",
+      ActionItem action = defaultAction();
+      action.execute(dcm, tag, hmac);
+      LOGGER.warn(
+          "Cannot execute the action {} with the SOP {} and the attribute {}. The strictest action will be chosen.",
           symbol,
           sopUID,
           tagPath,
