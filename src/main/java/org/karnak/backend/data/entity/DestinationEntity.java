@@ -132,7 +132,7 @@ public class DestinationEntity implements Serializable {
     this.delimiter = null;
     this.position = null;
     this.savePseudonym = null;
-    this.filterBySOPClasses = true;
+    this.filterBySOPClasses = false;
     this.notify = "";
     this.notifyObjectErrorPrefix = "";
     this.notifyObjectPattern = "";
