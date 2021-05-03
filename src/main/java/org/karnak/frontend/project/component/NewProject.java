@@ -41,7 +41,7 @@ public class NewProject extends HorizontalLayout {
 
     textResearchName.setWidth("20%");
     textResearchName.getStyle().set("padding-right", "10px");
-    textResearchName.setPlaceholder("Research Name");
+    textResearchName.setPlaceholder("Enter Name");
   }
 
   public Button getButtonAdd() {
