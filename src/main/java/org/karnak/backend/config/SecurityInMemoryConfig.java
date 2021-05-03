@@ -50,8 +50,8 @@ public class SecurityInMemoryConfig extends WebSecurityConfigurerAdapter {
         // Allows all internal traffic from the Vaadin framework
         .requestMatchers(SecurityUtil::isFrameworkInternalRequest)
         .permitAll()
-        // Allow all get endpoints
-        .antMatchers(HttpMethod.GET, "/api/**")
+        // Allow get echo endpoint
+        .antMatchers(HttpMethod.GET, "/api/echo/destinations")
         .permitAll()
         // Allows all authenticated traffic
         .antMatchers("/*")
@@ -92,19 +92,20 @@ public class SecurityInMemoryConfig extends WebSecurityConfigurerAdapter {
             "/VAADIN/**",
             // the standard favicon URI
             "/favicon.ico",
-            // the robots exclusion standard
-            "/robots.txt",
             // web application manifest
             "/manifest.webmanifest",
             "/sw.js",
             "/offline.html",
             // icons and images
-            "/icons/**",
-            "/images/**",
-            "/styles/**",
-            "/img/**",
+            "/icons/logo**",
+            "/img/karnak.png" // ,
+            // "/img/**" // ,
+            // "/images/**",
+            // "/styles/**",
+            // the robots exclusion standard
+            // "/robots.txt",
             // (development mode) H2 debugging console
-            "/h2-console/**");
+            /*"/h2-console/**"*/ );
   }
 
   @Bean
