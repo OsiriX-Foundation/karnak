@@ -23,21 +23,22 @@ public class Add extends AbstractAction {
 
   @Override
   public void execute(Attributes dcm, int tag, HMAC hmac) {
-    String tagValueIn = dcm.getString(newTag);
+    if (LOGGER.isTraceEnabled()) {
+      String tagValueIn = AbstractAction.getStringValue(dcm, newTag);
+      LOGGER.trace(
+          CLINICAL_MARKER,
+          PATTERN_WITH_INOUT,
+          MDC.get("SOPInstanceUID"),
+          TagUtils.toString(newTag),
+          symbol,
+          tagValueIn,
+          dummyValue);
+    }
 
     if (dummyValue != null) {
       dcm.setString(newTag, vr, dummyValue);
     } else {
       dcm.setNull(newTag, vr);
     }
-
-    LOGGER.trace(
-        CLINICAL_MARKER,
-        PATTERN_WITH_INOUT,
-        MDC.get("SOPInstanceUID"),
-        TagUtils.toString(newTag),
-        symbol,
-        tagValueIn,
-        dcm.getString(newTag));
   }
 }
