@@ -13,7 +13,7 @@ import com.vaadin.flow.component.grid.Grid;
 import java.io.Serial;
 import java.util.List;
 import org.dcm4che3.data.Attributes;
-import org.dcm4che3.util.TagUtils;
+import org.dcm4che3.data.Keyword;
 import org.weasis.core.util.StringUtil;
 import org.weasis.dicom.op.CFind;
 import org.weasis.dicom.param.DicomParam;
@@ -54,7 +54,7 @@ public class DicomWorkListGrid extends Grid<Attributes> {
     int[] pSeq = p.getParentSeqTags();
     if (pSeq == null || pSeq.length == 0) {
       addColumn(a -> getText(a, tag))
-          .setHeader(TagUtils.toString(tag)) // TODO set name
+          .setHeader(Keyword.valueOf(tag))
           .setSortable(true)
           .setKey(String.valueOf(tag));
     } else {
@@ -70,17 +70,13 @@ public class DicomWorkListGrid extends Grid<Attributes> {
                 }
                 return getText(parent, tag);
               })
-          .setHeader(TagUtils.toString(tag)) // TODO set name
+          .setHeader(Keyword.valueOf(tag))
           .setSortable(true)
           .setKey(String.valueOf(tag));
     }
   }
 
   private String getText(Attributes attributes, int tag) {
-    Object value = attributes.getValue(tag);
-    if (value == null) {
-      return StringUtil.EMPTY_STRING;
-    }
-    return value.toString();
+    return attributes.getString(tag, StringUtil.EMPTY_STRING);
   }
 }

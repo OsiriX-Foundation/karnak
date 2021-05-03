@@ -117,14 +117,16 @@ public class SwitchingAlbum {
 
   private boolean validateToken(List<String> validMinScope, String urlAPI, String introspectToken) {
     try {
-      final JSONObject responseIntrospect =
+      JSONObject responseIntrospect =
           kheopsAPI.tokenIntrospect(urlAPI, introspectToken, introspectToken);
-
       return validateIntrospectedToken(responseIntrospect, validMinScope);
+    } catch (InterruptedException e) {
+      LOGGER.warn("Session interrupted", e);
+      Thread.currentThread().interrupt();
     } catch (Exception e) {
       LOGGER.error("Invalid token", e);
-      return false;
     }
+    return false;
   }
 
   public void applyAfterTransfer(KheopsAlbumsEntity kheopsAlbumsEntity, Attributes dcm) {
@@ -177,6 +179,9 @@ public class SwitchingAlbum {
           urlAPI,
           authorizationSource,
           authorizationDestination);
+    } catch (InterruptedException e) {
+      LOGGER.warn("Session interrupted", e);
+      Thread.currentThread().interrupt();
     } catch (Exception e) {
       LOGGER.error(
           "Can't share the serie {} in the study {}", seriesInstanceUID, studyInstanceUID, e);

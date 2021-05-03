@@ -70,13 +70,13 @@ public class StoreScpForward {
               destinations.keySet().stream()
                   .filter(n -> n.getForwardAETitle().equals(as.getCalledAET()))
                   .findFirst();
-          if (!sourceNode.isPresent()) {
+          if (sourceNode.isEmpty()) {
             throw new IllegalStateException("Cannot find the forward AeTitle " + as.getCalledAET());
           }
           ForwardDicomNode fwdNode = sourceNode.get();
           List<ForwardDestination> destList = destinations.get(fwdNode);
           if (destList == null || destList.isEmpty()) {
-            throw new IllegalStateException("No DICOM destinations for " + fwdNode.toString());
+            throw new IllegalStateException("No DICOM destinations for " + fwdNode);
           }
 
           DicomNode callingNode = DicomNode.buildRemoteDicomNode(as);
@@ -134,7 +134,6 @@ public class StoreScpForward {
    * @param fwdNode the calling DICOM node configuration
    * @param destinationNode the final DICOM node configuration
    * @param attributesEditor the editor for modifying attributes on the fly (can be Null)
-   * @throws IOException
    */
   public StoreScpForward(
       AdvancedParams forwardParams,
