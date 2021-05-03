@@ -120,11 +120,10 @@
 
   <changeSet author="karnak" id="1.2-11">
     <update schemaName="public" tableName="destination">
-      <column name="externalid_provider_id" value="null"/>
-      <where>pseudonym_type is null</where>
+      <column name="externalid_provider_id" value="NULL"/>
+      <where>desidentification='false'</where>
     </update>
   </changeSet>
-
 
   <!-- CREATE FOREIGN KEY FOR externalid_provider_id -->
   <changeSet author="karnak" id="1.2-12">
@@ -138,6 +137,14 @@
       constraintName="fk5idsjfos5f4gv8efgEeSss512" deferrable="false" initiallyDeferred="false"
       onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
       referencedTableName="externalid_provider" validate="true"/>
+  </changeSet>
+
+  <changeSet author="karnak" id="1.2-13">
+    <dropColumn
+      schemaName="public"
+      tableName="destination">
+      <column name="pseudonym_type"/>
+    </dropColumn>
   </changeSet>
 
 </databaseChangeLog>
