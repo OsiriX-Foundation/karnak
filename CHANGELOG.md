@@ -1,5 +1,17 @@
 # Changelog
 
+## [v0.9.5](https://github.com/OsiriX-Foundation/karnak/tree/v0.9.5) (2021-04-16)
+
+[Full Changelog](https://github.com/OsiriX-Foundation/karnak/compare/v0.9.4...v0.9.5)
+
+**Implemented enhancements:**
+
+- Implement open id connect [\#112](https://github.com/OsiriX-Foundation/karnak/issues/112)
+
+**Fixed bugs:**
+
+- Exception loading sessions from persistent storage [\#127](https://github.com/OsiriX-Foundation/karnak/issues/127)
+
 ## [v0.9.4](https://github.com/OsiriX-Foundation/karnak/tree/v0.9.4) (2021-03-17)
 
 [Full Changelog](https://github.com/OsiriX-Foundation/karnak/compare/v0.9.3.1...v0.9.4)

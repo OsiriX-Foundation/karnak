@@ -13,11 +13,11 @@ import java.util.concurrent.Callable;
 import org.karnak.backend.model.dicom.WadoNode;
 import org.karnak.frontend.dicom.Util;
 
-public class CheckWadoThread implements Callable<String> {
+public class WadoResponse implements Callable<String> {
 
   private final WadoNode node;
 
-  public CheckWadoThread(WadoNode node) {
+  public WadoResponse(WadoNode node) {
     this.node = node;
   }
 
@@ -29,7 +29,7 @@ public class CheckWadoThread implements Callable<String> {
     result.append(node.toString());
     result.append("</h6>");
     result.append("<small>");
-    Util.getWadoResponse(result, node, true, "HTML", 3000, 5000);
+    Util.getWadoResponse(result, node, true, "HTML", 10000);
     result.append("</small>");
     result.append("<hr>");
 

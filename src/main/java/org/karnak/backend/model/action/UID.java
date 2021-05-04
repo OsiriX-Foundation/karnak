@@ -29,13 +29,15 @@ public class UID extends AbstractAction {
       uidHashed = hmac.uidHash(uidValue);
       dcm.setString(tag, VR.UI, uidHashed);
     }
-    LOGGER.trace(
-        CLINICAL_MARKER,
-        PATTERN_WITH_INOUT,
-        MDC.get("SOPInstanceUID"),
-        TagUtils.toString(tag),
-        symbol,
-        uidValue,
-        uidHashed);
+    if (LOGGER.isTraceEnabled()) {
+      LOGGER.trace(
+          CLINICAL_MARKER,
+          PATTERN_WITH_INOUT,
+          MDC.get("SOPInstanceUID"),
+          TagUtils.toString(tag),
+          symbol,
+          uidValue,
+          uidHashed);
+    }
   }
 }

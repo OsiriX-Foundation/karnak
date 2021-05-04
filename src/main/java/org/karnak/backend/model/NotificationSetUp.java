@@ -9,17 +9,19 @@
  */
 package org.karnak.backend.model;
 
+import java.util.List;
+
 public class NotificationSetUp {
 
   private final String notifyObjectErrorPrefix;
   private final String notifyObjectPattern;
-  private final String[] notifyObjectValues;
+  private final List<String> notifyObjectValues;
   private final int notifyInterval;
 
   public NotificationSetUp(
       String notifyObjectErrorPrefix,
       String notifyObjectPattern,
-      String[] notifyObjectValues,
+      List<String> notifyObjectValues,
       int notifyInterval) {
     super();
     this.notifyObjectErrorPrefix = notifyObjectErrorPrefix;
@@ -36,7 +38,7 @@ public class NotificationSetUp {
     return notifyObjectPattern;
   }
 
-  public String[] getNotifyObjectValues() {
+  public List<String> getNotifyObjectValues() {
     return notifyObjectValues;
   }
 

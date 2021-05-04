@@ -11,6 +11,7 @@ package org.karnak.frontend.dicom.mwl;
 
 import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Div;
@@ -34,6 +35,7 @@ public class DicomPane extends Composite<Dialog> {
   private Div titleBar;
   private TextArea contentFld;
   private HorizontalLayout buttonBar;
+  private Button cancelButton;
   private Anchor downloadDicomAnchor;
   private Anchor downloadTextAnchor;
 
@@ -53,7 +55,7 @@ public class DicomPane extends Composite<Dialog> {
 
   private void init() {
     currentDialog = getContent();
-    currentDialog.setSizeFull();
+    currentDialog.setWidth("50%");
   }
 
   private void buildMainLayout() {
@@ -90,13 +92,15 @@ public class DicomPane extends Composite<Dialog> {
 
     buildDownloadTextAnchor();
     buildDownloadDicomAnchor();
+    buildCancelButton();
 
-    buttonBar.add(downloadDicomAnchor, downloadTextAnchor);
+    buttonBar.add(cancelButton, downloadDicomAnchor, downloadTextAnchor);
   }
 
   private void buildDownloadTextAnchor() {
     Button downloadTextBtn = new Button();
     downloadTextBtn.setText("Download Text");
+    downloadTextBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
     downloadTextAnchor =
         new Anchor(
@@ -109,6 +113,7 @@ public class DicomPane extends Composite<Dialog> {
   private void buildDownloadDicomAnchor() {
     Button downloadDicomBtn = new Button();
     downloadDicomBtn.setText("Download DICOM");
+    downloadDicomBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
     downloadDicomAnchor =
         new Anchor(
@@ -117,5 +122,9 @@ public class DicomPane extends Composite<Dialog> {
             "");
     downloadDicomAnchor.getElement().setAttribute("download", true);
     downloadDicomAnchor.add(downloadDicomBtn);
+  }
+
+  private void buildCancelButton() {
+    cancelButton = new Button("Cancel", event -> currentDialog.close());
   }
 }
