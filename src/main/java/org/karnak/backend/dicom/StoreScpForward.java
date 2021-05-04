@@ -100,8 +100,9 @@ public class StoreScpForward {
 
           rsp.setInt(Tag.Status, VR.US, status);
 
+          Params p = null;
           try {
-            Params p =
+            p =
                 new Params(
                     rq.getString(Tag.AffectedSOPInstanceUID),
                     rq.getString(Tag.AffectedSOPClassUID),
@@ -113,7 +114,12 @@ public class StoreScpForward {
             ForwardUtil.storeMulitpleDestination(fwdNode, destList, p);
 
           } catch (Exception e) {
+            ForwardUtil.transferQuarantine(fwdNode , p);
             throw new DicomServiceException(Status.ProcessingFailure, e);
+          } finally{
+            if (fwdNode.getQuarantine() != null) {
+              ForwardUtil.transferQuarantine(fwdNode , p);
+            }
           }
         }
       };

@@ -11,6 +11,7 @@ package org.karnak.backend.dicom;
 
 import java.util.HashSet;
 import java.util.Set;
+import org.karnak.backend.model.Quarantine;
 import org.weasis.dicom.param.DicomNode;
 
 public class ForwardDicomNode extends DicomNode {
@@ -18,6 +19,7 @@ public class ForwardDicomNode extends DicomNode {
   private final String forwardAETitle;
   private final Set<DicomNode> acceptedSourceNodes;
   private final Long id;
+  private Quarantine quarantine;
 
   public ForwardDicomNode(DicomNode dicomNode) {
     this(dicomNode.getAet(), dicomNode.getHostname());
@@ -36,6 +38,7 @@ public class ForwardDicomNode extends DicomNode {
     this.forwardAETitle = fwdAeTitle;
     this.id = id;
     this.acceptedSourceNodes = new HashSet<>();
+    this.quarantine = null;
   }
 
   public void addAcceptedSourceNode(String srcAeTitle) {
@@ -53,6 +56,14 @@ public class ForwardDicomNode extends DicomNode {
 
   public Set<DicomNode> getAcceptedSourceNodes() {
     return acceptedSourceNodes;
+  }
+
+  public Quarantine getQuarantine() {
+    return quarantine;
+  }
+
+  public void setQuarantine(Quarantine quarantine) {
+    this.quarantine = quarantine;
   }
 
   public String getForwardAETitle() {
