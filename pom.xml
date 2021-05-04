@@ -28,12 +28,12 @@
     <java.version>14</java.version>
     <javax.el.version>3.0.0</javax.el.version>
     <javax.mail.version>1.6.2</javax.mail.version>
-    <maven-surefire-plugin.version>3.0.0-M4</maven-surefire-plugin.version>
+    <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <springframework.version>2.4.0</springframework.version>
-    <vaadin.version>17.0.10</vaadin.version>
-    <weasis-dicom-tools.version>5.23.2-IMG-RELEASE</weasis-dicom-tools.version>
+    <vaadin.version>17.0.11</vaadin.version>
+    <weasis-dicom-tools.version>5.23.2.1-IMG-RELEASE</weasis-dicom-tools.version>
     <weasis.opencv.native.version>4.5.1-dcm</weasis.opencv.native.version>
     <jacoco-maven-plugin.version>0.8.6</jacoco-maven-plugin.version>
     <sonar-maven-plugin.version>3.8.0.2131</sonar-maven-plugin.version>
@@ -158,7 +158,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.0.0-M5</version>
+        <version>${maven-surefire-plugin.version}</version>
         <dependencies>
           <dependency>
             <groupId>org.junit.jupiter</groupId>
