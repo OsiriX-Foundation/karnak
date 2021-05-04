@@ -36,9 +36,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.weasis.core.util.FileUtil;
 import org.weasis.core.util.LangUtil;
+import org.weasis.dicom.param.AdvancedParams;
 import org.weasis.dicom.param.AttributeEditor;
 import org.weasis.dicom.param.AttributeEditorContext;
 import org.weasis.dicom.param.AttributeEditorContext.Abort;
+import org.weasis.dicom.param.ConnectOptions;
+import org.weasis.dicom.param.DicomNode;
 import org.weasis.dicom.util.ServiceUtil;
 import org.weasis.dicom.util.ServiceUtil.ProgressStatus;
 import org.weasis.dicom.util.StoreFromStreamSCU;
@@ -296,6 +299,7 @@ public class ForwardUtil {
       progressNotify(
           destination, p.getIuid(), p.getCuid(), true, streamSCU.getNumberOfSuboperations());
       if (e.getAbort() == Abort.CONNECTION_EXCEPTION) {
+        transferQuarantine(sourceNode, copy, p);
         throw e;
       }
     } catch (Exception e) {
@@ -304,6 +308,7 @@ public class ForwardUtil {
       }
       progressNotify(
           destination, p.getIuid(), p.getCuid(), true, streamSCU.getNumberOfSuboperations());
+      transferQuarantine(sourceNode, copy, p);
       LOGGER.error(ERROR_WHEN_FORWARDING, e);
     } finally {
       streamSCU.triggerCloseExecutor();
@@ -393,6 +398,7 @@ public class ForwardUtil {
       progressNotify(
           destination, p.getIuid(), p.getCuid(), true, streamSCU.getNumberOfSuboperations());
       if (e.getAbort() == Abort.CONNECTION_EXCEPTION) {
+        transferQuarantine(fwdNode, copy, p);
         throw e;
       }
     } catch (Exception e) {
@@ -401,6 +407,7 @@ public class ForwardUtil {
       }
       progressNotify(
           destination, p.getIuid(), p.getCuid(), true, streamSCU.getNumberOfSuboperations());
+      transferQuarantine(fwdNode, copy, p);
       LOGGER.error(ERROR_WHEN_FORWARDING, e);
     } finally {
       streamSCU.triggerCloseExecutor();
@@ -441,11 +448,13 @@ public class ForwardUtil {
           if (p.getData() instanceof PDVInputStream) {
             ((PDVInputStream) p.getData()).skipAll();
           }
+          transferQuarantine(fwdNode, copy, p);
           throw new AbortException(context.getAbort(), context.getAbortMessage());
         } else if (context.getAbort() == Abort.CONNECTION_EXCEPTION) {
           if (p.getAs() != null) {
             p.getAs().abort();
           }
+          transferQuarantine(fwdNode, copy, p);
           throw new AbortException(
               context.getAbort(), "STOW-RS abort: " + context.getAbortMessage());
         }
@@ -462,10 +471,12 @@ public class ForwardUtil {
     } catch (AbortException e) {
       progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
       if (e.getAbort() == Abort.CONNECTION_EXCEPTION) {
+        transferQuarantine(fwdNode, copy, p);
         throw e;
       }
     } catch (Exception e) {
       progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
+      transferQuarantine(fwdNode, copy, p);
       LOGGER.error(ERROR_WHEN_FORWARDING, e);
     } finally {
       files = cleanOrGetBulkDataFiles(in, copy == null);
@@ -488,8 +499,10 @@ public class ForwardUtil {
         editors.forEach(e -> e.apply(attributes, context));
 
         if (context.getAbort() == Abort.FILE_EXCEPTION) {
+          transferQuarantine(fwdNode, copy, p);
           throw new AbortException(context.getAbort(), context.getAbortMessage());
         } else if (context.getAbort() == Abort.CONNECTION_EXCEPTION) {
+          transferQuarantine(fwdNode, copy, p);
           throw new AbortException(
               context.getAbort(), "DICOM associtation abort. " + context.getAbortMessage());
         }
@@ -505,10 +518,12 @@ public class ForwardUtil {
       }
     } catch (HttpException httpException) {
       progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
+      transferQuarantine(fwdNode, copy, p);
       throw new AbortException(Abort.FILE_EXCEPTION, "DICOMWeb forward", httpException);
     } catch (AbortException e) {
       progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
       if (e.getAbort() == Abort.CONNECTION_EXCEPTION) {
+        transferQuarantine(fwdNode, copy, p);
         throw e;
       }
     } catch (Exception e) {
@@ -539,5 +554,33 @@ public class ForwardUtil {
     }
 
     return UID.ImplicitVRLittleEndian;
+  }
+
+  public static void transferQuarantine(ForwardDicomNode fwdNode, Attributes quarantineData, Params p) {
+    try{
+      final DicomNode quarantineNode = new DicomNode("NODE2", "localhost", 4445);
+      AdvancedParams params = new AdvancedParams();
+      ConnectOptions connectOptions = new ConnectOptions();
+      connectOptions.setConnectTimeout(5000);
+      connectOptions.setAcceptTimeout(7000);
+      // Concurrent DICOM operations
+      connectOptions.setMaxOpsInvoked(50);
+      connectOptions.setMaxOpsPerformed(50);
+      params.setConnectOptions(connectOptions);
+
+      DicomForwardDestination quarantineDestination =
+          new DicomForwardDestination(null, params, fwdNode, quarantineNode, false, null, null);
+
+      List<File> files = transfer(fwdNode, quarantineDestination, quarantineData, p);
+
+      if (files != null) {
+        // Force to clean if tmp bulk files
+        for (File file : files) {
+          FileUtil.delete(file);
+        }
+      }
+    } catch (Exception e) {
+      LOGGER.error("Error when forwarding in quarantine", e);
+    }
   }
 }
