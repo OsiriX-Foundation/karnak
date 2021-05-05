@@ -114,11 +114,11 @@ public class StoreScpForward {
             ForwardUtil.storeMulitpleDestination(fwdNode, destList, p);
 
           } catch (Exception e) {
-            ForwardUtil.transferQuarantine(fwdNode , p);
+            ForwardUtil.transferQuarantine(fwdNode, p);
             throw new DicomServiceException(Status.ProcessingFailure, e);
-          } finally{
+          } finally {
             if (fwdNode.getQuarantine() != null) {
-              ForwardUtil.transferQuarantine(fwdNode , p);
+              ForwardUtil.transferQuarantine(fwdNode, p);
             }
           }
         }

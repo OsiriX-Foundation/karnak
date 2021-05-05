@@ -5,6 +5,9 @@ name: KARNAK-Profile
 environment: LOCAL
 karnakadmin: ${KARNAK_ADMIN:admin}
 karnakpassword: ${KARNAK_PASSWORD:admin}
+quarantineaet: ${QUARANTINE_AET:undefined}
+quarantinehostname: ${QUARANTINE_HOSTNAME:undefined}
+quarantineport: ${QUARANTINE_PORT:undefined}
 mainzelliste:
   apikey: '${MAINZELLISTE_API_KEY:changeThisApiKey}'
   serverurl: 'http://${MAINZELLISTE_HOSTNAME:localhost}:${MAINZELLISTE_HTTP_PORT:8083}'

@@ -32,6 +32,7 @@ import org.dcm4che3.net.DataWriterAdapter;
 import org.dcm4che3.net.InputStreamDataWriter;
 import org.dcm4che3.net.PDVInputStream;
 import org.dcm4che3.net.Status;
+import org.karnak.backend.config.AppConfig;
 import org.karnak.backend.model.Quarantine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -560,45 +561,52 @@ public class ForwardUtil {
   }
 
   public static void transferQuarantine(ForwardDicomNode fwdNode, Params p) {
+    var quarantineAet = AppConfig.getInstance().getQuarantineaet();
+    var quarantineHostname = AppConfig.getInstance().getQuarantinehostname();
+    var quarantinePort = AppConfig.getInstance().getQuarantineport();
     List<File> files = null;
-    try {
-      var quarantineNode = new DicomNode("NODE2", "localhost", 4445);
-      var advancedParams = new AdvancedParams();
-      var connectOptions = new ConnectOptions();
-      connectOptions.setConnectTimeout(5000);
-      connectOptions.setAcceptTimeout(7000);
-      // Concurrent DICOM operations
-      connectOptions.setMaxOpsInvoked(50);
-      connectOptions.setMaxOpsPerformed(50);
-      advancedParams.setConnectOptions(connectOptions);
-      var progress = new DicomProgress();
-      List<AttributeEditor> editors = new ArrayList<>();
-      var quarantineDestination =
-          new DicomForwardDestination(null, advancedParams, fwdNode, quarantineNode, true, progress, editors);
 
-      if (fwdNode.getQuarantine() != null) {
-        var quarantineAttributes = fwdNode.getQuarantine().getAttributes();
-        var params = fwdNode.getQuarantine().getParams();
-        prepareTransfer(quarantineDestination, params);
-        files = transfer(fwdNode, quarantineDestination, quarantineAttributes, params);
+    if (quarantineAet != null && quarantineHostname != null && quarantinePort != null) {
+      try {
+        var quarantineNode = new DicomNode(quarantineAet, quarantineHostname, quarantinePort);
+        var advancedParams = new AdvancedParams();
+        var connectOptions = new ConnectOptions();
+        connectOptions.setConnectTimeout(5000);
+        connectOptions.setAcceptTimeout(7000);
+        // Concurrent DICOM operations
+        connectOptions.setMaxOpsInvoked(50);
+        connectOptions.setMaxOpsPerformed(50);
+        advancedParams.setConnectOptions(connectOptions);
+        var progress = new DicomProgress();
+        List<AttributeEditor> editors = new ArrayList<>();
+        var quarantineDestination =
+            new DicomForwardDestination(
+                null, advancedParams, fwdNode, quarantineNode, true, progress, editors);
 
+        if (fwdNode.getQuarantine() != null) {
+          var quarantineAttributes = fwdNode.getQuarantine().getAttributes();
+          var params = fwdNode.getQuarantine().getParams();
+          prepareTransfer(quarantineDestination, params);
+          files = transfer(fwdNode, quarantineDestination, quarantineAttributes, params);
+
+          if (files != null) {
+            // Force to clean if tmp bulk files
+            for (File file : files) {
+              FileUtil.delete(file);
+            }
+          }
+          fwdNode.setQuarantine(null);
+        } else {
+          storeOneDestination(fwdNode, quarantineDestination, p);
+        }
+      } catch (Exception e) {
+        LOGGER.error("Error when forwarding in quarantine", e);
+      } finally {
         if (files != null) {
           // Force to clean if tmp bulk files
           for (File file : files) {
             FileUtil.delete(file);
           }
-        }
-        fwdNode.setQuarantine(null);
-      } else {
-        storeOneDestination(fwdNode, quarantineDestination, p);
-      }
-    } catch (Exception e) {
-      LOGGER.error("Error when forwarding in quarantine", e);
-    } finally {
-      if (files != null) {
-        // Force to clean if tmp bulk files
-        for (File file : files) {
-          FileUtil.delete(file);
         }
       }
     }

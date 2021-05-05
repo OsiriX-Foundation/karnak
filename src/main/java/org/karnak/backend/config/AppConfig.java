@@ -45,6 +45,9 @@ public class AppConfig {
   private String name;
   private String karnakadmin;
   private String karnakpassword;
+  private String quarantineaet;
+  private String quarantinehostname;
+  private String quarantineport;
   private final ProfileRepo profileRepo;
   private final ProfilePipeService profilePipeService;
 
@@ -93,6 +96,33 @@ public class AppConfig {
 
   public void setKarnakpassword(String karnakpassword) {
     this.karnakpassword = karnakpassword;
+  }
+
+  public String getQuarantineaet() {
+    return !quarantineaet.equals("undefined") ? quarantineaet : null;
+  }
+
+  public void setQuarantineaet(String quarantineaet) {
+    this.quarantineaet = quarantineaet;
+  }
+
+  public String getQuarantinehostname() {
+    return !quarantinehostname.equals("undefined") ? quarantinehostname : null;
+  }
+
+  public void setQuarantinehostname(String quarantinehostname) {
+    this.quarantinehostname = quarantinehostname;
+  }
+
+  public Integer getQuarantineport() {
+    if (!quarantineport.equals("undefined")) {
+      return Integer.parseInt(quarantineport);
+    }
+    return null;
+  }
+
+  public void setQuarantineport(String quarantineport) {
+    this.quarantineport = quarantineport;
   }
 
   @Bean("ConfidentialityProfiles")
