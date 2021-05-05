@@ -4,27 +4,27 @@ import org.dcm4che3.data.Attributes;
 import org.karnak.backend.dicom.ForwardUtil.Params;
 
 public class Quarantine {
-  private Attributes quanrantineAttribute;
-  private Params p;
+  private Attributes attributes;
+  private Params params;
 
   public Quarantine(Attributes quanrantineAttribute, Params p) {
-    this.quanrantineAttribute = quanrantineAttribute;
-    this.p = p;
+    this.attributes = quanrantineAttribute;
+    this.params = p;
   }
 
-  public Attributes getQuanrantineAttribute() {
-    return quanrantineAttribute;
+  public Attributes getAttributes() {
+    return attributes;
   }
 
-  public void setQuanrantineAttribute(Attributes quanrantineAttribute) {
-    this.quanrantineAttribute = quanrantineAttribute;
+  public void setAttributes(Attributes attributes) {
+    this.attributes = attributes;
   }
 
-  public Params getP() {
-    return p;
+  public Params getParams() {
+    return params;
   }
 
-  public void setP(Params p) {
-    this.p = p;
+  public void setParams(Params params) {
+    this.params = params;
   }
 }

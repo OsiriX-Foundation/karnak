@@ -560,29 +560,27 @@ public class ForwardUtil {
   }
 
   public static void transferQuarantine(ForwardDicomNode fwdNode, Params p) {
+    List<File> files = null;
     try {
-      final DicomNode quarantineNode = new DicomNode("NODE2", "localhost", 4445);
-      AdvancedParams params = new AdvancedParams();
-      ConnectOptions connectOptions = new ConnectOptions();
+      var quarantineNode = new DicomNode("NODE2", "localhost", 4445);
+      var advancedParams = new AdvancedParams();
+      var connectOptions = new ConnectOptions();
       connectOptions.setConnectTimeout(5000);
       connectOptions.setAcceptTimeout(7000);
       // Concurrent DICOM operations
       connectOptions.setMaxOpsInvoked(50);
       connectOptions.setMaxOpsPerformed(50);
-      params.setConnectOptions(connectOptions);
-
-      DicomProgress progress = new DicomProgress();
-
+      advancedParams.setConnectOptions(connectOptions);
+      var progress = new DicomProgress();
       List<AttributeEditor> editors = new ArrayList<>();
-      DicomForwardDestination quarantineDestination =
-          new DicomForwardDestination(null, params, fwdNode, quarantineNode, true, progress, editors);
+      var quarantineDestination =
+          new DicomForwardDestination(null, advancedParams, fwdNode, quarantineNode, true, progress, editors);
 
-      Quarantine quarantine = fwdNode.getQuarantine();
-      if (quarantine != null) {
-        Attributes quarantineAttributes = quarantine.getQuanrantineAttribute();
-        Params p2 = quarantine.getP();
-        prepareTransfer(quarantineDestination, p2);
-        List<File> files = transfer(fwdNode, quarantineDestination, quarantineAttributes, p2);
+      if (fwdNode.getQuarantine() != null) {
+        var quarantineAttributes = fwdNode.getQuarantine().getAttributes();
+        var params = fwdNode.getQuarantine().getParams();
+        prepareTransfer(quarantineDestination, params);
+        files = transfer(fwdNode, quarantineDestination, quarantineAttributes, params);
 
         if (files != null) {
           // Force to clean if tmp bulk files
@@ -590,12 +588,19 @@ public class ForwardUtil {
             FileUtil.delete(file);
           }
         }
+        fwdNode.setQuarantine(null);
       } else {
         storeOneDestination(fwdNode, quarantineDestination, p);
       }
-
     } catch (Exception e) {
       LOGGER.error("Error when forwarding in quarantine", e);
+    } finally {
+      if (files != null) {
+        // Force to clean if tmp bulk files
+        for (File file : files) {
+          FileUtil.delete(file);
+        }
+      }
     }
   }
 }
