@@ -41,34 +41,33 @@ class ForwardUtilTest {
 
   @Test
   void when_store_no_destination_should_throw_exception() {
+    // Init data
+    List<ForwardDestination> destList = new ArrayList<>();
+    ForwardDicomNode fwdNode = new ForwardDicomNode("fwdAeTitle");
+
     Assertions.assertThrows(
         IllegalStateException.class,
         () -> {
-          // Init data
-          List<ForwardDestination> destList = new ArrayList<>();
-          ForwardDicomNode fwdNode = new ForwardDicomNode("fwdAeTitle");
-
           // Call method
           ForwardUtil.storeMultipleDestination(fwdNode, destList, null);
         });
   }
 
   @Test
-  void when_store_dicom_dir_should_return() {
+  void when_store_dicom_dir_should_return() throws IOException {
+    // Init data
+    ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream("test".getBytes());
+    // Create params
+    Params p = new Params("iuid", "1.2.840.10008.1.3.10", "tsuid", 0, byteArrayInputStream, null);
+    List<ForwardDestination> destList = new ArrayList<>();
+    ForwardDicomNode forwardDicomNode = new ForwardDicomNode("fwdAeTitle");
+    DicomNode dicomNode = new DicomNode("fwdAeTitle", 1111);
+    ForwardDestination forwardDestination =
+        new DicomForwardDestination(forwardDicomNode, dicomNode);
+    destList.add(forwardDestination);
+
     Assertions.assertDoesNotThrow(
         () -> {
-          // Init data
-          ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream("test".getBytes());
-          // Create params
-          Params p =
-              new Params("iuid", "1.2.840.10008.1.3.10", "tsuid", 0, byteArrayInputStream, null);
-          List<ForwardDestination> destList = new ArrayList<>();
-          ForwardDicomNode forwardDicomNode = new ForwardDicomNode("fwdAeTitle");
-          DicomNode dicomNode = new DicomNode("fwdAeTitle", 1111);
-          ForwardDestination forwardDestination =
-              new DicomForwardDestination(forwardDicomNode, dicomNode);
-          destList.add(forwardDestination);
-
           // Call method
           ForwardUtil.storeMultipleDestination(forwardDicomNode, destList, p);
         });
@@ -78,20 +77,20 @@ class ForwardUtilTest {
   void when_store_one_dest_remote_dest_invalid_type_dicom_should_throw_io_exception()
       throws IOException {
 
+    // Init data
+    ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream("test".getBytes());
+    // Create params
+    Params p = new Params("iuid", "cuid", "tsuid", 0, byteArrayInputStream, null);
+    List<ForwardDestination> destList = new ArrayList<>();
+    ForwardDicomNode forwardDicomNode = new ForwardDicomNode("fwdAeTitle");
+    DicomNode dicomNode = new DicomNode("fwdAeTitle", 1111);
+    ForwardDestination forwardDestination =
+        new DicomForwardDestination(forwardDicomNode, dicomNode);
+    destList.add(forwardDestination);
+
     Assertions.assertThrows(
         IOException.class,
         () -> {
-          // Init data
-          ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream("test".getBytes());
-          // Create params
-          Params p = new Params("iuid", "cuid", "tsuid", 0, byteArrayInputStream, null);
-          List<ForwardDestination> destList = new ArrayList<>();
-          ForwardDicomNode forwardDicomNode = new ForwardDicomNode("fwdAeTitle");
-          DicomNode dicomNode = new DicomNode("fwdAeTitle", 1111);
-          ForwardDestination forwardDestination =
-              new DicomForwardDestination(forwardDicomNode, dicomNode);
-          destList.add(forwardDestination);
-
           // Call method
           ForwardUtil.storeMultipleDestination(forwardDicomNode, destList, p);
         });

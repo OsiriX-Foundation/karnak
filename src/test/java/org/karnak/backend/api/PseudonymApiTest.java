@@ -41,13 +41,14 @@ class PseudonymApiTest {
 
   @Test
   void when_add_ext_id_server_invalid_should_throw_exception() {
+
+    // Init data
+    PseudonymApi pseudonymApi = new PseudonymApi();
+    Fields fields = new Fields("patientId");
+
     Assertions.assertThrows(
         IllegalStateException.class,
         () -> {
-          // Init data
-          PseudonymApi pseudonymApi = new PseudonymApi();
-          Fields fields = new Fields("patientId");
-
           // Call method
           pseudonymApi.addExtID(fields, "externalPseudonym");
         });
@@ -55,13 +56,14 @@ class PseudonymApiTest {
 
   @Test
   void when_get_ext_id_server_invalid_should_throw_exception() {
+
+    // Init data
+    PseudonymApi pseudonymApi = new PseudonymApi();
+    Fields fields = new Fields("patientId");
+
     Assertions.assertThrows(
         IllegalStateException.class,
         () -> {
-          // Init data
-          PseudonymApi pseudonymApi = new PseudonymApi();
-          Fields fields = new Fields("patientId");
-
           // Call method
           pseudonymApi.getExistingExtID(fields);
         });
@@ -69,13 +71,13 @@ class PseudonymApiTest {
 
   @Test
   void when_generate_pid_server_invalid_should_throw_exception() {
+    // Init data
+    PseudonymApi pseudonymApi = new PseudonymApi();
+    Fields fields = new Fields("patientId");
+
     Assertions.assertThrows(
         IllegalStateException.class,
         () -> {
-          // Init data
-          PseudonymApi pseudonymApi = new PseudonymApi();
-          Fields fields = new Fields("patientId");
-
           // Call method
           pseudonymApi.generatePID(fields);
         });
