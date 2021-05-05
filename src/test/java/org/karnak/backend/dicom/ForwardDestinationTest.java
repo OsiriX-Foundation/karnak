@@ -42,7 +42,6 @@ class ForwardDestinationTest {
     if (dicomOutputDataMock != null) {
       dicomOutputDataMock.close();
     }
-
   }
 
   @Test
