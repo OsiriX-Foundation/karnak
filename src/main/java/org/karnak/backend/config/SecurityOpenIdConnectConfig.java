@@ -14,6 +14,7 @@ import org.karnak.backend.security.OpenIdConnectLogoutHandler;
 import org.karnak.backend.util.SecurityUtil;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -41,6 +42,9 @@ public class SecurityOpenIdConnectConfig extends WebSecurityConfigurerAdapter {
         // Allows all internal traffic from the Vaadin framework
         .requestMatchers(SecurityUtil::isFrameworkInternalRequest)
         .permitAll()
+        // Allow get echo endpoint
+        .antMatchers(HttpMethod.GET, "/api/echo/destinations")
+        .permitAll()
         // Allows all authenticated traffic
         // .antMatchers("/*").hasAuthority(SecurityRole.ADMIN_ROLE.getType())
         .anyRequest()
@@ -62,18 +66,19 @@ public class SecurityOpenIdConnectConfig extends WebSecurityConfigurerAdapter {
             "/VAADIN/**",
             // the standard favicon URI
             "/favicon.ico",
-            // the robots exclusion standard
-            "/robots.txt",
             // web application manifest
             "/manifest.webmanifest",
             "/sw.js",
             "/offline.html",
             // icons and images
-            "/icons/**",
-            "/images/**",
-            "/styles/**",
-            "/img/**",
+            "/icons/logo**",
+            "/img/karnak.png" // ,
+            // "/img/**" // ,
+            // "/images/**",
+            // "/styles/**",
+            // the robots exclusion standard
+            // "/robots.txt",
             // (development mode) H2 debugging console
-            "/h2-console/**");
+            /* "/h2-console/**" */ );
   }
 }
