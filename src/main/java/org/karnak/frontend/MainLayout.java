@@ -19,8 +19,6 @@ import com.vaadin.flow.component.icon.IronIcon;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLayout;
-import com.vaadin.flow.theme.Theme;
-import com.vaadin.flow.theme.lumo.Lumo;
 import org.karnak.backend.util.SecurityUtil;
 import org.karnak.frontend.dicom.DicomMainView;
 import org.karnak.frontend.extid.ExternalIDView;
@@ -35,7 +33,6 @@ import org.springframework.security.access.annotation.Secured;
 @NpmPackage(value = "@polymer/iron-icons", version = "3.0.1")
 @JsModule("@polymer/iron-icons/iron-icons.js")
 @CssImport(value = "./styles/shared-styles.css")
-@Theme(value = Lumo.class)
 @Route(value = "mainLayout")
 @Secured({"ADMIN"})
 @SuppressWarnings("serial")
