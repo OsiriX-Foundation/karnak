@@ -70,6 +70,7 @@ public class SecurityOpenIdConnectConfig extends WebSecurityConfigurerAdapter {
             "/manifest.webmanifest",
             "/sw.js",
             "/offline.html",
+            "/sw-runtime-resources-precache.js",
             // icons and images
             "/icons/logo**",
             "/img/karnak.png" // ,
