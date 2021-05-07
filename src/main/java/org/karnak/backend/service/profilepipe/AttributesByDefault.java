@@ -43,11 +43,10 @@ public class AttributesByDefault {
 
     profileElementEntities.forEach(
         profileElementEntity -> {
-          final Attributes attributes = new Attributes();
-          final String codeValue = ProfileItemType.getCodeValue(profileElementEntity.getCodename());
-          final String codeMeaning =
-              ProfileItemType.getCodeMeaning(profileElementEntity.getCodename());
+          String codeValue = ProfileItemType.getCodeValue(profileElementEntity.getCodename());
+          String codeMeaning = ProfileItemType.getCodeMeaning(profileElementEntity.getCodename());
           if (codeValue != null && listCodeValue.stream().noneMatch(s -> s.equals(codeValue))) {
+            Attributes attributes = new Attributes(dcm.bigEndian());
             attributes.setString(Tag.CodeValue, VR.SH, codeValue);
             attributes.setString(Tag.CodingSchemeDesignator, VR.SH, "DCM");
             attributes.setString(Tag.CodeMeaning, VR.LO, codeMeaning);

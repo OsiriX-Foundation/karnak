@@ -36,7 +36,7 @@ public class TextFieldsBindProject {
     Binder<ProjectEntity> binder = new BeanValidationBinder<>(ProjectEntity.class);
     binder
         .forField(textResearchName)
-        .withValidator(StringUtils::isNotBlank, "Research name is mandatory")
+        .withValidator(StringUtils::isNotBlank, "Name is mandatory")
         .bind(ProjectEntity::getName, ProjectEntity::setName);
     binder
         .forField(textSecret)

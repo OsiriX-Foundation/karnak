@@ -27,12 +27,12 @@ public class ExprConditionDestination implements ExpressionItem {
   }
 
   public ExprConditionDestination(int tag, VR vr, Attributes dcm, Attributes dcmCopy) {
-    this.tag = Objects.requireNonNull(tag);
+    this.tag = tag;
     this.vr = Objects.requireNonNull(vr);
-    if (dcmCopy != null) {
-      this.stringValue = dcmCopy.getString(this.tag);
-    } else {
+    if (dcmCopy == null || vr == VR.SQ || vr.isInlineBinary()) {
       this.stringValue = null;
+    } else {
+      this.stringValue = dcmCopy.getString(this.tag);
     }
     this.dcmCopy = dcmCopy;
     this.dcm = dcm;

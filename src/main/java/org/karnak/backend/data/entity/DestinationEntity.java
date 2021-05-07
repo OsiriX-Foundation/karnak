@@ -132,15 +132,15 @@ public class DestinationEntity implements Serializable {
     this.delimiter = null;
     this.position = null;
     this.savePseudonym = null;
-    this.filterBySOPClasses = true;
+    this.filterBySOPClasses = false;
     this.notify = "";
     this.notifyObjectErrorPrefix = "";
     this.notifyObjectPattern = "";
     this.notifyObjectValues = "";
-    this.notifyInterval = Integer.valueOf(0);
+    this.notifyInterval = 0;
     this.aeTitle = "";
     this.hostname = "";
-    this.port = Integer.valueOf(0);
+    this.port = 0;
     this.useaetdest = Boolean.FALSE;
     this.url = "";
     this.urlCredentials = "";
@@ -341,9 +341,9 @@ public class DestinationEntity implements Serializable {
     this.headers = headers;
   }
 
+  @JsonGetter("forwardNode")
   @ManyToOne
   @JoinColumn(name = "forward_node_id")
-  @JsonGetter("forwardNode")
   public ForwardNodeEntity getForwardNodeEntity() {
     return forwardNodeEntity;
   }
@@ -420,9 +420,9 @@ public class DestinationEntity implements Serializable {
     this.savePseudonym = savePseudonym;
   }
 
+  @JsonGetter("kheopsAlbums")
   @OneToMany(mappedBy = "destinationEntity", cascade = CascadeType.REMOVE)
   @LazyCollection(LazyCollectionOption.FALSE)
-  @JsonGetter("kheopsAlbums")
   public List<KheopsAlbumsEntity> getKheopsAlbumEntities() {
     return kheopsAlbumEntities;
   }
@@ -432,9 +432,9 @@ public class DestinationEntity implements Serializable {
     this.kheopsAlbumEntities = kheopsAlbumEntities;
   }
 
+  @JsonGetter("project")
   @ManyToOne
   @JoinColumn(name = "project_id")
-  @JsonGetter("project")
   public ProjectEntity getProjectEntity() {
     return projectEntity;
   }

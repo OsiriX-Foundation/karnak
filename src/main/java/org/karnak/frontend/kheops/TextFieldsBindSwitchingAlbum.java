@@ -99,9 +99,12 @@ public class TextFieldsBindSwitchingAlbum {
     try {
       JSONObject responseIntrospect = kheopsApi.tokenIntrospect(urlAPI, token, token);
       return SwitchingAlbum.validateIntrospectedToken(responseIntrospect, validMinScope);
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
     } catch (Exception e) {
-      return false;
+      // Do nothing
     }
+    return false;
   }
 
   public Binder<KheopsAlbumsEntity> getBinder() {

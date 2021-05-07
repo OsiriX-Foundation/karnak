@@ -31,6 +31,10 @@ public class ExternalIDLogic {
     this.externalIDView = externalIDView;
   }
 
+  public ExternalIDView getExternalIDView() {
+    return externalIDView;
+  }
+
   public List<ProjectEntity> retrieveProject() {
     return projectService.getAllProjects();
   }

@@ -27,10 +27,6 @@ public class GridDestination extends Grid<DestinationEntity> {
         .setHeader("Type")
         .setFlexGrow(20)
         .setSortable(true);
-    addColumn(DestinationEntity::getDestinationType)
-        .setHeader("Type")
-        .setFlexGrow(20)
-        .setSortable(true);
 
     addComponentColumn(
             destination -> {
