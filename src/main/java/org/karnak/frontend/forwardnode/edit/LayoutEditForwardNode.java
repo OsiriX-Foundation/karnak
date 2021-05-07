@@ -9,6 +9,7 @@
  */
 package org.karnak.frontend.forwardnode.edit;
 
+import static org.karnak.backend.enums.PseudonymType.EXTID_IN_TAG;
 import static org.karnak.backend.enums.PseudonymType.MAINZELLISTE_PID;
 
 import com.vaadin.flow.component.Component;
@@ -18,6 +19,7 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import java.util.HashSet;
 import java.util.Set;
+import org.dcm4che3.util.TagUtils;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.DicomSourceNodeEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
@@ -27,6 +29,7 @@ import org.karnak.backend.enums.NodeEventType;
 import org.karnak.backend.model.NodeEvent;
 import org.karnak.backend.service.ProjectService;
 import org.karnak.backend.service.SOPClassUIDService;
+import org.karnak.backend.util.DoubleToIntegerConverter;
 import org.karnak.frontend.component.ConfirmDialog;
 import org.karnak.frontend.forwardnode.ForwardNodeLogic;
 import org.karnak.frontend.forwardnode.edit.component.ButtonSaveDeleteCancel;
@@ -107,6 +110,8 @@ public class LayoutEditForwardNode extends VerticalLayout {
         newUpdateDestination.getFormDICOM().getFilterBySOPClassesForm());
     addBindersFilterBySOPClassesForm(
         newUpdateDestination.getFormSTOW().getFilterBySOPClassesForm());
+    addBinderExtidInDicomTag(newUpdateDestination.getFormSTOW().getLayoutDesidentification());
+    addBinderExtidInDicomTag(newUpdateDestination.getFormDICOM().getLayoutDesidentification());
   }
 
   /** Add events on components */
@@ -501,5 +506,91 @@ public class LayoutEditForwardNode extends VerticalLayout {
         .getBinder()
         .forField(filterBySOPClassesForm.getFilterBySOPClassesCheckbox()) //
         .bind(DestinationEntity::isFilterBySOPClasses, DestinationEntity::setFilterBySOPClasses);
+  }
+
+  public void addBinderExtidInDicomTag(LayoutDesidentification layoutDesidentification) {
+    layoutDesidentification
+        .getDestinationBinder()
+        .forField(layoutDesidentification.getExtidPresentInDicomTagView().getTag())
+        .withConverter(String::valueOf, value -> (value == null) ? "" : value, "Must be a tag")
+        .withValidator(
+            tag -> {
+              if (!layoutDesidentification.getCheckboxDesidentification().getValue()
+                  || !layoutDesidentification
+                  .getExtidListBox()
+                  .getValue()
+                  .equals(EXTID_IN_TAG.getValue())) {
+                return true;
+              }
+              final String cleanTag = tag.replaceAll("[(),]", "").toUpperCase();
+              try {
+                TagUtils.intFromHexString(cleanTag);
+              } catch (Exception e) {
+                return false;
+              }
+              return (tag != null && !tag.equals("") && cleanTag.length() == 8);
+            },
+            "Choose a valid tag\n")
+        .bind(DestinationEntity::getTag, DestinationEntity::setTag);
+
+    layoutDesidentification
+        .getDestinationBinder()
+        .forField(layoutDesidentification.getExtidPresentInDicomTagView().getDelimiter())
+        .withConverter(
+            String::valueOf, value -> (value == null) ? "" : value, "Must be a delimiter")
+        .withValidator(
+            delimiter -> {
+              if (!layoutDesidentification.getCheckboxDesidentification().getValue()
+                  || !layoutDesidentification
+                  .getExtidListBox()
+                  .getValue()
+                  .equals(EXTID_IN_TAG.getValue())) {
+                return true;
+              }
+              if (layoutDesidentification.getExtidPresentInDicomTagView().getPosition().getValue()
+                  != null
+                  && layoutDesidentification
+                  .getExtidPresentInDicomTagView()
+                  .getPosition()
+                  .getValue()
+                  > 0) {
+                return delimiter != null && !delimiter.equals("");
+              }
+              return true;
+            },
+            "A delimiter must be defined, when a position is present")
+        .bind(DestinationEntity::getDelimiter, DestinationEntity::setDelimiter);
+
+    layoutDesidentification
+        .getDestinationBinder()
+        .forField(layoutDesidentification.getExtidPresentInDicomTagView().getPosition())
+        .withConverter(new DoubleToIntegerConverter())
+        .withValidator(
+            position -> {
+              if (!layoutDesidentification.getCheckboxDesidentification().getValue()
+                  || !layoutDesidentification
+                  .getExtidListBox()
+                  .getValue()
+                  .equals(EXTID_IN_TAG.getValue())) {
+                return true;
+              }
+              if (layoutDesidentification.getExtidPresentInDicomTagView().getDelimiter().getValue()
+                  != null
+                  && !layoutDesidentification
+                  .getExtidPresentInDicomTagView()
+                  .getDelimiter()
+                  .getValue()
+                  .equals("")) {
+                return position != null && position >= 0;
+              }
+              return true;
+            },
+            "A position must be defined, when a delimiter is present")
+        .bind(DestinationEntity::getPosition, DestinationEntity::setPosition);
+
+    layoutDesidentification
+        .getDestinationBinder()
+        .forField(layoutDesidentification.getExtidPresentInDicomTagView().getSavePseudonym())
+        .bind(DestinationEntity::getSavePseudonym, DestinationEntity::setSavePseudonym);
   }
 }
