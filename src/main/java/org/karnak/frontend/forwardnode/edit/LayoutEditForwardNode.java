@@ -517,9 +517,9 @@ public class LayoutEditForwardNode extends VerticalLayout {
             tag -> {
               if (!layoutDesidentification.getCheckboxDesidentification().getValue()
                   || !layoutDesidentification
-                  .getExtidListBox()
-                  .getValue()
-                  .equals(EXTID_IN_TAG.getValue())) {
+                      .getExtidListBox()
+                      .getValue()
+                      .equals(EXTID_IN_TAG.getValue())) {
                 return true;
               }
               final String cleanTag = tag.replaceAll("[(),]", "").toUpperCase();
@@ -542,18 +542,18 @@ public class LayoutEditForwardNode extends VerticalLayout {
             delimiter -> {
               if (!layoutDesidentification.getCheckboxDesidentification().getValue()
                   || !layoutDesidentification
-                  .getExtidListBox()
-                  .getValue()
-                  .equals(EXTID_IN_TAG.getValue())) {
+                      .getExtidListBox()
+                      .getValue()
+                      .equals(EXTID_IN_TAG.getValue())) {
                 return true;
               }
               if (layoutDesidentification.getExtidPresentInDicomTagView().getPosition().getValue()
-                  != null
+                      != null
                   && layoutDesidentification
-                  .getExtidPresentInDicomTagView()
-                  .getPosition()
-                  .getValue()
-                  > 0) {
+                          .getExtidPresentInDicomTagView()
+                          .getPosition()
+                          .getValue()
+                      > 0) {
                 return delimiter != null && !delimiter.equals("");
               }
               return true;
@@ -569,18 +569,18 @@ public class LayoutEditForwardNode extends VerticalLayout {
             position -> {
               if (!layoutDesidentification.getCheckboxDesidentification().getValue()
                   || !layoutDesidentification
-                  .getExtidListBox()
-                  .getValue()
-                  .equals(EXTID_IN_TAG.getValue())) {
+                      .getExtidListBox()
+                      .getValue()
+                      .equals(EXTID_IN_TAG.getValue())) {
                 return true;
               }
               if (layoutDesidentification.getExtidPresentInDicomTagView().getDelimiter().getValue()
-                  != null
+                      != null
                   && !layoutDesidentification
-                  .getExtidPresentInDicomTagView()
-                  .getDelimiter()
-                  .getValue()
-                  .equals("")) {
+                      .getExtidPresentInDicomTagView()
+                      .getDelimiter()
+                      .getValue()
+                      .equals("")) {
                 return position != null && position >= 0;
               }
               return true;
