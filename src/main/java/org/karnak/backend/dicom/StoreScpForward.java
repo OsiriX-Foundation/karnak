@@ -110,7 +110,7 @@ public class StoreScpForward {
                     data,
                     as);
 
-            ForwardUtil.storeMulitpleDestination(fwdNode, destList, p);
+            ForwardUtil.storeMultipleDestination(fwdNode, destList, p);
 
           } catch (Exception e) {
             throw new DicomServiceException(Status.ProcessingFailure, e);

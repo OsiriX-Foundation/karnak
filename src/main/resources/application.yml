@@ -26,7 +26,7 @@ server:
   servlet:
     session:
       persistent: false
-#  forward-headers-strategy: NATIVE
+  forward-headers-strategy: NATIVE
 spring:
   application:
     name: karnak
