@@ -174,8 +174,7 @@ public class FormDICOM extends VerticalLayout {
               textErrorConditionMsg.setText("");
               return true;
             },
-            "Condition is not valid"
-        )
+            "Condition is not valid")
         .bind(DestinationEntity::getCondition, DestinationEntity::setCondition);
 
     binder.bindInstanceFields(this);

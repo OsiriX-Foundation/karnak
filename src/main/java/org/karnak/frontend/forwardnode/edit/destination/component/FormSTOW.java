@@ -76,10 +76,8 @@ public class FormSTOW extends VerticalLayout {
     add(
         UIS.setWidthFull( //
             new HorizontalLayout(description)));
-    add(
-        UIS.setWidthFull(new HorizontalLayout(condition)));
-    add(
-        UIS.setWidthFull(new HorizontalLayout(textErrorConditionMsg)));
+    add(UIS.setWidthFull(new HorizontalLayout(condition)));
+    add(UIS.setWidthFull(new HorizontalLayout(textErrorConditionMsg)));
     add(
         UIS.setWidthFull( //
             new HorizontalLayout(url, urlCredentials)));
@@ -166,15 +164,14 @@ public class FormSTOW extends VerticalLayout {
               if (!condition.getValue().equals("")) {
                 ExpressionError expressionError =
                     ExpressionResult.isValid(
-                      condition.getValue(), new ExprConditionDestination(), Boolean.class);
+                        condition.getValue(), new ExprConditionDestination(), Boolean.class);
                 textErrorConditionMsg.setText(expressionError.getMsg());
                 return expressionError.isValid();
               }
               textErrorConditionMsg.setText("");
               return true;
             },
-            "Condition is not valid"
-        )
+            "Condition is not valid")
         .bind(DestinationEntity::getCondition, DestinationEntity::setCondition);
     binder.bindInstanceFields(this);
   }
