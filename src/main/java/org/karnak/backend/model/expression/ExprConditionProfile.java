@@ -14,7 +14,7 @@ import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.VR;
 import org.karnak.backend.util.DicomObjectTools;
 
-public class ExprConditionDestination implements ExpressionItem {
+public class ExprConditionProfile implements ExpressionItem {
 
   private int tag;
   private VR vr;
@@ -22,11 +22,11 @@ public class ExprConditionDestination implements ExpressionItem {
   private final Attributes dcm;
   private final Attributes dcmCopy;
 
-  public ExprConditionDestination(int tag, VR vr) {
+  public ExprConditionProfile(int tag, VR vr) {
     this(tag, vr, new Attributes(), new Attributes());
   }
 
-  public ExprConditionDestination(int tag, VR vr, Attributes dcm, Attributes dcmCopy) {
+  public ExprConditionProfile(int tag, VR vr, Attributes dcm, Attributes dcmCopy) {
     this.tag = tag;
     this.vr = Objects.requireNonNull(vr);
     if (dcmCopy == null || vr == VR.SQ || vr.isInlineBinary()) {
