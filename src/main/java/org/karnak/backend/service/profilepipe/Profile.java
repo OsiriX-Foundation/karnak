@@ -32,6 +32,7 @@ import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.data.entity.ProfileEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
+import org.karnak.backend.dicom.Defacer;
 import org.karnak.backend.enums.ProfileItemType;
 import org.karnak.backend.enums.PseudonymType;
 import org.karnak.backend.model.action.ActionItem;
@@ -247,7 +248,10 @@ public class Profile {
           throw new IllegalStateException("Cannot clean pixel data to sopClassUID " + sopClassUID);
         }
       } else {
-        context.setMaskArea(null);
+        context.setMaskArea(mask);
+        context.getProperties().setProperty(Defacer.APPLY_DEFACING, "true");
+        // TODO
+        // context.setMaskArea(null);
       }
     }
 
