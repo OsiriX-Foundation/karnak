@@ -37,6 +37,7 @@ import org.karnak.backend.enums.DestinationType;
 import org.karnak.backend.enums.NodeEventType;
 import org.karnak.backend.model.NodeEvent;
 import org.karnak.backend.model.NotificationSetUp;
+import org.karnak.backend.model.editor.ConditionEditor;
 import org.karnak.backend.model.editor.DeIdentifyEditor;
 import org.karnak.backend.model.editor.FilterEditor;
 import org.karnak.backend.model.editor.StreamRegistryEditor;
@@ -295,6 +296,11 @@ public class GatewaySetUpService {
       List<ForwardDestination> dstList, ForwardDicomNode fwdSrcNode, DestinationEntity dstNode) {
     try {
       List<AttributeEditor> editors = new ArrayList<>();
+
+      if (!dstNode.getCondition().isEmpty()) {
+        editors.add(new ConditionEditor(dstNode.getCondition()));
+      }
+
       final boolean filterBySOPClassesEnable = dstNode.isFilterBySOPClasses();
       if (filterBySOPClassesEnable) {
         editors.add(new FilterEditor(dstNode.getSOPClassUIDEntityFilters()));
