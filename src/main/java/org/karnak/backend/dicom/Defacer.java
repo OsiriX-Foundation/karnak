@@ -82,28 +82,28 @@ public class Defacer {
 
     // DRAW A LINE WITH RANDOM VALUE WHEN FACE DETECTED
     int marge = 10;
+    int yOffsetRand = 4;
     // scan the image from left to right and bottom to top until the face is detected in Y
     for (int x = 0; x < faceDetectImg.width(); x++) {
       boolean faceDetected = false;
-      int yPositionFaceDetected = 0;
-      int yOffsetRand = 4;
+      int yFaceDetected = 0;
 
       for (int y = faceDetectImg.height() - 1; y > 0; y--) {
         double faceDetectPixelValue = faceDetectImg.toMat().get(y, x)[0];
         if (faceDetectPixelValue != 0.0) {
           faceDetected = true;
-          yPositionFaceDetected = y;
+          yFaceDetected = y;
 
           // Put random color before the first 10 lines of the face detection
-          int yR = yPositionFaceDetected + marge;
-          for (int yy = yPositionFaceDetected; yy <= yR; yy++) {
-            int yRand =
+          int yMaxMarge = yFaceDetected + marge;
+          for (int yMarge = yFaceDetected; yMarge <= yMaxMarge; yMarge++) {
+            int yRandInMarge =
                 DefacingUtil.randomY(
-                    yPositionFaceDetected + yOffsetRand,
-                    yPositionFaceDetected + yOffsetRand + marge,
+                    yFaceDetected + yOffsetRand,
+                    yFaceDetected + yOffsetRand + marge,
                     1);
-            double randomPixelColor = srcImg.toMat().get(yRand, x)[0];
-            randPxlLineImg.toMat().put(yy, x, randomPixelColor);
+            double randPxlColorInMarge = srcImg.toMat().get(yRandInMarge, x)[0];
+            randPxlLineImg.toMat().put(yMarge, x, randPxlColorInMarge);
           }
         }
 
@@ -111,11 +111,11 @@ public class Defacer {
           // Put random color after the face detection
           int yRand =
               DefacingUtil.randomY(
-                  yPositionFaceDetected + yOffsetRand,
-                  yPositionFaceDetected + yOffsetRand + marge,
+                  yFaceDetected + yOffsetRand,
+                  yFaceDetected + yOffsetRand + marge,
                   1);
-          double randomPixelColor = srcImg.toMat().get(yRand, x)[0];
-          randPxlLineImg.toMat().put(y, x, randomPixelColor);
+          double randPxlColor = srcImg.toMat().get(yRand, x)[0];
+          randPxlLineImg.toMat().put(y, x, randPxlColor);
         } else {
           randPxlLineImg.toMat().put(y, x, 0.0);
         }
