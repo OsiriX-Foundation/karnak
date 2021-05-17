@@ -1,5 +1,22 @@
 # Changelog
 
+## [v0.9.6](https://github.com/OsiriX-Foundation/karnak/tree/v0.9.6) (2021-05-07)
+
+[Full Changelog](https://github.com/OsiriX-Foundation/karnak/compare/v0.9.5...v0.9.6)
+
+**Implemented enhancements:**
+
+- Modal windows for the element of dicom worklist [\#135](https://github.com/OsiriX-Foundation/karnak/issues/135)
+- Bump vaadin.version from 17.0.10 to 19.0.5 [\#133](https://github.com/OsiriX-Foundation/karnak/issues/133)
+- remove the checkbox Authorized SOPs [\#97](https://github.com/OsiriX-Foundation/karnak/issues/97)
+- Raise an exception from the execute function of an action. [\#73](https://github.com/OsiriX-Foundation/karnak/issues/73)
+- \[Clean Pixel\] Recompression issue [\#39](https://github.com/OsiriX-Foundation/karnak/issues/39)
+
+**Fixed bugs:**
+
+- Decompress all the images with DICOM output [\#136](https://github.com/OsiriX-Foundation/karnak/issues/136)
+- STOW-RS exceptions when sending images from multiple sources concurrently [\#124](https://github.com/OsiriX-Foundation/karnak/issues/124)
+
 ## [v0.9.5](https://github.com/OsiriX-Foundation/karnak/tree/v0.9.5) (2021-04-16)
 
 [Full Changelog](https://github.com/OsiriX-Foundation/karnak/compare/v0.9.4...v0.9.5)
