@@ -1,7 +1,7 @@
 package org.karnak.backend.model.editor;
 
 import org.dcm4che3.data.Attributes;
-import org.karnak.backend.model.expression.ExprConditionKheops;
+import org.karnak.backend.model.expression.ExprConditionDestination;
 import org.karnak.backend.model.expression.ExpressionResult;
 import org.weasis.dicom.param.AttributeEditor;
 import org.weasis.dicom.param.AttributeEditorContext;
@@ -15,7 +15,7 @@ public class ConditionEditor implements AttributeEditor {
   }
 
   private static boolean validateCondition(String condition, Attributes dcm) {
-    return (Boolean) ExpressionResult.get(condition, new ExprConditionKheops(dcm), Boolean.class);
+    return (Boolean) ExpressionResult.get(condition, new ExprConditionDestination(dcm), Boolean.class);
   }
 
   @Override

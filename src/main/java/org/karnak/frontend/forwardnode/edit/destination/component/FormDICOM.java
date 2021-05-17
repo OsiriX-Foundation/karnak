@@ -19,7 +19,7 @@ import com.vaadin.flow.data.binder.Binder;
 import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.backend.data.entity.DestinationEntity;
-import org.karnak.backend.model.expression.ExprConditionKheops;
+import org.karnak.backend.model.expression.ExprConditionDestination;
 import org.karnak.backend.model.expression.ExpressionError;
 import org.karnak.backend.model.expression.ExpressionResult;
 import org.karnak.frontend.component.converter.HStringToIntegerConverter;
@@ -167,7 +167,7 @@ public class FormDICOM extends VerticalLayout {
               if (!condition.getValue().equals("")) {
                 ExpressionError expressionError =
                     ExpressionResult.isValid(
-                        condition.getValue(), new ExprConditionKheops(), Boolean.class);
+                        condition.getValue(), new ExprConditionDestination(), Boolean.class);
                 textErrorConditionMsg.setText(expressionError.getMsg());
                 return expressionError.isValid();
               }
