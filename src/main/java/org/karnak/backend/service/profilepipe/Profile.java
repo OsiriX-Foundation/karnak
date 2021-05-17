@@ -261,17 +261,12 @@ public class Profile {
         dcm, destinationEntity.getProjectEntity(), pseudonym);
 
     final Marker clincalMarker = MarkerFactory.getMarker("CLINICAL");
-    LOGGER.info(
-        clincalMarker,
-        "SOPInstanceUID_OLD={} SOPInstanceUID_NEW={} SeriesInstanceUID_OLD={} "
-            + "SeriesInstanceUID_NEW={} ProjectName={} ProfileName={} ProfileCodenames={}",
-        SOPInstanceUID,
-        dcm.getString(Tag.SOPInstanceUID),
-        SeriesInstanceUID,
-        dcm.getString(Tag.SeriesInstanceUID),
-        destinationEntity.getProjectEntity().getName(),
-        profileEntity.getName(),
-        profilesCodeName);
+    MDC.put("DeidentifySOPInstanceUID", dcm.getString(Tag.SOPInstanceUID));
+    MDC.put("DeidentifySeriesInstanceUID", dcm.getString(Tag.SeriesInstanceUID));
+    MDC.put("ProjectName", destinationEntity.getProjectEntity().getName());
+    MDC.put("ProfileName", profileEntity.getName());
+    MDC.put("ProfileCodenames", profilesCodeName);
+    LOGGER.info(clincalMarker, "");
     MDC.clear();
   }
 

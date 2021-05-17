@@ -77,7 +77,7 @@
                     <onMatch>NEUTRAL</onMatch>
                 </filter>
                 <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-                    <Pattern>%d %m%n</Pattern>
+                    <Pattern>%d SOPInstanceUID_OLD=%X{SOPInstanceUID} SOPInstanceUID_NEW=%X{DeidentifySOPInstanceUID} SeriesInstanceUID_OLD=%X{SeriesInstanceUID} SeriesInstanceUID_NEW=%X{DeidentifySeriesInstanceUID} ProjectName=%X{ProjectName} ProfileName=%X{ProfileName} ProfileCodenames=%X{ProfileCodenames}</Pattern>
                 </encoder>
             </appender>
 
