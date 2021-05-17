@@ -15,6 +15,7 @@ import org.karnak.backend.data.entity.ProfileEntity;
 import org.karnak.backend.service.profilepipe.Profile;
 import org.weasis.dicom.param.AttributeEditor;
 import org.weasis.dicom.param.AttributeEditorContext;
+import org.weasis.dicom.param.AttributeEditorContext.Abort;
 
 public class DeIdentifyEditor implements AttributeEditor {
 
@@ -30,6 +31,8 @@ public class DeIdentifyEditor implements AttributeEditor {
 
   @Override
   public void apply(Attributes dcm, AttributeEditorContext context) {
-    profile.apply(dcm, destinationEntity, profileEntity, context);
+    if (context.getAbort() != Abort.FILE_EXCEPTION) {
+      profile.apply(dcm, destinationEntity, profileEntity, context);
+    }
   }
 }
