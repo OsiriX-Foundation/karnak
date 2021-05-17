@@ -10,6 +10,7 @@
 package org.karnak.frontend.forwardnode.edit.destination.component;
 
 import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -18,6 +19,9 @@ import com.vaadin.flow.data.binder.Binder;
 import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.backend.data.entity.DestinationEntity;
+import org.karnak.backend.model.expression.ExprConditionKheops;
+import org.karnak.backend.model.expression.ExpressionError;
+import org.karnak.backend.model.expression.ExpressionResult;
 import org.karnak.frontend.component.converter.HStringToIntegerConverter;
 import org.karnak.frontend.forwardnode.edit.component.ButtonSaveDeleteCancel;
 import org.karnak.frontend.util.UIS;
@@ -40,6 +44,8 @@ public class FormDICOM extends VerticalLayout {
   private final LayoutDesidentification layoutDesidentification;
   private final FilterBySOPClassesForm filterBySOPClassesForm;
   private Checkbox activate;
+  private TextField condition;
+  private Span textErrorConditionMsg;
 
   public FormDICOM() {
     this.layoutDesidentification = new LayoutDesidentification();
@@ -66,9 +72,13 @@ public class FormDICOM extends VerticalLayout {
     notifyObjectValues = new TextField("Notif.: subject values");
     notifyInterval = new TextField("Notif.: interval");
     activate = new Checkbox("Enable destination");
+    condition = new TextField("Condition (Leave blank if no condition)");
+    textErrorConditionMsg = new Span();
 
     add(
         UIS.setWidthFull(new HorizontalLayout(aeTitle, description)),
+        UIS.setWidthFull(new HorizontalLayout(condition)),
+        UIS.setWidthFull(new HorizontalLayout(textErrorConditionMsg)),
         UIS.setWidthFull(new HorizontalLayout(hostname, port)),
         UIS.setWidthFull(new HorizontalLayout(useaetdest)),
         UIS.setWidthFull(new HorizontalLayout(notify)),
@@ -88,6 +98,10 @@ public class FormDICOM extends VerticalLayout {
     aeTitle.setWidth("30%");
 
     description.setWidth("70%");
+    condition.setWidthFull();
+
+    textErrorConditionMsg.getStyle().set("color", "red");
+    textErrorConditionMsg.getStyle().set("font-size", "0.8em");
 
     hostname.setWidth("70%");
     hostname.setRequired(true);
@@ -145,6 +159,24 @@ public class FormDICOM extends VerticalLayout {
         .forField(notifyInterval) //
         .withConverter(new HStringToIntegerConverter()) //
         .bind(DestinationEntity::getNotifyInterval, DestinationEntity::setNotifyInterval);
+
+    binder
+        .forField(condition)
+        .withValidator(
+            value -> {
+              if (!condition.getValue().equals("")) {
+                ExpressionError expressionError =
+                    ExpressionResult.isValid(
+                        condition.getValue(), new ExprConditionKheops(), Boolean.class);
+                textErrorConditionMsg.setText(expressionError.getMsg());
+                return expressionError.isValid();
+              }
+              textErrorConditionMsg.setText("");
+              return true;
+            },
+            "Condition is not valid"
+        )
+        .bind(DestinationEntity::getCondition, DestinationEntity::setCondition);
 
     binder.bindInstanceFields(this);
   }
