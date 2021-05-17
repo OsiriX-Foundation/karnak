@@ -32,8 +32,8 @@ public class Defacer {
     PlanarImage faceDetectionImg = faceDetection(image);
     PlanarImage randPxlLineImg = addRandPxlLine(image, faceDetectionImg);
     PlanarImage mergedImg = mergeImg(image, randPxlLineImg, faceDetectionImg);
-    //PlanarImage imgBlured = blurImg(mergedImg, faceDetectionImg);
-    return mergedImg;
+    PlanarImage imgBlured = blurImg(mergedImg, randPxlLineImg, faceDetectionImg);
+    return imgBlured;
   }
 
   public static PlanarImage faceDetection(PlanarImage srcImg) {
@@ -98,7 +98,10 @@ public class Defacer {
           int yR = yPositionFaceDetected + marge;
           for (int yy = yPositionFaceDetected; yy <= yR; yy++) {
             int yRand =
-                DefacingUtil.randomY(yPositionFaceDetected+yOffsetRand, yPositionFaceDetected + yOffsetRand + marge, 1);
+                DefacingUtil.randomY(
+                    yPositionFaceDetected + yOffsetRand,
+                    yPositionFaceDetected + yOffsetRand + marge,
+                    1);
             double randomPixelColor = srcImg.toMat().get(yRand, x)[0];
             randPxlLineImg.toMat().put(yy, x, randomPixelColor);
           }
@@ -106,7 +109,11 @@ public class Defacer {
 
         if (faceDetected) {
           // Put random color after the face detection
-          int yRand = DefacingUtil.randomY(yPositionFaceDetected+yOffsetRand, yPositionFaceDetected +yOffsetRand + marge, 1);
+          int yRand =
+              DefacingUtil.randomY(
+                  yPositionFaceDetected + yOffsetRand,
+                  yPositionFaceDetected + yOffsetRand + marge,
+                  1);
           double randomPixelColor = srcImg.toMat().get(yRand, x)[0];
           randPxlLineImg.toMat().put(y, x, randomPixelColor);
         } else {
@@ -117,12 +124,20 @@ public class Defacer {
     return randPxlLineImg;
   }
 
-  public static PlanarImage blurImg(PlanarImage srcImg, PlanarImage faceDetectImg) {
-    // BLUR THIS IMAGE
+  public static PlanarImage blurImg(
+      PlanarImage srcImg, PlanarImage randPxlLineImg, PlanarImage faceDetectImg) {
     ImageCV bluredImgRandPxlLine = new ImageCV();
     srcImg.toMat().copyTo(bluredImgRandPxlLine);
+
     Imgproc.blur(bluredImgRandPxlLine.toImageCV(), bluredImgRandPxlLine.toMat(), new Size(6, 6));
-    Mat mask = new Mat();
+
+    for (int x = 0; x < faceDetectImg.width(); x++) {
+      for (int y = faceDetectImg.height() - 1; y > 0; y--) {
+        if (randPxlLineImg.toMat().get(y, x)[0] == 0.0) {
+          bluredImgRandPxlLine.toMat().put(y, x, srcImg.toMat().get(y, x)[0]);
+        }
+      }
+    }
 
     return bluredImgRandPxlLine;
   }
