@@ -32,8 +32,8 @@ public class Defacer {
     PlanarImage faceDetectionImg = faceDetection(image);
     PlanarImage randPxlLineImg = addRandPxlLine(image, faceDetectionImg);
     PlanarImage mergedImg = mergeImg(image, randPxlLineImg, faceDetectionImg);
-    PlanarImage imgBlured = blurImg(mergedImg, faceDetectionImg);
-    return imgBlured;
+    //PlanarImage imgBlured = blurImg(mergedImg, faceDetectionImg);
+    return mergedImg;
   }
 
   public static PlanarImage faceDetection(PlanarImage srcImg) {
@@ -52,7 +52,7 @@ public class Defacer {
 
     // ERODE
     Mat kernel = new Mat();
-    int kernel_size = 3;
+    int kernel_size = 1;
     Mat ones = Mat.ones(kernel_size, kernel_size, CvType.CV_32F);
     Core.multiply(ones, new Scalar(1 / (double) (kernel_size * kernel_size)), kernel);
     Imgproc.erode(faceDetectionImg.toImageCV(), faceDetectionImg.toMat(), kernel);
@@ -69,7 +69,7 @@ public class Defacer {
     Imgproc.Canny(faceDetectionImg.toImageCV(), faceDetectionImg.toMat(), 240, 260);
 
     // DRAW BLACK RECT 1/3
-    int rectProportion = (int) (faceDetectionImg.height() / 2.5);
+    int rectProportion = (int) (faceDetectionImg.height() / 2.9);
     Rect rect = new Rect(0, rectProportion, faceDetectionImg.width(), faceDetectionImg.height());
     Imgproc.rectangle(faceDetectionImg.toImageCV(), rect, new Scalar(0, 0, 0), Imgproc.FILLED);
 
@@ -86,25 +86,27 @@ public class Defacer {
     for (int x = 0; x < faceDetectImg.width(); x++) {
       boolean faceDetected = false;
       int yPositionFaceDetected = 0;
+      int yOffsetRand = 4;
 
       for (int y = faceDetectImg.height() - 1; y > 0; y--) {
         double faceDetectPixelValue = faceDetectImg.toMat().get(y, x)[0];
         if (faceDetectPixelValue != 0.0) {
           faceDetected = true;
-          yPositionFaceDetected = y + 1;
+          yPositionFaceDetected = y;
 
           // Put random color before the first 10 lines of the face detection
-          int yR =yPositionFaceDetected+marge;
+          int yR = yPositionFaceDetected + marge;
           for (int yy = yPositionFaceDetected; yy <= yR; yy++) {
-            int yRand = DefacingUtil.randomY(yPositionFaceDetected, yPositionFaceDetected+marge, 1);
+            int yRand =
+                DefacingUtil.randomY(yPositionFaceDetected+yOffsetRand, yPositionFaceDetected + yOffsetRand + marge, 1);
             double randomPixelColor = srcImg.toMat().get(yRand, x)[0];
-            randPxlLineImg.toMat().put(yy ,x, randomPixelColor);
+            randPxlLineImg.toMat().put(yy, x, randomPixelColor);
           }
         }
 
         if (faceDetected) {
           // Put random color after the face detection
-          int yRand = DefacingUtil.randomY(yPositionFaceDetected, yPositionFaceDetected + marge, 1);
+          int yRand = DefacingUtil.randomY(yPositionFaceDetected+yOffsetRand, yPositionFaceDetected +yOffsetRand + marge, 1);
           double randomPixelColor = srcImg.toMat().get(yRand, x)[0];
           randPxlLineImg.toMat().put(y, x, randomPixelColor);
         } else {
