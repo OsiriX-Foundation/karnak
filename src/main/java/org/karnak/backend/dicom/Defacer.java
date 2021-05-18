@@ -99,9 +99,7 @@ public class Defacer {
           for (int yMarge = yFaceDetected; yMarge <= yMaxMarge; yMarge++) {
             int yRandInMarge =
                 DefacingUtil.randomY(
-                    yFaceDetected + yOffsetRand,
-                    yFaceDetected + yOffsetRand + marge,
-                    1);
+                    yFaceDetected + yOffsetRand, yFaceDetected + yOffsetRand + marge, 1);
             double randPxlColorInMarge = srcImg.toMat().get(yRandInMarge, x)[0];
             randPxlLineImg.toMat().put(yMarge, x, randPxlColorInMarge);
           }
@@ -111,9 +109,7 @@ public class Defacer {
           // Put random color after the face detection
           int yRand =
               DefacingUtil.randomY(
-                  yFaceDetected + yOffsetRand,
-                  yFaceDetected + yOffsetRand + marge,
-                  1);
+                  yFaceDetected + yOffsetRand, yFaceDetected + yOffsetRand + marge, 1);
           double randPxlColor = srcImg.toMat().get(yRand, x)[0];
           randPxlLineImg.toMat().put(y, x, randPxlColor);
         } else {

@@ -44,6 +44,7 @@ import org.karnak.backend.model.profilepipe.HMAC;
 import org.karnak.backend.model.profilepipe.HashContext;
 import org.karnak.backend.model.profiles.ActionTags;
 import org.karnak.backend.model.profiles.CleanPixelData;
+import org.karnak.backend.model.profiles.Defacing;
 import org.karnak.backend.model.profiles.ProfileItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -248,10 +249,12 @@ public class Profile {
           throw new IllegalStateException("Cannot clean pixel data to sopClassUID " + sopClassUID);
         }
       } else {
-        context.setMaskArea(mask);
-        context.getProperties().setProperty(Defacer.APPLY_DEFACING, "true");
-        // TODO
-        // context.setMaskArea(null);
+        if (profiles.stream().anyMatch(p -> p instanceof Defacing)) {
+          context.setMaskArea(mask); // to be deleted when you have corrected dcm4che
+          context.getProperties().setProperty(Defacer.APPLY_DEFACING, "true");
+        } else {
+          context.setMaskArea(null);
+        }
       }
     }
 
