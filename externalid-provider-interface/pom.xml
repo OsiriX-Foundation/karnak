@@ -12,6 +12,7 @@
     <maven.compiler.source>14</maven.compiler.source>
     <maven.compiler.target>14</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <weasis-dicom-tools.version>5.23.2.1-IMG-RELEASE</weasis-dicom-tools.version>
   </properties>
 
   <repositories>
@@ -24,8 +25,6 @@
       <id>www.dcm4che.org</id>
       <name>dcm4che Repository</name>
       <url>http://maven.dcm4che.org</url>
-      <!-- <url>http://www.dcm4che.org/maven2</url> (which will redirected to
-        https://www.dcm4che.org/maven2). -->
     </repository>
   </repositories>
 
@@ -39,7 +38,7 @@
         </exclusion>
       </exclusions>
       <groupId>org.weasis</groupId>
-      <version>5.23.1-IMG-RELEASE</version>
+      <version>${weasis-dicom-tools.version}</version>
     </dependency>
   </dependencies>
 
