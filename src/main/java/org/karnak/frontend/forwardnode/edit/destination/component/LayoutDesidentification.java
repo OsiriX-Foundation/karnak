@@ -10,6 +10,7 @@
 package org.karnak.frontend.forwardnode.edit.destination.component;
 
 import static org.karnak.backend.enums.ExternalIDProviderType.EXTID_IN_TAG;
+import static org.karnak.backend.enums.ExternalIDProviderType.ID_GENERATED_BY_MAINZELLISTE;
 
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.html.Div;
@@ -155,19 +156,18 @@ public class LayoutDesidentification extends Div {
     extidListBox.addValueChangeListener(
         event -> {
           if (event.getValue() != null) {
-            if (event.getValue().equals(MAINZELLISTE_PID.getValue())) {
+            if (event.getValue().equals(ID_GENERATED_BY_MAINZELLISTE.getDescription())) {
               checkboxUseAsPatientName.clear();
               extidPresentInDicomTagView.clear();
               div.remove(checkboxUseAsPatientName);
               div.remove(extidPresentInDicomTagView);
-            } else if (event.getValue().equals(MAINZELLISTE_EXTID.getValue())
-                || event.getValue().equals(CACHE_EXTID.getValue())) {
+            } else if (event.getValue().equals(EXTID_IN_TAG.getDescription())) {
+              div.add(UIS.setWidthFull(checkboxUseAsPatientName));
+              div.add(extidPresentInDicomTagView);
+            } else {
               div.add(UIS.setWidthFull(checkboxUseAsPatientName));
               extidPresentInDicomTagView.clear();
               div.remove(extidPresentInDicomTagView);
-            } else {
-              div.add(UIS.setWidthFull(checkboxUseAsPatientName));
-              div.add(extidPresentInDicomTagView);
             }
           } else {
             div.remove(checkboxUseAsPatientName);
