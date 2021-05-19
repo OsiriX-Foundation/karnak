@@ -21,7 +21,7 @@ import org.karnak.backend.model.expression.ExpressionResult;
 import org.karnak.frontend.util.UIS;
 
 public class DestinationCondition extends Div {
-  private final String LABEL_CONDITION = "Condition (Leave blank if no condition)";
+  private static final String LABEL_CONDITION = "Condition (Leave blank if no condition)";
   private TextField condition;
   private Span textErrorConditionMsg;
 
