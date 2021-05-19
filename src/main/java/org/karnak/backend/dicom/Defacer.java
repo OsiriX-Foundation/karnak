@@ -14,6 +14,7 @@ import org.opencv.core.Core;
 import org.opencv.core.Core.MinMaxLocResult;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
@@ -52,15 +53,10 @@ public class Defacer {
 
     // ERODE
     Mat kernel = new Mat();
-    int kernel_size = 1;
+    int kernel_size = 5;
     Mat ones = Mat.ones(kernel_size, kernel_size, CvType.CV_32F);
     Core.multiply(ones, new Scalar(1 / (double) (kernel_size * kernel_size)), kernel);
     Imgproc.erode(faceDetectionImg.toImageCV(), faceDetectionImg.toMat(), kernel);
-
-    // FILL BLACK HOLE
-    Mat kernel2 = Imgproc.getStructuringElement(Imgproc.MORPH_ELLIPSE, new Size(30, 30));
-    Imgproc.morphologyEx(
-        faceDetectionImg.toImageCV(), faceDetectionImg.toMat(), Imgproc.MORPH_CLOSE, kernel2);
 
     // RESCALE 8BIT
     faceDetectionImg = DefacingUtil.transformToByte(faceDetectionImg).toImageCV();
@@ -73,6 +69,19 @@ public class Defacer {
     Rect rect = new Rect(0, rectProportion, faceDetectionImg.width(), faceDetectionImg.height());
     Imgproc.rectangle(faceDetectionImg.toImageCV(), rect, new Scalar(0, 0, 0), Imgproc.FILLED);
 
+    for (int x = 0; x < faceDetectionImg.width(); x++) {
+      for (int y = 0; y < faceDetectionImg.height(); y++) {
+        if (faceDetectionImg.toMat().get(y, x)[0] == 255) {
+          Imgproc.line(
+              faceDetectionImg.toImageCV(),
+              new Point(x, y + 1),
+              new Point(x, faceDetectionImg.height()),
+              new Scalar(0));
+          break;
+        }
+      }
+    }
+
     return faceDetectionImg;
   }
 
@@ -81,28 +90,19 @@ public class Defacer {
     srcImg.toMat().copyTo(randPxlLineImg);
 
     // DRAW A LINE WITH RANDOM VALUE WHEN FACE DETECTED
-    int marge = 10;
-    int yOffsetRand = 4;
+    int yOffsetRand = 1;
     // scan the image from left to right and bottom to top until the face is detected in Y
     for (int x = 0; x < faceDetectImg.width(); x++) {
       boolean faceDetected = false;
       int yFaceDetected = 0;
+      int thicknessSkin = DefacingUtil.randomY(4, 7, 1);
+      int marge = 20;
 
       for (int y = faceDetectImg.height() - 1; y > 0; y--) {
         double faceDetectPixelValue = faceDetectImg.toMat().get(y, x)[0];
-        if (faceDetectPixelValue != 0.0) {
+        if (faceDetectPixelValue == 255.0) {
           faceDetected = true;
           yFaceDetected = y;
-
-          // Put random color before the first 10 lines of the face detection
-          int yMaxMarge = yFaceDetected + marge;
-          for (int yMarge = yFaceDetected; yMarge <= yMaxMarge; yMarge++) {
-            int yRandInMarge =
-                DefacingUtil.randomY(
-                    yFaceDetected + yOffsetRand, yFaceDetected + yOffsetRand + marge, 1);
-            double randPxlColorInMarge = srcImg.toMat().get(yRandInMarge, x)[0];
-            randPxlLineImg.toMat().put(yMarge, x, randPxlColorInMarge);
-          }
         }
 
         if (faceDetected) {
@@ -110,8 +110,8 @@ public class Defacer {
           int yRand =
               DefacingUtil.randomY(
                   yFaceDetected + yOffsetRand, yFaceDetected + yOffsetRand + marge, 1);
-          double randPxlColor = srcImg.toMat().get(yRand, x)[0];
-          randPxlLineImg.toMat().put(y, x, randPxlColor);
+          double randomPixelColor = srcImg.toMat().get(yRand, x)[0];
+          randPxlLineImg.toMat().put(y + thicknessSkin, x, randomPixelColor);
         } else {
           randPxlLineImg.toMat().put(y, x, 0.0);
         }
@@ -124,8 +124,7 @@ public class Defacer {
       PlanarImage srcImg, PlanarImage randPxlLineImg, PlanarImage faceDetectImg) {
     ImageCV bluredImgRandPxlLine = new ImageCV();
     srcImg.toMat().copyTo(bluredImgRandPxlLine);
-
-    Imgproc.blur(bluredImgRandPxlLine.toImageCV(), bluredImgRandPxlLine.toMat(), new Size(6, 6));
+    Imgproc.blur(bluredImgRandPxlLine.toImageCV(), bluredImgRandPxlLine.toMat(), new Size(5, 6));
 
     for (int x = 0; x < faceDetectImg.width(); x++) {
       for (int y = faceDetectImg.height() - 1; y > 0; y--) {
