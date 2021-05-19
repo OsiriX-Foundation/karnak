@@ -121,7 +121,7 @@ public class ForwardUtil {
 
   private ForwardUtil() {}
 
-  public static void storeMulitpleDestination(
+  public static void storeMultipleDestination(
       ForwardDicomNode fwdNode, List<ForwardDestination> destList, Params p) throws IOException {
     if (destList == null || destList.isEmpty()) {
       throw new IllegalStateException(

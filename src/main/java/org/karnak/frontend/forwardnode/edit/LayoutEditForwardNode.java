@@ -17,6 +17,7 @@ import com.vaadin.flow.data.binder.Binder;
 import java.util.HashSet;
 import java.util.Set;
 import org.dcm4che3.util.TagUtils;
+import org.dcm4che3.util.TagUtils;
 import org.karnak.ExternalIDProvider;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.DicomSourceNodeEntity;
@@ -31,6 +32,7 @@ import org.karnak.backend.service.ProjectService;
 import org.karnak.backend.service.SOPClassUIDService;
 import org.karnak.backend.util.DoubleToIntegerConverter;
 import org.karnak.backend.util.ExternalIDProviderUtil;
+import org.karnak.backend.util.DoubleToIntegerConverter;
 import org.karnak.frontend.component.ConfirmDialog;
 import org.karnak.frontend.forwardnode.ForwardNodeLogic;
 import org.karnak.frontend.forwardnode.edit.component.ButtonSaveDeleteCancel;
@@ -116,6 +118,8 @@ public class LayoutEditForwardNode extends VerticalLayout {
 
     addBinderExtidListBox(newUpdateDestination.getFormSTOW().getLayoutDesidentification());
     addBinderExtidListBox(newUpdateDestination.getFormDICOM().getLayoutDesidentification());
+    addBinderExtidInDicomTag(newUpdateDestination.getFormSTOW().getLayoutDesidentification());
+    addBinderExtidInDicomTag(newUpdateDestination.getFormDICOM().getLayoutDesidentification());
     addBinderExtidInDicomTag(newUpdateDestination.getFormSTOW().getLayoutDesidentification());
     addBinderExtidInDicomTag(newUpdateDestination.getFormDICOM().getLayoutDesidentification());
   }

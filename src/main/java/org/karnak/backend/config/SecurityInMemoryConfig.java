@@ -16,6 +16,7 @@ import org.karnak.backend.util.SecurityUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -48,6 +49,9 @@ public class SecurityInMemoryConfig extends WebSecurityConfigurerAdapter {
         .authorizeRequests()
         // Allows all internal traffic from the Vaadin framework
         .requestMatchers(SecurityUtil::isFrameworkInternalRequest)
+        .permitAll()
+        // Allow get echo endpoint
+        .antMatchers(HttpMethod.GET, "/api/echo/destinations")
         .permitAll()
         // Allows all authenticated traffic
         .antMatchers("/*")
@@ -88,19 +92,21 @@ public class SecurityInMemoryConfig extends WebSecurityConfigurerAdapter {
             "/VAADIN/**",
             // the standard favicon URI
             "/favicon.ico",
-            // the robots exclusion standard
-            "/robots.txt",
             // web application manifest
             "/manifest.webmanifest",
             "/sw.js",
             "/offline.html",
+            "/sw-runtime-resources-precache.js",
             // icons and images
-            "/icons/**",
-            "/images/**",
-            "/styles/**",
-            "/img/**",
+            "/icons/logo**",
+            "/img/karnak.png" // ,
+            // "/img/**" // ,
+            // "/images/**",
+            // "/styles/**",
+            // the robots exclusion standard
+            // "/robots.txt",
             // (development mode) H2 debugging console
-            "/h2-console/**");
+            /*"/h2-console/**"*/ );
   }
 
   @Bean

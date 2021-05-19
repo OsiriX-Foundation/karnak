@@ -155,12 +155,19 @@ public class LayoutDesidentification extends Div {
     extidListBox.addValueChangeListener(
         event -> {
           if (event.getValue() != null) {
-            div.add(UIS.setWidthFull(checkboxUseAsPatientName));
-            if (event.getValue().equals(EXTID_IN_TAG.getDescription())) {
-              div.add(extidPresentInDicomTagView);
-            } else {
+            if (event.getValue().equals(MAINZELLISTE_PID.getValue())) {
+              checkboxUseAsPatientName.clear();
+              extidPresentInDicomTagView.clear();
+              div.remove(checkboxUseAsPatientName);
+              div.remove(extidPresentInDicomTagView);
+            } else if (event.getValue().equals(MAINZELLISTE_EXTID.getValue())
+                || event.getValue().equals(CACHE_EXTID.getValue())) {
+              div.add(UIS.setWidthFull(checkboxUseAsPatientName));
               extidPresentInDicomTagView.clear();
               div.remove(extidPresentInDicomTagView);
+            } else {
+              div.add(UIS.setWidthFull(checkboxUseAsPatientName));
+              div.add(extidPresentInDicomTagView);
             }
           } else {
             div.remove(checkboxUseAsPatientName);

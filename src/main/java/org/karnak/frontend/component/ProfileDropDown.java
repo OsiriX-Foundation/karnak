@@ -14,5 +14,8 @@ import org.karnak.backend.data.entity.ProfileEntity;
 
 public class ProfileDropDown extends ComboBox<ProfileEntity> {
 
-  public ProfileDropDown() {}
+  public ProfileDropDown() {
+    // Place Holder
+    setPlaceholder("Select Profile");
+  }
 }
