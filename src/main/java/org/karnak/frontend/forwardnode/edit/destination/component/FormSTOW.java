@@ -10,7 +10,6 @@
 package org.karnak.frontend.forwardnode.edit.destination.component;
 
 import com.vaadin.flow.component.checkbox.Checkbox;
-import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
@@ -19,9 +18,6 @@ import com.vaadin.flow.component.textfield.TextFieldVariant;
 import com.vaadin.flow.data.binder.Binder;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.backend.data.entity.DestinationEntity;
-import org.karnak.backend.model.expression.ExprConditionDestination;
-import org.karnak.backend.model.expression.ExpressionError;
-import org.karnak.backend.model.expression.ExpressionResult;
 import org.karnak.frontend.component.converter.HStringToIntegerConverter;
 import org.karnak.frontend.forwardnode.edit.component.ButtonSaveDeleteCancel;
 import org.karnak.frontend.kheops.SwitchingAlbumsView;
@@ -43,12 +39,12 @@ public class FormSTOW extends VerticalLayout {
   private final FilterBySOPClassesForm filterBySOPClassesForm;
   private SwitchingAlbumsView switchingAlbumsView;
   private Checkbox activate;
-  private TextField condition;
-  private Span textErrorConditionMsg;
+  private DestinationCondition destinationCondition;
 
   public FormSTOW() {
     this.layoutDesidentification = new LayoutDesidentification();
     this.filterBySOPClassesForm = new FilterBySOPClassesForm();
+    this.destinationCondition = new DestinationCondition();
   }
 
   public void init(
@@ -57,6 +53,7 @@ public class FormSTOW extends VerticalLayout {
     this.binder = binder;
     this.layoutDesidentification.init(this.binder);
     this.filterBySOPClassesForm.init(this.binder);
+    this.destinationCondition.init(binder);
 
     this.description = new TextField("Description");
     this.url = new TextField("URL");
@@ -70,14 +67,11 @@ public class FormSTOW extends VerticalLayout {
 
     this.switchingAlbumsView = new SwitchingAlbumsView();
     this.activate = new Checkbox("Enable destination");
-    this.condition = new TextField("Condition (Leave blank if no condition)");
-    this.textErrorConditionMsg = new Span();
 
     add(
         UIS.setWidthFull( //
             new HorizontalLayout(description)));
-    add(UIS.setWidthFull(new HorizontalLayout(condition)));
-    add(UIS.setWidthFull(new HorizontalLayout(textErrorConditionMsg)));
+    add(destinationCondition);
     add(
         UIS.setWidthFull( //
             new HorizontalLayout(url, urlCredentials)));
@@ -103,10 +97,6 @@ public class FormSTOW extends VerticalLayout {
 
   private void setElements() {
     description.setWidth("100%");
-    condition.setWidthFull();
-
-    textErrorConditionMsg.getStyle().set("color", "red");
-    textErrorConditionMsg.getStyle().set("font-size", "0.8em");
 
     url.setWidth("50%");
     UIS.setTooltip(url, "The destination STOW-RS URL");
@@ -157,22 +147,6 @@ public class FormSTOW extends VerticalLayout {
     binder
         .forField(switchingAlbumsView)
         .bind(DestinationEntity::getKheopsAlbumEntities, DestinationEntity::setKheopsAlbumEntities);
-    binder
-        .forField(condition)
-        .withValidator(
-            value -> {
-              if (!condition.getValue().equals("")) {
-                ExpressionError expressionError =
-                    ExpressionResult.isValid(
-                        condition.getValue(), new ExprConditionDestination(), Boolean.class);
-                textErrorConditionMsg.setText(expressionError.getMsg());
-                return expressionError.isValid();
-              }
-              textErrorConditionMsg.setText("");
-              return true;
-            },
-            "Condition is not valid")
-        .bind(DestinationEntity::getCondition, DestinationEntity::setCondition);
     binder.bindInstanceFields(this);
   }
 
