@@ -55,6 +55,7 @@ public class DestinationEntity implements Serializable {
   private DestinationType destinationType;
 
   private boolean activate;
+  private String condition;
 
   private boolean desidentification;
 
@@ -123,6 +124,7 @@ public class DestinationEntity implements Serializable {
   protected DestinationEntity(DestinationType destinationType) {
     this.destinationType = destinationType;
     this.activate = true;
+    this.condition = "";
     this.description = "";
     this.desidentification = false;
     this.pseudonymAsPatientName = null;
@@ -190,6 +192,14 @@ public class DestinationEntity implements Serializable {
 
   public void setActivate(boolean activate) {
     this.activate = activate;
+  }
+
+  public String getCondition() {
+    return condition;
+  }
+
+  public void setCondition(String condition) {
+    this.condition = condition;
   }
 
   public String getDescription() {

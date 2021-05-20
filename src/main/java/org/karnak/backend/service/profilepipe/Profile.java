@@ -37,7 +37,7 @@ import org.karnak.backend.enums.ProfileItemType;
 import org.karnak.backend.model.action.ActionItem;
 import org.karnak.backend.model.action.Remove;
 import org.karnak.backend.model.action.ReplaceNull;
-import org.karnak.backend.model.expression.ExprConditionDestination;
+import org.karnak.backend.model.expression.ExprConditionProfile;
 import org.karnak.backend.model.expression.ExpressionResult;
 import org.karnak.backend.model.profilepipe.HMAC;
 import org.karnak.backend.model.profilepipe.HashContext;
@@ -132,8 +132,8 @@ public class Profile {
       AttributeEditorContext context) {
     for (int tag : dcm.tags()) {
       VR vr = dcm.getVR(tag);
-      final ExprConditionDestination exprConditionDestination =
-          new ExprConditionDestination(tag, vr, dcm, dcmCopy);
+      final ExprConditionProfile exprConditionProfile =
+          new ExprConditionProfile(tag, vr, dcm, dcmCopy);
 
       ActionItem currentAction = null;
       ProfileItem currentProfile = null;
@@ -149,7 +149,7 @@ public class Profile {
           boolean conditionIsOk =
               (Boolean)
                   ExpressionResult.get(
-                      profileEntity.getCondition(), exprConditionDestination, Boolean.class);
+                      profileEntity.getCondition(), exprConditionProfile, Boolean.class);
           if (conditionIsOk) {
             currentAction = profileEntity.getAction(dcm, dcmCopy, tag, hmac);
           }
