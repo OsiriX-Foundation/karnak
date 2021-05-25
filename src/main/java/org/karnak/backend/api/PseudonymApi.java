@@ -137,6 +137,10 @@ public class PseudonymApi {
         builder.append(URLEncoder.encode(entry.getValue().toString(), StandardCharsets.UTF_8));
       }
     }
+
+    // TODO TO REMOVE
+    LOGGER.info("builder.toString(): " + builder.toString());
+
     return HttpRequest.BodyPublishers.ofString(builder.toString());
   }
 
@@ -173,9 +177,16 @@ public class PseudonymApi {
             .header(MAINZELLISTE_HEADER, API_KEY)
             .build();
 
+    // TODO TO REMOVE
+    LOGGER.info("request: " + request.toString());
+
     HttpResponse<String> response;
     try {
       response = httpClient.send(request, BodyHandlers.ofString());
+
+      // TODO TO REMOVE
+      LOGGER.info("response: " + response.toString());
+
       controlErrorResponse(response);
       JSONObject jsonResp = new JSONObject(response.body());
       this.sessionId = jsonResp.getString("sessionId");
