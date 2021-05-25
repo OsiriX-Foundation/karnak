@@ -25,6 +25,11 @@ html {
   }
 }
 
+label[disabled] {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
 .main-layout {
   flex-direction: row;
 

@@ -75,23 +75,15 @@ public class AttributesByDefault {
       Attributes dcm, ProjectEntity projectEntity, String pseudonym) {
     final ProfileEntity profileEntity = projectEntity.getProfileEntity();
 
-    // ???
-    dcm.setString(Tag.ClinicalTrialProtocolEthicsCommitteeName, VR.LO, projectEntity.getName());
-    dcm.setString(Tag.ClinicalTrialSubjectReadingID, VR.LO, projectEntity.getName());
-
+    // Clinical Trial Subject - Module
     dcm.setString(Tag.ClinicalTrialSponsorName, VR.LO, projectEntity.getName());
     dcm.setString(Tag.ClinicalTrialProtocolID, VR.LO, profileEntity.getName());
-    dcm.setString(Tag.ClinicalTrialSubjectID, VR.LO, pseudonym);
-
-    // X IN BASIC DICOM PROFILE
-    dcm.remove(Tag.ClinicalTrialProtocolEthicsCommitteeApprovalNumber);
-    dcm.remove(Tag.ClinicalTrialTimePointDescription);
-
-    // Z IN BASIC DICOM PROFILE
-    dcm.setNull(Tag.ClinicalTrialCoordinatingCenterName, VR.LO);
     dcm.setNull(Tag.ClinicalTrialProtocolName, VR.LO);
     dcm.setNull(Tag.ClinicalTrialSiteID, VR.LO);
     dcm.setNull(Tag.ClinicalTrialSiteName, VR.LO);
-    dcm.setNull(Tag.ClinicalTrialTimePointID, VR.LO);
+    dcm.setString(Tag.ClinicalTrialSubjectID, VR.LO, pseudonym);
+    dcm.remove(Tag.ClinicalTrialSubjectReadingID);
+    dcm.remove(Tag.ClinicalTrialProtocolEthicsCommitteeName);
+    dcm.remove(Tag.ClinicalTrialProtocolEthicsCommitteeApprovalNumber);
   }
 }

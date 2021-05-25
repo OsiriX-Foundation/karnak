@@ -27,8 +27,8 @@ class DestinationEchoTest {
     destinationEchoToCompare.setUrl("url");
 
     // Test results
-    Assert.assertFalse(Objects.equals(destinationEcho, null));
-    Assert.assertTrue(Objects.equals(destinationEcho, destinationEcho));
+    Assert.assertNotNull(destinationEcho);
+    Assert.assertEquals(destinationEcho, destinationEcho);
     Assert.assertTrue(Objects.equals(destinationEcho, destinationEchoToCompare));
     Assert.assertEquals(destinationEcho.hashCode(), destinationEchoToCompare.hashCode());
   }
