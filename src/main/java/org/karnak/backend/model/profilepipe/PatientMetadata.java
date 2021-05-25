@@ -35,10 +35,6 @@ public class PatientMetadata {
   public PatientMetadata(Attributes dcm, String defaultIsserOfPatientID) {
     patientID = dcm.getString(Tag.PatientID, "");
     patientName = dcm.getString(Tag.PatientName, "");
-
-    // TODO: TO REMOVE ONLY FOR TEST
-    LOGGER.info("dcm.getString(Tag.PatientBirthDate):" + dcm.getString(Tag.PatientBirthDate));
-
     patientBirthDate =
         StringUtil.hasText(dcm.getString(Tag.PatientBirthDate))
                 && !Objects.equals(dcm.getString(Tag.PatientBirthDate), "NULL")
