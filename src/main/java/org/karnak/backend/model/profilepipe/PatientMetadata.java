@@ -37,7 +37,7 @@ public class PatientMetadata {
     patientName = dcm.getString(Tag.PatientName, "");
 
     // TODO: TO REMOVE ONLY FOR TEST
-    LOGGER.info("dcm.getString(Tag.PatientBirthDate):"+dcm.getString(Tag.PatientBirthDate));
+    LOGGER.info("dcm.getString(Tag.PatientBirthDate):" + dcm.getString(Tag.PatientBirthDate));
 
     patientBirthDate =
         StringUtil.hasText(dcm.getString(Tag.PatientBirthDate))
