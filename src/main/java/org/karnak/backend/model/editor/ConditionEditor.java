@@ -10,29 +10,29 @@
 package org.karnak.backend.model.editor;
 
 import org.dcm4che3.data.Attributes;
-import org.karnak.backend.data.entity.DestinationEntity;
-import org.karnak.backend.data.entity.ProfileEntity;
-import org.karnak.backend.service.profilepipe.Profile;
+import org.karnak.backend.model.expression.ExprConditionDestination;
+import org.karnak.backend.model.expression.ExpressionResult;
 import org.weasis.dicom.param.AttributeEditor;
 import org.weasis.dicom.param.AttributeEditorContext;
 import org.weasis.dicom.param.AttributeEditorContext.Abort;
 
-public class DeIdentifyEditor implements AttributeEditor {
+public class ConditionEditor implements AttributeEditor {
+  private String condition;
 
-  private final Profile profile;
-  private DestinationEntity destinationEntity;
-  private ProfileEntity profileEntity;
+  public ConditionEditor(String condition) {
+    this.condition = condition;
+  }
 
-  public DeIdentifyEditor(DestinationEntity destinationEntity) {
-    this.destinationEntity = destinationEntity;
-    this.profileEntity = destinationEntity.getProjectEntity().getProfileEntity();
-    this.profile = new Profile(profileEntity);
+  private static boolean validateCondition(String condition, Attributes dcm) {
+    return (Boolean)
+        ExpressionResult.get(condition, new ExprConditionDestination(dcm), Boolean.class);
   }
 
   @Override
   public void apply(Attributes dcm, AttributeEditorContext context) {
-    if (context.getAbort() != Abort.FILE_EXCEPTION) {
-      profile.apply(dcm, destinationEntity, profileEntity, context);
+    if (!validateCondition(this.condition, dcm)) {
+      context.setAbort(Abort.FILE_EXCEPTION);
+      context.setAbortMessage("The instance is blocked because is does not meet the condition");
     }
   }
 }

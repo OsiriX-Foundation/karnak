@@ -13,6 +13,7 @@ import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.textfield.TextField;
 import org.karnak.backend.model.profilepipe.HMAC;
 import org.karnak.frontend.component.WarningConfirmDialog;
@@ -28,27 +29,30 @@ public class ProjectSecret extends Div {
           "https://osirix-foundation.github.io/karnak-documentation/docs/deidentification/rules#action-u-generate-a-new-uid",
           "How KARNAK does ?");
 
+  private static final String LABEL_DISCLAIMER_SECRET =
+      "Please be sure that the project secret is saved.";
+  private final String TITLE = "Project Secret";
+
+  private final Label labelDisclaimer = new Label();
   private final Div titleDiv = new Div();
   private final Div valueDiv = new Div();
   private final Div messageWarningLayout = new Div();
   private final TextField textProjectSecret;
   private final Button generateButton = new Button("Generate Secret");
 
-  private final String TITLE = "Project Secret";
-
   public ProjectSecret(TextField textProjectSecret) {
     this.textProjectSecret = textProjectSecret;
-
     setWidthFull();
     setTitle();
     setValue();
     setMessageWarningLayout();
+    setLabelDisclaimerSecret();
     eventGenerateSecret();
-    add(titleDiv, valueDiv);
+    add(titleDiv, valueDiv, labelDisclaimer);
   }
 
   private void setTitle() {
-    titleDiv.setText(TITLE);
+    titleDiv.add(new Label(TITLE));
   }
 
   private void setValue() {
@@ -61,6 +65,13 @@ public class ProjectSecret extends Div {
     messageWarningLayout.add(new Div(new Text(WARNING_TEXT)));
     messageWarningLayout.add(new Div(new Text(REFER_LINK_TEXT)));
     messageWarningLayout.add(REFER_LINK);
+  }
+
+  private void setLabelDisclaimerSecret() {
+    labelDisclaimer.setText(LABEL_DISCLAIMER_SECRET);
+    labelDisclaimer.getStyle().set("color", "red");
+    labelDisclaimer.setMinWidth("75%");
+    labelDisclaimer.getStyle().set("right", "0px");
   }
 
   public void clear() {

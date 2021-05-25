@@ -15,6 +15,7 @@ import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.karnak.backend.data.entity.ProfileElementEntity;
@@ -51,10 +52,10 @@ public class ProfileElementMainView extends VerticalLayout {
       Set<ProfileElementEntity> profileElementEntities = profileEntity.getProfileElementEntities();
 
       if (profileElementEntities != null) {
-        profileElementEntities.stream()
-            .collect(Collectors.toList())
-            .sort(Comparator.comparingInt(ProfileElementEntity::getPosition));
-        profilesOrder = profileElementEntities;
+        profilesOrder =
+            profileElementEntities.stream()
+                .sorted(Comparator.comparing(ProfileElementEntity::getPosition))
+                .collect(Collectors.toCollection(LinkedHashSet::new));
         profilesView();
         setEnabled(true);
       } else {

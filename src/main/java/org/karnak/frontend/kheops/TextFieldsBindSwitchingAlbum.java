@@ -18,7 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.karnak.backend.api.KheopsApi;
 import org.karnak.backend.data.entity.KheopsAlbumsEntity;
-import org.karnak.backend.model.expression.ExprConditionKheops;
+import org.karnak.backend.model.expression.ExprConditionDestination;
 import org.karnak.backend.model.expression.ExpressionError;
 import org.karnak.backend.model.expression.ExpressionResult;
 import org.karnak.backend.service.kheops.SwitchingAlbum;
@@ -83,7 +83,7 @@ public class TextFieldsBindSwitchingAlbum {
               if (!textCondition.getValue().equals("")) {
                 expressionError =
                     ExpressionResult.isValid(
-                        textCondition.getValue(), new ExprConditionKheops(), Boolean.class);
+                        textCondition.getValue(), new ExprConditionDestination(), Boolean.class);
                 textErrorConditionMsg.setText(expressionError.getMsg());
                 return expressionError.isValid();
               }
