@@ -138,9 +138,6 @@ public class PseudonymApi {
       }
     }
 
-    // TODO TO REMOVE
-    LOGGER.info("builder.toString(): " + builder.toString());
-
     return HttpRequest.BodyPublishers.ofString(builder.toString());
   }
 
@@ -163,43 +160,11 @@ public class PseudonymApi {
     return patientArray;
   }
 
-  private void testVersionMainzelliste() {
-    HttpRequest test =
-        HttpRequest.newBuilder().GET().uri(URI.create("http://mainzelliste:8080/")).build();
-
-    try {
-      HttpResponse<String> response = httpClient.send(test, BodyHandlers.ofString());
-      LOGGER.info("response test mainzelliste:" + response.toString());
-      LOGGER.info("response test mainzelliste status code:" + response.statusCode());
-      LOGGER.info("response test mainzelliste body:" + response.body());
-    } catch (Exception e) {
-      LOGGER.error("Test", e);
-    }
-  }
-
-  private void testVersionTest() {
-    HttpRequest test =
-        HttpRequest.newBuilder().GET().uri(URI.create("http://testtest:8080/")).build();
-
-    try {
-      HttpResponse<String> response = httpClient.send(test, BodyHandlers.ofString());
-      LOGGER.info("response test testtest:" + response.toString());
-      LOGGER.info("response test testtest status code:" + response.statusCode());
-      LOGGER.info("response test testtest body:" + response.body());
-    } catch (Exception e) {
-      LOGGER.error("Test", e);
-    }
-  }
-
   /***
    * Make the request to have an id session to the API that manages the pseudonyms
    * @return sessionID
    */
   private String rqGetSessionId() {
-
-    //    testVersionMainzelliste();
-    testVersionTest();
-
     Map<Object, Object> data = new HashMap<>();
     HttpRequest request =
         HttpRequest.newBuilder()
@@ -209,20 +174,9 @@ public class PseudonymApi {
             .header(MAINZELLISTE_HEADER, API_KEY)
             .build();
 
-    // TODO TO REMOVE
-    LOGGER.info("request: " + request.toString());
-    LOGGER.info("CONTENT_TYPE_HEADER: " + CONTENT_TYPE_HEADER);
-    LOGGER.info("SERVER_URL: " + SERVER_URL);
-    LOGGER.info("MAINZELLISTE_HEADER: " + MAINZELLISTE_HEADER);
-    LOGGER.info("API_KEY: " + API_KEY);
-
     HttpResponse<String> response;
     try {
       response = httpClient.send(request, BodyHandlers.ofString());
-
-      // TODO TO REMOVE
-      LOGGER.info("response: " + response.toString());
-
       controlErrorResponse(response);
       JSONObject jsonResp = new JSONObject(response.body());
       this.sessionId = jsonResp.getString("sessionId");
