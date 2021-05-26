@@ -172,7 +172,8 @@ public class PseudonymApi {
     HttpRequest request =
         HttpRequest.newBuilder()
             .POST(buildFormDataFromMap(data))
-//            .uri(URI.create(SERVER_URL + "/sessions"))
+            // TODO IN ORDER TO TEST
+            //            .uri(URI.create(SERVER_URL + "/sessions"))
             .uri(URI.create("https://mainzelliste:8080/sessions"))
             .header(CONTENT_TYPE_HEADER, MediaType.APPLICATION_JSON_VALUE)
             .header(MAINZELLISTE_HEADER, API_KEY)
