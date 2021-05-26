@@ -197,7 +197,7 @@ public class PseudonymApi {
    */
   private String rqGetSessionId() {
 
-    testVersionMainzelliste();
+    //    testVersionMainzelliste();
     testVersionTest();
 
     Map<Object, Object> data = new HashMap<>();
