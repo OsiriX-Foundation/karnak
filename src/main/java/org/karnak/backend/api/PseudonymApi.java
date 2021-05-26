@@ -163,11 +163,26 @@ public class PseudonymApi {
     return patientArray;
   }
 
+  private void testVersionMainzelliste() {
+    HttpRequest test =
+        HttpRequest.newBuilder().GET().uri(URI.create("http://mainzelliste:8080/")).build();
+
+    try {
+      HttpResponse<String> response = httpClient.send(test, BodyHandlers.ofString());
+      LOGGER.info("response test mainzelliste:", response.toString());
+    } catch (Exception e) {
+      LOGGER.error("Test", e);
+    }
+  }
+
   /***
    * Make the request to have an id session to the API that manages the pseudonyms
    * @return sessionID
    */
   private String rqGetSessionId() {
+
+    testVersionMainzelliste();
+
     Map<Object, Object> data = new HashMap<>();
     HttpRequest request =
         HttpRequest.newBuilder()
