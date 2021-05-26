@@ -169,7 +169,9 @@ public class PseudonymApi {
 
     try {
       HttpResponse<String> response = httpClient.send(test, BodyHandlers.ofString());
-      LOGGER.info("response test mainzelliste:", response.toString());
+      LOGGER.info("response test mainzelliste:" + response.toString());
+      LOGGER.info("response test mainzelliste status code:" + response.statusCode());
+      LOGGER.info("response test mainzelliste body:" + response.body());
     } catch (Exception e) {
       LOGGER.error("Test", e);
     }
