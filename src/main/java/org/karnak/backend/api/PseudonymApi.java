@@ -179,6 +179,10 @@ public class PseudonymApi {
 
     // TODO TO REMOVE
     LOGGER.info("request: " + request.toString());
+    LOGGER.info("CONTENT_TYPE_HEADER: " + CONTENT_TYPE_HEADER);
+    LOGGER.info("SERVER_URL: " + SERVER_URL);
+    LOGGER.info("MAINZELLISTE_HEADER: " + MAINZELLISTE_HEADER);
+    LOGGER.info("API_KEY: " + API_KEY);
 
     HttpResponse<String> response;
     try {
