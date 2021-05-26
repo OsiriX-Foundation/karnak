@@ -177,6 +177,20 @@ public class PseudonymApi {
     }
   }
 
+  private void testVersionTest() {
+    HttpRequest test =
+        HttpRequest.newBuilder().GET().uri(URI.create("http://testtest:8080/")).build();
+
+    try {
+      HttpResponse<String> response = httpClient.send(test, BodyHandlers.ofString());
+      LOGGER.info("response test testtest:" + response.toString());
+      LOGGER.info("response test testtest status code:" + response.statusCode());
+      LOGGER.info("response test testtest body:" + response.body());
+    } catch (Exception e) {
+      LOGGER.error("Test", e);
+    }
+  }
+
   /***
    * Make the request to have an id session to the API that manages the pseudonyms
    * @return sessionID
@@ -184,6 +198,7 @@ public class PseudonymApi {
   private String rqGetSessionId() {
 
     testVersionMainzelliste();
+    testVersionTest();
 
     Map<Object, Object> data = new HashMap<>();
     HttpRequest request =
