@@ -10,7 +10,6 @@
 package org.karnak.backend.model.profilepipe;
 
 import java.time.LocalDate;
-import java.util.Objects;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.karnak.backend.api.rqbody.Fields;
@@ -35,11 +34,7 @@ public class PatientMetadata {
   public PatientMetadata(Attributes dcm, String defaultIsserOfPatientID) {
     patientID = dcm.getString(Tag.PatientID, "");
     patientName = dcm.getString(Tag.PatientName, "");
-    patientBirthDate =
-        StringUtil.hasText(dcm.getString(Tag.PatientBirthDate))
-                && !Objects.equals(dcm.getString(Tag.PatientBirthDate), "NULL")
-            ? setPatientBirthDate(dcm.getString(Tag.PatientBirthDate))
-            : "";
+    patientBirthDate = setPatientBirthDate(dcm.getString(Tag.PatientBirthDate));
     issuerOfPatientID =
         dcm.getString(
             Tag.IssuerOfPatientID,
