@@ -9,6 +9,8 @@
  */
 package org.karnak.backend.dicom;
 
+import org.dcm4che3.data.Attributes;
+import org.dcm4che3.data.Tag;
 import org.opencv.core.Core.MinMaxLocResult;
 import org.weasis.opencv.data.ImageCV;
 import org.weasis.opencv.data.PlanarImage;
@@ -18,6 +20,24 @@ public class DefacingUtil {
 
   public static int randomY(int minY, int maxY, int bound) {
     return (int) Math.floor(Math.random() * (maxY - minY + bound) + minY);
+  }
+
+  public static double pickRndYPxlColor2(int xInit, int minY, int maxY, PlanarImage imgToPick) {
+    int yRand = DefacingUtil.randomY(minY, maxY, 1);
+    MinMaxLocResult minMaxLocResult = ImageProcessor.findMinMaxValues(imgToPick.toImageCV());
+    double meanSkinColor = minMaxLocResult.maxVal;
+    //moyenne 3x3
+    int size = 4;
+    double mean = 0;
+    int sum = 0;
+    for (int x = xInit; x < xInit+size +1; x++) {
+      for (int y = yRand; y < yRand+size +1; y++) {
+        double color = imgToPick.toMat().get(y,x)[0];
+        mean = mean + color;
+        sum++;
+      }
+    }
+    return mean/sum;
   }
 
   public static PlanarImage transformToByte(PlanarImage srcImg) {
@@ -31,6 +51,16 @@ public class DefacingUtil {
     double yint = 255.0 - slope * max;
     imgTransform = ImageProcessor.rescaleToByte(imgTransform.toImageCV(), slope, yint);
     return imgTransform;
+  }
+
+  public static double hounsfieldToPxlValue(Attributes attributes, double hounsfield) {
+    String interceptS = attributes.getString(Tag.RescaleIntercept);
+    String slopeS = attributes.getString(Tag.RescaleSlope);
+    double intercept = Double.parseDouble(interceptS);
+    double slope = Double.parseDouble(slopeS);
+
+    //int hounsfield = pixel * slope + intercept;
+    return (hounsfield - intercept) / slope;
   }
 
   public static PlanarImage rescaleForVisualizing(
