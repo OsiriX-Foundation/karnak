@@ -27,9 +27,15 @@ public class DefacingUtil {
     int size = 4;
     double mean = 0;
     int sum = 0;
-    for (int x = xInit- (size/2); x < xInit+(size/2) +1; x++) {
+    //convolution
+    for (int x = xInit - (size/2); x < xInit+(size/2) +1; x++) {
       for (int y = yRand; y < yRand+size +1; y++) {
-        double color = imgToPick.toMat().get(y,x)[0];
+        double color = 0;
+        try {
+          color = imgToPick.toMat().get(y,x)[0];
+        } catch (Exception e){
+        }
+
         mean = mean + color;
         sum++;
       }

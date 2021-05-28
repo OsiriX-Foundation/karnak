@@ -79,7 +79,7 @@ public class Defacer {
     // DRAW BLACK RECT 1/3
     int rectProportion = (int) (faceDetectionImg.height() / 2.9);
     Rect rect = new Rect(0, rectProportion, faceDetectionImg.width(), faceDetectionImg.height());
-    Imgproc.rectangle(faceDetectionImg.toImageCV(), rect, new Scalar(0, 0, 0), Imgproc.FILLED);
+    Imgproc.rectangle(faceDetectionImg.toImageCV(), rect, new Scalar(255), Imgproc.FILLED);
 
     for (int x = 0; x < faceDetectionImg.width(); x++) {
       for (int y = 0; y < faceDetectionImg.height(); y++) {
@@ -133,16 +133,23 @@ public class Defacer {
     return randPxlLineImg;
   }
 
-  public static PlanarImage blurImg(
-      PlanarImage srcImg, PlanarImage randPxlLineImg, PlanarImage faceDetectImg) {
+  public static PlanarImage blurImg(PlanarImage srcImg, PlanarImage randPxlLineImg, PlanarImage faceDetectImg) {
     ImageCV bluredImgRandPxlLine = new ImageCV();
     srcImg.toMat().copyTo(bluredImgRandPxlLine);
-    Imgproc.blur(bluredImgRandPxlLine.toImageCV(), bluredImgRandPxlLine.toMat(), new Size(5, 6));
+    Imgproc.blur(bluredImgRandPxlLine.toImageCV(), bluredImgRandPxlLine.toMat(), new Size(5, 5));
+
+    int marginBlurSkin = 20;
 
     for (int x = 0; x < faceDetectImg.width(); x++) {
-      for (int y = faceDetectImg.height() - 1; y > 0; y--) {
-        if (randPxlLineImg.toMat().get(y, x)[0] == 0.0) {
-          bluredImgRandPxlLine.toMat().put(y, x, srcImg.toMat().get(y, x)[0]);
+      boolean faceDetected = true;
+      for (int y = 0; y < faceDetectImg.height(); y++) {
+        if(faceDetectImg.toMat().get(y,x)[0] != 0.0 ) {
+          faceDetected = false;
+          y = y +marginBlurSkin;
+        }
+
+        if (!faceDetected) {
+          bluredImgRandPxlLine.toMat().put(y, x, srcImg.toMat().get(y,x)[0]);
         }
       }
     }
