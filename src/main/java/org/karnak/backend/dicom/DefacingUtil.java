@@ -22,15 +22,12 @@ public class DefacingUtil {
     return (int) Math.floor(Math.random() * (maxY - minY + bound) + minY);
   }
 
-  public static double pickRndYPxlColor2(int xInit, int minY, int maxY, PlanarImage imgToPick) {
+  public static double pickRndYPxlColor(int xInit, int minY, int maxY, PlanarImage imgToPick) {
     int yRand = DefacingUtil.randomY(minY, maxY, 1);
-    MinMaxLocResult minMaxLocResult = ImageProcessor.findMinMaxValues(imgToPick.toImageCV());
-    double meanSkinColor = minMaxLocResult.maxVal;
-    //moyenne 3x3
     int size = 4;
     double mean = 0;
     int sum = 0;
-    for (int x = xInit; x < xInit+size +1; x++) {
+    for (int x = xInit- (size/2); x < xInit+(size/2) +1; x++) {
       for (int y = yRand; y < yRand+size +1; y++) {
         double color = imgToPick.toMat().get(y,x)[0];
         mean = mean + color;
