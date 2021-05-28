@@ -30,9 +30,8 @@ public class Defacer {
   private Defacer() {}
 
   public static PlanarImage apply(Attributes attributes, PlanarImage image) {
-    PlanarImage skinImg = filterBySkin(attributes, image);
     PlanarImage faceDetectionImg = faceDetection(image);
-    PlanarImage randPxlLineImg = addRandPxlLine(image, faceDetectionImg, skinImg);
+    PlanarImage randPxlLineImg = addRandPxlLine(image, faceDetectionImg);
     PlanarImage mergedImg = mergeImg(image, randPxlLineImg, faceDetectionImg);
     PlanarImage imgBlured = blurImg(mergedImg, randPxlLineImg, faceDetectionImg);
     return imgBlured;
@@ -97,7 +96,7 @@ public class Defacer {
     return faceDetectionImg;
   }
 
-  public static PlanarImage addRandPxlLine(PlanarImage srcImg, PlanarImage faceDetectImg, PlanarImage skinImg) {
+  public static PlanarImage addRandPxlLine(PlanarImage srcImg, PlanarImage faceDetectImg) {
     ImageCV randPxlLineImg = new ImageCV();
     srcImg.toMat().copyTo(randPxlLineImg);
 
