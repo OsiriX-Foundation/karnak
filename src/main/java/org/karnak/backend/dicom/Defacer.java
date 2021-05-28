@@ -10,6 +10,7 @@
 package org.karnak.backend.dicom;
 
 import org.dcm4che3.data.Attributes;
+import org.dcm4che3.data.Tag;
 import org.opencv.core.Core;
 import org.opencv.core.Core.MinMaxLocResult;
 import org.opencv.core.CvType;
@@ -31,7 +32,7 @@ public class Defacer {
 
   public static PlanarImage apply(Attributes attributes, PlanarImage image) {
     PlanarImage faceDetectionImg = faceDetection(image);
-    PlanarImage randPxlLineImg = addRandPxlLine(image, faceDetectionImg);
+    PlanarImage randPxlLineImg = addRandPxlLine(image, faceDetectionImg , attributes);
     PlanarImage mergedImg = mergeImg(image, randPxlLineImg, faceDetectionImg);
     PlanarImage imgBlured = blurImg(mergedImg, randPxlLineImg, faceDetectionImg);
     return imgBlured;
@@ -96,17 +97,19 @@ public class Defacer {
     return faceDetectionImg;
   }
 
-  public static PlanarImage addRandPxlLine(PlanarImage srcImg, PlanarImage faceDetectImg) {
+  public static PlanarImage addRandPxlLine(PlanarImage srcImg, PlanarImage faceDetectImg, Attributes attributes) {
     ImageCV randPxlLineImg = new ImageCV();
     srcImg.toMat().copyTo(randPxlLineImg);
-
+    double pixelSpacing = attributes.getDouble(Tag.PixelSpacing, 0.5);
+    int minThicknessSkin = (int) (1/ pixelSpacing); //1mm
+    int maxThicknessSkin = (int) (3 / pixelSpacing); //3mm
     // DRAW A LINE WITH RANDOM VALUE WHEN FACE DETECTED
     int yOffsetRand = 1;
     // scan the image from left to right and bottom to top until the face is detected in Y
     for (int x = 0; x < faceDetectImg.width(); x++) {
       boolean faceDetected = false;
       int yFaceDetected = 0;
-      int thicknessSkin = DefacingUtil.randomY(4, 7, 1);
+      int thicknessSkin = DefacingUtil.randomY(minThicknessSkin, maxThicknessSkin, 1);
       int margeY = 20;
 
       for (int y = faceDetectImg.height() - 1; y > 0; y--) {
