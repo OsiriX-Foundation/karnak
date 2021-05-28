@@ -159,6 +159,7 @@ An OpenID Connect identity provider can be configured by using the environment v
 In order to see the documentation for API/Endpoints:
 - Local: http://localhost:8081/swagger-ui/index.html?url=/v3/api-docs
 - Dev: https://karnak-dev.hcuge.ch/swagger-ui/index.html?url=/v3/api-docs
+- Cert: https://karnak-cert.hcuge.ch/swagger-ui/index.html?url=/v3/api-docs
 
 # Workflow
 
