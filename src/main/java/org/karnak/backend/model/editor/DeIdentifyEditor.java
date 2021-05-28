@@ -11,24 +11,28 @@ package org.karnak.backend.model.editor;
 
 import org.dcm4che3.data.Attributes;
 import org.karnak.backend.data.entity.DestinationEntity;
-import org.karnak.backend.data.entity.ProjectEntity;
+import org.karnak.backend.data.entity.ProfileEntity;
 import org.karnak.backend.service.profilepipe.Profile;
 import org.weasis.dicom.param.AttributeEditor;
 import org.weasis.dicom.param.AttributeEditorContext;
+import org.weasis.dicom.param.AttributeEditorContext.Abort;
 
 public class DeIdentifyEditor implements AttributeEditor {
 
   private final Profile profile;
-  private final DestinationEntity destinationEntity;
+  private DestinationEntity destinationEntity;
+  private ProfileEntity profileEntity;
 
   public DeIdentifyEditor(DestinationEntity destinationEntity) {
     this.destinationEntity = destinationEntity;
-    ProjectEntity projectEntity = destinationEntity.getProjectEntity();
-    this.profile = new Profile(projectEntity.getProfileEntity());
+    this.profileEntity = destinationEntity.getProjectEntity().getProfileEntity();
+    this.profile = new Profile(profileEntity);
   }
 
   @Override
   public void apply(Attributes dcm, AttributeEditorContext context) {
-    profile.apply(dcm, destinationEntity, context);
+    if (context.getAbort() != Abort.FILE_EXCEPTION) {
+      profile.apply(dcm, destinationEntity, profileEntity, context);
+    }
   }
 }

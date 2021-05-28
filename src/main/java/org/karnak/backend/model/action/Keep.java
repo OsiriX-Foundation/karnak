@@ -22,14 +22,15 @@ public class Keep extends AbstractAction {
 
   @Override
   public void execute(Attributes dcm, int tag, HMAC hmac) {
-    final String tagValueIn = dcm.getString(tag);
-    LOGGER.trace(
-        CLINICAL_MARKER,
-        PATTERN_WITH_INOUT,
-        MDC.get("SOPInstanceUID"),
-        TagUtils.toString(tag),
-        symbol,
-        tagValueIn,
-        tagValueIn);
+    if (LOGGER.isTraceEnabled()) {
+      String tagValueIn = AbstractAction.getStringValue(dcm, tag);
+      LOGGER.trace(
+          CLINICAL_MARKER,
+          PATTERN_WITH_IN,
+          MDC.get("SOPInstanceUID"),
+          TagUtils.toString(tag),
+          symbol,
+          tagValueIn);
+    }
   }
 }

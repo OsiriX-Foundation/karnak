@@ -74,6 +74,10 @@ see [karnak-docker](https://github.com/OsiriX-Foundation/karnak-docker).
             - `KARNAK_CLINICAL_LOGS_MAX_FILE_SIZE=100MB`
             - `KARNAK_CLINICAL_LOGS_MIN_INDEX=1`
             - `KARNAK_CLINICAL_LOGS_MAX_INDEX=10`
+            - `IDP=undefined`
+            - `OIDC_CLIENT_ID=undefined`
+            - `OIDC_CLIENT_SECRET=undefined`
+            - `OIDC_ISSUER_URI=undefined`
 
     Note: the tmp folder must be adapted according to your system and the dicom-opencv must the last folder.
 
@@ -125,10 +129,36 @@ See [environment variables](https://github.com/OsiriX-Foundation/karnak-docker#e
 
 # Architecture
 
-This project provides two modules:
+This project is divided in two parts:
 
-- karnak-data: the data model for persistence of the gateway configuration
-- karnak-mvc: the services and UI for updating the data model
+- backend: spring data (entities, repositories, converters, validators), enums, 
+        spring configurations, spring security, cache, spring services, models...
+- frontend : Vaadin components:  logic services, graphic components, views
+
+# Logs Kibana
+
+In order to activate the logs in Kibana, activate the profile docker (from application-docker.yml)
+in the pom.xml : spring.profiles.active
+
+The logs can be seen here: 
+- https://kibana-cert/s/spring/app/kibana#/discover
+- with the filter springAppName : karnak
+
+# Identity provider
+
+An OpenID Connect identity provider can be configured by using the environment variables:
+ - `IDP`:  when this environment variable has the value 'oidc', the following environment 
+ variables will configure the OpenID Connect identity provider. Any other value will load the in 
+ memory user configuration. 
+ - `OIDC_CLIENT_ID`: client id of the identity provider 
+ - `OIDC_CLIENT_SECRET`: client secret of the identity provider
+ - `OIDC_ISSUER_URI`: issuer URI of the identity provider
+ 
+# Documentation for API/Endpoints 
+
+In order to see the documentation for API/Endpoints:
+- Local: http://localhost:8081/swagger-ui/index.html?url=/v3/api-docs
+- Dev: https://karnak-dev.hcuge.ch/swagger-ui/index.html?url=/v3/api-docs
 
 # Workflow
 

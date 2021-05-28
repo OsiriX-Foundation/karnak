@@ -28,21 +28,39 @@
     <java.version>14</java.version>
     <javax.el.version>3.0.0</javax.el.version>
     <javax.mail.version>1.6.2</javax.mail.version>
-    <maven-surefire-plugin.version>3.0.0-M4</maven-surefire-plugin.version>
+    <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <springframework.version>2.4.0</springframework.version>
-    <vaadin.version>17.0.10</vaadin.version>
-    <weasis-dicom-tools.version>5.23.1-IMG-RELEASE</weasis-dicom-tools.version>
-    <weasis.opencv.native.version>4.5.0-dcm</weasis.opencv.native.version>
+    <springframework.version>2.4.5</springframework.version>
+    <vaadin.version>19.0.6</vaadin.version>
+    <weasis-dicom-tools.version>5.23.2.1-IMG-RELEASE</weasis-dicom-tools.version>
+    <weasis.opencv.native.version>4.5.1-dcm</weasis.opencv.native.version>
     <jacoco-maven-plugin.version>0.8.6</jacoco-maven-plugin.version>
     <sonar-maven-plugin.version>3.8.0.2131</sonar-maven-plugin.version>
-    <!--    <sonar.host.url>https://sonarcloud.io</sonar.host.url>-->
     <sonar.java.source>${java.version}</sonar.java.source>
     <sonar.java.target>${java.version}</sonar.java.target>
-    <!--    <sonar.organization>osirix-foundation-1</sonar.organization>-->
     <sonar.projectKey>karnak</sonar.projectKey>
+    <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+    <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
+    <h2.version>1.4.200</h2.version>
+    <junit.jupiter.version>5.0.3</junit.jupiter.version>
+    <mockito.version>3.9.0</mockito.version>
+    <springdoc.version>1.5.6</springdoc.version>
   </properties>
+
+  <!-- Distribution management for releases/snapshots -->
+  <distributionManagement>
+    <repository>
+      <id>dsi-releases</id>
+      <name>Nexus3-hug - release</name>
+      <url>http://nxrm.hcuge.ch:8091/repository/maven-releases/</url>
+    </repository>
+    <snapshotRepository>
+      <id>dsi-snapshots</id>
+      <name>Nexus3-hug - snapshot</name>
+      <url>http://nxrm.hcuge.ch:8091/repository/maven-snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
 
   <!-- Repositories -->
   <repositories>
@@ -138,6 +156,18 @@
         </executions>
       </plugin>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${maven-surefire-plugin.version}</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit.jupiter.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+      <plugin>
         <groupId>org.sonarsource.scanner.maven</groupId>
         <artifactId>sonar-maven-plugin</artifactId>
         <version>${sonar-maven-plugin.version}</version>
@@ -154,26 +184,6 @@
               <outputDirectory>${project.build.directory}/native-lib/lib/linux-x86-64
               </outputDirectory>
               <type>so</type>
-              <version>${weasis.opencv.native.version}</version>
-            </artifactItem>
-            <artifactItem>
-              <artifactId>libopencv_java</artifactId>
-              <classifier>macosx-x86-64</classifier>
-              <destFileName>libopencv_java.jnilib</destFileName>
-              <groupId>org.weasis.thirdparty.org.opencv</groupId>
-              <outputDirectory>${project.build.directory}/native-lib/lib/macosx-x86-64
-              </outputDirectory>
-              <type>jnilib</type>
-              <version>${weasis.opencv.native.version}</version>
-            </artifactItem>
-            <artifactItem>
-              <artifactId>opencv_java</artifactId>
-              <classifier>windows-x86-64</classifier>
-              <destFileName>opencv_java.dll</destFileName>
-              <groupId>org.weasis.thirdparty.org.opencv</groupId>
-              <outputDirectory>${project.build.directory}/native-lib/lib/windows-x86-64
-              </outputDirectory>
-              <type>dll</type>
               <version>${weasis.opencv.native.version}</version>
             </artifactItem>
           </artifactItems>
@@ -243,7 +253,7 @@
             <licenseHeader>
               <!-- @formatter:off -->
               <content>
- /*
+/*
  * Copyright (c) $YEAR Karnak Team and other contributors.
  *
  * This program and the accompanying materials are made available under the terms of the Eclipse
@@ -278,10 +288,34 @@
     </resources>
   </build>
 
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>${jacoco-maven-plugin.version}</version>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <!-- select non-aggregate reports -->
+              <report>report</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+    </plugins>
+  </reporting>
+
   <!-- Dependencies -->
   <dependencies>
+
+    <!-- Springboot starters -->
     <dependency>
       <artifactId>spring-boot-starter</artifactId>
+      <groupId>org.springframework.boot</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>spring-boot-starter-web</artifactId>
       <groupId>org.springframework.boot</groupId>
     </dependency>
 
@@ -322,9 +356,18 @@
           <artifactId>slf4j-log4j12</artifactId>
           <groupId>org.slf4j</groupId>
         </exclusion>
+        <exclusion>
+          <artifactId>libopencv_java</artifactId>
+          <groupId>org.weasis.thirdparty.org.opencv</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>opencv_java</artifactId>
+          <groupId>org.weasis.thirdparty.org.opencv</groupId>
+        </exclusion>
       </exclusions>
       <groupId>org.weasis</groupId>
       <version>${weasis-dicom-tools.version}</version>
+
     </dependency>
     <dependency>
       <artifactId>javax.mail</artifactId>
@@ -338,10 +381,6 @@
       <groupId>org.springframework.boot</groupId>
     </dependency>
 
-    <dependency>
-      <artifactId>spring-boot-starter-web</artifactId>
-      <groupId>org.springframework.boot</groupId>
-    </dependency>
 
     <!-- Vaadin Spring -->
     <dependency>
@@ -352,6 +391,10 @@
           <artifactId>vaadin-core</artifactId>
           <groupId>com.vaadin</groupId>
         </exclusion>
+        <exclusion>
+          <artifactId>spring-boot-starter-web</artifactId>
+          <groupId>org.springframework.boot</groupId>
+        </exclusion>
       </exclusions>
       <groupId>com.vaadin</groupId>
       <version>${vaadin.version}</version>
@@ -361,6 +404,13 @@
     <dependency>
       <artifactId>spring-boot-starter-security</artifactId>
       <groupId>org.springframework.boot</groupId>
+    </dependency>
+
+    <!-- Oauth2 -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-oauth2-client</artifactId>
+      <version>${springframework.version}</version>
     </dependency>
 
     <dependency>
@@ -491,6 +541,11 @@
       <artifactId>jackson-module-jaxb-annotations</artifactId>
       <groupId>com.fasterxml.jackson.module</groupId>
     </dependency>
+    <!-- Jackson Xml -->
+    <dependency>
+      <artifactId>jackson-dataformat-xml</artifactId>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+    </dependency>
 
     <!-- Tests -->
     <dependency>
@@ -504,6 +559,28 @@
       <groupId>org.springframework.boot</groupId>
       <scope>test</scope>
       <version>${springframework.version}</version>
+    </dependency>
+
+    <!-- Mockito inline -->
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-inline</artifactId>
+      <version>${mockito.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- DB H2 for tests -->
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <version>${h2.version}</version>
+    </dependency>
+
+    <!-- Spring doc / Open Api -->
+    <dependency>
+      <groupId>org.springdoc</groupId>
+      <artifactId>springdoc-openapi-ui</artifactId>
+      <version>${springdoc.version}</version>
     </dependency>
   </dependencies>
 
@@ -535,19 +612,6 @@
 
   <!-- Profiles -->
   <profiles>
-    <profile>
-      <dependencies>
-        <dependency>
-          <artifactId>h2</artifactId>
-          <groupId>com.h2database</groupId>
-          <scope>runtime</scope>
-        </dependency>
-      </dependencies>
-      <id>devh2</id>
-      <properties>
-        <activatedProperties>devh2</activatedProperties>
-      </properties>
-    </profile>
     <profile>
       <!-- Production mode is activated using -Pproduction -->
       <build>

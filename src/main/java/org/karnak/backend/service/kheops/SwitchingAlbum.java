@@ -21,7 +21,7 @@ import org.karnak.backend.api.KheopsApi;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.KheopsAlbumsEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
-import org.karnak.backend.model.expression.ExprConditionKheops;
+import org.karnak.backend.model.expression.ExprConditionDestination;
 import org.karnak.backend.model.expression.ExpressionResult;
 import org.karnak.backend.model.kheops.MetadataSwitching;
 import org.karnak.backend.model.profilepipe.HMAC;
@@ -41,7 +41,7 @@ public class SwitchingAlbum {
   }
 
   private static HMAC generateHMAC(DestinationEntity destinationEntity) {
-    if (destinationEntity.getDesidentification()) {
+    if (destinationEntity.isDesidentification()) {
       ProjectEntity projectEntity = destinationEntity.getProjectEntity();
       return new HMAC(projectEntity.getSecret());
     }
@@ -50,14 +50,14 @@ public class SwitchingAlbum {
 
   private static String hashUIDonDeidentification(
       DestinationEntity destinationEntity, String inputUID, HMAC hmac) {
-    if (destinationEntity.getDesidentification() && hmac != null) {
+    if (destinationEntity.isDesidentification() && hmac != null) {
       return hmac.uidHash(inputUID);
     }
     return inputUID;
   }
 
   private static boolean validateCondition(String condition, Attributes dcm) {
-    final ExprConditionKheops conditionKheops = new ExprConditionKheops(dcm);
+    final ExprConditionDestination conditionKheops = new ExprConditionDestination(dcm);
     return (Boolean) ExpressionResult.get(condition, conditionKheops, Boolean.class);
   }
 
@@ -117,14 +117,16 @@ public class SwitchingAlbum {
 
   private boolean validateToken(List<String> validMinScope, String urlAPI, String introspectToken) {
     try {
-      final JSONObject responseIntrospect =
+      JSONObject responseIntrospect =
           kheopsAPI.tokenIntrospect(urlAPI, introspectToken, introspectToken);
-
       return validateIntrospectedToken(responseIntrospect, validMinScope);
+    } catch (InterruptedException e) {
+      LOGGER.warn("Session interrupted", e);
+      Thread.currentThread().interrupt();
     } catch (Exception e) {
       LOGGER.error("Invalid token", e);
-      return false;
     }
+    return false;
   }
 
   public void applyAfterTransfer(KheopsAlbumsEntity kheopsAlbumsEntity, Attributes dcm) {
@@ -177,6 +179,9 @@ public class SwitchingAlbum {
           urlAPI,
           authorizationSource,
           authorizationDestination);
+    } catch (InterruptedException e) {
+      LOGGER.warn("Session interrupted", e);
+      Thread.currentThread().interrupt();
     } catch (Exception e) {
       LOGGER.error(
           "Can't share the serie {} in the study {}", seriesInstanceUID, studyInstanceUID, e);

@@ -11,7 +11,9 @@ package org.karnak.backend.service;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Properties;
@@ -41,25 +43,25 @@ public class EmailNotifyProgress implements ProgressListener {
   private static final Logger LOGGER = LoggerFactory.getLogger(EmailNotifyProgress.class);
 
   private final ScheduledThreadPoolExecutor checkProcess;
-  private final StreamRegistryEditor streamRegistry;
+  private final StreamRegistryEditor streamRegistryEditor;
   private final ForwardDestination forwardDestination;
-  private final String[] emailList;
+  private final List<String> emailList;
   private final GatewaySetUpService config;
   private final NotificationSetUp notificationSetUp;
 
   public EmailNotifyProgress(
-      StreamRegistryEditor streamRegistry,
+      StreamRegistryEditor streamRegistryEditor,
       ForwardDestination forwardDestination,
-      String[] emails,
+      List<String> emails,
       GatewaySetUpService config,
       NotificationSetUp notificationSetUp) {
-    this.streamRegistry = Objects.requireNonNull(streamRegistry);
+    this.streamRegistryEditor = Objects.requireNonNull(streamRegistryEditor);
     this.forwardDestination = Objects.requireNonNull(forwardDestination);
     this.config = Objects.requireNonNull(config);
-    this.emailList = emails;
+    this.emailList = emails == null ? Collections.emptyList() : emails;
     this.notificationSetUp = notificationSetUp;
-    if (emails != null && emails.length > 0) {
-      this.streamRegistry.setEnable(true);
+    if (!emailList.isEmpty()) {
+      this.streamRegistryEditor.setEnable(true);
       this.checkProcess = new ScheduledThreadPoolExecutor(1);
       int interval =
           notificationSetUp == null
@@ -68,26 +70,27 @@ public class EmailNotifyProgress implements ProgressListener {
       this.checkProcess.scheduleAtFixedRate(
           this::checkNotification, interval, interval, TimeUnit.SECONDS);
     } else {
+      this.streamRegistryEditor.setEnable(false);
       this.checkProcess = null;
     }
   }
 
   @Override
   public void handleProgression(DicomProgress progress) {
-    streamRegistry.update(progress);
+    streamRegistryEditor.update(progress);
   }
 
   public ForwardDestination getForwardDestination() {
     return forwardDestination;
   }
 
-  public String[] getEmailList() {
+  public List<String> getEmailList() {
     return emailList;
   }
 
   protected void checkNotification() {
-    if (streamRegistry.isEnable()) {
-      Iterator<Entry<String, Study>> studyIt = streamRegistry.getEntrySet().iterator();
+    if (streamRegistryEditor.isEnable()) {
+      Iterator<Entry<String, Study>> studyIt = streamRegistryEditor.getEntrySet().iterator();
       while (studyIt.hasNext()) {
         Study study = studyIt.next().getValue();
         long currentTime = System.currentTimeMillis();
@@ -96,7 +99,7 @@ public class EmailNotifyProgress implements ProgressListener {
             notificationSetUp == null
                 ? config.getNotificationSetUp().getNotifyInterval()
                 : notificationSetUp.getNotifyInterval();
-        boolean notify = (currentTime - lastnotif) > (interval * 1000);
+        boolean notify = (currentTime - lastnotif) > (interval * 1000L);
 
         if (notify) {
           StringBuilder message = new StringBuilder("\nPatientID: ");
@@ -114,7 +117,7 @@ public class EmailNotifyProgress implements ProgressListener {
           write(message, study.getStudyDescription());
           message.append("\nStudy date: ");
           write(message, study.getStudyDate());
-          message.append("\n\nList of Series transfered from [");
+          message.append("\n\nList of Series transferred from [");
           write(message, forwardDestination.getForwardDicomNode());
           message.append("] to [");
           write(message, forwardDestination);
@@ -153,11 +156,7 @@ public class EmailNotifyProgress implements ProgressListener {
             try {
               postMail(title.toString(), message.toString());
             } catch (Exception e) {
-              LOGGER.info(
-                  "Cannot send email notification to {}. Subject: {}",
-                  Arrays.toString(emailList),
-                  title,
-                  e);
+              LOGGER.info("Cannot send email notification to {}. Subject: {}", emailList, title, e);
             }
           }
           studyIt.remove();
@@ -172,16 +171,17 @@ public class EmailNotifyProgress implements ProgressListener {
     }
   }
 
-  private Object[] buildObjectValue(String[] notifyObjectValues, Study study) {
-    Object[] vals = new Object[notifyObjectValues.length];
-    for (int i = 0; i < notifyObjectValues.length; i++) {
-      if ("PatientID".equals(notifyObjectValues[i])) {
+  private Object[] buildObjectValue(List<String> notifyObjectValues, Study study) {
+    Object[] vals = new Object[notifyObjectValues.size()];
+    for (int i = 0; i < notifyObjectValues.size(); i++) {
+      String n = notifyObjectValues.get(i);
+      if ("PatientID".equals(n)) {
         vals[i] = study.getPatientID();
-      } else if ("StudyDescription".equals(notifyObjectValues[i])) {
+      } else if ("StudyDescription".equals(n)) {
         vals[i] = study.getStudyDescription();
-      } else if ("StudyInstanceUID".equals(notifyObjectValues[i])) {
+      } else if ("StudyInstanceUID".equals(n)) {
         vals[i] = study.getStudyInstanceUID();
-      } else if ("StudyDate".equals(notifyObjectValues[i])) {
+      } else if ("StudyDate".equals(n)) {
         vals[i] = study.getStudyDate();
       }
     }
@@ -191,8 +191,7 @@ public class EmailNotifyProgress implements ProgressListener {
   protected void postMail(String subject, String message) throws Exception {
     String smtpHost = config.getSmtpHost();
     if (!StringUtil.hasText(smtpHost)) {
-      LOGGER.warn(
-          "Cannot send mail to {}, no smtp host in configuration!", Arrays.toString(emailList));
+      LOGGER.warn("Cannot send mail to {}, no smtp host in configuration!", emailList);
       return;
     }
 
@@ -237,14 +236,11 @@ public class EmailNotifyProgress implements ProgressListener {
     InternetAddress addressFrom = new InternetAddress("karnak@kehops.online");
     msg.setFrom(addressFrom);
 
-    InternetAddress[] addressTo = new InternetAddress[emailList.length];
-    for (int i = 0; i < emailList.length; i++) {
-      addressTo[i] = new InternetAddress(emailList[i].trim());
+    InternetAddress[] addressTo = new InternetAddress[emailList.size()];
+    for (int i = 0; i < emailList.size(); i++) {
+      addressTo[i] = new InternetAddress(emailList.get(i).trim());
     }
     msg.setRecipients(Message.RecipientType.TO, addressTo);
-
-    // Optional : You can also set your custom headers in the Email if you Want
-    // msg.addHeader("MyHeaderName", "myHeaderValue");
 
     // Setting the Subject and Content Type
     msg.setSubject(subject);

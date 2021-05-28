@@ -26,21 +26,22 @@ public class Replace extends AbstractAction {
 
   @Override
   public void execute(Attributes dcm, int tag, HMAC hmac) {
-    String tagValueIn = dcm.getString(tag);
+    if (LOGGER.isTraceEnabled()) {
+      String tagValueIn = AbstractAction.getStringValue(dcm, tag);
+      LOGGER.trace(
+          CLINICAL_MARKER,
+          PATTERN_WITH_INOUT,
+          MDC.get("SOPInstanceUID"),
+          TagUtils.toString(tag),
+          symbol,
+          tagValueIn,
+          dummyValue);
+    }
 
     if (dummyValue != null) {
       dcm.setString(tag, dcm.getVR(tag), dummyValue);
     } else {
       dcm.setNull(tag, dcm.getVR(tag));
     }
-
-    LOGGER.trace(
-        CLINICAL_MARKER,
-        PATTERN_WITH_INOUT,
-        MDC.get("SOPInstanceUID"),
-        TagUtils.toString(tag),
-        symbol,
-        tagValueIn,
-        dummyValue);
   }
 }

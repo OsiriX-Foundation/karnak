@@ -16,6 +16,7 @@ import org.karnak.backend.util.SecurityUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,10 +29,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @Conditional(value = DefaultIdpLoadCondition.class)
 public class SecurityInMemoryConfig extends WebSecurityConfigurerAdapter {
 
-  private static final String LOGIN_PROCESSING_URL = "/login";
   private static final String LOGIN_FAILURE_URL = "/login?error";
   private static final String LOGIN_URL = "/login";
-  private static final String LOGOUT_SUCCESS_URL = "/login";
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
@@ -44,12 +43,15 @@ public class SecurityInMemoryConfig extends WebSecurityConfigurerAdapter {
         // Disables cross-site request forgery (CSRF) protection for main route and login
         .and()
         .csrf()
-        .ignoringAntMatchers("/", "/login")
+        .ignoringAntMatchers("/", LOGIN_URL)
         // Turns on authorization
         .and()
         .authorizeRequests()
         // Allows all internal traffic from the Vaadin framework
         .requestMatchers(SecurityUtil::isFrameworkInternalRequest)
+        .permitAll()
+        // Allow get echo endpoint
+        .antMatchers(HttpMethod.GET, "/api/echo/destinations")
         .permitAll()
         // Allows all authenticated traffic
         .antMatchers("/*")
@@ -62,12 +64,12 @@ public class SecurityInMemoryConfig extends WebSecurityConfigurerAdapter {
         // Configures the login page URLs
         .loginPage(LOGIN_URL)
         .permitAll()
-        .loginProcessingUrl(LOGIN_PROCESSING_URL)
+        .loginProcessingUrl(LOGIN_URL)
         .failureUrl(LOGIN_FAILURE_URL)
         // Configures the logout URL
         .and()
         .logout()
-        .logoutSuccessUrl(LOGOUT_SUCCESS_URL)
+        .logoutSuccessUrl(LOGIN_URL)
         .and()
         .exceptionHandling()
         .accessDeniedPage(LOGIN_URL);
@@ -90,19 +92,21 @@ public class SecurityInMemoryConfig extends WebSecurityConfigurerAdapter {
             "/VAADIN/**",
             // the standard favicon URI
             "/favicon.ico",
-            // the robots exclusion standard
-            "/robots.txt",
             // web application manifest
             "/manifest.webmanifest",
             "/sw.js",
             "/offline.html",
+            "/sw-runtime-resources-precache.js",
             // icons and images
-            "/icons/**",
-            "/images/**",
-            "/styles/**",
-            "/img/**",
+            "/icons/logo**",
+            "/img/karnak.png" // ,
+            // "/img/**" // ,
+            // "/images/**",
+            // "/styles/**",
+            // the robots exclusion standard
+            // "/robots.txt",
             // (development mode) H2 debugging console
-            "/h2-console/**");
+            /*"/h2-console/**"*/ );
   }
 
   @Bean

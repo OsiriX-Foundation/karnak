@@ -14,11 +14,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -40,57 +42,53 @@ import org.hibernate.annotations.LazyCollectionOption;
   "profileElementEntities",
   "maskEntities"
 })
-public class ProfileEntity {
+public class ProfileEntity implements Serializable {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  @JsonIgnore
+  private static final long serialVersionUID = -7178858361090900170L;
+
   private Long id;
-
   private String name;
   private String version;
   private String minimumKarnakVersion;
-  private String defaultissueropatientid;
-
-  @JsonIgnore private Boolean bydefault;
-
-  @OneToMany(mappedBy = "profileEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-  private List<ProfileElementEntity> profileElementEntities = new ArrayList<>();
-
-  @OneToMany(mappedBy = "profileEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  private String defaultIssuerOfPatientId;
+  private Boolean byDefault;
+  private Set<ProfileElementEntity> profileElementEntities = new HashSet<>();
   private Set<MaskEntity> maskEntities = new HashSet<>();
-
-  @OneToMany(mappedBy = "profileEntity")
-  @LazyCollection(LazyCollectionOption.FALSE)
-  @JsonIgnore
   private List<ProjectEntity> projectEntities;
 
   public ProfileEntity() {}
 
   public ProfileEntity(
-      String name, String version, String minimumKarnakVersion, String defaultissueropatientid) {
+      String name, String version, String minimumKarnakVersion, String defaultIssuerOfPatientId) {
     this.name = name;
     this.version = version;
     this.minimumKarnakVersion = minimumKarnakVersion;
-    this.defaultissueropatientid = defaultissueropatientid;
-    this.bydefault = false;
+    this.defaultIssuerOfPatientId = defaultIssuerOfPatientId;
+    this.byDefault = false;
   }
 
   public ProfileEntity(
       String name,
       String version,
       String minimumKarnakVersion,
-      String defaultissueropatientid,
-      Boolean bydefault) {
+      String defaultIssuerOfPatientId,
+      Boolean byDefault) {
     this.name = name;
     this.version = version;
     this.minimumKarnakVersion = minimumKarnakVersion;
-    this.defaultissueropatientid = defaultissueropatientid;
-    this.bydefault = bydefault;
+    this.defaultIssuerOfPatientId = defaultIssuerOfPatientId;
+    this.byDefault = byDefault;
   }
 
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @JsonIgnore
   public Long getId() {
     return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
   }
 
   public void addProfilePipe(ProfileElementEntity profileElementEntity) {
@@ -118,44 +116,49 @@ public class ProfileEntity {
   }
 
   @JsonGetter("minimumKarnakVersion")
-  public String getMinimumkarnakversion() {
+  public String getMinimumKarnakVersion() {
     return minimumKarnakVersion;
   }
 
   @JsonSetter("minimumKarnakVersion")
-  public void setMinimumkarnakversion(String minimumKarnakVersion) {
+  public void setMinimumKarnakVersion(String minimumKarnakVersion) {
     this.minimumKarnakVersion = minimumKarnakVersion;
   }
 
   @JsonGetter("defaultIssuerOfPatientID")
-  public String getDefaultissueropatientid() {
-    return defaultissueropatientid;
+  @Column(name = "defaultissueropatientid")
+  public String getDefaultIssuerOfPatientId() {
+    return defaultIssuerOfPatientId;
   }
 
   @JsonSetter("defaultIssuerOfPatientID")
-  public void setDefaultissueropatientid(String defaultissueropatientid) {
-    this.defaultissueropatientid = defaultissueropatientid;
+  public void setDefaultIssuerOfPatientId(String defaultIssuerOfPatientId) {
+    this.defaultIssuerOfPatientId = defaultIssuerOfPatientId;
   }
 
   @JsonGetter("profileElements")
-  public List<ProfileElementEntity> getProfileElementEntities() {
+  @OneToMany(mappedBy = "profileEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  public Set<ProfileElementEntity> getProfileElementEntities() {
     return profileElementEntities;
   }
 
   @JsonSetter("profileElements")
-  public void setProfileElementEntities(List<ProfileElementEntity> profileElementEntities) {
+  public void setProfileElementEntities(Set<ProfileElementEntity> profileElementEntities) {
     this.profileElementEntities = profileElementEntities;
   }
 
-  public Boolean getBydefault() {
-    return bydefault;
+  @JsonIgnore
+  @Column(name = "bydefault")
+  public Boolean getByDefault() {
+    return byDefault;
   }
 
-  public void setBydefault(Boolean bydefault) {
-    this.bydefault = bydefault;
+  public void setByDefault(Boolean bydefault) {
+    this.byDefault = bydefault;
   }
 
   @JsonGetter("masks")
+  @OneToMany(mappedBy = "profileEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   public Set<MaskEntity> getMaskEntities() {
     return maskEntities;
   }
@@ -165,7 +168,37 @@ public class ProfileEntity {
     this.maskEntities = maskEntities;
   }
 
+  @OneToMany(mappedBy = "profileEntity")
+  @LazyCollection(LazyCollectionOption.FALSE)
+  @JsonIgnore
   public List<ProjectEntity> getProjectEntities() {
     return projectEntities;
+  }
+
+  public void setProjectEntities(List<ProjectEntity> projectEntities) {
+    this.projectEntities = projectEntities;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    ProfileEntity that = (ProfileEntity) o;
+    return Objects.equals(id, that.id)
+        && Objects.equals(name, that.name)
+        && Objects.equals(version, that.version)
+        && Objects.equals(minimumKarnakVersion, that.minimumKarnakVersion)
+        && Objects.equals(defaultIssuerOfPatientId, that.defaultIssuerOfPatientId)
+        && Objects.equals(byDefault, that.byDefault);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+        id, name, version, minimumKarnakVersion, defaultIssuerOfPatientId, byDefault);
   }
 }

@@ -9,6 +9,7 @@
  */
 package org.karnak.frontend.dicom;
 
+import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
@@ -117,6 +118,7 @@ public class Util {
       StringBuilder result, String aet, String host, int port, boolean fontIcon, String format) {
 
     boolean reachable = false;
+    boolean xml = "XML".equalsIgnoreCase(format);
     try {
       if ("XML".equals(format.toUpperCase())) {
         result.append("<DcmNetworkStatus>");
@@ -127,7 +129,7 @@ public class Util {
 
       if (reachable) {
 
-        if ("XML".equals(format.toUpperCase())) {
+        if (xml) {
           result.append(address);
           result.append(" machine is turned on and can be pinged");
         } else {
@@ -138,7 +140,7 @@ public class Util {
           result.append(" machine is turned on and can be pinged.<br>");
         }
       } else if (address.getHostAddress().equals(address.getHostName())) {
-        if ("XML".equals(format.toUpperCase())) {
+        if (xml) {
           result.append(address);
           result.append(
               " host address and host name are equal, meaning the host name could not be resolved");
@@ -151,7 +153,7 @@ public class Util {
               " host address and host name are equal, meaning the host name could not be resolved.<br>");
         }
       } else {
-        if ("XML".equals(format.toUpperCase())) {
+        if (xml) {
           result.append(address);
           result.append(" machine is known in a DNS lookup but cannot be pinged");
         } else {
@@ -163,12 +165,12 @@ public class Util {
         }
       }
 
-      if ("XML".equals(format.toUpperCase())) {
+      if (xml) {
         result.append("</DcmNetworkStatus>");
       }
 
     } catch (Throwable e) {
-      if ("XML".equals(format.toUpperCase())) {
+      if (xml) {
         result.append("Network unexpected error: ");
         result.append(e.getMessage());
         result.append("</DcmNetworkStatus>");
@@ -183,12 +185,14 @@ public class Util {
 
     if (!reachable) {
 
-      if ("XML".equals(format.toUpperCase())) {
+      if (xml) {
         // Do nothing
       } else {
         Future<Boolean> future = portIsOpen(THREAD_POOL, host, port, 2500);
         try {
           reachable = future.get();
+        } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
         } catch (Exception e) {
           // Do nothing
         }
@@ -254,13 +258,14 @@ public class Util {
       Integer connectTimeout) {
 
     boolean success = false;
+    boolean xml = "XML".equalsIgnoreCase(format);
     try {
       AdvancedParams params = new AdvancedParams();
 
       DicomState state;
       if (connectTimeout != null) {
         ConnectOptions connectOptions = new ConnectOptions();
-        connectOptions.setConnectTimeout(connectTimeout.intValue());
+        connectOptions.setConnectTimeout(connectTimeout);
         params.setConnectOptions(connectOptions);
         state = Echo.process(params, new DicomNode(callingAET), calledNode);
       } else {
@@ -268,7 +273,7 @@ public class Util {
       }
       success = state.getStatus() == Status.Success;
 
-      if ("XML".equals(format.toUpperCase())) {
+      if (xml) {
         result.append("<DcmStatus>");
 
         if (success) {
@@ -307,12 +312,13 @@ public class Util {
       }
 
     } catch (Throwable e) {
-      if ("XML".equals(format.toUpperCase())) {
+      if (xml) {
         result.append("<DcmStatus>DICOM unexpected error</DcmStatus>");
         result.append("<DcmStatusMessage>").append(e.getMessage()).append("</DcmStatusMessage>");
       } else {
         // "HTML" and anything else
-        result.append("<span style=\"color:red\">" + getWarningItem(fontIcon));
+        result.append("<span style=\"color:red\">");
+        result.append(getWarningItem(fontIcon));
         result.append(" DICOM unexpected error: ");
         result.append(e.getMessage());
         result.append("</span><br>");
@@ -323,23 +329,18 @@ public class Util {
 
   public static void getWadoResponse(
       StringBuilder result, WadoNode node, boolean fontIcon, String format) {
-    getWadoResponse(result, node, fontIcon, format, null, null);
+    getWadoResponse(result, node, fontIcon, format, 10000);
   }
 
   public static void getWadoResponse(
-      StringBuilder result,
-      WadoNode node,
-      boolean fontIcon,
-      String format,
-      Integer connectTimeout,
-      Integer readTimeout) {
+      StringBuilder result, WadoNode node, boolean fontIcon, String format, long connectTimeout) {
     long startimeExt = System.currentTimeMillis();
 
-    boolean xml = "XML".equals(format.toUpperCase());
+    boolean xml = "XML".equalsIgnoreCase(format);
     try {
       HttpClient httpClient =
           HttpClient.newBuilder()
-              .connectTimeout(Duration.ofSeconds(10))
+              .connectTimeout(Duration.ofMillis(connectTimeout))
               .followRedirects(HttpClient.Redirect.NORMAL)
               .build();
       HttpRequest.Builder builder = HttpRequest.newBuilder();
@@ -356,15 +357,15 @@ public class Util {
               .header("User-Agent", "Mozilla/5.0 Firefox/43.0") // add request header
               .build();
 
-      long startime = System.currentTimeMillis();
+      long starTime = System.currentTimeMillis();
       HttpResponse<String> response =
           httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-      boolean success = response.statusCode() == 200;
+      boolean success = response.statusCode() == HttpURLConnection.HTTP_OK;
       String message = response.body();
-      if ("XML".equals(format.toUpperCase())) {
+      if (xml) {
         result
             .append("<WadoStatus elapsedTime=\"")
-            .append(System.currentTimeMillis() - startime)
+            .append(System.currentTimeMillis() - starTime)
             .append("ms\">");
         result.append(message);
         result.append("</WadoStatus>");
@@ -375,13 +376,16 @@ public class Util {
                 : "<span style=\"color:red\">" + getWarningItem(fontIcon));
 
         result.append(" Response Message in ");
-        result.append(System.currentTimeMillis() - startime);
+        result.append(System.currentTimeMillis() - starTime);
         result.append(" ms: ");
         result.append(message);
         result.append("</span><br>");
       }
     } catch (Throwable e) {
-      if ("XML".equals(format.toUpperCase())) {
+      if (e instanceof InterruptedException) {
+        Thread.currentThread().interrupt();
+      }
+      if (xml) {
         result
             .append("<WadoStatus elapsedTime=\"")
             .append(System.currentTimeMillis() - startimeExt)
@@ -390,7 +394,8 @@ public class Util {
         result.append(e.getMessage());
         result.append("</WadoStatus>");
       } else {
-        result.append("<span style=\"color:red\">" + getWarningItem(fontIcon));
+        result.append("<span style=\"color:red\">");
+        result.append(getWarningItem(fontIcon));
         result.append(" WADO unexpected error in ");
         result.append(System.currentTimeMillis() - startimeExt);
         result.append(" ms: ");

@@ -38,13 +38,36 @@ SYS_PROPS=""
 
 SYS_PROPS+=" -Djava.library.path='/tmp/dicom-opencv'"
 
+[[ ! -z "$JAVA_OPTS" ]] && SYS_PROPS+=" $JAVA_OPTS"
+
 ########################
-# KARNAK ENVIRONMENT #
+#  KARNAK ENVIRONMENT  #
 ########################
 file_env 'KARNAK_LOGIN_PASSWORD'
 : "${KARNAK_LOGIN_PASSWORD:=undefined}"
+: "${OIDC_CLIENT_ID:=undefined}"
+: "${OIDC_CLIENT_SECRET:=undefined}"
+: "${OIDC_ISSUER_URI:=undefined}"
 SYS_PROPS+=" -Dkarnakadmin='$KARNAK_LOGIN_ADMIN'"
 SYS_PROPS+=" -Dkarnakpassword='$KARNAK_LOGIN_PASSWORD'"
+SYS_PROPS+=" -Dspring.security.oauth2.client.registration.keycloak.client-id='$OIDC_CLIENT_ID'"
+SYS_PROPS+=" -Dspring.security.oauth2.client.registration.keycloak.client-secret='$OIDC_CLIENT_SECRET'"
+SYS_PROPS+=" -Dspring.security.oauth2.client.provider.keycloak.issuer-uri='$OIDC_ISSUER_URI'"
+
+##########################
+# KARNAK OPENID PROVIDER #
+##########################
+: "${IDP:=undefined}"
+if [[ "$IDP" == "oidc" ]]
+then
+  file_env 'OIDC_CLIENT_SECRET'
+  : "${OIDC_CLIENT_ID:=undefined}"
+  : "${OIDC_CLIENT_SECRET:=undefined}"
+  : "${OIDC_ISSUER_URI:=undefined}"
+  SYS_PROPS+=" -Dspring.security.oauth2.client.registration.keycloak.client-id='$OIDC_CLIENT_ID'"
+  SYS_PROPS+=" -Dspring.security.oauth2.client.registration.keycloak.client-secret='$OIDC_CLIENT_SECRET'"
+  SYS_PROPS+=" -Dspring.security.oauth2.client.provider.keycloak.issuer-uri='$OIDC_ISSUER_URI'"
+fi
 
 ########################
 # DATABASE ENVIRONMENT #
@@ -80,5 +103,10 @@ SYS_PROPS+=" -Dmainzelliste.apikey=$MAINZELLISTE_API_KEY"
 # https://docs.hazelcast.org/docs/4.1/manual/html-single/index.html#running-in-modular-java
 # Hazelcast needs the java.se module and access to the following Java packages for a proper work
 SYS_PROPS+=" --add-modules java.se --add-exports java.base/jdk.internal.ref=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.management/sun.management=ALL-UNNAMED --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED"
+
+if [[ -v LOGBACK_CONFIGURATION_FILE ]]
+then
+  SYS_PROPS+=" -Dlogging.config=$LOGBACK_CONFIGURATION_FILE"
+fi
 
 eval java "$SYS_PROPS" org.springframework.boot.loader.JarLauncher
