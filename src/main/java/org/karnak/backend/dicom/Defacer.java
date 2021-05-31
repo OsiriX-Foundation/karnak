@@ -32,7 +32,7 @@ public class Defacer {
 
   public static PlanarImage apply(Attributes attributes, PlanarImage image) {
     PlanarImage faceDetectionImg = faceDetection(image);
-    PlanarImage randPxlLineImg = addRandPxlLine(image, faceDetectionImg , attributes);
+    PlanarImage randPxlLineImg = addRandPxlLine(image, faceDetectionImg, attributes);
     PlanarImage mergedImg = mergeImg(image, randPxlLineImg, faceDetectionImg);
     PlanarImage imgBlured = blurImg(mergedImg, randPxlLineImg, faceDetectionImg);
     return imgBlured;
@@ -44,8 +44,18 @@ public class Defacer {
 
     MinMaxLocResult minMaxLutFaceDetectionImg = ImageProcessor.findMinMaxValues(skinImg);
 
-    Imgproc.threshold(skinImg.toImageCV(), skinImg.toMat(), DefacingUtil.hounsfieldToPxlValue(attributes, 100), minMaxLutFaceDetectionImg.maxVal, Imgproc.THRESH_TOZERO);
-    Imgproc.threshold(skinImg.toImageCV(), skinImg.toMat(), DefacingUtil.hounsfieldToPxlValue(attributes, 300), minMaxLutFaceDetectionImg.maxVal, Imgproc.THRESH_TOZERO_INV);
+    Imgproc.threshold(
+        skinImg.toImageCV(),
+        skinImg.toMat(),
+        DefacingUtil.hounsfieldToPxlValue(attributes, 100),
+        minMaxLutFaceDetectionImg.maxVal,
+        Imgproc.THRESH_TOZERO);
+    Imgproc.threshold(
+        skinImg.toImageCV(),
+        skinImg.toMat(),
+        DefacingUtil.hounsfieldToPxlValue(attributes, 300),
+        minMaxLutFaceDetectionImg.maxVal,
+        Imgproc.THRESH_TOZERO_INV);
     return skinImg;
   }
 
@@ -97,12 +107,13 @@ public class Defacer {
     return faceDetectionImg;
   }
 
-  public static PlanarImage addRandPxlLine(PlanarImage srcImg, PlanarImage faceDetectImg, Attributes attributes) {
+  public static PlanarImage addRandPxlLine(
+      PlanarImage srcImg, PlanarImage faceDetectImg, Attributes attributes) {
     ImageCV randPxlLineImg = new ImageCV();
     srcImg.toMat().copyTo(randPxlLineImg);
     double pixelSpacing = attributes.getDouble(Tag.PixelSpacing, 0.5);
-    int minThicknessSkin = (int) (1/ pixelSpacing); //1mm
-    int maxThicknessSkin = (int) (3 / pixelSpacing); //3mm
+    int minThicknessSkin = (int) (1 / pixelSpacing); // 1mm
+    int maxThicknessSkin = (int) (3 / pixelSpacing); // 3mm
     // DRAW A LINE WITH RANDOM VALUE WHEN FACE DETECTED
     int yOffsetRand = 1;
     // scan the image from left to right and bottom to top until the face is detected in Y
@@ -133,7 +144,8 @@ public class Defacer {
     return randPxlLineImg;
   }
 
-  public static PlanarImage blurImg(PlanarImage srcImg, PlanarImage randPxlLineImg, PlanarImage faceDetectImg) {
+  public static PlanarImage blurImg(
+      PlanarImage srcImg, PlanarImage randPxlLineImg, PlanarImage faceDetectImg) {
     ImageCV bluredImgRandPxlLine = new ImageCV();
     srcImg.toMat().copyTo(bluredImgRandPxlLine);
     Imgproc.blur(bluredImgRandPxlLine.toImageCV(), bluredImgRandPxlLine.toMat(), new Size(5, 5));
@@ -143,13 +155,13 @@ public class Defacer {
     for (int x = 0; x < faceDetectImg.width(); x++) {
       boolean faceDetected = true;
       for (int y = 0; y < faceDetectImg.height(); y++) {
-        if(faceDetectImg.toMat().get(y,x)[0] != 0.0 ) {
+        if (faceDetectImg.toMat().get(y, x)[0] != 0.0) {
           faceDetected = false;
-          y = y +marginBlurSkin;
+          y = y + marginBlurSkin;
         }
 
         if (!faceDetected) {
-          bluredImgRandPxlLine.toMat().put(y, x, srcImg.toMat().get(y,x)[0]);
+          bluredImgRandPxlLine.toMat().put(y, x, srcImg.toMat().get(y, x)[0]);
         }
       }
     }

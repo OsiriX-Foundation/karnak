@@ -27,20 +27,20 @@ public class DefacingUtil {
     int size = 4;
     double mean = 0;
     int sum = 0;
-    //convolution
-    for (int x = xInit - (size/2); x < xInit+(size/2) +1; x++) {
-      for (int y = yRand; y < yRand+size +1; y++) {
+    // convolution
+    for (int x = xInit - (size / 2); x < xInit + (size / 2) + 1; x++) {
+      for (int y = yRand; y < yRand + size + 1; y++) {
         double color = 0;
         try {
-          color = imgToPick.toMat().get(y,x)[0];
-        } catch (Exception e){
+          color = imgToPick.toMat().get(y, x)[0];
+        } catch (Exception e) {
         }
 
         mean = mean + color;
         sum++;
       }
     }
-    return mean/sum;
+    return mean / sum;
   }
 
   public static PlanarImage transformToByte(PlanarImage srcImg) {
@@ -62,7 +62,7 @@ public class DefacingUtil {
     double intercept = Double.parseDouble(interceptS);
     double slope = Double.parseDouble(slopeS);
 
-    //int hounsfield = pixel * slope + intercept;
+    // int hounsfield = pixel * slope + intercept;
     return (hounsfield - intercept) / slope;
   }
 
@@ -74,5 +74,24 @@ public class DefacingUtil {
     transformImg =
         ImageProcessor.rescaleToByte(transformImg.toImageCV(), contrast / 100.0, brigtness);
     return transformImg;
+  }
+
+  public static boolean isCT(Attributes attributes) {
+    String sopClassUID = attributes.getString(Tag.SOPClassUID);
+    String scuPattern = sopClassUID + ".";
+    if (scuPattern.equals("1.2.840.10008.5.1.4.1.1.2.")) {
+      return true;
+    }
+    return false;
+  }
+
+  public static boolean isAxial(Attributes attributes) {
+    double[] vector = attributes.getDoubles(Tag.ImageOrientationPatient);
+    ImageOrientation.Label label =
+        ImageOrientation.makeImageOrientationLabelFromImageOrientationPatient(vector);
+    if (label.equals(ImageOrientation.Label.AXIAL)) {
+      return true;
+    }
+    return false;
   }
 }

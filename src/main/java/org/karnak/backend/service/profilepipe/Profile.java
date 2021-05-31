@@ -9,6 +9,9 @@
  */
 package org.karnak.backend.service.profilepipe;
 
+import static org.karnak.backend.dicom.DefacingUtil.isAxial;
+import static org.karnak.backend.dicom.DefacingUtil.isCT;
+
 import java.awt.Color;
 import java.awt.Shape;
 import java.math.BigInteger;
@@ -250,8 +253,10 @@ public class Profile {
         }
       } else {
         if (profiles.stream().anyMatch(p -> p instanceof Defacing)) {
-          context.setMaskArea(mask); // to be deleted when you have corrected dcm4che
-          context.getProperties().setProperty(Defacer.APPLY_DEFACING, "true");
+          if (isCT(dcmCopy) && isAxial(dcmCopy)) {
+            context.setMaskArea(mask); // to be deleted when you have corrected dcm4che
+            context.getProperties().setProperty(Defacer.APPLY_DEFACING, "true");
+          }
         } else {
           context.setMaskArea(null);
         }
