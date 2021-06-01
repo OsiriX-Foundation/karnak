@@ -18,6 +18,8 @@ import org.weasis.opencv.op.ImageProcessor;
 
 public class DefacingUtil {
 
+  private DefacingUtil() {}
+
   public static int randomY(int minY, int maxY, int bound) {
     return (int) Math.floor(Math.random() * (maxY - minY + bound) + minY);
   }
@@ -27,20 +29,41 @@ public class DefacingUtil {
     int size = 4;
     double mean = 0;
     int sum = 0;
-    // convolution
-    for (int x = xInit - (size / 2); x < xInit + (size / 2) + 1; x++) {
-      for (int y = yRand; y < yRand + size + 1; y++) {
-        double color = 0;
-        try {
-          color = imgToPick.toMat().get(y, x)[0];
-        } catch (Exception e) {
-        }
+    //convolution
+    for (int x = xInit - (size/2); x < xInit+(size/2) +1; x++) {
+      for (int y = yRand; y < yRand+size +1; y++) {
+        int xPickColor = checkBoundsOfImageX(x, imgToPick);
+        int yPickColor = checkBoundsOfImageY(y, imgToPick);
+        double color = imgToPick.toMat().get(yPickColor, xPickColor)[0];
 
         mean = mean + color;
         sum++;
       }
     }
-    return mean / sum;
+    if (sum !=0 ){
+      return mean / sum;
+    }
+    return mean;
+  }
+
+  public static int checkBoundsOfImageX(int x, PlanarImage image) {
+    if (x < 0) {
+      return 0;
+    }
+    if (x >= image.width()) {
+      return image.width() - 1;
+    }
+    return x;
+  }
+
+  public static int checkBoundsOfImageY(int y, PlanarImage image) {
+    if (y < 0) {
+      return 0;
+    }
+    if (y >= image.height()) {
+      return image.height() - 1;
+    }
+    return y;
   }
 
   public static PlanarImage transformToByte(PlanarImage srcImg) {
@@ -62,7 +85,6 @@ public class DefacingUtil {
     double intercept = Double.parseDouble(interceptS);
     double slope = Double.parseDouble(slopeS);
 
-    // int hounsfield = pixel * slope + intercept;
     return (hounsfield - intercept) / slope;
   }
 
