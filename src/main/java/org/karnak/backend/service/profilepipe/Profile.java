@@ -13,6 +13,7 @@ import static org.karnak.backend.dicom.DefacingUtil.isAxial;
 import static org.karnak.backend.dicom.DefacingUtil.isCT;
 
 import java.awt.Color;
+import java.awt.Rectangle;
 import java.awt.Shape;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -252,14 +253,21 @@ public class Profile {
           throw new IllegalStateException("Cannot clean pixel data to sopClassUID " + sopClassUID);
         }
       } else {
-        if (profiles.stream().anyMatch(p -> p instanceof Defacing)) {
-          if (isCT(dcmCopy) && isAxial(dcmCopy)) {
-            context.setMaskArea(mask); // to be deleted when you have corrected dcm4che
-            context.getProperties().setProperty(Defacer.APPLY_DEFACING, "true");
-          }
-        } else {
-          context.setMaskArea(null);
-        }
+        context.setMaskArea(null);
+      }
+    }
+
+    // Apply clean recognizable visual features option
+    if (profiles.stream().anyMatch(p -> p instanceof Defacing)) {
+      if (isCT(dcmCopy) && isAxial(dcmCopy)) {
+        // CHEAT: add an empty mask area to pass the condition in ImageAdapter.imageTranscode
+        List<Shape> shapeList = new ArrayList<>();
+        Shape shape = new Rectangle(0,0,0,0);
+        shapeList.add(shape);
+        MaskArea mask = new MaskArea(shapeList, Color.WHITE);
+        context.setMaskArea(mask); // to be deleted when you have corrected dcm4che
+
+        context.getProperties().setProperty(Defacer.APPLY_DEFACING, "true");
       }
     }
 
