@@ -39,10 +39,12 @@ public class FormSTOW extends VerticalLayout {
   private final FilterBySOPClassesForm filterBySOPClassesForm;
   private SwitchingAlbumsView switchingAlbumsView;
   private Checkbox activate;
+  private DestinationCondition destinationCondition;
 
   public FormSTOW() {
     this.layoutDesidentification = new LayoutDesidentification();
     this.filterBySOPClassesForm = new FilterBySOPClassesForm();
+    this.destinationCondition = new DestinationCondition();
   }
 
   public void init(
@@ -51,6 +53,7 @@ public class FormSTOW extends VerticalLayout {
     this.binder = binder;
     this.layoutDesidentification.init(this.binder);
     this.filterBySOPClassesForm.init(this.binder);
+    this.destinationCondition.init(binder);
 
     this.description = new TextField("Description");
     this.url = new TextField("URL");
@@ -68,6 +71,7 @@ public class FormSTOW extends VerticalLayout {
     add(
         UIS.setWidthFull( //
             new HorizontalLayout(description)));
+    add(destinationCondition);
     add(
         UIS.setWidthFull( //
             new HorizontalLayout(url, urlCredentials)));

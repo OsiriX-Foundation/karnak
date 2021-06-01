@@ -42,7 +42,7 @@ import org.karnak.backend.enums.PseudonymType;
 import org.karnak.backend.model.action.ActionItem;
 import org.karnak.backend.model.action.Remove;
 import org.karnak.backend.model.action.ReplaceNull;
-import org.karnak.backend.model.expression.ExprConditionDestination;
+import org.karnak.backend.model.expression.ExprConditionProfile;
 import org.karnak.backend.model.expression.ExpressionResult;
 import org.karnak.backend.model.profilepipe.HMAC;
 import org.karnak.backend.model.profilepipe.HashContext;
@@ -138,8 +138,8 @@ public class Profile {
       AttributeEditorContext context) {
     for (int tag : dcm.tags()) {
       VR vr = dcm.getVR(tag);
-      final ExprConditionDestination exprConditionDestination =
-          new ExprConditionDestination(tag, vr, dcm, dcmCopy);
+      final ExprConditionProfile exprConditionProfile =
+          new ExprConditionProfile(tag, vr, dcm, dcmCopy);
 
       ActionItem currentAction = null;
       ProfileItem currentProfile = null;
@@ -155,7 +155,7 @@ public class Profile {
           boolean conditionIsOk =
               (Boolean)
                   ExpressionResult.get(
-                      profileEntity.getCondition(), exprConditionDestination, Boolean.class);
+                      profileEntity.getCondition(), exprConditionProfile, Boolean.class);
           if (conditionIsOk) {
             currentAction = profileEntity.getAction(dcm, dcmCopy, tag, hmac);
           }
@@ -281,17 +281,12 @@ public class Profile {
         dcm, destinationEntity.getProjectEntity(), pseudonym);
 
     final Marker clincalMarker = MarkerFactory.getMarker("CLINICAL");
-    LOGGER.info(
-        clincalMarker,
-        "SOPInstanceUID_OLD={} SOPInstanceUID_NEW={} SeriesInstanceUID_OLD={} "
-            + "SeriesInstanceUID_NEW={} ProjectName={} ProfileName={} ProfileCodenames={}",
-        SOPInstanceUID,
-        dcm.getString(Tag.SOPInstanceUID),
-        SeriesInstanceUID,
-        dcm.getString(Tag.SeriesInstanceUID),
-        destinationEntity.getProjectEntity().getName(),
-        profileEntity.getName(),
-        profilesCodeName);
+    MDC.put("DeidentifySOPInstanceUID", dcm.getString(Tag.SOPInstanceUID));
+    MDC.put("DeidentifySeriesInstanceUID", dcm.getString(Tag.SeriesInstanceUID));
+    MDC.put("ProjectName", destinationEntity.getProjectEntity().getName());
+    MDC.put("ProfileName", profileEntity.getName());
+    MDC.put("ProfileCodenames", profilesCodeName);
+    LOGGER.info(clincalMarker, "");
     MDC.clear();
   }
 

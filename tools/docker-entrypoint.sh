@@ -98,4 +98,9 @@ SYS_PROPS+=" -Dmainzelliste.apikey=$MAINZELLISTE_API_KEY"
 # Hazelcast needs the java.se module and access to the following Java packages for a proper work
 SYS_PROPS+=" --add-modules java.se --add-exports java.base/jdk.internal.ref=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.management/sun.management=ALL-UNNAMED --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED"
 
+if [[ -v LOGBACK_CONFIGURATION_FILE ]]
+then
+  SYS_PROPS+=" -Dlogging.config=$LOGBACK_CONFIGURATION_FILE"
+fi
+
 eval java "$SYS_PROPS" org.springframework.boot.loader.JarLauncher
