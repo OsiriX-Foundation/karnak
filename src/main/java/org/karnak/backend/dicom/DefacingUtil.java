@@ -29,9 +29,9 @@ public class DefacingUtil {
     int size = 4;
     double mean = 0;
     int sum = 0;
-    //convolution
-    for (int x = xInit - (size/2); x < xInit+(size/2) +1; x++) {
-      for (int y = yRand; y < yRand+size +1; y++) {
+    // convolution
+    for (int x = xInit - (size / 2); x < xInit + (size / 2) + 1; x++) {
+      for (int y = yRand; y < yRand + size + 1; y++) {
         int xPickColor = checkBoundsOfImageX(x, imgToPick);
         int yPickColor = checkBoundsOfImageY(y, imgToPick);
         double color = imgToPick.toMat().get(yPickColor, xPickColor)[0];
@@ -40,7 +40,7 @@ public class DefacingUtil {
         sum++;
       }
     }
-    if (sum !=0 ){
+    if (sum != 0) {
       return mean / sum;
     }
     return mean;

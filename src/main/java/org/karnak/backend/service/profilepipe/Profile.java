@@ -262,7 +262,7 @@ public class Profile {
       if (isCT(dcmCopy) && isAxial(dcmCopy)) {
         // CHEAT: add an empty mask area to pass the condition in ImageAdapter.imageTranscode
         List<Shape> shapeList = new ArrayList<>();
-        Shape shape = new Rectangle(0,0,0,0);
+        Shape shape = new Rectangle(0, 0, 0, 0);
         shapeList.add(shape);
         MaskArea mask = new MaskArea(shapeList, Color.WHITE);
         context.setMaskArea(mask); // to be deleted when you have corrected dcm4che

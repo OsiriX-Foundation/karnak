@@ -143,8 +143,7 @@ public class Defacer {
     return randPxlLineImg;
   }
 
-  public static PlanarImage blurImg(
-      PlanarImage srcImg, PlanarImage faceDetectImg) {
+  public static PlanarImage blurImg(PlanarImage srcImg, PlanarImage faceDetectImg) {
     ImageCV bluredImgRandPxlLine = new ImageCV();
     srcImg.toMat().copyTo(bluredImgRandPxlLine);
     Imgproc.blur(bluredImgRandPxlLine.toImageCV(), bluredImgRandPxlLine.toMat(), new Size(5, 5));
