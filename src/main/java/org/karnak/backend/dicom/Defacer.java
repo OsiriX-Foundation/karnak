@@ -64,7 +64,6 @@ public class Defacer {
 
     MinMaxLocResult minMaxLocResult = ImageProcessor.findMinMaxValues(faceDetectionImg.toMat());
 
-    // THRESHOLD
     Imgproc.threshold(
         faceDetectionImg.toImageCV(),
         faceDetectionImg.toMat(),
