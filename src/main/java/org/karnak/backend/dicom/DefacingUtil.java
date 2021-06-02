@@ -24,7 +24,7 @@ public class DefacingUtil {
   public static int randomY(int minY, int maxY, int bound) {
     SecureRandom secureRandom = new SecureRandom();
     double randomDouble = secureRandom.nextDouble();
-    return (int)Math.floor(randomDouble*(maxY-minY+bound)+minY);
+    return (int) Math.floor(randomDouble * (maxY - minY + bound) + minY);
   }
 
   public static double pickRndYPxlColor(int xInit, int minY, int maxY, PlanarImage imgToPick) {
