@@ -1,5 +1,51 @@
 # Changelog
 
+## [v0.9.6](https://github.com/OsiriX-Foundation/karnak/tree/v0.9.6) (2021-05-07)
+
+[Full Changelog](https://github.com/OsiriX-Foundation/karnak/compare/v0.9.5...v0.9.6)
+
+**Implemented enhancements:**
+
+- Modal windows for the element of dicom worklist [\#135](https://github.com/OsiriX-Foundation/karnak/issues/135)
+- Bump vaadin.version from 17.0.10 to 19.0.5 [\#133](https://github.com/OsiriX-Foundation/karnak/issues/133)
+- remove the checkbox Authorized SOPs [\#97](https://github.com/OsiriX-Foundation/karnak/issues/97)
+- Raise an exception from the execute function of an action. [\#73](https://github.com/OsiriX-Foundation/karnak/issues/73)
+- \[Clean Pixel\] Recompression issue [\#39](https://github.com/OsiriX-Foundation/karnak/issues/39)
+
+**Fixed bugs:**
+
+- Decompress all the images with DICOM output [\#136](https://github.com/OsiriX-Foundation/karnak/issues/136)
+- STOW-RS exceptions when sending images from multiple sources concurrently [\#124](https://github.com/OsiriX-Foundation/karnak/issues/124)
+
+## [v0.9.5](https://github.com/OsiriX-Foundation/karnak/tree/v0.9.5) (2021-04-16)
+
+[Full Changelog](https://github.com/OsiriX-Foundation/karnak/compare/v0.9.4...v0.9.5)
+
+**Implemented enhancements:**
+
+- Implement open id connect [\#112](https://github.com/OsiriX-Foundation/karnak/issues/112)
+
+**Fixed bugs:**
+
+- Exception loading sessions from persistent storage [\#127](https://github.com/OsiriX-Foundation/karnak/issues/127)
+
+## [v0.9.4](https://github.com/OsiriX-Foundation/karnak/tree/v0.9.4) (2021-03-17)
+
+[Full Changelog](https://github.com/OsiriX-Foundation/karnak/compare/v0.9.3.1...v0.9.4)
+
+**Implemented enhancements:**
+
+- Reorganization in the types of pseudonyms and improvement the management of pseudonyms [\#118](https://github.com/OsiriX-Foundation/karnak/issues/118)
+- Display a unique message when we add multiple  same external pseudonym via the csv file [\#108](https://github.com/OsiriX-Foundation/karnak/issues/108)
+- Linking external pseudonym to a project [\#107](https://github.com/OsiriX-Foundation/karnak/issues/107)
+- Pagination to visualize the External Pseudonym view [\#106](https://github.com/OsiriX-Foundation/karnak/issues/106)
+
+**Fixed bugs:**
+
+- Manage exception if status code is not SUCCESSFUL for a dicom stow [\#117](https://github.com/OsiriX-Foundation/karnak/issues/117)
+- Manage exception on parsing datetime [\#116](https://github.com/OsiriX-Foundation/karnak/issues/116)
+- Incorrect trailing \(FFFE,E00D\) Item Delimitation Item in outgoing C-STORE RQs. [\#109](https://github.com/OsiriX-Foundation/karnak/issues/109)
+
 ## [v0.9.3.1](https://github.com/OsiriX-Foundation/karnak/tree/v0.9.3.1) (2021-02-05)
 
 [Full Changelog](https://github.com/OsiriX-Foundation/karnak/compare/v0.9.3...v0.9.3.1)

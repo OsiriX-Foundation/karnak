@@ -16,9 +16,15 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import org.karnak.backend.model.dicom.WadoNode;
-import org.karnak.backend.service.thread.CheckWadoThread;
+import org.karnak.backend.service.thread.WadoResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class WadoService {
+
+  @Autowired
+  public WadoService() {}
 
   public String checkWado(List<WadoNode> nodes) throws InterruptedException, ExecutionException {
     StringBuilder result = new StringBuilder();
@@ -33,22 +39,14 @@ public class WadoService {
 
   private List<Future<String>> createThreadsResult(List<WadoNode> nodes)
       throws InterruptedException {
-    List<Future<String>> threadResult = null;
-    try {
-      ExecutorService executorService = Executors.newFixedThreadPool(nodes.size());
+    ExecutorService executorService = Executors.newFixedThreadPool(nodes.size());
 
-      List<CheckWadoThread> threads = new ArrayList<>();
+    List<WadoResponse> threads = new ArrayList<>();
 
-      for (WadoNode node : nodes) {
-        CheckWadoThread checkWadoThread = new CheckWadoThread(node);
-        threads.add(checkWadoThread);
-      }
-
-      threadResult = executorService.invokeAll(threads);
-
-      return threadResult;
-    } catch (InterruptedException e) {
-      throw e;
+    for (WadoNode node : nodes) {
+      WadoResponse checkWadoThread = new WadoResponse(node);
+      threads.add(checkWadoThread);
     }
+    return executorService.invokeAll(threads);
   }
 }

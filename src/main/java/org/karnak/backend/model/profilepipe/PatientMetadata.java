@@ -14,10 +14,14 @@ import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.karnak.backend.api.rqbody.Fields;
 import org.karnak.backend.cache.PseudonymPatient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.weasis.core.util.StringUtil;
 import org.weasis.dicom.util.DateUtil;
 
 public class PatientMetadata {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(PatientMetadata.class);
 
   private static final String PATIENT_SEX_OTHER = "O";
 

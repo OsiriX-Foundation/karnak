@@ -43,7 +43,7 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
   private static final String LABEL_FILTER = "Filter";
   private final Binder<CachedPatient> binder;
   private final List<CachedPatient> patientList;
-  private final transient PatientClient externalIDCache;
+  private transient PatientClient externalIDCache;
   private transient ProjectEntity projectEntity;
   private Button deletePatientButton;
   private Button saveEditPatientButton;
@@ -69,13 +69,13 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
   private TextField patientLastNameFilter;
   private TextField issuerOfPatientIDFilter;
 
-  private Collection<CachedPatient> patientsListInCache = new ArrayList<>();
+  private List<CachedPatient> patientsListInCache = new ArrayList<>();
   private transient Collection<PseudonymPatient> duplicatePatientsList = new ArrayList<>();
 
   public ExternalIDGrid() {
     binder = new Binder<>(CachedPatient.class);
     patientList = new ArrayList<>();
-    externalIDCache = AppConfig.getInstance().getExternalIDCache();
+    this.externalIDCache = AppConfig.getInstance().getExternalIDCache();
 
     setPageSize(10);
     setPaginatorSize(2);
@@ -255,7 +255,7 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
 
     binder
         .forField(patientFirstNameField)
-        .withValidator(StringUtils::isNotBlank, "Patient first name is empty")
+        .withValidator(StringUtils::isNotBlank, "Patient firstname is empty")
         .withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
         .bind("patientFirstName");
 
@@ -382,5 +382,17 @@ public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
 
   public void setProjectEntity(ProjectEntity projectEntity) {
     this.projectEntity = projectEntity;
+  }
+
+  public PatientClient getExternalIDCache() {
+    return externalIDCache;
+  }
+
+  public void setExternalIDCache(PatientClient externalIDCache) {
+    this.externalIDCache = externalIDCache;
+  }
+
+  public List<CachedPatient> getPatientsListInCache() {
+    return patientsListInCache;
   }
 }

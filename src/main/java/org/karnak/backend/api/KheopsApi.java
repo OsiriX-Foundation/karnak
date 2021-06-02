@@ -18,16 +18,20 @@ import java.util.HashMap;
 import java.util.Map;
 import org.apache.http.HttpHeaders;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 // Link used:
 // https://www.baeldung.com/httpclient-guide
 // https://www.baeldung.com/httpclient4
 
+@Service
 public class KheopsApi {
 
   private final HttpClient httpClient;
   private final String X_AUTHORIZATION_SOURCE = "X-Authorization-Source";
 
+  @Autowired
   public KheopsApi() {
     httpClient =
         HttpClient.newBuilder() // one instance, reuse

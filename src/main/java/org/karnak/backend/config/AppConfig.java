@@ -21,7 +21,6 @@ import org.karnak.backend.model.standard.ConfidentialityProfiles;
 import org.karnak.backend.model.standard.StandardDICOM;
 import org.karnak.backend.service.profilepipe.Profile;
 import org.karnak.backend.service.profilepipe.ProfilePipeService;
-import org.karnak.backend.service.profilepipe.ProfilePipeServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,16 +45,22 @@ public class AppConfig {
   private String name;
   private String karnakadmin;
   private String karnakpassword;
+  private final ProfileRepo profileRepo;
+  private final ProfilePipeService profilePipeService;
 
-  @Autowired private ProfileRepo profileRepo;
-
-  public static AppConfig getInstance() {
-    return instance;
+  @Autowired
+  public AppConfig(final ProfileRepo profileRepo, final ProfilePipeService profilePipeService) {
+    this.profileRepo = profileRepo;
+    this.profilePipeService = profilePipeService;
   }
 
   @PostConstruct
   public void postConstruct() {
     instance = this;
+  }
+
+  public static AppConfig getInstance() {
+    return instance;
   }
 
   public String getEnvironment() {
@@ -75,7 +80,7 @@ public class AppConfig {
   }
 
   public String getKarnakadmin() {
-    return karnakadmin;
+    return karnakadmin != null ? karnakadmin : "admin";
   }
 
   public void setKarnakadmin(String karnakadmin) {
@@ -83,15 +88,11 @@ public class AppConfig {
   }
 
   public String getKarnakpassword() {
-    return karnakpassword;
+    return karnakpassword != null ? karnakpassword : "admin";
   }
 
   public void setKarnakpassword(String karnakpassword) {
     this.karnakpassword = karnakpassword;
-  }
-
-  public ProfileRepo getProfilePersistence() {
-    return profileRepo;
   }
 
   @Bean("ConfidentialityProfiles")
@@ -113,11 +114,10 @@ public class AppConfig {
   @EventListener(ApplicationReadyEvent.class)
   public void setProfilesByDefault() {
     URL profileURL = Profile.class.getResource("profileByDefault.yml");
-    if (!profileRepo.existsByNameAndBydefault("Dicom Basic Profile", true)) {
+    if (!profileRepo.existsByNameAndByDefault("Dicom Basic Profile", true)) {
       try (InputStream inputStream = profileURL.openStream()) {
         final Yaml yaml = new Yaml(new Constructor(ProfilePipeBody.class));
         final ProfilePipeBody profilePipeYml = yaml.load(inputStream);
-        final ProfilePipeService profilePipeService = new ProfilePipeServiceImpl();
         profilePipeService.saveProfilePipe(profilePipeYml, true);
       } catch (final Exception e) {
         LOGGER.error("Cannot persist default profile {}", profileURL, e);

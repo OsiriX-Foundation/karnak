@@ -19,8 +19,6 @@ import com.vaadin.flow.component.icon.IronIcon;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLayout;
-import com.vaadin.flow.theme.Theme;
-import com.vaadin.flow.theme.lumo.Lumo;
 import org.karnak.backend.util.SecurityUtil;
 import org.karnak.frontend.dicom.DicomMainView;
 import org.karnak.frontend.extid.ExternalIDView;
@@ -28,14 +26,13 @@ import org.karnak.frontend.forwardnode.ForwardNodeView;
 import org.karnak.frontend.help.HelpView;
 import org.karnak.frontend.mainzelliste.MainzellisteView;
 import org.karnak.frontend.profile.ProfileView;
-import org.karnak.frontend.project.MainViewProjects;
+import org.karnak.frontend.project.ProjectView;
 import org.springframework.security.access.annotation.Secured;
 
 /** The main layout. Contains the navigation menu. */
 @NpmPackage(value = "@polymer/iron-icons", version = "3.0.1")
 @JsModule("@polymer/iron-icons/iron-icons.js")
 @CssImport(value = "./styles/shared-styles.css")
-@Theme(value = Lumo.class)
 @Route(value = "mainLayout")
 @Secured({"ADMIN"})
 @SuppressWarnings("serial")
@@ -51,8 +48,7 @@ public class MainLayout extends FlexLayout implements RouterLayout {
     menu.addView(
         ForwardNodeView.class, ForwardNodeView.VIEW_NAME, new IronIcon("icons", "settings"));
     menu.addView(ProfileView.class, ProfileView.VIEW_NAME, new IronIcon("icons", "assignment"));
-    menu.addView(
-        MainViewProjects.class, MainViewProjects.VIEW_NAME, new IronIcon("icons", "class"));
+    menu.addView(ProjectView.class, ProjectView.VIEW_NAME, new IronIcon("icons", "class"));
     menu.addView(
         ExternalIDView.class, ExternalIDView.VIEW_NAME, new IronIcon("icons", "perm-identity"));
     menu.addView(

@@ -10,6 +10,7 @@
 package org.karnak.backend.data.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,7 +22,9 @@ import javax.persistence.Table;
 
 @Entity(name = "Arguments")
 @Table(name = "arguments")
-public class ArgumentEntity {
+public class ArgumentEntity implements Serializable {
+
+  private static final long serialVersionUID = -839421871919135822L;
 
   private Long id;
   private ProfileElementEntity profileElementEntity;
@@ -88,13 +91,12 @@ public class ArgumentEntity {
     }
     ArgumentEntity that = (ArgumentEntity) o;
     return Objects.equals(id, that.id)
-        && Objects.equals(profileElementEntity, that.profileElementEntity)
         && Objects.equals(key, that.key)
         && Objects.equals(value, that.value);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, profileElementEntity, key, value);
+    return Objects.hash(id, key, value);
   }
 }

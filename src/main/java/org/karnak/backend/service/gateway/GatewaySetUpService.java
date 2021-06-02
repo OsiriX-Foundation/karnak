@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-2021 Karnak Team and other contributors.
+ * Copyright (c) 2021 Karnak Team and other contributors.
  *
  * This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
@@ -12,12 +12,15 @@ package org.karnak.backend.service.gateway;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.dcm4che3.data.Attributes;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -25,7 +28,7 @@ import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.DicomSourceNodeEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.data.entity.KheopsAlbumsEntity;
-import org.karnak.backend.data.repo.GatewayRepo;
+import org.karnak.backend.data.repo.ForwardNodeRepo;
 import org.karnak.backend.dicom.DicomForwardDestination;
 import org.karnak.backend.dicom.ForwardDestination;
 import org.karnak.backend.dicom.ForwardDicomNode;
@@ -34,6 +37,7 @@ import org.karnak.backend.enums.DestinationType;
 import org.karnak.backend.enums.NodeEventType;
 import org.karnak.backend.model.NodeEvent;
 import org.karnak.backend.model.NotificationSetUp;
+import org.karnak.backend.model.editor.ConditionEditor;
 import org.karnak.backend.model.editor.DeIdentifyEditor;
 import org.karnak.backend.model.editor.FilterEditor;
 import org.karnak.backend.model.editor.StreamRegistryEditor;
@@ -74,7 +78,7 @@ public class GatewaySetUpService {
   protected static final String T_URL = "url";
   private static final Logger LOGGER = LoggerFactory.getLogger(GatewaySetUpService.class);
   // Repositories
-  private final GatewayRepo forwardNodeRepo;
+  private final ForwardNodeRepo forwardNodeRepo;
 
   private final Map<ForwardDicomNode, List<ForwardDestination>> destMap = new HashMap<>();
 
@@ -100,8 +104,8 @@ public class GatewaySetUpService {
   private final String truststore;
 
   @Autowired
-  public GatewaySetUpService(final GatewayRepo gatewayRepo) throws Exception {
-    this.forwardNodeRepo = gatewayRepo;
+  public GatewaySetUpService(final ForwardNodeRepo forwardNodeRepo) throws Exception {
+    this.forwardNodeRepo = forwardNodeRepo;
     String path = getProperty("GATEWAY_ARCHIVE_PATH", null); // Only Archive and Pull mode
     storePath = StringUtil.hasText(path) ? Path.of(path) : null;
     intervalCheck =
@@ -126,8 +130,8 @@ public class GatewaySetUpService {
     String notifyObjectErrorPrefix = getProperty("NOTIFY_OBJECT_ERROR_PREFIX", "**ERROR**");
     String notifyObjectPattern =
         getProperty("NOTIFY_OBJECT_PATTERN", "[Karnak Notification] %s %.30s");
-    String[] notifyObjectValues =
-        getProperty("NOTIFY_OBJECT_VALUES", "PatientID,StudyDescription").split(",");
+    List<String> notifyObjectValues =
+        Arrays.asList(getProperty("NOTIFY_OBJECT_VALUES", "PatientID,StudyDescription").split(","));
     int notifyInterval = StringUtil.getInt(getProperty("NOTIFY_INTERNAL", "45"));
     this.notificationSetUp =
         new NotificationSetUp(
@@ -139,11 +143,11 @@ public class GatewaySetUpService {
   private static AdvancedParams getDefaultAdvancedParameters() {
     AdvancedParams params = new AdvancedParams();
     ConnectOptions connectOptions = new ConnectOptions();
-    connectOptions.setConnectTimeout(3000);
-    connectOptions.setAcceptTimeout(5000);
+    connectOptions.setConnectTimeout(5000);
+    connectOptions.setAcceptTimeout(7000);
     // Concurrent DICOM operations
-    connectOptions.setMaxOpsInvoked(3);
-    connectOptions.setMaxOpsPerformed(3);
+    connectOptions.setMaxOpsInvoked(50);
+    connectOptions.setMaxOpsPerformed(50);
     params.setConnectOptions(connectOptions);
     return params;
   }
@@ -236,13 +240,8 @@ public class GatewaySetUpService {
   }
 
   public AdvancedParams getAdvancedParams() {
-    AdvancedParams options = new AdvancedParams();
-    ConnectOptions connectOptions = new ConnectOptions();
-    connectOptions.setConnectTimeout(3000);
-    connectOptions.setAcceptTimeout(5000);
-    // Concurrent DICOM operations
-    connectOptions.setMaxOpsInvoked(15);
-    connectOptions.setMaxOpsPerformed(15);
+    AdvancedParams options = getDefaultAdvancedParameters();
+    ConnectOptions connectOptions = options.getConnectOptions();
     if (getListenerTLS()) {
       TlsOptions tls =
           new TlsOptions(
@@ -270,9 +269,7 @@ public class GatewaySetUpService {
 
   public List<ForwardDestination> getDestination(String fwdAET) {
     Optional<ForwardDicomNode> node = getDestinationNode(fwdAET);
-    if (node.isPresent()) {
-      getDestinations(node.get());
-    }
+    node.ifPresent(this::getDestinations);
     return Collections.emptyList();
   }
 
@@ -299,58 +296,70 @@ public class GatewaySetUpService {
       List<ForwardDestination> dstList, ForwardDicomNode fwdSrcNode, DestinationEntity dstNode) {
     try {
       List<AttributeEditor> editors = new ArrayList<>();
-      final boolean filterBySOPClassesEnable = dstNode.getFilterBySOPClasses();
-      if (filterBySOPClassesEnable) {
-        editors.add(new FilterEditor(dstNode.getSOPClassUIDFilters()));
+
+      if (!dstNode.getCondition().isEmpty()) {
+        editors.add(new ConditionEditor(dstNode.getCondition()));
       }
 
-      final List<KheopsAlbumsEntity> listKheopsAlbumEntities = dstNode.getKheopsAlbumEntities();
+      final boolean filterBySOPClassesEnable = dstNode.isFilterBySOPClasses();
+      if (filterBySOPClassesEnable) {
+        editors.add(new FilterEditor(dstNode.getSOPClassUIDEntityFilters()));
+      }
+
+      final List<KheopsAlbumsEntity> kheopsAlbumEntities = dstNode.getKheopsAlbumEntities();
+
       SwitchingAlbum switchingAlbum = new SwitchingAlbum();
-      editors.add(
-          (Attributes dcm, AttributeEditorContext context) -> {
-            if (listKheopsAlbumEntities != null) {
-              listKheopsAlbumEntities.forEach(
+      if (kheopsAlbumEntities != null && !kheopsAlbumEntities.isEmpty()) {
+        editors.add(
+            (Attributes dcm, AttributeEditorContext context) -> {
+              kheopsAlbumEntities.forEach(
                   kheopsAlbums -> {
                     switchingAlbum.apply(dstNode, kheopsAlbums, dcm);
                   });
-            }
-          });
+            });
+      }
 
-      final boolean desidentificationEnable = dstNode.getDesidentification();
-      final boolean profileDefined =
+      StreamRegistryEditor streamRegistryEditor = new StreamRegistryEditor();
+      editors.add(streamRegistryEditor);
+
+      boolean deidentificationEnable = dstNode.isDesidentification();
+      boolean profileDefined =
           dstNode.getProjectEntity() != null
               && dstNode.getProjectEntity().getProfileEntity() != null;
-      if (desidentificationEnable && profileDefined) { // TODO add an option in destination model
+      if (deidentificationEnable && profileDefined) { // TODO add an option in destination model
         editors.add(new DeIdentifyEditor(dstNode));
       }
 
       DicomProgress progress = new DicomProgress();
-      StreamRegistryEditor streamRegistryEditor = new StreamRegistryEditor();
-      editors.add(streamRegistryEditor);
-      String[] emails = dstNode.getNotify().split(",");
-      NotificationSetUp notifConfig = null;
+      List<String> emails =
+          Stream.of(dstNode.getNotify().split(","))
+              .filter(item -> !item.trim().isEmpty())
+              .collect(Collectors.toList());
       String notifyObjectErrorPrefix = dstNode.getNotifyObjectErrorPrefix();
       String notifyObjectPattern = dstNode.getNotifyObjectPattern();
-      String[] notifyObjectValues = dstNode.getNotifyObjectValues().split(",");
+      List<String> notifyObjectValues =
+          Stream.of(dstNode.getNotifyObjectValues().split(","))
+              .filter(item -> !item.trim().isEmpty())
+              .collect(Collectors.toList());
       Integer notifyInterval = dstNode.getNotifyInterval();
 
-      if (notifyObjectErrorPrefix == null) {
+      if (!StringUtil.hasText(notifyObjectErrorPrefix)) {
         notifyObjectErrorPrefix = getNotificationSetUp().getNotifyObjectErrorPrefix();
       }
-      if (notifyObjectPattern == null) {
+      if (!StringUtil.hasText(notifyObjectPattern)) {
         notifyObjectPattern = getNotificationSetUp().getNotifyObjectPattern();
       }
-      if (notifyObjectValues == null) {
+      if (notifyObjectValues.isEmpty()) {
         notifyObjectValues = getNotificationSetUp().getNotifyObjectValues();
       }
       if (notifyInterval == null || notifyInterval <= 0) {
         notifyInterval = getNotificationSetUp().getNotifyInterval();
       }
-      notifConfig =
+      NotificationSetUp notifConfig =
           new NotificationSetUp(
               notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues, notifyInterval);
       if (dstNode.isActivate()) {
-        if (dstNode.getType() == DestinationType.stow) {
+        if (dstNode.getDestinationType() == DestinationType.stow) {
           // parse headers to hashmap
           HashMap<String, String> map = new HashMap<>();
           String headers = dstNode.getHeaders();
@@ -366,16 +375,16 @@ public class GatewaySetUpService {
                   dstNode.getId(), fwdSrcNode, dstNode.getUrl(), map, progress, editors);
           progress.addProgressListener(
               new EmailNotifyProgress(streamRegistryEditor, fwd, emails, this, notifConfig));
-          progress.addProgressListener(
-              (DicomProgress dicomProgress) -> {
-                Attributes dcm = dicomProgress.getAttributes();
-                if (listKheopsAlbumEntities != null) {
-                  listKheopsAlbumEntities.forEach(
+          if (kheopsAlbumEntities != null && !kheopsAlbumEntities.isEmpty()) {
+            progress.addProgressListener(
+                (DicomProgress dicomProgress) -> {
+                  Attributes dcm = dicomProgress.getAttributes();
+                  kheopsAlbumEntities.forEach(
                       kheopsAlbums -> {
                         switchingAlbum.applyAfterTransfer(kheopsAlbums, dcm);
                       });
-                }
-              });
+                });
+          }
           dstList.add(fwd);
         } else {
           DicomNode destinationNode =

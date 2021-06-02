@@ -26,21 +26,14 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.weasis.core.util.FileUtil;
 import org.weasis.core.util.StringUtil;
-import org.weasis.dicom.param.ListenerParams;
-import org.weasis.dicom.tool.DicomListener;
 
 @Service
 public class GatewayService implements ApplicationListener<ContextRefreshedEvent> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(GatewayService.class);
 
-  private NativeLibraryManager manager;
   private final GatewaySetUpService gatewaySetUpService;
-
-  private DicomGateway dicomForwardOut;
-
-  private DicomListener dicomListenerOut;
-  private PullingService httpPullIn;
+  private DicomGateway gateway;
 
   @Autowired
   public GatewayService(final GatewaySetUpService gatewaySetUpService) {
@@ -64,31 +57,9 @@ public class GatewayService implements ApplicationListener<ContextRefreshedEvent
     }
   }
 
-  private static DicomListener buildDicomListener(GatewaySetUpService config) {
-    DicomListener dicomListener;
-    try {
-      dicomListener = new DicomListener(config.getStorePath().toFile());
-      String[] acceptedCallingAETitles =
-          GatewayParams.getAcceptedCallingAETitles(config.getDestinations());
-      ListenerParams params =
-          new ListenerParams(
-              config.getAdvancedParams(),
-              false,
-              "{00020016}/{00020003}",
-              null,
-              acceptedCallingAETitles);
-      dicomListener.start(config.getCallingDicomNode(), params);
-      LOGGER.info("Gateway DICOM listener is running: {}", config);
-      return dicomListener;
-    } catch (Exception e) {
-      LOGGER.error("Cannot start {}-stream DICOM listener", e);
-      return null;
-    }
-  }
-
   @Override
   public void onApplicationEvent(ContextRefreshedEvent event) {
-    LOGGER.info("Application Event:" + event.toString());
+    LOGGER.info("Application Event: {}", event);
   }
 
   @EventListener
@@ -98,17 +69,10 @@ public class GatewayService implements ApplicationListener<ContextRefreshedEvent
 
   @PreDestroy
   public void destroy() {
-    if (dicomListenerOut != null) {
-      dicomListenerOut.stop();
-    }
-    if (dicomForwardOut != null) {
-      dicomForwardOut.stop();
-    }
-    if (httpPullIn != null) {
-      httpPullIn.stop();
+    if (gateway != null) {
+      gateway.stop();
     }
     LOGGER.info("{}", "Gateway has been stopped");
-
     String dir = System.getProperty("dicom.native.codec");
     if (StringUtil.hasText(dir)) {
       FileUtil.delete(new File(dir));
@@ -116,14 +80,7 @@ public class GatewayService implements ApplicationListener<ContextRefreshedEvent
   }
 
   private void initGateway() {
-    dicomForwardOut = buildDicomGateway(gatewaySetUpService);
-    // } else if (Mode.ARCHIVE.equals(outMode)) {
-    // dicomListenerOut = buildDicomListener(configOut);
-    // }
-
-    // httpPullIn = new PullingService(configIn);
-    // httpPullIn.start();
-
+    gateway = buildDicomGateway(gatewaySetUpService);
   }
 
   @PostConstruct
@@ -131,8 +88,7 @@ public class GatewayService implements ApplicationListener<ContextRefreshedEvent
     LOGGER.info("{}", "Start the gateway manager running as a background process");
     try {
       URL resource = this.getClass().getResource("/lib");
-      manager = new NativeLibraryManager(resource);
-
+      NativeLibraryManager.initNativeLibs(resource);
     } catch (Exception e1) {
       throw new IllegalStateException("Cannot register DICOM native librairies", e1);
     }

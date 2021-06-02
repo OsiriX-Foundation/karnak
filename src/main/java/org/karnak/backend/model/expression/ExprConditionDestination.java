@@ -9,64 +9,68 @@
  */
 package org.karnak.backend.model.expression;
 
-import java.util.Objects;
 import org.dcm4che3.data.Attributes;
-import org.dcm4che3.data.VR;
-import org.karnak.backend.util.DicomObjectTools;
+import org.dcm4che3.util.TagUtils;
 
 public class ExprConditionDestination implements ExpressionItem {
 
-  private int tag;
-  private VR vr;
-  private String stringValue;
   private final Attributes dcm;
-  private final Attributes dcmCopy;
 
-  public ExprConditionDestination(int tag, VR vr) {
-    this(tag, vr, new Attributes(), new Attributes());
+  public ExprConditionDestination() {
+    this(new Attributes());
   }
 
-  public ExprConditionDestination(int tag, VR vr, Attributes dcm, Attributes dcmCopy) {
-    this.tag = Objects.requireNonNull(tag);
-    this.vr = Objects.requireNonNull(vr);
-    if (dcmCopy != null) {
-      this.stringValue = dcmCopy.getString(this.tag);
-    } else {
-      this.stringValue = null;
-    }
-    this.dcmCopy = dcmCopy;
+  public ExprConditionDestination(Attributes dcm) {
     this.dcm = dcm;
   }
 
-  public String getString(int tag) {
-    return dcmCopy.getString(tag);
+  public static void expressionValidation(String condition) {
+    ExprConditionDestination exprConditionDestination = new ExprConditionDestination();
+    ExpressionResult.get(condition, exprConditionDestination, Boolean.class);
   }
 
-  public boolean tagIsPresent(int tag) {
-    return DicomObjectTools.containsTagInAllAttributes(tag, dcmCopy);
+  public static int intFromHexString(String tag) {
+    String cleanTag = tag.replaceAll("[(),]", "").toUpperCase();
+    return TagUtils.intFromHexString(cleanTag);
   }
 
-  public int getTag() {
-    return tag;
+  public boolean tagValueIsPresent(String tag, String value) {
+    int cleanTag = intFromHexString(tag);
+    return tagValueIsPresent(cleanTag, value);
   }
 
-  public void setTag(int tag) {
-    this.tag = tag;
+  public boolean tagValueIsPresent(int tag, String value) {
+    String dcmValue = dcm.getString(tag);
+    return dcmValue != null && dcmValue.equals(value);
   }
 
-  public VR getVr() {
-    return vr;
+  public boolean tagValueContains(String tag, String value) {
+    int cleanTag = intFromHexString(tag);
+    return tagValueContains(cleanTag, value);
   }
 
-  public void setVr(VR vr) {
-    this.vr = vr;
+  public boolean tagValueContains(int tag, String value) {
+    String dcmValue = dcm.getString(tag);
+    return dcmValue != null && dcmValue.contains(value);
   }
 
-  public String getStringValue() {
-    return stringValue;
+  public boolean tagValueBeginsWith(String tag, String value) {
+    int cleanTag = intFromHexString(tag);
+    return tagValueBeginsWith(cleanTag, value);
   }
 
-  public void setStringValue(String stringValue) {
-    this.stringValue = stringValue;
+  public boolean tagValueBeginsWith(int tag, String value) {
+    String dcmValue = dcm.getString(tag);
+    return dcmValue != null && dcmValue.startsWith(value);
+  }
+
+  public boolean tagValueEndsWith(String tag, String value) {
+    int cleanTag = intFromHexString(tag);
+    return tagValueEndsWith(cleanTag, value);
+  }
+
+  public boolean tagValueEndsWith(int tag, String value) {
+    String dcmValue = dcm.getString(tag);
+    return dcmValue != null && dcmValue.endsWith(value);
   }
 }

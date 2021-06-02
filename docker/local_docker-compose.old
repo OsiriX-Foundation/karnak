@@ -1,7 +1,7 @@
 version: "3.1"
 services:
   mainzelliste-db:
-    image: postgres:9.5-alpine
+    image: registry-docker.hcuge.ch:8083/postgres:9.6-alpine
     environment:
       - POSTGRES_DB=mainzelliste
       - POSTGRES_USER=mainzelliste
@@ -26,7 +26,7 @@ services:
       - mainzelliste-db
 
   karnak-db:
-    image: postgres:12.4-alpine
+    image: registry-docker.hcuge.ch:8083/postgres:9.6-alpine
     environment:
       - POSTGRES_DB=karnak
       - POSTGRES_USER=karnak

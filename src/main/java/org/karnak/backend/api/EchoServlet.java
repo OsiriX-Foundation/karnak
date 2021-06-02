@@ -51,10 +51,17 @@ public class EchoServlet extends HttpServlet {
   }
 
   @Override
-  public void doGet(HttpServletRequest req, HttpServletResponse res)
-      throws ServletException, IOException {
+  public void doGet(HttpServletRequest req, HttpServletResponse res) {
     res.setContentType("text/xml");
-    PrintWriter out = res.getWriter();
+    PrintWriter out = null;
+    try {
+      out = res.getWriter();
+    } catch (IOException e) {
+      String errorMsg = "Cannot write response";
+      LOGGER.error(errorMsg);
+      ServletUtil.sendResponseError(res, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, errorMsg);
+      return;
+    }
     String aet = req.getParameter("srcAET");
     if (globalConfig == null) {
       String errorMsg = "Missing 'GlobalConfig' from current ServletContext";
@@ -97,6 +104,6 @@ public class EchoServlet extends HttpServlet {
       }
     }
     sb.append("</destinations>\n");
-    out.println(sb.toString());
+    out.println(sb);
   }
 }

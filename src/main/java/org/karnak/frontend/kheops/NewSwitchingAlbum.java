@@ -84,6 +84,10 @@ public class NewSwitchingAlbum extends Div {
     return buttonAdd;
   }
 
+  public Span getTextErrorConditionMsg() {
+    return textErrorConditionMsg;
+  }
+
   public void clear() {
     binder.readBean(new KheopsAlbumsEntity());
   }
