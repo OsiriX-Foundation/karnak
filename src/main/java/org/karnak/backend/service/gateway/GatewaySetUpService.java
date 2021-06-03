@@ -24,6 +24,7 @@ import java.util.stream.Stream;
 import org.dcm4che3.data.Attributes;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.karnak.backend.constant.DefaultValuesNotification;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.DicomSourceNodeEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
@@ -127,12 +128,16 @@ public class GatewaySetUpService {
     mailAuthUser = getProperty("MAIL_SMTP_USER", null);
     mailAuthPwd = getProperty("MAIL_SMTP_SECRET", null);
 
-    String notifyObjectErrorPrefix = getProperty("NOTIFY_OBJECT_ERROR_PREFIX", "**ERROR**");
+    String notifyObjectErrorPrefix =
+        getProperty("NOTIFY_OBJECT_ERROR_PREFIX", DefaultValuesNotification.OBJECT_ERROR_PREFIX);
     String notifyObjectPattern =
-        getProperty("NOTIFY_OBJECT_PATTERN", "[Karnak Notification] %s %.30s");
+        getProperty("NOTIFY_OBJECT_PATTERN", DefaultValuesNotification.OBJECT_PATTERN);
     List<String> notifyObjectValues =
-        Arrays.asList(getProperty("NOTIFY_OBJECT_VALUES", "PatientID,StudyDescription").split(","));
-    int notifyInterval = StringUtil.getInt(getProperty("NOTIFY_INTERNAL", "45"));
+        Arrays.asList(
+            getProperty("NOTIFY_OBJECT_VALUES", DefaultValuesNotification.OBJECT_VALUES)
+                .split(","));
+    int notifyInterval =
+        StringUtil.getInt(getProperty("NOTIFY_INTERNAL", DefaultValuesNotification.INTERVAL));
     this.notificationSetUp =
         new NotificationSetUp(
             notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues, notifyInterval);
