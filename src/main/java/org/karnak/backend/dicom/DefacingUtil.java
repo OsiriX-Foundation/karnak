@@ -83,11 +83,8 @@ public class DefacingUtil {
   }
 
   public static double hounsfieldToPxlValue(Attributes attributes, double hounsfield) {
-    String interceptS = attributes.getString(Tag.RescaleIntercept);
-    String slopeS = attributes.getString(Tag.RescaleSlope);
-    double intercept = Double.parseDouble(interceptS);
-    double slope = Double.parseDouble(slopeS);
-
+    double intercept = attributes.getDouble(Tag.RescaleIntercept, 0);
+    double slope = attributes.getDouble(Tag.RescaleSlope, 1.0);
     return (hounsfield - intercept) / slope;
   }
 
@@ -103,20 +100,13 @@ public class DefacingUtil {
 
   public static boolean isCT(Attributes attributes) {
     String sopClassUID = attributes.getString(Tag.SOPClassUID);
-    String scuPattern = sopClassUID + ".";
-    if (scuPattern.equals("1.2.840.10008.5.1.4.1.1.2.")) {
-      return true;
-    }
-    return false;
+    return (sopClassUID + ".").startsWith("1.2.840.10008.5.1.4.1.1.2.");
   }
 
   public static boolean isAxial(Attributes attributes) {
     double[] vector = attributes.getDoubles(Tag.ImageOrientationPatient);
     ImageOrientation.Label label =
         ImageOrientation.makeImageOrientationLabelFromImageOrientationPatient(vector);
-    if (label.equals(ImageOrientation.Label.AXIAL)) {
-      return true;
-    }
-    return false;
+    return label.equals(ImageOrientation.Label.AXIAL);
   }
 }
