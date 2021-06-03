@@ -72,6 +72,9 @@ public class DestinationEntity implements Serializable {
   private ProjectEntity projectEntity;
   private ForwardNodeEntity forwardNodeEntity;
 
+  // Activate notification
+  private boolean activateNotification;
+
   // list of emails (comma separated) used when the images have been sent (or
   // partially sent) to the final destination. Note: if an issue appears before
   // sending to the final destination then no email is delivered.
@@ -135,6 +138,7 @@ public class DestinationEntity implements Serializable {
     this.position = null;
     this.savePseudonym = null;
     this.filterBySOPClasses = false;
+
     this.notify = "";
     this.notifyObjectErrorPrefix = "";
     this.notifyObjectPattern = "";
@@ -454,6 +458,14 @@ public class DestinationEntity implements Serializable {
     this.projectEntity = projectEntity;
   }
 
+  public boolean isActivateNotification() {
+    return activateNotification;
+  }
+
+  public void setActivateNotification(boolean activateNotification) {
+    this.activateNotification = activateNotification;
+  }
+
   /**
    * Informs if this object matches with the filter as text.
    *
@@ -589,6 +601,7 @@ public class DestinationEntity implements Serializable {
         && Objects.equals(position, that.position)
         && Objects.equals(savePseudonym, that.savePseudonym)
         && Objects.equals(pseudonymAsPatientName, that.pseudonymAsPatientName)
+        && Objects.equals(activateNotification, that.activateNotification)
         && Objects.equals(notify, that.notify)
         && Objects.equals(notifyObjectErrorPrefix, that.notifyObjectErrorPrefix)
         && Objects.equals(notifyObjectPattern, that.notifyObjectPattern)
@@ -617,6 +630,7 @@ public class DestinationEntity implements Serializable {
         savePseudonym,
         pseudonymAsPatientName,
         filterBySOPClasses,
+        activateNotification,
         notify,
         notifyObjectErrorPrefix,
         notifyObjectPattern,
