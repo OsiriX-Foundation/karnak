@@ -27,6 +27,14 @@ public class PatientMetadata {
   private final String issuerOfPatientID;
   private final String patientSex;
 
+  public PatientMetadata(Attributes dcm) {
+    patientID = dcm.getString(Tag.PatientID, "");
+    patientName = dcm.getString(Tag.PatientName, "");
+    patientBirthDate = setPatientBirthDate(dcm.getString(Tag.PatientBirthDate));
+    issuerOfPatientID = "";
+    patientSex = setPatientSex(dcm.getString(Tag.PatientSex, PATIENT_SEX_OTHER));
+  }
+
   public PatientMetadata(Attributes dcm, String defaultIsserOfPatientID) {
     patientID = dcm.getString(Tag.PatientID, "");
     patientName = dcm.getString(Tag.PatientName, "");

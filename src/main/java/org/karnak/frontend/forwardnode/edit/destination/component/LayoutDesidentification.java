@@ -19,6 +19,7 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.select.Select;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
@@ -43,10 +44,12 @@ public class LayoutDesidentification extends Div {
   private DesidentificationName desidentificationName;
   private WarningNoProjectsDefined warningNoProjectsDefined;
   private Select<String> extidListBox;
+  private TextField issuerOfPatientIDByDefault;
 
   public LayoutDesidentification() {}
 
   public void init(final Binder<DestinationEntity> binder) {
+    this.issuerOfPatientIDByDefault = new TextField();
     this.projectDropDown = new ProjectDropDown();
     this.projectDropDown.setItemLabelGenerator(ProjectEntity::getName);
     this.desidentificationName = new DesidentificationName();
@@ -64,13 +67,23 @@ public class LayoutDesidentification extends Div {
     add(UIS.setWidthFull(new HorizontalLayout(checkboxDesidentification, div)));
 
     if (checkboxDesidentification.getValue()) {
-      div.add(labelDisclaimer, projectDropDown, desidentificationName, extidListBox);
+      div.add(
+          labelDisclaimer,
+          issuerOfPatientIDByDefault,
+          projectDropDown,
+          desidentificationName,
+          extidListBox);
     }
 
     projectDropDown.addValueChangeListener(event -> setTextOnSelectionProject(event.getValue()));
   }
 
   private void setElements() {
+    issuerOfPatientIDByDefault.setLabel("Issuer of Patient ID by default");
+    issuerOfPatientIDByDefault.setWidth("100%");
+    issuerOfPatientIDByDefault.setPlaceholder(
+        "If this field is empty, the Issuer of Patient ID is not used to define the authenticity of the patient");
+
     checkboxDesidentification = new Checkbox(LABEL_CHECKBOX_DESIDENTIFICATION);
     checkboxDesidentification.setValue(true);
     checkboxDesidentification.setMinWidth("25%");
@@ -160,6 +173,17 @@ public class LayoutDesidentification extends Div {
 
   private void setBinder() {
     destinationBinder
+        .forField(issuerOfPatientIDByDefault)
+        .bind(
+            DestinationEntity::getIssuerByDefault,
+            (destinationEntity, s) -> {
+              if (checkboxDesidentification.getValue()) {
+                destinationEntity.setIssuerByDefault(s);
+              } else {
+                destinationEntity.setIssuerByDefault("");
+              }
+            });
+    destinationBinder
         .forField(checkboxDesidentification)
         .bind(DestinationEntity::isDesidentification, DestinationEntity::setDesidentification);
     destinationBinder
@@ -246,5 +270,9 @@ public class LayoutDesidentification extends Div {
 
   public Select<String> getExtidListBox() {
     return extidListBox;
+  }
+
+  public TextField getIssuerOfPatientIDByDefault() {
+    return issuerOfPatientIDByDefault;
   }
 }

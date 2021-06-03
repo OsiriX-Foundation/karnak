@@ -16,4 +16,18 @@
       </column>
     </addColumn>
   </changeSet>
+
+  <changeSet author="karnak" id="1.2-2">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="destination" columnName="issuer_by_default"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="destination">
+      <column name="issuer_by_default" type="varchar(1024)" defaultValue=''>
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+  </changeSet>
+
 </databaseChangeLog>
