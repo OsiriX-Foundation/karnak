@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <artifactId>karnak</artifactId>
   <name>${project.artifactId}</name>
@@ -11,7 +11,7 @@
     <license>
       <distribution>repo</distribution>
       <name>Eclipse Public License v2.0</name>
-      <url>http://www.eclipse.org/legal/epl-v20.html</url>
+      <url>https://www.eclipse.org/legal/epl-v20.html</url>
     </license>
   </licenses>
 
@@ -34,7 +34,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <springframework.version>2.4.5</springframework.version>
     <vaadin.version>19.0.6</vaadin.version>
-    <weasis-dicom-tools.version>5.23.2.1-IMG-RELEASE</weasis-dicom-tools.version>
+    <weasis-dicom-tools.version>5.23.3-IMG-RELEASE</weasis-dicom-tools.version>
     <weasis.opencv.native.version>4.5.1-dcm</weasis.opencv.native.version>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <sonar.java.source>${java.version}</sonar.java.source>
@@ -69,8 +69,6 @@
       <id>www.dcm4che.org</id>
       <name>dcm4che Repository</name>
       <url>https://www.dcm4che.org/maven2</url>
-      <!-- <url>http://www.dcm4che.org/maven2</url> (which will redirected to
-        https://www.dcm4che.org/maven2). -->
     </repository>
   </repositories>
 
@@ -214,7 +212,7 @@
  * Copyright (c) $YEAR Karnak Team and other contributors.
  *
  * This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
  * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
@@ -224,14 +222,6 @@
             </licenseHeader>
           </java>
         </configuration>
-        <executions>
-          <execution>
-            <phase>verify</phase>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
       <plugin>
         <groupId>org.jacoco</groupId>
@@ -571,12 +561,6 @@
         <scope>import</scope>
         <type>pom</type>
         <version>${springframework.version}</version>
-      </dependency>
-      <dependency>
-        <artifactId>javax.servlet-api</artifactId>
-        <groupId>javax.servlet</groupId>
-        <scope>provided</scope>
-        <version>3.1.0</version>
       </dependency>
       <dependency>
         <artifactId>vaadin-bom</artifactId>
