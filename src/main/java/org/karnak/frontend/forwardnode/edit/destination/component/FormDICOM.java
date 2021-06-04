@@ -32,20 +32,17 @@ public class FormDICOM extends VerticalLayout {
   private TextField port;
   private Checkbox useaetdest;
 
-  private TextField notify;
-  private TextField notifyObjectErrorPrefix;
-  private TextField notifyObjectPattern;
-  private TextField notifyObjectValues;
-  private TextField notifyInterval;
   private final LayoutDesidentification layoutDesidentification;
   private final FilterBySOPClassesForm filterBySOPClassesForm;
   private Checkbox activate;
-  private DestinationCondition destinationCondition;
+  private final DestinationCondition destinationCondition;
+  private final NotificationComponent notificationComponent;
 
   public FormDICOM() {
     this.layoutDesidentification = new LayoutDesidentification();
     this.filterBySOPClassesForm = new FilterBySOPClassesForm();
     this.destinationCondition = new DestinationCondition();
+    this.notificationComponent = new NotificationComponent();
   }
 
   public void init(
@@ -55,6 +52,7 @@ public class FormDICOM extends VerticalLayout {
     this.layoutDesidentification.init(this.binder);
     this.filterBySOPClassesForm.init(this.binder);
     this.destinationCondition.init(this.binder);
+    notificationComponent.init(this.binder);
 
     setSizeFull();
 
@@ -63,11 +61,6 @@ public class FormDICOM extends VerticalLayout {
     hostname = new TextField("Hostname");
     port = new TextField("Port");
     useaetdest = new Checkbox("Use AETitle destination");
-    notify = new TextField("Notif.: list of emails");
-    notifyObjectErrorPrefix = new TextField("Notif.: error subject prefix");
-    notifyObjectPattern = new TextField("Notif.: subject pattern");
-    notifyObjectValues = new TextField("Notif.: subject values");
-    notifyInterval = new TextField("Notif.: interval");
     activate = new Checkbox("Enable destination");
 
     add(
@@ -75,10 +68,7 @@ public class FormDICOM extends VerticalLayout {
         destinationCondition,
         UIS.setWidthFull(new HorizontalLayout(hostname, port)),
         UIS.setWidthFull(new HorizontalLayout(useaetdest)),
-        UIS.setWidthFull(new HorizontalLayout(notify)),
-        UIS.setWidthFull(
-            new HorizontalLayout(
-                notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues, notifyInterval)),
+        UIS.setWidthFull(notificationComponent),
         UIS.setWidthFull(layoutDesidentification),
         UIS.setWidthFull(filterBySOPClassesForm),
         UIS.setWidthFull(activate),
@@ -102,29 +92,6 @@ public class FormDICOM extends VerticalLayout {
     UIS.setTooltip(
         useaetdest,
         "if \"true\" then use the destination AETitle as the calling  AETitle at the gateway side");
-
-    notify.setWidth("100%");
-
-    notifyObjectErrorPrefix.setWidth("24%");
-    UIS.setTooltip(
-        notifyObjectErrorPrefix,
-        "Prefix of the email object when containing an issue. Default value: **ERROR**");
-
-    notifyObjectPattern.setWidth("24%");
-    UIS.setTooltip(
-        notifyObjectPattern,
-        "Pattern of the email object, see https://dzone.com/articles/java-string-format-examples. Default value: [Karnak Notification] %s %.30s");
-
-    notifyObjectValues.setWidth("24%");
-    UIS.setTooltip(
-        notifyObjectValues,
-        "Values injected in the pattern [PatientID StudyDescription StudyDate StudyInstanceUID]. Default value: PatientID,StudyDescription");
-
-    notifyInterval.setWidth("18%");
-    notifyInterval.addThemeVariants(TextFieldVariant.LUMO_ALIGN_RIGHT);
-    UIS.setTooltip(
-        notifyInterval,
-        "Interval in seconds for sending a notification (when no new image is arrived in the archive folder). Default value: 45");
   }
 
   private void setBinder() {
@@ -145,10 +112,6 @@ public class FormDICOM extends VerticalLayout {
         .withValidator(Objects::nonNull, "Port is mandatory")
         .withValidator(value -> 1 <= value && value <= 65535, "Port should be between 1 and 65535")
         .bind(DestinationEntity::getPort, DestinationEntity::setPort);
-    binder
-        .forField(notifyInterval) //
-        .withConverter(new HStringToIntegerConverter()) //
-        .bind(DestinationEntity::getNotifyInterval, DestinationEntity::setNotifyInterval);
 
     binder.bindInstanceFields(this);
   }
