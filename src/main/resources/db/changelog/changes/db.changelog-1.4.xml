@@ -6,7 +6,7 @@
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog dbchangelog-4.0.xsd">
 
   <!-- CREATE externalid_provider TABLE-->
-  <changeSet author="karnak" id="1.3-1">
+  <changeSet author="karnak" id="1.4-1">
     <preConditions onFail="MARK_RAN">
       <not>
         <tableExists tableName="externalid_provider"/>
@@ -22,7 +22,7 @@
     </createTable>
   </changeSet>
 
-  <changeSet author="karnak" id="1.3-2">
+  <changeSet author="karnak" id="1.4-2">
     <preConditions onFail="MARK_RAN">
       <not>
         <columnExists tableName="destination" columnName="externalid_provider_id"/>
@@ -37,7 +37,7 @@
 
 
   <!-- INSERT VALUES IN externalid_provider TABLE-->
-  <changeSet author="karnak" id="1.3-3">
+  <changeSet author="karnak" id="1.4-3">
     <insert
       schemaName="public"
       tableName="externalid_provider">
@@ -46,7 +46,7 @@
     </insert>
   </changeSet>
 
-  <changeSet author="karnak" id="1.3-4">
+  <changeSet author="karnak" id="1.4-4">
     <insert
       schemaName="public"
       tableName="externalid_provider">
@@ -55,7 +55,7 @@
     </insert>
   </changeSet>
 
-  <changeSet author="karnak" id="1.3-5">
+  <changeSet author="karnak" id="1.4-5">
     <insert
       schemaName="public"
       tableName="externalid_provider">
@@ -64,7 +64,7 @@
     </insert>
   </changeSet>
 
-  <changeSet author="karnak" id="1.3-6">
+  <changeSet author="karnak" id="1.4-6">
     <insert
       schemaName="public"
       tableName="externalid_provider">
@@ -75,7 +75,7 @@
 
 
   <!-- UPDATE externalid_provider_id VALUES IN destination TABLE -->
-  <changeSet author="karnak" id="1.3-7">
+  <changeSet author="karnak" id="1.4-7">
     <update
       schemaName="public"
       tableName="destination">
@@ -86,7 +86,7 @@
   </changeSet>
 
 
-  <changeSet author="karnak" id="1.3-8">
+  <changeSet author="karnak" id="1.4-8">
     <update
       schemaName="public"
       tableName="destination">
@@ -97,7 +97,7 @@
   </changeSet>
 
 
-  <changeSet author="karnak" id="1.3-9">
+  <changeSet author="karnak" id="1.4-9">
     <update
       schemaName="public"
       tableName="destination">
@@ -108,7 +108,7 @@
   </changeSet>
 
 
-  <changeSet author="karnak" id="1.3-10">
+  <changeSet author="karnak" id="1.4-10">
     <update
       schemaName="public"
       tableName="destination">
@@ -118,7 +118,7 @@
     </update>
   </changeSet>
 
-  <changeSet author="karnak" id="1.3-11">
+  <changeSet author="karnak" id="1.4-11">
     <update schemaName="public" tableName="destination">
       <column name="externalid_provider_id" value="NULL"/>
       <where>desidentification='false'</where>
@@ -126,7 +126,7 @@
   </changeSet>
 
   <!-- CREATE FOREIGN KEY FOR externalid_provider_id -->
-  <changeSet author="karnak" id="1.3-12">
+  <changeSet author="karnak" id="1.4-12">
     <preConditions onFail="MARK_RAN">
       <not>
         <foreignKeyConstraintExists foreignKeyName="fk5idsjfos5f4gv8efgEeSss512"
@@ -139,7 +139,7 @@
       referencedTableName="externalid_provider" validate="true"/>
   </changeSet>
 
-  <changeSet author="karnak" id="1.3-13">
+  <changeSet author="karnak" id="1.4-13">
     <dropColumn
       schemaName="public"
       tableName="destination">
