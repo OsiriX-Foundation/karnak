@@ -37,7 +37,6 @@ public class FormSTOW extends VerticalLayout {
   private final DestinationCondition destinationCondition;
   private final NotificationComponent notificationComponent;
   private DestinationLogic destinationLogic;
-  private DestinationCondition destinationCondition;
 
   public FormSTOW() {
     this.layoutDesidentification = new LayoutDesidentification();
