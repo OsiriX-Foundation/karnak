@@ -45,7 +45,7 @@ jobs:
       - name: Build the spring app
         if: ${{ env.PUSH_PACKAGES }}
         shell: bash
-        run: mvn -B clean install -P production
+        run: mvn -B clean install -P production -Dmaven.test.skip=true
       - name: Docker meta
         id: docker_meta
         uses: crazy-max/ghaction-docker-meta@v1
