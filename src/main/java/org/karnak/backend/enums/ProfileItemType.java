@@ -13,6 +13,7 @@ import org.karnak.backend.model.profiles.ActionDates;
 import org.karnak.backend.model.profiles.ActionTags;
 import org.karnak.backend.model.profiles.BasicProfile;
 import org.karnak.backend.model.profiles.CleanPixelData;
+import org.karnak.backend.model.profiles.Defacing;
 import org.karnak.backend.model.profiles.Expression;
 import org.karnak.backend.model.profiles.PrivateTags;
 import org.karnak.backend.model.profiles.ProfileItem;
@@ -25,6 +26,11 @@ public enum ProfileItemType {
       "113100",
       "Basic Application Confidentiality Profile"),
   CLEAN_PIXEL_DATA(CleanPixelData.class, "clean.pixel.data", "113101", "Clean Pixel Data Option"),
+  DEFACING(
+      Defacing.class,
+      "clean.recognizable.visual.features",
+      "113102",
+      "Clean Recognizable Visual Features Option"),
   REPLACE_UID(UpdateUIDsProfile.class, "replace.uid", null, null),
   ACTION_TAGS(ActionTags.class, "action.on.specific.tags", null, null),
   ACTION_PRIVATETAGS(
