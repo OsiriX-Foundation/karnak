@@ -38,6 +38,7 @@ public class FormDICOM extends VerticalLayout {
   private final DestinationCondition destinationCondition;
   private final NotificationComponent notificationComponent;
   private final TransferSyntaxComponent transferSyntaxComponent;
+  private final TranscodeOnlyUncompressedComponent transcodeOnlyUncompressedComponent;
 
   public FormDICOM() {
     this.layoutDesidentification = new LayoutDesidentification();
@@ -45,6 +46,7 @@ public class FormDICOM extends VerticalLayout {
     this.destinationCondition = new DestinationCondition();
     this.notificationComponent = new NotificationComponent();
     this.transferSyntaxComponent = new TransferSyntaxComponent();
+    this.transcodeOnlyUncompressedComponent = new TranscodeOnlyUncompressedComponent();
   }
 
   public void init(
@@ -56,6 +58,7 @@ public class FormDICOM extends VerticalLayout {
     this.destinationCondition.init(this.binder);
     notificationComponent.init(this.binder);
     transferSyntaxComponent.init(this.binder);
+    transcodeOnlyUncompressedComponent.init(this.binder);
 
     setSizeFull();
 
@@ -73,6 +76,7 @@ public class FormDICOM extends VerticalLayout {
         UIS.setWidthFull(transferSyntaxComponent),
         UIS.setWidthFull(new HorizontalLayout(useaetdest)),
         UIS.setWidthFull(notificationComponent),
+        UIS.setWidthFull(transcodeOnlyUncompressedComponent),
         UIS.setWidthFull(layoutDesidentification),
         UIS.setWidthFull(filterBySOPClassesForm),
         UIS.setWidthFull(activate),

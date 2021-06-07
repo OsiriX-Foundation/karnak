@@ -48,7 +48,7 @@ public class WebForwardDestination extends ForwardDestination {
       Map<String, String> headers,
       DicomProgress progress,
       List<AttributeEditor> editors) {
-    this(null, fwdNode, requestURL, headers, progress, editors, null);
+    this(null, fwdNode, requestURL, headers, progress, editors, null, true);
   }
 
   public WebForwardDestination(
@@ -58,12 +58,14 @@ public class WebForwardDestination extends ForwardDestination {
       Map<String, String> headers,
       DicomProgress progress,
       List<AttributeEditor> editors,
-      String outputTransferSyntax) {
+      String outputTransferSyntax,
+      boolean transcodeOnlyUncompressed) {
     super(id, editors);
     this.callingNode = fwdNode;
     this.state = new DicomState(progress == null ? new DicomProgress() : progress);
     this.stowRS = new DicomStowRS(requestURL, ContentType.APPLICATION_DICOM, null, headers);
     setOutputTransferSyntax(outputTransferSyntax);
+    setTranscodeOnlyUncompressed(transcodeOnlyUncompressed);
   }
 
   public WebForwardDestination(

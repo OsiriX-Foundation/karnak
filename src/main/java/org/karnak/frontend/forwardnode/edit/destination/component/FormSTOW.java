@@ -36,6 +36,7 @@ public class FormSTOW extends VerticalLayout {
   private final DestinationCondition destinationCondition;
   private final NotificationComponent notificationComponent;
   private final TransferSyntaxComponent transferSyntaxComponent;
+  private final TranscodeOnlyUncompressedComponent transcodeOnlyUncompressedComponent;
 
   public FormSTOW() {
     this.layoutDesidentification = new LayoutDesidentification();
@@ -43,6 +44,7 @@ public class FormSTOW extends VerticalLayout {
     this.destinationCondition = new DestinationCondition();
     this.notificationComponent = new NotificationComponent();
     this.transferSyntaxComponent = new TransferSyntaxComponent();
+    this.transcodeOnlyUncompressedComponent = new TranscodeOnlyUncompressedComponent();
   }
 
   public void init(
@@ -54,6 +56,7 @@ public class FormSTOW extends VerticalLayout {
     this.destinationCondition.init(binder);
     notificationComponent.init(binder);
     transferSyntaxComponent.init(this.binder);
+    transcodeOnlyUncompressedComponent.init(this.binder);
 
     this.description = new TextField("Description");
     this.url = new TextField("URL");
@@ -68,6 +71,7 @@ public class FormSTOW extends VerticalLayout {
     add(UIS.setWidthFull(headers));
     add(UIS.setWidthFull(transferSyntaxComponent));
     add(UIS.setWidthFull(notificationComponent));
+    add(UIS.setWidthFull(transcodeOnlyUncompressedComponent));
     add(UIS.setWidthFull(layoutDesidentification));
     add(UIS.setWidthFull(filterBySOPClassesForm));
     add(UIS.setWidthFull(switchingAlbumsView));
