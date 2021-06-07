@@ -2,7 +2,7 @@
  * Copyright (c) 2018-2020 Karnak Team and other contributors.
  *
  * This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
  * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
@@ -13,7 +13,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import org.weasis.core.util.FileUtil;
-import org.weasis.dicom.param.*;
+import org.weasis.dicom.param.AttributeEditor;
+import org.weasis.dicom.param.DicomProgress;
+import org.weasis.dicom.param.DicomState;
 import org.weasis.dicom.web.ContentType;
 import org.weasis.dicom.web.DicomStowRS;
 
@@ -46,7 +48,7 @@ public class WebForwardDestination extends ForwardDestination {
       Map<String, String> headers,
       DicomProgress progress,
       List<AttributeEditor> editors) {
-    this(null, fwdNode, requestURL, headers, progress, editors);
+    this(null, fwdNode, requestURL, headers, progress, editors, null);
   }
 
   public WebForwardDestination(
@@ -55,11 +57,13 @@ public class WebForwardDestination extends ForwardDestination {
       String requestURL,
       Map<String, String> headers,
       DicomProgress progress,
-      List<AttributeEditor> editors) {
+      List<AttributeEditor> editors,
+      String outputTransferSyntax) {
     super(id, editors);
     this.callingNode = fwdNode;
     this.state = new DicomState(progress == null ? new DicomProgress() : progress);
     this.stowRS = new DicomStowRS(requestURL, ContentType.APPLICATION_DICOM, null, headers);
+    setOutputTransferSyntax(outputTransferSyntax);
   }
 
   public WebForwardDestination(

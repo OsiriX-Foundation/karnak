@@ -2,7 +2,7 @@
  * Copyright (c) 2009-2019 Karnak Team and other contributors.
  *
  * This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
  * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
@@ -21,7 +21,7 @@ public abstract class ForwardDestination {
 
   protected final List<AttributeEditor> dicomEditors;
   private final Long id;
-  private boolean tanscodeOnlyUncompressed = true;
+  private final boolean tanscodeOnlyUncompressed = true;
   private String outputTransferSyntax = "";
 
   protected ForwardDestination(Long id, List<AttributeEditor> dicomEditors) {
@@ -45,6 +45,10 @@ public abstract class ForwardDestination {
 
   public String getOutputTransferSyntax() {
     return outputTransferSyntax;
+  }
+
+  public void setOutputTransferSyntax(String outputTransferSyntax) {
+    this.outputTransferSyntax = outputTransferSyntax != null ? outputTransferSyntax : "";
   }
 
   public String getOutputTransferSyntax(String originalTsuid) {

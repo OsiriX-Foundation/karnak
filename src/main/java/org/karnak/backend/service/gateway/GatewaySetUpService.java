@@ -2,7 +2,7 @@
  * Copyright (c) 2021 Karnak Team and other contributors.
  *
  * This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
  * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
@@ -377,7 +377,14 @@ public class GatewaySetUpService {
 
           WebForwardDestination fwd =
               new WebForwardDestination(
-                  dstNode.getId(), fwdSrcNode, dstNode.getUrl(), map, progress, editors);
+                  dstNode.getId(),
+                  fwdSrcNode,
+                  dstNode.getUrl(),
+                  map,
+                  progress,
+                  editors,
+                  dstNode.getTransferSyntax());
+
           progress.addProgressListener(
               new EmailNotifyProgress(streamRegistryEditor, fwd, emails, this, notifConfig));
           if (kheopsAlbumEntities != null && !kheopsAlbumEntities.isEmpty()) {
@@ -402,7 +409,9 @@ public class GatewaySetUpService {
                   destinationNode,
                   dstNode.getUseaetdest(),
                   progress,
-                  editors);
+                  editors,
+                  dstNode.getTransferSyntax());
+
           progress.addProgressListener(
               new EmailNotifyProgress(streamRegistryEditor, dest, emails, this, notifConfig));
           dstList.add(dest);

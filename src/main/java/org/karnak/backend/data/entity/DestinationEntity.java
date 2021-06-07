@@ -2,7 +2,7 @@
  * Copyright (c) 2020-2021 Karnak Team and other contributors.
  *
  * This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
  * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
@@ -120,6 +120,9 @@ public class DestinationEntity implements Serializable {
   private String urlCredentials;
   // headers for HTTP request.
   private String headers;
+
+  // UID corresponding to the Transfer Syntax
+  private String transferSyntax;
 
   public DestinationEntity() {
     this(null);
@@ -466,6 +469,14 @@ public class DestinationEntity implements Serializable {
     this.activateNotification = activateNotification;
   }
 
+  public String getTransferSyntax() {
+    return transferSyntax;
+  }
+
+  public void setTransferSyntax(String transferSyntax) {
+    this.transferSyntax = transferSyntax;
+  }
+
   /**
    * Informs if this object matches with the filter as text.
    *
@@ -601,6 +612,7 @@ public class DestinationEntity implements Serializable {
         && Objects.equals(position, that.position)
         && Objects.equals(savePseudonym, that.savePseudonym)
         && Objects.equals(pseudonymAsPatientName, that.pseudonymAsPatientName)
+        && Objects.equals(transferSyntax, that.transferSyntax)
         && Objects.equals(activateNotification, that.activateNotification)
         && Objects.equals(notify, that.notify)
         && Objects.equals(notifyObjectErrorPrefix, that.notifyObjectErrorPrefix)
@@ -630,6 +642,7 @@ public class DestinationEntity implements Serializable {
         savePseudonym,
         pseudonymAsPatientName,
         filterBySOPClasses,
+        transferSyntax,
         activateNotification,
         notify,
         notifyObjectErrorPrefix,
