@@ -35,12 +35,14 @@ public class FormSTOW extends VerticalLayout {
   private Checkbox activate;
   private final DestinationCondition destinationCondition;
   private final NotificationComponent notificationComponent;
+  private final TransferSyntaxComponent transferSyntaxComponent;
 
   public FormSTOW() {
     this.layoutDesidentification = new LayoutDesidentification();
     this.filterBySOPClassesForm = new FilterBySOPClassesForm();
     this.destinationCondition = new DestinationCondition();
     this.notificationComponent = new NotificationComponent();
+    this.transferSyntaxComponent = new TransferSyntaxComponent();
   }
 
   public void init(
@@ -51,6 +53,7 @@ public class FormSTOW extends VerticalLayout {
     this.filterBySOPClassesForm.init(this.binder);
     this.destinationCondition.init(binder);
     notificationComponent.init(binder);
+    transferSyntaxComponent.init(this.binder);
 
     this.description = new TextField("Description");
     this.url = new TextField("URL");
@@ -63,6 +66,7 @@ public class FormSTOW extends VerticalLayout {
     add(destinationCondition);
     add(UIS.setWidthFull(new HorizontalLayout(url, urlCredentials)));
     add(UIS.setWidthFull(headers));
+    add(UIS.setWidthFull(transferSyntaxComponent));
     add(UIS.setWidthFull(notificationComponent));
     add(UIS.setWidthFull(layoutDesidentification));
     add(UIS.setWidthFull(filterBySOPClassesForm));
