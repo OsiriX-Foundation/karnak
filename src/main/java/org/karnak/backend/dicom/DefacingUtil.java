@@ -22,9 +22,7 @@ public class DefacingUtil {
   private DefacingUtil() {}
 
   public static int randomY(int minY, int maxY, int bound) {
-    SecureRandom secureRandom = new SecureRandom();
-    double randomDouble = secureRandom.nextDouble();
-    return (int) Math.floor(randomDouble * (maxY - minY + bound) + minY);
+    return (int) Math.floor(Math.random() * (maxY - minY + bound) + minY);
   }
 
   public static double pickRndYPxlColor(int xInit, int minY, int maxY, PlanarImage imgToPick) {
@@ -32,11 +30,14 @@ public class DefacingUtil {
     int size = 4;
     double mean = 0;
     int sum = 0;
+    int imgWidth = imgToPick.width();
+    int imgHeight = imgToPick.height();
+
     // convolution
     for (int x = xInit - (size / 2); x < xInit + (size / 2) + 1; x++) {
       for (int y = yRand; y < yRand + size + 1; y++) {
-        int xPickColor = checkBoundsOfImageX(x, imgToPick);
-        int yPickColor = checkBoundsOfImageY(y, imgToPick);
+        int xPickColor = checkBoundsOfImageX(x, imgWidth);
+        int yPickColor = checkBoundsOfImageY(y, imgHeight);
         double color = imgToPick.toMat().get(yPickColor, xPickColor)[0];
 
         mean = mean + color;
@@ -49,22 +50,22 @@ public class DefacingUtil {
     return mean;
   }
 
-  public static int checkBoundsOfImageX(int x, PlanarImage image) {
+  public static int checkBoundsOfImageX(int x, int imgWidth) {
     if (x < 0) {
       return 0;
     }
-    if (x >= image.width()) {
-      return image.width() - 1;
+    if (x >= imgWidth) {
+      return imgWidth - 1;
     }
     return x;
   }
 
-  public static int checkBoundsOfImageY(int y, PlanarImage image) {
+  public static int checkBoundsOfImageY(int y, int imgHeight) {
     if (y < 0) {
       return 0;
     }
-    if (y >= image.height()) {
-      return image.height() - 1;
+    if (y >= imgHeight) {
+      return imgHeight - 1;
     }
     return y;
   }

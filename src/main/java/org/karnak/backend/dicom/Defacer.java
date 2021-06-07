@@ -119,7 +119,7 @@ public class Defacer {
       boolean faceDetected = false;
       int yFaceDetected = 0;
       int thicknessSkin = DefacingUtil.randomY(minThicknessSkin, maxThicknessSkin, 1);
-      int margeY = 20;
+      int margeY = maxThicknessSkin;
 
       for (int y = faceDetectImg.height() - 1; y > 0; y--) {
         double faceDetectPixelValue = faceDetectImg.toMat().get(y, x)[0];
