@@ -37,12 +37,14 @@ public class FormDICOM extends VerticalLayout {
   private Checkbox activate;
   private final DestinationCondition destinationCondition;
   private final NotificationComponent notificationComponent;
+  private final TransferSyntaxComponent transferSyntaxComponent;
 
   public FormDICOM() {
     this.layoutDesidentification = new LayoutDesidentification();
     this.filterBySOPClassesForm = new FilterBySOPClassesForm();
     this.destinationCondition = new DestinationCondition();
     this.notificationComponent = new NotificationComponent();
+    this.transferSyntaxComponent = new TransferSyntaxComponent();
   }
 
   public void init(
@@ -53,6 +55,7 @@ public class FormDICOM extends VerticalLayout {
     this.filterBySOPClassesForm.init(this.binder);
     this.destinationCondition.init(this.binder);
     notificationComponent.init(this.binder);
+    transferSyntaxComponent.init(this.binder);
 
     setSizeFull();
 
@@ -67,6 +70,7 @@ public class FormDICOM extends VerticalLayout {
         UIS.setWidthFull(new HorizontalLayout(aeTitle, description)),
         destinationCondition,
         UIS.setWidthFull(new HorizontalLayout(hostname, port)),
+        UIS.setWidthFull(transferSyntaxComponent),
         UIS.setWidthFull(new HorizontalLayout(useaetdest)),
         UIS.setWidthFull(notificationComponent),
         UIS.setWidthFull(layoutDesidentification),

@@ -21,7 +21,7 @@ public abstract class ForwardDestination {
 
   protected final List<AttributeEditor> dicomEditors;
   private final Long id;
-  private boolean tanscodeOnlyUncompressed = true;
+  private final boolean tanscodeOnlyUncompressed = true;
   private String outputTransferSyntax = "";
 
   protected ForwardDestination(Long id, List<AttributeEditor> dicomEditors) {
@@ -45,6 +45,10 @@ public abstract class ForwardDestination {
 
   public String getOutputTransferSyntax() {
     return outputTransferSyntax;
+  }
+
+  public void setOutputTransferSyntax(String outputTransferSyntax) {
+    this.outputTransferSyntax = outputTransferSyntax != null ? outputTransferSyntax : "";
   }
 
   public String getOutputTransferSyntax(String originalTsuid) {
