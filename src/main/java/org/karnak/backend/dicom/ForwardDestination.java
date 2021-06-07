@@ -21,7 +21,7 @@ public abstract class ForwardDestination {
 
   protected final List<AttributeEditor> dicomEditors;
   private final Long id;
-  private final boolean tanscodeOnlyUncompressed = true;
+  private boolean transcodeOnlyUncompressed = true;
   private String outputTransferSyntax = "";
 
   protected ForwardDestination(Long id, List<AttributeEditor> dicomEditors) {
@@ -51,8 +51,16 @@ public abstract class ForwardDestination {
     this.outputTransferSyntax = outputTransferSyntax != null ? outputTransferSyntax : "";
   }
 
+  public boolean isTranscodeOnlyUncompressed() {
+    return transcodeOnlyUncompressed;
+  }
+
+  public void setTranscodeOnlyUncompressed(boolean transcodeOnlyUncompressed) {
+    this.transcodeOnlyUncompressed = transcodeOnlyUncompressed;
+  }
+
   public String getOutputTransferSyntax(String originalTsuid) {
-    if (tanscodeOnlyUncompressed
+    if (transcodeOnlyUncompressed
         && !DicomUtils.isNative(originalTsuid)
         && !UID.RLELossless.equals(originalTsuid)) {
       return originalTsuid;

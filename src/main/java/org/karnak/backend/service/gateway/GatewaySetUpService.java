@@ -383,7 +383,8 @@ public class GatewaySetUpService {
                   map,
                   progress,
                   editors,
-                  dstNode.getTransferSyntax());
+                  dstNode.getTransferSyntax(),
+                  dstNode.isTranscodeOnlyUncompressed());
 
           progress.addProgressListener(
               new EmailNotifyProgress(streamRegistryEditor, fwd, emails, this, notifConfig));
@@ -410,7 +411,8 @@ public class GatewaySetUpService {
                   dstNode.getUseaetdest(),
                   progress,
                   editors,
-                  dstNode.getTransferSyntax());
+                  dstNode.getTransferSyntax(),
+                  dstNode.isTranscodeOnlyUncompressed());
 
           progress.addProgressListener(
               new EmailNotifyProgress(streamRegistryEditor, dest, emails, this, notifConfig));
