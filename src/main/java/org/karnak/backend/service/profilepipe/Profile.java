@@ -13,7 +13,6 @@ import static org.karnak.backend.dicom.DefacingUtil.isAxial;
 import static org.karnak.backend.dicom.DefacingUtil.isCT;
 
 import java.awt.Color;
-import java.awt.Rectangle;
 import java.awt.Shape;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -42,6 +41,7 @@ import org.karnak.backend.enums.PseudonymType;
 import org.karnak.backend.model.action.ActionItem;
 import org.karnak.backend.model.action.Remove;
 import org.karnak.backend.model.action.ReplaceNull;
+import org.karnak.backend.model.expression.ExprConditionDestination;
 import org.karnak.backend.model.expression.ExprConditionProfile;
 import org.karnak.backend.model.expression.ExpressionResult;
 import org.karnak.backend.model.profilepipe.HMAC;
@@ -198,6 +198,56 @@ public class Profile {
     }
   }
 
+  public void applyCleanPixelData(
+      Attributes dcmCopy, AttributeEditorContext context, ProfileEntity profileEntity) {
+    Object pix = dcmCopy.getValue(Tag.PixelData);
+    if ((pix instanceof BulkData || pix instanceof Fragments)
+        && !profileEntity.getMaskEntities().isEmpty()
+        && profiles.stream().anyMatch(p -> p instanceof CleanPixelData)) {
+      String sopClassUID = dcmCopy.getString(Tag.SOPClassUID);
+      if (!StringUtil.hasText(sopClassUID)) {
+        throw new IllegalStateException("DICOM Object does not contain sopClassUID");
+      }
+      String scuPattern = sopClassUID + ".";
+      MaskArea mask = getMask(dcmCopy.getString(Tag.StationName));
+      // A mask must be applied with all the US and Secondary Capture sopClassUID, and with
+      // BurnedInAnnotation
+      if (scuPattern.startsWith("1.2.840.10008.5.1.4.1.1.6.")
+          || scuPattern.startsWith("1.2.840.10008.5.1.4.1.1.7.")
+          || scuPattern.startsWith("1.2.840.10008.5.1.4.1.1.3.")
+          || scuPattern.equals("1.2.840.10008.5.1.4.1.1.77.1.1")
+          || "YES".equalsIgnoreCase(dcmCopy.getString(Tag.BurnedInAnnotation))) {
+        context.setMaskArea(mask);
+        if (mask == null) {
+          throw new IllegalStateException("Cannot clean pixel data to sopClassUID " + sopClassUID);
+        }
+      } else {
+        context.setMaskArea(null);
+      }
+    }
+  }
+
+  public void applyDefacing(Attributes dcmCopy, AttributeEditorContext context) {
+    ProfileItem profileItemDefacing =
+        profiles.stream().filter(p -> p instanceof Defacing).findFirst().orElse(null);
+    if (profileItemDefacing != null) {
+      if (isCT(dcmCopy) && isAxial(dcmCopy)) {
+        if (profileItemDefacing.getCondition() == null) {
+          context.getProperties().setProperty(Defacer.APPLY_DEFACING, "true");
+        } else {
+          ExprConditionDestination exprConditionDestination = new ExprConditionDestination(dcmCopy);
+          boolean conditionIsOk =
+              (Boolean)
+                  ExpressionResult.get(
+                      profileItemDefacing.getCondition(), exprConditionDestination, Boolean.class);
+          if (conditionIsOk) {
+            context.getProperties().setProperty(Defacer.APPLY_DEFACING, "true");
+          }
+        }
+      }
+    }
+  }
+
   public void apply(
       Attributes dcm,
       DestinationEntity destinationEntity,
@@ -230,39 +280,12 @@ public class Profile {
             : newPatientID;
 
     Attributes dcmCopy = new Attributes(dcm);
+
     // Apply clean pixel data
-    Object pix = dcm.getValue(Tag.PixelData);
-    if ((pix instanceof BulkData || pix instanceof Fragments)
-        && !profileEntity.getMaskEntities().isEmpty()
-        && profiles.stream().anyMatch(p -> p instanceof CleanPixelData)) {
-      String sopClassUID = dcm.getString(Tag.SOPClassUID);
-      if (!StringUtil.hasText(sopClassUID)) {
-        throw new IllegalStateException("DICOM Object does not contain sopClassUID");
-      }
-      String scuPattern = sopClassUID + ".";
-      MaskArea mask = getMask(dcm.getString(Tag.StationName));
-      // A mask must be applied with all the US and Secondary Capture sopClassUID, and with
-      // BurnedInAnnotation
-      if (scuPattern.startsWith("1.2.840.10008.5.1.4.1.1.6.")
-          || scuPattern.startsWith("1.2.840.10008.5.1.4.1.1.7.")
-          || scuPattern.startsWith("1.2.840.10008.5.1.4.1.1.3.")
-          || scuPattern.equals("1.2.840.10008.5.1.4.1.1.77.1.1")
-          || "YES".equalsIgnoreCase(dcm.getString(Tag.BurnedInAnnotation))) {
-        context.setMaskArea(mask);
-        if (mask == null) {
-          throw new IllegalStateException("Cannot clean pixel data to sopClassUID " + sopClassUID);
-        }
-      } else {
-        context.setMaskArea(null);
-      }
-    }
+    applyCleanPixelData(dcmCopy, context, profileEntity);
 
     // Apply clean recognizable visual features option
-    if (profiles.stream().anyMatch(p -> p instanceof Defacing)) {
-      if (isCT(dcmCopy) && isAxial(dcmCopy)) {
-        context.getProperties().setProperty(Defacer.APPLY_DEFACING, "true");
-      }
-    }
+    applyDefacing(dcmCopy, context);
 
     applyAction(dcm, dcmCopy, hmac, null, null, context);
 
