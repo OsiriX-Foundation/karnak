@@ -38,11 +38,10 @@ public class Pseudonym {
   public String generatePseudonym(DestinationEntity destinationEntity, Attributes dcm) {
 
     PatientMetadata patientMetadata;
-    if (destinationEntity.getIssuerByDefault().equals("")) {
-      // Does not take the Issuer of Patient ID to determine the patient
+    if (destinationEntity.getIssuerByDefault() == null
+        || destinationEntity.getIssuerByDefault().equals("")) {
       patientMetadata = new PatientMetadata(dcm);
     } else {
-      // take the Issuer of Patient ID to determine the patient and give one by default
       patientMetadata = new PatientMetadata(dcm, destinationEntity.getIssuerByDefault());
     }
 
