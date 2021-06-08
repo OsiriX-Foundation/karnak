@@ -79,7 +79,7 @@ public class ProfilePipeService {
             profilePipeYml.getName(),
             profilePipeYml.getVersion(),
             profilePipeYml.getMinimumKarnakVersion(),
-            profilePipeYml.getDefaultIssuerOfPatientID(),
+            null,
             byDefault);
     if (profilePipeYml.getMasks() != null) {
       profilePipeYml
