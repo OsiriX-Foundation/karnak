@@ -73,12 +73,18 @@ public class FormDICOM extends VerticalLayout {
         UIS.setWidthFull(new HorizontalLayout(aeTitle, description)),
         destinationCondition,
         UIS.setWidthFull(new HorizontalLayout(hostname, port)),
-        UIS.setWidthFull(transferSyntaxComponent),
+        UIS.setWidthFull(new SeparatorComponent()),
+        UIS.setWidthFull(
+            new HorizontalLayout(transferSyntaxComponent, transcodeOnlyUncompressedComponent)),
+        UIS.setWidthFull(new SeparatorComponent()),
         UIS.setWidthFull(new HorizontalLayout(useaetdest)),
+        UIS.setWidthFull(new SeparatorComponent()),
         UIS.setWidthFull(notificationComponent),
-        UIS.setWidthFull(transcodeOnlyUncompressedComponent),
+        UIS.setWidthFull(new SeparatorComponent()),
         UIS.setWidthFull(layoutDesidentification),
+        UIS.setWidthFull(new SeparatorComponent()),
         UIS.setWidthFull(filterBySOPClassesForm),
+        UIS.setWidthFull(new SeparatorComponent()),
         UIS.setWidthFull(activate),
         UIS.setWidthFull(buttonSaveDeleteCancel));
 

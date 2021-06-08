@@ -69,12 +69,19 @@ public class FormSTOW extends VerticalLayout {
     add(destinationCondition);
     add(UIS.setWidthFull(new HorizontalLayout(url, urlCredentials)));
     add(UIS.setWidthFull(headers));
-    add(UIS.setWidthFull(transferSyntaxComponent));
+    add(UIS.setWidthFull(new SeparatorComponent()));
+    add(
+        UIS.setWidthFull(
+            new HorizontalLayout(transferSyntaxComponent, transcodeOnlyUncompressedComponent)));
+    add(UIS.setWidthFull(new SeparatorComponent()));
     add(UIS.setWidthFull(notificationComponent));
-    add(UIS.setWidthFull(transcodeOnlyUncompressedComponent));
+    add(UIS.setWidthFull(new SeparatorComponent()));
     add(UIS.setWidthFull(layoutDesidentification));
+    add(UIS.setWidthFull(new SeparatorComponent()));
     add(UIS.setWidthFull(filterBySOPClassesForm));
+    add(UIS.setWidthFull(new SeparatorComponent()));
     add(UIS.setWidthFull(switchingAlbumsView));
+    add(UIS.setWidthFull(new SeparatorComponent()));
     add(UIS.setWidthFull(activate));
     add(UIS.setWidthFull(buttonSaveDeleteCancel));
 

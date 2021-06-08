@@ -38,7 +38,9 @@ public class TranscodeOnlyUncompressedComponent extends VerticalLayout {
 
   /** Build components used in Transfer Syntax component */
   private void buildComponents() {
-    transcodeOnlyUncompressedCheckBox = new Checkbox("Transcode Only Uncompressed");
+    transcodeOnlyUncompressedCheckBox = new Checkbox("Transcode only uncompressed");
+    transcodeOnlyUncompressedCheckBox.getElement().getStyle().set("margin-left", "54px");
+    transcodeOnlyUncompressedCheckBox.getElement().getStyle().set("margin-top", "49px");
   }
 
   public void init(Binder<DestinationEntity> binder) {
