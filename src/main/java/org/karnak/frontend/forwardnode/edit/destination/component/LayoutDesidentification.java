@@ -32,6 +32,8 @@ public class LayoutDesidentification extends Div {
   private static final String LABEL_CHECKBOX_DESIDENTIFICATION = "Activate de-identification";
   private static final String LABEL_DISCLAIMER_DEIDENTIFICATION =
       "In order to ensure complete de-identification, visual verification of metadata and images is necessary.";
+  private static final String LABEL_DEFAULT_ISSUER =
+      "If this field is empty, the Issuer of Patient ID is not used to define the authenticity of the patient";
 
   private Checkbox checkboxDesidentification;
   private Label labelDisclaimer;
@@ -81,9 +83,8 @@ public class LayoutDesidentification extends Div {
   private void setElements() {
     issuerOfPatientIDByDefault.setLabel("Issuer of Patient ID by default");
     issuerOfPatientIDByDefault.setWidth("100%");
-    issuerOfPatientIDByDefault.setPlaceholder(
-        "If this field is empty, the Issuer of Patient ID is not used to define the authenticity of the patient");
-
+    issuerOfPatientIDByDefault.setPlaceholder(LABEL_DEFAULT_ISSUER);
+    UIS.setTooltip(issuerOfPatientIDByDefault, LABEL_DEFAULT_ISSUER);
     checkboxDesidentification = new Checkbox(LABEL_CHECKBOX_DESIDENTIFICATION);
     checkboxDesidentification.setValue(true);
     checkboxDesidentification.setMinWidth("25%");
