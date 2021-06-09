@@ -28,6 +28,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -50,7 +51,7 @@ public class ProfileEntity implements Serializable {
   private String name;
   private String version;
   private String minimumKarnakVersion;
-  private String defaultIssuerOfPatientId;
+  private String defaultIssuerOfPatientId; // not use in db but used in warning msg profile
   private Boolean byDefault;
   private Set<ProfileElementEntity> profileElementEntities = new HashSet<>();
   private Set<MaskEntity> maskEntities = new HashSet<>();
@@ -126,7 +127,7 @@ public class ProfileEntity implements Serializable {
   }
 
   @JsonGetter("defaultIssuerOfPatientID")
-  @Column(name = "defaultissueropatientid")
+  @Transient // not use in db but used in warning msg profile
   public String getDefaultIssuerOfPatientId() {
     return defaultIssuerOfPatientId;
   }
