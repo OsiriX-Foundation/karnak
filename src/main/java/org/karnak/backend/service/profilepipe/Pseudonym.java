@@ -44,7 +44,6 @@ public class Pseudonym {
 
   public String generatePseudonym(DestinationEntity destinationEntity, Attributes dcm) {
 
-    final PatientMetadata patientMetadata = new PatientMetadata(dcm, defaultIssuerOfPatientID);
     final ExternalIDProviderEntity externalIDProviderEntity =
         destinationEntity.getExternalIDProviderEntity();
     final ExternalIDProviderType externalIDProviderType =
@@ -113,8 +112,9 @@ public class Pseudonym {
       throw new IllegalStateException("Cannot get an external pseudonym of type EXTID_IN_TAG");
     } else {
       if (destinationEntity.getSavePseudonym().booleanValue()) {
-        final PseudonymApi pseudonymApi = new PseudonymApi();
-        pseudonymApi.addExtID(patientMetadata.generateMainzellisteFields(), pseudonymExtidInTag);
+        final MainzellisteApi pseudonymApi = new MainzellisteApi();
+        pseudonymApi.addExternalID(
+            patientMetadata.generateMainzellisteFields(), pseudonymExtidInTag);
       }
     }
     return pseudonymExtidInTag;
