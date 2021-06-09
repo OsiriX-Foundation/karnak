@@ -284,6 +284,7 @@ public class ForwardUtil {
           }
           throw new AbortException(context.getAbort(), context.getAbortMessage());
         } else if (context.getAbort() == Abort.CONNECTION_EXCEPTION) {
+          sourceNode.setQuarantine(new Quarantine(copy, p));
           if (p.getAs() != null) {
             p.getAs().abort();
           }
@@ -303,7 +304,6 @@ public class ForwardUtil {
       progressNotify(
           destination, p.getIuid(), p.getCuid(), true, streamSCU.getNumberOfSuboperations());
       if (e.getAbort() == Abort.CONNECTION_EXCEPTION) {
-        sourceNode.setQuarantine(new Quarantine(copy, p));
         throw e;
       }
     } catch (Exception e) {
@@ -384,8 +384,10 @@ public class ForwardUtil {
         }
 
         if (context.getAbort() == Abort.FILE_EXCEPTION) {
+          fwdNode.setQuarantine(new Quarantine(copy, p));
           throw new AbortException(context.getAbort(), context.getAbortMessage());
         } else if (context.getAbort() == Abort.CONNECTION_EXCEPTION) {
+          fwdNode.setQuarantine(new Quarantine(copy, p));
           throw new AbortException(
               context.getAbort(), "DICOM association abort. " + context.getAbortMessage());
         }
@@ -402,7 +404,6 @@ public class ForwardUtil {
       progressNotify(
           destination, p.getIuid(), p.getCuid(), true, streamSCU.getNumberOfSuboperations());
       if (e.getAbort() == Abort.CONNECTION_EXCEPTION) {
-        fwdNode.setQuarantine(new Quarantine(copy, p));
         throw e;
       }
     } catch (Exception e) {
@@ -449,16 +450,16 @@ public class ForwardUtil {
         }
 
         if (context.getAbort() == Abort.FILE_EXCEPTION) {
+          fwdNode.setQuarantine(new Quarantine(copy, p));
           if (p.getData() instanceof PDVInputStream) {
             ((PDVInputStream) p.getData()).skipAll();
           }
-          fwdNode.setQuarantine(new Quarantine(copy, p));
           throw new AbortException(context.getAbort(), context.getAbortMessage());
         } else if (context.getAbort() == Abort.CONNECTION_EXCEPTION) {
+          fwdNode.setQuarantine(new Quarantine(copy, p));
           if (p.getAs() != null) {
             p.getAs().abort();
           }
-          fwdNode.setQuarantine(new Quarantine(copy, p));
           throw new AbortException(
               context.getAbort(), "STOW-RS abort: " + context.getAbortMessage());
         }
@@ -475,7 +476,6 @@ public class ForwardUtil {
     } catch (AbortException e) {
       progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
       if (e.getAbort() == Abort.CONNECTION_EXCEPTION) {
-        fwdNode.setQuarantine(new Quarantine(copy, p));
         throw e;
       }
     } catch (Exception e) {
@@ -522,16 +522,15 @@ public class ForwardUtil {
       }
     } catch (HttpException httpException) {
       progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
-      fwdNode.setQuarantine(new Quarantine(copy, p));
       throw new AbortException(Abort.FILE_EXCEPTION, "DICOMWeb forward", httpException);
     } catch (AbortException e) {
       progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
       if (e.getAbort() == Abort.CONNECTION_EXCEPTION) {
-        fwdNode.setQuarantine(new Quarantine(copy, p));
         throw e;
       }
     } catch (Exception e) {
       progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
+      fwdNode.setQuarantine(new Quarantine(copy, p));
       LOGGER.error(ERROR_WHEN_FORWARDING, e);
     }
   }
