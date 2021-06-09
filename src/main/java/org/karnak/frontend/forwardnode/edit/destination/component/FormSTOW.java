@@ -35,12 +35,16 @@ public class FormSTOW extends VerticalLayout {
   private Checkbox activate;
   private final DestinationCondition destinationCondition;
   private final NotificationComponent notificationComponent;
+  private final TransferSyntaxComponent transferSyntaxComponent;
+  private final TranscodeOnlyUncompressedComponent transcodeOnlyUncompressedComponent;
 
   public FormSTOW() {
     this.layoutDesidentification = new LayoutDesidentification();
     this.filterBySOPClassesForm = new FilterBySOPClassesForm();
     this.destinationCondition = new DestinationCondition();
     this.notificationComponent = new NotificationComponent();
+    this.transferSyntaxComponent = new TransferSyntaxComponent();
+    this.transcodeOnlyUncompressedComponent = new TranscodeOnlyUncompressedComponent();
   }
 
   public void init(
@@ -51,6 +55,8 @@ public class FormSTOW extends VerticalLayout {
     this.filterBySOPClassesForm.init(this.binder);
     this.destinationCondition.init(binder);
     notificationComponent.init(binder);
+    transferSyntaxComponent.init(this.binder);
+    transcodeOnlyUncompressedComponent.init(this.binder);
 
     this.description = new TextField("Description");
     this.url = new TextField("URL");
@@ -59,15 +65,33 @@ public class FormSTOW extends VerticalLayout {
     this.switchingAlbumsView = new SwitchingAlbumsView();
     this.activate = new Checkbox("Enable destination");
 
-    add(UIS.setWidthFull(new HorizontalLayout(description)));
-    add(destinationCondition);
-    add(UIS.setWidthFull(new HorizontalLayout(url, urlCredentials)));
-    add(UIS.setWidthFull(headers));
-    add(UIS.setWidthFull(notificationComponent));
-    add(UIS.setWidthFull(layoutDesidentification));
-    add(UIS.setWidthFull(filterBySOPClassesForm));
-    add(UIS.setWidthFull(switchingAlbumsView));
-    add(UIS.setWidthFull(activate));
+    // Define layout
+    VerticalLayout destinationLayout =
+        new VerticalLayout(
+            UIS.setWidthFull(new HorizontalLayout(description)),
+            destinationCondition,
+            UIS.setWidthFull(new HorizontalLayout(url, urlCredentials)),
+            UIS.setWidthFull(headers));
+    VerticalLayout transferLayout =
+        new VerticalLayout(
+            new HorizontalLayout(transferSyntaxComponent, transcodeOnlyUncompressedComponent));
+    VerticalLayout activateLayout = new VerticalLayout(activate);
+    VerticalLayout switchingLayout = new VerticalLayout(switchingAlbumsView);
+
+    // Set padding
+    transferLayout.setPadding(true);
+    destinationLayout.setPadding(true);
+    activateLayout.setPadding(true);
+    activateLayout.setPadding(true);
+
+    // Add components
+    add(UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(destinationLayout))));
+    add(UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(transferLayout))));
+    add(UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(notificationComponent))));
+    add(UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(layoutDesidentification))));
+    add(UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(filterBySOPClassesForm))));
+    add(UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(switchingLayout))));
+    add(UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(activateLayout))));
     add(UIS.setWidthFull(buttonSaveDeleteCancel));
 
     setElements();

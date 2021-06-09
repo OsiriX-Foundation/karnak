@@ -377,7 +377,15 @@ public class GatewaySetUpService {
 
           WebForwardDestination fwd =
               new WebForwardDestination(
-                  dstNode.getId(), fwdSrcNode, dstNode.getUrl(), map, progress, editors);
+                  dstNode.getId(),
+                  fwdSrcNode,
+                  dstNode.getUrl(),
+                  map,
+                  progress,
+                  editors,
+                  dstNode.getTransferSyntax(),
+                  dstNode.isTranscodeOnlyUncompressed());
+
           progress.addProgressListener(
               new EmailNotifyProgress(streamRegistryEditor, fwd, emails, this, notifConfig));
           if (kheopsAlbumEntities != null && !kheopsAlbumEntities.isEmpty()) {
@@ -402,7 +410,10 @@ public class GatewaySetUpService {
                   destinationNode,
                   dstNode.getUseaetdest(),
                   progress,
-                  editors);
+                  editors,
+                  dstNode.getTransferSyntax(),
+                  dstNode.isTranscodeOnlyUncompressed());
+
           progress.addProgressListener(
               new EmailNotifyProgress(streamRegistryEditor, dest, emails, this, notifConfig));
           dstList.add(dest);

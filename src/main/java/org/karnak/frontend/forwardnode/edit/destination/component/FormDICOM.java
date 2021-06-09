@@ -37,12 +37,16 @@ public class FormDICOM extends VerticalLayout {
   private Checkbox activate;
   private final DestinationCondition destinationCondition;
   private final NotificationComponent notificationComponent;
+  private final TransferSyntaxComponent transferSyntaxComponent;
+  private final TranscodeOnlyUncompressedComponent transcodeOnlyUncompressedComponent;
 
   public FormDICOM() {
     this.layoutDesidentification = new LayoutDesidentification();
     this.filterBySOPClassesForm = new FilterBySOPClassesForm();
     this.destinationCondition = new DestinationCondition();
     this.notificationComponent = new NotificationComponent();
+    this.transferSyntaxComponent = new TransferSyntaxComponent();
+    this.transcodeOnlyUncompressedComponent = new TranscodeOnlyUncompressedComponent();
   }
 
   public void init(
@@ -53,6 +57,8 @@ public class FormDICOM extends VerticalLayout {
     this.filterBySOPClassesForm.init(this.binder);
     this.destinationCondition.init(this.binder);
     notificationComponent.init(this.binder);
+    transferSyntaxComponent.init(this.binder);
+    transcodeOnlyUncompressedComponent.init(this.binder);
 
     setSizeFull();
 
@@ -63,15 +69,33 @@ public class FormDICOM extends VerticalLayout {
     useaetdest = new Checkbox("Use AETitle destination");
     activate = new Checkbox("Enable destination");
 
+    // Define layout
+    VerticalLayout destinationLayout =
+        new VerticalLayout(
+            UIS.setWidthFull(new HorizontalLayout(aeTitle, description)),
+            destinationCondition,
+            UIS.setWidthFull(new HorizontalLayout(hostname, port)));
+    VerticalLayout transferLayout =
+        new VerticalLayout(
+            new HorizontalLayout(transferSyntaxComponent, transcodeOnlyUncompressedComponent));
+    VerticalLayout useaetdestLayout = new VerticalLayout(new HorizontalLayout(useaetdest));
+    VerticalLayout activateLayout = new VerticalLayout(activate);
+
+    // Set padding
+    destinationLayout.setPadding(true);
+    transferLayout.setPadding(true);
+    useaetdestLayout.setPadding(true);
+    activateLayout.setPadding(true);
+
+    // Add components
     add(
-        UIS.setWidthFull(new HorizontalLayout(aeTitle, description)),
-        destinationCondition,
-        UIS.setWidthFull(new HorizontalLayout(hostname, port)),
-        UIS.setWidthFull(new HorizontalLayout(useaetdest)),
-        UIS.setWidthFull(notificationComponent),
-        UIS.setWidthFull(layoutDesidentification),
-        UIS.setWidthFull(filterBySOPClassesForm),
-        UIS.setWidthFull(activate),
+        UIS.setWidthFull(new BoxShadowComponent(destinationLayout)),
+        UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(transferLayout))),
+        UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(useaetdestLayout))),
+        UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(notificationComponent))),
+        UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(layoutDesidentification))),
+        UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(filterBySOPClassesForm))),
+        UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(activateLayout))),
         UIS.setWidthFull(buttonSaveDeleteCancel));
 
     setElements();
