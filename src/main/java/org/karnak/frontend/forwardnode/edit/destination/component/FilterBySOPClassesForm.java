@@ -29,13 +29,13 @@ public class FilterBySOPClassesForm extends HorizontalLayout {
   public void init(Binder<DestinationEntity> binder) {
     this.binder = binder;
     setElements();
-
+    setPadding(true);
     add(filterBySOPClassesCheckbox, sopFilter);
   }
 
   private void setElements() {
     filterBySOPClassesCheckbox.setMinWidth("25%");
-    sopFilter.setMinWidth("70%");
+    sopFilter.setMinWidth("74%");
 
     filterBySOPClassesCheckbox.setValue(false);
     sopFilter.onEnabledStateChanged(false);

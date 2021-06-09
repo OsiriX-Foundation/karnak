@@ -9,18 +9,18 @@
  */
 package org.karnak.frontend.forwardnode.edit.destination.component;
 
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.data.binder.Binder;
 import java.util.Arrays;
 import java.util.stream.Collectors;
-import org.dcm4che3.data.UID;
 import org.karnak.backend.data.entity.DestinationEntity;
+import org.karnak.backend.enums.UIDType;
 
 /** Create a transfer syntax component */
 public class TransferSyntaxComponent extends VerticalLayout {
 
-  private ComboBox<String> transferSyntaxComboBox;
+  private Select<String> transferSyntaxSelect;
 
   public TransferSyntaxComponent() {
 
@@ -36,27 +36,29 @@ public class TransferSyntaxComponent extends VerticalLayout {
 
   /** Add components in transfer syntax */
   private void addComponents() {
-    add(transferSyntaxComboBox);
+    add(transferSyntaxSelect);
   }
 
   /** Build components used in Transfer Syntax component */
   private void buildComponents() {
-    transferSyntaxComboBox = new ComboBox<>("Transfer Syntax");
-    transferSyntaxComboBox.setClearButtonVisible(true);
-    transferSyntaxComboBox.setWidth("700px");
-    transferSyntaxComboBox.getElement().getStyle().set("--vaadin-combo-box-overlay-width", "650px");
+    transferSyntaxSelect = new Select<>();
+    transferSyntaxSelect.setWidth("600px");
+    transferSyntaxSelect.getElement().getStyle().set("--vaadin-combo-box-overlay-width", "550px");
+
     // Values
-    transferSyntaxComboBox.setItems(
-        Arrays.stream(UID.class.getFields())
-            .map(field -> UID.forName(field.getName()))
-            .collect(Collectors.toList()));
+    transferSyntaxSelect.setEmptySelectionAllowed(true);
+    transferSyntaxSelect.setEmptySelectionCaption("Keep original transfer syntax");
+    transferSyntaxSelect.setItems(
+        Arrays.stream(UIDType.values()).map(UIDType::getCode).collect(Collectors.toList()));
+
     // Labels
-    transferSyntaxComboBox.setItemLabelGenerator(UID::nameOf);
+    transferSyntaxSelect.setLabel("Transfer Syntax");
+    transferSyntaxSelect.setItemLabelGenerator(UIDType::descriptionOf);
   }
 
   public void init(Binder<DestinationEntity> binder) {
     binder
-        .forField(transferSyntaxComboBox)
+        .forField(transferSyntaxSelect)
         .bind(DestinationEntity::getTransferSyntax, DestinationEntity::setTransferSyntax);
   }
 }

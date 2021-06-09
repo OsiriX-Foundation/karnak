@@ -65,17 +65,33 @@ public class FormSTOW extends VerticalLayout {
     this.switchingAlbumsView = new SwitchingAlbumsView();
     this.activate = new Checkbox("Enable destination");
 
-    add(UIS.setWidthFull(new HorizontalLayout(description)));
-    add(destinationCondition);
-    add(UIS.setWidthFull(new HorizontalLayout(url, urlCredentials)));
-    add(UIS.setWidthFull(headers));
-    add(UIS.setWidthFull(transferSyntaxComponent));
-    add(UIS.setWidthFull(notificationComponent));
-    add(UIS.setWidthFull(transcodeOnlyUncompressedComponent));
-    add(UIS.setWidthFull(layoutDesidentification));
-    add(UIS.setWidthFull(filterBySOPClassesForm));
-    add(UIS.setWidthFull(switchingAlbumsView));
-    add(UIS.setWidthFull(activate));
+    // Define layout
+    VerticalLayout destinationLayout =
+        new VerticalLayout(
+            UIS.setWidthFull(new HorizontalLayout(description)),
+            destinationCondition,
+            UIS.setWidthFull(new HorizontalLayout(url, urlCredentials)),
+            UIS.setWidthFull(headers));
+    VerticalLayout transferLayout =
+        new VerticalLayout(
+            new HorizontalLayout(transferSyntaxComponent, transcodeOnlyUncompressedComponent));
+    VerticalLayout activateLayout = new VerticalLayout(activate);
+    VerticalLayout switchingLayout = new VerticalLayout(switchingAlbumsView);
+
+    // Set padding
+    transferLayout.setPadding(true);
+    destinationLayout.setPadding(true);
+    activateLayout.setPadding(true);
+    activateLayout.setPadding(true);
+
+    // Add components
+    add(UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(destinationLayout))));
+    add(UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(transferLayout))));
+    add(UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(notificationComponent))));
+    add(UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(layoutDesidentification))));
+    add(UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(filterBySOPClassesForm))));
+    add(UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(switchingLayout))));
+    add(UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(activateLayout))));
     add(UIS.setWidthFull(buttonSaveDeleteCancel));
 
     setElements();

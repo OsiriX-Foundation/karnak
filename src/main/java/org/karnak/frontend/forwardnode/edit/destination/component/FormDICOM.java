@@ -69,17 +69,33 @@ public class FormDICOM extends VerticalLayout {
     useaetdest = new Checkbox("Use AETitle destination");
     activate = new Checkbox("Enable destination");
 
+    // Define layout
+    VerticalLayout destinationLayout =
+        new VerticalLayout(
+            UIS.setWidthFull(new HorizontalLayout(aeTitle, description)),
+            destinationCondition,
+            UIS.setWidthFull(new HorizontalLayout(hostname, port)));
+    VerticalLayout transferLayout =
+        new VerticalLayout(
+            new HorizontalLayout(transferSyntaxComponent, transcodeOnlyUncompressedComponent));
+    VerticalLayout useaetdestLayout = new VerticalLayout(new HorizontalLayout(useaetdest));
+    VerticalLayout activateLayout = new VerticalLayout(activate);
+
+    // Set padding
+    destinationLayout.setPadding(true);
+    transferLayout.setPadding(true);
+    useaetdestLayout.setPadding(true);
+    activateLayout.setPadding(true);
+
+    // Add components
     add(
-        UIS.setWidthFull(new HorizontalLayout(aeTitle, description)),
-        destinationCondition,
-        UIS.setWidthFull(new HorizontalLayout(hostname, port)),
-        UIS.setWidthFull(transferSyntaxComponent),
-        UIS.setWidthFull(new HorizontalLayout(useaetdest)),
-        UIS.setWidthFull(notificationComponent),
-        UIS.setWidthFull(transcodeOnlyUncompressedComponent),
-        UIS.setWidthFull(layoutDesidentification),
-        UIS.setWidthFull(filterBySOPClassesForm),
-        UIS.setWidthFull(activate),
+        UIS.setWidthFull(new BoxShadowComponent(destinationLayout)),
+        UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(transferLayout))),
+        UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(useaetdestLayout))),
+        UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(notificationComponent))),
+        UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(layoutDesidentification))),
+        UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(filterBySOPClassesForm))),
+        UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(activateLayout))),
         UIS.setWidthFull(buttonSaveDeleteCancel));
 
     setElements();
