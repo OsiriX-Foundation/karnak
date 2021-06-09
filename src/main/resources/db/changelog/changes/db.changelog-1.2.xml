@@ -16,4 +16,5 @@
       </column>
     </addColumn>
   </changeSet>
+
 </databaseChangeLog>
