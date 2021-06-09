@@ -2,7 +2,7 @@
  * Copyright (c) 2020-2021 Karnak Team and other contributors.
  *
  * This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
  * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
@@ -21,7 +21,7 @@ import org.karnak.backend.api.KheopsApi;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.KheopsAlbumsEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
-import org.karnak.backend.model.expression.ExprConditionKheops;
+import org.karnak.backend.model.expression.ExprConditionDestination;
 import org.karnak.backend.model.expression.ExpressionResult;
 import org.karnak.backend.model.kheops.MetadataSwitching;
 import org.karnak.backend.model.profilepipe.HMAC;
@@ -57,7 +57,7 @@ public class SwitchingAlbum {
   }
 
   private static boolean validateCondition(String condition, Attributes dcm) {
-    final ExprConditionKheops conditionKheops = new ExprConditionKheops(dcm);
+    final ExprConditionDestination conditionKheops = new ExprConditionDestination(dcm);
     return (Boolean) ExpressionResult.get(condition, conditionKheops, Boolean.class);
   }
 

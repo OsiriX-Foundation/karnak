@@ -2,7 +2,7 @@
  * Copyright (c) 2020-2021 Karnak Team and other contributors.
  *
  * This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
  * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
@@ -55,6 +55,7 @@ public class DestinationEntity implements Serializable {
   private DestinationType destinationType;
 
   private boolean activate;
+  private String condition;
 
   private boolean desidentification;
 
@@ -70,6 +71,9 @@ public class DestinationEntity implements Serializable {
   private List<KheopsAlbumsEntity> kheopsAlbumEntities;
   private ProjectEntity projectEntity;
   private ForwardNodeEntity forwardNodeEntity;
+
+  // Activate notification
+  private boolean activateNotification;
 
   // list of emails (comma separated) used when the images have been sent (or
   // partially sent) to the final destination. Note: if an issue appears before
@@ -124,6 +128,7 @@ public class DestinationEntity implements Serializable {
   protected DestinationEntity(DestinationType destinationType) {
     this.destinationType = destinationType;
     this.activate = true;
+    this.condition = "";
     this.description = "";
     this.desidentification = false;
     this.pseudonymType = PseudonymType.MAINZELLISTE_PID;
@@ -133,6 +138,7 @@ public class DestinationEntity implements Serializable {
     this.position = null;
     this.savePseudonym = null;
     this.filterBySOPClasses = false;
+
     this.notify = "";
     this.notifyObjectErrorPrefix = "";
     this.notifyObjectPattern = "";
@@ -192,6 +198,14 @@ public class DestinationEntity implements Serializable {
 
   public void setActivate(boolean activate) {
     this.activate = activate;
+  }
+
+  public String getCondition() {
+    return condition;
+  }
+
+  public void setCondition(String condition) {
+    this.condition = condition;
   }
 
   public String getDescription() {
@@ -444,6 +458,14 @@ public class DestinationEntity implements Serializable {
     this.projectEntity = projectEntity;
   }
 
+  public boolean isActivateNotification() {
+    return activateNotification;
+  }
+
+  public void setActivateNotification(boolean activateNotification) {
+    this.activateNotification = activateNotification;
+  }
+
   /**
    * Informs if this object matches with the filter as text.
    *
@@ -579,6 +601,7 @@ public class DestinationEntity implements Serializable {
         && Objects.equals(position, that.position)
         && Objects.equals(savePseudonym, that.savePseudonym)
         && Objects.equals(pseudonymAsPatientName, that.pseudonymAsPatientName)
+        && Objects.equals(activateNotification, that.activateNotification)
         && Objects.equals(notify, that.notify)
         && Objects.equals(notifyObjectErrorPrefix, that.notifyObjectErrorPrefix)
         && Objects.equals(notifyObjectPattern, that.notifyObjectPattern)
@@ -607,6 +630,7 @@ public class DestinationEntity implements Serializable {
         savePseudonym,
         pseudonymAsPatientName,
         filterBySOPClasses,
+        activateNotification,
         notify,
         notifyObjectErrorPrefix,
         notifyObjectPattern,

@@ -2,7 +2,7 @@
  * Copyright (c) 2020-2021 Karnak Team and other contributors.
  *
  * This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
  * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
@@ -15,6 +15,7 @@ import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.karnak.backend.data.entity.ProfileElementEntity;
@@ -51,10 +52,10 @@ public class ProfileElementMainView extends VerticalLayout {
       Set<ProfileElementEntity> profileElementEntities = profileEntity.getProfileElementEntities();
 
       if (profileElementEntities != null) {
-        profileElementEntities.stream()
-            .collect(Collectors.toList())
-            .sort(Comparator.comparingInt(ProfileElementEntity::getPosition));
-        profilesOrder = profileElementEntities;
+        profilesOrder =
+            profileElementEntities.stream()
+                .sorted(Comparator.comparing(ProfileElementEntity::getPosition))
+                .collect(Collectors.toCollection(LinkedHashSet::new));
         profilesView();
         setEnabled(true);
       } else {

@@ -2,7 +2,7 @@
  * Copyright (c) 2020-2021 Karnak Team and other contributors.
  *
  * This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
  * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
@@ -20,11 +20,11 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.karnak.backend.model.expression.ExprConditionKheops;
+import org.karnak.backend.model.expression.ExprConditionDestination;
 
-class ExprConditionKheopsTest {
+class ExprConditionDestinationTest {
 
-  private static ExprConditionKheops exprConditionKheops;
+  private static ExprConditionDestination exprConditionDestination;
 
   @BeforeAll
   protected static void setUpBeforeClass() throws Exception {
@@ -36,7 +36,7 @@ class ExprConditionKheopsTest {
     dataset.setString(Tag.SmokingStatus, VR.CS, "YES");
     dataset.setString(Tag.Modality, VR.CS, "CT");
 
-    exprConditionKheops = new ExprConditionKheops(dataset);
+    exprConditionDestination = new ExprConditionDestination(dataset);
   }
 
   private static Stream<Arguments> providerIsPresent() {
@@ -247,49 +247,49 @@ class ExprConditionKheopsTest {
   @ParameterizedTest
   @MethodSource("providerIsPresent")
   void tagValueIsPresent(int tag, String input) {
-    assertTrue(exprConditionKheops.tagValueIsPresent(tag, input));
+    assertTrue(exprConditionDestination.tagValueIsPresent(tag, input));
   }
 
   @ParameterizedTest
   @MethodSource("providerIsNotPresent")
   void tagValueIsNotPresent(int tag, String input) {
-    assertFalse(exprConditionKheops.tagValueIsPresent(tag, input));
+    assertFalse(exprConditionDestination.tagValueIsPresent(tag, input));
   }
 
   @ParameterizedTest
   @MethodSource("providerContains")
   void tagValueContains(int tag, String input) {
-    assertTrue(exprConditionKheops.tagValueContains(tag, input));
+    assertTrue(exprConditionDestination.tagValueContains(tag, input));
   }
 
   @ParameterizedTest
   @MethodSource("providerNotContains")
   void tagValueNotContains(int tag, String input) {
-    assertFalse(exprConditionKheops.tagValueContains(tag, input));
+    assertFalse(exprConditionDestination.tagValueContains(tag, input));
   }
 
   @ParameterizedTest
   @MethodSource("providerBeginWith")
   void tagValueBeginWith(int tag, String input) {
-    assertTrue(exprConditionKheops.tagValueBeginsWith(tag, input));
+    assertTrue(exprConditionDestination.tagValueBeginsWith(tag, input));
   }
 
   @ParameterizedTest
   @MethodSource("providerNotBeginWith")
   void tagValueNotBeginWith(int tag, String input) {
-    assertFalse(exprConditionKheops.tagValueBeginsWith(tag, input));
+    assertFalse(exprConditionDestination.tagValueBeginsWith(tag, input));
   }
 
   @ParameterizedTest
   @MethodSource("providerEndWith")
   void tagValueEndWith(int tag, String input) {
-    assertTrue(exprConditionKheops.tagValueEndsWith(tag, input));
+    assertTrue(exprConditionDestination.tagValueEndsWith(tag, input));
   }
 
   @ParameterizedTest
   @MethodSource("providerNotEndWith")
   void tagValueNotEndWith(int tag, String input) {
-    assertFalse(exprConditionKheops.tagValueEndsWith(tag, input));
+    assertFalse(exprConditionDestination.tagValueEndsWith(tag, input));
   }
 
   /*
