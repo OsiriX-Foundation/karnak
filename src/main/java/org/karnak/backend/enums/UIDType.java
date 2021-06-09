@@ -10,6 +10,7 @@
 package org.karnak.backend.enums;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 public enum UIDType {
 
@@ -42,6 +43,9 @@ public enum UIDType {
 
   /** Description of the enum */
   private final String description;
+
+  /** Default description */
+  public static final String DEFAULT_DESCRIPTION = "Keep original transfer syntax";
 
   /**
    * Constructor
@@ -88,13 +92,13 @@ public enum UIDType {
 
   public static String descriptionOf(final String code) {
     if (code != null) {
-      return Arrays.stream(UIDType.values())
-          .filter(u -> code.trim().equalsIgnoreCase(u.getCode()))
-          .findFirst()
-          .orElse(null)
-          .getDescription();
+      Optional<UIDType> uidTypeFound =
+          Arrays.stream(UIDType.values())
+              .filter(u -> code.trim().equalsIgnoreCase(u.getCode()))
+              .findFirst();
+      return uidTypeFound.isPresent() ? uidTypeFound.get().getDescription() : DEFAULT_DESCRIPTION;
     }
-    return "Keep original transfer syntax";
+    return DEFAULT_DESCRIPTION;
   }
 
   public String getCode() {
