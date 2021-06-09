@@ -58,6 +58,7 @@ public class DestinationEntity implements Serializable {
   private String condition;
 
   private boolean desidentification;
+  private String issuerByDefault;
 
   private PseudonymType pseudonymType;
 
@@ -131,6 +132,7 @@ public class DestinationEntity implements Serializable {
     this.condition = "";
     this.description = "";
     this.desidentification = false;
+    this.issuerByDefault = "";
     this.pseudonymType = PseudonymType.MAINZELLISTE_PID;
     this.pseudonymAsPatientName = null;
     this.tag = null;
@@ -232,6 +234,14 @@ public class DestinationEntity implements Serializable {
 
   public void setDesidentification(boolean desidentification) {
     this.desidentification = desidentification;
+  }
+
+  public String getIssuerByDefault() {
+    return issuerByDefault;
+  }
+
+  public void setIssuerByDefault(String issuerByDefault) {
+    this.issuerByDefault = issuerByDefault;
   }
 
   public boolean isFilterBySOPClasses() {
@@ -591,6 +601,7 @@ public class DestinationEntity implements Serializable {
     }
     DestinationEntity that = (DestinationEntity) o;
     return desidentification == that.desidentification
+        && issuerByDefault == that.issuerByDefault
         && filterBySOPClasses == that.filterBySOPClasses
         && Objects.equals(id, that.id)
         && Objects.equals(description, that.description)
@@ -623,6 +634,7 @@ public class DestinationEntity implements Serializable {
         description,
         destinationType,
         desidentification,
+        issuerByDefault,
         pseudonymType,
         tag,
         delimiter,

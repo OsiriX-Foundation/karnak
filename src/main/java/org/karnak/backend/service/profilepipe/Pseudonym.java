@@ -35,10 +35,15 @@ public class Pseudonym {
     this.mainzellisteCache = AppConfig.getInstance().getMainzellisteCache();
   }
 
-  public String generatePseudonym(
-      DestinationEntity destinationEntity, Attributes dcm, String defaultIssuerOfPatientID) {
+  public String generatePseudonym(DestinationEntity destinationEntity, Attributes dcm) {
 
-    final PatientMetadata patientMetadata = new PatientMetadata(dcm, defaultIssuerOfPatientID);
+    PatientMetadata patientMetadata;
+    if (destinationEntity.getIssuerByDefault() == null
+        || destinationEntity.getIssuerByDefault().equals("")) {
+      patientMetadata = new PatientMetadata(dcm);
+    } else {
+      patientMetadata = new PatientMetadata(dcm, destinationEntity.getIssuerByDefault());
+    }
 
     if (destinationEntity.getPseudonymType().equals(PseudonymType.CACHE_EXTID)) {
       return getCacheExtid(patientMetadata, destinationEntity.getProjectEntity().getId());

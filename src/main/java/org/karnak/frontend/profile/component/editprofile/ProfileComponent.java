@@ -106,28 +106,12 @@ public class ProfileComponent extends VerticalLayout {
               updatedProfilePipes();
             });
 
-    ProfileMetadata defaultIssuerOfPatientID =
-        new ProfileMetadata(
-            "Default issuer of PatientID", profileEntity.getDefaultIssuerOfPatientId(), false);
-    defaultIssuerOfPatientID
-        .getValidateEditButton()
-        .addClickListener(
-            event -> {
-              profileEntity.setDefaultIssuerOfPatientId(defaultIssuerOfPatientID.getValue());
-              updatedProfilePipes();
-            });
     createDownloadButton(profileEntity);
 
     ProfileMasksView profileMasksView = new ProfileMasksView(profileEntity.getMaskEntities());
 
     if (profileEntity.getByDefault().booleanValue()) {
-      add(
-          new HorizontalLayout(title, download),
-          name,
-          version,
-          minVersion,
-          defaultIssuerOfPatientID,
-          profileMasksView);
+      add(new HorizontalLayout(title, download), name, version, minVersion, profileMasksView);
     } else {
       createDeleteButton(profileEntity);
       add(
@@ -135,7 +119,6 @@ public class ProfileComponent extends VerticalLayout {
           name,
           version,
           minVersion,
-          defaultIssuerOfPatientID,
           profileMasksView);
     }
   }

@@ -450,6 +450,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
                         .getDiv()
                         .add(
                             layoutDesidentification.getLabelDisclaimer(),
+                            layoutDesidentification.getIssuerOfPatientIDByDefault(),
                             layoutDesidentification.getProjectDropDown(),
                             layoutDesidentification.getDesidentificationName(),
                             layoutDesidentification.getExtidListBox());
@@ -463,6 +464,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
                       .getDiv()
                       .remove(
                           layoutDesidentification.getLabelDisclaimer(),
+                          layoutDesidentification.getIssuerOfPatientIDByDefault(),
                           layoutDesidentification.getProjectDropDown(),
                           layoutDesidentification.getDesidentificationName());
                   layoutDesidentification.getExtidListBox().setValue(MAINZELLISTE_PID.getValue());
