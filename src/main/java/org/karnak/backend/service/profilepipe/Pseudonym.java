@@ -2,7 +2,7 @@
  * Copyright (c) 2020-2021 Karnak Team and other contributors.
  *
  * This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
  * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
@@ -42,14 +42,20 @@ public class Pseudonym {
         ExternalIDProviderConfig.getInstance().externalIDProviderImplMap();
   }
 
-  public String generatePseudonym(
-      DestinationEntity destinationEntity, Attributes dcm, String defaultIssuerOfPatientID) {
+  public String generatePseudonym(DestinationEntity destinationEntity, Attributes dcm) {
 
     final PatientMetadata patientMetadata = new PatientMetadata(dcm, defaultIssuerOfPatientID);
     final ExternalIDProviderEntity externalIDProviderEntity =
         destinationEntity.getExternalIDProviderEntity();
     final ExternalIDProviderType externalIDProviderType =
         externalIDProviderEntity.getExternalIDProviderType();
+    PatientMetadata patientMetadata;
+    if (destinationEntity.getIssuerByDefault() == null
+        || destinationEntity.getIssuerByDefault().equals("")) {
+      patientMetadata = new PatientMetadata(dcm);
+    } else {
+      patientMetadata = new PatientMetadata(dcm, destinationEntity.getIssuerByDefault());
+    }
 
     if (externalIDProviderType.equals(ExternalIDProviderType.EXTID_IN_CACHE)) {
       return getExternalIDCSVInCache(patientMetadata, destinationEntity.getProjectEntity().getId());
@@ -107,9 +113,8 @@ public class Pseudonym {
       throw new IllegalStateException("Cannot get an external pseudonym of type EXTID_IN_TAG");
     } else {
       if (destinationEntity.getSavePseudonym().booleanValue()) {
-        final MainzellisteApi mainzellisteApi = new MainzellisteApi();
-        mainzellisteApi.addExternalID(
-            patientMetadata.generateMainzellisteFields(), pseudonymExtidInTag);
+        final PseudonymApi pseudonymApi = new PseudonymApi();
+        pseudonymApi.addExtID(patientMetadata.generateMainzellisteFields(), pseudonymExtidInTag);
       }
     }
     return pseudonymExtidInTag;

@@ -2,7 +2,7 @@
  * Copyright (c) 2020-2021 Karnak Team and other contributors.
  *
  * This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
  * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
@@ -58,6 +58,7 @@ public class DestinationEntity implements Serializable {
   private String condition;
 
   private boolean desidentification;
+  private String issuerByDefault;
 
   private String tag;
   private String delimiter;
@@ -130,6 +131,7 @@ public class DestinationEntity implements Serializable {
     this.condition = "";
     this.description = "";
     this.desidentification = false;
+    this.issuerByDefault = "";
     this.pseudonymAsPatientName = null;
     this.tag = null;
     this.delimiter = null;
@@ -230,6 +232,14 @@ public class DestinationEntity implements Serializable {
 
   public void setDesidentification(boolean desidentification) {
     this.desidentification = desidentification;
+  }
+
+  public String getIssuerByDefault() {
+    return issuerByDefault;
+  }
+
+  public void setIssuerByDefault(String issuerByDefault) {
+    this.issuerByDefault = issuerByDefault;
   }
 
   public boolean isFilterBySOPClasses() {
@@ -591,6 +601,7 @@ public class DestinationEntity implements Serializable {
     }
     DestinationEntity that = (DestinationEntity) o;
     return desidentification == that.desidentification
+        && issuerByDefault == that.issuerByDefault
         && filterBySOPClasses == that.filterBySOPClasses
         && Objects.equals(id, that.id)
         && Objects.equals(description, that.description)
@@ -622,6 +633,7 @@ public class DestinationEntity implements Serializable {
         description,
         destinationType,
         desidentification,
+        issuerByDefault,
         tag,
         delimiter,
         position,

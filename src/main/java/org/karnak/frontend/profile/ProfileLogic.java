@@ -2,13 +2,17 @@
  * Copyright (c) 2021 Karnak Team and other contributors.
  *
  * This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
  * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  */
 package org.karnak.frontend.profile;
 
+import com.vaadin.flow.component.Text;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -127,6 +131,9 @@ public class ProfileLogic extends ListDataProvider<ProfileEntity> {
         profileView.remove(profileView.getProfileHorizontalLayout());
         profileView.add(profileView.getProfileErrorView());
       }
+      if (profilePipe.getDefaultIssuerOfPatientID() != null) {
+        openWarningIssuerDialog();
+      }
     } catch (YAMLException e) {
       LOGGER.error("Unable to read uploaded YAML", e);
       profileView
@@ -135,5 +142,30 @@ public class ProfileLogic extends ListDataProvider<ProfileEntity> {
               "Unable to read uploaded YAML file.\n"
                   + "Please make sure it is a YAML file and respects the YAML structure.");
     }
+  }
+
+  public void openWarningIssuerDialog() {
+    var warningIssuer = new Dialog();
+    var content = new Div();
+    var divTitle = new Div();
+    divTitle.setText("Warning");
+    divTitle
+        .getStyle()
+        .set("font-size", "large")
+        .set("font-weight", "bolder")
+        .set("padding-bottom", "10px")
+        .set("color", "red");
+
+    var okBtn = new Button("Ok", e -> warningIssuer.close());
+    okBtn.getStyle().set("margin-top", "10px");
+
+    var txt =
+        new Text(
+            "The Issuer of Patient ID is no longer linked to a profile. Please fill in this field in the destination in the de-identification menu.");
+
+    content.add(divTitle, txt, okBtn);
+    warningIssuer.add(content);
+    warningIssuer.setMaxWidth("30%");
+    warningIssuer.open();
   }
 }

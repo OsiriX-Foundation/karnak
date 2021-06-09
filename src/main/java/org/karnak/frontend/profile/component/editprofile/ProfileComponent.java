@@ -2,7 +2,7 @@
  * Copyright (c) 2020-2021 Karnak Team and other contributors.
  *
  * This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
  * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
@@ -106,28 +106,12 @@ public class ProfileComponent extends VerticalLayout {
               updatedProfilePipes();
             });
 
-    ProfileMetadata defaultIssuerOfPatientID =
-        new ProfileMetadata(
-            "Default issuer of PatientID", profileEntity.getDefaultIssuerOfPatientId(), false);
-    defaultIssuerOfPatientID
-        .getValidateEditButton()
-        .addClickListener(
-            event -> {
-              profileEntity.setDefaultIssuerOfPatientId(defaultIssuerOfPatientID.getValue());
-              updatedProfilePipes();
-            });
     createDownloadButton(profileEntity);
 
     ProfileMasksView profileMasksView = new ProfileMasksView(profileEntity.getMaskEntities());
 
     if (profileEntity.getByDefault().booleanValue()) {
-      add(
-          new HorizontalLayout(title, download),
-          name,
-          version,
-          minVersion,
-          defaultIssuerOfPatientID,
-          profileMasksView);
+      add(new HorizontalLayout(title, download), name, version, minVersion, profileMasksView);
     } else {
       createDeleteButton(profileEntity);
       add(
@@ -135,7 +119,6 @@ public class ProfileComponent extends VerticalLayout {
           name,
           version,
           minVersion,
-          defaultIssuerOfPatientID,
           profileMasksView);
     }
   }
