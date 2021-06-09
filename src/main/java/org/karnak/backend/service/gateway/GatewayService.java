@@ -47,7 +47,7 @@ public class GatewayService implements ApplicationListener<ContextRefreshedEvent
           GatewayParams.getAcceptedCallingAETitles(config.getDestinations());
       GatewayParams gparams =
           new GatewayParams(config.getAdvancedParams(), false, null, acceptedCallingAETitles);
-      gateway = new DicomGateway(config.getDestinations());
+      gateway = new DicomGateway(config.getDestinations(), config.getFwdQuarantineDest());
       gateway.start(config.getCallingDicomNode(), gparams);
       LOGGER.info("Karnak DICOM gateway servlet is running: {}", config);
       return gateway;

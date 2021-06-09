@@ -121,6 +121,12 @@ public class AppConfig {
     return null;
   }
 
+  public boolean quarantineExist() {
+    return getQuarantineaet() != null
+        && getQuarantinehostname() != null
+        && getQuarantineport() != null;
+  }
+
   public void setQuarantineport(String quarantineport) {
     this.quarantineport = quarantineport;
   }

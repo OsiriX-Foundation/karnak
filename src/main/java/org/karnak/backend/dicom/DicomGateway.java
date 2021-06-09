@@ -60,9 +60,11 @@ public class DicomGateway {
     this.deviceService = new DeviceListenerService(storeSCP.getDevice());
   }
 
-  public DicomGateway(Map<ForwardDicomNode, List<ForwardDestination>> destinations)
+  public DicomGateway(
+      Map<ForwardDicomNode, List<ForwardDestination>> destinations,
+      Map<ForwardDicomNode, ForwardDestination> fwdQuarantineDest)
       throws IOException {
-    this.storeSCP = new StoreScpForward(destinations);
+    this.storeSCP = new StoreScpForward(destinations, fwdQuarantineDest);
     this.deviceService = new DeviceListenerService(storeSCP.getDevice());
   }
 

@@ -24,6 +24,7 @@ import java.util.stream.Stream;
 import org.dcm4che3.data.Attributes;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.karnak.backend.config.AppConfig;
 import org.karnak.backend.constant.DefaultValuesNotification;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.DicomSourceNodeEntity;
@@ -82,6 +83,7 @@ public class GatewaySetUpService {
   private final ForwardNodeRepo forwardNodeRepo;
 
   private final Map<ForwardDicomNode, List<ForwardDestination>> destMap = new HashMap<>();
+  private final Map<ForwardDicomNode, ForwardDestination> fwdQuarantineDest = new HashMap<>();
 
   private final Path storePath;
 
@@ -293,6 +295,10 @@ public class GatewaySetUpService {
     return destMap;
   }
 
+  public Map<ForwardDicomNode, ForwardDestination> getFwdQuarantineDest() {
+    return fwdQuarantineDest;
+  }
+
   public Set<ForwardDicomNode> getKeys() {
     return destMap.keySet();
   }
@@ -426,6 +432,32 @@ public class GatewaySetUpService {
         addDestinationNode(dstList, fwdSrcNode, dstNode);
       }
       destMap.put(fwdSrcNode, dstList);
+      addQuarantineNode(fwdSrcNode);
+    }
+  }
+
+  public void addQuarantineNode(ForwardDicomNode fwdNode) {
+    try {
+      var quarantineAet = AppConfig.getInstance().getQuarantineaet();
+      var quarantineHostname = AppConfig.getInstance().getQuarantinehostname();
+      var quarantinePort = AppConfig.getInstance().getQuarantineport();
+      if (AppConfig.getInstance().quarantineExist()) {
+        var quarantineNode = new DicomNode(quarantineAet, quarantineHostname, quarantinePort);
+        var progress = new DicomProgress();
+        List<AttributeEditor> editors = new ArrayList<>();
+        var quarantineDestination =
+            new DicomForwardDestination(
+                null,
+                getDefaultAdvancedParameters(),
+                fwdNode,
+                quarantineNode,
+                true,
+                progress,
+                editors);
+        fwdQuarantineDest.put(fwdNode, quarantineDestination);
+      }
+    } catch (Exception e) {
+      LOGGER.error("Cannot build Forward Quarantine Destination", e);
     }
   }
 
@@ -468,8 +500,10 @@ public class GatewaySetUpService {
       if (type == NodeEventType.ADD) {
         addAcceptedSourceNodes(fwdNode, fw);
         destMap.put(fwdNode, addDestinationNodes(fwdNode, fw));
+        addQuarantineNode(fwdNode);
       } else if (type == NodeEventType.REMOVE) {
         destMap.remove(fwdNode);
+        fwdQuarantineDest.remove(fwdNode);
       } else if (type == NodeEventType.UPDATE) {
         if (!aet.equals(fwdNode.getAet())) {
           ForwardDicomNode newfwdNode = new ForwardDicomNode(aet, null, id);
@@ -477,6 +511,7 @@ public class GatewaySetUpService {
             newfwdNode.getAcceptedSourceNodes().add(srcNode);
           }
           destMap.put(newfwdNode, destMap.remove(fwdNode));
+          addQuarantineNode(fwdNode);
         }
       }
     } else {

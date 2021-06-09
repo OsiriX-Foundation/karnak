@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
@@ -32,19 +33,14 @@ import org.dcm4che3.net.DataWriterAdapter;
 import org.dcm4che3.net.InputStreamDataWriter;
 import org.dcm4che3.net.PDVInputStream;
 import org.dcm4che3.net.Status;
-import org.karnak.backend.config.AppConfig;
 import org.karnak.backend.model.Quarantine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.weasis.core.util.FileUtil;
 import org.weasis.core.util.LangUtil;
-import org.weasis.dicom.param.AdvancedParams;
 import org.weasis.dicom.param.AttributeEditor;
 import org.weasis.dicom.param.AttributeEditorContext;
 import org.weasis.dicom.param.AttributeEditorContext.Abort;
-import org.weasis.dicom.param.ConnectOptions;
-import org.weasis.dicom.param.DicomNode;
-import org.weasis.dicom.param.DicomProgress;
 import org.weasis.dicom.util.ServiceUtil;
 import org.weasis.dicom.util.ServiceUtil.ProgressStatus;
 import org.weasis.dicom.util.StoreFromStreamSCU;
@@ -559,53 +555,30 @@ public class ForwardUtil {
     return UID.ImplicitVRLittleEndian;
   }
 
-  public static void transferQuarantine(ForwardDicomNode fwdNode, Params p) {
-    var quarantineAet = AppConfig.getInstance().getQuarantineaet();
-    var quarantineHostname = AppConfig.getInstance().getQuarantinehostname();
-    var quarantinePort = AppConfig.getInstance().getQuarantineport();
+  public static void transferQuarantine(
+      ForwardDicomNode fwdNode, Map<ForwardDicomNode, ForwardDestination> fwdQuarantineDest) {
     List<File> files = null;
-
-    if (quarantineAet != null && quarantineHostname != null && quarantinePort != null) {
-      try {
-        var quarantineNode = new DicomNode(quarantineAet, quarantineHostname, quarantinePort);
-        var advancedParams = new AdvancedParams();
-        var connectOptions = new ConnectOptions();
-        connectOptions.setConnectTimeout(5000);
-        connectOptions.setAcceptTimeout(7000);
-        // Concurrent DICOM operations
-        connectOptions.setMaxOpsInvoked(50);
-        connectOptions.setMaxOpsPerformed(50);
-        advancedParams.setConnectOptions(connectOptions);
-        var progress = new DicomProgress();
-        List<AttributeEditor> editors = new ArrayList<>();
-        var quarantineDestination =
-            new DicomForwardDestination(
-                null, advancedParams, fwdNode, quarantineNode, true, progress, editors);
-
-        if (fwdNode.getQuarantine() != null) {
-          var quarantineAttributes = fwdNode.getQuarantine().getAttributes();
-          var params = fwdNode.getQuarantine().getParams();
-          prepareTransfer(quarantineDestination, params);
-          files = transfer(fwdNode, quarantineDestination, quarantineAttributes, params);
-
-          if (files != null) {
-            // Force to clean if tmp bulk files
-            for (File file : files) {
-              FileUtil.delete(file);
-            }
-          }
-          fwdNode.setQuarantine(null);
-        } else {
-          storeOneDestination(fwdNode, quarantineDestination, p);
+    try {
+      ForwardDestination quarantineFwdDest = fwdQuarantineDest.get(fwdNode);
+      DicomForwardDestination quarantineDest = (DicomForwardDestination) quarantineFwdDest;
+      var quarantineAttributes = fwdNode.getQuarantine().getAttributes();
+      var params = fwdNode.getQuarantine().getParams();
+      prepareTransfer(quarantineDest, params);
+      files = transfer(fwdNode, quarantineDest, quarantineAttributes, params);
+      if (files != null) {
+        // Force to clean if tmp bulk files
+        for (File file : files) {
+          FileUtil.delete(file);
         }
-      } catch (Exception e) {
-        LOGGER.error("Error when forwarding in quarantine", e);
-      } finally {
-        if (files != null) {
-          // Force to clean if tmp bulk files
-          for (File file : files) {
-            FileUtil.delete(file);
-          }
+      }
+      fwdNode.setQuarantine(null);
+    } catch (Exception e) {
+      LOGGER.error("Error when forwarding in quarantine", e);
+    } finally {
+      if (files != null) {
+        // Force to clean if tmp bulk files
+        for (File file : files) {
+          FileUtil.delete(file);
         }
       }
     }

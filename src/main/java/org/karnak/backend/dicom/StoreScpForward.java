@@ -36,6 +36,7 @@ import org.dcm4che3.net.service.BasicCStoreSCP;
 import org.dcm4che3.net.service.DicomServiceException;
 import org.dcm4che3.net.service.DicomServiceRegistry;
 import org.dcm4che3.tool.common.CLIUtils;
+import org.karnak.backend.config.AppConfig;
 import org.karnak.backend.dicom.ForwardUtil.Params;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +55,7 @@ public class StoreScpForward {
   private volatile int status = 0;
 
   private final Map<ForwardDicomNode, List<ForwardDestination>> destinations;
+  private final Map<ForwardDicomNode, ForwardDestination> fwdQuarantineDest;
 
   private final BasicCStoreSCP cstoreSCP =
       new BasicCStoreSCP("*") {
@@ -114,11 +116,10 @@ public class StoreScpForward {
             ForwardUtil.storeMultipleDestination(fwdNode, destList, p);
 
           } catch (Exception e) {
-            ForwardUtil.transferQuarantine(fwdNode, p);
             throw new DicomServiceException(Status.ProcessingFailure, e);
           } finally {
-            if (fwdNode.getQuarantine() != null) {
-              ForwardUtil.transferQuarantine(fwdNode, p);
+            if (fwdNode.getQuarantine() != null && AppConfig.getInstance().quarantineExist()) {
+              ForwardUtil.transferQuarantine(fwdNode, fwdQuarantineDest);
             }
           }
         }
@@ -157,15 +158,19 @@ public class StoreScpForward {
         new DicomForwardDestination(forwardParams, fwdNode, destinationNode, attributesEditor);
     this.destinations = new HashMap<>();
     destinations.put(fwdNode, Collections.singletonList(uniqueDestination));
+    this.fwdQuarantineDest = null;
   }
 
-  public StoreScpForward(Map<ForwardDicomNode, List<ForwardDestination>> destinations) {
+  public StoreScpForward(
+      Map<ForwardDicomNode, List<ForwardDestination>> destinations,
+      Map<ForwardDicomNode, ForwardDestination> quarantineDest) {
     device.setDimseRQHandler(createServiceRegistry());
     device.addConnection(conn);
     device.addApplicationEntity(ae);
     ae.setAssociationAcceptor(true);
     ae.addConnection(conn);
     this.destinations = Objects.requireNonNull(destinations);
+    this.fwdQuarantineDest = Objects.requireNonNull(quarantineDest);
   }
 
   public final void setPriority(int priority) {
