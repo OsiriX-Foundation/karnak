@@ -131,8 +131,6 @@ public class ProfileLogic extends ListDataProvider<ProfileEntity> {
         profileView.remove(profileView.getProfileHorizontalLayout());
         profileView.add(profileView.getProfileErrorView());
       }
-      // TODO Later, you will have to delete the openWarningIssuerDialog and delete the issuer of
-      // patient ID in liquibase and entity
       if (profilePipe.getDefaultIssuerOfPatientID() != null) {
         openWarningIssuerDialog();
       }
