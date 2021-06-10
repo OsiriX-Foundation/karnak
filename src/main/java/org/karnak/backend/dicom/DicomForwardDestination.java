@@ -72,7 +72,9 @@ public class DicomForwardDestination extends ForwardDestination {
         destinationNode,
         useDestinationAetForKeyMap,
         progress,
-        editors);
+        editors,
+        null,
+        true);
   }
 
   public DicomForwardDestination(
@@ -82,7 +84,9 @@ public class DicomForwardDestination extends ForwardDestination {
       DicomNode destinationNode,
       boolean useDestinationAetForKeyMap,
       DicomProgress progress,
-      List<AttributeEditor> editors)
+      List<AttributeEditor> editors,
+      String outputTransferSyntax,
+      boolean transcodeOnlyUncompressed)
       throws IOException {
     super(id, editors);
     this.callingNode = fwdNode;
@@ -90,6 +94,8 @@ public class DicomForwardDestination extends ForwardDestination {
     this.streamSCU = new StoreFromStreamSCU(forwardParams, fwdNode, destinationNode, progress);
     this.streamSCUService = new DeviceOpService(streamSCU.getDevice());
     this.useDestinationAetForKeyMap = useDestinationAetForKeyMap;
+    setOutputTransferSyntax(outputTransferSyntax);
+    setTranscodeOnlyUncompressed(transcodeOnlyUncompressed);
   }
 
   public StoreFromStreamSCU getStreamSCU() {

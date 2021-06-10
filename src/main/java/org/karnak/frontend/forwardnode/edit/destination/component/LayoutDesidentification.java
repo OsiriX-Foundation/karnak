@@ -18,6 +18,7 @@ import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
@@ -27,7 +28,7 @@ import org.karnak.frontend.component.ProjectDropDown;
 import org.karnak.frontend.project.ProjectView;
 import org.karnak.frontend.util.UIS;
 
-public class LayoutDesidentification extends Div {
+public class LayoutDesidentification extends VerticalLayout {
 
   private static final String LABEL_CHECKBOX_DESIDENTIFICATION = "Activate de-identification";
   private static final String LABEL_DISCLAIMER_DEIDENTIFICATION =
@@ -66,6 +67,8 @@ public class LayoutDesidentification extends Div {
     setBinder();
     setEventExtidListBox();
     setEventWarningDICOM();
+
+    setPadding(true);
 
     add(UIS.setWidthFull(new HorizontalLayout(checkboxDesidentification, div)));
 

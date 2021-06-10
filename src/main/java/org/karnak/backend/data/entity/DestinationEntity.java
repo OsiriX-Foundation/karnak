@@ -122,6 +122,12 @@ public class DestinationEntity implements Serializable {
   // headers for HTTP request.
   private String headers;
 
+  // UID corresponding to the Transfer Syntax
+  private String transferSyntax;
+
+  // Transcode Only Uncompressed
+  private boolean transcodeOnlyUncompressed;
+
   public DestinationEntity() {
     this(null);
   }
@@ -153,6 +159,8 @@ public class DestinationEntity implements Serializable {
     this.url = "";
     this.urlCredentials = "";
     this.headers = "";
+
+    this.transcodeOnlyUncompressed = true;
   }
 
   public static DestinationEntity ofDicomEmpty() {
@@ -476,6 +484,22 @@ public class DestinationEntity implements Serializable {
     this.activateNotification = activateNotification;
   }
 
+  public String getTransferSyntax() {
+    return transferSyntax;
+  }
+
+  public void setTransferSyntax(String transferSyntax) {
+    this.transferSyntax = transferSyntax;
+  }
+
+  public boolean isTranscodeOnlyUncompressed() {
+    return transcodeOnlyUncompressed;
+  }
+
+  public void setTranscodeOnlyUncompressed(boolean transcodeOnlyUncompressed) {
+    this.transcodeOnlyUncompressed = transcodeOnlyUncompressed;
+  }
+
   /**
    * Informs if this object matches with the filter as text.
    *
@@ -612,6 +636,8 @@ public class DestinationEntity implements Serializable {
         && Objects.equals(position, that.position)
         && Objects.equals(savePseudonym, that.savePseudonym)
         && Objects.equals(pseudonymAsPatientName, that.pseudonymAsPatientName)
+        && Objects.equals(transferSyntax, that.transferSyntax)
+        && Objects.equals(transcodeOnlyUncompressed, that.transcodeOnlyUncompressed)
         && Objects.equals(activateNotification, that.activateNotification)
         && Objects.equals(notify, that.notify)
         && Objects.equals(notifyObjectErrorPrefix, that.notifyObjectErrorPrefix)
@@ -642,6 +668,8 @@ public class DestinationEntity implements Serializable {
         savePseudonym,
         pseudonymAsPatientName,
         filterBySOPClasses,
+        transferSyntax,
+        transcodeOnlyUncompressed,
         activateNotification,
         notify,
         notifyObjectErrorPrefix,
