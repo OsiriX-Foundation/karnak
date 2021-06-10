@@ -265,9 +265,7 @@ public class Profile {
     MDC.put("issuerOfPatientID", IssuerOfPatientID);
     MDC.put("PatientID", PatientID);
 
-    String pseudonym =
-        this.pseudonym.generatePseudonym(
-            destinationEntity, dcm, profileEntity.getDefaultIssuerOfPatientId());
+    String pseudonym = this.pseudonym.generatePseudonym(destinationEntity, dcm);
 
     String profilesCodeName =
         profiles.stream().map(ProfileItem::getCodeName).collect(Collectors.joining("-"));

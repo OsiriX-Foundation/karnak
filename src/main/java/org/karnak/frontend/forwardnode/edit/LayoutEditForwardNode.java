@@ -452,7 +452,8 @@ public class LayoutEditForwardNode extends VerticalLayout {
                             layoutDesidentification.getLabelDisclaimer(),
                             layoutDesidentification.getProjectDropDown(),
                             layoutDesidentification.getDesidentificationName(),
-                            layoutDesidentification.getExtidListBox());
+                            layoutDesidentification.getDivExtID(),
+                            layoutDesidentification.getIssuerOfPatientIDByDefault());
                     layoutDesidentification.setTextOnSelectionProject(
                         layoutDesidentification.getProjectDropDown().getValue());
                   } else {
@@ -464,17 +465,15 @@ public class LayoutEditForwardNode extends VerticalLayout {
                       .remove(
                           layoutDesidentification.getLabelDisclaimer(),
                           layoutDesidentification.getProjectDropDown(),
-                          layoutDesidentification.getDesidentificationName());
+                          layoutDesidentification.getDesidentificationName(),
+                          layoutDesidentification.getIssuerOfPatientIDByDefault());
                   layoutDesidentification.getExtidListBox().setValue(MAINZELLISTE_PID.getValue());
                   layoutDesidentification.getCheckboxUseAsPatientName().clear();
                   layoutDesidentification.getExtidPresentInDicomTagView().clear();
                   layoutDesidentification
                       .getDiv()
-                      .remove(layoutDesidentification.getExtidListBox());
+                      .remove(layoutDesidentification.getDivExtID());
                   remove(layoutDesidentification.getCheckboxUseAsPatientName());
-                  layoutDesidentification
-                      .getDiv()
-                      .remove(layoutDesidentification.getExtidPresentInDicomTagView());
                 }
               }
             });

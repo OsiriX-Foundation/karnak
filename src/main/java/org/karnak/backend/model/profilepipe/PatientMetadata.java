@@ -14,7 +14,6 @@ import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.karnak.backend.api.rqbody.Fields;
 import org.karnak.backend.cache.PseudonymPatient;
-import org.weasis.core.util.StringUtil;
 import org.weasis.dicom.util.DateUtil;
 
 public class PatientMetadata {
@@ -27,14 +26,19 @@ public class PatientMetadata {
   private final String issuerOfPatientID;
   private final String patientSex;
 
-  public PatientMetadata(Attributes dcm, String defaultIsserOfPatientID) {
+  public PatientMetadata(Attributes dcm) {
     patientID = dcm.getString(Tag.PatientID, "");
     patientName = dcm.getString(Tag.PatientName, "");
     patientBirthDate = setPatientBirthDate(dcm.getString(Tag.PatientBirthDate));
-    issuerOfPatientID =
-        dcm.getString(
-            Tag.IssuerOfPatientID,
-            StringUtil.hasText(defaultIsserOfPatientID) ? defaultIsserOfPatientID : "");
+    issuerOfPatientID = "";
+    patientSex = setPatientSex(dcm.getString(Tag.PatientSex, PATIENT_SEX_OTHER));
+  }
+
+  public PatientMetadata(Attributes dcm, String issuerOfPatientIDByDefault) {
+    patientID = dcm.getString(Tag.PatientID, "");
+    patientName = dcm.getString(Tag.PatientName, "");
+    patientBirthDate = setPatientBirthDate(dcm.getString(Tag.PatientBirthDate));
+    issuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID, issuerOfPatientIDByDefault);
     patientSex = setPatientSex(dcm.getString(Tag.PatientSex, PATIENT_SEX_OTHER));
   }
 
