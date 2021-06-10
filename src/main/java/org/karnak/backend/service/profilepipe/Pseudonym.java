@@ -2,7 +2,7 @@
  * Copyright (c) 2020-2021 Karnak Team and other contributors.
  *
  * This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
  * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
@@ -35,10 +35,15 @@ public class Pseudonym {
     this.mainzellisteCache = AppConfig.getInstance().getMainzellisteCache();
   }
 
-  public String generatePseudonym(
-      DestinationEntity destinationEntity, Attributes dcm, String defaultIssuerOfPatientID) {
+  public String generatePseudonym(DestinationEntity destinationEntity, Attributes dcm) {
 
-    final PatientMetadata patientMetadata = new PatientMetadata(dcm, defaultIssuerOfPatientID);
+    PatientMetadata patientMetadata;
+    if (destinationEntity.getIssuerByDefault() == null
+        || destinationEntity.getIssuerByDefault().equals("")) {
+      patientMetadata = new PatientMetadata(dcm);
+    } else {
+      patientMetadata = new PatientMetadata(dcm, destinationEntity.getIssuerByDefault());
+    }
 
     if (destinationEntity.getPseudonymType().equals(PseudonymType.CACHE_EXTID)) {
       return getCacheExtid(patientMetadata, destinationEntity.getProjectEntity().getId());
