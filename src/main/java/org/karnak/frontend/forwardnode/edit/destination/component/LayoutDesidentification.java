@@ -2,7 +2,7 @@
  * Copyright (c) 2020-2021 Karnak Team and other contributors.
  *
  * This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
  * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
@@ -20,6 +20,7 @@ import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
@@ -32,6 +33,8 @@ public class LayoutDesidentification extends VerticalLayout {
   private static final String LABEL_CHECKBOX_DESIDENTIFICATION = "Activate de-identification";
   private static final String LABEL_DISCLAIMER_DEIDENTIFICATION =
       "In order to ensure complete de-identification, visual verification of metadata and images is necessary.";
+  private static final String LABEL_DEFAULT_ISSUER =
+      "If this field is empty, the Issuer of Patient ID is not used to define the authenticity of the patient";
 
   private Checkbox checkboxDesidentification;
   private Label labelDisclaimer;
@@ -39,15 +42,18 @@ public class LayoutDesidentification extends VerticalLayout {
 
   private ProjectDropDown projectDropDown;
   private ExtidPresentInDicomTagView extidPresentInDicomTagView;
+  private Div divExtID;
   private Binder<DestinationEntity> destinationBinder;
   private Div div;
   private DesidentificationName desidentificationName;
   private WarningNoProjectsDefined warningNoProjectsDefined;
   private Select<String> extidListBox;
+  private TextField issuerOfPatientIDByDefault;
 
   public LayoutDesidentification() {}
 
   public void init(final Binder<DestinationEntity> binder) {
+    this.issuerOfPatientIDByDefault = new TextField();
     this.projectDropDown = new ProjectDropDown();
     this.projectDropDown.setItemLabelGenerator(ProjectEntity::getName);
     this.desidentificationName = new DesidentificationName();
@@ -67,13 +73,22 @@ public class LayoutDesidentification extends VerticalLayout {
     add(UIS.setWidthFull(new HorizontalLayout(checkboxDesidentification, div)));
 
     if (checkboxDesidentification.getValue()) {
-      div.add(labelDisclaimer, projectDropDown, desidentificationName, extidListBox);
+      div.add(
+          labelDisclaimer,
+          projectDropDown,
+          desidentificationName,
+          divExtID,
+          issuerOfPatientIDByDefault);
     }
 
     projectDropDown.addValueChangeListener(event -> setTextOnSelectionProject(event.getValue()));
   }
 
   private void setElements() {
+    issuerOfPatientIDByDefault.setLabel("Issuer of Patient ID by default");
+    issuerOfPatientIDByDefault.setWidth("100%");
+    issuerOfPatientIDByDefault.setPlaceholder(LABEL_DEFAULT_ISSUER);
+    UIS.setTooltip(issuerOfPatientIDByDefault, LABEL_DEFAULT_ISSUER);
     checkboxDesidentification = new Checkbox(LABEL_CHECKBOX_DESIDENTIFICATION);
     checkboxDesidentification.setValue(true);
     checkboxDesidentification.setMinWidth("25%");
@@ -101,6 +116,9 @@ public class LayoutDesidentification extends VerticalLayout {
     extidPresentInDicomTagView = new ExtidPresentInDicomTagView(destinationBinder);
     div = new Div();
     div.setWidth("100%");
+
+    divExtID = new Div();
+    divExtID.add(extidListBox);
   }
 
   private void setEventWarningDICOM() {
@@ -146,22 +164,33 @@ public class LayoutDesidentification extends VerticalLayout {
             if (event.getValue().equals(MAINZELLISTE_PID.getValue())) {
               checkboxUseAsPatientName.clear();
               extidPresentInDicomTagView.clear();
-              div.remove(checkboxUseAsPatientName);
-              div.remove(extidPresentInDicomTagView);
+              divExtID.remove(checkboxUseAsPatientName);
+              divExtID.remove(extidPresentInDicomTagView);
             } else if (event.getValue().equals(MAINZELLISTE_EXTID.getValue())
                 || event.getValue().equals(CACHE_EXTID.getValue())) {
-              div.add(UIS.setWidthFull(checkboxUseAsPatientName));
+              divExtID.add(UIS.setWidthFull(checkboxUseAsPatientName));
               extidPresentInDicomTagView.clear();
-              div.remove(extidPresentInDicomTagView);
+              divExtID.remove(extidPresentInDicomTagView);
             } else {
-              div.add(UIS.setWidthFull(checkboxUseAsPatientName));
-              div.add(extidPresentInDicomTagView);
+              divExtID.add(UIS.setWidthFull(checkboxUseAsPatientName));
+              divExtID.add(extidPresentInDicomTagView);
             }
           }
         });
   }
 
   private void setBinder() {
+    destinationBinder
+        .forField(issuerOfPatientIDByDefault)
+        .bind(
+            DestinationEntity::getIssuerByDefault,
+            (destinationEntity, s) -> {
+              if (checkboxDesidentification.getValue()) {
+                destinationEntity.setIssuerByDefault(s);
+              } else {
+                destinationEntity.setIssuerByDefault("");
+              }
+            });
     destinationBinder
         .forField(checkboxDesidentification)
         .bind(DestinationEntity::isDesidentification, DestinationEntity::setDesidentification);
@@ -235,6 +264,10 @@ public class LayoutDesidentification extends VerticalLayout {
     return extidPresentInDicomTagView;
   }
 
+  public Div getDivExtID() {
+    return divExtID;
+  }
+
   public Div getDiv() {
     return div;
   }
@@ -249,5 +282,9 @@ public class LayoutDesidentification extends VerticalLayout {
 
   public Select<String> getExtidListBox() {
     return extidListBox;
+  }
+
+  public TextField getIssuerOfPatientIDByDefault() {
+    return issuerOfPatientIDByDefault;
   }
 }

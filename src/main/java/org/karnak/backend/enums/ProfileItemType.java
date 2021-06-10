@@ -2,7 +2,7 @@
  * Copyright (c) 2021 Karnak Team and other contributors.
  *
  * This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
  * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
@@ -13,6 +13,7 @@ import org.karnak.backend.model.profiles.ActionDates;
 import org.karnak.backend.model.profiles.ActionTags;
 import org.karnak.backend.model.profiles.BasicProfile;
 import org.karnak.backend.model.profiles.CleanPixelData;
+import org.karnak.backend.model.profiles.Defacing;
 import org.karnak.backend.model.profiles.Expression;
 import org.karnak.backend.model.profiles.PrivateTags;
 import org.karnak.backend.model.profiles.ProfileItem;
@@ -25,6 +26,11 @@ public enum ProfileItemType {
       "113100",
       "Basic Application Confidentiality Profile"),
   CLEAN_PIXEL_DATA(CleanPixelData.class, "clean.pixel.data", "113101", "Clean Pixel Data Option"),
+  DEFACING(
+      Defacing.class,
+      "clean.recognizable.visual.features",
+      "113102",
+      "Clean Recognizable Visual Features Option"),
   REPLACE_UID(UpdateUIDsProfile.class, "replace.uid", null, null),
   ACTION_TAGS(ActionTags.class, "action.on.specific.tags", null, null),
   ACTION_PRIVATETAGS(

@@ -35,12 +35,14 @@ _*/
 hs_err*.log
 
 # Vaadin
+.npmrc
 package.json
 package-lock.json
 webpack.config.js
 webpack.generated.js
 tsconfig.json
 node_modules/
+/frontend/generated/
 types.d.ts
 pnpmfile.js
 pnpm-lock.yaml
