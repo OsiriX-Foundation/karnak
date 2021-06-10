@@ -14,26 +14,4 @@
       </column>
     </addColumn>
   </changeSet>
-  <changeSet author="karnak" id="1.3-2">
-    <preConditions onFail="MARK_RAN">
-      <not>
-        <columnExists tableName="destination" columnName="transfer_syntax"/>
-      </not>
-    </preConditions>
-    <addColumn tableName="destination">
-      <column name="transfer_syntax" type="VARCHAR(255)"/>
-    </addColumn>
-  </changeSet>
-  <changeSet author="karnak" id="1.3-3">
-    <preConditions onFail="MARK_RAN">
-      <not>
-        <columnExists tableName="destination" columnName="transcode_only_uncompressed"/>
-      </not>
-    </preConditions>
-    <addColumn tableName="destination">
-      <column name="transcode_only_uncompressed" type="BOOLEAN" defaultValue='true'>
-        <constraints nullable="false"/>
-      </column>
-    </addColumn>
-  </changeSet>
 </databaseChangeLog>
