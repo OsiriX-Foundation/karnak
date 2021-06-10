@@ -41,6 +41,7 @@ public class LayoutDesidentification extends Div {
 
   private ProjectDropDown projectDropDown;
   private ExtidPresentInDicomTagView extidPresentInDicomTagView;
+  private Div divExtID;
   private Binder<DestinationEntity> destinationBinder;
   private Div div;
   private DesidentificationName desidentificationName;
@@ -71,10 +72,10 @@ public class LayoutDesidentification extends Div {
     if (checkboxDesidentification.getValue()) {
       div.add(
           labelDisclaimer,
-          issuerOfPatientIDByDefault,
           projectDropDown,
           desidentificationName,
-          extidListBox);
+          divExtID,
+          issuerOfPatientIDByDefault);
     }
 
     projectDropDown.addValueChangeListener(event -> setTextOnSelectionProject(event.getValue()));
@@ -112,6 +113,9 @@ public class LayoutDesidentification extends Div {
     extidPresentInDicomTagView = new ExtidPresentInDicomTagView(destinationBinder);
     div = new Div();
     div.setWidth("100%");
+
+    divExtID = new Div();
+    divExtID.add(extidListBox);
   }
 
   private void setEventWarningDICOM() {
@@ -157,16 +161,16 @@ public class LayoutDesidentification extends Div {
             if (event.getValue().equals(MAINZELLISTE_PID.getValue())) {
               checkboxUseAsPatientName.clear();
               extidPresentInDicomTagView.clear();
-              div.remove(checkboxUseAsPatientName);
-              div.remove(extidPresentInDicomTagView);
+              divExtID.remove(checkboxUseAsPatientName);
+              divExtID.remove(extidPresentInDicomTagView);
             } else if (event.getValue().equals(MAINZELLISTE_EXTID.getValue())
                 || event.getValue().equals(CACHE_EXTID.getValue())) {
-              div.add(UIS.setWidthFull(checkboxUseAsPatientName));
+              divExtID.add(UIS.setWidthFull(checkboxUseAsPatientName));
               extidPresentInDicomTagView.clear();
-              div.remove(extidPresentInDicomTagView);
+              divExtID.remove(extidPresentInDicomTagView);
             } else {
-              div.add(UIS.setWidthFull(checkboxUseAsPatientName));
-              div.add(extidPresentInDicomTagView);
+              divExtID.add(UIS.setWidthFull(checkboxUseAsPatientName));
+              divExtID.add(extidPresentInDicomTagView);
             }
           }
         });
@@ -255,6 +259,10 @@ public class LayoutDesidentification extends Div {
 
   public ExtidPresentInDicomTagView getExtidPresentInDicomTagView() {
     return extidPresentInDicomTagView;
+  }
+
+  public Div getDivExtID() {
+    return divExtID;
   }
 
   public Div getDiv() {
