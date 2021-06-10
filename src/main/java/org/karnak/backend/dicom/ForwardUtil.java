@@ -559,22 +559,16 @@ public class ForwardUtil {
       ForwardDicomNode fwdNode, Map<ForwardDicomNode, ForwardDestination> fwdQuarantineDest) {
     List<File> files = null;
     try {
-      ForwardDestination quarantineFwdDest = fwdQuarantineDest.get(fwdNode);
-      DicomForwardDestination quarantineDest = (DicomForwardDestination) quarantineFwdDest;
+      var quarantineFwdDest = fwdQuarantineDest.get(fwdNode);
+      var quarantineDest = (DicomForwardDestination) quarantineFwdDest;
       var quarantineAttributes = fwdNode.getQuarantine().getAttributes();
       var params = fwdNode.getQuarantine().getParams();
       prepareTransfer(quarantineDest, params);
       files = transfer(fwdNode, quarantineDest, quarantineAttributes, params);
-      if (files != null) {
-        // Force to clean if tmp bulk files
-        for (File file : files) {
-          FileUtil.delete(file);
-        }
-      }
-      fwdNode.setQuarantine(null);
     } catch (Exception e) {
       LOGGER.error("Error when forwarding in quarantine", e);
     } finally {
+      fwdNode.setQuarantine(null);
       if (files != null) {
         // Force to clean if tmp bulk files
         for (File file : files) {
