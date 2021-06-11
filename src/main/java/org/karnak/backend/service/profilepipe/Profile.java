@@ -149,7 +149,11 @@ public class Profile {
               .collect(Collectors.toList())) {
         currentProfile = profileEntity;
 
-        if (profileEntity.getCondition() == null) {
+        if (profileEntity.getCondition() == null
+            || profileEntity.getCodeName().equals(ProfileItemType.DEFACING.getClassAlias())
+            || profileEntity
+                .getCodeName()
+                .equals(ProfileItemType.CLEAN_PIXEL_DATA.getClassAlias())) {
           currentAction = profileEntity.getAction(dcm, dcmCopy, tag, hmac);
         } else {
           boolean conditionIsOk =

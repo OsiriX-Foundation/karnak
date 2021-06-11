@@ -26,7 +26,13 @@ public class DefacingUtil {
 
   public static double pickRndYPxlColor(int xInit, int minY, int maxY, PlanarImage imgToPick) {
     int yRand = DefacingUtil.randomY(minY, maxY, 1);
-    int size = 4;
+    return imgToPick.toMat().get(yRand, xInit)[0];
+  }
+
+  public static double pickRndYPxlColorConvolution(
+      int xInit, int minY, int maxY, PlanarImage imgToPick) {
+    int yRand = DefacingUtil.randomY(minY, maxY, 1);
+    int size = 5;
     double mean = 0;
     int sum = 0;
     int imgWidth = imgToPick.width();
