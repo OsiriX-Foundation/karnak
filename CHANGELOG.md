@@ -1,5 +1,24 @@
 # Changelog
 
+## [v0.9.7](https://github.com/OsiriX-Foundation/karnak/tree/v0.9.7) (2021-06-11)
+
+[Full Changelog](https://github.com/OsiriX-Foundation/karnak/compare/v0.9.6...v0.9.7)
+
+**Implemented enhancements:**
+
+- Remove use pseudonym as patient name button and use pseudonym for patient name [\#154](https://github.com/OsiriX-Foundation/karnak/issues/154)
+- Check Issuer of Patient ID in destination [\#148](https://github.com/OsiriX-Foundation/karnak/issues/148)
+- Load an external logback configuration at startup [\#128](https://github.com/OsiriX-Foundation/karnak/issues/128)
+- Set the logging level at startup [\#119](https://github.com/OsiriX-Foundation/karnak/issues/119)
+- Pattern for the Clinical log warning [\#85](https://github.com/OsiriX-Foundation/karnak/issues/85)
+- Defacing CT [\#17](https://github.com/OsiriX-Foundation/karnak/issues/17)
+
+**Fixed bugs:**
+
+- The order of profile elements on the ui and when downloading a profile is not correct.  [\#146](https://github.com/OsiriX-Foundation/karnak/issues/146)
+- Do not de-identify when multiple actions and with retired SOP Class UID [\#138](https://github.com/OsiriX-Foundation/karnak/issues/138)
+- Fix endianness of added sequences [\#137](https://github.com/OsiriX-Foundation/karnak/issues/137)
+
 ## [v0.9.6](https://github.com/OsiriX-Foundation/karnak/tree/v0.9.6) (2021-05-07)
 
 [Full Changelog](https://github.com/OsiriX-Foundation/karnak/compare/v0.9.5...v0.9.6)

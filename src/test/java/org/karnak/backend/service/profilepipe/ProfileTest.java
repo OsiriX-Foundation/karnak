@@ -48,7 +48,6 @@ class ProfileTest {
     destinationEntity.setPseudonymType(PseudonymType.EXTID_IN_TAG);
     destinationEntity.setTag("0008,0080");
     destinationEntity.setSavePseudonym(false);
-    destinationEntity.setPseudonymAsPatientName(true);
     ProfileEntity profileEntity = new ProfileEntity();
     Set<ProfileElementEntity> profileElementEntities = new HashSet<>();
     ProfileElementEntity profileElementEntityBasic = new ProfileElementEntity();

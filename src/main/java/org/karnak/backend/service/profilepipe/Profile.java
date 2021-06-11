@@ -37,7 +37,6 @@ import org.karnak.backend.data.entity.ProfileEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.dicom.Defacer;
 import org.karnak.backend.enums.ProfileItemType;
-import org.karnak.backend.enums.PseudonymType;
 import org.karnak.backend.model.action.ActionItem;
 import org.karnak.backend.model.action.Remove;
 import org.karnak.backend.model.action.ReplaceNull;
@@ -149,7 +148,11 @@ public class Profile {
               .collect(Collectors.toList())) {
         currentProfile = profileEntity;
 
-        if (profileEntity.getCondition() == null) {
+        if (profileEntity.getCondition() == null
+            || profileEntity.getCodeName().equals(ProfileItemType.DEFACING.getClassAlias())
+            || profileEntity
+                .getCodeName()
+                .equals(ProfileItemType.CLEAN_PIXEL_DATA.getClassAlias())) {
           currentAction = profileEntity.getAction(dcm, dcmCopy, tag, hmac);
         } else {
           boolean conditionIsOk =
@@ -257,7 +260,6 @@ public class Profile {
     final String SeriesInstanceUID = dcm.getString(Tag.SeriesInstanceUID);
     final String IssuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID);
     final String PatientID = dcm.getString(Tag.PatientID);
-    final PseudonymType pseudonymType = destinationEntity.getPseudonymType();
     final HMAC hmac = generateHMAC(destinationEntity, PatientID);
 
     MDC.put("SOPInstanceUID", SOPInstanceUID);
@@ -265,17 +267,12 @@ public class Profile {
     MDC.put("issuerOfPatientID", IssuerOfPatientID);
     MDC.put("PatientID", PatientID);
 
-    String pseudonym = this.pseudonym.generatePseudonym(destinationEntity, dcm);
+    String pseudonymValue = this.pseudonym.generatePseudonym(destinationEntity, dcm);
 
     String profilesCodeName =
         profiles.stream().map(ProfileItem::getCodeName).collect(Collectors.joining("-"));
-    BigInteger patientValue = generatePatientID(pseudonym, hmac);
+    BigInteger patientValue = generatePatientID(pseudonymValue, hmac);
     String newPatientID = patientValue.toString(16).toUpperCase();
-    String newPatientName =
-        !pseudonymType.equals(PseudonymType.MAINZELLISTE_PID)
-                && destinationEntity.getPseudonymAsPatientName().booleanValue()
-            ? pseudonym
-            : newPatientID;
 
     Attributes dcmCopy = new Attributes(dcm);
 
@@ -289,10 +286,10 @@ public class Profile {
 
     // Set tags by default
     AttributesByDefault.setPatientModule(
-        dcm, newPatientID, newPatientName, destinationEntity.getProjectEntity());
+        dcm, newPatientID, pseudonymValue, destinationEntity.getProjectEntity());
     AttributesByDefault.setSOPCommonModule(dcm);
     AttributesByDefault.setClinicalTrialAttributes(
-        dcm, destinationEntity.getProjectEntity(), pseudonym);
+        dcm, destinationEntity.getProjectEntity(), pseudonymValue);
 
     final Marker clincalMarker = MarkerFactory.getMarker("CLINICAL");
     MDC.put("DeidentifySOPInstanceUID", dcm.getString(Tag.SOPInstanceUID));

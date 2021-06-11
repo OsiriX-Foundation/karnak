@@ -38,7 +38,6 @@ public class LayoutDesidentification extends VerticalLayout {
 
   private Checkbox checkboxDesidentification;
   private Label labelDisclaimer;
-  private Checkbox checkboxUseAsPatientName;
 
   private ProjectDropDown projectDropDown;
   private ExtidPresentInDicomTagView extidPresentInDicomTagView;
@@ -111,8 +110,6 @@ public class LayoutDesidentification extends VerticalLayout {
         CACHE_EXTID.getValue(),
         EXTID_IN_TAG.getValue());
 
-    checkboxUseAsPatientName = new Checkbox("Uses the pseudonym as Patient Name");
-
     extidPresentInDicomTagView = new ExtidPresentInDicomTagView(destinationBinder);
     div = new Div();
     div.setWidth("100%");
@@ -162,17 +159,13 @@ public class LayoutDesidentification extends VerticalLayout {
         event -> {
           if (event.getValue() != null) {
             if (event.getValue().equals(MAINZELLISTE_PID.getValue())) {
-              checkboxUseAsPatientName.clear();
               extidPresentInDicomTagView.clear();
-              divExtID.remove(checkboxUseAsPatientName);
               divExtID.remove(extidPresentInDicomTagView);
             } else if (event.getValue().equals(MAINZELLISTE_EXTID.getValue())
                 || event.getValue().equals(CACHE_EXTID.getValue())) {
-              divExtID.add(UIS.setWidthFull(checkboxUseAsPatientName));
               extidPresentInDicomTagView.clear();
               divExtID.remove(extidPresentInDicomTagView);
             } else {
-              divExtID.add(UIS.setWidthFull(checkboxUseAsPatientName));
               divExtID.add(extidPresentInDicomTagView);
             }
           }
@@ -228,12 +221,6 @@ public class LayoutDesidentification extends VerticalLayout {
                 destination.setPseudonymType(EXTID_IN_TAG);
               }
             });
-
-    destinationBinder
-        .forField(checkboxUseAsPatientName)
-        .bind(
-            DestinationEntity::getPseudonymAsPatientName,
-            DestinationEntity::setPseudonymAsPatientName);
   }
 
   public Binder<DestinationEntity> getDestinationBinder() {
@@ -254,10 +241,6 @@ public class LayoutDesidentification extends VerticalLayout {
 
   public Label getLabelDisclaimer() {
     return labelDisclaimer;
-  }
-
-  public Checkbox getCheckboxUseAsPatientName() {
-    return checkboxUseAsPatientName;
   }
 
   public ExtidPresentInDicomTagView getExtidPresentInDicomTagView() {

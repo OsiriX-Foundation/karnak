@@ -41,7 +41,6 @@ class DeIdentifyEditorTest {
     destinationEntity.setPseudonymType(PseudonymType.EXTID_IN_TAG);
     destinationEntity.setTag("0008,0080");
     destinationEntity.setSavePseudonym(false);
-    destinationEntity.setPseudonymAsPatientName(true);
     byte[] tabByte = new byte[16];
     tabByte[0] = 1;
     projectEntity.setSecret(tabByte);
