@@ -468,10 +468,8 @@ public class LayoutEditForwardNode extends VerticalLayout {
                           layoutDesidentification.getDesidentificationName(),
                           layoutDesidentification.getIssuerOfPatientIDByDefault());
                   layoutDesidentification.getExtidListBox().setValue(MAINZELLISTE_PID.getValue());
-                  layoutDesidentification.getCheckboxUseAsPatientName().clear();
                   layoutDesidentification.getExtidPresentInDicomTagView().clear();
                   layoutDesidentification.getDiv().remove(layoutDesidentification.getDivExtID());
-                  remove(layoutDesidentification.getCheckboxUseAsPatientName());
                 }
               }
             });
