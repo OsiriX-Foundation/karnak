@@ -66,7 +66,6 @@ public class DestinationEntity implements Serializable {
   private String delimiter;
   private Integer position;
   private Boolean savePseudonym;
-  private Boolean pseudonymAsPatientName;
   private boolean filterBySOPClasses;
   private Set<SOPClassUIDEntity> SOPClassUIDEntityFilters = new HashSet<>();
   private List<KheopsAlbumsEntity> kheopsAlbumEntities;
@@ -140,7 +139,6 @@ public class DestinationEntity implements Serializable {
     this.desidentification = false;
     this.issuerByDefault = "";
     this.pseudonymType = PseudonymType.MAINZELLISTE_PID;
-    this.pseudonymAsPatientName = null;
     this.tag = null;
     this.delimiter = null;
     this.position = null;
@@ -436,14 +434,6 @@ public class DestinationEntity implements Serializable {
     this.position = position;
   }
 
-  public Boolean getPseudonymAsPatientName() {
-    return pseudonymAsPatientName;
-  }
-
-  public void setPseudonymAsPatientName(Boolean pseudonymAsPatientName) {
-    this.pseudonymAsPatientName = pseudonymAsPatientName;
-  }
-
   public Boolean getSavePseudonym() {
     return savePseudonym;
   }
@@ -635,7 +625,6 @@ public class DestinationEntity implements Serializable {
         && Objects.equals(delimiter, that.delimiter)
         && Objects.equals(position, that.position)
         && Objects.equals(savePseudonym, that.savePseudonym)
-        && Objects.equals(pseudonymAsPatientName, that.pseudonymAsPatientName)
         && Objects.equals(transferSyntax, that.transferSyntax)
         && Objects.equals(transcodeOnlyUncompressed, that.transcodeOnlyUncompressed)
         && Objects.equals(activateNotification, that.activateNotification)
@@ -666,7 +655,6 @@ public class DestinationEntity implements Serializable {
         delimiter,
         position,
         savePseudonym,
-        pseudonymAsPatientName,
         filterBySOPClasses,
         transferSyntax,
         transcodeOnlyUncompressed,
