@@ -10,7 +10,6 @@
 package org.karnak.frontend.forwardnode.edit.destination.component;
 
 import static org.karnak.backend.enums.ExternalIDProviderType.EXTID_IN_TAG;
-import static org.karnak.backend.enums.ExternalIDProviderType.ID_GENERATED_BY_MAINZELLISTE;
 
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.html.Div;
@@ -178,7 +177,7 @@ public class LayoutDesidentification extends VerticalLayout {
               div.add(extidPresentInDicomTagView);
             } else {
               extidPresentInDicomTagView.clear();
-              divExtID.remove(extidPresentInDicomTagView);
+              div.remove(extidPresentInDicomTagView);
             }
           }
         });

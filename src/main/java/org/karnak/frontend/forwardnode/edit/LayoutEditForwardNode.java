@@ -471,14 +471,12 @@ public class LayoutEditForwardNode extends VerticalLayout {
                       .remove(
                           layoutDesidentification.getLabelDisclaimer(),
                           layoutDesidentification.getProjectDropDown(),
-                          layoutDesidentification.getDesidentificationName()
-                          layoutDesidentification.getIssuerOfPatientIDByDefault());
+                          layoutDesidentification.getDesidentificationName(),
+                          layoutDesidentification.getIssuerOfPatientIDByDefault(),
+                          layoutDesidentification.getDivExtID(),
+                          layoutDesidentification.getExtidPresentInDicomTagView());
                   layoutDesidentification.getExtidPresentInDicomTagView().clear();
-                  layoutDesidentification
-                      .getDiv()
-                      .remove(layoutDesidentification.getExtidListBox());
-                  layoutDesidentification.getExtidPresentInDicomTagView().clear();
-                  layoutDesidentification.getDiv().remove(layoutDesidentification.getDivExtID());
+                  layoutDesidentification.getExtidListBox().setValue(null);
                 }
               }
             });
@@ -572,10 +570,11 @@ public class LayoutEditForwardNode extends VerticalLayout {
         .withValidator(
             tag -> {
               if (!layoutDesidentification.getCheckboxDesidentification().getValue()
-                  || !layoutDesidentification
-                      .getExtidListBox()
-                      .getValue()
-                      .equals(ExternalIDProviderType.EXTID_IN_TAG.getDescription())) {
+                  || (layoutDesidentification.getExtidListBox().getValue() != null
+                      && !layoutDesidentification
+                          .getExtidListBox()
+                          .getValue()
+                          .equals(ExternalIDProviderType.EXTID_IN_TAG.getDescription()))) {
                 return true;
               }
               final String cleanTag = tag.replaceAll("[(),]", "").toUpperCase();
@@ -597,10 +596,11 @@ public class LayoutEditForwardNode extends VerticalLayout {
         .withValidator(
             delimiter -> {
               if (!layoutDesidentification.getCheckboxDesidentification().getValue()
-                  || !layoutDesidentification
-                      .getExtidListBox()
-                      .getValue()
-                      .equals(ExternalIDProviderType.EXTID_IN_TAG.getDescription())) {
+                  || (layoutDesidentification.getExtidListBox().getValue() != null
+                      && !layoutDesidentification
+                          .getExtidListBox()
+                          .getValue()
+                          .equals(ExternalIDProviderType.EXTID_IN_TAG.getDescription()))) {
                 return true;
               }
               if (layoutDesidentification.getExtidPresentInDicomTagView().getPosition().getValue()
@@ -624,10 +624,11 @@ public class LayoutEditForwardNode extends VerticalLayout {
         .withValidator(
             position -> {
               if (!layoutDesidentification.getCheckboxDesidentification().getValue()
-                  || !layoutDesidentification
-                      .getExtidListBox()
-                      .getValue()
-                      .equals(ExternalIDProviderType.EXTID_IN_TAG.getDescription())) {
+                  || (layoutDesidentification.getExtidListBox().getValue() != null
+                      && !layoutDesidentification
+                          .getExtidListBox()
+                          .getValue()
+                          .equals(ExternalIDProviderType.EXTID_IN_TAG.getDescription()))) {
                 return true;
               }
               if (layoutDesidentification.getExtidPresentInDicomTagView().getDelimiter().getValue()
