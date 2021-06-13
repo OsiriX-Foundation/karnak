@@ -41,7 +41,7 @@ public class NotificationComponent extends VerticalLayout {
     setWidthFull();
 
     // In order to not have a padding around the component
-    setPadding(false);
+    setPadding(true);
 
     // Build notification components
     buildComponents();

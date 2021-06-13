@@ -30,6 +30,7 @@ public class SwitchingAlbumsView extends CustomField<List<KheopsAlbumsEntity>> {
   private final VerticalLayout layout;
 
   public SwitchingAlbumsView() {
+    setWidthFull();
     gridSwitchingAlbums = new GridSwitchingAlbums();
     dataProviderSwitchingAlbums =
         (ListDataProvider<KheopsAlbumsEntity>) gridSwitchingAlbums.getDataProvider();

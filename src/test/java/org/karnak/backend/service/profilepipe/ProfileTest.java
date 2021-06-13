@@ -51,7 +51,6 @@ class ProfileTest {
     destinationEntity.setExternalIDProviderEntity(externalIDProviderEntity);
     destinationEntity.setTag("0008,0080");
     destinationEntity.setSavePseudonym(false);
-    destinationEntity.setPseudonymAsPatientName(true);
     ProfileEntity profileEntity = new ProfileEntity();
     Set<ProfileElementEntity> profileElementEntities = new HashSet<>();
     ProfileElementEntity profileElementEntityBasic = new ProfileElementEntity();

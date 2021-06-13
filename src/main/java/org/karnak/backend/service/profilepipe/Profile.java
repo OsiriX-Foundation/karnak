@@ -149,7 +149,11 @@ public class Profile {
               .collect(Collectors.toList())) {
         currentProfile = profileEntity;
 
-        if (profileEntity.getCondition() == null) {
+        if (profileEntity.getCondition() == null
+            || profileEntity.getCodeName().equals(ProfileItemType.DEFACING.getClassAlias())
+            || profileEntity
+                .getCodeName()
+                .equals(ProfileItemType.CLEAN_PIXEL_DATA.getClassAlias())) {
           currentAction = profileEntity.getAction(dcm, dcmCopy, tag, hmac);
         } else {
           boolean conditionIsOk =
@@ -268,17 +272,12 @@ public class Profile {
     MDC.put("issuerOfPatientID", IssuerOfPatientID);
     MDC.put("PatientID", PatientID);
 
-    String pseudonym = this.pseudonym.generatePseudonym(destinationEntity, dcm);
+    String pseudonymValue = this.pseudonym.generatePseudonym(destinationEntity, dcm);
 
     String profilesCodeName =
         profiles.stream().map(ProfileItem::getCodeName).collect(Collectors.joining("-"));
-    BigInteger patientValue = generatePatientID(pseudonym, hmac);
+    BigInteger patientValue = generatePatientID(pseudonymValue, hmac);
     String newPatientID = patientValue.toString(16).toUpperCase();
-    String newPatientName =
-        !externalIDProviderType.equals(ExternalIDProviderType.ID_GENERATED_BY_MAINZELLISTE)
-                && destinationEntity.getPseudonymAsPatientName().booleanValue()
-            ? pseudonym
-            : newPatientID;
 
     // Apply clean pixel data
     applyCleanPixelData(dcmCopy, context, profileEntity);
@@ -290,10 +289,10 @@ public class Profile {
 
     // Set tags by default
     AttributesByDefault.setPatientModule(
-        dcm, newPatientID, newPatientName, destinationEntity.getProjectEntity());
+        dcm, newPatientID, pseudonymValue, destinationEntity.getProjectEntity());
     AttributesByDefault.setSOPCommonModule(dcm);
     AttributesByDefault.setClinicalTrialAttributes(
-        dcm, destinationEntity.getProjectEntity(), pseudonym);
+        dcm, destinationEntity.getProjectEntity(), pseudonymValue);
 
     final Marker clincalMarker = MarkerFactory.getMarker("CLINICAL");
     MDC.put("DeidentifySOPInstanceUID", dcm.getString(Tag.SOPInstanceUID));

@@ -64,7 +64,6 @@ public class DestinationEntity implements Serializable {
   private String delimiter;
   private Integer position;
   private Boolean savePseudonym;
-  private Boolean pseudonymAsPatientName;
   private boolean filterBySOPClasses;
   private Set<SOPClassUIDEntity> SOPClassUIDEntityFilters = new HashSet<>();
   private List<KheopsAlbumsEntity> kheopsAlbumEntities;
@@ -121,6 +120,12 @@ public class DestinationEntity implements Serializable {
   // headers for HTTP request.
   private String headers;
 
+  // UID corresponding to the Transfer Syntax
+  private String transferSyntax;
+
+  // Transcode Only Uncompressed
+  private boolean transcodeOnlyUncompressed;
+
   public DestinationEntity() {
     this(null);
   }
@@ -132,7 +137,6 @@ public class DestinationEntity implements Serializable {
     this.description = "";
     this.desidentification = false;
     this.issuerByDefault = "";
-    this.pseudonymAsPatientName = null;
     this.tag = null;
     this.delimiter = null;
     this.position = null;
@@ -151,6 +155,8 @@ public class DestinationEntity implements Serializable {
     this.url = "";
     this.urlCredentials = "";
     this.headers = "";
+
+    this.transcodeOnlyUncompressed = true;
   }
 
   public static DestinationEntity ofDicomEmpty() {
@@ -418,14 +424,6 @@ public class DestinationEntity implements Serializable {
     this.position = position;
   }
 
-  public Boolean getPseudonymAsPatientName() {
-    return pseudonymAsPatientName;
-  }
-
-  public void setPseudonymAsPatientName(Boolean pseudonymAsPatientName) {
-    this.pseudonymAsPatientName = pseudonymAsPatientName;
-  }
-
   public Boolean getSavePseudonym() {
     return savePseudonym;
   }
@@ -474,6 +472,22 @@ public class DestinationEntity implements Serializable {
 
   public void setActivateNotification(boolean activateNotification) {
     this.activateNotification = activateNotification;
+  }
+
+  public String getTransferSyntax() {
+    return transferSyntax;
+  }
+
+  public void setTransferSyntax(String transferSyntax) {
+    this.transferSyntax = transferSyntax;
+  }
+
+  public boolean isTranscodeOnlyUncompressed() {
+    return transcodeOnlyUncompressed;
+  }
+
+  public void setTranscodeOnlyUncompressed(boolean transcodeOnlyUncompressed) {
+    this.transcodeOnlyUncompressed = transcodeOnlyUncompressed;
   }
 
   /**
@@ -610,7 +624,8 @@ public class DestinationEntity implements Serializable {
         && Objects.equals(delimiter, that.delimiter)
         && Objects.equals(position, that.position)
         && Objects.equals(savePseudonym, that.savePseudonym)
-        && Objects.equals(pseudonymAsPatientName, that.pseudonymAsPatientName)
+        && Objects.equals(transferSyntax, that.transferSyntax)
+        && Objects.equals(transcodeOnlyUncompressed, that.transcodeOnlyUncompressed)
         && Objects.equals(activateNotification, that.activateNotification)
         && Objects.equals(notify, that.notify)
         && Objects.equals(notifyObjectErrorPrefix, that.notifyObjectErrorPrefix)
@@ -638,8 +653,9 @@ public class DestinationEntity implements Serializable {
         delimiter,
         position,
         savePseudonym,
-        pseudonymAsPatientName,
         filterBySOPClasses,
+        transferSyntax,
+        transcodeOnlyUncompressed,
         activateNotification,
         notify,
         notifyObjectErrorPrefix,

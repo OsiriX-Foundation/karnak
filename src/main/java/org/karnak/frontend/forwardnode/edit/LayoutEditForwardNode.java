@@ -456,10 +456,10 @@ public class LayoutEditForwardNode extends VerticalLayout {
                         .getDiv()
                         .add(
                             layoutDesidentification.getLabelDisclaimer(),
-                            layoutDesidentification.getIssuerOfPatientIDByDefault(),
                             layoutDesidentification.getProjectDropDown(),
                             layoutDesidentification.getDesidentificationName(),
-                            layoutDesidentification.getExtidListBox());
+                            layoutDesidentification.getDivExtID(),
+                            layoutDesidentification.getIssuerOfPatientIDByDefault());
                     layoutDesidentification.setTextOnSelectionProject(
                         layoutDesidentification.getProjectDropDown().getValue());
                   } else {
@@ -470,22 +470,15 @@ public class LayoutEditForwardNode extends VerticalLayout {
                       .getDiv()
                       .remove(
                           layoutDesidentification.getLabelDisclaimer(),
-                          layoutDesidentification.getIssuerOfPatientIDByDefault(),
                           layoutDesidentification.getProjectDropDown(),
-                          layoutDesidentification.getDesidentificationName());
-                  layoutDesidentification.getProjectDropDown().clear();
-                  layoutDesidentification.getExtidListBox().clear();
-                  layoutDesidentification.getCheckboxUseAsPatientName().clear();
+                          layoutDesidentification.getDesidentificationName()
+                          layoutDesidentification.getIssuerOfPatientIDByDefault());
                   layoutDesidentification.getExtidPresentInDicomTagView().clear();
                   layoutDesidentification
                       .getDiv()
                       .remove(layoutDesidentification.getExtidListBox());
-                  layoutDesidentification
-                      .getDiv()
-                      .remove(layoutDesidentification.getCheckboxUseAsPatientName());
-                  layoutDesidentification
-                      .getDiv()
-                      .remove(layoutDesidentification.getExtidPresentInDicomTagView());
+                  layoutDesidentification.getExtidPresentInDicomTagView().clear();
+                  layoutDesidentification.getDiv().remove(layoutDesidentification.getDivExtID());
                 }
               }
             });

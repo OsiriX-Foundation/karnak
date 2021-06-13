@@ -16,6 +16,7 @@ import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
@@ -31,7 +32,7 @@ import org.karnak.frontend.component.ProjectDropDown;
 import org.karnak.frontend.project.ProjectView;
 import org.karnak.frontend.util.UIS;
 
-public class LayoutDesidentification extends Div {
+public class LayoutDesidentification extends VerticalLayout {
 
   private static final String LABEL_CHECKBOX_DESIDENTIFICATION = "Activate de-identification";
   private static final String LABEL_DISCLAIMER_DEIDENTIFICATION =
@@ -41,10 +42,10 @@ public class LayoutDesidentification extends Div {
 
   private Checkbox checkboxDesidentification;
   private Label labelDisclaimer;
-  private Checkbox checkboxUseAsPatientName;
 
   private ProjectDropDown projectDropDown;
   private ExtidPresentInDicomTagView extidPresentInDicomTagView;
+  private Div divExtID;
   private Binder<DestinationEntity> destinationBinder;
   private Div div;
   private DesidentificationName desidentificationName;
@@ -74,15 +75,17 @@ public class LayoutDesidentification extends Div {
     setEventExtidListBox();
     setEventWarningDICOM();
 
+    setPadding(true);
+
     add(UIS.setWidthFull(new HorizontalLayout(checkboxDesidentification, div)));
 
     if (checkboxDesidentification.getValue()) {
       div.add(
           labelDisclaimer,
-          issuerOfPatientIDByDefault,
           projectDropDown,
           desidentificationName,
-          extidListBox);
+          divExtID,
+          issuerOfPatientIDByDefault);
     }
 
     projectDropDown.addValueChangeListener(event -> setTextOnSelectionProject(event.getValue()));
@@ -123,11 +126,12 @@ public class LayoutDesidentification extends Div {
         });
     extidListBox.setItems(externalIDProviderTypeSentenceList);
 
-    checkboxUseAsPatientName = new Checkbox("Uses the pseudonym as Patient Name");
-
     extidPresentInDicomTagView = new ExtidPresentInDicomTagView(destinationBinder);
     div = new Div();
     div.setWidth("100%");
+
+    divExtID = new Div();
+    divExtID.add(extidListBox);
   }
 
   private void setEventWarningDICOM() {
@@ -170,21 +174,12 @@ public class LayoutDesidentification extends Div {
     extidListBox.addValueChangeListener(
         event -> {
           if (event.getValue() != null) {
-            if (event.getValue().equals(ID_GENERATED_BY_MAINZELLISTE.getDescription())) {
-              checkboxUseAsPatientName.clear();
-              extidPresentInDicomTagView.clear();
-              div.remove(checkboxUseAsPatientName);
-              div.remove(extidPresentInDicomTagView);
-            } else if (event.getValue().equals(EXTID_IN_TAG.getDescription())) {
-              div.add(UIS.setWidthFull(checkboxUseAsPatientName));
+            if (event.getValue().equals(EXTID_IN_TAG.getDescription())) {
               div.add(extidPresentInDicomTagView);
             } else {
-              div.add(UIS.setWidthFull(checkboxUseAsPatientName));
               extidPresentInDicomTagView.clear();
-              div.remove(extidPresentInDicomTagView);
+              divExtID.remove(extidPresentInDicomTagView);
             }
-          } else {
-            div.remove(checkboxUseAsPatientName);
           }
         });
   }
@@ -211,12 +206,6 @@ public class LayoutDesidentification extends Div {
                 project != null || (project == null && !checkboxDesidentification.getValue()),
             "Choose a project")
         .bind(DestinationEntity::getProjectEntity, DestinationEntity::setProjectEntity);
-
-    destinationBinder
-        .forField(checkboxUseAsPatientName)
-        .bind(
-            DestinationEntity::getPseudonymAsPatientName,
-            DestinationEntity::setPseudonymAsPatientName);
   }
 
   public Binder<DestinationEntity> getDestinationBinder() {
@@ -239,12 +228,12 @@ public class LayoutDesidentification extends Div {
     return labelDisclaimer;
   }
 
-  public Checkbox getCheckboxUseAsPatientName() {
-    return checkboxUseAsPatientName;
-  }
-
   public ExtidPresentInDicomTagView getExtidPresentInDicomTagView() {
     return extidPresentInDicomTagView;
+  }
+
+  public Div getDivExtID() {
+    return divExtID;
   }
 
   public Div getDiv() {
