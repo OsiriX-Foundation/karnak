@@ -12,17 +12,30 @@ package org.karnak.backend.model.profiles;
 import org.dcm4che3.data.Attributes;
 import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.model.action.ActionItem;
+import org.karnak.backend.model.expression.ExprConditionDestination;
+import org.karnak.backend.model.expression.ExpressionError;
+import org.karnak.backend.model.expression.ExpressionResult;
 import org.karnak.backend.model.profilepipe.HMAC;
 
 public class CleanPixelData extends AbstractProfileItem {
 
   public CleanPixelData(ProfileElementEntity profileElementEntity) throws Exception {
     super(profileElementEntity);
+    profileValidation();
   }
 
   @Override
   public ActionItem getAction(Attributes dcm, Attributes dcmCopy, int tag, HMAC hmac) {
     // Action handles in the DICOM content not in metadata.
     return null;
+  }
+
+  @Override
+  public void profileValidation() throws Exception {
+    ExpressionError expressionError =
+        ExpressionResult.isValid(condition, new ExprConditionDestination(), Boolean.class);
+    if (condition != null && !expressionError.isValid()) {
+      throw new Exception(expressionError.getMsg());
+    }
   }
 }
