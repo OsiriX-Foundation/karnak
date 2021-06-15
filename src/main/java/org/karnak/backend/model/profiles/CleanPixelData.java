@@ -18,6 +18,7 @@ public class CleanPixelData extends AbstractProfileItem {
 
   public CleanPixelData(ProfileElementEntity profileElementEntity) throws Exception {
     super(profileElementEntity);
+    profileValidation();
   }
 
   @Override

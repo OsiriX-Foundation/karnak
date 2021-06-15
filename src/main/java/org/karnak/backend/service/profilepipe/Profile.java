@@ -212,11 +212,8 @@ public class Profile {
       MaskArea mask = getMask(dcmCopy.getString(Tag.StationName));
       // A mask must be applied with all the US and Secondary Capture sopClassUID, and with
       // BurnedInAnnotation
-      if (scuPattern.startsWith("1.2.840.10008.5.1.4.1.1.6.")
-          || scuPattern.startsWith("1.2.840.10008.5.1.4.1.1.7.")
-          || scuPattern.startsWith("1.2.840.10008.5.1.4.1.1.3.")
-          || scuPattern.equals("1.2.840.10008.5.1.4.1.1.77.1.1")
-          || "YES".equalsIgnoreCase(dcmCopy.getString(Tag.BurnedInAnnotation))) {
+      if (isCleanPixelAllowedDependingImageType(dcmCopy, sopClassUID, scuPattern)
+          && evaluateConditionCleanPixelData(dcmCopy)) {
         context.setMaskArea(mask);
         if (mask == null) {
           throw new IllegalStateException("Cannot clean pixel data to sopClassUID " + sopClassUID);
@@ -225,6 +222,49 @@ public class Profile {
         context.setMaskArea(null);
       }
     }
+  }
+
+  /**
+   * Determine if the clean pixel should be applied depending on the image type
+   *
+   * @param dcmCopy Attributes
+   * @param sopClassUID SopClassUID
+   * @param scuPattern Pattern
+   * @return true if the clean pixel could be applied
+   */
+  private boolean isCleanPixelAllowedDependingImageType(
+      Attributes dcmCopy, String sopClassUID, String scuPattern) {
+    // A mask must be applied with all the US and Secondary Capture sopClassUID, and with
+    // BurnedInAnnotation
+    return scuPattern.startsWith("1.2.840.10008.5.1.4.1.1.6.")
+        || scuPattern.startsWith("1.2.840.10008.5.1.4.1.1.7.")
+        || scuPattern.startsWith("1.2.840.10008.5.1.4.1.1.3.")
+        || sopClassUID.equals("1.2.840.10008.5.1.4.1.1.77.1.1")
+        || "YES".equalsIgnoreCase(dcmCopy.getString(Tag.BurnedInAnnotation));
+  }
+
+  /**
+   * Evaluate the condition on the profile Clean Pixel Data
+   *
+   * @param dcmCopy Context copy
+   * @return true if the condition match, false if there are some exclusions
+   */
+  boolean evaluateConditionCleanPixelData(Attributes dcmCopy) {
+    boolean conditionCleanPixelData = true;
+    // Retrieve the profile item
+    ProfileItem profileItemCleanPixelData =
+        profiles.stream().filter(CleanPixelData.class::isInstance).findFirst().orElse(null);
+    if (profileItemCleanPixelData != null && profileItemCleanPixelData.getCondition() != null) {
+      // Evaluate the condition
+      ExprCondition exprCondition = new ExprCondition(dcmCopy);
+      conditionCleanPixelData =
+          (Boolean)
+              ExpressionResult.get(
+                  profileItemCleanPixelData.getCondition(),
+                  exprCondition,
+                  Boolean.class);
+    }
+    return conditionCleanPixelData;
   }
 
   public void applyDefacing(Attributes dcmCopy, AttributeEditorContext context) {
