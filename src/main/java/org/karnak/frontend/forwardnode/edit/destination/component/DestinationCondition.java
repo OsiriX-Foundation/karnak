@@ -15,7 +15,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import org.karnak.backend.data.entity.DestinationEntity;
-import org.karnak.backend.model.expression.ExprConditionDestination;
+import org.karnak.backend.model.expression.ExprCondition;
 import org.karnak.backend.model.expression.ExpressionError;
 import org.karnak.backend.model.expression.ExpressionResult;
 import org.karnak.frontend.util.UIS;
@@ -55,7 +55,7 @@ public class DestinationCondition extends Div {
               if (!condition.getValue().equals("")) {
                 ExpressionError expressionError =
                     ExpressionResult.isValid(
-                        condition.getValue(), new ExprConditionDestination(), Boolean.class);
+                        condition.getValue(), new ExprCondition(), Boolean.class);
                 textErrorConditionMsg.setText(expressionError.getMsg());
                 return expressionError.isValid();
               }

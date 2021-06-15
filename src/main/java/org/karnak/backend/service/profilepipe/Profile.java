@@ -40,8 +40,7 @@ import org.karnak.backend.enums.ProfileItemType;
 import org.karnak.backend.model.action.ActionItem;
 import org.karnak.backend.model.action.Remove;
 import org.karnak.backend.model.action.ReplaceNull;
-import org.karnak.backend.model.expression.ExprConditionDestination;
-import org.karnak.backend.model.expression.ExprConditionProfile;
+import org.karnak.backend.model.expression.ExprCondition;
 import org.karnak.backend.model.expression.ExpressionResult;
 import org.karnak.backend.model.profilepipe.HMAC;
 import org.karnak.backend.model.profilepipe.HashContext;
@@ -137,8 +136,7 @@ public class Profile {
       AttributeEditorContext context) {
     for (int tag : dcm.tags()) {
       VR vr = dcm.getVR(tag);
-      final ExprConditionProfile exprConditionProfile =
-          new ExprConditionProfile(tag, vr, dcm, dcmCopy);
+      final ExprCondition exprCondition = new ExprCondition(dcmCopy);
 
       ActionItem currentAction = null;
       ProfileItem currentProfile = null;
@@ -157,8 +155,7 @@ public class Profile {
         } else {
           boolean conditionIsOk =
               (Boolean)
-                  ExpressionResult.get(
-                      profileEntity.getCondition(), exprConditionProfile, Boolean.class);
+                  ExpressionResult.get(profileEntity.getCondition(), exprCondition, Boolean.class);
           if (conditionIsOk) {
             currentAction = profileEntity.getAction(dcm, dcmCopy, tag, hmac);
           }
@@ -278,11 +275,11 @@ public class Profile {
         if (profileItemDefacing.getCondition() == null) {
           context.getProperties().setProperty(Defacer.APPLY_DEFACING, "true");
         } else {
-          ExprConditionDestination exprConditionDestination = new ExprConditionDestination(dcmCopy);
+          ExprCondition exprCondition = new ExprCondition(dcmCopy);
           boolean conditionIsOk =
               (Boolean)
                   ExpressionResult.get(
-                      profileItemDefacing.getCondition(), exprConditionDestination, Boolean.class);
+                      profileItemDefacing.getCondition(), exprCondition, Boolean.class);
           if (conditionIsOk) {
             context.getProperties().setProperty(Defacer.APPLY_DEFACING, "true");
           }
