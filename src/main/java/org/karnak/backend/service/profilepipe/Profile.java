@@ -253,15 +253,15 @@ public class Profile {
     boolean conditionCleanPixelData = true;
     // Retrieve the profile item
     ProfileItem profileItemCleanPixelData =
-        profiles.stream().filter(p -> p instanceof CleanPixelData).findFirst().orElse(null);
+        profiles.stream().filter(CleanPixelData.class::isInstance).findFirst().orElse(null);
     if (profileItemCleanPixelData != null && profileItemCleanPixelData.getCondition() != null) {
       // Evaluate the condition
-      ExprConditionDestination exprConditionDestination = new ExprConditionDestination(dcmCopy);
+      ExprCondition exprCondition = new ExprCondition(dcmCopy);
       conditionCleanPixelData =
           (Boolean)
               ExpressionResult.get(
                   profileItemCleanPixelData.getCondition(),
-                  exprConditionDestination,
+                  exprCondition,
                   Boolean.class);
     }
     return conditionCleanPixelData;

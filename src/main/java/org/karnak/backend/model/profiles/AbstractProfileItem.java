@@ -18,6 +18,9 @@ import org.karnak.backend.data.entity.ExcludedTagEntity;
 import org.karnak.backend.data.entity.IncludedTagEntity;
 import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.model.action.ActionItem;
+import org.karnak.backend.model.expression.ExprCondition;
+import org.karnak.backend.model.expression.ExpressionError;
+import org.karnak.backend.model.expression.ExpressionResult;
 
 public abstract class AbstractProfileItem implements ProfileItem {
 
@@ -91,5 +94,11 @@ public abstract class AbstractProfileItem implements ProfileItem {
   }
 
   @Override
-  public void profileValidation() throws Exception {}
+  public void profileValidation() throws Exception {
+    ExpressionError expressionError =
+        ExpressionResult.isValid(condition, new ExprCondition(), Boolean.class);
+    if (condition != null && !expressionError.isValid()) {
+      throw new Exception(expressionError.getMsg());
+    }
+  }
 }
