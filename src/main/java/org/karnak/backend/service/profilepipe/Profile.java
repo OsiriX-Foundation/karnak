@@ -256,12 +256,12 @@ public class Profile {
         profiles.stream().filter(CleanPixelData.class::isInstance).findFirst().orElse(null);
     if (profileItemCleanPixelData != null && profileItemCleanPixelData.getCondition() != null) {
       // Evaluate the condition
-      ExprConditionDestination exprConditionDestination = new ExprConditionDestination(dcmCopy);
+      ExprCondition exprCondition = new ExprCondition(dcmCopy);
       conditionCleanPixelData =
           (Boolean)
               ExpressionResult.get(
                   profileItemCleanPixelData.getCondition(),
-                  exprConditionDestination,
+                  exprCondition,
                   Boolean.class);
     }
     return conditionCleanPixelData;
