@@ -260,9 +260,7 @@ public class Profile {
       conditionCleanPixelData =
           (Boolean)
               ExpressionResult.get(
-                  profileItemCleanPixelData.getCondition(),
-                  exprCondition,
-                  Boolean.class);
+                  profileItemCleanPixelData.getCondition(), exprCondition, Boolean.class);
     }
     return conditionCleanPixelData;
   }
