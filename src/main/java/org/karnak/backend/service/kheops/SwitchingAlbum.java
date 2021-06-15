@@ -21,7 +21,7 @@ import org.karnak.backend.api.KheopsApi;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.KheopsAlbumsEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
-import org.karnak.backend.model.expression.ExprConditionDestination;
+import org.karnak.backend.model.expression.ExprCondition;
 import org.karnak.backend.model.expression.ExpressionResult;
 import org.karnak.backend.model.kheops.MetadataSwitching;
 import org.karnak.backend.model.profilepipe.HMAC;
@@ -57,7 +57,7 @@ public class SwitchingAlbum {
   }
 
   private static boolean validateCondition(String condition, Attributes dcm) {
-    final ExprConditionDestination conditionKheops = new ExprConditionDestination(dcm);
+    final ExprCondition conditionKheops = new ExprCondition(dcm);
     return (Boolean) ExpressionResult.get(condition, conditionKheops, Boolean.class);
   }
 

@@ -12,7 +12,7 @@ package org.karnak.backend.model.profiles;
 import org.dcm4che3.data.Attributes;
 import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.model.action.ActionItem;
-import org.karnak.backend.model.expression.ExprConditionDestination;
+import org.karnak.backend.model.expression.ExprCondition;
 import org.karnak.backend.model.expression.ExpressionError;
 import org.karnak.backend.model.expression.ExpressionResult;
 import org.karnak.backend.model.profilepipe.HMAC;
@@ -33,7 +33,7 @@ public class Defacing extends AbstractProfileItem {
   @Override
   public void profileValidation() throws Exception {
     ExpressionError expressionError =
-        ExpressionResult.isValid(condition, new ExprConditionDestination(), Boolean.class);
+        ExpressionResult.isValid(condition, new ExprCondition(), Boolean.class);
     if (condition != null && !expressionError.isValid()) {
       throw new Exception(expressionError.getMsg());
     }
