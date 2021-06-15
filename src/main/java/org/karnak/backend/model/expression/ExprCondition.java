@@ -12,21 +12,21 @@ package org.karnak.backend.model.expression;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.util.TagUtils;
 
-public class ExprConditionDestination implements ExpressionItem {
+public class ExprCondition implements ExpressionItem {
 
   private final Attributes dcm;
 
-  public ExprConditionDestination() {
+  public ExprCondition() {
     this(new Attributes());
   }
 
-  public ExprConditionDestination(Attributes dcm) {
+  public ExprCondition(Attributes dcm) {
     this.dcm = dcm;
   }
 
   public static void expressionValidation(String condition) {
-    ExprConditionDestination exprConditionDestination = new ExprConditionDestination();
-    ExpressionResult.get(condition, exprConditionDestination, Boolean.class);
+    ExprCondition exprCondition = new ExprCondition();
+    ExpressionResult.get(condition, exprCondition, Boolean.class);
   }
 
   public static int intFromHexString(String tag) {

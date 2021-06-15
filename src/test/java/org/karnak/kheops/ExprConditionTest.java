@@ -20,11 +20,11 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.karnak.backend.model.expression.ExprConditionDestination;
+import org.karnak.backend.model.expression.ExprCondition;
 
-class ExprConditionDestinationTest {
+class ExprConditionTest {
 
-  private static ExprConditionDestination exprConditionDestination;
+  private static ExprCondition exprCondition;
 
   @BeforeAll
   protected static void setUpBeforeClass() throws Exception {
@@ -36,7 +36,7 @@ class ExprConditionDestinationTest {
     dataset.setString(Tag.SmokingStatus, VR.CS, "YES");
     dataset.setString(Tag.Modality, VR.CS, "CT");
 
-    exprConditionDestination = new ExprConditionDestination(dataset);
+    exprCondition = new ExprCondition(dataset);
   }
 
   private static Stream<Arguments> providerIsPresent() {
@@ -247,49 +247,49 @@ class ExprConditionDestinationTest {
   @ParameterizedTest
   @MethodSource("providerIsPresent")
   void tagValueIsPresent(int tag, String input) {
-    assertTrue(exprConditionDestination.tagValueIsPresent(tag, input));
+    assertTrue(exprCondition.tagValueIsPresent(tag, input));
   }
 
   @ParameterizedTest
   @MethodSource("providerIsNotPresent")
   void tagValueIsNotPresent(int tag, String input) {
-    assertFalse(exprConditionDestination.tagValueIsPresent(tag, input));
+    assertFalse(exprCondition.tagValueIsPresent(tag, input));
   }
 
   @ParameterizedTest
   @MethodSource("providerContains")
   void tagValueContains(int tag, String input) {
-    assertTrue(exprConditionDestination.tagValueContains(tag, input));
+    assertTrue(exprCondition.tagValueContains(tag, input));
   }
 
   @ParameterizedTest
   @MethodSource("providerNotContains")
   void tagValueNotContains(int tag, String input) {
-    assertFalse(exprConditionDestination.tagValueContains(tag, input));
+    assertFalse(exprCondition.tagValueContains(tag, input));
   }
 
   @ParameterizedTest
   @MethodSource("providerBeginWith")
   void tagValueBeginWith(int tag, String input) {
-    assertTrue(exprConditionDestination.tagValueBeginsWith(tag, input));
+    assertTrue(exprCondition.tagValueBeginsWith(tag, input));
   }
 
   @ParameterizedTest
   @MethodSource("providerNotBeginWith")
   void tagValueNotBeginWith(int tag, String input) {
-    assertFalse(exprConditionDestination.tagValueBeginsWith(tag, input));
+    assertFalse(exprCondition.tagValueBeginsWith(tag, input));
   }
 
   @ParameterizedTest
   @MethodSource("providerEndWith")
   void tagValueEndWith(int tag, String input) {
-    assertTrue(exprConditionDestination.tagValueEndsWith(tag, input));
+    assertTrue(exprCondition.tagValueEndsWith(tag, input));
   }
 
   @ParameterizedTest
   @MethodSource("providerNotEndWith")
   void tagValueNotEndWith(int tag, String input) {
-    assertFalse(exprConditionDestination.tagValueEndsWith(tag, input));
+    assertFalse(exprCondition.tagValueEndsWith(tag, input));
   }
 
   /*
