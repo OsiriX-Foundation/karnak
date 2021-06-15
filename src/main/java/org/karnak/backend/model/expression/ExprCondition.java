@@ -12,21 +12,21 @@ package org.karnak.backend.model.expression;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.util.TagUtils;
 
-public class ExprConditionDestination implements ExpressionItem {
+public class ExprCondition implements ExpressionItem {
 
   private final Attributes dcm;
 
-  public ExprConditionDestination() {
+  public ExprCondition() {
     this(new Attributes());
   }
 
-  public ExprConditionDestination(Attributes dcm) {
+  public ExprCondition(Attributes dcm) {
     this.dcm = dcm;
   }
 
   public static void expressionValidation(String condition) {
-    ExprConditionDestination exprConditionDestination = new ExprConditionDestination();
-    ExpressionResult.get(condition, exprConditionDestination, Boolean.class);
+    ExprCondition exprCondition = new ExprCondition();
+    ExpressionResult.get(condition, exprCondition, Boolean.class);
   }
 
   public static int intFromHexString(String tag) {
@@ -72,5 +72,20 @@ public class ExprConditionDestination implements ExpressionItem {
   public boolean tagValueEndsWith(int tag, String value) {
     String dcmValue = dcm.getString(tag);
     return dcmValue != null && dcmValue.endsWith(value);
+  }
+
+  public boolean tagIsPresent(String tag) {
+    int cleanTag = intFromHexString(tag);
+    if (dcm.getString(cleanTag) != null) {
+      return true;
+    }
+    return false;
+  }
+
+  public boolean tagIsPresent(int tag) {
+    if (dcm.getString(tag) != null) {
+      return true;
+    }
+    return false;
   }
 }

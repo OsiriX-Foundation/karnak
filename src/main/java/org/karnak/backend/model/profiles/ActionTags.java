@@ -11,13 +11,12 @@ package org.karnak.backend.model.profiles;
 
 import java.awt.Color;
 import org.dcm4che3.data.Attributes;
-import org.dcm4che3.data.VR;
 import org.karnak.backend.data.entity.ExcludedTagEntity;
 import org.karnak.backend.data.entity.IncludedTagEntity;
 import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.model.action.AbstractAction;
 import org.karnak.backend.model.action.ActionItem;
-import org.karnak.backend.model.expression.ExprConditionProfile;
+import org.karnak.backend.model.expression.ExprCondition;
 import org.karnak.backend.model.expression.ExpressionError;
 import org.karnak.backend.model.expression.ExpressionResult;
 import org.karnak.backend.model.profilepipe.HMAC;
@@ -97,7 +96,7 @@ public class ActionTags extends AbstractProfileItem {
     }
 
     final ExpressionError expressionError =
-        ExpressionResult.isValid(condition, new ExprConditionProfile(1, VR.AE), Boolean.class);
+        ExpressionResult.isValid(condition, new ExprCondition(new Attributes()), Boolean.class);
     if (condition != null && !expressionError.isValid()) {
       throw new Exception(expressionError.getMsg());
     }
