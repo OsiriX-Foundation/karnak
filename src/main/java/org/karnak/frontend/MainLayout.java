@@ -27,6 +27,7 @@ import org.karnak.frontend.help.HelpView;
 import org.karnak.frontend.mainzelliste.MainzellisteView;
 import org.karnak.frontend.profile.ProfileView;
 import org.karnak.frontend.project.ProjectView;
+import org.karnak.frontend.pseudonym.mapping.PseudonymMappingView;
 import org.springframework.security.access.annotation.Secured;
 
 /** The main layout. Contains the navigation menu. */
@@ -53,6 +54,7 @@ public class MainLayout extends FlexLayout implements RouterLayout {
         ExternalIDView.class, ExternalIDView.VIEW_NAME, new IronIcon("icons", "perm-identity"));
     menu.addView(
         MainzellisteView.class, MainzellisteView.VIEW_NAME, new IronIcon("icons", "perm-identity"));
+    menu.addView(PseudonymMappingView.class, PseudonymMappingView.VIEW_NAME, new IronIcon("icons", "perm-identity"));
     menu.addView(DicomMainView.class, DicomMainView.VIEW_NAME, new IronIcon("icons", "build"));
     menu.addView(HelpView.class, HelpView.VIEW_NAME, new IronIcon("icons", "help"));
     // menu.addView(AboutView.class, AboutView.VIEW_NAME, new IronIcon("icons", "info"));

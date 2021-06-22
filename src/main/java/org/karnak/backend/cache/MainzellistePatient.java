@@ -58,4 +58,14 @@ public class MainzellistePatient extends Patient {
   public void setIssuerOfPatientId(String issuerOfPatientId) {
     this.issuerOfPatientId = issuerOfPatientId;
   }
+
+  public String toStringUI() {
+    return "patientId:'" + patientId + '\'' +
+        " patientName:'" + patientName + '\'' +
+        " patientFirstName:'" + patientFirstName + '\'' +
+        " patientLastName:'" + patientLastName + '\'' +
+        " patientBirthDate:" + patientBirthDate +
+        " patientSex:'" + patientSex + '\'' +
+        " issuerOfPatientId:'" + issuerOfPatientId + '\'';
+  }
 }
