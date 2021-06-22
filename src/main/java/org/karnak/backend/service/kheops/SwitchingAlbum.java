@@ -98,7 +98,10 @@ public class SwitchingAlbum {
             return action;
           }
         } catch (Exception e) {
-          LOGGER.error("Switching KHEOPS, cannot get action for the destination: {}", destinationEntity.getDescription(), e);
+          LOGGER.error(
+              "Switching KHEOPS, cannot get action for the destination: {}",
+              destinationEntity.getDescription(),
+              e);
         }
       }
     }
