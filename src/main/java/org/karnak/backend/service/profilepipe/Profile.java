@@ -86,30 +86,35 @@ public class Profile {
     this.maskMap.put(stationName, maskArea);
   }
 
-  public List<ProfileItem> createProfilesList(final ProfileEntity profileEntity) {
-    if (profileEntity != null) {
-      final Set<ProfileElementEntity> listProfileElementEntity =
-          profileEntity.getProfileElementEntities();
-      List<ProfileItem> profileItems = new ArrayList<>();
+  public static List<ProfileItem> getProfileItems(ProfileEntity profileEntity) {
+    final Set<ProfileElementEntity> listProfileElementEntity =
+        profileEntity.getProfileElementEntities();
+    List<ProfileItem> profileItems = new ArrayList<>();
 
-      for (ProfileElementEntity profileElementEntity : listProfileElementEntity) {
-        ProfileItemType t = ProfileItemType.getType(profileElementEntity.getCodename());
-        if (t == null) {
-          LOGGER.error("Cannot find the profile codename: {}", profileElementEntity.getCodename());
-        } else {
-          Object instanceProfileItem;
-          try {
-            instanceProfileItem =
-                t.getProfileClass()
-                    .getConstructor(ProfileElementEntity.class)
-                    .newInstance(profileElementEntity);
-            profileItems.add((ProfileItem) instanceProfileItem);
-          } catch (Exception e) {
-            LOGGER.error("Cannot build the profile: {}", t.getProfileClass().getName(), e);
-          }
+    for (ProfileElementEntity profileElementEntity : listProfileElementEntity) {
+      ProfileItemType t = ProfileItemType.getType(profileElementEntity.getCodename());
+      if (t == null) {
+        LOGGER.error("Cannot find the profile codename: {}", profileElementEntity.getCodename());
+      } else {
+        Object instanceProfileItem;
+        try {
+          instanceProfileItem =
+              t.getProfileClass()
+                  .getConstructor(ProfileElementEntity.class)
+                  .newInstance(profileElementEntity);
+          profileItems.add((ProfileItem) instanceProfileItem);
+        } catch (Exception e) {
+          LOGGER.error("Cannot build the profile: {}", t.getProfileClass().getName(), e);
         }
       }
-      profileItems.sort(Comparator.comparing(ProfileItem::getPosition));
+    }
+    profileItems.sort(Comparator.comparing(ProfileItem::getPosition));
+    return profileItems;
+  }
+
+  public List<ProfileItem> createProfilesList(final ProfileEntity profileEntity) {
+    if (profileEntity != null) {
+      List<ProfileItem> profileItems = getProfileItems(profileEntity);
       profileEntity
           .getMaskEntities()
           .forEach(
