@@ -2,7 +2,7 @@
  * Copyright (c) 2020-2021 Karnak Team and other contributors.
  *
  * This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
  * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
@@ -10,14 +10,13 @@
 package org.karnak.backend.model.profiles;
 
 import org.dcm4che3.data.Attributes;
-import org.dcm4che3.data.VR;
 import org.dcm4che3.util.TagUtils;
 import org.karnak.backend.data.entity.ExcludedTagEntity;
 import org.karnak.backend.data.entity.IncludedTagEntity;
 import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.model.action.AbstractAction;
 import org.karnak.backend.model.action.ActionItem;
-import org.karnak.backend.model.expression.ExprConditionProfile;
+import org.karnak.backend.model.expression.ExprCondition;
 import org.karnak.backend.model.expression.ExpressionError;
 import org.karnak.backend.model.expression.ExpressionResult;
 import org.karnak.backend.model.profilepipe.HMAC;
@@ -87,10 +86,7 @@ public class PrivateTags extends AbstractProfileItem {
     }
 
     final ExpressionError expressionError =
-        ExpressionResult.isValid(
-            condition,
-            new ExprConditionProfile(1, VR.AE, new Attributes(), new Attributes()),
-            Boolean.class);
+        ExpressionResult.isValid(condition, new ExprCondition(new Attributes()), Boolean.class);
     if (condition != null && !expressionError.isValid()) {
       throw new Exception(expressionError.getMsg());
     }

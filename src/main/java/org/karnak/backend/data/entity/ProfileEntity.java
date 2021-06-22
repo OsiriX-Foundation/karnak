@@ -2,7 +2,7 @@
  * Copyright (c) 2020-2021 Karnak Team and other contributors.
  *
  * This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
  * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
@@ -28,6 +28,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -50,7 +51,7 @@ public class ProfileEntity implements Serializable {
   private String name;
   private String version;
   private String minimumKarnakVersion;
-  private String defaultIssuerOfPatientId;
+  private String defaultIssuerOfPatientId; // not use in db but used in warning msg profile
   private Boolean byDefault;
   private Set<ProfileElementEntity> profileElementEntities = new HashSet<>();
   private Set<MaskEntity> maskEntities = new HashSet<>();
@@ -126,7 +127,7 @@ public class ProfileEntity implements Serializable {
   }
 
   @JsonGetter("defaultIssuerOfPatientID")
-  @Column(name = "defaultissueropatientid")
+  @Transient // not use in db but used in warning msg profile
   public String getDefaultIssuerOfPatientId() {
     return defaultIssuerOfPatientId;
   }
