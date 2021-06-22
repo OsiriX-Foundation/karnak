@@ -2,7 +2,7 @@
  * Copyright (c) 2021 Karnak Team and other contributors.
  *
  * This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
  * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
@@ -48,7 +48,6 @@ class ProfileTest {
     destinationEntity.setPseudonymType(PseudonymType.EXTID_IN_TAG);
     destinationEntity.setTag("0008,0080");
     destinationEntity.setSavePseudonym(false);
-    destinationEntity.setPseudonymAsPatientName(true);
     ProfileEntity profileEntity = new ProfileEntity();
     Set<ProfileElementEntity> profileElementEntities = new HashSet<>();
     ProfileElementEntity profileElementEntityBasic = new ProfileElementEntity();
@@ -61,6 +60,7 @@ class ProfileTest {
     profileElementEntityCleanPixelData.setPosition(2);
     profileElementEntityBasic.setAction("ReplaceNull");
     profileElementEntityCleanPixelData.setAction("ReplaceNull");
+    profileElementEntityCleanPixelData.setCondition("!tagValueContains(#Tag.StationName,'ICT256')");
 
     profileElementEntities.add(profileElementEntityBasic);
     profileElementEntities.add(profileElementEntityCleanPixelData);
@@ -92,5 +92,79 @@ class ProfileTest {
     // Test results
     Assert.assertEquals("NONE", context.getAbort().name());
     Assert.assertNull(context.getMaskArea());
+  }
+
+  @Test
+  void should_evaluate_condition_clean_pixel_case_no_condition() {
+
+    // Init data
+    ProfileEntity profileEntity = new ProfileEntity();
+    Attributes attributes = new Attributes();
+    Set<ProfileElementEntity> profileElementEntities = new HashSet<>();
+    ProfileElementEntity profileElementEntityCleanPixelData = new ProfileElementEntity();
+    profileElementEntityCleanPixelData.setCodename("clean.pixel.data");
+    profileElementEntityCleanPixelData.setName("nameCleanPixel");
+    profileElementEntityCleanPixelData.setAction("ReplaceNull");
+    profileElementEntityCleanPixelData.setCondition(null);
+
+    profileElementEntities.add(profileElementEntityCleanPixelData);
+    profileEntity.setProfileElementEntities(profileElementEntities);
+    Profile profile = new Profile(profileEntity);
+
+    // Evaluate condition
+    boolean evaluation = profile.evaluateConditionCleanPixelData(attributes);
+
+    // Test results
+    Assert.assertTrue(evaluation);
+  }
+
+  @Test
+  void should_evaluate_condition_clean_pixel_case_exclude_station_name() {
+
+    // Init data
+    ProfileEntity profileEntity = new ProfileEntity();
+    Attributes attributes = new Attributes();
+    attributes.setString(Tag.StationName, VR.SH, "ICT256");
+    Set<ProfileElementEntity> profileElementEntities = new HashSet<>();
+    ProfileElementEntity profileElementEntityCleanPixelData = new ProfileElementEntity();
+    profileElementEntityCleanPixelData.setCodename("clean.pixel.data");
+    profileElementEntityCleanPixelData.setName("nameCleanPixel");
+    profileElementEntityCleanPixelData.setAction("ReplaceNull");
+    profileElementEntityCleanPixelData.setCondition("!tagValueContains(#Tag.StationName,'ICT256')");
+
+    profileElementEntities.add(profileElementEntityCleanPixelData);
+    profileEntity.setProfileElementEntities(profileElementEntities);
+    Profile profile = new Profile(profileEntity);
+
+    // Evaluate condition
+    boolean evaluation = profile.evaluateConditionCleanPixelData(attributes);
+
+    // Test results
+    Assert.assertFalse(evaluation);
+  }
+
+  @Test
+  void should_evaluate_condition_clean_pixel_case_include_station_name() {
+
+    // Init data
+    ProfileEntity profileEntity = new ProfileEntity();
+    Attributes attributes = new Attributes();
+    attributes.setString(Tag.StationName, VR.SH, "ICT256");
+    Set<ProfileElementEntity> profileElementEntities = new HashSet<>();
+    ProfileElementEntity profileElementEntityCleanPixelData = new ProfileElementEntity();
+    profileElementEntityCleanPixelData.setCodename("clean.pixel.data");
+    profileElementEntityCleanPixelData.setName("nameCleanPixel");
+    profileElementEntityCleanPixelData.setAction("ReplaceNull");
+    profileElementEntityCleanPixelData.setCondition("tagValueContains(#Tag.StationName,'ICT256')");
+
+    profileElementEntities.add(profileElementEntityCleanPixelData);
+    profileEntity.setProfileElementEntities(profileElementEntities);
+    Profile profile = new Profile(profileEntity);
+
+    // Evaluate condition
+    boolean evaluation = profile.evaluateConditionCleanPixelData(attributes);
+
+    // Test results
+    Assert.assertTrue(evaluation);
   }
 }

@@ -2,7 +2,7 @@
  * Copyright (c) 2020-2021 Karnak Team and other contributors.
  *
  * This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
  * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
@@ -18,6 +18,9 @@ import org.karnak.backend.data.entity.ExcludedTagEntity;
 import org.karnak.backend.data.entity.IncludedTagEntity;
 import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.model.action.ActionItem;
+import org.karnak.backend.model.expression.ExprCondition;
+import org.karnak.backend.model.expression.ExpressionError;
+import org.karnak.backend.model.expression.ExpressionResult;
 
 public abstract class AbstractProfileItem implements ProfileItem {
 
@@ -91,5 +94,11 @@ public abstract class AbstractProfileItem implements ProfileItem {
   }
 
   @Override
-  public void profileValidation() throws Exception {}
+  public void profileValidation() throws Exception {
+    ExpressionError expressionError =
+        ExpressionResult.isValid(condition, new ExprCondition(), Boolean.class);
+    if (condition != null && !expressionError.isValid()) {
+      throw new Exception(expressionError.getMsg());
+    }
+  }
 }

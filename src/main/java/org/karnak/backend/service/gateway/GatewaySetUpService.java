@@ -2,7 +2,7 @@
  * Copyright (c) 2021 Karnak Team and other contributors.
  *
  * This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
  * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
@@ -24,6 +24,7 @@ import java.util.stream.Stream;
 import org.dcm4che3.data.Attributes;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.karnak.backend.constant.DefaultValuesNotification;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.DicomSourceNodeEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
@@ -127,12 +128,16 @@ public class GatewaySetUpService {
     mailAuthUser = getProperty("MAIL_SMTP_USER", null);
     mailAuthPwd = getProperty("MAIL_SMTP_SECRET", null);
 
-    String notifyObjectErrorPrefix = getProperty("NOTIFY_OBJECT_ERROR_PREFIX", "**ERROR**");
+    String notifyObjectErrorPrefix =
+        getProperty("NOTIFY_OBJECT_ERROR_PREFIX", DefaultValuesNotification.OBJECT_ERROR_PREFIX);
     String notifyObjectPattern =
-        getProperty("NOTIFY_OBJECT_PATTERN", "[Karnak Notification] %s %.30s");
+        getProperty("NOTIFY_OBJECT_PATTERN", DefaultValuesNotification.OBJECT_PATTERN);
     List<String> notifyObjectValues =
-        Arrays.asList(getProperty("NOTIFY_OBJECT_VALUES", "PatientID,StudyDescription").split(","));
-    int notifyInterval = StringUtil.getInt(getProperty("NOTIFY_INTERNAL", "45"));
+        Arrays.asList(
+            getProperty("NOTIFY_OBJECT_VALUES", DefaultValuesNotification.OBJECT_VALUES)
+                .split(","));
+    int notifyInterval =
+        StringUtil.getInt(getProperty("NOTIFY_INTERNAL", DefaultValuesNotification.INTERVAL));
     this.notificationSetUp =
         new NotificationSetUp(
             notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues, notifyInterval);
@@ -372,7 +377,15 @@ public class GatewaySetUpService {
 
           WebForwardDestination fwd =
               new WebForwardDestination(
-                  dstNode.getId(), fwdSrcNode, dstNode.getUrl(), map, progress, editors);
+                  dstNode.getId(),
+                  fwdSrcNode,
+                  dstNode.getUrl(),
+                  map,
+                  progress,
+                  editors,
+                  dstNode.getTransferSyntax(),
+                  dstNode.isTranscodeOnlyUncompressed());
+
           progress.addProgressListener(
               new EmailNotifyProgress(streamRegistryEditor, fwd, emails, this, notifConfig));
           if (kheopsAlbumEntities != null && !kheopsAlbumEntities.isEmpty()) {
@@ -397,7 +410,10 @@ public class GatewaySetUpService {
                   destinationNode,
                   dstNode.getUseaetdest(),
                   progress,
-                  editors);
+                  editors,
+                  dstNode.getTransferSyntax(),
+                  dstNode.isTranscodeOnlyUncompressed());
+
           progress.addProgressListener(
               new EmailNotifyProgress(streamRegistryEditor, dest, emails, this, notifConfig));
           dstList.add(dest);

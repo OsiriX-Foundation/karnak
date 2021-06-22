@@ -2,7 +2,7 @@
  * Copyright (c) 2020-2021 Karnak Team and other contributors.
  *
  * This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0, or the Apache
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
  * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
@@ -12,21 +12,21 @@ package org.karnak.backend.model.expression;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.util.TagUtils;
 
-public class ExprConditionDestination implements ExpressionItem {
+public class ExprCondition implements ExpressionItem {
 
   private final Attributes dcm;
 
-  public ExprConditionDestination() {
+  public ExprCondition() {
     this(new Attributes());
   }
 
-  public ExprConditionDestination(Attributes dcm) {
+  public ExprCondition(Attributes dcm) {
     this.dcm = dcm;
   }
 
   public static void expressionValidation(String condition) {
-    ExprConditionDestination exprConditionDestination = new ExprConditionDestination();
-    ExpressionResult.get(condition, exprConditionDestination, Boolean.class);
+    ExprCondition exprCondition = new ExprCondition();
+    ExpressionResult.get(condition, exprCondition, Boolean.class);
   }
 
   public static int intFromHexString(String tag) {
@@ -72,5 +72,20 @@ public class ExprConditionDestination implements ExpressionItem {
   public boolean tagValueEndsWith(int tag, String value) {
     String dcmValue = dcm.getString(tag);
     return dcmValue != null && dcmValue.endsWith(value);
+  }
+
+  public boolean tagIsPresent(String tag) {
+    int cleanTag = intFromHexString(tag);
+    if (dcm.getString(cleanTag) != null) {
+      return true;
+    }
+    return false;
+  }
+
+  public boolean tagIsPresent(int tag) {
+    if (dcm.getString(tag) != null) {
+      return true;
+    }
+    return false;
   }
 }
