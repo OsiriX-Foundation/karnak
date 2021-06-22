@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.stream.Collectors;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.json.JSONObject;
@@ -21,10 +22,15 @@ import org.karnak.backend.api.KheopsApi;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.KheopsAlbumsEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
+import org.karnak.backend.model.action.ActionItem;
+import org.karnak.backend.model.action.UID;
 import org.karnak.backend.model.expression.ExprCondition;
 import org.karnak.backend.model.expression.ExpressionResult;
 import org.karnak.backend.model.kheops.MetadataSwitching;
 import org.karnak.backend.model.profilepipe.HMAC;
+import org.karnak.backend.model.profiles.CleanPixelData;
+import org.karnak.backend.model.profiles.ProfileItem;
+import org.karnak.backend.service.profilepipe.Profile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,8 +55,9 @@ public class SwitchingAlbum {
   }
 
   private static String hashUIDonDeidentification(
-      DestinationEntity destinationEntity, String inputUID, HMAC hmac) {
-    if (destinationEntity.isDesidentification() && hmac != null) {
+      DestinationEntity destinationEntity, String inputUID, HMAC hmac, int tag) {
+    ActionItem action = getAction(destinationEntity, tag);
+    if (destinationEntity.isDesidentification() && hmac != null && action instanceof UID) {
       return hmac.uidHash(inputUID);
     }
     return inputUID;
@@ -74,6 +81,33 @@ public class SwitchingAlbum {
     return valid;
   }
 
+  public static ActionItem getAction(DestinationEntity destinationEntity, int tag) {
+    if (destinationEntity.getProjectEntity() != null
+        && destinationEntity.getProjectEntity().getProfileEntity() != null) {
+      List<ProfileItem> profileItems =
+          Profile.getProfileItems(destinationEntity.getProjectEntity().getProfileEntity());
+      for (ProfileItem profileItem :
+          profileItems.stream()
+              .filter(p -> !(p instanceof CleanPixelData))
+              .collect(Collectors.toList())) {
+        try {
+          ActionItem action =
+              profileItem.getAction(
+                  new Attributes(), new Attributes(), tag, new HMAC(HMAC.generateRandomKey()));
+          if (action != null) {
+            return action;
+          }
+        } catch (Exception e) {
+          LOGGER.error(
+              "Switching KHEOPS, cannot get action for the destination: {}",
+              destinationEntity.getDescription(),
+              e);
+        }
+      }
+    }
+    return null;
+  }
+
   public void apply(
       DestinationEntity destinationEntity, KheopsAlbumsEntity kheopsAlbumsEntity, Attributes dcm) {
     String authorizationSource = kheopsAlbumsEntity.getAuthorizationSource();
@@ -81,14 +115,16 @@ public class SwitchingAlbum {
     String condition = kheopsAlbumsEntity.getCondition();
     HMAC hmac = generateHMAC(destinationEntity);
     String studyInstanceUID =
-        hashUIDonDeidentification(destinationEntity, dcm.getString(Tag.StudyInstanceUID), hmac);
+        hashUIDonDeidentification(
+            destinationEntity, dcm.getString(Tag.StudyInstanceUID), hmac, Tag.StudyInstanceUID);
     String seriesInstanceUID =
-        hashUIDonDeidentification(destinationEntity, dcm.getString(Tag.SeriesInstanceUID), hmac);
+        hashUIDonDeidentification(
+            destinationEntity, dcm.getString(Tag.SeriesInstanceUID), hmac, Tag.SeriesInstanceUID);
     String sopInstanceUID = dcm.getString(Tag.SOPInstanceUID);
     String urlAPI = kheopsAlbumsEntity.getUrlAPI();
     Long id = kheopsAlbumsEntity.getId();
     if (!switchingAlbumToDo.containsKey(id)) {
-      switchingAlbumToDo.put(id, new ArrayList());
+      switchingAlbumToDo.put(id, new ArrayList<MetadataSwitching>());
     }
     ArrayList<MetadataSwitching> metadataToDo =
         (ArrayList<MetadataSwitching>) switchingAlbumToDo.get(id);
