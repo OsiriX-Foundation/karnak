@@ -90,11 +90,15 @@ public class SwitchingAlbum {
           profileItems.stream()
               .filter(p -> !(p instanceof CleanPixelData))
               .collect(Collectors.toList())) {
-        ActionItem action =
-            profileItem.getAction(
-                new Attributes(), new Attributes(), tag, new HMAC(HMAC.generateRandomKey()));
-        if (action != null) {
-          return action;
+        try {
+          ActionItem action =
+              profileItem.getAction(
+                  new Attributes(), new Attributes(), tag, new HMAC(HMAC.generateRandomKey()));
+          if (action != null) {
+            return action;
+          }
+        } catch (Exception e) {
+          LOGGER.error("Switching KHEOPS, cannot get action for the destination: {}", destinationEntity.getDescription(), e);
         }
       }
     }
