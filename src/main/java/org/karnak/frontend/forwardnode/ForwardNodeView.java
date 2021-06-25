@@ -29,7 +29,7 @@ import org.springframework.security.access.annotation.Secured;
 @Route(value = "forwardnode", layout = MainLayout.class)
 @RouteAlias(value = "", layout = MainLayout.class)
 @PageTitle("KARNAK - Forward node")
-@Secured({"ADMIN"})
+@Secured({"ROLE_admin"})
 @SuppressWarnings("serial")
 public class ForwardNodeView extends HorizontalLayout implements HasUrlParameter<String> {
 

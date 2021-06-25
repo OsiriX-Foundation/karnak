@@ -36,8 +36,7 @@ public class PseudonymMappingLogic {
    * @param pseudonymMappingService Pseudonym mapping backend service
    */
   @Autowired
-  public PseudonymMappingLogic(
-      final PseudonymMappingService pseudonymMappingService) {
+  public PseudonymMappingLogic(final PseudonymMappingService pseudonymMappingService) {
     this.pseudonymMappingService = pseudonymMappingService;
   }
 

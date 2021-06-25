@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2021 Karnak Team and other contributors.
+ *
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
+ * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ */
 package org.karnak.backend.service;
 
 import org.json.JSONArray;
@@ -5,10 +14,14 @@ import org.json.JSONObject;
 import org.karnak.backend.api.PseudonymApi;
 import org.karnak.backend.cache.MainzellistePatient;
 import org.karnak.backend.dicom.DateTimeUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PseudonymMappingService {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(PseudonymMappingService.class);
 
   public MainzellistePatient retrieveMainzellistePatient(final String pseudonym) {
     MainzellistePatient mainzellistePatient = null;

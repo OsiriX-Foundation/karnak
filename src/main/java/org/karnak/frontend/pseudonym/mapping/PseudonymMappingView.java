@@ -24,7 +24,7 @@ import org.springframework.security.access.annotation.Secured;
 @Route(value = "mapping", layout = MainLayout.class)
 @PageTitle("KARNAK - Mainzelliste Mapping Pseudonym")
 @Tag("mainzelliste-mapping-pseudonym-view")
-@Secured({"ADMIN"})
+@Secured({"ROLE_investigator"})
 @SuppressWarnings("serial")
 public class PseudonymMappingView extends HorizontalLayout {
 
@@ -62,25 +62,30 @@ public class PseudonymMappingView extends HorizontalLayout {
 
   /** Build listeners */
   private void buildListeners() {
+
+    // Find patient listener
     mappingMainzellisteComponent
         .getFindButton()
         .addClickListener(
             event -> {
-              // Retrieve patient
-              MainzellistePatient mainzellistePatientFound = pseudonymMappingLogic
-                  .retrieveMainzellistePatient(
-                      mappingMainzellisteComponent.getPseudonymTextField().getValue());
+              if (mappingMainzellisteComponent.getPseudonymTextField().getValue() != null
+                  && !mappingMainzellisteComponent.getPseudonymTextField().getValue().isEmpty()) {
 
-              // If found set patient data
-              mappingMainzellisteComponent
-                  .getPatientFoundLabel()
-                  .setText(mainzellistePatientFound != null ? mainzellistePatientFound.toStringUI() : "Patient not found");
+                // Retrieve patient
+                MainzellistePatient mainzellistePatientFound =
+                    pseudonymMappingLogic.retrieveMainzellistePatient(
+                        mappingMainzellisteComponent.getPseudonymTextField().getValue());
+
+                // handle result find patient
+                mappingMainzellisteComponent.handleResultFindPatient(mainzellistePatientFound);
+              }
             });
   }
 
   /** Build components */
   private void buildComponents() {
     mappingMainzellisteComponent = new MappingMainzellisteComponent();
+    mappingMainzellisteComponent.getResultDiv().setVisible(false);
   }
 
   /** Add components in the view */
@@ -90,7 +95,6 @@ public class PseudonymMappingView extends HorizontalLayout {
 
     // Titles
     mappingLayout.add(new H2("Pseudonym Mapping"));
-    mappingLayout.add(new H2("Mainzelliste"));
 
     // Mainzelliste
     mappingLayout.add(mappingMainzellisteComponent);
