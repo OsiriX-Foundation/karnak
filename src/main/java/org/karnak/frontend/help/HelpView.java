@@ -20,7 +20,7 @@ import org.karnak.frontend.MainLayout;
 @Route(value = "help", layout = MainLayout.class)
 @PageTitle("KARNAK - Help")
 @Tag("help-view")
-//@Secured({"ROLE_admin", "ROLE_user"})
+// @Secured({"ROLE_admin", "ROLE_user"})
 public class HelpView extends VerticalLayout {
 
   public static final String VIEW_NAME = "Help";
