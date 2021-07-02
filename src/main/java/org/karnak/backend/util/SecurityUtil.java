@@ -16,21 +16,36 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
+import javax.annotation.PostConstruct;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import org.karnak.backend.enums.SecurityRole;
+import org.karnak.backend.security.RoleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 
+@Component
 public final class SecurityUtil {
 
   private static final Logger LOG = LoggerFactory.getLogger(SecurityUtil.class);
+
+  // Role service
+  @Autowired private RoleService jwtRoleService;
+  private static RoleService roleServiceStatic;
+
+  /** Set static autowired service */
+  @PostConstruct
+  public void init() {
+    roleServiceStatic = jwtRoleService;
+  }
 
   /**
    * Determines if a request is internal to Vaadin
@@ -87,6 +102,10 @@ public final class SecurityUtil {
       } else {
         // lookup needed role in user roles
         List<String> allowedRoles = Arrays.asList(secured.value());
+
+        // Update roles from access token
+        roleServiceStatic.updateAccessTokenRoles();
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         isAccessGranted =
             authentication != null

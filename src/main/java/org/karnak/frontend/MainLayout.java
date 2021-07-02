@@ -74,24 +74,6 @@ public class MainLayout extends FlexLayout implements RouterLayout {
   protected void onAttach(AttachEvent attachEvent) {
     super.onAttach(attachEvent);
     attachEvent.getUI().addShortcutListener(SecurityUtil::signOut, Key.KEY_L, KeyModifier.CONTROL);
-
-    // add the admin view menu item if/when it is registered dynamically
-    /*
-    Command addAdminMenuItemCommand = () -> menu.addView(AdminView.class, AdminView.VIEW_NAME,
-            new IronIcon("icons", "perm-identity"));
-    RouteConfiguration sessionScopedConfiguration = RouteConfiguration.forSessionScope();
-    if (sessionScopedConfiguration.isRouteRegistered(AdminView.class)) {
-        addAdminMenuItemCommand.execute();
-    } else {
-        sessionScopedConfiguration.addRoutesChangeListener(event -> {
-            for (RouteBaseData data : event.getAddedRoutes()) {
-                if (data.getNavigationTarget().equals(AdminView.class)) {
-                    addAdminMenuItemCommand.execute();
-                }
-            }
-        });
-    }
-     */
   }
 
   /**
