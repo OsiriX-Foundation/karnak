@@ -21,7 +21,7 @@ import org.springframework.security.access.annotation.Secured;
 @Route(value = "mainzelliste", layout = MainLayout.class)
 @PageTitle("KARNAK - Mainzelliste")
 @Tag("mainzelliste-view")
-@Secured({"ADMIN"})
+@Secured({"ROLE_admin"})
 @SuppressWarnings("serial")
 public class MainzellisteView extends HorizontalLayout {
 

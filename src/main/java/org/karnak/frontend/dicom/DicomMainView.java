@@ -28,7 +28,7 @@ import org.springframework.security.access.annotation.Secured;
 
 @Route(value = "dicom", layout = MainLayout.class)
 @PageTitle("KARNAK - DICOM Tools")
-@Secured({"ADMIN"})
+@Secured({"ROLE_admin"})
 public class DicomMainView extends VerticalLayout {
   public static final String VIEW_NAME = "DICOM Tools";
   private static final long serialVersionUID = 1L;

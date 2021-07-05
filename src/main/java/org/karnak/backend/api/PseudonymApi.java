@@ -155,7 +155,7 @@ public class PseudonymApi {
       LOGGER.warn("Session interrupted. Cannot create patient", e);
       Thread.currentThread().interrupt();
     } catch (Exception e) {
-      LOGGER.error("Cannot create patient", e);
+      LOGGER.info("Cannot get patient", e);
     }
     return patientArray;
   }

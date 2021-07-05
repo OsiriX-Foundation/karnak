@@ -30,7 +30,7 @@ import org.springframework.security.access.annotation.Secured;
 /** Project View */
 @Route(value = "projects", layout = MainLayout.class)
 @PageTitle("KARNAK - Projects")
-@Secured({"ADMIN"})
+@Secured({"ROLE_admin"})
 @SuppressWarnings("serial")
 public class ProjectView extends HorizontalLayout implements HasUrlParameter<String> {
 

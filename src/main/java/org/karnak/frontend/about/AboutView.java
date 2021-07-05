@@ -18,7 +18,7 @@ import org.springframework.security.access.annotation.Secured;
 
 @Route(value = "about", layout = MainLayout.class)
 @PageTitle("KARNAK - About")
-@Secured({"ADMIN"})
+@Secured({"ROLE_admin"})
 @SuppressWarnings("serial")
 public class AboutView extends VerticalLayout {
 
