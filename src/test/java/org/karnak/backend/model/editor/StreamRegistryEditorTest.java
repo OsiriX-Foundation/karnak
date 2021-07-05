@@ -18,12 +18,10 @@ import org.junit.jupiter.api.Test;
 import org.karnak.backend.model.Series;
 import org.karnak.backend.model.SopInstance;
 import org.karnak.backend.model.Study;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.weasis.dicom.param.AttributeEditorContext;
 import org.weasis.dicom.param.DicomNode;
 import org.weasis.dicom.param.DicomProgress;
 
-@SpringBootTest
 class StreamRegistryEditorTest {
 
   // Create streamRegistryEditor

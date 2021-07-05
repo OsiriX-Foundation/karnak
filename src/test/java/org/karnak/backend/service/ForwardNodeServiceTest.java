@@ -17,9 +17,7 @@ import org.karnak.backend.data.entity.DicomSourceNodeEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.data.repo.ForwardNodeRepo;
 import org.mockito.Mockito;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
 class ForwardNodeServiceTest {
 
   // Repositories

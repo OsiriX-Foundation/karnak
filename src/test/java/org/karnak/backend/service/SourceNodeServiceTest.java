@@ -15,10 +15,8 @@ import org.karnak.backend.data.entity.DicomSourceNodeEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.data.repo.DicomSourceNodeRepo;
 import org.mockito.Mockito;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationEventPublisher;
 
-@SpringBootTest
 class SourceNodeServiceTest {
 
   // Application Event Publisher
