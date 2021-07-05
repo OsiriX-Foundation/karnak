@@ -1,35 +1,35 @@
-//TODO: spring test configuration + reactivate this test
-///*
-// * Copyright (c) 2020-2021 Karnak Team and other contributors.
-// *
-// * This program and the accompanying materials are made available under the terms of the Eclipse
-// * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
-// * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
-// *
-// * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
-// */
-//package org.karnak.profilepipe;
+/*
+ * Copyright (c) 2020-2021 Karnak Team and other contributors.
+ *
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
+ * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ */
+package org.karnak.profilepipe;
+// TODO: spring test configuration + reactivate this test
 //
-//import static org.junit.jupiter.api.Assertions.assertTrue;
+// import static org.junit.jupiter.api.Assertions.assertTrue;
 //
-//import org.dcm4che3.data.Attributes;
-//import org.dcm4che3.data.Sequence;
-//import org.dcm4che3.data.Tag;
-//import org.dcm4che3.data.VR;
-//import org.junit.jupiter.api.BeforeAll;
-//import org.junit.jupiter.api.Test;
-//import org.karnak.backend.data.entity.ArgumentEntity;
-//import org.karnak.backend.data.entity.IncludedTagEntity;
-//import org.karnak.backend.data.entity.ProfileElementEntity;
-//import org.karnak.backend.data.entity.ProfileEntity;
-//import org.karnak.backend.model.profilepipe.HMAC;
-//import org.karnak.backend.model.profilepipe.HashContext;
-//import org.karnak.backend.service.profilepipe.Profile;
-//import org.karnak.backend.util.DicomObjectTools;
-//import org.springframework.boot.test.context.SpringBootTest;
+// import org.dcm4che3.data.Attributes;
+// import org.dcm4che3.data.Sequence;
+// import org.dcm4che3.data.Tag;
+// import org.dcm4che3.data.VR;
+// import org.junit.jupiter.api.BeforeAll;
+// import org.junit.jupiter.api.Test;
+// import org.karnak.backend.data.entity.ArgumentEntity;
+// import org.karnak.backend.data.entity.IncludedTagEntity;
+// import org.karnak.backend.data.entity.ProfileElementEntity;
+// import org.karnak.backend.data.entity.ProfileEntity;
+// import org.karnak.backend.model.profilepipe.HMAC;
+// import org.karnak.backend.model.profilepipe.HashContext;
+// import org.karnak.backend.service.profilepipe.Profile;
+// import org.karnak.backend.util.DicomObjectTools;
+// import org.springframework.boot.test.context.SpringBootTest;
 //
-//@SpringBootTest
-//class ProfileTest {
+// @SpringBootTest
+// class ProfileTest {
 //
 //  private static HMAC defaultHMAC;
 //
@@ -396,7 +396,8 @@
 //    final ProfileElementEntity profileElementEntity =
 //        new ProfileElementEntity(
 //            "Remove tag", "action.on.specific.tags", null, "X", null, 0, profileEntity);
-//    profileElementEntity.addIncludedTag(new IncludedTagEntity("(0010,1010)", profileElementEntity));
+//    profileElementEntity.addIncludedTag(new IncludedTagEntity("(0010,1010)",
+// profileElementEntity));
 //    profileEntity.addProfilePipe(profileElementEntity);
 //    Profile profile = new Profile(profileEntity);
 //    profile.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
@@ -420,7 +421,8 @@
 //    ProfileElementEntity profileElementEntity =
 //        new ProfileElementEntity(
 //            "Replace tag by null", "action.on.specific.tags", null, "Z", null, 0, profileEntity);
-//    profileElementEntity.addIncludedTag(new IncludedTagEntity("(0010,1010)", profileElementEntity));
+//    profileElementEntity.addIncludedTag(new IncludedTagEntity("(0010,1010)",
+// profileElementEntity));
 //    profileEntity.addProfilePipe(profileElementEntity);
 //    Profile profile = new Profile(profileEntity);
 //    profile.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
@@ -457,7 +459,8 @@
 //            "shift",
 //            0,
 //            profileEntity);
-//    profileElementEntity.addIncludedTag(new IncludedTagEntity("(xxxx,xxxx)", profileElementEntity));
+//    profileElementEntity.addIncludedTag(new IncludedTagEntity("(xxxx,xxxx)",
+// profileElementEntity));
 //    profileElementEntity.addArgument(new ArgumentEntity("seconds", "60", profileElementEntity));
 //    profileElementEntity.addArgument(new ArgumentEntity("days", "365", profileElementEntity));
 //    profileEntity.addProfilePipe(profileElementEntity);
@@ -501,8 +504,10 @@
 //            "shift_range",
 //            0,
 //            profileEntity);
-//    profileElementEntity.addIncludedTag(new IncludedTagEntity("(xxxx,xxxx)", profileElementEntity));
-//    profileElementEntity.addArgument(new ArgumentEntity("max_seconds", "60", profileElementEntity));
+//    profileElementEntity.addIncludedTag(new IncludedTagEntity("(xxxx,xxxx)",
+// profileElementEntity));
+//    profileElementEntity.addArgument(new ArgumentEntity("max_seconds", "60",
+// profileElementEntity));
 //    profileElementEntity.addArgument(new ArgumentEntity("min_days", "50", profileElementEntity));
 //    profileElementEntity.addArgument(new ArgumentEntity("max_days", "100", profileElementEntity));
 //
@@ -530,7 +535,8 @@
 //    final ProfileElementEntity profileElementEntity =
 //        new ProfileElementEntity(
 //            "Remove tag", "action.on.specific.tags", null, "X", null, 0, profileEntity);
-//    profileElementEntity.addIncludedTag(new IncludedTagEntity("(0010,1010)", profileElementEntity));
+//    profileElementEntity.addIncludedTag(new IncludedTagEntity("(0010,1010)",
+// profileElementEntity));
 //    profileEntity.addProfilePipe(profileElementEntity);
 //    final ProfileElementEntity profileElementEntity2 =
 //        new ProfileElementEntity(
@@ -582,8 +588,10 @@
 //    final ProfileElementEntity profileElementEntity =
 //        new ProfileElementEntity(
 //            "Keep tag", "action.on.privatetags", null, "K", null, 0, profileEntity);
-//    profileElementEntity.addIncludedTag(new IncludedTagEntity("(7053,xx00)", profileElementEntity));
-//    profileElementEntity.addIncludedTag(new IncludedTagEntity("(7053,xx09)", profileElementEntity));
+//    profileElementEntity.addIncludedTag(new IncludedTagEntity("(7053,xx00)",
+// profileElementEntity));
+//    profileElementEntity.addIncludedTag(new IncludedTagEntity("(7053,xx09)",
+// profileElementEntity));
 //    profileEntity.addProfilePipe(profileElementEntity);
 //    final ProfileElementEntity profileElementEntity2 =
 //        new ProfileElementEntity(
@@ -610,15 +618,17 @@
 //
 //    ProfileEntity profileEntity = new ProfileEntity("TEST", "0.9.1", "0.9.1", "DPA");
 //    ProfileElementEntity profileElementEntity =
-//        new ProfileElementEntity("Expr", "expression.on.tags", null, null, null, 0, profileEntity);
+//        new ProfileElementEntity("Expr", "expression.on.tags", null, null, null, 0,
+// profileEntity);
 //    profileElementEntity.addArgument(
 //        new ArgumentEntity(
 //            "expr", "stringValue == '075Y'? Remove() : Keep()", profileElementEntity));
-//    profileElementEntity.addIncludedTag(new IncludedTagEntity("(xxxx,xxxx)", profileElementEntity));
+//    profileElementEntity.addIncludedTag(new IncludedTagEntity("(xxxx,xxxx)",
+// profileElementEntity));
 //
 //    profileEntity.addProfilePipe(profileElementEntity);
 //    Profile profile = new Profile(profileEntity);
 //    profile.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
 //    assertTrue(DicomObjectTools.dicomObjectEquals(dataset2, dataset1));
 //  }
-//}
+// }

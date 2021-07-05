@@ -1,40 +1,40 @@
-//TODO: spring test configuration + reactivate this test
-///*
-// * Copyright (c) 2021 Karnak Team and other contributors.
-// *
-// * This program and the accompanying materials are made available under the terms of the Eclipse
-// * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
-// * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
-// *
-// * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
-// */
-//package org.karnak.backend.service.gateway;
+/*
+ * Copyright (c) 2021 Karnak Team and other contributors.
+ *
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
+ * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ */
+package org.karnak.backend.service.gateway;
+// TODO: spring test configuration + reactivate this test
 //
-//import java.util.ArrayList;
-//import java.util.HashSet;
-//import java.util.List;
-//import java.util.Set;
-//import org.junit.Assert;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.Test;
-//import org.karnak.backend.data.entity.DestinationEntity;
-//import org.karnak.backend.data.entity.DicomSourceNodeEntity;
-//import org.karnak.backend.data.entity.ForwardNodeEntity;
-//import org.karnak.backend.data.entity.KheopsAlbumsEntity;
-//import org.karnak.backend.data.entity.ProfileEntity;
-//import org.karnak.backend.data.entity.ProjectEntity;
-//import org.karnak.backend.data.repo.ForwardNodeRepo;
-//import org.karnak.backend.dicom.DicomForwardDestination;
-//import org.karnak.backend.dicom.ForwardDestination;
-//import org.karnak.backend.enums.DestinationType;
-//import org.karnak.backend.enums.NodeEventType;
-//import org.karnak.backend.model.NodeEvent;
-//import org.mockito.Mockito;
-//import org.springframework.boot.test.context.SpringBootTest;
-//import org.weasis.dicom.param.DicomNode;
+// import java.util.ArrayList;
+// import java.util.HashSet;
+// import java.util.List;
+// import java.util.Set;
+// import org.junit.Assert;
+// import org.junit.jupiter.api.BeforeEach;
+// import org.junit.jupiter.api.Test;
+// import org.karnak.backend.data.entity.DestinationEntity;
+// import org.karnak.backend.data.entity.DicomSourceNodeEntity;
+// import org.karnak.backend.data.entity.ForwardNodeEntity;
+// import org.karnak.backend.data.entity.KheopsAlbumsEntity;
+// import org.karnak.backend.data.entity.ProfileEntity;
+// import org.karnak.backend.data.entity.ProjectEntity;
+// import org.karnak.backend.data.repo.ForwardNodeRepo;
+// import org.karnak.backend.dicom.DicomForwardDestination;
+// import org.karnak.backend.dicom.ForwardDestination;
+// import org.karnak.backend.enums.DestinationType;
+// import org.karnak.backend.enums.NodeEventType;
+// import org.karnak.backend.model.NodeEvent;
+// import org.mockito.Mockito;
+// import org.springframework.boot.test.context.SpringBootTest;
+// import org.weasis.dicom.param.DicomNode;
 //
-//@SpringBootTest
-//class GatewaySetUpServiceTest {
+// @SpringBootTest
+// class GatewaySetUpServiceTest {
 //
 //  // Repositories
 //  final ForwardNodeRepo forwardNodeRepoMock = Mockito.mock(ForwardNodeRepo.class);
@@ -140,7 +140,8 @@
 //    Assert.assertEquals(1, gatewaySetUpService.getDestinations().size());
 //    Assert.assertTrue(gatewaySetUpService.getDestinationNode("fwdAeTitle").isPresent());
 //    Assert.assertEquals(
-//        "aeTitle", ((DicomForwardDestination) values.get(0).get(0)).getDestinationNode().getAet());
+//        "aeTitle", ((DicomForwardDestination)
+// values.get(0).get(0)).getDestinationNode().getAet());
 //  }
 //
 //  @Test
@@ -200,7 +201,8 @@
 //    Assert.assertTrue(gatewaySetUpService.getDestinationNode("fwdAeTitle").isPresent());
 //    Assert.assertEquals(
 //        0,
-//        gatewaySetUpService.getDestinationNode("fwdAeTitle").get().getAcceptedSourceNodes().size());
+//
+// gatewaySetUpService.getDestinationNode("fwdAeTitle").get().getAcceptedSourceNodes().size());
 //  }
 //
 //  @Test
@@ -230,7 +232,8 @@
 //    // Test results
 //    Assert.assertTrue(gatewaySetUpService.getDestinationNode("fwdAeTitle").isPresent());
 //    Assert.assertEquals(
-//        "aeTitle", ((DicomForwardDestination) values.get(0).get(0)).getDestinationNode().getAet());
+//        "aeTitle", ((DicomForwardDestination)
+// values.get(0).get(0)).getDestinationNode().getAet());
 //
 //    // Modify aeTitle
 //    destinationEntity.setAeTitle("aeTitleModified");
@@ -285,7 +288,8 @@
 //    // Test results
 //    Assert.assertTrue(gatewaySetUpService.getDestinationNode("fwdAeTitle").isPresent());
 //    Assert.assertEquals(
-//        "aeTitle", ((DicomForwardDestination) values.get(0).get(0)).getDestinationNode().getAet());
+//        "aeTitle", ((DicomForwardDestination)
+// values.get(0).get(0)).getDestinationNode().getAet());
 //
 //    // Modify forward nod
 //    forwardNodeEntity.setFwdAeTitle("aeTitleModified");
@@ -299,7 +303,8 @@
 //    // Test results
 //    Assert.assertTrue(gatewaySetUpService.getDestinationNode("aeTitleModified").isPresent());
 //    Assert.assertEquals(
-//        "aeTitle", ((DicomForwardDestination) values.get(0).get(0)).getDestinationNode().getAet());
+//        "aeTitle", ((DicomForwardDestination)
+// values.get(0).get(0)).getDestinationNode().getAet());
 //
 //    // Set Remove
 //    nodeEvent = new NodeEvent(forwardNodeEntity, NodeEventType.REMOVE);
@@ -310,4 +315,4 @@
 //    // Test results
 //    Assert.assertFalse(gatewaySetUpService.getDestinationNode("aeTitleModified").isPresent());
 //  }
-//}
+// }

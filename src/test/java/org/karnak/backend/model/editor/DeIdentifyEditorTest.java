@@ -1,30 +1,30 @@
-//TODO: spring test configuration + reactivate this test
-///*
-// * Copyright (c) 2021 Karnak Team and other contributors.
-// *
-// * This program and the accompanying materials are made available under the terms of the Eclipse
-// * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
-// * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
-// *
-// * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
-// */
-//package org.karnak.backend.model.editor;
+/*
+ * Copyright (c) 2021 Karnak Team and other contributors.
+ *
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
+ * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ */
+package org.karnak.backend.model.editor;
+// TODO: spring test configuration + reactivate this test
 //
-//import org.dcm4che3.data.Attributes;
-//import org.dcm4che3.data.Tag;
-//import org.dcm4che3.data.VR;
-//import org.junit.Assert;
-//import org.junit.jupiter.api.Test;
-//import org.karnak.backend.data.entity.DestinationEntity;
-//import org.karnak.backend.data.entity.ProfileEntity;
-//import org.karnak.backend.data.entity.ProjectEntity;
-//import org.karnak.backend.enums.PseudonymType;
-//import org.springframework.boot.test.context.SpringBootTest;
-//import org.weasis.dicom.param.AttributeEditorContext;
-//import org.weasis.dicom.param.DicomNode;
+// import org.dcm4che3.data.Attributes;
+// import org.dcm4che3.data.Tag;
+// import org.dcm4che3.data.VR;
+// import org.junit.Assert;
+// import org.junit.jupiter.api.Test;
+// import org.karnak.backend.data.entity.DestinationEntity;
+// import org.karnak.backend.data.entity.ProfileEntity;
+// import org.karnak.backend.data.entity.ProjectEntity;
+// import org.karnak.backend.enums.PseudonymType;
+// import org.springframework.boot.test.context.SpringBootTest;
+// import org.weasis.dicom.param.AttributeEditorContext;
+// import org.weasis.dicom.param.DicomNode;
 //
-//@SpringBootTest
-//class DeIdentifyEditorTest {
+// @SpringBootTest
+// class DeIdentifyEditorTest {
 //
 //  @Test
 //  void should_apply_to_dicom_object() {
@@ -63,4 +63,4 @@
 //    Assert.assertEquals("NONE", attributeEditorContext.getAbort().name());
 //    Assert.assertNull(attributeEditorContext.getMaskArea());
 //  }
-//}
+// }

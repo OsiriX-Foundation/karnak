@@ -1,32 +1,32 @@
-//TODO: spring test configuration + reactivate this test
-///*
-// * Copyright (c) 2021 Karnak Team and other contributors.
-// *
-// * This program and the accompanying materials are made available under the terms of the Eclipse
-// * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
-// * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
-// *
-// * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
-// */
-//package org.karnak.backend.service.profilepipe;
+/*
+ * Copyright (c) 2021 Karnak Team and other contributors.
+ *
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
+ * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ */
+package org.karnak.backend.service.profilepipe;
+// TODO: spring test configuration + reactivate this test
 //
-//import java.util.ArrayList;
-//import java.util.Arrays;
-//import java.util.HashMap;
-//import java.util.List;
-//import java.util.Map;
-//import org.junit.Assert;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.Test;
-//import org.karnak.backend.data.entity.ProfileEntity;
-//import org.karnak.backend.data.repo.ProfileRepo;
-//import org.karnak.backend.model.profilebody.MaskBody;
-//import org.karnak.backend.model.profilebody.ProfileElementBody;
-//import org.karnak.backend.model.profilebody.ProfilePipeBody;
-//import org.karnak.frontend.profile.component.errorprofile.ProfileError;
-//import org.mockito.Mockito;
+// import java.util.ArrayList;
+// import java.util.Arrays;
+// import java.util.HashMap;
+// import java.util.List;
+// import java.util.Map;
+// import org.junit.Assert;
+// import org.junit.jupiter.api.BeforeEach;
+// import org.junit.jupiter.api.Test;
+// import org.karnak.backend.data.entity.ProfileEntity;
+// import org.karnak.backend.data.repo.ProfileRepo;
+// import org.karnak.backend.model.profilebody.MaskBody;
+// import org.karnak.backend.model.profilebody.ProfileElementBody;
+// import org.karnak.backend.model.profilebody.ProfilePipeBody;
+// import org.karnak.frontend.profile.component.errorprofile.ProfileError;
+// import org.mockito.Mockito;
 //
-//class ProfilePipeServiceTest {
+// class ProfilePipeServiceTest {
 //
 //  // Repositories
 //  private final ProfileRepo profileRepositoryMock = Mockito.mock(ProfileRepo.class);
@@ -115,4 +115,4 @@
 //    // Test results
 //    Mockito.verify(profileRepositoryMock, Mockito.times(1)).deleteById(Mockito.anyLong());
 //  }
-//}
+// }
