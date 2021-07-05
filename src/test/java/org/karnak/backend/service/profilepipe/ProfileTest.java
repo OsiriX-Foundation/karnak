@@ -1,34 +1,34 @@
-//TODO: spring test configuration + reactivate this test
-///*
-// * Copyright (c) 2021 Karnak Team and other contributors.
-// *
-// * This program and the accompanying materials are made available under the terms of the Eclipse
-// * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
-// * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
-// *
-// * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
-// */
-//package org.karnak.backend.service.profilepipe;
+/*
+ * Copyright (c) 2021 Karnak Team and other contributors.
+ *
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
+ * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ */
+package org.karnak.backend.service.profilepipe;
+// TODO: spring test configuration + reactivate this test
 //
-//import java.awt.Rectangle;
-//import java.util.Arrays;
-//import java.util.HashSet;
-//import java.util.Set;
-//import org.dcm4che3.data.Attributes;
-//import org.dcm4che3.data.Tag;
-//import org.dcm4che3.data.VR;
-//import org.junit.Assert;
-//import org.junit.jupiter.api.Test;
-//import org.karnak.backend.data.entity.DestinationEntity;
-//import org.karnak.backend.data.entity.MaskEntity;
-//import org.karnak.backend.data.entity.ProfileElementEntity;
-//import org.karnak.backend.data.entity.ProfileEntity;
-//import org.karnak.backend.data.entity.ProjectEntity;
-//import org.karnak.backend.enums.DestinationType;
-//import org.karnak.backend.enums.PseudonymType;
-//import org.weasis.dicom.param.AttributeEditorContext;
+// import java.awt.Rectangle;
+// import java.util.Arrays;
+// import java.util.HashSet;
+// import java.util.Set;
+// import org.dcm4che3.data.Attributes;
+// import org.dcm4che3.data.Tag;
+// import org.dcm4che3.data.VR;
+// import org.junit.Assert;
+// import org.junit.jupiter.api.Test;
+// import org.karnak.backend.data.entity.DestinationEntity;
+// import org.karnak.backend.data.entity.MaskEntity;
+// import org.karnak.backend.data.entity.ProfileElementEntity;
+// import org.karnak.backend.data.entity.ProfileEntity;
+// import org.karnak.backend.data.entity.ProjectEntity;
+// import org.karnak.backend.enums.DestinationType;
+// import org.karnak.backend.enums.PseudonymType;
+// import org.weasis.dicom.param.AttributeEditorContext;
 //
-//class ProfileTest {
+// class ProfileTest {
 //
 //  @Test
 //  void should_apply() {
@@ -59,7 +59,8 @@
 //    profileElementEntityCleanPixelData.setPosition(2);
 //    profileElementEntityBasic.setAction("ReplaceNull");
 //    profileElementEntityCleanPixelData.setAction("ReplaceNull");
-//    profileElementEntityCleanPixelData.setCondition("!tagValueContains(#Tag.StationName,'ICT256')");
+//
+// profileElementEntityCleanPixelData.setCondition("!tagValueContains(#Tag.StationName,'ICT256')");
 //
 //    profileElementEntities.add(profileElementEntityBasic);
 //    profileElementEntities.add(profileElementEntityCleanPixelData);
@@ -129,7 +130,8 @@
 //    profileElementEntityCleanPixelData.setCodename("clean.pixel.data");
 //    profileElementEntityCleanPixelData.setName("nameCleanPixel");
 //    profileElementEntityCleanPixelData.setAction("ReplaceNull");
-//    profileElementEntityCleanPixelData.setCondition("!tagValueContains(#Tag.StationName,'ICT256')");
+//
+// profileElementEntityCleanPixelData.setCondition("!tagValueContains(#Tag.StationName,'ICT256')");
 //
 //    profileElementEntities.add(profileElementEntityCleanPixelData);
 //    profileEntity.setProfileElementEntities(profileElementEntities);
@@ -154,7 +156,8 @@
 //    profileElementEntityCleanPixelData.setCodename("clean.pixel.data");
 //    profileElementEntityCleanPixelData.setName("nameCleanPixel");
 //    profileElementEntityCleanPixelData.setAction("ReplaceNull");
-//    profileElementEntityCleanPixelData.setCondition("tagValueContains(#Tag.StationName,'ICT256')");
+//
+// profileElementEntityCleanPixelData.setCondition("tagValueContains(#Tag.StationName,'ICT256')");
 //
 //    profileElementEntities.add(profileElementEntityCleanPixelData);
 //    profileEntity.setProfileElementEntities(profileElementEntities);
@@ -166,4 +169,4 @@
 //    // Test results
 //    Assert.assertTrue(evaluation);
 //  }
-//}
+// }
