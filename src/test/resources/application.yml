@@ -1,0 +1,31 @@
+#  --------------------------------------------------------
+#  Karnak Application Profiles
+#  --------------------------------------------------------
+name: test-YAML
+environment: LOCAL
+karnakadmin: admin
+karnakpassword: admin
+mainzelliste:
+  apikey: 'changeThisApiKey'
+  serverurl: 'http://localhost:8083'
+logging:
+  level:
+    com:
+      zaxxer: INFO
+    org:
+      atmosphere: WARN
+      dcm4che3:
+        net: INFO
+      hibernate: WARN
+      springframework: INFO
+      springframework.core.io.support: INFO
+      weasis: DEBUG
+      karnak: DEBUG
+    root: INFO
+server:
+  port: 8081
+spring:
+  profiles:
+    active: '@activatedProperties@'
+  liquibase:
+    enabled: false

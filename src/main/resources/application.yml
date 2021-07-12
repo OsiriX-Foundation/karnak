@@ -1,0 +1,65 @@
+#  --------------------------------------------------------
+#  Karnak Application Profiles
+#  --------------------------------------------------------
+name: KARNAK-Profile
+environment: LOCAL
+karnakadmin: ${KARNAK_ADMIN:admin}
+karnakpassword: ${KARNAK_PASSWORD:admin}
+mainzelliste:
+  apikey: '${MAINZELLISTE_API_KEY:changeThisApiKey}'
+  serverurl: 'http://${MAINZELLISTE_HOSTNAME:localhost}:${MAINZELLISTE_HTTP_PORT:8083}'
+logging:
+  level:
+    org:
+      springframework: INFO
+    com:
+      vaadin:
+        flow:
+          server:
+            communication:
+              # Suppress WARN  c.v.f.s.c.ReturnChannelHandler - Ignoring update for disabled return channel
+              rpc:
+                MapSyncRpcHandler: ERROR
+              ReturnChannelHandler: ERROR
+server:
+  port: 8081
+  servlet:
+    session:
+      persistent: false
+  forward-headers-strategy: NATIVE
+spring:
+  application:
+    name: karnak
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+  profiles:
+    active: '@activatedProperties@, docker'
+  datasource:
+    password: ${DB_PASSWORD:5!KAnN@%98%d}
+    url: 'jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5433}/${DB_NAME:karnak}'
+    username: ${DB_USER:karnak}
+    hikari:
+      leak-detection-threshold: 0
+      minimum-idle: 5
+      maximum-pool-size: 10
+      connection-timeout: 10000
+      idle-timeout: 20000
+      max-lifetime: 1800000
+  mustache:
+    check-template-location: false
+  jpa:
+    hibernate:
+      # First time to create the db the value must be: create
+      ddl-auto: none
+    generate-ddl: false
+    show-sql: false
+    open-in-view: false
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+    properties:
+      hibernate:
+        temp:
+          use_jdbc_metadata_defaults: false
+      jdbc:
+        lob:
+          non_contextual_creation: true

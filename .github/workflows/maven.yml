@@ -3,14 +3,16 @@ on:
   push:
     branches:
       - master
+    tags:
+      - 'v*'
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [ opened, synchronize, reopened ]
 jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
     env:
-      PUSH_PACKAGES: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+      PUSH_PACKAGES: ${{ github.event_name == 'push' }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -31,13 +33,6 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-      - name: Build third-party libraries
-        shell: bash
-        run: |
-          git clone --depth 1 https://github.com/nroduit/dcm4che20.git --single-branch --branch image
-          mvn -B -f dcm4che20/pom.xml install
-          git clone --depth 1 https://github.com/nroduit/weasis-dicom-tools.git --single-branch --branch dcm4che6
-          mvn -B -f weasis-dicom-tools/pom.xml install
       - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
@@ -47,7 +42,12 @@ jobs:
       - name: Build the spring app
         if: ${{ env.PUSH_PACKAGES }}
         shell: bash
-        run: mvn -B clean install -P production
+        run: mvn -B clean install -P production -Dmaven.test.skip=true
+      - name: Docker meta
+        id: docker_meta
+        uses: crazy-max/ghaction-docker-meta@v1
+        with:
+          images: osirixfoundation/karnak
       - name: Set up QEMU
         if: ${{ env.PUSH_PACKAGES }}
         uses: docker/setup-qemu-action@v1
@@ -65,7 +65,8 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: mvc/src/main/docker/Dockerfile
+          file: src/main/docker/Dockerfile
           platforms: linux/amd64
-          push: true
-          tags: osirixfoundation/karnak:latest
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.docker_meta.outputs.tags }}
+          labels: ${{ steps.docker_meta.outputs.labels }}

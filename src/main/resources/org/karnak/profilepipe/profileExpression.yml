@@ -1,0 +1,14 @@
+name: "Expression"
+version: "1.0"
+minimumKarnakVersion: "1.0"
+defaultIssuerOfPatientID: "DPA"
+profileElements:
+  - name: "Expression"
+    codename: "expression.on.tags"
+    arguments:
+      expr: "getString(#Tag.PatientAge) == null? Keep() : null"
+    tags:
+      - "(xxxx,xxxx)"
+
+  - name: "DICOM basic profile"
+    codename: "basic.dicom.profile"
