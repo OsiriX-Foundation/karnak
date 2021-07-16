@@ -18,9 +18,7 @@ import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.KheopsAlbumsEntity;
 import org.karnak.backend.data.repo.KheopsAlbumsRepo;
 import org.mockito.Mockito;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
 class KheopsAlbumsServiceTest {
 
   // Repositories

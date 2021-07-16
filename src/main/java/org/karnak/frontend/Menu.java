@@ -64,7 +64,9 @@ public class Menu extends FlexLayout {
 
     // theme
     toggleButtonTheme = new ToggleButtonTheme();
-    add(new VerticalLayout(toggleButtonTheme));
+    VerticalLayout themeLayout = new VerticalLayout(toggleButtonTheme);
+    themeLayout.getElement().getStyle().set("align-items", "center");
+    add(themeLayout);
 
     // logout menu item
     Button logoutButton = new Button("Logout", VaadinIcon.SIGN_OUT.create());

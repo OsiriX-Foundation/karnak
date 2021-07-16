@@ -15,9 +15,7 @@ import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.data.entity.ProfileEntity;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
 class ProfileElementMainViewTest {
 
   @Test

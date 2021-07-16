@@ -7,19 +7,21 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  */
-package org.karnak.frontend.component;
+package org.karnak.frontend.pseudonym.mapping.component;
 
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
-class ProjectDropDownTest {
+class MappingInputComponentTest {
 
   @Test
-  void should_create_project_drop_down() {
-    // Create component
-    ProjectDropDown projectDropDown = new ProjectDropDown();
+  void should_create_mapping_input_component() {
+    // Call constructor
+    MappingInputComponent mappingInputComponent = new MappingInputComponent();
 
     // Test results
-    Assert.assertNotNull(projectDropDown);
+    Assert.assertNotNull(mappingInputComponent);
+    Assert.assertNotNull(mappingInputComponent.getFindButton());
+    Assert.assertNotNull(mappingInputComponent.getPseudonymTextField());
   }
 }

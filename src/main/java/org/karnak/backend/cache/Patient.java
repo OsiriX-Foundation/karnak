@@ -85,7 +85,7 @@ public abstract class Patient implements PseudonymPatient, Serializable {
     return value == null ? "" : value;
   }
 
-  protected void updatePatientName(String patientName) {
+  public void updatePatientName(String patientName) {
     this.patientName = patientName;
     this.patientFirstName = createPatientFirstName(patientName);
     this.patientLastName = createPatientLastName(patientName);

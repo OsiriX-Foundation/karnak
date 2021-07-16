@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  */
-package org.karnak.frontend.forwardnode.edit.destination.component;
+package org.karnak.frontend.component;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;
