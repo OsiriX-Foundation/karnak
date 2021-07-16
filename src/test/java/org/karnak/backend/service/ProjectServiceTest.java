@@ -12,6 +12,7 @@ package org.karnak.backend.service;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,6 +46,8 @@ class ProjectServiceTest {
     // Mock repositories
     Mockito.when(projectRepositoryMock.findAll())
         .thenReturn(Collections.singletonList(projectEntity));
+    Mockito.when(projectRepositoryMock.findById(Mockito.anyLong()))
+        .thenReturn(Optional.of(projectEntity));
 
     // Build mocked service
     projectService = new ProjectService(projectRepositoryMock, applicationEventPublisherMock);
@@ -116,5 +119,17 @@ class ProjectServiceTest {
     Assert.assertNotNull(projects);
     Assert.assertEquals(1, projects.size());
     Assert.assertEquals("projectEntityName", projects.get(0).getName());
+  }
+
+  @Test
+  void should_retrieve_project_by_id() {
+    // Call service
+    ProjectEntity projectEntity = projectService.retrieveProject(1L);
+
+    // Test results
+    Mockito.verify(projectRepositoryMock, Mockito.times(1)).findById(Mockito.anyLong());
+    Assert.assertNotNull(projectEntity);
+    Assert.assertEquals(Long.valueOf(1), projectEntity.getId());
+    Assert.assertEquals("projectEntityName", projectEntity.getName());
   }
 }

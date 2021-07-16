@@ -55,7 +55,7 @@ public class PseudonymApi {
   private String sessionId;
 
   public String addExtID(Fields patientFields, String externalPseudonym) {
-    this.sessionId = rqGetSessionId();
+    this.sessionId = rqGetSessionId(true);
     String[] extid = {"pid", "extid"};
     Data data = new Data(extid, patientFields, new Ids(externalPseudonym));
     try {
@@ -67,7 +67,7 @@ public class PseudonymApi {
   }
 
   public String getExistingExtID(Fields patientFields) {
-    this.sessionId = rqGetSessionId();
+    this.sessionId = rqGetSessionId(true);
     String[] extid = {"pid", "extid"};
     Data data = new Data(extid, patientFields, null);
     try {
@@ -78,7 +78,7 @@ public class PseudonymApi {
   }
 
   public String generatePID(Fields patientFields) {
-    this.sessionId = rqGetSessionId();
+    this.sessionId = rqGetSessionId(true);
     String[] extid = {"pid"};
     Data data = new Data(extid, patientFields, null);
     try {
@@ -89,9 +89,9 @@ public class PseudonymApi {
   }
 
   public JSONArray searchPatient(String pseudonym, String idTypes) {
-    this.sessionId = rqGetSessionId();
+    this.sessionId = rqGetSessionId(false);
     SearchIds[] searchIds = {new SearchIds(idTypes, pseudonym)}; // search example
-    return getPatients(searchIds);
+    return getPatients(searchIds, false);
   }
 
   private String getPseudonym(Data data) throws IOException {
@@ -144,13 +144,14 @@ public class PseudonymApi {
   /***
    * Get patient in pseudonym api
    * @param searchIds
+   * @param shouldThrowException Check if an exception should be thrown or only a log
    * @return Pseudonym
    */
-  private JSONArray getPatients(SearchIds[] searchIds) {
+  private JSONArray getPatients(SearchIds[] searchIds, boolean shouldThrowException) {
     JSONArray patientArray = null;
     try {
-      String tokenId = rqCreateTokenReadPatient(searchIds);
-      patientArray = rqGetPatient(tokenId);
+      String tokenId = rqCreateTokenReadPatient(searchIds, shouldThrowException);
+      patientArray = rqGetPatient(tokenId, shouldThrowException);
     } catch (InterruptedException e) {
       LOGGER.warn("Session interrupted. Cannot create patient", e);
       Thread.currentThread().interrupt();
@@ -162,9 +163,10 @@ public class PseudonymApi {
 
   /***
    * Make the request to have an id session to the API that manages the pseudonyms
+   * @param shouldThrowException Check if an exception should be thrown or only a log
    * @return sessionID
    */
-  private String rqGetSessionId() {
+  private String rqGetSessionId(boolean shouldThrowException) {
     Map<Object, Object> data = new HashMap<>();
     HttpRequest request =
         HttpRequest.newBuilder()
@@ -177,9 +179,10 @@ public class PseudonymApi {
     HttpResponse<String> response;
     try {
       response = httpClient.send(request, BodyHandlers.ofString());
-      controlErrorResponse(response);
-      JSONObject jsonResp = new JSONObject(response.body());
-      this.sessionId = jsonResp.getString("sessionId");
+      if (controlErrorResponse(response, shouldThrowException)) {
+        JSONObject jsonResp = new JSONObject(response.body());
+        this.sessionId = jsonResp.getString("sessionId");
+      }
     } catch (InterruptedException e) {
       LOGGER.warn("Session interrupted with Mainzelliste API", e);
       Thread.currentThread().interrupt();
@@ -207,7 +210,7 @@ public class PseudonymApi {
             .build();
 
     final HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
-    controlErrorResponse(response);
+    controlErrorResponse(response, true);
     final JSONObject jsonResp = new JSONObject(response.body());
     return jsonResp.getString("tokenId");
   }
@@ -215,10 +218,12 @@ public class PseudonymApi {
   /***
    * Make the request to have a token that allow to get patient(s)
    * @param searchIds
+   * @param shouldThrowException Check if an exception should be thrown or only a log
    * @return Patients
    */
-  private String rqCreateTokenReadPatient(SearchIds[] searchIds)
+  private String rqCreateTokenReadPatient(SearchIds[] searchIds, boolean shouldThrowException)
       throws IOException, InterruptedException {
+    String tokenId = null;
     String jsonBody = createJsonReadPatient(searchIds);
     HttpRequest request =
         HttpRequest.newBuilder()
@@ -229,10 +234,12 @@ public class PseudonymApi {
             .build();
 
     HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
-    controlErrorResponse(response);
+    if (controlErrorResponse(response, shouldThrowException)) {
+      JSONObject jsonResp = new JSONObject(response.body());
+      tokenId = jsonResp.getString("tokenId");
+    }
 
-    JSONObject jsonResp = new JSONObject(response.body());
-    return jsonResp.getString("tokenId");
+    return tokenId;
   }
 
   /***
@@ -256,7 +263,7 @@ public class PseudonymApi {
 
     List<JSONObject> newIds = new ArrayList<>();
     HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
-    controlErrorResponse(response);
+    controlErrorResponse(response, true);
     JSONArray jsonResp = new JSONArray(response.body());
     for (Object o : jsonResp) {
       if (o instanceof JSONObject) {
@@ -270,9 +277,13 @@ public class PseudonymApi {
   /***
    * Make the request to get patient with the tokenId
    * @param tokenId
+   * @param shouldThrowException Check if an exception should be thrown or only a log
    * @return Pseudonym
    */
-  private JSONArray rqGetPatient(String tokenId) throws IOException, InterruptedException {
+  private JSONArray rqGetPatient(String tokenId, boolean shouldThrowException)
+      throws IOException, InterruptedException {
+    JSONArray jsonArray = null;
+
     HttpRequest request =
         HttpRequest.newBuilder()
             .GET()
@@ -282,8 +293,10 @@ public class PseudonymApi {
             .build();
 
     HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
-    controlErrorResponse(response);
-    return new JSONArray(response.body());
+    if (controlErrorResponse(response, shouldThrowException)) {
+      jsonArray = new JSONArray(response.body());
+    }
+    return jsonArray;
   }
 
   /***
@@ -302,7 +315,15 @@ public class PseudonymApi {
     return gson.toJson(bodyRequest);
   }
 
-  private void controlErrorResponse(HttpResponse<String> response) {
+  /**
+   * Control response
+   *
+   * @param response Response
+   * @param throwError should an exception should be thrown
+   * @return true if no problem in response, false otherwise
+   */
+  private boolean controlErrorResponse(HttpResponse<String> response, boolean throwError) {
+    boolean status = true;
     if (response.statusCode() >= HttpURLConnection.HTTP_BAD_REQUEST) {
       final String errorMsg =
           "\n\tMainzelliste response : "
@@ -312,7 +333,13 @@ public class PseudonymApi {
               + response.headers()
               + "\n\t\tbody: "
               + response.body();
-      throw new IllegalStateException(errorMsg);
+      if (throwError) {
+        throw new IllegalStateException(errorMsg);
+      } else {
+        LOGGER.info(errorMsg);
+        status = false;
+      }
     }
+    return status;
   }
 }
