@@ -11,14 +11,14 @@ services:
       - karnak-db
 
   karnak-db:
-    image: registry-docker.hcuge.ch:8083/postgres:9.6-alpine
+    image: registry-docker.hcuge.ch:8083/postgres:13.2-alpine
     environment:
       - POSTGRES_DB=karnak
       - POSTGRES_USER=karnak
       - POSTGRES_PASSWORD=J3srmXJbHaBUhBafn2BK5I4oSbaQ1rw8697V8ESs/7w=
 
   mainzelliste-db:
-    image: registry-docker.hcuge.ch:8083/postgres:9.6-alpine
+    image: registry-docker.hcuge.ch:8083/postgres:13.2-alpine
     environment:
       - POSTGRES_DB=mainzelliste
       - POSTGRES_USER=mainzelliste
