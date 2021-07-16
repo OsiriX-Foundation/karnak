@@ -20,9 +20,7 @@ import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.data.entity.ProfileEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.enums.ProfileItemType;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
 class AttributesByDefaultTest {
 
   @Test

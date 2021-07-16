@@ -33,7 +33,7 @@ import org.springframework.security.access.annotation.Secured;
 
 @Route(value = "profile", layout = MainLayout.class)
 @PageTitle("KARNAK - Profiles")
-@Secured({"ADMIN"})
+@Secured({"ROLE_admin"})
 @SuppressWarnings("serial")
 public class ProfileView extends HorizontalLayout implements HasUrlParameter<String> {
 
@@ -48,7 +48,7 @@ public class ProfileView extends HorizontalLayout implements HasUrlParameter<Str
   private final ProfileGrid profileGrid;
   private final ProfileErrorView profileErrorView;
   private VerticalLayout barAndGridLayout;
-  private HorizontalLayout profileHorizontalLayout;
+  private final HorizontalLayout profileHorizontalLayout;
   private Upload uploadProfile;
   private MemoryBuffer memoryBuffer;
 

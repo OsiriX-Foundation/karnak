@@ -14,9 +14,11 @@ import java.util.Arrays;
 public enum SecurityRole {
 
   // Role admin
-  ADMIN_ROLE("ROLE_ADMIN", "ADMIN"),
+  ADMIN_ROLE("ROLE_admin", "admin"),
+  // Role Investigator
+  INVESTIGATOR_ROLE("ROLE_investigator", "investigator"),
   // Role user
-  USER_ROLE("ROLE_USER", "USER");
+  USER_ROLE("ROLE_user", "user");
 
   /** Role of the enum */
   private final String role;

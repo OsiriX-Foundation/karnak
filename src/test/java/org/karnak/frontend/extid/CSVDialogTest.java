@@ -14,9 +14,7 @@ import java.io.InputStream;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.data.entity.ProjectEntity;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
 class CSVDialogTest {
 
   @Test

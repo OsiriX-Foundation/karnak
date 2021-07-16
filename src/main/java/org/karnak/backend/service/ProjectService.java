@@ -10,6 +10,7 @@
 package org.karnak.backend.service;
 
 import java.util.List;
+import java.util.Optional;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.data.repo.ProjectRepo;
@@ -92,5 +93,22 @@ public class ProjectService {
    */
   public List<ProjectEntity> getAllProjects() {
     return projectRepo.findAll();
+  }
+
+  /**
+   * Retrieve project by id
+   *
+   * @param id Id to look for
+   * @return project found
+   */
+  public ProjectEntity retrieveProject(Long id) {
+    ProjectEntity projectEntity = null;
+    if (id != null) {
+      Optional<ProjectEntity> projectEntityOptional = projectRepo.findById(id);
+      if (projectEntityOptional.isPresent()) {
+        projectEntity = projectEntityOptional.get();
+      }
+    }
+    return projectEntity;
   }
 }

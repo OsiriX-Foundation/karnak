@@ -12,9 +12,7 @@ package org.karnak.backend.model.echo;
 import java.util.Objects;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
 class DestinationEchoTest {
 
   @Test

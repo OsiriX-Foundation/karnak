@@ -24,13 +24,11 @@ import org.karnak.backend.model.echo.DestinationEcho;
 import org.karnak.backend.service.gateway.GatewaySetUpService;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.weasis.dicom.op.Echo;
 import org.weasis.dicom.param.AdvancedParams;
 import org.weasis.dicom.param.DicomNode;
 import org.weasis.dicom.param.DicomState;
 
-@SpringBootTest
 class EchoServiceTest {
 
   // Service
