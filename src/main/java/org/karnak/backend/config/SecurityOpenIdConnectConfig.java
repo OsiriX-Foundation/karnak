@@ -9,9 +9,15 @@
  */
 package org.karnak.backend.config;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.karnak.backend.cache.RequestCache;
+import org.karnak.backend.constant.Token;
 import org.karnak.backend.security.OpenIdConnectLogoutHandler;
 import org.karnak.backend.util.SecurityUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -19,11 +25,23 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 
 @EnableWebSecurity
 @Configuration
 @ConditionalOnProperty(value = "IDP", havingValue = "oidc")
 public class SecurityOpenIdConnectConfig extends WebSecurityConfigurerAdapter {
+
+  @Value("${spring.security.oauth2.client.provider.keycloak.jwk-set-uri}")
+  private String jwkSetUri;
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
@@ -46,14 +64,16 @@ public class SecurityOpenIdConnectConfig extends WebSecurityConfigurerAdapter {
         .antMatchers(HttpMethod.GET, "/api/echo/destinations")
         .permitAll()
         // Allows all authenticated traffic
-        // .antMatchers("/*").hasAuthority(SecurityRole.ADMIN_ROLE.getType())
         .anyRequest()
         .authenticated()
         // OpenId connect login
         .and()
-        .oauth2Login()
+        .oauth2Login(
+            oauth2Login ->
+                oauth2Login.userInfoEndpoint(
+                    // Extract roles from access token
+                    userInfoEndpoint -> userInfoEndpoint.oidcUserService(oidcUserService())))
         // Handle logout
-        .and()
         .logout()
         .addLogoutHandler(new OpenIdConnectLogoutHandler());
   }
@@ -73,13 +93,59 @@ public class SecurityOpenIdConnectConfig extends WebSecurityConfigurerAdapter {
             "/sw-runtime-resources-precache.js",
             // icons and images
             "/icons/logo**",
-            "/img/karnak.png" // ,
-            // "/img/**" // ,
-            // "/images/**",
-            // "/styles/**",
-            // the robots exclusion standard
-            // "/robots.txt",
-            // (development mode) H2 debugging console
-            /* "/h2-console/**" */ );
+            "/img/karnak.png");
+  }
+
+  /**
+   * Retrieve roles from access token
+   *
+   * @param jwt access token
+   * @return Roles found
+   */
+  private Set<SimpleGrantedAuthority> retrieveRolesFromAccessToken(Jwt jwt) {
+    // Build roles
+    return ((List<String>)
+            ((Map<String, Object>)
+                    ((Map<String, Object>) jwt.getClaims().get(Token.RESOURCE_ACCESS))
+                        .get(Token.RESOURCE_NAME))
+                .get(Token.ROLES))
+        .stream()
+            .map(roleName -> Token.PREFIX_ROLE + roleName)
+            .map(SimpleGrantedAuthority::new)
+            .collect(Collectors.toSet());
+  }
+
+  /**
+   * Decode access token
+   *
+   * @param accessToken Access token to decode
+   * @return access token decoded
+   */
+  private Jwt decodeAccessToken(OAuth2AccessToken accessToken) {
+    return NimbusJwtDecoder.withJwkSetUri(jwkSetUri).build().decode(accessToken.getTokenValue());
+  }
+
+  /**
+   * Extract roles from access token and set authorities in the authenticated user
+   *
+   * @return OAuth2UserService
+   */
+  private OAuth2UserService<OidcUserRequest, OidcUser> oidcUserService() {
+    final OidcUserService oidcUserService = new OidcUserService();
+    return userRequest -> {
+      // Get the user from the request
+      OidcUser oidcUser = oidcUserService.loadUser(userRequest);
+
+      // Decode access token
+      Jwt jwt = decodeAccessToken(userRequest.getAccessToken());
+
+      // Retrieve roles from access token
+      Set<SimpleGrantedAuthority> grantedAuthoritiesFromAccessToken =
+          retrieveRolesFromAccessToken(jwt);
+
+      // Update the user with roles found
+      return new DefaultOidcUser(
+          grantedAuthoritiesFromAccessToken, oidcUser.getIdToken(), oidcUser.getUserInfo());
+    };
   }
 }
