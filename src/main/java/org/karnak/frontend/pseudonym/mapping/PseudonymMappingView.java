@@ -26,7 +26,7 @@ import org.karnak.frontend.pseudonym.mapping.component.MappingResultComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 
-@Route(value = "mapping", layout = MainLayout.class)
+@Route(value = PseudonymMappingView.ROUTE, layout = MainLayout.class)
 @PageTitle("KARNAK - Mainzelliste Mapping Pseudonym")
 @Tag("mainzelliste-mapping-pseudonym-view")
 @Secured({"ROLE_investigator"})
@@ -34,6 +34,7 @@ import org.springframework.security.access.annotation.Secured;
 public class PseudonymMappingView extends HorizontalLayout {
 
   public static final String VIEW_NAME = "Pseudonym mapping ";
+  public static final String ROUTE = "mapping";
 
   // Layout
   private VerticalLayout mappingLayout;

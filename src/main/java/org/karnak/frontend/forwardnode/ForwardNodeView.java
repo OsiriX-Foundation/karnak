@@ -26,7 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 
 /** Forward Node View */
-@Route(value = "forwardnode", layout = MainLayout.class)
+@Route(value = ForwardNodeView.ROUTE, layout = MainLayout.class)
 @RouteAlias(value = "", layout = MainLayout.class)
 @PageTitle("KARNAK - Forward node")
 @Secured({"ROLE_admin"})
@@ -34,6 +34,7 @@ import org.springframework.security.access.annotation.Secured;
 public class ForwardNodeView extends HorizontalLayout implements HasUrlParameter<String> {
 
   public static final String VIEW_NAME = "Gateway";
+  public static final String ROUTE = "forwardnode";
 
   // Forward Node Logic
   private final ForwardNodeLogic forwardNodeLogic;
