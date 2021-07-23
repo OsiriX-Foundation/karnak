@@ -18,13 +18,14 @@ import com.vaadin.flow.router.Route;
 import org.karnak.frontend.MainLayout;
 import org.springframework.security.access.annotation.Secured;
 
-@Route(value = "help", layout = MainLayout.class)
+@Route(value = HelpView.ROUTE, layout = MainLayout.class)
 @PageTitle("KARNAK - Help")
 @Tag("help-view")
 @Secured({"ROLE_admin", "ROLE_user"})
 public class HelpView extends VerticalLayout {
 
   public static final String VIEW_NAME = "Help";
+  public static final String ROUTE = "help";
 
   public HelpView() {
     setSizeFull();

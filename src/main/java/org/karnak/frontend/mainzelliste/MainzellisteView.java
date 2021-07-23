@@ -18,7 +18,7 @@ import com.vaadin.flow.router.Route;
 import org.karnak.frontend.MainLayout;
 import org.springframework.security.access.annotation.Secured;
 
-@Route(value = "mainzelliste", layout = MainLayout.class)
+@Route(value = MainzellisteView.ROUTE, layout = MainLayout.class)
 @PageTitle("KARNAK - Mainzelliste")
 @Tag("mainzelliste-view")
 @Secured({"ROLE_admin"})
@@ -26,6 +26,7 @@ import org.springframework.security.access.annotation.Secured;
 public class MainzellisteView extends HorizontalLayout {
 
   public static final String VIEW_NAME = "Mainzelliste pseudonym";
+  public static final String ROUTE = "mainzelliste";
 
   public MainzellisteView() {
     setSizeFull();
