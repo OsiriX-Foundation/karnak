@@ -28,13 +28,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 
 /** Project View */
-@Route(value = "projects", layout = MainLayout.class)
+@Route(value = ProjectView.ROUTE, layout = MainLayout.class)
 @PageTitle("KARNAK - Projects")
 @Secured({"ROLE_admin"})
 @SuppressWarnings("serial")
 public class ProjectView extends HorizontalLayout implements HasUrlParameter<String> {
 
   public static final String VIEW_NAME = "Projects";
+  public static final String ROUTE = "projects";
 
   // Project Logic
   private final ProjectLogic projectLogic;

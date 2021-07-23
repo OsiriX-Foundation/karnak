@@ -102,14 +102,7 @@ public class SecurityInMemoryConfig extends WebSecurityConfigurerAdapter {
             "/sw-runtime-resources-precache.js",
             // icons and images
             "/icons/logo**",
-            "/img/karnak.png" // ,
-            // "/img/**" // ,
-            // "/images/**",
-            // "/styles/**",
-            // the robots exclusion standard
-            // "/robots.txt",
-            // (development mode) H2 debugging console
-            /*"/h2-console/**"*/ );
+            "/img/karnak.png");
   }
 
   @Bean
