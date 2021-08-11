@@ -9,19 +9,26 @@
  */
 package org.karnak.frontend.forwardnode.edit.destination;
 
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import java.util.HashSet;
 import java.util.Objects;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
+import org.karnak.backend.dicom.ForwardUtil;
 import org.karnak.backend.model.NodeEvent;
 import org.karnak.backend.service.DestinationService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 /** Logic service use to make calls to backend and implement logic linked to the view */
 @Service
 public class DestinationLogic extends ListDataProvider<DestinationEntity> {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(DestinationLogic.class);
 
   // View
   private DestinationView destinationView;
@@ -58,6 +65,16 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
       getItems().addAll(forwardNodeEntity.getDestinationEntities());
     }
     super.refreshAll();
+  }
+
+  /** Check activity on the forward node */
+  @Scheduled(fixedRate = 500)
+  public void checkStatusTransfers() {
+    if (forwardNodeEntity != null) {
+      forwardNodeEntity.getDestinationEntities().stream()
+          .filter(DestinationEntity::isActivate)
+          .forEach(this::checkActivityDestination);
+    }
   }
 
   /**
@@ -125,5 +142,109 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
   public void deleteDestination(DestinationEntity destinationEntity) {
     destinationService.delete(destinationEntity);
     refreshAll();
+  }
+
+  /**
+   * Check activity on a specific destination
+   *
+   * @param destinationEntity Destination to check
+   */
+  private void checkActivityDestination(DestinationEntity destinationEntity) {
+    // Dicom
+    checkActivityDestinationDicom(destinationEntity);
+    // Stow
+    checkActivityDestinationStow(destinationEntity);
+  }
+
+  /**
+   * Check activity for dicom destination
+   *
+   * @param destinationEntity Destination to check
+   */
+  private void checkActivityDestinationDicom(DestinationEntity destinationEntity) {
+    if (containsKeyActivityDestinationDicom(destinationEntity)) {
+      // Retrieve the loading image of the corresponding destination
+      Image loadingImage =
+          destinationView
+              .getGridDestination()
+              .getLoadingImages()
+              .get(forwardNodeEntity.getFwdAeTitle())
+              .get(destinationEntity.getAeTitle());
+
+      // Get the status of the association
+      boolean hasAssociation =
+          ForwardUtil.transferActivityDicomMap
+              .get(forwardNodeEntity.getFwdAeTitle())
+              .get(destinationEntity.getId())
+              .hasAssociation();
+
+      // Check there is some activity on the destination: if yes set the progress bar visible
+      // otherwise set it invisible
+      if (hasAssociation && !loadingImage.isVisible()) {
+        destinationView.getUi().access(() -> loadingImage.setVisible(true));
+      } else if (!hasAssociation && loadingImage.isVisible()) {
+        destinationView.getUi().access(() -> loadingImage.setVisible(false));
+      }
+    }
+  }
+
+  /**
+   * Check if the map contains the key for the dicom destination
+   *
+   * @param destinationEntity Destination to check
+   * @return true if contains the corresponding key
+   */
+  private boolean containsKeyActivityDestinationDicom(DestinationEntity destinationEntity) {
+    return forwardNodeEntity != null
+        && !ForwardUtil.transferActivityDicomMap.isEmpty()
+        && ForwardUtil.transferActivityDicomMap.containsKey(forwardNodeEntity.getFwdAeTitle())
+        && ForwardUtil.transferActivityDicomMap
+            .get(forwardNodeEntity.getFwdAeTitle())
+            .containsKey(destinationEntity.getId());
+  }
+
+  /**
+   * Check if the map contains the key for the stow destination
+   *
+   * @param destinationEntity Destination to check
+   * @return true if contains the corresponding key
+   */
+  private boolean containsKeyActivityDestinationStow(DestinationEntity destinationEntity) {
+    return forwardNodeEntity != null
+        && !ForwardUtil.transferActivityStowMap.isEmpty()
+        && ForwardUtil.transferActivityStowMap.containsKey(forwardNodeEntity.getFwdAeTitle())
+        && ForwardUtil.transferActivityStowMap
+            .get(forwardNodeEntity.getFwdAeTitle())
+            .containsKey(destinationEntity.getId());
+  }
+  /**
+   * Check activity for stow destination
+   *
+   * @param destinationEntity Destination to check
+   */
+  private void checkActivityDestinationStow(DestinationEntity destinationEntity) {
+    if (containsKeyActivityDestinationStow(destinationEntity)) {
+      // Retrieve the loading image of the corresponding destination
+      Image loadingImage =
+          destinationView
+              .getGridDestination()
+              .getLoadingImages()
+              .get(forwardNodeEntity.getFwdAeTitle())
+              .get(destinationEntity.getAeTitle());
+
+      // Retrieve the status of transfer
+      boolean isInProgress =
+          ForwardUtil.transferActivityStowMap
+              .get(forwardNodeEntity.getFwdAeTitle())
+              .get(destinationEntity.getId());
+
+      // Check there is some activity on the destination: if yes set the progress bar visible
+      // otherwise set it invisible
+      if (isInProgress && !loadingImage.isVisible()) {
+        destinationView.getUi().access(() -> loadingImage.setVisible(true));
+      } else if (!isInProgress && loadingImage.isVisible()) {
+        destinationView.getUi().access(() -> loadingImage.setVisible(false));
+      }
+    }
   }
 }
