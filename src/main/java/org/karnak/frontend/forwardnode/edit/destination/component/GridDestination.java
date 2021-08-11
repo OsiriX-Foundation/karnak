@@ -10,10 +10,19 @@
 package org.karnak.frontend.forwardnode.edit.destination.component;
 
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
+import java.util.HashMap;
+import java.util.Map;
 import org.karnak.backend.data.entity.DestinationEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GridDestination extends Grid<DestinationEntity> {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(GridDestination.class);
+
+  private Map<String, Map<String, Image>> loadingImages = new HashMap<>();
 
   public GridDestination() {
     setSizeFull();
@@ -45,6 +54,41 @@ public class GridDestination extends Grid<DestinationEntity> {
         .setHeader("Enabled")
         .setFlexGrow(20)
         .setSortable(true);
+
+    // Loading image
+    addComponentColumn(this::buildLoadingImage)
+        .setHeader("Activity")
+        .setKey("Activity")
+        .setFlexGrow(20);
+  }
+
+  /**
+   * Build loading image
+   *
+   * @param destinationEntity Destination
+   * @return Loading image built
+   */
+  private LoadingImage buildLoadingImage(DestinationEntity destinationEntity) {
+    // Build loading image
+    LoadingImage image = new LoadingImage("In progress", "10%");
+
+    // Fill loading image map
+    if (loadingImages.isEmpty()
+        || !loadingImages.containsKey(destinationEntity.getForwardNodeEntity().getFwdAeTitle())) {
+      HashMap<String, Image> destinationProgressBarMap = new HashMap<>();
+      destinationProgressBarMap.put(destinationEntity.getAeTitle(), image);
+      loadingImages.put(
+          destinationEntity.getForwardNodeEntity().getFwdAeTitle(), destinationProgressBarMap);
+    } else {
+      loadingImages
+          .get(destinationEntity.getForwardNodeEntity().getFwdAeTitle())
+          .put(destinationEntity.getAeTitle(), image);
+    }
+
+    // Visibility
+    image.setVisible(false);
+
+    return image;
   }
 
   public DestinationEntity getSelectedRow() {
@@ -53,5 +97,13 @@ public class GridDestination extends Grid<DestinationEntity> {
 
   public void refresh(DestinationEntity data) {
     getDataCommunicator().refresh(data);
+  }
+
+  public Map<String, Map<String, Image>> getLoadingImages() {
+    return loadingImages;
+  }
+
+  public void setLoadingImages(Map<String, Map<String, Image>> loadingImages) {
+    this.loadingImages = loadingImages;
   }
 }
