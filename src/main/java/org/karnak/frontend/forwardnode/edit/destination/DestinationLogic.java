@@ -68,7 +68,7 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
   }
 
   /** Check activity on the forward node */
-  @Scheduled(fixedRate = 500)
+  @Scheduled(fixedRate = 200)
   public void checkStatusTransfers() {
     if (forwardNodeEntity != null) {
       forwardNodeEntity.getDestinationEntities().stream()
@@ -172,7 +172,7 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
               .getGridDestination()
               .getLoadingImages()
               .get(forwardNodeEntity.getFwdAeTitle())
-              .get(destinationEntity.getAeTitle());
+              .get(destinationEntity.getId());
 
       // Retrieve the status of transfer
       boolean isInProgress =
