@@ -417,6 +417,8 @@ public class ForwardUtil {
       LOGGER.error(ERROR_WHEN_FORWARDING, e);
     } finally {
       streamSCU.triggerCloseExecutor();
+      // Remove in progress in the transfer activity map
+      fillDestinationTransferActivityMap(destination, false);
     }
   }
 
@@ -487,7 +489,7 @@ public class ForwardUtil {
     } finally {
       files = cleanOrGetBulkDataFiles(in, copy == null);
 
-      // Set the flag in the transfer activity map
+      // Remove in progress in the transfer activity map
       fillDestinationTransferActivityMap(destination, false);
     }
     return files;
@@ -534,6 +536,9 @@ public class ForwardUtil {
     } catch (Exception e) {
       progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
       LOGGER.error(ERROR_WHEN_FORWARDING, e);
+    } finally {
+      // Remove in progress in the transfer activity map
+      fillDestinationTransferActivityMap(destination, false);
     }
   }
 

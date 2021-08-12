@@ -22,7 +22,8 @@ public class GridDestination extends Grid<DestinationEntity> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(GridDestination.class);
 
-  private Map<String, Map<String, Image>> loadingImages = new HashMap<>();
+  // Forward node / Id / Image
+  private Map<String, Map<Long, Image>> loadingImages = new HashMap<>();
 
   public GridDestination() {
     setSizeFull();
@@ -75,14 +76,13 @@ public class GridDestination extends Grid<DestinationEntity> {
     // Fill loading image map
     if (loadingImages.isEmpty()
         || !loadingImages.containsKey(destinationEntity.getForwardNodeEntity().getFwdAeTitle())) {
-      HashMap<String, Image> destinationProgressBarMap = new HashMap<>();
-      destinationProgressBarMap.put(destinationEntity.getAeTitle(), image);
-      loadingImages.put(
-          destinationEntity.getForwardNodeEntity().getFwdAeTitle(), destinationProgressBarMap);
+      HashMap<Long, Image> loadingImagesMap = new HashMap<>();
+      loadingImagesMap.put(destinationEntity.getId(), image);
+      loadingImages.put(destinationEntity.getForwardNodeEntity().getFwdAeTitle(), loadingImagesMap);
     } else {
       loadingImages
           .get(destinationEntity.getForwardNodeEntity().getFwdAeTitle())
-          .put(destinationEntity.getAeTitle(), image);
+          .put(destinationEntity.getId(), image);
     }
 
     // Visibility
@@ -99,11 +99,11 @@ public class GridDestination extends Grid<DestinationEntity> {
     getDataCommunicator().refresh(data);
   }
 
-  public Map<String, Map<String, Image>> getLoadingImages() {
+  public Map<String, Map<Long, Image>> getLoadingImages() {
     return loadingImages;
   }
 
-  public void setLoadingImages(Map<String, Map<String, Image>> loadingImages) {
+  public void setLoadingImages(Map<String, Map<Long, Image>> loadingImages) {
     this.loadingImages = loadingImages;
   }
 }
