@@ -68,7 +68,7 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
   }
 
   /** Check activity on the forward node */
-  @Scheduled(fixedRate = 500)
+  @Scheduled(fixedRate = 1000)
   public void checkStatusTransfers() {
     if (forwardNodeEntity != null) {
       forwardNodeEntity.getDestinationEntities().stream()
