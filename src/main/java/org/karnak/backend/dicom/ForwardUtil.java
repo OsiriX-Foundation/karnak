@@ -54,11 +54,8 @@ public class ForwardUtil {
   private static final Logger LOGGER = LoggerFactory.getLogger(ForwardUtil.class);
 
   // Transfer activity map: used to know the current transfer activity of a node
-  // Dicom: Forward Node / Id destination / StreamSCU
-  public static final Map<String, Map<Long, StoreFromStreamSCU>> transferActivityDicomMap =
-      new HashMap<>();
-  // Stow: Forward Node / Id destination / status
-  public static final Map<String, Map<Long, Boolean>> transferActivityStowMap = new HashMap<>();
+  // Forward Node / Id destination / status
+  public static final Map<String, Map<Long, Boolean>> transferActivityMap = new HashMap<>();
 
   public static final class Params {
     private final String iuid;
@@ -211,8 +208,8 @@ public class ForwardUtil {
     String dstTsuid = destination.getOutputTransferSyntax(tsuid);
     StoreFromStreamSCU streamSCU = destination.getStreamSCU();
 
-    // Set the streamSCU in the transfer activity map
-    fillDestinationTransferActivityDicomMap(destination, streamSCU);
+    // Set in progress in the transfer activity map
+    fillDestinationTransferActivityMap(destination, true);
 
     if (streamSCU.hasAssociation()) {
       // Handle dynamically new SOPClassUID
@@ -244,55 +241,6 @@ public class ForwardUtil {
       streamSCU.open();
     }
     return streamSCU;
-  }
-
-  /**
-   * Set the streamSCU in the transfer activity map
-   *
-   * @param destination Destination
-   * @param streamSCU Value to set
-   */
-  private static void fillDestinationTransferActivityDicomMap(
-      DicomForwardDestination destination, StoreFromStreamSCU streamSCU) {
-    // Case the map does not contains this previous forward node
-    if (transferActivityDicomMap.isEmpty()
-        || !transferActivityDicomMap.containsKey(destination.getForwardDicomNode().getAet())
-        || transferActivityDicomMap.get(destination.getForwardDicomNode().getAet()).isEmpty()) {
-      Map<Long, StoreFromStreamSCU> streamSCUMap = new HashMap<>();
-      streamSCUMap.put(destination.getId(), streamSCU);
-      transferActivityDicomMap.put(destination.getForwardDicomNode().getAet(), streamSCUMap);
-    }
-    // Case the map contains this previous forward node
-    else {
-      transferActivityDicomMap
-          .get(destination.getForwardDicomNode().getAet())
-          .put(destination.getId(), streamSCU);
-    }
-  }
-
-  /**
-   * Update the in progres stow map with the current status
-   *
-   * @param destination Destination
-   * @param isTransferInProgress Flag to know if a transfer is in progress
-   */
-  private static void fillDestinationTransferActivityStowMap(
-      WebForwardDestination destination, boolean isTransferInProgress) {
-
-    // Case the map does not contains this previous forward node
-    if (transferActivityStowMap.isEmpty()
-        || !transferActivityStowMap.containsKey(destination.getForwardDicomNode().getAet())
-        || transferActivityStowMap.get(destination.getForwardDicomNode().getAet()).isEmpty()) {
-      Map<Long, Boolean> activityMap = new HashMap<>();
-      activityMap.put(destination.getId(), isTransferInProgress);
-      transferActivityStowMap.put(destination.getForwardDicomNode().getAet(), activityMap);
-    }
-    // Case the map contains previous forward node
-    else {
-      transferActivityStowMap
-          .get(destination.getForwardDicomNode().getAet())
-          .put(destination.getId(), isTransferInProgress);
-    }
   }
 
   public static List<File> transfer(
@@ -370,6 +318,9 @@ public class ForwardUtil {
     } finally {
       streamSCU.triggerCloseExecutor();
       files = cleanOrGetBulkDataFiles(in, copy == null);
+
+      // Remove in progress in the transfer activity map
+      fillDestinationTransferActivityMap(destination, false);
     }
     return files;
   }
@@ -476,7 +427,7 @@ public class ForwardUtil {
     try {
 
       // Set the flag in the transfer activity map
-      fillDestinationTransferActivityStowMap(destination, true);
+      fillDestinationTransferActivityMap(destination, true);
 
       List<AttributeEditor> editors = destination.getDicomEditors();
       DicomStowRS stow = destination.getStowrsSingleFile();
@@ -537,7 +488,7 @@ public class ForwardUtil {
       files = cleanOrGetBulkDataFiles(in, copy == null);
 
       // Set the flag in the transfer activity map
-      fillDestinationTransferActivityStowMap(destination, false);
+      fillDestinationTransferActivityMap(destination, false);
     }
     return files;
   }
@@ -608,5 +559,30 @@ public class ForwardUtil {
     }
 
     return UID.ImplicitVRLittleEndian;
+  }
+
+  /**
+   * Update the in progres stow map with the current status
+   *
+   * @param destination Destination
+   * @param isTransferInProgress Flag to know if a transfer is in progress
+   */
+  private static void fillDestinationTransferActivityMap(
+      ForwardDestination destination, boolean isTransferInProgress) {
+
+    // Case the map does not contains this previous forward node
+    if (transferActivityMap.isEmpty()
+        || !transferActivityMap.containsKey(destination.getForwardDicomNode().getAet())
+        || transferActivityMap.get(destination.getForwardDicomNode().getAet()).isEmpty()) {
+      Map<Long, Boolean> activityMap = new HashMap<>();
+      activityMap.put(destination.getId(), isTransferInProgress);
+      transferActivityMap.put(destination.getForwardDicomNode().getAet(), activityMap);
+    }
+    // Case the map contains previous forward node
+    else {
+      transferActivityMap
+          .get(destination.getForwardDicomNode().getAet())
+          .put(destination.getId(), isTransferInProgress);
+    }
   }
 }

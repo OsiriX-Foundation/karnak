@@ -68,7 +68,7 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
   }
 
   /** Check activity on the forward node */
-  @Scheduled(fixedRate = 1000)
+  @Scheduled(fixedRate = 500)
   public void checkStatusTransfers() {
     if (forwardNodeEntity != null) {
       forwardNodeEntity.getDestinationEntities().stream()
@@ -145,85 +145,27 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
   }
 
   /**
-   * Check activity on a specific destination
+   * Check if the map contains the key for the destination
+   *
+   * @param destinationEntity Destination to check
+   * @return true if contains the corresponding key
+   */
+  private boolean containsKeyActivityDestination(DestinationEntity destinationEntity) {
+    return forwardNodeEntity != null
+        && !ForwardUtil.transferActivityMap.isEmpty()
+        && ForwardUtil.transferActivityMap.containsKey(forwardNodeEntity.getFwdAeTitle())
+        && ForwardUtil.transferActivityMap
+            .get(forwardNodeEntity.getFwdAeTitle())
+            .containsKey(destinationEntity.getId());
+  }
+
+  /**
+   * Check activity for a specific destination
    *
    * @param destinationEntity Destination to check
    */
   private void checkActivityDestination(DestinationEntity destinationEntity) {
-    // Dicom
-    checkActivityDestinationDicom(destinationEntity);
-    // Stow
-    checkActivityDestinationStow(destinationEntity);
-  }
-
-  /**
-   * Check activity for dicom destination
-   *
-   * @param destinationEntity Destination to check
-   */
-  private void checkActivityDestinationDicom(DestinationEntity destinationEntity) {
-    if (containsKeyActivityDestinationDicom(destinationEntity)) {
-      // Retrieve the loading image of the corresponding destination
-      Image loadingImage =
-          destinationView
-              .getGridDestination()
-              .getLoadingImages()
-              .get(forwardNodeEntity.getFwdAeTitle())
-              .get(destinationEntity.getAeTitle());
-
-      // Get the status of the association
-      boolean hasAssociation =
-          ForwardUtil.transferActivityDicomMap
-              .get(forwardNodeEntity.getFwdAeTitle())
-              .get(destinationEntity.getId())
-              .hasAssociation();
-
-      // Check there is some activity on the destination: if yes set the progress bar visible
-      // otherwise set it invisible
-      if (hasAssociation && !loadingImage.isVisible()) {
-        destinationView.getUi().access(() -> loadingImage.setVisible(true));
-      } else if (!hasAssociation && loadingImage.isVisible()) {
-        destinationView.getUi().access(() -> loadingImage.setVisible(false));
-      }
-    }
-  }
-
-  /**
-   * Check if the map contains the key for the dicom destination
-   *
-   * @param destinationEntity Destination to check
-   * @return true if contains the corresponding key
-   */
-  private boolean containsKeyActivityDestinationDicom(DestinationEntity destinationEntity) {
-    return forwardNodeEntity != null
-        && !ForwardUtil.transferActivityDicomMap.isEmpty()
-        && ForwardUtil.transferActivityDicomMap.containsKey(forwardNodeEntity.getFwdAeTitle())
-        && ForwardUtil.transferActivityDicomMap
-            .get(forwardNodeEntity.getFwdAeTitle())
-            .containsKey(destinationEntity.getId());
-  }
-
-  /**
-   * Check if the map contains the key for the stow destination
-   *
-   * @param destinationEntity Destination to check
-   * @return true if contains the corresponding key
-   */
-  private boolean containsKeyActivityDestinationStow(DestinationEntity destinationEntity) {
-    return forwardNodeEntity != null
-        && !ForwardUtil.transferActivityStowMap.isEmpty()
-        && ForwardUtil.transferActivityStowMap.containsKey(forwardNodeEntity.getFwdAeTitle())
-        && ForwardUtil.transferActivityStowMap
-            .get(forwardNodeEntity.getFwdAeTitle())
-            .containsKey(destinationEntity.getId());
-  }
-  /**
-   * Check activity for stow destination
-   *
-   * @param destinationEntity Destination to check
-   */
-  private void checkActivityDestinationStow(DestinationEntity destinationEntity) {
-    if (containsKeyActivityDestinationStow(destinationEntity)) {
+    if (containsKeyActivityDestination(destinationEntity)) {
       // Retrieve the loading image of the corresponding destination
       Image loadingImage =
           destinationView
@@ -234,7 +176,7 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
 
       // Retrieve the status of transfer
       boolean isInProgress =
-          ForwardUtil.transferActivityStowMap
+          ForwardUtil.transferActivityMap
               .get(forwardNodeEntity.getFwdAeTitle())
               .get(destinationEntity.getId());
 
