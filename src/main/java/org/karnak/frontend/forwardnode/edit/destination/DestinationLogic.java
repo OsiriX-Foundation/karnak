@@ -12,10 +12,11 @@ package org.karnak.frontend.forwardnode.edit.destination;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
-import org.karnak.backend.dicom.ForwardUtil;
 import org.karnak.backend.model.NodeEvent;
 import org.karnak.backend.service.DestinationService;
 import org.slf4j.Logger;
@@ -68,12 +69,14 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
   }
 
   /** Check activity on the forward node */
-  @Scheduled(fixedRate = 500)
+  @Scheduled(fixedRate = 1000)
   public void checkStatusTransfers() {
     if (forwardNodeEntity != null) {
-      forwardNodeEntity.getDestinationEntities().stream()
-          .filter(DestinationEntity::isActivate)
-          .forEach(this::checkActivityDestination);
+      List<DestinationEntity> destinationEntities =
+          forwardNodeEntity.getDestinationEntities().stream()
+              .filter(DestinationEntity::isActivate)
+              .collect(Collectors.toList());
+      checkActivityDestinations(destinationEntities);
     }
   }
 
@@ -145,48 +148,34 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
   }
 
   /**
-   * Check if the map contains the key for the destination
+   * Check activity for specific destinations
    *
-   * @param destinationEntity Destination to check
-   * @return true if contains the corresponding key
+   * @param destinationEntities Destinations to check
    */
-  private boolean containsKeyActivityDestination(DestinationEntity destinationEntity) {
-    return forwardNodeEntity != null
-        && !ForwardUtil.transferActivityMap.isEmpty()
-        && ForwardUtil.transferActivityMap.containsKey(forwardNodeEntity.getFwdAeTitle())
-        && ForwardUtil.transferActivityMap
-            .get(forwardNodeEntity.getFwdAeTitle())
-            .containsKey(destinationEntity.getId());
-  }
+  private void checkActivityDestinations(List<DestinationEntity> destinationEntities) {
+    // Refresh entities from db
+    List<Long> entitiesId =
+        destinationEntities.stream().map(DestinationEntity::getId).collect(Collectors.toList());
+    List<DestinationEntity> refreshedDestinationEntities =
+        destinationService.retrieveDestinationsFromIds(entitiesId);
 
-  /**
-   * Check activity for a specific destination
-   *
-   * @param destinationEntity Destination to check
-   */
-  private void checkActivityDestination(DestinationEntity destinationEntity) {
-    if (containsKeyActivityDestination(destinationEntity)) {
-      // Retrieve the loading image of the corresponding destination
-      Image loadingImage =
-          destinationView
-              .getGridDestination()
-              .getLoadingImages()
-              .get(forwardNodeEntity.getFwdAeTitle())
-              .get(destinationEntity.getId());
+    refreshedDestinationEntities.forEach(
+        d -> {
+          // Retrieve the loading image of the corresponding destination
+          Image loadingImage =
+              destinationView
+                  .getGridDestination()
+                  .getLoadingImages()
+                  .get(forwardNodeEntity.getFwdAeTitle())
+                  .get(d.getId());
 
-      // Retrieve the status of transfer
-      boolean isInProgress =
-          ForwardUtil.transferActivityMap
-              .get(forwardNodeEntity.getFwdAeTitle())
-              .get(destinationEntity.getId());
-
-      // Check there is some activity on the destination: if yes set the progress bar visible
-      // otherwise set it invisible
-      if (isInProgress && !loadingImage.isVisible()) {
-        destinationView.getUi().access(() -> loadingImage.setVisible(true));
-      } else if (!isInProgress && loadingImage.isVisible()) {
-        destinationView.getUi().access(() -> loadingImage.setVisible(false));
-      }
-    }
+          // Check there is some activity on the destination: if yes set the progress bar visible
+          // otherwise set it invisible
+          if (d.isTransferInProgress() && !loadingImage.isVisible()) {
+            destinationView.getUi().access(() -> loadingImage.setVisible(true));
+          } else if (!d.isTransferInProgress() && loadingImage.isVisible()) {
+            destinationView.getUi().access(() -> loadingImage.setVisible(false));
+          }
+        });
   }
 }

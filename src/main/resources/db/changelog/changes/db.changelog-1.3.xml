@@ -72,4 +72,17 @@
     </dropColumn>
   </changeSet>
 
+  <changeSet author="karnak" id="1.3-8">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="destination" columnName="transfer_in_progress"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="destination">
+      <column name="transfer_in_progress" type="BOOLEAN" defaultValue='false'>
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+  </changeSet>
+
 </databaseChangeLog>

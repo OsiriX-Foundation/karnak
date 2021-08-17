@@ -13,9 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
@@ -52,10 +50,6 @@ public class ForwardUtil {
   private static final String ERROR_WHEN_FORWARDING =
       "Error when forwarding to the final destination";
   private static final Logger LOGGER = LoggerFactory.getLogger(ForwardUtil.class);
-
-  // Transfer activity map: used to know the current transfer activity of a node
-  // Forward Node / Id destination / status
-  public static final Map<String, Map<Long, Boolean>> transferActivityMap = new HashMap<>();
 
   public static final class Params {
     private final String iuid;
@@ -208,9 +202,6 @@ public class ForwardUtil {
     String dstTsuid = destination.getOutputTransferSyntax(tsuid);
     StoreFromStreamSCU streamSCU = destination.getStreamSCU();
 
-    // Set in progress in the transfer activity map
-    fillDestinationTransferActivityMap(destination, true);
-
     if (streamSCU.hasAssociation()) {
       // Handle dynamically new SOPClassUID
       Set<String> tss = streamSCU.getTransferSyntaxesFor(cuid);
@@ -318,9 +309,6 @@ public class ForwardUtil {
     } finally {
       streamSCU.triggerCloseExecutor();
       files = cleanOrGetBulkDataFiles(in, copy == null);
-
-      // Remove in progress in the transfer activity map
-      fillDestinationTransferActivityMap(destination, false);
     }
     return files;
   }
@@ -417,8 +405,6 @@ public class ForwardUtil {
       LOGGER.error(ERROR_WHEN_FORWARDING, e);
     } finally {
       streamSCU.triggerCloseExecutor();
-      // Remove in progress in the transfer activity map
-      fillDestinationTransferActivityMap(destination, false);
     }
   }
 
@@ -427,10 +413,6 @@ public class ForwardUtil {
     DicomInputStream in = null;
     List<File> files;
     try {
-
-      // Set the flag in the transfer activity map
-      fillDestinationTransferActivityMap(destination, true);
-
       List<AttributeEditor> editors = destination.getDicomEditors();
       DicomStowRS stow = destination.getStowrsSingleFile();
       var syntax =
@@ -488,9 +470,6 @@ public class ForwardUtil {
       LOGGER.error(ERROR_WHEN_FORWARDING, e);
     } finally {
       files = cleanOrGetBulkDataFiles(in, copy == null);
-
-      // Remove in progress in the transfer activity map
-      fillDestinationTransferActivityMap(destination, false);
     }
     return files;
   }
@@ -536,9 +515,6 @@ public class ForwardUtil {
     } catch (Exception e) {
       progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
       LOGGER.error(ERROR_WHEN_FORWARDING, e);
-    } finally {
-      // Remove in progress in the transfer activity map
-      fillDestinationTransferActivityMap(destination, false);
     }
   }
 
@@ -564,30 +540,5 @@ public class ForwardUtil {
     }
 
     return UID.ImplicitVRLittleEndian;
-  }
-
-  /**
-   * Update the in progres stow map with the current status
-   *
-   * @param destination Destination
-   * @param isTransferInProgress Flag to know if a transfer is in progress
-   */
-  private static void fillDestinationTransferActivityMap(
-      ForwardDestination destination, boolean isTransferInProgress) {
-
-    // Case the map does not contains this previous forward node
-    if (transferActivityMap.isEmpty()
-        || !transferActivityMap.containsKey(destination.getForwardDicomNode().getAet())
-        || transferActivityMap.get(destination.getForwardDicomNode().getAet()).isEmpty()) {
-      Map<Long, Boolean> activityMap = new HashMap<>();
-      activityMap.put(destination.getId(), isTransferInProgress);
-      transferActivityMap.put(destination.getForwardDicomNode().getAet(), activityMap);
-    }
-    // Case the map contains previous forward node
-    else {
-      transferActivityMap
-          .get(destination.getForwardDicomNode().getAet())
-          .put(destination.getId(), isTransferInProgress);
-    }
   }
 }
