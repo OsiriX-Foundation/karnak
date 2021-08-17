@@ -10,6 +10,7 @@
 package org.karnak.backend.service;
 
 import java.util.Collection;
+import java.util.List;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.data.repo.DestinationRepo;
@@ -54,7 +55,7 @@ public class DestinationService {
   /**
    * Store given Destination to the backing destinationEntity service.
    *
-   * @param forwardNodeEntity
+   * @param forwardNodeEntity ForwardNode Entity
    * @param destinationEntity the updated or new destinationEntity
    */
   public DestinationEntity save(
@@ -102,5 +103,9 @@ public class DestinationService {
    */
   public Collection<DestinationEntity> retrieveDestinations(ForwardNodeEntity forwardNodeEntity) {
     return forwardNodeService.getAllDestinations(forwardNodeEntity);
+  }
+
+  public List<DestinationEntity> retrieveDestinationsFromIds(List<Long> ids) {
+    return destinationRepo.findAllById(ids);
   }
 }
