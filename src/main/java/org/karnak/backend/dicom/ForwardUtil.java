@@ -201,6 +201,7 @@ public class ForwardUtil {
     String tsuid = p.getTsuid();
     String dstTsuid = destination.getOutputTransferSyntax(tsuid);
     StoreFromStreamSCU streamSCU = destination.getStreamSCU();
+
     if (streamSCU.hasAssociation()) {
       // Handle dynamically new SOPClassUID
       Set<String> tss = streamSCU.getTransferSyntaxesFor(cuid);
