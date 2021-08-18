@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  */
-package org.karnak.backend.dicom;
+package org.karnak.backend.service;
 
 import java.io.IOException;
 import java.net.URL;
@@ -16,17 +16,28 @@ import java.util.Map;
 import java.util.Objects;
 import org.dcm4che3.net.Connection;
 import org.dcm4che3.net.TransferCapability;
+import org.karnak.backend.dicom.ForwardDestination;
+import org.karnak.backend.dicom.ForwardDicomNode;
+import org.karnak.backend.dicom.GatewayParams;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.weasis.dicom.param.AdvancedParams;
 import org.weasis.dicom.param.AttributeEditor;
 import org.weasis.dicom.param.DeviceListenerService;
 import org.weasis.dicom.param.DicomNode;
 
-public class DicomGateway {
-  private final StoreScpForward storeSCP;
-  private final DeviceListenerService deviceService;
+@Service
+public class DicomGatewayService {
+  private final StoreScpForwardService storeScpForwardService;
+  private DeviceListenerService deviceService;
+
+  @Autowired
+  public DicomGatewayService(final StoreScpForwardService storeScpForwardService) {
+    this.storeScpForwardService = storeScpForwardService;
+  }
 
   /**
-   * Build a DICOM Gateway with one final destination
+   * Init a DICOM Gateway with one final destination
    *
    * @param forwardParams the optional advanced parameters (proxy, authentication, connection and
    *     TLS) for the final destination
@@ -34,14 +45,14 @@ public class DicomGateway {
    * @param destinationNode the final DICOM node configuration
    * @throws IOException
    */
-  public DicomGateway(
+  public void init(
       AdvancedParams forwardParams, ForwardDicomNode fwdNode, DicomNode destinationNode)
       throws IOException {
-    this(forwardParams, fwdNode, destinationNode, null);
+    init(forwardParams, fwdNode, destinationNode, null);
   }
 
   /**
-   * Build a DICOM Gateway with one final destination
+   * Init a DICOM Gateway with one final destination
    *
    * @param forwardParams the optional advanced parameters (proxy, authentication, connection and
    *     TLS) for the final destination
@@ -50,28 +61,28 @@ public class DicomGateway {
    * @param editors the list of editor for modifying attributes on the fly (can be Null)
    * @throws IOException
    */
-  public DicomGateway(
+  public void init(
       AdvancedParams forwardParams,
       ForwardDicomNode fwdNode,
       DicomNode destinationNode,
       List<AttributeEditor> editors)
       throws IOException {
-    this.storeSCP = new StoreScpForward(forwardParams, fwdNode, destinationNode, editors);
-    this.deviceService = new DeviceListenerService(storeSCP.getDevice());
+    storeScpForwardService.init(forwardParams, fwdNode, destinationNode, editors);
+    this.deviceService = new DeviceListenerService(storeScpForwardService.getDevice());
   }
 
-  public DicomGateway(Map<ForwardDicomNode, List<ForwardDestination>> destinations)
+  public void init(Map<ForwardDicomNode, List<ForwardDestination>> destinations)
       throws IOException {
-    this.storeSCP = new StoreScpForward(destinations);
-    this.deviceService = new DeviceListenerService(storeSCP.getDevice());
+    storeScpForwardService.init(destinations);
+    this.deviceService = new DeviceListenerService(storeScpForwardService.getDevice());
   }
 
   public boolean isRunning() {
-    return storeSCP.getConnection().isListening();
+    return storeScpForwardService.getConnection().isListening();
   }
 
-  public StoreScpForward getStoreScpForward() {
-    return storeSCP;
+  public StoreScpForwardService getStoreScpForward() {
+    return storeScpForwardService;
   }
 
   public void start(DicomNode scpNode) throws Exception {
@@ -82,12 +93,13 @@ public class DicomGateway {
     if (isRunning()) {
       throw new IOException("Cannot start a DICOM Gateway because it is already running.");
     }
-    storeSCP.setStatus(0);
+    storeScpForwardService.setStatus(0);
+    storeScpForwardService.getCstoreSCP().setStatus(0);
 
     AdvancedParams options = Objects.requireNonNull(params).getParams();
-    Connection conn = storeSCP.getConnection();
+    Connection conn = storeScpForwardService.getConnection();
     if (params.isBindCallingAet()) {
-      options.configureBind(storeSCP.getApplicationEntity(), conn, scpNode);
+      options.configureBind(storeScpForwardService.getApplicationEntity(), conn, scpNode);
     } else {
       options.configureBind(conn, scpNode);
     }
@@ -96,13 +108,15 @@ public class DicomGateway {
     options.configureTLS(conn, null);
 
     // Limit the calling AETs
-    storeSCP.getApplicationEntity().setAcceptedCallingAETitles(params.getAcceptedCallingAETitles());
+    storeScpForwardService
+        .getApplicationEntity()
+        .setAcceptedCallingAETitles(params.getAcceptedCallingAETitles());
 
     URL transferCapabilityFile = params.getTransferCapabilityFile();
     if (transferCapabilityFile != null) {
-      storeSCP.loadDefaultTransferCapability(transferCapabilityFile);
+      storeScpForwardService.loadDefaultTransferCapability(transferCapabilityFile);
     } else {
-      storeSCP
+      storeScpForwardService
           .getApplicationEntity()
           .addTransferCapability(
               new TransferCapability(null, "*", TransferCapability.Role.SCP, "*"));
@@ -113,6 +127,6 @@ public class DicomGateway {
 
   public synchronized void stop() {
     deviceService.stop();
-    storeSCP.stop();
+    storeScpForwardService.stop();
   }
 }
