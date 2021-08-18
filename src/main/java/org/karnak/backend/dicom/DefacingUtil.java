@@ -9,6 +9,7 @@
  */
 package org.karnak.backend.dicom;
 
+import java.security.SecureRandom;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.opencv.core.Core.MinMaxLocResult;
@@ -21,7 +22,8 @@ public class DefacingUtil {
   private DefacingUtil() {}
 
   public static int randomY(int minY, int maxY, int bound) {
-    return (int) Math.floor(Math.random() * (maxY - minY + bound) + minY);
+    SecureRandom random = new SecureRandom();
+    return (int) Math.floor(random.nextDouble() * (maxY - minY + bound) + minY);
   }
 
   public static double pickRndYPxlColor(int xInit, int minY, int maxY, PlanarImage imgToPick) {

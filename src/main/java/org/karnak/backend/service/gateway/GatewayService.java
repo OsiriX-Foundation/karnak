@@ -13,9 +13,9 @@ import java.io.File;
 import java.net.URL;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import org.karnak.backend.dicom.DicomGateway;
 import org.karnak.backend.dicom.GatewayParams;
 import org.karnak.backend.model.NodeEvent;
+import org.karnak.backend.service.DicomGatewayService;
 import org.karnak.backend.util.NativeLibraryManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,27 +33,28 @@ public class GatewayService implements ApplicationListener<ContextRefreshedEvent
   private static final Logger LOGGER = LoggerFactory.getLogger(GatewayService.class);
 
   private final GatewaySetUpService gatewaySetUpService;
-  private DicomGateway gateway;
+  private final DicomGatewayService gateway;
 
   @Autowired
-  public GatewayService(final GatewaySetUpService gatewaySetUpService) {
+  public GatewayService(
+      final GatewaySetUpService gatewaySetUpService,
+      final DicomGatewayService dicomGatewayService) {
     this.gatewaySetUpService = gatewaySetUpService;
+    this.gateway = dicomGatewayService;
   }
 
-  private static DicomGateway buildDicomGateway(GatewaySetUpService config) {
-    DicomGateway gateway;
+  public void initGateway() {
     try {
       String[] acceptedCallingAETitles =
-          GatewayParams.getAcceptedCallingAETitles(config.getDestinations());
+          GatewayParams.getAcceptedCallingAETitles(gatewaySetUpService.getDestinations());
       GatewayParams gparams =
-          new GatewayParams(config.getAdvancedParams(), false, null, acceptedCallingAETitles);
-      gateway = new DicomGateway(config.getDestinations());
-      gateway.start(config.getCallingDicomNode(), gparams);
-      LOGGER.info("Karnak DICOM gateway servlet is running: {}", config);
-      return gateway;
+          new GatewayParams(
+              gatewaySetUpService.getAdvancedParams(), false, null, acceptedCallingAETitles);
+      gateway.init(gatewaySetUpService.getDestinations());
+      gateway.start(gatewaySetUpService.getCallingDicomNode(), gparams);
+      LOGGER.info("Karnak DICOM gateway servlet is running: {}", gatewaySetUpService);
     } catch (Exception e) {
       LOGGER.error("Cannot start DICOM gateway", e);
-      return null;
     }
   }
 
@@ -77,10 +78,6 @@ public class GatewayService implements ApplicationListener<ContextRefreshedEvent
     if (StringUtil.hasText(dir)) {
       FileUtil.delete(new File(dir));
     }
-  }
-
-  private void initGateway() {
-    gateway = buildDicomGateway(gatewaySetUpService);
   }
 
   @PostConstruct
