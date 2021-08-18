@@ -127,6 +127,9 @@ public class DestinationEntity implements Serializable {
   // Transcode Only Uncompressed
   private boolean transcodeOnlyUncompressed;
 
+  // Flag to know if there are some transfer activities on this destination
+  private boolean transferInProgress;
+
   public DestinationEntity() {
     this(null);
   }
@@ -490,6 +493,14 @@ public class DestinationEntity implements Serializable {
     this.transcodeOnlyUncompressed = transcodeOnlyUncompressed;
   }
 
+  public boolean isTransferInProgress() {
+    return transferInProgress;
+  }
+
+  public void setTransferInProgress(boolean transferInProgress) {
+    this.transferInProgress = transferInProgress;
+  }
+
   /**
    * Informs if this object matches with the filter as text.
    *
@@ -627,6 +638,7 @@ public class DestinationEntity implements Serializable {
         && Objects.equals(savePseudonym, that.savePseudonym)
         && Objects.equals(transferSyntax, that.transferSyntax)
         && Objects.equals(transcodeOnlyUncompressed, that.transcodeOnlyUncompressed)
+        && Objects.equals(transferInProgress, that.transferInProgress)
         && Objects.equals(activateNotification, that.activateNotification)
         && Objects.equals(notify, that.notify)
         && Objects.equals(notifyObjectErrorPrefix, that.notifyObjectErrorPrefix)
@@ -658,6 +670,7 @@ public class DestinationEntity implements Serializable {
         filterBySOPClasses,
         transferSyntax,
         transcodeOnlyUncompressed,
+        transferInProgress,
         activateNotification,
         notify,
         notifyObjectErrorPrefix,
