@@ -9,8 +9,7 @@
  */
 package org.karnak.frontend.component;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 class ProjectDropDownTest {
@@ -21,6 +20,6 @@ class ProjectDropDownTest {
     ProjectDropDown projectDropDown = new ProjectDropDown();
 
     // Test results
-    assertNotNull(projectDropDown);
+    Assert.assertNotNull(projectDropDown);
   }
 }

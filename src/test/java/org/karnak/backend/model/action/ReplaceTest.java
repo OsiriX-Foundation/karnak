@@ -9,10 +9,9 @@
  */
 package org.karnak.backend.model.action;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.VR;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 class ReplaceTest {
@@ -28,7 +27,7 @@ class ReplaceTest {
     replace.execute(attributes, 524294, null);
 
     // Test result
-    assertEquals("dummyValue", attributes.getString(524294));
+    Assert.assertEquals("dummyValue", attributes.getString(524294));
   }
 
   @Test
@@ -42,6 +41,6 @@ class ReplaceTest {
     replace.execute(attributes, 524294, null);
 
     // Test result
-    assertEquals(null, attributes.getString(524294));
+    Assert.assertEquals(null, attributes.getString(524294));
   }
 }

@@ -9,13 +9,9 @@
  */
 package org.karnak.backend.data.repo;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.util.List;
 import java.util.Optional;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.KheopsAlbumsEntity;
@@ -45,8 +41,8 @@ class KheopsAlbumsRepoTest {
     entity = repository.save(entity);
 
     // Test Save
-    assertEquals("Condition", entity.getCondition());
-    assertNotNull(entity.getId());
+    Assert.assertEquals("Condition", entity.getCondition());
+    Assert.assertNotNull(entity.getId());
     LOGGER.info(
         "Entity with Condition [{}] and id [{}] saved", entity.getCondition(), entity.getId());
 
@@ -54,12 +50,12 @@ class KheopsAlbumsRepoTest {
     Optional<KheopsAlbumsEntity> foundByIdOpt = repository.findById(entity.getId());
 
     // Test Find by Id
-    assertTrue(foundByIdOpt.isPresent());
+    Assert.assertTrue(foundByIdOpt.isPresent());
     LOGGER.info(
         "Entity found with Condition [{}] and id [{}]",
         foundByIdOpt.get().getCondition(),
         foundByIdOpt.get().getId());
-    assertEquals(entity.getId(), foundByIdOpt.get().getId());
+    Assert.assertEquals(entity.getId(), foundByIdOpt.get().getId());
   }
 
   /** Test find all. */
@@ -86,9 +82,9 @@ class KheopsAlbumsRepoTest {
     List<KheopsAlbumsEntity> all = repository.findAll();
 
     // Test find all
-    assertNotNull(all);
-    assertTrue(all.size() > 0);
-    assertEquals(1, all.size());
+    Assert.assertNotNull(all);
+    Assert.assertTrue(all.size() > 0);
+    Assert.assertEquals(1, all.size());
     LOGGER.info("Number of entities found [{}]", all.size());
   }
 
@@ -109,8 +105,8 @@ class KheopsAlbumsRepoTest {
     LOGGER.info("Id of the entity with Condition [{}]", entity.getId());
 
     // Test Save
-    assertNotNull(entity);
-    assertEquals(initialText, entity.getCondition());
+    Assert.assertNotNull(entity);
+    Assert.assertEquals(initialText, entity.getCondition());
 
     // Modify the record
     entity.setCondition(modifiedText);
@@ -118,9 +114,9 @@ class KheopsAlbumsRepoTest {
     KheopsAlbumsEntity entityModified = repository.save(entity);
 
     // Test Modify
-    assertNotNull(entityModified);
-    assertEquals(entity.getId(), entityModified.getId());
-    assertEquals(modifiedText, entityModified.getCondition());
+    Assert.assertNotNull(entityModified);
+    Assert.assertEquals(entity.getId(), entityModified.getId());
+    Assert.assertEquals(modifiedText, entityModified.getCondition());
     LOGGER.info(
         "Condition of the entity with id [{}]: [{}]",
         entityModified.getId(),
@@ -143,7 +139,7 @@ class KheopsAlbumsRepoTest {
     Optional<KheopsAlbumsEntity> foundByIdOpt = repository.findById(entity.getId());
 
     // Test Find by Id
-    assertTrue(foundByIdOpt.isPresent());
+    Assert.assertTrue(foundByIdOpt.isPresent());
 
     // Delete the entity
     entity = foundByIdOpt.get();
@@ -154,7 +150,7 @@ class KheopsAlbumsRepoTest {
     // Test Delete
     foundByIdOpt = repository.findById(id);
     LOGGER.info("Is deleted entity with id [{}] present: [{}]", id, foundByIdOpt.isPresent());
-    assertFalse(foundByIdOpt.isPresent());
+    Assert.assertFalse(foundByIdOpt.isPresent());
   }
 
   /** Test findAllByDestinationEntity method. */
@@ -186,11 +182,11 @@ class KheopsAlbumsRepoTest {
     List<KheopsAlbumsEntity> all = repository.findAllByDestinationEntity(destinationEntity);
 
     // Test results
-    assertNotNull(all);
-    assertTrue(all.size() > 0);
-    assertEquals(2, all.size());
-    assertEquals("AeTitle", all.get(0).getDestinationEntity().getAeTitle());
-    assertEquals("AeTitle", all.get(1).getDestinationEntity().getAeTitle());
+    Assert.assertNotNull(all);
+    Assert.assertTrue(all.size() > 0);
+    Assert.assertEquals(2, all.size());
+    Assert.assertEquals("AeTitle", all.get(0).getDestinationEntity().getAeTitle());
+    Assert.assertEquals("AeTitle", all.get(1).getDestinationEntity().getAeTitle());
     LOGGER.info("Number of entities found [{}]", all.size());
   }
 }

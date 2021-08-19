@@ -9,13 +9,9 @@
  */
 package org.karnak.backend.data.repo;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.util.List;
 import java.util.Optional;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.data.entity.DicomSourceNodeEntity;
 import org.slf4j.Logger;
@@ -42,20 +38,20 @@ class DicomSourceNodeRepoTest {
     entity = repository.save(entity);
 
     // Test Save
-    assertEquals("Name", entity.getAeTitle());
-    assertNotNull(entity.getId());
+    Assert.assertEquals("Name", entity.getAeTitle());
+    Assert.assertNotNull(entity.getId());
     LOGGER.info("Entity with name [{}] and id [{}] saved", entity.getAeTitle(), entity.getId());
 
     // Find By Id
     Optional<DicomSourceNodeEntity> foundByIdOpt = repository.findById(entity.getId());
 
     // Test Find by Id
-    assertTrue(foundByIdOpt.isPresent());
+    Assert.assertTrue(foundByIdOpt.isPresent());
     LOGGER.info(
         "Entity found with name [{}] and id [{}]",
         foundByIdOpt.get().getAeTitle(),
         foundByIdOpt.get().getId());
-    assertEquals(entity.getId(), foundByIdOpt.get().getId());
+    Assert.assertEquals(entity.getId(), foundByIdOpt.get().getId());
   }
 
   /** Test find all. */
@@ -73,9 +69,9 @@ class DicomSourceNodeRepoTest {
     List<DicomSourceNodeEntity> all = repository.findAll();
 
     // Test find all
-    assertNotNull(all);
-    assertTrue(all.size() > 0);
-    assertEquals(1, all.size());
+    Assert.assertNotNull(all);
+    Assert.assertTrue(all.size() > 0);
+    Assert.assertEquals(1, all.size());
     LOGGER.info("Number of entities found [{}]", all.size());
   }
 
@@ -96,8 +92,8 @@ class DicomSourceNodeRepoTest {
     LOGGER.info("Id of the entity with name [{}]", entity.getId());
 
     // Test Save
-    assertNotNull(entity);
-    assertEquals(initialText, entity.getAeTitle());
+    Assert.assertNotNull(entity);
+    Assert.assertEquals(initialText, entity.getAeTitle());
 
     // Modify the record
     entity.setAeTitle(modifiedText);
@@ -105,9 +101,9 @@ class DicomSourceNodeRepoTest {
     DicomSourceNodeEntity entityModified = repository.save(entity);
 
     // Test Modify
-    assertNotNull(entityModified);
-    assertEquals(entity.getId(), entityModified.getId());
-    assertEquals(modifiedText, entityModified.getAeTitle());
+    Assert.assertNotNull(entityModified);
+    Assert.assertEquals(entity.getId(), entityModified.getId());
+    Assert.assertEquals(modifiedText, entityModified.getAeTitle());
     LOGGER.info(
         "Name of the entity with id [{}]: [{}]",
         entityModified.getId(),
@@ -130,7 +126,7 @@ class DicomSourceNodeRepoTest {
     Optional<DicomSourceNodeEntity> foundByIdOpt = repository.findById(entity.getId());
 
     // Test Find by Id
-    assertTrue(foundByIdOpt.isPresent());
+    Assert.assertTrue(foundByIdOpt.isPresent());
 
     // Delete the entity
     entity = foundByIdOpt.get();
@@ -141,6 +137,6 @@ class DicomSourceNodeRepoTest {
     // Test Delete
     foundByIdOpt = repository.findById(id);
     LOGGER.info("Is deleted entity with id [{}] present: [{}]", id, foundByIdOpt.isPresent());
-    assertFalse(foundByIdOpt.isPresent());
+    Assert.assertFalse(foundByIdOpt.isPresent());
   }
 }

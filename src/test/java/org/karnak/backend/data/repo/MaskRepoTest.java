@@ -9,14 +9,10 @@
  */
 package org.karnak.backend.data.repo;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.awt.Rectangle;
 import java.util.List;
 import java.util.Optional;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.data.entity.MaskEntity;
 import org.karnak.backend.data.entity.ProfileEntity;
@@ -45,20 +41,20 @@ class MaskRepoTest {
     entity = repository.save(entity);
 
     // Test Save
-    assertEquals("Name", entity.getStationName());
-    assertNotNull(entity.getId());
+    Assert.assertEquals("Name", entity.getStationName());
+    Assert.assertNotNull(entity.getId());
     LOGGER.info("Entity with name [{}] and id [{}] saved", entity.getStationName(), entity.getId());
 
     // Find By Id
     Optional<MaskEntity> foundByIdOpt = repository.findById(entity.getId());
 
     // Test Find by Id
-    assertTrue(foundByIdOpt.isPresent());
+    Assert.assertTrue(foundByIdOpt.isPresent());
     LOGGER.info(
         "Entity found with name [{}] and id [{}]",
         foundByIdOpt.get().getStationName(),
         foundByIdOpt.get().getId());
-    assertEquals(entity.getId(), foundByIdOpt.get().getId());
+    Assert.assertEquals(entity.getId(), foundByIdOpt.get().getId());
   }
 
   /** Test find all. */
@@ -83,9 +79,9 @@ class MaskRepoTest {
     List<MaskEntity> all = repository.findAll();
 
     // Test find all
-    assertNotNull(all);
-    assertTrue(all.size() > 0);
-    assertEquals(1, all.size());
+    Assert.assertNotNull(all);
+    Assert.assertTrue(all.size() > 0);
+    Assert.assertEquals(1, all.size());
     LOGGER.info("Number of entities found [{}]", all.size());
   }
 
@@ -106,8 +102,8 @@ class MaskRepoTest {
     LOGGER.info("Id of the entity with name [{}]", entity.getId());
 
     // Test Save
-    assertNotNull(entity);
-    assertEquals(initialText, entity.getStationName());
+    Assert.assertNotNull(entity);
+    Assert.assertEquals(initialText, entity.getStationName());
 
     // Modify the record
     entity.setStationName(modifiedText);
@@ -115,9 +111,9 @@ class MaskRepoTest {
     MaskEntity entityModified = repository.save(entity);
 
     // Test Modify
-    assertNotNull(entityModified);
-    assertEquals(entity.getId(), entityModified.getId());
-    assertEquals(modifiedText, entityModified.getStationName());
+    Assert.assertNotNull(entityModified);
+    Assert.assertEquals(entity.getId(), entityModified.getId());
+    Assert.assertEquals(modifiedText, entityModified.getStationName());
     LOGGER.info(
         "Name of the entity with id [{}]: [{}]",
         entityModified.getId(),
@@ -141,7 +137,7 @@ class MaskRepoTest {
     Optional<MaskEntity> foundByIdOpt = repository.findById(entity.getId());
 
     // Test Find by Id
-    assertTrue(foundByIdOpt.isPresent());
+    Assert.assertTrue(foundByIdOpt.isPresent());
 
     // Delete the entity
     entity = foundByIdOpt.get();
@@ -152,6 +148,6 @@ class MaskRepoTest {
     // Test Delete
     foundByIdOpt = repository.findById(id);
     LOGGER.info("Is deleted entity with id [{}] present: [{}]", id, foundByIdOpt.isPresent());
-    assertFalse(foundByIdOpt.isPresent());
+    Assert.assertFalse(foundByIdOpt.isPresent());
   }
 }
