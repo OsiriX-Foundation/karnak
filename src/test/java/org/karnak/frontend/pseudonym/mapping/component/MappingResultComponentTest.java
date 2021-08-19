@@ -9,7 +9,9 @@
  */
 package org.karnak.frontend.pseudonym.mapping.component;
 
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.cache.CachedPatient;
 import org.karnak.backend.cache.Patient;
@@ -22,8 +24,8 @@ class MappingResultComponentTest {
     MappingResultComponent mappingResultComponent = new MappingResultComponent();
 
     // Test results
-    Assert.assertNotNull(mappingResultComponent);
-    Assert.assertNotNull(mappingResultComponent.getPatientFoundDetails());
+    assertNotNull(mappingResultComponent);
+    assertNotNull(mappingResultComponent.getPatientFoundDetails());
   }
 
   @Test
@@ -43,7 +45,7 @@ class MappingResultComponentTest {
     mappingResultComponent.handleResultFindPatient(patient, "PSEUDO", "Cache");
 
     // Test results
-    Assert.assertEquals("Cache", mappingResultComponent.getPatientFoundDetails().getSummaryText());
-    Assert.assertNotNull(mappingResultComponent.getPatientFoundDetails().getContent());
+    assertEquals("Cache", mappingResultComponent.getPatientFoundDetails().getSummaryText());
+    assertNotNull(mappingResultComponent.getPatientFoundDetails().getContent());
   }
 }

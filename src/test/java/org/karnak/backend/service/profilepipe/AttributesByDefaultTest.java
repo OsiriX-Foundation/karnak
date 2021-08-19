@@ -9,12 +9,14 @@
  */
 package org.karnak.backend.service.profilepipe;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.util.HashSet;
 import java.util.Set;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Sequence;
 import org.dcm4che3.data.Tag;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.data.entity.ProfileEntity;
@@ -50,16 +52,16 @@ class AttributesByDefaultTest {
     AttributesByDefault.setDeidentificationMethodCodeSequence(attributes, projectEntity);
 
     // Test results
-    Assert.assertNotNull(attributes.getValue(Tag.DeidentificationMethodCodeSequence));
+    assertNotNull(attributes.getValue(Tag.DeidentificationMethodCodeSequence));
     Sequence sequence = (Sequence) attributes.getValue(Tag.DeidentificationMethodCodeSequence);
-    Assert.assertEquals("113100", sequence.get(0).getValue(Tag.CodeValue));
-    Assert.assertEquals("DCM", sequence.get(0).getValue(Tag.CodingSchemeDesignator));
-    Assert.assertEquals(
+    assertEquals("113100", sequence.get(0).getValue(Tag.CodeValue));
+    assertEquals("DCM", sequence.get(0).getValue(Tag.CodingSchemeDesignator));
+    assertEquals(
         ProfileItemType.getCodeMeaning("basic.dicom.profile"),
         sequence.get(0).getValue(Tag.CodeMeaning));
-    Assert.assertEquals("113101", sequence.get(1).getValue(Tag.CodeValue));
-    Assert.assertEquals("DCM", sequence.get(1).getValue(Tag.CodingSchemeDesignator));
-    Assert.assertEquals(
+    assertEquals("113101", sequence.get(1).getValue(Tag.CodeValue));
+    assertEquals("DCM", sequence.get(1).getValue(Tag.CodingSchemeDesignator));
+    assertEquals(
         ProfileItemType.getCodeMeaning("clean.pixel.data"),
         sequence.get(1).getValue(Tag.CodeMeaning));
   }
