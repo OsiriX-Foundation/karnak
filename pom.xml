@@ -31,7 +31,7 @@
     <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <springframework.version>2.4.5</springframework.version>
+    <springframework.version>2.5.3</springframework.version>
     <vaadin.version>19.0.6</vaadin.version>
     <weasis-dicom-tools.version>5.23.3-IMG-RELEASE</weasis-dicom-tools.version>
     <weasis.opencv.native.version>4.5.1-dcm</weasis.opencv.native.version>
@@ -43,7 +43,7 @@
     <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
     <h2.version>1.4.200</h2.version>
-    <junit.jupiter.version>5.0.3</junit.jupiter.version>
+    <junit.jupiter.version>5.7.2</junit.jupiter.version>
     <mockito.version>3.9.0</mockito.version>
     <springdoc.version>1.5.6</springdoc.version>
   </properties>
@@ -335,7 +335,7 @@
     <dependency>
       <artifactId>liquibase-maven-plugin</artifactId>
       <groupId>org.liquibase</groupId>
-      <version>3.4.1</version>
+      <version>4.3.3</version>
     </dependency>
 
     <dependency>

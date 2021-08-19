@@ -9,7 +9,11 @@
  */
 package org.karnak.frontend.extid;
 
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.cache.CachedPatient;
 import org.karnak.backend.cache.ExternalIDCache;
@@ -27,7 +31,7 @@ class ExternalIDGridTest {
     ExternalIDGrid externalIDGrid = new ExternalIDGrid();
 
     // Test results
-    Assert.assertNotNull(externalIDGrid);
+    assertNotNull(externalIDGrid);
   }
 
   @Test
@@ -59,10 +63,10 @@ class ExternalIDGridTest {
     externalIDGrid.readAllCacheValue();
 
     // Test results
-    Assert.assertNotNull(externalIDGrid);
-    Assert.assertNotNull(externalIDGrid.getExternalIDCache());
-    Assert.assertNotNull(externalIDGrid.getProjectEntity());
-    Assert.assertEquals("pseudonym", externalIDGrid.getPatientsListInCache().get(0).getPseudonym());
+    assertNotNull(externalIDGrid);
+    assertNotNull(externalIDGrid.getExternalIDCache());
+    assertNotNull(externalIDGrid.getProjectEntity());
+    assertEquals("pseudonym", externalIDGrid.getPatientsListInCache().get(0).getPseudonym());
   }
 
   @Test
@@ -88,12 +92,12 @@ class ExternalIDGridTest {
     externalIDGrid.setProjectEntity(projectEntity);
 
     // Test no patient in cache
-    Assert.assertFalse(externalIDGrid.patientExist(patient));
+    assertFalse(externalIDGrid.patientExist(patient));
 
     // Add patient
     externalIDGrid.addPatient(patient);
 
     // Test patient in cache
-    Assert.assertTrue(externalIDGrid.patientExist(patient));
+    assertTrue(externalIDGrid.patientExist(patient));
   }
 }

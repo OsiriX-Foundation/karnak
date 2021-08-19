@@ -9,10 +9,11 @@
  */
 package org.karnak.frontend.pseudonym.mapping;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.cache.CachedPatient;
@@ -81,7 +82,7 @@ class PseudonymMappingLogicTest {
 
     // Test results
     Mockito.verify(externalIDCacheMock, Mockito.times(1)).getAll();
-    Assert.assertEquals("Project", externalIDCachePatients.keySet().stream().findFirst().get());
-    Assert.assertEquals("patientId", externalIDCachePatients.get("Project").getPatientId());
+    assertEquals("Project", externalIDCachePatients.keySet().stream().findFirst().get());
+    assertEquals("patientId", externalIDCachePatients.get("Project").getPatientId());
   }
 }
