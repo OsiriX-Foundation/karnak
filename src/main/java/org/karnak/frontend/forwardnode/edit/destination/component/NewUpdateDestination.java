@@ -13,6 +13,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
+import java.util.Objects;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.enums.DestinationType;
 import org.karnak.frontend.forwardnode.edit.component.ButtonSaveDeleteCancel;
@@ -27,6 +28,7 @@ public class NewUpdateDestination extends VerticalLayout {
   private final ButtonSaveDeleteCancel buttonDestinationDICOMSaveDeleteCancel;
   private final ButtonSaveDeleteCancel buttonDestinationSTOWSaveDeleteCancel;
   private DestinationEntity currentDestinationEntity;
+  public static final String TRANSFER_IN_PROGRESS = "Transfer in progress";
 
   public NewUpdateDestination() {
     setSizeFull();
@@ -45,8 +47,11 @@ public class NewUpdateDestination extends VerticalLayout {
   public void load(DestinationEntity destinationEntity, DestinationType type) {
     if (destinationEntity != null) {
       currentDestinationEntity = destinationEntity;
-      buttonDestinationDICOMSaveDeleteCancel.getDelete().setEnabled(true);
-      buttonDestinationSTOWSaveDeleteCancel.getDelete().setEnabled(true);
+      if (!Objects.equals(
+          buttonDestinationDICOMSaveDeleteCancel.getDelete().getText(), TRANSFER_IN_PROGRESS)) {
+        buttonDestinationDICOMSaveDeleteCancel.getDelete().setEnabled(true);
+        buttonDestinationSTOWSaveDeleteCancel.getDelete().setEnabled(true);
+      }
     } else {
       currentDestinationEntity =
           type == DestinationType.stow
