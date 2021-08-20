@@ -166,10 +166,7 @@ public class ForwardNodeView extends HorizontalLayout implements HasUrlParameter
             event -> {
               forwardNodeLogic.cancelForwardNode();
               // Case transfer is in progress reset labels
-              layoutEditForwardNode
-                  .getButtonForwardNodeSaveDeleteCancel()
-                  .getSave()
-                  .setText(SAVE);
+              layoutEditForwardNode.getButtonForwardNodeSaveDeleteCancel().getSave().setText(SAVE);
               layoutEditForwardNode
                   .getButtonForwardNodeSaveDeleteCancel()
                   .getDelete()
