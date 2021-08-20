@@ -18,7 +18,9 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.frontend.forwardnode.ForwardNodeLogic;
+import org.karnak.frontend.forwardnode.edit.component.ButtonSaveDeleteCancel;
 import org.karnak.frontend.forwardnode.edit.destination.component.GridDestination;
+import org.karnak.frontend.forwardnode.edit.destination.component.NewUpdateDestination;
 import org.karnak.frontend.util.UIS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +42,8 @@ public class DestinationView extends VerticalLayout {
   private Button newDestinationSTOW;
   private GridDestination gridDestination;
   private HorizontalLayout layoutFilterButton;
+  private ButtonSaveDeleteCancel buttonForwardNodeSaveDeleteCancel;
+  private NewUpdateDestination newUpdateDestination;
 
   private final String LABEL_NEW_DESTINATION_DICOM = "DICOM";
   private final String LABEL_NEW_DESTINATION_STOW = "STOW";
@@ -146,5 +150,22 @@ public class DestinationView extends VerticalLayout {
 
   public void setUi(UI ui) {
     this.ui = ui;
+  }
+
+  public ButtonSaveDeleteCancel getButtonForwardNodeSaveDeleteCancel() {
+    return buttonForwardNodeSaveDeleteCancel;
+  }
+
+  public void setButtonForwardNodeSaveDeleteCancel(
+      ButtonSaveDeleteCancel buttonForwardNodeSaveDeleteCancel) {
+    this.buttonForwardNodeSaveDeleteCancel = buttonForwardNodeSaveDeleteCancel;
+  }
+
+  public NewUpdateDestination getNewUpdateDestination() {
+    return newUpdateDestination;
+  }
+
+  public void setNewUpdateDestination(NewUpdateDestination newUpdateDestination) {
+    this.newUpdateDestination = newUpdateDestination;
   }
 }
