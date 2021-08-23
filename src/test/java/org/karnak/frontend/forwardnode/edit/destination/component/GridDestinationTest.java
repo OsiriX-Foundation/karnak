@@ -9,7 +9,8 @@
  */
 package org.karnak.frontend.forwardnode.edit.destination.component;
 
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.junit.jupiter.api.Test;
 
 class GridDestinationTest {
@@ -21,6 +22,6 @@ class GridDestinationTest {
     GridDestination gridDestination = new GridDestination();
 
     // Test results
-    Assert.assertNotNull(gridDestination);
+    assertNotNull(gridDestination);
   }
 }

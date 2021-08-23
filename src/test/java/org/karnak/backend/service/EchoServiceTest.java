@@ -9,11 +9,12 @@
  */
 package org.karnak.backend.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.dicom.DicomForwardDestination;
@@ -79,10 +80,10 @@ class EchoServiceTest {
     // Test results
     Mockito.verify(gatewaySetUpServiceMock, Mockito.times(1))
         .getDestinationNode(Mockito.anyString());
-    Assert.assertEquals(2, destinationEchos.size());
-    Assert.assertEquals("fwdAeTitle", destinationEchos.get(0).getAet());
-    Assert.assertEquals(444, destinationEchos.get(0).getStatus());
-    Assert.assertEquals("http://test.com/studies", destinationEchos.get(1).getUrl());
-    Assert.assertEquals(0, destinationEchos.get(1).getStatus());
+    assertEquals(2, destinationEchos.size());
+    assertEquals("fwdAeTitle", destinationEchos.get(0).getAet());
+    assertEquals(444, destinationEchos.get(0).getStatus());
+    assertEquals("http://test.com/studies", destinationEchos.get(1).getUrl());
+    assertEquals(0, destinationEchos.get(1).getStatus());
   }
 }
