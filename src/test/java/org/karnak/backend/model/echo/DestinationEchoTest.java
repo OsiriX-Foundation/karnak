@@ -32,7 +32,7 @@ class DestinationEchoTest {
     // Test results
     assertNotNull(destinationEcho);
     assertEquals(destinationEcho, destinationEcho);
-    assertTrue(Objects.equals(destinationEcho, destinationEchoToCompare));
+    assertEquals(destinationEcho, destinationEchoToCompare);
     assertEquals(destinationEcho.hashCode(), destinationEchoToCompare.hashCode());
   }
 }
