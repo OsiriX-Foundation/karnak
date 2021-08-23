@@ -9,12 +9,14 @@
  */
 package org.karnak.backend.model.editor;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+
 import java.util.HashSet;
 import java.util.Set;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.dcm4che3.data.VR;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.data.entity.SOPClassUIDEntity;
 import org.weasis.dicom.param.AttributeEditorContext;
@@ -52,7 +54,7 @@ class FilterEditorTest {
     filterEditor.apply(attributes, attributeEditorContext);
 
     // Test results
-    Assert.assertEquals(Abort.FILE_EXCEPTION, attributeEditorContext.getAbort());
+    assertEquals(Abort.FILE_EXCEPTION, attributeEditorContext.getAbort());
   }
 
   @Test
@@ -84,6 +86,6 @@ class FilterEditorTest {
     filterEditor.apply(attributes, attributeEditorContext);
 
     // Test results
-    Assert.assertNotEquals(Abort.FILE_EXCEPTION, attributeEditorContext.getAbort());
+    assertNotEquals(Abort.FILE_EXCEPTION, attributeEditorContext.getAbort());
   }
 }
