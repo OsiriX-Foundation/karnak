@@ -9,9 +9,13 @@
  */
 package org.karnak.backend.data.repo;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.List;
 import java.util.Optional;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.data.entity.IncludedTagEntity;
 import org.karnak.backend.data.entity.ProfileElementEntity;
@@ -43,20 +47,20 @@ class TagRepoTest {
     entity = repository.save(entity);
 
     // Test Save
-    Assert.assertEquals("Name", entity.getTagValue());
-    Assert.assertNotNull(entity.getId());
+    assertEquals("Name", entity.getTagValue());
+    assertNotNull(entity.getId());
     LOGGER.info("Entity with name [{}] and id [{}] saved", entity.getTagValue(), entity.getId());
 
     // Find By Id
     Optional<TagEntity> foundByIdOpt = repository.findById(entity.getId());
 
     // Test Find by Id
-    Assert.assertTrue(foundByIdOpt.isPresent());
+    assertTrue(foundByIdOpt.isPresent());
     LOGGER.info(
         "Entity found with name [{}] and id [{}]",
         foundByIdOpt.get().getTagValue(),
         foundByIdOpt.get().getId());
-    Assert.assertEquals(entity.getId(), foundByIdOpt.get().getId());
+    assertEquals(entity.getId(), foundByIdOpt.get().getId());
   }
 
   /** Test find all. */
@@ -85,9 +89,9 @@ class TagRepoTest {
     List<TagEntity> all = repository.findAll();
 
     // Test find all
-    Assert.assertNotNull(all);
-    Assert.assertTrue(all.size() > 0);
-    Assert.assertEquals(1, all.size());
+    assertNotNull(all);
+    assertTrue(all.size() > 0);
+    assertEquals(1, all.size());
     LOGGER.info("Number of entities found [{}]", all.size());
   }
 
@@ -108,8 +112,8 @@ class TagRepoTest {
     LOGGER.info("Id of the entity with name [{}]", entity.getId());
 
     // Test Save
-    Assert.assertNotNull(entity);
-    Assert.assertEquals(initialText, entity.getTagValue());
+    assertNotNull(entity);
+    assertEquals(initialText, entity.getTagValue());
 
     // Modify the record
     entity.setTagValue(modifiedText);
@@ -117,9 +121,9 @@ class TagRepoTest {
     IncludedTagEntity entityModified = repository.save(entity);
 
     // Test Modify
-    Assert.assertNotNull(entityModified);
-    Assert.assertEquals(entity.getId(), entityModified.getId());
-    Assert.assertEquals(modifiedText, entityModified.getTagValue());
+    assertNotNull(entityModified);
+    assertEquals(entity.getId(), entityModified.getId());
+    assertEquals(modifiedText, entityModified.getTagValue());
     LOGGER.info(
         "Name of the entity with id [{}]: [{}]",
         entityModified.getId(),
@@ -142,7 +146,7 @@ class TagRepoTest {
     Optional<TagEntity> foundByIdOpt = repository.findById(entity.getId());
 
     // Test Find by Id
-    Assert.assertTrue(foundByIdOpt.isPresent());
+    assertTrue(foundByIdOpt.isPresent());
 
     // Delete the entity
     TagEntity entityTag = foundByIdOpt.get();
@@ -153,6 +157,6 @@ class TagRepoTest {
     // Test Delete
     foundByIdOpt = repository.findById(id);
     LOGGER.info("Is deleted entity with id [{}] present: [{}]", id, foundByIdOpt.isPresent());
-    Assert.assertFalse(foundByIdOpt.isPresent());
+    assertFalse(foundByIdOpt.isPresent());
   }
 }
