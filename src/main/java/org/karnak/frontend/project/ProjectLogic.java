@@ -13,7 +13,6 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import java.util.ArrayList;
 import java.util.List;
 import org.karnak.backend.data.entity.DestinationEntity;
-import org.karnak.backend.data.entity.ProfileEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.service.ProjectService;
 import org.karnak.backend.service.profilepipe.ProfilePipeService;
@@ -175,7 +174,12 @@ public class ProjectLogic extends ListDataProvider<ProjectEntity> {
    */
   public void initEditProfileDropDown(EditProject editProject) {
     editProject.getProfileDropDown().setItems(profilePipeService.getAllProfiles());
-    editProject.getProfileDropDown().setItemLabelGenerator(ProfileEntity::getName);
+    editProject
+        .getProfileDropDown()
+        .setItemLabelGenerator(
+            profileEntity ->
+                String.format(
+                    "%s [version %s]", profileEntity.getName(), profileEntity.getVersion()));
   }
 
   /**
@@ -185,7 +189,12 @@ public class ProjectLogic extends ListDataProvider<ProjectEntity> {
    */
   public void initNewProjectProfileDropDown(NewProject newProject) {
     newProject.getProfileDropDown().setItems(profilePipeService.getAllProfiles());
-    newProject.getProfileDropDown().setItemLabelGenerator(ProfileEntity::getName);
+    newProject
+        .getProfileDropDown()
+        .setItemLabelGenerator(
+            profileEntity ->
+                String.format(
+                    "%s [version %s]", profileEntity.getName(), profileEntity.getVersion()));
   }
 
   public ProjectView getProjectView() {

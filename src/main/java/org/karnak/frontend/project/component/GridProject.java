@@ -26,7 +26,11 @@ public class GridProject extends Grid<ProjectEntity> {
             .setHeader("Project Name")
             .setFlexGrow(15)
             .setSortable(true);
-    addColumn(project -> project.getProfileEntity().getName())
+    addColumn(
+            project ->
+                String.format(
+                    "%s [version %s]",
+                    project.getProfileEntity().getName(), project.getProfileEntity().getVersion()))
         .setHeader("Desidenfication profile")
         .setFlexGrow(15)
         .setSortable(true);
