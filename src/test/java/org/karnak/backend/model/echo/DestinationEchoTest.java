@@ -11,9 +11,7 @@ package org.karnak.backend.model.echo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Objects;
 import org.junit.jupiter.api.Test;
 
 class DestinationEchoTest {
@@ -30,7 +28,7 @@ class DestinationEchoTest {
     // Test results
     assertNotNull(destinationEcho);
     assertEquals(destinationEcho, destinationEcho);
-    assertTrue(Objects.equals(destinationEcho, destinationEchoToCompare));
+    assertEquals(destinationEchoToCompare, destinationEcho);
     assertEquals(destinationEcho.hashCode(), destinationEchoToCompare.hashCode());
   }
 }
