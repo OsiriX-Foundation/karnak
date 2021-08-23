@@ -9,9 +9,10 @@
  */
 package org.karnak.frontend.extid;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,6 +32,6 @@ class CSVDialogTest {
     CSVDialog csvDialog = new CSVDialog(inputStream, separator, projectEntity);
 
     // Test results
-    Assert.assertNotNull(csvDialog);
+    assertNotNull(csvDialog);
   }
 }

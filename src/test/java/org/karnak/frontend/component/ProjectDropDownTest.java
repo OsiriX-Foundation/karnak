@@ -9,7 +9,8 @@
  */
 package org.karnak.frontend.component;
 
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -22,6 +23,6 @@ class ProjectDropDownTest {
     ProjectDropDown projectDropDown = new ProjectDropDown();
 
     // Test results
-    Assert.assertNotNull(projectDropDown);
+    assertNotNull(projectDropDown);
   }
 }

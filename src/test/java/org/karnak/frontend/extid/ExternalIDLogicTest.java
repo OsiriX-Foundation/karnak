@@ -9,8 +9,9 @@
  */
 package org.karnak.frontend.extid;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.util.List;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.data.entity.ProjectEntity;
@@ -41,7 +42,7 @@ class ExternalIDLogicTest {
     externalIDLogic.setExternalIDView(externalIDView);
 
     // Test results
-    Assert.assertNotNull(externalIDLogic.getExternalIDView());
+    assertNotNull(externalIDLogic.getExternalIDView());
   }
 
   @Test
