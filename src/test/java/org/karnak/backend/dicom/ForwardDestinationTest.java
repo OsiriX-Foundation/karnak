@@ -9,11 +9,12 @@
  */
 package org.karnak.backend.dicom;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.IOException;
 import org.dcm4che3.data.UID;
 import org.dcm4che3.img.DicomOutputData;
 import org.dcm4che3.img.util.DicomUtils;
-import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -56,7 +57,7 @@ class ForwardDestinationTest {
     String outputTransferSyntax = forwardDestination.getOutputTransferSyntax();
 
     // Test result
-    Assert.assertEquals("", outputTransferSyntax);
+    assertEquals("", outputTransferSyntax);
   }
 
   @Test
@@ -74,7 +75,7 @@ class ForwardDestinationTest {
     String outputTransferSyntax = forwardDestination.getOutputTransferSyntax("originalTsuid");
 
     // Test result
-    Assert.assertEquals("originalTsuid", outputTransferSyntax);
+    assertEquals("originalTsuid", outputTransferSyntax);
   }
 
   @Test
@@ -95,18 +96,18 @@ class ForwardDestinationTest {
     String outputTransferSyntax = forwardDestination.getOutputTransferSyntax(UID.RLELossless);
 
     // Test result
-    Assert.assertEquals(UID.ExplicitVRLittleEndian, outputTransferSyntax);
+    assertEquals(UID.ExplicitVRLittleEndian, outputTransferSyntax);
 
     // Call method
     outputTransferSyntax = forwardDestination.getOutputTransferSyntax(UID.ImplicitVRLittleEndian);
 
     // Test result
-    Assert.assertEquals(UID.ExplicitVRLittleEndian, outputTransferSyntax);
+    assertEquals(UID.ExplicitVRLittleEndian, outputTransferSyntax);
 
     // Call method
     outputTransferSyntax = forwardDestination.getOutputTransferSyntax(UID.ExplicitVRBigEndian);
 
     // Test result
-    Assert.assertEquals(UID.ExplicitVRLittleEndian, outputTransferSyntax);
+    assertEquals(UID.ExplicitVRLittleEndian, outputTransferSyntax);
   }
 }

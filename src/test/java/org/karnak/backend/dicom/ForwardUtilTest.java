@@ -9,11 +9,13 @@
  */
 package org.karnak.backend.dicom;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.dicom.ForwardUtil.Params;
@@ -31,12 +33,12 @@ class ForwardUtilTest {
     Params p = new Params("iuid", "cuid", "tsuid", 0, byteArrayInputStream, null);
 
     // Test results
-    Assert.assertEquals("iuid", p.getIuid());
-    Assert.assertEquals("cuid", p.getCuid());
-    Assert.assertEquals("tsuid", p.getTsuid());
-    Assert.assertEquals(0, p.getPriority());
-    Assert.assertEquals(byteArrayInputStream, p.getData());
-    Assert.assertNull(p.getAs());
+    assertEquals("iuid", p.getIuid());
+    assertEquals("cuid", p.getCuid());
+    assertEquals("tsuid", p.getTsuid());
+    assertEquals(0, p.getPriority());
+    assertEquals(byteArrayInputStream, p.getData());
+    assertNull(p.getAs());
   }
 
   @Test
