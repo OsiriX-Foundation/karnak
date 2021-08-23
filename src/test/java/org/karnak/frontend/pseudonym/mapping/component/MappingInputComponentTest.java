@@ -9,7 +9,8 @@
  */
 package org.karnak.frontend.pseudonym.mapping.component;
 
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.junit.jupiter.api.Test;
 
 class MappingInputComponentTest {
@@ -20,8 +21,8 @@ class MappingInputComponentTest {
     MappingInputComponent mappingInputComponent = new MappingInputComponent();
 
     // Test results
-    Assert.assertNotNull(mappingInputComponent);
-    Assert.assertNotNull(mappingInputComponent.getFindButton());
-    Assert.assertNotNull(mappingInputComponent.getPseudonymTextField());
+    assertNotNull(mappingInputComponent);
+    assertNotNull(mappingInputComponent.getFindButton());
+    assertNotNull(mappingInputComponent.getPseudonymTextField());
   }
 }

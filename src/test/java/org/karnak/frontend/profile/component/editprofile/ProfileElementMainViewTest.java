@@ -9,9 +9,11 @@
  */
 package org.karnak.frontend.profile.component.editprofile;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.HashSet;
 import java.util.Set;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.data.entity.ProfileEntity;
@@ -25,7 +27,7 @@ class ProfileElementMainViewTest {
     ProfileElementMainView profileElementMainView = new ProfileElementMainView();
 
     // Test results
-    Assert.assertNotNull(profileElementMainView);
+    assertNotNull(profileElementMainView);
   }
 
   @Test
@@ -55,6 +57,6 @@ class ProfileElementMainViewTest {
     profileElementMainView.setProfile(profileEntity);
 
     // Test results
-    Assert.assertTrue(profileElementMainView.isEnabled());
+    assertTrue(profileElementMainView.isEnabled());
   }
 }

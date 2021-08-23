@@ -9,9 +9,13 @@
  */
 package org.karnak.backend.data.repo;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.List;
 import java.util.Optional;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.data.entity.ArgumentEntity;
 import org.karnak.backend.data.entity.ProfileElementEntity;
@@ -42,20 +46,20 @@ class ArgumentRepoTest {
     entity = repository.save(entity);
 
     // Test Save
-    Assert.assertEquals("Key", entity.getKey());
-    Assert.assertNotNull(entity.getId());
+    assertEquals("Key", entity.getKey());
+    assertNotNull(entity.getId());
     LOGGER.info("Entity with Key [{}] and id [{}] saved", entity.getKey(), entity.getId());
 
     // Find By Id
     Optional<ArgumentEntity> foundByIdOpt = repository.findById(entity.getId());
 
     // Test Find by Id
-    Assert.assertTrue(foundByIdOpt.isPresent());
+    assertTrue(foundByIdOpt.isPresent());
     LOGGER.info(
         "Entity found with Key [{}] and id [{}]",
         foundByIdOpt.get().getKey(),
         foundByIdOpt.get().getId());
-    Assert.assertEquals(entity.getId(), foundByIdOpt.get().getId());
+    assertEquals(entity.getId(), foundByIdOpt.get().getId());
   }
 
   /** Test find all. */
@@ -84,9 +88,9 @@ class ArgumentRepoTest {
     List<ArgumentEntity> all = repository.findAll();
 
     // Test find all
-    Assert.assertNotNull(all);
-    Assert.assertTrue(all.size() > 0);
-    Assert.assertEquals(1, all.size());
+    assertNotNull(all);
+    assertTrue(all.size() > 0);
+    assertEquals(1, all.size());
     LOGGER.info("Number of entities found [{}]", all.size());
   }
 
@@ -107,8 +111,8 @@ class ArgumentRepoTest {
     LOGGER.info("Id of the entity with Key [{}]", entity.getId());
 
     // Test Save
-    Assert.assertNotNull(entity);
-    Assert.assertEquals(initialText, entity.getKey());
+    assertNotNull(entity);
+    assertEquals(initialText, entity.getKey());
 
     // Modify the record
     entity.setKey(modifiedText);
@@ -116,9 +120,9 @@ class ArgumentRepoTest {
     ArgumentEntity entityModified = repository.save(entity);
 
     // Test Modify
-    Assert.assertNotNull(entityModified);
-    Assert.assertEquals(entity.getId(), entityModified.getId());
-    Assert.assertEquals(modifiedText, entityModified.getKey());
+    assertNotNull(entityModified);
+    assertEquals(entity.getId(), entityModified.getId());
+    assertEquals(modifiedText, entityModified.getKey());
     LOGGER.info(
         "Key of the entity with id [{}]: [{}]", entityModified.getId(), entityModified.getKey());
   }
@@ -139,7 +143,7 @@ class ArgumentRepoTest {
     Optional<ArgumentEntity> foundByIdOpt = repository.findById(entity.getId());
 
     // Test Find by Id
-    Assert.assertTrue(foundByIdOpt.isPresent());
+    assertTrue(foundByIdOpt.isPresent());
 
     // Delete the entity
     entity = foundByIdOpt.get();
@@ -150,6 +154,6 @@ class ArgumentRepoTest {
     // Test Delete
     foundByIdOpt = repository.findById(id);
     LOGGER.info("Is deleted entity with id [{}] present: [{}]", id, foundByIdOpt.isPresent());
-    Assert.assertFalse(foundByIdOpt.isPresent());
+    assertFalse(foundByIdOpt.isPresent());
   }
 }

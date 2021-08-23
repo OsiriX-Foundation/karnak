@@ -9,11 +9,13 @@
  */
 package org.karnak.backend.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.data.entity.DestinationEntity;
@@ -116,9 +118,9 @@ class ProjectServiceTest {
 
     // Test results
     Mockito.verify(projectRepositoryMock, Mockito.times(1)).findAll();
-    Assert.assertNotNull(projects);
-    Assert.assertEquals(1, projects.size());
-    Assert.assertEquals("projectEntityName", projects.get(0).getName());
+    assertNotNull(projects);
+    assertEquals(1, projects.size());
+    assertEquals("projectEntityName", projects.get(0).getName());
   }
 
   @Test
@@ -128,8 +130,8 @@ class ProjectServiceTest {
 
     // Test results
     Mockito.verify(projectRepositoryMock, Mockito.times(1)).findById(Mockito.anyLong());
-    Assert.assertNotNull(projectEntity);
-    Assert.assertEquals(Long.valueOf(1), projectEntity.getId());
-    Assert.assertEquals("projectEntityName", projectEntity.getName());
+    assertNotNull(projectEntity);
+    assertEquals(Long.valueOf(1), projectEntity.getId());
+    assertEquals("projectEntityName", projectEntity.getName());
   }
 }
