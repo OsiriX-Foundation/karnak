@@ -9,8 +9,9 @@
  */
 package org.karnak.backend.model.echo;
 
-import java.util.Objects;
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -27,9 +28,9 @@ class DestinationEchoTest {
     destinationEchoToCompare.setUrl("url");
 
     // Test results
-    Assert.assertNotNull(destinationEcho);
-    Assert.assertEquals(destinationEcho, destinationEcho);
-    Assert.assertTrue(Objects.equals(destinationEcho, destinationEchoToCompare));
-    Assert.assertEquals(destinationEcho.hashCode(), destinationEchoToCompare.hashCode());
+    assertNotNull(destinationEcho);
+    assertEquals(destinationEcho, destinationEcho);
+    assertEquals(destinationEchoToCompare, destinationEcho);
+    assertEquals(destinationEcho.hashCode(), destinationEchoToCompare.hashCode());
   }
 }
