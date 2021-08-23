@@ -146,7 +146,10 @@ public class LayoutDesidentification extends VerticalLayout {
   public void setTextOnSelectionProject(ProjectEntity projectEntity) {
     if (projectEntity != null && projectEntity.getProfileEntity() != null) {
       desidentificationName.setShowValue(
-          String.format("The profile %s will be used", projectEntity.getProfileEntity().getName()));
+          String.format(
+              "The profile %s [version %s] will be used",
+              projectEntity.getProfileEntity().getName(),
+              projectEntity.getProfileEntity().getVersion()));
     } else if (projectEntity != null && projectEntity.getProfileEntity() == null) {
       desidentificationName.setShowValue("No profiles defined in the project");
     } else {
