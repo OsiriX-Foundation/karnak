@@ -9,11 +9,7 @@
  */
 package org.karnak.backend.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
+import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.data.entity.DestinationEntity;
@@ -94,8 +90,8 @@ class ForwardNodeServiceTest {
         forwardNodeService.getDestinationById(forwardNodeEntity, 1L);
 
     // Test result
-    assertNotNull(destinationFound);
-    assertEquals(1L, destinationFound.getId().longValue());
+    Assert.assertNotNull(destinationFound);
+    Assert.assertEquals(1L, destinationFound.getId().longValue());
   }
 
   @Test
@@ -114,11 +110,11 @@ class ForwardNodeServiceTest {
         forwardNodeService.updateDestination(forwardNodeEntity, destinationEntityToAdd);
 
     // Test result
-    assertNotNull(destinationAdded);
-    assertEquals(2L, destinationAdded.getId().longValue());
-    assertEquals(2, forwardNodeEntity.getDestinationEntities().size());
-    assertEquals(2, forwardNodeEntity.getDestinationEntities().size());
-    assertTrue(forwardNodeEntity.getDestinationEntities().contains(destinationAdded));
+    Assert.assertNotNull(destinationAdded);
+    Assert.assertEquals(2L, destinationAdded.getId().longValue());
+    Assert.assertEquals(2, forwardNodeEntity.getDestinationEntities().size());
+    Assert.assertEquals(2, forwardNodeEntity.getDestinationEntities().size());
+    Assert.assertTrue(forwardNodeEntity.getDestinationEntities().contains(destinationAdded));
   }
 
   @Test
@@ -137,8 +133,9 @@ class ForwardNodeServiceTest {
     forwardNodeService.deleteDestination(forwardNodeEntity, destinationEntityToDelete);
 
     // Test result
-    assertEquals(1, forwardNodeEntity.getDestinationEntities().size());
-    assertFalse(forwardNodeEntity.getDestinationEntities().contains(destinationEntityToDelete));
+    Assert.assertEquals(1, forwardNodeEntity.getDestinationEntities().size());
+    Assert.assertFalse(
+        forwardNodeEntity.getDestinationEntities().contains(destinationEntityToDelete));
   }
 
   @Test
@@ -153,8 +150,8 @@ class ForwardNodeServiceTest {
     DicomSourceNodeEntity sourceFound = forwardNodeService.getSourceNodeById(forwardNodeEntity, 1L);
 
     // Test result
-    assertNotNull(sourceFound);
-    assertEquals(1L, sourceFound.getId().longValue());
+    Assert.assertNotNull(sourceFound);
+    Assert.assertEquals(1L, sourceFound.getId().longValue());
   }
 
   @Test
@@ -173,11 +170,11 @@ class ForwardNodeServiceTest {
         forwardNodeService.updateSourceNode(forwardNodeEntity, dicomSourceNodeEntityToAdd);
 
     // Test result
-    assertNotNull(sourceAdded);
-    assertEquals(2L, sourceAdded.getId().longValue());
-    assertEquals(2, forwardNodeEntity.getSourceNodes().size());
-    assertEquals(2, forwardNodeEntity.getSourceNodes().size());
-    assertTrue(forwardNodeEntity.getSourceNodes().contains(sourceAdded));
+    Assert.assertNotNull(sourceAdded);
+    Assert.assertEquals(2L, sourceAdded.getId().longValue());
+    Assert.assertEquals(2, forwardNodeEntity.getSourceNodes().size());
+    Assert.assertEquals(2, forwardNodeEntity.getSourceNodes().size());
+    Assert.assertTrue(forwardNodeEntity.getSourceNodes().contains(sourceAdded));
   }
 
   @Test
@@ -196,7 +193,7 @@ class ForwardNodeServiceTest {
     forwardNodeService.deleteSourceNode(forwardNodeEntity, sourceEntityToDelete);
 
     // Test result
-    assertEquals(1, forwardNodeEntity.getSourceNodes().size());
-    assertFalse(forwardNodeEntity.getSourceNodes().contains(sourceEntityToDelete));
+    Assert.assertEquals(1, forwardNodeEntity.getSourceNodes().size());
+    Assert.assertFalse(forwardNodeEntity.getSourceNodes().contains(sourceEntityToDelete));
   }
 }

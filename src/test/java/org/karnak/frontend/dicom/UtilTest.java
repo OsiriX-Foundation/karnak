@@ -9,11 +9,9 @@
  */
 package org.karnak.frontend.dicom;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.net.MalformedURLException;
 import java.net.URL;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.model.dicom.WadoNode;
 import org.weasis.dicom.param.DicomNode;
@@ -32,9 +30,9 @@ class UtilTest {
         result, dicomNode.getAet(), dicomNode.getHostname(), dicomNode.getPort(), true, "XML");
 
     // Test results
-    assertNotNull(result);
-    assertTrue(result.toString().contains("<DcmNetworkStatus>"));
-    assertTrue(result.toString().contains("</DcmNetworkStatus>"));
+    Assert.assertNotNull(result);
+    Assert.assertTrue(result.toString().contains("<DcmNetworkStatus>"));
+    Assert.assertTrue(result.toString().contains("</DcmNetworkStatus>"));
   }
 
   //  @Test
@@ -113,8 +111,8 @@ class UtilTest {
     Util.getWadoResponse(result, wadoNode, true, "XML");
 
     // Test results
-    assertNotNull(result);
-    assertTrue(result.toString().contains("<WadoStatus"));
-    assertTrue(result.toString().contains("</WadoStatus>"));
+    Assert.assertNotNull(result);
+    Assert.assertTrue(result.toString().contains("<WadoStatus"));
+    Assert.assertTrue(result.toString().contains("</WadoStatus>"));
   }
 }

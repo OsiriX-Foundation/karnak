@@ -9,13 +9,10 @@
  */
 package org.karnak.backend.model.editor;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.dcm4che3.data.VR;
+import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.model.Series;
@@ -54,9 +51,10 @@ class StreamRegistryEditorTest {
     streamRegistryEditor.apply(dcm, attributeEditorContext);
 
     // Test results
-    assertNotNull(streamRegistryEditor.getStudy("studyInstanceUID"));
-    assertNotNull(streamRegistryEditor.getStudy("studyInstanceUID").getSeries("seriesInstanceUID"));
-    assertNotNull(
+    Assert.assertNotNull(streamRegistryEditor.getStudy("studyInstanceUID"));
+    Assert.assertNotNull(
+        streamRegistryEditor.getStudy("studyInstanceUID").getSeries("seriesInstanceUID"));
+    Assert.assertNotNull(
         streamRegistryEditor
             .getStudy("studyInstanceUID")
             .getSeries("seriesInstanceUID")
@@ -70,13 +68,13 @@ class StreamRegistryEditorTest {
     streamRegistryEditor.addStudy(new Study("studyInstanceUID", "patientId"));
 
     // Test study added
-    assertNotNull(streamRegistryEditor.getStudy("studyInstanceUID"));
+    Assert.assertNotNull(streamRegistryEditor.getStudy("studyInstanceUID"));
 
     // Call service
     streamRegistryEditor.removeStudy("studyInstanceUID");
 
     // Test result
-    assertNull(streamRegistryEditor.getStudy("studyInstanceUID"));
+    Assert.assertNull(streamRegistryEditor.getStudy("studyInstanceUID"));
   }
 
   @Test
@@ -98,6 +96,6 @@ class StreamRegistryEditorTest {
     streamRegistryEditor.update(dicomProgress);
 
     // Test result
-    assertTrue(sopInstance.isSent());
+    Assert.assertTrue(sopInstance.isSent());
   }
 }
