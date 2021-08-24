@@ -44,7 +44,7 @@ public class FormSourceNode extends VerticalLayout {
     add(
         UIS.setWidthFull(new HorizontalLayout(aeTitle, description)),
         UIS.setWidthFull(new HorizontalLayout(hostname)),
-        UIS.setWidthFull(checkHostname),
+        checkHostname,
         UIS.setWidthFull(buttonSaveDeleteCancel));
   }
 
