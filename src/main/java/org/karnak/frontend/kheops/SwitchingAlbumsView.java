@@ -17,7 +17,6 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import java.util.ArrayList;
 import java.util.List;
 import org.karnak.backend.data.entity.KheopsAlbumsEntity;
-import org.karnak.frontend.util.UIS;
 
 public class SwitchingAlbumsView extends CustomField<List<KheopsAlbumsEntity>> {
 
@@ -39,7 +38,7 @@ public class SwitchingAlbumsView extends CustomField<List<KheopsAlbumsEntity>> {
     kheopsAlbumsEntityList = new ArrayList<>();
     layout = new VerticalLayout();
     checkboxSwitchingAlbums = new Checkbox("Switching in different KHEOPS albums");
-    add(UIS.setWidthFull(checkboxSwitchingAlbums), layout);
+    add(checkboxSwitchingAlbums, layout);
     setEventCheckBox();
     setEventButtonAdd();
   }
