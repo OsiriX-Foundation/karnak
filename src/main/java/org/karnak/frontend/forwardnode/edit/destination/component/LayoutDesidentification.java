@@ -88,9 +88,12 @@ public class LayoutDesidentification extends VerticalLayout {
     issuerOfPatientIDByDefault.setWidth("100%");
     issuerOfPatientIDByDefault.setPlaceholder(LABEL_DEFAULT_ISSUER);
     UIS.setTooltip(issuerOfPatientIDByDefault, LABEL_DEFAULT_ISSUER);
+
+    // Checkbox activate de-identification
     checkboxDesidentification = new Checkbox(LABEL_CHECKBOX_DESIDENTIFICATION);
     checkboxDesidentification.setValue(true);
-    checkboxDesidentification.setMinWidth("25%");
+    checkboxDesidentification.setMinWidth("19%");
+    checkboxDesidentification.getElement().getStyle().set("margin-block-end", "auto");
 
     labelDisclaimer = new Label(LABEL_DISCLAIMER_DEIDENTIFICATION);
     labelDisclaimer.getStyle().set("color", "red");
