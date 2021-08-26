@@ -9,12 +9,14 @@
  */
 package org.karnak.backend.service.profilepipe;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.data.entity.ProfileEntity;
@@ -85,8 +87,8 @@ class ProfilePipeServiceTest {
     ArrayList<ProfileError> profileErrors = profilePipeService.validateProfile(profilePipeBody);
 
     // Test results
-    Assert.assertEquals(1, profileErrors.size());
-    Assert.assertNull(profileErrors.get(0).getError());
+    assertEquals(1, profileErrors.size());
+    assertNull(profileErrors.get(0).getError());
   }
 
   @Test

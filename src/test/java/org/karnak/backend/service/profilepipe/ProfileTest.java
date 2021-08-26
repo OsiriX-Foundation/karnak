@@ -9,6 +9,11 @@
  */
 package org.karnak.backend.service.profilepipe;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.awt.Rectangle;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -16,7 +21,6 @@ import java.util.Set;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.dcm4che3.data.VR;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.MaskEntity;
@@ -90,8 +94,8 @@ class ProfileTest {
     profile.apply(attributes, destinationEntity, profileEntity, context);
 
     // Test results
-    Assert.assertEquals("NONE", context.getAbort().name());
-    Assert.assertNull(context.getMaskArea());
+    assertEquals("NONE", context.getAbort().name());
+    assertNull(context.getMaskArea());
   }
 
   @Test
@@ -115,7 +119,7 @@ class ProfileTest {
     boolean evaluation = profile.evaluateConditionCleanPixelData(attributes);
 
     // Test results
-    Assert.assertTrue(evaluation);
+    assertTrue(evaluation);
   }
 
   @Test
@@ -140,7 +144,7 @@ class ProfileTest {
     boolean evaluation = profile.evaluateConditionCleanPixelData(attributes);
 
     // Test results
-    Assert.assertFalse(evaluation);
+    assertFalse(evaluation);
   }
 
   @Test
@@ -165,6 +169,6 @@ class ProfileTest {
     boolean evaluation = profile.evaluateConditionCleanPixelData(attributes);
 
     // Test results
-    Assert.assertTrue(evaluation);
+    assertTrue(evaluation);
   }
 }
