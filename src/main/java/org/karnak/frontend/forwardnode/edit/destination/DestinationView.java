@@ -9,6 +9,7 @@
  */
 package org.karnak.frontend.forwardnode.edit.destination;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -19,16 +20,21 @@ import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.frontend.forwardnode.ForwardNodeLogic;
 import org.karnak.frontend.forwardnode.edit.destination.component.GridDestination;
 import org.karnak.frontend.util.UIS;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Destination View */
 @SuppressWarnings("serial")
 public class DestinationView extends VerticalLayout {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(DestinationView.class);
 
   // Destination Logic
   private final DestinationLogic destinationLogic;
   private final ForwardNodeLogic forwardNodeLogic;
 
   // UI components
+  private UI ui;
   private TextField filter;
   private Button newDestinationDICOM;
   private Button newDestinationSTOW;
@@ -52,6 +58,9 @@ public class DestinationView extends VerticalLayout {
 
     // Set the view in the service
     this.destinationLogic.setDestinationsView(this);
+
+    // Keep the UI in order to be processed in the check of activity
+    ui = UI.getCurrent();
 
     // Create components and layout
     buildComponentsLayout();
@@ -104,6 +113,17 @@ public class DestinationView extends VerticalLayout {
     gridDestination.setEnabled(enabled);
   }
 
+  public void loadForwardNode(ForwardNodeEntity forwardNodeEntity) {
+    ForwardNodeEntity forwardNodeEntityReload = null;
+    if (forwardNodeEntity != null) {
+      forwardNodeEntityReload = forwardNodeLogic.retrieveForwardNodeById(forwardNodeEntity.getId());
+      setEnabled(forwardNodeEntityReload != null);
+    }
+    destinationLogic.loadForwardNode(forwardNodeEntityReload);
+    gridDestination.setItems(destinationLogic);
+    setEnabled(forwardNodeEntity != null);
+  }
+
   public Button getNewDestinationDICOM() {
     return newDestinationDICOM;
   }
@@ -120,14 +140,11 @@ public class DestinationView extends VerticalLayout {
     return destinationLogic;
   }
 
-  public void loadForwardNode(ForwardNodeEntity forwardNodeEntity) {
-    ForwardNodeEntity forwardNodeEntityReload = null;
-    if (forwardNodeEntity != null) {
-      forwardNodeEntityReload = forwardNodeLogic.retrieveForwardNodeById(forwardNodeEntity.getId());
-      setEnabled(forwardNodeEntityReload != null);
-    }
-    destinationLogic.loadForwardNode(forwardNodeEntityReload);
-    gridDestination.setItems(destinationLogic);
-    setEnabled(forwardNodeEntity != null);
+  public UI getUi() {
+    return ui;
+  }
+
+  public void setUi(UI ui) {
+    this.ui = ui;
   }
 }
