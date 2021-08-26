@@ -9,21 +9,16 @@
  */
 package org.karnak.frontend.forwardnode.edit.destination.component;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import com.vaadin.flow.component.html.Image;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+public class LoadingImage extends Image {
 
-@SpringBootTest
-class GridDestinationTest {
+  private final String loadingImagePath = "img/loading.gif";
 
-  @Test
-  void should_create_grid() {
-
-    // Build grid
-    GridDestination gridDestination = new GridDestination();
-
-    // Test results
-    assertNotNull(gridDestination);
+  public LoadingImage(String alt, String maxSize) {
+    setSrc(loadingImagePath);
+    setAlt(alt);
+    setMaxHeight(maxSize);
+    setMaxWidth(maxSize);
   }
 }

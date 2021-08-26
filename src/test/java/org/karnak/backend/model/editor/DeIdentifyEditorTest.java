@@ -9,10 +9,12 @@
  */
 package org.karnak.backend.model.editor;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.dcm4che3.data.VR;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ProfileEntity;
@@ -59,7 +61,7 @@ class DeIdentifyEditorTest {
     deIdentifyEditor.apply(attributes, attributeEditorContext);
 
     // Test results
-    Assert.assertEquals("NONE", attributeEditorContext.getAbort().name());
-    Assert.assertNull(attributeEditorContext.getMaskArea());
+    assertEquals("NONE", attributeEditorContext.getAbort().name());
+    assertNull(attributeEditorContext.getMaskArea());
   }
 }

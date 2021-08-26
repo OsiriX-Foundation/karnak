@@ -26,7 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 
 /** Forward Node View */
-@Route(value = "forwardnode", layout = MainLayout.class)
+@Route(value = ForwardNodeView.ROUTE, layout = MainLayout.class)
 @RouteAlias(value = "", layout = MainLayout.class)
 @PageTitle("KARNAK - Forward node")
 @Secured({"ADMIN"})
@@ -34,6 +34,9 @@ import org.springframework.security.access.annotation.Secured;
 public class ForwardNodeView extends HorizontalLayout implements HasUrlParameter<String> {
 
   public static final String VIEW_NAME = "Gateway";
+  public static final String ROUTE = "forwardnode";
+  public static final String SAVE = "Save";
+  public static final String DELETE = "Delete";
 
   // Forward Node Logic
   private final ForwardNodeLogic forwardNodeLogic;
@@ -138,7 +141,20 @@ public class ForwardNodeView extends HorizontalLayout implements HasUrlParameter
     layoutNewGridForwardNode
         .getGridForwardNode()
         .asSingleSelect()
-        .addValueChangeListener(event -> forwardNodeLogic.editForwardNode(event.getValue()));
+        .addValueChangeListener(
+            event -> {
+              if (event.getValue() == null) {
+                layoutEditForwardNode
+                    .getButtonForwardNodeSaveDeleteCancel()
+                    .getSave()
+                    .setText(SAVE);
+                layoutEditForwardNode
+                    .getButtonForwardNodeSaveDeleteCancel()
+                    .getDelete()
+                    .setText(DELETE);
+              }
+              forwardNodeLogic.editForwardNode(event.getValue());
+            });
   }
 
   /** Add event when click on cancel button in LayoutEditForwardNode */
@@ -146,7 +162,16 @@ public class ForwardNodeView extends HorizontalLayout implements HasUrlParameter
     layoutEditForwardNode
         .getButtonForwardNodeSaveDeleteCancel()
         .getCancel()
-        .addClickListener(event -> forwardNodeLogic.cancelForwardNode());
+        .addClickListener(
+            event -> {
+              forwardNodeLogic.cancelForwardNode();
+              // Case transfer is in progress reset labels
+              layoutEditForwardNode.getButtonForwardNodeSaveDeleteCancel().getSave().setText(SAVE);
+              layoutEditForwardNode
+                  .getButtonForwardNodeSaveDeleteCancel()
+                  .getDelete()
+                  .setText(DELETE);
+            });
   }
 
   /** Add event when click on delete button in LayoutEditForwardNode */
