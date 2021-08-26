@@ -159,6 +159,12 @@ public class LayoutEditForwardNode extends VerticalLayout {
         .getFilterBySOPClassesForm()
         .getSopFilter()
         .setItems(sopClassUIDService.getAllSOPClassUIDsName());
+
+    // Set button in view in order to be able to enable/disable it
+    destinationView.setButtonForwardNodeSaveDeleteCancel(buttonForwardNodeSaveDeleteCancel);
+
+    // Set editable form in order to retrieve save button to enable/disable it
+    destinationView.setNewUpdateDestination(newUpdateDestination);
   }
 
   public void setEditView() {
