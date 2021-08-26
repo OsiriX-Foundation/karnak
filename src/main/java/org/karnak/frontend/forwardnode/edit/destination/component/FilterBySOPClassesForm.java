@@ -34,8 +34,9 @@ public class FilterBySOPClassesForm extends HorizontalLayout {
   }
 
   private void setElements() {
-    filterBySOPClassesCheckbox.setMinWidth("25%");
-    sopFilter.setMinWidth("74%");
+    filterBySOPClassesCheckbox.setMinWidth("14%");
+    sopFilter.setMinWidth("80%");
+    sopFilter.getElement().getStyle().set("padding-left", "5%");
 
     filterBySOPClassesCheckbox.setValue(false);
     sopFilter.onEnabledStateChanged(false);
