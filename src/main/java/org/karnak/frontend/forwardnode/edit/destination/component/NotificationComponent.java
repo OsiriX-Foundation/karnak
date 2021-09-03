@@ -77,20 +77,53 @@ public class NotificationComponent extends VerticalLayout {
         event -> {
           if (event != null && event.getValue()) {
             notificationInputsDiv.setVisible(true);
-            notify.clear();
-            notifyObjectErrorPrefix.setValue(DefaultValuesNotification.OBJECT_ERROR_PREFIX);
-            notifyObjectPattern.setValue(DefaultValuesNotification.OBJECT_PATTERN);
-            notifyObjectValues.setValue(DefaultValuesNotification.OBJECT_VALUES);
-            notifyInterval.setValue(DefaultValuesNotification.INTERVAL);
+            // Set default values if null or empty
+            updateDefaultValuesNotificationTextFields();
           } else {
             notificationInputsDiv.setVisible(false);
-            notify.clear();
-            notifyObjectErrorPrefix.clear();
-            notifyObjectPattern.clear();
-            notifyObjectValues.clear();
-            notifyInterval.clear();
           }
         });
+  }
+
+  /** Set default values if textfield values are null or empty */
+  private void updateDefaultValuesNotificationTextFields() {
+    if (notifyObjectErrorPrefix.getValue() == null
+        || notifyObjectErrorPrefix.getValue().trim().isEmpty()) {
+      notifyObjectErrorPrefix.setValue(DefaultValuesNotification.OBJECT_ERROR_PREFIX);
+    }
+    if (notifyObjectPattern.getValue() == null || notifyObjectPattern.getValue().trim().isEmpty()) {
+      notifyObjectPattern.setValue(DefaultValuesNotification.OBJECT_PATTERN);
+    }
+    if (notifyObjectValues.getValue() == null || notifyObjectValues.getValue().trim().isEmpty()) {
+      notifyObjectValues.setValue(DefaultValuesNotification.OBJECT_VALUES);
+    }
+    if (notifyInterval.getValue() == null || notifyInterval.getValue().trim().isEmpty()) {
+      notifyInterval.setValue(DefaultValuesNotification.INTERVAL);
+    }
+  }
+
+  /**
+   * Set default values if notification values are null or empty
+   *
+   * @param destinationEntity Destination to update
+   */
+  public void updateDefaultValuesNotification(DestinationEntity destinationEntity) {
+    if (destinationEntity.getNotifyObjectErrorPrefix() == null
+        || destinationEntity.getNotifyObjectErrorPrefix().trim().isEmpty()) {
+      destinationEntity.setNotifyObjectErrorPrefix(DefaultValuesNotification.OBJECT_ERROR_PREFIX);
+    }
+    if (destinationEntity.getNotifyObjectPattern() == null
+        || destinationEntity.getNotifyObjectPattern().trim().isEmpty()) {
+      destinationEntity.setNotifyObjectPattern(DefaultValuesNotification.OBJECT_PATTERN);
+    }
+    if (destinationEntity.getNotifyObjectValues() == null
+        || destinationEntity.getNotifyObjectValues().trim().isEmpty()) {
+      destinationEntity.setNotifyObjectValues(DefaultValuesNotification.OBJECT_VALUES);
+    }
+    if (destinationEntity.getNotifyInterval() == null
+        || destinationEntity.getNotifyInterval() == 0) {
+      destinationEntity.setNotifyInterval(Integer.parseInt(DefaultValuesNotification.INTERVAL));
+    }
   }
 
   /** Build components used in Notification component */
@@ -106,39 +139,59 @@ public class NotificationComponent extends VerticalLayout {
 
   /** Notify interval */
   private void buildNotifyInterval() {
-    notifyInterval = new TextField("Notif.: interval");
+    notifyInterval =
+        new TextField(
+            String.format("Notif.: interval (Default: %s)", DefaultValuesNotification.INTERVAL));
     notifyInterval.setWidth("18%");
     notifyInterval.addThemeVariants(TextFieldVariant.LUMO_ALIGN_RIGHT);
     UIS.setTooltip(
         notifyInterval,
-        "Interval in seconds for sending a notification (when no new image is arrived in the archive folder). Default value: 45");
+        String.format(
+            "Interval in seconds for sending a notification (when no new image is arrived in the archive folder). Default value: %s",
+            DefaultValuesNotification.INTERVAL));
   }
 
   /** Notify Object Values */
   private void buildNotifyObjectValues() {
-    notifyObjectValues = new TextField("Notif.: subject values");
+    notifyObjectValues =
+        new TextField(
+            String.format(
+                "Notif.: subject values (Default: %s)", DefaultValuesNotification.OBJECT_VALUES));
     notifyObjectValues.setWidth("24%");
     UIS.setTooltip(
         notifyObjectValues,
-        "Values injected in the pattern [PatientID StudyDescription StudyDate StudyInstanceUID]. Default value: PatientID,StudyDescription");
+        String.format(
+            "Values injected in the pattern [PatientID StudyDescription StudyDate StudyInstanceUID]. Default value: %s",
+            DefaultValuesNotification.OBJECT_VALUES));
   }
 
   /** Notify Object Pattern */
   private void buildNotifyObjectPattern() {
-    notifyObjectPattern = new TextField("Notif.: subject pattern");
+    notifyObjectPattern =
+        new TextField(
+            String.format(
+                "Notif.: subject pattern (Default: %s)", DefaultValuesNotification.OBJECT_PATTERN));
     notifyObjectPattern.setWidth("24%");
     UIS.setTooltip(
         notifyObjectPattern,
-        "Pattern of the email object, see https://dzone.com/articles/java-string-format-examples. Default value: [Karnak Notification] %s %.30s");
+        String.format(
+            "Pattern of the email object, see https://dzone.com/articles/java-string-format-examples. Default value: %s",
+            DefaultValuesNotification.OBJECT_PATTERN));
   }
 
   /** Notify Object Error Prefix */
   private void buildNotifyObjectErrorPrefix() {
-    notifyObjectErrorPrefix = new TextField("Notif.: error subject prefix");
+    notifyObjectErrorPrefix =
+        new TextField(
+            String.format(
+                "Notif.: error subject prefix (Default: %s)",
+                DefaultValuesNotification.OBJECT_ERROR_PREFIX));
     notifyObjectErrorPrefix.setWidth("24%");
     UIS.setTooltip(
         notifyObjectErrorPrefix,
-        "Prefix of the email object when containing an issue. Default value: **ERROR**");
+        String.format(
+            "Prefix of the email object when containing an issue. Default value: %s",
+            DefaultValuesNotification.OBJECT_ERROR_PREFIX));
   }
 
   /** Notify */
