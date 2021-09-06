@@ -370,6 +370,14 @@ public class LayoutEditForwardNode extends VerticalLayout {
                   && newUpdateDestination
                       .getBinderFormDICOM()
                       .writeBeanIfValid(newUpdateDestination.getCurrentDestinationEntity())) {
+
+                // Update notification default values if empty
+                newUpdateDestination
+                    .getFormDICOM()
+                    .getNotificationComponent()
+                    .updateDefaultValuesNotification(
+                        newUpdateDestination.getCurrentDestinationEntity());
+
                 NodeEventType nodeEventType =
                     newUpdateDestination.getCurrentDestinationEntity().getId() == null
                         ? NodeEventType.ADD
@@ -388,6 +396,14 @@ public class LayoutEditForwardNode extends VerticalLayout {
                   && newUpdateDestination
                       .getBinderFormSTOW()
                       .writeBeanIfValid(newUpdateDestination.getCurrentDestinationEntity())) {
+
+                // Update notification default values if empty
+                newUpdateDestination
+                    .getFormSTOW()
+                    .getNotificationComponent()
+                    .updateDefaultValuesNotification(
+                        newUpdateDestination.getCurrentDestinationEntity());
+
                 NodeEventType nodeEventType =
                     newUpdateDestination.getCurrentDestinationEntity().getId() == null
                         ? NodeEventType.ADD
