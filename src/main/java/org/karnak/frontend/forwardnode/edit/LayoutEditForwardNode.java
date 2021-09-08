@@ -10,7 +10,6 @@
 package org.karnak.frontend.forwardnode.edit;
 
 import static org.karnak.backend.enums.PseudonymType.EXTID_IN_TAG;
-import static org.karnak.backend.enums.PseudonymType.MAINZELLISTE_PID;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -36,9 +35,10 @@ import org.karnak.frontend.forwardnode.edit.component.ButtonSaveDeleteCancel;
 import org.karnak.frontend.forwardnode.edit.component.EditAETitleDescription;
 import org.karnak.frontend.forwardnode.edit.component.TabSourcesDestination;
 import org.karnak.frontend.forwardnode.edit.destination.DestinationView;
+import org.karnak.frontend.forwardnode.edit.destination.component.DeIdentificationComponent;
 import org.karnak.frontend.forwardnode.edit.destination.component.FilterBySOPClassesForm;
-import org.karnak.frontend.forwardnode.edit.destination.component.LayoutDesidentification;
 import org.karnak.frontend.forwardnode.edit.destination.component.NewUpdateDestination;
+import org.karnak.frontend.forwardnode.edit.destination.component.NotificationComponent;
 import org.karnak.frontend.forwardnode.edit.source.SourceView;
 import org.karnak.frontend.forwardnode.edit.source.component.NewUpdateSourceNode;
 import org.karnak.frontend.util.UIS;
@@ -110,8 +110,8 @@ public class LayoutEditForwardNode extends VerticalLayout {
         newUpdateDestination.getFormDICOM().getFilterBySOPClassesForm());
     addBindersFilterBySOPClassesForm(
         newUpdateDestination.getFormSTOW().getFilterBySOPClassesForm());
-    addBinderExtidInDicomTag(newUpdateDestination.getFormSTOW().getLayoutDesidentification());
-    addBinderExtidInDicomTag(newUpdateDestination.getFormDICOM().getLayoutDesidentification());
+    addBinderExtidInDicomTag(newUpdateDestination.getFormSTOW().getDeIdentificationComponent());
+    addBinderExtidInDicomTag(newUpdateDestination.getFormDICOM().getDeIdentificationComponent());
   }
 
   /** Add events on components */
@@ -121,9 +121,9 @@ public class LayoutEditForwardNode extends VerticalLayout {
     addEventButtonSaveNewUpdateDestination();
     addEventButtonDeleteNewUpdateDestination();
     addEventCheckboxLayoutDesidentification(
-        newUpdateDestination.getFormDICOM().getLayoutDesidentification());
+        newUpdateDestination.getFormDICOM().getDeIdentificationComponent());
     addEventCheckboxLayoutDesidentification(
-        newUpdateDestination.getFormSTOW().getLayoutDesidentification());
+        newUpdateDestination.getFormSTOW().getDeIdentificationComponent());
     setEventChangeTabValue();
     setEventBinderForwardNode();
     setEventDestination();
@@ -139,7 +139,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
     // FormDicom
     newUpdateDestination
         .getFormDICOM()
-        .getLayoutDesidentification()
+        .getDeIdentificationComponent()
         .getProjectDropDown()
         .setItems(projectService.getAllProjects());
     newUpdateDestination
@@ -151,7 +151,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
     // FormStow
     newUpdateDestination
         .getFormSTOW()
-        .getLayoutDesidentification()
+        .getDeIdentificationComponent()
         .getProjectDropDown()
         .setItems(projectService.getAllProjects());
     newUpdateDestination
@@ -360,57 +360,77 @@ public class LayoutEditForwardNode extends VerticalLayout {
   }
 
   private void addEventButtonSaveNewUpdateDestination() {
-    newUpdateDestination
-        .getButtonDestinationDICOMSaveDeleteCancel()
-        .getSave()
-        .addClickListener(
-            event -> {
-              if (newUpdateDestination.getCurrentDestinationEntity().getDestinationType()
-                      == DestinationType.dicom
-                  && newUpdateDestination
-                      .getBinderFormDICOM()
-                      .writeBeanIfValid(newUpdateDestination.getCurrentDestinationEntity())) {
+    addEventButtonSaveNewUpdateDestinationDICOM();
+    addEventButtonSaveNewUpdateDestinationSTOW();
+  }
 
-                // Update notification default values if empty
-                newUpdateDestination
-                    .getFormDICOM()
-                    .getNotificationComponent()
-                    .updateDefaultValuesNotification(
-                        newUpdateDestination.getCurrentDestinationEntity());
-
-                NodeEventType nodeEventType =
-                    newUpdateDestination.getCurrentDestinationEntity().getId() == null
-                        ? NodeEventType.ADD
-                        : NodeEventType.UPDATE;
-                saveCurrentDestination(nodeEventType);
-              }
-            });
-
+  private void addEventButtonSaveNewUpdateDestinationSTOW() {
     newUpdateDestination
         .getButtonDestinationSTOWSaveDeleteCancel()
         .getSave()
         .addClickListener(
             event -> {
-              if (newUpdateDestination.getCurrentDestinationEntity().getDestinationType()
-                      == DestinationType.stow
+              DestinationEntity currentDestinationEntity =
+                  newUpdateDestination.getCurrentDestinationEntity();
+
+              if (currentDestinationEntity.getDestinationType() == DestinationType.stow
                   && newUpdateDestination
                       .getBinderFormSTOW()
-                      .writeBeanIfValid(newUpdateDestination.getCurrentDestinationEntity())) {
-
-                // Update notification default values if empty
-                newUpdateDestination
-                    .getFormSTOW()
-                    .getNotificationComponent()
-                    .updateDefaultValuesNotification(
-                        newUpdateDestination.getCurrentDestinationEntity());
-
-                NodeEventType nodeEventType =
-                    newUpdateDestination.getCurrentDestinationEntity().getId() == null
-                        ? NodeEventType.ADD
-                        : NodeEventType.UPDATE;
-                saveCurrentDestination(nodeEventType);
+                      .writeBeanIfValid(currentDestinationEntity)) {
+                // Reset / set defaults and save destination
+                resetDefaultValuesAndSaveDestination(
+                    currentDestinationEntity,
+                    newUpdateDestination.getFormSTOW().getNotificationComponent(),
+                    newUpdateDestination.getFormSTOW().getDeIdentificationComponent());
               }
             });
+  }
+
+  private void addEventButtonSaveNewUpdateDestinationDICOM() {
+    newUpdateDestination
+        .getButtonDestinationDICOMSaveDeleteCancel()
+        .getSave()
+        .addClickListener(
+            event -> {
+              DestinationEntity currentDestinationEntity =
+                  newUpdateDestination.getCurrentDestinationEntity();
+
+              if (currentDestinationEntity.getDestinationType() == DestinationType.dicom
+                  && newUpdateDestination
+                      .getBinderFormDICOM()
+                      .writeBeanIfValid(currentDestinationEntity)) {
+                // Reset / set defaults and save destination
+                resetDefaultValuesAndSaveDestination(
+                    currentDestinationEntity,
+                    newUpdateDestination.getFormDICOM().getNotificationComponent(),
+                    newUpdateDestination.getFormDICOM().getDeIdentificationComponent());
+              }
+            });
+  }
+
+  /**
+   * Reset / set defaults and save destination
+   *
+   * @param destinationEntity Destination
+   * @param notificationComponent Notification component
+   * @param deIdentificationComponent DeIdentification component
+   */
+  private void resetDefaultValuesAndSaveDestination(
+      DestinationEntity destinationEntity,
+      NotificationComponent notificationComponent,
+      DeIdentificationComponent deIdentificationComponent) {
+
+    // Update notification default values if empty
+    notificationComponent.updateDefaultValuesNotification(destinationEntity);
+
+    // Clean fields of destination which are not saved because not selected by user
+    deIdentificationComponent.cleanUnSavedData(destinationEntity);
+
+    NodeEventType nodeEventType =
+        destinationEntity.getId() == null ? NodeEventType.ADD : NodeEventType.UPDATE;
+
+    // Save
+    saveCurrentDestination(nodeEventType);
   }
 
   private void saveCurrentDestination(NodeEventType nodeEventType) {
@@ -460,38 +480,22 @@ public class LayoutEditForwardNode extends VerticalLayout {
   }
 
   private void addEventCheckboxLayoutDesidentification(
-      LayoutDesidentification layoutDesidentification) {
-    layoutDesidentification
-        .getCheckboxDesidentification()
+      DeIdentificationComponent deIdentificationComponent) {
+    deIdentificationComponent
+        .getDeIdentificationCheckbox()
         .addValueChangeListener(
             event -> {
               if (event.getValue() != null) {
                 if (event.getValue()) {
                   if (projectService.getAllProjects().size() > 0) {
-                    layoutDesidentification
-                        .getDiv()
-                        .add(
-                            layoutDesidentification.getLabelDisclaimer(),
-                            layoutDesidentification.getProjectDropDown(),
-                            layoutDesidentification.getDesidentificationName(),
-                            layoutDesidentification.getDivExtID(),
-                            layoutDesidentification.getIssuerOfPatientIDByDefault());
-                    layoutDesidentification.setTextOnSelectionProject(
-                        layoutDesidentification.getProjectDropDown().getValue());
+                    deIdentificationComponent.getDeIdentificationDiv().setVisible(true);
+                    deIdentificationComponent.setTextOnSelectionProject(
+                        deIdentificationComponent.getProjectDropDown().getValue());
                   } else {
-                    layoutDesidentification.getWarningNoProjectsDefined().open();
+                    deIdentificationComponent.getWarningNoProjectsDefined().open();
                   }
                 } else {
-                  layoutDesidentification
-                      .getDiv()
-                      .remove(
-                          layoutDesidentification.getLabelDisclaimer(),
-                          layoutDesidentification.getProjectDropDown(),
-                          layoutDesidentification.getDesidentificationName(),
-                          layoutDesidentification.getIssuerOfPatientIDByDefault());
-                  layoutDesidentification.getExtidListBox().setValue(MAINZELLISTE_PID.getValue());
-                  layoutDesidentification.getExtidPresentInDicomTagView().clear();
-                  layoutDesidentification.getDiv().remove(layoutDesidentification.getDivExtID());
+                  deIdentificationComponent.getDeIdentificationDiv().setVisible(false);
                 }
               }
             });
@@ -525,16 +529,16 @@ public class LayoutEditForwardNode extends VerticalLayout {
         .bind(DestinationEntity::isFilterBySOPClasses, DestinationEntity::setFilterBySOPClasses);
   }
 
-  public void addBinderExtidInDicomTag(LayoutDesidentification layoutDesidentification) {
-    layoutDesidentification
+  public void addBinderExtidInDicomTag(DeIdentificationComponent deIdentificationComponent) {
+    deIdentificationComponent
         .getDestinationBinder()
-        .forField(layoutDesidentification.getExtidPresentInDicomTagView().getTag())
+        .forField(deIdentificationComponent.getPseudonymInDicomTagComponent().getTag())
         .withConverter(String::valueOf, value -> (value == null) ? "" : value, "Must be a tag")
         .withValidator(
             tag -> {
-              if (!layoutDesidentification.getCheckboxDesidentification().getValue()
-                  || !layoutDesidentification
-                      .getExtidListBox()
+              if (!deIdentificationComponent.getDeIdentificationCheckbox().getValue()
+                  || !deIdentificationComponent
+                      .getPseudonymTypeSelect()
                       .getValue()
                       .equals(EXTID_IN_TAG.getValue())) {
                 return true;
@@ -550,24 +554,27 @@ public class LayoutEditForwardNode extends VerticalLayout {
             "Choose a valid tag\n")
         .bind(DestinationEntity::getTag, DestinationEntity::setTag);
 
-    layoutDesidentification
+    deIdentificationComponent
         .getDestinationBinder()
-        .forField(layoutDesidentification.getExtidPresentInDicomTagView().getDelimiter())
+        .forField(deIdentificationComponent.getPseudonymInDicomTagComponent().getDelimiter())
         .withConverter(
             String::valueOf, value -> (value == null) ? "" : value, "Must be a delimiter")
         .withValidator(
             delimiter -> {
-              if (!layoutDesidentification.getCheckboxDesidentification().getValue()
-                  || !layoutDesidentification
-                      .getExtidListBox()
+              if (!deIdentificationComponent.getDeIdentificationCheckbox().getValue()
+                  || !deIdentificationComponent
+                      .getPseudonymTypeSelect()
                       .getValue()
                       .equals(EXTID_IN_TAG.getValue())) {
                 return true;
               }
-              if (layoutDesidentification.getExtidPresentInDicomTagView().getPosition().getValue()
+              if (deIdentificationComponent
+                          .getPseudonymInDicomTagComponent()
+                          .getPosition()
+                          .getValue()
                       != null
-                  && layoutDesidentification
-                          .getExtidPresentInDicomTagView()
+                  && deIdentificationComponent
+                          .getPseudonymInDicomTagComponent()
                           .getPosition()
                           .getValue()
                       > 0) {
@@ -578,23 +585,26 @@ public class LayoutEditForwardNode extends VerticalLayout {
             "A delimiter must be defined, when a position is present")
         .bind(DestinationEntity::getDelimiter, DestinationEntity::setDelimiter);
 
-    layoutDesidentification
+    deIdentificationComponent
         .getDestinationBinder()
-        .forField(layoutDesidentification.getExtidPresentInDicomTagView().getPosition())
+        .forField(deIdentificationComponent.getPseudonymInDicomTagComponent().getPosition())
         .withConverter(new DoubleToIntegerConverter())
         .withValidator(
             position -> {
-              if (!layoutDesidentification.getCheckboxDesidentification().getValue()
-                  || !layoutDesidentification
-                      .getExtidListBox()
+              if (!deIdentificationComponent.getDeIdentificationCheckbox().getValue()
+                  || !deIdentificationComponent
+                      .getPseudonymTypeSelect()
                       .getValue()
                       .equals(EXTID_IN_TAG.getValue())) {
                 return true;
               }
-              if (layoutDesidentification.getExtidPresentInDicomTagView().getDelimiter().getValue()
+              if (deIdentificationComponent
+                          .getPseudonymInDicomTagComponent()
+                          .getDelimiter()
+                          .getValue()
                       != null
-                  && !layoutDesidentification
-                      .getExtidPresentInDicomTagView()
+                  && !deIdentificationComponent
+                      .getPseudonymInDicomTagComponent()
                       .getDelimiter()
                       .getValue()
                       .equals("")) {
@@ -605,9 +615,9 @@ public class LayoutEditForwardNode extends VerticalLayout {
             "A position must be defined, when a delimiter is present")
         .bind(DestinationEntity::getPosition, DestinationEntity::setPosition);
 
-    layoutDesidentification
+    deIdentificationComponent
         .getDestinationBinder()
-        .forField(layoutDesidentification.getExtidPresentInDicomTagView().getSavePseudonym())
+        .forField(deIdentificationComponent.getPseudonymInDicomTagComponent().getSavePseudonym())
         .bind(DestinationEntity::getSavePseudonym, DestinationEntity::setSavePseudonym);
   }
 }

@@ -11,7 +11,7 @@ package org.karnak.frontend.forwardnode.edit.destination.component;
 
 import com.vaadin.flow.component.html.Div;
 
-public class DesidentificationName extends Div {
+public class DeIdentificationName extends Div {
 
   public void setShowValue(String text) {
     removeAll();
