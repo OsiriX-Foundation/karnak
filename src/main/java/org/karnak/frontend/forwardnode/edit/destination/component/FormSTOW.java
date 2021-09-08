@@ -135,4 +135,8 @@ public class FormSTOW extends VerticalLayout {
   public FilterBySOPClassesForm getFilterBySOPClassesForm() {
     return filterBySOPClassesForm;
   }
+
+  public NotificationComponent getNotificationComponent() {
+    return notificationComponent;
+  }
 }
