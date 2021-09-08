@@ -33,7 +33,7 @@ public class FormDICOM extends VerticalLayout {
   private TextField port;
   private Checkbox useaetdest;
 
-  private final LayoutDesidentification layoutDesidentification;
+  private final DeIdentificationComponent deIdentificationComponent;
   private final FilterBySOPClassesForm filterBySOPClassesForm;
   private Checkbox activate;
   private final DestinationCondition destinationCondition;
@@ -42,7 +42,7 @@ public class FormDICOM extends VerticalLayout {
   private final TranscodeOnlyUncompressedComponent transcodeOnlyUncompressedComponent;
 
   public FormDICOM() {
-    this.layoutDesidentification = new LayoutDesidentification();
+    this.deIdentificationComponent = new DeIdentificationComponent();
     this.filterBySOPClassesForm = new FilterBySOPClassesForm();
     this.destinationCondition = new DestinationCondition();
     this.notificationComponent = new NotificationComponent();
@@ -54,7 +54,7 @@ public class FormDICOM extends VerticalLayout {
       Binder<DestinationEntity> binder, ButtonSaveDeleteCancel buttonSaveDeleteCancel) {
 
     this.binder = binder;
-    this.layoutDesidentification.init(this.binder);
+    this.deIdentificationComponent.init(this.binder);
     this.filterBySOPClassesForm.init(this.binder);
     this.destinationCondition.init(this.binder);
     notificationComponent.init(this.binder);
@@ -94,7 +94,7 @@ public class FormDICOM extends VerticalLayout {
         UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(transferLayout))),
         UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(useaetdestLayout))),
         UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(notificationComponent))),
-        UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(layoutDesidentification))),
+        UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(deIdentificationComponent))),
         UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(filterBySOPClassesForm))),
         UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(activateLayout))),
         UIS.setWidthFull(buttonSaveDeleteCancel));
@@ -141,8 +141,8 @@ public class FormDICOM extends VerticalLayout {
     binder.bindInstanceFields(this);
   }
 
-  public LayoutDesidentification getLayoutDesidentification() {
-    return layoutDesidentification;
+  public DeIdentificationComponent getDeIdentificationComponent() {
+    return deIdentificationComponent;
   }
 
   public FilterBySOPClassesForm getFilterBySOPClassesForm() {

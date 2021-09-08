@@ -18,7 +18,7 @@ import com.vaadin.flow.data.binder.Binder;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.frontend.util.UIS;
 
-public class ExtidPresentInDicomTagView extends Div {
+public class PseudonymInDicomTagComponent extends Div {
 
   private final Binder<DestinationEntity> destinationBinder;
   private TextField delimiter;
@@ -26,7 +26,7 @@ public class ExtidPresentInDicomTagView extends Div {
   private NumberField position;
   private Checkbox savePseudonym;
 
-  public ExtidPresentInDicomTagView(Binder<DestinationEntity> destinationBinder) {
+  public PseudonymInDicomTagComponent(Binder<DestinationEntity> destinationBinder) {
     this.destinationBinder = destinationBinder;
     setWidthFull();
     setElements();
