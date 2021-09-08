@@ -23,7 +23,7 @@ import org.karnak.frontend.util.UIS;
 
 public class FormSTOW extends VerticalLayout {
 
-  private final LayoutDesidentification layoutDesidentification;
+  private final DeIdentificationComponent deIdentificationComponent;
   private Binder<DestinationEntity> binder;
   private TextField description;
   private TextField url;
@@ -39,7 +39,7 @@ public class FormSTOW extends VerticalLayout {
   private final TranscodeOnlyUncompressedComponent transcodeOnlyUncompressedComponent;
 
   public FormSTOW() {
-    this.layoutDesidentification = new LayoutDesidentification();
+    this.deIdentificationComponent = new DeIdentificationComponent();
     this.filterBySOPClassesForm = new FilterBySOPClassesForm();
     this.destinationCondition = new DestinationCondition();
     this.notificationComponent = new NotificationComponent();
@@ -51,7 +51,7 @@ public class FormSTOW extends VerticalLayout {
       Binder<DestinationEntity> binder, ButtonSaveDeleteCancel buttonSaveDeleteCancel) {
     setSizeFull();
     this.binder = binder;
-    this.layoutDesidentification.init(this.binder);
+    this.deIdentificationComponent.init(this.binder);
     this.filterBySOPClassesForm.init(this.binder);
     this.destinationCondition.init(binder);
     notificationComponent.init(binder);
@@ -88,7 +88,7 @@ public class FormSTOW extends VerticalLayout {
     add(UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(destinationLayout))));
     add(UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(transferLayout))));
     add(UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(notificationComponent))));
-    add(UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(layoutDesidentification))));
+    add(UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(deIdentificationComponent))));
     add(UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(filterBySOPClassesForm))));
     add(UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(switchingLayout))));
     add(UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(activateLayout))));
@@ -128,8 +128,8 @@ public class FormSTOW extends VerticalLayout {
     binder.bindInstanceFields(this);
   }
 
-  public LayoutDesidentification getLayoutDesidentification() {
-    return layoutDesidentification;
+  public DeIdentificationComponent getDeIdentificationComponent() {
+    return deIdentificationComponent;
   }
 
   public FilterBySOPClassesForm getFilterBySOPClassesForm() {
