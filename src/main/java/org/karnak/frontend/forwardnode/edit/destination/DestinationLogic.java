@@ -9,6 +9,7 @@
  */
 package org.karnak.frontend.forwardnode.edit.destination;
 
+import com.vaadin.flow.component.UIDetachedException;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.data.provider.ListDataProvider;
@@ -102,12 +103,16 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
    * @param destinationEntities Refreshed destinations from DB
    */
   private void checkActivityEnableDisableButtons(List<DestinationEntity> destinationEntities) {
-    // If a transfer is in progress: disable
-    if (destinationEntities.stream().anyMatch(DestinationEntity::isTransferInProgress)) {
-      destinationView.getUi().access(this::disableSaveDeleteButtons);
-    } else {
-      // If no transfer: enable
-      destinationView.getUi().access(this::enableSaveDeleteButtons);
+    try {
+      // If a transfer is in progress: disable
+      if (destinationEntities.stream().anyMatch(DestinationEntity::isTransferInProgress)) {
+        destinationView.getUi().access(this::disableSaveDeleteButtons);
+      } else {
+        // If no transfer: enable
+        destinationView.getUi().access(this::enableSaveDeleteButtons);
+      }
+    } catch (UIDetachedException e) {
+      LOGGER.trace(String.format("UIDetachedException:%s", e.getMessage()));
     }
   }
 
