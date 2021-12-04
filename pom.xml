@@ -33,8 +33,8 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <springframework.version>2.4.9</springframework.version>
     <vaadin.version>19.0.9</vaadin.version>
-    <weasis-dicom-tools.version>5.23.3-IMG-RELEASE</weasis-dicom-tools.version>
-    <weasis.opencv.native.version>4.5.1-dcm</weasis.opencv.native.version>
+    <weasis-dicom-tools.version>5.24.2-IMG-RELEASE</weasis-dicom-tools.version>
+    <weasis.opencv.native.version>4.5.3-dcm</weasis.opencv.native.version>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <sonar.java.source>${java.version}</sonar.java.source>
     <sonar.java.target>${java.version}</sonar.java.target>
@@ -117,6 +117,26 @@
               <destFileName>libopencv_java.so</destFileName>
               <groupId>org.weasis.thirdparty.org.opencv</groupId>
               <outputDirectory>${project.build.directory}/native-lib/lib/linux-x86-64
+              </outputDirectory>
+              <type>so</type>
+              <version>${weasis.opencv.native.version}</version>
+            </artifactItem>
+            <artifactItem>
+              <artifactId>libopencv_java</artifactId>
+              <classifier>linux-aarch64</classifier>
+              <destFileName>libopencv_java.so</destFileName>
+              <groupId>org.weasis.thirdparty.org.opencv</groupId>
+              <outputDirectory>${project.build.directory}/native-lib/lib/linux-aarch64
+              </outputDirectory>
+              <type>so</type>
+              <version>${weasis.opencv.native.version}</version>
+            </artifactItem>
+            <artifactItem>
+              <artifactId>libopencv_java</artifactId>
+              <classifier>linux-armv7a</classifier>
+              <destFileName>libopencv_java.so</destFileName>
+              <groupId>org.weasis.thirdparty.org.opencv</groupId>
+              <outputDirectory>${project.build.directory}/native-lib/lib/linux-armv7a
               </outputDirectory>
               <type>so</type>
               <version>${weasis.opencv.native.version}</version>
