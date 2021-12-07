@@ -15,4 +15,5 @@ public class DefaultValuesNotification {
   public static final String OBJECT_PATTERN = "[Karnak Notification] %s %.30s";
   public static final String OBJECT_VALUES = "PatientID,StudyDescription";
   public static final String INTERVAL = "45";
+  public static final String MAIL_SMTP_SENDER = "karnak@kehops.online";
 }
