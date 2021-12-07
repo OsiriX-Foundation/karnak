@@ -117,7 +117,7 @@ Go on the root folder and launch the following command:
 * Full independent build: `docker build -t local/karnak:latest -f Dockerfile .`
 * Build from compile package:
     * `mvn clean install -P production`
-    * `docker build -t local/karnak:latest -f mvc/src/main/docker/Dockerfile .`
+    * `docker build -t local/karnak:latest -f src/main/docker/Dockerfile .`
 
 ## Run image from Docker Hub
 
