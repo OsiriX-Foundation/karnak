@@ -31,8 +31,7 @@ import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.repo.DestinationRepo;
 import org.karnak.backend.dicom.ForwardDestination;
 import org.karnak.backend.dicom.ForwardDicomNode;
-import org.karnak.backend.dicom.ForwardUtil;
-import org.karnak.backend.dicom.ForwardUtil.Params;
+import org.karnak.backend.dicom.Params;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,7 +116,7 @@ public class CStoreSCPService extends BasicCStoreSCP {
       // Update transfer status of destinations
       updateTransferStatus(destList);
 
-      ForwardUtil.storeMultipleDestination(fwdNode, destList, p);
+      ForwardService.storeMultipleDestination(fwdNode, destList, p);
 
     } catch (Exception e) {
       throw new DicomServiceException(Status.ProcessingFailure, e);

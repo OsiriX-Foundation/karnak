@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.karnak.backend.dicom.ForwardUtil.Params;
+import org.karnak.backend.service.ForwardService;
 import org.weasis.dicom.param.DicomNode;
 
 class ForwardUtilTest {
@@ -51,7 +51,7 @@ class ForwardUtilTest {
         IllegalStateException.class,
         () -> {
           // Call method
-          ForwardUtil.storeMultipleDestination(fwdNode, destList, null);
+          ForwardService.storeMultipleDestination(fwdNode, destList, null);
         });
   }
 
@@ -71,7 +71,7 @@ class ForwardUtilTest {
     Assertions.assertDoesNotThrow(
         () -> {
           // Call method
-          ForwardUtil.storeMultipleDestination(forwardDicomNode, destList, p);
+          ForwardService.storeMultipleDestination(forwardDicomNode, destList, p);
         });
   }
 
@@ -94,7 +94,7 @@ class ForwardUtilTest {
         IOException.class,
         () -> {
           // Call method
-          ForwardUtil.storeMultipleDestination(forwardDicomNode, destList, p);
+          ForwardService.storeMultipleDestination(forwardDicomNode, destList, p);
         });
   }
 }

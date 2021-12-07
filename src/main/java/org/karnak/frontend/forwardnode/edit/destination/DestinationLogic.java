@@ -19,7 +19,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
-import org.karnak.backend.model.NodeEvent;
+import org.karnak.backend.model.event.NodeEvent;
 import org.karnak.backend.service.DestinationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

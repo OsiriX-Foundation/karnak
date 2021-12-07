@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  */
-package org.karnak.backend.dicom;
+package org.karnak.backend.service;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,8 +32,16 @@ import org.dcm4che3.net.DataWriterAdapter;
 import org.dcm4che3.net.InputStreamDataWriter;
 import org.dcm4che3.net.PDVInputStream;
 import org.dcm4che3.net.Status;
+import org.karnak.backend.dicom.Defacer;
+import org.karnak.backend.dicom.DicomForwardDestination;
+import org.karnak.backend.dicom.ForwardDestination;
+import org.karnak.backend.dicom.ForwardDicomNode;
+import org.karnak.backend.dicom.Params;
+import org.karnak.backend.dicom.WebForwardDestination;
+import org.karnak.backend.exception.AbortException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 import org.weasis.core.util.FileUtil;
 import org.weasis.core.util.LangUtil;
 import org.weasis.dicom.param.AttributeEditor;
@@ -46,80 +54,18 @@ import org.weasis.dicom.web.DicomStowRS;
 import org.weasis.dicom.web.HttpException;
 import org.weasis.opencv.data.PlanarImage;
 
-public class ForwardUtil {
-  private static final String ERROR_WHEN_FORWARDING =
-      "Error when forwarding to the final destination";
-  private static final Logger LOGGER = LoggerFactory.getLogger(ForwardUtil.class);
+@Service
+public class ForwardService {
 
-  public static final class Params {
-    private final String iuid;
-    private final String cuid;
-    private final String tsuid;
-    private final InputStream data;
-    private final Association as;
-    private final int priority;
+  private static final String ERROR_WHEN_FORWARDING = "Error when forwarding to the final destination";
 
-    public Params(
-        String iuid, String cuid, String tsuid, int priority, InputStream data, Association as) {
-      super();
-      this.iuid = iuid;
-      this.cuid = cuid;
-      this.tsuid = tsuid;
-      this.priority = priority;
-      this.as = as;
-      this.data = data;
-    }
+  private static final Logger LOGGER = LoggerFactory.getLogger(ForwardService.class);
 
-    public String getIuid() {
-      return iuid;
-    }
+//  private ForwardService() {}
 
-    public String getCuid() {
-      return cuid;
-    }
 
-    public String getTsuid() {
-      return tsuid;
-    }
-
-    public int getPriority() {
-      return priority;
-    }
-
-    public Association getAs() {
-      return as;
-    }
-
-    public InputStream getData() {
-      return data;
-    }
+  public ForwardService() {
   }
-
-  private static final class AbortException extends IllegalStateException {
-    private static final long serialVersionUID = 3993065212756372490L;
-    private final Abort abort;
-
-    public AbortException(Abort abort, String s) {
-      super(s);
-      this.abort = abort;
-    }
-
-    public AbortException(Abort abort, String string, Exception e) {
-      super(string, e);
-      this.abort = abort;
-    }
-
-    @Override
-    public String toString() {
-      return getMessage();
-    }
-
-    public Abort getAbort() {
-      return abort;
-    }
-  }
-
-  private ForwardUtil() {}
 
   public static void storeMultipleDestination(
       ForwardDicomNode fwdNode, List<ForwardDestination> destList, Params p) throws IOException {
@@ -128,8 +74,8 @@ public class ForwardUtil {
           "Cannot find the DICOM destination from " + fwdNode.toString());
     }
     // Exclude DICOMDIR
-    if ("1.2.840.10008.1.3.10".equals(p.cuid)) {
-      LOGGER.warn("Cannot send DICOMDIR {}", p.iuid);
+    if ("1.2.840.10008.1.3.10".equals(p.getCuid())) {
+      LOGGER.warn("Cannot send DICOMDIR {}", p.getIuid());
       return;
     }
 

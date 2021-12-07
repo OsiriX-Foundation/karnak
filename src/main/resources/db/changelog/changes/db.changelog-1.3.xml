@@ -85,4 +85,53 @@
     </addColumn>
   </changeSet>
 
+  <changeSet author="karnak" id="1.3-9">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="destination" columnName="email_last_check"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="destination">
+      <column name="email_last_check" type="TIMESTAMP"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet author="karnak" id="1.3-10">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="destination" columnName="email_in_progress"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="destination">
+      <column name="email_in_progress" type="BOOLEAN" defaultValue='false'>
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+  </changeSet>
+
+  <changeSet author="karnak" id="1.3-11">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="transfer_status"/>
+      </not>
+    </preConditions>
+    <createTable tableName="transfer_status">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="transfer_status_pkey"/>
+      </column>
+      <column name="destination_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="sop_instance_uid" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="transfer_date" type="TIMESTAMP">
+        <constraints nullable="false"/>
+      </column>
+      <column name="sent" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+
 </databaseChangeLog>
