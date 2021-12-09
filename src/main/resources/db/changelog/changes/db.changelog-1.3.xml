@@ -122,6 +122,23 @@
       <column name="destination_id" type="BIGINT">
         <constraints nullable="false"/>
       </column>
+      <column name="patient_id" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="study_description" type="VARCHAR(255)"/>
+      <column name="study_date" type="TIMESTAMP">
+        <constraints nullable="false"/>
+      </column>
+      <column name="study_uid" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="serie_description" type="VARCHAR(255)"/>
+      <column name="serie_date" type="TIMESTAMP">
+        <constraints nullable="false"/>
+      </column>
+      <column name="serie_uid" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
       <column name="sop_instance_uid" type="VARCHAR(255)">
         <constraints nullable="false"/>
       </column>

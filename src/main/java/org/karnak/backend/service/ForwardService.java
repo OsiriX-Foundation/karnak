@@ -57,15 +57,14 @@ import org.weasis.opencv.data.PlanarImage;
 @Service
 public class ForwardService {
 
-  private static final String ERROR_WHEN_FORWARDING = "Error when forwarding to the final destination";
+  private static final String ERROR_WHEN_FORWARDING =
+      "Error when forwarding to the final destination";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ForwardService.class);
 
-//  private ForwardService() {}
+  //  private ForwardService() {}
 
-
-  public ForwardService() {
-  }
+  public ForwardService() {}
 
   public static void storeMultipleDestination(
       ForwardDicomNode fwdNode, List<ForwardDestination> destList, Params p) throws IOException {
