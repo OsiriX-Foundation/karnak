@@ -96,15 +96,20 @@ public class ShiftDate {
         LOGGER.error("args {} is not correct", value, e);
       }
     }
+    return shiftValue(dcm, tag, dcmElValue, shiftDays, shiftSeconds);
+  }
+
+  public static String shiftValue(Attributes dcm, int tag, String dcmElValue, int shiftDays, int shiftSeconds) {
     if (dcmElValue != null) {
       return switch (dcm.getVR(tag)) {
-        case AS -> ageByDays(dcmElValue, shiftDays);
-        case DA -> dateByDays(dcmElValue, shiftDays);
-        case DT -> datetimeByDays(dcm.getDate(tag), shiftDays, shiftSeconds);
-        case TM -> timeBySeconds(dcmElValue, shiftSeconds);
+        case AS -> ShiftDate.ageByDays(dcmElValue, shiftDays);
+        case DA -> ShiftDate.dateByDays(dcmElValue, shiftDays);
+        case DT -> ShiftDate.datetimeByDays(dcm.getDate(tag), shiftDays, shiftSeconds);
+        case TM -> ShiftDate.timeBySeconds(dcmElValue, shiftSeconds);
         default -> null;
       };
-    } else {
+    }
+    else {
       return null;
     }
   }
