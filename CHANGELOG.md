@@ -1,5 +1,17 @@
 # Changelog
 
+## [v0.9.9](https://github.com/OsiriX-Foundation/karnak/tree/v0.9.9) (2021-12-20)
+
+[Full Changelog](https://github.com/OsiriX-Foundation/karnak/compare/v0.9.8...v0.9.9)
+
+**Implemented enhancements:**
+
+- Update weasis-dicom-tools to 5.24.2 \(native lib to 4.5.3\) [\#177](https://github.com/OsiriX-Foundation/karnak/issues/177)
+- DeIdentification front: refactoring + behaviour activate/deactivate deidentification [\#174](https://github.com/OsiriX-Foundation/karnak/issues/174)
+- Notification Front: default values [\#172](https://github.com/OsiriX-Foundation/karnak/issues/172)
+- Karnak email address [\#159](https://github.com/OsiriX-Foundation/karnak/issues/159)
+- Change configuration when sending [\#31](https://github.com/OsiriX-Foundation/karnak/issues/31)
+
 ## [v0.9.8](https://github.com/OsiriX-Foundation/karnak/tree/v0.9.8) (2021-08-26)
 
 [Full Changelog](https://github.com/OsiriX-Foundation/karnak/compare/v0.9.7...v0.9.8)
