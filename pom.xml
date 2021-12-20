@@ -46,6 +46,7 @@
     <junit.jupiter.version>5.7.2</junit.jupiter.version>
     <mockito.version>3.9.0</mockito.version>
     <springdoc.version>1.5.6</springdoc.version>
+    <logback.version>1.2.9</logback.version>
   </properties>
 
   <!-- Repositories -->
@@ -514,6 +515,7 @@
     <dependency>
       <artifactId>logback-classic</artifactId>
       <groupId>ch.qos.logback</groupId>
+      <version>${logback.version}</version>
     </dependency>
 
     <!--	Jackson -->

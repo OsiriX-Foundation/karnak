@@ -13,7 +13,7 @@ online [Karnak user guide](https://osirix-foundation.github.io/karnak-documentat
 
 ## Gateway
 
-- Allows to build mapping between a source and one or more destinations
+- Allows building mapping between a source and one or more destinations
 - Each destination can be DICOM or DICOMWeb
 - Filter the images providers by AETitle and/or hostname (ot ensure the authenticity of the source)
 
@@ -51,7 +51,7 @@ see [karnak-docker](https://github.com/OsiriX-Foundation/karnak-docker).
 - Enable Spring and Spring Boot for the project
 - Create a Spring Boot launcher from main of StartApplication.java
     - Working Directory must be the mvc directory
-    - In VM Options, add `-Djava.library.path="/tmp/dicom-opencv"`
+    - In VM Options, add `-Djava.library.path="/tmp/dicom-opencv"`. Note: the tmp folder must be adapted according to your system and `dicom-opencv` is mandatory as the last folder.
     - In Environment variables, add the following values. The following values work with our default
       configuration define with docker used for the development (see: "Configure locally
       Mainzelliste and Postgres database with docker-compose") :
@@ -78,20 +78,7 @@ see [karnak-docker](https://github.com/OsiriX-Foundation/karnak-docker).
             - `OIDC_CLIENT_ID=undefined`
             - `OIDC_CLIENT_SECRET=undefined`
             - `OIDC_ISSUER_URI=undefined`
-
-    Note: the tmp folder must be adapted according to your system and the dicom-opencv must the last folder.
-
-<!--
-## Debug in Eclipse - obsolete
-
- - Configure locally mainzelliste and Postgres database (see below)
- - From Eclipse Marketplace: install the latest Spring Tools
- - Create a Spring Boot App launcher from main of SartApplication.java
-    - Copy the KARNAK environment variables in docker/.env and paste into the Environment tab of the launcher    
-    - In the Arguments tab of the launcher, add in VM arguments: `-Djava.library.path="/tmp/dicom-opencv"`    
-    Note: the tmp folder must be adapted according to your system and the dicom-opencv must the last folder.
--->
-
+            
 ## Configure locally Mainzelliste and Postgres database with docker-compose
 
 Minimum docker-compose version: **1.22**
@@ -125,7 +112,7 @@ See [karnak-docker](https://github.com/OsiriX-Foundation/karnak-docker)
 
 ## Docker environment variables
 
-See [environment variables](https://github.com/OsiriX-Foundation/karnak-docker#environment-variables)
+See [all the environment variables](https://github.com/OsiriX-Foundation/karnak-docker#environment-variables)
 
 # Architecture
 
