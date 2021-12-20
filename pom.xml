@@ -42,7 +42,7 @@
     <sonar.projectKey>karnak</sonar.projectKey>
     <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     <jacoco-maven-plugin.version>0.8.6</jacoco-maven-plugin.version>
-    <h2.version>1.4.200</h2.version>
+    <h2.version>2.0.202</h2.version>
     <junit.jupiter.version>5.7.2</junit.jupiter.version>
     <mockito.version>3.9.0</mockito.version>
     <springdoc.version>1.5.6</springdoc.version>
