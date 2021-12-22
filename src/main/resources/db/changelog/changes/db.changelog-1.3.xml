@@ -88,24 +88,22 @@
   <changeSet author="karnak" id="1.3-9">
     <preConditions onFail="MARK_RAN">
       <not>
-        <columnExists tableName="destination" columnName="email_last_check"/>
+        <columnExists tableName="destination" columnName="last_transfer"/>
       </not>
     </preConditions>
     <addColumn tableName="destination">
-      <column name="email_last_check" type="TIMESTAMP"/>
+      <column name="last_transfer" type="TIMESTAMP"/>
     </addColumn>
   </changeSet>
 
   <changeSet author="karnak" id="1.3-10">
     <preConditions onFail="MARK_RAN">
       <not>
-        <columnExists tableName="destination" columnName="email_in_progress"/>
+        <columnExists tableName="destination" columnName="email_last_check"/>
       </not>
     </preConditions>
     <addColumn tableName="destination">
-      <column name="email_in_progress" type="BOOLEAN" defaultValue='false'>
-        <constraints nullable="false"/>
-      </column>
+      <column name="email_last_check" type="TIMESTAMP"/>
     </addColumn>
   </changeSet>
 
@@ -119,35 +117,49 @@
       <column name="id" type="BIGINT" autoIncrement="true">
         <constraints nullable="false" primaryKey="true" primaryKeyName="transfer_status_pkey"/>
       </column>
+      <column name="forward_node_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
       <column name="destination_id" type="BIGINT">
         <constraints nullable="false"/>
       </column>
-      <column name="patient_id" type="VARCHAR(255)">
+      <column name="patient_id_original" type="VARCHAR(255)">
         <constraints nullable="false"/>
       </column>
-      <column name="study_description" type="VARCHAR(255)"/>
-      <column name="study_date" type="TIMESTAMP">
+      <column name="patient_id_to_send" type="VARCHAR(255)"/>
+      <column name="study_description_original" type="VARCHAR(255)"/>
+      <column name="study_description_to_send" type="VARCHAR(255)"/>
+      <column name="study_date_original" type="TIMESTAMP">
         <constraints nullable="false"/>
       </column>
-      <column name="study_uid" type="VARCHAR(255)">
+      <column name="study_date_to_send" type="TIMESTAMP"/>
+      <column name="study_uid_original" type="VARCHAR(255)">
         <constraints nullable="false"/>
       </column>
-      <column name="serie_description" type="VARCHAR(255)"/>
-      <column name="serie_date" type="TIMESTAMP">
+      <column name="study_uid_to_send" type="VARCHAR(255)"/>
+      <column name="accession_number_original" type="VARCHAR(255)"/>
+      <column name="accession_number_to_send" type="VARCHAR(255)"/>
+      <column name="serie_description_original" type="VARCHAR(255)"/>
+      <column name="serie_description_to_send" type="VARCHAR(255)"/>
+      <column name="serie_date_original" type="TIMESTAMP">
         <constraints nullable="false"/>
       </column>
-      <column name="serie_uid" type="VARCHAR(255)">
+      <column name="serie_date_to_send" type="TIMESTAMP"/>
+      <column name="serie_uid_original" type="VARCHAR(255)">
         <constraints nullable="false"/>
       </column>
-      <column name="sop_instance_uid" type="VARCHAR(255)">
+      <column name="serie_uid_to_send" type="VARCHAR(255)"/>
+      <column name="sop_instance_uid_original" type="VARCHAR(255)">
         <constraints nullable="false"/>
       </column>
+      <column name="sop_instance_uid_to_send" type="VARCHAR(255)"/>
       <column name="transfer_date" type="TIMESTAMP">
         <constraints nullable="false"/>
       </column>
       <column name="sent" type="BOOLEAN">
         <constraints nullable="false"/>
       </column>
+      <column name="reason" type="VARCHAR(255)"/>
     </createTable>
   </changeSet>
 

@@ -260,6 +260,11 @@ public class LayoutEditForwardNode extends VerticalLayout {
         .addItemClickListener(
             event -> {
               DestinationEntity destinationEntity = event.getItem();
+              // refresh destination entity in case changes occurs
+              destinationEntity =
+                  destinationView
+                      .getDestinationLogic()
+                      .retrieveDestinationEntity(destinationEntity.getId());
               this.newUpdateDestination.load(
                   destinationEntity, destinationEntity.getDestinationType());
               addFormView(this.newUpdateDestination);

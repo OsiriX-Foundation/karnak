@@ -10,6 +10,7 @@
 package org.karnak.backend.service;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -45,6 +46,7 @@ public class CStoreSCPService extends BasicCStoreSCP {
 
   // Service
   private final DestinationRepo destinationRepo;
+  private final ForwardService forwardService;
 
   private Map<ForwardDicomNode, List<ForwardDestination>> destinations;
   private volatile int priority;
@@ -56,9 +58,11 @@ public class CStoreSCPService extends BasicCStoreSCP {
       Executors.newSingleThreadScheduledExecutor();
 
   @Autowired
-  public CStoreSCPService(final DestinationRepo destinationRepo) {
+  public CStoreSCPService(
+      final DestinationRepo destinationRepo, final ForwardService forwardService) {
     super("*");
     this.destinationRepo = destinationRepo;
+    this.forwardService = forwardService;
   }
 
   public void init(Map<ForwardDicomNode, List<ForwardDestination>> destinations) {
@@ -116,7 +120,7 @@ public class CStoreSCPService extends BasicCStoreSCP {
       // Update transfer status of destinations
       updateTransferStatus(destList);
 
-      ForwardService.storeMultipleDestination(fwdNode, destList, p);
+      forwardService.storeMultipleDestination(fwdNode, destList, p);
 
     } catch (Exception e) {
       throw new DicomServiceException(Status.ProcessingFailure, e);
@@ -159,6 +163,7 @@ public class CStoreSCPService extends BasicCStoreSCP {
       DestinationEntity destinationEntity = destinationEntityOptional.get();
       if (destinationEntity.isActivate()) {
         destinationEntity.setTransferInProgress(status);
+        destinationEntity.setLastTransfer(LocalDateTime.now());
         destinationRepo.save(destinationEntity);
       }
     }

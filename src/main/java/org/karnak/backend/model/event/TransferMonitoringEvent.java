@@ -9,4 +9,15 @@
  */
 package org.karnak.backend.model.event;
 
-public class MonitoringEvent {}
+import org.karnak.backend.data.entity.TransferStatusEntity;
+import org.springframework.context.ApplicationEvent;
+
+/**
+ * Transfer monitoring event used to populate asynchronously transfer_status table
+ */
+public class TransferMonitoringEvent extends ApplicationEvent {
+
+  public TransferMonitoringEvent(TransferStatusEntity transferStatusEntity) {
+    super(transferStatusEntity);
+  }
+}

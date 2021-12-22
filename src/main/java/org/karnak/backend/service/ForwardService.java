@@ -32,6 +32,7 @@ import org.dcm4che3.net.DataWriterAdapter;
 import org.dcm4che3.net.InputStreamDataWriter;
 import org.dcm4che3.net.PDVInputStream;
 import org.dcm4che3.net.Status;
+import org.karnak.backend.data.entity.TransferStatusEntity;
 import org.karnak.backend.dicom.Defacer;
 import org.karnak.backend.dicom.DicomForwardDestination;
 import org.karnak.backend.dicom.ForwardDestination;
@@ -39,8 +40,11 @@ import org.karnak.backend.dicom.ForwardDicomNode;
 import org.karnak.backend.dicom.Params;
 import org.karnak.backend.dicom.WebForwardDestination;
 import org.karnak.backend.exception.AbortException;
+import org.karnak.backend.model.event.TransferMonitoringEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.weasis.core.util.FileUtil;
 import org.weasis.core.util.LangUtil;
@@ -62,11 +66,14 @@ public class ForwardService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ForwardService.class);
 
-  //  private ForwardService() {}
+  private final ApplicationEventPublisher applicationEventPublisher;
 
-  public ForwardService() {}
+  @Autowired
+  public ForwardService(final ApplicationEventPublisher applicationEventPublisher) {
+    this.applicationEventPublisher = applicationEventPublisher;
+  }
 
-  public static void storeMultipleDestination(
+  public void storeMultipleDestination(
       ForwardDicomNode fwdNode, List<ForwardDestination> destList, Params p) throws IOException {
     if (destList == null || destList.isEmpty()) {
       throw new IllegalStateException(
@@ -129,7 +136,7 @@ public class ForwardService {
     }
   }
 
-  public static void storeOneDestination(
+  public void storeOneDestination(
       ForwardDicomNode fwdNode, ForwardDestination destination, Params p) throws IOException {
     if (destination instanceof DicomForwardDestination) {
       DicomForwardDestination dest = (DicomForwardDestination) destination;
@@ -179,12 +186,14 @@ public class ForwardService {
     return streamSCU;
   }
 
-  public static List<File> transfer(
+  public List<File> transfer(
       ForwardDicomNode sourceNode, DicomForwardDestination destination, Attributes copy, Params p)
       throws IOException {
     StoreFromStreamSCU streamSCU = destination.getStreamSCU();
     DicomInputStream in = null;
     List<File> files;
+    Attributes attributesOriginal = new Attributes();
+    Attributes attributesToSend = new Attributes();
     try {
       if (!streamSCU.isReadyForDataTransfer()) {
         throw new IllegalStateException("Association not ready for transfer.");
@@ -201,12 +210,16 @@ public class ForwardService {
 
       if (copy == null && editors.isEmpty() && syntax.getRequested().equals(tsuid)) {
         dataWriter = new InputStreamDataWriter(p.getData());
+        attributesToSend = new DicomInputStream(p.getData()).readDataset();
+        attributesOriginal.addAll(attributesToSend);
       } else {
         AttributeEditorContext context =
             new AttributeEditorContext(tsuid, sourceNode, streamSCU.getRemoteDicomNode());
         in = new DicomInputStream(p.getData(), tsuid);
         in.setIncludeBulkData(IncludeBulkData.URI);
         Attributes attributes = in.readDataset();
+        attributesOriginal.addAll(attributes);
+        attributesToSend = attributes;
         if (copy != null) {
           copy.addAll(attributes);
         }
@@ -238,9 +251,23 @@ public class ForwardService {
       streamSCU.cstore(cuid, iuid, p.getPriority(), dataWriter, syntax.getSuitable());
       progressNotify(
           destination, p.getIuid(), p.getCuid(), false, streamSCU.getNumberOfSuboperations());
+      monitor(
+          sourceNode.getId(),
+          destination.getId(),
+          attributesOriginal,
+          attributesToSend,
+          true,
+          null);
     } catch (AbortException e) {
       progressNotify(
           destination, p.getIuid(), p.getCuid(), true, streamSCU.getNumberOfSuboperations());
+      monitor(
+          sourceNode.getId(),
+          destination.getId(),
+          attributesOriginal,
+          attributesToSend,
+          false,
+          e.getMessage());
       if (e.getAbort() == Abort.CONNECTION_EXCEPTION) {
         throw e;
       }
@@ -250,6 +277,13 @@ public class ForwardService {
       }
       progressNotify(
           destination, p.getIuid(), p.getCuid(), true, streamSCU.getNumberOfSuboperations());
+      monitor(
+          sourceNode.getId(),
+          destination.getId(),
+          attributesOriginal,
+          attributesToSend,
+          false,
+          e.getMessage());
       LOGGER.error(ERROR_WHEN_FORWARDING, e);
     } finally {
       streamSCU.triggerCloseExecutor();
@@ -290,10 +324,11 @@ public class ForwardService {
     return null;
   }
 
-  public static void transferOther(
+  public void transferOther(
       ForwardDicomNode fwdNode, DicomForwardDestination destination, Attributes copy, Params p) {
     StoreFromStreamSCU streamSCU = destination.getStreamSCU();
-
+    Attributes attributesToSend = new Attributes();
+    Attributes attributesOriginal = new Attributes();
     try {
       if (!streamSCU.isReadyForDataTransfer()) {
         throw new IllegalStateException("Association not ready for transfer.");
@@ -310,10 +345,14 @@ public class ForwardService {
       List<AttributeEditor> editors = destination.getDicomEditors();
       if (editors.isEmpty() && syntax.getRequested().equals(tsuid)) {
         dataWriter = new DataWriterAdapter(copy);
+        attributesOriginal.addAll(copy);
+        attributesToSend = copy;
       } else {
         AttributeEditorContext context =
             new AttributeEditorContext(tsuid, fwdNode, streamSCU.getRemoteDicomNode());
         Attributes attributes = new Attributes(copy);
+        attributesOriginal.addAll(attributes);
+        attributesToSend = attributes;
         if (!editors.isEmpty()) {
           editors.forEach(e -> e.apply(attributes, context));
           iuid = attributes.getString(Tag.SOPInstanceUID);
@@ -335,9 +374,18 @@ public class ForwardService {
       streamSCU.cstore(cuid, iuid, p.getPriority(), dataWriter, syntax.getSuitable());
       progressNotify(
           destination, p.getIuid(), p.getCuid(), false, streamSCU.getNumberOfSuboperations());
+      monitor(
+          fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, true, null);
     } catch (AbortException e) {
       progressNotify(
           destination, p.getIuid(), p.getCuid(), true, streamSCU.getNumberOfSuboperations());
+      monitor(
+          fwdNode.getId(),
+          destination.getId(),
+          attributesOriginal,
+          attributesToSend,
+          false,
+          e.getMessage());
       if (e.getAbort() == Abort.CONNECTION_EXCEPTION) {
         throw e;
       }
@@ -347,16 +395,25 @@ public class ForwardService {
       }
       progressNotify(
           destination, p.getIuid(), p.getCuid(), true, streamSCU.getNumberOfSuboperations());
+      monitor(
+          fwdNode.getId(),
+          destination.getId(),
+          attributesOriginal,
+          attributesToSend,
+          false,
+          e.getMessage());
       LOGGER.error(ERROR_WHEN_FORWARDING, e);
     } finally {
       streamSCU.triggerCloseExecutor();
     }
   }
 
-  public static List<File> transfer(
+  public List<File> transfer(
       ForwardDicomNode fwdNode, WebForwardDestination destination, Attributes copy, Params p) {
     DicomInputStream in = null;
     List<File> files;
+    Attributes attributesToSend = new Attributes();
+    Attributes attributesOriginal = new Attributes();
     try {
       List<AttributeEditor> editors = destination.getDicomEditors();
       DicomStowRS stow = destination.getStowrsSingleFile();
@@ -367,6 +424,8 @@ public class ForwardService {
         Attributes fmi =
             Attributes.createFileMetaInformation(p.getIuid(), p.getCuid(), syntax.getRequested());
         try (InputStream stream = p.getData()) {
+          attributesToSend = new DicomInputStream(p.getData()).readDataset();
+          attributesOriginal.addAll(attributesToSend);
           stow.uploadDicom(stream, fmi);
         } catch (HttpException httpException) {
           throw new AbortException(Abort.FILE_EXCEPTION, httpException.getMessage());
@@ -376,6 +435,8 @@ public class ForwardService {
         in = new DicomInputStream(p.getData(), p.getTsuid());
         in.setIncludeBulkData(IncludeBulkData.URI);
         Attributes attributes = in.readDataset();
+        attributesToSend = attributes;
+        attributesOriginal.addAll(attributes);
         if (copy != null) {
           copy.addAll(attributes);
         }
@@ -405,13 +466,29 @@ public class ForwardService {
         }
       }
       progressNotify(destination, p.getIuid(), p.getCuid(), false, 0);
+      monitor(
+          fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, true, null);
     } catch (AbortException e) {
       progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
+      monitor(
+          fwdNode.getId(),
+          destination.getId(),
+          attributesOriginal,
+          attributesToSend,
+          false,
+          e.getMessage());
       if (e.getAbort() == Abort.CONNECTION_EXCEPTION) {
         throw e;
       }
     } catch (Exception e) {
       progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
+      monitor(
+          fwdNode.getId(),
+          destination.getId(),
+          attributesOriginal,
+          attributesToSend,
+          false,
+          e.getMessage());
       LOGGER.error(ERROR_WHEN_FORWARDING, e);
     } finally {
       files = cleanOrGetBulkDataFiles(in, copy == null);
@@ -419,18 +496,24 @@ public class ForwardService {
     return files;
   }
 
-  public static void transferOther(
+  public void transferOther(
       ForwardDicomNode fwdNode, WebForwardDestination destination, Attributes copy, Params p) {
+    Attributes attributesToSend = new Attributes();
+    Attributes attributesOriginal = new Attributes();
     try {
       List<AttributeEditor> editors = destination.getDicomEditors();
       DicomStowRS stow = destination.getStowrsSingleFile();
       var syntax =
           new AdaptTransferSyntax(p.getTsuid(), destination.getOutputTransferSyntax(p.getTsuid()));
       if (syntax.getRequested().equals(p.getTsuid()) && editors.isEmpty()) {
+        attributesToSend = copy;
+        attributesOriginal.addAll(copy);
         stow.uploadDicom(copy, syntax.getRequested());
       } else {
         AttributeEditorContext context = new AttributeEditorContext(p.getTsuid(), fwdNode, null);
         Attributes attributes = new Attributes(copy);
+        attributesToSend = attributes;
+        attributesOriginal.addAll(attributes);
         editors.forEach(e -> e.apply(attributes, context));
 
         if (context.getAbort() == Abort.FILE_EXCEPTION) {
@@ -448,17 +531,40 @@ public class ForwardService {
           stow.uploadPayload(ImageAdapter.preparePlayload(attributes, syntax, desc, editable));
         }
         progressNotify(destination, p.getIuid(), p.getCuid(), false, 0);
+        monitor(
+            fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, true, null);
       }
     } catch (HttpException httpException) {
       progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
+      monitor(
+          fwdNode.getId(),
+          destination.getId(),
+          attributesOriginal,
+          attributesToSend,
+          false,
+          httpException.getMessage());
       throw new AbortException(Abort.FILE_EXCEPTION, "DICOMWeb forward", httpException);
     } catch (AbortException e) {
       progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
+      monitor(
+          fwdNode.getId(),
+          destination.getId(),
+          attributesOriginal,
+          attributesToSend,
+          false,
+          e.getMessage());
       if (e.getAbort() == Abort.CONNECTION_EXCEPTION) {
         throw e;
       }
     } catch (Exception e) {
       progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
+      monitor(
+          fwdNode.getId(),
+          destination.getId(),
+          attributesOriginal,
+          attributesToSend,
+          false,
+          e.getMessage());
       LOGGER.error(ERROR_WHEN_FORWARDING, e);
     }
   }
@@ -485,5 +591,28 @@ public class ForwardService {
     }
 
     return UID.ImplicitVRLittleEndian;
+  }
+
+  /**
+   * Publish an event for monitoring purpose
+   *
+   * @param forwardNodeId ForwardNode Id
+   * @param destinationId Destination Id
+   * @param attributesOriginal Original value
+   * @param attributesToSend De-identify value
+   * @param sent Flag to know if the transfer occurred
+   * @param reason Reason of not transferring the file
+   */
+  private void monitor(
+      Long forwardNodeId,
+      Long destinationId,
+      Attributes attributesOriginal,
+      Attributes attributesToSend,
+      boolean sent,
+      String reason) {
+    applicationEventPublisher.publishEvent(
+        new TransferMonitoringEvent(
+            TransferStatusEntity.buildTransferStatusEntity(
+                forwardNodeId, destinationId, attributesOriginal, attributesToSend, sent, reason)));
   }
 }

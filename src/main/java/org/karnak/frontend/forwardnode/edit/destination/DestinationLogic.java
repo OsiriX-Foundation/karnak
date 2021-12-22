@@ -298,4 +298,16 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
     destinationService.delete(destinationEntity);
     refreshAll();
   }
+
+  /**
+   * Retrieve destination depending on id in parameter
+   *
+   * @param id Id to look for
+   * @return Destination found
+   */
+  public DestinationEntity retrieveDestinationEntity(Long id) {
+    List<DestinationEntity> destinationEntities =
+        destinationService.retrieveDestinationsFromIds(List.of(id));
+    return destinationEntities.isEmpty() ? null : destinationEntities.stream().findFirst().get();
+  }
 }
