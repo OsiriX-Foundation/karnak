@@ -23,33 +23,44 @@
 
   <!-- Properties -->
   <properties>
-    <enforcer.jdk-version>[${java.version},)</enforcer.jdk-version>
-    <enforcer.maven-version>[3.2.0,)</enforcer.maven-version>
-    <java.version>14</java.version>
-    <javax.el.version>3.0.0</javax.el.version>
-    <javax.mail.version>1.6.2</javax.mail.version>
-    <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <springframework.version>2.4.9</springframework.version>
-    <vaadin.version>19.0.9</vaadin.version>
+
+    <enforcer.jdk-version>[${java.version},)</enforcer.jdk-version>
+    <enforcer.maven-version>[3.2.0,)</enforcer.maven-version>
+    <java.version>15</java.version>
+
+    <springframework.version>2.6.1</springframework.version>
+    <javax.el.version>3.0.0</javax.el.version>
+    <javax.mail.version>1.6.2</javax.mail.version>
+    <org.json.version>20211205</org.json.version>
+
     <weasis-dicom-tools.version>5.24.2-IMG-RELEASE</weasis-dicom-tools.version>
     <weasis.opencv.native.version>4.5.3-dcm</weasis.opencv.native.version>
+
+    <springdoc.version>1.6.0</springdoc.version>
+    <logback.version>1.2.9</logback.version>
+    <hazelcast.version>5.0.2</hazelcast.version>
+    <liquibase.version>4.6.1</liquibase.version>
+
+    <vaadin.version>21.0.9</vaadin.version>
+
+    <jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
+    <h2.version>1.4.200</h2.version>
+    <junit.jupiter.version>5.8.2</junit.jupiter.version>
+    <mockito.version>4.2.0</mockito.version>
+
+    <!-- Sonar configuration -->
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <sonar.java.source>${java.version}</sonar.java.source>
     <sonar.java.target>${java.version}</sonar.java.target>
     <sonar.organization>osirix-foundation-1</sonar.organization>
     <sonar.projectKey>karnak</sonar.projectKey>
     <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
-    <jacoco-maven-plugin.version>0.8.6</jacoco-maven-plugin.version>
-    <h2.version>1.4.200</h2.version>
-    <junit.jupiter.version>5.7.2</junit.jupiter.version>
-    <mockito.version>3.9.0</mockito.version>
-    <springdoc.version>1.5.6</springdoc.version>
-    <logback.version>1.2.9</logback.version>
-  </properties>
 
-  <!-- Repositories -->
+</properties>
+
+<!-- Repositories -->
   <repositories>
     <repository>
       <id>central</id>
@@ -97,16 +108,16 @@
           </execution>
         </executions>
         <groupId>org.apache.maven.plugins</groupId>
-        <version>3.0.0-M3</version>
+        <version>3.0.0</version>
       </plugin>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
         <configuration>
           <source>${java.version}</source>
           <target>${java.version}</target>
         </configuration>
-        <groupId>org.apache.maven.plugins</groupId>
-        <version>3.8.1</version>
       </plugin>
       <plugin>
         <artifactId>maven-dependency-plugin</artifactId>
@@ -175,7 +186,7 @@
           </execution>
         </executions>
         <groupId>org.apache.maven.plugins</groupId>
-        <version>3.1.1</version>
+        <version>3.2.0</version>
       </plugin>
       <plugin>
         <artifactId>spring-boot-maven-plugin</artifactId>
@@ -217,7 +228,7 @@
       <plugin>
         <groupId>com.diffplug.spotless</groupId>
         <artifactId>spotless-maven-plugin</artifactId>
-        <version>2.6.1</version>
+        <version>2.17.7</version>
         <configuration>
           <!-- define a language-specific format -->
           <java>
@@ -270,7 +281,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>${maven-surefire-plugin.version}</version>
+        <version>3.0.0-M5</version>
         <dependencies>
           <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -330,27 +341,26 @@
     </dependency>
 
     <dependency>
-      <artifactId>hazelcast</artifactId>
+      <artifactId>hazelcast-spring</artifactId>
       <groupId>com.hazelcast</groupId>
-      <version>4.1</version>
+      <version>${hazelcast.version}</version>
     </dependency>
 
     <dependency>
       <artifactId>liquibase-maven-plugin</artifactId>
       <groupId>org.liquibase</groupId>
-      <version>4.3.3</version>
+      <version>${liquibase.version}</version>
     </dependency>
 
     <dependency>
       <artifactId>json</artifactId>
       <groupId>org.json</groupId>
-      <version>20180813</version>
+      <version>${org.json.version}</version>
     </dependency>
 
     <dependency>
       <artifactId>gson</artifactId>
       <groupId>com.google.code.gson</groupId>
-      <version>2.8.6</version>
     </dependency>
 
     <dependency>
@@ -476,6 +486,7 @@
       <artifactId>vaadin-confirm-dialog-flow</artifactId>
       <groupId>com.vaadin</groupId>
     </dependency>
+
     <!-- Vaadin - Addons -->
     <dependency>
       <artifactId>iron-icons</artifactId>
@@ -487,15 +498,16 @@
       <groupId>org.vaadin.gatanaso</groupId>
       <version>3.0.2</version> <!-- use appropriate version -->
     </dependency>
+
     <dependency>
       <artifactId>vaadin-checkbox-flow</artifactId>
       <groupId>com.vaadin</groupId>
-      <version>3.1.0</version>
+      <version>${vaadin.version}</version>
     </dependency>
     <dependency>
       <artifactId>togglebutton</artifactId>
       <groupId>com.vaadin.componentfactory</groupId>
-      <version>1.0.0</version>
+      <version>1.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.vaadin.klaudeta</groupId>
@@ -507,11 +519,11 @@
       <artifactId>validation-api</artifactId>
       <groupId>javax.validation</groupId>
     </dependency>
+
     <dependency>
       <artifactId>jul-to-slf4j</artifactId>
       <groupId>org.slf4j</groupId>
     </dependency>
-
     <dependency>
       <artifactId>logback-classic</artifactId>
       <groupId>ch.qos.logback</groupId>

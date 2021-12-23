@@ -242,7 +242,9 @@ public class GatewaySetUpService {
     return smtpPort;
   }
 
-  public String getMailSmtpSender() { return  mailSmtpSender; }
+  public String getMailSmtpSender() {
+    return mailSmtpSender;
+  }
 
   public NotificationSetUp getNotificationSetUp() {
     return notificationSetUp;
