@@ -321,18 +321,6 @@
           </execution>
         </executions>
       </plugin>
-<!--      <plugin>-->
-<!--        <groupId>org.apache.maven.plugins</groupId>-->
-<!--        <artifactId>maven-surefire-plugin</artifactId>-->
-<!--        <version>${maven-surefire-plugin.version}</version>-->
-<!--        <dependencies>-->
-<!--          <dependency>-->
-<!--            <groupId>org.junit.jupiter</groupId>-->
-<!--            <artifactId>junit-jupiter-engine</artifactId>-->
-<!--            <version>${junit.jupiter.version}</version>-->
-<!--          </dependency>-->
-<!--        </dependencies>-->
-<!--      </plugin>-->
     </plugins>
     <resources>
       <resource>
