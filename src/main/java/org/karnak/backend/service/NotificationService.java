@@ -27,6 +27,7 @@ import org.karnak.backend.data.repo.TransferStatusRepo;
 import org.karnak.backend.enums.DestinationType;
 import org.karnak.backend.model.notification.SerieSummaryNotification;
 import org.karnak.backend.model.notification.TransferMonitoringNotification;
+import org.karnak.backend.util.SystemPropertyUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -172,8 +173,9 @@ public class NotificationService {
           determineUseOfOriginalOrDeIdentifyValues(
               hasAtLeastOneFileNotTransferred,
               firstTransferStatus.getDestinationEntity().isDesidentification());
-      // TODO: use env var from master open source
-      transferMonitoringNotification.setFrom("karnak@kehops.online");
+      transferMonitoringNotification.setFrom(
+          SystemPropertyUtil.retrieveSystemProperty(
+              "MAIL_SMTP_SENDER", Notification.MAIL_SMTP_SENDER));
       transferMonitoringNotification.setTo(firstTransferStatus.getDestinationEntity().getNotify());
       transferMonitoringNotification.setPatientId(
           useOriginalValues
@@ -213,7 +215,7 @@ public class NotificationService {
    * Build notification subject email
    *
    * @param hasAtLeastOneFileNotTransferred Flag to know if there is at least one file not
-   *     transfered
+   *     transferred
    * @param useOriginalValues Check if we should use original or de-identified values
    * @param transferStatusEntity TransferStatusEntity to evaluate
    * @return Subject built
@@ -237,7 +239,7 @@ public class NotificationService {
   /**
    * Build list of values to add to the subject
    *
-   * @param useOriginalValues Flag to know if we should original or de-identified values
+   * @param useOriginalValues Flag to know if we should use original or de-identified values
    * @param transferStatusEntity TransferStatusEntity to evaluate
    * @return List of values to add to the subject
    */
@@ -376,7 +378,7 @@ public class NotificationService {
   }
 
   /**
-   * Determine distinct reasons of not transfering
+   * Determine distinct reasons of not transferring
    *
    * @param transfersToEvaluate Transfers to evaluate
    * @return Distinct reasons found
@@ -475,7 +477,7 @@ public class NotificationService {
       helper.setTo(InternetAddress.parse(transferMonitoringNotification.getTo()));
       helper.setFrom(transferMonitoringNotification.getFrom());
     } catch (MessagingException e) {
-      LOGGER.error("Notification error when preparing email to send:" + e.getMessage());
+      LOGGER.error("Notification error when preparing email to send: {}", e.getMessage());
     }
     javaMailSender.send(mimeMessage);
   }

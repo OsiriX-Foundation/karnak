@@ -233,7 +233,8 @@ public class EmailNotifyProgress implements ProgressListener {
     Message msg = new MimeMessage(session);
 
     // set the from and to address
-    InternetAddress addressFrom = new InternetAddress("karnak@kehops.online");
+    String senderAddr = config.getMailSmtpSender();
+    InternetAddress addressFrom = new InternetAddress(senderAddr);
     msg.setFrom(addressFrom);
 
     InternetAddress[] addressTo = new InternetAddress[emailList.size()];
