@@ -96,6 +96,7 @@ public class GatewaySetUpService {
   private final String mailAuthUser;
   private final String mailAuthPwd;
   private final String smtpPort;
+  private final String mailSmtpSender;
 
   private final NotificationSetUp notificationSetUp;
 
@@ -124,6 +125,7 @@ public class GatewaySetUpService {
 
     smtpHost = getProperty("MAIL_SMTP_HOST", null);
     smtpPort = getProperty("MAIL_SMTP_PORT", null);
+    mailSmtpSender = getProperty("MAIL_SMTP_SENDER", DefaultValuesNotification.MAIL_SMTP_SENDER);
     mailAuthType = getProperty("MAIL_SMTP_TYPE", null);
     mailAuthUser = getProperty("MAIL_SMTP_USER", null);
     mailAuthPwd = getProperty("MAIL_SMTP_SECRET", null);
@@ -237,6 +239,10 @@ public class GatewaySetUpService {
 
   public String getSmtpPort() {
     return smtpPort;
+  }
+
+  public String getMailSmtpSender() {
+    return mailSmtpSender;
   }
 
   public NotificationSetUp getNotificationSetUp() {
