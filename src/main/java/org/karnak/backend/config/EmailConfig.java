@@ -11,6 +11,7 @@ package org.karnak.backend.config;
 
 import java.util.Objects;
 import java.util.Properties;
+import org.karnak.backend.util.SystemPropertyUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -24,16 +25,16 @@ public class EmailConfig {
   public JavaMailSender getJavaMailSender() {
 
     // retrieve system properties
-    String mailSmtpPort = retrieveSystemProperty("MAIL_SMTP_PORT", "0");
-    String mailSmtpUser = retrieveSystemProperty("MAIL_SMTP_USER", null);
-    String mailAuthType = retrieveSystemProperty("MAIL_SMTP_TYPE", null);
+    String mailSmtpPort = SystemPropertyUtil.retrieveSystemProperty("MAIL_SMTP_PORT", "0");
+    String mailSmtpUser = SystemPropertyUtil.retrieveSystemProperty("MAIL_SMTP_USER", null);
+    String mailAuthType = SystemPropertyUtil.retrieveSystemProperty("MAIL_SMTP_TYPE", null);
 
     // Configure JavaMailSender
     JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-    mailSender.setHost(retrieveSystemProperty("MAIL_SMTP_HOST", null));
+    mailSender.setHost(SystemPropertyUtil.retrieveSystemProperty("MAIL_SMTP_HOST", null));
     mailSender.setPort(Integer.parseInt(mailSmtpPort));
     mailSender.setUsername(mailSmtpUser);
-    mailSender.setPassword(retrieveSystemProperty("MAIL_SMTP_SECRET", null));
+    mailSender.setPassword(SystemPropertyUtil.retrieveSystemProperty("MAIL_SMTP_SECRET", null));
 
     // Additional properties
     Properties props = mailSender.getJavaMailProperties();
@@ -53,23 +54,5 @@ public class EmailConfig {
       props.setProperty("mail.smtp.submitter", mailSmtpUser);
     }
     return mailSender;
-  }
-
-  /**
-   * Retrieve system property
-   *
-   * @param key Key
-   * @param defaultValue default value
-   * @return property found
-   */
-  private String retrieveSystemProperty(String key, String defaultValue) {
-    String val = System.getProperty(key);
-    if (!StringUtil.hasText(val)) {
-      val = System.getenv(key);
-      if (!StringUtil.hasText(val)) {
-        return defaultValue;
-      }
-    }
-    return val;
   }
 }

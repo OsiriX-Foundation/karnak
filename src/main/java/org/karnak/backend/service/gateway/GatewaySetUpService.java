@@ -125,7 +125,7 @@ public class GatewaySetUpService {
 
     smtpHost = getProperty("MAIL_SMTP_HOST", null);
     smtpPort = getProperty("MAIL_SMTP_PORT", null);
-    mailSmtpSender = getProperty("MAIL_SMTP_SENDER", DefaultValuesNotification.MAIL_SMTP_SENDER);
+    mailSmtpSender = getProperty("MAIL_SMTP_SENDER", Notification.MAIL_SMTP_SENDER);
     mailAuthType = getProperty("MAIL_SMTP_TYPE", null);
     mailAuthUser = getProperty("MAIL_SMTP_USER", null);
     mailAuthPwd = getProperty("MAIL_SMTP_SECRET", null);

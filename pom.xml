@@ -397,11 +397,11 @@
       <version>${hazelcast.version}</version>
     </dependency>
 
-<!--    <dependency>-->
-<!--      <artifactId>hazelcast</artifactId>-->
-<!--      <groupId>com.hazelcast</groupId>-->
-<!--      <version>4.1</version>-->
-<!--    </dependency>-->
+    <!--    <dependency>-->
+    <!--      <artifactId>hazelcast</artifactId>-->
+    <!--      <groupId>com.hazelcast</groupId>-->
+    <!--      <version>4.1</version>-->
+    <!--    </dependency>-->
 
     <dependency>
       <artifactId>liquibase-maven-plugin</artifactId>
