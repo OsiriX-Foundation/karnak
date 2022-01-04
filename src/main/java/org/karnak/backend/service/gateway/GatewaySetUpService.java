@@ -12,19 +12,15 @@ package org.karnak.backend.service.gateway;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.dcm4che3.data.Attributes;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.karnak.backend.constant.DefaultValuesNotification;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.DicomSourceNodeEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
@@ -36,14 +32,13 @@ import org.karnak.backend.dicom.ForwardDicomNode;
 import org.karnak.backend.dicom.WebForwardDestination;
 import org.karnak.backend.enums.DestinationType;
 import org.karnak.backend.enums.NodeEventType;
-import org.karnak.backend.model.NodeEvent;
-import org.karnak.backend.model.NotificationSetUp;
 import org.karnak.backend.model.editor.ConditionEditor;
 import org.karnak.backend.model.editor.DeIdentifyEditor;
 import org.karnak.backend.model.editor.FilterEditor;
 import org.karnak.backend.model.editor.StreamRegistryEditor;
-import org.karnak.backend.service.EmailNotifyProgress;
+import org.karnak.backend.model.event.NodeEvent;
 import org.karnak.backend.service.kheops.SwitchingAlbum;
+import org.karnak.backend.util.SystemPropertyUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,22 +56,6 @@ import org.weasis.dicom.param.TlsOptions;
 @Service
 public class GatewaySetUpService {
 
-  protected static final String T_NODES = "forwardNodes";
-  protected static final String T_NODE = "forwardNode";
-  protected static final String T_SRCNODES = "sourceNodes";
-  protected static final String T_SRCNODE = "sourceNode";
-  protected static final String T_DESTINATIONS = "destinations";
-  protected static final String T_DESTINATION = "destination";
-  protected static final String T_HEADERS = "headers";
-  protected static final String T_HEADER = "header";
-  protected static final String T_KEY = "key";
-  protected static final String T_VALUE = "value";
-  protected static final String T_FWD_AET = "fwdAeTitle";
-  protected static final String T_AETITLE = "aeTitle";
-  protected static final String T_HOST = "hostname";
-  protected static final String T_PORT = "port";
-  protected static final String T_TYPE = "type";
-  protected static final String T_URL = "url";
   private static final Logger LOGGER = LoggerFactory.getLogger(GatewaySetUpService.class);
   // Repositories
   private final ForwardNodeRepo forwardNodeRepo;
@@ -91,13 +70,6 @@ public class GatewaySetUpService {
   private final int intervalCheck;
 
   private final String archiveUrl;
-  private final String smtpHost;
-  private final String mailAuthType;
-  private final String mailAuthUser;
-  private final String mailAuthPwd;
-  private final String smtpPort;
-
-  private final NotificationSetUp notificationSetUp;
 
   private final String clientKey;
   private final String clientKeyPwd;
@@ -107,40 +79,27 @@ public class GatewaySetUpService {
   @Autowired
   public GatewaySetUpService(final ForwardNodeRepo forwardNodeRepo) throws Exception {
     this.forwardNodeRepo = forwardNodeRepo;
-    String path = getProperty("GATEWAY_ARCHIVE_PATH", null); // Only Archive and Pull mode
+    String path =
+        SystemPropertyUtil.retrieveSystemProperty(
+            "GATEWAY_ARCHIVE_PATH", null); // Only Archive and Pull mode
     storePath = StringUtil.hasText(path) ? Path.of(path) : null;
     intervalCheck =
-        StringUtil.getInt(getProperty("GATEWAY_PULL_CHECK_INTERNAL", "5")); // Only Pull mode
-    archiveUrl = getProperty("GATEWAY_ARCHIVE_URL", ""); // Only Archive mode
+        StringUtil.getInt(
+            SystemPropertyUtil.retrieveSystemProperty(
+                "GATEWAY_PULL_CHECK_INTERNAL", "5")); // Only Pull mode
+    archiveUrl =
+        SystemPropertyUtil.retrieveSystemProperty("GATEWAY_ARCHIVE_URL", ""); // Only Archive mode
 
-    listenerAET = getProperty("DICOM_LISTENER_AET", "KARNAK-GATEWAY");
+    listenerAET = SystemPropertyUtil.retrieveSystemProperty("DICOM_LISTENER_AET", "KARNAK-GATEWAY");
     listenerPort = 11119;
-    listenerTLS = LangUtil.getEmptytoFalse(getProperty("DICOM_LISTENER_TLS", null));
+    listenerTLS =
+        LangUtil.getEmptytoFalse(
+            SystemPropertyUtil.retrieveSystemProperty("DICOM_LISTENER_TLS", null));
 
-    clientKey = getProperty("TLS_KEYSTORE_PATH", null);
-    clientKeyPwd = getProperty("TLS_KEYSTORE_SECRET", null);
-    truststorePwd = getProperty("TLS_TRUSTSTORE_PATH", null);
-    truststore = getProperty("TLS_TRUSTSTORE_SECRET", null);
-
-    smtpHost = getProperty("MAIL_SMTP_HOST", null);
-    smtpPort = getProperty("MAIL_SMTP_PORT", null);
-    mailAuthType = getProperty("MAIL_SMTP_TYPE", null);
-    mailAuthUser = getProperty("MAIL_SMTP_USER", null);
-    mailAuthPwd = getProperty("MAIL_SMTP_SECRET", null);
-
-    String notifyObjectErrorPrefix =
-        getProperty("NOTIFY_OBJECT_ERROR_PREFIX", DefaultValuesNotification.OBJECT_ERROR_PREFIX);
-    String notifyObjectPattern =
-        getProperty("NOTIFY_OBJECT_PATTERN", DefaultValuesNotification.OBJECT_PATTERN);
-    List<String> notifyObjectValues =
-        Arrays.asList(
-            getProperty("NOTIFY_OBJECT_VALUES", DefaultValuesNotification.OBJECT_VALUES)
-                .split(","));
-    int notifyInterval =
-        StringUtil.getInt(getProperty("NOTIFY_INTERNAL", DefaultValuesNotification.INTERVAL));
-    this.notificationSetUp =
-        new NotificationSetUp(
-            notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues, notifyInterval);
+    clientKey = SystemPropertyUtil.retrieveSystemProperty("TLS_KEYSTORE_PATH", null);
+    clientKeyPwd = SystemPropertyUtil.retrieveSystemProperty("TLS_KEYSTORE_SECRET", null);
+    truststorePwd = SystemPropertyUtil.retrieveSystemProperty("TLS_TRUSTSTORE_PATH", null);
+    truststore = SystemPropertyUtil.retrieveSystemProperty("TLS_TRUSTSTORE_SECRET", null);
 
     reloadGatewayPersistence();
   }
@@ -155,17 +114,6 @@ public class GatewaySetUpService {
     connectOptions.setMaxOpsPerformed(50);
     params.setConnectOptions(connectOptions);
     return params;
-  }
-
-  private String getProperty(String key, String defaultValue) {
-    String val = System.getProperty(key);
-    if (!StringUtil.hasText(val)) {
-      val = System.getenv(key);
-      if (!StringUtil.hasText(val)) {
-        return defaultValue;
-      }
-    }
-    return val;
   }
 
   @Override
@@ -218,30 +166,6 @@ public class GatewaySetUpService {
 
   public String getTruststore() {
     return truststore;
-  }
-
-  public String getSmtpHost() {
-    return smtpHost;
-  }
-
-  public String getMailAuthType() {
-    return mailAuthType;
-  }
-
-  public String getMailAuthUser() {
-    return mailAuthUser;
-  }
-
-  public String getMailAuthPwd() {
-    return mailAuthPwd;
-  }
-
-  public String getSmtpPort() {
-    return smtpPort;
-  }
-
-  public NotificationSetUp getNotificationSetUp() {
-    return notificationSetUp;
   }
 
   public AdvancedParams getAdvancedParams() {
@@ -336,33 +260,7 @@ public class GatewaySetUpService {
       }
 
       DicomProgress progress = new DicomProgress();
-      List<String> emails =
-          Stream.of(dstNode.getNotify().split(","))
-              .filter(item -> !item.trim().isEmpty())
-              .collect(Collectors.toList());
-      String notifyObjectErrorPrefix = dstNode.getNotifyObjectErrorPrefix();
-      String notifyObjectPattern = dstNode.getNotifyObjectPattern();
-      List<String> notifyObjectValues =
-          Stream.of(dstNode.getNotifyObjectValues().split(","))
-              .filter(item -> !item.trim().isEmpty())
-              .collect(Collectors.toList());
-      Integer notifyInterval = dstNode.getNotifyInterval();
 
-      if (!StringUtil.hasText(notifyObjectErrorPrefix)) {
-        notifyObjectErrorPrefix = getNotificationSetUp().getNotifyObjectErrorPrefix();
-      }
-      if (!StringUtil.hasText(notifyObjectPattern)) {
-        notifyObjectPattern = getNotificationSetUp().getNotifyObjectPattern();
-      }
-      if (notifyObjectValues.isEmpty()) {
-        notifyObjectValues = getNotificationSetUp().getNotifyObjectValues();
-      }
-      if (notifyInterval == null || notifyInterval <= 0) {
-        notifyInterval = getNotificationSetUp().getNotifyInterval();
-      }
-      NotificationSetUp notifConfig =
-          new NotificationSetUp(
-              notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues, notifyInterval);
       if (dstNode.isActivate()) {
         if (dstNode.getDestinationType() == DestinationType.stow) {
           // parse headers to hashmap
@@ -386,8 +284,6 @@ public class GatewaySetUpService {
                   dstNode.getTransferSyntax(),
                   dstNode.isTranscodeOnlyUncompressed());
 
-          progress.addProgressListener(
-              new EmailNotifyProgress(streamRegistryEditor, fwd, emails, this, notifConfig));
           if (kheopsAlbumEntities != null && !kheopsAlbumEntities.isEmpty()) {
             progress.addProgressListener(
                 (DicomProgress dicomProgress) -> {
@@ -414,8 +310,6 @@ public class GatewaySetUpService {
                   dstNode.getTransferSyntax(),
                   dstNode.isTranscodeOnlyUncompressed());
 
-          progress.addProgressListener(
-              new EmailNotifyProgress(streamRegistryEditor, dest, emails, this, notifConfig));
           dstList.add(dest);
         }
       }

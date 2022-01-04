@@ -19,7 +19,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
-import org.karnak.backend.model.NodeEvent;
+import org.karnak.backend.model.event.NodeEvent;
 import org.karnak.backend.service.DestinationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -297,5 +297,17 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
   public void deleteDestination(DestinationEntity destinationEntity) {
     destinationService.delete(destinationEntity);
     refreshAll();
+  }
+
+  /**
+   * Retrieve destination depending on id in parameter
+   *
+   * @param id Id to look for
+   * @return Destination found
+   */
+  public DestinationEntity retrieveDestinationEntity(Long id) {
+    List<DestinationEntity> destinationEntities =
+        destinationService.retrieveDestinationsFromIds(List.of(id));
+    return destinationEntities.isEmpty() ? null : destinationEntities.stream().findFirst().get();
   }
 }
