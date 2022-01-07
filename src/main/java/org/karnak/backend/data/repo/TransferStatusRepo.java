@@ -13,10 +13,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 import org.karnak.backend.data.entity.TransferStatusEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface TransferStatusRepo extends JpaRepository<TransferStatusEntity, Long> {
+public interface TransferStatusRepo
+    extends JpaRepository<TransferStatusEntity, Long>,
+        JpaSpecificationExecutor<TransferStatusEntity> {
 
   /**
    * Look for TransferStatusEntity for a destination and after the last check date

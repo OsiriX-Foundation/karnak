@@ -1,0 +1,58 @@
+/*
+ * Copyright (c) 2022 Karnak Team and other contributors.
+ *
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
+ * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ */
+package org.karnak.frontend.monitoring;
+
+import org.karnak.backend.data.entity.TransferStatusEntity;
+import org.karnak.backend.service.TransferMonitoringService;
+import org.karnak.frontend.monitoring.component.TransferStatusFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+/**
+ * Monitoring logic service use to make calls to backend and implement logic linked to the
+ * monitoring view
+ */
+@Service
+public class MonitoringLogic {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(MonitoringLogic.class);
+
+  // View
+  private MonitoringView monitoringView;
+
+  // Services
+  private final TransferMonitoringService transferMonitoringService;
+
+  @Autowired
+  public MonitoringLogic(final TransferMonitoringService transferMonitoringService) {
+    this.transferMonitoringService = transferMonitoringService;
+  }
+
+  public MonitoringView getMonitoringView() {
+    return monitoringView;
+  }
+
+  public void setMonitoringView(MonitoringView monitoringView) {
+    this.monitoringView = monitoringView;
+  }
+
+  public Page<TransferStatusEntity> retrieveTransferStatus(
+      TransferStatusFilter filter, Pageable pageable) {
+    return transferMonitoringService.retrieveTransferStatus(filter, pageable);
+  }
+
+  public int countTransferStatus(TransferStatusFilter filter) {
+    return transferMonitoringService.countTransferStatus(filter);
+  }
+}
