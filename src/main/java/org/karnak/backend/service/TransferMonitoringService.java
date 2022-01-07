@@ -11,9 +11,14 @@ package org.karnak.backend.service;
 
 import org.karnak.backend.data.entity.TransferStatusEntity;
 import org.karnak.backend.data.repo.TransferStatusRepo;
+import org.karnak.backend.data.repo.specification.TransferStatusSpecification;
 import org.karnak.backend.model.event.TransferMonitoringEvent;
+import org.karnak.frontend.monitoring.component.TransferStatusFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -40,5 +45,48 @@ public class TransferMonitoringService {
     TransferStatusEntity transferStatusEntity =
         (TransferStatusEntity) transferMonitoringEvent.getSource();
     transferStatusRepo.save(transferStatusEntity);
+  }
+
+  /**
+   * Retrieve transfer status depending on filter and pageable
+   *
+   * @param filter Filter to evaluate
+   * @param pageable Pageable to evaluate
+   * @return Transfer status entities found
+   */
+  public Page<TransferStatusEntity> retrieveTransferStatus(
+      TransferStatusFilter filter, Pageable pageable) {
+    Page<TransferStatusEntity> transferStatusFound;
+    if (!filter.hasFilter()) {
+      // No filter
+      transferStatusFound = transferStatusRepo.findAll(pageable);
+    } else {
+      // Create the specification and query the transfer status table
+      Specification<TransferStatusEntity> transferStatusSpecification =
+          new TransferStatusSpecification(filter);
+      transferStatusFound = transferStatusRepo.findAll(transferStatusSpecification, pageable);
+    }
+    return transferStatusFound;
+  }
+
+  /**
+   * Count transfer status depending on filter
+   *
+   * @param filter Filter to evaluate
+   * @return Count of Transfer status entities found
+   */
+  public int countTransferStatus(TransferStatusFilter filter) {
+    int countTransferStatus;
+
+    if (!filter.hasFilter()) {
+      // No filter
+      countTransferStatus = (int) transferStatusRepo.count();
+    } else {
+      // Create the specification and query the transfer status table
+      Specification<TransferStatusEntity> transferStatusSpecification =
+          new TransferStatusSpecification(filter);
+      countTransferStatus = (int) transferStatusRepo.count(transferStatusSpecification);
+    }
+    return countTransferStatus;
   }
 }
