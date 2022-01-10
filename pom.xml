@@ -50,8 +50,7 @@
     <org.json.version>20211205</org.json.version>
     <logback.version>1.2.9</logback.version>
     <hazelcast.version>5.0.2</hazelcast.version>
-<!--    <liquibase.version>4.6.1</liquibase.version>-->
-    <liquibase.version>4.3.3</liquibase.version>
+    <liquibase.version>4.6.1</liquibase.version>
   </properties>
 
   <!-- Distribution management for releases/snapshots -->
