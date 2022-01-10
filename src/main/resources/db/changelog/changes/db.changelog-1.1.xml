@@ -1,11 +1,11 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
   <changeSet author="karnak" id="1.1-1">
     <preConditions onFail="MARK_RAN">
       <not>
-        <columnExists  catalogName="liquibase" schemaName="public" tableName="destination" columnName="id_types"/>
+        <columnExists schemaName="public" tableName="destination" columnName="id_types"/>
       </not>
     </preConditions>
     <update catalogName="liquibase"
@@ -19,7 +19,7 @@
   <changeSet author="karnak" id="1.1-2">
     <preConditions onFail="MARK_RAN">
       <not>
-        <columnExists  catalogName="liquibase" schemaName="public" tableName="destination" columnName="id_types"/>
+        <columnExists schemaName="public" tableName="destination" columnName="id_types"/>
       </not>
     </preConditions>
     <update catalogName="liquibase"
