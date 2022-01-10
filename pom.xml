@@ -643,6 +643,12 @@
       <artifactId>springdoc-openapi-ui</artifactId>
       <version>${springdoc.version}</version>
     </dependency>
+
+    <dependency>
+      <groupId>org.vaadin.artur</groupId>
+      <artifactId>spring-data-provider</artifactId>
+      <version>2.1.0</version>
+    </dependency>
   </dependencies>
 
   <!-- Dependency Management -->
