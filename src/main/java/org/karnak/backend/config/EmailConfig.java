@@ -25,13 +25,17 @@ public class EmailConfig {
   public JavaMailSender getJavaMailSender() {
 
     // retrieve system properties
-    String mailSmtpPort = SystemPropertyUtil.retrieveSystemProperty("MAIL_SMTP_PORT", "0");
+//    String mailSmtpPort = SystemPropertyUtil.retrieveSystemProperty("MAIL_SMTP_PORT", "0");
+    // TODO: add in karnak.env waiting for pull validation => once done test and remove for open source
+    String mailSmtpPort = SystemPropertyUtil.retrieveSystemProperty("MAIL_SMTP_PORT", "25");
     String mailSmtpUser = SystemPropertyUtil.retrieveSystemProperty("MAIL_SMTP_USER", null);
     String mailAuthType = SystemPropertyUtil.retrieveSystemProperty("MAIL_SMTP_TYPE", null);
 
     // Configure JavaMailSender
     JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-    mailSender.setHost(SystemPropertyUtil.retrieveSystemProperty("MAIL_SMTP_HOST", null));
+//    mailSender.setHost(SystemPropertyUtil.retrieveSystemProperty("MAIL_SMTP_HOST", null));
+    // TODO: add in karnak.env waiting for pull validation => once done test and remove for open source
+    mailSender.setHost(SystemPropertyUtil.retrieveSystemProperty("MAIL_SMTP_HOST", "mailhost.hcuge.ch"));
     mailSender.setPort(Integer.parseInt(mailSmtpPort));
     mailSender.setUsername(mailSmtpUser);
     mailSender.setPassword(SystemPropertyUtil.retrieveSystemProperty("MAIL_SMTP_SECRET", null));
