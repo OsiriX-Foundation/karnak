@@ -22,15 +22,22 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Locale;
 import java.util.Objects;
 import org.karnak.backend.data.entity.TransferStatusEntity;
 import org.karnak.backend.enums.TransferStatusType;
 import org.karnak.backend.util.DateFormat;
 import org.karnak.frontend.monitoring.TransferStatusDataProvider;
+import org.karnak.frontend.util.UIS;
 import org.vaadin.klaudeta.PaginatedGrid;
 
 /** Grid for the monitoring view */
 public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity> {
+
+  // Tooltips
+  public static final String TOOLTIP_FILTER_BY_ORIGINAL_OR_DEIDENTIFIED_VALUE = "Filter by original or deidentified value";
+  public static final String TOOLTIP_FORMAT_DD_MM_YYYY = "Format: DD/MM/YYYY";
+  public static final String TOOLTIP_FORMAT_HH_MM = "Format: HH:MM";
 
   // Filter grid rows
   private TransferStatusFilter transferStatusFilter;
@@ -49,7 +56,8 @@ public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity> {
     this.transferStatusDataProvider = transferStatusDataProvider;
 
     // Set size for the grid
-    setSizeFull();
+    setWidthFull();
+    setHeight(90, Unit.PERCENTAGE);
 
     // Themes of the grid
     addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_ROW_STRIPES);
@@ -75,7 +83,7 @@ public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity> {
 
     // Pagination
     // Sets the max number of items to be rendered on the grid for each page
-    setPageSize(34);
+    setPageSize(35);
     // Sets how many pages should be visible on the pagination before and/or after the current
     // selected page
     setPaginatorSize(2);
@@ -133,6 +141,8 @@ public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity> {
       Column<TransferStatusEntity> transferDateColumn, HeaderRow filterRow) {
     // Date
     DatePicker datePicker = new DatePicker();
+    datePicker.setLocale(Locale.FRANCE);
+    UIS.setTooltip(datePicker, TOOLTIP_FORMAT_DD_MM_YYYY);
     datePicker.setPlaceholder("Date");
     datePicker.setMinWidth(30, Unit.PERCENTAGE);
     datePicker.setMaxWidth(40, Unit.PERCENTAGE);
@@ -141,6 +151,7 @@ public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity> {
     // Time Start
     TimePicker startTimePicker = new TimePicker();
     startTimePicker.setPlaceholder("Start");
+    UIS.setTooltip(startTimePicker, TOOLTIP_FORMAT_HH_MM);
     startTimePicker.setMinWidth(25, Unit.PERCENTAGE);
     startTimePicker.setMaxWidth(30, Unit.PERCENTAGE);
     startTimePicker.setClearButtonVisible(true);
@@ -148,6 +159,7 @@ public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity> {
     // Time End
     TimePicker endTimePicker = new TimePicker();
     endTimePicker.setPlaceholder("End");
+    UIS.setTooltip(endTimePicker, TOOLTIP_FORMAT_HH_MM);
     endTimePicker.setMinWidth(25, Unit.PERCENTAGE);
     endTimePicker.setMaxWidth(30, Unit.PERCENTAGE);
     endTimePicker.setClearButtonVisible(true);
@@ -291,6 +303,7 @@ public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity> {
     filterRow.getCell(studyUidColumn).setComponent(studyUidField);
     studyUidField.setSizeFull();
     studyUidField.setPlaceholder("Filter Study Uid");
+    UIS.setTooltip(studyUidField, TOOLTIP_FILTER_BY_ORIGINAL_OR_DEIDENTIFIED_VALUE);
   }
 
   /**
@@ -311,6 +324,7 @@ public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity> {
     filterRow.getCell(serieUidColumn).setComponent(serieUidField);
     serieUidField.setSizeFull();
     serieUidField.setPlaceholder("Filter Serie Uid");
+    UIS.setTooltip(serieUidField, TOOLTIP_FILTER_BY_ORIGINAL_OR_DEIDENTIFIED_VALUE);
   }
 
   /**
@@ -331,6 +345,7 @@ public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity> {
     filterRow.getCell(sopInstanceUidColumn).setComponent(sopInstanceUidField);
     sopInstanceUidField.setSizeFull();
     sopInstanceUidField.setPlaceholder("Filter Sop Instance Uid");
+    UIS.setTooltip(sopInstanceUidField, TOOLTIP_FILTER_BY_ORIGINAL_OR_DEIDENTIFIED_VALUE);
   }
 
   /**

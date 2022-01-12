@@ -168,47 +168,76 @@ public class NotificationService {
           transferMonitoringNotification.getSerieSummaryNotifications().stream()
               .anyMatch(ssm -> ssm.getNbTransferNotSent() > 0);
 
+      // Temporary disable send of notification de-identified and in error
+      // TODO: have a discussion with business to know how to handle such cases
+      if (hasAtLeastOneFileNotTransferred
+          && firstTransferStatus.getDestinationEntity().isDesidentification()) {
+        return null;
+      }
+
       // Check if we should use original or de-identified values
       boolean useOriginalValues =
           determineUseOfOriginalOrDeIdentifyValues(
               hasAtLeastOneFileNotTransferred,
               firstTransferStatus.getDestinationEntity().isDesidentification());
-      transferMonitoringNotification.setFrom(
-          SystemPropertyUtil.retrieveSystemProperty(
-              "MAIL_SMTP_SENDER", Notification.MAIL_SMTP_SENDER));
-      transferMonitoringNotification.setTo(firstTransferStatus.getDestinationEntity().getNotify());
-      transferMonitoringNotification.setPatientId(
-          useOriginalValues
-              ? firstTransferStatus.getPatientIdOriginal()
-              : firstTransferStatus.getPatientIdToSend());
-      transferMonitoringNotification.setStudyUid(
-          useOriginalValues
-              ? firstTransferStatus.getStudyUidOriginal()
-              : firstTransferStatus.getStudyUidToSend());
-      transferMonitoringNotification.setAccessionNumber(
-          useOriginalValues
-              ? firstTransferStatus.getAccessionNumberOriginal()
-              : firstTransferStatus.getAccessionNumberToSend());
-      transferMonitoringNotification.setStudyDescription(
-          useOriginalValues
-              ? firstTransferStatus.getStudyDescriptionOriginal()
-              : firstTransferStatus.getStudyDescriptionToSend());
-      transferMonitoringNotification.setStudyDate(
-          useOriginalValues
-              ? firstTransferStatus.getStudyDateOriginal()
-              : firstTransferStatus.getStudyDateToSend());
-      transferMonitoringNotification.setSource(
-          firstTransferStatus.getForwardNodeEntity().getFwdAeTitle());
-      transferMonitoringNotification.setDestination(
-          Objects.equals(
-                  firstTransferStatus.getDestinationEntity().getDestinationType(),
-                  DestinationType.dicom)
-              ? firstTransferStatus.getDestinationEntity().toStringDicomNotificationDestination()
-              : firstTransferStatus.getDestinationEntity().getUrl());
-      transferMonitoringNotification.setSubject(
-          buildSubject(hasAtLeastOneFileNotTransferred, useOriginalValues, firstTransferStatus));
+
+      // Set values in transferMonitoringNotification
+      buildTransferMonitoringNotificationSetValues(
+          transferMonitoringNotification,
+          firstTransferStatus,
+          hasAtLeastOneFileNotTransferred,
+          useOriginalValues);
     }
     return transferMonitoringNotification;
+  }
+
+  /**
+   * Set values in transferMonitoringNotification built
+   *
+   * @param transferMonitoringNotification TransferMonitoringNotification built
+   * @param transferStatusEntity Transfer status
+   * @param hasAtLeastOneFileNotTransferred Has at least one file not transferred
+   * @param useOriginalValues Flag to know if we should use original values
+   */
+  private void buildTransferMonitoringNotificationSetValues(
+      TransferMonitoringNotification transferMonitoringNotification,
+      TransferStatusEntity transferStatusEntity,
+      boolean hasAtLeastOneFileNotTransferred,
+      boolean useOriginalValues) {
+    transferMonitoringNotification.setFrom(
+        SystemPropertyUtil.retrieveSystemProperty(
+            "MAIL_SMTP_SENDER", Notification.MAIL_SMTP_SENDER));
+    transferMonitoringNotification.setTo(transferStatusEntity.getDestinationEntity().getNotify());
+    transferMonitoringNotification.setPatientId(
+        useOriginalValues
+            ? transferStatusEntity.getPatientIdOriginal()
+            : transferStatusEntity.getPatientIdToSend());
+    transferMonitoringNotification.setStudyUid(
+        useOriginalValues
+            ? transferStatusEntity.getStudyUidOriginal()
+            : transferStatusEntity.getStudyUidToSend());
+    transferMonitoringNotification.setAccessionNumber(
+        useOriginalValues
+            ? transferStatusEntity.getAccessionNumberOriginal()
+            : transferStatusEntity.getAccessionNumberToSend());
+    transferMonitoringNotification.setStudyDescription(
+        useOriginalValues
+            ? transferStatusEntity.getStudyDescriptionOriginal()
+            : transferStatusEntity.getStudyDescriptionToSend());
+    transferMonitoringNotification.setStudyDate(
+        useOriginalValues
+            ? transferStatusEntity.getStudyDateOriginal()
+            : transferStatusEntity.getStudyDateToSend());
+    transferMonitoringNotification.setSource(
+        transferStatusEntity.getForwardNodeEntity().getFwdAeTitle());
+    transferMonitoringNotification.setDestination(
+        Objects.equals(
+                transferStatusEntity.getDestinationEntity().getDestinationType(),
+                DestinationType.dicom)
+            ? transferStatusEntity.getDestinationEntity().toStringDicomNotificationDestination()
+            : transferStatusEntity.getDestinationEntity().getUrl());
+    transferMonitoringNotification.setSubject(
+        buildSubject(hasAtLeastOneFileNotTransferred, useOriginalValues, transferStatusEntity));
   }
 
   /**
