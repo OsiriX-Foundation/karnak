@@ -35,7 +35,8 @@ import org.vaadin.klaudeta.PaginatedGrid;
 public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity> {
 
   // Tooltips
-  public static final String TOOLTIP_FILTER_BY_ORIGINAL_OR_DEIDENTIFIED_VALUE = "Filter by original or deidentified value";
+  public static final String TOOLTIP_FILTER_BY_ORIGINAL_OR_DEIDENTIFIED_VALUE =
+      "Filter by original or deidentified value";
   public static final String TOOLTIP_FORMAT_DD_MM_YYYY = "Format: DD/MM/YYYY";
   public static final String TOOLTIP_FORMAT_HH_MM = "Format: HH:MM";
 

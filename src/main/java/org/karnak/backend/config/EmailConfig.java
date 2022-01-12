@@ -31,8 +31,7 @@ public class EmailConfig {
 
     // Configure JavaMailSender
     JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-    mailSender.setHost(
-        SystemPropertyUtil.retrieveSystemProperty("MAIL_SMTP_HOST", null));
+    mailSender.setHost(SystemPropertyUtil.retrieveSystemProperty("MAIL_SMTP_HOST", null));
     mailSender.setPort(Integer.parseInt(mailSmtpPort));
     mailSender.setUsername(mailSmtpUser);
     mailSender.setPassword(SystemPropertyUtil.retrieveSystemProperty("MAIL_SMTP_SECRET", null));
