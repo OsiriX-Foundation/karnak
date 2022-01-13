@@ -84,7 +84,7 @@ public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity> {
 
     // Pagination
     // Sets the max number of items to be rendered on the grid for each page
-    setPageSize(35);
+    setPageSize(33);
     // Sets how many pages should be visible on the pagination before and/or after the current
     // selected page
     setPaginatorSize(2);

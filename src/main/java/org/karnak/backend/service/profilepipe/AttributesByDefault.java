@@ -10,6 +10,7 @@
 package org.karnak.backend.service.profilepipe;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -66,7 +67,7 @@ public class AttributesByDefault {
   }
 
   public static void setSOPCommonModule(Attributes dcm) {
-    final LocalDateTime now = LocalDateTime.now();
+    final LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault());
     dcm.setString(Tag.InstanceCreationDate, VR.DA, DateTimeUtils.formatDA(now));
     dcm.setString(Tag.InstanceCreationTime, VR.TM, DateTimeUtils.formatTM(now));
   }

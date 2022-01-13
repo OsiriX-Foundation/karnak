@@ -10,6 +10,7 @@
 package org.karnak.backend.service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -97,7 +98,7 @@ public class NotificationService {
               // Keep previous check date
               LocalDateTime previousCheck = destinationEntity.getEmailLastCheck();
               // Update destination last check date
-              destinationEntity.setEmailLastCheck(LocalDateTime.now());
+              destinationEntity.setEmailLastCheck(LocalDateTime.now(ZoneId.systemDefault()));
               destinationRepo.save(destinationEntity);
               // Retrieve all TransferStatusEntities for this destination after the last email check
               List<TransferStatusEntity> transferStatusEntitiesDestinationsLastCheck =
@@ -481,12 +482,12 @@ public class NotificationService {
         && destinationEntity
             .getLastTransfer()
             .plusSeconds(Notification.EXTRA_TIMER_DELAY)
-            .isBefore(LocalDateTime.now())
+            .isBefore(LocalDateTime.now(ZoneId.systemDefault()))
         && (destinationEntity.getEmailLastCheck() == null
             || destinationEntity
                 .getEmailLastCheck()
                 .plusSeconds(destinationEntity.getNotifyInterval().longValue())
-                .isBefore(LocalDateTime.now()));
+                .isBefore(LocalDateTime.now(ZoneId.systemDefault())));
   }
 
   /**

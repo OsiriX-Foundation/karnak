@@ -11,6 +11,7 @@ package org.karnak.backend.service;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -163,7 +164,7 @@ public class CStoreSCPService extends BasicCStoreSCP {
       DestinationEntity destinationEntity = destinationEntityOptional.get();
       if (destinationEntity.isActivate()) {
         destinationEntity.setTransferInProgress(status);
-        destinationEntity.setLastTransfer(LocalDateTime.now());
+        destinationEntity.setLastTransfer(LocalDateTime.now(ZoneId.systemDefault()));
         destinationRepo.save(destinationEntity);
       }
     }

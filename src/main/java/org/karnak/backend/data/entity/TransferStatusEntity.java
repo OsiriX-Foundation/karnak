@@ -11,6 +11,7 @@ package org.karnak.backend.data.entity;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -121,7 +122,7 @@ public class TransferStatusEntity implements Serializable {
     return new TransferStatusEntity(
         forwardNodeId,
         destinationId,
-        LocalDateTime.now(),
+        LocalDateTime.now(ZoneId.systemDefault()),
         sent,
         reason,
         attributesOriginal.getString(Tag.PatientID),
