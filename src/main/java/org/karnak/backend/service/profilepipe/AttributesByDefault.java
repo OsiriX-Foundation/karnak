@@ -67,7 +67,7 @@ public class AttributesByDefault {
   }
 
   public static void setSOPCommonModule(Attributes dcm) {
-    final LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault());
+    final LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Zurich"));
     dcm.setString(Tag.InstanceCreationDate, VR.DA, DateTimeUtils.formatDA(now));
     dcm.setString(Tag.InstanceCreationTime, VR.TM, DateTimeUtils.formatTM(now));
   }

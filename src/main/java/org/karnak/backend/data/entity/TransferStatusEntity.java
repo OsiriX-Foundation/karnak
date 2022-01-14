@@ -122,7 +122,7 @@ public class TransferStatusEntity implements Serializable {
     return new TransferStatusEntity(
         forwardNodeId,
         destinationId,
-        LocalDateTime.now(ZoneId.systemDefault()),
+        LocalDateTime.now(ZoneId.of("Europe/Zurich")),
         sent,
         reason,
         attributesOriginal.getString(Tag.PatientID),

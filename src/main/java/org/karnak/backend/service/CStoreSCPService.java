@@ -164,7 +164,7 @@ public class CStoreSCPService extends BasicCStoreSCP {
       DestinationEntity destinationEntity = destinationEntityOptional.get();
       if (destinationEntity.isActivate()) {
         destinationEntity.setTransferInProgress(status);
-        destinationEntity.setLastTransfer(LocalDateTime.now(ZoneId.systemDefault()));
+        destinationEntity.setLastTransfer(LocalDateTime.now(ZoneId.of("Europe/Zurich")));
         destinationRepo.save(destinationEntity);
       }
     }

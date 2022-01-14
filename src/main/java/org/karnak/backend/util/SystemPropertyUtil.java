@@ -9,13 +9,9 @@
  */
 package org.karnak.backend.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.weasis.core.util.StringUtil;
 
 public class SystemPropertyUtil {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(SystemPropertyUtil.class);
 
   private SystemPropertyUtil() {}
 
@@ -27,16 +23,10 @@ public class SystemPropertyUtil {
    * @return property found
    */
   public static String retrieveSystemProperty(String key, String defaultValue) {
-    // TODO: to remove logs
-    LOGGER.info("SystemPropertyUtil key:" + key);
-    LOGGER.info("SystemPropertyUtil default value:" + defaultValue);
     String val = System.getProperty(key);
-    LOGGER.info("SystemPropertyUtil property val:" + val);
     if (!StringUtil.hasText(val)) {
       val = System.getenv(key);
-      LOGGER.info("SystemPropertyUtil env val:" + val);
       if (!StringUtil.hasText(val)) {
-        LOGGER.info("Default:" + defaultValue);
         return defaultValue;
       }
     }
