@@ -22,6 +22,14 @@ public interface TransferStatusRepo
         JpaSpecificationExecutor<TransferStatusEntity> {
 
   /**
+   * Look for TransferStatusEntity for a destination
+   *
+   * @param destinationId Destination id
+   * @return TransferStatusEntity found
+   */
+  List<TransferStatusEntity> findByDestinationId(Long destinationId);
+
+  /**
    * Look for TransferStatusEntity for a destination and after the last check date
    *
    * @param destinationId Destination id
@@ -30,12 +38,4 @@ public interface TransferStatusRepo
    */
   List<TransferStatusEntity> findByDestinationIdAndTransferDateAfter(
       Long destinationId, LocalDateTime lastCheck);
-
-  /**
-   * Look for TransferStatusEntity for a destination
-   *
-   * @param destinationId Destination id
-   * @return TransferStatusEntity found
-   */
-  List<TransferStatusEntity> findByDestinationId(Long destinationId);
 }
