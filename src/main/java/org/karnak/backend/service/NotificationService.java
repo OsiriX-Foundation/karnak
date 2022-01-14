@@ -98,7 +98,7 @@ public class NotificationService {
               // Keep previous check date
               LocalDateTime previousCheck = destinationEntity.getEmailLastCheck();
               // Update destination last check date
-              destinationEntity.setEmailLastCheck(LocalDateTime.now(ZoneId.of("Europe/Zurich")));
+              destinationEntity.setEmailLastCheck(LocalDateTime.now(ZoneId.of("CET")));
               destinationRepo.save(destinationEntity);
               // Retrieve all TransferStatusEntities for this destination after the last email check
               List<TransferStatusEntity> transferStatusEntitiesDestinationsLastCheck =
@@ -482,12 +482,12 @@ public class NotificationService {
         && destinationEntity
             .getLastTransfer()
             .plusSeconds(Notification.EXTRA_TIMER_DELAY)
-            .isBefore(LocalDateTime.now(ZoneId.of("Europe/Zurich")))
+            .isBefore(LocalDateTime.now(ZoneId.of("CET")))
         && (destinationEntity.getEmailLastCheck() == null
             || destinationEntity
                 .getEmailLastCheck()
                 .plusSeconds(destinationEntity.getNotifyInterval().longValue())
-                .isBefore(LocalDateTime.now(ZoneId.of("Europe/Zurich"))))
+                .isBefore(LocalDateTime.now(ZoneId.of("CET"))))
         && destinationEntity.isActivateNotification();
   }
 

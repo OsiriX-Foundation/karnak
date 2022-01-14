@@ -48,6 +48,7 @@ class NotificationServiceTest {
     destinationEntity.setDesidentification(true);
     destinationEntity.setLastTransfer(LocalDateTime.MIN);
     destinationEntity.setId(1L);
+    destinationEntity.setActivateNotification(true);
     when(destinationRepositoryMock.findAll()).thenReturn(Arrays.asList(destinationEntity));
 
     // Mock transfer status
