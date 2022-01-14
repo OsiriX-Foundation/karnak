@@ -85,7 +85,7 @@ public class NotificationService {
    *
    * @return notifications to send
    */
-  private List<TransferMonitoringNotification> buildNotificationsToSend() {
+  List<TransferMonitoringNotification> buildNotificationsToSend() {
     List<TransferMonitoringNotification> transferMonitoringNotifications = new ArrayList<>();
     destinationRepo
         // Retrieve all destinations
