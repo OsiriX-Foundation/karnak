@@ -506,6 +506,10 @@ public class NotificationService {
       helper.setText(templateEngine.process(Notification.TEMPLATE_THYMELEAF, context), true);
       helper.setTo(InternetAddress.parse(transferMonitoringNotification.getTo()));
       helper.setFrom(transferMonitoringNotification.getFrom());
+      // TODO: to remove
+      LOGGER.info("from: " + transferMonitoringNotification.getFrom());
+      LOGGER.info("to: " + transferMonitoringNotification.getTo());
+
     } catch (MessagingException e) {
       LOGGER.error("Notification error when preparing email to send: {}", e.getMessage());
     }
