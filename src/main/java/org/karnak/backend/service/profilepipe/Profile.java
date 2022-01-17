@@ -221,7 +221,8 @@ public class Profile {
           && evaluateConditionCleanPixelData(dcmCopy)) {
         context.setMaskArea(mask);
         if (mask == null) {
-          throw new IllegalStateException("Cannot clean pixel data to sopClassUID " + sopClassUID);
+          throw new IllegalStateException(
+              "Clean pixel is not applied: mask not defined in station name");
         }
       } else {
         context.setMaskArea(null);

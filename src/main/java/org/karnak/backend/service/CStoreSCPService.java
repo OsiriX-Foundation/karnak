@@ -10,6 +10,8 @@
 package org.karnak.backend.service;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -31,8 +33,7 @@ import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.repo.DestinationRepo;
 import org.karnak.backend.dicom.ForwardDestination;
 import org.karnak.backend.dicom.ForwardDicomNode;
-import org.karnak.backend.dicom.ForwardUtil;
-import org.karnak.backend.dicom.ForwardUtil.Params;
+import org.karnak.backend.dicom.Params;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,7 @@ public class CStoreSCPService extends BasicCStoreSCP {
 
   // Service
   private final DestinationRepo destinationRepo;
+  private final ForwardService forwardService;
 
   private Map<ForwardDicomNode, List<ForwardDestination>> destinations;
   private volatile int priority;
@@ -57,9 +59,11 @@ public class CStoreSCPService extends BasicCStoreSCP {
       Executors.newSingleThreadScheduledExecutor();
 
   @Autowired
-  public CStoreSCPService(final DestinationRepo destinationRepo) {
+  public CStoreSCPService(
+      final DestinationRepo destinationRepo, final ForwardService forwardService) {
     super("*");
     this.destinationRepo = destinationRepo;
+    this.forwardService = forwardService;
   }
 
   public void init(Map<ForwardDicomNode, List<ForwardDestination>> destinations) {
@@ -117,7 +121,7 @@ public class CStoreSCPService extends BasicCStoreSCP {
       // Update transfer status of destinations
       updateTransferStatus(destList);
 
-      ForwardUtil.storeMultipleDestination(fwdNode, destList, p);
+      forwardService.storeMultipleDestination(fwdNode, destList, p);
 
     } catch (Exception e) {
       throw new DicomServiceException(Status.ProcessingFailure, e);
@@ -160,6 +164,7 @@ public class CStoreSCPService extends BasicCStoreSCP {
       DestinationEntity destinationEntity = destinationEntityOptional.get();
       if (destinationEntity.isActivate()) {
         destinationEntity.setTransferInProgress(status);
+        destinationEntity.setLastTransfer(LocalDateTime.now(ZoneId.of("CET")));
         destinationRepo.save(destinationEntity);
       }
     }

@@ -1,5 +1,37 @@
 # Changelog
 
+## [v0.9.9](https://github.com/OsiriX-Foundation/karnak/tree/v0.9.9) (2021-12-20)
+
+[Full Changelog](https://github.com/OsiriX-Foundation/karnak/compare/v0.9.8...v0.9.9)
+
+**Implemented enhancements:**
+
+- Update weasis-dicom-tools to 5.24.2 \(native lib to 4.5.3\) [\#177](https://github.com/OsiriX-Foundation/karnak/issues/177)
+- DeIdentification front: refactoring + behaviour activate/deactivate deidentification [\#174](https://github.com/OsiriX-Foundation/karnak/issues/174)
+- Notification Front: default values [\#172](https://github.com/OsiriX-Foundation/karnak/issues/172)
+- Karnak email address [\#159](https://github.com/OsiriX-Foundation/karnak/issues/159)
+- Change configuration when sending [\#31](https://github.com/OsiriX-Foundation/karnak/issues/31)
+
+## [v0.9.8](https://github.com/OsiriX-Foundation/karnak/tree/v0.9.8) (2021-08-26)
+
+[Full Changelog](https://github.com/OsiriX-Foundation/karnak/compare/v0.9.7...v0.9.8)
+
+**Implemented enhancements:**
+
+- Adjust clickable zone checkbox [\#169](https://github.com/OsiriX-Foundation/karnak/issues/169)
+- Add profile version in projects views [\#167](https://github.com/OsiriX-Foundation/karnak/issues/167)
+- Springboot/junit/liquibase versions upgrade  [\#165](https://github.com/OsiriX-Foundation/karnak/issues/165)
+- Enable/disable destination buttons \(save/delete\) when transfer is in progress  [\#163](https://github.com/OsiriX-Foundation/karnak/issues/163)
+- Destinations: loading spinner transfer activity [\#161](https://github.com/OsiriX-Foundation/karnak/issues/161)
+- Image transcoding with a specific transfer syntax [\#139](https://github.com/OsiriX-Foundation/karnak/issues/139)
+- Inject an external id provider [\#88](https://github.com/OsiriX-Foundation/karnak/issues/88)
+- Check that the expression does not corrupt the DICOM [\#74](https://github.com/OsiriX-Foundation/karnak/issues/74)
+- Improve the notification module UI [\#42](https://github.com/OsiriX-Foundation/karnak/issues/42)
+
+**Fixed bugs:**
+
+- Switching in the KHEOPS album cannot be applied with the KEEP action on the study UID and / or the serial UID [\#156](https://github.com/OsiriX-Foundation/karnak/issues/156)
+
 ## [v0.9.7](https://github.com/OsiriX-Foundation/karnak/tree/v0.9.7) (2021-06-11)
 
 [Full Changelog](https://github.com/OsiriX-Foundation/karnak/compare/v0.9.6...v0.9.7)

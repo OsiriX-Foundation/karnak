@@ -13,7 +13,7 @@ import java.io.Serializable;
 import java.util.Optional;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.enums.NodeEventType;
-import org.karnak.backend.model.NodeEvent;
+import org.karnak.backend.model.event.NodeEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -24,6 +24,7 @@ public class ForwardNodeAPIService implements Serializable {
 
   // Services
   private final ForwardNodeService forwardNodeService;
+  private final DestinationService destinationService;
 
   // Event publisher
   private final ApplicationEventPublisher applicationEventPublisher;
@@ -31,8 +32,10 @@ public class ForwardNodeAPIService implements Serializable {
   @Autowired
   public ForwardNodeAPIService(
       final ForwardNodeService forwardNodeService,
+      final DestinationService destinationService,
       final ApplicationEventPublisher applicationEventPublisher) {
     this.forwardNodeService = forwardNodeService;
+    this.destinationService = destinationService;
     this.applicationEventPublisher = applicationEventPublisher;
   }
 
@@ -58,6 +61,11 @@ public class ForwardNodeAPIService implements Serializable {
   }
 
   public void updateForwardNode(ForwardNodeEntity forwardNodeEntity) {
+    // Refresh last transfer and email last check
+    forwardNodeEntity
+        .getDestinationEntities()
+        .forEach(destinationService::refreshLastTransferEmailLastCheck);
+    // Save forward entity
     forwardNodeService.save(forwardNodeEntity);
     applicationEventPublisher.publishEvent(new NodeEvent(forwardNodeEntity, NodeEventType.UPDATE));
   }

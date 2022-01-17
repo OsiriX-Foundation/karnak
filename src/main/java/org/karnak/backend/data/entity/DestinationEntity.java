@@ -12,6 +12,7 @@ package org.karnak.backend.data.entity;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -129,6 +130,12 @@ public class DestinationEntity implements Serializable {
 
   // Flag to know if there are some transfer activities on this destination
   private boolean transferInProgress;
+
+  // Date of the last transfer for this destination
+  private LocalDateTime lastTransfer;
+
+  // Last date of the check of email notifications for this destination
+  private LocalDateTime emailLastCheck;
 
   public DestinationEntity() {
     this(null);
@@ -501,6 +508,22 @@ public class DestinationEntity implements Serializable {
     this.transferInProgress = transferInProgress;
   }
 
+  public LocalDateTime getEmailLastCheck() {
+    return emailLastCheck;
+  }
+
+  public void setEmailLastCheck(LocalDateTime emailLastCheck) {
+    this.emailLastCheck = emailLastCheck;
+  }
+
+  public LocalDateTime getLastTransfer() {
+    return lastTransfer;
+  }
+
+  public void setLastTransfer(LocalDateTime lastTransfer) {
+    this.lastTransfer = lastTransfer;
+  }
+
   /**
    * Informs if this object matches with the filter as text.
    *
@@ -651,7 +674,9 @@ public class DestinationEntity implements Serializable {
         && Objects.equals(useaetdest, that.useaetdest)
         && Objects.equals(url, that.url)
         && Objects.equals(urlCredentials, that.urlCredentials)
-        && Objects.equals(headers, that.headers);
+        && Objects.equals(headers, that.headers)
+        && Objects.equals(lastTransfer, that.lastTransfer)
+        && Objects.equals(emailLastCheck, that.emailLastCheck);
   }
 
   @Override
@@ -683,6 +708,12 @@ public class DestinationEntity implements Serializable {
         useaetdest,
         url,
         urlCredentials,
-        headers);
+        headers,
+        lastTransfer,
+        emailLastCheck);
+  }
+
+  public String toStringDicomNotificationDestination() {
+    return "Host=" + getHostname() + " AET=" + getAeTitle() + " Port=" + getPort();
   }
 }

@@ -14,7 +14,7 @@ import java.net.URL;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import org.karnak.backend.dicom.GatewayParams;
-import org.karnak.backend.model.NodeEvent;
+import org.karnak.backend.model.event.NodeEvent;
 import org.karnak.backend.service.DicomGatewayService;
 import org.karnak.backend.util.NativeLibraryManager;
 import org.slf4j.Logger;
