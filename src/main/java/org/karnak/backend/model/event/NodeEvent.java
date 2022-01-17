@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  */
-package org.karnak.backend.model;
+package org.karnak.backend.model.event;
 
 import java.util.Objects;
 import org.karnak.backend.data.entity.DestinationEntity;

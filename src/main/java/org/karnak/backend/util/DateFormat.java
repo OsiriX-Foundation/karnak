@@ -11,6 +11,7 @@ package org.karnak.backend.util;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoField;
@@ -30,6 +31,10 @@ public class DateFormat {
 
   // Date formats
   public static final String FORMAT_DDMMYYYY_SLASH = "dd/MM/yyyy";
+  public static final String FORMAT_DDMMYYYY_SLASH_HHMMSS_2POINTS_SSSSSS_POINT =
+      "dd/MM/yyyy HH:mm:ss.SSSSSS";
+  public static final String FORMAT_DDMMYYYY_SLASH_HHMMSS_2POINTS_SSS_POINT =
+      "dd/MM/yyyy HH:mm:ss.SSS";
 
   /**
    * Build DateTimeFormatter
@@ -53,6 +58,17 @@ public class DateFormat {
    */
   public static String format(final LocalDate date, final String format) {
     return date == null ? null : date.format(dateTimeFormatter(format));
+  }
+
+  /**
+   * Format a LocalDateTime to a specific format
+   *
+   * @param dateTime Date to format
+   * @param format Format to apply
+   * @return Formatted date String
+   */
+  public static String format(final LocalDateTime dateTime, final String format) {
+    return dateTime == null ? null : dateTime.format(dateTimeFormatter(format));
   }
 
   public static String formatDA(String date, String option) {

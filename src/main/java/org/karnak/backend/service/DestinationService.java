@@ -11,6 +11,7 @@ package org.karnak.backend.service;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.data.repo.DestinationRepo;
@@ -66,9 +67,28 @@ public class DestinationService {
     if (destinationEntity.getId() != null) {
       dataUpdated = removeValuesOnDisabledDesidentification(destinationEntity);
     }
+
+    // Refresh last transfer and email last check before saving
+    refreshLastTransferEmailLastCheck(dataUpdated);
+
     destinationRepo.saveAndFlush(dataUpdated);
     kheopsAlbumsService.updateSwitchingAlbumsFromDestination(destinationEntity);
     return dataUpdated;
+  }
+
+  /**
+   * Refresh values from DB for email last check and last transfer
+   *
+   * @param destinationEntity Entity to update
+   */
+  public void refreshLastTransferEmailLastCheck(DestinationEntity destinationEntity) {
+    Optional<DestinationEntity> refreshedDestinationEntityOpt =
+        destinationRepo.findById(destinationEntity.getId());
+    if (refreshedDestinationEntityOpt.isPresent()) {
+      DestinationEntity destinationEntityRefreshed = refreshedDestinationEntityOpt.get();
+      destinationEntity.setLastTransfer(destinationEntityRefreshed.getLastTransfer());
+      destinationEntity.setEmailLastCheck(destinationEntityRefreshed.getEmailLastCheck());
+    }
   }
 
   private DestinationEntity removeValuesOnDisabledDesidentification(
