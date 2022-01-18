@@ -25,7 +25,10 @@ import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.DicomSourceNodeEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.data.entity.KheopsAlbumsEntity;
+import org.karnak.backend.data.entity.VersionEntity;
+import org.karnak.backend.data.repo.DestinationRepo;
 import org.karnak.backend.data.repo.ForwardNodeRepo;
+import org.karnak.backend.data.repo.VersionRepo;
 import org.karnak.backend.dicom.DicomForwardDestination;
 import org.karnak.backend.dicom.ForwardDestination;
 import org.karnak.backend.dicom.ForwardDicomNode;
@@ -42,6 +45,7 @@ import org.karnak.backend.util.SystemPropertyUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.weasis.core.util.LangUtil;
 import org.weasis.core.util.StringUtil;
@@ -59,6 +63,8 @@ public class GatewaySetUpService {
   private static final Logger LOGGER = LoggerFactory.getLogger(GatewaySetUpService.class);
   // Repositories
   private final ForwardNodeRepo forwardNodeRepo;
+  private final VersionRepo versionRepo;
+  private final DestinationRepo destinationRepo;
 
   private final Map<ForwardDicomNode, List<ForwardDestination>> destMap = new HashMap<>();
 
@@ -76,9 +82,19 @@ public class GatewaySetUpService {
   private final String truststorePwd;
   private final String truststore;
 
+  // Version gateway setup for this instance
+  private long gatewaySetUpVersion;
+
   @Autowired
-  public GatewaySetUpService(final ForwardNodeRepo forwardNodeRepo) throws Exception {
+  public GatewaySetUpService(
+      final ForwardNodeRepo forwardNodeRepo,
+      final VersionRepo versionRepo,
+      final DestinationRepo destinationRepo)
+      throws Exception {
     this.forwardNodeRepo = forwardNodeRepo;
+    this.versionRepo = versionRepo;
+    this.destinationRepo = destinationRepo;
+
     String path =
         SystemPropertyUtil.retrieveSystemProperty(
             "GATEWAY_ARCHIVE_PATH", null); // Only Archive and Pull mode
@@ -100,6 +116,9 @@ public class GatewaySetUpService {
     clientKeyPwd = SystemPropertyUtil.retrieveSystemProperty("TLS_KEYSTORE_SECRET", null);
     truststorePwd = SystemPropertyUtil.retrieveSystemProperty("TLS_TRUSTSTORE_PATH", null);
     truststore = SystemPropertyUtil.retrieveSystemProperty("TLS_TRUSTSTORE_SECRET", null);
+
+    // Init the current version of the gateway setup for this instance
+    this.gatewaySetUpVersion = 0L;
 
     reloadGatewayPersistence();
   }
@@ -405,5 +424,45 @@ public class GatewaySetUpService {
       addDestinationNode(dstList, fwdSrcNode, dstNode);
     }
     return dstList;
+  }
+
+  /**
+   * When an event on the gateway setup occurs, increment the version in order for other instance to
+   * be notified that a refresh of the configuration should be done
+   */
+  public void refreshVersionGatewaySetUp() {
+    // Retrieve the last version to increment
+    VersionEntity lastVersion = versionRepo.findTopByOrderByIdDesc();
+    if (lastVersion == null) {
+      // Case nothing in DB
+      lastVersion = new VersionEntity();
+    }
+    // Increment and save the version
+    lastVersion.setGatewaySetup(lastVersion.getGatewaySetup() + 1);
+    versionRepo.save(lastVersion);
+
+    // Update the current instance version
+    gatewaySetUpVersion = lastVersion.getGatewaySetup();
+  }
+
+  /** Check if a refresh of the configuration should be done */
+  @Scheduled(fixedRate = 5000)
+  private void checkRefreshGatewaySetUp() {
+    // Retrieve last gateway version
+    VersionEntity lastVersion = versionRepo.findTopByOrderByIdDesc();
+
+    // Check if refresh needed: current version of the gateway setup for this instance is lower than
+    // the last version in DB
+    if (lastVersion != null && gatewaySetUpVersion < lastVersion.getGatewaySetup()) {
+      // Check no transfer is in progress
+      if (destinationRepo.findAll().stream().noneMatch(DestinationEntity::isTransferInProgress)) {
+        // Rebuild the configuration
+        destMap.clear();
+        reloadGatewayPersistence();
+
+        // Update the current instance version
+        gatewaySetUpVersion = lastVersion.getGatewaySetup();
+      }
+    }
   }
 }
