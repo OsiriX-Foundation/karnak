@@ -51,8 +51,7 @@ class ProfilePipeServiceTest {
     Mockito.verify(profileRepositoryMock, Mockito.times(1)).findAll();
   }
 
-  // TODO: to reactivate
-  //  @Test
+  @Test
   void should_validate_profile() {
     // Init data
     ProfilePipeBody profilePipeBody = new ProfilePipeBody();
