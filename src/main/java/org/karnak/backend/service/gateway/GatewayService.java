@@ -66,6 +66,9 @@ public class GatewayService implements ApplicationListener<ContextRefreshedEvent
   @EventListener
   public void reloadOutboundNodes(NodeEvent event) {
     gatewaySetUpService.update(event);
+
+    // Refresh the version of the gateway set up
+    gatewaySetUpService.refreshVersionGatewaySetUp();
   }
 
   @PreDestroy
