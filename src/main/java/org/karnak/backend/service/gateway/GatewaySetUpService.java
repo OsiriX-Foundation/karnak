@@ -21,7 +21,6 @@ import java.util.Set;
 import org.dcm4che3.data.Attributes;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.karnak.backend.config.AppConfig;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.DicomSourceNodeEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
@@ -83,7 +82,7 @@ public class GatewaySetUpService {
   private final String truststorePwd;
   private final String truststore;
 
-  // Version gateway setup
+  // Version gateway setup for this instance
   private long gatewaySetUpVersion;
 
   @Autowired
@@ -118,6 +117,7 @@ public class GatewaySetUpService {
     truststorePwd = SystemPropertyUtil.retrieveSystemProperty("TLS_TRUSTSTORE_PATH", null);
     truststore = SystemPropertyUtil.retrieveSystemProperty("TLS_TRUSTSTORE_SECRET", null);
 
+    // Init the current version of the gateway setup for this instance
     this.gatewaySetUpVersion = 0L;
 
     reloadGatewayPersistence();
@@ -431,49 +431,38 @@ public class GatewaySetUpService {
    * be notified that a refresh of the configuration should be done
    */
   public void refreshVersionGatewaySetUp() {
+    // Retrieve the last version to increment
     VersionEntity lastVersion = versionRepo.findTopByOrderByIdDesc();
     if (lastVersion == null) {
+      // Case nothing in DB
       lastVersion = new VersionEntity();
     }
+    // Increment and save the version
     lastVersion.setGatewaySetup(lastVersion.getGatewaySetup() + 1);
     versionRepo.save(lastVersion);
-    gatewaySetUpVersion = lastVersion.getGatewaySetup();
 
-    // TODO: to remove
-    LOGGER.info(
-        AppConfig.getInstance().getNameInstance()
-            + " refreshVersionGatewaySetUp gatewaySetUpVersion:"
-            + gatewaySetUpVersion);
-    LOGGER.info(
-        AppConfig.getInstance().getNameInstance()
-            + " refreshVersionGatewaySetUp lastVersion:"
-            + lastVersion);
+    // Update the current instance version
+    gatewaySetUpVersion = lastVersion.getGatewaySetup();
   }
 
-  // TODO set back to 5000 when ok
-  @Scheduled(fixedRate = 30000)
+  /** Check if a refresh of the configuration should be done */
+  @Scheduled(fixedRate = 5000)
   private void checkRefreshGatewaySetUp() {
     // Retrieve last gateway version
     VersionEntity lastVersion = versionRepo.findTopByOrderByIdDesc();
 
-    // Check if refresh needed
+    // Check if refresh needed: current version of the gateway setup for this instance is lower than
+    // the last version in DB
     if (lastVersion != null && gatewaySetUpVersion < lastVersion.getGatewaySetup()) {
-
       // Check no transfer is in progress
       if (destinationRepo.findAll().stream().noneMatch(DestinationEntity::isTransferInProgress)) {
+        // Rebuild the configuration
         destMap.clear();
         reloadGatewayPersistence();
+
+        // Update the current instance version
         gatewaySetUpVersion = lastVersion.getGatewaySetup();
       }
     }
-    // TODO: to remove
-    LOGGER.info(
-        AppConfig.getInstance().getNameInstance()
-            + " checkRefreshGatewaySetUp gatewaySetUpVersion:"
-            + gatewaySetUpVersion);
-    LOGGER.info(
-        AppConfig.getInstance().getNameInstance()
-            + " checkRefreshGatewaySetUp lastVersion:"
-            + lastVersion.getGatewaySetup());
   }
 }
