@@ -82,12 +82,14 @@ public class DestinationService {
    * @param destinationEntity Entity to update
    */
   public void refreshLastTransferEmailLastCheck(DestinationEntity destinationEntity) {
-    Optional<DestinationEntity> refreshedDestinationEntityOpt =
-        destinationRepo.findById(destinationEntity.getId());
-    if (refreshedDestinationEntityOpt.isPresent()) {
-      DestinationEntity destinationEntityRefreshed = refreshedDestinationEntityOpt.get();
-      destinationEntity.setLastTransfer(destinationEntityRefreshed.getLastTransfer());
-      destinationEntity.setEmailLastCheck(destinationEntityRefreshed.getEmailLastCheck());
+    if (destinationEntity.getId() != null) {
+      Optional<DestinationEntity> refreshedDestinationEntityOpt =
+          destinationRepo.findById(destinationEntity.getId());
+      if (refreshedDestinationEntityOpt.isPresent()) {
+        DestinationEntity destinationEntityRefreshed = refreshedDestinationEntityOpt.get();
+        destinationEntity.setLastTransfer(destinationEntityRefreshed.getLastTransfer());
+        destinationEntity.setEmailLastCheck(destinationEntityRefreshed.getEmailLastCheck());
+      }
     }
   }
 
