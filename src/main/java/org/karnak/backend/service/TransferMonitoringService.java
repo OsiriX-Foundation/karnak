@@ -15,16 +15,22 @@ import org.karnak.backend.data.repo.specification.TransferStatusSpecification;
 import org.karnak.backend.model.event.TransferMonitoringEvent;
 import org.karnak.frontend.monitoring.component.TransferStatusFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 /** Handle transfer monitoring */
 @Service
 public class TransferMonitoringService {
+
+  @Value("${monitoring.max-history}")
+  private int sizeLimit;
 
   // Repositories
   private final TransferStatusRepo transferStatusRepo;
@@ -88,5 +94,18 @@ public class TransferMonitoringService {
       countTransferStatus = (int) transferStatusRepo.count(transferStatusSpecification);
     }
     return countTransferStatus;
+  }
+
+  /**
+   * Occurs every 30 min: clean transfer_status table if over the size limit LIFO: clean oldest
+   * records
+   */
+  @Scheduled(fixedRate = 30 * 60 * 1000)
+  public void cleanTransferStatus() {
+    int nbRecords = (int) transferStatusRepo.count();
+    if (nbRecords > sizeLimit) {
+      Pageable pageable = PageRequest.of(0, nbRecords - sizeLimit);
+      transferStatusRepo.deleteAll(transferStatusRepo.findAllByOrderByTransferDateAsc(pageable));
+    }
   }
 }
