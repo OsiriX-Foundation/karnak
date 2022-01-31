@@ -63,3 +63,5 @@ spring:
       jdbc:
         lob:
           non_contextual_creation: true
+monitoring:
+  max-history: 50000
