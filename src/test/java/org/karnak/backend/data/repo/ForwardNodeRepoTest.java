@@ -40,7 +40,7 @@ class ForwardNodeRepoTest {
   private final Consumer<ForwardNodeEntity> forwardNodeConsumer = //
       x ->
           assertThat(x) //
-              .hasFieldOrPropertyWithValue("description", "description") //
+              .hasFieldOrPropertyWithValue("fwdDescription", "description") //
               .hasFieldOrPropertyWithValue("fwdAeTitle", "fwdAeTitle") //
               .extracting(Object::toString)
               .asString()
