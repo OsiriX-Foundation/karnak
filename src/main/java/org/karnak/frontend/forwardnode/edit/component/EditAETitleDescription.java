@@ -56,6 +56,6 @@ public class EditAETitleDescription extends HorizontalLayout {
         .bind(ForwardNodeEntity::getFwdAeTitle, ForwardNodeEntity::setFwdAeTitle);
     binder
         .forField(textFieldDescription)
-        .bind(ForwardNodeEntity::getDescription, ForwardNodeEntity::setDescription);
+        .bind(ForwardNodeEntity::getFwdDescription, ForwardNodeEntity::setFwdDescription);
   }
 }

@@ -115,7 +115,7 @@ class ForwardNodeRepoTest {
   @Test
   void testInvalidSourceNode_AETitle_mandatory() {
     ForwardNodeEntity forwardNodeEntity = ForwardNodeEntity.ofEmpty();
-    forwardNodeEntity.setDescription("description");
+    forwardNodeEntity.setFwdDescription("description");
     forwardNodeEntity.setFwdAeTitle("fwdAeTitle");
     DicomSourceNodeEntity sourceNode = DicomSourceNodeEntity.ofEmpty();
     sourceNode.setDescription("description");
@@ -137,7 +137,7 @@ class ForwardNodeRepoTest {
   @Test
   void testInvalidDestinationDicom_AETitle_mandatory() {
     ForwardNodeEntity forwardNodeEntity = ForwardNodeEntity.ofEmpty();
-    forwardNodeEntity.setDescription("description");
+    forwardNodeEntity.setFwdDescription("description");
     forwardNodeEntity.setFwdAeTitle("fwdAeTitle");
     DestinationEntity destinationEntity =
         DestinationEntity.ofDicom("description", null, "hostname", 123, null);
@@ -157,7 +157,7 @@ class ForwardNodeRepoTest {
   @Test
   void testInvalidDestinationStow_URL_mandatory() {
     ForwardNodeEntity forwardNodeEntity = ForwardNodeEntity.ofEmpty();
-    forwardNodeEntity.setDescription("description");
+    forwardNodeEntity.setFwdDescription("description");
     forwardNodeEntity.setFwdAeTitle("fwdAeTitle");
     DestinationEntity destinationEntity =
         DestinationEntity.ofStow("description", null, "urlCredentials", "headers");
@@ -177,7 +177,7 @@ class ForwardNodeRepoTest {
   @Test
   void testForwardNode() {
     ForwardNodeEntity forwardNodeEntity = ForwardNodeEntity.ofEmpty();
-    forwardNodeEntity.setDescription("description");
+    forwardNodeEntity.setFwdDescription("description");
     forwardNodeEntity.setFwdAeTitle("fwdAeTitle");
     entityManager.persistAndFlush(forwardNodeEntity);
 
@@ -191,7 +191,7 @@ class ForwardNodeRepoTest {
   @Test
   void testWithSourceNode() {
     ForwardNodeEntity forwardNodeEntity = ForwardNodeEntity.ofEmpty();
-    forwardNodeEntity.setDescription("description");
+    forwardNodeEntity.setFwdDescription("description");
     forwardNodeEntity.setFwdAeTitle("fwdAeTitle");
     DicomSourceNodeEntity sourceNode = DicomSourceNodeEntity.ofEmpty();
     sourceNode.setDescription("description");
@@ -223,7 +223,7 @@ class ForwardNodeRepoTest {
   //  @Test
   void testWithDestinationDicom() {
     ForwardNodeEntity forwardNodeEntity = ForwardNodeEntity.ofEmpty();
-    forwardNodeEntity.setDescription("description");
+    forwardNodeEntity.setFwdDescription("description");
     forwardNodeEntity.setFwdAeTitle("fwdAeTitle");
     DestinationEntity destinationEntity =
         DestinationEntity.ofDicom("description", "aeTitle", "hostname", 123, null);
@@ -252,7 +252,7 @@ class ForwardNodeRepoTest {
   //  @Test
   void testWithDestinationStow() {
     ForwardNodeEntity forwardNodeEntity = ForwardNodeEntity.ofEmpty();
-    forwardNodeEntity.setDescription("description");
+    forwardNodeEntity.setFwdDescription("description");
     forwardNodeEntity.setFwdAeTitle("fwdAeTitle");
     DestinationEntity destinationEntity =
         DestinationEntity.ofStow("description", "url", "urlCredentials", "headers");
@@ -281,7 +281,7 @@ class ForwardNodeRepoTest {
   //  @Test
   void testWithSourceNodeAndDestinationDicom() {
     ForwardNodeEntity forwardNodeEntity = ForwardNodeEntity.ofEmpty();
-    forwardNodeEntity.setDescription("description");
+    forwardNodeEntity.setFwdDescription("description");
     forwardNodeEntity.setFwdAeTitle("fwdAeTitle");
     DicomSourceNodeEntity sourceNode = DicomSourceNodeEntity.ofEmpty();
     sourceNode.setDescription("description");
@@ -320,17 +320,19 @@ class ForwardNodeRepoTest {
   void shouldSaveAndFindARecord() {
     // Create an entity to save
     ForwardNodeEntity entity = new ForwardNodeEntity();
-    entity.setDescription("Description");
+    entity.setFwdDescription("Description");
 
     // Save the entity
-    LOGGER.info("Saving entity with Description [{}]", entity.getDescription());
+    LOGGER.info("Saving entity with Description [{}]", entity.getFwdDescription());
     entity = repository.save(entity);
 
     // Test Save
-    assertEquals("Description", entity.getDescription());
+    assertEquals("Description", entity.getFwdDescription());
     assertNotNull(entity.getId());
     LOGGER.info(
-        "Entity with Description [{}] and id [{}] saved", entity.getDescription(), entity.getId());
+        "Entity with Description [{}] and id [{}] saved",
+        entity.getFwdDescription(),
+        entity.getId());
 
     // Find By Id
     Optional<ForwardNodeEntity> foundByIdOpt = repository.findById(entity.getId());
@@ -339,7 +341,7 @@ class ForwardNodeRepoTest {
     assertTrue(foundByIdOpt.isPresent());
     LOGGER.info(
         "Entity found with Description [{}] and id [{}]",
-        foundByIdOpt.get().getDescription(),
+        foundByIdOpt.get().getFwdDescription(),
         foundByIdOpt.get().getId());
     assertEquals(entity.getId(), foundByIdOpt.get().getId());
   }
@@ -349,11 +351,11 @@ class ForwardNodeRepoTest {
   void shouldFindAllRecords() {
     // Create an entity to save
     ForwardNodeEntity entity = new ForwardNodeEntity();
-    entity.setDescription("Description");
+    entity.setFwdDescription("Description");
     entity.setFwdAeTitle("AeTitle");
 
     // Save the entity
-    LOGGER.info("Saving entity with Description [{}]", entity.getDescription());
+    LOGGER.info("Saving entity with Description [{}]", entity.getFwdDescription());
     repository.saveAndFlush(entity);
 
     // Find all
@@ -375,30 +377,30 @@ class ForwardNodeRepoTest {
 
     // Create an entity to save
     ForwardNodeEntity entity = new ForwardNodeEntity();
-    entity.setDescription(initialText);
+    entity.setFwdDescription(initialText);
 
     // Save the entity
-    LOGGER.info("Saving entity with Description [{}]", entity.getDescription());
+    LOGGER.info("Saving entity with Description [{}]", entity.getFwdDescription());
     entity = repository.save(entity);
     LOGGER.info("Id of the entity with Description [{}]", entity.getId());
 
     // Test Save
     assertNotNull(entity);
-    assertEquals(initialText, entity.getDescription());
+    assertEquals(initialText, entity.getFwdDescription());
 
     // Modify the record
-    entity.setDescription(modifiedText);
+    entity.setFwdDescription(modifiedText);
     LOGGER.info("Modify entity Description [{}] to [{}]", initialText, modifiedText);
     ForwardNodeEntity entityModified = repository.save(entity);
 
     // Test Modify
     assertNotNull(entityModified);
     assertEquals(entity.getId(), entityModified.getId());
-    assertEquals(modifiedText, entityModified.getDescription());
+    assertEquals(modifiedText, entityModified.getFwdDescription());
     LOGGER.info(
         "Description of the entity with id [{}]: [{}]",
         entityModified.getId(),
-        entityModified.getDescription());
+        entityModified.getFwdDescription());
   }
 
   /** Test delete record. */
@@ -407,10 +409,10 @@ class ForwardNodeRepoTest {
     // Create an entity to save
     ForwardNodeEntity entity = new ForwardNodeEntity();
     String description = "Description";
-    entity.setDescription(description);
+    entity.setFwdDescription(description);
 
     // Save the entity
-    LOGGER.info("Saving entity with Description [{}]", entity.getDescription());
+    LOGGER.info("Saving entity with Description [{}]", entity.getFwdDescription());
     entity = repository.save(entity);
 
     // Retrieve the entity

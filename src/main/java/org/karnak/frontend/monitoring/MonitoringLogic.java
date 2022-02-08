@@ -9,9 +9,15 @@
  */
 package org.karnak.frontend.monitoring;
 
+import com.opencsv.exceptions.CsvDataTypeMismatchException;
+import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
+import com.vaadin.flow.component.notification.Notification.Position;
+import java.io.IOException;
 import org.karnak.backend.data.entity.TransferStatusEntity;
 import org.karnak.backend.service.TransferMonitoringService;
+import org.karnak.frontend.monitoring.component.ExportSettings;
 import org.karnak.frontend.monitoring.component.TransferStatusFilter;
+import org.karnak.frontend.util.NotificationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,12 +53,44 @@ public class MonitoringLogic {
     this.monitoringView = monitoringView;
   }
 
+  /**
+   * Retrieve transfer status
+   *
+   * @param filter Filter to apply
+   * @param pageable Pageable
+   * @return Page of trnasfer entities
+   */
   public Page<TransferStatusEntity> retrieveTransferStatus(
       TransferStatusFilter filter, Pageable pageable) {
-    return transferMonitoringService.retrieveTransferStatus(filter, pageable);
+    return transferMonitoringService.retrieveTransferStatusPageable(filter, pageable);
   }
 
+  /**
+   * Count number of transfer status
+   *
+   * @param filter Filter to apply
+   * @return number of transfer status
+   */
   public int countTransferStatus(TransferStatusFilter filter) {
     return transferMonitoringService.countTransferStatus(filter);
+  }
+
+  /**
+   * Build monitoring export in CSV format
+   *
+   * @param exportSettings Export settings
+   */
+  public byte[] buildCsv(ExportSettings exportSettings) {
+    byte[] csvBuilt = new byte[0];
+    try {
+      csvBuilt =
+          transferMonitoringService.buildCsv(
+              monitoringView.getTransferStatusGrid().getTransferStatusFilter(), exportSettings);
+    } catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException | IOException e) {
+      String message = "Error when creating monitoring export CSV file";
+      LOGGER.error(message, e.getMessage());
+      NotificationUtil.displayErrorMessage(message, Position.BOTTOM_CENTER);
+    }
+    return csvBuilt;
   }
 }

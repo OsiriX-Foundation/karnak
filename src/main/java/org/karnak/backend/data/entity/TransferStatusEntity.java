@@ -9,6 +9,8 @@
  */
 package org.karnak.backend.data.entity;
 
+import com.opencsv.bean.CsvDate;
+import com.opencsv.bean.CsvRecurse;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -24,6 +26,7 @@ import javax.persistence.Table;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.dcm4che3.img.util.DateTimeUtils;
+import org.karnak.backend.util.DateFormat;
 import org.weasis.dicom.util.DateUtil;
 
 @Entity(name = "TransferStatus")
@@ -33,31 +36,46 @@ public class TransferStatusEntity implements Serializable {
   private static final long serialVersionUID = -1542928573652195764L;
 
   private Long id;
-  private ForwardNodeEntity forwardNodeEntity;
+  @CsvRecurse private ForwardNodeEntity forwardNodeEntity;
   private Long forwardNodeId;
-  private DestinationEntity destinationEntity;
+  @CsvRecurse private DestinationEntity destinationEntity;
   private Long destinationId;
+
+  @CsvDate(DateFormat.FORMAT_DDMMYYYY_SLASH_HHMMSS_2POINTS_SSSSSS_POINT)
   private LocalDateTime transferDate;
+
   private boolean sent;
   private String reason;
   // Original
   private String patientIdOriginal;
   private String accessionNumberOriginal;
   private String studyDescriptionOriginal;
+
+  @CsvDate(DateFormat.FORMAT_DDMMYYYY_SLASH_HHMMSS_2POINTS_SSSSSS_POINT)
   private LocalDateTime studyDateOriginal;
+
   private String studyUidOriginal;
   private String serieDescriptionOriginal;
+
+  @CsvDate(DateFormat.FORMAT_DDMMYYYY_SLASH_HHMMSS_2POINTS_SSSSSS_POINT)
   private LocalDateTime serieDateOriginal;
+
   private String serieUidOriginal;
   private String sopInstanceUidOriginal;
   // To send
   private String patientIdToSend;
   private String accessionNumberToSend;
   private String studyDescriptionToSend;
+
+  @CsvDate(DateFormat.FORMAT_DDMMYYYY_SLASH_HHMMSS_2POINTS_SSSSSS_POINT)
   private LocalDateTime studyDateToSend;
+
   private String studyUidToSend;
   private String serieDescriptionToSend;
+
+  @CsvDate(DateFormat.FORMAT_DDMMYYYY_SLASH_HHMMSS_2POINTS_SSSSSS_POINT)
   private LocalDateTime serieDateToSend;
+
   private String serieUidToSend;
   private String sopInstanceUidToSend;
 
