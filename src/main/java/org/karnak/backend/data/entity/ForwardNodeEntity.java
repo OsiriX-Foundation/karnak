@@ -13,6 +13,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -30,7 +31,7 @@ public class ForwardNodeEntity implements Serializable {
   private static final long serialVersionUID = 2095439136652046994L;
 
   private Long id;
-  private String description;
+  private String fwdDescription;
   // AETitle which defined a mapping of the gateway. This AETitle is configured as
   // a destination in the DICOM component that sends images to the gateway.
   private String fwdAeTitle;
@@ -44,12 +45,12 @@ public class ForwardNodeEntity implements Serializable {
 
   public ForwardNodeEntity() {
     this.fwdAeTitle = "";
-    this.description = "";
+    this.fwdDescription = "";
   }
 
   public ForwardNodeEntity(String fwdAeTitle) {
     this.fwdAeTitle = fwdAeTitle;
-    this.description = "";
+    this.fwdDescription = "";
   }
 
   public static ForwardNodeEntity ofEmpty() {
@@ -66,12 +67,13 @@ public class ForwardNodeEntity implements Serializable {
     this.id = id;
   }
 
-  public String getDescription() {
-    return this.description;
+  @Column(name = "description")
+  public String getFwdDescription() {
+    return this.fwdDescription;
   }
 
-  public void setDescription(String description) {
-    this.description = description;
+  public void setFwdDescription(String fwdDescription) {
+    this.fwdDescription = fwdDescription;
   }
 
   @NotBlank(message = "Forward AETitle is mandatory")
@@ -136,7 +138,7 @@ public class ForwardNodeEntity implements Serializable {
    */
   public boolean matchesFilter(String filterText) {
     if (contains(fwdAeTitle, filterText) //
-        || contains(description, filterText)) {
+        || contains(fwdDescription, filterText)) {
       return true;
     }
 
@@ -164,7 +166,7 @@ public class ForwardNodeEntity implements Serializable {
     return "ForwardNode [id="
         + id
         + ", description="
-        + description
+        + fwdDescription
         + ", fwdAeTitle="
         + fwdAeTitle
         + ", sourceNodes="

@@ -314,7 +314,7 @@ public class TransferStatusGridItemDetail extends FormLayout {
     forwardNodeAeTitleField.setValue(
         checkStringNullValue(transferStatusEntity.getForwardNodeEntity().getFwdAeTitle()));
     forwardNodeDescriptionField.setValue(
-        checkStringNullValue(transferStatusEntity.getForwardNodeEntity().getDescription()));
+        checkStringNullValue(transferStatusEntity.getForwardNodeEntity().getFwdDescription()));
   }
 
   /**

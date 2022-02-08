@@ -9,11 +9,24 @@
  */
 package org.karnak.backend.service;
 
+import com.opencsv.CSVWriter;
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
+import com.opencsv.exceptions.CsvDataTypeMismatchException;
+import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.List;
 import org.karnak.backend.data.entity.TransferStatusEntity;
 import org.karnak.backend.data.repo.TransferStatusRepo;
 import org.karnak.backend.data.repo.specification.TransferStatusSpecification;
 import org.karnak.backend.model.event.TransferMonitoringEvent;
+import org.karnak.frontend.monitoring.component.ExportSettings;
+import org.karnak.frontend.monitoring.component.MonitoringCsvMappingStrategy;
 import org.karnak.frontend.monitoring.component.TransferStatusFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
@@ -28,6 +41,8 @@ import org.springframework.stereotype.Service;
 /** Handle transfer monitoring */
 @Service
 public class TransferMonitoringService {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(TransferMonitoringService.class);
 
   @Value("${monitoring.max-history}")
   private int sizeLimit;
@@ -54,13 +69,26 @@ public class TransferMonitoringService {
   }
 
   /**
+   * Occurs every 30 min: clean transfer_status table if over the size limit LIFO: clean oldest
+   * records
+   */
+  @Scheduled(fixedRate = 30 * 60 * 1000)
+  public void cleanTransferStatus() {
+    int nbRecords = (int) transferStatusRepo.count();
+    if (nbRecords > sizeLimit) {
+      Pageable pageable = PageRequest.of(0, nbRecords - sizeLimit);
+      transferStatusRepo.deleteAll(transferStatusRepo.findAllByOrderByTransferDateAsc(pageable));
+    }
+  }
+
+  /**
    * Retrieve transfer status depending on filter and pageable
    *
    * @param filter Filter to evaluate
    * @param pageable Pageable to evaluate
    * @return Transfer status entities found
    */
-  public Page<TransferStatusEntity> retrieveTransferStatus(
+  public Page<TransferStatusEntity> retrieveTransferStatusPageable(
       TransferStatusFilter filter, Pageable pageable) {
     Page<TransferStatusEntity> transferStatusFound;
     if (!filter.hasFilter()) {
@@ -71,6 +99,26 @@ public class TransferMonitoringService {
       Specification<TransferStatusEntity> transferStatusSpecification =
           new TransferStatusSpecification(filter);
       transferStatusFound = transferStatusRepo.findAll(transferStatusSpecification, pageable);
+    }
+    return transferStatusFound;
+  }
+
+  /**
+   * Retrieve transfer status depending on filter
+   *
+   * @param filter Filter to evaluate
+   * @return Transfer status entities found
+   */
+  public List<TransferStatusEntity> retrieveTransferStatus(TransferStatusFilter filter) {
+    List<TransferStatusEntity> transferStatusFound;
+    if (!filter.hasFilter()) {
+      // No filter
+      transferStatusFound = transferStatusRepo.findAll();
+    } else {
+      // Create the specification and query the transfer status table
+      Specification<TransferStatusEntity> transferStatusSpecification =
+          new TransferStatusSpecification(filter);
+      transferStatusFound = transferStatusRepo.findAll(transferStatusSpecification);
     }
     return transferStatusFound;
   }
@@ -97,15 +145,44 @@ public class TransferMonitoringService {
   }
 
   /**
-   * Occurs every 30 min: clean transfer_status table if over the size limit LIFO: clean oldest
-   * records
+   * Build a transfer status csv file depending on filters
+   *
+   * @param filter Filters
+   * @param exportSettings Export settings
    */
-  @Scheduled(fixedRate = 30 * 60 * 1000)
-  public void cleanTransferStatus() {
-    int nbRecords = (int) transferStatusRepo.count();
-    if (nbRecords > sizeLimit) {
-      Pageable pageable = PageRequest.of(0, nbRecords - sizeLimit);
-      transferStatusRepo.deleteAll(transferStatusRepo.findAllByOrderByTransferDateAsc(pageable));
-    }
+  public byte[] buildCsv(TransferStatusFilter filter, ExportSettings exportSettings)
+      throws CsvRequiredFieldEmptyException, CsvDataTypeMismatchException, IOException {
+    // Init outputStream + writer
+    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+    OutputStreamWriter streamWriter = new OutputStreamWriter(stream);
+    CSVWriter writer =
+        new CSVWriter(
+            streamWriter,
+            exportSettings.getDelimiter() != null
+                ? exportSettings.getDelimiter().charAt(0)
+                : ExportSettings.DEFAULT_CSV_DELIMITER,
+            exportSettings.getQuoteCharacter() != null
+                ? exportSettings.getQuoteCharacter().charAt(0)
+                : CSVWriter.DEFAULT_QUOTE_CHARACTER,
+            exportSettings.getEscapeCharacter() != null
+                ? exportSettings.getEscapeCharacter().charAt(0)
+                : CSVWriter.DEFAULT_ESCAPE_CHARACTER,
+            CSVWriter.DEFAULT_LINE_END);
+
+    // Mapping strategy
+    MonitoringCsvMappingStrategy<TransferStatusEntity> monitoringCsvMappingStrategy =
+        new MonitoringCsvMappingStrategy<>();
+
+    // Bean to CSV
+    StatefulBeanToCsv<TransferStatusEntity> beanToCsv =
+        new StatefulBeanToCsvBuilder<TransferStatusEntity>(writer)
+            .withMappingStrategy(monitoringCsvMappingStrategy)
+            .build();
+
+    // Write CSV
+    beanToCsv.write(retrieveTransferStatus(filter));
+
+    streamWriter.flush();
+    return stream.toByteArray();
   }
 }
