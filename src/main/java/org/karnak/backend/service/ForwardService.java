@@ -265,6 +265,15 @@ public class ForwardService {
       if (e.getAbort() == Abort.CONNECTION_EXCEPTION) {
         throw e;
       }
+    } catch (IOException e) {
+      monitor(
+          sourceNode.getId(),
+          destination.getId(),
+          attributesOriginal,
+          attributesToSend,
+          false,
+          e.getMessage());
+      throw e;
     } catch (Exception e) {
       if (e instanceof InterruptedException) {
         Thread.currentThread().interrupt();
@@ -317,7 +326,8 @@ public class ForwardService {
   }
 
   public void transferOther(
-      ForwardDicomNode fwdNode, DicomForwardDestination destination, Attributes copy, Params p) {
+      ForwardDicomNode fwdNode, DicomForwardDestination destination, Attributes copy, Params p)
+      throws IOException {
     StoreFromStreamSCU streamSCU = destination.getStreamSCU();
     Attributes attributesToSend = new Attributes();
     Attributes attributesOriginal = new Attributes();
@@ -377,6 +387,15 @@ public class ForwardService {
       if (e.getAbort() == Abort.CONNECTION_EXCEPTION) {
         throw e;
       }
+    } catch (IOException e) {
+      monitor(
+          fwdNode.getId(),
+          destination.getId(),
+          attributesOriginal,
+          attributesToSend,
+          false,
+          e.getMessage());
+      throw e;
     } catch (Exception e) {
       if (e instanceof InterruptedException) {
         Thread.currentThread().interrupt();
@@ -395,7 +414,8 @@ public class ForwardService {
   }
 
   public List<File> transfer(
-      ForwardDicomNode fwdNode, WebForwardDestination destination, Attributes copy, Params p) {
+      ForwardDicomNode fwdNode, WebForwardDestination destination, Attributes copy, Params p)
+      throws IOException {
     DicomInputStream in = null;
     List<File> files;
     Attributes attributesToSend = new Attributes();
@@ -464,6 +484,15 @@ public class ForwardService {
       if (e.getAbort() == Abort.CONNECTION_EXCEPTION) {
         throw e;
       }
+    } catch (IOException e) {
+      monitor(
+          fwdNode.getId(),
+          destination.getId(),
+          attributesOriginal,
+          attributesToSend,
+          false,
+          e.getMessage());
+      throw e;
     } catch (Exception e) {
       monitor(
           fwdNode.getId(),
@@ -480,7 +509,8 @@ public class ForwardService {
   }
 
   public void transferOther(
-      ForwardDicomNode fwdNode, WebForwardDestination destination, Attributes copy, Params p) {
+      ForwardDicomNode fwdNode, WebForwardDestination destination, Attributes copy, Params p)
+      throws IOException {
     Attributes attributesToSend = new Attributes();
     Attributes attributesOriginal = new Attributes();
     try {
@@ -536,6 +566,15 @@ public class ForwardService {
       if (e.getAbort() == Abort.CONNECTION_EXCEPTION) {
         throw e;
       }
+    } catch (IOException e) {
+      monitor(
+          fwdNode.getId(),
+          destination.getId(),
+          attributesOriginal,
+          attributesToSend,
+          false,
+          e.getMessage());
+      throw e;
     } catch (Exception e) {
       monitor(
           fwdNode.getId(),
