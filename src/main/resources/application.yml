@@ -64,4 +64,4 @@ spring:
         lob:
           non_contextual_creation: true
 monitoring:
-  max-history: 200000
+  max-history: 150000

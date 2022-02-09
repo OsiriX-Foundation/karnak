@@ -22,6 +22,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
@@ -172,7 +173,11 @@ public class TransferStatusEntity implements Serializable {
   }
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @SequenceGenerator(
+      name = "TRANSFER_STATUS_GEN",
+      sequenceName = "transfer_status_sequence",
+      allocationSize = 1)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "TRANSFER_STATUS_GEN")
   public Long getId() {
     return id;
   }

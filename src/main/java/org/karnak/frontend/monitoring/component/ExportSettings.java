@@ -16,15 +16,13 @@ public class ExportSettings {
 
   private String delimiter;
   private String quoteCharacter;
-  private String escapeCharacter;
 
-  public static final char DEFAULT_CSV_DELIMITER = ';';
+  public static final char DEFAULT_CSV_DELIMITER = ',';
 
   /** Constructor with default values */
   public ExportSettings() {
     this.delimiter = String.valueOf(DEFAULT_CSV_DELIMITER);
     this.quoteCharacter = String.valueOf(CSVWriter.DEFAULT_QUOTE_CHARACTER);
-    this.escapeCharacter = String.valueOf(CSVWriter.DEFAULT_ESCAPE_CHARACTER);
   }
 
   public String getDelimiter() {
@@ -41,13 +39,5 @@ public class ExportSettings {
 
   public void setQuoteCharacter(String quoteCharacter) {
     this.quoteCharacter = quoteCharacter;
-  }
-
-  public String getEscapeCharacter() {
-    return escapeCharacter;
-  }
-
-  public void setEscapeCharacter(String escapeCharacter) {
-    this.escapeCharacter = escapeCharacter;
   }
 }

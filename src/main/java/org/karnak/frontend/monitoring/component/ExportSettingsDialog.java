@@ -29,7 +29,6 @@ public class ExportSettingsDialog extends Dialog {
   // Textfields
   private TextField delimiterTextField;
   private TextField quoteCharacterTextField;
-  private TextField escapeCharacterTextField;
 
   // Export setting model
   private ExportSettings exportSettings;
@@ -45,7 +44,7 @@ public class ExportSettingsDialog extends Dialog {
   public ExportSettingsDialog() {
     setModal(true);
     setWidth(11, Unit.PERCENTAGE);
-    setHeight(40, Unit.PERCENTAGE);
+    setHeight(37, Unit.PERCENTAGE);
 
     // Build components
     buildComponents();
@@ -99,14 +98,6 @@ public class ExportSettingsDialog extends Dialog {
             separator -> separator.length() == 1, "Quote character must contain only one character")
         .asRequired("Quote character is required")
         .bind(ExportSettings::getQuoteCharacter, ExportSettings::setQuoteCharacter);
-    // Escape character
-    binder
-        .forField(escapeCharacterTextField)
-        .withValidator(
-            separator -> separator.length() == 1,
-            "Escape character must contain only one character")
-        .asRequired("Escape character is required")
-        .bind(ExportSettings::getEscapeCharacter, ExportSettings::setEscapeCharacter);
   }
 
   /** Build components */
@@ -123,12 +114,10 @@ public class ExportSettingsDialog extends Dialog {
     // Textfields
     delimiterTextField = new TextField("Delimiter");
     quoteCharacterTextField = new TextField("Quote character");
-    escapeCharacterTextField = new TextField("Escape character");
     delimiterTextField.setWidth(60, Unit.PERCENTAGE);
     quoteCharacterTextField.setWidth(60, Unit.PERCENTAGE);
-    escapeCharacterTextField.setWidth(60, Unit.PERCENTAGE);
     VerticalLayout fieldsLayout = new VerticalLayout();
-    fieldsLayout.add(delimiterTextField, quoteCharacterTextField, escapeCharacterTextField);
+    fieldsLayout.add(delimiterTextField, quoteCharacterTextField);
 
     // Buttons
     cancelButton = new Button("Cancel");

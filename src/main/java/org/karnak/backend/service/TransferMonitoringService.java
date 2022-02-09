@@ -164,9 +164,7 @@ public class TransferMonitoringService {
             exportSettings.getQuoteCharacter() != null
                 ? exportSettings.getQuoteCharacter().charAt(0)
                 : CSVWriter.DEFAULT_QUOTE_CHARACTER,
-            exportSettings.getEscapeCharacter() != null
-                ? exportSettings.getEscapeCharacter().charAt(0)
-                : CSVWriter.DEFAULT_ESCAPE_CHARACTER,
+            CSVWriter.DEFAULT_ESCAPE_CHARACTER,
             CSVWriter.DEFAULT_LINE_END);
 
     // Mapping strategy
