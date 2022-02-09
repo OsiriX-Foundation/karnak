@@ -25,7 +25,7 @@ services:
       - POSTGRES_PASSWORD=LCqWpeyJi6uStLdJq93tD+NHxJ+yVYDgOknet5slIIk=
 
   mainzelliste:
-    image: osirixfoundation/karnak-mainzelliste:extid
+    image: repo-docker.hcuge.ch:9082/osirixfoundation/karnak-mainzelliste:extid
     env_file: mainzelliste.env
     depends_on:
       - mainzelliste-db
