@@ -81,7 +81,7 @@ class TransferMonitoringServiceTest {
 
     // Call service
     Page<TransferStatusEntity> transferStatusEntities =
-        transferMonitoringService.retrieveTransferStatus(filter, pageable.getPageable());
+        transferMonitoringService.retrieveTransferStatusPageable(filter, pageable.getPageable());
 
     // Test result
     assertNotNull(transferStatusEntities);
@@ -101,7 +101,7 @@ class TransferMonitoringServiceTest {
 
     // Call service
     Page<TransferStatusEntity> transferStatusEntities =
-        transferMonitoringService.retrieveTransferStatus(filter, pageable.getPageable());
+        transferMonitoringService.retrieveTransferStatusPageable(filter, pageable.getPageable());
 
     // Test result
     assertNotNull(transferStatusEntities);
