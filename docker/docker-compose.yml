@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   karnak:
-    image: registry-docker.hcuge.ch:8083/karnak:${SERVICE_VERSION}
+    image: repo-docker.hcuge.ch:9082/karnak:${SERVICE_VERSION}
     environment:
       JAVA_OPTS: -XX:MaxRAM=512m -XX:MaxRAMPercentage=75 -XX:+UseContainerSupport -XX:MetaspaceSize=64M -XX:MaxMetaspaceSize=162M
       KARNAK_WAIT_FOR: karnak-db:5432
@@ -11,14 +11,14 @@ services:
       - karnak-db
 
   karnak-db:
-    image: registry-docker.hcuge.ch:8083/postgres:9.6-alpine
+    image: repo-docker.hcuge.ch:9082/postgres:hug-9.6-alpine
     environment:
       - POSTGRES_DB=karnak
       - POSTGRES_USER=karnak
       - POSTGRES_PASSWORD=H2srmXJbHaBUhBafn2BK5I9oSbaQ1rw8697V8ESs/2o=
 
   mainzelliste-db:
-    image: registry-docker.hcuge.ch:8083/postgres:9.6-alpine
+    image: repo-docker.hcuge.ch:9082/postgres:hug-9.6-alpine
     environment:
       - POSTGRES_DB=mainzelliste
       - POSTGRES_USER=mainzelliste
