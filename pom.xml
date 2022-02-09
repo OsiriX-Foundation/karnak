@@ -50,7 +50,8 @@
     <org.json.version>20211205</org.json.version>
     <logback.version>1.2.9</logback.version>
     <hazelcast.version>5.0.2</hazelcast.version>
-    <liquibase.version>4.6.1</liquibase.version>
+    <liquibase.version>4.3.5</liquibase.version>
+    <opencsv.version>5.5.2</opencsv.version>
   </properties>
 
   <!-- Distribution management for releases/snapshots -->
@@ -407,6 +408,12 @@
       <artifactId>gson</artifactId>
       <groupId>com.google.code.gson</groupId>
       <version>2.8.6</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.opencsv</groupId>
+      <artifactId>opencsv</artifactId>
+      <version>${opencsv.version}</version>
     </dependency>
 
     <dependency>

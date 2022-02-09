@@ -271,7 +271,7 @@ class GatewaySetUpServiceTest {
     ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
     forwardNodeEntity.setFwdAeTitle("fwdAeTitle");
     forwardNodeEntity.setId(1L);
-    forwardNodeEntity.setDescription("description");
+    forwardNodeEntity.setFwdDescription("description");
     DestinationEntity destinationEntity = new DestinationEntity();
     destinationEntity.setFilterBySOPClasses(true);
     destinationEntity.setAeTitle("aeTitle");

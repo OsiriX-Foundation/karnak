@@ -23,6 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @DataJpaTest
 class TransferStatusRepoTest {
@@ -187,5 +189,34 @@ class TransferStatusRepoTest {
 
     // Test results
     assertTrue(byDestinationIdAndTransferDateAfter.isEmpty());
+  }
+
+  /** Test method findAllByOrderByTransferDateAsc */
+  @Test
+  void shouldFindAllByOrderByTransferDateAsc() {
+    // Init data
+    TransferStatusEntity transferStatusEntityAfter = new TransferStatusEntity();
+    transferStatusEntityAfter.setTransferDate(LocalDateTime.of(2022, 1, 2, 1, 2, 3));
+    transferStatusEntityAfter = repository.saveAndFlush(transferStatusEntityAfter);
+    TransferStatusEntity transferStatusEntityBefore = new TransferStatusEntity();
+    transferStatusEntityBefore.setTransferDate(LocalDateTime.of(2022, 1, 1, 1, 2, 3));
+    transferStatusEntityBefore = repository.saveAndFlush(transferStatusEntityBefore);
+    TransferStatusEntity transferStatusEntityShouldBeFiltered = new TransferStatusEntity();
+    transferStatusEntityShouldBeFiltered.setTransferDate(LocalDateTime.of(2022, 1, 3, 1, 2, 3));
+    transferStatusEntityShouldBeFiltered =
+        repository.saveAndFlush(transferStatusEntityShouldBeFiltered);
+
+    // Limit to 2 results
+    Pageable pageable = PageRequest.of(0, 2);
+
+    // Call method with date before
+    List<TransferStatusEntity> transferStatusEntities =
+        repository.findAllByOrderByTransferDateAsc(pageable).toList();
+
+    // Test results
+    assertFalse(transferStatusEntities.isEmpty());
+    assertEquals(2, transferStatusEntities.size());
+    assertEquals(transferStatusEntityBefore, transferStatusEntities.get(0));
+    assertEquals(transferStatusEntityAfter, transferStatusEntities.get(1));
   }
 }

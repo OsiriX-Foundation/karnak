@@ -74,12 +74,6 @@ public class NotificationService {
     buildNotificationsToSend().forEach(this::prepareAndSendNotification);
   }
 
-  /** Occurs every day at midnight: clean transfer_status table */
-  @Scheduled(cron = "0 0 0 * * ?")
-  private void cleanTransferStatus() {
-    transferStatusRepo.deleteAll();
-  }
-
   /**
    * Build transfer notification to send
    *

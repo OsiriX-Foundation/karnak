@@ -12,6 +12,8 @@ package org.karnak.backend.data.repo;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.karnak.backend.data.entity.TransferStatusEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
@@ -38,4 +40,13 @@ public interface TransferStatusRepo
    */
   List<TransferStatusEntity> findByDestinationIdAndTransferDateAfter(
       Long destinationId, LocalDateTime lastCheck);
+
+  /**
+   * Look for oldest transfer status entities, number of entities found is limited by the
+   * pageRequest
+   *
+   * @param pageable Limit the number of records found
+   * @return TransferEntities found
+   */
+  Page<TransferStatusEntity> findAllByOrderByTransferDateAsc(Pageable pageable);
 }
