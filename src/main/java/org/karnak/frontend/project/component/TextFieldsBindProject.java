@@ -32,7 +32,7 @@ public class TextFieldsBindProject {
 
   public TextFieldsBindProject() {
     this.textResearchName = new TextField();
-    this.secretComboBox = new ComboBox<>();
+    this.secretComboBox = new ComboBox<>("Project Secret");
     this.profileDropDown = new ProfileDropDown();
     this.binder = setBinder();
   }

@@ -45,7 +45,7 @@ public class EditProject extends VerticalLayout {
   public void setProject(ProjectEntity projectEntity) {
     this.projectEntity = projectEntity;
     if (projectEntity != null) {
-      projectSecret.setValuesCombobox(projectEntity);
+      projectSecret.addValuesCombobox(projectEntity);
       binder.setBean(projectEntity);
       setEnabled(true);
     } else {

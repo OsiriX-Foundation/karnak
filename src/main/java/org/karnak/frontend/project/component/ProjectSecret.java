@@ -14,7 +14,6 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Label;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.data.entity.SecretEntity;
 import org.karnak.backend.model.profilepipe.HMAC;
@@ -31,11 +30,6 @@ public class ProjectSecret extends Div {
           "https://osirix-foundation.github.io/karnak-documentation/docs/deidentification/rules#action-u-generate-a-new-uid",
           "How KARNAK does ?");
 
-  private final String TITLE = "Project Secret";
-
-  private final Label labelDisclaimer = new Label();
-  private final Div titleDiv = new Div();
-  private final Div valueDiv = new Div();
   private final Div messageWarningLayout = new Div();
   private final ComboBox<SecretEntity> secretComboBox;
   private final Button generateButton = new Button("Generate Secret");
@@ -44,38 +38,28 @@ public class ProjectSecret extends Div {
   public ProjectSecret(ComboBox<SecretEntity> secretComboBox) {
     this.secretComboBox = secretComboBox;
     setWidthFull();
-    setTitle();
-    setValue();
-    setMessageWarningLayout();
+    addComponents();
+    addMessageWarningLayout();
     eventGenerateSecret();
-    add(titleDiv, valueDiv, labelDisclaimer);
   }
 
-  private void setTitle() {
-    titleDiv.add(new Label(TITLE));
-  }
-
-  private void setValue() {
+  private void addComponents() {
     secretComboBox.getStyle().set("width", "80%");
     secretComboBox.setPlaceholder("Project Secret");
     generateButton.getStyle().set("margin-left", "10px");
-    valueDiv.add(secretComboBox, generateButton);
+    add(secretComboBox, generateButton);
   }
 
-  public void setValuesCombobox(ProjectEntity projectEntity) {
+  public void addValuesCombobox(ProjectEntity projectEntity) {
     this.projectEntity = projectEntity;
     secretComboBox.setItems(projectEntity.getSecretEntities());
     secretComboBox.setItemLabelGenerator(ProjectEntity::buildLabelSecret);
   }
 
-  private void setMessageWarningLayout() {
+  private void addMessageWarningLayout() {
     messageWarningLayout.add(new Div(new Text(WARNING_TEXT)));
     messageWarningLayout.add(new Div(new Text(REFER_LINK_TEXT)));
     messageWarningLayout.add(REFER_LINK);
-  }
-
-  public void clear() {
-    secretComboBox.clear();
   }
 
   private void eventGenerateSecret() {
