@@ -96,7 +96,7 @@ public class ProjectLogic extends ListDataProvider<ProjectEntity> {
       refreshItem(projectEntity);
     }
     projectEntity = projectService.save(projectEntity);
-    secretService.createActiveSecret(secretEntity, projectEntity);
+    secretService.saveActiveSecret(secretEntity, projectEntity);
     refreshAll();
   }
 
