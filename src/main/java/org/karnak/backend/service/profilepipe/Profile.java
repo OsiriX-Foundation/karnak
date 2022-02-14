@@ -35,6 +35,7 @@ import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.data.entity.ProfileEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
+import org.karnak.backend.data.entity.SecretEntity;
 import org.karnak.backend.dicom.Defacer;
 import org.karnak.backend.enums.ProfileItemType;
 import org.karnak.backend.model.action.ActionItem;
@@ -349,7 +350,8 @@ public class Profile {
           "Cannot build the HMAC a project is not associate at the destination");
     }
 
-    byte[] secret = projectEntity.getSecret();
+    SecretEntity secretEntity = projectEntity.retrieveActiveSecret();
+    byte[] secret = secretEntity != null ? secretEntity.getKey() : null;
     if (secret == null || secret.length != HMAC.KEY_BYTE_LENGTH) {
       throw new IllegalStateException(
           "Cannot build the HMAC no secret defined in the project associate at the destination");
