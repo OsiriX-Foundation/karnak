@@ -48,8 +48,8 @@ public class ProjectService {
    *
    * @param projectEntity Project to save
    */
-  public void save(ProjectEntity projectEntity) {
-    projectRepo.saveAndFlush(projectEntity);
+  public ProjectEntity save(ProjectEntity projectEntity) {
+    return projectRepo.saveAndFlush(projectEntity);
   }
 
   /**

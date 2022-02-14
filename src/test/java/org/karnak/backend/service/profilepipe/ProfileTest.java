@@ -27,6 +27,7 @@ import org.karnak.backend.data.entity.MaskEntity;
 import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.data.entity.ProfileEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
+import org.karnak.backend.data.entity.SecretEntity;
 import org.karnak.backend.enums.DestinationType;
 import org.karnak.backend.enums.PseudonymType;
 import org.weasis.dicom.param.AttributeEditorContext;
@@ -45,7 +46,7 @@ class ProfileTest {
     projectEntity.setProfileEntity(profileEntityProject);
     byte[] tabByte = new byte[16];
     tabByte[0] = 1;
-    projectEntity.setSecret(tabByte);
+    projectEntity.addActiveSecretEntity(new SecretEntity(tabByte));
     destinationEntity.setProjectEntity(projectEntity);
     destinationEntity.setPseudonymType(PseudonymType.EXTID_IN_TAG);
     destinationEntity.setTag("0008,0080");
