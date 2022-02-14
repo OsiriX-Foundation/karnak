@@ -11,9 +11,9 @@ package org.karnak.backend.data.entity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,6 +24,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.karnak.backend.model.profilepipe.HMAC;
+import org.karnak.backend.util.DateFormat;
 
 @Entity(name = "Project")
 @Table(name = "project")
@@ -33,18 +35,13 @@ public class ProjectEntity implements Serializable {
 
   private Long id;
   private String name;
-  private byte[] secret;
+  private List<SecretEntity> secretEntities;
   private List<DestinationEntity> destinationEntities;
   private ProfileEntity profileEntity;
 
   public ProjectEntity() {
     this.destinationEntities = new ArrayList<>();
-  }
-
-  public ProjectEntity(String name, byte[] secret) {
-    this.name = name;
-    this.secret = secret;
-    this.destinationEntities = new ArrayList<>();
+    this.secretEntities = new ArrayList<>();
   }
 
   @Id
@@ -65,12 +62,14 @@ public class ProjectEntity implements Serializable {
     this.name = name;
   }
 
-  public byte[] getSecret() {
-    return secret;
+  @OneToMany(mappedBy = "projectEntity", cascade = CascadeType.ALL)
+  @LazyCollection(LazyCollectionOption.FALSE)
+  public List<SecretEntity> getSecretEntities() {
+    return secretEntities;
   }
 
-  public void setSecret(byte[] secret) {
-    this.secret = secret;
+  public void setSecretEntities(List<SecretEntity> secretEntities) {
+    this.secretEntities = secretEntities;
   }
 
   @OneToMany(mappedBy = "projectEntity")
@@ -93,6 +92,49 @@ public class ProjectEntity implements Serializable {
     this.profileEntity = profileEntity;
   }
 
+  /**
+   * Retrieve the active secret of the project
+   *
+   * @return active secret to be used
+   */
+  public SecretEntity retrieveActiveSecret() {
+    return secretEntities.stream().filter(SecretEntity::isActive).findFirst().orElse(null);
+  }
+
+  /**
+   * Set the secret in parameter in the list of secret of the project and activate it
+   *
+   * @param secretEntity Secret to add
+   */
+  public void addActiveSecretEntity(SecretEntity secretEntity) {
+    applyActiveSecret(secretEntity);
+    secretEntities.add(secretEntity);
+  }
+
+  /**
+   * Activate the secret in parameter and deactivate others
+   *
+   * @param secretEntity Secret to activate
+   */
+  public void applyActiveSecret(SecretEntity secretEntity) {
+    secretEntities.forEach(s -> s.setActive(false));
+    secretEntity.setActive(true);
+  }
+
+  /**
+   * Build a label for the combobox secret
+   *
+   * @param secretEntity Label is build for this secretEntity
+   * @return Label built
+   */
+  public static String buildLabelSecret(SecretEntity secretEntity) {
+    return "%s  [created: %s]"
+        .formatted(
+            HMAC.showHexKey(HMAC.byteToHex(secretEntity.getKey())),
+            DateFormat.format(
+                secretEntity.getCreationDate(), DateFormat.FORMAT_DDMMYYYY_SLASH_HHMMSS_2POINTS));
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -102,13 +144,15 @@ public class ProjectEntity implements Serializable {
       return false;
     }
     ProjectEntity that = (ProjectEntity) o;
-    return Objects.equals(name, that.name) && Arrays.equals(secret, that.secret);
+    return Objects.equals(id, that.id)
+        && Objects.equals(name, that.name)
+        && Objects.equals(secretEntities, that.secretEntities)
+        && Objects.equals(destinationEntities, that.destinationEntities)
+        && Objects.equals(profileEntity, that.profileEntity);
   }
 
   @Override
   public int hashCode() {
-    int result = Objects.hash(name);
-    result = 31 * result + Arrays.hashCode(secret);
-    return result;
+    return Objects.hash(id, name, secretEntities, destinationEntities, profileEntity);
   }
 }

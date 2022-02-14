@@ -9,11 +9,16 @@
  */
 package org.karnak.frontend.project.component;
 
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.ValidationResult;
+import com.vaadin.flow.data.binder.Validator;
+import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.backend.data.entity.ProjectEntity;
+import org.karnak.backend.data.entity.SecretEntity;
 import org.karnak.backend.model.profilepipe.HMAC;
 import org.karnak.frontend.component.ProfileDropDown;
 
@@ -22,12 +27,12 @@ public class TextFieldsBindProject {
   private final Binder<ProjectEntity> binder;
 
   private final TextField textResearchName;
-  private final TextField textSecret;
+  private final ComboBox<SecretEntity> secretComboBox;
   private final ProfileDropDown profileDropDown;
 
   public TextFieldsBindProject() {
     this.textResearchName = new TextField();
-    this.textSecret = new TextField();
+    this.secretComboBox = new ComboBox<>();
     this.profileDropDown = new ProfileDropDown();
     this.binder = setBinder();
   }
@@ -38,26 +43,50 @@ public class TextFieldsBindProject {
         .forField(textResearchName)
         .withValidator(StringUtils::isNotBlank, "Name is mandatory")
         .bind(ProjectEntity::getName, ProjectEntity::setName);
+
     binder
-        .forField(textSecret)
-        .withValidator(StringUtils::isNotBlank, "Secret is mandatory")
-        .withValidator(HMAC::validateKey, "Secret is not valid")
-        .bind(
-            project -> {
-              if (project.getSecret() != null) {
-                String hexKey = HMAC.byteToHex(project.getSecret());
-                return HMAC.showHexKey(hexKey);
-              }
-              return null;
-            },
-            (project, s) -> {
-              project.setSecret(HMAC.hexToByte(s.replaceAll("-", "")));
-            });
+        .forField(secretComboBox)
+        .withValidator(secretMandatoryValidator())
+        .withValidator(secretValidValidator())
+        .bind(ProjectEntity::retrieveActiveSecret, ProjectEntity::applyActiveSecret);
+
     binder
         .forField(profileDropDown)
-        .withValidator(profilePipe -> profilePipe != null, "Choose the de-identification profile\n")
+        .withValidator(Objects::nonNull, "Choose the de-identification profile\n")
         .bind(ProjectEntity::getProfileEntity, ProjectEntity::setProfileEntity);
     return binder;
+  }
+
+  /**
+   * Validate secretEntity key
+   *
+   * @return validation ok if key is valid, validation error otherwise
+   */
+  private Validator<SecretEntity> secretValidValidator() {
+    return (secretEntity, valueContext) -> {
+      if (HMAC.validateKey(HMAC.byteToHex(secretEntity.getKey()))) {
+        return ValidationResult.ok();
+      } else {
+        return ValidationResult.error("Secret is not valid");
+      }
+    };
+  }
+
+  /**
+   * Validate key is present.
+   *
+   * @return validation ok if key is not null or empty, validation error otherwise
+   */
+  private Validator<SecretEntity> secretMandatoryValidator() {
+    return (secretEntity, valueContext) -> {
+      if (secretComboBox.getValue() != null
+          && secretEntity.getKey() != null
+          && secretEntity.getKey().length > 0) {
+        return ValidationResult.ok();
+      } else {
+        return ValidationResult.error("Secret is mandatory");
+      }
+    };
   }
 
   public Binder<ProjectEntity> getBinder() {
@@ -68,8 +97,8 @@ public class TextFieldsBindProject {
     return textResearchName;
   }
 
-  public TextField getTextSecret() {
-    return textSecret;
+  public ComboBox<SecretEntity> getSecretComboBox() {
+    return secretComboBox;
   }
 
   public ProfileDropDown getProfileDropDown() {

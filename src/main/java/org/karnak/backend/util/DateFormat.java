@@ -31,10 +31,11 @@ public class DateFormat {
 
   // Date formats
   public static final String FORMAT_DDMMYYYY_SLASH = "dd/MM/yyyy";
-  public static final String FORMAT_DDMMYYYY_SLASH_HHMMSS_2POINTS_SSSSSS_POINT =
-      "dd/MM/yyyy HH:mm:ss.SSSSSS";
+  public static final String FORMAT_DDMMYYYY_SLASH_HHMMSS_2POINTS = "dd/MM/yyyy HH:mm:ss";
   public static final String FORMAT_DDMMYYYY_SLASH_HHMMSS_2POINTS_SSS_POINT =
       "dd/MM/yyyy HH:mm:ss.SSS";
+  public static final String FORMAT_DDMMYYYY_SLASH_HHMMSS_2POINTS_SSSSSS_POINT =
+      "dd/MM/yyyy HH:mm:ss.SSSSSS";
 
   /**
    * Build DateTimeFormatter

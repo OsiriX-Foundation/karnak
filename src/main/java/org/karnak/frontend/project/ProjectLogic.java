@@ -14,7 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
+import org.karnak.backend.data.entity.SecretEntity;
 import org.karnak.backend.service.ProjectService;
+import org.karnak.backend.service.SecretService;
 import org.karnak.backend.service.profilepipe.ProfilePipeService;
 import org.karnak.frontend.component.ConfirmDialog;
 import org.karnak.frontend.project.component.EditProject;
@@ -39,6 +41,7 @@ public class ProjectLogic extends ListDataProvider<ProjectEntity> {
   // Services
   private final transient ProjectService projectService;
   private final transient ProfilePipeService profilePipeService;
+  private final SecretService secretService;
 
   /**
    * Autowired constructor
@@ -48,10 +51,13 @@ public class ProjectLogic extends ListDataProvider<ProjectEntity> {
    */
   @Autowired
   public ProjectLogic(
-      final ProjectService projectService, final ProfilePipeService profilePipeService) {
+      final ProjectService projectService,
+      final ProfilePipeService profilePipeService,
+      final SecretService secretService) {
     super(new ArrayList<>());
     this.projectService = projectService;
     this.profilePipeService = profilePipeService;
+    this.secretService = secretService;
     initDataProvider();
   }
 
@@ -80,15 +86,17 @@ public class ProjectLogic extends ListDataProvider<ProjectEntity> {
    * Create a new project
    *
    * @param projectEntity Project to create
+   * @param secretEntity Secret associated to the new project
    */
-  public void createProject(ProjectEntity projectEntity) {
+  public void createProject(ProjectEntity projectEntity, SecretEntity secretEntity) {
     boolean isNewProject = projectEntity.getId() == null;
     if (isNewProject) {
       getItems().add(projectEntity);
     } else {
       refreshItem(projectEntity);
     }
-    projectService.save(projectEntity);
+    projectEntity = projectService.save(projectEntity);
+    secretService.createActiveSecret(secretEntity, projectEntity);
     refreshAll();
   }
 

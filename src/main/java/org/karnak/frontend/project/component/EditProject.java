@@ -45,6 +45,7 @@ public class EditProject extends VerticalLayout {
   public void setProject(ProjectEntity projectEntity) {
     this.projectEntity = projectEntity;
     if (projectEntity != null) {
+      projectSecret.setValuesCombobox(projectEntity);
       binder.setBean(projectEntity);
       setEnabled(true);
     } else {
@@ -59,7 +60,7 @@ public class EditProject extends VerticalLayout {
     binder = textFieldsBindProject.getBinder();
     textProjectName = textFieldsBindProject.getTextResearchName();
     profileDropDown = textFieldsBindProject.getProfileDropDown();
-    projectSecret = new ProjectSecret(textFieldsBindProject.getTextSecret());
+    projectSecret = new ProjectSecret(textFieldsBindProject.getSecretComboBox());
     textProjectName.setLabel("Project Name");
     textProjectName.setWidthFull();
     profileDropDown.setLabel("De-identification Profile");

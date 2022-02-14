@@ -11,10 +11,12 @@ package org.karnak.frontend.project.component;
 
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.textfield.TextField;
+import org.karnak.backend.data.entity.ProjectEntity;
+import org.karnak.backend.data.entity.SecretEntity;
 import org.karnak.backend.model.profilepipe.HMAC;
 import org.karnak.frontend.component.WarningConfirmDialog;
 
@@ -29,24 +31,22 @@ public class ProjectSecret extends Div {
           "https://osirix-foundation.github.io/karnak-documentation/docs/deidentification/rules#action-u-generate-a-new-uid",
           "How KARNAK does ?");
 
-  private static final String LABEL_DISCLAIMER_SECRET =
-      "Please be sure that the project secret is saved.";
   private final String TITLE = "Project Secret";
 
   private final Label labelDisclaimer = new Label();
   private final Div titleDiv = new Div();
   private final Div valueDiv = new Div();
   private final Div messageWarningLayout = new Div();
-  private final TextField textProjectSecret;
+  private final ComboBox<SecretEntity> secretComboBox;
   private final Button generateButton = new Button("Generate Secret");
+  private ProjectEntity projectEntity;
 
-  public ProjectSecret(TextField textProjectSecret) {
-    this.textProjectSecret = textProjectSecret;
+  public ProjectSecret(ComboBox<SecretEntity> secretComboBox) {
+    this.secretComboBox = secretComboBox;
     setWidthFull();
     setTitle();
     setValue();
     setMessageWarningLayout();
-    setLabelDisclaimerSecret();
     eventGenerateSecret();
     add(titleDiv, valueDiv, labelDisclaimer);
   }
@@ -56,9 +56,16 @@ public class ProjectSecret extends Div {
   }
 
   private void setValue() {
-    textProjectSecret.getStyle().set("width", "80%");
+    secretComboBox.getStyle().set("width", "80%");
+    secretComboBox.setPlaceholder("Project Secret");
     generateButton.getStyle().set("margin-left", "10px");
-    valueDiv.add(textProjectSecret, generateButton);
+    valueDiv.add(secretComboBox, generateButton);
+  }
+
+  public void setValuesCombobox(ProjectEntity projectEntity) {
+    this.projectEntity = projectEntity;
+    secretComboBox.setItems(projectEntity.getSecretEntities());
+    secretComboBox.setItemLabelGenerator(ProjectEntity::buildLabelSecret);
   }
 
   private void setMessageWarningLayout() {
@@ -67,15 +74,8 @@ public class ProjectSecret extends Div {
     messageWarningLayout.add(REFER_LINK);
   }
 
-  private void setLabelDisclaimerSecret() {
-    labelDisclaimer.setText(LABEL_DISCLAIMER_SECRET);
-    labelDisclaimer.getStyle().set("color", "red");
-    labelDisclaimer.setMinWidth("75%");
-    labelDisclaimer.getStyle().set("right", "0px");
-  }
-
   public void clear() {
-    textProjectSecret.clear();
+    secretComboBox.clear();
   }
 
   private void eventGenerateSecret() {
@@ -84,8 +84,11 @@ public class ProjectSecret extends Div {
           WarningConfirmDialog dialog = new WarningConfirmDialog(messageWarningLayout);
           dialog.addConfirmationListener(
               componentEvent -> {
-                String generateSecret = HMAC.byteToHex(HMAC.generateRandomKey());
-                textProjectSecret.setValue(HMAC.showHexKey(generateSecret));
+                SecretEntity secretEntityToCreate =
+                    new SecretEntity(projectEntity.getId(), HMAC.generateRandomKey());
+                projectEntity.addActiveSecretEntity(secretEntityToCreate);
+                secretComboBox.setValue(secretEntityToCreate);
+                secretComboBox.getDataProvider().refreshAll();
               });
           dialog.open();
         });
