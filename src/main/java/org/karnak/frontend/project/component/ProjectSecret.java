@@ -69,7 +69,7 @@ public class ProjectSecret extends Div {
           dialog.addConfirmationListener(
               componentEvent -> {
                 SecretEntity secretEntityToCreate =
-                    new SecretEntity(projectEntity.getId(), HMAC.generateRandomKey());
+                    new SecretEntity(projectEntity, HMAC.generateRandomKey());
                 projectEntity.addActiveSecretEntity(secretEntityToCreate);
                 secretComboBox.setValue(secretEntityToCreate);
                 secretComboBox.getDataProvider().refreshAll();

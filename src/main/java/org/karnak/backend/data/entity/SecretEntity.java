@@ -11,7 +11,8 @@ package org.karnak.backend.data.entity;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import javax.persistence.Column;
+import java.util.Arrays;
+import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -25,7 +26,6 @@ import javax.persistence.Table;
 public class SecretEntity implements Serializable {
 
   private Long id;
-  private Long projectId;
   private ProjectEntity projectEntity;
   private byte[] key;
   private LocalDateTime creationDate;
@@ -38,8 +38,8 @@ public class SecretEntity implements Serializable {
     this.creationDate = LocalDateTime.now();
   }
 
-  public SecretEntity(Long projectId, byte[] key) {
-    this.projectId = projectId;
+  public SecretEntity(ProjectEntity projectEntity, byte[] key) {
+    this.projectEntity = projectEntity;
     this.key = key;
     this.creationDate = LocalDateTime.now();
   }
@@ -54,17 +54,8 @@ public class SecretEntity implements Serializable {
     this.id = id;
   }
 
-  @Column(name = "project_id")
-  public Long getProjectId() {
-    return projectId;
-  }
-
-  public void setProjectId(Long projectId) {
-    this.projectId = projectId;
-  }
-
   @ManyToOne
-  @JoinColumn(name = "project_id", insertable = false, updatable = false)
+  @JoinColumn(name = "project_id")
   public ProjectEntity getProjectEntity() {
     return projectEntity;
   }
@@ -95,5 +86,28 @@ public class SecretEntity implements Serializable {
 
   public void setActive(boolean active) {
     this.active = active;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    SecretEntity that = (SecretEntity) o;
+    return active == that.active
+        && Objects.equals(id, that.id)
+        && Objects.equals(projectEntity, that.projectEntity)
+        && Arrays.equals(key, that.key)
+        && Objects.equals(creationDate, that.creationDate);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = Objects.hash(id, projectEntity, creationDate, active);
+    result = 31 * result + Arrays.hashCode(key);
+    return result;
   }
 }

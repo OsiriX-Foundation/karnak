@@ -43,8 +43,8 @@ public class SecretService {
    * @param projectEntity Project associated to the secret
    * @return Secret saved
    */
-  public SecretEntity createActiveSecret(SecretEntity secretEntity, ProjectEntity projectEntity) {
-    secretEntity.setProjectId(projectEntity.getId());
+  public SecretEntity saveActiveSecret(SecretEntity secretEntity, ProjectEntity projectEntity) {
+    secretEntity.setProjectEntity(projectEntity);
     secretEntity.setActive(true);
     return secretRepo.saveAndFlush(secretEntity);
   }
