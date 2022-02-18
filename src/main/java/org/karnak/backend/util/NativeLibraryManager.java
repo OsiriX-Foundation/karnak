@@ -41,7 +41,7 @@ public class NativeLibraryManager {
     String filename =
         system.startsWith("win")
             ? "opencv_java.dll"
-            : system.startsWith("mac") ? "libopencv_java.jnilib" : "libopencv_java.so";
+            : system.startsWith("mac") ? "libopencv_java.dylib" : "libopencv_java.so";
     Path outputFile = Path.of(oLibPath.get(), filename);
     System.setProperty("dicom.native.codec", oLibPath.get());
 

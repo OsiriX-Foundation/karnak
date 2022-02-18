@@ -11,8 +11,11 @@ package org.karnak.backend.service.gateway;
 
 import java.io.File;
 import java.net.URL;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import org.karnak.backend.data.entity.DestinationEntity;
+import org.karnak.backend.data.repo.DestinationRepo;
 import org.karnak.backend.dicom.GatewayParams;
 import org.karnak.backend.model.event.NodeEvent;
 import org.karnak.backend.service.DicomGatewayService;
@@ -35,12 +38,17 @@ public class GatewayService implements ApplicationListener<ContextRefreshedEvent
   private final GatewaySetUpService gatewaySetUpService;
   private final DicomGatewayService gateway;
 
+  // Repository
+  private final DestinationRepo destinationRepo;
+
   @Autowired
   public GatewayService(
       final GatewaySetUpService gatewaySetUpService,
-      final DicomGatewayService dicomGatewayService) {
+      final DicomGatewayService dicomGatewayService,
+      final DestinationRepo destinationRepo) {
     this.gatewaySetUpService = gatewaySetUpService;
     this.gateway = dicomGatewayService;
+    this.destinationRepo = destinationRepo;
   }
 
   public void initGateway() {
@@ -76,6 +84,12 @@ public class GatewayService implements ApplicationListener<ContextRefreshedEvent
     if (gateway != null) {
       gateway.stop();
     }
+
+    // Reset status transfer in progress on destination
+    List<DestinationEntity> destinationEntities = destinationRepo.findAll();
+    destinationEntities.forEach(d -> d.setTransferInProgress(false));
+    destinationRepo.saveAll(destinationEntities);
+
     LOGGER.info("{}", "Gateway has been stopped");
     String dir = System.getProperty("dicom.native.codec");
     if (StringUtil.hasText(dir)) {
