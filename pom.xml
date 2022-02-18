@@ -32,8 +32,8 @@
     <javax.el.version>3.0.0</javax.el.version>
     <javax.mail.version>1.6.2</javax.mail.version>
     <vaadin.version>21.0.9</vaadin.version>
-    <weasis-dicom-tools.version>5.24.2-IMG-RELEASE</weasis-dicom-tools.version>
-    <weasis.opencv.native.version>4.5.3-dcm</weasis.opencv.native.version>
+    <weasis-dicom-tools.version>5.25.1.1-IMG-RELEASE</weasis-dicom-tools.version>
+    <weasis.opencv.native.version>4.5.5-dcm</weasis.opencv.native.version>
     <springdoc.version>1.6.0</springdoc.version>
     <mockito.version>4.2.0</mockito.version>
     <h2.version>1.4.200</h2.version>
@@ -215,11 +215,11 @@
             <artifactItem>
               <artifactId>libopencv_java</artifactId>
               <classifier>macosx-x86-64</classifier>
-              <destFileName>libopencv_java.jnilib</destFileName>
+              <destFileName>libopencv_java.dylib</destFileName>
               <groupId>org.weasis.thirdparty.org.opencv</groupId>
               <outputDirectory>${project.build.directory}/native-lib/lib/macosx-x86-64
               </outputDirectory>
-              <type>jnilib</type>
+              <type>dylib</type>
               <version>${weasis.opencv.native.version}</version>
             </artifactItem>
             <artifactItem>
