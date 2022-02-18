@@ -434,7 +434,11 @@ public class ForwardService {
           attributesOriginal.addAll(attributesToSend);
           stow.uploadDicom(stream, fmi);
         } catch (HttpException httpException) {
-          throw new AbortException(Abort.FILE_EXCEPTION, httpException.getMessage());
+          if (httpException.getStatusCode() != 409) {
+            throw new AbortException(Abort.FILE_EXCEPTION, httpException.getMessage());
+          } else {
+            LOGGER.debug("File already present in destination");
+          }
         }
       } else {
         AttributeEditorContext context = new AttributeEditorContext(p.getTsuid(), fwdNode, null);
@@ -547,14 +551,20 @@ public class ForwardService {
             fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, true, null);
       }
     } catch (HttpException httpException) {
-      monitor(
-          fwdNode.getId(),
-          destination.getId(),
-          attributesOriginal,
-          attributesToSend,
-          false,
-          httpException.getMessage());
-      throw new AbortException(Abort.FILE_EXCEPTION, "DICOMWeb forward", httpException);
+      if (httpException.getStatusCode() != 409) {
+        monitor(
+            fwdNode.getId(),
+            destination.getId(),
+            attributesOriginal,
+            attributesToSend,
+            false,
+            httpException.getMessage());
+        throw new AbortException(Abort.FILE_EXCEPTION, "DICOMWeb forward", httpException);
+      } else {
+        monitor(
+            fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, true, null);
+        LOGGER.debug("File already present in destination");
+      }
     } catch (AbortException e) {
       monitor(
           fwdNode.getId(),
