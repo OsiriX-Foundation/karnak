@@ -19,12 +19,10 @@ import org.dcm4che3.data.Tag;
 import org.dcm4che3.data.VR;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.data.entity.SOPClassUIDEntity;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.weasis.dicom.param.AttributeEditorContext;
 import org.weasis.dicom.param.AttributeEditorContext.Abort;
 import org.weasis.dicom.param.DicomNode;
 
-@SpringBootTest
 class FilterEditorTest {
 
   @Test

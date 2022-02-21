@@ -22,6 +22,7 @@ import org.karnak.backend.api.KheopsApi;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.KheopsAlbumsEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
+import org.karnak.backend.data.entity.SecretEntity;
 import org.karnak.backend.model.action.ActionItem;
 import org.karnak.backend.model.action.UID;
 import org.karnak.backend.model.expression.ExprCondition;
@@ -49,7 +50,8 @@ public class SwitchingAlbum {
   private static HMAC generateHMAC(DestinationEntity destinationEntity) {
     if (destinationEntity.isDesidentification()) {
       ProjectEntity projectEntity = destinationEntity.getProjectEntity();
-      return new HMAC(projectEntity.getSecret());
+      SecretEntity secretEntity = projectEntity.retrieveActiveSecret();
+      return secretEntity != null ? new HMAC(secretEntity.getKey()) : null;
     }
     return null;
   }

@@ -19,6 +19,7 @@ import com.vaadin.flow.router.OptionalParameter;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.karnak.backend.data.entity.ProjectEntity;
+import org.karnak.backend.data.entity.SecretEntity;
 import org.karnak.backend.model.profilepipe.HMAC;
 import org.karnak.frontend.MainLayout;
 import org.karnak.frontend.project.component.EditProject;
@@ -28,13 +29,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 
 /** Project View */
-@Route(value = "projects", layout = MainLayout.class)
+@Route(value = ProjectView.ROUTE, layout = MainLayout.class)
 @PageTitle("KARNAK - Projects")
-@Secured({"ADMIN"})
+@Secured({"ROLE_admin"})
 @SuppressWarnings("serial")
 public class ProjectView extends HorizontalLayout implements HasUrlParameter<String> {
 
   public static final String VIEW_NAME = "Projects";
+  public static final String ROUTE = "projects";
 
   // Project Logic
   private final ProjectLogic projectLogic;
@@ -134,8 +136,8 @@ public class ProjectView extends HorizontalLayout implements HasUrlParameter<Str
             event -> {
               ProjectEntity newProjectEntity = new ProjectEntity();
               if (newResearchBinder.writeBeanIfValid(newProjectEntity)) {
-                newProjectEntity.setSecret(HMAC.generateRandomKey());
-                projectLogic.createProject(newProjectEntity);
+                projectLogic.createProject(
+                    newProjectEntity, new SecretEntity(HMAC.generateRandomKey()));
                 newProject.clear();
                 gridProject.select(newProjectEntity);
                 navigateProject(newProjectEntity);

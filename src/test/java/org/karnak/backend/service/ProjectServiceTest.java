@@ -15,18 +15,17 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.data.repo.ProjectRepo;
-import org.karnak.backend.model.NodeEvent;
+import org.karnak.backend.model.event.NodeEvent;
 import org.mockito.Mockito;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationEventPublisher;
 
-@SpringBootTest
 class ProjectServiceTest {
 
   // Application Event Publisher
@@ -49,6 +48,8 @@ class ProjectServiceTest {
     // Mock repositories
     Mockito.when(projectRepositoryMock.findAll())
         .thenReturn(Collections.singletonList(projectEntity));
+    Mockito.when(projectRepositoryMock.findById(Mockito.anyLong()))
+        .thenReturn(Optional.of(projectEntity));
 
     // Build mocked service
     projectService = new ProjectService(projectRepositoryMock, applicationEventPublisherMock);
@@ -120,5 +121,17 @@ class ProjectServiceTest {
     assertNotNull(projects);
     assertEquals(1, projects.size());
     assertEquals("projectEntityName", projects.get(0).getName());
+  }
+
+  @Test
+  void should_retrieve_project_by_id() {
+    // Call service
+    ProjectEntity projectEntity = projectService.retrieveProject(1L);
+
+    // Test results
+    Mockito.verify(projectRepositoryMock, Mockito.times(1)).findById(Mockito.anyLong());
+    assertNotNull(projectEntity);
+    assertEquals(Long.valueOf(1), projectEntity.getId());
+    assertEquals("projectEntityName", projectEntity.getName());
   }
 }
