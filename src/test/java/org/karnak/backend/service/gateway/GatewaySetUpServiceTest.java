@@ -26,12 +26,14 @@ import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.data.entity.KheopsAlbumsEntity;
 import org.karnak.backend.data.entity.ProfileEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
+import org.karnak.backend.data.repo.DestinationRepo;
 import org.karnak.backend.data.repo.ForwardNodeRepo;
+import org.karnak.backend.data.repo.VersionRepo;
 import org.karnak.backend.dicom.DicomForwardDestination;
 import org.karnak.backend.dicom.ForwardDestination;
 import org.karnak.backend.enums.DestinationType;
 import org.karnak.backend.enums.NodeEventType;
-import org.karnak.backend.model.NodeEvent;
+import org.karnak.backend.model.event.NodeEvent;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.weasis.dicom.param.DicomNode;
@@ -41,6 +43,8 @@ class GatewaySetUpServiceTest {
 
   // Repositories
   final ForwardNodeRepo forwardNodeRepoMock = Mockito.mock(ForwardNodeRepo.class);
+  final VersionRepo versionRepoMock = Mockito.mock(VersionRepo.class);
+  final DestinationRepo destinationRepoMock = Mockito.mock(DestinationRepo.class);
 
   // Service
   private GatewaySetUpService gatewaySetUpService;
@@ -49,7 +53,8 @@ class GatewaySetUpServiceTest {
   public void setUp() throws Exception {
 
     // Build mocked service
-    gatewaySetUpService = new GatewaySetUpService(forwardNodeRepoMock);
+    gatewaySetUpService =
+        new GatewaySetUpService(forwardNodeRepoMock, versionRepoMock, destinationRepoMock);
   }
 
   @Test
@@ -266,7 +271,7 @@ class GatewaySetUpServiceTest {
     ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
     forwardNodeEntity.setFwdAeTitle("fwdAeTitle");
     forwardNodeEntity.setId(1L);
-    forwardNodeEntity.setDescription("description");
+    forwardNodeEntity.setFwdDescription("description");
     DestinationEntity destinationEntity = new DestinationEntity();
     destinationEntity.setFilterBySOPClasses(true);
     destinationEntity.setAeTitle("aeTitle");

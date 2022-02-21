@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ProfileEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
+import org.karnak.backend.data.entity.SecretEntity;
 import org.karnak.backend.enums.PseudonymType;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.weasis.dicom.param.AttributeEditorContext;
@@ -45,7 +46,7 @@ class DeIdentifyEditorTest {
     destinationEntity.setSavePseudonym(false);
     byte[] tabByte = new byte[16];
     tabByte[0] = 1;
-    projectEntity.setSecret(tabByte);
+    projectEntity.addActiveSecretEntity(new SecretEntity(tabByte));
     attributes.setString(Tag.PatientID, VR.SH, "patientID");
     attributes.setString(Tag.SeriesInstanceUID, VR.SH, "seriesInstanceUID");
     attributes.setString(Tag.SOPInstanceUID, VR.SH, "sopInstanceUID");

@@ -23,30 +23,35 @@
 
   <!-- Properties -->
   <properties>
-    <enforcer.jdk-version>[${java.version},)</enforcer.jdk-version>
-    <enforcer.maven-version>[3.2.0,)</enforcer.maven-version>
-    <java.version>14</java.version>
-    <javax.el.version>3.0.0</javax.el.version>
-    <javax.mail.version>1.6.2</javax.mail.version>
-    <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <springframework.version>2.4.9</springframework.version>
-    <vaadin.version>19.0.6</vaadin.version>
-    <weasis-dicom-tools.version>5.23.3-IMG-RELEASE</weasis-dicom-tools.version>
-    <weasis.opencv.native.version>4.5.1-dcm</weasis.opencv.native.version>
-    <jacoco-maven-plugin.version>0.8.6</jacoco-maven-plugin.version>
+    <enforcer.jdk-version>[${java.version},)</enforcer.jdk-version>
+    <enforcer.maven-version>[3.2.0,)</enforcer.maven-version>
+    <java.version>15</java.version>
+    <springframework.version>2.6.1</springframework.version>
+    <javax.el.version>3.0.0</javax.el.version>
+    <javax.mail.version>1.6.2</javax.mail.version>
+    <vaadin.version>21.0.9</vaadin.version>
+    <weasis-dicom-tools.version>5.25.1.1-IMG-RELEASE</weasis-dicom-tools.version>
+    <weasis.opencv.native.version>4.5.5-dcm</weasis.opencv.native.version>
+    <springdoc.version>1.6.0</springdoc.version>
+    <mockito.version>4.2.0</mockito.version>
+    <h2.version>1.4.200</h2.version>
+    <hug.springcloud.version>2.3.11-HSR11-1.0</hug.springcloud.version>
+    <jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
+    <junit.jupiter.version>5.8.2</junit.jupiter.version>
+    <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
     <sonar-maven-plugin.version>3.8.0.2131</sonar-maven-plugin.version>
     <sonar.java.source>${java.version}</sonar.java.source>
     <sonar.java.target>${java.version}</sonar.java.target>
     <sonar.projectKey>karnak</sonar.projectKey>
     <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
-    <h2.version>1.4.200</h2.version>
-    <junit.jupiter.version>5.7.2</junit.jupiter.version>
-    <mockito.version>3.9.0</mockito.version>
-    <springdoc.version>1.5.6</springdoc.version>
-    <hug.springcloud.version>2.3.11-HSR11-1.0</hug.springcloud.version>
+    <org.json.version>20211205</org.json.version>
+    <logback.version>1.2.9</logback.version>
+    <hazelcast.version>5.0.2</hazelcast.version>
+    <liquibase.version>4.3.5</liquibase.version>
+    <opencsv.version>5.5.2</opencsv.version>
   </properties>
 
   <!-- Distribution management for releases/snapshots -->
@@ -116,16 +121,16 @@
           </execution>
         </executions>
         <groupId>org.apache.maven.plugins</groupId>
-        <version>3.0.0-M3</version>
+        <version>3.0.0</version>
       </plugin>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
         <configuration>
           <source>${java.version}</source>
           <target>${java.version}</target>
         </configuration>
-        <groupId>org.apache.maven.plugins</groupId>
-        <version>3.8.1</version>
       </plugin>
       <plugin>
         <groupId>org.jacoco</groupId>
@@ -187,6 +192,46 @@
               <type>so</type>
               <version>${weasis.opencv.native.version}</version>
             </artifactItem>
+            <artifactItem>
+              <artifactId>libopencv_java</artifactId>
+              <classifier>linux-aarch64</classifier>
+              <destFileName>libopencv_java.so</destFileName>
+              <groupId>org.weasis.thirdparty.org.opencv</groupId>
+              <outputDirectory>${project.build.directory}/native-lib/lib/linux-aarch64
+              </outputDirectory>
+              <type>so</type>
+              <version>${weasis.opencv.native.version}</version>
+            </artifactItem>
+            <artifactItem>
+              <artifactId>libopencv_java</artifactId>
+              <classifier>linux-armv7a</classifier>
+              <destFileName>libopencv_java.so</destFileName>
+              <groupId>org.weasis.thirdparty.org.opencv</groupId>
+              <outputDirectory>${project.build.directory}/native-lib/lib/linux-armv7a
+              </outputDirectory>
+              <type>so</type>
+              <version>${weasis.opencv.native.version}</version>
+            </artifactItem>
+            <artifactItem>
+              <artifactId>libopencv_java</artifactId>
+              <classifier>macosx-x86-64</classifier>
+              <destFileName>libopencv_java.dylib</destFileName>
+              <groupId>org.weasis.thirdparty.org.opencv</groupId>
+              <outputDirectory>${project.build.directory}/native-lib/lib/macosx-x86-64
+              </outputDirectory>
+              <type>dylib</type>
+              <version>${weasis.opencv.native.version}</version>
+            </artifactItem>
+            <artifactItem>
+              <artifactId>opencv_java</artifactId>
+              <classifier>windows-x86-64</classifier>
+              <destFileName>opencv_java.dll</destFileName>
+              <groupId>org.weasis.thirdparty.org.opencv</groupId>
+              <outputDirectory>${project.build.directory}/native-lib/lib/windows-x86-64
+              </outputDirectory>
+              <type>dll</type>
+              <version>${weasis.opencv.native.version}</version>
+            </artifactItem>
           </artifactItems>
           <outputDirectory>${project.build.directory}</outputDirectory>
         </configuration>
@@ -200,7 +245,7 @@
           </execution>
         </executions>
         <groupId>org.apache.maven.plugins</groupId>
-        <version>3.1.1</version>
+        <version>3.2.0</version>
       </plugin>
       <plugin>
         <artifactId>spring-boot-maven-plugin</artifactId>
@@ -242,7 +287,7 @@
       <plugin>
         <groupId>com.diffplug.spotless</groupId>
         <artifactId>spotless-maven-plugin</artifactId>
-        <version>2.6.1</version>
+        <version>2.17.7</version>
         <configuration>
           <!-- define a language-specific format -->
           <java>
@@ -320,6 +365,14 @@
       <artifactId>spring-boot-starter-web</artifactId>
       <groupId>org.springframework.boot</groupId>
     </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-mail</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-thymeleaf</artifactId>
+    </dependency>
 
     <dependency>
       <artifactId>cache-api</artifactId>
@@ -328,27 +381,39 @@
     </dependency>
 
     <dependency>
-      <artifactId>hazelcast</artifactId>
+      <artifactId>hazelcast-spring</artifactId>
       <groupId>com.hazelcast</groupId>
-      <version>4.1</version>
+      <version>${hazelcast.version}</version>
     </dependency>
+
+    <!--    <dependency>-->
+    <!--      <artifactId>hazelcast</artifactId>-->
+    <!--      <groupId>com.hazelcast</groupId>-->
+    <!--      <version>4.1</version>-->
+    <!--    </dependency>-->
 
     <dependency>
       <artifactId>liquibase-maven-plugin</artifactId>
       <groupId>org.liquibase</groupId>
-      <version>4.3.3</version>
+      <version>${liquibase.version}</version>
     </dependency>
 
     <dependency>
       <artifactId>json</artifactId>
       <groupId>org.json</groupId>
-      <version>20180813</version>
+      <version>${org.json.version}</version>
     </dependency>
 
     <dependency>
       <artifactId>gson</artifactId>
       <groupId>com.google.code.gson</groupId>
       <version>2.8.6</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.opencsv</groupId>
+      <artifactId>opencsv</artifactId>
+      <version>${opencsv.version}</version>
     </dependency>
 
     <dependency>
@@ -369,7 +434,6 @@
       </exclusions>
       <groupId>org.weasis</groupId>
       <version>${weasis-dicom-tools.version}</version>
-
     </dependency>
     <dependency>
       <artifactId>javax.mail</artifactId>
@@ -382,7 +446,6 @@
       <artifactId>spring-boot-starter-data-jpa</artifactId>
       <groupId>org.springframework.boot</groupId>
     </dependency>
-
 
     <!-- Vaadin Spring -->
     <dependency>
@@ -490,12 +553,12 @@
     <dependency>
       <artifactId>vaadin-checkbox-flow</artifactId>
       <groupId>com.vaadin</groupId>
-      <version>3.1.0</version>
+      <version>${vaadin.version}</version>
     </dependency>
     <dependency>
       <artifactId>togglebutton</artifactId>
       <groupId>com.vaadin.componentfactory</groupId>
-      <version>1.0.0</version>
+      <version>1.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.vaadin.klaudeta</groupId>
@@ -507,6 +570,7 @@
       <artifactId>validation-api</artifactId>
       <groupId>javax.validation</groupId>
     </dependency>
+
     <dependency>
       <artifactId>jul-to-slf4j</artifactId>
       <groupId>org.slf4j</groupId>
@@ -515,6 +579,7 @@
     <dependency>
       <artifactId>logback-classic</artifactId>
       <groupId>ch.qos.logback</groupId>
+      <version>${logback.version}</version>
     </dependency>
 
     <dependency>
@@ -583,6 +648,12 @@
       <groupId>org.springdoc</groupId>
       <artifactId>springdoc-openapi-ui</artifactId>
       <version>${springdoc.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.vaadin.artur</groupId>
+      <artifactId>spring-data-provider</artifactId>
+      <version>2.1.0</version>
     </dependency>
   </dependencies>
 

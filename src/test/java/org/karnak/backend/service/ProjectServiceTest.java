@@ -22,7 +22,7 @@ import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.data.repo.ProjectRepo;
-import org.karnak.backend.model.NodeEvent;
+import org.karnak.backend.model.event.NodeEvent;
 import org.mockito.Mockito;
 import org.springframework.context.ApplicationEventPublisher;
 
