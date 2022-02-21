@@ -47,6 +47,7 @@ public class ForwardNodeService {
    * @param forwardNodeEntity the updated or new forwardNodeEntity
    */
   public void save(ForwardNodeEntity forwardNodeEntity) {
+    // Save forward node
     forwardNodeRepo.saveAndFlush(forwardNodeEntity);
   }
 

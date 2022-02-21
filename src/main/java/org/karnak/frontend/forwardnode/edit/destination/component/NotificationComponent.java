@@ -18,7 +18,7 @@ import com.vaadin.flow.component.textfield.TextFieldVariant;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationResult;
 import org.apache.commons.lang3.StringUtils;
-import org.karnak.backend.constant.DefaultValuesNotification;
+import org.karnak.backend.constant.Notification;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.frontend.component.converter.HStringToIntegerConverter;
 import org.karnak.frontend.util.UIS;
@@ -89,16 +89,16 @@ public class NotificationComponent extends VerticalLayout {
   private void updateDefaultValuesNotificationTextFields() {
     if (notifyObjectErrorPrefix.getValue() == null
         || notifyObjectErrorPrefix.getValue().trim().isEmpty()) {
-      notifyObjectErrorPrefix.setValue(DefaultValuesNotification.OBJECT_ERROR_PREFIX);
+      notifyObjectErrorPrefix.setValue(Notification.DEFAULT_SUBJECT_ERROR_PREFIX);
     }
     if (notifyObjectPattern.getValue() == null || notifyObjectPattern.getValue().trim().isEmpty()) {
-      notifyObjectPattern.setValue(DefaultValuesNotification.OBJECT_PATTERN);
+      notifyObjectPattern.setValue(Notification.DEFAULT_SUBJECT_PATTERN);
     }
     if (notifyObjectValues.getValue() == null || notifyObjectValues.getValue().trim().isEmpty()) {
-      notifyObjectValues.setValue(DefaultValuesNotification.OBJECT_VALUES);
+      notifyObjectValues.setValue(Notification.DEFAULT_SUBJECT_VALUES);
     }
     if (notifyInterval.getValue() == null || notifyInterval.getValue().trim().isEmpty()) {
-      notifyInterval.setValue(DefaultValuesNotification.INTERVAL);
+      notifyInterval.setValue(Notification.DEFAULT_INTERVAL);
     }
   }
 
@@ -110,19 +110,19 @@ public class NotificationComponent extends VerticalLayout {
   public void updateDefaultValuesNotification(DestinationEntity destinationEntity) {
     if (destinationEntity.getNotifyObjectErrorPrefix() == null
         || destinationEntity.getNotifyObjectErrorPrefix().trim().isEmpty()) {
-      destinationEntity.setNotifyObjectErrorPrefix(DefaultValuesNotification.OBJECT_ERROR_PREFIX);
+      destinationEntity.setNotifyObjectErrorPrefix(Notification.DEFAULT_SUBJECT_ERROR_PREFIX);
     }
     if (destinationEntity.getNotifyObjectPattern() == null
         || destinationEntity.getNotifyObjectPattern().trim().isEmpty()) {
-      destinationEntity.setNotifyObjectPattern(DefaultValuesNotification.OBJECT_PATTERN);
+      destinationEntity.setNotifyObjectPattern(Notification.DEFAULT_SUBJECT_PATTERN);
     }
     if (destinationEntity.getNotifyObjectValues() == null
         || destinationEntity.getNotifyObjectValues().trim().isEmpty()) {
-      destinationEntity.setNotifyObjectValues(DefaultValuesNotification.OBJECT_VALUES);
+      destinationEntity.setNotifyObjectValues(Notification.DEFAULT_SUBJECT_VALUES);
     }
     if (destinationEntity.getNotifyInterval() == null
         || destinationEntity.getNotifyInterval() == 0) {
-      destinationEntity.setNotifyInterval(Integer.parseInt(DefaultValuesNotification.INTERVAL));
+      destinationEntity.setNotifyInterval(Integer.parseInt(Notification.DEFAULT_INTERVAL));
     }
   }
 
@@ -141,14 +141,14 @@ public class NotificationComponent extends VerticalLayout {
   private void buildNotifyInterval() {
     notifyInterval =
         new TextField(
-            String.format("Notif.: interval (Default: %s)", DefaultValuesNotification.INTERVAL));
+            String.format("Notif.: interval (Default: %s)", Notification.DEFAULT_INTERVAL));
     notifyInterval.setWidth("18%");
     notifyInterval.addThemeVariants(TextFieldVariant.LUMO_ALIGN_RIGHT);
     UIS.setTooltip(
         notifyInterval,
         String.format(
             "Interval in seconds for sending a notification (when no new image is arrived in the archive folder). Default value: %s",
-            DefaultValuesNotification.INTERVAL));
+            Notification.DEFAULT_INTERVAL));
   }
 
   /** Notify Object Values */
@@ -156,13 +156,13 @@ public class NotificationComponent extends VerticalLayout {
     notifyObjectValues =
         new TextField(
             String.format(
-                "Notif.: subject values (Default: %s)", DefaultValuesNotification.OBJECT_VALUES));
+                "Notif.: subject values (Default: %s)", Notification.DEFAULT_SUBJECT_VALUES));
     notifyObjectValues.setWidth("24%");
     UIS.setTooltip(
         notifyObjectValues,
         String.format(
             "Values injected in the pattern [PatientID StudyDescription StudyDate StudyInstanceUID]. Default value: %s",
-            DefaultValuesNotification.OBJECT_VALUES));
+            Notification.DEFAULT_SUBJECT_VALUES));
   }
 
   /** Notify Object Pattern */
@@ -170,13 +170,13 @@ public class NotificationComponent extends VerticalLayout {
     notifyObjectPattern =
         new TextField(
             String.format(
-                "Notif.: subject pattern (Default: %s)", DefaultValuesNotification.OBJECT_PATTERN));
+                "Notif.: subject pattern (Default: %s)", Notification.DEFAULT_SUBJECT_PATTERN));
     notifyObjectPattern.setWidth("24%");
     UIS.setTooltip(
         notifyObjectPattern,
         String.format(
             "Pattern of the email object, see https://dzone.com/articles/java-string-format-examples. Default value: %s",
-            DefaultValuesNotification.OBJECT_PATTERN));
+            Notification.DEFAULT_SUBJECT_PATTERN));
   }
 
   /** Notify Object Error Prefix */
@@ -185,13 +185,13 @@ public class NotificationComponent extends VerticalLayout {
         new TextField(
             String.format(
                 "Notif.: error subject prefix (Default: %s)",
-                DefaultValuesNotification.OBJECT_ERROR_PREFIX));
+                Notification.DEFAULT_SUBJECT_ERROR_PREFIX));
     notifyObjectErrorPrefix.setWidth("24%");
     UIS.setTooltip(
         notifyObjectErrorPrefix,
         String.format(
             "Prefix of the email object when containing an issue. Default value: %s",
-            DefaultValuesNotification.OBJECT_ERROR_PREFIX));
+            Notification.DEFAULT_SUBJECT_ERROR_PREFIX));
   }
 
   /** Notify */

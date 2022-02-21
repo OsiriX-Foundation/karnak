@@ -12,7 +12,7 @@ package org.karnak.backend.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
-import org.karnak.backend.model.NodeEvent;
+import org.karnak.backend.model.event.NodeEvent;
 import org.mockito.Mockito;
 import org.springframework.context.ApplicationEventPublisher;
 
@@ -24,6 +24,7 @@ class ForwardNodeAPIServiceTest {
 
   // Service
   private final ForwardNodeService forwardNodeServiceMock = Mockito.mock(ForwardNodeService.class);
+  private final DestinationService destinationServiceMock = Mockito.mock(DestinationService.class);
   private ForwardNodeAPIService forwardNodeAPIService;
 
   @BeforeEach
@@ -31,7 +32,8 @@ class ForwardNodeAPIServiceTest {
 
     // Build mocked service
     forwardNodeAPIService =
-        new ForwardNodeAPIService(forwardNodeServiceMock, applicationEventPublisherMock);
+        new ForwardNodeAPIService(
+            forwardNodeServiceMock, destinationServiceMock, applicationEventPublisherMock);
   }
 
   @Test

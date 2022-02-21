@@ -12,6 +12,7 @@ package org.karnak.backend.data.entity;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -129,6 +130,12 @@ public class DestinationEntity implements Serializable {
 
   // Flag to know if there are some transfer activities on this destination
   private boolean transferInProgress;
+
+  // Date of the last transfer for this destination
+  private LocalDateTime lastTransfer;
+
+  // Last date of the check of email notifications for this destination
+  private LocalDateTime emailLastCheck;
 
   public DestinationEntity() {
     this(null);
@@ -501,6 +508,22 @@ public class DestinationEntity implements Serializable {
     this.transferInProgress = transferInProgress;
   }
 
+  public LocalDateTime getEmailLastCheck() {
+    return emailLastCheck;
+  }
+
+  public void setEmailLastCheck(LocalDateTime emailLastCheck) {
+    this.emailLastCheck = emailLastCheck;
+  }
+
+  public LocalDateTime getLastTransfer() {
+    return lastTransfer;
+  }
+
+  public void setLastTransfer(LocalDateTime lastTransfer) {
+    this.lastTransfer = lastTransfer;
+  }
+
   /**
    * Informs if this object matches with the filter as text.
    *
@@ -615,6 +638,74 @@ public class DestinationEntity implements Serializable {
     }
     return "Type of destination is unknown";
   }
+  //
+  //    @Override
+  //    public boolean equals(Object o) {
+  //      if (this == o) {
+  //        return true;
+  //      }
+  //      if (o == null || getClass() != o.getClass()) {
+  //        return false;
+  //      }
+  //      DestinationEntity that = (DestinationEntity) o;
+  //      return desidentification == that.desidentification
+  //          && issuerByDefault == that.issuerByDefault
+  //          && filterBySOPClasses == that.filterBySOPClasses
+  //          && Objects.equals(id, that.id)
+  //          && Objects.equals(description, that.description)
+  //          && destinationType == that.destinationType
+  //          && pseudonymType == that.pseudonymType
+  //          && Objects.equals(tag, that.tag)
+  //          && Objects.equals(delimiter, that.delimiter)
+  //          && Objects.equals(position, that.position)
+  //          && Objects.equals(savePseudonym, that.savePseudonym)
+  //          && Objects.equals(transferSyntax, that.transferSyntax)
+  //          && Objects.equals(transcodeOnlyUncompressed, that.transcodeOnlyUncompressed)
+  //          && Objects.equals(activateNotification, that.activateNotification)
+  //          && Objects.equals(notify, that.notify)
+  //          && Objects.equals(notifyObjectErrorPrefix, that.notifyObjectErrorPrefix)
+  //          && Objects.equals(notifyObjectPattern, that.notifyObjectPattern)
+  //          && Objects.equals(notifyObjectValues, that.notifyObjectValues)
+  //          && Objects.equals(notifyInterval, that.notifyInterval)
+  //          && Objects.equals(aeTitle, that.aeTitle)
+  //          && Objects.equals(hostname, that.hostname)
+  //          && Objects.equals(port, that.port)
+  //          && Objects.equals(useaetdest, that.useaetdest)
+  //          && Objects.equals(url, that.url)
+  //          && Objects.equals(urlCredentials, that.urlCredentials)
+  //          && Objects.equals(headers, that.headers);
+  //    }
+  //
+  //    @Override
+  //    public int hashCode() {
+  //      return Objects.hash(
+  //          id,
+  //          description,
+  //          destinationType,
+  //          desidentification,
+  //          issuerByDefault,
+  //          pseudonymType,
+  //          tag,
+  //          delimiter,
+  //          position,
+  //          savePseudonym,
+  //          filterBySOPClasses,
+  //          transferSyntax,
+  //          transcodeOnlyUncompressed,
+  //          activateNotification,
+  //          notify,
+  //          notifyObjectErrorPrefix,
+  //          notifyObjectPattern,
+  //          notifyObjectValues,
+  //          notifyInterval,
+  //          aeTitle,
+  //          hostname,
+  //          port,
+  //          useaetdest,
+  //          url,
+  //          urlCredentials,
+  //          headers);
+  //    }
 
   @Override
   public boolean equals(Object o) {
@@ -625,64 +716,15 @@ public class DestinationEntity implements Serializable {
       return false;
     }
     DestinationEntity that = (DestinationEntity) o;
-    return desidentification == that.desidentification
-        && issuerByDefault == that.issuerByDefault
-        && filterBySOPClasses == that.filterBySOPClasses
-        && Objects.equals(id, that.id)
-        && Objects.equals(description, that.description)
-        && destinationType == that.destinationType
-        && pseudonymType == that.pseudonymType
-        && Objects.equals(tag, that.tag)
-        && Objects.equals(delimiter, that.delimiter)
-        && Objects.equals(position, that.position)
-        && Objects.equals(savePseudonym, that.savePseudonym)
-        && Objects.equals(transferSyntax, that.transferSyntax)
-        && Objects.equals(transcodeOnlyUncompressed, that.transcodeOnlyUncompressed)
-        && Objects.equals(transferInProgress, that.transferInProgress)
-        && Objects.equals(activateNotification, that.activateNotification)
-        && Objects.equals(notify, that.notify)
-        && Objects.equals(notifyObjectErrorPrefix, that.notifyObjectErrorPrefix)
-        && Objects.equals(notifyObjectPattern, that.notifyObjectPattern)
-        && Objects.equals(notifyObjectValues, that.notifyObjectValues)
-        && Objects.equals(notifyInterval, that.notifyInterval)
-        && Objects.equals(aeTitle, that.aeTitle)
-        && Objects.equals(hostname, that.hostname)
-        && Objects.equals(port, that.port)
-        && Objects.equals(useaetdest, that.useaetdest)
-        && Objects.equals(url, that.url)
-        && Objects.equals(urlCredentials, that.urlCredentials)
-        && Objects.equals(headers, that.headers);
+    return Objects.equals(id, that.id);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        id,
-        description,
-        destinationType,
-        desidentification,
-        issuerByDefault,
-        pseudonymType,
-        tag,
-        delimiter,
-        position,
-        savePseudonym,
-        filterBySOPClasses,
-        transferSyntax,
-        transcodeOnlyUncompressed,
-        transferInProgress,
-        activateNotification,
-        notify,
-        notifyObjectErrorPrefix,
-        notifyObjectPattern,
-        notifyObjectValues,
-        notifyInterval,
-        aeTitle,
-        hostname,
-        port,
-        useaetdest,
-        url,
-        urlCredentials,
-        headers);
+    return Objects.hash(id);
+  }
+
+  public String toStringDicomNotificationDestination() {
+    return "Host=" + getHostname() + " AET=" + getAeTitle() + " Port=" + getPort();
   }
 }
