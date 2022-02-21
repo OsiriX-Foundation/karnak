@@ -11,17 +11,32 @@ package org.karnak.backend.dicom;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.mock;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.karnak.backend.dicom.ForwardUtil.Params;
+import org.karnak.backend.service.ForwardService;
+import org.springframework.context.ApplicationEventPublisher;
 import org.weasis.dicom.param.DicomNode;
 
 class ForwardUtilTest {
+
+  // Service
+  private ForwardService forwardService;
+
+  @BeforeEach
+  public void setUp() {
+    final ApplicationEventPublisher applicationEventPublisher =
+        mock(ApplicationEventPublisher.class);
+
+    // Build mocked service
+    forwardService = new ForwardService(applicationEventPublisher);
+  }
 
   @Test
   void should_create_params() {
@@ -51,7 +66,7 @@ class ForwardUtilTest {
         IllegalStateException.class,
         () -> {
           // Call method
-          ForwardUtil.storeMultipleDestination(fwdNode, destList, null);
+          forwardService.storeMultipleDestination(fwdNode, destList, null);
         });
   }
 
@@ -71,7 +86,7 @@ class ForwardUtilTest {
     Assertions.assertDoesNotThrow(
         () -> {
           // Call method
-          ForwardUtil.storeMultipleDestination(forwardDicomNode, destList, p);
+          forwardService.storeMultipleDestination(forwardDicomNode, destList, p);
         });
   }
 
@@ -94,7 +109,7 @@ class ForwardUtilTest {
         IOException.class,
         () -> {
           // Call method
-          ForwardUtil.storeMultipleDestination(forwardDicomNode, destList, p);
+          forwardService.storeMultipleDestination(forwardDicomNode, destList, p);
         });
   }
 }

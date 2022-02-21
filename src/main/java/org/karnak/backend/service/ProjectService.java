@@ -15,7 +15,7 @@ import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.data.repo.ProjectRepo;
 import org.karnak.backend.enums.NodeEventType;
-import org.karnak.backend.model.NodeEvent;
+import org.karnak.backend.model.event.NodeEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -48,8 +48,8 @@ public class ProjectService {
    *
    * @param projectEntity Project to save
    */
-  public void save(ProjectEntity projectEntity) {
-    projectRepo.saveAndFlush(projectEntity);
+  public ProjectEntity save(ProjectEntity projectEntity) {
+    return projectRepo.saveAndFlush(projectEntity);
   }
 
   /**

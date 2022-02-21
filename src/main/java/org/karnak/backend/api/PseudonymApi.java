@@ -49,7 +49,7 @@ public class PseudonymApi {
 
   private final HttpClient httpClient =
       HttpClient.newBuilder() // one instance, reuse
-          .version(HttpClient.Version.HTTP_2)
+          .version(HttpClient.Version.HTTP_1_1)
           .build();
 
   private String sessionId;

@@ -29,3 +29,5 @@ spring:
     active: '@activatedProperties@'
   liquibase:
     enabled: false
+monitoring:
+  max-history: 50000

@@ -35,7 +35,7 @@ public class KheopsApi {
   public KheopsApi() {
     httpClient =
         HttpClient.newBuilder() // one instance, reuse
-            .version(HttpClient.Version.HTTP_2)
+            .version(HttpClient.Version.HTTP_1_1)
             .build();
   }
 
