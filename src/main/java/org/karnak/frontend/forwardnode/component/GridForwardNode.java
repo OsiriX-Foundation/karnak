@@ -26,7 +26,7 @@ public class GridForwardNode extends Grid<ForwardNodeEntity> {
             .setFlexGrow(20)
             .setSortable(true);
 
-    addColumn(ForwardNodeEntity::getDescription)
+    addColumn(ForwardNodeEntity::getFwdDescription)
         .setHeader("Description")
         .setFlexGrow(20)
         .setSortable(true);

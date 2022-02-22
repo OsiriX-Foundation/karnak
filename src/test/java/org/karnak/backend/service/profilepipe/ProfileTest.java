@@ -27,12 +27,11 @@ import org.karnak.backend.data.entity.MaskEntity;
 import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.data.entity.ProfileEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
+import org.karnak.backend.data.entity.SecretEntity;
 import org.karnak.backend.enums.DestinationType;
 import org.karnak.backend.enums.PseudonymType;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.weasis.dicom.param.AttributeEditorContext;
 
-@SpringBootTest
 class ProfileTest {
 
   @Test
@@ -47,7 +46,7 @@ class ProfileTest {
     projectEntity.setProfileEntity(profileEntityProject);
     byte[] tabByte = new byte[16];
     tabByte[0] = 1;
-    projectEntity.setSecret(tabByte);
+    projectEntity.addActiveSecretEntity(new SecretEntity(tabByte));
     destinationEntity.setProjectEntity(projectEntity);
     destinationEntity.setPseudonymType(PseudonymType.EXTID_IN_TAG);
     destinationEntity.setTag("0008,0080");
@@ -64,6 +63,7 @@ class ProfileTest {
     profileElementEntityCleanPixelData.setPosition(2);
     profileElementEntityBasic.setAction("ReplaceNull");
     profileElementEntityCleanPixelData.setAction("ReplaceNull");
+
     profileElementEntityCleanPixelData.setCondition("!tagValueContains(#Tag.StationName,'ICT256')");
 
     profileElementEntities.add(profileElementEntityBasic);
@@ -134,6 +134,7 @@ class ProfileTest {
     profileElementEntityCleanPixelData.setCodename("clean.pixel.data");
     profileElementEntityCleanPixelData.setName("nameCleanPixel");
     profileElementEntityCleanPixelData.setAction("ReplaceNull");
+
     profileElementEntityCleanPixelData.setCondition("!tagValueContains(#Tag.StationName,'ICT256')");
 
     profileElementEntities.add(profileElementEntityCleanPixelData);
@@ -159,6 +160,7 @@ class ProfileTest {
     profileElementEntityCleanPixelData.setCodename("clean.pixel.data");
     profileElementEntityCleanPixelData.setName("nameCleanPixel");
     profileElementEntityCleanPixelData.setAction("ReplaceNull");
+
     profileElementEntityCleanPixelData.setCondition("tagValueContains(#Tag.StationName,'ICT256')");
 
     profileElementEntities.add(profileElementEntityCleanPixelData);

@@ -17,6 +17,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.backend.data.entity.DestinationEntity;
+import org.karnak.frontend.component.BoxShadowComponent;
 import org.karnak.frontend.forwardnode.edit.component.ButtonSaveDeleteCancel;
 import org.karnak.frontend.kheops.SwitchingAlbumsView;
 import org.karnak.frontend.util.UIS;

@@ -11,12 +11,15 @@ package org.karnak.backend.util;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import org.dcm4che3.data.Attributes;
 import org.karnak.backend.data.entity.ArgumentEntity;
 import org.karnak.backend.dicom.DateTimeUtils;
@@ -25,6 +28,49 @@ import org.slf4j.LoggerFactory;
 
 public class DateFormat {
   private static final Logger LOGGER = LoggerFactory.getLogger(DateFormat.class);
+
+  // Date formats
+  public static final String FORMAT_DDMMYYYY_SLASH = "dd/MM/yyyy";
+  public static final String FORMAT_DDMMYYYY_SLASH_HHMMSS_2POINTS = "dd/MM/yyyy HH:mm:ss";
+  public static final String FORMAT_DDMMYYYY_SLASH_HHMMSS_2POINTS_SSS_POINT =
+      "dd/MM/yyyy HH:mm:ss.SSS";
+  public static final String FORMAT_DDMMYYYY_SLASH_HHMMSS_2POINTS_SSSSSS_POINT =
+      "dd/MM/yyyy HH:mm:ss.SSSSSS";
+
+  /**
+   * Build DateTimeFormatter
+   *
+   * @param format Date format
+   * @return DateTimeFormatter
+   */
+  public static DateTimeFormatter dateTimeFormatter(final String format) {
+    return new DateTimeFormatterBuilder()
+        .parseCaseInsensitive()
+        .appendPattern(format)
+        .toFormatter(Locale.ENGLISH);
+  }
+
+  /**
+   * Format a LocalDate to a specifig
+   *
+   * @param date Date to format
+   * @param format Format to apply
+   * @return Formatted date String
+   */
+  public static String format(final LocalDate date, final String format) {
+    return date == null ? null : date.format(dateTimeFormatter(format));
+  }
+
+  /**
+   * Format a LocalDateTime to a specific format
+   *
+   * @param dateTime Date to format
+   * @param format Format to apply
+   * @return Formatted date String
+   */
+  public static String format(final LocalDateTime dateTime, final String format) {
+    return dateTime == null ? null : dateTime.format(dateTimeFormatter(format));
+  }
 
   public static String formatDA(String date, String option) {
     LocalDate localDate = DateTimeUtils.parseDA(date);

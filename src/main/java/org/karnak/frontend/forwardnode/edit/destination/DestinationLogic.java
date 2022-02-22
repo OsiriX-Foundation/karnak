@@ -9,6 +9,7 @@
  */
 package org.karnak.frontend.forwardnode.edit.destination;
 
+import com.vaadin.flow.component.UIDetachedException;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.data.provider.ListDataProvider;
@@ -18,7 +19,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
-import org.karnak.backend.model.NodeEvent;
+import org.karnak.backend.model.event.NodeEvent;
 import org.karnak.backend.service.DestinationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,12 +103,16 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
    * @param destinationEntities Refreshed destinations from DB
    */
   private void checkActivityEnableDisableButtons(List<DestinationEntity> destinationEntities) {
-    // If a transfer is in progress: disable
-    if (destinationEntities.stream().anyMatch(DestinationEntity::isTransferInProgress)) {
-      destinationView.getUi().access(this::disableSaveDeleteButtons);
-    } else {
-      // If no transfer: enable
-      destinationView.getUi().access(this::enableSaveDeleteButtons);
+    try {
+      // If a transfer is in progress: disable
+      if (destinationEntities.stream().anyMatch(DestinationEntity::isTransferInProgress)) {
+        destinationView.getUi().access(this::disableSaveDeleteButtons);
+      } else {
+        // If no transfer: enable
+        destinationView.getUi().access(this::enableSaveDeleteButtons);
+      }
+    } catch (UIDetachedException e) {
+      LOGGER.trace(String.format("UIDetachedException:%s", e.getMessage()));
     }
   }
 
@@ -292,5 +297,18 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
   public void deleteDestination(DestinationEntity destinationEntity) {
     destinationService.delete(destinationEntity);
     refreshAll();
+  }
+
+  /**
+   * Retrieve destination depending on id in parameter
+   *
+   * @param id Id to look for
+   * @return Destination found
+   */
+  public DestinationEntity retrieveDestinationEntity(Long id) {
+    List<DestinationEntity> destinationEntities =
+        destinationService.retrieveDestinationsFromIds(List.of(id));
+    return destinationEntities.isEmpty() ? null
+        : destinationEntities.stream().findFirst().orElse(null);
   }
 }

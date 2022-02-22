@@ -26,11 +26,12 @@ import org.karnak.frontend.dicom.monitor.MonitorView;
 import org.karnak.frontend.dicom.mwl.DicomWorkListView;
 import org.springframework.security.access.annotation.Secured;
 
-@Route(value = "dicom", layout = MainLayout.class)
+@Route(value = DicomMainView.ROUTE, layout = MainLayout.class)
 @PageTitle("KARNAK - DICOM Tools")
-@Secured({"ADMIN"})
+@Secured({"ROLE_admin"})
 public class DicomMainView extends VerticalLayout {
   public static final String VIEW_NAME = "DICOM Tools";
+  public static final String ROUTE = "dicom";
   private static final long serialVersionUID = 1L;
 
   // UI COMPONENTS

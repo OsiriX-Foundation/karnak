@@ -1,10 +1,11 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-  xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
-  xmlns:pro="http://www.liquibase.org/xml/ns/pro"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog dbchangelog-4.0.xsd">
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
   <changeSet author="karnak" id="1.1-1">
+    <preConditions onFail="MARK_RAN">
+      <columnExists tableName="destination" columnName="id_types"/>
+    </preConditions>
     <update catalogName="liquibase"
       schemaName="public"
       tableName="destination">
@@ -14,6 +15,9 @@
   </changeSet>
 
   <changeSet author="karnak" id="1.1-2">
+    <preConditions onFail="MARK_RAN">
+      <columnExists tableName="destination" columnName="id_types"/>
+    </preConditions>
     <update catalogName="liquibase"
       schemaName="public"
       tableName="destination">
@@ -23,6 +27,9 @@
   </changeSet>
 
   <changeSet author="karnak" id="1.1-3">
+    <preConditions onFail="MARK_RAN">
+        <columnExists tableName="destination" columnName="id_types"/>
+    </preConditions>
     <renameColumn catalogName="cat"
       columnDataType="INTEGER"
       newColumnName="pseudonym_type"

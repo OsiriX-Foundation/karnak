@@ -47,6 +47,7 @@ public class AppConfig {
   private String karnakpassword;
   private final ProfileRepo profileRepo;
   private final ProfilePipeService profilePipeService;
+  private String nameInstance;
 
   @Autowired
   public AppConfig(final ProfileRepo profileRepo, final ProfilePipeService profilePipeService) {
@@ -57,6 +58,9 @@ public class AppConfig {
   @PostConstruct
   public void postConstruct() {
     instance = this;
+    // TODO currently not used with unique instance
+//    nameInstance = RandomStringUtils.randomAlphabetic(5);
+    nameInstance = "karnak";
   }
 
   public static AppConfig getInstance() {
@@ -128,5 +132,9 @@ public class AppConfig {
   @Bean("StandardDICOM")
   public StandardDICOM getStandardDICOM() {
     return new StandardDICOM();
+  }
+
+  public String getNameInstance() {
+    return nameInstance;
   }
 }

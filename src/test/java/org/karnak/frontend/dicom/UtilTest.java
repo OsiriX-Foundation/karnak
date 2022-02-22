@@ -37,6 +37,70 @@ class UtilTest {
     assertTrue(result.toString().contains("</DcmNetworkStatus>"));
   }
 
+  //  @Test
+  //  void when_echo_response_format_xml_host_not_reachable_should_add_correct_tags() {
+  //
+  //    // Init data
+  //    DicomNode dicomNode = new DicomNode("fwdAeTitle", 1111);
+  //    StringBuilder result = new StringBuilder();
+  //
+  //    DicomState dicomState = new DicomState();
+  //    dicomState.setStatus(444);
+  //
+  //    try (MockedStatic<Echo> echoMock = Mockito.mockStatic(Echo.class)) {
+  //      echoMock
+  //          .when(
+  //              () ->
+  //                  Echo.process(
+  //                      Mockito.any(AdvancedParams.class),
+  //                      Mockito.any(DicomNode.class),
+  //                      Mockito.any(DicomNode.class)))
+  //          .thenReturn(dicomState);
+  //
+  //      // Call method
+  //      Util.getEchoResponse(result, dicomNode.getAet(), dicomNode, true, "XML", 0);
+  //
+  //      // Test results
+  //      Assert.assertNotNull(result);
+  //      String resultString = result.toString();
+  //      Assert.assertTrue(resultString.contains("<DcmStatus>"));
+  //      Assert.assertTrue(resultString.contains("</DcmStatus>"));
+  //      Assert.assertTrue(resultString.contains("Error"));
+  //    }
+  //  }
+
+  //  @Test
+  //  void when_echo_response_format_xml_host_reachable_should_add_correct_tags() {
+  //
+  //    // Init data
+  //    DicomNode dicomNode = new DicomNode("fwdAeTitle", 1111);
+  //    StringBuilder result = new StringBuilder();
+  //    DicomState dicomState = new DicomState();
+  //    dicomState.setStatus(0);
+  //
+  //    try (MockedStatic<Echo> echoMock = Mockito.mockStatic(Echo.class)) {
+  //      // Mock
+  //      echoMock
+  //          .when(
+  //              () ->
+  //                  Echo.process(
+  //                      Mockito.any(AdvancedParams.class),
+  //                      Mockito.any(DicomNode.class),
+  //                      Mockito.any(DicomNode.class)))
+  //          .thenReturn(dicomState);
+  //
+  //      // Call method
+  //      Util.getEchoResponse(result, dicomNode.getAet(), dicomNode, true, "XML", 0);
+  //
+  //      // Test results
+  //      Assert.assertNotNull(result);
+  //      String resultString = result.toString();
+  //      Assert.assertTrue(resultString.contains("<DcmStatus>"));
+  //      Assert.assertTrue(resultString.contains("</DcmStatus>"));
+  //      Assert.assertTrue(resultString.contains("Success"));
+  //    }
+  //  }
+
   @Test
   void when_wado_response_format_xml_host_not_reachable_should_add_correct_tags()
       throws MalformedURLException {

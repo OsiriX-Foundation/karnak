@@ -31,14 +31,15 @@ import org.karnak.frontend.component.ProjectDropDown;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 
-@Route(value = "extid", layout = MainLayout.class)
+@Route(value = ExternalIDView.ROUTE, layout = MainLayout.class)
 @PageTitle("KARNAK - External ID")
 @Tag("extid-view")
-@Secured({"ADMIN"})
+@Secured({"ROLE_admin"})
 @SuppressWarnings("serial")
 public class ExternalIDView extends HorizontalLayout {
 
   public static final String VIEW_NAME = "External pseudonym";
+  public static final String ROUTE = "extid";
   private static final String LABEL_CHOOSE_PROJECT = "Choose a project:";
   private static final String LABEL_DISCLAIMER_EXTID =
       "WARNING: The data that is added to this grid will be stored"

@@ -124,6 +124,18 @@ This project is divided in two parts:
         spring configurations, spring security, cache, spring services, models...
 - frontend : Vaadin components:  logic services, graphic components, views
 
+# Identity provider
+
+An OpenID Connect identity provider can be configured by using the environment variables:
+ - `IDP`:  when this environment variable has the value 'oidc', the following environment 
+ variables will configure the OpenID Connect identity provider. Any other value will load the in 
+ memory user configuration. 
+ - `OIDC_CLIENT_ID`: client id of the identity provider 
+ - `OIDC_CLIENT_SECRET`: client secret of the identity provider
+ - `OIDC_ISSUER_URI`: issuer URI of the identity provider
+ 
+# Documentation for API/Endpoints 
+
 # Workflow
 
 ![Workflow](doc/karnak-workflow.svg)

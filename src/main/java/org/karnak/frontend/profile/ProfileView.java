@@ -31,13 +31,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 
-@Route(value = "profile", layout = MainLayout.class)
+@Route(value = ProfileView.ROUTE, layout = MainLayout.class)
 @PageTitle("KARNAK - Profiles")
-@Secured({"ADMIN"})
+@Secured({"ROLE_admin"})
 @SuppressWarnings("serial")
 public class ProfileView extends HorizontalLayout implements HasUrlParameter<String> {
 
   public static final String VIEW_NAME = "Profiles";
+  public static final String ROUTE = "profile";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ProfileView.class);
 
@@ -48,7 +49,7 @@ public class ProfileView extends HorizontalLayout implements HasUrlParameter<Str
   private final ProfileGrid profileGrid;
   private final ProfileErrorView profileErrorView;
   private VerticalLayout barAndGridLayout;
-  private HorizontalLayout profileHorizontalLayout;
+  private final HorizontalLayout profileHorizontalLayout;
   private Upload uploadProfile;
   private MemoryBuffer memoryBuffer;
 

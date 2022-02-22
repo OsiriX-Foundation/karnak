@@ -23,6 +23,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication(exclude = ErrorMvcAutoConfiguration.class)
@@ -30,6 +31,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableJpaRepositories("org.karnak.backend.data.repo")
 @EnableVaadin(value = "org.karnak")
 @EnableScheduling
+@EnableAsync
 public class StartApplication implements CommandLineRunner {
 
   private static final Logger log = LoggerFactory.getLogger(StartApplication.class);

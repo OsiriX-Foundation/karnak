@@ -22,7 +22,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 
+@Component
 public final class SecurityUtil {
 
   private static final Logger LOG = LoggerFactory.getLogger(SecurityUtil.class);
@@ -70,29 +72,26 @@ public final class SecurityUtil {
    * @return true if access is granted
    */
   public static boolean isAccessGranted(Class<?> securedClass) {
-    boolean isAccessGranted = false;
+    boolean isAccessGranted = isUserLoggedIn();
 
-    if (isUserLoggedIn()) {
-      // // TODO: currently deactivated: to uncomment when managing views by role
-      //      // get the secured annotation
-      //      Secured secured = AnnotationUtils.findAnnotation(securedClass, Secured.class);
-      //
-      //      // allow if no roles are required
-      //      if (secured == null) {
-      //        isAccessGranted = true;
-      //      } else {
-      //        // lookup needed role in user roles
-      //        List<String> allowedRoles = Arrays.asList(secured.value());
-      //        Authentication authentication =
-      // SecurityContextHolder.getContext().getAuthentication();
-      //        isAccessGranted =
-      //                authentication != null
-      //                        && authentication.getAuthorities().stream()
-      //                        .map(GrantedAuthority::getAuthority)
-      //                        .anyMatch(allowedRoles::contains);
-      //      }
-      isAccessGranted = true;
-    }
+    // // TODO: currently deactivated: to uncomment when managing views by role
+    //      // get the secured annotation
+    //      Secured secured = AnnotationUtils.findAnnotation(securedClass, Secured.class);
+    //
+    //      // allow if no roles are required
+    //      if (secured == null) {
+    //        isAccessGranted = true;
+    //      } else {
+    //        // lookup needed role in user roles
+    //        List<String> allowedRoles = Arrays.asList(secured.value());
+    //        Authentication authentication =
+    // SecurityContextHolder.getContext().getAuthentication();
+    //        isAccessGranted =
+    //                authentication != null
+    //                        && authentication.getAuthorities().stream()
+    //                        .map(GrantedAuthority::getAuthority)
+    //                        .anyMatch(allowedRoles::contains);
+    //      }
     return isAccessGranted;
   }
 

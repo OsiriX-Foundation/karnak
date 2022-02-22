@@ -33,7 +33,7 @@ public class NewProject extends HorizontalLayout {
     this.profileDropDown = textFieldsBindProject.getProfileDropDown();
     setElements();
     add(this.textResearchName, this.profileDropDown, this.buttonAdd);
-    this.binder.removeBinding(textFieldsBindProject.getTextSecret());
+    this.binder.removeBinding(textFieldsBindProject.getSecretComboBox());
     this.binder.bindInstanceFields(this);
   }
 
