@@ -36,7 +36,7 @@
     <weasis.opencv.native.version>4.5.5-dcm</weasis.opencv.native.version>
     <springdoc.version>1.6.0</springdoc.version>
     <mockito.version>4.2.0</mockito.version>
-    <h2.version>1.4.200</h2.version>
+    <h2.version>2.1.210</h2.version>
     <jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
     <junit.jupiter.version>5.8.2</junit.jupiter.version>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
