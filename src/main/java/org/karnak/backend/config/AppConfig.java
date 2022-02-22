@@ -12,7 +12,6 @@ package org.karnak.backend.config;
 import java.io.InputStream;
 import java.net.URL;
 import javax.annotation.PostConstruct;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.karnak.backend.cache.ExternalIDCache;
 import org.karnak.backend.cache.MainzellisteCache;
 import org.karnak.backend.cache.PatientClient;
@@ -59,7 +58,9 @@ public class AppConfig {
   @PostConstruct
   public void postConstruct() {
     instance = this;
-    nameInstance = RandomStringUtils.randomAlphabetic(5);
+    // TODO currently not used with unique instance
+//    nameInstance = RandomStringUtils.randomAlphabetic(5);
+    nameInstance = "karnak";
   }
 
   public static AppConfig getInstance() {
