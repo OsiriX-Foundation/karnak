@@ -131,6 +131,7 @@ public class SwitchingAlbum {
     ArrayList<MetadataSwitching> metadataToDo =
         (ArrayList<MetadataSwitching>) switchingAlbumToDo.get(id);
 
+    LOGGER.info("size switchingAlbumToDo" + switchingAlbumToDo.size());
     LOGGER.info(
         "apply switching album keyset"
             + switchingAlbumToDo.keySet().stream()
@@ -142,11 +143,19 @@ public class SwitchingAlbum {
                 .map(Object::toString)
                 .collect(Collectors.joining("***")));
 
+    LOGGER.info("condition" + condition);
+    LOGGER.info("metadataToDo size" + metadataToDo.size());
+    LOGGER.info("seriesInstanceUID" + seriesInstanceUID);
+    LOGGER.info("dcm" + dcm);
+    LOGGER.info("validate condition" + validateCondition(condition, dcm));
+
     if ((condition == null || condition.length() == 0 || validateCondition(condition, dcm))
         && metadataToDo.stream()
             .noneMatch(
                 metadataSwitching ->
                     metadataSwitching.getSeriesInstanceUID().equals(seriesInstanceUID))) {
+      LOGGER.info("check apply");
+
       final boolean validAuthorizationSource =
           validateToken(MIN_SCOPE_SOURCE, urlAPI, authorizationSource);
       final boolean validDestinationSource =
@@ -161,6 +170,8 @@ public class SwitchingAlbum {
             kheopsAlbumsEntity.getId(),
             seriesInstanceUID);
       }
+
+      LOGGER.info("metadataToDo size 2" + metadataToDo.size());
     }
   }
 
@@ -190,6 +201,8 @@ public class SwitchingAlbum {
 
     ArrayList<MetadataSwitching> metadataToDo =
         (ArrayList<MetadataSwitching>) switchingAlbumToDo.get(id);
+    LOGGER.info("switchingAlbumToDo size" + switchingAlbumToDo.size());
+    LOGGER.info("applyAfterTransfer size metadataToDo" + metadataToDo.size());
     metadataToDo.forEach(
         metadataSwitching -> {
           if (metadataSwitching.getSOPinstanceUID().equals(sopInstanceUID)
