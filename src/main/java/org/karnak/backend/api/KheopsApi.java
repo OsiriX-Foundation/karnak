@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.Map;
 import org.apache.http.HttpHeaders;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +32,8 @@ public class KheopsApi {
 
   private final HttpClient httpClient;
   private final String X_AUTHORIZATION_SOURCE = "X-Authorization-Source";
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(KheopsApi.class);
 
   @Autowired
   public KheopsApi() {
@@ -66,6 +70,11 @@ public class KheopsApi {
             .build();
 
     HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+    LOGGER.info("shareSerie response", response);
+    LOGGER.info("shareSerie response status code", response.statusCode());
+
+
     try {
       return response.statusCode();
     } catch (Exception e) {
