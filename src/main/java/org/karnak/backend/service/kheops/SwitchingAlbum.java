@@ -131,11 +131,16 @@ public class SwitchingAlbum {
     ArrayList<MetadataSwitching> metadataToDo =
         (ArrayList<MetadataSwitching>) switchingAlbumToDo.get(id);
 
-    LOGGER.info("apply switching album keyset", switchingAlbumToDo.keySet().stream().map(Object::toString)
-        .collect(Collectors.joining("***")));
-    LOGGER.info("apply switching album values", switchingAlbumToDo.values().stream().map(Object::toString)
-        .collect(Collectors.joining("***")));
-
+    LOGGER.info(
+        "apply switching album keyset",
+        switchingAlbumToDo.keySet().stream()
+            .map(Object::toString)
+            .collect(Collectors.joining("***")));
+    LOGGER.info(
+        "apply switching album values",
+        switchingAlbumToDo.values().stream()
+            .map(Object::toString)
+            .collect(Collectors.joining("***")));
 
     if ((condition == null || condition.length() == 0 || validateCondition(condition, dcm))
         && metadataToDo.stream()

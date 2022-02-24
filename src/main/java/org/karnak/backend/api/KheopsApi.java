@@ -74,7 +74,6 @@ public class KheopsApi {
     LOGGER.info("shareSerie response", response);
     LOGGER.info("shareSerie response status code", response.statusCode());
 
-
     try {
       return response.statusCode();
     } catch (Exception e) {
