@@ -55,6 +55,16 @@ public class KheopsApi {
       String authorizationSource,
       String authorizationDestination)
       throws IOException, InterruptedException {
+
+    LOGGER.info(
+        "share serie%s%s%s%s%s"
+            .formatted(
+                studyInstanceUID,
+                seriesInstanceUID,
+                API_URL,
+                authorizationSource,
+                authorizationDestination));
+
     final String stringURI =
         String.format("%s/studies/%s/series/%s", API_URL, studyInstanceUID, seriesInstanceUID);
     final URI uri = URI.create(stringURI);

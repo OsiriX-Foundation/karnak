@@ -225,12 +225,16 @@ public class SwitchingAlbum {
       String authorizationSource,
       String authorizationDestination) {
     try {
-      return kheopsAPI.shareSerie(
-          studyInstanceUID,
-          seriesInstanceUID,
-          urlAPI,
-          authorizationSource,
-          authorizationDestination);
+      LOGGER.info("share serie");
+      int test =
+          kheopsAPI.shareSerie(
+              studyInstanceUID,
+              seriesInstanceUID,
+              urlAPI,
+              authorizationSource,
+              authorizationDestination);
+      LOGGER.info("result share serie" + test);
+      return test;
     } catch (InterruptedException e) {
       LOGGER.warn("Session interrupted", e);
       Thread.currentThread().interrupt();
