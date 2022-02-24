@@ -82,7 +82,9 @@ public class KheopsApi {
     HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
     LOGGER.info("shareSerie response", response);
-    LOGGER.info("shareSerie response status code", response.statusCode());
+    if (response != null) {
+      LOGGER.info("shareSerie response status code", response.statusCode());
+    }
 
     try {
       return response.statusCode();
