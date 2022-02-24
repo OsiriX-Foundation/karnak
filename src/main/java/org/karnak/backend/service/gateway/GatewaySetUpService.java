@@ -258,8 +258,10 @@ public class GatewaySetUpService {
       final List<KheopsAlbumsEntity> kheopsAlbumEntities = dstNode.getKheopsAlbumEntities();
 
       LOGGER.info(
-          "addDestinationNode kheopsAlbumEntities",
-          kheopsAlbumEntities.stream().map(Object::toString).collect(Collectors.joining(",")));
+          "addDestinationNode kheopsAlbumEntities"
+              + kheopsAlbumEntities.stream()
+                  .map(Object::toString)
+                  .collect(Collectors.joining(",")));
 
       SwitchingAlbum switchingAlbum = new SwitchingAlbum();
       if (kheopsAlbumEntities != null && !kheopsAlbumEntities.isEmpty()) {

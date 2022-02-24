@@ -81,9 +81,9 @@ public class KheopsApi {
 
     HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
-    LOGGER.info("shareSerie response", response);
+    LOGGER.info("shareSerie response%s".formatted(response));
     if (response != null) {
-      LOGGER.info("shareSerie response status code", response.statusCode());
+      LOGGER.info("shareSerie response status code%d".formatted(response.statusCode()));
     }
 
     try {
@@ -114,6 +114,9 @@ public class KheopsApi {
     HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
     try {
       final int status = response.statusCode();
+      LOGGER.info("tokenIntrospect status%d".formatted(status));
+      LOGGER.info("tokenIntrospect response%s".formatted(response));
+
       if (status >= 200 && status <= 300) {
         return new JSONObject(response.body());
       }
