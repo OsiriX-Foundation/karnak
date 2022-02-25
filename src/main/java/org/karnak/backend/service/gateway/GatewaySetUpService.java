@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.StringJoiner;
 import org.dcm4che3.data.Attributes;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -257,19 +256,6 @@ public class GatewaySetUpService {
 
       final List<KheopsAlbumsEntity> kheopsAlbumEntities = dstNode.getKheopsAlbumEntities();
 
-      if (!kheopsAlbumEntities.isEmpty()) {
-        // TODO TOREMOVE
-        LOGGER.info("kheopsAlbumEntities size" + kheopsAlbumEntities.size());
-        StringJoiner joiner = new StringJoiner(",");
-        for (KheopsAlbumsEntity kheopsAlbumEntity : kheopsAlbumEntities) {
-          String toString = kheopsAlbumEntity.toString();
-          joiner.add(toString);
-        }
-        LOGGER.info("addDestinationNode kheopsAlbumEntities" + joiner);
-      } else {
-        LOGGER.info("kheopsAlbumEntitiesis empty");
-      }
-
       SwitchingAlbum switchingAlbum = new SwitchingAlbum();
       if (kheopsAlbumEntities != null && !kheopsAlbumEntities.isEmpty()) {
         editors.add(
@@ -323,8 +309,6 @@ public class GatewaySetUpService {
                   Attributes dcm = dicomProgress.getAttributes();
                   kheopsAlbumEntities.forEach(
                       kheopsAlbums -> {
-                        // TODO TOREMOVE
-                        LOGGER.info("addDestinationNode applyAfterTransfer");
                         switchingAlbum.applyAfterTransfer(kheopsAlbums, dcm);
                       });
                 });

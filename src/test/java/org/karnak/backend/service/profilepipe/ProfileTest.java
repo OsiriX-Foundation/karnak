@@ -21,6 +21,7 @@ import java.util.Set;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.dcm4che3.data.VR;
+import org.junit.jupiter.api.Test;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.MaskEntity;
 import org.karnak.backend.data.entity.ProfileElementEntity;
@@ -32,8 +33,8 @@ import org.karnak.backend.enums.PseudonymType;
 import org.weasis.dicom.param.AttributeEditorContext;
 
 class ProfileTest {
-  // TODO TOREMOVE
-  //  @Test
+
+  @Test
   void should_apply() {
 
     // Init data
@@ -96,8 +97,8 @@ class ProfileTest {
     assertEquals("NONE", context.getAbort().name());
     assertNull(context.getMaskArea());
   }
-  // TODO TOREMOVE
-  //  @Test
+
+  @Test
   void should_evaluate_condition_clean_pixel_case_no_condition() {
 
     // Init data
@@ -120,8 +121,8 @@ class ProfileTest {
     // Test results
     assertTrue(evaluation);
   }
-  // TODO TOREMOVE
-  //  @Test
+
+  @Test
   void should_evaluate_condition_clean_pixel_case_exclude_station_name() {
 
     // Init data
@@ -146,8 +147,8 @@ class ProfileTest {
     // Test results
     assertFalse(evaluation);
   }
-  // TODO TOREMOVE
-  //  @Test
+
+  @Test
   void should_evaluate_condition_clean_pixel_case_include_station_name() {
 
     // Init data

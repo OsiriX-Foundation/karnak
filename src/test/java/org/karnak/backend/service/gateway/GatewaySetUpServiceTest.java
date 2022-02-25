@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.DicomSourceNodeEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
@@ -34,10 +35,10 @@ import org.karnak.backend.enums.DestinationType;
 import org.karnak.backend.enums.NodeEventType;
 import org.karnak.backend.model.event.NodeEvent;
 import org.mockito.Mockito;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.weasis.dicom.param.DicomNode;
-// TODO TOREMOVE
-// @SpringBootTest
 
+@SpringBootTest
 class GatewaySetUpServiceTest {
 
   // Repositories
@@ -55,8 +56,8 @@ class GatewaySetUpServiceTest {
     gatewaySetUpService =
         new GatewaySetUpService(forwardNodeRepoMock, versionRepoMock, destinationRepoMock);
   }
-  // TODO TOREMOVE
-  //  @Test
+
+  @Test
   void should_reload_gateway_stow() {
     // Init data
     List<ForwardNodeEntity> forwardNodeEntities = new ArrayList<>();
@@ -98,8 +99,8 @@ class GatewaySetUpServiceTest {
     assertEquals(1, gatewaySetUpService.getDestinations().size());
     assertTrue(gatewaySetUpService.getDestinationNode("fwdAeTitle").isPresent());
   }
-  // TODO TOREMOVE
-  //  @Test
+
+  @Test
   void should_reload_gateway_dicom() {
     // Init data
     List<ForwardNodeEntity> forwardNodeEntities = new ArrayList<>();
@@ -149,8 +150,8 @@ class GatewaySetUpServiceTest {
     assertEquals(
         "aeTitle", ((DicomForwardDestination) values.get(0).get(0)).getDestinationNode().getAet());
   }
-  // TODO TOREMOVE
-  //  @Test
+
+  @Test
   void should_update_dicom_source_node() {
     // Init data
     DicomSourceNodeEntity dicomSourceNodeEntity = new DicomSourceNodeEntity();
@@ -209,8 +210,8 @@ class GatewaySetUpServiceTest {
         0,
         gatewaySetUpService.getDestinationNode("fwdAeTitle").get().getAcceptedSourceNodes().size());
   }
-  // TODO TOREMOVE
-  //  @Test
+
+  @Test
   void should_update_destination() {
     // Init data
     DestinationEntity destinationEntity = new DestinationEntity();
@@ -263,8 +264,8 @@ class GatewaySetUpServiceTest {
     assertTrue(gatewaySetUpService.getDestinationNode("fwdAeTitle").isPresent());
     assertEquals(0, values.get(0).size());
   }
-  // TODO TOREMOVE
-  //  @Test
+
+  @Test
   void should_update_forward_node() {
     // Init data
     ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();

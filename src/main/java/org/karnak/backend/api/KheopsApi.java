@@ -55,17 +55,6 @@ public class KheopsApi {
       String authorizationSource,
       String authorizationDestination)
       throws IOException, InterruptedException {
-
-    // TODO TOREMOVE
-    LOGGER.info(
-        "share serie%s%s%s%s%s"
-            .formatted(
-                studyInstanceUID,
-                seriesInstanceUID,
-                API_URL,
-                authorizationSource,
-                authorizationDestination));
-
     final String stringURI =
         String.format("%s/studies/%s/series/%s", API_URL, studyInstanceUID, seriesInstanceUID);
     final URI uri = URI.create(stringURI);
@@ -81,13 +70,6 @@ public class KheopsApi {
             .build();
 
     HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
-    // TODO TOREMOVE
-    LOGGER.info("shareSerie response%s".formatted(response));
-    if (response != null) {
-      LOGGER.info("shareSerie response status code%d".formatted(response.statusCode()));
-    }
-
     try {
       return response.statusCode();
     } catch (Exception e) {
@@ -116,11 +98,6 @@ public class KheopsApi {
     HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
     try {
       final int status = response.statusCode();
-
-      // TODO TOREMOVE
-      LOGGER.info("tokenIntrospect status%d".formatted(status));
-      LOGGER.info("tokenIntrospect response%s".formatted(response));
-
       if (status >= 200 && status <= 300) {
         return new JSONObject(response.body());
       }

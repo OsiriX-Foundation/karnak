@@ -125,41 +125,17 @@ public class SwitchingAlbum {
     String sopInstanceUID = dcm.getString(Tag.SOPInstanceUID);
     String urlAPI = kheopsAlbumsEntity.getUrlAPI();
     Long id = kheopsAlbumsEntity.getId();
-
-    // TODO TOREMOVE
-    LOGGER.info("apply switching album");
-
     if (!switchingAlbumToDo.containsKey(id)) {
       switchingAlbumToDo.put(id, new ArrayList<MetadataSwitching>());
     }
     ArrayList<MetadataSwitching> metadataToDo =
         (ArrayList<MetadataSwitching>) switchingAlbumToDo.get(id);
 
-    // TODO TOREMOVE
-    LOGGER.info("size switchingAlbumToDo" + switchingAlbumToDo.size());
-    LOGGER.info(
-        "apply switching album keyset"
-            + switchingAlbumToDo.keySet().stream()
-                .map(Object::toString)
-                .collect(Collectors.joining("***")));
-    LOGGER.info(
-        "apply switching album values"
-            + switchingAlbumToDo.values().stream()
-                .map(Object::toString)
-                .collect(Collectors.joining("***")));
-    LOGGER.info("condition" + condition);
-    LOGGER.info("metadataToDo size" + metadataToDo.size());
-    LOGGER.info("seriesInstanceUID" + seriesInstanceUID);
-    LOGGER.info("dcm" + dcm);
-    LOGGER.info("validate condition" + validateCondition(condition, dcm));
-
     if ((condition == null || condition.length() == 0 || validateCondition(condition, dcm))
         && metadataToDo.stream()
             .noneMatch(
                 metadataSwitching ->
                     metadataSwitching.getSeriesInstanceUID().equals(seriesInstanceUID))) {
-      LOGGER.info("check apply");
-
       final boolean validAuthorizationSource =
           validateToken(MIN_SCOPE_SOURCE, urlAPI, authorizationSource);
       final boolean validDestinationSource =
@@ -174,9 +150,6 @@ public class SwitchingAlbum {
             kheopsAlbumsEntity.getId(),
             seriesInstanceUID);
       }
-
-      // TODO TOREMOVE
-      LOGGER.info("metadataToDo size 2" + metadataToDo.size());
     }
   }
 
@@ -206,11 +179,6 @@ public class SwitchingAlbum {
 
     ArrayList<MetadataSwitching> metadataToDo =
         (ArrayList<MetadataSwitching>) switchingAlbumToDo.get(id);
-
-    // TODO TOREMOVE
-    LOGGER.info("switchingAlbumToDo size" + switchingAlbumToDo.size());
-    LOGGER.info("applyAfterTransfer size metadataToDo" + metadataToDo.size());
-
     metadataToDo.forEach(
         metadataSwitching -> {
           if (metadataSwitching.getSOPinstanceUID().equals(sopInstanceUID)
@@ -222,10 +190,6 @@ public class SwitchingAlbum {
                     metadataSwitching.getSeriesInstanceUID(),
                     authorizationSource,
                     authorizationDestination);
-
-            // TODO TOREMOVE
-            LOGGER.info("Share serie status:" + status);
-
             if (status >= 400 && status <= 599) {
               LOGGER.warn(
                   "Can't share the serie [{}] for switching KHEOPS album [{}]. The response status is {}",
@@ -247,18 +211,12 @@ public class SwitchingAlbum {
       String authorizationSource,
       String authorizationDestination) {
     try {
-      // TODO TOREMOVE
-      LOGGER.info("share serie");
-      int shareSerie =
-          kheopsAPI.shareSerie(
-              studyInstanceUID,
-              seriesInstanceUID,
-              urlAPI,
-              authorizationSource,
-              authorizationDestination);
-      // TODO TOREMOVE
-      LOGGER.info("result share serie" + shareSerie);
-      return shareSerie;
+      return kheopsAPI.shareSerie(
+          studyInstanceUID,
+          seriesInstanceUID,
+          urlAPI,
+          authorizationSource,
+          authorizationDestination);
     } catch (InterruptedException e) {
       LOGGER.warn("Session interrupted", e);
       Thread.currentThread().interrupt();
