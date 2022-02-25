@@ -56,6 +56,7 @@ public class KheopsApi {
       String authorizationDestination)
       throws IOException, InterruptedException {
 
+    // TODO TOREMOVE
     LOGGER.info(
         "share serie%s%s%s%s%s"
             .formatted(
@@ -81,6 +82,7 @@ public class KheopsApi {
 
     HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
+    // TODO TOREMOVE
     LOGGER.info("shareSerie response%s".formatted(response));
     if (response != null) {
       LOGGER.info("shareSerie response status code%d".formatted(response.statusCode()));
@@ -114,6 +116,8 @@ public class KheopsApi {
     HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
     try {
       final int status = response.statusCode();
+
+      // TODO TOREMOVE
       LOGGER.info("tokenIntrospect status%d".formatted(status));
       LOGGER.info("tokenIntrospect response%s".formatted(response));
 

@@ -258,6 +258,7 @@ public class GatewaySetUpService {
       final List<KheopsAlbumsEntity> kheopsAlbumEntities = dstNode.getKheopsAlbumEntities();
 
       if (!kheopsAlbumEntities.isEmpty()) {
+        // TODO TOREMOVE
         LOGGER.info("kheopsAlbumEntities size" + kheopsAlbumEntities.size());
         StringJoiner joiner = new StringJoiner(",");
         for (KheopsAlbumsEntity kheopsAlbumEntity : kheopsAlbumEntities) {
@@ -322,6 +323,7 @@ public class GatewaySetUpService {
                   Attributes dcm = dicomProgress.getAttributes();
                   kheopsAlbumEntities.forEach(
                       kheopsAlbums -> {
+                        // TODO TOREMOVE
                         LOGGER.info("addDestinationNode applyAfterTransfer");
                         switchingAlbum.applyAfterTransfer(kheopsAlbums, dcm);
                       });

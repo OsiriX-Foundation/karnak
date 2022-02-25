@@ -32,7 +32,7 @@ import org.karnak.backend.enums.PseudonymType;
 import org.weasis.dicom.param.AttributeEditorContext;
 
 class ProfileTest {
-
+  // TODO TOREMOVE
   //  @Test
   void should_apply() {
 
@@ -96,7 +96,7 @@ class ProfileTest {
     assertEquals("NONE", context.getAbort().name());
     assertNull(context.getMaskArea());
   }
-
+  // TODO TOREMOVE
   //  @Test
   void should_evaluate_condition_clean_pixel_case_no_condition() {
 
@@ -120,7 +120,7 @@ class ProfileTest {
     // Test results
     assertTrue(evaluation);
   }
-
+  // TODO TOREMOVE
   //  @Test
   void should_evaluate_condition_clean_pixel_case_exclude_station_name() {
 
@@ -146,7 +146,7 @@ class ProfileTest {
     // Test results
     assertFalse(evaluation);
   }
-
+  // TODO TOREMOVE
   //  @Test
   void should_evaluate_condition_clean_pixel_case_include_station_name() {
 
