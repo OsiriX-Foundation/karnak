@@ -116,4 +116,26 @@ public class KheopsAlbumsEntity implements Serializable {
   public int hashCode() {
     return Objects.hash(urlAPI, authorizationDestination, authorizationSource, condition);
   }
+
+  @Override
+  public String toString() {
+    return "KheopsAlbumsEntity{"
+        + "id="
+        + id
+        + ", urlAPI='"
+        + urlAPI
+        + '\''
+        + ", authorizationDestination='"
+        + authorizationDestination
+        + '\''
+        + ", authorizationSource='"
+        + authorizationSource
+        + '\''
+        + ", condition='"
+        + condition
+        + '\''
+        + ", destinationEntity="
+        + destinationEntity
+        + '}';
+  }
 }
