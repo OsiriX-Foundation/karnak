@@ -31,6 +31,7 @@ import org.dcm4che3.net.DataWriter;
 import org.dcm4che3.net.DataWriterAdapter;
 import org.dcm4che3.net.InputStreamDataWriter;
 import org.dcm4che3.net.PDVInputStream;
+import org.dcm4che3.net.Status;
 import org.karnak.backend.data.entity.TransferStatusEntity;
 import org.karnak.backend.dicom.Defacer;
 import org.karnak.backend.dicom.DicomForwardDestination;
@@ -51,6 +52,7 @@ import org.weasis.dicom.param.AttributeEditor;
 import org.weasis.dicom.param.AttributeEditorContext;
 import org.weasis.dicom.param.AttributeEditorContext.Abort;
 import org.weasis.dicom.util.ServiceUtil;
+import org.weasis.dicom.util.ServiceUtil.ProgressStatus;
 import org.weasis.dicom.util.StoreFromStreamSCU;
 import org.weasis.dicom.web.DicomStowRS;
 import org.weasis.dicom.web.HttpException;
@@ -247,6 +249,8 @@ public class ForwardService {
       }
 
       streamSCU.cstore(cuid, iuid, p.getPriority(), dataWriter, syntax.getSuitable());
+      progressNotify(
+          destination, p.getIuid(), p.getCuid(), false, streamSCU.getNumberOfSuboperations());
       monitor(
           sourceNode.getId(),
           destination.getId(),
@@ -255,6 +259,8 @@ public class ForwardService {
           true,
           null);
     } catch (AbortException e) {
+      progressNotify(
+          destination, p.getIuid(), p.getCuid(), true, streamSCU.getNumberOfSuboperations());
       monitor(
           sourceNode.getId(),
           destination.getId(),
@@ -266,6 +272,8 @@ public class ForwardService {
         throw e;
       }
     } catch (IOException e) {
+      progressNotify(
+          destination, p.getIuid(), p.getCuid(), true, streamSCU.getNumberOfSuboperations());
       monitor(
           sourceNode.getId(),
           destination.getId(),
@@ -278,6 +286,8 @@ public class ForwardService {
       if (e instanceof InterruptedException) {
         Thread.currentThread().interrupt();
       }
+      progressNotify(
+          destination, p.getIuid(), p.getCuid(), true, streamSCU.getNumberOfSuboperations());
       monitor(
           sourceNode.getId(),
           destination.getId(),
@@ -374,9 +384,13 @@ public class ForwardService {
       }
 
       streamSCU.cstore(cuid, iuid, p.getPriority(), dataWriter, syntax.getSuitable());
+      progressNotify(
+          destination, p.getIuid(), p.getCuid(), false, streamSCU.getNumberOfSuboperations());
       monitor(
           fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, true, null);
     } catch (AbortException e) {
+      progressNotify(
+          destination, p.getIuid(), p.getCuid(), true, streamSCU.getNumberOfSuboperations());
       monitor(
           fwdNode.getId(),
           destination.getId(),
@@ -388,6 +402,8 @@ public class ForwardService {
         throw e;
       }
     } catch (IOException e) {
+      progressNotify(
+          destination, p.getIuid(), p.getCuid(), true, streamSCU.getNumberOfSuboperations());
       monitor(
           fwdNode.getId(),
           destination.getId(),
@@ -400,6 +416,8 @@ public class ForwardService {
       if (e instanceof InterruptedException) {
         Thread.currentThread().interrupt();
       }
+      progressNotify(
+          destination, p.getIuid(), p.getCuid(), true, streamSCU.getNumberOfSuboperations());
       monitor(
           fwdNode.getId(),
           destination.getId(),
@@ -475,9 +493,11 @@ public class ForwardService {
           stow.uploadPayload(ImageAdapter.preparePlayload(attributes, syntax, desc, editable));
         }
       }
+      progressNotify(destination, p.getIuid(), p.getCuid(), false, 0);
       monitor(
           fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, true, null);
     } catch (AbortException e) {
+      progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
       monitor(
           fwdNode.getId(),
           destination.getId(),
@@ -489,6 +509,7 @@ public class ForwardService {
         throw e;
       }
     } catch (IOException e) {
+      progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
       monitor(
           fwdNode.getId(),
           destination.getId(),
@@ -498,6 +519,7 @@ public class ForwardService {
           e.getMessage());
       throw e;
     } catch (Exception e) {
+      progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
       monitor(
           fwdNode.getId(),
           destination.getId(),
@@ -547,11 +569,13 @@ public class ForwardService {
           Editable<PlanarImage> editable = transformImage(attributes, context);
           stow.uploadPayload(ImageAdapter.preparePlayload(attributes, syntax, desc, editable));
         }
+        progressNotify(destination, p.getIuid(), p.getCuid(), false, 0);
         monitor(
             fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, true, null);
       }
     } catch (HttpException httpException) {
       if (httpException.getStatusCode() != 409) {
+        progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
         monitor(
             fwdNode.getId(),
             destination.getId(),
@@ -561,11 +585,13 @@ public class ForwardService {
             httpException.getMessage());
         throw new AbortException(Abort.FILE_EXCEPTION, "DICOMWeb forward", httpException);
       } else {
+        progressNotify(destination, p.getIuid(), p.getCuid(), false, 0);
         monitor(
             fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, true, null);
         LOGGER.debug("File already present in destination");
       }
     } catch (AbortException e) {
+      progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
       monitor(
           fwdNode.getId(),
           destination.getId(),
@@ -577,6 +603,7 @@ public class ForwardService {
         throw e;
       }
     } catch (IOException e) {
+      progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
       monitor(
           fwdNode.getId(),
           destination.getId(),
@@ -586,6 +613,7 @@ public class ForwardService {
           e.getMessage());
       throw e;
     } catch (Exception e) {
+      progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
       monitor(
           fwdNode.getId(),
           destination.getId(),
@@ -595,6 +623,17 @@ public class ForwardService {
           e.getMessage());
       LOGGER.error(ERROR_WHEN_FORWARDING, e);
     }
+  }
+
+  private static void progressNotify(
+      ForwardDestination destination, String iuid, String cuid, boolean failed, int subOperations) {
+    ServiceUtil.notifyProgession(
+        destination.getState(),
+        iuid,
+        cuid,
+        failed ? Status.ProcessingFailure : Status.Success,
+        failed ? ProgressStatus.FAILED : ProgressStatus.COMPLETED,
+        subOperations);
   }
 
   public static String selectTransferSyntax(Association as, String cuid, String filets) {
