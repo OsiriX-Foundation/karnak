@@ -1,5 +1,26 @@
 # Changelog
 
+## [v1.0.0](https://github.com/OsiriX-Foundation/karnak/tree/v1.0.0) (2022-03-05)
+
+[Full Changelog](https://github.com/OsiriX-Foundation/karnak/compare/v0.9.9...v1.0.0)
+
+**Implemented enhancements:**
+
+- Add in pre destroy reset transfer in progress status for destinations [\#192](https://github.com/OsiriX-Foundation/karnak/issues/192)
+- Add automatic refresh of gateway setup when multiple instances [\#190](https://github.com/OsiriX-Foundation/karnak/issues/190)
+- Add project secret history [\#189](https://github.com/OsiriX-Foundation/karnak/issues/189)
+- Create a monitoring csv export [\#188](https://github.com/OsiriX-Foundation/karnak/issues/188)
+- Notification improvement [\#187](https://github.com/OsiriX-Foundation/karnak/issues/187)
+- Create pseudonym mapping view [\#186](https://github.com/OsiriX-Foundation/karnak/issues/186)
+- Create monitoring view [\#185](https://github.com/OsiriX-Foundation/karnak/issues/185)
+- Vulnerability CVE-2021-42550 \(aka LOGBACK-1591\) [\#180](https://github.com/OsiriX-Foundation/karnak/issues/180)
+
+**Fixed bugs:**
+
+- Change httpClient from HTTP2 to HTTP1\_1 [\#194](https://github.com/OsiriX-Foundation/karnak/issues/194)
+- Handle 409 http exception in order to not rethrow exception = means file is already in the destination [\#193](https://github.com/OsiriX-Foundation/karnak/issues/193)
+- Upgrade version weasis-dicom-tools in order to fix "Go Away" exceptions [\#191](https://github.com/OsiriX-Foundation/karnak/issues/191)
+
 ## [v0.9.9](https://github.com/OsiriX-Foundation/karnak/tree/v0.9.9) (2021-12-20)
 
 [Full Changelog](https://github.com/OsiriX-Foundation/karnak/compare/v0.9.8...v0.9.9)
@@ -23,14 +44,11 @@
 - Springboot/junit/liquibase versions upgrade  [\#165](https://github.com/OsiriX-Foundation/karnak/issues/165)
 - Enable/disable destination buttons \(save/delete\) when transfer is in progress  [\#163](https://github.com/OsiriX-Foundation/karnak/issues/163)
 - Destinations: loading spinner transfer activity [\#161](https://github.com/OsiriX-Foundation/karnak/issues/161)
+- Switching in the KHEOPS album cannot be applied with the KEEP action on the study UID and / or the serial UID [\#156](https://github.com/OsiriX-Foundation/karnak/issues/156)
 - Image transcoding with a specific transfer syntax [\#139](https://github.com/OsiriX-Foundation/karnak/issues/139)
 - Inject an external id provider [\#88](https://github.com/OsiriX-Foundation/karnak/issues/88)
 - Check that the expression does not corrupt the DICOM [\#74](https://github.com/OsiriX-Foundation/karnak/issues/74)
 - Improve the notification module UI [\#42](https://github.com/OsiriX-Foundation/karnak/issues/42)
-
-**Fixed bugs:**
-
-- Switching in the KHEOPS album cannot be applied with the KEEP action on the study UID and / or the serial UID [\#156](https://github.com/OsiriX-Foundation/karnak/issues/156)
 
 ## [v0.9.7](https://github.com/OsiriX-Foundation/karnak/tree/v0.9.7) (2021-06-11)
 
