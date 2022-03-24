@@ -45,14 +45,8 @@ SYS_PROPS+=" -Djava.library.path='/tmp/dicom-opencv'"
 ########################
 file_env 'KARNAK_LOGIN_PASSWORD'
 : "${KARNAK_LOGIN_PASSWORD:=undefined}"
-: "${OIDC_CLIENT_ID:=undefined}"
-: "${OIDC_CLIENT_SECRET:=undefined}"
-: "${OIDC_ISSUER_URI:=undefined}"
 SYS_PROPS+=" -Dkarnakadmin='$KARNAK_LOGIN_ADMIN'"
 SYS_PROPS+=" -Dkarnakpassword='$KARNAK_LOGIN_PASSWORD'"
-SYS_PROPS+=" -Dspring.security.oauth2.client.registration.keycloak.client-id='$OIDC_CLIENT_ID'"
-SYS_PROPS+=" -Dspring.security.oauth2.client.registration.keycloak.client-secret='$OIDC_CLIENT_SECRET'"
-SYS_PROPS+=" -Dspring.security.oauth2.client.provider.keycloak.issuer-uri='$OIDC_ISSUER_URI'"
 
 ##########################
 # KARNAK OPENID PROVIDER #
