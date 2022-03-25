@@ -22,12 +22,6 @@ public enum UIDType {
   JPEG_EXTENDED_12BIT(
       "1.2.840.10008.1.2.4.51",
       "JPEG Extended (Process 2 & 4): Default Transfer Syntax for Lossy JPEG 12 Bit Image Compression (Process 4 only)"),
-  JPEG_SPECTRAL_SELECTION_NON_HIERARCHICAL_68(
-      "1.2.840.10008.1.2.4.53",
-      "JPEG Spectral Selection, Non-Hierarchical (Process 6 & 8) (Retired)"),
-  JPEG_FULL_PROGRESSION_NON_HIERARCHICAL_1012(
-      "1.2.840.10008.1.2.4.55",
-      "JPEG Full Progression, Non-Hierarchical (Process 10 & 12) (Retired)"),
   JPEG_LOSSLESS("1.2.840.10008.1.2.4.57", "JPEG Lossless, Non-Hierarchical (Process 14)"),
   JPEG_LOSSLESS_SV1(
       "1.2.840.10008.1.2.4.70",
