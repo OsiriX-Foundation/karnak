@@ -45,11 +45,13 @@
     <sonar.java.source>${java.version}</sonar.java.source>
     <sonar.java.target>${java.version}</sonar.java.target>
     <sonar.projectKey>karnak</sonar.projectKey>
-    <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+    <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/target/site/jacoco/jacoco.xml
+    </sonar.coverage.jacoco.xmlReportPaths>
     <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
     <org.json.version>20211205</org.json.version>
     <logback.version>1.2.9</logback.version>
-    <hazelcast.version>5.0.2</hazelcast.version>
+    <hazelcast.version>5.1.1</hazelcast.version>
+    <hazelcast-eureka-one.version>2.0.1</hazelcast-eureka-one.version>
     <liquibase.version>4.3.5</liquibase.version>
     <opencsv.version>5.5.2</opencsv.version>
   </properties>
@@ -314,12 +316,12 @@
           </java>
         </configuration>
         <executions>
-          <execution>
-            <phase>verify</phase>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
+<!--          <execution>-->
+<!--            <phase>verify</phase>-->
+<!--            <goals>-->
+<!--              <goal>check</goal>-->
+<!--            </goals>-->
+<!--          </execution>-->
         </executions>
       </plugin>
     </plugins>
@@ -380,17 +382,18 @@
       <version>1.1.1</version>
     </dependency>
 
+    <!-- Hazelcast -->
     <dependency>
       <artifactId>hazelcast-spring</artifactId>
       <groupId>com.hazelcast</groupId>
       <version>${hazelcast.version}</version>
     </dependency>
-
-    <!--    <dependency>-->
-    <!--      <artifactId>hazelcast</artifactId>-->
-    <!--      <groupId>com.hazelcast</groupId>-->
-    <!--      <version>4.1</version>-->
-    <!--    </dependency>-->
+    <!-- Hazelcast for eureka discovery -->
+    <dependency>
+      <artifactId>hazelcast-eureka-one</artifactId>
+      <groupId>com.hazelcast</groupId>
+      <version>${hazelcast-eureka-one.version}</version>
+    </dependency>
 
     <dependency>
       <artifactId>liquibase-maven-plugin</artifactId>
