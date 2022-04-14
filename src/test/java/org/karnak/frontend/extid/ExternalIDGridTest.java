@@ -20,8 +20,10 @@ import org.karnak.backend.cache.ExternalIDCache;
 import org.karnak.backend.cache.PatientClient;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
+@ActiveProfiles("test")
 class ExternalIDGridTest {
 
   @Test

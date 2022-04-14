@@ -12,11 +12,13 @@ package org.karnak.backend.config;
 import com.hazelcast.config.Config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 @Configuration
 public class HazelcastConfig {
 
   @Bean
+  @Profile("!test")
   public Config hazelcastConfiguration() {
     Config config = new Config();
     config.getNetworkConfig().getJoin().getMulticastConfig().setEnabled(false);

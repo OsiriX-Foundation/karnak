@@ -22,10 +22,12 @@ import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.data.entity.SecretEntity;
 import org.karnak.backend.enums.PseudonymType;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.weasis.dicom.param.AttributeEditorContext;
 import org.weasis.dicom.param.DicomNode;
 
 @SpringBootTest
+@ActiveProfiles("test")
 class DeIdentifyEditorTest {
 
   @Test

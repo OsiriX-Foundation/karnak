@@ -26,8 +26,10 @@ import org.karnak.backend.model.profilepipe.HashContext;
 import org.karnak.backend.service.profilepipe.Profile;
 import org.karnak.backend.util.DicomObjectTools;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
+@ActiveProfiles("test")
 class ProfileTest {
 
   private static HMAC defaultHMAC;

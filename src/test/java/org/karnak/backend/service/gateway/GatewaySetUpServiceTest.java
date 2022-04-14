@@ -36,9 +36,11 @@ import org.karnak.backend.enums.NodeEventType;
 import org.karnak.backend.model.event.NodeEvent;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.weasis.dicom.param.DicomNode;
 
 @SpringBootTest
+@ActiveProfiles("test")
 class GatewaySetUpServiceTest {
 
   // Repositories
