@@ -9,7 +9,6 @@
  */
 package org.karnak.backend.service.gateway;
 
-import java.io.File;
 import java.net.URL;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -27,8 +26,6 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
-import org.weasis.core.util.FileUtil;
-import org.weasis.core.util.StringUtil;
 
 @Service
 public class GatewayService implements ApplicationListener<ContextRefreshedEvent> {
@@ -91,9 +88,9 @@ public class GatewayService implements ApplicationListener<ContextRefreshedEvent
 
 		LOGGER.info("{}", "Gateway has been stopped");
 		String dir = System.getProperty("dicom.native.codec");
-		if (StringUtil.hasText(dir)) {
-			FileUtil.delete(new File(dir));
-		}
+//		if (StringUtil.hasText(dir)) {
+//			FileUtil.delete(new File(dir));
+//		}
 	}
 
 	@PostConstruct

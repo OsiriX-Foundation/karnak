@@ -76,11 +76,11 @@ public class ExprCondition implements ExpressionItem {
 
 	public boolean tagIsPresent(String tag) {
 		int cleanTag = intFromHexString(tag);
-    return dcm.getString(cleanTag) != null;
-  }
+		return dcm.getString(cleanTag) != null;
+	}
 
 	public boolean tagIsPresent(int tag) {
-    return dcm.getString(tag) != null;
-  }
+		return dcm.getString(tag) != null;
+	}
 
 }

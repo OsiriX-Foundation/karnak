@@ -30,7 +30,7 @@ logging:
                 MapSyncRpcHandler: ERROR
               ReturnChannelHandler: ERROR
 server:
-  port: 0
+  port: 8081
   servlet:
     session:
       persistent: false
@@ -79,11 +79,11 @@ spring:
       fail-fast: true
       name: ${spring.application.name}
       label: ${ENVIRONMENT}
-#  config:
-#    import: 'configserver:'
-#  main:
+  config:
+    import: 'configserver:'
+  main:
 #    web-application-type: servlet
-#    allow-bean-definition-overriding: true
+    allow-bean-definition-overriding: true
 
 # - Eureka
 eureka:

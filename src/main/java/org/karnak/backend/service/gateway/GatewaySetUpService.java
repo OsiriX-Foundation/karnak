@@ -433,7 +433,7 @@ public class GatewaySetUpService {
 
 	/** Check if a refresh of the configuration should be done */
 	@Scheduled(fixedRate = 5000)
-	private void checkRefreshGatewaySetUp() {
+	public void checkRefreshGatewaySetUp() {
 		// Retrieve last gateway version
 		VersionEntity lastVersion = versionRepo.findTopByOrderByIdDesc();
 
