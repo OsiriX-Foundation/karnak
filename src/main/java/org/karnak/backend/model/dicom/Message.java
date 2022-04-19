@@ -14,37 +14,40 @@ import org.karnak.backend.enums.MessageLevel;
 
 public class Message {
 
-  private MessageLevel level;
-  private MessageFormat format;
-  private String text;
+	private MessageLevel level;
 
-  public Message(MessageLevel level, MessageFormat format, String text) {
-    this.level = level;
-    this.format = format;
-    this.text = text;
-  }
+	private MessageFormat format;
 
-  public MessageLevel getLevel() {
-    return level;
-  }
+	private String text;
 
-  public void setLevel(MessageLevel level) {
-    this.level = level;
-  }
+	public Message(MessageLevel level, MessageFormat format, String text) {
+		this.level = level;
+		this.format = format;
+		this.text = text;
+	}
 
-  public MessageFormat getFormat() {
-    return format;
-  }
+	public MessageLevel getLevel() {
+		return level;
+	}
 
-  public void setFormat(MessageFormat format) {
-    this.format = format;
-  }
+	public void setLevel(MessageLevel level) {
+		this.level = level;
+	}
 
-  public String getText() {
-    return text;
-  }
+	public MessageFormat getFormat() {
+		return format;
+	}
 
-  public void setText(String text) {
-    this.text = text;
-  }
+	public void setFormat(MessageFormat format) {
+		this.format = format;
+	}
+
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+	}
+
 }

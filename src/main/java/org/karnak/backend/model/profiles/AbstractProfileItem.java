@@ -24,81 +24,90 @@ import org.karnak.backend.model.expression.ExpressionResult;
 
 public abstract class AbstractProfileItem implements ProfileItem {
 
-  protected final String name;
-  protected final String codeName;
-  protected final String condition;
-  protected final String action;
-  protected final String option;
-  protected final List<ArgumentEntity> argumentEntities;
-  protected final List<IncludedTagEntity> tagEntities;
-  protected final List<ExcludedTagEntity> excludedTagEntities;
-  protected final Map<Integer, ActionItem> tagMap;
-  protected final Integer position;
+	protected final String name;
 
-  protected AbstractProfileItem(ProfileElementEntity profileElementEntity) {
-    this.name = Objects.requireNonNull(profileElementEntity.getName());
-    this.codeName = Objects.requireNonNull(profileElementEntity.getCodename());
-    this.condition = profileElementEntity.getCondition();
-    this.action = profileElementEntity.getAction();
-    this.option = profileElementEntity.getOption();
-    this.argumentEntities = profileElementEntity.getArgumentEntities();
-    this.tagEntities = profileElementEntity.getIncludedTagEntities();
-    this.excludedTagEntities = profileElementEntity.getExcludedTagEntities();
-    this.position = profileElementEntity.getPosition();
-    this.tagMap = new HashMap<>();
-  }
+	protected final String codeName;
 
-  public String getName() {
-    return name;
-  }
+	protected final String condition;
 
-  public String getCodeName() {
-    return codeName;
-  }
+	protected final String action;
 
-  public String getCondition() {
-    return condition;
-  }
+	protected final String option;
 
-  public String getOption() {
-    return option;
-  }
+	protected final List<ArgumentEntity> argumentEntities;
 
-  public List<ArgumentEntity> getArguments() {
-    return argumentEntities;
-  }
+	protected final List<IncludedTagEntity> tagEntities;
 
-  public Integer getPosition() {
-    return position;
-  }
+	protected final List<ExcludedTagEntity> excludedTagEntities;
 
-  @Override
-  public String toString() {
-    return name;
-  }
+	protected final Map<Integer, ActionItem> tagMap;
 
-  @Override
-  public void clearTagMap() {
-    tagMap.clear();
-  }
+	protected final Integer position;
 
-  @Override
-  public ActionItem remove(int tag) {
-    return tagMap.remove(tag);
-  }
+	protected AbstractProfileItem(ProfileElementEntity profileElementEntity) {
+		this.name = Objects.requireNonNull(profileElementEntity.getName());
+		this.codeName = Objects.requireNonNull(profileElementEntity.getCodename());
+		this.condition = profileElementEntity.getCondition();
+		this.action = profileElementEntity.getAction();
+		this.option = profileElementEntity.getOption();
+		this.argumentEntities = profileElementEntity.getArgumentEntities();
+		this.tagEntities = profileElementEntity.getIncludedTagEntities();
+		this.excludedTagEntities = profileElementEntity.getExcludedTagEntities();
+		this.position = profileElementEntity.getPosition();
+		this.tagMap = new HashMap<>();
+	}
 
-  @Override
-  public ActionItem put(int tag, ActionItem action) {
-    Objects.requireNonNull(action);
-    return tagMap.put(tag, action);
-  }
+	public String getName() {
+		return name;
+	}
 
-  @Override
-  public void profileValidation() throws Exception {
-    ExpressionError expressionError =
-        ExpressionResult.isValid(condition, new ExprCondition(), Boolean.class);
-    if (condition != null && !expressionError.isValid()) {
-      throw new Exception(expressionError.getMsg());
-    }
-  }
+	public String getCodeName() {
+		return codeName;
+	}
+
+	public String getCondition() {
+		return condition;
+	}
+
+	public String getOption() {
+		return option;
+	}
+
+	public List<ArgumentEntity> getArguments() {
+		return argumentEntities;
+	}
+
+	public Integer getPosition() {
+		return position;
+	}
+
+	@Override
+	public String toString() {
+		return name;
+	}
+
+	@Override
+	public void clearTagMap() {
+		tagMap.clear();
+	}
+
+	@Override
+	public ActionItem remove(int tag) {
+		return tagMap.remove(tag);
+	}
+
+	@Override
+	public ActionItem put(int tag, ActionItem action) {
+		Objects.requireNonNull(action);
+		return tagMap.put(tag, action);
+	}
+
+	@Override
+	public void profileValidation() throws Exception {
+		ExpressionError expressionError = ExpressionResult.isValid(condition, new ExprCondition(), Boolean.class);
+		if (condition != null && !expressionError.isValid()) {
+			throw new Exception(expressionError.getMsg());
+		}
+	}
+
 }

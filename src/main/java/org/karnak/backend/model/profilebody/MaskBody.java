@@ -13,31 +13,34 @@ import java.util.List;
 
 public class MaskBody {
 
-  private String stationName;
-  private String color;
-  private List<String> rectangles;
+	private String stationName;
 
-  public String getStationName() {
-    return stationName;
-  }
+	private String color;
 
-  public void setStationName(String stationName) {
-    this.stationName = stationName;
-  }
+	private List<String> rectangles;
 
-  public String getColor() {
-    return color;
-  }
+	public String getStationName() {
+		return stationName;
+	}
 
-  public void setColor(String color) {
-    this.color = color;
-  }
+	public void setStationName(String stationName) {
+		this.stationName = stationName;
+	}
 
-  public List<String> getRectangles() {
-    return rectangles;
-  }
+	public String getColor() {
+		return color;
+	}
 
-  public void setRectangles(List<String> rectangles) {
-    this.rectangles = rectangles;
-  }
+	public void setColor(String color) {
+		this.color = color;
+	}
+
+	public List<String> getRectangles() {
+		return rectangles;
+	}
+
+	public void setRectangles(List<String> rectangles) {
+		this.rectangles = rectangles;
+	}
+
 }

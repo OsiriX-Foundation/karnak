@@ -1,6 +1,14 @@
 #  --------------------------------------------------------
 #  Karnak Application Profiles
 #  --------------------------------------------------------
+# - Info
+info:
+  component: Karnak
+  app:
+    name: Karnak
+    description: Karnak
+  environment: ${ENVIRONMENT}
+
 name: KARNAK-Profile
 environment: LOCAL
 karnakadmin: ${KARNAK_ADMIN:admin}
@@ -22,7 +30,7 @@ logging:
                 MapSyncRpcHandler: ERROR
               ReturnChannelHandler: ERROR
 server:
-  port: 8081
+  port: 0
   servlet:
     session:
       persistent: false
@@ -63,5 +71,27 @@ spring:
       jdbc:
         lob:
           non_contextual_creation: true
+  cloud:
+    config:
+      discovery:
+        enabled: false
+        service-id: config-server
+      fail-fast: true
+      name: ${spring.application.name}
+      label: ${ENVIRONMENT}
+#  config:
+#    import: 'configserver:'
+#  main:
+#    web-application-type: servlet
+#    allow-bean-definition-overriding: true
+
+# - Eureka
+eureka:
+  client:
+    fetch-registry: true
+    register-with-eureka: false
+    service-url:
+      defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
+
 monitoring:
   max-history: 150000

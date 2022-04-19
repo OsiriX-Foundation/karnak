@@ -16,74 +16,77 @@ import org.karnak.backend.enums.TransferStatusType;
 
 public class TransferStatusFilter {
 
-  private String studyUid;
-  private String serieUid;
-  private String sopInstanceUid;
-  private TransferStatusType transferStatusType;
-  private LocalDateTime start;
-  private LocalDateTime end;
+	private String studyUid;
 
-  public TransferStatusFilter() {
-    this.studyUid = "";
-    this.serieUid = "";
-    this.sopInstanceUid = "";
-    this.transferStatusType = TransferStatusType.ALL;
-  }
+	private String serieUid;
 
-  public String getStudyUid() {
-    return studyUid;
-  }
+	private String sopInstanceUid;
 
-  public void setStudyUid(String studyUid) {
-    this.studyUid = studyUid;
-  }
+	private TransferStatusType transferStatusType;
 
-  public String getSerieUid() {
-    return serieUid;
-  }
+	private LocalDateTime start;
 
-  public void setSerieUid(String serieUid) {
-    this.serieUid = serieUid;
-  }
+	private LocalDateTime end;
 
-  public String getSopInstanceUid() {
-    return sopInstanceUid;
-  }
+	public TransferStatusFilter() {
+		this.studyUid = "";
+		this.serieUid = "";
+		this.sopInstanceUid = "";
+		this.transferStatusType = TransferStatusType.ALL;
+	}
 
-  public void setSopInstanceUid(String sopInstanceUid) {
-    this.sopInstanceUid = sopInstanceUid;
-  }
+	public String getStudyUid() {
+		return studyUid;
+	}
 
-  public TransferStatusType getTransferStatusType() {
-    return transferStatusType;
-  }
+	public void setStudyUid(String studyUid) {
+		this.studyUid = studyUid;
+	}
 
-  public void setTransferStatusType(TransferStatusType transferStatusType) {
-    this.transferStatusType = transferStatusType;
-  }
+	public String getSerieUid() {
+		return serieUid;
+	}
 
-  public LocalDateTime getStart() {
-    return start;
-  }
+	public void setSerieUid(String serieUid) {
+		this.serieUid = serieUid;
+	}
 
-  public void setStart(LocalDateTime start) {
-    this.start = start;
-  }
+	public String getSopInstanceUid() {
+		return sopInstanceUid;
+	}
 
-  public LocalDateTime getEnd() {
-    return end;
-  }
+	public void setSopInstanceUid(String sopInstanceUid) {
+		this.sopInstanceUid = sopInstanceUid;
+	}
 
-  public void setEnd(LocalDateTime end) {
-    this.end = end;
-  }
+	public TransferStatusType getTransferStatusType() {
+		return transferStatusType;
+	}
 
-  public boolean hasFilter() {
-    return StringUtils.isNotBlank(studyUid)
-        || StringUtils.isNotBlank(serieUid)
-        || StringUtils.isNotBlank(sopInstanceUid)
-        || !Objects.equals(TransferStatusType.ALL, transferStatusType)
-        || start != null
-        || end != null;
-  }
+	public void setTransferStatusType(TransferStatusType transferStatusType) {
+		this.transferStatusType = transferStatusType;
+	}
+
+	public LocalDateTime getStart() {
+		return start;
+	}
+
+	public void setStart(LocalDateTime start) {
+		this.start = start;
+	}
+
+	public LocalDateTime getEnd() {
+		return end;
+	}
+
+	public void setEnd(LocalDateTime end) {
+		this.end = end;
+	}
+
+	public boolean hasFilter() {
+		return StringUtils.isNotBlank(studyUid) || StringUtils.isNotBlank(serieUid)
+				|| StringUtils.isNotBlank(sopInstanceUid) || !Objects.equals(TransferStatusType.ALL, transferStatusType)
+				|| start != null || end != null;
+	}
+
 }

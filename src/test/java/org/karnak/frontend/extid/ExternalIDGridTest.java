@@ -26,80 +26,69 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles("test")
 class ExternalIDGridTest {
 
-  @Test
-  void should_create_external_id_grid() {
+	@Test
+	void should_create_external_id_grid() {
 
-    // Call constructor
-    ExternalIDGrid externalIDGrid = new ExternalIDGrid();
+		// Call constructor
+		ExternalIDGrid externalIDGrid = new ExternalIDGrid();
 
-    // Test results
-    assertNotNull(externalIDGrid);
-  }
+		// Test results
+		assertNotNull(externalIDGrid);
+	}
 
-  @Test
-  void should_read_cache() {
+	@Test
+	void should_read_cache() {
 
-    // Call constructor
-    ExternalIDGrid externalIDGrid = new ExternalIDGrid();
+		// Call constructor
+		ExternalIDGrid externalIDGrid = new ExternalIDGrid();
 
-    // Set cache
-    PatientClient externalIDCache = new ExternalIDCache();
-    CachedPatient patient =
-        new CachedPatient(
-            "pseudonym",
-            "patientId",
-            "patientFirstName",
-            "patientLastName",
-            "issuerOfPatientId",
-            1L);
-    patient.setProjectID(1L);
-    externalIDCache.put("key", patient);
-    externalIDGrid.setExternalIDCache(externalIDCache);
+		// Set cache
+		PatientClient externalIDCache = new ExternalIDCache();
+		CachedPatient patient = new CachedPatient("pseudonym", "patientId", "patientFirstName", "patientLastName",
+				"issuerOfPatientId", 1L);
+		patient.setProjectID(1L);
+		externalIDCache.put("key", patient);
+		externalIDGrid.setExternalIDCache(externalIDCache);
 
-    // set project
-    ProjectEntity projectEntity = new ProjectEntity();
-    projectEntity.setId(1L);
-    externalIDGrid.setProjectEntity(projectEntity);
+		// set project
+		ProjectEntity projectEntity = new ProjectEntity();
+		projectEntity.setId(1L);
+		externalIDGrid.setProjectEntity(projectEntity);
 
-    // Call method
-    externalIDGrid.readAllCacheValue();
+		// Call method
+		externalIDGrid.readAllCacheValue();
 
-    // Test results
-    assertNotNull(externalIDGrid);
-    assertNotNull(externalIDGrid.getExternalIDCache());
-    assertNotNull(externalIDGrid.getProjectEntity());
-    assertEquals("pseudonym", externalIDGrid.getPatientsListInCache().get(0).getPseudonym());
-  }
+		// Test results
+		assertNotNull(externalIDGrid);
+		assertNotNull(externalIDGrid.getExternalIDCache());
+		assertNotNull(externalIDGrid.getProjectEntity());
+		assertEquals("pseudonym", externalIDGrid.getPatientsListInCache().get(0).getPseudonym());
+	}
 
-  @Test
-  void should_add_patient_and_check_existence() {
+	@Test
+	void should_add_patient_and_check_existence() {
 
-    // Call constructor
-    ExternalIDGrid externalIDGrid = new ExternalIDGrid();
+		// Call constructor
+		ExternalIDGrid externalIDGrid = new ExternalIDGrid();
 
-    // Add patient
-    CachedPatient patient =
-        new CachedPatient(
-            "pseudonym",
-            "patientId",
-            "patientFirstName",
-            "patientLastName",
-            "issuerOfPatientId",
-            1L);
-    patient.setProjectID(1L);
+		// Add patient
+		CachedPatient patient = new CachedPatient("pseudonym", "patientId", "patientFirstName", "patientLastName",
+				"issuerOfPatientId", 1L);
+		patient.setProjectID(1L);
 
-    // set project
-    ProjectEntity projectEntity = new ProjectEntity();
-    projectEntity.setId(1L);
-    externalIDGrid.setProjectEntity(projectEntity);
+		// set project
+		ProjectEntity projectEntity = new ProjectEntity();
+		projectEntity.setId(1L);
+		externalIDGrid.setProjectEntity(projectEntity);
 
-    // Test no patient in cache
-    assertFalse(externalIDGrid.patientExist(patient));
+		// Test no patient in cache
+		assertFalse(externalIDGrid.patientExist(patient));
 
-    // Add patient
-    externalIDGrid.addPatient(patient);
+		// Add patient
+		externalIDGrid.addPatient(patient);
 
-    // Test patient in cache
-    assertTrue(externalIDGrid.patientExist(patient));
-  }
+		// Test patient in cache
+		assertTrue(externalIDGrid.patientExist(patient));
+	}
+
 }

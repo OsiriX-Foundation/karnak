@@ -24,179 +24,178 @@ import org.mockito.Mockito;
 
 class ForwardNodeServiceTest {
 
-  // Repositories
-  private final ForwardNodeRepo forwardNodeRepoMock = Mockito.mock(ForwardNodeRepo.class);
+	// Repositories
+	private final ForwardNodeRepo forwardNodeRepoMock = Mockito.mock(ForwardNodeRepo.class);
 
-  // Service
-  private ForwardNodeService forwardNodeService;
+	// Service
+	private ForwardNodeService forwardNodeService;
 
-  @BeforeEach
-  public void setUp() {
+	@BeforeEach
+	public void setUp() {
 
-    // Build mocked service
-    forwardNodeService = new ForwardNodeService(forwardNodeRepoMock);
-  }
+		// Build mocked service
+		forwardNodeService = new ForwardNodeService(forwardNodeRepoMock);
+	}
 
-  @Test
-  void should_retrieve_forward_node_by_id() {
-    // Call service
-    forwardNodeService.get(1L);
+	@Test
+	void should_retrieve_forward_node_by_id() {
+		// Call service
+		forwardNodeService.get(1L);
 
-    // Test results
-    Mockito.verify(forwardNodeRepoMock, Mockito.times(1)).findById(Mockito.anyLong());
-  }
+		// Test results
+		Mockito.verify(forwardNodeRepoMock, Mockito.times(1)).findById(Mockito.anyLong());
+	}
 
-  @Test
-  void should_save_forward_node() {
-    // Init data
-    ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
+	@Test
+	void should_save_forward_node() {
+		// Init data
+		ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
 
-    // Call service
-    forwardNodeService.save(forwardNodeEntity);
+		// Call service
+		forwardNodeService.save(forwardNodeEntity);
 
-    // Test results
-    Mockito.verify(forwardNodeRepoMock, Mockito.times(1))
-        .saveAndFlush(Mockito.any(ForwardNodeEntity.class));
-  }
+		// Test results
+		Mockito.verify(forwardNodeRepoMock, Mockito.times(1)).saveAndFlush(Mockito.any(ForwardNodeEntity.class));
+	}
 
-  @Test
-  void should_delete_forward_node() {
-    // Init data
-    ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
-    forwardNodeEntity.setId(1L);
+	@Test
+	void should_delete_forward_node() {
+		// Init data
+		ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
+		forwardNodeEntity.setId(1L);
 
-    // Call service
-    forwardNodeService.delete(forwardNodeEntity);
+		// Call service
+		forwardNodeService.delete(forwardNodeEntity);
 
-    // Test results
-    Mockito.verify(forwardNodeRepoMock, Mockito.times(1)).deleteById(Mockito.anyLong());
-  }
+		// Test results
+		Mockito.verify(forwardNodeRepoMock, Mockito.times(1)).deleteById(Mockito.anyLong());
+	}
 
-  @Test
-  void should_retrieve_all_forward_node() {
-    // Call service
-    forwardNodeService.getAllForwardNodes();
+	@Test
+	void should_retrieve_all_forward_node() {
+		// Call service
+		forwardNodeService.getAllForwardNodes();
 
-    // Test results
-    Mockito.verify(forwardNodeRepoMock, Mockito.times(1)).findAll();
-  }
+		// Test results
+		Mockito.verify(forwardNodeRepoMock, Mockito.times(1)).findAll();
+	}
 
-  @Test
-  void should_retrieve_destination_by_id() {
-    // Init data
-    ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
-    DestinationEntity destinationEntity = new DestinationEntity();
-    destinationEntity.setId(1L);
-    forwardNodeEntity.addDestination(destinationEntity);
+	@Test
+	void should_retrieve_destination_by_id() {
+		// Init data
+		ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
+		DestinationEntity destinationEntity = new DestinationEntity();
+		destinationEntity.setId(1L);
+		forwardNodeEntity.addDestination(destinationEntity);
 
-    // Call service
-    DestinationEntity destinationFound =
-        forwardNodeService.getDestinationById(forwardNodeEntity, 1L);
+		// Call service
+		DestinationEntity destinationFound = forwardNodeService.getDestinationById(forwardNodeEntity, 1L);
 
-    // Test result
-    assertNotNull(destinationFound);
-    assertEquals(1L, destinationFound.getId().longValue());
-  }
+		// Test result
+		assertNotNull(destinationFound);
+		assertEquals(1L, destinationFound.getId().longValue());
+	}
 
-  @Test
-  void should_update_destination() {
-    // Init data
-    ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
-    DestinationEntity destinationEntity = new DestinationEntity();
-    destinationEntity.setId(1L);
-    forwardNodeEntity.addDestination(destinationEntity);
-    // Destination to add
-    DestinationEntity destinationEntityToAdd = new DestinationEntity();
-    destinationEntityToAdd.setId(2L);
+	@Test
+	void should_update_destination() {
+		// Init data
+		ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
+		DestinationEntity destinationEntity = new DestinationEntity();
+		destinationEntity.setId(1L);
+		forwardNodeEntity.addDestination(destinationEntity);
+		// Destination to add
+		DestinationEntity destinationEntityToAdd = new DestinationEntity();
+		destinationEntityToAdd.setId(2L);
 
-    // Call service
-    DestinationEntity destinationAdded =
-        forwardNodeService.updateDestination(forwardNodeEntity, destinationEntityToAdd);
+		// Call service
+		DestinationEntity destinationAdded = forwardNodeService.updateDestination(forwardNodeEntity,
+				destinationEntityToAdd);
 
-    // Test result
-    assertNotNull(destinationAdded);
-    assertEquals(2L, destinationAdded.getId().longValue());
-    assertEquals(2, forwardNodeEntity.getDestinationEntities().size());
-    assertEquals(2, forwardNodeEntity.getDestinationEntities().size());
-    assertTrue(forwardNodeEntity.getDestinationEntities().contains(destinationAdded));
-  }
+		// Test result
+		assertNotNull(destinationAdded);
+		assertEquals(2L, destinationAdded.getId().longValue());
+		assertEquals(2, forwardNodeEntity.getDestinationEntities().size());
+		assertEquals(2, forwardNodeEntity.getDestinationEntities().size());
+		assertTrue(forwardNodeEntity.getDestinationEntities().contains(destinationAdded));
+	}
 
-  @Test
-  void should_delete_destination() {
-    // Init data
-    ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
-    DestinationEntity destinationEntity = new DestinationEntity();
-    destinationEntity.setId(1L);
-    forwardNodeEntity.addDestination(destinationEntity);
-    // Destination to add
-    DestinationEntity destinationEntityToDelete = new DestinationEntity();
-    destinationEntityToDelete.setId(2L);
-    forwardNodeEntity.addDestination(destinationEntityToDelete);
+	@Test
+	void should_delete_destination() {
+		// Init data
+		ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
+		DestinationEntity destinationEntity = new DestinationEntity();
+		destinationEntity.setId(1L);
+		forwardNodeEntity.addDestination(destinationEntity);
+		// Destination to add
+		DestinationEntity destinationEntityToDelete = new DestinationEntity();
+		destinationEntityToDelete.setId(2L);
+		forwardNodeEntity.addDestination(destinationEntityToDelete);
 
-    // Call service
-    forwardNodeService.deleteDestination(forwardNodeEntity, destinationEntityToDelete);
+		// Call service
+		forwardNodeService.deleteDestination(forwardNodeEntity, destinationEntityToDelete);
 
-    // Test result
-    assertEquals(1, forwardNodeEntity.getDestinationEntities().size());
-    assertFalse(forwardNodeEntity.getDestinationEntities().contains(destinationEntityToDelete));
-  }
+		// Test result
+		assertEquals(1, forwardNodeEntity.getDestinationEntities().size());
+		assertFalse(forwardNodeEntity.getDestinationEntities().contains(destinationEntityToDelete));
+	}
 
-  @Test
-  void should_retrieve_source_by_id() {
-    // Init data
-    ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
-    DicomSourceNodeEntity dicomSourceNodeEntity = new DicomSourceNodeEntity();
-    dicomSourceNodeEntity.setId(1L);
-    forwardNodeEntity.addSourceNode(dicomSourceNodeEntity);
+	@Test
+	void should_retrieve_source_by_id() {
+		// Init data
+		ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
+		DicomSourceNodeEntity dicomSourceNodeEntity = new DicomSourceNodeEntity();
+		dicomSourceNodeEntity.setId(1L);
+		forwardNodeEntity.addSourceNode(dicomSourceNodeEntity);
 
-    // Call service
-    DicomSourceNodeEntity sourceFound = forwardNodeService.getSourceNodeById(forwardNodeEntity, 1L);
+		// Call service
+		DicomSourceNodeEntity sourceFound = forwardNodeService.getSourceNodeById(forwardNodeEntity, 1L);
 
-    // Test result
-    assertNotNull(sourceFound);
-    assertEquals(1L, sourceFound.getId().longValue());
-  }
+		// Test result
+		assertNotNull(sourceFound);
+		assertEquals(1L, sourceFound.getId().longValue());
+	}
 
-  @Test
-  void should_update_source() {
-    // Init data
-    ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
-    DicomSourceNodeEntity dicomSourceNodeEntity = new DicomSourceNodeEntity();
-    dicomSourceNodeEntity.setId(1L);
-    forwardNodeEntity.addSourceNode(dicomSourceNodeEntity);
-    // Source to add
-    DicomSourceNodeEntity dicomSourceNodeEntityToAdd = new DicomSourceNodeEntity();
-    dicomSourceNodeEntityToAdd.setId(2L);
+	@Test
+	void should_update_source() {
+		// Init data
+		ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
+		DicomSourceNodeEntity dicomSourceNodeEntity = new DicomSourceNodeEntity();
+		dicomSourceNodeEntity.setId(1L);
+		forwardNodeEntity.addSourceNode(dicomSourceNodeEntity);
+		// Source to add
+		DicomSourceNodeEntity dicomSourceNodeEntityToAdd = new DicomSourceNodeEntity();
+		dicomSourceNodeEntityToAdd.setId(2L);
 
-    // Call service
-    DicomSourceNodeEntity sourceAdded =
-        forwardNodeService.updateSourceNode(forwardNodeEntity, dicomSourceNodeEntityToAdd);
+		// Call service
+		DicomSourceNodeEntity sourceAdded = forwardNodeService.updateSourceNode(forwardNodeEntity,
+				dicomSourceNodeEntityToAdd);
 
-    // Test result
-    assertNotNull(sourceAdded);
-    assertEquals(2L, sourceAdded.getId().longValue());
-    assertEquals(2, forwardNodeEntity.getSourceNodes().size());
-    assertEquals(2, forwardNodeEntity.getSourceNodes().size());
-    assertTrue(forwardNodeEntity.getSourceNodes().contains(sourceAdded));
-  }
+		// Test result
+		assertNotNull(sourceAdded);
+		assertEquals(2L, sourceAdded.getId().longValue());
+		assertEquals(2, forwardNodeEntity.getSourceNodes().size());
+		assertEquals(2, forwardNodeEntity.getSourceNodes().size());
+		assertTrue(forwardNodeEntity.getSourceNodes().contains(sourceAdded));
+	}
 
-  @Test
-  void should_delete_source() {
-    // Init data
-    ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
-    DicomSourceNodeEntity dicomSourceNodeEntity = new DicomSourceNodeEntity();
-    dicomSourceNodeEntity.setId(1L);
-    forwardNodeEntity.addSourceNode(dicomSourceNodeEntity);
-    // Source to add
-    DicomSourceNodeEntity sourceEntityToDelete = new DicomSourceNodeEntity();
-    sourceEntityToDelete.setId(2L);
-    forwardNodeEntity.addSourceNode(sourceEntityToDelete);
+	@Test
+	void should_delete_source() {
+		// Init data
+		ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
+		DicomSourceNodeEntity dicomSourceNodeEntity = new DicomSourceNodeEntity();
+		dicomSourceNodeEntity.setId(1L);
+		forwardNodeEntity.addSourceNode(dicomSourceNodeEntity);
+		// Source to add
+		DicomSourceNodeEntity sourceEntityToDelete = new DicomSourceNodeEntity();
+		sourceEntityToDelete.setId(2L);
+		forwardNodeEntity.addSourceNode(sourceEntityToDelete);
 
-    // Call service
-    forwardNodeService.deleteSourceNode(forwardNodeEntity, sourceEntityToDelete);
+		// Call service
+		forwardNodeService.deleteSourceNode(forwardNodeEntity, sourceEntityToDelete);
 
-    // Test result
-    assertEquals(1, forwardNodeEntity.getSourceNodes().size());
-    assertFalse(forwardNodeEntity.getSourceNodes().contains(sourceEntityToDelete));
-  }
+		// Test result
+		assertEquals(1, forwardNodeEntity.getSourceNodes().size());
+		assertFalse(forwardNodeEntity.getSourceNodes().contains(sourceEntityToDelete));
+	}
+
 }

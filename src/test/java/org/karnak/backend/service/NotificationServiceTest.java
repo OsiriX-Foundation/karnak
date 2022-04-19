@@ -30,102 +30,79 @@ import org.thymeleaf.TemplateEngine;
 
 class NotificationServiceTest {
 
-  // Services
-  private final TemplateEngine templateEngineMock = Mockito.mock(TemplateEngine.class);
-  private final JavaMailSender javaMailSenderMock = Mockito.mock(JavaMailSender.class);
+	// Services
+	private final TemplateEngine templateEngineMock = Mockito.mock(TemplateEngine.class);
 
-  // Repositories
-  private final DestinationRepo destinationRepositoryMock = Mockito.mock(DestinationRepo.class);
-  private final TransferStatusRepo transferStatusRepoMock = Mockito.mock(TransferStatusRepo.class);
+	private final JavaMailSender javaMailSenderMock = Mockito.mock(JavaMailSender.class);
 
-  // Service
-  private NotificationService notificationService;
+	// Repositories
+	private final DestinationRepo destinationRepositoryMock = Mockito.mock(DestinationRepo.class);
 
-  @BeforeEach
-  void setUp() {
-    // Mock Destination
-    DestinationEntity destinationEntity = new DestinationEntity();
-    destinationEntity.setDesidentification(true);
-    destinationEntity.setLastTransfer(LocalDateTime.MIN);
-    destinationEntity.setId(1L);
-    destinationEntity.setActivateNotification(true);
-    when(destinationRepositoryMock.findAll()).thenReturn(Arrays.asList(destinationEntity));
+	private final TransferStatusRepo transferStatusRepoMock = Mockito.mock(TransferStatusRepo.class);
 
-    // Mock transfer status
-    TransferStatusEntity transferStatusEntity = new TransferStatusEntity();
-    transferStatusEntity.setPatientIdToSend("patientIdToSend");
-    transferStatusEntity.setPatientIdOriginal("patientIdOriginal");
-    transferStatusEntity.setSent(true);
-    transferStatusEntity.setDestinationEntity(destinationEntity);
-    transferStatusEntity.setForwardNodeId(2L);
-    transferStatusEntity.setStudyUidOriginal("studyUidOriginal");
-    transferStatusEntity.setStudyUidToSend("studyUidToSend");
-    transferStatusEntity.setSerieUidOriginal("serieUidOriginal");
-    transferStatusEntity.setStudyDescriptionToSend("studyDescriptionToSend");
-    transferStatusEntity.setStudyDateToSend(LocalDateTime.MIN);
-    transferStatusEntity.setSerieUidToSend("serieUidToSend");
-    transferStatusEntity.setSerieDescriptionToSend("serieDescriptionToSend");
-    transferStatusEntity.setSerieDateToSend(LocalDateTime.MIN);
-    ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
-    transferStatusEntity.setForwardNodeEntity(forwardNodeEntity);
-    when(transferStatusRepoMock.findByDestinationId(Mockito.anyLong()))
-        .thenReturn(Arrays.asList(transferStatusEntity));
+	// Service
+	private NotificationService notificationService;
 
-    // Build mocked service
-    notificationService =
-        new NotificationService(
-            templateEngineMock,
-            javaMailSenderMock,
-            transferStatusRepoMock,
-            destinationRepositoryMock);
-  }
+	@BeforeEach
+	void setUp() {
+		// Mock Destination
+		DestinationEntity destinationEntity = new DestinationEntity();
+		destinationEntity.setDesidentification(true);
+		destinationEntity.setLastTransfer(LocalDateTime.MIN);
+		destinationEntity.setId(1L);
+		destinationEntity.setActivateNotification(true);
+		when(destinationRepositoryMock.findAll()).thenReturn(Arrays.asList(destinationEntity));
 
-  @Test
-  void shouldBuildNotificationsToSend() {
-    // Call service
-    List<TransferMonitoringNotification> transferMonitoringNotifications =
-        notificationService.buildNotificationsToSend();
+		// Mock transfer status
+		TransferStatusEntity transferStatusEntity = new TransferStatusEntity();
+		transferStatusEntity.setPatientIdToSend("patientIdToSend");
+		transferStatusEntity.setPatientIdOriginal("patientIdOriginal");
+		transferStatusEntity.setSent(true);
+		transferStatusEntity.setDestinationEntity(destinationEntity);
+		transferStatusEntity.setForwardNodeId(2L);
+		transferStatusEntity.setStudyUidOriginal("studyUidOriginal");
+		transferStatusEntity.setStudyUidToSend("studyUidToSend");
+		transferStatusEntity.setSerieUidOriginal("serieUidOriginal");
+		transferStatusEntity.setStudyDescriptionToSend("studyDescriptionToSend");
+		transferStatusEntity.setStudyDateToSend(LocalDateTime.MIN);
+		transferStatusEntity.setSerieUidToSend("serieUidToSend");
+		transferStatusEntity.setSerieDescriptionToSend("serieDescriptionToSend");
+		transferStatusEntity.setSerieDateToSend(LocalDateTime.MIN);
+		ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
+		transferStatusEntity.setForwardNodeEntity(forwardNodeEntity);
+		when(transferStatusRepoMock.findByDestinationId(Mockito.anyLong()))
+				.thenReturn(Arrays.asList(transferStatusEntity));
 
-    // Test results
-    assertNotNull(transferMonitoringNotifications);
-    assertEquals(1, transferMonitoringNotifications.size());
-    assertEquals("patientIdToSend", transferMonitoringNotifications.get(0).getPatientId());
-    assertEquals("studyUidToSend", transferMonitoringNotifications.get(0).getStudyUid());
-    assertEquals(
-        "studyDescriptionToSend", transferMonitoringNotifications.get(0).getStudyDescription());
-    assertEquals(LocalDateTime.MIN, transferMonitoringNotifications.get(0).getStudyDate());
-    assertNotNull(transferMonitoringNotifications.get(0).getSerieSummaryNotifications());
-    assertEquals(1, transferMonitoringNotifications.get(0).getSerieSummaryNotifications().size());
-    assertEquals(
-        "serieUidToSend",
-        transferMonitoringNotifications.get(0).getSerieSummaryNotifications().get(0).getSerieUid());
-    assertEquals(
-        "serieDescriptionToSend",
-        transferMonitoringNotifications
-            .get(0)
-            .getSerieSummaryNotifications()
-            .get(0)
-            .getSerieDescription());
-    assertEquals(
-        LocalDateTime.MIN,
-        transferMonitoringNotifications
-            .get(0)
-            .getSerieSummaryNotifications()
-            .get(0)
-            .getSerieDate());
-    assertEquals(
-        1,
-        transferMonitoringNotifications
-            .get(0)
-            .getSerieSummaryNotifications()
-            .get(0)
-            .getNbTransferSent());
-    assertEquals(
-        0,
-        transferMonitoringNotifications
-            .get(0)
-            .getSerieSummaryNotifications()
-            .get(0)
-            .getNbTransferNotSent());
-  }
+		// Build mocked service
+		notificationService = new NotificationService(templateEngineMock, javaMailSenderMock, transferStatusRepoMock,
+				destinationRepositoryMock);
+	}
+
+	@Test
+	void shouldBuildNotificationsToSend() {
+		// Call service
+		List<TransferMonitoringNotification> transferMonitoringNotifications = notificationService
+				.buildNotificationsToSend();
+
+		// Test results
+		assertNotNull(transferMonitoringNotifications);
+		assertEquals(1, transferMonitoringNotifications.size());
+		assertEquals("patientIdToSend", transferMonitoringNotifications.get(0).getPatientId());
+		assertEquals("studyUidToSend", transferMonitoringNotifications.get(0).getStudyUid());
+		assertEquals("studyDescriptionToSend", transferMonitoringNotifications.get(0).getStudyDescription());
+		assertEquals(LocalDateTime.MIN, transferMonitoringNotifications.get(0).getStudyDate());
+		assertNotNull(transferMonitoringNotifications.get(0).getSerieSummaryNotifications());
+		assertEquals(1, transferMonitoringNotifications.get(0).getSerieSummaryNotifications().size());
+		assertEquals("serieUidToSend",
+				transferMonitoringNotifications.get(0).getSerieSummaryNotifications().get(0).getSerieUid());
+		assertEquals("serieDescriptionToSend",
+				transferMonitoringNotifications.get(0).getSerieSummaryNotifications().get(0).getSerieDescription());
+		assertEquals(LocalDateTime.MIN,
+				transferMonitoringNotifications.get(0).getSerieSummaryNotifications().get(0).getSerieDate());
+		assertEquals(1,
+				transferMonitoringNotifications.get(0).getSerieSummaryNotifications().get(0).getNbTransferSent());
+		assertEquals(0,
+				transferMonitoringNotifications.get(0).getSerieSummaryNotifications().get(0).getNbTransferNotSent());
+	}
+
 }

@@ -19,52 +19,57 @@ import org.karnak.frontend.forwardnode.edit.component.ButtonSaveDeleteCancel;
 @SuppressWarnings("serial")
 public class NewUpdateSourceNode extends VerticalLayout {
 
-  private final Binder<DicomSourceNodeEntity> binderFormSourceNode;
-  private final FormSourceNode formSourceNode;
-  private final ButtonSaveDeleteCancel buttonSaveDeleteCancel;
-  private DicomSourceNodeEntity currentSourceNode;
+	private final Binder<DicomSourceNodeEntity> binderFormSourceNode;
 
-  public NewUpdateSourceNode() {
-    currentSourceNode = null;
-    binderFormSourceNode = new BeanValidationBinder<>(DicomSourceNodeEntity.class);
-    buttonSaveDeleteCancel = new ButtonSaveDeleteCancel();
-    formSourceNode = new FormSourceNode(binderFormSourceNode, buttonSaveDeleteCancel);
-  }
+	private final FormSourceNode formSourceNode;
 
-  public void setView() {
-    removeAll();
-    binderFormSourceNode.readBean(currentSourceNode);
-    add(formSourceNode);
-  }
+	private final ButtonSaveDeleteCancel buttonSaveDeleteCancel;
 
-  public void load(DicomSourceNodeEntity sourceNode) {
-    if (sourceNode != null) {
-      currentSourceNode = sourceNode;
-      buttonSaveDeleteCancel.getDelete().setEnabled(true);
-    } else {
-      currentSourceNode = DicomSourceNodeEntity.ofEmpty();
-      buttonSaveDeleteCancel.getDelete().setEnabled(false);
-    }
-    setView();
-  }
+	private DicomSourceNodeEntity currentSourceNode;
 
-  public Button getButtonCancel() {
-    return buttonSaveDeleteCancel.getCancel();
-  }
+	public NewUpdateSourceNode() {
+		currentSourceNode = null;
+		binderFormSourceNode = new BeanValidationBinder<>(DicomSourceNodeEntity.class);
+		buttonSaveDeleteCancel = new ButtonSaveDeleteCancel();
+		formSourceNode = new FormSourceNode(binderFormSourceNode, buttonSaveDeleteCancel);
+	}
 
-  public Binder<DicomSourceNodeEntity> getBinderFormSourceNode() {
-    return binderFormSourceNode;
-  }
+	public void setView() {
+		removeAll();
+		binderFormSourceNode.readBean(currentSourceNode);
+		add(formSourceNode);
+	}
 
-  public ButtonSaveDeleteCancel getButtonSaveDeleteCancel() {
-    return buttonSaveDeleteCancel;
-  }
+	public void load(DicomSourceNodeEntity sourceNode) {
+		if (sourceNode != null) {
+			currentSourceNode = sourceNode;
+			buttonSaveDeleteCancel.getDelete().setEnabled(true);
+		}
+		else {
+			currentSourceNode = DicomSourceNodeEntity.ofEmpty();
+			buttonSaveDeleteCancel.getDelete().setEnabled(false);
+		}
+		setView();
+	}
 
-  public DicomSourceNodeEntity getCurrentSourceNode() {
-    return currentSourceNode;
-  }
+	public Button getButtonCancel() {
+		return buttonSaveDeleteCancel.getCancel();
+	}
 
-  public void setCurrentSourceNode(DicomSourceNodeEntity currentSourceNode) {
-    this.currentSourceNode = currentSourceNode;
-  }
+	public Binder<DicomSourceNodeEntity> getBinderFormSourceNode() {
+		return binderFormSourceNode;
+	}
+
+	public ButtonSaveDeleteCancel getButtonSaveDeleteCancel() {
+		return buttonSaveDeleteCancel;
+	}
+
+	public DicomSourceNodeEntity getCurrentSourceNode() {
+		return currentSourceNode;
+	}
+
+	public void setCurrentSourceNode(DicomSourceNodeEntity currentSourceNode) {
+		this.currentSourceNode = currentSourceNode;
+	}
+
 }

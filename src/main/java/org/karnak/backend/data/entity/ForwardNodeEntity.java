@@ -28,178 +28,166 @@ import javax.validation.constraints.Size;
 @Table(name = "forward_node")
 public class ForwardNodeEntity implements Serializable {
 
-  private static final long serialVersionUID = 2095439136652046994L;
+	private static final long serialVersionUID = 2095439136652046994L;
 
-  private Long id;
-  private String fwdDescription;
-  // AETitle which defined a mapping of the gateway. This AETitle is configured as
-  // a destination in the DICOM component that sends images to the gateway.
-  private String fwdAeTitle;
-  // Specification of a DICOM source node (the one which sends images to the
-  // gateway). When no source node is defined all the DICOM nodes are accepted by
-  // the gateway.
-  private Set<DicomSourceNodeEntity> sourceNodes = new HashSet<>();
-  // Specification of a final DICOM destination node. Multiple destinations can be
-  // defined either as a DICOM or DICOMWeb type.
-  private Set<DestinationEntity> destinationEntities = new HashSet<>();
+	private Long id;
 
-  public ForwardNodeEntity() {
-    this.fwdAeTitle = "";
-    this.fwdDescription = "";
-  }
+	private String fwdDescription;
 
-  public ForwardNodeEntity(String fwdAeTitle) {
-    this.fwdAeTitle = fwdAeTitle;
-    this.fwdDescription = "";
-  }
+	// AETitle which defined a mapping of the gateway. This AETitle is configured as
+	// a destination in the DICOM component that sends images to the gateway.
+	private String fwdAeTitle;
 
-  public static ForwardNodeEntity ofEmpty() {
-    return new ForwardNodeEntity();
-  }
+	// Specification of a DICOM source node (the one which sends images to the
+	// gateway). When no source node is defined all the DICOM nodes are accepted by
+	// the gateway.
+	private Set<DicomSourceNodeEntity> sourceNodes = new HashSet<>();
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  public Long getId() {
-    return id;
-  }
+	// Specification of a final DICOM destination node. Multiple destinations can be
+	// defined either as a DICOM or DICOMWeb type.
+	private Set<DestinationEntity> destinationEntities = new HashSet<>();
 
-  public void setId(Long id) {
-    this.id = id;
-  }
+	public ForwardNodeEntity() {
+		this.fwdAeTitle = "";
+		this.fwdDescription = "";
+	}
 
-  @Column(name = "description")
-  public String getFwdDescription() {
-    return this.fwdDescription;
-  }
+	public ForwardNodeEntity(String fwdAeTitle) {
+		this.fwdAeTitle = fwdAeTitle;
+		this.fwdDescription = "";
+	}
 
-  public void setFwdDescription(String fwdDescription) {
-    this.fwdDescription = fwdDescription;
-  }
+	public static ForwardNodeEntity ofEmpty() {
+		return new ForwardNodeEntity();
+	}
 
-  @NotBlank(message = "Forward AETitle is mandatory")
-  @Size(max = 16, message = "Forward AETitle has more than 16 characters")
-  public String getFwdAeTitle() {
-    return this.fwdAeTitle;
-  }
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	public Long getId() {
+		return id;
+	}
 
-  public void setFwdAeTitle(String fwdAeTitle) {
-    this.fwdAeTitle = fwdAeTitle;
-  }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-  @OneToMany(
-      mappedBy = "forwardNodeEntity",
-      cascade = CascadeType.ALL,
-      fetch = FetchType.EAGER,
-      orphanRemoval = true)
-  public Set<DicomSourceNodeEntity> getSourceNodes() {
-    return this.sourceNodes;
-  }
+	@Column(name = "description")
+	public String getFwdDescription() {
+		return this.fwdDescription;
+	}
 
-  public void setSourceNodes(Set<DicomSourceNodeEntity> sourceNodes) {
-    this.sourceNodes = sourceNodes;
-  }
+	public void setFwdDescription(String fwdDescription) {
+		this.fwdDescription = fwdDescription;
+	}
 
-  public void addSourceNode(DicomSourceNodeEntity sourceNode) {
-    sourceNode.setForwardNodeEntity(this);
-    this.sourceNodes.add(sourceNode);
-  }
+	@NotBlank(message = "Forward AETitle is mandatory")
+	@Size(max = 16, message = "Forward AETitle has more than 16 characters")
+	public String getFwdAeTitle() {
+		return this.fwdAeTitle;
+	}
 
-  public void removeSourceNode(DicomSourceNodeEntity sourceNode) {
-    this.sourceNodes.remove(sourceNode);
-  }
+	public void setFwdAeTitle(String fwdAeTitle) {
+		this.fwdAeTitle = fwdAeTitle;
+	}
 
-  @OneToMany(
-      mappedBy = "forwardNodeEntity",
-      cascade = CascadeType.ALL,
-      fetch = FetchType.EAGER,
-      orphanRemoval = true)
-  public Set<DestinationEntity> getDestinationEntities() {
-    return destinationEntities;
-  }
+	@OneToMany(mappedBy = "forwardNodeEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+	public Set<DicomSourceNodeEntity> getSourceNodes() {
+		return this.sourceNodes;
+	}
 
-  public void setDestinationEntities(Set<DestinationEntity> destinationEntities) {
-    this.destinationEntities = destinationEntities;
-  }
+	public void setSourceNodes(Set<DicomSourceNodeEntity> sourceNodes) {
+		this.sourceNodes = sourceNodes;
+	}
 
-  public void addDestination(DestinationEntity destinationEntity) {
-    destinationEntity.setForwardNodeEntity(this);
-    this.destinationEntities.add(destinationEntity);
-  }
+	public void addSourceNode(DicomSourceNodeEntity sourceNode) {
+		sourceNode.setForwardNodeEntity(this);
+		this.sourceNodes.add(sourceNode);
+	}
 
-  public void removeDestination(DestinationEntity destinationEntity) {
-    this.destinationEntities.remove(destinationEntity);
-  }
+	public void removeSourceNode(DicomSourceNodeEntity sourceNode) {
+		this.sourceNodes.remove(sourceNode);
+	}
 
-  /**
-   * Informs if this object matches with the filter as text.
-   *
-   * @param filterText the filter as text.
-   * @return true if this object matches with the filter as text; false otherwise.
-   */
-  public boolean matchesFilter(String filterText) {
-    if (contains(fwdAeTitle, filterText) //
-        || contains(fwdDescription, filterText)) {
-      return true;
-    }
+	@OneToMany(mappedBy = "forwardNodeEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+	public Set<DestinationEntity> getDestinationEntities() {
+		return destinationEntities;
+	}
 
-    for (DicomSourceNodeEntity sourceNode : sourceNodes) {
-      if (sourceNode.matchesFilter(filterText)) {
-        return true;
-      }
-    }
+	public void setDestinationEntities(Set<DestinationEntity> destinationEntities) {
+		this.destinationEntities = destinationEntities;
+	}
 
-    for (DestinationEntity destinationEntity : destinationEntities) {
-      if (destinationEntity.matchesFilter(filterText)) {
-        return true;
-      }
-    }
+	public void addDestination(DestinationEntity destinationEntity) {
+		destinationEntity.setForwardNodeEntity(this);
+		this.destinationEntities.add(destinationEntity);
+	}
 
-    return false;
-  }
+	public void removeDestination(DestinationEntity destinationEntity) {
+		this.destinationEntities.remove(destinationEntity);
+	}
 
-  private boolean contains(String value, String filterText) {
-    return value != null && value.contains(filterText);
-  }
+	/**
+	 * Informs if this object matches with the filter as text.
+	 * @param filterText the filter as text.
+	 * @return true if this object matches with the filter as text; false otherwise.
+	 */
+	public boolean matchesFilter(String filterText) {
+		if (contains(fwdAeTitle, filterText) //
+				|| contains(fwdDescription, filterText)) {
+			return true;
+		}
 
-  @Override
-  public String toString() {
-    return "ForwardNode [id="
-        + id
-        + ", description="
-        + fwdDescription
-        + ", fwdAeTitle="
-        + fwdAeTitle
-        + ", sourceNodes="
-        + sourceNodes
-        + ", destinations="
-        + destinationEntities
-        + "]";
-  }
+		for (DicomSourceNodeEntity sourceNode : sourceNodes) {
+			if (sourceNode.matchesFilter(filterText)) {
+				return true;
+			}
+		}
 
-  @Override
-  public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((id == null) ? 0 : id.hashCode());
-    return result;
-  }
+		for (DestinationEntity destinationEntity : destinationEntities) {
+			if (destinationEntity.matchesFilter(filterText)) {
+				return true;
+			}
+		}
 
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
-      return false;
-    }
-    ForwardNodeEntity other = (ForwardNodeEntity) obj;
-    if (id == null) {
-      return other.id == null;
-    } else {
-      return id.equals(other.id);
-    }
-  }
+		return false;
+	}
+
+	private boolean contains(String value, String filterText) {
+		return value != null && value.contains(filterText);
+	}
+
+	@Override
+	public String toString() {
+		return "ForwardNode [id=" + id + ", description=" + fwdDescription + ", fwdAeTitle=" + fwdAeTitle
+				+ ", sourceNodes=" + sourceNodes + ", destinations=" + destinationEntities + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		ForwardNodeEntity other = (ForwardNodeEntity) obj;
+		if (id == null) {
+			return other.id == null;
+		}
+		else {
+			return id.equals(other.id);
+		}
+	}
+
 }

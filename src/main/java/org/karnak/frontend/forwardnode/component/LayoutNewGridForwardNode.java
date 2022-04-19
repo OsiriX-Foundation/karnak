@@ -16,42 +16,49 @@ import org.karnak.backend.data.entity.ForwardNodeEntity;
 
 public class LayoutNewGridForwardNode extends VerticalLayout {
 
-  // UI Components
-  private final NewForwardNode newForwardNode;
-  private final GridForwardNode gridForwardNode;
-  private final Button buttonNewForwardNode;
-  private final TextField textFieldNewAETitleForwardNode;
-  private final Button buttonAddNewForwardNode;
-  private Button buttonCancelNewForwardNode;
+	// UI Components
+	private final NewForwardNode newForwardNode;
 
-  public LayoutNewGridForwardNode() {
-    newForwardNode = new NewForwardNode();
-    gridForwardNode = new GridForwardNode();
+	private final GridForwardNode gridForwardNode;
 
-    add(newForwardNode, gridForwardNode);
+	private final Button buttonNewForwardNode;
 
-    buttonNewForwardNode = newForwardNode.getNewForwardNode();
-    textFieldNewAETitleForwardNode = newForwardNode.getNewAETitleForwardNode();
-    buttonAddNewForwardNode = newForwardNode.getAddNewForwardNode();
-  }
+	private final TextField textFieldNewAETitleForwardNode;
 
-  public void load(ForwardNodeEntity forwardNodeEntity) {
-    if (forwardNodeEntity != null && forwardNodeEntity != gridForwardNode.getSelectedRow()) {
-      gridForwardNode.selectRow(forwardNodeEntity);
-    } else {
-      gridForwardNode.getSelectionModel().deselectAll();
-    }
-  }
+	private final Button buttonAddNewForwardNode;
 
-  public GridForwardNode getGridForwardNode() {
-    return gridForwardNode;
-  }
+	private Button buttonCancelNewForwardNode;
 
-  public TextField getTextFieldNewAETitleForwardNode() {
-    return textFieldNewAETitleForwardNode;
-  }
+	public LayoutNewGridForwardNode() {
+		newForwardNode = new NewForwardNode();
+		gridForwardNode = new GridForwardNode();
 
-  public Button getButtonAddNewForwardNode() {
-    return buttonAddNewForwardNode;
-  }
+		add(newForwardNode, gridForwardNode);
+
+		buttonNewForwardNode = newForwardNode.getNewForwardNode();
+		textFieldNewAETitleForwardNode = newForwardNode.getNewAETitleForwardNode();
+		buttonAddNewForwardNode = newForwardNode.getAddNewForwardNode();
+	}
+
+	public void load(ForwardNodeEntity forwardNodeEntity) {
+		if (forwardNodeEntity != null && forwardNodeEntity != gridForwardNode.getSelectedRow()) {
+			gridForwardNode.selectRow(forwardNodeEntity);
+		}
+		else {
+			gridForwardNode.getSelectionModel().deselectAll();
+		}
+	}
+
+	public GridForwardNode getGridForwardNode() {
+		return gridForwardNode;
+	}
+
+	public TextField getTextFieldNewAETitleForwardNode() {
+		return textFieldNewAETitleForwardNode;
+	}
+
+	public Button getButtonAddNewForwardNode() {
+		return buttonAddNewForwardNode;
+	}
+
 }

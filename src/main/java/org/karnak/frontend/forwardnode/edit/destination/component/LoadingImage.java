@@ -13,12 +13,13 @@ import com.vaadin.flow.component.html.Image;
 
 public class LoadingImage extends Image {
 
-  private final String loadingImagePath = "img/loading.gif";
+	private final String loadingImagePath = "img/loading.gif";
 
-  public LoadingImage(String alt, String maxSize) {
-    setSrc(loadingImagePath);
-    setAlt(alt);
-    setMaxHeight(maxSize);
-    setMaxWidth(maxSize);
-  }
+	public LoadingImage(String alt, String maxSize) {
+		setSrc(loadingImagePath);
+		setAlt(alt);
+		setMaxHeight(maxSize);
+		setMaxWidth(maxSize);
+	}
+
 }

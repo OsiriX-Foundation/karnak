@@ -32,58 +32,47 @@ import org.weasis.dicom.param.DicomState;
 
 class EchoServiceTest {
 
-  // Service
-  private EchoService echoService;
-  private final GatewaySetUpService gatewaySetUpServiceMock =
-      Mockito.mock(GatewaySetUpService.class);
+	// Service
+	private EchoService echoService;
 
-  @BeforeEach
-  public void setUp() {
-    // Build mocked service
-    echoService = new EchoService(gatewaySetUpServiceMock);
-  }
+	private final GatewaySetUpService gatewaySetUpServiceMock = Mockito.mock(GatewaySetUpService.class);
 
-  @Test
-  void should_retrieve_status_destinations() throws IOException {
-    // Init data
-    ForwardDicomNode forwardDicomNode = new ForwardDicomNode("fwdAeTitle");
-    Optional<ForwardDicomNode> forwardDicomNodeOpt = Optional.of(forwardDicomNode);
-    DicomNode dicomNode = new DicomNode("fwdAeTitle", 1111);
-    ForwardDestination forwardDestination =
-        new DicomForwardDestination(forwardDicomNode, dicomNode);
-    WebForwardDestination webForwardDestination =
-        new WebForwardDestination(forwardDicomNode, "http://test.com");
-    List<ForwardDestination> forwardDestinations =
-        Arrays.asList(forwardDestination, webForwardDestination);
-    DicomState dicomState = new DicomState();
-    dicomState.setStatus(444);
+	@BeforeEach
+	public void setUp() {
+		// Build mocked service
+		echoService = new EchoService(gatewaySetUpServiceMock);
+	}
 
-    // Mock
-    Mockito.when(gatewaySetUpServiceMock.getDestinationNode(Mockito.anyString()))
-        .thenReturn(forwardDicomNodeOpt);
-    Mockito.when(gatewaySetUpServiceMock.getDestinations(Mockito.any(ForwardDicomNode.class)))
-        .thenReturn(forwardDestinations);
-    MockedStatic<Echo> echoMock = Mockito.mockStatic(Echo.class);
-    echoMock
-        .when(
-            () ->
-                Echo.process(
-                    Mockito.any(AdvancedParams.class),
-                    Mockito.any(ForwardDicomNode.class),
-                    Mockito.any(DicomNode.class)))
-        .thenReturn(dicomState);
+	@Test
+	void should_retrieve_status_destinations() throws IOException {
+		// Init data
+		ForwardDicomNode forwardDicomNode = new ForwardDicomNode("fwdAeTitle");
+		Optional<ForwardDicomNode> forwardDicomNodeOpt = Optional.of(forwardDicomNode);
+		DicomNode dicomNode = new DicomNode("fwdAeTitle", 1111);
+		ForwardDestination forwardDestination = new DicomForwardDestination(forwardDicomNode, dicomNode);
+		WebForwardDestination webForwardDestination = new WebForwardDestination(forwardDicomNode, "http://test.com");
+		List<ForwardDestination> forwardDestinations = Arrays.asList(forwardDestination, webForwardDestination);
+		DicomState dicomState = new DicomState();
+		dicomState.setStatus(444);
 
-    // Call service
-    List<DestinationEcho> destinationEchos =
-        echoService.retrieveStatusConfiguredDestinations("fwdAeTitle");
+		// Mock
+		Mockito.when(gatewaySetUpServiceMock.getDestinationNode(Mockito.anyString())).thenReturn(forwardDicomNodeOpt);
+		Mockito.when(gatewaySetUpServiceMock.getDestinations(Mockito.any(ForwardDicomNode.class)))
+				.thenReturn(forwardDestinations);
+		MockedStatic<Echo> echoMock = Mockito.mockStatic(Echo.class);
+		echoMock.when(() -> Echo.process(Mockito.any(AdvancedParams.class), Mockito.any(ForwardDicomNode.class),
+				Mockito.any(DicomNode.class))).thenReturn(dicomState);
 
-    // Test results
-    Mockito.verify(gatewaySetUpServiceMock, Mockito.times(1))
-        .getDestinationNode(Mockito.anyString());
-    assertEquals(2, destinationEchos.size());
-    assertEquals("fwdAeTitle", destinationEchos.get(0).getAet());
-    assertEquals(444, destinationEchos.get(0).getStatus());
-    assertEquals("http://test.com/studies", destinationEchos.get(1).getUrl());
-    assertEquals(0, destinationEchos.get(1).getStatus());
-  }
+		// Call service
+		List<DestinationEcho> destinationEchos = echoService.retrieveStatusConfiguredDestinations("fwdAeTitle");
+
+		// Test results
+		Mockito.verify(gatewaySetUpServiceMock, Mockito.times(1)).getDestinationNode(Mockito.anyString());
+		assertEquals(2, destinationEchos.size());
+		assertEquals("fwdAeTitle", destinationEchos.get(0).getAet());
+		assertEquals(444, destinationEchos.get(0).getStatus());
+		assertEquals("http://test.com/studies", destinationEchos.get(1).getUrl());
+		assertEquals(0, destinationEchos.get(1).getStatus());
+	}
+
 }

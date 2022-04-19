@@ -20,51 +20,56 @@ import org.karnak.frontend.util.UIS;
 
 public class PseudonymInDicomTagComponent extends Div {
 
-  private final Binder<DestinationEntity> destinationBinder;
-  private TextField delimiter;
-  private TextField tag;
-  private NumberField position;
-  private Checkbox savePseudonym;
+	private final Binder<DestinationEntity> destinationBinder;
 
-  public PseudonymInDicomTagComponent(Binder<DestinationEntity> destinationBinder) {
-    this.destinationBinder = destinationBinder;
-    setWidthFull();
-    setElements();
-    add(UIS.setWidthFull(new HorizontalLayout(tag, delimiter, position, savePseudonym)));
-  }
+	private TextField delimiter;
 
-  public void setElements() {
-    delimiter = new TextField("Delimiter");
-    tag = new TextField("Tag");
-    position = new NumberField("Position");
-    position.setHasControls(true);
-    position.setMin(0);
-    position.setStep(1);
-    savePseudonym = new Checkbox("Save pseudonym in Mainzelliste");
-    savePseudonym.getStyle().set("margin-top", "30px");
-    savePseudonym.setValue(true);
-  }
+	private TextField tag;
 
-  public void clear() {
-    tag.clear();
-    delimiter.clear();
-    position.clear();
-    savePseudonym.clear();
-  }
+	private NumberField position;
 
-  public TextField getDelimiter() {
-    return delimiter;
-  }
+	private Checkbox savePseudonym;
 
-  public TextField getTag() {
-    return tag;
-  }
+	public PseudonymInDicomTagComponent(Binder<DestinationEntity> destinationBinder) {
+		this.destinationBinder = destinationBinder;
+		setWidthFull();
+		setElements();
+		add(UIS.setWidthFull(new HorizontalLayout(tag, delimiter, position, savePseudonym)));
+	}
 
-  public NumberField getPosition() {
-    return position;
-  }
+	public void setElements() {
+		delimiter = new TextField("Delimiter");
+		tag = new TextField("Tag");
+		position = new NumberField("Position");
+		position.setHasControls(true);
+		position.setMin(0);
+		position.setStep(1);
+		savePseudonym = new Checkbox("Save pseudonym in Mainzelliste");
+		savePseudonym.getStyle().set("margin-top", "30px");
+		savePseudonym.setValue(true);
+	}
 
-  public Checkbox getSavePseudonym() {
-    return savePseudonym;
-  }
+	public void clear() {
+		tag.clear();
+		delimiter.clear();
+		position.clear();
+		savePseudonym.clear();
+	}
+
+	public TextField getDelimiter() {
+		return delimiter;
+	}
+
+	public TextField getTag() {
+		return tag;
+	}
+
+	public NumberField getPosition() {
+		return position;
+	}
+
+	public Checkbox getSavePseudonym() {
+		return savePseudonym;
+	}
+
 }

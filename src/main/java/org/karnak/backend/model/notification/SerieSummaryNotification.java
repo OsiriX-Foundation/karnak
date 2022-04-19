@@ -17,91 +17,90 @@ import org.karnak.backend.constant.Notification;
 /** Model used for serie summary notification */
 public class SerieSummaryNotification {
 
-  private String serieUid;
-  private String serieDescription;
-  private LocalDateTime serieDate;
-  private long nbTransferSent;
-  private long nbTransferNotSent;
-  private List<String> unTransferedReasons;
+	private String serieUid;
 
-  public String getSerieUid() {
-    return serieUid;
-  }
+	private String serieDescription;
 
-  public void setSerieUid(String serieUid) {
-    this.serieUid = serieUid;
-  }
+	private LocalDateTime serieDate;
 
-  public String getSerieDescription() {
-    return serieDescription;
-  }
+	private long nbTransferSent;
 
-  public void setSerieDescription(String serieDescription) {
-    this.serieDescription = serieDescription;
-  }
+	private long nbTransferNotSent;
 
-  public LocalDateTime getSerieDate() {
-    return serieDate;
-  }
+	private List<String> unTransferedReasons;
 
-  public void setSerieDate(LocalDateTime serieDate) {
-    this.serieDate = serieDate;
-  }
+	public String getSerieUid() {
+		return serieUid;
+	}
 
-  public long getNbTransferSent() {
-    return nbTransferSent;
-  }
+	public void setSerieUid(String serieUid) {
+		this.serieUid = serieUid;
+	}
 
-  public void setNbTransferSent(long nbTransferSent) {
-    this.nbTransferSent = nbTransferSent;
-  }
+	public String getSerieDescription() {
+		return serieDescription;
+	}
 
-  public long getNbTransferNotSent() {
-    return nbTransferNotSent;
-  }
+	public void setSerieDescription(String serieDescription) {
+		this.serieDescription = serieDescription;
+	}
 
-  public void setNbTransferNotSent(long nbTransferNotSent) {
-    this.nbTransferNotSent = nbTransferNotSent;
-  }
+	public LocalDateTime getSerieDate() {
+		return serieDate;
+	}
 
-  public List<String> getUnTransferedReasons() {
-    return unTransferedReasons;
-  }
+	public void setSerieDate(LocalDateTime serieDate) {
+		this.serieDate = serieDate;
+	}
 
-  public void setUnTransferedReasons(List<String> unTransferedReasons) {
-    this.unTransferedReasons = unTransferedReasons;
-  }
+	public long getNbTransferSent() {
+		return nbTransferSent;
+	}
 
-  @Override
-  public boolean equals(Object o) {
+	public void setNbTransferSent(long nbTransferSent) {
+		this.nbTransferSent = nbTransferSent;
+	}
 
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    SerieSummaryNotification that = (SerieSummaryNotification) o;
-    return nbTransferSent == that.nbTransferSent
-        && nbTransferNotSent == that.nbTransferNotSent
-        && Objects.equals(serieUid, that.serieUid)
-        && Objects.equals(serieDescription, that.serieDescription)
-        && Objects.equals(serieDate, that.serieDate)
-        && Objects.equals(unTransferedReasons, that.unTransferedReasons);
-  }
+	public long getNbTransferNotSent() {
+		return nbTransferNotSent;
+	}
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(
-        serieUid,
-        serieDescription,
-        serieDate,
-        nbTransferSent,
-        nbTransferNotSent,
-        unTransferedReasons);
-  }
+	public void setNbTransferNotSent(long nbTransferNotSent) {
+		this.nbTransferNotSent = nbTransferNotSent;
+	}
 
-  public String toStringUnTransferredReasons() {
-    return String.join(Notification.COMMA_SEPARATOR, unTransferedReasons);
-  }
+	public List<String> getUnTransferedReasons() {
+		return unTransferedReasons;
+	}
+
+	public void setUnTransferedReasons(List<String> unTransferedReasons) {
+		this.unTransferedReasons = unTransferedReasons;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		SerieSummaryNotification that = (SerieSummaryNotification) o;
+		return nbTransferSent == that.nbTransferSent && nbTransferNotSent == that.nbTransferNotSent
+				&& Objects.equals(serieUid, that.serieUid) && Objects.equals(serieDescription, that.serieDescription)
+				&& Objects.equals(serieDate, that.serieDate)
+				&& Objects.equals(unTransferedReasons, that.unTransferedReasons);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(serieUid, serieDescription, serieDate, nbTransferSent, nbTransferNotSent,
+				unTransferedReasons);
+	}
+
+	public String toStringUnTransferredReasons() {
+		return String.join(Notification.COMMA_SEPARATOR, unTransferedReasons);
+	}
+
 }

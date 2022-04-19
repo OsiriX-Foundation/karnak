@@ -28,132 +28,134 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 @DataJpaTest
 class ArgumentRepoTest {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ArgumentRepoTest.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ArgumentRepoTest.class);
 
-  @Autowired private ArgumentRepo repository;
-  @Autowired private ProfileElementRepo profileElementRepo;
-  @Autowired private ProfileRepo profileRepo;
+	@Autowired
+	private ArgumentRepo repository;
 
-  /** Test save and find record. */
-  @Test
-  void shouldSaveAndFindARecord() {
-    // Create an entity to save
-    ArgumentEntity entity = new ArgumentEntity();
-    entity.setKey("Key");
+	@Autowired
+	private ProfileElementRepo profileElementRepo;
 
-    // Save the entity
-    LOGGER.info("Saving entity with Key [{}]", entity.getKey());
-    entity = repository.save(entity);
+	@Autowired
+	private ProfileRepo profileRepo;
 
-    // Test Save
-    assertEquals("Key", entity.getKey());
-    assertNotNull(entity.getId());
-    LOGGER.info("Entity with Key [{}] and id [{}] saved", entity.getKey(), entity.getId());
+	/** Test save and find record. */
+	@Test
+	void shouldSaveAndFindARecord() {
+		// Create an entity to save
+		ArgumentEntity entity = new ArgumentEntity();
+		entity.setKey("Key");
 
-    // Find By Id
-    Optional<ArgumentEntity> foundByIdOpt = repository.findById(entity.getId());
+		// Save the entity
+		LOGGER.info("Saving entity with Key [{}]", entity.getKey());
+		entity = repository.save(entity);
 
-    // Test Find by Id
-    assertTrue(foundByIdOpt.isPresent());
-    LOGGER.info(
-        "Entity found with Key [{}] and id [{}]",
-        foundByIdOpt.get().getKey(),
-        foundByIdOpt.get().getId());
-    assertEquals(entity.getId(), foundByIdOpt.get().getId());
-  }
+		// Test Save
+		assertEquals("Key", entity.getKey());
+		assertNotNull(entity.getId());
+		LOGGER.info("Entity with Key [{}] and id [{}] saved", entity.getKey(), entity.getId());
 
-  /** Test find all. */
-  @Test
-  void shouldFindAllRecords() {
-    // Create an entity to save
-    // Profile
-    ProfileEntity profileEntity = new ProfileEntity();
-    profileEntity.setName("name");
-    profileEntity = profileRepo.saveAndFlush(profileEntity);
-    // Profile element
-    ProfileElementEntity profileElementEntity = new ProfileElementEntity();
-    profileElementEntity.setName("name");
-    profileElementEntity.setProfileEntity(profileEntity);
-    profileElementEntity = profileElementRepo.saveAndFlush(profileElementEntity);
-    // Argument
-    ArgumentEntity entity = new ArgumentEntity();
-    entity.setKey("Key");
-    entity.setProfileElementEntity(profileElementEntity);
+		// Find By Id
+		Optional<ArgumentEntity> foundByIdOpt = repository.findById(entity.getId());
 
-    // Save the entity
-    LOGGER.info("Saving entity with Key [{}]", entity.getKey());
-    repository.saveAndFlush(entity);
+		// Test Find by Id
+		assertTrue(foundByIdOpt.isPresent());
+		LOGGER.info("Entity found with Key [{}] and id [{}]", foundByIdOpt.get().getKey(), foundByIdOpt.get().getId());
+		assertEquals(entity.getId(), foundByIdOpt.get().getId());
+	}
 
-    // Find all
-    List<ArgumentEntity> all = repository.findAll();
+	/** Test find all. */
+	@Test
+	void shouldFindAllRecords() {
+		// Create an entity to save
+		// Profile
+		ProfileEntity profileEntity = new ProfileEntity();
+		profileEntity.setName("name");
+		profileEntity = profileRepo.saveAndFlush(profileEntity);
+		// Profile element
+		ProfileElementEntity profileElementEntity = new ProfileElementEntity();
+		profileElementEntity.setName("name");
+		profileElementEntity.setProfileEntity(profileEntity);
+		profileElementEntity = profileElementRepo.saveAndFlush(profileElementEntity);
+		// Argument
+		ArgumentEntity entity = new ArgumentEntity();
+		entity.setKey("Key");
+		entity.setProfileElementEntity(profileElementEntity);
 
-    // Test find all
-    assertNotNull(all);
-    assertTrue(all.size() > 0);
-    assertEquals(1, all.size());
-    LOGGER.info("Number of entities found [{}]", all.size());
-  }
+		// Save the entity
+		LOGGER.info("Saving entity with Key [{}]", entity.getKey());
+		repository.saveAndFlush(entity);
 
-  /** Test modification of a record. */
-  @Test
-  void shouldModifyRecord() {
+		// Find all
+		List<ArgumentEntity> all = repository.findAll();
 
-    String initialText = "InitialText";
-    String modifiedText = "ModifiedText";
+		// Test find all
+		assertNotNull(all);
+		assertTrue(all.size() > 0);
+		assertEquals(1, all.size());
+		LOGGER.info("Number of entities found [{}]", all.size());
+	}
 
-    // Create an entity to save
-    ArgumentEntity entity = new ArgumentEntity();
-    entity.setKey(initialText);
+	/** Test modification of a record. */
+	@Test
+	void shouldModifyRecord() {
 
-    // Save the entity
-    LOGGER.info("Saving entity with Key [{}]", entity.getKey());
-    entity = repository.save(entity);
-    LOGGER.info("Id of the entity with Key [{}]", entity.getId());
+		String initialText = "InitialText";
+		String modifiedText = "ModifiedText";
 
-    // Test Save
-    assertNotNull(entity);
-    assertEquals(initialText, entity.getKey());
+		// Create an entity to save
+		ArgumentEntity entity = new ArgumentEntity();
+		entity.setKey(initialText);
 
-    // Modify the record
-    entity.setKey(modifiedText);
-    LOGGER.info("Modify entity Key [{}] to [{}]", initialText, modifiedText);
-    ArgumentEntity entityModified = repository.save(entity);
+		// Save the entity
+		LOGGER.info("Saving entity with Key [{}]", entity.getKey());
+		entity = repository.save(entity);
+		LOGGER.info("Id of the entity with Key [{}]", entity.getId());
 
-    // Test Modify
-    assertNotNull(entityModified);
-    assertEquals(entity.getId(), entityModified.getId());
-    assertEquals(modifiedText, entityModified.getKey());
-    LOGGER.info(
-        "Key of the entity with id [{}]: [{}]", entityModified.getId(), entityModified.getKey());
-  }
+		// Test Save
+		assertNotNull(entity);
+		assertEquals(initialText, entity.getKey());
 
-  /** Test delete record. */
-  @Test
-  void shouldDeleteRecord() {
-    // Create an entity to save
-    ArgumentEntity entity = new ArgumentEntity();
-    String key = "Key";
-    entity.setKey(key);
+		// Modify the record
+		entity.setKey(modifiedText);
+		LOGGER.info("Modify entity Key [{}] to [{}]", initialText, modifiedText);
+		ArgumentEntity entityModified = repository.save(entity);
 
-    // Save the entity
-    LOGGER.info("Saving entity with Key [{}]", entity.getKey());
-    entity = repository.save(entity);
+		// Test Modify
+		assertNotNull(entityModified);
+		assertEquals(entity.getId(), entityModified.getId());
+		assertEquals(modifiedText, entityModified.getKey());
+		LOGGER.info("Key of the entity with id [{}]: [{}]", entityModified.getId(), entityModified.getKey());
+	}
 
-    // Retrieve the entity
-    Optional<ArgumentEntity> foundByIdOpt = repository.findById(entity.getId());
+	/** Test delete record. */
+	@Test
+	void shouldDeleteRecord() {
+		// Create an entity to save
+		ArgumentEntity entity = new ArgumentEntity();
+		String key = "Key";
+		entity.setKey(key);
 
-    // Test Find by Id
-    assertTrue(foundByIdOpt.isPresent());
+		// Save the entity
+		LOGGER.info("Saving entity with Key [{}]", entity.getKey());
+		entity = repository.save(entity);
 
-    // Delete the entity
-    entity = foundByIdOpt.get();
-    Long id = entity.getId();
-    LOGGER.info("Deleting entity with id [{}]", id);
-    repository.delete(entity);
+		// Retrieve the entity
+		Optional<ArgumentEntity> foundByIdOpt = repository.findById(entity.getId());
 
-    // Test Delete
-    foundByIdOpt = repository.findById(id);
-    LOGGER.info("Is deleted entity with id [{}] present: [{}]", id, foundByIdOpt.isPresent());
-    assertFalse(foundByIdOpt.isPresent());
-  }
+		// Test Find by Id
+		assertTrue(foundByIdOpt.isPresent());
+
+		// Delete the entity
+		entity = foundByIdOpt.get();
+		Long id = entity.getId();
+		LOGGER.info("Deleting entity with id [{}]", id);
+		repository.delete(entity);
+
+		// Test Delete
+		foundByIdOpt = repository.findById(id);
+		LOGGER.info("Is deleted entity with id [{}] present: [{}]", id, foundByIdOpt.isPresent());
+		assertFalse(foundByIdOpt.isPresent());
+	}
+
 }

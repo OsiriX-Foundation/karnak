@@ -16,142 +16,137 @@ import java.util.Objects;
 /** Model used to build transfer monitoring notification */
 public class TransferMonitoringNotification {
 
-  private String subject;
-  private String from;
-  private String to;
-  private String patientId;
-  private String studyUid;
-  private String accessionNumber;
-  private String studyDescription;
-  private LocalDateTime studyDate;
-  private String source;
-  private String destination;
-  private List<SerieSummaryNotification> serieSummaryNotifications;
+	private String subject;
 
-  public String getSubject() {
-    return subject;
-  }
+	private String from;
 
-  public void setSubject(String subject) {
-    this.subject = subject;
-  }
+	private String to;
 
-  public String getFrom() {
-    return from;
-  }
+	private String patientId;
 
-  public void setFrom(String from) {
-    this.from = from;
-  }
+	private String studyUid;
 
-  public String getTo() {
-    return to;
-  }
+	private String accessionNumber;
 
-  public void setTo(String to) {
-    this.to = to;
-  }
+	private String studyDescription;
 
-  public String getPatientId() {
-    return patientId;
-  }
+	private LocalDateTime studyDate;
 
-  public void setPatientId(String patientId) {
-    this.patientId = patientId;
-  }
+	private String source;
 
-  public String getStudyUid() {
-    return studyUid;
-  }
+	private String destination;
 
-  public void setStudyUid(String studyUid) {
-    this.studyUid = studyUid;
-  }
+	private List<SerieSummaryNotification> serieSummaryNotifications;
 
-  public String getAccessionNumber() {
-    return accessionNumber;
-  }
+	public String getSubject() {
+		return subject;
+	}
 
-  public void setAccessionNumber(String accessionNumber) {
-    this.accessionNumber = accessionNumber;
-  }
+	public void setSubject(String subject) {
+		this.subject = subject;
+	}
 
-  public String getStudyDescription() {
-    return studyDescription;
-  }
+	public String getFrom() {
+		return from;
+	}
 
-  public void setStudyDescription(String studyDescription) {
-    this.studyDescription = studyDescription;
-  }
+	public void setFrom(String from) {
+		this.from = from;
+	}
 
-  public LocalDateTime getStudyDate() {
-    return studyDate;
-  }
+	public String getTo() {
+		return to;
+	}
 
-  public void setStudyDate(LocalDateTime studyDate) {
-    this.studyDate = studyDate;
-  }
+	public void setTo(String to) {
+		this.to = to;
+	}
 
-  public String getSource() {
-    return source;
-  }
+	public String getPatientId() {
+		return patientId;
+	}
 
-  public void setSource(String source) {
-    this.source = source;
-  }
+	public void setPatientId(String patientId) {
+		this.patientId = patientId;
+	}
 
-  public String getDestination() {
-    return destination;
-  }
+	public String getStudyUid() {
+		return studyUid;
+	}
 
-  public void setDestination(String destination) {
-    this.destination = destination;
-  }
+	public void setStudyUid(String studyUid) {
+		this.studyUid = studyUid;
+	}
 
-  public List<SerieSummaryNotification> getSerieSummaryNotifications() {
-    return serieSummaryNotifications;
-  }
+	public String getAccessionNumber() {
+		return accessionNumber;
+	}
 
-  public void setSerieSummaryNotifications(
-      List<SerieSummaryNotification> serieSummaryNotifications) {
-    this.serieSummaryNotifications = serieSummaryNotifications;
-  }
+	public void setAccessionNumber(String accessionNumber) {
+		this.accessionNumber = accessionNumber;
+	}
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    TransferMonitoringNotification that = (TransferMonitoringNotification) o;
-    return Objects.equals(subject, that.subject)
-        && Objects.equals(from, that.from)
-        && Objects.equals(to, that.to)
-        && Objects.equals(patientId, that.patientId)
-        && Objects.equals(studyUid, that.studyUid)
-        && Objects.equals(accessionNumber, that.accessionNumber)
-        && Objects.equals(studyDescription, that.studyDescription)
-        && Objects.equals(studyDate, that.studyDate)
-        && Objects.equals(source, that.source)
-        && Objects.equals(destination, that.destination)
-        && Objects.equals(serieSummaryNotifications, that.serieSummaryNotifications);
-  }
+	public String getStudyDescription() {
+		return studyDescription;
+	}
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(
-        subject,
-        from,
-        to,
-        patientId,
-        studyUid,
-        accessionNumber,
-        studyDescription,
-        studyDate,
-        source,
-        destination,
-        serieSummaryNotifications);
-  }
+	public void setStudyDescription(String studyDescription) {
+		this.studyDescription = studyDescription;
+	}
+
+	public LocalDateTime getStudyDate() {
+		return studyDate;
+	}
+
+	public void setStudyDate(LocalDateTime studyDate) {
+		this.studyDate = studyDate;
+	}
+
+	public String getSource() {
+		return source;
+	}
+
+	public void setSource(String source) {
+		this.source = source;
+	}
+
+	public String getDestination() {
+		return destination;
+	}
+
+	public void setDestination(String destination) {
+		this.destination = destination;
+	}
+
+	public List<SerieSummaryNotification> getSerieSummaryNotifications() {
+		return serieSummaryNotifications;
+	}
+
+	public void setSerieSummaryNotifications(List<SerieSummaryNotification> serieSummaryNotifications) {
+		this.serieSummaryNotifications = serieSummaryNotifications;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		TransferMonitoringNotification that = (TransferMonitoringNotification) o;
+		return Objects.equals(subject, that.subject) && Objects.equals(from, that.from) && Objects.equals(to, that.to)
+				&& Objects.equals(patientId, that.patientId) && Objects.equals(studyUid, that.studyUid)
+				&& Objects.equals(accessionNumber, that.accessionNumber)
+				&& Objects.equals(studyDescription, that.studyDescription) && Objects.equals(studyDate, that.studyDate)
+				&& Objects.equals(source, that.source) && Objects.equals(destination, that.destination)
+				&& Objects.equals(serieSummaryNotifications, that.serieSummaryNotifications);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(subject, from, to, patientId, studyUid, accessionNumber, studyDescription, studyDate,
+				source, destination, serieSummaryNotifications);
+	}
+
 }

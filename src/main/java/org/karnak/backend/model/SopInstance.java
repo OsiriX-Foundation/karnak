@@ -14,61 +14,64 @@ import java.util.Objects;
 
 public class SopInstance {
 
-  private final String sopInstanceUID;
-  private Integer instanceNumber;
-  private String sopClassUID;
-  private boolean sent;
+	private final String sopInstanceUID;
 
-  public SopInstance(String sopInstanceUID) {
-    this.sopInstanceUID = Objects.requireNonNull(sopInstanceUID, "sopInstanceIUID is null");
-  }
+	private Integer instanceNumber;
 
-  public static void addSopInstance(Map<String, SopInstance> sopInstanceMap, SopInstance s) {
-    if (s != null && sopInstanceMap != null) {
-      sopInstanceMap.put(s.getSopInstanceUID(), s);
-    }
-  }
+	private String sopClassUID;
 
-  public static SopInstance removeSopInstance(
-      Map<String, SopInstance> sopInstanceMap, String sopUID) {
-    if (sopUID == null || sopInstanceMap == null) {
-      return null;
-    }
-    return sopInstanceMap.remove(sopUID);
-  }
+	private boolean sent;
 
-  public static SopInstance getSopInstance(Map<String, SopInstance> sopInstanceMap, String sopUID) {
-    if (sopUID == null || sopInstanceMap == null) {
-      return null;
-    }
-    return sopInstanceMap.get(sopUID);
-  }
+	public SopInstance(String sopInstanceUID) {
+		this.sopInstanceUID = Objects.requireNonNull(sopInstanceUID, "sopInstanceIUID is null");
+	}
 
-  public String getSopInstanceUID() {
-    return sopInstanceUID;
-  }
+	public static void addSopInstance(Map<String, SopInstance> sopInstanceMap, SopInstance s) {
+		if (s != null && sopInstanceMap != null) {
+			sopInstanceMap.put(s.getSopInstanceUID(), s);
+		}
+	}
 
-  public Integer getInstanceNumber() {
-    return instanceNumber;
-  }
+	public static SopInstance removeSopInstance(Map<String, SopInstance> sopInstanceMap, String sopUID) {
+		if (sopUID == null || sopInstanceMap == null) {
+			return null;
+		}
+		return sopInstanceMap.remove(sopUID);
+	}
 
-  public void setInstanceNumber(Integer instanceNumber) {
-    this.instanceNumber = instanceNumber;
-  }
+	public static SopInstance getSopInstance(Map<String, SopInstance> sopInstanceMap, String sopUID) {
+		if (sopUID == null || sopInstanceMap == null) {
+			return null;
+		}
+		return sopInstanceMap.get(sopUID);
+	}
 
-  public String getSopClassUID() {
-    return sopClassUID;
-  }
+	public String getSopInstanceUID() {
+		return sopInstanceUID;
+	}
 
-  public void setSopClassUID(String sopClassUID) {
-    this.sopClassUID = sopClassUID;
-  }
+	public Integer getInstanceNumber() {
+		return instanceNumber;
+	}
 
-  public boolean isSent() {
-    return sent;
-  }
+	public void setInstanceNumber(Integer instanceNumber) {
+		this.instanceNumber = instanceNumber;
+	}
 
-  public void setSent(boolean sent) {
-    this.sent = sent;
-  }
+	public String getSopClassUID() {
+		return sopClassUID;
+	}
+
+	public void setSopClassUID(String sopClassUID) {
+		this.sopClassUID = sopClassUID;
+	}
+
+	public boolean isSent() {
+		return sent;
+	}
+
+	public void setSent(boolean sent) {
+		this.sent = sent;
+	}
+
 }

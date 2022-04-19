@@ -60,409 +60,397 @@ import org.weasis.dicom.param.TlsOptions;
 @Service
 public class GatewaySetUpService {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(GatewaySetUpService.class);
-  // Repositories
-  private final ForwardNodeRepo forwardNodeRepo;
-  private final VersionRepo versionRepo;
-  private final DestinationRepo destinationRepo;
+	private static final Logger LOGGER = LoggerFactory.getLogger(GatewaySetUpService.class);
 
-  private final Map<ForwardDicomNode, List<ForwardDestination>> destMap = new HashMap<>();
+	// Repositories
+	private final ForwardNodeRepo forwardNodeRepo;
 
-  private final Path storePath;
+	private final VersionRepo versionRepo;
 
-  private final String listenerAET;
-  private final int listenerPort;
-  private final Boolean listenerTLS;
-  private final int intervalCheck;
+	private final DestinationRepo destinationRepo;
 
-  private final String archiveUrl;
+	private final Map<ForwardDicomNode, List<ForwardDestination>> destMap = new HashMap<>();
 
-  private final String clientKey;
-  private final String clientKeyPwd;
-  private final String truststorePwd;
-  private final String truststore;
+	private final Path storePath;
 
-  // Version gateway setup for this instance
-  private long gatewaySetUpVersion;
+	private final String listenerAET;
 
-  @Autowired
-  public GatewaySetUpService(
-      final ForwardNodeRepo forwardNodeRepo,
-      final VersionRepo versionRepo,
-      final DestinationRepo destinationRepo)
-      throws Exception {
-    this.forwardNodeRepo = forwardNodeRepo;
-    this.versionRepo = versionRepo;
-    this.destinationRepo = destinationRepo;
+	private final int listenerPort;
 
-    String path =
-        SystemPropertyUtil.retrieveSystemProperty(
-            "GATEWAY_ARCHIVE_PATH", null); // Only Archive and Pull mode
-    storePath = StringUtil.hasText(path) ? Path.of(path) : null;
-    intervalCheck =
-        StringUtil.getInt(
-            SystemPropertyUtil.retrieveSystemProperty(
-                "GATEWAY_PULL_CHECK_INTERNAL", "5")); // Only Pull mode
-    archiveUrl =
-        SystemPropertyUtil.retrieveSystemProperty("GATEWAY_ARCHIVE_URL", ""); // Only Archive mode
+	private final Boolean listenerTLS;
 
-    listenerAET = SystemPropertyUtil.retrieveSystemProperty("DICOM_LISTENER_AET", "KARNAK-GATEWAY");
-    listenerPort = 11119;
-    listenerTLS =
-        LangUtil.getEmptytoFalse(
-            SystemPropertyUtil.retrieveSystemProperty("DICOM_LISTENER_TLS", null));
+	private final int intervalCheck;
 
-    clientKey = SystemPropertyUtil.retrieveSystemProperty("TLS_KEYSTORE_PATH", null);
-    clientKeyPwd = SystemPropertyUtil.retrieveSystemProperty("TLS_KEYSTORE_SECRET", null);
-    truststorePwd = SystemPropertyUtil.retrieveSystemProperty("TLS_TRUSTSTORE_PATH", null);
-    truststore = SystemPropertyUtil.retrieveSystemProperty("TLS_TRUSTSTORE_SECRET", null);
+	private final String archiveUrl;
 
-    // Init the current version of the gateway setup for this instance
-    this.gatewaySetUpVersion = 0L;
+	private final String clientKey;
 
-    reloadGatewayPersistence();
-  }
+	private final String clientKeyPwd;
 
-  private static AdvancedParams getDefaultAdvancedParameters() {
-    AdvancedParams params = new AdvancedParams();
-    ConnectOptions connectOptions = new ConnectOptions();
-    connectOptions.setConnectTimeout(5000);
-    connectOptions.setAcceptTimeout(7000);
-    // Concurrent DICOM operations
-    connectOptions.setMaxOpsInvoked(50);
-    connectOptions.setMaxOpsPerformed(50);
-    params.setConnectOptions(connectOptions);
-    return params;
-  }
+	private final String truststorePwd;
 
-  @Override
-  public String toString() {
-    StringBuilder buf = new StringBuilder();
-    buf.append("Hostname=");
-    buf.append(DicomNode.convertToIP(null));
-    buf.append(" AETitle=");
-    buf.append(listenerAET);
-    buf.append(" Port=");
-    buf.append(listenerPort);
-    return buf.toString();
-  }
+	private final String truststore;
 
-  public String getArchiveUrl() {
-    return archiveUrl;
-  }
+	// Version gateway setup for this instance
+	private long gatewaySetUpVersion;
 
-  public Path getStorePath() {
-    return storePath;
-  }
+	@Autowired
+	public GatewaySetUpService(final ForwardNodeRepo forwardNodeRepo, final VersionRepo versionRepo,
+			final DestinationRepo destinationRepo) throws Exception {
+		this.forwardNodeRepo = forwardNodeRepo;
+		this.versionRepo = versionRepo;
+		this.destinationRepo = destinationRepo;
 
-  public String getListenerAET() {
-    return listenerAET;
-  }
+		String path = SystemPropertyUtil.retrieveSystemProperty("GATEWAY_ARCHIVE_PATH", null); // Only
+																								// Archive
+																								// and
+																								// Pull
+																								// mode
+		storePath = StringUtil.hasText(path) ? Path.of(path) : null;
+		intervalCheck = StringUtil
+				.getInt(SystemPropertyUtil.retrieveSystemProperty("GATEWAY_PULL_CHECK_INTERNAL", "5")); // Only
+																										// Pull
+																										// mode
+		archiveUrl = SystemPropertyUtil.retrieveSystemProperty("GATEWAY_ARCHIVE_URL", ""); // Only
+																							// Archive
+																							// mode
 
-  public int getListenerPort() {
-    return listenerPort;
-  }
+		listenerAET = SystemPropertyUtil.retrieveSystemProperty("DICOM_LISTENER_AET", "KARNAK-GATEWAY");
+		listenerPort = 11119;
+		listenerTLS = LangUtil.getEmptytoFalse(SystemPropertyUtil.retrieveSystemProperty("DICOM_LISTENER_TLS", null));
 
-  public Boolean getListenerTLS() {
-    return listenerTLS;
-  }
+		clientKey = SystemPropertyUtil.retrieveSystemProperty("TLS_KEYSTORE_PATH", null);
+		clientKeyPwd = SystemPropertyUtil.retrieveSystemProperty("TLS_KEYSTORE_SECRET", null);
+		truststorePwd = SystemPropertyUtil.retrieveSystemProperty("TLS_TRUSTSTORE_PATH", null);
+		truststore = SystemPropertyUtil.retrieveSystemProperty("TLS_TRUSTSTORE_SECRET", null);
 
-  public int getIntervalCheck() {
-    return intervalCheck;
-  }
+		// Init the current version of the gateway setup for this instance
+		this.gatewaySetUpVersion = 0L;
 
-  public String getClientKey() {
-    return clientKey;
-  }
+		reloadGatewayPersistence();
+	}
 
-  public String getClientKeyPwd() {
-    return clientKeyPwd;
-  }
+	private static AdvancedParams getDefaultAdvancedParameters() {
+		AdvancedParams params = new AdvancedParams();
+		ConnectOptions connectOptions = new ConnectOptions();
+		connectOptions.setConnectTimeout(5000);
+		connectOptions.setAcceptTimeout(7000);
+		// Concurrent DICOM operations
+		connectOptions.setMaxOpsInvoked(50);
+		connectOptions.setMaxOpsPerformed(50);
+		params.setConnectOptions(connectOptions);
+		return params;
+	}
 
-  public String getTruststorePwd() {
-    return truststorePwd;
-  }
+	@Override
+	public String toString() {
+		StringBuilder buf = new StringBuilder();
+		buf.append("Hostname=");
+		buf.append(DicomNode.convertToIP(null));
+		buf.append(" AETitle=");
+		buf.append(listenerAET);
+		buf.append(" Port=");
+		buf.append(listenerPort);
+		return buf.toString();
+	}
 
-  public String getTruststore() {
-    return truststore;
-  }
+	public String getArchiveUrl() {
+		return archiveUrl;
+	}
 
-  public AdvancedParams getAdvancedParams() {
-    AdvancedParams options = getDefaultAdvancedParameters();
-    ConnectOptions connectOptions = options.getConnectOptions();
-    if (getListenerTLS()) {
-      TlsOptions tls =
-          new TlsOptions(
-              false,
-              getClientKey(),
-              "JKS",
-              getClientKeyPwd(),
-              getClientKeyPwd(),
-              getTruststore(),
-              "JKS",
-              getTruststorePwd());
-      options.setTlsOptions(tls);
-    }
-    options.setConnectOptions(connectOptions);
-    return options;
-  }
+	public Path getStorePath() {
+		return storePath;
+	}
 
-  public DicomNode getCallingDicomNode() {
-    return new DicomNode(getListenerAET(), null, getListenerPort());
-  }
+	public String getListenerAET() {
+		return listenerAET;
+	}
 
-  public Optional<ForwardDicomNode> getDestinationNode(String fwdAET) {
-    return destMap.keySet().stream().filter(n -> n.getForwardAETitle().equals(fwdAET)).findFirst();
-  }
+	public int getListenerPort() {
+		return listenerPort;
+	}
 
-  public List<ForwardDestination> getDestination(String fwdAET) {
-    Optional<ForwardDicomNode> node = getDestinationNode(fwdAET);
-    node.ifPresent(this::getDestinations);
-    return Collections.emptyList();
-  }
+	public Boolean getListenerTLS() {
+		return listenerTLS;
+	}
 
-  public List<ForwardDestination> getDestinations(ForwardDicomNode fwdSrcNode) {
-    List<ForwardDestination> destList = null;
-    if (fwdSrcNode != null) {
-      destList = destMap.get(fwdSrcNode);
-    }
-    if (destList == null) {
-      return Collections.emptyList();
-    }
-    return destList;
-  }
+	public int getIntervalCheck() {
+		return intervalCheck;
+	}
 
-  public Map<ForwardDicomNode, List<ForwardDestination>> getDestinations() {
-    return destMap;
-  }
+	public String getClientKey() {
+		return clientKey;
+	}
 
-  public Set<ForwardDicomNode> getKeys() {
-    return destMap.keySet();
-  }
+	public String getClientKeyPwd() {
+		return clientKeyPwd;
+	}
 
-  private void addDestinationNode(
-      List<ForwardDestination> dstList, ForwardDicomNode fwdSrcNode, DestinationEntity dstNode) {
-    try {
-      List<AttributeEditor> editors = new ArrayList<>();
+	public String getTruststorePwd() {
+		return truststorePwd;
+	}
 
-      if (!dstNode.getCondition().isEmpty()) {
-        editors.add(new ConditionEditor(dstNode.getCondition()));
-      }
+	public String getTruststore() {
+		return truststore;
+	}
 
-      final boolean filterBySOPClassesEnable = dstNode.isFilterBySOPClasses();
-      if (filterBySOPClassesEnable) {
-        editors.add(new FilterEditor(dstNode.getSOPClassUIDEntityFilters()));
-      }
+	public AdvancedParams getAdvancedParams() {
+		AdvancedParams options = getDefaultAdvancedParameters();
+		ConnectOptions connectOptions = options.getConnectOptions();
+		if (getListenerTLS()) {
+			TlsOptions tls = new TlsOptions(false, getClientKey(), "JKS", getClientKeyPwd(), getClientKeyPwd(),
+					getTruststore(), "JKS", getTruststorePwd());
+			options.setTlsOptions(tls);
+		}
+		options.setConnectOptions(connectOptions);
+		return options;
+	}
 
-      final List<KheopsAlbumsEntity> kheopsAlbumEntities = dstNode.getKheopsAlbumEntities();
+	public DicomNode getCallingDicomNode() {
+		return new DicomNode(getListenerAET(), null, getListenerPort());
+	}
 
-      SwitchingAlbum switchingAlbum = new SwitchingAlbum();
-      if (kheopsAlbumEntities != null && !kheopsAlbumEntities.isEmpty()) {
-        editors.add(
-            (Attributes dcm, AttributeEditorContext context) -> {
-              kheopsAlbumEntities.forEach(
-                  kheopsAlbums -> {
-                    switchingAlbum.apply(dstNode, kheopsAlbums, dcm);
-                  });
-            });
-      }
+	public Optional<ForwardDicomNode> getDestinationNode(String fwdAET) {
+		return destMap.keySet().stream().filter(n -> n.getForwardAETitle().equals(fwdAET)).findFirst();
+	}
 
-      StreamRegistryEditor streamRegistryEditor = new StreamRegistryEditor();
-      editors.add(streamRegistryEditor);
+	public List<ForwardDestination> getDestination(String fwdAET) {
+		Optional<ForwardDicomNode> node = getDestinationNode(fwdAET);
+		node.ifPresent(this::getDestinations);
+		return Collections.emptyList();
+	}
 
-      boolean deidentificationEnable = dstNode.isDesidentification();
-      boolean profileDefined =
-          dstNode.getProjectEntity() != null
-              && dstNode.getProjectEntity().getProfileEntity() != null;
-      if (deidentificationEnable && profileDefined) { // TODO add an option in destination model
-        editors.add(new DeIdentifyEditor(dstNode));
-      }
+	public List<ForwardDestination> getDestinations(ForwardDicomNode fwdSrcNode) {
+		List<ForwardDestination> destList = null;
+		if (fwdSrcNode != null) {
+			destList = destMap.get(fwdSrcNode);
+		}
+		if (destList == null) {
+			return Collections.emptyList();
+		}
+		return destList;
+	}
 
-      DicomProgress progress = new DicomProgress();
+	public Map<ForwardDicomNode, List<ForwardDestination>> getDestinations() {
+		return destMap;
+	}
 
-      if (dstNode.isActivate()) {
-        if (dstNode.getDestinationType() == DestinationType.stow) {
-          // parse headers to hashmap
-          HashMap<String, String> map = new HashMap<>();
-          String headers = dstNode.getHeaders();
-          Document doc = Jsoup.parse(headers);
-          String key = doc.getElementsByTag("key").text();
-          String value = doc.getElementsByTag("value").text();
-          if (StringUtil.hasText(key)) {
-            map.put(key, value);
-          }
+	public Set<ForwardDicomNode> getKeys() {
+		return destMap.keySet();
+	}
 
-          WebForwardDestination fwd =
-              new WebForwardDestination(
-                  dstNode.getId(),
-                  fwdSrcNode,
-                  dstNode.getUrl(),
-                  map,
-                  progress,
-                  editors,
-                  dstNode.getTransferSyntax(),
-                  dstNode.isTranscodeOnlyUncompressed());
+	private void addDestinationNode(List<ForwardDestination> dstList, ForwardDicomNode fwdSrcNode,
+			DestinationEntity dstNode) {
+		try {
+			List<AttributeEditor> editors = new ArrayList<>();
 
-          if (kheopsAlbumEntities != null && !kheopsAlbumEntities.isEmpty()) {
-            progress.addProgressListener(
-                (DicomProgress dicomProgress) -> {
-                  Attributes dcm = dicomProgress.getAttributes();
-                  kheopsAlbumEntities.forEach(
-                      kheopsAlbums -> {
-                        switchingAlbum.applyAfterTransfer(kheopsAlbums, dcm);
-                      });
-                });
-          }
-          dstList.add(fwd);
-        } else {
-          DicomNode destinationNode =
-              new DicomNode(dstNode.getAeTitle(), dstNode.getHostname(), dstNode.getPort());
-          DicomForwardDestination dest =
-              new DicomForwardDestination(
-                  dstNode.getId(),
-                  getDefaultAdvancedParameters(),
-                  fwdSrcNode,
-                  destinationNode,
-                  dstNode.getUseaetdest(),
-                  progress,
-                  editors,
-                  dstNode.getTransferSyntax(),
-                  dstNode.isTranscodeOnlyUncompressed());
+			if (!dstNode.getCondition().isEmpty()) {
+				editors.add(new ConditionEditor(dstNode.getCondition()));
+			}
 
-          dstList.add(dest);
-        }
-      }
-    } catch (IOException e) {
-      LOGGER.error("Cannot build ForwardDestination", e);
-    }
-  }
+			final boolean filterBySOPClassesEnable = dstNode.isFilterBySOPClasses();
+			if (filterBySOPClassesEnable) {
+				editors.add(new FilterEditor(dstNode.getSOPClassUIDEntityFilters()));
+			}
 
-  public void reloadGatewayPersistence() {
+			final List<KheopsAlbumsEntity> kheopsAlbumEntities = dstNode.getKheopsAlbumEntities();
 
-    List<ForwardNodeEntity> list = new ArrayList<>(forwardNodeRepo.findAll());
-    for (ForwardNodeEntity forwardNodeEntity : list) {
-      ForwardDicomNode fwdSrcNode =
-          new ForwardDicomNode(forwardNodeEntity.getFwdAeTitle(), null, forwardNodeEntity.getId());
-      addAcceptedSourceNodes(fwdSrcNode, forwardNodeEntity);
-      List<ForwardDestination> dstList =
-          new ArrayList<>(forwardNodeEntity.getDestinationEntities().size());
-      for (DestinationEntity dstNode : forwardNodeEntity.getDestinationEntities()) {
-        addDestinationNode(dstList, fwdSrcNode, dstNode);
-      }
-      destMap.put(fwdSrcNode, dstList);
-    }
-  }
+			SwitchingAlbum switchingAlbum = new SwitchingAlbum();
+			if (kheopsAlbumEntities != null && !kheopsAlbumEntities.isEmpty()) {
+				editors.add((Attributes dcm, AttributeEditorContext context) -> {
+					kheopsAlbumEntities.forEach(kheopsAlbums -> {
+						switchingAlbum.apply(dstNode, kheopsAlbums, dcm);
+					});
+				});
+			}
 
-  public void update(NodeEvent event) {
-    NodeEventType type = event.getEventType();
-    Object src = event.getSource();
-    Long id = event.getForwardNode().getId();
-    String aet = event.getForwardNode().getFwdAeTitle();
-    Optional<ForwardDicomNode> val =
-        destMap.keySet().stream().filter(f -> id.equals(f.getId())).findFirst();
-    ForwardDicomNode fwdNode;
-    if (val.isEmpty()) {
-      fwdNode = new ForwardDicomNode(aet, null, id);
-      destMap.put(fwdNode, new ArrayList<>(2));
-    } else {
-      fwdNode = val.get();
-    }
-    if (src instanceof DicomSourceNodeEntity) {
-      DicomSourceNodeEntity srcNode = (DicomSourceNodeEntity) src;
-      if (type == NodeEventType.ADD) {
-        fwdNode.addAcceptedSourceNode(srcNode.getId(), srcNode.getAeTitle(), srcNode.getHostname());
-      } else if (type == NodeEventType.REMOVE) {
-        fwdNode.getAcceptedSourceNodes().removeIf(s -> srcNode.getId().equals(s.getId()));
-      } else if (type == NodeEventType.UPDATE) {
-        fwdNode.getAcceptedSourceNodes().removeIf(s -> srcNode.getId().equals(s.getId()));
-        fwdNode.addAcceptedSourceNode(srcNode.getId(), srcNode.getAeTitle(), srcNode.getHostname());
-      }
-    } else if (src instanceof DestinationEntity) {
-      DestinationEntity dstNode = (DestinationEntity) src;
-      if (type == NodeEventType.ADD) {
-        addDestinationNode(destMap.get(fwdNode), fwdNode, dstNode);
-      } else if (type == NodeEventType.REMOVE) {
-        destMap.get(fwdNode).removeIf(d -> dstNode.getId().equals(d.getId()));
-      } else if (type == NodeEventType.UPDATE) {
-        destMap.get(fwdNode).removeIf(d -> dstNode.getId().equals(d.getId()));
-        addDestinationNode(destMap.get(fwdNode), fwdNode, dstNode);
-      }
-    } else if (src instanceof ForwardNodeEntity) {
-      ForwardNodeEntity fw = (ForwardNodeEntity) src;
-      if (type == NodeEventType.ADD) {
-        addAcceptedSourceNodes(fwdNode, fw);
-        destMap.put(fwdNode, addDestinationNodes(fwdNode, fw));
-      } else if (type == NodeEventType.REMOVE) {
-        destMap.remove(fwdNode);
-      } else if (type == NodeEventType.UPDATE) {
-        if (!aet.equals(fwdNode.getAet())) {
-          ForwardDicomNode newfwdNode = new ForwardDicomNode(aet, null, id);
-          for (DicomNode srcNode : fwdNode.getAcceptedSourceNodes()) {
-            newfwdNode.getAcceptedSourceNodes().add(srcNode);
-          }
-          destMap.put(newfwdNode, destMap.remove(fwdNode));
-        }
-      }
-    } else {
-      reloadGatewayPersistence();
-    }
-  }
+			StreamRegistryEditor streamRegistryEditor = new StreamRegistryEditor();
+			editors.add(streamRegistryEditor);
 
-  private void addAcceptedSourceNodes(
-      ForwardDicomNode fwdSrcNode, ForwardNodeEntity forwardNodeEntity) {
-    for (DicomSourceNodeEntity srcNode : forwardNodeEntity.getSourceNodes()) {
-      fwdSrcNode.addAcceptedSourceNode(
-          srcNode.getId(), srcNode.getAeTitle(), srcNode.getHostname());
-    }
-  }
+			boolean deidentificationEnable = dstNode.isDesidentification();
+			boolean profileDefined = dstNode.getProjectEntity() != null
+					&& dstNode.getProjectEntity().getProfileEntity() != null;
+			if (deidentificationEnable && profileDefined) { // TODO add an option in
+															// destination model
+				editors.add(new DeIdentifyEditor(dstNode));
+			}
 
-  private List<ForwardDestination> addDestinationNodes(
-      ForwardDicomNode fwdSrcNode, ForwardNodeEntity forwardNodeEntity) {
-    List<ForwardDestination> dstList =
-        new ArrayList<>(forwardNodeEntity.getDestinationEntities().size());
-    for (DestinationEntity dstNode : forwardNodeEntity.getDestinationEntities()) {
-      addDestinationNode(dstList, fwdSrcNode, dstNode);
-    }
-    return dstList;
-  }
+			DicomProgress progress = new DicomProgress();
 
-  /**
-   * When an event on the gateway setup occurs, increment the version in order for other instance to
-   * be notified that a refresh of the configuration should be done
-   */
-  public void refreshVersionGatewaySetUp() {
-    // Retrieve the last version to increment
-    VersionEntity lastVersion = versionRepo.findTopByOrderByIdDesc();
-    if (lastVersion == null) {
-      // Case nothing in DB
-      lastVersion = new VersionEntity();
-    }
-    // Increment and save the version
-    lastVersion.setGatewaySetup(lastVersion.getGatewaySetup() + 1);
-    versionRepo.save(lastVersion);
+			if (dstNode.isActivate()) {
+				if (dstNode.getDestinationType() == DestinationType.stow) {
+					// parse headers to hashmap
+					HashMap<String, String> map = new HashMap<>();
+					String headers = dstNode.getHeaders();
+					Document doc = Jsoup.parse(headers);
+					String key = doc.getElementsByTag("key").text();
+					String value = doc.getElementsByTag("value").text();
+					if (StringUtil.hasText(key)) {
+						map.put(key, value);
+					}
 
-    // Update the current instance version
-    gatewaySetUpVersion = lastVersion.getGatewaySetup();
-  }
+					WebForwardDestination fwd = new WebForwardDestination(dstNode.getId(), fwdSrcNode, dstNode.getUrl(),
+							map, progress, editors, dstNode.getTransferSyntax(), dstNode.isTranscodeOnlyUncompressed());
 
-  /** Check if a refresh of the configuration should be done */
-  @Scheduled(fixedRate = 5000)
-  private void checkRefreshGatewaySetUp() {
-    // Retrieve last gateway version
-    VersionEntity lastVersion = versionRepo.findTopByOrderByIdDesc();
+					if (kheopsAlbumEntities != null && !kheopsAlbumEntities.isEmpty()) {
+						progress.addProgressListener((DicomProgress dicomProgress) -> {
+							Attributes dcm = dicomProgress.getAttributes();
+							kheopsAlbumEntities.forEach(kheopsAlbums -> {
+								switchingAlbum.applyAfterTransfer(kheopsAlbums, dcm);
+							});
+						});
+					}
+					dstList.add(fwd);
+				}
+				else {
+					DicomNode destinationNode = new DicomNode(dstNode.getAeTitle(), dstNode.getHostname(),
+							dstNode.getPort());
+					DicomForwardDestination dest = new DicomForwardDestination(dstNode.getId(),
+							getDefaultAdvancedParameters(), fwdSrcNode, destinationNode, dstNode.getUseaetdest(),
+							progress, editors, dstNode.getTransferSyntax(), dstNode.isTranscodeOnlyUncompressed());
 
-    // Check if refresh needed: current version of the gateway setup for this instance is lower than
-    // the last version in DB
-    if (lastVersion != null && gatewaySetUpVersion < lastVersion.getGatewaySetup()) {
-      // Check no transfer is in progress
-      if (destinationRepo.findAll().stream().noneMatch(DestinationEntity::isTransferInProgress)) {
-        // Rebuild the configuration
-        destMap.clear();
-        reloadGatewayPersistence();
+					dstList.add(dest);
+				}
+			}
+		}
+		catch (IOException e) {
+			LOGGER.error("Cannot build ForwardDestination", e);
+		}
+	}
 
-        // Update the current instance version
-        gatewaySetUpVersion = lastVersion.getGatewaySetup();
-      }
-    }
-  }
+	public void reloadGatewayPersistence() {
+
+		List<ForwardNodeEntity> list = new ArrayList<>(forwardNodeRepo.findAll());
+		for (ForwardNodeEntity forwardNodeEntity : list) {
+			ForwardDicomNode fwdSrcNode = new ForwardDicomNode(forwardNodeEntity.getFwdAeTitle(), null,
+					forwardNodeEntity.getId());
+			addAcceptedSourceNodes(fwdSrcNode, forwardNodeEntity);
+			List<ForwardDestination> dstList = new ArrayList<>(forwardNodeEntity.getDestinationEntities().size());
+			for (DestinationEntity dstNode : forwardNodeEntity.getDestinationEntities()) {
+				addDestinationNode(dstList, fwdSrcNode, dstNode);
+			}
+			destMap.put(fwdSrcNode, dstList);
+		}
+	}
+
+	public void update(NodeEvent event) {
+		NodeEventType type = event.getEventType();
+		Object src = event.getSource();
+		Long id = event.getForwardNode().getId();
+		String aet = event.getForwardNode().getFwdAeTitle();
+		Optional<ForwardDicomNode> val = destMap.keySet().stream().filter(f -> id.equals(f.getId())).findFirst();
+		ForwardDicomNode fwdNode;
+		if (val.isEmpty()) {
+			fwdNode = new ForwardDicomNode(aet, null, id);
+			destMap.put(fwdNode, new ArrayList<>(2));
+		}
+		else {
+			fwdNode = val.get();
+		}
+		if (src instanceof DicomSourceNodeEntity) {
+			DicomSourceNodeEntity srcNode = (DicomSourceNodeEntity) src;
+			if (type == NodeEventType.ADD) {
+				fwdNode.addAcceptedSourceNode(srcNode.getId(), srcNode.getAeTitle(), srcNode.getHostname());
+			}
+			else if (type == NodeEventType.REMOVE) {
+				fwdNode.getAcceptedSourceNodes().removeIf(s -> srcNode.getId().equals(s.getId()));
+			}
+			else if (type == NodeEventType.UPDATE) {
+				fwdNode.getAcceptedSourceNodes().removeIf(s -> srcNode.getId().equals(s.getId()));
+				fwdNode.addAcceptedSourceNode(srcNode.getId(), srcNode.getAeTitle(), srcNode.getHostname());
+			}
+		}
+		else if (src instanceof DestinationEntity) {
+			DestinationEntity dstNode = (DestinationEntity) src;
+			if (type == NodeEventType.ADD) {
+				addDestinationNode(destMap.get(fwdNode), fwdNode, dstNode);
+			}
+			else if (type == NodeEventType.REMOVE) {
+				destMap.get(fwdNode).removeIf(d -> dstNode.getId().equals(d.getId()));
+			}
+			else if (type == NodeEventType.UPDATE) {
+				destMap.get(fwdNode).removeIf(d -> dstNode.getId().equals(d.getId()));
+				addDestinationNode(destMap.get(fwdNode), fwdNode, dstNode);
+			}
+		}
+		else if (src instanceof ForwardNodeEntity) {
+			ForwardNodeEntity fw = (ForwardNodeEntity) src;
+			if (type == NodeEventType.ADD) {
+				addAcceptedSourceNodes(fwdNode, fw);
+				destMap.put(fwdNode, addDestinationNodes(fwdNode, fw));
+			}
+			else if (type == NodeEventType.REMOVE) {
+				destMap.remove(fwdNode);
+			}
+			else if (type == NodeEventType.UPDATE) {
+				if (!aet.equals(fwdNode.getAet())) {
+					ForwardDicomNode newfwdNode = new ForwardDicomNode(aet, null, id);
+					for (DicomNode srcNode : fwdNode.getAcceptedSourceNodes()) {
+						newfwdNode.getAcceptedSourceNodes().add(srcNode);
+					}
+					destMap.put(newfwdNode, destMap.remove(fwdNode));
+				}
+			}
+		}
+		else {
+			reloadGatewayPersistence();
+		}
+	}
+
+	private void addAcceptedSourceNodes(ForwardDicomNode fwdSrcNode, ForwardNodeEntity forwardNodeEntity) {
+		for (DicomSourceNodeEntity srcNode : forwardNodeEntity.getSourceNodes()) {
+			fwdSrcNode.addAcceptedSourceNode(srcNode.getId(), srcNode.getAeTitle(), srcNode.getHostname());
+		}
+	}
+
+	private List<ForwardDestination> addDestinationNodes(ForwardDicomNode fwdSrcNode,
+			ForwardNodeEntity forwardNodeEntity) {
+		List<ForwardDestination> dstList = new ArrayList<>(forwardNodeEntity.getDestinationEntities().size());
+		for (DestinationEntity dstNode : forwardNodeEntity.getDestinationEntities()) {
+			addDestinationNode(dstList, fwdSrcNode, dstNode);
+		}
+		return dstList;
+	}
+
+	/**
+	 * When an event on the gateway setup occurs, increment the version in order for other
+	 * instance to be notified that a refresh of the configuration should be done
+	 */
+	public void refreshVersionGatewaySetUp() {
+		// Retrieve the last version to increment
+		VersionEntity lastVersion = versionRepo.findTopByOrderByIdDesc();
+		if (lastVersion == null) {
+			// Case nothing in DB
+			lastVersion = new VersionEntity();
+		}
+		// Increment and save the version
+		lastVersion.setGatewaySetup(lastVersion.getGatewaySetup() + 1);
+		versionRepo.save(lastVersion);
+
+		// Update the current instance version
+		gatewaySetUpVersion = lastVersion.getGatewaySetup();
+	}
+
+	/** Check if a refresh of the configuration should be done */
+	@Scheduled(fixedRate = 5000)
+	private void checkRefreshGatewaySetUp() {
+		// Retrieve last gateway version
+		VersionEntity lastVersion = versionRepo.findTopByOrderByIdDesc();
+
+		// Check if refresh needed: current version of the gateway setup for this instance
+		// is lower than
+		// the last version in DB
+		if (lastVersion != null && gatewaySetUpVersion < lastVersion.getGatewaySetup()) {
+			// Check no transfer is in progress
+			if (destinationRepo.findAll().stream().noneMatch(DestinationEntity::isTransferInProgress)) {
+				// Rebuild the configuration
+				destMap.clear();
+				reloadGatewayPersistence();
+
+				// Update the current instance version
+				gatewaySetUpVersion = lastVersion.getGatewaySetup();
+			}
+		}
+	}
+
 }

@@ -31,283 +31,246 @@ import org.springframework.stereotype.Service;
 @Service
 public class DestinationLogic extends ListDataProvider<DestinationEntity> {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(DestinationLogic.class);
-  public static final String TRANSFER_IN_PROGRESS = "Transfer in progress";
-  public static final String SAVE = "Save";
-  public static final String DELETE = "Delete";
+	private static final Logger LOGGER = LoggerFactory.getLogger(DestinationLogic.class);
 
-  // View
-  private DestinationView destinationView;
+	public static final String TRANSFER_IN_PROGRESS = "Transfer in progress";
 
-  // Services
-  private final transient DestinationService destinationService;
+	public static final String SAVE = "Save";
 
-  /** Text filter that can be changed separately. */
-  private String filterText = "";
+	public static final String DELETE = "Delete";
 
-  private ForwardNodeEntity forwardNodeEntity; // Current forward node
+	// View
+	private DestinationView destinationView;
 
-  /**
-   * Autowired constructor
-   *
-   * @param destinationService Destination Service
-   */
-  @Autowired
-  public DestinationLogic(final DestinationService destinationService) {
-    super(new HashSet<>());
-    this.destinationService = destinationService;
-  }
+	// Services
+	private final transient DestinationService destinationService;
 
-  @Override
-  public Object getId(DestinationEntity data) {
-    Objects.requireNonNull(data, "Cannot provide an id for a null item.");
-    return data.hashCode();
-  }
+	/** Text filter that can be changed separately. */
+	private String filterText = "";
 
-  @Override
-  public void refreshAll() {
-    getItems().clear();
-    if (forwardNodeEntity != null) {
-      getItems().addAll(forwardNodeEntity.getDestinationEntities());
-    }
-    super.refreshAll();
-  }
+	private ForwardNodeEntity forwardNodeEntity; // Current forward node
 
-  /** Check activity on the forward node */
-  @Scheduled(fixedRate = 1000)
-  public void checkStatusTransfers() {
-    if (forwardNodeEntity != null) {
-      // Refreshed destinations from DB
-      List<DestinationEntity> refreshedDestinations =
-          destinationService.retrieveDestinationsFromIds(
-              forwardNodeEntity.getDestinationEntities().stream()
-                  .map(DestinationEntity::getId)
-                  .collect(Collectors.toList()));
+	/**
+	 * Autowired constructor
+	 * @param destinationService Destination Service
+	 */
+	@Autowired
+	public DestinationLogic(final DestinationService destinationService) {
+		super(new HashSet<>());
+		this.destinationService = destinationService;
+	}
 
-      // Loading spinner
-      checkActivityLoadingSpinner(
-          refreshedDestinations.stream()
-              .filter(DestinationEntity::isActivate)
-              .collect(Collectors.toList()));
+	@Override
+	public Object getId(DestinationEntity data) {
+		Objects.requireNonNull(data, "Cannot provide an id for a null item.");
+		return data.hashCode();
+	}
 
-      // Buttons save/delete enable/disable
-      checkActivityEnableDisableButtons(refreshedDestinations);
-    }
-  }
+	@Override
+	public void refreshAll() {
+		getItems().clear();
+		if (forwardNodeEntity != null) {
+			getItems().addAll(forwardNodeEntity.getDestinationEntities());
+		}
+		super.refreshAll();
+	}
 
-  /**
-   * Enable/disable Save and Delete buttons depending on activity on a destination. If a transfer is
-   * in progress disable buttons save and delete for all destinations of the forward node (activated
-   * or not)
-   *
-   * @param destinationEntities Refreshed destinations from DB
-   */
-  private void checkActivityEnableDisableButtons(List<DestinationEntity> destinationEntities) {
-    try {
-      // If a transfer is in progress: disable
-      if (destinationEntities.stream().anyMatch(DestinationEntity::isTransferInProgress)) {
-        destinationView.getUi().access(this::disableSaveDeleteButtons);
-      } else {
-        // If no transfer: enable
-        destinationView.getUi().access(this::enableSaveDeleteButtons);
-      }
-    } catch (UIDetachedException e) {
-      LOGGER.trace(String.format("UIDetachedException:%s", e.getMessage()));
-    }
-  }
+	/** Check activity on the forward node */
+	@Scheduled(fixedRate = 1000)
+	public void checkStatusTransfers() {
+		if (forwardNodeEntity != null) {
+			// Refreshed destinations from DB
+			List<DestinationEntity> refreshedDestinations = destinationService
+					.retrieveDestinationsFromIds(forwardNodeEntity.getDestinationEntities().stream()
+							.map(DestinationEntity::getId).collect(Collectors.toList()));
 
-  /**
-   * Check activity for loading spinner
-   *
-   * @param activatedDestinationEntities Destinations to check
-   */
-  private void checkActivityLoadingSpinner(List<DestinationEntity> activatedDestinationEntities) {
-    activatedDestinationEntities.forEach(
-        d -> {
-          // Retrieve the loading image of the corresponding destination
-          Image loadingImage =
-              destinationView
-                  .getGridDestination()
-                  .getLoadingImages()
-                  .get(forwardNodeEntity.getFwdAeTitle())
-                  .get(d.getId());
+			// Loading spinner
+			checkActivityLoadingSpinner(
+					refreshedDestinations.stream().filter(DestinationEntity::isActivate).collect(Collectors.toList()));
 
-          // Check there is some activity on the destination: if yes set the loading spinner visible
-          // otherwise set it invisible
-          if (d.isTransferInProgress() && !loadingImage.isVisible()) {
-            // Loading spinner visible
-            destinationView.getUi().access(() -> loadingImage.setVisible(true));
-          } else if (!d.isTransferInProgress() && loadingImage.isVisible()) {
-            // Loading spinner invisible
-            destinationView.getUi().access(() -> loadingImage.setVisible(false));
-          }
-        });
-  }
+			// Buttons save/delete enable/disable
+			checkActivityEnableDisableButtons(refreshedDestinations);
+		}
+	}
 
-  /** Enable save delete buttons */
-  private void enableSaveDeleteButtons() {
-    // Forward node
-    enableButtonTransferInProgress(
-        destinationView.getButtonForwardNodeSaveDeleteCancel().getSave(),
-        destinationView.getButtonForwardNodeSaveDeleteCancel().getDelete());
+	/**
+	 * Enable/disable Save and Delete buttons depending on activity on a destination. If a
+	 * transfer is in progress disable buttons save and delete for all destinations of the
+	 * forward node (activated or not)
+	 * @param destinationEntities Refreshed destinations from DB
+	 */
+	private void checkActivityEnableDisableButtons(List<DestinationEntity> destinationEntities) {
+		try {
+			// If a transfer is in progress: disable
+			if (destinationEntities.stream().anyMatch(DestinationEntity::isTransferInProgress)) {
+				destinationView.getUi().access(this::disableSaveDeleteButtons);
+			}
+			else {
+				// If no transfer: enable
+				destinationView.getUi().access(this::enableSaveDeleteButtons);
+			}
+		}
+		catch (UIDetachedException e) {
+			LOGGER.trace(String.format("UIDetachedException:%s", e.getMessage()));
+		}
+	}
 
-    // Disable save button editable form stow/dicom
-    // Dicom
-    enableButtonTransferInProgress(
-        destinationView
-            .getNewUpdateDestination()
-            .getButtonDestinationDICOMSaveDeleteCancel()
-            .getSave(),
-        destinationView
-            .getNewUpdateDestination()
-            .getButtonDestinationDICOMSaveDeleteCancel()
-            .getDelete());
+	/**
+	 * Check activity for loading spinner
+	 * @param activatedDestinationEntities Destinations to check
+	 */
+	private void checkActivityLoadingSpinner(List<DestinationEntity> activatedDestinationEntities) {
+		activatedDestinationEntities.forEach(d -> {
+			// Retrieve the loading image of the corresponding destination
+			Image loadingImage = destinationView.getGridDestination().getLoadingImages()
+					.get(forwardNodeEntity.getFwdAeTitle()).get(d.getId());
 
-    // Stow
-    enableButtonTransferInProgress(
-        destinationView
-            .getNewUpdateDestination()
-            .getButtonDestinationSTOWSaveDeleteCancel()
-            .getSave(),
-        destinationView
-            .getNewUpdateDestination()
-            .getButtonDestinationSTOWSaveDeleteCancel()
-            .getDelete());
-  }
+			// Check there is some activity on the destination: if yes set the loading
+			// spinner visible
+			// otherwise set it invisible
+			if (d.isTransferInProgress() && !loadingImage.isVisible()) {
+				// Loading spinner visible
+				destinationView.getUi().access(() -> loadingImage.setVisible(true));
+			}
+			else if (!d.isTransferInProgress() && loadingImage.isVisible()) {
+				// Loading spinner invisible
+				destinationView.getUi().access(() -> loadingImage.setVisible(false));
+			}
+		});
+	}
 
-  /** Disable save delete buttons */
-  private void disableSaveDeleteButtons() {
-    // Forward node
-    disableButtonTransferInProgress(
-        destinationView.getButtonForwardNodeSaveDeleteCancel().getSave(),
-        destinationView.getButtonForwardNodeSaveDeleteCancel().getDelete());
+	/** Enable save delete buttons */
+	private void enableSaveDeleteButtons() {
+		// Forward node
+		enableButtonTransferInProgress(destinationView.getButtonForwardNodeSaveDeleteCancel().getSave(),
+				destinationView.getButtonForwardNodeSaveDeleteCancel().getDelete());
 
-    // Disable save button editable form stow/dicom
-    // Dicom
-    disableButtonTransferInProgress(
-        destinationView
-            .getNewUpdateDestination()
-            .getButtonDestinationDICOMSaveDeleteCancel()
-            .getSave(),
-        destinationView
-            .getNewUpdateDestination()
-            .getButtonDestinationDICOMSaveDeleteCancel()
-            .getDelete());
+		// Disable save button editable form stow/dicom
+		// Dicom
+		enableButtonTransferInProgress(
+				destinationView.getNewUpdateDestination().getButtonDestinationDICOMSaveDeleteCancel().getSave(),
+				destinationView.getNewUpdateDestination().getButtonDestinationDICOMSaveDeleteCancel().getDelete());
 
-    // Stow
-    disableButtonTransferInProgress(
-        destinationView
-            .getNewUpdateDestination()
-            .getButtonDestinationSTOWSaveDeleteCancel()
-            .getSave(),
-        destinationView
-            .getNewUpdateDestination()
-            .getButtonDestinationSTOWSaveDeleteCancel()
-            .getDelete());
-  }
+		// Stow
+		enableButtonTransferInProgress(
+				destinationView.getNewUpdateDestination().getButtonDestinationSTOWSaveDeleteCancel().getSave(),
+				destinationView.getNewUpdateDestination().getButtonDestinationSTOWSaveDeleteCancel().getDelete());
+	}
 
-  /**
-   * Enable buttons
-   *
-   * @param saveButton Save button
-   * @param deleteButton Delete button
-   */
-  private void enableButtonTransferInProgress(Button saveButton, Button deleteButton) {
-    saveButton.setEnabled(true);
-    deleteButton.setEnabled(true);
-    saveButton.setText(SAVE);
-    deleteButton.setText(DELETE);
-  }
+	/** Disable save delete buttons */
+	private void disableSaveDeleteButtons() {
+		// Forward node
+		disableButtonTransferInProgress(destinationView.getButtonForwardNodeSaveDeleteCancel().getSave(),
+				destinationView.getButtonForwardNodeSaveDeleteCancel().getDelete());
 
-  /**
-   * Disable buttons
-   *
-   * @param saveButton Save button
-   * @param deleteButton Delete button
-   */
-  private void disableButtonTransferInProgress(Button saveButton, Button deleteButton) {
-    saveButton.setEnabled(false);
-    deleteButton.setEnabled(false);
-    saveButton.setText(TRANSFER_IN_PROGRESS);
-    deleteButton.setText(TRANSFER_IN_PROGRESS);
-  }
+		// Disable save button editable form stow/dicom
+		// Dicom
+		disableButtonTransferInProgress(
+				destinationView.getNewUpdateDestination().getButtonDestinationDICOMSaveDeleteCancel().getSave(),
+				destinationView.getNewUpdateDestination().getButtonDestinationDICOMSaveDeleteCancel().getDelete());
 
-  /**
-   * Sets the filter to use for this data provider and refreshes data.
-   *
-   * <p>Filter is compared for allowed properties.
-   *
-   * @param filterTextInput the text to filter by, never null.
-   */
-  public void setFilter(String filterTextInput) {
-    Objects.requireNonNull(filterText, "Filter text cannot be null.");
+		// Stow
+		disableButtonTransferInProgress(
+				destinationView.getNewUpdateDestination().getButtonDestinationSTOWSaveDeleteCancel().getSave(),
+				destinationView.getNewUpdateDestination().getButtonDestinationSTOWSaveDeleteCancel().getDelete());
+	}
 
-    final String filterTextInputTrim = filterTextInput.trim();
+	/**
+	 * Enable buttons
+	 * @param saveButton Save button
+	 * @param deleteButton Delete button
+	 */
+	private void enableButtonTransferInProgress(Button saveButton, Button deleteButton) {
+		saveButton.setEnabled(true);
+		deleteButton.setEnabled(true);
+		saveButton.setText(SAVE);
+		deleteButton.setText(DELETE);
+	}
 
-    if (Objects.equals(this.filterText, filterTextInputTrim)) {
-      return;
-    }
-    this.filterText = filterTextInputTrim;
+	/**
+	 * Disable buttons
+	 * @param saveButton Save button
+	 * @param deleteButton Delete button
+	 */
+	private void disableButtonTransferInProgress(Button saveButton, Button deleteButton) {
+		saveButton.setEnabled(false);
+		deleteButton.setEnabled(false);
+		saveButton.setText(TRANSFER_IN_PROGRESS);
+		deleteButton.setText(TRANSFER_IN_PROGRESS);
+	}
 
-    setFilter(data -> matchesFilter(data, filterTextInputTrim));
-  }
+	/**
+	 * Sets the filter to use for this data provider and refreshes data.
+	 *
+	 * <p>
+	 * Filter is compared for allowed properties.
+	 * @param filterTextInput the text to filter by, never null.
+	 */
+	public void setFilter(String filterTextInput) {
+		Objects.requireNonNull(filterText, "Filter text cannot be null.");
 
-  private boolean matchesFilter(DestinationEntity data, String filterText) {
-    return data != null && data.matchesFilter(filterText);
-  }
+		final String filterTextInputTrim = filterTextInput.trim();
 
-  public DestinationView getDestinationsView() {
-    return destinationView;
-  }
+		if (Objects.equals(this.filterText, filterTextInputTrim)) {
+			return;
+		}
+		this.filterText = filterTextInputTrim;
 
-  public void setDestinationsView(DestinationView destinationView) {
-    this.destinationView = destinationView;
-  }
+		setFilter(data -> matchesFilter(data, filterTextInputTrim));
+	}
 
-  /**
-   * Load the forward node in the list of items
-   *
-   * @param forwardNodeEntity Forward node to load
-   */
-  public void loadForwardNode(ForwardNodeEntity forwardNodeEntity) {
-    this.forwardNodeEntity = forwardNodeEntity;
-    getItems().clear();
-    getItems().addAll(destinationService.retrieveDestinations(this.forwardNodeEntity));
-  }
+	private boolean matchesFilter(DestinationEntity data, String filterText) {
+		return data != null && data.matchesFilter(filterText);
+	}
 
-  /**
-   * Save the destination
-   *
-   * @param destinationEntity destination to save
-   */
-  public void saveDestination(DestinationEntity destinationEntity) {
-    destinationService.save(forwardNodeEntity, destinationEntity);
-    loadForwardNode(forwardNodeEntity);
-  }
+	public DestinationView getDestinationsView() {
+		return destinationView;
+	}
 
-  public void publishEvent(NodeEvent nodeEvent) {
-    destinationService.getApplicationEventPublisher().publishEvent(nodeEvent);
-  }
+	public void setDestinationsView(DestinationView destinationView) {
+		this.destinationView = destinationView;
+	}
 
-  /**
-   * Delete the destination in parameter
-   *
-   * @param destinationEntity destination to delete
-   */
-  public void deleteDestination(DestinationEntity destinationEntity) {
-    destinationService.delete(destinationEntity);
-    refreshAll();
-  }
+	/**
+	 * Load the forward node in the list of items
+	 * @param forwardNodeEntity Forward node to load
+	 */
+	public void loadForwardNode(ForwardNodeEntity forwardNodeEntity) {
+		this.forwardNodeEntity = forwardNodeEntity;
+		getItems().clear();
+		getItems().addAll(destinationService.retrieveDestinations(this.forwardNodeEntity));
+	}
 
-  /**
-   * Retrieve destination depending on id in parameter
-   *
-   * @param id Id to look for
-   * @return Destination found
-   */
-  public DestinationEntity retrieveDestinationEntity(Long id) {
-    List<DestinationEntity> destinationEntities =
-        destinationService.retrieveDestinationsFromIds(List.of(id));
-    return destinationEntities.isEmpty() ? null : destinationEntities.stream().findFirst().get();
-  }
+	/**
+	 * Save the destination
+	 * @param destinationEntity destination to save
+	 */
+	public void saveDestination(DestinationEntity destinationEntity) {
+		destinationService.save(forwardNodeEntity, destinationEntity);
+		loadForwardNode(forwardNodeEntity);
+	}
+
+	public void publishEvent(NodeEvent nodeEvent) {
+		destinationService.getApplicationEventPublisher().publishEvent(nodeEvent);
+	}
+
+	/**
+	 * Delete the destination in parameter
+	 * @param destinationEntity destination to delete
+	 */
+	public void deleteDestination(DestinationEntity destinationEntity) {
+		destinationService.delete(destinationEntity);
+		refreshAll();
+	}
+
+	/**
+	 * Retrieve destination depending on id in parameter
+	 * @param id Id to look for
+	 * @return Destination found
+	 */
+	public DestinationEntity retrieveDestinationEntity(Long id) {
+		List<DestinationEntity> destinationEntities = destinationService.retrieveDestinationsFromIds(List.of(id));
+		return destinationEntities.isEmpty() ? null : destinationEntities.stream().findFirst().get();
+	}
+
 }

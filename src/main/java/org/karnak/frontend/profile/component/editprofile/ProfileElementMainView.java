@@ -23,48 +23,48 @@ import org.karnak.backend.data.entity.ProfileEntity;
 
 public class ProfileElementMainView extends VerticalLayout {
 
-  private Set<ProfileElementEntity> profilesOrder;
+	private Set<ProfileElementEntity> profilesOrder;
 
-  public ProfileElementMainView() {}
+	public ProfileElementMainView() {
+	}
 
-  private void profilesView() {
-    removeAll();
-    add(
-        new HorizontalLayout(
-            new H2("Profile element(s)"))); // new horizontalelayout because fix padding
-    for (ProfileElementEntity profileElementEntity : profilesOrder) {
-      add(
-          setProfileName(
-              (profileElementEntity.getPosition() + 1) + ". " + profileElementEntity.getName()));
-      add(new ProfileElementView(profileElementEntity));
-    }
-  }
+	private void profilesView() {
+		removeAll();
+		add(new HorizontalLayout(new H2("Profile element(s)"))); // new horizontalelayout
+																	// because fix padding
+		for (ProfileElementEntity profileElementEntity : profilesOrder) {
+			add(setProfileName((profileElementEntity.getPosition() + 1) + ". " + profileElementEntity.getName()));
+			add(new ProfileElementView(profileElementEntity));
+		}
+	}
 
-  private Div setProfileName(String name) {
-    Div profileNameDiv = new Div();
-    profileNameDiv.add(new Text(name));
-    profileNameDiv.getStyle().set("font-weight", "bold").set("padding-left", "5px");
-    return profileNameDiv;
-  }
+	private Div setProfileName(String name) {
+		Div profileNameDiv = new Div();
+		profileNameDiv.add(new Text(name));
+		profileNameDiv.getStyle().set("font-weight", "bold").set("padding-left", "5px");
+		return profileNameDiv;
+	}
 
-  public void setProfile(ProfileEntity profileEntity) {
-    if (profileEntity != null) {
-      Set<ProfileElementEntity> profileElementEntities = profileEntity.getProfileElementEntities();
+	public void setProfile(ProfileEntity profileEntity) {
+		if (profileEntity != null) {
+			Set<ProfileElementEntity> profileElementEntities = profileEntity.getProfileElementEntities();
 
-      if (profileElementEntities != null) {
-        profilesOrder =
-            profileElementEntities.stream()
-                .sorted(Comparator.comparing(ProfileElementEntity::getPosition))
-                .collect(Collectors.toCollection(LinkedHashSet::new));
-        profilesView();
-        setEnabled(true);
-      } else {
-        removeAll();
-        setEnabled(false);
-      }
-    } else {
-      removeAll();
-      setEnabled(false);
-    }
-  }
+			if (profileElementEntities != null) {
+				profilesOrder = profileElementEntities.stream()
+						.sorted(Comparator.comparing(ProfileElementEntity::getPosition))
+						.collect(Collectors.toCollection(LinkedHashSet::new));
+				profilesView();
+				setEnabled(true);
+			}
+			else {
+				removeAll();
+				setEnabled(false);
+			}
+		}
+		else {
+			removeAll();
+			setEnabled(false);
+		}
+	}
+
 }

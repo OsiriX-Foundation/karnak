@@ -16,29 +16,32 @@ import java.util.Objects;
 
 public class WadoNode {
 
-  private final String name;
-  private final URL url;
-  private final List<String> tagEntities = new ArrayList<String>(2);
+	private final String name;
 
-  public WadoNode(String name, URL url) {
-    this.name = Objects.requireNonNull(name);
-    this.url = Objects.requireNonNull(url);
-  }
+	private final URL url;
 
-  @Override
-  public String toString() {
-    return name;
-  }
+	private final List<String> tagEntities = new ArrayList<String>(2);
 
-  public String getName() {
-    return name;
-  }
+	public WadoNode(String name, URL url) {
+		this.name = Objects.requireNonNull(name);
+		this.url = Objects.requireNonNull(url);
+	}
 
-  public URL getUrl() {
-    return url;
-  }
+	@Override
+	public String toString() {
+		return name;
+	}
 
-  public List<String> getTags() {
-    return tagEntities;
-  }
+	public String getName() {
+		return name;
+	}
+
+	public URL getUrl() {
+		return url;
+	}
+
+	public List<String> getTags() {
+		return tagEntities;
+	}
+
 }

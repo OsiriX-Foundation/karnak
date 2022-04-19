@@ -15,47 +15,51 @@ import com.vaadin.flow.component.html.Div;
 
 public class ProfileShowHide extends Div {
 
-  private final Component component;
-  private final Button btnShowHide = new Button();
-  private Boolean show = true;
-  private String textShow = "Show";
-  private String textHide = "Hide";
+	private final Component component;
 
-  public ProfileShowHide(Component component, Boolean show) {
-    this.component = component;
-    this.show = show;
-    setStyle();
-  }
+	private final Button btnShowHide = new Button();
 
-  public void setTextShow(String textShow) {
-    this.textShow = textShow;
-    setTextButtonShowHide();
-  }
+	private Boolean show = true;
 
-  public void setTextHide(String textHide) {
-    this.textHide = textHide;
-    setTextButtonShowHide();
-  }
+	private String textShow = "Show";
 
-  private void setStyle() {
-    getStyle().set("margin-top", "0px");
-  }
+	private String textHide = "Hide";
 
-  private void setTextButtonShowHide() {
-    btnShowHide.setText(show.booleanValue() ? textHide : textShow);
-  }
+	public ProfileShowHide(Component component, Boolean show) {
+		this.component = component;
+		this.show = show;
+		setStyle();
+	}
 
-  public void setView() {
-    removeAll();
-    component.setVisible(show);
-    setTextButtonShowHide();
-    btnShowHide.addClickListener(
-        buttonClickEvent -> {
-          show = !show;
-          component.setVisible(show);
-          setTextButtonShowHide();
-        });
-    add(component);
-    add(btnShowHide);
-  }
+	public void setTextShow(String textShow) {
+		this.textShow = textShow;
+		setTextButtonShowHide();
+	}
+
+	public void setTextHide(String textHide) {
+		this.textHide = textHide;
+		setTextButtonShowHide();
+	}
+
+	private void setStyle() {
+		getStyle().set("margin-top", "0px");
+	}
+
+	private void setTextButtonShowHide() {
+		btnShowHide.setText(show.booleanValue() ? textHide : textShow);
+	}
+
+	public void setView() {
+		removeAll();
+		component.setVisible(show);
+		setTextButtonShowHide();
+		btnShowHide.addClickListener(buttonClickEvent -> {
+			show = !show;
+			component.setVisible(show);
+			setTextButtonShowHide();
+		});
+		add(component);
+		add(btnShowHide);
+	}
+
 }

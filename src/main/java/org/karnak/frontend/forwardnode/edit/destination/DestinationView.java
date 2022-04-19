@@ -29,143 +29,154 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("serial")
 public class DestinationView extends VerticalLayout {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(DestinationView.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DestinationView.class);
 
-  // Destination Logic
-  private final DestinationLogic destinationLogic;
-  private final ForwardNodeLogic forwardNodeLogic;
+	// Destination Logic
+	private final DestinationLogic destinationLogic;
 
-  // UI components
-  private UI ui;
-  private TextField filter;
-  private Button newDestinationDICOM;
-  private Button newDestinationSTOW;
-  private GridDestination gridDestination;
-  private HorizontalLayout layoutFilterButton;
-  private ButtonSaveDeleteCancel buttonForwardNodeSaveDeleteCancel;
-  private NewUpdateDestination newUpdateDestination;
+	private final ForwardNodeLogic forwardNodeLogic;
 
-  private final String LABEL_NEW_DESTINATION_DICOM = "DICOM";
-  private final String LABEL_NEW_DESTINATION_STOW = "STOW";
-  private final String PLACEHOLDER_FILTER = "Filter properties of destination";
+	// UI components
+	private UI ui;
 
-  /**
-   * Destination view constructor
-   *
-   * @param forwardNodeLogic Logic service of the view
-   */
-  public DestinationView(final ForwardNodeLogic forwardNodeLogic) {
+	private TextField filter;
 
-    // Bind the autowired service
-    this.destinationLogic = forwardNodeLogic.getDestinationLogic();
-    this.forwardNodeLogic = forwardNodeLogic;
+	private Button newDestinationDICOM;
 
-    // Set the view in the service
-    this.destinationLogic.setDestinationsView(this);
+	private Button newDestinationSTOW;
 
-    // Keep the UI in order to be processed in the check of activity
-    ui = UI.getCurrent();
+	private GridDestination gridDestination;
 
-    // Create components and layout
-    buildComponentsLayout();
-  }
+	private HorizontalLayout layoutFilterButton;
 
-  /** Create components, layout and add the layout of the view */
-  private void buildComponentsLayout() {
-    setSizeFull();
-    filter = new TextField();
-    newDestinationDICOM = new Button(LABEL_NEW_DESTINATION_DICOM);
-    newDestinationSTOW = new Button(LABEL_NEW_DESTINATION_STOW);
-    gridDestination = new GridDestination();
+	private ButtonSaveDeleteCancel buttonForwardNodeSaveDeleteCancel;
 
-    setTextFieldFilter();
-    setButtonNewDestinationDICOM();
-    setButtonNewDestinationSTOW();
-    loadForwardNode(null);
+	private NewUpdateDestination newUpdateDestination;
 
-    layoutFilterButton = new HorizontalLayout(filter, newDestinationDICOM, newDestinationSTOW);
-    layoutFilterButton.setVerticalComponentAlignment(Alignment.START, filter);
-    layoutFilterButton.expand(filter);
+	private final String LABEL_NEW_DESTINATION_DICOM = "DICOM";
 
-    add(UIS.setWidthFull(layoutFilterButton), UIS.setWidthFull(gridDestination));
-  }
+	private final String LABEL_NEW_DESTINATION_STOW = "STOW";
 
-  private void setTextFieldFilter() {
-    filter.setPlaceholder(PLACEHOLDER_FILTER);
-    // Apply the filter to grid's data provider. TextField value is never null
-    filter.addValueChangeListener(event -> destinationLogic.setFilter(event.getValue()));
-  }
+	private final String PLACEHOLDER_FILTER = "Filter properties of destination";
 
-  private void setButtonNewDestinationDICOM() {
-    newDestinationDICOM.getElement().setAttribute("title", "New destination of type dicom");
-    newDestinationDICOM.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-    newDestinationDICOM.setIcon(VaadinIcon.PLUS_CIRCLE.create());
-    // newDestinationDICOM.addClickListener(click -> destinationLogic.newDestinationDicom());
-  }
+	/**
+	 * Destination view constructor
+	 * @param forwardNodeLogic Logic service of the view
+	 */
+	public DestinationView(final ForwardNodeLogic forwardNodeLogic) {
 
-  private void setButtonNewDestinationSTOW() {
-    newDestinationSTOW.getElement().setAttribute("title", "New destination of type stow");
-    newDestinationSTOW.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-    newDestinationSTOW.setIcon(VaadinIcon.PLUS_CIRCLE.create());
-    // newDestinationStow.addClickListener(click -> destinationLogic.newDestinationStow());
-  }
+		// Bind the autowired service
+		this.destinationLogic = forwardNodeLogic.getDestinationLogic();
+		this.forwardNodeLogic = forwardNodeLogic;
 
-  public void setEnabled(boolean enabled) {
-    filter.setEnabled(enabled);
-    newDestinationDICOM.setEnabled(enabled);
-    newDestinationSTOW.setEnabled(enabled);
-    gridDestination.setEnabled(enabled);
-  }
+		// Set the view in the service
+		this.destinationLogic.setDestinationsView(this);
 
-  public void loadForwardNode(ForwardNodeEntity forwardNodeEntity) {
-    ForwardNodeEntity forwardNodeEntityReload = null;
-    if (forwardNodeEntity != null) {
-      forwardNodeEntityReload = forwardNodeLogic.retrieveForwardNodeById(forwardNodeEntity.getId());
-      setEnabled(forwardNodeEntityReload != null);
-    }
-    destinationLogic.loadForwardNode(forwardNodeEntityReload);
-    gridDestination.setItems(destinationLogic);
-    setEnabled(forwardNodeEntity != null);
-  }
+		// Keep the UI in order to be processed in the check of activity
+		ui = UI.getCurrent();
 
-  public Button getNewDestinationDICOM() {
-    return newDestinationDICOM;
-  }
+		// Create components and layout
+		buildComponentsLayout();
+	}
 
-  public Button getNewDestinationSTOW() {
-    return newDestinationSTOW;
-  }
+	/** Create components, layout and add the layout of the view */
+	private void buildComponentsLayout() {
+		setSizeFull();
+		filter = new TextField();
+		newDestinationDICOM = new Button(LABEL_NEW_DESTINATION_DICOM);
+		newDestinationSTOW = new Button(LABEL_NEW_DESTINATION_STOW);
+		gridDestination = new GridDestination();
 
-  public GridDestination getGridDestination() {
-    return gridDestination;
-  }
+		setTextFieldFilter();
+		setButtonNewDestinationDICOM();
+		setButtonNewDestinationSTOW();
+		loadForwardNode(null);
 
-  public DestinationLogic getDestinationLogic() {
-    return destinationLogic;
-  }
+		layoutFilterButton = new HorizontalLayout(filter, newDestinationDICOM, newDestinationSTOW);
+		layoutFilterButton.setVerticalComponentAlignment(Alignment.START, filter);
+		layoutFilterButton.expand(filter);
 
-  public UI getUi() {
-    return ui;
-  }
+		add(UIS.setWidthFull(layoutFilterButton), UIS.setWidthFull(gridDestination));
+	}
 
-  public void setUi(UI ui) {
-    this.ui = ui;
-  }
+	private void setTextFieldFilter() {
+		filter.setPlaceholder(PLACEHOLDER_FILTER);
+		// Apply the filter to grid's data provider. TextField value is never null
+		filter.addValueChangeListener(event -> destinationLogic.setFilter(event.getValue()));
+	}
 
-  public ButtonSaveDeleteCancel getButtonForwardNodeSaveDeleteCancel() {
-    return buttonForwardNodeSaveDeleteCancel;
-  }
+	private void setButtonNewDestinationDICOM() {
+		newDestinationDICOM.getElement().setAttribute("title", "New destination of type dicom");
+		newDestinationDICOM.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+		newDestinationDICOM.setIcon(VaadinIcon.PLUS_CIRCLE.create());
+		// newDestinationDICOM.addClickListener(click ->
+		// destinationLogic.newDestinationDicom());
+	}
 
-  public void setButtonForwardNodeSaveDeleteCancel(
-      ButtonSaveDeleteCancel buttonForwardNodeSaveDeleteCancel) {
-    this.buttonForwardNodeSaveDeleteCancel = buttonForwardNodeSaveDeleteCancel;
-  }
+	private void setButtonNewDestinationSTOW() {
+		newDestinationSTOW.getElement().setAttribute("title", "New destination of type stow");
+		newDestinationSTOW.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+		newDestinationSTOW.setIcon(VaadinIcon.PLUS_CIRCLE.create());
+		// newDestinationStow.addClickListener(click ->
+		// destinationLogic.newDestinationStow());
+	}
 
-  public NewUpdateDestination getNewUpdateDestination() {
-    return newUpdateDestination;
-  }
+	public void setEnabled(boolean enabled) {
+		filter.setEnabled(enabled);
+		newDestinationDICOM.setEnabled(enabled);
+		newDestinationSTOW.setEnabled(enabled);
+		gridDestination.setEnabled(enabled);
+	}
 
-  public void setNewUpdateDestination(NewUpdateDestination newUpdateDestination) {
-    this.newUpdateDestination = newUpdateDestination;
-  }
+	public void loadForwardNode(ForwardNodeEntity forwardNodeEntity) {
+		ForwardNodeEntity forwardNodeEntityReload = null;
+		if (forwardNodeEntity != null) {
+			forwardNodeEntityReload = forwardNodeLogic.retrieveForwardNodeById(forwardNodeEntity.getId());
+			setEnabled(forwardNodeEntityReload != null);
+		}
+		destinationLogic.loadForwardNode(forwardNodeEntityReload);
+		gridDestination.setItems(destinationLogic);
+		setEnabled(forwardNodeEntity != null);
+	}
+
+	public Button getNewDestinationDICOM() {
+		return newDestinationDICOM;
+	}
+
+	public Button getNewDestinationSTOW() {
+		return newDestinationSTOW;
+	}
+
+	public GridDestination getGridDestination() {
+		return gridDestination;
+	}
+
+	public DestinationLogic getDestinationLogic() {
+		return destinationLogic;
+	}
+
+	public UI getUi() {
+		return ui;
+	}
+
+	public void setUi(UI ui) {
+		this.ui = ui;
+	}
+
+	public ButtonSaveDeleteCancel getButtonForwardNodeSaveDeleteCancel() {
+		return buttonForwardNodeSaveDeleteCancel;
+	}
+
+	public void setButtonForwardNodeSaveDeleteCancel(ButtonSaveDeleteCancel buttonForwardNodeSaveDeleteCancel) {
+		this.buttonForwardNodeSaveDeleteCancel = buttonForwardNodeSaveDeleteCancel;
+	}
+
+	public NewUpdateDestination getNewUpdateDestination() {
+		return newUpdateDestination;
+	}
+
+	public void setNewUpdateDestination(NewUpdateDestination newUpdateDestination) {
+		this.newUpdateDestination = newUpdateDestination;
+	}
+
 }

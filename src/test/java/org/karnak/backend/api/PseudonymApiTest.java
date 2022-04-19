@@ -20,66 +20,61 @@ import org.mockito.Mockito;
 
 class PseudonymApiTest {
 
-  MockedStatic<MainzellisteConfig> mainzellisteConfigMock;
+	MockedStatic<MainzellisteConfig> mainzellisteConfigMock;
 
-  @BeforeEach
-  void setUp() {
-    MainzellisteConfig mainzellisteConfig = new MainzellisteConfig();
-    mainzellisteConfig.setServerurl("http://serverUrl");
-    mainzellisteConfig.setApikey("apiKey");
-    mainzellisteConfigMock = Mockito.mockStatic(MainzellisteConfig.class);
-    mainzellisteConfigMock.when(MainzellisteConfig::getInstance).thenReturn(mainzellisteConfig);
-  }
+	@BeforeEach
+	void setUp() {
+		MainzellisteConfig mainzellisteConfig = new MainzellisteConfig();
+		mainzellisteConfig.setServerurl("http://serverUrl");
+		mainzellisteConfig.setApikey("apiKey");
+		mainzellisteConfigMock = Mockito.mockStatic(MainzellisteConfig.class);
+		mainzellisteConfigMock.when(MainzellisteConfig::getInstance).thenReturn(mainzellisteConfig);
+	}
 
-  @AfterEach
-  void tearDown() {
-    // Close static mock
-    if (mainzellisteConfigMock != null) {
-      mainzellisteConfigMock.close();
-    }
-  }
+	@AfterEach
+	void tearDown() {
+		// Close static mock
+		if (mainzellisteConfigMock != null) {
+			mainzellisteConfigMock.close();
+		}
+	}
 
-  @Test
-  void when_add_ext_id_server_invalid_should_throw_exception() {
+	@Test
+	void when_add_ext_id_server_invalid_should_throw_exception() {
 
-    // Init data
-    PseudonymApi pseudonymApi = new PseudonymApi();
-    Fields fields = new Fields("patientId");
+		// Init data
+		PseudonymApi pseudonymApi = new PseudonymApi();
+		Fields fields = new Fields("patientId");
 
-    Assertions.assertThrows(
-        IllegalStateException.class,
-        () -> {
-          // Call method
-          pseudonymApi.addExtID(fields, "externalPseudonym");
-        });
-  }
+		Assertions.assertThrows(IllegalStateException.class, () -> {
+			// Call method
+			pseudonymApi.addExtID(fields, "externalPseudonym");
+		});
+	}
 
-  @Test
-  void when_get_ext_id_server_invalid_should_throw_exception() {
+	@Test
+	void when_get_ext_id_server_invalid_should_throw_exception() {
 
-    // Init data
-    PseudonymApi pseudonymApi = new PseudonymApi();
-    Fields fields = new Fields("patientId");
+		// Init data
+		PseudonymApi pseudonymApi = new PseudonymApi();
+		Fields fields = new Fields("patientId");
 
-    Assertions.assertThrows(
-        IllegalStateException.class,
-        () -> {
-          // Call method
-          pseudonymApi.getExistingExtID(fields);
-        });
-  }
+		Assertions.assertThrows(IllegalStateException.class, () -> {
+			// Call method
+			pseudonymApi.getExistingExtID(fields);
+		});
+	}
 
-  @Test
-  void when_generate_pid_server_invalid_should_throw_exception() {
-    // Init data
-    PseudonymApi pseudonymApi = new PseudonymApi();
-    Fields fields = new Fields("patientId");
+	@Test
+	void when_generate_pid_server_invalid_should_throw_exception() {
+		// Init data
+		PseudonymApi pseudonymApi = new PseudonymApi();
+		Fields fields = new Fields("patientId");
 
-    Assertions.assertThrows(
-        IllegalStateException.class,
-        () -> {
-          // Call method
-          pseudonymApi.generatePID(fields);
-        });
-  }
+		Assertions.assertThrows(IllegalStateException.class, () -> {
+			// Call method
+			pseudonymApi.generatePID(fields);
+		});
+	}
+
 }

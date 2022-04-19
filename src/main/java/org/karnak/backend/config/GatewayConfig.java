@@ -24,26 +24,27 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories
 public class GatewayConfig {
 
-  // Repositories
-  private final SOPClassUIDRepo sopClassUIDRepo;
+	// Repositories
+	private final SOPClassUIDRepo sopClassUIDRepo;
 
-  @Autowired
-  public GatewayConfig(final SOPClassUIDRepo sopClassUIDRepo) {
-    this.sopClassUIDRepo = sopClassUIDRepo;
-  }
+	@Autowired
+	public GatewayConfig(final SOPClassUIDRepo sopClassUIDRepo) {
+		this.sopClassUIDRepo = sopClassUIDRepo;
+	}
 
-  @PostConstruct
-  private void writeSOPSinDatabase() {
-    final StandardSOPS standardSOPS = new StandardSOPS();
-    Set<SOPClassUIDEntity> sopClassUIDEntitySet = new HashSet<>();
-    for (jsonSOP sop : standardSOPS.getSOPS()) {
-      final String ciod = sop.getCiod();
-      final String uid = sop.getId();
-      final String name = sop.getName();
-      if (sopClassUIDRepo.existsByCiodAndUidAndName(ciod, uid, name).equals(Boolean.FALSE)) {
-        sopClassUIDEntitySet.add(new SOPClassUIDEntity(ciod, uid, name));
-      }
-    }
-    sopClassUIDRepo.saveAll(sopClassUIDEntitySet);
-  }
+	@PostConstruct
+	private void writeSOPSinDatabase() {
+		final StandardSOPS standardSOPS = new StandardSOPS();
+		Set<SOPClassUIDEntity> sopClassUIDEntitySet = new HashSet<>();
+		for (jsonSOP sop : standardSOPS.getSOPS()) {
+			final String ciod = sop.getCiod();
+			final String uid = sop.getId();
+			final String name = sop.getName();
+			if (sopClassUIDRepo.existsByCiodAndUidAndName(ciod, uid, name).equals(Boolean.FALSE)) {
+				sopClassUIDEntitySet.add(new SOPClassUIDEntity(ciod, uid, name));
+			}
+		}
+		sopClassUIDRepo.saveAll(sopClassUIDEntitySet);
+	}
+
 }

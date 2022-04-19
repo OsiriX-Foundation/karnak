@@ -16,69 +16,70 @@ import java.util.Objects;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class DestinationEcho {
 
-  // AeTitle of the destination dicom
-  private String aet;
-  // Url of the destination stow
-  private String url;
-  // Status
-  private int status;
+	// AeTitle of the destination dicom
+	private String aet;
 
-  /** Constructor without parameter */
-  public DestinationEcho() {}
+	// Url of the destination stow
+	private String url;
 
-  /**
-   * Constructor with parameters
-   *
-   * @param aet AeTitle
-   * @param url Url
-   * @param status Status
-   */
-  public DestinationEcho(String aet, String url, int status) {
-    this.aet = aet;
-    this.url = url;
-    this.status = status;
-  }
+	// Status
+	private int status;
 
-  public String getAet() {
-    return aet;
-  }
+	/** Constructor without parameter */
+	public DestinationEcho() {
+	}
 
-  public void setAet(String aet) {
-    this.aet = aet;
-  }
+	/**
+	 * Constructor with parameters
+	 * @param aet AeTitle
+	 * @param url Url
+	 * @param status Status
+	 */
+	public DestinationEcho(String aet, String url, int status) {
+		this.aet = aet;
+		this.url = url;
+		this.status = status;
+	}
 
-  public String getUrl() {
-    return url;
-  }
+	public String getAet() {
+		return aet;
+	}
 
-  public void setUrl(String url) {
-    this.url = url;
-  }
+	public void setAet(String aet) {
+		this.aet = aet;
+	}
 
-  public int getStatus() {
-    return status;
-  }
+	public String getUrl() {
+		return url;
+	}
 
-  public void setStatus(int status) {
-    this.status = status;
-  }
+	public void setUrl(String url) {
+		this.url = url;
+	}
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    DestinationEcho that = (DestinationEcho) o;
-    return Objects.equals(aet, that.aet)
-        && Objects.equals(url, that.url)
-        && Objects.equals(status, that.status);
-  }
+	public int getStatus() {
+		return status;
+	}
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(aet, url, status);
-  }
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		DestinationEcho that = (DestinationEcho) o;
+		return Objects.equals(aet, that.aet) && Objects.equals(url, that.url) && Objects.equals(status, that.status);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(aet, url, status);
+	}
+
 }

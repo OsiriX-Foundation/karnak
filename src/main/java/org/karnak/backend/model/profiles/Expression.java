@@ -27,59 +27,60 @@ import org.karnak.backend.model.profilepipe.TagActionMap;
 
 public class Expression extends AbstractProfileItem {
 
-  private final TagActionMap tagsAction;
-  private final TagActionMap exceptedTagsAction;
-  private final ActionItem actionByDefault;
+	private final TagActionMap tagsAction;
 
-  public Expression(ProfileElementEntity profileElementEntity) throws Exception {
-    super(profileElementEntity);
-    tagsAction = new TagActionMap();
-    exceptedTagsAction = new TagActionMap();
-    actionByDefault = AbstractAction.convertAction("K");
-    profileValidation();
-    setActionHashMap();
-  }
+	private final TagActionMap exceptedTagsAction;
 
-  private void setActionHashMap() throws Exception {
-    if (tagEntities != null) {
-      for (IncludedTagEntity tag : tagEntities) {
-        tagsAction.put(tag.getTagValue(), actionByDefault);
-      }
-      if (excludedTagEntities != null) {
-        for (ExcludedTagEntity tag : excludedTagEntities) {
-          exceptedTagsAction.put(tag.getTagValue(), actionByDefault);
-        }
-      }
-    }
-  }
+	private final ActionItem actionByDefault;
 
-  @Override
-  public ActionItem getAction(Attributes dcm, Attributes dcmCopy, int tag, HMAC hmac) {
-    if (exceptedTagsAction.get(tag) == null && tagsAction.get(tag) != null) {
-      final String expr = argumentEntities.get(0).getValue();
-      final ExprAction exprAction = new ExprAction(tag, dcm.getVR(tag), dcm, dcmCopy);
-      return (ActionItem) ExpressionResult.get(expr, exprAction, ActionItem.class);
-    }
-    return null;
-  }
+	public Expression(ProfileElementEntity profileElementEntity) throws Exception {
+		super(profileElementEntity);
+		tagsAction = new TagActionMap();
+		exceptedTagsAction = new TagActionMap();
+		actionByDefault = AbstractAction.convertAction("K");
+		profileValidation();
+		setActionHashMap();
+	}
 
-  public void profileValidation() throws Exception {
-    if (!argumentEntities.stream().anyMatch(argument -> argument.getKey().equals("expr"))) {
-      List<String> args =
-          argumentEntities.stream().map(ArgumentEntity::getKey).collect(Collectors.toList());
-      throw new IllegalArgumentException(
-          "Cannot build the expression: Missing argument, the class need [expr] as parameters. Parameters given "
-              + args);
-    }
+	private void setActionHashMap() throws Exception {
+		if (tagEntities != null) {
+			for (IncludedTagEntity tag : tagEntities) {
+				tagsAction.put(tag.getTagValue(), actionByDefault);
+			}
+			if (excludedTagEntities != null) {
+				for (ExcludedTagEntity tag : excludedTagEntities) {
+					exceptedTagsAction.put(tag.getTagValue(), actionByDefault);
+				}
+			}
+		}
+	}
 
-    final String expr = argumentEntities.get(0).getValue();
-    final ExpressionError expressionError =
-        ExpressionResult.isValid(
-            expr, new ExprAction(1, VR.AE, new Attributes(), new Attributes()), ActionItem.class);
+	@Override
+	public ActionItem getAction(Attributes dcm, Attributes dcmCopy, int tag, HMAC hmac) {
+		if (exceptedTagsAction.get(tag) == null && tagsAction.get(tag) != null) {
+			final String expr = argumentEntities.get(0).getValue();
+			final ExprAction exprAction = new ExprAction(tag, dcm.getVR(tag), dcm, dcmCopy);
+			return (ActionItem) ExpressionResult.get(expr, exprAction, ActionItem.class);
+		}
+		return null;
+	}
 
-    if (!expressionError.isValid()) {
-      throw new IllegalArgumentException(
-          String.format("Expression is not valid: \n\r%s", expressionError.getMsg()));
-    }
-  }
+	public void profileValidation() throws Exception {
+		if (!argumentEntities.stream().anyMatch(argument -> argument.getKey().equals("expr"))) {
+			List<String> args = argumentEntities.stream().map(ArgumentEntity::getKey).collect(Collectors.toList());
+			throw new IllegalArgumentException(
+					"Cannot build the expression: Missing argument, the class need [expr] as parameters. Parameters given "
+							+ args);
+		}
+
+		final String expr = argumentEntities.get(0).getValue();
+		final ExpressionError expressionError = ExpressionResult.isValid(expr,
+				new ExprAction(1, VR.AE, new Attributes(), new Attributes()), ActionItem.class);
+
+		if (!expressionError.isValid()) {
+			throw new IllegalArgumentException(
+					String.format("Expression is not valid: \n\r%s", expressionError.getMsg()));
+		}
+	}
+
 }

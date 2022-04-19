@@ -18,32 +18,33 @@ import java.nio.charset.StandardCharsets;
 
 public class StandardCIODtoModules {
 
-  private static final String ciodToModulesFileName = "ciod_to_modules.json";
-  private static jsonCIODtoModule[] ciodToModules;
+	private static final String ciodToModulesFileName = "ciod_to_modules.json";
 
-  public StandardCIODtoModules() {
-    URL url = this.getClass().getResource(ciodToModulesFileName);
-    ciodToModules = read(url);
-  }
+	private static jsonCIODtoModule[] ciodToModules;
 
-  public static jsonCIODtoModule[] readJsonCIODToModules() {
-    URL url = StandardCIODtoModules.class.getResource(ciodToModulesFileName);
-    return read(url);
-  }
+	public StandardCIODtoModules() {
+		URL url = this.getClass().getResource(ciodToModulesFileName);
+		ciodToModules = read(url);
+	}
 
-  private static jsonCIODtoModule[] read(URL url) {
-    Gson gson = new Gson();
-    try {
-      JsonReader reader =
-          new JsonReader(new InputStreamReader(url.openStream(), StandardCharsets.UTF_8));
-      return gson.fromJson(reader, jsonCIODtoModule[].class);
-    } catch (Exception e) {
-      throw new JsonParseException(
-          String.format("Cannot parse json %s correctly", ciodToModulesFileName), e);
-    }
-  }
+	public static jsonCIODtoModule[] readJsonCIODToModules() {
+		URL url = StandardCIODtoModules.class.getResource(ciodToModulesFileName);
+		return read(url);
+	}
 
-  public jsonCIODtoModule[] getCIODToModules() {
-    return ciodToModules;
-  }
+	private static jsonCIODtoModule[] read(URL url) {
+		Gson gson = new Gson();
+		try {
+			JsonReader reader = new JsonReader(new InputStreamReader(url.openStream(), StandardCharsets.UTF_8));
+			return gson.fromJson(reader, jsonCIODtoModule[].class);
+		}
+		catch (Exception e) {
+			throw new JsonParseException(String.format("Cannot parse json %s correctly", ciodToModulesFileName), e);
+		}
+	}
+
+	public jsonCIODtoModule[] getCIODToModules() {
+		return ciodToModules;
+	}
+
 }

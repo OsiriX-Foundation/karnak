@@ -39,59 +39,53 @@ import org.springframework.security.access.annotation.Secured;
 @CssImport(value = "./styles/shared-styles.css")
 @CssImport(value = "./styles/empty.css", include = "lumo-badge")
 @Route(value = "mainLayout")
-@Secured({"ROLE_admin"})
+@Secured({ "ROLE_admin" })
 @SuppressWarnings("serial")
 public class MainLayout extends FlexLayout implements RouterLayout {
 
-  private final Menu menu;
+	private final Menu menu;
 
-  public MainLayout() {
-    setSizeFull();
-    setClassName("main-layout");
+	public MainLayout() {
+		setSizeFull();
+		setClassName("main-layout");
 
-    menu = new Menu();
+		menu = new Menu();
 
-    // Add secured Menu
-    addSecuredMenu(
-        ForwardNodeView.class, ForwardNodeView.VIEW_NAME, new IronIcon("icons", "settings"));
-    addSecuredMenu(ProfileView.class, ProfileView.VIEW_NAME, new IronIcon("icons", "assignment"));
-    addSecuredMenu(ProjectView.class, ProjectView.VIEW_NAME, new IronIcon("icons", "class"));
-    addSecuredMenu(
-        ExternalIDView.class, ExternalIDView.VIEW_NAME, new IronIcon("icons", "perm-identity"));
-    addSecuredMenu(
-        MainzellisteView.class, MainzellisteView.VIEW_NAME, new IronIcon("icons", "perm-identity"));
-    addSecuredMenu(
-        PseudonymMappingView.class,
-        PseudonymMappingView.VIEW_NAME,
-        new IronIcon("icons", "perm-identity"));
-    addSecuredMenu(
-        MonitoringView.class, MonitoringView.VIEW_NAME, new IronIcon("icons", "history"));
-    addSecuredMenu(DicomMainView.class, DicomMainView.VIEW_NAME, new IronIcon("icons", "build"));
-    addSecuredMenu(HelpView.class, HelpView.VIEW_NAME, new IronIcon("icons", "help"));
-    // menu.addView(AboutView.class, AboutView.VIEW_NAME, new IronIcon("icons", "info"));
+		// Add secured Menu
+		addSecuredMenu(ForwardNodeView.class, ForwardNodeView.VIEW_NAME, new IronIcon("icons", "settings"));
+		addSecuredMenu(ProfileView.class, ProfileView.VIEW_NAME, new IronIcon("icons", "assignment"));
+		addSecuredMenu(ProjectView.class, ProjectView.VIEW_NAME, new IronIcon("icons", "class"));
+		addSecuredMenu(ExternalIDView.class, ExternalIDView.VIEW_NAME, new IronIcon("icons", "perm-identity"));
+		addSecuredMenu(MainzellisteView.class, MainzellisteView.VIEW_NAME, new IronIcon("icons", "perm-identity"));
+		addSecuredMenu(PseudonymMappingView.class, PseudonymMappingView.VIEW_NAME,
+				new IronIcon("icons", "perm-identity"));
+		addSecuredMenu(MonitoringView.class, MonitoringView.VIEW_NAME, new IronIcon("icons", "history"));
+		addSecuredMenu(DicomMainView.class, DicomMainView.VIEW_NAME, new IronIcon("icons", "build"));
+		addSecuredMenu(HelpView.class, HelpView.VIEW_NAME, new IronIcon("icons", "help"));
+		// menu.addView(AboutView.class, AboutView.VIEW_NAME, new IronIcon("icons",
+		// "info"));
 
-    // Add menu to the layout
-    add(menu);
-  }
+		// Add menu to the layout
+		add(menu);
+	}
 
-  @SuppressWarnings("rawtypes")
-  @Override
-  protected void onAttach(AttachEvent attachEvent) {
-    super.onAttach(attachEvent);
-    attachEvent.getUI().addShortcutListener(SecurityUtil::signOut, Key.KEY_L, KeyModifier.CONTROL);
-  }
+	@SuppressWarnings("rawtypes")
+	@Override
+	protected void onAttach(AttachEvent attachEvent) {
+		super.onAttach(attachEvent);
+		attachEvent.getUI().addShortcutListener(SecurityUtil::signOut, Key.KEY_L, KeyModifier.CONTROL);
+	}
 
-  /**
-   * Build and add secured menus
-   *
-   * @param securedClass View to secure
-   * @param viewName Name of the view
-   * @param icon Icon to apply to the menu
-   */
-  private void addSecuredMenu(
-      Class<? extends Component> securedClass, String viewName, IronIcon icon) {
-    if (SecurityUtil.isAccessGranted(securedClass)) {
-      menu.addView(securedClass, viewName, icon);
-    }
-  }
+	/**
+	 * Build and add secured menus
+	 * @param securedClass View to secure
+	 * @param viewName Name of the view
+	 * @param icon Icon to apply to the menu
+	 */
+	private void addSecuredMenu(Class<? extends Component> securedClass, String viewName, IronIcon icon) {
+		if (SecurityUtil.isAccessGranted(securedClass)) {
+			menu.addView(securedClass, viewName, icon);
+		}
+	}
+
 }

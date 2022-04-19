@@ -25,89 +25,92 @@ import javax.persistence.Table;
 @Table(name = "secret")
 public class SecretEntity implements Serializable {
 
-  private Long id;
-  private ProjectEntity projectEntity;
-  private byte[] key;
-  private LocalDateTime creationDate;
-  private boolean active;
+	private Long id;
 
-  public SecretEntity() {}
+	private ProjectEntity projectEntity;
 
-  public SecretEntity(byte[] key) {
-    this.key = key;
-    this.creationDate = LocalDateTime.now();
-  }
+	private byte[] key;
 
-  public SecretEntity(ProjectEntity projectEntity, byte[] key) {
-    this.projectEntity = projectEntity;
-    this.key = key;
-    this.creationDate = LocalDateTime.now();
-  }
+	private LocalDateTime creationDate;
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  public Long getId() {
-    return id;
-  }
+	private boolean active;
 
-  public void setId(Long id) {
-    this.id = id;
-  }
+	public SecretEntity() {
+	}
 
-  @ManyToOne
-  @JoinColumn(name = "project_id")
-  public ProjectEntity getProjectEntity() {
-    return projectEntity;
-  }
+	public SecretEntity(byte[] key) {
+		this.key = key;
+		this.creationDate = LocalDateTime.now();
+	}
 
-  public void setProjectEntity(ProjectEntity projectEntity) {
-    this.projectEntity = projectEntity;
-  }
+	public SecretEntity(ProjectEntity projectEntity, byte[] key) {
+		this.projectEntity = projectEntity;
+		this.key = key;
+		this.creationDate = LocalDateTime.now();
+	}
 
-  public byte[] getKey() {
-    return key;
-  }
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	public Long getId() {
+		return id;
+	}
 
-  public void setKey(byte[] key) {
-    this.key = key;
-  }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-  public LocalDateTime getCreationDate() {
-    return creationDate;
-  }
+	@ManyToOne
+	@JoinColumn(name = "project_id")
+	public ProjectEntity getProjectEntity() {
+		return projectEntity;
+	}
 
-  public void setCreationDate(LocalDateTime creationDate) {
-    this.creationDate = creationDate;
-  }
+	public void setProjectEntity(ProjectEntity projectEntity) {
+		this.projectEntity = projectEntity;
+	}
 
-  public boolean isActive() {
-    return active;
-  }
+	public byte[] getKey() {
+		return key;
+	}
 
-  public void setActive(boolean active) {
-    this.active = active;
-  }
+	public void setKey(byte[] key) {
+		this.key = key;
+	}
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    SecretEntity that = (SecretEntity) o;
-    return active == that.active
-        && Objects.equals(id, that.id)
-        && Objects.equals(projectEntity, that.projectEntity)
-        && Arrays.equals(key, that.key)
-        && Objects.equals(creationDate, that.creationDate);
-  }
+	public LocalDateTime getCreationDate() {
+		return creationDate;
+	}
 
-  @Override
-  public int hashCode() {
-    int result = Objects.hash(id, projectEntity, creationDate, active);
-    result = 31 * result + Arrays.hashCode(key);
-    return result;
-  }
+	public void setCreationDate(LocalDateTime creationDate) {
+		this.creationDate = creationDate;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		SecretEntity that = (SecretEntity) o;
+		return active == that.active && Objects.equals(id, that.id) && Objects.equals(projectEntity, that.projectEntity)
+				&& Arrays.equals(key, that.key) && Objects.equals(creationDate, that.creationDate);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = Objects.hash(id, projectEntity, creationDate, active);
+		result = 31 * result + Arrays.hashCode(key);
+		return result;
+	}
+
 }

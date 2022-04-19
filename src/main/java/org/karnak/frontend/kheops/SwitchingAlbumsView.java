@@ -20,99 +20,101 @@ import org.karnak.backend.data.entity.KheopsAlbumsEntity;
 
 public class SwitchingAlbumsView extends CustomField<List<KheopsAlbumsEntity>> {
 
-  private final NewSwitchingAlbum newSwitchingAlbum;
-  private final GridSwitchingAlbums gridSwitchingAlbums;
-  private final Binder<KheopsAlbumsEntity> newSwitchingAlbumBinder;
-  private final ListDataProvider<KheopsAlbumsEntity> dataProviderSwitchingAlbums;
-  private final List<KheopsAlbumsEntity> kheopsAlbumsEntityList;
-  private final Checkbox checkboxSwitchingAlbums;
-  private final VerticalLayout layout;
+	private final NewSwitchingAlbum newSwitchingAlbum;
 
-  public SwitchingAlbumsView() {
-    setWidthFull();
-    gridSwitchingAlbums = new GridSwitchingAlbums();
-    dataProviderSwitchingAlbums =
-        (ListDataProvider<KheopsAlbumsEntity>) gridSwitchingAlbums.getDataProvider();
-    newSwitchingAlbum = new NewSwitchingAlbum();
-    newSwitchingAlbumBinder = newSwitchingAlbum.getBinder();
-    kheopsAlbumsEntityList = new ArrayList<>();
-    layout = new VerticalLayout();
-    checkboxSwitchingAlbums = new Checkbox("Switching in different KHEOPS albums");
-    add(checkboxSwitchingAlbums, layout);
-    setEventCheckBox();
-    setEventButtonAdd();
-  }
+	private final GridSwitchingAlbums gridSwitchingAlbums;
 
-  private void setEventCheckBox() {
-    checkboxSwitchingAlbums.addValueChangeListener(
-        event -> {
-          if (event.getValue() != null) {
-            addComponent(event.getValue());
-          }
-        });
-  }
+	private final Binder<KheopsAlbumsEntity> newSwitchingAlbumBinder;
 
-  private void setCheckboxSwitchingAlbumsValue() {
-    checkboxSwitchingAlbums.setValue(!dataProviderSwitchingAlbums.getItems().isEmpty());
-  }
+	private final ListDataProvider<KheopsAlbumsEntity> dataProviderSwitchingAlbums;
 
-  public void addComponent(Boolean value) {
-    if (value == true) {
-      layout.add(newSwitchingAlbum, gridSwitchingAlbums);
-    } else {
-      newSwitchingAlbum.clear();
-      layout.removeAll();
-    }
-  }
+	private final List<KheopsAlbumsEntity> kheopsAlbumsEntityList;
 
-  public VerticalLayout getComponent() {
-    return layout;
-  }
+	private final Checkbox checkboxSwitchingAlbums;
 
-  private void setEventButtonAdd() {
-    newSwitchingAlbum
-        .getButtonAdd()
-        .addClickListener(
-            event -> {
-              newSwitchingAlbum.getTextErrorConditionMsg().setText("");
-              KheopsAlbumsEntity newKheopsAlbumsEntity = new KheopsAlbumsEntity();
-              if (newSwitchingAlbumBinder.writeBeanIfValid(newKheopsAlbumsEntity)) {
-                // Add only if not already existing in table
-                if (!dataProviderSwitchingAlbums.getItems().contains(newKheopsAlbumsEntity)) {
-                  dataProviderSwitchingAlbums.getItems().add(newKheopsAlbumsEntity);
-                  dataProviderSwitchingAlbums.refreshAll();
-                  newSwitchingAlbum.clear();
-                } else {
-                  // Otherwise error message already existing
-                  newSwitchingAlbum.getTextErrorConditionMsg().setText("Already existing");
-                }
-              }
-            });
-  }
+	private final VerticalLayout layout;
 
-  @Override
-  protected List<KheopsAlbumsEntity> generateModelValue() {
-    return kheopsAlbumsEntityList;
-  }
+	public SwitchingAlbumsView() {
+		setWidthFull();
+		gridSwitchingAlbums = new GridSwitchingAlbums();
+		dataProviderSwitchingAlbums = (ListDataProvider<KheopsAlbumsEntity>) gridSwitchingAlbums.getDataProvider();
+		newSwitchingAlbum = new NewSwitchingAlbum();
+		newSwitchingAlbumBinder = newSwitchingAlbum.getBinder();
+		kheopsAlbumsEntityList = new ArrayList<>();
+		layout = new VerticalLayout();
+		checkboxSwitchingAlbums = new Checkbox("Switching in different KHEOPS albums");
+		add(checkboxSwitchingAlbums, layout);
+		setEventCheckBox();
+		setEventButtonAdd();
+	}
 
-  @Override
-  public List<KheopsAlbumsEntity> getValue() {
-    return checkboxSwitchingAlbums.getValue()
-        ? new ArrayList<>(dataProviderSwitchingAlbums.getItems())
-        : null;
-  }
+	private void setEventCheckBox() {
+		checkboxSwitchingAlbums.addValueChangeListener(event -> {
+			if (event.getValue() != null) {
+				addComponent(event.getValue());
+			}
+		});
+	}
 
-  @Override
-  public void setValue(List<KheopsAlbumsEntity> kheopsAlbumEntities) {
-    dataProviderSwitchingAlbums.getItems().removeAll(dataProviderSwitchingAlbums.getItems());
-    gridSwitchingAlbums.clearEditorEditButtons();
-    dataProviderSwitchingAlbums
-        .getItems()
-        .addAll(kheopsAlbumEntities != null ? kheopsAlbumEntities : new ArrayList<>());
-    dataProviderSwitchingAlbums.refreshAll();
-    setCheckboxSwitchingAlbumsValue();
-  }
+	private void setCheckboxSwitchingAlbumsValue() {
+		checkboxSwitchingAlbums.setValue(!dataProviderSwitchingAlbums.getItems().isEmpty());
+	}
 
-  @Override
-  protected void setPresentationValue(List<KheopsAlbumsEntity> kheopsAlbumEntities) {}
+	public void addComponent(Boolean value) {
+		if (value == true) {
+			layout.add(newSwitchingAlbum, gridSwitchingAlbums);
+		}
+		else {
+			newSwitchingAlbum.clear();
+			layout.removeAll();
+		}
+	}
+
+	public VerticalLayout getComponent() {
+		return layout;
+	}
+
+	private void setEventButtonAdd() {
+		newSwitchingAlbum.getButtonAdd().addClickListener(event -> {
+			newSwitchingAlbum.getTextErrorConditionMsg().setText("");
+			KheopsAlbumsEntity newKheopsAlbumsEntity = new KheopsAlbumsEntity();
+			if (newSwitchingAlbumBinder.writeBeanIfValid(newKheopsAlbumsEntity)) {
+				// Add only if not already existing in table
+				if (!dataProviderSwitchingAlbums.getItems().contains(newKheopsAlbumsEntity)) {
+					dataProviderSwitchingAlbums.getItems().add(newKheopsAlbumsEntity);
+					dataProviderSwitchingAlbums.refreshAll();
+					newSwitchingAlbum.clear();
+				}
+				else {
+					// Otherwise error message already existing
+					newSwitchingAlbum.getTextErrorConditionMsg().setText("Already existing");
+				}
+			}
+		});
+	}
+
+	@Override
+	protected List<KheopsAlbumsEntity> generateModelValue() {
+		return kheopsAlbumsEntityList;
+	}
+
+	@Override
+	public List<KheopsAlbumsEntity> getValue() {
+		return checkboxSwitchingAlbums.getValue() ? new ArrayList<>(dataProviderSwitchingAlbums.getItems()) : null;
+	}
+
+	@Override
+	public void setValue(List<KheopsAlbumsEntity> kheopsAlbumEntities) {
+		dataProviderSwitchingAlbums.getItems().removeAll(dataProviderSwitchingAlbums.getItems());
+		gridSwitchingAlbums.clearEditorEditButtons();
+		dataProviderSwitchingAlbums.getItems()
+				.addAll(kheopsAlbumEntities != null ? kheopsAlbumEntities : new ArrayList<>());
+		dataProviderSwitchingAlbums.refreshAll();
+		setCheckboxSwitchingAlbumsValue();
+	}
+
+	@Override
+	protected void setPresentationValue(List<KheopsAlbumsEntity> kheopsAlbumEntities) {
+	}
+
 }

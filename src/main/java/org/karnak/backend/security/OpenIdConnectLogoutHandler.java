@@ -23,43 +23,39 @@ import org.springframework.web.util.UriComponentsBuilder;
 /** Handle IDP logout */
 public class OpenIdConnectLogoutHandler extends SecurityContextLogoutHandler {
 
-  private static final Logger logger = LoggerFactory.getLogger(OpenIdConnectLogoutHandler.class);
+	private static final Logger logger = LoggerFactory.getLogger(OpenIdConnectLogoutHandler.class);
 
-  private static final String END_SESSION_ENDPOINT = "/protocol/openid-connect/logout";
-  private static final String ID_TOKEN_HINT = "id_token_hint";
+	private static final String END_SESSION_ENDPOINT = "/protocol/openid-connect/logout";
 
-  @Override
-  public void logout(
-      HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-    // Security context logout
-    super.logout(request, response, authentication);
+	private static final String ID_TOKEN_HINT = "id_token_hint";
 
-    if (authentication != null && authentication.getPrincipal() instanceof OidcUser) {
-      // Idp logout
-      propagateLogoutToIdp((OidcUser) authentication.getPrincipal());
-    }
-  }
+	@Override
+	public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+		// Security context logout
+		super.logout(request, response, authentication);
 
-  /**
-   * Propagate logout to IDP
-   *
-   * @param user OpenId Connect user
-   */
-  private void propagateLogoutToIdp(OidcUser user) {
-    RestTemplate restTemplate = new RestTemplate();
+		if (authentication != null && authentication.getPrincipal() instanceof OidcUser) {
+			// Idp logout
+			propagateLogoutToIdp((OidcUser) authentication.getPrincipal());
+		}
+	}
 
-    // Build logout URI
-    String endSessionEndpoint = user.getIssuer() + END_SESSION_ENDPOINT;
-    UriComponentsBuilder builder =
-        UriComponentsBuilder.fromUriString(endSessionEndpoint)
-            .queryParam(ID_TOKEN_HINT, user.getIdToken().getTokenValue());
+	/**
+	 * Propagate logout to IDP
+	 * @param user OpenId Connect user
+	 */
+	private void propagateLogoutToIdp(OidcUser user) {
+		RestTemplate restTemplate = new RestTemplate();
 
-    // Call IDP logout endpoint
-    ResponseEntity<String> logoutResponse =
-        restTemplate.getForEntity(builder.toUriString(), String.class);
-    logger.info(
-        logoutResponse.getStatusCode().is2xxSuccessful()
-            ? "Successful IDP logout"
-            : "Could not propagate logout to IDP");
-  }
+		// Build logout URI
+		String endSessionEndpoint = user.getIssuer() + END_SESSION_ENDPOINT;
+		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(endSessionEndpoint).queryParam(ID_TOKEN_HINT,
+				user.getIdToken().getTokenValue());
+
+		// Call IDP logout endpoint
+		ResponseEntity<String> logoutResponse = restTemplate.getForEntity(builder.toUriString(), String.class);
+		logger.info(logoutResponse.getStatusCode().is2xxSuccessful() ? "Successful IDP logout"
+				: "Could not propagate logout to IDP");
+	}
+
 }

@@ -18,15 +18,16 @@ import org.springframework.security.access.annotation.Secured;
 
 @Route(value = "about", layout = MainLayout.class)
 @PageTitle("KARNAK - About")
-@Secured({"ROLE_admin"})
+@Secured({ "ROLE_admin" })
 @SuppressWarnings("serial")
 public class AboutView extends VerticalLayout {
 
-  public static final String VIEW_NAME = "About";
+	public static final String VIEW_NAME = "About";
 
-  public AboutView() {
-    add(new H2("About KARNAK"));
+	public AboutView() {
+		add(new H2("About KARNAK"));
 
-    setSizeFull();
-  }
+		setSizeFull();
+	}
+
 }

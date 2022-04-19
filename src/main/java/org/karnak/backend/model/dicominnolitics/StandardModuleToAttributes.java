@@ -18,32 +18,34 @@ import java.nio.charset.StandardCharsets;
 
 public class StandardModuleToAttributes {
 
-  private static final String moduleToAttributesFileName = "module_to_attributes.json";
-  private static jsonModuleToAttribute[] moduleToAttributes;
+	private static final String moduleToAttributesFileName = "module_to_attributes.json";
 
-  public StandardModuleToAttributes() {
-    URL url = this.getClass().getResource(moduleToAttributesFileName);
-    moduleToAttributes = read(url);
-  }
+	private static jsonModuleToAttribute[] moduleToAttributes;
 
-  public static jsonModuleToAttribute[] readJsonModuleToAttributes() {
-    URL url = StandardModuleToAttributes.class.getResource(moduleToAttributesFileName);
-    return read(url);
-  }
+	public StandardModuleToAttributes() {
+		URL url = this.getClass().getResource(moduleToAttributesFileName);
+		moduleToAttributes = read(url);
+	}
 
-  private static jsonModuleToAttribute[] read(URL url) {
-    Gson gson = new Gson();
-    try {
-      JsonReader reader =
-          new JsonReader(new InputStreamReader(url.openStream(), StandardCharsets.UTF_8));
-      return gson.fromJson(reader, jsonModuleToAttribute[].class);
-    } catch (Exception e) {
-      throw new JsonParseException(
-          String.format("Cannot parse json %s correctly", moduleToAttributesFileName), e);
-    }
-  }
+	public static jsonModuleToAttribute[] readJsonModuleToAttributes() {
+		URL url = StandardModuleToAttributes.class.getResource(moduleToAttributesFileName);
+		return read(url);
+	}
 
-  public jsonModuleToAttribute[] getModuleToAttributes() {
-    return moduleToAttributes;
-  }
+	private static jsonModuleToAttribute[] read(URL url) {
+		Gson gson = new Gson();
+		try {
+			JsonReader reader = new JsonReader(new InputStreamReader(url.openStream(), StandardCharsets.UTF_8));
+			return gson.fromJson(reader, jsonModuleToAttribute[].class);
+		}
+		catch (Exception e) {
+			throw new JsonParseException(String.format("Cannot parse json %s correctly", moduleToAttributesFileName),
+					e);
+		}
+	}
+
+	public jsonModuleToAttribute[] getModuleToAttributes() {
+		return moduleToAttributes;
+	}
+
 }

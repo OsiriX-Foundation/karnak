@@ -31,111 +31,107 @@ import org.springframework.data.domain.Pageable;
 
 class TransferMonitoringServiceTest {
 
-  // Repositories
-  private final TransferStatusRepo transferStatusRepoMock = Mockito.mock(TransferStatusRepo.class);
+	// Repositories
+	private final TransferStatusRepo transferStatusRepoMock = Mockito.mock(TransferStatusRepo.class);
 
-  // Service
-  private TransferMonitoringService transferMonitoringService;
+	// Service
+	private TransferMonitoringService transferMonitoringService;
 
-  @BeforeEach
-  void setUp() {
-    // Mock repo
-    TransferStatusEntity transferStatusEntity = new TransferStatusEntity();
-    transferStatusEntity.setStudyUidOriginal("studyUidOriginal");
-    Page<TransferStatusEntity> transferStatusEntitiesPage =
-        new PageImpl<>(Collections.singletonList(transferStatusEntity), PageRequest.of(0, 3), 3);
-    when(transferStatusRepoMock.findAll(any(Pageable.class)))
-        .thenReturn(transferStatusEntitiesPage);
-    when(transferStatusRepoMock.findAll(
-            any(TransferStatusSpecification.class), any(Pageable.class)))
-        .thenReturn(transferStatusEntitiesPage);
-    when(transferStatusRepoMock.count()).thenReturn(1L);
-    when(transferStatusRepoMock.count(any(TransferStatusSpecification.class))).thenReturn(2L);
+	@BeforeEach
+	void setUp() {
+		// Mock repo
+		TransferStatusEntity transferStatusEntity = new TransferStatusEntity();
+		transferStatusEntity.setStudyUidOriginal("studyUidOriginal");
+		Page<TransferStatusEntity> transferStatusEntitiesPage = new PageImpl<>(
+				Collections.singletonList(transferStatusEntity), PageRequest.of(0, 3), 3);
+		when(transferStatusRepoMock.findAll(any(Pageable.class))).thenReturn(transferStatusEntitiesPage);
+		when(transferStatusRepoMock.findAll(any(TransferStatusSpecification.class), any(Pageable.class)))
+				.thenReturn(transferStatusEntitiesPage);
+		when(transferStatusRepoMock.count()).thenReturn(1L);
+		when(transferStatusRepoMock.count(any(TransferStatusSpecification.class))).thenReturn(2L);
 
-    // Build mocked service
-    transferMonitoringService = new TransferMonitoringService(transferStatusRepoMock);
-  }
+		// Build mocked service
+		transferMonitoringService = new TransferMonitoringService(transferStatusRepoMock);
+	}
 
-  @Test
-  void shouldSaveEventReceived() {
-    // Init data
-    TransferStatusEntity transferStatusEntity = new TransferStatusEntity();
-    TransferMonitoringEvent transferMonitoringEvent =
-        new TransferMonitoringEvent(transferStatusEntity);
+	@Test
+	void shouldSaveEventReceived() {
+		// Init data
+		TransferStatusEntity transferStatusEntity = new TransferStatusEntity();
+		TransferMonitoringEvent transferMonitoringEvent = new TransferMonitoringEvent(transferStatusEntity);
 
-    // Call service
-    transferMonitoringService.onTransferMonitoringEvent(transferMonitoringEvent);
+		// Call service
+		transferMonitoringService.onTransferMonitoringEvent(transferMonitoringEvent);
 
-    // Test result
-    Mockito.verify(transferStatusRepoMock, Mockito.times(1))
-        .save(Mockito.any(TransferStatusEntity.class));
-  }
+		// Test result
+		Mockito.verify(transferStatusRepoMock, Mockito.times(1)).save(Mockito.any(TransferStatusEntity.class));
+	}
 
-  @Test
-  void shouldRetrieveTransferStatusNoFilter() {
-    // Init data
-    TransferStatusFilter filter = new TransferStatusFilter();
-    TransferStatusEntity transferStatusEntity = new TransferStatusEntity();
-    Page<TransferStatusEntity> pageable =
-        new PageImpl<>(Collections.singletonList(transferStatusEntity), PageRequest.of(0, 3), 3);
+	@Test
+	void shouldRetrieveTransferStatusNoFilter() {
+		// Init data
+		TransferStatusFilter filter = new TransferStatusFilter();
+		TransferStatusEntity transferStatusEntity = new TransferStatusEntity();
+		Page<TransferStatusEntity> pageable = new PageImpl<>(Collections.singletonList(transferStatusEntity),
+				PageRequest.of(0, 3), 3);
 
-    // Call service
-    Page<TransferStatusEntity> transferStatusEntities =
-        transferMonitoringService.retrieveTransferStatusPageable(filter, pageable.getPageable());
+		// Call service
+		Page<TransferStatusEntity> transferStatusEntities = transferMonitoringService
+				.retrieveTransferStatusPageable(filter, pageable.getPageable());
 
-    // Test result
-    assertNotNull(transferStatusEntities);
-    assertFalse(transferStatusEntities.toList().isEmpty());
-    assertEquals("studyUidOriginal", transferStatusEntities.toList().get(0).getStudyUidOriginal());
-    Mockito.verify(transferStatusRepoMock, Mockito.times(1)).findAll(Mockito.any(Pageable.class));
-  }
+		// Test result
+		assertNotNull(transferStatusEntities);
+		assertFalse(transferStatusEntities.toList().isEmpty());
+		assertEquals("studyUidOriginal", transferStatusEntities.toList().get(0).getStudyUidOriginal());
+		Mockito.verify(transferStatusRepoMock, Mockito.times(1)).findAll(Mockito.any(Pageable.class));
+	}
 
-  @Test
-  void shouldRetrieveTransferStatusFilter() {
-    // Init data
-    TransferStatusFilter filter = new TransferStatusFilter();
-    filter.setStudyUid("studyUid");
-    TransferStatusEntity transferStatusEntity = new TransferStatusEntity();
-    Page<TransferStatusEntity> pageable =
-        new PageImpl<>(Collections.singletonList(transferStatusEntity), PageRequest.of(0, 3), 3);
+	@Test
+	void shouldRetrieveTransferStatusFilter() {
+		// Init data
+		TransferStatusFilter filter = new TransferStatusFilter();
+		filter.setStudyUid("studyUid");
+		TransferStatusEntity transferStatusEntity = new TransferStatusEntity();
+		Page<TransferStatusEntity> pageable = new PageImpl<>(Collections.singletonList(transferStatusEntity),
+				PageRequest.of(0, 3), 3);
 
-    // Call service
-    Page<TransferStatusEntity> transferStatusEntities =
-        transferMonitoringService.retrieveTransferStatusPageable(filter, pageable.getPageable());
+		// Call service
+		Page<TransferStatusEntity> transferStatusEntities = transferMonitoringService
+				.retrieveTransferStatusPageable(filter, pageable.getPageable());
 
-    // Test result
-    assertNotNull(transferStatusEntities);
-    assertFalse(transferStatusEntities.toList().isEmpty());
-    assertEquals("studyUidOriginal", transferStatusEntities.toList().get(0).getStudyUidOriginal());
-    Mockito.verify(transferStatusRepoMock, Mockito.times(1))
-        .findAll(Mockito.any(TransferStatusSpecification.class), Mockito.any(Pageable.class));
-  }
+		// Test result
+		assertNotNull(transferStatusEntities);
+		assertFalse(transferStatusEntities.toList().isEmpty());
+		assertEquals("studyUidOriginal", transferStatusEntities.toList().get(0).getStudyUidOriginal());
+		Mockito.verify(transferStatusRepoMock, Mockito.times(1)).findAll(Mockito.any(TransferStatusSpecification.class),
+				Mockito.any(Pageable.class));
+	}
 
-  @Test
-  void shouldCountTransferStatusNoFilter() {
-    // Init data
-    TransferStatusFilter filter = new TransferStatusFilter();
+	@Test
+	void shouldCountTransferStatusNoFilter() {
+		// Init data
+		TransferStatusFilter filter = new TransferStatusFilter();
 
-    // Call service
-    int count = transferMonitoringService.countTransferStatus(filter);
+		// Call service
+		int count = transferMonitoringService.countTransferStatus(filter);
 
-    // Test result
-    assertEquals(1L, count);
-    Mockito.verify(transferStatusRepoMock, Mockito.times(1)).count();
-  }
+		// Test result
+		assertEquals(1L, count);
+		Mockito.verify(transferStatusRepoMock, Mockito.times(1)).count();
+	}
 
-  @Test
-  void shouldCountTransferStatusFilter() {
-    // Init data
-    TransferStatusFilter filter = new TransferStatusFilter();
-    filter.setStudyUid("studyUid");
+	@Test
+	void shouldCountTransferStatusFilter() {
+		// Init data
+		TransferStatusFilter filter = new TransferStatusFilter();
+		filter.setStudyUid("studyUid");
 
-    // Call service
-    int count = transferMonitoringService.countTransferStatus(filter);
+		// Call service
+		int count = transferMonitoringService.countTransferStatus(filter);
 
-    // Test result
-    assertEquals(2L, count);
-    Mockito.verify(transferStatusRepoMock, Mockito.times(1))
-        .count(Mockito.any(TransferStatusSpecification.class));
-  }
+		// Test result
+		assertEquals(2L, count);
+		Mockito.verify(transferStatusRepoMock, Mockito.times(1)).count(Mockito.any(TransferStatusSpecification.class));
+	}
+
 }

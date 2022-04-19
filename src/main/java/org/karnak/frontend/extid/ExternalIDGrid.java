@@ -37,362 +37,328 @@ import org.vaadin.klaudeta.PaginatedGrid;
 
 public class ExternalIDGrid extends PaginatedGrid<CachedPatient> {
 
-  private static final String ERROR_MESSAGE_PATIENT = "Length must be between 1 and 50.";
-  private static final String LABEL_SAVE = "Save";
-  private static final String LABEL_CANCEL = "Cancel";
-  private static final String LABEL_FILTER = "Filter";
-  private final Binder<CachedPatient> binder;
-  private final List<CachedPatient> patientList;
-  private transient PatientClient externalIDCache;
-  private transient ProjectEntity projectEntity;
-  private Button deletePatientButton;
-  private Button saveEditPatientButton;
-  private Button cancelEditPatientButton;
-  private Editor<CachedPatient> editor;
-  private Collection<Button> editButtons;
-  private TextField externalIdField;
-  private TextField patientIdField;
-  private TextField patientFirstNameField;
-  private TextField patientLastNameField;
-  private TextField issuerOfPatientIdField;
-  private Grid.Column<CachedPatient> deleteColumn;
+	private static final String ERROR_MESSAGE_PATIENT = "Length must be between 1 and 50.";
 
-  private Grid.Column<CachedPatient> extidColumn;
-  private Grid.Column<CachedPatient> patientIdColumn;
-  private Grid.Column<CachedPatient> patientFirstNameColumn;
-  private Grid.Column<CachedPatient> patientLastNameColumn;
-  private Grid.Column<CachedPatient> issuerOfPatientIDColumn;
+	private static final String LABEL_SAVE = "Save";
 
-  private TextField patientIdFilter;
-  private TextField extidFilter;
-  private TextField patientFirstNameFilter;
-  private TextField patientLastNameFilter;
-  private TextField issuerOfPatientIDFilter;
+	private static final String LABEL_CANCEL = "Cancel";
 
-  private List<CachedPatient> patientsListInCache = new ArrayList<>();
-  private transient Collection<PseudonymPatient> duplicatePatientsList = new ArrayList<>();
+	private static final String LABEL_FILTER = "Filter";
 
-  public ExternalIDGrid() {
-    binder = new Binder<>(CachedPatient.class);
-    patientList = new ArrayList<>();
-    this.externalIDCache = AppConfig.getInstance().getExternalIDCache();
+	private final Binder<CachedPatient> binder;
 
-    setPageSize(10);
-    setPaginatorSize(2);
+	private final List<CachedPatient> patientList;
 
-    setSizeFull();
-    getElement()
-        .addEventListener("keyup", event -> editor.cancel())
-        .setFilter("event.key === 'Escape' || event.key === 'Esc'");
-    setHeightByRows(true);
-    setItems(patientList);
-    setElements();
-    setBinder();
-    readAllCacheValue();
-    editor.addOpenListener(
-        e -> {
-          editButtons.stream().forEach(button -> button.setEnabled(!editor.isOpen()));
-          deleteColumn.setVisible(false);
-        });
+	private transient PatientClient externalIDCache;
 
-    editor.addCloseListener(
-        e -> {
-          editButtons.stream().forEach(button -> button.setEnabled(!editor.isOpen()));
-          deleteColumn.setVisible(true);
-        });
+	private transient ProjectEntity projectEntity;
 
-    saveEditPatientButton.addClickListener(
-        e -> {
-          final CachedPatient patientEdit =
-              new CachedPatient(
-                  externalIdField.getValue(),
-                  patientIdField.getValue(),
-                  patientFirstNameField.getValue(),
-                  patientLastNameField.getValue(),
-                  issuerOfPatientIdField.getValue(),
-                  projectEntity.getId());
-          externalIDCache.remove(
-              PatientClientUtil.generateKey(editor.getItem(), projectEntity.getId()));
-          externalIDCache.put(
-              PatientClientUtil.generateKey(patientEdit, projectEntity.getId()), patientEdit);
-          editor.save();
-        });
-    saveEditPatientButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+	private Button deletePatientButton;
 
-    cancelEditPatientButton.addClickListener(e -> editor.cancel());
-  }
+	private Button saveEditPatientButton;
 
-  private void setElements() {
-    extidColumn =
-        addColumn(CachedPatient::getPseudonym).setHeader("External Pseudonym").setSortable(true);
-    patientIdColumn =
-        addColumn(CachedPatient::getPatientId).setHeader("Patient ID").setSortable(true);
-    patientFirstNameColumn =
-        addColumn(CachedPatient::getPatientFirstName)
-            .setHeader("Patient first name")
-            .setSortable(true);
-    patientLastNameColumn =
-        addColumn(CachedPatient::getPatientLastName)
-            .setHeader("Patient last name")
-            .setSortable(true);
-    issuerOfPatientIDColumn =
-        addColumn(CachedPatient::getIssuerOfPatientId)
-            .setHeader("Issuer of patient ID")
-            .setSortable(true);
-    Grid.Column<CachedPatient> editorColumn =
-        addComponentColumn(
-            patient -> {
-              Button edit = new Button("Edit");
-              edit.addClassName("edit");
-              edit.addClickListener(
-                  e -> {
-                    editor.editItem(patient);
-                    externalIdField.focus();
-                  });
-              edit.setEnabled(!editor.isOpen());
-              editButtons.add(edit);
-              return edit;
-            });
+	private Button cancelEditPatientButton;
 
-    addFilterElements();
+	private Editor<CachedPatient> editor;
 
-    editButtons = Collections.newSetFromMap(new WeakHashMap<>());
-    editor = getEditor();
-    editor.setBinder(binder);
-    editor.setBuffered(true);
+	private Collection<Button> editButtons;
 
-    externalIdField = new TextField();
-    patientIdField = new TextField();
-    patientFirstNameField = new TextField();
-    patientLastNameField = new TextField();
-    issuerOfPatientIdField = new TextField();
+	private TextField externalIdField;
 
-    extidColumn.setEditorComponent(externalIdField);
-    patientIdColumn.setEditorComponent(patientIdField);
-    patientFirstNameColumn.setEditorComponent(patientFirstNameField);
-    patientLastNameColumn.setEditorComponent(patientLastNameField);
-    issuerOfPatientIDColumn.setEditorComponent(issuerOfPatientIdField);
+	private TextField patientIdField;
 
-    deleteColumn =
-        addComponentColumn(
-            patient -> {
-              deletePatientButton = new Button("Delete");
-              deletePatientButton.addThemeVariants(
-                  ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
-              deletePatientButton.addClickListener(
-                  e -> {
-                    externalIDCache.remove(
-                        PatientClientUtil.generateKey(patient, projectEntity.getId()));
-                    readAllCacheValue();
-                  });
-              return deletePatientButton;
-            });
+	private TextField patientFirstNameField;
 
-    saveEditPatientButton = new Button(LABEL_SAVE);
-    cancelEditPatientButton = new Button(LABEL_CANCEL);
+	private TextField patientLastNameField;
 
-    Div buttons = new Div(saveEditPatientButton, cancelEditPatientButton);
-    editorColumn.setEditorComponent(buttons);
-  }
+	private TextField issuerOfPatientIdField;
 
-  public void addFilterElements() {
-    HeaderRow filterRow = appendHeaderRow();
+	private Grid.Column<CachedPatient> deleteColumn;
 
-    extidFilter = new TextField();
+	private Grid.Column<CachedPatient> extidColumn;
 
-    extidFilter.addValueChangeListener(event -> checkAndUpdateAllFilters());
-    extidFilter.setValueChangeMode(ValueChangeMode.EAGER);
-    filterRow.getCell(extidColumn).setComponent(extidFilter);
-    extidFilter.setSizeFull();
-    extidFilter.setPlaceholder(LABEL_FILTER);
+	private Grid.Column<CachedPatient> patientIdColumn;
 
-    patientIdFilter = new TextField();
-    patientIdFilter.addValueChangeListener(event -> checkAndUpdateAllFilters());
-    patientIdFilter.setValueChangeMode(ValueChangeMode.EAGER);
-    filterRow.getCell(patientIdColumn).setComponent(patientIdFilter);
-    patientIdFilter.setSizeFull();
-    patientIdFilter.setPlaceholder(LABEL_FILTER);
+	private Grid.Column<CachedPatient> patientFirstNameColumn;
 
-    patientFirstNameFilter = new TextField();
-    patientFirstNameFilter.addValueChangeListener(event -> checkAndUpdateAllFilters());
-    patientFirstNameFilter.setValueChangeMode(ValueChangeMode.EAGER);
-    filterRow.getCell(patientFirstNameColumn).setComponent(patientFirstNameFilter);
-    patientFirstNameFilter.setSizeFull();
-    patientFirstNameFilter.setPlaceholder(LABEL_FILTER);
+	private Grid.Column<CachedPatient> patientLastNameColumn;
 
-    patientLastNameFilter = new TextField();
-    patientLastNameFilter.addValueChangeListener(event -> checkAndUpdateAllFilters());
-    patientLastNameFilter.setValueChangeMode(ValueChangeMode.EAGER);
-    filterRow.getCell(patientLastNameColumn).setComponent(patientLastNameFilter);
-    patientLastNameFilter.setSizeFull();
-    patientLastNameFilter.setPlaceholder(LABEL_FILTER);
+	private Grid.Column<CachedPatient> issuerOfPatientIDColumn;
 
-    issuerOfPatientIDFilter = new TextField();
-    issuerOfPatientIDFilter.addValueChangeListener(event -> checkAndUpdateAllFilters());
-    issuerOfPatientIDFilter.setValueChangeMode(ValueChangeMode.EAGER);
-    filterRow.getCell(issuerOfPatientIDColumn).setComponent(issuerOfPatientIDFilter);
-    issuerOfPatientIDFilter.setSizeFull();
-    issuerOfPatientIDFilter.setPlaceholder(LABEL_FILTER);
-  }
+	private TextField patientIdFilter;
 
-  public Div setBinder() {
-    Div validationStatus = new Div();
-    validationStatus.setId("validation");
-    validationStatus.getStyle().set("color", "var(--theme-color, red)");
-    binder
-        .forField(externalIdField)
-        .withValidator(StringUtils::isNotBlank, "External Pseudonym is empty")
-        .withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
-        .withStatusLabel(validationStatus)
-        .bind("pseudonym");
+	private TextField extidFilter;
 
-    binder
-        .forField(patientIdField)
-        .withValidator(StringUtils::isNotBlank, "Patient ID is empty")
-        .withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
-        .withStatusLabel(validationStatus)
-        .bind("patientId");
+	private TextField patientFirstNameFilter;
 
-    binder
-        .forField(patientFirstNameField)
-        .withValidator(StringUtils::isNotBlank, "Patient firstname is empty")
-        .withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
-        .bind("patientFirstName");
+	private TextField patientLastNameFilter;
 
-    binder
-        .forField(patientLastNameField)
-        .withValidator(StringUtils::isNotBlank, "Patient last name is empty")
-        .withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
-        .bind("patientLastName");
+	private TextField issuerOfPatientIDFilter;
 
-    binder
-        .forField(issuerOfPatientIdField)
-        .withValidator(new StringLengthValidator("Length must be between 0 and 50.", 0, 50))
-        .withStatusLabel(validationStatus)
-        .bind("issuerOfPatientId");
+	private List<CachedPatient> patientsListInCache = new ArrayList<>();
 
-    return validationStatus;
-  }
+	private transient Collection<PseudonymPatient> duplicatePatientsList = new ArrayList<>();
 
-  public void readAllCacheValue() {
-    if (externalIDCache != null) {
-      Collection<PseudonymPatient> pseudonymPatients = externalIDCache.getAll();
-      patientsListInCache = new ArrayList<>();
-      for (Iterator<PseudonymPatient> iterator = pseudonymPatients.iterator();
-          iterator.hasNext(); ) {
-        final CachedPatient patient = (CachedPatient) iterator.next();
-        if (projectEntity != null
-            && patient.getProjectID() != null
-            && patient.getProjectID().equals(projectEntity.getId())) {
-          patientsListInCache.add(patient);
-        }
-      }
-      setItems(patientsListInCache);
-    }
-    refreshPaginator();
-  }
+	public ExternalIDGrid() {
+		binder = new Binder<>(CachedPatient.class);
+		patientList = new ArrayList<>();
+		this.externalIDCache = AppConfig.getInstance().getExternalIDCache();
 
-  public void addPatient(CachedPatient newPatient) {
-    if (!patientExist(newPatient)) {
-      externalIDCache.put(
-          PatientClientUtil.generateKey(newPatient, projectEntity.getId()), newPatient);
-    }
-  }
+		setPageSize(10);
+		setPaginatorSize(2);
 
-  public void addPatientList(List<CachedPatient> patientList) {
-    patientList.forEach(this::addPatient);
-    readAllCacheValue();
-  }
+		setSizeFull();
+		getElement().addEventListener("keyup", event -> editor.cancel())
+				.setFilter("event.key === 'Escape' || event.key === 'Esc'");
+		setHeightByRows(true);
+		setItems(patientList);
+		setElements();
+		setBinder();
+		readAllCacheValue();
+		editor.addOpenListener(e -> {
+			editButtons.stream().forEach(button -> button.setEnabled(!editor.isOpen()));
+			deleteColumn.setVisible(false);
+		});
 
-  public boolean patientExist(PseudonymPatient patient) {
-    final PseudonymPatient duplicatePatient =
-        externalIDCache.get(PatientClientUtil.generateKey(patient, projectEntity.getId()));
-    if (duplicatePatient != null) {
-      duplicatePatientsList.add(duplicatePatient);
-      return true;
-    }
-    return false;
-  }
+		editor.addCloseListener(e -> {
+			editButtons.stream().forEach(button -> button.setEnabled(!editor.isOpen()));
+			deleteColumn.setVisible(true);
+		});
 
-  public void checkAndUpdateAllFilters() {
-    List<CachedPatient> filterList = patientsListInCache.stream().collect(Collectors.toList());
+		saveEditPatientButton.addClickListener(e -> {
+			final CachedPatient patientEdit = new CachedPatient(externalIdField.getValue(), patientIdField.getValue(),
+					patientFirstNameField.getValue(), patientLastNameField.getValue(),
+					issuerOfPatientIdField.getValue(), projectEntity.getId());
+			externalIDCache.remove(PatientClientUtil.generateKey(editor.getItem(), projectEntity.getId()));
+			externalIDCache.put(PatientClientUtil.generateKey(patientEdit, projectEntity.getId()), patientEdit);
+			editor.save();
+		});
+		saveEditPatientButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
-    if (!extidFilter.getValue().equals("")) {
-      filterList =
-          filterList.stream()
-              .filter(
-                  cachedPatient -> cachedPatient.getPseudonym().contains(extidFilter.getValue()))
-              .collect(Collectors.toList());
-    }
+		cancelEditPatientButton.addClickListener(e -> editor.cancel());
+	}
 
-    if (!patientIdFilter.getValue().equals("")) {
-      filterList =
-          filterList.stream()
-              .filter(
-                  cachedPatient ->
-                      cachedPatient.getPatientId().contains(patientIdFilter.getValue()))
-              .collect(Collectors.toList());
-    }
+	private void setElements() {
+		extidColumn = addColumn(CachedPatient::getPseudonym).setHeader("External Pseudonym").setSortable(true);
+		patientIdColumn = addColumn(CachedPatient::getPatientId).setHeader("Patient ID").setSortable(true);
+		patientFirstNameColumn = addColumn(CachedPatient::getPatientFirstName).setHeader("Patient first name")
+				.setSortable(true);
+		patientLastNameColumn = addColumn(CachedPatient::getPatientLastName).setHeader("Patient last name")
+				.setSortable(true);
+		issuerOfPatientIDColumn = addColumn(CachedPatient::getIssuerOfPatientId).setHeader("Issuer of patient ID")
+				.setSortable(true);
+		Grid.Column<CachedPatient> editorColumn = addComponentColumn(patient -> {
+			Button edit = new Button("Edit");
+			edit.addClassName("edit");
+			edit.addClickListener(e -> {
+				editor.editItem(patient);
+				externalIdField.focus();
+			});
+			edit.setEnabled(!editor.isOpen());
+			editButtons.add(edit);
+			return edit;
+		});
 
-    if (!patientFirstNameFilter.getValue().equals("")) {
-      filterList =
-          filterList.stream()
-              .filter(
-                  cachedPatient ->
-                      cachedPatient
-                          .getPatientFirstName()
-                          .contains(patientFirstNameFilter.getValue()))
-              .collect(Collectors.toList());
-    }
+		addFilterElements();
 
-    if (!patientLastNameFilter.getValue().equals("")) {
-      filterList =
-          filterList.stream()
-              .filter(
-                  cachedPatient ->
-                      cachedPatient.getPatientLastName().contains(patientLastNameFilter.getValue()))
-              .collect(Collectors.toList());
-    }
+		editButtons = Collections.newSetFromMap(new WeakHashMap<>());
+		editor = getEditor();
+		editor.setBinder(binder);
+		editor.setBuffered(true);
 
-    if (!issuerOfPatientIDFilter.getValue().equals("")) {
-      filterList =
-          filterList.stream()
-              .filter(
-                  cachedPatient ->
-                      cachedPatient
-                          .getIssuerOfPatientId()
-                          .contains(issuerOfPatientIDFilter.getValue()))
-              .collect(Collectors.toList());
-    }
+		externalIdField = new TextField();
+		patientIdField = new TextField();
+		patientFirstNameField = new TextField();
+		patientLastNameField = new TextField();
+		issuerOfPatientIdField = new TextField();
 
-    setItems(filterList);
-  }
+		extidColumn.setEditorComponent(externalIdField);
+		patientIdColumn.setEditorComponent(patientIdField);
+		patientFirstNameColumn.setEditorComponent(patientFirstNameField);
+		patientLastNameColumn.setEditorComponent(patientLastNameField);
+		issuerOfPatientIDColumn.setEditorComponent(issuerOfPatientIdField);
 
-  public Collection<PseudonymPatient> getDuplicatePatientsList() {
-    return duplicatePatientsList;
-  }
+		deleteColumn = addComponentColumn(patient -> {
+			deletePatientButton = new Button("Delete");
+			deletePatientButton.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
+			deletePatientButton.addClickListener(e -> {
+				externalIDCache.remove(PatientClientUtil.generateKey(patient, projectEntity.getId()));
+				readAllCacheValue();
+			});
+			return deletePatientButton;
+		});
 
-  public void setDuplicatePatientsList(Collection<PseudonymPatient> duplicatePatientsList) {
-    this.duplicatePatientsList = duplicatePatientsList;
-  }
+		saveEditPatientButton = new Button(LABEL_SAVE);
+		cancelEditPatientButton = new Button(LABEL_CANCEL);
 
-  public ProjectEntity getProjectEntity() {
-    return projectEntity;
-  }
+		Div buttons = new Div(saveEditPatientButton, cancelEditPatientButton);
+		editorColumn.setEditorComponent(buttons);
+	}
 
-  public void setProjectEntity(ProjectEntity projectEntity) {
-    this.projectEntity = projectEntity;
-  }
+	public void addFilterElements() {
+		HeaderRow filterRow = appendHeaderRow();
 
-  public PatientClient getExternalIDCache() {
-    return externalIDCache;
-  }
+		extidFilter = new TextField();
 
-  public void setExternalIDCache(PatientClient externalIDCache) {
-    this.externalIDCache = externalIDCache;
-  }
+		extidFilter.addValueChangeListener(event -> checkAndUpdateAllFilters());
+		extidFilter.setValueChangeMode(ValueChangeMode.EAGER);
+		filterRow.getCell(extidColumn).setComponent(extidFilter);
+		extidFilter.setSizeFull();
+		extidFilter.setPlaceholder(LABEL_FILTER);
 
-  public List<CachedPatient> getPatientsListInCache() {
-    return patientsListInCache;
-  }
+		patientIdFilter = new TextField();
+		patientIdFilter.addValueChangeListener(event -> checkAndUpdateAllFilters());
+		patientIdFilter.setValueChangeMode(ValueChangeMode.EAGER);
+		filterRow.getCell(patientIdColumn).setComponent(patientIdFilter);
+		patientIdFilter.setSizeFull();
+		patientIdFilter.setPlaceholder(LABEL_FILTER);
+
+		patientFirstNameFilter = new TextField();
+		patientFirstNameFilter.addValueChangeListener(event -> checkAndUpdateAllFilters());
+		patientFirstNameFilter.setValueChangeMode(ValueChangeMode.EAGER);
+		filterRow.getCell(patientFirstNameColumn).setComponent(patientFirstNameFilter);
+		patientFirstNameFilter.setSizeFull();
+		patientFirstNameFilter.setPlaceholder(LABEL_FILTER);
+
+		patientLastNameFilter = new TextField();
+		patientLastNameFilter.addValueChangeListener(event -> checkAndUpdateAllFilters());
+		patientLastNameFilter.setValueChangeMode(ValueChangeMode.EAGER);
+		filterRow.getCell(patientLastNameColumn).setComponent(patientLastNameFilter);
+		patientLastNameFilter.setSizeFull();
+		patientLastNameFilter.setPlaceholder(LABEL_FILTER);
+
+		issuerOfPatientIDFilter = new TextField();
+		issuerOfPatientIDFilter.addValueChangeListener(event -> checkAndUpdateAllFilters());
+		issuerOfPatientIDFilter.setValueChangeMode(ValueChangeMode.EAGER);
+		filterRow.getCell(issuerOfPatientIDColumn).setComponent(issuerOfPatientIDFilter);
+		issuerOfPatientIDFilter.setSizeFull();
+		issuerOfPatientIDFilter.setPlaceholder(LABEL_FILTER);
+	}
+
+	public Div setBinder() {
+		Div validationStatus = new Div();
+		validationStatus.setId("validation");
+		validationStatus.getStyle().set("color", "var(--theme-color, red)");
+		binder.forField(externalIdField).withValidator(StringUtils::isNotBlank, "External Pseudonym is empty")
+				.withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
+				.withStatusLabel(validationStatus).bind("pseudonym");
+
+		binder.forField(patientIdField).withValidator(StringUtils::isNotBlank, "Patient ID is empty")
+				.withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
+				.withStatusLabel(validationStatus).bind("patientId");
+
+		binder.forField(patientFirstNameField).withValidator(StringUtils::isNotBlank, "Patient firstname is empty")
+				.withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50)).bind("patientFirstName");
+
+		binder.forField(patientLastNameField).withValidator(StringUtils::isNotBlank, "Patient last name is empty")
+				.withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50)).bind("patientLastName");
+
+		binder.forField(issuerOfPatientIdField)
+				.withValidator(new StringLengthValidator("Length must be between 0 and 50.", 0, 50))
+				.withStatusLabel(validationStatus).bind("issuerOfPatientId");
+
+		return validationStatus;
+	}
+
+	public void readAllCacheValue() {
+		if (externalIDCache != null) {
+			Collection<PseudonymPatient> pseudonymPatients = externalIDCache.getAll();
+			patientsListInCache = new ArrayList<>();
+			for (Iterator<PseudonymPatient> iterator = pseudonymPatients.iterator(); iterator.hasNext();) {
+				final CachedPatient patient = (CachedPatient) iterator.next();
+				if (projectEntity != null && patient.getProjectID() != null
+						&& patient.getProjectID().equals(projectEntity.getId())) {
+					patientsListInCache.add(patient);
+				}
+			}
+			setItems(patientsListInCache);
+		}
+		refreshPaginator();
+	}
+
+	public void addPatient(CachedPatient newPatient) {
+		if (!patientExist(newPatient)) {
+			externalIDCache.put(PatientClientUtil.generateKey(newPatient, projectEntity.getId()), newPatient);
+		}
+	}
+
+	public void addPatientList(List<CachedPatient> patientList) {
+		patientList.forEach(this::addPatient);
+		readAllCacheValue();
+	}
+
+	public boolean patientExist(PseudonymPatient patient) {
+		final PseudonymPatient duplicatePatient = externalIDCache
+				.get(PatientClientUtil.generateKey(patient, projectEntity.getId()));
+		if (duplicatePatient != null) {
+			duplicatePatientsList.add(duplicatePatient);
+			return true;
+		}
+		return false;
+	}
+
+	public void checkAndUpdateAllFilters() {
+		List<CachedPatient> filterList = patientsListInCache.stream().collect(Collectors.toList());
+
+		if (!extidFilter.getValue().equals("")) {
+			filterList = filterList.stream()
+					.filter(cachedPatient -> cachedPatient.getPseudonym().contains(extidFilter.getValue()))
+					.collect(Collectors.toList());
+		}
+
+		if (!patientIdFilter.getValue().equals("")) {
+			filterList = filterList.stream()
+					.filter(cachedPatient -> cachedPatient.getPatientId().contains(patientIdFilter.getValue()))
+					.collect(Collectors.toList());
+		}
+
+		if (!patientFirstNameFilter.getValue().equals("")) {
+			filterList = filterList.stream().filter(
+					cachedPatient -> cachedPatient.getPatientFirstName().contains(patientFirstNameFilter.getValue()))
+					.collect(Collectors.toList());
+		}
+
+		if (!patientLastNameFilter.getValue().equals("")) {
+			filterList = filterList.stream().filter(
+					cachedPatient -> cachedPatient.getPatientLastName().contains(patientLastNameFilter.getValue()))
+					.collect(Collectors.toList());
+		}
+
+		if (!issuerOfPatientIDFilter.getValue().equals("")) {
+			filterList = filterList.stream().filter(
+					cachedPatient -> cachedPatient.getIssuerOfPatientId().contains(issuerOfPatientIDFilter.getValue()))
+					.collect(Collectors.toList());
+		}
+
+		setItems(filterList);
+	}
+
+	public Collection<PseudonymPatient> getDuplicatePatientsList() {
+		return duplicatePatientsList;
+	}
+
+	public void setDuplicatePatientsList(Collection<PseudonymPatient> duplicatePatientsList) {
+		this.duplicatePatientsList = duplicatePatientsList;
+	}
+
+	public ProjectEntity getProjectEntity() {
+		return projectEntity;
+	}
+
+	public void setProjectEntity(ProjectEntity projectEntity) {
+		this.projectEntity = projectEntity;
+	}
+
+	public PatientClient getExternalIDCache() {
+		return externalIDCache;
+	}
+
+	public void setExternalIDCache(PatientClient externalIDCache) {
+		this.externalIDCache = externalIDCache;
+	}
+
+	public List<CachedPatient> getPatientsListInCache() {
+		return patientsListInCache;
+	}
+
 }

@@ -13,22 +13,24 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Counter {
 
-  private final AtomicInteger count = new AtomicInteger(0);
-  private final int interval;
+	private final AtomicInteger count = new AtomicInteger(0);
 
-  public Counter(int interval) {
-    this.interval = interval;
-  }
+	private final int interval;
 
-  public int getCount() {
-    return count.get();
-  }
+	public Counter(int interval) {
+		this.interval = interval;
+	}
 
-  public void resetCount() {
-    this.count.set(0);
-  }
+	public int getCount() {
+		return count.get();
+	}
 
-  public int increment() {
-    return this.count.addAndGet(interval);
-  }
+	public void resetCount() {
+		this.count.set(0);
+	}
+
+	public int increment() {
+		return this.count.addAndGet(interval);
+	}
+
 }

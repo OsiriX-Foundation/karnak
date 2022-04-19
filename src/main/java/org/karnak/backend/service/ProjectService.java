@@ -24,91 +24,83 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProjectService {
 
-  // Repositories
-  private final ProjectRepo projectRepo;
+	// Repositories
+	private final ProjectRepo projectRepo;
 
-  // Event publisher
-  private final ApplicationEventPublisher applicationEventPublisher;
+	// Event publisher
+	private final ApplicationEventPublisher applicationEventPublisher;
 
-  /**
-   * Autowired constructor
-   *
-   * @param projectRepo Project repository
-   * @param applicationEventPublisher Application Event Publisher
-   */
-  @Autowired
-  public ProjectService(
-      final ProjectRepo projectRepo, final ApplicationEventPublisher applicationEventPublisher) {
-    this.projectRepo = projectRepo;
-    this.applicationEventPublisher = applicationEventPublisher;
-  }
+	/**
+	 * Autowired constructor
+	 * @param projectRepo Project repository
+	 * @param applicationEventPublisher Application Event Publisher
+	 */
+	@Autowired
+	public ProjectService(final ProjectRepo projectRepo, final ApplicationEventPublisher applicationEventPublisher) {
+		this.projectRepo = projectRepo;
+		this.applicationEventPublisher = applicationEventPublisher;
+	}
 
-  /**
-   * Save in DB the project in parameter
-   *
-   * @param projectEntity Project to save
-   */
-  public ProjectEntity save(ProjectEntity projectEntity) {
-    return projectRepo.saveAndFlush(projectEntity);
-  }
+	/**
+	 * Save in DB the project in parameter
+	 * @param projectEntity Project to save
+	 */
+	public ProjectEntity save(ProjectEntity projectEntity) {
+		return projectRepo.saveAndFlush(projectEntity);
+	}
 
-  /**
-   * Update project and destinations
-   *
-   * @param projectEntity Project to updated
-   */
-  public void update(ProjectEntity projectEntity) {
-    if (projectEntity.getId() != null) {
-      projectRepo.saveAndFlush(projectEntity);
-      updateDestinations(projectEntity);
-    }
-  }
+	/**
+	 * Update project and destinations
+	 * @param projectEntity Project to updated
+	 */
+	public void update(ProjectEntity projectEntity) {
+		if (projectEntity.getId() != null) {
+			projectRepo.saveAndFlush(projectEntity);
+			updateDestinations(projectEntity);
+		}
+	}
 
-  /**
-   * Update destinations
-   *
-   * @param projectEntity Project destinations to update
-   */
-  private void updateDestinations(ProjectEntity projectEntity) {
-    for (DestinationEntity destinationEntity : projectEntity.getDestinationEntities()) {
-      applicationEventPublisher.publishEvent(
-          new NodeEvent(destinationEntity, NodeEventType.UPDATE));
-    }
-  }
+	/**
+	 * Update destinations
+	 * @param projectEntity Project destinations to update
+	 */
+	private void updateDestinations(ProjectEntity projectEntity) {
+		for (DestinationEntity destinationEntity : projectEntity.getDestinationEntities()) {
+			applicationEventPublisher.publishEvent(new NodeEvent(destinationEntity, NodeEventType.UPDATE));
+		}
+	}
 
-  /**
-   * Remove project
-   *
-   * @param projectEntity Project to remove
-   */
-  public void remove(ProjectEntity projectEntity) {
-    projectRepo.deleteById(projectEntity.getId());
-    projectRepo.flush();
-  }
+	/**
+	 * Remove project
+	 * @param projectEntity Project to remove
+	 */
+	public void remove(ProjectEntity projectEntity) {
+		projectRepo.deleteById(projectEntity.getId());
+		projectRepo.flush();
+	}
 
-  /**
-   * Retrieve all projects
-   *
-   * @return projects found
-   */
-  public List<ProjectEntity> getAllProjects() {
-    return projectRepo.findAll();
-  }
+	/**
+	 * Retrieve all projects
+	 * @return projects found
+	 */
+	public List<ProjectEntity> getAllProjects() {
+		return projectRepo.findAll();
+	}
 
-  /**
-   * Retrieve project by id
-   *
-   * @param id Id to look for
-   * @return project found
-   */
-  public ProjectEntity retrieveProject(Long id) {
-    ProjectEntity projectEntity = null;
-    if (id != null) {
-      Optional<ProjectEntity> projectEntityOptional = projectRepo.findById(id);
-      if (projectEntityOptional.isPresent()) {
-        projectEntity = projectEntityOptional.get();
-      }
-    }
-    return projectEntity;
-  }
+	/**
+	 * Retrieve project by id
+	 * @param id Id to look for
+	 * @return project found
+	 */
+	public ProjectEntity retrieveProject(Long id) {
+		ProjectEntity projectEntity = null;
+		if (id != null) {
+			Optional<ProjectEntity> projectEntityOptional = projectRepo.findById(id);
+			if (projectEntityOptional.isPresent()) {
+				projectEntity = projectEntityOptional.get();
+			}
+		}
+		return projectEntity;
+	}
+
 }

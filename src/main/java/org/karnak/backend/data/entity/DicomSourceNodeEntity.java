@@ -25,135 +25,129 @@ import javax.validation.constraints.Size;
 @Table(name = "dicom_source_node")
 public class DicomSourceNodeEntity implements Serializable {
 
-  private static final long serialVersionUID = -4917273057619947934L;
+	private static final long serialVersionUID = -4917273057619947934L;
 
-  private Long id;
-  private String description;
-  // AETitle of the source node.
-  private String aeTitle;
-  // the host or IP of the source node. If the hostname exists then it is checked
-  // (allows a restriction on the host not only in the AETitle).
-  private String hostname;
-  // if "true" check the hostname during the DICOM association and if not match
-  // the connection is abort
-  private Boolean checkHostname;
-  private ForwardNodeEntity forwardNodeEntity;
+	private Long id;
 
-  public DicomSourceNodeEntity() {
-    this.description = "";
-    this.aeTitle = "";
-    this.hostname = "";
-    this.checkHostname = Boolean.FALSE;
-  }
+	private String description;
 
-  public static DicomSourceNodeEntity ofEmpty() {
-    DicomSourceNodeEntity instance = new DicomSourceNodeEntity();
-    return instance;
-  }
+	// AETitle of the source node.
+	private String aeTitle;
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  public Long getId() {
-    return id;
-  }
+	// the host or IP of the source node. If the hostname exists then it is checked
+	// (allows a restriction on the host not only in the AETitle).
+	private String hostname;
 
-  public void setId(Long id) {
-    this.id = id;
-  }
+	// if "true" check the hostname during the DICOM association and if not match
+	// the connection is abort
+	private Boolean checkHostname;
 
-  public String getDescription() {
-    return description;
-  }
+	private ForwardNodeEntity forwardNodeEntity;
 
-  public void setDescription(String description) {
-    this.description = description;
-  }
+	public DicomSourceNodeEntity() {
+		this.description = "";
+		this.aeTitle = "";
+		this.hostname = "";
+		this.checkHostname = Boolean.FALSE;
+	}
 
-  @NotBlank(message = "AETitle is mandatory")
-  @Size(max = 16, message = "AETitle has more than 16 characters")
-  public String getAeTitle() {
-    return aeTitle;
-  }
+	public static DicomSourceNodeEntity ofEmpty() {
+		DicomSourceNodeEntity instance = new DicomSourceNodeEntity();
+		return instance;
+	}
 
-  public void setAeTitle(String aeTitle) {
-    this.aeTitle = aeTitle;
-  }
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	public Long getId() {
+		return id;
+	}
 
-  public String getHostname() {
-    return hostname;
-  }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-  public void setHostname(String hostname) {
-    this.hostname = hostname;
-  }
+	public String getDescription() {
+		return description;
+	}
 
-  @ManyToOne
-  @JoinColumn(name = "forward_node_id")
-  public ForwardNodeEntity getForwardNodeEntity() {
-    return forwardNodeEntity;
-  }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-  public void setForwardNodeEntity(ForwardNodeEntity forwardNodeEntity) {
-    this.forwardNodeEntity = forwardNodeEntity;
-  }
+	@NotBlank(message = "AETitle is mandatory")
+	@Size(max = 16, message = "AETitle has more than 16 characters")
+	public String getAeTitle() {
+		return aeTitle;
+	}
 
-  public Boolean getCheckHostname() {
-    return checkHostname;
-  }
+	public void setAeTitle(String aeTitle) {
+		this.aeTitle = aeTitle;
+	}
 
-  public void setCheckHostname(Boolean checkHostname) {
-    this.checkHostname = checkHostname;
-  }
+	public String getHostname() {
+		return hostname;
+	}
 
-  /**
-   * Informs if this object matches with the filter as text.
-   *
-   * @param filterText the filter as text.
-   * @return true if this object matches with the filter as text; false otherwise.
-   */
-  public boolean matchesFilter(String filterText) {
-    return contains(description, filterText) //
-        || contains(aeTitle, filterText) //
-        || contains(hostname, filterText);
-  }
+	public void setHostname(String hostname) {
+		this.hostname = hostname;
+	}
 
-  private boolean contains(String value, String filterText) {
-    return value != null && value.contains(filterText);
-  }
+	@ManyToOne
+	@JoinColumn(name = "forward_node_id")
+	public ForwardNodeEntity getForwardNodeEntity() {
+		return forwardNodeEntity;
+	}
 
-  @Override
-  public String toString() {
-    return "DicomSourceNode [id="
-        + id
-        + ", description="
-        + description
-        + ", aeTitle="
-        + aeTitle
-        + ", hostname="
-        + hostname
-        + ", checkHostname="
-        + checkHostname
-        + "]";
-  }
+	public void setForwardNodeEntity(ForwardNodeEntity forwardNodeEntity) {
+		this.forwardNodeEntity = forwardNodeEntity;
+	}
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    DicomSourceNodeEntity that = (DicomSourceNodeEntity) o;
-    return Objects.equals(id, that.id)
-        && Objects.equals(description, that.description)
-        && Objects.equals(aeTitle, that.aeTitle)
-        && Objects.equals(hostname, that.hostname)
-        && Objects.equals(checkHostname, that.checkHostname);
-  }
+	public Boolean getCheckHostname() {
+		return checkHostname;
+	}
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(id, description, aeTitle, hostname, checkHostname);
-  }
+	public void setCheckHostname(Boolean checkHostname) {
+		this.checkHostname = checkHostname;
+	}
+
+	/**
+	 * Informs if this object matches with the filter as text.
+	 * @param filterText the filter as text.
+	 * @return true if this object matches with the filter as text; false otherwise.
+	 */
+	public boolean matchesFilter(String filterText) {
+		return contains(description, filterText) //
+				|| contains(aeTitle, filterText) //
+				|| contains(hostname, filterText);
+	}
+
+	private boolean contains(String value, String filterText) {
+		return value != null && value.contains(filterText);
+	}
+
+	@Override
+	public String toString() {
+		return "DicomSourceNode [id=" + id + ", description=" + description + ", aeTitle=" + aeTitle + ", hostname="
+				+ hostname + ", checkHostname=" + checkHostname + "]";
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		DicomSourceNodeEntity that = (DicomSourceNodeEntity) o;
+		return Objects.equals(id, that.id) && Objects.equals(description, that.description)
+				&& Objects.equals(aeTitle, that.aeTitle) && Objects.equals(hostname, that.hostname)
+				&& Objects.equals(checkHostname, that.checkHostname);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, description, aeTitle, hostname, checkHostname);
+	}
+
 }

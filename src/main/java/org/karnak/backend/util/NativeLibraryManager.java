@@ -24,36 +24,35 @@ import org.weasis.core.util.NativeLibrary;
 
 public class NativeLibraryManager {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(NativeLibraryManager.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(NativeLibraryManager.class);
 
-  private NativeLibraryManager() {}
+	private NativeLibraryManager() {
+	}
 
-  public static void initNativeLibs(URL resource) {
-    Optional<String> oLibPath =
-        Arrays.stream(System.getProperty("java.library.path").split(File.pathSeparator))
-            .filter(p -> p.contains("dicom-opencv"))
-            .findFirst();
-    if (oLibPath.isEmpty()) {
-      throw new IllegalStateException("OpenCV library is not configured in java.library.path");
-    }
+	public static void initNativeLibs(URL resource) {
+		Optional<String> oLibPath = Arrays.stream(System.getProperty("java.library.path").split(File.pathSeparator))
+				.filter(p -> p.contains("dicom-opencv")).findFirst();
+		if (oLibPath.isEmpty()) {
+			throw new IllegalStateException("OpenCV library is not configured in java.library.path");
+		}
 
-    String system = NativeLibrary.getNativeLibSpecification();
-    String filename =
-        system.startsWith("win")
-            ? "opencv_java.dll"
-            : system.startsWith("mac") ? "libopencv_java.dylib" : "libopencv_java.so";
-    Path outputFile = Path.of(oLibPath.get(), filename);
-    System.setProperty("dicom.native.codec", oLibPath.get());
+		String system = NativeLibrary.getNativeLibSpecification();
+		String filename = system.startsWith("win") ? "opencv_java.dll"
+				: system.startsWith("mac") ? "libopencv_java.dylib" : "libopencv_java.so";
+		Path outputFile = Path.of(oLibPath.get(), filename);
+		System.setProperty("dicom.native.codec", oLibPath.get());
 
-    try {
-      Files.createDirectories(outputFile.getParent());
-      String path = resource.toString() + "/" + system + "/" + filename;
-      FileUtil.writeStream(new URL(path).openStream(), outputFile, true);
-    } catch (IOException e) {
-      LOGGER.error("copy native libs", e);
-    }
+		try {
+			Files.createDirectories(outputFile.getParent());
+			String path = resource.toString() + "/" + system + "/" + filename;
+			FileUtil.writeStream(new URL(path).openStream(), outputFile, true);
+		}
+		catch (IOException e) {
+			LOGGER.error("copy native libs", e);
+		}
 
-    OpenCVNativeLoader loader = new OpenCVNativeLoader();
-    loader.init();
-  }
+		OpenCVNativeLoader loader = new OpenCVNativeLoader();
+		loader.init();
+	}
+
 }

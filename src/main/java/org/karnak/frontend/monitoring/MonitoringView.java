@@ -30,93 +30,93 @@ import org.springframework.security.access.annotation.Secured;
 /** Monitoring View */
 @Route(value = MonitoringView.ROUTE, layout = MainLayout.class)
 @PageTitle("KARNAK - Monitoring")
-@Secured({"ROLE_admin"})
+@Secured({ "ROLE_admin" })
 public class MonitoringView extends VerticalLayout {
 
-  public static final String VIEW_NAME = "Monitoring";
-  public static final String ROUTE = "monitoring";
+	public static final String VIEW_NAME = "Monitoring";
 
-  // Monitoring Logic
-  private final MonitoringLogic monitoringLogic;
+	public static final String ROUTE = "monitoring";
 
-  // UI components
-  private TransferStatusGrid transferStatusGrid;
-  private final TransferStatusDataProvider<TransferStatusEntity> transferStatusDataProvider;
-  private Button refreshGridButton;
-  private Anchor exportAnchor;
-  private Button exportSettingsButton;
-  private ExportSettingsDialog exportSettingsDialog;
+	// Monitoring Logic
+	private final MonitoringLogic monitoringLogic;
 
-  /**
-   * Autowired constructor.
-   *
-   * @param monitoringLogic Monitoring Logic used to call backend services and implement logic
-   *     linked to the monitoring view
-   */
-  @Autowired
-  public MonitoringView(
-      final MonitoringLogic monitoringLogic,
-      final TransferStatusDataProvider<TransferStatusEntity> transferStatusDataProvider) {
-    // Bind the autowired service
-    this.monitoringLogic = monitoringLogic;
-    this.transferStatusDataProvider = transferStatusDataProvider;
+	// UI components
+	private TransferStatusGrid transferStatusGrid;
 
-    // Set the view in the service
-    this.monitoringLogic.setMonitoringView(this);
+	private final TransferStatusDataProvider<TransferStatusEntity> transferStatusDataProvider;
 
-    // Build  components
-    buildComponents();
+	private Button refreshGridButton;
 
-    // Add components in the view
-    addComponentsView();
-  }
+	private Anchor exportAnchor;
 
-  /** Build components */
-  private void buildComponents() {
-    // Paginated Grid + data provider
-    transferStatusGrid = new TransferStatusGrid(transferStatusDataProvider);
-    transferStatusDataProvider.setFilter(transferStatusGrid.getTransferStatusFilter());
-    transferStatusGrid.setDataProvider(transferStatusDataProvider);
+	private Button exportSettingsButton;
 
-    // Refresh button
-    refreshGridButton = new Button("Refresh", new Icon(VaadinIcon.REFRESH));
-    refreshGridButton.addClickListener(buttonClickEvent -> transferStatusDataProvider.refreshAll());
-    refreshGridButton.setWidthFull();
+	private ExportSettingsDialog exportSettingsDialog;
 
-    // Export Settings Dialog
-    exportSettingsDialog = new ExportSettingsDialog();
+	/**
+	 * Autowired constructor.
+	 * @param monitoringLogic Monitoring Logic used to call backend services and implement
+	 * logic linked to the monitoring view
+	 */
+	@Autowired
+	public MonitoringView(final MonitoringLogic monitoringLogic,
+			final TransferStatusDataProvider<TransferStatusEntity> transferStatusDataProvider) {
+		// Bind the autowired service
+		this.monitoringLogic = monitoringLogic;
+		this.transferStatusDataProvider = transferStatusDataProvider;
 
-    // Export Settings Button
-    exportSettingsButton = new Button("Export Settings", new Icon(VaadinIcon.COGS));
-    exportSettingsButton.setWidthFull();
-    exportSettingsButton.addClickListener(buttonClickEvent -> exportSettingsDialog.open());
+		// Set the view in the service
+		this.monitoringLogic.setMonitoringView(this);
 
-    // Export button
-    StreamResource streamResource =
-        new StreamResource(
-            "export.csv",
-            () ->
-                new ByteArrayInputStream(
-                    monitoringLogic.buildCsv(exportSettingsDialog.getExportSettings())));
-    exportAnchor = new Anchor(streamResource, "");
-    exportAnchor.setWidthFull();
-    Button exportButton = new Button("Export", new Icon(VaadinIcon.DOWNLOAD_ALT));
-    exportButton.setWidthFull();
-    exportAnchor.getElement().setAttribute("download", true);
-    exportAnchor.add(exportButton);
-  }
+		// Build components
+		buildComponents();
 
-  /** Add components in the view */
-  private void addComponentsView() {
-    add(transferStatusGrid);
-    HorizontalLayout buttonLayout =
-        new HorizontalLayout(exportSettingsButton, exportAnchor, refreshGridButton);
-    add(UIS.setWidthFull(buttonLayout));
-    setSizeFull();
-    setWidthFull();
-  }
+		// Add components in the view
+		addComponentsView();
+	}
 
-  public TransferStatusGrid getTransferStatusGrid() {
-    return transferStatusGrid;
-  }
+	/** Build components */
+	private void buildComponents() {
+		// Paginated Grid + data provider
+		transferStatusGrid = new TransferStatusGrid(transferStatusDataProvider);
+		transferStatusDataProvider.setFilter(transferStatusGrid.getTransferStatusFilter());
+		transferStatusGrid.setDataProvider(transferStatusDataProvider);
+
+		// Refresh button
+		refreshGridButton = new Button("Refresh", new Icon(VaadinIcon.REFRESH));
+		refreshGridButton.addClickListener(buttonClickEvent -> transferStatusDataProvider.refreshAll());
+		refreshGridButton.setWidthFull();
+
+		// Export Settings Dialog
+		exportSettingsDialog = new ExportSettingsDialog();
+
+		// Export Settings Button
+		exportSettingsButton = new Button("Export Settings", new Icon(VaadinIcon.COGS));
+		exportSettingsButton.setWidthFull();
+		exportSettingsButton.addClickListener(buttonClickEvent -> exportSettingsDialog.open());
+
+		// Export button
+		StreamResource streamResource = new StreamResource("export.csv",
+				() -> new ByteArrayInputStream(monitoringLogic.buildCsv(exportSettingsDialog.getExportSettings())));
+		exportAnchor = new Anchor(streamResource, "");
+		exportAnchor.setWidthFull();
+		Button exportButton = new Button("Export", new Icon(VaadinIcon.DOWNLOAD_ALT));
+		exportButton.setWidthFull();
+		exportAnchor.getElement().setAttribute("download", true);
+		exportAnchor.add(exportButton);
+	}
+
+	/** Add components in the view */
+	private void addComponentsView() {
+		add(transferStatusGrid);
+		HorizontalLayout buttonLayout = new HorizontalLayout(exportSettingsButton, exportAnchor, refreshGridButton);
+		add(UIS.setWidthFull(buttonLayout));
+		setSizeFull();
+		setWidthFull();
+	}
+
+	public TransferStatusGrid getTransferStatusGrid() {
+		return transferStatusGrid;
+	}
+
 }

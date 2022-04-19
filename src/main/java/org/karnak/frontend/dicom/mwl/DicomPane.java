@@ -23,108 +23,113 @@ import org.dcm4che3.data.Attributes;
 
 public class DicomPane extends Composite<Dialog> {
 
-  private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-  // CONTROLLER
-  private final DicomPaneLogic logic = new DicomPaneLogic(this);
-  // DATA
-  private final Attributes dcm;
-  // UI COMPONENTS
-  private Dialog currentDialog;
-  private VerticalLayout mainLayout;
-  private Div titleBar;
-  private TextArea contentFld;
-  private HorizontalLayout buttonBar;
-  private Button cancelButton;
-  private Anchor downloadDicomAnchor;
-  private Anchor downloadTextAnchor;
+	// CONTROLLER
+	private final DicomPaneLogic logic = new DicomPaneLogic(this);
 
-  public DicomPane(Attributes dcm) {
-    this.dcm = dcm;
+	// DATA
+	private final Attributes dcm;
 
-    init();
+	// UI COMPONENTS
+	private Dialog currentDialog;
 
-    buildMainLayout();
+	private VerticalLayout mainLayout;
 
-    currentDialog.add(mainLayout);
-  }
+	private Div titleBar;
 
-  public void open() {
-    currentDialog.open();
-  }
+	private TextArea contentFld;
 
-  private void init() {
-    currentDialog = getContent();
-    currentDialog.setWidth("50%");
-  }
+	private HorizontalLayout buttonBar;
 
-  private void buildMainLayout() {
-    mainLayout = new VerticalLayout();
-    mainLayout.setSizeFull();
-    mainLayout.setPadding(false);
+	private Button cancelButton;
 
-    buildTitleBar();
-    buildContentField();
-    buildButtonBar();
+	private Anchor downloadDicomAnchor;
 
-    mainLayout.add(titleBar, contentFld, buttonBar);
+	private Anchor downloadTextAnchor;
 
-    mainLayout.setFlexGrow(1, contentFld);
-  }
+	public DicomPane(Attributes dcm) {
+		this.dcm = dcm;
 
-  private void buildTitleBar() {
-    titleBar = new Div();
-    titleBar.setText("Worklist Entry");
-  }
+		init();
 
-  private void buildContentField() {
-    contentFld = new TextArea();
+		buildMainLayout();
 
-    contentFld.setReadOnly(true);
-    contentFld.setHeight("600px");
-    contentFld.setWidth("600px");
+		currentDialog.add(mainLayout);
+	}
 
-    contentFld.setValue(dcm.toString(1500, 300));
-  }
+	public void open() {
+		currentDialog.open();
+	}
 
-  private void buildButtonBar() {
-    buttonBar = new HorizontalLayout();
+	private void init() {
+		currentDialog = getContent();
+		currentDialog.setWidth("50%");
+	}
 
-    buildDownloadTextAnchor();
-    buildDownloadDicomAnchor();
-    buildCancelButton();
+	private void buildMainLayout() {
+		mainLayout = new VerticalLayout();
+		mainLayout.setSizeFull();
+		mainLayout.setPadding(false);
 
-    buttonBar.add(cancelButton, downloadDicomAnchor, downloadTextAnchor);
-  }
+		buildTitleBar();
+		buildContentField();
+		buildButtonBar();
 
-  private void buildDownloadTextAnchor() {
-    Button downloadTextBtn = new Button();
-    downloadTextBtn.setText("Download Text");
-    downloadTextBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+		mainLayout.add(titleBar, contentFld, buttonBar);
 
-    downloadTextAnchor =
-        new Anchor(
-            new StreamResource("worklistItem.txt", () -> logic.getWorklistItemInputStreamText(dcm)),
-            "");
-    downloadTextAnchor.getElement().setAttribute("download", true);
-    downloadTextAnchor.add(downloadTextBtn);
-  }
+		mainLayout.setFlexGrow(1, contentFld);
+	}
 
-  private void buildDownloadDicomAnchor() {
-    Button downloadDicomBtn = new Button();
-    downloadDicomBtn.setText("Download DICOM");
-    downloadDicomBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+	private void buildTitleBar() {
+		titleBar = new Div();
+		titleBar.setText("Worklist Entry");
+	}
 
-    downloadDicomAnchor =
-        new Anchor(
-            new StreamResource(
-                "worklistItem.dcm", () -> logic.getWorklistItemInputStreamInDicom(dcm)),
-            "");
-    downloadDicomAnchor.getElement().setAttribute("download", true);
-    downloadDicomAnchor.add(downloadDicomBtn);
-  }
+	private void buildContentField() {
+		contentFld = new TextArea();
 
-  private void buildCancelButton() {
-    cancelButton = new Button("Cancel", event -> currentDialog.close());
-  }
+		contentFld.setReadOnly(true);
+		contentFld.setHeight("600px");
+		contentFld.setWidth("600px");
+
+		contentFld.setValue(dcm.toString(1500, 300));
+	}
+
+	private void buildButtonBar() {
+		buttonBar = new HorizontalLayout();
+
+		buildDownloadTextAnchor();
+		buildDownloadDicomAnchor();
+		buildCancelButton();
+
+		buttonBar.add(cancelButton, downloadDicomAnchor, downloadTextAnchor);
+	}
+
+	private void buildDownloadTextAnchor() {
+		Button downloadTextBtn = new Button();
+		downloadTextBtn.setText("Download Text");
+		downloadTextBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+
+		downloadTextAnchor = new Anchor(
+				new StreamResource("worklistItem.txt", () -> logic.getWorklistItemInputStreamText(dcm)), "");
+		downloadTextAnchor.getElement().setAttribute("download", true);
+		downloadTextAnchor.add(downloadTextBtn);
+	}
+
+	private void buildDownloadDicomAnchor() {
+		Button downloadDicomBtn = new Button();
+		downloadDicomBtn.setText("Download DICOM");
+		downloadDicomBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+
+		downloadDicomAnchor = new Anchor(
+				new StreamResource("worklistItem.dcm", () -> logic.getWorklistItemInputStreamInDicom(dcm)), "");
+		downloadDicomAnchor.getElement().setAttribute("download", true);
+		downloadDicomAnchor.add(downloadDicomBtn);
+	}
+
+	private void buildCancelButton() {
+		cancelButton = new Button("Cancel", event -> currentDialog.close());
+	}
+
 }

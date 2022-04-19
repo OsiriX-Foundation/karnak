@@ -13,58 +13,64 @@ import java.util.List;
 
 public class ProfilePipeBody {
 
-  private String name;
-  private String version;
-  private String minimumKarnakVersion;
-  private String defaultIssuerOfPatientID;
-  private List<ProfileElementBody> profiles;
-  private List<MaskBody> masks;
+	private String name;
 
-  public String getName() {
-    return name;
-  }
+	private String version;
 
-  public void setName(String name) {
-    this.name = name;
-  }
+	private String minimumKarnakVersion;
 
-  public String getVersion() {
-    return version;
-  }
+	private String defaultIssuerOfPatientID;
 
-  public void setVersion(String version) {
-    this.version = version;
-  }
+	private List<ProfileElementBody> profiles;
 
-  public String getMinimumKarnakVersion() {
-    return minimumKarnakVersion;
-  }
+	private List<MaskBody> masks;
 
-  public void setMinimumKarnakVersion(String minimumKarnakVersion) {
-    this.minimumKarnakVersion = minimumKarnakVersion;
-  }
+	public String getName() {
+		return name;
+	}
 
-  public List<ProfileElementBody> getProfileElements() {
-    return profiles;
-  }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-  public void setProfileElements(List<ProfileElementBody> profiles) {
-    this.profiles = profiles;
-  }
+	public String getVersion() {
+		return version;
+	}
 
-  public String getDefaultIssuerOfPatientID() {
-    return defaultIssuerOfPatientID;
-  }
+	public void setVersion(String version) {
+		this.version = version;
+	}
 
-  public void setDefaultIssuerOfPatientID(String defaultIssuerOfPatientID) {
-    this.defaultIssuerOfPatientID = defaultIssuerOfPatientID;
-  }
+	public String getMinimumKarnakVersion() {
+		return minimumKarnakVersion;
+	}
 
-  public List<MaskBody> getMasks() {
-    return masks;
-  }
+	public void setMinimumKarnakVersion(String minimumKarnakVersion) {
+		this.minimumKarnakVersion = minimumKarnakVersion;
+	}
 
-  public void setMasks(List<MaskBody> masks) {
-    this.masks = masks;
-  }
+	public List<ProfileElementBody> getProfileElements() {
+		return profiles;
+	}
+
+	public void setProfileElements(List<ProfileElementBody> profiles) {
+		this.profiles = profiles;
+	}
+
+	public String getDefaultIssuerOfPatientID() {
+		return defaultIssuerOfPatientID;
+	}
+
+	public void setDefaultIssuerOfPatientID(String defaultIssuerOfPatientID) {
+		this.defaultIssuerOfPatientID = defaultIssuerOfPatientID;
+	}
+
+	public List<MaskBody> getMasks() {
+		return masks;
+	}
+
+	public void setMasks(List<MaskBody> masks) {
+		this.masks = masks;
+	}
+
 }

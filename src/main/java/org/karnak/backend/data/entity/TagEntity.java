@@ -32,61 +32,65 @@ import org.hibernate.annotations.DiscriminatorOptions;
 @DiscriminatorOptions(force = true)
 public abstract class TagEntity implements Serializable {
 
-  private static final long serialVersionUID = -1172918773653197764L;
+	private static final long serialVersionUID = -1172918773653197764L;
 
-  private Long id;
-  private ProfileElementEntity profileElementEntity;
-  private String tagValue;
+	private Long id;
 
-  public TagEntity() {}
+	private ProfileElementEntity profileElementEntity;
 
-  public TagEntity(String tagValue, ProfileElementEntity profileElementEntity) {
-    this.tagValue = tagValue;
-    this.profileElementEntity = profileElementEntity;
-  }
+	private String tagValue;
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  public Long getId() {
-    return id;
-  }
+	public TagEntity() {
+	}
 
-  public void setId(Long id) {
-    this.id = id;
-  }
+	public TagEntity(String tagValue, ProfileElementEntity profileElementEntity) {
+		this.tagValue = tagValue;
+		this.profileElementEntity = profileElementEntity;
+	}
 
-  @ManyToOne()
-  @JoinColumn(name = "profile_element_id", nullable = false)
-  public ProfileElementEntity getProfileElementEntity() {
-    return profileElementEntity;
-  }
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	public Long getId() {
+		return id;
+	}
 
-  public void setProfileElementEntity(ProfileElementEntity profileElementEntity) {
-    this.profileElementEntity = profileElementEntity;
-  }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-  public String getTagValue() {
-    return tagValue;
-  }
+	@ManyToOne()
+	@JoinColumn(name = "profile_element_id", nullable = false)
+	public ProfileElementEntity getProfileElementEntity() {
+		return profileElementEntity;
+	}
 
-  public void setTagValue(String tagValue) {
-    this.tagValue = tagValue;
-  }
+	public void setProfileElementEntity(ProfileElementEntity profileElementEntity) {
+		this.profileElementEntity = profileElementEntity;
+	}
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    TagEntity tagEntity = (TagEntity) o;
-    return Objects.equals(id, tagEntity.id) && Objects.equals(tagValue, tagEntity.tagValue);
-  }
+	public String getTagValue() {
+		return tagValue;
+	}
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(id, tagValue);
-  }
+	public void setTagValue(String tagValue) {
+		this.tagValue = tagValue;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		TagEntity tagEntity = (TagEntity) o;
+		return Objects.equals(id, tagEntity.id) && Objects.equals(tagValue, tagEntity.tagValue);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, tagValue);
+	}
+
 }

@@ -17,35 +17,28 @@ import org.karnak.backend.data.entity.ProjectEntity;
 
 public class GridProject extends Grid<ProjectEntity> {
 
-  public GridProject() {
-    setWidthFull();
-    setHeightByRows(true);
+	public GridProject() {
+		setWidthFull();
+		setHeightByRows(true);
 
-    Column<ProjectEntity> projectNameColumn =
-        addColumn(ProjectEntity::getName)
-            .setHeader("Project Name")
-            .setFlexGrow(15)
-            .setSortable(true);
-    addColumn(
-            project ->
-                String.format(
-                    "%s [version %s]",
-                    project.getProfileEntity().getName(), project.getProfileEntity().getVersion()))
-        .setHeader("Desidenfication profile")
-        .setFlexGrow(15)
-        .setSortable(true);
+		Column<ProjectEntity> projectNameColumn = addColumn(ProjectEntity::getName).setHeader("Project Name")
+				.setFlexGrow(15).setSortable(true);
+		addColumn(project -> String.format("%s [version %s]", project.getProfileEntity().getName(),
+				project.getProfileEntity().getVersion())).setHeader("Desidenfication profile").setFlexGrow(15)
+						.setSortable(true);
 
-    // Set by default the order on the name of the column
-    GridSortOrder<ProjectEntity> order =
-        new GridSortOrder<>(projectNameColumn, SortDirection.ASCENDING);
-    sort(Arrays.asList(order));
-  }
+		// Set by default the order on the name of the column
+		GridSortOrder<ProjectEntity> order = new GridSortOrder<>(projectNameColumn, SortDirection.ASCENDING);
+		sort(Arrays.asList(order));
+	}
 
-  public void selectRow(ProjectEntity row) {
-    if (row != null) {
-      getSelectionModel().select(row);
-    } else {
-      getSelectionModel().deselectAll();
-    }
-  }
+	public void selectRow(ProjectEntity row) {
+		if (row != null) {
+			getSelectionModel().select(row);
+		}
+		else {
+			getSelectionModel().deselectAll();
+		}
+	}
+
 }

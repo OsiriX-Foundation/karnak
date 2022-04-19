@@ -23,92 +23,97 @@ import org.weasis.core.util.StringUtil;
 
 public class ExprAction implements ExpressionItem {
 
-  private int tag;
-  private VR vr;
-  private String stringValue;
-  private Attributes dcm;
-  private Attributes dcmCopy;
+	private int tag;
 
-  public ExprAction(int tag, VR vr, Attributes dcm, Attributes dcmCopy) {
-    this.tag = Objects.requireNonNull(tag);
-    this.vr = Objects.requireNonNull(vr);
-    this.stringValue = dcmCopy.getString(this.tag);
-    this.dcmCopy = dcmCopy;
-    this.dcm = dcm;
-  }
+	private VR vr;
 
-  public ExprAction(int tag, VR vr, String stringValue) {
-    this.tag = Objects.requireNonNull(tag);
-    this.vr = Objects.requireNonNull(vr);
-    this.stringValue = stringValue;
-  }
+	private String stringValue;
 
-  public static boolean isHexTag(String elem) {
-    String cleanElem = elem.replaceAll("[(),]", "").toUpperCase();
+	private Attributes dcm;
 
-    if (!StringUtil.hasText(cleanElem) || cleanElem.length() != 8) {
-      return false;
-    }
-    return cleanElem.matches("[0-9A-FX]+");
-  }
+	private Attributes dcmCopy;
 
-  public int getTag() {
-    return tag;
-  }
+	public ExprAction(int tag, VR vr, Attributes dcm, Attributes dcmCopy) {
+		this.tag = Objects.requireNonNull(tag);
+		this.vr = Objects.requireNonNull(vr);
+		this.stringValue = dcmCopy.getString(this.tag);
+		this.dcmCopy = dcmCopy;
+		this.dcm = dcm;
+	}
 
-  public void setTag(int tag) {
-    this.tag = tag;
-  }
+	public ExprAction(int tag, VR vr, String stringValue) {
+		this.tag = Objects.requireNonNull(tag);
+		this.vr = Objects.requireNonNull(vr);
+		this.stringValue = stringValue;
+	}
 
-  public VR getVr() {
-    return vr;
-  }
+	public static boolean isHexTag(String elem) {
+		String cleanElem = elem.replaceAll("[(),]", "").toUpperCase();
 
-  public void setVr(VR vr) {
-    this.vr = vr;
-  }
+		if (!StringUtil.hasText(cleanElem) || cleanElem.length() != 8) {
+			return false;
+		}
+		return cleanElem.matches("[0-9A-FX]+");
+	}
 
-  public String getStringValue() {
-    return stringValue;
-  }
+	public int getTag() {
+		return tag;
+	}
 
-  public void setStringValue(String stringValue) {
-    this.stringValue = stringValue;
-  }
+	public void setTag(int tag) {
+		this.tag = tag;
+	}
 
-  public ActionItem Keep() {
-    return new Keep("K");
-  }
+	public VR getVr() {
+		return vr;
+	}
 
-  public ActionItem Remove() {
-    return new Remove("X");
-  }
+	public void setVr(VR vr) {
+		this.vr = vr;
+	}
 
-  public ActionItem Replace(String dummyValue) {
-    ActionItem replace = new Replace("D");
-    replace.setDummyValue(dummyValue);
-    return replace;
-  }
+	public String getStringValue() {
+		return stringValue;
+	}
 
-  public ActionItem UID() {
-    return new UID("U");
-  }
+	public void setStringValue(String stringValue) {
+		this.stringValue = stringValue;
+	}
 
-  public ActionItem ReplaceNull() {
-    return new ReplaceNull("Z");
-  }
+	public ActionItem Keep() {
+		return new Keep("K");
+	}
 
-  public String getString(int tag) {
-    return dcmCopy.getString(tag);
-  }
+	public ActionItem Remove() {
+		return new Remove("X");
+	}
 
-  public boolean tagIsPresent(int tag) {
-    return DicomObjectTools.containsTagInAllAttributes(tag, dcmCopy);
-  }
+	public ActionItem Replace(String dummyValue) {
+		ActionItem replace = new Replace("D");
+		replace.setDummyValue(dummyValue);
+		return replace;
+	}
 
-  /*public ActionItem Add(int newTag, VR newVr, String newValue){
-      Add add = new Add("A", newTag, newVr, newValue);
-      add.execute(dcm, newTag, null, null);
-      return null;
-  }*/
+	public ActionItem UID() {
+		return new UID("U");
+	}
+
+	public ActionItem ReplaceNull() {
+		return new ReplaceNull("Z");
+	}
+
+	public String getString(int tag) {
+		return dcmCopy.getString(tag);
+	}
+
+	public boolean tagIsPresent(int tag) {
+		return DicomObjectTools.containsTagInAllAttributes(tag, dcmCopy);
+	}
+
+	/*
+	 * public ActionItem Add(int newTag, VR newVr, String newValue){ Add add = new
+	 * Add("A", newTag, newVr, newValue); add.execute(dcm, newTag, null, null); return
+	 * null; }
+	 */
+
 }

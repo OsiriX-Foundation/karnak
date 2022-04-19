@@ -27,134 +27,126 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DateFormat {
-  private static final Logger LOGGER = LoggerFactory.getLogger(DateFormat.class);
 
-  // Date formats
-  public static final String FORMAT_DDMMYYYY_SLASH = "dd/MM/yyyy";
-  public static final String FORMAT_DDMMYYYY_SLASH_HHMMSS_2POINTS = "dd/MM/yyyy HH:mm:ss";
-  public static final String FORMAT_DDMMYYYY_SLASH_HHMMSS_2POINTS_SSS_POINT =
-      "dd/MM/yyyy HH:mm:ss.SSS";
-  public static final String FORMAT_DDMMYYYY_SLASH_HHMMSS_2POINTS_SSSSSS_POINT =
-      "dd/MM/yyyy HH:mm:ss.SSSSSS";
+	private static final Logger LOGGER = LoggerFactory.getLogger(DateFormat.class);
 
-  /**
-   * Build DateTimeFormatter
-   *
-   * @param format Date format
-   * @return DateTimeFormatter
-   */
-  public static DateTimeFormatter dateTimeFormatter(final String format) {
-    return new DateTimeFormatterBuilder()
-        .parseCaseInsensitive()
-        .appendPattern(format)
-        .toFormatter(Locale.ENGLISH);
-  }
+	// Date formats
+	public static final String FORMAT_DDMMYYYY_SLASH = "dd/MM/yyyy";
 
-  /**
-   * Format a LocalDate to a specifig
-   *
-   * @param date Date to format
-   * @param format Format to apply
-   * @return Formatted date String
-   */
-  public static String format(final LocalDate date, final String format) {
-    return date == null ? null : date.format(dateTimeFormatter(format));
-  }
+	public static final String FORMAT_DDMMYYYY_SLASH_HHMMSS_2POINTS = "dd/MM/yyyy HH:mm:ss";
 
-  /**
-   * Format a LocalDateTime to a specific format
-   *
-   * @param dateTime Date to format
-   * @param format Format to apply
-   * @return Formatted date String
-   */
-  public static String format(final LocalDateTime dateTime, final String format) {
-    return dateTime == null ? null : dateTime.format(dateTimeFormatter(format));
-  }
+	public static final String FORMAT_DDMMYYYY_SLASH_HHMMSS_2POINTS_SSS_POINT = "dd/MM/yyyy HH:mm:ss.SSS";
 
-  public static String formatDA(String date, String option) {
-    LocalDate localDate = DateTimeUtils.parseDA(date);
-    switch (option) {
-      case "day":
-        localDate = localDate.minusDays(localDate.getDayOfMonth() - 1L);
-        break;
-      case "month_day":
-        localDate = localDate.minusDays(localDate.getDayOfMonth() - 1L);
-        localDate = localDate.minusMonths(localDate.getMonthValue() - 1L);
-    }
+	public static final String FORMAT_DDMMYYYY_SLASH_HHMMSS_2POINTS_SSSSSS_POINT = "dd/MM/yyyy HH:mm:ss.SSSSSS";
 
-    return localDate.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-  }
+	/**
+	 * Build DateTimeFormatter
+	 * @param format Date format
+	 * @return DateTimeFormatter
+	 */
+	public static DateTimeFormatter dateTimeFormatter(final String format) {
+		return new DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern(format).toFormatter(Locale.ENGLISH);
+	}
 
-  public static String formatDT(String dateTime, String option) {
+	/**
+	 * Format a LocalDate to a specifig
+	 * @param date Date to format
+	 * @param format Format to apply
+	 * @return Formatted date String
+	 */
+	public static String format(final LocalDate date, final String format) {
+		return date == null ? null : date.format(dateTimeFormatter(format));
+	}
 
-    Temporal localDateTime = DateTimeUtils.parseDT(dateTime);
+	/**
+	 * Format a LocalDateTime to a specific format
+	 * @param dateTime Date to format
+	 * @param format Format to apply
+	 * @return Formatted date String
+	 */
+	public static String format(final LocalDateTime dateTime, final String format) {
+		return dateTime == null ? null : dateTime.format(dateTimeFormatter(format));
+	}
 
-    switch (option) {
-      case "day":
-        localDateTime =
-            localDateTime.minus(localDateTime.get(ChronoField.DAY_OF_MONTH) - 1L, ChronoUnit.DAYS);
-        break;
-      case "month_day":
-        localDateTime =
-            localDateTime.minus(localDateTime.get(ChronoField.DAY_OF_MONTH) - 1L, ChronoUnit.DAYS);
-        localDateTime =
-            localDateTime.minus(
-                localDateTime.get(ChronoField.MONTH_OF_YEAR) - 1L, ChronoUnit.MONTHS);
-    }
+	public static String formatDA(String date, String option) {
+		LocalDate localDate = DateTimeUtils.parseDA(date);
+		switch (option) {
+		case "day":
+			localDate = localDate.minusDays(localDate.getDayOfMonth() - 1L);
+			break;
+		case "month_day":
+			localDate = localDate.minusDays(localDate.getDayOfMonth() - 1L);
+			localDate = localDate.minusMonths(localDate.getMonthValue() - 1L);
+		}
 
-    return DateTimeUtils.formatDT(localDateTime);
-  }
+		return localDate.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+	}
 
-  public static String format(Attributes dcm, int tag, List<ArgumentEntity> argumentEntities)
-      throws DateTimeException {
-    try {
-      verifyPatternArguments(argumentEntities);
-    } catch (IllegalArgumentException e) {
-      throw e;
-    }
+	public static String formatDT(String dateTime, String option) {
 
-    String dcmElValue = dcm.getString(tag);
-    String format = "";
+		Temporal localDateTime = DateTimeUtils.parseDT(dateTime);
 
-    for (ArgumentEntity argumentEntity : argumentEntities) {
-      final String key = argumentEntity.getKey();
-      final String value = argumentEntity.getValue();
+		switch (option) {
+		case "day":
+			localDateTime = localDateTime.minus(localDateTime.get(ChronoField.DAY_OF_MONTH) - 1L, ChronoUnit.DAYS);
+			break;
+		case "month_day":
+			localDateTime = localDateTime.minus(localDateTime.get(ChronoField.DAY_OF_MONTH) - 1L, ChronoUnit.DAYS);
+			localDateTime = localDateTime.minus(localDateTime.get(ChronoField.MONTH_OF_YEAR) - 1L, ChronoUnit.MONTHS);
+		}
 
-      try {
-        if (key.equals("remove")) {
-          format = value;
-        }
-      } catch (Exception e) {
-        LOGGER.error("args {} is not correct", value, e);
-      }
-    }
-    if (dcmElValue != null) {
-      return switch (dcm.getVR(tag)) {
-        case DA -> formatDA(dcmElValue, format);
-        case DT -> formatDT(dcmElValue, format);
-        default -> null;
-      };
-    } else {
-      return null;
-    }
-  }
+		return DateTimeUtils.formatDT(localDateTime);
+	}
 
-  public static void verifyPatternArguments(List<ArgumentEntity> argumentEntities)
-      throws IllegalArgumentException {
-    List<String> listValue = new ArrayList<>();
-    listValue.add("day");
-    listValue.add("month_day");
+	public static String format(Attributes dcm, int tag, List<ArgumentEntity> argumentEntities)
+			throws DateTimeException {
+		try {
+			verifyPatternArguments(argumentEntities);
+		}
+		catch (IllegalArgumentException e) {
+			throw e;
+		}
 
-    if (argumentEntities.stream()
-        .noneMatch(
-            argument ->
-                argument.getKey().equals("remove") && listValue.contains(argument.getValue()))) {
-      IllegalArgumentException missingParameters =
-          new IllegalArgumentException(
-              "Cannot build the option date_format, arguments are not correct");
-      LOGGER.error("Missing argument, the class need pattern as parameters", missingParameters);
-      throw missingParameters;
-    }
-  }
+		String dcmElValue = dcm.getString(tag);
+		String format = "";
+
+		for (ArgumentEntity argumentEntity : argumentEntities) {
+			final String key = argumentEntity.getKey();
+			final String value = argumentEntity.getValue();
+
+			try {
+				if (key.equals("remove")) {
+					format = value;
+				}
+			}
+			catch (Exception e) {
+				LOGGER.error("args {} is not correct", value, e);
+			}
+		}
+		if (dcmElValue != null) {
+			return switch (dcm.getVR(tag)) {
+			case DA -> formatDA(dcmElValue, format);
+			case DT -> formatDT(dcmElValue, format);
+			default -> null;
+			};
+		}
+		else {
+			return null;
+		}
+	}
+
+	public static void verifyPatternArguments(List<ArgumentEntity> argumentEntities) throws IllegalArgumentException {
+		List<String> listValue = new ArrayList<>();
+		listValue.add("day");
+		listValue.add("month_day");
+
+		if (argumentEntities.stream()
+				.noneMatch(argument -> argument.getKey().equals("remove") && listValue.contains(argument.getValue()))) {
+			IllegalArgumentException missingParameters = new IllegalArgumentException(
+					"Cannot build the option date_format, arguments are not correct");
+			LOGGER.error("Missing argument, the class need pattern as parameters", missingParameters);
+			throw missingParameters;
+		}
+	}
+
 }

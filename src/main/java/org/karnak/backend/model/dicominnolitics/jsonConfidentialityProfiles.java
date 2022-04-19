@@ -19,46 +19,53 @@ import org.karnak.backend.model.action.ReplaceNull;
 import org.karnak.backend.model.action.UID;
 
 public class jsonConfidentialityProfiles {
-  private String id;
-  private String name;
-  private String tag;
-  private String basicProfile;
-  private String stdCompIOD;
-  private String cleanDescOpt;
 
-  public String getId() {
-    return id;
-  }
+	private String id;
 
-  public String getName() {
-    return name;
-  }
+	private String name;
 
-  public String getTag() {
-    return tag;
-  }
+	private String tag;
 
-  public ActionItem getBasicProfile() {
-    return convertAction(basicProfile);
-  }
+	private String basicProfile;
 
-  public ActionItem getStdCompIOD() {
-    return convertAction(stdCompIOD);
-  }
+	private String stdCompIOD;
 
-  public ActionItem getCleanDescOpt() {
-    return convertAction(cleanDescOpt);
-  }
+	private String cleanDescOpt;
 
-  private static ActionItem convertAction(String strAction) {
-    return switch (strAction) {
-      case "D" -> new DefaultDummy("DDum");
-      case "Z" -> new ReplaceNull("Z");
-      case "X" -> new Remove("X");
-      case "K" -> new Keep("K");
-      case "U" -> new UID("U");
-      case "Z/D", "X/D", "X/Z/D", "X/Z", "X/Z/U", "X/Z/U*" -> new MultipleActions(strAction);
-      default -> new Replace("D");
-    };
-  }
+	public String getId() {
+		return id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getTag() {
+		return tag;
+	}
+
+	public ActionItem getBasicProfile() {
+		return convertAction(basicProfile);
+	}
+
+	public ActionItem getStdCompIOD() {
+		return convertAction(stdCompIOD);
+	}
+
+	public ActionItem getCleanDescOpt() {
+		return convertAction(cleanDescOpt);
+	}
+
+	private static ActionItem convertAction(String strAction) {
+		return switch (strAction) {
+		case "D" -> new DefaultDummy("DDum");
+		case "Z" -> new ReplaceNull("Z");
+		case "X" -> new Remove("X");
+		case "K" -> new Keep("K");
+		case "U" -> new UID("U");
+		case "Z/D", "X/D", "X/Z/D", "X/Z", "X/Z/U", "X/Z/U*" -> new MultipleActions(strAction);
+		default -> new Replace("D");
+		};
+	}
+
 }

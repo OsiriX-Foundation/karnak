@@ -23,111 +23,102 @@ import org.springframework.stereotype.Service;
 @Service
 public class DestinationService {
 
-  // Repositories
-  private final DestinationRepo destinationRepo;
+	// Repositories
+	private final DestinationRepo destinationRepo;
 
-  // Services
-  private final ForwardNodeService forwardNodeService;
-  private final KheopsAlbumsService kheopsAlbumsService;
+	// Services
+	private final ForwardNodeService forwardNodeService;
 
-  // Event publisher
-  private final ApplicationEventPublisher applicationEventPublisher;
+	private final KheopsAlbumsService kheopsAlbumsService;
 
-  /**
-   * Autowired constructor
-   *
-   * @param destinationRepo Destination repository
-   * @param forwardNodeService ForwardNode Service
-   * @param kheopsAlbumsService Kheops Albums Service
-   * @param applicationEventPublisher ApplicationEventPublisher
-   */
-  @Autowired
-  public DestinationService(
-      final DestinationRepo destinationRepo,
-      final ForwardNodeService forwardNodeService,
-      final KheopsAlbumsService kheopsAlbumsService,
-      final ApplicationEventPublisher applicationEventPublisher) {
-    this.destinationRepo = destinationRepo;
-    this.forwardNodeService = forwardNodeService;
-    this.kheopsAlbumsService = kheopsAlbumsService;
-    this.applicationEventPublisher = applicationEventPublisher;
-  }
+	// Event publisher
+	private final ApplicationEventPublisher applicationEventPublisher;
 
-  /**
-   * Store given Destination to the backing destinationEntity service.
-   *
-   * @param forwardNodeEntity ForwardNode Entity
-   * @param destinationEntity the updated or new destinationEntity
-   */
-  public DestinationEntity save(
-      ForwardNodeEntity forwardNodeEntity, DestinationEntity destinationEntity) {
-    DestinationEntity dataUpdated =
-        forwardNodeService.updateDestination(forwardNodeEntity, destinationEntity);
+	/**
+	 * Autowired constructor
+	 * @param destinationRepo Destination repository
+	 * @param forwardNodeService ForwardNode Service
+	 * @param kheopsAlbumsService Kheops Albums Service
+	 * @param applicationEventPublisher ApplicationEventPublisher
+	 */
+	@Autowired
+	public DestinationService(final DestinationRepo destinationRepo, final ForwardNodeService forwardNodeService,
+			final KheopsAlbumsService kheopsAlbumsService, final ApplicationEventPublisher applicationEventPublisher) {
+		this.destinationRepo = destinationRepo;
+		this.forwardNodeService = forwardNodeService;
+		this.kheopsAlbumsService = kheopsAlbumsService;
+		this.applicationEventPublisher = applicationEventPublisher;
+	}
 
-    if (destinationEntity.getId() != null) {
-      dataUpdated = removeValuesOnDisabledDesidentification(destinationEntity);
-    }
+	/**
+	 * Store given Destination to the backing destinationEntity service.
+	 * @param forwardNodeEntity ForwardNode Entity
+	 * @param destinationEntity the updated or new destinationEntity
+	 */
+	public DestinationEntity save(ForwardNodeEntity forwardNodeEntity, DestinationEntity destinationEntity) {
+		DestinationEntity dataUpdated = forwardNodeService.updateDestination(forwardNodeEntity, destinationEntity);
 
-    // Refresh last transfer and email last check before saving
-    refreshLastTransferEmailLastCheck(dataUpdated);
+		if (destinationEntity.getId() != null) {
+			dataUpdated = removeValuesOnDisabledDesidentification(destinationEntity);
+		}
 
-    destinationRepo.saveAndFlush(dataUpdated);
-    kheopsAlbumsService.updateSwitchingAlbumsFromDestination(destinationEntity);
-    return dataUpdated;
-  }
+		// Refresh last transfer and email last check before saving
+		refreshLastTransferEmailLastCheck(dataUpdated);
 
-  /**
-   * Refresh values from DB for email last check and last transfer
-   *
-   * @param destinationEntity Entity to update
-   */
-  public void refreshLastTransferEmailLastCheck(DestinationEntity destinationEntity) {
-    if (destinationEntity.getId() != null) {
-      Optional<DestinationEntity> refreshedDestinationEntityOpt =
-          destinationRepo.findById(destinationEntity.getId());
-      if (refreshedDestinationEntityOpt.isPresent()) {
-        DestinationEntity destinationEntityRefreshed = refreshedDestinationEntityOpt.get();
-        destinationEntity.setLastTransfer(destinationEntityRefreshed.getLastTransfer());
-        destinationEntity.setEmailLastCheck(destinationEntityRefreshed.getEmailLastCheck());
-      }
-    }
-  }
+		destinationRepo.saveAndFlush(dataUpdated);
+		kheopsAlbumsService.updateSwitchingAlbumsFromDestination(destinationEntity);
+		return dataUpdated;
+	}
 
-  private DestinationEntity removeValuesOnDisabledDesidentification(
-      DestinationEntity destinationEntity) {
-    if (!destinationEntity.isDesidentification()) {
-      destinationEntity.setProjectEntity(null);
-    }
-    return destinationEntity;
-  }
+	/**
+	 * Refresh values from DB for email last check and last transfer
+	 * @param destinationEntity Entity to update
+	 */
+	public void refreshLastTransferEmailLastCheck(DestinationEntity destinationEntity) {
+		if (destinationEntity.getId() != null) {
+			Optional<DestinationEntity> refreshedDestinationEntityOpt = destinationRepo
+					.findById(destinationEntity.getId());
+			if (refreshedDestinationEntityOpt.isPresent()) {
+				DestinationEntity destinationEntityRefreshed = refreshedDestinationEntityOpt.get();
+				destinationEntity.setLastTransfer(destinationEntityRefreshed.getLastTransfer());
+				destinationEntity.setEmailLastCheck(destinationEntityRefreshed.getEmailLastCheck());
+			}
+		}
+	}
 
-  /**
-   * Delete given data from the backing data service.
-   *
-   * @param destinationEntity the data to be deleted
-   */
-  public void delete(DestinationEntity destinationEntity) {
-    ForwardNodeEntity forwardNodeEntityOfDest = destinationEntity.getForwardNodeEntity();
-    if (forwardNodeEntityOfDest != null) {
-      forwardNodeService.deleteDestination(forwardNodeEntityOfDest, destinationEntity);
-    }
-  }
+	private DestinationEntity removeValuesOnDisabledDesidentification(DestinationEntity destinationEntity) {
+		if (!destinationEntity.isDesidentification()) {
+			destinationEntity.setProjectEntity(null);
+		}
+		return destinationEntity;
+	}
 
-  public ApplicationEventPublisher getApplicationEventPublisher() {
-    return applicationEventPublisher;
-  }
+	/**
+	 * Delete given data from the backing data service.
+	 * @param destinationEntity the data to be deleted
+	 */
+	public void delete(DestinationEntity destinationEntity) {
+		ForwardNodeEntity forwardNodeEntityOfDest = destinationEntity.getForwardNodeEntity();
+		if (forwardNodeEntityOfDest != null) {
+			forwardNodeService.deleteDestination(forwardNodeEntityOfDest, destinationEntity);
+		}
+	}
 
-  /**
-   * Retrieve destinations of a forward node
-   *
-   * @param forwardNodeEntity forward node
-   * @return destinations found
-   */
-  public Collection<DestinationEntity> retrieveDestinations(ForwardNodeEntity forwardNodeEntity) {
-    return forwardNodeService.getAllDestinations(forwardNodeEntity);
-  }
+	public ApplicationEventPublisher getApplicationEventPublisher() {
+		return applicationEventPublisher;
+	}
 
-  public List<DestinationEntity> retrieveDestinationsFromIds(List<Long> ids) {
-    return destinationRepo.findAllById(ids);
-  }
+	/**
+	 * Retrieve destinations of a forward node
+	 * @param forwardNodeEntity forward node
+	 * @return destinations found
+	 */
+	public Collection<DestinationEntity> retrieveDestinations(ForwardNodeEntity forwardNodeEntity) {
+		return forwardNodeService.getAllDestinations(forwardNodeEntity);
+	}
+
+	public List<DestinationEntity> retrieveDestinationsFromIds(List<Long> ids) {
+		return destinationRepo.findAllById(ids);
+	}
+
 }

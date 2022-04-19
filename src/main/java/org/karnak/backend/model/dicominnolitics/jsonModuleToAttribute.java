@@ -11,34 +11,40 @@ package org.karnak.backend.model.dicominnolitics;
 
 public class jsonModuleToAttribute {
 
-  private String moduleId;
-  private String path;
-  private String tag;
-  private String type;
-  private String linkToStandard;
-  private String description;
+	private String moduleId;
 
-  public String getModuleId() {
-    return moduleId;
-  }
+	private String path;
 
-  public String getPath() {
-    return path;
-  }
+	private String tag;
 
-  public String getTag() {
-    return tag;
-  }
+	private String type;
 
-  public String getType() {
-    return type;
-  }
+	private String linkToStandard;
 
-  public String getLinkToStandard() {
-    return linkToStandard;
-  }
+	private String description;
 
-  public String getDescription() {
-    return description;
-  }
+	public String getModuleId() {
+		return moduleId;
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public String getTag() {
+		return tag;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public String getLinkToStandard() {
+		return linkToStandard;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
 }

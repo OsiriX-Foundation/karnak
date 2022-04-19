@@ -17,22 +17,24 @@ import org.karnak.backend.model.dicom.Message;
 
 public abstract class AbstractDialog extends Composite<Dialog> {
 
-  private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-  protected VerticalLayout mainLayout;
-  private MessageBox messageBox;
+	protected VerticalLayout mainLayout;
 
-  protected abstract void createMainLayout();
+	private MessageBox messageBox;
 
-  public void displayMessage(Message message) {
-    removeMessage();
-    messageBox = new MessageBox(message, MessageType.STATIC_MESSAGE);
-    mainLayout.addComponentAtIndex(1, messageBox);
-  }
+	protected abstract void createMainLayout();
 
-  public void removeMessage() {
-    if (messageBox != null) {
-      mainLayout.remove(messageBox);
-    }
-  }
+	public void displayMessage(Message message) {
+		removeMessage();
+		messageBox = new MessageBox(message, MessageType.STATIC_MESSAGE);
+		mainLayout.addComponentAtIndex(1, messageBox);
+	}
+
+	public void removeMessage() {
+		if (messageBox != null) {
+			mainLayout.remove(messageBox);
+		}
+	}
+
 }

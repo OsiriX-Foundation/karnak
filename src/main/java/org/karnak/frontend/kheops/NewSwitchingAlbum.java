@@ -20,79 +20,76 @@ import org.karnak.backend.data.entity.KheopsAlbumsEntity;
 
 public class NewSwitchingAlbum extends Div {
 
-  private final Binder<KheopsAlbumsEntity> binder;
+	private final Binder<KheopsAlbumsEntity> binder;
 
-  private final Button buttonAdd;
-  private final TextField textAuthorizationDestination;
-  private final TextField textAuthorizationSource;
-  private final TextField textCondition;
-  private final TextField textUrlAPI;
-  private final Span textErrorConditionMsg;
-  private final TextFieldsBindSwitchingAlbum textFieldsBindSwitchingAlbum;
+	private final Button buttonAdd;
 
-  public NewSwitchingAlbum() {
-    setWidthFull();
+	private final TextField textAuthorizationDestination;
 
-    textFieldsBindSwitchingAlbum = new TextFieldsBindSwitchingAlbum();
-    binder = textFieldsBindSwitchingAlbum.getBinder();
-    buttonAdd = new Button("Add");
-    textAuthorizationDestination = textFieldsBindSwitchingAlbum.getTextAuthorizationDestination();
-    textAuthorizationSource = textFieldsBindSwitchingAlbum.getTextAuthorizationSource();
-    textCondition = textFieldsBindSwitchingAlbum.getTextCondition();
-    textErrorConditionMsg = textFieldsBindSwitchingAlbum.getTextErrorConditionMsg();
-    textUrlAPI = textFieldsBindSwitchingAlbum.getTextUrlAPI();
+	private final TextField textAuthorizationSource;
 
-    setElements();
-    VerticalLayout verticalLayout = new VerticalLayout();
-    verticalLayout.add(
-        new HorizontalLayout(
-            textUrlAPI,
-            textAuthorizationDestination,
-            textAuthorizationSource,
-            textCondition,
-            buttonAdd));
-    verticalLayout.add(new HorizontalLayout(textErrorConditionMsg));
-    add(verticalLayout);
-    binder.bindInstanceFields(this);
-  }
+	private final TextField textCondition;
 
-  private void setElements() {
-    textErrorConditionMsg
-        .getStyle()
-        .set("margin-left", "calc(var(--lumo-border-radius-m) / 4")
-        .set("font-size", "var(--lumo-font-size-xs)")
-        .set("line-height", "var(--lumo-line-height-xs)")
-        .set("color", "var(--lumo-error-text-color)")
-        .set("will-change", "max-height")
-        .set("transition", "0.4s max-height")
-        .set("max-height", "5em");
-    textUrlAPI.setWidth("20%");
-    textUrlAPI.getStyle().set("padding-right", "10px");
-    textUrlAPI.setPlaceholder("Url API");
-    textAuthorizationDestination.setWidth("20%");
-    textAuthorizationDestination.getStyle().set("padding-right", "10px");
-    textAuthorizationDestination.setPlaceholder("Valid token of destination");
-    textAuthorizationSource.setWidth("20%");
-    textAuthorizationSource.getStyle().set("padding-right", "10px");
-    textAuthorizationSource.setPlaceholder("Valid token of source");
-    textCondition.setWidth("20%");
-    textCondition.getStyle().set("padding-right", "10px");
-    textCondition.setPlaceholder("Condition");
-  }
+	private final TextField textUrlAPI;
 
-  public Button getButtonAdd() {
-    return buttonAdd;
-  }
+	private final Span textErrorConditionMsg;
 
-  public Span getTextErrorConditionMsg() {
-    return textErrorConditionMsg;
-  }
+	private final TextFieldsBindSwitchingAlbum textFieldsBindSwitchingAlbum;
 
-  public void clear() {
-    binder.readBean(new KheopsAlbumsEntity());
-  }
+	public NewSwitchingAlbum() {
+		setWidthFull();
 
-  public Binder<KheopsAlbumsEntity> getBinder() {
-    return binder;
-  }
+		textFieldsBindSwitchingAlbum = new TextFieldsBindSwitchingAlbum();
+		binder = textFieldsBindSwitchingAlbum.getBinder();
+		buttonAdd = new Button("Add");
+		textAuthorizationDestination = textFieldsBindSwitchingAlbum.getTextAuthorizationDestination();
+		textAuthorizationSource = textFieldsBindSwitchingAlbum.getTextAuthorizationSource();
+		textCondition = textFieldsBindSwitchingAlbum.getTextCondition();
+		textErrorConditionMsg = textFieldsBindSwitchingAlbum.getTextErrorConditionMsg();
+		textUrlAPI = textFieldsBindSwitchingAlbum.getTextUrlAPI();
+
+		setElements();
+		VerticalLayout verticalLayout = new VerticalLayout();
+		verticalLayout.add(new HorizontalLayout(textUrlAPI, textAuthorizationDestination, textAuthorizationSource,
+				textCondition, buttonAdd));
+		verticalLayout.add(new HorizontalLayout(textErrorConditionMsg));
+		add(verticalLayout);
+		binder.bindInstanceFields(this);
+	}
+
+	private void setElements() {
+		textErrorConditionMsg.getStyle().set("margin-left", "calc(var(--lumo-border-radius-m) / 4")
+				.set("font-size", "var(--lumo-font-size-xs)").set("line-height", "var(--lumo-line-height-xs)")
+				.set("color", "var(--lumo-error-text-color)").set("will-change", "max-height")
+				.set("transition", "0.4s max-height").set("max-height", "5em");
+		textUrlAPI.setWidth("20%");
+		textUrlAPI.getStyle().set("padding-right", "10px");
+		textUrlAPI.setPlaceholder("Url API");
+		textAuthorizationDestination.setWidth("20%");
+		textAuthorizationDestination.getStyle().set("padding-right", "10px");
+		textAuthorizationDestination.setPlaceholder("Valid token of destination");
+		textAuthorizationSource.setWidth("20%");
+		textAuthorizationSource.getStyle().set("padding-right", "10px");
+		textAuthorizationSource.setPlaceholder("Valid token of source");
+		textCondition.setWidth("20%");
+		textCondition.getStyle().set("padding-right", "10px");
+		textCondition.setPlaceholder("Condition");
+	}
+
+	public Button getButtonAdd() {
+		return buttonAdd;
+	}
+
+	public Span getTextErrorConditionMsg() {
+		return textErrorConditionMsg;
+	}
+
+	public void clear() {
+		binder.readBean(new KheopsAlbumsEntity());
+	}
+
+	public Binder<KheopsAlbumsEntity> getBinder() {
+		return binder;
+	}
+
 }

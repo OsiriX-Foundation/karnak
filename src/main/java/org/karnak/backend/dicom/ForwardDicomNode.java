@@ -15,75 +15,79 @@ import org.weasis.dicom.param.DicomNode;
 
 public class ForwardDicomNode extends DicomNode {
 
-  private final String forwardAETitle;
-  private final Set<DicomNode> acceptedSourceNodes;
-  private final Long id;
+	private final String forwardAETitle;
 
-  public ForwardDicomNode(DicomNode dicomNode) {
-    this(dicomNode.getAet(), dicomNode.getHostname());
-  }
+	private final Set<DicomNode> acceptedSourceNodes;
 
-  public ForwardDicomNode(String fwdAeTitle) {
-    this(fwdAeTitle, null);
-  }
+	private final Long id;
 
-  public ForwardDicomNode(String fwdAeTitle, String fwdHostname) {
-    this(fwdAeTitle, fwdHostname, null);
-  }
+	public ForwardDicomNode(DicomNode dicomNode) {
+		this(dicomNode.getAet(), dicomNode.getHostname());
+	}
 
-  public ForwardDicomNode(String fwdAeTitle, String fwdHostname, Long id) {
-    super(fwdAeTitle, fwdHostname, null);
-    this.forwardAETitle = fwdAeTitle;
-    this.id = id;
-    this.acceptedSourceNodes = new HashSet<>();
-  }
+	public ForwardDicomNode(String fwdAeTitle) {
+		this(fwdAeTitle, null);
+	}
 
-  public void addAcceptedSourceNode(String srcAeTitle) {
-    addAcceptedSourceNode(srcAeTitle, null);
-  }
+	public ForwardDicomNode(String fwdAeTitle, String fwdHostname) {
+		this(fwdAeTitle, fwdHostname, null);
+	}
 
-  public void addAcceptedSourceNode(String srcAeTitle, String srcHostname) {
-    acceptedSourceNodes.add(
-        new DicomNode(null, srcAeTitle, srcHostname, null, srcHostname != null));
-  }
+	public ForwardDicomNode(String fwdAeTitle, String fwdHostname, Long id) {
+		super(fwdAeTitle, fwdHostname, null);
+		this.forwardAETitle = fwdAeTitle;
+		this.id = id;
+		this.acceptedSourceNodes = new HashSet<>();
+	}
 
-  public void addAcceptedSourceNode(Long id, String srcAeTitle, String srcHostname) {
-    acceptedSourceNodes.add(new DicomNode(id, srcAeTitle, srcHostname, null, srcHostname != null));
-  }
+	public void addAcceptedSourceNode(String srcAeTitle) {
+		addAcceptedSourceNode(srcAeTitle, null);
+	}
 
-  public Set<DicomNode> getAcceptedSourceNodes() {
-    return acceptedSourceNodes;
-  }
+	public void addAcceptedSourceNode(String srcAeTitle, String srcHostname) {
+		acceptedSourceNodes.add(new DicomNode(null, srcAeTitle, srcHostname, null, srcHostname != null));
+	}
 
-  public String getForwardAETitle() {
-    return forwardAETitle;
-  }
+	public void addAcceptedSourceNode(Long id, String srcAeTitle, String srcHostname) {
+		acceptedSourceNodes.add(new DicomNode(id, srcAeTitle, srcHostname, null, srcHostname != null));
+	}
 
-  public Long getId() {
-    return id;
-  }
+	public Set<DicomNode> getAcceptedSourceNodes() {
+		return acceptedSourceNodes;
+	}
 
-  @Override
-  public String toString() {
-    return forwardAETitle;
-  }
+	public String getForwardAETitle() {
+		return forwardAETitle;
+	}
 
-  @Override
-  public int hashCode() {
-    final int prime = 31;
-    int result = super.hashCode();
-    result = prime * result + forwardAETitle.hashCode();
-    return result;
-  }
+	public Long getId() {
+		return id;
+	}
 
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) return true;
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) return false;
-    ForwardDicomNode other = (ForwardDicomNode) obj;
-    return forwardAETitle.equals(other.forwardAETitle);
-  }
+	@Override
+	public String toString() {
+		return forwardAETitle;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + forwardAETitle.hashCode();
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass())
+			return false;
+		ForwardDicomNode other = (ForwardDicomNode) obj;
+		return forwardAETitle.equals(other.forwardAETitle);
+	}
+
 }

@@ -23,30 +23,31 @@ import org.springframework.stereotype.Service;
 @Service
 public class WadoService {
 
-  @Autowired
-  public WadoService() {}
+	@Autowired
+	public WadoService() {
+	}
 
-  public String checkWado(List<WadoNode> nodes) throws InterruptedException, ExecutionException {
-    StringBuilder result = new StringBuilder();
+	public String checkWado(List<WadoNode> nodes) throws InterruptedException, ExecutionException {
+		StringBuilder result = new StringBuilder();
 
-    List<Future<String>> threadsResult = createThreadsResult(nodes);
-    for (Future<String> threadResult : threadsResult) {
-      result.append(threadResult.get());
-    }
+		List<Future<String>> threadsResult = createThreadsResult(nodes);
+		for (Future<String> threadResult : threadsResult) {
+			result.append(threadResult.get());
+		}
 
-    return result.toString();
-  }
+		return result.toString();
+	}
 
-  private List<Future<String>> createThreadsResult(List<WadoNode> nodes)
-      throws InterruptedException {
-    ExecutorService executorService = Executors.newFixedThreadPool(nodes.size());
+	private List<Future<String>> createThreadsResult(List<WadoNode> nodes) throws InterruptedException {
+		ExecutorService executorService = Executors.newFixedThreadPool(nodes.size());
 
-    List<WadoResponse> threads = new ArrayList<>();
+		List<WadoResponse> threads = new ArrayList<>();
 
-    for (WadoNode node : nodes) {
-      WadoResponse checkWadoThread = new WadoResponse(node);
-      threads.add(checkWadoThread);
-    }
-    return executorService.invokeAll(threads);
-  }
+		for (WadoNode node : nodes) {
+			WadoResponse checkWadoThread = new WadoResponse(node);
+			threads.add(checkWadoThread);
+		}
+		return executorService.invokeAll(threads);
+	}
+
 }

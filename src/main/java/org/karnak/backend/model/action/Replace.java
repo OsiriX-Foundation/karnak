@@ -16,32 +16,28 @@ import org.slf4j.MDC;
 
 public class Replace extends AbstractAction {
 
-  public Replace(String symbol) {
-    super(symbol);
-  }
+	public Replace(String symbol) {
+		super(symbol);
+	}
 
-  public Replace(String symbol, String dummyValue) {
-    super(symbol, dummyValue);
-  }
+	public Replace(String symbol, String dummyValue) {
+		super(symbol, dummyValue);
+	}
 
-  @Override
-  public void execute(Attributes dcm, int tag, HMAC hmac) {
-    if (LOGGER.isTraceEnabled()) {
-      String tagValueIn = AbstractAction.getStringValue(dcm, tag);
-      LOGGER.trace(
-          CLINICAL_MARKER,
-          PATTERN_WITH_INOUT,
-          MDC.get("SOPInstanceUID"),
-          TagUtils.toString(tag),
-          symbol,
-          tagValueIn,
-          dummyValue);
-    }
+	@Override
+	public void execute(Attributes dcm, int tag, HMAC hmac) {
+		if (LOGGER.isTraceEnabled()) {
+			String tagValueIn = AbstractAction.getStringValue(dcm, tag);
+			LOGGER.trace(CLINICAL_MARKER, PATTERN_WITH_INOUT, MDC.get("SOPInstanceUID"), TagUtils.toString(tag), symbol,
+					tagValueIn, dummyValue);
+		}
 
-    if (dummyValue != null) {
-      dcm.setString(tag, dcm.getVR(tag), dummyValue);
-    } else {
-      dcm.setNull(tag, dcm.getVR(tag));
-    }
-  }
+		if (dummyValue != null) {
+			dcm.setString(tag, dcm.getVR(tag), dummyValue);
+		}
+		else {
+			dcm.setNull(tag, dcm.getVR(tag));
+		}
+	}
+
 }

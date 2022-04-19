@@ -19,30 +19,33 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DICOMType {
-  private static final Logger LOGGER = LoggerFactory.getLogger(DICOMType.class);
 
-  public static String getBySOP(Attributes dcm, int tag) {
-    final StandardDICOM standardDICOM = AppConfig.getInstance().getStandardDICOM();
-    final String sopUID = MetadataDICOMObject.getValue(dcm, Tag.SOPClassUID);
-    final String tagPath = MetadataDICOMObject.getTagPath(dcm, tag);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DICOMType.class);
 
-    String currentType = null;
-    try {
-      List<ModuleAttribute> moduleAttribute = standardDICOM.getAttributesBySOP(sopUID, tagPath);
-      if (moduleAttribute.size() == 1) {
-        currentType = moduleAttribute.get(0).getType();
-      } else if (moduleAttribute.size() > 1) {
-        currentType = ModuleAttribute.getStrictedType(moduleAttribute);
-      } else {
-        LOGGER.warn(
-            String.format("Could not found the attribute %s in the SOP %s.", tagPath, sopUID));
-      }
-    } catch (StandardDICOMException standardDICOMException) {
-      LOGGER.error(
-          String.format(
-              "Could not find a DICOM type with the SOP %s and the attribute %s", sopUID, tagPath),
-          standardDICOMException);
-    }
-    return currentType;
-  }
+	public static String getBySOP(Attributes dcm, int tag) {
+		final StandardDICOM standardDICOM = AppConfig.getInstance().getStandardDICOM();
+		final String sopUID = MetadataDICOMObject.getValue(dcm, Tag.SOPClassUID);
+		final String tagPath = MetadataDICOMObject.getTagPath(dcm, tag);
+
+		String currentType = null;
+		try {
+			List<ModuleAttribute> moduleAttribute = standardDICOM.getAttributesBySOP(sopUID, tagPath);
+			if (moduleAttribute.size() == 1) {
+				currentType = moduleAttribute.get(0).getType();
+			}
+			else if (moduleAttribute.size() > 1) {
+				currentType = ModuleAttribute.getStrictedType(moduleAttribute);
+			}
+			else {
+				LOGGER.warn(String.format("Could not found the attribute %s in the SOP %s.", tagPath, sopUID));
+			}
+		}
+		catch (StandardDICOMException standardDICOMException) {
+			LOGGER.error(
+					String.format("Could not find a DICOM type with the SOP %s and the attribute %s", sopUID, tagPath),
+					standardDICOMException);
+		}
+		return currentType;
+	}
+
 }

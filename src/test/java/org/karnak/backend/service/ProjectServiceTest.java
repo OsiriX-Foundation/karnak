@@ -28,110 +28,105 @@ import org.springframework.context.ApplicationEventPublisher;
 
 class ProjectServiceTest {
 
-  // Application Event Publisher
-  private final ApplicationEventPublisher applicationEventPublisherMock =
-      Mockito.mock(ApplicationEventPublisher.class);
+	// Application Event Publisher
+	private final ApplicationEventPublisher applicationEventPublisherMock = Mockito
+			.mock(ApplicationEventPublisher.class);
 
-  // Repositories
-  private final ProjectRepo projectRepositoryMock = Mockito.mock(ProjectRepo.class);
+	// Repositories
+	private final ProjectRepo projectRepositoryMock = Mockito.mock(ProjectRepo.class);
 
-  // Service
-  private ProjectService projectService;
+	// Service
+	private ProjectService projectService;
 
-  @BeforeEach
-  public void setUp() {
-    // Init data
-    ProjectEntity projectEntity = new ProjectEntity();
-    projectEntity.setId(1L);
-    projectEntity.setName("projectEntityName");
+	@BeforeEach
+	public void setUp() {
+		// Init data
+		ProjectEntity projectEntity = new ProjectEntity();
+		projectEntity.setId(1L);
+		projectEntity.setName("projectEntityName");
 
-    // Mock repositories
-    Mockito.when(projectRepositoryMock.findAll())
-        .thenReturn(Collections.singletonList(projectEntity));
-    Mockito.when(projectRepositoryMock.findById(Mockito.anyLong()))
-        .thenReturn(Optional.of(projectEntity));
+		// Mock repositories
+		Mockito.when(projectRepositoryMock.findAll()).thenReturn(Collections.singletonList(projectEntity));
+		Mockito.when(projectRepositoryMock.findById(Mockito.anyLong())).thenReturn(Optional.of(projectEntity));
 
-    // Build mocked service
-    projectService = new ProjectService(projectRepositoryMock, applicationEventPublisherMock);
-  }
+		// Build mocked service
+		projectService = new ProjectService(projectRepositoryMock, applicationEventPublisherMock);
+	}
 
-  @Test
-  void should_call_save_from_repository() {
-    // Init data
-    ProjectEntity projectEntity = new ProjectEntity();
+	@Test
+	void should_call_save_from_repository() {
+		// Init data
+		ProjectEntity projectEntity = new ProjectEntity();
 
-    // Call service
-    projectService.save(projectEntity);
+		// Call service
+		projectService.save(projectEntity);
 
-    // Test results
-    Mockito.verify(projectRepositoryMock, Mockito.times(1))
-        .saveAndFlush(Mockito.any(ProjectEntity.class));
-  }
+		// Test results
+		Mockito.verify(projectRepositoryMock, Mockito.times(1)).saveAndFlush(Mockito.any(ProjectEntity.class));
+	}
 
-  @Test
-  void should_save_project_and_publish_event_for_each_destinations() {
-    // Init data
-    // Create project
-    ProjectEntity projectEntity = new ProjectEntity();
-    projectEntity.setId(1L);
-    // Set destinations
-    DestinationEntity destinationEntityFirst = new DestinationEntity();
-    DestinationEntity destinationEntitySecond = new DestinationEntity();
-    ForwardNodeEntity forwardNodeEntityFirst = new ForwardNodeEntity();
-    ForwardNodeEntity forwardNodeEntitySecond = new ForwardNodeEntity();
-    destinationEntityFirst.setForwardNodeEntity(forwardNodeEntityFirst);
-    destinationEntitySecond.setForwardNodeEntity(forwardNodeEntitySecond);
-    projectEntity.setDestinationEntities(
-        Arrays.asList(destinationEntityFirst, destinationEntitySecond));
+	@Test
+	void should_save_project_and_publish_event_for_each_destinations() {
+		// Init data
+		// Create project
+		ProjectEntity projectEntity = new ProjectEntity();
+		projectEntity.setId(1L);
+		// Set destinations
+		DestinationEntity destinationEntityFirst = new DestinationEntity();
+		DestinationEntity destinationEntitySecond = new DestinationEntity();
+		ForwardNodeEntity forwardNodeEntityFirst = new ForwardNodeEntity();
+		ForwardNodeEntity forwardNodeEntitySecond = new ForwardNodeEntity();
+		destinationEntityFirst.setForwardNodeEntity(forwardNodeEntityFirst);
+		destinationEntitySecond.setForwardNodeEntity(forwardNodeEntitySecond);
+		projectEntity.setDestinationEntities(Arrays.asList(destinationEntityFirst, destinationEntitySecond));
 
-    // Call service
-    projectService.update(projectEntity);
+		// Call service
+		projectService.update(projectEntity);
 
-    // Test results
-    Mockito.verify(projectRepositoryMock, Mockito.times(1))
-        .saveAndFlush(Mockito.any(ProjectEntity.class));
-    Mockito.verify(applicationEventPublisherMock, Mockito.times(2))
-        .publishEvent(Mockito.any(NodeEvent.class));
-  }
+		// Test results
+		Mockito.verify(projectRepositoryMock, Mockito.times(1)).saveAndFlush(Mockito.any(ProjectEntity.class));
+		Mockito.verify(applicationEventPublisherMock, Mockito.times(2)).publishEvent(Mockito.any(NodeEvent.class));
+	}
 
-  @Test
-  void should_call_delete_from_repository() {
-    // Init data
-    ProjectEntity projectEntity = new ProjectEntity();
-    projectEntity.setId(1L);
+	@Test
+	void should_call_delete_from_repository() {
+		// Init data
+		ProjectEntity projectEntity = new ProjectEntity();
+		projectEntity.setId(1L);
 
-    // Call service
-    projectService.remove(projectEntity);
+		// Call service
+		projectService.remove(projectEntity);
 
-    // Test results
-    Mockito.verify(projectRepositoryMock, Mockito.times(1)).deleteById(Mockito.anyLong());
-  }
+		// Test results
+		Mockito.verify(projectRepositoryMock, Mockito.times(1)).deleteById(Mockito.anyLong());
+	}
 
-  @Test
-  void should_retrieve_all_projects() {
-    // Init data
-    ProjectEntity projectEntity = new ProjectEntity();
-    projectEntity.setId(1L);
+	@Test
+	void should_retrieve_all_projects() {
+		// Init data
+		ProjectEntity projectEntity = new ProjectEntity();
+		projectEntity.setId(1L);
 
-    // Call service
-    List<ProjectEntity> projects = projectService.getAllProjects();
+		// Call service
+		List<ProjectEntity> projects = projectService.getAllProjects();
 
-    // Test results
-    Mockito.verify(projectRepositoryMock, Mockito.times(1)).findAll();
-    assertNotNull(projects);
-    assertEquals(1, projects.size());
-    assertEquals("projectEntityName", projects.get(0).getName());
-  }
+		// Test results
+		Mockito.verify(projectRepositoryMock, Mockito.times(1)).findAll();
+		assertNotNull(projects);
+		assertEquals(1, projects.size());
+		assertEquals("projectEntityName", projects.get(0).getName());
+	}
 
-  @Test
-  void should_retrieve_project_by_id() {
-    // Call service
-    ProjectEntity projectEntity = projectService.retrieveProject(1L);
+	@Test
+	void should_retrieve_project_by_id() {
+		// Call service
+		ProjectEntity projectEntity = projectService.retrieveProject(1L);
 
-    // Test results
-    Mockito.verify(projectRepositoryMock, Mockito.times(1)).findById(Mockito.anyLong());
-    assertNotNull(projectEntity);
-    assertEquals(Long.valueOf(1), projectEntity.getId());
-    assertEquals("projectEntityName", projectEntity.getName());
-  }
+		// Test results
+		Mockito.verify(projectRepositoryMock, Mockito.times(1)).findById(Mockito.anyLong());
+		assertNotNull(projectEntity);
+		assertEquals(Long.valueOf(1), projectEntity.getId());
+		assertEquals("projectEntityName", projectEntity.getName());
+	}
+
 }

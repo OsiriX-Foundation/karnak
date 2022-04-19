@@ -15,54 +15,59 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 
 public class ButtonSaveDeleteCancel extends HorizontalLayout {
 
-  private final Button save;
-  private final Button delete;
-  private final Button cancel;
+	private final Button save;
 
-  private final String LABEL_SAVE = "Save";
-  private final String LABEL_CANCEL = "Cancel";
-  private final String LABEL_DELETE = "Delete";
+	private final Button delete;
 
-  public ButtonSaveDeleteCancel() {
-    save = new Button(LABEL_SAVE);
-    cancel = new Button(LABEL_CANCEL);
-    delete = new Button(LABEL_DELETE);
+	private final Button cancel;
 
-    add(save, delete, cancel);
-    setButtonSave();
-    setButtonCancel();
-    setButtonDelete();
-  }
+	private final String LABEL_SAVE = "Save";
 
-  private void setButtonSave() {
-    save.setWidth("100%");
-    save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-  }
+	private final String LABEL_CANCEL = "Cancel";
 
-  private void setButtonCancel() {
-    cancel.setWidth("100%");
-  }
+	private final String LABEL_DELETE = "Delete";
 
-  private void setButtonDelete() {
-    delete.setWidth("100%");
-    delete.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
-  }
+	public ButtonSaveDeleteCancel() {
+		save = new Button(LABEL_SAVE);
+		cancel = new Button(LABEL_CANCEL);
+		delete = new Button(LABEL_DELETE);
 
-  public void setEnabled(boolean enabled) {
-    save.setEnabled(enabled);
-    delete.setEnabled(enabled);
-    cancel.setEnabled(enabled);
-  }
+		add(save, delete, cancel);
+		setButtonSave();
+		setButtonCancel();
+		setButtonDelete();
+	}
 
-  public Button getSave() {
-    return save;
-  }
+	private void setButtonSave() {
+		save.setWidth("100%");
+		save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+	}
 
-  public Button getDelete() {
-    return delete;
-  }
+	private void setButtonCancel() {
+		cancel.setWidth("100%");
+	}
 
-  public Button getCancel() {
-    return cancel;
-  }
+	private void setButtonDelete() {
+		delete.setWidth("100%");
+		delete.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
+	}
+
+	public void setEnabled(boolean enabled) {
+		save.setEnabled(enabled);
+		delete.setEnabled(enabled);
+		cancel.setEnabled(enabled);
+	}
+
+	public Button getSave() {
+		return save;
+	}
+
+	public Button getDelete() {
+		return delete;
+	}
+
+	public Button getCancel() {
+		return cancel;
+	}
+
 }

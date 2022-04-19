@@ -21,76 +21,79 @@ import javax.persistence.Table;
 @Table(name = "sop_class_uid")
 public class SOPClassUIDEntity implements Serializable {
 
-  private static final long serialVersionUID = 2885426916053925842L;
+	private static final long serialVersionUID = 2885426916053925842L;
 
-  private Long id;
-  private String ciod;
-  private String uid;
-  private String name;
+	private Long id;
 
-  public SOPClassUIDEntity() {}
+	private String ciod;
 
-  public SOPClassUIDEntity(String ciod, String uid, String name) {
-    this.ciod = ciod;
-    this.uid = uid;
-    this.name = name;
-  }
+	private String uid;
 
-  public SOPClassUIDEntity(String ciod) {
-    this.ciod = ciod;
-  }
+	private String name;
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  public Long getId() {
-    return id;
-  }
+	public SOPClassUIDEntity() {
+	}
 
-  public void setId(Long id) {
-    this.id = id;
-  }
+	public SOPClassUIDEntity(String ciod, String uid, String name) {
+		this.ciod = ciod;
+		this.uid = uid;
+		this.name = name;
+	}
 
-  public String getCiod() {
-    return ciod;
-  }
+	public SOPClassUIDEntity(String ciod) {
+		this.ciod = ciod;
+	}
 
-  public void setCiod(String ciod) {
-    this.ciod = ciod;
-  }
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	public Long getId() {
+		return id;
+	}
 
-  public String getUid() {
-    return uid;
-  }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-  public void setUid(String uid) {
-    this.uid = uid;
-  }
+	public String getCiod() {
+		return ciod;
+	}
 
-  public String getName() {
-    return name;
-  }
+	public void setCiod(String ciod) {
+		this.ciod = ciod;
+	}
 
-  public void setName(String name) {
-    this.name = name;
-  }
+	public String getUid() {
+		return uid;
+	}
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    SOPClassUIDEntity that = (SOPClassUIDEntity) o;
-    return Objects.equals(id, that.id)
-        && Objects.equals(ciod, that.ciod)
-        && Objects.equals(uid, that.uid)
-        && Objects.equals(name, that.name);
-  }
+	public void setUid(String uid) {
+		this.uid = uid;
+	}
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(id, ciod, uid, name);
-  }
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		SOPClassUIDEntity that = (SOPClassUIDEntity) o;
+		return Objects.equals(id, that.id) && Objects.equals(ciod, that.ciod) && Objects.equals(uid, that.uid)
+				&& Objects.equals(name, that.name);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, ciod, uid, name);
+	}
+
 }

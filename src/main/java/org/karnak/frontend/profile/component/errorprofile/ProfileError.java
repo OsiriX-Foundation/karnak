@@ -13,32 +13,34 @@ import org.karnak.backend.data.entity.ProfileElementEntity;
 
 public class ProfileError {
 
-  private ProfileElementEntity profileElementEntity;
-  private String error;
+	private ProfileElementEntity profileElementEntity;
 
-  public ProfileError(ProfileElementEntity profileElementEntity) {
-    this.profileElementEntity = profileElementEntity;
-    this.error = null;
-  }
+	private String error;
 
-  public ProfileError(ProfileElementEntity profileElementEntity, String error) {
-    this.profileElementEntity = profileElementEntity;
-    this.error = error;
-  }
+	public ProfileError(ProfileElementEntity profileElementEntity) {
+		this.profileElementEntity = profileElementEntity;
+		this.error = null;
+	}
 
-  public ProfileElementEntity getProfileElement() {
-    return profileElementEntity;
-  }
+	public ProfileError(ProfileElementEntity profileElementEntity, String error) {
+		this.profileElementEntity = profileElementEntity;
+		this.error = error;
+	}
 
-  public void setProfileElement(ProfileElementEntity profileElementEntity) {
-    this.profileElementEntity = profileElementEntity;
-  }
+	public ProfileElementEntity getProfileElement() {
+		return profileElementEntity;
+	}
 
-  public String getError() {
-    return error;
-  }
+	public void setProfileElement(ProfileElementEntity profileElementEntity) {
+		this.profileElementEntity = profileElementEntity;
+	}
 
-  public void setError(String error) {
-    this.error = error;
-  }
+	public String getError() {
+		return error;
+	}
+
+	public void setError(String error) {
+		this.error = error;
+	}
+
 }

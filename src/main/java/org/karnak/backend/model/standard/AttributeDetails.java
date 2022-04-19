@@ -17,41 +17,36 @@ import org.karnak.backend.model.dicominnolitics.StandardAttributes;
 import org.karnak.backend.model.dicominnolitics.jsonAttributes;
 
 public class AttributeDetails {
-  private final Map<String, AttributeDetail> hmapAttributeDetail;
 
-  public AttributeDetails() {
-    hmapAttributeDetail = initializeAttributes(StandardAttributes.readJsonAttributes());
-  }
+	private final Map<String, AttributeDetail> hmapAttributeDetail;
 
-  private Map<String, AttributeDetail> initializeAttributes(jsonAttributes[] attributes) {
-    Map<String, AttributeDetail> hmapAttribute = new HashMap<>();
+	public AttributeDetails() {
+		hmapAttributeDetail = initializeAttributes(StandardAttributes.readJsonAttributes());
+	}
 
-    for (jsonAttributes attribute : attributes) {
-      AttributeDetail attributeDetail =
-          new AttributeDetail(
-              attribute.getId(),
-              attribute.getKeyword(),
-              attribute.getName(),
-              attribute.getRetired(),
-              attribute.getTag(),
-              attribute.getValueMultiplicity(),
-              attribute.getValueRepresentation());
+	private Map<String, AttributeDetail> initializeAttributes(jsonAttributes[] attributes) {
+		Map<String, AttributeDetail> hmapAttribute = new HashMap<>();
 
-      String attributeKey = attributeDetail.getId();
-      hmapAttribute.put(attributeKey, attributeDetail);
-    }
+		for (jsonAttributes attribute : attributes) {
+			AttributeDetail attributeDetail = new AttributeDetail(attribute.getId(), attribute.getKeyword(),
+					attribute.getName(), attribute.getRetired(), attribute.getTag(), attribute.getValueMultiplicity(),
+					attribute.getValueRepresentation());
 
-    return hmapAttribute;
-  }
+			String attributeKey = attributeDetail.getId();
+			hmapAttribute.put(attributeKey, attributeDetail);
+		}
 
-  public AttributeDetail getAttributeDetail(String id) {
-    return hmapAttributeDetail.get(id);
-  }
+		return hmapAttribute;
+	}
 
-  public List<AttributeDetail> getListAttributeDetail(List<String> listId) {
-    return hmapAttributeDetail.entrySet().stream()
-        .filter(attributeDetail -> listId.contains(attributeDetail.getKey()))
-        .map(attributeDetail -> attributeDetail.getValue())
-        .collect(Collectors.toList());
-  }
+	public AttributeDetail getAttributeDetail(String id) {
+		return hmapAttributeDetail.get(id);
+	}
+
+	public List<AttributeDetail> getListAttributeDetail(List<String> listId) {
+		return hmapAttributeDetail.entrySet().stream()
+				.filter(attributeDetail -> listId.contains(attributeDetail.getKey()))
+				.map(attributeDetail -> attributeDetail.getValue()).collect(Collectors.toList());
+	}
+
 }

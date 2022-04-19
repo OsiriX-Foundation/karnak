@@ -16,21 +16,17 @@ import org.slf4j.MDC;
 
 public class Keep extends AbstractAction {
 
-  public Keep(String symbol) {
-    super(symbol);
-  }
+	public Keep(String symbol) {
+		super(symbol);
+	}
 
-  @Override
-  public void execute(Attributes dcm, int tag, HMAC hmac) {
-    if (LOGGER.isTraceEnabled()) {
-      String tagValueIn = AbstractAction.getStringValue(dcm, tag);
-      LOGGER.trace(
-          CLINICAL_MARKER,
-          PATTERN_WITH_IN,
-          MDC.get("SOPInstanceUID"),
-          TagUtils.toString(tag),
-          symbol,
-          tagValueIn);
-    }
-  }
+	@Override
+	public void execute(Attributes dcm, int tag, HMAC hmac) {
+		if (LOGGER.isTraceEnabled()) {
+			String tagValueIn = AbstractAction.getStringValue(dcm, tag);
+			LOGGER.trace(CLINICAL_MARKER, PATTERN_WITH_IN, MDC.get("SOPInstanceUID"), TagUtils.toString(tag), symbol,
+					tagValueIn);
+		}
+	}
+
 }

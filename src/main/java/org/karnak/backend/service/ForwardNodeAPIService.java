@@ -22,60 +22,56 @@ import org.springframework.stereotype.Service;
 @Service
 public class ForwardNodeAPIService implements Serializable {
 
-  // Services
-  private final ForwardNodeService forwardNodeService;
-  private final DestinationService destinationService;
+	// Services
+	private final ForwardNodeService forwardNodeService;
 
-  // Event publisher
-  private final ApplicationEventPublisher applicationEventPublisher;
+	private final DestinationService destinationService;
 
-  @Autowired
-  public ForwardNodeAPIService(
-      final ForwardNodeService forwardNodeService,
-      final DestinationService destinationService,
-      final ApplicationEventPublisher applicationEventPublisher) {
-    this.forwardNodeService = forwardNodeService;
-    this.destinationService = destinationService;
-    this.applicationEventPublisher = applicationEventPublisher;
-  }
+	// Event publisher
+	private final ApplicationEventPublisher applicationEventPublisher;
 
-  public ForwardNodeService getDataProvider() {
-    return forwardNodeService;
-  }
+	@Autowired
+	public ForwardNodeAPIService(final ForwardNodeService forwardNodeService,
+			final DestinationService destinationService, final ApplicationEventPublisher applicationEventPublisher) {
+		this.forwardNodeService = forwardNodeService;
+		this.destinationService = destinationService;
+		this.applicationEventPublisher = applicationEventPublisher;
+	}
 
-  public void addForwardNode(ForwardNodeEntity forwardNodeEntity) {
-    NodeEventType eventType =
-        forwardNodeEntity.getId() == null ? NodeEventType.ADD : NodeEventType.UPDATE;
-    if (eventType == NodeEventType.ADD) {
-      Optional<ForwardNodeEntity> val =
-          forwardNodeService.getAllForwardNodes().stream()
-              .filter(f -> f.getFwdAeTitle().equals(forwardNodeEntity.getFwdAeTitle()))
-              .findFirst();
-      if (val.isPresent()) {
-        // showError("Cannot add this new node because the AE-Title already exists!");
-        return;
-      }
-    }
-    forwardNodeService.save(forwardNodeEntity);
-    applicationEventPublisher.publishEvent(new NodeEvent(forwardNodeEntity, eventType));
-  }
+	public ForwardNodeService getDataProvider() {
+		return forwardNodeService;
+	}
 
-  public void updateForwardNode(ForwardNodeEntity forwardNodeEntity) {
-    // Refresh last transfer and email last check
-    forwardNodeEntity
-        .getDestinationEntities()
-        .forEach(destinationService::refreshLastTransferEmailLastCheck);
-    // Save forward entity
-    forwardNodeService.save(forwardNodeEntity);
-    applicationEventPublisher.publishEvent(new NodeEvent(forwardNodeEntity, NodeEventType.UPDATE));
-  }
+	public void addForwardNode(ForwardNodeEntity forwardNodeEntity) {
+		NodeEventType eventType = forwardNodeEntity.getId() == null ? NodeEventType.ADD : NodeEventType.UPDATE;
+		if (eventType == NodeEventType.ADD) {
+			Optional<ForwardNodeEntity> val = forwardNodeService.getAllForwardNodes().stream()
+					.filter(f -> f.getFwdAeTitle().equals(forwardNodeEntity.getFwdAeTitle())).findFirst();
+			if (val.isPresent()) {
+				// showError("Cannot add this new node because the AE-Title already
+				// exists!");
+				return;
+			}
+		}
+		forwardNodeService.save(forwardNodeEntity);
+		applicationEventPublisher.publishEvent(new NodeEvent(forwardNodeEntity, eventType));
+	}
 
-  public void deleteForwardNode(ForwardNodeEntity forwardNodeEntity) {
-    forwardNodeService.delete(forwardNodeEntity);
-    applicationEventPublisher.publishEvent(new NodeEvent(forwardNodeEntity, NodeEventType.REMOVE));
-  }
+	public void updateForwardNode(ForwardNodeEntity forwardNodeEntity) {
+		// Refresh last transfer and email last check
+		forwardNodeEntity.getDestinationEntities().forEach(destinationService::refreshLastTransferEmailLastCheck);
+		// Save forward entity
+		forwardNodeService.save(forwardNodeEntity);
+		applicationEventPublisher.publishEvent(new NodeEvent(forwardNodeEntity, NodeEventType.UPDATE));
+	}
 
-  public ForwardNodeEntity getForwardNodeById(Long dataId) {
-    return forwardNodeService.get(dataId);
-  }
+	public void deleteForwardNode(ForwardNodeEntity forwardNodeEntity) {
+		forwardNodeService.delete(forwardNodeEntity);
+		applicationEventPublisher.publishEvent(new NodeEvent(forwardNodeEntity, NodeEventType.REMOVE));
+	}
+
+	public ForwardNodeEntity getForwardNodeById(Long dataId) {
+		return forwardNodeService.get(dataId);
+	}
+
 }
