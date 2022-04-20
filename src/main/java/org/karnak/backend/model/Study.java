@@ -19,123 +19,130 @@ import java.util.Set;
 
 public class Study {
 
-  private final String studyInstanceUID;
-  private final Map<String, Series> seriesMap;
-  private String patientID;
-  private String[] otherPatientIDs;
-  private String studyDescription;
-  private String accessionNumber;
-  private LocalDateTime studyDate;
-  private long timeStamp;
+	private final String studyInstanceUID;
 
-  public Study(String studyInstanceUID, String patientID) {
-    this.studyInstanceUID =
-        Objects.requireNonNull(studyInstanceUID, "studyInstanceUID cannot be null!");
-    this.patientID = patientID == null ? "" : patientID;
-    this.studyDescription = "";
-    this.seriesMap = new HashMap<>();
-  }
+	private final Map<String, Series> seriesMap;
 
-  public String getStudyInstanceUID() {
-    return studyInstanceUID;
-  }
+	private String patientID;
 
-  public String getPatientID() {
-    return patientID;
-  }
+	private String[] otherPatientIDs;
 
-  public void setPatientID(String patientID) {
-    this.patientID = patientID;
-  }
+	private String studyDescription;
 
-  public String getStudyDescription() {
-    return studyDescription;
-  }
+	private String accessionNumber;
 
-  public void setStudyDescription(String studyDesc) {
-    this.studyDescription = studyDesc;
-  }
+	private LocalDateTime studyDate;
 
-  public LocalDateTime getStudyDate() {
-    return studyDate;
-  }
+	private long timeStamp;
 
-  public void setStudyDate(LocalDateTime studyDate) {
-    this.studyDate = studyDate;
-  }
+	public Study(String studyInstanceUID, String patientID) {
+		this.studyInstanceUID = Objects.requireNonNull(studyInstanceUID, "studyInstanceUID cannot be null!");
+		this.patientID = patientID == null ? "" : patientID;
+		this.studyDescription = "";
+		this.seriesMap = new HashMap<>();
+	}
 
-  public void addSeries(Series s) {
-    if (s != null) {
-      seriesMap.put(s.getSeriesInstanceUID(), s);
-    }
-  }
+	public String getStudyInstanceUID() {
+		return studyInstanceUID;
+	}
 
-  public Series removeSeries(String seriesUID) {
-    return seriesMap.remove(seriesUID);
-  }
+	public String getPatientID() {
+		return patientID;
+	}
 
-  public boolean isEmpty() {
-    for (Series s : seriesMap.values()) {
-      if (!s.isEmpty()) {
-        return false;
-      }
-    }
-    return true;
-  }
+	public void setPatientID(String patientID) {
+		this.patientID = patientID;
+	}
 
-  public Series getSeries(String seriesUID) {
-    return seriesMap.get(seriesUID);
-  }
+	public String getStudyDescription() {
+		return studyDescription;
+	}
 
-  public Collection<Series> getSeries() {
-    return seriesMap.values();
-  }
+	public void setStudyDescription(String studyDesc) {
+		this.studyDescription = studyDesc;
+	}
 
-  public Set<Entry<String, Series>> getEntrySet() {
-    return seriesMap.entrySet();
-  }
+	public LocalDateTime getStudyDate() {
+		return studyDate;
+	}
 
-  @Override
-  public int hashCode() {
-    return 31 + studyInstanceUID.hashCode();
-  }
+	public void setStudyDate(LocalDateTime studyDate) {
+		this.studyDate = studyDate;
+	}
 
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
-      return false;
-    }
-    Study other = (Study) obj;
-    return studyInstanceUID.equals(other.studyInstanceUID);
-  }
+	public void addSeries(Series s) {
+		if (s != null) {
+			seriesMap.put(s.getSeriesInstanceUID(), s);
+		}
+	}
 
-  public long getTimeStamp() {
-    return timeStamp;
-  }
+	public Series removeSeries(String seriesUID) {
+		return seriesMap.remove(seriesUID);
+	}
 
-  public void setTimeStamp(long timeStamp) {
-    this.timeStamp = timeStamp;
-  }
+	public boolean isEmpty() {
+		for (Series s : seriesMap.values()) {
+			if (!s.isEmpty()) {
+				return false;
+			}
+		}
+		return true;
+	}
 
-  public String[] getOtherPatientIDs() {
-    return otherPatientIDs;
-  }
+	public Series getSeries(String seriesUID) {
+		return seriesMap.get(seriesUID);
+	}
 
-  public void setOtherPatientIDs(String[] otherPatientIDs) {
-    this.otherPatientIDs = otherPatientIDs;
-  }
+	public Collection<Series> getSeries() {
+		return seriesMap.values();
+	}
 
-  public String getAccessionNumber() {
-    return accessionNumber;
-  }
+	public Set<Entry<String, Series>> getEntrySet() {
+		return seriesMap.entrySet();
+	}
 
-  public void setAccessionNumber(String accessionNumber) {
-    this.accessionNumber = accessionNumber;
-  }
+	@Override
+	public int hashCode() {
+		return 31 + studyInstanceUID.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		Study other = (Study) obj;
+		return studyInstanceUID.equals(other.studyInstanceUID);
+	}
+
+	public long getTimeStamp() {
+		return timeStamp;
+	}
+
+	public void setTimeStamp(long timeStamp) {
+		this.timeStamp = timeStamp;
+	}
+
+	public String[] getOtherPatientIDs() {
+		return otherPatientIDs;
+	}
+
+	public void setOtherPatientIDs(String[] otherPatientIDs) {
+		this.otherPatientIDs = otherPatientIDs;
+	}
+
+	public String getAccessionNumber() {
+		return accessionNumber;
+	}
+
+	public void setAccessionNumber(String accessionNumber) {
+		this.accessionNumber = accessionNumber;
+	}
+
 }

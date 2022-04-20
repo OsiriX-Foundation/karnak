@@ -35,171 +35,168 @@ import org.hibernate.annotations.LazyCollectionOption;
 @Entity(name = "Profile")
 @Table(name = "profile")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-@JsonPropertyOrder({
-  "name",
-  "version",
-  "minimumKarnakVersion",
-  "defaultIssuerOfPatientID",
-  "profileElementEntities",
-  "maskEntities"
-})
+@JsonPropertyOrder({ "name", "version", "minimumKarnakVersion", "defaultIssuerOfPatientID", "profileElementEntities",
+		"maskEntities" })
 public class ProfileEntity implements Serializable {
 
-  private static final long serialVersionUID = -7178858361090900170L;
+	private static final long serialVersionUID = -7178858361090900170L;
 
-  private Long id;
-  private String name;
-  private String version;
-  private String minimumKarnakVersion;
-  private String defaultIssuerOfPatientId; // not use in db but used in warning msg profile
-  private Boolean byDefault;
-  private Set<ProfileElementEntity> profileElementEntities = new HashSet<>();
-  private Set<MaskEntity> maskEntities = new HashSet<>();
-  private List<ProjectEntity> projectEntities;
+	private Long id;
 
-  public ProfileEntity() {}
+	private String name;
 
-  public ProfileEntity(
-      String name, String version, String minimumKarnakVersion, String defaultIssuerOfPatientId) {
-    this.name = name;
-    this.version = version;
-    this.minimumKarnakVersion = minimumKarnakVersion;
-    this.defaultIssuerOfPatientId = defaultIssuerOfPatientId;
-    this.byDefault = false;
-  }
+	private String version;
 
-  public ProfileEntity(
-      String name,
-      String version,
-      String minimumKarnakVersion,
-      String defaultIssuerOfPatientId,
-      Boolean byDefault) {
-    this.name = name;
-    this.version = version;
-    this.minimumKarnakVersion = minimumKarnakVersion;
-    this.defaultIssuerOfPatientId = defaultIssuerOfPatientId;
-    this.byDefault = byDefault;
-  }
+	private String minimumKarnakVersion;
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  @JsonIgnore
-  public Long getId() {
-    return id;
-  }
+	private String defaultIssuerOfPatientId; // not use in db but used in warning msg
+												// profile
 
-  public void setId(Long id) {
-    this.id = id;
-  }
+	private Boolean byDefault;
 
-  public void addProfilePipe(ProfileElementEntity profileElementEntity) {
-    this.profileElementEntities.add(profileElementEntity);
-  }
+	private Set<ProfileElementEntity> profileElementEntities = new HashSet<>();
 
-  public void addMask(MaskEntity maskEntity) {
-    this.maskEntities.add(maskEntity);
-  }
+	private Set<MaskEntity> maskEntities = new HashSet<>();
 
-  public String getName() {
-    return name;
-  }
+	private List<ProjectEntity> projectEntities;
 
-  public void setName(String name) {
-    this.name = name;
-  }
+	public ProfileEntity() {
+	}
 
-  public String getVersion() {
-    return version;
-  }
+	public ProfileEntity(String name, String version, String minimumKarnakVersion, String defaultIssuerOfPatientId) {
+		this.name = name;
+		this.version = version;
+		this.minimumKarnakVersion = minimumKarnakVersion;
+		this.defaultIssuerOfPatientId = defaultIssuerOfPatientId;
+		this.byDefault = false;
+	}
 
-  public void setVersion(String version) {
-    this.version = version;
-  }
+	public ProfileEntity(String name, String version, String minimumKarnakVersion, String defaultIssuerOfPatientId,
+			Boolean byDefault) {
+		this.name = name;
+		this.version = version;
+		this.minimumKarnakVersion = minimumKarnakVersion;
+		this.defaultIssuerOfPatientId = defaultIssuerOfPatientId;
+		this.byDefault = byDefault;
+	}
 
-  @JsonGetter("minimumKarnakVersion")
-  public String getMinimumKarnakVersion() {
-    return minimumKarnakVersion;
-  }
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@JsonIgnore
+	public Long getId() {
+		return id;
+	}
 
-  @JsonSetter("minimumKarnakVersion")
-  public void setMinimumKarnakVersion(String minimumKarnakVersion) {
-    this.minimumKarnakVersion = minimumKarnakVersion;
-  }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-  @JsonGetter("defaultIssuerOfPatientID")
-  @Transient // not use in db but used in warning msg profile
-  public String getDefaultIssuerOfPatientId() {
-    return defaultIssuerOfPatientId;
-  }
+	public void addProfilePipe(ProfileElementEntity profileElementEntity) {
+		this.profileElementEntities.add(profileElementEntity);
+	}
 
-  @JsonSetter("defaultIssuerOfPatientID")
-  public void setDefaultIssuerOfPatientId(String defaultIssuerOfPatientId) {
-    this.defaultIssuerOfPatientId = defaultIssuerOfPatientId;
-  }
+	public void addMask(MaskEntity maskEntity) {
+		this.maskEntities.add(maskEntity);
+	}
 
-  @JsonGetter("profileElements")
-  @OneToMany(mappedBy = "profileEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-  public Set<ProfileElementEntity> getProfileElementEntities() {
-    return profileElementEntities;
-  }
+	public String getName() {
+		return name;
+	}
 
-  @JsonSetter("profileElements")
-  public void setProfileElementEntities(Set<ProfileElementEntity> profileElementEntities) {
-    this.profileElementEntities = profileElementEntities;
-  }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-  @JsonIgnore
-  @Column(name = "bydefault")
-  public Boolean getByDefault() {
-    return byDefault;
-  }
+	public String getVersion() {
+		return version;
+	}
 
-  public void setByDefault(Boolean bydefault) {
-    this.byDefault = bydefault;
-  }
+	public void setVersion(String version) {
+		this.version = version;
+	}
 
-  @JsonGetter("masks")
-  @OneToMany(mappedBy = "profileEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-  public Set<MaskEntity> getMaskEntities() {
-    return maskEntities;
-  }
+	@JsonGetter("minimumKarnakVersion")
+	public String getMinimumKarnakVersion() {
+		return minimumKarnakVersion;
+	}
 
-  @JsonSetter("masks")
-  public void setMaskEntities(Set<MaskEntity> maskEntities) {
-    this.maskEntities = maskEntities;
-  }
+	@JsonSetter("minimumKarnakVersion")
+	public void setMinimumKarnakVersion(String minimumKarnakVersion) {
+		this.minimumKarnakVersion = minimumKarnakVersion;
+	}
 
-  @OneToMany(mappedBy = "profileEntity")
-  @LazyCollection(LazyCollectionOption.FALSE)
-  @JsonIgnore
-  public List<ProjectEntity> getProjectEntities() {
-    return projectEntities;
-  }
+	@JsonGetter("defaultIssuerOfPatientID")
+	@Transient // not use in db but used in warning msg profile
+	public String getDefaultIssuerOfPatientId() {
+		return defaultIssuerOfPatientId;
+	}
 
-  public void setProjectEntities(List<ProjectEntity> projectEntities) {
-    this.projectEntities = projectEntities;
-  }
+	@JsonSetter("defaultIssuerOfPatientID")
+	public void setDefaultIssuerOfPatientId(String defaultIssuerOfPatientId) {
+		this.defaultIssuerOfPatientId = defaultIssuerOfPatientId;
+	}
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    ProfileEntity that = (ProfileEntity) o;
-    return Objects.equals(id, that.id)
-        && Objects.equals(name, that.name)
-        && Objects.equals(version, that.version)
-        && Objects.equals(minimumKarnakVersion, that.minimumKarnakVersion)
-        && Objects.equals(defaultIssuerOfPatientId, that.defaultIssuerOfPatientId)
-        && Objects.equals(byDefault, that.byDefault);
-  }
+	@JsonGetter("profileElements")
+	@OneToMany(mappedBy = "profileEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	public Set<ProfileElementEntity> getProfileElementEntities() {
+		return profileElementEntities;
+	}
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(
-        id, name, version, minimumKarnakVersion, defaultIssuerOfPatientId, byDefault);
-  }
+	@JsonSetter("profileElements")
+	public void setProfileElementEntities(Set<ProfileElementEntity> profileElementEntities) {
+		this.profileElementEntities = profileElementEntities;
+	}
+
+	@JsonIgnore
+	@Column(name = "bydefault")
+	public Boolean getByDefault() {
+		return byDefault;
+	}
+
+	public void setByDefault(Boolean bydefault) {
+		this.byDefault = bydefault;
+	}
+
+	@JsonGetter("masks")
+	@OneToMany(mappedBy = "profileEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	public Set<MaskEntity> getMaskEntities() {
+		return maskEntities;
+	}
+
+	@JsonSetter("masks")
+	public void setMaskEntities(Set<MaskEntity> maskEntities) {
+		this.maskEntities = maskEntities;
+	}
+
+	@OneToMany(mappedBy = "profileEntity")
+	@LazyCollection(LazyCollectionOption.FALSE)
+	@JsonIgnore
+	public List<ProjectEntity> getProjectEntities() {
+		return projectEntities;
+	}
+
+	public void setProjectEntities(List<ProjectEntity> projectEntities) {
+		this.projectEntities = projectEntities;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		ProfileEntity that = (ProfileEntity) o;
+		return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(version, that.version)
+				&& Objects.equals(minimumKarnakVersion, that.minimumKarnakVersion)
+				&& Objects.equals(defaultIssuerOfPatientId, that.defaultIssuerOfPatientId)
+				&& Objects.equals(byDefault, that.byDefault);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, name, version, minimumKarnakVersion, defaultIssuerOfPatientId, byDefault);
+	}
+
 }

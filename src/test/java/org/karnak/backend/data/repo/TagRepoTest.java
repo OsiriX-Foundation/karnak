@@ -29,134 +29,135 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 @DataJpaTest
 class TagRepoTest {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(TagRepoTest.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TagRepoTest.class);
 
-  @Autowired private TagRepo repository;
-  @Autowired private ProfileElementRepo profileElementRepo;
-  @Autowired private ProfileRepo profileRepo;
+	@Autowired
+	private TagRepo repository;
 
-  /** Test save and find record. */
-  @Test
-  void shouldSaveAndFindARecord() {
-    // Create an entity to save
-    IncludedTagEntity entity = new IncludedTagEntity();
-    entity.setTagValue("Name");
+	@Autowired
+	private ProfileElementRepo profileElementRepo;
 
-    // Save the entity
-    LOGGER.info("Saving entity with name [{}]", entity.getTagValue());
-    entity = repository.save(entity);
+	@Autowired
+	private ProfileRepo profileRepo;
 
-    // Test Save
-    assertEquals("Name", entity.getTagValue());
-    assertNotNull(entity.getId());
-    LOGGER.info("Entity with name [{}] and id [{}] saved", entity.getTagValue(), entity.getId());
+	/** Test save and find record. */
+	@Test
+	void shouldSaveAndFindARecord() {
+		// Create an entity to save
+		IncludedTagEntity entity = new IncludedTagEntity();
+		entity.setTagValue("Name");
 
-    // Find By Id
-    Optional<TagEntity> foundByIdOpt = repository.findById(entity.getId());
+		// Save the entity
+		LOGGER.info("Saving entity with name [{}]", entity.getTagValue());
+		entity = repository.save(entity);
 
-    // Test Find by Id
-    assertTrue(foundByIdOpt.isPresent());
-    LOGGER.info(
-        "Entity found with name [{}] and id [{}]",
-        foundByIdOpt.get().getTagValue(),
-        foundByIdOpt.get().getId());
-    assertEquals(entity.getId(), foundByIdOpt.get().getId());
-  }
+		// Test Save
+		assertEquals("Name", entity.getTagValue());
+		assertNotNull(entity.getId());
+		LOGGER.info("Entity with name [{}] and id [{}] saved", entity.getTagValue(), entity.getId());
 
-  /** Test find all. */
-  @Test
-  void shouldFindAllRecords() {
-    // Create an entity to save
-    // Profile
-    ProfileEntity profileEntity = new ProfileEntity();
-    profileEntity.setName("name");
-    profileEntity = profileRepo.saveAndFlush(profileEntity);
-    // Profile element
-    ProfileElementEntity profileElementEntity = new ProfileElementEntity();
-    profileElementEntity.setName("name");
-    profileElementEntity.setProfileEntity(profileEntity);
-    profileElementEntity = profileElementRepo.saveAndFlush(profileElementEntity);
-    // IncludedTagEntity
-    IncludedTagEntity entity = new IncludedTagEntity();
-    entity.setTagValue("Name");
-    entity.setProfileElementEntity(profileElementEntity);
+		// Find By Id
+		Optional<TagEntity> foundByIdOpt = repository.findById(entity.getId());
 
-    // Save the entity
-    LOGGER.info("Saving entity with name [{}]", entity.getTagValue());
-    repository.saveAndFlush(entity);
+		// Test Find by Id
+		assertTrue(foundByIdOpt.isPresent());
+		LOGGER.info("Entity found with name [{}] and id [{}]", foundByIdOpt.get().getTagValue(),
+				foundByIdOpt.get().getId());
+		assertEquals(entity.getId(), foundByIdOpt.get().getId());
+	}
 
-    // Find all
-    List<TagEntity> all = repository.findAll();
+	/** Test find all. */
+	@Test
+	void shouldFindAllRecords() {
+		// Create an entity to save
+		// Profile
+		ProfileEntity profileEntity = new ProfileEntity();
+		profileEntity.setName("name");
+		profileEntity = profileRepo.saveAndFlush(profileEntity);
+		// Profile element
+		ProfileElementEntity profileElementEntity = new ProfileElementEntity();
+		profileElementEntity.setName("name");
+		profileElementEntity.setProfileEntity(profileEntity);
+		profileElementEntity = profileElementRepo.saveAndFlush(profileElementEntity);
+		// IncludedTagEntity
+		IncludedTagEntity entity = new IncludedTagEntity();
+		entity.setTagValue("Name");
+		entity.setProfileElementEntity(profileElementEntity);
 
-    // Test find all
-    assertNotNull(all);
-    assertTrue(all.size() > 0);
-    assertEquals(1, all.size());
-    LOGGER.info("Number of entities found [{}]", all.size());
-  }
+		// Save the entity
+		LOGGER.info("Saving entity with name [{}]", entity.getTagValue());
+		repository.saveAndFlush(entity);
 
-  /** Test modification of a record. */
-  @Test
-  void shouldModifyRecord() {
+		// Find all
+		List<TagEntity> all = repository.findAll();
 
-    String initialText = "InitialText";
-    String modifiedText = "ModifiedText";
+		// Test find all
+		assertNotNull(all);
+		assertTrue(all.size() > 0);
+		assertEquals(1, all.size());
+		LOGGER.info("Number of entities found [{}]", all.size());
+	}
 
-    // Create an entity to save
-    IncludedTagEntity entity = new IncludedTagEntity();
-    entity.setTagValue(initialText);
+	/** Test modification of a record. */
+	@Test
+	void shouldModifyRecord() {
 
-    // Save the entity
-    LOGGER.info("Saving entity with name [{}]", entity.getTagValue());
-    entity = repository.save(entity);
-    LOGGER.info("Id of the entity with name [{}]", entity.getId());
+		String initialText = "InitialText";
+		String modifiedText = "ModifiedText";
 
-    // Test Save
-    assertNotNull(entity);
-    assertEquals(initialText, entity.getTagValue());
+		// Create an entity to save
+		IncludedTagEntity entity = new IncludedTagEntity();
+		entity.setTagValue(initialText);
 
-    // Modify the record
-    entity.setTagValue(modifiedText);
-    LOGGER.info("Modify entity name [{}] to [{}]", initialText, modifiedText);
-    IncludedTagEntity entityModified = repository.save(entity);
+		// Save the entity
+		LOGGER.info("Saving entity with name [{}]", entity.getTagValue());
+		entity = repository.save(entity);
+		LOGGER.info("Id of the entity with name [{}]", entity.getId());
 
-    // Test Modify
-    assertNotNull(entityModified);
-    assertEquals(entity.getId(), entityModified.getId());
-    assertEquals(modifiedText, entityModified.getTagValue());
-    LOGGER.info(
-        "Name of the entity with id [{}]: [{}]",
-        entityModified.getId(),
-        entityModified.getTagValue());
-  }
+		// Test Save
+		assertNotNull(entity);
+		assertEquals(initialText, entity.getTagValue());
 
-  /** Test delete record. */
-  @Test
-  void shouldDeleteRecord() {
-    // Create an entity to save
-    IncludedTagEntity entity = new IncludedTagEntity();
-    String name = "Name";
-    entity.setTagValue(name);
+		// Modify the record
+		entity.setTagValue(modifiedText);
+		LOGGER.info("Modify entity name [{}] to [{}]", initialText, modifiedText);
+		IncludedTagEntity entityModified = repository.save(entity);
 
-    // Save the entity
-    LOGGER.info("Saving entity with name [{}]", entity.getTagValue());
-    entity = repository.save(entity);
+		// Test Modify
+		assertNotNull(entityModified);
+		assertEquals(entity.getId(), entityModified.getId());
+		assertEquals(modifiedText, entityModified.getTagValue());
+		LOGGER.info("Name of the entity with id [{}]: [{}]", entityModified.getId(), entityModified.getTagValue());
+	}
 
-    // Retrieve the entity
-    Optional<TagEntity> foundByIdOpt = repository.findById(entity.getId());
+	/** Test delete record. */
+	@Test
+	void shouldDeleteRecord() {
+		// Create an entity to save
+		IncludedTagEntity entity = new IncludedTagEntity();
+		String name = "Name";
+		entity.setTagValue(name);
 
-    // Test Find by Id
-    assertTrue(foundByIdOpt.isPresent());
+		// Save the entity
+		LOGGER.info("Saving entity with name [{}]", entity.getTagValue());
+		entity = repository.save(entity);
 
-    // Delete the entity
-    TagEntity entityTag = foundByIdOpt.get();
-    Long id = entityTag.getId();
-    LOGGER.info("Deleting entity with id [{}]", id);
-    repository.delete(entityTag);
+		// Retrieve the entity
+		Optional<TagEntity> foundByIdOpt = repository.findById(entity.getId());
 
-    // Test Delete
-    foundByIdOpt = repository.findById(id);
-    LOGGER.info("Is deleted entity with id [{}] present: [{}]", id, foundByIdOpt.isPresent());
-    assertFalse(foundByIdOpt.isPresent());
-  }
+		// Test Find by Id
+		assertTrue(foundByIdOpt.isPresent());
+
+		// Delete the entity
+		TagEntity entityTag = foundByIdOpt.get();
+		Long id = entityTag.getId();
+		LOGGER.info("Deleting entity with id [{}]", id);
+		repository.delete(entityTag);
+
+		// Test Delete
+		foundByIdOpt = repository.findById(id);
+		LOGGER.info("Is deleted entity with id [{}] present: [{}]", id, foundByIdOpt.isPresent());
+		assertFalse(foundByIdOpt.isPresent());
+	}
+
 }

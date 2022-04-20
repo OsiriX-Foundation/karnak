@@ -15,7 +15,8 @@ import org.springframework.context.ApplicationEvent;
 /** Transfer monitoring event used to populate asynchronously transfer_status table */
 public class TransferMonitoringEvent extends ApplicationEvent {
 
-  public TransferMonitoringEvent(TransferStatusEntity transferStatusEntity) {
-    super(transferStatusEntity);
-  }
+	public TransferMonitoringEvent(TransferStatusEntity transferStatusEntity) {
+		super(transferStatusEntity);
+	}
+
 }

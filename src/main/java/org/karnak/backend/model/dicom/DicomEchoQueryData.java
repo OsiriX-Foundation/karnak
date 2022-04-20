@@ -11,59 +11,64 @@ package org.karnak.backend.model.dicom;
 
 public class DicomEchoQueryData {
 
-  private static final String DEFAULT_VALUE_FOR_CALLING_AET = "DCM-TOOLS";
+	private static final String DEFAULT_VALUE_FOR_CALLING_AET = "DCM-TOOLS";
 
-  private String callingAet;
-  private DicomNodeList calledDicomNodeType;
-  private String calledAet;
-  private String calledHostname;
-  private Integer calledPort;
+	private String callingAet;
 
-  public DicomEchoQueryData() {
-    reset();
-  }
+	private DicomNodeList calledDicomNodeType;
 
-  public String getCallingAet() {
-    return callingAet;
-  }
+	private String calledAet;
 
-  public void setCallingAet(String callingAeTitle) {
-    this.callingAet = callingAeTitle;
-  }
+	private String calledHostname;
 
-  public DicomNodeList getCalledDicomNodeType() {
-    return calledDicomNodeType;
-  }
+	private Integer calledPort;
 
-  public void setCalledDicomNodeType(DicomNodeList calledDicomNodeType) {
-    this.calledDicomNodeType = calledDicomNodeType;
-  }
+	public DicomEchoQueryData() {
+		reset();
+	}
 
-  public String getCalledAet() {
-    return calledAet;
-  }
+	public String getCallingAet() {
+		return callingAet;
+	}
 
-  public void setCalledAet(String calledAet) {
-    this.calledAet = calledAet;
-  }
+	public void setCallingAet(String callingAeTitle) {
+		this.callingAet = callingAeTitle;
+	}
 
-  public String getCalledHostname() {
-    return calledHostname;
-  }
+	public DicomNodeList getCalledDicomNodeType() {
+		return calledDicomNodeType;
+	}
 
-  public void setCalledHostname(String calledHostname) {
-    this.calledHostname = calledHostname;
-  }
+	public void setCalledDicomNodeType(DicomNodeList calledDicomNodeType) {
+		this.calledDicomNodeType = calledDicomNodeType;
+	}
 
-  public Integer getCalledPort() {
-    return calledPort;
-  }
+	public String getCalledAet() {
+		return calledAet;
+	}
 
-  public void setCalledPort(Integer calledPort) {
-    this.calledPort = calledPort;
-  }
+	public void setCalledAet(String calledAet) {
+		this.calledAet = calledAet;
+	}
 
-  public void reset() {
-    callingAet = DEFAULT_VALUE_FOR_CALLING_AET;
-  }
+	public String getCalledHostname() {
+		return calledHostname;
+	}
+
+	public void setCalledHostname(String calledHostname) {
+		this.calledHostname = calledHostname;
+	}
+
+	public Integer getCalledPort() {
+		return calledPort;
+	}
+
+	public void setCalledPort(Integer calledPort) {
+		this.calledPort = calledPort;
+	}
+
+	public void reset() {
+		callingAet = DEFAULT_VALUE_FOR_CALLING_AET;
+	}
+
 }

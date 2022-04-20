@@ -14,124 +14,136 @@ import org.karnak.backend.enums.Modality;
 
 public class WorkListQueryData {
 
-  private static final String DEFAULT_VALUE_FOR_CALLING_AET = "DCM-TOOLS";
+	private static final String DEFAULT_VALUE_FOR_CALLING_AET = "DCM-TOOLS";
 
-  private String callingAet;
-  private String workListAet;
-  private String workListHostname;
-  private Integer workListPort;
-  private String scheduledStationAet;
-  private Modality scheduledModality;
-  private String patientId;
-  private String admissionId;
-  private LocalDate scheduledFrom;
-  private LocalDate scheduledTo;
-  private String patientName;
-  private String accessionNumber;
+	private String callingAet;
 
-  public WorkListQueryData() {
-    callingAet = DEFAULT_VALUE_FOR_CALLING_AET;
-    scheduledModality = Modality.ALL;
-  }
+	private String workListAet;
 
-  public String getWorkListAet() {
-    return workListAet;
-  }
+	private String workListHostname;
 
-  public void setWorkListAet(String workListAet) {
-    this.workListAet = workListAet;
-  }
+	private Integer workListPort;
 
-  public String getWorkListHostname() {
-    return workListHostname;
-  }
+	private String scheduledStationAet;
 
-  public void setWorkListHostname(String workListHostname) {
-    this.workListHostname = workListHostname;
-  }
+	private Modality scheduledModality;
 
-  public Integer getWorkListPort() {
-    return workListPort;
-  }
+	private String patientId;
 
-  public void setWorkListPort(Integer workListPort) {
-    this.workListPort = workListPort;
-  }
+	private String admissionId;
 
-  public String getCallingAet() {
-    return callingAet;
-  }
+	private LocalDate scheduledFrom;
 
-  public void setCallingAet(String callingAet) {
-    this.callingAet = callingAet;
-  }
+	private LocalDate scheduledTo;
 
-  public String getScheduledStationAet() {
-    return scheduledStationAet;
-  }
+	private String patientName;
 
-  public void setScheduledStationAet(String scheduledStationAet) {
-    this.scheduledStationAet = scheduledStationAet;
-  }
+	private String accessionNumber;
 
-  public Modality getScheduledModality() {
-    return scheduledModality;
-  }
+	public WorkListQueryData() {
+		callingAet = DEFAULT_VALUE_FOR_CALLING_AET;
+		scheduledModality = Modality.ALL;
+	}
 
-  public void setScheduledModality(Modality scheduledModality) {
-    this.scheduledModality = scheduledModality;
-  }
+	public String getWorkListAet() {
+		return workListAet;
+	}
 
-  public String getPatientId() {
-    return patientId;
-  }
+	public void setWorkListAet(String workListAet) {
+		this.workListAet = workListAet;
+	}
 
-  public void setPatientId(String patientId) {
-    this.patientId = patientId;
-  }
+	public String getWorkListHostname() {
+		return workListHostname;
+	}
 
-  public String getAdmissionId() {
-    return admissionId;
-  }
+	public void setWorkListHostname(String workListHostname) {
+		this.workListHostname = workListHostname;
+	}
 
-  public void setAdmissionId(String admissionId) {
-    this.admissionId = admissionId;
-  }
+	public Integer getWorkListPort() {
+		return workListPort;
+	}
 
-  public LocalDate getScheduledFrom() {
-    return scheduledFrom;
-  }
+	public void setWorkListPort(Integer workListPort) {
+		this.workListPort = workListPort;
+	}
 
-  public void setScheduledFrom(LocalDate scheduledFrom) {
-    this.scheduledFrom = scheduledFrom;
-  }
+	public String getCallingAet() {
+		return callingAet;
+	}
 
-  public LocalDate getScheduledTo() {
-    return scheduledTo;
-  }
+	public void setCallingAet(String callingAet) {
+		this.callingAet = callingAet;
+	}
 
-  public void setScheduledTo(LocalDate scheduledTo) {
-    this.scheduledTo = scheduledTo;
-  }
+	public String getScheduledStationAet() {
+		return scheduledStationAet;
+	}
 
-  public String getPatientName() {
-    return patientName;
-  }
+	public void setScheduledStationAet(String scheduledStationAet) {
+		this.scheduledStationAet = scheduledStationAet;
+	}
 
-  public void setPatientName(String patientName) {
-    this.patientName = patientName;
-  }
+	public Modality getScheduledModality() {
+		return scheduledModality;
+	}
 
-  public String getAccessionNumber() {
-    return accessionNumber;
-  }
+	public void setScheduledModality(Modality scheduledModality) {
+		this.scheduledModality = scheduledModality;
+	}
 
-  public void setAccessionNumber(String accessionNumber) {
-    this.accessionNumber = accessionNumber;
-  }
+	public String getPatientId() {
+		return patientId;
+	}
 
-  public void reset() {
-    callingAet = DEFAULT_VALUE_FOR_CALLING_AET;
-    scheduledModality = Modality.ALL;
-  }
+	public void setPatientId(String patientId) {
+		this.patientId = patientId;
+	}
+
+	public String getAdmissionId() {
+		return admissionId;
+	}
+
+	public void setAdmissionId(String admissionId) {
+		this.admissionId = admissionId;
+	}
+
+	public LocalDate getScheduledFrom() {
+		return scheduledFrom;
+	}
+
+	public void setScheduledFrom(LocalDate scheduledFrom) {
+		this.scheduledFrom = scheduledFrom;
+	}
+
+	public LocalDate getScheduledTo() {
+		return scheduledTo;
+	}
+
+	public void setScheduledTo(LocalDate scheduledTo) {
+		this.scheduledTo = scheduledTo;
+	}
+
+	public String getPatientName() {
+		return patientName;
+	}
+
+	public void setPatientName(String patientName) {
+		this.patientName = patientName;
+	}
+
+	public String getAccessionNumber() {
+		return accessionNumber;
+	}
+
+	public void setAccessionNumber(String accessionNumber) {
+		this.accessionNumber = accessionNumber;
+	}
+
+	public void reset() {
+		callingAet = DEFAULT_VALUE_FOR_CALLING_AET;
+		scheduledModality = Modality.ALL;
+	}
+
 }

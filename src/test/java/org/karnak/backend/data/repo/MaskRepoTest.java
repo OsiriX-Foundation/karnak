@@ -28,130 +28,129 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 @DataJpaTest
 class MaskRepoTest {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(MaskRepoTest.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(MaskRepoTest.class);
 
-  @Autowired private MaskRepo repository;
-  @Autowired private ProfileRepo profileRepo;
+	@Autowired
+	private MaskRepo repository;
 
-  /** Test save and find record. */
-  @Test
-  void shouldSaveAndFindARecord() {
-    // Create an entity to save
-    MaskEntity entity = new MaskEntity();
-    entity.setStationName("Name");
+	@Autowired
+	private ProfileRepo profileRepo;
 
-    // Save the entity
-    LOGGER.info("Saving entity with name [{}]", entity.getStationName());
-    entity = repository.save(entity);
+	/** Test save and find record. */
+	@Test
+	void shouldSaveAndFindARecord() {
+		// Create an entity to save
+		MaskEntity entity = new MaskEntity();
+		entity.setStationName("Name");
 
-    // Test Save
-    assertEquals("Name", entity.getStationName());
-    assertNotNull(entity.getId());
-    LOGGER.info("Entity with name [{}] and id [{}] saved", entity.getStationName(), entity.getId());
+		// Save the entity
+		LOGGER.info("Saving entity with name [{}]", entity.getStationName());
+		entity = repository.save(entity);
 
-    // Find By Id
-    Optional<MaskEntity> foundByIdOpt = repository.findById(entity.getId());
+		// Test Save
+		assertEquals("Name", entity.getStationName());
+		assertNotNull(entity.getId());
+		LOGGER.info("Entity with name [{}] and id [{}] saved", entity.getStationName(), entity.getId());
 
-    // Test Find by Id
-    assertTrue(foundByIdOpt.isPresent());
-    LOGGER.info(
-        "Entity found with name [{}] and id [{}]",
-        foundByIdOpt.get().getStationName(),
-        foundByIdOpt.get().getId());
-    assertEquals(entity.getId(), foundByIdOpt.get().getId());
-  }
+		// Find By Id
+		Optional<MaskEntity> foundByIdOpt = repository.findById(entity.getId());
 
-  /** Test find all. */
-  @Test
-  void shouldFindAllRecords() {
-    // Create an entity to save
-    // Profile
-    ProfileEntity profileEntity = new ProfileEntity();
-    profileEntity.setName("name");
-    profileEntity = profileRepo.saveAndFlush(profileEntity);
-    // Mask
-    MaskEntity entity = new MaskEntity();
-    entity.setStationName("Name");
-    entity.addRectangle(new Rectangle());
-    entity.setProfileEntity(profileEntity);
+		// Test Find by Id
+		assertTrue(foundByIdOpt.isPresent());
+		LOGGER.info("Entity found with name [{}] and id [{}]", foundByIdOpt.get().getStationName(),
+				foundByIdOpt.get().getId());
+		assertEquals(entity.getId(), foundByIdOpt.get().getId());
+	}
 
-    // Save the entity
-    LOGGER.info("Saving entity with name [{}]", entity.getStationName());
-    repository.saveAndFlush(entity);
+	/** Test find all. */
+	@Test
+	void shouldFindAllRecords() {
+		// Create an entity to save
+		// Profile
+		ProfileEntity profileEntity = new ProfileEntity();
+		profileEntity.setName("name");
+		profileEntity = profileRepo.saveAndFlush(profileEntity);
+		// Mask
+		MaskEntity entity = new MaskEntity();
+		entity.setStationName("Name");
+		entity.addRectangle(new Rectangle());
+		entity.setProfileEntity(profileEntity);
 
-    // Find all
-    List<MaskEntity> all = repository.findAll();
+		// Save the entity
+		LOGGER.info("Saving entity with name [{}]", entity.getStationName());
+		repository.saveAndFlush(entity);
 
-    // Test find all
-    assertNotNull(all);
-    assertTrue(all.size() > 0);
-    assertEquals(1, all.size());
-    LOGGER.info("Number of entities found [{}]", all.size());
-  }
+		// Find all
+		List<MaskEntity> all = repository.findAll();
 
-  /** Test modification of a record. */
-  @Test
-  void shouldModifyRecord() {
+		// Test find all
+		assertNotNull(all);
+		assertTrue(all.size() > 0);
+		assertEquals(1, all.size());
+		LOGGER.info("Number of entities found [{}]", all.size());
+	}
 
-    String initialText = "InitialText";
-    String modifiedText = "ModifiedText";
+	/** Test modification of a record. */
+	@Test
+	void shouldModifyRecord() {
 
-    // Create an entity to save
-    MaskEntity entity = new MaskEntity();
-    entity.setStationName(initialText);
+		String initialText = "InitialText";
+		String modifiedText = "ModifiedText";
 
-    // Save the entity
-    LOGGER.info("Saving entity with name [{}]", entity.getStationName());
-    entity = repository.save(entity);
-    LOGGER.info("Id of the entity with name [{}]", entity.getId());
+		// Create an entity to save
+		MaskEntity entity = new MaskEntity();
+		entity.setStationName(initialText);
 
-    // Test Save
-    assertNotNull(entity);
-    assertEquals(initialText, entity.getStationName());
+		// Save the entity
+		LOGGER.info("Saving entity with name [{}]", entity.getStationName());
+		entity = repository.save(entity);
+		LOGGER.info("Id of the entity with name [{}]", entity.getId());
 
-    // Modify the record
-    entity.setStationName(modifiedText);
-    LOGGER.info("Modify entity name [{}] to [{}]", initialText, modifiedText);
-    MaskEntity entityModified = repository.save(entity);
+		// Test Save
+		assertNotNull(entity);
+		assertEquals(initialText, entity.getStationName());
 
-    // Test Modify
-    assertNotNull(entityModified);
-    assertEquals(entity.getId(), entityModified.getId());
-    assertEquals(modifiedText, entityModified.getStationName());
-    LOGGER.info(
-        "Name of the entity with id [{}]: [{}]",
-        entityModified.getId(),
-        entityModified.getStationName());
-  }
+		// Modify the record
+		entity.setStationName(modifiedText);
+		LOGGER.info("Modify entity name [{}] to [{}]", initialText, modifiedText);
+		MaskEntity entityModified = repository.save(entity);
 
-  /** Test delete record. */
-  @Test
-  void shouldDeleteRecord() {
-    // Create an entity to save
-    MaskEntity entity = new MaskEntity();
-    String name = "Name";
-    entity.setStationName(name);
-    entity.addRectangle(new Rectangle());
+		// Test Modify
+		assertNotNull(entityModified);
+		assertEquals(entity.getId(), entityModified.getId());
+		assertEquals(modifiedText, entityModified.getStationName());
+		LOGGER.info("Name of the entity with id [{}]: [{}]", entityModified.getId(), entityModified.getStationName());
+	}
 
-    // Save the entity
-    LOGGER.info("Saving entity with name [{}]", entity.getStationName());
-    entity = repository.save(entity);
+	/** Test delete record. */
+	@Test
+	void shouldDeleteRecord() {
+		// Create an entity to save
+		MaskEntity entity = new MaskEntity();
+		String name = "Name";
+		entity.setStationName(name);
+		entity.addRectangle(new Rectangle());
 
-    // Retrieve the entity
-    Optional<MaskEntity> foundByIdOpt = repository.findById(entity.getId());
+		// Save the entity
+		LOGGER.info("Saving entity with name [{}]", entity.getStationName());
+		entity = repository.save(entity);
 
-    // Test Find by Id
-    assertTrue(foundByIdOpt.isPresent());
+		// Retrieve the entity
+		Optional<MaskEntity> foundByIdOpt = repository.findById(entity.getId());
 
-    // Delete the entity
-    entity = foundByIdOpt.get();
-    Long id = entity.getId();
-    LOGGER.info("Deleting entity with id [{}]", id);
-    repository.delete(entity);
+		// Test Find by Id
+		assertTrue(foundByIdOpt.isPresent());
 
-    // Test Delete
-    foundByIdOpt = repository.findById(id);
-    LOGGER.info("Is deleted entity with id [{}] present: [{}]", id, foundByIdOpt.isPresent());
-    assertFalse(foundByIdOpt.isPresent());
-  }
+		// Delete the entity
+		entity = foundByIdOpt.get();
+		Long id = entity.getId();
+		LOGGER.info("Deleting entity with id [{}]", id);
+		repository.delete(entity);
+
+		// Test Delete
+		foundByIdOpt = repository.findById(id);
+		LOGGER.info("Is deleted entity with id [{}] present: [{}]", id, foundByIdOpt.isPresent());
+		assertFalse(foundByIdOpt.isPresent());
+	}
+
 }

@@ -11,52 +11,48 @@ package org.karnak.backend.cache;
 
 public class CachedPatient extends Patient {
 
-  private Long projectID;
+	private Long projectID;
 
-  public CachedPatient(
-      String pseudonym,
-      String patientId,
-      String patientFirstName,
-      String patientLastName,
-      String issuerOfPatientId,
-      Long projectID) {
-    super(pseudonym, patientId, patientFirstName, patientLastName, null, null, issuerOfPatientId);
-    this.projectID = projectID;
-  }
+	public CachedPatient(String pseudonym, String patientId, String patientFirstName, String patientLastName,
+			String issuerOfPatientId, Long projectID) {
+		super(pseudonym, patientId, patientFirstName, patientLastName, null, null, issuerOfPatientId);
+		this.projectID = projectID;
+	}
 
-  public void setPseudonym(String pseudonym) {
-    this.pseudonym = pseudonym;
-  }
+	public void setPseudonym(String pseudonym) {
+		this.pseudonym = pseudonym;
+	}
 
-  public void setPatientId(String patientId) {
-    this.patientId = patientId;
-  }
+	public void setPatientId(String patientId) {
+		this.patientId = patientId;
+	}
 
-  public void setPatientFirstName(String patientFirstName) {
-    updatePatientFirstName(patientFirstName);
-  }
+	public void setPatientFirstName(String patientFirstName) {
+		updatePatientFirstName(patientFirstName);
+	}
 
-  public void setPatientLastName(String patientLastName) {
-    updatePatientLastName(patientLastName);
-  }
+	public void setPatientLastName(String patientLastName) {
+		updatePatientLastName(patientLastName);
+	}
 
-  public void setIssuerOfPatientId(String issuerOfPatientId) {
-    this.issuerOfPatientId = issuerOfPatientId;
-  }
+	public void setIssuerOfPatientId(String issuerOfPatientId) {
+		this.issuerOfPatientId = issuerOfPatientId;
+	}
 
-  public Long getProjectID() {
-    return projectID;
-  }
+	public Long getProjectID() {
+		return projectID;
+	}
 
-  public void setProjectID(Long projectID) {
-    this.projectID = projectID;
-  }
+	public void setProjectID(Long projectID) {
+		this.projectID = projectID;
+	}
 
-  @Override
-  public String toString() {
-    return String.format(
-        "External pseudonym: %s, Patient ID: %s, Patient first name: %s, Patient last name: %s,"
-            + " Issuer of patient ID: %s",
-        pseudonym, patientId, patientFirstName, patientLastName, issuerOfPatientId);
-  }
+	@Override
+	public String toString() {
+		return String.format(
+				"External pseudonym: %s, Patient ID: %s, Patient first name: %s, Patient last name: %s,"
+						+ " Issuer of patient ID: %s",
+				pseudonym, patientId, patientFirstName, patientLastName, issuerOfPatientId);
+	}
+
 }

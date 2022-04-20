@@ -43,154 +43,139 @@ import org.weasis.dicom.param.DicomNode;
 @Service
 public class CStoreSCPService extends BasicCStoreSCP {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(CStoreSCPService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CStoreSCPService.class);
 
-  // Service
-  private final DestinationRepo destinationRepo;
-  private final ForwardService forwardService;
+	// Service
+	private final DestinationRepo destinationRepo;
 
-  private Map<ForwardDicomNode, List<ForwardDestination>> destinations;
-  private volatile int priority;
-  private volatile int status = 0;
+	private final ForwardService forwardService;
 
-  // Scheduled service for updating status transfer in progress
-  private ScheduledFuture isDelayOver;
-  private final ScheduledExecutorService executorService =
-      Executors.newSingleThreadScheduledExecutor();
+	private Map<ForwardDicomNode, List<ForwardDestination>> destinations;
 
-  @Autowired
-  public CStoreSCPService(
-      final DestinationRepo destinationRepo, final ForwardService forwardService) {
-    super("*");
-    this.destinationRepo = destinationRepo;
-    this.forwardService = forwardService;
-  }
+	private volatile int priority;
 
-  public void init(Map<ForwardDicomNode, List<ForwardDestination>> destinations) {
-    this.destinations = destinations;
-  }
+	private volatile int status = 0;
 
-  @Override
-  protected void store(
-      Association as, PresentationContext pc, Attributes rq, PDVInputStream data, Attributes rsp)
-      throws IOException {
-    Optional<ForwardDicomNode> sourceNode =
-        destinations.keySet().stream()
-            .filter(n -> n.getForwardAETitle().equals(as.getCalledAET()))
-            .findFirst();
-    if (sourceNode.isEmpty()) {
-      throw new IllegalStateException("Cannot find the forward AeTitle " + as.getCalledAET());
-    }
-    ForwardDicomNode fwdNode = sourceNode.get();
-    List<ForwardDestination> destList = destinations.get(fwdNode);
-    if (destList == null || destList.isEmpty()) {
-      throw new IllegalStateException("No DICOM destinations for " + fwdNode);
-    }
+	// Scheduled service for updating status transfer in progress
+	private ScheduledFuture isDelayOver;
 
-    DicomNode callingNode = DicomNode.buildRemoteDicomNode(as);
-    Set<DicomNode> srcNodes = fwdNode.getAcceptedSourceNodes();
-    boolean valid =
-        srcNodes.isEmpty()
-            || srcNodes.stream()
-                .anyMatch(
-                    n ->
-                        n.getAet().equals(callingNode.getAet())
-                            && (!n.isValidateHostname()
-                                || n.equalsHostname(callingNode.getHostname())));
-    if (!valid) {
-      rsp.setInt(Tag.Status, VR.US, Status.NotAuthorized);
-      LOGGER.error(
-          "Refused: not authorized (124H). Source node: {}. SopUID: {}",
-          callingNode,
-          rq.getString(Tag.AffectedSOPInstanceUID));
-      return;
-    }
+	private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
 
-    rsp.setInt(Tag.Status, VR.US, status);
+	@Autowired
+	public CStoreSCPService(final DestinationRepo destinationRepo, final ForwardService forwardService) {
+		super("*");
+		this.destinationRepo = destinationRepo;
+		this.forwardService = forwardService;
+	}
 
-    try {
-      Params p =
-          new Params(
-              rq.getString(Tag.AffectedSOPInstanceUID),
-              rq.getString(Tag.AffectedSOPClassUID),
-              pc.getTransferSyntax(),
-              priority,
-              data,
-              as);
+	public void init(Map<ForwardDicomNode, List<ForwardDestination>> destinations) {
+		this.destinations = destinations;
+	}
 
-      // Update transfer status of destinations
-      updateTransferStatus(destList);
+	@Override
+	protected void store(Association as, PresentationContext pc, Attributes rq, PDVInputStream data, Attributes rsp)
+			throws IOException {
+		Optional<ForwardDicomNode> sourceNode = destinations.keySet().stream()
+				.filter(n -> n.getForwardAETitle().equals(as.getCalledAET())).findFirst();
+		if (sourceNode.isEmpty()) {
+			throw new IllegalStateException("Cannot find the forward AeTitle " + as.getCalledAET());
+		}
+		ForwardDicomNode fwdNode = sourceNode.get();
+		List<ForwardDestination> destList = destinations.get(fwdNode);
+		if (destList == null || destList.isEmpty()) {
+			throw new IllegalStateException("No DICOM destinations for " + fwdNode);
+		}
 
-      forwardService.storeMultipleDestination(fwdNode, destList, p);
+		DicomNode callingNode = DicomNode.buildRemoteDicomNode(as);
+		Set<DicomNode> srcNodes = fwdNode.getAcceptedSourceNodes();
+		boolean valid = srcNodes.isEmpty() || srcNodes.stream().anyMatch(n -> n.getAet().equals(callingNode.getAet())
+				&& (!n.isValidateHostname() || n.equalsHostname(callingNode.getHostname())));
+		if (!valid) {
+			rsp.setInt(Tag.Status, VR.US, Status.NotAuthorized);
+			LOGGER.error("Refused: not authorized (124H). Source node: {}. SopUID: {}", callingNode,
+					rq.getString(Tag.AffectedSOPInstanceUID));
+			return;
+		}
 
-    } catch (Exception e) {
-      throw new DicomServiceException(Status.ProcessingFailure, e);
-    }
-  }
+		rsp.setInt(Tag.Status, VR.US, status);
 
-  /**
-   * Update transfer status: if there is a transfer in progress set status to true and schedule a
-   * thread which will set back status to false in a certain delay. If a transfer is still in
-   * progress after the end of the delay, set status to true and an other delay is scheduled.
-   *
-   * @param destinations Destinations to update
-   */
-  private void updateTransferStatus(List<ForwardDestination> destinations) {
-    // if delay is over or first iteration
-    if (isDelayOver == null || isDelayOver.isDone()) {
-      // Set flag transfer in progress
-      destinations.forEach(d -> updateTransferStatus(d, true));
-      // In a certain delay set back transfer in progress to false
-      isDelayOver =
-          executorService.schedule(
-              () -> destinations.forEach(d -> updateTransferStatus(d, false)), 5, TimeUnit.SECONDS);
-    }
-  }
+		try {
+			Params p = new Params(rq.getString(Tag.AffectedSOPInstanceUID), rq.getString(Tag.AffectedSOPClassUID),
+					pc.getTransferSyntax(), priority, data, as);
 
-  /**
-   * Update the transfer status of a destination
-   *
-   * @param destination Destination to retrieve
-   * @param status Status to update
-   */
-  private void updateTransferStatus(ForwardDestination destination, boolean status) {
-    // Retrieve the destination entity
-    Optional<DestinationEntity> destinationEntityOptional =
-        destinationRepo.findById(destination.getId());
+			// Update transfer status of destinations
+			updateTransferStatus(destList);
 
-    if (destinationEntityOptional.isPresent()) {
-      // Update the destination transfer status if destination has been found and destination
-      // is active
-      DestinationEntity destinationEntity = destinationEntityOptional.get();
-      if (destinationEntity.isActivate()) {
-        destinationEntity.setTransferInProgress(status);
-        destinationEntity.setLastTransfer(LocalDateTime.now(ZoneId.of("CET")));
-        destinationRepo.save(destinationEntity);
-      }
-    }
-  }
+			forwardService.storeMultipleDestination(fwdNode, destList, p);
 
-  public Map<ForwardDicomNode, List<ForwardDestination>> getDestinations() {
-    return destinations;
-  }
+		}
+		catch (Exception e) {
+			throw new DicomServiceException(Status.ProcessingFailure, e);
+		}
+	}
 
-  public void setDestinations(Map<ForwardDicomNode, List<ForwardDestination>> destinations) {
-    this.destinations = destinations;
-  }
+	/**
+	 * Update transfer status: if there is a transfer in progress set status to true and
+	 * schedule a thread which will set back status to false in a certain delay. If a
+	 * transfer is still in progress after the end of the delay, set status to true and an
+	 * other delay is scheduled.
+	 * @param destinations Destinations to update
+	 */
+	private void updateTransferStatus(List<ForwardDestination> destinations) {
+		// if delay is over or first iteration
+		if (isDelayOver == null || isDelayOver.isDone()) {
+			// Set flag transfer in progress
+			destinations.forEach(d -> updateTransferStatus(d, true));
+			// In a certain delay set back transfer in progress to false
+			isDelayOver = executorService.schedule(() -> destinations.forEach(d -> updateTransferStatus(d, false)), 5,
+					TimeUnit.SECONDS);
+		}
+	}
 
-  public int getPriority() {
-    return priority;
-  }
+	/**
+	 * Update the transfer status of a destination
+	 * @param destination Destination to retrieve
+	 * @param status Status to update
+	 */
+	private void updateTransferStatus(ForwardDestination destination, boolean status) {
+		// Retrieve the destination entity
+		Optional<DestinationEntity> destinationEntityOptional = destinationRepo.findById(destination.getId());
 
-  public void setPriority(int priority) {
-    this.priority = priority;
-  }
+		if (destinationEntityOptional.isPresent()) {
+			// Update the destination transfer status if destination has been found and
+			// destination
+			// is active
+			DestinationEntity destinationEntity = destinationEntityOptional.get();
+			if (destinationEntity.isActivate()) {
+				destinationEntity.setTransferInProgress(status);
+				destinationEntity.setLastTransfer(LocalDateTime.now(ZoneId.of("CET")));
+				destinationRepo.save(destinationEntity);
+			}
+		}
+	}
 
-  public int getStatus() {
-    return status;
-  }
+	public Map<ForwardDicomNode, List<ForwardDestination>> getDestinations() {
+		return destinations;
+	}
 
-  public void setStatus(int status) {
-    this.status = status;
-  }
+	public void setDestinations(Map<ForwardDicomNode, List<ForwardDestination>> destinations) {
+		this.destinations = destinations;
+	}
+
+	public int getPriority() {
+		return priority;
+	}
+
+	public void setPriority(int priority) {
+		this.priority = priority;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
 }

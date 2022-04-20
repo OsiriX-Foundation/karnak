@@ -28,169 +28,168 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 @DataJpaTest
 class KheopsAlbumsRepoTest {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(KheopsAlbumsRepoTest.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(KheopsAlbumsRepoTest.class);
 
-  @Autowired private KheopsAlbumsRepo repository;
-  @Autowired private DestinationRepo destinationRepo;
+	@Autowired
+	private KheopsAlbumsRepo repository;
 
-  /** Test save and find record. */
-  @Test
-  void shouldSaveAndFindARecord() {
-    // Create an entity to save
-    KheopsAlbumsEntity entity = new KheopsAlbumsEntity();
-    entity.setCondition("Condition");
+	@Autowired
+	private DestinationRepo destinationRepo;
 
-    // Save the entity
-    LOGGER.info("Saving entity with Condition [{}]", entity.getCondition());
-    entity = repository.save(entity);
+	/** Test save and find record. */
+	@Test
+	void shouldSaveAndFindARecord() {
+		// Create an entity to save
+		KheopsAlbumsEntity entity = new KheopsAlbumsEntity();
+		entity.setCondition("Condition");
 
-    // Test Save
-    assertEquals("Condition", entity.getCondition());
-    assertNotNull(entity.getId());
-    LOGGER.info(
-        "Entity with Condition [{}] and id [{}] saved", entity.getCondition(), entity.getId());
+		// Save the entity
+		LOGGER.info("Saving entity with Condition [{}]", entity.getCondition());
+		entity = repository.save(entity);
 
-    // Find By Id
-    Optional<KheopsAlbumsEntity> foundByIdOpt = repository.findById(entity.getId());
+		// Test Save
+		assertEquals("Condition", entity.getCondition());
+		assertNotNull(entity.getId());
+		LOGGER.info("Entity with Condition [{}] and id [{}] saved", entity.getCondition(), entity.getId());
 
-    // Test Find by Id
-    assertTrue(foundByIdOpt.isPresent());
-    LOGGER.info(
-        "Entity found with Condition [{}] and id [{}]",
-        foundByIdOpt.get().getCondition(),
-        foundByIdOpt.get().getId());
-    assertEquals(entity.getId(), foundByIdOpt.get().getId());
-  }
+		// Find By Id
+		Optional<KheopsAlbumsEntity> foundByIdOpt = repository.findById(entity.getId());
 
-  /** Test find all. */
-  @Test
-  void shouldFindAllRecords() {
-    // Create an entity to save
-    // Destination
-    DestinationEntity destinationEntity = new DestinationEntity();
-    destinationEntity.setAeTitle("AeTitle");
-    destinationEntity.setDestinationType(DestinationType.dicom);
-    destinationEntity.setHostname("hostName");
-    destinationEntity.setPort(1);
-    destinationEntity = destinationRepo.saveAndFlush(destinationEntity);
-    // Kheops Albums
-    KheopsAlbumsEntity entity = new KheopsAlbumsEntity();
-    entity.setCondition("Condition");
-    entity.setDestinationEntity(destinationEntity);
+		// Test Find by Id
+		assertTrue(foundByIdOpt.isPresent());
+		LOGGER.info("Entity found with Condition [{}] and id [{}]", foundByIdOpt.get().getCondition(),
+				foundByIdOpt.get().getId());
+		assertEquals(entity.getId(), foundByIdOpt.get().getId());
+	}
 
-    // Save the entity
-    LOGGER.info("Saving entity with Condition [{}]", entity.getCondition());
-    repository.saveAndFlush(entity);
+	/** Test find all. */
+	@Test
+	void shouldFindAllRecords() {
+		// Create an entity to save
+		// Destination
+		DestinationEntity destinationEntity = new DestinationEntity();
+		destinationEntity.setAeTitle("AeTitle");
+		destinationEntity.setDestinationType(DestinationType.dicom);
+		destinationEntity.setHostname("hostName");
+		destinationEntity.setPort(1);
+		destinationEntity = destinationRepo.saveAndFlush(destinationEntity);
+		// Kheops Albums
+		KheopsAlbumsEntity entity = new KheopsAlbumsEntity();
+		entity.setCondition("Condition");
+		entity.setDestinationEntity(destinationEntity);
 
-    // Find all
-    List<KheopsAlbumsEntity> all = repository.findAll();
+		// Save the entity
+		LOGGER.info("Saving entity with Condition [{}]", entity.getCondition());
+		repository.saveAndFlush(entity);
 
-    // Test find all
-    assertNotNull(all);
-    assertTrue(all.size() > 0);
-    assertEquals(1, all.size());
-    LOGGER.info("Number of entities found [{}]", all.size());
-  }
+		// Find all
+		List<KheopsAlbumsEntity> all = repository.findAll();
 
-  /** Test modification of a record. */
-  @Test
-  void shouldModifyRecord() {
+		// Test find all
+		assertNotNull(all);
+		assertTrue(all.size() > 0);
+		assertEquals(1, all.size());
+		LOGGER.info("Number of entities found [{}]", all.size());
+	}
 
-    String initialText = "InitialText";
-    String modifiedText = "ModifiedText";
+	/** Test modification of a record. */
+	@Test
+	void shouldModifyRecord() {
 
-    // Create an entity to save
-    KheopsAlbumsEntity entity = new KheopsAlbumsEntity();
-    entity.setCondition(initialText);
+		String initialText = "InitialText";
+		String modifiedText = "ModifiedText";
 
-    // Save the entity
-    LOGGER.info("Saving entity with Condition [{}]", entity.getCondition());
-    entity = repository.save(entity);
-    LOGGER.info("Id of the entity with Condition [{}]", entity.getId());
+		// Create an entity to save
+		KheopsAlbumsEntity entity = new KheopsAlbumsEntity();
+		entity.setCondition(initialText);
 
-    // Test Save
-    assertNotNull(entity);
-    assertEquals(initialText, entity.getCondition());
+		// Save the entity
+		LOGGER.info("Saving entity with Condition [{}]", entity.getCondition());
+		entity = repository.save(entity);
+		LOGGER.info("Id of the entity with Condition [{}]", entity.getId());
 
-    // Modify the record
-    entity.setCondition(modifiedText);
-    LOGGER.info("Modify entity Condition [{}] to [{}]", initialText, modifiedText);
-    KheopsAlbumsEntity entityModified = repository.save(entity);
+		// Test Save
+		assertNotNull(entity);
+		assertEquals(initialText, entity.getCondition());
 
-    // Test Modify
-    assertNotNull(entityModified);
-    assertEquals(entity.getId(), entityModified.getId());
-    assertEquals(modifiedText, entityModified.getCondition());
-    LOGGER.info(
-        "Condition of the entity with id [{}]: [{}]",
-        entityModified.getId(),
-        entityModified.getCondition());
-  }
+		// Modify the record
+		entity.setCondition(modifiedText);
+		LOGGER.info("Modify entity Condition [{}] to [{}]", initialText, modifiedText);
+		KheopsAlbumsEntity entityModified = repository.save(entity);
 
-  /** Test delete record. */
-  @Test
-  void shouldDeleteRecord() {
-    // Create an entity to save
-    KheopsAlbumsEntity entity = new KheopsAlbumsEntity();
-    String condition = "Condition";
-    entity.setCondition(condition);
+		// Test Modify
+		assertNotNull(entityModified);
+		assertEquals(entity.getId(), entityModified.getId());
+		assertEquals(modifiedText, entityModified.getCondition());
+		LOGGER.info("Condition of the entity with id [{}]: [{}]", entityModified.getId(),
+				entityModified.getCondition());
+	}
 
-    // Save the entity
-    LOGGER.info("Saving entity with Condition [{}]", entity.getCondition());
-    entity = repository.save(entity);
+	/** Test delete record. */
+	@Test
+	void shouldDeleteRecord() {
+		// Create an entity to save
+		KheopsAlbumsEntity entity = new KheopsAlbumsEntity();
+		String condition = "Condition";
+		entity.setCondition(condition);
 
-    // Retrieve the entity
-    Optional<KheopsAlbumsEntity> foundByIdOpt = repository.findById(entity.getId());
+		// Save the entity
+		LOGGER.info("Saving entity with Condition [{}]", entity.getCondition());
+		entity = repository.save(entity);
 
-    // Test Find by Id
-    assertTrue(foundByIdOpt.isPresent());
+		// Retrieve the entity
+		Optional<KheopsAlbumsEntity> foundByIdOpt = repository.findById(entity.getId());
 
-    // Delete the entity
-    entity = foundByIdOpt.get();
-    Long id = entity.getId();
-    LOGGER.info("Deleting entity with id [{}]", id);
-    repository.delete(entity);
+		// Test Find by Id
+		assertTrue(foundByIdOpt.isPresent());
 
-    // Test Delete
-    foundByIdOpt = repository.findById(id);
-    LOGGER.info("Is deleted entity with id [{}] present: [{}]", id, foundByIdOpt.isPresent());
-    assertFalse(foundByIdOpt.isPresent());
-  }
+		// Delete the entity
+		entity = foundByIdOpt.get();
+		Long id = entity.getId();
+		LOGGER.info("Deleting entity with id [{}]", id);
+		repository.delete(entity);
 
-  /** Test findAllByDestinationEntity method. */
-  @Test
-  void shouldFindAllByDestinationEntity() {
-    // Create and save destination
-    DestinationEntity destinationEntity = new DestinationEntity();
-    destinationEntity.setAeTitle("AeTitle");
-    destinationEntity.setDestinationType(DestinationType.dicom);
-    destinationEntity.setHostname("hostName");
-    destinationEntity.setPort(1);
+		// Test Delete
+		foundByIdOpt = repository.findById(id);
+		LOGGER.info("Is deleted entity with id [{}] present: [{}]", id, foundByIdOpt.isPresent());
+		assertFalse(foundByIdOpt.isPresent());
+	}
 
-    // Save the entity
-    LOGGER.info("Saving entity with name [{}]", destinationEntity.getAeTitle());
-    destinationEntity = destinationRepo.saveAndFlush(destinationEntity);
+	/** Test findAllByDestinationEntity method. */
+	@Test
+	void shouldFindAllByDestinationEntity() {
+		// Create and save destination
+		DestinationEntity destinationEntity = new DestinationEntity();
+		destinationEntity.setAeTitle("AeTitle");
+		destinationEntity.setDestinationType(DestinationType.dicom);
+		destinationEntity.setHostname("hostName");
+		destinationEntity.setPort(1);
 
-    // Create and save 2 Kheops Albums with same destination
-    KheopsAlbumsEntity entityFirst = new KheopsAlbumsEntity();
-    entityFirst.setDestinationEntity(destinationEntity);
-    KheopsAlbumsEntity entitySecond = new KheopsAlbumsEntity();
-    entitySecond.setDestinationEntity(destinationEntity);
+		// Save the entity
+		LOGGER.info("Saving entity with name [{}]", destinationEntity.getAeTitle());
+		destinationEntity = destinationRepo.saveAndFlush(destinationEntity);
 
-    // Save the entity
-    LOGGER.info("Saving entities");
-    entityFirst = repository.save(entityFirst);
-    entitySecond = repository.save(entitySecond);
+		// Create and save 2 Kheops Albums with same destination
+		KheopsAlbumsEntity entityFirst = new KheopsAlbumsEntity();
+		entityFirst.setDestinationEntity(destinationEntity);
+		KheopsAlbumsEntity entitySecond = new KheopsAlbumsEntity();
+		entitySecond.setDestinationEntity(destinationEntity);
 
-    // Retrieve the entities
-    List<KheopsAlbumsEntity> all = repository.findAllByDestinationEntity(destinationEntity);
+		// Save the entity
+		LOGGER.info("Saving entities");
+		entityFirst = repository.save(entityFirst);
+		entitySecond = repository.save(entitySecond);
 
-    // Test results
-    assertNotNull(all);
-    assertTrue(all.size() > 0);
-    assertEquals(2, all.size());
-    assertEquals("AeTitle", all.get(0).getDestinationEntity().getAeTitle());
-    assertEquals("AeTitle", all.get(1).getDestinationEntity().getAeTitle());
-    LOGGER.info("Number of entities found [{}]", all.size());
-  }
+		// Retrieve the entities
+		List<KheopsAlbumsEntity> all = repository.findAllByDestinationEntity(destinationEntity);
+
+		// Test results
+		assertNotNull(all);
+		assertTrue(all.size() > 0);
+		assertEquals(2, all.size());
+		assertEquals("AeTitle", all.get(0).getDestinationEntity().getAeTitle());
+		assertEquals("AeTitle", all.get(1).getDestinationEntity().getAeTitle());
+		LOGGER.info("Number of entities found [{}]", all.size());
+	}
+
 }

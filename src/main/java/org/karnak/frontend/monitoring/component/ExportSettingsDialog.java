@@ -26,117 +26,113 @@ import org.karnak.frontend.util.NotificationUtil;
 /** Dialog to get the input of the user concerning the export settings */
 public class ExportSettingsDialog extends Dialog {
 
-  // Textfields
-  private TextField delimiterTextField;
-  private TextField quoteCharacterTextField;
+	// Textfields
+	private TextField delimiterTextField;
 
-  // Export setting model
-  private ExportSettings exportSettings;
+	private TextField quoteCharacterTextField;
 
-  // Binder
-  private Binder<ExportSettings> binder;
+	// Export setting model
+	private ExportSettings exportSettings;
 
-  // Button
-  private Button saveButton;
-  private Button cancelButton;
+	// Binder
+	private Binder<ExportSettings> binder;
 
-  /** Constructor */
-  public ExportSettingsDialog() {
-    setModal(true);
-    setWidth(11, Unit.PERCENTAGE);
-    setHeight(37, Unit.PERCENTAGE);
+	// Button
+	private Button saveButton;
 
-    // Build components
-    buildComponents();
+	private Button cancelButton;
 
-    // Binder
-    buildBinder();
+	/** Constructor */
+	public ExportSettingsDialog() {
+		setModal(true);
+		setWidth(11, Unit.PERCENTAGE);
+		setHeight(37, Unit.PERCENTAGE);
 
-    // Events
-    addEvents();
-  }
+		// Build components
+		buildComponents();
 
-  /** Add events */
-  private void addEvents() {
-    // read defaults values
-    binder.readBean(exportSettings);
+		// Binder
+		buildBinder();
 
-    // Save button
-    saveButton.addClickListener(
-        buttonClickEvent -> {
-          try {
-            binder.writeBean(exportSettings);
-            this.close();
-          } catch (ValidationException e) {
-            NotificationUtil.displayErrorMessage(
-                "Error occurred during bean validation", Position.BOTTOM_CENTER);
-          }
-        });
+		// Events
+		addEvents();
+	}
 
-    // Cancel button
-    cancelButton.addClickListener(
-        buttonClickEvent -> {
-          binder.readBean(exportSettings);
-          this.close();
-        });
-  }
+	/** Add events */
+	private void addEvents() {
+		// read defaults values
+		binder.readBean(exportSettings);
 
-  /** Binder on textfields */
-  private void buildBinder() {
-    binder = new Binder<>(ExportSettings.class);
-    // Delimiter
-    binder
-        .forField(delimiterTextField)
-        .withValidator(
-            separator -> separator.length() == 1, "Delimiter must contain only one character")
-        .asRequired("Delimiter is required")
-        .bind(ExportSettings::getDelimiter, ExportSettings::setDelimiter);
-    // Quote character
-    binder
-        .forField(quoteCharacterTextField)
-        .withValidator(
-            separator -> separator.length() == 1, "Quote character must contain only one character")
-        .asRequired("Quote character is required")
-        .bind(ExportSettings::getQuoteCharacter, ExportSettings::setQuoteCharacter);
-  }
+		// Save button
+		saveButton.addClickListener(buttonClickEvent -> {
+			try {
+				binder.writeBean(exportSettings);
+				this.close();
+			}
+			catch (ValidationException e) {
+				NotificationUtil.displayErrorMessage("Error occurred during bean validation", Position.BOTTOM_CENTER);
+			}
+		});
 
-  /** Build components */
-  private void buildComponents() {
-    // Default
-    exportSettings = new ExportSettings();
+		// Cancel button
+		cancelButton.addClickListener(buttonClickEvent -> {
+			binder.readBean(exportSettings);
+			this.close();
+		});
+	}
 
-    // Title
-    HorizontalLayout titleLayout = new HorizontalLayout();
-    H2 dialogTitle = new H2("Export Settings");
-    dialogTitle.setWidthFull();
-    titleLayout.add(dialogTitle);
+	/** Binder on textfields */
+	private void buildBinder() {
+		binder = new Binder<>(ExportSettings.class);
+		// Delimiter
+		binder.forField(delimiterTextField)
+				.withValidator(separator -> separator.length() == 1, "Delimiter must contain only one character")
+				.asRequired("Delimiter is required").bind(ExportSettings::getDelimiter, ExportSettings::setDelimiter);
+		// Quote character
+		binder.forField(quoteCharacterTextField)
+				.withValidator(separator -> separator.length() == 1, "Quote character must contain only one character")
+				.asRequired("Quote character is required")
+				.bind(ExportSettings::getQuoteCharacter, ExportSettings::setQuoteCharacter);
+	}
 
-    // Textfields
-    delimiterTextField = new TextField("Delimiter");
-    quoteCharacterTextField = new TextField("Quote character");
-    delimiterTextField.setWidth(60, Unit.PERCENTAGE);
-    quoteCharacterTextField.setWidth(60, Unit.PERCENTAGE);
-    VerticalLayout fieldsLayout = new VerticalLayout();
-    fieldsLayout.add(delimiterTextField, quoteCharacterTextField);
+	/** Build components */
+	private void buildComponents() {
+		// Default
+		exportSettings = new ExportSettings();
 
-    // Buttons
-    cancelButton = new Button("Cancel");
-    saveButton = new Button("Save settings");
-    saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-    HorizontalLayout buttonLayout = new HorizontalLayout(cancelButton, saveButton);
-    buttonLayout.setJustifyContentMode(JustifyContentMode.CENTER);
-    buttonLayout.setWidthFull();
+		// Title
+		HorizontalLayout titleLayout = new HorizontalLayout();
+		H2 dialogTitle = new H2("Export Settings");
+		dialogTitle.setWidthFull();
+		titleLayout.add(dialogTitle);
 
-    // Final layout
-    VerticalLayout dialogLayout = new VerticalLayout(titleLayout, fieldsLayout, buttonLayout);
-    add(dialogLayout);
-  }
+		// Textfields
+		delimiterTextField = new TextField("Delimiter");
+		quoteCharacterTextField = new TextField("Quote character");
+		delimiterTextField.setWidth(60, Unit.PERCENTAGE);
+		quoteCharacterTextField.setWidth(60, Unit.PERCENTAGE);
+		VerticalLayout fieldsLayout = new VerticalLayout();
+		fieldsLayout.add(delimiterTextField, quoteCharacterTextField);
 
-  public ExportSettings getExportSettings() {
-    return exportSettings;
-  }
+		// Buttons
+		cancelButton = new Button("Cancel");
+		saveButton = new Button("Save settings");
+		saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+		HorizontalLayout buttonLayout = new HorizontalLayout(cancelButton, saveButton);
+		buttonLayout.setJustifyContentMode(JustifyContentMode.CENTER);
+		buttonLayout.setWidthFull();
 
-  public void setExportSettings(ExportSettings exportSettings) {
-    this.exportSettings = exportSettings;
-  }
+		// Final layout
+		VerticalLayout dialogLayout = new VerticalLayout(titleLayout, fieldsLayout, buttonLayout);
+		add(dialogLayout);
+	}
+
+	public ExportSettings getExportSettings() {
+		return exportSettings;
+	}
+
+	public void setExportSettings(ExportSettings exportSettings) {
+		this.exportSettings = exportSettings;
+	}
+
 }

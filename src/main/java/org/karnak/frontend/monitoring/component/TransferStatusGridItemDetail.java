@@ -20,320 +20,288 @@ import org.karnak.backend.util.DateFormat;
 
 public class TransferStatusGridItemDetail extends FormLayout {
 
-  // Transfer Status
-  // Original
-  private TextField patientIdOriginalField;
-  private TextField accessionNumberOriginalField;
-  private TextField studyDescriptionOriginalField;
-  private TextField studyDateOriginalField;
-  private TextField studyUidOriginalField;
-  private TextField serieDescriptionOriginalField;
-  private TextField serieDateOriginalField;
-  private TextField serieUidOriginalField;
-  private TextField sopInstanceUidOriginalField;
-  // To send
-  private TextField patientIdToSendField;
-  private TextField accessionNumberToSendField;
-  private TextField studyDescriptionToSendField;
-  private TextField studyDateToSendField;
-  private TextField studyUidToSendField;
-  private TextField serieDescriptionToSendField;
-  private TextField serieDateToSendField;
-  private TextField serieUidToSendField;
-  private TextField sopInstanceUidToSendField;
+	// Transfer Status
+	// Original
+	private TextField patientIdOriginalField;
 
-  // Destination
-  private TextField destinationUrlField;
-  private TextField destinationHostNameField;
-  private TextField destinationAeTitleField;
-  private TextField destinationPortField;
-  private TextField destinationDescriptionField;
+	private TextField accessionNumberOriginalField;
 
-  // Forward Node
-  private TextField forwardNodeAeTitleField;
-  private TextField forwardNodeDescriptionField;
+	private TextField studyDescriptionOriginalField;
 
-  /** Constructor */
-  public TransferStatusGridItemDetail() {
-    // Transfer Status
-    initTextFieldsTransferStatus();
+	private TextField studyDateOriginalField;
 
-    // Destination
-    initTextFieldsDestination();
+	private TextField studyUidOriginalField;
 
-    // Forward node
-    initTextFieldsForwardNode();
-  }
+	private TextField serieDescriptionOriginalField;
 
-  /** Init destination text fields */
-  private void initTextFieldsDestination() {
-    destinationUrlField = new TextField("Destination Url");
-    destinationHostNameField = new TextField("Destination Host Name");
-    destinationAeTitleField = new TextField("Destination AeTitle");
-    destinationPortField = new TextField("Destination Port");
-    destinationDescriptionField = new TextField("Destination Description");
-  }
+	private TextField serieDateOriginalField;
 
-  /** Init forward node text fields */
-  private void initTextFieldsForwardNode() {
-    forwardNodeAeTitleField = new TextField("Forward Node AeTitle");
-    forwardNodeDescriptionField = new TextField("Forward Node Description");
-  }
+	private TextField serieUidOriginalField;
 
-  /** Init transfer status text fields */
-  private void initTextFieldsTransferStatus() {
-    // Original
-    patientIdOriginalField = new TextField("Patient Id Original");
-    accessionNumberOriginalField = new TextField("Accession Number Original");
-    studyDescriptionOriginalField = new TextField("Study Description Original");
-    studyDateOriginalField = new TextField("Study Date Original");
-    studyUidOriginalField = new TextField("Study Uid Original");
-    serieDescriptionOriginalField = new TextField("Serie Description Original");
-    serieDateOriginalField = new TextField("Serie Date Original");
-    serieUidOriginalField = new TextField("Serie Uid Original");
-    sopInstanceUidOriginalField = new TextField("Sop Instance Uid Original");
-    // To Send
-    patientIdToSendField = new TextField("Patient Id Sent");
-    accessionNumberToSendField = new TextField("Accession Number Sent");
-    studyDescriptionToSendField = new TextField("Study Description Sent");
-    studyDateToSendField = new TextField("Study Date Sent");
-    studyUidToSendField = new TextField("Study Uid Sent");
-    serieDescriptionToSendField = new TextField("Serie Description Sent");
-    serieDateToSendField = new TextField("Serie Date Sent");
-    serieUidToSendField = new TextField("Serie Uid Sent");
-    sopInstanceUidToSendField = new TextField("Sop Instance Uid Sent");
-  }
+	private TextField sopInstanceUidOriginalField;
 
-  /**
-   * Add texfields in component
-   *
-   * @param textFields Textfields to add
-   */
-  private void addTextFields(List<TextField> textFields) {
-    textFields.forEach(
-        field -> {
-          field.setReadOnly(true);
-          add(field);
-        });
-  }
+	// To send
+	private TextField patientIdToSendField;
 
-  /**
-   * Determine textfields to display and set values
-   *
-   * @param transferStatusEntity values to evaluate
-   */
-  public void buildDetailsToDisplay(TransferStatusEntity transferStatusEntity) {
-    determineTextFieldsToDisplay(transferStatusEntity);
-    setValues(transferStatusEntity);
-  }
+	private TextField accessionNumberToSendField;
 
-  /**
-   * Determine texfields to display
-   *
-   * @param transferStatusEntity Values to evaluate
-   */
-  private void determineTextFieldsToDisplay(TransferStatusEntity transferStatusEntity) {
-    // Forward node
-    determineTextFieldsToDisplayForwardNode(transferStatusEntity);
+	private TextField studyDescriptionToSendField;
 
-    // Destination
-    determineTextFieldsToDisplayDestination(transferStatusEntity);
+	private TextField studyDateToSendField;
 
-    // Transfer Status
-    determineTextFieldsToDisplayTransferStatus(transferStatusEntity);
-  }
+	private TextField studyUidToSendField;
 
-  /**
-   * Determine texfields to display for destiforward ndoe
-   *
-   * @param transferStatusEntity values to evaluate
-   */
-  private void determineTextFieldsToDisplayForwardNode(TransferStatusEntity transferStatusEntity) {
-    addTextFields(Arrays.asList(forwardNodeAeTitleField, forwardNodeDescriptionField));
-  }
+	private TextField serieDescriptionToSendField;
 
-  /**
-   * Determine texfields to display for destination
-   *
-   * @param transferStatusEntity values to evaluate
-   */
-  private void determineTextFieldsToDisplayDestination(TransferStatusEntity transferStatusEntity) {
-    addTextFields(
-        Objects.equals(
-                transferStatusEntity.getDestinationEntity().getDestinationType(),
-                DestinationType.dicom)
-            ? Arrays.asList(
-                destinationHostNameField,
-                destinationAeTitleField,
-                destinationPortField,
-                destinationDescriptionField)
-            : Arrays.asList(destinationUrlField, destinationDescriptionField));
-  }
+	private TextField serieDateToSendField;
 
-  /**
-   * Determine texfields to display for transfer status
-   *
-   * @param transferStatusEntity values to evaluate
-   */
-  private void determineTextFieldsToDisplayTransferStatus(
-      TransferStatusEntity transferStatusEntity) {
+	private TextField serieUidToSendField;
 
-    // Transfer Status
-    // Original
-    List<TextField> originalTransferStatusTextFields =
-        Arrays.asList(
-            patientIdOriginalField,
-            accessionNumberOriginalField,
-            studyDescriptionOriginalField,
-            studyDateOriginalField,
-            studyUidOriginalField,
-            serieDescriptionOriginalField,
-            serieDateOriginalField,
-            serieUidOriginalField,
-            sopInstanceUidOriginalField);
-    // To Send
-    List<TextField> toSendTransferStatusTextFields =
-        Arrays.asList(
-            patientIdToSendField,
-            accessionNumberToSendField,
-            studyDescriptionToSendField,
-            studyDateToSendField,
-            studyUidToSendField,
-            serieDescriptionToSendField,
-            serieDateToSendField,
-            serieUidToSendField,
-            sopInstanceUidToSendField);
+	private TextField sopInstanceUidToSendField;
 
-    // Transfer Status
-    // If not sent only original values
-    if (!transferStatusEntity.isSent()) {
-      addTextFields(originalTransferStatusTextFields);
-    }
-    // If sent: display original and sent values
-    else {
-      addTextFields(originalTransferStatusTextFields);
-      addTextFields(toSendTransferStatusTextFields);
-    }
-  }
+	// Destination
+	private TextField destinationUrlField;
 
-  /**
-   * Populate values in textfields
-   *
-   * @param transferStatusEntity values to populate
-   */
-  private void setValues(TransferStatusEntity transferStatusEntity) {
-    // Transfer Status
-    setValuesTransferStatus(transferStatusEntity);
+	private TextField destinationHostNameField;
 
-    // Destination
-    setValuesDestination(transferStatusEntity);
+	private TextField destinationAeTitleField;
 
-    // Forward Node
-    setValuesForwardNode(transferStatusEntity);
-  }
+	private TextField destinationPortField;
 
-  /**
-   * Set values for transfer status
-   *
-   * @param transferStatusEntity values to populate
-   */
-  private void setValuesTransferStatus(TransferStatusEntity transferStatusEntity) {
-    // Original
-    patientIdOriginalField.setValue(
-        checkStringNullValue(transferStatusEntity.getPatientIdOriginal()));
-    accessionNumberOriginalField.setValue(
-        checkStringNullValue(transferStatusEntity.getAccessionNumberOriginal()));
-    studyDescriptionOriginalField.setValue(
-        checkStringNullValue(transferStatusEntity.getStudyDescriptionOriginal()));
-    studyDateOriginalField.setValue(
-        checkStringNullValue(
-            DateFormat.format(
-                transferStatusEntity.getStudyDateOriginal(),
-                DateFormat.FORMAT_DDMMYYYY_SLASH_HHMMSS_2POINTS_SSS_POINT)));
-    studyUidOriginalField.setValue(
-        checkStringNullValue(transferStatusEntity.getStudyUidOriginal()));
-    serieDescriptionOriginalField.setValue(
-        checkStringNullValue(transferStatusEntity.getSerieDescriptionOriginal()));
-    serieDateOriginalField.setValue(
-        checkStringNullValue(
-            DateFormat.format(
-                transferStatusEntity.getSerieDateOriginal(),
-                DateFormat.FORMAT_DDMMYYYY_SLASH_HHMMSS_2POINTS_SSS_POINT)));
-    serieUidOriginalField.setValue(
-        checkStringNullValue(transferStatusEntity.getSerieUidOriginal()));
-    sopInstanceUidOriginalField.setValue(
-        checkStringNullValue(transferStatusEntity.getSopInstanceUidOriginal()));
-    // Sent
-    patientIdToSendField.setValue(checkStringNullValue(transferStatusEntity.getPatientIdToSend()));
-    accessionNumberToSendField.setValue(
-        checkStringNullValue(transferStatusEntity.getAccessionNumberToSend()));
-    studyDescriptionToSendField.setValue(
-        checkStringNullValue(transferStatusEntity.getStudyDescriptionToSend()));
-    studyDateToSendField.setValue(
-        checkStringNullValue(
-            DateFormat.format(
-                transferStatusEntity.getStudyDateToSend(),
-                DateFormat.FORMAT_DDMMYYYY_SLASH_HHMMSS_2POINTS_SSS_POINT)));
-    studyUidToSendField.setValue(checkStringNullValue(transferStatusEntity.getStudyUidToSend()));
-    serieDescriptionToSendField.setValue(
-        checkStringNullValue(transferStatusEntity.getSerieDescriptionToSend()));
-    serieDateToSendField.setValue(
-        checkStringNullValue(
-            DateFormat.format(
-                transferStatusEntity.getSerieDateToSend(),
-                DateFormat.FORMAT_DDMMYYYY_SLASH_HHMMSS_2POINTS_SSS_POINT)));
-    serieUidToSendField.setValue(checkStringNullValue(transferStatusEntity.getSerieUidToSend()));
-    sopInstanceUidToSendField.setValue(
-        checkStringNullValue(transferStatusEntity.getSopInstanceUidToSend()));
-  }
+	private TextField destinationDescriptionField;
 
-  /**
-   * Set values for destination
-   *
-   * @param transferStatusEntity values to populate
-   */
-  private void setValuesDestination(TransferStatusEntity transferStatusEntity) {
-    destinationUrlField.setValue(
-        checkStringNullValue(transferStatusEntity.getDestinationEntity().getUrl()));
-    destinationHostNameField.setValue(
-        checkStringNullValue(transferStatusEntity.getDestinationEntity().getHostname()));
-    destinationAeTitleField.setValue(
-        checkStringNullValue(transferStatusEntity.getDestinationEntity().getAeTitle()));
-    destinationPortField.setValue(
-        checkIntegerNullValue(transferStatusEntity.getDestinationEntity().getPort()));
-    destinationDescriptionField.setValue(
-        checkStringNullValue(transferStatusEntity.getDestinationEntity().getDescription()));
-  }
+	// Forward Node
+	private TextField forwardNodeAeTitleField;
 
-  /**
-   * Set values for Forward Node
-   *
-   * @param transferStatusEntity values to populate
-   */
-  private void setValuesForwardNode(TransferStatusEntity transferStatusEntity) {
-    forwardNodeAeTitleField.setValue(
-        checkStringNullValue(transferStatusEntity.getForwardNodeEntity().getFwdAeTitle()));
-    forwardNodeDescriptionField.setValue(
-        checkStringNullValue(transferStatusEntity.getForwardNodeEntity().getFwdDescription()));
-  }
+	private TextField forwardNodeDescriptionField;
 
-  /**
-   * Check value is not null otherwise return empty string
-   *
-   * @param valueToEvaluate Value to evaluate
-   * @return if null empty string otherwise value
-   */
-  private String checkStringNullValue(String valueToEvaluate) {
-    return valueToEvaluate == null ? "" : valueToEvaluate;
-  }
+	/** Constructor */
+	public TransferStatusGridItemDetail() {
+		// Transfer Status
+		initTextFieldsTransferStatus();
 
-  /**
-   * Check value is not null otherwise return empty string
-   *
-   * @param valueToEvaluate Value to evaluate
-   * @return if null empty string otherwise value
-   */
-  private String checkIntegerNullValue(Integer valueToEvaluate) {
-    return valueToEvaluate == null ? "" : valueToEvaluate.toString();
-  }
+		// Destination
+		initTextFieldsDestination();
+
+		// Forward node
+		initTextFieldsForwardNode();
+	}
+
+	/** Init destination text fields */
+	private void initTextFieldsDestination() {
+		destinationUrlField = new TextField("Destination Url");
+		destinationHostNameField = new TextField("Destination Host Name");
+		destinationAeTitleField = new TextField("Destination AeTitle");
+		destinationPortField = new TextField("Destination Port");
+		destinationDescriptionField = new TextField("Destination Description");
+	}
+
+	/** Init forward node text fields */
+	private void initTextFieldsForwardNode() {
+		forwardNodeAeTitleField = new TextField("Forward Node AeTitle");
+		forwardNodeDescriptionField = new TextField("Forward Node Description");
+	}
+
+	/** Init transfer status text fields */
+	private void initTextFieldsTransferStatus() {
+		// Original
+		patientIdOriginalField = new TextField("Patient Id Original");
+		accessionNumberOriginalField = new TextField("Accession Number Original");
+		studyDescriptionOriginalField = new TextField("Study Description Original");
+		studyDateOriginalField = new TextField("Study Date Original");
+		studyUidOriginalField = new TextField("Study Uid Original");
+		serieDescriptionOriginalField = new TextField("Serie Description Original");
+		serieDateOriginalField = new TextField("Serie Date Original");
+		serieUidOriginalField = new TextField("Serie Uid Original");
+		sopInstanceUidOriginalField = new TextField("Sop Instance Uid Original");
+		// To Send
+		patientIdToSendField = new TextField("Patient Id Sent");
+		accessionNumberToSendField = new TextField("Accession Number Sent");
+		studyDescriptionToSendField = new TextField("Study Description Sent");
+		studyDateToSendField = new TextField("Study Date Sent");
+		studyUidToSendField = new TextField("Study Uid Sent");
+		serieDescriptionToSendField = new TextField("Serie Description Sent");
+		serieDateToSendField = new TextField("Serie Date Sent");
+		serieUidToSendField = new TextField("Serie Uid Sent");
+		sopInstanceUidToSendField = new TextField("Sop Instance Uid Sent");
+	}
+
+	/**
+	 * Add texfields in component
+	 * @param textFields Textfields to add
+	 */
+	private void addTextFields(List<TextField> textFields) {
+		textFields.forEach(field -> {
+			field.setReadOnly(true);
+			add(field);
+		});
+	}
+
+	/**
+	 * Determine textfields to display and set values
+	 * @param transferStatusEntity values to evaluate
+	 */
+	public void buildDetailsToDisplay(TransferStatusEntity transferStatusEntity) {
+		determineTextFieldsToDisplay(transferStatusEntity);
+		setValues(transferStatusEntity);
+	}
+
+	/**
+	 * Determine texfields to display
+	 * @param transferStatusEntity Values to evaluate
+	 */
+	private void determineTextFieldsToDisplay(TransferStatusEntity transferStatusEntity) {
+		// Forward node
+		determineTextFieldsToDisplayForwardNode(transferStatusEntity);
+
+		// Destination
+		determineTextFieldsToDisplayDestination(transferStatusEntity);
+
+		// Transfer Status
+		determineTextFieldsToDisplayTransferStatus(transferStatusEntity);
+	}
+
+	/**
+	 * Determine texfields to display for destiforward ndoe
+	 * @param transferStatusEntity values to evaluate
+	 */
+	private void determineTextFieldsToDisplayForwardNode(TransferStatusEntity transferStatusEntity) {
+		addTextFields(Arrays.asList(forwardNodeAeTitleField, forwardNodeDescriptionField));
+	}
+
+	/**
+	 * Determine texfields to display for destination
+	 * @param transferStatusEntity values to evaluate
+	 */
+	private void determineTextFieldsToDisplayDestination(TransferStatusEntity transferStatusEntity) {
+		addTextFields(
+				Objects.equals(transferStatusEntity.getDestinationEntity().getDestinationType(), DestinationType.dicom)
+						? Arrays.asList(destinationHostNameField, destinationAeTitleField, destinationPortField,
+								destinationDescriptionField)
+						: Arrays.asList(destinationUrlField, destinationDescriptionField));
+	}
+
+	/**
+	 * Determine texfields to display for transfer status
+	 * @param transferStatusEntity values to evaluate
+	 */
+	private void determineTextFieldsToDisplayTransferStatus(TransferStatusEntity transferStatusEntity) {
+
+		// Transfer Status
+		// Original
+		List<TextField> originalTransferStatusTextFields = Arrays.asList(patientIdOriginalField,
+				accessionNumberOriginalField, studyDescriptionOriginalField, studyDateOriginalField,
+				studyUidOriginalField, serieDescriptionOriginalField, serieDateOriginalField, serieUidOriginalField,
+				sopInstanceUidOriginalField);
+		// To Send
+		List<TextField> toSendTransferStatusTextFields = Arrays.asList(patientIdToSendField, accessionNumberToSendField,
+				studyDescriptionToSendField, studyDateToSendField, studyUidToSendField, serieDescriptionToSendField,
+				serieDateToSendField, serieUidToSendField, sopInstanceUidToSendField);
+
+		// Transfer Status
+		// If not sent only original values
+		if (!transferStatusEntity.isSent()) {
+			addTextFields(originalTransferStatusTextFields);
+		}
+		// If sent: display original and sent values
+		else {
+			addTextFields(originalTransferStatusTextFields);
+			addTextFields(toSendTransferStatusTextFields);
+		}
+	}
+
+	/**
+	 * Populate values in textfields
+	 * @param transferStatusEntity values to populate
+	 */
+	private void setValues(TransferStatusEntity transferStatusEntity) {
+		// Transfer Status
+		setValuesTransferStatus(transferStatusEntity);
+
+		// Destination
+		setValuesDestination(transferStatusEntity);
+
+		// Forward Node
+		setValuesForwardNode(transferStatusEntity);
+	}
+
+	/**
+	 * Set values for transfer status
+	 * @param transferStatusEntity values to populate
+	 */
+	private void setValuesTransferStatus(TransferStatusEntity transferStatusEntity) {
+		// Original
+		patientIdOriginalField.setValue(checkStringNullValue(transferStatusEntity.getPatientIdOriginal()));
+		accessionNumberOriginalField.setValue(checkStringNullValue(transferStatusEntity.getAccessionNumberOriginal()));
+		studyDescriptionOriginalField
+				.setValue(checkStringNullValue(transferStatusEntity.getStudyDescriptionOriginal()));
+		studyDateOriginalField
+				.setValue(checkStringNullValue(DateFormat.format(transferStatusEntity.getStudyDateOriginal(),
+						DateFormat.FORMAT_DDMMYYYY_SLASH_HHMMSS_2POINTS_SSS_POINT)));
+		studyUidOriginalField.setValue(checkStringNullValue(transferStatusEntity.getStudyUidOriginal()));
+		serieDescriptionOriginalField
+				.setValue(checkStringNullValue(transferStatusEntity.getSerieDescriptionOriginal()));
+		serieDateOriginalField
+				.setValue(checkStringNullValue(DateFormat.format(transferStatusEntity.getSerieDateOriginal(),
+						DateFormat.FORMAT_DDMMYYYY_SLASH_HHMMSS_2POINTS_SSS_POINT)));
+		serieUidOriginalField.setValue(checkStringNullValue(transferStatusEntity.getSerieUidOriginal()));
+		sopInstanceUidOriginalField.setValue(checkStringNullValue(transferStatusEntity.getSopInstanceUidOriginal()));
+		// Sent
+		patientIdToSendField.setValue(checkStringNullValue(transferStatusEntity.getPatientIdToSend()));
+		accessionNumberToSendField.setValue(checkStringNullValue(transferStatusEntity.getAccessionNumberToSend()));
+		studyDescriptionToSendField.setValue(checkStringNullValue(transferStatusEntity.getStudyDescriptionToSend()));
+		studyDateToSendField.setValue(checkStringNullValue(DateFormat.format(transferStatusEntity.getStudyDateToSend(),
+				DateFormat.FORMAT_DDMMYYYY_SLASH_HHMMSS_2POINTS_SSS_POINT)));
+		studyUidToSendField.setValue(checkStringNullValue(transferStatusEntity.getStudyUidToSend()));
+		serieDescriptionToSendField.setValue(checkStringNullValue(transferStatusEntity.getSerieDescriptionToSend()));
+		serieDateToSendField.setValue(checkStringNullValue(DateFormat.format(transferStatusEntity.getSerieDateToSend(),
+				DateFormat.FORMAT_DDMMYYYY_SLASH_HHMMSS_2POINTS_SSS_POINT)));
+		serieUidToSendField.setValue(checkStringNullValue(transferStatusEntity.getSerieUidToSend()));
+		sopInstanceUidToSendField.setValue(checkStringNullValue(transferStatusEntity.getSopInstanceUidToSend()));
+	}
+
+	/**
+	 * Set values for destination
+	 * @param transferStatusEntity values to populate
+	 */
+	private void setValuesDestination(TransferStatusEntity transferStatusEntity) {
+		destinationUrlField.setValue(checkStringNullValue(transferStatusEntity.getDestinationEntity().getUrl()));
+		destinationHostNameField
+				.setValue(checkStringNullValue(transferStatusEntity.getDestinationEntity().getHostname()));
+		destinationAeTitleField
+				.setValue(checkStringNullValue(transferStatusEntity.getDestinationEntity().getAeTitle()));
+		destinationPortField.setValue(checkIntegerNullValue(transferStatusEntity.getDestinationEntity().getPort()));
+		destinationDescriptionField
+				.setValue(checkStringNullValue(transferStatusEntity.getDestinationEntity().getDescription()));
+	}
+
+	/**
+	 * Set values for Forward Node
+	 * @param transferStatusEntity values to populate
+	 */
+	private void setValuesForwardNode(TransferStatusEntity transferStatusEntity) {
+		forwardNodeAeTitleField
+				.setValue(checkStringNullValue(transferStatusEntity.getForwardNodeEntity().getFwdAeTitle()));
+		forwardNodeDescriptionField
+				.setValue(checkStringNullValue(transferStatusEntity.getForwardNodeEntity().getFwdDescription()));
+	}
+
+	/**
+	 * Check value is not null otherwise return empty string
+	 * @param valueToEvaluate Value to evaluate
+	 * @return if null empty string otherwise value
+	 */
+	private String checkStringNullValue(String valueToEvaluate) {
+		return valueToEvaluate == null ? "" : valueToEvaluate;
+	}
+
+	/**
+	 * Check value is not null otherwise return empty string
+	 * @param valueToEvaluate Value to evaluate
+	 * @return if null empty string otherwise value
+	 */
+	private String checkIntegerNullValue(Integer valueToEvaluate) {
+		return valueToEvaluate == null ? "" : valueToEvaluate.toString();
+	}
+
 }

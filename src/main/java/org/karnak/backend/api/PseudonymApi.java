@@ -39,307 +39,286 @@ import org.springframework.http.MediaType;
 /** API model */
 public class PseudonymApi {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(PseudonymApi.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PseudonymApi.class);
 
-  private static final String SERVER_URL = MainzellisteConfig.getInstance().getServerurl();
-  private static final String API_KEY = MainzellisteConfig.getInstance().getApikey();
+	private static final String SERVER_URL = MainzellisteConfig.getInstance().getServerurl();
 
-  private static final String MAINZELLISTE_HEADER = "mainzellisteApiKey";
-  private static final String CONTENT_TYPE_HEADER = "Content-Type";
+	private static final String API_KEY = MainzellisteConfig.getInstance().getApikey();
 
-  private final HttpClient httpClient =
-      HttpClient.newBuilder() // one instance, reuse
-          .version(HttpClient.Version.HTTP_1_1)
-          .build();
+	private static final String MAINZELLISTE_HEADER = "mainzellisteApiKey";
 
-  private String sessionId;
+	private static final String CONTENT_TYPE_HEADER = "Content-Type";
 
-  public String addExtID(Fields patientFields, String externalPseudonym) {
-    this.sessionId = rqGetSessionId(true);
-    String[] extid = {"pid", "extid"};
-    Data data = new Data(extid, patientFields, new Ids(externalPseudonym));
-    try {
-      return getPseudonym(data);
-    } catch (Exception e) {
-      throw new IllegalStateException(
-          String.format("Cannot add a extid %s in Mainzellise %s", externalPseudonym, e));
-    }
-  }
+	private final HttpClient httpClient = HttpClient.newBuilder() // one instance, reuse
+			.version(HttpClient.Version.HTTP_1_1).build();
 
-  public String getExistingExtID(Fields patientFields) {
-    this.sessionId = rqGetSessionId(true);
-    String[] extid = {"pid", "extid"};
-    Data data = new Data(extid, patientFields, null);
-    try {
-      return getPseudonym(data);
-    } catch (Exception e) {
-      throw new IllegalStateException("Cannot get an existing extid in Mainzelliste API", e);
-    }
-  }
+	private String sessionId;
 
-  public String generatePID(Fields patientFields) {
-    this.sessionId = rqGetSessionId(true);
-    String[] extid = {"pid"};
-    Data data = new Data(extid, patientFields, null);
-    try {
-      return getPseudonym(data);
-    } catch (Exception e) {
-      throw new IllegalStateException("Cannot generate pid in Mainzelliste", e);
-    }
-  }
+	public String addExtID(Fields patientFields, String externalPseudonym) {
+		this.sessionId = rqGetSessionId(true);
+		String[] extid = { "pid", "extid" };
+		Data data = new Data(extid, patientFields, new Ids(externalPseudonym));
+		try {
+			return getPseudonym(data);
+		}
+		catch (Exception e) {
+			throw new IllegalStateException(
+					String.format("Cannot add a extid %s in Mainzellise %s", externalPseudonym, e));
+		}
+	}
 
-  public JSONArray searchPatient(String pseudonym, String idTypes) {
-    this.sessionId = rqGetSessionId(false);
-    SearchIds[] searchIds = {new SearchIds(idTypes, pseudonym)}; // search example
-    return getPatients(searchIds, false);
-  }
+	public String getExistingExtID(Fields patientFields) {
+		this.sessionId = rqGetSessionId(true);
+		String[] extid = { "pid", "extid" };
+		Data data = new Data(extid, patientFields, null);
+		try {
+			return getPseudonym(data);
+		}
+		catch (Exception e) {
+			throw new IllegalStateException("Cannot get an existing extid in Mainzelliste API", e);
+		}
+	}
 
-  private String getPseudonym(Data data) throws IOException {
-    String tokenIDAddPatient;
-    try {
-      tokenIDAddPatient = rqCreateTokenAddPatient(data);
-      List<JSONObject> pseudonymList = rqCreatePatient(tokenIDAddPatient);
-      String idTypes = data.get_idtypes()[data.get_idtypes().length - 1];
-      JSONObject jsonPseudonym =
-          pseudonymList.stream()
-              .filter(p -> p.getString("idType").equals(idTypes))
-              .findFirst()
-              .orElseThrow();
-      return jsonPseudonym.getString("idString");
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-      throw new IOException(e);
-    }
-  }
+	public String generatePID(Fields patientFields) {
+		this.sessionId = rqGetSessionId(true);
+		String[] extid = { "pid" };
+		Data data = new Data(extid, patientFields, null);
+		try {
+			return getPseudonym(data);
+		}
+		catch (Exception e) {
+			throw new IllegalStateException("Cannot generate pid in Mainzelliste", e);
+		}
+	}
 
-  /***
-   * This classe allow the communcation betwen karnak and pseudonym api with a specific sessionId
-   * @param sessionsId
-   * public PseudonymApi(String sessionsId) {
-   * this.sessionId = sessionsId;
-   * }
-   */
+	public JSONArray searchPatient(String pseudonym, String idTypes) {
+		this.sessionId = rqGetSessionId(false);
+		SearchIds[] searchIds = { new SearchIds(idTypes, pseudonym) }; // search example
+		return getPatients(searchIds, false);
+	}
 
-  /***
-   * This method allow to construct a body in BodyPublisher format
-   * @param data This param is the body in format HashMap with Key Value
-   * @return BodyPublisher with the content of the data to pass in the body
-   */
-  private static HttpRequest.BodyPublisher buildFormDataFromMap(Map<Object, Object> data) {
-    var builder = new StringBuilder();
-    for (Map.Entry<Object, Object> entry : data.entrySet()) {
-      if (entry != null) {
-        if (builder.length() > 0) {
-          builder.append("&");
-        }
-        builder.append(URLEncoder.encode(entry.getKey().toString(), StandardCharsets.UTF_8));
-        builder.append("=");
-        builder.append(URLEncoder.encode(entry.getValue().toString(), StandardCharsets.UTF_8));
-      }
-    }
+	private String getPseudonym(Data data) throws IOException {
+		String tokenIDAddPatient;
+		try {
+			tokenIDAddPatient = rqCreateTokenAddPatient(data);
+			List<JSONObject> pseudonymList = rqCreatePatient(tokenIDAddPatient);
+			String idTypes = data.get_idtypes()[data.get_idtypes().length - 1];
+			JSONObject jsonPseudonym = pseudonymList.stream().filter(p -> p.getString("idType").equals(idTypes))
+					.findFirst().orElseThrow();
+			return jsonPseudonym.getString("idString");
+		}
+		catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			throw new IOException(e);
+		}
+	}
 
-    return HttpRequest.BodyPublishers.ofString(builder.toString());
-  }
+	/***
+	 * This classe allow the communcation betwen karnak and pseudonym api with a specific
+	 * sessionId
+	 * @param sessionsId public PseudonymApi(String sessionsId) { this.sessionId =
+	 * sessionsId; }
+	 */
 
-  /***
-   * Get patient in pseudonym api
-   * @param searchIds
-   * @param shouldThrowException Check if an exception should be thrown or only a log
-   * @return Pseudonym
-   */
-  private JSONArray getPatients(SearchIds[] searchIds, boolean shouldThrowException) {
-    JSONArray patientArray = null;
-    try {
-      String tokenId = rqCreateTokenReadPatient(searchIds, shouldThrowException);
-      patientArray = rqGetPatient(tokenId, shouldThrowException);
-    } catch (InterruptedException e) {
-      LOGGER.warn("Session interrupted. Cannot create patient", e);
-      Thread.currentThread().interrupt();
-    } catch (Exception e) {
-      LOGGER.info("Cannot get patient", e);
-    }
-    return patientArray;
-  }
+	/***
+	 * This method allow to construct a body in BodyPublisher format
+	 * @param data This param is the body in format HashMap with Key Value
+	 * @return BodyPublisher with the content of the data to pass in the body
+	 */
+	private static HttpRequest.BodyPublisher buildFormDataFromMap(Map<Object, Object> data) {
+		var builder = new StringBuilder();
+		for (Map.Entry<Object, Object> entry : data.entrySet()) {
+			if (entry != null) {
+				if (builder.length() > 0) {
+					builder.append("&");
+				}
+				builder.append(URLEncoder.encode(entry.getKey().toString(), StandardCharsets.UTF_8));
+				builder.append("=");
+				builder.append(URLEncoder.encode(entry.getValue().toString(), StandardCharsets.UTF_8));
+			}
+		}
 
-  /***
-   * Make the request to have an id session to the API that manages the pseudonyms
-   * @param shouldThrowException Check if an exception should be thrown or only a log
-   * @return sessionID
-   */
-  private String rqGetSessionId(boolean shouldThrowException) {
-    Map<Object, Object> data = new HashMap<>();
-    HttpRequest request =
-        HttpRequest.newBuilder()
-            .POST(buildFormDataFromMap(data))
-            .uri(URI.create(SERVER_URL + "/sessions"))
-            .header(CONTENT_TYPE_HEADER, MediaType.APPLICATION_JSON_VALUE)
-            .header(MAINZELLISTE_HEADER, API_KEY)
-            .build();
+		return HttpRequest.BodyPublishers.ofString(builder.toString());
+	}
 
-    HttpResponse<String> response;
-    try {
-      response = httpClient.send(request, BodyHandlers.ofString());
-      if (controlErrorResponse(response, shouldThrowException)) {
-        JSONObject jsonResp = new JSONObject(response.body());
-        this.sessionId = jsonResp.getString("sessionId");
-      }
-    } catch (InterruptedException e) {
-      LOGGER.warn("Session interrupted with Mainzelliste API", e);
-      Thread.currentThread().interrupt();
-    } catch (Exception e) {
-      LOGGER.error("Cannot get a sessionId with Mainzelliste API", e);
-    }
-    return this.sessionId;
-  }
+	/***
+	 * Get patient in pseudonym api
+	 * @param searchIds
+	 * @param shouldThrowException Check if an exception should be thrown or only a log
+	 * @return Pseudonym
+	 */
+	private JSONArray getPatients(SearchIds[] searchIds, boolean shouldThrowException) {
+		JSONArray patientArray = null;
+		try {
+			String tokenId = rqCreateTokenReadPatient(searchIds, shouldThrowException);
+			patientArray = rqGetPatient(tokenId, shouldThrowException);
+		}
+		catch (InterruptedException e) {
+			LOGGER.warn("Session interrupted. Cannot create patient", e);
+			Thread.currentThread().interrupt();
+		}
+		catch (Exception e) {
+			LOGGER.info("Cannot get patient", e);
+		}
+		return patientArray;
+	}
 
-  /***
-   * Make the request to have a token that allow to add a new patient
-   * @return sessionID
-   */
-  private String rqCreateTokenAddPatient(Data data) throws IOException, InterruptedException {
-    Body bodyRequest = new Body("addPatient", data);
-    Gson gson = new Gson();
-    String jsonBody = gson.toJson(bodyRequest);
+	/***
+	 * Make the request to have an id session to the API that manages the pseudonyms
+	 * @param shouldThrowException Check if an exception should be thrown or only a log
+	 * @return sessionID
+	 */
+	private String rqGetSessionId(boolean shouldThrowException) {
+		Map<Object, Object> data = new HashMap<>();
+		HttpRequest request = HttpRequest.newBuilder().POST(buildFormDataFromMap(data))
+				.uri(URI.create(SERVER_URL + "/sessions")).header(CONTENT_TYPE_HEADER, MediaType.APPLICATION_JSON_VALUE)
+				.header(MAINZELLISTE_HEADER, API_KEY).build();
 
-    HttpRequest request =
-        HttpRequest.newBuilder()
-            .POST(BodyPublishers.ofString(jsonBody))
-            .uri(URI.create(SERVER_URL + "/sessions/" + this.sessionId + "/tokens"))
-            .header(CONTENT_TYPE_HEADER, MediaType.APPLICATION_JSON_VALUE)
-            .header(MAINZELLISTE_HEADER, API_KEY)
-            .build();
+		HttpResponse<String> response;
+		try {
+			response = httpClient.send(request, BodyHandlers.ofString());
+			if (controlErrorResponse(response, shouldThrowException)) {
+				JSONObject jsonResp = new JSONObject(response.body());
+				this.sessionId = jsonResp.getString("sessionId");
+			}
+		}
+		catch (InterruptedException e) {
+			LOGGER.warn("Session interrupted with Mainzelliste API", e);
+			Thread.currentThread().interrupt();
+		}
+		catch (Exception e) {
+			LOGGER.error("Cannot get a sessionId with Mainzelliste API", e);
+		}
+		return this.sessionId;
+	}
 
-    final HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
-    controlErrorResponse(response, true);
-    final JSONObject jsonResp = new JSONObject(response.body());
-    return jsonResp.getString("tokenId");
-  }
+	/***
+	 * Make the request to have a token that allow to add a new patient
+	 * @return sessionID
+	 */
+	private String rqCreateTokenAddPatient(Data data) throws IOException, InterruptedException {
+		Body bodyRequest = new Body("addPatient", data);
+		Gson gson = new Gson();
+		String jsonBody = gson.toJson(bodyRequest);
 
-  /***
-   * Make the request to have a token that allow to get patient(s)
-   * @param searchIds
-   * @param shouldThrowException Check if an exception should be thrown or only a log
-   * @return Patients
-   */
-  private String rqCreateTokenReadPatient(SearchIds[] searchIds, boolean shouldThrowException)
-      throws IOException, InterruptedException {
-    String tokenId = null;
-    String jsonBody = createJsonReadPatient(searchIds);
-    HttpRequest request =
-        HttpRequest.newBuilder()
-            .POST(BodyPublishers.ofString(jsonBody))
-            .uri(URI.create(SERVER_URL + "/sessions/" + this.sessionId + "/tokens"))
-            .header(CONTENT_TYPE_HEADER, MediaType.APPLICATION_JSON_VALUE)
-            .header(MAINZELLISTE_HEADER, API_KEY)
-            .build();
+		HttpRequest request = HttpRequest.newBuilder().POST(BodyPublishers.ofString(jsonBody))
+				.uri(URI.create(SERVER_URL + "/sessions/" + this.sessionId + "/tokens"))
+				.header(CONTENT_TYPE_HEADER, MediaType.APPLICATION_JSON_VALUE).header(MAINZELLISTE_HEADER, API_KEY)
+				.build();
 
-    HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
-    if (controlErrorResponse(response, shouldThrowException)) {
-      JSONObject jsonResp = new JSONObject(response.body());
-      tokenId = jsonResp.getString("tokenId");
-    }
+		final HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
+		controlErrorResponse(response, true);
+		final JSONObject jsonResp = new JSONObject(response.body());
+		return jsonResp.getString("tokenId");
+	}
 
-    return tokenId;
-  }
+	/***
+	 * Make the request to have a token that allow to get patient(s)
+	 * @param searchIds
+	 * @param shouldThrowException Check if an exception should be thrown or only a log
+	 * @return Patients
+	 */
+	private String rqCreateTokenReadPatient(SearchIds[] searchIds, boolean shouldThrowException)
+			throws IOException, InterruptedException {
+		String tokenId = null;
+		String jsonBody = createJsonReadPatient(searchIds);
+		HttpRequest request = HttpRequest.newBuilder().POST(BodyPublishers.ofString(jsonBody))
+				.uri(URI.create(SERVER_URL + "/sessions/" + this.sessionId + "/tokens"))
+				.header(CONTENT_TYPE_HEADER, MediaType.APPLICATION_JSON_VALUE).header(MAINZELLISTE_HEADER, API_KEY)
+				.build();
 
-  /***
-   * Make the request to create patient with the tokenId
-   * @param tokenId
-   * @return Pseudonym
-   */
-  private List<JSONObject> rqCreatePatient(String tokenId)
-      throws IOException, InterruptedException {
-    Map<Object, Object> data = new HashMap<>();
-    data.put("sureness", true);
-    HttpRequest request =
-        HttpRequest.newBuilder()
-            .POST(buildFormDataFromMap(data))
-            .uri(
-                URI.create(
-                    SERVER_URL + "/patients?tokenId=" + tokenId + "&mainzellisteApiVersion=2.0"))
-            .header(CONTENT_TYPE_HEADER, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-            .header(MAINZELLISTE_HEADER, API_KEY)
-            .build();
+		HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
+		if (controlErrorResponse(response, shouldThrowException)) {
+			JSONObject jsonResp = new JSONObject(response.body());
+			tokenId = jsonResp.getString("tokenId");
+		}
 
-    List<JSONObject> newIds = new ArrayList<>();
-    HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
-    controlErrorResponse(response, true);
-    JSONArray jsonResp = new JSONArray(response.body());
-    for (Object o : jsonResp) {
-      if (o instanceof JSONObject) {
-        newIds.add((JSONObject) o);
-      }
-    }
+		return tokenId;
+	}
 
-    return newIds;
-  }
+	/***
+	 * Make the request to create patient with the tokenId
+	 * @param tokenId
+	 * @return Pseudonym
+	 */
+	private List<JSONObject> rqCreatePatient(String tokenId) throws IOException, InterruptedException {
+		Map<Object, Object> data = new HashMap<>();
+		data.put("sureness", true);
+		HttpRequest request = HttpRequest.newBuilder().POST(buildFormDataFromMap(data))
+				.uri(URI.create(SERVER_URL + "/patients?tokenId=" + tokenId + "&mainzellisteApiVersion=2.0"))
+				.header(CONTENT_TYPE_HEADER, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+				.header(MAINZELLISTE_HEADER, API_KEY).build();
 
-  /***
-   * Make the request to get patient with the tokenId
-   * @param tokenId
-   * @param shouldThrowException Check if an exception should be thrown or only a log
-   * @return Pseudonym
-   */
-  private JSONArray rqGetPatient(String tokenId, boolean shouldThrowException)
-      throws IOException, InterruptedException {
-    JSONArray jsonArray = null;
+		List<JSONObject> newIds = new ArrayList<>();
+		HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
+		controlErrorResponse(response, true);
+		JSONArray jsonResp = new JSONArray(response.body());
+		for (Object o : jsonResp) {
+			if (o instanceof JSONObject) {
+				newIds.add((JSONObject) o);
+			}
+		}
 
-    HttpRequest request =
-        HttpRequest.newBuilder()
-            .GET()
-            .uri(URI.create(SERVER_URL + "/patients?tokenId=" + tokenId))
-            .header(CONTENT_TYPE_HEADER, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-            .header(MAINZELLISTE_HEADER, API_KEY)
-            .build();
+		return newIds;
+	}
 
-    HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
-    if (controlErrorResponse(response, shouldThrowException)) {
-      jsonArray = new JSONArray(response.body());
-    }
-    return jsonArray;
-  }
+	/***
+	 * Make the request to get patient with the tokenId
+	 * @param tokenId
+	 * @param shouldThrowException Check if an exception should be thrown or only a log
+	 * @return Pseudonym
+	 */
+	private JSONArray rqGetPatient(String tokenId, boolean shouldThrowException)
+			throws IOException, InterruptedException {
+		JSONArray jsonArray = null;
 
-  /***
-   * This method allow to create a json body for readPatients in pseudonym api
-   * @param searchIds SearchIds that we want to read in pseudonym api.
-   * @return String json body
-   */
-  private String createJsonReadPatient(SearchIds[] searchIds) {
-    String[] resultFields = {
-      "patientID", "patientName", "patientBirthDate", "patientSex", "issuerOfPatientID"
-    }; // fields returns
-    Data data = new Data(searchIds, resultFields);
+		HttpRequest request = HttpRequest.newBuilder().GET()
+				.uri(URI.create(SERVER_URL + "/patients?tokenId=" + tokenId))
+				.header(CONTENT_TYPE_HEADER, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+				.header(MAINZELLISTE_HEADER, API_KEY).build();
 
-    Body bodyRequest = new Body("readPatients", data);
-    Gson gson = new Gson();
-    return gson.toJson(bodyRequest);
-  }
+		HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
+		if (controlErrorResponse(response, shouldThrowException)) {
+			jsonArray = new JSONArray(response.body());
+		}
+		return jsonArray;
+	}
 
-  /**
-   * Control response
-   *
-   * @param response Response
-   * @param throwError should an exception should be thrown
-   * @return true if no problem in response, false otherwise
-   */
-  private boolean controlErrorResponse(HttpResponse<String> response, boolean throwError) {
-    boolean status = true;
-    if (response.statusCode() >= HttpURLConnection.HTTP_BAD_REQUEST) {
-      final String errorMsg =
-          "\n\tMainzelliste response : "
-              + "\n\t\tstatus code: "
-              + response.statusCode()
-              + "\n\t\theaders:: "
-              + response.headers()
-              + "\n\t\tbody: "
-              + response.body();
-      if (throwError) {
-        throw new IllegalStateException(errorMsg);
-      } else {
-        LOGGER.info(errorMsg);
-        status = false;
-      }
-    }
-    return status;
-  }
+	/***
+	 * This method allow to create a json body for readPatients in pseudonym api
+	 * @param searchIds SearchIds that we want to read in pseudonym api.
+	 * @return String json body
+	 */
+	private String createJsonReadPatient(SearchIds[] searchIds) {
+		String[] resultFields = { "patientID", "patientName", "patientBirthDate", "patientSex", "issuerOfPatientID" }; // fields
+																														// returns
+		Data data = new Data(searchIds, resultFields);
+
+		Body bodyRequest = new Body("readPatients", data);
+		Gson gson = new Gson();
+		return gson.toJson(bodyRequest);
+	}
+
+	/**
+	 * Control response
+	 * @param response Response
+	 * @param throwError should an exception should be thrown
+	 * @return true if no problem in response, false otherwise
+	 */
+	private boolean controlErrorResponse(HttpResponse<String> response, boolean throwError) {
+		boolean status = true;
+		if (response.statusCode() >= HttpURLConnection.HTTP_BAD_REQUEST) {
+			final String errorMsg = "\n\tMainzelliste response : " + "\n\t\tstatus code: " + response.statusCode()
+					+ "\n\t\theaders:: " + response.headers() + "\n\t\tbody: " + response.body();
+			if (throwError) {
+				throw new IllegalStateException(errorMsg);
+			}
+			else {
+				LOGGER.info(errorMsg);
+				status = false;
+			}
+		}
+		return status;
+	}
+
 }

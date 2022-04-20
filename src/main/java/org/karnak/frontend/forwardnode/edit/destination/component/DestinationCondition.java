@@ -21,53 +21,48 @@ import org.karnak.backend.model.expression.ExpressionResult;
 import org.karnak.frontend.util.UIS;
 
 public class DestinationCondition extends Div {
-  private static final String LABEL_CONDITION = "Condition (Leave blank if no condition)";
-  private TextField condition;
-  private Span textErrorConditionMsg;
 
-  public DestinationCondition() {
-    this.setWidthFull();
+	private static final String LABEL_CONDITION = "Condition (Leave blank if no condition)";
 
-    this.condition = new TextField(LABEL_CONDITION);
-    this.textErrorConditionMsg = new Span();
-  }
+	private final TextField condition;
 
-  public void init(Binder<DestinationEntity> binder) {
-    setElements();
-    setBinder(binder);
-    this.add(
-        new HorizontalLayout(UIS.setWidthFull(condition)),
-        new HorizontalLayout(UIS.setWidthFull(textErrorConditionMsg)));
-  }
+	private final Span textErrorConditionMsg;
 
-  private void setElements() {
-    condition.setWidthFull();
-    textErrorConditionMsg.setText("");
-    textErrorConditionMsg.getStyle().set("color", "red");
-    textErrorConditionMsg.getStyle().set("font-size", "0.8em");
-  }
+	public DestinationCondition() {
+		this.setWidthFull();
 
-  private void setBinder(Binder<DestinationEntity> binder) {
-    binder
-        .forField(condition)
-        .withValidator(
-            value -> {
-              if (!condition.getValue().equals("")) {
-                ExpressionError expressionError =
-                    ExpressionResult.isValid(
-                        condition.getValue(), new ExprCondition(), Boolean.class);
-                textErrorConditionMsg.setText(expressionError.getMsg());
-                return expressionError.isValid();
-              }
-              return true;
-            },
-            "Condition not valid")
-        .withValidationStatusHandler(
-            status -> {
-              if (!status.isError()) {
-                textErrorConditionMsg.setText("");
-              }
-            })
-        .bind(DestinationEntity::getCondition, DestinationEntity::setCondition);
-  }
+		this.condition = new TextField(LABEL_CONDITION);
+		this.textErrorConditionMsg = new Span();
+	}
+
+	public void init(Binder<DestinationEntity> binder) {
+		setElements();
+		setBinder(binder);
+		this.add(new HorizontalLayout(UIS.setWidthFull(condition)),
+				new HorizontalLayout(UIS.setWidthFull(textErrorConditionMsg)));
+	}
+
+	private void setElements() {
+		condition.setWidthFull();
+		textErrorConditionMsg.setText("");
+		textErrorConditionMsg.getStyle().set("color", "red");
+		textErrorConditionMsg.getStyle().set("font-size", "0.8em");
+	}
+
+	private void setBinder(Binder<DestinationEntity> binder) {
+		binder.forField(condition).withValidator(value -> {
+			if (!condition.getValue().equals("")) {
+				ExpressionError expressionError = ExpressionResult.isValid(condition.getValue(), new ExprCondition(),
+						Boolean.class);
+				textErrorConditionMsg.setText(expressionError.getMsg());
+				return expressionError.isValid();
+			}
+			return true;
+		}, "Condition not valid").withValidationStatusHandler(status -> {
+			if (!status.isError()) {
+				textErrorConditionMsg.setText("");
+			}
+		}).bind(DestinationEntity::getCondition, DestinationEntity::setCondition);
+	}
+
 }

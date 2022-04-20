@@ -39,101 +39,110 @@ import org.yaml.snakeyaml.constructor.Constructor;
 @ConfigurationProperties
 public class AppConfig {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(AppConfig.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AppConfig.class);
 
-  private static AppConfig instance;
-  private String environment;
-  private String name;
-  private String karnakadmin;
-  private String karnakpassword;
-  private final ProfileRepo profileRepo;
-  private final ProfilePipeService profilePipeService;
-  private String nameInstance;
+	private static AppConfig instance;
 
-  @Autowired
-  public AppConfig(final ProfileRepo profileRepo, final ProfilePipeService profilePipeService) {
-    this.profileRepo = profileRepo;
-    this.profilePipeService = profilePipeService;
-  }
+	private String environment;
 
-  @PostConstruct
-  public void postConstruct() {
-    instance = this;
-    nameInstance = RandomStringUtils.randomAlphabetic(5);
-  }
+	private String name;
 
-  public static AppConfig getInstance() {
-    return instance;
-  }
+	private String karnakadmin;
 
-  public String getEnvironment() {
-    return environment;
-  }
+	private String karnakpassword;
 
-  public void setEnvironment(String environment) {
-    this.environment = environment;
-  }
+	private final ProfileRepo profileRepo;
 
-  public String getName() {
-    return name;
-  }
+	private final ProfilePipeService profilePipeService;
 
-  public void setName(String name) {
-    this.name = name;
-  }
+	private String nameInstance;
 
-  public String getKarnakadmin() {
-    return karnakadmin != null ? karnakadmin : "admin";
-  }
+	@Autowired
+	public AppConfig(final ProfileRepo profileRepo, final ProfilePipeService profilePipeService) {
+		this.profileRepo = profileRepo;
+		this.profilePipeService = profilePipeService;
+	}
 
-  public void setKarnakadmin(String karnakadmin) {
-    this.karnakadmin = karnakadmin;
-  }
+	@PostConstruct
+	public void postConstruct() {
+		instance = this;
+		nameInstance = RandomStringUtils.randomAlphabetic(5);
+	}
 
-  public String getKarnakpassword() {
-    return karnakpassword != null ? karnakpassword : "admin";
-  }
+	public static AppConfig getInstance() {
+		return instance;
+	}
 
-  public void setKarnakpassword(String karnakpassword) {
-    this.karnakpassword = karnakpassword;
-  }
+	public String getEnvironment() {
+		return environment;
+	}
 
-  @Bean("ConfidentialityProfiles")
-  public ConfidentialityProfiles getConfidentialityProfile() {
-    return new ConfidentialityProfiles();
-  }
+	public void setEnvironment(String environment) {
+		this.environment = environment;
+	}
 
-  @Bean("ExternalIDPatient")
-  public PatientClient getExternalIDCache() {
-    return new ExternalIDCache();
-  }
+	public String getName() {
+		return name;
+	}
 
-  @Bean("MainzellisteCache")
-  public PatientClient getMainzellisteCache() {
-    return new MainzellisteCache();
-  }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-  // https://stackoverflow.com/questions/27405713/running-code-after-spring-boot-starts
-  @EventListener(ApplicationReadyEvent.class)
-  public void setProfilesByDefault() {
-    URL profileURL = Profile.class.getResource("profileByDefault.yml");
-    if (!profileRepo.existsByNameAndByDefault("Dicom Basic Profile", true)) {
-      try (InputStream inputStream = profileURL.openStream()) {
-        final Yaml yaml = new Yaml(new Constructor(ProfilePipeBody.class));
-        final ProfilePipeBody profilePipeYml = yaml.load(inputStream);
-        profilePipeService.saveProfilePipe(profilePipeYml, true);
-      } catch (final Exception e) {
-        LOGGER.error("Cannot persist default profile {}", profileURL, e);
-      }
-    }
-  }
+	public String getKarnakadmin() {
+		return karnakadmin != null ? karnakadmin : "admin";
+	}
 
-  @Bean("StandardDICOM")
-  public StandardDICOM getStandardDICOM() {
-    return new StandardDICOM();
-  }
+	public void setKarnakadmin(String karnakadmin) {
+		this.karnakadmin = karnakadmin;
+	}
 
-  public String getNameInstance() {
-    return nameInstance;
-  }
+	public String getKarnakpassword() {
+		return karnakpassword != null ? karnakpassword : "admin";
+	}
+
+	public void setKarnakpassword(String karnakpassword) {
+		this.karnakpassword = karnakpassword;
+	}
+
+	@Bean("ConfidentialityProfiles")
+	public ConfidentialityProfiles getConfidentialityProfile() {
+		return new ConfidentialityProfiles();
+	}
+
+	@Bean("ExternalIDPatient")
+	public PatientClient getExternalIDCache() {
+		return new ExternalIDCache();
+	}
+
+	@Bean("MainzellisteCache")
+	public PatientClient getMainzellisteCache() {
+		return new MainzellisteCache();
+	}
+
+	// https://stackoverflow.com/questions/27405713/running-code-after-spring-boot-starts
+	@EventListener(ApplicationReadyEvent.class)
+	public void setProfilesByDefault() {
+		URL profileURL = Profile.class.getResource("profileByDefault.yml");
+		if (!profileRepo.existsByNameAndByDefault("Dicom Basic Profile", true)) {
+			try (InputStream inputStream = profileURL.openStream()) {
+				final Yaml yaml = new Yaml(new Constructor(ProfilePipeBody.class));
+				final ProfilePipeBody profilePipeYml = yaml.load(inputStream);
+				profilePipeService.saveProfilePipe(profilePipeYml, true);
+			}
+			catch (final Exception e) {
+				LOGGER.error("Cannot persist default profile {}", profileURL, e);
+			}
+		}
+	}
+
+	@Bean("StandardDICOM")
+	public StandardDICOM getStandardDICOM() {
+		return new StandardDICOM();
+	}
+
+	public String getNameInstance() {
+		return nameInstance;
+	}
+
 }

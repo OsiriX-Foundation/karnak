@@ -17,18 +17,14 @@ import org.springframework.context.annotation.Profile;
 @Configuration
 public class HazelcastConfig {
 
-  @Bean
-  @Profile("!test")
-  public Config hazelcastConfiguration() {
-    Config config = new Config();
-    config.getNetworkConfig().getJoin().getMulticastConfig().setEnabled(false);
-    config
-        .getNetworkConfig()
-        .getJoin()
-        .getEurekaConfig()
-        .setEnabled(true)
-        .setProperty("self-registration", "true")
-        .setProperty("namespace", "hazelcast");
-    return config;
-  }
+	@Bean
+	@Profile("!test")
+	public Config hazelcastConfiguration() {
+		Config config = new Config();
+		config.getNetworkConfig().getJoin().getMulticastConfig().setEnabled(false);
+		config.getNetworkConfig().getJoin().getEurekaConfig().setEnabled(true).setProperty("self-registration", "true")
+				.setProperty("namespace", "hazelcast");
+		return config;
+	}
+
 }

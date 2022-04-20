@@ -19,103 +19,106 @@ import com.vaadin.flow.component.textfield.TextField;
 
 public class ProfileMetadata extends VerticalLayout {
 
-  private final Div titleDiv = new Div();
-  private final Div valueDiv = new Div();
-  private final TextField valueField = new TextField();
-  private final Button editButton = new Button(new Icon(VaadinIcon.EDIT));
-  private final Button validateEditButton = new Button(new Icon(VaadinIcon.CHECK));
-  private final Button disabledEditButton = new Button(new Icon(VaadinIcon.CLOSE));
+	private final Div titleDiv = new Div();
 
-  private String title;
-  private String value;
+	private final Div valueDiv = new Div();
 
-  public ProfileMetadata() {
-    this.title = "";
-    this.value = "";
-    this.titleDiv.setText("");
-    this.valueDiv.setText("");
-  }
+	private final TextField valueField = new TextField();
 
-  public ProfileMetadata(String title, String value, Boolean profileByDefault) {
-    this.title = title;
-    this.value = value;
+	private final Button editButton = new Button(new Icon(VaadinIcon.EDIT));
 
-    setTitleText();
-    setValueText();
-    setElements();
-    addEvents();
+	private final Button validateEditButton = new Button(new Icon(VaadinIcon.CHECK));
 
-    if (!profileByDefault.booleanValue()) {
-      titleDiv.add(editButton);
-    }
+	private final Button disabledEditButton = new Button(new Icon(VaadinIcon.CLOSE));
 
-    add(titleDiv, valueDiv);
-  }
+	private final String title;
 
-  private void addEvents() {
-    editButton.addClickListener(event -> editOnClick());
+	private String value;
 
-    disabledEditButton.addClickListener(event -> disabledEditButton());
+	public ProfileMetadata() {
+		this.title = "";
+		this.value = "";
+		this.titleDiv.setText("");
+		this.valueDiv.setText("");
+	}
 
-    validateEditButton.addClickListener(event -> validateEditButton());
-  }
+	public ProfileMetadata(String title, String value, Boolean profileByDefault) {
+		this.title = title;
+		this.value = value;
 
-  private void setElements() {
-    titleDiv
-        .getStyle()
-        .set("font-weight", "bold")
-        .set("margin-top", "0px")
-        .set("padding-left", "5px");
-    valueDiv.getStyle().set("color", "grey").set("padding-left", "10px").set("margin-top", "5px");
-  }
+		setTitleText();
+		setValueText();
+		setElements();
+		addEvents();
 
-  private void setTitleText() {
-    titleDiv.setText(this.title);
-  }
+		if (!profileByDefault.booleanValue()) {
+			titleDiv.add(editButton);
+		}
 
-  private void setValueText() {
-    String text = "Not defined";
-    if (this.value != null) {
-      text = this.value;
-    }
-    Text valueText = new Text(text);
-    valueDiv.add(valueText);
-  }
+		add(titleDiv, valueDiv);
+	}
 
-  private void setValueTextField() {
-    valueField.setValue("");
-    if (this.value != null) {
-      valueField.setValue(this.value);
-    }
-    valueDiv.add(valueField);
-    valueDiv.add(validateEditButton);
-    valueDiv.add(disabledEditButton);
-  }
+	private void addEvents() {
+		editButton.addClickListener(event -> editOnClick());
 
-  private void editOnClick() {
-    titleDiv.remove(editButton);
-    valueDiv.removeAll();
-    setValueTextField();
-  }
+		disabledEditButton.addClickListener(event -> disabledEditButton());
 
-  private void disabledEditButton() {
-    titleDiv.add(editButton);
-    valueDiv.removeAll();
-    setValueText();
-  }
+		validateEditButton.addClickListener(event -> validateEditButton());
+	}
 
-  private void validateEditButton() {
-    titleDiv.add(editButton);
-    value = valueField.getValue();
-    valueDiv.removeAll();
-    setValueText();
-  }
+	private void setElements() {
+		titleDiv.getStyle().set("font-weight", "bold").set("margin-top", "0px").set("padding-left", "5px");
+		valueDiv.getStyle().set("color", "grey").set("padding-left", "10px").set("margin-top", "5px");
+	}
 
-  public String getValue() {
-    return value;
-  }
+	private void setTitleText() {
+		titleDiv.setText(this.title);
+	}
 
-  public Button getValidateEditButton() {
-    return validateEditButton;
-  }
+	private void setValueText() {
+		String text = "Not defined";
+		if (this.value != null) {
+			text = this.value;
+		}
+		Text valueText = new Text(text);
+		valueDiv.add(valueText);
+	}
+
+	private void setValueTextField() {
+		valueField.setValue("");
+		if (this.value != null) {
+			valueField.setValue(this.value);
+		}
+		valueDiv.add(valueField);
+		valueDiv.add(validateEditButton);
+		valueDiv.add(disabledEditButton);
+	}
+
+	private void editOnClick() {
+		titleDiv.remove(editButton);
+		valueDiv.removeAll();
+		setValueTextField();
+	}
+
+	private void disabledEditButton() {
+		titleDiv.add(editButton);
+		valueDiv.removeAll();
+		setValueText();
+	}
+
+	private void validateEditButton() {
+		titleDiv.add(editButton);
+		value = valueField.getValue();
+		valueDiv.removeAll();
+		setValueText();
+	}
+
+	public String getValue() {
+		return value;
+	}
+
+	public Button getValidateEditButton() {
+		return validateEditButton;
+	}
+
 }

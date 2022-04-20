@@ -27,75 +27,71 @@ import org.springframework.web.context.WebApplicationContext;
 @SpringJUnitWebConfig(classes = EchoService.class)
 class EchoControllerTest {
 
-  private MockMvc mockMvc;
+	private MockMvc mockMvc;
 
-  @MockBean private EchoService echoServiceMock;
+	@MockBean
+	private EchoService echoServiceMock;
 
-  /**
-   * Init mock mvc
-   *
-   * @param wac WebApplicationContext
-   */
-  @BeforeEach
-  public void setUp(WebApplicationContext wac) {
-    this.mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-  }
+	/**
+	 * Init mock mvc
+	 * @param wac WebApplicationContext
+	 */
+	@BeforeEach
+	public void setUp(WebApplicationContext wac) {
+		this.mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+	}
 
-  /**
-   * Test Get Status destinations: case data found
-   *
-   * <p>Expected: - mocked DestinationEcho have been created and returned from the service
-   * retrieveStatusConfiguredDestinations - status is OK - response body has the correct values and
-   * format
-   *
-   * @throws Exception thrown
-   */
-  // @Test
-  void when_data_found_should_retrieve_status_destinations() throws Exception {
-    // Init data
-    List<DestinationEcho> destinationEchos = new ArrayList<>();
-    DestinationEcho destinationEchoDicom = new DestinationEcho();
-    destinationEchoDicom.setAet("aet");
-    destinationEchoDicom.setStatus(111);
-    destinationEchoDicom.setUrl(null);
-    DestinationEcho destinationEchoStow = new DestinationEcho();
-    destinationEchoStow.setAet(null);
-    destinationEchoStow.setStatus(222);
-    destinationEchoStow.setUrl("http://test.com");
-    destinationEchos.add(destinationEchoDicom);
-    destinationEchos.add(destinationEchoStow);
+	/**
+	 * Test Get Status destinations: case data found
+	 *
+	 * <p>
+	 * Expected: - mocked DestinationEcho have been created and returned from the service
+	 * retrieveStatusConfiguredDestinations - status is OK - response body has the correct
+	 * values and format
+	 * @throws Exception thrown
+	 */
+	// @Test
+	void when_data_found_should_retrieve_status_destinations() throws Exception {
+		// Init data
+		List<DestinationEcho> destinationEchos = new ArrayList<>();
+		DestinationEcho destinationEchoDicom = new DestinationEcho();
+		destinationEchoDicom.setAet("aet");
+		destinationEchoDicom.setStatus(111);
+		destinationEchoDicom.setUrl(null);
+		DestinationEcho destinationEchoStow = new DestinationEcho();
+		destinationEchoStow.setAet(null);
+		destinationEchoStow.setStatus(222);
+		destinationEchoStow.setUrl("http://test.com");
+		destinationEchos.add(destinationEchoDicom);
+		destinationEchos.add(destinationEchoStow);
 
-    // Mock service to return targets
-    Mockito.when(echoServiceMock.retrieveStatusConfiguredDestinations(Mockito.anyString()))
-        .thenReturn(destinationEchos);
+		// Mock service to return targets
+		Mockito.when(echoServiceMock.retrieveStatusConfiguredDestinations(Mockito.anyString()))
+				.thenReturn(destinationEchos);
 
-    // Call service and test results
-    this.mockMvc
-        .perform(MockMvcRequestBuilders.get("/api/echo/destinations").param("srcAet", "aet"))
-        .andExpect(MockMvcResultMatchers.status().isOk())
-        .andExpect(
-            MockMvcResultMatchers.content()
-                .string(
-                    "<destinations><destination><aet>aet</aet><status>111</status></destination><destination><url>http://test.com</url><status>222</status></destination></destinations>"));
-  }
+		// Call service and test results
+		this.mockMvc.perform(MockMvcRequestBuilders.get("/api/echo/destinations").param("srcAet", "aet"))
+				.andExpect(MockMvcResultMatchers.status().isOk()).andExpect(MockMvcResultMatchers.content().string(
+						"<destinations><destination><aet>aet</aet><status>111</status></destination><destination><url>http://test.com</url><status>222</status></destination></destinations>"));
+	}
 
-  /**
-   * Test Get Status destinations: case no data found
-   *
-   * <p>Expected: - the service retrieveStatusConfiguredDestinations return empty list - status is
-   * no content
-   *
-   * @throws Exception thrown
-   */
-  // @Test
-  void when_no_data_found_should_respond_no_content() throws Exception {
-    // Mock service to return targets
-    Mockito.when(echoServiceMock.retrieveStatusConfiguredDestinations(Mockito.anyString()))
-        .thenReturn(new ArrayList<>());
+	/**
+	 * Test Get Status destinations: case no data found
+	 *
+	 * <p>
+	 * Expected: - the service retrieveStatusConfiguredDestinations return empty list -
+	 * status is no content
+	 * @throws Exception thrown
+	 */
+	// @Test
+	void when_no_data_found_should_respond_no_content() throws Exception {
+		// Mock service to return targets
+		Mockito.when(echoServiceMock.retrieveStatusConfiguredDestinations(Mockito.anyString()))
+				.thenReturn(new ArrayList<>());
 
-    // Call service and test results
-    this.mockMvc
-        .perform(MockMvcRequestBuilders.get("/api/echo/destinations").param("srcAet", "aet"))
-        .andExpect(MockMvcResultMatchers.status().isNoContent());
-  }
+		// Call service and test results
+		this.mockMvc.perform(MockMvcRequestBuilders.get("/api/echo/destinations").param("srcAet", "aet"))
+				.andExpect(MockMvcResultMatchers.status().isNoContent());
+	}
+
 }

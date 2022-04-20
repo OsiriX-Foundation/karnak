@@ -27,62 +27,57 @@ import org.mockito.Mockito;
 
 class PseudonymMappingLogicTest {
 
-  // Service
-  private PseudonymMappingLogic pseudonymMappingLogic;
-  private final PseudonymMappingService pseudonymMappingServiceMock =
-      Mockito.mock(PseudonymMappingService.class);
-  private final ExternalIDCache externalIDCacheMock = Mockito.mock(ExternalIDCache.class);
-  private final ProjectService projectServiceMock = Mockito.mock(ProjectService.class);
+	// Service
+	private PseudonymMappingLogic pseudonymMappingLogic;
 
-  @BeforeEach
-  void setUp() {
+	private final PseudonymMappingService pseudonymMappingServiceMock = Mockito.mock(PseudonymMappingService.class);
 
-    // Behaviour of mocks
-    // ExternalIDCacheMock
-    List<PseudonymPatient> pseudonymPatients = new ArrayList<>();
-    PseudonymPatient pseudonymPatient =
-        new CachedPatient(
-            "pseudonym",
-            "patientId",
-            "patientFirstName",
-            "patientLastName",
-            "issuerOfPatientId",
-            1L);
-    pseudonymPatients.add(pseudonymPatient);
-    Mockito.when(externalIDCacheMock.getAll()).thenReturn(pseudonymPatients);
-    // ProjectService
-    ProjectEntity projectEntity = new ProjectEntity();
-    projectEntity.setId(1L);
-    projectEntity.setName("Project");
-    Mockito.when(projectServiceMock.retrieveProject(Mockito.anyLong())).thenReturn(projectEntity);
+	private final ExternalIDCache externalIDCacheMock = Mockito.mock(ExternalIDCache.class);
 
-    // Build mocked service
-    pseudonymMappingLogic =
-        new PseudonymMappingLogic(
-            pseudonymMappingServiceMock, externalIDCacheMock, projectServiceMock);
-  }
+	private final ProjectService projectServiceMock = Mockito.mock(ProjectService.class);
 
-  @Test
-  void should_retrieve_mainzelliste_patient() {
+	@BeforeEach
+	void setUp() {
 
-    // Call service
-    pseudonymMappingLogic.retrieveMainzellistePatient("pseudonym");
+		// Behaviour of mocks
+		// ExternalIDCacheMock
+		List<PseudonymPatient> pseudonymPatients = new ArrayList<>();
+		PseudonymPatient pseudonymPatient = new CachedPatient("pseudonym", "patientId", "patientFirstName",
+				"patientLastName", "issuerOfPatientId", 1L);
+		pseudonymPatients.add(pseudonymPatient);
+		Mockito.when(externalIDCacheMock.getAll()).thenReturn(pseudonymPatients);
+		// ProjectService
+		ProjectEntity projectEntity = new ProjectEntity();
+		projectEntity.setId(1L);
+		projectEntity.setName("Project");
+		Mockito.when(projectServiceMock.retrieveProject(Mockito.anyLong())).thenReturn(projectEntity);
 
-    // Test results
-    Mockito.verify(pseudonymMappingServiceMock, Mockito.times(1))
-        .retrieveMainzellistePatient(Mockito.anyString());
-  }
+		// Build mocked service
+		pseudonymMappingLogic = new PseudonymMappingLogic(pseudonymMappingServiceMock, externalIDCacheMock,
+				projectServiceMock);
+	}
 
-  @Test
-  void should_retrieve_external_id_cache_patient() {
+	@Test
+	void should_retrieve_mainzelliste_patient() {
 
-    // Call service
-    Map<String, Patient> externalIDCachePatients =
-        pseudonymMappingLogic.retrieveExternalIDCachePatients("pseudonym");
+		// Call service
+		pseudonymMappingLogic.retrieveMainzellistePatient("pseudonym");
 
-    // Test results
-    Mockito.verify(externalIDCacheMock, Mockito.times(1)).getAll();
-    assertEquals("Project", externalIDCachePatients.keySet().stream().findFirst().get());
-    assertEquals("patientId", externalIDCachePatients.get("Project").getPatientId());
-  }
+		// Test results
+		Mockito.verify(pseudonymMappingServiceMock, Mockito.times(1)).retrieveMainzellistePatient(Mockito.anyString());
+	}
+
+	@Test
+	void should_retrieve_external_id_cache_patient() {
+
+		// Call service
+		Map<String, Patient> externalIDCachePatients = pseudonymMappingLogic
+				.retrieveExternalIDCachePatients("pseudonym");
+
+		// Test results
+		Mockito.verify(externalIDCacheMock, Mockito.times(1)).getAll();
+		assertEquals("Project", externalIDCachePatients.keySet().stream().findFirst().get());
+		assertEquals("patientId", externalIDCachePatients.get("Project").getPatientId());
+	}
+
 }

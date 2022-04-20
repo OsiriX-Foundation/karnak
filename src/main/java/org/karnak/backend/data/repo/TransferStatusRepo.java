@@ -20,33 +20,29 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TransferStatusRepo
-    extends JpaRepository<TransferStatusEntity, Long>,
-        JpaSpecificationExecutor<TransferStatusEntity> {
+		extends JpaRepository<TransferStatusEntity, Long>, JpaSpecificationExecutor<TransferStatusEntity> {
 
-  /**
-   * Look for TransferStatusEntity for a destination
-   *
-   * @param destinationId Destination id
-   * @return TransferStatusEntity found
-   */
-  List<TransferStatusEntity> findByDestinationId(Long destinationId);
+	/**
+	 * Look for TransferStatusEntity for a destination
+	 * @param destinationId Destination id
+	 * @return TransferStatusEntity found
+	 */
+	List<TransferStatusEntity> findByDestinationId(Long destinationId);
 
-  /**
-   * Look for TransferStatusEntity for a destination and after the last check date
-   *
-   * @param destinationId Destination id
-   * @param lastCheck Date of the last check
-   * @return TransferStatusEntity found
-   */
-  List<TransferStatusEntity> findByDestinationIdAndTransferDateAfter(
-      Long destinationId, LocalDateTime lastCheck);
+	/**
+	 * Look for TransferStatusEntity for a destination and after the last check date
+	 * @param destinationId Destination id
+	 * @param lastCheck Date of the last check
+	 * @return TransferStatusEntity found
+	 */
+	List<TransferStatusEntity> findByDestinationIdAndTransferDateAfter(Long destinationId, LocalDateTime lastCheck);
 
-  /**
-   * Look for oldest transfer status entities, number of entities found is limited by the
-   * pageRequest
-   *
-   * @param pageable Limit the number of records found
-   * @return TransferEntities found
-   */
-  Page<TransferStatusEntity> findAllByOrderByTransferDateAsc(Pageable pageable);
+	/**
+	 * Look for oldest transfer status entities, number of entities found is limited by
+	 * the pageRequest
+	 * @param pageable Limit the number of records found
+	 * @return TransferEntities found
+	 */
+	Page<TransferStatusEntity> findAllByOrderByTransferDateAsc(Pageable pageable);
+
 }

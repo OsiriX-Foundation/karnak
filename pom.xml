@@ -3,6 +3,15 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
+
+  <!-- Pom Parent -->
+  <parent>
+    <groupId>ch.hcuge.springcloud</groupId>
+    <artifactId>spring-cloud-ms-dependencies</artifactId>
+    <version>2.6.6-2021.0.1-1.0</version>
+    <relativePath/> <!-- lookup parent from repository -->
+  </parent>
+
   <artifactId>karnak</artifactId>
   <name>${project.artifactId}</name>
   <modelVersion>4.0.0</modelVersion>
@@ -27,8 +36,8 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <enforcer.jdk-version>[${java.version},)</enforcer.jdk-version>
     <enforcer.maven-version>[3.2.0,)</enforcer.maven-version>
-    <java.version>15</java.version>
-    <springframework.version>2.6.1</springframework.version>
+    <java.version>17</java.version>
+    <springframework.version>2.6.6</springframework.version>
     <javax.el.version>3.0.0</javax.el.version>
     <javax.mail.version>1.6.2</javax.mail.version>
     <vaadin.version>21.0.9</vaadin.version>
@@ -286,44 +295,44 @@
         <groupId>com.vaadin</groupId>
         <version>${vaadin.version}</version>
       </plugin>
-      <plugin>
-        <groupId>com.diffplug.spotless</groupId>
-        <artifactId>spotless-maven-plugin</artifactId>
-        <version>2.17.7</version>
-        <configuration>
-          <!-- define a language-specific format -->
-          <java>
-            <googleJavaFormat/>
-            <toggleOffOn>
-              <off>@formatter:off</off>
-              <on>@formatter:on</on>
-            </toggleOffOn>
-            <licenseHeader>
-              <!-- @formatter:off -->
-              <content>
-/*
- * Copyright (c) $YEAR Karnak Team and other contributors.
- *
- * This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
- * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
- */
-              </content>
-              <!-- @formatter:on -->
-            </licenseHeader>
-          </java>
-        </configuration>
-        <executions>
-<!--          <execution>-->
-<!--            <phase>verify</phase>-->
-<!--            <goals>-->
-<!--              <goal>check</goal>-->
-<!--            </goals>-->
-<!--          </execution>-->
-        </executions>
-      </plugin>
+<!--      <plugin>-->
+<!--        <groupId>com.diffplug.spotless</groupId>-->
+<!--        <artifactId>spotless-maven-plugin</artifactId>-->
+<!--        <version>2.17.7</version>-->
+<!--        <configuration>-->
+<!--          &lt;!&ndash; define a language-specific format &ndash;&gt;-->
+<!--          <java>-->
+<!--            <googleJavaFormat/>-->
+<!--            <toggleOffOn>-->
+<!--              <off>@formatter:off</off>-->
+<!--              <on>@formatter:on</on>-->
+<!--            </toggleOffOn>-->
+<!--            <licenseHeader>-->
+<!--              &lt;!&ndash; @formatter:off &ndash;&gt;-->
+<!--              <content>-->
+<!--/*-->
+<!-- * Copyright (c) $YEAR Karnak Team and other contributors.-->
+<!-- *-->
+<!-- * This program and the accompanying materials are made available under the terms of the Eclipse-->
+<!-- * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache-->
+<!-- * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.-->
+<!-- *-->
+<!-- * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0-->
+<!-- */-->
+<!--              </content>-->
+<!--              &lt;!&ndash; @formatter:on &ndash;&gt;-->
+<!--            </licenseHeader>-->
+<!--          </java>-->
+<!--        </configuration>-->
+<!--        <executions>-->
+<!--&lt;!&ndash;          <execution>&ndash;&gt;-->
+<!--&lt;!&ndash;            <phase>verify</phase>&ndash;&gt;-->
+<!--&lt;!&ndash;            <goals>&ndash;&gt;-->
+<!--&lt;!&ndash;              <goal>check</goal>&ndash;&gt;-->
+<!--&lt;!&ndash;            </goals>&ndash;&gt;-->
+<!--&lt;!&ndash;          </execution>&ndash;&gt;-->
+<!--        </executions>-->
+<!--      </plugin>-->
     </plugins>
     <resources>
       <resource>
@@ -688,50 +697,51 @@
 
   <!-- Profiles -->
   <profiles>
-    <profile>
-      <!-- Production mode is activated using -Pproduction -->
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>spring-boot-maven-plugin</artifactId>
-            <configuration>
-              <jvmArguments>-Dvaadin.productionMode</jvmArguments>
-              <layers>
-                <enabled>true</enabled>
-              </layers>
-            </configuration>
-            <groupId>org.springframework.boot</groupId>
-          </plugin>
-          <plugin>
-            <artifactId>vaadin-maven-plugin</artifactId>
-            <configuration>
-              <pnpmEnable>true</pnpmEnable>
-            </configuration>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>build-frontend</goal>
-                </goals>
-                <phase>compile</phase>
-              </execution>
-            </executions>
-            <groupId>com.vaadin</groupId>
-          </plugin>
-        </plugins>
-      </build>
-      <dependencies>
-        <dependency>
-          <artifactId>flow-server-production-mode</artifactId>
-          <groupId>com.vaadin</groupId>
-        </dependency>
-      </dependencies>
+<!--    TODO-->
+<!--    <profile>-->
+<!--      &lt;!&ndash; Production mode is activated using -Pproduction &ndash;&gt;-->
+<!--      <build>-->
+<!--        <plugins>-->
+<!--          <plugin>-->
+<!--            <artifactId>spring-boot-maven-plugin</artifactId>-->
+<!--            <configuration>-->
+<!--              <jvmArguments>-Dvaadin.productionMode</jvmArguments>-->
+<!--              <layers>-->
+<!--                <enabled>true</enabled>-->
+<!--              </layers>-->
+<!--            </configuration>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--          </plugin>-->
+<!--          <plugin>-->
+<!--            <artifactId>vaadin-maven-plugin</artifactId>-->
+<!--            <configuration>-->
+<!--              <pnpmEnable>true</pnpmEnable>-->
+<!--            </configuration>-->
+<!--            <executions>-->
+<!--              <execution>-->
+<!--                <goals>-->
+<!--                  <goal>build-frontend</goal>-->
+<!--                </goals>-->
+<!--                <phase>compile</phase>-->
+<!--              </execution>-->
+<!--            </executions>-->
+<!--            <groupId>com.vaadin</groupId>-->
+<!--          </plugin>-->
+<!--        </plugins>-->
+<!--      </build>-->
+<!--      <dependencies>-->
+<!--        <dependency>-->
+<!--          <artifactId>flow-server-production-mode</artifactId>-->
+<!--          <groupId>com.vaadin</groupId>-->
+<!--        </dependency>-->
+<!--      </dependencies>-->
 
-      <id>production</id>
+<!--      <id>production</id>-->
 
-      <properties>
-        <vaadin.productionMode>true</vaadin.productionMode>
-      </properties>
-    </profile>
+<!--      <properties>-->
+<!--        <vaadin.productionMode>true</vaadin.productionMode>-->
+<!--      </properties>-->
+<!--    </profile>-->
   </profiles>
 
 </project>

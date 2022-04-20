@@ -21,34 +21,32 @@ import org.springframework.security.access.annotation.Secured;
 @Route(value = HelpView.ROUTE, layout = MainLayout.class)
 @PageTitle("KARNAK - Help")
 @Tag("help-view")
-@Secured({"ROLE_admin", "ROLE_user"})
+@Secured({ "ROLE_admin", "ROLE_user" })
 public class HelpView extends VerticalLayout {
 
-  public static final String VIEW_NAME = "Help";
-  public static final String ROUTE = "help";
+	public static final String VIEW_NAME = "Help";
 
-  public HelpView() {
-    setSizeFull();
-    H1 heading = new H1("Help");
+	public static final String ROUTE = "help";
 
-    Anchor generalDoc =
-        new Anchor(
-            "https://osirix-foundation.github.io/karnak-documentation/", "General documentation");
-    generalDoc.setTarget("_blank");
+	public HelpView() {
+		setSizeFull();
+		H1 heading = new H1("Help");
 
-    Anchor installation =
-        new Anchor(
-            "https://osirix-foundation.github.io/karnak-documentation/docs/installation",
-            "Installation and configuration with Docker");
-    installation.setTarget("_blank");
+		Anchor generalDoc = new Anchor("https://osirix-foundation.github.io/karnak-documentation/",
+				"General documentation");
+		generalDoc.setTarget("_blank");
 
-    Anchor profile =
-        new Anchor(
-            "https://osirix-foundation.github.io/karnak-documentation/docs/deidentification/profiles",
-            "Build your own profile for de-identification or for tag morphing");
-    profile.setTarget("_blank");
-    VerticalLayout layout = new VerticalLayout();
-    layout.add(heading, generalDoc, installation, profile);
-    this.add(layout);
-  }
+		Anchor installation = new Anchor("https://osirix-foundation.github.io/karnak-documentation/docs/installation",
+				"Installation and configuration with Docker");
+		installation.setTarget("_blank");
+
+		Anchor profile = new Anchor(
+				"https://osirix-foundation.github.io/karnak-documentation/docs/deidentification/profiles",
+				"Build your own profile for de-identification or for tag morphing");
+		profile.setTarget("_blank");
+		VerticalLayout layout = new VerticalLayout();
+		layout.add(heading, generalDoc, installation, profile);
+		this.add(layout);
+	}
+
 }

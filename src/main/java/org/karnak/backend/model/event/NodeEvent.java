@@ -17,34 +17,37 @@ import org.karnak.backend.enums.NodeEventType;
 import org.springframework.context.ApplicationEvent;
 
 public class NodeEvent extends ApplicationEvent {
-  private static final long serialVersionUID = -15504960651765311L;
 
-  private final NodeEventType eventType;
-  private final ForwardNodeEntity forwardNodeEntity;
+	private static final long serialVersionUID = -15504960651765311L;
 
-  public NodeEvent(ForwardNodeEntity fwdNode, NodeEventType eventType) {
-    super(fwdNode);
-    this.forwardNodeEntity = fwdNode;
-    this.eventType = eventType;
-  }
+	private final NodeEventType eventType;
 
-  public NodeEvent(DicomSourceNodeEntity srcNode, NodeEventType eventType) {
-    super(srcNode);
-    this.forwardNodeEntity = Objects.requireNonNull(srcNode.getForwardNodeEntity());
-    this.eventType = eventType;
-  }
+	private final ForwardNodeEntity forwardNodeEntity;
 
-  public NodeEvent(DestinationEntity dstNode, NodeEventType eventType) {
-    super(dstNode);
-    this.forwardNodeEntity = Objects.requireNonNull(dstNode.getForwardNodeEntity());
-    this.eventType = eventType;
-  }
+	public NodeEvent(ForwardNodeEntity fwdNode, NodeEventType eventType) {
+		super(fwdNode);
+		this.forwardNodeEntity = fwdNode;
+		this.eventType = eventType;
+	}
 
-  public ForwardNodeEntity getForwardNode() {
-    return forwardNodeEntity;
-  }
+	public NodeEvent(DicomSourceNodeEntity srcNode, NodeEventType eventType) {
+		super(srcNode);
+		this.forwardNodeEntity = Objects.requireNonNull(srcNode.getForwardNodeEntity());
+		this.eventType = eventType;
+	}
 
-  public NodeEventType getEventType() {
-    return eventType;
-  }
+	public NodeEvent(DestinationEntity dstNode, NodeEventType eventType) {
+		super(dstNode);
+		this.forwardNodeEntity = Objects.requireNonNull(dstNode.getForwardNodeEntity());
+		this.eventType = eventType;
+	}
+
+	public ForwardNodeEntity getForwardNode() {
+		return forwardNodeEntity;
+	}
+
+	public NodeEventType getEventType() {
+		return eventType;
+	}
+
 }

@@ -18,5 +18,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface KheopsAlbumsRepo extends JpaRepository<KheopsAlbumsEntity, Long> {
 
-  List<KheopsAlbumsEntity> findAllByDestinationEntity(DestinationEntity destinationEntity);
+	List<KheopsAlbumsEntity> findAllByDestinationEntity(DestinationEntity destinationEntity);
+
 }

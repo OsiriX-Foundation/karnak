@@ -28,201 +28,198 @@ import org.springframework.stereotype.Service;
 /** Logic service use to make calls to backend and implement logic linked to the view */
 @Service
 public class ForwardNodeLogic extends ListDataProvider<ForwardNodeEntity> {
-  private static final Logger LOGGER = LoggerFactory.getLogger(ForwardNodeLogic.class);
 
-  // View
-  private ForwardNodeView forwardNodeView;
+	private static final Logger LOGGER = LoggerFactory.getLogger(ForwardNodeLogic.class);
 
-  // Services
-  private final ForwardNodeAPIService forwardNodeAPIService;
-  private final transient ForwardNodeService forwardNodeService;
-  private final transient ProjectService projectService;
-  private final SOPClassUIDService sopClassUIDService;
-  private final SourceLogic sourceLogic;
-  private final DestinationLogic destinationLogic;
+	// View
+	private ForwardNodeView forwardNodeView;
 
-  /** Text filter that can be changed separately. */
-  private String filterText = "";
+	// Services
+	private final ForwardNodeAPIService forwardNodeAPIService;
 
-  @Autowired
-  public ForwardNodeLogic(
-      final ForwardNodeAPIService forwardNodeAPIService,
-      final ForwardNodeService forwardNodeService,
-      final ProjectService projectService,
-      final SOPClassUIDService sopClassUIDService,
-      final SourceLogic sourceLogic,
-      final DestinationLogic destinationLogic) {
-    super(new ArrayList<>());
-    this.forwardNodeAPIService = forwardNodeAPIService;
-    this.forwardNodeService = forwardNodeService;
-    this.projectService = projectService;
-    this.sopClassUIDService = sopClassUIDService;
-    this.sourceLogic = sourceLogic;
-    this.destinationLogic = destinationLogic;
+	private final transient ForwardNodeService forwardNodeService;
 
-    initDataProvider();
-  }
+	private final transient ProjectService projectService;
 
-  @Override
-  public void refreshAll() {
-    getItems().clear();
-    getItems().addAll(forwardNodeService.getAllForwardNodes());
-    super.refreshAll();
-  }
+	private final SOPClassUIDService sopClassUIDService;
 
-  @Override
-  public Long getId(ForwardNodeEntity data) {
-    Objects.requireNonNull(data, "Cannot provide an id for a null item.");
-    return data.getId();
-  }
+	private final SourceLogic sourceLogic;
 
-  /** Initialize the data provider */
-  private void initDataProvider() {
-    getItems().addAll(forwardNodeService.getAllForwardNodes());
-  }
+	private final DestinationLogic destinationLogic;
 
-  /** Update the fragment without causing navigator to change view */
-  private void setFragmentParameter(String dataIdStr) {
-    final String fragmentParameter;
-    if (dataIdStr == null || dataIdStr.isEmpty()) {
-      fragmentParameter = "";
-    } else {
-      fragmentParameter = dataIdStr;
-    }
-    UI.getCurrent().navigate(ForwardNodeView.class, fragmentParameter);
-  }
+	/** Text filter that can be changed separately. */
+	private String filterText = "";
 
-  public Long enter(String dataIdStr) {
-    // TODO: On enter, go to dataIdStr
-    try {
-      return Long.valueOf(dataIdStr);
-    } catch (NumberFormatException e) {
-      LOGGER.error("Cannot get valueOf {}", dataIdStr, e);
-    }
-    return null;
-    /*
-    if (dataIdStr != null && !dataIdStr.isEmpty()) {
-        // Ensure this is selected even if coming directly here from login
-        try {
-            Long dataId = Long.valueOf(dataIdStr);
-            ForwardNodeEntity data = findForwardNode(dataId);
-            gatewayView.selectRow(data);
-        } catch (NumberFormatException e) {
-        }
-    } else {
-        gatewayView.showForm(false);
-    }
-    */
-  }
+	@Autowired
+	public ForwardNodeLogic(final ForwardNodeAPIService forwardNodeAPIService,
+			final ForwardNodeService forwardNodeService, final ProjectService projectService,
+			final SOPClassUIDService sopClassUIDService, final SourceLogic sourceLogic,
+			final DestinationLogic destinationLogic) {
+		super(new ArrayList<>());
+		this.forwardNodeAPIService = forwardNodeAPIService;
+		this.forwardNodeService = forwardNodeService;
+		this.projectService = projectService;
+		this.sopClassUIDService = sopClassUIDService;
+		this.sourceLogic = sourceLogic;
+		this.destinationLogic = destinationLogic;
 
-  public void editForwardNode(ForwardNodeEntity data) {
-    if (data == null) {
-      setFragmentParameter("");
-    } else {
-      setFragmentParameter(String.valueOf(data.getId()));
-    }
-  }
+		initDataProvider();
+	}
 
-  public void cancelForwardNode() {
-    setFragmentParameter("");
-  }
+	@Override
+	public void refreshAll() {
+		getItems().clear();
+		getItems().addAll(forwardNodeService.getAllForwardNodes());
+		super.refreshAll();
+	}
 
-  public void saveForwardNode(ForwardNodeEntity data) {
-    /*
-    boolean newData = data.isNewData();
-    gatewayView.clearSelection();
-    gatewayView.updateForwardNode(data);
-    setFragmentParameter("");
-    gatewayView.showSaveNotification(data.getFwdAeTitle() + (newData ? " created" : " updated"));
-    //editForwardNode(data); //if you dont't want to exit the selection after saving a forward node.
-    editForwardNode(null); //if you want to exit the selection after saving a forward node.
-     */
-  }
+	@Override
+	public Long getId(ForwardNodeEntity data) {
+		Objects.requireNonNull(data, "Cannot provide an id for a null item.");
+		return data.getId();
+	}
 
-  //  public void deleteForwardNode(ForwardNodeEntity data) {
-  /*
-  gatewayView.clearSelection();
-  gatewayView.removeForwardNode(data);
-  setFragmentParameter("");
-  gatewayView.showSaveNotification(data.getFwdAeTitle() + " removed");
-  */
-  //    setFragmentParameter("");
-  //  }
+	/** Initialize the data provider */
+	private void initDataProvider() {
+		getItems().addAll(forwardNodeService.getAllForwardNodes());
+	}
 
-  public ForwardNodeView getForwardNodeView() {
-    return forwardNodeView;
-  }
+	/** Update the fragment without causing navigator to change view */
+	private void setFragmentParameter(String dataIdStr) {
+		final String fragmentParameter;
+		if (dataIdStr == null || dataIdStr.isEmpty()) {
+			fragmentParameter = "";
+		}
+		else {
+			fragmentParameter = dataIdStr;
+		}
+		UI.getCurrent().navigate(ForwardNodeView.class, fragmentParameter);
+	}
 
-  public void setForwardNodeView(ForwardNodeView forwardNodeView) {
-    this.forwardNodeView = forwardNodeView;
-  }
+	public Long enter(String dataIdStr) {
+		// TODO: On enter, go to dataIdStr
+		try {
+			return Long.valueOf(dataIdStr);
+		}
+		catch (NumberFormatException e) {
+			LOGGER.error("Cannot get valueOf {}", dataIdStr, e);
+		}
+		return null;
+		/*
+		 * if (dataIdStr != null && !dataIdStr.isEmpty()) { // Ensure this is selected
+		 * even if coming directly here from login try { Long dataId =
+		 * Long.valueOf(dataIdStr); ForwardNodeEntity data = findForwardNode(dataId);
+		 * gatewayView.selectRow(data); } catch (NumberFormatException e) { } } else {
+		 * gatewayView.showForm(false); }
+		 */
+	}
 
-  /**
-   * Retrieve forward node depending on its id
-   *
-   * @param idForwardNode id of the forward node to retrieve
-   * @return Forward node found
-   */
-  public ForwardNodeEntity retrieveForwardNodeById(Long idForwardNode) {
-    return forwardNodeAPIService.getForwardNodeById(idForwardNode);
-  }
+	public void editForwardNode(ForwardNodeEntity data) {
+		if (data == null) {
+			setFragmentParameter("");
+		}
+		else {
+			setFragmentParameter(String.valueOf(data.getId()));
+		}
+	}
 
-  /**
-   * Add a forward node
-   *
-   * @param forwardNodeEntity Forward node to add
-   */
-  public void addForwardNode(ForwardNodeEntity forwardNodeEntity) {
-    forwardNodeAPIService.addForwardNode(forwardNodeEntity);
-    refreshItem(forwardNodeEntity);
-    refreshAll();
-  }
+	public void cancelForwardNode() {
+		setFragmentParameter("");
+	}
 
-  /**
-   * Sets the filter to use for this data provider and refreshes data.
-   *
-   * <p>Filter is compared for allowed properties.
-   *
-   * @param filterTextInput the text to filter by, never null.
-   */
-  public void setFilter(String filterTextInput) {
-    Objects.requireNonNull(filterText, "Filter text cannot be null.");
+	public void saveForwardNode(ForwardNodeEntity data) {
+		/*
+		 * boolean newData = data.isNewData(); gatewayView.clearSelection();
+		 * gatewayView.updateForwardNode(data); setFragmentParameter("");
+		 * gatewayView.showSaveNotification(data.getFwdAeTitle() + (newData ? " created" :
+		 * " updated")); //editForwardNode(data); //if you dont't want to exit the
+		 * selection after saving a forward node. editForwardNode(null); //if you want to
+		 * exit the selection after saving a forward node.
+		 */
+	}
 
-    final String filterTextTrim = filterTextInput.trim();
+	// public void deleteForwardNode(ForwardNodeEntity data) {
+	/*
+	 * gatewayView.clearSelection(); gatewayView.removeForwardNode(data);
+	 * setFragmentParameter(""); gatewayView.showSaveNotification(data.getFwdAeTitle() +
+	 * " removed");
+	 */
+	// setFragmentParameter("");
+	// }
 
-    if (Objects.equals(this.filterText, filterTextTrim)) {
-      return;
-    }
-    this.filterText = filterTextTrim;
+	public ForwardNodeView getForwardNodeView() {
+		return forwardNodeView;
+	}
 
-    setFilter(data -> matchesFilter(data, filterTextTrim));
-  }
+	public void setForwardNodeView(ForwardNodeView forwardNodeView) {
+		this.forwardNodeView = forwardNodeView;
+	}
 
-  private boolean matchesFilter(ForwardNodeEntity data, String filterText) {
-    return data != null && data.matchesFilter(filterText);
-  }
+	/**
+	 * Retrieve forward node depending on its id
+	 * @param idForwardNode id of the forward node to retrieve
+	 * @return Forward node found
+	 */
+	public ForwardNodeEntity retrieveForwardNodeById(Long idForwardNode) {
+		return forwardNodeAPIService.getForwardNodeById(idForwardNode);
+	}
 
-  public void deleteForwardNode(ForwardNodeEntity forwardNodeEntity) {
-    forwardNodeAPIService.deleteForwardNode(forwardNodeEntity);
-  }
+	/**
+	 * Add a forward node
+	 * @param forwardNodeEntity Forward node to add
+	 */
+	public void addForwardNode(ForwardNodeEntity forwardNodeEntity) {
+		forwardNodeAPIService.addForwardNode(forwardNodeEntity);
+		refreshItem(forwardNodeEntity);
+		refreshAll();
+	}
 
-  public void updateForwardNode(ForwardNodeEntity forwardNodeEntity) {
-    forwardNodeAPIService.updateForwardNode(forwardNodeEntity);
-  }
+	/**
+	 * Sets the filter to use for this data provider and refreshes data.
+	 *
+	 * <p>
+	 * Filter is compared for allowed properties.
+	 * @param filterTextInput the text to filter by, never null.
+	 */
+	public void setFilter(String filterTextInput) {
+		Objects.requireNonNull(filterText, "Filter text cannot be null.");
 
-  public ProjectService getProjectService() {
-    return projectService;
-  }
+		final String filterTextTrim = filterTextInput.trim();
 
-  public SOPClassUIDService getSopClassUIDService() {
-    return sopClassUIDService;
-  }
+		if (Objects.equals(this.filterText, filterTextTrim)) {
+			return;
+		}
+		this.filterText = filterTextTrim;
 
-  public SourceLogic getSourceLogic() {
-    return sourceLogic;
-  }
+		setFilter(data -> matchesFilter(data, filterTextTrim));
+	}
 
-  public DestinationLogic getDestinationLogic() {
-    return destinationLogic;
-  }
+	private boolean matchesFilter(ForwardNodeEntity data, String filterText) {
+		return data != null && data.matchesFilter(filterText);
+	}
+
+	public void deleteForwardNode(ForwardNodeEntity forwardNodeEntity) {
+		forwardNodeAPIService.deleteForwardNode(forwardNodeEntity);
+	}
+
+	public void updateForwardNode(ForwardNodeEntity forwardNodeEntity) {
+		forwardNodeAPIService.updateForwardNode(forwardNodeEntity);
+	}
+
+	public ProjectService getProjectService() {
+		return projectService;
+	}
+
+	public SOPClassUIDService getSopClassUIDService() {
+		return sopClassUIDService;
+	}
+
+	public SourceLogic getSourceLogic() {
+		return sourceLogic;
+	}
+
+	public DestinationLogic getDestinationLogic() {
+		return destinationLogic;
+	}
+
 }

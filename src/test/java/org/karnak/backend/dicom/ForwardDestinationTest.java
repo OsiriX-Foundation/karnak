@@ -24,90 +24,87 @@ import org.weasis.dicom.param.DicomNode;
 
 class ForwardDestinationTest {
 
-  // Mock
-  MockedStatic<DicomUtils> dicomUtilsMock;
-  MockedStatic<DicomOutputData> dicomOutputDataMock;
+	// Mock
+	MockedStatic<DicomUtils> dicomUtilsMock;
 
-  @BeforeEach
-  void setUp() {
-    dicomUtilsMock = Mockito.mockStatic(DicomUtils.class);
-    dicomOutputDataMock = Mockito.mockStatic(DicomOutputData.class);
-  }
+	MockedStatic<DicomOutputData> dicomOutputDataMock;
 
-  @AfterEach
-  void tearDown() {
-    // Close static mock
-    if (dicomUtilsMock != null) {
-      dicomUtilsMock.close();
-    }
-    if (dicomOutputDataMock != null) {
-      dicomOutputDataMock.close();
-    }
-  }
+	@BeforeEach
+	void setUp() {
+		dicomUtilsMock = Mockito.mockStatic(DicomUtils.class);
+		dicomOutputDataMock = Mockito.mockStatic(DicomOutputData.class);
+	}
 
-  @Test
-  void when_get_output_transfer_syntax_should_retrieve_value_initialized() throws IOException {
-    // Init data
-    ForwardDicomNode forwardDicomNode = new ForwardDicomNode("fwdAeTitle");
-    DicomNode dicomNode = new DicomNode("fwdAeTitle", 1111);
-    ForwardDestination forwardDestination =
-        new DicomForwardDestination(forwardDicomNode, dicomNode);
+	@AfterEach
+	void tearDown() {
+		// Close static mock
+		if (dicomUtilsMock != null) {
+			dicomUtilsMock.close();
+		}
+		if (dicomOutputDataMock != null) {
+			dicomOutputDataMock.close();
+		}
+	}
 
-    // Call method
-    String outputTransferSyntax = forwardDestination.getOutputTransferSyntax();
+	@Test
+	void when_get_output_transfer_syntax_should_retrieve_value_initialized() throws IOException {
+		// Init data
+		ForwardDicomNode forwardDicomNode = new ForwardDicomNode("fwdAeTitle");
+		DicomNode dicomNode = new DicomNode("fwdAeTitle", 1111);
+		ForwardDestination forwardDestination = new DicomForwardDestination(forwardDicomNode, dicomNode);
 
-    // Test result
-    assertEquals("", outputTransferSyntax);
-  }
+		// Call method
+		String outputTransferSyntax = forwardDestination.getOutputTransferSyntax();
 
-  @Test
-  void when_not_native_not_rle_lossless_should_return_originalTsuid() throws IOException {
-    // Init data
-    ForwardDicomNode forwardDicomNode = new ForwardDicomNode("fwdAeTitle");
-    DicomNode dicomNode = new DicomNode("fwdAeTitle", 1111);
-    ForwardDestination forwardDestination =
-        new DicomForwardDestination(forwardDicomNode, dicomNode);
+		// Test result
+		assertEquals("", outputTransferSyntax);
+	}
 
-    // Mock
-    dicomUtilsMock.when(() -> DicomUtils.isNative(Mockito.anyString())).thenReturn(false);
+	@Test
+	void when_not_native_not_rle_lossless_should_return_originalTsuid() throws IOException {
+		// Init data
+		ForwardDicomNode forwardDicomNode = new ForwardDicomNode("fwdAeTitle");
+		DicomNode dicomNode = new DicomNode("fwdAeTitle", 1111);
+		ForwardDestination forwardDestination = new DicomForwardDestination(forwardDicomNode, dicomNode);
 
-    // Call method
-    String outputTransferSyntax = forwardDestination.getOutputTransferSyntax("originalTsuid");
+		// Mock
+		dicomUtilsMock.when(() -> DicomUtils.isNative(Mockito.anyString())).thenReturn(false);
 
-    // Test result
-    assertEquals("originalTsuid", outputTransferSyntax);
-  }
+		// Call method
+		String outputTransferSyntax = forwardDestination.getOutputTransferSyntax("originalTsuid");
 
-  @Test
-  void when_uid_rlelossless_or_endian_should_return_explicit_vr_little_endian() throws IOException {
-    // Init data
-    ForwardDicomNode forwardDicomNode = new ForwardDicomNode("fwdAeTitle");
-    DicomNode dicomNode = new DicomNode("fwdAeTitle", 1111);
-    ForwardDestination forwardDestination =
-        new DicomForwardDestination(forwardDicomNode, dicomNode);
+		// Test result
+		assertEquals("originalTsuid", outputTransferSyntax);
+	}
 
-    // Mock
-    dicomUtilsMock.when(() -> DicomUtils.isNative(Mockito.anyString())).thenReturn(true);
-    dicomOutputDataMock
-        .when(() -> DicomOutputData.isSupportedSyntax(Mockito.anyString()))
-        .thenReturn(false);
+	@Test
+	void when_uid_rlelossless_or_endian_should_return_explicit_vr_little_endian() throws IOException {
+		// Init data
+		ForwardDicomNode forwardDicomNode = new ForwardDicomNode("fwdAeTitle");
+		DicomNode dicomNode = new DicomNode("fwdAeTitle", 1111);
+		ForwardDestination forwardDestination = new DicomForwardDestination(forwardDicomNode, dicomNode);
 
-    // Call method
-    String outputTransferSyntax = forwardDestination.getOutputTransferSyntax(UID.RLELossless);
+		// Mock
+		dicomUtilsMock.when(() -> DicomUtils.isNative(Mockito.anyString())).thenReturn(true);
+		dicomOutputDataMock.when(() -> DicomOutputData.isSupportedSyntax(Mockito.anyString())).thenReturn(false);
 
-    // Test result
-    assertEquals(UID.ExplicitVRLittleEndian, outputTransferSyntax);
+		// Call method
+		String outputTransferSyntax = forwardDestination.getOutputTransferSyntax(UID.RLELossless);
 
-    // Call method
-    outputTransferSyntax = forwardDestination.getOutputTransferSyntax(UID.ImplicitVRLittleEndian);
+		// Test result
+		assertEquals(UID.ExplicitVRLittleEndian, outputTransferSyntax);
 
-    // Test result
-    assertEquals(UID.ExplicitVRLittleEndian, outputTransferSyntax);
+		// Call method
+		outputTransferSyntax = forwardDestination.getOutputTransferSyntax(UID.ImplicitVRLittleEndian);
 
-    // Call method
-    outputTransferSyntax = forwardDestination.getOutputTransferSyntax(UID.ExplicitVRBigEndian);
+		// Test result
+		assertEquals(UID.ExplicitVRLittleEndian, outputTransferSyntax);
 
-    // Test result
-    assertEquals(UID.ExplicitVRLittleEndian, outputTransferSyntax);
-  }
+		// Call method
+		outputTransferSyntax = forwardDestination.getOutputTransferSyntax(UID.ExplicitVRBigEndian);
+
+		// Test result
+		assertEquals(UID.ExplicitVRLittleEndian, outputTransferSyntax);
+	}
+
 }

@@ -38,198 +38,193 @@ import org.karnak.backend.data.converter.TagListToStringListConverter;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ProfileElementEntity implements Serializable {
 
-  private static final long serialVersionUID = 818925943276758147L;
+	private static final long serialVersionUID = 818925943276758147L;
 
-  private Long id;
-  private String name;
-  private String codename;
-  private String condition;
-  private String action;
-  private String option;
-  private Integer position;
-  private ProfileEntity profileEntity;
-  private List<IncludedTagEntity> includedTagEntities = new ArrayList<>();
-  private List<ExcludedTagEntity> excludedTagEntities = new ArrayList<>();
-  private List<ArgumentEntity> argumentEntities = new ArrayList<>();
+	private Long id;
 
-  public ProfileElementEntity() {}
+	private String name;
 
-  public ProfileElementEntity(
-      String name,
-      String codename,
-      String condition,
-      String action,
-      String option,
-      Integer position,
-      ProfileEntity profileEntity) {
-    this.name = name;
-    this.codename = codename;
-    this.condition = condition;
-    this.action = action;
-    this.option = option;
-    this.position = position;
-    this.profileEntity = profileEntity;
-  }
+	private String codename;
 
-  public ProfileElementEntity(
-      String name,
-      String codename,
-      String condition,
-      String action,
-      String option,
-      List<ArgumentEntity> argumentEntities,
-      Integer position,
-      ProfileEntity profileEntity) {
-    this.name = name;
-    this.codename = codename;
-    this.condition = condition;
-    this.action = action;
-    this.option = option;
-    this.argumentEntities = argumentEntities;
-    this.position = position;
-    this.profileEntity = profileEntity;
-  }
+	private String condition;
 
-  public void addIncludedTag(IncludedTagEntity includedtag) {
-    this.includedTagEntities.add(includedtag);
-  }
+	private String action;
 
-  public void addExceptedtags(ExcludedTagEntity exceptedtags) {
-    this.excludedTagEntities.add(exceptedtags);
-  }
+	private String option;
 
-  public void addArgument(ArgumentEntity argumentEntity) {
-    this.argumentEntities.add(argumentEntity);
-  }
+	private Integer position;
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  @JsonIgnore
-  public Long getId() {
-    return id;
-  }
+	private ProfileEntity profileEntity;
 
-  public void setId(Long id) {
-    this.id = id;
-  }
+	private List<IncludedTagEntity> includedTagEntities = new ArrayList<>();
 
-  public String getName() {
-    return name;
-  }
+	private List<ExcludedTagEntity> excludedTagEntities = new ArrayList<>();
 
-  public void setName(String name) {
-    this.name = name;
-  }
+	private List<ArgumentEntity> argumentEntities = new ArrayList<>();
 
-  public String getCodename() {
-    return codename;
-  }
+	public ProfileElementEntity() {
+	}
 
-  public void setCodename(String codename) {
-    this.codename = codename;
-  }
+	public ProfileElementEntity(String name, String codename, String condition, String action, String option,
+			Integer position, ProfileEntity profileEntity) {
+		this.name = name;
+		this.codename = codename;
+		this.condition = condition;
+		this.action = action;
+		this.option = option;
+		this.position = position;
+		this.profileEntity = profileEntity;
+	}
 
-  public String getCondition() {
-    return condition;
-  }
+	public ProfileElementEntity(String name, String codename, String condition, String action, String option,
+			List<ArgumentEntity> argumentEntities, Integer position, ProfileEntity profileEntity) {
+		this.name = name;
+		this.codename = codename;
+		this.condition = condition;
+		this.action = action;
+		this.option = option;
+		this.argumentEntities = argumentEntities;
+		this.position = position;
+		this.profileEntity = profileEntity;
+	}
 
-  public void setCondition(String condition) {
-    this.condition = condition;
-  }
+	public void addIncludedTag(IncludedTagEntity includedtag) {
+		this.includedTagEntities.add(includedtag);
+	}
 
-  public String getAction() {
-    return action;
-  }
+	public void addExceptedtags(ExcludedTagEntity exceptedtags) {
+		this.excludedTagEntities.add(exceptedtags);
+	}
 
-  public void setAction(String action) {
-    this.action = action;
-  }
+	public void addArgument(ArgumentEntity argumentEntity) {
+		this.argumentEntities.add(argumentEntity);
+	}
 
-  public String getOption() {
-    return option;
-  }
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@JsonIgnore
+	public Long getId() {
+		return id;
+	}
 
-  public void setOption(String option) {
-    this.option = option;
-  }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-  @JsonGetter("arguments")
-  @OneToMany(mappedBy = "profileElementEntity", cascade = CascadeType.ALL)
-  @LazyCollection(LazyCollectionOption.FALSE)
-  @JsonSerialize(converter = ArgumentToMapConverter.class)
-  public List<ArgumentEntity> getArgumentEntities() {
-    return argumentEntities;
-  }
+	public String getName() {
+		return name;
+	}
 
-  @JsonSetter("arguments")
-  public void setArgumentEntities(List<ArgumentEntity> argumentEntities) {
-    this.argumentEntities = argumentEntities;
-  }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-  @JsonIgnore
-  public Integer getPosition() {
-    return position;
-  }
+	public String getCodename() {
+		return codename;
+	}
 
-  public void setPosition(Integer position) {
-    this.position = position;
-  }
+	public void setCodename(String codename) {
+		this.codename = codename;
+	}
 
-  @ManyToOne()
-  @JoinColumn(name = "profile_id", nullable = false)
-  @JsonIgnore
-  public ProfileEntity getProfileEntity() {
-    return profileEntity;
-  }
+	public String getCondition() {
+		return condition;
+	}
 
-  public void setProfileEntity(ProfileEntity profileEntity) {
-    this.profileEntity = profileEntity;
-  }
+	public void setCondition(String condition) {
+		this.condition = condition;
+	}
 
-  @JsonGetter("tags")
-  @OneToMany(mappedBy = "profileElementEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-  @JsonSerialize(converter = TagListToStringListConverter.class)
-  public List<IncludedTagEntity> getIncludedTagEntities() {
-    return includedTagEntities;
-  }
+	public String getAction() {
+		return action;
+	}
 
-  @JsonSetter("tags")
-  public void setIncludedTagEntities(List<IncludedTagEntity> includedTagEntities) {
-    this.includedTagEntities = includedTagEntities;
-  }
+	public void setAction(String action) {
+		this.action = action;
+	}
 
-  @JsonGetter("excludedTags")
-  @OneToMany(mappedBy = "profileElementEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-  @JsonSerialize(converter = TagListToStringListConverter.class)
-  public List<ExcludedTagEntity> getExcludedTagEntities() {
-    return excludedTagEntities;
-  }
+	public String getOption() {
+		return option;
+	}
 
-  @JsonSetter("excludedTags")
-  public void setExcludedTagEntities(List<ExcludedTagEntity> excludedTagEntities) {
-    this.excludedTagEntities = excludedTagEntities;
-  }
+	public void setOption(String option) {
+		this.option = option;
+	}
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    ProfileElementEntity that = (ProfileElementEntity) o;
-    return Objects.equals(id, that.id)
-        && Objects.equals(name, that.name)
-        && Objects.equals(codename, that.codename)
-        && Objects.equals(condition, that.condition)
-        && Objects.equals(action, that.action)
-        && Objects.equals(option, that.option)
-        && Objects.equals(position, that.position);
-  }
+	@JsonGetter("arguments")
+	@OneToMany(mappedBy = "profileElementEntity", cascade = CascadeType.ALL)
+	@LazyCollection(LazyCollectionOption.FALSE)
+	@JsonSerialize(converter = ArgumentToMapConverter.class)
+	public List<ArgumentEntity> getArgumentEntities() {
+		return argumentEntities;
+	}
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(id, name, codename, condition, action, option, position);
-  }
+	@JsonSetter("arguments")
+	public void setArgumentEntities(List<ArgumentEntity> argumentEntities) {
+		this.argumentEntities = argumentEntities;
+	}
+
+	@JsonIgnore
+	public Integer getPosition() {
+		return position;
+	}
+
+	public void setPosition(Integer position) {
+		this.position = position;
+	}
+
+	@ManyToOne()
+	@JoinColumn(name = "profile_id", nullable = false)
+	@JsonIgnore
+	public ProfileEntity getProfileEntity() {
+		return profileEntity;
+	}
+
+	public void setProfileEntity(ProfileEntity profileEntity) {
+		this.profileEntity = profileEntity;
+	}
+
+	@JsonGetter("tags")
+	@OneToMany(mappedBy = "profileElementEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JsonSerialize(converter = TagListToStringListConverter.class)
+	public List<IncludedTagEntity> getIncludedTagEntities() {
+		return includedTagEntities;
+	}
+
+	@JsonSetter("tags")
+	public void setIncludedTagEntities(List<IncludedTagEntity> includedTagEntities) {
+		this.includedTagEntities = includedTagEntities;
+	}
+
+	@JsonGetter("excludedTags")
+	@OneToMany(mappedBy = "profileElementEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JsonSerialize(converter = TagListToStringListConverter.class)
+	public List<ExcludedTagEntity> getExcludedTagEntities() {
+		return excludedTagEntities;
+	}
+
+	@JsonSetter("excludedTags")
+	public void setExcludedTagEntities(List<ExcludedTagEntity> excludedTagEntities) {
+		this.excludedTagEntities = excludedTagEntities;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		ProfileElementEntity that = (ProfileElementEntity) o;
+		return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(codename, that.codename)
+				&& Objects.equals(condition, that.condition) && Objects.equals(action, that.action)
+				&& Objects.equals(option, that.option) && Objects.equals(position, that.position);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, name, codename, condition, action, option, position);
+	}
+
 }

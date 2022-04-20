@@ -39,118 +39,120 @@ import org.weasis.dicom.param.DicomNode;
 @Service
 public class StoreScpForwardService {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(StoreScpForwardService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(StoreScpForwardService.class);
 
-  private final Device device = new Device("storescp");
-  private final ApplicationEntity ae = new ApplicationEntity("*");
-  private final Connection conn = new Connection();
-  private volatile int priority;
-  private volatile int status = 0;
+	private final Device device = new Device("storescp");
 
-  private Map<ForwardDicomNode, List<ForwardDestination>> destinations;
+	private final ApplicationEntity ae = new ApplicationEntity("*");
 
-  private final CStoreSCPService cStoreSCPService;
+	private final Connection conn = new Connection();
 
-  @Autowired
-  public StoreScpForwardService(final CStoreSCPService cStoreSCPService) {
-    this.cStoreSCPService = cStoreSCPService;
-  }
+	private volatile int priority;
 
-  /**
-   * Init service
-   *
-   * @param forwardParams the optional advanced parameters (proxy, authentication, connection and
-   *     TLS) for the final destination
-   * @param fwdNode the calling DICOM node configuration
-   * @param destinationNode the final DICOM node configuration
-   * @param attributesEditor the editor for modifying attributes on the fly (can be Null)
-   */
-  public void init(
-      AdvancedParams forwardParams,
-      ForwardDicomNode fwdNode,
-      DicomNode destinationNode,
-      List<AttributeEditor> attributesEditor)
-      throws IOException {
-    DicomForwardDestination uniqueDestination =
-        new DicomForwardDestination(forwardParams, fwdNode, destinationNode, attributesEditor);
-    this.destinations = new HashMap<>();
-    destinations.put(fwdNode, Collections.singletonList(uniqueDestination));
-    cStoreSCPService.init(destinations);
+	private volatile int status = 0;
 
-    device.setDimseRQHandler(createServiceRegistry());
-    device.addConnection(conn);
-    device.addApplicationEntity(ae);
-    ae.setAssociationAcceptor(true);
-    ae.addConnection(conn);
-  }
+	private Map<ForwardDicomNode, List<ForwardDestination>> destinations;
 
-  public void init(Map<ForwardDicomNode, List<ForwardDestination>> destinations) {
-    this.destinations = Objects.requireNonNull(destinations);
-    cStoreSCPService.init(destinations);
-    device.setDimseRQHandler(createServiceRegistry());
-    device.addConnection(conn);
-    device.addApplicationEntity(ae);
-    ae.setAssociationAcceptor(true);
-    ae.addConnection(conn);
-  }
+	private final CStoreSCPService cStoreSCPService;
 
-  public final void setPriority(int priority) {
-    this.priority = priority;
-  }
+	@Autowired
+	public StoreScpForwardService(final CStoreSCPService cStoreSCPService) {
+		this.cStoreSCPService = cStoreSCPService;
+	}
 
-  private DicomServiceRegistry createServiceRegistry() {
-    DicomServiceRegistry serviceRegistry = new DicomServiceRegistry();
-    serviceRegistry.addDicomService(new BasicCEchoSCP());
-    serviceRegistry.addDicomService(cStoreSCPService);
-    return serviceRegistry;
-  }
+	/**
+	 * Init service
+	 * @param forwardParams the optional advanced parameters (proxy, authentication,
+	 * connection and TLS) for the final destination
+	 * @param fwdNode the calling DICOM node configuration
+	 * @param destinationNode the final DICOM node configuration
+	 * @param attributesEditor the editor for modifying attributes on the fly (can be
+	 * Null)
+	 */
+	public void init(AdvancedParams forwardParams, ForwardDicomNode fwdNode, DicomNode destinationNode,
+			List<AttributeEditor> attributesEditor) throws IOException {
+		DicomForwardDestination uniqueDestination = new DicomForwardDestination(forwardParams, fwdNode, destinationNode,
+				attributesEditor);
+		this.destinations = new HashMap<>();
+		destinations.put(fwdNode, Collections.singletonList(uniqueDestination));
+		cStoreSCPService.init(destinations);
 
-  public void setStatus(int status) {
-    this.status = status;
-  }
+		device.setDimseRQHandler(createServiceRegistry());
+		device.addConnection(conn);
+		device.addApplicationEntity(ae);
+		ae.setAssociationAcceptor(true);
+		ae.addConnection(conn);
+	}
 
-  public void loadDefaultTransferCapability(URL transferCapabilityFile) {
-    Properties p = new Properties();
+	public void init(Map<ForwardDicomNode, List<ForwardDestination>> destinations) {
+		this.destinations = Objects.requireNonNull(destinations);
+		cStoreSCPService.init(destinations);
+		device.setDimseRQHandler(createServiceRegistry());
+		device.addConnection(conn);
+		device.addApplicationEntity(ae);
+		ae.setAssociationAcceptor(true);
+		ae.addConnection(conn);
+	}
 
-    try {
-      if (transferCapabilityFile != null) {
-        try (InputStream in = transferCapabilityFile.openStream()) {
-          p.load(in);
-        }
-      } else {
-        p.load(this.getClass().getResourceAsStream("sop-classes.properties"));
-      }
-    } catch (IOException e) {
-      LOGGER.error("Cannot read sop-classes", e);
-    }
+	public final void setPriority(int priority) {
+		this.priority = priority;
+	}
 
-    for (String cuid : p.stringPropertyNames()) {
-      String ts = p.getProperty(cuid);
-      TransferCapability tc =
-          new TransferCapability(
-              null, CLIUtils.toUID(cuid), TransferCapability.Role.SCP, CLIUtils.toUIDs(ts));
-      ae.addTransferCapability(tc);
-    }
-  }
+	private DicomServiceRegistry createServiceRegistry() {
+		DicomServiceRegistry serviceRegistry = new DicomServiceRegistry();
+		serviceRegistry.addDicomService(new BasicCEchoSCP());
+		serviceRegistry.addDicomService(cStoreSCPService);
+		return serviceRegistry;
+	}
 
-  public ApplicationEntity getApplicationEntity() {
-    return ae;
-  }
+	public void setStatus(int status) {
+		this.status = status;
+	}
 
-  public Connection getConnection() {
-    return conn;
-  }
+	public void loadDefaultTransferCapability(URL transferCapabilityFile) {
+		Properties p = new Properties();
 
-  public Device getDevice() {
-    return device;
-  }
+		try {
+			if (transferCapabilityFile != null) {
+				try (InputStream in = transferCapabilityFile.openStream()) {
+					p.load(in);
+				}
+			}
+			else {
+				p.load(this.getClass().getResourceAsStream("sop-classes.properties"));
+			}
+		}
+		catch (IOException e) {
+			LOGGER.error("Cannot read sop-classes", e);
+		}
 
-  public void stop() {
-    destinations.values().forEach(l -> l.forEach(ForwardDestination::stop));
-    cStoreSCPService.getDestinations().values().forEach(l -> l.forEach(ForwardDestination::stop));
-  }
+		for (String cuid : p.stringPropertyNames()) {
+			String ts = p.getProperty(cuid);
+			TransferCapability tc = new TransferCapability(null, CLIUtils.toUID(cuid), TransferCapability.Role.SCP,
+					CLIUtils.toUIDs(ts));
+			ae.addTransferCapability(tc);
+		}
+	}
 
-  public CStoreSCPService getCstoreSCP() {
-    return cStoreSCPService;
-  }
+	public ApplicationEntity getApplicationEntity() {
+		return ae;
+	}
+
+	public Connection getConnection() {
+		return conn;
+	}
+
+	public Device getDevice() {
+		return device;
+	}
+
+	public void stop() {
+		destinations.values().forEach(l -> l.forEach(ForwardDestination::stop));
+		cStoreSCPService.getDestinations().values().forEach(l -> l.forEach(ForwardDestination::stop));
+	}
+
+	public CStoreSCPService getCstoreSCP() {
+		return cStoreSCPService;
+	}
+
 }

@@ -16,54 +16,52 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 
 public class WarningNoProjectsDefined extends Dialog {
 
-  private final Button btnValidate;
-  private final Button btnCancel;
+	private final Button btnValidate;
 
-  public WarningNoProjectsDefined() {
-    btnValidate = new Button();
-    btnCancel = new Button();
+	private final Button btnCancel;
 
-    setContent();
-  }
+	public WarningNoProjectsDefined() {
+		btnValidate = new Button();
+		btnCancel = new Button();
 
-  public void setTextBtnValidate(String text) {
-    btnValidate.setText(text);
-  }
+		setContent();
+	}
 
-  public void setTextBtnCancel(String text) {
-    btnCancel.setText(text);
-  }
+	public void setTextBtnValidate(String text) {
+		btnValidate.setText(text);
+	}
 
-  private void setContent() {
-    removeAll();
-    Div divTitle = new Div();
-    divTitle.setText("No projects created");
-    divTitle
-        .getStyle()
-        .set("font-size", "large")
-        .set("font-weight", "bolder")
-        .set("padding-bottom", "10px")
-        .set("color", "red");
+	public void setTextBtnCancel(String text) {
+		btnCancel.setText(text);
+	}
 
-    Div divContent = new Div();
-    Div divIntro = new Div();
-    divIntro.setText(
-        "No projects are defined. You can't use the de-identification until you have created a project.");
-    divIntro.getStyle().set("padding-bottom", "10px");
-    divContent.add(divIntro);
-    btnValidate.setWidthFull();
-    btnCancel.setWidthFull();
+	private void setContent() {
+		removeAll();
+		Div divTitle = new Div();
+		divTitle.setText("No projects created");
+		divTitle.getStyle().set("font-size", "large").set("font-weight", "bolder").set("padding-bottom", "10px")
+				.set("color", "red");
 
-    HorizontalLayout btnLayout = new HorizontalLayout(btnValidate, btnCancel);
-    btnLayout.getStyle().set("margin-left", "50%");
-    add(divTitle, divContent, btnLayout);
-  }
+		Div divContent = new Div();
+		Div divIntro = new Div();
+		divIntro.setText(
+				"No projects are defined. You can't use the de-identification until you have created a project.");
+		divIntro.getStyle().set("padding-bottom", "10px");
+		divContent.add(divIntro);
+		btnValidate.setWidthFull();
+		btnCancel.setWidthFull();
 
-  public Button getBtnValidate() {
-    return btnValidate;
-  }
+		HorizontalLayout btnLayout = new HorizontalLayout(btnValidate, btnCancel);
+		btnLayout.getStyle().set("margin-left", "50%");
+		add(divTitle, divContent, btnLayout);
+	}
 
-  public Button getBtnCancel() {
-    return btnCancel;
-  }
+	public Button getBtnValidate() {
+		return btnValidate;
+	}
+
+	public Button getBtnCancel() {
+		return btnCancel;
+	}
+
 }

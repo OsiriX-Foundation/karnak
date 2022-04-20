@@ -18,45 +18,49 @@ import org.karnak.frontend.component.ProfileDropDown;
 
 public class NewProject extends HorizontalLayout {
 
-  private final Binder<ProjectEntity> binder;
-  private final Button buttonAdd;
-  private final TextField textResearchName;
-  private final ProfileDropDown profileDropDown;
+	private final Binder<ProjectEntity> binder;
 
-  public NewProject() {
+	private final Button buttonAdd;
 
-    TextFieldsBindProject textFieldsBindProject = new TextFieldsBindProject();
-    setWidthFull();
-    this.binder = textFieldsBindProject.getBinder();
-    this.buttonAdd = new Button("Add");
-    this.textResearchName = textFieldsBindProject.getTextResearchName();
-    this.profileDropDown = textFieldsBindProject.getProfileDropDown();
-    setElements();
-    add(this.textResearchName, this.profileDropDown, this.buttonAdd);
-    this.binder.removeBinding(textFieldsBindProject.getSecretComboBox());
-    this.binder.bindInstanceFields(this);
-  }
+	private final TextField textResearchName;
 
-  private void setElements() {
+	private final ProfileDropDown profileDropDown;
 
-    textResearchName.setWidth("20%");
-    textResearchName.getStyle().set("padding-right", "10px");
-    textResearchName.setPlaceholder("Enter Name");
-  }
+	public NewProject() {
 
-  public Button getButtonAdd() {
-    return buttonAdd;
-  }
+		TextFieldsBindProject textFieldsBindProject = new TextFieldsBindProject();
+		setWidthFull();
+		this.binder = textFieldsBindProject.getBinder();
+		this.buttonAdd = new Button("Add");
+		this.textResearchName = textFieldsBindProject.getTextResearchName();
+		this.profileDropDown = textFieldsBindProject.getProfileDropDown();
+		setElements();
+		add(this.textResearchName, this.profileDropDown, this.buttonAdd);
+		this.binder.removeBinding(textFieldsBindProject.getSecretComboBox());
+		this.binder.bindInstanceFields(this);
+	}
 
-  public void clear() {
-    binder.readBean(new ProjectEntity());
-  }
+	private void setElements() {
 
-  public Binder<ProjectEntity> getBinder() {
-    return binder;
-  }
+		textResearchName.setWidth("20%");
+		textResearchName.getStyle().set("padding-right", "10px");
+		textResearchName.setPlaceholder("Enter Name");
+	}
 
-  public ProfileDropDown getProfileDropDown() {
-    return profileDropDown;
-  }
+	public Button getButtonAdd() {
+		return buttonAdd;
+	}
+
+	public void clear() {
+		binder.readBean(new ProjectEntity());
+	}
+
+	public Binder<ProjectEntity> getBinder() {
+		return binder;
+	}
+
+	public ProfileDropDown getProfileDropDown() {
+		return profileDropDown;
+	}
+
 }

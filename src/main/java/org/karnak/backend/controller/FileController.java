@@ -28,46 +28,46 @@ package org.karnak.backend.controller;
 // @RequestMapping(EndPoint.FILE_PATH)
 // public class FileController {
 //
-//  private static final Logger LOGGER = LoggerFactory.getLogger(FileController.class);
+// private static final Logger LOGGER = LoggerFactory.getLogger(FileController.class);
 //
-//  // Services
-//  private final FileService fileService;
+// // Services
+// private final FileService fileService;
 //
-//  /**
-//   * Autowired constructor
-//   *
-//   * @param fileService Service managing files
-//   */
-//  @Autowired
-//  public FileController(final FileService fileService) {
-//    this.fileService = fileService;
-//  }
+// /**
+// * Autowired constructor
+// *
+// * @param fileService Service managing files
+// */
+// @Autowired
+// public FileController(final FileService fileService) {
+// this.fileService = fileService;
+// }
 //
-//  /**
-//   * @param aet Aet to get files from
-//   * @param fileName File to download
-//   * @return if successful download the file otherwise display an error message
-//   */
-//  @GetMapping(
-//      value = {EndPoint.DOWNLOAD_SOPUID_PATH},
-//      produces = {MediaType.APPLICATION_OCTET_STREAM_VALUE})
-//  public ResponseEntity<Object> downloadSopUidFromAetT(
-//      @RequestParam(value = EndPoint.AET_PARAM) String aet,
-//      @RequestParam(value = EndPoint.SOP_UID_PARAM) String fileName) {
-//    byte[] file;
+// /**
+// * @param aet Aet to get files from
+// * @param fileName File to download
+// * @return if successful download the file otherwise display an error message
+// */
+// @GetMapping(
+// value = {EndPoint.DOWNLOAD_SOPUID_PATH},
+// produces = {MediaType.APPLICATION_OCTET_STREAM_VALUE})
+// public ResponseEntity<Object> downloadSopUidFromAetT(
+// @RequestParam(value = EndPoint.AET_PARAM) String aet,
+// @RequestParam(value = EndPoint.SOP_UID_PARAM) String fileName) {
+// byte[] file;
 //
-//    try {
-//      file = fileService.retrieveFileToDownload(aet, fileName);
-//    } catch (Exception e) {
-//      LOGGER.error("Unexpected exception when downloading", e);
-//      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-//          .body("Error when downloading the file: Internal server error => " + e.getMessage());
-//    }
+// try {
+// file = fileService.retrieveFileToDownload(aet, fileName);
+// } catch (Exception e) {
+// LOGGER.error("Unexpected exception when downloading", e);
+// return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+// .body("Error when downloading the file: Internal server error => " + e.getMessage());
+// }
 //
-//    return file == null
-//        ? ResponseEntity.notFound().build()
-//        : ResponseEntity.status(HttpStatus.OK)
-//            .header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
-//            .body(file);
-//  }
+// return file == null
+// ? ResponseEntity.notFound().build()
+// : ResponseEntity.status(HttpStatus.OK)
+// .header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
+// .body(file);
+// }
 // }

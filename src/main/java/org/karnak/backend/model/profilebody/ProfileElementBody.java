@@ -14,85 +14,94 @@ import java.util.Map;
 
 public class ProfileElementBody {
 
-  private String name;
-  private String codename;
-  private String condition;
-  private String action;
-  private String option;
-  private String args;
-  private List<String> tagEntities;
-  private List<String> excludedTags;
-  private Map<String, String> arguments;
+	private String name;
 
-  public String getName() {
-    return name;
-  }
+	private String codename;
 
-  public void setName(String name) {
-    this.name = name;
-  }
+	private String condition;
 
-  public String getCodename() {
-    return codename;
-  }
+	private String action;
 
-  public void setCodename(String codename) {
-    this.codename = codename;
-  }
+	private String option;
 
-  public String getCondition() {
-    return condition;
-  }
+	private String args;
 
-  public void setCondition(String condition) {
-    this.condition = condition;
-  }
+	private List<String> tagEntities;
 
-  public String getAction() {
-    return action;
-  }
+	private List<String> excludedTags;
 
-  public void setAction(String action) {
-    this.action = action;
-  }
+	private Map<String, String> arguments;
 
-  public String getOption() {
-    return option;
-  }
+	public String getName() {
+		return name;
+	}
 
-  public void setOption(String option) {
-    this.option = option;
-  }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-  public String getArgs() {
-    return args;
-  }
+	public String getCodename() {
+		return codename;
+	}
 
-  public void setArgs(String args) {
-    this.args = args;
-  }
+	public void setCodename(String codename) {
+		this.codename = codename;
+	}
 
-  public Map<String, String> getArguments() {
-    return arguments;
-  }
+	public String getCondition() {
+		return condition;
+	}
 
-  public void setArguments(Map<String, String> arguments) {
-    this.arguments = arguments;
-  }
+	public void setCondition(String condition) {
+		this.condition = condition;
+	}
 
-  public List<String> getTags() {
-    return tagEntities;
-  }
+	public String getAction() {
+		return action;
+	}
 
-  public void setTags(List<String> tagEntities) {
-    this.tagEntities = tagEntities;
-  }
+	public void setAction(String action) {
+		this.action = action;
+	}
 
-  public List<String> getExcludedTags() {
-    return excludedTags;
-  }
+	public String getOption() {
+		return option;
+	}
 
-  public void setExcludedTags(List<String> excludedTags) {
-    this.excludedTags = excludedTags;
-  }
+	public void setOption(String option) {
+		this.option = option;
+	}
+
+	public String getArgs() {
+		return args;
+	}
+
+	public void setArgs(String args) {
+		this.args = args;
+	}
+
+	public Map<String, String> getArguments() {
+		return arguments;
+	}
+
+	public void setArguments(Map<String, String> arguments) {
+		this.arguments = arguments;
+	}
+
+	public List<String> getTags() {
+		return tagEntities;
+	}
+
+	public void setTags(List<String> tagEntities) {
+		this.tagEntities = tagEntities;
+	}
+
+	public List<String> getExcludedTags() {
+		return excludedTags;
+	}
+
+	public void setExcludedTags(List<String> excludedTags) {
+		this.excludedTags = excludedTags;
+	}
+
 }

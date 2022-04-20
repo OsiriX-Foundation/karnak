@@ -19,74 +19,70 @@ import org.springframework.context.ApplicationEventPublisher;
 
 class SourceNodeServiceTest {
 
-  // Application Event Publisher
-  private final ApplicationEventPublisher applicationEventPublisherMock =
-      Mockito.mock(ApplicationEventPublisher.class);
+	// Application Event Publisher
+	private final ApplicationEventPublisher applicationEventPublisherMock = Mockito
+			.mock(ApplicationEventPublisher.class);
 
-  // Repositories
-  private final DicomSourceNodeRepo dicomSourceNodeRepoMock =
-      Mockito.mock(DicomSourceNodeRepo.class);
+	// Repositories
+	private final DicomSourceNodeRepo dicomSourceNodeRepoMock = Mockito.mock(DicomSourceNodeRepo.class);
 
-  // Services
-  private final ForwardNodeService forwardNodeServiceMock = Mockito.mock(ForwardNodeService.class);
-  private SourceNodeService sourceNodeService;
+	// Services
+	private final ForwardNodeService forwardNodeServiceMock = Mockito.mock(ForwardNodeService.class);
 
-  @BeforeEach
-  public void setUp() {
-    // Build mocked service
-    sourceNodeService =
-        new SourceNodeService(
-            dicomSourceNodeRepoMock, forwardNodeServiceMock, applicationEventPublisherMock);
-  }
+	private SourceNodeService sourceNodeService;
 
-  @Test
-  void should_retrieve_source_nodes_from_forward_node() {
-    // Init data
-    ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
+	@BeforeEach
+	public void setUp() {
+		// Build mocked service
+		sourceNodeService = new SourceNodeService(dicomSourceNodeRepoMock, forwardNodeServiceMock,
+				applicationEventPublisherMock);
+	}
 
-    // Call service
-    sourceNodeService.retrieveSourceNodes(forwardNodeEntity);
+	@Test
+	void should_retrieve_source_nodes_from_forward_node() {
+		// Init data
+		ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
 
-    // Test results
-    Mockito.verify(forwardNodeServiceMock, Mockito.times(1))
-        .getAllSourceNodes(Mockito.any(ForwardNodeEntity.class));
-  }
+		// Call service
+		sourceNodeService.retrieveSourceNodes(forwardNodeEntity);
 
-  @Test
-  void should_save_dicom_source_node() {
-    // Init data
-    ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
-    DicomSourceNodeEntity dicomSourceNodeEntity = new DicomSourceNodeEntity();
+		// Test results
+		Mockito.verify(forwardNodeServiceMock, Mockito.times(1))
+				.getAllSourceNodes(Mockito.any(ForwardNodeEntity.class));
+	}
 
-    // Mock service
-    Mockito.when(
-            forwardNodeServiceMock.updateSourceNode(
-                Mockito.any(ForwardNodeEntity.class), Mockito.any(DicomSourceNodeEntity.class)))
-        .thenReturn(dicomSourceNodeEntity);
+	@Test
+	void should_save_dicom_source_node() {
+		// Init data
+		ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
+		DicomSourceNodeEntity dicomSourceNodeEntity = new DicomSourceNodeEntity();
 
-    // Call service
-    sourceNodeService.save(forwardNodeEntity, dicomSourceNodeEntity);
+		// Mock service
+		Mockito.when(forwardNodeServiceMock.updateSourceNode(Mockito.any(ForwardNodeEntity.class),
+				Mockito.any(DicomSourceNodeEntity.class))).thenReturn(dicomSourceNodeEntity);
 
-    // Test results
-    Mockito.verify(forwardNodeServiceMock, Mockito.times(1))
-        .updateSourceNode(
-            Mockito.any(ForwardNodeEntity.class), Mockito.any(DicomSourceNodeEntity.class));
-  }
+		// Call service
+		sourceNodeService.save(forwardNodeEntity, dicomSourceNodeEntity);
 
-  @Test
-  void should_delete_source_node() {
-    // Init data
-    ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
-    DicomSourceNodeEntity dicomSourceNodeEntity = new DicomSourceNodeEntity();
-    dicomSourceNodeEntity.setId(1L);
-    dicomSourceNodeEntity.setForwardNodeEntity(forwardNodeEntity);
+		// Test results
+		Mockito.verify(forwardNodeServiceMock, Mockito.times(1)).updateSourceNode(Mockito.any(ForwardNodeEntity.class),
+				Mockito.any(DicomSourceNodeEntity.class));
+	}
 
-    // Call service
-    sourceNodeService.delete(dicomSourceNodeEntity);
+	@Test
+	void should_delete_source_node() {
+		// Init data
+		ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
+		DicomSourceNodeEntity dicomSourceNodeEntity = new DicomSourceNodeEntity();
+		dicomSourceNodeEntity.setId(1L);
+		dicomSourceNodeEntity.setForwardNodeEntity(forwardNodeEntity);
 
-    // Test results
-    Mockito.verify(forwardNodeServiceMock, Mockito.times(1))
-        .deleteSourceNode(
-            Mockito.any(ForwardNodeEntity.class), Mockito.any(DicomSourceNodeEntity.class));
-  }
+		// Call service
+		sourceNodeService.delete(dicomSourceNodeEntity);
+
+		// Test results
+		Mockito.verify(forwardNodeServiceMock, Mockito.times(1)).deleteSourceNode(Mockito.any(ForwardNodeEntity.class),
+				Mockito.any(DicomSourceNodeEntity.class));
+	}
+
 }

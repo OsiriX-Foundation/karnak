@@ -9,7 +9,6 @@
  */
 package org.karnak.backend.service.gateway;
 
-import java.io.File;
 import java.net.URL;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -27,85 +26,84 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
-import org.weasis.core.util.FileUtil;
-import org.weasis.core.util.StringUtil;
 
 @Service
 public class GatewayService implements ApplicationListener<ContextRefreshedEvent> {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(GatewayService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(GatewayService.class);
 
-  private final GatewaySetUpService gatewaySetUpService;
-  private final DicomGatewayService gateway;
+	private final GatewaySetUpService gatewaySetUpService;
 
-  // Repository
-  private final DestinationRepo destinationRepo;
+	private final DicomGatewayService gateway;
 
-  @Autowired
-  public GatewayService(
-      final GatewaySetUpService gatewaySetUpService,
-      final DicomGatewayService dicomGatewayService,
-      final DestinationRepo destinationRepo) {
-    this.gatewaySetUpService = gatewaySetUpService;
-    this.gateway = dicomGatewayService;
-    this.destinationRepo = destinationRepo;
-  }
+	// Repository
+	private final DestinationRepo destinationRepo;
 
-  public void initGateway() {
-    try {
-      String[] acceptedCallingAETitles =
-          GatewayParams.getAcceptedCallingAETitles(gatewaySetUpService.getDestinations());
-      GatewayParams gparams =
-          new GatewayParams(
-              gatewaySetUpService.getAdvancedParams(), false, null, acceptedCallingAETitles);
-      gateway.init(gatewaySetUpService.getDestinations());
-      gateway.start(gatewaySetUpService.getCallingDicomNode(), gparams);
-      LOGGER.info("Karnak DICOM gateway servlet is running: {}", gatewaySetUpService);
-    } catch (Exception e) {
-      LOGGER.error("Cannot start DICOM gateway", e);
-    }
-  }
+	@Autowired
+	public GatewayService(final GatewaySetUpService gatewaySetUpService, final DicomGatewayService dicomGatewayService,
+			final DestinationRepo destinationRepo) {
+		this.gatewaySetUpService = gatewaySetUpService;
+		this.gateway = dicomGatewayService;
+		this.destinationRepo = destinationRepo;
+	}
 
-  @Override
-  public void onApplicationEvent(ContextRefreshedEvent event) {
-    LOGGER.info("Application Event: {}", event);
-  }
+	public void initGateway() {
+		try {
+			String[] acceptedCallingAETitles = GatewayParams
+					.getAcceptedCallingAETitles(gatewaySetUpService.getDestinations());
+			GatewayParams gparams = new GatewayParams(gatewaySetUpService.getAdvancedParams(), false, null,
+					acceptedCallingAETitles);
+			gateway.init(gatewaySetUpService.getDestinations());
+			gateway.start(gatewaySetUpService.getCallingDicomNode(), gparams);
+			LOGGER.info("Karnak DICOM gateway servlet is running: {}", gatewaySetUpService);
+		}
+		catch (Exception e) {
+			LOGGER.error("Cannot start DICOM gateway", e);
+		}
+	}
 
-  @EventListener
-  public void reloadOutboundNodes(NodeEvent event) {
-    gatewaySetUpService.update(event);
+	@Override
+	public void onApplicationEvent(ContextRefreshedEvent event) {
+		LOGGER.info("Application Event: {}", event);
+	}
 
-    // Refresh the version of the gateway set up
-    gatewaySetUpService.refreshVersionGatewaySetUp();
-  }
+	@EventListener
+	public void reloadOutboundNodes(NodeEvent event) {
+		gatewaySetUpService.update(event);
 
-  @PreDestroy
-  public void destroy() {
-    if (gateway != null) {
-      gateway.stop();
-    }
+		// Refresh the version of the gateway set up
+		gatewaySetUpService.refreshVersionGatewaySetUp();
+	}
 
-    // Reset status transfer in progress on destination
-    List<DestinationEntity> destinationEntities = destinationRepo.findAll();
-    destinationEntities.forEach(d -> d.setTransferInProgress(false));
-    destinationRepo.saveAll(destinationEntities);
+	@PreDestroy
+	public void destroy() {
+		if (gateway != null) {
+			gateway.stop();
+		}
 
-    LOGGER.info("{}", "Gateway has been stopped");
-    String dir = System.getProperty("dicom.native.codec");
-    if (StringUtil.hasText(dir)) {
-      FileUtil.delete(new File(dir));
-    }
-  }
+		// Reset status transfer in progress on destination
+		List<DestinationEntity> destinationEntities = destinationRepo.findAll();
+		destinationEntities.forEach(d -> d.setTransferInProgress(false));
+		destinationRepo.saveAll(destinationEntities);
 
-  @PostConstruct
-  public void init() {
-    LOGGER.info("{}", "Start the gateway manager running as a background process");
-    try {
-      URL resource = this.getClass().getResource("/lib");
-      NativeLibraryManager.initNativeLibs(resource);
-    } catch (Exception e1) {
-      throw new IllegalStateException("Cannot register DICOM native librairies", e1);
-    }
-    initGateway();
-  }
+		LOGGER.info("{}", "Gateway has been stopped");
+		String dir = System.getProperty("dicom.native.codec");
+		// if (StringUtil.hasText(dir)) {
+		// FileUtil.delete(new File(dir));
+		// }
+	}
+
+	@PostConstruct
+	public void init() {
+		LOGGER.info("{}", "Start the gateway manager running as a background process");
+		try {
+			URL resource = this.getClass().getResource("/lib");
+			NativeLibraryManager.initNativeLibs(resource);
+		}
+		catch (Exception e1) {
+			throw new IllegalStateException("Cannot register DICOM native librairies", e1);
+		}
+		initGateway();
+	}
+
 }

@@ -19,17 +19,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class HazelcastService {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(HazelcastService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(HazelcastService.class);
 
-  /** Log every minutes */
-  @Scheduled(fixedRate = 60000)
-  public void logHazelcast() {
-    LOGGER.info(
-        String.format(
-            "Hazelcast values for instance %s:%s",
-            AppConfig.getInstance().getNameInstance(),
-            AppConfig.getInstance().getExternalIDCache().getAll().stream()
-                .map(Object::toString)
-                .collect(Collectors.joining("***"))));
-  }
+	/** Log every minutes */
+	@Scheduled(fixedRate = 60000)
+	public void logHazelcast() {
+		LOGGER.info(String.format("Hazelcast values for instance %s:%s", AppConfig.getInstance().getNameInstance(),
+				AppConfig.getInstance().getExternalIDCache().getAll().stream().map(Object::toString)
+						.collect(Collectors.joining("***"))));
+	}
+
 }

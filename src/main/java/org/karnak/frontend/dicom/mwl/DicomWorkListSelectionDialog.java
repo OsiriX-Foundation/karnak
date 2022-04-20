@@ -33,209 +33,203 @@ import org.karnak.frontend.component.AbstractDialog;
 
 public class DicomWorkListSelectionDialog extends AbstractDialog {
 
-  private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-  // CONTROLLER
-  private DicomWorkListSelectionLogic logic = new DicomWorkListSelectionLogic(this);
+	// CONTROLLER
+	private final DicomWorkListSelectionLogic logic = new DicomWorkListSelectionLogic(this);
 
-  // UI COMPONENTS
-  private Dialog dialog;
+	// UI COMPONENTS
+	private Dialog dialog;
 
-  private Div titleBar;
-  private FormLayout formLayout;
-  private Select<ConfigNode> worklistNodeSelector;
-  private HorizontalLayout buttonBar;
-  private Button cancelBtn;
-  private Button selectBtn;
+	private Div titleBar;
 
-  // DATA
-  private DicomNodeList workListNodes;
-  private ListDataProvider<ConfigNode> dataProviderForWorkListNodes;
+	private FormLayout formLayout;
 
-  public DicomWorkListSelectionDialog() {
-    init();
-    logic.loadDicomNodeList();
-    createMainLayout();
-    dataProviderForWorkListNodes.refreshAll();
-    selectFirstItemInWorkListNodes();
-    dialog.add(mainLayout);
-  }
+	private Select<ConfigNode> worklistNodeSelector;
 
-  @Override
-  protected void createMainLayout() {
-    mainLayout = new VerticalLayout();
-    mainLayout.setSizeFull();
-    mainLayout.setPadding(false);
-    mainLayout.setSpacing(true);
+	private HorizontalLayout buttonBar;
 
-    buildTitleBar();
-    buildFormLayout();
-    buildButtonBar();
+	private Button cancelBtn;
 
-    mainLayout.add(titleBar, formLayout, buttonBar);
-  }
+	private Button selectBtn;
 
-  public void open() {
-    dialog.open();
-  }
+	// DATA
+	private DicomNodeList workListNodes;
 
-  public void loadWorkListNodes(DicomNodeList workListNodes) {
-    this.workListNodes.clear();
+	private ListDataProvider<ConfigNode> dataProviderForWorkListNodes;
 
-    if (workListNodes != null && !workListNodes.isEmpty()) {
-      this.workListNodes.addAll(workListNodes);
-      this.workListNodes.sort(Comparator.comparing(ConfigNode::getName));
-    }
-  }
+	public DicomWorkListSelectionDialog() {
+		init();
+		logic.loadDicomNodeList();
+		createMainLayout();
+		dataProviderForWorkListNodes.refreshAll();
+		selectFirstItemInWorkListNodes();
+		dialog.add(mainLayout);
+	}
 
-  // LISTENERS
-  public Registration addWorkListSelectionListener(
-      ComponentEventListener<WorkListSelectionEvent> listener) {
-    return addListener(WorkListSelectionEvent.class, listener);
-  }
+	@Override
+	protected void createMainLayout() {
+		mainLayout = new VerticalLayout();
+		mainLayout.setSizeFull();
+		mainLayout.setPadding(false);
+		mainLayout.setSpacing(true);
 
-  private void init() {
-    dialog = this.getContent();
+		buildTitleBar();
+		buildFormLayout();
+		buildButtonBar();
 
-    workListNodes = new DicomNodeList("Worklists");
-    buildDataProvider();
-  }
+		mainLayout.add(titleBar, formLayout, buttonBar);
+	}
 
-  @SuppressWarnings("serial")
-  private void buildDataProvider() {
-    dataProviderForWorkListNodes = new ListDataProvider<>(workListNodes);
+	public void open() {
+		dialog.open();
+	}
 
-    dataProviderForWorkListNodes.addDataProviderListener(
-        new DataProviderListener<ConfigNode>() {
+	public void loadWorkListNodes(DicomNodeList workListNodes) {
+		this.workListNodes.clear();
 
-          @Override
-          public void onDataChange(DataChangeEvent<ConfigNode> event) {
-            selectFirstItemInWorkListNodes();
-          }
-        });
-  }
+		if (workListNodes != null && !workListNodes.isEmpty()) {
+			this.workListNodes.addAll(workListNodes);
+			this.workListNodes.sort(Comparator.comparing(ConfigNode::getName));
+		}
+	}
 
-  private void buildTitleBar() {
-    titleBar = new Div();
-    titleBar.setText("Worklist Selection");
-    titleBar.getStyle().set("font-weight", "500");
-  }
+	// LISTENERS
+	public Registration addWorkListSelectionListener(ComponentEventListener<WorkListSelectionEvent> listener) {
+		return addListener(WorkListSelectionEvent.class, listener);
+	}
 
-  private void buildFormLayout() {
-    formLayout = new FormLayout();
-    formLayout.setSizeFull();
+	private void init() {
+		dialog = this.getContent();
 
-    buildWorklistNodeSelector();
+		workListNodes = new DicomNodeList("Worklists");
+		buildDataProvider();
+	}
 
-    formLayout.add(worklistNodeSelector);
-  }
+	@SuppressWarnings("serial")
+	private void buildDataProvider() {
+		dataProviderForWorkListNodes = new ListDataProvider<>(workListNodes);
 
-  private void buildWorklistNodeSelector() {
-    worklistNodeSelector = new Select<>();
-    worklistNodeSelector.setLabel("Worklist Node");
-    worklistNodeSelector.setDataProvider(dataProviderForWorkListNodes);
-    worklistNodeSelector.setItemLabelGenerator(
-        item ->
-            item.getName()
-                + " ["
-                + item.getAet()
-                + " | "
-                + item.getHostname()
-                + " | "
-                + item.getPort()
-                + "]");
-    worklistNodeSelector.setRenderer(buildDicomNodeRenderer());
-  }
+		dataProviderForWorkListNodes.addDataProviderListener(new DataProviderListener<ConfigNode>() {
 
-  private ComponentRenderer<Div, ConfigNode> buildDicomNodeRenderer() {
-    return new ComponentRenderer<Div, ConfigNode>(
-        item -> {
-          Div div = new Div();
-          div.getStyle().set("line-height", "92%");
+			@Override
+			public void onDataChange(DataChangeEvent<ConfigNode> event) {
+				selectFirstItemInWorkListNodes();
+			}
+		});
+	}
 
-          Span spanDescription = new Span(item.getName());
-          spanDescription.getStyle().set("font-weight", "500");
+	private void buildTitleBar() {
+		titleBar = new Div();
+		titleBar.setText("Worklist Selection");
+		titleBar.getStyle().set("font-weight", "500");
+	}
 
-          HtmlComponent htmlLineBreak = new HtmlComponent("BR");
+	private void buildFormLayout() {
+		formLayout = new FormLayout();
+		formLayout.setSizeFull();
 
-          Span spanOtherAttributes =
-              new Span(item.getAet() + " | " + item.getHostname() + " | " + item.getPort());
-          spanOtherAttributes.getStyle().set("font-size", "75%");
+		buildWorklistNodeSelector();
 
-          div.add(spanDescription, htmlLineBreak, spanOtherAttributes);
+		formLayout.add(worklistNodeSelector);
+	}
 
-          return div;
-        });
-  }
+	private void buildWorklistNodeSelector() {
+		worklistNodeSelector = new Select<>();
+		worklistNodeSelector.setLabel("Worklist Node");
+		worklistNodeSelector.setDataProvider(dataProviderForWorkListNodes);
+		worklistNodeSelector.setItemLabelGenerator(item -> item.getName() + " [" + item.getAet() + " | "
+				+ item.getHostname() + " | " + item.getPort() + "]");
+		worklistNodeSelector.setRenderer(buildDicomNodeRenderer());
+	}
 
-  private void selectFirstItemInWorkListNodes() {
-    if (workListNodes != null && !workListNodes.isEmpty()) {
-      worklistNodeSelector.setValue(workListNodes.get(0));
-    }
-  }
+	private ComponentRenderer<Div, ConfigNode> buildDicomNodeRenderer() {
+		return new ComponentRenderer<Div, ConfigNode>(item -> {
+			Div div = new Div();
+			div.getStyle().set("line-height", "92%");
 
-  private void buildButtonBar() {
-    buttonBar = new HorizontalLayout();
-    buttonBar.setWidthFull();
-    buttonBar.setPadding(false);
-    buttonBar.setSpacing(true);
+			Span spanDescription = new Span(item.getName());
+			spanDescription.getStyle().set("font-weight", "500");
 
-    buildCancelBtn();
-    buildSelectBtn();
+			HtmlComponent htmlLineBreak = new HtmlComponent("BR");
 
-    buttonBar.add(cancelBtn, selectBtn);
-  }
+			Span spanOtherAttributes = new Span(item.getAet() + " | " + item.getHostname() + " | " + item.getPort());
+			spanOtherAttributes.getStyle().set("font-size", "75%");
 
-  @SuppressWarnings("serial")
-  private void buildCancelBtn() {
-    cancelBtn = new Button("Cancel");
+			div.add(spanDescription, htmlLineBreak, spanOtherAttributes);
 
-    cancelBtn.addClickListener(
-        new ComponentEventListener<ClickEvent<Button>>() {
+			return div;
+		});
+	}
 
-          @Override
-          public void onComponentEvent(ClickEvent<Button> event) {
-            dialog.close();
-          }
-        });
-  }
+	private void selectFirstItemInWorkListNodes() {
+		if (workListNodes != null && !workListNodes.isEmpty()) {
+			worklistNodeSelector.setValue(workListNodes.get(0));
+		}
+	}
 
-  @SuppressWarnings("serial")
-  private void buildSelectBtn() {
-    selectBtn = new Button("Select");
-    selectBtn.addClassName("stroked-button");
+	private void buildButtonBar() {
+		buttonBar = new HorizontalLayout();
+		buttonBar.setWidthFull();
+		buttonBar.setPadding(false);
+		buttonBar.setSpacing(true);
 
-    selectBtn.addClickListener(
-        new ComponentEventListener<ClickEvent<Button>>() {
+		buildCancelBtn();
+		buildSelectBtn();
 
-          @Override
-          public void onComponentEvent(ClickEvent<Button> event) {
-            fireWorkListSelectionEvent();
-            dialog.close();
-          }
-        });
-  }
+		buttonBar.add(cancelBtn, selectBtn);
+	}
 
-  private void fireWorkListSelectionEvent() {
-    ConfigNode selectedWorkList = worklistNodeSelector.getValue();
-    fireEvent(new WorkListSelectionEvent(this, false, selectedWorkList));
-  }
+	@SuppressWarnings("serial")
+	private void buildCancelBtn() {
+		cancelBtn = new Button("Cancel");
 
-  public class WorkListSelectionEvent extends ComponentEvent<DicomWorkListSelectionDialog> {
+		cancelBtn.addClickListener(new ComponentEventListener<ClickEvent<Button>>() {
 
-    private static final long serialVersionUID = 1L;
+			@Override
+			public void onComponentEvent(ClickEvent<Button> event) {
+				dialog.close();
+			}
+		});
+	}
 
-    private final ConfigNode selectedWorkList;
+	@SuppressWarnings("serial")
+	private void buildSelectBtn() {
+		selectBtn = new Button("Select");
+		selectBtn.addClassName("stroked-button");
 
-    public WorkListSelectionEvent(
-        DicomWorkListSelectionDialog source, boolean fromClient, ConfigNode selectedWorkList) {
-      super(source, fromClient);
+		selectBtn.addClickListener(new ComponentEventListener<ClickEvent<Button>>() {
 
-      this.selectedWorkList = selectedWorkList;
-    }
+			@Override
+			public void onComponentEvent(ClickEvent<Button> event) {
+				fireWorkListSelectionEvent();
+				dialog.close();
+			}
+		});
+	}
 
-    public ConfigNode getSelectedWorkList() {
-      return selectedWorkList;
-    }
-  }
+	private void fireWorkListSelectionEvent() {
+		ConfigNode selectedWorkList = worklistNodeSelector.getValue();
+		fireEvent(new WorkListSelectionEvent(this, false, selectedWorkList));
+	}
+
+	public class WorkListSelectionEvent extends ComponentEvent<DicomWorkListSelectionDialog> {
+
+		private static final long serialVersionUID = 1L;
+
+		private final ConfigNode selectedWorkList;
+
+		public WorkListSelectionEvent(DicomWorkListSelectionDialog source, boolean fromClient,
+				ConfigNode selectedWorkList) {
+			super(source, fromClient);
+
+			this.selectedWorkList = selectedWorkList;
+		}
+
+		public ConfigNode getSelectedWorkList() {
+			return selectedWorkList;
+		}
+
+	}
+
 }

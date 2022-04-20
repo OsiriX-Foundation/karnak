@@ -19,41 +19,45 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "mainzelliste")
 public class MainzellisteConfig {
 
-  private static MainzellisteConfig instance;
-  private String apikey;
-  private String serverurl;
-  private String idtypes;
+	private static MainzellisteConfig instance;
 
-  public static MainzellisteConfig getInstance() {
-    return instance;
-  }
+	private String apikey;
 
-  @PostConstruct
-  public void postConstruct() {
-    instance = this;
-  }
+	private String serverurl;
 
-  public String getApikey() {
-    return apikey;
-  }
+	private String idtypes;
 
-  public void setApikey(String apikey) {
-    this.apikey = apikey;
-  }
+	public static MainzellisteConfig getInstance() {
+		return instance;
+	}
 
-  public String getServerurl() {
-    return serverurl;
-  }
+	@PostConstruct
+	public void postConstruct() {
+		instance = this;
+	}
 
-  public void setServerurl(String serverurl) {
-    this.serverurl = serverurl;
-  }
+	public String getApikey() {
+		return apikey;
+	}
 
-  public String getIdtypes() {
-    return idtypes;
-  }
+	public void setApikey(String apikey) {
+		this.apikey = apikey;
+	}
 
-  public void setIdtypes(String idtypes) {
-    this.idtypes = idtypes;
-  }
+	public String getServerurl() {
+		return serverurl;
+	}
+
+	public void setServerurl(String serverurl) {
+		this.serverurl = serverurl;
+	}
+
+	public String getIdtypes() {
+		return idtypes;
+	}
+
+	public void setIdtypes(String idtypes) {
+		this.idtypes = idtypes;
+	}
+
 }

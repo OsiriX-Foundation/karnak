@@ -27,149 +27,143 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 @DataJpaTest
 class SecretRepoTest {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(SecretRepoTest.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SecretRepoTest.class);
 
-  @Autowired private SecretRepo repository;
+	@Autowired
+	private SecretRepo repository;
 
-  @Autowired private ProjectRepo projectRepo;
+	@Autowired
+	private ProjectRepo projectRepo;
 
-  /**
-   * Add a Secret entity in Db
-   *
-   * @param projectEntity Project to link
-   * @return Secret saved
-   */
-  private SecretEntity addSecretEntityInDb(ProjectEntity projectEntity) {
-    SecretEntity entity = new SecretEntity();
-    entity.setProjectEntity(projectEntity);
+	/**
+	 * Add a Secret entity in Db
+	 * @param projectEntity Project to link
+	 * @return Secret saved
+	 */
+	private SecretEntity addSecretEntityInDb(ProjectEntity projectEntity) {
+		SecretEntity entity = new SecretEntity();
+		entity.setProjectEntity(projectEntity);
 
-    // Save the entity
-    LOGGER.info(
-        "Saving entity with Project [{}]",
-        "%d|%s".formatted(entity.getProjectEntity().getId(), entity.getProjectEntity().getName()));
-    entity = repository.saveAndFlush(entity);
-    return entity;
-  }
+		// Save the entity
+		LOGGER.info("Saving entity with Project [{}]",
+				"%d|%s".formatted(entity.getProjectEntity().getId(), entity.getProjectEntity().getName()));
+		entity = repository.saveAndFlush(entity);
+		return entity;
+	}
 
-  /**
-   * Add project in Db
-   *
-   * @return project saved
-   */
-  private ProjectEntity addProjectEntityInDb() {
-    ProjectEntity projectEntity = new ProjectEntity();
-    projectEntity.setName("projectName");
-    ProjectEntity projectEntitySaved = projectRepo.saveAndFlush(projectEntity);
-    return projectEntitySaved;
-  }
+	/**
+	 * Add project in Db
+	 * @return project saved
+	 */
+	private ProjectEntity addProjectEntityInDb() {
+		ProjectEntity projectEntity = new ProjectEntity();
+		projectEntity.setName("projectName");
+		ProjectEntity projectEntitySaved = projectRepo.saveAndFlush(projectEntity);
+		return projectEntitySaved;
+	}
 
-  /** Test save and find record. */
-  @Test
-  void shouldSaveAndFindARecord() {
-    // Create an entity to save
-    ProjectEntity projectEntitySaved = addProjectEntityInDb();
-    SecretEntity entity = addSecretEntityInDb(projectEntitySaved);
+	/** Test save and find record. */
+	@Test
+	void shouldSaveAndFindARecord() {
+		// Create an entity to save
+		ProjectEntity projectEntitySaved = addProjectEntityInDb();
+		SecretEntity entity = addSecretEntityInDb(projectEntitySaved);
 
-    // Test Save
-    assertEquals(projectEntitySaved.getId(), entity.getProjectEntity().getId());
-    assertEquals("projectName", entity.getProjectEntity().getName());
-    assertNotNull(entity.getId());
-    LOGGER.info(
-        "Entity with Project [{}] and id [{}] saved",
-        "%d|%s".formatted(entity.getProjectEntity().getId(), entity.getProjectEntity().getName()),
-        entity.getId());
+		// Test Save
+		assertEquals(projectEntitySaved.getId(), entity.getProjectEntity().getId());
+		assertEquals("projectName", entity.getProjectEntity().getName());
+		assertNotNull(entity.getId());
+		LOGGER.info("Entity with Project [{}] and id [{}] saved",
+				"%d|%s".formatted(entity.getProjectEntity().getId(), entity.getProjectEntity().getName()),
+				entity.getId());
 
-    // Find By Id
-    Optional<SecretEntity> foundByIdOpt = repository.findById(entity.getId());
+		// Find By Id
+		Optional<SecretEntity> foundByIdOpt = repository.findById(entity.getId());
 
-    // Test Find by Id
-    assertTrue(foundByIdOpt.isPresent());
-    SecretEntity secretEntityFound = foundByIdOpt.get();
-    LOGGER.info(
-        "Entity found with Project [{}] and id [{}]",
-        "%d|%s"
-            .formatted(
-                secretEntityFound.getProjectEntity().getId(),
-                secretEntityFound.getProjectEntity().getName()),
-        secretEntityFound.getId());
-    assertEquals(entity.getId(), secretEntityFound.getId());
-  }
+		// Test Find by Id
+		assertTrue(foundByIdOpt.isPresent());
+		SecretEntity secretEntityFound = foundByIdOpt.get();
+		LOGGER.info("Entity found with Project [{}] and id [{}]",
+				"%d|%s".formatted(secretEntityFound.getProjectEntity().getId(),
+						secretEntityFound.getProjectEntity().getName()),
+				secretEntityFound.getId());
+		assertEquals(entity.getId(), secretEntityFound.getId());
+	}
 
-  /** Test find all. */
-  @Test
-  void shouldFindAllRecords() {
-    // Create an entity to save
-    ProjectEntity projectEntitySaved = addProjectEntityInDb();
-    SecretEntity entity = addSecretEntityInDb(projectEntitySaved);
+	/** Test find all. */
+	@Test
+	void shouldFindAllRecords() {
+		// Create an entity to save
+		ProjectEntity projectEntitySaved = addProjectEntityInDb();
+		SecretEntity entity = addSecretEntityInDb(projectEntitySaved);
 
-    // Find all
-    List<SecretEntity> all = repository.findAll();
+		// Find all
+		List<SecretEntity> all = repository.findAll();
 
-    // Test find all
-    assertNotNull(all);
-    assertTrue(all.size() > 0);
-    assertEquals(1, all.size());
-    LOGGER.info("Number of entities found [{}]", all.size());
-  }
+		// Test find all
+		assertNotNull(all);
+		assertTrue(all.size() > 0);
+		assertEquals(1, all.size());
+		LOGGER.info("Number of entities found [{}]", all.size());
+	}
 
-  /** Test modification of a record. */
-  @Test
-  void shouldModifyRecord() {
+	/** Test modification of a record. */
+	@Test
+	void shouldModifyRecord() {
 
-    String initialText = "InitialText";
-    String modifiedText = "ModifiedText";
+		String initialText = "InitialText";
+		String modifiedText = "ModifiedText";
 
-    // Create an entity to save
-    ProjectEntity projectEntitySaved = addProjectEntityInDb();
-    SecretEntity entity = addSecretEntityInDb(projectEntitySaved);
-    entity.getProjectEntity().setName(initialText);
+		// Create an entity to save
+		ProjectEntity projectEntitySaved = addProjectEntityInDb();
+		SecretEntity entity = addSecretEntityInDb(projectEntitySaved);
+		entity.getProjectEntity().setName(initialText);
 
-    // Save the entity
-    LOGGER.info("Saving entity with project name [{}]", entity.getProjectEntity().getName());
-    entity = repository.save(entity);
-    LOGGER.info("Id of the entity with project name [{}]", entity.getProjectEntity().getName());
+		// Save the entity
+		LOGGER.info("Saving entity with project name [{}]", entity.getProjectEntity().getName());
+		entity = repository.save(entity);
+		LOGGER.info("Id of the entity with project name [{}]", entity.getProjectEntity().getName());
 
-    // Test Save
-    assertNotNull(entity);
-    assertEquals(initialText, entity.getProjectEntity().getName());
+		// Test Save
+		assertNotNull(entity);
+		assertEquals(initialText, entity.getProjectEntity().getName());
 
-    // Modify the record
-    entity.getProjectEntity().setName(modifiedText);
-    LOGGER.info("Modify entity project name [{}] to [{}]", initialText, modifiedText);
-    SecretEntity entityModified = repository.save(entity);
+		// Modify the record
+		entity.getProjectEntity().setName(modifiedText);
+		LOGGER.info("Modify entity project name [{}] to [{}]", initialText, modifiedText);
+		SecretEntity entityModified = repository.save(entity);
 
-    // Test Modify
-    assertNotNull(entityModified);
-    assertEquals(entity.getId(), entityModified.getId());
-    assertEquals(modifiedText, entityModified.getProjectEntity().getName());
-    LOGGER.info(
-        "Project name of the entity with id [{}]: [{}]",
-        entityModified.getId(),
-        entityModified.getProjectEntity().getName());
-  }
+		// Test Modify
+		assertNotNull(entityModified);
+		assertEquals(entity.getId(), entityModified.getId());
+		assertEquals(modifiedText, entityModified.getProjectEntity().getName());
+		LOGGER.info("Project name of the entity with id [{}]: [{}]", entityModified.getId(),
+				entityModified.getProjectEntity().getName());
+	}
 
-  /** Test delete record. */
-  @Test
-  void shouldDeleteRecord() {
-    // Create an entity to save
-    ProjectEntity projectEntitySaved = addProjectEntityInDb();
-    SecretEntity entity = addSecretEntityInDb(projectEntitySaved);
+	/** Test delete record. */
+	@Test
+	void shouldDeleteRecord() {
+		// Create an entity to save
+		ProjectEntity projectEntitySaved = addProjectEntityInDb();
+		SecretEntity entity = addSecretEntityInDb(projectEntitySaved);
 
-    // Retrieve the entity
-    Optional<SecretEntity> foundByIdOpt = repository.findById(entity.getId());
+		// Retrieve the entity
+		Optional<SecretEntity> foundByIdOpt = repository.findById(entity.getId());
 
-    // Test Find by Id
-    assertTrue(foundByIdOpt.isPresent());
+		// Test Find by Id
+		assertTrue(foundByIdOpt.isPresent());
 
-    // Delete the entity
-    entity = foundByIdOpt.get();
-    Long id = entity.getId();
-    LOGGER.info("Deleting entity with id [{}]", id);
-    repository.delete(entity);
+		// Delete the entity
+		entity = foundByIdOpt.get();
+		Long id = entity.getId();
+		LOGGER.info("Deleting entity with id [{}]", id);
+		repository.delete(entity);
 
-    // Test Delete
-    foundByIdOpt = repository.findById(id);
-    LOGGER.info("Is deleted entity with id [{}] present: [{}]", id, foundByIdOpt.isPresent());
-    assertFalse(foundByIdOpt.isPresent());
-  }
+		// Test Delete
+		foundByIdOpt = repository.findById(id);
+		LOGGER.info("Is deleted entity with id [{}] present: [{}]", id, foundByIdOpt.isPresent());
+		assertFalse(foundByIdOpt.isPresent());
+	}
+
 }

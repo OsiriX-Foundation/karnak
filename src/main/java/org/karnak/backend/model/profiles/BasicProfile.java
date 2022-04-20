@@ -20,29 +20,30 @@ import org.karnak.backend.model.standard.ConfidentialityProfiles;
 
 public class BasicProfile extends AbstractProfileItem {
 
-  private final List<ProfileItem> listProfiles;
-  private final TagActionMap actionMap;
+	private final List<ProfileItem> listProfiles;
 
-  public BasicProfile(ProfileElementEntity profileElementEntity) {
-    super(profileElementEntity);
-    ConfidentialityProfiles confidentialityProfiles =
-        AppConfig.getInstance().getConfidentialityProfile();
-    actionMap = confidentialityProfiles.getActionMap();
-    listProfiles = confidentialityProfiles.getListProfiles();
-  }
+	private final TagActionMap actionMap;
 
-  @Override
-  public ActionItem getAction(Attributes dcm, Attributes dcmCopy, int tag, HMAC hmac) {
-    ActionItem action = actionMap.get(tag);
-    if (action == null) {
-      for (ProfileItem p : listProfiles) {
-        ActionItem val = p.getAction(dcm, dcmCopy, tag, hmac);
-        if (val != null) {
-          return val;
-        }
-      }
-      return null;
-    }
-    return action;
-  }
+	public BasicProfile(ProfileElementEntity profileElementEntity) {
+		super(profileElementEntity);
+		ConfidentialityProfiles confidentialityProfiles = AppConfig.getInstance().getConfidentialityProfile();
+		actionMap = confidentialityProfiles.getActionMap();
+		listProfiles = confidentialityProfiles.getListProfiles();
+	}
+
+	@Override
+	public ActionItem getAction(Attributes dcm, Attributes dcmCopy, int tag, HMAC hmac) {
+		ActionItem action = actionMap.get(tag);
+		if (action == null) {
+			for (ProfileItem p : listProfiles) {
+				ActionItem val = p.getAction(dcm, dcmCopy, tag, hmac);
+				if (val != null) {
+					return val;
+				}
+			}
+			return null;
+		}
+		return action;
+	}
+
 }

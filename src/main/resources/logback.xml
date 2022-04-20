@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <property name="LOGS" value="logs"/>
+  <appender name="DEV_OUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <Pattern>%black(%d{ISO8601}) %highlight(%-5level) %marker %highlight(%X{SOPInstanceUID}) %highlight(%X{issuerOfPatientID}) %highlight(%X{PatientID}) [%yellow(%t)] %yellow(%C{1.}): %msg%n%throwable</Pattern>
+    </encoder>
+  </appender>
+  <root level="info">
+    <appender-ref ref="DEV_OUT"/>
+  </root>
+  <logger name="org.weasis" level="debug"/>
+  <logger name="org.dcm4che6" level="debug"/>
+  <logger name="org.karnak" level="debug"/>
+</configuration>

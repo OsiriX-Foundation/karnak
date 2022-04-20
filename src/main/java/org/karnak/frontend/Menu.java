@@ -32,64 +32,65 @@ import org.karnak.frontend.util.ToggleButtonTheme;
 @SuppressWarnings("serial")
 public class Menu extends FlexLayout {
 
-  private static final String SHOW_TABS = "show-tabs";
-  private final ToggleButtonTheme toggleButtonTheme;
-  private Tabs tabs;
-  private RadioButtonGroup<String> radioGroup;
+	private static final String SHOW_TABS = "show-tabs";
 
-  public Menu() {
-    setClassName("menu-bar");
+	private final ToggleButtonTheme toggleButtonTheme;
 
-    // Button for toggling the menu visibility on small screens
-    final Button showMenu =
-        new Button(
-            "Menu",
-            event -> {
-              if (tabs.getClassNames().contains(SHOW_TABS)) {
-                tabs.removeClassName(SHOW_TABS);
-              } else {
-                tabs.addClassName(SHOW_TABS);
-              }
-            });
-    showMenu.setClassName("menu-button");
-    showMenu.addThemeVariants(ButtonVariant.LUMO_SMALL);
-    showMenu.setIcon(new Icon(VaadinIcon.MENU));
-    add(showMenu);
+	private Tabs tabs;
 
-    // container for the navigation buttons, which are added by addView()
-    tabs = new Tabs();
-    tabs.setOrientation(Tabs.Orientation.VERTICAL);
-    setFlexGrow(1, tabs);
-    add(tabs);
+	private RadioButtonGroup<String> radioGroup;
 
-    // theme
-    toggleButtonTheme = new ToggleButtonTheme();
-    VerticalLayout themeLayout = new VerticalLayout(toggleButtonTheme);
-    themeLayout.getElement().getStyle().set("align-items", "center");
-    add(themeLayout);
+	public Menu() {
+		setClassName("menu-bar");
 
-    // logout menu item
-    Button logoutButton = new Button("Logout", VaadinIcon.SIGN_OUT.create());
-    logoutButton.addClickListener(event -> SecurityUtil.signOut());
+		// Button for toggling the menu visibility on small screens
+		final Button showMenu = new Button("Menu", event -> {
+			if (tabs.getClassNames().contains(SHOW_TABS)) {
+				tabs.removeClassName(SHOW_TABS);
+			}
+			else {
+				tabs.addClassName(SHOW_TABS);
+			}
+		});
+		showMenu.setClassName("menu-button");
+		showMenu.addThemeVariants(ButtonVariant.LUMO_SMALL);
+		showMenu.setIcon(new Icon(VaadinIcon.MENU));
+		add(showMenu);
 
-    logoutButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
-    add(logoutButton);
-  }
+		// container for the navigation buttons, which are added by addView()
+		tabs = new Tabs();
+		tabs.setOrientation(Tabs.Orientation.VERTICAL);
+		setFlexGrow(1, tabs);
+		add(tabs);
 
-  /**
-   * Add a view to the navigation menu
-   *
-   * @param viewClass that has a {@code Route} annotation
-   * @param caption view caption in the menu
-   * @param icon view icon in the menu
-   */
-  public void addView(Class<? extends Component> viewClass, String caption, IronIcon icon) {
-    Tab tab = new Tab();
-    RouterLink routerLink = new RouterLink(null, viewClass);
-    routerLink.setClassName("menu-link");
-    routerLink.add(icon);
-    routerLink.add(new Span(caption));
-    tab.add(routerLink);
-    tabs.add(tab);
-  }
+		// theme
+		toggleButtonTheme = new ToggleButtonTheme();
+		VerticalLayout themeLayout = new VerticalLayout(toggleButtonTheme);
+		themeLayout.getElement().getStyle().set("align-items", "center");
+		add(themeLayout);
+
+		// logout menu item
+		Button logoutButton = new Button("Logout", VaadinIcon.SIGN_OUT.create());
+		logoutButton.addClickListener(event -> SecurityUtil.signOut());
+
+		logoutButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
+		add(logoutButton);
+	}
+
+	/**
+	 * Add a view to the navigation menu
+	 * @param viewClass that has a {@code Route} annotation
+	 * @param caption view caption in the menu
+	 * @param icon view icon in the menu
+	 */
+	public void addView(Class<? extends Component> viewClass, String caption, IronIcon icon) {
+		Tab tab = new Tab();
+		RouterLink routerLink = new RouterLink(null, viewClass);
+		routerLink.setClassName("menu-link");
+		routerLink.add(icon);
+		routerLink.add(new Span(caption));
+		tab.add(routerLink);
+		tabs.add(tab);
+	}
+
 }

@@ -1,8 +1,16 @@
 #  --------------------------------------------------------
 #  Karnak Application Profiles
 #  --------------------------------------------------------
-name: KARNAK-Profile
-environment: LOCAL
+# - Info
+info:
+  component: Karnak
+  app:
+    name: Karnak
+    description: Karnak
+#  environment: ${ENVIRONMENT}
+
+#name: KARNAK-Profile
+#environment: DEV
 karnakadmin: ${KARNAK_ADMIN:admin}
 karnakpassword: ${KARNAK_PASSWORD:admin}
 mainzelliste:
@@ -63,5 +71,27 @@ spring:
       jdbc:
         lob:
           non_contextual_creation: true
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: config-server
+      fail-fast: true
+      name: ${spring.application.name}
+#      label: ${ENVIRONMENT}
+  config:
+    import: 'configserver:'
+  main:
+#    web-application-type: servlet
+    allow-bean-definition-overriding: true
+
+# - Eureka
+eureka:
+  client:
+    fetch-registry: true
+    register-with-eureka: false
+    service-url:
+      defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
+
 monitoring:
   max-history: 150000
