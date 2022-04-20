@@ -88,9 +88,9 @@ public class GatewayService implements ApplicationListener<ContextRefreshedEvent
 
 		LOGGER.info("{}", "Gateway has been stopped");
 		String dir = System.getProperty("dicom.native.codec");
-//		if (StringUtil.hasText(dir)) {
-//			FileUtil.delete(new File(dir));
-//		}
+		// if (StringUtil.hasText(dir)) {
+		// FileUtil.delete(new File(dir));
+		// }
 	}
 
 	@PostConstruct
