@@ -7,10 +7,10 @@ info:
   app:
     name: Karnak
     description: Karnak
-  environment: ${ENVIRONMENT}
+#  environment: ${ENVIRONMENT}
 
-name: KARNAK-Profile
-environment: LOCAL
+#name: KARNAK-Profile
+#environment: DEV
 karnakadmin: ${KARNAK_ADMIN:admin}
 karnakpassword: ${KARNAK_PASSWORD:admin}
 mainzelliste:
@@ -74,11 +74,11 @@ spring:
   cloud:
     config:
       discovery:
-        enabled: false
+        enabled: true
         service-id: config-server
       fail-fast: true
       name: ${spring.application.name}
-      label: ${ENVIRONMENT}
+#      label: ${ENVIRONMENT}
   config:
     import: 'configserver:'
   main:
