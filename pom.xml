@@ -81,6 +81,10 @@
   <!-- Repositories -->
   <repositories>
     <repository>
+      <id>mvn-repo-master</id>
+      <url>https://raw.github.com/nroduit/mvn-repo/master/</url>
+    </repository>
+    <repository>
       <id>HUG_Nexus3</id>
       <name>Nexus3-hug</name>
       <url>http://nxrm.hcuge.ch:8091/repository/maven-public/</url>
@@ -94,10 +98,7 @@
         <updatePolicy>always</updatePolicy>
       </releases>
     </repository>
-    <repository>
-      <id>mvn-repo-master</id>
-      <url>https://raw.github.com/nroduit/mvn-repo/master/</url>
-    </repository>
+
     <repository>
       <id>www.dcm4che.org</id>
       <name>dcm4che Repository</name>
