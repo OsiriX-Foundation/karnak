@@ -81,11 +81,11 @@
   <!-- Repositories -->
   <repositories>
     <repository>
-      <id>mvn-repo-master</id>
+      <id>2_mvn-repo-master</id>
       <url>https://raw.github.com/nroduit/mvn-repo/master/</url>
     </repository>
     <repository>
-      <id>HUG_Nexus3</id>
+      <id>1_HUG_Nexus3</id>
       <name>Nexus3-hug</name>
       <url>http://nxrm.hcuge.ch:8091/repository/maven-public/</url>
       <layout>default</layout>
