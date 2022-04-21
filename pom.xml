@@ -66,39 +66,52 @@
   </properties>
 
 <!--   Distribution management for releases/snapshots -->
-<!--  <distributionManagement>-->
-<!--    <repository>-->
-<!--      <id>dsi-releases</id>-->
-<!--      <name>Nexus3-hug - release</name>-->
-<!--      <url>http://nxrm.hcuge.ch:8091/repository/maven-releases/</url>-->
-<!--    </repository>-->
-<!--    <snapshotRepository>-->
-<!--      <id>dsi-snapshots</id>-->
-<!--      <name>Nexus3-hug - snapshot</name>-->
-<!--      <url>http://nxrm.hcuge.ch:8091/repository/maven-snapshots/</url>-->
-<!--    </snapshotRepository>-->
-<!--  </distributionManagement>-->
+  <distributionManagement>
+    <repository>
+      <id>dsi-releases</id>
+      <name>Nexus3-hug - release</name>
+      <url>http://nxrm.hcuge.ch:8091/repository/maven-releases/</url>
+    </repository>
+    <snapshotRepository>
+      <id>dsi-snapshots</id>
+      <name>Nexus3-hug - snapshot</name>
+      <url>http://nxrm.hcuge.ch:8091/repository/maven-snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
 
   <!-- Repositories -->
   <repositories>
     <repository>
+      <id>HUG_Nexus3</id>
+      <name>Nexus3-hug</name>
+      <url>http://nxrm.hcuge.ch:8091/repository/maven-public/</url>
+      <layout>default</layout>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </snapshots>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </releases>
+    </repository>
+    <repository>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>daily</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </snapshots>
+      <id>HUG2</id>
+      <name>Nexus3-hug</name>
+      <url>http://vmcebu.hcuge.ch:8091/repository/maven-public/</url>
+    </repository>
+    <repository>
       <id>mvn-repo-master</id>
       <url>https://raw.github.com/nroduit/mvn-repo/master/</url>
     </repository>
-<!--    <repository>-->
-<!--      <id>HUG_Nexus3</id>-->
-<!--      <name>Nexus3-hug</name>-->
-<!--      <url>http://nxrm.hcuge.ch:8091/repository/maven-public/</url>-->
-<!--      <layout>default</layout>-->
-<!--      <snapshots>-->
-<!--        <enabled>true</enabled>-->
-<!--        <updatePolicy>always</updatePolicy>-->
-<!--      </snapshots>-->
-<!--      <releases>-->
-<!--        <enabled>true</enabled>-->
-<!--        <updatePolicy>always</updatePolicy>-->
-<!--      </releases>-->
-<!--    </repository>-->
 
     <repository>
       <id>www.dcm4che.org</id>
