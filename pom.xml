@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
+  <modelVersion>4.0.0</modelVersion>
 
   <!-- Pom Parent -->
   <parent>
@@ -14,7 +14,6 @@
 
   <artifactId>karnak</artifactId>
   <name>${project.artifactId}</name>
-  <modelVersion>4.0.0</modelVersion>
   <groupId>org.karnak</groupId>
   <licenses>
     <license>
@@ -65,48 +64,48 @@
     <opencsv.version>5.5.2</opencsv.version>
   </properties>
 
-  <!-- Distribution management for releases/snapshots -->
-<!--  <distributionManagement>-->
-<!--    <repository>-->
-<!--      <id>dsi-releases</id>-->
-<!--      <name>Nexus3-hug - release</name>-->
-<!--      <url>http://nxrm.hcuge.ch:8091/repository/maven-releases/</url>-->
-<!--    </repository>-->
-<!--    <snapshotRepository>-->
-<!--      <id>dsi-snapshots</id>-->
-<!--      <name>Nexus3-hug - snapshot</name>-->
-<!--      <url>http://nxrm.hcuge.ch:8091/repository/maven-snapshots/</url>-->
-<!--    </snapshotRepository>-->
-<!--  </distributionManagement>-->
+<!--   Distribution management for releases/snapshots -->
+  <distributionManagement>
+    <repository>
+      <id>dsi-releases</id>
+      <name>Nexus3-hug - release</name>
+      <url>http://nxrm.hcuge.ch:8091/repository/maven-releases/</url>
+    </repository>
+    <snapshotRepository>
+      <id>dsi-snapshots</id>
+      <name>Nexus3-hug - snapshot</name>
+      <url>http://nxrm.hcuge.ch:8091/repository/maven-snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
 
-<!--  &lt;!&ndash; Repositories &ndash;&gt;-->
-<!--  <repositories>-->
-<!--    <repository>-->
-<!--      <id>HUG_Nexus3</id>-->
-<!--      <name>Nexus3-hug</name>-->
-<!--      <url>http://nxrm.hcuge.ch:8091/repository/maven-public/</url>-->
-<!--      <layout>default</layout>-->
-<!--      <snapshots>-->
-<!--        <enabled>true</enabled>-->
-<!--        <updatePolicy>always</updatePolicy>-->
-<!--      </snapshots>-->
-<!--      <releases>-->
-<!--        <enabled>true</enabled>-->
-<!--        <updatePolicy>always</updatePolicy>-->
-<!--      </releases>-->
-<!--    </repository>-->
-<!--    <repository>-->
-<!--      <id>mvn-repo-master</id>-->
-<!--      <url>https://raw.github.com/nroduit/mvn-repo/master/</url>-->
-<!--    </repository>-->
-<!--    <repository>-->
-<!--      <id>www.dcm4che.org</id>-->
-<!--      <name>dcm4che Repository</name>-->
-<!--      <url>http://maven.dcm4che.org</url>-->
-<!--      &lt;!&ndash; <url>http://www.dcm4che.org/maven2</url> (which will redirected to-->
-<!--        https://www.dcm4che.org/maven2). &ndash;&gt;-->
-<!--    </repository>-->
-<!--  </repositories>-->
+  <!-- Repositories -->
+  <repositories>
+    <repository>
+      <id>HUG_Nexus3</id>
+      <name>Nexus3-hug</name>
+      <url>http://nxrm.hcuge.ch:8091/repository/maven-public/</url>
+      <layout>default</layout>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </snapshots>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </releases>
+    </repository>
+    <repository>
+      <id>mvn-repo-master</id>
+      <url>https://raw.github.com/nroduit/mvn-repo/master/</url>
+    </repository>
+    <repository>
+      <id>www.dcm4che.org</id>
+      <name>dcm4che Repository</name>
+      <url>http://maven.dcm4che.org</url>
+      <!-- <url>http://www.dcm4che.org/maven2</url> (which will redirected to
+        https://www.dcm4che.org/maven2). -->
+    </repository>
+  </repositories>
 
   <!-- Build-->
   <build>
