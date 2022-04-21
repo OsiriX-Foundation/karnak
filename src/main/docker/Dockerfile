@@ -3,14 +3,14 @@
 # docker build -t osirixfoundation/karnak:latest -f src/main/docker/Dockerfile .
 
 # Based on build image containing maven, jdk and git
-FROM maven:3.8-eclipse-temurin-17 as builder
+FROM maven:3.6-adoptopenjdk-15 as builder
 ARG JAR_FILE=target/karnak*.jar
 WORKDIR /app
 COPY ${JAR_FILE} application.jar
 RUN java -Djarmode=layertools -jar application.jar extract
 
 # Build the final deployment image
-FROM eclipse-temurin:17-jre-focal
+FROM adoptopenjdk:15-jre-hotspot
 WORKDIR app
 COPY --from=builder /app/dependencies/ ./
 COPY --from=builder /app/spring-boot-loader/ ./
