@@ -35,6 +35,7 @@ public class EmailConfig {
     mailSender.setPort(Integer.parseInt(mailSmtpPort));
     mailSender.setUsername(mailSmtpUser);
     mailSender.setPassword(SystemPropertyUtil.retrieveSystemProperty("MAIL_SMTP_SECRET", null));
+    mailSender.setDefaultEncoding("utf-8");
 
     // Additional properties
     Properties props = mailSender.getJavaMailProperties();
@@ -55,4 +56,5 @@ public class EmailConfig {
     }
     return mailSender;
   }
+
 }
