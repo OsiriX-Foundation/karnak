@@ -2,18 +2,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-
-  <!-- Pom Parent -->
-  <parent>
-    <groupId>ch.hcuge.springcloud</groupId>
-    <artifactId>spring-cloud-ms-dependencies</artifactId>
-    <version>2.6.6-2021.0.1-1.0</version>
-    <relativePath/> <!-- lookup parent from repository -->
-  </parent>
 
   <artifactId>karnak</artifactId>
   <name>${project.artifactId}</name>
+  <modelVersion>4.0.0</modelVersion>
   <groupId>org.karnak</groupId>
   <licenses>
     <license>
@@ -35,8 +27,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <enforcer.jdk-version>[${java.version},)</enforcer.jdk-version>
     <enforcer.maven-version>[3.2.0,)</enforcer.maven-version>
-    <java.version>15</java.version>
-<!--    <java.version>17</java.version>-->
+    <java.version>17</java.version>
     <springframework.version>2.6.6</springframework.version>
     <javax.el.version>3.0.0</javax.el.version>
     <javax.mail.version>1.6.2</javax.mail.version>
@@ -54,8 +45,7 @@
     <sonar.java.source>${java.version}</sonar.java.source>
     <sonar.java.target>${java.version}</sonar.java.target>
     <sonar.projectKey>karnak</sonar.projectKey>
-    <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/target/site/jacoco/jacoco.xml
-    </sonar.coverage.jacoco.xmlReportPaths>
+    <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
     <org.json.version>20211205</org.json.version>
     <logback.version>1.2.9</logback.version>
@@ -65,7 +55,7 @@
     <opencsv.version>5.5.2</opencsv.version>
   </properties>
 
-<!--   Distribution management for releases/snapshots -->
+  <!-- Distribution management for releases/snapshots -->
   <distributionManagement>
     <repository>
       <id>dsi-releases</id>
@@ -96,23 +86,9 @@
       </releases>
     </repository>
     <repository>
-      <releases>
-        <enabled>true</enabled>
-        <updatePolicy>daily</updatePolicy>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>always</updatePolicy>
-      </snapshots>
-      <id>HUG2</id>
-      <name>Nexus3-hug</name>
-      <url>http://vmcebu.hcuge.ch:8091/repository/maven-public/</url>
-    </repository>
-    <repository>
       <id>mvn-repo-master</id>
       <url>https://raw.github.com/nroduit/mvn-repo/master/</url>
     </repository>
-
     <repository>
       <id>www.dcm4che.org</id>
       <name>dcm4che Repository</name>
@@ -411,11 +387,60 @@
       <groupId>com.hazelcast</groupId>
       <version>${hazelcast.version}</version>
     </dependency>
+<!--    <dependency>-->
+<!--      <groupId>com.hazelcast</groupId>-->
+<!--      <artifactId>hazelcast</artifactId>-->
+<!--      <version>3.12</version>-->
+<!--    </dependency>-->
     <!-- Hazelcast for eureka discovery -->
     <dependency>
       <artifactId>hazelcast-eureka-one</artifactId>
       <groupId>com.hazelcast</groupId>
       <version>${hazelcast-eureka-one.version}</version>
+    </dependency>
+
+<!--    <dependency>-->
+<!--      <groupId>com.netflix.eureka</groupId>-->
+<!--      <artifactId>eureka-client</artifactId>-->
+<!--      <version>1.10.17</version>-->
+<!--&lt;!&ndash;      <scope>runtime</scope>&ndash;&gt;-->
+<!--    </dependency>-->
+
+<!--    <dependency>-->
+<!--      <groupId>org.springframework.cloud</groupId>-->
+<!--      <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>-->
+<!--      <version>3.1.1</version>-->
+<!--    </dependency>-->
+
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+      <version>3.1.1</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.sun.jersey</groupId>
+          <artifactId>jersey-client</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.sun.jersey</groupId>
+          <artifactId>jersey-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.sun.jersey.contribs</groupId>
+          <artifactId>jersey-apache-client4</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+<!--    <dependency>-->
+<!--      <groupId>org.springframework.cloud</groupId>-->
+<!--      <artifactId>spring-cloud-netflix-eureka-client</artifactId>-->
+<!--      <version>3.1.1</version>-->
+<!--    </dependency>-->
+    <dependency>
+      <groupId>com.netflix.eureka</groupId>
+      <artifactId>eureka-core</artifactId>
+      <version>1.10.17</version>
     </dependency>
 
     <dependency>
