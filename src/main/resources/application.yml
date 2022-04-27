@@ -146,4 +146,4 @@ management:
         '[http.server.requests]': 50ms, 150ms, 250ms, 400ms
     tags:
       application: ${spring.application.name}
-      team: ${application.team}
+#      team: ${application.team}
