@@ -45,7 +45,7 @@ spring:
 #    active: '@activatedProperties@, docker, service'
 #    active: '@activatedProperties@, eureka, service, without_bus'
 #    active: docker, service
-    active: '@activatedProperties@, eureka'
+    active: '@activatedProperties@, docker, eureka'
   datasource:
     password: ${DB_PASSWORD:5!KAnN@%98%d}
     url: 'jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5433}/${DB_NAME:karnak}'
