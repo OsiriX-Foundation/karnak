@@ -2,11 +2,11 @@
 #  Karnak Application Profiles
 #  --------------------------------------------------------
 # - Info
-info:
-  component: Karnak
-  app:
-    name: Karnak
-    description: Karnak
+#info:
+#  component: Karnak
+#  app:
+#    name: Karnak
+#    description: Karnak
 #  environment: ${ENVIRONMENT}
 
 #name: KARNAK-Profile
@@ -30,7 +30,7 @@ logging:
                 MapSyncRpcHandler: ERROR
               ReturnChannelHandler: ERROR
 server:
-  port: 8081
+  port: 0
   servlet:
     session:
       persistent: false
@@ -42,8 +42,10 @@ spring:
     enabled: true
     change-log: classpath:db/changelog/db.changelog-master.yaml
   profiles:
-    active: '@activatedProperties@, docker, service'
+#    active: '@activatedProperties@, docker, service'
+#    active: '@activatedProperties@, eureka, service, without_bus'
 #    active: docker, service
+    active: '@activatedProperties@, eureka'
   datasource:
     password: ${DB_PASSWORD:5!KAnN@%98%d}
     url: 'jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5433}/${DB_NAME:karnak}'
@@ -72,27 +74,30 @@ spring:
       jdbc:
         lob:
           non_contextual_creation: true
-  cloud:
-    config:
-      discovery:
-        enabled: true
-        service-id: config-server
-      fail-fast: true
-      name: ${spring.application.name}
-#      label: ${ENVIRONMENT}
-  config:
-    import: 'configserver:'
-  main:
-#    web-application-type: servlet
-    allow-bean-definition-overriding: true
+#  cloud:
+#    config:
+#      discovery:
+#        enabled: true
+#        service-id: config-server
+#      fail-fast: true
+#      name: ${spring.application.name}
+##      label: ${ENVIRONMENT}
+#  config:
+#    import: 'configserver:'
+#  main:
+##    web-application-type: servlet
+#    allow-bean-definition-overriding: true
 
 # - Eureka
-eureka:
-  client:
-    fetch-registry: true
-    register-with-eureka: false
-    service-url:
-      defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
+#eureka:
+#  client:
+#    fetch-registry: true
+#    register-with-eureka: false
+#    service-url:
+##      defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
+#      defaultZone: http://localhost:8761/eureka
+
+
 
 monitoring:
   max-history: 150000

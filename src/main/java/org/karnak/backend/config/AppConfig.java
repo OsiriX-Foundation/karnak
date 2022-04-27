@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
@@ -37,6 +38,7 @@ import org.yaml.snakeyaml.constructor.Constructor;
 @Configuration
 @EnableConfigurationProperties
 @ConfigurationProperties
+@EnableDiscoveryClient
 public class AppConfig {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AppConfig.class);
