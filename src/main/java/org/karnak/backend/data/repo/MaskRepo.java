@@ -14,6 +14,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface MaskRepo extends JpaRepository<MaskEntity, Long> {
-
-}
+public interface MaskRepo extends JpaRepository<MaskEntity, Long> {}

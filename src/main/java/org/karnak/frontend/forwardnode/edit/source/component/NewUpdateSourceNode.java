@@ -19,57 +19,55 @@ import org.karnak.frontend.forwardnode.edit.component.ButtonSaveDeleteCancel;
 @SuppressWarnings("serial")
 public class NewUpdateSourceNode extends VerticalLayout {
 
-	private final Binder<DicomSourceNodeEntity> binderFormSourceNode;
+  private final Binder<DicomSourceNodeEntity> binderFormSourceNode;
 
-	private final FormSourceNode formSourceNode;
+  private final FormSourceNode formSourceNode;
 
-	private final ButtonSaveDeleteCancel buttonSaveDeleteCancel;
+  private final ButtonSaveDeleteCancel buttonSaveDeleteCancel;
 
-	private DicomSourceNodeEntity currentSourceNode;
+  private DicomSourceNodeEntity currentSourceNode;
 
-	public NewUpdateSourceNode() {
-		currentSourceNode = null;
-		binderFormSourceNode = new BeanValidationBinder<>(DicomSourceNodeEntity.class);
-		buttonSaveDeleteCancel = new ButtonSaveDeleteCancel();
-		formSourceNode = new FormSourceNode(binderFormSourceNode, buttonSaveDeleteCancel);
-	}
+  public NewUpdateSourceNode() {
+    currentSourceNode = null;
+    binderFormSourceNode = new BeanValidationBinder<>(DicomSourceNodeEntity.class);
+    buttonSaveDeleteCancel = new ButtonSaveDeleteCancel();
+    formSourceNode = new FormSourceNode(binderFormSourceNode, buttonSaveDeleteCancel);
+  }
 
-	public void setView() {
-		removeAll();
-		binderFormSourceNode.readBean(currentSourceNode);
-		add(formSourceNode);
-	}
+  public void setView() {
+    removeAll();
+    binderFormSourceNode.readBean(currentSourceNode);
+    add(formSourceNode);
+  }
 
-	public void load(DicomSourceNodeEntity sourceNode) {
-		if (sourceNode != null) {
-			currentSourceNode = sourceNode;
-			buttonSaveDeleteCancel.getDelete().setEnabled(true);
-		}
-		else {
-			currentSourceNode = DicomSourceNodeEntity.ofEmpty();
-			buttonSaveDeleteCancel.getDelete().setEnabled(false);
-		}
-		setView();
-	}
+  public void load(DicomSourceNodeEntity sourceNode) {
+    if (sourceNode != null) {
+      currentSourceNode = sourceNode;
+      buttonSaveDeleteCancel.getDelete().setEnabled(true);
+    } else {
+      currentSourceNode = DicomSourceNodeEntity.ofEmpty();
+      buttonSaveDeleteCancel.getDelete().setEnabled(false);
+    }
+    setView();
+  }
 
-	public Button getButtonCancel() {
-		return buttonSaveDeleteCancel.getCancel();
-	}
+  public Button getButtonCancel() {
+    return buttonSaveDeleteCancel.getCancel();
+  }
 
-	public Binder<DicomSourceNodeEntity> getBinderFormSourceNode() {
-		return binderFormSourceNode;
-	}
+  public Binder<DicomSourceNodeEntity> getBinderFormSourceNode() {
+    return binderFormSourceNode;
+  }
 
-	public ButtonSaveDeleteCancel getButtonSaveDeleteCancel() {
-		return buttonSaveDeleteCancel;
-	}
+  public ButtonSaveDeleteCancel getButtonSaveDeleteCancel() {
+    return buttonSaveDeleteCancel;
+  }
 
-	public DicomSourceNodeEntity getCurrentSourceNode() {
-		return currentSourceNode;
-	}
+  public DicomSourceNodeEntity getCurrentSourceNode() {
+    return currentSourceNode;
+  }
 
-	public void setCurrentSourceNode(DicomSourceNodeEntity currentSourceNode) {
-		this.currentSourceNode = currentSourceNode;
-	}
-
+  public void setCurrentSourceNode(DicomSourceNodeEntity currentSourceNode) {
+    this.currentSourceNode = currentSourceNode;
+  }
 }

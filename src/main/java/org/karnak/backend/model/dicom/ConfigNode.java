@@ -15,50 +15,49 @@ import org.weasis.dicom.param.DicomNode;
 
 public class ConfigNode {
 
-	private String name;
+  private String name;
 
-	private DicomNode calledNode;
+  private DicomNode calledNode;
 
-	public ConfigNode(String name, DicomNode calledNode) {
-		this.name = Objects.requireNonNull(name);
-		this.calledNode = Objects.requireNonNull(calledNode);
-	}
+  public ConfigNode(String name, DicomNode calledNode) {
+    this.name = Objects.requireNonNull(name);
+    this.calledNode = Objects.requireNonNull(calledNode);
+  }
 
-	@Override
-	public String toString() {
-		return name;
-	}
+  @Override
+  public String toString() {
+    return name;
+  }
 
-	public String getName() {
-		return name;
-	}
+  public String getName() {
+    return name;
+  }
 
-	public void setName(String name) {
-		if (StringUtil.hasText(name)) {
-			this.name = name;
-		}
-	}
+  public void setName(String name) {
+    if (StringUtil.hasText(name)) {
+      this.name = name;
+    }
+  }
 
-	public String getAet() {
-		return calledNode.getAet();
-	}
+  public String getAet() {
+    return calledNode.getAet();
+  }
 
-	public String getHostname() {
-		return calledNode.getHostname();
-	}
+  public String getHostname() {
+    return calledNode.getHostname();
+  }
 
-	public Integer getPort() {
-		return calledNode.getPort();
-	}
+  public Integer getPort() {
+    return calledNode.getPort();
+  }
 
-	public DicomNode getCalledNode() {
-		return calledNode;
-	}
+  public DicomNode getCalledNode() {
+    return calledNode;
+  }
 
-	public void setCalledNode(DicomNode calledNode) {
-		if (calledNode != null) {
-			this.calledNode = calledNode;
-		}
-	}
-
+  public void setCalledNode(DicomNode calledNode) {
+    if (calledNode != null) {
+      this.calledNode = calledNode;
+    }
+  }
 }

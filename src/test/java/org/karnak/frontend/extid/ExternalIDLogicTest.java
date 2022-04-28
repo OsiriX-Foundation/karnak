@@ -20,37 +20,36 @@ import org.mockito.Mockito;
 
 class ExternalIDLogicTest {
 
-	// Service
-	private ExternalIDLogic externalIDLogic;
+  // Service
+  private ExternalIDLogic externalIDLogic;
 
-	private final ProjectService projectServiceMock = Mockito.mock(ProjectService.class);
+  private final ProjectService projectServiceMock = Mockito.mock(ProjectService.class);
 
-	@BeforeEach
-	public void setUp() {
-		// Build mocked service
-		externalIDLogic = new ExternalIDLogic(projectServiceMock);
-	}
+  @BeforeEach
+  public void setUp() {
+    // Build mocked service
+    externalIDLogic = new ExternalIDLogic(projectServiceMock);
+  }
 
-	@Test
-	void should_set_view() {
+  @Test
+  void should_set_view() {
 
-		// Init data
-		ExternalIDView externalIDView = Mockito.mock(ExternalIDView.class);
+    // Init data
+    ExternalIDView externalIDView = Mockito.mock(ExternalIDView.class);
 
-		// Call method
-		externalIDLogic.setExternalIDView(externalIDView);
+    // Call method
+    externalIDLogic.setExternalIDView(externalIDView);
 
-		// Test results
-		assertNotNull(externalIDLogic.getExternalIDView());
-	}
+    // Test results
+    assertNotNull(externalIDLogic.getExternalIDView());
+  }
 
-	@Test
-	void should_retrieve_projects() {
-		// Call method
-		List<ProjectEntity> projectEntities = externalIDLogic.retrieveProject();
+  @Test
+  void should_retrieve_projects() {
+    // Call method
+    List<ProjectEntity> projectEntities = externalIDLogic.retrieveProject();
 
-		// Test result
-		Mockito.verify(projectServiceMock, Mockito.times(1)).getAllProjects();
-	}
-
+    // Test result
+    Mockito.verify(projectServiceMock, Mockito.times(1)).getAllProjects();
+  }
 }

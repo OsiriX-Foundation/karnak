@@ -21,43 +21,42 @@ import javax.persistence.Table;
 @Table(name = "version")
 public class VersionEntity implements Serializable {
 
-	private Long id;
+  private Long id;
 
-	private long gatewaySetup;
+  private long gatewaySetup;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	public Long getId() {
-		return id;
-	}
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  public Long getId() {
+    return id;
+  }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+  public void setId(Long id) {
+    this.id = id;
+  }
 
-	public long getGatewaySetup() {
-		return gatewaySetup;
-	}
+  public long getGatewaySetup() {
+    return gatewaySetup;
+  }
 
-	public void setGatewaySetup(long gatewaySetup) {
-		this.gatewaySetup = gatewaySetup;
-	}
+  public void setGatewaySetup(long gatewaySetup) {
+    this.gatewaySetup = gatewaySetup;
+  }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		VersionEntity that = (VersionEntity) o;
-		return gatewaySetup == that.gatewaySetup && Objects.equals(id, that.id);
-	}
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    VersionEntity that = (VersionEntity) o;
+    return gatewaySetup == that.gatewaySetup && Objects.equals(id, that.id);
+  }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(id, gatewaySetup);
-	}
-
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, gatewaySetup);
+  }
 }

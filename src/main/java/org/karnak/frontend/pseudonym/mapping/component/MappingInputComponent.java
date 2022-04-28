@@ -19,47 +19,46 @@ import org.karnak.frontend.component.BoxShadowComponent;
 /** Input pseudonym that the user wants to look for */
 public class MappingInputComponent extends VerticalLayout {
 
-	// Components
-	private TextField pseudonymTextField;
+  // Components
+  private TextField pseudonymTextField;
 
-	private Button findButton;
+  private Button findButton;
 
-	/** Constructor */
-	public MappingInputComponent() {
-		setWidthFull();
+  /** Constructor */
+  public MappingInputComponent() {
+    setWidthFull();
 
-		// TextField input for pseudonym
-		pseudonymTextField = new TextField();
-		pseudonymTextField.setPlaceholder("Pseudonym to look for...");
-		pseudonymTextField.setMinWidth(85, Unit.PERCENTAGE);
+    // TextField input for pseudonym
+    pseudonymTextField = new TextField();
+    pseudonymTextField.setPlaceholder("Pseudonym to look for...");
+    pseudonymTextField.setMinWidth(85, Unit.PERCENTAGE);
 
-		// Find Button
-		findButton = new Button("Find...");
-		findButton.setAutofocus(true);
+    // Find Button
+    findButton = new Button("Find...");
+    findButton.setAutofocus(true);
 
-		// Pseudonym layout
-		HorizontalLayout pseudonymLayout = new HorizontalLayout();
-		pseudonymLayout.add(pseudonymTextField, findButton);
-		BoxShadowComponent pseudonymBoxShadowComponent = new BoxShadowComponent(pseudonymLayout);
-		pseudonymBoxShadowComponent.getElement().getStyle().set("padding", "1%");
-		pseudonymBoxShadowComponent.getElement().getStyle().set("width", "44%");
-		add(pseudonymBoxShadowComponent);
-	}
+    // Pseudonym layout
+    HorizontalLayout pseudonymLayout = new HorizontalLayout();
+    pseudonymLayout.add(pseudonymTextField, findButton);
+    BoxShadowComponent pseudonymBoxShadowComponent = new BoxShadowComponent(pseudonymLayout);
+    pseudonymBoxShadowComponent.getElement().getStyle().set("padding", "1%");
+    pseudonymBoxShadowComponent.getElement().getStyle().set("width", "44%");
+    add(pseudonymBoxShadowComponent);
+  }
 
-	public TextField getPseudonymTextField() {
-		return pseudonymTextField;
-	}
+  public TextField getPseudonymTextField() {
+    return pseudonymTextField;
+  }
 
-	public void setPseudonymTextField(TextField pseudonymTextField) {
-		this.pseudonymTextField = pseudonymTextField;
-	}
+  public void setPseudonymTextField(TextField pseudonymTextField) {
+    this.pseudonymTextField = pseudonymTextField;
+  }
 
-	public Button getFindButton() {
-		return findButton;
-	}
+  public Button getFindButton() {
+    return findButton;
+  }
 
-	public void setFindButton(Button findButton) {
-		this.findButton = findButton;
-	}
-
+  public void setFindButton(Button findButton) {
+    this.findButton = findButton;
+  }
 }

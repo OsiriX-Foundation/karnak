@@ -20,21 +20,24 @@ import org.weasis.dicom.param.AttributeEditorContext.Abort;
 
 public class FilterEditor implements AttributeEditor {
 
-	private final Set<SOPClassUIDEntity> sopClassUIDEntitySet;
+  private final Set<SOPClassUIDEntity> sopClassUIDEntitySet;
 
-	public FilterEditor(Set<SOPClassUIDEntity> sopClassUIDEntitySet) {
-		this.sopClassUIDEntitySet = sopClassUIDEntitySet;
-	}
+  public FilterEditor(Set<SOPClassUIDEntity> sopClassUIDEntitySet) {
+    this.sopClassUIDEntitySet = sopClassUIDEntitySet;
+  }
 
-	@Override
-	public void apply(Attributes dcm, AttributeEditorContext context) {
-		String classUID = dcm.getString(Tag.SOPClassUID);
-		Predicate<SOPClassUIDEntity> sopClassUIDPredicate = sopClassUID -> sopClassUID.getUid().equals(classUID);
-		if (sopClassUIDEntitySet.stream().noneMatch(sopClassUIDPredicate)) {
-			context.setAbort(Abort.FILE_EXCEPTION);
-			context.setAbortMessage(dcm.getString(Tag.SOPInstanceUID) + " is blocked because " + classUID
-					+ " is not in the SOPClassUID filter");
-		}
-	}
-
+  @Override
+  public void apply(Attributes dcm, AttributeEditorContext context) {
+    String classUID = dcm.getString(Tag.SOPClassUID);
+    Predicate<SOPClassUIDEntity> sopClassUIDPredicate =
+        sopClassUID -> sopClassUID.getUid().equals(classUID);
+    if (sopClassUIDEntitySet.stream().noneMatch(sopClassUIDPredicate)) {
+      context.setAbort(Abort.FILE_EXCEPTION);
+      context.setAbortMessage(
+          dcm.getString(Tag.SOPInstanceUID)
+              + " is blocked because "
+              + classUID
+              + " is not in the SOPClassUID filter");
+    }
+  }
 }

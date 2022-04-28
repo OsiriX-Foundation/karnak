@@ -21,44 +21,44 @@ import org.springframework.stereotype.Component;
 import org.vaadin.artur.spring.dataprovider.FilterablePageableDataProvider;
 
 @Component
-public class TransferStatusDataProvider<T> extends FilterablePageableDataProvider<T, TransferStatusFilter> {
+public class TransferStatusDataProvider<T>
+    extends FilterablePageableDataProvider<T, TransferStatusFilter> {
 
-	// Services
-	private final MonitoringLogic monitoringLogic;
+  // Services
+  private final MonitoringLogic monitoringLogic;
 
-	// Default sort order
-	private List<QuerySortOrder> defaultSortOrders;
+  // Default sort order
+  private List<QuerySortOrder> defaultSortOrders;
 
-	@Autowired
-	public TransferStatusDataProvider(MonitoringLogic monitoringLogic) {
-		this.monitoringLogic = monitoringLogic;
+  @Autowired
+  public TransferStatusDataProvider(MonitoringLogic monitoringLogic) {
+    this.monitoringLogic = monitoringLogic;
 
-		// Default sort order
-		setSortOrders();
-	}
+    // Default sort order
+    setSortOrders();
+  }
 
-	@Override
-	protected Page<T> fetchFromBackEnd(Query<T, TransferStatusFilter> query, Pageable pageable) {
-		TransferStatusFilter filter = query.getFilter().orElse(new TransferStatusFilter());
-		return (Page<T>) monitoringLogic.retrieveTransferStatus(filter, pageable);
-	}
+  @Override
+  protected Page<T> fetchFromBackEnd(Query<T, TransferStatusFilter> query, Pageable pageable) {
+    TransferStatusFilter filter = query.getFilter().orElse(new TransferStatusFilter());
+    return (Page<T>) monitoringLogic.retrieveTransferStatus(filter, pageable);
+  }
 
-	@Override
-	protected List<QuerySortOrder> getDefaultSortOrders() {
-		return defaultSortOrders;
-	}
+  @Override
+  protected List<QuerySortOrder> getDefaultSortOrders() {
+    return defaultSortOrders;
+  }
 
-	@Override
-	protected int sizeInBackEnd(Query<T, TransferStatusFilter> query) {
-		TransferStatusFilter filter = query.getFilter().orElse(new TransferStatusFilter());
-		return monitoringLogic.countTransferStatus(filter);
-	}
+  @Override
+  protected int sizeInBackEnd(Query<T, TransferStatusFilter> query) {
+    TransferStatusFilter filter = query.getFilter().orElse(new TransferStatusFilter());
+    return monitoringLogic.countTransferStatus(filter);
+  }
 
-	/** Default sort order */
-	private void setSortOrders() {
-		QuerySortOrderBuilder builder = new QuerySortOrderBuilder();
-		builder.thenDesc("transferDate");
-		defaultSortOrders = builder.build();
-	}
-
+  /** Default sort order */
+  private void setSortOrders() {
+    QuerySortOrderBuilder builder = new QuerySortOrderBuilder();
+    builder.thenDesc("transferDate");
+    defaultSortOrders = builder.build();
+  }
 }

@@ -22,40 +22,42 @@ import org.springframework.stereotype.Service;
 @Service
 public class SOPClassUIDService extends ListDataProvider<SOPClassUIDEntity> {
 
-	// Repositories
-	private final SOPClassUIDRepo sopClassUIDRepo;
+  // Repositories
+  private final SOPClassUIDRepo sopClassUIDRepo;
 
-	@Autowired
-	public SOPClassUIDService(final SOPClassUIDRepo sopClassUIDRepo) {
-		super(new ArrayList<>());
-		this.sopClassUIDRepo = sopClassUIDRepo;
-		getItems().addAll(getAllSOPClassUIDs());
-	}
+  @Autowired
+  public SOPClassUIDService(final SOPClassUIDRepo sopClassUIDRepo) {
+    super(new ArrayList<>());
+    this.sopClassUIDRepo = sopClassUIDRepo;
+    getItems().addAll(getAllSOPClassUIDs());
+  }
 
-	public SOPClassUIDEntity get(Long dataId) {
-		return sopClassUIDRepo.getSOPClassUIDById(dataId);
-	}
+  public SOPClassUIDEntity get(Long dataId) {
+    return sopClassUIDRepo.getSOPClassUIDById(dataId);
+  }
 
-	public SOPClassUIDEntity getByName(String name) {
-		return sopClassUIDRepo.getSOPClassUIDByName(name);
-	}
+  public SOPClassUIDEntity getByName(String name) {
+    return sopClassUIDRepo.getSOPClassUIDByName(name);
+  }
 
-	public List<SOPClassUIDEntity> getAllSOPClassUIDs() {
-		List<SOPClassUIDEntity> list = new ArrayList<>();
-		sopClassUIDRepo.findAll() //
-				.forEach(list::add);
-		return list;
-	}
+  public List<SOPClassUIDEntity> getAllSOPClassUIDs() {
+    List<SOPClassUIDEntity> list = new ArrayList<>();
+    sopClassUIDRepo
+        .findAll() //
+        .forEach(list::add);
+    return list;
+  }
 
-	public List<String> getAllSOPClassUIDsName() {
-		return sopClassUIDRepo.findAll().stream().map(SOPClassUIDEntity::getName).collect(Collectors.toList());
-	}
+  public List<String> getAllSOPClassUIDsName() {
+    return sopClassUIDRepo.findAll().stream()
+        .map(SOPClassUIDEntity::getName)
+        .collect(Collectors.toList());
+  }
 
-	@Override
-	public void refreshAll() {
-		getItems().clear();
-		getItems().addAll(getAllSOPClassUIDs());
-		super.refreshAll();
-	}
-
+  @Override
+  public void refreshAll() {
+    getItems().clear();
+    getItems().addAll(getAllSOPClassUIDs());
+    super.refreshAll();
+  }
 }

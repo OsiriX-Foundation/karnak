@@ -17,17 +17,16 @@ import org.junit.jupiter.api.Test;
 
 class AddTest {
 
-	@Test
-	void should_add_tag() {
-		// Init data
-		Attributes attributes = new Attributes();
-		Add add = new Add("symbol", 524294, VR.AE, "dummyValue");
+  @Test
+  void should_add_tag() {
+    // Init data
+    Attributes attributes = new Attributes();
+    Add add = new Add("symbol", 524294, VR.AE, "dummyValue");
 
-		// Add tag
-		add.execute(attributes, 524291, null);
+    // Add tag
+    add.execute(attributes, 524291, null);
 
-		// Test result
-		assertEquals("dummyValue", attributes.getString(524294));
-	}
-
+    // Test result
+    assertEquals("dummyValue", attributes.getString(524294));
+  }
 }

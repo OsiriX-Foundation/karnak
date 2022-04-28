@@ -16,70 +16,71 @@ import java.util.Objects;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class DestinationEcho {
 
-	// AeTitle of the destination dicom
-	private String aet;
+  // AeTitle of the destination dicom
+  private String aet;
 
-	// Url of the destination stow
-	private String url;
+  // Url of the destination stow
+  private String url;
 
-	// Status
-	private int status;
+  // Status
+  private int status;
 
-	/** Constructor without parameter */
-	public DestinationEcho() {
-	}
+  /** Constructor without parameter */
+  public DestinationEcho() {}
 
-	/**
-	 * Constructor with parameters
-	 * @param aet AeTitle
-	 * @param url Url
-	 * @param status Status
-	 */
-	public DestinationEcho(String aet, String url, int status) {
-		this.aet = aet;
-		this.url = url;
-		this.status = status;
-	}
+  /**
+   * Constructor with parameters
+   *
+   * @param aet AeTitle
+   * @param url Url
+   * @param status Status
+   */
+  public DestinationEcho(String aet, String url, int status) {
+    this.aet = aet;
+    this.url = url;
+    this.status = status;
+  }
 
-	public String getAet() {
-		return aet;
-	}
+  public String getAet() {
+    return aet;
+  }
 
-	public void setAet(String aet) {
-		this.aet = aet;
-	}
+  public void setAet(String aet) {
+    this.aet = aet;
+  }
 
-	public String getUrl() {
-		return url;
-	}
+  public String getUrl() {
+    return url;
+  }
 
-	public void setUrl(String url) {
-		this.url = url;
-	}
+  public void setUrl(String url) {
+    this.url = url;
+  }
 
-	public int getStatus() {
-		return status;
-	}
+  public int getStatus() {
+    return status;
+  }
 
-	public void setStatus(int status) {
-		this.status = status;
-	}
+  public void setStatus(int status) {
+    this.status = status;
+  }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		DestinationEcho that = (DestinationEcho) o;
-		return Objects.equals(aet, that.aet) && Objects.equals(url, that.url) && Objects.equals(status, that.status);
-	}
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    DestinationEcho that = (DestinationEcho) o;
+    return Objects.equals(aet, that.aet)
+        && Objects.equals(url, that.url)
+        && Objects.equals(status, that.status);
+  }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(aet, url, status);
-	}
-
+  @Override
+  public int hashCode() {
+    return Objects.hash(aet, url, status);
+  }
 }

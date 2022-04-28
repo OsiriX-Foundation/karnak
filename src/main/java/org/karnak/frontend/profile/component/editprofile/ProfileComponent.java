@@ -34,132 +34,151 @@ import org.slf4j.LoggerFactory;
 
 public class ProfileComponent extends VerticalLayout {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ProfileComponent.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ProfileComponent.class);
 
-	private final WarningDeleteProfileUsed dialogWarning;
+  private final WarningDeleteProfileUsed dialogWarning;
 
-	private ProfileEntity profileEntity;
+  private ProfileEntity profileEntity;
 
-	private Anchor download;
+  private Anchor download;
 
-	private Button deleteButton;
+  private Button deleteButton;
 
-	private final ProfileLogic profileLogic;
+  private final ProfileLogic profileLogic;
 
-	public ProfileComponent(final ProfileLogic profileLogic) {
-		setSizeFull();
-		this.profileLogic = profileLogic;
-		this.dialogWarning = new WarningDeleteProfileUsed();
-	}
+  public ProfileComponent(final ProfileLogic profileLogic) {
+    setSizeFull();
+    this.profileLogic = profileLogic;
+    this.dialogWarning = new WarningDeleteProfileUsed();
+  }
 
-	public static StreamResource createStreamResource(ProfileEntity profileEntity) {
-		try {
-			Set<ProfileElementEntity> profileElementEntities = profileEntity.getProfileElementEntities().stream()
-					.sorted(Comparator.comparing(ProfileElementEntity::getPosition))
-					.collect(Collectors.toCollection(LinkedHashSet::new));
-			profileEntity.setProfileElementEntities(profileElementEntities);
+  public static StreamResource createStreamResource(ProfileEntity profileEntity) {
+    try {
+      Set<ProfileElementEntity> profileElementEntities =
+          profileEntity.getProfileElementEntities().stream()
+              .sorted(Comparator.comparing(ProfileElementEntity::getPosition))
+              .collect(Collectors.toCollection(LinkedHashSet::new));
+      profileEntity.setProfileElementEntities(profileElementEntities);
 
-			// https://stackoverflow.com/questions/61506368/formatting-yaml-with-jackson
-			ObjectMapper mapper = new ObjectMapper(
-					new YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
+      // https://stackoverflow.com/questions/61506368/formatting-yaml-with-jackson
+      ObjectMapper mapper =
+          new ObjectMapper(new YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
 
-			String strYaml = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(profileEntity);
-			return new StreamResource(String.format("%s.yml", profileEntity.getName()).replace(" ", "-"),
-					() -> new ByteArrayInputStream(strYaml.getBytes()));
+      String strYaml = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(profileEntity);
+      return new StreamResource(
+          String.format("%s.yml", profileEntity.getName()).replace(" ", "-"),
+          () -> new ByteArrayInputStream(strYaml.getBytes()));
 
-		}
-		catch (final Exception e) {
-			LOGGER.error("Cannot create the StreamResource for downloading the yaml profile", e);
-		}
-		return null;
-	}
+    } catch (final Exception e) {
+      LOGGER.error("Cannot create the StreamResource for downloading the yaml profile", e);
+    }
+    return null;
+  }
 
-	public void setProfile() {
-		removeAll();
-		H2 title = new H2("Profile");
-		ProfileMetadata name = new ProfileMetadata("Name", profileEntity.getName(), profileEntity.getByDefault());
-		name.getValidateEditButton().addClickListener(event -> {
-			profileEntity.setName(name.getValue());
-			updatedProfilePipes();
-		});
+  public void setProfile() {
+    removeAll();
+    H2 title = new H2("Profile");
+    ProfileMetadata name =
+        new ProfileMetadata("Name", profileEntity.getName(), profileEntity.getByDefault());
+    name.getValidateEditButton()
+        .addClickListener(
+            event -> {
+              profileEntity.setName(name.getValue());
+              updatedProfilePipes();
+            });
 
-		ProfileMetadata version = new ProfileMetadata("Profile version", profileEntity.getVersion(),
-				profileEntity.getByDefault());
-		version.getValidateEditButton().addClickListener(event -> {
-			profileEntity.setVersion(version.getValue());
-			updatedProfilePipes();
-		});
+    ProfileMetadata version =
+        new ProfileMetadata(
+            "Profile version", profileEntity.getVersion(), profileEntity.getByDefault());
+    version
+        .getValidateEditButton()
+        .addClickListener(
+            event -> {
+              profileEntity.setVersion(version.getValue());
+              updatedProfilePipes();
+            });
 
-		ProfileMetadata minVersion = new ProfileMetadata("Min. version KARNAK required",
-				profileEntity.getMinimumKarnakVersion(), profileEntity.getByDefault());
-		minVersion.getValidateEditButton().addClickListener(event -> {
-			profileEntity.setMinimumKarnakVersion(minVersion.getValue());
-			updatedProfilePipes();
-		});
+    ProfileMetadata minVersion =
+        new ProfileMetadata(
+            "Min. version KARNAK required",
+            profileEntity.getMinimumKarnakVersion(),
+            profileEntity.getByDefault());
+    minVersion
+        .getValidateEditButton()
+        .addClickListener(
+            event -> {
+              profileEntity.setMinimumKarnakVersion(minVersion.getValue());
+              updatedProfilePipes();
+            });
 
-		createDownloadButton(profileEntity);
+    createDownloadButton(profileEntity);
 
-		ProfileMasksView profileMasksView = new ProfileMasksView(profileEntity.getMaskEntities());
+    ProfileMasksView profileMasksView = new ProfileMasksView(profileEntity.getMaskEntities());
 
-		if (profileEntity.getByDefault().booleanValue()) {
-			add(new HorizontalLayout(title, download), name, version, minVersion, profileMasksView);
-		}
-		else {
-			createDeleteButton(profileEntity);
-			add(new HorizontalLayout(title, download, deleteButton), name, version, minVersion, profileMasksView);
-		}
-	}
+    if (profileEntity.getByDefault().booleanValue()) {
+      add(new HorizontalLayout(title, download), name, version, minVersion, profileMasksView);
+    } else {
+      createDeleteButton(profileEntity);
+      add(
+          new HorizontalLayout(title, download, deleteButton),
+          name,
+          version,
+          minVersion,
+          profileMasksView);
+    }
+  }
 
-	private void updatedProfilePipes() {
-		profileEntity = profileLogic.updateProfile(profileEntity);
-		final StreamResource profileStreamResource = createStreamResource(profileEntity);
-		download.setHref(profileStreamResource);
-		createDeleteButton(profileEntity);
-	}
+  private void updatedProfilePipes() {
+    profileEntity = profileLogic.updateProfile(profileEntity);
+    final StreamResource profileStreamResource = createStreamResource(profileEntity);
+    download.setHref(profileStreamResource);
+    createDeleteButton(profileEntity);
+  }
 
-	public void setEventValidate(ProfileMetadata metadata) {
-		metadata.getValidateEditButton().addClickListener(event -> profileEntity.setName(metadata.getValue()));
-	}
+  public void setEventValidate(ProfileMetadata metadata) {
+    metadata
+        .getValidateEditButton()
+        .addClickListener(event -> profileEntity.setName(metadata.getValue()));
+  }
 
-	public ProfileEntity getProfile() {
-		return profileEntity;
-	}
+  public ProfileEntity getProfile() {
+    return profileEntity;
+  }
 
-	public void setProfile(ProfileEntity profileEntity) {
-		this.profileEntity = profileEntity;
-		if (profileEntity != null) {
-			setProfile();
-			setEnabled(true);
-		}
-		else {
-			removeAll();
-			setEnabled(false);
-		}
-	}
+  public void setProfile(ProfileEntity profileEntity) {
+    this.profileEntity = profileEntity;
+    if (profileEntity != null) {
+      setProfile();
+      setEnabled(true);
+    } else {
+      removeAll();
+      setEnabled(false);
+    }
+  }
 
-	public void createDownloadButton(ProfileEntity profileEntity) {
-		final StreamResource profileStreamResource = createStreamResource(profileEntity);
-		download = new Anchor(profileStreamResource, "");
-		download.getElement().setAttribute("download", true);
-		download.add(new Button(new Icon(VaadinIcon.DOWNLOAD_ALT)));
-		download.getStyle().set("margin-top", "30px");
-	}
+  public void createDownloadButton(ProfileEntity profileEntity) {
+    final StreamResource profileStreamResource = createStreamResource(profileEntity);
+    download = new Anchor(profileStreamResource, "");
+    download.getElement().setAttribute("download", true);
+    download.add(new Button(new Icon(VaadinIcon.DOWNLOAD_ALT)));
+    download.getStyle().set("margin-top", "30px");
+  }
 
-	private void createDeleteButton(ProfileEntity profileEntity) {
-		deleteButton = new Button((new Icon(VaadinIcon.TRASH)));
-		deleteButton.setWidth("100%");
-		deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
-		deleteButton.getStyle().set("margin-top", "34px");
-		deleteButton.addClickListener(buttonClickEvent -> {
-			if (profileEntity.getProjectEntities() != null && !profileEntity.getProjectEntities().isEmpty()) {
-				dialogWarning.setText(profileEntity);
-				dialogWarning.open();
-			}
-			else {
-				profileLogic.deleteProfile(profileEntity);
-				removeAll();
-			}
-		});
-	}
-
+  private void createDeleteButton(ProfileEntity profileEntity) {
+    deleteButton = new Button((new Icon(VaadinIcon.TRASH)));
+    deleteButton.setWidth("100%");
+    deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
+    deleteButton.getStyle().set("margin-top", "34px");
+    deleteButton.addClickListener(
+        buttonClickEvent -> {
+          if (profileEntity.getProjectEntities() != null
+              && !profileEntity.getProjectEntities().isEmpty()) {
+            dialogWarning.setText(profileEntity);
+            dialogWarning.open();
+          } else {
+            profileLogic.deleteProfile(profileEntity);
+            removeAll();
+          }
+        });
+  }
 }

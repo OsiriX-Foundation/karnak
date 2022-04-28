@@ -20,41 +20,51 @@ import org.karnak.backend.cache.PseudonymPatient;
 
 public class DuplicateDialog extends Dialog {
 
-	private final Collection<CachedPatient> duplicateList;
+  private final Collection<CachedPatient> duplicateList;
 
-	private Grid<CachedPatient> grid;
+  private Grid<CachedPatient> grid;
 
-	public DuplicateDialog(String title, String text, Collection<PseudonymPatient> duplicateList, String buttonText) {
-		removeAll();
-		this.duplicateList = (List<CachedPatient>) (List<?>) duplicateList;
+  public DuplicateDialog(
+      String title, String text, Collection<PseudonymPatient> duplicateList, String buttonText) {
+    removeAll();
+    this.duplicateList = (List<CachedPatient>) (List<?>) duplicateList;
 
-		Div divTitle = new Div();
-		divTitle.setText(title);
-		divTitle.getStyle().set("font-size", "large").set("font-weight", "bolder").set("padding-bottom", "10px");
+    Div divTitle = new Div();
+    divTitle.setText(title);
+    divTitle
+        .getStyle()
+        .set("font-size", "large")
+        .set("font-weight", "bolder")
+        .set("padding-bottom", "10px");
 
-		Div divContent = new Div();
-		Div divIntro = new Div();
-		divIntro.setText(text);
-		divIntro.getStyle().set("padding-bottom", "10px");
+    Div divContent = new Div();
+    Div divIntro = new Div();
+    divIntro.setText(text);
+    divIntro.getStyle().set("padding-bottom", "10px");
 
-		divContent.add(divIntro);
+    divContent.add(divIntro);
 
-		setGridElement();
+    setGridElement();
 
-		Button cancelButton = new Button(buttonText, event -> close());
+    Button cancelButton = new Button(buttonText, event -> close());
 
-		cancelButton.getStyle().set("margin-left", "50%");
-		add(divTitle, divContent, grid, cancelButton);
-	}
+    cancelButton.getStyle().set("margin-left", "50%");
+    add(divTitle, divContent, grid, cancelButton);
+  }
 
-	public void setGridElement() {
-		grid = new Grid<>();
-		grid.addColumn(CachedPatient::getPseudonym).setHeader("External pseudonym").setSortable(true);
-		grid.addColumn(CachedPatient::getPatientId).setHeader("Patient ID").setSortable(true);
-		grid.addColumn(CachedPatient::getPatientFirstName).setHeader("Patient first name").setSortable(true);
-		grid.addColumn(CachedPatient::getPatientLastName).setHeader("Patient last name").setSortable(true);
-		grid.addColumn(CachedPatient::getIssuerOfPatientId).setHeader("Issuer of patient ID").setSortable(true);
-		grid.setItems(duplicateList);
-	}
-
+  public void setGridElement() {
+    grid = new Grid<>();
+    grid.addColumn(CachedPatient::getPseudonym).setHeader("External pseudonym").setSortable(true);
+    grid.addColumn(CachedPatient::getPatientId).setHeader("Patient ID").setSortable(true);
+    grid.addColumn(CachedPatient::getPatientFirstName)
+        .setHeader("Patient first name")
+        .setSortable(true);
+    grid.addColumn(CachedPatient::getPatientLastName)
+        .setHeader("Patient last name")
+        .setSortable(true);
+    grid.addColumn(CachedPatient::getIssuerOfPatientId)
+        .setHeader("Issuer of patient ID")
+        .setSortable(true);
+    grid.setItems(duplicateList);
+  }
 }

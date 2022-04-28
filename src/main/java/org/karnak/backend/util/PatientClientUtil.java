@@ -15,58 +15,59 @@ import org.karnak.backend.model.profilepipe.PatientMetadata;
 
 public class PatientClientUtil {
 
-	private PatientClientUtil() {
-		throw new IllegalStateException("Utility class");
-	}
+  private PatientClientUtil() {
+    throw new IllegalStateException("Utility class");
+  }
 
-	public static String getPseudonym(PatientMetadata patientMetadata, PatientClient cache) {
-		if (cache != null) {
-			final String key = generateKey(patientMetadata);
-			return getCachedKey(key, patientMetadata, cache);
-		}
-		return null;
-	}
+  public static String getPseudonym(PatientMetadata patientMetadata, PatientClient cache) {
+    if (cache != null) {
+      final String key = generateKey(patientMetadata);
+      return getCachedKey(key, patientMetadata, cache);
+    }
+    return null;
+  }
 
-	public static String getPseudonym(PatientMetadata patientMetadata, PatientClient cache, Long projectID) {
-		if (cache != null) {
-			final String key = generateKey(patientMetadata, projectID);
-			return getCachedKey(key, patientMetadata, cache);
-		}
-		return null;
-	}
+  public static String getPseudonym(
+      PatientMetadata patientMetadata, PatientClient cache, Long projectID) {
+    if (cache != null) {
+      final String key = generateKey(patientMetadata, projectID);
+      return getCachedKey(key, patientMetadata, cache);
+    }
+    return null;
+  }
 
-	private static String getCachedKey(String key, PatientMetadata patientMetadata, PatientClient cache) {
-		final PseudonymPatient patient = cache.get(key);
-		if (patient != null && patientMetadata.compareCachedPatient(patient)) {
-			return patient.getPseudonym();
-		}
-		return null;
-	}
+  private static String getCachedKey(
+      String key, PatientMetadata patientMetadata, PatientClient cache) {
+    final PseudonymPatient patient = cache.get(key);
+    if (patient != null && patientMetadata.compareCachedPatient(patient)) {
+      return patient.getPseudonym();
+    }
+    return null;
+  }
 
-	public static String generateKey(String patientID, String issuerOfPatientID) {
-		return patientID.concat(issuerOfPatientID == null ? "" : issuerOfPatientID);
-	}
+  public static String generateKey(String patientID, String issuerOfPatientID) {
+    return patientID.concat(issuerOfPatientID == null ? "" : issuerOfPatientID);
+  }
 
-	public static String generateKey(PseudonymPatient patient) {
-		String patientID = patient.getPatientId();
-		String issuerOfPatientID = patient.getIssuerOfPatientId();
-		return generateKey(patientID, issuerOfPatientID);
-	}
+  public static String generateKey(PseudonymPatient patient) {
+    String patientID = patient.getPatientId();
+    String issuerOfPatientID = patient.getIssuerOfPatientId();
+    return generateKey(patientID, issuerOfPatientID);
+  }
 
-	public static String generateKey(PatientMetadata patientMetadata) {
-		String patientID = patientMetadata.getPatientID();
-		String issuerOfPatientID = patientMetadata.getIssuerOfPatientID();
-		return generateKey(patientID, issuerOfPatientID);
-	}
+  public static String generateKey(PatientMetadata patientMetadata) {
+    String patientID = patientMetadata.getPatientID();
+    String issuerOfPatientID = patientMetadata.getIssuerOfPatientID();
+    return generateKey(patientID, issuerOfPatientID);
+  }
 
-	public static String generateKey(PatientMetadata patientMetadata, Long projectID) {
-		final String key = generateKey(patientMetadata);
-		return key.concat(projectID == null ? "" : projectID.toString());
-	}
+  public static String generateKey(PatientMetadata patientMetadata, Long projectID) {
+    final String key = generateKey(patientMetadata);
+    return key.concat(projectID == null ? "" : projectID.toString());
+  }
 
-	public static String generateKey(PseudonymPatient pseudonymPatient, Long projectID) {
-		final String key = generateKey(pseudonymPatient);
-		return key.concat(projectID == null ? "" : projectID.toString());
-	}
-
+  public static String generateKey(PseudonymPatient pseudonymPatient, Long projectID) {
+    final String key = generateKey(pseudonymPatient);
+    return key.concat(projectID == null ? "" : projectID.toString());
+  }
 }

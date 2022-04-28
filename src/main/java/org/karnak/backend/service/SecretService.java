@@ -18,33 +18,34 @@ import org.springframework.stereotype.Service;
 @Service
 public class SecretService {
 
-	// Repositories
-	private final SecretRepo secretRepo;
+  // Repositories
+  private final SecretRepo secretRepo;
 
-	@Autowired
-	public SecretService(final SecretRepo secretRepo) {
-		this.secretRepo = secretRepo;
-	}
+  @Autowired
+  public SecretService(final SecretRepo secretRepo) {
+    this.secretRepo = secretRepo;
+  }
 
-	/**
-	 * Save a secret in db
-	 * @param secretEntity Secret to save
-	 * @return Secret saved
-	 */
-	public SecretEntity save(SecretEntity secretEntity) {
-		return secretRepo.saveAndFlush(secretEntity);
-	}
+  /**
+   * Save a secret in db
+   *
+   * @param secretEntity Secret to save
+   * @return Secret saved
+   */
+  public SecretEntity save(SecretEntity secretEntity) {
+    return secretRepo.saveAndFlush(secretEntity);
+  }
 
-	/**
-	 * Save in db a new active secret for the project in parameter
-	 * @param secretEntity Secret to save
-	 * @param projectEntity Project associated to the secret
-	 * @return Secret saved
-	 */
-	public SecretEntity saveActiveSecret(SecretEntity secretEntity, ProjectEntity projectEntity) {
-		secretEntity.setProjectEntity(projectEntity);
-		secretEntity.setActive(true);
-		return secretRepo.saveAndFlush(secretEntity);
-	}
-
+  /**
+   * Save in db a new active secret for the project in parameter
+   *
+   * @param secretEntity Secret to save
+   * @param projectEntity Project associated to the secret
+   * @return Secret saved
+   */
+  public SecretEntity saveActiveSecret(SecretEntity secretEntity, ProjectEntity projectEntity) {
+    secretEntity.setProjectEntity(projectEntity);
+    secretEntity.setActive(true);
+    return secretRepo.saveAndFlush(secretEntity);
+  }
 }

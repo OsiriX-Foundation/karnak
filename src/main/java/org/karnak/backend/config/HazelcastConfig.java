@@ -17,27 +17,29 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 @Configuration
-//@EnableEurekaClient
+// @EnableEurekaClient
 public class HazelcastConfig {
 
-	@Bean
-	@Profile("!test")
-	public Config hazelcastConfiguration(EurekaClient eurekaClient) {
-//		Config config = new Config();
-//		config.getNetworkConfig().getJoin().getMulticastConfig().setEnabled(false);
-//		config.getNetworkConfig().getJoin().getEurekaConfig().setEnabled(true)
-//				.setProperty("self-registration", "true")
-//				.setProperty("namespace", "hazelcast-karnak");
-//		return config;
-		EurekaOneDiscoveryStrategyFactory.setEurekaClient(eurekaClient);
-		Config config = new Config();
-		config.getNetworkConfig().getJoin().getMulticastConfig().setEnabled(false);
-		config.getNetworkConfig().getJoin().getEurekaConfig()
-				.setEnabled(true)
-				.setProperty("self-registration", "true")
-				.setProperty("namespace", "hazelcast-karnak")
-				.setProperty("use-metadata-for-host-and-port", "true");
-		return config;
-	}
-
+  @Bean
+  @Profile("!test")
+  public Config hazelcastConfiguration(EurekaClient eurekaClient) {
+    //		Config config = new Config();
+    //		config.getNetworkConfig().getJoin().getMulticastConfig().setEnabled(false);
+    //		config.getNetworkConfig().getJoin().getEurekaConfig().setEnabled(true)
+    //				.setProperty("self-registration", "true")
+    //				.setProperty("namespace", "hazelcast-karnak");
+    //		return config;
+    EurekaOneDiscoveryStrategyFactory.setEurekaClient(eurekaClient);
+    Config config = new Config();
+    config.getNetworkConfig().getJoin().getMulticastConfig().setEnabled(false);
+    config
+        .getNetworkConfig()
+        .getJoin()
+        .getEurekaConfig()
+        .setEnabled(true)
+        .setProperty("self-registration", "true")
+        .setProperty("namespace", "hazelcast-karnak")
+        .setProperty("use-metadata-for-host-and-port", "true");
+    return config;
+  }
 }

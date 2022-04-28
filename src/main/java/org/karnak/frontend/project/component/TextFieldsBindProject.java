@@ -24,79 +24,86 @@ import org.karnak.frontend.component.ProfileDropDown;
 
 public class TextFieldsBindProject {
 
-	private final Binder<ProjectEntity> binder;
+  private final Binder<ProjectEntity> binder;
 
-	private final TextField textResearchName;
+  private final TextField textResearchName;
 
-	private final ComboBox<SecretEntity> secretComboBox;
+  private final ComboBox<SecretEntity> secretComboBox;
 
-	private final ProfileDropDown profileDropDown;
+  private final ProfileDropDown profileDropDown;
 
-	public TextFieldsBindProject() {
-		this.textResearchName = new TextField();
-		this.secretComboBox = new ComboBox<>("Project Secret");
-		this.profileDropDown = new ProfileDropDown();
-		this.binder = setBinder();
-	}
+  public TextFieldsBindProject() {
+    this.textResearchName = new TextField();
+    this.secretComboBox = new ComboBox<>("Project Secret");
+    this.profileDropDown = new ProfileDropDown();
+    this.binder = setBinder();
+  }
 
-	private Binder<ProjectEntity> setBinder() {
-		Binder<ProjectEntity> binder = new BeanValidationBinder<>(ProjectEntity.class);
-		binder.forField(textResearchName).withValidator(StringUtils::isNotBlank, "Name is mandatory")
-				.bind(ProjectEntity::getName, ProjectEntity::setName);
+  private Binder<ProjectEntity> setBinder() {
+    Binder<ProjectEntity> binder = new BeanValidationBinder<>(ProjectEntity.class);
+    binder
+        .forField(textResearchName)
+        .withValidator(StringUtils::isNotBlank, "Name is mandatory")
+        .bind(ProjectEntity::getName, ProjectEntity::setName);
 
-		binder.forField(secretComboBox).withValidator(secretMandatoryValidator()).withValidator(secretValidValidator())
-				.bind(ProjectEntity::retrieveActiveSecret, ProjectEntity::applyActiveSecret);
+    binder
+        .forField(secretComboBox)
+        .withValidator(secretMandatoryValidator())
+        .withValidator(secretValidValidator())
+        .bind(ProjectEntity::retrieveActiveSecret, ProjectEntity::applyActiveSecret);
 
-		binder.forField(profileDropDown).withValidator(Objects::nonNull, "Choose the de-identification profile\n")
-				.bind(ProjectEntity::getProfileEntity, ProjectEntity::setProfileEntity);
-		return binder;
-	}
+    binder
+        .forField(profileDropDown)
+        .withValidator(Objects::nonNull, "Choose the de-identification profile\n")
+        .bind(ProjectEntity::getProfileEntity, ProjectEntity::setProfileEntity);
+    return binder;
+  }
 
-	/**
-	 * Validate secretEntity key
-	 * @return validation ok if key is valid, validation error otherwise
-	 */
-	private Validator<SecretEntity> secretValidValidator() {
-		return (secretEntity, valueContext) -> {
-			if (HMAC.validateKey(HMAC.byteToHex(secretEntity.getKey()))) {
-				return ValidationResult.ok();
-			}
-			else {
-				return ValidationResult.error("Secret is not valid");
-			}
-		};
-	}
+  /**
+   * Validate secretEntity key
+   *
+   * @return validation ok if key is valid, validation error otherwise
+   */
+  private Validator<SecretEntity> secretValidValidator() {
+    return (secretEntity, valueContext) -> {
+      if (HMAC.validateKey(HMAC.byteToHex(secretEntity.getKey()))) {
+        return ValidationResult.ok();
+      } else {
+        return ValidationResult.error("Secret is not valid");
+      }
+    };
+  }
 
-	/**
-	 * Validate key is present.
-	 * @return validation ok if key is not null or empty, validation error otherwise
-	 */
-	private Validator<SecretEntity> secretMandatoryValidator() {
-		return (secretEntity, valueContext) -> {
-			if (secretComboBox.getValue() != null && secretEntity.getKey() != null
-					&& secretEntity.getKey().length > 0) {
-				return ValidationResult.ok();
-			}
-			else {
-				return ValidationResult.error("Secret is mandatory");
-			}
-		};
-	}
+  /**
+   * Validate key is present.
+   *
+   * @return validation ok if key is not null or empty, validation error otherwise
+   */
+  private Validator<SecretEntity> secretMandatoryValidator() {
+    return (secretEntity, valueContext) -> {
+      if (secretComboBox.getValue() != null
+          && secretEntity.getKey() != null
+          && secretEntity.getKey().length > 0) {
+        return ValidationResult.ok();
+      } else {
+        return ValidationResult.error("Secret is mandatory");
+      }
+    };
+  }
 
-	public Binder<ProjectEntity> getBinder() {
-		return binder;
-	}
+  public Binder<ProjectEntity> getBinder() {
+    return binder;
+  }
 
-	public TextField getTextResearchName() {
-		return textResearchName;
-	}
+  public TextField getTextResearchName() {
+    return textResearchName;
+  }
 
-	public ComboBox<SecretEntity> getSecretComboBox() {
-		return secretComboBox;
-	}
+  public ComboBox<SecretEntity> getSecretComboBox() {
+    return secretComboBox;
+  }
 
-	public ProfileDropDown getProfileDropDown() {
-		return profileDropDown;
-	}
-
+  public ProfileDropDown getProfileDropDown() {
+    return profileDropDown;
+  }
 }

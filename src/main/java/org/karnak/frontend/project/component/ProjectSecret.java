@@ -21,60 +21,65 @@ import org.karnak.frontend.component.WarningConfirmDialog;
 
 public class ProjectSecret extends Div {
 
-	private final String WARNING_TEXT = "If you change the project secret, the integrity of the DICOM will be compromise";
+  private final String WARNING_TEXT =
+      "If you change the project secret, the integrity of the DICOM will be compromise";
 
-	private final String REFER_LINK_TEXT = "For more details on the use of the project secret, please refer to the following link";
+  private final String REFER_LINK_TEXT =
+      "For more details on the use of the project secret, please refer to the following link";
 
-	private final Anchor REFER_LINK = new Anchor(
-			"https://osirix-foundation.github.io/karnak-documentation/docs/deidentification/rules#action-u-generate-a-new-uid",
-			"How KARNAK does ?");
+  private final Anchor REFER_LINK =
+      new Anchor(
+          "https://osirix-foundation.github.io/karnak-documentation/docs/deidentification/rules#action-u-generate-a-new-uid",
+          "How KARNAK does ?");
 
-	private final Div messageWarningLayout = new Div();
+  private final Div messageWarningLayout = new Div();
 
-	private final ComboBox<SecretEntity> secretComboBox;
+  private final ComboBox<SecretEntity> secretComboBox;
 
-	private final Button generateButton = new Button("Generate Secret");
+  private final Button generateButton = new Button("Generate Secret");
 
-	private ProjectEntity projectEntity;
+  private ProjectEntity projectEntity;
 
-	public ProjectSecret(ComboBox<SecretEntity> secretComboBox) {
-		this.secretComboBox = secretComboBox;
-		setWidthFull();
-		addComponents();
-		addMessageWarningLayout();
-		eventGenerateSecret();
-	}
+  public ProjectSecret(ComboBox<SecretEntity> secretComboBox) {
+    this.secretComboBox = secretComboBox;
+    setWidthFull();
+    addComponents();
+    addMessageWarningLayout();
+    eventGenerateSecret();
+  }
 
-	private void addComponents() {
-		secretComboBox.getStyle().set("width", "80%");
-		secretComboBox.setPlaceholder("Project Secret");
-		generateButton.getStyle().set("margin-left", "10px");
-		add(secretComboBox, generateButton);
-	}
+  private void addComponents() {
+    secretComboBox.getStyle().set("width", "80%");
+    secretComboBox.setPlaceholder("Project Secret");
+    generateButton.getStyle().set("margin-left", "10px");
+    add(secretComboBox, generateButton);
+  }
 
-	public void addValuesCombobox(ProjectEntity projectEntity) {
-		this.projectEntity = projectEntity;
-		secretComboBox.setItems(projectEntity.getSecretEntities());
-		secretComboBox.setItemLabelGenerator(ProjectEntity::buildLabelSecret);
-	}
+  public void addValuesCombobox(ProjectEntity projectEntity) {
+    this.projectEntity = projectEntity;
+    secretComboBox.setItems(projectEntity.getSecretEntities());
+    secretComboBox.setItemLabelGenerator(ProjectEntity::buildLabelSecret);
+  }
 
-	private void addMessageWarningLayout() {
-		messageWarningLayout.add(new Div(new Text(WARNING_TEXT)));
-		messageWarningLayout.add(new Div(new Text(REFER_LINK_TEXT)));
-		messageWarningLayout.add(REFER_LINK);
-	}
+  private void addMessageWarningLayout() {
+    messageWarningLayout.add(new Div(new Text(WARNING_TEXT)));
+    messageWarningLayout.add(new Div(new Text(REFER_LINK_TEXT)));
+    messageWarningLayout.add(REFER_LINK);
+  }
 
-	private void eventGenerateSecret() {
-		generateButton.addClickListener(event -> {
-			WarningConfirmDialog dialog = new WarningConfirmDialog(messageWarningLayout);
-			dialog.addConfirmationListener(componentEvent -> {
-				SecretEntity secretEntityToCreate = new SecretEntity(projectEntity, HMAC.generateRandomKey());
-				projectEntity.addActiveSecretEntity(secretEntityToCreate);
-				secretComboBox.setValue(secretEntityToCreate);
-				secretComboBox.getDataProvider().refreshAll();
-			});
-			dialog.open();
-		});
-	}
-
+  private void eventGenerateSecret() {
+    generateButton.addClickListener(
+        event -> {
+          WarningConfirmDialog dialog = new WarningConfirmDialog(messageWarningLayout);
+          dialog.addConfirmationListener(
+              componentEvent -> {
+                SecretEntity secretEntityToCreate =
+                    new SecretEntity(projectEntity, HMAC.generateRandomKey());
+                projectEntity.addActiveSecretEntity(secretEntityToCreate);
+                secretComboBox.setValue(secretEntityToCreate);
+                secretComboBox.getDataProvider().refreshAll();
+              });
+          dialog.open();
+        });
+  }
 }

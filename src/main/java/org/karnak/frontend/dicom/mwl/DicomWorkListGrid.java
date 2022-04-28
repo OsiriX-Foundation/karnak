@@ -21,52 +21,62 @@ import org.weasis.dicom.tool.ModalityWorklist;
 
 public class DicomWorkListGrid extends Grid<Attributes> {
 
-	@Serial
-	private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
-	List<DicomParam> params = List.of(CFind.PatientName, CFind.PatientID, CFind.PatientBirthDate, CFind.PatientSex,
-			CFind.AccessionNumber, ModalityWorklist.ScheduledProcedureStepDescription, ModalityWorklist.Modality,
-			ModalityWorklist.ScheduledStationName);
+  List<DicomParam> params =
+      List.of(
+          CFind.PatientName,
+          CFind.PatientID,
+          CFind.PatientBirthDate,
+          CFind.PatientSex,
+          CFind.AccessionNumber,
+          ModalityWorklist.ScheduledProcedureStepDescription,
+          ModalityWorklist.Modality,
+          ModalityWorklist.ScheduledStationName);
 
-	public DicomWorkListGrid() {
-		init();
-		buildColumns();
-	}
+  public DicomWorkListGrid() {
+    init();
+    buildColumns();
+  }
 
-	private void init() {
-		setSelectionMode(SelectionMode.SINGLE);
-	}
+  private void init() {
+    setSelectionMode(SelectionMode.SINGLE);
+  }
 
-	private void buildColumns() {
-		for (DicomParam p : params) {
-			addColumn(p);
-		}
-	}
+  private void buildColumns() {
+    for (DicomParam p : params) {
+      addColumn(p);
+    }
+  }
 
-	private void addColumn(DicomParam p) {
-		int tag = p.getTag();
-		int[] pSeq = p.getParentSeqTags();
-		if (pSeq == null || pSeq.length == 0) {
-			addColumn(a -> getText(a, tag)).setHeader(Keyword.valueOf(tag)).setSortable(true)
-					.setKey(String.valueOf(tag));
-		}
-		else {
-			addColumn(a -> {
-				Attributes parent = a;
-				for (int k = 0; k < pSeq.length; k++) {
-					Attributes pn = parent.getNestedDataset(pSeq[k]);
-					if (pn == null) {
-						break;
-					}
-					parent = pn;
-				}
-				return getText(parent, tag);
-			}).setHeader(Keyword.valueOf(tag)).setSortable(true).setKey(String.valueOf(tag));
-		}
-	}
+  private void addColumn(DicomParam p) {
+    int tag = p.getTag();
+    int[] pSeq = p.getParentSeqTags();
+    if (pSeq == null || pSeq.length == 0) {
+      addColumn(a -> getText(a, tag))
+          .setHeader(Keyword.valueOf(tag))
+          .setSortable(true)
+          .setKey(String.valueOf(tag));
+    } else {
+      addColumn(
+              a -> {
+                Attributes parent = a;
+                for (int k = 0; k < pSeq.length; k++) {
+                  Attributes pn = parent.getNestedDataset(pSeq[k]);
+                  if (pn == null) {
+                    break;
+                  }
+                  parent = pn;
+                }
+                return getText(parent, tag);
+              })
+          .setHeader(Keyword.valueOf(tag))
+          .setSortable(true)
+          .setKey(String.valueOf(tag));
+    }
+  }
 
-	private String getText(Attributes attributes, int tag) {
-		return attributes.getString(tag, StringUtil.EMPTY_STRING);
-	}
-
+  private String getText(Attributes attributes, int tag) {
+    return attributes.getString(tag, StringUtil.EMPTY_STRING);
+  }
 }

@@ -19,19 +19,18 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "dcmprofile")
 public class DcmProfileConfig {
 
-	private static DcmProfileConfig instance;
+  private static DcmProfileConfig instance;
 
-	public static DcmProfileConfig getInstance() {
-		return instance;
-	}
+  public static DcmProfileConfig getInstance() {
+    return instance;
+  }
 
-	public static void setInstance(DcmProfileConfig instance) {
-		DcmProfileConfig.instance = instance;
-	}
+  public static void setInstance(DcmProfileConfig instance) {
+    DcmProfileConfig.instance = instance;
+  }
 
-	@PostConstruct
-	public void postConstruct() {
-		instance = this;
-	}
-
+  @PostConstruct
+  public void postConstruct() {
+    instance = this;
+  }
 }

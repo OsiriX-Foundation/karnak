@@ -12,39 +12,38 @@ package org.karnak.backend.constant;
 /** Constants for notification */
 public class Notification {
 
-	// Default
-	public static final String DEFAULT_SUBJECT_ERROR_PREFIX = "**ERROR**";
+  // Default
+  public static final String DEFAULT_SUBJECT_ERROR_PREFIX = "**ERROR**";
 
-	public static final String DEFAULT_SUBJECT_PATTERN = "[Karnak Notification] %s %.30s";
+  public static final String DEFAULT_SUBJECT_PATTERN = "[Karnak Notification] %s %.30s";
 
-	public static final String DEFAULT_SUBJECT_VALUES = "PatientID,StudyDescription";
+  public static final String DEFAULT_SUBJECT_VALUES = "PatientID,StudyDescription";
 
-	public static final String DEFAULT_INTERVAL = "45";
+  public static final String DEFAULT_INTERVAL = "45";
 
-	public static final String MAIL_SMTP_SENDER = "karnak@kehops.online";
+  public static final String MAIL_SMTP_SENDER = "karnak@kehops.online";
 
-	// Thymeleaf
-	public static final String CONTEXT_THYMELEAF = "notif";
+  // Thymeleaf
+  public static final String CONTEXT_THYMELEAF = "notif";
 
-	public static final String TEMPLATE_THYMELEAF = "transferNotificationEmail";
+  public static final String TEMPLATE_THYMELEAF = "transferNotificationEmail";
 
-	// Separators
-	public static final String COMMA_SEPARATOR = ",";
+  // Separators
+  public static final String COMMA_SEPARATOR = ",";
 
-	public static final String EMPTY_STRING = "";
+  public static final String EMPTY_STRING = "";
 
-	public static final String SPACE = " ";
+  public static final String SPACE = " ";
 
-	// PARAMS
-	public static final String PARAM_STUDY_DATE = "StudyDate";
+  // PARAMS
+  public static final String PARAM_STUDY_DATE = "StudyDate";
 
-	public static final String PARAM_STUDY_INSTANCE_UID = "StudyInstanceUID";
+  public static final String PARAM_STUDY_INSTANCE_UID = "StudyInstanceUID";
 
-	public static final String PARAM_STUDY_DESCRIPTION = "StudyDescription";
+  public static final String PARAM_STUDY_DESCRIPTION = "StudyDescription";
 
-	public static final String PARAM_PATIENT_ID = "PatientID";
+  public static final String PARAM_PATIENT_ID = "PatientID";
 
-	// Various
-	public static final long EXTRA_TIMER_DELAY = 10;
-
+  // Various
+  public static final long EXTRA_TIMER_DELAY = 10;
 }

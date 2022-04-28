@@ -16,10 +16,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface VersionRepo extends JpaRepository<VersionEntity, Long> {
 
-	/**
-	 * Find last record of the table version
-	 * @return VersionEntity found
-	 */
-	VersionEntity findTopByOrderByIdDesc();
-
+  /**
+   * Find last record of the table version
+   *
+   * @return VersionEntity found
+   */
+  VersionEntity findTopByOrderByIdDesc();
 }

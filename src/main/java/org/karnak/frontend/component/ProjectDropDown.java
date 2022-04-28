@@ -14,8 +14,7 @@ import org.karnak.backend.data.entity.ProjectEntity;
 
 public class ProjectDropDown extends ComboBox<ProjectEntity> {
 
-	public ProjectDropDown() {
-		setItemLabelGenerator(ProjectEntity::getName);
-	}
-
+  public ProjectDropDown() {
+    setItemLabelGenerator(ProjectEntity::getName);
+  }
 }

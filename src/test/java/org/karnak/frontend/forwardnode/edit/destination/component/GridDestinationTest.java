@@ -15,14 +15,13 @@ import org.junit.jupiter.api.Test;
 
 class GridDestinationTest {
 
-	@Test
-	void should_create_grid() {
+  @Test
+  void should_create_grid() {
 
-		// Build grid
-		GridDestination gridDestination = new GridDestination();
+    // Build grid
+    GridDestination gridDestination = new GridDestination();
 
-		// Test results
-		assertNotNull(gridDestination);
-	}
-
+    // Test results
+    assertNotNull(gridDestination);
+  }
 }

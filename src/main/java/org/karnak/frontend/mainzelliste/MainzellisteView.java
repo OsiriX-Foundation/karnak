@@ -21,19 +21,18 @@ import org.springframework.security.access.annotation.Secured;
 @Route(value = MainzellisteView.ROUTE, layout = MainLayout.class)
 @PageTitle("KARNAK - Mainzelliste")
 @Tag("mainzelliste-view")
-@Secured({ "ROLE_admin" })
+@Secured({"ROLE_admin"})
 @SuppressWarnings("serial")
 public class MainzellisteView extends HorizontalLayout {
 
-	public static final String VIEW_NAME = "Mainzelliste pseudonym";
+  public static final String VIEW_NAME = "Mainzelliste pseudonym";
 
-	public static final String ROUTE = "mainzelliste";
+  public static final String ROUTE = "mainzelliste";
 
-	public MainzellisteView() {
-		setSizeFull();
-		VerticalLayout verticalLayout = new VerticalLayout();
-		verticalLayout.add(new H2("Mainzelliste Pseudonym"), new MainzellisteAddPatient());
-		add(verticalLayout);
-	}
-
+  public MainzellisteView() {
+    setSizeFull();
+    VerticalLayout verticalLayout = new VerticalLayout();
+    verticalLayout.add(new H2("Mainzelliste Pseudonym"), new MainzellisteAddPatient());
+    add(verticalLayout);
+  }
 }

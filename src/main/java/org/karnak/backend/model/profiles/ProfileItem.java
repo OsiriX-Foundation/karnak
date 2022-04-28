@@ -17,26 +17,25 @@ import org.karnak.backend.model.profilepipe.HMAC;
 
 public interface ProfileItem {
 
-	ActionItem getAction(Attributes dcm, Attributes dcmCopy, int tag, HMAC hmac);
+  ActionItem getAction(Attributes dcm, Attributes dcmCopy, int tag, HMAC hmac);
 
-	ActionItem put(int tag, ActionItem action);
+  ActionItem put(int tag, ActionItem action);
 
-	ActionItem remove(int tag);
+  ActionItem remove(int tag);
 
-	void clearTagMap();
+  void clearTagMap();
 
-	String getName();
+  String getName();
 
-	String getCodeName();
+  String getCodeName();
 
-	String getCondition();
+  String getCondition();
 
-	String getOption();
+  String getOption();
 
-	List<ArgumentEntity> getArguments();
+  List<ArgumentEntity> getArguments();
 
-	Integer getPosition();
+  Integer getPosition();
 
-	void profileValidation() throws Exception;
-
+  void profileValidation() throws Exception;
 }

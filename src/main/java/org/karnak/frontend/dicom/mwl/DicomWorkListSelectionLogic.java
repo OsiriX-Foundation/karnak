@@ -16,22 +16,21 @@ import org.karnak.backend.util.DicomNodeUtil;
 
 public class DicomWorkListSelectionLogic {
 
-	// DIALOG
-	private final DicomWorkListSelectionDialog dialog;
+  // DIALOG
+  private final DicomWorkListSelectionDialog dialog;
 
-	public DicomWorkListSelectionLogic(DicomWorkListSelectionDialog view) {
-		this.dialog = view;
-	}
+  public DicomWorkListSelectionLogic(DicomWorkListSelectionDialog view) {
+    this.dialog = view;
+  }
 
-	public void loadDicomNodeList() {
-		try {
-			dialog.removeMessage();
-			dialog.loadWorkListNodes(DicomNodeUtil.getAllWorkListNodesDefinedLocally());
-		}
-		catch (Exception e) {
-			Message message = new Message(MessageLevel.ERROR, MessageFormat.TEXT, "Cannot read the set of worklists");
-			dialog.displayMessage(message);
-		}
-	}
-
+  public void loadDicomNodeList() {
+    try {
+      dialog.removeMessage();
+      dialog.loadWorkListNodes(DicomNodeUtil.getAllWorkListNodesDefinedLocally());
+    } catch (Exception e) {
+      Message message =
+          new Message(MessageLevel.ERROR, MessageFormat.TEXT, "Cannot read the set of worklists");
+      dialog.displayMessage(message);
+    }
+  }
 }

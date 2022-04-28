@@ -19,26 +19,33 @@ import org.weasis.dicom.param.DicomNode;
 
 public class GatewayParams extends AbstractListenerParams {
 
-	public GatewayParams(boolean bindCallingAet) {
-		super(null, bindCallingAet, null);
-	}
+  public GatewayParams(boolean bindCallingAet) {
+    super(null, bindCallingAet, null);
+  }
 
-	public GatewayParams(AdvancedParams params, boolean bindCallingAet) {
-		super(params, bindCallingAet, null);
-	}
+  public GatewayParams(AdvancedParams params, boolean bindCallingAet) {
+    super(params, bindCallingAet, null);
+  }
 
-	public GatewayParams(AdvancedParams params, boolean bindCallingAet, URL transferCapabilityFile,
-			String... acceptedCallingAETitles) {
-		super(params, bindCallingAet, transferCapabilityFile, acceptedCallingAETitles);
-	}
+  public GatewayParams(
+      AdvancedParams params,
+      boolean bindCallingAet,
+      URL transferCapabilityFile,
+      String... acceptedCallingAETitles) {
+    super(params, bindCallingAet, transferCapabilityFile, acceptedCallingAETitles);
+  }
 
-	public static String[] getAcceptedCallingAETitles(Map<ForwardDicomNode, List<ForwardDestination>> destinations) {
-		Set<ForwardDicomNode> set = destinations.keySet();
-		if (set.stream().anyMatch(s -> s.getAcceptedSourceNodes().isEmpty())) {
-			return null;
-		}
-		return set.stream().map(ForwardDicomNode::getAcceptedSourceNodes).flatMap(Set<DicomNode>::stream)
-				.map(DicomNode::getAet).distinct().toArray(String[]::new);
-	}
-
+  public static String[] getAcceptedCallingAETitles(
+      Map<ForwardDicomNode, List<ForwardDestination>> destinations) {
+    Set<ForwardDicomNode> set = destinations.keySet();
+    if (set.stream().anyMatch(s -> s.getAcceptedSourceNodes().isEmpty())) {
+      return null;
+    }
+    return set.stream()
+        .map(ForwardDicomNode::getAcceptedSourceNodes)
+        .flatMap(Set<DicomNode>::stream)
+        .map(DicomNode::getAet)
+        .distinct()
+        .toArray(String[]::new);
+  }
 }

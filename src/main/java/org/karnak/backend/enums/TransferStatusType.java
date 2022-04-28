@@ -11,31 +11,32 @@ package org.karnak.backend.enums;
 
 /** Enum for the transfer status */
 public enum TransferStatusType {
+  ALL(null, "All"),
+  SENT(true, "Sent"),
+  NOT_SENT(false, "Not Sent");
 
-	ALL(null, "All"), SENT(true, "Sent"), NOT_SENT(false, "Not Sent");
+  /** Code of the enum */
+  private final Boolean code;
 
-	/** Code of the enum */
-	private final Boolean code;
+  /** Description of the enum */
+  private final String description;
 
-	/** Description of the enum */
-	private final String description;
+  /**
+   * Constructor
+   *
+   * @param code Code
+   * @param description Description
+   */
+  TransferStatusType(Boolean code, String description) {
+    this.code = code;
+    this.description = description;
+  }
 
-	/**
-	 * Constructor
-	 * @param code Code
-	 * @param description Description
-	 */
-	TransferStatusType(Boolean code, String description) {
-		this.code = code;
-		this.description = description;
-	}
+  public Boolean getCode() {
+    return code;
+  }
 
-	public Boolean getCode() {
-		return code;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
+  public String getDescription() {
+    return description;
+  }
 }

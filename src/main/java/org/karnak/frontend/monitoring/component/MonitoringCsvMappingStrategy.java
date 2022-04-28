@@ -20,18 +20,20 @@ import java.util.EnumSet;
  */
 public class MonitoringCsvMappingStrategy<T> extends ColumnPositionMappingStrategy<T> {
 
-	/** Constructor */
-	public MonitoringCsvMappingStrategy() {
-		setColumnMapping(EnumSet.allOf(MonitoringCsvMapping.class).stream()
-				.map(MonitoringCsvMapping::getNameFieldEntity).toArray(String[]::new));
-	}
+  /** Constructor */
+  public MonitoringCsvMappingStrategy() {
+    setColumnMapping(
+        EnumSet.allOf(MonitoringCsvMapping.class).stream()
+            .map(MonitoringCsvMapping::getNameFieldEntity)
+            .toArray(String[]::new));
+  }
 
-	@Override
-	public String[] generateHeader(T bean) throws CsvRequiredFieldEmptyException {
-		setType((Class<? extends T>) bean.getClass());
-		super.generateHeader(bean);
-		return EnumSet.allOf(MonitoringCsvMapping.class).stream().map(MonitoringCsvMapping::getLabelCsv)
-				.toArray(String[]::new);
-	}
-
+  @Override
+  public String[] generateHeader(T bean) throws CsvRequiredFieldEmptyException {
+    setType((Class<? extends T>) bean.getClass());
+    super.generateHeader(bean);
+    return EnumSet.allOf(MonitoringCsvMapping.class).stream()
+        .map(MonitoringCsvMapping::getLabelCsv)
+        .toArray(String[]::new);
+  }
 }

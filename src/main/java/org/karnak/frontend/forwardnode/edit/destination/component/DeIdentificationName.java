@@ -13,9 +13,8 @@ import com.vaadin.flow.component.html.Div;
 
 public class DeIdentificationName extends Div {
 
-	public void setShowValue(String text) {
-		removeAll();
-		add(text);
-	}
-
+  public void setShowValue(String text) {
+    removeAll();
+    add(text);
+  }
 }

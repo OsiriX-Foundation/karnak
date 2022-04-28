@@ -26,260 +26,296 @@ import org.karnak.frontend.util.UIS;
 /** Create a notification component */
 public class NotificationComponent extends VerticalLayout {
 
-	// Components
-	private TextField notify;
+  // Components
+  private TextField notify;
 
-	private TextField notifyObjectErrorPrefix;
+  private TextField notifyObjectErrorPrefix;
 
-	private TextField notifyObjectPattern;
+  private TextField notifyObjectPattern;
 
-	private TextField notifyObjectValues;
+  private TextField notifyObjectValues;
 
-	private TextField notifyInterval;
+  private TextField notifyInterval;
 
-	private Checkbox activateNotification;
+  private Checkbox activateNotification;
 
-	private Div notificationInputsDiv;
+  private Div notificationInputsDiv;
 
-	/** Constructor */
-	public NotificationComponent() {
-		// Size
-		setWidthFull();
+  /** Constructor */
+  public NotificationComponent() {
+    // Size
+    setWidthFull();
 
-		// In order to not have a padding around the component
-		setPadding(true);
+    // In order to not have a padding around the component
+    setPadding(true);
 
-		// Build notification components
-		buildComponents();
+    // Build notification components
+    buildComponents();
 
-		// Build listeners
-		buildListeners();
+    // Build listeners
+    buildListeners();
 
-		// Add components
-		addComponents();
-	}
+    // Add components
+    addComponents();
+  }
 
-	/** Add components in notification components */
-	private void addComponents() {
-		notificationInputsDiv.add(UIS.setWidthFull(new HorizontalLayout(notify)),
-				UIS.setWidthFull(new HorizontalLayout(notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues,
-						notifyInterval)));
+  /** Add components in notification components */
+  private void addComponents() {
+    notificationInputsDiv.add(
+        UIS.setWidthFull(new HorizontalLayout(notify)),
+        UIS.setWidthFull(
+            new HorizontalLayout(
+                notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues, notifyInterval)));
 
-		add(UIS.setWidthFull(new HorizontalLayout(activateNotification)), UIS.setWidthFull(notificationInputsDiv));
-	}
+    add(
+        UIS.setWidthFull(new HorizontalLayout(activateNotification)),
+        UIS.setWidthFull(notificationInputsDiv));
+  }
 
-	/** Build listeners on components */
-	private void buildListeners() {
-		buildListenerActivateNotification();
-	}
+  /** Build listeners on components */
+  private void buildListeners() {
+    buildListenerActivateNotification();
+  }
 
-	/** Listener activate notification */
-	private void buildListenerActivateNotification() {
-		activateNotification.addValueChangeListener(event -> {
-			if (event != null && event.getValue()) {
-				notificationInputsDiv.setVisible(true);
-				// Set default values if null or empty
-				updateDefaultValuesNotificationTextFields();
-			}
-			else {
-				notificationInputsDiv.setVisible(false);
-			}
-		});
-	}
+  /** Listener activate notification */
+  private void buildListenerActivateNotification() {
+    activateNotification.addValueChangeListener(
+        event -> {
+          if (event != null && event.getValue()) {
+            notificationInputsDiv.setVisible(true);
+            // Set default values if null or empty
+            updateDefaultValuesNotificationTextFields();
+          } else {
+            notificationInputsDiv.setVisible(false);
+          }
+        });
+  }
 
-	/** Set default values if textfield values are null or empty */
-	private void updateDefaultValuesNotificationTextFields() {
-		if (notifyObjectErrorPrefix.getValue() == null || notifyObjectErrorPrefix.getValue().trim().isEmpty()) {
-			notifyObjectErrorPrefix.setValue(Notification.DEFAULT_SUBJECT_ERROR_PREFIX);
-		}
-		if (notifyObjectPattern.getValue() == null || notifyObjectPattern.getValue().trim().isEmpty()) {
-			notifyObjectPattern.setValue(Notification.DEFAULT_SUBJECT_PATTERN);
-		}
-		if (notifyObjectValues.getValue() == null || notifyObjectValues.getValue().trim().isEmpty()) {
-			notifyObjectValues.setValue(Notification.DEFAULT_SUBJECT_VALUES);
-		}
-		if (notifyInterval.getValue() == null || notifyInterval.getValue().trim().isEmpty()) {
-			notifyInterval.setValue(Notification.DEFAULT_INTERVAL);
-		}
-	}
+  /** Set default values if textfield values are null or empty */
+  private void updateDefaultValuesNotificationTextFields() {
+    if (notifyObjectErrorPrefix.getValue() == null
+        || notifyObjectErrorPrefix.getValue().trim().isEmpty()) {
+      notifyObjectErrorPrefix.setValue(Notification.DEFAULT_SUBJECT_ERROR_PREFIX);
+    }
+    if (notifyObjectPattern.getValue() == null || notifyObjectPattern.getValue().trim().isEmpty()) {
+      notifyObjectPattern.setValue(Notification.DEFAULT_SUBJECT_PATTERN);
+    }
+    if (notifyObjectValues.getValue() == null || notifyObjectValues.getValue().trim().isEmpty()) {
+      notifyObjectValues.setValue(Notification.DEFAULT_SUBJECT_VALUES);
+    }
+    if (notifyInterval.getValue() == null || notifyInterval.getValue().trim().isEmpty()) {
+      notifyInterval.setValue(Notification.DEFAULT_INTERVAL);
+    }
+  }
 
-	/**
-	 * Set default values if notification values are null or empty
-	 * @param destinationEntity Destination to update
-	 */
-	public void updateDefaultValuesNotification(DestinationEntity destinationEntity) {
-		if (destinationEntity.getNotifyObjectErrorPrefix() == null
-				|| destinationEntity.getNotifyObjectErrorPrefix().trim().isEmpty()) {
-			destinationEntity.setNotifyObjectErrorPrefix(Notification.DEFAULT_SUBJECT_ERROR_PREFIX);
-		}
-		if (destinationEntity.getNotifyObjectPattern() == null
-				|| destinationEntity.getNotifyObjectPattern().trim().isEmpty()) {
-			destinationEntity.setNotifyObjectPattern(Notification.DEFAULT_SUBJECT_PATTERN);
-		}
-		if (destinationEntity.getNotifyObjectValues() == null
-				|| destinationEntity.getNotifyObjectValues().trim().isEmpty()) {
-			destinationEntity.setNotifyObjectValues(Notification.DEFAULT_SUBJECT_VALUES);
-		}
-		if (destinationEntity.getNotifyInterval() == null || destinationEntity.getNotifyInterval() == 0) {
-			destinationEntity.setNotifyInterval(Integer.parseInt(Notification.DEFAULT_INTERVAL));
-		}
-	}
+  /**
+   * Set default values if notification values are null or empty
+   *
+   * @param destinationEntity Destination to update
+   */
+  public void updateDefaultValuesNotification(DestinationEntity destinationEntity) {
+    if (destinationEntity.getNotifyObjectErrorPrefix() == null
+        || destinationEntity.getNotifyObjectErrorPrefix().trim().isEmpty()) {
+      destinationEntity.setNotifyObjectErrorPrefix(Notification.DEFAULT_SUBJECT_ERROR_PREFIX);
+    }
+    if (destinationEntity.getNotifyObjectPattern() == null
+        || destinationEntity.getNotifyObjectPattern().trim().isEmpty()) {
+      destinationEntity.setNotifyObjectPattern(Notification.DEFAULT_SUBJECT_PATTERN);
+    }
+    if (destinationEntity.getNotifyObjectValues() == null
+        || destinationEntity.getNotifyObjectValues().trim().isEmpty()) {
+      destinationEntity.setNotifyObjectValues(Notification.DEFAULT_SUBJECT_VALUES);
+    }
+    if (destinationEntity.getNotifyInterval() == null
+        || destinationEntity.getNotifyInterval() == 0) {
+      destinationEntity.setNotifyInterval(Integer.parseInt(Notification.DEFAULT_INTERVAL));
+    }
+  }
 
-	/** Build components used in Notification component */
-	private void buildComponents() {
-		buildNotificationInputsDiv();
-		buildActivateNotification();
-		buildNotify();
-		buildNotifyObjectErrorPrefix();
-		buildNotifyObjectPattern();
-		buildNotifyObjectValues();
-		buildNotifyInterval();
-	}
+  /** Build components used in Notification component */
+  private void buildComponents() {
+    buildNotificationInputsDiv();
+    buildActivateNotification();
+    buildNotify();
+    buildNotifyObjectErrorPrefix();
+    buildNotifyObjectPattern();
+    buildNotifyObjectValues();
+    buildNotifyInterval();
+  }
 
-	/** Notify interval */
-	private void buildNotifyInterval() {
-		notifyInterval = new TextField(String.format("Notif.: interval (Default: %s)", Notification.DEFAULT_INTERVAL));
-		notifyInterval.setWidth("18%");
-		notifyInterval.addThemeVariants(TextFieldVariant.LUMO_ALIGN_RIGHT);
-		UIS.setTooltip(notifyInterval, String.format(
-				"Interval in seconds for sending a notification (when no new image is arrived in the archive folder). Default value: %s",
-				Notification.DEFAULT_INTERVAL));
-	}
+  /** Notify interval */
+  private void buildNotifyInterval() {
+    notifyInterval =
+        new TextField(
+            String.format("Notif.: interval (Default: %s)", Notification.DEFAULT_INTERVAL));
+    notifyInterval.setWidth("18%");
+    notifyInterval.addThemeVariants(TextFieldVariant.LUMO_ALIGN_RIGHT);
+    UIS.setTooltip(
+        notifyInterval,
+        String.format(
+            "Interval in seconds for sending a notification (when no new image is arrived in the archive folder). Default value: %s",
+            Notification.DEFAULT_INTERVAL));
+  }
 
-	/** Notify Object Values */
-	private void buildNotifyObjectValues() {
-		notifyObjectValues = new TextField(
-				String.format("Notif.: subject values (Default: %s)", Notification.DEFAULT_SUBJECT_VALUES));
-		notifyObjectValues.setWidth("24%");
-		UIS.setTooltip(notifyObjectValues, String.format(
-				"Values injected in the pattern [PatientID StudyDescription StudyDate StudyInstanceUID]. Default value: %s",
-				Notification.DEFAULT_SUBJECT_VALUES));
-	}
+  /** Notify Object Values */
+  private void buildNotifyObjectValues() {
+    notifyObjectValues =
+        new TextField(
+            String.format(
+                "Notif.: subject values (Default: %s)", Notification.DEFAULT_SUBJECT_VALUES));
+    notifyObjectValues.setWidth("24%");
+    UIS.setTooltip(
+        notifyObjectValues,
+        String.format(
+            "Values injected in the pattern [PatientID StudyDescription StudyDate StudyInstanceUID]. Default value: %s",
+            Notification.DEFAULT_SUBJECT_VALUES));
+  }
 
-	/** Notify Object Pattern */
-	private void buildNotifyObjectPattern() {
-		notifyObjectPattern = new TextField(
-				String.format("Notif.: subject pattern (Default: %s)", Notification.DEFAULT_SUBJECT_PATTERN));
-		notifyObjectPattern.setWidth("24%");
-		UIS.setTooltip(notifyObjectPattern, String.format(
-				"Pattern of the email object, see https://dzone.com/articles/java-string-format-examples. Default value: %s",
-				Notification.DEFAULT_SUBJECT_PATTERN));
-	}
+  /** Notify Object Pattern */
+  private void buildNotifyObjectPattern() {
+    notifyObjectPattern =
+        new TextField(
+            String.format(
+                "Notif.: subject pattern (Default: %s)", Notification.DEFAULT_SUBJECT_PATTERN));
+    notifyObjectPattern.setWidth("24%");
+    UIS.setTooltip(
+        notifyObjectPattern,
+        String.format(
+            "Pattern of the email object, see https://dzone.com/articles/java-string-format-examples. Default value: %s",
+            Notification.DEFAULT_SUBJECT_PATTERN));
+  }
 
-	/** Notify Object Error Prefix */
-	private void buildNotifyObjectErrorPrefix() {
-		notifyObjectErrorPrefix = new TextField(
-				String.format("Notif.: error subject prefix (Default: %s)", Notification.DEFAULT_SUBJECT_ERROR_PREFIX));
-		notifyObjectErrorPrefix.setWidth("24%");
-		UIS.setTooltip(notifyObjectErrorPrefix,
-				String.format("Prefix of the email object when containing an issue. Default value: %s",
-						Notification.DEFAULT_SUBJECT_ERROR_PREFIX));
-	}
+  /** Notify Object Error Prefix */
+  private void buildNotifyObjectErrorPrefix() {
+    notifyObjectErrorPrefix =
+        new TextField(
+            String.format(
+                "Notif.: error subject prefix (Default: %s)",
+                Notification.DEFAULT_SUBJECT_ERROR_PREFIX));
+    notifyObjectErrorPrefix.setWidth("24%");
+    UIS.setTooltip(
+        notifyObjectErrorPrefix,
+        String.format(
+            "Prefix of the email object when containing an issue. Default value: %s",
+            Notification.DEFAULT_SUBJECT_ERROR_PREFIX));
+  }
 
-	/** Notify */
-	private void buildNotify() {
-		notify = new TextField("Notif.: list of emails");
-		notify.setWidth("100%");
-		notify.getStyle().set("padding-top", "0");
-		notify.getStyle().set("padding", "0");
-	}
+  /** Notify */
+  private void buildNotify() {
+    notify = new TextField("Notif.: list of emails");
+    notify.setWidth("100%");
+    notify.getStyle().set("padding-top", "0");
+    notify.getStyle().set("padding", "0");
+  }
 
-	/** Activate Notification */
-	private void buildActivateNotification() {
-		activateNotification = new Checkbox("Activate notification");
-		// By default deactivate
-		activateNotification.setValue(false);
-	}
+  /** Activate Notification */
+  private void buildActivateNotification() {
+    activateNotification = new Checkbox("Activate notification");
+    // By default deactivate
+    activateNotification.setValue(false);
+  }
 
-	/** Notification Inputs Div */
-	private void buildNotificationInputsDiv() {
-		notificationInputsDiv = new Div();
-		// By default hide
-		notificationInputsDiv.setVisible(false);
-	}
+  /** Notification Inputs Div */
+  private void buildNotificationInputsDiv() {
+    notificationInputsDiv = new Div();
+    // By default hide
+    notificationInputsDiv.setVisible(false);
+  }
 
-	/**
-	 * Init binder for the component
-	 * @param binder Binder
-	 */
-	public void init(Binder<DestinationEntity> binder) {
+  /**
+   * Init binder for the component
+   *
+   * @param binder Binder
+   */
+  public void init(Binder<DestinationEntity> binder) {
 
-		// Activate notification
-		binder.forField(getActivateNotification()).bind(DestinationEntity::isActivateNotification,
-				DestinationEntity::setActivateNotification);
+    // Activate notification
+    binder
+        .forField(getActivateNotification())
+        .bind(
+            DestinationEntity::isActivateNotification, DestinationEntity::setActivateNotification);
 
-		// List of emails
-		binder.forField(getNotify()).withValidator((s, valueContext) -> {
-			if (StringUtils.isBlank(s) && getActivateNotification().getValue()) {
-				return ValidationResult.error("Should have at least one address email");
-			}
-			return ValidationResult.ok();
-		}).bind(DestinationEntity::getNotify, DestinationEntity::setNotify);
+    // List of emails
+    binder
+        .forField(getNotify())
+        .withValidator(
+            (s, valueContext) -> {
+              if (StringUtils.isBlank(s) && getActivateNotification().getValue()) {
+                return ValidationResult.error("Should have at least one address email");
+              }
+              return ValidationResult.ok();
+            })
+        .bind(DestinationEntity::getNotify, DestinationEntity::setNotify);
 
-		// Interval
-		binder.forField(getNotifyInterval()) //
-				.withConverter(new HStringToIntegerConverter()) //
-				.bind(DestinationEntity::getNotifyInterval, DestinationEntity::setNotifyInterval);
+    // Interval
+    binder
+        .forField(getNotifyInterval()) //
+        .withConverter(new HStringToIntegerConverter()) //
+        .bind(DestinationEntity::getNotifyInterval, DestinationEntity::setNotifyInterval);
 
-		// Error Prefix
-		binder.forField(getNotifyObjectErrorPrefix()).bind(DestinationEntity::getNotifyObjectErrorPrefix,
-				DestinationEntity::setNotifyObjectErrorPrefix);
+    // Error Prefix
+    binder
+        .forField(getNotifyObjectErrorPrefix())
+        .bind(
+            DestinationEntity::getNotifyObjectErrorPrefix,
+            DestinationEntity::setNotifyObjectErrorPrefix);
 
-		// Subject Pattern
-		binder.forField(getNotifyObjectPattern()).bind(DestinationEntity::getNotifyObjectPattern,
-				DestinationEntity::setNotifyObjectPattern);
+    // Subject Pattern
+    binder
+        .forField(getNotifyObjectPattern())
+        .bind(DestinationEntity::getNotifyObjectPattern, DestinationEntity::setNotifyObjectPattern);
 
-		// Subject Values
-		binder.forField(getNotifyObjectValues()).bind(DestinationEntity::getNotifyObjectValues,
-				DestinationEntity::setNotifyObjectValues);
-	}
+    // Subject Values
+    binder
+        .forField(getNotifyObjectValues())
+        .bind(DestinationEntity::getNotifyObjectValues, DestinationEntity::setNotifyObjectValues);
+  }
 
-	public TextField getNotify() {
-		return notify;
-	}
+  public TextField getNotify() {
+    return notify;
+  }
 
-	public void setNotify(TextField notify) {
-		this.notify = notify;
-	}
+  public void setNotify(TextField notify) {
+    this.notify = notify;
+  }
 
-	public TextField getNotifyObjectErrorPrefix() {
-		return notifyObjectErrorPrefix;
-	}
+  public TextField getNotifyObjectErrorPrefix() {
+    return notifyObjectErrorPrefix;
+  }
 
-	public void setNotifyObjectErrorPrefix(TextField notifyObjectErrorPrefix) {
-		this.notifyObjectErrorPrefix = notifyObjectErrorPrefix;
-	}
+  public void setNotifyObjectErrorPrefix(TextField notifyObjectErrorPrefix) {
+    this.notifyObjectErrorPrefix = notifyObjectErrorPrefix;
+  }
 
-	public TextField getNotifyObjectPattern() {
-		return notifyObjectPattern;
-	}
+  public TextField getNotifyObjectPattern() {
+    return notifyObjectPattern;
+  }
 
-	public void setNotifyObjectPattern(TextField notifyObjectPattern) {
-		this.notifyObjectPattern = notifyObjectPattern;
-	}
+  public void setNotifyObjectPattern(TextField notifyObjectPattern) {
+    this.notifyObjectPattern = notifyObjectPattern;
+  }
 
-	public TextField getNotifyObjectValues() {
-		return notifyObjectValues;
-	}
+  public TextField getNotifyObjectValues() {
+    return notifyObjectValues;
+  }
 
-	public void setNotifyObjectValues(TextField notifyObjectValues) {
-		this.notifyObjectValues = notifyObjectValues;
-	}
+  public void setNotifyObjectValues(TextField notifyObjectValues) {
+    this.notifyObjectValues = notifyObjectValues;
+  }
 
-	public TextField getNotifyInterval() {
-		return notifyInterval;
-	}
+  public TextField getNotifyInterval() {
+    return notifyInterval;
+  }
 
-	public void setNotifyInterval(TextField notifyInterval) {
-		this.notifyInterval = notifyInterval;
-	}
+  public void setNotifyInterval(TextField notifyInterval) {
+    this.notifyInterval = notifyInterval;
+  }
 
-	public Checkbox getActivateNotification() {
-		return activateNotification;
-	}
+  public Checkbox getActivateNotification() {
+    return activateNotification;
+  }
 
-	public void setActivateNotification(Checkbox activateNotification) {
-		this.activateNotification = activateNotification;
-	}
-
+  public void setActivateNotification(Checkbox activateNotification) {
+    this.activateNotification = activateNotification;
+  }
 }

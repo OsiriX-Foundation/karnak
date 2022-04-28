@@ -14,19 +14,17 @@ import org.karnak.backend.data.entity.ProfileEntity;
 
 public class ProfileGrid extends Grid<ProfileEntity> {
 
-	public ProfileGrid() {
-		setSelectionMode(SelectionMode.SINGLE);
-		addColumn(ProfileEntity::getName).setHeader("Name");
-		addColumn(ProfileEntity::getVersion).setHeader("Version");
-	}
+  public ProfileGrid() {
+    setSelectionMode(SelectionMode.SINGLE);
+    addColumn(ProfileEntity::getName).setHeader("Name");
+    addColumn(ProfileEntity::getVersion).setHeader("Version");
+  }
 
-	public void selectRow(ProfileEntity row) {
-		if (row != null) {
-			getSelectionModel().select(row);
-		}
-		else {
-			getSelectionModel().deselectAll();
-		}
-	}
-
+  public void selectRow(ProfileEntity row) {
+    if (row != null) {
+      getSelectionModel().select(row);
+    } else {
+      getSelectionModel().deselectAll();
+    }
+  }
 }

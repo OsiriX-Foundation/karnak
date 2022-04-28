@@ -26,199 +26,206 @@ import org.karnak.frontend.dicom.Util;
 
 public class MonitorView extends AbstractView {
 
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	// CONTROLLER
-	private final MonitorLogic logic = new MonitorLogic(this);
+  // CONTROLLER
+  private final MonitorLogic logic = new MonitorLogic(this);
 
-	// UI COMPONENTS
-	private VerticalLayout dicomAndWadoLayout;
+  // UI COMPONENTS
+  private VerticalLayout dicomAndWadoLayout;
 
-	// Dicom Layout
-	private HorizontalLayout dicomEchoLayout;
+  // Dicom Layout
+  private HorizontalLayout dicomEchoLayout;
 
-	private H6 dicomEchoLayoutTitle;
+  private H6 dicomEchoLayoutTitle;
 
-	private Select<DicomNodeList> dicomEchoNodeListSelector;
+  private Select<DicomNodeList> dicomEchoNodeListSelector;
 
-	private Button dicomEchoBtn;
+  private Button dicomEchoBtn;
 
-	// WADO Layout
-	private HorizontalLayout wadoLayout;
+  // WADO Layout
+  private HorizontalLayout wadoLayout;
 
-	private H6 wadoLayoutTitle;
+  private H6 wadoLayoutTitle;
 
-	private Select<WadoNodeList> wadoNodeListSelector;
+  private Select<WadoNodeList> wadoNodeListSelector;
 
-	private Button wadoBtn;
+  private Button wadoBtn;
 
-	// Result Layout
-	private VerticalLayout resultLayout;
+  // Result Layout
+  private VerticalLayout resultLayout;
 
-	private H6 resultTitle;
+  private H6 resultTitle;
 
-	private Div resultDiv;
+  private Div resultDiv;
 
-	public MonitorView() {
-		init();
-		createView();
-		createMainLayout();
+  public MonitorView() {
+    init();
+    createView();
+    createMainLayout();
 
-		add(mainLayout);
-	}
+    add(mainLayout);
+  }
 
-	public void displayStatus(String status) {
-		resultDiv.removeAll();
-		resultDiv.add(new Html("<span>" + status + "</span>"));
+  public void displayStatus(String status) {
+    resultDiv.removeAll();
+    resultDiv.add(new Html("<span>" + status + "</span>"));
 
-		resultLayout.setVisible(true);
-	}
+    resultLayout.setVisible(true);
+  }
 
-	private void init() {
-	}
+  private void init() {}
 
-	private void createView() {
-		setSizeFull();
-	}
+  private void createView() {
+    setSizeFull();
+  }
 
-	private void createMainLayout() {
-		mainLayout = new VerticalLayout();
-		mainLayout.setPadding(true);
-		mainLayout.setSpacing(true);
-		mainLayout.setWidthFull();
+  private void createMainLayout() {
+    mainLayout = new VerticalLayout();
+    mainLayout.setPadding(true);
+    mainLayout.setSpacing(true);
+    mainLayout.setWidthFull();
 
-		buildDicomAndWadoLayout();
-		buildResultLayout();
+    buildDicomAndWadoLayout();
+    buildResultLayout();
 
-		mainLayout.add(dicomAndWadoLayout, resultLayout);
-	}
+    mainLayout.add(dicomAndWadoLayout, resultLayout);
+  }
 
-	private void buildDicomEchoLayoutTitle() {
-		dicomEchoLayoutTitle = new H6("Dicom Echo");
-		dicomEchoLayoutTitle.getStyle().set("margin-top", "0px");
-	}
+  private void buildDicomEchoLayoutTitle() {
+    dicomEchoLayoutTitle = new H6("Dicom Echo");
+    dicomEchoLayoutTitle.getStyle().set("margin-top", "0px");
+  }
 
-	private void buildDicomEchoLayout() {
-		dicomEchoLayout = new HorizontalLayout();
-		dicomEchoLayout.setMargin(false);
-		dicomEchoLayout.setSpacing(true);
-		dicomEchoLayout.setWidthFull();
-		dicomEchoLayout.setDefaultVerticalComponentAlignment(Alignment.END);
+  private void buildDicomEchoLayout() {
+    dicomEchoLayout = new HorizontalLayout();
+    dicomEchoLayout.setMargin(false);
+    dicomEchoLayout.setSpacing(true);
+    dicomEchoLayout.setWidthFull();
+    dicomEchoLayout.setDefaultVerticalComponentAlignment(Alignment.END);
 
-		buildDicomNodeListSelector();
-		buildDicomEchoBtn();
+    buildDicomNodeListSelector();
+    buildDicomEchoBtn();
 
-		dicomEchoLayout.add(dicomEchoNodeListSelector, dicomEchoBtn);
-	}
+    dicomEchoLayout.add(dicomEchoNodeListSelector, dicomEchoBtn);
+  }
 
-	private void buildDicomNodeListSelector() {
-		dicomEchoNodeListSelector = new Select<>();
-		dicomEchoNodeListSelector.setEmptySelectionAllowed(false);
+  private void buildDicomNodeListSelector() {
+    dicomEchoNodeListSelector = new Select<>();
+    dicomEchoNodeListSelector.setEmptySelectionAllowed(false);
 
-		DicomNodeList pacsProdDicomNodeList = Util.readnodes(this.getClass().getResource("/config/pacs-nodes-web.csv"),
-				"PACS Public WEB");
-		DicomNodeList newPacsProdDicomNodeList = Util
-				.readnodes(this.getClass().getResource("/config/workstations-nodes.csv"), "Workstations");
+    DicomNodeList pacsProdDicomNodeList =
+        Util.readnodes(
+            this.getClass().getResource("/config/pacs-nodes-web.csv"), "PACS Public WEB");
+    DicomNodeList newPacsProdDicomNodeList =
+        Util.readnodes(
+            this.getClass().getResource("/config/workstations-nodes.csv"), "Workstations");
 
-		dicomEchoNodeListSelector.setItems(pacsProdDicomNodeList, newPacsProdDicomNodeList);
+    dicomEchoNodeListSelector.setItems(pacsProdDicomNodeList, newPacsProdDicomNodeList);
 
-		dicomEchoNodeListSelector
-				.addValueChangeListener((ValueChangeListener<ValueChangeEvent<DicomNodeList>>) event -> logic
-						.dicomNodeListSelected(event.getValue()));
+    dicomEchoNodeListSelector.addValueChangeListener(
+        (ValueChangeListener<ValueChangeEvent<DicomNodeList>>)
+            event -> logic.dicomNodeListSelected(event.getValue()));
 
-		if (!pacsProdDicomNodeList.isEmpty()) {
-			dicomEchoNodeListSelector.setValue(pacsProdDicomNodeList);
-		}
-	}
+    if (!pacsProdDicomNodeList.isEmpty()) {
+      dicomEchoNodeListSelector.setValue(pacsProdDicomNodeList);
+    }
+  }
 
-	private void buildDicomEchoBtn() {
-		dicomEchoBtn = new Button("Check!");
-		dicomEchoBtn.addClickListener(event -> logic.dicomEcho());
-	}
+  private void buildDicomEchoBtn() {
+    dicomEchoBtn = new Button("Check!");
+    dicomEchoBtn.addClickListener(event -> logic.dicomEcho());
+  }
 
-	private void buildWadoLayoutTitle() {
-		wadoLayoutTitle = new H6("WADO");
-	}
+  private void buildWadoLayoutTitle() {
+    wadoLayoutTitle = new H6("WADO");
+  }
 
-	private void buildWadoLayout() {
-		wadoLayout = new HorizontalLayout();
-		wadoLayout.setMargin(false);
-		wadoLayout.setSpacing(true);
-		wadoLayout.setWidthFull();
-		wadoLayout.setDefaultVerticalComponentAlignment(Alignment.END);
+  private void buildWadoLayout() {
+    wadoLayout = new HorizontalLayout();
+    wadoLayout.setMargin(false);
+    wadoLayout.setSpacing(true);
+    wadoLayout.setWidthFull();
+    wadoLayout.setDefaultVerticalComponentAlignment(Alignment.END);
 
-		buildwadoNodeListSelector();
-		buildWadoBtn();
+    buildwadoNodeListSelector();
+    buildWadoBtn();
 
-		wadoLayout.add(wadoNodeListSelector, wadoBtn);
-	}
+    wadoLayout.add(wadoNodeListSelector, wadoBtn);
+  }
 
-	private void buildwadoNodeListSelector() {
-		wadoNodeListSelector = new Select<>();
-		wadoNodeListSelector.setEmptySelectionAllowed(false);
+  private void buildwadoNodeListSelector() {
+    wadoNodeListSelector = new Select<>();
+    wadoNodeListSelector.setEmptySelectionAllowed(false);
 
-		WadoNodeList pacsProdWadoNodeList = Util.readWadoNodes(this.getClass().getResource("/config/pacs-wado-web.csv"),
-				"Public web");
+    WadoNodeList pacsProdWadoNodeList =
+        Util.readWadoNodes(this.getClass().getResource("/config/pacs-wado-web.csv"), "Public web");
 
-		wadoNodeListSelector.setItems(pacsProdWadoNodeList);
+    wadoNodeListSelector.setItems(pacsProdWadoNodeList);
 
-		wadoNodeListSelector.addValueChangeListener((ValueChangeListener<ValueChangeEvent<WadoNodeList>>) event -> logic
-				.wadoNodeListSelected(event.getValue()));
+    wadoNodeListSelector.addValueChangeListener(
+        (ValueChangeListener<ValueChangeEvent<WadoNodeList>>)
+            event -> logic.wadoNodeListSelected(event.getValue()));
 
-		if (!pacsProdWadoNodeList.isEmpty()) {
-			wadoNodeListSelector.setValue(pacsProdWadoNodeList);
-		}
-	}
+    if (!pacsProdWadoNodeList.isEmpty()) {
+      wadoNodeListSelector.setValue(pacsProdWadoNodeList);
+    }
+  }
 
-	private void buildWadoBtn() {
-		wadoBtn = new Button("Check!");
+  private void buildWadoBtn() {
+    wadoBtn = new Button("Check!");
 
-		wadoBtn.addClickListener(event -> logic.wado());
-	}
+    wadoBtn.addClickListener(event -> logic.wado());
+  }
 
-	private void buildDicomAndWadoLayout() {
-		dicomAndWadoLayout = new VerticalLayout();
-		dicomAndWadoLayout.setWidthFull();
-		dicomAndWadoLayout.setPadding(true);
-		dicomAndWadoLayout.setSpacing(false);
-		dicomAndWadoLayout.getStyle().set("box-shadow",
-				"0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12)");
-		dicomAndWadoLayout.getStyle().set("border-radius", "4px");
+  private void buildDicomAndWadoLayout() {
+    dicomAndWadoLayout = new VerticalLayout();
+    dicomAndWadoLayout.setWidthFull();
+    dicomAndWadoLayout.setPadding(true);
+    dicomAndWadoLayout.setSpacing(false);
+    dicomAndWadoLayout
+        .getStyle()
+        .set(
+            "box-shadow",
+            "0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12)");
+    dicomAndWadoLayout.getStyle().set("border-radius", "4px");
 
-		buildDicomEchoLayoutTitle();
-		buildDicomEchoLayout();
-		buildWadoLayoutTitle();
-		buildWadoLayout();
+    buildDicomEchoLayoutTitle();
+    buildDicomEchoLayout();
+    buildWadoLayoutTitle();
+    buildWadoLayout();
 
-		dicomAndWadoLayout.add(dicomEchoLayoutTitle, dicomEchoLayout, wadoLayoutTitle, wadoLayout);
-	}
+    dicomAndWadoLayout.add(dicomEchoLayoutTitle, dicomEchoLayout, wadoLayoutTitle, wadoLayout);
+  }
 
-	private void buildResultLayout() {
-		resultLayout = new VerticalLayout();
-		resultLayout.setSizeFull();
-		resultLayout.setPadding(true);
-		resultLayout.setSpacing(false);
-		resultLayout.getStyle().set("box-shadow",
-				"0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12)");
-		resultLayout.getStyle().set("border-radius", "4px");
-		resultLayout.setVisible(false);
+  private void buildResultLayout() {
+    resultLayout = new VerticalLayout();
+    resultLayout.setSizeFull();
+    resultLayout.setPadding(true);
+    resultLayout.setSpacing(false);
+    resultLayout
+        .getStyle()
+        .set(
+            "box-shadow",
+            "0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12)");
+    resultLayout.getStyle().set("border-radius", "4px");
+    resultLayout.setVisible(false);
 
-		buildResultTitle();
-		buildResultDiv();
+    buildResultTitle();
+    buildResultDiv();
 
-		resultLayout.add(resultTitle, resultDiv);
-	}
+    resultLayout.add(resultTitle, resultDiv);
+  }
 
-	private void buildResultTitle() {
-		resultTitle = new H6("Result");
-		resultTitle.getStyle().set("margin-top", "0px");
-		resultTitle.getStyle().set("padding-bottom", "0px");
-	}
+  private void buildResultTitle() {
+    resultTitle = new H6("Result");
+    resultTitle.getStyle().set("margin-top", "0px");
+    resultTitle.getStyle().set("padding-bottom", "0px");
+  }
 
-	private void buildResultDiv() {
-		resultDiv = new Div();
-		resultDiv.setSizeFull();
-		resultDiv.getStyle().set("overflow-y", "auto");
-	}
-
+  private void buildResultDiv() {
+    resultDiv = new Div();
+    resultDiv.setSizeFull();
+    resultDiv.getStyle().set("overflow-y", "auto");
+  }
 }

@@ -14,73 +14,72 @@ import org.dcm4che3.util.TagUtils;
 
 public class ExprCondition implements ExpressionItem {
 
-	private final Attributes dcm;
+  private final Attributes dcm;
 
-	public ExprCondition() {
-		this(new Attributes());
-	}
+  public ExprCondition() {
+    this(new Attributes());
+  }
 
-	public ExprCondition(Attributes dcm) {
-		this.dcm = dcm;
-	}
+  public ExprCondition(Attributes dcm) {
+    this.dcm = dcm;
+  }
 
-	public static void expressionValidation(String condition) {
-		ExprCondition exprCondition = new ExprCondition();
-		ExpressionResult.get(condition, exprCondition, Boolean.class);
-	}
+  public static void expressionValidation(String condition) {
+    ExprCondition exprCondition = new ExprCondition();
+    ExpressionResult.get(condition, exprCondition, Boolean.class);
+  }
 
-	public static int intFromHexString(String tag) {
-		String cleanTag = tag.replaceAll("[(),]", "").toUpperCase();
-		return TagUtils.intFromHexString(cleanTag);
-	}
+  public static int intFromHexString(String tag) {
+    String cleanTag = tag.replaceAll("[(),]", "").toUpperCase();
+    return TagUtils.intFromHexString(cleanTag);
+  }
 
-	public boolean tagValueIsPresent(String tag, String value) {
-		int cleanTag = intFromHexString(tag);
-		return tagValueIsPresent(cleanTag, value);
-	}
+  public boolean tagValueIsPresent(String tag, String value) {
+    int cleanTag = intFromHexString(tag);
+    return tagValueIsPresent(cleanTag, value);
+  }
 
-	public boolean tagValueIsPresent(int tag, String value) {
-		String dcmValue = dcm.getString(tag);
-		return dcmValue != null && dcmValue.equals(value);
-	}
+  public boolean tagValueIsPresent(int tag, String value) {
+    String dcmValue = dcm.getString(tag);
+    return dcmValue != null && dcmValue.equals(value);
+  }
 
-	public boolean tagValueContains(String tag, String value) {
-		int cleanTag = intFromHexString(tag);
-		return tagValueContains(cleanTag, value);
-	}
+  public boolean tagValueContains(String tag, String value) {
+    int cleanTag = intFromHexString(tag);
+    return tagValueContains(cleanTag, value);
+  }
 
-	public boolean tagValueContains(int tag, String value) {
-		String dcmValue = dcm.getString(tag);
-		return dcmValue != null && dcmValue.contains(value);
-	}
+  public boolean tagValueContains(int tag, String value) {
+    String dcmValue = dcm.getString(tag);
+    return dcmValue != null && dcmValue.contains(value);
+  }
 
-	public boolean tagValueBeginsWith(String tag, String value) {
-		int cleanTag = intFromHexString(tag);
-		return tagValueBeginsWith(cleanTag, value);
-	}
+  public boolean tagValueBeginsWith(String tag, String value) {
+    int cleanTag = intFromHexString(tag);
+    return tagValueBeginsWith(cleanTag, value);
+  }
 
-	public boolean tagValueBeginsWith(int tag, String value) {
-		String dcmValue = dcm.getString(tag);
-		return dcmValue != null && dcmValue.startsWith(value);
-	}
+  public boolean tagValueBeginsWith(int tag, String value) {
+    String dcmValue = dcm.getString(tag);
+    return dcmValue != null && dcmValue.startsWith(value);
+  }
 
-	public boolean tagValueEndsWith(String tag, String value) {
-		int cleanTag = intFromHexString(tag);
-		return tagValueEndsWith(cleanTag, value);
-	}
+  public boolean tagValueEndsWith(String tag, String value) {
+    int cleanTag = intFromHexString(tag);
+    return tagValueEndsWith(cleanTag, value);
+  }
 
-	public boolean tagValueEndsWith(int tag, String value) {
-		String dcmValue = dcm.getString(tag);
-		return dcmValue != null && dcmValue.endsWith(value);
-	}
+  public boolean tagValueEndsWith(int tag, String value) {
+    String dcmValue = dcm.getString(tag);
+    return dcmValue != null && dcmValue.endsWith(value);
+  }
 
-	public boolean tagIsPresent(String tag) {
-		int cleanTag = intFromHexString(tag);
-		return dcm.getString(cleanTag) != null;
-	}
+  public boolean tagIsPresent(String tag) {
+    int cleanTag = intFromHexString(tag);
+    return dcm.getString(cleanTag) != null;
+  }
 
-	public boolean tagIsPresent(int tag) {
-		return dcm.getString(tag) != null;
-	}
-
+  public boolean tagIsPresent(int tag) {
+    return dcm.getString(tag) != null;
+  }
 }

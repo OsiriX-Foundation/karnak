@@ -17,42 +17,39 @@ import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.enums.DestinationType;
 
 /**
- * @see https://stackoverflow.com/questions/27173960/jsr303-apply-all-validation-groups-defined-in-sequence
+ * @see
+ *     https://stackoverflow.com/questions/27173960/jsr303-apply-all-validation-groups-defined-in-sequence
  */
-public class DestinationGroupSequenceProvider implements DefaultGroupSequenceProvider<DestinationEntity> {
+public class DestinationGroupSequenceProvider
+    implements DefaultGroupSequenceProvider<DestinationEntity> {
 
-	@Override
-	public List<Class<?>> getValidationGroups(DestinationEntity destinationEntity) {
-		if (destinationEntity != null) {
-			DestinationType type = destinationEntity.getDestinationType();
-			if (type != null) {
-				switch (type) {
-				case dicom:
-					return TYPE_DICOM_GROUPS;
-				case stow:
-					return TYPE_STOW_GROUPS;
-				}
-			}
-		}
+  @Override
+  public List<Class<?>> getValidationGroups(DestinationEntity destinationEntity) {
+    if (destinationEntity != null) {
+      DestinationType type = destinationEntity.getDestinationType();
+      if (type != null) {
+        switch (type) {
+          case dicom:
+            return TYPE_DICOM_GROUPS;
+          case stow:
+            return TYPE_STOW_GROUPS;
+        }
+      }
+    }
 
-		return DEFAULT_GROUPS;
-	}
+    return DEFAULT_GROUPS;
+  }
 
-	public interface DestinationDicomGroup {
+  public interface DestinationDicomGroup {}
 
-	}
+  private static final List<Class<?>> DEFAULT_GROUPS = //
+      Collections.singletonList(DestinationEntity.class);
 
-	private static final List<Class<?>> DEFAULT_GROUPS = //
-			Collections.singletonList(DestinationEntity.class);
+  private static final List<Class<?>> TYPE_DICOM_GROUPS = //
+      Arrays.asList(DestinationEntity.class, DestinationDicomGroup.class);
 
-	private static final List<Class<?>> TYPE_DICOM_GROUPS = //
-			Arrays.asList(DestinationEntity.class, DestinationDicomGroup.class);
+  private static final List<Class<?>> TYPE_STOW_GROUPS = //
+      Arrays.asList(DestinationEntity.class, DestinationStowGroup.class);
 
-	private static final List<Class<?>> TYPE_STOW_GROUPS = //
-			Arrays.asList(DestinationEntity.class, DestinationStowGroup.class);
-
-	public interface DestinationStowGroup {
-
-	}
-
+  public interface DestinationStowGroup {}
 }

@@ -18,19 +18,18 @@ import org.karnak.backend.data.entity.ProjectEntity;
 
 class CSVDialogTest {
 
-	@Test
-	void should_create_csv_dialog() {
-		// Init data
-		ProjectEntity projectEntity = new ProjectEntity();
-		char separator = ';';
+  @Test
+  void should_create_csv_dialog() {
+    // Init data
+    ProjectEntity projectEntity = new ProjectEntity();
+    char separator = ';';
 
-		InputStream inputStream = new ByteArrayInputStream(new byte[0]);
+    InputStream inputStream = new ByteArrayInputStream(new byte[0]);
 
-		// Call service
-		CSVDialog csvDialog = new CSVDialog(inputStream, separator, projectEntity);
+    // Call service
+    CSVDialog csvDialog = new CSVDialog(inputStream, separator, projectEntity);
 
-		// Test results
-		assertNotNull(csvDialog);
-	}
-
+    // Test results
+    assertNotNull(csvDialog);
+  }
 }

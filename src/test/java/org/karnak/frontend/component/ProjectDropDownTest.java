@@ -15,13 +15,12 @@ import org.junit.jupiter.api.Test;
 
 class ProjectDropDownTest {
 
-	@Test
-	void should_create_project_drop_down() {
-		// Create component
-		ProjectDropDown projectDropDown = new ProjectDropDown();
+  @Test
+  void should_create_project_drop_down() {
+    // Create component
+    ProjectDropDown projectDropDown = new ProjectDropDown();
 
-		// Test results
-		assertNotNull(projectDropDown);
-	}
-
+    // Test results
+    assertNotNull(projectDropDown);
+  }
 }

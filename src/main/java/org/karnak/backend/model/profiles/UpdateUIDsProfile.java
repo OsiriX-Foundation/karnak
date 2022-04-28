@@ -19,21 +19,22 @@ import org.karnak.backend.model.profilepipe.HMAC;
 
 public class UpdateUIDsProfile extends AbstractProfileItem {
 
-	public UpdateUIDsProfile(ProfileElementEntity profileElementEntity) {
-		super(profileElementEntity);
-	}
+  public UpdateUIDsProfile(ProfileElementEntity profileElementEntity) {
+    super(profileElementEntity);
+  }
 
-	@Override
-	public ActionItem getAction(Attributes dcm, Attributes dcmCopy, int tag, HMAC hmac) {
-		return tagMap.get(tag);
-	}
+  @Override
+  public ActionItem getAction(Attributes dcm, Attributes dcmCopy, int tag, HMAC hmac) {
+    return tagMap.get(tag);
+  }
 
-	@Override
-	public ActionItem put(int tag, ActionItem action) {
-		if (!(action instanceof UID) && !(action instanceof Remove) && !(action instanceof ReplaceNull)) {
-			throw new IllegalStateException(String.format("The action %s is not consistent !", action));
-		}
-		return tagMap.put(tag, action);
-	}
-
+  @Override
+  public ActionItem put(int tag, ActionItem action) {
+    if (!(action instanceof UID)
+        && !(action instanceof Remove)
+        && !(action instanceof ReplaceNull)) {
+      throw new IllegalStateException(String.format("The action %s is not consistent !", action));
+    }
+    return tagMap.put(tag, action);
+  }
 }

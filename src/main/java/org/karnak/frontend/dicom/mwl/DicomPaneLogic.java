@@ -21,40 +21,38 @@ import org.slf4j.LoggerFactory;
 
 public class DicomPaneLogic {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(DicomPaneLogic.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(DicomPaneLogic.class);
 
-	// PANE
-	private final DicomPane pane;
+  // PANE
+  private final DicomPane pane;
 
-	public DicomPaneLogic(DicomPane pane) {
-		this.pane = pane;
-	}
+  public DicomPaneLogic(DicomPane pane) {
+    this.pane = pane;
+  }
 
-	public InputStream getWorklistItemInputStreamInDicom(Attributes attributes) {
-		InputStream inputStream = null;
+  public InputStream getWorklistItemInputStreamInDicom(Attributes attributes) {
+    InputStream inputStream = null;
 
-		if (attributes != null) {
-			try (ByteArrayOutputStream tmp = new ByteArrayOutputStream();
-					DicomOutputStream out = new DicomOutputStream(tmp, UID.ImplicitVRLittleEndian)) {
-				out.writeDataset(null, attributes);
-				inputStream = new ByteArrayInputStream(tmp.toByteArray());
-			}
-			catch (IOException e) {
-				LOGGER.error("Cannot write dicom file: {}", e.getMessage()); // $NON-NLS-1$
-			}
-		}
+    if (attributes != null) {
+      try (ByteArrayOutputStream tmp = new ByteArrayOutputStream();
+          DicomOutputStream out = new DicomOutputStream(tmp, UID.ImplicitVRLittleEndian)) {
+        out.writeDataset(null, attributes);
+        inputStream = new ByteArrayInputStream(tmp.toByteArray());
+      } catch (IOException e) {
+        LOGGER.error("Cannot write dicom file: {}", e.getMessage()); // $NON-NLS-1$
+      }
+    }
 
-		return inputStream;
-	}
+    return inputStream;
+  }
 
-	public InputStream getWorklistItemInputStreamText(Attributes attributes) {
-		InputStream inputStream = null;
+  public InputStream getWorklistItemInputStreamText(Attributes attributes) {
+    InputStream inputStream = null;
 
-		if (attributes != null) {
-			inputStream = new ByteArrayInputStream(attributes.toString(1500, 300).getBytes());
-		}
+    if (attributes != null) {
+      inputStream = new ByteArrayInputStream(attributes.toString(1500, 300).getBytes());
+    }
 
-		return inputStream;
-	}
-
+    return inputStream;
+  }
 }

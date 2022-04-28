@@ -14,17 +14,17 @@ import com.vaadin.flow.component.notification.Notification;
 
 public class NotificationUtil {
 
-	/**
-	 * Display error message if issue when exporting
-	 * @param message Message to display
-	 */
-	public static void displayErrorMessage(String message, Notification.Position position) {
-		Span content = new Span(message);
-		content.getStyle().set("color", "var(--lumo-error-text-color)");
-		Notification notification = new Notification(content);
-		notification.setDuration(3000);
-		notification.setPosition(position);
-		notification.open();
-	}
-
+  /**
+   * Display error message if issue when exporting
+   *
+   * @param message Message to display
+   */
+  public static void displayErrorMessage(String message, Notification.Position position) {
+    Span content = new Span(message);
+    content.getStyle().set("color", "var(--lumo-error-text-color)");
+    Notification notification = new Notification(content);
+    notification.setDuration(3000);
+    notification.setPosition(position);
+    notification.open();
+  }
 }
