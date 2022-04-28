@@ -91,10 +91,13 @@ public class NewUpdateDestination extends VerticalLayout {
   }
 
   /**
-   * For transfer syntax: EXPLICIT_VR_LITTLE_ENDIAN and Keep original, transcode only uncompressed is deactivated and the value is set to false
+   * For transfer syntax: EXPLICIT_VR_LITTLE_ENDIAN and Keep original, transcode only uncompressed
+   * is deactivated and the value is set to false
+   *
    * @param transcodeOnlyUncompressedComponent Transcode Only Uncompressed Component
    * @param transferSyntax Transfer Syntax to evaluate
-   * @param forceTranscodeOnlyUncompressed Used to know if we reset the value of transcode only uncompressed checkbox
+   * @param forceTranscodeOnlyUncompressed Used to know if we reset the value of transcode only
+   *     uncompressed checkbox
    */
   public void handleEventTranscodeOnlyUncompressedWhenSomeTransferSyntax(
       TranscodeOnlyUncompressedComponent transcodeOnlyUncompressedComponent,
