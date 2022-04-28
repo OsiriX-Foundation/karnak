@@ -13,6 +13,7 @@ import static org.karnak.backend.enums.PseudonymType.EXTID_IN_TAG;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
@@ -39,6 +40,7 @@ import org.karnak.frontend.forwardnode.edit.destination.component.DeIdentificati
 import org.karnak.frontend.forwardnode.edit.destination.component.FilterBySOPClassesForm;
 import org.karnak.frontend.forwardnode.edit.destination.component.NewUpdateDestination;
 import org.karnak.frontend.forwardnode.edit.destination.component.NotificationComponent;
+import org.karnak.frontend.forwardnode.edit.destination.component.TranscodeOnlyUncompressedComponent;
 import org.karnak.frontend.forwardnode.edit.source.SourceView;
 import org.karnak.frontend.forwardnode.edit.source.component.NewUpdateSourceNode;
 import org.karnak.frontend.util.UIS;
@@ -134,6 +136,12 @@ public class LayoutEditForwardNode extends VerticalLayout {
         newUpdateDestination.getFormDICOM().getDeIdentificationComponent());
     addEventCheckboxLayoutDesidentification(
         newUpdateDestination.getFormSTOW().getDeIdentificationComponent());
+    addEventTranscodeOnlyUncompressedWhenSomeTransferSyntax(
+        newUpdateDestination.getFormSTOW().getTransferSyntaxComponent().getTransferSyntaxSelect(),
+        newUpdateDestination.getFormSTOW().getTranscodeOnlyUncompressedComponent());
+    addEventTranscodeOnlyUncompressedWhenSomeTransferSyntax(
+        newUpdateDestination.getFormDICOM().getTransferSyntaxComponent().getTransferSyntaxSelect(),
+        newUpdateDestination.getFormDICOM().getTranscodeOnlyUncompressedComponent());
     setEventChangeTabValue();
     setEventBinderForwardNode();
     setEventDestination();
@@ -634,5 +642,18 @@ public class LayoutEditForwardNode extends VerticalLayout {
         .getDestinationBinder()
         .forField(deIdentificationComponent.getPseudonymInDicomTagComponent().getSavePseudonym())
         .bind(DestinationEntity::getSavePseudonym, DestinationEntity::setSavePseudonym);
+  }
+
+  /**
+   * Event on checkbox Transcode Only Uncompressed: deactivate for some transfer syntax Keep
+   * original + Explicit VR
+   */
+  private void addEventTranscodeOnlyUncompressedWhenSomeTransferSyntax(
+      Select<String> transferSyntaxSelect,
+      TranscodeOnlyUncompressedComponent transcodeOnlyUncompressedComponent) {
+    transferSyntaxSelect.addValueChangeListener(
+        value ->
+            newUpdateDestination.handleEventTranscodeOnlyUncompressedWhenSomeTransferSyntax(
+                transcodeOnlyUncompressedComponent, value.getValue(), true));
   }
 }

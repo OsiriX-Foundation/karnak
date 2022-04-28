@@ -162,4 +162,12 @@ public class FormDICOM extends VerticalLayout {
   public NotificationComponent getNotificationComponent() {
     return notificationComponent;
   }
+
+  public TransferSyntaxComponent getTransferSyntaxComponent() {
+    return transferSyntaxComponent;
+  }
+
+  public TranscodeOnlyUncompressedComponent getTranscodeOnlyUncompressedComponent() {
+    return transcodeOnlyUncompressedComponent;
+  }
 }

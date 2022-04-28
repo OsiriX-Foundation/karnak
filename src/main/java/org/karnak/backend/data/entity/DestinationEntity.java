@@ -186,7 +186,7 @@ public class DestinationEntity implements Serializable {
     this.urlCredentials = "";
     this.headers = "";
 
-    this.transcodeOnlyUncompressed = true;
+    this.transcodeOnlyUncompressed = false;
   }
 
   public static DestinationEntity ofDicomEmpty() {

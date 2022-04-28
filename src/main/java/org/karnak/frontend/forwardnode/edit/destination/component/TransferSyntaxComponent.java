@@ -61,4 +61,8 @@ public class TransferSyntaxComponent extends VerticalLayout {
         .forField(transferSyntaxSelect)
         .bind(DestinationEntity::getTransferSyntax, DestinationEntity::setTransferSyntax);
   }
+
+  public Select<String> getTransferSyntaxSelect() {
+    return transferSyntaxSelect;
+  }
 }
