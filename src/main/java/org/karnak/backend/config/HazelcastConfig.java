@@ -12,13 +12,17 @@ package org.karnak.backend.config;
 import com.hazelcast.config.Config;
 import com.hazelcast.eureka.one.EurekaOneDiscoveryStrategyFactory;
 import com.netflix.discovery.EurekaClient;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 @Configuration
-// @EnableEurekaClient
+@EnableEurekaClient
 public class HazelcastConfig {
+
+  // TODO: hazelcast
+  static Config configHazelcast;
 
   @Bean
   @Profile("!test")
@@ -40,6 +44,15 @@ public class HazelcastConfig {
         .setProperty("self-registration", "true")
         .setProperty("namespace", "hazelcast-karnak")
         .setProperty("use-metadata-for-host-and-port", "true");
+
+    // TODO: hazelcast
+    configHazelcast = config;
+
     return config;
+  }
+
+  // TODO: hazelcast
+  public static Config getConfigHazelcast() {
+    return configHazelcast;
   }
 }

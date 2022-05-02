@@ -15,6 +15,7 @@ import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.map.IMap;
 import java.util.Collection;
+import org.karnak.backend.config.HazelcastConfig;
 
 public abstract class PatientClient {
 
@@ -29,7 +30,9 @@ public abstract class PatientClient {
 
   public PatientClient(String name, int ttlSeconds) {
     this.name = name;
-    this.hazelcastInstance = Hazelcast.newHazelcastInstance(createConfig(ttlSeconds));
+    // TODO: hazelcast
+//    this.hazelcastInstance = Hazelcast.newHazelcastInstance(createConfig(ttlSeconds));
+    this.hazelcastInstance = Hazelcast.newHazelcastInstance(HazelcastConfig.getConfigHazelcast());
   }
 
   private Config createConfig(int ttlSeconds) {
