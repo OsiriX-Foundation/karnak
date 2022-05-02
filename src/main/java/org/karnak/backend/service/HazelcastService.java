@@ -10,6 +10,7 @@
 package org.karnak.backend.service;
 
 import java.util.stream.Collectors;
+import org.karnak.backend.cache.ExternalIDCache;
 import org.karnak.backend.config.AppConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,12 @@ public class HazelcastService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(HazelcastService.class);
 
+  private final ExternalIDCache externalIDCache;
+
+  public HazelcastService(final ExternalIDCache externalIDCache) {
+    this.externalIDCache = externalIDCache;
+  }
+
   /** Log every minutes */
   @Scheduled(fixedRate = 60000)
   public void logHazelcast() {
@@ -28,7 +35,7 @@ public class HazelcastService {
         String.format(
             "Hazelcast values for instance %s:%s",
             AppConfig.getInstance().getNameInstance(),
-            AppConfig.getInstance().getExternalIDCache().getAll().stream()
+            externalIDCache.getAll().stream()
                 .map(Object::toString)
                 .collect(Collectors.joining("***"))));
   }

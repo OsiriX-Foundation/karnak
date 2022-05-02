@@ -21,9 +21,6 @@ import org.springframework.context.annotation.Profile;
 @EnableEurekaClient
 public class HazelcastConfig {
 
-  // TODO: hazelcast
-  static Config configHazelcast;
-
   @Bean
   @Profile("!test")
   public Config hazelcastConfiguration(EurekaClient eurekaClient) {
@@ -45,14 +42,8 @@ public class HazelcastConfig {
         .setProperty("namespace", "hazelcast-karnak")
         .setProperty("use-metadata-for-host-and-port", "true");
 
-    // TODO: hazelcast
-    configHazelcast = config;
-
     return config;
   }
 
-  // TODO: hazelcast
-  public static Config getConfigHazelcast() {
-    return configHazelcast;
-  }
+
 }
