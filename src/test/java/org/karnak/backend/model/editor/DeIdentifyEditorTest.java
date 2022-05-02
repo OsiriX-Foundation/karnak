@@ -16,12 +16,15 @@ import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.dcm4che3.data.VR;
 import org.junit.jupiter.api.Test;
+import org.karnak.backend.cache.ExternalIDCache;
+import org.karnak.backend.cache.MainzellisteCache;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ProfileEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.data.entity.SecretEntity;
 import org.karnak.backend.enums.PseudonymType;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.weasis.dicom.param.AttributeEditorContext;
 import org.weasis.dicom.param.DicomNode;
@@ -29,6 +32,12 @@ import org.weasis.dicom.param.DicomNode;
 @SpringBootTest
 @ActiveProfiles("test")
 class DeIdentifyEditorTest {
+
+  @MockBean
+  private ExternalIDCache externalIDCache;
+
+  @MockBean
+  private MainzellisteCache mainzellisteCache;
 
   @Test
   void should_apply_to_dicom_object() {
