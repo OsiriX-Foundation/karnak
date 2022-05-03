@@ -12,7 +12,6 @@ package org.karnak.backend.config;
 import com.hazelcast.config.Config;
 import com.hazelcast.eureka.one.EurekaOneDiscoveryStrategyFactory;
 import com.netflix.discovery.EurekaClient;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,9 +20,6 @@ import org.springframework.context.annotation.Profile;
 @Configuration
 @EnableEurekaClient
 public class HazelcastConfig {
-
-  @Value("${hazelcast.port:5701}")
-  private int hazelcastPort;
 
   @Bean
   @Profile("!test")
@@ -36,7 +32,7 @@ public class HazelcastConfig {
     //		return config;
     EurekaOneDiscoveryStrategyFactory.setEurekaClient(eurekaClient);
     Config config = new Config();
-    config.getNetworkConfig().setPort(hazelcastPort);
+    config.getNetworkConfig().setPortAutoIncrement(true);
     config.getNetworkConfig().getJoin().getMulticastConfig().setEnabled(false);
     config
         .getNetworkConfig()
@@ -46,6 +42,13 @@ public class HazelcastConfig {
         .setProperty("self-registration", "true")
         .setProperty("namespace", "hazelcast-karnak")
         .setProperty("use-metadata-for-host-and-port", "true");
+
+    // TODO to test
+//        .setProperty("use-classpath-eureka-client-props", "false")
+//        .setProperty("shouldUseDns", "false")
+//        .setProperty("name", "hazelcast-karnak")
+//        .setProperty("serviceUrl.default", "http://eureka:8761/eureka");
+
     return config;
   }
 
