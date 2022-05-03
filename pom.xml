@@ -387,19 +387,31 @@
       <version>1.1.1</version>
     </dependency>
 
-    <!-- Hazelcast -->
+    <!-- Hazelcast
     <dependency>
       <artifactId>hazelcast-spring</artifactId>
       <groupId>com.hazelcast</groupId>
       <version>${hazelcast.version}</version>
     </dependency>
-
-    <!-- Hazelcast for eureka discovery -->
+ -->
+    <!-- Hazelcast for eureka discovery
     <dependency>
       <artifactId>hazelcast-eureka-one</artifactId>
       <groupId>com.hazelcast</groupId>
       <version>${hazelcast-eureka-one.version}</version>
     </dependency>
+     -->
+    
+		<dependency>
+			<groupId>com.hazelcast</groupId>
+			<artifactId>hazelcast</artifactId>
+            <version>${hazelcast.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.hazelcast</groupId>
+			<artifactId>hazelcast-eureka-one</artifactId>
+			<version>2.0.1</version>
+		</dependency>    
 
     <dependency>
       <groupId>org.springframework.cloud</groupId>
@@ -419,12 +431,6 @@
           <artifactId>jersey-apache-client4</artifactId>
         </exclusion>
       </exclusions>
-    </dependency>
-
-    <dependency>
-      <groupId>com.netflix.eureka</groupId>
-      <artifactId>eureka-core</artifactId>
-      <version>1.10.17</version>
     </dependency>
 
     <!--   Monitoring-->
