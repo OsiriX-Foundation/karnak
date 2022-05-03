@@ -37,7 +37,7 @@
     <springdoc.version>1.6.0</springdoc.version>
     <mockito.version>4.2.0</mockito.version>
     <h2.version>1.4.200</h2.version>
-    <hug.springcloud.version>2.3.11-HSR11-1.0</hug.springcloud.version>
+    <hug.springcloud.version>2.6.6-2021.0.1-1.0</hug.springcloud.version>
     <jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
     <junit.jupiter.version>5.8.2</junit.jupiter.version>
     <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
