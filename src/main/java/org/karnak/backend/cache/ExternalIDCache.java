@@ -10,6 +10,8 @@
 package org.karnak.backend.cache;
 
 import com.hazelcast.config.Config;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component//("ExternalIDPatient")
@@ -19,7 +21,8 @@ public class ExternalIDCache extends PatientClient {
 
   private static final int TTL_SECONDS = 60 * 60 * 24 * 7;
 
-  public ExternalIDCache(Config hazelcastConfiguration) {
+  @Autowired
+  public ExternalIDCache(@Qualifier("hazelcastConfiguration") Config hazelcastConfiguration) {
     super(NAME, TTL_SECONDS, hazelcastConfiguration);
   }
 }
