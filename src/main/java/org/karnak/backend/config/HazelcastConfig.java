@@ -39,7 +39,12 @@ public class HazelcastConfig {
         .setEnabled(true)
         .setProperty("self-registration", "true")
         .setProperty("namespace", "hazelcast-karnak")
-        .setProperty("use-metadata-for-host-and-port", "false");
+        .setProperty("use-metadata-for-host-and-port", "false")
+    // TODO to test
+            .setProperty("shouldUseDns", "false")
+        .setProperty("name", "hazelcast-karnak")
+        .setProperty("serviceUrl.default", "http://eureka:8761/eureka")
+    ;
 //
 //    ClientConfig clientConfig = new ClientConfig();
 //    var application = eurekaClient.getApplication("karnak");
