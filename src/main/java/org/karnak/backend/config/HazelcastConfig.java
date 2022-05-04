@@ -42,14 +42,14 @@ public class HazelcastConfig {
     EurekaOneDiscoveryStrategyFactory.setEurekaClient(eurekaClient);
     Config config = new Config();
     config.getNetworkConfig().getJoin().getMulticastConfig().setEnabled(false);
-    config
-        .getNetworkConfig()
-        .getJoin()
-        .getEurekaConfig()
+    config.getNetworkConfig().getJoin().getMulticastConfig().setEnabled(false);
+    config.getNetworkConfig().getJoin().getEurekaConfig()
         .setEnabled(true)
         .setProperty("self-registration", "true")
-        .setProperty("namespace", "hazelcast-karnak")
-        .setProperty("use-metadata-for-host-and-port", "true");
+        .setProperty("namespace", "hazelcast")
+        .setProperty("use-metadata-for-host-and-port", "true")
+        .setProperty("use-classpath-eureka-client-props", "false")
+        .setUsePublicIp(true);
 
 
     MapConfig mapConfig = new MapConfig("mainzelliste");
