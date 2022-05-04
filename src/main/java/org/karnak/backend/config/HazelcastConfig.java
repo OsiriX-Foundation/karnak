@@ -15,6 +15,9 @@ import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.eureka.one.EurekaOneDiscoveryStrategyFactory;
 import com.netflix.discovery.EurekaClient;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -32,7 +35,8 @@ public class HazelcastConfig {
 
   @Bean
   @Profile("!test")
-  public Config hazelcastConfiguration(EurekaClient eurekaClient) {
+  public Config hazelcastConfiguration(EurekaClient eurekaClient, @Value("eureka.instance.instanceId") String instanceId)
+      throws UnknownHostException {
     //		Config config = new Config();
     //		config.getNetworkConfig().getJoin().getMulticastConfig().setEnabled(false);
     //		config.getNetworkConfig().getJoin().getEurekaConfig().setEnabled(true)
@@ -50,6 +54,8 @@ public class HazelcastConfig {
         .setProperty("use-classpath-eureka-client-props", "false")
         .setUsePublicIp(true);
 
+    config.getNetworkConfig()
+        .setPublicAddress( InetAddress.getLocalHost().getHostAddress() );
 
     MapConfig mapConfig = new MapConfig("mainzelliste");
     mapConfig.setTimeToLiveSeconds(15 * 60);
