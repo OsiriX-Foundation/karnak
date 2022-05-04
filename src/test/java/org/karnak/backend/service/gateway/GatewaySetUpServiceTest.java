@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.hazelcast.core.HazelcastInstance;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -61,6 +62,9 @@ class GatewaySetUpServiceTest {
 
   @MockBean
   private MainzellisteCache mainzellisteCache;
+
+  @MockBean
+  private HazelcastInstance hazelcastInstance;
 
   @BeforeEach
   public void setUp() throws Exception {
