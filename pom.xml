@@ -411,12 +411,17 @@
 			<groupId>com.hazelcast</groupId>
 			<artifactId>hazelcast-eureka-one</artifactId>
 			<version>2.0.1</version>
-		</dependency>    
+		</dependency>
 
     <dependency>
       <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-      <version>3.1.1</version>
+      <!--
       <exclusions>
         <exclusion>
           <groupId>com.sun.jersey</groupId>
@@ -431,6 +436,7 @@
           <artifactId>jersey-apache-client4</artifactId>
         </exclusion>
       </exclusions>
+      -->
     </dependency>
 
     <!--   Monitoring-->
@@ -727,6 +733,14 @@
         <type>pom</type>
         <version>${vaadin.version}</version>
       </dependency>
+
+          <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-dependencies</artifactId>
+            <version>2021.0.2</version>
+            <type>pom</type>
+            <scope>import</scope>
+          </dependency>
     </dependencies>
   </dependencyManagement>
 
