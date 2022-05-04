@@ -42,12 +42,11 @@ public class HazelcastConfig {
     EurekaOneDiscoveryStrategyFactory.setEurekaClient(eurekaClient);
     Config config = new Config();
     config.getNetworkConfig().getJoin().getMulticastConfig().setEnabled(false);
-    config.getNetworkConfig().getJoin().getMulticastConfig().setEnabled(false);
     config.getNetworkConfig().getJoin().getEurekaConfig()
         .setEnabled(true)
         .setProperty("self-registration", "true")
         .setProperty("namespace", "hazelcast")
-        .setProperty("use-metadata-for-host-and-port", "true")
+        .setProperty("use-metadata-for-host-and-port", "false")
         .setProperty("use-classpath-eureka-client-props", "false")
         .setUsePublicIp(true);
 
@@ -61,7 +60,7 @@ public class HazelcastConfig {
     mapConfigExternalId.setTimeToLiveSeconds(60 * 60 * 24 * 7);
     config.addMapConfig(mapConfigExternalId);
 
-    config.setInstanceName("hazelcast-karnak");
+   // config.setInstanceName("hazelcast-karnak");
 //
 //    ClientConfig clientConfig = new ClientConfig();
 //    var application = eurekaClient.getApplication("karnak");

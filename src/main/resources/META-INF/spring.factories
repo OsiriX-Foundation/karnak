@@ -1,0 +1,2 @@
+org.springframework.context.ApplicationListener=\
+org.karnak.backend.config.DynamicPropertiesListener
