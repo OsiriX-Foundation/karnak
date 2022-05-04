@@ -9,9 +9,6 @@
  */
 package org.karnak.backend.cache;
 
-import com.hazelcast.config.Config;
-import com.hazelcast.config.MapConfig;
-import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.map.IMap;
 import java.util.Collection;
@@ -27,37 +24,11 @@ public abstract class PatientClient {
 
   private final HazelcastInstance hazelcastInstance;
 
-  public PatientClient(String name, int ttlSeconds, Config hazelcastConfiguration) {
+  public PatientClient(String name, HazelcastInstance hazelcastInstance) {
     this.name = name;
-    // TODO: hazelcast
-//    this.hazelcastInstance = Hazelcast.newHazelcastInstance(createConfig(ttlSeconds));
-
-    MapConfig mapConfig = new MapConfig(name);
-    mapConfig.setTimeToLiveSeconds(ttlSeconds);
-    hazelcastConfiguration.addMapConfig(mapConfig);
-//    hazelcastConfiguration.getCPSubsystemConfig().setCPMemberCount(CP_MEMBER);
-//    hazelcastConfiguration.setClassLoader(PseudonymPatient.class.getClassLoader());
-//    hazelcastConfiguration.setInstanceName("hazelcast-karnak");
-
-    this.hazelcastInstance = Hazelcast.newHazelcastInstance(hazelcastConfiguration);
-//    this.hazelcastInstance = Hazelcast.getOrCreateHazelcastInstance(hazelcastConfiguration);
-//    this.hazelcastInstance = hazelcastInstance;
+    this.hazelcastInstance = hazelcastInstance;
   }
 
-//  private Config createConfig(int ttlSeconds) {
-//    Config config = new Config();
-//    MapConfig mapConfig = new MapConfig(name);
-//    mapConfig.setTimeToLiveSeconds(ttlSeconds);
-//    // The method setMaxIdleSeconds defines how long the entry stays in the cache
-//    // without being
-//    // touched
-//    // mapConfig.setMaxIdleSeconds(20);
-//    config.addMapConfig(mapConfig);
-//    config.setClusterName(CLUSTER_NAME);
-//    config.getCPSubsystemConfig().setCPMemberCount(CP_MEMBER);
-//    config.setClassLoader(PseudonymPatient.class.getClassLoader());
-//    return config;
-//  }
 
   public PseudonymPatient put(String key, PseudonymPatient patient) {
     IMap<String, PseudonymPatient> map = hazelcastInstance.getMap(name);

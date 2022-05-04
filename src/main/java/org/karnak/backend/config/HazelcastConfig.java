@@ -10,14 +10,25 @@
 package org.karnak.backend.config;
 
 import com.hazelcast.config.Config;
+import com.hazelcast.config.MapConfig;
+import com.hazelcast.core.Hazelcast;
+import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.eureka.one.EurekaOneDiscoveryStrategyFactory;
 import com.netflix.discovery.EurekaClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 
 @Configuration
 public class HazelcastConfig {
+
+  @Bean
+  @Primary
+  public HazelcastInstance hazelcastInstance(Config config) {
+    return Hazelcast.newHazelcastInstance(config);
+  }
+
 
   @Bean
   @Profile("!test")
@@ -30,21 +41,27 @@ public class HazelcastConfig {
     //		return config;
     EurekaOneDiscoveryStrategyFactory.setEurekaClient(eurekaClient);
     Config config = new Config();
-    config.getNetworkConfig().setPortAutoIncrement(true);
     config.getNetworkConfig().getJoin().getMulticastConfig().setEnabled(false);
-    config
-        .getNetworkConfig()
-        .getJoin()
-        .getEurekaConfig()
+    config.getNetworkConfig().getJoin().getMulticastConfig().setEnabled(false);
+    config.getNetworkConfig().getJoin().getEurekaConfig()
         .setEnabled(true)
         .setProperty("self-registration", "true")
-        .setProperty("namespace", "hazelcast-karnak")
+        .setProperty("namespace", "hazelcast")
         .setProperty("use-metadata-for-host-and-port", "true")
-    // TODO to test
-//            .setProperty("shouldUseDns", "false")
-//        .setProperty("name", "hazelcast-karnak")
-//        .setProperty("serviceUrl.default", "http://eureka:8761/eureka")
-    ;
+        .setProperty("use-classpath-eureka-client-props", "false")
+        .setUsePublicIp(true);
+
+
+    MapConfig mapConfig = new MapConfig("mainzelliste");
+    mapConfig.setTimeToLiveSeconds(15 * 60);
+    config.addMapConfig(mapConfig);
+
+
+    MapConfig mapConfigExternalId = new MapConfig("externalid");
+    mapConfigExternalId.setTimeToLiveSeconds(60 * 60 * 24 * 7);
+    config.addMapConfig(mapConfigExternalId);
+
+    config.setInstanceName("hazelcast-karnak");
 //
 //    ClientConfig clientConfig = new ClientConfig();
 //    var application = eurekaClient.getApplication("karnak");
