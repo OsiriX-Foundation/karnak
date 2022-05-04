@@ -35,12 +35,12 @@ public abstract class PatientClient {
     MapConfig mapConfig = new MapConfig(name);
     mapConfig.setTimeToLiveSeconds(ttlSeconds);
     hazelcastConfiguration.addMapConfig(mapConfig);
-    hazelcastConfiguration.getCPSubsystemConfig().setCPMemberCount(CP_MEMBER);
-    hazelcastConfiguration.setClassLoader(PseudonymPatient.class.getClassLoader());
+//    hazelcastConfiguration.getCPSubsystemConfig().setCPMemberCount(CP_MEMBER);
+//    hazelcastConfiguration.setClassLoader(PseudonymPatient.class.getClassLoader());
 //    hazelcastConfiguration.setInstanceName("hazelcast-karnak");
 
-    this.hazelcastInstance = Hazelcast.newHazelcastInstance(hazelcastConfiguration);
-//    this.hazelcastInstance = Hazelcast.getOrCreateHazelcastInstance(hazelcastConfiguration);
+//    this.hazelcastInstance = Hazelcast.newHazelcastInstance(hazelcastConfiguration);
+    this.hazelcastInstance = Hazelcast.getOrCreateHazelcastInstance(hazelcastConfiguration);
 //    this.hazelcastInstance = hazelcastInstance;
   }
 
