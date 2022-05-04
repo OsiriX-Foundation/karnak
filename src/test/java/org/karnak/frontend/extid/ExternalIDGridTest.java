@@ -11,6 +11,7 @@ package org.karnak.frontend.extid;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import com.hazelcast.core.HazelcastInstance;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.cache.ExternalIDCache;
 import org.karnak.backend.cache.MainzellisteCache;
@@ -27,6 +28,9 @@ class ExternalIDGridTest {
 
   @MockBean
   private MainzellisteCache mainzellisteCache;
+
+  @MockBean
+  private HazelcastInstance hazelcastInstance;
 
   @Test
   void should_create_external_id_grid() {

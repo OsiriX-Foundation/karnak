@@ -12,6 +12,7 @@ package org.karnak.backend.model.editor;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import com.hazelcast.core.HazelcastInstance;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.dcm4che3.data.VR;
@@ -38,6 +39,9 @@ class DeIdentifyEditorTest {
 
   @MockBean
   private MainzellisteCache mainzellisteCache;
+
+  @MockBean
+  private HazelcastInstance hazelcastInstance;
 
   @Test
   void should_apply_to_dicom_object() {

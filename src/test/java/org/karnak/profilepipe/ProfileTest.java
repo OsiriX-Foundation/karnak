@@ -11,6 +11,7 @@ package org.karnak.profilepipe;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.hazelcast.core.HazelcastInstance;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Sequence;
 import org.dcm4che3.data.Tag;
@@ -42,6 +43,9 @@ class ProfileTest {
 
   @MockBean
   private MainzellisteCache mainzellisteCache;
+
+  @MockBean
+  private HazelcastInstance hazelcastInstance;
 
   @BeforeAll
   static void beforeAll() {
