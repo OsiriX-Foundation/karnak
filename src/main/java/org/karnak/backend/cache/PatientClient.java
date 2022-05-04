@@ -39,8 +39,8 @@ public abstract class PatientClient {
 //    hazelcastConfiguration.setClassLoader(PseudonymPatient.class.getClassLoader());
 //    hazelcastConfiguration.setInstanceName("hazelcast-karnak");
 
-//    this.hazelcastInstance = Hazelcast.newHazelcastInstance(hazelcastConfiguration);
-    this.hazelcastInstance = Hazelcast.getOrCreateHazelcastInstance(hazelcastConfiguration);
+    this.hazelcastInstance = Hazelcast.newHazelcastInstance(hazelcastConfiguration);
+//    this.hazelcastInstance = Hazelcast.getOrCreateHazelcastInstance(hazelcastConfiguration);
 //    this.hazelcastInstance = hazelcastInstance;
   }
 
