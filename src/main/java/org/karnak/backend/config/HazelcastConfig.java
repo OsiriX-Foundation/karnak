@@ -38,7 +38,7 @@ public class HazelcastConfig {
         .getEurekaConfig()
         .setEnabled(true)
         .setProperty("self-registration", "true")
-        .setProperty("namespace", "hazelcast-karnak")
+        .setProperty("namespace", "hazelcast")
         .setProperty("use-metadata-for-host-and-port", "false")
     // TODO to test
             .setProperty("shouldUseDns", "false")
