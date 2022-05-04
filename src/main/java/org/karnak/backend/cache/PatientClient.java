@@ -35,7 +35,6 @@ public abstract class PatientClient {
     MapConfig mapConfig = new MapConfig(name);
     mapConfig.setTimeToLiveSeconds(ttlSeconds);
     hazelcastConfiguration.addMapConfig(mapConfig);
-    hazelcastConfiguration.getNetworkConfig().setPortAutoIncrement(true);
 //    hazelcastConfiguration.getCPSubsystemConfig().setCPMemberCount(CP_MEMBER);
 //    hazelcastConfiguration.setClassLoader(PseudonymPatient.class.getClassLoader());
 //    hazelcastConfiguration.setInstanceName("hazelcast-karnak");
