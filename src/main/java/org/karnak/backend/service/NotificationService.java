@@ -70,7 +70,7 @@ public class NotificationService {
    * notifications and send them via email.
    */
   @Scheduled(fixedRate = 10 * 1000)
-  private void determineNotificationToSend() {
+  public void determineNotificationToSend() {
     buildNotificationsToSend().forEach(this::prepareAndSendNotification);
   }
 

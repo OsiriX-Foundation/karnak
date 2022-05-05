@@ -16,7 +16,7 @@
   </licenses>
 
   <!-- Version -->
-  <version>1.0.16</version>
+  <version>1.0.17</version>
 
   <!-- Packaging -->
   <packaging>jar</packaging>
@@ -28,7 +28,7 @@
     <enforcer.jdk-version>[${java.version},)</enforcer.jdk-version>
     <enforcer.maven-version>[3.2.0,)</enforcer.maven-version>
     <java.version>15</java.version>
-    <springframework.version>2.6.1</springframework.version>
+    <springframework.version>2.6.6</springframework.version>
     <javax.el.version>3.0.0</javax.el.version>
     <javax.mail.version>1.6.2</javax.mail.version>
     <vaadin.version>21.0.9</vaadin.version>
@@ -37,7 +37,7 @@
     <springdoc.version>1.6.0</springdoc.version>
     <mockito.version>4.2.0</mockito.version>
     <h2.version>1.4.200</h2.version>
-    <hug.springcloud.version>2.3.11-HSR11-1.0</hug.springcloud.version>
+    <hug.springcloud.version>2.6.6-2021.0.1-1.0</hug.springcloud.version>
     <jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
     <junit.jupiter.version>5.8.2</junit.jupiter.version>
     <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
@@ -49,7 +49,7 @@
     <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
     <org.json.version>20211205</org.json.version>
     <logback.version>1.2.9</logback.version>
-    <hazelcast.version>5.0.2</hazelcast.version>
+    <hazelcast.version>5.1.1</hazelcast.version>
     <liquibase.version>4.3.5</liquibase.version>
     <opencsv.version>5.5.2</opencsv.version>
   </properties>
@@ -313,14 +313,14 @@
             </licenseHeader>
           </java>
         </configuration>
-        <executions>
-          <execution>
-            <phase>verify</phase>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
+<!--        <executions>-->
+<!--          <execution>-->
+<!--            <phase>verify</phase>-->
+<!--            <goals>-->
+<!--              <goal>check</goal>-->
+<!--            </goals>-->
+<!--          </execution>-->
+<!--        </executions>-->
       </plugin>
     </plugins>
     <resources>
@@ -369,6 +369,12 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-mail</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-thymeleaf</artifactId>
@@ -380,17 +386,18 @@
       <version>1.1.1</version>
     </dependency>
 
+    <!-- Hazelcast -->
     <dependency>
-      <artifactId>hazelcast-spring</artifactId>
       <groupId>com.hazelcast</groupId>
+      <artifactId>hazelcast-spring</artifactId>
       <version>${hazelcast.version}</version>
     </dependency>
 
-    <!--    <dependency>-->
-    <!--      <artifactId>hazelcast</artifactId>-->
-    <!--      <groupId>com.hazelcast</groupId>-->
-    <!--      <version>4.1</version>-->
-    <!--    </dependency>-->
+    <!--   Monitoring-->
+    <dependency>
+      <groupId>io.micrometer</groupId>
+      <artifactId>micrometer-registry-prometheus</artifactId>
+    </dependency>
 
     <dependency>
       <artifactId>liquibase-maven-plugin</artifactId>

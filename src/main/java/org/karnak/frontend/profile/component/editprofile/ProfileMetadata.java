@@ -26,7 +26,8 @@ public class ProfileMetadata extends VerticalLayout {
   private final Button validateEditButton = new Button(new Icon(VaadinIcon.CHECK));
   private final Button disabledEditButton = new Button(new Icon(VaadinIcon.CLOSE));
 
-  private String title;
+  private final String title;
+
   private String value;
 
   public ProfileMetadata() {
