@@ -120,7 +120,7 @@ public class Util {
     boolean reachable = false;
     boolean xml = "XML".equalsIgnoreCase(format);
     try {
-      if ("XML".equals(format.toUpperCase())) {
+      if ("XML".equalsIgnoreCase(format)) {
         result.append("<DcmNetworkStatus>");
       }
 

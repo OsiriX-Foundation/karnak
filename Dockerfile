@@ -19,9 +19,13 @@ RUN java -Djarmode=layertools -jar application.jar extract
 FROM adoptopenjdk:15-jre-hotspot
 WORKDIR app
 COPY --from=builder /app/bin/dependencies/ ./
+RUN true
 COPY --from=builder /app/bin/spring-boot-loader/ ./
+RUN true
 COPY --from=builder /app/bin/snapshot-dependencies/ ./
+RUN true
 COPY --from=builder /app/bin/application/ ./
+RUN true
 COPY tools/docker-entrypoint.sh .
 
 EXPOSE 8080

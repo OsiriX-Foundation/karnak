@@ -50,4 +50,8 @@ public class TranscodeOnlyUncompressedComponent extends VerticalLayout {
             DestinationEntity::isTranscodeOnlyUncompressed,
             DestinationEntity::setTranscodeOnlyUncompressed);
   }
+
+  public Checkbox getTranscodeOnlyUncompressedCheckBox() {
+    return transcodeOnlyUncompressedCheckBox;
+  }
 }
