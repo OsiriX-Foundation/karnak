@@ -28,8 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
@@ -39,39 +37,23 @@ import org.yaml.snakeyaml.constructor.Constructor;
 @Configuration
 @EnableConfigurationProperties
 @ConfigurationProperties
-@EnableDiscoveryClient
-@EnableEurekaClient
 public class AppConfig {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AppConfig.class);
 
   private static AppConfig instance;
-
   private String environment;
-
   private String name;
-
   private String karnakadmin;
-
   private String karnakpassword;
-
   private final ProfileRepo profileRepo;
-
   private final ProfilePipeService profilePipeService;
-
   private String nameInstance;
 
-  private final ExternalIDCache externalIDCache;
-
-  private final MainzellisteCache mainzellisteCache;
-
   @Autowired
-  public AppConfig(final ProfileRepo profileRepo, final ProfilePipeService profilePipeService,
-      final ExternalIDCache externalIDCache, final MainzellisteCache mainzellisteCache) {
+  public AppConfig(final ProfileRepo profileRepo, final ProfilePipeService profilePipeService) {
     this.profileRepo = profileRepo;
     this.profilePipeService = profilePipeService;
-    this.externalIDCache = externalIDCache;
-    this.mainzellisteCache = mainzellisteCache;
   }
 
   @PostConstruct
@@ -121,16 +103,14 @@ public class AppConfig {
     return new ConfidentialityProfiles();
   }
 
-//  @Bean("ExternalIDPatient")
+  @Bean("ExternalIDPatient")
   public PatientClient getExternalIDCache() {
-//    return new ExternalIDCache();
-    return this.externalIDCache;
+    return new ExternalIDCache();
   }
 
-//  @Bean("MainzellisteCache")
+  @Bean("MainzellisteCache")
   public PatientClient getMainzellisteCache() {
-//    return new MainzellisteCache();
-    return this.mainzellisteCache;
+    return new MainzellisteCache();
   }
 
   // https://stackoverflow.com/questions/27405713/running-code-after-spring-boot-starts

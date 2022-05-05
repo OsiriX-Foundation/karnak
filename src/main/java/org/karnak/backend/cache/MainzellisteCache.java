@@ -9,19 +9,15 @@
  */
 package org.karnak.backend.cache;
 
-import com.hazelcast.core.HazelcastInstance;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component//("MainzellisteCache")
+@Component
 public class MainzellisteCache extends PatientClient {
 
   private static final String NAME = "mainzelliste";
-
   private static final int TTL_SECONDS = 15 * 60;
 
-  @Autowired
-  public MainzellisteCache(HazelcastInstance hazelcastInstance) {
-    super(NAME, hazelcastInstance);
+  public MainzellisteCache() {
+    super(NAME, TTL_SECONDS);
   }
 }

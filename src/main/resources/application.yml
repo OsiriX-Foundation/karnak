@@ -1,8 +1,8 @@
 #  --------------------------------------------------------
 #  Karnak Application Profiles
 #  --------------------------------------------------------
-#name: KARNAK-Profile
-#environment: DEV
+name: KARNAK-Profile
+#environment: LOCAL
 karnakadmin: ${KARNAK_ADMIN:admin}
 karnakpassword: ${KARNAK_PASSWORD:admin}
 mainzelliste:
@@ -34,7 +34,7 @@ spring:
     enabled: true
     change-log: classpath:db/changelog/db.changelog-master.yaml
   profiles:
-    active: '@activatedProperties@,docker,eureka'
+    active: '@activatedProperties@, docker'
   datasource:
     password: ${DB_PASSWORD:5!KAnN@%98%d}
     url: 'jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5433}/${DB_NAME:karnak}'
@@ -63,52 +63,5 @@ spring:
       jdbc:
         lob:
           non_contextual_creation: true
-
 monitoring:
   max-history: 150000
-
-info:
-#  environment: ${ENVIRONMENT}
-  tags:
-    eureka.datacenter: ${eureka.datacenter}
-    eureka.instance-id: ${eureka.instance.instance-id}
-
-management:
-  endpoint:
-    health:
-      show-details: always
-    # https://github.com/spring-projects/spring-boot/issues/20509
-    env:
-      post.enabled: true
-    #issue with spring cloud Hoxton.SR10 and sup
-    restart:
-      enabled: false
-    pause:
-      enabled: false
-    shutdown:
-      enabled: false
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-    enabled-by-default: true
-  health:
-    config:
-      enabled: false
-  info:
-    env:
-      enabled: true #disabled by default in springboot 2.6
-  metrics:
-    export:
-      prometheus:
-        enabled: true
-    distribution:
-      percentiles-histogram:
-        '[http.server.requests]': true
-      percentiles:
-        '[http.server.requests]': 0.5, 0.9, 0.95, 0.99, 0.999
-      slo:
-        '[http.server.requests]': 50ms, 150ms, 250ms, 400ms
-    tags:
-      application: ${spring.application.name}
-#      team: ${application.team}

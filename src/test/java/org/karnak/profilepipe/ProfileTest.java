@@ -11,15 +11,12 @@ package org.karnak.profilepipe;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.hazelcast.core.HazelcastInstance;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Sequence;
 import org.dcm4che3.data.Tag;
 import org.dcm4che3.data.VR;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.karnak.backend.cache.ExternalIDCache;
-import org.karnak.backend.cache.MainzellisteCache;
 import org.karnak.backend.data.entity.ArgumentEntity;
 import org.karnak.backend.data.entity.IncludedTagEntity;
 import org.karnak.backend.data.entity.ProfileElementEntity;
@@ -29,23 +26,11 @@ import org.karnak.backend.model.profilepipe.HashContext;
 import org.karnak.backend.service.profilepipe.Profile;
 import org.karnak.backend.util.DicomObjectTools;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
-@ActiveProfiles("test")
 class ProfileTest {
 
   private static HMAC defaultHMAC;
-
-  @MockBean
-  private ExternalIDCache externalIDCache;
-
-  @MockBean
-  private MainzellisteCache mainzellisteCache;
-
-  @MockBean
-  private HazelcastInstance hazelcastInstance;
 
   @BeforeAll
   static void beforeAll() {
@@ -572,9 +557,8 @@ class ProfileTest {
     dataset1.setString(0x70534200, VR.LO, "Private TagEntity");
     dataset1.setString(0x70531209, VR.LO, "Private TagEntity");
     dataset1.setString(0x70534209, VR.LO, "Private TagEntity");
-    dataset1.setString(0x70534205, VR.LO, "Private TagEntity"); // it's a private tag
-    // but it's not in
-    // scope
+    dataset1.setString(
+        0x70534205, VR.LO, "Private TagEntity"); // it's a private tag but it's not in scope
 
     dataset2.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
     dataset2.setString(Tag.StudyInstanceUID, VR.UI, "12345");

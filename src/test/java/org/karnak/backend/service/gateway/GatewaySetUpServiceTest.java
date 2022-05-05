@@ -14,15 +14,12 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.hazelcast.core.HazelcastInstance;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.karnak.backend.cache.ExternalIDCache;
-import org.karnak.backend.cache.MainzellisteCache;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.DicomSourceNodeEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
@@ -39,32 +36,18 @@ import org.karnak.backend.enums.NodeEventType;
 import org.karnak.backend.model.event.NodeEvent;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ActiveProfiles;
 import org.weasis.dicom.param.DicomNode;
 
 @SpringBootTest
-@ActiveProfiles("test")
 class GatewaySetUpServiceTest {
 
   // Repositories
   final ForwardNodeRepo forwardNodeRepoMock = Mockito.mock(ForwardNodeRepo.class);
-
   final VersionRepo versionRepoMock = Mockito.mock(VersionRepo.class);
-
   final DestinationRepo destinationRepoMock = Mockito.mock(DestinationRepo.class);
 
   // Service
   private GatewaySetUpService gatewaySetUpService;
-
-  @MockBean
-  private ExternalIDCache externalIDCache;
-
-  @MockBean
-  private MainzellisteCache mainzellisteCache;
-
-  @MockBean
-  private HazelcastInstance hazelcastInstance;
 
   @BeforeEach
   public void setUp() throws Exception {
