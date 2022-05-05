@@ -2,7 +2,7 @@
 #  Karnak Application Profiles
 #  --------------------------------------------------------
 name: KARNAK-Profile
-environment: LOCAL
+#environment: LOCAL
 karnakadmin: ${KARNAK_ADMIN:admin}
 karnakpassword: ${KARNAK_PASSWORD:admin}
 mainzelliste:
