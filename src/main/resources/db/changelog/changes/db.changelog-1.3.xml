@@ -253,4 +253,18 @@
       referencedTableName="project" validate="true"/>
   </changeSet>
 
+  <changeSet author="karnak" id="1.3-18">
+    <dropNotNullConstraint
+      columnDataType="TIMESTAMP"
+      columnName="study_date_original"
+      tableName="transfer_status"/>
+  </changeSet>
+
+  <changeSet author="karnak" id="1.3-19">
+    <dropNotNullConstraint
+      columnDataType="TIMESTAMP"
+      columnName="serie_date_original"
+      tableName="transfer_status"/>
+  </changeSet>
+
 </databaseChangeLog>

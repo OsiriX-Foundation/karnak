@@ -1,6 +1,13 @@
 #  --------------------------------------------------------
 #  Karnak Application Profiles
 #  --------------------------------------------------------
+# - Info
+info:
+  component: Karnak
+  app:
+    name: Karnak
+    description: Karnak
+
 name: test-YAML
 environment: LOCAL
 karnakadmin: admin

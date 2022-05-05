@@ -22,8 +22,10 @@ import org.karnak.frontend.util.UIS;
 
 public class DestinationCondition extends Div {
   private static final String LABEL_CONDITION = "Condition (Leave blank if no condition)";
-  private TextField condition;
-  private Span textErrorConditionMsg;
+
+  private final TextField condition;
+
+  private final Span textErrorConditionMsg;
 
   public DestinationCondition() {
     this.setWidthFull();

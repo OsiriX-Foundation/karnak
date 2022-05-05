@@ -3,7 +3,7 @@
 # docker build -t osirixfoundation/karnak:latest -f src/main/docker/Dockerfile .
 
 # Based on build image containing maven, jdk and git
-FROM adoptopenjdk:15-jre-hotspot as builder
+FROM maven:3.6-adoptopenjdk-15 as builder
 ARG JAR_FILE=target/karnak*.jar
 WORKDIR /app
 COPY ${JAR_FILE} application.jar
@@ -13,9 +13,13 @@ RUN java -Djarmode=layertools -jar application.jar extract
 FROM adoptopenjdk:15-jre-hotspot
 WORKDIR app
 COPY --from=builder /app/dependencies/ ./
+RUN true
 COPY --from=builder /app/spring-boot-loader/ ./
+RUN true
 COPY --from=builder /app/snapshot-dependencies/ ./
+RUN true
 COPY --from=builder /app/application/ ./
+RUN true
 COPY tools/docker-entrypoint.sh .
 
 EXPOSE 8080

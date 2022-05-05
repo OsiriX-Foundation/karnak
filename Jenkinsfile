@@ -1,3 +1,3 @@
-@Library('hug-dsi@hugflow') _
+@Library('hug-dsi@master') _
 import ch.hcuge.dsi.jenkins.BuildImage;
-newGenHugFlowMavenPipeline (mavenImage: BuildImage.MVN_36_JDK15)
+newGenMavenPipeline(mavenImage: BuildImage.MVN_36_JDK15)
