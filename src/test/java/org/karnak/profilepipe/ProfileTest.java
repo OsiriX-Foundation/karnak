@@ -17,6 +17,9 @@ import org.dcm4che3.data.Tag;
 import org.dcm4che3.data.VR;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.karnak.backend.cache.ExternalIDCache;
+import org.karnak.backend.cache.MainzellisteCache;
+import org.karnak.backend.config.RedisConfiguration;
 import org.karnak.backend.data.entity.ArgumentEntity;
 import org.karnak.backend.data.entity.IncludedTagEntity;
 import org.karnak.backend.data.entity.ProfileElementEntity;
@@ -26,11 +29,21 @@ import org.karnak.backend.model.profilepipe.HashContext;
 import org.karnak.backend.service.profilepipe.Profile;
 import org.karnak.backend.util.DicomObjectTools;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 @SpringBootTest
 class ProfileTest {
 
   private static HMAC defaultHMAC;
+
+  @MockBean
+  private ExternalIDCache externalIDCache;
+
+  @MockBean
+  private MainzellisteCache mainzellisteCache;
+
+  @MockBean
+  private RedisConfiguration redisConfiguration;
 
   @BeforeAll
   static void beforeAll() {

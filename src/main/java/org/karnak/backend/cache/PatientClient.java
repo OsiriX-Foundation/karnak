@@ -9,57 +9,81 @@
  */
 package org.karnak.backend.cache;
 
-import com.hazelcast.config.Config;
-import com.hazelcast.config.MapConfig;
-import com.hazelcast.core.Hazelcast;
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.map.IMap;
 import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import org.springframework.cache.Cache;
+import org.springframework.cache.Cache.ValueWrapper;
+import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.core.RedisTemplate;
 
 public abstract class PatientClient {
 
-  // https://docs.hazelcast.org/docs/latest/manual/html-single/#cp-subsystem
-  private static final String CLUSTER_NAME = "PatientClient";
-  private static final int CP_MEMBER = 3;
   private final String name;
-  private final HazelcastInstance hazelcastInstance;
+  private final Cache cache;
+  private final RedisTemplate redisTemplate;
+  private final RedisCacheManager redisCacheManager;
+  private static final String KEY_SEPARATOR = "::";
+  private final String prefixKeySearchCache;
+  private final String patternSearchAllKeysCache;
 
-  public PatientClient(String name, int ttlSeconds) {
+  public PatientClient(
+      Cache cache,
+      RedisTemplate redisTemplate,
+      String name,
+      RedisCacheManager
+          redisCacheManager /*RedisCacheManager redisCacheManager*/ /*, int ttlSeconds*/) {
     this.name = name;
-    this.hazelcastInstance = Hazelcast.newHazelcastInstance(createConfig(ttlSeconds));
-  }
+    this.cache = cache;
+    this.redisTemplate = redisTemplate;
+    this.redisCacheManager = redisCacheManager;
+    this.prefixKeySearchCache = "%s%s".formatted(name, KEY_SEPARATOR);
+    this.patternSearchAllKeysCache = "%s*".formatted(prefixKeySearchCache);
 
-  private Config createConfig(int ttlSeconds) {
-    Config config = new Config();
-    MapConfig mapConfig = new MapConfig(name);
-    mapConfig.setTimeToLiveSeconds(ttlSeconds);
-    // The method setMaxIdleSeconds defines how long the entry stays in the cache without being
-    // touched
-    // mapConfig.setMaxIdleSeconds(20);
-    config.addMapConfig(mapConfig);
-    config.setClusterName(CLUSTER_NAME);
-    config.getCPSubsystemConfig().setCPMemberCount(CP_MEMBER);
-    config.setClassLoader(PseudonymPatient.class.getClassLoader());
-    return config;
+    // PseudonymPatient pseudonymPatient = new CachedPatient("test",        "test", "test",        "test",        "test",        1L);
+//        String key = RandomStringUtils.randomAlphabetic(1);
+//        cache.putIfAbsent(key, pseudonymPatient);
+//    Set<String> keys = redisTemplate.keys("*");
+    //    redisTemplate.opsForValue().multiGet(keys);
   }
 
   public PseudonymPatient put(String key, PseudonymPatient patient) {
-    IMap<String, PseudonymPatient> map = hazelcastInstance.getMap(name);
-    return map.putIfAbsent(key, patient);
+    return (PseudonymPatient) cache.putIfAbsent(key, patient);
   }
 
   public PseudonymPatient get(String key) {
-    IMap<String, PseudonymPatient> map = hazelcastInstance.getMap(name);
-    return map.get(key);
+    ValueWrapper valueFromCache = cache.get(key);
+    return valueFromCache != null ? (PseudonymPatient) valueFromCache.get() : null;
   }
 
   public void remove(String key) {
-    IMap<String, PseudonymPatient> map = hazelcastInstance.getMap(name);
-    map.remove(key);
+    cache.evictIfPresent(key);
   }
 
   public Collection<PseudonymPatient> getAll() {
-    IMap<String, PseudonymPatient> map = hazelcastInstance.getMap(name);
-    return map.values();
+
+//    return (Collection<PseudonymPatient>)
+//        redisTemplate.keys(patternSearchAllKeysCache).stream()
+//            .filter(Objects::nonNull)
+//            .filter(c -> ((String)c).length() > prefixKeySearchCache.length())
+//            .map(k -> {
+//              ValueWrapper keyValue = cache.get(
+//                  ((String) k).substring(prefixKeySearchCache.length()));
+//              return keyValue != null  ? (PseudonymPatient) keyValue.get() : null;
+//            })
+//            .collect(Collectors.toList());
+
+    List<CachedPatient> collect = (List<CachedPatient>) redisTemplate.keys(patternSearchAllKeysCache).stream()
+        .filter(Objects::nonNull)
+        .filter(c -> ((String) c).length() > prefixKeySearchCache.length())
+        .map(k -> {
+          ValueWrapper keyValue = cache.get(
+              ((String) k).substring(prefixKeySearchCache.length()));
+          return keyValue != null ? keyValue.get() : null;
+        })
+        .collect(Collectors.toList());
+
+    return null;
   }
 }

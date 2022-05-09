@@ -20,6 +20,9 @@ import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.karnak.backend.cache.ExternalIDCache;
+import org.karnak.backend.cache.MainzellisteCache;
+import org.karnak.backend.config.RedisConfiguration;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.DicomSourceNodeEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
@@ -36,10 +39,20 @@ import org.karnak.backend.enums.NodeEventType;
 import org.karnak.backend.model.event.NodeEvent;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.weasis.dicom.param.DicomNode;
 
 @SpringBootTest
 class GatewaySetUpServiceTest {
+
+  @MockBean
+  private ExternalIDCache externalIDCache;
+
+  @MockBean
+  private MainzellisteCache mainzellisteCache;
+
+  @MockBean
+  private RedisConfiguration redisConfiguration;
 
   // Repositories
   final ForwardNodeRepo forwardNodeRepoMock = Mockito.mock(ForwardNodeRepo.class);

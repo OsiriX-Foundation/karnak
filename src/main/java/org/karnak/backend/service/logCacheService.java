@@ -13,19 +13,20 @@ import java.util.stream.Collectors;
 import org.karnak.backend.config.AppConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Service
-public class HazelcastService {
+public class logCacheService {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(HazelcastService.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(logCacheService.class);
 
   /** Log every minutes */
-  //  @Scheduled(fixedRate = 60000)
-  public void logHazelcast() {
+  @Scheduled(fixedRate = 60000)
+  public void logCache() {
     LOGGER.info(
         String.format(
-            "Hazelcast values for instance %s:%s",
+            "Cache values for instance %s:%s",
             AppConfig.getInstance().getNameInstance(),
             AppConfig.getInstance().getExternalIDCache().getAll().stream()
                 .map(Object::toString)

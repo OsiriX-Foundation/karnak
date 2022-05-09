@@ -9,15 +9,17 @@
  */
 package org.karnak.backend.cache;
 
+import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MainzellisteCache extends PatientClient {
 
-  private static final String NAME = "mainzelliste";
-  private static final int TTL_SECONDS = 15 * 60;
+  private static final String NAME = "mainzelliste.cache";
+//  private static final int TTL_SECONDS = 15 * 60;
 
-  public MainzellisteCache() {
-    super(NAME, TTL_SECONDS);
+  public MainzellisteCache(RedisCacheManager redisCacheManager, RedisTemplate redisTemplate) {
+    super(redisCacheManager.getCache(NAME), redisTemplate,NAME, redisCacheManager/*, TTL_SECONDS*/);
   }
 }

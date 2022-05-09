@@ -49,7 +49,7 @@
     <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
     <org.json.version>20211205</org.json.version>
     <logback.version>1.2.9</logback.version>
-    <hazelcast.version>5.1.1</hazelcast.version>
+<!--    <hazelcast.version>5.1.1</hazelcast.version>-->
     <liquibase.version>4.3.5</liquibase.version>
     <opencsv.version>5.5.2</opencsv.version>
   </properties>
@@ -381,18 +381,20 @@
     </dependency>
 
     <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-cache</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-redis</artifactId>
+    </dependency>
+
+    <dependency>
       <artifactId>cache-api</artifactId>
       <groupId>javax.cache</groupId>
       <version>1.1.1</version>
     </dependency>
-
-    <!-- Hazelcast -->
-    <dependency>
-      <groupId>com.hazelcast</groupId>
-      <artifactId>hazelcast-spring</artifactId>
-      <version>${hazelcast.version}</version>
-    </dependency>
-
 
     <!--   Monitoring-->
     <dependency>
