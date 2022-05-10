@@ -19,7 +19,7 @@ import com.vaadin.flow.router.Route;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.karnak.backend.cache.Patient;
+import org.karnak.backend.cache.PatientCache;
 import org.karnak.frontend.MainLayout;
 import org.karnak.frontend.pseudonym.mapping.component.MappingInputComponent;
 import org.karnak.frontend.pseudonym.mapping.component.MappingResultComponent;
@@ -137,7 +137,7 @@ public class PseudonymMappingView extends HorizontalLayout {
   private void mappingFindPatientInExternalIDCache() {
 
     // Retrieve pseudonym patient mapping in all projects
-    Map<String, Patient> mappingPseudoProjectPatientFound =
+    Map<String, PatientCache> mappingPseudoProjectPatientFound =
         pseudonymMappingLogic.retrieveExternalIDCachePatients(
             mappingInputComponent.getPseudonymTextField().getValue());
 
@@ -168,7 +168,7 @@ public class PseudonymMappingView extends HorizontalLayout {
     MappingResultComponent mappingMainzellisteResultComponent = new MappingResultComponent();
 
     // Retrieve patient
-    Patient mainzellistePatientFound =
+    PatientCache mainzellistePatientFound =
         pseudonymMappingLogic.retrieveMainzellistePatient(
             mappingInputComponent.getPseudonymTextField().getValue());
 

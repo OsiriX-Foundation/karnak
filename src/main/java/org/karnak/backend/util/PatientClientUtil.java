@@ -9,8 +9,8 @@
  */
 package org.karnak.backend.util;
 
+import org.karnak.backend.cache.PatientCache;
 import org.karnak.backend.cache.PatientClient;
-import org.karnak.backend.cache.PseudonymPatient;
 import org.karnak.backend.model.profilepipe.PatientMetadata;
 
 public class PatientClientUtil {
@@ -38,7 +38,7 @@ public class PatientClientUtil {
 
   private static String getCachedKey(
       String key, PatientMetadata patientMetadata, PatientClient cache) {
-    final PseudonymPatient patient = cache.get(key);
+    final PatientCache patient = cache.get(key);
     if (patient != null && patientMetadata.compareCachedPatient(patient)) {
       return patient.getPseudonym();
     }
@@ -49,7 +49,7 @@ public class PatientClientUtil {
     return patientID.concat(issuerOfPatientID == null ? "" : issuerOfPatientID);
   }
 
-  public static String generateKey(PseudonymPatient patient) {
+  public static String generateKey(PatientCache patient) {
     String patientID = patient.getPatientId();
     String issuerOfPatientID = patient.getIssuerOfPatientId();
     return generateKey(patientID, issuerOfPatientID);
@@ -66,7 +66,7 @@ public class PatientClientUtil {
     return key.concat(projectID == null ? "" : projectID.toString());
   }
 
-  public static String generateKey(PseudonymPatient pseudonymPatient, Long projectID) {
+  public static String generateKey(PatientCache pseudonymPatient, Long projectID) {
     final String key = generateKey(pseudonymPatient);
     return key.concat(projectID == null ? "" : projectID.toString());
   }

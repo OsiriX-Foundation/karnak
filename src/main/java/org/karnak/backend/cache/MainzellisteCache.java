@@ -17,9 +17,8 @@ import org.springframework.stereotype.Component;
 public class MainzellisteCache extends PatientClient {
 
   private static final String NAME = "mainzelliste.cache";
-//  private static final int TTL_SECONDS = 15 * 60;
 
-  public MainzellisteCache(RedisCacheManager redisCacheManager, RedisTemplate redisTemplate) {
-    super(redisCacheManager.getCache(NAME), redisTemplate,NAME, redisCacheManager/*, TTL_SECONDS*/);
+  public MainzellisteCache(RedisCacheManager redisCacheManager, RedisTemplate<String, PatientCache> redisTemplate) {
+    super(redisCacheManager.getCache(NAME), redisTemplate,NAME);
   }
 }

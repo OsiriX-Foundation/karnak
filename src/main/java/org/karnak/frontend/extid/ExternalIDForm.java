@@ -20,6 +20,7 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.validator.StringLengthValidator;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.backend.cache.CachedPatient;
+import org.karnak.backend.cache.PatientCache;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -148,9 +149,9 @@ public class ExternalIDForm extends Div {
         .bind("issuerOfPatientId");
   }
 
-  public CachedPatient getNewPatient() {
-    CachedPatient newPatient =
-        new CachedPatient(
+  public PatientCache getNewPatient() {
+    PatientCache newPatient =
+        new PatientCache(
             externalIdField.getValue(),
             patientIdField.getValue(),
             patientFirstNameField.getValue(),

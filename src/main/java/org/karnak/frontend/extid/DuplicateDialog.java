@@ -15,19 +15,19 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import java.util.Collection;
 import java.util.List;
-import org.karnak.backend.cache.CachedPatient;
-import org.karnak.backend.cache.PseudonymPatient;
+import org.karnak.backend.cache.PatientCache;
+
 
 public class DuplicateDialog extends Dialog {
 
-  private final Collection<CachedPatient> duplicateList;
+  private final Collection<PatientCache> duplicateList;
 
-  private Grid<CachedPatient> grid;
+  private Grid<PatientCache> grid;
 
   public DuplicateDialog(
-      String title, String text, Collection<PseudonymPatient> duplicateList, String buttonText) {
+      String title, String text, Collection<PatientCache> duplicateList, String buttonText) {
     removeAll();
-    this.duplicateList = (List<CachedPatient>) (List<?>) duplicateList;
+    this.duplicateList = (List<PatientCache>) (List<?>) duplicateList;
 
     Div divTitle = new Div();
     divTitle.setText(title);
@@ -54,15 +54,15 @@ public class DuplicateDialog extends Dialog {
 
   public void setGridElement() {
     grid = new Grid<>();
-    grid.addColumn(CachedPatient::getPseudonym).setHeader("External pseudonym").setSortable(true);
-    grid.addColumn(CachedPatient::getPatientId).setHeader("Patient ID").setSortable(true);
-    grid.addColumn(CachedPatient::getPatientFirstName)
+    grid.addColumn(PatientCache::getPseudonym).setHeader("External pseudonym").setSortable(true);
+    grid.addColumn(PatientCache::getPatientId).setHeader("Patient ID").setSortable(true);
+    grid.addColumn(PatientCache::getPatientFirstName)
         .setHeader("Patient first name")
         .setSortable(true);
-    grid.addColumn(CachedPatient::getPatientLastName)
+    grid.addColumn(PatientCache::getPatientLastName)
         .setHeader("Patient last name")
         .setSortable(true);
-    grid.addColumn(CachedPatient::getIssuerOfPatientId)
+    grid.addColumn(PatientCache::getIssuerOfPatientId)
         .setHeader("Issuer of patient ID")
         .setSortable(true);
     grid.setItems(duplicateList);

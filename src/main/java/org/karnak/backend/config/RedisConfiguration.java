@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.time.Duration;
-import org.karnak.backend.cache.PseudonymPatient;
+import org.karnak.backend.cache.PatientCache;
 import org.springframework.boot.autoconfigure.cache.RedisCacheManagerBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,7 +20,7 @@ public class RedisConfiguration {
 
 	@Bean
 	ChannelTopic topic() {
-		return new ChannelTopic("pseudonymPatient:queue");
+		return new ChannelTopic("patient:queue");
 	}
 
 //	@Bean
@@ -49,17 +49,17 @@ public class RedisConfiguration {
 //	}
 
 	@Bean(name = "redisTemplate")
-	public RedisTemplate<String, PseudonymPatient> redisTemplate(
+	public RedisTemplate<String, PatientCache> redisTemplate(
 			RedisConnectionFactory connectionFactory) {
 
 		ObjectMapper objectMapper = new ObjectMapper().registerModule(new Jdk8Module())
 				.registerModule(new JavaTimeModule());
 
-		Jackson2JsonRedisSerializer<PseudonymPatient> serializer = new Jackson2JsonRedisSerializer<>(
-				PseudonymPatient.class);
+		Jackson2JsonRedisSerializer<PatientCache> serializer = new Jackson2JsonRedisSerializer<>(
+				PatientCache.class);
 		serializer.setObjectMapper(objectMapper);
 
-		RedisTemplate<String, PseudonymPatient> template = new RedisTemplate<>();
+		RedisTemplate<String, PatientCache> template = new RedisTemplate<>();
 		template.setConnectionFactory(connectionFactory);
 		template.setKeySerializer(new StringRedisSerializer());
 		template.setValueSerializer(serializer);

@@ -102,13 +102,13 @@ class PatientClientUtilTest {
 
   @ParameterizedTest
   @MethodSource("providerGenerateKeyPseudonymPatient")
-  void generateKeyPseudonymPatient(PseudonymPatient patient, String output) {
+  void generateKeyPseudonymPatient(PatientCache patient, String output) {
     assertEquals(PatientClientUtil.generateKey(patient), output);
   }
 
   @ParameterizedTest
   @MethodSource("providerGenerateKeyPseudonymPatientAndProjectID")
-  void providerGenerateKeyPseudonymPatientAndProjectID(CachedPatient cachedPatient, String output) {
+  void providerGenerateKeyPseudonymPatientAndProjectID(PatientCache cachedPatient, String output) {
     assertEquals(
         PatientClientUtil.generateKey(cachedPatient, cachedPatient.getProjectID()), output);
   }

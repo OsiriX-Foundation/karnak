@@ -12,7 +12,7 @@ package org.karnak.backend.service;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.karnak.backend.api.PseudonymApi;
-import org.karnak.backend.cache.MainzellistePatient;
+import org.karnak.backend.cache.PatientCache;
 import org.karnak.backend.dicom.DateTimeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,8 +23,8 @@ public class PseudonymMappingService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(PseudonymMappingService.class);
 
-  public MainzellistePatient retrieveMainzellistePatient(final String pseudonym) {
-    MainzellistePatient mainzellistePatient = null;
+  public PatientCache retrieveMainzellistePatient(final String pseudonym) {
+    PatientCache mainzellistePatient = null;
 
     // Pseudonym api
     PseudonymApi pseudonymApi = new PseudonymApi();
@@ -47,7 +47,7 @@ public class PseudonymMappingService {
       // Map to model
       if (jsonObject != null) {
         mainzellistePatient =
-            new MainzellistePatient(
+            new PatientCache(
                 pseudonym,
                 jsonObject.getString("patientID"),
                 null,

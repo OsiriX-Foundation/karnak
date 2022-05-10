@@ -13,8 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Test;
-import org.karnak.backend.cache.CachedPatient;
-import org.karnak.backend.cache.Patient;
+import org.karnak.backend.cache.PatientCache;
 
 class MappingResultComponentTest {
 
@@ -31,8 +30,8 @@ class MappingResultComponentTest {
   @Test
   void should_handle_result_patient_found() {
     // Init data
-    Patient patient =
-        new CachedPatient(
+    PatientCache patient =
+        new PatientCache(
             "pseudonym",
             "patientId",
             "patientFirstName",

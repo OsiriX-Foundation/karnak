@@ -17,9 +17,8 @@ import org.springframework.stereotype.Component;
 public class ExternalIDCache extends PatientClient {
 
   private static final String NAME = "externalId.cache";
-//  private static final int TTL_SECONDS = 60 * 60 * 24 * 7;
 
-  public ExternalIDCache(RedisCacheManager redisCacheManager, RedisTemplate redisTemplate) {
-    super(redisCacheManager.getCache(NAME), redisTemplate, NAME, redisCacheManager/*, TTL_SECONDS*/);
+  public ExternalIDCache(RedisCacheManager redisCacheManager, RedisTemplate<String, PatientCache> redisTemplate) {
+    super(redisCacheManager.getCache(NAME), redisTemplate, NAME);
   }
 }

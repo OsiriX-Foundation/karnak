@@ -24,7 +24,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.karnak.backend.cache.CachedPatient;
 import org.karnak.backend.cache.MainzellistePatient;
-import org.karnak.backend.cache.PseudonymPatient;
+import org.karnak.backend.cache.PatientCache;
 import org.karnak.backend.model.profilepipe.PatientMetadata;
 
 class PatientMetadataTest {
@@ -230,14 +230,14 @@ class PatientMetadataTest {
 
   @ParameterizedTest
   @MethodSource("providerCompareCachedPatient")
-  void compareCachedPatient(PatientMetadata patientMetadata, PseudonymPatient pseudonymPatient) {
+  void compareCachedPatient(PatientMetadata patientMetadata, PatientCache pseudonymPatient) {
     assertTrue(patientMetadata.compareCachedPatient(pseudonymPatient));
   }
 
   @ParameterizedTest
   @MethodSource("providerCompareCachedPatientFalse")
   void compareCachedPatientFalse(
-      PatientMetadata patientMetadata, PseudonymPatient pseudonymPatient) {
+      PatientMetadata patientMetadata, PatientCache pseudonymPatient) {
     assertFalse(patientMetadata.compareCachedPatient(pseudonymPatient));
   }
 
