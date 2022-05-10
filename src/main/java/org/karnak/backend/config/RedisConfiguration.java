@@ -23,31 +23,6 @@ public class RedisConfiguration {
 		return new ChannelTopic("patient:queue");
 	}
 
-//	@Bean
-//	ReactiveRedisMessageListenerContainer container(ReactiveRedisConnectionFactory factory) {
-//		ReactiveRedisMessageListenerContainer container = new ReactiveRedisMessageListenerContainer(factory);
-//		container.receive(topic());
-//		return container;
-//	}
-
-//	@Bean
-//	@Bean(name = "redisTemplate")
-//	ReactiveRedisTemplate<String, PseudonymPatient> reactiveRedisTemplate(
-//			ReactiveRedisConnectionFactory factory) {
-
-//		ObjectMapper objectMapper = new ObjectMapper().registerModule(new Jdk8Module())
-//				.registerModule(new JavaTimeModule());
-
-//		Jackson2JsonRedisSerializer<PseudonymPatient> serializer = new Jackson2JsonRedisSerializer<>(
-//				PseudonymPatient.class);
-//		serializer.setObjectMapper(objectMapper);
-
-//		RedisSerializationContext.RedisSerializationContextBuilder<String, PseudonymPatient> builder = RedisSerializationContext
-//				.newSerializationContext(new StringRedisSerializer());
-//		RedisSerializationContext<String, PseudonymPatient> context = builder.value(serializer).build();
-//		return new ReactiveRedisTemplate<>(factory, context);
-//	}
-
 	@Bean(name = "redisTemplate")
 	public RedisTemplate<String, PatientCache> redisTemplate(
 			RedisConnectionFactory connectionFactory) {
@@ -63,12 +38,9 @@ public class RedisConfiguration {
 		template.setConnectionFactory(connectionFactory);
 		template.setKeySerializer(new StringRedisSerializer());
 		template.setValueSerializer(serializer);
-//		template.setHashValueSerializer(serializer);
-
 
 		return template;
 	}
-
 
 	@Bean
 	public RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer() {

@@ -22,7 +22,7 @@ logging:
                 MapSyncRpcHandler: ERROR
               ReturnChannelHandler: ERROR
 server:
-  port: 8081
+  port: 0
   servlet:
     session:
       persistent: false

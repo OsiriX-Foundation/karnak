@@ -54,25 +54,25 @@ class PatientClientUtilTest {
 
   private static Stream<Arguments> providerGenerateKeyPseudonymPatient() {
     return Stream.of(
-        Arguments.of(new CachedPatient("pseudo", "123", "456", "789", "101112", null), "123101112"),
-        Arguments.of(new CachedPatient("pseudo", "123", "456", "789", "", null), "123", null),
+        Arguments.of(new PatientCache("pseudo", "123", "456", "789", "101112", null), "123101112"),
+        Arguments.of(new PatientCache("pseudo", "123", "456", "789", "", null), "123", null),
         Arguments.of(
-            new CachedPatient("pseudo", "EREN", "Patient", "Name", "PDA", null), "ERENPDA"),
-        Arguments.of(new CachedPatient("pseudo", "EREN", "Patient", "Name", "", null), "EREN"),
+            new PatientCache("pseudo", "EREN", "Patient", "Name", "PDA", null), "ERENPDA"),
+        Arguments.of(new PatientCache("pseudo", "EREN", "Patient", "Name", "", null), "EREN"),
         Arguments.of(
-            new MainzellistePatient(
+            new PatientCache(
                 "pseudo", "123", "", "456", LocalDate.of(1993, 02, 16), "M", ""),
             "123"),
         Arguments.of(
-            new MainzellistePatient(
+            new PatientCache(
                 "pseudo", "123", "", "456", LocalDate.of(1993, 02, 16), "M", "789"),
             "123789"),
         Arguments.of(
-            new MainzellistePatient(
+            new PatientCache(
                 "pseudo", "EREN", "Name", "Patient", LocalDate.of(1993, 02, 16), "M", "PDA"),
             "ERENPDA"),
         Arguments.of(
-            new MainzellistePatient(
+            new PatientCache(
                 "pseudo", "EREN", "Name", "Patient", LocalDate.of(1993, 02, 16), "M", ""),
             "EREN"));
   }
@@ -80,10 +80,10 @@ class PatientClientUtilTest {
   private static Stream<Arguments> providerGenerateKeyPseudonymPatientAndProjectID() {
     return Stream.of(
         Arguments.of(
-            new CachedPatient("pseudo", "123", "456", "789", "101112", 900L), "123101112900"),
-        Arguments.of(new CachedPatient("pseudo", "123", "456", "789", "", 128L), "123128"),
+            new PatientCache("pseudo", "123", "456", "789", "101112", 900L), "123101112900"),
+        Arguments.of(new PatientCache("pseudo", "123", "456", "789", "", 128L), "123128"),
         Arguments.of(
-            new CachedPatient("pseudo", "EREN", "Patient", "Name", "PDA", 524L), "ERENPDA524"));
+            new PatientCache("pseudo", "EREN", "Patient", "Name", "PDA", 524L), "ERENPDA524"));
   }
 
   private static Stream<Arguments> providerGenerateKeyPatientMetadata() {
