@@ -36,5 +36,9 @@ spring:
     active: '@activatedProperties@'
   liquibase:
     enabled: false
+  data:
+    redis:
+      repositories:
+        enabled: false
 monitoring:
   max-history: 50000

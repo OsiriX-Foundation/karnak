@@ -3,7 +3,6 @@ package org.karnak.backend.cache;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Objects;
 
 public class Patient implements Serializable {
 
@@ -178,31 +177,6 @@ public class Patient implements Serializable {
 
   private static String emptyStringIfNull(String value) {
     return value == null ? "" : value;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    Patient that = (Patient) o;
-    return Objects.equals(pseudonym, that.pseudonym) && Objects.equals(patientId,
-        that.patientId) && Objects.equals(patientName, that.patientName)
-        && Objects.equals(patientFirstName, that.patientFirstName)
-        && Objects.equals(patientLastName, that.patientLastName)
-        && Objects.equals(patientBirthDate, that.patientBirthDate)
-        && Objects.equals(patientSex, that.patientSex) && Objects.equals(
-        issuerOfPatientId, that.issuerOfPatientId) && Objects.equals(projectID,
-        that.projectID);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(pseudonym, patientId, patientName, patientFirstName, patientLastName,
-        patientBirthDate, patientSex, issuerOfPatientId, projectID);
   }
 
   @Override
