@@ -17,7 +17,7 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import org.karnak.backend.cache.PatientCache;
+import org.karnak.backend.cache.Patient;
 import org.karnak.backend.util.DateFormat;
 import org.karnak.frontend.component.BoxShadowComponent;
 
@@ -46,7 +46,7 @@ public class MappingResultComponent extends VerticalLayout {
    * @param inputValue Input value entered by the user
    * @param location from where the mapping has been taken from
    */
-  public void handleResultFindPatient(PatientCache patientFound, String inputValue, String location) {
+  public void handleResultFindPatient(Patient patientFound, String inputValue, String location) {
     // Reset details
     getPatientFoundDetails().setContent(null);
     getPatientFoundDetails().setSummary(null);
@@ -81,7 +81,7 @@ public class MappingResultComponent extends VerticalLayout {
    * @param patientFound Patient found
    * @param location Where the patient has been stored
    */
-  private void handleResultFindPatientPatientFound(PatientCache patientFound, String location) {
+  private void handleResultFindPatientPatientFound(Patient patientFound, String location) {
     getPatientFoundDetails().setOpened(true);
 
     // Summary

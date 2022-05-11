@@ -18,7 +18,7 @@ public class MainzellisteCache extends PatientClient {
 
   private static final String NAME = "mainzelliste.cache";
 
-  public MainzellisteCache(RedisCacheManager redisCacheManager, RedisTemplate<String, PatientCache> redisTemplate) {
+  public MainzellisteCache(RedisCacheManager redisCacheManager, RedisTemplate<String, Patient> redisTemplate) {
     super(redisCacheManager.getCache(NAME), redisTemplate,NAME);
   }
 }

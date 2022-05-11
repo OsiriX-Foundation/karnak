@@ -22,7 +22,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.karnak.backend.cache.PatientCache;
+import org.karnak.backend.cache.Patient;
 import org.karnak.backend.model.profilepipe.PatientMetadata;
 
 class PatientMetadataTest {
@@ -109,56 +109,56 @@ class PatientMetadataTest {
 
   private static Stream<Arguments> providerCompareCachedPatient() {
     return Stream.of(
-        Arguments.of(patientMetadata, new PatientCache("TEST", "", "", "", "", null)),
-        Arguments.of(patientMetadata, new PatientCache("TEST", "", "", "", null, "O", "")),
+        Arguments.of(patientMetadata, new Patient("TEST", "", "", "", "", null)),
+        Arguments.of(patientMetadata, new Patient("TEST", "", "", "", null, "O", "")),
         Arguments.of(
             patientMetadataDicomEmptyWithIssuer,
-            new PatientCache("TEST", "", "", "", "PDA", null)),
+            new Patient("TEST", "", "", "", "PDA", null)),
         Arguments.of(
             patientMetadataDicomEmptyWithIssuer,
-            new PatientCache("TEST", "", "", "", null, "O", "PDA")),
+            new Patient("TEST", "", "", "", null, "O", "PDA")),
         Arguments.of(
             patientMetadataWithNotValidPatientSex,
-            new PatientCache("TEST", "EREN", "Name", "Patient", "PDA", null)),
+            new Patient("TEST", "EREN", "Name", "Patient", "PDA", null)),
         Arguments.of(
             patientMetadataWithNotValidPatientSex,
-            new PatientCache(
+            new Patient(
                 "TEST", "EREN", "Name", "Patient", LocalDate.of(1993, 2, 16), "O", "PDA")));
   }
 
   private static Stream<Arguments> providerCompareCachedPatientFalse() {
     return Stream.of(
-        Arguments.of(patientMetadata, new PatientCache("TEST", "1", "", "", "", null)),
-        Arguments.of(patientMetadata, new PatientCache("TEST", "", "", "", "1", null)),
-        Arguments.of(patientMetadata, new PatientCache("TEST", "1", "", "", null, "O", "")),
-        Arguments.of(patientMetadata, new PatientCache("TEST", "", "", "", null, "O", "1")),
+        Arguments.of(patientMetadata, new Patient("TEST", "1", "", "", "", null)),
+        Arguments.of(patientMetadata, new Patient("TEST", "", "", "", "1", null)),
+        Arguments.of(patientMetadata, new Patient("TEST", "1", "", "", null, "O", "")),
+        Arguments.of(patientMetadata, new Patient("TEST", "", "", "", null, "O", "1")),
         Arguments.of(
             patientMetadataDicomEmptyWithIssuer,
-            new PatientCache("TEST", "1", "", "", "PDA", null)),
+            new Patient("TEST", "1", "", "", "PDA", null)),
         Arguments.of(
-            patientMetadataDicomEmptyWithIssuer, new PatientCache("TEST", "", "", "", "", null)),
-        Arguments.of(
-            patientMetadataDicomEmptyWithIssuer,
-            new PatientCache("TEST", "1", "", "", null, "O", "PDA")),
+            patientMetadataDicomEmptyWithIssuer, new Patient("TEST", "", "", "", "", null)),
         Arguments.of(
             patientMetadataDicomEmptyWithIssuer,
-            new PatientCache("TEST", "", "", "", null, "O", "")),
+            new Patient("TEST", "1", "", "", null, "O", "PDA")),
+        Arguments.of(
+            patientMetadataDicomEmptyWithIssuer,
+            new Patient("TEST", "", "", "", null, "O", "")),
         Arguments.of(
             patientMetadataWithNotValidPatientSex,
-            new PatientCache("TEST", "", "Name", "Patient", "PDA", null)),
+            new Patient("TEST", "", "Name", "Patient", "PDA", null)),
         Arguments.of(
             patientMetadataWithNotValidPatientSex,
-            new PatientCache("TEST", "", "^Name", "", "PDA", null)),
+            new Patient("TEST", "", "^Name", "", "PDA", null)),
         Arguments.of(
             patientMetadataWithNotValidPatientSex,
-            new PatientCache("TEST", "EREN", "Patient^Name", "", "", null)),
+            new Patient("TEST", "EREN", "Patient^Name", "", "", null)),
         Arguments.of(
             patientMetadataWithNotValidPatientSex,
-            new PatientCache(
+            new Patient(
                 "TEST", "", "Name", "Patient", LocalDate.of(1993, 2, 16), "O", "PDA")),
         Arguments.of(
             patientMetadataWithNotValidPatientSex,
-            new PatientCache(
+            new Patient(
                 "TEST", "EREN", "Name", "Patient", LocalDate.of(1993, 2, 16), "O", "")));
   }
 
@@ -228,15 +228,15 @@ class PatientMetadataTest {
 
   @ParameterizedTest
   @MethodSource("providerCompareCachedPatient")
-  void compareCachedPatient(PatientMetadata patientMetadata, PatientCache pseudonymPatient) {
-    assertTrue(patientMetadata.compareCachedPatient(pseudonymPatient));
+  void compareCachedPatient(PatientMetadata patientMetadata, Patient patient) {
+    assertTrue(patientMetadata.compareCachedPatient(patient));
   }
 
   @ParameterizedTest
   @MethodSource("providerCompareCachedPatientFalse")
   void compareCachedPatientFalse(
-      PatientMetadata patientMetadata, PatientCache pseudonymPatient) {
-    assertFalse(patientMetadata.compareCachedPatient(pseudonymPatient));
+      PatientMetadata patientMetadata, Patient patient) {
+    assertFalse(patientMetadata.compareCachedPatient(patient));
   }
 
   @ParameterizedTest

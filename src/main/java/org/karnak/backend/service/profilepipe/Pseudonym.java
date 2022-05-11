@@ -12,7 +12,7 @@ package org.karnak.backend.service.profilepipe;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.util.TagUtils;
 import org.karnak.backend.api.PseudonymApi;
-import org.karnak.backend.cache.PatientCache;
+import org.karnak.backend.cache.Patient;
 import org.karnak.backend.cache.PatientClient;
 import org.karnak.backend.config.AppConfig;
 import org.karnak.backend.data.entity.DestinationEntity;
@@ -138,8 +138,8 @@ public class Pseudonym {
   }
 
   private void cachingMainzellistePseudonym(String pseudonym, PatientMetadata patientMetadata) {
-    final PatientCache mainzellistePatient =
-        new PatientCache(
+    final Patient mainzellistePatient =
+        new Patient(
             pseudonym,
             patientMetadata.getPatientID(),
             patientMetadata.getPatientFirstName(),

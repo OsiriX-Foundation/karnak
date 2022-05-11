@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import org.karnak.backend.cache.ExternalIDCache;
-import org.karnak.backend.cache.PatientCache;
+import org.karnak.backend.cache.Patient;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.service.ProjectService;
 import org.karnak.backend.service.PseudonymMappingService;
@@ -66,7 +66,7 @@ public class PseudonymMappingLogic {
    * @param pseudonym Pseudonym
    * @return Patient found
    */
-  public PatientCache retrieveMainzellistePatient(String pseudonym) {
+  public Patient retrieveMainzellistePatient(String pseudonym) {
     return pseudonymMappingService.retrieveMainzellistePatient(pseudonym);
   }
 
@@ -77,22 +77,22 @@ public class PseudonymMappingLogic {
    * @param pseudonym Pseudonym
    * @return Map of patients by project
    */
-  public Map<String, PatientCache> retrieveExternalIDCachePatients(String pseudonym) {
-    Map<String, PatientCache> externalIDCacheMapping = new HashMap<>();
+  public Map<String, Patient> retrieveExternalIDCachePatients(String pseudonym) {
+    Map<String, Patient> externalIDCacheMapping = new HashMap<>();
 
-    // Look for PseudonymPatient in externalID cache corresponding to the input of the
+    // Look for patients in externalID cache corresponding to the input of the
     // user
-    List<PatientCache> pseudonymPatientsFound =
+    List<Patient> patientsFound =
         externalIDCache.getAll().stream()
             .filter(extId -> Objects.equals(extId.getPseudonym(), pseudonym))
             .collect(Collectors.toList());
 
     // Add mapping found
-    pseudonymPatientsFound.forEach(
+    patientsFound.forEach(
         p -> {
-          Long projectID = ((PatientCache) p).getProjectID();
+          Long projectID = ((Patient) p).getProjectID();
           ProjectEntity projectEntity = projectService.retrieveProject(projectID);
-          externalIDCacheMapping.put(projectEntity.getName(), (PatientCache) p);
+          externalIDCacheMapping.put(projectEntity.getName(), (Patient) p);
         });
 
     return externalIDCacheMapping;

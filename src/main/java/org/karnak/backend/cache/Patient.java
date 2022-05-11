@@ -5,7 +5,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class PatientCache implements Serializable {
+public class Patient implements Serializable {
 
   @Serial
   private static final long serialVersionUID = -6906583906530083181L;
@@ -22,7 +22,7 @@ public class PatientCache implements Serializable {
   private String issuerOfPatientId;
   private Long projectID;
 
-  public PatientCache(String pseudonym, String patientId, String patientName,
+  public Patient(String pseudonym, String patientId, String patientName,
       String patientFirstName, String patientLastName, LocalDate patientBirthDate,
       String patientSex, String issuerOfPatientId, Long projectID) {
     this.pseudonym = pseudonym;
@@ -36,7 +36,7 @@ public class PatientCache implements Serializable {
     this.projectID = projectID;
   }
 
-  public PatientCache(String pseudonym, String patientId,
+  public Patient(String pseudonym, String patientId,
       String patientFirstName, String patientLastName,  String issuerOfPatientId, Long projectID) {
     this.pseudonym = pseudonym;
     this.patientId = patientId;
@@ -47,7 +47,7 @@ public class PatientCache implements Serializable {
     this.projectID = projectID;
   }
 
-  public PatientCache(
+  public Patient(
       String pseudonym,
       String patientId,
       String patientFirstName,
@@ -188,7 +188,7 @@ public class PatientCache implements Serializable {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    PatientCache that = (PatientCache) o;
+    Patient that = (Patient) o;
     return Objects.equals(pseudonym, that.pseudonym) && Objects.equals(patientId,
         that.patientId) && Objects.equals(patientName, that.patientName)
         && Objects.equals(patientFirstName, that.patientFirstName)
@@ -207,7 +207,7 @@ public class PatientCache implements Serializable {
 
   @Override
   public String toString() {
-    return "PatientCache{" +
+    return "Patient{" +
         "pseudonym='" + pseudonym + '\'' +
         ", patientId='" + patientId + '\'' +
         ", patientName='" + patientName + '\'' +

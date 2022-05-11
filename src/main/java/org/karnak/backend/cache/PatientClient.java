@@ -19,32 +19,32 @@ import org.springframework.data.redis.core.RedisTemplate;
 public abstract class PatientClient {
 
   private final Cache cache;
-  private final RedisTemplate<String, PatientCache> redisTemplate;
+  private final RedisTemplate<String, Patient> redisTemplate;
   private static final String KEY_SEPARATOR = "::";
   private final String prefixKeySearchCache;
   private final String patternSearchAllKeysCache;
 
-  public PatientClient(Cache cache, RedisTemplate<String, PatientCache> redisTemplate, String name) {
+  public PatientClient(Cache cache, RedisTemplate<String, Patient> redisTemplate, String name) {
     this.cache = cache;
     this.redisTemplate = redisTemplate;
     this.prefixKeySearchCache = "%s%s".formatted(name, KEY_SEPARATOR);
     this.patternSearchAllKeysCache = "%s*".formatted(prefixKeySearchCache);
   }
 
-  public PatientCache put(String key, PatientCache patient) {
-    return (PatientCache) cache.putIfAbsent(key, patient);
+  public Patient put(String key, Patient patient) {
+    return (Patient) cache.putIfAbsent(key, patient);
   }
 
-  public PatientCache get(String key) {
+  public Patient get(String key) {
     ValueWrapper valueFromCache = cache.get(key);
-    return valueFromCache != null ? (PatientCache) valueFromCache.get() : null;
+    return valueFromCache != null ? (Patient) valueFromCache.get() : null;
   }
 
   public void remove(String key) {
     cache.evictIfPresent(key);
   }
 
-  public Collection<PatientCache> getAll() {
+  public Collection<Patient> getAll() {
     return Objects.requireNonNull(redisTemplate.keys(patternSearchAllKeysCache)).stream()
         .filter(Objects::nonNull)
         .filter(c -> c.length() > prefixKeySearchCache.length())
@@ -52,7 +52,7 @@ public abstract class PatientClient {
             k -> {
               ValueWrapper keyValue =
                   cache.get(k.substring(prefixKeySearchCache.length()));
-              return keyValue != null ? (PatientCache) keyValue.get() : null;
+              return keyValue != null ? (Patient) keyValue.get() : null;
             })
         .collect(Collectors.toList());
   }

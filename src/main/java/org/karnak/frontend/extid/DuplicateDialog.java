@@ -15,19 +15,19 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import java.util.Collection;
 import java.util.List;
-import org.karnak.backend.cache.PatientCache;
+import org.karnak.backend.cache.Patient;
 
 
 public class DuplicateDialog extends Dialog {
 
-  private final Collection<PatientCache> duplicateList;
+  private final Collection<Patient> duplicateList;
 
-  private Grid<PatientCache> grid;
+  private Grid<Patient> grid;
 
   public DuplicateDialog(
-      String title, String text, Collection<PatientCache> duplicateList, String buttonText) {
+      String title, String text, Collection<Patient> duplicateList, String buttonText) {
     removeAll();
-    this.duplicateList = (List<PatientCache>) (List<?>) duplicateList;
+    this.duplicateList = (List<Patient>) (List<?>) duplicateList;
 
     Div divTitle = new Div();
     divTitle.setText(title);
@@ -54,15 +54,15 @@ public class DuplicateDialog extends Dialog {
 
   public void setGridElement() {
     grid = new Grid<>();
-    grid.addColumn(PatientCache::getPseudonym).setHeader("External pseudonym").setSortable(true);
-    grid.addColumn(PatientCache::getPatientId).setHeader("Patient ID").setSortable(true);
-    grid.addColumn(PatientCache::getPatientFirstName)
+    grid.addColumn(Patient::getPseudonym).setHeader("External pseudonym").setSortable(true);
+    grid.addColumn(Patient::getPatientId).setHeader("Patient ID").setSortable(true);
+    grid.addColumn(Patient::getPatientFirstName)
         .setHeader("Patient first name")
         .setSortable(true);
-    grid.addColumn(PatientCache::getPatientLastName)
+    grid.addColumn(Patient::getPatientLastName)
         .setHeader("Patient last name")
         .setSortable(true);
-    grid.addColumn(PatientCache::getIssuerOfPatientId)
+    grid.addColumn(Patient::getIssuerOfPatientId)
         .setHeader("Issuer of patient ID")
         .setSortable(true);
     grid.setItems(duplicateList);

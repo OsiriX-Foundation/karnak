@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import liquibase.util.csv.opencsv.CSVReader;
-import org.karnak.backend.cache.PatientCache;
+import org.karnak.backend.cache.Patient;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +54,7 @@ public class CSVDialog extends Dialog {
     "", EXTERNAL_PSEUDONYM, PATIENT_ID, PATIENT_FIRST_NAME, PATIENT_LAST_NAME, ISSUER_OF_PATIENT_ID
   };
 
-  private final List<PatientCache> patientsList;
+  private final List<Patient> patientsList;
 
   private NumberField fromLineField;
 
@@ -241,8 +241,8 @@ public class CSVDialog extends Dialog {
             selectValuesPositionHashMap.get(ISSUER_OF_PATIENT_ID).equals(-1)
                 ? ""
                 : row[selectValuesPositionHashMap.get(ISSUER_OF_PATIENT_ID)];
-        final PatientCache newPatient =
-            new PatientCache(
+        final Patient newPatient =
+            new Patient(
                 row[selectValuesPositionHashMap.get(EXTERNAL_PSEUDONYM)],
                 row[selectValuesPositionHashMap.get(PATIENT_ID)],
                 row[selectValuesPositionHashMap.get(PATIENT_FIRST_NAME)],
@@ -260,7 +260,7 @@ public class CSVDialog extends Dialog {
     return readCSVButton;
   }
 
-  public List<PatientCache> getPatientsList() {
+  public List<Patient> getPatientsList() {
     return patientsList;
   }
 
