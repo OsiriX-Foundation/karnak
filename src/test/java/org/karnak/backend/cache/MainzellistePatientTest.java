@@ -150,18 +150,19 @@ class MainzellistePatientTest {
   @ParameterizedTest
   @MethodSource("providerUpdatePatientLastName")
   void getUpdatedPatientLastName(Patient mainzellistePatient, String output) {
-    assertEquals(mainzellistePatient.getPatientLastName(), output);
+    assertEquals(mainzellistePatient.getPatientLastName() == null ? "": mainzellistePatient.getPatientLastName(), output);
   }
 
   @ParameterizedTest
   @MethodSource("providerUpdatePatientFirstName")
   void getUpdatedPatientFirstName(Patient mainzellistePatient, String output) {
-    assertEquals(mainzellistePatient.getPatientFirstName(), output);
+    assertEquals(mainzellistePatient.getPatientFirstName() == null ? "": mainzellistePatient.getPatientFirstName(), output);
   }
 
   @ParameterizedTest
   @MethodSource("providerUpdatePatientName")
   void getUpdatedPatientName(Patient mainzellistePatient, String output) {
+    mainzellistePatient.updatePatientFirstName(mainzellistePatient.getPatientFirstName());
     assertEquals(mainzellistePatient.getPatientName(), output);
   }
 }

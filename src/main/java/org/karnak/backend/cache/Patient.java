@@ -39,8 +39,8 @@ public class Patient implements Serializable {
       String patientFirstName, String patientLastName,  String issuerOfPatientId, Long projectID) {
     this.pseudonym = pseudonym;
     this.patientId = patientId;
-    this.patientFirstName = patientFirstName;
-    this.patientLastName = patientLastName;
+    this.patientFirstName = emptyStringIfNull(patientFirstName);
+    this.patientLastName = emptyStringIfNull(patientLastName);
     this.patientName =  createPatientName(patientFirstName, patientLastName);
     this.issuerOfPatientId = issuerOfPatientId;
     this.projectID = projectID;
@@ -56,8 +56,8 @@ public class Patient implements Serializable {
       String issuerOfPatientId) {
     this.pseudonym = pseudonym;
     this.patientId = patientId;
-    this.patientFirstName = patientFirstName;
-    this.patientLastName = patientLastName;
+    this.patientFirstName = emptyStringIfNull(patientFirstName);
+    this.patientLastName = emptyStringIfNull(patientLastName);
     this.patientName =  createPatientName(patientFirstName, patientLastName);
     this.issuerOfPatientId = issuerOfPatientId;
     this.patientBirthDate = patientBirthDate;
@@ -165,12 +165,12 @@ public class Patient implements Serializable {
   }
 
 
-  protected void updatePatientLastName(String patientLastName) {
+  public void updatePatientLastName(String patientLastName) {
     this.patientLastName = emptyStringIfNull(patientLastName);
     this.patientName = createPatientName(patientFirstName, patientLastName);
   }
 
-  protected void updatePatientFirstName(String patientFirstName) {
+  public void updatePatientFirstName(String patientFirstName) {
     this.patientFirstName = emptyStringIfNull(patientFirstName);
     this.patientName = createPatientName(patientFirstName, patientLastName);
   }
