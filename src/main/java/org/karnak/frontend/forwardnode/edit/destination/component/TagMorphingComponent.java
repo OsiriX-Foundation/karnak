@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2022 Karnak Team and other contributors.
+ *
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
+ * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ */
 package org.karnak.frontend.forwardnode.edit.destination.component;
 
 import com.vaadin.flow.component.checkbox.Checkbox;
@@ -12,8 +21,7 @@ import org.karnak.frontend.util.UIS;
 
 public class TagMorphingComponent extends VerticalLayout {
 
-  @Serial
-  private static final long serialVersionUID = 6526643405482005449L;
+  @Serial private static final long serialVersionUID = 6526643405482005449L;
 
   // Labels
   private static final String LABEL_CHECKBOX_TAG_MORPHING = "Activate tag morphing";
@@ -80,8 +88,7 @@ public class TagMorphingComponent extends VerticalLayout {
     return warningNoProjectsDefined;
   }
 
-  public void setWarningNoProjectsDefined(
-      WarningNoProjectsDefined warningNoProjectsDefined) {
+  public void setWarningNoProjectsDefined(WarningNoProjectsDefined warningNoProjectsDefined) {
     this.warningNoProjectsDefined = warningNoProjectsDefined;
   }
 
@@ -89,8 +96,7 @@ public class TagMorphingComponent extends VerticalLayout {
     return destinationBinder;
   }
 
-  public void setDestinationBinder(
-      Binder<DestinationEntity> destinationBinder) {
+  public void setDestinationBinder(Binder<DestinationEntity> destinationBinder) {
     this.destinationBinder = destinationBinder;
   }
 
@@ -99,7 +105,8 @@ public class TagMorphingComponent extends VerticalLayout {
     profileLabel = new ProfileLabel();
     projectDropDown = destinationComponentUtil.buildProjectDropDown();
     warningNoProjectsDefined = destinationComponentUtil.buildWarningNoProjectDefined();
-    tagMorphingCheckbox = destinationComponentUtil.buildActivateCheckbox(LABEL_CHECKBOX_TAG_MORPHING);
+    tagMorphingCheckbox =
+        destinationComponentUtil.buildActivateCheckbox(LABEL_CHECKBOX_TAG_MORPHING);
     tagMorphingDiv = destinationComponentUtil.buildActivateDiv();
   }
 
@@ -110,15 +117,16 @@ public class TagMorphingComponent extends VerticalLayout {
     destinationBinder
         .forField(projectDropDown)
         .withValidator(
-            project -> project != null || !tagMorphingCheckbox.getValue(),
-            "Choose a project")
-        .bind(DestinationEntity::getTagMorphingProjectEntity, DestinationEntity::setTagMorphingProjectEntity);
+            project -> project != null || !tagMorphingCheckbox.getValue(), "Choose a project")
+        .bind(
+            DestinationEntity::getTagMorphingProjectEntity,
+            DestinationEntity::setTagMorphingProjectEntity);
   }
 
   /** Build listeners */
   private void buildListeners() {
-    destinationComponentUtil.buildWarningNoProjectDefinedListener(warningNoProjectsDefined,
-        tagMorphingCheckbox);
+    destinationComponentUtil.buildWarningNoProjectDefinedListener(
+        warningNoProjectsDefined, tagMorphingCheckbox);
     destinationComponentUtil.buildProjectDropDownListener(projectDropDown, profileLabel);
   }
 
@@ -128,9 +136,7 @@ public class TagMorphingComponent extends VerticalLayout {
     setPadding(true);
 
     // Add components in div
-    tagMorphingDiv.add(
-        projectDropDown,
-        profileLabel);
+    tagMorphingDiv.add(projectDropDown, profileLabel);
 
     // If checkbox is checked set div visible, invisible otherwise
     tagMorphingDiv.setVisible(tagMorphingCheckbox.getValue());

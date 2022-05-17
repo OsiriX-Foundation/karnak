@@ -263,7 +263,8 @@ public class GatewaySetUpService {
       List<AttributeEditor> editors = new ArrayList<>();
       applyConditionEditor(dstNode, editors);
       applyFilterEditor(dstNode, editors);
-      SwitchingAlbum switchingAlbum = applySwitchingAlbumEditor(dstNode,editors, kheopsAlbumEntities);
+      SwitchingAlbum switchingAlbum =
+          applySwitchingAlbumEditor(dstNode, editors, kheopsAlbumEntities);
       applyStreamRegistryEditor(editors);
       applyDeIdentifyEditor(dstNode, editors);
       applyTagMorphingEditor(dstNode, editors);
@@ -327,12 +328,15 @@ public class GatewaySetUpService {
 
   /**
    * Apply switching album editor
+   *
    * @param dstNode Destination
    * @param editors List of editors
    * @param kheopsAlbumEntities kheopsAlbumEntities
    * @return SwitchingAlbum created
    */
-  private SwitchingAlbum applySwitchingAlbumEditor(DestinationEntity dstNode, List<AttributeEditor> editors,
+  private SwitchingAlbum applySwitchingAlbumEditor(
+      DestinationEntity dstNode,
+      List<AttributeEditor> editors,
       List<KheopsAlbumsEntity> kheopsAlbumEntities) {
     SwitchingAlbum switchingAlbum = new SwitchingAlbum();
     if (kheopsAlbumEntities != null && !kheopsAlbumEntities.isEmpty()) {
@@ -343,19 +347,24 @@ public class GatewaySetUpService {
 
   /**
    * Switching editor
+   *
    * @param dstNode Destination
    * @param kheopsAlbumEntities kheopsAlbum Entities
    * @param switchingAlbum switchingAlbum
    * @return Editor
    */
-  private AttributeEditor switchingEditor(DestinationEntity dstNode,
-      List<KheopsAlbumsEntity> kheopsAlbumEntities, SwitchingAlbum switchingAlbum) {
-    return (Attributes dcm, AttributeEditorContext context) -> kheopsAlbumEntities.forEach(
-        kheopsAlbums -> switchingAlbum.apply(dstNode, kheopsAlbums, dcm));
+  private AttributeEditor switchingEditor(
+      DestinationEntity dstNode,
+      List<KheopsAlbumsEntity> kheopsAlbumEntities,
+      SwitchingAlbum switchingAlbum) {
+    return (Attributes dcm, AttributeEditorContext context) ->
+        kheopsAlbumEntities.forEach(
+            kheopsAlbums -> switchingAlbum.apply(dstNode, kheopsAlbums, dcm));
   }
 
   /**
    * Apply StreamRegistryEditor
+   *
    * @param editors List of editors
    */
   private void applyStreamRegistryEditor(List<AttributeEditor> editors) {
@@ -364,7 +373,8 @@ public class GatewaySetUpService {
 
   /**
    * Apply Filter editor
-   * @param dstNode  Destination
+   *
+   * @param dstNode Destination
    * @param editors List of editors
    */
   private void applyFilterEditor(DestinationEntity dstNode, List<AttributeEditor> editors) {
@@ -376,7 +386,8 @@ public class GatewaySetUpService {
 
   /**
    * Apply Condition editor
-   * @param dstNode  Destination
+   *
+   * @param dstNode Destination
    * @param editors List of editors
    */
   private void applyConditionEditor(DestinationEntity dstNode, List<AttributeEditor> editors) {

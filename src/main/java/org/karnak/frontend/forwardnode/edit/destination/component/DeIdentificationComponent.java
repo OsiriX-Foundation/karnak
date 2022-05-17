@@ -30,8 +30,7 @@ import org.karnak.frontend.util.UIS;
 
 public class DeIdentificationComponent extends VerticalLayout {
 
-  @Serial
-  private static final long serialVersionUID = -4535591077096019645L;
+  @Serial private static final long serialVersionUID = -4535591077096019645L;
 
   // Labels
   private static final String LABEL_CHECKBOX_DEIDENTIFICATION = "Activate de-identification";
@@ -118,7 +117,8 @@ public class DeIdentificationComponent extends VerticalLayout {
   /** Build listeners */
   private void buildListeners() {
     buildPseudonymTypeListener();
-    destinationComponentUtil.buildWarningNoProjectDefinedListener(warningNoProjectsDefined, deIdentificationCheckbox);
+    destinationComponentUtil.buildWarningNoProjectDefinedListener(
+        warningNoProjectsDefined, deIdentificationCheckbox);
     destinationComponentUtil.buildProjectDropDownListener(projectDropDown, profileLabel);
   }
 
@@ -128,7 +128,8 @@ public class DeIdentificationComponent extends VerticalLayout {
     projectDropDown = destinationComponentUtil.buildProjectDropDown();
     profileLabel = new ProfileLabel();
     warningNoProjectsDefined = destinationComponentUtil.buildWarningNoProjectDefined();
-    deIdentificationCheckbox = destinationComponentUtil.buildActivateCheckbox(LABEL_CHECKBOX_DEIDENTIFICATION);
+    deIdentificationCheckbox =
+        destinationComponentUtil.buildActivateCheckbox(LABEL_CHECKBOX_DEIDENTIFICATION);
     buildDisclaimerLabel();
     buildPseudonymTypeSelect();
     buildPseudonymInDicomTagComponent();
@@ -177,8 +178,6 @@ public class DeIdentificationComponent extends VerticalLayout {
     UIS.setTooltip(issuerOfPatientIDByDefault, LABEL_DEFAULT_ISSUER);
   }
 
-
-
   /** Listener on pseudonym type */
   private void buildPseudonymTypeListener() {
     pseudonymTypeSelect.addValueChangeListener(
@@ -208,8 +207,7 @@ public class DeIdentificationComponent extends VerticalLayout {
     destinationBinder
         .forField(projectDropDown)
         .withValidator(
-            project -> project != null || !deIdentificationCheckbox.getValue(),
-            "Choose a project")
+            project -> project != null || !deIdentificationCheckbox.getValue(), "Choose a project")
         .bind(DestinationEntity::getProjectEntity, DestinationEntity::setProjectEntity);
 
     destinationBinder

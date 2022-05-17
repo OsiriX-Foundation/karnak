@@ -134,13 +134,17 @@ public class LayoutEditForwardNode extends VerticalLayout {
     addEventButtonSaveNewUpdateDestination();
     addEventButtonDeleteNewUpdateDestination();
     addEventCheckboxLayoutTagMorphing(
-        newUpdateDestination.getFormDICOM().getTagMorphingComponent(), newUpdateDestination.getFormDICOM().getDeIdentificationComponent());
+        newUpdateDestination.getFormDICOM().getTagMorphingComponent(),
+        newUpdateDestination.getFormDICOM().getDeIdentificationComponent());
     addEventCheckboxLayoutTagMorphing(
-        newUpdateDestination.getFormSTOW().getTagMorphingComponent(), newUpdateDestination.getFormSTOW().getDeIdentificationComponent());
+        newUpdateDestination.getFormSTOW().getTagMorphingComponent(),
+        newUpdateDestination.getFormSTOW().getDeIdentificationComponent());
     addEventCheckboxLayoutDesidentification(
-        newUpdateDestination.getFormDICOM().getDeIdentificationComponent(), newUpdateDestination.getFormDICOM().getTagMorphingComponent());
+        newUpdateDestination.getFormDICOM().getDeIdentificationComponent(),
+        newUpdateDestination.getFormDICOM().getTagMorphingComponent());
     addEventCheckboxLayoutDesidentification(
-        newUpdateDestination.getFormSTOW().getDeIdentificationComponent(), newUpdateDestination.getFormSTOW().getTagMorphingComponent());
+        newUpdateDestination.getFormSTOW().getDeIdentificationComponent(),
+        newUpdateDestination.getFormSTOW().getTagMorphingComponent());
     addEventTranscodeOnlyUncompressedWhenSomeTransferSyntax(
         newUpdateDestination.getFormSTOW().getTransferSyntaxComponent().getTransferSyntaxSelect(),
         newUpdateDestination.getFormSTOW().getTranscodeOnlyUncompressedComponent());
@@ -519,6 +523,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
 
   /**
    * Add event checkbox deidentification
+   *
    * @param deIdentificationComponent DeIdentification Component
    * @param tagMorphingComponent Tag Morphing Component
    */
@@ -552,6 +557,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
 
   /**
    * Add event tag morphing checkbox
+   *
    * @param deIdentificationComponent DeIdentification Component
    * @param tagMorphingComponent Tag Morphing Component
    */

@@ -91,7 +91,8 @@ class ProfileTest {
     // Call method
     Profile profile = new Profile(profileEntity);
     // profile.init(profileEntity);
-    profile.applyDeIdentification(attributes, destinationEntity, profileEntity, context, projectEntity);
+    profile.applyDeIdentification(
+        attributes, destinationEntity, profileEntity, context, projectEntity);
 
     // Test results
     assertEquals("NONE", context.getAbort().name());
