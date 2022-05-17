@@ -22,14 +22,16 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
+import java.io.Serial;
 import java.util.Objects;
 import org.karnak.backend.data.entity.DestinationEntity;
-import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.frontend.component.ProjectDropDown;
-import org.karnak.frontend.project.ProjectView;
 import org.karnak.frontend.util.UIS;
 
 public class DeIdentificationComponent extends VerticalLayout {
+
+  @Serial
+  private static final long serialVersionUID = -4535591077096019645L;
 
   // Labels
   private static final String LABEL_CHECKBOX_DEIDENTIFICATION = "Activate de-identification";
@@ -55,7 +57,7 @@ public class DeIdentificationComponent extends VerticalLayout {
 
   private Div deIdentificationDiv;
 
-  private DeIdentificationName deIdentificationName;
+  private ProfileLabel profileLabel;
 
   private WarningNoProjectsDefined warningNoProjectsDefined;
 
@@ -63,8 +65,12 @@ public class DeIdentificationComponent extends VerticalLayout {
 
   private TextField issuerOfPatientIDByDefault;
 
+  private final DestinationComponentUtil destinationComponentUtil;
+
   /** Constructor */
-  public DeIdentificationComponent() {}
+  public DeIdentificationComponent() {
+    this.destinationComponentUtil = new DestinationComponentUtil();
+  }
 
   /**
    * Init deidentification component
@@ -97,7 +103,7 @@ public class DeIdentificationComponent extends VerticalLayout {
     deIdentificationDiv.add(
         disclaimerLabel,
         projectDropDown,
-        deIdentificationName,
+        profileLabel,
         pseudonymTypeSelect,
         pseudonymDicomTagDiv,
         issuerOfPatientIDByDefault);
@@ -112,26 +118,21 @@ public class DeIdentificationComponent extends VerticalLayout {
   /** Build listeners */
   private void buildListeners() {
     buildPseudonymTypeListener();
-    buildWarningNoProjectDefinedListener();
-    buildProjectDropDownListener();
-  }
-
-  /** Build listener on projectDropDown */
-  private void buildProjectDropDownListener() {
-    projectDropDown.addValueChangeListener(event -> setTextOnSelectionProject(event.getValue()));
+    destinationComponentUtil.buildWarningNoProjectDefinedListener(warningNoProjectsDefined, deIdentificationCheckbox);
+    destinationComponentUtil.buildProjectDropDownListener(projectDropDown, profileLabel);
   }
 
   /** Build deidentification components */
   private void buildComponents() {
     buildIssuerOfPatientID();
-    buildProjectDropDown();
-    buildDeIdentificationName();
-    buildWarningNoProjectDefined();
-    buildDeIdentificationCheckbox();
+    projectDropDown = destinationComponentUtil.buildProjectDropDown();
+    profileLabel = new ProfileLabel();
+    warningNoProjectsDefined = destinationComponentUtil.buildWarningNoProjectDefined();
+    deIdentificationCheckbox = destinationComponentUtil.buildActivateCheckbox(LABEL_CHECKBOX_DEIDENTIFICATION);
     buildDisclaimerLabel();
     buildPseudonymTypeSelect();
     buildPseudonymInDicomTagComponent();
-    buildDeIdentificationDiv();
+    deIdentificationDiv = destinationComponentUtil.buildActivateDiv();
     buildPseudonymDicomTagDiv();
   }
 
@@ -140,24 +141,10 @@ public class DeIdentificationComponent extends VerticalLayout {
     pseudonymInDicomTagComponent = new PseudonymInDicomTagComponent(destinationBinder);
   }
 
-  /** Build deidentification name */
-  private void buildDeIdentificationName() {
-    deIdentificationName = new DeIdentificationName();
-  }
-
   /** Build Pseudonym Dicom Tag Div which is visible if "Pseudonym is in a dicom tag" is selected */
   private void buildPseudonymDicomTagDiv() {
     pseudonymDicomTagDiv = new Div();
     pseudonymDicomTagDiv.add(pseudonymInDicomTagComponent);
-  }
-
-  /**
-   * Build deidentification div which is visible or not depending on the activate deidentification
-   * checkbox
-   */
-  private void buildDeIdentificationDiv() {
-    deIdentificationDiv = new Div();
-    deIdentificationDiv.setWidth("100%");
   }
 
   /** Build pseudonym type */
@@ -181,30 +168,6 @@ public class DeIdentificationComponent extends VerticalLayout {
     disclaimerLabel.getStyle().set("right", "0px");
   }
 
-  /** Build Checkbox activate de-identification */
-  private void buildDeIdentificationCheckbox() {
-    // Checkbox activate de-identification
-    deIdentificationCheckbox = new Checkbox(LABEL_CHECKBOX_DEIDENTIFICATION);
-    deIdentificationCheckbox.setValue(true);
-    deIdentificationCheckbox.setMinWidth("20%");
-    deIdentificationCheckbox.getElement().getStyle().set("margin-block-end", "auto");
-  }
-
-  /** Warning No Project Defined */
-  private void buildWarningNoProjectDefined() {
-    warningNoProjectsDefined = new WarningNoProjectsDefined();
-    warningNoProjectsDefined.setTextBtnCancel("Continue");
-    warningNoProjectsDefined.setTextBtnValidate("Create a project");
-  }
-
-  /** Build project drop down */
-  private void buildProjectDropDown() {
-    projectDropDown = new ProjectDropDown();
-    projectDropDown.setItemLabelGenerator(ProjectEntity::getName);
-    projectDropDown.setLabel("Choose a project");
-    projectDropDown.setWidth("100%");
-  }
-
   /** Build issuer of patient ID */
   private void buildIssuerOfPatientID() {
     issuerOfPatientIDByDefault = new TextField();
@@ -214,44 +177,7 @@ public class DeIdentificationComponent extends VerticalLayout {
     UIS.setTooltip(issuerOfPatientIDByDefault, LABEL_DEFAULT_ISSUER);
   }
 
-  /**
-   * Listener on popup warning no project defined: => navigate to view project or uncheck checkbox
-   * deidentification
-   */
-  private void buildWarningNoProjectDefinedListener() {
-    warningNoProjectsDefined
-        .getBtnCancel()
-        .addClickListener(
-            btnEvent -> {
-              deIdentificationCheckbox.setValue(false);
-              warningNoProjectsDefined.close();
-            });
-    warningNoProjectsDefined
-        .getBtnValidate()
-        .addClickListener(
-            btnEvent -> {
-              warningNoProjectsDefined.close();
-              navigateToProject();
-            });
-  }
 
-  private void navigateToProject() {
-    getUI().ifPresent(nav -> nav.navigate(ProjectView.VIEW_NAME.toLowerCase()));
-  }
-
-  public void setTextOnSelectionProject(ProjectEntity projectEntity) {
-    if (projectEntity != null && projectEntity.getProfileEntity() != null) {
-      deIdentificationName.setShowValue(
-          String.format(
-              "The profile %s [version %s] will be used",
-              projectEntity.getProfileEntity().getName(),
-              projectEntity.getProfileEntity().getVersion()));
-    } else if (projectEntity != null && projectEntity.getProfileEntity() == null) {
-      deIdentificationName.setShowValue("No profiles defined in the project");
-    } else {
-      deIdentificationName.removeAll();
-    }
-  }
 
   /** Listener on pseudonym type */
   private void buildPseudonymTypeListener() {
@@ -282,13 +208,13 @@ public class DeIdentificationComponent extends VerticalLayout {
     destinationBinder
         .forField(projectDropDown)
         .withValidator(
-            project -> project != null || (project == null && !deIdentificationCheckbox.getValue()),
+            project -> project != null || !deIdentificationCheckbox.getValue(),
             "Choose a project")
         .bind(DestinationEntity::getProjectEntity, DestinationEntity::setProjectEntity);
 
     destinationBinder
         .forField(pseudonymTypeSelect)
-        .withValidator(type -> type != null, "Choose pseudonym type\n")
+        .withValidator(Objects::nonNull, "Choose pseudonym type\n")
         .bind(
             destination -> {
               if (destination.getPseudonymType().equals(MAINZELLISTE_PID)) {
@@ -371,10 +297,6 @@ public class DeIdentificationComponent extends VerticalLayout {
     return deIdentificationDiv;
   }
 
-  public DeIdentificationName getDesidentificationName() {
-    return deIdentificationName;
-  }
-
   public WarningNoProjectsDefined getWarningNoProjectsDefined() {
     return warningNoProjectsDefined;
   }
@@ -385,5 +307,13 @@ public class DeIdentificationComponent extends VerticalLayout {
 
   public TextField getIssuerOfPatientIDByDefault() {
     return issuerOfPatientIDByDefault;
+  }
+
+  public DestinationComponentUtil getDestinationComponentUtil() {
+    return destinationComponentUtil;
+  }
+
+  public ProfileLabel getProfileLabel() {
+    return profileLabel;
   }
 }

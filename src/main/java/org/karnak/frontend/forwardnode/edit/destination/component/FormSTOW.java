@@ -26,6 +26,8 @@ public class FormSTOW extends VerticalLayout {
 
   private final DeIdentificationComponent deIdentificationComponent;
 
+  private final TagMorphingComponent tagMorphingComponent;
+
   private Binder<DestinationEntity> binder;
 
   private TextField description;
@@ -52,6 +54,7 @@ public class FormSTOW extends VerticalLayout {
 
   public FormSTOW() {
     this.deIdentificationComponent = new DeIdentificationComponent();
+    this.tagMorphingComponent = new TagMorphingComponent();
     this.filterBySOPClassesForm = new FilterBySOPClassesForm();
     this.destinationCondition = new DestinationCondition();
     this.notificationComponent = new NotificationComponent();
@@ -64,6 +67,7 @@ public class FormSTOW extends VerticalLayout {
     setSizeFull();
     this.binder = binder;
     this.deIdentificationComponent.init(this.binder);
+    this.tagMorphingComponent.init(this.binder);
     this.filterBySOPClassesForm.init(this.binder);
     this.destinationCondition.init(binder);
     notificationComponent.init(binder);
@@ -100,6 +104,7 @@ public class FormSTOW extends VerticalLayout {
     add(UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(destinationLayout))));
     add(UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(transferLayout))));
     add(UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(notificationComponent))));
+    add(UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(tagMorphingComponent))));
     add(UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(deIdentificationComponent))));
     add(UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(filterBySOPClassesForm))));
     add(UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(switchingLayout))));
@@ -142,6 +147,10 @@ public class FormSTOW extends VerticalLayout {
 
   public DeIdentificationComponent getDeIdentificationComponent() {
     return deIdentificationComponent;
+  }
+
+  public TagMorphingComponent getTagMorphingComponent() {
+    return tagMorphingComponent;
   }
 
   public FilterBySOPClassesForm getFilterBySOPClassesForm() {

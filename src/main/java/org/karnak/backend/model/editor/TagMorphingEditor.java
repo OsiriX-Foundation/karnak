@@ -18,7 +18,7 @@ import org.weasis.dicom.param.AttributeEditor;
 import org.weasis.dicom.param.AttributeEditorContext;
 import org.weasis.dicom.param.AttributeEditorContext.Abort;
 
-public class DeIdentifyEditor implements AttributeEditor {
+public class TagMorphingEditor implements AttributeEditor {
 
   private final Profile profile;
 
@@ -28,9 +28,9 @@ public class DeIdentifyEditor implements AttributeEditor {
 
   private final ProjectEntity projectEntity;
 
-  public DeIdentifyEditor(DestinationEntity destinationEntity) {
+  public TagMorphingEditor(DestinationEntity destinationEntity) {
     this.destinationEntity = destinationEntity;
-    this.projectEntity = destinationEntity.getProjectEntity();
+    this.projectEntity = destinationEntity.getTagMorphingProjectEntity();
     this.profileEntity = projectEntity.getProfileEntity();
     this.profile = new Profile(profileEntity);
   }
@@ -38,7 +38,7 @@ public class DeIdentifyEditor implements AttributeEditor {
   @Override
   public void apply(Attributes dcm, AttributeEditorContext context) {
     if (context.getAbort() != Abort.FILE_EXCEPTION) {
-      profile.applyDeIdentification(dcm, destinationEntity, profileEntity, context, projectEntity);
+      profile.applyTagMorphing(dcm, destinationEntity, profileEntity, context, projectEntity);
     }
   }
 }
