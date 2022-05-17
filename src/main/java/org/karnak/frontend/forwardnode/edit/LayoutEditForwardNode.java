@@ -40,6 +40,7 @@ import org.karnak.frontend.forwardnode.edit.destination.component.DeIdentificati
 import org.karnak.frontend.forwardnode.edit.destination.component.FilterBySOPClassesForm;
 import org.karnak.frontend.forwardnode.edit.destination.component.NewUpdateDestination;
 import org.karnak.frontend.forwardnode.edit.destination.component.NotificationComponent;
+import org.karnak.frontend.forwardnode.edit.destination.component.TagMorphingComponent;
 import org.karnak.frontend.forwardnode.edit.destination.component.TranscodeOnlyUncompressedComponent;
 import org.karnak.frontend.forwardnode.edit.source.SourceView;
 import org.karnak.frontend.forwardnode.edit.source.component.NewUpdateSourceNode;
@@ -132,10 +133,18 @@ public class LayoutEditForwardNode extends VerticalLayout {
     addEventButtonDeleteNewUpdateSourceNode();
     addEventButtonSaveNewUpdateDestination();
     addEventButtonDeleteNewUpdateDestination();
-    addEventCheckboxLayoutDesidentification(
+    addEventCheckboxLayoutTagMorphing(
+        newUpdateDestination.getFormDICOM().getTagMorphingComponent(),
         newUpdateDestination.getFormDICOM().getDeIdentificationComponent());
-    addEventCheckboxLayoutDesidentification(
+    addEventCheckboxLayoutTagMorphing(
+        newUpdateDestination.getFormSTOW().getTagMorphingComponent(),
         newUpdateDestination.getFormSTOW().getDeIdentificationComponent());
+    addEventCheckboxLayoutDesidentification(
+        newUpdateDestination.getFormDICOM().getDeIdentificationComponent(),
+        newUpdateDestination.getFormDICOM().getTagMorphingComponent());
+    addEventCheckboxLayoutDesidentification(
+        newUpdateDestination.getFormSTOW().getDeIdentificationComponent(),
+        newUpdateDestination.getFormSTOW().getTagMorphingComponent());
     addEventTranscodeOnlyUncompressedWhenSomeTransferSyntax(
         newUpdateDestination.getFormSTOW().getTransferSyntaxComponent().getTransferSyntaxSelect(),
         newUpdateDestination.getFormSTOW().getTranscodeOnlyUncompressedComponent());
@@ -162,6 +171,11 @@ public class LayoutEditForwardNode extends VerticalLayout {
         .setItems(projectService.getAllProjects());
     newUpdateDestination
         .getFormDICOM()
+        .getTagMorphingComponent()
+        .getProjectDropDown()
+        .setItems(projectService.getAllProjects());
+    newUpdateDestination
+        .getFormDICOM()
         .getFilterBySOPClassesForm()
         .getSopFilter()
         .setItems(sopClassUIDService.getAllSOPClassUIDsName());
@@ -170,6 +184,11 @@ public class LayoutEditForwardNode extends VerticalLayout {
     newUpdateDestination
         .getFormSTOW()
         .getDeIdentificationComponent()
+        .getProjectDropDown()
+        .setItems(projectService.getAllProjects());
+    newUpdateDestination
+        .getFormSTOW()
+        .getTagMorphingComponent()
         .getProjectDropDown()
         .setItems(projectService.getAllProjects());
     newUpdateDestination
@@ -502,23 +521,70 @@ public class LayoutEditForwardNode extends VerticalLayout {
     }
   }
 
+  /**
+   * Add event checkbox deidentification
+   *
+   * @param deIdentificationComponent DeIdentification Component
+   * @param tagMorphingComponent Tag Morphing Component
+   */
   private void addEventCheckboxLayoutDesidentification(
-      DeIdentificationComponent deIdentificationComponent) {
+      DeIdentificationComponent deIdentificationComponent,
+      TagMorphingComponent tagMorphingComponent) {
     deIdentificationComponent
         .getDeIdentificationCheckbox()
         .addValueChangeListener(
             event -> {
               if (event.getValue() != null) {
                 if (event.getValue()) {
-                  if (projectService.getAllProjects().size() > 0) {
+                  // Deactivate tag morphing
+                  tagMorphingComponent.getTagMorphingCheckbox().setValue(false);
+                  if (!projectService.getAllProjects().isEmpty()) {
                     deIdentificationComponent.getDeIdentificationDiv().setVisible(true);
-                    deIdentificationComponent.setTextOnSelectionProject(
-                        deIdentificationComponent.getProjectDropDown().getValue());
+                    deIdentificationComponent
+                        .getDestinationComponentUtil()
+                        .setTextOnSelectionProject(
+                            deIdentificationComponent.getProjectDropDown().getValue(),
+                            deIdentificationComponent.getProfileLabel());
                   } else {
                     deIdentificationComponent.getWarningNoProjectsDefined().open();
                   }
                 } else {
                   deIdentificationComponent.getDeIdentificationDiv().setVisible(false);
+                }
+              }
+            });
+  }
+
+  /**
+   * Add event tag morphing checkbox
+   *
+   * @param deIdentificationComponent DeIdentification Component
+   * @param tagMorphingComponent Tag Morphing Component
+   */
+  private void addEventCheckboxLayoutTagMorphing(
+      TagMorphingComponent tagMorphingComponent,
+      DeIdentificationComponent deIdentificationComponent) {
+    tagMorphingComponent
+        .getTagMorphingCheckbox()
+        .addValueChangeListener(
+            event -> {
+              if (event.getValue() != null) {
+                if (event.getValue()) {
+                  // Deactivate deidentification
+                  deIdentificationComponent.getDeIdentificationCheckbox().setValue(false);
+
+                  if (!projectService.getAllProjects().isEmpty()) {
+                    tagMorphingComponent.getTagMorphingDiv().setVisible(true);
+                    tagMorphingComponent
+                        .getDestinationComponentUtil()
+                        .setTextOnSelectionProject(
+                            tagMorphingComponent.getProjectDropDown().getValue(),
+                            tagMorphingComponent.getProfileLabel());
+                  } else {
+                    tagMorphingComponent.getWarningNoProjectsDefined().open();
+                  }
+                } else {
+                  tagMorphingComponent.getTagMorphingDiv().setVisible(false);
                 }
               }
             });

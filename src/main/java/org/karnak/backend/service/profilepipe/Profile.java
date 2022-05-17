@@ -297,16 +297,26 @@ public class Profile {
     }
   }
 
-  public void apply(
+  /**
+   * Apply deidentification
+   *
+   * @param dcm Attributes
+   * @param destinationEntity Destination
+   * @param profileEntity Profile
+   * @param context Context
+   * @param projectEntity Project
+   */
+  public void applyDeIdentification(
       Attributes dcm,
       DestinationEntity destinationEntity,
       ProfileEntity profileEntity,
-      AttributeEditorContext context) {
+      AttributeEditorContext context,
+      ProjectEntity projectEntity) {
     final String SOPInstanceUID = dcm.getString(Tag.SOPInstanceUID);
     final String SeriesInstanceUID = dcm.getString(Tag.SeriesInstanceUID);
     final String IssuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID);
     final String PatientID = dcm.getString(Tag.PatientID);
-    final HMAC hmac = generateHMAC(destinationEntity, PatientID);
+    final HMAC hmac = generateHMAC(PatientID, projectEntity);
 
     MDC.put("SOPInstanceUID", SOPInstanceUID);
     MDC.put("SeriesInstanceUID", SeriesInstanceUID);
@@ -347,8 +357,42 @@ public class Profile {
     MDC.clear();
   }
 
-  private HMAC generateHMAC(DestinationEntity destinationEntity, String patientID) {
-    ProjectEntity projectEntity = destinationEntity.getProjectEntity();
+  public void applyTagMorphing(
+      Attributes dcm,
+      DestinationEntity destinationEntity,
+      ProfileEntity profileEntity,
+      AttributeEditorContext context,
+      ProjectEntity projectEntity) {
+    final String SOPInstanceUID = dcm.getString(Tag.SOPInstanceUID);
+    final String SeriesInstanceUID = dcm.getString(Tag.SeriesInstanceUID);
+    final String IssuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID);
+    final String PatientID = dcm.getString(Tag.PatientID);
+    final HMAC hmac = generateHMAC(PatientID, projectEntity);
+
+    MDC.put("SOPInstanceUID", SOPInstanceUID);
+    MDC.put("SeriesInstanceUID", SeriesInstanceUID);
+    MDC.put("issuerOfPatientID", IssuerOfPatientID);
+    MDC.put("PatientID", PatientID);
+
+    String profilesCodeName =
+        profiles.stream().map(ProfileItem::getCodeName).collect(Collectors.joining("-"));
+
+    Attributes dcmCopy = new Attributes(dcm);
+
+    // Apply actions on tags
+    applyAction(dcm, dcmCopy, hmac, null, null, context);
+
+    final Marker clincalMarker = MarkerFactory.getMarker("CLINICAL");
+    MDC.put("TagMorphingSOPInstanceUID", dcm.getString(Tag.SOPInstanceUID));
+    MDC.put("TagMorphingSeriesInstanceUID", dcm.getString(Tag.SeriesInstanceUID));
+    MDC.put("ProjectName", destinationEntity.getTagMorphingProjectEntity().getName());
+    MDC.put("ProfileName", profileEntity.getName());
+    MDC.put("ProfileCodenames", profilesCodeName);
+    LOGGER.info(clincalMarker, "");
+    MDC.clear();
+  }
+
+  private HMAC generateHMAC(String patientID, ProjectEntity projectEntity) {
     if (projectEntity == null) {
       throw new IllegalStateException(
           "Cannot build the HMAC a project is not associate at the destination");

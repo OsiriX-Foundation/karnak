@@ -39,6 +39,8 @@ public class FormDICOM extends VerticalLayout {
 
   private final DeIdentificationComponent deIdentificationComponent;
 
+  private final TagMorphingComponent tagMorphingComponent;
+
   private final FilterBySOPClassesForm filterBySOPClassesForm;
 
   private Checkbox activate;
@@ -53,6 +55,7 @@ public class FormDICOM extends VerticalLayout {
 
   public FormDICOM() {
     this.deIdentificationComponent = new DeIdentificationComponent();
+    this.tagMorphingComponent = new TagMorphingComponent();
     this.filterBySOPClassesForm = new FilterBySOPClassesForm();
     this.destinationCondition = new DestinationCondition();
     this.notificationComponent = new NotificationComponent();
@@ -65,6 +68,7 @@ public class FormDICOM extends VerticalLayout {
 
     this.binder = binder;
     this.deIdentificationComponent.init(this.binder);
+    this.tagMorphingComponent.init(this.binder);
     this.filterBySOPClassesForm.init(this.binder);
     this.destinationCondition.init(this.binder);
     notificationComponent.init(this.binder);
@@ -104,6 +108,7 @@ public class FormDICOM extends VerticalLayout {
         UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(transferLayout))),
         UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(useaetdestLayout))),
         UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(notificationComponent))),
+        UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(tagMorphingComponent))),
         UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(deIdentificationComponent))),
         UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(filterBySOPClassesForm))),
         UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(activateLayout))),
@@ -153,6 +158,10 @@ public class FormDICOM extends VerticalLayout {
 
   public DeIdentificationComponent getDeIdentificationComponent() {
     return deIdentificationComponent;
+  }
+
+  public TagMorphingComponent getTagMorphingComponent() {
+    return tagMorphingComponent;
   }
 
   public FilterBySOPClassesForm getFilterBySOPClassesForm() {

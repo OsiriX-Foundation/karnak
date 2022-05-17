@@ -61,6 +61,8 @@ public class DestinationEntity implements Serializable {
 
   private String condition;
 
+  private boolean activateTagMorphing;
+
   private boolean desidentification;
 
   private String issuerByDefault;
@@ -82,6 +84,8 @@ public class DestinationEntity implements Serializable {
   private List<KheopsAlbumsEntity> kheopsAlbumEntities;
 
   private ProjectEntity projectEntity;
+
+  private ProjectEntity tagMorphingProjectEntity;
 
   private ForwardNodeEntity forwardNodeEntity;
 
@@ -494,6 +498,18 @@ public class DestinationEntity implements Serializable {
     this.projectEntity = projectEntity;
   }
 
+  @JsonGetter("tagMorphingProject")
+  @ManyToOne
+  @JoinColumn(name = "tag_morphing_project_id")
+  public ProjectEntity getTagMorphingProjectEntity() {
+    return tagMorphingProjectEntity;
+  }
+
+  @JsonSetter("tagMorphingProject")
+  public void setTagMorphingProjectEntity(ProjectEntity tagMorphingProjectEntity) {
+    this.tagMorphingProjectEntity = tagMorphingProjectEntity;
+  }
+
   public boolean isActivateNotification() {
     return activateNotification;
   }
@@ -540,6 +556,14 @@ public class DestinationEntity implements Serializable {
 
   public void setLastTransfer(LocalDateTime lastTransfer) {
     this.lastTransfer = lastTransfer;
+  }
+
+  public boolean isActivateTagMorphing() {
+    return activateTagMorphing;
+  }
+
+  public void setActivateTagMorphing(boolean activateTagMorphing) {
+    this.activateTagMorphing = activateTagMorphing;
   }
 
   /**
