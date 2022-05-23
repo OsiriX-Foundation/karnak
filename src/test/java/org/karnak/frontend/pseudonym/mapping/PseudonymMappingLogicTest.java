@@ -16,10 +16,8 @@ import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.karnak.backend.cache.CachedPatient;
 import org.karnak.backend.cache.ExternalIDCache;
 import org.karnak.backend.cache.Patient;
-import org.karnak.backend.cache.PseudonymPatient;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.service.ProjectService;
 import org.karnak.backend.service.PseudonymMappingService;
@@ -42,9 +40,9 @@ class PseudonymMappingLogicTest {
 
     // Behaviour of mocks
     // ExternalIDCacheMock
-    List<PseudonymPatient> pseudonymPatients = new ArrayList<>();
-    PseudonymPatient pseudonymPatient =
-        new CachedPatient(
+    List<Patient> pseudonymPatients = new ArrayList<>();
+    Patient pseudonymPatient =
+        new Patient(
             "pseudonym",
             "patientId",
             "patientFirstName",

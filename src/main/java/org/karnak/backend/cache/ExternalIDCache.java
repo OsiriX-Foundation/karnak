@@ -9,15 +9,16 @@
  */
 package org.karnak.backend.cache;
 
+import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ExternalIDCache extends PatientClient {
 
-  private static final String NAME = "externalid";
-  private static final int TTL_SECONDS = 60 * 60 * 24 * 7;
+  private static final String NAME = "externalId.cache";
 
-  public ExternalIDCache() {
-    super(NAME, TTL_SECONDS);
+  public ExternalIDCache(RedisCacheManager redisCacheManager, RedisTemplate<String, Patient> redisTemplate) {
+    super(redisCacheManager.getCache(NAME), redisTemplate, NAME);
   }
 }

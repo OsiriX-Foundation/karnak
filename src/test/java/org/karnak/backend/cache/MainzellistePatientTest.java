@@ -20,28 +20,28 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 class MainzellistePatientTest {
 
-  static MainzellistePatient mainzellistePatient;
-  static MainzellistePatient mainzellistePatientWithFirstName;
-  static MainzellistePatient mainzellistePatientWithLastName;
-  static MainzellistePatient mainzellistePatientWithLastNameNull;
-  static MainzellistePatient mainzellistePatientWithFirstNameNull;
+  static Patient mainzellistePatient;
+  static Patient mainzellistePatientWithFirstName;
+  static Patient mainzellistePatientWithLastName;
+  static Patient mainzellistePatientWithLastNameNull;
+  static Patient mainzellistePatientWithFirstNameNull;
 
   @BeforeAll
   protected static void setUpBeforeClass() throws Exception {
     mainzellistePatient =
-        new MainzellistePatient(
+        new Patient(
             "pseudonym", "mykasa", "Kenny", "Ackermann", LocalDate.of(1982, 2, 4), "M", "DPA");
     mainzellistePatientWithFirstName =
-        new MainzellistePatient(
+        new Patient(
             "pseudonym", "mykasa", "Kenny", "", LocalDate.of(1982, 2, 4), "M", "DPA");
     mainzellistePatientWithLastName =
-        new MainzellistePatient(
+        new Patient(
             "pseudonym", "mykasa", "", "Ackermann", LocalDate.of(1982, 2, 4), "M", "DPA");
     mainzellistePatientWithLastNameNull =
-        new MainzellistePatient(
+        new Patient(
             "pseudonym", "mykasa", "Kenny", null, LocalDate.of(1982, 2, 4), "M", "DPA");
     mainzellistePatientWithFirstNameNull =
-        new MainzellistePatient(
+        new Patient(
             "pseudonym", "mykasa", null, "Ackermann", LocalDate.of(1982, 2, 4), "M", "DPA");
   }
 
@@ -131,37 +131,38 @@ class MainzellistePatientTest {
 
   @ParameterizedTest
   @MethodSource("providerGetPatientName")
-  void getPatientName(MainzellistePatient mainzellistePatient, String output) {
+  void getPatientName(Patient mainzellistePatient, String output) {
     assertEquals(mainzellistePatient.getPatientName(), output);
   }
 
   @ParameterizedTest
   @MethodSource("providerGetPatientFirstName")
-  void getPatientFirstName(MainzellistePatient mainzellistePatient, String output) {
+  void getPatientFirstName(Patient mainzellistePatient, String output) {
     assertEquals(mainzellistePatient.getPatientFirstName(), output);
   }
 
   @ParameterizedTest
   @MethodSource("providerGetPatientLastName")
-  void getPatientLastName(MainzellistePatient mainzellistePatient, String output) {
+  void getPatientLastName(Patient mainzellistePatient, String output) {
     assertEquals(mainzellistePatient.getPatientLastName(), output);
   }
 
   @ParameterizedTest
   @MethodSource("providerUpdatePatientLastName")
-  void getUpdatedPatientLastName(MainzellistePatient mainzellistePatient, String output) {
-    assertEquals(mainzellistePatient.getPatientLastName(), output);
+  void getUpdatedPatientLastName(Patient mainzellistePatient, String output) {
+    assertEquals(mainzellistePatient.getPatientLastName() == null ? "": mainzellistePatient.getPatientLastName(), output);
   }
 
   @ParameterizedTest
   @MethodSource("providerUpdatePatientFirstName")
-  void getUpdatedPatientFirstName(MainzellistePatient mainzellistePatient, String output) {
-    assertEquals(mainzellistePatient.getPatientFirstName(), output);
+  void getUpdatedPatientFirstName(Patient mainzellistePatient, String output) {
+    assertEquals(mainzellistePatient.getPatientFirstName() == null ? "": mainzellistePatient.getPatientFirstName(), output);
   }
 
   @ParameterizedTest
   @MethodSource("providerUpdatePatientName")
-  void getUpdatedPatientName(MainzellistePatient mainzellistePatient, String output) {
+  void getUpdatedPatientName(Patient mainzellistePatient, String output) {
+    mainzellistePatient.updatePatientFirstName(mainzellistePatient.getPatientFirstName());
     assertEquals(mainzellistePatient.getPatientName(), output);
   }
 }

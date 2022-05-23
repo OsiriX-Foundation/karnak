@@ -25,7 +25,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import java.io.InputStream;
 import java.util.ArrayList;
-import org.karnak.backend.cache.CachedPatient;
+import org.karnak.backend.cache.Patient;
 import org.karnak.frontend.MainLayout;
 import org.karnak.frontend.component.ProjectDropDown;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,7 +101,7 @@ public class ExternalIDView extends HorizontalLayout {
         .getAddPatientButton()
         .addClickListener(
             click -> {
-              final CachedPatient newPatient = externalIDForm.getNewPatient();
+              final Patient newPatient = externalIDForm.getNewPatient();
               if (newPatient != null) {
                 externalIDGrid.addPatient(newPatient);
                 checkDuplicatePatient();

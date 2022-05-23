@@ -24,7 +24,7 @@ import java.time.format.DateTimeFormatter;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.backend.api.PseudonymApi;
 import org.karnak.backend.api.rqbody.Fields;
-import org.karnak.backend.cache.MainzellistePatient;
+import org.karnak.backend.cache.Patient;
 import org.karnak.frontend.component.ConfirmDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +35,7 @@ public class MainzellisteAddPatient extends VerticalLayout {
 
   private static final String ERROR_MESSAGE_PATIENT = "Length must be between 1 and 50.";
 
-  private final Binder<MainzellistePatient> binder;
+  private final Binder<Patient> binder;
 
   private TextField externalIdField;
 
@@ -65,7 +65,7 @@ public class MainzellisteAddPatient extends VerticalLayout {
 
   public MainzellisteAddPatient() {
     setSizeFull();
-    binder = new BeanValidationBinder<>(MainzellistePatient.class);
+    binder = new BeanValidationBinder<>(Patient.class);
 
     setElements();
     setBinder();

@@ -14,11 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import org.karnak.backend.cache.CachedPatient;
 import org.karnak.backend.cache.ExternalIDCache;
-import org.karnak.backend.cache.MainzellistePatient;
 import org.karnak.backend.cache.Patient;
-import org.karnak.backend.cache.PseudonymPatient;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.service.ProjectService;
 import org.karnak.backend.service.PseudonymMappingService;
@@ -69,7 +66,7 @@ public class PseudonymMappingLogic {
    * @param pseudonym Pseudonym
    * @return Patient found
    */
-  public MainzellistePatient retrieveMainzellistePatient(String pseudonym) {
+  public Patient retrieveMainzellistePatient(String pseudonym) {
     return pseudonymMappingService.retrieveMainzellistePatient(pseudonym);
   }
 
@@ -83,19 +80,19 @@ public class PseudonymMappingLogic {
   public Map<String, Patient> retrieveExternalIDCachePatients(String pseudonym) {
     Map<String, Patient> externalIDCacheMapping = new HashMap<>();
 
-    // Look for PseudonymPatient in externalID cache corresponding to the input of the
+    // Look for patients in externalID cache corresponding to the input of the
     // user
-    List<PseudonymPatient> pseudonymPatientsFound =
+    List<Patient> patientsFound =
         externalIDCache.getAll().stream()
             .filter(extId -> Objects.equals(extId.getPseudonym(), pseudonym))
             .collect(Collectors.toList());
 
     // Add mapping found
-    pseudonymPatientsFound.forEach(
+    patientsFound.forEach(
         p -> {
-          Long projectID = ((CachedPatient) p).getProjectID();
+          Long projectID = ((Patient) p).getProjectID();
           ProjectEntity projectEntity = projectService.retrieveProject(projectID);
-          externalIDCacheMapping.put(projectEntity.getName(), (CachedPatient) p);
+          externalIDCacheMapping.put(projectEntity.getName(), (Patient) p);
         });
 
     return externalIDCacheMapping;
