@@ -63,5 +63,16 @@ spring:
       jdbc:
         lob:
           non_contextual_creation: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+    enabled-by-default: true
+  server:
+    port: ${SERVER_MANAGEMENT_PORT:18089}
+  endpoint:
+    health:
+      show-details: always
 monitoring:
   max-history: 150000
