@@ -46,8 +46,7 @@ public class RedisConfiguration {
 	public RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer() {
 		return (builder) -> builder
 				.withCacheConfiguration("externalId.cache",
-//						RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofDays(7)))
-						RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(3)))
+						RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofDays(7)))
 				.withCacheConfiguration("mainzelliste.cache",
 						RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(15)));
 	}
