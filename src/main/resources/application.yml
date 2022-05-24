@@ -92,6 +92,8 @@ management:
   health:
     config:
       enabled: false
+  server:
+    port: ${SERVER_MANAGEMENT_PORT:18089}
   info:
     env:
       enabled: true #disabled by default in springboot 2.6
