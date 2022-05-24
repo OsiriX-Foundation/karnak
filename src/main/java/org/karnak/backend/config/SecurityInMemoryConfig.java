@@ -13,6 +13,9 @@ import org.karnak.backend.cache.RequestCache;
 import org.karnak.backend.enums.SecurityRole;
 import org.karnak.backend.security.DefaultIdpLoadCondition;
 import org.karnak.backend.util.SecurityUtil;
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
+import org.springframework.boot.actuate.health.HealthEndpoint;
+import org.springframework.boot.actuate.info.InfoEndpoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
@@ -50,6 +53,9 @@ public class SecurityInMemoryConfig extends WebSecurityConfigurerAdapter {
         // Turns on authorization
         .and()
         .authorizeRequests()
+        // Actuator and health
+        .antMatchers("/actuator/**").permitAll()
+        .requestMatchers(EndpointRequest.to(HealthEndpoint.class, InfoEndpoint.class)).permitAll()
         // Allows all internal traffic from the Vaadin framework
         .requestMatchers(SecurityUtil::isFrameworkInternalRequest)
         .permitAll()
