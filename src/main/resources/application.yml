@@ -63,23 +63,38 @@ spring:
       jdbc:
         lob:
           non_contextual_creation: true
+
+# add info for all microservices
 info:
-#  environment: ${ENVIRONMENT}
+  environment: ${ENVIRONMENT}
   tags:
     eureka.datacenter: ${eureka.datacenter}
     eureka.instance-id: ${eureka.instance.instance-id}
-
 management:
+  endpoint:
+    health:
+      show-details: always
+# https://github.com/spring-projects/spring-boot/issues/20509
+    env:
+      post.enabled: true      
+#issue with spring cloud Hoxton.SR10 and sup
+    restart:
+      enabled: false
+    pause:
+      enabled: false
+    shutdown:
+      enabled: false
   endpoints:
     web:
       exposure:
         include: "*"
     enabled-by-default: true
-  server:
-    port: ${SERVER_MANAGEMENT_PORT:18089}
-  endpoint:
-    health:
-      show-details: always
+  health:
+    config:
+      enabled: false
+  info:
+    env:
+      enabled: true #disabled by default in springboot 2.6
   metrics:
     export:
       prometheus:
@@ -93,6 +108,7 @@ management:
         '[http.server.requests]': 50ms, 150ms, 250ms, 400ms
     tags:
       application: ${spring.application.name}
+      team: ${application.team}
 
 monitoring:
   max-history: 150000
