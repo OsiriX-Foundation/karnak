@@ -32,6 +32,11 @@ logging:
 server:
   port: 8081
 spring:
+  application:
+    name: karnak
+  cloud:
+    config:
+      enabled: false
   profiles:
     active: '@activatedProperties@'
   liquibase:
