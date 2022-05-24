@@ -34,7 +34,7 @@ spring:
     enabled: true
     change-log: classpath:db/changelog/db.changelog-master.yaml
   profiles:
-    active: '@activatedProperties@,docker,redis'
+    active: '@activatedProperties@,docker,redis, eureka'
   datasource:
     password: ${DB_PASSWORD:5!KAnN@%98%d}
     url: 'jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5433}/${DB_NAME:karnak}'
@@ -63,6 +63,12 @@ spring:
       jdbc:
         lob:
           non_contextual_creation: true
+info:
+#  environment: ${ENVIRONMENT}
+  tags:
+    eureka.datacenter: ${eureka.datacenter}
+    eureka.instance-id: ${eureka.instance.instance-id}
+
 management:
   endpoints:
     web:
@@ -74,5 +80,19 @@ management:
   endpoint:
     health:
       show-details: always
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    distribution:
+      percentiles-histogram:
+        '[http.server.requests]': true
+      percentiles:
+        '[http.server.requests]': 0.5, 0.9, 0.95, 0.99, 0.999
+      slo:
+        '[http.server.requests]': 50ms, 150ms, 250ms, 400ms
+    tags:
+      application: ${spring.application.name}
+
 monitoring:
   max-history: 150000
