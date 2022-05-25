@@ -112,18 +112,15 @@ class PatientMetadataTest {
         Arguments.of(patientMetadata, new Patient("TEST", "", "", "", "", null)),
         Arguments.of(patientMetadata, new Patient("TEST", "", "", "", null, "O", "")),
         Arguments.of(
-            patientMetadataDicomEmptyWithIssuer,
-            new Patient("TEST", "", "", "", "PDA", null)),
+            patientMetadataDicomEmptyWithIssuer, new Patient("TEST", "", "", "", "PDA", null)),
         Arguments.of(
-            patientMetadataDicomEmptyWithIssuer,
-            new Patient("TEST", "", "", "", null, "O", "PDA")),
+            patientMetadataDicomEmptyWithIssuer, new Patient("TEST", "", "", "", null, "O", "PDA")),
         Arguments.of(
             patientMetadataWithNotValidPatientSex,
             new Patient("TEST", "EREN", "Name", "Patient", "PDA", null)),
         Arguments.of(
             patientMetadataWithNotValidPatientSex,
-            new Patient(
-                "TEST", "EREN", "Name", "Patient", LocalDate.of(1993, 2, 16), "O", "PDA")));
+            new Patient("TEST", "EREN", "Name", "Patient", LocalDate.of(1993, 2, 16), "O", "PDA")));
   }
 
   private static Stream<Arguments> providerCompareCachedPatientFalse() {
@@ -133,16 +130,14 @@ class PatientMetadataTest {
         Arguments.of(patientMetadata, new Patient("TEST", "1", "", "", null, "O", "")),
         Arguments.of(patientMetadata, new Patient("TEST", "", "", "", null, "O", "1")),
         Arguments.of(
-            patientMetadataDicomEmptyWithIssuer,
-            new Patient("TEST", "1", "", "", "PDA", null)),
+            patientMetadataDicomEmptyWithIssuer, new Patient("TEST", "1", "", "", "PDA", null)),
         Arguments.of(
             patientMetadataDicomEmptyWithIssuer, new Patient("TEST", "", "", "", "", null)),
         Arguments.of(
             patientMetadataDicomEmptyWithIssuer,
             new Patient("TEST", "1", "", "", null, "O", "PDA")),
         Arguments.of(
-            patientMetadataDicomEmptyWithIssuer,
-            new Patient("TEST", "", "", "", null, "O", "")),
+            patientMetadataDicomEmptyWithIssuer, new Patient("TEST", "", "", "", null, "O", "")),
         Arguments.of(
             patientMetadataWithNotValidPatientSex,
             new Patient("TEST", "", "Name", "Patient", "PDA", null)),
@@ -154,12 +149,10 @@ class PatientMetadataTest {
             new Patient("TEST", "EREN", "Patient^Name", "", "", null)),
         Arguments.of(
             patientMetadataWithNotValidPatientSex,
-            new Patient(
-                "TEST", "", "Name", "Patient", LocalDate.of(1993, 2, 16), "O", "PDA")),
+            new Patient("TEST", "", "Name", "Patient", LocalDate.of(1993, 2, 16), "O", "PDA")),
         Arguments.of(
             patientMetadataWithNotValidPatientSex,
-            new Patient(
-                "TEST", "EREN", "Name", "Patient", LocalDate.of(1993, 2, 16), "O", "")));
+            new Patient("TEST", "EREN", "Name", "Patient", LocalDate.of(1993, 2, 16), "O", "")));
   }
 
   private static Stream<Arguments> providerPatientBirthdateInvalid() {
@@ -234,8 +227,7 @@ class PatientMetadataTest {
 
   @ParameterizedTest
   @MethodSource("providerCompareCachedPatientFalse")
-  void compareCachedPatientFalse(
-      PatientMetadata patientMetadata, Patient patient) {
+  void compareCachedPatientFalse(PatientMetadata patientMetadata, Patient patient) {
     assertFalse(patientMetadata.compareCachedPatient(patient));
   }
 

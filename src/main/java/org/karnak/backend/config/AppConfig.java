@@ -59,7 +59,11 @@ public class AppConfig {
   private final MainzellisteCache mainzellisteCache;
 
   @Autowired
-  public AppConfig(final ProfileRepo profileRepo, final ProfilePipeService profilePipeService, final ExternalIDCache externalIDCache, final MainzellisteCache mainzellisteCache) {
+  public AppConfig(
+      final ProfileRepo profileRepo,
+      final ProfilePipeService profilePipeService,
+      final ExternalIDCache externalIDCache,
+      final MainzellisteCache mainzellisteCache) {
     this.profileRepo = profileRepo;
     this.profilePipeService = profilePipeService;
     this.externalIDCache = externalIDCache;

@@ -208,7 +208,9 @@ public class DeIdentificationComponent extends VerticalLayout {
         .forField(projectDropDown)
         .withValidator(
             project -> project != null || !deIdentificationCheckbox.getValue(), "Choose a project")
-        .bind(DestinationEntity::getDeIdentificationProjectEntity, DestinationEntity::setDeIdentificationProjectEntity);
+        .bind(
+            DestinationEntity::getDeIdentificationProjectEntity,
+            DestinationEntity::setDeIdentificationProjectEntity);
 
     destinationBinder
         .forField(pseudonymTypeSelect)

@@ -32,17 +32,13 @@ class MainzellistePatientTest {
         new Patient(
             "pseudonym", "mykasa", "Kenny", "Ackermann", LocalDate.of(1982, 2, 4), "M", "DPA");
     mainzellistePatientWithFirstName =
-        new Patient(
-            "pseudonym", "mykasa", "Kenny", "", LocalDate.of(1982, 2, 4), "M", "DPA");
+        new Patient("pseudonym", "mykasa", "Kenny", "", LocalDate.of(1982, 2, 4), "M", "DPA");
     mainzellistePatientWithLastName =
-        new Patient(
-            "pseudonym", "mykasa", "", "Ackermann", LocalDate.of(1982, 2, 4), "M", "DPA");
+        new Patient("pseudonym", "mykasa", "", "Ackermann", LocalDate.of(1982, 2, 4), "M", "DPA");
     mainzellistePatientWithLastNameNull =
-        new Patient(
-            "pseudonym", "mykasa", "Kenny", null, LocalDate.of(1982, 2, 4), "M", "DPA");
+        new Patient("pseudonym", "mykasa", "Kenny", null, LocalDate.of(1982, 2, 4), "M", "DPA");
     mainzellistePatientWithFirstNameNull =
-        new Patient(
-            "pseudonym", "mykasa", null, "Ackermann", LocalDate.of(1982, 2, 4), "M", "DPA");
+        new Patient("pseudonym", "mykasa", null, "Ackermann", LocalDate.of(1982, 2, 4), "M", "DPA");
   }
 
   private static Stream<Arguments> providerGetPatientName() {
@@ -150,13 +146,21 @@ class MainzellistePatientTest {
   @ParameterizedTest
   @MethodSource("providerUpdatePatientLastName")
   void getUpdatedPatientLastName(Patient mainzellistePatient, String output) {
-    assertEquals(mainzellistePatient.getPatientLastName() == null ? "": mainzellistePatient.getPatientLastName(), output);
+    assertEquals(
+        mainzellistePatient.getPatientLastName() == null
+            ? ""
+            : mainzellistePatient.getPatientLastName(),
+        output);
   }
 
   @ParameterizedTest
   @MethodSource("providerUpdatePatientFirstName")
   void getUpdatedPatientFirstName(Patient mainzellistePatient, String output) {
-    assertEquals(mainzellistePatient.getPatientFirstName() == null ? "": mainzellistePatient.getPatientFirstName(), output);
+    assertEquals(
+        mainzellistePatient.getPatientFirstName() == null
+            ? ""
+            : mainzellistePatient.getPatientFirstName(),
+        output);
   }
 
   @ParameterizedTest

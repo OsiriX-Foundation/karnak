@@ -56,34 +56,27 @@ class PatientClientUtilTest {
     return Stream.of(
         Arguments.of(new Patient("pseudo", "123", "456", "789", "101112", null), "123101112"),
         Arguments.of(new Patient("pseudo", "123", "456", "789", "", null), "123", null),
-        Arguments.of(
-            new Patient("pseudo", "EREN", "Patient", "Name", "PDA", null), "ERENPDA"),
+        Arguments.of(new Patient("pseudo", "EREN", "Patient", "Name", "PDA", null), "ERENPDA"),
         Arguments.of(new Patient("pseudo", "EREN", "Patient", "Name", "", null), "EREN"),
         Arguments.of(
-            new Patient(
-                "pseudo", "123", "", "456", LocalDate.of(1993, 02, 16), "M", ""),
-            "123"),
+            new Patient("pseudo", "123", "", "456", LocalDate.of(1993, 02, 16), "M", ""), "123"),
         Arguments.of(
-            new Patient(
-                "pseudo", "123", "", "456", LocalDate.of(1993, 02, 16), "M", "789"),
+            new Patient("pseudo", "123", "", "456", LocalDate.of(1993, 02, 16), "M", "789"),
             "123789"),
         Arguments.of(
             new Patient(
                 "pseudo", "EREN", "Name", "Patient", LocalDate.of(1993, 02, 16), "M", "PDA"),
             "ERENPDA"),
         Arguments.of(
-            new Patient(
-                "pseudo", "EREN", "Name", "Patient", LocalDate.of(1993, 02, 16), "M", ""),
+            new Patient("pseudo", "EREN", "Name", "Patient", LocalDate.of(1993, 02, 16), "M", ""),
             "EREN"));
   }
 
   private static Stream<Arguments> providerGenerateKeyPseudonymPatientAndProjectID() {
     return Stream.of(
-        Arguments.of(
-            new Patient("pseudo", "123", "456", "789", "101112", 900L), "123101112900"),
+        Arguments.of(new Patient("pseudo", "123", "456", "789", "101112", 900L), "123101112900"),
         Arguments.of(new Patient("pseudo", "123", "456", "789", "", 128L), "123128"),
-        Arguments.of(
-            new Patient("pseudo", "EREN", "Patient", "Name", "PDA", 524L), "ERENPDA524"));
+        Arguments.of(new Patient("pseudo", "EREN", "Patient", "Name", "PDA", 524L), "ERENPDA524"));
   }
 
   private static Stream<Arguments> providerGenerateKeyPatientMetadata() {
@@ -109,8 +102,7 @@ class PatientClientUtilTest {
   @ParameterizedTest
   @MethodSource("providerGenerateKeyPseudonymPatientAndProjectID")
   void providerGenerateKeyPseudonymPatientAndProjectID(Patient patient, String output) {
-    assertEquals(
-        PatientClientUtil.generateKey(patient, patient.getProjectID()), output);
+    assertEquals(PatientClientUtil.generateKey(patient, patient.getProjectID()), output);
   }
 
   @ParameterizedTest

@@ -47,7 +47,8 @@ public class Pseudonym {
     }
 
     if (destinationEntity.getPseudonymType().equals(PseudonymType.CACHE_EXTID)) {
-      return getCacheExtid(patientMetadata, destinationEntity.getDeIdentificationProjectEntity().getId());
+      return getCacheExtid(
+          patientMetadata, destinationEntity.getDeIdentificationProjectEntity().getId());
     }
 
     if (destinationEntity.getPseudonymType().equals(PseudonymType.EXTID_IN_TAG)) {

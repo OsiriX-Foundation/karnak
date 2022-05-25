@@ -45,14 +45,11 @@ import org.weasis.dicom.param.DicomNode;
 @SpringBootTest
 class GatewaySetUpServiceTest {
 
-  @MockBean
-  private ExternalIDCache externalIDCache;
+  @MockBean private ExternalIDCache externalIDCache;
 
-  @MockBean
-  private MainzellisteCache mainzellisteCache;
+  @MockBean private MainzellisteCache mainzellisteCache;
 
-  @MockBean
-  private RedisConfiguration redisConfiguration;
+  @MockBean private RedisConfiguration redisConfiguration;
 
   // Repositories
   final ForwardNodeRepo forwardNodeRepoMock = Mockito.mock(ForwardNodeRepo.class);

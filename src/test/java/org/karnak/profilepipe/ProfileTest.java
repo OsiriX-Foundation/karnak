@@ -36,14 +36,11 @@ class ProfileTest {
 
   private static HMAC defaultHMAC;
 
-  @MockBean
-  private ExternalIDCache externalIDCache;
+  @MockBean private ExternalIDCache externalIDCache;
 
-  @MockBean
-  private MainzellisteCache mainzellisteCache;
+  @MockBean private MainzellisteCache mainzellisteCache;
 
-  @MockBean
-  private RedisConfiguration redisConfiguration;
+  @MockBean private RedisConfiguration redisConfiguration;
 
   @BeforeAll
   static void beforeAll() {

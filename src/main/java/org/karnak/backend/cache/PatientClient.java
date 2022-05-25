@@ -50,8 +50,7 @@ public abstract class PatientClient {
         .filter(c -> c.length() > prefixKeySearchCache.length())
         .map(
             k -> {
-              ValueWrapper keyValue =
-                  cache.get(k.substring(prefixKeySearchCache.length()));
+              ValueWrapper keyValue = cache.get(k.substring(prefixKeySearchCache.length()));
               return keyValue != null ? (Patient) keyValue.get() : null;
             })
         .collect(Collectors.toList());

@@ -62,8 +62,11 @@ public class SwitchingAlbum {
 
   private static String hashUIDonDeidentification(
       DestinationEntity destinationEntity, String inputUID, HMAC hmac, int tag) {
-    return destinationEntity.isDesidentification() && hmac != null && getAction(destinationEntity,
-        tag) instanceof UID ? hmac.uidHash(inputUID) : inputUID;
+    return destinationEntity.isDesidentification()
+            && hmac != null
+            && getAction(destinationEntity, tag) instanceof UID
+        ? hmac.uidHash(inputUID)
+        : inputUID;
   }
 
   private static boolean validateCondition(String condition, Attributes dcm) {
@@ -88,7 +91,8 @@ public class SwitchingAlbum {
     if (destinationEntity.getDeIdentificationProjectEntity() != null
         && destinationEntity.getDeIdentificationProjectEntity().getProfileEntity() != null) {
       List<ProfileItem> profileItems =
-          Profile.getProfileItems(destinationEntity.getDeIdentificationProjectEntity().getProfileEntity());
+          Profile.getProfileItems(
+              destinationEntity.getDeIdentificationProjectEntity().getProfileEntity());
       for (ProfileItem profileItem :
           profileItems.stream()
               .filter(p -> !(p instanceof CleanPixelData))

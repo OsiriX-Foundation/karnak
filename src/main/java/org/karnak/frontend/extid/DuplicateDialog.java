@@ -17,7 +17,6 @@ import java.util.Collection;
 import java.util.List;
 import org.karnak.backend.cache.Patient;
 
-
 public class DuplicateDialog extends Dialog {
 
   private final Collection<Patient> duplicateList;
@@ -56,12 +55,8 @@ public class DuplicateDialog extends Dialog {
     grid = new Grid<>();
     grid.addColumn(Patient::getPseudonym).setHeader("External pseudonym").setSortable(true);
     grid.addColumn(Patient::getPatientId).setHeader("Patient ID").setSortable(true);
-    grid.addColumn(Patient::getPatientFirstName)
-        .setHeader("Patient first name")
-        .setSortable(true);
-    grid.addColumn(Patient::getPatientLastName)
-        .setHeader("Patient last name")
-        .setSortable(true);
+    grid.addColumn(Patient::getPatientFirstName).setHeader("Patient first name").setSortable(true);
+    grid.addColumn(Patient::getPatientLastName).setHeader("Patient last name").setSortable(true);
     grid.addColumn(Patient::getIssuerOfPatientId)
         .setHeader("Issuer of patient ID")
         .setSortable(true);
