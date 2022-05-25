@@ -62,8 +62,10 @@ public class SecurityOpenIdConnectConfig extends WebSecurityConfigurerAdapter {
         .and()
         .authorizeRequests()
         // Actuator and health
-        .antMatchers("/actuator/**").permitAll()
-        .requestMatchers(EndpointRequest.to(HealthEndpoint.class, InfoEndpoint.class)).permitAll()
+        .antMatchers("/actuator/**")
+        .permitAll()
+        .requestMatchers(EndpointRequest.to(HealthEndpoint.class, InfoEndpoint.class))
+        .permitAll()
         // Allows all internal traffic from the Vaadin framework
         .requestMatchers(SecurityUtil::isFrameworkInternalRequest)
         .permitAll()

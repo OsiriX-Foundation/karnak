@@ -151,16 +151,11 @@ public class ExternalIDGrid extends PaginatedGrid<Patient> {
   private void setElements() {
     extidColumn =
         addColumn(Patient::getPseudonym).setHeader("External Pseudonym").setSortable(true);
-    patientIdColumn =
-        addColumn(Patient::getPatientId).setHeader("Patient ID").setSortable(true);
+    patientIdColumn = addColumn(Patient::getPatientId).setHeader("Patient ID").setSortable(true);
     patientFirstNameColumn =
-        addColumn(Patient::getPatientFirstName)
-            .setHeader("Patient first name")
-            .setSortable(true);
+        addColumn(Patient::getPatientFirstName).setHeader("Patient first name").setSortable(true);
     patientLastNameColumn =
-        addColumn(Patient::getPatientLastName)
-            .setHeader("Patient last name")
-            .setSortable(true);
+        addColumn(Patient::getPatientLastName).setHeader("Patient last name").setSortable(true);
     issuerOfPatientIDColumn =
         addColumn(Patient::getIssuerOfPatientId)
             .setHeader("Issuer of patient ID")
@@ -304,8 +299,7 @@ public class ExternalIDGrid extends PaginatedGrid<Patient> {
     if (externalIDCache != null) {
       Collection<Patient> patients = externalIDCache.getAll();
       patientsListInCache = new ArrayList<>();
-      for (Iterator<Patient> iterator = patients.iterator();
-          iterator.hasNext(); ) {
+      for (Iterator<Patient> iterator = patients.iterator(); iterator.hasNext(); ) {
         final Patient patient = (Patient) iterator.next();
         if (projectEntity != null
             && patient.getProjectID() != null

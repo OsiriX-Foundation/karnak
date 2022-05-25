@@ -76,7 +76,7 @@ public class ProjectEntity implements Serializable {
     this.secretEntities = secretEntities;
   }
 
-  @OneToMany(mappedBy = "projectEntity")
+  @OneToMany(mappedBy = "deIdentificationProjectEntity")
   @LazyCollection(LazyCollectionOption.FALSE)
   public List<DestinationEntity> getDestinationEntities() {
     return destinationEntities;

@@ -18,7 +18,8 @@ public class ExternalIDCache extends PatientClient {
 
   private static final String NAME = "externalId.cache";
 
-  public ExternalIDCache(RedisCacheManager redisCacheManager, RedisTemplate<String, Patient> redisTemplate) {
+  public ExternalIDCache(
+      RedisCacheManager redisCacheManager, RedisTemplate<String, Patient> redisTemplate) {
     super(redisCacheManager.getCache(NAME), redisTemplate, NAME);
   }
 }

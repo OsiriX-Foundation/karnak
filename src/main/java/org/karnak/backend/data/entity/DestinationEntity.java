@@ -83,7 +83,7 @@ public class DestinationEntity implements Serializable {
 
   private List<KheopsAlbumsEntity> kheopsAlbumEntities;
 
-  private ProjectEntity projectEntity;
+  private ProjectEntity deIdentificationProjectEntity;
 
   private ProjectEntity tagMorphingProjectEntity;
 
@@ -486,16 +486,16 @@ public class DestinationEntity implements Serializable {
     this.kheopsAlbumEntities = kheopsAlbumEntities;
   }
 
-  @JsonGetter("project")
+  @JsonGetter("deIdentificationProject")
   @ManyToOne
-  @JoinColumn(name = "project_id")
-  public ProjectEntity getProjectEntity() {
-    return projectEntity;
+  @JoinColumn(name = "deidentification_project_id")
+  public ProjectEntity getDeIdentificationProjectEntity() {
+    return deIdentificationProjectEntity;
   }
 
-  @JsonSetter("project")
-  public void setProjectEntity(ProjectEntity projectEntity) {
-    this.projectEntity = projectEntity;
+  @JsonSetter("deIdentificationProject")
+  public void setDeIdentificationProjectEntity(ProjectEntity deIdentificationProjectEntity) {
+    this.deIdentificationProjectEntity = deIdentificationProjectEntity;
   }
 
   @JsonGetter("tagMorphingProject")

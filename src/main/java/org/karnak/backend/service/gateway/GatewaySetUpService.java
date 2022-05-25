@@ -404,8 +404,8 @@ public class GatewaySetUpService {
    * @param editors List of editors
    */
   private void applyDeIdentifyEditor(DestinationEntity dstNode, List<AttributeEditor> editors) {
-    if (dstNode.getProjectEntity() != null
-        && dstNode.getProjectEntity().getProfileEntity() != null
+    if (dstNode.getDeIdentificationProjectEntity() != null
+        && dstNode.getDeIdentificationProjectEntity().getProfileEntity() != null
         && dstNode.isDesidentification()) {
       editors.add(new DeIdentifyEditor(dstNode));
     }

@@ -66,7 +66,7 @@ public class DestinationService {
         forwardNodeService.updateDestination(forwardNodeEntity, destinationEntity);
 
     if (destinationEntity.getId() != null) {
-      dataUpdated = removeValuesOnDisabledDesidentification(destinationEntity);
+      dataUpdated = removeValuesOnDisabledDeIdentificationTagMorphing(destinationEntity);
     }
 
     // Refresh last transfer and email last check before saving
@@ -94,10 +94,13 @@ public class DestinationService {
     }
   }
 
-  private DestinationEntity removeValuesOnDisabledDesidentification(
+  private DestinationEntity removeValuesOnDisabledDeIdentificationTagMorphing(
       DestinationEntity destinationEntity) {
     if (!destinationEntity.isDesidentification()) {
-      destinationEntity.setProjectEntity(null);
+      destinationEntity.setDeIdentificationProjectEntity(null);
+    }
+    if (!destinationEntity.isActivateTagMorphing()) {
+      destinationEntity.setTagMorphingProjectEntity(null);
     }
     return destinationEntity;
   }

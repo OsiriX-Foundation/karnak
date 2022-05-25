@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2022 Karnak Team and other contributors.
+ *
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
+ * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ */
 package org.karnak.backend.cache;
 
 import java.io.Serial;
@@ -6,8 +15,7 @@ import java.time.LocalDate;
 
 public class Patient implements Serializable {
 
-  @Serial
-  private static final long serialVersionUID = -6906583906530083181L;
+  @Serial private static final long serialVersionUID = -6906583906530083181L;
 
   private static final Character SPLIT_CHAR_PATIENT_NAME = '^';
 
@@ -21,9 +29,16 @@ public class Patient implements Serializable {
   private String issuerOfPatientId;
   private Long projectID;
 
-  public Patient(String pseudonym, String patientId, String patientName,
-      String patientFirstName, String patientLastName, LocalDate patientBirthDate,
-      String patientSex, String issuerOfPatientId, Long projectID) {
+  public Patient(
+      String pseudonym,
+      String patientId,
+      String patientName,
+      String patientFirstName,
+      String patientLastName,
+      LocalDate patientBirthDate,
+      String patientSex,
+      String issuerOfPatientId,
+      Long projectID) {
     this.pseudonym = pseudonym;
     this.patientId = patientId;
     this.patientName = patientName;
@@ -35,13 +50,18 @@ public class Patient implements Serializable {
     this.projectID = projectID;
   }
 
-  public Patient(String pseudonym, String patientId,
-      String patientFirstName, String patientLastName,  String issuerOfPatientId, Long projectID) {
+  public Patient(
+      String pseudonym,
+      String patientId,
+      String patientFirstName,
+      String patientLastName,
+      String issuerOfPatientId,
+      Long projectID) {
     this.pseudonym = pseudonym;
     this.patientId = patientId;
     this.patientFirstName = emptyStringIfNull(patientFirstName);
     this.patientLastName = emptyStringIfNull(patientLastName);
-    this.patientName =  createPatientName(patientFirstName, patientLastName);
+    this.patientName = createPatientName(patientFirstName, patientLastName);
     this.issuerOfPatientId = issuerOfPatientId;
     this.projectID = projectID;
   }
@@ -58,7 +78,7 @@ public class Patient implements Serializable {
     this.patientId = patientId;
     this.patientFirstName = emptyStringIfNull(patientFirstName);
     this.patientLastName = emptyStringIfNull(patientLastName);
-    this.patientName =  createPatientName(patientFirstName, patientLastName);
+    this.patientName = createPatientName(patientFirstName, patientLastName);
     this.issuerOfPatientId = issuerOfPatientId;
     this.patientBirthDate = patientBirthDate;
     this.patientSex = patientSex;
@@ -164,7 +184,6 @@ public class Patient implements Serializable {
     this.patientLastName = createPatientLastName(patientName);
   }
 
-
   public void updatePatientLastName(String patientLastName) {
     this.patientLastName = emptyStringIfNull(patientLastName);
     this.patientName = createPatientName(patientFirstName, patientLastName);
@@ -181,16 +200,32 @@ public class Patient implements Serializable {
 
   @Override
   public String toString() {
-    return "Patient{" +
-        "pseudonym='" + pseudonym + '\'' +
-        ", patientId='" + patientId + '\'' +
-        ", patientName='" + patientName + '\'' +
-        ", patientFirstName='" + patientFirstName + '\'' +
-        ", patientLastName='" + patientLastName + '\'' +
-        ", patientBirthDate=" + patientBirthDate +
-        ", patientSex='" + patientSex + '\'' +
-        ", issuerOfPatientId='" + issuerOfPatientId + '\'' +
-        ", projectID=" + projectID +
-        '}';
+    return "Patient{"
+        + "pseudonym='"
+        + pseudonym
+        + '\''
+        + ", patientId='"
+        + patientId
+        + '\''
+        + ", patientName='"
+        + patientName
+        + '\''
+        + ", patientFirstName='"
+        + patientFirstName
+        + '\''
+        + ", patientLastName='"
+        + patientLastName
+        + '\''
+        + ", patientBirthDate="
+        + patientBirthDate
+        + ", patientSex='"
+        + patientSex
+        + '\''
+        + ", issuerOfPatientId='"
+        + issuerOfPatientId
+        + '\''
+        + ", projectID="
+        + projectID
+        + '}';
   }
 }

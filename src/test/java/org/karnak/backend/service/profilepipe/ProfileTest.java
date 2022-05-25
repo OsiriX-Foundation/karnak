@@ -47,7 +47,7 @@ class ProfileTest {
     byte[] tabByte = new byte[16];
     tabByte[0] = 1;
     projectEntity.addActiveSecretEntity(new SecretEntity(tabByte));
-    destinationEntity.setProjectEntity(projectEntity);
+    destinationEntity.setDeIdentificationProjectEntity(projectEntity);
     destinationEntity.setPseudonymType(PseudonymType.EXTID_IN_TAG);
     destinationEntity.setTag("0008,0080");
     destinationEntity.setSavePseudonym(false);

@@ -32,14 +32,11 @@ import org.weasis.dicom.param.DicomNode;
 @SpringBootTest
 class DeIdentifyEditorTest {
 
-  @MockBean
-  private ExternalIDCache externalIDCache;
+  @MockBean private ExternalIDCache externalIDCache;
 
-  @MockBean
-  private MainzellisteCache mainzellisteCache;
+  @MockBean private MainzellisteCache mainzellisteCache;
 
-  @MockBean
-  private RedisConfiguration redisConfiguration;
+  @MockBean private RedisConfiguration redisConfiguration;
 
   @Test
   void should_apply_to_dicom_object() {
@@ -53,7 +50,7 @@ class DeIdentifyEditorTest {
     ProfileEntity profileEntity = new ProfileEntity();
     ProjectEntity projectEntity = new ProjectEntity();
     projectEntity.setProfileEntity(profileEntity);
-    destinationEntity.setProjectEntity(projectEntity);
+    destinationEntity.setDeIdentificationProjectEntity(projectEntity);
     destinationEntity.setPseudonymType(PseudonymType.EXTID_IN_TAG);
     destinationEntity.setTag("0008,0080");
     destinationEntity.setSavePseudonym(false);
