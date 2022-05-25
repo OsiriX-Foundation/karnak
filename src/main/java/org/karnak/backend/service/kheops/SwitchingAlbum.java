@@ -62,11 +62,8 @@ public class SwitchingAlbum {
 
   private static String hashUIDonDeidentification(
       DestinationEntity destinationEntity, String inputUID, HMAC hmac, int tag) {
-    ActionItem action = getAction(destinationEntity, tag);
-    if (destinationEntity.isDesidentification() && hmac != null && action instanceof UID) {
-      return hmac.uidHash(inputUID);
-    }
-    return inputUID;
+    return destinationEntity.isDesidentification() && hmac != null && getAction(destinationEntity,
+        tag) instanceof UID ? hmac.uidHash(inputUID) : inputUID;
   }
 
   private static boolean validateCondition(String condition, Attributes dcm) {
