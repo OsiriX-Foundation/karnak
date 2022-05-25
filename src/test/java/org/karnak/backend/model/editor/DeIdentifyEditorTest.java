@@ -53,7 +53,7 @@ class DeIdentifyEditorTest {
     ProfileEntity profileEntity = new ProfileEntity();
     ProjectEntity projectEntity = new ProjectEntity();
     projectEntity.setProfileEntity(profileEntity);
-    destinationEntity.setProjectEntity(projectEntity);
+    destinationEntity.setDeIdentificationProjectEntity(projectEntity);
     destinationEntity.setPseudonymType(PseudonymType.EXTID_IN_TAG);
     destinationEntity.setTag("0008,0080");
     destinationEntity.setSavePseudonym(false);

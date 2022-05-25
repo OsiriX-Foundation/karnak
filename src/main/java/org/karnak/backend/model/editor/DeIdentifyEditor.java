@@ -30,7 +30,7 @@ public class DeIdentifyEditor implements AttributeEditor {
 
   public DeIdentifyEditor(DestinationEntity destinationEntity) {
     this.destinationEntity = destinationEntity;
-    this.projectEntity = destinationEntity.getProjectEntity();
+    this.projectEntity = destinationEntity.getDeIdentificationProjectEntity();
     this.profileEntity = projectEntity.getProfileEntity();
     this.profile = new Profile(profileEntity);
   }

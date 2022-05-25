@@ -342,15 +342,15 @@ public class Profile {
 
     // Set tags by default
     AttributesByDefault.setPatientModule(
-        dcm, newPatientID, pseudonymValue, destinationEntity.getProjectEntity());
+        dcm, newPatientID, pseudonymValue, destinationEntity.getDeIdentificationProjectEntity());
     AttributesByDefault.setSOPCommonModule(dcm);
     AttributesByDefault.setClinicalTrialAttributes(
-        dcm, destinationEntity.getProjectEntity(), pseudonymValue);
+        dcm, destinationEntity.getDeIdentificationProjectEntity(), pseudonymValue);
 
     final Marker clincalMarker = MarkerFactory.getMarker("CLINICAL");
     MDC.put("DeidentifySOPInstanceUID", dcm.getString(Tag.SOPInstanceUID));
     MDC.put("DeidentifySeriesInstanceUID", dcm.getString(Tag.SeriesInstanceUID));
-    MDC.put("ProjectName", destinationEntity.getProjectEntity().getName());
+    MDC.put("ProjectName", destinationEntity.getDeIdentificationProjectEntity().getName());
     MDC.put("ProfileName", profileEntity.getName());
     MDC.put("ProfileCodenames", profilesCodeName);
     LOGGER.info(clincalMarker, "");

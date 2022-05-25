@@ -94,7 +94,7 @@ class GatewaySetUpServiceTest {
     ProjectEntity projectEntity = new ProjectEntity();
     ProfileEntity profileEntity = new ProfileEntity();
     projectEntity.setProfileEntity(profileEntity);
-    destinationEntity.setProjectEntity(projectEntity);
+    destinationEntity.setDeIdentificationProjectEntity(projectEntity);
     destinationEntity.setNotifyInterval(1);
     destinationEntity.setDestinationType(DestinationType.stow);
     destinationEntities.add(destinationEntity);
@@ -138,7 +138,7 @@ class GatewaySetUpServiceTest {
     ProjectEntity projectEntity = new ProjectEntity();
     ProfileEntity profileEntity = new ProfileEntity();
     projectEntity.setProfileEntity(profileEntity);
-    destinationEntity.setProjectEntity(projectEntity);
+    destinationEntity.setDeIdentificationProjectEntity(projectEntity);
     destinationEntity.setNotifyInterval(1);
     destinationEntity.setPort(11112);
     destinationEntity.setDestinationType(DestinationType.dicom);

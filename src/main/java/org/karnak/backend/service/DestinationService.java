@@ -97,7 +97,7 @@ public class DestinationService {
   private DestinationEntity removeValuesOnDisabledDesidentification(
       DestinationEntity destinationEntity) {
     if (!destinationEntity.isDesidentification()) {
-      destinationEntity.setProjectEntity(null);
+      destinationEntity.setDeIdentificationProjectEntity(null);
     }
     return destinationEntity;
   }

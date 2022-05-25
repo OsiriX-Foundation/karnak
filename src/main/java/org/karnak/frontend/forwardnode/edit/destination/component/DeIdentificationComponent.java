@@ -208,7 +208,7 @@ public class DeIdentificationComponent extends VerticalLayout {
         .forField(projectDropDown)
         .withValidator(
             project -> project != null || !deIdentificationCheckbox.getValue(), "Choose a project")
-        .bind(DestinationEntity::getProjectEntity, DestinationEntity::setProjectEntity);
+        .bind(DestinationEntity::getDeIdentificationProjectEntity, DestinationEntity::setDeIdentificationProjectEntity);
 
     destinationBinder
         .forField(pseudonymTypeSelect)
@@ -257,7 +257,7 @@ public class DeIdentificationComponent extends VerticalLayout {
 
     if (!destinationEntity.isDesidentification()) {
       // Reset the destination for pseudonym type, project, issuer of patient id
-      destinationEntity.setProjectEntity(null);
+      destinationEntity.setDeIdentificationProjectEntity(null);
       destinationEntity.setPseudonymType(MAINZELLISTE_PID);
       destinationEntity.setIssuerByDefault(null);
     }
