@@ -2,6 +2,9 @@
 #
 # docker build -t osirixfoundation/karnak:latest -f src/main/docker/Dockerfile .
 
+RUN addgroup -S karnakgrp && adduser -S karnakuser -G karnakgrp -h /home/karnakuser
+USER karnakuser
+
 # Based on build image containing maven, jdk and git
 #FROM maven:3.8-openjdk-17 as builder
 FROM maven:3.6-adoptopenjdk-15 as builder
