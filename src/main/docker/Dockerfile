@@ -2,8 +2,6 @@
 #
 # docker build -t osirixfoundation/karnak:latest -f src/main/docker/Dockerfile .
 
-RUN addgroup -S karnakgrp && adduser -S karnakuser -G karnakgrp -h /home/karnakuser
-USER karnakuser
 
 # Based on build image containing maven, jdk and git
 #FROM maven:3.8-openjdk-17 as builder
@@ -17,6 +15,10 @@ RUN java -Djarmode=layertools -jar application.jar extract
 #FROM maven:3.8-openjdk-17
 FROM adoptopenjdk:15-jre-hotspot
 WORKDIR app
+
+RUN addgroup -S karnakgrp && adduser -S karnakuser -G karnakgrp -h /home/karnakuser
+USER karnakuser
+
 COPY --from=builder /app/dependencies/ ./
 RUN true
 COPY --from=builder /app/spring-boot-loader/ ./
