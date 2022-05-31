@@ -16,9 +16,6 @@ RUN java -Djarmode=layertools -jar application.jar extract
 FROM adoptopenjdk:15-jre-hotspot
 WORKDIR app
 
-RUN addgroup -S karnakgrp && adduser -S karnakuser -G karnakgrp -h /home/karnakuser
-USER karnakuser
-
 COPY --from=builder /app/dependencies/ ./
 RUN true
 COPY --from=builder /app/spring-boot-loader/ ./

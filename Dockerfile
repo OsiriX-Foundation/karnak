@@ -2,7 +2,6 @@
 #
 # docker build -t osirixfoundation/karnak:latest -f Dockerfile .
 
-
 # Based on build image containing maven, jdk and git
 FROM maven:3.6-adoptopenjdk-15 as builder
 WORKDIR /app
@@ -19,9 +18,6 @@ RUN java -Djarmode=layertools -jar application.jar extract
 # Build the final deployment image
 FROM adoptopenjdk:15-jre-hotspot
 WORKDIR app
-
-RUN addgroup -S karnakgrp && adduser -S karnakuser -G karnakgrp -h /home/karnakuser
-USER karnakuser
 
 COPY --from=builder /app/bin/dependencies/ ./
 RUN true
