@@ -32,7 +32,6 @@ import org.dcm4che3.net.DataWriterAdapter;
 import org.dcm4che3.net.InputStreamDataWriter;
 import org.dcm4che3.net.PDVInputStream;
 import org.dcm4che3.net.Status;
-import org.karnak.backend.data.entity.TransferStatusEntity;
 import org.karnak.backend.dicom.Defacer;
 import org.karnak.backend.dicom.DicomForwardDestination;
 import org.karnak.backend.dicom.ForwardDestination;
@@ -40,7 +39,6 @@ import org.karnak.backend.dicom.ForwardDicomNode;
 import org.karnak.backend.dicom.Params;
 import org.karnak.backend.dicom.WebForwardDestination;
 import org.karnak.backend.exception.AbortException;
-import org.karnak.backend.model.event.TransferMonitoringEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -666,9 +664,10 @@ public class ForwardService {
       Attributes attributesToSend,
       boolean sent,
       String reason) {
-    applicationEventPublisher.publishEvent(
-        new TransferMonitoringEvent(
-            TransferStatusEntity.buildTransferStatusEntity(
-                forwardNodeId, destinationId, attributesOriginal, attributesToSend, sent, reason)));
+    // TODO to rollback: for load tests oom
+//    applicationEventPublisher.publishEvent(
+//        new TransferMonitoringEvent(
+//            TransferStatusEntity.buildTransferStatusEntity(
+//                forwardNodeId, destinationId, attributesOriginal, attributesToSend, sent, reason)));
   }
 }
