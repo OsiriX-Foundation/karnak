@@ -243,18 +243,7 @@ public class ForwardService {
           throw new AbortException(
               context.getAbort(), "DICOM association abort: " + context.getAbortMessage());
         }
-
-        BytesWithImageDescriptor desc = ImageAdapter.imageTranscode(attributes, syntax, context);
-        TransformedPlanarImage transformedPlanarImage = null;
-        try {
-          transformedPlanarImage = transformImage(attributes, context);
-          dataWriter = ImageAdapter.buildDataWriter(attributes, syntax, transformedPlanarImage != null ? transformedPlanarImage.getEditablePlanarImage() : null, desc);
-        }
-        finally{
-          if(transformedPlanarImage != null && transformedPlanarImage.getPlanarImage() != null){
-            transformedPlanarImage.getPlanarImage().release();
-          }
-        }
+        dataWriter = buildDataWriterFromTransformedImage(syntax, context, attributes);
       }
 
       streamSCU.cstore(cuid, iuid, p.getPriority(), dataWriter, syntax.getSuitable());
@@ -312,6 +301,24 @@ public class ForwardService {
     return files;
   }
 
+  private DataWriter buildDataWriterFromTransformedImage(AdaptTransferSyntax syntax, AttributeEditorContext context,
+      Attributes attributes) throws IOException {
+    DataWriter dataWriter;
+    BytesWithImageDescriptor desc = ImageAdapter.imageTranscode(attributes, syntax, context);
+    TransformedPlanarImage transformedPlanarImage = null;
+    try {
+      transformedPlanarImage = transformImage(attributes, context);
+      dataWriter = ImageAdapter.buildDataWriter(attributes,
+          syntax, transformedPlanarImage != null ? transformedPlanarImage.getEditablePlanarImage() : null, desc);
+    }
+    finally{
+      if(transformedPlanarImage != null && transformedPlanarImage.getPlanarImage() != null){
+        transformedPlanarImage.getPlanarImage().release();
+      }
+    }
+    return dataWriter;
+  }
+
   private static TransformedPlanarImage transformImage(
       Attributes attributes, AttributeEditorContext context) {
     MaskArea m = context.getMaskArea();
@@ -347,26 +354,6 @@ public class ForwardService {
     }
     return image;
   }
-
-//  private static Editable<PlanarImage> transformImage(
-//      Attributes attributes, AttributeEditorContext context) {
-//    MaskArea m = context.getMaskArea();
-//    boolean defacing =
-//        LangUtil.getEmptytoFalse(context.getProperties().getProperty(Defacer.APPLY_DEFACING));
-//    if (m != null || defacing) {
-//      return img -> {
-//        PlanarImage image = img;
-//        if (defacing) {
-//          image = Defacer.apply(attributes, image);
-//        }
-//        if (m != null) {
-//          image = MaskArea.drawShape(image.toMat(), m);
-//        }
-//        return image;
-//      };
-//    }
-//    return null;
-//  }
 
   private static List<File> cleanOrGetBulkDataFiles(DicomInputStream in, boolean clean) {
     FileUtil.safeClose(in);
@@ -422,19 +409,7 @@ public class ForwardService {
           throw new AbortException(
               context.getAbort(), "DICOM association abort. " + context.getAbortMessage());
         }
-
-        BytesWithImageDescriptor desc = ImageAdapter.imageTranscode(attributes, syntax, context);
-
-        TransformedPlanarImage transformedPlanarImage = null;
-        try {
-          transformedPlanarImage = transformImage(attributes, context);
-          dataWriter = ImageAdapter.buildDataWriter(attributes, syntax, transformedPlanarImage != null ? transformedPlanarImage.getEditablePlanarImage() : null, desc);
-        }
-        finally{
-          if(transformedPlanarImage != null && transformedPlanarImage.getPlanarImage() != null){
-            transformedPlanarImage.getPlanarImage().release();
-          }
-        }
+        dataWriter = buildDataWriterFromTransformedImage(syntax, context, attributes);
       }
 
       streamSCU.cstore(cuid, iuid, p.getPriority(), dataWriter, syntax.getSuitable());
@@ -543,16 +518,7 @@ public class ForwardService {
         if (desc == null) {
           stow.uploadDicom(attributes, syntax.getOriginal());
         } else {
-          TransformedPlanarImage transformedPlanarImage = null;
-          try {
-            transformedPlanarImage = transformImage(attributes, context);
-            stow.uploadPayload(ImageAdapter.preparePlayload(attributes, syntax, desc, transformedPlanarImage != null ? transformedPlanarImage.getEditablePlanarImage() : null));
-          }
-          finally{
-            if(transformedPlanarImage != null && transformedPlanarImage.getPlanarImage() != null){
-              transformedPlanarImage.getPlanarImage().release();
-            }
-          }
+          uploadPayLoadFromTransformedImage(stow, syntax, context, attributes, desc);
         }
       }
       progressNotify(destination, p.getIuid(), p.getCuid(), false, 0);
@@ -596,6 +562,21 @@ public class ForwardService {
     return files;
   }
 
+  private void uploadPayLoadFromTransformedImage(DicomStowRS stow, AdaptTransferSyntax syntax,
+      AttributeEditorContext context, Attributes attributes, BytesWithImageDescriptor desc)
+      throws Exception {
+    TransformedPlanarImage transformedPlanarImage = null;
+    try {
+      transformedPlanarImage = transformImage(attributes, context);
+      stow.uploadPayload(ImageAdapter.preparePlayload(attributes, syntax, desc, transformedPlanarImage != null ? transformedPlanarImage.getEditablePlanarImage() : null));
+    }
+    finally{
+      if(transformedPlanarImage != null && transformedPlanarImage.getPlanarImage() != null){
+        transformedPlanarImage.getPlanarImage().release();
+      }
+    }
+  }
+
   public void transferOther(
       ForwardDicomNode fwdNode, WebForwardDestination destination, Attributes copy, Params p)
       throws IOException {
@@ -628,16 +609,7 @@ public class ForwardService {
         if (desc == null) {
           stow.uploadDicom(attributes, syntax.getOriginal());
         } else {
-          TransformedPlanarImage transformedPlanarImage = null;
-          try {
-            transformedPlanarImage = transformImage(attributes, context);
-            stow.uploadPayload(ImageAdapter.preparePlayload(attributes, syntax, desc, transformedPlanarImage != null ? transformedPlanarImage.getEditablePlanarImage() : null));
-          }
-          finally{
-            if(transformedPlanarImage != null && transformedPlanarImage.getPlanarImage() != null){
-              transformedPlanarImage.getPlanarImage().release();
-            }
-          }
+          uploadPayLoadFromTransformedImage(stow, syntax, context, attributes, desc);
         }
         progressNotify(destination, p.getIuid(), p.getCuid(), false, 0);
         monitor(
