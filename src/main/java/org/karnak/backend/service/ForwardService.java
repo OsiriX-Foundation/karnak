@@ -208,7 +208,7 @@ public class ForwardService {
               tsuid,
               streamSCU.selectTransferSyntax(cuid, destination.getOutputTransferSyntax(tsuid)));
       List<AttributeEditor> editors = destination.getDicomEditors();
-
+      TransformedPlanarImage transformedPlanarImage = new TransformedPlanarImage();
       if (copy == null && editors.isEmpty() && syntax.getRequested().equals(tsuid)) {
         dataWriter = new InputStreamDataWriter(p.getData());
         attributesToSend = new DicomInputStream(p.getData()).readDataset();
@@ -243,10 +243,11 @@ public class ForwardService {
           throw new AbortException(
               context.getAbort(), "DICOM association abort: " + context.getAbortMessage());
         }
-        dataWriter = buildDataWriterFromTransformedImage(syntax, context, attributes);
+        dataWriter = buildDataWriterFromTransformedImage(syntax, context, attributes, transformedPlanarImage);
       }
 
-      streamSCU.cstore(cuid, iuid, p.getPriority(), dataWriter, syntax.getSuitable());
+      launchCStore(p, streamSCU, dataWriter, cuid, iuid, syntax, transformedPlanarImage);
+
       progressNotify(
           destination, p.getIuid(), p.getCuid(), false, streamSCU.getNumberOfSuboperations());
       monitor(
@@ -301,31 +302,35 @@ public class ForwardService {
     return files;
   }
 
-  private DataWriter buildDataWriterFromTransformedImage(AdaptTransferSyntax syntax, AttributeEditorContext context,
-      Attributes attributes) throws IOException {
-    DataWriter dataWriter;
-    BytesWithImageDescriptor desc = ImageAdapter.imageTranscode(attributes, syntax, context);
-    TransformedPlanarImage transformedPlanarImage = null;
+  private void launchCStore(Params p, StoreFromStreamSCU streamSCU, DataWriter dataWriter, String cuid,
+      String iuid, AdaptTransferSyntax syntax, TransformedPlanarImage transformedPlanarImage)
+      throws IOException, InterruptedException {
     try {
-      transformedPlanarImage = transformImage(attributes, context);
-      dataWriter = ImageAdapter.buildDataWriter(attributes,
-          syntax, transformedPlanarImage != null ? transformedPlanarImage.getEditablePlanarImage() : null, desc);
+      streamSCU.cstore(cuid, iuid, p.getPriority(), dataWriter, syntax.getSuitable());
     }
     finally{
       if(transformedPlanarImage != null && transformedPlanarImage.getPlanarImage() != null){
         transformedPlanarImage.getPlanarImage().release();
       }
     }
+  }
+
+  private DataWriter buildDataWriterFromTransformedImage(AdaptTransferSyntax syntax, AttributeEditorContext context,
+      Attributes attributes,TransformedPlanarImage transformedPlanarImage) throws IOException {
+    DataWriter dataWriter;
+    BytesWithImageDescriptor desc = ImageAdapter.imageTranscode(attributes, syntax, context);
+    transformedPlanarImage = transformImage(attributes, context, transformedPlanarImage);
+    dataWriter = ImageAdapter.buildDataWriter(attributes,
+        syntax, transformedPlanarImage != null ? transformedPlanarImage.getEditablePlanarImage() : null, desc);
     return dataWriter;
   }
 
   private static TransformedPlanarImage transformImage(
-      Attributes attributes, AttributeEditorContext context) {
+      Attributes attributes, AttributeEditorContext context, TransformedPlanarImage transformedPlanarImage) {
     MaskArea m = context.getMaskArea();
     boolean defacing =
         LangUtil.getEmptytoFalse(context.getProperties().getProperty(Defacer.APPLY_DEFACING));
     if (m != null || defacing) {
-      TransformedPlanarImage transformedPlanarImage = new TransformedPlanarImage();
       Editable<PlanarImage> editablePlanarImage = buildEditablePlanarImage(attributes, m, defacing,
           transformedPlanarImage);
       transformedPlanarImage.setEditablePlanarImage(editablePlanarImage);
@@ -387,6 +392,7 @@ public class ForwardService {
               tsuid,
               streamSCU.selectTransferSyntax(cuid, destination.getOutputTransferSyntax(tsuid)));
       List<AttributeEditor> editors = destination.getDicomEditors();
+      TransformedPlanarImage transformedPlanarImage = new TransformedPlanarImage();
       if (editors.isEmpty() && syntax.getRequested().equals(tsuid)) {
         dataWriter = new DataWriterAdapter(copy);
         attributesOriginal.addAll(copy);
@@ -409,10 +415,11 @@ public class ForwardService {
           throw new AbortException(
               context.getAbort(), "DICOM association abort. " + context.getAbortMessage());
         }
-        dataWriter = buildDataWriterFromTransformedImage(syntax, context, attributes);
+        dataWriter = buildDataWriterFromTransformedImage(syntax, context, attributes, transformedPlanarImage);
       }
 
-      streamSCU.cstore(cuid, iuid, p.getPriority(), dataWriter, syntax.getSuitable());
+      launchCStore(p, streamSCU, dataWriter, cuid, iuid, syntax, transformedPlanarImage);
+
       progressNotify(
           destination, p.getIuid(), p.getCuid(), false, streamSCU.getNumberOfSuboperations());
       monitor(
@@ -565,9 +572,9 @@ public class ForwardService {
   private void uploadPayLoadFromTransformedImage(DicomStowRS stow, AdaptTransferSyntax syntax,
       AttributeEditorContext context, Attributes attributes, BytesWithImageDescriptor desc)
       throws Exception {
-    TransformedPlanarImage transformedPlanarImage = null;
+    TransformedPlanarImage transformedPlanarImage = new TransformedPlanarImage();
     try {
-      transformedPlanarImage = transformImage(attributes, context);
+      transformedPlanarImage = transformImage(attributes, context, transformedPlanarImage);
       stow.uploadPayload(ImageAdapter.preparePlayload(attributes, syntax, desc, transformedPlanarImage != null ? transformedPlanarImage.getEditablePlanarImage() : null));
     }
     finally{
