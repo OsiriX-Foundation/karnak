@@ -9,7 +9,9 @@
  */
 package org.karnak.backend.constant;
 
-/** Constants for notification */
+/**
+ * Constants for notification
+ */
 public class Notification {
 
   // Default

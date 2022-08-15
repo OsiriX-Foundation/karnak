@@ -32,7 +32,9 @@ import org.karnak.frontend.project.ProjectView;
 import org.karnak.frontend.pseudonym.mapping.PseudonymMappingView;
 import org.springframework.security.access.annotation.Secured;
 
-/** The main layout. Contains the navigation menu. */
+/**
+ * The main layout. Contains the navigation menu.
+ */
 @NpmPackage(value = "@polymer/iron-icons", version = "3.0.1")
 @JsModule("@polymer/iron-icons/iron-icons.js")
 @JsModule("@vaadin/vaadin-lumo-styles/badge.js")
@@ -86,8 +88,8 @@ public class MainLayout extends FlexLayout implements RouterLayout {
    * Build and add secured menus
    *
    * @param securedClass View to secure
-   * @param viewName Name of the view
-   * @param icon Icon to apply to the menu
+   * @param viewName     Name of the view
+   * @param icon         Icon to apply to the menu
    */
   private void addSecuredMenu(
       Class<? extends Component> securedClass, String viewName, IronIcon icon) {

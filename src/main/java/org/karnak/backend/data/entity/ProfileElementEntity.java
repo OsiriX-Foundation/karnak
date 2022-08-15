@@ -62,7 +62,8 @@ public class ProfileElementEntity implements Serializable {
 
   private List<ArgumentEntity> argumentEntities = new ArrayList<>();
 
-  public ProfileElementEntity() {}
+  public ProfileElementEntity() {
+  }
 
   public ProfileElementEntity(
       String name,

@@ -9,7 +9,9 @@
  */
 package org.karnak.backend.constant;
 
-/** Constants dealing used for token management */
+/**
+ * Constants dealing used for token management
+ */
 public class Token {
 
   // Name of the resource in the access token for retrieving roles

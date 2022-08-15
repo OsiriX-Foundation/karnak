@@ -37,7 +37,8 @@ public class KheopsAlbumsEntity implements Serializable {
 
   private DestinationEntity destinationEntity = new DestinationEntity();
 
-  public KheopsAlbumsEntity() {}
+  public KheopsAlbumsEntity() {
+  }
 
   public KheopsAlbumsEntity(
       String urlAPI,

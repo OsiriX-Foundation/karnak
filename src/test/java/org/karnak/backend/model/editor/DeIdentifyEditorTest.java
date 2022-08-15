@@ -32,11 +32,14 @@ import org.weasis.dicom.param.DicomNode;
 @SpringBootTest
 class DeIdentifyEditorTest {
 
-  @MockBean private ExternalIDCache externalIDCache;
+  @MockBean
+  private ExternalIDCache externalIDCache;
 
-  @MockBean private MainzellisteCache mainzellisteCache;
+  @MockBean
+  private MainzellisteCache mainzellisteCache;
 
-  @MockBean private RedisConfiguration redisConfiguration;
+  @MockBean
+  private RedisConfiguration redisConfiguration;
 
   @Test
   void should_apply_to_dicom_object() {

@@ -13,7 +13,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
-/** Model used to build transfer monitoring notification */
+/**
+ * Model used to build transfer monitoring notification
+ */
 public class TransferMonitoringNotification {
 
   private String subject;

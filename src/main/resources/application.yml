@@ -74,10 +74,10 @@ management:
   endpoint:
     health:
       show-details: always
-# https://github.com/spring-projects/spring-boot/issues/20509
+    # https://github.com/spring-projects/spring-boot/issues/20509
     env:
-      post.enabled: true      
-#issue with spring cloud Hoxton.SR10 and sup
+      post.enabled: true
+    #issue with spring cloud Hoxton.SR10 and sup
     restart:
       enabled: false
     pause:

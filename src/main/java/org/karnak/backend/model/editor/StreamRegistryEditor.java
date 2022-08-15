@@ -39,7 +39,8 @@ public class StreamRegistryEditor implements AttributeEditor {
 
   private boolean enable = false;
 
-  public StreamRegistryEditor() {}
+  public StreamRegistryEditor() {
+  }
 
   private static LocalDateTime getDateTime(Attributes dicom, int date, int time) {
     LocalDate d = DateUtil.getDicomDate(dicom.getString(date));

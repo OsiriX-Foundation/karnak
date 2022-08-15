@@ -20,7 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
-/** Project service */
+/**
+ * Project service
+ */
 @Service
 public class ProjectService {
 
@@ -33,7 +35,7 @@ public class ProjectService {
   /**
    * Autowired constructor
    *
-   * @param projectRepo Project repository
+   * @param projectRepo               Project repository
    * @param applicationEventPublisher Application Event Publisher
    */
   @Autowired

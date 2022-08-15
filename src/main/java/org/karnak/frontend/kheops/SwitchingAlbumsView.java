@@ -120,5 +120,6 @@ public class SwitchingAlbumsView extends CustomField<List<KheopsAlbumsEntity>> {
   }
 
   @Override
-  protected void setPresentationValue(List<KheopsAlbumsEntity> kheopsAlbumEntities) {}
+  protected void setPresentationValue(List<KheopsAlbumsEntity> kheopsAlbumEntities) {
+  }
 }

@@ -46,7 +46,9 @@ import org.karnak.frontend.forwardnode.edit.source.SourceView;
 import org.karnak.frontend.forwardnode.edit.source.component.NewUpdateSourceNode;
 import org.karnak.frontend.util.UIS;
 
-/** Layout of the edit forward node */
+/**
+ * Layout of the edit forward node
+ */
 @SuppressWarnings("serial")
 public class LayoutEditForwardNode extends VerticalLayout {
 
@@ -108,7 +110,9 @@ public class LayoutEditForwardNode extends VerticalLayout {
     addBinders();
   }
 
-  /** Build layout */
+  /**
+   * Build layout
+   */
   private void buildLayout() {
     layoutDestinationsSources.setSizeFull();
     getStyle().set("overflow-y", "auto");
@@ -117,7 +121,9 @@ public class LayoutEditForwardNode extends VerticalLayout {
     setLayoutDestinationsSources(tabSourcesDestination.getSelectedTab().getLabel());
   }
 
-  /** Add binders on components */
+  /**
+   * Add binders on components
+   */
   private void addBinders() {
     addBindersFilterBySOPClassesForm(
         newUpdateDestination.getFormDICOM().getFilterBySOPClassesForm());
@@ -127,7 +133,9 @@ public class LayoutEditForwardNode extends VerticalLayout {
     addBinderExtidInDicomTag(newUpdateDestination.getFormDICOM().getDeIdentificationComponent());
   }
 
-  /** Add events on components */
+  /**
+   * Add events on components
+   */
   private void addEvents() {
     addEventButtonSaveNewUpdateSourceNode();
     addEventButtonDeleteNewUpdateSourceNode();
@@ -417,8 +425,8 @@ public class LayoutEditForwardNode extends VerticalLayout {
 
               if (currentDestinationEntity.getDestinationType() == DestinationType.stow
                   && newUpdateDestination
-                      .getBinderFormSTOW()
-                      .writeBeanIfValid(currentDestinationEntity)) {
+                  .getBinderFormSTOW()
+                  .writeBeanIfValid(currentDestinationEntity)) {
                 // Reset / set defaults and save destination
                 resetDefaultValuesAndSaveDestination(
                     currentDestinationEntity,
@@ -439,8 +447,8 @@ public class LayoutEditForwardNode extends VerticalLayout {
 
               if (currentDestinationEntity.getDestinationType() == DestinationType.dicom
                   && newUpdateDestination
-                      .getBinderFormDICOM()
-                      .writeBeanIfValid(currentDestinationEntity)) {
+                  .getBinderFormDICOM()
+                  .writeBeanIfValid(currentDestinationEntity)) {
                 // Reset / set defaults and save destination
                 resetDefaultValuesAndSaveDestination(
                     currentDestinationEntity,
@@ -453,8 +461,8 @@ public class LayoutEditForwardNode extends VerticalLayout {
   /**
    * Reset / set defaults and save destination
    *
-   * @param destinationEntity Destination
-   * @param notificationComponent Notification component
+   * @param destinationEntity         Destination
+   * @param notificationComponent     Notification component
    * @param deIdentificationComponent DeIdentification component
    */
   private void resetDefaultValuesAndSaveDestination(
@@ -525,7 +533,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
    * Add event checkbox deidentification
    *
    * @param deIdentificationComponent DeIdentification Component
-   * @param tagMorphingComponent Tag Morphing Component
+   * @param tagMorphingComponent      Tag Morphing Component
    */
   private void addEventCheckboxLayoutDesidentification(
       DeIdentificationComponent deIdentificationComponent,
@@ -559,7 +567,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
    * Add event tag morphing checkbox
    *
    * @param deIdentificationComponent DeIdentification Component
-   * @param tagMorphingComponent Tag Morphing Component
+   * @param tagMorphingComponent      Tag Morphing Component
    */
   private void addEventCheckboxLayoutTagMorphing(
       TagMorphingComponent tagMorphingComponent,
@@ -627,9 +635,9 @@ public class LayoutEditForwardNode extends VerticalLayout {
             tag -> {
               if (!deIdentificationComponent.getDeIdentificationCheckbox().getValue()
                   || !deIdentificationComponent
-                      .getPseudonymTypeSelect()
-                      .getValue()
-                      .equals(EXTID_IN_TAG.getValue())) {
+                  .getPseudonymTypeSelect()
+                  .getValue()
+                  .equals(EXTID_IN_TAG.getValue())) {
                 return true;
               }
               final String cleanTag = tag.replaceAll("[(),]", "").toUpperCase();
@@ -652,21 +660,21 @@ public class LayoutEditForwardNode extends VerticalLayout {
             delimiter -> {
               if (!deIdentificationComponent.getDeIdentificationCheckbox().getValue()
                   || !deIdentificationComponent
-                      .getPseudonymTypeSelect()
-                      .getValue()
-                      .equals(EXTID_IN_TAG.getValue())) {
+                  .getPseudonymTypeSelect()
+                  .getValue()
+                  .equals(EXTID_IN_TAG.getValue())) {
                 return true;
               }
               if (deIdentificationComponent
-                          .getPseudonymInDicomTagComponent()
-                          .getPosition()
-                          .getValue()
-                      != null
+                  .getPseudonymInDicomTagComponent()
+                  .getPosition()
+                  .getValue()
+                  != null
                   && deIdentificationComponent
-                          .getPseudonymInDicomTagComponent()
-                          .getPosition()
-                          .getValue()
-                      > 0) {
+                  .getPseudonymInDicomTagComponent()
+                  .getPosition()
+                  .getValue()
+                  > 0) {
                 return delimiter != null && !delimiter.equals("");
               }
               return true;
@@ -682,21 +690,21 @@ public class LayoutEditForwardNode extends VerticalLayout {
             position -> {
               if (!deIdentificationComponent.getDeIdentificationCheckbox().getValue()
                   || !deIdentificationComponent
-                      .getPseudonymTypeSelect()
-                      .getValue()
-                      .equals(EXTID_IN_TAG.getValue())) {
+                  .getPseudonymTypeSelect()
+                  .getValue()
+                  .equals(EXTID_IN_TAG.getValue())) {
                 return true;
               }
               if (deIdentificationComponent
-                          .getPseudonymInDicomTagComponent()
-                          .getDelimiter()
-                          .getValue()
-                      != null
+                  .getPseudonymInDicomTagComponent()
+                  .getDelimiter()
+                  .getValue()
+                  != null
                   && !deIdentificationComponent
-                      .getPseudonymInDicomTagComponent()
-                      .getDelimiter()
-                      .getValue()
-                      .equals("")) {
+                  .getPseudonymInDicomTagComponent()
+                  .getDelimiter()
+                  .getValue()
+                  .equals("")) {
                 return position != null && position >= 0;
               }
               return true;

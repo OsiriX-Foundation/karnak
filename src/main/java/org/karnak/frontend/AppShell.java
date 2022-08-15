@@ -19,4 +19,6 @@ import com.vaadin.flow.server.PWA;
  */
 @PWA(name = "Karnak Gateway", shortName = "karnak", iconPath = "icons/logo.png")
 @Push
-public class AppShell implements AppShellConfigurator {}
+public class AppShell implements AppShellConfigurator {
+
+}

@@ -21,7 +21,8 @@ import org.karnak.frontend.util.UIS;
 
 public class TagMorphingComponent extends VerticalLayout {
 
-  @Serial private static final long serialVersionUID = 6526643405482005449L;
+  @Serial
+  private static final long serialVersionUID = 6526643405482005449L;
 
   // Labels
   private static final String LABEL_CHECKBOX_TAG_MORPHING = "Activate tag morphing";
@@ -41,7 +42,9 @@ public class TagMorphingComponent extends VerticalLayout {
 
   private ProfileLabel profileLabel;
 
-  /** Constructor */
+  /**
+   * Constructor
+   */
   public TagMorphingComponent() {
     this.destinationComponentUtil = new DestinationComponentUtil();
   }
@@ -100,7 +103,9 @@ public class TagMorphingComponent extends VerticalLayout {
     this.destinationBinder = destinationBinder;
   }
 
-  /** Build deidentification components */
+  /**
+   * Build deidentification components
+   */
   private void buildComponents() {
     profileLabel = new ProfileLabel();
     projectDropDown = destinationComponentUtil.buildProjectDropDown();
@@ -123,14 +128,18 @@ public class TagMorphingComponent extends VerticalLayout {
             DestinationEntity::setTagMorphingProjectEntity);
   }
 
-  /** Build listeners */
+  /**
+   * Build listeners
+   */
   private void buildListeners() {
     destinationComponentUtil.buildWarningNoProjectDefinedListener(
         warningNoProjectsDefined, tagMorphingCheckbox);
     destinationComponentUtil.buildProjectDropDownListener(projectDropDown, profileLabel);
   }
 
-  /** Add components */
+  /**
+   * Add components
+   */
   private void addComponents() {
     // Padding
     setPadding(true);

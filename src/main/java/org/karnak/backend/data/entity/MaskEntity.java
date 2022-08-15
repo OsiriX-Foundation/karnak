@@ -43,7 +43,8 @@ public class MaskEntity implements Serializable {
 
   private List<Rectangle> rectangles = new ArrayList<>();
 
-  public MaskEntity() {}
+  public MaskEntity() {
+  }
 
   public MaskEntity(String stationName, String color, ProfileEntity profileEntity) {
     this.stationName = stationName;

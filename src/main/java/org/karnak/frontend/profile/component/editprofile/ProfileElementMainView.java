@@ -25,7 +25,8 @@ public class ProfileElementMainView extends VerticalLayout {
 
   private Set<ProfileElementEntity> profilesOrder;
 
-  public ProfileElementMainView() {}
+  public ProfileElementMainView() {
+  }
 
   private void profilesView() {
     removeAll();

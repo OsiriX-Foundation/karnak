@@ -38,7 +38,9 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-/** Handle transfer monitoring */
+/**
+ * Handle transfer monitoring
+ */
 @Service
 public class TransferMonitoringService {
 
@@ -84,7 +86,7 @@ public class TransferMonitoringService {
   /**
    * Retrieve transfer status depending on filter and pageable
    *
-   * @param filter Filter to evaluate
+   * @param filter   Filter to evaluate
    * @param pageable Pageable to evaluate
    * @return Transfer status entities found
    */
@@ -147,7 +149,7 @@ public class TransferMonitoringService {
   /**
    * Build a transfer status csv file depending on filters
    *
-   * @param filter Filters
+   * @param filter         Filters
    * @param exportSettings Export settings
    */
   public byte[] buildCsv(TransferStatusFilter filter, ExportSettings exportSettings)

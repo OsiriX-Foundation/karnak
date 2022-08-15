@@ -39,7 +39,9 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-/** Handle notifications */
+/**
+ * Handle notifications
+ */
 @Service
 public class NotificationService {
 
@@ -115,8 +117,8 @@ public class NotificationService {
    * Build transfer notifications to send.
    *
    * @param transferMonitoringNotifications List of notifications to fill
-   * @param transferStatusBySourceAndStudy Map of TransferStatus by Source and Study: <br>
-   *     <Source , <Study, List<TransferStatus>>>
+   * @param transferStatusBySourceAndStudy  Map of TransferStatus by Source and Study: <br> <Source
+   *                                        , <Study, List<TransferStatus>>>
    */
   private void buildTransferMonitoringNotifications(
       List<TransferMonitoringNotification> transferMonitoringNotifications,
@@ -193,10 +195,10 @@ public class NotificationService {
   /**
    * Set values in transferMonitoringNotification built
    *
-   * @param transferMonitoringNotification TransferMonitoringNotification built
-   * @param transferStatusEntity Transfer status
+   * @param transferMonitoringNotification  TransferMonitoringNotification built
+   * @param transferStatusEntity            Transfer status
    * @param hasAtLeastOneFileNotTransferred Has at least one file not transferred
-   * @param useOriginalValues Flag to know if we should use original values
+   * @param useOriginalValues               Flag to know if we should use original values
    */
   private void buildTransferMonitoringNotificationSetValues(
       TransferMonitoringNotification transferMonitoringNotification,
@@ -231,8 +233,8 @@ public class NotificationService {
         transferStatusEntity.getForwardNodeEntity().getFwdAeTitle());
     transferMonitoringNotification.setDestination(
         Objects.equals(
-                transferStatusEntity.getDestinationEntity().getDestinationType(),
-                DestinationType.dicom)
+            transferStatusEntity.getDestinationEntity().getDestinationType(),
+            DestinationType.dicom)
             ? transferStatusEntity.getDestinationEntity().toStringDicomNotificationDestination()
             : transferStatusEntity.getDestinationEntity().getUrl());
     transferMonitoringNotification.setSubject(
@@ -243,9 +245,9 @@ public class NotificationService {
    * Build notification subject email
    *
    * @param hasAtLeastOneFileNotTransferred Flag to know if there is at least one file not
-   *     transferred
-   * @param useOriginalValues Check if we should use original or de-identified values
-   * @param transferStatusEntity TransferStatusEntity to evaluate
+   *                                        transferred
+   * @param useOriginalValues               Check if we should use original or de-identified values
+   * @param transferStatusEntity            TransferStatusEntity to evaluate
    * @return Subject built
    */
   private String buildSubject(
@@ -267,7 +269,7 @@ public class NotificationService {
   /**
    * Build list of values to add to the subject
    *
-   * @param useOriginalValues Flag to know if we should use original or de-identified values
+   * @param useOriginalValues    Flag to know if we should use original or de-identified values
    * @param transferStatusEntity TransferStatusEntity to evaluate
    * @return List of values to add to the subject
    */
@@ -279,8 +281,8 @@ public class NotificationService {
     // destination
     String[] notifyObjectValues =
         (transferStatusEntity.getDestinationEntity().getNotifyObjectValues() == null
-                ? Notification.DEFAULT_SUBJECT_VALUES
-                : transferStatusEntity.getDestinationEntity().getNotifyObjectValues())
+            ? Notification.DEFAULT_SUBJECT_VALUES
+            : transferStatusEntity.getDestinationEntity().getNotifyObjectValues())
             .split(Notification.COMMA_SEPARATOR);
 
     // Select the values to add
@@ -311,8 +313,8 @@ public class NotificationService {
         subjectValues.add(
             useOriginalValues
                 ? transferStatusEntity.getStudyDateOriginal() == null
-                    ? Notification.EMPTY_STRING
-                    : transferStatusEntity.getStudyDateOriginal().toString()
+                ? Notification.EMPTY_STRING
+                : transferStatusEntity.getStudyDateOriginal().toString()
                 : transferStatusEntity.getStudyDateToSend() == null
                     ? Notification.EMPTY_STRING
                     : transferStatusEntity.getStudyDateToSend().toString());
@@ -325,8 +327,8 @@ public class NotificationService {
    * Build subject value, if null set empty string in the subject
    *
    * @param useOriginalValues Flag to know if we should use original value
-   * @param original Value original
-   * @param toSend Value transformed to send
+   * @param original          Value original
+   * @param toSend            Value transformed to send
    * @return subject value
    */
   private String buildSubjectValue(boolean useOriginalValues, String original, String toSend) {
@@ -338,7 +340,7 @@ public class NotificationService {
   /**
    * Build transfer serie summary results
    *
-   * @param transferStatusEntities TransferStatus to evaluate
+   * @param transferStatusEntities  TransferStatus to evaluate
    * @param isDestinationDeIdentify Flag to know if the destination should be de-identify
    * @return Serie summary notifications
    */
@@ -369,8 +371,8 @@ public class NotificationService {
    * Build summary notification for the serie in parameter
    *
    * @param isDestinationDeIdentify Flag to know if the destination should be de-identify
-   * @param transfersToEvaluate Transfers to evaluate
-   * @param transferStatusEntity TransferStatus containing general series values to set
+   * @param transfersToEvaluate     Transfers to evaluate
+   * @param transferStatusEntity    TransferStatus containing general series values to set
    * @return Summary notification for this serie
    */
   private SerieSummaryNotification buildSerieSummaryNotification(
@@ -425,7 +427,7 @@ public class NotificationService {
    * Determine if we have to use originals or de-identify values. If any transfer not sent or flag
    * deidentification for the destination is false: use originals values
    *
-   * @param hasTransferNotSent Flag to know if there are transfer not sent
+   * @param hasTransferNotSent      Flag to know if there are transfer not sent
    * @param isDestinationDeIdentify Is deidentification requested for the destination
    * @return true if we have to use originals values, false otherwise
    */
@@ -453,7 +455,7 @@ public class NotificationService {
    * Retrieve TransferStatusEntities for this destination after the last email check
    *
    * @param destinationEntity Destination to look for
-   * @param lastCheck Last check for this destination
+   * @param lastCheck         Last check for this destination
    * @return TransferStatusEntity found
    */
   private List<TransferStatusEntity> retrieveTransferStatusDestinationLastCheck(
@@ -466,10 +468,10 @@ public class NotificationService {
 
   /**
    * Check if notification should be sent depending on last check of notification (compare to
-   * notification interval of the destination and current date) <br>
-   * A transfer should not be in progress to send the notification and an extra timer of 10s is
-   * added for serie transfers which are not immediately sent each time (a delay is occurring
-   * between transfer of files in the same serie)
+   * notification interval of the destination and current date) <br> A transfer should not be in
+   * progress to send the notification and an extra timer of 10s is added for serie transfers which
+   * are not immediately sent each time (a delay is occurring between transfer of files in the same
+   * serie)
    *
    * @param destinationEntity Destination to evaluate
    * @return true if the notification can be process, false otherwise
@@ -479,14 +481,14 @@ public class NotificationService {
         && destinationEntity.getLastTransfer() != null
         // Add extra timer delay in order to insure transfer of serie is over
         && destinationEntity
-            .getLastTransfer()
-            .plusSeconds(Notification.EXTRA_TIMER_DELAY)
-            .isBefore(LocalDateTime.now(ZoneId.of("CET")))
+        .getLastTransfer()
+        .plusSeconds(Notification.EXTRA_TIMER_DELAY)
+        .isBefore(LocalDateTime.now(ZoneId.of("CET")))
         && (destinationEntity.getEmailLastCheck() == null
-            || destinationEntity
-                .getEmailLastCheck()
-                .plusSeconds(destinationEntity.getNotifyInterval().longValue())
-                .isBefore(LocalDateTime.now(ZoneId.of("CET"))))
+        || destinationEntity
+        .getEmailLastCheck()
+        .plusSeconds(destinationEntity.getNotifyInterval().longValue())
+        .isBefore(LocalDateTime.now(ZoneId.of("CET"))))
         && destinationEntity.isActivateNotification();
   }
 

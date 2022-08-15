@@ -16,7 +16,9 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import org.karnak.frontend.component.BoxShadowComponent;
 
-/** Input pseudonym that the user wants to look for */
+/**
+ * Input pseudonym that the user wants to look for
+ */
 public class MappingInputComponent extends VerticalLayout {
 
   // Components
@@ -24,7 +26,9 @@ public class MappingInputComponent extends VerticalLayout {
 
   private Button findButton;
 
-  /** Constructor */
+  /**
+   * Constructor
+   */
   public MappingInputComponent() {
     setWidthFull();
 

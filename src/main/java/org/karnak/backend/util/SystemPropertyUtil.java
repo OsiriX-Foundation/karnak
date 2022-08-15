@@ -13,12 +13,13 @@ import org.weasis.core.util.StringUtil;
 
 public class SystemPropertyUtil {
 
-  private SystemPropertyUtil() {}
+  private SystemPropertyUtil() {
+  }
 
   /**
    * Retrieve system property
    *
-   * @param key Key
+   * @param key          Key
    * @param defaultValue default value
    * @return property found
    */

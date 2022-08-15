@@ -25,7 +25,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- * Mapping logic service use to make calls to backend and implement logic linked to the mapping view
+ * Mapping logic service use to make calls to backend and implement logic linked to the mapping
+ * view
  */
 @Service
 public class PseudonymMappingLogic {
@@ -47,8 +48,8 @@ public class PseudonymMappingLogic {
    * Autowired constructor
    *
    * @param pseudonymMappingService Pseudonym mapping backend service
-   * @param externalIDCache External ID Cache
-   * @param projectService Project service
+   * @param externalIDCache         External ID Cache
+   * @param projectService          Project service
    */
   @Autowired
   public PseudonymMappingLogic(

@@ -45,7 +45,8 @@
     <sonar.java.source>${java.version}</sonar.java.source>
     <sonar.java.target>${java.version}</sonar.java.target>
     <sonar.projectKey>karnak</sonar.projectKey>
-    <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+    <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/target/site/jacoco/jacoco.xml
+    </sonar.coverage.jacoco.xmlReportPaths>
     <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
     <org.json.version>20211205</org.json.version>
     <logback.version>1.2.9</logback.version>
@@ -312,14 +313,14 @@
             </licenseHeader>
           </java>
         </configuration>
-<!--        <executions>-->
-<!--          <execution>-->
-<!--            <phase>verify</phase>-->
-<!--            <goals>-->
-<!--              <goal>check</goal>-->
-<!--            </goals>-->
-<!--          </execution>-->
-<!--        </executions>-->
+        <!--        <executions>-->
+        <!--          <execution>-->
+        <!--            <phase>verify</phase>-->
+        <!--            <goals>-->
+        <!--              <goal>check</goal>-->
+        <!--            </goals>-->
+        <!--          </execution>-->
+        <!--        </executions>-->
       </plugin>
     </plugins>
     <resources>
@@ -700,13 +701,13 @@
         <version>${vaadin.version}</version>
       </dependency>
 
-          <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-dependencies</artifactId>
-            <version>2021.0.2</version>
-            <type>pom</type>
-            <scope>import</scope>
-          </dependency>
+      <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-dependencies</artifactId>
+        <version>2021.0.2</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 

@@ -29,7 +29,8 @@ public class ShiftDate {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ShiftDate.class);
 
-  private ShiftDate() {}
+  private ShiftDate() {
+  }
 
   public static String dateByDays(String date, int shiftDays) {
     LocalDate localDate = DateTimeUtils.parseDA(date);

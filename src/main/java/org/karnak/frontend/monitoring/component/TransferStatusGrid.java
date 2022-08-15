@@ -31,7 +31,9 @@ import org.karnak.frontend.monitoring.TransferStatusDataProvider;
 import org.karnak.frontend.util.UIS;
 import org.vaadin.klaudeta.PaginatedGrid;
 
-/** Grid for the monitoring view */
+/**
+ * Grid for the monitoring view
+ */
 public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity> {
 
   // Tooltips
@@ -99,7 +101,7 @@ public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity> {
    * @return the renderer created
    */
   private ComponentRenderer<TransferStatusGridItemDetail, TransferStatusEntity>
-      createTransferStatusDetails() {
+  createTransferStatusDetails() {
     return new ComponentRenderer<>(
         TransferStatusGridItemDetail::new, TransferStatusGridItemDetail::buildDetailsToDisplay);
   }
@@ -107,11 +109,11 @@ public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity> {
   /**
    * Create filters
    *
-   * @param transferDateColumn Transfer Date column
-   * @param studyUidColumn Study Uid Column
-   * @param serieUidColumn Serie Uid Column
+   * @param transferDateColumn   Transfer Date column
+   * @param studyUidColumn       Study Uid Column
+   * @param serieUidColumn       Serie Uid Column
    * @param sopInstanceUidColumn Sop Instance Uid Column
-   * @param statusColumn Status Column
+   * @param statusColumn         Status Column
    */
   private void createFiltersOnRows(
       Column<TransferStatusEntity> transferDateColumn,
@@ -139,7 +141,7 @@ public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity> {
    * Creation of the filter for transfer date
    *
    * @param transferDateColumn Column
-   * @param filterRow Row filter
+   * @param filterRow          Row filter
    */
   private void createTransferDateFilter(
       Column<TransferStatusEntity> transferDateColumn, HeaderRow filterRow) {
@@ -183,9 +185,9 @@ public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity> {
   /**
    * Listener end time
    *
-   * @param datePicker Date
+   * @param datePicker      Date
    * @param startTimePicker Start time
-   * @param endTimePicker End time
+   * @param endTimePicker   End time
    */
   private void buildListenerEndTime(
       DatePicker datePicker, TimePicker startTimePicker, TimePicker endTimePicker) {
@@ -196,9 +198,9 @@ public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity> {
   /**
    * Listener start time
    *
-   * @param datePicker Date
+   * @param datePicker      Date
    * @param startTimePicker Start time
-   * @param endTimePicker End time
+   * @param endTimePicker   End time
    */
   private void buildListenerStartTime(
       DatePicker datePicker, TimePicker startTimePicker, TimePicker endTimePicker) {
@@ -209,9 +211,9 @@ public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity> {
   /**
    * Listener date
    *
-   * @param datePicker Date
+   * @param datePicker      Date
    * @param startTimePicker Start time
-   * @param endTimePicker End time
+   * @param endTimePicker   End time
    */
   private void buildListenerDate(
       DatePicker datePicker, TimePicker startTimePicker, TimePicker endTimePicker) {
@@ -222,9 +224,9 @@ public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity> {
   /**
    * Handle event on date time pickers
    *
-   * @param datePicker Date
+   * @param datePicker      Date
    * @param startTimePicker Start time
-   * @param endTimePicker End time
+   * @param endTimePicker   End time
    */
   private void handleEventDateTime(
       DatePicker datePicker, TimePicker startTimePicker, TimePicker endTimePicker) {
@@ -243,9 +245,9 @@ public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity> {
   /**
    * Add date time values in filter
    *
-   * @param datePicker Date
+   * @param datePicker      Date
    * @param startTimePicker Start time
-   * @param endTimePicker End time
+   * @param endTimePicker   End time
    */
   private void addFilterDateTimeValues(
       DatePicker datePicker, TimePicker startTimePicker, TimePicker endTimePicker) {
@@ -274,13 +276,13 @@ public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity> {
    * Check invalid combinations
    *
    * @param startTimePicker StartTimePicker
-   * @param endTimePicker EndTimePicker
+   * @param endTimePicker   EndTimePicker
    */
   private void checkDateTimePickerInvalid(TimePicker startTimePicker, TimePicker endTimePicker) {
     if (startTimePicker.getValue() != null
         && endTimePicker.getValue() != null
         && (Objects.equals(startTimePicker.getValue(), endTimePicker.getValue())
-            || startTimePicker.getValue().isAfter(endTimePicker.getValue()))) {
+        || startTimePicker.getValue().isAfter(endTimePicker.getValue()))) {
       startTimePicker.setInvalid(true);
       endTimePicker.setInvalid(true);
     } else {
@@ -293,7 +295,7 @@ public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity> {
    * Creation of the filter for study uid
    *
    * @param studyUidColumn Column
-   * @param filterRow Row filter
+   * @param filterRow      Row filter
    */
   private void createStudyUidFilter(
       Column<TransferStatusEntity> studyUidColumn, HeaderRow filterRow) {
@@ -314,7 +316,7 @@ public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity> {
    * Creation of the filter for serie uid
    *
    * @param serieUidColumn Column
-   * @param filterRow Row filter
+   * @param filterRow      Row filter
    */
   private void createSerieUidFilter(
       Column<TransferStatusEntity> serieUidColumn, HeaderRow filterRow) {
@@ -335,7 +337,7 @@ public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity> {
    * Creation of the filter for sop instance uid
    *
    * @param sopInstanceUidColumn Column
-   * @param filterRow Row filter
+   * @param filterRow            Row filter
    */
   private void createSopInstanceUidFilter(
       Column<TransferStatusEntity> sopInstanceUidColumn, HeaderRow filterRow) {
@@ -356,7 +358,7 @@ public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity> {
    * Creation of the filter for status
    *
    * @param statusColumn Column
-   * @param filterRow Row filter
+   * @param filterRow    Row filter
    */
   private void createHasBeenSentFilter(
       Column<TransferStatusEntity> statusColumn, HeaderRow filterRow) {
@@ -380,10 +382,10 @@ public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity> {
    */
   private Column<TransferStatusEntity> addColumnTransferDate() {
     return addColumn(
-            transferStatusEntity ->
-                DateFormat.format(
-                    transferStatusEntity.getTransferDate(),
-                    DateFormat.FORMAT_DDMMYYYY_SLASH_HHMMSS_2POINTS_SSSSSS_POINT))
+        transferStatusEntity ->
+            DateFormat.format(
+                transferStatusEntity.getTransferDate(),
+                DateFormat.FORMAT_DDMMYYYY_SLASH_HHMMSS_2POINTS_SSSSSS_POINT))
         .setHeader("Transfer date")
         .setWidth("20%")
         .setSortable(false)
@@ -397,10 +399,10 @@ public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity> {
    */
   private Column<TransferStatusEntity> addColumnStudyUid() {
     return addColumn(
-            transferStatusEntity ->
-                transferStatusEntity.isSent()
-                    ? transferStatusEntity.getStudyUidToSend()
-                    : transferStatusEntity.getStudyUidOriginal())
+        transferStatusEntity ->
+            transferStatusEntity.isSent()
+                ? transferStatusEntity.getStudyUidToSend()
+                : transferStatusEntity.getStudyUidOriginal())
         .setHeader("Study UID")
         .setWidth("20%")
         .setSortable(false)
@@ -414,10 +416,10 @@ public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity> {
    */
   private Column<TransferStatusEntity> addColumnSerieUid() {
     return addColumn(
-            transferStatusEntity ->
-                transferStatusEntity.isSent()
-                    ? transferStatusEntity.getSerieUidToSend()
-                    : transferStatusEntity.getSerieUidOriginal())
+        transferStatusEntity ->
+            transferStatusEntity.isSent()
+                ? transferStatusEntity.getSerieUidToSend()
+                : transferStatusEntity.getSerieUidOriginal())
         .setHeader("Serie UID")
         .setWidth("20%")
         .setSortable(false)
@@ -431,10 +433,10 @@ public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity> {
    */
   private Column<TransferStatusEntity> addColumnSopInstanceUid() {
     return addColumn(
-            transferStatusEntity ->
-                transferStatusEntity.isSent()
-                    ? transferStatusEntity.getSopInstanceUidToSend()
-                    : transferStatusEntity.getSopInstanceUidOriginal())
+        transferStatusEntity ->
+            transferStatusEntity.isSent()
+                ? transferStatusEntity.getSopInstanceUidToSend()
+                : transferStatusEntity.getSopInstanceUidOriginal())
         .setHeader("Sop Instance UID")
         .setWidth("20%")
         .setSortable(false)

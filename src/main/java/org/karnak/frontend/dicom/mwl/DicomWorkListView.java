@@ -45,7 +45,9 @@ import org.karnak.frontend.dicom.AbstractView;
 import org.karnak.frontend.dicom.PortField;
 import org.karnak.frontend.dicom.mwl.DicomWorkListSelectionDialog.WorkListSelectionEvent;
 
-/** Calling Order 1) constructor 2) setParameter 3) beforeEnter */
+/**
+ * Calling Order 1) constructor 2) setParameter 3) beforeEnter
+ */
 public class DicomWorkListView extends AbstractView implements HasUrlParameter<String> {
 
   private static final long serialVersionUID = 1L;

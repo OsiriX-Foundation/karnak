@@ -28,7 +28,9 @@ import org.karnak.frontend.project.component.NewProject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 
-/** Project View */
+/**
+ * Project View
+ */
 @Route(value = ProjectView.ROUTE, layout = MainLayout.class)
 @PageTitle("KARNAK - Projects")
 @Secured({"ROLE_admin"})
@@ -55,7 +57,7 @@ public class ProjectView extends HorizontalLayout implements HasUrlParameter<Str
    * Autowired constructor.
    *
    * @param projectLogic Project Logic used to call backend services and implement logic linked to
-   *     the project view
+   *                     the project view
    */
   @Autowired
   public ProjectView(final ProjectLogic projectLogic) {
@@ -94,7 +96,9 @@ public class ProjectView extends HorizontalLayout implements HasUrlParameter<Str
     gridProject.selectRow(currentProjectEntity);
   }
 
-  /** Create and add the layout of the view */
+  /**
+   * Create and add the layout of the view
+   */
   private void buildLayout() {
     VerticalLayout layoutNewProject = new VerticalLayout(this.newProject, this.gridProject);
     setWidthFull();
@@ -103,7 +107,9 @@ public class ProjectView extends HorizontalLayout implements HasUrlParameter<Str
     add(layoutNewProject, this.editProject);
   }
 
-  /** Init components */
+  /**
+   * Init components
+   */
   private void initComponents() {
     initEditProject(editProject, gridProject);
     initNewProjectForm(newProject);
@@ -132,7 +138,9 @@ public class ProjectView extends HorizontalLayout implements HasUrlParameter<Str
     projectLogic.initEditProfileDropDown(editProject);
   }
 
-  /** Add event on button New Project */
+  /**
+   * Add event on button New Project
+   */
   private void addEventButtonNewProject() {
     newProject
         .getButtonAdd()
@@ -149,7 +157,9 @@ public class ProjectView extends HorizontalLayout implements HasUrlParameter<Str
             });
   }
 
-  /** Add event when selecting a project in the grid */
+  /**
+   * Add event when selecting a project in the grid
+   */
   private void addEventGridSelection() {
     gridProject
         .asSingleSelect()

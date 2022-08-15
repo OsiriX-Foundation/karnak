@@ -63,10 +63,10 @@ public class StoreScpForwardService {
   /**
    * Init service
    *
-   * @param forwardParams the optional advanced parameters (proxy, authentication, connection and
-   *     TLS) for the final destination
-   * @param fwdNode the calling DICOM node configuration
-   * @param destinationNode the final DICOM node configuration
+   * @param forwardParams    the optional advanced parameters (proxy, authentication, connection and
+   *                         TLS) for the final destination
+   * @param fwdNode          the calling DICOM node configuration
+   * @param destinationNode  the final DICOM node configuration
    * @param attributesEditor the editor for modifying attributes on the fly (can be Null)
    */
   public void init(

@@ -28,7 +28,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- * Project logic service use to make calls to backend and implement logic linked to the project view
+ * Project logic service use to make calls to backend and implement logic linked to the project
+ * view
  */
 @Service
 public class ProjectLogic extends ListDataProvider<ProjectEntity> {
@@ -48,7 +49,7 @@ public class ProjectLogic extends ListDataProvider<ProjectEntity> {
   /**
    * Autowired constructor
    *
-   * @param projectService Project backend service
+   * @param projectService     Project backend service
    * @param profilePipeService Profile Pipe Service
    */
   @Autowired
@@ -70,7 +71,9 @@ public class ProjectLogic extends ListDataProvider<ProjectEntity> {
     super.refreshAll();
   }
 
-  /** Initialize the data provider */
+  /**
+   * Initialize the data provider
+   */
   private void initDataProvider() {
     getItems().addAll(projectService.getAllProjects());
   }
@@ -88,7 +91,7 @@ public class ProjectLogic extends ListDataProvider<ProjectEntity> {
    * Create a new project
    *
    * @param projectEntity Project to create
-   * @param secretEntity Secret associated to the new project
+   * @param secretEntity  Secret associated to the new project
    */
   public void createProject(ProjectEntity projectEntity, SecretEntity secretEntity) {
     boolean isNewProject = projectEntity.getId() == null;

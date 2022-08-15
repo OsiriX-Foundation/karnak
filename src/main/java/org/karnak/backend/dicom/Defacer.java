@@ -28,7 +28,8 @@ public class Defacer {
 
   public static final String APPLY_DEFACING = "defacing";
 
-  private Defacer() {}
+  private Defacer() {
+  }
 
   public static PlanarImage apply(Attributes attributes, PlanarImage image) {
     PlanarImage faceDetectionImg = faceDetection(attributes, image);

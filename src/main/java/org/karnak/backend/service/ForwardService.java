@@ -243,7 +243,8 @@ public class ForwardService {
           throw new AbortException(
               context.getAbort(), "DICOM association abort: " + context.getAbortMessage());
         }
-        dataWriter = buildDataWriterFromTransformedImage(syntax, context, attributes, transformedPlanarImage);
+        dataWriter = buildDataWriterFromTransformedImage(syntax, context, attributes,
+            transformedPlanarImage);
       }
 
       launchCStore(p, streamSCU, dataWriter, cuid, iuid, syntax, transformedPlanarImage);
@@ -302,31 +303,35 @@ public class ForwardService {
     return files;
   }
 
-  private void launchCStore(Params p, StoreFromStreamSCU streamSCU, DataWriter dataWriter, String cuid,
+  private void launchCStore(Params p, StoreFromStreamSCU streamSCU, DataWriter dataWriter,
+      String cuid,
       String iuid, AdaptTransferSyntax syntax, TransformedPlanarImage transformedPlanarImage)
       throws IOException, InterruptedException {
     try {
       streamSCU.cstore(cuid, iuid, p.getPriority(), dataWriter, syntax.getSuitable());
-    }
-    finally{
-      if(transformedPlanarImage != null && transformedPlanarImage.getPlanarImage() != null){
+    } finally {
+      if (transformedPlanarImage != null && transformedPlanarImage.getPlanarImage() != null) {
         transformedPlanarImage.getPlanarImage().release();
       }
     }
   }
 
-  private DataWriter buildDataWriterFromTransformedImage(AdaptTransferSyntax syntax, AttributeEditorContext context,
-      Attributes attributes,TransformedPlanarImage transformedPlanarImage) throws IOException {
+  private DataWriter buildDataWriterFromTransformedImage(AdaptTransferSyntax syntax,
+      AttributeEditorContext context,
+      Attributes attributes, TransformedPlanarImage transformedPlanarImage) throws IOException {
     DataWriter dataWriter;
     BytesWithImageDescriptor desc = ImageAdapter.imageTranscode(attributes, syntax, context);
     transformedPlanarImage = transformImage(attributes, context, transformedPlanarImage);
     dataWriter = ImageAdapter.buildDataWriter(attributes,
-        syntax, transformedPlanarImage != null ? transformedPlanarImage.getEditablePlanarImage() : null, desc);
+        syntax,
+        transformedPlanarImage != null ? transformedPlanarImage.getEditablePlanarImage() : null,
+        desc);
     return dataWriter;
   }
 
   private static TransformedPlanarImage transformImage(
-      Attributes attributes, AttributeEditorContext context, TransformedPlanarImage transformedPlanarImage) {
+      Attributes attributes, AttributeEditorContext context,
+      TransformedPlanarImage transformedPlanarImage) {
     MaskArea m = context.getMaskArea();
     boolean defacing =
         LangUtil.getEmptytoFalse(context.getProperties().getProperty(Defacer.APPLY_DEFACING));
@@ -415,7 +420,8 @@ public class ForwardService {
           throw new AbortException(
               context.getAbort(), "DICOM association abort. " + context.getAbortMessage());
         }
-        dataWriter = buildDataWriterFromTransformedImage(syntax, context, attributes, transformedPlanarImage);
+        dataWriter = buildDataWriterFromTransformedImage(syntax, context, attributes,
+            transformedPlanarImage);
       }
 
       launchCStore(p, streamSCU, dataWriter, cuid, iuid, syntax, transformedPlanarImage);
@@ -575,10 +581,10 @@ public class ForwardService {
     TransformedPlanarImage transformedPlanarImage = new TransformedPlanarImage();
     try {
       transformedPlanarImage = transformImage(attributes, context, transformedPlanarImage);
-      stow.uploadPayload(ImageAdapter.preparePlayload(attributes, syntax, desc, transformedPlanarImage != null ? transformedPlanarImage.getEditablePlanarImage() : null));
-    }
-    finally{
-      if(transformedPlanarImage != null && transformedPlanarImage.getPlanarImage() != null){
+      stow.uploadPayload(ImageAdapter.preparePlayload(attributes, syntax, desc,
+          transformedPlanarImage != null ? transformedPlanarImage.getEditablePlanarImage() : null));
+    } finally {
+      if (transformedPlanarImage != null && transformedPlanarImage.getPlanarImage() != null) {
         transformedPlanarImage.getPlanarImage().release();
       }
     }
@@ -701,12 +707,12 @@ public class ForwardService {
   /**
    * Publish an event for monitoring purpose
    *
-   * @param forwardNodeId ForwardNode Id
-   * @param destinationId Destination Id
+   * @param forwardNodeId      ForwardNode Id
+   * @param destinationId      Destination Id
    * @param attributesOriginal Original value
-   * @param attributesToSend De-identify value
-   * @param sent Flag to know if the transfer occurred
-   * @param reason Reason of not transferring the file
+   * @param attributesToSend   De-identify value
+   * @param sent               Flag to know if the transfer occurred
+   * @param reason             Reason of not transferring the file
    */
   private void monitor(
       Long forwardNodeId,

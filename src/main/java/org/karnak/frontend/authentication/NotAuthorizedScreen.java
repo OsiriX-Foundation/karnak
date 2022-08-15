@@ -25,7 +25,9 @@ import org.karnak.backend.util.SecurityUtil;
 import org.karnak.frontend.image.LogoKarnak;
 import org.springframework.beans.factory.annotation.Autowired;
 
-/** UI content when the user is not authorized to see the view. */
+/**
+ * UI content when the user is not authorized to see the view.
+ */
 @Route(NotAuthorizedScreen.ROUTE)
 @PageTitle("KARNAK - Not authorized")
 @CssImport(value = "./styles/shared-styles.css")
@@ -43,7 +45,9 @@ public class NotAuthorizedScreen extends FlexLayout {
     buildUI();
   }
 
-  /** Build User Interface */
+  /**
+   * Build User Interface
+   */
   private void buildUI() {
     setSizeFull();
     setClassName("not-authorized-screen");

@@ -32,7 +32,8 @@ import org.springframework.data.jpa.domain.Specification;
 @DataJpaTest
 class TransferStatusSpecificationTest {
 
-  @Autowired private TransferStatusRepo repository;
+  @Autowired
+  private TransferStatusRepo repository;
 
   @BeforeEach
   void setUp() {

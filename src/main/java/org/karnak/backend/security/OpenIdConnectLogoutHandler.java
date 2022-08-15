@@ -20,7 +20,9 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-/** Handle IDP logout */
+/**
+ * Handle IDP logout
+ */
 public class OpenIdConnectLogoutHandler extends SecurityContextLogoutHandler {
 
   private static final Logger logger = LoggerFactory.getLogger(OpenIdConnectLogoutHandler.class);

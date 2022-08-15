@@ -36,7 +36,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 
-/** API model */
+/**
+ * API model
+ */
 public class PseudonymApi {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(PseudonymApi.class);
@@ -307,7 +309,7 @@ public class PseudonymApi {
    */
   private String createJsonReadPatient(SearchIds[] searchIds) {
     String[] resultFields = {
-      "patientID", "patientName", "patientBirthDate", "patientSex", "issuerOfPatientID"
+        "patientID", "patientName", "patientBirthDate", "patientSex", "issuerOfPatientID"
     }; // fields
     // returns
     Data data = new Data(searchIds, resultFields);
@@ -320,7 +322,7 @@ public class PseudonymApi {
   /**
    * Control response
    *
-   * @param response Response
+   * @param response   Response
    * @param throwError should an exception should be thrown
    * @return true if no problem in response, false otherwise
    */

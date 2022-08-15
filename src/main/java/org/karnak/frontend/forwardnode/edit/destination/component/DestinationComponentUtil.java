@@ -19,7 +19,9 @@ import org.karnak.frontend.project.ProjectView;
 
 public class DestinationComponentUtil extends VerticalLayout {
 
-  /** Build project drop down */
+  /**
+   * Build project drop down
+   */
   public ProjectDropDown buildProjectDropDown() {
     ProjectDropDown projectDropDown = new ProjectDropDown();
     projectDropDown.setItemLabelGenerator(ProjectEntity::getName);
@@ -28,7 +30,9 @@ public class DestinationComponentUtil extends VerticalLayout {
     return projectDropDown;
   }
 
-  /** Warning No Project Defined */
+  /**
+   * Warning No Project Defined
+   */
   public WarningNoProjectsDefined buildWarningNoProjectDefined() {
     WarningNoProjectsDefined warningNoProjectsDefined = new WarningNoProjectsDefined();
     warningNoProjectsDefined.setTextBtnCancel("Continue");
@@ -36,7 +40,9 @@ public class DestinationComponentUtil extends VerticalLayout {
     return warningNoProjectsDefined;
   }
 
-  /** Build Checkbox activate */
+  /**
+   * Build Checkbox activate
+   */
   public Checkbox buildActivateCheckbox(final String label) {
     // Checkbox activate
     Checkbox checkbox = new Checkbox(label);
@@ -46,7 +52,9 @@ public class DestinationComponentUtil extends VerticalLayout {
     return checkbox;
   }
 
-  /** Build div which is visible or not depending on the activated checkbox */
+  /**
+   * Build div which is visible or not depending on the activated checkbox
+   */
   public Div buildActivateDiv() {
     Div div = new Div();
     div.setWidth("100%");
@@ -75,7 +83,9 @@ public class DestinationComponentUtil extends VerticalLayout {
             });
   }
 
-  /** Build listener on projectDropDown */
+  /**
+   * Build listener on projectDropDown
+   */
   public void buildProjectDropDownListener(
       ProjectDropDown projectDropDown, ProfileLabel profileLabel) {
     projectDropDown.addValueChangeListener(

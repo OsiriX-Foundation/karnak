@@ -63,8 +63,8 @@ public class SwitchingAlbum {
   private static String hashUIDonDeidentification(
       DestinationEntity destinationEntity, String inputUID, HMAC hmac, int tag) {
     return destinationEntity.isDesidentification()
-            && hmac != null
-            && getAction(destinationEntity, tag) instanceof UID
+        && hmac != null
+        && getAction(destinationEntity, tag) instanceof UID
         ? hmac.uidHash(inputUID)
         : inputUID;
   }
@@ -138,9 +138,9 @@ public class SwitchingAlbum {
 
     if ((condition == null || condition.length() == 0 || validateCondition(condition, dcm))
         && metadataToDo.stream()
-            .noneMatch(
-                metadataSwitching ->
-                    metadataSwitching.getSeriesInstanceUID().equals(seriesInstanceUID))) {
+        .noneMatch(
+            metadataSwitching ->
+                metadataSwitching.getSeriesInstanceUID().equals(seriesInstanceUID))) {
       final boolean validAuthorizationSource =
           validateToken(MIN_SCOPE_SOURCE, urlAPI, authorizationSource);
       final boolean validDestinationSource =

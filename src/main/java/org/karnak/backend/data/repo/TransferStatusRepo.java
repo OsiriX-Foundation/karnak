@@ -21,7 +21,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TransferStatusRepo
     extends JpaRepository<TransferStatusEntity, Long>,
-        JpaSpecificationExecutor<TransferStatusEntity> {
+    JpaSpecificationExecutor<TransferStatusEntity> {
 
   /**
    * Look for TransferStatusEntity for a destination
@@ -35,7 +35,7 @@ public interface TransferStatusRepo
    * Look for TransferStatusEntity for a destination and after the last check date
    *
    * @param destinationId Destination id
-   * @param lastCheck Date of the last check
+   * @param lastCheck     Date of the last check
    * @return TransferStatusEntity found
    */
   List<TransferStatusEntity> findByDestinationIdAndTransferDateAfter(

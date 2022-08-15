@@ -36,16 +36,19 @@ class ProfileTest {
 
   private static HMAC defaultHMAC;
 
-  @MockBean private ExternalIDCache externalIDCache;
+  @MockBean
+  private ExternalIDCache externalIDCache;
 
-  @MockBean private MainzellisteCache mainzellisteCache;
+  @MockBean
+  private MainzellisteCache mainzellisteCache;
 
-  @MockBean private RedisConfiguration redisConfiguration;
+  @MockBean
+  private RedisConfiguration redisConfiguration;
 
   @BeforeAll
   static void beforeAll() {
     final byte[] HMAC_KEY = {
-      121, -7, 104, 11, 126, -39, -128, -126, 114, -94, 40, -67, 61, -45, 59, -53
+        121, -7, 104, 11, 126, -39, -128, -126, 114, -94, 40, -67, 61, -45, 59, -53
     };
     defaultHMAC = new HMAC(HMAC_KEY);
   }

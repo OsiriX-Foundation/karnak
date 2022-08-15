@@ -52,9 +52,10 @@ public class DicomForwardDestination extends ForwardDestination {
   }
 
   /**
-   * @param forwardParams optional advanced parameters (proxy, authentication, connection and TLS)
-   * @param fwdNode the DICOM forwarding node. Cannot be null.
-   * @param destinationNode the DICOM destination node. Cannot be null.
+   * @param forwardParams              optional advanced parameters (proxy, authentication,
+   *                                   connection and TLS)
+   * @param fwdNode                    the DICOM forwarding node. Cannot be null.
+   * @param destinationNode            the DICOM destination node. Cannot be null.
    * @param useDestinationAetForKeyMap
    * @param progress
    * @param editors

@@ -46,8 +46,8 @@ public class StartApplication implements CommandLineRunner {
     // application-oidc.yml
     if (System.getenv().containsKey(EnvironmentVariable.IDP.getCode())
         && Objects.equals(
-            System.getenv().get(EnvironmentVariable.IDP.getCode()),
-            ApplicationProfile.OIDC.getCode())) {
+        System.getenv().get(EnvironmentVariable.IDP.getCode()),
+        ApplicationProfile.OIDC.getCode())) {
       application.profiles(ApplicationProfile.OIDC.getCode());
     }
 

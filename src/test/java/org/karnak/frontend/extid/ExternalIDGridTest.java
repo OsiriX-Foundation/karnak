@@ -29,11 +29,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 @SpringBootTest
 class ExternalIDGridTest {
 
-  @MockBean private ExternalIDCache externalIDCache;
+  @MockBean
+  private ExternalIDCache externalIDCache;
 
-  @MockBean private MainzellisteCache mainzellisteCache;
+  @MockBean
+  private MainzellisteCache mainzellisteCache;
 
-  @MockBean private RedisConfiguration redisConfiguration;
+  @MockBean
+  private RedisConfiguration redisConfiguration;
 
   @Test
   void should_create_external_id_grid() {

@@ -29,11 +29,15 @@ class ProfileElementRepoTest {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ProfileElementRepoTest.class);
 
-  @Autowired private ProfileElementRepo repository;
+  @Autowired
+  private ProfileElementRepo repository;
 
-  @Autowired private ProfileRepo profileRepo;
+  @Autowired
+  private ProfileRepo profileRepo;
 
-  /** Test save and find record. */
+  /**
+   * Test save and find record.
+   */
   @Test
   void shouldSaveAndFindARecord() {
     // Create an entity to save
@@ -61,7 +65,9 @@ class ProfileElementRepoTest {
     assertEquals(entity.getId(), foundByIdOpt.get().getId());
   }
 
-  /** Test find all. */
+  /**
+   * Test find all.
+   */
   @Test
   void shouldFindAllRecords() {
     // Create an entity to save
@@ -88,7 +94,9 @@ class ProfileElementRepoTest {
     LOGGER.info("Number of entities found [{}]", all.size());
   }
 
-  /** Test modification of a record. */
+  /**
+   * Test modification of a record.
+   */
   @Test
   void shouldModifyRecord() {
 
@@ -121,7 +129,9 @@ class ProfileElementRepoTest {
         "Name of the entity with id [{}]: [{}]", entityModified.getId(), entityModified.getName());
   }
 
-  /** Test delete record. */
+  /**
+   * Test delete record.
+   */
   @Test
   void shouldDeleteRecord() {
     // Create an entity to save

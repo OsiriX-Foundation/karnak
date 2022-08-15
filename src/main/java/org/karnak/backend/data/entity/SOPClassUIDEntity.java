@@ -31,7 +31,8 @@ public class SOPClassUIDEntity implements Serializable {
 
   private String name;
 
-  public SOPClassUIDEntity() {}
+  public SOPClassUIDEntity() {
+  }
 
   public SOPClassUIDEntity(String ciod, String uid, String name) {
     this.ciod = ciod;

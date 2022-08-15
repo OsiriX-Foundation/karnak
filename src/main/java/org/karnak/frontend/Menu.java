@@ -83,8 +83,8 @@ public class Menu extends FlexLayout {
    * Add a view to the navigation menu
    *
    * @param viewClass that has a {@code Route} annotation
-   * @param caption view caption in the menu
-   * @param icon view icon in the menu
+   * @param caption   view caption in the menu
+   * @param icon      view icon in the menu
    */
   public void addView(Class<? extends Component> viewClass, String caption, IronIcon icon) {
     Tab tab = new Tab();

@@ -91,7 +91,7 @@ public class UIServiceInitListener implements VaadinServiceInitListener {
         // Try to find first authorized view
         Optional<? extends Class<? extends com.vaadin.flow.component.Component>>
             firstAuthorizedViewFoundOpt =
-                viewClasses.stream().filter(SecurityUtil::isAccessGranted).findFirst();
+            viewClasses.stream().filter(SecurityUtil::isAccessGranted).findFirst();
 
         // If an authorized view have been found
         if (firstAuthorizedViewFoundOpt.isPresent()) {

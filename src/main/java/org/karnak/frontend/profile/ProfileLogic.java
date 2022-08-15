@@ -59,7 +59,9 @@ public class ProfileLogic extends ListDataProvider<ProfileEntity> {
     super.refreshAll();
   }
 
-  /** Initialize the data provider */
+  /**
+   * Initialize the data provider
+   */
   private void initDataProvider() {
     getItems().addAll(profilePipeService.getAllProfiles());
   }

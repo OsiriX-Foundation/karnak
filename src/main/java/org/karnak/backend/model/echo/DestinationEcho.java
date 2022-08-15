@@ -12,7 +12,9 @@ package org.karnak.backend.model.echo;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.Objects;
 
-/** Model for destination in echo controller */
+/**
+ * Model for destination in echo controller
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class DestinationEcho {
 
@@ -25,14 +27,17 @@ public class DestinationEcho {
   // Status
   private int status;
 
-  /** Constructor without parameter */
-  public DestinationEcho() {}
+  /**
+   * Constructor without parameter
+   */
+  public DestinationEcho() {
+  }
 
   /**
    * Constructor with parameters
    *
-   * @param aet AeTitle
-   * @param url Url
+   * @param aet    AeTitle
+   * @param url    Url
    * @param status Status
    */
   public DestinationEcho(String aet, String url, int status) {

@@ -38,11 +38,13 @@ public class TransferStatusEntity implements Serializable {
 
   private Long id;
 
-  @CsvRecurse private ForwardNodeEntity forwardNodeEntity;
+  @CsvRecurse
+  private ForwardNodeEntity forwardNodeEntity;
 
   private Long forwardNodeId;
 
-  @CsvRecurse private DestinationEntity destinationEntity;
+  @CsvRecurse
+  private DestinationEntity destinationEntity;
 
   private Long destinationId;
 
@@ -95,7 +97,8 @@ public class TransferStatusEntity implements Serializable {
 
   private String sopInstanceUidToSend;
 
-  public TransferStatusEntity() {}
+  public TransferStatusEntity() {
+  }
 
   public TransferStatusEntity(
       Long forwardNodeId,

@@ -88,7 +88,9 @@ public class ProjectSecret extends Div {
         });
   }
 
-  /** Manage event when importing a secret */
+  /**
+   * Manage event when importing a secret
+   */
   private void eventImportSecret() {
     secretComboBox.addCustomValueSetListener(
         event -> {
@@ -102,8 +104,8 @@ public class ProjectSecret extends Div {
           boolean alreadyExisting =
               valid
                   && items.stream()
-                      .map(secretEntity -> HMAC.showHexKey(HMAC.byteToHex(secretEntity.getKey())))
-                      .anyMatch(secretValue -> Objects.equals(secretValue, customValue));
+                  .map(secretEntity -> HMAC.showHexKey(HMAC.byteToHex(secretEntity.getKey())))
+                  .anyMatch(secretValue -> Objects.equals(secretValue, customValue));
 
           // Already existing
           if (alreadyExisting) {

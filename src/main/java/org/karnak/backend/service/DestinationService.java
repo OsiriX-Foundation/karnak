@@ -19,7 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
-/** Service managing destinations */
+/**
+ * Service managing destinations
+ */
 @Service
 public class DestinationService {
 
@@ -37,9 +39,9 @@ public class DestinationService {
   /**
    * Autowired constructor
    *
-   * @param destinationRepo Destination repository
-   * @param forwardNodeService ForwardNode Service
-   * @param kheopsAlbumsService Kheops Albums Service
+   * @param destinationRepo           Destination repository
+   * @param forwardNodeService        ForwardNode Service
+   * @param kheopsAlbumsService       Kheops Albums Service
    * @param applicationEventPublisher ApplicationEventPublisher
    */
   @Autowired

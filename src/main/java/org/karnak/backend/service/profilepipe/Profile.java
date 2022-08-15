@@ -157,8 +157,8 @@ public class Profile {
         if (profileEntity.getCondition() == null
             || profileEntity.getCodeName().equals(ProfileItemType.DEFACING.getClassAlias())
             || profileEntity
-                .getCodeName()
-                .equals(ProfileItemType.CLEAN_PIXEL_DATA.getClassAlias())) {
+            .getCodeName()
+            .equals(ProfileItemType.CLEAN_PIXEL_DATA.getClassAlias())) {
           currentAction = profileEntity.getAction(dcm, dcmCopy, tag, hmac);
         } else {
           boolean conditionIsOk =
@@ -237,9 +237,9 @@ public class Profile {
   /**
    * Determine if the clean pixel should be applied depending on the image type
    *
-   * @param dcmCopy Attributes
+   * @param dcmCopy     Attributes
    * @param sopClassUID SopClassUID
-   * @param scuPattern Pattern
+   * @param scuPattern  Pattern
    * @return true if the clean pixel could be applied
    */
   private boolean isCleanPixelAllowedDependingImageType(
@@ -300,11 +300,11 @@ public class Profile {
   /**
    * Apply deidentification
    *
-   * @param dcm Attributes
+   * @param dcm               Attributes
    * @param destinationEntity Destination
-   * @param profileEntity Profile
-   * @param context Context
-   * @param projectEntity Project
+   * @param profileEntity     Profile
+   * @param context           Context
+   * @param projectEntity     Project
    */
   public void applyDeIdentification(
       Attributes dcm,

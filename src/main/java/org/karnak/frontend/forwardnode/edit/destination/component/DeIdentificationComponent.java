@@ -30,7 +30,8 @@ import org.karnak.frontend.util.UIS;
 
 public class DeIdentificationComponent extends VerticalLayout {
 
-  @Serial private static final long serialVersionUID = -4535591077096019645L;
+  @Serial
+  private static final long serialVersionUID = -4535591077096019645L;
 
   // Labels
   private static final String LABEL_CHECKBOX_DEIDENTIFICATION = "Activate de-identification";
@@ -66,7 +67,9 @@ public class DeIdentificationComponent extends VerticalLayout {
 
   private final DestinationComponentUtil destinationComponentUtil;
 
-  /** Constructor */
+  /**
+   * Constructor
+   */
   public DeIdentificationComponent() {
     this.destinationComponentUtil = new DestinationComponentUtil();
   }
@@ -93,7 +96,9 @@ public class DeIdentificationComponent extends VerticalLayout {
     addComponents();
   }
 
-  /** Add components */
+  /**
+   * Add components
+   */
   private void addComponents() {
     // Padding
     setPadding(true);
@@ -114,7 +119,9 @@ public class DeIdentificationComponent extends VerticalLayout {
     add(UIS.setWidthFull(new HorizontalLayout(deIdentificationCheckbox, deIdentificationDiv)));
   }
 
-  /** Build listeners */
+  /**
+   * Build listeners
+   */
   private void buildListeners() {
     buildPseudonymTypeListener();
     destinationComponentUtil.buildWarningNoProjectDefinedListener(
@@ -122,7 +129,9 @@ public class DeIdentificationComponent extends VerticalLayout {
     destinationComponentUtil.buildProjectDropDownListener(projectDropDown, profileLabel);
   }
 
-  /** Build deidentification components */
+  /**
+   * Build deidentification components
+   */
   private void buildComponents() {
     buildIssuerOfPatientID();
     projectDropDown = destinationComponentUtil.buildProjectDropDown();
@@ -137,18 +146,24 @@ public class DeIdentificationComponent extends VerticalLayout {
     buildPseudonymDicomTagDiv();
   }
 
-  /** Build Pseudonym In Dicom Tag Component */
+  /**
+   * Build Pseudonym In Dicom Tag Component
+   */
   private void buildPseudonymInDicomTagComponent() {
     pseudonymInDicomTagComponent = new PseudonymInDicomTagComponent(destinationBinder);
   }
 
-  /** Build Pseudonym Dicom Tag Div which is visible if "Pseudonym is in a dicom tag" is selected */
+  /**
+   * Build Pseudonym Dicom Tag Div which is visible if "Pseudonym is in a dicom tag" is selected
+   */
   private void buildPseudonymDicomTagDiv() {
     pseudonymDicomTagDiv = new Div();
     pseudonymDicomTagDiv.add(pseudonymInDicomTagComponent);
   }
 
-  /** Build pseudonym type */
+  /**
+   * Build pseudonym type
+   */
   private void buildPseudonymTypeSelect() {
     pseudonymTypeSelect = new Select<>();
     pseudonymTypeSelect.setLabel("Pseudonym type");
@@ -161,7 +176,9 @@ public class DeIdentificationComponent extends VerticalLayout {
         EXTID_IN_TAG.getValue());
   }
 
-  /** Build disclaimer */
+  /**
+   * Build disclaimer
+   */
   private void buildDisclaimerLabel() {
     disclaimerLabel = new Label(LABEL_DISCLAIMER_DEIDENTIFICATION);
     disclaimerLabel.getStyle().set("color", "red");
@@ -169,7 +186,9 @@ public class DeIdentificationComponent extends VerticalLayout {
     disclaimerLabel.getStyle().set("right", "0px");
   }
 
-  /** Build issuer of patient ID */
+  /**
+   * Build issuer of patient ID
+   */
   private void buildIssuerOfPatientID() {
     issuerOfPatientIDByDefault = new TextField();
     issuerOfPatientIDByDefault.setLabel("Issuer of Patient ID by default");
@@ -178,7 +197,9 @@ public class DeIdentificationComponent extends VerticalLayout {
     UIS.setTooltip(issuerOfPatientIDByDefault, LABEL_DEFAULT_ISSUER);
   }
 
-  /** Listener on pseudonym type */
+  /**
+   * Listener on pseudonym type
+   */
   private void buildPseudonymTypeListener() {
     pseudonymTypeSelect.addValueChangeListener(
         event -> {

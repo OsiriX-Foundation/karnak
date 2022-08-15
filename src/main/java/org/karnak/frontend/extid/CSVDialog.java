@@ -51,7 +51,8 @@ public class CSVDialog extends Dialog {
       "Upload CSV that contains the correspondence table with the externals pseudonyms";
 
   private final String[] selectValues = {
-    "", EXTERNAL_PSEUDONYM, PATIENT_ID, PATIENT_FIRST_NAME, PATIENT_LAST_NAME, ISSUER_OF_PATIENT_ID
+      "", EXTERNAL_PSEUDONYM, PATIENT_ID, PATIENT_FIRST_NAME, PATIENT_LAST_NAME,
+      ISSUER_OF_PATIENT_ID
   };
 
   private final List<Patient> patientsList;

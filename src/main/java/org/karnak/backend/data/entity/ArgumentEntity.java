@@ -34,7 +34,8 @@ public class ArgumentEntity implements Serializable {
 
   private String value;
 
-  public ArgumentEntity() {}
+  public ArgumentEntity() {
+  }
 
   public ArgumentEntity(String key, String value) {
     this.key = key;

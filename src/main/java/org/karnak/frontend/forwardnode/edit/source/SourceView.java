@@ -20,7 +20,9 @@ import org.karnak.frontend.forwardnode.ForwardNodeLogic;
 import org.karnak.frontend.forwardnode.edit.source.component.GridSourceNode;
 import org.karnak.frontend.util.UIS;
 
-/** Source View */
+/**
+ * Source View
+ */
 @SuppressWarnings("serial")
 public class SourceView extends VerticalLayout {
 
@@ -60,7 +62,9 @@ public class SourceView extends VerticalLayout {
     buildComponentsLayout();
   }
 
-  /** Create components, layout and add the layout of the view */
+  /**
+   * Create components, layout and add the layout of the view
+   */
   private void buildComponentsLayout() {
     setSizeFull();
     gridSourceNode = new GridSourceNode();

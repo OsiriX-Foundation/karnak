@@ -95,9 +95,9 @@ public class NewUpdateDestination extends VerticalLayout {
    * is deactivated and the value is set to false
    *
    * @param transcodeOnlyUncompressedComponent Transcode Only Uncompressed Component
-   * @param transferSyntax Transfer Syntax to evaluate
-   * @param forceTranscodeOnlyUncompressed Used to know if we reset the value of transcode only
-   *     uncompressed checkbox
+   * @param transferSyntax                     Transfer Syntax to evaluate
+   * @param forceTranscodeOnlyUncompressed     Used to know if we reset the value of transcode only
+   *                                           uncompressed checkbox
    */
   public void handleEventTranscodeOnlyUncompressedWhenSomeTransferSyntax(
       TranscodeOnlyUncompressedComponent transcodeOnlyUncompressedComponent,

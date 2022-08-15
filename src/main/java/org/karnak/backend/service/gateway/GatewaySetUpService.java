@@ -329,8 +329,8 @@ public class GatewaySetUpService {
   /**
    * Apply switching album editor
    *
-   * @param dstNode Destination
-   * @param editors List of editors
+   * @param dstNode             Destination
+   * @param editors             List of editors
    * @param kheopsAlbumEntities kheopsAlbumEntities
    * @return SwitchingAlbum created
    */
@@ -348,9 +348,9 @@ public class GatewaySetUpService {
   /**
    * Switching editor
    *
-   * @param dstNode Destination
+   * @param dstNode             Destination
    * @param kheopsAlbumEntities kheopsAlbum Entities
-   * @param switchingAlbum switchingAlbum
+   * @param switchingAlbum      switchingAlbum
    * @return Editor
    */
   private AttributeEditor switchingEditor(
@@ -533,7 +533,9 @@ public class GatewaySetUpService {
     gatewaySetUpVersion = lastVersion.getGatewaySetup();
   }
 
-  /** Check if a refresh of the configuration should be done */
+  /**
+   * Check if a refresh of the configuration should be done
+   */
   @Scheduled(fixedRate = 5000)
   public void checkRefreshGatewaySetUp() {
     // Retrieve last gateway version

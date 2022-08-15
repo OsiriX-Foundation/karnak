@@ -25,7 +25,9 @@ import org.karnak.frontend.util.UIS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** Destination View */
+/**
+ * Destination View
+ */
 @SuppressWarnings("serial")
 public class DestinationView extends VerticalLayout {
 
@@ -80,7 +82,9 @@ public class DestinationView extends VerticalLayout {
     buildComponentsLayout();
   }
 
-  /** Create components, layout and add the layout of the view */
+  /**
+   * Create components, layout and add the layout of the view
+   */
   private void buildComponentsLayout() {
     setSizeFull();
     filter = new TextField();

@@ -294,7 +294,8 @@
   <changeSet author="karnak" id="1.3-22">
     <preConditions onFail="MARK_RAN">
       <not>
-        <foreignKeyConstraintExists foreignKeyName="constraintForeignKeyDestinationTagMorphingProjectId"/>
+        <foreignKeyConstraintExists
+          foreignKeyName="constraintForeignKeyDestinationTagMorphingProjectId"/>
       </not>
     </preConditions>
     <addForeignKeyConstraint baseColumnNames="tag_morphing_project_id" baseTableName="destination"
@@ -319,17 +320,24 @@
   <changeSet author="karnak" id="1.3-24">
     <preConditions onFail="MARK_RAN">
       <not>
-        <foreignKeyConstraintExists foreignKeyName="constraintForeignKeyDestinationDeIdentificationProjectId" schemaName="public"/>
+        <foreignKeyConstraintExists
+          foreignKeyName="constraintForeignKeyDestinationDeIdentificationProjectId"
+          schemaName="public"/>
       </not>
     </preConditions>
-    <addForeignKeyConstraint baseColumnNames="deidentification_project_id" baseTableName="destination" constraintName="constraintForeignKeyDestinationDeIdentificationProjectId" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="project" validate="true"/>
+    <addForeignKeyConstraint baseColumnNames="deidentification_project_id"
+      baseTableName="destination"
+      constraintName="constraintForeignKeyDestinationDeIdentificationProjectId" deferrable="false"
+      initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
+      referencedTableName="project" validate="true"/>
   </changeSet>
 
   <changeSet author="karnak" id="1.3-25">
     <preConditions onFail="MARK_RAN">
       <foreignKeyConstraintExists foreignKeyName="fk7dgdnyp63q8n3f887xhre5bru" schemaName="public"/>
     </preConditions>
-    <dropForeignKeyConstraint baseTableName="destination" constraintName="fk7dgdnyp63q8n3f887xhre5bru"/>
+    <dropForeignKeyConstraint baseTableName="destination"
+      constraintName="fk7dgdnyp63q8n3f887xhre5bru"/>
   </changeSet>
 
 </databaseChangeLog>

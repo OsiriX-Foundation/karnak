@@ -15,7 +15,8 @@ import java.time.LocalDate;
 
 public class Patient implements Serializable {
 
-  @Serial private static final long serialVersionUID = -6906583906530083181L;
+  @Serial
+  private static final long serialVersionUID = -6906583906530083181L;
 
   private static final Character SPLIT_CHAR_PATIENT_NAME = '^';
 

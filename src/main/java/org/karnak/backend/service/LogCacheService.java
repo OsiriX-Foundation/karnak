@@ -28,7 +28,9 @@ public class LogCacheService {
     this.externalIDCache = externalIDCache;
   }
 
-  /** Log every minutes */
+  /**
+   * Log every minutes
+   */
   @Scheduled(fixedRate = 60000)
   public void logCache() {
     LOGGER.info(

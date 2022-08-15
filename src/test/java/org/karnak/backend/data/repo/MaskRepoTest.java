@@ -30,11 +30,15 @@ class MaskRepoTest {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MaskRepoTest.class);
 
-  @Autowired private MaskRepo repository;
+  @Autowired
+  private MaskRepo repository;
 
-  @Autowired private ProfileRepo profileRepo;
+  @Autowired
+  private ProfileRepo profileRepo;
 
-  /** Test save and find record. */
+  /**
+   * Test save and find record.
+   */
   @Test
   void shouldSaveAndFindARecord() {
     // Create an entity to save
@@ -62,7 +66,9 @@ class MaskRepoTest {
     assertEquals(entity.getId(), foundByIdOpt.get().getId());
   }
 
-  /** Test find all. */
+  /**
+   * Test find all.
+   */
   @Test
   void shouldFindAllRecords() {
     // Create an entity to save
@@ -90,7 +96,9 @@ class MaskRepoTest {
     LOGGER.info("Number of entities found [{}]", all.size());
   }
 
-  /** Test modification of a record. */
+  /**
+   * Test modification of a record.
+   */
   @Test
   void shouldModifyRecord() {
 
@@ -125,7 +133,9 @@ class MaskRepoTest {
         entityModified.getStationName());
   }
 
-  /** Test delete record. */
+  /**
+   * Test delete record.
+   */
   @Test
   void shouldDeleteRecord() {
     // Create an entity to save

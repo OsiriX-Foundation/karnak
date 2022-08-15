@@ -25,10 +25,13 @@ import org.karnak.backend.enums.TransferStatusType;
 import org.karnak.frontend.monitoring.component.TransferStatusFilter;
 import org.springframework.data.jpa.domain.Specification;
 
-/** Transfer status specification: used to look for entries depending on criteria */
+/**
+ * Transfer status specification: used to look for entries depending on criteria
+ */
 public class TransferStatusSpecification implements Specification<TransferStatusEntity> {
 
-  @Serial private static final long serialVersionUID = -939448741462690254L;
+  @Serial
+  private static final long serialVersionUID = -939448741462690254L;
 
   // Like character
   private static final String LIKE = "%";
@@ -81,16 +84,16 @@ public class TransferStatusSpecification implements Specification<TransferStatus
       buildCriteriaTransferDate(criteriaBuilder, predicates, pTransferDate);
     }
 
-    return criteriaBuilder.and(predicates.toArray(new Predicate[] {}));
+    return criteriaBuilder.and(predicates.toArray(new Predicate[]{}));
   }
 
   /**
    * Build criteria for study uid
    *
-   * @param criteriaBuilder CriteriaBuilder
-   * @param predicates Predicates to build
+   * @param criteriaBuilder   CriteriaBuilder
+   * @param predicates        Predicates to build
    * @param pStudyUidOriginal Path of study uid original
-   * @param pStudyUidToSend Path of study uid to send
+   * @param pStudyUidToSend   Path of study uid to send
    */
   private void buildCriteriaStudyUid(
       CriteriaBuilder criteriaBuilder,
@@ -111,10 +114,10 @@ public class TransferStatusSpecification implements Specification<TransferStatus
   /**
    * Build criteria for serie uid
    *
-   * @param criteriaBuilder CriteriaBuilder
-   * @param predicates Predicates to build
+   * @param criteriaBuilder   CriteriaBuilder
+   * @param predicates        Predicates to build
    * @param pSerieUidOriginal Path of serie uid original
-   * @param pSerieUidToSend Path of serie uid to send
+   * @param pSerieUidToSend   Path of serie uid to send
    */
   private void buildCriteriaSerieUid(
       CriteriaBuilder criteriaBuilder,
@@ -135,10 +138,10 @@ public class TransferStatusSpecification implements Specification<TransferStatus
   /**
    * Build criteria for sop instance uid
    *
-   * @param criteriaBuilder CriteriaBuilder
-   * @param predicates Predicates to build
+   * @param criteriaBuilder         CriteriaBuilder
+   * @param predicates              Predicates to build
    * @param pSopInstanceUidOriginal Path of sop instance uid original
-   * @param pSopInstanceUidToSend Path of sop instance uid to send
+   * @param pSopInstanceUidToSend   Path of sop instance uid to send
    */
   private void buildCriteriaSopInstanceUid(
       CriteriaBuilder criteriaBuilder,
@@ -160,8 +163,8 @@ public class TransferStatusSpecification implements Specification<TransferStatus
    * Build criteria for sent
    *
    * @param criteriaBuilder CriteriaBuilder
-   * @param predicates Predicates to build
-   * @param pSent Path of sent
+   * @param predicates      Predicates to build
+   * @param pSent           Path of sent
    */
   private void buildCriteriaSent(
       CriteriaBuilder criteriaBuilder, List<Predicate> predicates, Path<Boolean> pSent) {
@@ -176,8 +179,8 @@ public class TransferStatusSpecification implements Specification<TransferStatus
    * Build criteria for transfer date
    *
    * @param criteriaBuilder CriteriaBuilder
-   * @param predicates Predicates to build
-   * @param pTransferDate Path of transfer date
+   * @param predicates      Predicates to build
+   * @param pTransferDate   Path of transfer date
    */
   private void buildCriteriaTransferDate(
       CriteriaBuilder criteriaBuilder,

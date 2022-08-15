@@ -114,14 +114,14 @@ public class SecurityOpenIdConnectConfig extends WebSecurityConfigurerAdapter {
   private Set<SimpleGrantedAuthority> retrieveRolesFromAccessToken(Jwt jwt) {
     // Build roles
     return ((List<String>)
-            ((Map<String, Object>)
-                    ((Map<String, Object>) jwt.getClaims().get(Token.RESOURCE_ACCESS))
-                        .get(Token.RESOURCE_NAME))
-                .get(Token.ROLES))
+        ((Map<String, Object>)
+            ((Map<String, Object>) jwt.getClaims().get(Token.RESOURCE_ACCESS))
+                .get(Token.RESOURCE_NAME))
+            .get(Token.ROLES))
         .stream()
-            .map(roleName -> Token.PREFIX_ROLE + roleName)
-            .map(SimpleGrantedAuthority::new)
-            .collect(Collectors.toSet());
+        .map(roleName -> Token.PREFIX_ROLE + roleName)
+        .map(SimpleGrantedAuthority::new)
+        .collect(Collectors.toSet());
   }
 
   /**

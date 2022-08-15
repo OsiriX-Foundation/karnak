@@ -186,13 +186,17 @@ public class DateTimeUtils {
   }
 
   public static String truncateTM(String value, int maxLength) {
-    if (maxLength < 2) throw new IllegalArgumentException("maxLength %d < 2" + maxLength);
+    if (maxLength < 2) {
+      throw new IllegalArgumentException("maxLength %d < 2" + maxLength);
+    }
 
     return truncate(value, value.length(), maxLength, 8);
   }
 
   public static String truncateDT(String value, int maxLength) {
-    if (maxLength < 4) throw new IllegalArgumentException("maxLength %d < 4" + maxLength);
+    if (maxLength < 4) {
+      throw new IllegalArgumentException("maxLength %d < 4" + maxLength);
+    }
 
     int index = indexOfZone(value);
     return index < 0
@@ -205,7 +209,9 @@ public class DateTimeUtils {
     int index = tm.lastIndexOf(':');
     if (index > 0) {
       length--;
-      if (index > 4) length--;
+      if (index > 4) {
+        length--;
+      }
     }
     return nanosToAdd(length);
   }

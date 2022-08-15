@@ -74,7 +74,8 @@ public class MonitorView extends AbstractView {
     resultLayout.setVisible(true);
   }
 
-  private void init() {}
+  private void init() {
+  }
 
   private void createView() {
     setSizeFull();

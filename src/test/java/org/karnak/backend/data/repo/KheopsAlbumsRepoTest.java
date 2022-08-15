@@ -30,11 +30,15 @@ class KheopsAlbumsRepoTest {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(KheopsAlbumsRepoTest.class);
 
-  @Autowired private KheopsAlbumsRepo repository;
+  @Autowired
+  private KheopsAlbumsRepo repository;
 
-  @Autowired private DestinationRepo destinationRepo;
+  @Autowired
+  private DestinationRepo destinationRepo;
 
-  /** Test save and find record. */
+  /**
+   * Test save and find record.
+   */
   @Test
   void shouldSaveAndFindARecord() {
     // Create an entity to save
@@ -63,7 +67,9 @@ class KheopsAlbumsRepoTest {
     assertEquals(entity.getId(), foundByIdOpt.get().getId());
   }
 
-  /** Test find all. */
+  /**
+   * Test find all.
+   */
   @Test
   void shouldFindAllRecords() {
     // Create an entity to save
@@ -93,7 +99,9 @@ class KheopsAlbumsRepoTest {
     LOGGER.info("Number of entities found [{}]", all.size());
   }
 
-  /** Test modification of a record. */
+  /**
+   * Test modification of a record.
+   */
   @Test
   void shouldModifyRecord() {
 
@@ -128,7 +136,9 @@ class KheopsAlbumsRepoTest {
         entityModified.getCondition());
   }
 
-  /** Test delete record. */
+  /**
+   * Test delete record.
+   */
   @Test
   void shouldDeleteRecord() {
     // Create an entity to save
@@ -158,7 +168,9 @@ class KheopsAlbumsRepoTest {
     assertFalse(foundByIdOpt.isPresent());
   }
 
-  /** Test findAllByDestinationEntity method. */
+  /**
+   * Test findAllByDestinationEntity method.
+   */
   @Test
   void shouldFindAllByDestinationEntity() {
     // Create and save destination
