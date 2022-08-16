@@ -23,11 +23,17 @@ public class NewSwitchingAlbum extends Div {
   private final Binder<KheopsAlbumsEntity> binder;
 
   private final Button buttonAdd;
+
   private final TextField textAuthorizationDestination;
+
   private final TextField textAuthorizationSource;
+
   private final TextField textCondition;
+
   private final TextField textUrlAPI;
+
   private final Span textErrorConditionMsg;
+
   private final TextFieldsBindSwitchingAlbum textFieldsBindSwitchingAlbum;
 
   public NewSwitchingAlbum() {

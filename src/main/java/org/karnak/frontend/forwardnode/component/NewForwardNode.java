@@ -20,8 +20,11 @@ import com.vaadin.flow.component.textfield.TextField;
 public class NewForwardNode extends HorizontalLayout {
 
   private final Button newForwardNode;
+
   private final TextField newAETitleForwardNode;
+
   private final Button addNewForwardNode;
+
   private final Button cancelNewForwardNode;
 
   public NewForwardNode() {

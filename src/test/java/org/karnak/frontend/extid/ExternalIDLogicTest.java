@@ -22,6 +22,7 @@ class ExternalIDLogicTest {
 
   // Service
   private ExternalIDLogic externalIDLogic;
+
   private final ProjectService projectServiceMock = Mockito.mock(ProjectService.class);
 
   @BeforeEach

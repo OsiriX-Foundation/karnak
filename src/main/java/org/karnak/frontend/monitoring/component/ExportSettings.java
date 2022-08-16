@@ -11,15 +11,20 @@ package org.karnak.frontend.monitoring.component;
 
 import com.opencsv.CSVWriter;
 
-/** Model used to collect the export settings of the user */
+/**
+ * Model used to collect the export settings of the user
+ */
 public class ExportSettings {
 
   private String delimiter;
+
   private String quoteCharacter;
 
   public static final char DEFAULT_CSV_DELIMITER = ',';
 
-  /** Constructor with default values */
+  /**
+   * Constructor with default values
+   */
   public ExportSettings() {
     this.delimiter = String.valueOf(DEFAULT_CSV_DELIMITER);
     this.quoteCharacter = String.valueOf(CSVWriter.DEFAULT_QUOTE_CHARACTER);

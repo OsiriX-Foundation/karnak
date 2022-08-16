@@ -20,8 +20,11 @@ import org.weasis.dicom.param.DicomState;
 public abstract class ForwardDestination {
 
   protected final List<AttributeEditor> dicomEditors;
+
   private final Long id;
+
   private boolean transcodeOnlyUncompressed = true;
+
   private String outputTransferSyntax = "";
 
   protected ForwardDestination(Long id, List<AttributeEditor> dicomEditors) {

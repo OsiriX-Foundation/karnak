@@ -17,7 +17,9 @@ import org.karnak.backend.data.entity.ForwardNodeEntity;
 public class EditAETitleDescription extends HorizontalLayout {
 
   private final TextField textFieldAETitle;
+
   private final TextField textFieldDescription;
+
   private final Binder<ForwardNodeEntity> binder;
 
   public EditAETitleDescription(Binder<ForwardNodeEntity> binder) {

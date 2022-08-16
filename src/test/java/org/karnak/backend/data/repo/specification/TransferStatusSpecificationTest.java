@@ -32,7 +32,8 @@ import org.springframework.data.jpa.domain.Specification;
 @DataJpaTest
 class TransferStatusSpecificationTest {
 
-  @Autowired private TransferStatusRepo repository;
+  @Autowired
+  private TransferStatusRepo repository;
 
   @BeforeEach
   void setUp() {
@@ -99,7 +100,7 @@ class TransferStatusSpecificationTest {
     List<TransferStatusEntity> transferStatusEntitiesToSend =
         repository.findAll(transferStatusSpecificationToSend);
 
-    //  Test results
+    // Test results
     // Original
     assertNotNull(transferStatusEntitiesOriginal);
     assertFalse(transferStatusEntitiesOriginal.isEmpty());
@@ -132,7 +133,7 @@ class TransferStatusSpecificationTest {
     List<TransferStatusEntity> transferStatusEntitiesToSend =
         repository.findAll(transferStatusSpecificationToSend);
 
-    //  Test results
+    // Test results
     // Original
     assertNotNull(transferStatusEntitiesOriginal);
     assertFalse(transferStatusEntitiesOriginal.isEmpty());
@@ -165,7 +166,7 @@ class TransferStatusSpecificationTest {
     List<TransferStatusEntity> transferStatusEntitiesToSend =
         repository.findAll(transferStatusSpecificationToSend);
 
-    //  Test results
+    // Test results
     // Original
     assertNotNull(transferStatusEntitiesOriginal);
     assertFalse(transferStatusEntitiesOriginal.isEmpty());
@@ -193,7 +194,7 @@ class TransferStatusSpecificationTest {
     List<TransferStatusEntity> transferStatusEntities =
         repository.findAll(transferStatusSpecification);
 
-    //  Test results
+    // Test results
     assertNotNull(transferStatusEntities);
     assertFalse(transferStatusEntities.isEmpty());
     assertEquals(1, transferStatusEntities.size());
@@ -222,7 +223,7 @@ class TransferStatusSpecificationTest {
     List<TransferStatusEntity> transferStatusEntitiesOutOfRange =
         repository.findAll(transferStatusSpecificationOutOfRange);
 
-    //  Test results
+    // Test results
     // In Range
     assertNotNull(transferStatusEntitiesInRange);
     assertFalse(transferStatusEntitiesInRange.isEmpty());

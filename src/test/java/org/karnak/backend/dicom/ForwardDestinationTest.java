@@ -26,6 +26,7 @@ class ForwardDestinationTest {
 
   // Mock
   MockedStatic<DicomUtils> dicomUtilsMock;
+
   MockedStatic<DicomOutputData> dicomOutputDataMock;
 
   @BeforeEach

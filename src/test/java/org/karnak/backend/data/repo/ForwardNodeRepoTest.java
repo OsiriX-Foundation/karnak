@@ -45,6 +45,7 @@ class ForwardNodeRepoTest {
               .extracting(Object::toString)
               .asString()
               .matches("^ForwardNode \\[.*");
+
   private final Consumer<DicomSourceNodeEntity> sourceNodeConsumer = //
       x ->
           assertThat(x) //
@@ -55,6 +56,7 @@ class ForwardNodeRepoTest {
               .extracting(Object::toString)
               .asString()
               .matches("^DicomSourceNode \\[.*");
+
   private final Consumer<DestinationEntity> destinationDicomConsumer = //
       x ->
           assertThat(x) //
@@ -66,6 +68,7 @@ class ForwardNodeRepoTest {
               .extracting(Object::toString)
               .asString()
               .matches("^Destination \\[.*");
+
   private final Consumer<DestinationEntity> destinationStowConsumer = //
       x ->
           assertThat(x) //
@@ -78,9 +81,11 @@ class ForwardNodeRepoTest {
               .asString()
               .matches("^Destination \\[.*");
 
-  @Autowired private TestEntityManager entityManager;
+  @Autowired
+  private TestEntityManager entityManager;
 
-  @Autowired private ForwardNodeRepo repository;
+  @Autowired
+  private ForwardNodeRepo repository;
 
   @Test
   void testInvalidForwardNode_Mandatory() {
@@ -220,7 +225,7 @@ class ForwardNodeRepoTest {
         .hasSize(0);
   }
 
-  //  @Test
+  // @Test
   void testWithDestinationDicom() {
     ForwardNodeEntity forwardNodeEntity = ForwardNodeEntity.ofEmpty();
     forwardNodeEntity.setFwdDescription("description");
@@ -249,7 +254,7 @@ class ForwardNodeRepoTest {
         .satisfies(destinationDicomConsumer);
   }
 
-  //  @Test
+  // @Test
   void testWithDestinationStow() {
     ForwardNodeEntity forwardNodeEntity = ForwardNodeEntity.ofEmpty();
     forwardNodeEntity.setFwdDescription("description");
@@ -278,7 +283,7 @@ class ForwardNodeRepoTest {
         .satisfies(destinationStowConsumer);
   }
 
-  //  @Test
+  // @Test
   void testWithSourceNodeAndDestinationDicom() {
     ForwardNodeEntity forwardNodeEntity = ForwardNodeEntity.ofEmpty();
     forwardNodeEntity.setFwdDescription("description");
@@ -315,7 +320,9 @@ class ForwardNodeRepoTest {
         .satisfies(destinationDicomConsumer);
   }
 
-  /** Test save and find record. */
+  /**
+   * Test save and find record.
+   */
   @Test
   void shouldSaveAndFindARecord() {
     // Create an entity to save
@@ -346,7 +353,9 @@ class ForwardNodeRepoTest {
     assertEquals(entity.getId(), foundByIdOpt.get().getId());
   }
 
-  /** Test find all. */
+  /**
+   * Test find all.
+   */
   @Test
   void shouldFindAllRecords() {
     // Create an entity to save
@@ -368,7 +377,9 @@ class ForwardNodeRepoTest {
     LOGGER.info("Number of entities found [{}]", all.size());
   }
 
-  /** Test modification of a record. */
+  /**
+   * Test modification of a record.
+   */
   @Test
   void shouldModifyRecord() {
 
@@ -403,7 +414,9 @@ class ForwardNodeRepoTest {
         entityModified.getFwdDescription());
   }
 
-  /** Test delete record. */
+  /**
+   * Test delete record.
+   */
   @Test
   void shouldDeleteRecord() {
     // Create an entity to save

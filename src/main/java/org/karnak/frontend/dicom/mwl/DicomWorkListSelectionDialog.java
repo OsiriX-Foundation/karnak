@@ -36,20 +36,26 @@ public class DicomWorkListSelectionDialog extends AbstractDialog {
   private static final long serialVersionUID = 1L;
 
   // CONTROLLER
-  private DicomWorkListSelectionLogic logic = new DicomWorkListSelectionLogic(this);
+  private final DicomWorkListSelectionLogic logic = new DicomWorkListSelectionLogic(this);
 
   // UI COMPONENTS
   private Dialog dialog;
 
   private Div titleBar;
+
   private FormLayout formLayout;
+
   private Select<ConfigNode> worklistNodeSelector;
+
   private HorizontalLayout buttonBar;
+
   private Button cancelBtn;
+
   private Button selectBtn;
 
   // DATA
   private DicomNodeList workListNodes;
+
   private ListDataProvider<ConfigNode> dataProviderForWorkListNodes;
 
   public DicomWorkListSelectionDialog() {

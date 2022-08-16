@@ -23,12 +23,19 @@ import org.karnak.frontend.forwardnode.edit.component.ButtonSaveDeleteCancel;
 public class NewUpdateDestination extends VerticalLayout {
 
   private final FormDICOM formDICOM;
+
   private final FormSTOW formSTOW;
+
   private final Binder<DestinationEntity> binderFormDICOM;
+
   private final Binder<DestinationEntity> binderFormSTOW;
+
   private final ButtonSaveDeleteCancel buttonDestinationDICOMSaveDeleteCancel;
+
   private final ButtonSaveDeleteCancel buttonDestinationSTOWSaveDeleteCancel;
+
   private DestinationEntity currentDestinationEntity;
+
   public static final String TRANSFER_IN_PROGRESS = "Transfer in progress";
 
   public NewUpdateDestination() {
@@ -88,9 +95,9 @@ public class NewUpdateDestination extends VerticalLayout {
    * is deactivated and the value is set to false
    *
    * @param transcodeOnlyUncompressedComponent Transcode Only Uncompressed Component
-   * @param transferSyntax Transfer Syntax to evaluate
-   * @param forceTranscodeOnlyUncompressed Used to know if we reset the value of transcode only
-   *     uncompressed checkbox
+   * @param transferSyntax                     Transfer Syntax to evaluate
+   * @param forceTranscodeOnlyUncompressed     Used to know if we reset the value of transcode only
+   *                                           uncompressed checkbox
    */
   public void handleEventTranscodeOnlyUncompressedWhenSomeTransferSyntax(
       TranscodeOnlyUncompressedComponent transcodeOnlyUncompressedComponent,

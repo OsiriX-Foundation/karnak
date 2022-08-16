@@ -12,8 +12,11 @@ package org.karnak.backend.model;
 public final class FileInfo {
 
   private final String iuid;
+
   private final String cuid;
+
   private final String tsuid;
+
   private final String filename;
 
   public FileInfo(String filename, String iuid, String cuid, String tsuid) {

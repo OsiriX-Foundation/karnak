@@ -37,10 +37,13 @@ import org.weasis.dicom.param.DicomState;
 @WebServlet(urlPatterns = "/echo")
 public class EchoServlet extends HttpServlet {
 
-  @Serial private static final long serialVersionUID = -8349040600894140520L;
+  @Serial
+  private static final long serialVersionUID = -8349040600894140520L;
+
   private static final Logger LOGGER = LoggerFactory.getLogger(EchoServlet.class);
 
-  @Autowired private GatewaySetUpService globalConfig;
+  @Autowired
+  private GatewaySetUpService globalConfig;
 
   @Override
   public final void init() throws ServletException {

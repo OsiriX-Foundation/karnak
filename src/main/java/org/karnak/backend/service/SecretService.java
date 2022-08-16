@@ -39,7 +39,7 @@ public class SecretService {
   /**
    * Save in db a new active secret for the project in parameter
    *
-   * @param secretEntity Secret to save
+   * @param secretEntity  Secret to save
    * @param projectEntity Project associated to the secret
    * @return Secret saved
    */

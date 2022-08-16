@@ -97,7 +97,7 @@ public class Util {
             // Force getting hostname
             inetAddress.getHostName();
             result.append("<br>Inet address: ");
-            result.append(inetAddress.toString());
+            result.append(inetAddress);
           }
           result.append("<hr>");
         }
@@ -354,7 +354,8 @@ public class Util {
           builder
               .GET()
               .uri(new URI("https://httpbin.org/get"))
-              .header("User-Agent", "Mozilla/5.0 Firefox/43.0") // add request header
+              .header("User-Agent", "Mozilla/5.0 Firefox/43.0") // add request
+              // header
               .build();
 
       long starTime = System.currentTimeMillis();

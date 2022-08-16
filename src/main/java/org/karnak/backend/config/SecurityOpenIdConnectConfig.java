@@ -18,6 +18,9 @@ import org.karnak.backend.constant.Token;
 import org.karnak.backend.security.OpenIdConnectLogoutHandler;
 import org.karnak.backend.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
+import org.springframework.boot.actuate.health.HealthEndpoint;
+import org.springframework.boot.actuate.info.InfoEndpoint;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -46,7 +49,8 @@ public class SecurityOpenIdConnectConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http
-        // Uses RequestCache to track unauthorized requests so that users are redirected
+        // Uses RequestCache to track unauthorized requests so that users are
+        // redirected
         // appropriately after login
         .requestCache()
         .requestCache(new RequestCache())
@@ -57,6 +61,11 @@ public class SecurityOpenIdConnectConfig extends WebSecurityConfigurerAdapter {
         // Turns on authorization
         .and()
         .authorizeRequests()
+        // Actuator and health
+        .antMatchers("/actuator/**")
+        .permitAll()
+        .requestMatchers(EndpointRequest.to(HealthEndpoint.class, InfoEndpoint.class))
+        .permitAll()
         // Allows all internal traffic from the Vaadin framework
         .requestMatchers(SecurityUtil::isFrameworkInternalRequest)
         .permitAll()
@@ -105,14 +114,14 @@ public class SecurityOpenIdConnectConfig extends WebSecurityConfigurerAdapter {
   private Set<SimpleGrantedAuthority> retrieveRolesFromAccessToken(Jwt jwt) {
     // Build roles
     return ((List<String>)
-            ((Map<String, Object>)
-                    ((Map<String, Object>) jwt.getClaims().get(Token.RESOURCE_ACCESS))
-                        .get(Token.RESOURCE_NAME))
-                .get(Token.ROLES))
+        ((Map<String, Object>)
+            ((Map<String, Object>) jwt.getClaims().get(Token.RESOURCE_ACCESS))
+                .get(Token.RESOURCE_NAME))
+            .get(Token.ROLES))
         .stream()
-            .map(roleName -> Token.PREFIX_ROLE + roleName)
-            .map(SimpleGrantedAuthority::new)
-            .collect(Collectors.toSet());
+        .map(roleName -> Token.PREFIX_ROLE + roleName)
+        .map(SimpleGrantedAuthority::new)
+        .collect(Collectors.toSet());
   }
 
   /**

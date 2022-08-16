@@ -27,16 +27,25 @@ public class DicomPane extends Composite<Dialog> {
 
   // CONTROLLER
   private final DicomPaneLogic logic = new DicomPaneLogic(this);
+
   // DATA
   private final Attributes dcm;
+
   // UI COMPONENTS
   private Dialog currentDialog;
+
   private VerticalLayout mainLayout;
+
   private Div titleBar;
+
   private TextArea contentFld;
+
   private HorizontalLayout buttonBar;
+
   private Button cancelButton;
+
   private Anchor downloadDicomAnchor;
+
   private Anchor downloadTextAnchor;
 
   public DicomPane(Attributes dcm) {

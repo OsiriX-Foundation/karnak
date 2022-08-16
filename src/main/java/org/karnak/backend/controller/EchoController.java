@@ -32,7 +32,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-/** Rest controller managing echo */
+/**
+ * Rest controller managing echo
+ */
 @RestController
 @RequestMapping(EndPoint.ECHO_PATH)
 @Tag(name = "Echo", description = "API Endpoints for Echo")
@@ -59,17 +61,17 @@ public class EchoController {
       tags = "Echo")
   @ApiResponses(
       value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Status and configured destinations found from an AeTitle",
-            content =
-                @Content(
-                    schema = @Schema(implementation = DestinationEchos.class),
-                    examples =
-                        @ExampleObject(
-                            name = "Example values status destinations",
-                            value = SpringDocUtil.EXAMPLE_VALUES_STATUS_DESTINATIONS_ECHO))),
-        @ApiResponse(responseCode = "204", description = "No Content", content = @Content)
+          @ApiResponse(
+              responseCode = "200",
+              description = "Status and configured destinations found from an AeTitle",
+              content =
+              @Content(
+                  schema = @Schema(implementation = DestinationEchos.class),
+                  examples =
+                  @ExampleObject(
+                      name = "Example values status destinations",
+                      value = SpringDocUtil.EXAMPLE_VALUES_STATUS_DESTINATIONS_ECHO))),
+          @ApiResponse(responseCode = "204", description = "No Content", content = @Content)
       })
   /**
    * Retrieve the status of the configured destinations from the source AeTitle in parameter

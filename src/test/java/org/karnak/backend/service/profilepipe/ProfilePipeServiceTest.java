@@ -52,7 +52,7 @@ class ProfilePipeServiceTest {
   }
 
   // TODO: to reactivate
-  //  @Test
+  // @Test
   void should_validate_profile() {
     // Init data
     ProfilePipeBody profilePipeBody = new ProfilePipeBody();

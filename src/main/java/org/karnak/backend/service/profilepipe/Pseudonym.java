@@ -12,7 +12,7 @@ package org.karnak.backend.service.profilepipe;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.util.TagUtils;
 import org.karnak.backend.api.PseudonymApi;
-import org.karnak.backend.cache.MainzellistePatient;
+import org.karnak.backend.cache.Patient;
 import org.karnak.backend.cache.PatientClient;
 import org.karnak.backend.config.AppConfig;
 import org.karnak.backend.data.entity.DestinationEntity;
@@ -28,6 +28,7 @@ public class Pseudonym {
   private static final Logger LOGGER = LoggerFactory.getLogger(Pseudonym.class);
 
   private final PatientClient externalIdCache;
+
   private final PatientClient mainzellisteCache;
 
   public Pseudonym() {
@@ -46,7 +47,8 @@ public class Pseudonym {
     }
 
     if (destinationEntity.getPseudonymType().equals(PseudonymType.CACHE_EXTID)) {
-      return getCacheExtid(patientMetadata, destinationEntity.getProjectEntity().getId());
+      return getCacheExtid(
+          patientMetadata, destinationEntity.getDeIdentificationProjectEntity().getId());
     }
 
     if (destinationEntity.getPseudonymType().equals(PseudonymType.EXTID_IN_TAG)) {
@@ -137,8 +139,8 @@ public class Pseudonym {
   }
 
   private void cachingMainzellistePseudonym(String pseudonym, PatientMetadata patientMetadata) {
-    final MainzellistePatient mainzellistePatient =
-        new MainzellistePatient(
+    final Patient mainzellistePatient =
+        new Patient(
             pseudonym,
             patientMetadata.getPatientID(),
             patientMetadata.getPatientFirstName(),

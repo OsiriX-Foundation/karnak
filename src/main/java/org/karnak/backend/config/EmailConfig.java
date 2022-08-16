@@ -35,6 +35,7 @@ public class EmailConfig {
     mailSender.setPort(Integer.parseInt(mailSmtpPort));
     mailSender.setUsername(mailSmtpUser);
     mailSender.setPassword(SystemPropertyUtil.retrieveSystemProperty("MAIL_SMTP_SECRET", null));
+    mailSender.setDefaultEncoding("utf-8");
 
     // Additional properties
     Properties props = mailSender.getJavaMailProperties();
@@ -45,8 +46,9 @@ public class EmailConfig {
       props.put("mail.smtp.auth", "true");
       if (Objects.equals("SSL", mailAuthType)) {
         props.put("mail.smtp.socketFactory.port", mailSmtpPort); // SSL Port
-        props.put(
-            "mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory"); // SSL Factory Class
+        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory"); // SSL
+        // Factory
+        // Class
         props.put("mail.smtp.ssl.checkserveridentity", true);
       } else {
         props.put("mail.smtp.starttls.enable", "true");

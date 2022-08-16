@@ -16,7 +16,7 @@
   </licenses>
 
   <!-- Version -->
-  <version>1.0.3-RELEASE</version>
+  <version>1.0.49-RELEASE</version>
 
   <!-- Packaging -->
   <packaging>jar</packaging>
@@ -27,12 +27,12 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <enforcer.jdk-version>[${java.version},)</enforcer.jdk-version>
     <enforcer.maven-version>[3.2.0,)</enforcer.maven-version>
-    <java.version>15</java.version>
+    <java.version>17</java.version>
     <springframework.version>2.6.6</springframework.version>
     <javax.el.version>3.0.0</javax.el.version>
     <javax.mail.version>1.6.2</javax.mail.version>
     <vaadin.version>21.0.9</vaadin.version>
-    <weasis-dicom-tools.version>5.25.1.1-IMG-RELEASE</weasis-dicom-tools.version>
+    <weasis-dicom-tools.version>5.27.0.1</weasis-dicom-tools.version>
     <weasis.opencv.native.version>4.5.5-dcm</weasis.opencv.native.version>
     <springdoc.version>1.6.0</springdoc.version>
     <mockito.version>4.2.0</mockito.version>
@@ -45,11 +45,11 @@
     <sonar.java.source>${java.version}</sonar.java.source>
     <sonar.java.target>${java.version}</sonar.java.target>
     <sonar.projectKey>karnak</sonar.projectKey>
-    <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+    <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/target/site/jacoco/jacoco.xml
+    </sonar.coverage.jacoco.xmlReportPaths>
     <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
     <org.json.version>20211205</org.json.version>
     <logback.version>1.2.9</logback.version>
-    <hazelcast.version>5.1.1</hazelcast.version>
     <liquibase.version>4.3.5</liquibase.version>
     <opencsv.version>5.5.2</opencsv.version>
   </properties>
@@ -73,7 +73,7 @@
     <repository>
       <id>HUG_Nexus3</id>
       <name>Nexus3-hug</name>
-      <url>http://nxrm.hcuge.ch:8091/repository/maven-public/</url>
+      <url>https://nxrm.hisaas.hcuge.ch/repository/maven-public/</url>
       <layout>default</layout>
       <snapshots>
         <enabled>true</enabled>
@@ -91,9 +91,7 @@
     <repository>
       <id>www.dcm4che.org</id>
       <name>dcm4che Repository</name>
-      <url>http://maven.dcm4che.org</url>
-      <!-- <url>http://www.dcm4che.org/maven2</url> (which will redirected to
-        https://www.dcm4che.org/maven2). -->
+      <url>https://www.dcm4che.org/maven2</url>
     </repository>
   </repositories>
 
@@ -313,14 +311,14 @@
             </licenseHeader>
           </java>
         </configuration>
-<!--        <executions>-->
-<!--          <execution>-->
-<!--            <phase>verify</phase>-->
-<!--            <goals>-->
-<!--              <goal>check</goal>-->
-<!--            </goals>-->
-<!--          </execution>-->
-<!--        </executions>-->
+        <!--        <executions>-->
+        <!--          <execution>-->
+        <!--            <phase>verify</phase>-->
+        <!--            <goals>-->
+        <!--              <goal>check</goal>-->
+        <!--            </goals>-->
+        <!--          </execution>-->
+        <!--        </executions>-->
       </plugin>
     </plugins>
     <resources>
@@ -381,16 +379,29 @@
     </dependency>
 
     <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-cache</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-redis</artifactId>
+    </dependency>
+
+    <dependency>
       <artifactId>cache-api</artifactId>
       <groupId>javax.cache</groupId>
       <version>1.1.1</version>
     </dependency>
 
-    <!-- Hazelcast -->
     <dependency>
-      <groupId>com.hazelcast</groupId>
-      <artifactId>hazelcast-spring</artifactId>
-      <version>${hazelcast.version}</version>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
     </dependency>
 
     <!--   Monitoring-->
@@ -686,6 +697,14 @@
         <scope>import</scope>
         <type>pom</type>
         <version>${vaadin.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-dependencies</artifactId>
+        <version>2021.0.2</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>

@@ -62,7 +62,7 @@ public class KheopsAlbumsService {
     if (destinationEntity.getKheopsAlbumEntities() != null
         && kheopsAlbumsEntityListDatabase != null
         && destinationEntity.getKheopsAlbumEntities().size()
-            != kheopsAlbumsEntityListDatabase.size()) {
+        != kheopsAlbumsEntityListDatabase.size()) {
       for (KheopsAlbumsEntity kheopsAlbumDatabase : kheopsAlbumsEntityListDatabase) {
         Predicate<KheopsAlbumsEntity> idIsAlwaysPresent =
             kheopsAlbum -> kheopsAlbum.getId().equals(kheopsAlbumDatabase.getId());

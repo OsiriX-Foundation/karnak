@@ -36,6 +36,7 @@ public class GatewayService implements ApplicationListener<ContextRefreshedEvent
   private static final Logger LOGGER = LoggerFactory.getLogger(GatewayService.class);
 
   private final GatewaySetUpService gatewaySetUpService;
+
   private final DicomGatewayService gateway;
 
   // Repository

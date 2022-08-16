@@ -17,7 +17,7 @@ import org.karnak.backend.util.DicomNodeUtil;
 public class DicomWorkListSelectionLogic {
 
   // DIALOG
-  private DicomWorkListSelectionDialog dialog;
+  private final DicomWorkListSelectionDialog dialog;
 
   public DicomWorkListSelectionLogic(DicomWorkListSelectionDialog view) {
     this.dialog = view;

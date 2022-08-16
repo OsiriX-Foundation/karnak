@@ -36,15 +36,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 
-/** API model */
+/**
+ * API model
+ */
 public class PseudonymApi {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(PseudonymApi.class);
 
   private static final String SERVER_URL = MainzellisteConfig.getInstance().getServerurl();
+
   private static final String API_KEY = MainzellisteConfig.getInstance().getApikey();
 
   private static final String MAINZELLISTE_HEADER = "mainzellisteApiKey";
+
   private static final String CONTENT_TYPE_HEADER = "Content-Type";
 
   private final HttpClient httpClient =
@@ -113,11 +117,10 @@ public class PseudonymApi {
   }
 
   /***
-   * This classe allow the communcation betwen karnak and pseudonym api with a specific sessionId
-   * @param sessionsId
-   * public PseudonymApi(String sessionsId) {
-   * this.sessionId = sessionsId;
-   * }
+   * This classe allow the communcation betwen karnak and pseudonym api with a specific
+   * sessionId
+   * @param sessionsId public PseudonymApi(String sessionsId) { this.sessionId =
+   * sessionsId; }
    */
 
   /***
@@ -306,8 +309,9 @@ public class PseudonymApi {
    */
   private String createJsonReadPatient(SearchIds[] searchIds) {
     String[] resultFields = {
-      "patientID", "patientName", "patientBirthDate", "patientSex", "issuerOfPatientID"
-    }; // fields returns
+        "patientID", "patientName", "patientBirthDate", "patientSex", "issuerOfPatientID"
+    }; // fields
+    // returns
     Data data = new Data(searchIds, resultFields);
 
     Body bodyRequest = new Body("readPatients", data);
@@ -318,7 +322,7 @@ public class PseudonymApi {
   /**
    * Control response
    *
-   * @param response Response
+   * @param response   Response
    * @param throwError should an exception should be thrown
    * @return true if no problem in response, false otherwise
    */

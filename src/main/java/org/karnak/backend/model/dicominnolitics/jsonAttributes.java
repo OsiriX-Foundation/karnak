@@ -10,12 +10,19 @@
 package org.karnak.backend.model.dicominnolitics;
 
 public class jsonAttributes {
+
   private String tag;
+
   private String name;
+
   private String keyword;
+
   private String valueRepresentation;
+
   private String valueMultiplicity;
+
   private String retired;
+
   private String id;
 
   public String getTag() {

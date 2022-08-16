@@ -28,6 +28,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
@@ -37,6 +40,9 @@ import org.yaml.snakeyaml.constructor.Constructor;
 @Configuration
 @EnableConfigurationProperties
 @ConfigurationProperties
+@EnableCaching
+@EnableDiscoveryClient
+@EnableEurekaClient
 public class AppConfig {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AppConfig.class);
@@ -49,11 +55,19 @@ public class AppConfig {
   private final ProfileRepo profileRepo;
   private final ProfilePipeService profilePipeService;
   private String nameInstance;
+  private final ExternalIDCache externalIDCache;
+  private final MainzellisteCache mainzellisteCache;
 
   @Autowired
-  public AppConfig(final ProfileRepo profileRepo, final ProfilePipeService profilePipeService) {
+  public AppConfig(
+      final ProfileRepo profileRepo,
+      final ProfilePipeService profilePipeService,
+      final ExternalIDCache externalIDCache,
+      final MainzellisteCache mainzellisteCache) {
     this.profileRepo = profileRepo;
     this.profilePipeService = profilePipeService;
+    this.externalIDCache = externalIDCache;
+    this.mainzellisteCache = mainzellisteCache;
   }
 
   @PostConstruct
@@ -105,12 +119,12 @@ public class AppConfig {
 
   @Bean("ExternalIDPatient")
   public PatientClient getExternalIDCache() {
-    return new ExternalIDCache();
+    return externalIDCache;
   }
 
   @Bean("MainzellisteCache")
   public PatientClient getMainzellisteCache() {
-    return new MainzellisteCache();
+    return mainzellisteCache;
   }
 
   // https://stackoverflow.com/questions/27405713/running-code-after-spring-boot-starts

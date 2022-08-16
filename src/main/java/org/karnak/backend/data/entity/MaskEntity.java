@@ -34,12 +34,17 @@ public class MaskEntity implements Serializable {
   private static final long serialVersionUID = 1833858684629178458L;
 
   private Long id;
+
   private ProfileEntity profileEntity;
+
   private String stationName;
+
   private String color;
+
   private List<Rectangle> rectangles = new ArrayList<>();
 
-  public MaskEntity() {}
+  public MaskEntity() {
+  }
 
   public MaskEntity(String stationName, String color, ProfileEntity profileEntity) {
     this.stationName = stationName;

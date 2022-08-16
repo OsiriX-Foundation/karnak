@@ -42,23 +42,32 @@ public class DicomEchoSelectionDialog extends AbstractDialog {
   private static final long serialVersionUID = 1L;
 
   // CONTROLLER
-  private DicomEchoSelectionLogic logic = new DicomEchoSelectionLogic(this);
+  private final DicomEchoSelectionLogic logic = new DicomEchoSelectionLogic(this);
 
   // UI COMPONENTS
   private Dialog dialog;
 
   private Div titleBar;
+
   private FormLayout formLayout;
+
   private Select<DicomNodeList> dicomNodeTypeSelector;
+
   private ComboBox<ConfigNode> dicomNodeSelector;
+
   private HorizontalLayout buttonBar;
+
   private Button cancelBtn;
+
   private Button selectBtn;
 
   // DATA
   private List<DicomNodeList> dicomNodeTypes;
+
   private ListDataProvider<DicomNodeList> dataProviderForDicomNodeTypes;
+
   private DicomNodeList dicomNodes;
+
   private ListDataProvider<ConfigNode> dataProviderForDicomNodes;
 
   public DicomEchoSelectionDialog() {

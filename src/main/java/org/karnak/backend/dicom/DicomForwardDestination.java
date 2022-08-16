@@ -22,10 +22,13 @@ import org.weasis.dicom.util.StoreFromStreamSCU;
 public class DicomForwardDestination extends ForwardDestination {
 
   private final StoreFromStreamSCU streamSCU;
+
   private final DeviceOpService streamSCUService;
+
   private final boolean useDestinationAetForKeyMap;
 
   private final ForwardDicomNode callingNode;
+
   private final DicomNode destinationNode;
 
   public DicomForwardDestination(ForwardDicomNode fwdNode, DicomNode destinationNode)
@@ -49,9 +52,10 @@ public class DicomForwardDestination extends ForwardDestination {
   }
 
   /**
-   * @param forwardParams optional advanced parameters (proxy, authentication, connection and TLS)
-   * @param fwdNode the DICOM forwarding node. Cannot be null.
-   * @param destinationNode the DICOM destination node. Cannot be null.
+   * @param forwardParams              optional advanced parameters (proxy, authentication,
+   *                                   connection and TLS)
+   * @param fwdNode                    the DICOM forwarding node. Cannot be null.
+   * @param destinationNode            the DICOM destination node. Cannot be null.
    * @param useDestinationAetForKeyMap
    * @param progress
    * @param editors
@@ -121,10 +125,10 @@ public class DicomForwardDestination extends ForwardDestination {
 
   @Override
   public void stop() {
-    //    Association as = streamSCU.getAssociation();
-    //    if (as != null && as.isReadyForDataTransfer()) {
-    //      as.abort();
-    //    }
+    // Association as = streamSCU.getAssociation();
+    // if (as != null && as.isReadyForDataTransfer()) {
+    // as.abort();
+    // }
     streamSCU.close(true);
     streamSCUService.stop();
   }

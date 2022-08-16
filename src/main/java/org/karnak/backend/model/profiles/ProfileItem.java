@@ -16,6 +16,7 @@ import org.karnak.backend.model.action.ActionItem;
 import org.karnak.backend.model.profilepipe.HMAC;
 
 public interface ProfileItem {
+
   ActionItem getAction(Attributes dcm, Attributes dcmCopy, int tag, HMAC hmac);
 
   ActionItem put(int tag, ActionItem action);

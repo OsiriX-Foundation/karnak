@@ -20,6 +20,7 @@ public class DicomWebToolsBrand extends Composite<Div> {
   private static final String TEXT = "Dicom Web Tools";
 
   private final Div div;
+
   private Span text;
 
   public DicomWebToolsBrand() {

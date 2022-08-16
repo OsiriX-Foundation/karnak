@@ -19,7 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
-/** Service managing destinations */
+/**
+ * Service managing destinations
+ */
 @Service
 public class DestinationService {
 
@@ -28,6 +30,7 @@ public class DestinationService {
 
   // Services
   private final ForwardNodeService forwardNodeService;
+
   private final KheopsAlbumsService kheopsAlbumsService;
 
   // Event publisher
@@ -36,9 +39,9 @@ public class DestinationService {
   /**
    * Autowired constructor
    *
-   * @param destinationRepo Destination repository
-   * @param forwardNodeService ForwardNode Service
-   * @param kheopsAlbumsService Kheops Albums Service
+   * @param destinationRepo           Destination repository
+   * @param forwardNodeService        ForwardNode Service
+   * @param kheopsAlbumsService       Kheops Albums Service
    * @param applicationEventPublisher ApplicationEventPublisher
    */
   @Autowired
@@ -65,7 +68,7 @@ public class DestinationService {
         forwardNodeService.updateDestination(forwardNodeEntity, destinationEntity);
 
     if (destinationEntity.getId() != null) {
-      dataUpdated = removeValuesOnDisabledDesidentification(destinationEntity);
+      dataUpdated = removeValuesOnDisabledDeIdentificationTagMorphing(destinationEntity);
     }
 
     // Refresh last transfer and email last check before saving
@@ -93,10 +96,13 @@ public class DestinationService {
     }
   }
 
-  private DestinationEntity removeValuesOnDisabledDesidentification(
+  private DestinationEntity removeValuesOnDisabledDeIdentificationTagMorphing(
       DestinationEntity destinationEntity) {
     if (!destinationEntity.isDesidentification()) {
-      destinationEntity.setProjectEntity(null);
+      destinationEntity.setDeIdentificationProjectEntity(null);
+    }
+    if (!destinationEntity.isActivateTagMorphing()) {
+      destinationEntity.setTagMorphingProjectEntity(null);
     }
     return destinationEntity;
   }

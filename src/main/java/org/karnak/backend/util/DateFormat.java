@@ -27,13 +27,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DateFormat {
+
   private static final Logger LOGGER = LoggerFactory.getLogger(DateFormat.class);
 
   // Date formats
   public static final String FORMAT_DDMMYYYY_SLASH = "dd/MM/yyyy";
+
   public static final String FORMAT_DDMMYYYY_SLASH_HHMMSS_2POINTS = "dd/MM/yyyy HH:mm:ss";
+
   public static final String FORMAT_DDMMYYYY_SLASH_HHMMSS_2POINTS_SSS_POINT =
       "dd/MM/yyyy HH:mm:ss.SSS";
+
   public static final String FORMAT_DDMMYYYY_SLASH_HHMMSS_2POINTS_SSSSSS_POINT =
       "dd/MM/yyyy HH:mm:ss.SSSSSS";
 
@@ -53,7 +57,7 @@ public class DateFormat {
   /**
    * Format a LocalDate to a specifig
    *
-   * @param date Date to format
+   * @param date   Date to format
    * @param format Format to apply
    * @return Formatted date String
    */
@@ -65,7 +69,7 @@ public class DateFormat {
    * Format a LocalDateTime to a specific format
    *
    * @param dateTime Date to format
-   * @param format Format to apply
+   * @param format   Format to apply
    * @return Formatted date String
    */
   public static String format(final LocalDateTime dateTime, final String format) {

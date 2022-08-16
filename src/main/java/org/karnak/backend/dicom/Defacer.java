@@ -28,7 +28,8 @@ public class Defacer {
 
   public static final String APPLY_DEFACING = "defacing";
 
-  private Defacer() {}
+  private Defacer() {
+  }
 
   public static PlanarImage apply(Attributes attributes, PlanarImage image) {
     PlanarImage faceDetectionImg = faceDetection(attributes, image);
@@ -114,7 +115,8 @@ public class Defacer {
     int maxThicknessSkin = (int) (3 / pixelSpacing); // 3mm
     // DRAW A LINE WITH RANDOM VALUE WHEN FACE DETECTED
     int yOffsetRand = 1;
-    // scan the image from left to right and bottom to top until the face is detected in Y
+    // scan the image from left to right and bottom to top until the face is detected
+    // in Y
     for (int x = 0; x < faceDetectImg.width(); x++) {
       boolean faceDetected = false;
       int yFaceDetected = 0;

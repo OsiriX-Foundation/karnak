@@ -41,18 +41,29 @@ public class ProfileElementEntity implements Serializable {
   private static final long serialVersionUID = 818925943276758147L;
 
   private Long id;
+
   private String name;
+
   private String codename;
+
   private String condition;
+
   private String action;
+
   private String option;
+
   private Integer position;
+
   private ProfileEntity profileEntity;
+
   private List<IncludedTagEntity> includedTagEntities = new ArrayList<>();
+
   private List<ExcludedTagEntity> excludedTagEntities = new ArrayList<>();
+
   private List<ArgumentEntity> argumentEntities = new ArrayList<>();
 
-  public ProfileElementEntity() {}
+  public ProfileElementEntity() {
+  }
 
   public ProfileElementEntity(
       String name,

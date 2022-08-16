@@ -15,13 +15,21 @@ import java.util.Map;
 public class ProfileElementBody {
 
   private String name;
+
   private String codename;
+
   private String condition;
+
   private String action;
+
   private String option;
+
   private String args;
+
   private List<String> tagEntities;
+
   private List<String> excludedTags;
+
   private Map<String, String> arguments;
 
   public String getName() {

@@ -43,8 +43,11 @@ public enum ProfileItemType {
   EXPRESSION_TAGS(Expression.class, "expression.on.tags", null, null);
 
   private final Class<? extends ProfileItem> profileClass;
+
   private final String classAlias;
+
   private final String codeValue;
+
   private final String codeMeaning;
 
   ProfileItemType(

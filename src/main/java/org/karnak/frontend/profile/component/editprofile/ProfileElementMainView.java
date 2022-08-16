@@ -25,13 +25,13 @@ public class ProfileElementMainView extends VerticalLayout {
 
   private Set<ProfileElementEntity> profilesOrder;
 
-  public ProfileElementMainView() {}
+  public ProfileElementMainView() {
+  }
 
   private void profilesView() {
     removeAll();
-    add(
-        new HorizontalLayout(
-            new H2("Profile element(s)"))); // new horizontalelayout because fix padding
+    add(new HorizontalLayout(new H2("Profile element(s)"))); // new horizontalelayout
+    // because fix padding
     for (ProfileElementEntity profileElementEntity : profilesOrder) {
       add(
           setProfileName(

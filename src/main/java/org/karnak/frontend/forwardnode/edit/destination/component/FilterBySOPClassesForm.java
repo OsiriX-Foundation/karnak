@@ -18,7 +18,9 @@ import org.vaadin.gatanaso.MultiselectComboBox;
 public class FilterBySOPClassesForm extends HorizontalLayout {
 
   private final MultiselectComboBox<String> sopFilter;
+
   private final Checkbox filterBySOPClassesCheckbox;
+
   private Binder<DestinationEntity> binder;
 
   public FilterBySOPClassesForm() {
