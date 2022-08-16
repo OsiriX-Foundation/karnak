@@ -14,9 +14,13 @@ import java.util.ArrayList;
 public class SOP {
 
   private final String UID;
+
   private final String name;
+
   private final String ciod;
+
   private final String ciod_id;
+
   private final ArrayList<Module> modules;
 
   SOP(String UID, String name, String ciod, String ciod_id, ArrayList<Module> modules) {

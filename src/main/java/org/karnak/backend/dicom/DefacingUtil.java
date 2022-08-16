@@ -19,7 +19,8 @@ import org.weasis.opencv.op.ImageProcessor;
 
 public class DefacingUtil {
 
-  private DefacingUtil() {}
+  private DefacingUtil() {
+  }
 
   public static int randomY(int minY, int maxY, int bound) {
     SecureRandom random = new SecureRandom();

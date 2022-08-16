@@ -17,9 +17,13 @@ import org.apache.commons.lang3.StringUtils;
 public class ModuleAttribute {
 
   private static final List<String> strictedTypes = Arrays.asList("1", "1C", "2", "2C", "3");
+
   private final String moduleTagPath;
+
   private final String tagPath;
+
   private final String type;
+
   private final String moduleId;
 
   public ModuleAttribute(String moduleTagPath, String type, String moduleId) {

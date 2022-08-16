@@ -22,7 +22,8 @@ public class ShiftRangeDate {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ShiftRangeDate.class);
 
-  private ShiftRangeDate() {}
+  private ShiftRangeDate() {
+  }
 
   public static void verifyShiftArguments(List<ArgumentEntity> argumentEntities)
       throws IllegalArgumentException {

@@ -26,6 +26,7 @@ import org.springframework.security.access.annotation.Secured;
 public class MainzellisteView extends HorizontalLayout {
 
   public static final String VIEW_NAME = "Mainzelliste pseudonym";
+
   public static final String ROUTE = "mainzelliste";
 
   public MainzellisteView() {

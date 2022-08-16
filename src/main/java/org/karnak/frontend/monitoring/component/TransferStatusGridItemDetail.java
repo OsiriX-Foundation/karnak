@@ -23,37 +23,61 @@ public class TransferStatusGridItemDetail extends FormLayout {
   // Transfer Status
   // Original
   private TextField patientIdOriginalField;
+
   private TextField accessionNumberOriginalField;
+
   private TextField studyDescriptionOriginalField;
+
   private TextField studyDateOriginalField;
+
   private TextField studyUidOriginalField;
+
   private TextField serieDescriptionOriginalField;
+
   private TextField serieDateOriginalField;
+
   private TextField serieUidOriginalField;
+
   private TextField sopInstanceUidOriginalField;
+
   // To send
   private TextField patientIdToSendField;
+
   private TextField accessionNumberToSendField;
+
   private TextField studyDescriptionToSendField;
+
   private TextField studyDateToSendField;
+
   private TextField studyUidToSendField;
+
   private TextField serieDescriptionToSendField;
+
   private TextField serieDateToSendField;
+
   private TextField serieUidToSendField;
+
   private TextField sopInstanceUidToSendField;
 
   // Destination
   private TextField destinationUrlField;
+
   private TextField destinationHostNameField;
+
   private TextField destinationAeTitleField;
+
   private TextField destinationPortField;
+
   private TextField destinationDescriptionField;
 
   // Forward Node
   private TextField forwardNodeAeTitleField;
+
   private TextField forwardNodeDescriptionField;
 
-  /** Constructor */
+  /**
+   * Constructor
+   */
   public TransferStatusGridItemDetail() {
     // Transfer Status
     initTextFieldsTransferStatus();
@@ -65,7 +89,9 @@ public class TransferStatusGridItemDetail extends FormLayout {
     initTextFieldsForwardNode();
   }
 
-  /** Init destination text fields */
+  /**
+   * Init destination text fields
+   */
   private void initTextFieldsDestination() {
     destinationUrlField = new TextField("Destination Url");
     destinationHostNameField = new TextField("Destination Host Name");
@@ -74,13 +100,17 @@ public class TransferStatusGridItemDetail extends FormLayout {
     destinationDescriptionField = new TextField("Destination Description");
   }
 
-  /** Init forward node text fields */
+  /**
+   * Init forward node text fields
+   */
   private void initTextFieldsForwardNode() {
     forwardNodeAeTitleField = new TextField("Forward Node AeTitle");
     forwardNodeDescriptionField = new TextField("Forward Node Description");
   }
 
-  /** Init transfer status text fields */
+  /**
+   * Init transfer status text fields
+   */
   private void initTextFieldsTransferStatus() {
     // Original
     patientIdOriginalField = new TextField("Patient Id Original");
@@ -160,13 +190,13 @@ public class TransferStatusGridItemDetail extends FormLayout {
   private void determineTextFieldsToDisplayDestination(TransferStatusEntity transferStatusEntity) {
     addTextFields(
         Objects.equals(
-                transferStatusEntity.getDestinationEntity().getDestinationType(),
-                DestinationType.dicom)
+            transferStatusEntity.getDestinationEntity().getDestinationType(),
+            DestinationType.dicom)
             ? Arrays.asList(
-                destinationHostNameField,
-                destinationAeTitleField,
-                destinationPortField,
-                destinationDescriptionField)
+            destinationHostNameField,
+            destinationAeTitleField,
+            destinationPortField,
+            destinationDescriptionField)
             : Arrays.asList(destinationUrlField, destinationDescriptionField));
   }
 

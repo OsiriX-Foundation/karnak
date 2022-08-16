@@ -20,8 +20,11 @@ import org.karnak.frontend.forwardnode.edit.component.ButtonSaveDeleteCancel;
 public class NewUpdateSourceNode extends VerticalLayout {
 
   private final Binder<DicomSourceNodeEntity> binderFormSourceNode;
+
   private final FormSourceNode formSourceNode;
+
   private final ButtonSaveDeleteCancel buttonSaveDeleteCancel;
+
   private DicomSourceNodeEntity currentSourceNode;
 
   public NewUpdateSourceNode() {

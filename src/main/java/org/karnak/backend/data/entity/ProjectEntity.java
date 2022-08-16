@@ -34,9 +34,13 @@ public class ProjectEntity implements Serializable {
   private static final long serialVersionUID = 8809562914582842501L;
 
   private Long id;
+
   private String name;
+
   private List<SecretEntity> secretEntities;
+
   private List<DestinationEntity> destinationEntities;
+
   private ProfileEntity profileEntity;
 
   public ProjectEntity() {
@@ -72,7 +76,7 @@ public class ProjectEntity implements Serializable {
     this.secretEntities = secretEntities;
   }
 
-  @OneToMany(mappedBy = "projectEntity")
+  @OneToMany(mappedBy = "deIdentificationProjectEntity")
   @LazyCollection(LazyCollectionOption.FALSE)
   public List<DestinationEntity> getDestinationEntities() {
     return destinationEntities;

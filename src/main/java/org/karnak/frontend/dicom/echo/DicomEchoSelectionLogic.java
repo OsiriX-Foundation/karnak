@@ -17,7 +17,7 @@ import org.karnak.backend.util.DicomNodeUtil;
 public class DicomEchoSelectionLogic {
 
   // DIALOG
-  private DicomEchoSelectionDialog dialog;
+  private final DicomEchoSelectionDialog dialog;
 
   public DicomEchoSelectionLogic(DicomEchoSelectionDialog dialog) {
     this.dialog = dialog;

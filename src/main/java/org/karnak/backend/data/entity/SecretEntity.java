@@ -26,12 +26,17 @@ import javax.persistence.Table;
 public class SecretEntity implements Serializable {
 
   private Long id;
+
   private ProjectEntity projectEntity;
+
   private byte[] key;
+
   private LocalDateTime creationDate;
+
   private boolean active;
 
-  public SecretEntity() {}
+  public SecretEntity() {
+  }
 
   public SecretEntity(byte[] key) {
     this.key = key;

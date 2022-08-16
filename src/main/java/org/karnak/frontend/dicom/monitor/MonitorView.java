@@ -36,17 +36,27 @@ public class MonitorView extends AbstractView {
 
   // Dicom Layout
   private HorizontalLayout dicomEchoLayout;
+
   private H6 dicomEchoLayoutTitle;
+
   private Select<DicomNodeList> dicomEchoNodeListSelector;
+
   private Button dicomEchoBtn;
+
   // WADO Layout
   private HorizontalLayout wadoLayout;
+
   private H6 wadoLayoutTitle;
+
   private Select<WadoNodeList> wadoNodeListSelector;
+
   private Button wadoBtn;
+
   // Result Layout
   private VerticalLayout resultLayout;
+
   private H6 resultTitle;
+
   private Div resultDiv;
 
   public MonitorView() {
@@ -64,7 +74,8 @@ public class MonitorView extends AbstractView {
     resultLayout.setVisible(true);
   }
 
-  private void init() {}
+  private void init() {
+  }
 
   private void createView() {
     setSizeFull();

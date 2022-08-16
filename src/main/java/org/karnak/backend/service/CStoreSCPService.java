@@ -47,14 +47,18 @@ public class CStoreSCPService extends BasicCStoreSCP {
 
   // Service
   private final DestinationRepo destinationRepo;
+
   private final ForwardService forwardService;
 
   private Map<ForwardDicomNode, List<ForwardDestination>> destinations;
+
   private volatile int priority;
+
   private volatile int status = 0;
 
   // Scheduled service for updating status transfer in progress
   private ScheduledFuture isDelayOver;
+
   private final ScheduledExecutorService executorService =
       Executors.newSingleThreadScheduledExecutor();
 
@@ -92,11 +96,11 @@ public class CStoreSCPService extends BasicCStoreSCP {
     boolean valid =
         srcNodes.isEmpty()
             || srcNodes.stream()
-                .anyMatch(
-                    n ->
-                        n.getAet().equals(callingNode.getAet())
-                            && (!n.isValidateHostname()
-                                || n.equalsHostname(callingNode.getHostname())));
+            .anyMatch(
+                n ->
+                    n.getAet().equals(callingNode.getAet())
+                        && (!n.isValidateHostname()
+                        || n.equalsHostname(callingNode.getHostname())));
     if (!valid) {
       rsp.setInt(Tag.Status, VR.US, Status.NotAuthorized);
       LOGGER.error(
@@ -151,7 +155,7 @@ public class CStoreSCPService extends BasicCStoreSCP {
    * Update the transfer status of a destination
    *
    * @param destination Destination to retrieve
-   * @param status Status to update
+   * @param status      Status to update
    */
   private void updateTransferStatus(ForwardDestination destination, boolean status) {
     // Retrieve the destination entity
@@ -159,7 +163,8 @@ public class CStoreSCPService extends BasicCStoreSCP {
         destinationRepo.findById(destination.getId());
 
     if (destinationEntityOptional.isPresent()) {
-      // Update the destination transfer status if destination has been found and destination
+      // Update the destination transfer status if destination has been found and
+      // destination
       // is active
       DestinationEntity destinationEntity = destinationEntityOptional.get();
       if (destinationEntity.isActivate()) {

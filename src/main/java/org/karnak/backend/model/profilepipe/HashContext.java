@@ -12,6 +12,7 @@ package org.karnak.backend.model.profilepipe;
 public class HashContext {
 
   private final byte[] secret;
+
   private final String PatientID;
 
   public HashContext(byte[] secret, String PatientID) {

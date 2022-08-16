@@ -14,6 +14,7 @@ import org.weasis.dicom.param.DicomNode;
 public class SourceNode {
 
   private final String forwardAETitle;
+
   private final DicomNode sourceNode;
 
   public SourceNode(String forwardAETitle, DicomNode sourceNode) {

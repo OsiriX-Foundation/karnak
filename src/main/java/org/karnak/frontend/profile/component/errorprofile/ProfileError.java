@@ -14,6 +14,7 @@ import org.karnak.backend.data.entity.ProfileElementEntity;
 public class ProfileError {
 
   private ProfileElementEntity profileElementEntity;
+
   private String error;
 
   public ProfileError(ProfileElementEntity profileElementEntity) {

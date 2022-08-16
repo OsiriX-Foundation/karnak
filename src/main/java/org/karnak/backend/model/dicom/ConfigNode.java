@@ -16,6 +16,7 @@ import org.weasis.dicom.param.DicomNode;
 public class ConfigNode {
 
   private String name;
+
   private DicomNode calledNode;
 
   public ConfigNode(String name, DicomNode calledNode) {

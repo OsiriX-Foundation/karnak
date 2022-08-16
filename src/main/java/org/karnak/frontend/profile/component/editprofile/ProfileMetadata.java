@@ -20,10 +20,15 @@ import com.vaadin.flow.component.textfield.TextField;
 public class ProfileMetadata extends VerticalLayout {
 
   private final Div titleDiv = new Div();
+
   private final Div valueDiv = new Div();
+
   private final TextField valueField = new TextField();
+
   private final Button editButton = new Button(new Icon(VaadinIcon.EDIT));
+
   private final Button validateEditButton = new Button(new Icon(VaadinIcon.CHECK));
+
   private final Button disabledEditButton = new Button(new Icon(VaadinIcon.CLOSE));
 
   private final String title;

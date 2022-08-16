@@ -44,7 +44,7 @@ public final class SecurityUtil {
     final String parameterValue = request.getParameter(ApplicationConstants.REQUEST_TYPE_PARAMETER);
     return parameterValue != null
         && Stream.of(HandlerHelper.RequestType.values())
-            .anyMatch(r -> r.getIdentifier().equals(parameterValue));
+        .anyMatch(r -> r.getIdentifier().equals(parameterValue));
   }
 
   /**
@@ -67,7 +67,7 @@ public final class SecurityUtil {
   public static boolean isUserAdmin() {
     return SecurityUtil.isUserLoggedIn()
         && SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
-            .anyMatch(ga -> Objects.equals(ga.getAuthority(), SecurityRole.ADMIN_ROLE.getRole()));
+        .anyMatch(ga -> Objects.equals(ga.getAuthority(), SecurityRole.ADMIN_ROLE.getRole()));
   }
 
   /**
@@ -94,14 +94,16 @@ public final class SecurityUtil {
         isAccessGranted =
             authentication != null
                 && authentication.getAuthorities().stream()
-                    .map(GrantedAuthority::getAuthority)
-                    .anyMatch(allowedRoles::contains);
+                .map(GrantedAuthority::getAuthority)
+                .anyMatch(allowedRoles::contains);
       }
     }
     return isAccessGranted;
   }
 
-  /** Sign out method */
+  /**
+   * Sign out method
+   */
   public static void signOut() {
     try {
       VaadinServletService.getCurrentServletRequest().logout();

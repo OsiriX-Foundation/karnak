@@ -20,7 +20,7 @@ import org.weasis.dicom.param.AttributeEditorContext.Abort;
 
 public class FilterEditor implements AttributeEditor {
 
-  private Set<SOPClassUIDEntity> sopClassUIDEntitySet;
+  private final Set<SOPClassUIDEntity> sopClassUIDEntitySet;
 
   public FilterEditor(Set<SOPClassUIDEntity> sopClassUIDEntitySet) {
     this.sopClassUIDEntitySet = sopClassUIDEntitySet;

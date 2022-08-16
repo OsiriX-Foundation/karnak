@@ -32,7 +32,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-/** UI content when the user is not logged in yet. */
+/**
+ * UI content when the user is not logged in yet.
+ */
 @Route(LoginScreen.ROUTE)
 @PageTitle("KARNAK - Login")
 @CssImport(value = "./styles/shared-styles.css")
@@ -70,7 +72,9 @@ public class LoginScreen extends FlexLayout implements BeforeEnterObserver {
     }
   }
 
-  /** Build User Interface */
+  /**
+   * Build User Interface
+   */
   private void buildUI() {
     setSizeFull();
     setClassName("login-screen");
@@ -108,7 +112,8 @@ public class LoginScreen extends FlexLayout implements BeforeEnterObserver {
    */
   private Component buildLoginMainComponent() {
 
-    // sets the LoginForm action to "login" in order to post the login form to Spring Security
+    // sets the LoginForm action to "login" in order to post the login form to Spring
+    // Security
     loginForm.setAction("login");
 
     // deactivate forgot password button
@@ -147,7 +152,8 @@ public class LoginScreen extends FlexLayout implements BeforeEnterObserver {
           .anyMatch(ga -> Objects.equals(ga.getAuthority(), SecurityRole.ADMIN_ROLE.getRole()))) {
 
         // if authentication was successful and user is admin,
-        // we will update the security context and redirect to the page requested first
+        // we will update the security context and redirect to the page requested
+        // first
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UI.getCurrent().navigate(requestCache.resolveRedirectUrl());
       }

@@ -17,10 +17,15 @@ import org.karnak.backend.enums.TransferStatusType;
 public class TransferStatusFilter {
 
   private String studyUid;
+
   private String serieUid;
+
   private String sopInstanceUid;
+
   private TransferStatusType transferStatusType;
+
   private LocalDateTime start;
+
   private LocalDateTime end;
 
   public TransferStatusFilter() {

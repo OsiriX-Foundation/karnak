@@ -18,10 +18,15 @@ public class LayoutNewGridForwardNode extends VerticalLayout {
 
   // UI Components
   private final NewForwardNode newForwardNode;
+
   private final GridForwardNode gridForwardNode;
+
   private final Button buttonNewForwardNode;
+
   private final TextField textFieldNewAETitleForwardNode;
+
   private final Button buttonAddNewForwardNode;
+
   private Button buttonCancelNewForwardNode;
 
   public LayoutNewGridForwardNode() {

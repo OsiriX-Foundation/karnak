@@ -45,15 +45,21 @@ import org.karnak.frontend.dicom.AbstractView;
 import org.karnak.frontend.dicom.PortField;
 import org.karnak.frontend.dicom.mwl.DicomWorkListSelectionDialog.WorkListSelectionEvent;
 
-/** Calling Order 1) constructor 2) setParameter 3) beforeEnter */
+/**
+ * Calling Order 1) constructor 2) setParameter 3) beforeEnter
+ */
 public class DicomWorkListView extends AbstractView implements HasUrlParameter<String> {
 
   private static final long serialVersionUID = 1L;
 
   private static final String PARAMETER_CALLING_AET = "callingAET";
+
   private static final String PARAMETER_WORKLIST_AET = "worklistAet";
+
   private static final String PARAMETER_WORKLIST_HOSTNAME = "worklistHostname";
+
   private static final String PARAMETER_WORKLIST_PORT = "worklistPort";
+
   private static final String PARAMETER_ACTION = "action";
 
   private static final String ACTION_QUERY = "query";
@@ -66,46 +72,76 @@ public class DicomWorkListView extends AbstractView implements HasUrlParameter<S
 
   // UI COMPONENTS
   private VerticalLayout wlConfigurationAndQueryLayout;
+
   // WL Configuration
   private H6 wlConfigurationTitle;
+
   private FormLayout wlConfigurationForm;
+
   private TextField callingAetFld;
+
   private TextField workListAetFld;
+
   private TextField workListHostnameFld;
+
   private PortField workListPortFld;
+
   // WL Query
   private H6 wlQueryTitle;
+
   private FormLayout wlQueryForm;
+
   private TextField scheduledStationAetFld;
+
   private Select<Modality> scheduledModalitySelector;
+
   private TextField patientIdfld;
+
   private TextField admissionIdFld;
+
   private DatePicker scheduledFromFld;
+
   private DatePicker scheduledToFld;
+
   private TextField patientNameFld;
+
   private TextField accessionNumberFld;
+
   private HorizontalLayout buttonBar;
+
   private Button clearBtn;
+
   private Button selectWorkListBtn;
+
   private Button queryBtn;
+
   // Query Result
   private VerticalLayout queryResultLayout;
+
   private H6 queryResultTitle;
+
   private DicomWorkListGrid queryResultGrid;
 
   private DicomPane dicomPane;
 
   // DATA
   private WorkListQueryData workListQueryData;
+
   private Binder<WorkListQueryData> binderForWorkListQuery;
+
   private List<Attributes> attributes;
+
   private ListDataProvider<Attributes> dataProviderForAttributes;
 
   // PARAMETERS
   private String callingAetParam;
+
   private String worklistAetParam;
+
   private String worklistHostnameParam;
+
   private String worklistPortParam;
+
   private String actionParam;
 
   public DicomWorkListView() {

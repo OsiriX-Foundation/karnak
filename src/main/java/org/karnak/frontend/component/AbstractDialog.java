@@ -20,6 +20,7 @@ public abstract class AbstractDialog extends Composite<Dialog> {
   private static final long serialVersionUID = 1L;
 
   protected VerticalLayout mainLayout;
+
   private MessageBox messageBox;
 
   protected abstract void createMainLayout();

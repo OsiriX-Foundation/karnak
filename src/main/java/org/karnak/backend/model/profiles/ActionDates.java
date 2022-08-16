@@ -34,7 +34,9 @@ public class ActionDates extends AbstractProfileItem {
   private static final Logger LOGGER = LoggerFactory.getLogger(ActionDates.class);
 
   private final TagActionMap tagsAction;
+
   private final TagActionMap exceptedTagsAction;
+
   private final ActionItem actionByDefault;
 
   public ActionDates(ProfileElementEntity profileElementEntity) throws Exception {

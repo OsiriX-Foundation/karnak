@@ -29,9 +29,11 @@ class SecretRepoTest {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SecretRepoTest.class);
 
-  @Autowired private SecretRepo repository;
+  @Autowired
+  private SecretRepo repository;
 
-  @Autowired private ProjectRepo projectRepo;
+  @Autowired
+  private ProjectRepo projectRepo;
 
   /**
    * Add a Secret entity in Db
@@ -63,7 +65,9 @@ class SecretRepoTest {
     return projectEntitySaved;
   }
 
-  /** Test save and find record. */
+  /**
+   * Test save and find record.
+   */
   @Test
   void shouldSaveAndFindARecord() {
     // Create an entity to save
@@ -95,7 +99,9 @@ class SecretRepoTest {
     assertEquals(entity.getId(), secretEntityFound.getId());
   }
 
-  /** Test find all. */
+  /**
+   * Test find all.
+   */
   @Test
   void shouldFindAllRecords() {
     // Create an entity to save
@@ -112,7 +118,9 @@ class SecretRepoTest {
     LOGGER.info("Number of entities found [{}]", all.size());
   }
 
-  /** Test modification of a record. */
+  /**
+   * Test modification of a record.
+   */
   @Test
   void shouldModifyRecord() {
 
@@ -148,7 +156,9 @@ class SecretRepoTest {
         entityModified.getProjectEntity().getName());
   }
 
-  /** Test delete record. */
+  /**
+   * Test delete record.
+   */
   @Test
   void shouldDeleteRecord() {
     // Create an entity to save

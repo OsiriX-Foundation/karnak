@@ -27,21 +27,35 @@ import com.vaadin.flow.shared.Registration;
 public class WarningConfirmDialog extends Composite<Dialog> {
 
   private static final long serialVersionUID = 1L;
+
   private static final String DEFAULT_TITLE = "Warning";
+
   private static final String DEFAULT_VALIDATE = "Validate";
+
   private static final String DEFAULT_CANCEL = "Cancel";
+
   private final Div messageLayout;
+
   // DATA
   private final String valueTitle;
+
   private final String valueValidate;
+
   private final String valueCancel;
+
   // UI COMPONENT
   private Dialog dialog;
+
   private VerticalLayout mainLayout;
+
   private HorizontalLayout headerLayout;
+
   private Span titleText;
+
   private HorizontalLayout buttonsLayout;
+
   private Button buttonValidate;
+
   private Button buttonCancel;
 
   public WarningConfirmDialog(Div messageLayout) {

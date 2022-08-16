@@ -22,10 +22,15 @@ import org.karnak.frontend.util.UIS;
 public class FormSourceNode extends VerticalLayout {
 
   private final Binder<DicomSourceNodeEntity> binder;
+
   private final TextField aeTitle;
+
   private final TextField description;
+
   private final TextField hostname;
+
   private final Checkbox checkHostname;
+
   private final ButtonSaveDeleteCancel buttonSaveDeleteCancel;
 
   public FormSourceNode(

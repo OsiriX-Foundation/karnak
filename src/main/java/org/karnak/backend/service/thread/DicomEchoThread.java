@@ -29,7 +29,7 @@ public class DicomEchoThread implements Callable<String> {
     result.append("<P>");
     DicomNode dcmNode = node.getCalledNode();
     result.append("<h6>DICOM Echo: ");
-    result.append(node.toString());
+    result.append(node);
     result.append("</h6>");
     result.append(dcmNode.toString());
     result.append("<br>");

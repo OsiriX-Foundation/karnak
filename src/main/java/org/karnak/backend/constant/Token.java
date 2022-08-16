@@ -9,14 +9,20 @@
  */
 package org.karnak.backend.constant;
 
-/** Constants dealing used for token management */
+/**
+ * Constants dealing used for token management
+ */
 public class Token {
+
   // Name of the resource in the access token for retrieving roles
   public static final String RESOURCE_NAME = "karnak";
+
   // Access token resource access
   public static final String RESOURCE_ACCESS = "resource_access";
+
   // Roles
   public static final String ROLES = "roles";
+
   // Prefix of built roles
   public static final String PREFIX_ROLE = "ROLE_";
 }

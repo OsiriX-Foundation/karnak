@@ -20,12 +20,19 @@ import java.util.Set;
 public class Study {
 
   private final String studyInstanceUID;
+
   private final Map<String, Series> seriesMap;
+
   private String patientID;
+
   private String[] otherPatientIDs;
+
   private String studyDescription;
+
   private String accessionNumber;
+
   private LocalDateTime studyDate;
+
   private long timeStamp;
 
   public Study(String studyInstanceUID, String patientID) {

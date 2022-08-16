@@ -26,13 +26,19 @@ import org.karnak.backend.service.kheops.SwitchingAlbum;
 public class TextFieldsBindSwitchingAlbum {
 
   private final KheopsApi kheopsApi;
+
   private final Binder<KheopsAlbumsEntity> binder;
 
   private final TextField textUrlAPI;
+
   private final TextField textAuthorizationDestination;
+
   private final TextField textAuthorizationSource;
+
   private final TextField textCondition;
+
   private ExpressionError expressionError;
+
   private final Span textErrorConditionMsg;
 
   public TextFieldsBindSwitchingAlbum() {

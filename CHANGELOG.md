@@ -6,8 +6,10 @@
 
 **Implemented enhancements:**
 
-- Update weasis-dicom-tools to 5.24.2 \(native lib to 4.5.3\) [\#177](https://github.com/OsiriX-Foundation/karnak/issues/177)
-- DeIdentification front: refactoring + behaviour activate/deactivate deidentification [\#174](https://github.com/OsiriX-Foundation/karnak/issues/174)
+- Update weasis-dicom-tools to 5.24.2 \(native lib to
+  4.5.3\) [\#177](https://github.com/OsiriX-Foundation/karnak/issues/177)
+- DeIdentification front: refactoring + behaviour activate/deactivate
+  deidentification [\#174](https://github.com/OsiriX-Foundation/karnak/issues/174)
 - Notification Front: default values [\#172](https://github.com/OsiriX-Foundation/karnak/issues/172)
 - Karnak email address [\#159](https://github.com/OsiriX-Foundation/karnak/issues/159)
 - Change configuration when sending [\#31](https://github.com/OsiriX-Foundation/karnak/issues/31)
@@ -19,18 +21,25 @@
 **Implemented enhancements:**
 
 - Adjust clickable zone checkbox [\#169](https://github.com/OsiriX-Foundation/karnak/issues/169)
-- Add profile version in projects views [\#167](https://github.com/OsiriX-Foundation/karnak/issues/167)
-- Springboot/junit/liquibase versions upgrade  [\#165](https://github.com/OsiriX-Foundation/karnak/issues/165)
-- Enable/disable destination buttons \(save/delete\) when transfer is in progress  [\#163](https://github.com/OsiriX-Foundation/karnak/issues/163)
-- Destinations: loading spinner transfer activity [\#161](https://github.com/OsiriX-Foundation/karnak/issues/161)
-- Image transcoding with a specific transfer syntax [\#139](https://github.com/OsiriX-Foundation/karnak/issues/139)
+- Add profile version in projects
+  views [\#167](https://github.com/OsiriX-Foundation/karnak/issues/167)
+- Springboot/junit/liquibase versions
+  upgrade  [\#165](https://github.com/OsiriX-Foundation/karnak/issues/165)
+- Enable/disable destination buttons \(save/delete\) when transfer is in
+  progress  [\#163](https://github.com/OsiriX-Foundation/karnak/issues/163)
+- Destinations: loading spinner transfer
+  activity [\#161](https://github.com/OsiriX-Foundation/karnak/issues/161)
+- Image transcoding with a specific transfer
+  syntax [\#139](https://github.com/OsiriX-Foundation/karnak/issues/139)
 - Inject an external id provider [\#88](https://github.com/OsiriX-Foundation/karnak/issues/88)
-- Check that the expression does not corrupt the DICOM [\#74](https://github.com/OsiriX-Foundation/karnak/issues/74)
+- Check that the expression does not corrupt the
+  DICOM [\#74](https://github.com/OsiriX-Foundation/karnak/issues/74)
 - Improve the notification module UI [\#42](https://github.com/OsiriX-Foundation/karnak/issues/42)
 
 **Fixed bugs:**
 
-- Switching in the KHEOPS album cannot be applied with the KEEP action on the study UID and / or the serial UID [\#156](https://github.com/OsiriX-Foundation/karnak/issues/156)
+- Switching in the KHEOPS album cannot be applied with the KEEP action on the study UID and / or the
+  serial UID [\#156](https://github.com/OsiriX-Foundation/karnak/issues/156)
 
 ## [v0.9.7](https://github.com/OsiriX-Foundation/karnak/tree/v0.9.7) (2021-06-11)
 
@@ -38,17 +47,22 @@
 
 **Implemented enhancements:**
 
-- Remove use pseudonym as patient name button and use pseudonym for patient name [\#154](https://github.com/OsiriX-Foundation/karnak/issues/154)
-- Check Issuer of Patient ID in destination [\#148](https://github.com/OsiriX-Foundation/karnak/issues/148)
-- Load an external logback configuration at startup [\#128](https://github.com/OsiriX-Foundation/karnak/issues/128)
+- Remove use pseudonym as patient name button and use pseudonym for patient
+  name [\#154](https://github.com/OsiriX-Foundation/karnak/issues/154)
+- Check Issuer of Patient ID in
+  destination [\#148](https://github.com/OsiriX-Foundation/karnak/issues/148)
+- Load an external logback configuration at
+  startup [\#128](https://github.com/OsiriX-Foundation/karnak/issues/128)
 - Set the logging level at startup [\#119](https://github.com/OsiriX-Foundation/karnak/issues/119)
 - Pattern for the Clinical log warning [\#85](https://github.com/OsiriX-Foundation/karnak/issues/85)
 - Defacing CT [\#17](https://github.com/OsiriX-Foundation/karnak/issues/17)
 
 **Fixed bugs:**
 
-- The order of profile elements on the ui and when downloading a profile is not correct.  [\#146](https://github.com/OsiriX-Foundation/karnak/issues/146)
-- Do not de-identify when multiple actions and with retired SOP Class UID [\#138](https://github.com/OsiriX-Foundation/karnak/issues/138)
+- The order of profile elements on the ui and when downloading a profile is not
+  correct.  [\#146](https://github.com/OsiriX-Foundation/karnak/issues/146)
+- Do not de-identify when multiple actions and with retired SOP Class
+  UID [\#138](https://github.com/OsiriX-Foundation/karnak/issues/138)
 - Fix endianness of added sequences [\#137](https://github.com/OsiriX-Foundation/karnak/issues/137)
 
 ## [v0.9.6](https://github.com/OsiriX-Foundation/karnak/tree/v0.9.6) (2021-05-07)
@@ -57,16 +71,21 @@
 
 **Implemented enhancements:**
 
-- Modal windows for the element of dicom worklist [\#135](https://github.com/OsiriX-Foundation/karnak/issues/135)
-- Bump vaadin.version from 17.0.10 to 19.0.5 [\#133](https://github.com/OsiriX-Foundation/karnak/issues/133)
+- Modal windows for the element of dicom
+  worklist [\#135](https://github.com/OsiriX-Foundation/karnak/issues/135)
+- Bump vaadin.version from 17.0.10 to
+  19.0.5 [\#133](https://github.com/OsiriX-Foundation/karnak/issues/133)
 - remove the checkbox Authorized SOPs [\#97](https://github.com/OsiriX-Foundation/karnak/issues/97)
-- Raise an exception from the execute function of an action. [\#73](https://github.com/OsiriX-Foundation/karnak/issues/73)
+- Raise an exception from the execute function of an
+  action. [\#73](https://github.com/OsiriX-Foundation/karnak/issues/73)
 - \[Clean Pixel\] Recompression issue [\#39](https://github.com/OsiriX-Foundation/karnak/issues/39)
 
 **Fixed bugs:**
 
-- Decompress all the images with DICOM output [\#136](https://github.com/OsiriX-Foundation/karnak/issues/136)
-- STOW-RS exceptions when sending images from multiple sources concurrently [\#124](https://github.com/OsiriX-Foundation/karnak/issues/124)
+- Decompress all the images with DICOM
+  output [\#136](https://github.com/OsiriX-Foundation/karnak/issues/136)
+- STOW-RS exceptions when sending images from multiple sources
+  concurrently [\#124](https://github.com/OsiriX-Foundation/karnak/issues/124)
 
 ## [v0.9.5](https://github.com/OsiriX-Foundation/karnak/tree/v0.9.5) (2021-04-16)
 
@@ -78,7 +97,8 @@
 
 **Fixed bugs:**
 
-- Exception loading sessions from persistent storage [\#127](https://github.com/OsiriX-Foundation/karnak/issues/127)
+- Exception loading sessions from persistent
+  storage [\#127](https://github.com/OsiriX-Foundation/karnak/issues/127)
 
 ## [v0.9.4](https://github.com/OsiriX-Foundation/karnak/tree/v0.9.4) (2021-03-17)
 
@@ -86,16 +106,23 @@
 
 **Implemented enhancements:**
 
-- Reorganization in the types of pseudonyms and improvement the management of pseudonyms [\#118](https://github.com/OsiriX-Foundation/karnak/issues/118)
-- Display a unique message when we add multiple  same external pseudonym via the csv file [\#108](https://github.com/OsiriX-Foundation/karnak/issues/108)
-- Linking external pseudonym to a project [\#107](https://github.com/OsiriX-Foundation/karnak/issues/107)
-- Pagination to visualize the External Pseudonym view [\#106](https://github.com/OsiriX-Foundation/karnak/issues/106)
+- Reorganization in the types of pseudonyms and improvement the management of
+  pseudonyms [\#118](https://github.com/OsiriX-Foundation/karnak/issues/118)
+- Display a unique message when we add multiple same external pseudonym via the csv
+  file [\#108](https://github.com/OsiriX-Foundation/karnak/issues/108)
+- Linking external pseudonym to a
+  project [\#107](https://github.com/OsiriX-Foundation/karnak/issues/107)
+- Pagination to visualize the External Pseudonym
+  view [\#106](https://github.com/OsiriX-Foundation/karnak/issues/106)
 
 **Fixed bugs:**
 
-- Manage exception if status code is not SUCCESSFUL for a dicom stow [\#117](https://github.com/OsiriX-Foundation/karnak/issues/117)
-- Manage exception on parsing datetime [\#116](https://github.com/OsiriX-Foundation/karnak/issues/116)
-- Incorrect trailing \(FFFE,E00D\) Item Delimitation Item in outgoing C-STORE RQs. [\#109](https://github.com/OsiriX-Foundation/karnak/issues/109)
+- Manage exception if status code is not SUCCESSFUL for a dicom
+  stow [\#117](https://github.com/OsiriX-Foundation/karnak/issues/117)
+- Manage exception on parsing
+  datetime [\#116](https://github.com/OsiriX-Foundation/karnak/issues/116)
+- Incorrect trailing \(FFFE,E00D\) Item Delimitation Item in outgoing C-STORE
+  RQs. [\#109](https://github.com/OsiriX-Foundation/karnak/issues/109)
 
 ## [v0.9.3.1](https://github.com/OsiriX-Foundation/karnak/tree/v0.9.3.1) (2021-02-05)
 
@@ -103,7 +130,8 @@
 
 **Fixed bugs:**
 
-- Profile format is not correct when it exported [\#111](https://github.com/OsiriX-Foundation/karnak/issues/111)
+- Profile format is not correct when it
+  exported [\#111](https://github.com/OsiriX-Foundation/karnak/issues/111)
 
 ## [v0.9.3](https://github.com/OsiriX-Foundation/karnak/tree/v0.9.3) (2021-02-01)
 
@@ -111,33 +139,43 @@
 
 **Implemented enhancements:**
 
-- Pop up warning when regenerate Project secret [\#92](https://github.com/OsiriX-Foundation/karnak/issues/92)
-- Simplify the pseudonym cache metadata [\#90](https://github.com/OsiriX-Foundation/karnak/issues/90)
-- In the UI, split the pseudonym cache and mainzelliste [\#89](https://github.com/OsiriX-Foundation/karnak/issues/89)
+- Pop up warning when regenerate Project
+  secret [\#92](https://github.com/OsiriX-Foundation/karnak/issues/92)
+- Simplify the pseudonym cache
+  metadata [\#90](https://github.com/OsiriX-Foundation/karnak/issues/90)
+- In the UI, split the pseudonym cache and
+  mainzelliste [\#89](https://github.com/OsiriX-Foundation/karnak/issues/89)
 - Pass the action logs to level TRACE [\#84](https://github.com/OsiriX-Foundation/karnak/issues/84)
-- Remove all references to the secret KARNAK\_HMAC\_KEY [\#81](https://github.com/OsiriX-Foundation/karnak/issues/81)
-- Add Instance Creation Date and Time attributes [\#79](https://github.com/OsiriX-Foundation/karnak/issues/79)
+- Remove all references to the secret
+  KARNAK\_HMAC\_KEY [\#81](https://github.com/OsiriX-Foundation/karnak/issues/81)
+- Add Instance Creation Date and Time
+  attributes [\#79](https://github.com/OsiriX-Foundation/karnak/issues/79)
 - Update help view [\#78](https://github.com/OsiriX-Foundation/karnak/issues/78)
 - Add rolling log for clinical log [\#77](https://github.com/OsiriX-Foundation/karnak/issues/77)
 - Remove a profile [\#76](https://github.com/OsiriX-Foundation/karnak/issues/76)
 - Improve the performance of the logs [\#67](https://github.com/OsiriX-Foundation/karnak/issues/67)
 - Show masks in the profiles page [\#61](https://github.com/OsiriX-Foundation/karnak/issues/61)
 - Export a profile [\#60](https://github.com/OsiriX-Foundation/karnak/issues/60)
-- Reformat the code with google-java-format [\#40](https://github.com/OsiriX-Foundation/karnak/issues/40)
+- Reformat the code with
+  google-java-format [\#40](https://github.com/OsiriX-Foundation/karnak/issues/40)
 - Upgrade of version [\#23](https://github.com/OsiriX-Foundation/karnak/issues/23)
-- Use of the DICOM structure according to Information Object Definition \(IOD\) [\#11](https://github.com/OsiriX-Foundation/karnak/issues/11)
+- Use of the DICOM structure according to Information Object Definition
+  \(IOD\) [\#11](https://github.com/OsiriX-Foundation/karnak/issues/11)
 
 **Fixed bugs:**
 
--  Upload profile error on Chrome [\#93](https://github.com/OsiriX-Foundation/karnak/issues/93)
+- Upload profile error on Chrome [\#93](https://github.com/OsiriX-Foundation/karnak/issues/93)
 - Missing level in log file [\#68](https://github.com/OsiriX-Foundation/karnak/issues/68)
-- Hazelcast ClassNotFoundException in docker environment [\#66](https://github.com/OsiriX-Foundation/karnak/issues/66)
+- Hazelcast ClassNotFoundException in docker
+  environment [\#66](https://github.com/OsiriX-Foundation/karnak/issues/66)
 
 **Closed issues:**
 
-- Logs the following fields for each de-identified instance in clinical logs \(Serie UID, Instance UID, ...\) [\#83](https://github.com/OsiriX-Foundation/karnak/issues/83)
+- Logs the following fields for each de-identified instance in clinical logs \(Serie UID, Instance
+  UID, ...\) [\#83](https://github.com/OsiriX-Foundation/karnak/issues/83)
 - Add mask view in profile view [\#71](https://github.com/OsiriX-Foundation/karnak/issues/71)
--  Creation of a website for the karnak doc [\#70](https://github.com/OsiriX-Foundation/karnak/issues/70)
+- Creation of a website for the karnak
+  doc [\#70](https://github.com/OsiriX-Foundation/karnak/issues/70)
 
 ## [0.9.2](https://github.com/OsiriX-Foundation/karnak/tree/0.9.2) (2020-11-04)
 
@@ -145,14 +183,17 @@
 
 **Implemented enhancements:**
 
--  Reduce information in clinical log [\#56](https://github.com/OsiriX-Foundation/karnak/issues/56)
-- Using caching for the Mainzelliste pseudonym [\#53](https://github.com/OsiriX-Foundation/karnak/issues/53)
-- Improve the performance of pseudonym caching [\#52](https://github.com/OsiriX-Foundation/karnak/issues/52)
+- Reduce information in clinical log [\#56](https://github.com/OsiriX-Foundation/karnak/issues/56)
+- Using caching for the Mainzelliste
+  pseudonym [\#53](https://github.com/OsiriX-Foundation/karnak/issues/53)
+- Improve the performance of pseudonym
+  caching [\#52](https://github.com/OsiriX-Foundation/karnak/issues/52)
 - Optimisation in actions [\#45](https://github.com/OsiriX-Foundation/karnak/issues/45)
 - Upgrade Spring and Vaadin [\#41](https://github.com/OsiriX-Foundation/karnak/issues/41)
 - Use DICOM endpoint as URL [\#36](https://github.com/OsiriX-Foundation/karnak/issues/36)
 - Warning No projects created [\#35](https://github.com/OsiriX-Foundation/karnak/issues/35)
-- Option shift date, keep year, month or day [\#30](https://github.com/OsiriX-Foundation/karnak/issues/30)
+- Option shift date, keep year, month or
+  day [\#30](https://github.com/OsiriX-Foundation/karnak/issues/30)
 - Expression in replace [\#28](https://github.com/OsiriX-Foundation/karnak/issues/28)
 - UI navigation [\#24](https://github.com/OsiriX-Foundation/karnak/issues/24)
 - Switching in different KHEOPS' album [\#16](https://github.com/OsiriX-Foundation/karnak/issues/16)
@@ -162,18 +203,28 @@
 
 **Fixed bugs:**
 
-- Validator applied to null fields after adding a new project [\#59](https://github.com/OsiriX-Foundation/karnak/issues/59)
-- The project grid doesn't update after updating a project [\#58](https://github.com/OsiriX-Foundation/karnak/issues/58)
+- Validator applied to null fields after adding a new
+  project [\#59](https://github.com/OsiriX-Foundation/karnak/issues/59)
+- The project grid doesn't update after updating a
+  project [\#58](https://github.com/OsiriX-Foundation/karnak/issues/58)
 - What happens with a null UID [\#57](https://github.com/OsiriX-Foundation/karnak/issues/57)
 - Define an "all" log file size [\#55](https://github.com/OsiriX-Foundation/karnak/issues/55)
-- Sequences are not fully removed with Action X [\#51](https://github.com/OsiriX-Foundation/karnak/issues/51)
-- Image with Clean pixel data is not sent to a DICOMWeb destination [\#50](https://github.com/OsiriX-Foundation/karnak/issues/50)
-- DICOM connection between the forward node and the destination is closed randomly [\#49](https://github.com/OsiriX-Foundation/karnak/issues/49)
-- Applying masks doesn't work when sending simultaneously several dataset [\#48](https://github.com/OsiriX-Foundation/karnak/issues/48)
-- Notification for a DICOM destination doesn't work [\#47](https://github.com/OsiriX-Foundation/karnak/issues/47)
-- Notification is not consistent when UIDs are changed by de-identification [\#46](https://github.com/OsiriX-Foundation/karnak/issues/46)
-- NPE when setting a string value to Binary VR [\#44](https://github.com/OsiriX-Foundation/karnak/issues/44)
-- Propagation of the action in sequence [\#29](https://github.com/OsiriX-Foundation/karnak/issues/29)
+- Sequences are not fully removed with Action
+  X [\#51](https://github.com/OsiriX-Foundation/karnak/issues/51)
+- Image with Clean pixel data is not sent to a DICOMWeb
+  destination [\#50](https://github.com/OsiriX-Foundation/karnak/issues/50)
+- DICOM connection between the forward node and the destination is closed
+  randomly [\#49](https://github.com/OsiriX-Foundation/karnak/issues/49)
+- Applying masks doesn't work when sending simultaneously several
+  dataset [\#48](https://github.com/OsiriX-Foundation/karnak/issues/48)
+- Notification for a DICOM destination doesn't
+  work [\#47](https://github.com/OsiriX-Foundation/karnak/issues/47)
+- Notification is not consistent when UIDs are changed by
+  de-identification [\#46](https://github.com/OsiriX-Foundation/karnak/issues/46)
+- NPE when setting a string value to Binary
+  VR [\#44](https://github.com/OsiriX-Foundation/karnak/issues/44)
+- Propagation of the action in
+  sequence [\#29](https://github.com/OsiriX-Foundation/karnak/issues/29)
 - Changing parameters during sending [\#26](https://github.com/OsiriX-Foundation/karnak/issues/26)
 
 ## [0.9.1](https://github.com/OsiriX-Foundation/karnak/tree/0.9.1) (2020-09-07)
@@ -182,7 +233,8 @@
 
 **Implemented enhancements:**
 
-- Verification and error checking on the structure of the yaml file containing the profile [\#25](https://github.com/OsiriX-Foundation/karnak/issues/25)
+- Verification and error checking on the structure of the yaml file containing the
+  profile [\#25](https://github.com/OsiriX-Foundation/karnak/issues/25)
 - Expression in option or profile [\#22](https://github.com/OsiriX-Foundation/karnak/issues/22)
 - Refactor constructor of ProfileItem [\#21](https://github.com/OsiriX-Foundation/karnak/issues/21)
 - Option with Date [\#19](https://github.com/OsiriX-Foundation/karnak/issues/19)
@@ -201,6 +253,5 @@
 - Vaadin Upgrade to v16 [\#6](https://github.com/OsiriX-Foundation/karnak/issues/6)
 - Select all filters [\#5](https://github.com/OsiriX-Foundation/karnak/issues/5)
 
-
-
-\* *This Changelog was automatically generated by [github_changelog_generator](https://github.com/github-changelog-generator/github-changelog-generator)*
+\* *This Changelog was automatically generated
+by [github_changelog_generator](https://github.com/github-changelog-generator/github-changelog-generator)*

@@ -20,9 +20,11 @@ import java.util.Set;
 public class Series {
 
   private final String seriesInstanceUID;
+
   private final Map<String, SopInstance> sopInstanceMap;
 
   private String seriesDescription;
+
   private LocalDateTime seriesDate;
 
   public Series(String seriesInstanceUID) {

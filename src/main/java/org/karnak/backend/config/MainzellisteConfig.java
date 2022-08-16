@@ -20,8 +20,11 @@ import org.springframework.stereotype.Component;
 public class MainzellisteConfig {
 
   private static MainzellisteConfig instance;
+
   private String apikey;
+
   private String serverurl;
+
   private String idtypes;
 
   public static MainzellisteConfig getInstance() {

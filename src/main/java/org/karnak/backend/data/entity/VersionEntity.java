@@ -22,6 +22,7 @@ import javax.persistence.Table;
 public class VersionEntity implements Serializable {
 
   private Long id;
+
   private long gatewaySetup;
 
   @Id

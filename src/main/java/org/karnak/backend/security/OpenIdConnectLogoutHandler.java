@@ -20,12 +20,15 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-/** Handle IDP logout */
+/**
+ * Handle IDP logout
+ */
 public class OpenIdConnectLogoutHandler extends SecurityContextLogoutHandler {
 
   private static final Logger logger = LoggerFactory.getLogger(OpenIdConnectLogoutHandler.class);
 
   private static final String END_SESSION_ENDPOINT = "/protocol/openid-connect/logout";
+
   private static final String ID_TOKEN_HINT = "id_token_hint";
 
   @Override

@@ -19,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 public class StandardSOPS {
 
   private static final String sopsFileName = "sops.json";
+
   private static jsonSOP[] sops;
 
   public StandardSOPS() {

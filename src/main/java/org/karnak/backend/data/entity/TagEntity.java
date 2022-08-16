@@ -35,10 +35,13 @@ public abstract class TagEntity implements Serializable {
   private static final long serialVersionUID = -1172918773653197764L;
 
   private Long id;
+
   private ProfileElementEntity profileElementEntity;
+
   private String tagValue;
 
-  public TagEntity() {}
+  public TagEntity() {
+  }
 
   public TagEntity(String tagValue, ProfileElementEntity profileElementEntity) {
     this.tagValue = tagValue;

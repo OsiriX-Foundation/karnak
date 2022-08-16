@@ -25,10 +25,13 @@ import org.weasis.core.util.StringUtil;
 public class HMAC {
 
   public static final int KEY_BYTE_LENGTH = 16;
+
   private static final Logger LOGGER = LoggerFactory.getLogger(HMAC.class);
+
   private static final String HMAC_SHA256 = "HmacSHA256";
 
   private Mac mac;
+
   private HashContext hashContext;
 
   public HMAC(byte[] hmacKey) {
@@ -42,7 +45,7 @@ public class HMAC {
 
   /*
    * Generate a random secret key of 32bytes
-   * */
+   */
   public static byte[] generateRandomKey() {
     SecureRandom random = new SecureRandom();
     byte[] bytes = new byte[KEY_BYTE_LENGTH];
@@ -117,7 +120,7 @@ public class HMAC {
     // Variant 1 -> 10b
     uuid[8] &= 0x3F;
     uuid[8] |= 0x80;
-    return "2.25." + new BigInteger(1, uuid).toString();
+    return "2.25." + new BigInteger(1, uuid);
   }
 
   public HashContext getHashContext() {

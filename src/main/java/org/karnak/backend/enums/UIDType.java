@@ -38,19 +38,25 @@ public enum UIDType {
   JPEG_2000_LOSSLESS("1.2.840.10008.1.2.4.90", "JPEG 2000 Image Compression (Lossless Only)"),
   JPEG_2000("1.2.840.10008.1.2.4.91", "JPEG 2000 Image Compression");
 
-  /** Code of the enum */
+  /**
+   * Code of the enum
+   */
   private final String code;
 
-  /** Description of the enum */
+  /**
+   * Description of the enum
+   */
   private final String description;
 
-  /** Default description */
+  /**
+   * Default description
+   */
   public static final String DEFAULT_DESCRIPTION = "Keep original transfer syntax";
 
   /**
    * Constructor
    *
-   * @param code Code
+   * @param code        Code
    * @param description Description
    */
   UIDType(String code, String description) {

@@ -25,14 +25,23 @@ import org.karnak.backend.model.expression.ExpressionResult;
 public abstract class AbstractProfileItem implements ProfileItem {
 
   protected final String name;
+
   protected final String codeName;
+
   protected final String condition;
+
   protected final String action;
+
   protected final String option;
+
   protected final List<ArgumentEntity> argumentEntities;
+
   protected final List<IncludedTagEntity> tagEntities;
+
   protected final List<ExcludedTagEntity> excludedTagEntities;
+
   protected final Map<Integer, ActionItem> tagMap;
+
   protected final Integer position;
 
   protected AbstractProfileItem(ProfileElementEntity profileElementEntity) {

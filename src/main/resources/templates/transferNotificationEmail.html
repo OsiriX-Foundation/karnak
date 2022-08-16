@@ -1,91 +1,97 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Karnak</title>
-  </head>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <title>Karnak</title>
+</head>
 
-  <body>
-    <table style="width:100%">
-      <tr>
-        <td>
-          <table style="align-content:center;width:100%;">
+<body>
+<table style="width:100%">
+  <tr>
+    <td>
+      <table style="align-content:center;width:100%;">
 
-            <!-- Header -->
-            <tr>
-              <td>
-                <header>
-                  <p style="background-color: #666;text-align: center;font-size: 35px;color: white;">Karnak Transfer Notification</p>
-                </header>
-              </td>
-            </tr>
+        <!-- Header -->
+        <tr>
+          <td>
+            <header>
+              <p style="background-color: #666;text-align: center;font-size: 35px;color: white;">
+                Karnak Transfer Notification</p>
+            </header>
+          </td>
+        </tr>
 
-            <!-- Study informations -->
-            <tr>
-              <td>
-                <h2 style="background-color: #f1f1f1; text-align: center; ">Study informations</h2>
-                <p>PatientID:  <b th:text="${notif.getPatientId()}"></b> </p>
-                <p>Study UID: <b th:text="${notif.getStudyUid()}"></b>  </p>
-                <span th:if="${notif.getAccessionNumber() != null && !notif.getAccessionNumber().isBlank()}">
+        <!-- Study informations -->
+        <tr>
+          <td>
+            <h2 style="background-color: #f1f1f1; text-align: center; ">Study informations</h2>
+            <p>PatientID: <b th:text="${notif.getPatientId()}"></b></p>
+            <p>Study UID: <b th:text="${notif.getStudyUid()}"></b></p>
+            <span
+                th:if="${notif.getAccessionNumber() != null && !notif.getAccessionNumber().isBlank()}">
                   <p>AccessionNumber: <b th:text="${notif.getAccessionNumber()}"></b></p>
                 </span>
-                <span th:if="${notif.getStudyDescription() != null && !notif.getStudyDescription().isBlank()}">
+            <span
+                th:if="${notif.getStudyDescription() != null && !notif.getStudyDescription().isBlank()}">
                   <p>Study description:  <b th:text="${notif.getStudyDescription()}"></b></p>
                 </span>
-                <span th:if="${notif.getStudyDate() != null}">
-                  <p>Study date:  <b th:text="${#temporals.format(notif.getStudyDate(), 'dd/MM/yyyy HH:mm:ss.SSS')}"></b></p>
+            <span th:if="${notif.getStudyDate() != null}">
+                  <p>Study date:  <b
+                      th:text="${#temporals.format(notif.getStudyDate(), 'dd/MM/yyyy HH:mm:ss.SSS')}"></b></p>
                 </span>
-                <br>
-              </td>
-            </tr>
-
-            <!-- Series summary -->
-            <tr>
-              <td>
-                <h2 style="background-color: #f1f1f1; text-align: center; ">
-                  Series transferred from [<b th:text="${notif.getSource()}"></b>] to [<b th:text="${notif.getDestination()}"></b>]
-                </h2>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <table style="width:100%">
-                  <tr style="text-align: center; vertical-align: middle;background-color: lightgrey">
-                    <th>Series UID</th>
-                    <th>Series description</th>
-                    <th>Series date</th>
-                    <th>Transferred</th>
-                    <th>Not transferred</th>
-                    <th>Not transferred reasons</th>
-                  </tr>
-                  <tr th:each="serie, rowStat: ${notif.getSerieSummaryNotifications()}"
-                      th:style="(${rowStat.odd} ? 'background: #f0f0f2;' : 'background: #ffffff;')+('text-align: center; vertical-align: middle;')"
-                      th:styleappend="${serie.getNbTransferNotSent()} > 0 ? 'color: red;' : 'color: black;'">
-                    <td th:text="${serie.getSerieUid()}" />
-                    <td th:text="${serie.getSerieDescription()}" />
-                    <td th:text="${#temporals.format(serie.getSerieDate(), 'dd/MM/yyyy HH:mm:ss.SSS')}" />
-                    <td th:text="${serie.getNbTransferSent()}" />
-                    <td th:text="${serie.getNbTransferNotSent()}"/>
-                    <td th:text="${serie.toStringUnTransferredReasons}" />
-                  </tr>
-                </table>
-              </td>
-            </tr>
             <br>
+          </td>
+        </tr>
 
-            <!-- Footer -->
-            <tr>
-              <td>
-                <footer>
-                  <p style="background-color: #777; text-align: center; color: white;">Copyright Karnak Team</p>
-                </footer>
-              </td>
-            </tr>
+        <!-- Series summary -->
+        <tr>
+          <td>
+            <h2 style="background-color: #f1f1f1; text-align: center; ">
+              Series transferred from [<b th:text="${notif.getSource()}"></b>] to [<b
+                th:text="${notif.getDestination()}"></b>]
+            </h2>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <table style="width:100%">
+              <tr style="text-align: center; vertical-align: middle;background-color: lightgrey">
+                <th>Series UID</th>
+                <th>Series description</th>
+                <th>Series date</th>
+                <th>Transferred</th>
+                <th>Not transferred</th>
+                <th>Not transferred reasons</th>
+              </tr>
+              <tr th:each="serie, rowStat: ${notif.getSerieSummaryNotifications()}"
+                  th:style="(${rowStat.odd} ? 'background: #f0f0f2;' : 'background: #ffffff;')+('text-align: center; vertical-align: middle;')"
+                  th:styleappend="${serie.getNbTransferNotSent()} > 0 ? 'color: red;' : 'color: black;'">
+                <td th:text="${serie.getSerieUid()}"/>
+                <td th:text="${serie.getSerieDescription()}"/>
+                <td th:text="${#temporals.format(serie.getSerieDate(), 'dd/MM/yyyy HH:mm:ss.SSS')}"/>
+                <td th:text="${serie.getNbTransferSent()}"/>
+                <td th:text="${serie.getNbTransferNotSent()}"/>
+                <td th:text="${serie.toStringUnTransferredReasons}"/>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <br>
 
-          </table>
-        </td>
-      </tr>
-    </table>
-  </body>
+        <!-- Footer -->
+        <tr>
+          <td>
+            <footer>
+              <p style="background-color: #777; text-align: center; color: white;">Copyright Karnak
+                Team</p>
+            </footer>
+          </td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+</table>
+</body>
 </html>

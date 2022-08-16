@@ -15,9 +15,9 @@ import org.dcm4che3.util.TagUtils;
 public class MetadataDICOMObject {
 
   /*
-   * Search a tagValue in the current DicomObject and his parent
-   * Will loop in the parent of the DicomObject until the last parent or the tagValue
-   * */
+   * Search a tagValue in the current DicomObject and his parent Will loop in the parent
+   * of the DicomObject until the last parent or the tagValue
+   */
   public static String getValue(Attributes dcm, int tag) {
     return getValueRec(dcm, tag);
   }
@@ -32,9 +32,9 @@ public class MetadataDICOMObject {
   }
 
   /*
-   * Generate the tag Path as needed in the class StandardDICOM
-   * Will loop in the parent of the DicomObject until the last parent
-   * */
+   * Generate the tag Path as needed in the class StandardDICOM Will loop in the parent
+   * of the DicomObject until the last parent
+   */
   public static String getTagPath(Attributes dcm, int currentTag) {
     return getTagPathRec(dcm, TagUtils.toString(currentTag));
   }

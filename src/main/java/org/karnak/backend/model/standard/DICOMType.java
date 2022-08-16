@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DICOMType {
+
   private static final Logger LOGGER = LoggerFactory.getLogger(DICOMType.class);
 
   public static String getBySOP(Attributes dcm, int tag) {

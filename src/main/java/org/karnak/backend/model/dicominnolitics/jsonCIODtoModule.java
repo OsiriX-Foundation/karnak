@@ -12,9 +12,13 @@ package org.karnak.backend.model.dicominnolitics;
 public class jsonCIODtoModule {
 
   private String ciodId;
+
   private String moduleId;
+
   private String usage;
+
   private String conditionalStatement;
+
   private String informationEntity;
 
   public String getCiodId() {

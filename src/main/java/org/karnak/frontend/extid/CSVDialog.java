@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import liquibase.util.csv.opencsv.CSVReader;
-import org.karnak.backend.cache.CachedPatient;
+import org.karnak.backend.cache.Patient;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,27 +36,47 @@ import org.slf4j.LoggerFactory;
 public class CSVDialog extends Dialog {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CSVDialog.class);
+
   private static final String EXTERNAL_PSEUDONYM = "External Pseudonym";
+
   private static final String PATIENT_ID = "Patient ID";
+
   private static final String PATIENT_FIRST_NAME = "Patient first name";
+
   private static final String PATIENT_LAST_NAME = "Patient last name";
+
   private static final String ISSUER_OF_PATIENT_ID = "Issuer of patient ID";
+
   private static final String TITLE =
       "Upload CSV that contains the correspondence table with the externals pseudonyms";
+
   private final String[] selectValues = {
-    "", EXTERNAL_PSEUDONYM, PATIENT_ID, PATIENT_FIRST_NAME, PATIENT_LAST_NAME, ISSUER_OF_PATIENT_ID
+      "", EXTERNAL_PSEUDONYM, PATIENT_ID, PATIENT_FIRST_NAME, PATIENT_LAST_NAME,
+      ISSUER_OF_PATIENT_ID
   };
-  private final List<CachedPatient> patientsList;
+
+  private final List<Patient> patientsList;
+
   private NumberField fromLineField;
+
   private Button readCSVButton;
+
   private Button cancelButton;
+
   private Div divGridContent;
+
   private Div errorMsg;
+
   private Div divTitle;
+
   private Grid<String[]> csvGrid;
+
   private List<Select<String>> listOfSelect;
+
   private List<String[]> allRows;
+
   private HashMap<String, Integer> selectValuesPositionHashMap;
+
   private final transient ProjectEntity projectEntity;
 
   public CSVDialog(InputStream inputStream, char separator, ProjectEntity projectEntity) {
@@ -222,8 +242,8 @@ public class CSVDialog extends Dialog {
             selectValuesPositionHashMap.get(ISSUER_OF_PATIENT_ID).equals(-1)
                 ? ""
                 : row[selectValuesPositionHashMap.get(ISSUER_OF_PATIENT_ID)];
-        final CachedPatient newPatient =
-            new CachedPatient(
+        final Patient newPatient =
+            new Patient(
                 row[selectValuesPositionHashMap.get(EXTERNAL_PSEUDONYM)],
                 row[selectValuesPositionHashMap.get(PATIENT_ID)],
                 row[selectValuesPositionHashMap.get(PATIENT_FIRST_NAME)],
@@ -241,7 +261,7 @@ public class CSVDialog extends Dialog {
     return readCSVButton;
   }
 
-  public List<CachedPatient> getPatientsList() {
+  public List<Patient> getPatientsList() {
     return patientsList;
   }
 

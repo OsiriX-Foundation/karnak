@@ -13,7 +13,7 @@ import java.time.LocalDate;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.karnak.backend.api.rqbody.Fields;
-import org.karnak.backend.cache.PseudonymPatient;
+import org.karnak.backend.cache.Patient;
 import org.weasis.dicom.util.DateUtil;
 
 public class PatientMetadata {
@@ -21,9 +21,13 @@ public class PatientMetadata {
   private static final String PATIENT_SEX_OTHER = "O";
 
   private final String patientID;
+
   private final String patientName;
+
   private final String patientBirthDate;
+
   private final String issuerOfPatientID;
+
   private final String patientSex;
 
   public PatientMetadata(Attributes dcm) {
@@ -89,13 +93,13 @@ public class PatientMetadata {
     return patientSex;
   }
 
-  public boolean compareCachedPatient(PseudonymPatient patient) {
+  public boolean compareCachedPatient(Patient patient) {
     if (patient != null) {
       boolean samePatient = patient.getPatientId().equals(patientID);
       samePatient =
           samePatient
               && (patient.getIssuerOfPatientId() == null
-                  || patient.getIssuerOfPatientId().equals(issuerOfPatientID));
+              || patient.getIssuerOfPatientId().equals(issuerOfPatientID));
       return samePatient;
     }
     return false;

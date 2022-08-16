@@ -12,6 +12,7 @@ package org.karnak.backend.model.expression;
 public class ExpressionError {
 
   private boolean isValid;
+
   private String msg;
 
   public ExpressionError(boolean isValid, String msg) {
