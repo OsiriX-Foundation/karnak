@@ -4,7 +4,8 @@
 
 
 # Based on build image containing maven, jdk and git
-FROM maven:3.8-eclipse-temurin-17 as builder
+#FROM maven:3.8-eclipse-temurin-17 as builder
+FROM maven:3.6-openjdk-17 as builder
 ARG JAR_FILE=target/karnak*.jar
 WORKDIR /app
 COPY ${JAR_FILE} application.jar
