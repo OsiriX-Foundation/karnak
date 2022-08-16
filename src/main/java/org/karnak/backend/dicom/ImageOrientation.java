@@ -27,7 +27,8 @@ package org.karnak.backend.dicom;
  * be designated by one or two additional letters in each value. Within each value, the letters
  * shall be ordered with the principal orientation designated in the first character.
  *
- * <p>C.7.6.2.1.1 Image Position And Image Orientation. The Image Position (0020,0032) specifies the
+ * <p>C.7.6.2.1.1 Image Position And Image Orientation. The Image Position (0020,0032) specifies
+ * the
  * x, y, and z coordinates of the upper left hand corner of the image; it is the center of the first
  * voxel transmitted. Image Orientation (0020,0037) specifies the direction cosines of the first row
  * and the first column with respect to the patient. These Attributes shall be provide as a pair.
@@ -53,10 +54,15 @@ public abstract class ImageOrientation {
   }
 
   public static final String DIR_R = "R"; // NON-NLS
+
   public static final String DIR_L = "L"; // NON-NLS
+
   public static final String DIR_A = "A"; // NON-NLS
+
   public static final String DIR_P = "P"; // NON-NLS
+
   public static final String DIR_F = "F"; // NON-NLS
+
   public static final String DIR_H = "H"; // NON-NLS
 
   private static final double OBLIQUITY_THRESHOLD = 0.8;
@@ -65,7 +71,8 @@ public abstract class ImageOrientation {
    * Get a label describing the major axis from a unit vector (direction cosine) as found in
    * ImageOrientationPatient.
    *
-   * <p>Some degree of deviation from one of the standard orthogonal axes is allowed before deciding
+   * <p>Some degree of deviation from one of the standard orthogonal axes is allowed before
+   * deciding
    * no major axis applies and returning null.
    *
    * @param x

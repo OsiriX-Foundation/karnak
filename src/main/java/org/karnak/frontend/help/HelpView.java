@@ -25,6 +25,7 @@ import org.springframework.security.access.annotation.Secured;
 public class HelpView extends VerticalLayout {
 
   public static final String VIEW_NAME = "Help";
+
   public static final String ROUTE = "help";
 
   public HelpView() {

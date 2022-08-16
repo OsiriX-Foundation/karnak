@@ -21,13 +21,17 @@ import org.karnak.backend.cache.Patient;
 import org.karnak.backend.util.DateFormat;
 import org.karnak.frontend.component.BoxShadowComponent;
 
-/** Result component */
+/**
+ * Result component
+ */
 public class MappingResultComponent extends VerticalLayout {
 
   // Components
   private Details patientFoundDetails;
 
-  /** Constructor */
+  /**
+   * Constructor
+   */
   public MappingResultComponent() {
     setWidth(98, Unit.PERCENTAGE);
 
@@ -43,8 +47,8 @@ public class MappingResultComponent extends VerticalLayout {
    * Handle result when Find is clicked
    *
    * @param patientFound patient found/not found by the backend
-   * @param inputValue Input value entered by the user
-   * @param location from where the mapping has been taken from
+   * @param inputValue   Input value entered by the user
+   * @param location     from where the mapping has been taken from
    */
   public void handleResultFindPatient(Patient patientFound, String inputValue, String location) {
     // Reset details
@@ -64,7 +68,7 @@ public class MappingResultComponent extends VerticalLayout {
    * Handle Result of Find Patient when Patient Not Found
    *
    * @param inputValue Input value entered by the user
-   * @param location from where the mapping has been taken from
+   * @param location   from where the mapping has been taken from
    */
   public static void handleResultFindPatientPatientNotFound(String inputValue, String location) {
     Span content = new Span(String.format("%s Pseudonym %s not found", location, inputValue));
@@ -79,7 +83,7 @@ public class MappingResultComponent extends VerticalLayout {
    * Handle Result of Find Patient when Patient Found
    *
    * @param patientFound Patient found
-   * @param location Where the patient has been stored
+   * @param location     Where the patient has been stored
    */
   private void handleResultFindPatientPatientFound(Patient patientFound, String location) {
     getPatientFoundDetails().setOpened(true);
@@ -113,8 +117,8 @@ public class MappingResultComponent extends VerticalLayout {
    * Add information of the patient found in badge title components
    *
    * @param patientFoundDetailLayout Layout
-   * @param title Title
-   * @param value Value of the patient found
+   * @param title                    Title
+   * @param value                    Value of the patient found
    */
   private void addDetailPatientFound(
       HorizontalLayout patientFoundDetailLayout, String title, String value) {

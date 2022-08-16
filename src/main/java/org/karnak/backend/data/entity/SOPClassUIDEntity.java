@@ -24,11 +24,15 @@ public class SOPClassUIDEntity implements Serializable {
   private static final long serialVersionUID = 2885426916053925842L;
 
   private Long id;
+
   private String ciod;
+
   private String uid;
+
   private String name;
 
-  public SOPClassUIDEntity() {}
+  public SOPClassUIDEntity() {
+  }
 
   public SOPClassUIDEntity(String ciod, String uid, String name) {
     this.ciod = ciod;

@@ -25,7 +25,9 @@ import org.karnak.frontend.util.UIS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** Destination View */
+/**
+ * Destination View
+ */
 @SuppressWarnings("serial")
 public class DestinationView extends VerticalLayout {
 
@@ -33,20 +35,30 @@ public class DestinationView extends VerticalLayout {
 
   // Destination Logic
   private final DestinationLogic destinationLogic;
+
   private final ForwardNodeLogic forwardNodeLogic;
 
   // UI components
   private UI ui;
+
   private TextField filter;
+
   private Button newDestinationDICOM;
+
   private Button newDestinationSTOW;
+
   private GridDestination gridDestination;
+
   private HorizontalLayout layoutFilterButton;
+
   private ButtonSaveDeleteCancel buttonForwardNodeSaveDeleteCancel;
+
   private NewUpdateDestination newUpdateDestination;
 
   private final String LABEL_NEW_DESTINATION_DICOM = "DICOM";
+
   private final String LABEL_NEW_DESTINATION_STOW = "STOW";
+
   private final String PLACEHOLDER_FILTER = "Filter properties of destination";
 
   /**
@@ -70,7 +82,9 @@ public class DestinationView extends VerticalLayout {
     buildComponentsLayout();
   }
 
-  /** Create components, layout and add the layout of the view */
+  /**
+   * Create components, layout and add the layout of the view
+   */
   private void buildComponentsLayout() {
     setSizeFull();
     filter = new TextField();
@@ -100,14 +114,16 @@ public class DestinationView extends VerticalLayout {
     newDestinationDICOM.getElement().setAttribute("title", "New destination of type dicom");
     newDestinationDICOM.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
     newDestinationDICOM.setIcon(VaadinIcon.PLUS_CIRCLE.create());
-    // newDestinationDICOM.addClickListener(click -> destinationLogic.newDestinationDicom());
+    // newDestinationDICOM.addClickListener(click ->
+    // destinationLogic.newDestinationDicom());
   }
 
   private void setButtonNewDestinationSTOW() {
     newDestinationSTOW.getElement().setAttribute("title", "New destination of type stow");
     newDestinationSTOW.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
     newDestinationSTOW.setIcon(VaadinIcon.PLUS_CIRCLE.create());
-    // newDestinationStow.addClickListener(click -> destinationLogic.newDestinationStow());
+    // newDestinationStow.addClickListener(click ->
+    // destinationLogic.newDestinationStow());
   }
 
   public void setEnabled(boolean enabled) {

@@ -21,9 +21,13 @@ import org.karnak.frontend.util.UIS;
 public class PseudonymInDicomTagComponent extends Div {
 
   private final Binder<DestinationEntity> destinationBinder;
+
   private TextField delimiter;
+
   private TextField tag;
+
   private NumberField position;
+
   private Checkbox savePseudonym;
 
   public PseudonymInDicomTagComponent(Binder<DestinationEntity> destinationBinder) {

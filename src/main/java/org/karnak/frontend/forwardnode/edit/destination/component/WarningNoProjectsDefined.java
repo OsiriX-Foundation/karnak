@@ -17,6 +17,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 public class WarningNoProjectsDefined extends Dialog {
 
   private final Button btnValidate;
+
   private final Button btnCancel;
 
   public WarningNoProjectsDefined() {
@@ -48,7 +49,7 @@ public class WarningNoProjectsDefined extends Dialog {
     Div divContent = new Div();
     Div divIntro = new Div();
     divIntro.setText(
-        "No projects are defined. You can't use the de-identification until you have created a project.");
+        "No projects are defined. You can't use the tag morphing or de-identification until you have created a project.");
     divIntro.getStyle().set("padding-bottom", "10px");
     divContent.add(divIntro);
     btnValidate.setWidthFull();

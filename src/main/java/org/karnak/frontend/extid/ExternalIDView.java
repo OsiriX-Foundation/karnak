@@ -25,7 +25,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import java.io.InputStream;
 import java.util.ArrayList;
-import org.karnak.backend.cache.CachedPatient;
+import org.karnak.backend.cache.Patient;
 import org.karnak.frontend.MainLayout;
 import org.karnak.frontend.component.ProjectDropDown;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,19 +39,29 @@ import org.springframework.security.access.annotation.Secured;
 public class ExternalIDView extends HorizontalLayout {
 
   public static final String VIEW_NAME = "External pseudonym";
+
   public static final String ROUTE = "extid";
+
   private static final String LABEL_CHOOSE_PROJECT = "Choose a project:";
+
   private static final String LABEL_DISCLAIMER_EXTID =
       "WARNING: The data that is added to this grid will be stored"
           + " temporally for a short period of time. If the machine restarts, the data will be deleted.";
+
   private final ProjectDropDown projectDropDown;
+
   private final ExternalIDGrid externalIDGrid;
+
   private final Div validationStatus;
+
   private final ExternalIDForm externalIDForm;
 
   private transient InputStream inputStream;
+
   private Upload uploadCsvButton;
+
   private Div uploadCsvLabelDiv;
+
   private final transient ExternalIDLogic externalIDLogic;
 
   @Autowired
@@ -91,7 +101,7 @@ public class ExternalIDView extends HorizontalLayout {
         .getAddPatientButton()
         .addClickListener(
             click -> {
-              final CachedPatient newPatient = externalIDForm.getNewPatient();
+              final Patient newPatient = externalIDForm.getNewPatient();
               if (newPatient != null) {
                 externalIDGrid.addPatient(newPatient);
                 checkDuplicatePatient();

@@ -25,11 +25,17 @@ import org.karnak.backend.model.profilepipe.HashContext;
 import org.karnak.backend.util.ShiftRangeDate;
 
 class ShiftRangeDateTest {
+
   private static final Attributes dataset = new Attributes();
+
   private static final List<ArgumentEntity> argumentEntities = new ArrayList<>();
+
   private static final ArgumentEntity max_seconds = new ArgumentEntity();
+
   private static final ArgumentEntity max_days = new ArgumentEntity();
+
   private static final ArgumentEntity min_seconds = new ArgumentEntity();
+
   private static final ArgumentEntity min_days = new ArgumentEntity();
 
   @BeforeAll

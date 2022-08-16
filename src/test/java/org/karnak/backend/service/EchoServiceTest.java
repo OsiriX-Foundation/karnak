@@ -34,6 +34,7 @@ class EchoServiceTest {
 
   // Service
   private EchoService echoService;
+
   private final GatewaySetUpService gatewaySetUpServiceMock =
       Mockito.mock(GatewaySetUpService.class);
 

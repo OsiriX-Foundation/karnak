@@ -19,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 public class StandardCIODtoModules {
 
   private static final String ciodToModulesFileName = "ciod_to_modules.json";
+
   private static jsonCIODtoModule[] ciodToModules;
 
   public StandardCIODtoModules() {

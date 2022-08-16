@@ -27,7 +27,9 @@ public class TextFieldsBindProject {
   private final Binder<ProjectEntity> binder;
 
   private final TextField textResearchName;
+
   private final ComboBox<SecretEntity> secretComboBox;
+
   private final ProfileDropDown profileDropDown;
 
   public TextFieldsBindProject() {

@@ -19,8 +19,11 @@ import org.karnak.frontend.component.ProfileDropDown;
 public class NewProject extends HorizontalLayout {
 
   private final Binder<ProjectEntity> binder;
+
   private final Button buttonAdd;
+
   private final TextField textResearchName;
+
   private final ProfileDropDown profileDropDown;
 
   public NewProject() {

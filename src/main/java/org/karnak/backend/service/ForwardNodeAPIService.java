@@ -18,12 +18,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
-/** Forward Node API Service */
+/**
+ * Forward Node API Service
+ */
 @Service
 public class ForwardNodeAPIService implements Serializable {
 
   // Services
   private final ForwardNodeService forwardNodeService;
+
   private final DestinationService destinationService;
 
   // Event publisher
@@ -52,7 +55,8 @@ public class ForwardNodeAPIService implements Serializable {
               .filter(f -> f.getFwdAeTitle().equals(forwardNodeEntity.getFwdAeTitle()))
               .findFirst();
       if (val.isPresent()) {
-        // showError("Cannot add this new node because the AE-Title already exists!");
+        // showError("Cannot add this new node because the AE-Title already
+        // exists!");
         return;
       }
     }

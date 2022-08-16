@@ -39,19 +39,19 @@ public class GridDestination extends Grid<DestinationEntity> {
         .setSortable(true);
 
     addComponentColumn(
-            destination -> {
-              Span spanDot = new Span();
-              spanDot.getStyle().set("height", "25px");
-              spanDot.getStyle().set("width", "25px");
-              spanDot.getStyle().set("border-radius", "50%");
-              spanDot.getStyle().set("display", "inline-block");
-              if (destination.isActivate()) {
-                spanDot.getStyle().set("background-color", "#5FC04C");
-              } else {
-                spanDot.getStyle().set("background-color", "#FC4848");
-              }
-              return spanDot;
-            })
+        destination -> {
+          Span spanDot = new Span();
+          spanDot.getStyle().set("height", "25px");
+          spanDot.getStyle().set("width", "25px");
+          spanDot.getStyle().set("border-radius", "50%");
+          spanDot.getStyle().set("display", "inline-block");
+          if (destination.isActivate()) {
+            spanDot.getStyle().set("background-color", "#5FC04C");
+          } else {
+            spanDot.getStyle().set("background-color", "#FC4848");
+          }
+          return spanDot;
+        })
         .setHeader("Enabled")
         .setFlexGrow(20)
         .setSortable(true);

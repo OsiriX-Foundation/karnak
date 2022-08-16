@@ -14,9 +14,13 @@ public class DicomEchoQueryData {
   private static final String DEFAULT_VALUE_FOR_CALLING_AET = "DCM-TOOLS";
 
   private String callingAet;
+
   private DicomNodeList calledDicomNodeType;
+
   private String calledAet;
+
   private String calledHostname;
+
   private Integer calledPort;
 
   public DicomEchoQueryData() {

@@ -28,9 +28,12 @@ class ProjectRepoTest {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ProjectRepoTest.class);
 
-  @Autowired private ProjectRepo repository;
+  @Autowired
+  private ProjectRepo repository;
 
-  /** Test save and find record. */
+  /**
+   * Test save and find record.
+   */
   @Test
   void shouldSaveAndFindARecord() {
     // Create an entity to save
@@ -58,7 +61,9 @@ class ProjectRepoTest {
     assertEquals(entity.getId(), foundByIdOpt.get().getId());
   }
 
-  /** Test find all. */
+  /**
+   * Test find all.
+   */
   @Test
   void shouldFindAllRecords() {
     // Create an entity to save
@@ -79,7 +84,9 @@ class ProjectRepoTest {
     LOGGER.info("Number of entities found [{}]", all.size());
   }
 
-  /** Test modification of a record. */
+  /**
+   * Test modification of a record.
+   */
   @Test
   void shouldModifyRecord() {
 
@@ -112,7 +119,9 @@ class ProjectRepoTest {
         "Name of the entity with id [{}]: [{}]", entityModified.getId(), entityModified.getName());
   }
 
-  /** Test delete record. */
+  /**
+   * Test delete record.
+   */
   @Test
   void shouldDeleteRecord() {
     // Create an entity to save

@@ -19,11 +19,17 @@ import org.karnak.backend.model.action.ReplaceNull;
 import org.karnak.backend.model.action.UID;
 
 public class jsonConfidentialityProfiles {
+
   private String id;
+
   private String name;
+
   private String tag;
+
   private String basicProfile;
+
   private String stdCompIOD;
+
   private String cleanDescOpt;
 
   public String getId() {

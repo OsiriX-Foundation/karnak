@@ -32,10 +32,12 @@ class NotificationServiceTest {
 
   // Services
   private final TemplateEngine templateEngineMock = Mockito.mock(TemplateEngine.class);
+
   private final JavaMailSender javaMailSenderMock = Mockito.mock(JavaMailSender.class);
 
   // Repositories
   private final DestinationRepo destinationRepositoryMock = Mockito.mock(DestinationRepo.class);
+
   private final TransferStatusRepo transferStatusRepoMock = Mockito.mock(TransferStatusRepo.class);
 
   // Service

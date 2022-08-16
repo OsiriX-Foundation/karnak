@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
 public class KheopsApi {
 
   private final HttpClient httpClient;
+
   private final String X_AUTHORIZATION_SOURCE = "X-Authorization-Source";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(KheopsApi.class);

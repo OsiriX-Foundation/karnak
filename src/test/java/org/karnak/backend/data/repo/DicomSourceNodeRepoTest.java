@@ -28,9 +28,12 @@ class DicomSourceNodeRepoTest {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(DicomSourceNodeRepoTest.class);
 
-  @Autowired private DicomSourceNodeRepo repository;
+  @Autowired
+  private DicomSourceNodeRepo repository;
 
-  /** Test save and find record. */
+  /**
+   * Test save and find record.
+   */
   @Test
   void shouldSaveAndFindARecord() {
     // Create an entity to save
@@ -58,7 +61,9 @@ class DicomSourceNodeRepoTest {
     assertEquals(entity.getId(), foundByIdOpt.get().getId());
   }
 
-  /** Test find all. */
+  /**
+   * Test find all.
+   */
   @Test
   void shouldFindAllRecords() {
     // Create an entity to save
@@ -79,7 +84,9 @@ class DicomSourceNodeRepoTest {
     LOGGER.info("Number of entities found [{}]", all.size());
   }
 
-  /** Test modification of a record. */
+  /**
+   * Test modification of a record.
+   */
   @Test
   void shouldModifyRecord() {
 
@@ -114,7 +121,9 @@ class DicomSourceNodeRepoTest {
         entityModified.getAeTitle());
   }
 
-  /** Test delete record. */
+  /**
+   * Test delete record.
+   */
   @Test
   void shouldDeleteRecord() {
     // Create an entity to save

@@ -16,11 +16,15 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 public class ButtonSaveDeleteCancel extends HorizontalLayout {
 
   private final Button save;
+
   private final Button delete;
+
   private final Button cancel;
 
   private final String LABEL_SAVE = "Save";
+
   private final String LABEL_CANCEL = "Cancel";
+
   private final String LABEL_DELETE = "Delete";
 
   public ButtonSaveDeleteCancel() {

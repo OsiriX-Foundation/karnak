@@ -29,12 +29,19 @@ import org.karnak.backend.data.entity.KheopsAlbumsEntity;
 public class GridSwitchingAlbums extends Grid<KheopsAlbumsEntity> {
 
   private final Binder<KheopsAlbumsEntity> binder;
+
   private final ListDataProvider<KheopsAlbumsEntity> dataProvider;
+
   private final Collection<Button> editButtons;
+
   private final TextField textUrlAPI;
+
   private final TextField textAuthorizationDestination;
+
   private final TextField textAuthorizationSource;
+
   private final TextField textCondition;
+
   private Editor<KheopsAlbumsEntity> editor;
 
   public GridSwitchingAlbums() {
@@ -85,24 +92,24 @@ public class GridSwitchingAlbums extends Grid<KheopsAlbumsEntity> {
 
     Column<KheopsAlbumsEntity> editorColumn =
         addComponentColumn(
-                kheopsAlbums -> {
-                  Button edit = new Button("Edit");
-                  edit.addClickListener(e -> editor.editItem(kheopsAlbums));
-                  edit.setEnabled(!editor.isOpen());
+            kheopsAlbums -> {
+              Button edit = new Button("Edit");
+              edit.addClickListener(e -> editor.editItem(kheopsAlbums));
+              edit.setEnabled(!editor.isOpen());
 
-                  Button remove = new Button("Remove");
-                  remove.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
-                  remove.addClickListener(
-                      e -> {
-                        dataProvider.getItems().remove(kheopsAlbums);
-                        dataProvider.refreshAll();
-                      });
-                  remove.setEnabled(!editor.isOpen());
+              Button remove = new Button("Remove");
+              remove.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
+              remove.addClickListener(
+                  e -> {
+                    dataProvider.getItems().remove(kheopsAlbums);
+                    dataProvider.refreshAll();
+                  });
+              remove.setEnabled(!editor.isOpen());
 
-                  editButtons.add(edit);
-                  editButtons.add(remove);
-                  return new Div(edit, remove);
-                })
+              editButtons.add(edit);
+              editButtons.add(remove);
+              return new Div(edit, remove);
+            })
             .setFlexGrow(15);
 
     editor.addOpenListener(

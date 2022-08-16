@@ -24,13 +24,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class MultipleActions extends AbstractAction {
+
   private static final Logger LOGGER = LoggerFactory.getLogger(MultipleActions.class);
 
   final StandardDICOM standardDICOM;
+
   final ActionItem defaultDummyValue;
+
   final ActionItem actionUID;
+
   final ActionItem actionReplaceNull;
+
   final ActionItem actionRemove;
+
   final ActionItem actionKeep;
 
   public MultipleActions(String symbol) {
@@ -153,10 +159,10 @@ public class MultipleActions extends AbstractAction {
   }
 
   private ActionItem replaceNullOrRemove(String currentType) {
-    /* TODO: throw exception ?
-    if (currentType.equals("1") || currentType.equals("1C")) {
-        throw new Exception(For the current SOP, the tag must type 1. Impossible to execute and respect the standard);
-    }
+    /*
+     * TODO: throw exception ? if (currentType.equals("1") ||
+     * currentType.equals("1C")) { throw new Exception(For the current SOP, the tag
+     * must type 1. Impossible to execute and respect the standard); }
      */
     if (currentType.equals("2") || currentType.equals("2C")) {
       return actionReplaceNull;

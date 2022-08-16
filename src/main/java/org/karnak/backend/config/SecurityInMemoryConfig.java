@@ -13,6 +13,9 @@ import org.karnak.backend.cache.RequestCache;
 import org.karnak.backend.enums.SecurityRole;
 import org.karnak.backend.security.DefaultIdpLoadCondition;
 import org.karnak.backend.util.SecurityUtil;
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
+import org.springframework.boot.actuate.health.HealthEndpoint;
+import org.springframework.boot.actuate.info.InfoEndpoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
@@ -30,23 +33,31 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 public class SecurityInMemoryConfig extends WebSecurityConfigurerAdapter {
 
   private static final String LOGIN_FAILURE_URL = "/login?error";
+
   private static final String LOGIN_URL = "/login";
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
 
     http
-        // Uses RequestCache to track unauthorized requests so that users are redirected
+        // Uses RequestCache to track unauthorized requests so that users are
+        // redirected
         // appropriately after login
         .requestCache()
         .requestCache(new RequestCache())
-        // Disables cross-site request forgery (CSRF) protection for main route and login
+        // Disables cross-site request forgery (CSRF) protection for main route
+        // and login
         .and()
         .csrf()
         .ignoringAntMatchers("/", LOGIN_URL)
         // Turns on authorization
         .and()
         .authorizeRequests()
+        // Actuator and health
+        .antMatchers("/actuator/**")
+        .permitAll()
+        .requestMatchers(EndpointRequest.to(HealthEndpoint.class, InfoEndpoint.class))
+        .permitAll()
         // Allows all internal traffic from the Vaadin framework
         .requestMatchers(SecurityUtil::isFrameworkInternalRequest)
         .permitAll()

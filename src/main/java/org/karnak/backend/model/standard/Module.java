@@ -14,7 +14,9 @@ public class Module {
   public static final String MANDATORY = "M";
 
   private final String id;
+
   private final String usage;
+
   private final String informationEntity;
 
   public Module(String id, String usage, String informationEntity) {

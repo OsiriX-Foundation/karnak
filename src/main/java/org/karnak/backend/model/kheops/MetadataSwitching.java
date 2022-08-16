@@ -12,8 +12,11 @@ package org.karnak.backend.model.kheops;
 public class MetadataSwitching {
 
   private final String studyInstanceUID;
+
   private final String seriesInstanceUID;
+
   private final String SOPinstanceUID;
+
   private boolean applied;
 
   public MetadataSwitching(

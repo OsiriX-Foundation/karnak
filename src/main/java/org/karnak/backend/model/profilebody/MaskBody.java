@@ -14,7 +14,9 @@ import java.util.List;
 public class MaskBody {
 
   private String stationName;
+
   private String color;
+
   private List<String> rectangles;
 
   public String getStationName() {

@@ -25,10 +25,12 @@ public class MonitorLogic {
 
   // SERVICES
   private final DicomEchoService dicomEchoService;
+
   private final WadoService wadoService;
 
   // DATA
   private DicomNodeList dicomNodeListSelected;
+
   private WadoNodeList wadoNodeListSelected;
 
   public MonitorLogic(MonitorView view) {

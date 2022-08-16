@@ -30,20 +30,32 @@ import org.springframework.security.access.annotation.Secured;
 @PageTitle("KARNAK - DICOM Tools")
 @Secured({"ROLE_admin"})
 public class DicomMainView extends VerticalLayout {
+
   public static final String VIEW_NAME = "DICOM Tools";
+
   public static final String ROUTE = "dicom";
+
   private static final long serialVersionUID = 1L;
 
   // UI COMPONENTS
   private DicomWebToolsBrand dicomWebToolsBrand;
+
   private Tabs menu;
+
   private Tab tabDicomEchoView;
+
   private Tab tabDicomWorkListView;
+
   private Tab tabMonitorView;
+
   private Map<Tab, Component> tabsToPages;
+
   private AbstractView pageDicomEchoView;
+
   private AbstractView pageDicomWorkListView;
+
   private AbstractView pageMonitorView;
+
   private Set<Component> pagesShown;
 
   // DATA

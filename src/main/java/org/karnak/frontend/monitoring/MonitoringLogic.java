@@ -56,7 +56,7 @@ public class MonitoringLogic {
   /**
    * Retrieve transfer status
    *
-   * @param filter Filter to apply
+   * @param filter   Filter to apply
    * @param pageable Pageable
    * @return Page of trnasfer entities
    */

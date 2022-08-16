@@ -36,28 +36,38 @@ import org.hibernate.annotations.LazyCollectionOption;
 @Table(name = "profile")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonPropertyOrder({
-  "name",
-  "version",
-  "minimumKarnakVersion",
-  "defaultIssuerOfPatientID",
-  "profileElementEntities",
-  "maskEntities"
+    "name",
+    "version",
+    "minimumKarnakVersion",
+    "defaultIssuerOfPatientID",
+    "profileElementEntities",
+    "maskEntities"
 })
 public class ProfileEntity implements Serializable {
 
   private static final long serialVersionUID = -7178858361090900170L;
 
   private Long id;
+
   private String name;
+
   private String version;
+
   private String minimumKarnakVersion;
-  private String defaultIssuerOfPatientId; // not use in db but used in warning msg profile
+
+  private String defaultIssuerOfPatientId; // not use in db but used in warning msg
+  // profile
+
   private Boolean byDefault;
+
   private Set<ProfileElementEntity> profileElementEntities = new HashSet<>();
+
   private Set<MaskEntity> maskEntities = new HashSet<>();
+
   private List<ProjectEntity> projectEntities;
 
-  public ProfileEntity() {}
+  public ProfileEntity() {
+  }
 
   public ProfileEntity(
       String name, String version, String minimumKarnakVersion, String defaultIssuerOfPatientId) {

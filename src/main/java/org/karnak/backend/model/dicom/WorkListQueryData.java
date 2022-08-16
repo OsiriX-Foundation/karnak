@@ -17,16 +17,27 @@ public class WorkListQueryData {
   private static final String DEFAULT_VALUE_FOR_CALLING_AET = "DCM-TOOLS";
 
   private String callingAet;
+
   private String workListAet;
+
   private String workListHostname;
+
   private Integer workListPort;
+
   private String scheduledStationAet;
+
   private Modality scheduledModality;
+
   private String patientId;
+
   private String admissionId;
+
   private LocalDate scheduledFrom;
+
   private LocalDate scheduledTo;
+
   private String patientName;
+
   private String accessionNumber;
 
   public WorkListQueryData() {

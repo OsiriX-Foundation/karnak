@@ -21,6 +21,7 @@ import org.karnak.backend.model.standard.ConfidentialityProfiles;
 public class BasicProfile extends AbstractProfileItem {
 
   private final List<ProfileItem> listProfiles;
+
   private final TagActionMap actionMap;
 
   public BasicProfile(ProfileElementEntity profileElementEntity) {
