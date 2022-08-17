@@ -17,7 +17,9 @@ import java.util.Objects;
 public class WadoNode {
 
   private final String name;
+
   private final URL url;
+
   private final List<String> tagEntities = new ArrayList<String>(2);
 
   public WadoNode(String name, URL url) {

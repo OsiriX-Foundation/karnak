@@ -25,9 +25,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-/** Logic service use to make calls to backend and implement logic linked to the view */
+/**
+ * Logic service use to make calls to backend and implement logic linked to the view
+ */
 @Service
 public class ForwardNodeLogic extends ListDataProvider<ForwardNodeEntity> {
+
   private static final Logger LOGGER = LoggerFactory.getLogger(ForwardNodeLogic.class);
 
   // View
@@ -35,13 +38,20 @@ public class ForwardNodeLogic extends ListDataProvider<ForwardNodeEntity> {
 
   // Services
   private final ForwardNodeAPIService forwardNodeAPIService;
+
   private final transient ForwardNodeService forwardNodeService;
+
   private final transient ProjectService projectService;
+
   private final SOPClassUIDService sopClassUIDService;
+
   private final SourceLogic sourceLogic;
+
   private final DestinationLogic destinationLogic;
 
-  /** Text filter that can be changed separately. */
+  /**
+   * Text filter that can be changed separately.
+   */
   private String filterText = "";
 
   @Autowired
@@ -76,12 +86,16 @@ public class ForwardNodeLogic extends ListDataProvider<ForwardNodeEntity> {
     return data.getId();
   }
 
-  /** Initialize the data provider */
+  /**
+   * Initialize the data provider
+   */
   private void initDataProvider() {
     getItems().addAll(forwardNodeService.getAllForwardNodes());
   }
 
-  /** Update the fragment without causing navigator to change view */
+  /**
+   * Update the fragment without causing navigator to change view
+   */
   private void setFragmentParameter(String dataIdStr) {
     final String fragmentParameter;
     if (dataIdStr == null || dataIdStr.isEmpty()) {
@@ -101,18 +115,12 @@ public class ForwardNodeLogic extends ListDataProvider<ForwardNodeEntity> {
     }
     return null;
     /*
-    if (dataIdStr != null && !dataIdStr.isEmpty()) {
-        // Ensure this is selected even if coming directly here from login
-        try {
-            Long dataId = Long.valueOf(dataIdStr);
-            ForwardNodeEntity data = findForwardNode(dataId);
-            gatewayView.selectRow(data);
-        } catch (NumberFormatException e) {
-        }
-    } else {
-        gatewayView.showForm(false);
-    }
-    */
+     * if (dataIdStr != null && !dataIdStr.isEmpty()) { // Ensure this is selected
+     * even if coming directly here from login try { Long dataId =
+     * Long.valueOf(dataIdStr); ForwardNodeEntity data = findForwardNode(dataId);
+     * gatewayView.selectRow(data); } catch (NumberFormatException e) { } } else {
+     * gatewayView.showForm(false); }
+     */
   }
 
   public void editForwardNode(ForwardNodeEntity data) {
@@ -129,25 +137,23 @@ public class ForwardNodeLogic extends ListDataProvider<ForwardNodeEntity> {
 
   public void saveForwardNode(ForwardNodeEntity data) {
     /*
-    boolean newData = data.isNewData();
-    gatewayView.clearSelection();
-    gatewayView.updateForwardNode(data);
-    setFragmentParameter("");
-    gatewayView.showSaveNotification(data.getFwdAeTitle() + (newData ? " created" : " updated"));
-    //editForwardNode(data); //if you dont't want to exit the selection after saving a forward node.
-    editForwardNode(null); //if you want to exit the selection after saving a forward node.
+     * boolean newData = data.isNewData(); gatewayView.clearSelection();
+     * gatewayView.updateForwardNode(data); setFragmentParameter("");
+     * gatewayView.showSaveNotification(data.getFwdAeTitle() + (newData ? " created" :
+     * " updated")); //editForwardNode(data); //if you dont't want to exit the
+     * selection after saving a forward node. editForwardNode(null); //if you want to
+     * exit the selection after saving a forward node.
      */
   }
 
-  //  public void deleteForwardNode(ForwardNodeEntity data) {
+  // public void deleteForwardNode(ForwardNodeEntity data) {
   /*
-  gatewayView.clearSelection();
-  gatewayView.removeForwardNode(data);
-  setFragmentParameter("");
-  gatewayView.showSaveNotification(data.getFwdAeTitle() + " removed");
-  */
-  //    setFragmentParameter("");
-  //  }
+   * gatewayView.clearSelection(); gatewayView.removeForwardNode(data);
+   * setFragmentParameter(""); gatewayView.showSaveNotification(data.getFwdAeTitle() +
+   * " removed");
+   */
+  // setFragmentParameter("");
+  // }
 
   public ForwardNodeView getForwardNodeView() {
     return forwardNodeView;

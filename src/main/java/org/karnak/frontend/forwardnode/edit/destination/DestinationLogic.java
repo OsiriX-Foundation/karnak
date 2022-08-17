@@ -27,13 +27,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-/** Logic service use to make calls to backend and implement logic linked to the view */
+/**
+ * Logic service use to make calls to backend and implement logic linked to the view
+ */
 @Service
 public class DestinationLogic extends ListDataProvider<DestinationEntity> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(DestinationLogic.class);
+
   public static final String TRANSFER_IN_PROGRESS = "Transfer in progress";
+
   public static final String SAVE = "Save";
+
   public static final String DELETE = "Delete";
 
   // View
@@ -42,7 +47,9 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
   // Services
   private final transient DestinationService destinationService;
 
-  /** Text filter that can be changed separately. */
+  /**
+   * Text filter that can be changed separately.
+   */
   private String filterText = "";
 
   private ForwardNodeEntity forwardNodeEntity; // Current forward node
@@ -73,7 +80,9 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
     super.refreshAll();
   }
 
-  /** Check activity on the forward node */
+  /**
+   * Check activity on the forward node
+   */
   @Scheduled(fixedRate = 1000)
   public void checkStatusTransfers() {
     if (forwardNodeEntity != null) {
@@ -132,7 +141,8 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
                   .get(forwardNodeEntity.getFwdAeTitle())
                   .get(d.getId());
 
-          // Check there is some activity on the destination: if yes set the loading spinner visible
+          // Check there is some activity on the destination: if yes set the loading
+          // spinner visible
           // otherwise set it invisible
           if (d.isTransferInProgress() && !loadingImage.isVisible()) {
             // Loading spinner visible
@@ -144,7 +154,9 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
         });
   }
 
-  /** Enable save delete buttons */
+  /**
+   * Enable save delete buttons
+   */
   private void enableSaveDeleteButtons() {
     // Forward node
     enableButtonTransferInProgress(
@@ -175,7 +187,9 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
             .getDelete());
   }
 
-  /** Disable save delete buttons */
+  /**
+   * Disable save delete buttons
+   */
   private void disableSaveDeleteButtons() {
     // Forward node
     disableButtonTransferInProgress(
@@ -209,7 +223,7 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
   /**
    * Enable buttons
    *
-   * @param saveButton Save button
+   * @param saveButton   Save button
    * @param deleteButton Delete button
    */
   private void enableButtonTransferInProgress(Button saveButton, Button deleteButton) {
@@ -222,7 +236,7 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
   /**
    * Disable buttons
    *
-   * @param saveButton Save button
+   * @param saveButton   Save button
    * @param deleteButton Delete button
    */
   private void disableButtonTransferInProgress(Button saveButton, Button deleteButton) {
@@ -308,7 +322,6 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
   public DestinationEntity retrieveDestinationEntity(Long id) {
     List<DestinationEntity> destinationEntities =
         destinationService.retrieveDestinationsFromIds(List.of(id));
-    return destinationEntities.isEmpty() ? null
-        : destinationEntities.stream().findFirst().orElse(null);
+    return destinationEntities.isEmpty() ? null : destinationEntities.stream().findFirst().get();
   }
 }

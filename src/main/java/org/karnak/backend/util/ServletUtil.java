@@ -25,7 +25,8 @@ public class ServletUtil {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ServletUtil.class);
 
-  private ServletUtil() {}
+  private ServletUtil() {
+  }
 
   public static String getFirstParameter(Object val) {
     if (val instanceof String[]) {
@@ -43,7 +44,7 @@ public class ServletUtil {
     if (val instanceof String[]) {
       return (String[]) val;
     } else if (val != null) {
-      return new String[] {val.toString()};
+      return new String[]{val.toString()};
     }
     return null;
   }
@@ -55,7 +56,7 @@ public class ServletUtil {
       arr[array.length] = arg;
       return arr;
     } else if (val != null) {
-      return new String[] {val.toString(), arg};
+      return new String[]{val.toString(), arg};
     }
     return arg;
   }
@@ -128,9 +129,9 @@ public class ServletUtil {
         ignoreException =
             message != null
                 && (message.indexOf("Connection reset") != -1
-                    || message.indexOf("Broken pipe") != -1
-                    || message.indexOf("Socket closed") != -1
-                    || message.indexOf("connection abort") != -1);
+                || message.indexOf("Broken pipe") != -1
+                || message.indexOf("Socket closed") != -1
+                || message.indexOf("connection abort") != -1);
       } else {
         ignoreException =
             throwable.getClass().getName().indexOf("ClientAbortException") >= 0

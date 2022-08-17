@@ -55,7 +55,9 @@ public class TransferStatusDataProvider<T>
     return monitoringLogic.countTransferStatus(filter);
   }
 
-  /** Default sort order */
+  /**
+   * Default sort order
+   */
   private void setSortOrders() {
     QuerySortOrderBuilder builder = new QuerySortOrderBuilder();
     builder.thenDesc("transferDate");

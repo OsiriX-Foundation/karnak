@@ -19,6 +19,7 @@ import com.vaadin.flow.theme.lumo.Lumo;
 public class ToggleButtonTheme extends HorizontalLayout {
 
   private final ToggleButton toggleButton;
+
   private final String THEME_COLOR_KEY = "theme-variant";
 
   public ToggleButtonTheme() {

@@ -38,9 +38,13 @@ import org.slf4j.LoggerFactory;
 public class SwitchingAlbum {
 
   public static final ImmutableList<String> MIN_SCOPE_SOURCE = ImmutableList.of("read", "send");
+
   public static final ImmutableList<String> MIN_SCOPE_DESTINATION = ImmutableList.of("write");
+
   private static final Logger LOGGER = LoggerFactory.getLogger(SwitchingAlbum.class);
+
   private final KheopsApi kheopsAPI;
+
   private final Map<Long, List> switchingAlbumToDo = new WeakHashMap<>();
 
   public SwitchingAlbum() {
@@ -49,7 +53,7 @@ public class SwitchingAlbum {
 
   private static HMAC generateHMAC(DestinationEntity destinationEntity) {
     if (destinationEntity.isDesidentification()) {
-      ProjectEntity projectEntity = destinationEntity.getProjectEntity();
+      ProjectEntity projectEntity = destinationEntity.getDeIdentificationProjectEntity();
       SecretEntity secretEntity = projectEntity.retrieveActiveSecret();
       return secretEntity != null ? new HMAC(secretEntity.getKey()) : null;
     }
@@ -58,11 +62,11 @@ public class SwitchingAlbum {
 
   private static String hashUIDonDeidentification(
       DestinationEntity destinationEntity, String inputUID, HMAC hmac, int tag) {
-    ActionItem action = getAction(destinationEntity, tag);
-    if (destinationEntity.isDesidentification() && hmac != null && action instanceof UID) {
-      return hmac.uidHash(inputUID);
-    }
-    return inputUID;
+    return destinationEntity.isDesidentification()
+        && hmac != null
+        && getAction(destinationEntity, tag) instanceof UID
+        ? hmac.uidHash(inputUID)
+        : inputUID;
   }
 
   private static boolean validateCondition(String condition, Attributes dcm) {
@@ -84,10 +88,11 @@ public class SwitchingAlbum {
   }
 
   public static ActionItem getAction(DestinationEntity destinationEntity, int tag) {
-    if (destinationEntity.getProjectEntity() != null
-        && destinationEntity.getProjectEntity().getProfileEntity() != null) {
+    if (destinationEntity.getDeIdentificationProjectEntity() != null
+        && destinationEntity.getDeIdentificationProjectEntity().getProfileEntity() != null) {
       List<ProfileItem> profileItems =
-          Profile.getProfileItems(destinationEntity.getProjectEntity().getProfileEntity());
+          Profile.getProfileItems(
+              destinationEntity.getDeIdentificationProjectEntity().getProfileEntity());
       for (ProfileItem profileItem :
           profileItems.stream()
               .filter(p -> !(p instanceof CleanPixelData))
@@ -133,9 +138,9 @@ public class SwitchingAlbum {
 
     if ((condition == null || condition.length() == 0 || validateCondition(condition, dcm))
         && metadataToDo.stream()
-            .noneMatch(
-                metadataSwitching ->
-                    metadataSwitching.getSeriesInstanceUID().equals(seriesInstanceUID))) {
+        .noneMatch(
+            metadataSwitching ->
+                metadataSwitching.getSeriesInstanceUID().equals(seriesInstanceUID))) {
       final boolean validAuthorizationSource =
           validateToken(MIN_SCOPE_SOURCE, urlAPI, authorizationSource);
       final boolean validDestinationSource =

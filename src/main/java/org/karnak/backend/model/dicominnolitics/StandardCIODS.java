@@ -19,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 public class StandardCIODS {
 
   private static final String ciodsFileName = "ciods.json";
+
   private static jsonCIOD[] ciods;
 
   public StandardCIODS() {

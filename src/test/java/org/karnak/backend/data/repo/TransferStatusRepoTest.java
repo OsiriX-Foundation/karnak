@@ -31,9 +31,12 @@ class TransferStatusRepoTest {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(TransferStatusRepoTest.class);
 
-  @Autowired private TransferStatusRepo repository;
+  @Autowired
+  private TransferStatusRepo repository;
 
-  /** Test save and find record. */
+  /**
+   * Test save and find record.
+   */
   @Test
   void shouldSaveAndFindARecord() {
     // Create an entity to save
@@ -64,7 +67,9 @@ class TransferStatusRepoTest {
     assertEquals(entity.getId(), foundByIdOpt.get().getId());
   }
 
-  /** Test find all. */
+  /**
+   * Test find all.
+   */
   @Test
   void shouldFindAllRecords() {
     // Create an entity to save
@@ -85,7 +90,9 @@ class TransferStatusRepoTest {
     LOGGER.info("Number of entities found [{}]", all.size());
   }
 
-  /** Test modification of a record. */
+  /**
+   * Test modification of a record.
+   */
   @Test
   void shouldModifyRecord() {
 
@@ -120,7 +127,9 @@ class TransferStatusRepoTest {
         entityModified.getStudyDescriptionOriginal());
   }
 
-  /** Test delete record. */
+  /**
+   * Test delete record.
+   */
   @Test
   void shouldDeleteRecord() {
     // Create an entity to save
@@ -150,7 +159,9 @@ class TransferStatusRepoTest {
     assertFalse(foundByIdOpt.isPresent());
   }
 
-  /** Test method findByDestinationIdAndTransferDateAfter */
+  /**
+   * Test method findByDestinationIdAndTransferDateAfter
+   */
   @Test
   void shouldFindByDestinationId() {
     // Init data
@@ -166,7 +177,9 @@ class TransferStatusRepoTest {
     assertEquals(toTest.getId(), byDestinationId.get(0).getId());
   }
 
-  /** Test method findByDestinationIdAndTransferDateAfter */
+  /**
+   * Test method findByDestinationIdAndTransferDateAfter
+   */
   @Test
   void shouldFindByDestinationIdAndTransferDateAfter() {
     // Init data
@@ -191,7 +204,9 @@ class TransferStatusRepoTest {
     assertTrue(byDestinationIdAndTransferDateAfter.isEmpty());
   }
 
-  /** Test method findAllByOrderByTransferDateAsc */
+  /**
+   * Test method findAllByOrderByTransferDateAsc
+   */
   @Test
   void shouldFindAllByOrderByTransferDateAsc() {
     // Init data

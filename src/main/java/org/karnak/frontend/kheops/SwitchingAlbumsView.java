@@ -21,11 +21,17 @@ import org.karnak.backend.data.entity.KheopsAlbumsEntity;
 public class SwitchingAlbumsView extends CustomField<List<KheopsAlbumsEntity>> {
 
   private final NewSwitchingAlbum newSwitchingAlbum;
+
   private final GridSwitchingAlbums gridSwitchingAlbums;
+
   private final Binder<KheopsAlbumsEntity> newSwitchingAlbumBinder;
+
   private final ListDataProvider<KheopsAlbumsEntity> dataProviderSwitchingAlbums;
+
   private final List<KheopsAlbumsEntity> kheopsAlbumsEntityList;
+
   private final Checkbox checkboxSwitchingAlbums;
+
   private final VerticalLayout layout;
 
   public SwitchingAlbumsView() {
@@ -114,5 +120,6 @@ public class SwitchingAlbumsView extends CustomField<List<KheopsAlbumsEntity>> {
   }
 
   @Override
-  protected void setPresentationValue(List<KheopsAlbumsEntity> kheopsAlbumEntities) {}
+  protected void setPresentationValue(List<KheopsAlbumsEntity> kheopsAlbumEntities) {
+  }
 }

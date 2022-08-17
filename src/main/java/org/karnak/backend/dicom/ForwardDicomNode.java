@@ -16,7 +16,9 @@ import org.weasis.dicom.param.DicomNode;
 public class ForwardDicomNode extends DicomNode {
 
   private final String forwardAETitle;
+
   private final Set<DicomNode> acceptedSourceNodes;
+
   private final Long id;
 
   public ForwardDicomNode(DicomNode dicomNode) {
@@ -78,11 +80,15 @@ public class ForwardDicomNode extends DicomNode {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj) return true;
+    if (this == obj) {
+      return true;
+    }
     if (obj == null) {
       return false;
     }
-    if (getClass() != obj.getClass()) return false;
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
     ForwardDicomNode other = (ForwardDicomNode) obj;
     return forwardAETitle.equals(other.forwardAETitle);
   }

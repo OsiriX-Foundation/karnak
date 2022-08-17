@@ -28,7 +28,8 @@ import org.karnak.backend.enums.ProfileItemType;
 
 public class AttributesByDefault {
 
-  private AttributesByDefault() {}
+  private AttributesByDefault() {
+  }
 
   public static void setDeidentificationMethodCodeSequence(
       Attributes dcm, ProjectEntity projectEntity) {

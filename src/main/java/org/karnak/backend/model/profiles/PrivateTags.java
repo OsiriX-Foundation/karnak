@@ -29,7 +29,9 @@ public class PrivateTags extends AbstractProfileItem {
   private static final Logger LOGGER = LoggerFactory.getLogger(PrivateTags.class);
 
   private final TagActionMap tagsAction;
+
   private final TagActionMap exceptedTagsAction;
+
   private final ActionItem actionByDefault;
 
   public PrivateTags(ProfileElementEntity profileElementEntity) throws Exception {

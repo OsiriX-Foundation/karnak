@@ -27,11 +27,15 @@ public class ArgumentEntity implements Serializable {
   private static final long serialVersionUID = -839421871919135822L;
 
   private Long id;
+
   private ProfileElementEntity profileElementEntity;
+
   private String key;
+
   private String value;
 
-  public ArgumentEntity() {}
+  public ArgumentEntity() {
+  }
 
   public ArgumentEntity(String key, String value) {
     this.key = key;

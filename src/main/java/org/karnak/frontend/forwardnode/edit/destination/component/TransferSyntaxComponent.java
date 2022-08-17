@@ -17,7 +17,9 @@ import java.util.stream.Collectors;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.enums.UIDType;
 
-/** Create a transfer syntax component */
+/**
+ * Create a transfer syntax component
+ */
 public class TransferSyntaxComponent extends VerticalLayout {
 
   private Select<String> transferSyntaxSelect;
@@ -34,12 +36,16 @@ public class TransferSyntaxComponent extends VerticalLayout {
     addComponents();
   }
 
-  /** Add components in transfer syntax */
+  /**
+   * Add components in transfer syntax
+   */
   private void addComponents() {
     add(transferSyntaxSelect);
   }
 
-  /** Build components used in Transfer Syntax component */
+  /**
+   * Build components used in Transfer Syntax component
+   */
   private void buildComponents() {
     transferSyntaxSelect = new Select<>();
     transferSyntaxSelect.setWidth("600px");
@@ -60,5 +66,9 @@ public class TransferSyntaxComponent extends VerticalLayout {
     binder
         .forField(transferSyntaxSelect)
         .bind(DestinationEntity::getTransferSyntax, DestinationEntity::setTransferSyntax);
+  }
+
+  public Select<String> getTransferSyntaxSelect() {
+    return transferSyntaxSelect;
   }
 }

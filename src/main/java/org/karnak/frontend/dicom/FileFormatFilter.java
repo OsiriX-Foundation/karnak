@@ -24,9 +24,13 @@ import javax.swing.filechooser.FileFilter;
 public class FileFormatFilter extends FileFilter {
 
   private final Map<String, FileFormatFilter> fExtensions;
+
   private String fDescription;
+
   private String fFullDescription;
+
   private String fDefaultExtension;
+
   private boolean fUseExtensionsInDescription;
 
   public FileFormatFilter(String extension, String description) {

@@ -35,11 +35,16 @@ import org.slf4j.LoggerFactory;
 public class ProfileComponent extends VerticalLayout {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ProfileComponent.class);
+
   private final WarningDeleteProfileUsed dialogWarning;
+
   private ProfileEntity profileEntity;
+
   private Anchor download;
+
   private Button deleteButton;
-  private ProfileLogic profileLogic;
+
+  private final ProfileLogic profileLogic;
 
   public ProfileComponent(final ProfileLogic profileLogic) {
     setSizeFull();

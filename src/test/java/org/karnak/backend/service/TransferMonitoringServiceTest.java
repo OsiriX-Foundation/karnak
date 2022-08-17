@@ -47,7 +47,7 @@ class TransferMonitoringServiceTest {
     when(transferStatusRepoMock.findAll(any(Pageable.class)))
         .thenReturn(transferStatusEntitiesPage);
     when(transferStatusRepoMock.findAll(
-            any(TransferStatusSpecification.class), any(Pageable.class)))
+        any(TransferStatusSpecification.class), any(Pageable.class)))
         .thenReturn(transferStatusEntitiesPage);
     when(transferStatusRepoMock.count()).thenReturn(1L);
     when(transferStatusRepoMock.count(any(TransferStatusSpecification.class))).thenReturn(2L);

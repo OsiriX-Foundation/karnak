@@ -27,7 +27,9 @@ import org.weasis.dicom.param.ConnectOptions;
 import org.weasis.dicom.param.DicomNode;
 import org.weasis.dicom.param.DicomState;
 
-/** Service managing echo */
+/**
+ * Service managing echo
+ */
 @Service
 public class EchoService {
 
@@ -44,8 +46,8 @@ public class EchoService {
   /**
    * Retrieve the configured destinations from the setup
    *
-   * @return List of configured destinations
    * @param sourceAet Source AeTitle
+   * @return List of configured destinations
    */
   public List<DestinationEcho> retrieveStatusConfiguredDestinations(String sourceAet) {
     List<DestinationEcho> destinationEchos = new ArrayList<>();
@@ -65,8 +67,8 @@ public class EchoService {
    * Fill the list of destinations status
    *
    * @param destinationEchos List to fill
-   * @param sourceNode Source Node
-   * @param destinations Destinations found
+   * @param sourceNode       Source Node
+   * @param destinations     Destinations found
    */
   private void fillDestinationsStatus(
       List<DestinationEcho> destinationEchos,
@@ -98,7 +100,7 @@ public class EchoService {
    * Build params for echo process call
    *
    * @param connectTimeout Connect Timeout
-   * @param acceptTimeout Accept Timeout
+   * @param acceptTimeout  Accept Timeout
    * @return parameters built
    */
   private AdvancedParams buildEchoProcessParams(int connectTimeout, int acceptTimeout) {

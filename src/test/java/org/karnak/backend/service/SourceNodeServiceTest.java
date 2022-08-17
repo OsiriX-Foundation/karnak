@@ -29,6 +29,7 @@ class SourceNodeServiceTest {
 
   // Services
   private final ForwardNodeService forwardNodeServiceMock = Mockito.mock(ForwardNodeService.class);
+
   private SourceNodeService sourceNodeService;
 
   @BeforeEach

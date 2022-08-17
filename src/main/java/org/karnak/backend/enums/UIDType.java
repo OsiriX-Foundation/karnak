@@ -22,6 +22,12 @@ public enum UIDType {
   JPEG_EXTENDED_12BIT(
       "1.2.840.10008.1.2.4.51",
       "JPEG Extended (Process 2 & 4): Default Transfer Syntax for Lossy JPEG 12 Bit Image Compression (Process 4 only)"),
+  JPEG_SPECTRAL_SELECTION_NON_HIERARCHICAL_68(
+      "1.2.840.10008.1.2.4.53",
+      "JPEG Spectral Selection, Non-Hierarchical (Process 6 & 8) (Retired)"),
+  JPEG_FULL_PROGRESSION_NON_HIERARCHICAL_1012(
+      "1.2.840.10008.1.2.4.55",
+      "JPEG Full Progression, Non-Hierarchical (Process 10 & 12) (Retired)"),
   JPEG_LOSSLESS("1.2.840.10008.1.2.4.57", "JPEG Lossless, Non-Hierarchical (Process 14)"),
   JPEG_LOSSLESS_SV1(
       "1.2.840.10008.1.2.4.70",
@@ -32,19 +38,25 @@ public enum UIDType {
   JPEG_2000_LOSSLESS("1.2.840.10008.1.2.4.90", "JPEG 2000 Image Compression (Lossless Only)"),
   JPEG_2000("1.2.840.10008.1.2.4.91", "JPEG 2000 Image Compression");
 
-  /** Code of the enum */
+  /**
+   * Code of the enum
+   */
   private final String code;
 
-  /** Description of the enum */
+  /**
+   * Description of the enum
+   */
   private final String description;
 
-  /** Default description */
+  /**
+   * Default description
+   */
   public static final String DEFAULT_DESCRIPTION = "Keep original transfer syntax";
 
   /**
    * Constructor
    *
-   * @param code Code
+   * @param code        Code
    * @param description Description
    */
   UIDType(String code, String description) {

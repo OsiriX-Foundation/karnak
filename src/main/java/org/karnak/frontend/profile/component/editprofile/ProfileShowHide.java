@@ -16,9 +16,13 @@ import com.vaadin.flow.component.html.Div;
 public class ProfileShowHide extends Div {
 
   private final Component component;
+
   private final Button btnShowHide = new Button();
+
   private Boolean show = true;
+
   private String textShow = "Show";
+
   private String textHide = "Hide";
 
   public ProfileShowHide(Component component, Boolean show) {

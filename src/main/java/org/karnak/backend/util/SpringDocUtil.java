@@ -10,7 +10,10 @@
 package org.karnak.backend.util;
 
 public class SpringDocUtil {
-  /** Echo */
+
+  /**
+   * Echo
+   */
   // Examples
   // Destinations (with status)
   public static final String EXAMPLE_VALUES_STATUS_DESTINATIONS_ECHO =

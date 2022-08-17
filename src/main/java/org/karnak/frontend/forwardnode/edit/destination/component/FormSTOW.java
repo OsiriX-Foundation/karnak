@@ -25,22 +25,36 @@ import org.karnak.frontend.util.UIS;
 public class FormSTOW extends VerticalLayout {
 
   private final DeIdentificationComponent deIdentificationComponent;
+
+  private final TagMorphingComponent tagMorphingComponent;
+
   private Binder<DestinationEntity> binder;
+
   private TextField description;
+
   private TextField url;
+
   private TextField urlCredentials;
+
   private TextArea headers;
 
   private final FilterBySOPClassesForm filterBySOPClassesForm;
+
   private SwitchingAlbumsView switchingAlbumsView;
+
   private Checkbox activate;
+
   private final DestinationCondition destinationCondition;
+
   private final NotificationComponent notificationComponent;
+
   private final TransferSyntaxComponent transferSyntaxComponent;
+
   private final TranscodeOnlyUncompressedComponent transcodeOnlyUncompressedComponent;
 
   public FormSTOW() {
     this.deIdentificationComponent = new DeIdentificationComponent();
+    this.tagMorphingComponent = new TagMorphingComponent();
     this.filterBySOPClassesForm = new FilterBySOPClassesForm();
     this.destinationCondition = new DestinationCondition();
     this.notificationComponent = new NotificationComponent();
@@ -53,6 +67,7 @@ public class FormSTOW extends VerticalLayout {
     setSizeFull();
     this.binder = binder;
     this.deIdentificationComponent.init(this.binder);
+    this.tagMorphingComponent.init(this.binder);
     this.filterBySOPClassesForm.init(this.binder);
     this.destinationCondition.init(binder);
     notificationComponent.init(binder);
@@ -89,6 +104,7 @@ public class FormSTOW extends VerticalLayout {
     add(UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(destinationLayout))));
     add(UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(transferLayout))));
     add(UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(notificationComponent))));
+    add(UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(tagMorphingComponent))));
     add(UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(deIdentificationComponent))));
     add(UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(filterBySOPClassesForm))));
     add(UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(switchingLayout))));
@@ -133,11 +149,23 @@ public class FormSTOW extends VerticalLayout {
     return deIdentificationComponent;
   }
 
+  public TagMorphingComponent getTagMorphingComponent() {
+    return tagMorphingComponent;
+  }
+
   public FilterBySOPClassesForm getFilterBySOPClassesForm() {
     return filterBySOPClassesForm;
   }
 
   public NotificationComponent getNotificationComponent() {
     return notificationComponent;
+  }
+
+  public TransferSyntaxComponent getTransferSyntaxComponent() {
+    return transferSyntaxComponent;
+  }
+
+  public TranscodeOnlyUncompressedComponent getTranscodeOnlyUncompressedComponent() {
+    return transcodeOnlyUncompressedComponent;
   }
 }

@@ -17,7 +17,8 @@ import org.weasis.dicom.param.AttributeEditorContext;
 import org.weasis.dicom.param.AttributeEditorContext.Abort;
 
 public class ConditionEditor implements AttributeEditor {
-  private String condition;
+
+  private final String condition;
 
   public ConditionEditor(String condition) {
     this.condition = condition;

@@ -9,11 +9,20 @@
  */
 package org.karnak.backend.constant;
 
-public class DefaultValuesNotification {
+/**
+ * Constants dealing used for token management
+ */
+public class Token {
 
-  public static final String OBJECT_ERROR_PREFIX = "**ERROR**";
-  public static final String OBJECT_PATTERN = "[Karnak Notification] %s %.30s";
-  public static final String OBJECT_VALUES = "PatientID,StudyDescription";
-  public static final String INTERVAL = "45";
-  public static final String MAIL_SMTP_SENDER = "karnak@kehops.online";
+  // Name of the resource in the access token for retrieving roles
+  public static final String RESOURCE_NAME = "karnak";
+
+  // Access token resource access
+  public static final String RESOURCE_ACCESS = "resource_access";
+
+  // Roles
+  public static final String ROLES = "roles";
+
+  // Prefix of built roles
+  public static final String PREFIX_ROLE = "ROLE_";
 }

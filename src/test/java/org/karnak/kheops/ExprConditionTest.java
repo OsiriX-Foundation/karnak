@@ -293,22 +293,27 @@ class ExprConditionTest {
   }
 
   /*
-  @Test
-  void validateCondition() {
-      assertTrue(exprConditionKheops.validateCondition("tagValueIsPresent(Tag.PatientName)"));
-      assertTrue(exprConditionKheops.validateCondition("tagValueIsPresent((Tag.PatientName))"));
-      assertTrue(exprConditionKheops.validateCondition("tagValueIsPresent((0000,0000))"));
-      assertTrue(exprConditionKheops.validateCondition("tagValueIsPresent((00000000))"));
-      assertTrue(exprConditionKheops.validateCondition("tagValueIsPresent(0000,0000)"));
-      assertTrue(exprConditionKheops.validateCondition("tagValueIsPresent(00000000)"));
-
-      assertTrue(exprConditionKheops.validateCondition("tagValueContains((0000,0000))"));
-      assertTrue(exprConditionKheops.validateCondition("tagValueBeginWith((0000,0000))"));
-      assertTrue(exprConditionKheops.validateCondition("tagValueEndWith((0000,0000))"));
-      assertTrue(exprConditionKheops.validateCondition("tagValueIsPresent((FFFF,FFFF))"));
-      assertTrue(exprConditionKheops.validateCondition("tagValueContains((FFFF,FFFF))"));
-      assertTrue(exprConditionKheops.validateCondition("tagValueBeginWith((FFFF,FFFF))"));
-      assertTrue(exprConditionKheops.validateCondition("tagValueEndWith((FFFF,FFFF))"));
-  }
+   * @Test void validateCondition() { assertTrue(exprConditionKheops.validateCondition(
+   * "tagValueIsPresent(Tag.PatientName)"));
+   * assertTrue(exprConditionKheops.validateCondition(
+   * "tagValueIsPresent((Tag.PatientName))"));
+   * assertTrue(exprConditionKheops.validateCondition("tagValueIsPresent((0000,0000))"))
+   * ;
+   * assertTrue(exprConditionKheops.validateCondition("tagValueIsPresent((00000000))"));
+   * assertTrue(exprConditionKheops.validateCondition("tagValueIsPresent(0000,0000)"));
+   * assertTrue(exprConditionKheops.validateCondition("tagValueIsPresent(00000000)"));
+   *
+   * assertTrue(exprConditionKheops.validateCondition("tagValueContains((0000,0000))"));
+   * assertTrue(exprConditionKheops.validateCondition("tagValueBeginWith((0000,0000))"))
+   * ;
+   * assertTrue(exprConditionKheops.validateCondition("tagValueEndWith((0000,0000))"));
+   * assertTrue(exprConditionKheops.validateCondition("tagValueIsPresent((FFFF,FFFF))"))
+   * ;
+   * assertTrue(exprConditionKheops.validateCondition("tagValueContains((FFFF,FFFF))"));
+   * assertTrue(exprConditionKheops.validateCondition("tagValueBeginWith((FFFF,FFFF))"))
+   * ;
+   * assertTrue(exprConditionKheops.validateCondition("tagValueEndWith((FFFF,FFFF))"));
+   * }
    */
+
 }

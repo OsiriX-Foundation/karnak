@@ -14,7 +14,9 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.binder.Binder;
 import org.karnak.backend.data.entity.DestinationEntity;
 
-/** Create a transfer syntax component */
+/**
+ * Create a transfer syntax component
+ */
 public class TranscodeOnlyUncompressedComponent extends VerticalLayout {
 
   private Checkbox transcodeOnlyUncompressedCheckBox;
@@ -31,12 +33,16 @@ public class TranscodeOnlyUncompressedComponent extends VerticalLayout {
     addComponents();
   }
 
-  /** Add components in TranscodeOnlyUncompressed */
+  /**
+   * Add components in TranscodeOnlyUncompressed
+   */
   private void addComponents() {
     add(transcodeOnlyUncompressedCheckBox);
   }
 
-  /** Build components used in Transfer Syntax component */
+  /**
+   * Build components used in Transfer Syntax component
+   */
   private void buildComponents() {
     transcodeOnlyUncompressedCheckBox = new Checkbox("Transcode only uncompressed");
     transcodeOnlyUncompressedCheckBox.getElement().getStyle().set("margin-left", "66px");
@@ -49,5 +55,9 @@ public class TranscodeOnlyUncompressedComponent extends VerticalLayout {
         .bind(
             DestinationEntity::isTranscodeOnlyUncompressed,
             DestinationEntity::setTranscodeOnlyUncompressed);
+  }
+
+  public Checkbox getTranscodeOnlyUncompressedCheckBox() {
+    return transcodeOnlyUncompressedCheckBox;
   }
 }

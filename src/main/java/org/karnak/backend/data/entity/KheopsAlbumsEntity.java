@@ -26,13 +26,19 @@ public class KheopsAlbumsEntity implements Serializable {
   private static final long serialVersionUID = -3315720301354286325L;
 
   private Long id;
+
   private String urlAPI;
+
   private String authorizationDestination;
+
   private String authorizationSource;
+
   private String condition;
+
   private DestinationEntity destinationEntity = new DestinationEntity();
 
-  public KheopsAlbumsEntity() {}
+  public KheopsAlbumsEntity() {
+  }
 
   public KheopsAlbumsEntity(
       String urlAPI,
@@ -115,5 +121,27 @@ public class KheopsAlbumsEntity implements Serializable {
   @Override
   public int hashCode() {
     return Objects.hash(urlAPI, authorizationDestination, authorizationSource, condition);
+  }
+
+  @Override
+  public String toString() {
+    return "KheopsAlbumsEntity{"
+        + "id="
+        + id
+        + ", urlAPI='"
+        + urlAPI
+        + '\''
+        + ", authorizationDestination='"
+        + authorizationDestination
+        + '\''
+        + ", authorizationSource='"
+        + authorizationSource
+        + '\''
+        + ", condition='"
+        + condition
+        + '\''
+        + ", destinationEntity="
+        + destinationEntity
+        + '}';
   }
 }

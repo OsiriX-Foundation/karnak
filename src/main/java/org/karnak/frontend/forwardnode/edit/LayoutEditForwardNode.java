@@ -13,6 +13,7 @@ import static org.karnak.backend.enums.PseudonymType.EXTID_IN_TAG;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
@@ -39,28 +40,42 @@ import org.karnak.frontend.forwardnode.edit.destination.component.DeIdentificati
 import org.karnak.frontend.forwardnode.edit.destination.component.FilterBySOPClassesForm;
 import org.karnak.frontend.forwardnode.edit.destination.component.NewUpdateDestination;
 import org.karnak.frontend.forwardnode.edit.destination.component.NotificationComponent;
+import org.karnak.frontend.forwardnode.edit.destination.component.TagMorphingComponent;
+import org.karnak.frontend.forwardnode.edit.destination.component.TranscodeOnlyUncompressedComponent;
 import org.karnak.frontend.forwardnode.edit.source.SourceView;
 import org.karnak.frontend.forwardnode.edit.source.component.NewUpdateSourceNode;
 import org.karnak.frontend.util.UIS;
 
-/** Layout of the edit forward node */
+/**
+ * Layout of the edit forward node
+ */
 @SuppressWarnings("serial")
 public class LayoutEditForwardNode extends VerticalLayout {
 
   // Services
   private final transient ProjectService projectService;
+
   private final SOPClassUIDService sopClassUIDService;
 
   // UI components
   private final Binder<ForwardNodeEntity> binderForwardNode;
+
   private final EditAETitleDescription editAETitleDescription;
+
   private final TabSourcesDestination tabSourcesDestination;
+
   private final VerticalLayout layoutDestinationsSources;
+
   private final DestinationView destinationView;
+
   private final SourceView sourceView;
+
   private final NewUpdateDestination newUpdateDestination;
+
   private final ButtonSaveDeleteCancel buttonForwardNodeSaveDeleteCancel;
+
   private final NewUpdateSourceNode newUpdateSourceNode;
+
   private ForwardNodeEntity currentForwardNodeEntity;
 
   /**
@@ -95,7 +110,9 @@ public class LayoutEditForwardNode extends VerticalLayout {
     addBinders();
   }
 
-  /** Build layout */
+  /**
+   * Build layout
+   */
   private void buildLayout() {
     layoutDestinationsSources.setSizeFull();
     getStyle().set("overflow-y", "auto");
@@ -104,7 +121,9 @@ public class LayoutEditForwardNode extends VerticalLayout {
     setLayoutDestinationsSources(tabSourcesDestination.getSelectedTab().getLabel());
   }
 
-  /** Add binders on components */
+  /**
+   * Add binders on components
+   */
   private void addBinders() {
     addBindersFilterBySOPClassesForm(
         newUpdateDestination.getFormDICOM().getFilterBySOPClassesForm());
@@ -114,16 +133,32 @@ public class LayoutEditForwardNode extends VerticalLayout {
     addBinderExtidInDicomTag(newUpdateDestination.getFormDICOM().getDeIdentificationComponent());
   }
 
-  /** Add events on components */
+  /**
+   * Add events on components
+   */
   private void addEvents() {
     addEventButtonSaveNewUpdateSourceNode();
     addEventButtonDeleteNewUpdateSourceNode();
     addEventButtonSaveNewUpdateDestination();
     addEventButtonDeleteNewUpdateDestination();
-    addEventCheckboxLayoutDesidentification(
+    addEventCheckboxLayoutTagMorphing(
+        newUpdateDestination.getFormDICOM().getTagMorphingComponent(),
         newUpdateDestination.getFormDICOM().getDeIdentificationComponent());
-    addEventCheckboxLayoutDesidentification(
+    addEventCheckboxLayoutTagMorphing(
+        newUpdateDestination.getFormSTOW().getTagMorphingComponent(),
         newUpdateDestination.getFormSTOW().getDeIdentificationComponent());
+    addEventCheckboxLayoutDesidentification(
+        newUpdateDestination.getFormDICOM().getDeIdentificationComponent(),
+        newUpdateDestination.getFormDICOM().getTagMorphingComponent());
+    addEventCheckboxLayoutDesidentification(
+        newUpdateDestination.getFormSTOW().getDeIdentificationComponent(),
+        newUpdateDestination.getFormSTOW().getTagMorphingComponent());
+    addEventTranscodeOnlyUncompressedWhenSomeTransferSyntax(
+        newUpdateDestination.getFormSTOW().getTransferSyntaxComponent().getTransferSyntaxSelect(),
+        newUpdateDestination.getFormSTOW().getTranscodeOnlyUncompressedComponent());
+    addEventTranscodeOnlyUncompressedWhenSomeTransferSyntax(
+        newUpdateDestination.getFormDICOM().getTransferSyntaxComponent().getTransferSyntaxSelect(),
+        newUpdateDestination.getFormDICOM().getTranscodeOnlyUncompressedComponent());
     setEventChangeTabValue();
     setEventBinderForwardNode();
     setEventDestination();
@@ -144,6 +179,11 @@ public class LayoutEditForwardNode extends VerticalLayout {
         .setItems(projectService.getAllProjects());
     newUpdateDestination
         .getFormDICOM()
+        .getTagMorphingComponent()
+        .getProjectDropDown()
+        .setItems(projectService.getAllProjects());
+    newUpdateDestination
+        .getFormDICOM()
         .getFilterBySOPClassesForm()
         .getSopFilter()
         .setItems(sopClassUIDService.getAllSOPClassUIDsName());
@@ -152,6 +192,11 @@ public class LayoutEditForwardNode extends VerticalLayout {
     newUpdateDestination
         .getFormSTOW()
         .getDeIdentificationComponent()
+        .getProjectDropDown()
+        .setItems(projectService.getAllProjects());
+    newUpdateDestination
+        .getFormSTOW()
+        .getTagMorphingComponent()
         .getProjectDropDown()
         .setItems(projectService.getAllProjects());
     newUpdateDestination
@@ -380,8 +425,8 @@ public class LayoutEditForwardNode extends VerticalLayout {
 
               if (currentDestinationEntity.getDestinationType() == DestinationType.stow
                   && newUpdateDestination
-                      .getBinderFormSTOW()
-                      .writeBeanIfValid(currentDestinationEntity)) {
+                  .getBinderFormSTOW()
+                  .writeBeanIfValid(currentDestinationEntity)) {
                 // Reset / set defaults and save destination
                 resetDefaultValuesAndSaveDestination(
                     currentDestinationEntity,
@@ -402,8 +447,8 @@ public class LayoutEditForwardNode extends VerticalLayout {
 
               if (currentDestinationEntity.getDestinationType() == DestinationType.dicom
                   && newUpdateDestination
-                      .getBinderFormDICOM()
-                      .writeBeanIfValid(currentDestinationEntity)) {
+                  .getBinderFormDICOM()
+                  .writeBeanIfValid(currentDestinationEntity)) {
                 // Reset / set defaults and save destination
                 resetDefaultValuesAndSaveDestination(
                     currentDestinationEntity,
@@ -416,8 +461,8 @@ public class LayoutEditForwardNode extends VerticalLayout {
   /**
    * Reset / set defaults and save destination
    *
-   * @param destinationEntity Destination
-   * @param notificationComponent Notification component
+   * @param destinationEntity         Destination
+   * @param notificationComponent     Notification component
    * @param deIdentificationComponent DeIdentification component
    */
   private void resetDefaultValuesAndSaveDestination(
@@ -484,23 +529,70 @@ public class LayoutEditForwardNode extends VerticalLayout {
     }
   }
 
+  /**
+   * Add event checkbox deidentification
+   *
+   * @param deIdentificationComponent DeIdentification Component
+   * @param tagMorphingComponent      Tag Morphing Component
+   */
   private void addEventCheckboxLayoutDesidentification(
-      DeIdentificationComponent deIdentificationComponent) {
+      DeIdentificationComponent deIdentificationComponent,
+      TagMorphingComponent tagMorphingComponent) {
     deIdentificationComponent
         .getDeIdentificationCheckbox()
         .addValueChangeListener(
             event -> {
               if (event.getValue() != null) {
                 if (event.getValue()) {
-                  if (projectService.getAllProjects().size() > 0) {
+                  // Deactivate tag morphing
+                  tagMorphingComponent.getTagMorphingCheckbox().setValue(false);
+                  if (!projectService.getAllProjects().isEmpty()) {
                     deIdentificationComponent.getDeIdentificationDiv().setVisible(true);
-                    deIdentificationComponent.setTextOnSelectionProject(
-                        deIdentificationComponent.getProjectDropDown().getValue());
+                    deIdentificationComponent
+                        .getDestinationComponentUtil()
+                        .setTextOnSelectionProject(
+                            deIdentificationComponent.getProjectDropDown().getValue(),
+                            deIdentificationComponent.getProfileLabel());
                   } else {
                     deIdentificationComponent.getWarningNoProjectsDefined().open();
                   }
                 } else {
                   deIdentificationComponent.getDeIdentificationDiv().setVisible(false);
+                }
+              }
+            });
+  }
+
+  /**
+   * Add event tag morphing checkbox
+   *
+   * @param deIdentificationComponent DeIdentification Component
+   * @param tagMorphingComponent      Tag Morphing Component
+   */
+  private void addEventCheckboxLayoutTagMorphing(
+      TagMorphingComponent tagMorphingComponent,
+      DeIdentificationComponent deIdentificationComponent) {
+    tagMorphingComponent
+        .getTagMorphingCheckbox()
+        .addValueChangeListener(
+            event -> {
+              if (event.getValue() != null) {
+                if (event.getValue()) {
+                  // Deactivate deidentification
+                  deIdentificationComponent.getDeIdentificationCheckbox().setValue(false);
+
+                  if (!projectService.getAllProjects().isEmpty()) {
+                    tagMorphingComponent.getTagMorphingDiv().setVisible(true);
+                    tagMorphingComponent
+                        .getDestinationComponentUtil()
+                        .setTextOnSelectionProject(
+                            tagMorphingComponent.getProjectDropDown().getValue(),
+                            tagMorphingComponent.getProfileLabel());
+                  } else {
+                    tagMorphingComponent.getWarningNoProjectsDefined().open();
+                  }
+                } else {
+                  tagMorphingComponent.getTagMorphingDiv().setVisible(false);
                 }
               }
             });
@@ -543,9 +635,9 @@ public class LayoutEditForwardNode extends VerticalLayout {
             tag -> {
               if (!deIdentificationComponent.getDeIdentificationCheckbox().getValue()
                   || !deIdentificationComponent
-                      .getPseudonymTypeSelect()
-                      .getValue()
-                      .equals(EXTID_IN_TAG.getValue())) {
+                  .getPseudonymTypeSelect()
+                  .getValue()
+                  .equals(EXTID_IN_TAG.getValue())) {
                 return true;
               }
               final String cleanTag = tag.replaceAll("[(),]", "").toUpperCase();
@@ -568,21 +660,21 @@ public class LayoutEditForwardNode extends VerticalLayout {
             delimiter -> {
               if (!deIdentificationComponent.getDeIdentificationCheckbox().getValue()
                   || !deIdentificationComponent
-                      .getPseudonymTypeSelect()
-                      .getValue()
-                      .equals(EXTID_IN_TAG.getValue())) {
+                  .getPseudonymTypeSelect()
+                  .getValue()
+                  .equals(EXTID_IN_TAG.getValue())) {
                 return true;
               }
               if (deIdentificationComponent
-                          .getPseudonymInDicomTagComponent()
-                          .getPosition()
-                          .getValue()
-                      != null
+                  .getPseudonymInDicomTagComponent()
+                  .getPosition()
+                  .getValue()
+                  != null
                   && deIdentificationComponent
-                          .getPseudonymInDicomTagComponent()
-                          .getPosition()
-                          .getValue()
-                      > 0) {
+                  .getPseudonymInDicomTagComponent()
+                  .getPosition()
+                  .getValue()
+                  > 0) {
                 return delimiter != null && !delimiter.equals("");
               }
               return true;
@@ -598,21 +690,21 @@ public class LayoutEditForwardNode extends VerticalLayout {
             position -> {
               if (!deIdentificationComponent.getDeIdentificationCheckbox().getValue()
                   || !deIdentificationComponent
-                      .getPseudonymTypeSelect()
-                      .getValue()
-                      .equals(EXTID_IN_TAG.getValue())) {
+                  .getPseudonymTypeSelect()
+                  .getValue()
+                  .equals(EXTID_IN_TAG.getValue())) {
                 return true;
               }
               if (deIdentificationComponent
-                          .getPseudonymInDicomTagComponent()
-                          .getDelimiter()
-                          .getValue()
-                      != null
+                  .getPseudonymInDicomTagComponent()
+                  .getDelimiter()
+                  .getValue()
+                  != null
                   && !deIdentificationComponent
-                      .getPseudonymInDicomTagComponent()
-                      .getDelimiter()
-                      .getValue()
-                      .equals("")) {
+                  .getPseudonymInDicomTagComponent()
+                  .getDelimiter()
+                  .getValue()
+                  .equals("")) {
                 return position != null && position >= 0;
               }
               return true;
@@ -624,5 +716,18 @@ public class LayoutEditForwardNode extends VerticalLayout {
         .getDestinationBinder()
         .forField(deIdentificationComponent.getPseudonymInDicomTagComponent().getSavePseudonym())
         .bind(DestinationEntity::getSavePseudonym, DestinationEntity::setSavePseudonym);
+  }
+
+  /**
+   * Event on checkbox Transcode Only Uncompressed: deactivate for some transfer syntax Keep
+   * original + Explicit VR
+   */
+  private void addEventTranscodeOnlyUncompressedWhenSomeTransferSyntax(
+      Select<String> transferSyntaxSelect,
+      TranscodeOnlyUncompressedComponent transcodeOnlyUncompressedComponent) {
+    transferSyntaxSelect.addValueChangeListener(
+        value ->
+            newUpdateDestination.handleEventTranscodeOnlyUncompressedWhenSomeTransferSyntax(
+                transcodeOnlyUncompressedComponent, value.getValue(), true));
   }
 }

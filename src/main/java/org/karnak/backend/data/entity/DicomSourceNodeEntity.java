@@ -28,15 +28,20 @@ public class DicomSourceNodeEntity implements Serializable {
   private static final long serialVersionUID = -4917273057619947934L;
 
   private Long id;
+
   private String description;
+
   // AETitle of the source node.
   private String aeTitle;
+
   // the host or IP of the source node. If the hostname exists then it is checked
   // (allows a restriction on the host not only in the AETitle).
   private String hostname;
+
   // if "true" check the hostname during the DICOM association and if not match
   // the connection is abort
   private Boolean checkHostname;
+
   private ForwardNodeEntity forwardNodeEntity;
 
   public DicomSourceNodeEntity() {

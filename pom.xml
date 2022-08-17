@@ -28,11 +28,11 @@
     <enforcer.jdk-version>[${java.version},)</enforcer.jdk-version>
     <enforcer.maven-version>[3.2.0,)</enforcer.maven-version>
     <java.version>17</java.version>
-    <springframework.version>2.6.1</springframework.version>
+    <springframework.version>2.6.6</springframework.version>
     <javax.el.version>3.0.0</javax.el.version>
     <javax.mail.version>1.6.2</javax.mail.version>
     <vaadin.version>21.0.9</vaadin.version>
-    <weasis-dicom-tools.version>5.25.2-IMG-RELEASE</weasis-dicom-tools.version>
+    <weasis-dicom-tools.version>5.27.0.1</weasis-dicom-tools.version>
     <weasis.opencv.native.version>4.5.5-dcm</weasis.opencv.native.version>
     <springdoc.version>1.6.0</springdoc.version>
     <mockito.version>4.2.0</mockito.version>
@@ -47,7 +47,6 @@
     <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     <org.json.version>20211205</org.json.version>
     <logback.version>1.2.9</logback.version>
-    <hazelcast.version>5.0.2</hazelcast.version>
     <liquibase.version>4.3.5</liquibase.version>
     <opencsv.version>5.5.2</opencsv.version>
 </properties>
@@ -335,15 +334,19 @@
     </dependency>
 
     <dependency>
-      <artifactId>cache-api</artifactId>
-      <groupId>javax.cache</groupId>
-      <version>1.1.1</version>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-cache</artifactId>
     </dependency>
 
     <dependency>
-      <artifactId>hazelcast-spring</artifactId>
-      <groupId>com.hazelcast</groupId>
-      <version>${hazelcast.version}</version>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-redis</artifactId>
+    </dependency>
+
+    <dependency>
+      <artifactId>cache-api</artifactId>
+      <groupId>javax.cache</groupId>
+      <version>1.1.1</version>
     </dependency>
 
     <dependency>

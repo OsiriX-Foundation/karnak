@@ -38,6 +38,9 @@ services:
     secrets:
       - postgres_karnak_password
 
+  karnak-cache:
+    image: redis:6.0.16-alpine3.15
+
   node-dicom:
     image: dcm4che/dcm4che-tools:5.22.6
     entrypoint: [ "storescp", "-b", "NODE:4444" ]

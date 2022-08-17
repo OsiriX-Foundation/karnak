@@ -12,6 +12,7 @@ package org.karnak.backend.api.rqbody;
 public class SearchIds {
 
   private String idType;
+
   private String idString;
 
   public SearchIds(String idType, String idString) {

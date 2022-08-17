@@ -12,10 +12,15 @@ RUN java -Djarmode=layertools -jar application.jar extract
 # Build the final deployment image
 FROM eclipse-temurin:17-jre-focal
 WORKDIR app
+
 COPY --from=builder /app/dependencies/ ./
+RUN true
 COPY --from=builder /app/spring-boot-loader/ ./
+RUN true
 COPY --from=builder /app/snapshot-dependencies/ ./
+RUN true
 COPY --from=builder /app/application/ ./
+RUN true
 COPY tools/docker-entrypoint.sh .
 
 EXPOSE 8080

@@ -9,10 +9,22 @@
  */
 package org.karnak.backend.dicom;
 
-import static java.time.temporal.ChronoField.*;
+import static java.time.temporal.ChronoField.DAY_OF_MONTH;
+import static java.time.temporal.ChronoField.HOUR_OF_DAY;
+import static java.time.temporal.ChronoField.MINUTE_OF_HOUR;
+import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
 import static java.time.temporal.ChronoField.NANO_OF_SECOND;
+import static java.time.temporal.ChronoField.OFFSET_SECONDS;
+import static java.time.temporal.ChronoField.SECOND_OF_MINUTE;
+import static java.time.temporal.ChronoField.YEAR;
 
-import java.time.*;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.FormatStyle;
@@ -29,6 +41,7 @@ import org.slf4j.LoggerFactory;
  * @since Apr 2019
  */
 public class DateTimeUtils {
+
   private static final Logger LOGGER = LoggerFactory.getLogger(DateTimeUtils.class);
 
   private static final DateTimeFormatter DA_PARSER =
@@ -173,13 +186,17 @@ public class DateTimeUtils {
   }
 
   public static String truncateTM(String value, int maxLength) {
-    if (maxLength < 2) throw new IllegalArgumentException("maxLength %d < 2" + maxLength);
+    if (maxLength < 2) {
+      throw new IllegalArgumentException("maxLength %d < 2" + maxLength);
+    }
 
     return truncate(value, value.length(), maxLength, 8);
   }
 
   public static String truncateDT(String value, int maxLength) {
-    if (maxLength < 4) throw new IllegalArgumentException("maxLength %d < 4" + maxLength);
+    if (maxLength < 4) {
+      throw new IllegalArgumentException("maxLength %d < 4" + maxLength);
+    }
 
     int index = indexOfZone(value);
     return index < 0
@@ -192,7 +209,9 @@ public class DateTimeUtils {
     int index = tm.lastIndexOf(':');
     if (index > 0) {
       length--;
-      if (index > 4) length--;
+      if (index > 4) {
+        length--;
+      }
     }
     return nanosToAdd(length);
   }
@@ -266,6 +285,7 @@ public class DateTimeUtils {
 
   private static final DateTimeFormatter defaultTimeFormatter =
       DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM);
+
   private static final DateTimeFormatter defaultDateTimeFormatter =
       DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);
 

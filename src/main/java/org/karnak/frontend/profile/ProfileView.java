@@ -38,6 +38,7 @@ import org.springframework.security.access.annotation.Secured;
 public class ProfileView extends HorizontalLayout implements HasUrlParameter<String> {
 
   public static final String VIEW_NAME = "Profiles";
+
   public static final String ROUTE = "profile";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ProfileView.class);
@@ -45,12 +46,19 @@ public class ProfileView extends HorizontalLayout implements HasUrlParameter<Str
   private final ProfileLogic profileLogic;
 
   private final ProfileComponent profileComponent;
+
   private final ProfileElementMainView profileElementMainView;
+
   private final ProfileGrid profileGrid;
+
   private final ProfileErrorView profileErrorView;
+
   private VerticalLayout barAndGridLayout;
+
   private final HorizontalLayout profileHorizontalLayout;
+
   private Upload uploadProfile;
+
   private MemoryBuffer memoryBuffer;
 
   @Autowired

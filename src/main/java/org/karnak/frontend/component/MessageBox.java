@@ -25,12 +25,16 @@ public class MessageBox extends Composite<Div> {
 
   // UI COMPONENTS
   private HorizontalLayout layout;
+
   private Div titleDiv;
+
   private Div contentDiv;
+
   private IronIcon icon;
 
   // DATA
   private Message message;
+
   private final MessageType type;
 
   public MessageBox(MessageType type) {

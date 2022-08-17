@@ -12,10 +12,15 @@ package org.karnak.backend.api.rqbody;
 public class Data {
 
   private String[] idtypes;
+
   private Fields fields;
+
   private Ids ids;
+
   private SearchIds[] searchIds;
+
   private String[] resultFields;
+
   private String[] resultIds;
 
   public Data(String[] idtypes, Fields fields, Ids ids) {

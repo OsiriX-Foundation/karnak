@@ -62,7 +62,9 @@ public class Profile {
   private static final Logger LOGGER = LoggerFactory.getLogger(Profile.class);
 
   private final List<ProfileItem> profiles;
+
   private final Pseudonym pseudonym;
+
   private final Map<String, MaskArea> maskMap;
 
   public Profile(ProfileEntity profileEntity) {
@@ -155,8 +157,8 @@ public class Profile {
         if (profileEntity.getCondition() == null
             || profileEntity.getCodeName().equals(ProfileItemType.DEFACING.getClassAlias())
             || profileEntity
-                .getCodeName()
-                .equals(ProfileItemType.CLEAN_PIXEL_DATA.getClassAlias())) {
+            .getCodeName()
+            .equals(ProfileItemType.CLEAN_PIXEL_DATA.getClassAlias())) {
           currentAction = profileEntity.getAction(dcm, dcmCopy, tag, hmac);
         } else {
           boolean conditionIsOk =
@@ -216,7 +218,8 @@ public class Profile {
       }
       String scuPattern = sopClassUID + ".";
       MaskArea mask = getMask(dcmCopy.getString(Tag.StationName));
-      // A mask must be applied with all the US and Secondary Capture sopClassUID, and with
+      // A mask must be applied with all the US and Secondary Capture sopClassUID,
+      // and with
       // BurnedInAnnotation
       if (isCleanPixelAllowedDependingImageType(dcmCopy, sopClassUID, scuPattern)
           && evaluateConditionCleanPixelData(dcmCopy)) {
@@ -234,14 +237,15 @@ public class Profile {
   /**
    * Determine if the clean pixel should be applied depending on the image type
    *
-   * @param dcmCopy Attributes
+   * @param dcmCopy     Attributes
    * @param sopClassUID SopClassUID
-   * @param scuPattern Pattern
+   * @param scuPattern  Pattern
    * @return true if the clean pixel could be applied
    */
   private boolean isCleanPixelAllowedDependingImageType(
       Attributes dcmCopy, String sopClassUID, String scuPattern) {
-    // A mask must be applied with all the US and Secondary Capture sopClassUID, and with
+    // A mask must be applied with all the US and Secondary Capture sopClassUID, and
+    // with
     // BurnedInAnnotation
     return scuPattern.startsWith("1.2.840.10008.5.1.4.1.1.6.")
         || scuPattern.startsWith("1.2.840.10008.5.1.4.1.1.7.")
@@ -293,16 +297,26 @@ public class Profile {
     }
   }
 
-  public void apply(
+  /**
+   * Apply deidentification
+   *
+   * @param dcm               Attributes
+   * @param destinationEntity Destination
+   * @param profileEntity     Profile
+   * @param context           Context
+   * @param projectEntity     Project
+   */
+  public void applyDeIdentification(
       Attributes dcm,
       DestinationEntity destinationEntity,
       ProfileEntity profileEntity,
-      AttributeEditorContext context) {
+      AttributeEditorContext context,
+      ProjectEntity projectEntity) {
     final String SOPInstanceUID = dcm.getString(Tag.SOPInstanceUID);
     final String SeriesInstanceUID = dcm.getString(Tag.SeriesInstanceUID);
     final String IssuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID);
     final String PatientID = dcm.getString(Tag.PatientID);
-    final HMAC hmac = generateHMAC(destinationEntity, PatientID);
+    final HMAC hmac = generateHMAC(PatientID, projectEntity);
 
     MDC.put("SOPInstanceUID", SOPInstanceUID);
     MDC.put("SeriesInstanceUID", SeriesInstanceUID);
@@ -328,23 +342,57 @@ public class Profile {
 
     // Set tags by default
     AttributesByDefault.setPatientModule(
-        dcm, newPatientID, pseudonymValue, destinationEntity.getProjectEntity());
+        dcm, newPatientID, pseudonymValue, destinationEntity.getDeIdentificationProjectEntity());
     AttributesByDefault.setSOPCommonModule(dcm);
     AttributesByDefault.setClinicalTrialAttributes(
-        dcm, destinationEntity.getProjectEntity(), pseudonymValue);
+        dcm, destinationEntity.getDeIdentificationProjectEntity(), pseudonymValue);
 
     final Marker clincalMarker = MarkerFactory.getMarker("CLINICAL");
     MDC.put("DeidentifySOPInstanceUID", dcm.getString(Tag.SOPInstanceUID));
     MDC.put("DeidentifySeriesInstanceUID", dcm.getString(Tag.SeriesInstanceUID));
-    MDC.put("ProjectName", destinationEntity.getProjectEntity().getName());
+    MDC.put("ProjectName", destinationEntity.getDeIdentificationProjectEntity().getName());
     MDC.put("ProfileName", profileEntity.getName());
     MDC.put("ProfileCodenames", profilesCodeName);
     LOGGER.info(clincalMarker, "");
     MDC.clear();
   }
 
-  private HMAC generateHMAC(DestinationEntity destinationEntity, String patientID) {
-    ProjectEntity projectEntity = destinationEntity.getProjectEntity();
+  public void applyTagMorphing(
+      Attributes dcm,
+      DestinationEntity destinationEntity,
+      ProfileEntity profileEntity,
+      AttributeEditorContext context,
+      ProjectEntity projectEntity) {
+    final String SOPInstanceUID = dcm.getString(Tag.SOPInstanceUID);
+    final String SeriesInstanceUID = dcm.getString(Tag.SeriesInstanceUID);
+    final String IssuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID);
+    final String PatientID = dcm.getString(Tag.PatientID);
+    final HMAC hmac = generateHMAC(PatientID, projectEntity);
+
+    MDC.put("SOPInstanceUID", SOPInstanceUID);
+    MDC.put("SeriesInstanceUID", SeriesInstanceUID);
+    MDC.put("issuerOfPatientID", IssuerOfPatientID);
+    MDC.put("PatientID", PatientID);
+
+    String profilesCodeName =
+        profiles.stream().map(ProfileItem::getCodeName).collect(Collectors.joining("-"));
+
+    Attributes dcmCopy = new Attributes(dcm);
+
+    // Apply actions on tags
+    applyAction(dcm, dcmCopy, hmac, null, null, context);
+
+    final Marker clincalMarker = MarkerFactory.getMarker("CLINICAL");
+    MDC.put("TagMorphingSOPInstanceUID", dcm.getString(Tag.SOPInstanceUID));
+    MDC.put("TagMorphingSeriesInstanceUID", dcm.getString(Tag.SeriesInstanceUID));
+    MDC.put("ProjectName", destinationEntity.getTagMorphingProjectEntity().getName());
+    MDC.put("ProfileName", profileEntity.getName());
+    MDC.put("ProfileCodenames", profilesCodeName);
+    LOGGER.info(clincalMarker, "");
+    MDC.clear();
+  }
+
+  private HMAC generateHMAC(String patientID, ProjectEntity projectEntity) {
     if (projectEntity == null) {
       throw new IllegalStateException(
           "Cannot build the HMAC a project is not associate at the destination");

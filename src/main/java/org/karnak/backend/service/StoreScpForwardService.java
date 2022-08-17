@@ -42,9 +42,13 @@ public class StoreScpForwardService {
   private static final Logger LOGGER = LoggerFactory.getLogger(StoreScpForwardService.class);
 
   private final Device device = new Device("storescp");
+
   private final ApplicationEntity ae = new ApplicationEntity("*");
+
   private final Connection conn = new Connection();
+
   private volatile int priority;
+
   private volatile int status = 0;
 
   private Map<ForwardDicomNode, List<ForwardDestination>> destinations;
@@ -59,10 +63,10 @@ public class StoreScpForwardService {
   /**
    * Init service
    *
-   * @param forwardParams the optional advanced parameters (proxy, authentication, connection and
-   *     TLS) for the final destination
-   * @param fwdNode the calling DICOM node configuration
-   * @param destinationNode the final DICOM node configuration
+   * @param forwardParams    the optional advanced parameters (proxy, authentication, connection and
+   *                         TLS) for the final destination
+   * @param fwdNode          the calling DICOM node configuration
+   * @param destinationNode  the final DICOM node configuration
    * @param attributesEditor the editor for modifying attributes on the fly (can be Null)
    */
   public void init(

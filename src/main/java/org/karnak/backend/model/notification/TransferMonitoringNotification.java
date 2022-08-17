@@ -13,19 +13,31 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
-/** Model used to build transfer monitoring notification */
+/**
+ * Model used to build transfer monitoring notification
+ */
 public class TransferMonitoringNotification {
 
   private String subject;
+
   private String from;
+
   private String to;
+
   private String patientId;
+
   private String studyUid;
+
   private String accessionNumber;
+
   private String studyDescription;
+
   private LocalDateTime studyDate;
+
   private String source;
+
   private String destination;
+
   private List<SerieSummaryNotification> serieSummaryNotifications;
 
   public String getSubject() {

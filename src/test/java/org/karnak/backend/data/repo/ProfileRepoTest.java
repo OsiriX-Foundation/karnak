@@ -28,9 +28,12 @@ class ProfileRepoTest {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ProfileRepoTest.class);
 
-  @Autowired private ProfileRepo repository;
+  @Autowired
+  private ProfileRepo repository;
 
-  /** Test save and find record. */
+  /**
+   * Test save and find record.
+   */
   @Test
   void shouldSaveAndFindARecord() {
     // Create an entity to save
@@ -58,7 +61,9 @@ class ProfileRepoTest {
     assertEquals(entity.getId(), foundByIdOpt.get().getId());
   }
 
-  /** Test find all. */
+  /**
+   * Test find all.
+   */
   @Test
   void shouldFindAllRecords() {
     // Create an entity to save
@@ -79,7 +84,9 @@ class ProfileRepoTest {
     LOGGER.info("Number of entities found [{}]", all.size());
   }
 
-  /** Test modification of a record. */
+  /**
+   * Test modification of a record.
+   */
   @Test
   void shouldModifyRecord() {
 
@@ -112,7 +119,9 @@ class ProfileRepoTest {
         "Name of the entity with id [{}]: [{}]", entityModified.getId(), entityModified.getName());
   }
 
-  /** Test delete record. */
+  /**
+   * Test delete record.
+   */
   @Test
   void shouldDeleteRecord() {
     // Create an entity to save
@@ -142,7 +151,9 @@ class ProfileRepoTest {
     assertFalse(foundByIdOpt.isPresent());
   }
 
-  /** Test existsByName method. */
+  /**
+   * Test existsByName method.
+   */
   @Test
   void shouldExistsByName() {
 
@@ -165,7 +176,9 @@ class ProfileRepoTest {
     assertFalse(repository.existsByName("Name"));
   }
 
-  /** Test existsByNameAndByDefault method. */
+  /**
+   * Test existsByNameAndByDefault method.
+   */
   @Test
   void shouldExistsByNameAndByDefault() {
 

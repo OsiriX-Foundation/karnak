@@ -24,7 +24,8 @@ import org.springframework.stereotype.Service;
 public class DicomEchoService {
 
   @Autowired
-  public DicomEchoService() {}
+  public DicomEchoService() {
+  }
 
   public String dicomEcho(List<ConfigNode> nodes) throws InterruptedException, ExecutionException {
     StringBuilder result = new StringBuilder();

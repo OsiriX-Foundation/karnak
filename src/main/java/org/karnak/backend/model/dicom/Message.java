@@ -15,7 +15,9 @@ import org.karnak.backend.enums.MessageLevel;
 public class Message {
 
   private MessageLevel level;
+
   private MessageFormat format;
+
   private String text;
 
   public Message(MessageLevel level, MessageFormat format, String text) {

@@ -21,7 +21,8 @@ import org.weasis.dicom.tool.ModalityWorklist;
 
 public class DicomWorkListGrid extends Grid<Attributes> {
 
-  @Serial private static final long serialVersionUID = 1L;
+  @Serial
+  private static final long serialVersionUID = 1L;
 
   List<DicomParam> params =
       List.of(
@@ -59,17 +60,17 @@ public class DicomWorkListGrid extends Grid<Attributes> {
           .setKey(String.valueOf(tag));
     } else {
       addColumn(
-              a -> {
-                Attributes parent = a;
-                for (int k = 0; k < pSeq.length; k++) {
-                  Attributes pn = parent.getNestedDataset(pSeq[k]);
-                  if (pn == null) {
-                    break;
-                  }
-                  parent = pn;
-                }
-                return getText(parent, tag);
-              })
+          a -> {
+            Attributes parent = a;
+            for (int k = 0; k < pSeq.length; k++) {
+              Attributes pn = parent.getNestedDataset(pSeq[k]);
+              if (pn == null) {
+                break;
+              }
+              parent = pn;
+            }
+            return getText(parent, tag);
+          })
           .setHeader(Keyword.valueOf(tag))
           .setSortable(true)
           .setKey(String.valueOf(tag));

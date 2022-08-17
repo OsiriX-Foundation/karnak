@@ -18,16 +18,24 @@ import org.slf4j.MarkerFactory;
 import org.weasis.core.util.StringUtil;
 
 public abstract class AbstractAction implements ActionItem {
+
   protected static final Logger LOGGER = LoggerFactory.getLogger(AbstractAction.class);
+
   protected static final Marker CLINICAL_MARKER = MarkerFactory.getMarker("CLINICAL");
+
   protected static final String PATTERN_WITH_INOUT =
       "SOPInstanceUID_OLD={} TAG={} ACTION={} OLD={} NEW={}";
+
   protected static final String PATTERN_WITH_IN = "SOPInstanceUID_OLD={} TAG={} ACTION={} OLD={}";
+
   protected static final String ADD_METHOD = "a";
 
   protected final String symbol;
+
   protected String dummyValue;
+
   protected int newTag;
+
   protected VR vr;
 
   protected AbstractAction(String symbol) {

@@ -53,7 +53,7 @@ public enum MonitoringCsvMapping {
    * Constructor
    *
    * @param nameFieldEntity Name of the field of the entity to retrieve
-   * @param labelCsv Name of the column header of the Csv file
+   * @param labelCsv        Name of the column header of the Csv file
    */
   MonitoringCsvMapping(String nameFieldEntity, String labelCsv) {
     this.nameFieldEntity = nameFieldEntity;

@@ -39,6 +39,7 @@ import org.karnak.backend.model.editor.ConditionEditor;
 import org.karnak.backend.model.editor.DeIdentifyEditor;
 import org.karnak.backend.model.editor.FilterEditor;
 import org.karnak.backend.model.editor.StreamRegistryEditor;
+import org.karnak.backend.model.editor.TagMorphingEditor;
 import org.karnak.backend.model.event.NodeEvent;
 import org.karnak.backend.service.kheops.SwitchingAlbum;
 import org.karnak.backend.util.SystemPropertyUtil;
@@ -61,9 +62,12 @@ import org.weasis.dicom.param.TlsOptions;
 public class GatewaySetUpService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(GatewaySetUpService.class);
+
   // Repositories
   private final ForwardNodeRepo forwardNodeRepo;
+
   private final VersionRepo versionRepo;
+
   private final DestinationRepo destinationRepo;
 
   private final Map<ForwardDicomNode, List<ForwardDestination>> destMap = new HashMap<>();
@@ -71,15 +75,21 @@ public class GatewaySetUpService {
   private final Path storePath;
 
   private final String listenerAET;
+
   private final int listenerPort;
+
   private final Boolean listenerTLS;
+
   private final int intervalCheck;
 
   private final String archiveUrl;
 
   private final String clientKey;
+
   private final String clientKeyPwd;
+
   private final String truststorePwd;
+
   private final String truststore;
 
   // Version gateway setup for this instance
@@ -95,22 +105,26 @@ public class GatewaySetUpService {
     this.versionRepo = versionRepo;
     this.destinationRepo = destinationRepo;
 
-    String path =
-        SystemPropertyUtil.retrieveSystemProperty(
-            "GATEWAY_ARCHIVE_PATH", null); // Only Archive and Pull mode
+    String path = SystemPropertyUtil.retrieveSystemProperty("GATEWAY_ARCHIVE_PATH", null); // Only
+    // Archive
+    // and
+    // Pull
+    // mode
     storePath = StringUtil.hasText(path) ? Path.of(path) : null;
     intervalCheck =
         StringUtil.getInt(
-            SystemPropertyUtil.retrieveSystemProperty(
-                "GATEWAY_PULL_CHECK_INTERNAL", "5")); // Only Pull mode
-    archiveUrl =
-        SystemPropertyUtil.retrieveSystemProperty("GATEWAY_ARCHIVE_URL", ""); // Only Archive mode
+            SystemPropertyUtil.retrieveSystemProperty("GATEWAY_PULL_CHECK_INTERNAL", "5")); // Only
+    // Pull
+    // mode
+    archiveUrl = SystemPropertyUtil.retrieveSystemProperty("GATEWAY_ARCHIVE_URL", ""); // Only
+    // Archive
+    // mode
 
     listenerAET = SystemPropertyUtil.retrieveSystemProperty("DICOM_LISTENER_AET", "KARNAK-GATEWAY");
     listenerPort = 11119;
     listenerTLS =
         LangUtil.getEmptytoFalse(
-            SystemPropertyUtil.retrieveSystemProperty("DICOM_LISTENER_TLS", null));
+            SystemPropertyUtil.retrieveSystemProperty("DICOM_LISTENER_TLS", "false"));
 
     clientKey = SystemPropertyUtil.retrieveSystemProperty("TLS_KEYSTORE_PATH", null);
     clientKeyPwd = SystemPropertyUtil.retrieveSystemProperty("TLS_KEYSTORE_SECRET", null);
@@ -243,40 +257,17 @@ public class GatewaySetUpService {
   private void addDestinationNode(
       List<ForwardDestination> dstList, ForwardDicomNode fwdSrcNode, DestinationEntity dstNode) {
     try {
-      List<AttributeEditor> editors = new ArrayList<>();
-
-      if (!dstNode.getCondition().isEmpty()) {
-        editors.add(new ConditionEditor(dstNode.getCondition()));
-      }
-
-      final boolean filterBySOPClassesEnable = dstNode.isFilterBySOPClasses();
-      if (filterBySOPClassesEnable) {
-        editors.add(new FilterEditor(dstNode.getSOPClassUIDEntityFilters()));
-      }
-
       final List<KheopsAlbumsEntity> kheopsAlbumEntities = dstNode.getKheopsAlbumEntities();
 
-      SwitchingAlbum switchingAlbum = new SwitchingAlbum();
-      if (kheopsAlbumEntities != null && !kheopsAlbumEntities.isEmpty()) {
-        editors.add(
-            (Attributes dcm, AttributeEditorContext context) -> {
-              kheopsAlbumEntities.forEach(
-                  kheopsAlbums -> {
-                    switchingAlbum.apply(dstNode, kheopsAlbums, dcm);
-                  });
-            });
-      }
-
-      StreamRegistryEditor streamRegistryEditor = new StreamRegistryEditor();
-      editors.add(streamRegistryEditor);
-
-      boolean deidentificationEnable = dstNode.isDesidentification();
-      boolean profileDefined =
-          dstNode.getProjectEntity() != null
-              && dstNode.getProjectEntity().getProfileEntity() != null;
-      if (deidentificationEnable && profileDefined) { // TODO add an option in destination model
-        editors.add(new DeIdentifyEditor(dstNode));
-      }
+      // Apply editors
+      List<AttributeEditor> editors = new ArrayList<>();
+      applyConditionEditor(dstNode, editors);
+      applyFilterEditor(dstNode, editors);
+      SwitchingAlbum switchingAlbum =
+          applySwitchingAlbumEditor(dstNode, editors, kheopsAlbumEntities);
+      applyStreamRegistryEditor(editors);
+      applyDeIdentifyEditor(dstNode, editors);
+      applyTagMorphingEditor(dstNode, editors);
 
       DicomProgress progress = new DicomProgress();
 
@@ -308,9 +299,7 @@ public class GatewaySetUpService {
                 (DicomProgress dicomProgress) -> {
                   Attributes dcm = dicomProgress.getAttributes();
                   kheopsAlbumEntities.forEach(
-                      kheopsAlbums -> {
-                        switchingAlbum.applyAfterTransfer(kheopsAlbums, dcm);
-                      });
+                      kheopsAlbums -> switchingAlbum.applyAfterTransfer(kheopsAlbums, dcm));
                 });
           }
           dstList.add(fwd);
@@ -334,6 +323,105 @@ public class GatewaySetUpService {
       }
     } catch (IOException e) {
       LOGGER.error("Cannot build ForwardDestination", e);
+    }
+  }
+
+  /**
+   * Apply switching album editor
+   *
+   * @param dstNode             Destination
+   * @param editors             List of editors
+   * @param kheopsAlbumEntities kheopsAlbumEntities
+   * @return SwitchingAlbum created
+   */
+  private SwitchingAlbum applySwitchingAlbumEditor(
+      DestinationEntity dstNode,
+      List<AttributeEditor> editors,
+      List<KheopsAlbumsEntity> kheopsAlbumEntities) {
+    SwitchingAlbum switchingAlbum = new SwitchingAlbum();
+    if (kheopsAlbumEntities != null && !kheopsAlbumEntities.isEmpty()) {
+      editors.add(switchingEditor(dstNode, kheopsAlbumEntities, switchingAlbum));
+    }
+    return switchingAlbum;
+  }
+
+  /**
+   * Switching editor
+   *
+   * @param dstNode             Destination
+   * @param kheopsAlbumEntities kheopsAlbum Entities
+   * @param switchingAlbum      switchingAlbum
+   * @return Editor
+   */
+  private AttributeEditor switchingEditor(
+      DestinationEntity dstNode,
+      List<KheopsAlbumsEntity> kheopsAlbumEntities,
+      SwitchingAlbum switchingAlbum) {
+    return (Attributes dcm, AttributeEditorContext context) ->
+        kheopsAlbumEntities.forEach(
+            kheopsAlbums -> switchingAlbum.apply(dstNode, kheopsAlbums, dcm));
+  }
+
+  /**
+   * Apply StreamRegistryEditor
+   *
+   * @param editors List of editors
+   */
+  private void applyStreamRegistryEditor(List<AttributeEditor> editors) {
+    editors.add(new StreamRegistryEditor());
+  }
+
+  /**
+   * Apply Filter editor
+   *
+   * @param dstNode Destination
+   * @param editors List of editors
+   */
+  private void applyFilterEditor(DestinationEntity dstNode, List<AttributeEditor> editors) {
+    final boolean filterBySOPClassesEnable = dstNode.isFilterBySOPClasses();
+    if (filterBySOPClassesEnable) {
+      editors.add(new FilterEditor(dstNode.getSOPClassUIDEntityFilters()));
+    }
+  }
+
+  /**
+   * Apply Condition editor
+   *
+   * @param dstNode Destination
+   * @param editors List of editors
+   */
+  private void applyConditionEditor(DestinationEntity dstNode, List<AttributeEditor> editors) {
+    if (!dstNode.getCondition().isEmpty()) {
+      editors.add(new ConditionEditor(dstNode.getCondition()));
+    }
+  }
+
+  /**
+   * Depending on the destination, apply changes on tags: deidentification or the tag morphing
+   * profiles
+   *
+   * @param dstNode Destination
+   * @param editors List of editors
+   */
+  private void applyDeIdentifyEditor(DestinationEntity dstNode, List<AttributeEditor> editors) {
+    if (dstNode.getDeIdentificationProjectEntity() != null
+        && dstNode.getDeIdentificationProjectEntity().getProfileEntity() != null
+        && dstNode.isDesidentification()) {
+      editors.add(new DeIdentifyEditor(dstNode));
+    }
+  }
+
+  /**
+   * Depending on the destination, apply changes on tags: the tag morphing profiles
+   *
+   * @param dstNode Destination
+   * @param editors List of editors
+   */
+  private void applyTagMorphingEditor(DestinationEntity dstNode, List<AttributeEditor> editors) {
+    if (dstNode.getTagMorphingProjectEntity() != null
+        && dstNode.getTagMorphingProjectEntity().getProfileEntity() != null
+        && dstNode.isActivateTagMorphing()) {
+      editors.add(new TagMorphingEditor(dstNode));
     }
   }
 
@@ -445,13 +533,16 @@ public class GatewaySetUpService {
     gatewaySetUpVersion = lastVersion.getGatewaySetup();
   }
 
-  /** Check if a refresh of the configuration should be done */
+  /**
+   * Check if a refresh of the configuration should be done
+   */
   @Scheduled(fixedRate = 5000)
-  private void checkRefreshGatewaySetUp() {
+  public void checkRefreshGatewaySetUp() {
     // Retrieve last gateway version
     VersionEntity lastVersion = versionRepo.findTopByOrderByIdDesc();
 
-    // Check if refresh needed: current version of the gateway setup for this instance is lower than
+    // Check if refresh needed: current version of the gateway setup for this instance
+    // is lower than
     // the last version in DB
     if (lastVersion != null && gatewaySetUpVersion < lastVersion.getGatewaySetup()) {
       // Check no transfer is in progress
