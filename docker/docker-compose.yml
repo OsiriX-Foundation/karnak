@@ -41,7 +41,7 @@ services:
   karnak-cache:
     image: redis:6.0.16-alpine3.15
     ports:
-      - "6379:6379"
+      - ${REDIS_PORT}:6379
 
   node-dicom:
     image: dcm4che/dcm4che-tools:5.22.6
