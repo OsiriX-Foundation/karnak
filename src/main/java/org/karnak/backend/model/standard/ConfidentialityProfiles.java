@@ -29,6 +29,7 @@ public class ConfidentialityProfiles {
   private static final Logger LOGGER = LoggerFactory.getLogger(ConfidentialityProfiles.class);
 
   private final TagActionMap actionMap = new TagActionMap();
+
   private final List<ProfileItem> listProfiles = new ArrayList<>();
 
   public ConfidentialityProfiles() {

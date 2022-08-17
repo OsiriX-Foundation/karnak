@@ -28,6 +28,7 @@ class DestinationServiceTest {
 
   // Services
   private final ForwardNodeService forwardNodeServiceMock = Mockito.mock(ForwardNodeService.class);
+
   private final KheopsAlbumsService kheopsAlbumsServiceMock =
       Mockito.mock(KheopsAlbumsService.class);
 

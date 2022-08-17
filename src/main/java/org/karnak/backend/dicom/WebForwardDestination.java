@@ -22,7 +22,9 @@ import org.weasis.dicom.web.DicomStowRS;
 public class WebForwardDestination extends ForwardDestination {
 
   private final ForwardDicomNode callingNode;
+
   private final DicomState state;
+
   private final DicomStowRS stowRS;
 
   public WebForwardDestination(ForwardDicomNode fwdNode, String requestURL) {

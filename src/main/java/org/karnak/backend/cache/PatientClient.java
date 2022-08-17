@@ -9,57 +9,57 @@
  */
 package org.karnak.backend.cache;
 
-import com.hazelcast.config.Config;
-import com.hazelcast.config.MapConfig;
-import com.hazelcast.core.Hazelcast;
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.map.IMap;
 import java.util.Collection;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import org.springframework.cache.Cache;
+import org.springframework.cache.Cache.ValueWrapper;
+import org.springframework.data.redis.core.RedisTemplate;
 
 public abstract class PatientClient {
 
-  // https://docs.hazelcast.org/docs/latest/manual/html-single/#cp-subsystem
-  private static final String CLUSTER_NAME = "PatientClient";
-  private static final int CP_MEMBER = 3;
-  private final String name;
-  private final HazelcastInstance hazelcastInstance;
+  private final Cache cache;
+  private final RedisTemplate<String, Patient> redisTemplate;
+  private static final String KEY_SEPARATOR = "::";
+  private final String prefixKeySearchCache;
+  private final String patternSearchAllKeysCache;
 
-  public PatientClient(String name, int ttlSeconds) {
-    this.name = name;
-    this.hazelcastInstance = Hazelcast.newHazelcastInstance(createConfig(ttlSeconds));
+  public PatientClient(Cache cache, RedisTemplate<String, Patient> redisTemplate, String name) {
+    this.cache = cache;
+    this.redisTemplate = redisTemplate;
+    this.prefixKeySearchCache = "%s%s".formatted(name, KEY_SEPARATOR);
+    this.patternSearchAllKeysCache = "%s*".formatted(prefixKeySearchCache);
   }
 
-  private Config createConfig(int ttlSeconds) {
-    Config config = new Config();
-    MapConfig mapConfig = new MapConfig(name);
-    mapConfig.setTimeToLiveSeconds(ttlSeconds);
-    // The method setMaxIdleSeconds defines how long the entry stays in the cache without being
-    // touched
-    // mapConfig.setMaxIdleSeconds(20);
-    config.addMapConfig(mapConfig);
-    config.setClusterName(CLUSTER_NAME);
-    config.getCPSubsystemConfig().setCPMemberCount(CP_MEMBER);
-    config.setClassLoader(PseudonymPatient.class.getClassLoader());
-    return config;
+  public Patient put(String key, Patient patient) {
+    return (Patient) cache.putIfAbsent(key, patient);
   }
 
-  public PseudonymPatient put(String key, PseudonymPatient patient) {
-    IMap<String, PseudonymPatient> map = hazelcastInstance.getMap(name);
-    return map.putIfAbsent(key, patient);
-  }
-
-  public PseudonymPatient get(String key) {
-    IMap<String, PseudonymPatient> map = hazelcastInstance.getMap(name);
-    return map.get(key);
+  public Patient get(String key) {
+    ValueWrapper valueFromCache = cache.get(key);
+    return valueFromCache != null ? (Patient) valueFromCache.get() : null;
   }
 
   public void remove(String key) {
-    IMap<String, PseudonymPatient> map = hazelcastInstance.getMap(name);
-    map.remove(key);
+    cache.evictIfPresent(key);
   }
 
-  public Collection<PseudonymPatient> getAll() {
-    IMap<String, PseudonymPatient> map = hazelcastInstance.getMap(name);
-    return map.values();
+  public Collection<Patient> getAll() {
+    return Objects.requireNonNull(redisTemplate.keys(patternSearchAllKeysCache)).stream()
+        .filter(Objects::nonNull)
+        .filter(c -> c.length() > prefixKeySearchCache.length())
+        .map(
+            k -> {
+              ValueWrapper keyValue = cache.get(k.substring(prefixKeySearchCache.length()));
+              return keyValue != null ? (Patient) keyValue.get() : null;
+            })
+        .collect(Collectors.toList());
+  }
+
+  public void removeAll() {
+    Objects.requireNonNull(redisTemplate.keys(patternSearchAllKeysCache)).stream()
+        .filter(Objects::nonNull)
+        .filter(c -> c.length() > prefixKeySearchCache.length())
+        .forEach(k -> remove(k.substring(prefixKeySearchCache.length())));
   }
 }

@@ -14,6 +14,9 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.data.provider.ListDataProvider;
+import java.util.Collection;
+import java.util.Objects;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.data.entity.SecretEntity;
 import org.karnak.backend.model.profilepipe.HMAC;
@@ -23,16 +26,21 @@ public class ProjectSecret extends Div {
 
   private final String WARNING_TEXT =
       "If you change the project secret, the integrity of the DICOM will be compromise";
+
   private final String REFER_LINK_TEXT =
       "For more details on the use of the project secret, please refer to the following link";
+
   private final Anchor REFER_LINK =
       new Anchor(
           "https://osirix-foundation.github.io/karnak-documentation/docs/deidentification/rules#action-u-generate-a-new-uid",
           "How KARNAK does ?");
 
   private final Div messageWarningLayout = new Div();
+
   private final ComboBox<SecretEntity> secretComboBox;
-  private final Button generateButton = new Button("Generate Secret");
+
+  private final Button generateSecretButton = new Button("Generate Secret");
+
   private ProjectEntity projectEntity;
 
   public ProjectSecret(ComboBox<SecretEntity> secretComboBox) {
@@ -41,13 +49,15 @@ public class ProjectSecret extends Div {
     addComponents();
     addMessageWarningLayout();
     eventGenerateSecret();
+    eventImportSecret();
   }
 
   private void addComponents() {
     secretComboBox.getStyle().set("width", "80%");
     secretComboBox.setPlaceholder("Project Secret");
-    generateButton.getStyle().set("margin-left", "10px");
-    add(secretComboBox, generateButton);
+    secretComboBox.setAllowCustomValue(true);
+    generateSecretButton.getStyle().set("margin-left", "10px");
+    add(secretComboBox, generateSecretButton);
   }
 
   public void addValuesCombobox(ProjectEntity projectEntity) {
@@ -63,7 +73,7 @@ public class ProjectSecret extends Div {
   }
 
   private void eventGenerateSecret() {
-    generateButton.addClickListener(
+    generateSecretButton.addClickListener(
         event -> {
           WarningConfirmDialog dialog = new WarningConfirmDialog(messageWarningLayout);
           dialog.addConfirmationListener(
@@ -75,6 +85,51 @@ public class ProjectSecret extends Div {
                 secretComboBox.getDataProvider().refreshAll();
               });
           dialog.open();
+        });
+  }
+
+  /**
+   * Manage event when importing a secret
+   */
+  private void eventImportSecret() {
+    secretComboBox.addCustomValueSetListener(
+        event -> {
+          // Retrieve value entered by user
+          String customValue = event.getDetail();
+
+          // Check if valid are already existing
+          boolean valid = HMAC.validateKey(customValue);
+          Collection<SecretEntity> items =
+              ((ListDataProvider) secretComboBox.getDataProvider()).getItems();
+          boolean alreadyExisting =
+              valid
+                  && items.stream()
+                  .map(secretEntity -> HMAC.showHexKey(HMAC.byteToHex(secretEntity.getKey())))
+                  .anyMatch(secretValue -> Objects.equals(secretValue, customValue));
+
+          // Already existing
+          if (alreadyExisting) {
+            secretComboBox.setInvalid(true);
+            secretComboBox.setErrorMessage("Secret is already existing");
+          }
+          // Not valid
+          else if (!valid) {
+            secretComboBox.setInvalid(true);
+            secretComboBox.setErrorMessage("Secret is not valid");
+          } else {
+            // Ok
+            secretComboBox.setInvalid(false);
+            WarningConfirmDialog dialog = new WarningConfirmDialog(messageWarningLayout);
+            dialog.addConfirmationListener(
+                componentEvent -> {
+                  SecretEntity secretEntityToCreate =
+                      new SecretEntity(projectEntity, HMAC.hexToByte(customValue));
+                  projectEntity.addActiveSecretEntity(secretEntityToCreate);
+                  secretComboBox.setValue(secretEntityToCreate);
+                  secretComboBox.getDataProvider().refreshAll();
+                });
+            dialog.open();
+          }
         });
   }
 }

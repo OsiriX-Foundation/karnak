@@ -17,9 +17,11 @@ import org.karnak.backend.enums.NodeEventType;
 import org.springframework.context.ApplicationEvent;
 
 public class NodeEvent extends ApplicationEvent {
+
   private static final long serialVersionUID = -15504960651765311L;
 
   private final NodeEventType eventType;
+
   private final ForwardNodeEntity forwardNodeEntity;
 
   public NodeEvent(ForwardNodeEntity fwdNode, NodeEventType eventType) {

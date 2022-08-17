@@ -24,9 +24,13 @@ import org.weasis.core.util.StringUtil;
 public class ExprAction implements ExpressionItem {
 
   private int tag;
+
   private VR vr;
+
   private String stringValue;
+
   private Attributes dcm;
+
   private Attributes dcmCopy;
 
   public ExprAction(int tag, VR vr, Attributes dcm, Attributes dcmCopy) {
@@ -106,9 +110,10 @@ public class ExprAction implements ExpressionItem {
     return DicomObjectTools.containsTagInAllAttributes(tag, dcmCopy);
   }
 
-  /*public ActionItem Add(int newTag, VR newVr, String newValue){
-      Add add = new Add("A", newTag, newVr, newValue);
-      add.execute(dcm, newTag, null, null);
-      return null;
-  }*/
+  /*
+   * public ActionItem Add(int newTag, VR newVr, String newValue){ Add add = new
+   * Add("A", newTag, newVr, newValue); add.execute(dcm, newTag, null, null); return
+   * null; }
+   */
+
 }

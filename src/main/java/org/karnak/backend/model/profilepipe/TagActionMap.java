@@ -18,6 +18,7 @@ import org.weasis.core.util.StringUtil;
 public class TagActionMap {
 
   private final HashMap<Integer, ActionItem> tagAction;
+
   private final HashMap<String, ActionItem> tagPatternAction;
 
   public TagActionMap() {

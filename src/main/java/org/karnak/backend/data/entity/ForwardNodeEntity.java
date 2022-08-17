@@ -31,14 +31,18 @@ public class ForwardNodeEntity implements Serializable {
   private static final long serialVersionUID = 2095439136652046994L;
 
   private Long id;
+
   private String fwdDescription;
+
   // AETitle which defined a mapping of the gateway. This AETitle is configured as
   // a destination in the DICOM component that sends images to the gateway.
   private String fwdAeTitle;
+
   // Specification of a DICOM source node (the one which sends images to the
   // gateway). When no source node is defined all the DICOM nodes are accepted by
   // the gateway.
   private Set<DicomSourceNodeEntity> sourceNodes = new HashSet<>();
+
   // Specification of a final DICOM destination node. Multiple destinations can be
   // defined either as a DICOM or DICOMWeb type.
   private Set<DestinationEntity> destinationEntities = new HashSet<>();

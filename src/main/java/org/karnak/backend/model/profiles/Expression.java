@@ -28,7 +28,9 @@ import org.karnak.backend.model.profilepipe.TagActionMap;
 public class Expression extends AbstractProfileItem {
 
   private final TagActionMap tagsAction;
+
   private final TagActionMap exceptedTagsAction;
+
   private final ActionItem actionByDefault;
 
   public Expression(ProfileElementEntity profileElementEntity) throws Exception {

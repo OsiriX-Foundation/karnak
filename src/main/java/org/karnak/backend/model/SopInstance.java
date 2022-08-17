@@ -15,8 +15,11 @@ import java.util.Objects;
 public class SopInstance {
 
   private final String sopInstanceUID;
+
   private Integer instanceNumber;
+
   private String sopClassUID;
+
   private boolean sent;
 
   public SopInstance(String sopInstanceUID) {

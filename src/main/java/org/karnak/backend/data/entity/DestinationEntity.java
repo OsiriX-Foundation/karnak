@@ -52,25 +52,41 @@ public class DestinationEntity implements Serializable {
   private static final long serialVersionUID = 4835879567037810171L;
 
   private Long id;
+
   private String description;
+
   private DestinationType destinationType;
 
   private boolean activate;
+
   private String condition;
 
+  private boolean activateTagMorphing;
+
   private boolean desidentification;
+
   private String issuerByDefault;
 
   private PseudonymType pseudonymType;
 
   private String tag;
+
   private String delimiter;
+
   private Integer position;
+
   private Boolean savePseudonym;
+
   private boolean filterBySOPClasses;
+
   private Set<SOPClassUIDEntity> SOPClassUIDEntityFilters = new HashSet<>();
+
   private List<KheopsAlbumsEntity> kheopsAlbumEntities;
-  private ProjectEntity projectEntity;
+
+  private ProjectEntity deIdentificationProjectEntity;
+
+  private ProjectEntity tagMorphingProjectEntity;
+
   private ForwardNodeEntity forwardNodeEntity;
 
   // Activate notification
@@ -84,7 +100,8 @@ public class DestinationEntity implements Serializable {
   // Prefix of the email object when containing an issue. Default value: **ERROR**
   private String notifyObjectErrorPrefix;
 
-  // Pattern of the email object, see https://dzone.com/articles/java-string-format-examples.
+  // Pattern of the email object, see
+  // https://dzone.com/articles/java-string-format-examples.
   // Default value:
   // [Karnak Notification] %s %.30s
   private String notifyObjectPattern;
@@ -101,12 +118,15 @@ public class DestinationEntity implements Serializable {
   // the AETitle of the destination node.
   // mandatory[type=dicom]
   private String aeTitle;
+
   // the host or IP of the destination node.
   // mandatory[type=dicom]
   private String hostname;
+
   // the port of the destination node.
   // mandatory[type=dicom]
   private Integer port;
+
   // false by default; if "true" then use the destination AETitle as the calling
   // AETitle at the gateway side. Otherwise with "false" the calling AETitle is
   // the AETitle defined in the property "listener.aet" of the file
@@ -117,8 +137,10 @@ public class DestinationEntity implements Serializable {
   // the destination STOW-RS URL.
   // mandatory[type=stow]
   private String url;
+
   // credentials of the STOW-RS service (format is "user:password").
   private String urlCredentials;
+
   // headers for HTTP request.
   private String headers;
 
@@ -168,7 +190,7 @@ public class DestinationEntity implements Serializable {
     this.urlCredentials = "";
     this.headers = "";
 
-    this.transcodeOnlyUncompressed = true;
+    this.transcodeOnlyUncompressed = false;
   }
 
   public static DestinationEntity ofDicomEmpty() {
@@ -464,16 +486,28 @@ public class DestinationEntity implements Serializable {
     this.kheopsAlbumEntities = kheopsAlbumEntities;
   }
 
-  @JsonGetter("project")
+  @JsonGetter("deIdentificationProject")
   @ManyToOne
-  @JoinColumn(name = "project_id")
-  public ProjectEntity getProjectEntity() {
-    return projectEntity;
+  @JoinColumn(name = "deidentification_project_id")
+  public ProjectEntity getDeIdentificationProjectEntity() {
+    return deIdentificationProjectEntity;
   }
 
-  @JsonSetter("project")
-  public void setProjectEntity(ProjectEntity projectEntity) {
-    this.projectEntity = projectEntity;
+  @JsonSetter("deIdentificationProject")
+  public void setDeIdentificationProjectEntity(ProjectEntity deIdentificationProjectEntity) {
+    this.deIdentificationProjectEntity = deIdentificationProjectEntity;
+  }
+
+  @JsonGetter("tagMorphingProject")
+  @ManyToOne
+  @JoinColumn(name = "tag_morphing_project_id")
+  public ProjectEntity getTagMorphingProjectEntity() {
+    return tagMorphingProjectEntity;
+  }
+
+  @JsonSetter("tagMorphingProject")
+  public void setTagMorphingProjectEntity(ProjectEntity tagMorphingProjectEntity) {
+    this.tagMorphingProjectEntity = tagMorphingProjectEntity;
   }
 
   public boolean isActivateNotification() {
@@ -522,6 +556,14 @@ public class DestinationEntity implements Serializable {
 
   public void setLastTransfer(LocalDateTime lastTransfer) {
     this.lastTransfer = lastTransfer;
+  }
+
+  public boolean isActivateTagMorphing() {
+    return activateTagMorphing;
+  }
+
+  public void setActivateTagMorphing(boolean activateTagMorphing) {
+    this.activateTagMorphing = activateTagMorphing;
   }
 
   /**
@@ -639,73 +681,73 @@ public class DestinationEntity implements Serializable {
     return "Type of destination is unknown";
   }
   //
-  //    @Override
-  //    public boolean equals(Object o) {
-  //      if (this == o) {
-  //        return true;
-  //      }
-  //      if (o == null || getClass() != o.getClass()) {
-  //        return false;
-  //      }
-  //      DestinationEntity that = (DestinationEntity) o;
-  //      return desidentification == that.desidentification
-  //          && issuerByDefault == that.issuerByDefault
-  //          && filterBySOPClasses == that.filterBySOPClasses
-  //          && Objects.equals(id, that.id)
-  //          && Objects.equals(description, that.description)
-  //          && destinationType == that.destinationType
-  //          && pseudonymType == that.pseudonymType
-  //          && Objects.equals(tag, that.tag)
-  //          && Objects.equals(delimiter, that.delimiter)
-  //          && Objects.equals(position, that.position)
-  //          && Objects.equals(savePseudonym, that.savePseudonym)
-  //          && Objects.equals(transferSyntax, that.transferSyntax)
-  //          && Objects.equals(transcodeOnlyUncompressed, that.transcodeOnlyUncompressed)
-  //          && Objects.equals(activateNotification, that.activateNotification)
-  //          && Objects.equals(notify, that.notify)
-  //          && Objects.equals(notifyObjectErrorPrefix, that.notifyObjectErrorPrefix)
-  //          && Objects.equals(notifyObjectPattern, that.notifyObjectPattern)
-  //          && Objects.equals(notifyObjectValues, that.notifyObjectValues)
-  //          && Objects.equals(notifyInterval, that.notifyInterval)
-  //          && Objects.equals(aeTitle, that.aeTitle)
-  //          && Objects.equals(hostname, that.hostname)
-  //          && Objects.equals(port, that.port)
-  //          && Objects.equals(useaetdest, that.useaetdest)
-  //          && Objects.equals(url, that.url)
-  //          && Objects.equals(urlCredentials, that.urlCredentials)
-  //          && Objects.equals(headers, that.headers);
-  //    }
+  // @Override
+  // public boolean equals(Object o) {
+  // if (this == o) {
+  // return true;
+  // }
+  // if (o == null || getClass() != o.getClass()) {
+  // return false;
+  // }
+  // DestinationEntity that = (DestinationEntity) o;
+  // return desidentification == that.desidentification
+  // && issuerByDefault == that.issuerByDefault
+  // && filterBySOPClasses == that.filterBySOPClasses
+  // && Objects.equals(id, that.id)
+  // && Objects.equals(description, that.description)
+  // && destinationType == that.destinationType
+  // && pseudonymType == that.pseudonymType
+  // && Objects.equals(tag, that.tag)
+  // && Objects.equals(delimiter, that.delimiter)
+  // && Objects.equals(position, that.position)
+  // && Objects.equals(savePseudonym, that.savePseudonym)
+  // && Objects.equals(transferSyntax, that.transferSyntax)
+  // && Objects.equals(transcodeOnlyUncompressed, that.transcodeOnlyUncompressed)
+  // && Objects.equals(activateNotification, that.activateNotification)
+  // && Objects.equals(notify, that.notify)
+  // && Objects.equals(notifyObjectErrorPrefix, that.notifyObjectErrorPrefix)
+  // && Objects.equals(notifyObjectPattern, that.notifyObjectPattern)
+  // && Objects.equals(notifyObjectValues, that.notifyObjectValues)
+  // && Objects.equals(notifyInterval, that.notifyInterval)
+  // && Objects.equals(aeTitle, that.aeTitle)
+  // && Objects.equals(hostname, that.hostname)
+  // && Objects.equals(port, that.port)
+  // && Objects.equals(useaetdest, that.useaetdest)
+  // && Objects.equals(url, that.url)
+  // && Objects.equals(urlCredentials, that.urlCredentials)
+  // && Objects.equals(headers, that.headers);
+  // }
   //
-  //    @Override
-  //    public int hashCode() {
-  //      return Objects.hash(
-  //          id,
-  //          description,
-  //          destinationType,
-  //          desidentification,
-  //          issuerByDefault,
-  //          pseudonymType,
-  //          tag,
-  //          delimiter,
-  //          position,
-  //          savePseudonym,
-  //          filterBySOPClasses,
-  //          transferSyntax,
-  //          transcodeOnlyUncompressed,
-  //          activateNotification,
-  //          notify,
-  //          notifyObjectErrorPrefix,
-  //          notifyObjectPattern,
-  //          notifyObjectValues,
-  //          notifyInterval,
-  //          aeTitle,
-  //          hostname,
-  //          port,
-  //          useaetdest,
-  //          url,
-  //          urlCredentials,
-  //          headers);
-  //    }
+  // @Override
+  // public int hashCode() {
+  // return Objects.hash(
+  // id,
+  // description,
+  // destinationType,
+  // desidentification,
+  // issuerByDefault,
+  // pseudonymType,
+  // tag,
+  // delimiter,
+  // position,
+  // savePseudonym,
+  // filterBySOPClasses,
+  // transferSyntax,
+  // transcodeOnlyUncompressed,
+  // activateNotification,
+  // notify,
+  // notifyObjectErrorPrefix,
+  // notifyObjectPattern,
+  // notifyObjectValues,
+  // notifyInterval,
+  // aeTitle,
+  // hostname,
+  // port,
+  // useaetdest,
+  // url,
+  // urlCredentials,
+  // headers);
+  // }
 
   @Override
   public boolean equals(Object o) {

@@ -10,12 +10,19 @@
 package org.karnak.backend.model.standard;
 
 public class AttributeDetail {
+
   private final String id;
+
   private final String keyword;
+
   private final String name;
+
   private final String retired;
+
   private final String tag;
+
   private final String valueMultiplicity;
+
   private final String valueRepresentation;
 
   public AttributeDetail(

@@ -33,10 +33,15 @@ public class ConfirmDialog extends Composite<Dialog> {
   private VerticalLayout mainLayout;
 
   private HorizontalLayout headerLayout;
+
   private Span titleText;
+
   private Div messageLayout;
+
   private HorizontalLayout buttonsLayout;
+
   private Button yesBtn;
+
   private Button noBtn;
 
   // DATA

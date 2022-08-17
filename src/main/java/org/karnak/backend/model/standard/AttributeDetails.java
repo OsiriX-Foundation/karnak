@@ -17,6 +17,7 @@ import org.karnak.backend.model.dicominnolitics.StandardAttributes;
 import org.karnak.backend.model.dicominnolitics.jsonAttributes;
 
 public class AttributeDetails {
+
   private final Map<String, AttributeDetail> hmapAttributeDetail;
 
   public AttributeDetails() {

@@ -14,10 +14,15 @@ import java.util.List;
 public class ProfilePipeBody {
 
   private String name;
+
   private String version;
+
   private String minimumKarnakVersion;
+
   private String defaultIssuerOfPatientID;
+
   private List<ProfileElementBody> profiles;
+
   private List<MaskBody> masks;
 
   public String getName() {

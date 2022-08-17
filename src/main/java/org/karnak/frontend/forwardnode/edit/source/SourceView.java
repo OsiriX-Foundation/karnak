@@ -20,21 +20,28 @@ import org.karnak.frontend.forwardnode.ForwardNodeLogic;
 import org.karnak.frontend.forwardnode.edit.source.component.GridSourceNode;
 import org.karnak.frontend.util.UIS;
 
-/** Source View */
+/**
+ * Source View
+ */
 @SuppressWarnings("serial")
 public class SourceView extends VerticalLayout {
 
   // Source Logic
   private final SourceLogic sourceLogic;
+
   private final ForwardNodeLogic forwardNodeLogic;
 
   // UI components
   private HorizontalLayout layoutFilterButton;
+
   private TextField filter;
+
   private Button newSourceNode;
+
   private GridSourceNode gridSourceNode;
 
   private static final String LABEL_NEW_SOURCE_NODE = "Source";
+
   private static final String PLACEHOLDER_FILTER = "Filter properties of sources";
 
   /**
@@ -55,7 +62,9 @@ public class SourceView extends VerticalLayout {
     buildComponentsLayout();
   }
 
-  /** Create components, layout and add the layout of the view */
+  /**
+   * Create components, layout and add the layout of the view
+   */
   private void buildComponentsLayout() {
     setSizeFull();
     gridSourceNode = new GridSourceNode();

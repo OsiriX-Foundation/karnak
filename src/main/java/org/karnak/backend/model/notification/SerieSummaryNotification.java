@@ -14,14 +14,21 @@ import java.util.List;
 import java.util.Objects;
 import org.karnak.backend.constant.Notification;
 
-/** Model used for serie summary notification */
+/**
+ * Model used for serie summary notification
+ */
 public class SerieSummaryNotification {
 
   private String serieUid;
+
   private String serieDescription;
+
   private LocalDateTime serieDate;
+
   private long nbTransferSent;
+
   private long nbTransferNotSent;
+
   private List<String> unTransferedReasons;
 
   public String getSerieUid() {

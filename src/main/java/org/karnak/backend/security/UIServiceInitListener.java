@@ -86,11 +86,12 @@ public class UIServiceInitListener implements VaadinServiceInitListener {
         && !isLoginScreen) {
       // If root requested
       if (isForwardNode) {
-        // List all authorized views and take first one if user request root of the application
+        // List all authorized views and take first one if user request root of
+        // the application
         // Try to find first authorized view
         Optional<? extends Class<? extends com.vaadin.flow.component.Component>>
             firstAuthorizedViewFoundOpt =
-                viewClasses.stream().filter(SecurityUtil::isAccessGranted).findFirst();
+            viewClasses.stream().filter(SecurityUtil::isAccessGranted).findFirst();
 
         // If an authorized view have been found
         if (firstAuthorizedViewFoundOpt.isPresent()) {

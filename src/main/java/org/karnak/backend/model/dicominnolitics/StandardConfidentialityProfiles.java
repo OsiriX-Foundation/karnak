@@ -20,6 +20,7 @@ public class StandardConfidentialityProfiles {
 
   private static final String confidentialityProfilesFileName =
       "confidentiality_profile_attributes.json";
+
   private static jsonConfidentialityProfiles[] confidentialityProfiles;
 
   public StandardConfidentialityProfiles() {

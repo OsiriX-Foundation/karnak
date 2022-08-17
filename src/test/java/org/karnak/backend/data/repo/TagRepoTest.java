@@ -31,11 +31,18 @@ class TagRepoTest {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(TagRepoTest.class);
 
-  @Autowired private TagRepo repository;
-  @Autowired private ProfileElementRepo profileElementRepo;
-  @Autowired private ProfileRepo profileRepo;
+  @Autowired
+  private TagRepo repository;
 
-  /** Test save and find record. */
+  @Autowired
+  private ProfileElementRepo profileElementRepo;
+
+  @Autowired
+  private ProfileRepo profileRepo;
+
+  /**
+   * Test save and find record.
+   */
   @Test
   void shouldSaveAndFindARecord() {
     // Create an entity to save
@@ -63,7 +70,9 @@ class TagRepoTest {
     assertEquals(entity.getId(), foundByIdOpt.get().getId());
   }
 
-  /** Test find all. */
+  /**
+   * Test find all.
+   */
   @Test
   void shouldFindAllRecords() {
     // Create an entity to save
@@ -95,7 +104,9 @@ class TagRepoTest {
     LOGGER.info("Number of entities found [{}]", all.size());
   }
 
-  /** Test modification of a record. */
+  /**
+   * Test modification of a record.
+   */
   @Test
   void shouldModifyRecord() {
 
@@ -130,7 +141,9 @@ class TagRepoTest {
         entityModified.getTagValue());
   }
 
-  /** Test delete record. */
+  /**
+   * Test delete record.
+   */
   @Test
   void shouldDeleteRecord() {
     // Create an entity to save

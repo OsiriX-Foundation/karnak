@@ -20,10 +20,14 @@ public enum SecurityRole {
   // Role user
   USER_ROLE("ROLE_user", "user");
 
-  /** Role of the enum */
+  /**
+   * Role of the enum
+   */
   private final String role;
 
-  /** Type of the enum */
+  /**
+   * Type of the enum
+   */
   private final String type;
 
   /**

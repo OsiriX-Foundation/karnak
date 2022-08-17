@@ -21,13 +21,21 @@ import org.karnak.frontend.component.ProfileDropDown;
 public class EditProject extends VerticalLayout {
 
   private ProfileDropDown profileDropDown;
+
   private final WarningRemoveProjectUsed dialogWarning;
+
   private Binder<ProjectEntity> binder;
+
   private TextField textProjectName;
+
   private ProjectSecret projectSecret;
+
   private HorizontalLayout horizontalLayoutButtons;
+
   private Button buttonUpdate;
+
   private Button buttonRemove;
+
   private ProjectEntity projectEntity;
 
   public EditProject() {

@@ -14,46 +14,47 @@ package org.karnak.backend.service;
 // @Service
 // public class FileService {
 //
-//  private static final Logger LOGGER = LoggerFactory.getLogger(FileService.class);
+// private static final Logger LOGGER = LoggerFactory.getLogger(FileService.class);
 //
-//  // Service
-//  private final GatewaySetUpService gatewaySetUpService;
+// // Service
+// private final GatewaySetUpService gatewaySetUpService;
 //
-//  @Autowired
-//  public FileService(final GatewaySetUpService gatewaySetUpService) {
-//    this.gatewaySetUpService = gatewaySetUpService;
-//  }
+// @Autowired
+// public FileService(final GatewaySetUpService gatewaySetUpService) {
+// this.gatewaySetUpService = gatewaySetUpService;
+// }
 //
-//  /**
-//   * Retrieve the file to download
-//   *
-//   * @param aet AeTitle
-//   * @param fileName File name
-//   * @return File to download
-//   * @throws IOException IO Exception
-//   * @throws IllegalStateException Illegal State Exception
-//   */
-//  public byte[] retrieveFileToDownload(String aet, String fileName)
-//      throws IOException, IllegalStateException {
+// /**
+// * Retrieve the file to download
+// *
+// * @param aet AeTitle
+// * @param fileName File name
+// * @return File to download
+// * @throws IOException IO Exception
+// * @throws IllegalStateException Illegal State Exception
+// */
+// public byte[] retrieveFileToDownload(String aet, String fileName)
+// throws IOException, IllegalStateException {
 //
-//    // Stored Path to get file from
-//    final Path archiveDir = gatewaySetUpService.getStorePath();
+// // Stored Path to get file from
+// final Path archiveDir = gatewaySetUpService.getStorePath();
 //
-//    // If path is not valid throw an exception
-//    if (archiveDir == null || !Files.isDirectory(archiveDir) || !Files.isReadable(archiveDir)) {
-//      throw new IllegalStateException("Cannot access to the archive directory");
-//    } else {
-//      if (aet != null && fileName != null) {
-//        Path path = Path.of(archiveDir.toString(), aet, fileName);
-//        if (path == null || !Files.isReadable(path)) {
-//          LOGGER.warn("Cannot get this file for downloading: {}", path);
-//        } else {
-//          // Return the file
-//          DataInputStream in = new DataInputStream(Files.newInputStream(path));
-//          return IOUtils.toByteArray(in);
-//        }
-//      }
-//    }
-//    return null;
-//  }
+// // If path is not valid throw an exception
+// if (archiveDir == null || !Files.isDirectory(archiveDir) ||
+// !Files.isReadable(archiveDir)) {
+// throw new IllegalStateException("Cannot access to the archive directory");
+// } else {
+// if (aet != null && fileName != null) {
+// Path path = Path.of(archiveDir.toString(), aet, fileName);
+// if (path == null || !Files.isReadable(path)) {
+// LOGGER.warn("Cannot get this file for downloading: {}", path);
+// } else {
+// // Return the file
+// DataInputStream in = new DataInputStream(Files.newInputStream(path));
+// return IOUtils.toByteArray(in);
+// }
+// }
+// }
+// return null;
+// }
 // }

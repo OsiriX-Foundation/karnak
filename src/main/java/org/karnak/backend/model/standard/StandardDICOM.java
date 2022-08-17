@@ -20,7 +20,9 @@ import org.karnak.backend.exception.SOPNotFoundException;
 public class StandardDICOM {
 
   private final SOPS sops;
+
   private final ModuleToAttributes moduleToAttributes;
+
   private final AttributeDetails attributeDetails;
 
   public StandardDICOM() {

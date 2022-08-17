@@ -12,16 +12,20 @@ package org.karnak.backend.api.rqbody;
 public class Fields {
 
   // ---------------------------------------------------------------
-  // Fields  -------------------------------------------------------
+  // Fields -------------------------------------------------------
   // ---------------------------------------------------------------
   private String patientID;
+
   private String patientName;
+
   private String patientBirthDate;
+
   private String patientSex;
+
   private String issuerOfPatientID;
 
   // ---------------------------------------------------------------
-  // Constructors  ------------------------------------------------
+  // Constructors ------------------------------------------------
   // ---------------------------------------------------------------
   public Fields(String patientID) {
     this.patientID = patientID;
@@ -41,7 +45,7 @@ public class Fields {
   }
 
   // ---------------------------------------------------------------
-  // Getters/Setters  ------------------------------------------------
+  // Getters/Setters ------------------------------------------------
   // ---------------------------------------------------------------
   public String get_patientID() {
     return this.patientID;

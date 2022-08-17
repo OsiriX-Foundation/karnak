@@ -15,10 +15,15 @@ import org.dcm4che3.net.Association;
 public final class Params {
 
   private final String iuid;
+
   private final String cuid;
+
   private final String tsuid;
+
   private final InputStream data;
+
   private final Association as;
+
   private final int priority;
 
   public Params(

@@ -12,6 +12,7 @@ package org.karnak.backend.api.rqbody;
 public class Body {
 
   private String type;
+
   private Data data;
 
   public Body(String type, Data data) {

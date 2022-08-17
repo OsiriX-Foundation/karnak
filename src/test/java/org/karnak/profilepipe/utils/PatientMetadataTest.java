@@ -22,9 +22,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.karnak.backend.cache.CachedPatient;
-import org.karnak.backend.cache.MainzellistePatient;
-import org.karnak.backend.cache.PseudonymPatient;
+import org.karnak.backend.cache.Patient;
 import org.karnak.backend.model.profilepipe.PatientMetadata;
 
 class PatientMetadataTest {
@@ -111,57 +109,50 @@ class PatientMetadataTest {
 
   private static Stream<Arguments> providerCompareCachedPatient() {
     return Stream.of(
-        Arguments.of(patientMetadata, new CachedPatient("TEST", "", "", "", "", null)),
-        Arguments.of(patientMetadata, new MainzellistePatient("TEST", "", "", "", null, "O", "")),
+        Arguments.of(patientMetadata, new Patient("TEST", "", "", "", "", null)),
+        Arguments.of(patientMetadata, new Patient("TEST", "", "", "", null, "O", "")),
         Arguments.of(
-            patientMetadataDicomEmptyWithIssuer,
-            new CachedPatient("TEST", "", "", "", "PDA", null)),
+            patientMetadataDicomEmptyWithIssuer, new Patient("TEST", "", "", "", "PDA", null)),
         Arguments.of(
-            patientMetadataDicomEmptyWithIssuer,
-            new MainzellistePatient("TEST", "", "", "", null, "O", "PDA")),
+            patientMetadataDicomEmptyWithIssuer, new Patient("TEST", "", "", "", null, "O", "PDA")),
         Arguments.of(
             patientMetadataWithNotValidPatientSex,
-            new CachedPatient("TEST", "EREN", "Name", "Patient", "PDA", null)),
+            new Patient("TEST", "EREN", "Name", "Patient", "PDA", null)),
         Arguments.of(
             patientMetadataWithNotValidPatientSex,
-            new MainzellistePatient(
-                "TEST", "EREN", "Name", "Patient", LocalDate.of(1993, 2, 16), "O", "PDA")));
+            new Patient("TEST", "EREN", "Name", "Patient", LocalDate.of(1993, 2, 16), "O", "PDA")));
   }
 
   private static Stream<Arguments> providerCompareCachedPatientFalse() {
     return Stream.of(
-        Arguments.of(patientMetadata, new CachedPatient("TEST", "1", "", "", "", null)),
-        Arguments.of(patientMetadata, new CachedPatient("TEST", "", "", "", "1", null)),
-        Arguments.of(patientMetadata, new MainzellistePatient("TEST", "1", "", "", null, "O", "")),
-        Arguments.of(patientMetadata, new MainzellistePatient("TEST", "", "", "", null, "O", "1")),
+        Arguments.of(patientMetadata, new Patient("TEST", "1", "", "", "", null)),
+        Arguments.of(patientMetadata, new Patient("TEST", "", "", "", "1", null)),
+        Arguments.of(patientMetadata, new Patient("TEST", "1", "", "", null, "O", "")),
+        Arguments.of(patientMetadata, new Patient("TEST", "", "", "", null, "O", "1")),
+        Arguments.of(
+            patientMetadataDicomEmptyWithIssuer, new Patient("TEST", "1", "", "", "PDA", null)),
+        Arguments.of(
+            patientMetadataDicomEmptyWithIssuer, new Patient("TEST", "", "", "", "", null)),
         Arguments.of(
             patientMetadataDicomEmptyWithIssuer,
-            new CachedPatient("TEST", "1", "", "", "PDA", null)),
+            new Patient("TEST", "1", "", "", null, "O", "PDA")),
         Arguments.of(
-            patientMetadataDicomEmptyWithIssuer, new CachedPatient("TEST", "", "", "", "", null)),
-        Arguments.of(
-            patientMetadataDicomEmptyWithIssuer,
-            new MainzellistePatient("TEST", "1", "", "", null, "O", "PDA")),
-        Arguments.of(
-            patientMetadataDicomEmptyWithIssuer,
-            new MainzellistePatient("TEST", "", "", "", null, "O", "")),
+            patientMetadataDicomEmptyWithIssuer, new Patient("TEST", "", "", "", null, "O", "")),
         Arguments.of(
             patientMetadataWithNotValidPatientSex,
-            new CachedPatient("TEST", "", "Name", "Patient", "PDA", null)),
+            new Patient("TEST", "", "Name", "Patient", "PDA", null)),
         Arguments.of(
             patientMetadataWithNotValidPatientSex,
-            new CachedPatient("TEST", "", "^Name", "", "PDA", null)),
+            new Patient("TEST", "", "^Name", "", "PDA", null)),
         Arguments.of(
             patientMetadataWithNotValidPatientSex,
-            new CachedPatient("TEST", "EREN", "Patient^Name", "", "", null)),
+            new Patient("TEST", "EREN", "Patient^Name", "", "", null)),
         Arguments.of(
             patientMetadataWithNotValidPatientSex,
-            new MainzellistePatient(
-                "TEST", "", "Name", "Patient", LocalDate.of(1993, 2, 16), "O", "PDA")),
+            new Patient("TEST", "", "Name", "Patient", LocalDate.of(1993, 2, 16), "O", "PDA")),
         Arguments.of(
             patientMetadataWithNotValidPatientSex,
-            new MainzellistePatient(
-                "TEST", "EREN", "Name", "Patient", LocalDate.of(1993, 2, 16), "O", "")));
+            new Patient("TEST", "EREN", "Name", "Patient", LocalDate.of(1993, 2, 16), "O", "")));
   }
 
   private static Stream<Arguments> providerPatientBirthdateInvalid() {
@@ -230,15 +221,14 @@ class PatientMetadataTest {
 
   @ParameterizedTest
   @MethodSource("providerCompareCachedPatient")
-  void compareCachedPatient(PatientMetadata patientMetadata, PseudonymPatient pseudonymPatient) {
-    assertTrue(patientMetadata.compareCachedPatient(pseudonymPatient));
+  void compareCachedPatient(PatientMetadata patientMetadata, Patient patient) {
+    assertTrue(patientMetadata.compareCachedPatient(patient));
   }
 
   @ParameterizedTest
   @MethodSource("providerCompareCachedPatientFalse")
-  void compareCachedPatientFalse(
-      PatientMetadata patientMetadata, PseudonymPatient pseudonymPatient) {
-    assertFalse(patientMetadata.compareCachedPatient(pseudonymPatient));
+  void compareCachedPatientFalse(PatientMetadata patientMetadata, Patient patient) {
+    assertFalse(patientMetadata.compareCachedPatient(patient));
   }
 
   @ParameterizedTest

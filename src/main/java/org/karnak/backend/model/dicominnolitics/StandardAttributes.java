@@ -17,9 +17,11 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 public class StandardAttributes {
+
   private static final String ATTRIBUTES_FILENAME = "attributes.json";
 
-  private StandardAttributes() {}
+  private StandardAttributes() {
+  }
 
   public static jsonAttributes[] readJsonAttributes() {
     URL url = StandardCIODS.class.getResource(ATTRIBUTES_FILENAME);

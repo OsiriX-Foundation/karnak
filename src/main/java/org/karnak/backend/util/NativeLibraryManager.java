@@ -26,7 +26,8 @@ public class NativeLibraryManager {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(NativeLibraryManager.class);
 
-  private NativeLibraryManager() {}
+  private NativeLibraryManager() {
+  }
 
   public static void initNativeLibs(URL resource) {
     Optional<String> oLibPath =

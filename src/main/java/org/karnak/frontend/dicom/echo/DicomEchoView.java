@@ -37,20 +37,28 @@ import org.karnak.frontend.dicom.AbstractView;
 import org.karnak.frontend.dicom.PortField;
 import org.karnak.frontend.dicom.echo.DicomEchoSelectionDialog.DicomNodeSelectionEvent;
 
-/** Calling Order 1) constructor 2) setParameter 3) beforeEnter */
+/**
+ * Calling Order 1) constructor 2) setParameter 3) beforeEnter
+ */
 @SuppressWarnings("serial")
 public class DicomEchoView extends AbstractView implements HasUrlParameter<String> {
 
   public static final String VIEW_NAME = "Dicom Echo";
+
   private static final long serialVersionUID = 1L;
 
   private static final String PARAMETER_CALLING_AET = "callingAET";
+
   private static final String PARAMETER_CALLED_AET = "calledAET";
+
   private static final String PARAMETER_CALLED_HOSTNAME = "calledHostname";
+
   private static final String PARAMETER_CALLED_PORT = "calledPort";
+
   private static final String PARAMETER_ACTION = "action";
 
   private static final String ACTION_ECHO = "echo";
+
   public static final String ERROR_MESSAGE = "This filed is mandatory";
 
   // CONTROLLER
@@ -62,28 +70,44 @@ public class DicomEchoView extends AbstractView implements HasUrlParameter<Strin
   // UI COMPONENTS
   // Dicom Echo Query
   private VerticalLayout dicomEchoQueryLayout;
+
   private FormLayout formLayout;
+
   private H6 formLayoutTitle;
+
   private TextField callingAetFld;
+
   private TextField calledAetFld;
+
   private TextField calledHostnameFld;
+
   private PortField calledPortFld;
+
   private HorizontalLayout buttonBar;
+
   private Button clearBtn;
+
   private Button selectDicomNodeBtn;
+
   private Button dicomEchoBtn;
+
   // Dicom Echo Status
   private Div dicomEchoStatusLayout;
 
   // DATA
   private DicomEchoQueryData dicomEchoQueryData;
+
   private Binder<DicomEchoQueryData> binder;
 
   // PARAMETERS
   private String callingAetParam;
+
   private String dicomNodeAetParam;
+
   private String dicomNodeHostnameParam;
+
   private String dicomNodePortParam;
+
   private String actionParam;
 
   public DicomEchoView() {

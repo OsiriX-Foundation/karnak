@@ -28,7 +28,9 @@ import org.weasis.dicom.param.DicomNode;
 
 @Service
 public class DicomGatewayService {
+
   private final StoreScpForwardService storeScpForwardService;
+
   private DeviceListenerService deviceService;
 
   @Autowired
@@ -39,9 +41,9 @@ public class DicomGatewayService {
   /**
    * Init a DICOM Gateway with one final destination
    *
-   * @param forwardParams the optional advanced parameters (proxy, authentication, connection and
-   *     TLS) for the final destination
-   * @param fwdNode the calling DICOM node configuration
+   * @param forwardParams   the optional advanced parameters (proxy, authentication, connection and
+   *                        TLS) for the final destination
+   * @param fwdNode         the calling DICOM node configuration
    * @param destinationNode the final DICOM node configuration
    * @throws IOException
    */
@@ -54,11 +56,11 @@ public class DicomGatewayService {
   /**
    * Init a DICOM Gateway with one final destination
    *
-   * @param forwardParams the optional advanced parameters (proxy, authentication, connection and
-   *     TLS) for the final destination
-   * @param fwdNode the calling DICOM node configuration
+   * @param forwardParams   the optional advanced parameters (proxy, authentication, connection and
+   *                        TLS) for the final destination
+   * @param fwdNode         the calling DICOM node configuration
    * @param destinationNode the final DICOM node configuration
-   * @param editors the list of editor for modifying attributes on the fly (can be Null)
+   * @param editors         the list of editor for modifying attributes on the fly (can be Null)
    * @throws IOException
    */
   public void init(
