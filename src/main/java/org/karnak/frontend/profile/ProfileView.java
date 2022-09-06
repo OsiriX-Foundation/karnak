@@ -84,6 +84,7 @@ public class ProfileView extends HorizontalLayout implements HasUrlParameter<Str
   @Override
   public void setParameter(BeforeEvent beforeEvent, @OptionalParameter String parameter) {
     ProfileEntity currentProfileEntity = null;
+    profileLogic.refreshAll();
     if (parameter != null) {
       final Long idProfilePipe = profileLogic.enter(parameter);
       if (idProfilePipe != null) {

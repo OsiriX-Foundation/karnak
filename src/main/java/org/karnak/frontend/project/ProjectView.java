@@ -86,6 +86,7 @@ public class ProjectView extends HorizontalLayout implements HasUrlParameter<Str
   @Override
   public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
     ProjectEntity currentProjectEntity = null;
+    projectLogic.refreshAll();
     if (parameter != null) {
       Long idProject = projectLogic.enter(parameter);
       if (idProject != null) {
