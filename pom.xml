@@ -16,7 +16,7 @@
   </licenses>
 
   <!-- Version -->
-  <version>1.0.50-RELEASE</version>
+  <version>1.0.51-RELEASE</version>
 
   <!-- Packaging -->
   <packaging>jar</packaging>
