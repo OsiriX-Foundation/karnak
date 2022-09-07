@@ -32,7 +32,8 @@ public abstract class PatientClient {
   }
 
   public Patient put(String key, Patient patient) {
-    return (Patient) cache.putIfAbsent(key, patient);
+    ValueWrapper valueFromCache = cache.putIfAbsent(key, patient);
+    return valueFromCache != null ? (Patient) valueFromCache.get() : null;
   }
 
   public Patient get(String key) {
