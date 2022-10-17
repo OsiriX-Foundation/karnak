@@ -9,12 +9,9 @@
  */
 package org.karnak.backend.service;
 
-import java.util.stream.Collectors;
 import org.karnak.backend.cache.ExternalIDCache;
-import org.karnak.backend.config.AppConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -31,14 +28,14 @@ public class LogCacheService {
   /**
    * Log every minutes
    */
-  @Scheduled(fixedRate = 60000)
-  public void logCache() {
-    LOGGER.info(
-        String.format(
-            "Cache values for instance %s:%s",
-            AppConfig.getInstance().getNameInstance(),
-            externalIDCache.getAll().stream()
-                .map(Object::toString)
-                .collect(Collectors.joining("***"))));
-  }
+//  @Scheduled(fixedRate = 60000)
+//  public void logCache() {
+//    LOGGER.info(
+//        String.format(
+//            "Cache values for instance %s:%s",
+//            AppConfig.getInstance().getNameInstance(),
+//            externalIDCache.getAll().stream()
+//                .map(Object::toString)
+//                .collect(Collectors.joining("***"))));
+//  }
 }
