@@ -81,7 +81,7 @@ public class EchoController {
    */
   @GetMapping(
       value = {EndPoint.DESTINATIONS_PATH},
-      produces = {MediaType.APPLICATION_XML_VALUE})
+      produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
   public ResponseEntity<DestinationEchos> retrieveStatusConfiguredDestinations(
       @RequestParam(value = EndPoint.SRC_AET_PARAM) String srcAet) {
 
