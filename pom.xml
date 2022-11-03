@@ -435,13 +435,6 @@
       <version>${springframework.version}</version>
     </dependency>
 
-    <dependency>
-      <artifactId>spring-boot-devtools</artifactId>
-      <groupId>org.springframework.boot</groupId>
-      <optional>true</optional>
-      <version>${springframework.version}</version>
-    </dependency>
-
     <!-- Bean validation implementation -->
     <dependency>
       <artifactId>hibernate-validator</artifactId>

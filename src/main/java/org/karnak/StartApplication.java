@@ -51,8 +51,6 @@ public class StartApplication implements CommandLineRunner {
       application.profiles(ApplicationProfile.OIDC.getCode());
     }
 
-    System.setProperty("spring.devtools.restart.enabled", "false");
-
     // Run application
     application.run(args);
   }
