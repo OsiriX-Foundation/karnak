@@ -16,7 +16,7 @@ RUN cp ../target/karnak*.jar application.jar
 RUN java -Djarmode=layertools -jar application.jar extract
 
 # Build the final deployment image
-FROM eclipse-temurin:17-jre-focal
+FROM eclipse-temurin:17-jre-jammy
 WORKDIR app
 
 COPY --from=builder /app/bin/dependencies/ ./
