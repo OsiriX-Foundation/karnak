@@ -322,6 +322,6 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
   public DestinationEntity retrieveDestinationEntity(Long id) {
     List<DestinationEntity> destinationEntities =
         destinationService.retrieveDestinationsFromIds(List.of(id));
-    return destinationEntities.isEmpty() ? null : destinationEntities.stream().findFirst().get();
+    return destinationEntities.stream().findFirst().orElse(null);
   }
 }
