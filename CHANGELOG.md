@@ -1,8 +1,20 @@
 # Changelog
 
-## [v1.0.2](https://github.com/OsiriX-Foundation/karnak/tree/v1.0.2) (2022-11-04)
+## [Unreleased](https://github.com/OsiriX-Foundation/karnak/tree/HEAD)
+
+[Full Changelog](https://github.com/OsiriX-Foundation/karnak/compare/v1.0.2...HEAD)
+
+**Closed issues:**
+
+- Check behaviour hazelcast multi instance [\#176](https://github.com/OsiriX-Foundation/karnak/issues/176)
+
+## [v1.0.2](https://github.com/OsiriX-Foundation/karnak/tree/v1.0.2) (2022-11-05)
 
 [Full Changelog](https://github.com/OsiriX-Foundation/karnak/compare/v1.0.1...v1.0.2)
+
+**Merged pull requests:**
+
+- fix: remove duplicate [\#196](https://github.com/OsiriX-Foundation/karnak/pull/196) ([jdcshug](https://github.com/jdcshug))
 
 ## [v1.0.1](https://github.com/OsiriX-Foundation/karnak/tree/v1.0.1) (2022-03-25)
 
@@ -29,6 +41,11 @@
 - Handle 409 http exception in order to not rethrow exception = means file is already in the destination [\#193](https://github.com/OsiriX-Foundation/karnak/issues/193)
 - Upgrade version weasis-dicom-tools in order to fix "Go Away" exceptions [\#191](https://github.com/OsiriX-Foundation/karnak/issues/191)
 
+**Merged pull requests:**
+
+- fix: switching album issue [\#195](https://github.com/OsiriX-Foundation/karnak/pull/195) ([jdcshug](https://github.com/jdcshug))
+- monitoring + notification + export + secret history + pseudonym mapping [\#184](https://github.com/OsiriX-Foundation/karnak/pull/184) ([jdcshug](https://github.com/jdcshug))
+
 ## [v0.9.9](https://github.com/OsiriX-Foundation/karnak/tree/v0.9.9) (2021-12-20)
 
 [Full Changelog](https://github.com/OsiriX-Foundation/karnak/compare/v0.9.8...v0.9.9)
@@ -40,6 +57,9 @@
 - Notification Front: default values [\#172](https://github.com/OsiriX-Foundation/karnak/issues/172)
 - Karnak email address [\#159](https://github.com/OsiriX-Foundation/karnak/issues/159)
 - Change configuration when sending [\#31](https://github.com/OsiriX-Foundation/karnak/issues/31)
+- Feat/notification sender [\#178](https://github.com/OsiriX-Foundation/karnak/pull/178) ([redwork321](https://github.com/redwork321))
+- Feat/deidentification activ deactiv front refactoring [\#173](https://github.com/OsiriX-Foundation/karnak/pull/173) ([jdcshug](https://github.com/jdcshug))
+- feat: default values notification [\#171](https://github.com/OsiriX-Foundation/karnak/pull/171) ([jdcshug](https://github.com/jdcshug))
 
 ## [v0.9.8](https://github.com/OsiriX-Foundation/karnak/tree/v0.9.8) (2021-08-26)
 
@@ -57,6 +77,17 @@
 - Inject an external id provider [\#88](https://github.com/OsiriX-Foundation/karnak/issues/88)
 - Check that the expression does not corrupt the DICOM [\#74](https://github.com/OsiriX-Foundation/karnak/issues/74)
 - Improve the notification module UI [\#42](https://github.com/OsiriX-Foundation/karnak/issues/42)
+- Adjust clickable zone checkbox [\#168](https://github.com/OsiriX-Foundation/karnak/pull/168) ([jdcshug](https://github.com/jdcshug))
+- feat: add profile version [\#166](https://github.com/OsiriX-Foundation/karnak/pull/166) ([jdcshug](https://github.com/jdcshug))
+- Upgrade versions springboot/junit/liquibase [\#164](https://github.com/OsiriX-Foundation/karnak/pull/164) ([jdcshug](https://github.com/jdcshug))
+- Enable/disable destination buttons \(save/delete\) when transfer is in progress [\#162](https://github.com/OsiriX-Foundation/karnak/pull/162) ([jdcshug](https://github.com/jdcshug))
+- Activity transfer destination [\#160](https://github.com/OsiriX-Foundation/karnak/pull/160) ([jdcshug](https://github.com/jdcshug))
+
+**Merged pull requests:**
+
+- Bump vaadin-bom from 19.0.6 to 19.0.9 [\#158](https://github.com/OsiriX-Foundation/karnak/pull/158) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Fix hash uidkeep [\#157](https://github.com/OsiriX-Foundation/karnak/pull/157) ([nicolasvandooren](https://github.com/nicolasvandooren))
+- feat: add condition clean pixel data [\#155](https://github.com/OsiriX-Foundation/karnak/pull/155) ([jdcshug](https://github.com/jdcshug))
 
 ## [v0.9.7](https://github.com/OsiriX-Foundation/karnak/tree/v0.9.7) (2021-06-11)
 
@@ -77,6 +108,20 @@
 - Do not de-identify when multiple actions and with retired SOP Class UID [\#138](https://github.com/OsiriX-Foundation/karnak/issues/138)
 - Fix endianness of added sequences [\#137](https://github.com/OsiriX-Foundation/karnak/issues/137)
 
+**Closed issues:**
+
+- Condition to activate a destination [\#101](https://github.com/OsiriX-Foundation/karnak/issues/101)
+
+**Merged pull requests:**
+
+- feat: destination [\#153](https://github.com/OsiriX-Foundation/karnak/pull/153) ([jdcshug](https://github.com/jdcshug))
+- Check issuer [\#152](https://github.com/OsiriX-Foundation/karnak/pull/152) ([cicciu](https://github.com/cicciu))
+- feat: activate/deactivate notification [\#150](https://github.com/OsiriX-Foundation/karnak/pull/150) ([jdcshug](https://github.com/jdcshug))
+- Defacing [\#149](https://github.com/OsiriX-Foundation/karnak/pull/149) ([cicciu](https://github.com/cicciu))
+- Condition activate destination [\#145](https://github.com/OsiriX-Foundation/karnak/pull/145) ([nicolasvandooren](https://github.com/nicolasvandooren))
+- External logback [\#144](https://github.com/OsiriX-Foundation/karnak/pull/144) ([nicolasvandooren](https://github.com/nicolasvandooren))
+- feat: add unit tests +  header native for springdoc [\#143](https://github.com/OsiriX-Foundation/karnak/pull/143) ([jdcshug](https://github.com/jdcshug))
+
 ## [v0.9.6](https://github.com/OsiriX-Foundation/karnak/tree/v0.9.6) (2021-05-07)
 
 [Full Changelog](https://github.com/OsiriX-Foundation/karnak/compare/v0.9.5...v0.9.6)
@@ -94,6 +139,15 @@
 - Decompress all the images with DICOM output [\#136](https://github.com/OsiriX-Foundation/karnak/issues/136)
 - STOW-RS exceptions when sending images from multiple sources concurrently [\#124](https://github.com/OsiriX-Foundation/karnak/issues/124)
 
+**Merged pull requests:**
+
+- feat: vaadin 19 [\#142](https://github.com/OsiriX-Foundation/karnak/pull/142) ([jdcshug](https://github.com/jdcshug))
+- feat: modify Project labels + set placeholder ProfileDropDown [\#141](https://github.com/OsiriX-Foundation/karnak/pull/141) ([jdcshug](https://github.com/jdcshug))
+- fix: resources handler spring mvc + configuration echo controller spr… [\#140](https://github.com/OsiriX-Foundation/karnak/pull/140) ([jdcshug](https://github.com/jdcshug))
+- Feat/echo endpoint [\#130](https://github.com/OsiriX-Foundation/karnak/pull/130) ([jdcshug](https://github.com/jdcshug))
+- feat: add service unit tests + coverage on new code + deactivate previous not working unit tests [\#129](https://github.com/OsiriX-Foundation/karnak/pull/129) ([jdcshug](https://github.com/jdcshug))
+- Deidentification method [\#126](https://github.com/OsiriX-Foundation/karnak/pull/126) ([cicciu](https://github.com/cicciu))
+
 ## [v0.9.5](https://github.com/OsiriX-Foundation/karnak/tree/v0.9.5) (2021-04-16)
 
 [Full Changelog](https://github.com/OsiriX-Foundation/karnak/compare/v0.9.4...v0.9.5)
@@ -105,6 +159,10 @@
 **Fixed bugs:**
 
 - Exception loading sessions from persistent storage [\#127](https://github.com/OsiriX-Foundation/karnak/issues/127)
+
+**Closed issues:**
+
+- Enabled or Disabled a node or a destination [\#27](https://github.com/OsiriX-Foundation/karnak/issues/27)
 
 ## [v0.9.4](https://github.com/OsiriX-Foundation/karnak/tree/v0.9.4) (2021-03-17)
 
@@ -122,6 +180,16 @@
 - Manage exception if status code is not SUCCESSFUL for a dicom stow [\#117](https://github.com/OsiriX-Foundation/karnak/issues/117)
 - Manage exception on parsing datetime [\#116](https://github.com/OsiriX-Foundation/karnak/issues/116)
 - Incorrect trailing \(FFFE,E00D\) Item Delimitation Item in outgoing C-STORE RQs. [\#109](https://github.com/OsiriX-Foundation/karnak/issues/109)
+
+**Merged pull requests:**
+
+- feat: merge pom.xml [\#125](https://github.com/OsiriX-Foundation/karnak/pull/125) ([jdcshug](https://github.com/jdcshug))
+- enable/disable destination [\#123](https://github.com/OsiriX-Foundation/karnak/pull/123) ([cicciu](https://github.com/cicciu))
+- Use attribute [\#122](https://github.com/OsiriX-Foundation/karnak/pull/122) ([nicolasvandooren](https://github.com/nicolasvandooren))
+- External pseudonym project [\#121](https://github.com/OsiriX-Foundation/karnak/pull/121) ([cicciu](https://github.com/cicciu))
+- Separate cache mainzelliste [\#120](https://github.com/OsiriX-Foundation/karnak/pull/120) ([cicciu](https://github.com/cicciu))
+- Duplicate extid unique msg [\#115](https://github.com/OsiriX-Foundation/karnak/pull/115) ([cicciu](https://github.com/cicciu))
+- Pagination extid [\#114](https://github.com/OsiriX-Foundation/karnak/pull/114) ([cicciu](https://github.com/cicciu))
 
 ## [v0.9.3.1](https://github.com/OsiriX-Foundation/karnak/tree/v0.9.3.1) (2021-02-05)
 
@@ -165,6 +233,20 @@
 - Add mask view in profile view [\#71](https://github.com/OsiriX-Foundation/karnak/issues/71)
 -  Creation of a website for the karnak doc [\#70](https://github.com/OsiriX-Foundation/karnak/issues/70)
 
+**Merged pull requests:**
+
+- Refactor structure [\#104](https://github.com/OsiriX-Foundation/karnak/pull/104) ([jdcshug](https://github.com/jdcshug))
+- Upload csv [\#103](https://github.com/OsiriX-Foundation/karnak/pull/103) ([cicciu](https://github.com/cicciu))
+- add\_idp\_keycloak: Handle Keycloak IDP [\#102](https://github.com/OsiriX-Foundation/karnak/pull/102) ([jdcshug](https://github.com/jdcshug))
+- Refactor pseudonym to remove duplicate code [\#100](https://github.com/OsiriX-Foundation/karnak/pull/100) ([nicolasvandooren](https://github.com/nicolasvandooren))
+- Simplify the pseudonym and split the cached pseudonym and mainzelliste [\#98](https://github.com/OsiriX-Foundation/karnak/pull/98) ([nicolasvandooren](https://github.com/nicolasvandooren))
+- Login Spring Security [\#95](https://github.com/OsiriX-Foundation/karnak/pull/95) ([jdcshug](https://github.com/jdcshug))
+- Choose an action depending the standard DICOM [\#94](https://github.com/OsiriX-Foundation/karnak/pull/94) ([nicolasvandooren](https://github.com/nicolasvandooren))
+- Improve clinical logs [\#86](https://github.com/OsiriX-Foundation/karnak/pull/86) ([cicciu](https://github.com/cicciu))
+- Remove profile [\#82](https://github.com/OsiriX-Foundation/karnak/pull/82) ([cicciu](https://github.com/cicciu))
+- Export profile [\#72](https://github.com/OsiriX-Foundation/karnak/pull/72) ([cicciu](https://github.com/cicciu))
+- Production cache embedded [\#69](https://github.com/OsiriX-Foundation/karnak/pull/69) ([nicolasvandooren](https://github.com/nicolasvandooren))
+
 ## [0.9.2](https://github.com/OsiriX-Foundation/karnak/tree/0.9.2) (2020-11-04)
 
 [Full Changelog](https://github.com/OsiriX-Foundation/karnak/compare/0.9.1...0.9.2)
@@ -185,6 +267,7 @@
 - Implement clean pixel data \(text\) [\#14](https://github.com/OsiriX-Foundation/karnak/issues/14)
 - Import an external pseudonym [\#13](https://github.com/OsiriX-Foundation/karnak/issues/13)
 - Terms/Conditions on login page [\#8](https://github.com/OsiriX-Foundation/karnak/issues/8)
+- Mainzelliste caching [\#64](https://github.com/OsiriX-Foundation/karnak/pull/64) ([nicolasvandooren](https://github.com/nicolasvandooren))
 
 **Fixed bugs:**
 
@@ -201,6 +284,18 @@
 - NPE when setting a string value to Binary VR [\#44](https://github.com/OsiriX-Foundation/karnak/issues/44)
 - Propagation of the action in sequence [\#29](https://github.com/OsiriX-Foundation/karnak/issues/29)
 - Changing parameters during sending [\#26](https://github.com/OsiriX-Foundation/karnak/issues/26)
+- Update grid project [\#63](https://github.com/OsiriX-Foundation/karnak/pull/63) ([nicolasvandooren](https://github.com/nicolasvandooren))
+
+**Closed issues:**
+
+- Use the Date Parser dcm4che [\#34](https://github.com/OsiriX-Foundation/karnak/issues/34)
+- Patient Name splitted [\#33](https://github.com/OsiriX-Foundation/karnak/issues/33)
+
+**Merged pull requests:**
+
+- Seq not fully removed [\#65](https://github.com/OsiriX-Foundation/karnak/pull/65) ([cicciu](https://github.com/cicciu))
+- Logback config [\#62](https://github.com/OsiriX-Foundation/karnak/pull/62) ([cicciu](https://github.com/cicciu))
+- Pseudonym caching  [\#54](https://github.com/OsiriX-Foundation/karnak/pull/54) ([nicolasvandooren](https://github.com/nicolasvandooren))
 
 ## [0.9.1](https://github.com/OsiriX-Foundation/karnak/tree/0.9.1) (2020-09-07)
 
@@ -226,6 +321,11 @@
 - Configuration of user/password Admin [\#7](https://github.com/OsiriX-Foundation/karnak/issues/7)
 - Vaadin Upgrade to v16 [\#6](https://github.com/OsiriX-Foundation/karnak/issues/6)
 - Select all filters [\#5](https://github.com/OsiriX-Foundation/karnak/issues/5)
+
+**Merged pull requests:**
+
+- Make the UUID valid [\#3](https://github.com/OsiriX-Foundation/karnak/pull/3) ([spalte](https://github.com/spalte))
+- Scale suggestion [\#2](https://github.com/OsiriX-Foundation/karnak/pull/2) ([spalte](https://github.com/spalte))
 
 
 
