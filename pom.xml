@@ -16,7 +16,7 @@
   </licenses>
 
   <!-- Version -->
-  <version>1.0.52</version>
+  <version>1.0.53</version>
 
   <!-- Packaging -->
   <packaging>jar</packaging>
@@ -493,13 +493,6 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-oauth2-client</artifactId>
-      <version>${springframework.version}</version>
-    </dependency>
-
-    <dependency>
-      <artifactId>spring-boot-devtools</artifactId>
-      <groupId>org.springframework.boot</groupId>
-      <optional>true</optional>
       <version>${springframework.version}</version>
     </dependency>
 
