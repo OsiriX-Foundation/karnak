@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.dcm4che3.data.UID;
@@ -159,6 +160,9 @@ public class ForwardService {
       // Handle dynamically new SOPClassUID
       Set<String> tss = streamSCU.getTransferSyntaxesFor(cuid);
       if (!tss.contains(dstTsuid)) {
+        LOGGER.info("New output transfer syntax "+dstTsuid+": closing streamSCU");
+        LOGGER.info("Current list of transfer syntaxes for "+cuid+":"+tss.stream().collect(
+            Collectors.joining(",")));
         streamSCU.close(true);
       }
 
@@ -170,6 +174,7 @@ public class ForwardService {
 
       if (!streamSCU.isReadyForDataTransfer()) {
         // If connection has been closed just reopen
+        LOGGER.info("streamSCU not ready for data transfer, reopen streamSCU");
         streamSCU.open();
       }
     } else {
@@ -182,6 +187,7 @@ public class ForwardService {
       if (DicomOutputData.isAdaptableSyntax(dstTsuid)) {
         streamSCU.addData(cuid, UID.JPEGLosslessSV1);
       }
+      LOGGER.info("open streamSCU");
       streamSCU.open();
     }
     return streamSCU;
@@ -297,6 +303,7 @@ public class ForwardService {
           e.getMessage());
       LOGGER.error(ERROR_WHEN_FORWARDING, e);
     } finally {
+      LOGGER.info("streamSCU triggerCloseExecutor transfer");
       streamSCU.triggerCloseExecutor();
       files = cleanOrGetBulkDataFiles(in, copy == null);
     }
@@ -469,6 +476,7 @@ public class ForwardService {
           e.getMessage());
       LOGGER.error(ERROR_WHEN_FORWARDING, e);
     } finally {
+      LOGGER.info("streamSCU triggerCloseExecutor transferOther");
       streamSCU.triggerCloseExecutor();
     }
   }
