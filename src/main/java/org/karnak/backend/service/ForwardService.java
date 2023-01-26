@@ -303,7 +303,6 @@ public class ForwardService {
           e.getMessage());
       LOGGER.error(ERROR_WHEN_FORWARDING, e);
     } finally {
-      LOGGER.info("streamSCU triggerCloseExecutor transfer");
       streamSCU.triggerCloseExecutor();
       files = cleanOrGetBulkDataFiles(in, copy == null);
     }
@@ -476,7 +475,6 @@ public class ForwardService {
           e.getMessage());
       LOGGER.error(ERROR_WHEN_FORWARDING, e);
     } finally {
-      LOGGER.info("streamSCU triggerCloseExecutor transferOther");
       streamSCU.triggerCloseExecutor();
     }
   }
