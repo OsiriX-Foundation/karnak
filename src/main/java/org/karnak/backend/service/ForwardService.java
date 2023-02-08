@@ -12,9 +12,9 @@ package org.karnak.backend.service;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.net.URL;
+import java.util.*;
+
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.dcm4che3.data.UID;
@@ -32,6 +32,9 @@ import org.dcm4che3.net.DataWriterAdapter;
 import org.dcm4che3.net.InputStreamDataWriter;
 import org.dcm4che3.net.PDVInputStream;
 import org.dcm4che3.net.Status;
+import org.dcm4che3.tool.common.CLIUtils;
+import org.dcm4che3.tool.getscu.GetSCU;
+import org.dcm4che3.util.StringUtils;
 import org.karnak.backend.data.entity.TransferStatusEntity;
 import org.karnak.backend.dicom.Defacer;
 import org.karnak.backend.dicom.DicomForwardDestination;
@@ -62,10 +65,11 @@ import org.weasis.opencv.data.PlanarImage;
 @Service
 public class ForwardService {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(ForwardService.class);
+
   private static final String ERROR_WHEN_FORWARDING =
       "Error when forwarding to the final destination";
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ForwardService.class);
 
   private final ApplicationEventPublisher applicationEventPublisher;
 
@@ -155,35 +159,7 @@ public class ForwardService {
     String dstTsuid = destination.getOutputTransferSyntax(tsuid);
     StoreFromStreamSCU streamSCU = destination.getStreamSCU();
 
-    if (streamSCU.hasAssociation()) {
-      // Handle dynamically new SOPClassUID
-      Set<String> tss = streamSCU.getTransferSyntaxesFor(cuid);
-      if (!tss.contains(dstTsuid)) {
-        streamSCU.close(true);
-      }
-
-      // Add Presentation Context for the association
-      streamSCU.addData(cuid, dstTsuid);
-      if (DicomOutputData.isAdaptableSyntax(dstTsuid)) {
-        streamSCU.addData(cuid, UID.JPEGLosslessSV1);
-      }
-
-      if (!streamSCU.isReadyForDataTransfer()) {
-        // If connection has been closed just reopen
-        streamSCU.open();
-      }
-    } else {
-      destination.getStreamSCUService().start();
-      // Add Presentation Context for the association
-      streamSCU.addData(cuid, dstTsuid);
-      if (!dstTsuid.equals(UID.ExplicitVRLittleEndian)) {
-        streamSCU.addData(cuid, UID.ExplicitVRLittleEndian);
-      }
-      if (DicomOutputData.isAdaptableSyntax(dstTsuid)) {
-        streamSCU.addData(cuid, UID.JPEGLosslessSV1);
-      }
-      streamSCU.open();
-    }
+    streamSCU.prepareTransfer( destination.getStreamSCUService(), p.getIuid(), cuid, dstTsuid);
     return streamSCU;
   }
 
@@ -250,7 +226,7 @@ public class ForwardService {
       launchCStore(p, streamSCU, dataWriter, cuid, iuid, syntax, transformedPlanarImage);
 
       progressNotify(
-          destination, p.getIuid(), p.getCuid(), false, streamSCU.getNumberOfSuboperations());
+          destination, p.getIuid(), p.getCuid(), false, streamSCU);
       monitor(
           sourceNode.getId(),
           destination.getId(),
@@ -260,7 +236,7 @@ public class ForwardService {
           null);
     } catch (AbortException e) {
       progressNotify(
-          destination, p.getIuid(), p.getCuid(), true, streamSCU.getNumberOfSuboperations());
+          destination, p.getIuid(), p.getCuid(), true, streamSCU);
       monitor(
           sourceNode.getId(),
           destination.getId(),
@@ -273,7 +249,7 @@ public class ForwardService {
       }
     } catch (IOException e) {
       progressNotify(
-          destination, p.getIuid(), p.getCuid(), true, streamSCU.getNumberOfSuboperations());
+          destination, p.getIuid(), p.getCuid(), true, streamSCU);
       monitor(
           sourceNode.getId(),
           destination.getId(),
@@ -287,7 +263,7 @@ public class ForwardService {
         Thread.currentThread().interrupt();
       }
       progressNotify(
-          destination, p.getIuid(), p.getCuid(), true, streamSCU.getNumberOfSuboperations());
+          destination, p.getIuid(), p.getCuid(), true, streamSCU);
       monitor(
           sourceNode.getId(),
           destination.getId(),
@@ -427,12 +403,12 @@ public class ForwardService {
       launchCStore(p, streamSCU, dataWriter, cuid, iuid, syntax, transformedPlanarImage);
 
       progressNotify(
-          destination, p.getIuid(), p.getCuid(), false, streamSCU.getNumberOfSuboperations());
+          destination, p.getIuid(), p.getCuid(), false, streamSCU);
       monitor(
           fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, true, null);
     } catch (AbortException e) {
       progressNotify(
-          destination, p.getIuid(), p.getCuid(), true, streamSCU.getNumberOfSuboperations());
+          destination, p.getIuid(), p.getCuid(), true, streamSCU);
       monitor(
           fwdNode.getId(),
           destination.getId(),
@@ -445,7 +421,7 @@ public class ForwardService {
       }
     } catch (IOException e) {
       progressNotify(
-          destination, p.getIuid(), p.getCuid(), true, streamSCU.getNumberOfSuboperations());
+          destination, p.getIuid(), p.getCuid(), true, streamSCU);
       monitor(
           fwdNode.getId(),
           destination.getId(),
@@ -459,7 +435,7 @@ public class ForwardService {
         Thread.currentThread().interrupt();
       }
       progressNotify(
-          destination, p.getIuid(), p.getCuid(), true, streamSCU.getNumberOfSuboperations());
+          destination, p.getIuid(), p.getCuid(), true, streamSCU);
       monitor(
           fwdNode.getId(),
           destination.getId(),
@@ -679,6 +655,18 @@ public class ForwardService {
       LOGGER.error(ERROR_WHEN_FORWARDING, e);
     }
   }
+  private static void progressNotify(
+          ForwardDestination destination, String iuid, String cuid, boolean failed, StoreFromStreamSCU streamSCU) {
+    streamSCU.removeInstanceUID(iuid);
+    ServiceUtil.notifyProgession(
+            destination.getState(),
+            iuid,
+            cuid,
+            failed ? Status.ProcessingFailure : Status.Success,
+            failed ? ProgressStatus.FAILED : ProgressStatus.COMPLETED,
+            streamSCU.getNumberOfSuboperations());
+  }
+
 
   private static void progressNotify(
       ForwardDestination destination, String iuid, String cuid, boolean failed, int subOperations) {
