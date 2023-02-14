@@ -15,7 +15,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.IntStream;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.dcm4che3.data.UID;
@@ -74,7 +73,8 @@ public class ForwardService {
   }
 
   public void storeMultipleDestination(
-      ForwardDicomNode forwardNode, List<ForwardDestination> destinations, Params p) throws IOException {
+      ForwardDicomNode forwardNode, List<ForwardDestination> destinations, Params p)
+      throws IOException {
     if (destinations == null || destinations.isEmpty()) {
       throw new IllegalStateException(
           "Cannot find destinations from " + forwardNode.toString());
@@ -89,10 +89,15 @@ public class ForwardService {
     Attributes attributes = new Attributes();
     List<File> files = new ArrayList<>();
     try {
-      IntStream.range(0, destinations.size()).forEachOrdered(i ->
-          prepareAndTransfer(forwardNode, p, i, destinations.get(i), attributes, destinations.size(), files));
-    }
-    finally {
+      int nbDestinations = destinations.size();
+      for (int i = 0; i < nbDestinations; i++) {
+        prepareAndTransfer(forwardNode, p, i, destinations.get(i), attributes,
+            nbDestinations, files);
+      }
+    } catch (IOException e) {
+      LOGGER.error("Cannot connect to the final destination", e);
+      throw e;
+    } finally {
       if (!files.isEmpty()) {
         // Force to clean if tmp bulk files
         for (File file : files) {
@@ -111,36 +116,33 @@ public class ForwardService {
    * @param destination    Destination
    * @param attributes     Attributes
    * @param nbDestinations Number of destinations to handle
-   * @param files Temp files to delete
+   * @param files          Temp files to delete
    */
   private void prepareAndTransfer(ForwardDicomNode fwdNode, Params p, int index,
-      ForwardDestination destination, Attributes attributes, int nbDestinations, List<File> files) {
-      try {
-        if (destination instanceof DicomForwardDestination) {
-          // Prepare transfer only for dicom destination
-          prepareTransfer((DicomForwardDestination) destination, p);
-        }
-        if (index == 0) {
-          // Case first iteration: handle first destination of the forward node
-          Attributes attToApply = nbDestinations > 1 ? attributes : null;
-          if (destination instanceof DicomForwardDestination) {
-            files.addAll(transfer(fwdNode, (DicomForwardDestination) destination, attToApply, p));
-          } else if (destination instanceof WebForwardDestination) {
-            files.addAll(transfer(fwdNode, (WebForwardDestination) destination, attToApply, p));
-          }
-        } else {
-          // Case other iterations: handle other destinations of the forward node
-          if (!attributes.isEmpty()) {
-            if (destination instanceof DicomForwardDestination) {
-              transferOther(fwdNode, (DicomForwardDestination) destination, attributes, p);
-            } else if (destination instanceof WebForwardDestination) {
-              transferOther(fwdNode, (WebForwardDestination) destination, attributes, p);
-            }
-          }
-        }
-      } catch (Exception e) {
-        LOGGER.error("Cannot connect to the final destination", e);
+      ForwardDestination destination, Attributes attributes, int nbDestinations, List<File> files)
+      throws IOException {
+    if (destination instanceof DicomForwardDestination) {
+      // Prepare transfer only for dicom destination
+      prepareTransfer((DicomForwardDestination) destination, p);
+    }
+    if (index == 0) {
+      // Case first iteration: handle first destination of the forward node
+      Attributes attToApply = nbDestinations > 1 ? attributes : null;
+      if (destination instanceof DicomForwardDestination) {
+        files.addAll(transfer(fwdNode, (DicomForwardDestination) destination, attToApply, p));
+      } else if (destination instanceof WebForwardDestination) {
+        files.addAll(transfer(fwdNode, (WebForwardDestination) destination, attToApply, p));
       }
+    } else {
+      // Case other iterations: handle other destinations of the forward node
+      if (!attributes.isEmpty()) {
+        if (destination instanceof DicomForwardDestination) {
+          transferOther(fwdNode, (DicomForwardDestination) destination, attributes, p);
+        } else if (destination instanceof WebForwardDestination) {
+          transferOther(fwdNode, (WebForwardDestination) destination, attributes, p);
+        }
+      }
+    }
   }
 
   public static StoreFromStreamSCU prepareTransfer(
@@ -645,16 +647,18 @@ public class ForwardService {
       LOGGER.error(ERROR_WHEN_FORWARDING, e);
     }
   }
+
   private static void progressNotify(
-          ForwardDestination destination, String iuid, String cuid, boolean failed, StoreFromStreamSCU streamSCU) {
+      ForwardDestination destination, String iuid, String cuid, boolean failed,
+      StoreFromStreamSCU streamSCU) {
     streamSCU.removeIUIDProcessed(iuid);
     ServiceUtil.notifyProgession(
-            destination.getState(),
-            iuid,
-            cuid,
-            failed ? Status.ProcessingFailure : Status.Success,
-            failed ? ProgressStatus.FAILED : ProgressStatus.COMPLETED,
-            streamSCU.getNumberOfSuboperations());
+        destination.getState(),
+        iuid,
+        cuid,
+        failed ? Status.ProcessingFailure : Status.Success,
+        failed ? ProgressStatus.FAILED : ProgressStatus.COMPLETED,
+        streamSCU.getNumberOfSuboperations());
   }
 
 
