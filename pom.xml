@@ -16,7 +16,7 @@
   </licenses>
 
   <!-- Version -->
-  <version>1.0.54-RELEASE</version>
+  <version>1.0.58-RELEASE</version>
 
   <!-- Packaging -->
   <packaging>jar</packaging>
@@ -32,8 +32,8 @@
     <javax.el.version>3.0.0</javax.el.version>
     <javax.mail.version>1.6.2</javax.mail.version>
     <vaadin.version>21.0.9</vaadin.version>
-    <weasis-dicom-tools.version>5.27.0.1</weasis-dicom-tools.version>
-    <weasis.opencv.native.version>4.5.5-dcm</weasis.opencv.native.version>
+    <weasis-dicom-tools.version>5.29.0.2</weasis-dicom-tools.version>
+    <weasis.opencv.native.version>4.6.0-dcm</weasis.opencv.native.version>
     <springdoc.version>1.6.0</springdoc.version>
     <mockito.version>4.2.0</mockito.version>
     <h2.version>1.4.200</h2.version>
