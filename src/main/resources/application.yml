@@ -27,9 +27,11 @@ server:
     session:
       persistent: false
   forward-headers-strategy: NATIVE
+
 spring:
   application:
     name: karnak
+    version: '@project.version@'
   liquibase:
     enabled: true
     change-log: classpath:db/changelog/db.changelog-master.yaml
@@ -55,7 +57,7 @@ spring:
     generate-ddl: false
     show-sql: false
     open-in-view: false
-    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     properties:
       hibernate:
         temp:
@@ -64,8 +66,12 @@ spring:
         lob:
           non_contextual_creation: true
 
-# add info for all microservices
+# - Info
 info:
+  component: Karnak
+  app:
+    name: Karnak
+    description: Karnak
   environment: ${ENVIRONMENT}
   tags:
     eureka.datacenter: ${eureka.datacenter}
@@ -114,4 +120,4 @@ management:
       team: ${application.team}
 
 monitoring:
-  max-history: 150000
+  max-history: 300000
