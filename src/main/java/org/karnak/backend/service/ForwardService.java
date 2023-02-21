@@ -225,7 +225,7 @@ public class ForwardService {
           attributesOriginal,
           attributesToSend,
           true,
-          null);
+          null, attributesOriginal.getString(Tag.Modality), p.getCuid());
     } catch (AbortException e) {
       progressNotify(
           destination, p.getIuid(), p.getCuid(), true, streamSCU);
@@ -235,7 +235,7 @@ public class ForwardService {
           attributesOriginal,
           attributesToSend,
           false,
-          e.getMessage());
+          e.getMessage(), attributesOriginal.getString(Tag.Modality), p.getCuid());
       if (e.getAbort() == Abort.CONNECTION_EXCEPTION) {
         throw e;
       }
@@ -248,7 +248,7 @@ public class ForwardService {
           attributesOriginal,
           attributesToSend,
           false,
-          e.getMessage());
+          e.getMessage(), attributesOriginal.getString(Tag.Modality), p.getCuid());
       throw e;
     } catch (Exception e) {
       if (e instanceof InterruptedException) {
@@ -262,7 +262,7 @@ public class ForwardService {
           attributesOriginal,
           attributesToSend,
           false,
-          e.getMessage());
+          e.getMessage(), attributesOriginal.getString(Tag.Modality), p.getCuid());
       LOGGER.error(ERROR_WHEN_FORWARDING, e);
     } finally {
       streamSCU.triggerCloseExecutor();
@@ -397,7 +397,7 @@ public class ForwardService {
       progressNotify(
           destination, p.getIuid(), p.getCuid(), false, streamSCU);
       monitor(
-          fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, true, null);
+          fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, true, null, attributesOriginal.getString(Tag.Modality), p.getCuid());
     } catch (AbortException e) {
       progressNotify(
           destination, p.getIuid(), p.getCuid(), true, streamSCU);
@@ -407,7 +407,7 @@ public class ForwardService {
           attributesOriginal,
           attributesToSend,
           false,
-          e.getMessage());
+          e.getMessage(), attributesOriginal.getString(Tag.Modality), p.getCuid());
       if (e.getAbort() == Abort.CONNECTION_EXCEPTION) {
         throw e;
       }
@@ -420,7 +420,7 @@ public class ForwardService {
           attributesOriginal,
           attributesToSend,
           false,
-          e.getMessage());
+          e.getMessage(), attributesOriginal.getString(Tag.Modality), p.getCuid());
       throw e;
     } catch (Exception e) {
       if (e instanceof InterruptedException) {
@@ -434,7 +434,7 @@ public class ForwardService {
           attributesOriginal,
           attributesToSend,
           false,
-          e.getMessage());
+          e.getMessage(), attributesOriginal.getString(Tag.Modality), p.getCuid());
       LOGGER.error(ERROR_WHEN_FORWARDING, e);
     } finally {
       streamSCU.triggerCloseExecutor();
@@ -504,7 +504,7 @@ public class ForwardService {
       }
       progressNotify(destination, p.getIuid(), p.getCuid(), false, 0);
       monitor(
-          fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, true, null);
+          fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, true, null, attributesOriginal.getString(Tag.Modality), p.getCuid());
     } catch (AbortException e) {
       progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
       monitor(
@@ -513,7 +513,7 @@ public class ForwardService {
           attributesOriginal,
           attributesToSend,
           false,
-          e.getMessage());
+          e.getMessage(), attributesOriginal.getString(Tag.Modality), p.getCuid());
       if (e.getAbort() == Abort.CONNECTION_EXCEPTION) {
         throw e;
       }
@@ -525,7 +525,7 @@ public class ForwardService {
           attributesOriginal,
           attributesToSend,
           false,
-          e.getMessage());
+          e.getMessage(), attributesOriginal.getString(Tag.Modality), p.getCuid());
       throw e;
     } catch (Exception e) {
       progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
@@ -535,7 +535,7 @@ public class ForwardService {
           attributesOriginal,
           attributesToSend,
           false,
-          e.getMessage());
+          e.getMessage(), attributesOriginal.getString(Tag.Modality), p.getCuid());
       LOGGER.error(ERROR_WHEN_FORWARDING, e);
     } finally {
       files = cleanOrGetBulkDataFiles(in, copy == null);
@@ -594,7 +594,7 @@ public class ForwardService {
         }
         progressNotify(destination, p.getIuid(), p.getCuid(), false, 0);
         monitor(
-            fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, true, null);
+            fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, true, null, attributesOriginal.getString(Tag.Modality), p.getCuid());
       }
     } catch (HttpException httpException) {
       if (httpException.getStatusCode() != 409) {
@@ -605,12 +605,12 @@ public class ForwardService {
             attributesOriginal,
             attributesToSend,
             false,
-            httpException.getMessage());
+            httpException.getMessage(), attributesOriginal.getString(Tag.Modality), p.getCuid());
         throw new AbortException(Abort.FILE_EXCEPTION, "DICOMWeb forward", httpException);
       } else {
         progressNotify(destination, p.getIuid(), p.getCuid(), false, 0);
         monitor(
-            fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, true, null);
+            fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, true, null, attributesOriginal.getString(Tag.Modality), p.getCuid());
         LOGGER.debug("File already present in destination");
       }
     } catch (AbortException e) {
@@ -621,7 +621,7 @@ public class ForwardService {
           attributesOriginal,
           attributesToSend,
           false,
-          e.getMessage());
+          e.getMessage(), attributesOriginal.getString(Tag.Modality), p.getCuid());
       if (e.getAbort() == Abort.CONNECTION_EXCEPTION) {
         throw e;
       }
@@ -633,7 +633,7 @@ public class ForwardService {
           attributesOriginal,
           attributesToSend,
           false,
-          e.getMessage());
+          e.getMessage(), attributesOriginal.getString(Tag.Modality), p.getCuid());
       throw e;
     } catch (Exception e) {
       progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
@@ -643,7 +643,7 @@ public class ForwardService {
           attributesOriginal,
           attributesToSend,
           false,
-          e.getMessage());
+          e.getMessage(), attributesOriginal.getString(Tag.Modality), p.getCuid());
       LOGGER.error(ERROR_WHEN_FORWARDING, e);
     }
   }
@@ -695,6 +695,8 @@ public class ForwardService {
    * @param attributesToSend   De-identify value
    * @param sent               Flag to know if the transfer occurred
    * @param reason             Reason of not transferring the file
+   * @param modality           Modality of the file transferred
+   * @param sopClassUid     Sop Class Uid
    */
   private void monitor(
       Long forwardNodeId,
@@ -702,10 +704,12 @@ public class ForwardService {
       Attributes attributesOriginal,
       Attributes attributesToSend,
       boolean sent,
-      String reason) {
+      String reason,
+      String modality,
+      String sopClassUid) {
     applicationEventPublisher.publishEvent(
         new TransferMonitoringEvent(
             TransferStatusEntity.buildTransferStatusEntity(
-                forwardNodeId, destinationId, attributesOriginal, attributesToSend, sent, reason)));
+                forwardNodeId, destinationId, attributesOriginal, attributesToSend, sent, reason, modality, sopClassUid)));
   }
 }
