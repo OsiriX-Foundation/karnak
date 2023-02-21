@@ -68,10 +68,12 @@ class NotificationServiceTest {
     transferStatusEntity.setSerieUidToSend("serieUidToSend");
     transferStatusEntity.setSerieDescriptionToSend("serieDescriptionToSend");
     transferStatusEntity.setSerieDateToSend(LocalDateTime.MIN);
+    transferStatusEntity.setSopClassUid("sopClassUid");
+    transferStatusEntity.setModality("modality");
     ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
     transferStatusEntity.setForwardNodeEntity(forwardNodeEntity);
     when(transferStatusRepoMock.findByDestinationId(Mockito.anyLong()))
-        .thenReturn(Arrays.asList(transferStatusEntity));
+        .thenReturn(List.of(transferStatusEntity));
 
     // Build mocked service
     notificationService =
@@ -129,5 +131,19 @@ class NotificationServiceTest {
             .getSerieSummaryNotifications()
             .get(0)
             .getNbTransferNotSent());
+    assertEquals(
+        "modality",
+        transferMonitoringNotifications
+            .get(0)
+            .getSerieSummaryNotifications()
+            .get(0)
+            .toStringTransferredModalities());
+    assertEquals(
+        "sopClassUid",
+        transferMonitoringNotifications
+            .get(0)
+            .getSerieSummaryNotifications()
+            .get(0)
+            .toStringTransferredSopClassUid());
   }
 }
