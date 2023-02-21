@@ -60,6 +60,8 @@
                 <th>Series UID</th>
                 <th>Series description</th>
                 <th>Series date</th>
+                <th>Modality</th>
+                <th>Sop class UID</th>
                 <th>Transferred</th>
                 <th>Not transferred</th>
                 <th>Not transferred reasons</th>
@@ -70,6 +72,8 @@
                 <td th:text="${serie.getSerieUid()}"/>
                 <td th:text="${serie.getSerieDescription()}"/>
                 <td th:text="${#temporals.format(serie.getSerieDate(), 'dd/MM/yyyy HH:mm:ss.SSS')}"/>
+                <td th:text="${serie.toStringTransferredModalities()}"/>
+                <td th:text="${serie.toStringTransferredSopClassUid()}"/>
                 <td th:text="${serie.getNbTransferSent()}"/>
                 <td th:text="${serie.getNbTransferNotSent()}"/>
                 <td th:text="${serie.toStringUnTransferredReasons}"/>
