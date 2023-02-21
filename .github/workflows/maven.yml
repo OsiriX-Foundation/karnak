@@ -11,16 +11,18 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [ 16.x ]
+
     env:
       PUSH_PACKAGES: ${{ github.event_name == 'push' }}
     steps:
+      - name: Setup NODE
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+      - run: echo 'NODE_OPTIONS="--openssl-legacy-provider"' >> $GITHUB_ENV
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-          node-version: ${{ matrix.node-version }}
       - name: Set up JDK for compilation
         uses: actions/setup-java@v3
         with:
