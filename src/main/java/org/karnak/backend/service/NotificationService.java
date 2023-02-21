@@ -387,8 +387,21 @@ public class NotificationService {
     serieSummaryNotification.setNbTransferNotSent(
         transfersToEvaluate.stream().filter(t -> !t.isSent()).count());
     // Distinct reasons
-    serieSummaryNotification.setUnTransferedReasons(
-        determineUnTransferredReasons(transfersToEvaluate));
+    serieSummaryNotification.setUnTransferedReasons(transfersToEvaluate.stream()
+        .map(TransferStatusEntity::getReason)
+        .filter(Objects::nonNull)
+        .collect(Collectors.toSet()));
+    // Distinct modalities
+    serieSummaryNotification.setTransferredModalities(transfersToEvaluate.stream()
+        .map(TransferStatusEntity::getModality)
+        .filter(Objects::nonNull)
+        .collect(Collectors.toSet()));
+    // Distinct transfer syntax
+    serieSummaryNotification.setTransferredSopClassUid(transfersToEvaluate.stream()
+        .map(TransferStatusEntity::getSopClassUid)
+        .filter(Objects::nonNull)
+        .collect(Collectors.toSet()));
+
     // Flag to know if we should use original or de-identify values
     boolean useOriginalValues =
         determineUseOfOriginalOrDeIdentifyValues(
@@ -406,21 +419,6 @@ public class NotificationService {
             ? transferStatusEntity.getSerieDateOriginal()
             : transferStatusEntity.getSerieDateToSend());
     return serieSummaryNotification;
-  }
-
-  /**
-   * Determine distinct reasons of not transferring
-   *
-   * @param transfersToEvaluate Transfers to evaluate
-   * @return Distinct reasons found
-   */
-  private List<String> determineUnTransferredReasons(
-      List<TransferStatusEntity> transfersToEvaluate) {
-    return transfersToEvaluate.stream()
-        .map(TransferStatusEntity::getReason)
-        .filter(Objects::nonNull)
-        .distinct()
-        .collect(Collectors.toList());
   }
 
   /**

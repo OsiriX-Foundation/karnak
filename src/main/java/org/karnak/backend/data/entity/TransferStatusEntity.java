@@ -97,6 +97,10 @@ public class TransferStatusEntity implements Serializable {
 
   private String sopInstanceUidToSend;
 
+  private String modality;
+
+  private String sopClassUid;
+
   public TransferStatusEntity() {
   }
 
@@ -123,7 +127,9 @@ public class TransferStatusEntity implements Serializable {
       String serieDescriptionToSend,
       LocalDateTime serieDateToSend,
       String serieUidToSend,
-      String sopInstanceUidToSend) {
+      String sopInstanceUidToSend,
+      String modality,
+      String sopClassUid) {
     this.forwardNodeId = forwardNodeId;
     this.destinationId = destinationId;
     this.transferDate = transferDate;
@@ -147,6 +153,8 @@ public class TransferStatusEntity implements Serializable {
     this.serieDateToSend = serieDateToSend;
     this.serieUidToSend = serieUidToSend;
     this.sopInstanceUidToSend = sopInstanceUidToSend;
+    this.modality = modality;
+    this.sopClassUid = sopClassUid;
   }
 
   public static TransferStatusEntity buildTransferStatusEntity(
@@ -155,7 +163,9 @@ public class TransferStatusEntity implements Serializable {
       Attributes attributesOriginal,
       Attributes attributesToSend,
       boolean sent,
-      String reason) {
+      String reason,
+      String modality,
+      String sopClassUid) {
     return new TransferStatusEntity(
         forwardNodeId,
         destinationId,
@@ -187,7 +197,8 @@ public class TransferStatusEntity implements Serializable {
             DateUtil.getDicomDate(attributesToSend.getString(Tag.SeriesDate)),
             DateUtil.getDicomTime(attributesToSend.getString(Tag.SeriesTime))),
         attributesToSend.getString(Tag.SeriesInstanceUID),
-        attributesToSend.getString(Tag.SOPInstanceUID));
+        attributesToSend.getString(Tag.SOPInstanceUID),
+        modality, sopClassUid);
   }
 
   @Id
@@ -410,6 +421,22 @@ public class TransferStatusEntity implements Serializable {
     this.sopInstanceUidToSend = sopInstanceUidToSend;
   }
 
+  public String getModality() {
+    return modality;
+  }
+
+  public void setModality(String modality) {
+    this.modality = modality;
+  }
+
+  public String getSopClassUid() {
+    return sopClassUid;
+  }
+
+  public void setSopClassUid(String sopClassUid) {
+    this.sopClassUid = sopClassUid;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -444,7 +471,9 @@ public class TransferStatusEntity implements Serializable {
         && Objects.equals(serieDescriptionToSend, that.serieDescriptionToSend)
         && Objects.equals(serieDateToSend, that.serieDateToSend)
         && Objects.equals(serieUidToSend, that.serieUidToSend)
-        && Objects.equals(sopInstanceUidToSend, that.sopInstanceUidToSend);
+        && Objects.equals(sopInstanceUidToSend, that.sopInstanceUidToSend)
+        && Objects.equals(modality, that.modality)
+        && Objects.equals(sopClassUid, that.sopClassUid);
   }
 
   @Override
@@ -475,79 +504,41 @@ public class TransferStatusEntity implements Serializable {
         serieDescriptionToSend,
         serieDateToSend,
         serieUidToSend,
-        sopInstanceUidToSend);
+        sopInstanceUidToSend,
+        modality, sopClassUid);
   }
 
   @Override
   public String toString() {
-    return "TransferStatusEntity{"
-        + "id="
-        + id
-        + ", forwardNodeEntity="
-        + forwardNodeEntity
-        + ", forwardNodeId="
-        + forwardNodeId
-        + ", destinationEntity="
-        + destinationEntity
-        + ", destinationId="
-        + destinationId
-        + ", transferDate="
-        + transferDate
-        + ", sent="
-        + sent
-        + ", reason='"
-        + reason
-        + '\''
-        + ", patientIdOriginal='"
-        + patientIdOriginal
-        + '\''
-        + ", accessionNumberOriginal='"
-        + accessionNumberOriginal
-        + '\''
-        + ", studyDescriptionOriginal='"
-        + studyDescriptionOriginal
-        + '\''
-        + ", studyDateOriginal="
-        + studyDateOriginal
-        + ", studyUidOriginal='"
-        + studyUidOriginal
-        + '\''
-        + ", serieDescriptionOriginal='"
-        + serieDescriptionOriginal
-        + '\''
-        + ", serieDateOriginal="
-        + serieDateOriginal
-        + ", serieUidOriginal='"
-        + serieUidOriginal
-        + '\''
-        + ", sopInstanceUidOriginal='"
-        + sopInstanceUidOriginal
-        + '\''
-        + ", patientIdToSend='"
-        + patientIdToSend
-        + '\''
-        + ", accessionNumberToSend='"
-        + accessionNumberToSend
-        + '\''
-        + ", studyDescriptionToSend='"
-        + studyDescriptionToSend
-        + '\''
-        + ", studyDateToSend="
-        + studyDateToSend
-        + ", studyUidToSend='"
-        + studyUidToSend
-        + '\''
-        + ", serieDescriptionToSend='"
-        + serieDescriptionToSend
-        + '\''
-        + ", serieDateToSend="
-        + serieDateToSend
-        + ", serieUidToSend='"
-        + serieUidToSend
-        + '\''
-        + ", sopInstanceUidToSend='"
-        + sopInstanceUidToSend
-        + '\''
-        + '}';
+    return "TransferStatusEntity{" +
+        "id=" + id +
+        ", forwardNodeEntity=" + forwardNodeEntity +
+        ", forwardNodeId=" + forwardNodeId +
+        ", destinationEntity=" + destinationEntity +
+        ", destinationId=" + destinationId +
+        ", transferDate=" + transferDate +
+        ", sent=" + sent +
+        ", reason='" + reason + '\'' +
+        ", patientIdOriginal='" + patientIdOriginal + '\'' +
+        ", accessionNumberOriginal='" + accessionNumberOriginal + '\'' +
+        ", studyDescriptionOriginal='" + studyDescriptionOriginal + '\'' +
+        ", studyDateOriginal=" + studyDateOriginal +
+        ", studyUidOriginal='" + studyUidOriginal + '\'' +
+        ", serieDescriptionOriginal='" + serieDescriptionOriginal + '\'' +
+        ", serieDateOriginal=" + serieDateOriginal +
+        ", serieUidOriginal='" + serieUidOriginal + '\'' +
+        ", sopInstanceUidOriginal='" + sopInstanceUidOriginal + '\'' +
+        ", patientIdToSend='" + patientIdToSend + '\'' +
+        ", accessionNumberToSend='" + accessionNumberToSend + '\'' +
+        ", studyDescriptionToSend='" + studyDescriptionToSend + '\'' +
+        ", studyDateToSend=" + studyDateToSend +
+        ", studyUidToSend='" + studyUidToSend + '\'' +
+        ", serieDescriptionToSend='" + serieDescriptionToSend + '\'' +
+        ", serieDateToSend=" + serieDateToSend +
+        ", serieUidToSend='" + serieUidToSend + '\'' +
+        ", sopInstanceUidToSend='" + sopInstanceUidToSend + '\'' +
+        ", modality='" + modality + '\'' +
+        ", sopClassUid='" + sopClassUid + '\'' +
+        '}';
   }
 }
