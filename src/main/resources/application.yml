@@ -115,3 +115,6 @@ management:
 
 monitoring:
   max-history: 150000
+
+mail:
+  sender: no-reply@hcuge.ch
