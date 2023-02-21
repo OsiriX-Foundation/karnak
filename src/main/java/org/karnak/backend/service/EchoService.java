@@ -77,8 +77,9 @@ public class EchoService {
     destinations.forEach(
         destination -> {
           // Case DICOM
-          if (destination instanceof DicomForwardDestination d) {
-            DicomNode calledNode = d.getStreamSCU().getCalledNode();
+          if (destination instanceof DicomForwardDestination) {
+            DicomNode calledNode =
+                ((DicomForwardDestination) destination).getStreamSCU().getCalledNode();
             // Retrieve the status of the dicom node
             DicomState dicomState =
                 Echo.process(buildEchoProcessParams(3000, 5000), sourceNode, calledNode);
@@ -87,7 +88,8 @@ public class EchoService {
                 new DestinationEcho(calledNode.getAet(), null, dicomState.getStatus()));
           }
           // Case Stow
-          else if (destination instanceof WebForwardDestination d) {
+          else if (destination instanceof WebForwardDestination) {
+            WebForwardDestination d = (WebForwardDestination) destination;
             // Add the destination and its status
             destinationEchos.add(new DestinationEcho(null, d.getRequestURL(), 0));
           }

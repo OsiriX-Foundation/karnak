@@ -21,6 +21,11 @@ import org.karnak.backend.util.DateFormat;
 public class TransferStatusGridItemDetail extends FormLayout {
 
   // Transfer Status
+  // Modality
+  private TextField  modalityField;
+  // Sop Class Uid
+  private TextField sopClassUidField;
+
   // Original
   private TextField patientIdOriginalField;
 
@@ -112,6 +117,10 @@ public class TransferStatusGridItemDetail extends FormLayout {
    * Init transfer status text fields
    */
   private void initTextFieldsTransferStatus() {
+    // Modality
+    modalityField = new TextField("Modality");
+    // Sop Class Uid
+    sopClassUidField = new TextField("Sop Class Uid");
     // Original
     patientIdOriginalField = new TextField("Patient Id Original");
     accessionNumberOriginalField = new TextField("Accession Number Original");
@@ -235,6 +244,9 @@ public class TransferStatusGridItemDetail extends FormLayout {
             sopInstanceUidToSendField);
 
     // Transfer Status
+    // Modality and sop class uid
+    addTextFields(Arrays.asList(modalityField, sopClassUidField));
+    // Sop Class Uid
     // If not sent only original values
     if (!transferStatusEntity.isSent()) {
       addTextFields(originalTransferStatusTextFields);
@@ -268,6 +280,10 @@ public class TransferStatusGridItemDetail extends FormLayout {
    * @param transferStatusEntity values to populate
    */
   private void setValuesTransferStatus(TransferStatusEntity transferStatusEntity) {
+    // Modality
+    modalityField.setValue(checkStringNullValue(transferStatusEntity.getModality()));
+    // Sop class Uid
+    sopClassUidField.setValue(checkStringNullValue(transferStatusEntity.getSopClassUid()));
     // Original
     patientIdOriginalField.setValue(
         checkStringNullValue(transferStatusEntity.getPatientIdOriginal()));

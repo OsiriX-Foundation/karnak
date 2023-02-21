@@ -23,8 +23,6 @@ public class Notification {
 
   public static final String DEFAULT_INTERVAL = "45";
 
-  public static final String MAIL_SMTP_SENDER = "karnak@kehops.online";
-
   // Thymeleaf
   public static final String CONTEXT_THYMELEAF = "notif";
 
