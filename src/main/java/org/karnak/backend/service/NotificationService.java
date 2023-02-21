@@ -32,6 +32,7 @@ import org.karnak.backend.util.SystemPropertyUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -46,6 +47,9 @@ import org.thymeleaf.context.Context;
 public class NotificationService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(NotificationService.class);
+
+  @Value("${mail.sender}")
+  private String mailSender;
 
   // Services
   private final TemplateEngine templateEngine;
@@ -207,7 +211,7 @@ public class NotificationService {
       boolean useOriginalValues) {
     transferMonitoringNotification.setFrom(
         SystemPropertyUtil.retrieveSystemProperty(
-            "MAIL_SMTP_SENDER", Notification.MAIL_SMTP_SENDER));
+            "MAIL_SMTP_SENDER", mailSender));
     transferMonitoringNotification.setTo(transferStatusEntity.getDestinationEntity().getNotify());
     transferMonitoringNotification.setPatientId(
         useOriginalValues
