@@ -11,9 +11,14 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+
     env:
       PUSH_PACKAGES: ${{ github.event_name == 'push' }}
     steps:
+      - name: Setup NODE
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16"
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis

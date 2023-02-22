@@ -65,3 +65,6 @@ spring:
           non_contextual_creation: true
 monitoring:
   max-history: 150000
+
+mail:
+  sender: karnak@kehops.online
