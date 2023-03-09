@@ -264,13 +264,6 @@
           <layers>
             <enabled>true</enabled>
           </layers>
-          <docker>
-            <publishRegistry>
-              <username>${publish-docker-registry-username}</username>
-              <password>${publish-docker-registry-password}</password>
-              <url>${publish-docker-registry}</url>
-            </publishRegistry>
-          </docker>
           <maxAttempts>240</maxAttempts>
           <wait>500</wait>
         </configuration>
