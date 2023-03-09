@@ -52,6 +52,7 @@
     <logback.version>1.2.9</logback.version>
     <liquibase.version>4.3.5</liquibase.version>
     <opencsv.version>5.5.2</opencsv.version>
+    <spring-javaformat.version>0.0.38</spring-javaformat.version>
   </properties>
 
   <!-- Distribution management for releases/snapshots -->
@@ -708,6 +709,11 @@
       <!-- Production mode is activated using -Pproduction -->
       <build>
         <plugins>
+          <plugin>
+            <groupId>io.spring.javaformat</groupId>
+            <artifactId>spring-javaformat-maven-plugin</artifactId>
+            <version>${spring-javaformat.version}</version>
+          </plugin>
           <plugin>
             <artifactId>spring-boot-maven-plugin</artifactId>
             <configuration>
