@@ -18,49 +18,55 @@ import org.springframework.data.redis.core.RedisTemplate;
 
 public abstract class PatientClient {
 
-  private final Cache cache;
-  private final RedisTemplate<String, Patient> redisTemplate;
-  private static final String KEY_SEPARATOR = "::";
-  private final String prefixKeySearchCache;
-  private final String patternSearchAllKeysCache;
+	private final Cache cache;
 
-  public PatientClient(Cache cache, RedisTemplate<String, Patient> redisTemplate, String name) {
-    this.cache = cache;
-    this.redisTemplate = redisTemplate;
-    this.prefixKeySearchCache = "%s%s".formatted(name, KEY_SEPARATOR);
-    this.patternSearchAllKeysCache = "%s*".formatted(prefixKeySearchCache);
-  }
+	private final RedisTemplate<String, Patient> redisTemplate;
 
-  public Patient put(String key, Patient patient) {
-    ValueWrapper valueFromCache = cache.putIfAbsent(key, patient);
-    return valueFromCache != null ? (Patient) valueFromCache.get() : null;
-  }
+	private static final String KEY_SEPARATOR = "::";
 
-  public Patient get(String key) {
-    ValueWrapper valueFromCache = cache.get(key);
-    return valueFromCache != null ? (Patient) valueFromCache.get() : null;
-  }
+	private final String prefixKeySearchCache;
 
-  public void remove(String key) {
-    cache.evictIfPresent(key);
-  }
+	private final String patternSearchAllKeysCache;
 
-  public Collection<Patient> getAll() {
-    return Objects.requireNonNull(redisTemplate.keys(patternSearchAllKeysCache)).stream()
-        .filter(Objects::nonNull)
-        .filter(c -> c.length() > prefixKeySearchCache.length())
-        .map(
-            k -> {
-              ValueWrapper keyValue = cache.get(k.substring(prefixKeySearchCache.length()));
-              return keyValue != null ? (Patient) keyValue.get() : null;
-            })
-        .collect(Collectors.toList());
-  }
+	public PatientClient(Cache cache, RedisTemplate<String, Patient> redisTemplate, String name) {
+		this.cache = cache;
+		this.redisTemplate = redisTemplate;
+		this.prefixKeySearchCache = "%s%s".formatted(name, KEY_SEPARATOR);
+		this.patternSearchAllKeysCache = "%s*".formatted(prefixKeySearchCache);
+	}
 
-  public void removeAll() {
-    Objects.requireNonNull(redisTemplate.keys(patternSearchAllKeysCache)).stream()
-        .filter(Objects::nonNull)
-        .filter(c -> c.length() > prefixKeySearchCache.length())
-        .forEach(k -> remove(k.substring(prefixKeySearchCache.length())));
-  }
+	public Patient put(String key, Patient patient) {
+		ValueWrapper valueFromCache = cache.putIfAbsent(key, patient);
+		return valueFromCache != null ? (Patient) valueFromCache.get() : null;
+	}
+
+	public Patient get(String key) {
+		ValueWrapper valueFromCache = cache.get(key);
+		return valueFromCache != null ? (Patient) valueFromCache.get() : null;
+	}
+
+	public void remove(String key) {
+		cache.evictIfPresent(key);
+	}
+
+	public Collection<Patient> getAll() {
+		return Objects.requireNonNull(redisTemplate.keys(patternSearchAllKeysCache))
+			.stream()
+			.filter(Objects::nonNull)
+			.filter(c -> c.length() > prefixKeySearchCache.length())
+			.map(k -> {
+				ValueWrapper keyValue = cache.get(k.substring(prefixKeySearchCache.length()));
+				return keyValue != null ? (Patient) keyValue.get() : null;
+			})
+			.collect(Collectors.toList());
+	}
+
+	public void removeAll() {
+		Objects.requireNonNull(redisTemplate.keys(patternSearchAllKeysCache))
+			.stream()
+			.filter(Objects::nonNull)
+			.filter(c -> c.length() > prefixKeySearchCache.length())
+			.forEach(k -> remove(k.substring(prefixKeySearchCache.length())));
+	}
+
 }

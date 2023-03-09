@@ -21,44 +21,37 @@ import org.springframework.stereotype.Service;
 @Service
 public class PseudonymMappingService {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(PseudonymMappingService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PseudonymMappingService.class);
 
-  public Patient retrieveMainzellistePatient(final String pseudonym) {
-    Patient mainzellistePatient = null;
+	public Patient retrieveMainzellistePatient(final String pseudonym) {
+		Patient mainzellistePatient = null;
 
-    // Pseudonym api
-    PseudonymApi pseudonymApi = new PseudonymApi();
+		// Pseudonym api
+		PseudonymApi pseudonymApi = new PseudonymApi();
 
-    // Search pid pseudonym
-    JSONArray patientFoundJSONArray = pseudonymApi.searchPatient(pseudonym, "pid");
+		// Search pid pseudonym
+		JSONArray patientFoundJSONArray = pseudonymApi.searchPatient(pseudonym, "pid");
 
-    // Not found: Search extid pseudonym
-    if (patientFoundJSONArray == null) {
-      patientFoundJSONArray = pseudonymApi.searchPatient(pseudonym, "extid");
-    }
+		// Not found: Search extid pseudonym
+		if (patientFoundJSONArray == null) {
+			patientFoundJSONArray = pseudonymApi.searchPatient(pseudonym, "extid");
+		}
 
-    // Patient found
-    if (patientFoundJSONArray != null
-        && !patientFoundJSONArray.isEmpty()
-        && !patientFoundJSONArray.isNull(0)) {
-      // Retrieve patient from response
-      JSONObject jsonObject = ((JSONObject) patientFoundJSONArray.getJSONObject(0).get("fields"));
+		// Patient found
+		if (patientFoundJSONArray != null && !patientFoundJSONArray.isEmpty() && !patientFoundJSONArray.isNull(0)) {
+			// Retrieve patient from response
+			JSONObject jsonObject = ((JSONObject) patientFoundJSONArray.getJSONObject(0).get("fields"));
 
-      // Map to model
-      if (jsonObject != null) {
-        mainzellistePatient =
-            new Patient(
-                pseudonym,
-                jsonObject.getString("patientID"),
-                null,
-                null,
-                DateTimeUtils.parseDA(jsonObject.getString("patientBirthDate")),
-                jsonObject.getString("patientSex"),
-                jsonObject.getString("issuerOfPatientID"));
-        // Set patient name (first/last)
-        mainzellistePatient.updatePatientName(jsonObject.getString("patientName"));
-      }
-    }
-    return mainzellistePatient;
-  }
+			// Map to model
+			if (jsonObject != null) {
+				mainzellistePatient = new Patient(pseudonym, jsonObject.getString("patientID"), null, null,
+						DateTimeUtils.parseDA(jsonObject.getString("patientBirthDate")),
+						jsonObject.getString("patientSex"), jsonObject.getString("issuerOfPatientID"));
+				// Set patient name (first/last)
+				mainzellistePatient.updatePatientName(jsonObject.getString("patientName"));
+			}
+		}
+		return mainzellistePatient;
+	}
+
 }

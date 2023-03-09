@@ -23,97 +23,97 @@ import org.weasis.core.util.StringUtil;
 
 public class ExprAction implements ExpressionItem {
 
-  private int tag;
+	private int tag;
 
-  private VR vr;
+	private VR vr;
 
-  private String stringValue;
+	private String stringValue;
 
-  private Attributes dcm;
+	private Attributes dcm;
 
-  private Attributes dcmCopy;
+	private Attributes dcmCopy;
 
-  public ExprAction(int tag, VR vr, Attributes dcm, Attributes dcmCopy) {
-    this.tag = Objects.requireNonNull(tag);
-    this.vr = Objects.requireNonNull(vr);
-    this.stringValue = dcmCopy.getString(this.tag);
-    this.dcmCopy = dcmCopy;
-    this.dcm = dcm;
-  }
+	public ExprAction(int tag, VR vr, Attributes dcm, Attributes dcmCopy) {
+		this.tag = Objects.requireNonNull(tag);
+		this.vr = Objects.requireNonNull(vr);
+		this.stringValue = dcmCopy.getString(this.tag);
+		this.dcmCopy = dcmCopy;
+		this.dcm = dcm;
+	}
 
-  public ExprAction(int tag, VR vr, String stringValue) {
-    this.tag = Objects.requireNonNull(tag);
-    this.vr = Objects.requireNonNull(vr);
-    this.stringValue = stringValue;
-  }
+	public ExprAction(int tag, VR vr, String stringValue) {
+		this.tag = Objects.requireNonNull(tag);
+		this.vr = Objects.requireNonNull(vr);
+		this.stringValue = stringValue;
+	}
 
-  public static boolean isHexTag(String elem) {
-    String cleanElem = elem.replaceAll("[(),]", "").toUpperCase();
+	public static boolean isHexTag(String elem) {
+		String cleanElem = elem.replaceAll("[(),]", "").toUpperCase();
 
-    if (!StringUtil.hasText(cleanElem) || cleanElem.length() != 8) {
-      return false;
-    }
-    return cleanElem.matches("[0-9A-FX]+");
-  }
+		if (!StringUtil.hasText(cleanElem) || cleanElem.length() != 8) {
+			return false;
+		}
+		return cleanElem.matches("[0-9A-FX]+");
+	}
 
-  public int getTag() {
-    return tag;
-  }
+	public int getTag() {
+		return tag;
+	}
 
-  public void setTag(int tag) {
-    this.tag = tag;
-  }
+	public void setTag(int tag) {
+		this.tag = tag;
+	}
 
-  public VR getVr() {
-    return vr;
-  }
+	public VR getVr() {
+		return vr;
+	}
 
-  public void setVr(VR vr) {
-    this.vr = vr;
-  }
+	public void setVr(VR vr) {
+		this.vr = vr;
+	}
 
-  public String getStringValue() {
-    return stringValue;
-  }
+	public String getStringValue() {
+		return stringValue;
+	}
 
-  public void setStringValue(String stringValue) {
-    this.stringValue = stringValue;
-  }
+	public void setStringValue(String stringValue) {
+		this.stringValue = stringValue;
+	}
 
-  public ActionItem Keep() {
-    return new Keep("K");
-  }
+	public ActionItem Keep() {
+		return new Keep("K");
+	}
 
-  public ActionItem Remove() {
-    return new Remove("X");
-  }
+	public ActionItem Remove() {
+		return new Remove("X");
+	}
 
-  public ActionItem Replace(String dummyValue) {
-    ActionItem replace = new Replace("D");
-    replace.setDummyValue(dummyValue);
-    return replace;
-  }
+	public ActionItem Replace(String dummyValue) {
+		ActionItem replace = new Replace("D");
+		replace.setDummyValue(dummyValue);
+		return replace;
+	}
 
-  public ActionItem UID() {
-    return new UID("U");
-  }
+	public ActionItem UID() {
+		return new UID("U");
+	}
 
-  public ActionItem ReplaceNull() {
-    return new ReplaceNull("Z");
-  }
+	public ActionItem ReplaceNull() {
+		return new ReplaceNull("Z");
+	}
 
-  public String getString(int tag) {
-    return dcmCopy.getString(tag);
-  }
+	public String getString(int tag) {
+		return dcmCopy.getString(tag);
+	}
 
-  public boolean tagIsPresent(int tag) {
-    return DicomObjectTools.containsTagInAllAttributes(tag, dcmCopy);
-  }
+	public boolean tagIsPresent(int tag) {
+		return DicomObjectTools.containsTagInAllAttributes(tag, dcmCopy);
+	}
 
-  /*
-   * public ActionItem Add(int newTag, VR newVr, String newValue){ Add add = new
-   * Add("A", newTag, newVr, newValue); add.execute(dcm, newTag, null, null); return
-   * null; }
-   */
+	/*
+	 * public ActionItem Add(int newTag, VR newVr, String newValue){ Add add = new
+	 * Add("A", newTag, newVr, newValue); add.execute(dcm, newTag, null, null); return
+	 * null; }
+	 */
 
 }

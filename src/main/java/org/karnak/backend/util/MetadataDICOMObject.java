@@ -14,38 +14,38 @@ import org.dcm4che3.util.TagUtils;
 
 public class MetadataDICOMObject {
 
-  /*
-   * Search a tagValue in the current DicomObject and his parent Will loop in the parent
-   * of the DicomObject until the last parent or the tagValue
-   */
-  public static String getValue(Attributes dcm, int tag) {
-    return getValueRec(dcm, tag);
-  }
+	/*
+	 * Search a tagValue in the current DicomObject and his parent Will loop in the parent
+	 * of the DicomObject until the last parent or the tagValue
+	 */
+	public static String getValue(Attributes dcm, int tag) {
+		return getValueRec(dcm, tag);
+	}
 
-  private static String getValueRec(Attributes dcm, int tag) {
-    String tagValue = dcm.getString(tag);
-    Attributes dcmParent = dcm.getParent();
-    if (dcmParent != null && tagValue == null) {
-      return getValueRec(dcmParent, tag);
-    }
-    return tagValue;
-  }
+	private static String getValueRec(Attributes dcm, int tag) {
+		String tagValue = dcm.getString(tag);
+		Attributes dcmParent = dcm.getParent();
+		if (dcmParent != null && tagValue == null) {
+			return getValueRec(dcmParent, tag);
+		}
+		return tagValue;
+	}
 
-  /*
-   * Generate the tag Path as needed in the class StandardDICOM Will loop in the parent
-   * of the DicomObject until the last parent
-   */
-  public static String getTagPath(Attributes dcm, int currentTag) {
-    return getTagPathRec(dcm, TagUtils.toString(currentTag));
-  }
+	/*
+	 * Generate the tag Path as needed in the class StandardDICOM Will loop in the parent
+	 * of the DicomObject until the last parent
+	 */
+	public static String getTagPath(Attributes dcm, int currentTag) {
+		return getTagPathRec(dcm, TagUtils.toString(currentTag));
+	}
 
-  private static String getTagPathRec(Attributes dcm, String tagPath) {
-    Attributes dcmParent = dcm.getParent();
-    if (dcmParent != null) {
-      return getTagPathRec(
-          dcmParent,
-          String.format("%s:%s", TagUtils.toHexString(dcm.getParentSequenceTag()), tagPath));
-    }
-    return tagPath;
-  }
+	private static String getTagPathRec(Attributes dcm, String tagPath) {
+		Attributes dcmParent = dcm.getParent();
+		if (dcmParent != null) {
+			return getTagPathRec(dcmParent,
+					String.format("%s:%s", TagUtils.toHexString(dcm.getParentSequenceTag()), tagPath));
+		}
+		return tagPath;
+	}
+
 }

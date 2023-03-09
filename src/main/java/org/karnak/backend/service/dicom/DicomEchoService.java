@@ -23,39 +23,40 @@ import org.springframework.stereotype.Service;
 @Service
 public class DicomEchoService {
 
-  @Autowired
-  public DicomEchoService() {
-  }
+	@Autowired
+	public DicomEchoService() {
+	}
 
-  public String dicomEcho(List<ConfigNode> nodes) throws InterruptedException, ExecutionException {
-    StringBuilder result = new StringBuilder();
+	public String dicomEcho(List<ConfigNode> nodes) throws InterruptedException, ExecutionException {
+		StringBuilder result = new StringBuilder();
 
-    List<Future<String>> threadsResult = createThreadsResult(nodes);
-    for (Future<String> threadResult : threadsResult) {
-      result.append(threadResult.get());
-    }
+		List<Future<String>> threadsResult = createThreadsResult(nodes);
+		for (Future<String> threadResult : threadsResult) {
+			result.append(threadResult.get());
+		}
 
-    return result.toString();
-  }
+		return result.toString();
+	}
 
-  private List<Future<String>> createThreadsResult(List<ConfigNode> nodes)
-      throws InterruptedException {
-    List<Future<String>> threadResult = null;
-    try {
-      ExecutorService executorService = Executors.newFixedThreadPool(nodes.size());
+	private List<Future<String>> createThreadsResult(List<ConfigNode> nodes) throws InterruptedException {
+		List<Future<String>> threadResult = null;
+		try {
+			ExecutorService executorService = Executors.newFixedThreadPool(nodes.size());
 
-      List<DicomEchoThread> threads = new ArrayList<>();
+			List<DicomEchoThread> threads = new ArrayList<>();
 
-      for (ConfigNode node : nodes) {
-        DicomEchoThread dicomEchoThread = new DicomEchoThread(node);
-        threads.add(dicomEchoThread);
-      }
+			for (ConfigNode node : nodes) {
+				DicomEchoThread dicomEchoThread = new DicomEchoThread(node);
+				threads.add(dicomEchoThread);
+			}
 
-      threadResult = executorService.invokeAll(threads);
+			threadResult = executorService.invokeAll(threads);
 
-      return threadResult;
-    } catch (InterruptedException e) {
-      throw e;
-    }
-  }
+			return threadResult;
+		}
+		catch (InterruptedException e) {
+			throw e;
+		}
+	}
+
 }

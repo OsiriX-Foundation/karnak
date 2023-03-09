@@ -20,43 +20,42 @@ import org.mockito.Mockito;
 
 class SecretServiceTest {
 
-  // Repositories
-  private final SecretRepo secretRepositoryMock = Mockito.mock(SecretRepo.class);
+	// Repositories
+	private final SecretRepo secretRepositoryMock = Mockito.mock(SecretRepo.class);
 
-  // Service
-  private SecretService secretService;
+	// Service
+	private SecretService secretService;
 
-  @BeforeEach
-  public void setUp() {
-    // Build mocked service
-    secretService = new SecretService(secretRepositoryMock);
-  }
+	@BeforeEach
+	public void setUp() {
+		// Build mocked service
+		secretService = new SecretService(secretRepositoryMock);
+	}
 
-  @Test
-  void should_call_save_from_repository() {
-    // Init data
-    SecretEntity secretEntity = new SecretEntity();
+	@Test
+	void should_call_save_from_repository() {
+		// Init data
+		SecretEntity secretEntity = new SecretEntity();
 
-    // Call service
-    secretService.save(secretEntity);
+		// Call service
+		secretService.save(secretEntity);
 
-    // Test results
-    Mockito.verify(secretRepositoryMock, Mockito.times(1))
-        .saveAndFlush(Mockito.any(SecretEntity.class));
-  }
+		// Test results
+		Mockito.verify(secretRepositoryMock, Mockito.times(1)).saveAndFlush(Mockito.any(SecretEntity.class));
+	}
 
-  @Test
-  void should_save_active_secret() {
-    // Init data
-    SecretEntity secretEntity = new SecretEntity();
-    secretEntity.setActive(false);
+	@Test
+	void should_save_active_secret() {
+		// Init data
+		SecretEntity secretEntity = new SecretEntity();
+		secretEntity.setActive(false);
 
-    // Call service
-    secretService.saveActiveSecret(secretEntity, new ProjectEntity());
+		// Call service
+		secretService.saveActiveSecret(secretEntity, new ProjectEntity());
 
-    // Test results
-    Mockito.verify(secretRepositoryMock, Mockito.times(1))
-        .saveAndFlush(Mockito.any(SecretEntity.class));
-    assertTrue(secretEntity.isActive());
-  }
+		// Test results
+		Mockito.verify(secretRepositoryMock, Mockito.times(1)).saveAndFlush(Mockito.any(SecretEntity.class));
+		assertTrue(secretEntity.isActive());
+	}
+
 }

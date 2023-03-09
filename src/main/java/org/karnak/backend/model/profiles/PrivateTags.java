@@ -26,71 +26,72 @@ import org.slf4j.LoggerFactory;
 
 public class PrivateTags extends AbstractProfileItem {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(PrivateTags.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PrivateTags.class);
 
-  private final TagActionMap tagsAction;
+	private final TagActionMap tagsAction;
 
-  private final TagActionMap exceptedTagsAction;
+	private final TagActionMap exceptedTagsAction;
 
-  private final ActionItem actionByDefault;
+	private final ActionItem actionByDefault;
 
-  public PrivateTags(ProfileElementEntity profileElementEntity) throws Exception {
-    super(profileElementEntity);
-    tagsAction = new TagActionMap();
-    exceptedTagsAction = new TagActionMap();
-    actionByDefault = AbstractAction.convertAction(this.action);
-    profileValidation();
-    setActionHashMap();
-  }
+	public PrivateTags(ProfileElementEntity profileElementEntity) throws Exception {
+		super(profileElementEntity);
+		tagsAction = new TagActionMap();
+		exceptedTagsAction = new TagActionMap();
+		actionByDefault = AbstractAction.convertAction(this.action);
+		profileValidation();
+		setActionHashMap();
+	}
 
-  private void setActionHashMap() throws Exception {
+	private void setActionHashMap() throws Exception {
 
-    if (tagEntities != null && tagEntities.size() > 0) {
-      for (IncludedTagEntity tag : tagEntities) {
-        tagsAction.put(tag.getTagValue(), actionByDefault);
-      }
-    }
-    if (excludedTagEntities != null && excludedTagEntities.size() > 0) {
-      for (ExcludedTagEntity tag : excludedTagEntities) {
-        exceptedTagsAction.put(tag.getTagValue(), actionByDefault);
-      }
-    }
-  }
+		if (tagEntities != null && tagEntities.size() > 0) {
+			for (IncludedTagEntity tag : tagEntities) {
+				tagsAction.put(tag.getTagValue(), actionByDefault);
+			}
+		}
+		if (excludedTagEntities != null && excludedTagEntities.size() > 0) {
+			for (ExcludedTagEntity tag : excludedTagEntities) {
+				exceptedTagsAction.put(tag.getTagValue(), actionByDefault);
+			}
+		}
+	}
 
-  @Override
-  public ActionItem getAction(Attributes dcm, Attributes dcmCopy, int tag, HMAC hmac) {
-    if (TagUtils.isPrivateGroup(tag)) {
-      if (!tagsAction.isEmpty() && exceptedTagsAction.isEmpty()) {
-        return tagsAction.get(tag);
-      }
+	@Override
+	public ActionItem getAction(Attributes dcm, Attributes dcmCopy, int tag, HMAC hmac) {
+		if (TagUtils.isPrivateGroup(tag)) {
+			if (!tagsAction.isEmpty() && exceptedTagsAction.isEmpty()) {
+				return tagsAction.get(tag);
+			}
 
-      if (tagsAction.isEmpty() && !exceptedTagsAction.isEmpty()) {
-        if (exceptedTagsAction.get(tag) != null) {
-          return null;
-        }
-      }
+			if (tagsAction.isEmpty() && !exceptedTagsAction.isEmpty()) {
+				if (exceptedTagsAction.get(tag) != null) {
+					return null;
+				}
+			}
 
-      if (!tagsAction.isEmpty() && !exceptedTagsAction.isEmpty()) {
-        // TODO check tag value?
-        if (exceptedTagsAction.get(tag) == null) {
-          return tagsAction.get(tag);
-        }
-        return null;
-      }
-      return actionByDefault;
-    }
-    return null;
-  }
+			if (!tagsAction.isEmpty() && !exceptedTagsAction.isEmpty()) {
+				// TODO check tag value?
+				if (exceptedTagsAction.get(tag) == null) {
+					return tagsAction.get(tag);
+				}
+				return null;
+			}
+			return actionByDefault;
+		}
+		return null;
+	}
 
-  public void profileValidation() throws Exception {
-    if (action == null) {
-      throw new Exception("Cannot build the profile " + codeName + ": Unknown Action");
-    }
+	public void profileValidation() throws Exception {
+		if (action == null) {
+			throw new Exception("Cannot build the profile " + codeName + ": Unknown Action");
+		}
 
-    final ExpressionError expressionError =
-        ExpressionResult.isValid(condition, new ExprCondition(new Attributes()), Boolean.class);
-    if (condition != null && !expressionError.isValid()) {
-      throw new Exception(expressionError.getMsg());
-    }
-  }
+		final ExpressionError expressionError = ExpressionResult.isValid(condition, new ExprCondition(new Attributes()),
+				Boolean.class);
+		if (condition != null && !expressionError.isValid()) {
+			throw new Exception(expressionError.getMsg());
+		}
+	}
+
 }

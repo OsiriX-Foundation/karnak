@@ -29,202 +29,192 @@ import org.springframework.security.access.annotation.Secured;
 @Route(value = PseudonymMappingView.ROUTE, layout = MainLayout.class)
 @PageTitle("KARNAK - Mainzelliste Mapping Pseudonym")
 @Tag("mainzelliste-mapping-pseudonym-view")
-@Secured({"ROLE_investigator"})
+@Secured({ "ROLE_investigator" })
 @SuppressWarnings("serial")
 public class PseudonymMappingView extends HorizontalLayout {
 
-  public static final String VIEW_NAME = "Pseudonym mapping ";
+	public static final String VIEW_NAME = "Pseudonym mapping ";
 
-  public static final String ROUTE = "mapping";
+	public static final String ROUTE = "mapping";
 
-  // Layout
-  private VerticalLayout mappingLayout;
+	// Layout
+	private VerticalLayout mappingLayout;
 
-  // Mapping Logic
-  private final PseudonymMappingLogic pseudonymMappingLogic;
+	// Mapping Logic
+	private final PseudonymMappingLogic pseudonymMappingLogic;
 
-  // Components
-  private List<MappingResultComponent> mappingResultComponents;
+	// Components
+	private List<MappingResultComponent> mappingResultComponents;
 
-  private MappingInputComponent mappingInputComponent;
+	private MappingInputComponent mappingInputComponent;
 
-  private Label pseudonymToLookForLabel;
+	private Label pseudonymToLookForLabel;
 
-  /**
-   * Autowired constructor.
-   *
-   * @param pseudonymMappingLogic Mapping Logic used to call backend services and implement logic
-   *                              linked to the view
-   */
-  @Autowired
-  public PseudonymMappingView(final PseudonymMappingLogic pseudonymMappingLogic) {
-    // Bind the autowired service
-    this.pseudonymMappingLogic = pseudonymMappingLogic;
+	/**
+	 * Autowired constructor.
+	 * @param pseudonymMappingLogic Mapping Logic used to call backend services and
+	 * implement logic linked to the view
+	 */
+	@Autowired
+	public PseudonymMappingView(final PseudonymMappingLogic pseudonymMappingLogic) {
+		// Bind the autowired service
+		this.pseudonymMappingLogic = pseudonymMappingLogic;
 
-    // Set the view in the service
-    this.pseudonymMappingLogic.setMappingView(this);
+		// Set the view in the service
+		this.pseudonymMappingLogic.setMappingView(this);
 
-    // Build components
-    buildComponents();
+		// Build components
+		buildComponents();
 
-    // Build listeners
-    buildListeners();
+		// Build listeners
+		buildListeners();
 
-    // Add components in the view
-    addComponentsView();
-  }
+		// Add components in the view
+		addComponentsView();
+	}
 
-  /**
-   * Build listeners
-   */
-  private void buildListeners() {
+	/**
+	 * Build listeners
+	 */
+	private void buildListeners() {
 
-    // Find patient listener
-    mappingInputComponent
-        .getFindButton()
-        .addClickListener(
-            event -> {
-              if (mappingInputComponent.getPseudonymTextField().getValue() != null
-                  && !mappingInputComponent.getPseudonymTextField().getValue().isEmpty()) {
+		// Find patient listener
+		mappingInputComponent.getFindButton().addClickListener(event -> {
+			if (mappingInputComponent.getPseudonymTextField().getValue() != null
+					&& !mappingInputComponent.getPseudonymTextField().getValue().isEmpty()) {
 
-                // Reset previous results found
-                removePreviousResultsFound();
+				// Reset previous results found
+				removePreviousResultsFound();
 
-                // Create title searched pseudonym
-                buildTitlePseudonymToLookFor(
-                    mappingInputComponent.getPseudonymTextField().getValue());
+				// Create title searched pseudonym
+				buildTitlePseudonymToLookFor(mappingInputComponent.getPseudonymTextField().getValue());
 
-                // Find mapping pseudonym/patient store in mainzelliste
-                mappingFindPatientMainzelliste();
+				// Find mapping pseudonym/patient store in mainzelliste
+				mappingFindPatientMainzelliste();
 
-                // Find mapping pseudonym/patient store in external id cache
-                mappingFindPatientInExternalIDCache();
+				// Find mapping pseudonym/patient store in external id cache
+				mappingFindPatientInExternalIDCache();
 
-                // reset value pseudonym entered by the user
-                mappingInputComponent.getPseudonymTextField().clear();
+				// reset value pseudonym entered by the user
+				mappingInputComponent.getPseudonymTextField().clear();
 
-                // Case no result found: change label title
-                if (mappingResultComponents != null && mappingResultComponents.isEmpty()) {
-                  pseudonymToLookForLabel.setText(
-                      String.format("%s: no mapping found", pseudonymToLookForLabel.getText()));
-                }
-              }
-            });
-  }
+				// Case no result found: change label title
+				if (mappingResultComponents != null && mappingResultComponents.isEmpty()) {
+					pseudonymToLookForLabel
+						.setText(String.format("%s: no mapping found", pseudonymToLookForLabel.getText()));
+				}
+			}
+		});
+	}
 
-  /**
-   * Remove previous results found to clear the view
-   */
-  private void removePreviousResultsFound() {
-    mappingResultComponents.forEach(c -> mappingLayout.remove(c));
-    if (pseudonymToLookForLabel != null) {
-      mappingLayout.remove(pseudonymToLookForLabel);
-    }
-    mappingResultComponents.clear();
-  }
+	/**
+	 * Remove previous results found to clear the view
+	 */
+	private void removePreviousResultsFound() {
+		mappingResultComponents.forEach(c -> mappingLayout.remove(c));
+		if (pseudonymToLookForLabel != null) {
+			mappingLayout.remove(pseudonymToLookForLabel);
+		}
+		mappingResultComponents.clear();
+	}
 
-  /**
-   * Build title pseudonym to look for
-   *
-   * @param pseudonym pseudonym to look for
-   */
-  private void buildTitlePseudonymToLookFor(String pseudonym) {
-    pseudonymToLookForLabel = new Label(String.format("Pseudonym %s", pseudonym));
-    pseudonymToLookForLabel.getElement().getStyle().set("margin-left", "1em");
-    pseudonymToLookForLabel.getStyle().set("font-size", "large").set("font-weight", "bolder");
+	/**
+	 * Build title pseudonym to look for
+	 * @param pseudonym pseudonym to look for
+	 */
+	private void buildTitlePseudonymToLookFor(String pseudonym) {
+		pseudonymToLookForLabel = new Label(String.format("Pseudonym %s", pseudonym));
+		pseudonymToLookForLabel.getElement().getStyle().set("margin-left", "1em");
+		pseudonymToLookForLabel.getStyle().set("font-size", "large").set("font-weight", "bolder");
 
-    // Add in the layout
-    mappingLayout.add(pseudonymToLookForLabel);
-  }
+		// Add in the layout
+		mappingLayout.add(pseudonymToLookForLabel);
+	}
 
-  /**
-   * Find mapping patient in cache for all projects
-   */
-  private void mappingFindPatientInExternalIDCache() {
+	/**
+	 * Find mapping patient in cache for all projects
+	 */
+	private void mappingFindPatientInExternalIDCache() {
 
-    // Retrieve pseudonym patient mapping in all projects
-    Map<String, Patient> mappingPseudoProjectPatientFound =
-        pseudonymMappingLogic.retrieveExternalIDCachePatients(
-            mappingInputComponent.getPseudonymTextField().getValue());
+		// Retrieve pseudonym patient mapping in all projects
+		Map<String, Patient> mappingPseudoProjectPatientFound = pseudonymMappingLogic
+			.retrieveExternalIDCachePatients(mappingInputComponent.getPseudonymTextField().getValue());
 
-    // Handle result find patient
-    if (!mappingPseudoProjectPatientFound.isEmpty()) {
-      mappingPseudoProjectPatientFound.forEach(
-          (project, patient) -> {
-            MappingResultComponent mappingResultComponent = new MappingResultComponent();
-            mappingResultComponent.handleResultFindPatient(
-                patient,
-                mappingInputComponent.getPseudonymTextField().getValue(),
-                String.format("[External][%s]", project));
+		// Handle result find patient
+		if (!mappingPseudoProjectPatientFound.isEmpty()) {
+			mappingPseudoProjectPatientFound.forEach((project, patient) -> {
+				MappingResultComponent mappingResultComponent = new MappingResultComponent();
+				mappingResultComponent.handleResultFindPatient(patient,
+						mappingInputComponent.getPseudonymTextField().getValue(),
+						String.format("[External][%s]", project));
 
-            // Add in the list of components to reset
-            mappingResultComponents.add(mappingResultComponent);
+				// Add in the list of components to reset
+				mappingResultComponents.add(mappingResultComponent);
 
-            // Add in the layout
-            mappingLayout.add(mappingResultComponent);
-          });
-    } else {
-      MappingResultComponent.handleResultFindPatientPatientNotFound(
-          mappingInputComponent.getPseudonymTextField().getValue(), "[External]");
-    }
-  }
+				// Add in the layout
+				mappingLayout.add(mappingResultComponent);
+			});
+		}
+		else {
+			MappingResultComponent.handleResultFindPatientPatientNotFound(
+					mappingInputComponent.getPseudonymTextField().getValue(), "[External]");
+		}
+	}
 
-  /**
-   * Find patient mapping in mainzelliste
-   */
-  private void mappingFindPatientMainzelliste() {
-    MappingResultComponent mappingMainzellisteResultComponent = new MappingResultComponent();
+	/**
+	 * Find patient mapping in mainzelliste
+	 */
+	private void mappingFindPatientMainzelliste() {
+		MappingResultComponent mappingMainzellisteResultComponent = new MappingResultComponent();
 
-    // Retrieve patient
-    Patient mainzellistePatientFound =
-        pseudonymMappingLogic.retrieveMainzellistePatient(
-            mappingInputComponent.getPseudonymTextField().getValue());
+		// Retrieve patient
+		Patient mainzellistePatientFound = pseudonymMappingLogic
+			.retrieveMainzellistePatient(mappingInputComponent.getPseudonymTextField().getValue());
 
-    // Handle result find patient
-    mappingMainzellisteResultComponent.handleResultFindPatient(
-        mainzellistePatientFound,
-        mappingInputComponent.getPseudonymTextField().getValue(),
-        "[Mainzelliste]");
+		// Handle result find patient
+		mappingMainzellisteResultComponent.handleResultFindPatient(mainzellistePatientFound,
+				mappingInputComponent.getPseudonymTextField().getValue(), "[Mainzelliste]");
 
-    if (mainzellistePatientFound != null) {
-      // Add in the list of components to reset
-      mappingResultComponents.add(mappingMainzellisteResultComponent);
+		if (mainzellistePatientFound != null) {
+			// Add in the list of components to reset
+			mappingResultComponents.add(mappingMainzellisteResultComponent);
 
-      // Add in the layout
-      mappingLayout.add(mappingMainzellisteResultComponent);
-    }
-  }
+			// Add in the layout
+			mappingLayout.add(mappingMainzellisteResultComponent);
+		}
+	}
 
-  /**
-   * Build components
-   */
-  private void buildComponents() {
-    // Input pseudonym
-    mappingInputComponent = new MappingInputComponent();
+	/**
+	 * Build components
+	 */
+	private void buildComponents() {
+		// Input pseudonym
+		mappingInputComponent = new MappingInputComponent();
 
-    // List of components to remove when new search is done
-    mappingResultComponents = new ArrayList<>();
-  }
+		// List of components to remove when new search is done
+		mappingResultComponents = new ArrayList<>();
+	}
 
-  /**
-   * Add components in the view
-   */
-  private void addComponentsView() {
-    setSizeFull();
+	/**
+	 * Add components in the view
+	 */
+	private void addComponentsView() {
+		setSizeFull();
 
-    // Layout
-    mappingLayout = new VerticalLayout();
-    VerticalLayout inputLayout = new VerticalLayout();
+		// Layout
+		mappingLayout = new VerticalLayout();
+		VerticalLayout inputLayout = new VerticalLayout();
 
-    // Titles
-    mappingLayout.add(new H2("Pseudonym Mapping"));
+		// Titles
+		mappingLayout.add(new H2("Pseudonym Mapping"));
 
-    // Input
-    inputLayout.add(mappingInputComponent);
-    inputLayout.getElement().getStyle().set("margin-left", "22%");
-    mappingLayout.add(inputLayout);
+		// Input
+		inputLayout.add(mappingInputComponent);
+		inputLayout.getElement().getStyle().set("margin-left", "22%");
+		mappingLayout.add(inputLayout);
 
-    // Layout
-    add(mappingLayout);
-  }
+		// Layout
+		add(mappingLayout);
+	}
+
 }

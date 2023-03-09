@@ -19,64 +19,63 @@ import org.weasis.dicom.param.DicomState;
 
 public abstract class ForwardDestination {
 
-  protected final List<AttributeEditor> dicomEditors;
+	protected final List<AttributeEditor> dicomEditors;
 
-  private final Long id;
+	private final Long id;
 
-  private boolean transcodeOnlyUncompressed = true;
+	private boolean transcodeOnlyUncompressed = true;
 
-  private String outputTransferSyntax = "";
+	private String outputTransferSyntax = "";
 
-  protected ForwardDestination(Long id, List<AttributeEditor> dicomEditors) {
-    this.dicomEditors = dicomEditors;
-    this.id = id;
-  }
+	protected ForwardDestination(Long id, List<AttributeEditor> dicomEditors) {
+		this.dicomEditors = dicomEditors;
+		this.id = id;
+	}
 
-  public List<AttributeEditor> getDicomEditors() {
-    return dicomEditors;
-  }
+	public List<AttributeEditor> getDicomEditors() {
+		return dicomEditors;
+	}
 
-  public Long getId() {
-    return id;
-  }
+	public Long getId() {
+		return id;
+	}
 
-  public abstract ForwardDicomNode getForwardDicomNode();
+	public abstract ForwardDicomNode getForwardDicomNode();
 
-  public abstract void stop();
+	public abstract void stop();
 
-  public abstract DicomState getState();
+	public abstract DicomState getState();
 
-  public String getOutputTransferSyntax() {
-    return outputTransferSyntax;
-  }
+	public String getOutputTransferSyntax() {
+		return outputTransferSyntax;
+	}
 
-  public void setOutputTransferSyntax(String outputTransferSyntax) {
-    this.outputTransferSyntax = outputTransferSyntax != null ? outputTransferSyntax : "";
-  }
+	public void setOutputTransferSyntax(String outputTransferSyntax) {
+		this.outputTransferSyntax = outputTransferSyntax != null ? outputTransferSyntax : "";
+	}
 
-  public boolean isTranscodeOnlyUncompressed() {
-    return transcodeOnlyUncompressed;
-  }
+	public boolean isTranscodeOnlyUncompressed() {
+		return transcodeOnlyUncompressed;
+	}
 
-  public void setTranscodeOnlyUncompressed(boolean transcodeOnlyUncompressed) {
-    this.transcodeOnlyUncompressed = transcodeOnlyUncompressed;
-  }
+	public void setTranscodeOnlyUncompressed(boolean transcodeOnlyUncompressed) {
+		this.transcodeOnlyUncompressed = transcodeOnlyUncompressed;
+	}
 
-  public String getOutputTransferSyntax(String originalTsuid) {
-    if (transcodeOnlyUncompressed
-        && !DicomUtils.isNative(originalTsuid)
-        && !UID.RLELossless.equals(originalTsuid)) {
-      return originalTsuid;
-    }
-    if (DicomOutputData.isSupportedSyntax(outputTransferSyntax)
-        && DicomImageReader.isSupportedSyntax(originalTsuid)) {
-      return outputTransferSyntax;
-    }
-    if (UID.RLELossless.equals(originalTsuid)
-        || UID.ImplicitVRLittleEndian.equals(originalTsuid)
-        || UID.ExplicitVRBigEndian.equals(originalTsuid)) {
-      return UID.ExplicitVRLittleEndian;
-    }
-    return originalTsuid;
-  }
+	public String getOutputTransferSyntax(String originalTsuid) {
+		if (transcodeOnlyUncompressed && !DicomUtils.isNative(originalTsuid)
+				&& !UID.RLELossless.equals(originalTsuid)) {
+			return originalTsuid;
+		}
+		if (DicomOutputData.isSupportedSyntax(outputTransferSyntax)
+				&& DicomImageReader.isSupportedSyntax(originalTsuid)) {
+			return outputTransferSyntax;
+		}
+		if (UID.RLELossless.equals(originalTsuid) || UID.ImplicitVRLittleEndian.equals(originalTsuid)
+				|| UID.ExplicitVRBigEndian.equals(originalTsuid)) {
+			return UID.ExplicitVRLittleEndian;
+		}
+		return originalTsuid;
+	}
+
 }

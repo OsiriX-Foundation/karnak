@@ -20,56 +20,52 @@ import org.springframework.stereotype.Service;
 @Service
 public class SourceNodeService {
 
-  // Repositories
-  private final DicomSourceNodeRepo dicomSourceNodeRepo;
+	// Repositories
+	private final DicomSourceNodeRepo dicomSourceNodeRepo;
 
-  // Services
-  private final ForwardNodeService forwardNodeService;
+	// Services
+	private final ForwardNodeService forwardNodeService;
 
-  // Event publisher
-  private final ApplicationEventPublisher applicationEventPublisher;
+	// Event publisher
+	private final ApplicationEventPublisher applicationEventPublisher;
 
-  @Autowired
-  public SourceNodeService(
-      final DicomSourceNodeRepo dicomSourceNodeRepo,
-      final ForwardNodeService forwardNodeService,
-      final ApplicationEventPublisher applicationEventPublisher) {
-    this.dicomSourceNodeRepo = dicomSourceNodeRepo;
-    this.forwardNodeService = forwardNodeService;
-    this.applicationEventPublisher = applicationEventPublisher;
-  }
+	@Autowired
+	public SourceNodeService(final DicomSourceNodeRepo dicomSourceNodeRepo, final ForwardNodeService forwardNodeService,
+			final ApplicationEventPublisher applicationEventPublisher) {
+		this.dicomSourceNodeRepo = dicomSourceNodeRepo;
+		this.forwardNodeService = forwardNodeService;
+		this.applicationEventPublisher = applicationEventPublisher;
+	}
 
-  public Collection<DicomSourceNodeEntity> retrieveSourceNodes(
-      ForwardNodeEntity forwardNodeEntity) {
-    return forwardNodeService.getAllSourceNodes(forwardNodeEntity);
-  }
+	public Collection<DicomSourceNodeEntity> retrieveSourceNodes(ForwardNodeEntity forwardNodeEntity) {
+		return forwardNodeService.getAllSourceNodes(forwardNodeEntity);
+	}
 
-  /**
-   * Store given DicomSourceNodeEntity.
-   *
-   * @param forwardNodeEntity
-   * @param dicomSourceNodeEntity the updated or new dicomSourceNodeEntity
-   */
-  public DicomSourceNodeEntity save(
-      ForwardNodeEntity forwardNodeEntity, DicomSourceNodeEntity dicomSourceNodeEntity) {
-    DicomSourceNodeEntity dataUpdated =
-        this.forwardNodeService.updateSourceNode(forwardNodeEntity, dicomSourceNodeEntity);
-    return dataUpdated;
-  }
+	/**
+	 * Store given DicomSourceNodeEntity.
+	 * @param forwardNodeEntity
+	 * @param dicomSourceNodeEntity the updated or new dicomSourceNodeEntity
+	 */
+	public DicomSourceNodeEntity save(ForwardNodeEntity forwardNodeEntity,
+			DicomSourceNodeEntity dicomSourceNodeEntity) {
+		DicomSourceNodeEntity dataUpdated = this.forwardNodeService.updateSourceNode(forwardNodeEntity,
+				dicomSourceNodeEntity);
+		return dataUpdated;
+	}
 
-  /**
-   * Delete given data from the backing data service.
-   *
-   * @param dicomSourceNodeEntity the data to be deleted
-   */
-  public void delete(DicomSourceNodeEntity dicomSourceNodeEntity) {
-    ForwardNodeEntity forwardNodeEntityOfDest = dicomSourceNodeEntity.getForwardNodeEntity();
-    if (forwardNodeEntityOfDest != null) {
-      forwardNodeService.deleteSourceNode(forwardNodeEntityOfDest, dicomSourceNodeEntity);
-    }
-  }
+	/**
+	 * Delete given data from the backing data service.
+	 * @param dicomSourceNodeEntity the data to be deleted
+	 */
+	public void delete(DicomSourceNodeEntity dicomSourceNodeEntity) {
+		ForwardNodeEntity forwardNodeEntityOfDest = dicomSourceNodeEntity.getForwardNodeEntity();
+		if (forwardNodeEntityOfDest != null) {
+			forwardNodeService.deleteSourceNode(forwardNodeEntityOfDest, dicomSourceNodeEntity);
+		}
+	}
 
-  public ApplicationEventPublisher getApplicationEventPublisher() {
-    return applicationEventPublisher;
-  }
+	public ApplicationEventPublisher getApplicationEventPublisher() {
+		return applicationEventPublisher;
+	}
+
 }

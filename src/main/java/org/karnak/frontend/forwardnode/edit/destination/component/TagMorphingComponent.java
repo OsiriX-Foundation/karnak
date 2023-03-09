@@ -21,148 +21,141 @@ import org.karnak.frontend.util.UIS;
 
 public class TagMorphingComponent extends VerticalLayout {
 
-  @Serial
-  private static final long serialVersionUID = 6526643405482005449L;
+	@Serial
+	private static final long serialVersionUID = 6526643405482005449L;
 
-  // Labels
-  private static final String LABEL_CHECKBOX_TAG_MORPHING = "Activate tag morphing";
+	// Labels
+	private static final String LABEL_CHECKBOX_TAG_MORPHING = "Activate tag morphing";
 
-  // Components
-  private Checkbox tagMorphingCheckbox;
+	// Components
+	private Checkbox tagMorphingCheckbox;
 
-  private ProjectDropDown projectDropDown;
+	private ProjectDropDown projectDropDown;
 
-  private WarningNoProjectsDefined warningNoProjectsDefined;
+	private WarningNoProjectsDefined warningNoProjectsDefined;
 
-  private Binder<DestinationEntity> destinationBinder;
+	private Binder<DestinationEntity> destinationBinder;
 
-  private Div tagMorphingDiv;
+	private Div tagMorphingDiv;
 
-  private final DestinationComponentUtil destinationComponentUtil;
+	private final DestinationComponentUtil destinationComponentUtil;
 
-  private ProfileLabel profileLabel;
+	private ProfileLabel profileLabel;
 
-  /**
-   * Constructor
-   */
-  public TagMorphingComponent() {
-    this.destinationComponentUtil = new DestinationComponentUtil();
-  }
+	/**
+	 * Constructor
+	 */
+	public TagMorphingComponent() {
+		this.destinationComponentUtil = new DestinationComponentUtil();
+	}
 
-  /**
-   * Init deidentification component
-   *
-   * @param binder Binder for checks
-   */
-  public void init(final Binder<DestinationEntity> binder) {
-    // Init destination binder
-    setDestinationBinder(binder);
+	/**
+	 * Init deidentification component
+	 * @param binder Binder for checks
+	 */
+	public void init(final Binder<DestinationEntity> binder) {
+		// Init destination binder
+		setDestinationBinder(binder);
 
-    // Build deidentification components
-    buildComponents();
+		// Build deidentification components
+		buildComponents();
 
-    // Init destination binder
-    initDestinationBinder();
+		// Init destination binder
+		initDestinationBinder();
 
-    // Build Listeners
-    buildListeners();
+		// Build Listeners
+		buildListeners();
 
-    // Add components
-    addComponents();
-  }
+		// Add components
+		addComponents();
+	}
 
-  public Checkbox getTagMorphingCheckbox() {
-    return tagMorphingCheckbox;
-  }
+	public Checkbox getTagMorphingCheckbox() {
+		return tagMorphingCheckbox;
+	}
 
-  public void setTagMorphingCheckbox(Checkbox tagMorphingCheckbox) {
-    this.tagMorphingCheckbox = tagMorphingCheckbox;
-  }
+	public void setTagMorphingCheckbox(Checkbox tagMorphingCheckbox) {
+		this.tagMorphingCheckbox = tagMorphingCheckbox;
+	}
 
-  public ProjectDropDown getProjectDropDown() {
-    return projectDropDown;
-  }
+	public ProjectDropDown getProjectDropDown() {
+		return projectDropDown;
+	}
 
-  public void setProjectDropDown(ProjectDropDown projectDropDown) {
-    this.projectDropDown = projectDropDown;
-  }
+	public void setProjectDropDown(ProjectDropDown projectDropDown) {
+		this.projectDropDown = projectDropDown;
+	}
 
-  public WarningNoProjectsDefined getWarningNoProjectsDefined() {
-    return warningNoProjectsDefined;
-  }
+	public WarningNoProjectsDefined getWarningNoProjectsDefined() {
+		return warningNoProjectsDefined;
+	}
 
-  public void setWarningNoProjectsDefined(WarningNoProjectsDefined warningNoProjectsDefined) {
-    this.warningNoProjectsDefined = warningNoProjectsDefined;
-  }
+	public void setWarningNoProjectsDefined(WarningNoProjectsDefined warningNoProjectsDefined) {
+		this.warningNoProjectsDefined = warningNoProjectsDefined;
+	}
 
-  public Binder<DestinationEntity> getDestinationBinder() {
-    return destinationBinder;
-  }
+	public Binder<DestinationEntity> getDestinationBinder() {
+		return destinationBinder;
+	}
 
-  public void setDestinationBinder(Binder<DestinationEntity> destinationBinder) {
-    this.destinationBinder = destinationBinder;
-  }
+	public void setDestinationBinder(Binder<DestinationEntity> destinationBinder) {
+		this.destinationBinder = destinationBinder;
+	}
 
-  /**
-   * Build deidentification components
-   */
-  private void buildComponents() {
-    profileLabel = new ProfileLabel();
-    projectDropDown = destinationComponentUtil.buildProjectDropDown();
-    warningNoProjectsDefined = destinationComponentUtil.buildWarningNoProjectDefined();
-    tagMorphingCheckbox =
-        destinationComponentUtil.buildActivateCheckbox(LABEL_CHECKBOX_TAG_MORPHING);
-    tagMorphingDiv = destinationComponentUtil.buildActivateDiv();
-  }
+	/**
+	 * Build deidentification components
+	 */
+	private void buildComponents() {
+		profileLabel = new ProfileLabel();
+		projectDropDown = destinationComponentUtil.buildProjectDropDown();
+		warningNoProjectsDefined = destinationComponentUtil.buildWarningNoProjectDefined();
+		tagMorphingCheckbox = destinationComponentUtil.buildActivateCheckbox(LABEL_CHECKBOX_TAG_MORPHING);
+		tagMorphingDiv = destinationComponentUtil.buildActivateDiv();
+	}
 
-  private void initDestinationBinder() {
-    destinationBinder
-        .forField(tagMorphingCheckbox)
-        .bind(DestinationEntity::isActivateTagMorphing, DestinationEntity::setActivateTagMorphing);
-    destinationBinder
-        .forField(projectDropDown)
-        .withValidator(
-            project -> project != null || !tagMorphingCheckbox.getValue(), "Choose a project")
-        .bind(
-            DestinationEntity::getTagMorphingProjectEntity,
-            DestinationEntity::setTagMorphingProjectEntity);
-  }
+	private void initDestinationBinder() {
+		destinationBinder.forField(tagMorphingCheckbox)
+			.bind(DestinationEntity::isActivateTagMorphing, DestinationEntity::setActivateTagMorphing);
+		destinationBinder.forField(projectDropDown)
+			.withValidator(project -> project != null || !tagMorphingCheckbox.getValue(), "Choose a project")
+			.bind(DestinationEntity::getTagMorphingProjectEntity, DestinationEntity::setTagMorphingProjectEntity);
+	}
 
-  /**
-   * Build listeners
-   */
-  private void buildListeners() {
-    destinationComponentUtil.buildWarningNoProjectDefinedListener(
-        warningNoProjectsDefined, tagMorphingCheckbox);
-    destinationComponentUtil.buildProjectDropDownListener(projectDropDown, profileLabel);
-  }
+	/**
+	 * Build listeners
+	 */
+	private void buildListeners() {
+		destinationComponentUtil.buildWarningNoProjectDefinedListener(warningNoProjectsDefined, tagMorphingCheckbox);
+		destinationComponentUtil.buildProjectDropDownListener(projectDropDown, profileLabel);
+	}
 
-  /**
-   * Add components
-   */
-  private void addComponents() {
-    // Padding
-    setPadding(true);
+	/**
+	 * Add components
+	 */
+	private void addComponents() {
+		// Padding
+		setPadding(true);
 
-    // Add components in div
-    tagMorphingDiv.add(projectDropDown, profileLabel);
+		// Add components in div
+		tagMorphingDiv.add(projectDropDown, profileLabel);
 
-    // If checkbox is checked set div visible, invisible otherwise
-    tagMorphingDiv.setVisible(tagMorphingCheckbox.getValue());
+		// If checkbox is checked set div visible, invisible otherwise
+		tagMorphingDiv.setVisible(tagMorphingCheckbox.getValue());
 
-    // Add components in view
-    add(UIS.setWidthFull(new HorizontalLayout(tagMorphingCheckbox, tagMorphingDiv)));
-  }
+		// Add components in view
+		add(UIS.setWidthFull(new HorizontalLayout(tagMorphingCheckbox, tagMorphingDiv)));
+	}
 
-  public Div getTagMorphingDiv() {
-    return tagMorphingDiv;
-  }
+	public Div getTagMorphingDiv() {
+		return tagMorphingDiv;
+	}
 
-  public DestinationComponentUtil getDestinationComponentUtil() {
-    return destinationComponentUtil;
-  }
+	public DestinationComponentUtil getDestinationComponentUtil() {
+		return destinationComponentUtil;
+	}
 
-  public ProfileLabel getProfileLabel() {
-    return profileLabel;
-  }
+	public ProfileLabel getProfileLabel() {
+		return profileLabel;
+	}
+
 }

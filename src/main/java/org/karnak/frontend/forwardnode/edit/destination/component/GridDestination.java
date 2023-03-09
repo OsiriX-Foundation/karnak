@@ -20,90 +20,78 @@ import org.slf4j.LoggerFactory;
 
 public class GridDestination extends Grid<DestinationEntity> {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(GridDestination.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(GridDestination.class);
 
-  // Forward node / Id / Image
-  private Map<String, Map<Long, Image>> loadingImages = new HashMap<>();
+	// Forward node / Id / Image
+	private Map<String, Map<Long, Image>> loadingImages = new HashMap<>();
 
-  public GridDestination() {
-    setSizeFull();
+	public GridDestination() {
+		setSizeFull();
 
-    addColumn(DestinationEntity::getDescription)
-        .setHeader("Description")
-        .setFlexGrow(20)
-        .setSortable(true);
+		addColumn(DestinationEntity::getDescription).setHeader("Description").setFlexGrow(20).setSortable(true);
 
-    addColumn(DestinationEntity::getDestinationType)
-        .setHeader("Type")
-        .setFlexGrow(20)
-        .setSortable(true);
+		addColumn(DestinationEntity::getDestinationType).setHeader("Type").setFlexGrow(20).setSortable(true);
 
-    addComponentColumn(
-        destination -> {
-          Span spanDot = new Span();
-          spanDot.getStyle().set("height", "25px");
-          spanDot.getStyle().set("width", "25px");
-          spanDot.getStyle().set("border-radius", "50%");
-          spanDot.getStyle().set("display", "inline-block");
-          if (destination.isActivate()) {
-            spanDot.getStyle().set("background-color", "#5FC04C");
-          } else {
-            spanDot.getStyle().set("background-color", "#FC4848");
-          }
-          return spanDot;
-        })
-        .setHeader("Enabled")
-        .setFlexGrow(20)
-        .setSortable(true);
+		addComponentColumn(destination -> {
+			Span spanDot = new Span();
+			spanDot.getStyle().set("height", "25px");
+			spanDot.getStyle().set("width", "25px");
+			spanDot.getStyle().set("border-radius", "50%");
+			spanDot.getStyle().set("display", "inline-block");
+			if (destination.isActivate()) {
+				spanDot.getStyle().set("background-color", "#5FC04C");
+			}
+			else {
+				spanDot.getStyle().set("background-color", "#FC4848");
+			}
+			return spanDot;
+		}).setHeader("Enabled").setFlexGrow(20).setSortable(true);
 
-    // Loading image
-    addComponentColumn(this::buildLoadingImage)
-        .setHeader("Activity")
-        .setKey("Activity")
-        .setFlexGrow(20);
-  }
+		// Loading image
+		addComponentColumn(this::buildLoadingImage).setHeader("Activity").setKey("Activity").setFlexGrow(20);
+	}
 
-  /**
-   * Build loading image
-   *
-   * @param destinationEntity Destination
-   * @return Loading image built
-   */
-  private LoadingImage buildLoadingImage(DestinationEntity destinationEntity) {
-    // Build loading image
-    LoadingImage image = new LoadingImage("In progress", "10%");
+	/**
+	 * Build loading image
+	 * @param destinationEntity Destination
+	 * @return Loading image built
+	 */
+	private LoadingImage buildLoadingImage(DestinationEntity destinationEntity) {
+		// Build loading image
+		LoadingImage image = new LoadingImage("In progress", "10%");
 
-    // Fill loading image map
-    if (loadingImages.isEmpty()
-        || !loadingImages.containsKey(destinationEntity.getForwardNodeEntity().getFwdAeTitle())) {
-      HashMap<Long, Image> loadingImagesMap = new HashMap<>();
-      loadingImagesMap.put(destinationEntity.getId(), image);
-      loadingImages.put(destinationEntity.getForwardNodeEntity().getFwdAeTitle(), loadingImagesMap);
-    } else {
-      loadingImages
-          .get(destinationEntity.getForwardNodeEntity().getFwdAeTitle())
-          .put(destinationEntity.getId(), image);
-    }
+		// Fill loading image map
+		if (loadingImages.isEmpty()
+				|| !loadingImages.containsKey(destinationEntity.getForwardNodeEntity().getFwdAeTitle())) {
+			HashMap<Long, Image> loadingImagesMap = new HashMap<>();
+			loadingImagesMap.put(destinationEntity.getId(), image);
+			loadingImages.put(destinationEntity.getForwardNodeEntity().getFwdAeTitle(), loadingImagesMap);
+		}
+		else {
+			loadingImages.get(destinationEntity.getForwardNodeEntity().getFwdAeTitle())
+				.put(destinationEntity.getId(), image);
+		}
 
-    // Visibility
-    image.setVisible(false);
+		// Visibility
+		image.setVisible(false);
 
-    return image;
-  }
+		return image;
+	}
 
-  public DestinationEntity getSelectedRow() {
-    return asSingleSelect().getValue();
-  }
+	public DestinationEntity getSelectedRow() {
+		return asSingleSelect().getValue();
+	}
 
-  public void refresh(DestinationEntity data) {
-    getDataCommunicator().refresh(data);
-  }
+	public void refresh(DestinationEntity data) {
+		getDataCommunicator().refresh(data);
+	}
 
-  public Map<String, Map<Long, Image>> getLoadingImages() {
-    return loadingImages;
-  }
+	public Map<String, Map<Long, Image>> getLoadingImages() {
+		return loadingImages;
+	}
 
-  public void setLoadingImages(Map<String, Map<Long, Image>> loadingImages) {
-    this.loadingImages = loadingImages;
-  }
+	public void setLoadingImages(Map<String, Map<Long, Image>> loadingImages) {
+		this.loadingImages = loadingImages;
+	}
+
 }

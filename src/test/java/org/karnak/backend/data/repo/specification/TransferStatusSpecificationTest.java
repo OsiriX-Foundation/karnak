@@ -32,207 +32,195 @@ import org.springframework.data.jpa.domain.Specification;
 @DataJpaTest
 class TransferStatusSpecificationTest {
 
-  @Autowired
-  private TransferStatusRepo repository;
+	@Autowired
+	private TransferStatusRepo repository;
 
-  @BeforeEach
-  void setUp() {
+	@BeforeEach
+	void setUp() {
 
-    // Study Uid original
-    TransferStatusEntity transferStatusWithStudyUidOriginal = new TransferStatusEntity();
-    transferStatusWithStudyUidOriginal.setStudyUidOriginal("studyUidOriginal");
-    // Study Uid to Send
-    TransferStatusEntity transferStatusWithStudyUidToSend = new TransferStatusEntity();
-    transferStatusWithStudyUidToSend.setStudyUidToSend("studyUidToSend");
+		// Study Uid original
+		TransferStatusEntity transferStatusWithStudyUidOriginal = new TransferStatusEntity();
+		transferStatusWithStudyUidOriginal.setStudyUidOriginal("studyUidOriginal");
+		// Study Uid to Send
+		TransferStatusEntity transferStatusWithStudyUidToSend = new TransferStatusEntity();
+		transferStatusWithStudyUidToSend.setStudyUidToSend("studyUidToSend");
 
-    // Serie Uid original
-    TransferStatusEntity transferStatusWithSerieUidOriginal = new TransferStatusEntity();
-    transferStatusWithSerieUidOriginal.setSerieUidOriginal("serieUidOriginal");
-    // Serie Uid to Send
-    TransferStatusEntity transferStatusWithSerieUidToSend = new TransferStatusEntity();
-    transferStatusWithSerieUidToSend.setSerieUidToSend("serieUidToSend");
+		// Serie Uid original
+		TransferStatusEntity transferStatusWithSerieUidOriginal = new TransferStatusEntity();
+		transferStatusWithSerieUidOriginal.setSerieUidOriginal("serieUidOriginal");
+		// Serie Uid to Send
+		TransferStatusEntity transferStatusWithSerieUidToSend = new TransferStatusEntity();
+		transferStatusWithSerieUidToSend.setSerieUidToSend("serieUidToSend");
 
-    // Sop Instance Uid original
-    TransferStatusEntity transferStatusWithSopInstanceUidOriginal = new TransferStatusEntity();
-    transferStatusWithSopInstanceUidOriginal.setSopInstanceUidOriginal("sopInstanceUidOriginal");
-    // Sop Instance Uid to Send
-    TransferStatusEntity transferStatusWithSopInstanceUidToSend = new TransferStatusEntity();
-    transferStatusWithSopInstanceUidToSend.setSopInstanceUidToSend("sopInstanceUidToSend");
+		// Sop Instance Uid original
+		TransferStatusEntity transferStatusWithSopInstanceUidOriginal = new TransferStatusEntity();
+		transferStatusWithSopInstanceUidOriginal.setSopInstanceUidOriginal("sopInstanceUidOriginal");
+		// Sop Instance Uid to Send
+		TransferStatusEntity transferStatusWithSopInstanceUidToSend = new TransferStatusEntity();
+		transferStatusWithSopInstanceUidToSend.setSopInstanceUidToSend("sopInstanceUidToSend");
 
-    // Sent true
-    TransferStatusEntity transferStatusWithHasBeenSent = new TransferStatusEntity();
-    transferStatusWithHasBeenSent.setSent(true);
+		// Sent true
+		TransferStatusEntity transferStatusWithHasBeenSent = new TransferStatusEntity();
+		transferStatusWithHasBeenSent.setSent(true);
 
-    // With transfer date
-    TransferStatusEntity transferStatusWithTransferDate = new TransferStatusEntity();
-    transferStatusWithTransferDate.setTransferDate(LocalDateTime.of(2022, 1, 1, 6, 0, 0));
+		// With transfer date
+		TransferStatusEntity transferStatusWithTransferDate = new TransferStatusEntity();
+		transferStatusWithTransferDate.setTransferDate(LocalDateTime.of(2022, 1, 1, 6, 0, 0));
 
-    // Save in DB
-    Arrays.asList(
-            transferStatusWithStudyUidOriginal,
-            transferStatusWithStudyUidToSend,
-            transferStatusWithSerieUidOriginal,
-            transferStatusWithSerieUidToSend,
-            transferStatusWithSopInstanceUidOriginal,
-            transferStatusWithSopInstanceUidToSend,
-            transferStatusWithHasBeenSent,
-            transferStatusWithTransferDate)
-        .forEach(transferStatusEntity -> repository.saveAndFlush(transferStatusEntity));
-  }
+		// Save in DB
+		Arrays
+			.asList(transferStatusWithStudyUidOriginal, transferStatusWithStudyUidToSend,
+					transferStatusWithSerieUidOriginal, transferStatusWithSerieUidToSend,
+					transferStatusWithSopInstanceUidOriginal, transferStatusWithSopInstanceUidToSend,
+					transferStatusWithHasBeenSent, transferStatusWithTransferDate)
+			.forEach(transferStatusEntity -> repository.saveAndFlush(transferStatusEntity));
+	}
 
-  @Test
-  void shouldFilterByStudyUid() {
-    // Init data
-    // Original
-    TransferStatusFilter filterOriginal = new TransferStatusFilter();
-    filterOriginal.setStudyUid("studyUidOriginal");
-    Specification<TransferStatusEntity> transferStatusSpecificationOriginal =
-        new TransferStatusSpecification(filterOriginal);
-    // To Send
-    TransferStatusFilter filterToSend = new TransferStatusFilter();
-    filterToSend.setStudyUid("studyUidToSend");
-    Specification<TransferStatusEntity> transferStatusSpecificationToSend =
-        new TransferStatusSpecification(filterToSend);
+	@Test
+	void shouldFilterByStudyUid() {
+		// Init data
+		// Original
+		TransferStatusFilter filterOriginal = new TransferStatusFilter();
+		filterOriginal.setStudyUid("studyUidOriginal");
+		Specification<TransferStatusEntity> transferStatusSpecificationOriginal = new TransferStatusSpecification(
+				filterOriginal);
+		// To Send
+		TransferStatusFilter filterToSend = new TransferStatusFilter();
+		filterToSend.setStudyUid("studyUidToSend");
+		Specification<TransferStatusEntity> transferStatusSpecificationToSend = new TransferStatusSpecification(
+				filterToSend);
 
-    // Call service
-    List<TransferStatusEntity> transferStatusEntitiesOriginal =
-        repository.findAll(transferStatusSpecificationOriginal);
-    List<TransferStatusEntity> transferStatusEntitiesToSend =
-        repository.findAll(transferStatusSpecificationToSend);
+		// Call service
+		List<TransferStatusEntity> transferStatusEntitiesOriginal = repository
+			.findAll(transferStatusSpecificationOriginal);
+		List<TransferStatusEntity> transferStatusEntitiesToSend = repository.findAll(transferStatusSpecificationToSend);
 
-    // Test results
-    // Original
-    assertNotNull(transferStatusEntitiesOriginal);
-    assertFalse(transferStatusEntitiesOriginal.isEmpty());
-    assertEquals(1, transferStatusEntitiesOriginal.size());
-    assertEquals("studyUidOriginal", transferStatusEntitiesOriginal.get(0).getStudyUidOriginal());
-    // To Send
-    assertNotNull(transferStatusEntitiesToSend);
-    assertFalse(transferStatusEntitiesToSend.isEmpty());
-    assertEquals(1, transferStatusEntitiesToSend.size());
-    assertEquals("studyUidToSend", transferStatusEntitiesToSend.get(0).getStudyUidToSend());
-  }
+		// Test results
+		// Original
+		assertNotNull(transferStatusEntitiesOriginal);
+		assertFalse(transferStatusEntitiesOriginal.isEmpty());
+		assertEquals(1, transferStatusEntitiesOriginal.size());
+		assertEquals("studyUidOriginal", transferStatusEntitiesOriginal.get(0).getStudyUidOriginal());
+		// To Send
+		assertNotNull(transferStatusEntitiesToSend);
+		assertFalse(transferStatusEntitiesToSend.isEmpty());
+		assertEquals(1, transferStatusEntitiesToSend.size());
+		assertEquals("studyUidToSend", transferStatusEntitiesToSend.get(0).getStudyUidToSend());
+	}
 
-  @Test
-  void shouldFilterBySerieUid() {
-    // Init data
-    // Original
-    TransferStatusFilter filterOriginal = new TransferStatusFilter();
-    filterOriginal.setSerieUid("serieUidOriginal");
-    Specification<TransferStatusEntity> transferStatusSpecificationOriginal =
-        new TransferStatusSpecification(filterOriginal);
-    // To Send
-    TransferStatusFilter filterToSend = new TransferStatusFilter();
-    filterToSend.setSerieUid("serieUidToSend");
-    Specification<TransferStatusEntity> transferStatusSpecificationToSend =
-        new TransferStatusSpecification(filterToSend);
+	@Test
+	void shouldFilterBySerieUid() {
+		// Init data
+		// Original
+		TransferStatusFilter filterOriginal = new TransferStatusFilter();
+		filterOriginal.setSerieUid("serieUidOriginal");
+		Specification<TransferStatusEntity> transferStatusSpecificationOriginal = new TransferStatusSpecification(
+				filterOriginal);
+		// To Send
+		TransferStatusFilter filterToSend = new TransferStatusFilter();
+		filterToSend.setSerieUid("serieUidToSend");
+		Specification<TransferStatusEntity> transferStatusSpecificationToSend = new TransferStatusSpecification(
+				filterToSend);
 
-    // Call service
-    List<TransferStatusEntity> transferStatusEntitiesOriginal =
-        repository.findAll(transferStatusSpecificationOriginal);
-    List<TransferStatusEntity> transferStatusEntitiesToSend =
-        repository.findAll(transferStatusSpecificationToSend);
+		// Call service
+		List<TransferStatusEntity> transferStatusEntitiesOriginal = repository
+			.findAll(transferStatusSpecificationOriginal);
+		List<TransferStatusEntity> transferStatusEntitiesToSend = repository.findAll(transferStatusSpecificationToSend);
 
-    // Test results
-    // Original
-    assertNotNull(transferStatusEntitiesOriginal);
-    assertFalse(transferStatusEntitiesOriginal.isEmpty());
-    assertEquals(1, transferStatusEntitiesOriginal.size());
-    assertEquals("serieUidOriginal", transferStatusEntitiesOriginal.get(0).getSerieUidOriginal());
-    // To Send
-    assertNotNull(transferStatusEntitiesToSend);
-    assertFalse(transferStatusEntitiesToSend.isEmpty());
-    assertEquals(1, transferStatusEntitiesToSend.size());
-    assertEquals("serieUidToSend", transferStatusEntitiesToSend.get(0).getSerieUidToSend());
-  }
+		// Test results
+		// Original
+		assertNotNull(transferStatusEntitiesOriginal);
+		assertFalse(transferStatusEntitiesOriginal.isEmpty());
+		assertEquals(1, transferStatusEntitiesOriginal.size());
+		assertEquals("serieUidOriginal", transferStatusEntitiesOriginal.get(0).getSerieUidOriginal());
+		// To Send
+		assertNotNull(transferStatusEntitiesToSend);
+		assertFalse(transferStatusEntitiesToSend.isEmpty());
+		assertEquals(1, transferStatusEntitiesToSend.size());
+		assertEquals("serieUidToSend", transferStatusEntitiesToSend.get(0).getSerieUidToSend());
+	}
 
-  @Test
-  void shouldFilterBySopInstanceUid() {
-    // Init data
-    // Original
-    TransferStatusFilter filterOriginal = new TransferStatusFilter();
-    filterOriginal.setSopInstanceUid("sopInstanceUidOriginal");
-    Specification<TransferStatusEntity> transferStatusSpecificationOriginal =
-        new TransferStatusSpecification(filterOriginal);
-    // To Send
-    TransferStatusFilter filterToSend = new TransferStatusFilter();
-    filterToSend.setSopInstanceUid("sopInstanceUidToSend");
-    Specification<TransferStatusEntity> transferStatusSpecificationToSend =
-        new TransferStatusSpecification(filterToSend);
+	@Test
+	void shouldFilterBySopInstanceUid() {
+		// Init data
+		// Original
+		TransferStatusFilter filterOriginal = new TransferStatusFilter();
+		filterOriginal.setSopInstanceUid("sopInstanceUidOriginal");
+		Specification<TransferStatusEntity> transferStatusSpecificationOriginal = new TransferStatusSpecification(
+				filterOriginal);
+		// To Send
+		TransferStatusFilter filterToSend = new TransferStatusFilter();
+		filterToSend.setSopInstanceUid("sopInstanceUidToSend");
+		Specification<TransferStatusEntity> transferStatusSpecificationToSend = new TransferStatusSpecification(
+				filterToSend);
 
-    // Call service
-    List<TransferStatusEntity> transferStatusEntitiesOriginal =
-        repository.findAll(transferStatusSpecificationOriginal);
-    List<TransferStatusEntity> transferStatusEntitiesToSend =
-        repository.findAll(transferStatusSpecificationToSend);
+		// Call service
+		List<TransferStatusEntity> transferStatusEntitiesOriginal = repository
+			.findAll(transferStatusSpecificationOriginal);
+		List<TransferStatusEntity> transferStatusEntitiesToSend = repository.findAll(transferStatusSpecificationToSend);
 
-    // Test results
-    // Original
-    assertNotNull(transferStatusEntitiesOriginal);
-    assertFalse(transferStatusEntitiesOriginal.isEmpty());
-    assertEquals(1, transferStatusEntitiesOriginal.size());
-    assertEquals(
-        "sopInstanceUidOriginal",
-        transferStatusEntitiesOriginal.get(0).getSopInstanceUidOriginal());
-    // To Send
-    assertNotNull(transferStatusEntitiesToSend);
-    assertFalse(transferStatusEntitiesToSend.isEmpty());
-    assertEquals(1, transferStatusEntitiesToSend.size());
-    assertEquals(
-        "sopInstanceUidToSend", transferStatusEntitiesToSend.get(0).getSopInstanceUidToSend());
-  }
+		// Test results
+		// Original
+		assertNotNull(transferStatusEntitiesOriginal);
+		assertFalse(transferStatusEntitiesOriginal.isEmpty());
+		assertEquals(1, transferStatusEntitiesOriginal.size());
+		assertEquals("sopInstanceUidOriginal", transferStatusEntitiesOriginal.get(0).getSopInstanceUidOriginal());
+		// To Send
+		assertNotNull(transferStatusEntitiesToSend);
+		assertFalse(transferStatusEntitiesToSend.isEmpty());
+		assertEquals(1, transferStatusEntitiesToSend.size());
+		assertEquals("sopInstanceUidToSend", transferStatusEntitiesToSend.get(0).getSopInstanceUidToSend());
+	}
 
-  @Test
-  void shouldFilterByTransferStatusType() {
-    // Init data
-    TransferStatusFilter filter = new TransferStatusFilter();
-    filter.setTransferStatusType(TransferStatusType.SENT);
-    Specification<TransferStatusEntity> transferStatusSpecification =
-        new TransferStatusSpecification(filter);
+	@Test
+	void shouldFilterByTransferStatusType() {
+		// Init data
+		TransferStatusFilter filter = new TransferStatusFilter();
+		filter.setTransferStatusType(TransferStatusType.SENT);
+		Specification<TransferStatusEntity> transferStatusSpecification = new TransferStatusSpecification(filter);
 
-    // Call service
-    List<TransferStatusEntity> transferStatusEntities =
-        repository.findAll(transferStatusSpecification);
+		// Call service
+		List<TransferStatusEntity> transferStatusEntities = repository.findAll(transferStatusSpecification);
 
-    // Test results
-    assertNotNull(transferStatusEntities);
-    assertFalse(transferStatusEntities.isEmpty());
-    assertEquals(1, transferStatusEntities.size());
-    assertEquals(TransferStatusType.SENT.getCode(), transferStatusEntities.get(0).isSent());
-  }
+		// Test results
+		assertNotNull(transferStatusEntities);
+		assertFalse(transferStatusEntities.isEmpty());
+		assertEquals(1, transferStatusEntities.size());
+		assertEquals(TransferStatusType.SENT.getCode(), transferStatusEntities.get(0).isSent());
+	}
 
-  @Test
-  void shouldFilterByTransferDate() {
-    // Init data
-    // In range
-    TransferStatusFilter filterInRange = new TransferStatusFilter();
-    filterInRange.setStart(LocalDateTime.of(LocalDate.of(2022, 1, 1), LocalTime.of(5, 0, 0)));
-    filterInRange.setEnd(LocalDateTime.of(LocalDate.of(2022, 1, 1), LocalTime.of(7, 0, 0)));
-    Specification<TransferStatusEntity> transferStatusSpecificationInRange =
-        new TransferStatusSpecification(filterInRange);
-    // Out of range
-    TransferStatusFilter filterOutOfRange = new TransferStatusFilter();
-    filterOutOfRange.setStart(LocalDateTime.of(LocalDate.of(2022, 1, 1), LocalTime.of(12, 1, 0)));
-    filterOutOfRange.setEnd(LocalDateTime.of(LocalDate.of(2022, 1, 1), LocalTime.of(13, 0, 0)));
-    Specification<TransferStatusEntity> transferStatusSpecificationOutOfRange =
-        new TransferStatusSpecification(filterOutOfRange);
+	@Test
+	void shouldFilterByTransferDate() {
+		// Init data
+		// In range
+		TransferStatusFilter filterInRange = new TransferStatusFilter();
+		filterInRange.setStart(LocalDateTime.of(LocalDate.of(2022, 1, 1), LocalTime.of(5, 0, 0)));
+		filterInRange.setEnd(LocalDateTime.of(LocalDate.of(2022, 1, 1), LocalTime.of(7, 0, 0)));
+		Specification<TransferStatusEntity> transferStatusSpecificationInRange = new TransferStatusSpecification(
+				filterInRange);
+		// Out of range
+		TransferStatusFilter filterOutOfRange = new TransferStatusFilter();
+		filterOutOfRange.setStart(LocalDateTime.of(LocalDate.of(2022, 1, 1), LocalTime.of(12, 1, 0)));
+		filterOutOfRange.setEnd(LocalDateTime.of(LocalDate.of(2022, 1, 1), LocalTime.of(13, 0, 0)));
+		Specification<TransferStatusEntity> transferStatusSpecificationOutOfRange = new TransferStatusSpecification(
+				filterOutOfRange);
 
-    // Call service
-    List<TransferStatusEntity> transferStatusEntitiesInRange =
-        repository.findAll(transferStatusSpecificationInRange);
-    List<TransferStatusEntity> transferStatusEntitiesOutOfRange =
-        repository.findAll(transferStatusSpecificationOutOfRange);
+		// Call service
+		List<TransferStatusEntity> transferStatusEntitiesInRange = repository
+			.findAll(transferStatusSpecificationInRange);
+		List<TransferStatusEntity> transferStatusEntitiesOutOfRange = repository
+			.findAll(transferStatusSpecificationOutOfRange);
 
-    // Test results
-    // In Range
-    assertNotNull(transferStatusEntitiesInRange);
-    assertFalse(transferStatusEntitiesInRange.isEmpty());
-    assertEquals(1, transferStatusEntitiesInRange.size());
-    assertEquals(
-        LocalDateTime.of(LocalDate.of(2022, 1, 1), LocalTime.of(6, 0, 0)),
-        transferStatusEntitiesInRange.get(0).getTransferDate());
-    // Out of range
-    assertNotNull(transferStatusEntitiesOutOfRange);
-    assertTrue(transferStatusEntitiesOutOfRange.isEmpty());
-  }
+		// Test results
+		// In Range
+		assertNotNull(transferStatusEntitiesInRange);
+		assertFalse(transferStatusEntitiesInRange.isEmpty());
+		assertEquals(1, transferStatusEntitiesInRange.size());
+		assertEquals(LocalDateTime.of(LocalDate.of(2022, 1, 1), LocalTime.of(6, 0, 0)),
+				transferStatusEntitiesInRange.get(0).getTransferDate());
+		// Out of range
+		assertNotNull(transferStatusEntitiesOutOfRange);
+		assertTrue(transferStatusEntitiesOutOfRange.isEmpty());
+	}
+
 }

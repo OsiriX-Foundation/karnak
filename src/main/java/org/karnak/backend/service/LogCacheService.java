@@ -17,25 +17,26 @@ import org.springframework.stereotype.Service;
 @Service
 public class LogCacheService {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(LogCacheService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(LogCacheService.class);
 
-  private ExternalIDCache externalIDCache;
+	private ExternalIDCache externalIDCache;
 
-  public LogCacheService(ExternalIDCache externalIDCache) {
-    this.externalIDCache = externalIDCache;
-  }
+	public LogCacheService(ExternalIDCache externalIDCache) {
+		this.externalIDCache = externalIDCache;
+	}
 
-  /**
-   * Log every minutes
-   */
-//  @Scheduled(fixedRate = 60000)
-//  public void logCache() {
-//    LOGGER.info(
-//        String.format(
-//            "Cache values for instance %s:%s",
-//            AppConfig.getInstance().getNameInstance(),
-//            externalIDCache.getAll().stream()
-//                .map(Object::toString)
-//                .collect(Collectors.joining("***"))));
-//  }
+	/**
+	 * Log every minutes
+	 */
+	// @Scheduled(fixedRate = 60000)
+	// public void logCache() {
+	// LOGGER.info(
+	// String.format(
+	// "Cache values for instance %s:%s",
+	// AppConfig.getInstance().getNameInstance(),
+	// externalIDCache.getAll().stream()
+	// .map(Object::toString)
+	// .collect(Collectors.joining("***"))));
+	// }
+
 }

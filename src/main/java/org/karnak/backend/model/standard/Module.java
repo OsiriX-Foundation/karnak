@@ -11,33 +11,34 @@ package org.karnak.backend.model.standard;
 
 public class Module {
 
-  public static final String MANDATORY = "M";
+	public static final String MANDATORY = "M";
 
-  private final String id;
+	private final String id;
 
-  private final String usage;
+	private final String usage;
 
-  private final String informationEntity;
+	private final String informationEntity;
 
-  public Module(String id, String usage, String informationEntity) {
-    this.id = id;
-    this.usage = usage;
-    this.informationEntity = informationEntity;
-  }
+	public Module(String id, String usage, String informationEntity) {
+		this.id = id;
+		this.usage = usage;
+		this.informationEntity = informationEntity;
+	}
 
-  public String getId() {
-    return id;
-  }
+	public String getId() {
+		return id;
+	}
 
-  public static boolean moduleIsMandatory(Module module) {
-    return module.getUsage().equals(MANDATORY);
-  }
+	public static boolean moduleIsMandatory(Module module) {
+		return module.getUsage().equals(MANDATORY);
+	}
 
-  public String getUsage() {
-    return usage;
-  }
+	public String getUsage() {
+		return usage;
+	}
 
-  public String getInformationEntity() {
-    return informationEntity;
-  }
+	public String getInformationEntity() {
+		return informationEntity;
+	}
+
 }

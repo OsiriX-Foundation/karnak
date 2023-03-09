@@ -19,80 +19,73 @@ import org.springframework.context.ApplicationEventPublisher;
 
 class DestinationServiceTest {
 
-  // Application Event Publisher
-  private final ApplicationEventPublisher applicationEventPublisherMock =
-      Mockito.mock(ApplicationEventPublisher.class);
+	// Application Event Publisher
+	private final ApplicationEventPublisher applicationEventPublisherMock = Mockito
+		.mock(ApplicationEventPublisher.class);
 
-  // Repositories
-  private final DestinationRepo destinationRepoMock = Mockito.mock(DestinationRepo.class);
+	// Repositories
+	private final DestinationRepo destinationRepoMock = Mockito.mock(DestinationRepo.class);
 
-  // Services
-  private final ForwardNodeService forwardNodeServiceMock = Mockito.mock(ForwardNodeService.class);
+	// Services
+	private final ForwardNodeService forwardNodeServiceMock = Mockito.mock(ForwardNodeService.class);
 
-  private final KheopsAlbumsService kheopsAlbumsServiceMock =
-      Mockito.mock(KheopsAlbumsService.class);
+	private final KheopsAlbumsService kheopsAlbumsServiceMock = Mockito.mock(KheopsAlbumsService.class);
 
-  // Service
-  private DestinationService destinationService;
+	// Service
+	private DestinationService destinationService;
 
-  @BeforeEach
-  public void setUp() {
-    // Build mocked service
-    destinationService =
-        new DestinationService(
-            destinationRepoMock,
-            forwardNodeServiceMock,
-            kheopsAlbumsServiceMock,
-            applicationEventPublisherMock);
-  }
+	@BeforeEach
+	public void setUp() {
+		// Build mocked service
+		destinationService = new DestinationService(destinationRepoMock, forwardNodeServiceMock,
+				kheopsAlbumsServiceMock, applicationEventPublisherMock);
+	}
 
-  @Test
-  void should_save_destination_update_forward_node_update_albums() {
-    // Init data
-    ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
-    DestinationEntity destinationEntity = new DestinationEntity();
-    destinationEntity.setId(1L);
+	@Test
+	void should_save_destination_update_forward_node_update_albums() {
+		// Init data
+		ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
+		DestinationEntity destinationEntity = new DestinationEntity();
+		destinationEntity.setId(1L);
 
-    // Call service
-    destinationService.save(forwardNodeEntity, destinationEntity);
+		// Call service
+		destinationService.save(forwardNodeEntity, destinationEntity);
 
-    // Test results
-    Mockito.verify(forwardNodeServiceMock, Mockito.times(1))
-        .updateDestination(
-            Mockito.any(ForwardNodeEntity.class), Mockito.any(DestinationEntity.class));
-    Mockito.verify(destinationRepoMock, Mockito.times(1))
-        .saveAndFlush(Mockito.any(DestinationEntity.class));
-    Mockito.verify(kheopsAlbumsServiceMock, Mockito.times(1))
-        .updateSwitchingAlbumsFromDestination(Mockito.any(DestinationEntity.class));
-  }
+		// Test results
+		Mockito.verify(forwardNodeServiceMock, Mockito.times(1))
+			.updateDestination(Mockito.any(ForwardNodeEntity.class), Mockito.any(DestinationEntity.class));
+		Mockito.verify(destinationRepoMock, Mockito.times(1)).saveAndFlush(Mockito.any(DestinationEntity.class));
+		Mockito.verify(kheopsAlbumsServiceMock, Mockito.times(1))
+			.updateSwitchingAlbumsFromDestination(Mockito.any(DestinationEntity.class));
+	}
 
-  @Test
-  void should_delete_destination_update_forward_node() {
-    // Init data
-    ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
-    DestinationEntity destinationEntity = new DestinationEntity();
-    destinationEntity.setId(1L);
-    destinationEntity.setForwardNodeEntity(forwardNodeEntity);
+	@Test
+	void should_delete_destination_update_forward_node() {
+		// Init data
+		ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
+		DestinationEntity destinationEntity = new DestinationEntity();
+		destinationEntity.setId(1L);
+		destinationEntity.setForwardNodeEntity(forwardNodeEntity);
 
-    // Call service
-    destinationService.delete(destinationEntity);
+		// Call service
+		destinationService.delete(destinationEntity);
 
-    // Test results
-    Mockito.verify(forwardNodeServiceMock, Mockito.times(1))
-        .deleteDestination(
-            Mockito.any(ForwardNodeEntity.class), Mockito.any(DestinationEntity.class));
-  }
+		// Test results
+		Mockito.verify(forwardNodeServiceMock, Mockito.times(1))
+			.deleteDestination(Mockito.any(ForwardNodeEntity.class), Mockito.any(DestinationEntity.class));
+	}
 
-  @Test
-  void should_retrieve_destinations() {
-    // Init data
-    ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
+	@Test
+	void should_retrieve_destinations() {
+		// Init data
+		ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
 
-    // Call service
-    destinationService.retrieveDestinations(forwardNodeEntity);
+		// Call service
+		destinationService.retrieveDestinations(forwardNodeEntity);
 
-    // Test results
-    Mockito.verify(forwardNodeServiceMock, Mockito.times(1))
-        .getAllDestinations(Mockito.any(ForwardNodeEntity.class));
-  }
+		// Test results
+		Mockito.verify(forwardNodeServiceMock, Mockito.times(1))
+			.getAllDestinations(Mockito.any(ForwardNodeEntity.class));
+	}
+
 }

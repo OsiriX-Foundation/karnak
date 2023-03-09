@@ -32,142 +32,136 @@ import org.yaml.snakeyaml.error.YAMLException;
 @Service
 public class ProfileLogic extends ListDataProvider<ProfileEntity> {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ProfileLogic.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ProfileLogic.class);
 
-  // view
-  private ProfileView profileView;
+	// view
+	private ProfileView profileView;
 
-  // services
-  private final transient ProfilePipeService profilePipeService;
+	// services
+	private final transient ProfilePipeService profilePipeService;
 
-  /**
-   * Autowired constructor
-   *
-   * @param profilePipeService Profile Pipe Service
-   */
-  @Autowired
-  public ProfileLogic(final ProfilePipeService profilePipeService) {
-    super(new ArrayList<>());
-    this.profilePipeService = profilePipeService;
-    initDataProvider();
-  }
+	/**
+	 * Autowired constructor
+	 * @param profilePipeService Profile Pipe Service
+	 */
+	@Autowired
+	public ProfileLogic(final ProfilePipeService profilePipeService) {
+		super(new ArrayList<>());
+		this.profilePipeService = profilePipeService;
+		initDataProvider();
+	}
 
-  @Override
-  public void refreshAll() {
-    getItems().clear();
-    getItems().addAll(profilePipeService.getAllProfiles());
-    super.refreshAll();
-  }
+	@Override
+	public void refreshAll() {
+		getItems().clear();
+		getItems().addAll(profilePipeService.getAllProfiles());
+		super.refreshAll();
+	}
 
-  /**
-   * Initialize the data provider
-   */
-  private void initDataProvider() {
-    getItems().addAll(profilePipeService.getAllProfiles());
-  }
+	/**
+	 * Initialize the data provider
+	 */
+	private void initDataProvider() {
+		getItems().addAll(profilePipeService.getAllProfiles());
+	}
 
-  public Long enter(String dataIdStr) {
-    try {
-      return Long.valueOf(dataIdStr);
-    } catch (NumberFormatException e) {
-      LOGGER.error("Cannot get valueOf {}", dataIdStr, e);
-    }
-    return null;
-  }
+	public Long enter(String dataIdStr) {
+		try {
+			return Long.valueOf(dataIdStr);
+		}
+		catch (NumberFormatException e) {
+			LOGGER.error("Cannot get valueOf {}", dataIdStr, e);
+		}
+		return null;
+	}
 
-  /**
-   * Retrieve a profile depending of its id
-   *
-   * @param profileID Id of the profile to retrieve
-   * @return Project found
-   */
-  public ProfileEntity retrieveProfile(Long profileID) {
-    refreshAll();
-    return getItems().stream()
-        .filter(project -> project.getId().equals(profileID))
-        .findAny()
-        .orElse(null);
-  }
+	/**
+	 * Retrieve a profile depending of its id
+	 * @param profileID Id of the profile to retrieve
+	 * @return Project found
+	 */
+	public ProfileEntity retrieveProfile(Long profileID) {
+		refreshAll();
+		return getItems().stream().filter(project -> project.getId().equals(profileID)).findAny().orElse(null);
+	}
 
-  public ProfileView getProfileView() {
-    return profileView;
-  }
+	public ProfileView getProfileView() {
+		return profileView;
+	}
 
-  public void setProfileView(ProfileView profileView) {
-    this.profileView = profileView;
-  }
+	public void setProfileView(ProfileView profileView) {
+		this.profileView = profileView;
+	}
 
-  public void deleteProfile(ProfileEntity profileEntity) {
-    profilePipeService.deleteProfile(profileEntity);
-    profileView.remove(profileView.getProfileHorizontalLayout());
-    refreshAll();
-  }
+	public void deleteProfile(ProfileEntity profileEntity) {
+		profilePipeService.deleteProfile(profileEntity);
+		profileView.remove(profileView.getProfileHorizontalLayout());
+		refreshAll();
+	}
 
-  public ProfileEntity updateProfile(ProfileEntity profileEntity) {
-    final ProfileEntity profileUpdate = profilePipeService.updateProfile(profileEntity);
-    refreshAll();
-    profileView.getProfileGrid().selectRow(profileUpdate);
-    return profileEntity;
-  }
+	public ProfileEntity updateProfile(ProfileEntity profileEntity) {
+		final ProfileEntity profileUpdate = profilePipeService.updateProfile(profileEntity);
+		refreshAll();
+		profileView.getProfileGrid().selectRow(profileUpdate);
+		return profileEntity;
+	}
 
-  private ProfilePipeBody readProfileYaml(InputStream stream) {
-    final Yaml yaml = new Yaml(new Constructor(ProfilePipeBody.class));
-    return yaml.load(stream);
-  }
+	private ProfilePipeBody readProfileYaml(InputStream stream) {
+		final Yaml yaml = new Yaml(new Constructor(ProfilePipeBody.class));
+		return yaml.load(stream);
+	}
 
-  public void setProfileComponent(InputStream stream) {
-    try {
-      ProfilePipeBody profilePipe = readProfileYaml(stream);
-      ArrayList<ProfileError> profileErrors = profilePipeService.validateProfile(profilePipe);
-      Predicate<ProfileError> errorPredicate = profileError -> profileError.getError() != null;
-      if (profileErrors.stream().noneMatch(errorPredicate)) {
-        final ProfileEntity newProfileEntity =
-            profilePipeService.saveProfilePipe(profilePipe, false);
-        profileView.getProfileErrorView().removeAll();
-        profileView.getProfileGrid().selectRow(newProfileEntity);
-        profileView.getProfileComponent().setProfile(newProfileEntity);
-        profileView.getProfileElementMainView().setProfile(newProfileEntity);
-      } else {
-        profileView.getProfileGrid().deselectAll();
-        profileView.getProfileErrorView().setView(profileErrors);
-        profileView.remove(profileView.getProfileHorizontalLayout());
-        profileView.add(profileView.getProfileErrorView());
-      }
-      if (profilePipe.getDefaultIssuerOfPatientID() != null) {
-        openWarningIssuerDialog();
-      }
-    } catch (YAMLException e) {
-      LOGGER.error("Unable to read uploaded YAML", e);
-      profileView
-          .getProfileErrorView()
-          .setView(
-              "Unable to read uploaded YAML file.\n"
-                  + "Please make sure it is a YAML file and respects the YAML structure.");
-    }
-  }
+	public void setProfileComponent(InputStream stream) {
+		try {
+			ProfilePipeBody profilePipe = readProfileYaml(stream);
+			ArrayList<ProfileError> profileErrors = profilePipeService.validateProfile(profilePipe);
+			Predicate<ProfileError> errorPredicate = profileError -> profileError.getError() != null;
+			if (profileErrors.stream().noneMatch(errorPredicate)) {
+				final ProfileEntity newProfileEntity = profilePipeService.saveProfilePipe(profilePipe, false);
+				profileView.getProfileErrorView().removeAll();
+				profileView.getProfileGrid().selectRow(newProfileEntity);
+				profileView.getProfileComponent().setProfile(newProfileEntity);
+				profileView.getProfileElementMainView().setProfile(newProfileEntity);
+			}
+			else {
+				profileView.getProfileGrid().deselectAll();
+				profileView.getProfileErrorView().setView(profileErrors);
+				profileView.remove(profileView.getProfileHorizontalLayout());
+				profileView.add(profileView.getProfileErrorView());
+			}
+			if (profilePipe.getDefaultIssuerOfPatientID() != null) {
+				openWarningIssuerDialog();
+			}
+		}
+		catch (YAMLException e) {
+			LOGGER.error("Unable to read uploaded YAML", e);
+			profileView.getProfileErrorView()
+				.setView("Unable to read uploaded YAML file.\n"
+						+ "Please make sure it is a YAML file and respects the YAML structure.");
+		}
+	}
 
-  public void openWarningIssuerDialog() {
-    var warningIssuer = new Dialog();
-    var content = new Div();
-    var divTitle = new Div();
-    divTitle.setText("Warning");
-    divTitle
-        .getStyle()
-        .set("font-size", "large")
-        .set("font-weight", "bolder")
-        .set("padding-bottom", "10px")
-        .set("color", "red");
+	public void openWarningIssuerDialog() {
+		var warningIssuer = new Dialog();
+		var content = new Div();
+		var divTitle = new Div();
+		divTitle.setText("Warning");
+		divTitle.getStyle()
+			.set("font-size", "large")
+			.set("font-weight", "bolder")
+			.set("padding-bottom", "10px")
+			.set("color", "red");
 
-    var okBtn = new Button("Ok", e -> warningIssuer.close());
-    okBtn.getStyle().set("margin-top", "10px");
+		var okBtn = new Button("Ok", e -> warningIssuer.close());
+		okBtn.getStyle().set("margin-top", "10px");
 
-    var txt =
-        new Text(
-            "The Issuer of Patient ID is no longer linked to a profile. Please fill in this field in the destination in the de-identification menu.");
+		var txt = new Text(
+				"The Issuer of Patient ID is no longer linked to a profile. Please fill in this field in the destination in the de-identification menu.");
 
-    content.add(divTitle, txt, okBtn);
-    warningIssuer.add(content);
-    warningIssuer.setMaxWidth("30%");
-    warningIssuer.open();
-  }
+		content.add(divTitle, txt, okBtn);
+		warningIssuer.add(content);
+		warningIssuer.setMaxWidth("30%");
+		warningIssuer.open();
+	}
+
 }

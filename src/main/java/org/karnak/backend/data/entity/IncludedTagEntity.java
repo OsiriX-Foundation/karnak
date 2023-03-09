@@ -17,12 +17,13 @@ import javax.persistence.Entity;
 @DiscriminatorValue("IncludedTag")
 public class IncludedTagEntity extends TagEntity implements Serializable {
 
-  private static final long serialVersionUID = 6644786515302502293L;
+	private static final long serialVersionUID = 6644786515302502293L;
 
-  public IncludedTagEntity() {
-  }
+	public IncludedTagEntity() {
+	}
 
-  public IncludedTagEntity(String tagValue, ProfileElementEntity profileElementEntity) {
-    super(tagValue, profileElementEntity);
-  }
+	public IncludedTagEntity(String tagValue, ProfileElementEntity profileElementEntity) {
+		super(tagValue, profileElementEntity);
+	}
+
 }

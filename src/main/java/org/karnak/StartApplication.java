@@ -34,31 +34,30 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableAsync
 public class StartApplication implements CommandLineRunner {
 
-  private static final Logger log = LoggerFactory.getLogger(StartApplication.class);
+	private static final Logger log = LoggerFactory.getLogger(StartApplication.class);
 
-  @Autowired(required = false)
-  private AppConfig myConfig;
+	@Autowired(required = false)
+	private AppConfig myConfig;
 
-  public static void main(String[] args) {
-    SpringApplicationBuilder application = new SpringApplicationBuilder(StartApplication.class);
+	public static void main(String[] args) {
+		SpringApplicationBuilder application = new SpringApplicationBuilder(StartApplication.class);
 
-    // If environment variable IDP exists and has value "oidc": activate the profile
-    // application-oidc.yml
-    if (System.getenv().containsKey(EnvironmentVariable.IDP.getCode())
-        && Objects.equals(
-        System.getenv().get(EnvironmentVariable.IDP.getCode()),
-        ApplicationProfile.OIDC.getCode())) {
-      application.profiles(ApplicationProfile.OIDC.getCode());
-    }
+		// If environment variable IDP exists and has value "oidc": activate the profile
+		// application-oidc.yml
+		if (System.getenv().containsKey(EnvironmentVariable.IDP.getCode()) && Objects
+			.equals(System.getenv().get(EnvironmentVariable.IDP.getCode()), ApplicationProfile.OIDC.getCode())) {
+			application.profiles(ApplicationProfile.OIDC.getCode());
+		}
 
-    // Run application
-    application.run(args);
-  }
+		// Run application
+		application.run(args);
+	}
 
-  @Override
-  public void run(String... args) {
-    log.info("StartApplication...");
-    log.info("using environment: " + (myConfig != null ? myConfig.getEnvironment() : ""));
-    log.info("name: " + (myConfig != null ? myConfig.getName() : ""));
-  }
+	@Override
+	public void run(String... args) {
+		log.info("StartApplication...");
+		log.info("using environment: " + (myConfig != null ? myConfig.getEnvironment() : ""));
+		log.info("name: " + (myConfig != null ? myConfig.getName() : ""));
+	}
+
 }

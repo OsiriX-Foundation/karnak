@@ -25,158 +25,150 @@ import org.karnak.frontend.util.UIS;
 
 public class FormDICOM extends VerticalLayout {
 
-  private Binder<DestinationEntity> binder;
+	private Binder<DestinationEntity> binder;
 
-  private TextField aeTitle;
+	private TextField aeTitle;
 
-  private TextField description;
+	private TextField description;
 
-  private TextField hostname;
+	private TextField hostname;
 
-  private TextField port;
+	private TextField port;
 
-  private Checkbox useaetdest;
+	private Checkbox useaetdest;
 
-  private final DeIdentificationComponent deIdentificationComponent;
+	private final DeIdentificationComponent deIdentificationComponent;
 
-  private final TagMorphingComponent tagMorphingComponent;
+	private final TagMorphingComponent tagMorphingComponent;
 
-  private final FilterBySOPClassesForm filterBySOPClassesForm;
+	private final FilterBySOPClassesForm filterBySOPClassesForm;
 
-  private Checkbox activate;
+	private Checkbox activate;
 
-  private final DestinationCondition destinationCondition;
+	private final DestinationCondition destinationCondition;
 
-  private final NotificationComponent notificationComponent;
+	private final NotificationComponent notificationComponent;
 
-  private final TransferSyntaxComponent transferSyntaxComponent;
+	private final TransferSyntaxComponent transferSyntaxComponent;
 
-  private final TranscodeOnlyUncompressedComponent transcodeOnlyUncompressedComponent;
+	private final TranscodeOnlyUncompressedComponent transcodeOnlyUncompressedComponent;
 
-  public FormDICOM() {
-    this.deIdentificationComponent = new DeIdentificationComponent();
-    this.tagMorphingComponent = new TagMorphingComponent();
-    this.filterBySOPClassesForm = new FilterBySOPClassesForm();
-    this.destinationCondition = new DestinationCondition();
-    this.notificationComponent = new NotificationComponent();
-    this.transferSyntaxComponent = new TransferSyntaxComponent();
-    this.transcodeOnlyUncompressedComponent = new TranscodeOnlyUncompressedComponent();
-  }
+	public FormDICOM() {
+		this.deIdentificationComponent = new DeIdentificationComponent();
+		this.tagMorphingComponent = new TagMorphingComponent();
+		this.filterBySOPClassesForm = new FilterBySOPClassesForm();
+		this.destinationCondition = new DestinationCondition();
+		this.notificationComponent = new NotificationComponent();
+		this.transferSyntaxComponent = new TransferSyntaxComponent();
+		this.transcodeOnlyUncompressedComponent = new TranscodeOnlyUncompressedComponent();
+	}
 
-  public void init(
-      Binder<DestinationEntity> binder, ButtonSaveDeleteCancel buttonSaveDeleteCancel) {
+	public void init(Binder<DestinationEntity> binder, ButtonSaveDeleteCancel buttonSaveDeleteCancel) {
 
-    this.binder = binder;
-    this.deIdentificationComponent.init(this.binder);
-    this.tagMorphingComponent.init(this.binder);
-    this.filterBySOPClassesForm.init(this.binder);
-    this.destinationCondition.init(this.binder);
-    notificationComponent.init(this.binder);
-    transferSyntaxComponent.init(this.binder);
-    transcodeOnlyUncompressedComponent.init(this.binder);
+		this.binder = binder;
+		this.deIdentificationComponent.init(this.binder);
+		this.tagMorphingComponent.init(this.binder);
+		this.filterBySOPClassesForm.init(this.binder);
+		this.destinationCondition.init(this.binder);
+		notificationComponent.init(this.binder);
+		transferSyntaxComponent.init(this.binder);
+		transcodeOnlyUncompressedComponent.init(this.binder);
 
-    setSizeFull();
+		setSizeFull();
 
-    aeTitle = new TextField("AETitle");
-    description = new TextField("Description");
-    hostname = new TextField("Hostname");
-    port = new TextField("Port");
-    useaetdest = new Checkbox("Use AETitle destination");
-    activate = new Checkbox("Enable destination");
+		aeTitle = new TextField("AETitle");
+		description = new TextField("Description");
+		hostname = new TextField("Hostname");
+		port = new TextField("Port");
+		useaetdest = new Checkbox("Use AETitle destination");
+		activate = new Checkbox("Enable destination");
 
-    // Define layout
-    VerticalLayout destinationLayout =
-        new VerticalLayout(
-            UIS.setWidthFull(new HorizontalLayout(aeTitle, description)),
-            destinationCondition,
-            UIS.setWidthFull(new HorizontalLayout(hostname, port)));
-    VerticalLayout transferLayout =
-        new VerticalLayout(
-            new HorizontalLayout(transferSyntaxComponent, transcodeOnlyUncompressedComponent));
-    VerticalLayout useaetdestLayout = new VerticalLayout(new HorizontalLayout(useaetdest));
-    VerticalLayout activateLayout = new VerticalLayout(activate);
+		// Define layout
+		VerticalLayout destinationLayout = new VerticalLayout(
+				UIS.setWidthFull(new HorizontalLayout(aeTitle, description)), destinationCondition,
+				UIS.setWidthFull(new HorizontalLayout(hostname, port)));
+		VerticalLayout transferLayout = new VerticalLayout(
+				new HorizontalLayout(transferSyntaxComponent, transcodeOnlyUncompressedComponent));
+		VerticalLayout useaetdestLayout = new VerticalLayout(new HorizontalLayout(useaetdest));
+		VerticalLayout activateLayout = new VerticalLayout(activate);
 
-    // Set padding
-    destinationLayout.setPadding(true);
-    transferLayout.setPadding(true);
-    useaetdestLayout.setPadding(true);
-    activateLayout.setPadding(true);
+		// Set padding
+		destinationLayout.setPadding(true);
+		transferLayout.setPadding(true);
+		useaetdestLayout.setPadding(true);
+		activateLayout.setPadding(true);
 
-    // Add components
-    add(
-        UIS.setWidthFull(new BoxShadowComponent(destinationLayout)),
-        UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(transferLayout))),
-        UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(useaetdestLayout))),
-        UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(notificationComponent))),
-        UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(tagMorphingComponent))),
-        UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(deIdentificationComponent))),
-        UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(filterBySOPClassesForm))),
-        UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(activateLayout))),
-        UIS.setWidthFull(buttonSaveDeleteCancel));
+		// Add components
+		add(UIS.setWidthFull(new BoxShadowComponent(destinationLayout)),
+				UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(transferLayout))),
+				UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(useaetdestLayout))),
+				UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(notificationComponent))),
+				UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(tagMorphingComponent))),
+				UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(deIdentificationComponent))),
+				UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(filterBySOPClassesForm))),
+				UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(activateLayout))),
+				UIS.setWidthFull(buttonSaveDeleteCancel));
 
-    setElements();
-    setBinder();
-  }
+		setElements();
+		setBinder();
+	}
 
-  private void setElements() {
-    aeTitle.setWidth("30%");
+	private void setElements() {
+		aeTitle.setWidth("30%");
 
-    description.setWidth("70%");
+		description.setWidth("70%");
 
-    hostname.setWidth("70%");
-    hostname.setRequired(true);
+		hostname.setWidth("70%");
+		hostname.setRequired(true);
 
-    port.setWidth("30%");
-    port.addThemeVariants(TextFieldVariant.LUMO_ALIGN_RIGHT);
+		port.setWidth("30%");
+		port.addThemeVariants(TextFieldVariant.LUMO_ALIGN_RIGHT);
 
-    UIS.setTooltip(
-        useaetdest,
-        "if \"true\" then use the destination AETitle as the calling  AETitle at the gateway side");
-  }
+		UIS.setTooltip(useaetdest,
+				"if \"true\" then use the destination AETitle as the calling  AETitle at the gateway side");
+	}
 
-  private void setBinder() {
-    binder
-        .forField(aeTitle)
-        .withValidator(StringUtils::isNotBlank, "AETitle is mandatory")
-        .withValidator(value -> value.length() <= 16, "AETitle has more than 16 characters")
-        .withValidator(UIS::containsNoWhitespace, "AETitle contains white spaces")
-        .bind(DestinationEntity::getAeTitle, DestinationEntity::setAeTitle);
+	private void setBinder() {
+		binder.forField(aeTitle)
+			.withValidator(StringUtils::isNotBlank, "AETitle is mandatory")
+			.withValidator(value -> value.length() <= 16, "AETitle has more than 16 characters")
+			.withValidator(UIS::containsNoWhitespace, "AETitle contains white spaces")
+			.bind(DestinationEntity::getAeTitle, DestinationEntity::setAeTitle);
 
-    binder
-        .forField(hostname)
-        .withValidator(StringUtils::isNotBlank, "Hostname is mandatory")
-        .bind(DestinationEntity::getHostname, DestinationEntity::setHostname);
-    binder
-        .forField(port)
-        .withConverter(new HStringToIntegerConverter())
-        .withValidator(Objects::nonNull, "Port is mandatory")
-        .withValidator(value -> 1 <= value && value <= 65535, "Port should be between 1 and 65535")
-        .bind(DestinationEntity::getPort, DestinationEntity::setPort);
+		binder.forField(hostname)
+			.withValidator(StringUtils::isNotBlank, "Hostname is mandatory")
+			.bind(DestinationEntity::getHostname, DestinationEntity::setHostname);
+		binder.forField(port)
+			.withConverter(new HStringToIntegerConverter())
+			.withValidator(Objects::nonNull, "Port is mandatory")
+			.withValidator(value -> 1 <= value && value <= 65535, "Port should be between 1 and 65535")
+			.bind(DestinationEntity::getPort, DestinationEntity::setPort);
 
-    binder.bindInstanceFields(this);
-  }
+		binder.bindInstanceFields(this);
+	}
 
-  public DeIdentificationComponent getDeIdentificationComponent() {
-    return deIdentificationComponent;
-  }
+	public DeIdentificationComponent getDeIdentificationComponent() {
+		return deIdentificationComponent;
+	}
 
-  public TagMorphingComponent getTagMorphingComponent() {
-    return tagMorphingComponent;
-  }
+	public TagMorphingComponent getTagMorphingComponent() {
+		return tagMorphingComponent;
+	}
 
-  public FilterBySOPClassesForm getFilterBySOPClassesForm() {
-    return filterBySOPClassesForm;
-  }
+	public FilterBySOPClassesForm getFilterBySOPClassesForm() {
+		return filterBySOPClassesForm;
+	}
 
-  public NotificationComponent getNotificationComponent() {
-    return notificationComponent;
-  }
+	public NotificationComponent getNotificationComponent() {
+		return notificationComponent;
+	}
 
-  public TransferSyntaxComponent getTransferSyntaxComponent() {
-    return transferSyntaxComponent;
-  }
+	public TransferSyntaxComponent getTransferSyntaxComponent() {
+		return transferSyntaxComponent;
+	}
 
-  public TranscodeOnlyUncompressedComponent getTranscodeOnlyUncompressedComponent() {
-    return transcodeOnlyUncompressedComponent;
-  }
+	public TranscodeOnlyUncompressedComponent getTranscodeOnlyUncompressedComponent() {
+		return transcodeOnlyUncompressedComponent;
+	}
+
 }

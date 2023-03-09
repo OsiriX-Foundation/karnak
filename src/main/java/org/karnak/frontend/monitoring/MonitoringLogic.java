@@ -32,65 +32,62 @@ import org.springframework.stereotype.Service;
 @Service
 public class MonitoringLogic {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(MonitoringLogic.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(MonitoringLogic.class);
 
-  // View
-  private MonitoringView monitoringView;
+	// View
+	private MonitoringView monitoringView;
 
-  // Services
-  private final TransferMonitoringService transferMonitoringService;
+	// Services
+	private final TransferMonitoringService transferMonitoringService;
 
-  @Autowired
-  public MonitoringLogic(final TransferMonitoringService transferMonitoringService) {
-    this.transferMonitoringService = transferMonitoringService;
-  }
+	@Autowired
+	public MonitoringLogic(final TransferMonitoringService transferMonitoringService) {
+		this.transferMonitoringService = transferMonitoringService;
+	}
 
-  public MonitoringView getMonitoringView() {
-    return monitoringView;
-  }
+	public MonitoringView getMonitoringView() {
+		return monitoringView;
+	}
 
-  public void setMonitoringView(MonitoringView monitoringView) {
-    this.monitoringView = monitoringView;
-  }
+	public void setMonitoringView(MonitoringView monitoringView) {
+		this.monitoringView = monitoringView;
+	}
 
-  /**
-   * Retrieve transfer status
-   *
-   * @param filter   Filter to apply
-   * @param pageable Pageable
-   * @return Page of trnasfer entities
-   */
-  public Page<TransferStatusEntity> retrieveTransferStatus(
-      TransferStatusFilter filter, Pageable pageable) {
-    return transferMonitoringService.retrieveTransferStatusPageable(filter, pageable);
-  }
+	/**
+	 * Retrieve transfer status
+	 * @param filter Filter to apply
+	 * @param pageable Pageable
+	 * @return Page of trnasfer entities
+	 */
+	public Page<TransferStatusEntity> retrieveTransferStatus(TransferStatusFilter filter, Pageable pageable) {
+		return transferMonitoringService.retrieveTransferStatusPageable(filter, pageable);
+	}
 
-  /**
-   * Count number of transfer status
-   *
-   * @param filter Filter to apply
-   * @return number of transfer status
-   */
-  public int countTransferStatus(TransferStatusFilter filter) {
-    return transferMonitoringService.countTransferStatus(filter);
-  }
+	/**
+	 * Count number of transfer status
+	 * @param filter Filter to apply
+	 * @return number of transfer status
+	 */
+	public int countTransferStatus(TransferStatusFilter filter) {
+		return transferMonitoringService.countTransferStatus(filter);
+	}
 
-  /**
-   * Build monitoring export in CSV format
-   *
-   * @param exportSettings Export settings
-   */
-  public byte[] buildCsv(ExportSettings exportSettings) {
-    byte[] csvBuilt = new byte[0];
-    try {
-      csvBuilt =
-          transferMonitoringService.buildCsv(
-              monitoringView.getTransferStatusGrid().getTransferStatusFilter(), exportSettings);
-    } catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException | IOException e) {
-      String message = "Error when creating monitoring export CSV file";
-      LOGGER.error(message, e.getMessage());
-      NotificationUtil.displayErrorMessage(message, Position.BOTTOM_CENTER);
-    }
-    return csvBuilt;
-  }
+	/**
+	 * Build monitoring export in CSV format
+	 * @param exportSettings Export settings
+	 */
+	public byte[] buildCsv(ExportSettings exportSettings) {
+		byte[] csvBuilt = new byte[0];
+		try {
+			csvBuilt = transferMonitoringService
+				.buildCsv(monitoringView.getTransferStatusGrid().getTransferStatusFilter(), exportSettings);
+		}
+		catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException | IOException e) {
+			String message = "Error when creating monitoring export CSV file";
+			LOGGER.error(message, e.getMessage());
+			NotificationUtil.displayErrorMessage(message, Position.BOTTOM_CENTER);
+		}
+		return csvBuilt;
+	}
+
 }
