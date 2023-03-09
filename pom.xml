@@ -53,6 +53,9 @@
     <liquibase.version>4.3.5</liquibase.version>
     <opencsv.version>5.5.2</opencsv.version>
     <spring-javaformat.version>0.0.38</spring-javaformat.version>
+    <publish-docker-registry-username/>
+    <publish-docker-registry-password/>
+    <publish-docker-registry/>
   </properties>
 
   <!-- Distribution management for releases/snapshots -->
@@ -261,6 +264,13 @@
           <layers>
             <enabled>true</enabled>
           </layers>
+          <docker>
+            <publishRegistry>
+              <username>${publish-docker-registry-username}</username>
+              <password>${publish-docker-registry-password}</password>
+              <url>${publish-docker-registry}</url>
+            </publishRegistry>
+          </docker>
           <maxAttempts>240</maxAttempts>
           <wait>500</wait>
         </configuration>
