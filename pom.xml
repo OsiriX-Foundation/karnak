@@ -100,6 +100,11 @@
   <build>
     <plugins>
       <plugin>
+        <groupId>io.spring.javaformat</groupId>
+        <artifactId>spring-javaformat-maven-plugin</artifactId>
+        <version>${spring-javaformat.version}</version>
+      </plugin>
+      <plugin>
         <artifactId>maven-enforcer-plugin</artifactId>
         <executions>
           <execution>
@@ -709,11 +714,6 @@
       <!-- Production mode is activated using -Pproduction -->
       <build>
         <plugins>
-          <plugin>
-            <groupId>io.spring.javaformat</groupId>
-            <artifactId>spring-javaformat-maven-plugin</artifactId>
-            <version>${spring-javaformat.version}</version>
-          </plugin>
           <plugin>
             <artifactId>spring-boot-maven-plugin</artifactId>
             <configuration>
