@@ -42,7 +42,7 @@ public final class SecurityUtil {
 	public static boolean isFrameworkInternalRequest(HttpServletRequest request) {
 		final String parameterValue = request.getParameter(ApplicationConstants.REQUEST_TYPE_PARAMETER);
 		return parameterValue != null && Stream.of(HandlerHelper.RequestType.values())
-			.anyMatch(r -> r.getIdentifier().equals(parameterValue));
+				.anyMatch(r -> r.getIdentifier().equals(parameterValue));
 	}
 
 	/**
@@ -60,11 +60,8 @@ public final class SecurityUtil {
 	 * @return true if the user is logged and is an admin
 	 */
 	public static boolean isUserAdmin() {
-		return SecurityUtil.isUserLoggedIn() && SecurityContextHolder.getContext()
-			.getAuthentication()
-			.getAuthorities()
-			.stream()
-			.anyMatch(ga -> Objects.equals(ga.getAuthority(), SecurityRole.ADMIN_ROLE.getRole()));
+		return SecurityUtil.isUserLoggedIn() && SecurityContextHolder.getContext().getAuthentication().getAuthorities()
+				.stream().anyMatch(ga -> Objects.equals(ga.getAuthority(), SecurityRole.ADMIN_ROLE.getRole()));
 	}
 
 	/**
@@ -88,10 +85,8 @@ public final class SecurityUtil {
 				List<String> allowedRoles = Arrays.asList(secured.value());
 
 				Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-				isAccessGranted = authentication != null && authentication.getAuthorities()
-					.stream()
-					.map(GrantedAuthority::getAuthority)
-					.anyMatch(allowedRoles::contains);
+				isAccessGranted = authentication != null && authentication.getAuthorities().stream()
+						.map(GrantedAuthority::getAuthority).anyMatch(allowedRoles::contains);
 			}
 		}
 		return isAccessGranted;
