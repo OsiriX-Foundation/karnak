@@ -47,10 +47,8 @@ public class ForwardNodeAPIService implements Serializable {
 	public void addForwardNode(ForwardNodeEntity forwardNodeEntity) {
 		NodeEventType eventType = forwardNodeEntity.getId() == null ? NodeEventType.ADD : NodeEventType.UPDATE;
 		if (eventType == NodeEventType.ADD) {
-			Optional<ForwardNodeEntity> val = forwardNodeService.getAllForwardNodes()
-				.stream()
-				.filter(f -> f.getFwdAeTitle().equals(forwardNodeEntity.getFwdAeTitle()))
-				.findFirst();
+			Optional<ForwardNodeEntity> val = forwardNodeService.getAllForwardNodes().stream()
+					.filter(f -> f.getFwdAeTitle().equals(forwardNodeEntity.getFwdAeTitle())).findFirst();
 			if (val.isPresent()) {
 				// showError("Cannot add this new node because the AE-Title already
 				// exists!");

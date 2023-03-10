@@ -22,13 +22,10 @@ public class GridProject extends Grid<ProjectEntity> {
 		setHeightByRows(true);
 
 		Column<ProjectEntity> projectNameColumn = addColumn(ProjectEntity::getName).setHeader("Project Name")
-			.setFlexGrow(15)
-			.setSortable(true);
+				.setFlexGrow(15).setSortable(true);
 		addColumn(project -> String.format("%s [version %s]", project.getProfileEntity().getName(),
-				project.getProfileEntity().getVersion()))
-			.setHeader("Desidenfication profile")
-			.setFlexGrow(15)
-			.setSortable(true);
+				project.getProfileEntity().getVersion())).setHeader("Desidenfication profile").setFlexGrow(15)
+						.setSortable(true);
 
 		// Set by default the order on the name of the column
 		GridSortOrder<ProjectEntity> order = new GridSortOrder<>(projectNameColumn, SortDirection.ASCENDING);

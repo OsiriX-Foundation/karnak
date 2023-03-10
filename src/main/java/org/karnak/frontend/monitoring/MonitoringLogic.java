@@ -13,13 +13,12 @@ import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import com.vaadin.flow.component.notification.Notification.Position;
 import java.io.IOException;
+import lombok.extern.slf4j.Slf4j;
 import org.karnak.backend.data.entity.TransferStatusEntity;
 import org.karnak.backend.service.TransferMonitoringService;
 import org.karnak.frontend.monitoring.component.ExportSettings;
 import org.karnak.frontend.monitoring.component.TransferStatusFilter;
 import org.karnak.frontend.util.NotificationUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,9 +29,8 @@ import org.springframework.stereotype.Service;
  * monitoring view
  */
 @Service
+@Slf4j
 public class MonitoringLogic {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(MonitoringLogic.class);
 
 	// View
 	private MonitoringView monitoringView;
@@ -80,11 +78,11 @@ public class MonitoringLogic {
 		byte[] csvBuilt = new byte[0];
 		try {
 			csvBuilt = transferMonitoringService
-				.buildCsv(monitoringView.getTransferStatusGrid().getTransferStatusFilter(), exportSettings);
+					.buildCsv(monitoringView.getTransferStatusGrid().getTransferStatusFilter(), exportSettings);
 		}
 		catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException | IOException e) {
 			String message = "Error when creating monitoring export CSV file";
-			LOGGER.error(message, e.getMessage());
+			log.error(message, e.getMessage());
 			NotificationUtil.displayErrorMessage(message, Position.BOTTOM_CENTER);
 		}
 		return csvBuilt;

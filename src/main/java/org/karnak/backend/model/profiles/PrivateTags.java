@@ -21,12 +21,8 @@ import org.karnak.backend.model.expression.ExpressionError;
 import org.karnak.backend.model.expression.ExpressionResult;
 import org.karnak.backend.model.profilepipe.HMAC;
 import org.karnak.backend.model.profilepipe.TagActionMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class PrivateTags extends AbstractProfileItem {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(PrivateTags.class);
 
 	private final TagActionMap tagsAction;
 

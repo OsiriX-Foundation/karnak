@@ -39,11 +39,8 @@ public class WarningNoProjectsDefined extends Dialog {
 		removeAll();
 		Div divTitle = new Div();
 		divTitle.setText("No projects created");
-		divTitle.getStyle()
-			.set("font-size", "large")
-			.set("font-weight", "bolder")
-			.set("padding-bottom", "10px")
-			.set("color", "red");
+		divTitle.getStyle().set("font-size", "large").set("font-weight", "bolder").set("padding-bottom", "10px")
+				.set("color", "red");
 
 		Div divContent = new Div();
 		Div divIntro = new Div();

@@ -17,17 +17,15 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.dcm4che3.data.Attributes;
 import org.karnak.backend.data.entity.ArgumentEntity;
 import org.karnak.backend.dicom.DateTimeUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.weasis.dicom.util.DateUtil;
 
+@Slf4j
 public class ShiftDate {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(ShiftDate.class);
 
 	private ShiftDate() {
 	}
@@ -94,7 +92,7 @@ public class ShiftDate {
 				}
 			}
 			catch (Exception e) {
-				LOGGER.error("args {} is not correct", value, e);
+				log.error("args {} is not correct", value, e);
 			}
 		}
 		if (dcmElValue != null) {
@@ -118,7 +116,7 @@ public class ShiftDate {
 			IllegalArgumentException missingParameters = new IllegalArgumentException(
 					"Cannot build the option ShiftDate: Missing argument, the class need [seconds, days] as parameters. Parameters given "
 							+ args);
-			LOGGER.error("Missing argument, the class need seconds and days as parameters", missingParameters);
+			log.error("Missing argument, the class need seconds and days as parameters", missingParameters);
 			throw missingParameters;
 		}
 	}

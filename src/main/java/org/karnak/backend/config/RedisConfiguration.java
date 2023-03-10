@@ -36,7 +36,7 @@ public class RedisConfiguration {
 	public RedisTemplate<String, Patient> redisTemplate(RedisConnectionFactory connectionFactory) {
 
 		ObjectMapper objectMapper = new ObjectMapper().registerModule(new Jdk8Module())
-			.registerModule(new JavaTimeModule());
+				.registerModule(new JavaTimeModule());
 
 		Jackson2JsonRedisSerializer<Patient> serializer = new Jackson2JsonRedisSerializer<>(Patient.class);
 		serializer.setObjectMapper(objectMapper);
@@ -52,10 +52,10 @@ public class RedisConfiguration {
 	@Bean
 	public RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer() {
 		return (builder) -> builder
-			.withCacheConfiguration("externalId.cache",
-					RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofDays(7)))
-			.withCacheConfiguration("mainzelliste.cache",
-					RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(15)));
+				.withCacheConfiguration("externalId.cache",
+						RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofDays(7)))
+				.withCacheConfiguration("mainzelliste.cache",
+						RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(15)));
 	}
 
 }

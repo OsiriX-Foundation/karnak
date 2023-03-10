@@ -198,51 +198,50 @@ public class DeIdentificationComponent extends VerticalLayout {
 	}
 
 	private void initDestinationBinder() {
-		destinationBinder.forField(issuerOfPatientIDByDefault)
-			.bind(DestinationEntity::getIssuerByDefault, (destinationEntity, s) -> {
-				if (deIdentificationCheckbox.getValue()) {
-					destinationEntity.setIssuerByDefault(s);
-				}
-				else {
-					destinationEntity.setIssuerByDefault("");
-				}
-			});
-		destinationBinder.forField(deIdentificationCheckbox)
-			.bind(DestinationEntity::isDesidentification, DestinationEntity::setDesidentification);
+		destinationBinder.forField(issuerOfPatientIDByDefault).bind(DestinationEntity::getIssuerByDefault,
+				(destinationEntity, s) -> {
+					if (deIdentificationCheckbox.getValue()) {
+						destinationEntity.setIssuerByDefault(s);
+					}
+					else {
+						destinationEntity.setIssuerByDefault("");
+					}
+				});
+		destinationBinder.forField(deIdentificationCheckbox).bind(DestinationEntity::isDesidentification,
+				DestinationEntity::setDesidentification);
 		destinationBinder.forField(projectDropDown)
-			.withValidator(project -> project != null || !deIdentificationCheckbox.getValue(), "Choose a project")
-			.bind(DestinationEntity::getDeIdentificationProjectEntity,
-					DestinationEntity::setDeIdentificationProjectEntity);
+				.withValidator(project -> project != null || !deIdentificationCheckbox.getValue(), "Choose a project")
+				.bind(DestinationEntity::getDeIdentificationProjectEntity,
+						DestinationEntity::setDeIdentificationProjectEntity);
 
-		destinationBinder.forField(pseudonymTypeSelect)
-			.withValidator(Objects::nonNull, "Choose pseudonym type\n")
-			.bind(destination -> {
-				if (destination.getPseudonymType().equals(MAINZELLISTE_PID)) {
-					return MAINZELLISTE_PID.getValue();
-				}
-				else if (destination.getPseudonymType().equals(MAINZELLISTE_EXTID)) {
-					return MAINZELLISTE_EXTID.getValue();
-				}
-				else if (destination.getPseudonymType().equals(CACHE_EXTID)) {
-					return CACHE_EXTID.getValue();
-				}
-				else {
-					return EXTID_IN_TAG.getValue();
-				}
-			}, (destination, s) -> {
-				if (s.equals(MAINZELLISTE_PID.getValue())) {
-					destination.setPseudonymType(MAINZELLISTE_PID);
-				}
-				else if (s.equals(MAINZELLISTE_EXTID.getValue())) {
-					destination.setPseudonymType(MAINZELLISTE_EXTID);
-				}
-				else if (s.equals(CACHE_EXTID.getValue())) {
-					destination.setPseudonymType(CACHE_EXTID);
-				}
-				else {
-					destination.setPseudonymType(EXTID_IN_TAG);
-				}
-			});
+		destinationBinder.forField(pseudonymTypeSelect).withValidator(Objects::nonNull, "Choose pseudonym type\n")
+				.bind(destination -> {
+					if (destination.getPseudonymType().equals(MAINZELLISTE_PID)) {
+						return MAINZELLISTE_PID.getValue();
+					}
+					else if (destination.getPseudonymType().equals(MAINZELLISTE_EXTID)) {
+						return MAINZELLISTE_EXTID.getValue();
+					}
+					else if (destination.getPseudonymType().equals(CACHE_EXTID)) {
+						return CACHE_EXTID.getValue();
+					}
+					else {
+						return EXTID_IN_TAG.getValue();
+					}
+				}, (destination, s) -> {
+					if (s.equals(MAINZELLISTE_PID.getValue())) {
+						destination.setPseudonymType(MAINZELLISTE_PID);
+					}
+					else if (s.equals(MAINZELLISTE_EXTID.getValue())) {
+						destination.setPseudonymType(MAINZELLISTE_EXTID);
+					}
+					else if (s.equals(CACHE_EXTID.getValue())) {
+						destination.setPseudonymType(CACHE_EXTID);
+					}
+					else {
+						destination.setPseudonymType(EXTID_IN_TAG);
+					}
+				});
 	}
 
 	/**

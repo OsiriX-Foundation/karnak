@@ -36,25 +36,14 @@
     <enforcer.jdk-version>[${java.version},)</enforcer.jdk-version>
     <enforcer.maven-version>[3.3.0,)</enforcer.maven-version>
     <liquibase.version>4.3.5</liquibase.version>
-
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-
     <javax.el.version>3.0.0</javax.el.version>
     <javax.mail.version>1.6.2</javax.mail.version>
     <vaadin.version>21.0.9</vaadin.version>
     <weasis-dicom-tools.version>5.29.0.2</weasis-dicom-tools.version>
     <weasis.opencv.native.version>4.6.0-dcm</weasis.opencv.native.version>
-    <springdoc.version>1.6.0</springdoc.version>
-
     <h2.version>1.4.200</h2.version>
-    <hug.springcloud.version>2.6.6-2021.0.1-1.0</hug.springcloud.version>
-    <junit.jupiter.version>5.8.2</junit.jupiter.version>
-    <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
     <org.json.version>20211205</org.json.version>
-    <logback.version>1.2.9</logback.version>
     <opencsv.version>5.5.2</opencsv.version>
-    <spring-javaformat.version>0.0.38</spring-javaformat.version>
   </properties>
 
   <!-- Dependency Management -->
@@ -131,6 +120,7 @@
       <artifactId>spring-boot-starter-web</artifactId>
       <groupId>org.springframework.boot</groupId>
     </dependency>
+
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-mail</artifactId>
@@ -290,6 +280,7 @@
       <artifactId>vaadin-confirm-dialog-flow</artifactId>
       <groupId>com.vaadin</groupId>
     </dependency>
+
     <!-- Vaadin - Addons -->
     <dependency>
       <artifactId>iron-icons</artifactId>
@@ -366,13 +357,6 @@
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
       <version>${h2.version}</version>
-    </dependency>
-
-    <!-- Spring doc / Open Api -->
-    <dependency>
-      <groupId>org.springdoc</groupId>
-      <artifactId>springdoc-openapi-ui</artifactId>
-      <version>${springdoc.version}</version>
     </dependency>
 
     <dependency>
@@ -572,9 +556,7 @@
           <groupId>com.vaadin</groupId>
         </dependency>
       </dependencies>
-
       <id>production</id>
-
       <properties>
         <vaadin.productionMode>true</vaadin.productionMode>
       </properties>
@@ -582,4 +564,3 @@
   </profiles>
 
 </project>
-

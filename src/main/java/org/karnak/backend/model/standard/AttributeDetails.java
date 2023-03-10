@@ -44,11 +44,9 @@ public class AttributeDetails {
 	}
 
 	public List<AttributeDetail> getListAttributeDetail(List<String> listId) {
-		return hmapAttributeDetail.entrySet()
-			.stream()
-			.filter(attributeDetail -> listId.contains(attributeDetail.getKey()))
-			.map(attributeDetail -> attributeDetail.getValue())
-			.collect(Collectors.toList());
+		return hmapAttributeDetail.entrySet().stream()
+				.filter(attributeDetail -> listId.contains(attributeDetail.getKey()))
+				.map(attributeDetail -> attributeDetail.getValue()).collect(Collectors.toList());
 	}
 
 }

@@ -118,13 +118,13 @@ public class MonitorView extends AbstractView {
 		DicomNodeList pacsProdDicomNodeList = Util.readnodes(this.getClass().getResource("/config/pacs-nodes-web.csv"),
 				"PACS Public WEB");
 		DicomNodeList newPacsProdDicomNodeList = Util
-			.readnodes(this.getClass().getResource("/config/workstations-nodes.csv"), "Workstations");
+				.readnodes(this.getClass().getResource("/config/workstations-nodes.csv"), "Workstations");
 
 		dicomEchoNodeListSelector.setItems(pacsProdDicomNodeList, newPacsProdDicomNodeList);
 
 		dicomEchoNodeListSelector
-			.addValueChangeListener((ValueChangeListener<ValueChangeEvent<DicomNodeList>>) event -> logic
-				.dicomNodeListSelected(event.getValue()));
+				.addValueChangeListener((ValueChangeListener<ValueChangeEvent<DicomNodeList>>) event -> logic
+						.dicomNodeListSelected(event.getValue()));
 
 		if (!pacsProdDicomNodeList.isEmpty()) {
 			dicomEchoNodeListSelector.setValue(pacsProdDicomNodeList);
@@ -163,7 +163,7 @@ public class MonitorView extends AbstractView {
 		wadoNodeListSelector.setItems(pacsProdWadoNodeList);
 
 		wadoNodeListSelector.addValueChangeListener((ValueChangeListener<ValueChangeEvent<WadoNodeList>>) event -> logic
-			.wadoNodeListSelected(event.getValue()));
+				.wadoNodeListSelected(event.getValue()));
 
 		if (!pacsProdWadoNodeList.isEmpty()) {
 			wadoNodeListSelector.setValue(pacsProdWadoNodeList);
@@ -181,9 +181,8 @@ public class MonitorView extends AbstractView {
 		dicomAndWadoLayout.setWidthFull();
 		dicomAndWadoLayout.setPadding(true);
 		dicomAndWadoLayout.setSpacing(false);
-		dicomAndWadoLayout.getStyle()
-			.set("box-shadow",
-					"0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12)");
+		dicomAndWadoLayout.getStyle().set("box-shadow",
+				"0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12)");
 		dicomAndWadoLayout.getStyle().set("border-radius", "4px");
 
 		buildDicomEchoLayoutTitle();
@@ -199,9 +198,8 @@ public class MonitorView extends AbstractView {
 		resultLayout.setSizeFull();
 		resultLayout.setPadding(true);
 		resultLayout.setSpacing(false);
-		resultLayout.getStyle()
-			.set("box-shadow",
-					"0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12)");
+		resultLayout.getStyle().set("box-shadow",
+				"0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12)");
 		resultLayout.getStyle().set("border-radius", "4px");
 		resultLayout.setVisible(false);
 

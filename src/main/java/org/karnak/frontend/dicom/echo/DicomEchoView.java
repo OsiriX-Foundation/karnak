@@ -164,9 +164,8 @@ public class DicomEchoView extends AbstractView implements HasUrlParameter<Strin
 		dicomEchoQueryLayout.setWidthFull();
 		dicomEchoQueryLayout.setPadding(true);
 		dicomEchoQueryLayout.setSpacing(false);
-		dicomEchoQueryLayout.getStyle()
-			.set("box-shadow",
-					"0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12)");
+		dicomEchoQueryLayout.getStyle().set("box-shadow",
+				"0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12)");
 		dicomEchoQueryLayout.getStyle().set("border-radius", "4px");
 
 		buildFormLayoutTitle();
@@ -250,13 +249,13 @@ public class DicomEchoView extends AbstractView implements HasUrlParameter<Strin
 		dicomEchoSelectionDialog = new DicomEchoSelectionDialog();
 
 		dicomEchoSelectionDialog
-			.addDicomNodeSelectionListener((ComponentEventListener<DicomNodeSelectionEvent>) event -> {
-				ConfigNode selectedDicomNode = event.getSelectedDicomNode();
+				.addDicomNodeSelectionListener((ComponentEventListener<DicomNodeSelectionEvent>) event -> {
+					ConfigNode selectedDicomNode = event.getSelectedDicomNode();
 
-				calledAetFld.setValue(selectedDicomNode.getAet());
-				calledHostnameFld.setValue(selectedDicomNode.getHostname());
-				calledPortFld.setValue(selectedDicomNode.getPort());
-			});
+					calledAetFld.setValue(selectedDicomNode.getAet());
+					calledHostnameFld.setValue(selectedDicomNode.getHostname());
+					calledPortFld.setValue(selectedDicomNode.getPort());
+				});
 
 		dicomEchoSelectionDialog.open();
 	}
@@ -274,9 +273,8 @@ public class DicomEchoView extends AbstractView implements HasUrlParameter<Strin
 		dicomEchoStatusLayout = new Div();
 		dicomEchoStatusLayout.setWidth("-webkit-fill-available");
 		dicomEchoStatusLayout.getStyle().set("padding", "1em");
-		dicomEchoStatusLayout.getStyle()
-			.set("box-shadow",
-					"0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12)");
+		dicomEchoStatusLayout.getStyle().set("box-shadow",
+				"0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12)");
 		dicomEchoStatusLayout.getStyle().set("border-radius", "4px");
 
 		dicomEchoStatusLayout.setVisible(false);
@@ -284,22 +282,18 @@ public class DicomEchoView extends AbstractView implements HasUrlParameter<Strin
 
 	@SuppressWarnings("serial")
 	private void bindFields() {
-		binder.forField(callingAetFld)
-			.asRequired(ERROR_MESSAGE)
-			.bind(DicomEchoQueryData::getCallingAet, DicomEchoQueryData::setCallingAet);
+		binder.forField(callingAetFld).asRequired(ERROR_MESSAGE).bind(DicomEchoQueryData::getCallingAet,
+				DicomEchoQueryData::setCallingAet);
 
-		binder.forField(calledAetFld)
-			.asRequired(ERROR_MESSAGE)
-			.bind(DicomEchoQueryData::getCalledAet, DicomEchoQueryData::setCalledAet);
+		binder.forField(calledAetFld).asRequired(ERROR_MESSAGE).bind(DicomEchoQueryData::getCalledAet,
+				DicomEchoQueryData::setCalledAet);
 
-		binder.forField(calledHostnameFld)
-			.asRequired(ERROR_MESSAGE)
-			.bind(DicomEchoQueryData::getCalledHostname, DicomEchoQueryData::setCalledHostname);
+		binder.forField(calledHostnameFld).asRequired(ERROR_MESSAGE).bind(DicomEchoQueryData::getCalledHostname,
+				DicomEchoQueryData::setCalledHostname);
 
-		binder.forField(calledPortFld)
-			.asRequired(ERROR_MESSAGE)
-			.withValidator(new IntegerRangeValidator("Invalid port number", 1, 65535))
-			.bind(DicomEchoQueryData::getCalledPort, DicomEchoQueryData::setCalledPort);
+		binder.forField(calledPortFld).asRequired(ERROR_MESSAGE)
+				.withValidator(new IntegerRangeValidator("Invalid port number", 1, 65535))
+				.bind(DicomEchoQueryData::getCalledPort, DicomEchoQueryData::setCalledPort);
 
 		binder.readBean(dicomEchoQueryData);
 

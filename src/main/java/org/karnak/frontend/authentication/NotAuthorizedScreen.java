@@ -53,16 +53,15 @@ public class NotAuthorizedScreen extends FlexLayout {
 		setClassName("not-authorized-screen");
 
 		// read local storage theme
-		UI.getCurrent()
-			.getPage()
-			.executeJs("return localStorage.getItem($0)", THEME_COLOR_KEY)
-			.then(String.class, string -> {
-				final String themeColor = string;
-				if ((string != null) && (string.equals(Lumo.DARK) || string.equals(Lumo.LIGHT))) {
-					UI.getCurrent().getElement().setAttribute("theme", themeColor);
-					UI.getCurrent().getPage().executeJs("localStorage.setItem($0, $1)", THEME_COLOR_KEY, themeColor);
-				}
-			});
+		UI.getCurrent().getPage().executeJs("return localStorage.getItem($0)", THEME_COLOR_KEY).then(String.class,
+				string -> {
+					final String themeColor = string;
+					if ((string != null) && (string.equals(Lumo.DARK) || string.equals(Lumo.LIGHT))) {
+						UI.getCurrent().getElement().setAttribute("theme", themeColor);
+						UI.getCurrent().getPage().executeJs("localStorage.setItem($0, $1)", THEME_COLOR_KEY,
+								themeColor);
+					}
+				});
 
 		// Build component
 		add(buildNotAuthorizedComponent());

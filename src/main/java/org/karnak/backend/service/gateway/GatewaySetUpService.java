@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
 import org.dcm4che3.data.Attributes;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -43,8 +44,6 @@ import org.karnak.backend.model.editor.TagMorphingEditor;
 import org.karnak.backend.model.event.NodeEvent;
 import org.karnak.backend.service.kheops.SwitchingAlbum;
 import org.karnak.backend.util.SystemPropertyUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -59,9 +58,8 @@ import org.weasis.dicom.param.DicomProgress;
 import org.weasis.dicom.param.TlsOptions;
 
 @Service
+@Slf4j
 public class GatewaySetUpService {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(GatewaySetUpService.class);
 
 	// Repositories
 	private final ForwardNodeRepo forwardNodeRepo;
@@ -109,7 +107,7 @@ public class GatewaySetUpService {
 		// mode
 		storePath = StringUtil.hasText(path) ? Path.of(path) : null;
 		intervalCheck = StringUtil
-			.getInt(SystemPropertyUtil.retrieveSystemProperty("GATEWAY_PULL_CHECK_INTERNAL", "5")); // Only
+				.getInt(SystemPropertyUtil.retrieveSystemProperty("GATEWAY_PULL_CHECK_INTERNAL", "5")); // Only
 		// Pull
 		// mode
 		archiveUrl = SystemPropertyUtil.retrieveSystemProperty("GATEWAY_ARCHIVE_URL", ""); // Only
@@ -119,7 +117,7 @@ public class GatewaySetUpService {
 		listenerAET = SystemPropertyUtil.retrieveSystemProperty("DICOM_LISTENER_AET", "KARNAK-GATEWAY");
 		listenerPort = 11119;
 		listenerTLS = LangUtil
-			.getEmptytoFalse(SystemPropertyUtil.retrieveSystemProperty("DICOM_LISTENER_TLS", "false"));
+				.getEmptytoFalse(SystemPropertyUtil.retrieveSystemProperty("DICOM_LISTENER_TLS", "false"));
 
 		clientKey = SystemPropertyUtil.retrieveSystemProperty("TLS_KEYSTORE_PATH", null);
 		clientKeyPwd = SystemPropertyUtil.retrieveSystemProperty("TLS_KEYSTORE_SECRET", null);
@@ -276,7 +274,7 @@ public class GatewaySetUpService {
 						progress.addProgressListener((DicomProgress dicomProgress) -> {
 							Attributes dcm = dicomProgress.getAttributes();
 							kheopsAlbumEntities
-								.forEach(kheopsAlbums -> switchingAlbum.applyAfterTransfer(kheopsAlbums, dcm));
+									.forEach(kheopsAlbums -> switchingAlbum.applyAfterTransfer(kheopsAlbums, dcm));
 						});
 					}
 					dstList.add(fwd);
@@ -293,7 +291,7 @@ public class GatewaySetUpService {
 			}
 		}
 		catch (IOException e) {
-			LOGGER.error("Cannot build ForwardDestination", e);
+			log.error("Cannot build ForwardDestination", e);
 		}
 	}
 
@@ -323,7 +321,7 @@ public class GatewaySetUpService {
 	private AttributeEditor switchingEditor(DestinationEntity dstNode, List<KheopsAlbumsEntity> kheopsAlbumEntities,
 			SwitchingAlbum switchingAlbum) {
 		return (Attributes dcm, AttributeEditorContext context) -> kheopsAlbumEntities
-			.forEach(kheopsAlbums -> switchingAlbum.apply(dstNode, kheopsAlbums, dcm));
+				.forEach(kheopsAlbums -> switchingAlbum.apply(dstNode, kheopsAlbums, dcm));
 	}
 
 	/**

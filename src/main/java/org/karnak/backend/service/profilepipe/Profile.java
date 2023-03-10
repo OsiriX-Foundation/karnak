@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.BulkData;
 import org.dcm4che3.data.Fragments;
@@ -49,17 +50,14 @@ import org.karnak.backend.model.profiles.ActionTags;
 import org.karnak.backend.model.profiles.CleanPixelData;
 import org.karnak.backend.model.profiles.Defacing;
 import org.karnak.backend.model.profiles.ProfileItem;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 import org.weasis.core.util.StringUtil;
 import org.weasis.dicom.param.AttributeEditorContext;
 
+@Slf4j
 public class Profile {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(Profile.class);
 
 	private final List<ProfileItem> profiles;
 
@@ -96,18 +94,17 @@ public class Profile {
 		for (ProfileElementEntity profileElementEntity : listProfileElementEntity) {
 			ProfileItemType t = ProfileItemType.getType(profileElementEntity.getCodename());
 			if (t == null) {
-				LOGGER.error("Cannot find the profile codename: {}", profileElementEntity.getCodename());
+				log.error("Cannot find the profile codename: {}", profileElementEntity.getCodename());
 			}
 			else {
 				Object instanceProfileItem;
 				try {
-					instanceProfileItem = t.getProfileClass()
-						.getConstructor(ProfileElementEntity.class)
-						.newInstance(profileElementEntity);
+					instanceProfileItem = t.getProfileClass().getConstructor(ProfileElementEntity.class)
+							.newInstance(profileElementEntity);
 					profileItems.add((ProfileItem) instanceProfileItem);
 				}
 				catch (Exception e) {
-					LOGGER.error("Cannot build the profile: {}", t.getProfileClass().getName(), e);
+					log.error("Cannot build the profile: {}", t.getProfileClass().getName(), e);
 				}
 			}
 		}
@@ -139,9 +136,8 @@ public class Profile {
 
 			ActionItem currentAction = null;
 			ProfileItem currentProfile = null;
-			for (ProfileItem profileEntity : profiles.stream()
-				.filter(p -> !(p instanceof CleanPixelData))
-				.collect(Collectors.toList())) {
+			for (ProfileItem profileEntity : profiles.stream().filter(p -> !(p instanceof CleanPixelData))
+					.collect(Collectors.toList())) {
 				currentProfile = profileEntity;
 
 				if (profileEntity.getCondition() == null
@@ -183,7 +179,7 @@ public class Profile {
 						currentAction.execute(dcm, tag, hmac);
 					}
 					catch (final Exception e) {
-						LOGGER.error("Cannot execute the currentAction {} for tag: {}", currentAction,
+						log.error("Cannot execute the currentAction {} for tag: {}", currentAction,
 								TagUtils.toString(tag), e);
 					}
 				}
@@ -243,10 +239,8 @@ public class Profile {
 	boolean evaluateConditionCleanPixelData(Attributes dcmCopy) {
 		boolean conditionCleanPixelData = true;
 		// Retrieve the profile item
-		ProfileItem profileItemCleanPixelData = profiles.stream()
-			.filter(CleanPixelData.class::isInstance)
-			.findFirst()
-			.orElse(null);
+		ProfileItem profileItemCleanPixelData = profiles.stream().filter(CleanPixelData.class::isInstance).findFirst()
+				.orElse(null);
 		if (profileItemCleanPixelData != null && profileItemCleanPixelData.getCondition() != null) {
 			// Evaluate the condition
 			ExprCondition exprCondition = new ExprCondition(dcmCopy);
@@ -325,7 +319,7 @@ public class Profile {
 		MDC.put("ProjectName", destinationEntity.getDeIdentificationProjectEntity().getName());
 		MDC.put("ProfileName", profileEntity.getName());
 		MDC.put("ProfileCodenames", profilesCodeName);
-		LOGGER.info(clincalMarker, "");
+		log.info(clincalMarker, "");
 		MDC.clear();
 	}
 
@@ -355,7 +349,7 @@ public class Profile {
 		MDC.put("ProjectName", destinationEntity.getTagMorphingProjectEntity().getName());
 		MDC.put("ProfileName", profileEntity.getName());
 		MDC.put("ProfileCodenames", profilesCodeName);
-		LOGGER.info(clincalMarker, "");
+		log.info(clincalMarker, "");
 		MDC.clear();
 	}
 

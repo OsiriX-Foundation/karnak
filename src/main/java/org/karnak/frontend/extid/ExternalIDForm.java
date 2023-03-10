@@ -21,12 +21,8 @@ import com.vaadin.flow.data.validator.StringLengthValidator;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.backend.cache.Patient;
 import org.karnak.backend.data.entity.ProjectEntity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ExternalIDForm extends Div {
-
-	protected static final Logger LOGGER = LoggerFactory.getLogger(ExternalIDForm.class);
 
 	private static final String ERROR_MESSAGE_PATIENT = "Length must be between 1 and 50.";
 
@@ -113,29 +109,21 @@ public class ExternalIDForm extends Div {
 	}
 
 	public void setBinder() {
-		binder.forField(externalIdField)
-			.withValidator(StringUtils::isNotBlank, "External Pseudonym is empty")
-			.withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
-			.bind("pseudonym");
+		binder.forField(externalIdField).withValidator(StringUtils::isNotBlank, "External Pseudonym is empty")
+				.withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50)).bind("pseudonym");
 
-		binder.forField(patientIdField)
-			.withValidator(StringUtils::isNotBlank, "Patient ID is empty")
-			.withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
-			.bind("patientId");
+		binder.forField(patientIdField).withValidator(StringUtils::isNotBlank, "Patient ID is empty")
+				.withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50)).bind("patientId");
 
-		binder.forField(patientFirstNameField)
-			.withValidator(StringUtils::isNotBlank, "Patient first name is empty")
-			.withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
-			.bind("patientFirstName");
+		binder.forField(patientFirstNameField).withValidator(StringUtils::isNotBlank, "Patient first name is empty")
+				.withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50)).bind("patientFirstName");
 
-		binder.forField(patientLastNameField)
-			.withValidator(StringUtils::isNotBlank, "Patient last name is empty")
-			.withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
-			.bind("patientLastName");
+		binder.forField(patientLastNameField).withValidator(StringUtils::isNotBlank, "Patient last name is empty")
+				.withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50)).bind("patientLastName");
 
 		binder.forField(issuerOfPatientIdField)
-			.withValidator(new StringLengthValidator("Length must be between 0 and 50.", 0, 50))
-			.bind("issuerOfPatientId");
+				.withValidator(new StringLengthValidator("Length must be between 0 and 50.", 0, 50))
+				.bind("issuerOfPatientId");
 	}
 
 	public Patient getNewPatient() {

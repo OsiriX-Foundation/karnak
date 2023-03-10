@@ -328,10 +328,8 @@ public class Util {
 
 		boolean xml = "XML".equalsIgnoreCase(format);
 		try {
-			HttpClient httpClient = HttpClient.newBuilder()
-				.connectTimeout(Duration.ofMillis(connectTimeout))
-				.followRedirects(HttpClient.Redirect.NORMAL)
-				.build();
+			HttpClient httpClient = HttpClient.newBuilder().connectTimeout(Duration.ofMillis(connectTimeout))
+					.followRedirects(HttpClient.Redirect.NORMAL).build();
 			HttpRequest.Builder builder = HttpRequest.newBuilder();
 			for (String tag : node.getTags()) {
 				String[] val = tag.split(":");
@@ -339,20 +337,18 @@ public class Util {
 					builder.header(val[0].trim(), val[1].trim());
 				}
 			}
-			HttpRequest request = builder.GET()
-				.uri(new URI("https://httpbin.org/get"))
-				.header("User-Agent", "Mozilla/5.0 Firefox/43.0") // add request
-				// header
-				.build();
+			HttpRequest request = builder.GET().uri(new URI("https://httpbin.org/get"))
+					.header("User-Agent", "Mozilla/5.0 Firefox/43.0") // add request
+					// header
+					.build();
 
 			long starTime = System.currentTimeMillis();
 			HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 			boolean success = response.statusCode() == HttpURLConnection.HTTP_OK;
 			String message = response.body();
 			if (xml) {
-				result.append("<WadoStatus elapsedTime=\"")
-					.append(System.currentTimeMillis() - starTime)
-					.append("ms\">");
+				result.append("<WadoStatus elapsedTime=\"").append(System.currentTimeMillis() - starTime)
+						.append("ms\">");
 				result.append(message);
 				result.append("</WadoStatus>");
 			}
@@ -372,9 +368,8 @@ public class Util {
 				Thread.currentThread().interrupt();
 			}
 			if (xml) {
-				result.append("<WadoStatus elapsedTime=\"")
-					.append(System.currentTimeMillis() - startimeExt)
-					.append("ms\">");
+				result.append("<WadoStatus elapsedTime=\"").append(System.currentTimeMillis() - startimeExt)
+						.append("ms\">");
 				result.append("WADO unexpected error: ");
 				result.append(e.getMessage());
 				result.append("</WadoStatus>");

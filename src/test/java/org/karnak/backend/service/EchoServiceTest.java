@@ -58,11 +58,10 @@ class EchoServiceTest {
 		// Mock
 		Mockito.when(gatewaySetUpServiceMock.getDestinationNode(Mockito.anyString())).thenReturn(forwardDicomNodeOpt);
 		Mockito.when(gatewaySetUpServiceMock.getDestinations(Mockito.any(ForwardDicomNode.class)))
-			.thenReturn(forwardDestinations);
+				.thenReturn(forwardDestinations);
 		MockedStatic<Echo> echoMock = Mockito.mockStatic(Echo.class);
 		echoMock.when(() -> Echo.process(Mockito.any(AdvancedParams.class), Mockito.any(ForwardDicomNode.class),
-				Mockito.any(DicomNode.class)))
-			.thenReturn(dicomState);
+				Mockito.any(DicomNode.class))).thenReturn(dicomState);
 
 		// Call service
 		List<DestinationEcho> destinationEchos = echoService.retrieveStatusConfiguredDestinations("fwdAeTitle");

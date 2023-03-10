@@ -108,7 +108,7 @@ public class ExternalIDGrid extends PaginatedGrid<Patient> {
 
 		setSizeFull();
 		getElement().addEventListener("keyup", event -> editor.cancel())
-			.setFilter("event.key === 'Escape' || event.key === 'Esc'");
+				.setFilter("event.key === 'Escape' || event.key === 'Esc'");
 		setHeightByRows(true);
 		setItems(patientList);
 		setElements();
@@ -141,10 +141,10 @@ public class ExternalIDGrid extends PaginatedGrid<Patient> {
 		extidColumn = addColumn(Patient::getPseudonym).setHeader("External Pseudonym").setSortable(true);
 		patientIdColumn = addColumn(Patient::getPatientId).setHeader("Patient ID").setSortable(true);
 		patientFirstNameColumn = addColumn(Patient::getPatientFirstName).setHeader("Patient first name")
-			.setSortable(true);
+				.setSortable(true);
 		patientLastNameColumn = addColumn(Patient::getPatientLastName).setHeader("Patient last name").setSortable(true);
 		issuerOfPatientIDColumn = addColumn(Patient::getIssuerOfPatientId).setHeader("Issuer of patient ID")
-			.setSortable(true);
+				.setSortable(true);
 		Grid.Column<Patient> editorColumn = addComponentColumn(patient -> {
 			Button edit = new Button("Edit");
 			edit.addClassName("edit");
@@ -237,32 +237,23 @@ public class ExternalIDGrid extends PaginatedGrid<Patient> {
 		Div validationStatus = new Div();
 		validationStatus.setId("validation");
 		validationStatus.getStyle().set("color", "var(--theme-color, red)");
-		binder.forField(externalIdField)
-			.withValidator(StringUtils::isNotBlank, "External Pseudonym is empty")
-			.withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
-			.withStatusLabel(validationStatus)
-			.bind("pseudonym");
+		binder.forField(externalIdField).withValidator(StringUtils::isNotBlank, "External Pseudonym is empty")
+				.withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
+				.withStatusLabel(validationStatus).bind("pseudonym");
 
-		binder.forField(patientIdField)
-			.withValidator(StringUtils::isNotBlank, "Patient ID is empty")
-			.withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
-			.withStatusLabel(validationStatus)
-			.bind("patientId");
+		binder.forField(patientIdField).withValidator(StringUtils::isNotBlank, "Patient ID is empty")
+				.withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
+				.withStatusLabel(validationStatus).bind("patientId");
 
-		binder.forField(patientFirstNameField)
-			.withValidator(StringUtils::isNotBlank, "Patient firstname is empty")
-			.withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
-			.bind("patientFirstName");
+		binder.forField(patientFirstNameField).withValidator(StringUtils::isNotBlank, "Patient firstname is empty")
+				.withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50)).bind("patientFirstName");
 
-		binder.forField(patientLastNameField)
-			.withValidator(StringUtils::isNotBlank, "Patient last name is empty")
-			.withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
-			.bind("patientLastName");
+		binder.forField(patientLastNameField).withValidator(StringUtils::isNotBlank, "Patient last name is empty")
+				.withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50)).bind("patientLastName");
 
 		binder.forField(issuerOfPatientIdField)
-			.withValidator(new StringLengthValidator("Length must be between 0 and 50.", 0, 50))
-			.withStatusLabel(validationStatus)
-			.bind("issuerOfPatientId");
+				.withValidator(new StringLengthValidator("Length must be between 0 and 50.", 0, 50))
+				.withStatusLabel(validationStatus).bind("issuerOfPatientId");
 
 		return validationStatus;
 	}
@@ -296,7 +287,7 @@ public class ExternalIDGrid extends PaginatedGrid<Patient> {
 
 	public boolean patientExist(Patient patient) {
 		final Patient duplicatePatient = externalIDCache
-			.get(PatientClientUtil.generateKey(patient, projectEntity.getId()));
+				.get(PatientClientUtil.generateKey(patient, projectEntity.getId()));
 		if (duplicatePatient != null) {
 			duplicatePatientsList.add(duplicatePatient);
 			return true;
@@ -309,34 +300,32 @@ public class ExternalIDGrid extends PaginatedGrid<Patient> {
 
 		if (!extidFilter.getValue().equals("")) {
 			filterList = filterList.stream()
-				.filter(cachedPatient -> cachedPatient.getPseudonym().contains(extidFilter.getValue()))
-				.collect(Collectors.toList());
+					.filter(cachedPatient -> cachedPatient.getPseudonym().contains(extidFilter.getValue()))
+					.collect(Collectors.toList());
 		}
 
 		if (!patientIdFilter.getValue().equals("")) {
 			filterList = filterList.stream()
-				.filter(cachedPatient -> cachedPatient.getPatientId().contains(patientIdFilter.getValue()))
-				.collect(Collectors.toList());
+					.filter(cachedPatient -> cachedPatient.getPatientId().contains(patientIdFilter.getValue()))
+					.collect(Collectors.toList());
 		}
 
 		if (!patientFirstNameFilter.getValue().equals("")) {
-			filterList = filterList.stream()
-				.filter(cachedPatient -> cachedPatient.getPatientFirstName()
-					.contains(patientFirstNameFilter.getValue()))
-				.collect(Collectors.toList());
+			filterList = filterList.stream().filter(
+					cachedPatient -> cachedPatient.getPatientFirstName().contains(patientFirstNameFilter.getValue()))
+					.collect(Collectors.toList());
 		}
 
 		if (!patientLastNameFilter.getValue().equals("")) {
-			filterList = filterList.stream()
-				.filter(cachedPatient -> cachedPatient.getPatientLastName().contains(patientLastNameFilter.getValue()))
-				.collect(Collectors.toList());
+			filterList = filterList.stream().filter(
+					cachedPatient -> cachedPatient.getPatientLastName().contains(patientLastNameFilter.getValue()))
+					.collect(Collectors.toList());
 		}
 
 		if (!issuerOfPatientIDFilter.getValue().equals("")) {
-			filterList = filterList.stream()
-				.filter(cachedPatient -> cachedPatient.getIssuerOfPatientId()
-					.contains(issuerOfPatientIDFilter.getValue()))
-				.collect(Collectors.toList());
+			filterList = filterList.stream().filter(
+					cachedPatient -> cachedPatient.getIssuerOfPatientId().contains(issuerOfPatientIDFilter.getValue()))
+					.collect(Collectors.toList());
 		}
 
 		setItems(filterList);

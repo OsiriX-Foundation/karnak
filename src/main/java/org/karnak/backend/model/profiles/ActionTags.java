@@ -10,6 +10,7 @@
 package org.karnak.backend.model.profiles;
 
 import java.awt.Color;
+import lombok.extern.slf4j.Slf4j;
 import org.dcm4che3.data.Attributes;
 import org.karnak.backend.data.entity.ExcludedTagEntity;
 import org.karnak.backend.data.entity.IncludedTagEntity;
@@ -21,12 +22,9 @@ import org.karnak.backend.model.expression.ExpressionError;
 import org.karnak.backend.model.expression.ExpressionResult;
 import org.karnak.backend.model.profilepipe.HMAC;
 import org.karnak.backend.model.profilepipe.TagActionMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+@Slf4j
 public class ActionTags extends AbstractProfileItem {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActionTags.class);
 
 	private final TagActionMap tagsAction;
 
@@ -60,7 +58,7 @@ public class ActionTags extends AbstractProfileItem {
 			}
 		}
 		catch (NumberFormatException e) {
-			LOGGER.error("Cannot parse color {} into int", hexColor); // $NON-NLS-1$
+			log.error("Cannot parse color {} into int", hexColor); // $NON-NLS-1$
 		}
 		return new Color(intValue, true);
 	}

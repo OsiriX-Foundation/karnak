@@ -55,7 +55,7 @@ public class TransferSyntaxComponent extends VerticalLayout {
 		transferSyntaxSelect.setEmptySelectionAllowed(true);
 		transferSyntaxSelect.setEmptySelectionCaption(UIDType.DEFAULT_DESCRIPTION);
 		transferSyntaxSelect
-			.setItems(Arrays.stream(UIDType.values()).map(UIDType::getCode).collect(Collectors.toList()));
+				.setItems(Arrays.stream(UIDType.values()).map(UIDType::getCode).collect(Collectors.toList()));
 
 		// Labels
 		transferSyntaxSelect.setLabel("Transfer Syntax");
@@ -63,8 +63,8 @@ public class TransferSyntaxComponent extends VerticalLayout {
 	}
 
 	public void init(Binder<DestinationEntity> binder) {
-		binder.forField(transferSyntaxSelect)
-			.bind(DestinationEntity::getTransferSyntax, DestinationEntity::setTransferSyntax);
+		binder.forField(transferSyntaxSelect).bind(DestinationEntity::getTransferSyntax,
+				DestinationEntity::setTransferSyntax);
 	}
 
 	public Select<String> getTransferSyntaxSelect() {

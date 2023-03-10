@@ -12,15 +12,13 @@ package org.karnak.backend.util;
 import java.time.DateTimeException;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.dcm4che3.data.Attributes;
 import org.karnak.backend.data.entity.ArgumentEntity;
 import org.karnak.backend.model.profilepipe.HMAC;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+@Slf4j
 public class ShiftRangeDate {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(ShiftRangeDate.class);
 
 	private ShiftRangeDate() {
 	}
@@ -33,7 +31,7 @@ public class ShiftRangeDate {
 					+ args;
 
 			IllegalArgumentException missingParameters = new IllegalArgumentException(text);
-			LOGGER.error(text, missingParameters);
+			log.error(text, missingParameters);
 			throw missingParameters;
 		}
 	}
@@ -69,7 +67,7 @@ public class ShiftRangeDate {
 				}
 			}
 			catch (Exception e) {
-				LOGGER.error("args {} is not correct", value, e);
+				log.error("args {} is not correct", value, e);
 			}
 		}
 		String dcmElValue = dcm.getString(tag);

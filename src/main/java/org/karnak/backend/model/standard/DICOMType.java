@@ -10,17 +10,15 @@
 package org.karnak.backend.model.standard;
 
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.karnak.backend.config.AppConfig;
 import org.karnak.backend.exception.StandardDICOMException;
 import org.karnak.backend.util.MetadataDICOMObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+@Slf4j
 public class DICOMType {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(DICOMType.class);
 
 	public static String getBySOP(Attributes dcm, int tag) {
 		final StandardDICOM standardDICOM = AppConfig.getInstance().getStandardDICOM();
@@ -37,11 +35,11 @@ public class DICOMType {
 				currentType = ModuleAttribute.getStrictedType(moduleAttribute);
 			}
 			else {
-				LOGGER.warn(String.format("Could not found the attribute %s in the SOP %s.", tagPath, sopUID));
+				log.warn(String.format("Could not found the attribute %s in the SOP %s.", tagPath, sopUID));
 			}
 		}
 		catch (StandardDICOMException standardDICOMException) {
-			LOGGER.error(
+			log.error(
 					String.format("Could not find a DICOM type with the SOP %s and the attribute %s", sopUID, tagPath),
 					standardDICOMException);
 		}

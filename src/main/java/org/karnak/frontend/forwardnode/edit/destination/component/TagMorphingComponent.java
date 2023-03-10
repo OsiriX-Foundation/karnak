@@ -114,11 +114,11 @@ public class TagMorphingComponent extends VerticalLayout {
 	}
 
 	private void initDestinationBinder() {
-		destinationBinder.forField(tagMorphingCheckbox)
-			.bind(DestinationEntity::isActivateTagMorphing, DestinationEntity::setActivateTagMorphing);
+		destinationBinder.forField(tagMorphingCheckbox).bind(DestinationEntity::isActivateTagMorphing,
+				DestinationEntity::setActivateTagMorphing);
 		destinationBinder.forField(projectDropDown)
-			.withValidator(project -> project != null || !tagMorphingCheckbox.getValue(), "Choose a project")
-			.bind(DestinationEntity::getTagMorphingProjectEntity, DestinationEntity::setTagMorphingProjectEntity);
+				.withValidator(project -> project != null || !tagMorphingCheckbox.getValue(), "Choose a project")
+				.bind(DestinationEntity::getTagMorphingProjectEntity, DestinationEntity::setTagMorphingProjectEntity);
 	}
 
 	/**

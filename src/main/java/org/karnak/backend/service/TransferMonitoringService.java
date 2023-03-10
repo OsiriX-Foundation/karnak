@@ -18,6 +18,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.karnak.backend.data.entity.TransferStatusEntity;
 import org.karnak.backend.data.repo.TransferStatusRepo;
 import org.karnak.backend.data.repo.specification.TransferStatusSpecification;
@@ -25,8 +26,6 @@ import org.karnak.backend.model.event.TransferMonitoringEvent;
 import org.karnak.frontend.monitoring.component.ExportSettings;
 import org.karnak.frontend.monitoring.component.MonitoringCsvMappingStrategy;
 import org.karnak.frontend.monitoring.component.TransferStatusFilter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
@@ -42,9 +41,8 @@ import org.springframework.stereotype.Service;
  * Handle transfer monitoring
  */
 @Service
+@Slf4j
 public class TransferMonitoringService {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(TransferMonitoringService.class);
 
 	@Value("${monitoring.max-history}")
 	private int sizeLimit;
@@ -162,8 +160,7 @@ public class TransferMonitoringService {
 
 		// Bean to CSV
 		StatefulBeanToCsv<TransferStatusEntity> beanToCsv = new StatefulBeanToCsvBuilder<TransferStatusEntity>(writer)
-			.withMappingStrategy(monitoringCsvMappingStrategy)
-			.build();
+				.withMappingStrategy(monitoringCsvMappingStrategy).build();
 
 		// Write CSV
 		beanToCsv.write(retrieveTransferStatus(filter));

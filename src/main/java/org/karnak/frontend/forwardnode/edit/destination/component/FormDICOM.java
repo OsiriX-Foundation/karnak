@@ -129,20 +129,17 @@ public class FormDICOM extends VerticalLayout {
 	}
 
 	private void setBinder() {
-		binder.forField(aeTitle)
-			.withValidator(StringUtils::isNotBlank, "AETitle is mandatory")
-			.withValidator(value -> value.length() <= 16, "AETitle has more than 16 characters")
-			.withValidator(UIS::containsNoWhitespace, "AETitle contains white spaces")
-			.bind(DestinationEntity::getAeTitle, DestinationEntity::setAeTitle);
+		binder.forField(aeTitle).withValidator(StringUtils::isNotBlank, "AETitle is mandatory")
+				.withValidator(value -> value.length() <= 16, "AETitle has more than 16 characters")
+				.withValidator(UIS::containsNoWhitespace, "AETitle contains white spaces")
+				.bind(DestinationEntity::getAeTitle, DestinationEntity::setAeTitle);
 
-		binder.forField(hostname)
-			.withValidator(StringUtils::isNotBlank, "Hostname is mandatory")
-			.bind(DestinationEntity::getHostname, DestinationEntity::setHostname);
-		binder.forField(port)
-			.withConverter(new HStringToIntegerConverter())
-			.withValidator(Objects::nonNull, "Port is mandatory")
-			.withValidator(value -> 1 <= value && value <= 65535, "Port should be between 1 and 65535")
-			.bind(DestinationEntity::getPort, DestinationEntity::setPort);
+		binder.forField(hostname).withValidator(StringUtils::isNotBlank, "Hostname is mandatory")
+				.bind(DestinationEntity::getHostname, DestinationEntity::setHostname);
+		binder.forField(port).withConverter(new HStringToIntegerConverter())
+				.withValidator(Objects::nonNull, "Port is mandatory")
+				.withValidator(value -> 1 <= value && value <= 65535, "Port should be between 1 and 65535")
+				.bind(DestinationEntity::getPort, DestinationEntity::setPort);
 
 		binder.bindInstanceFields(this);
 	}

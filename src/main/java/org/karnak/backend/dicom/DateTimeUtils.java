@@ -33,87 +33,42 @@ import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 import java.util.Calendar;
 import java.util.Date;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Gunter Zeilinger (gunterze@protonmail.com)
  * @since Apr 2019
  */
+@Slf4j
 public class DateTimeUtils {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(DateTimeUtils.class);
-
 	private static final DateTimeFormatter DA_PARSER = new DateTimeFormatterBuilder().appendValue(YEAR, 4)
-		.optionalStart()
-		.appendLiteral('.')
-		.optionalEnd()
-		.appendValue(MONTH_OF_YEAR, 2)
-		.optionalStart()
-		.appendLiteral('.')
-		.optionalEnd()
-		.appendValue(DAY_OF_MONTH, 2)
-		.toFormatter();
+			.optionalStart().appendLiteral('.').optionalEnd().appendValue(MONTH_OF_YEAR, 2).optionalStart()
+			.appendLiteral('.').optionalEnd().appendValue(DAY_OF_MONTH, 2).toFormatter();
 
 	private static final DateTimeFormatter DA_FORMATTER = new DateTimeFormatterBuilder().appendValue(YEAR, 4)
-		.appendValue(MONTH_OF_YEAR, 2)
-		.appendValue(DAY_OF_MONTH, 2)
-		.toFormatter();
+			.appendValue(MONTH_OF_YEAR, 2).appendValue(DAY_OF_MONTH, 2).toFormatter();
 
 	private static final DateTimeFormatter TM_PARSER = new DateTimeFormatterBuilder().appendValue(HOUR_OF_DAY, 2)
-		.optionalStart()
-		.optionalStart()
-		.appendLiteral(':')
-		.optionalEnd()
-		.appendValue(MINUTE_OF_HOUR, 2)
-		.optionalStart()
-		.optionalStart()
-		.appendLiteral(':')
-		.optionalEnd()
-		.appendValue(SECOND_OF_MINUTE, 2)
-		.optionalStart()
-		.appendFraction(NANO_OF_SECOND, 0, 6, true)
-		.toFormatter();
+			.optionalStart().optionalStart().appendLiteral(':').optionalEnd().appendValue(MINUTE_OF_HOUR, 2)
+			.optionalStart().optionalStart().appendLiteral(':').optionalEnd().appendValue(SECOND_OF_MINUTE, 2)
+			.optionalStart().appendFraction(NANO_OF_SECOND, 0, 6, true).toFormatter();
 
 	private static final DateTimeFormatter TM_FORMATTER = new DateTimeFormatterBuilder().appendValue(HOUR_OF_DAY, 2)
-		.appendValue(MINUTE_OF_HOUR, 2)
-		.appendValue(SECOND_OF_MINUTE, 2)
-		.appendFraction(NANO_OF_SECOND, 6, 6, true)
-		.toFormatter();
+			.appendValue(MINUTE_OF_HOUR, 2).appendValue(SECOND_OF_MINUTE, 2).appendFraction(NANO_OF_SECOND, 6, 6, true)
+			.toFormatter();
 
 	private static final DateTimeFormatter DT_PARSER = new DateTimeFormatterBuilder().appendValue(YEAR, 4)
-		.optionalStart()
-		.appendValue(MONTH_OF_YEAR, 2)
-		.optionalStart()
-		.appendValue(DAY_OF_MONTH, 2)
-		.optionalStart()
-		.appendValue(HOUR_OF_DAY, 2)
-		.optionalStart()
-		.appendValue(MINUTE_OF_HOUR, 2)
-		.optionalStart()
-		.appendValue(SECOND_OF_MINUTE, 2)
-		.optionalStart()
-		.appendFraction(NANO_OF_SECOND, 0, 6, true)
-		.optionalEnd()
-		.optionalEnd()
-		.optionalEnd()
-		.optionalEnd()
-		.optionalEnd()
-		.optionalEnd()
-		.optionalStart()
-		.appendOffset("+HHMM", "+0000")
-		.toFormatter();
+			.optionalStart().appendValue(MONTH_OF_YEAR, 2).optionalStart().appendValue(DAY_OF_MONTH, 2).optionalStart()
+			.appendValue(HOUR_OF_DAY, 2).optionalStart().appendValue(MINUTE_OF_HOUR, 2).optionalStart()
+			.appendValue(SECOND_OF_MINUTE, 2).optionalStart().appendFraction(NANO_OF_SECOND, 0, 6, true).optionalEnd()
+			.optionalEnd().optionalEnd().optionalEnd().optionalEnd().optionalEnd().optionalStart()
+			.appendOffset("+HHMM", "+0000").toFormatter();
 
 	private static final DateTimeFormatter DT_FORMATTER = new DateTimeFormatterBuilder().appendValue(YEAR, 4)
-		.appendValue(MONTH_OF_YEAR, 2)
-		.appendValue(DAY_OF_MONTH, 2)
-		.appendValue(HOUR_OF_DAY, 2)
-		.appendValue(MINUTE_OF_HOUR, 2)
-		.appendValue(SECOND_OF_MINUTE, 2)
-		.appendFraction(NANO_OF_SECOND, 6, 6, true)
-		.optionalStart()
-		.appendOffset("+HHMM", "+0000")
-		.toFormatter();
+			.appendValue(MONTH_OF_YEAR, 2).appendValue(DAY_OF_MONTH, 2).appendValue(HOUR_OF_DAY, 2)
+			.appendValue(MINUTE_OF_HOUR, 2).appendValue(SECOND_OF_MINUTE, 2).appendFraction(NANO_OF_SECOND, 6, 6, true)
+			.optionalStart().appendOffset("+HHMM", "+0000").toFormatter();
 
 	public static LocalDate parseDA(String value) {
 		return LocalDate.from(DA_PARSER.parse(value));
@@ -268,7 +223,7 @@ public class DateTimeUtils {
 	private static final DateTimeFormatter defaultTimeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM);
 
 	private static final DateTimeFormatter defaultDateTimeFormatter = DateTimeFormatter
-		.ofLocalizedDateTime(FormatStyle.MEDIUM);
+			.ofLocalizedDateTime(FormatStyle.MEDIUM);
 
 	/**
 	 * Convert date or time object to display date in String with FormatStyle.MEDIUM
@@ -298,7 +253,7 @@ public class DateTimeUtils {
 				return datetime.toLocalDate();
 			}
 			catch (Exception e) {
-				LOGGER.error("Date conversion", e);
+				log.error("Date conversion", e);
 			}
 		}
 		return null;
@@ -311,7 +266,7 @@ public class DateTimeUtils {
 				return datetime.toLocalTime();
 			}
 			catch (Exception e) {
-				LOGGER.error("Time conversion", e);
+				log.error("Time conversion", e);
 			}
 		}
 		return null;
@@ -323,7 +278,7 @@ public class DateTimeUtils {
 				return LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
 			}
 			catch (Exception e) {
-				LOGGER.error("DateTime conversion", e);
+				log.error("DateTime conversion", e);
 			}
 		}
 		return null;

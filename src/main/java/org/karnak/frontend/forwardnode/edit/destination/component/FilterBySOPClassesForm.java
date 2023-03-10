@@ -44,7 +44,7 @@ public class FilterBySOPClassesForm extends HorizontalLayout {
 		sopFilter.onEnabledStateChanged(false);
 
 		filterBySOPClassesCheckbox.addValueChangeListener(checkboxBooleanComponentValueChangeEvent -> sopFilter
-			.onEnabledStateChanged(checkboxBooleanComponentValueChangeEvent.getValue()));
+				.onEnabledStateChanged(checkboxBooleanComponentValueChangeEvent.getValue()));
 	}
 
 	public MultiselectComboBox<String> getSopFilter() {
