@@ -62,6 +62,7 @@ public class SecurityConfiguration {
 //
 //        // @formatter:on
 		// return http.build();
+		// TODO use keycloakConverter to get roles
 
 		http
 			// Uses RequestCache to track unauthorized requests so that users are
