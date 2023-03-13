@@ -520,24 +520,28 @@
   <!-- Profiles -->
   <profiles>
     <profile>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+
       <!-- Production mode is activated using -Pproduction -->
+      <id>production</id>
+      <properties>
+        <vaadin.productionMode>true</vaadin.productionMode>
+      </properties>
+
+      <dependencies>
+        <dependency>
+          <artifactId>flow-server-production-mode</artifactId>
+          <groupId>com.vaadin</groupId>
+        </dependency>
+      </dependencies>
+
       <build>
         <plugins>
           <plugin>
-            <artifactId>spring-boot-maven-plugin</artifactId>
-            <configuration>
-              <jvmArguments>-Dvaadin.productionMode</jvmArguments>
-              <layers>
-                <enabled>true</enabled>
-              </layers>
-            </configuration>
-            <groupId>org.springframework.boot</groupId>
-          </plugin>
-          <plugin>
+            <groupId>com.vaadin</groupId>
             <artifactId>vaadin-maven-plugin</artifactId>
-            <configuration>
-              <pnpmEnable>true</pnpmEnable>
-            </configuration>
             <executions>
               <execution>
                 <goals>
@@ -546,20 +550,68 @@
                 <phase>compile</phase>
               </execution>
             </executions>
-            <groupId>com.vaadin</groupId>
+            <configuration>
+              <pnpmEnable>true</pnpmEnable>
+              <!--              <nodeVersion>${node.version}</nodeVersion>-->
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <configuration>
+              <excludes>
+                <exclude>**/org/karnak/frontend/**/*</exclude>
+              </excludes>
+            </configuration>
           </plugin>
         </plugins>
+<!--        <resources>-->
+<!--          <resource>-->
+<!--            <directory>src/main/resources</directory>-->
+<!--            <filtering>true</filtering>-->
+<!--          </resource>-->
+<!--          <resource>-->
+<!--            <directory>${project.basedir}/packages</directory>-->
+<!--          </resource>-->
+<!--        </resources>-->
+<!--        <testResources>-->
+<!--          <testResource>-->
+<!--            <directory>${project.basedir}/src/test/resources</directory>-->
+<!--            <filtering>true</filtering>-->
+<!--          </testResource>-->
+<!--        </testResources>-->
       </build>
-      <dependencies>
-        <dependency>
-          <artifactId>flow-server-production-mode</artifactId>
-          <groupId>com.vaadin</groupId>
-        </dependency>
-      </dependencies>
-      <id>production</id>
-      <properties>
-        <vaadin.productionMode>true</vaadin.productionMode>
-      </properties>
+
+<!--      <build>-->
+<!--        <plugins>-->
+<!--          <plugin>-->
+<!--            <artifactId>spring-boot-maven-plugin</artifactId>-->
+<!--            <configuration>-->
+<!--              <jvmArguments>-Dvaadin.productionMode</jvmArguments>-->
+<!--              <layers>-->
+<!--                <enabled>true</enabled>-->
+<!--              </layers>-->
+<!--            </configuration>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--          </plugin>-->
+<!--          <plugin>-->
+<!--            <artifactId>vaadin-maven-plugin</artifactId>-->
+<!--            <configuration>-->
+<!--              <pnpmEnable>true</pnpmEnable>-->
+<!--            </configuration>-->
+<!--            <executions>-->
+<!--              <execution>-->
+<!--                <goals>-->
+<!--                  <goal>build-frontend</goal>-->
+<!--                </goals>-->
+<!--                <phase>compile</phase>-->
+<!--              </execution>-->
+<!--            </executions>-->
+<!--            <groupId>com.vaadin</groupId>-->
+<!--          </plugin>-->
+<!--        </plugins>-->
+<!--      </build>-->
+
     </profile>
   </profiles>
 
