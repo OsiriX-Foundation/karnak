@@ -30,7 +30,7 @@ class ProjectServiceTest {
 
 	// Application Event Publisher
 	private final ApplicationEventPublisher applicationEventPublisherMock = Mockito
-		.mock(ApplicationEventPublisher.class);
+			.mock(ApplicationEventPublisher.class);
 
 	// Repositories
 	private final ProjectRepo projectRepositoryMock = Mockito.mock(ProjectRepo.class);

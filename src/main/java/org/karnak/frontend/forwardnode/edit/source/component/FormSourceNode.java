@@ -59,9 +59,8 @@ public class FormSourceNode extends VerticalLayout {
 	}
 
 	private void setBinder() {
-		binder.forField(aeTitle)
-			.withValidator(StringUtils::isNotBlank, "AETitle is mandatory")
-			.bind(DicomSourceNodeEntity::getAeTitle, DicomSourceNodeEntity::setAeTitle);
+		binder.forField(aeTitle).withValidator(StringUtils::isNotBlank, "AETitle is mandatory")
+				.bind(DicomSourceNodeEntity::getAeTitle, DicomSourceNodeEntity::setAeTitle);
 		binder.bindInstanceFields(this);
 	}
 

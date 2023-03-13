@@ -11,11 +11,10 @@ package org.karnak;
 
 import com.vaadin.flow.spring.annotation.EnableVaadin;
 import java.util.Objects;
+import lombok.extern.slf4j.Slf4j;
 import org.karnak.backend.config.AppConfig;
 import org.karnak.backend.enums.ApplicationProfile;
 import org.karnak.backend.enums.EnvironmentVariable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -32,9 +31,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableVaadin(value = "org.karnak")
 @EnableScheduling
 @EnableAsync
+@Slf4j
 public class StartApplication implements CommandLineRunner {
-
-	private static final Logger log = LoggerFactory.getLogger(StartApplication.class);
 
 	@Autowired(required = false)
 	private AppConfig myConfig;
@@ -45,7 +43,7 @@ public class StartApplication implements CommandLineRunner {
 		// If environment variable IDP exists and has value "oidc": activate the profile
 		// application-oidc.yml
 		if (System.getenv().containsKey(EnvironmentVariable.IDP.getCode()) && Objects
-			.equals(System.getenv().get(EnvironmentVariable.IDP.getCode()), ApplicationProfile.OIDC.getCode())) {
+				.equals(System.getenv().get(EnvironmentVariable.IDP.getCode()), ApplicationProfile.OIDC.getCode())) {
 			application.profiles(ApplicationProfile.OIDC.getCode());
 		}
 

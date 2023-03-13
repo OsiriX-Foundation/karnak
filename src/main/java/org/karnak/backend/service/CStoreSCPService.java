@@ -20,6 +20,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import lombok.extern.slf4j.Slf4j;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.dcm4che3.data.VR;
@@ -34,16 +35,13 @@ import org.karnak.backend.data.repo.DestinationRepo;
 import org.karnak.backend.dicom.ForwardDestination;
 import org.karnak.backend.dicom.ForwardDicomNode;
 import org.karnak.backend.dicom.Params;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.weasis.dicom.param.DicomNode;
 
 @Service
+@Slf4j
 public class CStoreSCPService extends BasicCStoreSCP {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(CStoreSCPService.class);
 
 	// Service
 	private final DestinationRepo destinationRepo;
@@ -75,10 +73,8 @@ public class CStoreSCPService extends BasicCStoreSCP {
 	@Override
 	protected void store(Association as, PresentationContext pc, Attributes rq, PDVInputStream data, Attributes rsp)
 			throws IOException {
-		Optional<ForwardDicomNode> sourceNode = destinations.keySet()
-			.stream()
-			.filter(n -> n.getForwardAETitle().equals(as.getCalledAET()))
-			.findFirst();
+		Optional<ForwardDicomNode> sourceNode = destinations.keySet().stream()
+				.filter(n -> n.getForwardAETitle().equals(as.getCalledAET())).findFirst();
 		if (sourceNode.isEmpty()) {
 			throw new IllegalStateException("Cannot find the forward AeTitle " + as.getCalledAET());
 		}
@@ -90,12 +86,11 @@ public class CStoreSCPService extends BasicCStoreSCP {
 
 		DicomNode callingNode = DicomNode.buildRemoteDicomNode(as);
 		Set<DicomNode> srcNodes = fwdNode.getAcceptedSourceNodes();
-		boolean valid = srcNodes.isEmpty() || srcNodes.stream()
-			.anyMatch(n -> n.getAet().equals(callingNode.getAet())
-					&& (!n.isValidateHostname() || n.equalsHostname(callingNode.getHostname())));
+		boolean valid = srcNodes.isEmpty() || srcNodes.stream().anyMatch(n -> n.getAet().equals(callingNode.getAet())
+				&& (!n.isValidateHostname() || n.equalsHostname(callingNode.getHostname())));
 		if (!valid) {
 			rsp.setInt(Tag.Status, VR.US, Status.NotAuthorized);
-			LOGGER.error("Refused: not authorized (124H). Source node: {}. SopUID: {}", callingNode,
+			log.error("Refused: not authorized (124H). Source node: {}. SopUID: {}", callingNode,
 					rq.getString(Tag.AffectedSOPInstanceUID));
 			return;
 		}

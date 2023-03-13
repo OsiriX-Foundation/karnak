@@ -69,13 +69,12 @@ class EchoControllerTest {
 
 		// Mock service to return targets
 		Mockito.when(echoServiceMock.retrieveStatusConfiguredDestinations(Mockito.anyString()))
-			.thenReturn(destinationEchos);
+				.thenReturn(destinationEchos);
 
 		// Call service and test results
 		this.mockMvc.perform(MockMvcRequestBuilders.get("/api/echo/destinations").param("srcAet", "aet"))
-			.andExpect(MockMvcResultMatchers.status().isOk())
-			.andExpect(MockMvcResultMatchers.content()
-				.string("<destinations><destination><aet>aet</aet><status>111</status></destination><destination><url>http://test.com</url><status>222</status></destination></destinations>"));
+				.andExpect(MockMvcResultMatchers.status().isOk()).andExpect(MockMvcResultMatchers.content().string(
+						"<destinations><destination><aet>aet</aet><status>111</status></destination><destination><url>http://test.com</url><status>222</status></destination></destinations>"));
 	}
 
 	/**
@@ -90,11 +89,11 @@ class EchoControllerTest {
 	void when_no_data_found_should_respond_no_content() throws Exception {
 		// Mock service to return targets
 		Mockito.when(echoServiceMock.retrieveStatusConfiguredDestinations(Mockito.anyString()))
-			.thenReturn(new ArrayList<>());
+				.thenReturn(new ArrayList<>());
 
 		// Call service and test results
 		this.mockMvc.perform(MockMvcRequestBuilders.get("/api/echo/destinations").param("srcAet", "aet"))
-			.andExpect(MockMvcResultMatchers.status().isNoContent());
+				.andExpect(MockMvcResultMatchers.status().isNoContent());
 	}
 
 }

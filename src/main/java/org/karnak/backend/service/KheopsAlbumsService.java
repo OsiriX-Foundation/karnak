@@ -48,7 +48,7 @@ public class KheopsAlbumsService {
 	private void removeKheopsAlbums(DestinationEntity destinationEntity) {
 		List<KheopsAlbumsEntity> kheopsAlbumsEntityListDatabase = new ArrayList<>();
 		kheopsAlbumsRepo.findAllByDestinationEntity(destinationEntity) //
-			.forEach(kheopsAlbumsEntityListDatabase::add);
+				.forEach(kheopsAlbumsEntityListDatabase::add);
 		deleteDiffCurrentAndDatabase(destinationEntity, kheopsAlbumsEntityListDatabase);
 		deleteAll(destinationEntity, kheopsAlbumsEntityListDatabase);
 	}
@@ -59,7 +59,7 @@ public class KheopsAlbumsService {
 				&& destinationEntity.getKheopsAlbumEntities().size() != kheopsAlbumsEntityListDatabase.size()) {
 			for (KheopsAlbumsEntity kheopsAlbumDatabase : kheopsAlbumsEntityListDatabase) {
 				Predicate<KheopsAlbumsEntity> idIsAlwaysPresent = kheopsAlbum -> kheopsAlbum.getId()
-					.equals(kheopsAlbumDatabase.getId());
+						.equals(kheopsAlbumDatabase.getId());
 				if (!destinationEntity.getKheopsAlbumEntities().stream().anyMatch(idIsAlwaysPresent)) {
 					deleteSwitchingAlbums(kheopsAlbumDatabase);
 				}

@@ -17,19 +17,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.data.entity.TransferStatusEntity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 @DataJpaTest
+@Slf4j
 class TransferStatusRepoTest {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(TransferStatusRepoTest.class);
 
 	@Autowired
 	private TransferStatusRepo repository;
@@ -44,21 +42,20 @@ class TransferStatusRepoTest {
 		entity.setPatientIdOriginal("Id");
 
 		// Save the entity
-		LOGGER.info("Saving entity with PatientIdOriginal [{}]", entity.getPatientIdOriginal());
+		log.info("Saving entity with PatientIdOriginal [{}]", entity.getPatientIdOriginal());
 		entity = repository.save(entity);
 
 		// Test Save
 		assertEquals("Id", entity.getPatientIdOriginal());
 		assertNotNull(entity.getId());
-		LOGGER.info("Entity with PatientIdOriginal [{}] and id [{}] saved", entity.getPatientIdOriginal(),
-				entity.getId());
+		log.info("Entity with PatientIdOriginal [{}] and id [{}] saved", entity.getPatientIdOriginal(), entity.getId());
 
 		// Find By Id
 		Optional<TransferStatusEntity> foundByIdOpt = repository.findById(entity.getId());
 
 		// Test Find by Id
 		assertTrue(foundByIdOpt.isPresent());
-		LOGGER.info("Entity found with PatientId [{}] and id [{}]", foundByIdOpt.get().getPatientIdOriginal(),
+		log.info("Entity found with PatientId [{}] and id [{}]", foundByIdOpt.get().getPatientIdOriginal(),
 				foundByIdOpt.get().getId());
 		assertEquals(entity.getId(), foundByIdOpt.get().getId());
 	}
@@ -73,7 +70,7 @@ class TransferStatusRepoTest {
 		entity.setPatientIdToSend("Id");
 
 		// Save the entity
-		LOGGER.info("Saving entity with PatientIdToSend [{}]", entity.getPatientIdToSend());
+		log.info("Saving entity with PatientIdToSend [{}]", entity.getPatientIdToSend());
 		repository.saveAndFlush(entity);
 
 		// Find all
@@ -83,7 +80,7 @@ class TransferStatusRepoTest {
 		assertNotNull(all);
 		assertTrue(all.size() > 0);
 		assertEquals(1, all.size());
-		LOGGER.info("Number of entities found [{}]", all.size());
+		log.info("Number of entities found [{}]", all.size());
 	}
 
 	/**
@@ -100,9 +97,9 @@ class TransferStatusRepoTest {
 		entity.setStudyDescriptionOriginal(initialText);
 
 		// Save the entity
-		LOGGER.info("Saving entity with description [{}]", entity.getStudyDescriptionOriginal());
+		log.info("Saving entity with description [{}]", entity.getStudyDescriptionOriginal());
 		entity = repository.save(entity);
-		LOGGER.info("Id of the entity with description [{}]", entity.getStudyDescriptionOriginal());
+		log.info("Id of the entity with description [{}]", entity.getStudyDescriptionOriginal());
 
 		// Test Save
 		assertNotNull(entity);
@@ -110,14 +107,14 @@ class TransferStatusRepoTest {
 
 		// Modify the record
 		entity.setStudyDescriptionOriginal(modifiedText);
-		LOGGER.info("Modify entity description [{}] to [{}]", initialText, modifiedText);
+		log.info("Modify entity description [{}] to [{}]", initialText, modifiedText);
 		TransferStatusEntity entityModified = repository.save(entity);
 
 		// Test Modify
 		assertNotNull(entityModified);
 		assertEquals(entity.getId(), entityModified.getId());
 		assertEquals(modifiedText, entityModified.getStudyDescriptionOriginal());
-		LOGGER.info("Description of the entity with id [{}]: [{}]", entityModified.getId(),
+		log.info("Description of the entity with id [{}]: [{}]", entityModified.getId(),
 				entityModified.getStudyDescriptionOriginal());
 	}
 
@@ -132,7 +129,7 @@ class TransferStatusRepoTest {
 		entity.setStudyDescriptionToSend(description);
 
 		// Save the entity
-		LOGGER.info("Saving entity with description [{}]", entity.getStudyDescriptionToSend());
+		log.info("Saving entity with description [{}]", entity.getStudyDescriptionToSend());
 		entity = repository.save(entity);
 
 		// Retrieve the entity
@@ -144,12 +141,12 @@ class TransferStatusRepoTest {
 		// Delete the entity
 		entity = foundByIdOpt.get();
 		Long id = entity.getId();
-		LOGGER.info("Deleting entity with id [{}]", id);
+		log.info("Deleting entity with id [{}]", id);
 		repository.delete(entity);
 
 		// Test Delete
 		foundByIdOpt = repository.findById(id);
-		LOGGER.info("Is deleted entity with id [{}] present: [{}]", id, foundByIdOpt.isPresent());
+		log.info("Is deleted entity with id [{}] present: [{}]", id, foundByIdOpt.isPresent());
 		assertFalse(foundByIdOpt.isPresent());
 	}
 
@@ -182,14 +179,15 @@ class TransferStatusRepoTest {
 
 		// Call method with date before
 		List<TransferStatusEntity> byDestinationIdAndTransferDateAfter = repository
-			.findByDestinationIdAndTransferDateAfter(toTest.getDestinationId(), LocalDateTime.of(2022, 1, 14, 0, 0, 0));
+				.findByDestinationIdAndTransferDateAfter(toTest.getDestinationId(),
+						LocalDateTime.of(2022, 1, 14, 0, 0, 0));
 
 		// Test results
 		assertFalse(byDestinationIdAndTransferDateAfter.isEmpty());
 
 		// Call method with date after
-		byDestinationIdAndTransferDateAfter = repository
-			.findByDestinationIdAndTransferDateAfter(toTest.getDestinationId(), LocalDateTime.of(2022, 1, 15, 0, 0, 0));
+		byDestinationIdAndTransferDateAfter = repository.findByDestinationIdAndTransferDateAfter(
+				toTest.getDestinationId(), LocalDateTime.of(2022, 1, 15, 0, 0, 0));
 
 		// Test results
 		assertTrue(byDestinationIdAndTransferDateAfter.isEmpty());
@@ -216,7 +214,7 @@ class TransferStatusRepoTest {
 
 		// Call method with date before
 		List<TransferStatusEntity> transferStatusEntities = repository.findAllByOrderByTransferDateAsc(pageable)
-			.toList();
+				.toList();
 
 		// Test results
 		assertFalse(transferStatusEntities.isEmpty());

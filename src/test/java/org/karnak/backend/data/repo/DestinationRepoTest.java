@@ -16,18 +16,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.enums.DestinationType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 @DataJpaTest
+@Slf4j
 class DestinationRepoTest {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(DestinationRepoTest.class);
 
 	@Autowired
 	private DestinationRepo repository;
@@ -42,20 +40,20 @@ class DestinationRepoTest {
 		entity.setAeTitle("Name");
 
 		// Save the entity
-		LOGGER.info("Saving entity with name [{}]", entity.getAeTitle());
+		log.info("Saving entity with name [{}]", entity.getAeTitle());
 		entity = repository.save(entity);
 
 		// Test Save
 		assertEquals("Name", entity.getAeTitle());
 		assertNotNull(entity.getId());
-		LOGGER.info("Entity with name [{}] and id [{}] saved", entity.getAeTitle(), entity.getId());
+		log.info("Entity with name [{}] and id [{}] saved", entity.getAeTitle(), entity.getId());
 
 		// Find By Id
 		Optional<DestinationEntity> foundByIdOpt = repository.findById(entity.getId());
 
 		// Test Find by Id
 		assertTrue(foundByIdOpt.isPresent());
-		LOGGER.info("Entity found with name [{}] and id [{}]", foundByIdOpt.get().getAeTitle(),
+		log.info("Entity found with name [{}] and id [{}]", foundByIdOpt.get().getAeTitle(),
 				foundByIdOpt.get().getId());
 		assertEquals(entity.getId(), foundByIdOpt.get().getId());
 	}
@@ -73,7 +71,7 @@ class DestinationRepoTest {
 		entity.setPort(1);
 
 		// Save the entity
-		LOGGER.info("Saving entity with name [{}]", entity.getAeTitle());
+		log.info("Saving entity with name [{}]", entity.getAeTitle());
 		repository.saveAndFlush(entity);
 
 		// Find all
@@ -83,7 +81,7 @@ class DestinationRepoTest {
 		assertNotNull(all);
 		assertTrue(all.size() > 0);
 		assertEquals(1, all.size());
-		LOGGER.info("Number of entities found [{}]", all.size());
+		log.info("Number of entities found [{}]", all.size());
 	}
 
 	/**
@@ -100,9 +98,9 @@ class DestinationRepoTest {
 		entity.setAeTitle(initialText);
 
 		// Save the entity
-		LOGGER.info("Saving entity with name [{}]", entity.getAeTitle());
+		log.info("Saving entity with name [{}]", entity.getAeTitle());
 		entity = repository.save(entity);
-		LOGGER.info("Id of the entity with name [{}]", entity.getId());
+		log.info("Id of the entity with name [{}]", entity.getId());
 
 		// Test Save
 		assertNotNull(entity);
@@ -110,14 +108,14 @@ class DestinationRepoTest {
 
 		// Modify the record
 		entity.setAeTitle(modifiedText);
-		LOGGER.info("Modify entity name [{}] to [{}]", initialText, modifiedText);
+		log.info("Modify entity name [{}] to [{}]", initialText, modifiedText);
 		DestinationEntity entityModified = repository.save(entity);
 
 		// Test Modify
 		assertNotNull(entityModified);
 		assertEquals(entity.getId(), entityModified.getId());
 		assertEquals(modifiedText, entityModified.getAeTitle());
-		LOGGER.info("Name of the entity with id [{}]: [{}]", entityModified.getId(), entityModified.getAeTitle());
+		log.info("Name of the entity with id [{}]: [{}]", entityModified.getId(), entityModified.getAeTitle());
 	}
 
 	/**
@@ -131,7 +129,7 @@ class DestinationRepoTest {
 		entity.setAeTitle(name);
 
 		// Save the entity
-		LOGGER.info("Saving entity with name [{}]", entity.getAeTitle());
+		log.info("Saving entity with name [{}]", entity.getAeTitle());
 		entity = repository.save(entity);
 
 		// Retrieve the entity
@@ -143,12 +141,12 @@ class DestinationRepoTest {
 		// Delete the entity
 		entity = foundByIdOpt.get();
 		Long id = entity.getId();
-		LOGGER.info("Deleting entity with id [{}]", id);
+		log.info("Deleting entity with id [{}]", id);
 		repository.delete(entity);
 
 		// Test Delete
 		foundByIdOpt = repository.findById(id);
-		LOGGER.info("Is deleted entity with id [{}] present: [{}]", id, foundByIdOpt.isPresent());
+		log.info("Is deleted entity with id [{}] present: [{}]", id, foundByIdOpt.isPresent());
 		assertFalse(foundByIdOpt.isPresent());
 	}
 

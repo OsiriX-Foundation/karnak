@@ -50,8 +50,8 @@ public class TranscodeOnlyUncompressedComponent extends VerticalLayout {
 	}
 
 	public void init(Binder<DestinationEntity> binder) {
-		binder.forField(transcodeOnlyUncompressedCheckBox)
-			.bind(DestinationEntity::isTranscodeOnlyUncompressed, DestinationEntity::setTranscodeOnlyUncompressed);
+		binder.forField(transcodeOnlyUncompressedCheckBox).bind(DestinationEntity::isTranscodeOnlyUncompressed,
+				DestinationEntity::setTranscodeOnlyUncompressed);
 	}
 
 	public Checkbox getTranscodeOnlyUncompressedCheckBox() {

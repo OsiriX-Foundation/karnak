@@ -16,17 +16,15 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.weasis.core.util.StringUtil;
 
+@Slf4j
 public class HMAC {
 
 	public static final int KEY_BYTE_LENGTH = 16;
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(HMAC.class);
 
 	private static final String HMAC_SHA256 = "HmacSHA256";
 
@@ -86,10 +84,10 @@ public class HMAC {
 			this.mac.init(key);
 		}
 		catch (NoSuchAlgorithmException e) {
-			LOGGER.error("Invalid algorithm for the HMAC", e);
+			log.error("Invalid algorithm for the HMAC", e);
 		}
 		catch (InvalidKeyException e) {
-			LOGGER.error("Invalid key for the HMAC init", e);
+			log.error("Invalid key for the HMAC init", e);
 		}
 	}
 

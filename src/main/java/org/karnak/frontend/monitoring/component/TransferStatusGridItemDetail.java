@@ -259,16 +259,16 @@ public class TransferStatusGridItemDetail extends FormLayout {
 		patientIdOriginalField.setValue(checkStringNullValue(transferStatusEntity.getPatientIdOriginal()));
 		accessionNumberOriginalField.setValue(checkStringNullValue(transferStatusEntity.getAccessionNumberOriginal()));
 		studyDescriptionOriginalField
-			.setValue(checkStringNullValue(transferStatusEntity.getStudyDescriptionOriginal()));
+				.setValue(checkStringNullValue(transferStatusEntity.getStudyDescriptionOriginal()));
 		studyDateOriginalField
-			.setValue(checkStringNullValue(DateFormat.format(transferStatusEntity.getStudyDateOriginal(),
-					DateFormat.FORMAT_DDMMYYYY_SLASH_HHMMSS_2POINTS_SSS_POINT)));
+				.setValue(checkStringNullValue(DateFormat.format(transferStatusEntity.getStudyDateOriginal(),
+						DateFormat.FORMAT_DDMMYYYY_SLASH_HHMMSS_2POINTS_SSS_POINT)));
 		studyUidOriginalField.setValue(checkStringNullValue(transferStatusEntity.getStudyUidOriginal()));
 		serieDescriptionOriginalField
-			.setValue(checkStringNullValue(transferStatusEntity.getSerieDescriptionOriginal()));
+				.setValue(checkStringNullValue(transferStatusEntity.getSerieDescriptionOriginal()));
 		serieDateOriginalField
-			.setValue(checkStringNullValue(DateFormat.format(transferStatusEntity.getSerieDateOriginal(),
-					DateFormat.FORMAT_DDMMYYYY_SLASH_HHMMSS_2POINTS_SSS_POINT)));
+				.setValue(checkStringNullValue(DateFormat.format(transferStatusEntity.getSerieDateOriginal(),
+						DateFormat.FORMAT_DDMMYYYY_SLASH_HHMMSS_2POINTS_SSS_POINT)));
 		serieUidOriginalField.setValue(checkStringNullValue(transferStatusEntity.getSerieUidOriginal()));
 		sopInstanceUidOriginalField.setValue(checkStringNullValue(transferStatusEntity.getSopInstanceUidOriginal()));
 		// Sent
@@ -292,12 +292,12 @@ public class TransferStatusGridItemDetail extends FormLayout {
 	private void setValuesDestination(TransferStatusEntity transferStatusEntity) {
 		destinationUrlField.setValue(checkStringNullValue(transferStatusEntity.getDestinationEntity().getUrl()));
 		destinationHostNameField
-			.setValue(checkStringNullValue(transferStatusEntity.getDestinationEntity().getHostname()));
+				.setValue(checkStringNullValue(transferStatusEntity.getDestinationEntity().getHostname()));
 		destinationAeTitleField
-			.setValue(checkStringNullValue(transferStatusEntity.getDestinationEntity().getAeTitle()));
+				.setValue(checkStringNullValue(transferStatusEntity.getDestinationEntity().getAeTitle()));
 		destinationPortField.setValue(checkIntegerNullValue(transferStatusEntity.getDestinationEntity().getPort()));
 		destinationDescriptionField
-			.setValue(checkStringNullValue(transferStatusEntity.getDestinationEntity().getDescription()));
+				.setValue(checkStringNullValue(transferStatusEntity.getDestinationEntity().getDescription()));
 	}
 
 	/**
@@ -306,9 +306,9 @@ public class TransferStatusGridItemDetail extends FormLayout {
 	 */
 	private void setValuesForwardNode(TransferStatusEntity transferStatusEntity) {
 		forwardNodeAeTitleField
-			.setValue(checkStringNullValue(transferStatusEntity.getForwardNodeEntity().getFwdAeTitle()));
+				.setValue(checkStringNullValue(transferStatusEntity.getForwardNodeEntity().getFwdAeTitle()));
 		forwardNodeDescriptionField
-			.setValue(checkStringNullValue(transferStatusEntity.getForwardNodeEntity().getFwdDescription()));
+				.setValue(checkStringNullValue(transferStatusEntity.getForwardNodeEntity().getFwdDescription()));
 	}
 
 	/**

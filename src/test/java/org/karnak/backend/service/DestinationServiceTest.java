@@ -21,7 +21,7 @@ class DestinationServiceTest {
 
 	// Application Event Publisher
 	private final ApplicationEventPublisher applicationEventPublisherMock = Mockito
-		.mock(ApplicationEventPublisher.class);
+			.mock(ApplicationEventPublisher.class);
 
 	// Repositories
 	private final DestinationRepo destinationRepoMock = Mockito.mock(DestinationRepo.class);
@@ -52,11 +52,11 @@ class DestinationServiceTest {
 		destinationService.save(forwardNodeEntity, destinationEntity);
 
 		// Test results
-		Mockito.verify(forwardNodeServiceMock, Mockito.times(1))
-			.updateDestination(Mockito.any(ForwardNodeEntity.class), Mockito.any(DestinationEntity.class));
+		Mockito.verify(forwardNodeServiceMock, Mockito.times(1)).updateDestination(Mockito.any(ForwardNodeEntity.class),
+				Mockito.any(DestinationEntity.class));
 		Mockito.verify(destinationRepoMock, Mockito.times(1)).saveAndFlush(Mockito.any(DestinationEntity.class));
 		Mockito.verify(kheopsAlbumsServiceMock, Mockito.times(1))
-			.updateSwitchingAlbumsFromDestination(Mockito.any(DestinationEntity.class));
+				.updateSwitchingAlbumsFromDestination(Mockito.any(DestinationEntity.class));
 	}
 
 	@Test
@@ -71,8 +71,8 @@ class DestinationServiceTest {
 		destinationService.delete(destinationEntity);
 
 		// Test results
-		Mockito.verify(forwardNodeServiceMock, Mockito.times(1))
-			.deleteDestination(Mockito.any(ForwardNodeEntity.class), Mockito.any(DestinationEntity.class));
+		Mockito.verify(forwardNodeServiceMock, Mockito.times(1)).deleteDestination(Mockito.any(ForwardNodeEntity.class),
+				Mockito.any(DestinationEntity.class));
 	}
 
 	@Test
@@ -85,7 +85,7 @@ class DestinationServiceTest {
 
 		// Test results
 		Mockito.verify(forwardNodeServiceMock, Mockito.times(1))
-			.getAllDestinations(Mockito.any(ForwardNodeEntity.class));
+				.getAllDestinations(Mockito.any(ForwardNodeEntity.class));
 	}
 
 }

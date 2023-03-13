@@ -20,62 +20,52 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import javax.validation.ConstraintViolationException;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.DicomSourceNodeEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.enums.DestinationType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 // @AutoConfigureTestDatabase(replace = Replace.NONE)
 @DataJpaTest
+@Slf4j
 class ForwardNodeRepoTest {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(ForwardNodeRepoTest.class);
 
 	private final Consumer<ForwardNodeEntity> forwardNodeConsumer = //
 			x -> assertThat(x) //
-				.hasFieldOrPropertyWithValue("fwdDescription", "description") //
-				.hasFieldOrPropertyWithValue("fwdAeTitle", "fwdAeTitle") //
-				.extracting(Object::toString)
-				.asString()
-				.matches("^ForwardNode \\[.*");
+					.hasFieldOrPropertyWithValue("fwdDescription", "description") //
+					.hasFieldOrPropertyWithValue("fwdAeTitle", "fwdAeTitle") //
+					.extracting(Object::toString).asString().matches("^ForwardNode \\[.*");
 
 	private final Consumer<DicomSourceNodeEntity> sourceNodeConsumer = //
 			x -> assertThat(x) //
-				.hasFieldOrPropertyWithValue("description", "description") //
-				.hasFieldOrPropertyWithValue("aeTitle", "aeTitle") //
-				.hasFieldOrPropertyWithValue("hostname", "hostname") //
-				.hasFieldOrPropertyWithValue("checkHostname", true) //
-				.extracting(Object::toString)
-				.asString()
-				.matches("^DicomSourceNode \\[.*");
+					.hasFieldOrPropertyWithValue("description", "description") //
+					.hasFieldOrPropertyWithValue("aeTitle", "aeTitle") //
+					.hasFieldOrPropertyWithValue("hostname", "hostname") //
+					.hasFieldOrPropertyWithValue("checkHostname", true) //
+					.extracting(Object::toString).asString().matches("^DicomSourceNode \\[.*");
 
 	private final Consumer<DestinationEntity> destinationDicomConsumer = //
 			x -> assertThat(x) //
-				.hasFieldOrPropertyWithValue("description", "description") //
-				.hasFieldOrPropertyWithValue("type", DestinationType.dicom) //
-				.hasFieldOrPropertyWithValue("aeTitle", "aeTitle") //
-				.hasFieldOrPropertyWithValue("hostname", "hostname") //
-				.hasFieldOrPropertyWithValue("port", 123) //
-				.extracting(Object::toString)
-				.asString()
-				.matches("^Destination \\[.*");
+					.hasFieldOrPropertyWithValue("description", "description") //
+					.hasFieldOrPropertyWithValue("type", DestinationType.dicom) //
+					.hasFieldOrPropertyWithValue("aeTitle", "aeTitle") //
+					.hasFieldOrPropertyWithValue("hostname", "hostname") //
+					.hasFieldOrPropertyWithValue("port", 123) //
+					.extracting(Object::toString).asString().matches("^Destination \\[.*");
 
 	private final Consumer<DestinationEntity> destinationStowConsumer = //
 			x -> assertThat(x) //
-				.hasFieldOrPropertyWithValue("description", "description") //
-				.hasFieldOrPropertyWithValue("type", DestinationType.stow) //
-				.hasFieldOrPropertyWithValue("url", "url") //
-				.hasFieldOrPropertyWithValue("urlCredentials", "urlCredentials") //
-				.hasFieldOrPropertyWithValue("headers", "headers") //
-				.extracting(Object::toString)
-				.asString()
-				.matches("^Destination \\[.*");
+					.hasFieldOrPropertyWithValue("description", "description") //
+					.hasFieldOrPropertyWithValue("type", DestinationType.stow) //
+					.hasFieldOrPropertyWithValue("url", "url") //
+					.hasFieldOrPropertyWithValue("urlCredentials", "urlCredentials") //
+					.hasFieldOrPropertyWithValue("headers", "headers") //
+					.extracting(Object::toString).asString().matches("^Destination \\[.*");
 
 	@Autowired
 	private TestEntityManager entityManager;
@@ -168,9 +158,9 @@ class ForwardNodeRepoTest {
 
 		Iterable<ForwardNodeEntity> all = repository.findAll();
 		assertThat(all) //
-			.hasSize(1) //
-			.first() //
-			.satisfies(forwardNodeConsumer);
+				.hasSize(1) //
+				.first() //
+				.satisfies(forwardNodeConsumer);
 	}
 
 	@Test
@@ -188,21 +178,21 @@ class ForwardNodeRepoTest {
 
 		Iterable<ForwardNodeEntity> all = repository.findAll();
 		assertThat(all) //
-			.hasSize(1) //
-			.first() //
-			.satisfies(forwardNodeConsumer);
+				.hasSize(1) //
+				.first() //
+				.satisfies(forwardNodeConsumer);
 
 		assertThat(all) //
-			.hasSize(1) //
-			.flatExtracting(ForwardNodeEntity::getSourceNodes) //
-			.hasSize(1) //
-			.first() //
-			.satisfies(sourceNodeConsumer);
+				.hasSize(1) //
+				.flatExtracting(ForwardNodeEntity::getSourceNodes) //
+				.hasSize(1) //
+				.first() //
+				.satisfies(sourceNodeConsumer);
 
 		assertThat(all) //
-			.hasSize(1) //
-			.flatExtracting(ForwardNodeEntity::getDestinationEntities) //
-			.hasSize(0);
+				.hasSize(1) //
+				.flatExtracting(ForwardNodeEntity::getDestinationEntities) //
+				.hasSize(0);
 	}
 
 	// @Test
@@ -217,21 +207,21 @@ class ForwardNodeRepoTest {
 
 		Iterable<ForwardNodeEntity> all = repository.findAll();
 		assertThat(all) //
-			.hasSize(1) //
-			.first() //
-			.satisfies(forwardNodeConsumer);
+				.hasSize(1) //
+				.first() //
+				.satisfies(forwardNodeConsumer);
 
 		assertThat(all) //
-			.hasSize(1) //
-			.flatExtracting(ForwardNodeEntity::getSourceNodes) //
-			.hasSize(0);
+				.hasSize(1) //
+				.flatExtracting(ForwardNodeEntity::getSourceNodes) //
+				.hasSize(0);
 
 		assertThat(all) //
-			.hasSize(1) //
-			.flatExtracting(ForwardNodeEntity::getDestinationEntities) //
-			.hasSize(1) //
-			.first() //
-			.satisfies(destinationDicomConsumer);
+				.hasSize(1) //
+				.flatExtracting(ForwardNodeEntity::getDestinationEntities) //
+				.hasSize(1) //
+				.first() //
+				.satisfies(destinationDicomConsumer);
 	}
 
 	// @Test
@@ -246,21 +236,21 @@ class ForwardNodeRepoTest {
 
 		Iterable<ForwardNodeEntity> all = repository.findAll();
 		assertThat(all) //
-			.hasSize(1) //
-			.first() //
-			.satisfies(forwardNodeConsumer);
+				.hasSize(1) //
+				.first() //
+				.satisfies(forwardNodeConsumer);
 
 		assertThat(all) //
-			.hasSize(1) //
-			.flatExtracting(ForwardNodeEntity::getSourceNodes) //
-			.hasSize(0);
+				.hasSize(1) //
+				.flatExtracting(ForwardNodeEntity::getSourceNodes) //
+				.hasSize(0);
 
 		assertThat(all) //
-			.hasSize(1) //
-			.flatExtracting(ForwardNodeEntity::getDestinationEntities) //
-			.hasSize(1) //
-			.first() //
-			.satisfies(destinationStowConsumer);
+				.hasSize(1) //
+				.flatExtracting(ForwardNodeEntity::getDestinationEntities) //
+				.hasSize(1) //
+				.first() //
+				.satisfies(destinationStowConsumer);
 	}
 
 	// @Test
@@ -281,23 +271,23 @@ class ForwardNodeRepoTest {
 
 		Iterable<ForwardNodeEntity> all = repository.findAll();
 		assertThat(all) //
-			.hasSize(1) //
-			.first() //
-			.satisfies(forwardNodeConsumer);
+				.hasSize(1) //
+				.first() //
+				.satisfies(forwardNodeConsumer);
 
 		assertThat(all) //
-			.hasSize(1) //
-			.flatExtracting(ForwardNodeEntity::getSourceNodes) //
-			.hasSize(1) //
-			.first() //
-			.satisfies(sourceNodeConsumer);
+				.hasSize(1) //
+				.flatExtracting(ForwardNodeEntity::getSourceNodes) //
+				.hasSize(1) //
+				.first() //
+				.satisfies(sourceNodeConsumer);
 
 		assertThat(all) //
-			.hasSize(1) //
-			.flatExtracting(ForwardNodeEntity::getDestinationEntities) //
-			.hasSize(1) //
-			.first() //
-			.satisfies(destinationDicomConsumer);
+				.hasSize(1) //
+				.flatExtracting(ForwardNodeEntity::getDestinationEntities) //
+				.hasSize(1) //
+				.first() //
+				.satisfies(destinationDicomConsumer);
 	}
 
 	/**
@@ -310,20 +300,20 @@ class ForwardNodeRepoTest {
 		entity.setFwdDescription("Description");
 
 		// Save the entity
-		LOGGER.info("Saving entity with Description [{}]", entity.getFwdDescription());
+		log.info("Saving entity with Description [{}]", entity.getFwdDescription());
 		entity = repository.save(entity);
 
 		// Test Save
 		assertEquals("Description", entity.getFwdDescription());
 		assertNotNull(entity.getId());
-		LOGGER.info("Entity with Description [{}] and id [{}] saved", entity.getFwdDescription(), entity.getId());
+		log.info("Entity with Description [{}] and id [{}] saved", entity.getFwdDescription(), entity.getId());
 
 		// Find By Id
 		Optional<ForwardNodeEntity> foundByIdOpt = repository.findById(entity.getId());
 
 		// Test Find by Id
 		assertTrue(foundByIdOpt.isPresent());
-		LOGGER.info("Entity found with Description [{}] and id [{}]", foundByIdOpt.get().getFwdDescription(),
+		log.info("Entity found with Description [{}] and id [{}]", foundByIdOpt.get().getFwdDescription(),
 				foundByIdOpt.get().getId());
 		assertEquals(entity.getId(), foundByIdOpt.get().getId());
 	}
@@ -339,7 +329,7 @@ class ForwardNodeRepoTest {
 		entity.setFwdAeTitle("AeTitle");
 
 		// Save the entity
-		LOGGER.info("Saving entity with Description [{}]", entity.getFwdDescription());
+		log.info("Saving entity with Description [{}]", entity.getFwdDescription());
 		repository.saveAndFlush(entity);
 
 		// Find all
@@ -349,7 +339,7 @@ class ForwardNodeRepoTest {
 		assertNotNull(all);
 		assertTrue(all.size() > 0);
 		assertEquals(1, all.size());
-		LOGGER.info("Number of entities found [{}]", all.size());
+		log.info("Number of entities found [{}]", all.size());
 	}
 
 	/**
@@ -366,9 +356,9 @@ class ForwardNodeRepoTest {
 		entity.setFwdDescription(initialText);
 
 		// Save the entity
-		LOGGER.info("Saving entity with Description [{}]", entity.getFwdDescription());
+		log.info("Saving entity with Description [{}]", entity.getFwdDescription());
 		entity = repository.save(entity);
-		LOGGER.info("Id of the entity with Description [{}]", entity.getId());
+		log.info("Id of the entity with Description [{}]", entity.getId());
 
 		// Test Save
 		assertNotNull(entity);
@@ -376,14 +366,14 @@ class ForwardNodeRepoTest {
 
 		// Modify the record
 		entity.setFwdDescription(modifiedText);
-		LOGGER.info("Modify entity Description [{}] to [{}]", initialText, modifiedText);
+		log.info("Modify entity Description [{}] to [{}]", initialText, modifiedText);
 		ForwardNodeEntity entityModified = repository.save(entity);
 
 		// Test Modify
 		assertNotNull(entityModified);
 		assertEquals(entity.getId(), entityModified.getId());
 		assertEquals(modifiedText, entityModified.getFwdDescription());
-		LOGGER.info("Description of the entity with id [{}]: [{}]", entityModified.getId(),
+		log.info("Description of the entity with id [{}]: [{}]", entityModified.getId(),
 				entityModified.getFwdDescription());
 	}
 
@@ -398,7 +388,7 @@ class ForwardNodeRepoTest {
 		entity.setFwdDescription(description);
 
 		// Save the entity
-		LOGGER.info("Saving entity with Description [{}]", entity.getFwdDescription());
+		log.info("Saving entity with Description [{}]", entity.getFwdDescription());
 		entity = repository.save(entity);
 
 		// Retrieve the entity
@@ -410,12 +400,12 @@ class ForwardNodeRepoTest {
 		// Delete the entity
 		entity = foundByIdOpt.get();
 		Long id = entity.getId();
-		LOGGER.info("Deleting entity with id [{}]", id);
+		log.info("Deleting entity with id [{}]", id);
 		repository.delete(entity);
 
 		// Test Delete
 		foundByIdOpt = repository.findById(id);
-		LOGGER.info("Is deleted entity with id [{}] present: [{}]", id, foundByIdOpt.isPresent());
+		log.info("Is deleted entity with id [{}] present: [{}]", id, foundByIdOpt.isPresent());
 		assertFalse(foundByIdOpt.isPresent());
 	}
 

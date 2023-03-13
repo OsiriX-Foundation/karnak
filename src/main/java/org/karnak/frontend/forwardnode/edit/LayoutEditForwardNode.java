@@ -165,32 +165,20 @@ public class LayoutEditForwardNode extends VerticalLayout {
 
 	private void initComponents() {
 		// FormDicom
-		newUpdateDestination.getFormDICOM()
-			.getDeIdentificationComponent()
-			.getProjectDropDown()
-			.setItems(projectService.getAllProjects());
-		newUpdateDestination.getFormDICOM()
-			.getTagMorphingComponent()
-			.getProjectDropDown()
-			.setItems(projectService.getAllProjects());
-		newUpdateDestination.getFormDICOM()
-			.getFilterBySOPClassesForm()
-			.getSopFilter()
-			.setItems(sopClassUIDService.getAllSOPClassUIDsName());
+		newUpdateDestination.getFormDICOM().getDeIdentificationComponent().getProjectDropDown()
+				.setItems(projectService.getAllProjects());
+		newUpdateDestination.getFormDICOM().getTagMorphingComponent().getProjectDropDown()
+				.setItems(projectService.getAllProjects());
+		newUpdateDestination.getFormDICOM().getFilterBySOPClassesForm().getSopFilter()
+				.setItems(sopClassUIDService.getAllSOPClassUIDsName());
 
 		// FormStow
-		newUpdateDestination.getFormSTOW()
-			.getDeIdentificationComponent()
-			.getProjectDropDown()
-			.setItems(projectService.getAllProjects());
-		newUpdateDestination.getFormSTOW()
-			.getTagMorphingComponent()
-			.getProjectDropDown()
-			.setItems(projectService.getAllProjects());
-		newUpdateDestination.getFormSTOW()
-			.getFilterBySOPClassesForm()
-			.getSopFilter()
-			.setItems(sopClassUIDService.getAllSOPClassUIDsName());
+		newUpdateDestination.getFormSTOW().getDeIdentificationComponent().getProjectDropDown()
+				.setItems(projectService.getAllProjects());
+		newUpdateDestination.getFormSTOW().getTagMorphingComponent().getProjectDropDown()
+				.setItems(projectService.getAllProjects());
+		newUpdateDestination.getFormSTOW().getFilterBySOPClassesForm().getSopFilter()
+				.setItems(sopClassUIDService.getAllSOPClassUIDsName());
 
 		// Set button in view in order to be able to enable/disable it
 		destinationView.setButtonForwardNodeSaveDeleteCancel(buttonForwardNodeSaveDeleteCancel);
@@ -280,7 +268,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
 			DestinationEntity destinationEntity = event.getItem();
 			// refresh destination entity in case changes occurs
 			destinationEntity = destinationView.getDestinationLogic()
-				.retrieveDestinationEntity(destinationEntity.getId());
+					.retrieveDestinationEntity(destinationEntity.getId());
 			this.newUpdateDestination.load(destinationEntity, destinationEntity.getDestinationType());
 			addFormView(this.newUpdateDestination);
 		});
@@ -328,11 +316,11 @@ public class LayoutEditForwardNode extends VerticalLayout {
 			NodeEventType nodeEventType = newUpdateSourceNode.getCurrentSourceNode().getId() == null ? NodeEventType.ADD
 					: NodeEventType.UPDATE;
 			if (newUpdateSourceNode.getBinderFormSourceNode()
-				.writeBeanIfValid(newUpdateSourceNode.getCurrentSourceNode())) {
+					.writeBeanIfValid(newUpdateSourceNode.getCurrentSourceNode())) {
 				sourceView.getSourceLogic().saveSourceNode(newUpdateSourceNode.getCurrentSourceNode());
 				load(getCurrentForwardNodeEntity());
 				sourceView.getSourceLogic()
-					.publishEvent(new NodeEvent(newUpdateSourceNode.getCurrentSourceNode(), nodeEventType));
+						.publishEvent(new NodeEvent(newUpdateSourceNode.getCurrentSourceNode(), nodeEventType));
 			}
 		});
 	}
@@ -412,16 +400,14 @@ public class LayoutEditForwardNode extends VerticalLayout {
 		destinationView.getDestinationLogic().saveDestination(newUpdateDestination.getCurrentDestinationEntity());
 		load(getCurrentForwardNodeEntity());
 		destinationView.getDestinationLogic()
-			.publishEvent(new NodeEvent(newUpdateDestination.getCurrentDestinationEntity(), nodeEventType));
+				.publishEvent(new NodeEvent(newUpdateDestination.getCurrentDestinationEntity(), nodeEventType));
 	}
 
 	private void addEventButtonDeleteNewUpdateDestination() {
-		newUpdateDestination.getButtonDestinationDICOMSaveDeleteCancel()
-			.getDelete()
-			.addClickListener(event -> removeCurrentDestination());
-		newUpdateDestination.getButtonDestinationSTOWSaveDeleteCancel()
-			.getDelete()
-			.addClickListener(event -> removeCurrentDestination());
+		newUpdateDestination.getButtonDestinationDICOMSaveDeleteCancel().getDelete()
+				.addClickListener(event -> removeCurrentDestination());
+		newUpdateDestination.getButtonDestinationSTOWSaveDeleteCancel().getDelete()
+				.addClickListener(event -> removeCurrentDestination());
 	}
 
 	private void removeCurrentDestination() {
@@ -433,7 +419,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
 				NodeEvent nodeEvent = new NodeEvent(newUpdateDestination.getCurrentDestinationEntity(),
 						NodeEventType.REMOVE);
 				destinationView.getDestinationLogic()
-					.deleteDestination(newUpdateDestination.getCurrentDestinationEntity());
+						.deleteDestination(newUpdateDestination.getCurrentDestinationEntity());
 				destinationView.getDestinationLogic().publishEvent(nodeEvent);
 				load(getCurrentForwardNodeEntity());
 			});
@@ -455,9 +441,9 @@ public class LayoutEditForwardNode extends VerticalLayout {
 					tagMorphingComponent.getTagMorphingCheckbox().setValue(false);
 					if (!projectService.getAllProjects().isEmpty()) {
 						deIdentificationComponent.getDeIdentificationDiv().setVisible(true);
-						deIdentificationComponent.getDestinationComponentUtil()
-							.setTextOnSelectionProject(deIdentificationComponent.getProjectDropDown().getValue(),
-									deIdentificationComponent.getProfileLabel());
+						deIdentificationComponent.getDestinationComponentUtil().setTextOnSelectionProject(
+								deIdentificationComponent.getProjectDropDown().getValue(),
+								deIdentificationComponent.getProfileLabel());
 					}
 					else {
 						deIdentificationComponent.getWarningNoProjectsDefined().open();
@@ -485,9 +471,9 @@ public class LayoutEditForwardNode extends VerticalLayout {
 
 					if (!projectService.getAllProjects().isEmpty()) {
 						tagMorphingComponent.getTagMorphingDiv().setVisible(true);
-						tagMorphingComponent.getDestinationComponentUtil()
-							.setTextOnSelectionProject(tagMorphingComponent.getProjectDropDown().getValue(),
-									tagMorphingComponent.getProfileLabel());
+						tagMorphingComponent.getDestinationComponentUtil().setTextOnSelectionProject(
+								tagMorphingComponent.getProjectDropDown().getValue(),
+								tagMorphingComponent.getProfileLabel());
 					}
 					else {
 						tagMorphingComponent.getWarningNoProjectsDefined().open();
@@ -501,90 +487,82 @@ public class LayoutEditForwardNode extends VerticalLayout {
 	}
 
 	private void addBindersFilterBySOPClassesForm(FilterBySOPClassesForm filterBySOPClassesForm) {
-		filterBySOPClassesForm.getBinder()
-			.forField(filterBySOPClassesForm.getSopFilter())
-			.withValidator(
-					listOfSOPFilter -> !listOfSOPFilter.isEmpty()
-							|| !filterBySOPClassesForm.getFilterBySOPClassesCheckbox().getValue(),
-					"No filter are applied\n")
-			.bind(DestinationEntity::retrieveSOPClassUIDFiltersName, (destination, sopClassNames) -> {
-				Set<SOPClassUIDEntity> newSOPClassUIDEntities = new HashSet<>();
-				sopClassNames.forEach(sopClasseName -> {
-					SOPClassUIDEntity sopClassUIDEntity = sopClassUIDService.getByName(sopClasseName);
-					newSOPClassUIDEntities.add(sopClassUIDEntity);
+		filterBySOPClassesForm.getBinder().forField(filterBySOPClassesForm.getSopFilter())
+				.withValidator(
+						listOfSOPFilter -> !listOfSOPFilter.isEmpty()
+								|| !filterBySOPClassesForm.getFilterBySOPClassesCheckbox().getValue(),
+						"No filter are applied\n")
+				.bind(DestinationEntity::retrieveSOPClassUIDFiltersName, (destination, sopClassNames) -> {
+					Set<SOPClassUIDEntity> newSOPClassUIDEntities = new HashSet<>();
+					sopClassNames.forEach(sopClasseName -> {
+						SOPClassUIDEntity sopClassUIDEntity = sopClassUIDService.getByName(sopClasseName);
+						newSOPClassUIDEntities.add(sopClassUIDEntity);
+					});
+					destination.setSOPClassUIDEntityFilters(newSOPClassUIDEntities);
 				});
-				destination.setSOPClassUIDEntityFilters(newSOPClassUIDEntities);
-			});
 
-		filterBySOPClassesForm.getBinder()
-			.forField(filterBySOPClassesForm.getFilterBySOPClassesCheckbox()) //
-			.bind(DestinationEntity::isFilterBySOPClasses, DestinationEntity::setFilterBySOPClasses);
+		filterBySOPClassesForm.getBinder().forField(filterBySOPClassesForm.getFilterBySOPClassesCheckbox()) //
+				.bind(DestinationEntity::isFilterBySOPClasses, DestinationEntity::setFilterBySOPClasses);
 	}
 
 	public void addBinderExtidInDicomTag(DeIdentificationComponent deIdentificationComponent) {
 		deIdentificationComponent.getDestinationBinder()
-			.forField(deIdentificationComponent.getPseudonymInDicomTagComponent().getTag())
-			.withConverter(String::valueOf, value -> (value == null) ? "" : value, "Must be a tag")
-			.withValidator(tag -> {
-				if (!deIdentificationComponent.getDeIdentificationCheckbox().getValue()
-						|| !deIdentificationComponent.getPseudonymTypeSelect()
-							.getValue()
-							.equals(EXTID_IN_TAG.getValue())) {
-					return true;
-				}
-				final String cleanTag = tag.replaceAll("[(),]", "").toUpperCase();
-				try {
-					TagUtils.intFromHexString(cleanTag);
-				}
-				catch (Exception e) {
-					return false;
-				}
-				return (tag != null && !tag.equals("") && cleanTag.length() == 8);
-			}, "Choose a valid tag\n")
-			.bind(DestinationEntity::getTag, DestinationEntity::setTag);
+				.forField(deIdentificationComponent.getPseudonymInDicomTagComponent().getTag())
+				.withConverter(String::valueOf, value -> (value == null) ? "" : value, "Must be a tag")
+				.withValidator(tag -> {
+					if (!deIdentificationComponent.getDeIdentificationCheckbox().getValue()
+							|| !deIdentificationComponent.getPseudonymTypeSelect().getValue()
+									.equals(EXTID_IN_TAG.getValue())) {
+						return true;
+					}
+					final String cleanTag = tag.replaceAll("[(),]", "").toUpperCase();
+					try {
+						TagUtils.intFromHexString(cleanTag);
+					}
+					catch (Exception e) {
+						return false;
+					}
+					return (tag != null && !tag.equals("") && cleanTag.length() == 8);
+				}, "Choose a valid tag\n").bind(DestinationEntity::getTag, DestinationEntity::setTag);
 
 		deIdentificationComponent.getDestinationBinder()
-			.forField(deIdentificationComponent.getPseudonymInDicomTagComponent().getDelimiter())
-			.withConverter(String::valueOf, value -> (value == null) ? "" : value, "Must be a delimiter")
-			.withValidator(delimiter -> {
-				if (!deIdentificationComponent.getDeIdentificationCheckbox().getValue()
-						|| !deIdentificationComponent.getPseudonymTypeSelect()
-							.getValue()
-							.equals(EXTID_IN_TAG.getValue())) {
+				.forField(deIdentificationComponent.getPseudonymInDicomTagComponent().getDelimiter())
+				.withConverter(String::valueOf, value -> (value == null) ? "" : value, "Must be a delimiter")
+				.withValidator(delimiter -> {
+					if (!deIdentificationComponent.getDeIdentificationCheckbox().getValue()
+							|| !deIdentificationComponent.getPseudonymTypeSelect().getValue()
+									.equals(EXTID_IN_TAG.getValue())) {
+						return true;
+					}
+					if (deIdentificationComponent.getPseudonymInDicomTagComponent().getPosition().getValue() != null
+							&& deIdentificationComponent.getPseudonymInDicomTagComponent().getPosition()
+									.getValue() > 0) {
+						return delimiter != null && !delimiter.equals("");
+					}
 					return true;
-				}
-				if (deIdentificationComponent.getPseudonymInDicomTagComponent().getPosition().getValue() != null
-						&& deIdentificationComponent.getPseudonymInDicomTagComponent().getPosition().getValue() > 0) {
-					return delimiter != null && !delimiter.equals("");
-				}
-				return true;
-			}, "A delimiter must be defined, when a position is present")
-			.bind(DestinationEntity::getDelimiter, DestinationEntity::setDelimiter);
+				}, "A delimiter must be defined, when a position is present")
+				.bind(DestinationEntity::getDelimiter, DestinationEntity::setDelimiter);
 
 		deIdentificationComponent.getDestinationBinder()
-			.forField(deIdentificationComponent.getPseudonymInDicomTagComponent().getPosition())
-			.withConverter(new DoubleToIntegerConverter())
-			.withValidator(position -> {
-				if (!deIdentificationComponent.getDeIdentificationCheckbox().getValue()
-						|| !deIdentificationComponent.getPseudonymTypeSelect()
-							.getValue()
-							.equals(EXTID_IN_TAG.getValue())) {
+				.forField(deIdentificationComponent.getPseudonymInDicomTagComponent().getPosition())
+				.withConverter(new DoubleToIntegerConverter()).withValidator(position -> {
+					if (!deIdentificationComponent.getDeIdentificationCheckbox().getValue()
+							|| !deIdentificationComponent.getPseudonymTypeSelect().getValue()
+									.equals(EXTID_IN_TAG.getValue())) {
+						return true;
+					}
+					if (deIdentificationComponent.getPseudonymInDicomTagComponent().getDelimiter().getValue() != null
+							&& !deIdentificationComponent.getPseudonymInDicomTagComponent().getDelimiter().getValue()
+									.equals("")) {
+						return position != null && position >= 0;
+					}
 					return true;
-				}
-				if (deIdentificationComponent.getPseudonymInDicomTagComponent().getDelimiter().getValue() != null
-						&& !deIdentificationComponent.getPseudonymInDicomTagComponent()
-							.getDelimiter()
-							.getValue()
-							.equals("")) {
-					return position != null && position >= 0;
-				}
-				return true;
-			}, "A position must be defined, when a delimiter is present")
-			.bind(DestinationEntity::getPosition, DestinationEntity::setPosition);
+				}, "A position must be defined, when a delimiter is present")
+				.bind(DestinationEntity::getPosition, DestinationEntity::setPosition);
 
 		deIdentificationComponent.getDestinationBinder()
-			.forField(deIdentificationComponent.getPseudonymInDicomTagComponent().getSavePseudonym())
-			.bind(DestinationEntity::getSavePseudonym, DestinationEntity::setSavePseudonym);
+				.forField(deIdentificationComponent.getPseudonymInDicomTagComponent().getSavePseudonym())
+				.bind(DestinationEntity::getSavePseudonym, DestinationEntity::setSavePseudonym);
 	}
 
 	/**

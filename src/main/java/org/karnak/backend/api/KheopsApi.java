@@ -16,10 +16,9 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpHeaders;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,19 +27,17 @@ import org.springframework.stereotype.Service;
 // https://www.baeldung.com/httpclient4
 
 @Service
+@Slf4j
 public class KheopsApi {
 
 	private final HttpClient httpClient;
 
 	private final String X_AUTHORIZATION_SOURCE = "X-Authorization-Source";
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(KheopsApi.class);
-
 	@Autowired
 	public KheopsApi() {
 		httpClient = HttpClient.newBuilder() // one instance, reuse
-			.version(HttpClient.Version.HTTP_1_1)
-			.build();
+				.version(HttpClient.Version.HTTP_1_1).build();
 	}
 
 	// https://github.com/OsiriX-Foundation/KheopsAuthorization/wiki/Add-a-series
@@ -52,14 +49,11 @@ public class KheopsApi {
 			String authorizationDestination) throws IOException, InterruptedException {
 		final String stringURI = String.format("%s/studies/%s/series/%s", API_URL, studyInstanceUID, seriesInstanceUID);
 		final URI uri = URI.create(stringURI);
-		HttpRequest request = HttpRequest.newBuilder()
-			.PUT(HttpRequest.BodyPublishers.noBody())
-			.uri(uri)
-			.setHeader(HttpHeaders.ACCEPT, "application/json")
-			.setHeader(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded")
-			.setHeader(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", authorizationDestination))
-			.setHeader(X_AUTHORIZATION_SOURCE, String.format("Bearer %s", authorizationSource))
-			.build();
+		HttpRequest request = HttpRequest.newBuilder().PUT(HttpRequest.BodyPublishers.noBody()).uri(uri)
+				.setHeader(HttpHeaders.ACCEPT, "application/json")
+				.setHeader(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded")
+				.setHeader(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", authorizationDestination))
+				.setHeader(X_AUTHORIZATION_SOURCE, String.format("Bearer %s", authorizationSource)).build();
 
 		HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 		try {
@@ -78,13 +72,10 @@ public class KheopsApi {
 
 		Map<Object, Object> data = new HashMap<>();
 		data.put("token", introspectToken);
-		HttpRequest request = HttpRequest.newBuilder()
-			.POST(utils.buildDataFromMap(data))
-			.uri(uri)
-			.setHeader(HttpHeaders.ACCEPT, "application/json")
-			.setHeader(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded")
-			.setHeader(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", authorizationToken))
-			.build();
+		HttpRequest request = HttpRequest.newBuilder().POST(utils.buildDataFromMap(data)).uri(uri)
+				.setHeader(HttpHeaders.ACCEPT, "application/json")
+				.setHeader(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded")
+				.setHeader(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", authorizationToken)).build();
 
 		HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 		try {

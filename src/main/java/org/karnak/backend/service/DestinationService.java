@@ -79,7 +79,7 @@ public class DestinationService {
 	public void refreshLastTransferEmailLastCheck(DestinationEntity destinationEntity) {
 		if (destinationEntity.getId() != null) {
 			Optional<DestinationEntity> refreshedDestinationEntityOpt = destinationRepo
-				.findById(destinationEntity.getId());
+					.findById(destinationEntity.getId());
 			if (refreshedDestinationEntityOpt.isPresent()) {
 				DestinationEntity destinationEntityRefreshed = refreshedDestinationEntityOpt.get();
 				destinationEntity.setLastTransfer(destinationEntityRefreshed.getLastTransfer());

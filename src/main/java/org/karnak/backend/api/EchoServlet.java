@@ -19,14 +19,13 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.karnak.backend.dicom.DicomForwardDestination;
 import org.karnak.backend.dicom.ForwardDestination;
 import org.karnak.backend.dicom.ForwardDicomNode;
 import org.karnak.backend.dicom.WebForwardDestination;
 import org.karnak.backend.service.gateway.GatewaySetUpService;
 import org.karnak.backend.util.ServletUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.weasis.dicom.op.Echo;
 import org.weasis.dicom.param.AdvancedParams;
@@ -35,12 +34,11 @@ import org.weasis.dicom.param.DicomNode;
 import org.weasis.dicom.param.DicomState;
 
 @WebServlet(urlPatterns = "/echo")
+@Slf4j
 public class EchoServlet extends HttpServlet {
 
 	@Serial
 	private static final long serialVersionUID = -8349040600894140520L;
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(EchoServlet.class);
 
 	@Autowired
 	private GatewaySetUpService globalConfig;
@@ -48,7 +46,7 @@ public class EchoServlet extends HttpServlet {
 	@Override
 	public final void init() throws ServletException {
 		if (globalConfig == null) {
-			LOGGER.error("EchoServlet service cannot start: GatewaySetUpService is missing.");
+			log.error("EchoServlet service cannot start: GatewaySetUpService is missing.");
 			destroy();
 		}
 	}
@@ -62,14 +60,14 @@ public class EchoServlet extends HttpServlet {
 		}
 		catch (IOException e) {
 			String errorMsg = "Cannot write response";
-			LOGGER.error(errorMsg);
+			log.error(errorMsg);
 			ServletUtil.sendResponseError(res, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, errorMsg);
 			return;
 		}
 		String aet = req.getParameter("srcAET");
 		if (globalConfig == null) {
 			String errorMsg = "Missing 'GlobalConfig' from current ServletContext";
-			LOGGER.error(errorMsg);
+			log.error(errorMsg);
 			ServletUtil.sendResponseError(res, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, errorMsg);
 			return;
 		}

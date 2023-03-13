@@ -17,12 +17,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.model.event.NodeEvent;
 import org.karnak.backend.service.DestinationService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -31,9 +30,8 @@ import org.springframework.stereotype.Service;
  * Logic service use to make calls to backend and implement logic linked to the view
  */
 @Service
+@Slf4j
 public class DestinationLogic extends ListDataProvider<DestinationEntity> {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(DestinationLogic.class);
 
 	public static final String TRANSFER_IN_PROGRESS = "Transfer in progress";
 
@@ -87,10 +85,8 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
 		if (forwardNodeEntity != null) {
 			// Refreshed destinations from DB
 			List<DestinationEntity> refreshedDestinations = destinationService
-				.retrieveDestinationsFromIds(forwardNodeEntity.getDestinationEntities()
-					.stream()
-					.map(DestinationEntity::getId)
-					.collect(Collectors.toList()));
+					.retrieveDestinationsFromIds(forwardNodeEntity.getDestinationEntities().stream()
+							.map(DestinationEntity::getId).collect(Collectors.toList()));
 
 			// Loading spinner
 			checkActivityLoadingSpinner(
@@ -119,7 +115,7 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
 			}
 		}
 		catch (UIDetachedException e) {
-			LOGGER.trace(String.format("UIDetachedException:%s", e.getMessage()));
+			log.trace(String.format("UIDetachedException:%s", e.getMessage()));
 		}
 	}
 
@@ -130,10 +126,8 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
 	private void checkActivityLoadingSpinner(List<DestinationEntity> activatedDestinationEntities) {
 		activatedDestinationEntities.forEach(d -> {
 			// Retrieve the loading image of the corresponding destination
-			Image loadingImage = destinationView.getGridDestination()
-				.getLoadingImages()
-				.get(forwardNodeEntity.getFwdAeTitle())
-				.get(d.getId());
+			Image loadingImage = destinationView.getGridDestination().getLoadingImages()
+					.get(forwardNodeEntity.getFwdAeTitle()).get(d.getId());
 
 			// Check there is some activity on the destination: if yes set the loading
 			// spinner visible
@@ -284,7 +278,7 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
 	 */
 	public DestinationEntity retrieveDestinationEntity(Long id) {
 		List<DestinationEntity> destinationEntities = destinationService.retrieveDestinationsFromIds(List.of(id));
-		return destinationEntities.isEmpty() ? null : destinationEntities.stream().findFirst().get();
+		return destinationEntities.isEmpty() ? null : destinationEntities.stream().findFirst().orElse(null);
 	}
 
 }

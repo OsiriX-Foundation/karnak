@@ -24,20 +24,16 @@ public class MonitoringCsvMappingStrategy<T> extends ColumnPositionMappingStrate
 	 * Constructor
 	 */
 	public MonitoringCsvMappingStrategy() {
-		setColumnMapping(EnumSet.allOf(MonitoringCsvMapping.class)
-			.stream()
-			.map(MonitoringCsvMapping::getNameFieldEntity)
-			.toArray(String[]::new));
+		setColumnMapping(EnumSet.allOf(MonitoringCsvMapping.class).stream()
+				.map(MonitoringCsvMapping::getNameFieldEntity).toArray(String[]::new));
 	}
 
 	@Override
 	public String[] generateHeader(T bean) throws CsvRequiredFieldEmptyException {
 		setType((Class<? extends T>) bean.getClass());
 		super.generateHeader(bean);
-		return EnumSet.allOf(MonitoringCsvMapping.class)
-			.stream()
-			.map(MonitoringCsvMapping::getLabelCsv)
-			.toArray(String[]::new);
+		return EnumSet.allOf(MonitoringCsvMapping.class).stream().map(MonitoringCsvMapping::getLabelCsv)
+				.toArray(String[]::new);
 	}
 
 }

@@ -21,17 +21,15 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.validator.StringLengthValidator;
 import java.time.format.DateTimeFormatter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.backend.api.PseudonymApi;
 import org.karnak.backend.api.rqbody.Fields;
 import org.karnak.backend.cache.Patient;
 import org.karnak.frontend.component.ConfirmDialog;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+@Slf4j
 public class MainzellisteAddPatient extends VerticalLayout {
-
-	protected static final Logger LOGGER = LoggerFactory.getLogger(MainzellisteAddPatient.class);
 
 	private static final String ERROR_MESSAGE_PATIENT = "Length must be between 1 and 50.";
 
@@ -127,36 +125,26 @@ public class MainzellisteAddPatient extends VerticalLayout {
 	}
 
 	public void setBinder() {
-		binder.forField(externalIdField)
-			.withValidator(StringUtils::isNotBlank, "External Pseudonym is empty")
-			.withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
-			.bind("pseudonym");
+		binder.forField(externalIdField).withValidator(StringUtils::isNotBlank, "External Pseudonym is empty")
+				.withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50)).bind("pseudonym");
 
-		binder.forField(patientIdField)
-			.withValidator(StringUtils::isNotBlank, "Patient ID is empty")
-			.withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
-			.bind("patientId");
+		binder.forField(patientIdField).withValidator(StringUtils::isNotBlank, "Patient ID is empty")
+				.withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50)).bind("patientId");
 
-		binder.forField(patientFirstNameField)
-			.withValidator(StringUtils::isNotBlank, "Patient first name is empty")
-			.withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
-			.bind("patientFirstName");
+		binder.forField(patientFirstNameField).withValidator(StringUtils::isNotBlank, "Patient first name is empty")
+				.withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50)).bind("patientFirstName");
 
-		binder.forField(patientLastNameField)
-			.withValidator(StringUtils::isNotBlank, "Patient last name is empty")
-			.withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
-			.bind("patientLastName");
+		binder.forField(patientLastNameField).withValidator(StringUtils::isNotBlank, "Patient last name is empty")
+				.withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50)).bind("patientLastName");
 
 		binder.forField(issuerOfPatientIdField)
-			.withValidator(new StringLengthValidator("Length must be between 0 and 50.", 0, 50))
-			.bind("issuerOfPatientId");
+				.withValidator(new StringLengthValidator("Length must be between 0 and 50.", 0, 50))
+				.bind("issuerOfPatientId");
 
 		binder.forField(patientBirthDateField).asRequired("Please choose a date").bind("patientBirthDate");
 
-		binder.forField(patientSexField)
-			.withValidator(StringUtils::isNotBlank, "Patient Sex is empty")
-			.withValidator(new StringLengthValidator("Length must be 1.", 1, 1))
-			.bind("patientSex");
+		binder.forField(patientSexField).withValidator(StringUtils::isNotBlank, "Patient Sex is empty")
+				.withValidator(new StringLengthValidator("Length must be 1.", 1, 1)).bind("patientSex");
 	}
 
 	public void clearPatientFields() {
@@ -187,11 +175,11 @@ public class MainzellisteAddPatient extends VerticalLayout {
 							+ newPatientFields.get_issuerOfPatientID() + " " + "PatientSex:"
 							+ newPatientFields.get_patientSex() + " " + "PatientBirthDate:"
 							+ newPatientFields.get_patientBirthDate();
-					LOGGER.info("Added a new patient in Mainzelliste: {}", strPatient);
+					log.info("Added a new patient in Mainzelliste: {}", strPatient);
 				}
 			}
 			catch (Exception e) {
-				LOGGER.error("Cannot create a new patient with Mainzelliste API", e);
+				log.error("Cannot create a new patient with Mainzelliste API", e);
 			}
 			binder.readBean(null);
 		}

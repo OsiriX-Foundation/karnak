@@ -206,9 +206,8 @@ public class DicomWorkListView extends AbstractView implements HasUrlParameter<S
 		wlConfigurationAndQueryLayout.setWidthFull();
 		wlConfigurationAndQueryLayout.setPadding(true);
 		wlConfigurationAndQueryLayout.setSpacing(false);
-		wlConfigurationAndQueryLayout.getStyle()
-			.set("box-shadow",
-					"0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12)");
+		wlConfigurationAndQueryLayout.getStyle().set("box-shadow",
+				"0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12)");
 		wlConfigurationAndQueryLayout.getStyle().set("border-radius", "4px");
 
 		buildWlConfigurationTitle();
@@ -402,9 +401,8 @@ public class DicomWorkListView extends AbstractView implements HasUrlParameter<S
 		queryResultLayout.setSizeFull();
 		queryResultLayout.setPadding(true);
 		queryResultLayout.setSpacing(false);
-		queryResultLayout.getStyle()
-			.set("box-shadow",
-					"0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12)");
+		queryResultLayout.getStyle().set("box-shadow",
+				"0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12)");
 		queryResultLayout.getStyle().set("border-radius", "4px");
 		queryResultLayout.setVisible(false);
 
@@ -433,22 +431,18 @@ public class DicomWorkListView extends AbstractView implements HasUrlParameter<S
 
 	@SuppressWarnings("serial")
 	private void bindFields() {
-		binderForWorkListQuery.forField(callingAetFld)
-			.asRequired("Ce champ est obligatoire")
-			.bind(WorkListQueryData::getCallingAet, WorkListQueryData::setCallingAet);
+		binderForWorkListQuery.forField(callingAetFld).asRequired("Ce champ est obligatoire")
+				.bind(WorkListQueryData::getCallingAet, WorkListQueryData::setCallingAet);
 
-		binderForWorkListQuery.forField(workListAetFld)
-			.asRequired("Ce champ est obligatoire")
-			.bind(WorkListQueryData::getWorkListAet, WorkListQueryData::setWorkListAet);
+		binderForWorkListQuery.forField(workListAetFld).asRequired("Ce champ est obligatoire")
+				.bind(WorkListQueryData::getWorkListAet, WorkListQueryData::setWorkListAet);
 
-		binderForWorkListQuery.forField(workListHostnameFld)
-			.asRequired("Ce champ est obligatoire")
-			.bind(WorkListQueryData::getWorkListHostname, WorkListQueryData::setWorkListHostname);
+		binderForWorkListQuery.forField(workListHostnameFld).asRequired("Ce champ est obligatoire")
+				.bind(WorkListQueryData::getWorkListHostname, WorkListQueryData::setWorkListHostname);
 
-		binderForWorkListQuery.forField(workListPortFld)
-			.asRequired("Ce champ est obligatoire")
-			.withValidator(new IntegerRangeValidator("Le port est invalide", 1, 65535))
-			.bind(WorkListQueryData::getWorkListPort, WorkListQueryData::setWorkListPort);
+		binderForWorkListQuery.forField(workListPortFld).asRequired("Ce champ est obligatoire")
+				.withValidator(new IntegerRangeValidator("Le port est invalide", 1, 65535))
+				.bind(WorkListQueryData::getWorkListPort, WorkListQueryData::setWorkListPort);
 
 		binderForWorkListQuery.bind(scheduledStationAetFld, WorkListQueryData::getScheduledStationAet,
 				WorkListQueryData::setScheduledStationAet);

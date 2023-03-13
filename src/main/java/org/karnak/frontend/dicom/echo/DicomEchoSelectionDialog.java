@@ -150,13 +150,13 @@ public class DicomEchoSelectionDialog extends AbstractDialog {
 	private void buildDataProviders() {
 		dataProviderForDicomNodeTypes = new ListDataProvider<>(dicomNodeTypes);
 
-		dataProviderForDicomNodeTypes
-			.addDataProviderListener((DataProviderListener<DicomNodeList>) event -> selectFirstItemInDicomNodeTypes());
+		dataProviderForDicomNodeTypes.addDataProviderListener(
+				(DataProviderListener<DicomNodeList>) event -> selectFirstItemInDicomNodeTypes());
 
 		dataProviderForDicomNodes = new ListDataProvider<>(dicomNodes);
 
 		dataProviderForDicomNodes
-			.addDataProviderListener((DataProviderListener<ConfigNode>) event -> selectFirstItemInDicomNodes());
+				.addDataProviderListener((DataProviderListener<ConfigNode>) event -> selectFirstItemInDicomNodes());
 	}
 
 	private void buildTitleBar() {

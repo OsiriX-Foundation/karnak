@@ -12,6 +12,7 @@ package org.karnak.frontend.project;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.data.entity.SecretEntity;
@@ -22,8 +23,6 @@ import org.karnak.frontend.component.ConfirmDialog;
 import org.karnak.frontend.project.component.EditProject;
 import org.karnak.frontend.project.component.GridProject;
 import org.karnak.frontend.project.component.NewProject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,9 +31,8 @@ import org.springframework.stereotype.Service;
  * project view
  */
 @Service
+@Slf4j
 public class ProjectLogic extends ListDataProvider<ProjectEntity> {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(ProjectLogic.class);
 
 	// View
 	private ProjectView projectView;
@@ -80,7 +78,7 @@ public class ProjectLogic extends ListDataProvider<ProjectEntity> {
 			return Long.valueOf(dataIdStr);
 		}
 		catch (NumberFormatException e) {
-			LOGGER.error("Cannot get valueOf {}", dataIdStr, e);
+			log.error("Cannot get valueOf {}", dataIdStr, e);
 		}
 		return null;
 	}
@@ -170,9 +168,8 @@ public class ProjectLogic extends ListDataProvider<ProjectEntity> {
 	 */
 	public void initEditProfileDropDown(EditProject editProject) {
 		editProject.getProfileDropDown().setItems(profilePipeService.getAllProfiles());
-		editProject.getProfileDropDown()
-			.setItemLabelGenerator(profileEntity -> String.format("%s [version %s]", profileEntity.getName(),
-					profileEntity.getVersion()));
+		editProject.getProfileDropDown().setItemLabelGenerator(
+				profileEntity -> String.format("%s [version %s]", profileEntity.getName(), profileEntity.getVersion()));
 	}
 
 	/**
@@ -181,9 +178,8 @@ public class ProjectLogic extends ListDataProvider<ProjectEntity> {
 	 */
 	public void initNewProjectProfileDropDown(NewProject newProject) {
 		newProject.getProfileDropDown().setItems(profilePipeService.getAllProfiles());
-		newProject.getProfileDropDown()
-			.setItemLabelGenerator(profileEntity -> String.format("%s [version %s]", profileEntity.getName(),
-					profileEntity.getVersion()));
+		newProject.getProfileDropDown().setItemLabelGenerator(
+				profileEntity -> String.format("%s [version %s]", profileEntity.getName(), profileEntity.getVersion()));
 	}
 
 	public ProjectView getProjectView() {

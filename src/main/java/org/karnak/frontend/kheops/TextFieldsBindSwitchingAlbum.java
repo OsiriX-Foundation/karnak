@@ -55,26 +55,23 @@ public class TextFieldsBindSwitchingAlbum {
 	private Binder<KheopsAlbumsEntity> buildBinder() {
 		Binder<KheopsAlbumsEntity> b = new BeanValidationBinder<>(KheopsAlbumsEntity.class);
 		b.forField(textAuthorizationDestination)
-			.withValidator(StringUtils::isNotBlank, "Token destination is mandatory")
-			.withValidator(value -> {
-				if (!textUrlAPI.getValue().isBlank()) {
-					return validateToken(value, textUrlAPI.getValue(), SwitchingAlbum.MIN_SCOPE_DESTINATION);
-				}
-				return true;
-			}, "Token can't be validate, minimum permissions: [write]")
-			.bind(KheopsAlbumsEntity::getAuthorizationDestination, KheopsAlbumsEntity::setAuthorizationDestination);
-		b.forField(textAuthorizationSource)
-			.withValidator(StringUtils::isNotBlank, "Token source is mandatory")
-			.withValidator(value -> {
-				if (!textUrlAPI.getValue().isBlank()) {
-					return validateToken(value, textUrlAPI.getValue(), SwitchingAlbum.MIN_SCOPE_SOURCE);
-				}
-				return true;
-			}, "Token can't be validate, minimum permissions: [read, send]")
-			.bind(KheopsAlbumsEntity::getAuthorizationSource, KheopsAlbumsEntity::setAuthorizationSource);
-		b.forField(textUrlAPI)
-			.withValidator(StringUtils::isNotBlank, "Url API is mandatory")
-			.bind(KheopsAlbumsEntity::getUrlAPI, KheopsAlbumsEntity::setUrlAPI);
+				.withValidator(StringUtils::isNotBlank, "Token destination is mandatory").withValidator(value -> {
+					if (!textUrlAPI.getValue().isBlank()) {
+						return validateToken(value, textUrlAPI.getValue(), SwitchingAlbum.MIN_SCOPE_DESTINATION);
+					}
+					return true;
+				}, "Token can't be validate, minimum permissions: [write]")
+				.bind(KheopsAlbumsEntity::getAuthorizationDestination, KheopsAlbumsEntity::setAuthorizationDestination);
+		b.forField(textAuthorizationSource).withValidator(StringUtils::isNotBlank, "Token source is mandatory")
+				.withValidator(value -> {
+					if (!textUrlAPI.getValue().isBlank()) {
+						return validateToken(value, textUrlAPI.getValue(), SwitchingAlbum.MIN_SCOPE_SOURCE);
+					}
+					return true;
+				}, "Token can't be validate, minimum permissions: [read, send]")
+				.bind(KheopsAlbumsEntity::getAuthorizationSource, KheopsAlbumsEntity::setAuthorizationSource);
+		b.forField(textUrlAPI).withValidator(StringUtils::isNotBlank, "Url API is mandatory")
+				.bind(KheopsAlbumsEntity::getUrlAPI, KheopsAlbumsEntity::setUrlAPI);
 		b.forField(textCondition).withValidator(value -> {
 			if (!textCondition.getValue().equals("")) {
 				expressionError = ExpressionResult.isValid(textCondition.getValue(), new ExprCondition(),

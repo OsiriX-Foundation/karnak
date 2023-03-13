@@ -12,7 +12,7 @@ package org.karnak.backend.config;
 import java.io.InputStream;
 import java.net.URL;
 import javax.annotation.PostConstruct;
-import org.apache.commons.lang3.RandomStringUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.karnak.backend.cache.ExternalIDCache;
 import org.karnak.backend.cache.MainzellisteCache;
 import org.karnak.backend.cache.PatientClient;
@@ -22,8 +22,6 @@ import org.karnak.backend.model.standard.ConfidentialityProfiles;
 import org.karnak.backend.model.standard.StandardDICOM;
 import org.karnak.backend.service.profilepipe.Profile;
 import org.karnak.backend.service.profilepipe.ProfilePipeService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -43,9 +41,8 @@ import org.yaml.snakeyaml.constructor.Constructor;
 @EnableCaching
 @EnableDiscoveryClient
 @EnableEurekaClient
+@Slf4j
 public class AppConfig {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(AppConfig.class);
 
 	private static AppConfig instance;
 
@@ -60,8 +57,6 @@ public class AppConfig {
 	private final ProfileRepo profileRepo;
 
 	private final ProfilePipeService profilePipeService;
-
-	private String nameInstance;
 
 	private final ExternalIDCache externalIDCache;
 
@@ -79,7 +74,6 @@ public class AppConfig {
 	@PostConstruct
 	public void postConstruct() {
 		instance = this;
-		nameInstance = RandomStringUtils.randomAlphabetic(5);
 	}
 
 	public static AppConfig getInstance() {
@@ -144,7 +138,7 @@ public class AppConfig {
 				profilePipeService.saveProfilePipe(profilePipeYml, true);
 			}
 			catch (final Exception e) {
-				LOGGER.error("Cannot persist default profile {}", profileURL, e);
+				log.error("Cannot persist default profile {}", profileURL, e);
 			}
 		}
 	}
@@ -152,10 +146,6 @@ public class AppConfig {
 	@Bean("StandardDICOM")
 	public StandardDICOM getStandardDICOM() {
 		return new StandardDICOM();
-	}
-
-	public String getNameInstance() {
-		return nameInstance;
 	}
 
 }

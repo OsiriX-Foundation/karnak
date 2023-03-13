@@ -108,7 +108,7 @@ public class SwitchingAlbumsView extends CustomField<List<KheopsAlbumsEntity>> {
 		dataProviderSwitchingAlbums.getItems().removeAll(dataProviderSwitchingAlbums.getItems());
 		gridSwitchingAlbums.clearEditorEditButtons();
 		dataProviderSwitchingAlbums.getItems()
-			.addAll(kheopsAlbumEntities != null ? kheopsAlbumEntities : new ArrayList<>());
+				.addAll(kheopsAlbumEntities != null ? kheopsAlbumEntities : new ArrayList<>());
 		dataProviderSwitchingAlbums.refreshAll();
 		setCheckboxSwitchingAlbumsValue();
 	}

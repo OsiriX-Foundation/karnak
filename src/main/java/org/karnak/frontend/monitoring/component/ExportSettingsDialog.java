@@ -94,14 +94,13 @@ public class ExportSettingsDialog extends Dialog {
 		binder = new Binder<>(ExportSettings.class);
 		// Delimiter
 		binder.forField(delimiterTextField)
-			.withValidator(separator -> separator.length() == 1, "Delimiter must contain only one character")
-			.asRequired("Delimiter is required")
-			.bind(ExportSettings::getDelimiter, ExportSettings::setDelimiter);
+				.withValidator(separator -> separator.length() == 1, "Delimiter must contain only one character")
+				.asRequired("Delimiter is required").bind(ExportSettings::getDelimiter, ExportSettings::setDelimiter);
 		// Quote character
 		binder.forField(quoteCharacterTextField)
-			.withValidator(separator -> separator.length() == 1, "Quote character must contain only one character")
-			.asRequired("Quote character is required")
-			.bind(ExportSettings::getQuoteCharacter, ExportSettings::setQuoteCharacter);
+				.withValidator(separator -> separator.length() == 1, "Quote character must contain only one character")
+				.asRequired("Quote character is required")
+				.bind(ExportSettings::getQuoteCharacter, ExportSettings::setQuoteCharacter);
 	}
 
 	/**

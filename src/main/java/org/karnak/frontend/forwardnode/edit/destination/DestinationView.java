@@ -22,16 +22,12 @@ import org.karnak.frontend.forwardnode.edit.component.ButtonSaveDeleteCancel;
 import org.karnak.frontend.forwardnode.edit.destination.component.GridDestination;
 import org.karnak.frontend.forwardnode.edit.destination.component.NewUpdateDestination;
 import org.karnak.frontend.util.UIS;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Destination View
  */
 @SuppressWarnings("serial")
 public class DestinationView extends VerticalLayout {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(DestinationView.class);
 
 	// Destination Logic
 	private final DestinationLogic destinationLogic;

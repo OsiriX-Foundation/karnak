@@ -64,10 +64,8 @@ public enum UIDType {
 	 */
 	public static UIDType fromCode(final String code) {
 		if (code != null) {
-			return Arrays.stream(UIDType.values())
-				.filter(u -> code.trim().equalsIgnoreCase(u.getCode()))
-				.findFirst()
-				.orElse(null);
+			return Arrays.stream(UIDType.values()).filter(u -> code.trim().equalsIgnoreCase(u.getCode())).findFirst()
+					.orElse(null);
 		}
 		return null;
 	}
@@ -79,10 +77,8 @@ public enum UIDType {
 	 */
 	public static UIDType fromDescription(final String description) {
 		if (description != null) {
-			return Arrays.stream(UIDType.values())
-				.filter(u -> description.trim().equalsIgnoreCase(u.getDescription()))
-				.findFirst()
-				.orElse(null);
+			return Arrays.stream(UIDType.values()).filter(u -> description.trim().equalsIgnoreCase(u.getDescription()))
+					.findFirst().orElse(null);
 		}
 		return null;
 	}
@@ -90,8 +86,7 @@ public enum UIDType {
 	public static String descriptionOf(final String code) {
 		if (code != null) {
 			Optional<UIDType> uidTypeFound = Arrays.stream(UIDType.values())
-				.filter(u -> code.trim().equalsIgnoreCase(u.getCode()))
-				.findFirst();
+					.filter(u -> code.trim().equalsIgnoreCase(u.getCode())).findFirst();
 			return uidTypeFound.isPresent() ? uidTypeFound.get().getDescription() : DEFAULT_DESCRIPTION;
 		}
 		return DEFAULT_DESCRIPTION;

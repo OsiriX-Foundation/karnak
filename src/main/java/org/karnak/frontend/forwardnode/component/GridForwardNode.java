@@ -21,9 +21,7 @@ public class GridForwardNode extends Grid<ForwardNodeEntity> {
 		setSizeFull();
 
 		Column<ForwardNodeEntity> forwardAeTitleColumn = addColumn(ForwardNodeEntity::getFwdAeTitle)
-			.setHeader("Forward AETitle")
-			.setFlexGrow(20)
-			.setSortable(true);
+				.setHeader("Forward AETitle").setFlexGrow(20).setSortable(true);
 
 		addColumn(ForwardNodeEntity::getFwdDescription).setHeader("Description").setFlexGrow(20).setSortable(true);
 

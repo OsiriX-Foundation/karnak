@@ -11,8 +11,7 @@ package org.karnak.backend.security;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
@@ -23,9 +22,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 /**
  * Handle IDP logout
  */
+@Slf4j
 public class OpenIdConnectLogoutHandler extends SecurityContextLogoutHandler {
-
-	private static final Logger logger = LoggerFactory.getLogger(OpenIdConnectLogoutHandler.class);
 
 	private static final String END_SESSION_ENDPOINT = "/protocol/openid-connect/logout";
 
@@ -51,12 +49,12 @@ public class OpenIdConnectLogoutHandler extends SecurityContextLogoutHandler {
 
 		// Build logout URI
 		String endSessionEndpoint = user.getIssuer() + END_SESSION_ENDPOINT;
-		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(endSessionEndpoint)
-			.queryParam(ID_TOKEN_HINT, user.getIdToken().getTokenValue());
+		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(endSessionEndpoint).queryParam(ID_TOKEN_HINT,
+				user.getIdToken().getTokenValue());
 
 		// Call IDP logout endpoint
 		ResponseEntity<String> logoutResponse = restTemplate.getForEntity(builder.toUriString(), String.class);
-		logger.info(logoutResponse.getStatusCode().is2xxSuccessful() ? "Successful IDP logout"
+		log.info(logoutResponse.getStatusCode().is2xxSuccessful() ? "Successful IDP logout"
 				: "Could not propagate logout to IDP");
 	}
 

@@ -17,23 +17,21 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.karnak.backend.dicom.DateTimeUtils;
 import org.karnak.backend.model.Series;
 import org.karnak.backend.model.SopInstance;
 import org.karnak.backend.model.Study;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.weasis.dicom.param.AttributeEditor;
 import org.weasis.dicom.param.AttributeEditorContext;
 import org.weasis.dicom.param.AttributeEditorContext.Abort;
 import org.weasis.dicom.param.DicomProgress;
 import org.weasis.dicom.util.DateUtil;
 
+@Slf4j
 public class StreamRegistryEditor implements AttributeEditor {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(StreamRegistryEditor.class);
 
 	private final Map<String, Study> studyMap = new HashMap<>();
 
@@ -132,7 +130,7 @@ public class StreamRegistryEditor implements AttributeEditor {
 						}
 					}
 				}
-				LOGGER.error("sopUID [{}] doesn't exist for notify the state", sopUID);
+				log.error("sopUID [{}] doesn't exist for notify the state", sopUID);
 			}
 		}
 	}

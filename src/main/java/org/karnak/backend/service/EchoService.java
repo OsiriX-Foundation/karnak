@@ -17,8 +17,6 @@ import org.karnak.backend.dicom.ForwardDicomNode;
 import org.karnak.backend.dicom.WebForwardDestination;
 import org.karnak.backend.model.echo.DestinationEcho;
 import org.karnak.backend.service.gateway.GatewaySetUpService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.weasis.dicom.op.Echo;
@@ -32,8 +30,6 @@ import org.weasis.dicom.param.DicomState;
  */
 @Service
 public class EchoService {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(EchoService.class);
 
 	// Service
 	private final GatewaySetUpService gatewaySetUpService;
@@ -53,8 +49,8 @@ public class EchoService {
 
 		// Fill the list of destinations status
 		gatewaySetUpService.getDestinationNode(sourceAet)
-			.ifPresent(sourceNode -> fillDestinationsStatus(destinationEchos, sourceNode,
-					gatewaySetUpService.getDestinations(sourceNode)));
+				.ifPresent(sourceNode -> fillDestinationsStatus(destinationEchos, sourceNode,
+						gatewaySetUpService.getDestinations(sourceNode)));
 
 		return destinationEchos;
 	}

@@ -28,20 +28,18 @@ public class ToggleButtonTheme extends HorizontalLayout {
 		toggleButton = new ToggleButton();
 
 		// read local storage theme
-		UI.getCurrent()
-			.getPage()
-			.executeJs("return localStorage.getItem($0)", THEME_COLOR_KEY)
-			.then(String.class, string -> {
-				final String themeColor = string;
-				if (themeColor != null) {
-					if (string.equals(Lumo.DARK)) {
-						toggleButton.setValue(true);
+		UI.getCurrent().getPage().executeJs("return localStorage.getItem($0)", THEME_COLOR_KEY).then(String.class,
+				string -> {
+					final String themeColor = string;
+					if (themeColor != null) {
+						if (string.equals(Lumo.DARK)) {
+							toggleButton.setValue(true);
+						}
+						else if (string.equals(Lumo.LIGHT)) {
+							toggleButton.setValue(false);
+						}
 					}
-					else if (string.equals(Lumo.LIGHT)) {
-						toggleButton.setValue(false);
-					}
-				}
-			});
+				});
 
 		toggleButton.addValueChangeListener(toggleButtonBooleanComponentValueChangeEvent -> {
 			if (Boolean.TRUE.equals(toggleButtonBooleanComponentValueChangeEvent.getValue())) {

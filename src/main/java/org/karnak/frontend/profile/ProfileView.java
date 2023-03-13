@@ -26,8 +26,6 @@ import org.karnak.frontend.profile.component.ProfileGrid;
 import org.karnak.frontend.profile.component.editprofile.ProfileComponent;
 import org.karnak.frontend.profile.component.editprofile.ProfileElementMainView;
 import org.karnak.frontend.profile.component.errorprofile.ProfileErrorView;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 
@@ -40,8 +38,6 @@ public class ProfileView extends HorizontalLayout implements HasUrlParameter<Str
 	public static final String VIEW_NAME = "Profiles";
 
 	public static final String ROUTE = "profile";
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(ProfileView.class);
 
 	private final ProfileLogic profileLogic;
 

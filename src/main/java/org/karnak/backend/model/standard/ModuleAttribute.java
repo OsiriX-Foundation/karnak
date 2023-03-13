@@ -43,9 +43,8 @@ public class ModuleAttribute {
 	}
 
 	private String generateTagPath(String tagPath, String moduleId) {
-		List<String> tagPathFiltered = Arrays.stream(tagPath.split(":"))
-			.filter(value -> !value.equals(moduleId))
-			.collect(Collectors.toList());
+		List<String> tagPathFiltered = Arrays.stream(tagPath.split(":")).filter(value -> !value.equals(moduleId))
+				.collect(Collectors.toList());
 
 		return StringUtils.join(tagPathFiltered, ":");
 	}
