@@ -38,8 +38,8 @@ spring:
         enabled: false
 #    Currently no cs configured in docker deploy/ vault
 #      fail-fast: true
-#      name: ${spring.application.name}
-#      label: ${ENVIRONMENT}
+      name: ${spring.application.name}
+      label: ${ENVIRONMENT}
 #      uri: ${CONFIGSERVER_URI}
 #  config:
 #    import: 'configserver:'
