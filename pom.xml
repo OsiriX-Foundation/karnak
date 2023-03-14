@@ -165,7 +165,7 @@
     <dependency>
       <groupId>ch.hcuge.springcloud</groupId>
       <artifactId>spring-cloud-security</artifactId>
-<!--      <version>${spring-cloud-parent.version}</version>-->
+      <version>${spring-cloud-parent.version}</version>
     </dependency>
 
     <!-- Eureka -->
@@ -190,7 +190,7 @@
     <dependency>
       <groupId>ch.hcuge.springcloud</groupId>
       <artifactId>spring-cloud-eureka-plugins</artifactId>
-<!--      <version>${spring-cloud-eureka-plugins.version}</version>-->
+      <version>${spring-cloud-eureka-plugins.version}</version>
     </dependency>
 
     <!-- security -->
