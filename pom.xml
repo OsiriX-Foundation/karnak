@@ -7,7 +7,7 @@
   <!-- Pom Parent -->
   <parent>
     <groupId>ch.hcuge.springcloud</groupId>
-    <artifactId>spring-cloud-ms-dependencies</artifactId>
+    <artifactId>spring-cloud-core-dependencies</artifactId>
     <version>2.7.7-2021.0.5-1.0</version>
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
@@ -36,7 +36,7 @@
     <enforcer.jdk-version>[${java.version},)</enforcer.jdk-version>
     <enforcer.maven-version>[3.3.0,)</enforcer.maven-version>
     <liquibase.version>4.3.5</liquibase.version>
-    <javax.el.version>3.0.0</javax.el.version>
+<!--    <javax.el.version>3.0.0</javax.el.version>-->
     <javax.mail.version>1.6.2</javax.mail.version>
     <vaadin.version>21.0.9</vaadin.version>
     <weasis-dicom-tools.version>5.29.0.2</weasis-dicom-tools.version>
@@ -114,9 +114,9 @@
   <!-- Dependencies -->
   <dependencies>
 
-    <!-- =================== -->
-    <!-- Springboot starters -->
-    <!-- =================== -->
+    <!-- =========== -->
+    <!-- Springboot  -->
+    <!-- =========== -->
 
     <dependency>
       <artifactId>spring-boot-starter-web</artifactId>
@@ -152,13 +152,74 @@
     <!-- Oauth2 -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-oauth2-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>ch.hcuge.springcloud</groupId>
+      <artifactId>spring-cloud-security</artifactId>
+      <version>${spring-cloud-parent.version}</version>
+    </dependency>
+
+    <!-- Eureka -->
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.springframework.cloud</groupId>
+          <artifactId>spring-cloud-starter-netflix-ribbon</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.springframework.cloud</groupId>
+          <artifactId>spring-cloud-netflix-ribbon</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.netflix.ribbon</groupId>
+          <artifactId>ribbon-eureka</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>ch.hcuge.springcloud</groupId>
+      <artifactId>spring-cloud-eureka-plugins</artifactId>
+      <version>${spring-cloud-eureka-plugins.version}</version>
+    </dependency>
+
+    <!-- security -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>ch.hcuge.springcloud</groupId>
+      <artifactId>spring-cloud-security</artifactId>
+<!--      <version>${spring-cloud-parent.version}</version>-->
+    </dependency>
+
+    <!-- ====== -->
+    <!-- Lombok -->
+    <!-- ====== -->
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <optional>true</optional>
     </dependency>
 
     <!-- ====== -->
     <!-- Weasis -->
     <!-- ====== -->
-
     <!-- Dicom-tools-->
     <dependency>
       <artifactId>weasis-dicom-tools</artifactId>
@@ -179,7 +240,6 @@
     <!-- ========= -->
     <!-- Liquibase -->
     <!-- ========= -->
-
     <dependency>
       <artifactId>liquibase-maven-plugin</artifactId>
       <groupId>org.liquibase</groupId>
@@ -189,18 +249,17 @@
     <!-- ========= -->
     <!-- Open Csv  -->
     <!-- ========= -->
-
     <dependency>
       <groupId>com.opencsv</groupId>
       <artifactId>opencsv</artifactId>
       <version>${opencsv.version}</version>
     </dependency>
 
-    <dependency>
-      <artifactId>cache-api</artifactId>
-      <groupId>javax.cache</groupId>
-      <version>1.1.1</version>
-    </dependency>
+<!--    <dependency>-->
+<!--      <artifactId>cache-api</artifactId>-->
+<!--      <groupId>javax.cache</groupId>-->
+<!--      <version>1.1.1</version>-->
+<!--    </dependency>-->
 
     <dependency>
       <artifactId>json</artifactId>
@@ -213,6 +272,12 @@
       <groupId>com.google.code.gson</groupId>
       <version>2.8.6</version>
     </dependency>
+
+<!--    <dependency>-->
+<!--      <artifactId>javax.el</artifactId>-->
+<!--      <groupId>org.glassfish</groupId>-->
+<!--      <version>${javax.el.version}</version>-->
+<!--    </dependency>-->
 
 <!--    <dependency>-->
 <!--      <artifactId>weasis-dicom-tools</artifactId>-->
@@ -243,24 +308,27 @@
       <version>${javax.mail.version}</version>
     </dependency>
 
-    <!-- Bean validation implementation -->
+    <!-- ============ -->
+    <!--  Validation  -->
+    <!-- ============ -->
     <dependency>
       <artifactId>hibernate-validator</artifactId>
       <groupId>org.hibernate.validator</groupId>
     </dependency>
+
     <dependency>
-      <artifactId>javax.el</artifactId>
-      <groupId>org.glassfish</groupId>
-      <version>${javax.el.version}</version>
+      <artifactId>validation-api</artifactId>
+      <groupId>javax.validation</groupId>
     </dependency>
 
-    <!-- PostgreSQL -->
+    <!-- ============ -->
+    <!--  Postgresql  -->
+    <!-- ============ -->
     <dependency>
       <artifactId>postgresql</artifactId>
       <groupId>org.postgresql</groupId>
       <scope>runtime</scope>
     </dependency>
-
 
     <!-- ========= -->
     <!--   Vaadin  -->
@@ -282,7 +350,6 @@
       <groupId>com.vaadin</groupId>
       <version>${vaadin.version}</version>
     </dependency>
-
     <dependency>
       <groupId>com.vaadin</groupId>
       <artifactId>vaadin</artifactId>
@@ -319,7 +386,11 @@
       <artifactId>vaadin-confirm-dialog-flow</artifactId>
       <groupId>com.vaadin</groupId>
     </dependency>
-
+    <dependency>
+      <groupId>org.vaadin.artur</groupId>
+      <artifactId>spring-data-provider</artifactId>
+      <version>2.1.0</version>
+    </dependency>
     <!-- Vaadin - Addons -->
     <dependency>
       <artifactId>iron-icons</artifactId>
@@ -347,12 +418,9 @@
       <version>2.0.10</version>
     </dependency>
 
-    <dependency>
-      <artifactId>validation-api</artifactId>
-      <groupId>javax.validation</groupId>
-    </dependency>
-
-    <!--	Jackson -->
+    <!-- ========== -->
+    <!--   Jackson  -->
+    <!-- ========== -->
     <dependency>
       <artifactId>jackson-annotations</artifactId>
       <groupId>com.fasterxml.jackson.core</groupId>
@@ -398,13 +466,7 @@
       <version>${h2.version}</version>
     </dependency>
 
-    <dependency>
-      <groupId>org.vaadin.artur</groupId>
-      <artifactId>spring-data-provider</artifactId>
-      <version>2.1.0</version>
-    </dependency>
   </dependencies>
-
 
   <!-- Build-->
   <build>
