@@ -40,7 +40,7 @@
     <javax.mail.version>1.6.2</javax.mail.version>
     <vaadin.version>21.0.9</vaadin.version>
     <weasis-dicom-tools.version>5.29.0.2</weasis-dicom-tools.version>
-    <weasis.opencv.native.version>4.6.0-dcm</weasis.opencv.native.version>
+<!--    <weasis.opencv.native.version>4.6.0-dcm</weasis.opencv.native.version>-->
     <h2.version>1.4.200</h2.version>
     <org.json.version>20211205</org.json.version>
     <opencsv.version>5.5.2</opencsv.version>
@@ -114,7 +114,9 @@
   <!-- Dependencies -->
   <dependencies>
 
+    <!-- =================== -->
     <!-- Springboot starters -->
+    <!-- =================== -->
 
     <dependency>
       <artifactId>spring-boot-starter-web</artifactId>
@@ -141,16 +143,63 @@
       <artifactId>spring-boot-starter-data-redis</artifactId>
     </dependency>
 
+    <!-- jpa, crud repository -->
     <dependency>
-      <artifactId>cache-api</artifactId>
-      <groupId>javax.cache</groupId>
-      <version>1.1.1</version>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-jpa</artifactId>
     </dependency>
+
+    <!-- Oauth2 -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-oauth2-client</artifactId>
+    </dependency>
+
+    <!-- ====== -->
+    <!-- Weasis -->
+    <!-- ====== -->
+
+    <!-- Dicom-tools-->
+    <dependency>
+      <artifactId>weasis-dicom-tools</artifactId>
+      <groupId>org.weasis</groupId>
+      <version>${weasis-dicom-tools.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <!-- ========= -->
+    <!-- Liquibase -->
+    <!-- ========= -->
 
     <dependency>
       <artifactId>liquibase-maven-plugin</artifactId>
       <groupId>org.liquibase</groupId>
       <version>${liquibase.version}</version>
+    </dependency>
+
+    <!-- ========= -->
+    <!-- Open Csv  -->
+    <!-- ========= -->
+
+    <dependency>
+      <groupId>com.opencsv</groupId>
+      <artifactId>opencsv</artifactId>
+      <version>${opencsv.version}</version>
+    </dependency>
+
+    <dependency>
+      <artifactId>cache-api</artifactId>
+      <groupId>javax.cache</groupId>
+      <version>1.1.1</version>
     </dependency>
 
     <dependency>
@@ -165,65 +214,33 @@
       <version>2.8.6</version>
     </dependency>
 
-    <dependency>
-      <groupId>com.opencsv</groupId>
-      <artifactId>opencsv</artifactId>
-      <version>${opencsv.version}</version>
-    </dependency>
+<!--    <dependency>-->
+<!--      <artifactId>weasis-dicom-tools</artifactId>-->
+<!--      <exclusions>-->
+<!--        <exclusion>-->
+<!--          <artifactId>slf4j-log4j12</artifactId>-->
+<!--          <groupId>org.slf4j</groupId>-->
+<!--        </exclusion>-->
+<!--        <exclusion>-->
+<!--          <artifactId>libopencv_java</artifactId>-->
+<!--          <groupId>org.weasis.thirdparty.org.opencv</groupId>-->
+<!--        </exclusion>-->
+<!--        <exclusion>-->
+<!--          <artifactId>opencv_java</artifactId>-->
+<!--          <groupId>org.weasis.thirdparty.org.opencv</groupId>-->
+<!--        </exclusion>-->
+<!--      </exclusions>-->
+<!--      <groupId>org.weasis</groupId>-->
+<!--      <version>${weasis-dicom-tools.version}</version>-->
+<!--    </dependency>-->
 
-    <dependency>
-      <artifactId>weasis-dicom-tools</artifactId>
-      <exclusions>
-        <exclusion>
-          <artifactId>slf4j-log4j12</artifactId>
-          <groupId>org.slf4j</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>libopencv_java</artifactId>
-          <groupId>org.weasis.thirdparty.org.opencv</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>opencv_java</artifactId>
-          <groupId>org.weasis.thirdparty.org.opencv</groupId>
-        </exclusion>
-      </exclusions>
-      <groupId>org.weasis</groupId>
-      <version>${weasis-dicom-tools.version}</version>
-    </dependency>
+    <!-- ========= -->
+    <!--    Mail   -->
+    <!-- ========= -->
     <dependency>
       <artifactId>javax.mail</artifactId>
       <groupId>com.sun.mail</groupId>
       <version>${javax.mail.version}</version>
-    </dependency>
-
-    <!-- jpa, crud repository -->
-    <dependency>
-      <artifactId>spring-boot-starter-data-jpa</artifactId>
-      <groupId>org.springframework.boot</groupId>
-    </dependency>
-
-    <!-- Vaadin Spring -->
-    <dependency>
-      <artifactId>vaadin-spring-boot-starter</artifactId>
-      <exclusions>
-        <!-- Excluding so that webjars are not included. -->
-        <exclusion>
-          <artifactId>vaadin-core</artifactId>
-          <groupId>com.vaadin</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>spring-boot-starter-web</artifactId>
-          <groupId>org.springframework.boot</groupId>
-        </exclusion>
-      </exclusions>
-      <groupId>com.vaadin</groupId>
-      <version>${vaadin.version}</version>
-    </dependency>
-
-    <!-- Oauth2 -->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-oauth2-client</artifactId>
     </dependency>
 
     <!-- Bean validation implementation -->
@@ -244,7 +261,30 @@
       <scope>runtime</scope>
     </dependency>
 
+
+    <!-- ========= -->
+    <!--   Vaadin  -->
+    <!-- ========= -->
+    <!-- Vaadin Spring -->
     <dependency>
+      <artifactId>vaadin-spring-boot-starter</artifactId>
+      <exclusions>
+        <!-- Excluding so that webjars are not included. -->
+        <exclusion>
+          <artifactId>vaadin-core</artifactId>
+          <groupId>com.vaadin</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>spring-boot-starter-web</artifactId>
+          <groupId>org.springframework.boot</groupId>
+        </exclusion>
+      </exclusions>
+      <groupId>com.vaadin</groupId>
+      <version>${vaadin.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.vaadin</groupId>
       <artifactId>vaadin</artifactId>
       <!-- Replace artifactId with vaadin-core to use only free components -->
       <exclusions>
@@ -274,7 +314,6 @@
           <groupId>org.webjars.bowergithub.webcomponents</groupId>
         </exclusion>
       </exclusions>
-      <groupId>com.vaadin</groupId>
     </dependency>
     <dependency>
       <artifactId>vaadin-confirm-dialog-flow</artifactId>
@@ -371,22 +410,22 @@
   <build>
     <defaultGoal>spring-boot:run</defaultGoal>
     <plugins>
-      <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-        <configuration>
-          <jvmArguments>
-            -Djava.library.path="${java.io.tmpdir}/dicom-opencv-${weasis.opencv.native.version}"
-          </jvmArguments>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>repackage</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
+<!--      <plugin>-->
+<!--        <groupId>org.springframework.boot</groupId>-->
+<!--        <artifactId>spring-boot-maven-plugin</artifactId>-->
+<!--        <configuration>-->
+<!--          <jvmArguments>-->
+<!--            -Djava.library.path="${java.io.tmpdir}/dicom-opencv-${weasis.opencv.native.version}"-->
+<!--          </jvmArguments>-->
+<!--        </configuration>-->
+<!--        <executions>-->
+<!--          <execution>-->
+<!--            <goals>-->
+<!--              <goal>repackage</goal>-->
+<!--            </goals>-->
+<!--          </execution>-->
+<!--        </executions>-->
+<!--      </plugin>-->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
@@ -435,85 +474,97 @@
 <!--        </configuration>-->
 <!--      </plugin>-->
 
+<!--      <plugin>-->
+<!--        <artifactId>maven-dependency-plugin</artifactId>-->
+<!--        <configuration>-->
+<!--          <artifactItems>-->
+<!--            <artifactItem>-->
+<!--              <artifactId>libopencv_java</artifactId>-->
+<!--              <classifier>linux-x86-64</classifier>-->
+<!--              <destFileName>libopencv_java.so</destFileName>-->
+<!--              <groupId>org.weasis.thirdparty.org.opencv</groupId>-->
+<!--              <outputDirectory>${project.build.directory}/native-lib/lib/linux-x86-64-->
+<!--              </outputDirectory>-->
+<!--              <type>so</type>-->
+<!--              <version>${weasis.opencv.native.version}</version>-->
+<!--            </artifactItem>-->
+<!--            <artifactItem>-->
+<!--              <artifactId>libopencv_java</artifactId>-->
+<!--              <classifier>linux-aarch64</classifier>-->
+<!--              <destFileName>libopencv_java.so</destFileName>-->
+<!--              <groupId>org.weasis.thirdparty.org.opencv</groupId>-->
+<!--              <outputDirectory>${project.build.directory}/native-lib/lib/linux-aarch64-->
+<!--              </outputDirectory>-->
+<!--              <type>so</type>-->
+<!--              <version>${weasis.opencv.native.version}</version>-->
+<!--            </artifactItem>-->
+<!--            <artifactItem>-->
+<!--              <artifactId>libopencv_java</artifactId>-->
+<!--              <classifier>linux-armv7a</classifier>-->
+<!--              <destFileName>libopencv_java.so</destFileName>-->
+<!--              <groupId>org.weasis.thirdparty.org.opencv</groupId>-->
+<!--              <outputDirectory>${project.build.directory}/native-lib/lib/linux-armv7a-->
+<!--              </outputDirectory>-->
+<!--              <type>so</type>-->
+<!--              <version>${weasis.opencv.native.version}</version>-->
+<!--            </artifactItem>-->
+<!--            <artifactItem>-->
+<!--              <artifactId>libopencv_java</artifactId>-->
+<!--              <classifier>macosx-x86-64</classifier>-->
+<!--              <destFileName>libopencv_java.dylib</destFileName>-->
+<!--              <groupId>org.weasis.thirdparty.org.opencv</groupId>-->
+<!--              <outputDirectory>${project.build.directory}/native-lib/lib/macosx-x86-64-->
+<!--              </outputDirectory>-->
+<!--              <type>dylib</type>-->
+<!--              <version>${weasis.opencv.native.version}</version>-->
+<!--            </artifactItem>-->
+<!--            <artifactItem>-->
+<!--              <artifactId>opencv_java</artifactId>-->
+<!--              <classifier>windows-x86-64</classifier>-->
+<!--              <destFileName>opencv_java.dll</destFileName>-->
+<!--              <groupId>org.weasis.thirdparty.org.opencv</groupId>-->
+<!--              <outputDirectory>${project.build.directory}/native-lib/lib/windows-x86-64-->
+<!--              </outputDirectory>-->
+<!--              <type>dll</type>-->
+<!--              <version>${weasis.opencv.native.version}</version>-->
+<!--            </artifactItem>-->
+<!--          </artifactItems>-->
+<!--          <outputDirectory>${project.build.directory}</outputDirectory>-->
+<!--        </configuration>-->
+<!--        <executions>-->
+<!--          <execution>-->
+<!--            <goals>-->
+<!--              <goal>copy</goal>-->
+<!--            </goals>-->
+<!--            <id>copy</id>-->
+<!--            <phase>generate-resources</phase>-->
+<!--          </execution>-->
+<!--        </executions>-->
+<!--        <groupId>org.apache.maven.plugins</groupId>-->
+<!--        <version>3.2.0</version>-->
+<!--      </plugin>-->
       <plugin>
-        <artifactId>maven-dependency-plugin</artifactId>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
         <configuration>
-          <artifactItems>
-            <artifactItem>
-              <artifactId>libopencv_java</artifactId>
-              <classifier>linux-x86-64</classifier>
-              <destFileName>libopencv_java.so</destFileName>
-              <groupId>org.weasis.thirdparty.org.opencv</groupId>
-              <outputDirectory>${project.build.directory}/native-lib/lib/linux-x86-64
-              </outputDirectory>
-              <type>so</type>
-              <version>${weasis.opencv.native.version}</version>
-            </artifactItem>
-            <artifactItem>
-              <artifactId>libopencv_java</artifactId>
-              <classifier>linux-aarch64</classifier>
-              <destFileName>libopencv_java.so</destFileName>
-              <groupId>org.weasis.thirdparty.org.opencv</groupId>
-              <outputDirectory>${project.build.directory}/native-lib/lib/linux-aarch64
-              </outputDirectory>
-              <type>so</type>
-              <version>${weasis.opencv.native.version}</version>
-            </artifactItem>
-            <artifactItem>
-              <artifactId>libopencv_java</artifactId>
-              <classifier>linux-armv7a</classifier>
-              <destFileName>libopencv_java.so</destFileName>
-              <groupId>org.weasis.thirdparty.org.opencv</groupId>
-              <outputDirectory>${project.build.directory}/native-lib/lib/linux-armv7a
-              </outputDirectory>
-              <type>so</type>
-              <version>${weasis.opencv.native.version}</version>
-            </artifactItem>
-            <artifactItem>
-              <artifactId>libopencv_java</artifactId>
-              <classifier>macosx-x86-64</classifier>
-              <destFileName>libopencv_java.dylib</destFileName>
-              <groupId>org.weasis.thirdparty.org.opencv</groupId>
-              <outputDirectory>${project.build.directory}/native-lib/lib/macosx-x86-64
-              </outputDirectory>
-              <type>dylib</type>
-              <version>${weasis.opencv.native.version}</version>
-            </artifactItem>
-            <artifactItem>
-              <artifactId>opencv_java</artifactId>
-              <classifier>windows-x86-64</classifier>
-              <destFileName>opencv_java.dll</destFileName>
-              <groupId>org.weasis.thirdparty.org.opencv</groupId>
-              <outputDirectory>${project.build.directory}/native-lib/lib/windows-x86-64
-              </outputDirectory>
-              <type>dll</type>
-              <version>${weasis.opencv.native.version}</version>
-            </artifactItem>
-          </artifactItems>
-          <outputDirectory>${project.build.directory}</outputDirectory>
+          <image>
+            <env>
+              <BPE_DELIM_LD_LIBRARY_PATH>:</BPE_DELIM_LD_LIBRARY_PATH>
+              <BPE_APPEND_LD_LIBRARY_PATH>/var/lib/native_lib:/var/lib/native_lib/native_lib</BPE_APPEND_LD_LIBRARY_PATH>
+            </env>
+          </image>
         </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>copy</goal>
-            </goals>
-            <id>copy</id>
-            <phase>generate-resources</phase>
-          </execution>
-        </executions>
-        <groupId>org.apache.maven.plugins</groupId>
-        <version>3.2.0</version>
       </plugin>
     </plugins>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>true</filtering>
-      </resource>
-      <resource>
-        <directory>${project.build.directory}/native-lib</directory>
-      </resource>
-    </resources>
+<!--    <resources>-->
+<!--      <resource>-->
+<!--        <directory>src/main/resources</directory>-->
+<!--        <filtering>true</filtering>-->
+<!--      </resource>-->
+<!--      <resource>-->
+<!--        <directory>${project.build.directory}/native-lib</directory>-->
+<!--      </resource>-->
+<!--    </resources>-->
   </build>
 
 
