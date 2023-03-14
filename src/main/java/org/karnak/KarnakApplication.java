@@ -39,8 +39,7 @@ public class KarnakApplication implements CommandLineRunner {
 	private AppConfig myConfig;
 
 	public static void main(String[] args) {
-		// Load open cv library
-		loadOpenCvNativeLibrary();
+
 		SpringApplicationBuilder application = new SpringApplicationBuilder(KarnakApplication.class);
 
 		// If environment variable IDP exists and has value "oidc": activate the profile
@@ -57,6 +56,8 @@ public class KarnakApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) {
 		log.info("StartApplication");
+		// Load open cv library
+		loadOpenCvNativeLibrary();
 		log.info("using environment: " + (myConfig != null ? myConfig.getEnvironment() : ""));
 		log.info("name: " + (myConfig != null ? myConfig.getName() : ""));
 	}
