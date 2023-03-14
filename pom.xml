@@ -194,19 +194,19 @@
     </dependency>
 
     <!-- security -->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-security</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>ch.hcuge.springcloud</groupId>
-      <artifactId>spring-cloud-security</artifactId>
-<!--      <version>${spring-cloud-parent.version}</version>-->
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>org.springframework.boot</groupId>-->
+<!--      <artifactId>spring-boot-starter-security</artifactId>-->
+<!--    </dependency>-->
+<!--    <dependency>-->
+<!--      <groupId>org.springframework.boot</groupId>-->
+<!--      <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>-->
+<!--    </dependency>-->
+<!--    <dependency>-->
+<!--      <groupId>ch.hcuge.springcloud</groupId>-->
+<!--      <artifactId>spring-cloud-security</artifactId>-->
+<!--&lt;!&ndash;      <version>${spring-cloud-parent.version}</version>&ndash;&gt;-->
+<!--    </dependency>-->
 
     <!-- ====== -->
     <!-- Lombok -->
@@ -486,29 +486,29 @@
         </configuration>
       </plugin>
             
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <version>3.0.0-M3</version>
-        <executions>
-          <execution>
-            <id>min-requirement</id>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-            <configuration>
-              <rules>
-                <requireMavenVersion>
-                  <version>${enforcer.maven-version}</version>
-                </requireMavenVersion>
-                <requireJavaVersion>
-                  <version>${enforcer.jdk-version}</version>
-                </requireJavaVersion>
-              </rules>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
+<!--      <plugin>-->
+<!--        <groupId>org.apache.maven.plugins</groupId>-->
+<!--        <artifactId>maven-enforcer-plugin</artifactId>-->
+<!--        <version>3.0.0-M3</version>-->
+<!--        <executions>-->
+<!--          <execution>-->
+<!--            <id>min-requirement</id>-->
+<!--            <goals>-->
+<!--              <goal>enforce</goal>-->
+<!--            </goals>-->
+<!--            <configuration>-->
+<!--              <rules>-->
+<!--                <requireMavenVersion>-->
+<!--                  <version>${enforcer.maven-version}</version>-->
+<!--                </requireMavenVersion>-->
+<!--                <requireJavaVersion>-->
+<!--                  <version>${enforcer.jdk-version}</version>-->
+<!--                </requireJavaVersion>-->
+<!--              </rules>-->
+<!--            </configuration>-->
+<!--          </execution>-->
+<!--        </executions>-->
+<!--      </plugin>-->
       <!-- Take care of synchronizing java dependencies and imports in package.json and main.js files. It also creates webpack.config.js
         if not exists yet. -->
       <plugin>
