@@ -36,12 +36,13 @@ spring:
     config:
       discovery:
         enabled: false
-      fail-fast: true
-      name: ${spring.application.name}
-      label: ${ENVIRONMENT}
-      uri: ${CONFIGSERVER_URI}
-  config:
-    import: 'configserver:'
+#    Currently no cs configured in docker deploy/ vault
+#      fail-fast: true
+#      name: ${spring.application.name}
+#      label: ${ENVIRONMENT}
+#      uri: ${CONFIGSERVER_URI}
+#  config:
+#    import: 'configserver:'
   liquibase:
     enabled: true
     change-log: classpath:db/changelog/db.changelog-master.yaml
