@@ -472,22 +472,20 @@
   <build>
     <defaultGoal>spring-boot:run</defaultGoal>
     <plugins>
-<!--      <plugin>-->
-<!--        <groupId>org.springframework.boot</groupId>-->
-<!--        <artifactId>spring-boot-maven-plugin</artifactId>-->
-<!--        <configuration>-->
-<!--          <jvmArguments>-->
-<!--            -Djava.library.path="${java.io.tmpdir}/dicom-opencv-${weasis.opencv.native.version}"-->
-<!--          </jvmArguments>-->
-<!--        </configuration>-->
-<!--        <executions>-->
-<!--          <execution>-->
-<!--            <goals>-->
-<!--              <goal>repackage</goal>-->
-<!--            </goals>-->
-<!--          </execution>-->
-<!--        </executions>-->
-<!--      </plugin>-->
+      
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+          <image>
+            <env>
+              <BPE_DELIM_LD_LIBRARY_PATH>:</BPE_DELIM_LD_LIBRARY_PATH>
+              <BPE_APPEND_LD_LIBRARY_PATH>/var/lib/native_lib:/var/lib/native_lib/native_lib</BPE_APPEND_LD_LIBRARY_PATH>
+            </env>
+          </image>
+        </configuration>
+      </plugin>
+            
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
@@ -605,18 +603,7 @@
 <!--        <groupId>org.apache.maven.plugins</groupId>-->
 <!--        <version>3.2.0</version>-->
 <!--      </plugin>-->
-      <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-        <configuration>
-          <image>
-            <env>
-              <BPE_DELIM_LD_LIBRARY_PATH>:</BPE_DELIM_LD_LIBRARY_PATH>
-              <BPE_APPEND_LD_LIBRARY_PATH>/var/lib/native_lib:/var/lib/native_lib/native_lib</BPE_APPEND_LD_LIBRARY_PATH>
-            </env>
-          </image>
-        </configuration>
-      </plugin>
+
     </plugins>
 <!--    <resources>-->
 <!--      <resource>-->
