@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.karnak.backend.config.AppConfig;
 import org.karnak.backend.enums.ApplicationProfile;
 import org.karnak.backend.enums.EnvironmentVariable;
+import org.opencv.osgi.OpenCVNativeLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -32,13 +33,15 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @EnableAsync
 @Slf4j
-public class StartApplication implements CommandLineRunner {
+public class KarnakApplication implements CommandLineRunner {
 
 	@Autowired(required = false)
 	private AppConfig myConfig;
 
 	public static void main(String[] args) {
-		SpringApplicationBuilder application = new SpringApplicationBuilder(StartApplication.class);
+		// Load open cv library
+		loadOpenCvNativeLibrary();
+		SpringApplicationBuilder application = new SpringApplicationBuilder(KarnakApplication.class);
 
 		// If environment variable IDP exists and has value "oidc": activate the profile
 		// application-oidc.yml
@@ -56,6 +59,15 @@ public class StartApplication implements CommandLineRunner {
 		log.info("StartApplication...");
 		log.info("using environment: " + (myConfig != null ? myConfig.getEnvironment() : ""));
 		log.info("name: " + (myConfig != null ? myConfig.getName() : ""));
+	}
+
+	/**
+	 * Load Open CV library
+	 */
+	private static void loadOpenCvNativeLibrary() {
+		OpenCVNativeLoader loader = new OpenCVNativeLoader();
+		loader.init();
+		log.info("Native OpenCV is activated");
 	}
 
 }
