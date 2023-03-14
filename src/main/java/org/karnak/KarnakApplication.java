@@ -65,6 +65,7 @@ public class KarnakApplication implements CommandLineRunner {
 	 * Load Open CV library
 	 */
 	private static void loadOpenCvNativeLibrary() {
+		log.info("Loading open cv native library");
 		OpenCVNativeLoader loader = new OpenCVNativeLoader();
 		loader.init();
 		log.info("Native OpenCV is activated");
