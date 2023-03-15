@@ -46,6 +46,6 @@ spring:
       repositories:
         enabled: false
 monitoring:
-  max-history: 300000
+  max-history: 50000
 mail:
   sender: no-reply@hcuge.ch
