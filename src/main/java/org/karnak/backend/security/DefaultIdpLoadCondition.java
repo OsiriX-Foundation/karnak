@@ -17,16 +17,16 @@ import org.springframework.context.annotation.ConditionContext;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 
 /**
- * Default behaviour to load the IDP If property IDP is missing or different from oidc: load the in
- * memory IDP
+ * Default behaviour to load the IDP If property IDP is missing or different from oidc:
+ * load the in memory IDP
  */
 public class DefaultIdpLoadCondition implements Condition {
 
-  @Override
-  public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
-    // Define default IDP
-    return !Objects.equals(
-        context.getEnvironment().getProperty(EnvironmentVariable.IDP.getCode()),
-        ApplicationProfile.OIDC.getCode());
-  }
+	@Override
+	public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
+		// Define default IDP
+		return !Objects.equals(context.getEnvironment().getProperty(EnvironmentVariable.IDP.getCode()),
+				ApplicationProfile.OIDC.getCode());
+	}
+
 }

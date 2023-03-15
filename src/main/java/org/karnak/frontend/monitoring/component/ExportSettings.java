@@ -16,33 +16,34 @@ import com.opencsv.CSVWriter;
  */
 public class ExportSettings {
 
-  private String delimiter;
+	private String delimiter;
 
-  private String quoteCharacter;
+	private String quoteCharacter;
 
-  public static final char DEFAULT_CSV_DELIMITER = ',';
+	public static final char DEFAULT_CSV_DELIMITER = ',';
 
-  /**
-   * Constructor with default values
-   */
-  public ExportSettings() {
-    this.delimiter = String.valueOf(DEFAULT_CSV_DELIMITER);
-    this.quoteCharacter = String.valueOf(CSVWriter.DEFAULT_QUOTE_CHARACTER);
-  }
+	/**
+	 * Constructor with default values
+	 */
+	public ExportSettings() {
+		this.delimiter = String.valueOf(DEFAULT_CSV_DELIMITER);
+		this.quoteCharacter = String.valueOf(CSVWriter.DEFAULT_QUOTE_CHARACTER);
+	}
 
-  public String getDelimiter() {
-    return delimiter;
-  }
+	public String getDelimiter() {
+		return delimiter;
+	}
 
-  public void setDelimiter(String delimiter) {
-    this.delimiter = delimiter;
-  }
+	public void setDelimiter(String delimiter) {
+		this.delimiter = delimiter;
+	}
 
-  public String getQuoteCharacter() {
-    return quoteCharacter;
-  }
+	public String getQuoteCharacter() {
+		return quoteCharacter;
+	}
 
-  public void setQuoteCharacter(String quoteCharacter) {
-    this.quoteCharacter = quoteCharacter;
-  }
+	public void setQuoteCharacter(String quoteCharacter) {
+		this.quoteCharacter = quoteCharacter;
+	}
+
 }

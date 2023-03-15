@@ -9,35 +9,32 @@
  */
 package org.karnak.backend.model.action;
 
+import lombok.extern.slf4j.Slf4j;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.VR;
 import org.dcm4che3.util.TagUtils;
 import org.karnak.backend.model.profilepipe.HMAC;
 import org.slf4j.MDC;
 
+@Slf4j
 public class UID extends AbstractAction {
 
-  public UID(String symbol) {
-    super(symbol);
-  }
+	public UID(String symbol) {
+		super(symbol);
+	}
 
-  @Override
-  public void execute(Attributes dcm, int tag, HMAC hmac) {
-    String uidValue = dcm.getString(tag);
-    String uidHashed = null;
-    if (uidValue != null) {
-      uidHashed = hmac.uidHash(uidValue);
-      dcm.setString(tag, VR.UI, uidHashed);
-    }
-    if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace(
-          CLINICAL_MARKER,
-          PATTERN_WITH_INOUT,
-          MDC.get("SOPInstanceUID"),
-          TagUtils.toString(tag),
-          symbol,
-          uidValue,
-          uidHashed);
-    }
-  }
+	@Override
+	public void execute(Attributes dcm, int tag, HMAC hmac) {
+		String uidValue = dcm.getString(tag);
+		String uidHashed = null;
+		if (uidValue != null) {
+			uidHashed = hmac.uidHash(uidValue);
+			dcm.setString(tag, VR.UI, uidHashed);
+		}
+		if (log.isTraceEnabled()) {
+			log.trace(CLINICAL_MARKER, PATTERN_WITH_INOUT, MDC.get("SOPInstanceUID"), TagUtils.toString(tag), symbol,
+					uidValue, uidHashed);
+		}
+	}
+
 }

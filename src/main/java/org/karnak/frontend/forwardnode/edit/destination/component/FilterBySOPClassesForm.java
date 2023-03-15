@@ -17,46 +17,46 @@ import org.vaadin.gatanaso.MultiselectComboBox;
 
 public class FilterBySOPClassesForm extends HorizontalLayout {
 
-  private final MultiselectComboBox<String> sopFilter;
+	private final MultiselectComboBox<String> sopFilter;
 
-  private final Checkbox filterBySOPClassesCheckbox;
+	private final Checkbox filterBySOPClassesCheckbox;
 
-  private Binder<DestinationEntity> binder;
+	private Binder<DestinationEntity> binder;
 
-  public FilterBySOPClassesForm() {
-    this.filterBySOPClassesCheckbox = new Checkbox("Authorized SOPs");
-    this.sopFilter = new MultiselectComboBox<>();
-  }
+	public FilterBySOPClassesForm() {
+		this.filterBySOPClassesCheckbox = new Checkbox("Authorized SOPs");
+		this.sopFilter = new MultiselectComboBox<>();
+	}
 
-  public void init(Binder<DestinationEntity> binder) {
-    this.binder = binder;
-    setElements();
-    setPadding(true);
-    add(filterBySOPClassesCheckbox, sopFilter);
-  }
+	public void init(Binder<DestinationEntity> binder) {
+		this.binder = binder;
+		setElements();
+		setPadding(true);
+		add(filterBySOPClassesCheckbox, sopFilter);
+	}
 
-  private void setElements() {
-    filterBySOPClassesCheckbox.setMinWidth("14%");
-    sopFilter.setMinWidth("80%");
-    sopFilter.getElement().getStyle().set("padding-left", "5%");
+	private void setElements() {
+		filterBySOPClassesCheckbox.setMinWidth("14%");
+		sopFilter.setMinWidth("80%");
+		sopFilter.getElement().getStyle().set("padding-left", "5%");
 
-    filterBySOPClassesCheckbox.setValue(false);
-    sopFilter.onEnabledStateChanged(false);
+		filterBySOPClassesCheckbox.setValue(false);
+		sopFilter.onEnabledStateChanged(false);
 
-    filterBySOPClassesCheckbox.addValueChangeListener(
-        checkboxBooleanComponentValueChangeEvent ->
-            sopFilter.onEnabledStateChanged(checkboxBooleanComponentValueChangeEvent.getValue()));
-  }
+		filterBySOPClassesCheckbox.addValueChangeListener(checkboxBooleanComponentValueChangeEvent -> sopFilter
+				.onEnabledStateChanged(checkboxBooleanComponentValueChangeEvent.getValue()));
+	}
 
-  public MultiselectComboBox<String> getSopFilter() {
-    return sopFilter;
-  }
+	public MultiselectComboBox<String> getSopFilter() {
+		return sopFilter;
+	}
 
-  public Checkbox getFilterBySOPClassesCheckbox() {
-    return filterBySOPClassesCheckbox;
-  }
+	public Checkbox getFilterBySOPClassesCheckbox() {
+		return filterBySOPClassesCheckbox;
+	}
 
-  public Binder<DestinationEntity> getBinder() {
-    return binder;
-  }
+	public Binder<DestinationEntity> getBinder() {
+		return binder;
+	}
+
 }

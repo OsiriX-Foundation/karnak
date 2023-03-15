@@ -15,14 +15,15 @@ import org.junit.jupiter.api.Test;
 
 class MappingInputComponentTest {
 
-  @Test
-  void should_create_mapping_input_component() {
-    // Call constructor
-    MappingInputComponent mappingInputComponent = new MappingInputComponent();
+	@Test
+	void should_create_mapping_input_component() {
+		// Call constructor
+		MappingInputComponent mappingInputComponent = new MappingInputComponent();
 
-    // Test results
-    assertNotNull(mappingInputComponent);
-    assertNotNull(mappingInputComponent.getFindButton());
-    assertNotNull(mappingInputComponent.getPseudonymTextField());
-  }
+		// Test results
+		assertNotNull(mappingInputComponent);
+		assertNotNull(mappingInputComponent.getFindButton());
+		assertNotNull(mappingInputComponent.getPseudonymTextField());
+	}
+
 }

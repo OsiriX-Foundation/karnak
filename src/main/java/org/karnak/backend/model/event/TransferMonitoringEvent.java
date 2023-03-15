@@ -17,7 +17,8 @@ import org.springframework.context.ApplicationEvent;
  */
 public class TransferMonitoringEvent extends ApplicationEvent {
 
-  public TransferMonitoringEvent(TransferStatusEntity transferStatusEntity) {
-    super(transferStatusEntity);
-  }
+	public TransferMonitoringEvent(TransferStatusEntity transferStatusEntity) {
+		super(transferStatusEntity);
+	}
+
 }

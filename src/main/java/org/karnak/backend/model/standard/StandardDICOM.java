@@ -19,90 +19,86 @@ import org.karnak.backend.exception.SOPNotFoundException;
 
 public class StandardDICOM {
 
-  private final SOPS sops;
+	private final SOPS sops;
 
-  private final ModuleToAttributes moduleToAttributes;
+	private final ModuleToAttributes moduleToAttributes;
 
-  private final AttributeDetails attributeDetails;
+	private final AttributeDetails attributeDetails;
 
-  public StandardDICOM() {
-    sops = new SOPS();
-    moduleToAttributes = new ModuleToAttributes();
-    attributeDetails = new AttributeDetails();
-  }
+	public StandardDICOM() {
+		sops = new SOPS();
+		moduleToAttributes = new ModuleToAttributes();
+		attributeDetails = new AttributeDetails();
+	}
 
-  public static String cleanTagPath(String tagPath) {
-    return tagPath.replaceAll("[(),]", "").toLowerCase();
-  }
+	public static String cleanTagPath(String tagPath) {
+		return tagPath.replaceAll("[(),]", "").toLowerCase();
+	}
 
-  public List<String> getAllSOPuids() {
-    return sops.getAllUIDs();
-  }
+	public List<String> getAllSOPuids() {
+		return sops.getAllUIDs();
+	}
 
-  public String getCIOD(String sopUID) throws SOPNotFoundException {
-    return sops.getCIOD(sopUID);
-  }
+	public String getCIOD(String sopUID) throws SOPNotFoundException {
+		return sops.getCIOD(sopUID);
+	}
 
-  public String getIdCIOD(String sopUID) throws SOPNotFoundException {
-    return sops.getIdCIOD(sopUID);
-  }
+	public String getIdCIOD(String sopUID) throws SOPNotFoundException {
+		return sops.getIdCIOD(sopUID);
+	}
 
-  public Optional<Module> getModuleByModuleID(String sopUID, String moduleId)
-      throws SOPNotFoundException {
-    return sops.getModuleByModuleID(sopUID, moduleId);
-  }
+	public Optional<Module> getModuleByModuleID(String sopUID, String moduleId) throws SOPNotFoundException {
+		return sops.getModuleByModuleID(sopUID, moduleId);
+	}
 
-  public boolean moduleIsPresent(String sopUID, String moduleId) throws SOPNotFoundException {
-    return sops.moduleIsPresent(sopUID, moduleId);
-  }
+	public boolean moduleIsPresent(String sopUID, String moduleId) throws SOPNotFoundException {
+		return sops.moduleIsPresent(sopUID, moduleId);
+	}
 
-  public Map<Module, Map<String, ModuleAttribute>> getModulesBySOP(String sopUID)
-      throws SOPNotFoundException {
-    return sops.getModuleToAttribute(sopUID, moduleToAttributes);
-  }
+	public Map<Module, Map<String, ModuleAttribute>> getModulesBySOP(String sopUID) throws SOPNotFoundException {
+		return sops.getModuleToAttribute(sopUID, moduleToAttributes);
+	}
 
-  public List<String> getModulesNameBySOP(String sopUID) throws SOPNotFoundException {
-    return sops.getSopModulesName(sopUID);
-  }
+	public List<String> getModulesNameBySOP(String sopUID) throws SOPNotFoundException {
+		return sops.getSopModulesName(sopUID);
+	}
 
-  public List<ModuleAttribute> getAttributesBySOP(String sopUID, int tagPath)
-      throws SOPNotFoundException {
-    return getAttributesBySOP(sopUID, TagUtils.toHexString(tagPath));
-  }
+	public List<ModuleAttribute> getAttributesBySOP(String sopUID, int tagPath) throws SOPNotFoundException {
+		return getAttributesBySOP(sopUID, TagUtils.toHexString(tagPath));
+	}
 
-  public List<ModuleAttribute> getAttributesBySOP(String sopUID, String tagPath)
-      throws SOPNotFoundException {
-    String tagPathCleaned = cleanTagPath(tagPath);
-    Map<Module, Map<String, ModuleAttribute>> mapModuleAttributes = getModulesBySOP(sopUID);
-    List<ModuleAttribute> moduleAttributes = new ArrayList<>();
-    mapModuleAttributes.forEach(
-        (module, attr) -> {
-          ModuleAttribute moduleAttribute = attr.get(tagPathCleaned);
-          if (moduleAttribute != null) {
-            moduleAttributes.add(moduleAttribute);
-          }
-        });
-    return moduleAttributes;
-  }
+	public List<ModuleAttribute> getAttributesBySOP(String sopUID, String tagPath) throws SOPNotFoundException {
+		String tagPathCleaned = cleanTagPath(tagPath);
+		Map<Module, Map<String, ModuleAttribute>> mapModuleAttributes = getModulesBySOP(sopUID);
+		List<ModuleAttribute> moduleAttributes = new ArrayList<>();
+		mapModuleAttributes.forEach((module, attr) -> {
+			ModuleAttribute moduleAttribute = attr.get(tagPathCleaned);
+			if (moduleAttribute != null) {
+				moduleAttributes.add(moduleAttribute);
+			}
+		});
+		return moduleAttributes;
+	}
 
-  public Map<String, ModuleAttribute> getAttributesByModule(String moduleId) {
-    return moduleToAttributes.getAttributesByModule(moduleId);
-  }
+	public Map<String, ModuleAttribute> getAttributesByModule(String moduleId) {
+		return moduleToAttributes.getAttributesByModule(moduleId);
+	}
 
-  public List<ModuleAttribute> getAttributeListByModule(String moduleId) {
-    return new ArrayList<>(moduleToAttributes.getAttributesByModule(moduleId).values());
-  }
+	public List<ModuleAttribute> getAttributeListByModule(String moduleId) {
+		return new ArrayList<>(moduleToAttributes.getAttributesByModule(moduleId).values());
+	}
 
-  public Map<String, ModuleAttribute> getModuleAttributesByType(String moduleId, String type)
-      throws ModuleNotFoundException {
-    return moduleToAttributes.getModuleAttributesByType(moduleId, type);
-  }
+	public Map<String, ModuleAttribute> getModuleAttributesByType(String moduleId, String type)
+			throws ModuleNotFoundException {
+		return moduleToAttributes.getModuleAttributesByType(moduleId, type);
+	}
 
-  public AttributeDetail getAttributeDetail(String tag) {
-    return attributeDetails.getAttributeDetail(tag);
-  }
+	public AttributeDetail getAttributeDetail(String tag) {
+		return attributeDetails.getAttributeDetail(tag);
+	}
 
-  public List<AttributeDetail> getListAttributeDetail(List<String> tag) {
-    return attributeDetails.getListAttributeDetail(tag);
-  }
+	public List<AttributeDetail> getListAttributeDetail(List<String> tag) {
+		return attributeDetails.getListAttributeDetail(tag);
+	}
+
 }

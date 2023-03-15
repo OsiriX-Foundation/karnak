@@ -25,158 +25,153 @@ import com.vaadin.flow.shared.Registration;
 
 public class ConfirmDialog extends Composite<Dialog> {
 
-  private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-  // UI COMPONENTS
-  private Dialog dialog;
+	// UI COMPONENTS
+	private Dialog dialog;
 
-  private VerticalLayout mainLayout;
+	private VerticalLayout mainLayout;
 
-  private HorizontalLayout headerLayout;
+	private HorizontalLayout headerLayout;
 
-  private Span titleText;
+	private Span titleText;
 
-  private Div messageLayout;
+	private Div messageLayout;
 
-  private HorizontalLayout buttonsLayout;
+	private HorizontalLayout buttonsLayout;
 
-  private Button yesBtn;
+	private Button yesBtn;
 
-  private Button noBtn;
+	private Button noBtn;
 
-  // DATA
-  private final String messageText;
+	// DATA
+	private final String messageText;
 
-  public ConfirmDialog(String messageText) {
-    this.messageText = messageText;
+	public ConfirmDialog(String messageText) {
+		this.messageText = messageText;
 
-    init();
+		init();
 
-    createMainLayout();
+		createMainLayout();
 
-    dialog.add(mainLayout);
-  }
+		dialog.add(mainLayout);
+	}
 
-  public void open() {
-    dialog.open();
-  }
+	public void open() {
+		dialog.open();
+	}
 
-  // LISTENERS
-  public Registration addConfirmationListener(ComponentEventListener<ConfirmationEvent> listener) {
-    return addListener(ConfirmationEvent.class, listener);
-  }
+	// LISTENERS
+	public Registration addConfirmationListener(ComponentEventListener<ConfirmationEvent> listener) {
+		return addListener(ConfirmationEvent.class, listener);
+	}
 
-  private void init() {
-    dialog = getContent();
-    dialog.setId("confirm-dialog");
-    dialog.setCloseOnEsc(false);
-    dialog.setCloseOnOutsideClick(false);
-  }
+	private void init() {
+		dialog = getContent();
+		dialog.setId("confirm-dialog");
+		dialog.setCloseOnEsc(false);
+		dialog.setCloseOnOutsideClick(false);
+	}
 
-  private void createMainLayout() {
-    mainLayout = new VerticalLayout();
-    mainLayout.setSizeFull();
-    mainLayout.addClassName("dialog-container");
+	private void createMainLayout() {
+		mainLayout = new VerticalLayout();
+		mainLayout.setSizeFull();
+		mainLayout.addClassName("dialog-container");
 
-    createHeaderLayout();
-    createMessageLayout();
-    createButtonsLayout();
+		createHeaderLayout();
+		createMessageLayout();
+		createButtonsLayout();
 
-    mainLayout.add(headerLayout, messageLayout, buttonsLayout);
-  }
+		mainLayout.add(headerLayout, messageLayout, buttonsLayout);
+	}
 
-  private void createHeaderLayout() {
-    headerLayout = new HorizontalLayout();
-    headerLayout.setWidthFull();
-    headerLayout.addClassName("dialog-title");
-    headerLayout.setAlignItems(Alignment.BASELINE);
+	private void createHeaderLayout() {
+		headerLayout = new HorizontalLayout();
+		headerLayout.setWidthFull();
+		headerLayout.addClassName("dialog-title");
+		headerLayout.setAlignItems(Alignment.BASELINE);
 
-    createTitleText();
+		createTitleText();
 
-    headerLayout.add(titleText);
-  }
+		headerLayout.add(titleText);
+	}
 
-  private void createTitleText() {
-    titleText = new Span("Confirmation");
-    titleText.getStyle().set("font-size", "24px");
-    titleText.getStyle().set("font-weight", "400");
-  }
+	private void createTitleText() {
+		titleText = new Span("Confirmation");
+		titleText.getStyle().set("font-size", "24px");
+		titleText.getStyle().set("font-weight", "400");
+	}
 
-  private void createMessageLayout() {
-    messageLayout = new Div();
-    messageLayout.addClassName("dialog-content");
+	private void createMessageLayout() {
+		messageLayout = new Div();
+		messageLayout.addClassName("dialog-content");
 
-    messageLayout.add(messageText);
-  }
+		messageLayout.add(messageText);
+	}
 
-  private void createButtonsLayout() {
-    buttonsLayout = new HorizontalLayout();
-    buttonsLayout.setWidthFull();
-    buttonsLayout.addClassName("dialog-buttons");
+	private void createButtonsLayout() {
+		buttonsLayout = new HorizontalLayout();
+		buttonsLayout.setWidthFull();
+		buttonsLayout.addClassName("dialog-buttons");
 
-    createNoBtn();
-    createYesBtn();
+		createNoBtn();
+		createYesBtn();
 
-    buttonsLayout.add(noBtn, yesBtn);
+		buttonsLayout.add(noBtn, yesBtn);
 
-    noBtn
-        .getElement()
-        .getStyle()
-        .set(
-            "margin-left",
-            "auto"); // https://vaadin.com/forum/thread/17198105/button-alignment-in-horizontal-layout
-  }
+		noBtn.getElement().getStyle().set("margin-left", "auto"); // https://vaadin.com/forum/thread/17198105/button-alignment-in-horizontal-layout
+	}
 
-  @SuppressWarnings("serial")
-  private void createYesBtn() {
-    yesBtn = new Button();
-    yesBtn.addClassName("stroked-button");
-    yesBtn.addClassName("primary");
-    yesBtn.setText("Oui");
-    yesBtn.setWidth("90px");
+	@SuppressWarnings("serial")
+	private void createYesBtn() {
+		yesBtn = new Button();
+		yesBtn.addClassName("stroked-button");
+		yesBtn.addClassName("primary");
+		yesBtn.setText("Oui");
+		yesBtn.setWidth("90px");
 
-    yesBtn.focus();
+		yesBtn.focus();
 
-    yesBtn.addClickListener(
-        new ComponentEventListener<ClickEvent<Button>>() {
+		yesBtn.addClickListener(new ComponentEventListener<ClickEvent<Button>>() {
 
-          @Override
-          public void onComponentEvent(ClickEvent<Button> event) {
-            fireConfirmationEvent();
-            dialog.close();
-          }
-        });
+			@Override
+			public void onComponentEvent(ClickEvent<Button> event) {
+				fireConfirmationEvent();
+				dialog.close();
+			}
+		});
 
-    yesBtn.addClickShortcut(Key.ENTER);
-  }
+		yesBtn.addClickShortcut(Key.ENTER);
+	}
 
-  @SuppressWarnings("serial")
-  private void createNoBtn() {
-    noBtn = new Button();
-    noBtn.addClassName("primary");
-    noBtn.setText("Non");
-    noBtn.setWidth("90px");
+	@SuppressWarnings("serial")
+	private void createNoBtn() {
+		noBtn = new Button();
+		noBtn.addClassName("primary");
+		noBtn.setText("Non");
+		noBtn.setWidth("90px");
 
-    noBtn.addClickListener(
-        new ComponentEventListener<ClickEvent<Button>>() {
+		noBtn.addClickListener(new ComponentEventListener<ClickEvent<Button>>() {
 
-          @Override
-          public void onComponentEvent(ClickEvent<Button> event) {
-            dialog.close();
-          }
-        });
-  }
+			@Override
+			public void onComponentEvent(ClickEvent<Button> event) {
+				dialog.close();
+			}
+		});
+	}
 
-  private void fireConfirmationEvent() {
-    fireEvent(new ConfirmationEvent(this, false));
-  }
+	private void fireConfirmationEvent() {
+		fireEvent(new ConfirmationEvent(this, false));
+	}
 
-  public class ConfirmationEvent extends ComponentEvent<ConfirmDialog> {
+	public class ConfirmationEvent extends ComponentEvent<ConfirmDialog> {
 
-    private static final long serialVersionUID = 1L;
+		private static final long serialVersionUID = 1L;
 
-    public ConfirmationEvent(ConfirmDialog source, boolean fromClient) {
-      super(source, fromClient);
-    }
-  }
+		public ConfirmationEvent(ConfirmDialog source, boolean fromClient) {
+			super(source, fromClient);
+		}
+
+	}
+
 }

@@ -13,24 +13,24 @@ import org.weasis.core.util.StringUtil;
 
 public class SystemPropertyUtil {
 
-  private SystemPropertyUtil() {
-  }
+	private SystemPropertyUtil() {
+	}
 
-  /**
-   * Retrieve system property
-   *
-   * @param key          Key
-   * @param defaultValue default value
-   * @return property found
-   */
-  public static String retrieveSystemProperty(String key, String defaultValue) {
-    String val = System.getProperty(key);
-    if (!StringUtil.hasText(val)) {
-      val = System.getenv(key);
-      if (!StringUtil.hasText(val)) {
-        return defaultValue;
-      }
-    }
-    return val;
-  }
+	/**
+	 * Retrieve system property
+	 * @param key Key
+	 * @param defaultValue default value
+	 * @return property found
+	 */
+	public static String retrieveSystemProperty(String key, String defaultValue) {
+		String val = System.getProperty(key);
+		if (!StringUtil.hasText(val)) {
+			val = System.getenv(key);
+			if (!StringUtil.hasText(val)) {
+				return defaultValue;
+			}
+		}
+		return val;
+	}
+
 }

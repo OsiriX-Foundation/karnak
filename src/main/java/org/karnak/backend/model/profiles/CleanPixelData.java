@@ -16,14 +16,15 @@ import org.karnak.backend.model.profilepipe.HMAC;
 
 public class CleanPixelData extends AbstractProfileItem {
 
-  public CleanPixelData(ProfileElementEntity profileElementEntity) throws Exception {
-    super(profileElementEntity);
-    profileValidation();
-  }
+	public CleanPixelData(ProfileElementEntity profileElementEntity) throws Exception {
+		super(profileElementEntity);
+		profileValidation();
+	}
 
-  @Override
-  public ActionItem getAction(Attributes dcm, Attributes dcmCopy, int tag, HMAC hmac) {
-    // Action handles in the DICOM content not in metadata.
-    return null;
-  }
+	@Override
+	public ActionItem getAction(Attributes dcm, Attributes dcmCopy, int tag, HMAC hmac) {
+		// Action handles in the DICOM content not in metadata.
+		return null;
+	}
+
 }

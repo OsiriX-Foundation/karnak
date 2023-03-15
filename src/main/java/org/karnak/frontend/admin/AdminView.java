@@ -20,9 +20,10 @@ import com.vaadin.flow.router.PageTitle;
 @SuppressWarnings("serial")
 public class AdminView extends VerticalLayout {
 
-  public static final String VIEW_NAME = "Admin";
+	public static final String VIEW_NAME = "Admin";
 
-  public AdminView() {
-    add(new H2("You are connected as an admin."));
-  }
+	public AdminView() {
+		add(new H2("You are connected as an admin."));
+	}
+
 }

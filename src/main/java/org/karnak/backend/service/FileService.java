@@ -14,7 +14,6 @@ package org.karnak.backend.service;
 // @Service
 // public class FileService {
 //
-// private static final Logger LOGGER = LoggerFactory.getLogger(FileService.class);
 //
 // // Service
 // private final GatewaySetUpService gatewaySetUpService;
@@ -47,7 +46,7 @@ package org.karnak.backend.service;
 // if (aet != null && fileName != null) {
 // Path path = Path.of(archiveDir.toString(), aet, fileName);
 // if (path == null || !Files.isReadable(path)) {
-// LOGGER.warn("Cannot get this file for downloading: {}", path);
+// log.warn("Cannot get this file for downloading: {}", path);
 // } else {
 // // Return the file
 // DataInputStream in = new DataInputStream(Files.newInputStream(path));

@@ -16,51 +16,52 @@ import org.mockito.Mockito;
 
 class SOPClassUIDServiceTest {
 
-  // Repositories
-  private final SOPClassUIDRepo sopClassUIDRepoMock = Mockito.mock(SOPClassUIDRepo.class);
+	// Repositories
+	private final SOPClassUIDRepo sopClassUIDRepoMock = Mockito.mock(SOPClassUIDRepo.class);
 
-  // Service
-  private SOPClassUIDService sopClassUIDService;
+	// Service
+	private SOPClassUIDService sopClassUIDService;
 
-  @BeforeEach
-  public void setUp() {
-    // Build mocked service
-    sopClassUIDService = new SOPClassUIDService(sopClassUIDRepoMock);
-  }
+	@BeforeEach
+	public void setUp() {
+		// Build mocked service
+		sopClassUIDService = new SOPClassUIDService(sopClassUIDRepoMock);
+	}
 
-  @Test
-  void should_retrieve_sopClassUID_by_id() {
-    // Call service
-    sopClassUIDService.get(1L);
+	@Test
+	void should_retrieve_sopClassUID_by_id() {
+		// Call service
+		sopClassUIDService.get(1L);
 
-    // Test results
-    Mockito.verify(sopClassUIDRepoMock, Mockito.times(1)).getSOPClassUIDById(Mockito.anyLong());
-  }
+		// Test results
+		Mockito.verify(sopClassUIDRepoMock, Mockito.times(1)).getSOPClassUIDById(Mockito.anyLong());
+	}
 
-  @Test
-  void should_retrieve_sopClassUID_by_name() {
-    // Call service
-    sopClassUIDService.getByName("name");
+	@Test
+	void should_retrieve_sopClassUID_by_name() {
+		// Call service
+		sopClassUIDService.getByName("name");
 
-    // Test results
-    Mockito.verify(sopClassUIDRepoMock, Mockito.times(1)).getSOPClassUIDByName(Mockito.anyString());
-  }
+		// Test results
+		Mockito.verify(sopClassUIDRepoMock, Mockito.times(1)).getSOPClassUIDByName(Mockito.anyString());
+	}
 
-  @Test
-  void should_retrieve_all_sopClassUID() {
-    // Call service
-    sopClassUIDService.getAllSOPClassUIDs();
+	@Test
+	void should_retrieve_all_sopClassUID() {
+		// Call service
+		sopClassUIDService.getAllSOPClassUIDs();
 
-    // Test results
-    Mockito.verify(sopClassUIDRepoMock, Mockito.atLeast(1)).findAll();
-  }
+		// Test results
+		Mockito.verify(sopClassUIDRepoMock, Mockito.atLeast(1)).findAll();
+	}
 
-  @Test
-  void should_retrieve_all_names_from_sopClassUID() {
-    // Call service
-    sopClassUIDService.getAllSOPClassUIDsName();
+	@Test
+	void should_retrieve_all_names_from_sopClassUID() {
+		// Call service
+		sopClassUIDService.getAllSOPClassUIDsName();
 
-    // Test results
-    Mockito.verify(sopClassUIDRepoMock, Mockito.atLeast(1)).findAll();
-  }
+		// Test results
+		Mockito.verify(sopClassUIDRepoMock, Mockito.atLeast(1)).findAll();
+	}
+
 }

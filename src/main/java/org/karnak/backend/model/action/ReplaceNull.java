@@ -9,30 +9,27 @@
  */
 package org.karnak.backend.model.action;
 
+import lombok.extern.slf4j.Slf4j;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.util.TagUtils;
 import org.karnak.backend.model.profilepipe.HMAC;
 import org.slf4j.MDC;
 
+@Slf4j
 public class ReplaceNull extends AbstractAction {
 
-  public ReplaceNull(String symbol) {
-    super(symbol);
-  }
+	public ReplaceNull(String symbol) {
+		super(symbol);
+	}
 
-  @Override
-  public void execute(Attributes dcm, int tag, HMAC hmac) {
-    if (LOGGER.isTraceEnabled()) {
-      String tagValueIn = AbstractAction.getStringValue(dcm, tag);
-      LOGGER.trace(
-          CLINICAL_MARKER,
-          PATTERN_WITH_INOUT,
-          MDC.get("SOPInstanceUID"),
-          TagUtils.toString(tag),
-          symbol,
-          tagValueIn,
-          null);
-    }
-    dcm.setNull(tag, dcm.getVR(tag));
-  }
+	@Override
+	public void execute(Attributes dcm, int tag, HMAC hmac) {
+		if (log.isTraceEnabled()) {
+			String tagValueIn = AbstractAction.getStringValue(dcm, tag);
+			log.trace(CLINICAL_MARKER, PATTERN_WITH_INOUT, MDC.get("SOPInstanceUID"), TagUtils.toString(tag), symbol,
+					tagValueIn, null);
+		}
+		dcm.setNull(tag, dcm.getVR(tag));
+	}
+
 }
