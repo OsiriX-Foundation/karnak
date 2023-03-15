@@ -29,106 +29,97 @@ import org.weasis.dicom.param.DicomNode;
 @Service
 public class DicomGatewayService {
 
-  private final StoreScpForwardService storeScpForwardService;
+	private final StoreScpForwardService storeScpForwardService;
 
-  private DeviceListenerService deviceService;
+	private DeviceListenerService deviceService;
 
-  @Autowired
-  public DicomGatewayService(final StoreScpForwardService storeScpForwardService) {
-    this.storeScpForwardService = storeScpForwardService;
-  }
+	@Autowired
+	public DicomGatewayService(final StoreScpForwardService storeScpForwardService) {
+		this.storeScpForwardService = storeScpForwardService;
+	}
 
-  /**
-   * Init a DICOM Gateway with one final destination
-   *
-   * @param forwardParams   the optional advanced parameters (proxy, authentication, connection and
-   *                        TLS) for the final destination
-   * @param fwdNode         the calling DICOM node configuration
-   * @param destinationNode the final DICOM node configuration
-   * @throws IOException
-   */
-  public void init(
-      AdvancedParams forwardParams, ForwardDicomNode fwdNode, DicomNode destinationNode)
-      throws IOException {
-    init(forwardParams, fwdNode, destinationNode, null);
-  }
+	/**
+	 * Init a DICOM Gateway with one final destination
+	 * @param forwardParams the optional advanced parameters (proxy, authentication,
+	 * connection and TLS) for the final destination
+	 * @param fwdNode the calling DICOM node configuration
+	 * @param destinationNode the final DICOM node configuration
+	 * @throws IOException
+	 */
+	public void init(AdvancedParams forwardParams, ForwardDicomNode fwdNode, DicomNode destinationNode)
+			throws IOException {
+		init(forwardParams, fwdNode, destinationNode, null);
+	}
 
-  /**
-   * Init a DICOM Gateway with one final destination
-   *
-   * @param forwardParams   the optional advanced parameters (proxy, authentication, connection and
-   *                        TLS) for the final destination
-   * @param fwdNode         the calling DICOM node configuration
-   * @param destinationNode the final DICOM node configuration
-   * @param editors         the list of editor for modifying attributes on the fly (can be Null)
-   * @throws IOException
-   */
-  public void init(
-      AdvancedParams forwardParams,
-      ForwardDicomNode fwdNode,
-      DicomNode destinationNode,
-      List<AttributeEditor> editors)
-      throws IOException {
-    storeScpForwardService.init(forwardParams, fwdNode, destinationNode, editors);
-    this.deviceService = new DeviceListenerService(storeScpForwardService.getDevice());
-  }
+	/**
+	 * Init a DICOM Gateway with one final destination
+	 * @param forwardParams the optional advanced parameters (proxy, authentication,
+	 * connection and TLS) for the final destination
+	 * @param fwdNode the calling DICOM node configuration
+	 * @param destinationNode the final DICOM node configuration
+	 * @param editors the list of editor for modifying attributes on the fly (can be Null)
+	 * @throws IOException
+	 */
+	public void init(AdvancedParams forwardParams, ForwardDicomNode fwdNode, DicomNode destinationNode,
+			List<AttributeEditor> editors) throws IOException {
+		storeScpForwardService.init(forwardParams, fwdNode, destinationNode, editors);
+		this.deviceService = new DeviceListenerService(storeScpForwardService.getDevice());
+	}
 
-  public void init(Map<ForwardDicomNode, List<ForwardDestination>> destinations)
-      throws IOException {
-    storeScpForwardService.init(destinations);
-    this.deviceService = new DeviceListenerService(storeScpForwardService.getDevice());
-  }
+	public void init(Map<ForwardDicomNode, List<ForwardDestination>> destinations) throws IOException {
+		storeScpForwardService.init(destinations);
+		this.deviceService = new DeviceListenerService(storeScpForwardService.getDevice());
+	}
 
-  public boolean isRunning() {
-    return storeScpForwardService.getConnection().isListening();
-  }
+	public boolean isRunning() {
+		return storeScpForwardService.getConnection().isListening();
+	}
 
-  public StoreScpForwardService getStoreScpForward() {
-    return storeScpForwardService;
-  }
+	public StoreScpForwardService getStoreScpForward() {
+		return storeScpForwardService;
+	}
 
-  public void start(DicomNode scpNode) throws Exception {
-    start(scpNode, new GatewayParams(false));
-  }
+	public void start(DicomNode scpNode) throws Exception {
+		start(scpNode, new GatewayParams(false));
+	}
 
-  public synchronized void start(DicomNode scpNode, GatewayParams params) throws Exception {
-    if (isRunning()) {
-      throw new IOException("Cannot start a DICOM Gateway because it is already running.");
-    }
-    storeScpForwardService.setStatus(0);
-    storeScpForwardService.getCstoreSCP().setStatus(0);
+	public synchronized void start(DicomNode scpNode, GatewayParams params) throws Exception {
+		if (isRunning()) {
+			throw new IOException("Cannot start a DICOM Gateway because it is already running.");
+		}
+		storeScpForwardService.setStatus(0);
+		storeScpForwardService.getCstoreSCP().setStatus(0);
 
-    AdvancedParams options = Objects.requireNonNull(params).getParams();
-    Connection conn = storeScpForwardService.getConnection();
-    if (params.isBindCallingAet()) {
-      options.configureBind(storeScpForwardService.getApplicationEntity(), conn, scpNode);
-    } else {
-      options.configureBind(conn, scpNode);
-    }
-    // configure
-    options.configure(conn);
-    options.configureTLS(conn, null);
+		AdvancedParams options = Objects.requireNonNull(params).getParams();
+		Connection conn = storeScpForwardService.getConnection();
+		if (params.isBindCallingAet()) {
+			options.configureBind(storeScpForwardService.getApplicationEntity(), conn, scpNode);
+		}
+		else {
+			options.configureBind(conn, scpNode);
+		}
+		// configure
+		options.configure(conn);
+		options.configureTLS(conn, null);
 
-    // Limit the calling AETs
-    storeScpForwardService
-        .getApplicationEntity()
-        .setAcceptedCallingAETitles(params.getAcceptedCallingAETitles());
+		// Limit the calling AETs
+		storeScpForwardService.getApplicationEntity().setAcceptedCallingAETitles(params.getAcceptedCallingAETitles());
 
-    URL transferCapabilityFile = params.getTransferCapabilityFile();
-    if (transferCapabilityFile != null) {
-      storeScpForwardService.loadDefaultTransferCapability(transferCapabilityFile);
-    } else {
-      storeScpForwardService
-          .getApplicationEntity()
-          .addTransferCapability(
-              new TransferCapability(null, "*", TransferCapability.Role.SCP, "*"));
-    }
+		URL transferCapabilityFile = params.getTransferCapabilityFile();
+		if (transferCapabilityFile != null) {
+			storeScpForwardService.loadDefaultTransferCapability(transferCapabilityFile);
+		}
+		else {
+			storeScpForwardService.getApplicationEntity()
+					.addTransferCapability(new TransferCapability(null, "*", TransferCapability.Role.SCP, "*"));
+		}
 
-    deviceService.start();
-  }
+		deviceService.start();
+	}
 
-  public synchronized void stop() {
-    deviceService.stop();
-    storeScpForwardService.stop();
-  }
+	public synchronized void stop() {
+		deviceService.stop();
+		storeScpForwardService.stop();
+	}
+
 }

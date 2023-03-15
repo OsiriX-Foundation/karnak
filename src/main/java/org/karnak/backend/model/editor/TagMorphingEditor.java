@@ -20,25 +20,26 @@ import org.weasis.dicom.param.AttributeEditorContext.Abort;
 
 public class TagMorphingEditor implements AttributeEditor {
 
-  private final Profile profile;
+	private final Profile profile;
 
-  private final DestinationEntity destinationEntity;
+	private final DestinationEntity destinationEntity;
 
-  private final ProfileEntity profileEntity;
+	private final ProfileEntity profileEntity;
 
-  private final ProjectEntity projectEntity;
+	private final ProjectEntity projectEntity;
 
-  public TagMorphingEditor(DestinationEntity destinationEntity) {
-    this.destinationEntity = destinationEntity;
-    this.projectEntity = destinationEntity.getTagMorphingProjectEntity();
-    this.profileEntity = projectEntity.getProfileEntity();
-    this.profile = new Profile(profileEntity);
-  }
+	public TagMorphingEditor(DestinationEntity destinationEntity) {
+		this.destinationEntity = destinationEntity;
+		this.projectEntity = destinationEntity.getTagMorphingProjectEntity();
+		this.profileEntity = projectEntity.getProfileEntity();
+		this.profile = new Profile(profileEntity);
+	}
 
-  @Override
-  public void apply(Attributes dcm, AttributeEditorContext context) {
-    if (context.getAbort() != Abort.FILE_EXCEPTION) {
-      profile.applyTagMorphing(dcm, destinationEntity, profileEntity, context, projectEntity);
-    }
-  }
+	@Override
+	public void apply(Attributes dcm, AttributeEditorContext context) {
+		if (context.getAbort() != Abort.FILE_EXCEPTION) {
+			profile.applyTagMorphing(dcm, destinationEntity, profileEntity, context, projectEntity);
+		}
+	}
+
 }

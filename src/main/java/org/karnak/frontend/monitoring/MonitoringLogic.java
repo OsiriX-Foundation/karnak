@@ -13,13 +13,12 @@ import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import com.vaadin.flow.component.notification.Notification.Position;
 import java.io.IOException;
+import lombok.extern.slf4j.Slf4j;
 import org.karnak.backend.data.entity.TransferStatusEntity;
 import org.karnak.backend.service.TransferMonitoringService;
 import org.karnak.frontend.monitoring.component.ExportSettings;
 import org.karnak.frontend.monitoring.component.TransferStatusFilter;
 import org.karnak.frontend.util.NotificationUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,67 +29,63 @@ import org.springframework.stereotype.Service;
  * monitoring view
  */
 @Service
+@Slf4j
 public class MonitoringLogic {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(MonitoringLogic.class);
+	// View
+	private MonitoringView monitoringView;
 
-  // View
-  private MonitoringView monitoringView;
+	// Services
+	private final TransferMonitoringService transferMonitoringService;
 
-  // Services
-  private final TransferMonitoringService transferMonitoringService;
+	@Autowired
+	public MonitoringLogic(final TransferMonitoringService transferMonitoringService) {
+		this.transferMonitoringService = transferMonitoringService;
+	}
 
-  @Autowired
-  public MonitoringLogic(final TransferMonitoringService transferMonitoringService) {
-    this.transferMonitoringService = transferMonitoringService;
-  }
+	public MonitoringView getMonitoringView() {
+		return monitoringView;
+	}
 
-  public MonitoringView getMonitoringView() {
-    return monitoringView;
-  }
+	public void setMonitoringView(MonitoringView monitoringView) {
+		this.monitoringView = monitoringView;
+	}
 
-  public void setMonitoringView(MonitoringView monitoringView) {
-    this.monitoringView = monitoringView;
-  }
+	/**
+	 * Retrieve transfer status
+	 * @param filter Filter to apply
+	 * @param pageable Pageable
+	 * @return Page of trnasfer entities
+	 */
+	public Page<TransferStatusEntity> retrieveTransferStatus(TransferStatusFilter filter, Pageable pageable) {
+		return transferMonitoringService.retrieveTransferStatusPageable(filter, pageable);
+	}
 
-  /**
-   * Retrieve transfer status
-   *
-   * @param filter   Filter to apply
-   * @param pageable Pageable
-   * @return Page of trnasfer entities
-   */
-  public Page<TransferStatusEntity> retrieveTransferStatus(
-      TransferStatusFilter filter, Pageable pageable) {
-    return transferMonitoringService.retrieveTransferStatusPageable(filter, pageable);
-  }
+	/**
+	 * Count number of transfer status
+	 * @param filter Filter to apply
+	 * @return number of transfer status
+	 */
+	public int countTransferStatus(TransferStatusFilter filter) {
+		return transferMonitoringService.countTransferStatus(filter);
+	}
 
-  /**
-   * Count number of transfer status
-   *
-   * @param filter Filter to apply
-   * @return number of transfer status
-   */
-  public int countTransferStatus(TransferStatusFilter filter) {
-    return transferMonitoringService.countTransferStatus(filter);
-  }
+	/**
+	 * Build monitoring export in CSV format
+	 * @param exportSettings Export settings
+	 */
+	public byte[] buildCsv(ExportSettings exportSettings) {
+		byte[] csvBuilt = new byte[0];
+		try {
+			csvBuilt = transferMonitoringService
+					.buildCsv(monitoringView.getTransferStatusGrid().getTransferStatusFilter(), exportSettings);
+		}
+		catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException | IOException e) {
+			String message = "Error when creating monitoring export CSV file";
+			log.error(message, e.getMessage());
+			NotificationUtil.displayErrorMessage(message, Position.BOTTOM_CENTER);
+		}
+		return csvBuilt;
+	}
 
-  /**
-   * Build monitoring export in CSV format
-   *
-   * @param exportSettings Export settings
-   */
-  public byte[] buildCsv(ExportSettings exportSettings) {
-    byte[] csvBuilt = new byte[0];
-    try {
-      csvBuilt =
-          transferMonitoringService.buildCsv(
-              monitoringView.getTransferStatusGrid().getTransferStatusFilter(), exportSettings);
-    } catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException | IOException e) {
-      String message = "Error when creating monitoring export CSV file";
-      LOGGER.error(message, e.getMessage());
-      NotificationUtil.displayErrorMessage(message, Position.BOTTOM_CENTER);
-    }
-    return csvBuilt;
-  }
 }

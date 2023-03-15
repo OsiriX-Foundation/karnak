@@ -21,164 +21,138 @@ import com.vaadin.flow.data.validator.StringLengthValidator;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.backend.cache.Patient;
 import org.karnak.backend.data.entity.ProjectEntity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ExternalIDForm extends Div {
 
-  protected static final Logger LOGGER = LoggerFactory.getLogger(ExternalIDForm.class);
+	private static final String ERROR_MESSAGE_PATIENT = "Length must be between 1 and 50.";
 
-  private static final String ERROR_MESSAGE_PATIENT = "Length must be between 1 and 50.";
+	private final Binder<Patient> binder;
 
-  private final Binder<Patient> binder;
+	private transient ProjectEntity projectEntity;
 
-  private transient ProjectEntity projectEntity;
+	private TextField externalIdField;
 
-  private TextField externalIdField;
+	private TextField patientIdField;
 
-  private TextField patientIdField;
+	private TextField patientFirstNameField;
 
-  private TextField patientFirstNameField;
+	private TextField patientLastNameField;
 
-  private TextField patientLastNameField;
+	private TextField issuerOfPatientIdField;
 
-  private TextField issuerOfPatientIdField;
+	private Button addPatientButton;
 
-  private Button addPatientButton;
+	private Button clearFieldsButton;
 
-  private Button clearFieldsButton;
+	private Div addedPatientLabelDiv;
 
-  private Div addedPatientLabelDiv;
+	public ExternalIDForm() {
+		setSizeFull();
 
-  public ExternalIDForm() {
-    setSizeFull();
+		binder = new BeanValidationBinder<>(Patient.class);
 
-    binder = new BeanValidationBinder<>(Patient.class);
+		setElements();
+		setBinder();
 
-    setElements();
-    setBinder();
+		clearFieldsButton.addClickListener(click -> clearPatientFields());
 
-    clearFieldsButton.addClickListener(click -> clearPatientFields());
+		// enable/disable update button while editing
+		binder.addStatusChangeListener(event -> {
+			boolean isValid = !event.hasValidationErrors();
+			boolean hasChanges = binder.hasChanges();
+			addPatientButton.setEnabled(hasChanges && isValid);
+		});
 
-    // enable/disable update button while editing
-    binder.addStatusChangeListener(
-        event -> {
-          boolean isValid = !event.hasValidationErrors();
-          boolean hasChanges = binder.hasChanges();
-          addPatientButton.setEnabled(hasChanges && isValid);
-        });
+		HorizontalLayout horizontalLayout1 = new HorizontalLayout();
+		HorizontalLayout horizontalLayout2 = new HorizontalLayout();
+		HorizontalLayout horizontalLayout3 = new HorizontalLayout();
+		HorizontalLayout horizontalLayout4 = new HorizontalLayout();
+		HorizontalLayout horizontalLayout5 = new HorizontalLayout();
+		Div addPatientDiv = new Div();
 
-    HorizontalLayout horizontalLayout1 = new HorizontalLayout();
-    HorizontalLayout horizontalLayout2 = new HorizontalLayout();
-    HorizontalLayout horizontalLayout3 = new HorizontalLayout();
-    HorizontalLayout horizontalLayout4 = new HorizontalLayout();
-    HorizontalLayout horizontalLayout5 = new HorizontalLayout();
-    Div addPatientDiv = new Div();
+		horizontalLayout1.setSizeFull();
+		horizontalLayout2.setSizeFull();
+		horizontalLayout3.setSizeFull();
+		horizontalLayout4.setSizeFull();
 
-    horizontalLayout1.setSizeFull();
-    horizontalLayout2.setSizeFull();
-    horizontalLayout3.setSizeFull();
-    horizontalLayout4.setSizeFull();
+		horizontalLayout3.add(addedPatientLabelDiv);
 
-    horizontalLayout3.add(addedPatientLabelDiv);
+		horizontalLayout4.add(externalIdField, patientIdField, patientFirstNameField, patientLastNameField,
+				issuerOfPatientIdField);
+		horizontalLayout5.add(clearFieldsButton, addPatientButton);
 
-    horizontalLayout4.add(
-        externalIdField,
-        patientIdField,
-        patientFirstNameField,
-        patientLastNameField,
-        issuerOfPatientIdField);
-    horizontalLayout5.add(clearFieldsButton, addPatientButton);
+		addPatientDiv.add(horizontalLayout4, horizontalLayout5);
+		add(horizontalLayout1, horizontalLayout2, horizontalLayout3, addPatientDiv);
+	}
 
-    addPatientDiv.add(horizontalLayout4, horizontalLayout5);
-    add(horizontalLayout1, horizontalLayout2, horizontalLayout3, addPatientDiv);
-  }
+	private void setElements() {
+		addedPatientLabelDiv = new Div();
+		addedPatientLabelDiv.setText("Add a new patient: ");
+		addedPatientLabelDiv.getStyle().set("font-size", "large").set("font-weight", "bolder");
 
-  private void setElements() {
-    addedPatientLabelDiv = new Div();
-    addedPatientLabelDiv.setText("Add a new patient: ");
-    addedPatientLabelDiv.getStyle().set("font-size", "large").set("font-weight", "bolder");
+		externalIdField = new TextField("External Pseudonym");
+		externalIdField.setWidth("20");
+		patientIdField = new TextField("Patient ID");
+		patientIdField.setWidth("20%");
+		patientFirstNameField = new TextField("Patient first name");
+		patientFirstNameField.setWidth("20%");
+		patientLastNameField = new TextField("Patient last name");
+		patientLastNameField.setWidth("20%");
+		issuerOfPatientIdField = new TextField("Issuer of patient ID");
+		issuerOfPatientIdField.setWidth("20%");
 
-    externalIdField = new TextField("External Pseudonym");
-    externalIdField.setWidth("20");
-    patientIdField = new TextField("Patient ID");
-    patientIdField.setWidth("20%");
-    patientFirstNameField = new TextField("Patient first name");
-    patientFirstNameField.setWidth("20%");
-    patientLastNameField = new TextField("Patient last name");
-    patientLastNameField.setWidth("20%");
-    issuerOfPatientIdField = new TextField("Issuer of patient ID");
-    issuerOfPatientIdField.setWidth("20%");
+		clearFieldsButton = new Button("Clear");
 
-    clearFieldsButton = new Button("Clear");
+		addPatientButton = new Button("Add patient");
+		addPatientButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+		addPatientButton.setIcon(VaadinIcon.PLUS_CIRCLE.create());
+	}
 
-    addPatientButton = new Button("Add patient");
-    addPatientButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-    addPatientButton.setIcon(VaadinIcon.PLUS_CIRCLE.create());
-  }
+	public void setBinder() {
+		binder.forField(externalIdField).withValidator(StringUtils::isNotBlank, "External Pseudonym is empty")
+				.withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50)).bind("pseudonym");
 
-  public void setBinder() {
-    binder
-        .forField(externalIdField)
-        .withValidator(StringUtils::isNotBlank, "External Pseudonym is empty")
-        .withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
-        .bind("pseudonym");
+		binder.forField(patientIdField).withValidator(StringUtils::isNotBlank, "Patient ID is empty")
+				.withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50)).bind("patientId");
 
-    binder
-        .forField(patientIdField)
-        .withValidator(StringUtils::isNotBlank, "Patient ID is empty")
-        .withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
-        .bind("patientId");
+		binder.forField(patientFirstNameField).withValidator(StringUtils::isNotBlank, "Patient first name is empty")
+				.withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50)).bind("patientFirstName");
 
-    binder
-        .forField(patientFirstNameField)
-        .withValidator(StringUtils::isNotBlank, "Patient first name is empty")
-        .withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
-        .bind("patientFirstName");
+		binder.forField(patientLastNameField).withValidator(StringUtils::isNotBlank, "Patient last name is empty")
+				.withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50)).bind("patientLastName");
 
-    binder
-        .forField(patientLastNameField)
-        .withValidator(StringUtils::isNotBlank, "Patient last name is empty")
-        .withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
-        .bind("patientLastName");
+		binder.forField(issuerOfPatientIdField)
+				.withValidator(new StringLengthValidator("Length must be between 0 and 50.", 0, 50))
+				.bind("issuerOfPatientId");
+	}
 
-    binder
-        .forField(issuerOfPatientIdField)
-        .withValidator(new StringLengthValidator("Length must be between 0 and 50.", 0, 50))
-        .bind("issuerOfPatientId");
-  }
+	public Patient getNewPatient() {
+		Patient newPatient = new Patient(externalIdField.getValue(), patientIdField.getValue(),
+				patientFirstNameField.getValue(), patientLastNameField.getValue(), issuerOfPatientIdField.getValue(),
+				projectEntity.getId());
+		binder.validate();
+		if (binder.isValid()) {
+			binder.readBean(null);
+			return newPatient;
+		}
+		return null;
+	}
 
-  public Patient getNewPatient() {
-    Patient newPatient =
-        new Patient(
-            externalIdField.getValue(),
-            patientIdField.getValue(),
-            patientFirstNameField.getValue(),
-            patientLastNameField.getValue(),
-            issuerOfPatientIdField.getValue(),
-            projectEntity.getId());
-    binder.validate();
-    if (binder.isValid()) {
-      binder.readBean(null);
-      return newPatient;
-    }
-    return null;
-  }
+	public void clearPatientFields() {
+		externalIdField.clear();
+		patientIdField.clear();
+		patientFirstNameField.clear();
+		patientLastNameField.clear();
+		issuerOfPatientIdField.clear();
+		binder.readBean(null);
+	}
 
-  public void clearPatientFields() {
-    externalIdField.clear();
-    patientIdField.clear();
-    patientFirstNameField.clear();
-    patientLastNameField.clear();
-    issuerOfPatientIdField.clear();
-    binder.readBean(null);
-  }
+	public Button getAddPatientButton() {
+		return addPatientButton;
+	}
 
-  public Button getAddPatientButton() {
-    return addPatientButton;
-  }
+	public void setProjectEntity(ProjectEntity projectEntity) {
+		this.projectEntity = projectEntity;
+	}
 
-  public void setProjectEntity(ProjectEntity projectEntity) {
-    this.projectEntity = projectEntity;
-  }
 }

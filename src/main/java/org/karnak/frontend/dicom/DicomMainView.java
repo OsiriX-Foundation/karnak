@@ -28,82 +28,82 @@ import org.springframework.security.access.annotation.Secured;
 
 @Route(value = DicomMainView.ROUTE, layout = MainLayout.class)
 @PageTitle("KARNAK - DICOM Tools")
-@Secured({"ROLE_admin"})
+@Secured({ "ROLE_admin" })
 public class DicomMainView extends VerticalLayout {
 
-  public static final String VIEW_NAME = "DICOM Tools";
+	public static final String VIEW_NAME = "DICOM Tools";
 
-  public static final String ROUTE = "dicom";
+	public static final String ROUTE = "dicom";
 
-  private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-  // UI COMPONENTS
-  private DicomWebToolsBrand dicomWebToolsBrand;
+	// UI COMPONENTS
+	private DicomWebToolsBrand dicomWebToolsBrand;
 
-  private Tabs menu;
+	private Tabs menu;
 
-  private Tab tabDicomEchoView;
+	private Tab tabDicomEchoView;
 
-  private Tab tabDicomWorkListView;
+	private Tab tabDicomWorkListView;
 
-  private Tab tabMonitorView;
+	private Tab tabMonitorView;
 
-  private Map<Tab, Component> tabsToPages;
+	private Map<Tab, Component> tabsToPages;
 
-  private AbstractView pageDicomEchoView;
+	private AbstractView pageDicomEchoView;
 
-  private AbstractView pageDicomWorkListView;
+	private AbstractView pageDicomWorkListView;
 
-  private AbstractView pageMonitorView;
+	private AbstractView pageMonitorView;
 
-  private Set<Component> pagesShown;
+	private Set<Component> pagesShown;
 
-  // DATA
-  private Map<Class<? extends Component>, Tab> navigationTargetToTab;
+	// DATA
+	private Map<Class<? extends Component>, Tab> navigationTargetToTab;
 
-  public DicomMainView() {
-    init();
+	public DicomMainView() {
+		init();
 
-    createDicomWebToolsBrand();
-    createMenu();
-  }
+		createDicomWebToolsBrand();
+		createMenu();
+	}
 
-  private void init() {
-    navigationTargetToTab = new HashMap<>();
-  }
+	private void init() {
+		navigationTargetToTab = new HashMap<>();
+	}
 
-  private void createDicomWebToolsBrand() {
-    dicomWebToolsBrand = new DicomWebToolsBrand();
-  }
+	private void createDicomWebToolsBrand() {
+		dicomWebToolsBrand = new DicomWebToolsBrand();
+	}
 
-  private void createMenu() {
-    tabDicomEchoView = new Tab("DICOM Echo");
-    pageDicomEchoView = new DicomEchoView();
+	private void createMenu() {
+		tabDicomEchoView = new Tab("DICOM Echo");
+		pageDicomEchoView = new DicomEchoView();
 
-    tabDicomWorkListView = new Tab("DICOM Worklist");
-    pageDicomWorkListView = new DicomWorkListView();
+		tabDicomWorkListView = new Tab("DICOM Worklist");
+		pageDicomWorkListView = new DicomWorkListView();
 
-    tabMonitorView = new Tab("Monitor");
-    pageMonitorView = new MonitorView();
+		tabMonitorView = new Tab("Monitor");
+		pageMonitorView = new MonitorView();
 
-    tabsToPages = new HashMap<>();
-    tabsToPages.put(tabDicomEchoView, pageDicomEchoView);
-    tabsToPages.put(tabDicomWorkListView, pageDicomWorkListView);
-    tabsToPages.put(tabMonitorView, pageMonitorView);
+		tabsToPages = new HashMap<>();
+		tabsToPages.put(tabDicomEchoView, pageDicomEchoView);
+		tabsToPages.put(tabDicomWorkListView, pageDicomWorkListView);
+		tabsToPages.put(tabMonitorView, pageMonitorView);
 
-    menu = new Tabs(tabDicomEchoView, tabDicomWorkListView, tabMonitorView);
-    add(menu);
-    pagesShown = Stream.of(pageDicomEchoView).collect(Collectors.toSet());
+		menu = new Tabs(tabDicomEchoView, tabDicomWorkListView, tabMonitorView);
+		add(menu);
+		pagesShown = Stream.of(pageDicomEchoView).collect(Collectors.toSet());
 
-    add(pageDicomEchoView);
-    menu.addSelectedChangeListener(
-        event -> {
-          pagesShown.forEach(page -> page.setVisible(false));
-          pagesShown.clear();
-          Component selectedPage = tabsToPages.get(menu.getSelectedTab());
-          selectedPage.setVisible(true);
-          pagesShown.add(selectedPage);
-          add(selectedPage);
-        });
-  }
+		add(pageDicomEchoView);
+		menu.addSelectedChangeListener(event -> {
+			pagesShown.forEach(page -> page.setVisible(false));
+			pagesShown.clear();
+			Component selectedPage = tabsToPages.get(menu.getSelectedTab());
+			selectedPage.setVisible(true);
+			pagesShown.add(selectedPage);
+			add(selectedPage);
+		});
+	}
+
 }

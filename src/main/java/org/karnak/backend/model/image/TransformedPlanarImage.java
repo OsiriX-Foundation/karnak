@@ -5,23 +5,24 @@ import org.weasis.opencv.data.PlanarImage;
 
 public class TransformedPlanarImage {
 
-  Editable<PlanarImage> editablePlanarImage;
-  PlanarImage planarImage;
+	Editable<PlanarImage> editablePlanarImage;
 
-  public Editable<PlanarImage> getEditablePlanarImage() {
-    return editablePlanarImage;
-  }
+	PlanarImage planarImage;
 
-  public void setEditablePlanarImage(
-      Editable<PlanarImage> editablePlanarImage) {
-    this.editablePlanarImage = editablePlanarImage;
-  }
+	public Editable<PlanarImage> getEditablePlanarImage() {
+		return editablePlanarImage;
+	}
 
-  public PlanarImage getPlanarImage() {
-    return planarImage;
-  }
+	public void setEditablePlanarImage(Editable<PlanarImage> editablePlanarImage) {
+		this.editablePlanarImage = editablePlanarImage;
+	}
 
-  public void setPlanarImage(PlanarImage planarImage) {
-    this.planarImage = planarImage;
-  }
+	public PlanarImage getPlanarImage() {
+		return planarImage;
+	}
+
+	public void setPlanarImage(PlanarImage planarImage) {
+		this.planarImage = planarImage;
+	}
+
 }

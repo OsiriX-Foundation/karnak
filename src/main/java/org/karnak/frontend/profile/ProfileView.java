@@ -26,146 +26,142 @@ import org.karnak.frontend.profile.component.ProfileGrid;
 import org.karnak.frontend.profile.component.editprofile.ProfileComponent;
 import org.karnak.frontend.profile.component.editprofile.ProfileElementMainView;
 import org.karnak.frontend.profile.component.errorprofile.ProfileErrorView;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 
 @Route(value = ProfileView.ROUTE, layout = MainLayout.class)
 @PageTitle("KARNAK - Profiles")
-@Secured({"ROLE_admin"})
+@Secured({ "ROLE_admin" })
 @SuppressWarnings("serial")
 public class ProfileView extends HorizontalLayout implements HasUrlParameter<String> {
 
-  public static final String VIEW_NAME = "Profiles";
+	public static final String VIEW_NAME = "Profiles";
 
-  public static final String ROUTE = "profile";
+	public static final String ROUTE = "profile";
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ProfileView.class);
+	private final ProfileLogic profileLogic;
 
-  private final ProfileLogic profileLogic;
+	private final ProfileComponent profileComponent;
 
-  private final ProfileComponent profileComponent;
+	private final ProfileElementMainView profileElementMainView;
 
-  private final ProfileElementMainView profileElementMainView;
+	private final ProfileGrid profileGrid;
 
-  private final ProfileGrid profileGrid;
+	private final ProfileErrorView profileErrorView;
 
-  private final ProfileErrorView profileErrorView;
+	private VerticalLayout barAndGridLayout;
 
-  private VerticalLayout barAndGridLayout;
+	private final HorizontalLayout profileHorizontalLayout;
 
-  private final HorizontalLayout profileHorizontalLayout;
+	private Upload uploadProfile;
 
-  private Upload uploadProfile;
+	private MemoryBuffer memoryBuffer;
 
-  private MemoryBuffer memoryBuffer;
+	@Autowired
+	public ProfileView(final ProfileLogic profileLogic) {
+		this.profileLogic = profileLogic;
+		this.profileLogic.setProfileView(this);
 
-  @Autowired
-  public ProfileView(final ProfileLogic profileLogic) {
-    this.profileLogic = profileLogic;
-    this.profileLogic.setProfileView(this);
+		profileGrid = new ProfileGrid();
+		profileComponent = new ProfileComponent(profileLogic);
+		profileElementMainView = new ProfileElementMainView();
+		profileErrorView = new ProfileErrorView();
+		profileHorizontalLayout = new HorizontalLayout(profileComponent, profileElementMainView);
 
-    profileGrid = new ProfileGrid();
-    profileComponent = new ProfileComponent(profileLogic);
-    profileElementMainView = new ProfileElementMainView();
-    profileErrorView = new ProfileErrorView();
-    profileHorizontalLayout = new HorizontalLayout(profileComponent, profileElementMainView);
+		initComponents();
+		buildLayout();
 
-    initComponents();
-    buildLayout();
+		addEventUploadProfile();
+		addEventGridSelection();
 
-    addEventUploadProfile();
-    addEventGridSelection();
+		add(barAndGridLayout, profileHorizontalLayout);
+	}
 
-    add(barAndGridLayout, profileHorizontalLayout);
-  }
+	@Override
+	public void setParameter(BeforeEvent beforeEvent, @OptionalParameter String parameter) {
+		ProfileEntity currentProfileEntity = null;
+		profileLogic.refreshAll();
+		if (parameter != null) {
+			final Long idProfilePipe = profileLogic.enter(parameter);
+			if (idProfilePipe != null) {
+				currentProfileEntity = profileLogic.retrieveProfile(idProfilePipe);
+			}
+			remove(profileErrorView);
+			add(profileHorizontalLayout);
+		}
+		profileGrid.selectRow(currentProfileEntity);
+		profileComponent.setProfile(currentProfileEntity);
+		profileElementMainView.setProfile(currentProfileEntity);
+	}
 
-  @Override
-  public void setParameter(BeforeEvent beforeEvent, @OptionalParameter String parameter) {
-    ProfileEntity currentProfileEntity = null;
-    profileLogic.refreshAll();
-    if (parameter != null) {
-      final Long idProfilePipe = profileLogic.enter(parameter);
-      if (idProfilePipe != null) {
-        currentProfileEntity = profileLogic.retrieveProfile(idProfilePipe);
-      }
-      remove(profileErrorView);
-      add(profileHorizontalLayout);
-    }
-    profileGrid.selectRow(currentProfileEntity);
-    profileComponent.setProfile(currentProfileEntity);
-    profileElementMainView.setProfile(currentProfileEntity);
-  }
+	private void buildLayout() {
+		setSizeFull();
+		profileComponent.setWidth("45%");
+		profileElementMainView.setWidth("55%");
+		profileErrorView.setWidth("75%");
+		profileHorizontalLayout.setWidth("75%");
+		profileHorizontalLayout.getStyle().set("overflow-y", "auto");
 
-  private void buildLayout() {
-    setSizeFull();
-    profileComponent.setWidth("45%");
-    profileElementMainView.setWidth("55%");
-    profileErrorView.setWidth("75%");
-    profileHorizontalLayout.setWidth("75%");
-    profileHorizontalLayout.getStyle().set("overflow-y", "auto");
+		barAndGridLayout = new VerticalLayout();
+		barAndGridLayout.add(uploadProfile);
+		barAndGridLayout.add(profileGrid);
+		barAndGridLayout.setFlexGrow(0, uploadProfile);
+		barAndGridLayout.setFlexGrow(1, profileGrid);
+		barAndGridLayout.setWidth("25%");
+	}
 
-    barAndGridLayout = new VerticalLayout();
-    barAndGridLayout.add(uploadProfile);
-    barAndGridLayout.add(profileGrid);
-    barAndGridLayout.setFlexGrow(0, uploadProfile);
-    barAndGridLayout.setFlexGrow(1, profileGrid);
-    barAndGridLayout.setWidth("25%");
-  }
+	private void initComponents() {
+		initUploadProfile();
+		profileGrid.setItems(profileLogic);
+	}
 
-  private void initComponents() {
-    initUploadProfile();
-    profileGrid.setItems(profileLogic);
-  }
+	private void initUploadProfile() {
+		memoryBuffer = new MemoryBuffer();
+		// https://github.com/vaadin/vaadin-upload-flow/blob/6fa9cc429e1d0894704fb962e0df375a9d0439c8/vaadin-upload-flow-integration-tests/src/main/java/com/vaadin/flow/component/upload/tests/it/UploadView.java#L122
+		uploadProfile = new Upload(memoryBuffer);
+		uploadProfile.setDropLabel(new Span("Drag and drop your profile here"));
+	}
 
-  private void initUploadProfile() {
-    memoryBuffer = new MemoryBuffer();
-    // https://github.com/vaadin/vaadin-upload-flow/blob/6fa9cc429e1d0894704fb962e0df375a9d0439c8/vaadin-upload-flow-integration-tests/src/main/java/com/vaadin/flow/component/upload/tests/it/UploadView.java#L122
-    uploadProfile = new Upload(memoryBuffer);
-    uploadProfile.setDropLabel(new Span("Drag and drop your profile here"));
-  }
+	private void addEventUploadProfile() {
+		uploadProfile.addSucceededListener(e -> profileLogic.setProfileComponent(memoryBuffer.getInputStream()));
+	}
 
-  private void addEventUploadProfile() {
-    uploadProfile.addSucceededListener(
-        e -> profileLogic.setProfileComponent(memoryBuffer.getInputStream()));
-  }
+	private void addEventGridSelection() {
+		profileGrid.asSingleSelect().addValueChangeListener(event -> navigateProfile(event.getValue()));
+	}
 
-  private void addEventGridSelection() {
-    profileGrid.asSingleSelect().addValueChangeListener(event -> navigateProfile(event.getValue()));
-  }
+	/**
+	 * Navigation to the profile in parameter
+	 * @param profileEntity Profile to navigate to
+	 */
+	public void navigateProfile(ProfileEntity profileEntity) {
+		if (profileEntity == null) {
+			UI.getCurrent().navigate(ProfileView.class, "");
+		}
+		else {
+			String profileID = String.valueOf(profileEntity.getId());
+			UI.getCurrent().navigate(ProfileView.class, profileID);
+		}
+	}
 
-  /**
-   * Navigation to the profile in parameter
-   *
-   * @param profileEntity Profile to navigate to
-   */
-  public void navigateProfile(ProfileEntity profileEntity) {
-    if (profileEntity == null) {
-      UI.getCurrent().navigate(ProfileView.class, "");
-    } else {
-      String profileID = String.valueOf(profileEntity.getId());
-      UI.getCurrent().navigate(ProfileView.class, profileID);
-    }
-  }
+	public ProfileComponent getProfileComponent() {
+		return profileComponent;
+	}
 
-  public ProfileComponent getProfileComponent() {
-    return profileComponent;
-  }
+	public ProfileElementMainView getProfileElementMainView() {
+		return profileElementMainView;
+	}
 
-  public ProfileElementMainView getProfileElementMainView() {
-    return profileElementMainView;
-  }
+	public ProfileGrid getProfileGrid() {
+		return profileGrid;
+	}
 
-  public ProfileGrid getProfileGrid() {
-    return profileGrid;
-  }
+	public ProfileErrorView getProfileErrorView() {
+		return profileErrorView;
+	}
 
-  public ProfileErrorView getProfileErrorView() {
-    return profileErrorView;
-  }
+	public HorizontalLayout getProfileHorizontalLayout() {
+		return profileHorizontalLayout;
+	}
 
-  public HorizontalLayout getProfileHorizontalLayout() {
-    return profileHorizontalLayout;
-  }
 }

@@ -11,11 +11,11 @@ package org.karnak;
 
 import com.vaadin.flow.spring.annotation.EnableVaadin;
 import java.util.Objects;
+import lombok.extern.slf4j.Slf4j;
 import org.karnak.backend.config.AppConfig;
 import org.karnak.backend.enums.ApplicationProfile;
 import org.karnak.backend.enums.EnvironmentVariable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.opencv.osgi.OpenCVNativeLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -32,33 +32,45 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableVaadin(value = "org.karnak")
 @EnableScheduling
 @EnableAsync
-public class StartApplication implements CommandLineRunner {
+@Slf4j
+public class KarnakApplication implements CommandLineRunner {
 
-  private static final Logger log = LoggerFactory.getLogger(StartApplication.class);
+	@Autowired(required = false)
+	private AppConfig myConfig;
 
-  @Autowired(required = false)
-  private AppConfig myConfig;
+	public static void main(String[] args) {
 
-  public static void main(String[] args) {
-    SpringApplicationBuilder application = new SpringApplicationBuilder(StartApplication.class);
+		// Load open cv library
+		log.info("Loading open cv native library");
+		loadOpenCvNativeLibrary();
 
-    // If environment variable IDP exists and has value "oidc": activate the profile
-    // application-oidc.yml
-    if (System.getenv().containsKey(EnvironmentVariable.IDP.getCode())
-        && Objects.equals(
-        System.getenv().get(EnvironmentVariable.IDP.getCode()),
-        ApplicationProfile.OIDC.getCode())) {
-      application.profiles(ApplicationProfile.OIDC.getCode());
-    }
+		SpringApplicationBuilder application = new SpringApplicationBuilder(KarnakApplication.class);
 
-    // Run application
-    application.run(args);
-  }
+		// If environment variable IDP exists and has value "oidc": activate the profile
+		// application-oidc.yml
+		if (System.getenv().containsKey(EnvironmentVariable.IDP.getCode()) && Objects
+				.equals(System.getenv().get(EnvironmentVariable.IDP.getCode()), ApplicationProfile.OIDC.getCode())) {
+			application.profiles(ApplicationProfile.OIDC.getCode());
+		}
 
-  @Override
-  public void run(String... args) {
-    log.info("StartApplication...");
-    log.info("using environment: " + (myConfig != null ? myConfig.getEnvironment() : ""));
-    log.info("name: " + (myConfig != null ? myConfig.getName() : ""));
-  }
+		// Run application
+		application.run(args);
+	}
+
+	@Override
+	public void run(String... args) {
+		log.info("StartApplication");
+		log.info("using environment: " + (myConfig != null ? myConfig.getEnvironment() : ""));
+		log.info("name: " + (myConfig != null ? myConfig.getName() : ""));
+	}
+
+	/**
+	 * Load Open CV library
+	 */
+	private static void loadOpenCvNativeLibrary() {
+		OpenCVNativeLoader loader = new OpenCVNativeLoader();
+		loader.init();
+		log.info("Native OpenCV is activated");
+	}
+
 }

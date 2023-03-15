@@ -18,97 +18,89 @@ import org.springframework.context.ApplicationEventPublisher;
 
 class ForwardNodeAPIServiceTest {
 
-  // Application Event Publisher
-  private final ApplicationEventPublisher applicationEventPublisherMock =
-      Mockito.mock(ApplicationEventPublisher.class);
+	// Application Event Publisher
+	private final ApplicationEventPublisher applicationEventPublisherMock = Mockito
+			.mock(ApplicationEventPublisher.class);
 
-  // Service
-  private final ForwardNodeService forwardNodeServiceMock = Mockito.mock(ForwardNodeService.class);
+	// Service
+	private final ForwardNodeService forwardNodeServiceMock = Mockito.mock(ForwardNodeService.class);
 
-  private final DestinationService destinationServiceMock = Mockito.mock(DestinationService.class);
+	private final DestinationService destinationServiceMock = Mockito.mock(DestinationService.class);
 
-  private ForwardNodeAPIService forwardNodeAPIService;
+	private ForwardNodeAPIService forwardNodeAPIService;
 
-  @BeforeEach
-  public void setUp() {
+	@BeforeEach
+	public void setUp() {
 
-    // Build mocked service
-    forwardNodeAPIService =
-        new ForwardNodeAPIService(
-            forwardNodeServiceMock, destinationServiceMock, applicationEventPublisherMock);
-  }
+		// Build mocked service
+		forwardNodeAPIService = new ForwardNodeAPIService(forwardNodeServiceMock, destinationServiceMock,
+				applicationEventPublisherMock);
+	}
 
-  @Test
-  void should_add_forward_node_node_type_add() {
-    // Init data
-    ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
+	@Test
+	void should_add_forward_node_node_type_add() {
+		// Init data
+		ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
 
-    // Call service
-    forwardNodeAPIService.addForwardNode(forwardNodeEntity);
+		// Call service
+		forwardNodeAPIService.addForwardNode(forwardNodeEntity);
 
-    // Test results
-    Mockito.verify(forwardNodeServiceMock, Mockito.times(1)).getAllForwardNodes();
-    Mockito.verify(forwardNodeServiceMock, Mockito.times(1))
-        .save(Mockito.any(ForwardNodeEntity.class));
-    Mockito.verify(applicationEventPublisherMock, Mockito.times(1))
-        .publishEvent(Mockito.any(NodeEvent.class));
-  }
+		// Test results
+		Mockito.verify(forwardNodeServiceMock, Mockito.times(1)).getAllForwardNodes();
+		Mockito.verify(forwardNodeServiceMock, Mockito.times(1)).save(Mockito.any(ForwardNodeEntity.class));
+		Mockito.verify(applicationEventPublisherMock, Mockito.times(1)).publishEvent(Mockito.any(NodeEvent.class));
+	}
 
-  @Test
-  void should_add_forward_node_node_type_update() {
-    // Init data
-    ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
-    forwardNodeEntity.setId(1L);
+	@Test
+	void should_add_forward_node_node_type_update() {
+		// Init data
+		ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
+		forwardNodeEntity.setId(1L);
 
-    // Call service
-    forwardNodeAPIService.addForwardNode(forwardNodeEntity);
+		// Call service
+		forwardNodeAPIService.addForwardNode(forwardNodeEntity);
 
-    // Test results
-    Mockito.verify(forwardNodeServiceMock, Mockito.times(0)).getAllForwardNodes();
-    Mockito.verify(forwardNodeServiceMock, Mockito.times(1))
-        .save(Mockito.any(ForwardNodeEntity.class));
-    Mockito.verify(applicationEventPublisherMock, Mockito.times(1))
-        .publishEvent(Mockito.any(NodeEvent.class));
-  }
+		// Test results
+		Mockito.verify(forwardNodeServiceMock, Mockito.times(0)).getAllForwardNodes();
+		Mockito.verify(forwardNodeServiceMock, Mockito.times(1)).save(Mockito.any(ForwardNodeEntity.class));
+		Mockito.verify(applicationEventPublisherMock, Mockito.times(1)).publishEvent(Mockito.any(NodeEvent.class));
+	}
 
-  @Test
-  void should_update_forward_node() {
-    // Init data
-    ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
-    forwardNodeEntity.setId(1L);
+	@Test
+	void should_update_forward_node() {
+		// Init data
+		ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
+		forwardNodeEntity.setId(1L);
 
-    // Call service
-    forwardNodeAPIService.updateForwardNode(forwardNodeEntity);
+		// Call service
+		forwardNodeAPIService.updateForwardNode(forwardNodeEntity);
 
-    // Test results
-    Mockito.verify(forwardNodeServiceMock, Mockito.times(1))
-        .save(Mockito.any(ForwardNodeEntity.class));
-    Mockito.verify(applicationEventPublisherMock, Mockito.times(1))
-        .publishEvent(Mockito.any(NodeEvent.class));
-  }
+		// Test results
+		Mockito.verify(forwardNodeServiceMock, Mockito.times(1)).save(Mockito.any(ForwardNodeEntity.class));
+		Mockito.verify(applicationEventPublisherMock, Mockito.times(1)).publishEvent(Mockito.any(NodeEvent.class));
+	}
 
-  @Test
-  void should_delete_forward_node() {
-    // Init data
-    ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
-    forwardNodeEntity.setId(1L);
+	@Test
+	void should_delete_forward_node() {
+		// Init data
+		ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
+		forwardNodeEntity.setId(1L);
 
-    // Call service
-    forwardNodeAPIService.deleteForwardNode(forwardNodeEntity);
+		// Call service
+		forwardNodeAPIService.deleteForwardNode(forwardNodeEntity);
 
-    // Test results
-    Mockito.verify(forwardNodeServiceMock, Mockito.times(1))
-        .delete(Mockito.any(ForwardNodeEntity.class));
-    Mockito.verify(applicationEventPublisherMock, Mockito.times(1))
-        .publishEvent(Mockito.any(NodeEvent.class));
-  }
+		// Test results
+		Mockito.verify(forwardNodeServiceMock, Mockito.times(1)).delete(Mockito.any(ForwardNodeEntity.class));
+		Mockito.verify(applicationEventPublisherMock, Mockito.times(1)).publishEvent(Mockito.any(NodeEvent.class));
+	}
 
-  @Test
-  void should_retrieve_forward_node_by_id() {
-    // Call service
-    forwardNodeAPIService.getForwardNodeById(1L);
+	@Test
+	void should_retrieve_forward_node_by_id() {
+		// Call service
+		forwardNodeAPIService.getForwardNodeById(1L);
 
-    // Test results
-    Mockito.verify(forwardNodeServiceMock, Mockito.times(1)).get(Mockito.anyLong());
-  }
+		// Test results
+		Mockito.verify(forwardNodeServiceMock, Mockito.times(1)).get(Mockito.anyLong());
+	}
+
 }
