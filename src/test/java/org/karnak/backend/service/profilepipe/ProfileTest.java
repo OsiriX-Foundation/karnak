@@ -34,144 +34,144 @@ import org.weasis.dicom.param.AttributeEditorContext;
 
 class ProfileTest {
 
-  @Test
-  void should_apply() {
+	@Test
+	void should_apply() {
 
-    // Init data
-    Attributes attributes = new Attributes();
-    DestinationEntity destinationEntity = new DestinationEntity();
-    destinationEntity.setDestinationType(DestinationType.dicom);
-    ProjectEntity projectEntity = new ProjectEntity();
-    ProfileEntity profileEntityProject = new ProfileEntity();
-    projectEntity.setProfileEntity(profileEntityProject);
-    byte[] tabByte = new byte[16];
-    tabByte[0] = 1;
-    projectEntity.addActiveSecretEntity(new SecretEntity(tabByte));
-    destinationEntity.setDeIdentificationProjectEntity(projectEntity);
-    destinationEntity.setPseudonymType(PseudonymType.EXTID_IN_TAG);
-    destinationEntity.setTag("0008,0080");
-    destinationEntity.setSavePseudonym(false);
-    ProfileEntity profileEntity = new ProfileEntity();
-    Set<ProfileElementEntity> profileElementEntities = new HashSet<>();
-    ProfileElementEntity profileElementEntityBasic = new ProfileElementEntity();
-    profileElementEntityBasic.setCodename("basic.dicom.profile");
-    profileElementEntityBasic.setName("nameBasic");
-    ProfileElementEntity profileElementEntityCleanPixelData = new ProfileElementEntity();
-    profileElementEntityCleanPixelData.setCodename("clean.pixel.data");
-    profileElementEntityCleanPixelData.setName("nameCleanPixel");
-    profileElementEntityBasic.setPosition(1);
-    profileElementEntityCleanPixelData.setPosition(2);
-    profileElementEntityBasic.setAction("ReplaceNull");
-    profileElementEntityCleanPixelData.setAction("ReplaceNull");
+		// Init data
+		Attributes attributes = new Attributes();
+		DestinationEntity destinationEntity = new DestinationEntity();
+		destinationEntity.setDestinationType(DestinationType.dicom);
+		ProjectEntity projectEntity = new ProjectEntity();
+		ProfileEntity profileEntityProject = new ProfileEntity();
+		projectEntity.setProfileEntity(profileEntityProject);
+		byte[] tabByte = new byte[16];
+		tabByte[0] = 1;
+		projectEntity.addActiveSecretEntity(new SecretEntity(tabByte));
+		destinationEntity.setDeIdentificationProjectEntity(projectEntity);
+		destinationEntity.setPseudonymType(PseudonymType.EXTID_IN_TAG);
+		destinationEntity.setTag("0008,0080");
+		destinationEntity.setSavePseudonym(false);
+		ProfileEntity profileEntity = new ProfileEntity();
+		Set<ProfileElementEntity> profileElementEntities = new HashSet<>();
+		ProfileElementEntity profileElementEntityBasic = new ProfileElementEntity();
+		profileElementEntityBasic.setCodename("basic.dicom.profile");
+		profileElementEntityBasic.setName("nameBasic");
+		ProfileElementEntity profileElementEntityCleanPixelData = new ProfileElementEntity();
+		profileElementEntityCleanPixelData.setCodename("clean.pixel.data");
+		profileElementEntityCleanPixelData.setName("nameCleanPixel");
+		profileElementEntityBasic.setPosition(1);
+		profileElementEntityCleanPixelData.setPosition(2);
+		profileElementEntityBasic.setAction("ReplaceNull");
+		profileElementEntityCleanPixelData.setAction("ReplaceNull");
 
-    profileElementEntityCleanPixelData.setCondition("!tagValueContains(#Tag.StationName,'ICT256')");
+		profileElementEntityCleanPixelData.setCondition("!tagValueContains(#Tag.StationName,'ICT256')");
 
-    profileElementEntities.add(profileElementEntityBasic);
-    profileElementEntities.add(profileElementEntityCleanPixelData);
-    profileEntity.setProfileElementEntities(profileElementEntities);
-    profileEntity.setDefaultIssuerOfPatientId("defaultIssuerOfPatientId");
-    Set<MaskEntity> maskEntities = new HashSet<>();
-    MaskEntity maskEntity = new MaskEntity();
-    maskEntities.add(maskEntity);
-    maskEntity.setColor("1234567897");
-    maskEntity.setStationName("stationName");
-    maskEntity.setRectangles(Arrays.asList(new Rectangle()));
-    profileEntity.setMaskEntities(maskEntities);
-    AttributeEditorContext context = new AttributeEditorContext("tsuid", null, null);
-    attributes.setString(Tag.PatientID, VR.SH, "patientID");
-    attributes.setString(Tag.SeriesInstanceUID, VR.SH, "seriesInstanceUID");
-    attributes.setString(Tag.SOPInstanceUID, VR.SH, "sopInstanceUID");
-    attributes.setString(Tag.IssuerOfPatientID, VR.SH, "issuerOfPatientID");
-    attributes.setString(Tag.PixelData, VR.SH, "pixelData");
-    attributes.setString(Tag.SOPClassUID, VR.SH, "1.2.840.10008.5.1.4.1.1.88.74");
-    attributes.setString(Tag.BurnedInAnnotation, VR.SH, "YES");
-    attributes.setString(Tag.StationName, VR.SH, "stationName");
-    attributes.setString(524416, VR.SH, "pseudonym");
+		profileElementEntities.add(profileElementEntityBasic);
+		profileElementEntities.add(profileElementEntityCleanPixelData);
+		profileEntity.setProfileElementEntities(profileElementEntities);
+		profileEntity.setDefaultIssuerOfPatientId("defaultIssuerOfPatientId");
+		Set<MaskEntity> maskEntities = new HashSet<>();
+		MaskEntity maskEntity = new MaskEntity();
+		maskEntities.add(maskEntity);
+		maskEntity.setColor("1234567897");
+		maskEntity.setStationName("stationName");
+		maskEntity.setRectangles(Arrays.asList(new Rectangle()));
+		profileEntity.setMaskEntities(maskEntities);
+		AttributeEditorContext context = new AttributeEditorContext("tsuid", null, null);
+		attributes.setString(Tag.PatientID, VR.SH, "patientID");
+		attributes.setString(Tag.SeriesInstanceUID, VR.SH, "seriesInstanceUID");
+		attributes.setString(Tag.SOPInstanceUID, VR.SH, "sopInstanceUID");
+		attributes.setString(Tag.IssuerOfPatientID, VR.SH, "issuerOfPatientID");
+		attributes.setString(Tag.PixelData, VR.SH, "pixelData");
+		attributes.setString(Tag.SOPClassUID, VR.SH, "1.2.840.10008.5.1.4.1.1.88.74");
+		attributes.setString(Tag.BurnedInAnnotation, VR.SH, "YES");
+		attributes.setString(Tag.StationName, VR.SH, "stationName");
+		attributes.setString(524416, VR.SH, "pseudonym");
 
-    // Call method
-    Profile profile = new Profile(profileEntity);
-    // profile.init(profileEntity);
-    profile.applyDeIdentification(
-        attributes, destinationEntity, profileEntity, context, projectEntity);
+		// Call method
+		Profile profile = new Profile(profileEntity);
+		// profile.init(profileEntity);
+		profile.applyDeIdentification(attributes, destinationEntity, profileEntity, context, projectEntity);
 
-    // Test results
-    assertEquals("NONE", context.getAbort().name());
-    assertNull(context.getMaskArea());
-  }
+		// Test results
+		assertEquals("NONE", context.getAbort().name());
+		assertNull(context.getMaskArea());
+	}
 
-  @Test
-  void should_evaluate_condition_clean_pixel_case_no_condition() {
+	@Test
+	void should_evaluate_condition_clean_pixel_case_no_condition() {
 
-    // Init data
-    ProfileEntity profileEntity = new ProfileEntity();
-    Attributes attributes = new Attributes();
-    Set<ProfileElementEntity> profileElementEntities = new HashSet<>();
-    ProfileElementEntity profileElementEntityCleanPixelData = new ProfileElementEntity();
-    profileElementEntityCleanPixelData.setCodename("clean.pixel.data");
-    profileElementEntityCleanPixelData.setName("nameCleanPixel");
-    profileElementEntityCleanPixelData.setAction("ReplaceNull");
-    profileElementEntityCleanPixelData.setCondition(null);
+		// Init data
+		ProfileEntity profileEntity = new ProfileEntity();
+		Attributes attributes = new Attributes();
+		Set<ProfileElementEntity> profileElementEntities = new HashSet<>();
+		ProfileElementEntity profileElementEntityCleanPixelData = new ProfileElementEntity();
+		profileElementEntityCleanPixelData.setCodename("clean.pixel.data");
+		profileElementEntityCleanPixelData.setName("nameCleanPixel");
+		profileElementEntityCleanPixelData.setAction("ReplaceNull");
+		profileElementEntityCleanPixelData.setCondition(null);
 
-    profileElementEntities.add(profileElementEntityCleanPixelData);
-    profileEntity.setProfileElementEntities(profileElementEntities);
-    Profile profile = new Profile(profileEntity);
+		profileElementEntities.add(profileElementEntityCleanPixelData);
+		profileEntity.setProfileElementEntities(profileElementEntities);
+		Profile profile = new Profile(profileEntity);
 
-    // Evaluate condition
-    boolean evaluation = profile.evaluateConditionCleanPixelData(attributes);
+		// Evaluate condition
+		boolean evaluation = profile.evaluateConditionCleanPixelData(attributes);
 
-    // Test results
-    assertTrue(evaluation);
-  }
+		// Test results
+		assertTrue(evaluation);
+	}
 
-  @Test
-  void should_evaluate_condition_clean_pixel_case_exclude_station_name() {
+	@Test
+	void should_evaluate_condition_clean_pixel_case_exclude_station_name() {
 
-    // Init data
-    ProfileEntity profileEntity = new ProfileEntity();
-    Attributes attributes = new Attributes();
-    attributes.setString(Tag.StationName, VR.SH, "ICT256");
-    Set<ProfileElementEntity> profileElementEntities = new HashSet<>();
-    ProfileElementEntity profileElementEntityCleanPixelData = new ProfileElementEntity();
-    profileElementEntityCleanPixelData.setCodename("clean.pixel.data");
-    profileElementEntityCleanPixelData.setName("nameCleanPixel");
-    profileElementEntityCleanPixelData.setAction("ReplaceNull");
+		// Init data
+		ProfileEntity profileEntity = new ProfileEntity();
+		Attributes attributes = new Attributes();
+		attributes.setString(Tag.StationName, VR.SH, "ICT256");
+		Set<ProfileElementEntity> profileElementEntities = new HashSet<>();
+		ProfileElementEntity profileElementEntityCleanPixelData = new ProfileElementEntity();
+		profileElementEntityCleanPixelData.setCodename("clean.pixel.data");
+		profileElementEntityCleanPixelData.setName("nameCleanPixel");
+		profileElementEntityCleanPixelData.setAction("ReplaceNull");
 
-    profileElementEntityCleanPixelData.setCondition("!tagValueContains(#Tag.StationName,'ICT256')");
+		profileElementEntityCleanPixelData.setCondition("!tagValueContains(#Tag.StationName,'ICT256')");
 
-    profileElementEntities.add(profileElementEntityCleanPixelData);
-    profileEntity.setProfileElementEntities(profileElementEntities);
-    Profile profile = new Profile(profileEntity);
+		profileElementEntities.add(profileElementEntityCleanPixelData);
+		profileEntity.setProfileElementEntities(profileElementEntities);
+		Profile profile = new Profile(profileEntity);
 
-    // Evaluate condition
-    boolean evaluation = profile.evaluateConditionCleanPixelData(attributes);
+		// Evaluate condition
+		boolean evaluation = profile.evaluateConditionCleanPixelData(attributes);
 
-    // Test results
-    assertFalse(evaluation);
-  }
+		// Test results
+		assertFalse(evaluation);
+	}
 
-  @Test
-  void should_evaluate_condition_clean_pixel_case_include_station_name() {
+	@Test
+	void should_evaluate_condition_clean_pixel_case_include_station_name() {
 
-    // Init data
-    ProfileEntity profileEntity = new ProfileEntity();
-    Attributes attributes = new Attributes();
-    attributes.setString(Tag.StationName, VR.SH, "ICT256");
-    Set<ProfileElementEntity> profileElementEntities = new HashSet<>();
-    ProfileElementEntity profileElementEntityCleanPixelData = new ProfileElementEntity();
-    profileElementEntityCleanPixelData.setCodename("clean.pixel.data");
-    profileElementEntityCleanPixelData.setName("nameCleanPixel");
-    profileElementEntityCleanPixelData.setAction("ReplaceNull");
+		// Init data
+		ProfileEntity profileEntity = new ProfileEntity();
+		Attributes attributes = new Attributes();
+		attributes.setString(Tag.StationName, VR.SH, "ICT256");
+		Set<ProfileElementEntity> profileElementEntities = new HashSet<>();
+		ProfileElementEntity profileElementEntityCleanPixelData = new ProfileElementEntity();
+		profileElementEntityCleanPixelData.setCodename("clean.pixel.data");
+		profileElementEntityCleanPixelData.setName("nameCleanPixel");
+		profileElementEntityCleanPixelData.setAction("ReplaceNull");
 
-    profileElementEntityCleanPixelData.setCondition("tagValueContains(#Tag.StationName,'ICT256')");
+		profileElementEntityCleanPixelData.setCondition("tagValueContains(#Tag.StationName,'ICT256')");
 
-    profileElementEntities.add(profileElementEntityCleanPixelData);
-    profileEntity.setProfileElementEntities(profileElementEntities);
-    Profile profile = new Profile(profileEntity);
+		profileElementEntities.add(profileElementEntityCleanPixelData);
+		profileEntity.setProfileElementEntities(profileElementEntities);
+		Profile profile = new Profile(profileEntity);
 
-    // Evaluate condition
-    boolean evaluation = profile.evaluateConditionCleanPixelData(attributes);
+		// Evaluate condition
+		boolean evaluation = profile.evaluateConditionCleanPixelData(attributes);
 
-    // Test results
-    assertTrue(evaluation);
-  }
+		// Test results
+		assertTrue(evaluation);
+	}
+
 }

@@ -18,48 +18,49 @@ import org.karnak.frontend.component.ProfileDropDown;
 
 public class NewProject extends HorizontalLayout {
 
-  private final Binder<ProjectEntity> binder;
+	private final Binder<ProjectEntity> binder;
 
-  private final Button buttonAdd;
+	private final Button buttonAdd;
 
-  private final TextField textResearchName;
+	private final TextField textResearchName;
 
-  private final ProfileDropDown profileDropDown;
+	private final ProfileDropDown profileDropDown;
 
-  public NewProject() {
+	public NewProject() {
 
-    TextFieldsBindProject textFieldsBindProject = new TextFieldsBindProject();
-    setWidthFull();
-    this.binder = textFieldsBindProject.getBinder();
-    this.buttonAdd = new Button("Add");
-    this.textResearchName = textFieldsBindProject.getTextResearchName();
-    this.profileDropDown = textFieldsBindProject.getProfileDropDown();
-    setElements();
-    add(this.textResearchName, this.profileDropDown, this.buttonAdd);
-    this.binder.removeBinding(textFieldsBindProject.getSecretComboBox());
-    this.binder.bindInstanceFields(this);
-  }
+		TextFieldsBindProject textFieldsBindProject = new TextFieldsBindProject();
+		setWidthFull();
+		this.binder = textFieldsBindProject.getBinder();
+		this.buttonAdd = new Button("Add");
+		this.textResearchName = textFieldsBindProject.getTextResearchName();
+		this.profileDropDown = textFieldsBindProject.getProfileDropDown();
+		setElements();
+		add(this.textResearchName, this.profileDropDown, this.buttonAdd);
+		this.binder.removeBinding(textFieldsBindProject.getSecretComboBox());
+		this.binder.bindInstanceFields(this);
+	}
 
-  private void setElements() {
+	private void setElements() {
 
-    textResearchName.setWidth("20%");
-    textResearchName.getStyle().set("padding-right", "10px");
-    textResearchName.setPlaceholder("Enter Name");
-  }
+		textResearchName.setWidth("20%");
+		textResearchName.getStyle().set("padding-right", "10px");
+		textResearchName.setPlaceholder("Enter Name");
+	}
 
-  public Button getButtonAdd() {
-    return buttonAdd;
-  }
+	public Button getButtonAdd() {
+		return buttonAdd;
+	}
 
-  public void clear() {
-    binder.readBean(new ProjectEntity());
-  }
+	public void clear() {
+		binder.readBean(new ProjectEntity());
+	}
 
-  public Binder<ProjectEntity> getBinder() {
-    return binder;
-  }
+	public Binder<ProjectEntity> getBinder() {
+		return binder;
+	}
 
-  public ProfileDropDown getProfileDropDown() {
-    return profileDropDown;
-  }
+	public ProfileDropDown getProfileDropDown() {
+		return profileDropDown;
+	}
+
 }

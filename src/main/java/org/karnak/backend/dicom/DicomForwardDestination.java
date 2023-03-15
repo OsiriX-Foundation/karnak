@@ -21,125 +21,99 @@ import org.weasis.dicom.util.StoreFromStreamSCU;
 
 public class DicomForwardDestination extends ForwardDestination {
 
-  private final StoreFromStreamSCU streamSCU;
+	private final StoreFromStreamSCU streamSCU;
 
-  private final DeviceOpService streamSCUService;
+	private final DeviceOpService streamSCUService;
 
-  private final boolean useDestinationAetForKeyMap;
+	private final boolean useDestinationAetForKeyMap;
 
-  private final ForwardDicomNode callingNode;
+	private final ForwardDicomNode callingNode;
 
-  private final DicomNode destinationNode;
+	private final DicomNode destinationNode;
 
-  public DicomForwardDestination(ForwardDicomNode fwdNode, DicomNode destinationNode)
-      throws IOException {
-    this(null, fwdNode, destinationNode, null);
-  }
+	public DicomForwardDestination(ForwardDicomNode fwdNode, DicomNode destinationNode) throws IOException {
+		this(null, fwdNode, destinationNode, null);
+	}
 
-  public DicomForwardDestination(
-      AdvancedParams forwardParams, ForwardDicomNode fwdNode, DicomNode destinationNode)
-      throws IOException {
-    this(forwardParams, fwdNode, destinationNode, null);
-  }
+	public DicomForwardDestination(AdvancedParams forwardParams, ForwardDicomNode fwdNode, DicomNode destinationNode)
+			throws IOException {
+		this(forwardParams, fwdNode, destinationNode, null);
+	}
 
-  public DicomForwardDestination(
-      AdvancedParams forwardParams,
-      ForwardDicomNode fwdNode,
-      DicomNode destinationNode,
-      List<AttributeEditor> editors)
-      throws IOException {
-    this(forwardParams, fwdNode, destinationNode, false, null, editors);
-  }
+	public DicomForwardDestination(AdvancedParams forwardParams, ForwardDicomNode fwdNode, DicomNode destinationNode,
+			List<AttributeEditor> editors) throws IOException {
+		this(forwardParams, fwdNode, destinationNode, false, null, editors);
+	}
 
-  /**
-   * @param forwardParams              optional advanced parameters (proxy, authentication,
-   *                                   connection and TLS)
-   * @param fwdNode                    the DICOM forwarding node. Cannot be null.
-   * @param destinationNode            the DICOM destination node. Cannot be null.
-   * @param useDestinationAetForKeyMap
-   * @param progress
-   * @param editors
-   * @throws IOException
-   */
-  public DicomForwardDestination(
-      AdvancedParams forwardParams,
-      ForwardDicomNode fwdNode,
-      DicomNode destinationNode,
-      boolean useDestinationAetForKeyMap,
-      DicomProgress progress,
-      List<AttributeEditor> editors)
-      throws IOException {
-    this(
-        null,
-        forwardParams,
-        fwdNode,
-        destinationNode,
-        useDestinationAetForKeyMap,
-        progress,
-        editors,
-        null,
-        true);
-  }
+	/**
+	 * @param forwardParams optional advanced parameters (proxy, authentication,
+	 * connection and TLS)
+	 * @param fwdNode the DICOM forwarding node. Cannot be null.
+	 * @param destinationNode the DICOM destination node. Cannot be null.
+	 * @param useDestinationAetForKeyMap
+	 * @param progress
+	 * @param editors
+	 * @throws IOException
+	 */
+	public DicomForwardDestination(AdvancedParams forwardParams, ForwardDicomNode fwdNode, DicomNode destinationNode,
+			boolean useDestinationAetForKeyMap, DicomProgress progress, List<AttributeEditor> editors)
+			throws IOException {
+		this(null, forwardParams, fwdNode, destinationNode, useDestinationAetForKeyMap, progress, editors, null, true);
+	}
 
-  public DicomForwardDestination(
-      Long id,
-      AdvancedParams forwardParams,
-      ForwardDicomNode fwdNode,
-      DicomNode destinationNode,
-      boolean useDestinationAetForKeyMap,
-      DicomProgress progress,
-      List<AttributeEditor> editors,
-      String outputTransferSyntax,
-      boolean transcodeOnlyUncompressed)
-      throws IOException {
-    super(id, editors);
-    this.callingNode = fwdNode;
-    this.destinationNode = destinationNode;
-    this.streamSCU = new StoreFromStreamSCU(forwardParams, fwdNode, destinationNode, progress);
-    this.streamSCUService = new DeviceOpService(streamSCU.getDevice());
-    this.useDestinationAetForKeyMap = useDestinationAetForKeyMap;
-    setOutputTransferSyntax(outputTransferSyntax);
-    setTranscodeOnlyUncompressed(transcodeOnlyUncompressed);
-  }
+	public DicomForwardDestination(Long id, AdvancedParams forwardParams, ForwardDicomNode fwdNode,
+			DicomNode destinationNode, boolean useDestinationAetForKeyMap, DicomProgress progress,
+			List<AttributeEditor> editors, String outputTransferSyntax, boolean transcodeOnlyUncompressed)
+			throws IOException {
+		super(id, editors);
+		this.callingNode = fwdNode;
+		this.destinationNode = destinationNode;
+		this.streamSCU = new StoreFromStreamSCU(forwardParams, fwdNode, destinationNode, progress);
+		this.streamSCUService = new DeviceOpService(streamSCU.getDevice());
+		this.useDestinationAetForKeyMap = useDestinationAetForKeyMap;
+		setOutputTransferSyntax(outputTransferSyntax);
+		setTranscodeOnlyUncompressed(transcodeOnlyUncompressed);
+	}
 
-  public StoreFromStreamSCU getStreamSCU() {
-    return streamSCU;
-  }
+	public StoreFromStreamSCU getStreamSCU() {
+		return streamSCU;
+	}
 
-  public DeviceOpService getStreamSCUService() {
-    return streamSCUService;
-  }
+	public DeviceOpService getStreamSCUService() {
+		return streamSCUService;
+	}
 
-  public boolean isUseDestinationAetForKeyMap() {
-    return useDestinationAetForKeyMap;
-  }
+	public boolean isUseDestinationAetForKeyMap() {
+		return useDestinationAetForKeyMap;
+	}
 
-  @Override
-  public ForwardDicomNode getForwardDicomNode() {
-    return callingNode;
-  }
+	@Override
+	public ForwardDicomNode getForwardDicomNode() {
+		return callingNode;
+	}
 
-  public DicomNode getDestinationNode() {
-    return destinationNode;
-  }
+	public DicomNode getDestinationNode() {
+		return destinationNode;
+	}
 
-  @Override
-  public void stop() {
-    // Association as = streamSCU.getAssociation();
-    // if (as != null && as.isReadyForDataTransfer()) {
-    // as.abort();
-    // }
-    streamSCU.close(true);
-    streamSCUService.stop();
-  }
+	@Override
+	public void stop() {
+		// Association as = streamSCU.getAssociation();
+		// if (as != null && as.isReadyForDataTransfer()) {
+		// as.abort();
+		// }
+		streamSCU.close(true);
+		streamSCUService.stop();
+	}
 
-  @Override
-  public DicomState getState() {
-    return streamSCU.getState();
-  }
+	@Override
+	public DicomState getState() {
+		return streamSCU.getState();
+	}
 
-  @Override
-  public String toString() {
-    return destinationNode.toString();
-  }
+	@Override
+	public String toString() {
+		return destinationNode.toString();
+	}
+
 }

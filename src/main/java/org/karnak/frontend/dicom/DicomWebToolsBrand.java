@@ -15,27 +15,28 @@ import com.vaadin.flow.component.html.Span;
 
 public class DicomWebToolsBrand extends Composite<Div> {
 
-  private static final long serialVersionUID = 5833252271846713700L;
+	private static final long serialVersionUID = 5833252271846713700L;
 
-  private static final String TEXT = "Dicom Web Tools";
+	private static final String TEXT = "Dicom Web Tools";
 
-  private final Div div;
+	private final Div div;
 
-  private Span text;
+	private Span text;
 
-  public DicomWebToolsBrand() {
-    div = getContent();
-    div.getStyle().set("display", "contents");
+	public DicomWebToolsBrand() {
+		div = getContent();
+		div.getStyle().set("display", "contents");
 
-    createText();
+		createText();
 
-    div.add(text);
-  }
+		div.add(text);
+	}
 
-  private void createText() {
-    text = new Span(TEXT);
-    text.getStyle().set("padding-left", "1em");
-    text.getStyle().set("padding-right", "1em");
-    text.getStyle().set("white-space", "nowrap");
-  }
+	private void createText() {
+		text = new Span(TEXT);
+		text.getStyle().set("padding-left", "1em");
+		text.getStyle().set("padding-right", "1em");
+		text.getStyle().set("white-space", "nowrap");
+	}
+
 }

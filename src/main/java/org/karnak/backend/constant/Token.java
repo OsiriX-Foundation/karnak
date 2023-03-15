@@ -14,15 +14,16 @@ package org.karnak.backend.constant;
  */
 public class Token {
 
-  // Name of the resource in the access token for retrieving roles
-  public static final String RESOURCE_NAME = "karnak";
+	// Name of the resource in the access token for retrieving roles
+	public static final String RESOURCE_NAME = "karnak";
 
-  // Access token resource access
-  public static final String RESOURCE_ACCESS = "resource_access";
+	// Access token resource access
+	public static final String RESOURCE_ACCESS = "resource_access";
 
-  // Roles
-  public static final String ROLES = "roles";
+	// Roles
+	public static final String ROLES = "roles";
 
-  // Prefix of built roles
-  public static final String PREFIX_ROLE = "ROLE_";
+	// Prefix of built roles
+	public static final String PREFIX_ROLE = "ROLE_";
+
 }

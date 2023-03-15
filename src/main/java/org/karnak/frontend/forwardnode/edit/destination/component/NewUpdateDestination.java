@@ -22,140 +22,135 @@ import org.karnak.frontend.forwardnode.edit.component.ButtonSaveDeleteCancel;
 @SuppressWarnings("serial")
 public class NewUpdateDestination extends VerticalLayout {
 
-  private final FormDICOM formDICOM;
+	private final FormDICOM formDICOM;
 
-  private final FormSTOW formSTOW;
+	private final FormSTOW formSTOW;
 
-  private final Binder<DestinationEntity> binderFormDICOM;
+	private final Binder<DestinationEntity> binderFormDICOM;
 
-  private final Binder<DestinationEntity> binderFormSTOW;
+	private final Binder<DestinationEntity> binderFormSTOW;
 
-  private final ButtonSaveDeleteCancel buttonDestinationDICOMSaveDeleteCancel;
+	private final ButtonSaveDeleteCancel buttonDestinationDICOMSaveDeleteCancel;
 
-  private final ButtonSaveDeleteCancel buttonDestinationSTOWSaveDeleteCancel;
+	private final ButtonSaveDeleteCancel buttonDestinationSTOWSaveDeleteCancel;
 
-  private DestinationEntity currentDestinationEntity;
+	private DestinationEntity currentDestinationEntity;
 
-  public static final String TRANSFER_IN_PROGRESS = "Transfer in progress";
+	public static final String TRANSFER_IN_PROGRESS = "Transfer in progress";
 
-  public NewUpdateDestination() {
-    setSizeFull();
+	public NewUpdateDestination() {
+		setSizeFull();
 
-    this.formDICOM = new FormDICOM();
-    this.formSTOW = new FormSTOW();
-    this.binderFormDICOM = new BeanValidationBinder<>(DestinationEntity.class);
-    this.binderFormSTOW = new BeanValidationBinder<>(DestinationEntity.class);
-    this.buttonDestinationDICOMSaveDeleteCancel = new ButtonSaveDeleteCancel();
-    this.buttonDestinationSTOWSaveDeleteCancel = new ButtonSaveDeleteCancel();
-    this.currentDestinationEntity = null;
-    this.formDICOM.init(binderFormDICOM, buttonDestinationDICOMSaveDeleteCancel);
-    this.formSTOW.init(binderFormSTOW, buttonDestinationSTOWSaveDeleteCancel);
-  }
+		this.formDICOM = new FormDICOM();
+		this.formSTOW = new FormSTOW();
+		this.binderFormDICOM = new BeanValidationBinder<>(DestinationEntity.class);
+		this.binderFormSTOW = new BeanValidationBinder<>(DestinationEntity.class);
+		this.buttonDestinationDICOMSaveDeleteCancel = new ButtonSaveDeleteCancel();
+		this.buttonDestinationSTOWSaveDeleteCancel = new ButtonSaveDeleteCancel();
+		this.currentDestinationEntity = null;
+		this.formDICOM.init(binderFormDICOM, buttonDestinationDICOMSaveDeleteCancel);
+		this.formSTOW.init(binderFormSTOW, buttonDestinationSTOWSaveDeleteCancel);
+	}
 
-  public void load(DestinationEntity destinationEntity, DestinationType type) {
-    if (destinationEntity != null) {
-      currentDestinationEntity = destinationEntity;
-      if (!Objects.equals(
-          buttonDestinationDICOMSaveDeleteCancel.getDelete().getText(), TRANSFER_IN_PROGRESS)) {
-        buttonDestinationDICOMSaveDeleteCancel.getDelete().setEnabled(true);
-        buttonDestinationSTOWSaveDeleteCancel.getDelete().setEnabled(true);
-      }
-    } else {
-      currentDestinationEntity =
-          type == DestinationType.stow
-              ? DestinationEntity.ofStowEmpty()
-              : DestinationEntity.ofDicomEmpty();
-      buttonDestinationDICOMSaveDeleteCancel.getDelete().setEnabled(false);
-      buttonDestinationSTOWSaveDeleteCancel.getDelete().setEnabled(false);
-    }
-    setView(type);
-  }
+	public void load(DestinationEntity destinationEntity, DestinationType type) {
+		if (destinationEntity != null) {
+			currentDestinationEntity = destinationEntity;
+			if (!Objects.equals(buttonDestinationDICOMSaveDeleteCancel.getDelete().getText(), TRANSFER_IN_PROGRESS)) {
+				buttonDestinationDICOMSaveDeleteCancel.getDelete().setEnabled(true);
+				buttonDestinationSTOWSaveDeleteCancel.getDelete().setEnabled(true);
+			}
+		}
+		else {
+			currentDestinationEntity = type == DestinationType.stow ? DestinationEntity.ofStowEmpty()
+					: DestinationEntity.ofDicomEmpty();
+			buttonDestinationDICOMSaveDeleteCancel.getDelete().setEnabled(false);
+			buttonDestinationSTOWSaveDeleteCancel.getDelete().setEnabled(false);
+		}
+		setView(type);
+	}
 
-  public void setView(DestinationType type) {
-    removeAll();
-    if (type == DestinationType.stow) {
-      add(formSTOW);
-      binderFormSTOW.readBean(currentDestinationEntity);
-      handleEventTranscodeOnlyUncompressedWhenSomeTransferSyntax(
-          formSTOW.getTranscodeOnlyUncompressedComponent(),
-          currentDestinationEntity.getTransferSyntax(),
-          false);
-    } else if (type == DestinationType.dicom) {
-      add(formDICOM);
-      binderFormDICOM.readBean(currentDestinationEntity);
-      handleEventTranscodeOnlyUncompressedWhenSomeTransferSyntax(
-          formDICOM.getTranscodeOnlyUncompressedComponent(),
-          currentDestinationEntity.getTransferSyntax(),
-          false);
-    }
-  }
+	public void setView(DestinationType type) {
+		removeAll();
+		if (type == DestinationType.stow) {
+			add(formSTOW);
+			binderFormSTOW.readBean(currentDestinationEntity);
+			handleEventTranscodeOnlyUncompressedWhenSomeTransferSyntax(formSTOW.getTranscodeOnlyUncompressedComponent(),
+					currentDestinationEntity.getTransferSyntax(), false);
+		}
+		else if (type == DestinationType.dicom) {
+			add(formDICOM);
+			binderFormDICOM.readBean(currentDestinationEntity);
+			handleEventTranscodeOnlyUncompressedWhenSomeTransferSyntax(
+					formDICOM.getTranscodeOnlyUncompressedComponent(), currentDestinationEntity.getTransferSyntax(),
+					false);
+		}
+	}
 
-  /**
-   * For transfer syntax: EXPLICIT_VR_LITTLE_ENDIAN and Keep original, transcode only uncompressed
-   * is deactivated and the value is set to false
-   *
-   * @param transcodeOnlyUncompressedComponent Transcode Only Uncompressed Component
-   * @param transferSyntax                     Transfer Syntax to evaluate
-   * @param forceTranscodeOnlyUncompressed     Used to know if we reset the value of transcode only
-   *                                           uncompressed checkbox
-   */
-  public void handleEventTranscodeOnlyUncompressedWhenSomeTransferSyntax(
-      TranscodeOnlyUncompressedComponent transcodeOnlyUncompressedComponent,
-      String transferSyntax,
-      boolean forceTranscodeOnlyUncompressed) {
-    UIDType uidTypeSelected = UIDType.fromCode(transferSyntax);
-    if (uidTypeSelected == null
-        || Objects.equals(UIDType.EXPLICIT_VR_LITTLE_ENDIAN, uidTypeSelected)) {
-      if (forceTranscodeOnlyUncompressed) {
-        transcodeOnlyUncompressedComponent.getTranscodeOnlyUncompressedCheckBox().setValue(false);
-      }
-      transcodeOnlyUncompressedComponent.setEnabled(false);
+	/**
+	 * For transfer syntax: EXPLICIT_VR_LITTLE_ENDIAN and Keep original, transcode only
+	 * uncompressed is deactivated and the value is set to false
+	 * @param transcodeOnlyUncompressedComponent Transcode Only Uncompressed Component
+	 * @param transferSyntax Transfer Syntax to evaluate
+	 * @param forceTranscodeOnlyUncompressed Used to know if we reset the value of
+	 * transcode only uncompressed checkbox
+	 */
+	public void handleEventTranscodeOnlyUncompressedWhenSomeTransferSyntax(
+			TranscodeOnlyUncompressedComponent transcodeOnlyUncompressedComponent, String transferSyntax,
+			boolean forceTranscodeOnlyUncompressed) {
+		UIDType uidTypeSelected = UIDType.fromCode(transferSyntax);
+		if (uidTypeSelected == null || Objects.equals(UIDType.EXPLICIT_VR_LITTLE_ENDIAN, uidTypeSelected)) {
+			if (forceTranscodeOnlyUncompressed) {
+				transcodeOnlyUncompressedComponent.getTranscodeOnlyUncompressedCheckBox().setValue(false);
+			}
+			transcodeOnlyUncompressedComponent.setEnabled(false);
 
-    } else {
-      transcodeOnlyUncompressedComponent.setEnabled(true);
-      if (forceTranscodeOnlyUncompressed) {
-        transcodeOnlyUncompressedComponent.getTranscodeOnlyUncompressedCheckBox().setValue(true);
-      }
-    }
-  }
+		}
+		else {
+			transcodeOnlyUncompressedComponent.setEnabled(true);
+			if (forceTranscodeOnlyUncompressed) {
+				transcodeOnlyUncompressedComponent.getTranscodeOnlyUncompressedCheckBox().setValue(true);
+			}
+		}
+	}
 
-  public Button getButtonDICOMCancel() {
-    return buttonDestinationDICOMSaveDeleteCancel.getCancel();
-  }
+	public Button getButtonDICOMCancel() {
+		return buttonDestinationDICOMSaveDeleteCancel.getCancel();
+	}
 
-  public Button getButtonSTOWCancel() {
-    return buttonDestinationSTOWSaveDeleteCancel.getCancel();
-  }
+	public Button getButtonSTOWCancel() {
+		return buttonDestinationSTOWSaveDeleteCancel.getCancel();
+	}
 
-  public ButtonSaveDeleteCancel getButtonDestinationDICOMSaveDeleteCancel() {
-    return buttonDestinationDICOMSaveDeleteCancel;
-  }
+	public ButtonSaveDeleteCancel getButtonDestinationDICOMSaveDeleteCancel() {
+		return buttonDestinationDICOMSaveDeleteCancel;
+	}
 
-  public ButtonSaveDeleteCancel getButtonDestinationSTOWSaveDeleteCancel() {
-    return buttonDestinationSTOWSaveDeleteCancel;
-  }
+	public ButtonSaveDeleteCancel getButtonDestinationSTOWSaveDeleteCancel() {
+		return buttonDestinationSTOWSaveDeleteCancel;
+	}
 
-  public Binder<DestinationEntity> getBinderFormDICOM() {
-    return binderFormDICOM;
-  }
+	public Binder<DestinationEntity> getBinderFormDICOM() {
+		return binderFormDICOM;
+	}
 
-  public Binder<DestinationEntity> getBinderFormSTOW() {
-    return binderFormSTOW;
-  }
+	public Binder<DestinationEntity> getBinderFormSTOW() {
+		return binderFormSTOW;
+	}
 
-  public DestinationEntity getCurrentDestinationEntity() {
-    return currentDestinationEntity;
-  }
+	public DestinationEntity getCurrentDestinationEntity() {
+		return currentDestinationEntity;
+	}
 
-  public void setCurrentDestinationEntity(DestinationEntity currentDestinationEntity) {
-    this.currentDestinationEntity = currentDestinationEntity;
-  }
+	public void setCurrentDestinationEntity(DestinationEntity currentDestinationEntity) {
+		this.currentDestinationEntity = currentDestinationEntity;
+	}
 
-  public FormDICOM getFormDICOM() {
-    return formDICOM;
-  }
+	public FormDICOM getFormDICOM() {
+		return formDICOM;
+	}
 
-  public FormSTOW getFormSTOW() {
-    return formSTOW;
-  }
+	public FormSTOW getFormSTOW() {
+		return formSTOW;
+	}
+
 }

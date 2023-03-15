@@ -14,22 +14,23 @@ package org.karnak.backend.enums;
  */
 public enum EnvironmentVariable {
 
-  /**
-   * Environment variable IDP: determine the identity provider to use: "oidc": load keycloak, any
-   * other: load in memory
-   */
-  IDP("IDP");
+	/**
+	 * Environment variable IDP: determine the identity provider to use: "oidc": load
+	 * keycloak, any other: load in memory
+	 */
+	IDP("IDP");
 
-  /**
-   * Name of the environment variable
-   */
-  final String code;
+	/**
+	 * Name of the environment variable
+	 */
+	final String code;
 
-  EnvironmentVariable(final String code) {
-    this.code = code;
-  }
+	EnvironmentVariable(final String code) {
+		this.code = code;
+	}
 
-  public String getCode() {
-    return code;
-  }
+	public String getCode() {
+		return code;
+	}
+
 }

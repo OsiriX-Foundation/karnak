@@ -1,3 +1,3 @@
-@Library('hug-dsi@master') _
+@Library('dsi-pipeline@master') _
 import ch.hcuge.dsi.jenkins.BuildImage;
-newGenMavenPipeline(mavenImage: BuildImage.MVN_36_JDK17)
+springBootMavenPipeline(mavenImage: BuildImage.MVN_36_JDK17)

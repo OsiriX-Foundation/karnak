@@ -21,98 +21,94 @@ import org.mockito.Mockito;
 
 class KheopsAlbumsServiceTest {
 
-  // Repositories
-  private final KheopsAlbumsRepo kheopsAlbumsRepoMock = Mockito.mock(KheopsAlbumsRepo.class);
+	// Repositories
+	private final KheopsAlbumsRepo kheopsAlbumsRepoMock = Mockito.mock(KheopsAlbumsRepo.class);
 
-  // Service
-  private KheopsAlbumsService kheopsAlbumsService;
+	// Service
+	private KheopsAlbumsService kheopsAlbumsService;
 
-  @BeforeEach
-  public void setUp() {
-    // Build mocked service
-    kheopsAlbumsService = new KheopsAlbumsService(kheopsAlbumsRepoMock);
-  }
+	@BeforeEach
+	public void setUp() {
+		// Build mocked service
+		kheopsAlbumsService = new KheopsAlbumsService(kheopsAlbumsRepoMock);
+	}
 
-  @Test
-  void should_add_new_album() {
-    // Init data
-    KheopsAlbumsEntity kheopsAlbumsEntity = new KheopsAlbumsEntity();
-    DestinationEntity destinationEntity = new DestinationEntity();
-    destinationEntity.setId(1L);
-    kheopsAlbumsEntity.setDestinationEntity(destinationEntity);
+	@Test
+	void should_add_new_album() {
+		// Init data
+		KheopsAlbumsEntity kheopsAlbumsEntity = new KheopsAlbumsEntity();
+		DestinationEntity destinationEntity = new DestinationEntity();
+		destinationEntity.setId(1L);
+		kheopsAlbumsEntity.setDestinationEntity(destinationEntity);
 
-    // Call service
-    kheopsAlbumsService.newSwitchingAlbum(kheopsAlbumsEntity);
+		// Call service
+		kheopsAlbumsService.newSwitchingAlbum(kheopsAlbumsEntity);
 
-    // Test results
-    Mockito.verify(kheopsAlbumsRepoMock, Mockito.times(1))
-        .saveAndFlush(Mockito.any(KheopsAlbumsEntity.class));
-  }
+		// Test results
+		Mockito.verify(kheopsAlbumsRepoMock, Mockito.times(1)).saveAndFlush(Mockito.any(KheopsAlbumsEntity.class));
+	}
 
-  @Test
-  void should_update_album_from_destination_and_delete_diff() {
-    // Init data
-    DestinationEntity destinationEntity = new DestinationEntity();
-    destinationEntity.setId(1L);
-    KheopsAlbumsEntity kheopsAlbumsEntityFromDestination = new KheopsAlbumsEntity();
-    kheopsAlbumsEntityFromDestination.setId(2L);
-    destinationEntity.setKheopsAlbumEntities(
-        Collections.singletonList(kheopsAlbumsEntityFromDestination));
-    DestinationEntity destinationEntityFromKheopsAlbum = new DestinationEntity();
-    destinationEntityFromKheopsAlbum.setId(3L);
-    kheopsAlbumsEntityFromDestination.setDestinationEntity(destinationEntityFromKheopsAlbum);
+	@Test
+	void should_update_album_from_destination_and_delete_diff() {
+		// Init data
+		DestinationEntity destinationEntity = new DestinationEntity();
+		destinationEntity.setId(1L);
+		KheopsAlbumsEntity kheopsAlbumsEntityFromDestination = new KheopsAlbumsEntity();
+		kheopsAlbumsEntityFromDestination.setId(2L);
+		destinationEntity.setKheopsAlbumEntities(Collections.singletonList(kheopsAlbumsEntityFromDestination));
+		DestinationEntity destinationEntityFromKheopsAlbum = new DestinationEntity();
+		destinationEntityFromKheopsAlbum.setId(3L);
+		kheopsAlbumsEntityFromDestination.setDestinationEntity(destinationEntityFromKheopsAlbum);
 
-    // Mock
-    // findAllByDestinationEntity
-    List<KheopsAlbumsEntity> kheopsAlbumsEntities = new ArrayList<>();
-    KheopsAlbumsEntity kheopsAlbumsEntityFirst = new KheopsAlbumsEntity();
-    kheopsAlbumsEntityFirst.setId(88L);
-    KheopsAlbumsEntity kheopsAlbumsEntitySecond = new KheopsAlbumsEntity();
-    kheopsAlbumsEntityFirst.setId(99L);
-    kheopsAlbumsEntities.add(kheopsAlbumsEntityFirst);
-    kheopsAlbumsEntities.add(kheopsAlbumsEntitySecond);
-    Mockito.when(
-            kheopsAlbumsRepoMock.findAllByDestinationEntity(Mockito.any(DestinationEntity.class)))
-        .thenReturn(kheopsAlbumsEntities);
+		// Mock
+		// findAllByDestinationEntity
+		List<KheopsAlbumsEntity> kheopsAlbumsEntities = new ArrayList<>();
+		KheopsAlbumsEntity kheopsAlbumsEntityFirst = new KheopsAlbumsEntity();
+		kheopsAlbumsEntityFirst.setId(88L);
+		KheopsAlbumsEntity kheopsAlbumsEntitySecond = new KheopsAlbumsEntity();
+		kheopsAlbumsEntityFirst.setId(99L);
+		kheopsAlbumsEntities.add(kheopsAlbumsEntityFirst);
+		kheopsAlbumsEntities.add(kheopsAlbumsEntitySecond);
+		Mockito.when(kheopsAlbumsRepoMock.findAllByDestinationEntity(Mockito.any(DestinationEntity.class)))
+				.thenReturn(kheopsAlbumsEntities);
 
-    // Call service
-    kheopsAlbumsService.updateSwitchingAlbumsFromDestination(destinationEntity);
+		// Call service
+		kheopsAlbumsService.updateSwitchingAlbumsFromDestination(destinationEntity);
 
-    // Test results
-    Mockito.verify(kheopsAlbumsRepoMock, Mockito.times(1))
-        .saveAndFlush(Mockito.any(KheopsAlbumsEntity.class));
-    Mockito.verify(kheopsAlbumsRepoMock, Mockito.times(1))
-        .findAllByDestinationEntity(Mockito.any(DestinationEntity.class));
-    Mockito.verify(kheopsAlbumsRepoMock, Mockito.times(1)).deleteById(Mockito.anyLong());
-  }
+		// Test results
+		Mockito.verify(kheopsAlbumsRepoMock, Mockito.times(1)).saveAndFlush(Mockito.any(KheopsAlbumsEntity.class));
+		Mockito.verify(kheopsAlbumsRepoMock, Mockito.times(1))
+				.findAllByDestinationEntity(Mockito.any(DestinationEntity.class));
+		Mockito.verify(kheopsAlbumsRepoMock, Mockito.times(1)).deleteById(Mockito.anyLong());
+	}
 
-  @Test
-  void should_update_album_from_destination_and_delete_all() {
-    // Init data
-    DestinationEntity destinationEntity = new DestinationEntity();
-    destinationEntity.setId(1L);
-    KheopsAlbumsEntity kheopsAlbumsEntityFromDestination = new KheopsAlbumsEntity();
-    kheopsAlbumsEntityFromDestination.setId(2L);
-    DestinationEntity destinationEntityFromKheopsAlbum = new DestinationEntity();
-    destinationEntityFromKheopsAlbum.setId(3L);
-    kheopsAlbumsEntityFromDestination.setDestinationEntity(destinationEntityFromKheopsAlbum);
+	@Test
+	void should_update_album_from_destination_and_delete_all() {
+		// Init data
+		DestinationEntity destinationEntity = new DestinationEntity();
+		destinationEntity.setId(1L);
+		KheopsAlbumsEntity kheopsAlbumsEntityFromDestination = new KheopsAlbumsEntity();
+		kheopsAlbumsEntityFromDestination.setId(2L);
+		DestinationEntity destinationEntityFromKheopsAlbum = new DestinationEntity();
+		destinationEntityFromKheopsAlbum.setId(3L);
+		kheopsAlbumsEntityFromDestination.setDestinationEntity(destinationEntityFromKheopsAlbum);
 
-    // Mock
-    // findAllByDestinationEntity
-    List<KheopsAlbumsEntity> kheopsAlbumsEntities = new ArrayList<>();
-    KheopsAlbumsEntity kheopsAlbumsEntityFirst = new KheopsAlbumsEntity();
-    kheopsAlbumsEntityFirst.setId(88L);
-    kheopsAlbumsEntities.add(kheopsAlbumsEntityFirst);
-    Mockito.when(
-            kheopsAlbumsRepoMock.findAllByDestinationEntity(Mockito.any(DestinationEntity.class)))
-        .thenReturn(kheopsAlbumsEntities);
+		// Mock
+		// findAllByDestinationEntity
+		List<KheopsAlbumsEntity> kheopsAlbumsEntities = new ArrayList<>();
+		KheopsAlbumsEntity kheopsAlbumsEntityFirst = new KheopsAlbumsEntity();
+		kheopsAlbumsEntityFirst.setId(88L);
+		kheopsAlbumsEntities.add(kheopsAlbumsEntityFirst);
+		Mockito.when(kheopsAlbumsRepoMock.findAllByDestinationEntity(Mockito.any(DestinationEntity.class)))
+				.thenReturn(kheopsAlbumsEntities);
 
-    // Call service
-    kheopsAlbumsService.updateSwitchingAlbumsFromDestination(destinationEntity);
+		// Call service
+		kheopsAlbumsService.updateSwitchingAlbumsFromDestination(destinationEntity);
 
-    // Test results
-    Mockito.verify(kheopsAlbumsRepoMock, Mockito.times(1))
-        .findAllByDestinationEntity(Mockito.any(DestinationEntity.class));
-    Mockito.verify(kheopsAlbumsRepoMock, Mockito.times(1)).deleteById(Mockito.anyLong());
-  }
+		// Test results
+		Mockito.verify(kheopsAlbumsRepoMock, Mockito.times(1))
+				.findAllByDestinationEntity(Mockito.any(DestinationEntity.class));
+		Mockito.verify(kheopsAlbumsRepoMock, Mockito.times(1)).deleteById(Mockito.anyLong());
+	}
+
 }

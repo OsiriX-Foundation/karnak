@@ -16,148 +16,143 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.data.entity.ProfileEntity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 @DataJpaTest
+@Slf4j
 class ProfileElementRepoTest {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ProfileElementRepoTest.class);
+	@Autowired
+	private ProfileElementRepo repository;
 
-  @Autowired
-  private ProfileElementRepo repository;
+	@Autowired
+	private ProfileRepo profileRepo;
 
-  @Autowired
-  private ProfileRepo profileRepo;
+	/**
+	 * Test save and find record.
+	 */
+	@Test
+	void shouldSaveAndFindARecord() {
+		// Create an entity to save
+		ProfileElementEntity entity = new ProfileElementEntity();
+		entity.setName("Name");
 
-  /**
-   * Test save and find record.
-   */
-  @Test
-  void shouldSaveAndFindARecord() {
-    // Create an entity to save
-    ProfileElementEntity entity = new ProfileElementEntity();
-    entity.setName("Name");
+		// Save the entity
+		log.info("Saving entity with name [{}]", entity.getName());
+		entity = repository.save(entity);
 
-    // Save the entity
-    LOGGER.info("Saving entity with name [{}]", entity.getName());
-    entity = repository.save(entity);
+		// Test Save
+		assertEquals("Name", entity.getName());
+		assertNotNull(entity.getId());
+		log.info("Entity with name [{}] and id [{}] saved", entity.getName(), entity.getId());
 
-    // Test Save
-    assertEquals("Name", entity.getName());
-    assertNotNull(entity.getId());
-    LOGGER.info("Entity with name [{}] and id [{}] saved", entity.getName(), entity.getId());
+		// Find By Id
+		Optional<ProfileElementEntity> foundByIdOpt = repository.findById(entity.getId());
 
-    // Find By Id
-    Optional<ProfileElementEntity> foundByIdOpt = repository.findById(entity.getId());
+		// Test Find by Id
+		assertTrue(foundByIdOpt.isPresent());
+		log.info("Entity found with name [{}] and id [{}]", foundByIdOpt.get().getName(), foundByIdOpt.get().getId());
+		assertEquals(entity.getId(), foundByIdOpt.get().getId());
+	}
 
-    // Test Find by Id
-    assertTrue(foundByIdOpt.isPresent());
-    LOGGER.info(
-        "Entity found with name [{}] and id [{}]",
-        foundByIdOpt.get().getName(),
-        foundByIdOpt.get().getId());
-    assertEquals(entity.getId(), foundByIdOpt.get().getId());
-  }
+	/**
+	 * Test find all.
+	 */
+	@Test
+	void shouldFindAllRecords() {
+		// Create an entity to save
+		// Profile
+		ProfileEntity profileEntity = new ProfileEntity();
+		profileEntity.setName("name");
+		profileEntity = profileRepo.saveAndFlush(profileEntity);
+		// ProfileElement
+		ProfileElementEntity entity = new ProfileElementEntity();
+		entity.setName("Name");
+		entity.setProfileEntity(profileEntity);
 
-  /**
-   * Test find all.
-   */
-  @Test
-  void shouldFindAllRecords() {
-    // Create an entity to save
-    // Profile
-    ProfileEntity profileEntity = new ProfileEntity();
-    profileEntity.setName("name");
-    profileEntity = profileRepo.saveAndFlush(profileEntity);
-    // ProfileElement
-    ProfileElementEntity entity = new ProfileElementEntity();
-    entity.setName("Name");
-    entity.setProfileEntity(profileEntity);
+		// Save the entity
+		log.info("Saving entity with name [{}]", entity.getName());
+		repository.saveAndFlush(entity);
 
-    // Save the entity
-    LOGGER.info("Saving entity with name [{}]", entity.getName());
-    repository.saveAndFlush(entity);
+		// Find all
+		List<ProfileElementEntity> all = repository.findAll();
 
-    // Find all
-    List<ProfileElementEntity> all = repository.findAll();
+		// Test find all
+		assertNotNull(all);
+		assertTrue(all.size() > 0);
+		assertEquals(1, all.size());
+		log.info("Number of entities found [{}]", all.size());
+	}
 
-    // Test find all
-    assertNotNull(all);
-    assertTrue(all.size() > 0);
-    assertEquals(1, all.size());
-    LOGGER.info("Number of entities found [{}]", all.size());
-  }
+	/**
+	 * Test modification of a record.
+	 */
+	@Test
+	void shouldModifyRecord() {
 
-  /**
-   * Test modification of a record.
-   */
-  @Test
-  void shouldModifyRecord() {
+		String initialText = "InitialText";
+		String modifiedText = "ModifiedText";
 
-    String initialText = "InitialText";
-    String modifiedText = "ModifiedText";
+		// Create an entity to save
+		ProfileElementEntity entity = new ProfileElementEntity();
+		entity.setName(initialText);
 
-    // Create an entity to save
-    ProfileElementEntity entity = new ProfileElementEntity();
-    entity.setName(initialText);
+		// Save the entity
+		log.info("Saving entity with name [{}]", entity.getName());
+		entity = repository.save(entity);
+		log.info("Id of the entity with name [{}]", entity.getId());
 
-    // Save the entity
-    LOGGER.info("Saving entity with name [{}]", entity.getName());
-    entity = repository.save(entity);
-    LOGGER.info("Id of the entity with name [{}]", entity.getId());
+		// Test Save
+		assertNotNull(entity);
+		assertEquals(initialText, entity.getName());
 
-    // Test Save
-    assertNotNull(entity);
-    assertEquals(initialText, entity.getName());
+		// Modify the record
+		entity.setName(modifiedText);
+		log.info("Modify entity name [{}] to [{}]", initialText, modifiedText);
+		ProfileElementEntity entityModified = repository.save(entity);
 
-    // Modify the record
-    entity.setName(modifiedText);
-    LOGGER.info("Modify entity name [{}] to [{}]", initialText, modifiedText);
-    ProfileElementEntity entityModified = repository.save(entity);
+		// Test Modify
+		assertNotNull(entityModified);
+		assertEquals(entity.getId(), entityModified.getId());
+		assertEquals(modifiedText, entityModified.getName());
+		log.info("Name of the entity with id [{}]: [{}]", entityModified.getId(), entityModified.getName());
+	}
 
-    // Test Modify
-    assertNotNull(entityModified);
-    assertEquals(entity.getId(), entityModified.getId());
-    assertEquals(modifiedText, entityModified.getName());
-    LOGGER.info(
-        "Name of the entity with id [{}]: [{}]", entityModified.getId(), entityModified.getName());
-  }
+	/**
+	 * Test delete record.
+	 */
+	@Test
+	void shouldDeleteRecord() {
+		// Create an entity to save
+		ProfileElementEntity entity = new ProfileElementEntity();
+		String name = "Name";
+		entity.setName(name);
 
-  /**
-   * Test delete record.
-   */
-  @Test
-  void shouldDeleteRecord() {
-    // Create an entity to save
-    ProfileElementEntity entity = new ProfileElementEntity();
-    String name = "Name";
-    entity.setName(name);
+		// Save the entity
+		log.info("Saving entity with name [{}]", entity.getName());
+		entity = repository.save(entity);
 
-    // Save the entity
-    LOGGER.info("Saving entity with name [{}]", entity.getName());
-    entity = repository.save(entity);
+		// Retrieve the entity
+		Optional<ProfileElementEntity> foundByIdOpt = repository.findById(entity.getId());
 
-    // Retrieve the entity
-    Optional<ProfileElementEntity> foundByIdOpt = repository.findById(entity.getId());
+		// Test Find by Id
+		assertTrue(foundByIdOpt.isPresent());
 
-    // Test Find by Id
-    assertTrue(foundByIdOpt.isPresent());
+		// Delete the entity
+		entity = foundByIdOpt.get();
+		Long id = entity.getId();
+		log.info("Deleting entity with id [{}]", id);
+		repository.delete(entity);
 
-    // Delete the entity
-    entity = foundByIdOpt.get();
-    Long id = entity.getId();
-    LOGGER.info("Deleting entity with id [{}]", id);
-    repository.delete(entity);
+		// Test Delete
+		foundByIdOpt = repository.findById(id);
+		log.info("Is deleted entity with id [{}] present: [{}]", id, foundByIdOpt.isPresent());
+		assertFalse(foundByIdOpt.isPresent());
+	}
 
-    // Test Delete
-    foundByIdOpt = repository.findById(id);
-    LOGGER.info("Is deleted entity with id [{}] present: [{}]", id, foundByIdOpt.isPresent());
-    assertFalse(foundByIdOpt.isPresent());
-  }
 }

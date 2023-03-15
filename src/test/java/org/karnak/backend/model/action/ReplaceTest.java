@@ -17,31 +17,32 @@ import org.junit.jupiter.api.Test;
 
 class ReplaceTest {
 
-  @Test
-  void should_replace_tag_not_null() {
-    // Init data
-    Attributes attributes = new Attributes();
-    attributes.setString(524294, VR.AE, "initialValue");
-    Replace replace = new Replace("symbol", "dummyValue");
+	@Test
+	void should_replace_tag_not_null() {
+		// Init data
+		Attributes attributes = new Attributes();
+		attributes.setString(524294, VR.AE, "initialValue");
+		Replace replace = new Replace("symbol", "dummyValue");
 
-    // Add tag
-    replace.execute(attributes, 524294, null);
+		// Add tag
+		replace.execute(attributes, 524294, null);
 
-    // Test result
-    assertEquals("dummyValue", attributes.getString(524294));
-  }
+		// Test result
+		assertEquals("dummyValue", attributes.getString(524294));
+	}
 
-  @Test
-  void should_replace_tag_null() {
-    // Init data
-    Attributes attributes = new Attributes();
-    attributes.setString(524294, VR.AE, "initialValue");
-    Replace replace = new Replace("symbol", null);
+	@Test
+	void should_replace_tag_null() {
+		// Init data
+		Attributes attributes = new Attributes();
+		attributes.setString(524294, VR.AE, "initialValue");
+		Replace replace = new Replace("symbol", null);
 
-    // Add tag
-    replace.execute(attributes, 524294, null);
+		// Add tag
+		replace.execute(attributes, 524294, null);
 
-    // Test result
-    assertEquals(null, attributes.getString(524294));
-  }
+		// Test result
+		assertEquals(null, attributes.getString(524294));
+	}
+
 }
