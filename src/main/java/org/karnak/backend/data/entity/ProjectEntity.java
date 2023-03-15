@@ -31,132 +31,125 @@ import org.karnak.backend.util.DateFormat;
 @Table(name = "project")
 public class ProjectEntity implements Serializable {
 
-  private static final long serialVersionUID = 8809562914582842501L;
+	private static final long serialVersionUID = 8809562914582842501L;
 
-  private Long id;
+	private Long id;
 
-  private String name;
+	private String name;
 
-  private List<SecretEntity> secretEntities;
+	private List<SecretEntity> secretEntities;
 
-  private List<DestinationEntity> destinationEntities;
+	private List<DestinationEntity> destinationEntities;
 
-  private ProfileEntity profileEntity;
+	private ProfileEntity profileEntity;
 
-  public ProjectEntity() {
-    this.destinationEntities = new ArrayList<>();
-    this.secretEntities = new ArrayList<>();
-  }
+	public ProjectEntity() {
+		this.destinationEntities = new ArrayList<>();
+		this.secretEntities = new ArrayList<>();
+	}
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  public Long getId() {
-    return id;
-  }
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	public Long getId() {
+		return id;
+	}
 
-  public void setId(Long id) {
-    this.id = id;
-  }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-  public String getName() {
-    return name;
-  }
+	public String getName() {
+		return name;
+	}
 
-  public void setName(String name) {
-    this.name = name;
-  }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-  @OneToMany(mappedBy = "projectEntity", cascade = CascadeType.ALL)
-  @LazyCollection(LazyCollectionOption.FALSE)
-  public List<SecretEntity> getSecretEntities() {
-    return secretEntities;
-  }
+	@OneToMany(mappedBy = "projectEntity", cascade = CascadeType.ALL)
+	@LazyCollection(LazyCollectionOption.FALSE)
+	public List<SecretEntity> getSecretEntities() {
+		return secretEntities;
+	}
 
-  public void setSecretEntities(List<SecretEntity> secretEntities) {
-    this.secretEntities = secretEntities;
-  }
+	public void setSecretEntities(List<SecretEntity> secretEntities) {
+		this.secretEntities = secretEntities;
+	}
 
-  @OneToMany(mappedBy = "deIdentificationProjectEntity")
-  @LazyCollection(LazyCollectionOption.FALSE)
-  public List<DestinationEntity> getDestinationEntities() {
-    return destinationEntities;
-  }
+	@OneToMany(mappedBy = "deIdentificationProjectEntity")
+	@LazyCollection(LazyCollectionOption.FALSE)
+	public List<DestinationEntity> getDestinationEntities() {
+		return destinationEntities;
+	}
 
-  public void setDestinationEntities(List<DestinationEntity> destinationEntities) {
-    this.destinationEntities = destinationEntities;
-  }
+	public void setDestinationEntities(List<DestinationEntity> destinationEntities) {
+		this.destinationEntities = destinationEntities;
+	}
 
-  @ManyToOne
-  @JoinColumn(name = "profile_pipe_id")
-  public ProfileEntity getProfileEntity() {
-    return profileEntity;
-  }
+	@ManyToOne
+	@JoinColumn(name = "profile_pipe_id")
+	public ProfileEntity getProfileEntity() {
+		return profileEntity;
+	}
 
-  public void setProfileEntity(ProfileEntity profileEntity) {
-    this.profileEntity = profileEntity;
-  }
+	public void setProfileEntity(ProfileEntity profileEntity) {
+		this.profileEntity = profileEntity;
+	}
 
-  /**
-   * Retrieve the active secret of the project
-   *
-   * @return active secret to be used
-   */
-  public SecretEntity retrieveActiveSecret() {
-    return secretEntities.stream().filter(SecretEntity::isActive).findFirst().orElse(null);
-  }
+	/**
+	 * Retrieve the active secret of the project
+	 * @return active secret to be used
+	 */
+	public SecretEntity retrieveActiveSecret() {
+		return secretEntities.stream().filter(SecretEntity::isActive).findFirst().orElse(null);
+	}
 
-  /**
-   * Set the secret in parameter in the list of secret of the project and activate it
-   *
-   * @param secretEntity Secret to add
-   */
-  public void addActiveSecretEntity(SecretEntity secretEntity) {
-    applyActiveSecret(secretEntity);
-    secretEntities.add(secretEntity);
-  }
+	/**
+	 * Set the secret in parameter in the list of secret of the project and activate it
+	 * @param secretEntity Secret to add
+	 */
+	public void addActiveSecretEntity(SecretEntity secretEntity) {
+		applyActiveSecret(secretEntity);
+		secretEntities.add(secretEntity);
+	}
 
-  /**
-   * Activate the secret in parameter and deactivate others
-   *
-   * @param secretEntity Secret to activate
-   */
-  public void applyActiveSecret(SecretEntity secretEntity) {
-    secretEntities.forEach(s -> s.setActive(false));
-    secretEntity.setActive(true);
-  }
+	/**
+	 * Activate the secret in parameter and deactivate others
+	 * @param secretEntity Secret to activate
+	 */
+	public void applyActiveSecret(SecretEntity secretEntity) {
+		secretEntities.forEach(s -> s.setActive(false));
+		secretEntity.setActive(true);
+	}
 
-  /**
-   * Build a label for the combobox secret
-   *
-   * @param secretEntity Label is build for this secretEntity
-   * @return Label built
-   */
-  public static String buildLabelSecret(SecretEntity secretEntity) {
-    return "%s  [created: %s]"
-        .formatted(
-            HMAC.showHexKey(HMAC.byteToHex(secretEntity.getKey())),
-            DateFormat.format(
-                secretEntity.getCreationDate(), DateFormat.FORMAT_DDMMYYYY_SLASH_HHMMSS_2POINTS));
-  }
+	/**
+	 * Build a label for the combobox secret
+	 * @param secretEntity Label is build for this secretEntity
+	 * @return Label built
+	 */
+	public static String buildLabelSecret(SecretEntity secretEntity) {
+		return "%s  [created: %s]".formatted(HMAC.showHexKey(HMAC.byteToHex(secretEntity.getKey())),
+				DateFormat.format(secretEntity.getCreationDate(), DateFormat.FORMAT_DDMMYYYY_SLASH_HHMMSS_2POINTS));
+	}
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    ProjectEntity that = (ProjectEntity) o;
-    return Objects.equals(id, that.id)
-        && Objects.equals(name, that.name)
-        && Objects.equals(secretEntities, that.secretEntities)
-        && Objects.equals(destinationEntities, that.destinationEntities)
-        && Objects.equals(profileEntity, that.profileEntity);
-  }
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		ProjectEntity that = (ProjectEntity) o;
+		return Objects.equals(id, that.id) && Objects.equals(name, that.name)
+				&& Objects.equals(secretEntities, that.secretEntities)
+				&& Objects.equals(destinationEntities, that.destinationEntities)
+				&& Objects.equals(profileEntity, that.profileEntity);
+	}
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(id, name, secretEntities, destinationEntities, profileEntity);
-  }
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, name, secretEntities, destinationEntities, profileEntity);
+	}
+
 }

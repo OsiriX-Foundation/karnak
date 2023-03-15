@@ -17,15 +17,16 @@ import java.util.List;
 @JacksonXmlRootElement(localName = "destinations")
 public class DestinationEchos {
 
-  private final List<DestinationEcho> destinationEchos;
+	private final List<DestinationEcho> destinationEchos;
 
-  public DestinationEchos(List<DestinationEcho> destinationEchos) {
-    this.destinationEchos = destinationEchos;
-  }
+	public DestinationEchos(List<DestinationEcho> destinationEchos) {
+		this.destinationEchos = destinationEchos;
+	}
 
-  @JacksonXmlProperty(localName = "destination")
-  @JacksonXmlElementWrapper(useWrapping = false)
-  public List<DestinationEcho> getDestinationEchos() {
-    return destinationEchos;
-  }
+	@JacksonXmlProperty(localName = "destination")
+	@JacksonXmlElementWrapper(useWrapping = false)
+	public List<DestinationEcho> getDestinationEchos() {
+		return destinationEchos;
+	}
+
 }

@@ -22,53 +22,53 @@ import org.karnak.backend.enums.UIDType;
  */
 public class TransferSyntaxComponent extends VerticalLayout {
 
-  private Select<String> transferSyntaxSelect;
+	private Select<String> transferSyntaxSelect;
 
-  public TransferSyntaxComponent() {
+	public TransferSyntaxComponent() {
 
-    // In order to not have a padding around the component
-    setPadding(false);
+		// In order to not have a padding around the component
+		setPadding(false);
 
-    // Build transfer syntax components
-    buildComponents();
+		// Build transfer syntax components
+		buildComponents();
 
-    // Add components
-    addComponents();
-  }
+		// Add components
+		addComponents();
+	}
 
-  /**
-   * Add components in transfer syntax
-   */
-  private void addComponents() {
-    add(transferSyntaxSelect);
-  }
+	/**
+	 * Add components in transfer syntax
+	 */
+	private void addComponents() {
+		add(transferSyntaxSelect);
+	}
 
-  /**
-   * Build components used in Transfer Syntax component
-   */
-  private void buildComponents() {
-    transferSyntaxSelect = new Select<>();
-    transferSyntaxSelect.setWidth("600px");
-    transferSyntaxSelect.getElement().getStyle().set("--vaadin-combo-box-overlay-width", "550px");
+	/**
+	 * Build components used in Transfer Syntax component
+	 */
+	private void buildComponents() {
+		transferSyntaxSelect = new Select<>();
+		transferSyntaxSelect.setWidth("600px");
+		transferSyntaxSelect.getElement().getStyle().set("--vaadin-combo-box-overlay-width", "550px");
 
-    // Values
-    transferSyntaxSelect.setEmptySelectionAllowed(true);
-    transferSyntaxSelect.setEmptySelectionCaption(UIDType.DEFAULT_DESCRIPTION);
-    transferSyntaxSelect.setItems(
-        Arrays.stream(UIDType.values()).map(UIDType::getCode).collect(Collectors.toList()));
+		// Values
+		transferSyntaxSelect.setEmptySelectionAllowed(true);
+		transferSyntaxSelect.setEmptySelectionCaption(UIDType.DEFAULT_DESCRIPTION);
+		transferSyntaxSelect
+				.setItems(Arrays.stream(UIDType.values()).map(UIDType::getCode).collect(Collectors.toList()));
 
-    // Labels
-    transferSyntaxSelect.setLabel("Transfer Syntax");
-    transferSyntaxSelect.setItemLabelGenerator(UIDType::descriptionOf);
-  }
+		// Labels
+		transferSyntaxSelect.setLabel("Transfer Syntax");
+		transferSyntaxSelect.setItemLabelGenerator(UIDType::descriptionOf);
+	}
 
-  public void init(Binder<DestinationEntity> binder) {
-    binder
-        .forField(transferSyntaxSelect)
-        .bind(DestinationEntity::getTransferSyntax, DestinationEntity::setTransferSyntax);
-  }
+	public void init(Binder<DestinationEntity> binder) {
+		binder.forField(transferSyntaxSelect).bind(DestinationEntity::getTransferSyntax,
+				DestinationEntity::setTransferSyntax);
+	}
 
-  public Select<String> getTransferSyntaxSelect() {
-    return transferSyntaxSelect;
-  }
+	public Select<String> getTransferSyntaxSelect() {
+		return transferSyntaxSelect;
+	}
+
 }

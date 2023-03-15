@@ -20,25 +20,26 @@ import org.weasis.dicom.param.AttributeEditorContext.Abort;
 
 public class DeIdentifyEditor implements AttributeEditor {
 
-  private final Profile profile;
+	private final Profile profile;
 
-  private final DestinationEntity destinationEntity;
+	private final DestinationEntity destinationEntity;
 
-  private final ProfileEntity profileEntity;
+	private final ProfileEntity profileEntity;
 
-  private final ProjectEntity projectEntity;
+	private final ProjectEntity projectEntity;
 
-  public DeIdentifyEditor(DestinationEntity destinationEntity) {
-    this.destinationEntity = destinationEntity;
-    this.projectEntity = destinationEntity.getDeIdentificationProjectEntity();
-    this.profileEntity = projectEntity.getProfileEntity();
-    this.profile = new Profile(profileEntity);
-  }
+	public DeIdentifyEditor(DestinationEntity destinationEntity) {
+		this.destinationEntity = destinationEntity;
+		this.projectEntity = destinationEntity.getDeIdentificationProjectEntity();
+		this.profileEntity = projectEntity.getProfileEntity();
+		this.profile = new Profile(profileEntity);
+	}
 
-  @Override
-  public void apply(Attributes dcm, AttributeEditorContext context) {
-    if (context.getAbort() != Abort.FILE_EXCEPTION) {
-      profile.applyDeIdentification(dcm, destinationEntity, profileEntity, context, projectEntity);
-    }
-  }
+	@Override
+	public void apply(Attributes dcm, AttributeEditorContext context) {
+		if (context.getAbort() != Abort.FILE_EXCEPTION) {
+			profile.applyDeIdentification(dcm, destinationEntity, profileEntity, context, projectEntity);
+		}
+	}
+
 }

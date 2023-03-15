@@ -16,9 +16,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SOPClassUIDRepo extends JpaRepository<SOPClassUIDEntity, Long> {
 
-  SOPClassUIDEntity getSOPClassUIDByName(String name);
+	SOPClassUIDEntity getSOPClassUIDByName(String name);
 
-  SOPClassUIDEntity getSOPClassUIDById(Long id);
+	SOPClassUIDEntity getSOPClassUIDById(Long id);
 
-  Boolean existsByCiodAndUidAndName(String ciod, String uid, String name);
+	Boolean existsByCiodAndUidAndName(String ciod, String uid, String name);
+
 }

@@ -21,90 +21,80 @@ import org.springframework.stereotype.Service;
 @Service
 public class KheopsAlbumsService {
 
-  private final KheopsAlbumsRepo kheopsAlbumsRepo;
+	private final KheopsAlbumsRepo kheopsAlbumsRepo;
 
-  @Autowired
-  public KheopsAlbumsService(final KheopsAlbumsRepo kheopsAlbumsRepo) {
-    this.kheopsAlbumsRepo = kheopsAlbumsRepo;
-  }
+	@Autowired
+	public KheopsAlbumsService(final KheopsAlbumsRepo kheopsAlbumsRepo) {
+		this.kheopsAlbumsRepo = kheopsAlbumsRepo;
+	}
 
-  public void newSwitchingAlbum(KheopsAlbumsEntity kheopsAlbum) {
-    Long destinationID =
-        kheopsAlbum.getDestinationEntity() != null
-            ? kheopsAlbum.getDestinationEntity().getId()
-            : null;
-    if (destinationID != null) {
-      kheopsAlbumsRepo.saveAndFlush(kheopsAlbum);
-    }
-  }
+	public void newSwitchingAlbum(KheopsAlbumsEntity kheopsAlbum) {
+		Long destinationID = kheopsAlbum.getDestinationEntity() != null ? kheopsAlbum.getDestinationEntity().getId()
+				: null;
+		if (destinationID != null) {
+			kheopsAlbumsRepo.saveAndFlush(kheopsAlbum);
+		}
+	}
 
-  public void updateSwitchingAlbumsFromDestination(DestinationEntity destinationEntity) {
-    if (destinationEntity.getKheopsAlbumEntities() != null) {
-      for (KheopsAlbumsEntity kheopsAlbum : destinationEntity.getKheopsAlbumEntities()) {
-        setDestination(destinationEntity, kheopsAlbum);
-      }
-    }
-    removeKheopsAlbums(destinationEntity);
-  }
+	public void updateSwitchingAlbumsFromDestination(DestinationEntity destinationEntity) {
+		if (destinationEntity.getKheopsAlbumEntities() != null) {
+			for (KheopsAlbumsEntity kheopsAlbum : destinationEntity.getKheopsAlbumEntities()) {
+				setDestination(destinationEntity, kheopsAlbum);
+			}
+		}
+		removeKheopsAlbums(destinationEntity);
+	}
 
-  private void removeKheopsAlbums(DestinationEntity destinationEntity) {
-    List<KheopsAlbumsEntity> kheopsAlbumsEntityListDatabase = new ArrayList<>();
-    kheopsAlbumsRepo
-        .findAllByDestinationEntity(destinationEntity) //
-        .forEach(kheopsAlbumsEntityListDatabase::add);
-    deleteDiffCurrentAndDatabase(destinationEntity, kheopsAlbumsEntityListDatabase);
-    deleteAll(destinationEntity, kheopsAlbumsEntityListDatabase);
-  }
+	private void removeKheopsAlbums(DestinationEntity destinationEntity) {
+		List<KheopsAlbumsEntity> kheopsAlbumsEntityListDatabase = new ArrayList<>();
+		kheopsAlbumsRepo.findAllByDestinationEntity(destinationEntity) //
+				.forEach(kheopsAlbumsEntityListDatabase::add);
+		deleteDiffCurrentAndDatabase(destinationEntity, kheopsAlbumsEntityListDatabase);
+		deleteAll(destinationEntity, kheopsAlbumsEntityListDatabase);
+	}
 
-  private void deleteDiffCurrentAndDatabase(
-      DestinationEntity destinationEntity,
-      List<KheopsAlbumsEntity> kheopsAlbumsEntityListDatabase) {
-    if (destinationEntity.getKheopsAlbumEntities() != null
-        && kheopsAlbumsEntityListDatabase != null
-        && destinationEntity.getKheopsAlbumEntities().size()
-        != kheopsAlbumsEntityListDatabase.size()) {
-      for (KheopsAlbumsEntity kheopsAlbumDatabase : kheopsAlbumsEntityListDatabase) {
-        Predicate<KheopsAlbumsEntity> idIsAlwaysPresent =
-            kheopsAlbum -> kheopsAlbum.getId().equals(kheopsAlbumDatabase.getId());
-        if (!destinationEntity.getKheopsAlbumEntities().stream().anyMatch(idIsAlwaysPresent)) {
-          deleteSwitchingAlbums(kheopsAlbumDatabase);
-        }
-      }
-    }
-  }
+	private void deleteDiffCurrentAndDatabase(DestinationEntity destinationEntity,
+			List<KheopsAlbumsEntity> kheopsAlbumsEntityListDatabase) {
+		if (destinationEntity.getKheopsAlbumEntities() != null && kheopsAlbumsEntityListDatabase != null
+				&& destinationEntity.getKheopsAlbumEntities().size() != kheopsAlbumsEntityListDatabase.size()) {
+			for (KheopsAlbumsEntity kheopsAlbumDatabase : kheopsAlbumsEntityListDatabase) {
+				Predicate<KheopsAlbumsEntity> idIsAlwaysPresent = kheopsAlbum -> kheopsAlbum.getId()
+						.equals(kheopsAlbumDatabase.getId());
+				if (!destinationEntity.getKheopsAlbumEntities().stream().anyMatch(idIsAlwaysPresent)) {
+					deleteSwitchingAlbums(kheopsAlbumDatabase);
+				}
+			}
+		}
+	}
 
-  private void deleteAll(
-      DestinationEntity destinationEntity,
-      List<KheopsAlbumsEntity> kheopsAlbumsEntityListDatabase) {
-    if (destinationEntity.getKheopsAlbumEntities() == null
-        && kheopsAlbumsEntityListDatabase != null) {
-      deleteListSwitchingAlbums(kheopsAlbumsEntityListDatabase);
-    }
-  }
+	private void deleteAll(DestinationEntity destinationEntity,
+			List<KheopsAlbumsEntity> kheopsAlbumsEntityListDatabase) {
+		if (destinationEntity.getKheopsAlbumEntities() == null && kheopsAlbumsEntityListDatabase != null) {
+			deleteListSwitchingAlbums(kheopsAlbumsEntityListDatabase);
+		}
+	}
 
-  public void setDestination(DestinationEntity destinationEntity, KheopsAlbumsEntity kheopsAlbum) {
-    Long destinationID =
-        kheopsAlbum.getDestinationEntity() != null
-            ? kheopsAlbum.getDestinationEntity().getId()
-            : null;
-    if (destinationID == null) {
-      kheopsAlbum.setDestinationEntity(destinationEntity);
-    }
-    kheopsAlbumsRepo.saveAndFlush(kheopsAlbum);
-  }
+	public void setDestination(DestinationEntity destinationEntity, KheopsAlbumsEntity kheopsAlbum) {
+		Long destinationID = kheopsAlbum.getDestinationEntity() != null ? kheopsAlbum.getDestinationEntity().getId()
+				: null;
+		if (destinationID == null) {
+			kheopsAlbum.setDestinationEntity(destinationEntity);
+		}
+		kheopsAlbumsRepo.saveAndFlush(kheopsAlbum);
+	}
 
-  public void deleteSwitchingAlbums(KheopsAlbumsEntity kheopsAlbumsEntity) {
-    kheopsAlbumsRepo.deleteById(kheopsAlbumsEntity.getId());
-    kheopsAlbumsRepo.flush();
-  }
+	public void deleteSwitchingAlbums(KheopsAlbumsEntity kheopsAlbumsEntity) {
+		kheopsAlbumsRepo.deleteById(kheopsAlbumsEntity.getId());
+		kheopsAlbumsRepo.flush();
+	}
 
-  public void deleteListSwitchingAlbums(List<KheopsAlbumsEntity> kheopsAlbumsEntityList) {
-    if (kheopsAlbumsEntityList != null) {
-      kheopsAlbumsEntityList.forEach(
-          kheopsAlbums -> {
-            kheopsAlbumsRepo.deleteById(kheopsAlbums.getId());
-          });
-      kheopsAlbumsRepo.flush();
-    }
-  }
+	public void deleteListSwitchingAlbums(List<KheopsAlbumsEntity> kheopsAlbumsEntityList) {
+		if (kheopsAlbumsEntityList != null) {
+			kheopsAlbumsEntityList.forEach(kheopsAlbums -> {
+				kheopsAlbumsRepo.deleteById(kheopsAlbums.getId());
+			});
+			kheopsAlbumsRepo.flush();
+		}
+	}
+
 }

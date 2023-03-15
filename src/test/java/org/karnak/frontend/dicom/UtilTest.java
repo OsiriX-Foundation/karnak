@@ -20,101 +20,100 @@ import org.weasis.dicom.param.DicomNode;
 
 class UtilTest {
 
-  @Test
-  void when_network_response_format_xml_host_not_reachable_should_add_correct_tags() {
+	@Test
+	void when_network_response_format_xml_host_not_reachable_should_add_correct_tags() {
 
-    // Init data
-    DicomNode dicomNode = new DicomNode("fwdAeTitle", 1111);
-    StringBuilder result = new StringBuilder();
+		// Init data
+		DicomNode dicomNode = new DicomNode("fwdAeTitle", 1111);
+		StringBuilder result = new StringBuilder();
 
-    // Call method
-    Util.getNetworkResponse(
-        result, dicomNode.getAet(), dicomNode.getHostname(), dicomNode.getPort(), true, "XML");
+		// Call method
+		Util.getNetworkResponse(result, dicomNode.getAet(), dicomNode.getHostname(), dicomNode.getPort(), true, "XML");
 
-    // Test results
-    assertNotNull(result);
-    assertTrue(result.toString().contains("<DcmNetworkStatus>"));
-    assertTrue(result.toString().contains("</DcmNetworkStatus>"));
-  }
+		// Test results
+		assertNotNull(result);
+		assertTrue(result.toString().contains("<DcmNetworkStatus>"));
+		assertTrue(result.toString().contains("</DcmNetworkStatus>"));
+	}
 
-  // @Test
-  // void when_echo_response_format_xml_host_not_reachable_should_add_correct_tags() {
-  //
-  // // Init data
-  // DicomNode dicomNode = new DicomNode("fwdAeTitle", 1111);
-  // StringBuilder result = new StringBuilder();
-  //
-  // DicomState dicomState = new DicomState();
-  // dicomState.setStatus(444);
-  //
-  // try (MockedStatic<Echo> echoMock = Mockito.mockStatic(Echo.class)) {
-  // echoMock
-  // .when(
-  // () ->
-  // Echo.process(
-  // Mockito.any(AdvancedParams.class),
-  // Mockito.any(DicomNode.class),
-  // Mockito.any(DicomNode.class)))
-  // .thenReturn(dicomState);
-  //
-  // // Call method
-  // Util.getEchoResponse(result, dicomNode.getAet(), dicomNode, true, "XML", 0);
-  //
-  // // Test results
-  // Assert.assertNotNull(result);
-  // String resultString = result.toString();
-  // Assert.assertTrue(resultString.contains("<DcmStatus>"));
-  // Assert.assertTrue(resultString.contains("</DcmStatus>"));
-  // Assert.assertTrue(resultString.contains("Error"));
-  // }
-  // }
+	// @Test
+	// void when_echo_response_format_xml_host_not_reachable_should_add_correct_tags() {
+	//
+	// // Init data
+	// DicomNode dicomNode = new DicomNode("fwdAeTitle", 1111);
+	// StringBuilder result = new StringBuilder();
+	//
+	// DicomState dicomState = new DicomState();
+	// dicomState.setStatus(444);
+	//
+	// try (MockedStatic<Echo> echoMock = Mockito.mockStatic(Echo.class)) {
+	// echoMock
+	// .when(
+	// () ->
+	// Echo.process(
+	// Mockito.any(AdvancedParams.class),
+	// Mockito.any(DicomNode.class),
+	// Mockito.any(DicomNode.class)))
+	// .thenReturn(dicomState);
+	//
+	// // Call method
+	// Util.getEchoResponse(result, dicomNode.getAet(), dicomNode, true, "XML", 0);
+	//
+	// // Test results
+	// Assert.assertNotNull(result);
+	// String resultString = result.toString();
+	// Assert.assertTrue(resultString.contains("<DcmStatus>"));
+	// Assert.assertTrue(resultString.contains("</DcmStatus>"));
+	// Assert.assertTrue(resultString.contains("Error"));
+	// }
+	// }
 
-  // @Test
-  // void when_echo_response_format_xml_host_reachable_should_add_correct_tags() {
-  //
-  // // Init data
-  // DicomNode dicomNode = new DicomNode("fwdAeTitle", 1111);
-  // StringBuilder result = new StringBuilder();
-  // DicomState dicomState = new DicomState();
-  // dicomState.setStatus(0);
-  //
-  // try (MockedStatic<Echo> echoMock = Mockito.mockStatic(Echo.class)) {
-  // // Mock
-  // echoMock
-  // .when(
-  // () ->
-  // Echo.process(
-  // Mockito.any(AdvancedParams.class),
-  // Mockito.any(DicomNode.class),
-  // Mockito.any(DicomNode.class)))
-  // .thenReturn(dicomState);
-  //
-  // // Call method
-  // Util.getEchoResponse(result, dicomNode.getAet(), dicomNode, true, "XML", 0);
-  //
-  // // Test results
-  // Assert.assertNotNull(result);
-  // String resultString = result.toString();
-  // Assert.assertTrue(resultString.contains("<DcmStatus>"));
-  // Assert.assertTrue(resultString.contains("</DcmStatus>"));
-  // Assert.assertTrue(resultString.contains("Success"));
-  // }
-  // }
+	// @Test
+	// void when_echo_response_format_xml_host_reachable_should_add_correct_tags() {
+	//
+	// // Init data
+	// DicomNode dicomNode = new DicomNode("fwdAeTitle", 1111);
+	// StringBuilder result = new StringBuilder();
+	// DicomState dicomState = new DicomState();
+	// dicomState.setStatus(0);
+	//
+	// try (MockedStatic<Echo> echoMock = Mockito.mockStatic(Echo.class)) {
+	// // Mock
+	// echoMock
+	// .when(
+	// () ->
+	// Echo.process(
+	// Mockito.any(AdvancedParams.class),
+	// Mockito.any(DicomNode.class),
+	// Mockito.any(DicomNode.class)))
+	// .thenReturn(dicomState);
+	//
+	// // Call method
+	// Util.getEchoResponse(result, dicomNode.getAet(), dicomNode, true, "XML", 0);
+	//
+	// // Test results
+	// Assert.assertNotNull(result);
+	// String resultString = result.toString();
+	// Assert.assertTrue(resultString.contains("<DcmStatus>"));
+	// Assert.assertTrue(resultString.contains("</DcmStatus>"));
+	// Assert.assertTrue(resultString.contains("Success"));
+	// }
+	// }
 
-  @Test
-  void when_wado_response_format_xml_host_not_reachable_should_add_correct_tags()
-      throws MalformedURLException {
+	@Test
+	void when_wado_response_format_xml_host_not_reachable_should_add_correct_tags() throws MalformedURLException {
 
-    // Init data
-    WadoNode wadoNode = new WadoNode("fwdAeTitle", new URL("http://test.com"));
-    StringBuilder result = new StringBuilder();
+		// Init data
+		WadoNode wadoNode = new WadoNode("fwdAeTitle", new URL("http://test.com"));
+		StringBuilder result = new StringBuilder();
 
-    // Call method
-    Util.getWadoResponse(result, wadoNode, true, "XML");
+		// Call method
+		Util.getWadoResponse(result, wadoNode, true, "XML");
 
-    // Test results
-    assertNotNull(result);
-    assertTrue(result.toString().contains("<WadoStatus"));
-    assertTrue(result.toString().contains("</WadoStatus>"));
-  }
+		// Test results
+		assertNotNull(result);
+		assertTrue(result.toString().contains("<WadoStatus"));
+		assertTrue(result.toString().contains("</WadoStatus>"));
+	}
+
 }
