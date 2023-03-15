@@ -162,7 +162,7 @@ public class Defacer {
 
 		for (int x = 0; x < faceDetectImg.width(); x++) {
 			for (int y = faceDetectImg.height() - 1; y > 0; y--) {
-				if (MathUtil.isDifferentFromZero(randPxlLineImg.toMat().get(y, x)[0]) ) {
+				if (MathUtil.isDifferentFromZero(randPxlLineImg.toMat().get(y, x)[0])) {
 					newImg.toMat().put(y, x, randPxlLineImg.toMat().get(y, x)[0]);
 				}
 				else {
