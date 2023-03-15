@@ -32,7 +32,7 @@ public class KheopsApi {
 
 	private final HttpClient httpClient;
 
-	private final String X_AUTHORIZATION_SOURCE = "X-Authorization-Source";
+	private static final String X_AUTHORIZATION_SOURCE = "X-Authorization-Source";
 
 	@Autowired
 	public KheopsApi() {
