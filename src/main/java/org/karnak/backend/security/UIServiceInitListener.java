@@ -33,7 +33,7 @@ import org.springframework.stereotype.Component;
 public class UIServiceInitListener implements VaadinServiceInitListener {
 
 	// All view classes
-	private final List<? extends Class<? extends com.vaadin.flow.component.Component>> viewClasses = Arrays.asList(
+	private static final List<? extends Class<? extends com.vaadin.flow.component.Component>> viewClasses = Arrays.asList(
 			ForwardNodeView.class, ProfileView.class, ProjectView.class, ExternalIDView.class, MainzellisteView.class,
 			PseudonymMappingView.class, DicomMainView.class, HelpView.class);
 
