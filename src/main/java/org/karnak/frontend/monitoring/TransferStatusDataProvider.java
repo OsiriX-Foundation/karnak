@@ -34,7 +34,9 @@ public class TransferStatusDataProvider<T> extends FilterablePageableDataProvide
 		this.monitoringLogic = monitoringLogic;
 
 		// Default sort order
-		setSortOrders();
+		QuerySortOrderBuilder builder = new QuerySortOrderBuilder();
+		builder.thenDesc("transferDate");
+		this.defaultSortOrders = builder.build();
 	}
 
 	@Override
@@ -52,15 +54,6 @@ public class TransferStatusDataProvider<T> extends FilterablePageableDataProvide
 	protected int sizeInBackEnd(Query<T, TransferStatusFilter> query) {
 		TransferStatusFilter filter = query.getFilter().orElse(new TransferStatusFilter());
 		return monitoringLogic.countTransferStatus(filter);
-	}
-
-	/**
-	 * Default sort order
-	 */
-	private void setSortOrders() {
-		QuerySortOrderBuilder builder = new QuerySortOrderBuilder();
-		builder.thenDesc("transferDate");
-		this.defaultSortOrders = builder.build();
 	}
 
 }

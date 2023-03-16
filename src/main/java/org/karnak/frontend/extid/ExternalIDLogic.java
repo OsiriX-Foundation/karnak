@@ -25,6 +25,7 @@ public class ExternalIDLogic {
 	@Autowired
 	public ExternalIDLogic(final ProjectService projectService) {
 		this.projectService = projectService;
+		this.externalIDView = null;
 	}
 
 	public void setExternalIDView(ExternalIDView externalIDView) {
