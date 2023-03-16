@@ -64,6 +64,7 @@ public class CStoreSCPService extends BasicCStoreSCP {
 		super("*");
 		this.destinationRepo = destinationRepo;
 		this.forwardService = forwardService;
+		this.destinations = null;
 	}
 
 	public void init(Map<ForwardDicomNode, List<ForwardDestination>> destinations) {
@@ -175,5 +176,7 @@ public class CStoreSCPService extends BasicCStoreSCP {
 	public void setStatus(int status) {
 		this.status = status;
 	}
+
+
 
 }
