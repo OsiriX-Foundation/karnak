@@ -60,7 +60,7 @@ public class TransferStatusDataProvider<T> extends FilterablePageableDataProvide
 	private void setSortOrders() {
 		QuerySortOrderBuilder builder = new QuerySortOrderBuilder();
 		builder.thenDesc("transferDate");
-		defaultSortOrders = builder.build();
+		this.defaultSortOrders = builder.build();
 	}
 
 }

@@ -46,6 +46,7 @@ public class SourceLogic extends ListDataProvider<DicomSourceNodeEntity> {
 	public SourceLogic(final SourceNodeService sourceNodeService) {
 		super(new HashSet<>());
 		this.sourceNodeService = sourceNodeService;
+		this.sourceView = null;
 	}
 
 	@Override
