@@ -56,6 +56,7 @@ public class ProjectLogic extends ListDataProvider<ProjectEntity> {
 		this.projectService = projectService;
 		this.profilePipeService = profilePipeService;
 		this.secretService = secretService;
+		this.projectView = null;
 		initDataProvider();
 	}
 

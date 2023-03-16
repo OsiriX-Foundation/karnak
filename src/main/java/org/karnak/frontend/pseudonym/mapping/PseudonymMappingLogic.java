@@ -52,6 +52,7 @@ public class PseudonymMappingLogic {
 		this.pseudonymMappingService = pseudonymMappingService;
 		this.externalIDCache = externalIDCache;
 		this.projectService = projectService;
+		this.pseudonymMappingView = null;
 	}
 
 	/**

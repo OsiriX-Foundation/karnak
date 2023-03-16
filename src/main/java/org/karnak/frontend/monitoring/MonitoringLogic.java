@@ -41,6 +41,7 @@ public class MonitoringLogic {
 	@Autowired
 	public MonitoringLogic(final TransferMonitoringService transferMonitoringService) {
 		this.transferMonitoringService = transferMonitoringService;
+		this.monitoringView = null;
 	}
 
 	public MonitoringView getMonitoringView() {
