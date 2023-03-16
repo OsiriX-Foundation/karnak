@@ -59,7 +59,7 @@ public class StoreScpForwardService {
 		this.destinations = null;
 		this.status = 0;
 		this.conn = new Connection();
-		this.ae= new ApplicationEntity("*");
+		this.ae = new ApplicationEntity("*");
 		this.device = new Device("storescp");
 	}
 
