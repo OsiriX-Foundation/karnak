@@ -48,7 +48,7 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
 	/**
 	 * Text filter that can be changed separately.
 	 */
-	private String filterText = "";
+	private String filterText;
 
 	private ForwardNodeEntity forwardNodeEntity; // Current forward node
 
@@ -60,6 +60,9 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
 	public DestinationLogic(final DestinationService destinationService) {
 		super(new HashSet<>());
 		this.destinationService = destinationService;
+		this.forwardNodeEntity = null;
+		this.filterText = "";
+		this.destinationView = null;
 	}
 
 	@Override

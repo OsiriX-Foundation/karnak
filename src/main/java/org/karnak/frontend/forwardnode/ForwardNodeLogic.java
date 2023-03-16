@@ -50,7 +50,7 @@ public class ForwardNodeLogic extends ListDataProvider<ForwardNodeEntity> {
 	/**
 	 * Text filter that can be changed separately.
 	 */
-	private String filterText = "";
+	private String filterText;
 
 	@Autowired
 	public ForwardNodeLogic(final ForwardNodeAPIService forwardNodeAPIService,
@@ -64,6 +64,8 @@ public class ForwardNodeLogic extends ListDataProvider<ForwardNodeEntity> {
 		this.sopClassUIDService = sopClassUIDService;
 		this.sourceLogic = sourceLogic;
 		this.destinationLogic = destinationLogic;
+		this.filterText = "";
+		this.forwardNodeView = null;
 
 		initDataProvider();
 	}
