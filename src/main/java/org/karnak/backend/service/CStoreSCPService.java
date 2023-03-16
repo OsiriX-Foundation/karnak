@@ -177,6 +177,4 @@ public class CStoreSCPService extends BasicCStoreSCP {
 		this.status = status;
 	}
 
-
-
 }
