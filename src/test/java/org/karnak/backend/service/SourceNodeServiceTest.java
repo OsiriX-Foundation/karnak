@@ -21,7 +21,7 @@ class SourceNodeServiceTest {
 
 	// Application Event Publisher
 	private final ApplicationEventPublisher applicationEventPublisherMock = Mockito
-			.mock(ApplicationEventPublisher.class);
+		.mock(ApplicationEventPublisher.class);
 
 	// Repositories
 	private final DicomSourceNodeRepo dicomSourceNodeRepoMock = Mockito.mock(DicomSourceNodeRepo.class);
@@ -48,7 +48,7 @@ class SourceNodeServiceTest {
 
 		// Test results
 		Mockito.verify(forwardNodeServiceMock, Mockito.times(1))
-				.getAllSourceNodes(Mockito.any(ForwardNodeEntity.class));
+			.getAllSourceNodes(Mockito.any(ForwardNodeEntity.class));
 	}
 
 	@Test
@@ -58,15 +58,17 @@ class SourceNodeServiceTest {
 		DicomSourceNodeEntity dicomSourceNodeEntity = new DicomSourceNodeEntity();
 
 		// Mock service
-		Mockito.when(forwardNodeServiceMock.updateSourceNode(Mockito.any(ForwardNodeEntity.class),
-				Mockito.any(DicomSourceNodeEntity.class))).thenReturn(dicomSourceNodeEntity);
+		Mockito
+			.when(forwardNodeServiceMock.updateSourceNode(Mockito.any(ForwardNodeEntity.class),
+					Mockito.any(DicomSourceNodeEntity.class)))
+			.thenReturn(dicomSourceNodeEntity);
 
 		// Call service
 		sourceNodeService.save(forwardNodeEntity, dicomSourceNodeEntity);
 
 		// Test results
-		Mockito.verify(forwardNodeServiceMock, Mockito.times(1)).updateSourceNode(Mockito.any(ForwardNodeEntity.class),
-				Mockito.any(DicomSourceNodeEntity.class));
+		Mockito.verify(forwardNodeServiceMock, Mockito.times(1))
+			.updateSourceNode(Mockito.any(ForwardNodeEntity.class), Mockito.any(DicomSourceNodeEntity.class));
 	}
 
 	@Test
@@ -81,8 +83,8 @@ class SourceNodeServiceTest {
 		sourceNodeService.delete(dicomSourceNodeEntity);
 
 		// Test results
-		Mockito.verify(forwardNodeServiceMock, Mockito.times(1)).deleteSourceNode(Mockito.any(ForwardNodeEntity.class),
-				Mockito.any(DicomSourceNodeEntity.class));
+		Mockito.verify(forwardNodeServiceMock, Mockito.times(1))
+			.deleteSourceNode(Mockito.any(ForwardNodeEntity.class), Mockito.any(DicomSourceNodeEntity.class));
 	}
 
 }

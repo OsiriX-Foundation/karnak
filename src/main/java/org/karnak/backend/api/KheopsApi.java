@@ -37,7 +37,8 @@ public class KheopsApi {
 	@Autowired
 	public KheopsApi() {
 		httpClient = HttpClient.newBuilder() // one instance, reuse
-				.version(HttpClient.Version.HTTP_1_1).build();
+			.version(HttpClient.Version.HTTP_1_1)
+			.build();
 	}
 
 	// https://github.com/OsiriX-Foundation/KheopsAuthorization/wiki/Add-a-series
@@ -49,11 +50,14 @@ public class KheopsApi {
 			String authorizationDestination) throws IOException, InterruptedException {
 		final String stringURI = String.format("%s/studies/%s/series/%s", API_URL, studyInstanceUID, seriesInstanceUID);
 		final URI uri = URI.create(stringURI);
-		HttpRequest request = HttpRequest.newBuilder().PUT(HttpRequest.BodyPublishers.noBody()).uri(uri)
-				.setHeader(HttpHeaders.ACCEPT, "application/json")
-				.setHeader(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded")
-				.setHeader(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", authorizationDestination))
-				.setHeader(X_AUTHORIZATION_SOURCE, String.format("Bearer %s", authorizationSource)).build();
+		HttpRequest request = HttpRequest.newBuilder()
+			.PUT(HttpRequest.BodyPublishers.noBody())
+			.uri(uri)
+			.setHeader(HttpHeaders.ACCEPT, "application/json")
+			.setHeader(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded")
+			.setHeader(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", authorizationDestination))
+			.setHeader(X_AUTHORIZATION_SOURCE, String.format("Bearer %s", authorizationSource))
+			.build();
 
 		HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 		try {
@@ -72,10 +76,13 @@ public class KheopsApi {
 
 		Map<Object, Object> data = new HashMap<>();
 		data.put("token", introspectToken);
-		HttpRequest request = HttpRequest.newBuilder().POST(utils.buildDataFromMap(data)).uri(uri)
-				.setHeader(HttpHeaders.ACCEPT, "application/json")
-				.setHeader(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded")
-				.setHeader(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", authorizationToken)).build();
+		HttpRequest request = HttpRequest.newBuilder()
+			.POST(utils.buildDataFromMap(data))
+			.uri(uri)
+			.setHeader(HttpHeaders.ACCEPT, "application/json")
+			.setHeader(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded")
+			.setHeader(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", authorizationToken))
+			.build();
 
 		HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 		try {

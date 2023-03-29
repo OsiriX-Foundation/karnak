@@ -49,7 +49,7 @@ public class KarnakApplication implements CommandLineRunner {
 		// If environment variable IDP exists and has value "oidc": activate the profile
 		// application-oidc.yml
 		if (System.getenv().containsKey(EnvironmentVariable.IDP.getCode()) && Objects
-				.equals(System.getenv().get(EnvironmentVariable.IDP.getCode()), ApplicationProfile.OIDC.getCode())) {
+			.equals(System.getenv().get(EnvironmentVariable.IDP.getCode()), ApplicationProfile.OIDC.getCode())) {
 			application.profiles(ApplicationProfile.OIDC.getCode());
 		}
 

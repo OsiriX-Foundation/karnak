@@ -619,8 +619,8 @@ public class ForwardService {
 	private void monitor(Long forwardNodeId, Long destinationId, Attributes attributesOriginal,
 			Attributes attributesToSend, boolean sent, String reason, String modality, String sopClassUid) {
 		applicationEventPublisher
-				.publishEvent(new TransferMonitoringEvent(TransferStatusEntity.buildTransferStatusEntity(forwardNodeId,
-						destinationId, attributesOriginal, attributesToSend, sent, reason, modality, sopClassUid)));
+			.publishEvent(new TransferMonitoringEvent(TransferStatusEntity.buildTransferStatusEntity(forwardNodeId,
+					destinationId, attributesOriginal, attributesToSend, sent, reason, modality, sopClassUid)));
 	}
 
 }

@@ -122,7 +122,7 @@ public class Pseudonym {
 	public String getMainzellisteExtID(PatientMetadata patientMetadata) {
 		final PseudonymApi pseudonymApi = new PseudonymApi();
 		final String pseudonymMainzellisteExtID = pseudonymApi
-				.getExistingExtID(patientMetadata.generateMainzellisteFields());
+			.getExistingExtID(patientMetadata.generateMainzellisteFields());
 		if (pseudonymMainzellisteExtID == null) {
 			throw new IllegalStateException("Cannot get pseudonym of type extid in Mainzelliste API");
 		}

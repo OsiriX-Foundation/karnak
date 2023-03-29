@@ -68,11 +68,12 @@ class TransferStatusSpecificationTest {
 		transferStatusWithTransferDate.setTransferDate(LocalDateTime.of(2022, 1, 1, 6, 0, 0));
 
 		// Save in DB
-		Arrays.asList(transferStatusWithStudyUidOriginal, transferStatusWithStudyUidToSend,
-				transferStatusWithSerieUidOriginal, transferStatusWithSerieUidToSend,
-				transferStatusWithSopInstanceUidOriginal, transferStatusWithSopInstanceUidToSend,
-				transferStatusWithHasBeenSent, transferStatusWithTransferDate)
-				.forEach(transferStatusEntity -> repository.saveAndFlush(transferStatusEntity));
+		Arrays
+			.asList(transferStatusWithStudyUidOriginal, transferStatusWithStudyUidToSend,
+					transferStatusWithSerieUidOriginal, transferStatusWithSerieUidToSend,
+					transferStatusWithSopInstanceUidOriginal, transferStatusWithSopInstanceUidToSend,
+					transferStatusWithHasBeenSent, transferStatusWithTransferDate)
+			.forEach(transferStatusEntity -> repository.saveAndFlush(transferStatusEntity));
 	}
 
 	@Test
@@ -91,7 +92,7 @@ class TransferStatusSpecificationTest {
 
 		// Call service
 		List<TransferStatusEntity> transferStatusEntitiesOriginal = repository
-				.findAll(transferStatusSpecificationOriginal);
+			.findAll(transferStatusSpecificationOriginal);
 		List<TransferStatusEntity> transferStatusEntitiesToSend = repository.findAll(transferStatusSpecificationToSend);
 
 		// Test results
@@ -123,7 +124,7 @@ class TransferStatusSpecificationTest {
 
 		// Call service
 		List<TransferStatusEntity> transferStatusEntitiesOriginal = repository
-				.findAll(transferStatusSpecificationOriginal);
+			.findAll(transferStatusSpecificationOriginal);
 		List<TransferStatusEntity> transferStatusEntitiesToSend = repository.findAll(transferStatusSpecificationToSend);
 
 		// Test results
@@ -155,7 +156,7 @@ class TransferStatusSpecificationTest {
 
 		// Call service
 		List<TransferStatusEntity> transferStatusEntitiesOriginal = repository
-				.findAll(transferStatusSpecificationOriginal);
+			.findAll(transferStatusSpecificationOriginal);
 		List<TransferStatusEntity> transferStatusEntitiesToSend = repository.findAll(transferStatusSpecificationToSend);
 
 		// Test results
@@ -206,9 +207,9 @@ class TransferStatusSpecificationTest {
 
 		// Call service
 		List<TransferStatusEntity> transferStatusEntitiesInRange = repository
-				.findAll(transferStatusSpecificationInRange);
+			.findAll(transferStatusSpecificationInRange);
 		List<TransferStatusEntity> transferStatusEntitiesOutOfRange = repository
-				.findAll(transferStatusSpecificationOutOfRange);
+			.findAll(transferStatusSpecificationOutOfRange);
 
 		// Test results
 		// In Range

@@ -70,7 +70,7 @@ class PseudonymMappingLogicTest {
 
 		// Call service
 		Map<String, Patient> externalIDCachePatients = pseudonymMappingLogic
-				.retrieveExternalIDCachePatients("pseudonym");
+			.retrieveExternalIDCachePatients("pseudonym");
 
 		// Test results
 		Mockito.verify(externalIDCacheMock, Mockito.times(1)).getAll();

@@ -37,8 +37,12 @@ public class GatewayParams extends AbstractListenerParams {
 		if (set.stream().anyMatch(s -> s.getAcceptedSourceNodes().isEmpty())) {
 			return null;
 		}
-		return set.stream().map(ForwardDicomNode::getAcceptedSourceNodes).flatMap(Set<DicomNode>::stream)
-				.map(DicomNode::getAet).distinct().toArray(String[]::new);
+		return set.stream()
+			.map(ForwardDicomNode::getAcceptedSourceNodes)
+			.flatMap(Set<DicomNode>::stream)
+			.map(DicomNode::getAet)
+			.distinct()
+			.toArray(String[]::new);
 	}
 
 }

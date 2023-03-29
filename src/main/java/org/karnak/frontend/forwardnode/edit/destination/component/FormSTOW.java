@@ -126,11 +126,12 @@ public class FormSTOW extends VerticalLayout {
 	}
 
 	private void setBinder() {
-		binder.forField(url).withValidator(StringUtils::isNotBlank, "URL is mandatory").bind(DestinationEntity::getUrl,
-				DestinationEntity::setUrl);
+		binder.forField(url)
+			.withValidator(StringUtils::isNotBlank, "URL is mandatory")
+			.bind(DestinationEntity::getUrl, DestinationEntity::setUrl);
 
-		binder.forField(switchingAlbumsView).bind(DestinationEntity::getKheopsAlbumEntities,
-				DestinationEntity::setKheopsAlbumEntities);
+		binder.forField(switchingAlbumsView)
+			.bind(DestinationEntity::getKheopsAlbumEntities, DestinationEntity::setKheopsAlbumEntities);
 
 		binder.bindInstanceFields(this);
 	}

@@ -52,11 +52,12 @@ public class EditAETitleDescription extends HorizontalLayout {
 	}
 
 	private void setBinder() {
-		binder.forField(textFieldAETitle).withValidator(value -> !value.equals(""), "Forward AE Title is mandatory")
-				.withValidator(value -> value.length() <= 16, "Forward AETitle has more than 16 characters")
-				.bind(ForwardNodeEntity::getFwdAeTitle, ForwardNodeEntity::setFwdAeTitle);
-		binder.forField(textFieldDescription).bind(ForwardNodeEntity::getFwdDescription,
-				ForwardNodeEntity::setFwdDescription);
+		binder.forField(textFieldAETitle)
+			.withValidator(value -> !value.equals(""), "Forward AE Title is mandatory")
+			.withValidator(value -> value.length() <= 16, "Forward AETitle has more than 16 characters")
+			.bind(ForwardNodeEntity::getFwdAeTitle, ForwardNodeEntity::setFwdAeTitle);
+		binder.forField(textFieldDescription)
+			.bind(ForwardNodeEntity::getFwdDescription, ForwardNodeEntity::setFwdDescription);
 	}
 
 }

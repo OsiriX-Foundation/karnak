@@ -112,7 +112,7 @@ public class DicomGatewayService {
 		}
 		else {
 			storeScpForwardService.getApplicationEntity()
-					.addTransferCapability(new TransferCapability(null, "*", TransferCapability.Role.SCP, "*"));
+				.addTransferCapability(new TransferCapability(null, "*", TransferCapability.Role.SCP, "*"));
 		}
 
 		deviceService.start();

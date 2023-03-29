@@ -88,8 +88,10 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
 		if (forwardNodeEntity != null) {
 			// Refreshed destinations from DB
 			List<DestinationEntity> refreshedDestinations = destinationService
-					.retrieveDestinationsFromIds(forwardNodeEntity.getDestinationEntities().stream()
-							.map(DestinationEntity::getId).collect(Collectors.toList()));
+				.retrieveDestinationsFromIds(forwardNodeEntity.getDestinationEntities()
+					.stream()
+					.map(DestinationEntity::getId)
+					.collect(Collectors.toList()));
 
 			// Loading spinner
 			checkActivityLoadingSpinner(
@@ -129,8 +131,10 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
 	private void checkActivityLoadingSpinner(List<DestinationEntity> activatedDestinationEntities) {
 		activatedDestinationEntities.forEach(d -> {
 			// Retrieve the loading image of the corresponding destination
-			Image loadingImage = destinationView.getGridDestination().getLoadingImages()
-					.get(forwardNodeEntity.getFwdAeTitle()).get(d.getId());
+			Image loadingImage = destinationView.getGridDestination()
+				.getLoadingImages()
+				.get(forwardNodeEntity.getFwdAeTitle())
+				.get(d.getId());
 
 			// Check there is some activity on the destination: if yes set the loading
 			// spinner visible

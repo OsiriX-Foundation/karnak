@@ -55,8 +55,10 @@ public class ModuleToAttributes {
 			throw new ModuleNotFoundException(
 					String.format("Unable to get module attributes. Could not find the module %s", moduleID));
 		}
-		return attributes.entrySet().stream().filter(entry -> type.equals(entry.getValue().getType()))
-				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+		return attributes.entrySet()
+			.stream()
+			.filter(entry -> type.equals(entry.getValue().getType()))
+			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 	}
 
 }

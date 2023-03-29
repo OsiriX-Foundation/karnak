@@ -121,11 +121,11 @@ public class ForwardNodeView extends HorizontalLayout implements HasUrlParameter
 	 */
 	private void addEventNewForwardNodeLayoutNewGrid() {
 		layoutNewGridForwardNode.getButtonAddNewForwardNode()
-				.addClickListener(click -> eventAddForwardNodeLayoutNewGrid(new ForwardNodeEntity(
-						layoutNewGridForwardNode.getTextFieldNewAETitleForwardNode().getValue())));
-		layoutNewGridForwardNode.getTextFieldNewAETitleForwardNode().addKeyDownListener(Key.ENTER,
-				keyDownEvent -> eventAddForwardNodeLayoutNewGrid(new ForwardNodeEntity(
-						layoutNewGridForwardNode.getTextFieldNewAETitleForwardNode().getValue())));
+			.addClickListener(click -> eventAddForwardNodeLayoutNewGrid(
+					new ForwardNodeEntity(layoutNewGridForwardNode.getTextFieldNewAETitleForwardNode().getValue())));
+		layoutNewGridForwardNode.getTextFieldNewAETitleForwardNode()
+			.addKeyDownListener(Key.ENTER, keyDownEvent -> eventAddForwardNodeLayoutNewGrid(
+					new ForwardNodeEntity(layoutNewGridForwardNode.getTextFieldNewAETitleForwardNode().getValue())));
 	}
 
 	/**
@@ -187,7 +187,7 @@ public class ForwardNodeView extends HorizontalLayout implements HasUrlParameter
 	private void addEventSaveButtonLayoutEdit() {
 		layoutEditForwardNode.getButtonForwardNodeSaveDeleteCancel().getSave().addClickListener(event -> {
 			if (layoutEditForwardNode.getBinderForwardNode()
-					.writeBeanIfValid(layoutEditForwardNode.getCurrentForwardNodeEntity())) {
+				.writeBeanIfValid(layoutEditForwardNode.getCurrentForwardNodeEntity())) {
 				forwardNodeLogic.updateForwardNode(layoutEditForwardNode.getCurrentForwardNodeEntity());
 				forwardNodeLogic.refreshItem(layoutEditForwardNode.getCurrentForwardNodeEntity());
 				forwardNodeLogic.refreshAll();

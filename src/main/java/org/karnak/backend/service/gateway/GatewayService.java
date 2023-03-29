@@ -49,7 +49,7 @@ public class GatewayService implements ApplicationListener<ContextRefreshedEvent
 	public void initGateway() {
 		try {
 			String[] acceptedCallingAETitles = GatewayParams
-					.getAcceptedCallingAETitles(gatewaySetUpService.getDestinations());
+				.getAcceptedCallingAETitles(gatewaySetUpService.getDestinations());
 			GatewayParams gparams = new GatewayParams(gatewaySetUpService.getAdvancedParams(), false, null,
 					acceptedCallingAETitles);
 			gateway.init(gatewaySetUpService.getDestinations());

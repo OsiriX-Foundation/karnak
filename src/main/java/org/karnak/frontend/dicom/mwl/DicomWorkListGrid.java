@@ -47,8 +47,9 @@ public class DicomWorkListGrid extends Grid<Attributes> {
 		int tag = p.getTag();
 		int[] pSeq = p.getParentSeqTags();
 		if (pSeq == null || pSeq.length == 0) {
-			addColumn(a -> getText(a, tag)).setHeader(Keyword.valueOf(tag)).setSortable(true)
-					.setKey(String.valueOf(tag));
+			addColumn(a -> getText(a, tag)).setHeader(Keyword.valueOf(tag))
+				.setSortable(true)
+				.setKey(String.valueOf(tag));
 		}
 		else {
 			addColumn(a -> {

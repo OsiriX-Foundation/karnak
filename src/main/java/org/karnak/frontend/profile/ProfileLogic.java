@@ -134,8 +134,9 @@ public class ProfileLogic extends ListDataProvider<ProfileEntity> {
 		}
 		catch (YAMLException e) {
 			log.error("Unable to read uploaded YAML", e);
-			profileView.getProfileErrorView().setView("Unable to read uploaded YAML file.\n"
-					+ "Please make sure it is a YAML file and respects the YAML structure.");
+			profileView.getProfileErrorView()
+				.setView("Unable to read uploaded YAML file.\n"
+						+ "Please make sure it is a YAML file and respects the YAML structure.");
 		}
 	}
 
@@ -144,8 +145,11 @@ public class ProfileLogic extends ListDataProvider<ProfileEntity> {
 		var content = new Div();
 		var divTitle = new Div();
 		divTitle.setText("Warning");
-		divTitle.getStyle().set("font-size", "large").set("font-weight", "bolder").set("padding-bottom", "10px")
-				.set("color", "red");
+		divTitle.getStyle()
+			.set("font-size", "large")
+			.set("font-weight", "bolder")
+			.set("padding-bottom", "10px")
+			.set("color", "red");
 
 		var okBtn = new Button("Ok", e -> warningIssuer.close());
 		okBtn.getStyle().set("margin-top", "10px");

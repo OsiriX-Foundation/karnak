@@ -64,8 +64,8 @@ public class GridDestination extends Grid<DestinationEntity> {
 			loadingImages.put(destinationEntity.getForwardNodeEntity().getFwdAeTitle(), loadingImagesMap);
 		}
 		else {
-			loadingImages.get(destinationEntity.getForwardNodeEntity().getFwdAeTitle()).put(destinationEntity.getId(),
-					image);
+			loadingImages.get(destinationEntity.getForwardNodeEntity().getFwdAeTitle())
+				.put(destinationEntity.getId(), image);
 		}
 
 		// Visibility

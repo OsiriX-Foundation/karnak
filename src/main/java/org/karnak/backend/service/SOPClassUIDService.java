@@ -43,7 +43,7 @@ public class SOPClassUIDService extends ListDataProvider<SOPClassUIDEntity> {
 	public List<SOPClassUIDEntity> getAllSOPClassUIDs() {
 		List<SOPClassUIDEntity> list = new ArrayList<>();
 		sopClassUIDRepo.findAll() //
-				.forEach(list::add);
+			.forEach(list::add);
 		return list;
 	}
 

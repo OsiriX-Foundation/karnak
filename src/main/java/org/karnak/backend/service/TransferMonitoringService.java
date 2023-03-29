@@ -160,7 +160,8 @@ public class TransferMonitoringService {
 
 		// Bean to CSV
 		StatefulBeanToCsv<TransferStatusEntity> beanToCsv = new StatefulBeanToCsvBuilder<TransferStatusEntity>(writer)
-				.withMappingStrategy(monitoringCsvMappingStrategy).build();
+			.withMappingStrategy(monitoringCsvMappingStrategy)
+			.build();
 
 		// Write CSV
 		beanToCsv.write(retrieveTransferStatus(filter));

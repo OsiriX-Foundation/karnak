@@ -179,15 +179,14 @@ class TransferStatusRepoTest {
 
 		// Call method with date before
 		List<TransferStatusEntity> byDestinationIdAndTransferDateAfter = repository
-				.findByDestinationIdAndTransferDateAfter(toTest.getDestinationId(),
-						LocalDateTime.of(2022, 1, 14, 0, 0, 0));
+			.findByDestinationIdAndTransferDateAfter(toTest.getDestinationId(), LocalDateTime.of(2022, 1, 14, 0, 0, 0));
 
 		// Test results
 		assertFalse(byDestinationIdAndTransferDateAfter.isEmpty());
 
 		// Call method with date after
-		byDestinationIdAndTransferDateAfter = repository.findByDestinationIdAndTransferDateAfter(
-				toTest.getDestinationId(), LocalDateTime.of(2022, 1, 15, 0, 0, 0));
+		byDestinationIdAndTransferDateAfter = repository
+			.findByDestinationIdAndTransferDateAfter(toTest.getDestinationId(), LocalDateTime.of(2022, 1, 15, 0, 0, 0));
 
 		// Test results
 		assertTrue(byDestinationIdAndTransferDateAfter.isEmpty());
@@ -214,7 +213,7 @@ class TransferStatusRepoTest {
 
 		// Call method with date before
 		List<TransferStatusEntity> transferStatusEntities = repository.findAllByOrderByTransferDateAsc(pageable)
-				.toList();
+			.toList();
 
 		// Test results
 		assertFalse(transferStatusEntities.isEmpty());

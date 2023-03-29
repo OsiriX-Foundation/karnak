@@ -233,8 +233,8 @@ public class NotificationComponent extends VerticalLayout {
 	public void init(Binder<DestinationEntity> binder) {
 
 		// Activate notification
-		binder.forField(getActivateNotification()).bind(DestinationEntity::isActivateNotification,
-				DestinationEntity::setActivateNotification);
+		binder.forField(getActivateNotification())
+			.bind(DestinationEntity::isActivateNotification, DestinationEntity::setActivateNotification);
 
 		// List of emails
 		binder.forField(getNotify()).withValidator((s, valueContext) -> {
@@ -246,20 +246,20 @@ public class NotificationComponent extends VerticalLayout {
 
 		// Interval
 		binder.forField(getNotifyInterval()) //
-				.withConverter(new HStringToIntegerConverter()) //
-				.bind(DestinationEntity::getNotifyInterval, DestinationEntity::setNotifyInterval);
+			.withConverter(new HStringToIntegerConverter()) //
+			.bind(DestinationEntity::getNotifyInterval, DestinationEntity::setNotifyInterval);
 
 		// Error Prefix
-		binder.forField(getNotifyObjectErrorPrefix()).bind(DestinationEntity::getNotifyObjectErrorPrefix,
-				DestinationEntity::setNotifyObjectErrorPrefix);
+		binder.forField(getNotifyObjectErrorPrefix())
+			.bind(DestinationEntity::getNotifyObjectErrorPrefix, DestinationEntity::setNotifyObjectErrorPrefix);
 
 		// Subject Pattern
-		binder.forField(getNotifyObjectPattern()).bind(DestinationEntity::getNotifyObjectPattern,
-				DestinationEntity::setNotifyObjectPattern);
+		binder.forField(getNotifyObjectPattern())
+			.bind(DestinationEntity::getNotifyObjectPattern, DestinationEntity::setNotifyObjectPattern);
 
 		// Subject Values
-		binder.forField(getNotifyObjectValues()).bind(DestinationEntity::getNotifyObjectValues,
-				DestinationEntity::setNotifyObjectValues);
+		binder.forField(getNotifyObjectValues())
+			.bind(DestinationEntity::getNotifyObjectValues, DestinationEntity::setNotifyObjectValues);
 	}
 
 	public TextField getNotify() {

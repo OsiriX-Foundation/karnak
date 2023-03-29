@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
@@ -65,31 +66,54 @@ public class SecurityConfiguration {
 		// TODO use keycloakConverter to get roles
 
 		http
-				// Uses RequestCache to track unauthorized requests so that users are
-				// redirected
-				// appropriately after login
-				.requestCache().requestCache(new RequestCache())
-				// Disables cross-site request forgery (CSRF) protection for main route
-				.and().csrf().ignoringAntMatchers("/")
-				// Turns on authorization
-				.and().authorizeRequests()
-				// Actuator and health
-				.antMatchers("/actuator/**").permitAll()
-				.requestMatchers(EndpointRequest.to(HealthEndpoint.class, InfoEndpoint.class)).permitAll()
-				// Allows all internal traffic from the Vaadin framework
-				.requestMatchers(SecurityUtil::isFrameworkInternalRequest).permitAll()
-				// Allow get echo endpoint
-				.antMatchers(HttpMethod.GET, "/api/echo/destinations").permitAll()
-				// Allows all authenticated traffic
-				.anyRequest().authenticated()
-				// OpenId connect login
-				.and().oauth2Login(oauth2Login -> oauth2Login.userInfoEndpoint(
-						// Extract roles from access token
-						userInfoEndpoint -> userInfoEndpoint.oidcUserService(oidcUserService())))
-				// Handle logout
-				.logout().addLogoutHandler(new OpenIdConnectLogoutHandler());
+			// Uses RequestCache to track unauthorized requests so that users are
+			// redirected
+			// appropriately after login
+			.requestCache()
+			.requestCache(new RequestCache())
+			// Disables cross-site request forgery (CSRF) protection for main route
+			.and()
+			.csrf()
+			.ignoringAntMatchers("/")
+			// Turns on authorization
+			.and()
+			.authorizeRequests()
+			// Actuator and health
+			.antMatchers("/actuator/**")
+			.permitAll()
+			.requestMatchers(EndpointRequest.to(HealthEndpoint.class, InfoEndpoint.class))
+			.permitAll()
+			// Allows all internal traffic from the Vaadin framework
+			.requestMatchers(SecurityUtil::isFrameworkInternalRequest)
+			.permitAll()
+			// Allow endpoints
+			.antMatchers(HttpMethod.GET, "/api/echo/destinations")
+			.permitAll()
+			// Allows all authenticated traffic
+			.anyRequest()
+			.authenticated()
+			// OpenId connect login
+			.and()
+			.oauth2Login(oauth2Login -> oauth2Login.userInfoEndpoint(
+					// Extract roles from access token
+					userInfoEndpoint -> userInfoEndpoint.oidcUserService(oidcUserService())))
+			// Handle logout
+			.logout()
+			.addLogoutHandler(new OpenIdConnectLogoutHandler());
 
 		return http.build();
+	}
+
+	@Bean
+	public WebSecurityCustomizer webSecurityCustomizer() {
+		return (web) -> web.ignoring()
+			.antMatchers("/VAADIN/**",
+					// the standard favicon URI
+					"/favicon.ico",
+					// web application manifest
+					"/manifest.webmanifest", "/sw.js", "/offline.html", "/sw-runtime-resources-precache.js",
+					// icons and images
+					"/icons/logo**", "/img/karnak.png");
 	}
 
 	/**
@@ -100,8 +124,10 @@ public class SecurityConfiguration {
 	private Set<SimpleGrantedAuthority> retrieveRolesFromAccessToken(Jwt jwt) {
 		// Build roles
 		return ((List<String>) ((Map<String, Object>) ((Map<String, Object>) jwt.getClaims().get(Token.RESOURCE_ACCESS))
-				.get(Token.RESOURCE_NAME)).get(Token.ROLES)).stream().map(roleName -> Token.PREFIX_ROLE + roleName)
-						.map(SimpleGrantedAuthority::new).collect(Collectors.toSet());
+			.get(Token.RESOURCE_NAME)).get(Token.ROLES)).stream()
+			.map(roleName -> Token.PREFIX_ROLE + roleName)
+			.map(SimpleGrantedAuthority::new)
+			.collect(Collectors.toSet());
 	}
 
 	/**

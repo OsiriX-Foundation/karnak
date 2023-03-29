@@ -52,9 +52,10 @@ public class ProfileComponent extends VerticalLayout {
 
 	public static StreamResource createStreamResource(ProfileEntity profileEntity) {
 		try {
-			Set<ProfileElementEntity> profileElementEntities = profileEntity.getProfileElementEntities().stream()
-					.sorted(Comparator.comparing(ProfileElementEntity::getPosition))
-					.collect(Collectors.toCollection(LinkedHashSet::new));
+			Set<ProfileElementEntity> profileElementEntities = profileEntity.getProfileElementEntities()
+				.stream()
+				.sorted(Comparator.comparing(ProfileElementEntity::getPosition))
+				.collect(Collectors.toCollection(LinkedHashSet::new));
 			profileEntity.setProfileElementEntities(profileElementEntities);
 
 			// https://stackoverflow.com/questions/61506368/formatting-yaml-with-jackson

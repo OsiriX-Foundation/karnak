@@ -108,7 +108,7 @@ public class GatewaySetUpService {
 		// mode
 		storePath = StringUtil.hasText(path) ? Path.of(path) : null;
 		intervalCheck = StringUtil
-				.getInt(SystemPropertyUtil.retrieveSystemProperty("GATEWAY_PULL_CHECK_INTERNAL", "5")); // Only
+			.getInt(SystemPropertyUtil.retrieveSystemProperty("GATEWAY_PULL_CHECK_INTERNAL", "5")); // Only
 		// Pull
 		// mode
 		archiveUrl = SystemPropertyUtil.retrieveSystemProperty("GATEWAY_ARCHIVE_URL", ""); // Only
@@ -118,7 +118,7 @@ public class GatewaySetUpService {
 		listenerAET = SystemPropertyUtil.retrieveSystemProperty("DICOM_LISTENER_AET", "KARNAK-GATEWAY");
 		listenerPort = 11119;
 		listenerTLS = LangUtil
-				.getEmptytoFalse(SystemPropertyUtil.retrieveSystemProperty("DICOM_LISTENER_TLS", "false"));
+			.getEmptytoFalse(SystemPropertyUtil.retrieveSystemProperty("DICOM_LISTENER_TLS", "false"));
 
 		clientKey = SystemPropertyUtil.retrieveSystemProperty("TLS_KEYSTORE_PATH", null);
 		clientKeyPwd = SystemPropertyUtil.retrieveSystemProperty("TLS_KEYSTORE_SECRET", null);
@@ -275,7 +275,7 @@ public class GatewaySetUpService {
 						progress.addProgressListener((DicomProgress dicomProgress) -> {
 							Attributes dcm = dicomProgress.getAttributes();
 							kheopsAlbumEntities
-									.forEach(kheopsAlbums -> switchingAlbum.applyAfterTransfer(kheopsAlbums, dcm));
+								.forEach(kheopsAlbums -> switchingAlbum.applyAfterTransfer(kheopsAlbums, dcm));
 						});
 					}
 					dstList.add(fwd);
@@ -322,7 +322,7 @@ public class GatewaySetUpService {
 	private AttributeEditor switchingEditor(DestinationEntity dstNode, List<KheopsAlbumsEntity> kheopsAlbumEntities,
 			SwitchingAlbum switchingAlbum) {
 		return (Attributes dcm, AttributeEditorContext context) -> kheopsAlbumEntities
-				.forEach(kheopsAlbums -> switchingAlbum.apply(dstNode, kheopsAlbums, dcm));
+			.forEach(kheopsAlbums -> switchingAlbum.apply(dstNode, kheopsAlbums, dcm));
 	}
 
 	/**

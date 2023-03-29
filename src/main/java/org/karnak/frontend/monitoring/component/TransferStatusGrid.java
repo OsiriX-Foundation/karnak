@@ -188,7 +188,7 @@ public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity> {
 	 */
 	private void buildListenerStartTime(DatePicker datePicker, TimePicker startTimePicker, TimePicker endTimePicker) {
 		startTimePicker
-				.addValueChangeListener(event -> handleEventDateTime(datePicker, startTimePicker, endTimePicker));
+			.addValueChangeListener(event -> handleEventDateTime(datePicker, startTimePicker, endTimePicker));
 	}
 
 	/**
@@ -229,14 +229,14 @@ public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity> {
 	private void addFilterDateTimeValues(DatePicker datePicker, TimePicker startTimePicker, TimePicker endTimePicker) {
 		if (datePicker.getValue() != null) {
 			// Start time
-			transferStatusFilter.setStart(
-					startTimePicker.getValue() == null ? LocalDateTime.of(datePicker.getValue(), LocalTime.MIN)
-							: LocalDateTime.of(datePicker.getValue(), startTimePicker.getValue()));
+			transferStatusFilter
+				.setStart(startTimePicker.getValue() == null ? LocalDateTime.of(datePicker.getValue(), LocalTime.MIN)
+						: LocalDateTime.of(datePicker.getValue(), startTimePicker.getValue()));
 
 			// End time
 			transferStatusFilter
-					.setEnd(endTimePicker.getValue() == null ? LocalDateTime.of(datePicker.getValue(), LocalTime.MAX)
-							: LocalDateTime.of(datePicker.getValue(), endTimePicker.getValue()));
+				.setEnd(endTimePicker.getValue() == null ? LocalDateTime.of(datePicker.getValue(), LocalTime.MAX)
+						: LocalDateTime.of(datePicker.getValue(), endTimePicker.getValue()));
 
 		}
 		else {
@@ -343,8 +343,11 @@ public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity> {
 	 */
 	private Column<TransferStatusEntity> addColumnTransferDate() {
 		return addColumn(transferStatusEntity -> DateFormat.format(transferStatusEntity.getTransferDate(),
-				DateFormat.FORMAT_DDMMYYYY_SLASH_HHMMSS_2POINTS_SSSSSS_POINT)).setHeader("Transfer date")
-						.setWidth("20%").setSortable(false).setKey("transferDateColumn");
+				DateFormat.FORMAT_DDMMYYYY_SLASH_HHMMSS_2POINTS_SSSSSS_POINT))
+			.setHeader("Transfer date")
+			.setWidth("20%")
+			.setSortable(false)
+			.setKey("transferDateColumn");
 	}
 
 	/**
@@ -354,7 +357,10 @@ public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity> {
 	private Column<TransferStatusEntity> addColumnStudyUid() {
 		return addColumn(transferStatusEntity -> transferStatusEntity.isSent()
 				? transferStatusEntity.getStudyUidToSend() : transferStatusEntity.getStudyUidOriginal())
-						.setHeader("Study UID").setWidth("20%").setSortable(false).setKey("studyUidColumn");
+			.setHeader("Study UID")
+			.setWidth("20%")
+			.setSortable(false)
+			.setKey("studyUidColumn");
 	}
 
 	/**
@@ -364,7 +370,10 @@ public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity> {
 	private Column<TransferStatusEntity> addColumnSerieUid() {
 		return addColumn(transferStatusEntity -> transferStatusEntity.isSent()
 				? transferStatusEntity.getSerieUidToSend() : transferStatusEntity.getSerieUidOriginal())
-						.setHeader("Serie UID").setWidth("20%").setSortable(false).setKey("serieUidColumn");
+			.setHeader("Serie UID")
+			.setWidth("20%")
+			.setSortable(false)
+			.setKey("serieUidColumn");
 	}
 
 	/**
@@ -374,8 +383,10 @@ public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity> {
 	private Column<TransferStatusEntity> addColumnSopInstanceUid() {
 		return addColumn(transferStatusEntity -> transferStatusEntity.isSent()
 				? transferStatusEntity.getSopInstanceUidToSend() : transferStatusEntity.getSopInstanceUidOriginal())
-						.setHeader("Sop Instance UID").setWidth("20%").setSortable(false)
-						.setKey("sopInstanceUidColumn");
+			.setHeader("Sop Instance UID")
+			.setWidth("20%")
+			.setSortable(false)
+			.setKey("sopInstanceUidColumn");
 	}
 
 	/**
@@ -383,8 +394,10 @@ public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity> {
 	 * @return column built
 	 */
 	private Column<TransferStatusEntity> addColumnStatus() {
-		return addColumn(createColumnStatusComponentRenderer()).setHeader("Status").setWidth("20%").setSortable(false)
-				.setKey("statusColumn");
+		return addColumn(createColumnStatusComponentRenderer()).setHeader("Status")
+			.setWidth("20%")
+			.setSortable(false)
+			.setKey("statusColumn");
 	}
 
 	/**
@@ -393,8 +406,9 @@ public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity> {
 	 */
 	private ComponentRenderer<Span, TransferStatusEntity> createColumnStatusComponentRenderer() {
 		return new ComponentRenderer<>(Span::new, (span, transferStatusEntity) -> {
-			span.getElement().getThemeList()
-					.add(String.format("badge primary pill %s", transferStatusEntity.isSent() ? "success" : "error"));
+			span.getElement()
+				.getThemeList()
+				.add(String.format("badge primary pill %s", transferStatusEntity.isSent() ? "success" : "error"));
 			span.setText(transferStatusEntity.isSent() ? "Sent" : transferStatusEntity.getReason());
 		});
 	}

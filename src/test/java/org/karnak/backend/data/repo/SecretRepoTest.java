@@ -83,9 +83,8 @@ class SecretRepoTest {
 		// Test Find by Id
 		assertTrue(foundByIdOpt.isPresent());
 		SecretEntity secretEntityFound = foundByIdOpt.get();
-		log.info("Entity found with Project [{}] and id [{}]",
-				"%d|%s".formatted(secretEntityFound.getProjectEntity().getId(),
-						secretEntityFound.getProjectEntity().getName()),
+		log.info("Entity found with Project [{}] and id [{}]", "%d|%s"
+			.formatted(secretEntityFound.getProjectEntity().getId(), secretEntityFound.getProjectEntity().getName()),
 				secretEntityFound.getId());
 		assertEquals(entity.getId(), secretEntityFound.getId());
 	}

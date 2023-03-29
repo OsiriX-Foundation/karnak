@@ -79,7 +79,7 @@ public class MonitoringLogic {
 		byte[] csvBuilt = new byte[0];
 		try {
 			csvBuilt = transferMonitoringService
-					.buildCsv(monitoringView.getTransferStatusGrid().getTransferStatusFilter(), exportSettings);
+				.buildCsv(monitoringView.getTransferStatusGrid().getTransferStatusFilter(), exportSettings);
 		}
 		catch (CsvDataTypeMismatchException | CsvRequiredFieldEmptyException | IOException e) {
 			String message = "Error when creating monitoring export CSV file";

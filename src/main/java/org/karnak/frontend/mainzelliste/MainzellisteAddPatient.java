@@ -125,26 +125,36 @@ public class MainzellisteAddPatient extends VerticalLayout {
 	}
 
 	public void setBinder() {
-		binder.forField(externalIdField).withValidator(StringUtils::isNotBlank, "External Pseudonym is empty")
-				.withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50)).bind("pseudonym");
+		binder.forField(externalIdField)
+			.withValidator(StringUtils::isNotBlank, "External Pseudonym is empty")
+			.withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
+			.bind("pseudonym");
 
-		binder.forField(patientIdField).withValidator(StringUtils::isNotBlank, "Patient ID is empty")
-				.withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50)).bind("patientId");
+		binder.forField(patientIdField)
+			.withValidator(StringUtils::isNotBlank, "Patient ID is empty")
+			.withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
+			.bind("patientId");
 
-		binder.forField(patientFirstNameField).withValidator(StringUtils::isNotBlank, "Patient first name is empty")
-				.withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50)).bind("patientFirstName");
+		binder.forField(patientFirstNameField)
+			.withValidator(StringUtils::isNotBlank, "Patient first name is empty")
+			.withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
+			.bind("patientFirstName");
 
-		binder.forField(patientLastNameField).withValidator(StringUtils::isNotBlank, "Patient last name is empty")
-				.withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50)).bind("patientLastName");
+		binder.forField(patientLastNameField)
+			.withValidator(StringUtils::isNotBlank, "Patient last name is empty")
+			.withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
+			.bind("patientLastName");
 
 		binder.forField(issuerOfPatientIdField)
-				.withValidator(new StringLengthValidator("Length must be between 0 and 50.", 0, 50))
-				.bind("issuerOfPatientId");
+			.withValidator(new StringLengthValidator("Length must be between 0 and 50.", 0, 50))
+			.bind("issuerOfPatientId");
 
 		binder.forField(patientBirthDateField).asRequired("Please choose a date").bind("patientBirthDate");
 
-		binder.forField(patientSexField).withValidator(StringUtils::isNotBlank, "Patient Sex is empty")
-				.withValidator(new StringLengthValidator("Length must be 1.", 1, 1)).bind("patientSex");
+		binder.forField(patientSexField)
+			.withValidator(StringUtils::isNotBlank, "Patient Sex is empty")
+			.withValidator(new StringLengthValidator("Length must be 1.", 1, 1))
+			.bind("patientSex");
 	}
 
 	public void clearPatientFields() {

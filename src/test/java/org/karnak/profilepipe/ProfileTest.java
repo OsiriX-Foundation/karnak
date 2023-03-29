@@ -558,8 +558,8 @@ class ProfileTest {
 		ProfileEntity profileEntity = new ProfileEntity("TEST", "0.9.1", "0.9.1", "DPA");
 		ProfileElementEntity profileElementEntity = new ProfileElementEntity("Expr", "expression.on.tags", null, null,
 				null, 0, profileEntity);
-		profileElementEntity.addArgument(
-				new ArgumentEntity("expr", "stringValue == '075Y'? Remove() : Keep()", profileElementEntity));
+		profileElementEntity
+			.addArgument(new ArgumentEntity("expr", "stringValue == '075Y'? Remove() : Keep()", profileElementEntity));
 		profileElementEntity.addIncludedTag(new IncludedTagEntity("(xxxx,xxxx)", profileElementEntity));
 
 		profileEntity.addProfilePipe(profileElementEntity);

@@ -34,8 +34,8 @@ public class UIServiceInitListener implements VaadinServiceInitListener {
 
 	// All view classes
 	private static final List<? extends Class<? extends com.vaadin.flow.component.Component>> viewClasses = Arrays
-			.asList(ForwardNodeView.class, ProfileView.class, ProjectView.class, ExternalIDView.class,
-					MainzellisteView.class, PseudonymMappingView.class, DicomMainView.class, HelpView.class);
+		.asList(ForwardNodeView.class, ProfileView.class, ProjectView.class, ExternalIDView.class,
+				MainzellisteView.class, PseudonymMappingView.class, DicomMainView.class, HelpView.class);
 
 	/**
 	 * Listen for the initialization of the UI (the internal root component in Vaadin) and
@@ -74,7 +74,9 @@ public class UIServiceInitListener implements VaadinServiceInitListener {
 				// the application
 				// Try to find first authorized view
 				Optional<? extends Class<? extends com.vaadin.flow.component.Component>> firstAuthorizedViewFoundOpt = viewClasses
-						.stream().filter(SecurityUtil::isAccessGranted).findFirst();
+					.stream()
+					.filter(SecurityUtil::isAccessGranted)
+					.findFirst();
 
 				// If an authorized view have been found
 				if (firstAuthorizedViewFoundOpt.isPresent()) {

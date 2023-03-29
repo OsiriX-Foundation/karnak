@@ -20,9 +20,9 @@ public class DicomNodeUtil {
 		List<DicomNodeList> dicomNodeTypes = new ArrayList<>();
 
 		dicomNodeTypes
-				.add(Util.readnodes(DicomNodeUtil.class.getResource("/config/workstations-nodes.csv"), "Workstations"));
+			.add(Util.readnodes(DicomNodeUtil.class.getResource("/config/workstations-nodes.csv"), "Workstations"));
 		dicomNodeTypes
-				.add(Util.readnodes(DicomNodeUtil.class.getResource("/config/pacs-nodes-web.csv"), "PACS Public WEB"));
+			.add(Util.readnodes(DicomNodeUtil.class.getResource("/config/pacs-nodes-web.csv"), "PACS Public WEB"));
 
 		return dicomNodeTypes;
 	}

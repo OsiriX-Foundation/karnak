@@ -37,35 +37,43 @@ class ForwardNodeRepoTest {
 
 	private final Consumer<ForwardNodeEntity> forwardNodeConsumer = //
 			x -> assertThat(x) //
-					.hasFieldOrPropertyWithValue("fwdDescription", "description") //
-					.hasFieldOrPropertyWithValue("fwdAeTitle", "fwdAeTitle") //
-					.extracting(Object::toString).asString().matches("^ForwardNode \\[.*");
+				.hasFieldOrPropertyWithValue("fwdDescription", "description") //
+				.hasFieldOrPropertyWithValue("fwdAeTitle", "fwdAeTitle") //
+				.extracting(Object::toString)
+				.asString()
+				.matches("^ForwardNode \\[.*");
 
 	private final Consumer<DicomSourceNodeEntity> sourceNodeConsumer = //
 			x -> assertThat(x) //
-					.hasFieldOrPropertyWithValue("description", "description") //
-					.hasFieldOrPropertyWithValue("aeTitle", "aeTitle") //
-					.hasFieldOrPropertyWithValue("hostname", "hostname") //
-					.hasFieldOrPropertyWithValue("checkHostname", true) //
-					.extracting(Object::toString).asString().matches("^DicomSourceNode \\[.*");
+				.hasFieldOrPropertyWithValue("description", "description") //
+				.hasFieldOrPropertyWithValue("aeTitle", "aeTitle") //
+				.hasFieldOrPropertyWithValue("hostname", "hostname") //
+				.hasFieldOrPropertyWithValue("checkHostname", true) //
+				.extracting(Object::toString)
+				.asString()
+				.matches("^DicomSourceNode \\[.*");
 
 	private final Consumer<DestinationEntity> destinationDicomConsumer = //
 			x -> assertThat(x) //
-					.hasFieldOrPropertyWithValue("description", "description") //
-					.hasFieldOrPropertyWithValue("type", DestinationType.dicom) //
-					.hasFieldOrPropertyWithValue("aeTitle", "aeTitle") //
-					.hasFieldOrPropertyWithValue("hostname", "hostname") //
-					.hasFieldOrPropertyWithValue("port", 123) //
-					.extracting(Object::toString).asString().matches("^Destination \\[.*");
+				.hasFieldOrPropertyWithValue("description", "description") //
+				.hasFieldOrPropertyWithValue("type", DestinationType.dicom) //
+				.hasFieldOrPropertyWithValue("aeTitle", "aeTitle") //
+				.hasFieldOrPropertyWithValue("hostname", "hostname") //
+				.hasFieldOrPropertyWithValue("port", 123) //
+				.extracting(Object::toString)
+				.asString()
+				.matches("^Destination \\[.*");
 
 	private final Consumer<DestinationEntity> destinationStowConsumer = //
 			x -> assertThat(x) //
-					.hasFieldOrPropertyWithValue("description", "description") //
-					.hasFieldOrPropertyWithValue("type", DestinationType.stow) //
-					.hasFieldOrPropertyWithValue("url", "url") //
-					.hasFieldOrPropertyWithValue("urlCredentials", "urlCredentials") //
-					.hasFieldOrPropertyWithValue("headers", "headers") //
-					.extracting(Object::toString).asString().matches("^Destination \\[.*");
+				.hasFieldOrPropertyWithValue("description", "description") //
+				.hasFieldOrPropertyWithValue("type", DestinationType.stow) //
+				.hasFieldOrPropertyWithValue("url", "url") //
+				.hasFieldOrPropertyWithValue("urlCredentials", "urlCredentials") //
+				.hasFieldOrPropertyWithValue("headers", "headers") //
+				.extracting(Object::toString)
+				.asString()
+				.matches("^Destination \\[.*");
 
 	@Autowired
 	private TestEntityManager entityManager;
@@ -158,9 +166,9 @@ class ForwardNodeRepoTest {
 
 		Iterable<ForwardNodeEntity> all = repository.findAll();
 		assertThat(all) //
-				.hasSize(1) //
-				.first() //
-				.satisfies(forwardNodeConsumer);
+			.hasSize(1) //
+			.first() //
+			.satisfies(forwardNodeConsumer);
 	}
 
 	@Test
@@ -178,21 +186,21 @@ class ForwardNodeRepoTest {
 
 		Iterable<ForwardNodeEntity> all = repository.findAll();
 		assertThat(all) //
-				.hasSize(1) //
-				.first() //
-				.satisfies(forwardNodeConsumer);
+			.hasSize(1) //
+			.first() //
+			.satisfies(forwardNodeConsumer);
 
 		assertThat(all) //
-				.hasSize(1) //
-				.flatExtracting(ForwardNodeEntity::getSourceNodes) //
-				.hasSize(1) //
-				.first() //
-				.satisfies(sourceNodeConsumer);
+			.hasSize(1) //
+			.flatExtracting(ForwardNodeEntity::getSourceNodes) //
+			.hasSize(1) //
+			.first() //
+			.satisfies(sourceNodeConsumer);
 
 		assertThat(all) //
-				.hasSize(1) //
-				.flatExtracting(ForwardNodeEntity::getDestinationEntities) //
-				.hasSize(0);
+			.hasSize(1) //
+			.flatExtracting(ForwardNodeEntity::getDestinationEntities) //
+			.hasSize(0);
 	}
 
 	// @Test
@@ -207,21 +215,21 @@ class ForwardNodeRepoTest {
 
 		Iterable<ForwardNodeEntity> all = repository.findAll();
 		assertThat(all) //
-				.hasSize(1) //
-				.first() //
-				.satisfies(forwardNodeConsumer);
+			.hasSize(1) //
+			.first() //
+			.satisfies(forwardNodeConsumer);
 
 		assertThat(all) //
-				.hasSize(1) //
-				.flatExtracting(ForwardNodeEntity::getSourceNodes) //
-				.hasSize(0);
+			.hasSize(1) //
+			.flatExtracting(ForwardNodeEntity::getSourceNodes) //
+			.hasSize(0);
 
 		assertThat(all) //
-				.hasSize(1) //
-				.flatExtracting(ForwardNodeEntity::getDestinationEntities) //
-				.hasSize(1) //
-				.first() //
-				.satisfies(destinationDicomConsumer);
+			.hasSize(1) //
+			.flatExtracting(ForwardNodeEntity::getDestinationEntities) //
+			.hasSize(1) //
+			.first() //
+			.satisfies(destinationDicomConsumer);
 	}
 
 	// @Test
@@ -236,21 +244,21 @@ class ForwardNodeRepoTest {
 
 		Iterable<ForwardNodeEntity> all = repository.findAll();
 		assertThat(all) //
-				.hasSize(1) //
-				.first() //
-				.satisfies(forwardNodeConsumer);
+			.hasSize(1) //
+			.first() //
+			.satisfies(forwardNodeConsumer);
 
 		assertThat(all) //
-				.hasSize(1) //
-				.flatExtracting(ForwardNodeEntity::getSourceNodes) //
-				.hasSize(0);
+			.hasSize(1) //
+			.flatExtracting(ForwardNodeEntity::getSourceNodes) //
+			.hasSize(0);
 
 		assertThat(all) //
-				.hasSize(1) //
-				.flatExtracting(ForwardNodeEntity::getDestinationEntities) //
-				.hasSize(1) //
-				.first() //
-				.satisfies(destinationStowConsumer);
+			.hasSize(1) //
+			.flatExtracting(ForwardNodeEntity::getDestinationEntities) //
+			.hasSize(1) //
+			.first() //
+			.satisfies(destinationStowConsumer);
 	}
 
 	// @Test
@@ -271,23 +279,23 @@ class ForwardNodeRepoTest {
 
 		Iterable<ForwardNodeEntity> all = repository.findAll();
 		assertThat(all) //
-				.hasSize(1) //
-				.first() //
-				.satisfies(forwardNodeConsumer);
+			.hasSize(1) //
+			.first() //
+			.satisfies(forwardNodeConsumer);
 
 		assertThat(all) //
-				.hasSize(1) //
-				.flatExtracting(ForwardNodeEntity::getSourceNodes) //
-				.hasSize(1) //
-				.first() //
-				.satisfies(sourceNodeConsumer);
+			.hasSize(1) //
+			.flatExtracting(ForwardNodeEntity::getSourceNodes) //
+			.hasSize(1) //
+			.first() //
+			.satisfies(sourceNodeConsumer);
 
 		assertThat(all) //
-				.hasSize(1) //
-				.flatExtracting(ForwardNodeEntity::getDestinationEntities) //
-				.hasSize(1) //
-				.first() //
-				.satisfies(destinationDicomConsumer);
+			.hasSize(1) //
+			.flatExtracting(ForwardNodeEntity::getDestinationEntities) //
+			.hasSize(1) //
+			.first() //
+			.satisfies(destinationDicomConsumer);
 	}
 
 	/**

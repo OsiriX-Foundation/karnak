@@ -51,8 +51,8 @@ public class ProfileElementMainView extends VerticalLayout {
 
 			if (profileElementEntities != null) {
 				profilesOrder = profileElementEntities.stream()
-						.sorted(Comparator.comparing(ProfileElementEntity::getPosition))
-						.collect(Collectors.toCollection(LinkedHashSet::new));
+					.sorted(Comparator.comparing(ProfileElementEntity::getPosition))
+					.collect(Collectors.toCollection(LinkedHashSet::new));
 				profilesView();
 				setEnabled(true);
 			}

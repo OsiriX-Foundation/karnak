@@ -99,8 +99,9 @@ public class Profile {
 			else {
 				Object instanceProfileItem;
 				try {
-					instanceProfileItem = t.getProfileClass().getConstructor(ProfileElementEntity.class)
-							.newInstance(profileElementEntity);
+					instanceProfileItem = t.getProfileClass()
+						.getConstructor(ProfileElementEntity.class)
+						.newInstance(profileElementEntity);
 					profileItems.add((ProfileItem) instanceProfileItem);
 				}
 				catch (Exception e) {
@@ -136,8 +137,9 @@ public class Profile {
 
 			ActionItem currentAction = null;
 			ProfileItem currentProfile = null;
-			for (ProfileItem profileEntity : profiles.stream().filter(p -> !(p instanceof CleanPixelData))
-					.collect(Collectors.toList())) {
+			for (ProfileItem profileEntity : profiles.stream()
+				.filter(p -> !(p instanceof CleanPixelData))
+				.collect(Collectors.toList())) {
 				currentProfile = profileEntity;
 
 				if (profileEntity.getCondition() == null
@@ -239,8 +241,10 @@ public class Profile {
 	boolean evaluateConditionCleanPixelData(Attributes dcmCopy) {
 		boolean conditionCleanPixelData = true;
 		// Retrieve the profile item
-		ProfileItem profileItemCleanPixelData = profiles.stream().filter(CleanPixelData.class::isInstance).findFirst()
-				.orElse(null);
+		ProfileItem profileItemCleanPixelData = profiles.stream()
+			.filter(CleanPixelData.class::isInstance)
+			.findFirst()
+			.orElse(null);
 		if (profileItemCleanPixelData != null && profileItemCleanPixelData.getCondition() != null) {
 			// Evaluate the condition
 			ExprCondition exprCondition = new ExprCondition(dcmCopy);

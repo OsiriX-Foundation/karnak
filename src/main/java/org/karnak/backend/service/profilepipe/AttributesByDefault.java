@@ -33,8 +33,10 @@ public class AttributesByDefault {
 
 	public static void setDeidentificationMethodCodeSequence(Attributes dcm, ProjectEntity projectEntity) {
 		final ProfileEntity profileEntity = projectEntity.getProfileEntity();
-		final List<ProfileElementEntity> profileElementEntities = profileEntity.getProfileElementEntities().stream()
-				.sorted(Comparator.comparing(ProfileElementEntity::getPosition)).collect(Collectors.toList());
+		final List<ProfileElementEntity> profileElementEntities = profileEntity.getProfileElementEntities()
+			.stream()
+			.sorted(Comparator.comparing(ProfileElementEntity::getPosition))
+			.collect(Collectors.toList());
 
 		Sequence deidentificationMethodSequence = dcm.newSequence(Tag.DeidentificationMethodCodeSequence,
 				profileElementEntities.size());

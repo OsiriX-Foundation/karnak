@@ -58,10 +58,14 @@ public class NewSwitchingAlbum extends Div {
 	}
 
 	private void setElements() {
-		textErrorConditionMsg.getStyle().set("margin-left", "calc(var(--lumo-border-radius-m) / 4")
-				.set("font-size", "var(--lumo-font-size-xs)").set("line-height", "var(--lumo-line-height-xs)")
-				.set("color", "var(--lumo-error-text-color)").set("will-change", "max-height")
-				.set("transition", "0.4s max-height").set("max-height", "5em");
+		textErrorConditionMsg.getStyle()
+			.set("margin-left", "calc(var(--lumo-border-radius-m) / 4")
+			.set("font-size", "var(--lumo-font-size-xs)")
+			.set("line-height", "var(--lumo-line-height-xs)")
+			.set("color", "var(--lumo-error-text-color)")
+			.set("will-change", "max-height")
+			.set("transition", "0.4s max-height")
+			.set("max-height", "5em");
 		textUrlAPI.setWidth("20%");
 		textUrlAPI.getStyle().set("padding-right", "10px");
 		textUrlAPI.setPlaceholder("Url API");

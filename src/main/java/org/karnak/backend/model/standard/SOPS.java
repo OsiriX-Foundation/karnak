@@ -111,7 +111,7 @@ public class SOPS {
 		SOP sop = HMapSOPS.get(uid);
 		if (sop == null) {
 			throw new SOPNotFoundException(String
-					.format("Unable to get if module %s is present. Could not find the SOP UID %s", moduleId, uid));
+				.format("Unable to get if module %s is present. Could not find the SOP UID %s", moduleId, uid));
 		}
 		return sop.getModules().stream().filter(module -> moduleId.equals(module.getId())).findFirst();
 	}
@@ -138,7 +138,7 @@ public class SOPS {
 		SOP sop = HMapSOPS.get(uid);
 		if (sop == null) {
 			throw new SOPNotFoundException(String
-					.format("Unable to get if module %s is present. Could not find the SOP UID %s", moduleId, uid));
+				.format("Unable to get if module %s is present. Could not find the SOP UID %s", moduleId, uid));
 		}
 		Predicate<Module> modulePredicate = module -> moduleId.equals(module.getId());
 		return sop.getModules().stream().anyMatch(modulePredicate);

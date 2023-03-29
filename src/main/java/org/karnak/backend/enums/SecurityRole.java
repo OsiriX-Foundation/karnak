@@ -47,8 +47,10 @@ public enum SecurityRole {
 	 */
 	public static SecurityRole fromCode(final String role) {
 		if (role != null) {
-			return Arrays.stream(SecurityRole.values()).filter(r -> role.trim().equalsIgnoreCase(r.getRole()))
-					.findFirst().orElse(null);
+			return Arrays.stream(SecurityRole.values())
+				.filter(r -> role.trim().equalsIgnoreCase(r.getRole()))
+				.findFirst()
+				.orElse(null);
 		}
 		return null;
 	}

@@ -78,8 +78,10 @@ public class CStoreSCPService extends BasicCStoreSCP {
 	@Override
 	protected void store(Association as, PresentationContext pc, Attributes rq, PDVInputStream data, Attributes rsp)
 			throws IOException {
-		Optional<ForwardDicomNode> sourceNode = destinations.keySet().stream()
-				.filter(n -> n.getForwardAETitle().equals(as.getCalledAET())).findFirst();
+		Optional<ForwardDicomNode> sourceNode = destinations.keySet()
+			.stream()
+			.filter(n -> n.getForwardAETitle().equals(as.getCalledAET()))
+			.findFirst();
 		if (sourceNode.isEmpty()) {
 			throw new IllegalStateException("Cannot find the forward AeTitle " + as.getCalledAET());
 		}
@@ -91,8 +93,9 @@ public class CStoreSCPService extends BasicCStoreSCP {
 
 		DicomNode callingNode = DicomNode.buildRemoteDicomNode(as);
 		Set<DicomNode> srcNodes = fwdNode.getAcceptedSourceNodes();
-		boolean valid = srcNodes.isEmpty() || srcNodes.stream().anyMatch(n -> n.getAet().equals(callingNode.getAet())
-				&& (!n.isValidateHostname() || n.equalsHostname(callingNode.getHostname())));
+		boolean valid = srcNodes.isEmpty() || srcNodes.stream()
+			.anyMatch(n -> n.getAet().equals(callingNode.getAet())
+					&& (!n.isValidateHostname() || n.equalsHostname(callingNode.getHostname())));
 		if (!valid) {
 			rsp.setInt(Tag.Status, VR.US, Status.NotAuthorized);
 			log.error("Refused: not authorized (124H). Source node: {}. SopUID: {}", callingNode,

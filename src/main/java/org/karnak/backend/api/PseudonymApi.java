@@ -50,7 +50,8 @@ public class PseudonymApi {
 	private static final String CONTENT_TYPE_HEADER = "Content-Type";
 
 	private final HttpClient httpClient = HttpClient.newBuilder() // one instance, reuse
-			.version(HttpClient.Version.HTTP_1_1).build();
+		.version(HttpClient.Version.HTTP_1_1)
+		.build();
 
 	private String sessionId;
 
@@ -103,8 +104,10 @@ public class PseudonymApi {
 			tokenIDAddPatient = rqCreateTokenAddPatient(data);
 			List<JSONObject> pseudonymList = rqCreatePatient(tokenIDAddPatient);
 			String idTypes = data.get_idtypes()[data.get_idtypes().length - 1];
-			JSONObject jsonPseudonym = pseudonymList.stream().filter(p -> p.getString("idType").equals(idTypes))
-					.findFirst().orElseThrow();
+			JSONObject jsonPseudonym = pseudonymList.stream()
+				.filter(p -> p.getString("idType").equals(idTypes))
+				.findFirst()
+				.orElseThrow();
 			return jsonPseudonym.getString("idString");
 		}
 		catch (InterruptedException e) {
@@ -170,9 +173,12 @@ public class PseudonymApi {
 	 */
 	private String rqGetSessionId(boolean shouldThrowException) {
 		Map<Object, Object> data = new HashMap<>();
-		HttpRequest request = HttpRequest.newBuilder().POST(buildFormDataFromMap(data))
-				.uri(URI.create(SERVER_URL + "/sessions")).header(CONTENT_TYPE_HEADER, MediaType.APPLICATION_JSON_VALUE)
-				.header(MAINZELLISTE_HEADER, API_KEY).build();
+		HttpRequest request = HttpRequest.newBuilder()
+			.POST(buildFormDataFromMap(data))
+			.uri(URI.create(SERVER_URL + "/sessions"))
+			.header(CONTENT_TYPE_HEADER, MediaType.APPLICATION_JSON_VALUE)
+			.header(MAINZELLISTE_HEADER, API_KEY)
+			.build();
 
 		HttpResponse<String> response;
 		try {
@@ -201,10 +207,12 @@ public class PseudonymApi {
 		Gson gson = new Gson();
 		String jsonBody = gson.toJson(bodyRequest);
 
-		HttpRequest request = HttpRequest.newBuilder().POST(BodyPublishers.ofString(jsonBody))
-				.uri(URI.create(SERVER_URL + "/sessions/" + this.sessionId + "/tokens"))
-				.header(CONTENT_TYPE_HEADER, MediaType.APPLICATION_JSON_VALUE).header(MAINZELLISTE_HEADER, API_KEY)
-				.build();
+		HttpRequest request = HttpRequest.newBuilder()
+			.POST(BodyPublishers.ofString(jsonBody))
+			.uri(URI.create(SERVER_URL + "/sessions/" + this.sessionId + "/tokens"))
+			.header(CONTENT_TYPE_HEADER, MediaType.APPLICATION_JSON_VALUE)
+			.header(MAINZELLISTE_HEADER, API_KEY)
+			.build();
 
 		final HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
 		controlErrorResponse(response, true);
@@ -222,10 +230,12 @@ public class PseudonymApi {
 			throws IOException, InterruptedException {
 		String tokenId = null;
 		String jsonBody = createJsonReadPatient(searchIds);
-		HttpRequest request = HttpRequest.newBuilder().POST(BodyPublishers.ofString(jsonBody))
-				.uri(URI.create(SERVER_URL + "/sessions/" + this.sessionId + "/tokens"))
-				.header(CONTENT_TYPE_HEADER, MediaType.APPLICATION_JSON_VALUE).header(MAINZELLISTE_HEADER, API_KEY)
-				.build();
+		HttpRequest request = HttpRequest.newBuilder()
+			.POST(BodyPublishers.ofString(jsonBody))
+			.uri(URI.create(SERVER_URL + "/sessions/" + this.sessionId + "/tokens"))
+			.header(CONTENT_TYPE_HEADER, MediaType.APPLICATION_JSON_VALUE)
+			.header(MAINZELLISTE_HEADER, API_KEY)
+			.build();
 
 		HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
 		if (controlErrorResponse(response, shouldThrowException)) {
@@ -244,10 +254,12 @@ public class PseudonymApi {
 	private List<JSONObject> rqCreatePatient(String tokenId) throws IOException, InterruptedException {
 		Map<Object, Object> data = new HashMap<>();
 		data.put("sureness", true);
-		HttpRequest request = HttpRequest.newBuilder().POST(buildFormDataFromMap(data))
-				.uri(URI.create(SERVER_URL + "/patients?tokenId=" + tokenId + "&mainzellisteApiVersion=2.0"))
-				.header(CONTENT_TYPE_HEADER, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-				.header(MAINZELLISTE_HEADER, API_KEY).build();
+		HttpRequest request = HttpRequest.newBuilder()
+			.POST(buildFormDataFromMap(data))
+			.uri(URI.create(SERVER_URL + "/patients?tokenId=" + tokenId + "&mainzellisteApiVersion=2.0"))
+			.header(CONTENT_TYPE_HEADER, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+			.header(MAINZELLISTE_HEADER, API_KEY)
+			.build();
 
 		List<JSONObject> newIds = new ArrayList<>();
 		HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
@@ -272,10 +284,12 @@ public class PseudonymApi {
 			throws IOException, InterruptedException {
 		JSONArray jsonArray = null;
 
-		HttpRequest request = HttpRequest.newBuilder().GET()
-				.uri(URI.create(SERVER_URL + "/patients?tokenId=" + tokenId))
-				.header(CONTENT_TYPE_HEADER, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-				.header(MAINZELLISTE_HEADER, API_KEY).build();
+		HttpRequest request = HttpRequest.newBuilder()
+			.GET()
+			.uri(URI.create(SERVER_URL + "/patients?tokenId=" + tokenId))
+			.header(CONTENT_TYPE_HEADER, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+			.header(MAINZELLISTE_HEADER, API_KEY)
+			.build();
 
 		HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
 		if (controlErrorResponse(response, shouldThrowException)) {

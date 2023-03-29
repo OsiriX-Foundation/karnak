@@ -49,8 +49,8 @@ public class EchoService {
 
 		// Fill the list of destinations status
 		gatewaySetUpService.getDestinationNode(sourceAet)
-				.ifPresent(sourceNode -> fillDestinationsStatus(destinationEchos, sourceNode,
-						gatewaySetUpService.getDestinations(sourceNode)));
+			.ifPresent(sourceNode -> fillDestinationsStatus(destinationEchos, sourceNode,
+					gatewaySetUpService.getDestinations(sourceNode)));
 
 		return destinationEchos;
 	}

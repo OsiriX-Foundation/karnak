@@ -50,17 +50,23 @@ public abstract class PatientClient {
 	}
 
 	public Collection<Patient> getAll() {
-		return Objects.requireNonNull(redisTemplate.keys(patternSearchAllKeysCache)).stream().filter(Objects::nonNull)
-				.filter(c -> c.length() > prefixKeySearchCache.length()).map(k -> {
-					ValueWrapper keyValue = cache.get(k.substring(prefixKeySearchCache.length()));
-					return keyValue != null ? (Patient) keyValue.get() : null;
-				}).collect(Collectors.toList());
+		return Objects.requireNonNull(redisTemplate.keys(patternSearchAllKeysCache))
+			.stream()
+			.filter(Objects::nonNull)
+			.filter(c -> c.length() > prefixKeySearchCache.length())
+			.map(k -> {
+				ValueWrapper keyValue = cache.get(k.substring(prefixKeySearchCache.length()));
+				return keyValue != null ? (Patient) keyValue.get() : null;
+			})
+			.collect(Collectors.toList());
 	}
 
 	public void removeAll() {
-		Objects.requireNonNull(redisTemplate.keys(patternSearchAllKeysCache)).stream().filter(Objects::nonNull)
-				.filter(c -> c.length() > prefixKeySearchCache.length())
-				.forEach(k -> remove(k.substring(prefixKeySearchCache.length())));
+		Objects.requireNonNull(redisTemplate.keys(patternSearchAllKeysCache))
+			.stream()
+			.filter(Objects::nonNull)
+			.filter(c -> c.length() > prefixKeySearchCache.length())
+			.forEach(k -> remove(k.substring(prefixKeySearchCache.length())));
 	}
 
 }

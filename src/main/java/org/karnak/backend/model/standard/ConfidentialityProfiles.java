@@ -33,7 +33,7 @@ public class ConfidentialityProfiles {
 	public ConfidentialityProfiles() {
 		final StandardConfidentialityProfiles standardConfidentialityProfiles = new StandardConfidentialityProfiles();
 		jsonConfidentialityProfiles[] confidentialityProfiles = StandardConfidentialityProfiles
-				.getConfidentialityProfiles();
+			.getConfidentialityProfiles();
 
 		for (jsonConfidentialityProfiles confidentialityProfilesTag : confidentialityProfiles) {
 			String tag = confidentialityProfilesTag.getTag();

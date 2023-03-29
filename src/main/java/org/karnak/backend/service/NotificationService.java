@@ -84,27 +84,28 @@ public class NotificationService {
 	List<TransferMonitoringNotification> buildNotificationsToSend() {
 		List<TransferMonitoringNotification> transferMonitoringNotifications = new ArrayList<>();
 		destinationRepo
-				// Retrieve all destinations
-				.findAll().stream()
-				// Check if notification should be sent for this destinations
-				.filter(this::checkDestinationLastVerification).forEach(destinationEntity -> {
-					// Keep previous check date
-					LocalDateTime previousCheck = destinationEntity.getEmailLastCheck();
-					// Update destination last check date
-					destinationEntity.setEmailLastCheck(LocalDateTime.now(ZoneId.of("CET")));
-					destinationRepo.save(destinationEntity);
-					// Retrieve all TransferStatusEntities for this destination after the
-					// last email check
-					List<TransferStatusEntity> transferStatusEntitiesDestinationsLastCheck = retrieveTransferStatusDestinationLastCheck(
-							destinationEntity, previousCheck);
-					// Gather TransferStatus by Source and Study: <Source , <Study,
-					// List<TransferStatus>>>
-					Map<Long, Map<String, List<TransferStatusEntity>>> transferStatusBySourceAndStudy = gatherTransferStatusBySourceAndStudy(
-							transferStatusEntitiesDestinationsLastCheck);
-					// Build the notifications to send
-					buildTransferMonitoringNotifications(transferMonitoringNotifications,
-							transferStatusBySourceAndStudy);
-				});
+			// Retrieve all destinations
+			.findAll()
+			.stream()
+			// Check if notification should be sent for this destinations
+			.filter(this::checkDestinationLastVerification)
+			.forEach(destinationEntity -> {
+				// Keep previous check date
+				LocalDateTime previousCheck = destinationEntity.getEmailLastCheck();
+				// Update destination last check date
+				destinationEntity.setEmailLastCheck(LocalDateTime.now(ZoneId.of("CET")));
+				destinationRepo.save(destinationEntity);
+				// Retrieve all TransferStatusEntities for this destination after the
+				// last email check
+				List<TransferStatusEntity> transferStatusEntitiesDestinationsLastCheck = retrieveTransferStatusDestinationLastCheck(
+						destinationEntity, previousCheck);
+				// Gather TransferStatus by Source and Study: <Source , <Study,
+				// List<TransferStatus>>>
+				Map<Long, Map<String, List<TransferStatusEntity>>> transferStatusBySourceAndStudy = gatherTransferStatusBySourceAndStudy(
+						transferStatusEntitiesDestinationsLastCheck);
+				// Build the notifications to send
+				buildTransferMonitoringNotifications(transferMonitoringNotifications, transferStatusBySourceAndStudy);
+			});
 		return transferMonitoringNotifications;
 	}
 
@@ -157,7 +158,8 @@ public class NotificationService {
 
 			// Has at least one file not transferred
 			boolean hasAtLeastOneFileNotTransferred = transferMonitoringNotification.getSerieSummaryNotifications()
-					.stream().anyMatch(ssm -> ssm.getNbTransferNotSent() > 0);
+				.stream()
+				.anyMatch(ssm -> ssm.getNbTransferNotSent() > 0);
 
 			// Temporary disable send of notification de-identified and in error
 			// TODO: have a discussion with business to know how to handle such cases
@@ -187,7 +189,7 @@ public class NotificationService {
 			TransferMonitoringNotification transferMonitoringNotification, TransferStatusEntity transferStatusEntity,
 			boolean hasAtLeastOneFileNotTransferred, boolean useOriginalValues) {
 		transferMonitoringNotification
-				.setFrom(SystemPropertyUtil.retrieveSystemProperty("MAIL_SMTP_SENDER", mailSender));
+			.setFrom(SystemPropertyUtil.retrieveSystemProperty("MAIL_SMTP_SENDER", mailSender));
 		transferMonitoringNotification.setTo(transferStatusEntity.getDestinationEntity().getNotify());
 		transferMonitoringNotification.setPatientId(useOriginalValues ? transferStatusEntity.getPatientIdOriginal()
 				: transferStatusEntity.getPatientIdToSend());
@@ -196,8 +198,8 @@ public class NotificationService {
 		transferMonitoringNotification.setAccessionNumber(useOriginalValues
 				? transferStatusEntity.getAccessionNumberOriginal() : transferStatusEntity.getAccessionNumberToSend());
 		transferMonitoringNotification
-				.setStudyDescription(useOriginalValues ? transferStatusEntity.getStudyDescriptionOriginal()
-						: transferStatusEntity.getStudyDescriptionToSend());
+			.setStudyDescription(useOriginalValues ? transferStatusEntity.getStudyDescriptionOriginal()
+					: transferStatusEntity.getStudyDescriptionToSend());
 		transferMonitoringNotification.setStudyDate(useOriginalValues ? transferStatusEntity.getStudyDateOriginal()
 				: transferStatusEntity.getStudyDateToSend());
 		transferMonitoringNotification.setSource(transferStatusEntity.getForwardNodeEntity().getFwdAeTitle());
@@ -206,7 +208,7 @@ public class NotificationService {
 						? transferStatusEntity.getDestinationEntity().toStringDicomNotificationDestination()
 						: transferStatusEntity.getDestinationEntity().getUrl());
 		transferMonitoringNotification
-				.setSubject(buildSubject(hasAtLeastOneFileNotTransferred, useOriginalValues, transferStatusEntity));
+			.setSubject(buildSubject(hasAtLeastOneFileNotTransferred, useOriginalValues, transferStatusEntity));
 	}
 
 	/**
@@ -244,7 +246,7 @@ public class NotificationService {
 		String[] notifyObjectValues = (transferStatusEntity.getDestinationEntity().getNotifyObjectValues() == null
 				? Notification.DEFAULT_SUBJECT_VALUES
 				: transferStatusEntity.getDestinationEntity().getNotifyObjectValues())
-						.split(Notification.COMMA_SEPARATOR);
+			.split(Notification.COMMA_SEPARATOR);
 
 		// Select the values to add
 		for (String notifyObjectValue : notifyObjectValues) {
@@ -256,8 +258,8 @@ public class NotificationService {
 			else if (Objects.equals(Notification.PARAM_STUDY_DESCRIPTION, notifyObjectValue)) {
 				// Study description
 				subjectValues
-						.add(buildSubjectValue(useOriginalValues, transferStatusEntity.getStudyDescriptionOriginal(),
-								transferStatusEntity.getStudyDescriptionToSend()));
+					.add(buildSubjectValue(useOriginalValues, transferStatusEntity.getStudyDescriptionOriginal(),
+							transferStatusEntity.getStudyDescriptionToSend()));
 			}
 			else if (Objects.equals(Notification.PARAM_STUDY_INSTANCE_UID, notifyObjectValue)) {
 				// Study uid
@@ -300,7 +302,7 @@ public class NotificationService {
 		List<SerieSummaryNotification> serieSummaryNotifications = new ArrayList<>();
 		// Group by serie uid
 		Map<String, List<TransferStatusEntity>> transferStatusEntitiesBySerieUid = transferStatusEntities.stream()
-				.collect(Collectors.groupingBy(TransferStatusEntity::getSerieUidOriginal));
+			.collect(Collectors.groupingBy(TransferStatusEntity::getSerieUidOriginal));
 		transferStatusEntitiesBySerieUid.forEach((serieUidOriginal, transfersToEvaluate) -> {
 			Optional<TransferStatusEntity> firstTransferStatusEntityOpt = transfersToEvaluate.stream().findFirst();
 			if (firstTransferStatusEntityOpt.isPresent()) {
@@ -327,18 +329,24 @@ public class NotificationService {
 		SerieSummaryNotification serieSummaryNotification = new SerieSummaryNotification();
 		// Number transfers sent
 		serieSummaryNotification
-				.setNbTransferSent(transfersToEvaluate.stream().filter(TransferStatusEntity::isSent).count());
+			.setNbTransferSent(transfersToEvaluate.stream().filter(TransferStatusEntity::isSent).count());
 		// Number transfers not sent
 		serieSummaryNotification.setNbTransferNotSent(transfersToEvaluate.stream().filter(t -> !t.isSent()).count());
 		// Distinct reasons
 		serieSummaryNotification.setUnTransferedReasons(transfersToEvaluate.stream()
-				.map(TransferStatusEntity::getReason).filter(Objects::nonNull).collect(Collectors.toSet()));
+			.map(TransferStatusEntity::getReason)
+			.filter(Objects::nonNull)
+			.collect(Collectors.toSet()));
 		// Distinct modalities
 		serieSummaryNotification.setTransferredModalities(transfersToEvaluate.stream()
-				.map(TransferStatusEntity::getModality).filter(Objects::nonNull).collect(Collectors.toSet()));
+			.map(TransferStatusEntity::getModality)
+			.filter(Objects::nonNull)
+			.collect(Collectors.toSet()));
 		// Distinct transfer syntax
 		serieSummaryNotification.setTransferredSopClassUid(transfersToEvaluate.stream()
-				.map(TransferStatusEntity::getSopClassUid).filter(Objects::nonNull).collect(Collectors.toSet()));
+			.map(TransferStatusEntity::getSopClassUid)
+			.filter(Objects::nonNull)
+			.collect(Collectors.toSet()));
 
 		// Flag to know if we should use original or de-identify values
 		boolean useOriginalValues = determineUseOfOriginalOrDeIdentifyValues(
@@ -346,8 +354,8 @@ public class NotificationService {
 		serieSummaryNotification.setSerieUid(useOriginalValues ? transferStatusEntity.getSerieUidOriginal()
 				: transferStatusEntity.getSerieUidToSend());
 		serieSummaryNotification
-				.setSerieDescription(useOriginalValues ? transferStatusEntity.getSerieDescriptionOriginal()
-						: transferStatusEntity.getSerieDescriptionToSend());
+			.setSerieDescription(useOriginalValues ? transferStatusEntity.getSerieDescriptionOriginal()
+					: transferStatusEntity.getSerieDescriptionToSend());
 		serieSummaryNotification.setSerieDate(useOriginalValues ? transferStatusEntity.getSerieDateOriginal()
 				: transferStatusEntity.getSerieDateToSend());
 		return serieSummaryNotification;
@@ -372,8 +380,9 @@ public class NotificationService {
 	 */
 	private Map<Long, Map<String, List<TransferStatusEntity>>> gatherTransferStatusBySourceAndStudy(
 			List<TransferStatusEntity> transferStatusEntities) {
-		return transferStatusEntities.stream().collect(Collectors.groupingBy(TransferStatusEntity::getForwardNodeId,
-				Collectors.groupingBy(TransferStatusEntity::getStudyUidOriginal)));
+		return transferStatusEntities.stream()
+			.collect(Collectors.groupingBy(TransferStatusEntity::getForwardNodeId,
+					Collectors.groupingBy(TransferStatusEntity::getStudyUidOriginal)));
 	}
 
 	/**
@@ -400,11 +409,12 @@ public class NotificationService {
 	private boolean checkDestinationLastVerification(DestinationEntity destinationEntity) {
 		return !destinationEntity.isTransferInProgress() && destinationEntity.getLastTransfer() != null
 		// Add extra timer delay in order to insure transfer of serie is over
-				&& destinationEntity.getLastTransfer().plusSeconds(Notification.EXTRA_TIMER_DELAY)
-						.isBefore(LocalDateTime.now(ZoneId.of("CET")))
+				&& destinationEntity.getLastTransfer()
+					.plusSeconds(Notification.EXTRA_TIMER_DELAY)
+					.isBefore(LocalDateTime.now(ZoneId.of("CET")))
 				&& (destinationEntity.getEmailLastCheck() == null || destinationEntity.getEmailLastCheck()
-						.plusSeconds(destinationEntity.getNotifyInterval().longValue())
-						.isBefore(LocalDateTime.now(ZoneId.of("CET"))))
+					.plusSeconds(destinationEntity.getNotifyInterval().longValue())
+					.isBefore(LocalDateTime.now(ZoneId.of("CET"))))
 				&& destinationEntity.isActivateNotification();
 	}
 

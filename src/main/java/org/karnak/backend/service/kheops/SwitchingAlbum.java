@@ -85,9 +85,10 @@ public class SwitchingAlbum {
 		if (destinationEntity.getDeIdentificationProjectEntity() != null
 				&& destinationEntity.getDeIdentificationProjectEntity().getProfileEntity() != null) {
 			List<ProfileItem> profileItems = Profile
-					.getProfileItems(destinationEntity.getDeIdentificationProjectEntity().getProfileEntity());
-			for (ProfileItem profileItem : profileItems.stream().filter(p -> !(p instanceof CleanPixelData))
-					.collect(Collectors.toList())) {
+				.getProfileItems(destinationEntity.getDeIdentificationProjectEntity().getProfileEntity());
+			for (ProfileItem profileItem : profileItems.stream()
+				.filter(p -> !(p instanceof CleanPixelData))
+				.collect(Collectors.toList())) {
 				try {
 					ActionItem action = profileItem.getAction(new Attributes(), new Attributes(), tag,
 							new HMAC(HMAC.generateRandomKey()));
@@ -122,7 +123,7 @@ public class SwitchingAlbum {
 		ArrayList<MetadataSwitching> metadataToDo = (ArrayList<MetadataSwitching>) switchingAlbumToDo.get(id);
 
 		if ((condition == null || condition.length() == 0 || validateCondition(condition, dcm)) && metadataToDo.stream()
-				.noneMatch(metadataSwitching -> metadataSwitching.getSeriesInstanceUID().equals(seriesInstanceUID))) {
+			.noneMatch(metadataSwitching -> metadataSwitching.getSeriesInstanceUID().equals(seriesInstanceUID))) {
 			final boolean validAuthorizationSource = validateToken(MIN_SCOPE_SOURCE, urlAPI, authorizationSource);
 			final boolean validDestinationSource = validateToken(MIN_SCOPE_DESTINATION, urlAPI,
 					authorizationDestination);

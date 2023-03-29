@@ -188,23 +188,27 @@ public class CSVDialog extends Dialog {
 	}
 
 	public <K, V> String getValueWithKey(Map<K, V> map, V value) {
-		Stream<K> keyStream1 = map.entrySet().stream().filter(entry -> value.equals(entry.getValue()))
-				.map(Map.Entry::getKey);
+		Stream<K> keyStream1 = map.entrySet()
+			.stream()
+			.filter(entry -> value.equals(entry.getValue()))
+			.map(Map.Entry::getKey);
 
 		return (String) keyStream1.findFirst().orElse(null);
 	}
 
 	private void generateErrorMsg() {
-		final Stream<String> streamFieldNotSelected = selectValuesPositionHashMap.entrySet().stream()
-				.map(stringIntegerEntry -> {
-					if (stringIntegerEntry.getValue().equals(-1) && !stringIntegerEntry.getKey().equals("")
-							&& !stringIntegerEntry.getKey().equals(ISSUER_OF_PATIENT_ID)) {
-						return stringIntegerEntry.getKey();
-					}
-					else {
-						return "";
-					}
-				}).filter(s -> !s.equals(""));
+		final Stream<String> streamFieldNotSelected = selectValuesPositionHashMap.entrySet()
+			.stream()
+			.map(stringIntegerEntry -> {
+				if (stringIntegerEntry.getValue().equals(-1) && !stringIntegerEntry.getKey().equals("")
+						&& !stringIntegerEntry.getKey().equals(ISSUER_OF_PATIENT_ID)) {
+					return stringIntegerEntry.getKey();
+				}
+				else {
+					return "";
+				}
+			})
+			.filter(s -> !s.equals(""));
 		final String concatFieldNotSelected = streamFieldNotSelected.collect(Collectors.joining(", "));
 		errorMsg.setText(String.format("These fields are not selected: %s", concatFieldNotSelected));
 	}

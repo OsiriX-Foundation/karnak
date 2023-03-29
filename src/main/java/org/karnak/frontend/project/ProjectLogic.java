@@ -169,8 +169,9 @@ public class ProjectLogic extends ListDataProvider<ProjectEntity> {
 	 */
 	public void initEditProfileDropDown(EditProject editProject) {
 		editProject.getProfileDropDown().setItems(profilePipeService.getAllProfiles());
-		editProject.getProfileDropDown().setItemLabelGenerator(
-				profileEntity -> String.format("%s [version %s]", profileEntity.getName(), profileEntity.getVersion()));
+		editProject.getProfileDropDown()
+			.setItemLabelGenerator(profileEntity -> String.format("%s [version %s]", profileEntity.getName(),
+					profileEntity.getVersion()));
 	}
 
 	/**
@@ -179,8 +180,9 @@ public class ProjectLogic extends ListDataProvider<ProjectEntity> {
 	 */
 	public void initNewProjectProfileDropDown(NewProject newProject) {
 		newProject.getProfileDropDown().setItems(profilePipeService.getAllProfiles());
-		newProject.getProfileDropDown().setItemLabelGenerator(
-				profileEntity -> String.format("%s [version %s]", profileEntity.getName(), profileEntity.getVersion()));
+		newProject.getProfileDropDown()
+			.setItemLabelGenerator(profileEntity -> String.format("%s [version %s]", profileEntity.getName(),
+					profileEntity.getVersion()));
 	}
 
 	public ProjectView getProjectView() {

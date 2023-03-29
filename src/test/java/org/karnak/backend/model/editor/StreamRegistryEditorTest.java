@@ -55,8 +55,9 @@ class StreamRegistryEditorTest {
 		// Test results
 		assertNotNull(streamRegistryEditor.getStudy("studyInstanceUID"));
 		assertNotNull(streamRegistryEditor.getStudy("studyInstanceUID").getSeries("seriesInstanceUID"));
-		assertNotNull(streamRegistryEditor.getStudy("studyInstanceUID").getSeries("seriesInstanceUID")
-				.getSopInstance("sopInstanceUID"));
+		assertNotNull(streamRegistryEditor.getStudy("studyInstanceUID")
+			.getSeries("seriesInstanceUID")
+			.getSopInstance("sopInstanceUID"));
 	}
 
 	@Test

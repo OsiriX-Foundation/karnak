@@ -101,7 +101,7 @@ public class PseudonymMappingView extends HorizontalLayout {
 				// Case no result found: change label title
 				if (mappingResultComponents != null && mappingResultComponents.isEmpty()) {
 					pseudonymToLookForLabel
-							.setText(String.format("%s: no mapping found", pseudonymToLookForLabel.getText()));
+						.setText(String.format("%s: no mapping found", pseudonymToLookForLabel.getText()));
 				}
 			}
 		});
@@ -138,7 +138,7 @@ public class PseudonymMappingView extends HorizontalLayout {
 
 		// Retrieve pseudonym patient mapping in all projects
 		Map<String, Patient> mappingPseudoProjectPatientFound = pseudonymMappingLogic
-				.retrieveExternalIDCachePatients(mappingInputComponent.getPseudonymTextField().getValue());
+			.retrieveExternalIDCachePatients(mappingInputComponent.getPseudonymTextField().getValue());
 
 		// Handle result find patient
 		if (!mappingPseudoProjectPatientFound.isEmpty()) {
@@ -169,7 +169,7 @@ public class PseudonymMappingView extends HorizontalLayout {
 
 		// Retrieve patient
 		Patient mainzellistePatientFound = pseudonymMappingLogic
-				.retrieveMainzellistePatient(mappingInputComponent.getPseudonymTextField().getValue());
+			.retrieveMainzellistePatient(mappingInputComponent.getPseudonymTextField().getValue());
 
 		// Handle result find patient
 		mappingMainzellisteResultComponent.handleResultFindPatient(mainzellistePatientFound,

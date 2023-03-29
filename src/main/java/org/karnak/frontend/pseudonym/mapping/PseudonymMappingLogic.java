@@ -75,8 +75,10 @@ public class PseudonymMappingLogic {
 
 		// Look for patients in externalID cache corresponding to the input of the
 		// user
-		List<Patient> patientsFound = externalIDCache.getAll().stream()
-				.filter(extId -> Objects.equals(extId.getPseudonym(), pseudonym)).collect(Collectors.toList());
+		List<Patient> patientsFound = externalIDCache.getAll()
+			.stream()
+			.filter(extId -> Objects.equals(extId.getPseudonym(), pseudonym))
+			.collect(Collectors.toList());
 
 		// Add mapping found
 		patientsFound.forEach(p -> {

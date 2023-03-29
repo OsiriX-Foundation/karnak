@@ -20,7 +20,7 @@ class ForwardNodeAPIServiceTest {
 
 	// Application Event Publisher
 	private final ApplicationEventPublisher applicationEventPublisherMock = Mockito
-			.mock(ApplicationEventPublisher.class);
+		.mock(ApplicationEventPublisher.class);
 
 	// Service
 	private final ForwardNodeService forwardNodeServiceMock = Mockito.mock(ForwardNodeService.class);

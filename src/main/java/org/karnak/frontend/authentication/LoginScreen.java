@@ -80,15 +80,16 @@ public class LoginScreen extends FlexLayout implements BeforeEnterObserver {
 		setClassName("login-screen");
 
 		// read local storage theme
-		UI.getCurrent().getPage().executeJs("return localStorage.getItem($0)", THEME_COLOR_KEY).then(String.class,
-				string -> {
-					final String themeColor = string;
-					if ((string != null) && (string.equals(Lumo.DARK) || string.equals(Lumo.LIGHT))) {
-						UI.getCurrent().getElement().setAttribute("theme", themeColor);
-						UI.getCurrent().getPage().executeJs("localStorage.setItem($0, $1)", THEME_COLOR_KEY,
-								themeColor);
-					}
-				});
+		UI.getCurrent()
+			.getPage()
+			.executeJs("return localStorage.getItem($0)", THEME_COLOR_KEY)
+			.then(String.class, string -> {
+				final String themeColor = string;
+				if ((string != null) && (string.equals(Lumo.DARK) || string.equals(Lumo.LIGHT))) {
+					UI.getCurrent().getElement().setAttribute("theme", themeColor);
+					UI.getCurrent().getPage().executeJs("localStorage.setItem($0, $1)", THEME_COLOR_KEY, themeColor);
+				}
+			});
 
 		// Build component
 		add(buildLoginMainComponent());
@@ -135,11 +136,12 @@ public class LoginScreen extends FlexLayout implements BeforeEnterObserver {
 			// try to authenticate with given credentials,
 			// should always return not null or throw an {@link AuthenticationException}
 			final Authentication authentication = authenticationManager
-					.authenticate(new UsernamePasswordAuthenticationToken(event.getUsername(), event.getPassword()));
+				.authenticate(new UsernamePasswordAuthenticationToken(event.getUsername(), event.getPassword()));
 
 			// if the user is admin
-			if (authentication.getAuthorities().stream()
-					.anyMatch(ga -> Objects.equals(ga.getAuthority(), SecurityRole.ADMIN_ROLE.getRole()))) {
+			if (authentication.getAuthorities()
+				.stream()
+				.anyMatch(ga -> Objects.equals(ga.getAuthority(), SecurityRole.ADMIN_ROLE.getRole()))) {
 
 				// if authentication was successful and user is admin,
 				// we will update the security context and redirect to the page requested

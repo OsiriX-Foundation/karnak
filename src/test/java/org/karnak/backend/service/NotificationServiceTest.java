@@ -83,7 +83,7 @@ class NotificationServiceTest {
 	void shouldBuildNotificationsToSend() {
 		// Call service
 		List<TransferMonitoringNotification> transferMonitoringNotifications = notificationService
-				.buildNotificationsToSend();
+			.buildNotificationsToSend();
 
 		// Test results
 		assertNotNull(transferMonitoringNotifications);
@@ -104,10 +104,16 @@ class NotificationServiceTest {
 				transferMonitoringNotifications.get(0).getSerieSummaryNotifications().get(0).getNbTransferSent());
 		assertEquals(0,
 				transferMonitoringNotifications.get(0).getSerieSummaryNotifications().get(0).getNbTransferNotSent());
-		assertEquals("modality", transferMonitoringNotifications.get(0).getSerieSummaryNotifications().get(0)
-				.toStringTransferredModalities());
-		assertEquals("sopClassUid", transferMonitoringNotifications.get(0).getSerieSummaryNotifications().get(0)
-				.toStringTransferredSopClassUid());
+		assertEquals("modality",
+				transferMonitoringNotifications.get(0)
+					.getSerieSummaryNotifications()
+					.get(0)
+					.toStringTransferredModalities());
+		assertEquals("sopClassUid",
+				transferMonitoringNotifications.get(0)
+					.getSerieSummaryNotifications()
+					.get(0)
+					.toStringTransferredSopClassUid());
 	}
 
 }

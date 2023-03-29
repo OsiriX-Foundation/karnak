@@ -46,7 +46,7 @@ class TransferMonitoringServiceTest {
 				Collections.singletonList(transferStatusEntity), PageRequest.of(0, 3), 3);
 		when(transferStatusRepoMock.findAll(any(Pageable.class))).thenReturn(transferStatusEntitiesPage);
 		when(transferStatusRepoMock.findAll(any(TransferStatusSpecification.class), any(Pageable.class)))
-				.thenReturn(transferStatusEntitiesPage);
+			.thenReturn(transferStatusEntitiesPage);
 		when(transferStatusRepoMock.count()).thenReturn(1L);
 		when(transferStatusRepoMock.count(any(TransferStatusSpecification.class))).thenReturn(2L);
 
@@ -77,7 +77,7 @@ class TransferMonitoringServiceTest {
 
 		// Call service
 		Page<TransferStatusEntity> transferStatusEntities = transferMonitoringService
-				.retrieveTransferStatusPageable(filter, pageable.getPageable());
+			.retrieveTransferStatusPageable(filter, pageable.getPageable());
 
 		// Test result
 		assertNotNull(transferStatusEntities);
@@ -97,14 +97,14 @@ class TransferMonitoringServiceTest {
 
 		// Call service
 		Page<TransferStatusEntity> transferStatusEntities = transferMonitoringService
-				.retrieveTransferStatusPageable(filter, pageable.getPageable());
+			.retrieveTransferStatusPageable(filter, pageable.getPageable());
 
 		// Test result
 		assertNotNull(transferStatusEntities);
 		assertFalse(transferStatusEntities.toList().isEmpty());
 		assertEquals("studyUidOriginal", transferStatusEntities.toList().get(0).getStudyUidOriginal());
-		Mockito.verify(transferStatusRepoMock, Mockito.times(1)).findAll(Mockito.any(TransferStatusSpecification.class),
-				Mockito.any(Pageable.class));
+		Mockito.verify(transferStatusRepoMock, Mockito.times(1))
+			.findAll(Mockito.any(TransferStatusSpecification.class), Mockito.any(Pageable.class));
 	}
 
 	@Test

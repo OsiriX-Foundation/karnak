@@ -37,14 +37,17 @@ public class RectangleListConverter implements AttributeConverter<List<Rectangle
 
 	@Override
 	public String convertToDatabaseColumn(List<Rectangle> stringList) {
-		return stringList.stream().map(RectangleListConverter::rectangleToString)
-				.collect(Collectors.joining(SPLIT_CHAR));
+		return stringList.stream()
+			.map(RectangleListConverter::rectangleToString)
+			.collect(Collectors.joining(SPLIT_CHAR));
 	}
 
 	@Override
 	public List<Rectangle> convertToEntityAttribute(String string) {
-		return Arrays.asList(string.split(SPLIT_CHAR)).stream().map(RectangleListConverter::stringToRectangle)
-				.collect(Collectors.toList());
+		return Arrays.asList(string.split(SPLIT_CHAR))
+			.stream()
+			.map(RectangleListConverter::stringToRectangle)
+			.collect(Collectors.toList());
 	}
 
 }
