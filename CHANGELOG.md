@@ -1,12 +1,26 @@
 # Changelog
 
-## [Unreleased](https://github.com/OsiriX-Foundation/karnak/tree/HEAD)
+## [v1.0.3](https://github.com/OsiriX-Foundation/karnak/tree/v1.0.3) (2023-03-31)
 
-[Full Changelog](https://github.com/OsiriX-Foundation/karnak/compare/v1.0.2...HEAD)
+[Full Changelog](https://github.com/OsiriX-Foundation/karnak/compare/v1.0.2...v1.0.3)
+
+**Implemented enhancements:**
+
+-  Monitoring/notification: add modality + sop class uid fields [\#200](https://github.com/OsiriX-Foundation/karnak/issues/200)
+- Fix: dynamic new sop class uid in dicom transfers  [\#199](https://github.com/OsiriX-Foundation/karnak/issues/199)
+- Mail sender in parameter [\#198](https://github.com/OsiriX-Foundation/karnak/issues/198)
+
+**Fixed bugs:**
+
+- Concurrency issue: association error for some instances with DICOM \(dimse\) destination [\#202](https://github.com/OsiriX-Foundation/karnak/issues/202)
 
 **Closed issues:**
 
 - Check behaviour hazelcast multi instance [\#176](https://github.com/OsiriX-Foundation/karnak/issues/176)
+
+**Merged pull requests:**
+
+- Mail sender, fix transfers dicom, modality + sop class uid in monitoring/notification \#198 \#199 \#200 [\#201](https://github.com/OsiriX-Foundation/karnak/pull/201) ([jdcshug](https://github.com/jdcshug))
 
 ## [v1.0.2](https://github.com/OsiriX-Foundation/karnak/tree/v1.0.2) (2022-11-05)
 
