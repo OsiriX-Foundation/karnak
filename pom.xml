@@ -45,7 +45,7 @@
     <sonar.organization>osirix-foundation-1</sonar.organization>
     <sonar.projectKey>karnak</sonar.projectKey>
     <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
-    <org.json.version>20220924</org.json.version>
+    <org.json.version>20230227</org.json.version>
     <logback.version>1.2.9</logback.version>
     <liquibase.version>4.3.5</liquibase.version>
     <opencsv.version>5.5.2</opencsv.version>
