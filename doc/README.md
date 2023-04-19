@@ -118,7 +118,6 @@ UUID). “*The value after "2.25." is the straight decimal encoding of the UUID 
 be a direct decimal encoding of the single integer, all 128 bits.*”[2]
 
 [1]: <https://www.dclunie.com/medical-image-faq/html/part2.html>
-
 [2]: https://wiki.ihe.net/index.php/Creating_Unique_IDs_-_OID_and_UUID "How do you create an OID ?"
 
 The generated UUID will use the first 16 octet (128 bit) from the hash value. The UUID is a type 4

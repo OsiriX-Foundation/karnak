@@ -124,10 +124,16 @@ public class ForwardService {
 			// Case first iteration: handle first destination of the forward node
 			Attributes attToApply = nbDestinations > 1 ? attributes : null;
 			if (destination instanceof DicomForwardDestination) {
-				files.addAll(transfer(fwdNode, (DicomForwardDestination) destination, attToApply, p));
+				List<File> list = transfer(fwdNode, (DicomForwardDestination) destination, attToApply, p);
+				if (list != null) {
+					files.addAll(list);
+				}
 			}
 			else if (destination instanceof WebForwardDestination) {
-				files.addAll(transfer(fwdNode, (WebForwardDestination) destination, attToApply, p));
+				List<File> list = transfer(fwdNode, (WebForwardDestination) destination, attToApply, p);
+				if (list != null) {
+					files.addAll(list);
+				}
 			}
 		}
 		else {
