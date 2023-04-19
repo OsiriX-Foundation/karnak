@@ -1,5 +1,65 @@
 # Changelog
 
+## [v1.0.3](https://github.com/OsiriX-Foundation/karnak/tree/v1.0.3) (2023-03-31)
+
+[Full Changelog](https://github.com/OsiriX-Foundation/karnak/compare/v1.0.2...v1.0.3)
+
+**Implemented enhancements:**
+
+-  Monitoring/notification: add modality + sop class uid fields [\#200](https://github.com/OsiriX-Foundation/karnak/issues/200)
+- Fix: dynamic new sop class uid in dicom transfers  [\#199](https://github.com/OsiriX-Foundation/karnak/issues/199)
+- Mail sender in parameter [\#198](https://github.com/OsiriX-Foundation/karnak/issues/198)
+
+**Fixed bugs:**
+
+- Concurrency issue: association error for some instances with DICOM \(dimse\) destination [\#202](https://github.com/OsiriX-Foundation/karnak/issues/202)
+
+**Closed issues:**
+
+- Check behaviour hazelcast multi instance [\#176](https://github.com/OsiriX-Foundation/karnak/issues/176)
+
+**Merged pull requests:**
+
+- Mail sender, fix transfers dicom, modality + sop class uid in monitoring/notification \#198 \#199 \#200 [\#201](https://github.com/OsiriX-Foundation/karnak/pull/201) ([jdcshug](https://github.com/jdcshug))
+
+## [v1.0.2](https://github.com/OsiriX-Foundation/karnak/tree/v1.0.2) (2022-11-05)
+
+[Full Changelog](https://github.com/OsiriX-Foundation/karnak/compare/v1.0.1...v1.0.2)
+
+**Merged pull requests:**
+
+- fix: remove duplicate [\#196](https://github.com/OsiriX-Foundation/karnak/pull/196) ([jdcshug](https://github.com/jdcshug))
+
+## [v1.0.1](https://github.com/OsiriX-Foundation/karnak/tree/v1.0.1) (2022-03-25)
+
+[Full Changelog](https://github.com/OsiriX-Foundation/karnak/compare/v1.0.0...v1.0.1)
+
+## [v1.0.0](https://github.com/OsiriX-Foundation/karnak/tree/v1.0.0) (2022-03-05)
+
+[Full Changelog](https://github.com/OsiriX-Foundation/karnak/compare/v0.9.9...v1.0.0)
+
+**Implemented enhancements:**
+
+- Add in pre destroy reset transfer in progress status for destinations [\#192](https://github.com/OsiriX-Foundation/karnak/issues/192)
+- Add automatic refresh of gateway setup when multiple instances [\#190](https://github.com/OsiriX-Foundation/karnak/issues/190)
+- Add project secret history [\#189](https://github.com/OsiriX-Foundation/karnak/issues/189)
+- Create a monitoring csv export [\#188](https://github.com/OsiriX-Foundation/karnak/issues/188)
+- Notification improvement [\#187](https://github.com/OsiriX-Foundation/karnak/issues/187)
+- Create pseudonym mapping view [\#186](https://github.com/OsiriX-Foundation/karnak/issues/186)
+- Create monitoring view [\#185](https://github.com/OsiriX-Foundation/karnak/issues/185)
+- Vulnerability CVE-2021-42550 \(aka LOGBACK-1591\) [\#180](https://github.com/OsiriX-Foundation/karnak/issues/180)
+
+**Fixed bugs:**
+
+- Change httpClient from HTTP2 to HTTP1\_1 [\#194](https://github.com/OsiriX-Foundation/karnak/issues/194)
+- Handle 409 http exception in order to not rethrow exception = means file is already in the destination [\#193](https://github.com/OsiriX-Foundation/karnak/issues/193)
+- Upgrade version weasis-dicom-tools in order to fix "Go Away" exceptions [\#191](https://github.com/OsiriX-Foundation/karnak/issues/191)
+
+**Merged pull requests:**
+
+- fix: switching album issue [\#195](https://github.com/OsiriX-Foundation/karnak/pull/195) ([jdcshug](https://github.com/jdcshug))
+- monitoring + notification + export + secret history + pseudonym mapping [\#184](https://github.com/OsiriX-Foundation/karnak/pull/184) ([jdcshug](https://github.com/jdcshug))
+
 ## [v0.9.9](https://github.com/OsiriX-Foundation/karnak/tree/v0.9.9) (2021-12-20)
 
 [Full Changelog](https://github.com/OsiriX-Foundation/karnak/compare/v0.9.8...v0.9.9)
@@ -13,6 +73,9 @@
 - Notification Front: default values [\#172](https://github.com/OsiriX-Foundation/karnak/issues/172)
 - Karnak email address [\#159](https://github.com/OsiriX-Foundation/karnak/issues/159)
 - Change configuration when sending [\#31](https://github.com/OsiriX-Foundation/karnak/issues/31)
+- Feat/notification sender [\#178](https://github.com/OsiriX-Foundation/karnak/pull/178) ([redwork321](https://github.com/redwork321))
+- Feat/deidentification activ deactiv front refactoring [\#173](https://github.com/OsiriX-Foundation/karnak/pull/173) ([jdcshug](https://github.com/jdcshug))
+- feat: default values notification [\#171](https://github.com/OsiriX-Foundation/karnak/pull/171) ([jdcshug](https://github.com/jdcshug))
 
 ## [v0.9.8](https://github.com/OsiriX-Foundation/karnak/tree/v0.9.8) (2021-08-26)
 
