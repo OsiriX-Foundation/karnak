@@ -125,13 +125,13 @@ public class ForwardService {
 			Attributes attToApply = nbDestinations > 1 ? attributes : null;
 			if (destination instanceof DicomForwardDestination) {
 				List<File> list = transfer(fwdNode, (DicomForwardDestination) destination, attToApply, p);
-				if(list != null) {
+				if (list != null) {
 					files.addAll(list);
 				}
 			}
 			else if (destination instanceof WebForwardDestination) {
 				List<File> list = transfer(fwdNode, (WebForwardDestination) destination, attToApply, p);
-				if(list != null) {
+				if (list != null) {
 					files.addAll(list);
 				}
 			}
