@@ -79,16 +79,6 @@ public class ShiftRangeDate {
     int shiftDays = (int) hmac.scaleHash(patientID, shiftMinDays, shiftMaxDays);
     int shiftSeconds = (int) hmac.scaleHash(patientID, shiftMinSeconds, shiftMaxSeconds);
 
-    if (dcmElValue != null) {
-      return switch (dcm.getVR(tag)) {
-        case AS -> ShiftDate.ageByDays(dcmElValue, shiftDays);
-        case DA -> ShiftDate.dateByDays(dcmElValue, shiftDays);
-        case DT -> ShiftDate.datetimeByDays(dcm.getDate(tag), shiftDays, shiftSeconds);
-        case TM -> ShiftDate.timeBySeconds(dcmElValue, shiftSeconds);
-        default -> null;
-      };
-    }
-
-    return null;
+    return ShiftDate.shiftValue(dcm, tag, dcmElValue, shiftDays, shiftSeconds);
   }
 }
