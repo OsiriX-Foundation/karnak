@@ -34,7 +34,7 @@ import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.util.PatientClientUtil;
 import org.vaadin.klaudeta.PaginatedGrid;
 
-public class ExternalIDGrid extends PaginatedGrid<Patient> {
+public class ExternalIDGrid extends PaginatedGrid<Patient, PatientFilter> {
 
 	private static final String ERROR_MESSAGE_PATIENT = "Length must be between 1 and 50.";
 
@@ -98,10 +98,14 @@ public class ExternalIDGrid extends PaginatedGrid<Patient> {
 
 	private transient Collection<Patient> duplicatePatientsList = new ArrayList<>();
 
+	private PatientFilter patientFilter;
+
 	public ExternalIDGrid() {
 		binder = new Binder<>(Patient.class);
 		patientList = new ArrayList<>();
 		this.externalIDCache = AppConfig.getInstance().getExternalIDCache();
+		// TODO: to use instead of the current multiple filters..: cf TELIMA-257
+		this.patientFilter = new PatientFilter();
 
 		setPageSize(10);
 		setPaginatorSize(2);
@@ -305,6 +309,9 @@ public class ExternalIDGrid extends PaginatedGrid<Patient> {
 	}
 
 	public void checkAndUpdateAllFilters() {
+		// TODO: replace by PatientFilter which will contains all filters and remove
+		// extidFilter, patientIdFilter, patientFirstNameFilter, patientLastNameFilter,
+		// issuerOfPatientIDFilter
 		List<Patient> filterList = patientsListInCache.stream().collect(Collectors.toList());
 
 		if (!extidFilter.getValue().equals("")) {
