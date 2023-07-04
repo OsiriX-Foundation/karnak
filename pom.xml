@@ -43,7 +43,7 @@
     <org.json.version>20211205</org.json.version>
     <opencsv.version>5.7.1</opencsv.version>
     <swagger.version>2.2.14</swagger.version>
-    <node.version>v19.1.0</node.version>
+    <node.version>v20.3.1</node.version>
   </properties>
 
   <!-- Dependency Management -->
