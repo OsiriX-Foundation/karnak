@@ -110,8 +110,8 @@ public class DateFormat {
 		String format = "";
 
 		for (ArgumentEntity argumentEntity : argumentEntities) {
-			final String key = argumentEntity.getKey();
-			final String value = argumentEntity.getValue();
+			final String key = argumentEntity.getArgumentKey();
+			final String value = argumentEntity.getArgumentValue();
 
 			try {
 				if (key.equals("remove")) {
@@ -140,7 +140,8 @@ public class DateFormat {
 		listValue.add("month_day");
 
 		if (argumentEntities.stream()
-			.noneMatch(argument -> argument.getKey().equals("remove") && listValue.contains(argument.getValue()))) {
+			.noneMatch(argument -> argument.getArgumentKey().equals("remove")
+					&& listValue.contains(argument.getArgumentValue()))) {
 			IllegalArgumentException missingParameters = new IllegalArgumentException(
 					"Cannot build the option date_format, arguments are not correct");
 			log.error("Missing argument, the class need pattern as parameters", missingParameters);

@@ -128,7 +128,7 @@ public class ProjectEntity implements Serializable {
 	 * @return Label built
 	 */
 	public static String buildLabelSecret(SecretEntity secretEntity) {
-		return "%s  [created: %s]".formatted(HMAC.showHexKey(HMAC.byteToHex(secretEntity.getKey())),
+		return "%s  [created: %s]".formatted(HMAC.showHexKey(HMAC.byteToHex(secretEntity.getSecretKey())),
 				DateFormat.format(secretEntity.getCreationDate(), DateFormat.FORMAT_DDMMYYYY_SLASH_HHMMSS_2POINTS));
 	}
 

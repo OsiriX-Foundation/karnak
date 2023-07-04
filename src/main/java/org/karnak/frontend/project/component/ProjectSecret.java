@@ -94,7 +94,7 @@ public class ProjectSecret extends Div {
 			boolean valid = HMAC.validateKey(customValue);
 			Collection<SecretEntity> items = ((ListDataProvider) secretComboBox.getDataProvider()).getItems();
 			boolean alreadyExisting = valid && items.stream()
-				.map(secretEntity -> HMAC.showHexKey(HMAC.byteToHex(secretEntity.getKey())))
+				.map(secretEntity -> HMAC.showHexKey(HMAC.byteToHex(secretEntity.getSecretKey())))
 				.anyMatch(secretValue -> Objects.equals(secretValue, customValue));
 
 			// Already existing

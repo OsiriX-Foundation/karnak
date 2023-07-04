@@ -35,11 +35,11 @@
     <java.version>17</java.version>
     <enforcer.jdk-version>[${java.version},)</enforcer.jdk-version>
     <enforcer.maven-version>[3.3.0,)</enforcer.maven-version>
-    <liquibase.version>4.3.5</liquibase.version>
+    <liquibase.version>4.23.0</liquibase.version>
     <javax.mail.version>1.6.2</javax.mail.version>
     <vaadin.version>23.3.15</vaadin.version>
     <weasis-dicom-tools.version>5.29.0.2</weasis-dicom-tools.version>
-    <h2.version>1.4.200</h2.version>
+    <h2.version>2.1.214</h2.version>
     <org.json.version>20211205</org.json.version>
     <opencsv.version>5.7.1</opencsv.version>
     <swagger.version>2.2.14</swagger.version>

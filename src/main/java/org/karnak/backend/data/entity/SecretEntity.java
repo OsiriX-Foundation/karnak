@@ -29,7 +29,7 @@ public class SecretEntity implements Serializable {
 
 	private ProjectEntity projectEntity;
 
-	private byte[] key;
+	private byte[] secretKey;
 
 	private LocalDateTime creationDate;
 
@@ -38,14 +38,14 @@ public class SecretEntity implements Serializable {
 	public SecretEntity() {
 	}
 
-	public SecretEntity(byte[] key) {
-		this.key = key;
+	public SecretEntity(byte[] secretKey) {
+		this.secretKey = secretKey;
 		this.creationDate = LocalDateTime.now();
 	}
 
-	public SecretEntity(ProjectEntity projectEntity, byte[] key) {
+	public SecretEntity(ProjectEntity projectEntity, byte[] secretKey) {
 		this.projectEntity = projectEntity;
-		this.key = key;
+		this.secretKey = secretKey;
 		this.creationDate = LocalDateTime.now();
 	}
 
@@ -69,12 +69,12 @@ public class SecretEntity implements Serializable {
 		this.projectEntity = projectEntity;
 	}
 
-	public byte[] getKey() {
-		return key;
+	public byte[] getSecretKey() {
+		return secretKey;
 	}
 
-	public void setKey(byte[] key) {
-		this.key = key;
+	public void setSecretKey(byte[] key) {
+		this.secretKey = key;
 	}
 
 	public LocalDateTime getCreationDate() {
@@ -103,13 +103,13 @@ public class SecretEntity implements Serializable {
 		}
 		SecretEntity that = (SecretEntity) o;
 		return active == that.active && Objects.equals(id, that.id) && Objects.equals(projectEntity, that.projectEntity)
-				&& Arrays.equals(key, that.key) && Objects.equals(creationDate, that.creationDate);
+				&& Arrays.equals(secretKey, that.secretKey) && Objects.equals(creationDate, that.creationDate);
 	}
 
 	@Override
 	public int hashCode() {
 		int result = Objects.hash(id, projectEntity, creationDate, active);
-		result = 31 * result + Arrays.hashCode(key);
+		result = 31 * result + Arrays.hashCode(secretKey);
 		return result;
 	}
 

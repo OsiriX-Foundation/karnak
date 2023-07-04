@@ -363,7 +363,7 @@ public class Profile {
 		}
 
 		SecretEntity secretEntity = projectEntity.retrieveActiveSecret();
-		byte[] secret = secretEntity != null ? secretEntity.getKey() : null;
+		byte[] secret = secretEntity != null ? secretEntity.getSecretKey() : null;
 		if (secret == null || secret.length != HMAC.KEY_BYTE_LENGTH) {
 			throw new IllegalStateException(
 					"Cannot build the HMAC no secret defined in the project associate at the destination");

@@ -38,10 +38,10 @@ class ShiftDateTest {
 
 	@BeforeAll
 	protected static void setUpBeforeClass() throws Exception {
-		seconds.setKey("seconds");
-		seconds.setValue("500");
-		days.setKey("days");
-		days.setValue("40");
+		seconds.setArgumentKey("seconds");
+		seconds.setArgumentValue("500");
+		days.setArgumentKey("days");
+		days.setArgumentValue("40");
 
 		argumentEntities.add(seconds);
 		argumentEntities.add(days);
@@ -162,20 +162,20 @@ class ShiftDateTest {
 		assertEquals("20171231120034.354000", ShiftDate.shift(dataset, Tag.AcquisitionDateTime, argumentEntities));
 		assertEquals("235314.000000", ShiftDate.shift(dataset, Tag.AcquisitionTime, argumentEntities));
 
-		seconds.setKey("notseconds");
-		days.setKey("days");
+		seconds.setArgumentKey("notseconds");
+		days.setArgumentKey("days");
 		Assertions.assertThrows(IllegalArgumentException.class, () -> {
 			ShiftDate.shift(dataset, Tag.AcquisitionTime, argumentEntities);
 		});
 
-		seconds.setKey("seconds");
-		days.setKey("notdays");
+		seconds.setArgumentKey("seconds");
+		days.setArgumentKey("notdays");
 		Assertions.assertThrows(IllegalArgumentException.class, () -> {
 			ShiftDate.shift(dataset, Tag.AcquisitionTime, argumentEntities);
 		});
 
-		seconds.setKey("notseconds");
-		days.setKey("notdays");
+		seconds.setArgumentKey("notseconds");
+		days.setArgumentKey("notdays");
 		Assertions.assertThrows(IllegalArgumentException.class, () -> {
 			ShiftDate.shift(dataset, Tag.AcquisitionTime, argumentEntities);
 		});

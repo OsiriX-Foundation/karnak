@@ -53,7 +53,7 @@ public class SwitchingAlbum {
 		if (destinationEntity.isDesidentification()) {
 			ProjectEntity projectEntity = destinationEntity.getDeIdentificationProjectEntity();
 			SecretEntity secretEntity = projectEntity.retrieveActiveSecret();
-			return secretEntity != null ? new HMAC(secretEntity.getKey()) : null;
+			return secretEntity != null ? new HMAC(secretEntity.getSecretKey()) : null;
 		}
 		return null;
 	}
