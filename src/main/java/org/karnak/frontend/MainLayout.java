@@ -37,9 +37,7 @@ import org.springframework.security.access.annotation.Secured;
  */
 @NpmPackage(value = "@polymer/iron-icons", version = "3.0.1")
 @JsModule("@polymer/iron-icons/iron-icons.js")
-@JsModule("@vaadin/vaadin-lumo-styles/badge.js")
 @CssImport(value = "./styles/shared-styles.css")
-@CssImport(value = "./styles/empty.css", include = "lumo-badge")
 @Route(value = "mainLayout")
 @Secured({ "ROLE_admin" })
 @SuppressWarnings("serial")
