@@ -10,14 +10,14 @@
 package org.karnak.frontend.forwardnode.edit.destination.component;
 
 import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.data.binder.Binder;
 import org.karnak.backend.data.entity.DestinationEntity;
-import org.vaadin.gatanaso.MultiselectComboBox;
 
 public class FilterBySOPClassesForm extends HorizontalLayout {
 
-	private final MultiselectComboBox<String> sopFilter;
+	private final MultiSelectComboBox<String> sopFilter;
 
 	private final Checkbox filterBySOPClassesCheckbox;
 
@@ -25,7 +25,7 @@ public class FilterBySOPClassesForm extends HorizontalLayout {
 
 	public FilterBySOPClassesForm() {
 		this.filterBySOPClassesCheckbox = new Checkbox("Authorized SOPs");
-		this.sopFilter = new MultiselectComboBox<>();
+		this.sopFilter = new MultiSelectComboBox<>();
 	}
 
 	public void init(Binder<DestinationEntity> binder) {
@@ -47,7 +47,7 @@ public class FilterBySOPClassesForm extends HorizontalLayout {
 			.onEnabledStateChanged(checkboxBooleanComponentValueChangeEvent.getValue()));
 	}
 
-	public MultiselectComboBox<String> getSopFilter() {
+	public MultiSelectComboBox<String> getSopFilter() {
 		return sopFilter;
 	}
 

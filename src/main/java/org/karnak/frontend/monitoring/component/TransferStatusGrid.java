@@ -34,7 +34,7 @@ import org.vaadin.klaudeta.PaginatedGrid;
 /**
  * Grid for the monitoring view
  */
-public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity> {
+public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity, TransferStatusFilter> {
 
 	// Tooltips
 	public static final String TOOLTIP_FILTER_BY_ORIGINAL_OR_DEIDENTIFIED_VALUE = "Filter by original or deidentified value";

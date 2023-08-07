@@ -80,7 +80,7 @@ public class ProfileElementView extends Div {
 		verticalLayout.getStyle().set("margin-top", "0px");
 		for (ArgumentEntity argumentEntity : argumentEntities) {
 			Div tagDiv = new Div();
-			tagDiv.add(new Text(argumentEntity.getKey() + " : " + argumentEntity.getValue()));
+			tagDiv.add(new Text(argumentEntity.getArgumentKey() + " : " + argumentEntity.getArgumentValue()));
 			tagDiv.getStyle().set("color", "grey").set("padding-left", "15px").set("margin-top", "2px");
 			verticalLayout.add(tagDiv);
 		}

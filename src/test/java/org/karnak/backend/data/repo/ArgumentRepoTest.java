@@ -44,23 +44,24 @@ class ArgumentRepoTest {
 	void shouldSaveAndFindARecord() {
 		// Create an entity to save
 		ArgumentEntity entity = new ArgumentEntity();
-		entity.setKey("Key");
+		entity.setArgumentKey("Key");
 
 		// Save the entity
-		log.info("Saving entity with Key [{}]", entity.getKey());
+		log.info("Saving entity with Key [{}]", entity.getArgumentKey());
 		entity = repository.save(entity);
 
 		// Test Save
-		assertEquals("Key", entity.getKey());
+		assertEquals("Key", entity.getArgumentKey());
 		assertNotNull(entity.getId());
-		log.info("Entity with Key [{}] and id [{}] saved", entity.getKey(), entity.getId());
+		log.info("Entity with Key [{}] and id [{}] saved", entity.getArgumentKey(), entity.getId());
 
 		// Find By Id
 		Optional<ArgumentEntity> foundByIdOpt = repository.findById(entity.getId());
 
 		// Test Find by Id
 		assertTrue(foundByIdOpt.isPresent());
-		log.info("Entity found with Key [{}] and id [{}]", foundByIdOpt.get().getKey(), foundByIdOpt.get().getId());
+		log.info("Entity found with Key [{}] and id [{}]", foundByIdOpt.get().getArgumentKey(),
+				foundByIdOpt.get().getId());
 		assertEquals(entity.getId(), foundByIdOpt.get().getId());
 	}
 
@@ -81,11 +82,11 @@ class ArgumentRepoTest {
 		profileElementEntity = profileElementRepo.saveAndFlush(profileElementEntity);
 		// Argument
 		ArgumentEntity entity = new ArgumentEntity();
-		entity.setKey("Key");
+		entity.setArgumentKey("Key");
 		entity.setProfileElementEntity(profileElementEntity);
 
 		// Save the entity
-		log.info("Saving entity with Key [{}]", entity.getKey());
+		log.info("Saving entity with Key [{}]", entity.getArgumentKey());
 		repository.saveAndFlush(entity);
 
 		// Find all
@@ -109,27 +110,27 @@ class ArgumentRepoTest {
 
 		// Create an entity to save
 		ArgumentEntity entity = new ArgumentEntity();
-		entity.setKey(initialText);
+		entity.setArgumentKey(initialText);
 
 		// Save the entity
-		log.info("Saving entity with Key [{}]", entity.getKey());
+		log.info("Saving entity with Key [{}]", entity.getArgumentKey());
 		entity = repository.save(entity);
 		log.info("Id of the entity with Key [{}]", entity.getId());
 
 		// Test Save
 		assertNotNull(entity);
-		assertEquals(initialText, entity.getKey());
+		assertEquals(initialText, entity.getArgumentKey());
 
 		// Modify the record
-		entity.setKey(modifiedText);
+		entity.setArgumentKey(modifiedText);
 		log.info("Modify entity Key [{}] to [{}]", initialText, modifiedText);
 		ArgumentEntity entityModified = repository.save(entity);
 
 		// Test Modify
 		assertNotNull(entityModified);
 		assertEquals(entity.getId(), entityModified.getId());
-		assertEquals(modifiedText, entityModified.getKey());
-		log.info("Key of the entity with id [{}]: [{}]", entityModified.getId(), entityModified.getKey());
+		assertEquals(modifiedText, entityModified.getArgumentKey());
+		log.info("Key of the entity with id [{}]: [{}]", entityModified.getId(), entityModified.getArgumentKey());
 	}
 
 	/**
@@ -140,10 +141,10 @@ class ArgumentRepoTest {
 		// Create an entity to save
 		ArgumentEntity entity = new ArgumentEntity();
 		String key = "Key";
-		entity.setKey(key);
+		entity.setArgumentKey(key);
 
 		// Save the entity
-		log.info("Saving entity with Key [{}]", entity.getKey());
+		log.info("Saving entity with Key [{}]", entity.getArgumentKey());
 		entity = repository.save(entity);
 
 		// Retrieve the entity

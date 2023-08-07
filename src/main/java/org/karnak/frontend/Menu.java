@@ -85,7 +85,7 @@ public class Menu extends FlexLayout {
 	 */
 	public void addView(Class<? extends Component> viewClass, String caption, IronIcon icon) {
 		Tab tab = new Tab();
-		RouterLink routerLink = new RouterLink(null, viewClass);
+		RouterLink routerLink = new RouterLink(viewClass);
 		routerLink.setClassName("menu-link");
 		routerLink.add(icon);
 		routerLink.add(new Span(caption));

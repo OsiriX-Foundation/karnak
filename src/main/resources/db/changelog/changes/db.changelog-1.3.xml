@@ -362,4 +362,25 @@
     </addColumn>
   </changeSet>
 
+  <changeSet author="karnak" id="1.3-28">
+    <preConditions onFail="MARK_RAN">
+        <columnExists tableName="arguments" columnName="key"/>
+    </preConditions>
+    <renameColumn newColumnName="argument_key" oldColumnName="key" tableName="arguments"/>
+  </changeSet>
+
+  <changeSet author="karnak" id="1.3-29">
+    <preConditions onFail="MARK_RAN">
+        <columnExists tableName="arguments" columnName="value"/>
+    </preConditions>
+    <renameColumn newColumnName="argument_value" oldColumnName="value" tableName="arguments"/>
+  </changeSet>
+
+  <changeSet author="karnak" id="1.3-30">
+    <preConditions onFail="MARK_RAN">
+        <columnExists tableName="secret" columnName="key"/>
+    </preConditions>
+    <renameColumn newColumnName="secret_key" oldColumnName="key" tableName="secret"/>
+  </changeSet>
+
 </databaseChangeLog>
