@@ -104,15 +104,15 @@ public class ExprAction implements ExpressionItem {
 	public ActionItem ReplaceFromUri(String dummyValue) {
 		String response = null;
 
-		if (stringValue != null){
+		if (stringValue != null) {
 			try {
 				// TODO: to improve
 				HttpResponse<String> httpResponse = HttpClient.newBuilder()
-						.build()
-						.send(HttpRequest.newBuilder()
-								.uri(new URI(dummyValue))
-								.POST(HttpRequest.BodyPublishers.ofString(stringValue))
-								.build(), BodyHandlers.ofString());
+					.build()
+					.send(HttpRequest.newBuilder()
+						.uri(new URI(dummyValue))
+						.POST(HttpRequest.BodyPublishers.ofString(stringValue))
+						.build(), BodyHandlers.ofString());
 				response = httpResponse.body();
 			}
 			catch (URISyntaxException | IOException | InterruptedException e) {
