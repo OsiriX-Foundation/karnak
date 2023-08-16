@@ -9,6 +9,13 @@
  */
 package org.karnak.backend.model.expression;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.net.http.HttpResponse.BodyHandlers;
 import java.util.Objects;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.VR;
@@ -91,6 +98,30 @@ public class ExprAction implements ExpressionItem {
 	public ActionItem Replace(String dummyValue) {
 		ActionItem replace = new Replace("D");
 		replace.setDummyValue(dummyValue);
+		return replace;
+	}
+
+	public ActionItem ReplaceFromUri(String dummyValue) {
+		String response = null;
+
+		if (stringValue != null){
+			try {
+				// TODO: to improve
+				HttpResponse<String> httpResponse = HttpClient.newBuilder()
+						.build()
+						.send(HttpRequest.newBuilder()
+								.uri(new URI(dummyValue))
+								.POST(HttpRequest.BodyPublishers.ofString(stringValue))
+								.build(), BodyHandlers.ofString());
+				response = httpResponse.body();
+			}
+			catch (URISyntaxException | IOException | InterruptedException e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		ActionItem replace = new Replace("D");
+		replace.setDummyValue(response);
 		return replace;
 	}
 
