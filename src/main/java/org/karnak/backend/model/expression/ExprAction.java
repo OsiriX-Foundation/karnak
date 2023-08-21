@@ -101,7 +101,7 @@ public class ExprAction implements ExpressionItem {
 		return replace;
 	}
 
-	public ActionItem ReplaceFromUri(String dummyValue) {
+	public ActionItem ReplaceFromUriPost(String dummyValue) {
 		String response = null;
 
 		if (stringValue != null) {
