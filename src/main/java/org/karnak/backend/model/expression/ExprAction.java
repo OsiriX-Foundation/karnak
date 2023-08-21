@@ -9,9 +9,7 @@
  */
 package org.karnak.backend.model.expression;
 
-import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -19,6 +17,7 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.util.Objects;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.VR;
+import org.karnak.backend.exception.ExpressionActionException;
 import org.karnak.backend.model.action.ActionItem;
 import org.karnak.backend.model.action.Keep;
 import org.karnak.backend.model.action.Remove;
@@ -115,8 +114,12 @@ public class ExprAction implements ExpressionItem {
 						.build(), BodyHandlers.ofString());
 				response = httpResponse.body();
 			}
-			catch (URISyntaxException | IOException | InterruptedException e) {
-				throw new RuntimeException(e);
+			catch (InterruptedException e){
+				Thread.currentThread().interrupt();
+			}
+			catch (Exception e){
+				throw new ExpressionActionException(
+            "Issue when using action ReplaceFromUriPost:%s".formatted(e.getMessage()));
 			}
 		}
 
