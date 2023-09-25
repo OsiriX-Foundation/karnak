@@ -114,12 +114,12 @@ public class ExprAction implements ExpressionItem {
 						.build(), BodyHandlers.ofString());
 				response = httpResponse.body();
 			}
-			catch (InterruptedException e){
+			catch (InterruptedException e) {
 				Thread.currentThread().interrupt();
 			}
-			catch (Exception e){
+			catch (Exception e) {
 				throw new ExpressionActionException(
-            "Issue when using action ReplaceFromUriPost:%s".formatted(e.getMessage()));
+						"Issue when using action ReplaceFromUriPost:%s".formatted(e.getMessage()));
 			}
 		}
 
