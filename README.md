@@ -11,7 +11,7 @@ online [Karnak user guide](https://osirix-foundation.github.io/karnak-documentat
 
 :warning: **Security**: Karnak is using Logback and is not affected by
 CVE-2021-44228. [CVE-2021-42550 has been fixed](https://github.com/OsiriX-Foundation/karnak/issues/180)
-since v0.9.9
+since v0.9.9 
 
 # Application Features
 
