@@ -9,6 +9,9 @@
  */
 package org.karnak.backend.service;
 
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -17,9 +20,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.mail.MessagingException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.karnak.backend.constant.Notification;
 import org.karnak.backend.data.entity.DestinationEntity;

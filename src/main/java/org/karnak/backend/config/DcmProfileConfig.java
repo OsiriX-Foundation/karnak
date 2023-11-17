@@ -9,7 +9,8 @@
  */
 package org.karnak.backend.config;
 
-import javax.annotation.PostConstruct;
+
+import jakarta.annotation.PostConstruct;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;

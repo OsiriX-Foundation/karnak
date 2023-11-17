@@ -9,12 +9,13 @@
  */
 package org.karnak.backend.data.converter;
 
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
 import java.awt.Rectangle;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.persistence.AttributeConverter;
-import javax.persistence.Converter;
+
 
 @Converter
 public class RectangleListConverter implements AttributeConverter<List<Rectangle>, String> {
