@@ -96,7 +96,7 @@ public class LoginScreen extends FlexLayout implements BeforeEnterObserver {
 
 		// It's ugly but it works. @see
 		// https://github.com/vaadin/vaadin-login-flow/issues/53
-		UI.getCurrent().getPage().executeJavaScript("document.getElementById(\"vaadinLoginUsername\").focus();");
+		UI.getCurrent().getPage().executeJs("document.getElementById(\"vaadinLoginUsername\").focus();");
 	}
 
 	/**

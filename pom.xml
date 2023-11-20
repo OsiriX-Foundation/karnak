@@ -356,11 +356,11 @@
       <version>2.1.0</version>
     </dependency>
     <!-- Vaadin - Addons -->
-    <dependency>
-      <artifactId>iron-icons</artifactId>
-      <groupId>com.flowingcode.addons</groupId>
-      <version>2.0.1</version>
-    </dependency>
+<!--    <dependency>-->
+<!--      <artifactId>iron-icons</artifactId>-->
+<!--      <groupId>com.flowingcode.addons</groupId>-->
+<!--      <version>2.0.1</version>-->
+<!--    </dependency>-->
     <dependency>
       <artifactId>vaadin-checkbox-flow</artifactId>
       <groupId>com.vaadin</groupId>
@@ -374,7 +374,7 @@
     <dependency>
       <groupId>org.vaadin.klaudeta</groupId>
       <artifactId>grid-pagination</artifactId>
-      <version>3.0.0</version>
+      <version>4.0.0</version>
     </dependency>
 
     <!-- ========== -->

@@ -41,7 +41,7 @@ public class PseudonymInDicomTagComponent extends Div {
 		delimiter = new TextField("Delimiter");
 		tag = new TextField("Tag");
 		position = new NumberField("Position");
-		position.setHasControls(true);
+		position.setStepButtonsVisible(true);
 		position.setMin(0);
 		position.setStep(1);
 		savePseudonym = new Checkbox("Save pseudonym in Mainzelliste");

@@ -113,7 +113,7 @@ public class ExternalIDGrid extends PaginatedGrid<Patient, PatientFilter> {
 		setSizeFull();
 		getElement().addEventListener("keyup", event -> editor.cancel())
 			.setFilter("event.key === 'Escape' || event.key === 'Esc'");
-		setHeightByRows(true);
+
 		setItems(patientList);
 		setElements();
 		setBinder();

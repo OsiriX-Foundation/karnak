@@ -16,7 +16,6 @@ import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.icon.IronIcon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -83,7 +82,7 @@ public class Menu extends FlexLayout {
 	 * @param caption view caption in the menu
 	 * @param icon view icon in the menu
 	 */
-	public void addView(Class<? extends Component> viewClass, String caption, IronIcon icon) {
+	public void addView(Class<? extends Component> viewClass, String caption, Icon icon) {
 		Tab tab = new Tab();
 		RouterLink routerLink = new RouterLink(viewClass);
 		routerLink.setClassName("menu-link");

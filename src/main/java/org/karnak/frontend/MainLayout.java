@@ -16,7 +16,7 @@ import com.vaadin.flow.component.KeyModifier;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dependency.NpmPackage;
-import com.vaadin.flow.component.icon.IronIcon;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLayout;
@@ -52,17 +52,16 @@ public class MainLayout extends FlexLayout implements RouterLayout {
 		menu = new Menu();
 
 		// Add secured Menu
-		addSecuredMenu(ForwardNodeView.class, ForwardNodeView.VIEW_NAME, new IronIcon("icons", "settings"));
-		addSecuredMenu(ProfileView.class, ProfileView.VIEW_NAME, new IronIcon("icons", "assignment"));
-		addSecuredMenu(ProjectView.class, ProjectView.VIEW_NAME, new IronIcon("icons", "class"));
-		addSecuredMenu(ExternalIDView.class, ExternalIDView.VIEW_NAME, new IronIcon("icons", "perm-identity"));
-		addSecuredMenu(MainzellisteView.class, MainzellisteView.VIEW_NAME, new IronIcon("icons", "perm-identity"));
-		addSecuredMenu(PseudonymMappingView.class, PseudonymMappingView.VIEW_NAME,
-				new IronIcon("icons", "perm-identity"));
-		addSecuredMenu(MonitoringView.class, MonitoringView.VIEW_NAME, new IronIcon("icons", "history"));
-		addSecuredMenu(DicomMainView.class, DicomMainView.VIEW_NAME, new IronIcon("icons", "build"));
-		addSecuredMenu(HelpView.class, HelpView.VIEW_NAME, new IronIcon("icons", "help"));
-		// menu.addView(AboutView.class, AboutView.VIEW_NAME, new IronIcon("icons",
+		addSecuredMenu(ForwardNodeView.class, ForwardNodeView.VIEW_NAME, new Icon("icons", "settings"));
+		addSecuredMenu(ProfileView.class, ProfileView.VIEW_NAME, new Icon("icons", "assignment"));
+		addSecuredMenu(ProjectView.class, ProjectView.VIEW_NAME, new Icon("icons", "class"));
+		addSecuredMenu(ExternalIDView.class, ExternalIDView.VIEW_NAME, new Icon("icons", "perm-identity"));
+		addSecuredMenu(MainzellisteView.class, MainzellisteView.VIEW_NAME, new Icon("icons", "perm-identity"));
+		addSecuredMenu(PseudonymMappingView.class, PseudonymMappingView.VIEW_NAME, new Icon("icons", "perm-identity"));
+		addSecuredMenu(MonitoringView.class, MonitoringView.VIEW_NAME, new Icon("icons", "history"));
+		addSecuredMenu(DicomMainView.class, DicomMainView.VIEW_NAME, new Icon("icons", "build"));
+		addSecuredMenu(HelpView.class, HelpView.VIEW_NAME, new Icon("icons", "help"));
+		// menu.addView(AboutView.class, AboutView.VIEW_NAME, new Icon("icons",
 		// "info"));
 
 		// Add menu to the layout
@@ -82,7 +81,7 @@ public class MainLayout extends FlexLayout implements RouterLayout {
 	 * @param viewName Name of the view
 	 * @param icon Icon to apply to the menu
 	 */
-	private void addSecuredMenu(Class<? extends Component> securedClass, String viewName, IronIcon icon) {
+	private void addSecuredMenu(Class<? extends Component> securedClass, String viewName, Icon icon) {
 		if (SecurityUtil.isAccessGranted(securedClass)) {
 			menu.addView(securedClass, viewName, icon);
 		}

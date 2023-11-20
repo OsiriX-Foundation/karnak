@@ -115,7 +115,7 @@ public class CSVDialog extends Dialog {
 
 		fromLineField = new NumberField("From line ");
 		fromLineField.setValue(1d);
-		fromLineField.setHasControls(true);
+		fromLineField.setStepButtonsVisible(true);
 		fromLineField.setMin(1);
 		fromLineField.setMax((double) allRows.size() + 1);
 

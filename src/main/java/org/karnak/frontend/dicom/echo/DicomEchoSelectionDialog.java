@@ -191,7 +191,7 @@ public class DicomEchoSelectionDialog extends AbstractDialog {
 		dicomNodeSelector = new ComboBox<>();
 		dicomNodeSelector.setLabel("Dicom Node");
 		dicomNodeSelector.setClearButtonVisible(true);
-		dicomNodeSelector.setDataProvider(dataProviderForDicomNodes);
+		dicomNodeSelector.setItems(dataProviderForDicomNodes);
 		dicomNodeSelector.setItemLabelGenerator(item -> item.getName() + " [" + item.getAet() + " | "
 				+ item.getHostname() + " | " + item.getPort() + "]");
 		dicomNodeSelector.setRenderer(buildDicomNodeRenderer());
