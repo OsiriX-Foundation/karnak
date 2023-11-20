@@ -14,6 +14,8 @@ import com.vaadin.flow.server.VaadinServletService;
 import com.vaadin.flow.shared.ApplicationConstants;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 import org.karnak.backend.enums.SecurityRole;
