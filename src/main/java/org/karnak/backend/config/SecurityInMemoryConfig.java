@@ -22,6 +22,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -30,7 +32,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @EnableWebSecurity
@@ -44,29 +45,14 @@ public class SecurityInMemoryConfig {
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
-		HttpSessionRequestCache requestCache = new HttpSessionRequestCache();
-		requestCache.setMatchingRequestParameterName("continue");
-
 		http
-			// Uses RequestCache to track unauthorized requests so that users are
-			// redirected
-			// appropriately after login
-			// TODO to test
-			// .requestCache()
-			// .requestCache(new RequestCache())
-			.requestCache((cache) -> cache.requestCache(requestCache))
-
 			// Disables cross-site request forgery (CSRF) protection for main route
 			.csrf(csrf -> csrf.ignoringRequestMatchers(AntPathRequestMatcher
-				.antMatcher(EndPoint.ALL_REMAINING_PATH)/*
-														 * , AntPathRequestMatcher.
-														 * antMatcher(LOGIN_URL)
-														 */))
+				.antMatcher(EndPoint.ALL_REMAINING_PATH)))
 			// Turns on/off authorizations
 			.authorizeHttpRequests(authorize -> authorize
 				// Actuator, health, info
-				.requestMatchers("/actuator/**")
+				.requestMatchers(AntPathRequestMatcher.antMatcher("/actuator/**"))
 				.permitAll()
 				.requestMatchers(EndpointRequest.to(HealthEndpoint.class, InfoEndpoint.class))
 				.permitAll()
@@ -74,27 +60,23 @@ public class SecurityInMemoryConfig {
 				.requestMatchers(SecurityUtil::isFrameworkInternalRequest)
 				.permitAll()
 				// Allow endpoints
-				.requestMatchers(HttpMethod.GET, "/api/echo/destinations")
-				.permitAll()
-
+				 .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET,"/api/echo/destinations"))
+				 .permitAll()
 				// Deny
 				.requestMatchers(EndpointRequest.to(ShutdownEndpoint.class))
 				.denyAll()
-
 				// Allows all authenticated traffic
 				// Allow admin role
-				.requestMatchers("/*")
+				.requestMatchers(AntPathRequestMatcher.antMatcher("/*"))
 				.hasRole(SecurityRole.ADMIN_ROLE.getType())
 				.anyRequest()
 				.authenticated())
-
 			// Enables form-based login and permits unauthenticated access to it
 			// Configures the login page URLs
 			.formLogin(formLogin -> formLogin.loginPage(LOGIN_URL)
 				.permitAll()
 				.loginProcessingUrl(LOGIN_URL)
 				.failureUrl(LOGIN_FAILURE_URL))
-
 			// Configures the logout URL
 			.logout(logout -> logout.logoutSuccessUrl(LOGIN_URL))
 			.exceptionHandling(exceptionHandling -> exceptionHandling.accessDeniedPage(LOGIN_URL));
@@ -116,14 +98,13 @@ public class SecurityInMemoryConfig {
 	@Bean
 	public WebSecurityCustomizer webSecurityCustomizer() {
 		// Access to static resources, bypassing Spring security.
-		return (web) -> web.ignoring()
-				.requestMatchers("/VAADIN/**",
-					// the standard favicon URI
-					"/favicon.ico",
-					// web application manifest
-					"/manifest.webmanifest", "/sw.js", "/offline.html", "/sw-runtime-resources-precache.js",
-					// icons and images
-					"/icons/logo**", "/img/karnak.png");
+		return web -> web.ignoring()
+			.requestMatchers(AntPathRequestMatcher.antMatcher("/VAADIN/**"),
+					AntPathRequestMatcher.antMatcher("/img/**"), AntPathRequestMatcher.antMatcher("/icons/**"),
+					AntPathRequestMatcher.antMatcher("/sw.js"), AntPathRequestMatcher.antMatcher("/favicon.ico"),
+					AntPathRequestMatcher.antMatcher("/manifest.webmanifest"),
+					AntPathRequestMatcher.antMatcher("/offline.html"),
+					AntPathRequestMatcher.antMatcher("/sw-runtime-resources-precache.js"));
 	}
 
 //	@Bean
