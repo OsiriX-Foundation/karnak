@@ -21,7 +21,6 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Objects;
 
-
 @Entity
 @Table(name = "secret")
 public class SecretEntity implements Serializable {

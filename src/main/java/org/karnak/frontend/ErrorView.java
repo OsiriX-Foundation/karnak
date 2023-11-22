@@ -19,7 +19,6 @@ import com.vaadin.flow.router.NotFoundException;
 import com.vaadin.flow.router.ParentLayout;
 import jakarta.servlet.http.HttpServletResponse;
 
-
 /**
  * View shown when trying to navigate to a view that does not exist using
  */

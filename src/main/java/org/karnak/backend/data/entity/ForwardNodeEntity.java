@@ -24,7 +24,6 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-
 @Entity(name = "ForwardNode")
 @Table(name = "forward_node")
 public class ForwardNodeEntity implements Serializable {

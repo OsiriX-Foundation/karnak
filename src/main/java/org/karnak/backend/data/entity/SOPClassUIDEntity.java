@@ -17,7 +17,6 @@ import jakarta.persistence.Table;
 import java.io.Serializable;
 import java.util.Objects;
 
-
 @Entity(name = "SOPClassUID")
 @Table(name = "sop_class_uid")
 public class SOPClassUIDEntity implements Serializable {

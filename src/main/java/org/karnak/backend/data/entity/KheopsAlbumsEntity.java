@@ -19,7 +19,6 @@ import jakarta.persistence.Table;
 import java.io.Serializable;
 import java.util.Objects;
 
-
 @Entity(name = "KheopsAlbums")
 @Table(name = "kheops_albums")
 public class KheopsAlbumsEntity implements Serializable {

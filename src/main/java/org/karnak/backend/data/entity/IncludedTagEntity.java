@@ -13,7 +13,6 @@ import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import java.io.Serializable;
 
-
 @Entity(name = "IncludedTag")
 @DiscriminatorValue("IncludedTag")
 public class IncludedTagEntity extends TagEntity implements Serializable {

@@ -20,7 +20,6 @@ import jakarta.persistence.Table;
 import java.io.Serializable;
 import java.util.Objects;
 
-
 @Entity(name = "Arguments")
 @Table(name = "arguments")
 public class ArgumentEntity implements Serializable {

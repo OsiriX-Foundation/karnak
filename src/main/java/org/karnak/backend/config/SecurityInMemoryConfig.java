@@ -83,16 +83,15 @@ public class SecurityInMemoryConfig {
 		return http.build();
 	}
 
-//	@Override
-//	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//		// Configure users and roles in memory
-//		auth.inMemoryAuthentication()
-//			.withUser(AppConfig.getInstance().getKarnakadmin())
-//			.password("{noop}" + AppConfig.getInstance().getKarnakpassword())
-//			.roles(SecurityRole.ADMIN_ROLE.getType(), SecurityRole.INVESTIGATOR_ROLE.getType(),
-//					SecurityRole.USER_ROLE.getType());
-//	}
-
+	// @Override
+	// protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+	// // Configure users and roles in memory
+	// auth.inMemoryAuthentication()
+	// .withUser(AppConfig.getInstance().getKarnakadmin())
+	// .password("{noop}" + AppConfig.getInstance().getKarnakpassword())
+	// .roles(SecurityRole.ADMIN_ROLE.getType(), SecurityRole.INVESTIGATOR_ROLE.getType(),
+	// SecurityRole.USER_ROLE.getType());
+	// }
 
 	@Bean
 	public WebSecurityCustomizer webSecurityCustomizer() {
@@ -106,20 +105,21 @@ public class SecurityInMemoryConfig {
 					AntPathRequestMatcher.antMatcher("/sw-runtime-resources-precache.js"));
 	}
 
-//	@Bean
-//	@Override
-//	public AuthenticationManager authenticationManagerBean() throws Exception {
-//		return super.authenticationManagerBean();
-//	}
+	// @Bean
+	// @Override
+	// public AuthenticationManager authenticationManagerBean() throws Exception {
+	// return super.authenticationManagerBean();
+	// }
 
 	@Bean
 	public UserDetailsService userDetailsService() {
 		// Configure users and roles in memory
-		UserDetails userDetails = User.builder().username(AppConfig.getInstance().getKarnakadmin())
-				.password("{noop}" + AppConfig.getInstance().getKarnakpassword())
-				.roles(SecurityRole.ADMIN_ROLE.getType(), SecurityRole.INVESTIGATOR_ROLE.getType(),
-						SecurityRole.USER_ROLE.getType())
-				.build();
+		UserDetails userDetails = User.builder()
+			.username(AppConfig.getInstance().getKarnakadmin())
+			.password("{noop}" + AppConfig.getInstance().getKarnakpassword())
+			.roles(SecurityRole.ADMIN_ROLE.getType(), SecurityRole.INVESTIGATOR_ROLE.getType(),
+					SecurityRole.USER_ROLE.getType())
+			.build();
 
 		return new InMemoryUserDetailsManager(userDetails);
 	}

@@ -17,7 +17,6 @@ import jakarta.persistence.Table;
 import java.io.Serializable;
 import java.util.Objects;
 
-
 @Entity(name = "Version")
 @Table(name = "version")
 public class VersionEntity implements Serializable {

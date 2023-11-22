@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 @Converter
 public class RectangleListConverter implements AttributeConverter<List<Rectangle>, String> {
 

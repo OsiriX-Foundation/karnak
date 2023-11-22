@@ -21,7 +21,6 @@ import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
 
-
 @Entity(name = "DicomSourceNode")
 @Table(name = "dicom_source_node")
 public class DicomSourceNodeEntity implements Serializable {
