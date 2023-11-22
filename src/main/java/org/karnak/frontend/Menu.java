@@ -12,8 +12,6 @@ package org.karnak.frontend;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.dependency.JsModule;
-import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -26,8 +24,6 @@ import com.vaadin.flow.router.RouterLink;
 import org.karnak.backend.util.SecurityUtil;
 import org.karnak.frontend.util.ToggleButtonTheme;
 
-@NpmPackage(value = "@polymer/iron-icons", version = "3.0.1")
-@JsModule("@polymer/iron-icons/iron-icons.js")
 @SuppressWarnings("serial")
 public class Menu extends FlexLayout {
 

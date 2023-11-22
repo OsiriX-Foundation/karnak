@@ -45,8 +45,8 @@ public class SecurityConfiguration {
 	public SecurityFilterChain securityFilterChain(HttpSecurity http,
 			KeycloakJwtGrantedAuthoritiesConverter keycloakJwtGrantedAuthoritiesConverter) throws Exception {
 		// TODO to clean: not needed
-//		HttpSessionRequestCache requestCache = new HttpSessionRequestCache();
-//		requestCache.setMatchingRequestParameterName("continue");
+		// HttpSessionRequestCache requestCache = new HttpSessionRequestCache();
+		// requestCache.setMatchingRequestParameterName("continue");
 
 		http
 			// Uses RequestCache to track unauthorized requests so that users are
@@ -55,7 +55,7 @@ public class SecurityConfiguration {
 			// TODO to test and if not needed to clean
 			// .requestCache()
 			// .requestCache(new RequestCache())
-//			.requestCache((cache) -> cache.requestCache(requestCache))
+			// .requestCache((cache) -> cache.requestCache(requestCache))
 			// Disables cross-site request forgery (CSRF) protection for main route
 			.csrf(csrf -> csrf.ignoringRequestMatchers(AntPathRequestMatcher
 				.antMatcher(EndPoint.ALL_REMAINING_PATH)/*
@@ -65,9 +65,9 @@ public class SecurityConfiguration {
 			// Turns on/off authorizations
 			.authorizeHttpRequests(authorize -> authorize
 				// Actuator, health, info
-					.requestMatchers(AntPathRequestMatcher.antMatcher("/actuator/**"))
-					// TODO to clean
-//				.requestMatchers("/actuator/**")
+				.requestMatchers(AntPathRequestMatcher.antMatcher("/actuator/**"))
+				// TODO to clean
+				// .requestMatchers("/actuator/**")
 				.permitAll()
 				.requestMatchers(EndpointRequest.to(HealthEndpoint.class, InfoEndpoint.class))
 				.permitAll()
@@ -93,29 +93,16 @@ public class SecurityConfiguration {
 		return http.build();
 	}
 
-	// TODO to clean
-//	@Bean
-//	public WebSecurityCustomizer webSecurityCustomizer() {
-//		return (web) -> web.ignoring()
-//			.requestMatchers("/VAADIN/**",
-//					// the standard favicon URI
-//					"/favicon.ico",
-//					// web application manifest
-//					"/manifest.webmanifest", "/sw.js", "/offline.html", "/sw-runtime-resources-precache.js",
-//					// icons and images
-//					"/icons/logo**", "/img/karnak.png");
-//	}
-
 	@Bean
 	public WebSecurityCustomizer webSecurityCustomizer() {
 		// Access to static resources, bypassing Spring security.
 		return (web) -> web.ignoring()
-				.requestMatchers(AntPathRequestMatcher.antMatcher("/VAADIN/**"),
-						AntPathRequestMatcher.antMatcher("/img/**"), AntPathRequestMatcher.antMatcher("/icons/**"),
-						AntPathRequestMatcher.antMatcher("/sw.js"), AntPathRequestMatcher.antMatcher("/favicon.ico"),
-						AntPathRequestMatcher.antMatcher("/manifest.webmanifest"),
-						AntPathRequestMatcher.antMatcher("/offline.html"),
-						AntPathRequestMatcher.antMatcher("/sw-runtime-resources-precache.js"));
+			.requestMatchers(AntPathRequestMatcher.antMatcher("/VAADIN/**"),
+					AntPathRequestMatcher.antMatcher("/img/**"), AntPathRequestMatcher.antMatcher("/icons/**"),
+					AntPathRequestMatcher.antMatcher("/sw.js"), AntPathRequestMatcher.antMatcher("/favicon.ico"),
+					AntPathRequestMatcher.antMatcher("/manifest.webmanifest"),
+					AntPathRequestMatcher.antMatcher("/offline.html"),
+					AntPathRequestMatcher.antMatcher("/sw-runtime-resources-precache.js"));
 	}
 
 	/**

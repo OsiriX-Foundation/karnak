@@ -18,7 +18,6 @@ import org.karnak.backend.enums.MessageLevel;
 import org.karnak.backend.enums.MessageType;
 import org.karnak.backend.model.dicom.Message;
 
-// @JsModule("@polymer/iron-icons/iron-icons.js")
 public class MessageBox extends Composite<Div> {
 
 	private static final long serialVersionUID = 1L;

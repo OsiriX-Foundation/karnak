@@ -14,9 +14,8 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.KeyModifier;
 import com.vaadin.flow.component.dependency.CssImport;
-import com.vaadin.flow.component.dependency.JsModule;
-import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLayout;
@@ -35,8 +34,6 @@ import org.springframework.security.access.annotation.Secured;
 /**
  * The main layout. Contains the navigation menu.
  */
-@NpmPackage(value = "@polymer/iron-icons", version = "3.0.1")
-@JsModule("@polymer/iron-icons/iron-icons.js")
 @CssImport(value = "./styles/shared-styles.css")
 @Route(value = "mainLayout")
 @Secured({ "ROLE_admin" })
@@ -52,17 +49,17 @@ public class MainLayout extends FlexLayout implements RouterLayout {
 		menu = new Menu();
 
 		// Add secured Menu
-		addSecuredMenu(ForwardNodeView.class, ForwardNodeView.VIEW_NAME, new Icon("icons", "settings"));
-		addSecuredMenu(ProfileView.class, ProfileView.VIEW_NAME, new Icon("icons", "assignment"));
-		addSecuredMenu(ProjectView.class, ProjectView.VIEW_NAME, new Icon("icons", "class"));
-		addSecuredMenu(ExternalIDView.class, ExternalIDView.VIEW_NAME, new Icon("icons", "perm-identity"));
-		addSecuredMenu(MainzellisteView.class, MainzellisteView.VIEW_NAME, new Icon("icons", "perm-identity"));
-		addSecuredMenu(PseudonymMappingView.class, PseudonymMappingView.VIEW_NAME, new Icon("icons", "perm-identity"));
-		addSecuredMenu(MonitoringView.class, MonitoringView.VIEW_NAME, new Icon("icons", "history"));
-		addSecuredMenu(DicomMainView.class, DicomMainView.VIEW_NAME, new Icon("icons", "build"));
-		addSecuredMenu(HelpView.class, HelpView.VIEW_NAME, new Icon("icons", "help"));
-		// menu.addView(AboutView.class, AboutView.VIEW_NAME, new Icon("icons",
-		// "info"));
+		addSecuredMenu(ForwardNodeView.class, ForwardNodeView.VIEW_NAME, VaadinIcon.COG_O.create());
+		addSecuredMenu(ProfileView.class, ProfileView.VIEW_NAME, VaadinIcon.CLIPBOARD_TEXT.create());
+		addSecuredMenu(ProjectView.class, ProjectView.VIEW_NAME, VaadinIcon.FOLDER_OPEN_O.create());
+		addSecuredMenu(ExternalIDView.class, ExternalIDView.VIEW_NAME, VaadinIcon.CLIPBOARD_USER.create());
+		addSecuredMenu(MainzellisteView.class, MainzellisteView.VIEW_NAME, VaadinIcon.CLIPBOARD_USER.create());
+		addSecuredMenu(PseudonymMappingView.class, PseudonymMappingView.VIEW_NAME, VaadinIcon.SITEMAP.create());
+		addSecuredMenu(MonitoringView.class, MonitoringView.VIEW_NAME, VaadinIcon.PIE_BAR_CHART.create());
+		addSecuredMenu(DicomMainView.class, DicomMainView.VIEW_NAME, VaadinIcon.TOOLS.create());
+		addSecuredMenu(HelpView.class, HelpView.VIEW_NAME, VaadinIcon.QUESTION_CIRCLE.create());
+		// menu.addView(AboutView.class, AboutView.VIEW_NAME,
+		// VaadinIcon.INFO_CIRCLE.create());
 
 		// Add menu to the layout
 		add(menu);
@@ -83,6 +80,7 @@ public class MainLayout extends FlexLayout implements RouterLayout {
 	 */
 	private void addSecuredMenu(Class<? extends Component> securedClass, String viewName, Icon icon) {
 		if (SecurityUtil.isAccessGranted(securedClass)) {
+			icon.getStyle().setMargin("2%");
 			menu.addView(securedClass, viewName, icon);
 		}
 	}

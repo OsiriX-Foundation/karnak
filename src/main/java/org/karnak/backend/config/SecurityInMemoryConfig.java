@@ -47,8 +47,7 @@ public class SecurityInMemoryConfig {
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
 			// Disables cross-site request forgery (CSRF) protection for main route
-			.csrf(csrf -> csrf.ignoringRequestMatchers(AntPathRequestMatcher
-				.antMatcher(EndPoint.ALL_REMAINING_PATH)))
+			.csrf(csrf -> csrf.ignoringRequestMatchers(AntPathRequestMatcher.antMatcher(EndPoint.ALL_REMAINING_PATH)))
 			// Turns on/off authorizations
 			.authorizeHttpRequests(authorize -> authorize
 				// Actuator, health, info
@@ -60,8 +59,8 @@ public class SecurityInMemoryConfig {
 				.requestMatchers(SecurityUtil::isFrameworkInternalRequest)
 				.permitAll()
 				// Allow endpoints
-				 .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET,"/api/echo/destinations"))
-				 .permitAll()
+				.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/api/echo/destinations"))
+				.permitAll()
 				// Deny
 				.requestMatchers(EndpointRequest.to(ShutdownEndpoint.class))
 				.denyAll()
