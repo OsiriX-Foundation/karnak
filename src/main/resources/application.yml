@@ -119,9 +119,10 @@ management:
     env:
       enabled: true #disabled by default in springboot 2.6
   metrics:
-    export:
-      prometheus:
-        enabled: true
+#    TODO to clean
+#    export:
+#      prometheus:
+#        enabled: true
     distribution:
       percentiles-histogram:
         '[http.server.requests]': true
@@ -133,6 +134,10 @@ management:
       application: ${spring.application.name}
       instance: ${eureka.instance.instance-id}
       team: ${application.team}
+  prometheus:
+    metrics:
+      export:
+        enabled: true
 
 monitoring:
   max-history: 300000
