@@ -71,6 +71,10 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     properties:
       hibernate:
+        #    In order to still use the unique hibernate_sequence, otherwise we should create a sequence table_name_seq for
+        #  each tables
+        id:
+          db_structure_naming_strategy: legacy
         temp:
           use_jdbc_metadata_defaults: false
       jdbc:
@@ -115,9 +119,6 @@ management:
     env:
       enabled: true #disabled by default in springboot 2.6
   metrics:
-    export:
-      prometheus:
-        enabled: true
     distribution:
       percentiles-histogram:
         '[http.server.requests]': true
@@ -129,6 +130,10 @@ management:
       application: ${spring.application.name}
       instance: ${eureka.instance.instance-id}
       team: ${application.team}
+  prometheus:
+    metrics:
+      export:
+        enabled: true
 
 monitoring:
   max-history: 300000

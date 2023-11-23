@@ -1,16 +1,17 @@
 package org.karnak.backend.config;
 
-import ch.hcuge.springcloud.security.oauth2.resource.keycloak.web.KeycloakConverter;
+import ch.hcuge.springcloud.security.oauth2.resource.keycloak.KeycloakJwtGrantedAuthoritiesConverter;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.karnak.backend.cache.RequestCache;
+import org.karnak.backend.constant.EndPoint;
 import org.karnak.backend.constant.Token;
 import org.karnak.backend.security.OpenIdConnectLogoutHandler;
 import org.karnak.backend.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
+import org.springframework.boot.actuate.context.ShutdownEndpoint;
 import org.springframework.boot.actuate.health.HealthEndpoint;
 import org.springframework.boot.actuate.info.InfoEndpoint;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -30,6 +31,7 @@ import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @EnableWebSecurity
 @Configuration
@@ -40,80 +42,51 @@ public class SecurityConfiguration {
 	private String jwkSetUri;
 
 	@Bean
-	KeycloakConverter keycloakConverter(@Value("${spring.application.name}") String applicationName) {
-		return new KeycloakConverter(applicationName);
-	}
-
-	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http, KeycloakConverter keycloakConverter)
-			throws Exception {
-		// @formatter:off
-//        http
-//                .authorizeHttpRequests((authorize) -> authorize
-//                        .antMatchers("/actuator/**").permitAll()
-//                        .requestMatchers(EndpointRequest.to(ShutdownEndpoint.class)).denyAll()
-//                        .anyRequest().authenticated()
-//                )
-//                .oauth2ResourceServer(oauth2 ->
-//                    oauth2
-//                        .jwt()
-//                        .jwtAuthenticationConverter(keycloakConverter.grantedAuthoritiesExtractor())
-//                )
-//        ;
-//
-//        // @formatter:on
-		// return http.build();
-		// TODO use keycloakConverter to get roles
-
+	public SecurityFilterChain securityFilterChain(HttpSecurity http,
+			KeycloakJwtGrantedAuthoritiesConverter keycloakJwtGrantedAuthoritiesConverter) throws Exception {
 		http
-			// Uses RequestCache to track unauthorized requests so that users are
-			// redirected
-			// appropriately after login
-			.requestCache()
-			.requestCache(new RequestCache())
 			// Disables cross-site request forgery (CSRF) protection for main route
-			.and()
-			.csrf()
-			.ignoringAntMatchers("/")
-			// Turns on authorization
-			.and()
-			.authorizeRequests()
-			// Actuator and health
-			.antMatchers("/actuator/**")
-			.permitAll()
-			.requestMatchers(EndpointRequest.to(HealthEndpoint.class, InfoEndpoint.class))
-			.permitAll()
-			// Allows all internal traffic from the Vaadin framework
-			.requestMatchers(SecurityUtil::isFrameworkInternalRequest)
-			.permitAll()
-			// Allow endpoints
-			.antMatchers(HttpMethod.GET, "/api/echo/destinations")
-			.permitAll()
-			// Allows all authenticated traffic
-			.anyRequest()
-			.authenticated()
+			.csrf(csrf -> csrf.ignoringRequestMatchers(AntPathRequestMatcher
+				.antMatcher(EndPoint.ALL_REMAINING_PATH)))
+			// Turns on/off authorizations
+			.authorizeHttpRequests(authorize -> authorize
+				// Actuator, health, info
+				.requestMatchers(AntPathRequestMatcher.antMatcher("/actuator/**"))
+				.permitAll()
+				.requestMatchers(EndpointRequest.to(HealthEndpoint.class, InfoEndpoint.class))
+				.permitAll()
+				// Allows all internal traffic from the Vaadin framework
+				.requestMatchers(SecurityUtil::isFrameworkInternalRequest)
+				.permitAll()
+				// Allow endpoints
+				.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/api/echo/destinations"))
+				.permitAll()
+				// Deny
+				.requestMatchers(EndpointRequest.to(ShutdownEndpoint.class))
+				.denyAll()
+				// Allows all authenticated traffic
+				.anyRequest()
+				.authenticated())
 			// OpenId connect login
-			.and()
 			.oauth2Login(oauth2Login -> oauth2Login.userInfoEndpoint(
 					// Extract roles from access token
 					userInfoEndpoint -> userInfoEndpoint.oidcUserService(oidcUserService())))
 			// Handle logout
-			.logout()
-			.addLogoutHandler(new OpenIdConnectLogoutHandler());
+			.logout(logout -> logout.addLogoutHandler(new OpenIdConnectLogoutHandler()));
 
 		return http.build();
 	}
 
 	@Bean
 	public WebSecurityCustomizer webSecurityCustomizer() {
+		// Access to static resources, bypassing Spring security.
 		return (web) -> web.ignoring()
-			.antMatchers("/VAADIN/**",
-					// the standard favicon URI
-					"/favicon.ico",
-					// web application manifest
-					"/manifest.webmanifest", "/sw.js", "/offline.html", "/sw-runtime-resources-precache.js",
-					// icons and images
-					"/icons/logo**", "/img/karnak.png");
+			.requestMatchers(AntPathRequestMatcher.antMatcher("/VAADIN/**"),
+					AntPathRequestMatcher.antMatcher("/img/**"), AntPathRequestMatcher.antMatcher("/icons/**"),
+					AntPathRequestMatcher.antMatcher("/sw.js"), AntPathRequestMatcher.antMatcher("/favicon.ico"),
+					AntPathRequestMatcher.antMatcher("/manifest.webmanifest"),
+					AntPathRequestMatcher.antMatcher("/offline.html"),
+					AntPathRequestMatcher.antMatcher("/sw-runtime-resources-precache.js"));
 	}
 
 	/**

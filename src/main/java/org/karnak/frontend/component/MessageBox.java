@@ -12,13 +12,12 @@ package org.karnak.frontend.component;
 import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.icon.IronIcon;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import org.karnak.backend.enums.MessageLevel;
 import org.karnak.backend.enums.MessageType;
 import org.karnak.backend.model.dicom.Message;
 
-// @JsModule("@polymer/iron-icons/iron-icons.js")
 public class MessageBox extends Composite<Div> {
 
 	private static final long serialVersionUID = 1L;
@@ -30,7 +29,7 @@ public class MessageBox extends Composite<Div> {
 
 	private Div contentDiv;
 
-	private IronIcon icon;
+	private Icon icon;
 
 	// DATA
 	private Message message;
@@ -138,13 +137,13 @@ public class MessageBox extends Composite<Div> {
 	private void createIcon() {
 		if (message != null) {
 			if (MessageLevel.INFO == message.getLevel()) {
-				icon = new IronIcon("icons", "info-outline");
+				icon = new Icon("icons", "info-outline");
 			}
 			else if (MessageLevel.WARN == message.getLevel()) {
-				icon = new IronIcon("icons", "warning");
+				icon = new Icon("icons", "warning");
 			}
 			else if (MessageLevel.ERROR == message.getLevel()) {
-				icon = new IronIcon("icons", "error-outline");
+				icon = new Icon("icons", "error-outline");
 			}
 		}
 	}

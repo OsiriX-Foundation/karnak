@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
   <include resource="ch/hcuge/springcloud/logging/logback-spring.xml"/>
-  <root level="INFO">
-    <springProfile name="!docker">
+  <springProfile name="!docker">
+    <root level="INFO">
       <appender-ref ref="console"/>
-    </springProfile>
-    <springProfile name="docker">
+    </root>
+  </springProfile>
+  <springProfile name="docker">
+    <root level="INFO">
       <appender-ref ref="logstash"/>
-    </springProfile>
-  </root>
-  <logger name="org.dcm4che3" level="warn">
-    <springProfile name="docker">
-      <appender-ref ref="logstash"/>
-    </springProfile>
-  </logger>
+    </root>
+    <logger name="org.dcm4che3" level="warn">
+      <springProfile name="docker">
+        <appender-ref ref="logstash"/>
+      </springProfile>
+    </logger>
+  </springProfile>
 </configuration>
-

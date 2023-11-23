@@ -8,7 +8,7 @@
   <parent>
     <groupId>ch.hcuge.springcloud</groupId>
     <artifactId>spring-cloud-core-dependencies</artifactId>
-    <version>2.7.14-2021.0.6-1.0</version>
+    <version>3.1.5-2022.0.4-1.0-SNAPSHOT</version>
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
 
@@ -36,11 +36,10 @@
     <enforcer.jdk-version>[${java.version},)</enforcer.jdk-version>
     <enforcer.maven-version>[3.3.0,)</enforcer.maven-version>
     <liquibase.version>4.23.0</liquibase.version>
-    <javax.mail.version>1.6.2</javax.mail.version>
-    <vaadin.version>23.3.15</vaadin.version>
+    <vaadin.version>24.2.3</vaadin.version>
     <weasis-dicom-tools.version>5.29.0.2</weasis-dicom-tools.version>
     <h2.version>2.1.214</h2.version>
-    <org.json.version>20211205</org.json.version>
+    <org.json.version>20230227</org.json.version>
     <opencsv.version>5.7.1</opencsv.version>
     <swagger.version>2.2.14</swagger.version>
     <node.version>v20.5.1</node.version>
@@ -60,12 +59,6 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>${springboot.version}</version>
-      </dependency>
-      <dependency>
-        <artifactId>javax.servlet-api</artifactId>
-        <groupId>javax.servlet</groupId>
-        <scope>provided</scope>
-        <version>3.1.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -187,12 +180,6 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <dependency>
-      <groupId>ch.hcuge.springcloud</groupId>
-      <artifactId>spring-cloud-eureka-plugins</artifactId>
-      <version>${spring-cloud-eureka-plugins.version}</version>
-    </dependency>
-
 
     <!-- ====== -->
     <!-- Swagger -->
@@ -259,16 +246,7 @@
     <dependency>
       <artifactId>gson</artifactId>
       <groupId>com.google.code.gson</groupId>
-      <version>2.8.6</version>
-    </dependency>
-
-    <!-- ========= -->
-    <!--    Mail   -->
-    <!-- ========= -->
-    <dependency>
-      <artifactId>javax.mail</artifactId>
-      <groupId>com.sun.mail</groupId>
-      <version>${javax.mail.version}</version>
+      <version>2.10.1</version>
     </dependency>
 
     <!-- ============ -->
@@ -277,11 +255,6 @@
     <dependency>
       <artifactId>hibernate-validator</artifactId>
       <groupId>org.hibernate.validator</groupId>
-    </dependency>
-
-    <dependency>
-      <artifactId>validation-api</artifactId>
-      <groupId>javax.validation</groupId>
     </dependency>
 
     <!-- ============ -->
@@ -356,24 +329,14 @@
     </dependency>
     <!-- Vaadin - Addons -->
     <dependency>
-      <artifactId>iron-icons</artifactId>
-      <groupId>com.flowingcode.addons</groupId>
-      <version>2.0.1</version>
-    </dependency>
-    <dependency>
-      <artifactId>vaadin-checkbox-flow</artifactId>
-      <groupId>com.vaadin</groupId>
-      <version>${vaadin.version}</version>
-    </dependency>
-    <dependency>
       <artifactId>togglebutton</artifactId>
       <groupId>com.vaadin.componentfactory</groupId>
-      <version>1.0.1</version>
+      <version>3.0.0</version>
     </dependency>
     <dependency>
       <groupId>org.vaadin.klaudeta</groupId>
       <artifactId>grid-pagination</artifactId>
-      <version>3.0.0</version>
+      <version>4.0.0</version>
     </dependency>
 
     <!-- ========== -->
@@ -418,6 +381,7 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-inline</artifactId>
+      <version>5.2.0</version>
       <scope>test</scope>
     </dependency>
 
@@ -442,7 +406,8 @@
           <image>
             <env>
               <BPE_DELIM_LD_LIBRARY_PATH>:</BPE_DELIM_LD_LIBRARY_PATH>
-              <BPE_APPEND_LD_LIBRARY_PATH>/var/lib/native_lib:/var/lib/native_lib/native_lib</BPE_APPEND_LD_LIBRARY_PATH>
+              <BPE_APPEND_LD_LIBRARY_PATH>/var/lib/native_lib:/var/lib/native_lib/native_lib
+              </BPE_APPEND_LD_LIBRARY_PATH>
             </env>
           </image>
         </configuration>
@@ -477,6 +442,50 @@
 
   <!-- Profiles -->
   <profiles>
+
+    <!--  For Unit test: no need to rebuild front as in pipeline it is done before  -->
+    <profile>
+      <id>unit-test</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>build-frontend</goal>
+                </goals>
+                <phase>none</phase>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <!--  For Integration test: no need to rebuild front as in pipeline it is done before  -->
+    <profile>
+      <id>integration-test</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>build-frontend</goal>
+                </goals>
+                <phase>none</phase>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <!--  Profile: production -->
     <profile>
       <activation>
         <activeByDefault>true</activeByDefault>

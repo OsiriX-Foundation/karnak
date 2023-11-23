@@ -51,8 +51,7 @@ public class MappingResultComponent extends VerticalLayout {
 	 */
 	public void handleResultFindPatient(Patient patientFound, String inputValue, String location) {
 		// Reset details
-		getPatientFoundDetails().setContent(null);
-		getPatientFoundDetails().setSummary(null);
+		getPatientFoundDetails().removeAll();
 
 		// If found set patient data
 		if (patientFound != null) {

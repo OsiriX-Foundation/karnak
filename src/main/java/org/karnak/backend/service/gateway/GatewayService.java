@@ -9,10 +9,10 @@
  */
 package org.karnak.backend.service.gateway;
 
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import java.io.File;
 import java.util.List;
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.repo.DestinationRepo;

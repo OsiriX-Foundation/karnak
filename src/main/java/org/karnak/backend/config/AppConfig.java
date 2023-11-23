@@ -9,9 +9,9 @@
  */
 package org.karnak.backend.config;
 
+import jakarta.annotation.PostConstruct;
 import java.io.InputStream;
 import java.net.URL;
-import javax.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.karnak.backend.cache.ExternalIDCache;
 import org.karnak.backend.cache.MainzellisteCache;
@@ -28,7 +28,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
@@ -40,7 +39,6 @@ import org.yaml.snakeyaml.constructor.Constructor;
 @ConfigurationProperties
 @EnableCaching
 @EnableDiscoveryClient
-@EnableEurekaClient
 @Slf4j
 public class AppConfig {
 
