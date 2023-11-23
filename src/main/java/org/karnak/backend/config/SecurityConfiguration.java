@@ -44,30 +44,14 @@ public class SecurityConfiguration {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http,
 			KeycloakJwtGrantedAuthoritiesConverter keycloakJwtGrantedAuthoritiesConverter) throws Exception {
-		// TODO to clean: not needed
-		// HttpSessionRequestCache requestCache = new HttpSessionRequestCache();
-		// requestCache.setMatchingRequestParameterName("continue");
-
 		http
-			// Uses RequestCache to track unauthorized requests so that users are
-			// redirected
-			// appropriately after login
-			// TODO to test and if not needed to clean
-			// .requestCache()
-			// .requestCache(new RequestCache())
-			// .requestCache((cache) -> cache.requestCache(requestCache))
 			// Disables cross-site request forgery (CSRF) protection for main route
 			.csrf(csrf -> csrf.ignoringRequestMatchers(AntPathRequestMatcher
-				.antMatcher(EndPoint.ALL_REMAINING_PATH)/*
-														 * , AntPathRequestMatcher.
-														 * antMatcher(LOGIN_URL)
-														 */))
+				.antMatcher(EndPoint.ALL_REMAINING_PATH)))
 			// Turns on/off authorizations
 			.authorizeHttpRequests(authorize -> authorize
 				// Actuator, health, info
 				.requestMatchers(AntPathRequestMatcher.antMatcher("/actuator/**"))
-				// TODO to clean
-				// .requestMatchers("/actuator/**")
 				.permitAll()
 				.requestMatchers(EndpointRequest.to(HealthEndpoint.class, InfoEndpoint.class))
 				.permitAll()

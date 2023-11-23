@@ -119,10 +119,6 @@ management:
     env:
       enabled: true #disabled by default in springboot 2.6
   metrics:
-#    TODO to clean
-#    export:
-#      prometheus:
-#        enabled: true
     distribution:
       percentiles-histogram:
         '[http.server.requests]': true
