@@ -83,16 +83,6 @@ public class SecurityInMemoryConfig {
 		return http.build();
 	}
 
-	// @Override
-	// protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-	// // Configure users and roles in memory
-	// auth.inMemoryAuthentication()
-	// .withUser(AppConfig.getInstance().getKarnakadmin())
-	// .password("{noop}" + AppConfig.getInstance().getKarnakpassword())
-	// .roles(SecurityRole.ADMIN_ROLE.getType(), SecurityRole.INVESTIGATOR_ROLE.getType(),
-	// SecurityRole.USER_ROLE.getType());
-	// }
-
 	@Bean
 	public WebSecurityCustomizer webSecurityCustomizer() {
 		// Access to static resources, bypassing Spring security.
