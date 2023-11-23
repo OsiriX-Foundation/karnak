@@ -75,7 +75,7 @@ public class SecurityConfiguration {
 				.requestMatchers(SecurityUtil::isFrameworkInternalRequest)
 				.permitAll()
 				// Allow endpoints
-				.requestMatchers(HttpMethod.GET, "/api/echo/destinations")
+				.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/api/echo/destinations"))
 				.permitAll()
 				// Deny
 				.requestMatchers(EndpointRequest.to(ShutdownEndpoint.class))
