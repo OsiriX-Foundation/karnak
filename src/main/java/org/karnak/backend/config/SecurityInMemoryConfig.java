@@ -105,11 +105,11 @@ public class SecurityInMemoryConfig {
 					AntPathRequestMatcher.antMatcher("/sw-runtime-resources-precache.js"));
 	}
 
-	// @Bean
-	// @Override
-	// public AuthenticationManager authenticationManagerBean() throws Exception {
-	// return super.authenticationManagerBean();
-	// }
+	@Bean
+	public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+			throws Exception {
+		return authenticationConfiguration.getAuthenticationManager();
+	}
 
 	@Bean
 	public UserDetailsService userDetailsService() {
