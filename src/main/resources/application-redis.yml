@@ -1,8 +1,15 @@
 spring:
-  redis:
-    host: ${REDIS_HOST:localhost}
-    port: ${REDIS_PORT:6379}
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+#      TODO to clean
+#  redis:
+#    host: ${REDIS_HOST:localhost}
+#    port: ${REDIS_PORT:6379}
   cache:
     type: REDIS
     redis:
       cache-null-values: false
+
+
