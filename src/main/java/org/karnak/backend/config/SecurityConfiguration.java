@@ -46,8 +46,7 @@ public class SecurityConfiguration {
 			KeycloakJwtGrantedAuthoritiesConverter keycloakJwtGrantedAuthoritiesConverter) throws Exception {
 		http
 			// Disables cross-site request forgery (CSRF) protection for main route
-			.csrf(csrf -> csrf.ignoringRequestMatchers(AntPathRequestMatcher
-				.antMatcher(EndPoint.ALL_REMAINING_PATH)))
+			.csrf(csrf -> csrf.ignoringRequestMatchers(AntPathRequestMatcher.antMatcher(EndPoint.ALL_REMAINING_PATH)))
 			// Turns on/off authorizations
 			.authorizeHttpRequests(authorize -> authorize
 				// Actuator, health, info
