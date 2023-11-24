@@ -8,7 +8,7 @@
   <parent>
     <groupId>ch.hcuge.springcloud</groupId>
     <artifactId>spring-cloud-core-dependencies</artifactId>
-    <version>3.1.5-2022.0.4-1.0-SNAPSHOT</version>
+    <version>3.1.6-2022.0.4-1.0</version>
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
 
