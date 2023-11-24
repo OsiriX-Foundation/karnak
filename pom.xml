@@ -38,7 +38,7 @@
     <liquibase.version>4.23.0</liquibase.version>
     <vaadin.version>24.2.3</vaadin.version>
     <weasis-dicom-tools.version>5.29.0.2</weasis-dicom-tools.version>
-    <h2.version>2.1.214</h2.version>
+    <h2.version>2.2.224</h2.version>
     <org.json.version>20230227</org.json.version>
     <opencsv.version>5.7.1</opencsv.version>
     <swagger.version>2.2.14</swagger.version>
