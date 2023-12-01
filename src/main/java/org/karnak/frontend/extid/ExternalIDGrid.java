@@ -34,7 +34,7 @@ import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.util.PatientClientUtil;
 import org.vaadin.klaudeta.PaginatedGrid;
 
-public class ExternalIDGrid extends PaginatedGrid<Patient> {
+public class ExternalIDGrid extends PaginatedGrid<Patient, PatientFilter> {
 
   private static final String ERROR_MESSAGE_PATIENT = "Length must be between 1 and 50.";
 
@@ -98,10 +98,13 @@ public class ExternalIDGrid extends PaginatedGrid<Patient> {
 
   private transient Collection<Patient> duplicatePatientsList = new ArrayList<>();
 
+	private PatientFilter patientFilter;
+
   public ExternalIDGrid() {
     binder = new Binder<>(Patient.class);
     patientList = new ArrayList<>();
     this.externalIDCache = AppConfig.getInstance().getExternalIDCache();
+		this.patientFilter = new PatientFilter();
 
     setPageSize(10);
     setPaginatorSize(2);
@@ -110,7 +113,7 @@ public class ExternalIDGrid extends PaginatedGrid<Patient> {
     getElement()
         .addEventListener("keyup", event -> editor.cancel())
         .setFilter("event.key === 'Escape' || event.key === 'Esc'");
-    setHeightByRows(true);
+
     setItems(patientList);
     setElements();
     setBinder();

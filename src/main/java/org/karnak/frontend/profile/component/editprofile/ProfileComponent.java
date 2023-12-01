@@ -161,14 +161,11 @@ public class ProfileComponent extends VerticalLayout {
     download = new Anchor(profileStreamResource, "");
     download.getElement().setAttribute("download", true);
     download.add(new Button(new Icon(VaadinIcon.DOWNLOAD_ALT)));
-    download.getStyle().set("margin-top", "30px");
   }
 
   private void createDeleteButton(ProfileEntity profileEntity) {
     deleteButton = new Button((new Icon(VaadinIcon.TRASH)));
-    deleteButton.setWidth("100%");
     deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
-    deleteButton.getStyle().set("margin-top", "34px");
     deleteButton.addClickListener(
         buttonClickEvent -> {
           if (profileEntity.getProjectEntities() != null

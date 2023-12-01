@@ -35,7 +35,9 @@ public class TransferStatusDataProvider<T>
     this.monitoringLogic = monitoringLogic;
 
     // Default sort order
-    setSortOrders();
+		QuerySortOrderBuilder builder = new QuerySortOrderBuilder();
+		builder.thenDesc("transferDate");
+		this.defaultSortOrders = builder.build();
   }
 
   @Override
@@ -55,12 +57,4 @@ public class TransferStatusDataProvider<T>
     return monitoringLogic.countTransferStatus(filter);
   }
 
-  /**
-   * Default sort order
-   */
-  private void setSortOrders() {
-    QuerySortOrderBuilder builder = new QuerySortOrderBuilder();
-    builder.thenDesc("transferDate");
-    defaultSortOrders = builder.build();
-  }
 }

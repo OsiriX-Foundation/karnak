@@ -9,10 +9,9 @@
  */
 package org.karnak.backend.config;
 
+import jakarta.annotation.PostConstruct;
 import java.io.InputStream;
 import java.net.URL;
-import javax.annotation.PostConstruct;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.karnak.backend.cache.ExternalIDCache;
 import org.karnak.backend.cache.MainzellisteCache;
 import org.karnak.backend.cache.PatientClient;
@@ -50,7 +49,7 @@ public class AppConfig {
   private String karnakpassword;
   private final ProfileRepo profileRepo;
   private final ProfilePipeService profilePipeService;
-  private String nameInstance;
+
   private final ExternalIDCache externalIDCache;
   private final MainzellisteCache mainzellisteCache;
 
@@ -69,7 +68,6 @@ public class AppConfig {
   @PostConstruct
   public void postConstruct() {
     instance = this;
-    nameInstance = RandomStringUtils.randomAlphabetic(5);
   }
 
   public static AppConfig getInstance() {
@@ -143,7 +141,4 @@ public class AppConfig {
     return new StandardDICOM();
   }
 
-  public String getNameInstance() {
-    return nameInstance;
-  }
 }

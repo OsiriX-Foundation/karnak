@@ -36,6 +36,7 @@ public class DicomGatewayService {
   @Autowired
   public DicomGatewayService(final StoreScpForwardService storeScpForwardService) {
     this.storeScpForwardService = storeScpForwardService;
+		this.deviceService = null;
   }
 
   /**

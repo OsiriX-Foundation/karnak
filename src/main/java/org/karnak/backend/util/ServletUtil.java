@@ -9,6 +9,8 @@
  */
 package org.karnak.backend.util;
 
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -16,8 +18,6 @@ import java.net.SocketException;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Properties;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

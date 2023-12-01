@@ -10,15 +10,15 @@
 package org.karnak.backend.data.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import java.io.Serializable;
 import java.util.Objects;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 
 @Entity(name = "Arguments")
 @Table(name = "arguments")
@@ -30,21 +30,21 @@ public class ArgumentEntity implements Serializable {
 
   private ProfileElementEntity profileElementEntity;
 
-  private String key;
+	private String argumentKey;
 
-  private String value;
+	private String argumentValue;
 
   public ArgumentEntity() {
   }
 
-  public ArgumentEntity(String key, String value) {
-    this.key = key;
-    this.value = value;
+	public ArgumentEntity(String argumentKey, String argumentValue) {
+		this.argumentKey = argumentKey;
+		this.argumentValue = argumentValue;
   }
 
-  public ArgumentEntity(String key, String value, ProfileElementEntity profileElementEntity) {
-    this.key = key;
-    this.value = value;
+	public ArgumentEntity(String argumentKey, String argumentValue, ProfileElementEntity profileElementEntity) {
+		this.argumentKey = argumentKey;
+		this.argumentValue = argumentValue;
     this.profileElementEntity = profileElementEntity;
   }
 
@@ -59,20 +59,20 @@ public class ArgumentEntity implements Serializable {
     this.id = id;
   }
 
-  public String getKey() {
-    return key;
+	public String getArgumentKey() {
+		return argumentKey;
   }
 
-  public void setKey(String key) {
-    this.key = key;
+	public void setArgumentKey(String key) {
+		this.argumentKey = key;
   }
 
-  public String getValue() {
-    return value;
+	public String getArgumentValue() {
+		return argumentValue;
   }
 
-  public void setValue(String value) {
-    this.value = value;
+	public void setArgumentValue(String value) {
+		this.argumentValue = value;
   }
 
   @ManyToOne()
@@ -94,13 +94,12 @@ public class ArgumentEntity implements Serializable {
       return false;
     }
     ArgumentEntity that = (ArgumentEntity) o;
-    return Objects.equals(id, that.id)
-        && Objects.equals(key, that.key)
-        && Objects.equals(value, that.value);
+		return Objects.equals(id, that.id) && Objects.equals(argumentKey, that.argumentKey)
+				&& Objects.equals(argumentValue, that.argumentValue);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, key, value);
+		return Objects.hash(id, argumentKey, argumentValue);
   }
 }

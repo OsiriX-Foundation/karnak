@@ -23,7 +23,6 @@ import org.karnak.backend.data.entity.TransferStatusEntity;
 import org.karnak.frontend.MainLayout;
 import org.karnak.frontend.monitoring.component.ExportSettingsDialog;
 import org.karnak.frontend.monitoring.component.TransferStatusGrid;
-import org.karnak.frontend.util.UIS;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 
@@ -91,25 +90,21 @@ public class MonitoringView extends VerticalLayout {
     // Refresh button
     refreshGridButton = new Button("Refresh", new Icon(VaadinIcon.REFRESH));
     refreshGridButton.addClickListener(buttonClickEvent -> transferStatusDataProvider.refreshAll());
-    refreshGridButton.setWidthFull();
+		refreshGridButton.setWidth("33%");
 
     // Export Settings Dialog
     exportSettingsDialog = new ExportSettingsDialog();
 
     // Export Settings Button
     exportSettingsButton = new Button("Export Settings", new Icon(VaadinIcon.COGS));
-    exportSettingsButton.setWidthFull();
+		exportSettingsButton.setWidth("33%");
     exportSettingsButton.addClickListener(buttonClickEvent -> exportSettingsDialog.open());
 
     // Export button
-    StreamResource streamResource =
-        new StreamResource(
-            "export.csv",
-            () ->
-                new ByteArrayInputStream(
-                    monitoringLogic.buildCsv(exportSettingsDialog.getExportSettings())));
+		StreamResource streamResource = new StreamResource("export.csv",
+				() -> new ByteArrayInputStream(monitoringLogic.buildCsv(exportSettingsDialog.getExportSettings())));
     exportAnchor = new Anchor(streamResource, "");
-    exportAnchor.setWidthFull();
+		exportAnchor.setWidth("33%");
     Button exportButton = new Button("Export", new Icon(VaadinIcon.DOWNLOAD_ALT));
     exportButton.setWidthFull();
     exportAnchor.getElement().setAttribute("download", true);
@@ -121,9 +116,9 @@ public class MonitoringView extends VerticalLayout {
    */
   private void addComponentsView() {
     add(transferStatusGrid);
-    HorizontalLayout buttonLayout =
-        new HorizontalLayout(exportSettingsButton, exportAnchor, refreshGridButton);
-    add(UIS.setWidthFull(buttonLayout));
+		HorizontalLayout buttonLayout = new HorizontalLayout(exportSettingsButton, exportAnchor, refreshGridButton);
+		buttonLayout.setWidthFull();
+		add(buttonLayout);
     setSizeFull();
     setWidthFull();
   }

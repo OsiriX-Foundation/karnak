@@ -66,7 +66,7 @@ public class TextFieldsBindProject {
    */
   private Validator<SecretEntity> secretValidValidator() {
     return (secretEntity, valueContext) -> {
-      if (HMAC.validateKey(HMAC.byteToHex(secretEntity.getKey()))) {
+			if (HMAC.validateKey(HMAC.byteToHex(secretEntity.getSecretKey()))) {
         return ValidationResult.ok();
       } else {
         return ValidationResult.error("Secret is not valid");
@@ -81,9 +81,8 @@ public class TextFieldsBindProject {
    */
   private Validator<SecretEntity> secretMandatoryValidator() {
     return (secretEntity, valueContext) -> {
-      if (secretComboBox.getValue() != null
-          && secretEntity.getKey() != null
-          && secretEntity.getKey().length > 0) {
+			if (secretComboBox.getValue() != null && secretEntity.getSecretKey() != null
+					&& secretEntity.getSecretKey().length > 0) {
         return ValidationResult.ok();
       } else {
         return ValidationResult.error("Secret is mandatory");

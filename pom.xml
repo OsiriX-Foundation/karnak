@@ -28,15 +28,13 @@
     <enforcer.jdk-version>[${java.version},)</enforcer.jdk-version>
     <enforcer.maven-version>[3.2.0,)</enforcer.maven-version>
     <java.version>17</java.version>
-    <springframework.version>2.6.6</springframework.version>
-    <javax.el.version>3.0.0</javax.el.version>
-    <javax.mail.version>1.6.2</javax.mail.version>
-    <vaadin.version>21.0.9</vaadin.version>
+    <springframework.version>3.1.6</springframework.version>
+    <vaadin.version>24.2.3</vaadin.version>
     <weasis-dicom-tools.version>5.29.0.2</weasis-dicom-tools.version>
     <weasis.opencv.native.version>4.6.0-dcm</weasis.opencv.native.version>
     <springdoc.version>1.6.12</springdoc.version>
-    <mockito.version>4.2.0</mockito.version>
-    <h2.version>1.4.200</h2.version>
+    <mockito.version>5.2.0</mockito.version>
+    <h2.version>2.2.224</h2.version>
     <jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
     <junit.jupiter.version>5.8.2</junit.jupiter.version>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
@@ -45,10 +43,10 @@
     <sonar.organization>osirix-foundation-1</sonar.organization>
     <sonar.projectKey>karnak</sonar.projectKey>
     <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
-    <org.json.version>20220924</org.json.version>
-    <logback.version>1.2.9</logback.version>
-    <liquibase.version>4.3.5</liquibase.version>
-    <opencsv.version>5.5.2</opencsv.version>
+    <org.json.version>20230227</org.json.version>
+    <logback.version>1.4.13</logback.version>
+    <liquibase.version>4.23.0</liquibase.version>
+    <opencsv.version>5.7.1</opencsv.version>
 </properties>
 
 <!-- Repositories -->
@@ -342,11 +340,9 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-redis</artifactId>
     </dependency>
-
     <dependency>
-      <artifactId>cache-api</artifactId>
-      <groupId>javax.cache</groupId>
-      <version>1.1.1</version>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
     </dependency>
 
     <dependency>
@@ -391,11 +387,6 @@
       <groupId>org.weasis</groupId>
       <version>${weasis-dicom-tools.version}</version>
     </dependency>
-    <dependency>
-      <artifactId>javax.mail</artifactId>
-      <groupId>com.sun.mail</groupId>
-      <version>${javax.mail.version}</version>
-    </dependency>
 
     <!-- jpa, crud repository -->
     <dependency>
@@ -439,17 +430,24 @@
       <artifactId>hibernate-validator</artifactId>
       <groupId>org.hibernate.validator</groupId>
     </dependency>
-    <dependency>
-      <artifactId>javax.el</artifactId>
-      <groupId>org.glassfish</groupId>
-      <version>${javax.el.version}</version>
-    </dependency>
 
     <!-- PostgreSQL -->
     <dependency>
       <artifactId>postgresql</artifactId>
       <groupId>org.postgresql</groupId>
       <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+      <version>4.5.14</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>32.1.3-jre</version>
     </dependency>
 
     <dependency>
@@ -491,35 +489,14 @@
 
     <!-- Vaadin - Addons -->
     <dependency>
-      <artifactId>iron-icons</artifactId>
-      <groupId>com.flowingcode.addons</groupId>
-      <version>2.0.1</version>
-    </dependency>
-    <dependency>
-      <artifactId>multiselect-combo-box-flow</artifactId>
-      <groupId>org.vaadin.gatanaso</groupId>
-      <version>3.0.2</version> <!-- use appropriate version -->
-    </dependency>
-
-    <dependency>
-      <artifactId>vaadin-checkbox-flow</artifactId>
-      <groupId>com.vaadin</groupId>
-      <version>${vaadin.version}</version>
-    </dependency>
-    <dependency>
       <artifactId>togglebutton</artifactId>
       <groupId>com.vaadin.componentfactory</groupId>
-      <version>1.0.1</version>
+      <version>3.0.0</version>
     </dependency>
     <dependency>
       <groupId>org.vaadin.klaudeta</groupId>
       <artifactId>grid-pagination</artifactId>
-      <version>2.0.10</version>
-    </dependency>
-
-    <dependency>
-      <artifactId>validation-api</artifactId>
-      <groupId>javax.validation</groupId>
+      <version>4.0.0</version>
     </dependency>
 
     <dependency>
@@ -544,6 +521,10 @@
     <dependency>
       <artifactId>jackson-module-jaxb-annotations</artifactId>
       <groupId>com.fasterxml.jackson.module</groupId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-yaml</artifactId>
     </dependency>
     <!-- Jackson Xml -->
     <dependency>
@@ -603,12 +584,6 @@
         <scope>import</scope>
         <type>pom</type>
         <version>${springframework.version}</version>
-      </dependency>
-      <dependency>
-        <artifactId>javax.servlet-api</artifactId>
-        <groupId>javax.servlet</groupId>
-        <scope>provided</scope>
-        <version>3.1.0</version>
       </dependency>
       <dependency>
         <artifactId>vaadin-bom</artifactId>

@@ -12,7 +12,7 @@ package org.karnak.frontend.mainzelliste;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.datepicker.DatePicker;
-import com.vaadin.flow.component.icon.IronIcon;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
@@ -115,7 +115,7 @@ public class MainzellisteAddPatient extends VerticalLayout {
 
     saveInMainzellisteButton = new Button("Save patient in Mainzelliste");
     saveInMainzellisteButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-    saveInMainzellisteButton.setIcon(new IronIcon("icons", "icons:send"));
+		saveInMainzellisteButton.setIcon(new Icon("icons", "icons:send"));
 
     horizontalLayoutAddClear = new HorizontalLayout();
     horizontalLayoutAddClear.getStyle().set("margin-left", "auto");

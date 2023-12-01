@@ -46,7 +46,7 @@ public class GridSwitchingAlbums extends Grid<KheopsAlbumsEntity> {
 
   public GridSwitchingAlbums() {
     setWidthFull();
-    setHeightByRows(true);
+
     setItems(new ArrayList<>());
     dataProvider = (ListDataProvider<KheopsAlbumsEntity>) getDataProvider();
 

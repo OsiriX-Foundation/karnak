@@ -19,7 +19,6 @@ public class GridProject extends Grid<ProjectEntity> {
 
   public GridProject() {
     setWidthFull();
-    setHeightByRows(true);
 
     Column<ProjectEntity> projectNameColumn =
         addColumn(ProjectEntity::getName)

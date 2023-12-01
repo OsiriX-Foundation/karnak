@@ -1,3 +1,7 @@
+#  --------------------------------------------------------
+#  Karnak OIDC Application properties
+#  --------------------------------------------------------
+#Keycloak OIDC
 spring:
   security:
     oauth2:
@@ -13,3 +17,4 @@ spring:
         provider:
           keycloak:
             issuer-uri: '${OIDC_ISSUER_URI:undefined}'
+            jwk-set-uri: '${OIDC_ISSUER_URI:undefined}/protocol/openid-connect/certs'
