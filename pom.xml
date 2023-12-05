@@ -44,8 +44,7 @@
     <sonar.projectKey>karnak</sonar.projectKey>
     <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     <org.json.version>20230227</org.json.version>
-    <logback.version>1.4.13</logback.version>
-    <liquibase.version>4.23.0</liquibase.version>
+    <liquibase.version>4.20.0</liquibase.version>
     <opencsv.version>5.7.1</opencsv.version>
 </properties>
 
@@ -497,16 +496,6 @@
       <groupId>org.vaadin.klaudeta</groupId>
       <artifactId>grid-pagination</artifactId>
       <version>4.0.0</version>
-    </dependency>
-
-    <dependency>
-      <artifactId>jul-to-slf4j</artifactId>
-      <groupId>org.slf4j</groupId>
-    </dependency>
-    <dependency>
-      <artifactId>logback-classic</artifactId>
-      <groupId>ch.qos.logback</groupId>
-      <version>${logback.version}</version>
     </dependency>
 
     <!--	Jackson -->
