@@ -5,7 +5,7 @@
         <then>
             <appender name="DEV_OUT" class="ch.qos.logback.core.ConsoleAppender">
                 <encoder>
-                    <Pattern>%black(%d{ISO8601})  %highlight(%-5level) %marker %highlight(%X{SOPInstanceUID}) %highlight(%X{issuerOfPatientID}) %highlight(%X{PatientID}) [%yellow(%t)] %yellow(%C{1.}): %msg%n%throwable </Pattern>
+                    <Pattern>%black(%d{ISO8601})  %highlight(%-5level) %marker %highlight(%X{SOPInstanceUID}) %highlight(%X{issuerOfPatientID}) %highlight(%X{PatientID}) [%yellow(%t)] %yellow(%C{1}): %msg%n%throwable </Pattern>
                 </encoder>
             </appender>
             <root level="info">
