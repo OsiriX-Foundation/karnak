@@ -20,6 +20,7 @@ import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
+import org.weasis.core.util.MathUtil;
 import org.weasis.opencv.data.ImageCV;
 import org.weasis.opencv.data.PlanarImage;
 import org.weasis.opencv.op.ImageProcessor;
@@ -92,7 +93,7 @@ public class Defacer {
 
     for (int x = 0; x < faceDetectionImg.width(); x++) {
       for (int y = 0; y < faceDetectionImg.height(); y++) {
-        if (faceDetectionImg.toMat().get(y, x)[0] == 255) {
+				if (MathUtil.isEqual(faceDetectionImg.toMat().get(y, x)[0], 255)) {
           Imgproc.line(
               faceDetectionImg.toImageCV(),
               new Point(x, y + 1.0),
@@ -125,7 +126,7 @@ public class Defacer {
 
       for (int y = faceDetectImg.height() - 1; y > 0; y--) {
         double faceDetectPixelValue = faceDetectImg.toMat().get(y, x)[0];
-        if (faceDetectPixelValue == 255.0) {
+				if (MathUtil.isEqual(faceDetectPixelValue, 255.0)) {
           faceDetected = true;
           yFaceDetected = y;
         }
@@ -155,7 +156,7 @@ public class Defacer {
       boolean faceDetected = true;
       int yNoBlurImg = 0;
       for (int y = 0; y < faceDetectImg.height(); y++) {
-        if (faceDetectImg.toMat().get(y, x)[0] != 0.0) {
+				if (MathUtil.isDifferentFromZero(faceDetectImg.toMat().get(y, x)[0])) {
           faceDetected = false;
           yNoBlurImg = y + marginBlurSkin;
         }
@@ -177,7 +178,7 @@ public class Defacer {
 
     for (int x = 0; x < faceDetectImg.width(); x++) {
       for (int y = faceDetectImg.height() - 1; y > 0; y--) {
-        if (randPxlLineImg.toMat().get(y, x)[0] != 0.0) {
+				if (MathUtil.isDifferentFromZero(randPxlLineImg.toMat().get(y, x)[0])) {
           newImg.toMat().put(y, x, randPxlLineImg.toMat().get(y, x)[0]);
         } else {
           newImg.toMat().put(y, x, srcImg.toMat().get(y, x)[0]);

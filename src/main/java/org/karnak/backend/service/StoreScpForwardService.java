@@ -41,15 +41,15 @@ public class StoreScpForwardService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(StoreScpForwardService.class);
 
-  private final Device device = new Device("storescp");
+  private final Device device;
 
-  private final ApplicationEntity ae = new ApplicationEntity("*");
+	private final ApplicationEntity ae;
 
-  private final Connection conn = new Connection();
+	private final Connection conn;
 
   private volatile int priority;
 
-  private volatile int status = 0;
+	private volatile int status;
 
   private Map<ForwardDicomNode, List<ForwardDestination>> destinations;
 
@@ -58,6 +58,12 @@ public class StoreScpForwardService {
   @Autowired
   public StoreScpForwardService(final CStoreSCPService cStoreSCPService) {
     this.cStoreSCPService = cStoreSCPService;
+		this.destinations = null;
+		this.status = 0;
+		this.priority = 0;
+		this.conn = new Connection();
+		this.ae = new ApplicationEntity("*");
+		this.device = new Device("storescp");
   }
 
   /**

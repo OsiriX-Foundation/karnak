@@ -9,9 +9,9 @@
  */
 package org.karnak.backend.config;
 
+import jakarta.annotation.PostConstruct;
 import java.util.HashSet;
 import java.util.Set;
-import javax.annotation.PostConstruct;
 import org.karnak.backend.data.entity.SOPClassUIDEntity;
 import org.karnak.backend.data.repo.SOPClassUIDRepo;
 import org.karnak.backend.model.dicominnolitics.StandardSOPS;

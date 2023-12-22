@@ -70,7 +70,7 @@ public class GatewaySetUpService {
 
   private final DestinationRepo destinationRepo;
 
-  private final Map<ForwardDicomNode, List<ForwardDestination>> destMap = new HashMap<>();
+	private final Map<ForwardDicomNode, List<ForwardDestination>> destMap;
 
   private final Path storePath;
 
@@ -104,6 +104,7 @@ public class GatewaySetUpService {
     this.forwardNodeRepo = forwardNodeRepo;
     this.versionRepo = versionRepo;
     this.destinationRepo = destinationRepo;
+		this.destMap = new HashMap<>();
 
     String path = SystemPropertyUtil.retrieveSystemProperty("GATEWAY_ARCHIVE_PATH", null); // Only
     // Archive

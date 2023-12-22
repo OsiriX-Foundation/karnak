@@ -12,7 +12,7 @@ package org.karnak.frontend.profile.component.errorprofile;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.icon.IronIcon;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import java.util.ArrayList;
 import org.karnak.backend.data.entity.ProfileElementEntity;
@@ -60,15 +60,15 @@ public class ProfileErrorView extends VerticalLayout {
     profileShowHide.setView();
   }
 
-  private IronIcon setErrorIcon() {
-    IronIcon errorIcon = new IronIcon("icons", "error");
+	private Icon setErrorIcon() {
+		Icon errorIcon = new Icon("icons", "error");
     errorIcon.setColor("red");
     errorIcon.getStyle().set("padding-left", "5px");
     return errorIcon;
   }
 
-  private IronIcon setSuccessIcon() {
-    IronIcon errorIcon = new IronIcon("icons", "check");
+	private Icon setSuccessIcon() {
+		Icon errorIcon = new Icon("icons", "check");
     errorIcon.setColor("green");
     errorIcon.getStyle().set("padding-left", "5px");
     return errorIcon;

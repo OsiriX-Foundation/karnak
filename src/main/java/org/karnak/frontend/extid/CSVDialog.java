@@ -9,6 +9,10 @@
  */
 package org.karnak.frontend.extid;
 
+import com.opencsv.CSVParserBuilder;
+import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
+import com.opencsv.exceptions.CsvException;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -27,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import liquibase.util.csv.opencsv.CSVReader;
 import org.karnak.backend.cache.Patient;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.slf4j.Logger;
@@ -87,10 +90,13 @@ public class CSVDialog extends Dialog {
     this.projectEntity = projectEntity;
     patientsList = new ArrayList<>();
     allRows = null;
-    try {
-      CSVReader csvReader = new CSVReader(new InputStreamReader(inputStream), separator);
+
+		try (CSVReader csvReader = new CSVReaderBuilder(new InputStreamReader(inputStream))
+			.withCSVParser(new CSVParserBuilder().withSeparator(separator).build())
+			.build()) {
       allRows = csvReader.readAll();
-    } catch (IOException e) {
+		}
+		catch (IOException | CsvException e) {
       LOGGER.error("Error while reading the CSV", e);
     }
 
@@ -122,7 +128,7 @@ public class CSVDialog extends Dialog {
 
     fromLineField = new NumberField("From line ");
     fromLineField.setValue(1d);
-    fromLineField.setHasControls(true);
+		fromLineField.setStepButtonsVisible(true);
     fromLineField.setMin(1);
     fromLineField.setMax((double) allRows.size() + 1);
 

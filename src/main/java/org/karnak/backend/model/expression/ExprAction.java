@@ -9,9 +9,15 @@
  */
 package org.karnak.backend.model.expression;
 
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.net.http.HttpResponse.BodyHandlers;
 import java.util.Objects;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.VR;
+import org.karnak.backend.exception.ExpressionActionException;
 import org.karnak.backend.model.action.ActionItem;
 import org.karnak.backend.model.action.Keep;
 import org.karnak.backend.model.action.Remove;
@@ -93,6 +99,34 @@ public class ExprAction implements ExpressionItem {
     replace.setDummyValue(dummyValue);
     return replace;
   }
+
+	public ActionItem ReplaceFromUriPost(String dummyValue) {
+		String response = null;
+
+		if (stringValue != null) {
+			try {
+				// TODO: to improve
+				HttpResponse<String> httpResponse = HttpClient.newBuilder()
+					.build()
+					.send(HttpRequest.newBuilder()
+						.uri(new URI(dummyValue))
+						.POST(HttpRequest.BodyPublishers.ofString(stringValue))
+						.build(), BodyHandlers.ofString());
+				response = httpResponse.body();
+			}
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+			}
+			catch (Exception e) {
+				throw new ExpressionActionException(
+						"Issue when using action ReplaceFromUriPost:%s".formatted(e.getMessage()));
+			}
+		}
+
+		ActionItem replace = new Replace("D");
+		replace.setDummyValue(response);
+		return replace;
+	}
 
   public ActionItem UID() {
     return new UID("U");

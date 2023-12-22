@@ -45,15 +45,13 @@ public class MappingResultComponent extends VerticalLayout {
 
   /**
    * Handle result when Find is clicked
-   *
    * @param patientFound patient found/not found by the backend
    * @param inputValue   Input value entered by the user
    * @param location     from where the mapping has been taken from
    */
   public void handleResultFindPatient(Patient patientFound, String inputValue, String location) {
     // Reset details
-    getPatientFoundDetails().setContent(null);
-    getPatientFoundDetails().setSummary(null);
+		getPatientFoundDetails().removeAll();
 
     // If found set patient data
     if (patientFound != null) {
@@ -66,7 +64,6 @@ public class MappingResultComponent extends VerticalLayout {
 
   /**
    * Handle Result of Find Patient when Patient Not Found
-   *
    * @param inputValue Input value entered by the user
    * @param location   from where the mapping has been taken from
    */
@@ -81,7 +78,6 @@ public class MappingResultComponent extends VerticalLayout {
 
   /**
    * Handle Result of Find Patient when Patient Found
-   *
    * @param patientFound Patient found
    * @param location     Where the patient has been stored
    */
@@ -115,7 +111,6 @@ public class MappingResultComponent extends VerticalLayout {
 
   /**
    * Add information of the patient found in badge title components
-   *
    * @param patientFoundDetailLayout Layout
    * @param title                    Title
    * @param value                    Value of the patient found
@@ -129,7 +124,6 @@ public class MappingResultComponent extends VerticalLayout {
 
   /**
    * Build badge title
-   *
    * @param title Title
    * @return BoxShadowComponent designed with the title
    */

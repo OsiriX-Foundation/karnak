@@ -34,7 +34,7 @@ public class SourceLogic extends ListDataProvider<DicomSourceNodeEntity> {
   /**
    * Text filter that can be changed separately.
    */
-  private String filterText = "";
+	private String filterText;
 
   private ForwardNodeEntity forwardNodeEntity; // Current forward node
 
@@ -47,6 +47,9 @@ public class SourceLogic extends ListDataProvider<DicomSourceNodeEntity> {
   public SourceLogic(final SourceNodeService sourceNodeService) {
     super(new HashSet<>());
     this.sourceNodeService = sourceNodeService;
+		this.sourceView = null;
+		this.forwardNodeEntity = null;
+		this.filterText = "";
   }
 
   @Override

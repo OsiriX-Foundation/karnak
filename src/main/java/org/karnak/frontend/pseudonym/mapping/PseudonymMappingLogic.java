@@ -25,8 +25,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- * Mapping logic service use to make calls to backend and implement logic linked to the mapping
- * view
+ * Mapping logic service use to make calls to backend and implement logic linked to the
+ * mapping view
  */
 @Service
 public class PseudonymMappingLogic {
@@ -46,7 +46,6 @@ public class PseudonymMappingLogic {
 
   /**
    * Autowired constructor
-   *
    * @param pseudonymMappingService Pseudonym mapping backend service
    * @param externalIDCache         External ID Cache
    * @param projectService          Project service
@@ -59,11 +58,11 @@ public class PseudonymMappingLogic {
     this.pseudonymMappingService = pseudonymMappingService;
     this.externalIDCache = externalIDCache;
     this.projectService = projectService;
+    this.pseudonymMappingView = null;
   }
 
   /**
    * Retrieve a patient stored in mainzelliste by its pseudonym
-   *
    * @param pseudonym Pseudonym
    * @return Patient found
    */
@@ -72,9 +71,8 @@ public class PseudonymMappingLogic {
   }
 
   /**
-   * Retrieve a map of patients by project stored in external id cache which have the pseudonym in
-   * parameter
-   *
+	 * Retrieve a map of patients by project stored in external id cache which have the
+	 * pseudonym in parameter
    * @param pseudonym Pseudonym
    * @return Map of patients by project
    */

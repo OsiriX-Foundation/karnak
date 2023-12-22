@@ -54,13 +54,12 @@ public class CStoreSCPService extends BasicCStoreSCP {
 
   private volatile int priority;
 
-  private volatile int status = 0;
+	private volatile int status;
 
   // Scheduled service for updating status transfer in progress
   private ScheduledFuture isDelayOver;
 
-  private final ScheduledExecutorService executorService =
-      Executors.newSingleThreadScheduledExecutor();
+	private final ScheduledExecutorService executorService;
 
   @Autowired
   public CStoreSCPService(
@@ -68,6 +67,11 @@ public class CStoreSCPService extends BasicCStoreSCP {
     super("*");
     this.destinationRepo = destinationRepo;
     this.forwardService = forwardService;
+		this.destinations = null;
+		this.executorService = Executors.newSingleThreadScheduledExecutor();
+		this.isDelayOver = null;
+		this.status = 0;
+		this.priority = 0;
   }
 
   public void init(Map<ForwardDicomNode, List<ForwardDestination>> destinations) {

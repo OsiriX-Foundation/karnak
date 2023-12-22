@@ -9,6 +9,8 @@
  */
 package org.karnak.profilepipe.option.datemanager;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
 import org.dcm4che3.data.Attributes;
@@ -19,8 +21,6 @@ import org.junit.jupiter.api.Test;
 import org.karnak.backend.data.entity.ArgumentEntity;
 import org.karnak.backend.model.profilepipe.HMAC;
 import org.karnak.backend.util.ShiftByTagDate;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ShiftByTagDateTest {
 
@@ -61,10 +61,10 @@ public class ShiftByTagDateTest {
 
   @Test
   void shiftByTag() {
-    days_tag.setKey("days_tag");
-    days_tag.setValue("(0015,1010)");
-    seconds_tag.setKey("seconds_tag");
-    seconds_tag.setValue("(0015,1011)");
+    days_tag.setArgumentKey("days_tag");
+    days_tag.setArgumentValue("(0015,1010)");
+    seconds_tag.setArgumentKey("seconds_tag");
+    seconds_tag.setArgumentValue("(0015,1011)");
     argumentEntities.add(seconds_tag);
     argumentEntities.add(days_tag);
 
@@ -79,10 +79,10 @@ public class ShiftByTagDateTest {
 
   @Test
   void shiftByBadTag() {
-    days_tag.setKey("days_tag");
-    days_tag.setValue("(0017,1010)");
-    seconds_tag.setKey("seconds_tag");
-    seconds_tag.setValue("(0017,1011)");
+    days_tag.setArgumentKey("days_tag");
+    days_tag.setArgumentValue("(0017,1010)");
+    seconds_tag.setArgumentKey("seconds_tag");
+    seconds_tag.setArgumentValue("(0017,1011)");
     argumentEntities.add(seconds_tag);
     argumentEntities.add(days_tag);
 
@@ -97,10 +97,10 @@ public class ShiftByTagDateTest {
 
   @Test
   void shiftByBadTag2() {
-    days_tag.setKey("days_tag");
-    days_tag.setValue("(0015,1012)");
-    seconds_tag.setKey("seconds_tag");
-    seconds_tag.setValue("(0015,1013)");
+    days_tag.setArgumentKey("days_tag");
+    days_tag.setArgumentValue("(0015,1012)");
+    seconds_tag.setArgumentKey("seconds_tag");
+    seconds_tag.setArgumentValue("(0015,1013)");
     argumentEntities.add(seconds_tag);
     argumentEntities.add(days_tag);
 

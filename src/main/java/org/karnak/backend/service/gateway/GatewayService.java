@@ -9,11 +9,11 @@
  */
 package org.karnak.backend.service.gateway;
 
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import java.io.File;
 import java.net.URL;
 import java.util.List;
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.repo.DestinationRepo;
 import org.karnak.backend.dicom.GatewayParams;

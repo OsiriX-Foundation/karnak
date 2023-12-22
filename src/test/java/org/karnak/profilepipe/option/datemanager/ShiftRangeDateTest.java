@@ -40,10 +40,10 @@ class ShiftRangeDateTest {
 
   @BeforeAll
   protected static void setUpBeforeClass() throws Exception {
-    max_seconds.setKey("max_seconds");
-    max_seconds.setValue("1000");
-    max_days.setKey("max_days");
-    max_days.setValue("200");
+    max_seconds.setArgumentKey("max_seconds");
+    max_seconds.setArgumentValue("1000");
+    max_days.setArgumentKey("max_days");
+    max_days.setArgumentValue("200");
 
     argumentEntities.add(max_seconds);
     argumentEntities.add(max_days);
@@ -84,10 +84,10 @@ class ShiftRangeDateTest {
     assertEquals(
         "235417", ShiftRangeDate.shift(dataset, Tag.AcquisitionTime, argumentEntities, hmac_2));
 
-    min_seconds.setKey("min_seconds");
-    min_seconds.setValue("500");
-    min_days.setKey("min_days");
-    min_days.setValue("100");
+    min_seconds.setArgumentKey("min_seconds");
+    min_seconds.setArgumentValue("500");
+    min_days.setArgumentKey("min_days");
+    min_days.setArgumentValue("100");
 
     argumentEntities.add(min_seconds);
     argumentEntities.add(min_days);
@@ -110,50 +110,50 @@ class ShiftRangeDateTest {
         ShiftRangeDate.shift(dataset, Tag.AcquisitionDateTime, argumentEntities, hmac_2));
     assertEquals(
         "234936", ShiftRangeDate.shift(dataset, Tag.AcquisitionTime, argumentEntities, hmac_2));
-    max_seconds.setKey("test_max_seconds");
-    max_days.setKey("max_days");
+    max_seconds.setArgumentKey("test_max_seconds");
+    max_days.setArgumentKey("max_days");
     Assertions.assertThrows(
         IllegalArgumentException.class,
         () -> ShiftRangeDate.shift(dataset, Tag.AcquisitionTime, argumentEntities, hmac));
-    max_seconds.setKey("test_max_seconds");
-    max_days.setKey("max_days");
-    Assertions.assertThrows(
-        IllegalArgumentException.class,
-        () -> ShiftRangeDate.shift(dataset, Tag.AcquisitionTime, argumentEntities, hmac));
-
-    max_seconds.setKey("max_seconds");
-    max_days.setKey("test_max_days");
+    max_seconds.setArgumentKey("test_max_seconds");
+    max_days.setArgumentKey("max_days");
     Assertions.assertThrows(
         IllegalArgumentException.class,
         () -> ShiftRangeDate.shift(dataset, Tag.AcquisitionTime, argumentEntities, hmac));
 
-    max_seconds.setKey("test_max_seconds");
-    max_days.setKey("test_max_days");
+    max_seconds.setArgumentKey("max_seconds");
+    max_days.setArgumentKey("test_max_days");
+    Assertions.assertThrows(
+        IllegalArgumentException.class,
+        () -> ShiftRangeDate.shift(dataset, Tag.AcquisitionTime, argumentEntities, hmac));
+
+    max_seconds.setArgumentKey("test_max_seconds");
+    max_days.setArgumentKey("test_max_days");
     Assertions.assertThrows(
         IllegalArgumentException.class,
         () -> ShiftRangeDate.shift(dataset, Tag.AcquisitionTime, argumentEntities, hmac));
 
     List<ArgumentEntity> arguments_2 = new ArrayList<>();
     ArgumentEntity arg_1 = new ArgumentEntity();
-    arg_1.setKey("max_seconds");
-    arg_1.setValue("12");
+    arg_1.setArgumentKey("max_seconds");
+    arg_1.setArgumentValue("12");
     arguments_2.add(arg_1);
 
     Assertions.assertThrows(
         IllegalArgumentException.class,
         () -> ShiftRangeDate.shift(dataset, Tag.AcquisitionTime, arguments_2, hmac));
 
-    arg_1.setKey("max_days");
+    arg_1.setArgumentKey("max_days");
     Assertions.assertThrows(
         IllegalArgumentException.class,
         () -> ShiftRangeDate.shift(dataset, Tag.AcquisitionTime, arguments_2, hmac));
 
-    arg_1.setKey("min_seconds");
+    arg_1.setArgumentKey("min_seconds");
     Assertions.assertThrows(
         IllegalArgumentException.class,
         () -> ShiftRangeDate.shift(dataset, Tag.AcquisitionTime, arguments_2, hmac));
 
-    arg_1.setKey("min_days");
+    arg_1.setArgumentKey("min_days");
     Assertions.assertThrows(
         IllegalArgumentException.class,
         () -> ShiftRangeDate.shift(dataset, Tag.AcquisitionTime, arguments_2, hmac));

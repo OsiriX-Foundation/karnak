@@ -12,11 +12,8 @@ package org.karnak.frontend;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.dependency.JsModule;
-import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.icon.IronIcon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -27,8 +24,6 @@ import com.vaadin.flow.router.RouterLink;
 import org.karnak.backend.util.SecurityUtil;
 import org.karnak.frontend.util.ToggleButtonTheme;
 
-@NpmPackage(value = "@polymer/iron-icons", version = "3.0.1")
-@JsModule("@polymer/iron-icons/iron-icons.js")
 @SuppressWarnings("serial")
 public class Menu extends FlexLayout {
 
@@ -79,20 +74,20 @@ public class Menu extends FlexLayout {
     add(logoutButton);
   }
 
-  /**
-   * Add a view to the navigation menu
-   *
-   * @param viewClass that has a {@code Route} annotation
-   * @param caption   view caption in the menu
-   * @param icon      view icon in the menu
-   */
-  public void addView(Class<? extends Component> viewClass, String caption, IronIcon icon) {
-    Tab tab = new Tab();
-    RouterLink routerLink = new RouterLink(null, viewClass);
-    routerLink.setClassName("menu-link");
-    routerLink.add(icon);
-    routerLink.add(new Span(caption));
-    tab.add(routerLink);
-    tabs.add(tab);
-  }
+	/**
+	 * Add a view to the navigation menu
+	 * @param viewClass that has a {@code Route} annotation
+	 * @param caption view caption in the menu
+	 * @param icon view icon in the menu
+	 */
+	public void addView(Class<? extends Component> viewClass, String caption, Icon icon) {
+		Tab tab = new Tab();
+		RouterLink routerLink = new RouterLink(viewClass);
+		routerLink.setClassName("menu-link");
+		routerLink.add(icon);
+		routerLink.add(new Span(caption));
+		tab.add(routerLink);
+		tabs.add(tab);
+	}
+
 }

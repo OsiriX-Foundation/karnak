@@ -49,6 +49,7 @@ public class ProfileLogic extends ListDataProvider<ProfileEntity> {
   public ProfileLogic(final ProfilePipeService profilePipeService) {
     super(new ArrayList<>());
     this.profilePipeService = profilePipeService;
+		this.profileView = null;
     initDataProvider();
   }
 

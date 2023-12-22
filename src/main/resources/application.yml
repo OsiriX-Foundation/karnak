@@ -55,9 +55,13 @@ spring:
     generate-ddl: false
     show-sql: false
     open-in-view: false
-    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     properties:
       hibernate:
+        #    In order to still use the unique hibernate_sequence, otherwise we should create a sequence table_name_seq for
+        #  each tables
+        id:
+          db_structure_naming_strategy: legacy
         temp:
           use_jdbc_metadata_defaults: false
       jdbc:

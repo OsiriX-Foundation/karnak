@@ -9,17 +9,17 @@
  */
 package org.karnak.backend.data.entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Objects;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 
 @Entity
 @Table(name = "secret")
@@ -29,7 +29,7 @@ public class SecretEntity implements Serializable {
 
   private ProjectEntity projectEntity;
 
-  private byte[] key;
+	private byte[] secretKey;
 
   private LocalDateTime creationDate;
 
@@ -38,14 +38,14 @@ public class SecretEntity implements Serializable {
   public SecretEntity() {
   }
 
-  public SecretEntity(byte[] key) {
-    this.key = key;
+	public SecretEntity(byte[] secretKey) {
+		this.secretKey = secretKey;
     this.creationDate = LocalDateTime.now();
   }
 
-  public SecretEntity(ProjectEntity projectEntity, byte[] key) {
+	public SecretEntity(ProjectEntity projectEntity, byte[] secretKey) {
     this.projectEntity = projectEntity;
-    this.key = key;
+		this.secretKey = secretKey;
     this.creationDate = LocalDateTime.now();
   }
 
@@ -69,12 +69,12 @@ public class SecretEntity implements Serializable {
     this.projectEntity = projectEntity;
   }
 
-  public byte[] getKey() {
-    return key;
+	public byte[] getSecretKey() {
+		return secretKey;
   }
 
-  public void setKey(byte[] key) {
-    this.key = key;
+	public void setSecretKey(byte[] key) {
+		this.secretKey = key;
   }
 
   public LocalDateTime getCreationDate() {
@@ -105,14 +105,13 @@ public class SecretEntity implements Serializable {
     return active == that.active
         && Objects.equals(id, that.id)
         && Objects.equals(projectEntity, that.projectEntity)
-        && Arrays.equals(key, that.key)
-        && Objects.equals(creationDate, that.creationDate);
+				&& Arrays.equals(secretKey, that.secretKey) && Objects.equals(creationDate, that.creationDate);
   }
 
   @Override
   public int hashCode() {
     int result = Objects.hash(id, projectEntity, creationDate, active);
-    result = 31 * result + Arrays.hashCode(key);
+		result = 31 * result + Arrays.hashCode(secretKey);
     return result;
   }
 }

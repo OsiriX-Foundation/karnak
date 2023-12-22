@@ -23,7 +23,7 @@ public class ArgumentToMapConverter
     Map<String, String> argumentMap = new HashMap<>();
     argumentEntities.forEach(
         argument -> {
-          argumentMap.put(argument.getKey(), argument.getValue());
+			argumentMap.put(argument.getArgumentKey(), argument.getArgumentValue());
         });
     return argumentMap;
   }

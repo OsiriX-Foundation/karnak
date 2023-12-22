@@ -12,6 +12,7 @@ package org.karnak.frontend;
 import com.vaadin.flow.component.page.AppShellConfigurator;
 import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.server.PWA;
+import com.vaadin.flow.theme.Theme;
 
 /**
  * Use the @PWA annotation make the application installable on phones, tablets and some desktop
@@ -19,6 +20,7 @@ import com.vaadin.flow.server.PWA;
  */
 @PWA(name = "Karnak Gateway", shortName = "karnak", iconPath = "icons/logo.png")
 @Push
+@Theme("common-theme")
 public class AppShell implements AppShellConfigurator {
 
 }

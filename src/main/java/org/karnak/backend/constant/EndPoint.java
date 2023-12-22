@@ -25,4 +25,6 @@ public class EndPoint {
   // public static final String AET_PARAM = "aet";
   // public static final String SOP_UID_PARAM = "sopUid";
 
+	public static final String ALL_REMAINING_PATH = "/**";
+
 }
