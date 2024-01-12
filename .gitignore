@@ -47,6 +47,7 @@ node_modules/
 types.d.ts
 pnpmfile.js
 pnpm-lock.yaml
+/vite.*
 
 #vscode config
 .vscode

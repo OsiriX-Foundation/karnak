@@ -3,52 +3,58 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-  <artifactId>karnak</artifactId>
-  <name>${project.artifactId}</name>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.karnak</groupId>
-  <licenses>
-    <license>
-      <distribution>repo</distribution>
-      <name>Eclipse Public License v2.0</name>
-      <url>https://www.eclipse.org/legal/epl-v20.html</url>
-    </license>
-  </licenses>
-
-  <!-- Version -->
+  <artifactId>karnak</artifactId>
+  <name>${project.artifactId}</name>
   <version>1.0.3</version>
-
-  <!-- Packaging -->
   <packaging>jar</packaging>
 
-  <!-- Properties -->
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <enforcer.jdk-version>[${java.version},)</enforcer.jdk-version>
     <enforcer.maven-version>[3.2.0,)</enforcer.maven-version>
     <java.version>17</java.version>
+
     <springframework.version>3.1.6</springframework.version>
-    <vaadin.version>24.2.3</vaadin.version>
-    <weasis-dicom-tools.version>5.29.0.2</weasis-dicom-tools.version>
-    <weasis.opencv.native.version>4.6.0-dcm</weasis.opencv.native.version>
     <springdoc.version>1.6.12</springdoc.version>
-    <mockito.version>5.2.0</mockito.version>
-    <h2.version>2.2.224</h2.version>
-    <jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
-    <junit.jupiter.version>5.8.2</junit.jupiter.version>
-    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-    <sonar.java.source>${java.version}</sonar.java.source>
-    <sonar.java.target>${java.version}</sonar.java.target>
-    <sonar.organization>osirix-foundation-1</sonar.organization>
-    <sonar.projectKey>karnak</sonar.projectKey>
-    <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+    <vaadin.version>24.2.3</vaadin.version>
     <org.json.version>20230227</org.json.version>
     <liquibase.version>4.20.0</liquibase.version>
     <opencsv.version>5.7.1</opencsv.version>
-</properties>
 
-<!-- Repositories -->
+    <weasis-dicom-tools.version>5.31.1</weasis-dicom-tools.version>
+    <weasis.opencv.native.version>4.8.1-dcm</weasis.opencv.native.version>
+
+    <h2.version>2.2.224</h2.version>
+    <mockito.version>5.2.0</mockito.version>
+    <junit.jupiter.version>5.8.2</junit.jupiter.version>
+
+    <sonar.organization>osirix-foundation-1</sonar.organization>
+    <sonar.projectKey>karnak</sonar.projectKey>
+    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+    <sonar.language>java</sonar.language>
+    <sonar.java.source>${java.version}</sonar.java.source>
+    <sonar.test.exclusions>src/test/**/*</sonar.test.exclusions>
+
+    <!-- Tests require the native library and can only be run on Linux, Windows and macOS-->
+    <argLine>-Djava.library.path=${project.build.outputDirectory}/lib/${os-name}-${cpu-name}</argLine>
+ </properties>
+
+  <licenses>
+    <license>
+      <distribution>repo</distribution>
+      <name>Eclipse Public License v2.0</name>
+      <url>https://www.eclipse.org/legal/epl-v20.html</url>
+    </license>
+    <license>
+      <name>Apache License v2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
   <repositories>
     <repository>
       <id>central</id>
@@ -72,112 +78,149 @@
     </repository>
   </repositories>
 
-  <!-- Build-->
   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.12.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>3.1.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-clean-plugin</artifactId>
+          <version>3.3.2</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>3.1.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>3.3.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>maven-bundle-plugin</artifactId>
+          <version>5.1.9</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>3.6.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>3.2.3</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>3.3.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <version>3.4.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>3.3.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>4.0.0-M13</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>3.5.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>0.8.11</version>
+        </plugin>
+        <plugin>
+          <groupId>com.diffplug.spotless</groupId>
+          <artifactId>spotless-maven-plugin</artifactId>
+          <version>2.41.1</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
     <plugins>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
         <executions>
           <execution>
-            <configuration>
-              <rules>
-                <requireJavaVersion>
-                  <version>${enforcer.jdk-version}</version>
-                </requireJavaVersion>
-                <requireMavenVersion>
-                  <version>${enforcer.maven-version}</version>
-                </requireMavenVersion>
-              </rules>
-            </configuration>
+            <id>min-requirement</id>
             <goals>
               <goal>enforce</goal>
             </goals>
-            <id>min-requirement</id>
+            <configuration>
+              <rules>
+                <requireMavenVersion>
+                  <version>${enforcer.maven-version}</version>
+                </requireMavenVersion>
+                <requireJavaVersion>
+                  <version>${enforcer.jdk-version}</version>
+                </requireJavaVersion>
+              </rules>
+            </configuration>
           </execution>
         </executions>
-        <groupId>org.apache.maven.plugins</groupId>
-        <version>3.1.0</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.10.1</version>
         <configuration>
           <source>${java.version}</source>
           <target>${java.version}</target>
         </configuration>
       </plugin>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
-        <configuration>
-          <artifactItems>
-            <artifactItem>
-              <artifactId>libopencv_java</artifactId>
-              <classifier>linux-x86-64</classifier>
-              <destFileName>libopencv_java.so</destFileName>
-              <groupId>org.weasis.thirdparty.org.opencv</groupId>
-              <outputDirectory>${project.build.directory}/native-lib/lib/linux-x86-64
-              </outputDirectory>
-              <type>so</type>
-              <version>${weasis.opencv.native.version}</version>
-            </artifactItem>
-            <artifactItem>
-              <artifactId>libopencv_java</artifactId>
-              <classifier>linux-aarch64</classifier>
-              <destFileName>libopencv_java.so</destFileName>
-              <groupId>org.weasis.thirdparty.org.opencv</groupId>
-              <outputDirectory>${project.build.directory}/native-lib/lib/linux-aarch64
-              </outputDirectory>
-              <type>so</type>
-              <version>${weasis.opencv.native.version}</version>
-            </artifactItem>
-            <artifactItem>
-              <artifactId>libopencv_java</artifactId>
-              <classifier>linux-armv7a</classifier>
-              <destFileName>libopencv_java.so</destFileName>
-              <groupId>org.weasis.thirdparty.org.opencv</groupId>
-              <outputDirectory>${project.build.directory}/native-lib/lib/linux-armv7a
-              </outputDirectory>
-              <type>so</type>
-              <version>${weasis.opencv.native.version}</version>
-            </artifactItem>
-            <artifactItem>
-              <artifactId>libopencv_java</artifactId>
-              <classifier>macosx-x86-64</classifier>
-              <destFileName>libopencv_java.dylib</destFileName>
-              <groupId>org.weasis.thirdparty.org.opencv</groupId>
-              <outputDirectory>${project.build.directory}/native-lib/lib/macosx-x86-64
-              </outputDirectory>
-              <type>dylib</type>
-              <version>${weasis.opencv.native.version}</version>
-            </artifactItem>
-            <artifactItem>
-              <artifactId>opencv_java</artifactId>
-              <classifier>windows-x86-64</classifier>
-              <destFileName>opencv_java.dll</destFileName>
-              <groupId>org.weasis.thirdparty.org.opencv</groupId>
-              <outputDirectory>${project.build.directory}/native-lib/lib/windows-x86-64
-              </outputDirectory>
-              <type>dll</type>
-              <version>${weasis.opencv.native.version}</version>
-            </artifactItem>
-          </artifactItems>
-          <outputDirectory>${project.build.directory}</outputDirectory>
-        </configuration>
         <executions>
           <execution>
+            <id>copy</id>
+            <phase>generate-test-resources</phase>
             <goals>
               <goal>copy</goal>
             </goals>
-            <id>copy</id>
-            <phase>generate-resources</phase>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.weasis.thirdparty.org.opencv</groupId>
+                  <artifactId>${lib-file-name}</artifactId>
+                  <version>${weasis.opencv.native.version}</version>
+                  <type>${lib-file-ext}</type>
+                  <classifier>${os-name}-${cpu-name}</classifier>
+                  <overWrite>false</overWrite>
+                  <outputDirectory>${project.build.outputDirectory}/lib/${os-name}-${cpu-name}</outputDirectory>
+                  <destFileName>${lib-file-name}.${lib-file-ext}</destFileName>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
           </execution>
         </executions>
-        <groupId>org.apache.maven.plugins</groupId>
-        <version>3.2.0</version>
       </plugin>
       <plugin>
+        <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>${springframework.version}</version>
         <configuration>
           <jvmArguments>
             -Djava.library.path="${java.io.tmpdir}/dicom-opencv-${weasis.opencv.native.version}"
@@ -196,13 +239,13 @@
             </goals>
           </execution>
         </executions>
-        <groupId>org.springframework.boot</groupId>
-        <version>${springframework.version}</version>
       </plugin>
       <!-- Take care of synchronizing java dependencies and imports in package.json and main.js files. It also creates webpack.config.js
         if not exists yet. -->
       <plugin>
+        <groupId>com.vaadin</groupId>
         <artifactId>vaadin-maven-plugin</artifactId>
+        <version>${vaadin.version}</version>
         <executions>
           <execution>
             <goals>
@@ -210,13 +253,10 @@
             </goals>
           </execution>
         </executions>
-        <groupId>com.vaadin</groupId>
-        <version>${vaadin.version}</version>
       </plugin>
       <plugin>
         <groupId>com.diffplug.spotless</groupId>
         <artifactId>spotless-maven-plugin</artifactId>
-        <version>2.27.2</version>
         <configuration>
           <!-- define a language-specific format -->
           <java>
@@ -243,76 +283,37 @@
           </java>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <version>${jacoco-maven-plugin.version}</version>
-        <configuration>
-          <append>true</append>
-        </configuration>
-        <executions>
-          <execution>
-            <id>prepare-agent</id>
-            <goals>
-              <goal>prepare-agent</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>report</id>
-            <phase>prepare-package</phase>
-            <goals>
-              <goal>report</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.0.0-M7</version>
-        <dependencies>
-          <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>${junit.jupiter.version}</version>
-          </dependency>
-        </dependencies>
-      </plugin>
     </plugins>
+
     <resources>
       <resource>
         <directory>src/main/resources</directory>
         <filtering>true</filtering>
       </resource>
-      <resource>
-        <directory>${project.build.directory}/native-lib</directory>
-      </resource>
     </resources>
   </build>
 
-  <!-- Reportings -->
-  <reporting>
-    <plugins>
-      <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <version>${jacoco-maven-plugin.version}</version>
-        <reportSets>
-          <reportSet>
-            <reports>
-              <!-- select non-aggregate reports -->
-              <report>report</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-      </plugin>
-    </plugins>
-  </reporting>
+  <!-- Dependency Management -->
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <groupId>org.springframework.boot</groupId>
+        <scope>import</scope>
+        <type>pom</type>
+        <version>${springframework.version}</version>
+      </dependency>
+      <dependency>
+        <artifactId>vaadin-bom</artifactId>
+        <groupId>com.vaadin</groupId>
+        <scope>import</scope>
+        <type>pom</type>
+        <version>${vaadin.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
-  <!-- Dependencies -->
   <dependencies>
-
-    <!-- Springboot starters -->
     <dependency>
       <artifactId>spring-boot-starter</artifactId>
       <groupId>org.springframework.boot</groupId>
@@ -564,26 +565,6 @@
     </dependency>
   </dependencies>
 
-  <!-- Dependency Management -->
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <artifactId>spring-boot-dependencies</artifactId>
-        <groupId>org.springframework.boot</groupId>
-        <scope>import</scope>
-        <type>pom</type>
-        <version>${springframework.version}</version>
-      </dependency>
-      <dependency>
-        <artifactId>vaadin-bom</artifactId>
-        <groupId>com.vaadin</groupId>
-        <scope>import</scope>
-        <type>pom</type>
-        <version>${vaadin.version}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <!-- Profiles -->
   <profiles>
     <profile>
@@ -629,6 +610,143 @@
       <properties>
         <vaadin.productionMode>true</vaadin.productionMode>
       </properties>
+    </profile>
+
+    <profile>
+      <id>linux-x86_64</id>
+      <activation>
+        <os>
+          <name>linux</name>
+          <arch>amd64</arch>
+        </os>
+      </activation>
+      <properties>
+        <os-name>linux</os-name>
+        <cpu-name>x86-64</cpu-name>
+        <lib-file-name>libopencv_java</lib-file-name>
+        <lib-file-ext>so</lib-file-ext>
+      </properties>
+    </profile>
+    <profile>
+      <id>linux-aarch64</id>
+      <activation>
+        <os>
+          <name>linux</name>
+          <arch>aarch64</arch>
+        </os>
+      </activation>
+      <properties>
+        <os-name>linux</os-name>
+        <cpu-name>aarch64</cpu-name>
+        <lib-file-name>libopencv_java</lib-file-name>
+        <lib-file-ext>so</lib-file-ext>
+      </properties>
+    </profile>
+    <profile>
+      <id>linux-arm32</id>
+      <activation>
+        <os>
+          <name>linux</name>
+          <arch>arm</arch>
+        </os>
+      </activation>
+      <properties>
+        <os-name>linux</os-name>
+        <cpu-name>armv7a</cpu-name>
+        <lib-file-name>libopencv_java</lib-file-name>
+        <lib-file-ext>so</lib-file-ext>
+      </properties>
+    </profile>
+    <profile>
+      <id>macosx-x86_64</id>
+      <activation>
+        <os>
+          <name>mac os x</name>
+          <arch>x86_64</arch>
+        </os>
+      </activation>
+      <properties>
+        <os-name>macosx</os-name>
+        <cpu-name>x86-64</cpu-name>
+        <lib-file-name>libopencv_java</lib-file-name>
+        <lib-file-ext>dylib</lib-file-ext>
+      </properties>
+    </profile>
+    <profile>
+      <id>macosx-aarch64</id>
+      <activation>
+        <os>
+          <name>mac os x</name>
+          <arch>aarch64</arch>
+        </os>
+      </activation>
+      <properties>
+        <os-name>macosx</os-name>
+        <cpu-name>aarch64</cpu-name>
+        <lib-file-name>libopencv_java</lib-file-name>
+        <lib-file-ext>dylib</lib-file-ext>
+      </properties>
+    </profile>
+    <profile>
+      <id>windows-x86_64</id>
+      <activation>
+        <os>
+          <family>windows</family>
+          <arch>amd64</arch>
+        </os>
+      </activation>
+      <properties>
+        <os-name>windows</os-name>
+        <cpu-name>x86-64</cpu-name>
+        <lib-file-name>opencv_java</lib-file-name>
+        <lib-file-ext>dll</lib-file-ext>
+      </properties>
+    </profile>
+    <profile>
+      <id>windows-x86</id>
+      <activation>
+        <os>
+          <family>windows</family>
+          <arch>x86</arch>
+        </os>
+      </activation>
+      <properties>
+        <os-name>windows</os-name>
+        <cpu-name>x86</cpu-name>
+        <lib-file-name>opencv_java</lib-file-name>
+        <lib-file-ext>dll</lib-file-ext>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>coverage</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <configuration>
+              <excludes>
+                <exclude>org/karnak/frontend/**</exclude>
+              </excludes>
+            </configuration>
+            <executions>
+              <execution>
+                <id>prepare-agent</id>
+                <goals>
+                  <goal>prepare-agent</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>report</id>
+                <goals>
+                  <goal>report</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
   </profiles>
 
