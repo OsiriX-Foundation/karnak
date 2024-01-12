@@ -10,6 +10,7 @@
 package org.karnak.backend.model.expression;
 
 import org.dcm4che3.data.Attributes;
+import org.dcm4che3.img.util.DicomUtils;
 import org.dcm4che3.util.TagUtils;
 
 public class ExprCondition implements ExpressionItem {
@@ -40,7 +41,7 @@ public class ExprCondition implements ExpressionItem {
   }
 
   public boolean tagValueIsPresent(int tag, String value) {
-    String dcmValue = dcm.getString(tag);
+    String dcmValue = DicomUtils.getStringFromDicomElement(dcm, tag);
     return dcmValue != null && dcmValue.equals(value);
   }
 
@@ -50,7 +51,7 @@ public class ExprCondition implements ExpressionItem {
   }
 
   public boolean tagValueContains(int tag, String value) {
-    String dcmValue = dcm.getString(tag);
+    String dcmValue = DicomUtils.getStringFromDicomElement(dcm, tag);
     return dcmValue != null && dcmValue.contains(value);
   }
 
@@ -60,7 +61,7 @@ public class ExprCondition implements ExpressionItem {
   }
 
   public boolean tagValueBeginsWith(int tag, String value) {
-    String dcmValue = dcm.getString(tag);
+    String dcmValue = DicomUtils.getStringFromDicomElement(dcm, tag);
     return dcmValue != null && dcmValue.startsWith(value);
   }
 
@@ -70,7 +71,7 @@ public class ExprCondition implements ExpressionItem {
   }
 
   public boolean tagValueEndsWith(int tag, String value) {
-    String dcmValue = dcm.getString(tag);
+    String dcmValue = DicomUtils.getStringFromDicomElement(dcm, tag);
     return dcmValue != null && dcmValue.endsWith(value);
   }
 

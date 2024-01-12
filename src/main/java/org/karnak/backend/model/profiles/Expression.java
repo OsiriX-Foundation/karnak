@@ -65,11 +65,12 @@ public class Expression extends AbstractProfileItem {
     return null;
   }
 
+  @Override
   public void profileValidation() throws Exception {
-		if (!argumentEntities.stream().anyMatch(argument -> argument.getArgumentKey().equals("expr"))) {
+		if (argumentEntities.stream().noneMatch(argument -> argument.getArgumentKey().equals("expr"))) {
 			List<String> args = argumentEntities.stream()
 				.map(ArgumentEntity::getArgumentKey)
-				.collect(Collectors.toList());
+				.toList();
       throw new IllegalArgumentException(
           "Cannot build the expression: Missing argument, the class need [expr] as parameters. Parameters given "
               + args);
