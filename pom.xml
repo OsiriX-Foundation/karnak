@@ -20,7 +20,7 @@
     <springframework.version>3.1.6</springframework.version>
     <springdoc.version>1.6.12</springdoc.version>
     <vaadin.version>24.2.3</vaadin.version>
-    <org.json.version>20230227</org.json.version>
+    <org.json.version>20231013</org.json.version>
     <liquibase.version>4.20.0</liquibase.version>
     <opencsv.version>5.7.1</opencsv.version>
 
