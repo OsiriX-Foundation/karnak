@@ -1,5 +1,18 @@
-version: "3.1"
+version: "3.7"
+
 services:
+  karnak-db:
+    image: postgres:12.4-alpine
+    environment:
+      - POSTGRES_DB=karnak
+      - POSTGRES_USER=karnak
+      - POSTGRES_PASSWORD_FILE=/run/secrets/postgres_karnak_password
+    ports:
+      - ${KARNAK_PG_PORT}:5432
+    volumes:
+      - karnak-db-data:/var/lib/postgresql/data
+    secrets:
+      - postgres_karnak_password
   mainzelliste-db:
     image: postgres:9.5-alpine
     environment:
@@ -25,18 +38,6 @@ services:
     depends_on:
       - mainzelliste-db
 
-  karnak-db:
-    image: postgres:12.4-alpine
-    environment:
-      - POSTGRES_DB=karnak
-      - POSTGRES_USER=karnak
-      - POSTGRES_PASSWORD_FILE=/run/secrets/postgres_karnak_password
-    ports:
-      - ${KARNAK_PG_PORT}:5432
-    volumes:
-      - karnak-db-data:/var/lib/postgresql/data
-    secrets:
-      - postgres_karnak_password
 
   karnak-cache:
     image: redis:6.0.16-alpine3.15
