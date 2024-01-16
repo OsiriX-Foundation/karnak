@@ -17,35 +17,31 @@ import org.karnak.backend.data.entity.ForwardNodeEntity;
 
 public class GridForwardNode extends Grid<ForwardNodeEntity> {
 
-  public GridForwardNode() {
-    setSizeFull();
+	public GridForwardNode() {
+		setSizeFull();
 
-    Column<ForwardNodeEntity> forwardAeTitleColumn =
-        addColumn(ForwardNodeEntity::getFwdAeTitle)
-            .setHeader("Forward AETitle")
-            .setFlexGrow(20)
-            .setSortable(true);
+		Column<ForwardNodeEntity> forwardAeTitleColumn = addColumn(ForwardNodeEntity::getFwdAeTitle)
+			.setHeader("Forward AETitle")
+			.setFlexGrow(20)
+			.setSortable(true);
 
-    addColumn(ForwardNodeEntity::getFwdDescription)
-        .setHeader("Description")
-        .setFlexGrow(20)
-        .setSortable(true);
+		addColumn(ForwardNodeEntity::getFwdDescription).setHeader("Description").setFlexGrow(20).setSortable(true);
 
-    // Set by default the order on the name of the column Forward AeTitle
-    GridSortOrder<ForwardNodeEntity> order =
-        new GridSortOrder<>(forwardAeTitleColumn, SortDirection.ASCENDING);
-    sort(Arrays.asList(order));
-  }
+		// Set by default the order on the name of the column Forward AeTitle
+		GridSortOrder<ForwardNodeEntity> order = new GridSortOrder<>(forwardAeTitleColumn, SortDirection.ASCENDING);
+		sort(Arrays.asList(order));
+	}
 
-  public ForwardNodeEntity getSelectedRow() {
-    return asSingleSelect().getValue();
-  }
+	public ForwardNodeEntity getSelectedRow() {
+		return asSingleSelect().getValue();
+	}
 
-  public void refresh(ForwardNodeEntity data) {
-    getDataCommunicator().refresh(data);
-  }
+	public void refresh(ForwardNodeEntity data) {
+		getDataCommunicator().refresh(data);
+	}
 
-  public void selectRow(ForwardNodeEntity row) {
-    getSelectionModel().select(row);
-  }
+	public void selectRow(ForwardNodeEntity row) {
+		getSelectionModel().select(row);
+	}
+
 }

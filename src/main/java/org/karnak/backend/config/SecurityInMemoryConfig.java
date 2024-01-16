@@ -39,12 +39,13 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @Conditional(value = DefaultIdpLoadCondition.class)
 public class SecurityInMemoryConfig {
 
-  private static final String LOGIN_FAILURE_URL = "/login?error";
-  private static final String LOGIN_URL = "/login";
+	private static final String LOGIN_FAILURE_URL = "/login?error";
+
+	private static final String LOGIN_URL = "/login";
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http
+		http
 			// Disables cross-site request forgery (CSRF) protection for main route
 			.csrf(csrf -> csrf.ignoringRequestMatchers(AntPathRequestMatcher.antMatcher(EndPoint.ALL_REMAINING_PATH)))
 			// Turns on/off authorizations
@@ -54,33 +55,33 @@ public class SecurityInMemoryConfig {
 				.permitAll()
 				.requestMatchers(EndpointRequest.to(HealthEndpoint.class, InfoEndpoint.class))
 				.permitAll()
-        // Allows all internal traffic from the Vaadin framework
-        .requestMatchers(SecurityUtil::isFrameworkInternalRequest)
-        .permitAll()
+				// Allows all internal traffic from the Vaadin framework
+				.requestMatchers(SecurityUtil::isFrameworkInternalRequest)
+				.permitAll()
 				// Allow endpoints
 				.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/api/echo/destinations"))
-        .permitAll()
+				.permitAll()
 				// Deny
 				.requestMatchers(EndpointRequest.to(ShutdownEndpoint.class))
 				.denyAll()
-        // Allows all authenticated traffic
+				// Allows all authenticated traffic
 				// Allow admin role
 				.requestMatchers(AntPathRequestMatcher.antMatcher("/*"))
-        .hasRole(SecurityRole.ADMIN_ROLE.getType())
-        .anyRequest()
+				.hasRole(SecurityRole.ADMIN_ROLE.getType())
+				.anyRequest()
 				.authenticated())
-        // Enables form-based login and permits unauthenticated access to it
-        // Configures the login page URLs
+			// Enables form-based login and permits unauthenticated access to it
+			// Configures the login page URLs
 			.formLogin(formLogin -> formLogin.loginPage(LOGIN_URL)
-        .permitAll()
-        .loginProcessingUrl(LOGIN_URL)
+				.permitAll()
+				.loginProcessingUrl(LOGIN_URL)
 				.failureUrl(LOGIN_FAILURE_URL))
-        // Configures the logout URL
+			// Configures the logout URL
 			.logout(logout -> logout.logoutSuccessUrl(LOGIN_URL))
 			.exceptionHandling(exceptionHandling -> exceptionHandling.accessDeniedPage(LOGIN_URL));
 
 		return http.build();
-  }
+	}
 
 	@Bean
 	public WebSecurityCustomizer webSecurityCustomizer() {
@@ -102,21 +103,20 @@ public class SecurityInMemoryConfig {
 
 	@Bean
 	public UserDetailsService userDetailsService() {
-    // Configure users and roles in memory
+		// Configure users and roles in memory
 		UserDetails userDetails = User.builder()
 			.username(AppConfig.getInstance().getKarnakadmin())
-        .password("{noop}" + AppConfig.getInstance().getKarnakpassword())
-        .roles(
-            SecurityRole.ADMIN_ROLE.getType(),
-            SecurityRole.INVESTIGATOR_ROLE.getType(),
+			.password("{noop}" + AppConfig.getInstance().getKarnakpassword())
+			.roles(SecurityRole.ADMIN_ROLE.getType(), SecurityRole.INVESTIGATOR_ROLE.getType(),
 					SecurityRole.USER_ROLE.getType())
 			.build();
 
 		return new InMemoryUserDetailsManager(userDetails);
-  }
+	}
 
-  @Bean
-  public RequestCache requestCache() { //
-    return new RequestCache();
-  }
+	@Bean
+	public RequestCache requestCache() { //
+		return new RequestCache();
+	}
+
 }

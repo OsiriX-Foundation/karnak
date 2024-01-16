@@ -9,26 +9,21 @@
  */
 package org.karnak.backend.enums;
 
-/**
- * Application profile
- */
+/** Application profile */
 public enum ApplicationProfile {
 
-  /**
-   * Profile OIDC: use to activate the application profile: application-oidc.yml
-   */
-  OIDC("oidc");
+	/** Profile OIDC: use to activate the application profile: application-oidc.yml */
+	OIDC("oidc");
 
-  /**
-   * Name of the profile to activate
-   */
-  final String code;
+	/** Name of the profile to activate */
+	final String code;
 
-  ApplicationProfile(final String code) {
-    this.code = code;
-  }
+	ApplicationProfile(final String code) {
+		this.code = code;
+	}
 
-  public String getCode() {
-    return code;
-  }
+	public String getCode() {
+		return code;
+	}
+
 }

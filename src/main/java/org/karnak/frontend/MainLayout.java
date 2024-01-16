@@ -31,22 +31,20 @@ import org.karnak.frontend.project.ProjectView;
 import org.karnak.frontend.pseudonym.mapping.PseudonymMappingView;
 import org.springframework.security.access.annotation.Secured;
 
-/**
- * The main layout. Contains the navigation menu.
- */
+/** The main layout. Contains the navigation menu. */
 @CssImport(value = "./styles/shared-styles.css")
 @Route(value = "mainLayout")
-@Secured({"ROLE_admin"})
+@Secured({ "ROLE_admin" })
 @SuppressWarnings("serial")
 public class MainLayout extends FlexLayout implements RouterLayout {
 
-  private final Menu menu;
+	private final Menu menu;
 
-  public MainLayout() {
-    setSizeFull();
-    setClassName("main-layout");
+	public MainLayout() {
+		setSizeFull();
+		setClassName("main-layout");
 
-    menu = new Menu();
+		menu = new Menu();
 
 		// Add secured Menu
 		addSecuredMenu(ForwardNodeView.class, ForwardNodeView.VIEW_NAME, VaadinIcon.COG_O.create());
@@ -61,16 +59,16 @@ public class MainLayout extends FlexLayout implements RouterLayout {
 		// menu.addView(AboutView.class, AboutView.VIEW_NAME,
 		// VaadinIcon.INFO_CIRCLE.create());
 
-    // Add menu to the layout
-    add(menu);
-  }
+		// Add menu to the layout
+		add(menu);
+	}
 
-  @SuppressWarnings("rawtypes")
-  @Override
-  protected void onAttach(AttachEvent attachEvent) {
-    super.onAttach(attachEvent);
-    attachEvent.getUI().addShortcutListener(SecurityUtil::signOut, Key.KEY_L, KeyModifier.CONTROL);
-  }
+	@SuppressWarnings("rawtypes")
+	@Override
+	protected void onAttach(AttachEvent attachEvent) {
+		super.onAttach(attachEvent);
+		attachEvent.getUI().addShortcutListener(SecurityUtil::signOut, Key.KEY_L, KeyModifier.CONTROL);
+	}
 
 	/**
 	 * Build and add secured menus

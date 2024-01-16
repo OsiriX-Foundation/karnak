@@ -16,22 +16,23 @@ import org.karnak.backend.util.DicomNodeUtil;
 
 public class DicomEchoSelectionLogic {
 
-  // DIALOG
-  private final DicomEchoSelectionDialog dialog;
+	// DIALOG
+	private final DicomEchoSelectionDialog dialog;
 
-  public DicomEchoSelectionLogic(DicomEchoSelectionDialog dialog) {
-    this.dialog = dialog;
-  }
+	public DicomEchoSelectionLogic(DicomEchoSelectionDialog dialog) {
+		this.dialog = dialog;
+	}
 
-  public void loadDicomNodeList() {
-    try {
-      dialog.removeMessage();
-      dialog.loadDicomNodeTypes(DicomNodeUtil.getAllDicomNodeTypesDefinedLocally());
-    } catch (Exception e) {
-      Message message =
-          new Message(
-              MessageLevel.ERROR, MessageFormat.TEXT, "Cannot read the list of DICOM nodes");
-      dialog.displayMessage(message);
-    }
-  }
+	public void loadDicomNodeList() {
+		try {
+			dialog.removeMessage();
+			dialog.loadDicomNodeTypes(DicomNodeUtil.getAllDicomNodeTypesDefinedLocally());
+		}
+		catch (Exception e) {
+			Message message = new Message(MessageLevel.ERROR, MessageFormat.TEXT,
+					"Cannot read the list of DICOM nodes");
+			dialog.displayMessage(message);
+		}
+	}
+
 }

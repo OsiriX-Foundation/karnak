@@ -16,21 +16,19 @@ import org.karnak.frontend.dicom.Util;
 
 public class DicomNodeUtil {
 
-  public static List<DicomNodeList> getAllDicomNodeTypesDefinedLocally() {
-    List<DicomNodeList> dicomNodeTypes = new ArrayList<>();
+	public static List<DicomNodeList> getAllDicomNodeTypesDefinedLocally() {
+		List<DicomNodeList> dicomNodeTypes = new ArrayList<>();
 
-    dicomNodeTypes.add(
-        Util.readnodes(
-            DicomNodeUtil.class.getResource("/config/workstations-nodes.csv"), "Workstations"));
-    dicomNodeTypes.add(
-        Util.readnodes(
-            DicomNodeUtil.class.getResource("/config/pacs-nodes-web.csv"), "PACS Public WEB"));
+		dicomNodeTypes
+			.add(Util.readnodes(DicomNodeUtil.class.getResource("/config/workstations-nodes.csv"), "Workstations"));
+		dicomNodeTypes
+			.add(Util.readnodes(DicomNodeUtil.class.getResource("/config/pacs-nodes-web.csv"), "PACS Public WEB"));
 
-    return dicomNodeTypes;
-  }
+		return dicomNodeTypes;
+	}
 
-  public static DicomNodeList getAllWorkListNodesDefinedLocally() {
-    return Util.readnodes(
-        DicomNodeUtil.class.getResource("/config/worklist-nodes.csv"), "Worklists");
-  }
+	public static DicomNodeList getAllWorkListNodesDefinedLocally() {
+		return Util.readnodes(DicomNodeUtil.class.getResource("/config/worklist-nodes.csv"), "Worklists");
+	}
+
 }

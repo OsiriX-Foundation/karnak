@@ -31,77 +31,75 @@ import org.springframework.stereotype.Service;
 @Service
 public class PseudonymMappingLogic {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(PseudonymMappingLogic.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PseudonymMappingLogic.class);
 
-  // View
-  private PseudonymMappingView pseudonymMappingView;
+	// View
+	private PseudonymMappingView pseudonymMappingView;
 
-  // Services
-  private final PseudonymMappingService pseudonymMappingService;
+	// Services
+	private final PseudonymMappingService pseudonymMappingService;
 
-  private final ProjectService projectService;
+	private final ProjectService projectService;
 
-  // Cache
-  private final ExternalIDCache externalIDCache;
+	// Cache
+	private final ExternalIDCache externalIDCache;
 
-  /**
-   * Autowired constructor
-   * @param pseudonymMappingService Pseudonym mapping backend service
-   * @param externalIDCache         External ID Cache
-   * @param projectService          Project service
-   */
-  @Autowired
-  public PseudonymMappingLogic(
-      final PseudonymMappingService pseudonymMappingService,
-      final ExternalIDCache externalIDCache,
-      final ProjectService projectService) {
-    this.pseudonymMappingService = pseudonymMappingService;
-    this.externalIDCache = externalIDCache;
-    this.projectService = projectService;
-    this.pseudonymMappingView = null;
-  }
+	/**
+	 * Autowired constructor
+	 * @param pseudonymMappingService Pseudonym mapping backend service
+	 * @param externalIDCache External ID Cache
+	 * @param projectService Project service
+	 */
+	@Autowired
+	public PseudonymMappingLogic(final PseudonymMappingService pseudonymMappingService,
+			final ExternalIDCache externalIDCache, final ProjectService projectService) {
+		this.pseudonymMappingService = pseudonymMappingService;
+		this.externalIDCache = externalIDCache;
+		this.projectService = projectService;
+		this.pseudonymMappingView = null;
+	}
 
-  /**
-   * Retrieve a patient stored in mainzelliste by its pseudonym
-   * @param pseudonym Pseudonym
-   * @return Patient found
-   */
-  public Patient retrieveMainzellistePatient(String pseudonym) {
-    return pseudonymMappingService.retrieveMainzellistePatient(pseudonym);
-  }
+	/**
+	 * Retrieve a patient stored in mainzelliste by its pseudonym
+	 * @param pseudonym Pseudonym
+	 * @return Patient found
+	 */
+	public Patient retrieveMainzellistePatient(String pseudonym) {
+		return pseudonymMappingService.retrieveMainzellistePatient(pseudonym);
+	}
 
-  /**
+	/**
 	 * Retrieve a map of patients by project stored in external id cache which have the
 	 * pseudonym in parameter
-   * @param pseudonym Pseudonym
-   * @return Map of patients by project
-   */
-  public Map<String, Patient> retrieveExternalIDCachePatients(String pseudonym) {
-    Map<String, Patient> externalIDCacheMapping = new HashMap<>();
+	 * @param pseudonym Pseudonym
+	 * @return Map of patients by project
+	 */
+	public Map<String, Patient> retrieveExternalIDCachePatients(String pseudonym) {
+		Map<String, Patient> externalIDCacheMapping = new HashMap<>();
 
-    // Look for patients in externalID cache corresponding to the input of the
-    // user
-    List<Patient> patientsFound =
-        externalIDCache.getAll().stream()
-            .filter(extId -> Objects.equals(extId.getPseudonym(), pseudonym))
-            .collect(Collectors.toList());
+		// Look for patients in externalID cache corresponding to the input of the
+		// user
+		List<Patient> patientsFound = externalIDCache.getAll()
+			.stream()
+			.filter(extId -> Objects.equals(extId.getPseudonym(), pseudonym))
+			.collect(Collectors.toList());
 
-    // Add mapping found
-    patientsFound.forEach(
-        p -> {
-          Long projectID = ((Patient) p).getProjectID();
-          ProjectEntity projectEntity = projectService.retrieveProject(projectID);
-          externalIDCacheMapping.put(projectEntity.getName(), (Patient) p);
-        });
+		// Add mapping found
+		patientsFound.forEach(p -> {
+			Long projectID = ((Patient) p).getProjectID();
+			ProjectEntity projectEntity = projectService.retrieveProject(projectID);
+			externalIDCacheMapping.put(projectEntity.getName(), (Patient) p);
+		});
 
-    return externalIDCacheMapping;
-  }
+		return externalIDCacheMapping;
+	}
 
-  public PseudonymMappingView getMappingView() {
-    return pseudonymMappingView;
-  }
+	public PseudonymMappingView getMappingView() {
+		return pseudonymMappingView;
+	}
 
-  public void setMappingView(PseudonymMappingView pseudonymMappingView) {
-    this.pseudonymMappingView = pseudonymMappingView;
-  }
+	public void setMappingView(PseudonymMappingView pseudonymMappingView) {
+		this.pseudonymMappingView = pseudonymMappingView;
+	}
+
 }

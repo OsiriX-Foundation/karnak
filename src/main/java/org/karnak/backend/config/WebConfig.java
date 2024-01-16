@@ -14,21 +14,16 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-/**
- * Configuration for the Spring MVC part
- */
+/** Configuration for the Spring MVC part */
 @Configuration
 @EnableWebMvc
 public class WebConfig implements WebMvcConfigurer {
 
-  @Override
-  public void addResourceHandlers(ResourceHandlerRegistry registry) {
-    // resource handler for images and icons
-    registry
-        .addResourceHandler("/img/**")
-        .addResourceLocations("classpath:META-INF/resources/img/");
-    registry
-        .addResourceHandler("/icons/**")
-        .addResourceLocations("classpath:META-INF/resources/icons/");
-  }
+	@Override
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		// resource handler for images and icons
+		registry.addResourceHandler("/img/**").addResourceLocations("classpath:META-INF/resources/img/");
+		registry.addResourceHandler("/icons/**").addResourceLocations("classpath:META-INF/resources/icons/");
+	}
+
 }

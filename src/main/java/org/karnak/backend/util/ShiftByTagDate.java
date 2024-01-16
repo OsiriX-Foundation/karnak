@@ -18,62 +18,68 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ShiftByTagDate {
-  private static final Logger LOGGER = LoggerFactory.getLogger(ShiftByTagDate.class);
 
-  private ShiftByTagDate() {
-  }
+	private static final Logger LOGGER = LoggerFactory.getLogger(ShiftByTagDate.class);
 
-  public static void verifyShiftArguments(List<ArgumentEntity> argumentEntities) {
-    // All arguments are optional
-  }
+	private ShiftByTagDate() {
+	}
 
-  public static String shift(Attributes dcm, int tag, List<ArgumentEntity> argumentEntities, HMAC hmac) {
-    try {
-      verifyShiftArguments(argumentEntities);
-    } catch (IllegalArgumentException e) {
-      throw e;
-    }
+	public static void verifyShiftArguments(List<ArgumentEntity> argumentEntities) {
+		// All arguments are optional
+	}
 
-    String dcmElValue = dcm.getString(tag);
-    String shiftDaysTag = "";
-    String shiftSecondsTag = "";
+	public static String shift(Attributes dcm, int tag, List<ArgumentEntity> argumentEntities, HMAC hmac) {
+		try {
+			verifyShiftArguments(argumentEntities);
+		}
+		catch (IllegalArgumentException e) {
+			throw e;
+		}
 
-    for (ArgumentEntity argumentEntity : argumentEntities) {
-      final String key = argumentEntity.getArgumentKey();
-      final String value = argumentEntity.getArgumentValue();
+		String dcmElValue = dcm.getString(tag);
+		String shiftDaysTag = "";
+		String shiftSecondsTag = "";
 
-      try {
-        if (key.equals("days_tag")) {
-          shiftDaysTag = value;
-        }
-        if (key.equals("seconds_tag")) {
-          shiftSecondsTag = value;
-        }
-      } catch (Exception e) {
-        LOGGER.error("args {} is not correct", value, e);
-      }
-    }
+		for (ArgumentEntity argumentEntity : argumentEntities) {
+			final String key = argumentEntity.getArgumentKey();
+			final String value = argumentEntity.getArgumentValue();
 
-    final String shiftDaysValue = dcm.getString(ExprCondition.intFromHexString(shiftDaysTag));
-    final String shiftSecondsValue = dcm.getString(ExprCondition.intFromHexString(shiftSecondsTag));
+			try {
+				if (key.equals("days_tag")) {
+					shiftDaysTag = value;
+				}
+				if (key.equals("seconds_tag")) {
+					shiftSecondsTag = value;
+				}
+			}
+			catch (Exception e) {
+				LOGGER.error("args {} is not correct", value, e);
+			}
+		}
 
-    int shiftDays = 0;
-    int shiftSeconds = 0;
-    try {
-      if (shiftDaysValue != null) {
-        shiftDays = Integer.parseInt(shiftDaysValue);
-      }
-    } catch (Exception e) {
-      LOGGER.error("args {} is not correct", shiftDaysValue, e);
-    }
-    try {
-      if (shiftSecondsValue != null) {
-        shiftSeconds = Integer.parseInt(shiftSecondsValue);
-      }
-    } catch (Exception e) {
-      LOGGER.error("args {} is not correct", shiftSecondsValue, e);
-    }
+		final String shiftDaysValue = dcm.getString(ExprCondition.intFromHexString(shiftDaysTag));
+		final String shiftSecondsValue = dcm.getString(ExprCondition.intFromHexString(shiftSecondsTag));
 
-    return ShiftDate.shiftValue(dcm, tag, dcmElValue, shiftDays, shiftSeconds);
-  }
+		int shiftDays = 0;
+		int shiftSeconds = 0;
+		try {
+			if (shiftDaysValue != null) {
+				shiftDays = Integer.parseInt(shiftDaysValue);
+			}
+		}
+		catch (Exception e) {
+			LOGGER.error("args {} is not correct", shiftDaysValue, e);
+		}
+		try {
+			if (shiftSecondsValue != null) {
+				shiftSeconds = Integer.parseInt(shiftSecondsValue);
+			}
+		}
+		catch (Exception e) {
+			LOGGER.error("args {} is not correct", shiftSecondsValue, e);
+		}
+
+		return ShiftDate.shiftValue(dcm, tag, dcmElValue, shiftDays, shiftSeconds);
+	}
+
 }

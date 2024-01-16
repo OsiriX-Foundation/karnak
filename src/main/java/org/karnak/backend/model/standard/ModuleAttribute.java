@@ -16,55 +16,54 @@ import org.apache.commons.lang3.StringUtils;
 
 public class ModuleAttribute {
 
-  private static final List<String> strictedTypes = Arrays.asList("1", "1C", "2", "2C", "3");
+	private static final List<String> strictedTypes = Arrays.asList("1", "1C", "2", "2C", "3");
 
-  private final String moduleTagPath;
+	private final String moduleTagPath;
 
-  private final String tagPath;
+	private final String tagPath;
 
-  private final String type;
+	private final String type;
 
-  private final String moduleId;
+	private final String moduleId;
 
-  public ModuleAttribute(String moduleTagPath, String type, String moduleId) {
-    this.moduleTagPath = moduleTagPath;
-    this.type = type;
-    this.moduleId = moduleId;
-    this.tagPath = generateTagPath(moduleTagPath, moduleId);
-  }
+	public ModuleAttribute(String moduleTagPath, String type, String moduleId) {
+		this.moduleTagPath = moduleTagPath;
+		this.type = type;
+		this.moduleId = moduleId;
+		this.tagPath = generateTagPath(moduleTagPath, moduleId);
+	}
 
-  public static String getStrictedType(List<ModuleAttribute> moduleAttributes) {
-    for (String strictedType : strictedTypes) {
-      if (moduleAttributes.stream().anyMatch(attribute -> strictedType.equals(attribute.getType()))
-          == true) {
-        return strictedType;
-      }
-    }
-    return null;
-  }
+	public static String getStrictedType(List<ModuleAttribute> moduleAttributes) {
+		for (String strictedType : strictedTypes) {
+			if (moduleAttributes.stream().anyMatch(attribute -> strictedType.equals(attribute.getType())) == true) {
+				return strictedType;
+			}
+		}
+		return null;
+	}
 
-  private String generateTagPath(String tagPath, String moduleId) {
-    List<String> tagPathFiltered =
-        Arrays.stream(tagPath.split(":"))
-            .filter(value -> !value.equals(moduleId))
-            .collect(Collectors.toList());
+	private String generateTagPath(String tagPath, String moduleId) {
+		List<String> tagPathFiltered = Arrays.stream(tagPath.split(":"))
+			.filter(value -> !value.equals(moduleId))
+			.collect(Collectors.toList());
 
-    return StringUtils.join(tagPathFiltered, ":");
-  }
+		return StringUtils.join(tagPathFiltered, ":");
+	}
 
-  public String getModuleTagPath() {
-    return moduleTagPath;
-  }
+	public String getModuleTagPath() {
+		return moduleTagPath;
+	}
 
-  public String getTagPath() {
-    return tagPath;
-  }
+	public String getTagPath() {
+		return tagPath;
+	}
 
-  public String getType() {
-    return type;
-  }
+	public String getType() {
+		return type;
+	}
 
-  public String getModuleId() {
-    return moduleId;
-  }
+	public String getModuleId() {
+		return moduleId;
+	}
+
 }

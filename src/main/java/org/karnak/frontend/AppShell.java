@@ -15,8 +15,8 @@ import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.theme.Theme;
 
 /**
- * Use the @PWA annotation make the application installable on phones, tablets and some desktop
- * browsers.
+ * Use the @PWA annotation make the application installable on phones, tablets and some
+ * desktop browsers.
  */
 @PWA(name = "Karnak Gateway", shortName = "karnak", iconPath = "icons/logo.png")
 @Push

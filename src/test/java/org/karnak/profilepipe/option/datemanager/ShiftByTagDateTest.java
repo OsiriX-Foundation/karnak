@@ -24,92 +24,93 @@ import org.karnak.backend.util.ShiftByTagDate;
 
 public class ShiftByTagDateTest {
 
-  private static final Attributes dataset = new Attributes();
-  private static final List<ArgumentEntity> argumentEntities = new ArrayList<>();
-  private static final ArgumentEntity seconds_tag = new ArgumentEntity();
-  private static final ArgumentEntity days_tag = new ArgumentEntity();
-  private static final HMAC hmac = new HMAC(HMAC.generateRandomKey());
+	private static final Attributes dataset = new Attributes();
 
-  @BeforeEach
-  protected void setUpBeforeTest() throws Exception {
-    argumentEntities.clear();
+	private static final List<ArgumentEntity> argumentEntities = new ArrayList<>();
 
-    dataset.clear();
+	private static final ArgumentEntity seconds_tag = new ArgumentEntity();
 
-    dataset.setString(Tag.StudyDate, VR.DA, "20180209");
-    dataset.setString(Tag.StudyTime, VR.TM, "120843");
-    dataset.setString(Tag.PatientAge, VR.AS, "043Y");
-    dataset.setString(Tag.AcquisitionDateTime, VR.DT, "20180209120854.354");
-    dataset.setString(Tag.AcquisitionTime, VR.TM, "010134");
-    dataset.setString(0x00150010, VR.LT, "ADIS");
-    dataset.setString(0x00151010, VR.LT, "10");
-    dataset.setString(0x00151011, VR.LT, "500");
-    dataset.setString(0x00151012, VR.LT, "AAA");
-    dataset.setString(0x00151013, VR.LT, "BBB");
-  }
+	private static final ArgumentEntity days_tag = new ArgumentEntity();
 
-  @Test
-  void shiftNoop() {
-    assertEquals("20180209", ShiftByTagDate.shift(dataset, Tag.StudyDate, argumentEntities, hmac));
-    assertEquals("120843", ShiftByTagDate.shift(dataset, Tag.StudyTime, argumentEntities, hmac));
-    assertEquals("043Y", ShiftByTagDate.shift(dataset, Tag.PatientAge, argumentEntities, hmac));
-    assertEquals(
-            "20180209120854.354000",
-            ShiftByTagDate.shift(dataset, Tag.AcquisitionDateTime, argumentEntities, hmac));
-    assertEquals("010134", ShiftByTagDate.shift(dataset, Tag.AcquisitionTime, argumentEntities, hmac));
-  }
+	private static final HMAC hmac = new HMAC(HMAC.generateRandomKey());
 
-  @Test
-  void shiftByTag() {
-    days_tag.setArgumentKey("days_tag");
-    days_tag.setArgumentValue("(0015,1010)");
-    seconds_tag.setArgumentKey("seconds_tag");
-    seconds_tag.setArgumentValue("(0015,1011)");
-    argumentEntities.add(seconds_tag);
-    argumentEntities.add(days_tag);
+	@BeforeEach
+	protected void setUpBeforeTest() throws Exception {
+		argumentEntities.clear();
 
-    assertEquals("20180130", ShiftByTagDate.shift(dataset, Tag.StudyDate, argumentEntities, hmac));
-    assertEquals("120023", ShiftByTagDate.shift(dataset, Tag.StudyTime, argumentEntities, hmac));
-    assertEquals("043Y", ShiftByTagDate.shift(dataset, Tag.PatientAge, argumentEntities, hmac));
-    assertEquals(
-            "20180130120034.354000",
-            ShiftByTagDate.shift(dataset, Tag.AcquisitionDateTime, argumentEntities, hmac));
-    assertEquals("005314", ShiftByTagDate.shift(dataset, Tag.AcquisitionTime, argumentEntities, hmac));
-  }
+		dataset.clear();
 
-  @Test
-  void shiftByBadTag() {
-    days_tag.setArgumentKey("days_tag");
-    days_tag.setArgumentValue("(0017,1010)");
-    seconds_tag.setArgumentKey("seconds_tag");
-    seconds_tag.setArgumentValue("(0017,1011)");
-    argumentEntities.add(seconds_tag);
-    argumentEntities.add(days_tag);
+		dataset.setString(Tag.StudyDate, VR.DA, "20180209");
+		dataset.setString(Tag.StudyTime, VR.TM, "120843");
+		dataset.setString(Tag.PatientAge, VR.AS, "043Y");
+		dataset.setString(Tag.AcquisitionDateTime, VR.DT, "20180209120854.354");
+		dataset.setString(Tag.AcquisitionTime, VR.TM, "010134");
+		dataset.setString(0x00150010, VR.LT, "ADIS");
+		dataset.setString(0x00151010, VR.LT, "10");
+		dataset.setString(0x00151011, VR.LT, "500");
+		dataset.setString(0x00151012, VR.LT, "AAA");
+		dataset.setString(0x00151013, VR.LT, "BBB");
+	}
 
-    assertEquals("20180209", ShiftByTagDate.shift(dataset, Tag.StudyDate, argumentEntities, hmac));
-    assertEquals("120843", ShiftByTagDate.shift(dataset, Tag.StudyTime, argumentEntities, hmac));
-    assertEquals("043Y", ShiftByTagDate.shift(dataset, Tag.PatientAge, argumentEntities, hmac));
-    assertEquals(
-            "20180209120854.354000",
-            ShiftByTagDate.shift(dataset, Tag.AcquisitionDateTime, argumentEntities, hmac));
-    assertEquals("010134", ShiftByTagDate.shift(dataset, Tag.AcquisitionTime, argumentEntities, hmac));
-  }
+	@Test
+	void shiftNoop() {
+		assertEquals("20180209", ShiftByTagDate.shift(dataset, Tag.StudyDate, argumentEntities, hmac));
+		assertEquals("120843", ShiftByTagDate.shift(dataset, Tag.StudyTime, argumentEntities, hmac));
+		assertEquals("043Y", ShiftByTagDate.shift(dataset, Tag.PatientAge, argumentEntities, hmac));
+		assertEquals("20180209120854.354000",
+				ShiftByTagDate.shift(dataset, Tag.AcquisitionDateTime, argumentEntities, hmac));
+		assertEquals("010134", ShiftByTagDate.shift(dataset, Tag.AcquisitionTime, argumentEntities, hmac));
+	}
 
-  @Test
-  void shiftByBadTag2() {
-    days_tag.setArgumentKey("days_tag");
-    days_tag.setArgumentValue("(0015,1012)");
-    seconds_tag.setArgumentKey("seconds_tag");
-    seconds_tag.setArgumentValue("(0015,1013)");
-    argumentEntities.add(seconds_tag);
-    argumentEntities.add(days_tag);
+	@Test
+	void shiftByTag() {
+		days_tag.setArgumentKey("days_tag");
+		days_tag.setArgumentValue("(0015,1010)");
+		seconds_tag.setArgumentKey("seconds_tag");
+		seconds_tag.setArgumentValue("(0015,1011)");
+		argumentEntities.add(seconds_tag);
+		argumentEntities.add(days_tag);
 
-    assertEquals("20180209", ShiftByTagDate.shift(dataset, Tag.StudyDate, argumentEntities, hmac));
-    assertEquals("120843", ShiftByTagDate.shift(dataset, Tag.StudyTime, argumentEntities, hmac));
-    assertEquals("043Y", ShiftByTagDate.shift(dataset, Tag.PatientAge, argumentEntities, hmac));
-    assertEquals(
-            "20180209120854.354000",
-            ShiftByTagDate.shift(dataset, Tag.AcquisitionDateTime, argumentEntities, hmac));
-    assertEquals("010134", ShiftByTagDate.shift(dataset, Tag.AcquisitionTime, argumentEntities, hmac));
-  }
+		assertEquals("20180130", ShiftByTagDate.shift(dataset, Tag.StudyDate, argumentEntities, hmac));
+		assertEquals("120023", ShiftByTagDate.shift(dataset, Tag.StudyTime, argumentEntities, hmac));
+		assertEquals("043Y", ShiftByTagDate.shift(dataset, Tag.PatientAge, argumentEntities, hmac));
+		assertEquals("20180130120034.354000",
+				ShiftByTagDate.shift(dataset, Tag.AcquisitionDateTime, argumentEntities, hmac));
+		assertEquals("005314", ShiftByTagDate.shift(dataset, Tag.AcquisitionTime, argumentEntities, hmac));
+	}
+
+	@Test
+	void shiftByBadTag() {
+		days_tag.setArgumentKey("days_tag");
+		days_tag.setArgumentValue("(0017,1010)");
+		seconds_tag.setArgumentKey("seconds_tag");
+		seconds_tag.setArgumentValue("(0017,1011)");
+		argumentEntities.add(seconds_tag);
+		argumentEntities.add(days_tag);
+
+		assertEquals("20180209", ShiftByTagDate.shift(dataset, Tag.StudyDate, argumentEntities, hmac));
+		assertEquals("120843", ShiftByTagDate.shift(dataset, Tag.StudyTime, argumentEntities, hmac));
+		assertEquals("043Y", ShiftByTagDate.shift(dataset, Tag.PatientAge, argumentEntities, hmac));
+		assertEquals("20180209120854.354000",
+				ShiftByTagDate.shift(dataset, Tag.AcquisitionDateTime, argumentEntities, hmac));
+		assertEquals("010134", ShiftByTagDate.shift(dataset, Tag.AcquisitionTime, argumentEntities, hmac));
+	}
+
+	@Test
+	void shiftByBadTag2() {
+		days_tag.setArgumentKey("days_tag");
+		days_tag.setArgumentValue("(0015,1012)");
+		seconds_tag.setArgumentKey("seconds_tag");
+		seconds_tag.setArgumentValue("(0015,1013)");
+		argumentEntities.add(seconds_tag);
+		argumentEntities.add(days_tag);
+
+		assertEquals("20180209", ShiftByTagDate.shift(dataset, Tag.StudyDate, argumentEntities, hmac));
+		assertEquals("120843", ShiftByTagDate.shift(dataset, Tag.StudyTime, argumentEntities, hmac));
+		assertEquals("043Y", ShiftByTagDate.shift(dataset, Tag.PatientAge, argumentEntities, hmac));
+		assertEquals("20180209120854.354000",
+				ShiftByTagDate.shift(dataset, Tag.AcquisitionDateTime, argumentEntities, hmac));
+		assertEquals("010134", ShiftByTagDate.shift(dataset, Tag.AcquisitionTime, argumentEntities, hmac));
+	}
+
 }

@@ -18,25 +18,26 @@ import org.springframework.stereotype.Service;
 @Service
 public class ExternalIDLogic {
 
-  private ExternalIDView externalIDView;
+	private ExternalIDView externalIDView;
 
-  private final ProjectService projectService;
+	private final ProjectService projectService;
 
-  @Autowired
-  public ExternalIDLogic(final ProjectService projectService) {
-    this.projectService = projectService;
+	@Autowired
+	public ExternalIDLogic(final ProjectService projectService) {
+		this.projectService = projectService;
 		this.externalIDView = null;
-  }
+	}
 
-  public void setExternalIDView(ExternalIDView externalIDView) {
-    this.externalIDView = externalIDView;
-  }
+	public void setExternalIDView(ExternalIDView externalIDView) {
+		this.externalIDView = externalIDView;
+	}
 
-  public ExternalIDView getExternalIDView() {
-    return externalIDView;
-  }
+	public ExternalIDView getExternalIDView() {
+		return externalIDView;
+	}
 
-  public List<ProjectEntity> retrieveProject() {
-    return projectService.getAllProjects();
-  }
+	public List<ProjectEntity> retrieveProject() {
+		return projectService.getAllProjects();
+	}
+
 }

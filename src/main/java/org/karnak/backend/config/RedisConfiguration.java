@@ -27,38 +27,35 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 public class RedisConfiguration {
 
-  @Bean
-  ChannelTopic topic() {
-    return new ChannelTopic("patient:queue");
-  }
+	@Bean
+	ChannelTopic topic() {
+		return new ChannelTopic("patient:queue");
+	}
 
-  @Bean(name = "redisTemplate")
-  public RedisTemplate<String, Patient> redisTemplate(RedisConnectionFactory connectionFactory) {
+	@Bean(name = "redisTemplate")
+	public RedisTemplate<String, Patient> redisTemplate(RedisConnectionFactory connectionFactory) {
 
-    ObjectMapper objectMapper =
-        new ObjectMapper().registerModule(new Jdk8Module()).registerModule(new JavaTimeModule());
+		ObjectMapper objectMapper = new ObjectMapper().registerModule(new Jdk8Module())
+			.registerModule(new JavaTimeModule());
 
-    Jackson2JsonRedisSerializer<Patient> serializer =
-        new Jackson2JsonRedisSerializer<>(Patient.class);
-    serializer.setObjectMapper(objectMapper);
+		Jackson2JsonRedisSerializer<Patient> serializer = new Jackson2JsonRedisSerializer<>(Patient.class);
+		serializer.setObjectMapper(objectMapper);
 
-    RedisTemplate<String, Patient> template = new RedisTemplate<>();
-    template.setConnectionFactory(connectionFactory);
-    template.setKeySerializer(new StringRedisSerializer());
-    template.setValueSerializer(serializer);
+		RedisTemplate<String, Patient> template = new RedisTemplate<>();
+		template.setConnectionFactory(connectionFactory);
+		template.setKeySerializer(new StringRedisSerializer());
+		template.setValueSerializer(serializer);
 
-    return template;
-  }
+		return template;
+	}
 
-  @Bean
-  public RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer() {
-    return (builder) ->
-        builder
-            .withCacheConfiguration(
-                "externalId.cache",
-                RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofDays(7)))
-            .withCacheConfiguration(
-                "mainzelliste.cache",
-                RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(15)));
-  }
+	@Bean
+	public RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer() {
+		return (builder) -> builder
+			.withCacheConfiguration("externalId.cache",
+					RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofDays(7)))
+			.withCacheConfiguration("mainzelliste.cache",
+					RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(15)));
+	}
+
 }

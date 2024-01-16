@@ -20,119 +20,123 @@ import org.karnak.backend.model.dicom.Message;
 
 public class MessageBox extends Composite<Div> {
 
-  private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-  // UI COMPONENTS
-  private HorizontalLayout layout;
+	// UI COMPONENTS
+	private HorizontalLayout layout;
 
-  private Div titleDiv;
+	private Div titleDiv;
 
-  private Div contentDiv;
+	private Div contentDiv;
 
 	private Icon icon;
 
-  // DATA
-  private Message message;
+	// DATA
+	private Message message;
 
-  private final MessageType type;
+	private final MessageType type;
 
-  public MessageBox(MessageType type) {
-    this.type = type;
+	public MessageBox(MessageType type) {
+		this.type = type;
 
-    createMessageBox();
-    createLayout();
-    createTitleDiv();
-    createContentDiv();
+		createMessageBox();
+		createLayout();
+		createTitleDiv();
+		createContentDiv();
 
-    layout.add(titleDiv, contentDiv);
+		layout.add(titleDiv, contentDiv);
 
-    getContent().add(layout);
-  }
+		getContent().add(layout);
+	}
 
-  public MessageBox(Message message, MessageType type) {
-    this.message = message;
-    this.type = type;
+	public MessageBox(Message message, MessageType type) {
+		this.message = message;
+		this.type = type;
 
-    createMessageBox();
-    createLayout();
-    createTitleDiv();
-    createContentDiv();
+		createMessageBox();
+		createLayout();
+		createTitleDiv();
+		createContentDiv();
 
-    layout.add(titleDiv, contentDiv);
+		layout.add(titleDiv, contentDiv);
 
-    getContent().add(layout);
-  }
+		getContent().add(layout);
+	}
 
-  public void setMessage(Message message) {
-    this.message = message;
+	public void setMessage(Message message) {
+		this.message = message;
 
-    updateLayout();
-    updateTitleDiv();
-    updateContentDiv();
-  }
+		updateLayout();
+		updateTitleDiv();
+		updateContentDiv();
+	}
 
-  private void createMessageBox() {
-    getContent().addClassName("message-box");
-  }
+	private void createMessageBox() {
+		getContent().addClassName("message-box");
+	}
 
-  private void createLayout() {
-    layout = new HorizontalLayout();
-    layout.addClassName("message-box-layout");
-    if (type == MessageType.STATIC_MESSAGE) {
-      layout.addClassName("message-box-layout-with-margin");
-    }
+	private void createLayout() {
+		layout = new HorizontalLayout();
+		layout.addClassName("message-box-layout");
+		if (type == MessageType.STATIC_MESSAGE) {
+			layout.addClassName("message-box-layout-with-margin");
+		}
 
-    if (message != null) {
-      if (MessageLevel.INFO == message.getLevel()) {
-        layout.addClassName("info");
-      } else if (MessageLevel.WARN == message.getLevel()) {
-        layout.addClassName("warn");
-      } else if (MessageLevel.ERROR == message.getLevel()) {
-        layout.addClassName("error");
-      }
-    }
-  }
+		if (message != null) {
+			if (MessageLevel.INFO == message.getLevel()) {
+				layout.addClassName("info");
+			}
+			else if (MessageLevel.WARN == message.getLevel()) {
+				layout.addClassName("warn");
+			}
+			else if (MessageLevel.ERROR == message.getLevel()) {
+				layout.addClassName("error");
+			}
+		}
+	}
 
-  private void createTitleDiv() {
-    titleDiv = new Div();
-    titleDiv.addClassName("message-box-title");
+	private void createTitleDiv() {
+		titleDiv = new Div();
+		titleDiv.addClassName("message-box-title");
 
-    if (message != null) {
-      if (MessageLevel.INFO == message.getLevel()) {
-        titleDiv.addClassName("info");
-      } else if (MessageLevel.WARN == message.getLevel()) {
-        titleDiv.addClassName("warn");
-      } else if (MessageLevel.ERROR == message.getLevel()) {
-        titleDiv.addClassName("error");
-      }
+		if (message != null) {
+			if (MessageLevel.INFO == message.getLevel()) {
+				titleDiv.addClassName("info");
+			}
+			else if (MessageLevel.WARN == message.getLevel()) {
+				titleDiv.addClassName("warn");
+			}
+			else if (MessageLevel.ERROR == message.getLevel()) {
+				titleDiv.addClassName("error");
+			}
 
-      createIcon();
-      titleDiv.add(icon);
-    }
-  }
+			createIcon();
+			titleDiv.add(icon);
+		}
+	}
 
-  private void createContentDiv() {
-    contentDiv = new Div();
-    contentDiv.addClassName("message-box-content");
+	private void createContentDiv() {
+		contentDiv = new Div();
+		contentDiv.addClassName("message-box-content");
 
-    if (message != null) {
-      switch (message.getFormat()) {
-        case TEXT:
-          contentDiv.setText(message.getText());
-          break;
-        case HTML:
-          contentDiv.removeAll();
-          contentDiv.add(new Html("<span>" + message.getText() + "</span>"));
-          break;
-        default:
-          break;
-      }
-    }
-  }
+		if (message != null) {
+			switch (message.getFormat()) {
+				case TEXT:
+					contentDiv.setText(message.getText());
+					break;
+				case HTML:
+					contentDiv.removeAll();
+					contentDiv.add(new Html("<span>" + message.getText() + "</span>"));
+					break;
+				default:
+					break;
+			}
+		}
+	}
 
-  private void createIcon() {
-    if (message != null) {
-      if (MessageLevel.INFO == message.getLevel()) {
+	private void createIcon() {
+		if (message != null) {
+			if (MessageLevel.INFO == message.getLevel()) {
 				icon = new Icon("icons", "info-outline");
 			}
 			else if (MessageLevel.WARN == message.getLevel()) {
@@ -140,50 +144,55 @@ public class MessageBox extends Composite<Div> {
 			}
 			else if (MessageLevel.ERROR == message.getLevel()) {
 				icon = new Icon("icons", "error-outline");
-      }
-    }
-  }
+			}
+		}
+	}
 
-  private void updateLayout() {
-    if (message != null) {
-      if (MessageLevel.INFO == message.getLevel()) {
-        layout.addClassName("info");
-      } else if (MessageLevel.WARN == message.getLevel()) {
-        layout.addClassName("warn");
-      } else if (MessageLevel.ERROR == message.getLevel()) {
-        layout.addClassName("error");
-      }
-    }
-  }
+	private void updateLayout() {
+		if (message != null) {
+			if (MessageLevel.INFO == message.getLevel()) {
+				layout.addClassName("info");
+			}
+			else if (MessageLevel.WARN == message.getLevel()) {
+				layout.addClassName("warn");
+			}
+			else if (MessageLevel.ERROR == message.getLevel()) {
+				layout.addClassName("error");
+			}
+		}
+	}
 
-  private void updateTitleDiv() {
-    if (message != null) {
-      if (MessageLevel.INFO == message.getLevel()) {
-        titleDiv.addClassName("info");
-      } else if (MessageLevel.WARN == message.getLevel()) {
-        titleDiv.addClassName("warn");
-      } else if (MessageLevel.ERROR == message.getLevel()) {
-        titleDiv.addClassName("error");
-      }
+	private void updateTitleDiv() {
+		if (message != null) {
+			if (MessageLevel.INFO == message.getLevel()) {
+				titleDiv.addClassName("info");
+			}
+			else if (MessageLevel.WARN == message.getLevel()) {
+				titleDiv.addClassName("warn");
+			}
+			else if (MessageLevel.ERROR == message.getLevel()) {
+				titleDiv.addClassName("error");
+			}
 
-      createIcon();
-      titleDiv.add(icon);
-    }
-  }
+			createIcon();
+			titleDiv.add(icon);
+		}
+	}
 
-  private void updateContentDiv() {
-    if (message != null) {
-      switch (message.getFormat()) {
-        case TEXT:
-          contentDiv.setText(message.getText());
-          break;
-        case HTML:
-          contentDiv.removeAll();
-          contentDiv.add(new Html("<span>" + message.getText() + "</span>"));
-          break;
-        default:
-          break;
-      }
-    }
-  }
+	private void updateContentDiv() {
+		if (message != null) {
+			switch (message.getFormat()) {
+				case TEXT:
+					contentDiv.setText(message.getText());
+					break;
+				case HTML:
+					contentDiv.removeAll();
+					contentDiv.add(new Html("<span>" + message.getText() + "</span>"));
+					break;
+				default:
+					break;
+			}
+		}
+	}
+
 }

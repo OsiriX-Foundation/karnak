@@ -25,158 +25,152 @@ import org.slf4j.LoggerFactory;
 
 public class MultipleActions extends AbstractAction {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(MultipleActions.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(MultipleActions.class);
 
-  final StandardDICOM standardDICOM;
+	final StandardDICOM standardDICOM;
 
-  final ActionItem defaultDummyValue;
+	final ActionItem defaultDummyValue;
 
-  final ActionItem actionUID;
+	final ActionItem actionUID;
 
-  final ActionItem actionReplaceNull;
+	final ActionItem actionReplaceNull;
 
-  final ActionItem actionRemove;
+	final ActionItem actionRemove;
 
-  final ActionItem actionKeep;
+	final ActionItem actionKeep;
 
-  public MultipleActions(String symbol) {
-    super(symbol);
-    standardDICOM = AppConfig.getInstance().getStandardDICOM();
-    defaultDummyValue = new DefaultDummy(symbol);
-    actionUID = new UID("U");
-    actionReplaceNull = new ReplaceNull("Z");
-    actionRemove = new Remove("X");
-    actionKeep = new Keep("K");
-  }
+	public MultipleActions(String symbol) {
+		super(symbol);
+		standardDICOM = AppConfig.getInstance().getStandardDICOM();
+		defaultDummyValue = new DefaultDummy(symbol);
+		actionUID = new UID("U");
+		actionReplaceNull = new ReplaceNull("Z");
+		actionRemove = new Remove("X");
+		actionKeep = new Keep("K");
+	}
 
-  @Override
-  public void execute(Attributes dcm, int tag, HMAC hmac) {
-    String sopUID = MetadataDICOMObject.getValue(dcm, Tag.SOPClassUID);
-    String tagPath = MetadataDICOMObject.getTagPath(dcm, tag);
-    try {
-      List<ModuleAttribute> moduleAttributes = standardDICOM.getAttributesBySOP(sopUID, tagPath);
-      if (moduleAttributes.size() == 1) {
-        String currentType = moduleAttributes.get(0).getType();
-        ActionItem actionItem = chooseAction(sopUID, currentType);
-        actionItem.execute(dcm, tag, hmac);
-      } else if (moduleAttributes.size() > 1) {
-        ActionItem action = multipleAttributes(sopUID, moduleAttributes);
-        action.execute(dcm, tag, hmac);
-      } else {
-        ActionItem action = defaultAction();
-        action.execute(dcm, tag, hmac);
-        LOGGER.warn(
-            "Cannot find the attribute {} in the SOP {}.  The strictest action will be chosen ({}).",
-            tagPath,
-            sopUID,
-            symbol);
-      }
-    } catch (StandardDICOMException standardDICOMException) {
-      ActionItem action = defaultAction();
-      action.execute(dcm, tag, hmac);
-      LOGGER.warn(
-          "Cannot execute the action {} with the SOP {} and the attribute {}. The strictest action will be chosen.",
-          symbol,
-          sopUID,
-          tagPath,
-          standardDICOMException);
-    }
-  }
+	@Override
+	public void execute(Attributes dcm, int tag, HMAC hmac) {
+		String sopUID = MetadataDICOMObject.getValue(dcm, Tag.SOPClassUID);
+		String tagPath = MetadataDICOMObject.getTagPath(dcm, tag);
+		try {
+			List<ModuleAttribute> moduleAttributes = standardDICOM.getAttributesBySOP(sopUID, tagPath);
+			if (moduleAttributes.size() == 1) {
+				String currentType = moduleAttributes.get(0).getType();
+				ActionItem actionItem = chooseAction(sopUID, currentType);
+				actionItem.execute(dcm, tag, hmac);
+			}
+			else if (moduleAttributes.size() > 1) {
+				ActionItem action = multipleAttributes(sopUID, moduleAttributes);
+				action.execute(dcm, tag, hmac);
+			}
+			else {
+				ActionItem action = defaultAction();
+				action.execute(dcm, tag, hmac);
+				LOGGER.warn("Cannot find the attribute {} in the SOP {}.  The strictest action will be chosen ({}).",
+						tagPath, sopUID, symbol);
+			}
+		}
+		catch (StandardDICOMException standardDICOMException) {
+			ActionItem action = defaultAction();
+			action.execute(dcm, tag, hmac);
+			LOGGER.warn(
+					"Cannot execute the action {} with the SOP {} and the attribute {}. The strictest action will be chosen.",
+					symbol, sopUID, tagPath, standardDICOMException);
+		}
+	}
 
-  private ActionItem multipleAttributes(String sopUID, List<ModuleAttribute> moduleAttributes) {
-    List<ModuleAttribute> mandatoryModuleAttributes =
-        getMandatoryAttributes(sopUID, moduleAttributes);
+	private ActionItem multipleAttributes(String sopUID, List<ModuleAttribute> moduleAttributes) {
+		List<ModuleAttribute> mandatoryModuleAttributes = getMandatoryAttributes(sopUID, moduleAttributes);
 
-    if (mandatoryModuleAttributes.isEmpty()) {
-      String currentType = ModuleAttribute.getStrictedType(moduleAttributes);
-      return chooseAction(sopUID, currentType);
-    }
+		if (mandatoryModuleAttributes.isEmpty()) {
+			String currentType = ModuleAttribute.getStrictedType(moduleAttributes);
+			return chooseAction(sopUID, currentType);
+		}
 
-    if (mandatoryModuleAttributes.size() == 1) {
-      String currentType = mandatoryModuleAttributes.get(0).getType();
-      return chooseAction(sopUID, currentType);
-    }
+		if (mandatoryModuleAttributes.size() == 1) {
+			String currentType = mandatoryModuleAttributes.get(0).getType();
+			return chooseAction(sopUID, currentType);
+		}
 
-    String currentType = ModuleAttribute.getStrictedType(mandatoryModuleAttributes);
-    return chooseAction(sopUID, currentType);
-  }
+		String currentType = ModuleAttribute.getStrictedType(mandatoryModuleAttributes);
+		return chooseAction(sopUID, currentType);
+	}
 
-  private List<ModuleAttribute> getMandatoryAttributes(
-      String sopUID, List<ModuleAttribute> moduleAttributes) {
-    List<ModuleAttribute> mandatoryModuleAttributes = new ArrayList<>();
-    moduleAttributes.forEach(
-        attribute -> {
-          Module module =
-              standardDICOM.getModuleByModuleID(sopUID, attribute.getModuleId()).orElse(null);
-          if (module != null && Module.moduleIsMandatory(module)) {
-            mandatoryModuleAttributes.add(attribute);
-          }
-        });
-    return mandatoryModuleAttributes;
-  }
+	private List<ModuleAttribute> getMandatoryAttributes(String sopUID, List<ModuleAttribute> moduleAttributes) {
+		List<ModuleAttribute> mandatoryModuleAttributes = new ArrayList<>();
+		moduleAttributes.forEach(attribute -> {
+			Module module = standardDICOM.getModuleByModuleID(sopUID, attribute.getModuleId()).orElse(null);
+			if (module != null && Module.moduleIsMandatory(module)) {
+				mandatoryModuleAttributes.add(attribute);
+			}
+		});
+		return mandatoryModuleAttributes;
+	}
 
-  private ActionItem chooseAction(String sopUID, String currentType) {
-    return switch (symbol) {
-      case "Z/D" -> dummyOrReplaceNull(currentType);
-      case "X/D" -> dummyOrRemove(currentType);
-      case "X/Z/D" -> dummyOrReplaceNullOrRemove(currentType);
-      case "X/Z" -> replaceNullOrRemove(currentType);
-      case "X/Z/U", "X/Z/U*" -> uidReplaceNullOrRemove(currentType);
-      default -> defaultDummyValue;
-    };
-  }
+	private ActionItem chooseAction(String sopUID, String currentType) {
+		return switch (symbol) {
+			case "Z/D" -> dummyOrReplaceNull(currentType);
+			case "X/D" -> dummyOrRemove(currentType);
+			case "X/Z/D" -> dummyOrReplaceNullOrRemove(currentType);
+			case "X/Z" -> replaceNullOrRemove(currentType);
+			case "X/Z/U", "X/Z/U*" -> uidReplaceNullOrRemove(currentType);
+			default -> defaultDummyValue;
+		};
+	}
 
-  private ActionItem defaultAction() {
-    return switch (symbol) {
-      case "X/Z" -> actionReplaceNull;
-      case "X/Z/U", "X/Z/U*" -> actionUID;
-      default -> defaultDummyValue;
-    };
-  }
+	private ActionItem defaultAction() {
+		return switch (symbol) {
+			case "X/Z" -> actionReplaceNull;
+			case "X/Z/U", "X/Z/U*" -> actionUID;
+			default -> defaultDummyValue;
+		};
+	}
 
-  private ActionItem dummyOrReplaceNull(String currentType) {
-    if (currentType.equals("1") || currentType.equals("1C")) {
-      return defaultDummyValue;
-    }
-    return actionReplaceNull;
-  }
+	private ActionItem dummyOrReplaceNull(String currentType) {
+		if (currentType.equals("1") || currentType.equals("1C")) {
+			return defaultDummyValue;
+		}
+		return actionReplaceNull;
+	}
 
-  private ActionItem dummyOrRemove(String currentType) {
-    if (currentType.equals("3")) {
-      return actionRemove;
-    }
-    return defaultDummyValue;
-  }
+	private ActionItem dummyOrRemove(String currentType) {
+		if (currentType.equals("3")) {
+			return actionRemove;
+		}
+		return defaultDummyValue;
+	}
 
-  private ActionItem dummyOrReplaceNullOrRemove(String currentType) {
-    if (currentType.equals("1") || currentType.equals("1C")) {
-      return defaultDummyValue;
-    }
-    if (currentType.equals("2") || currentType.equals("2C")) {
-      return actionReplaceNull;
-    }
-    return actionRemove;
-  }
+	private ActionItem dummyOrReplaceNullOrRemove(String currentType) {
+		if (currentType.equals("1") || currentType.equals("1C")) {
+			return defaultDummyValue;
+		}
+		if (currentType.equals("2") || currentType.equals("2C")) {
+			return actionReplaceNull;
+		}
+		return actionRemove;
+	}
 
-  private ActionItem replaceNullOrRemove(String currentType) {
-    /*
-     * TODO: throw exception ? if (currentType.equals("1") ||
-     * currentType.equals("1C")) { throw new Exception(For the current SOP, the tag
-     * must type 1. Impossible to execute and respect the standard); }
-     */
-    if (currentType.equals("2") || currentType.equals("2C")) {
-      return actionReplaceNull;
-    }
-    return actionRemove;
-  }
+	private ActionItem replaceNullOrRemove(String currentType) {
+		/*
+		 * TODO: throw exception ? if (currentType.equals("1") ||
+		 * currentType.equals("1C")) { throw new Exception(For the current SOP, the tag
+		 * must type 1. Impossible to execute and respect the standard); }
+		 */
+		if (currentType.equals("2") || currentType.equals("2C")) {
+			return actionReplaceNull;
+		}
+		return actionRemove;
+	}
 
-  private ActionItem uidReplaceNullOrRemove(String currentType) {
-    if (currentType.equals("1") || currentType.equals("1C")) {
-      return actionUID;
-    }
-    if (currentType.equals("2") || currentType.equals("2C")) {
-      return actionReplaceNull;
-    }
-    return actionRemove;
-  }
+	private ActionItem uidReplaceNullOrRemove(String currentType) {
+		if (currentType.equals("1") || currentType.equals("1C")) {
+			return actionUID;
+		}
+		if (currentType.equals("2") || currentType.equals("2C")) {
+			return actionReplaceNull;
+		}
+		return actionRemove;
+	}
+
 }

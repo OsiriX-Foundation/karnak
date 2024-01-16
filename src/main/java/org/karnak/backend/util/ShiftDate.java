@@ -27,109 +27,106 @@ import org.weasis.dicom.util.DateUtil;
 
 public class ShiftDate {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ShiftDate.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ShiftDate.class);
 
-  private ShiftDate() {
-  }
+	private ShiftDate() {
+	}
 
-  public static String dateByDays(String date, int shiftDays) {
-    LocalDate localDate = DateTimeUtils.parseDA(date);
-    LocalDate dummyLocalDate = localDate.minusDays(shiftDays);
-    return DateUtil.formatDicomDate(dummyLocalDate);
-  }
+	public static String dateByDays(String date, int shiftDays) {
+		LocalDate localDate = DateTimeUtils.parseDA(date);
+		LocalDate dummyLocalDate = localDate.minusDays(shiftDays);
+		return DateUtil.formatDicomDate(dummyLocalDate);
+	}
 
-  public static String timeBySeconds(String time, int shiftSeconds) {
-    LocalTime localTime = DateTimeUtils.parseTM(time);
-    LocalTime dummyLocalTime = localTime.minusSeconds(shiftSeconds);
-    return DateUtil.formatDicomTime(dummyLocalTime);
-  }
+	public static String timeBySeconds(String time, int shiftSeconds) {
+		LocalTime localTime = DateTimeUtils.parseTM(time);
+		LocalTime dummyLocalTime = localTime.minusSeconds(shiftSeconds);
+		return DateUtil.formatDicomTime(dummyLocalTime);
+	}
 
-  public static String datetimeByDays(Date dateTime, int shiftDays, int shiftSeconds) {
-    LocalDateTime localDateTime =
-        LocalDateTime.ofInstant(dateTime.toInstant(), ZoneId.systemDefault());
-    LocalDateTime dummyLocalDateTime = localDateTime.minusDays(shiftDays);
-    dummyLocalDateTime = dummyLocalDateTime.minusSeconds(shiftSeconds);
-    return DateTimeUtils.formatDT(dummyLocalDateTime);
-  }
+	public static String datetimeByDays(Date dateTime, int shiftDays, int shiftSeconds) {
+		LocalDateTime localDateTime = LocalDateTime.ofInstant(dateTime.toInstant(), ZoneId.systemDefault());
+		LocalDateTime dummyLocalDateTime = localDateTime.minusDays(shiftDays);
+		dummyLocalDateTime = dummyLocalDateTime.minusSeconds(shiftSeconds);
+		return DateTimeUtils.formatDT(dummyLocalDateTime);
+	}
 
-  private static String addMissingZero(String age, int nMissingValue) {
-    int n = nMissingValue - age.length();
-    return StringUtils.repeat('0', n) + age;
-  }
+	private static String addMissingZero(String age, int nMissingValue) {
+		int n = nMissingValue - age.length();
+		return StringUtils.repeat('0', n) + age;
+	}
 
-  public static String ageByDays(String age, int shiftDays) {
-    String valueAge = age.substring(0, 3);
-    int intAge = Integer.parseInt(valueAge);
+	public static String ageByDays(String age, int shiftDays) {
+		String valueAge = age.substring(0, 3);
+		int intAge = Integer.parseInt(valueAge);
 
-    int maxSubstring = age.length();
-    String formatAge = age.substring(3, maxSubstring);
+		int maxSubstring = age.length();
+		String formatAge = age.substring(3, maxSubstring);
 
-    int intDummyAge =
-        switch (formatAge) {
-          case "Y" -> intAge + shiftDays / 365;
-          case "M" -> intAge + shiftDays / 30;
-          case "W" -> intAge + shiftDays / 7;
-          default -> intAge + shiftDays;
-        };
+		int intDummyAge = switch (formatAge) {
+			case "Y" -> intAge + shiftDays / 365;
+			case "M" -> intAge + shiftDays / 30;
+			case "W" -> intAge + shiftDays / 7;
+			default -> intAge + shiftDays;
+		};
 
-    return addMissingZero(String.valueOf(intDummyAge), 3) + formatAge;
-  }
+		return addMissingZero(String.valueOf(intDummyAge), 3) + formatAge;
+	}
 
-  public static String shift(Attributes dcm, int tag, List<ArgumentEntity> argumentEntities)
-      throws DateTimeException {
-    verifyShiftArguments(argumentEntities);
+	public static String shift(Attributes dcm, int tag, List<ArgumentEntity> argumentEntities)
+			throws DateTimeException {
+		verifyShiftArguments(argumentEntities);
 
-    String dcmElValue = dcm.getString(tag);
-    int shiftDays = -1;
-    int shiftSeconds = -1;
+		String dcmElValue = dcm.getString(tag);
+		int shiftDays = -1;
+		int shiftSeconds = -1;
 
-    for (ArgumentEntity argumentEntity : argumentEntities) {
+		for (ArgumentEntity argumentEntity : argumentEntities) {
 			final String key = argumentEntity.getArgumentKey();
 			final String value = argumentEntity.getArgumentValue();
 
-      try {
-        if (key.equals("seconds")) {
-          shiftSeconds = Integer.parseInt(value);
-        }
-        if (key.equals("days")) {
-          shiftDays = Integer.parseInt(value);
-        }
-      } catch (Exception e) {
-        LOGGER.error("args {} is not correct", value, e);
-      }
-    }
-    return shiftValue(dcm, tag, dcmElValue, shiftDays, shiftSeconds);
-  }
+			try {
+				if (key.equals("seconds")) {
+					shiftSeconds = Integer.parseInt(value);
+				}
+				if (key.equals("days")) {
+					shiftDays = Integer.parseInt(value);
+				}
+			}
+			catch (Exception e) {
+				LOGGER.error("args {} is not correct", value, e);
+			}
+		}
+		return shiftValue(dcm, tag, dcmElValue, shiftDays, shiftSeconds);
+	}
 
-  public static String shiftValue(Attributes dcm, int tag, String dcmElValue, int shiftDays, int shiftSeconds) {
-    if (dcmElValue != null) {
-      return switch (dcm.getVR(tag)) {
-        case AS -> ShiftDate.ageByDays(dcmElValue, shiftDays);
-        case DA -> ShiftDate.dateByDays(dcmElValue, shiftDays);
-        case DT -> ShiftDate.datetimeByDays(dcm.getDate(tag), shiftDays, shiftSeconds);
-        case TM -> ShiftDate.timeBySeconds(dcmElValue, shiftSeconds);
-        default -> null;
-      };
-    }
-    else {
-      return null;
-    }
-  }
+	public static String shiftValue(Attributes dcm, int tag, String dcmElValue, int shiftDays, int shiftSeconds) {
+		if (dcmElValue != null) {
+			return switch (dcm.getVR(tag)) {
+				case AS -> ShiftDate.ageByDays(dcmElValue, shiftDays);
+				case DA -> ShiftDate.dateByDays(dcmElValue, shiftDays);
+				case DT -> ShiftDate.datetimeByDays(dcm.getDate(tag), shiftDays, shiftSeconds);
+				case TM -> ShiftDate.timeBySeconds(dcmElValue, shiftSeconds);
+				default -> null;
+			};
+		}
+		else {
+			return null;
+		}
+	}
 
-  public static void verifyShiftArguments(List<ArgumentEntity> argumentEntities)
-      throws IllegalArgumentException {
+	public static void verifyShiftArguments(List<ArgumentEntity> argumentEntities) throws IllegalArgumentException {
 		if (argumentEntities.stream().noneMatch(argument -> argument.getArgumentKey().equals("seconds"))
 				|| argumentEntities.stream().noneMatch(argument -> argument.getArgumentKey().equals("days"))) {
 			List<String> args = argumentEntities.stream()
 				.map(ArgumentEntity::getArgumentKey)
 				.collect(Collectors.toList());
-      IllegalArgumentException missingParameters =
-          new IllegalArgumentException(
-              "Cannot build the option ShiftDate: Missing argument, the class need [seconds, days] as parameters. Parameters given "
-                  + args);
-      LOGGER.error(
-          "Missing argument, the class need seconds and days as parameters", missingParameters);
-      throw missingParameters;
-    }
-  }
+			IllegalArgumentException missingParameters = new IllegalArgumentException(
+					"Cannot build the option ShiftDate: Missing argument, the class need [seconds, days] as parameters. Parameters given "
+							+ args);
+			LOGGER.error("Missing argument, the class need seconds and days as parameters", missingParameters);
+			throw missingParameters;
+		}
+	}
+
 }

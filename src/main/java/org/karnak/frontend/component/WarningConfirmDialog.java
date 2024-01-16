@@ -26,143 +26,141 @@ import com.vaadin.flow.shared.Registration;
 
 public class WarningConfirmDialog extends Composite<Dialog> {
 
-  private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-  private static final String DEFAULT_TITLE = "Warning";
+	private static final String DEFAULT_TITLE = "Warning";
 
-  private static final String DEFAULT_VALIDATE = "Validate";
+	private static final String DEFAULT_VALIDATE = "Validate";
 
-  private static final String DEFAULT_CANCEL = "Cancel";
+	private static final String DEFAULT_CANCEL = "Cancel";
 
-  private final Div messageLayout;
+	private final Div messageLayout;
 
-  // DATA
-  private final String valueTitle;
+	// DATA
+	private final String valueTitle;
 
-  private final String valueValidate;
+	private final String valueValidate;
 
-  private final String valueCancel;
+	private final String valueCancel;
 
-  // UI COMPONENT
-  private Dialog dialog;
+	// UI COMPONENT
+	private Dialog dialog;
 
-  private VerticalLayout mainLayout;
+	private VerticalLayout mainLayout;
 
-  private HorizontalLayout headerLayout;
+	private HorizontalLayout headerLayout;
 
-  private Span titleText;
+	private Span titleText;
 
-  private HorizontalLayout buttonsLayout;
+	private HorizontalLayout buttonsLayout;
 
-  private Button buttonValidate;
+	private Button buttonValidate;
 
-  private Button buttonCancel;
+	private Button buttonCancel;
 
-  public WarningConfirmDialog(Div messageLayout) {
-    this(DEFAULT_TITLE, messageLayout, DEFAULT_VALIDATE, DEFAULT_CANCEL);
-  }
+	public WarningConfirmDialog(Div messageLayout) {
+		this(DEFAULT_TITLE, messageLayout, DEFAULT_VALIDATE, DEFAULT_CANCEL);
+	}
 
-  public WarningConfirmDialog(String valueTitle, Div messageLayout) {
-    this(valueTitle, messageLayout, DEFAULT_VALIDATE, DEFAULT_CANCEL);
-  }
+	public WarningConfirmDialog(String valueTitle, Div messageLayout) {
+		this(valueTitle, messageLayout, DEFAULT_VALIDATE, DEFAULT_CANCEL);
+	}
 
-  public WarningConfirmDialog(
-      String valueTitle, Div messageLayout, String valueValidate, String valueCancel) {
-    this.messageLayout = messageLayout;
-    this.valueTitle = valueTitle;
-    this.valueValidate = valueValidate;
-    this.valueCancel = valueCancel;
-    init();
-    createMainLayout();
-    dialog.add(mainLayout);
-  }
+	public WarningConfirmDialog(String valueTitle, Div messageLayout, String valueValidate, String valueCancel) {
+		this.messageLayout = messageLayout;
+		this.valueTitle = valueTitle;
+		this.valueValidate = valueValidate;
+		this.valueCancel = valueCancel;
+		init();
+		createMainLayout();
+		dialog.add(mainLayout);
+	}
 
-  public void open() {
-    dialog.open();
-  }
+	public void open() {
+		dialog.open();
+	}
 
-  public Registration addConfirmationListener(
-      ComponentEventListener<WarningConfirmDialog.ConfirmationEvent> listener) {
-    return addListener(WarningConfirmDialog.ConfirmationEvent.class, listener);
-  }
+	public Registration addConfirmationListener(
+			ComponentEventListener<WarningConfirmDialog.ConfirmationEvent> listener) {
+		return addListener(WarningConfirmDialog.ConfirmationEvent.class, listener);
+	}
 
-  private void init() {
-    dialog = getContent();
-    dialog.setCloseOnEsc(false);
-    dialog.setCloseOnOutsideClick(false);
-  }
+	private void init() {
+		dialog = getContent();
+		dialog.setCloseOnEsc(false);
+		dialog.setCloseOnOutsideClick(false);
+	}
 
-  private void createMainLayout() {
-    mainLayout = new VerticalLayout();
-    mainLayout.setSizeFull();
+	private void createMainLayout() {
+		mainLayout = new VerticalLayout();
+		mainLayout.setSizeFull();
 
-    createHeaderLayout();
-    createButtonsLayout();
+		createHeaderLayout();
+		createButtonsLayout();
 
-    mainLayout.add(headerLayout, messageLayout, buttonsLayout);
-  }
+		mainLayout.add(headerLayout, messageLayout, buttonsLayout);
+	}
 
-  private void createHeaderLayout() {
-    headerLayout = new HorizontalLayout();
-    headerLayout.setWidthFull();
-    headerLayout.setAlignItems(FlexComponent.Alignment.BASELINE);
+	private void createHeaderLayout() {
+		headerLayout = new HorizontalLayout();
+		headerLayout.setWidthFull();
+		headerLayout.setAlignItems(FlexComponent.Alignment.BASELINE);
 
-    createTitleText();
+		createTitleText();
 
-    headerLayout.add(titleText);
-  }
+		headerLayout.add(titleText);
+	}
 
-  private void createTitleText() {
-    titleText = new Span(valueTitle);
-    titleText.getStyle().set("font-size", "24px");
-    titleText.getStyle().set("font-weight", "400");
-    titleText.getStyle().set("color", "red");
-  }
+	private void createTitleText() {
+		titleText = new Span(valueTitle);
+		titleText.getStyle().set("font-size", "24px");
+		titleText.getStyle().set("font-weight", "400");
+		titleText.getStyle().set("color", "red");
+	}
 
-  private void createButtonsLayout() {
-    buttonsLayout = new HorizontalLayout();
-    buttonsLayout.setWidthFull();
-    createButtonCancel();
-    createButtonValidate();
-    buttonsLayout.add(buttonCancel, buttonValidate);
-    buttonCancel.getElement().getStyle().set("margin-left", "auto");
-  }
+	private void createButtonsLayout() {
+		buttonsLayout = new HorizontalLayout();
+		buttonsLayout.setWidthFull();
+		createButtonCancel();
+		createButtonValidate();
+		buttonsLayout.add(buttonCancel, buttonValidate);
+		buttonCancel.getElement().getStyle().set("margin-left", "auto");
+	}
 
-  @SuppressWarnings("serial")
-  private void createButtonValidate() {
-    buttonValidate = new Button();
-    buttonValidate.setText(valueValidate);
-    buttonValidate.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
-    buttonValidate.setWidth("90px");
-    buttonValidate.focus();
-    buttonValidate.addClickListener(
-        (ComponentEventListener<ClickEvent<Button>>)
-            event -> {
-              fireConfirmationEvent();
-              dialog.close();
-            });
-    buttonValidate.addClickShortcut(Key.ENTER);
-  }
+	@SuppressWarnings("serial")
+	private void createButtonValidate() {
+		buttonValidate = new Button();
+		buttonValidate.setText(valueValidate);
+		buttonValidate.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
+		buttonValidate.setWidth("90px");
+		buttonValidate.focus();
+		buttonValidate.addClickListener((ComponentEventListener<ClickEvent<Button>>) event -> {
+			fireConfirmationEvent();
+			dialog.close();
+		});
+		buttonValidate.addClickShortcut(Key.ENTER);
+	}
 
-  @SuppressWarnings("serial")
-  private void createButtonCancel() {
-    buttonCancel = new Button();
-    buttonCancel.setText(valueCancel);
-    buttonCancel.setWidth("90px");
-    buttonCancel.addClickListener(
-        (ComponentEventListener<ClickEvent<Button>>) event -> dialog.close());
-  }
+	@SuppressWarnings("serial")
+	private void createButtonCancel() {
+		buttonCancel = new Button();
+		buttonCancel.setText(valueCancel);
+		buttonCancel.setWidth("90px");
+		buttonCancel.addClickListener((ComponentEventListener<ClickEvent<Button>>) event -> dialog.close());
+	}
 
-  private void fireConfirmationEvent() {
-    fireEvent(new WarningConfirmDialog.ConfirmationEvent(this, false));
-  }
+	private void fireConfirmationEvent() {
+		fireEvent(new WarningConfirmDialog.ConfirmationEvent(this, false));
+	}
 
-  public class ConfirmationEvent extends ComponentEvent<WarningConfirmDialog> {
+	public class ConfirmationEvent extends ComponentEvent<WarningConfirmDialog> {
 
-    private static final long serialVersionUID = 1L;
+		private static final long serialVersionUID = 1L;
 
-    public ConfirmationEvent(WarningConfirmDialog source, boolean fromClient) {
-      super(source, fromClient);
-    }
-  }
+		public ConfirmationEvent(WarningConfirmDialog source, boolean fromClient) {
+			super(source, fromClient);
+		}
+
+	}
+
 }

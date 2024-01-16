@@ -18,25 +18,25 @@ import java.nio.charset.StandardCharsets;
 
 public class StandardAttributes {
 
-  private static final String ATTRIBUTES_FILENAME = "attributes.json";
+	private static final String ATTRIBUTES_FILENAME = "attributes.json";
 
-  private StandardAttributes() {
-  }
+	private StandardAttributes() {
+	}
 
-  public static jsonAttributes[] readJsonAttributes() {
-    URL url = StandardCIODS.class.getResource(ATTRIBUTES_FILENAME);
-    return read(url);
-  }
+	public static jsonAttributes[] readJsonAttributes() {
+		URL url = StandardCIODS.class.getResource(ATTRIBUTES_FILENAME);
+		return read(url);
+	}
 
-  private static jsonAttributes[] read(URL url) {
-    Gson gson = new Gson();
-    try {
-      JsonReader reader =
-          new JsonReader(new InputStreamReader(url.openStream(), StandardCharsets.UTF_8));
-      return gson.fromJson(reader, jsonAttributes[].class);
-    } catch (Exception e) {
-      throw new JsonParseException(
-          String.format("Cannot parse json %s correctly", ATTRIBUTES_FILENAME), e);
-    }
-  }
+	private static jsonAttributes[] read(URL url) {
+		Gson gson = new Gson();
+		try {
+			JsonReader reader = new JsonReader(new InputStreamReader(url.openStream(), StandardCharsets.UTF_8));
+			return gson.fromJson(reader, jsonAttributes[].class);
+		}
+		catch (Exception e) {
+			throw new JsonParseException(String.format("Cannot parse json %s correctly", ATTRIBUTES_FILENAME), e);
+		}
+	}
+
 }

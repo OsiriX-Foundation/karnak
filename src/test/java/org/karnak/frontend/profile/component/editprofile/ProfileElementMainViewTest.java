@@ -20,43 +20,44 @@ import org.karnak.backend.data.entity.ProfileEntity;
 
 class ProfileElementMainViewTest {
 
-  @Test
-  void should_create_profile_element_main_view() {
+	@Test
+	void should_create_profile_element_main_view() {
 
-    // Call constructor
-    ProfileElementMainView profileElementMainView = new ProfileElementMainView();
+		// Call constructor
+		ProfileElementMainView profileElementMainView = new ProfileElementMainView();
 
-    // Test results
-    assertNotNull(profileElementMainView);
-  }
+		// Test results
+		assertNotNull(profileElementMainView);
+	}
 
-  @Test
-  void should_set_profile_and_enable() {
+	@Test
+	void should_set_profile_and_enable() {
 
-    // Call constructor
-    ProfileElementMainView profileElementMainView = new ProfileElementMainView();
+		// Call constructor
+		ProfileElementMainView profileElementMainView = new ProfileElementMainView();
 
-    // Init data
-    ProfileEntity profileEntity = new ProfileEntity();
-    Set<ProfileElementEntity> profileElementEntities = new HashSet<>();
-    ProfileElementEntity profileElementEntityBasic = new ProfileElementEntity();
-    profileElementEntityBasic.setCodename("basic.dicom.profile");
-    profileElementEntityBasic.setName("nameBasic");
-    ProfileElementEntity profileElementEntityCleanPixelData = new ProfileElementEntity();
-    profileElementEntityCleanPixelData.setCodename("clean.pixel.data");
-    profileElementEntityCleanPixelData.setName("nameCleanPixel");
-    profileElementEntityBasic.setPosition(1);
-    profileElementEntityCleanPixelData.setPosition(2);
-    profileElementEntityBasic.setAction("ReplaceNull");
-    profileElementEntityCleanPixelData.setAction("ReplaceNull");
-    profileElementEntities.add(profileElementEntityBasic);
-    profileElementEntities.add(profileElementEntityCleanPixelData);
-    profileEntity.setProfileElementEntities(profileElementEntities);
+		// Init data
+		ProfileEntity profileEntity = new ProfileEntity();
+		Set<ProfileElementEntity> profileElementEntities = new HashSet<>();
+		ProfileElementEntity profileElementEntityBasic = new ProfileElementEntity();
+		profileElementEntityBasic.setCodename("basic.dicom.profile");
+		profileElementEntityBasic.setName("nameBasic");
+		ProfileElementEntity profileElementEntityCleanPixelData = new ProfileElementEntity();
+		profileElementEntityCleanPixelData.setCodename("clean.pixel.data");
+		profileElementEntityCleanPixelData.setName("nameCleanPixel");
+		profileElementEntityBasic.setPosition(1);
+		profileElementEntityCleanPixelData.setPosition(2);
+		profileElementEntityBasic.setAction("ReplaceNull");
+		profileElementEntityCleanPixelData.setAction("ReplaceNull");
+		profileElementEntities.add(profileElementEntityBasic);
+		profileElementEntities.add(profileElementEntityCleanPixelData);
+		profileEntity.setProfileElementEntities(profileElementEntities);
 
-    // Call method
-    profileElementMainView.setProfile(profileEntity);
+		// Call method
+		profileElementMainView.setProfile(profileEntity);
 
-    // Test results
-    assertTrue(profileElementMainView.isEnabled());
-  }
+		// Test results
+		assertTrue(profileElementMainView.isEnabled());
+	}
+
 }

@@ -39,257 +39,245 @@ import org.karnak.frontend.component.AbstractDialog;
 
 public class DicomEchoSelectionDialog extends AbstractDialog {
 
-  private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-  // CONTROLLER
-  private final DicomEchoSelectionLogic logic = new DicomEchoSelectionLogic(this);
+	// CONTROLLER
+	private final DicomEchoSelectionLogic logic = new DicomEchoSelectionLogic(this);
 
-  // UI COMPONENTS
-  private Dialog dialog;
+	// UI COMPONENTS
+	private Dialog dialog;
 
-  private Div titleBar;
+	private Div titleBar;
 
-  private FormLayout formLayout;
+	private FormLayout formLayout;
 
-  private Select<DicomNodeList> dicomNodeTypeSelector;
+	private Select<DicomNodeList> dicomNodeTypeSelector;
 
-  private ComboBox<ConfigNode> dicomNodeSelector;
+	private ComboBox<ConfigNode> dicomNodeSelector;
 
-  private HorizontalLayout buttonBar;
+	private HorizontalLayout buttonBar;
 
-  private Button cancelBtn;
+	private Button cancelBtn;
 
-  private Button selectBtn;
+	private Button selectBtn;
 
-  // DATA
-  private List<DicomNodeList> dicomNodeTypes;
+	// DATA
+	private List<DicomNodeList> dicomNodeTypes;
 
-  private ListDataProvider<DicomNodeList> dataProviderForDicomNodeTypes;
+	private ListDataProvider<DicomNodeList> dataProviderForDicomNodeTypes;
 
-  private DicomNodeList dicomNodes;
+	private DicomNodeList dicomNodes;
 
-  private ListDataProvider<ConfigNode> dataProviderForDicomNodes;
+	private ListDataProvider<ConfigNode> dataProviderForDicomNodes;
 
-  public DicomEchoSelectionDialog() {
-    init();
-    createMainLayout();
-    dialog.add(mainLayout);
-    selectDicomNoldeList(DicomNodeUtil.getAllDicomNodeTypesDefinedLocally());
-  }
+	public DicomEchoSelectionDialog() {
+		init();
+		createMainLayout();
+		dialog.add(mainLayout);
+		selectDicomNoldeList(DicomNodeUtil.getAllDicomNodeTypesDefinedLocally());
+	}
 
-  public void selectDicomNoldeList(List<DicomNodeList> nodeLists) {
-    try {
-      this.removeMessage();
-      this.loadDicomNodeTypes(nodeLists);
-    } catch (Exception e) {
-      Message message =
-          new Message(
-              MessageLevel.ERROR, MessageFormat.TEXT, "Cannot read the list of DICOM nodes");
-      this.displayMessage(message);
-    }
-  }
+	public void selectDicomNoldeList(List<DicomNodeList> nodeLists) {
+		try {
+			this.removeMessage();
+			this.loadDicomNodeTypes(nodeLists);
+		}
+		catch (Exception e) {
+			Message message = new Message(MessageLevel.ERROR, MessageFormat.TEXT,
+					"Cannot read the list of DICOM nodes");
+			this.displayMessage(message);
+		}
+	}
 
-  @Override
-  protected void createMainLayout() {
-    mainLayout = new VerticalLayout();
-    mainLayout.setSizeFull();
-    mainLayout.setPadding(false);
-    mainLayout.setSpacing(true);
+	@Override
+	protected void createMainLayout() {
+		mainLayout = new VerticalLayout();
+		mainLayout.setSizeFull();
+		mainLayout.setPadding(false);
+		mainLayout.setSpacing(true);
 
-    buildTitleBar();
-    buildFormLayout();
-    buildButtonBar();
+		buildTitleBar();
+		buildFormLayout();
+		buildButtonBar();
 
-    mainLayout.add(titleBar, formLayout, buttonBar);
-  }
+		mainLayout.add(titleBar, formLayout, buttonBar);
+	}
 
-  public void open() {
-    dialog.open();
-  }
+	public void open() {
+		dialog.open();
+	}
 
-  public void loadDicomNodeTypes(List<DicomNodeList> dicomNodeTypes) {
-    this.dicomNodeTypes.clear();
+	public void loadDicomNodeTypes(List<DicomNodeList> dicomNodeTypes) {
+		this.dicomNodeTypes.clear();
 
-    if (dicomNodeTypes != null && !dicomNodeTypes.isEmpty()) {
-      dicomNodeTypes.sort((dn1, dn2) -> dn1.getName().compareTo(dn2.getName()));
-      this.dicomNodeTypes.addAll(dicomNodeTypes);
-    }
+		if (dicomNodeTypes != null && !dicomNodeTypes.isEmpty()) {
+			dicomNodeTypes.sort((dn1, dn2) -> dn1.getName().compareTo(dn2.getName()));
+			this.dicomNodeTypes.addAll(dicomNodeTypes);
+		}
 
-    dataProviderForDicomNodeTypes.refreshAll();
+		dataProviderForDicomNodeTypes.refreshAll();
 
-    selectFirstItemInDicomNodeTypes();
-  }
+		selectFirstItemInDicomNodeTypes();
+	}
 
-  public void loadDicomNodes(DicomNodeList dicomNodes) {
-    this.dicomNodes.clear();
+	public void loadDicomNodes(DicomNodeList dicomNodes) {
+		this.dicomNodes.clear();
 
-    if (dicomNodes != null && !dicomNodes.isEmpty()) {
-      this.dicomNodes.addAll(dicomNodes);
-      this.dicomNodes.sort((wl1, wl2) -> wl1.getName().compareTo(wl2.getName()));
-    }
+		if (dicomNodes != null && !dicomNodes.isEmpty()) {
+			this.dicomNodes.addAll(dicomNodes);
+			this.dicomNodes.sort((wl1, wl2) -> wl1.getName().compareTo(wl2.getName()));
+		}
 
-    dataProviderForDicomNodes.refreshAll();
+		dataProviderForDicomNodes.refreshAll();
 
-    selectFirstItemInDicomNodes();
-  }
+		selectFirstItemInDicomNodes();
+	}
 
-  // LISTENERS
-  public Registration addDicomNodeSelectionListener(
-      ComponentEventListener<DicomNodeSelectionEvent> listener) {
-    return addListener(DicomNodeSelectionEvent.class, listener);
-  }
+	// LISTENERS
+	public Registration addDicomNodeSelectionListener(ComponentEventListener<DicomNodeSelectionEvent> listener) {
+		return addListener(DicomNodeSelectionEvent.class, listener);
+	}
 
-  private void init() {
-    dialog = this.getContent();
+	private void init() {
+		dialog = this.getContent();
 
-    dicomNodeTypes = new ArrayList<>();
-    dicomNodes = new DicomNodeList("DicomNodes");
+		dicomNodeTypes = new ArrayList<>();
+		dicomNodes = new DicomNodeList("DicomNodes");
 
-    buildDataProviders();
-  }
+		buildDataProviders();
+	}
 
-  private void buildDataProviders() {
-    dataProviderForDicomNodeTypes = new ListDataProvider<>(dicomNodeTypes);
+	private void buildDataProviders() {
+		dataProviderForDicomNodeTypes = new ListDataProvider<>(dicomNodeTypes);
 
-    dataProviderForDicomNodeTypes.addDataProviderListener(
-        (DataProviderListener<DicomNodeList>) event -> selectFirstItemInDicomNodeTypes());
+		dataProviderForDicomNodeTypes
+			.addDataProviderListener((DataProviderListener<DicomNodeList>) event -> selectFirstItemInDicomNodeTypes());
 
-    dataProviderForDicomNodes = new ListDataProvider<>(dicomNodes);
+		dataProviderForDicomNodes = new ListDataProvider<>(dicomNodes);
 
-    dataProviderForDicomNodes.addDataProviderListener(
-        (DataProviderListener<ConfigNode>) event -> selectFirstItemInDicomNodes());
-  }
+		dataProviderForDicomNodes
+			.addDataProviderListener((DataProviderListener<ConfigNode>) event -> selectFirstItemInDicomNodes());
+	}
 
-  private void buildTitleBar() {
-    titleBar = new Div();
-    titleBar.setText("Dicom Node Selection");
-    titleBar.getStyle().set("font-weight", "500");
-  }
+	private void buildTitleBar() {
+		titleBar = new Div();
+		titleBar.setText("Dicom Node Selection");
+		titleBar.getStyle().set("font-weight", "500");
+	}
 
-  private void buildFormLayout() {
-    formLayout = new FormLayout();
-    formLayout.setSizeFull();
+	private void buildFormLayout() {
+		formLayout = new FormLayout();
+		formLayout.setSizeFull();
 
-    buildDicomNodeTypeSelector();
-    buildDicomNodeSelector();
+		buildDicomNodeTypeSelector();
+		buildDicomNodeSelector();
 
-    formLayout.add(dicomNodeTypeSelector, dicomNodeSelector);
-  }
+		formLayout.add(dicomNodeTypeSelector, dicomNodeSelector);
+	}
 
-  private void buildDicomNodeTypeSelector() {
-    dicomNodeTypeSelector = new Select<>();
-    dicomNodeTypeSelector.setLabel("Dicom Nodes Type");
-    dicomNodeTypeSelector.setItems(dataProviderForDicomNodeTypes);
+	private void buildDicomNodeTypeSelector() {
+		dicomNodeTypeSelector = new Select<>();
+		dicomNodeTypeSelector.setLabel("Dicom Nodes Type");
+		dicomNodeTypeSelector.setItems(dataProviderForDicomNodeTypes);
 
-    dicomNodeTypeSelector.addValueChangeListener(
-        (ValueChangeListener<ValueChangeEvent<DicomNodeList>>)
-            event -> {
-              DicomNodeList selectedNodeType = event.getValue();
+		dicomNodeTypeSelector.addValueChangeListener((ValueChangeListener<ValueChangeEvent<DicomNodeList>>) event -> {
+			DicomNodeList selectedNodeType = event.getValue();
 
-              loadDicomNodes(selectedNodeType);
-            });
-  }
+			loadDicomNodes(selectedNodeType);
+		});
+	}
 
-  private void buildDicomNodeSelector() {
-    dicomNodeSelector = new ComboBox<>();
-    dicomNodeSelector.setLabel("Dicom Node");
-    dicomNodeSelector.setClearButtonVisible(true);
+	private void buildDicomNodeSelector() {
+		dicomNodeSelector = new ComboBox<>();
+		dicomNodeSelector.setLabel("Dicom Node");
+		dicomNodeSelector.setClearButtonVisible(true);
 		dicomNodeSelector.setItems(dataProviderForDicomNodes);
-    dicomNodeSelector.setItemLabelGenerator(
-        item ->
-            item.getName()
-                + " ["
-                + item.getAet()
-                + " | "
-                + item.getHostname()
-                + " | "
-                + item.getPort()
-                + "]");
-    dicomNodeSelector.setRenderer(buildDicomNodeRenderer());
-  }
+		dicomNodeSelector.setItemLabelGenerator(item -> item.getName() + " [" + item.getAet() + " | "
+				+ item.getHostname() + " | " + item.getPort() + "]");
+		dicomNodeSelector.setRenderer(buildDicomNodeRenderer());
+	}
 
-  private ComponentRenderer<Div, ConfigNode> buildDicomNodeRenderer() {
-    return new ComponentRenderer<>(
-        item -> {
-          Div div = new Div();
-          div.getStyle().set("line-height", "92%");
+	private ComponentRenderer<Div, ConfigNode> buildDicomNodeRenderer() {
+		return new ComponentRenderer<>(item -> {
+			Div div = new Div();
+			div.getStyle().set("line-height", "92%");
 
-          Span spanDescription = new Span(item.getName());
-          spanDescription.getStyle().set("font-weight", "500");
+			Span spanDescription = new Span(item.getName());
+			spanDescription.getStyle().set("font-weight", "500");
 
-          HtmlComponent htmlLineBreak = new HtmlComponent("BR");
+			HtmlComponent htmlLineBreak = new HtmlComponent("BR");
 
-          Span spanOtherAttributes =
-              new Span(item.getAet() + " | " + item.getHostname() + " | " + item.getPort());
-          spanOtherAttributes.getStyle().set("font-size", "75%");
+			Span spanOtherAttributes = new Span(item.getAet() + " | " + item.getHostname() + " | " + item.getPort());
+			spanOtherAttributes.getStyle().set("font-size", "75%");
 
-          div.add(spanDescription, htmlLineBreak, spanOtherAttributes);
+			div.add(spanDescription, htmlLineBreak, spanOtherAttributes);
 
-          return div;
-        });
-  }
+			return div;
+		});
+	}
 
-  private void selectFirstItemInDicomNodeTypes() {
-    if (dicomNodeTypes != null && !dicomNodeTypes.isEmpty()) {
-      dicomNodeTypeSelector.setValue(dicomNodeTypes.get(0));
-    }
-  }
+	private void selectFirstItemInDicomNodeTypes() {
+		if (dicomNodeTypes != null && !dicomNodeTypes.isEmpty()) {
+			dicomNodeTypeSelector.setValue(dicomNodeTypes.get(0));
+		}
+	}
 
-  private void selectFirstItemInDicomNodes() {
-    if (dicomNodes != null && !dicomNodes.isEmpty()) {
-      dicomNodeSelector.setValue(dicomNodes.get(0));
-    }
-  }
+	private void selectFirstItemInDicomNodes() {
+		if (dicomNodes != null && !dicomNodes.isEmpty()) {
+			dicomNodeSelector.setValue(dicomNodes.get(0));
+		}
+	}
 
-  private void buildButtonBar() {
-    buttonBar = new HorizontalLayout();
-    buttonBar.setWidthFull();
-    buttonBar.setPadding(false);
-    buttonBar.setSpacing(true);
+	private void buildButtonBar() {
+		buttonBar = new HorizontalLayout();
+		buttonBar.setWidthFull();
+		buttonBar.setPadding(false);
+		buttonBar.setSpacing(true);
 
-    buildCancelBtn();
-    buildSelectBtn();
+		buildCancelBtn();
+		buildSelectBtn();
 
-    buttonBar.add(cancelBtn, selectBtn);
-  }
+		buttonBar.add(cancelBtn, selectBtn);
+	}
 
-  private void buildCancelBtn() {
-    cancelBtn = new Button("Cancel");
+	private void buildCancelBtn() {
+		cancelBtn = new Button("Cancel");
 
-    cancelBtn.addClickListener(event -> dialog.close());
-  }
+		cancelBtn.addClickListener(event -> dialog.close());
+	}
 
-  private void buildSelectBtn() {
-    selectBtn = new Button("Select");
-    selectBtn.addClassName("stroked-button");
+	private void buildSelectBtn() {
+		selectBtn = new Button("Select");
+		selectBtn.addClassName("stroked-button");
 
-    selectBtn.addClickListener(
-        event -> {
-          fireDicomNodeSelectionEvent();
-          dialog.close();
-        });
-  }
+		selectBtn.addClickListener(event -> {
+			fireDicomNodeSelectionEvent();
+			dialog.close();
+		});
+	}
 
-  private void fireDicomNodeSelectionEvent() {
-    ConfigNode selectedDicomNode = dicomNodeSelector.getValue();
-    fireEvent(new DicomNodeSelectionEvent(this, false, selectedDicomNode));
-  }
+	private void fireDicomNodeSelectionEvent() {
+		ConfigNode selectedDicomNode = dicomNodeSelector.getValue();
+		fireEvent(new DicomNodeSelectionEvent(this, false, selectedDicomNode));
+	}
 
-  public static class DicomNodeSelectionEvent extends ComponentEvent<DicomEchoSelectionDialog> {
+	public static class DicomNodeSelectionEvent extends ComponentEvent<DicomEchoSelectionDialog> {
 
-    private static final long serialVersionUID = 1L;
+		private static final long serialVersionUID = 1L;
 
-    private final ConfigNode selectedDicomNode;
+		private final ConfigNode selectedDicomNode;
 
-    public DicomNodeSelectionEvent(
-        DicomEchoSelectionDialog source, boolean fromClient, ConfigNode selectedDicomNode) {
-      super(source, fromClient);
+		public DicomNodeSelectionEvent(DicomEchoSelectionDialog source, boolean fromClient,
+				ConfigNode selectedDicomNode) {
+			super(source, fromClient);
 
-      this.selectedDicomNode = selectedDicomNode;
-    }
+			this.selectedDicomNode = selectedDicomNode;
+		}
 
-    public ConfigNode getSelectedDicomNode() {
-      return selectedDicomNode;
-    }
-  }
+		public ConfigNode getSelectedDicomNode() {
+			return selectedDicomNode;
+		}
+
+	}
+
 }

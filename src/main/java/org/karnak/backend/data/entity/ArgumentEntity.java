@@ -24,82 +24,83 @@ import java.util.Objects;
 @Table(name = "arguments")
 public class ArgumentEntity implements Serializable {
 
-  private static final long serialVersionUID = -839421871919135822L;
+	private static final long serialVersionUID = -839421871919135822L;
 
-  private Long id;
+	private Long id;
 
-  private ProfileElementEntity profileElementEntity;
+	private ProfileElementEntity profileElementEntity;
 
 	private String argumentKey;
 
 	private String argumentValue;
 
-  public ArgumentEntity() {
-  }
+	public ArgumentEntity() {
+	}
 
 	public ArgumentEntity(String argumentKey, String argumentValue) {
 		this.argumentKey = argumentKey;
 		this.argumentValue = argumentValue;
-  }
+	}
 
 	public ArgumentEntity(String argumentKey, String argumentValue, ProfileElementEntity profileElementEntity) {
 		this.argumentKey = argumentKey;
 		this.argumentValue = argumentValue;
-    this.profileElementEntity = profileElementEntity;
-  }
+		this.profileElementEntity = profileElementEntity;
+	}
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  @JsonIgnore
-  public Long getId() {
-    return id;
-  }
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@JsonIgnore
+	public Long getId() {
+		return id;
+	}
 
-  public void setId(Long id) {
-    this.id = id;
-  }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public String getArgumentKey() {
 		return argumentKey;
-  }
+	}
 
 	public void setArgumentKey(String key) {
 		this.argumentKey = key;
-  }
+	}
 
 	public String getArgumentValue() {
 		return argumentValue;
-  }
+	}
 
 	public void setArgumentValue(String value) {
 		this.argumentValue = value;
-  }
+	}
 
-  @ManyToOne()
-  @JoinColumn(name = "profile_element_id", nullable = false)
-  public ProfileElementEntity getProfileElementEntity() {
-    return profileElementEntity;
-  }
+	@ManyToOne()
+	@JoinColumn(name = "profile_element_id", nullable = false)
+	public ProfileElementEntity getProfileElementEntity() {
+		return profileElementEntity;
+	}
 
-  public void setProfileElementEntity(ProfileElementEntity profileElementEntity) {
-    this.profileElementEntity = profileElementEntity;
-  }
+	public void setProfileElementEntity(ProfileElementEntity profileElementEntity) {
+		this.profileElementEntity = profileElementEntity;
+	}
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    ArgumentEntity that = (ArgumentEntity) o;
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		ArgumentEntity that = (ArgumentEntity) o;
 		return Objects.equals(id, that.id) && Objects.equals(argumentKey, that.argumentKey)
 				&& Objects.equals(argumentValue, that.argumentValue);
-  }
+	}
 
-  @Override
-  public int hashCode() {
+	@Override
+	public int hashCode() {
 		return Objects.hash(id, argumentKey, argumentValue);
-  }
+	}
+
 }

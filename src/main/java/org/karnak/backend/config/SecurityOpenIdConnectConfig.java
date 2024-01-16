@@ -32,47 +32,48 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @ConditionalOnProperty(value = "IDP", havingValue = "oidc")
 public class SecurityOpenIdConnectConfig {
 
-  @Bean
-  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http
-        // Disables cross-site request forgery (CSRF) protection for main route
-        .csrf(csrf -> csrf.ignoringRequestMatchers(AntPathRequestMatcher.antMatcher(EndPoint.ALL_REMAINING_PATH)))
-        // Turns on/off authorizations
-        .authorizeHttpRequests(authorize -> authorize
-            // Actuator, health, info
-            .requestMatchers(AntPathRequestMatcher.antMatcher("/actuator/**"))
-            .permitAll()
-            .requestMatchers(EndpointRequest.to(HealthEndpoint.class, InfoEndpoint.class))
-            .permitAll()
-            // Allows all internal traffic from the Vaadin framework
-            .requestMatchers(SecurityUtil::isFrameworkInternalRequest)
-            .permitAll()
-            // Allow endpoints
-            .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/api/echo/destinations"))
-            .permitAll()
-            // Deny
-            .requestMatchers(EndpointRequest.to(ShutdownEndpoint.class))
-            .denyAll()
-            // Allows all authenticated traffic
-            .anyRequest()
-            .authenticated())
-        // OpenId connect login
-        .oauth2Login(Customizer.withDefaults())
-        // Handle logout
-        .logout(logout -> logout.addLogoutHandler(new OpenIdConnectLogoutHandler()));
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		http
+			// Disables cross-site request forgery (CSRF) protection for main route
+			.csrf(csrf -> csrf.ignoringRequestMatchers(AntPathRequestMatcher.antMatcher(EndPoint.ALL_REMAINING_PATH)))
+			// Turns on/off authorizations
+			.authorizeHttpRequests(authorize -> authorize
+				// Actuator, health, info
+				.requestMatchers(AntPathRequestMatcher.antMatcher("/actuator/**"))
+				.permitAll()
+				.requestMatchers(EndpointRequest.to(HealthEndpoint.class, InfoEndpoint.class))
+				.permitAll()
+				// Allows all internal traffic from the Vaadin framework
+				.requestMatchers(SecurityUtil::isFrameworkInternalRequest)
+				.permitAll()
+				// Allow endpoints
+				.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/api/echo/destinations"))
+				.permitAll()
+				// Deny
+				.requestMatchers(EndpointRequest.to(ShutdownEndpoint.class))
+				.denyAll()
+				// Allows all authenticated traffic
+				.anyRequest()
+				.authenticated())
+			// OpenId connect login
+			.oauth2Login(Customizer.withDefaults())
+			// Handle logout
+			.logout(logout -> logout.addLogoutHandler(new OpenIdConnectLogoutHandler()));
 
-    return http.build();
-  }
+		return http.build();
+	}
 
-  @Bean
-  public WebSecurityCustomizer webSecurityCustomizer() {
-    // Access to static resources, bypassing Spring security.
-    return (web) -> web.ignoring()
-        .requestMatchers(AntPathRequestMatcher.antMatcher("/VAADIN/**"),
-            AntPathRequestMatcher.antMatcher("/img/**"), AntPathRequestMatcher.antMatcher("/icons/**"),
-            AntPathRequestMatcher.antMatcher("/sw.js"), AntPathRequestMatcher.antMatcher("/favicon.ico"),
-            AntPathRequestMatcher.antMatcher("/manifest.webmanifest"),
-            AntPathRequestMatcher.antMatcher("/offline.html"),
-            AntPathRequestMatcher.antMatcher("/sw-runtime-resources-precache.js"));
-  }
+	@Bean
+	public WebSecurityCustomizer webSecurityCustomizer() {
+		// Access to static resources, bypassing Spring security.
+		return (web) -> web.ignoring()
+			.requestMatchers(AntPathRequestMatcher.antMatcher("/VAADIN/**"),
+					AntPathRequestMatcher.antMatcher("/img/**"), AntPathRequestMatcher.antMatcher("/icons/**"),
+					AntPathRequestMatcher.antMatcher("/sw.js"), AntPathRequestMatcher.antMatcher("/favicon.ico"),
+					AntPathRequestMatcher.antMatcher("/manifest.webmanifest"),
+					AntPathRequestMatcher.antMatcher("/offline.html"),
+					AntPathRequestMatcher.antMatcher("/sw-runtime-resources-precache.js"));
+	}
+
 }
