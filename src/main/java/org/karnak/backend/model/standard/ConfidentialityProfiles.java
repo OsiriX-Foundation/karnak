@@ -11,6 +11,7 @@ package org.karnak.backend.model.standard;
 
 import java.util.ArrayList;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.enums.ProfileItemType;
 import org.karnak.backend.model.action.ActionItem;
@@ -21,12 +22,9 @@ import org.karnak.backend.model.profiles.AbstractProfileItem;
 import org.karnak.backend.model.profiles.PrivateTags;
 import org.karnak.backend.model.profiles.ProfileItem;
 import org.karnak.backend.util.PrivateTagPattern;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+@Slf4j
 public class ConfidentialityProfiles {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(ConfidentialityProfiles.class);
 
 	private final TagActionMap actionMap = new TagActionMap();
 
@@ -50,7 +48,7 @@ public class ConfidentialityProfiles {
 				}
 				catch (Exception e) {
 					item = null;
-					LOGGER.error("Cannot build the profile: PrivateTags", e);
+					log.error("Cannot build the profile: PrivateTags", e);
 				}
 			}
 			else {

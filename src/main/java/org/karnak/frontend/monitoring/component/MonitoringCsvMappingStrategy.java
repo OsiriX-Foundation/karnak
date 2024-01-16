@@ -20,7 +20,9 @@ import java.util.EnumSet;
  */
 public class MonitoringCsvMappingStrategy<T> extends ColumnPositionMappingStrategy<T> {
 
-	/** Constructor */
+	/**
+	 * Constructor
+	 */
 	public MonitoringCsvMappingStrategy() {
 		setColumnMapping(EnumSet.allOf(MonitoringCsvMapping.class)
 			.stream()

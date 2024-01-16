@@ -20,6 +20,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import lombok.extern.slf4j.Slf4j;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.dcm4che3.data.VR;
@@ -34,16 +35,13 @@ import org.karnak.backend.data.repo.DestinationRepo;
 import org.karnak.backend.dicom.ForwardDestination;
 import org.karnak.backend.dicom.ForwardDicomNode;
 import org.karnak.backend.dicom.Params;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.weasis.dicom.param.DicomNode;
 
 @Service
+@Slf4j
 public class CStoreSCPService extends BasicCStoreSCP {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(CStoreSCPService.class);
 
 	// Service
 	private final DestinationRepo destinationRepo;
@@ -100,7 +98,7 @@ public class CStoreSCPService extends BasicCStoreSCP {
 					&& (!n.isValidateHostname() || n.equalsHostname(callingNode.getHostname())));
 		if (!valid) {
 			rsp.setInt(Tag.Status, VR.US, Status.NotAuthorized);
-			LOGGER.error("Refused: not authorized (124H). Source node: {}. SopUID: {}", callingNode,
+			log.error("Refused: not authorized (124H). Source node: {}. SopUID: {}", callingNode,
 					rq.getString(Tag.AffectedSOPInstanceUID));
 			return;
 		}

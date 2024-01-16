@@ -23,7 +23,9 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import org.karnak.frontend.util.NotificationUtil;
 
-/** Dialog to get the input of the user concerning the export settings */
+/**
+ * Dialog to get the input of the user concerning the export settings
+ */
 public class ExportSettingsDialog extends Dialog {
 
 	// Textfields
@@ -42,7 +44,9 @@ public class ExportSettingsDialog extends Dialog {
 
 	private Button cancelButton;
 
-	/** Constructor */
+	/**
+	 * Constructor
+	 */
 	public ExportSettingsDialog() {
 		setModal(true);
 		setWidth(11, Unit.PERCENTAGE);
@@ -58,7 +62,9 @@ public class ExportSettingsDialog extends Dialog {
 		addEvents();
 	}
 
-	/** Add events */
+	/**
+	 * Add events
+	 */
 	private void addEvents() {
 		// read defaults values
 		binder.readBean(exportSettings);
@@ -81,7 +87,9 @@ public class ExportSettingsDialog extends Dialog {
 		});
 	}
 
-	/** Binder on textfields */
+	/**
+	 * Binder on textfields
+	 */
 	private void buildBinder() {
 		binder = new Binder<>(ExportSettings.class);
 		// Delimiter
@@ -96,7 +104,9 @@ public class ExportSettingsDialog extends Dialog {
 			.bind(ExportSettings::getQuoteCharacter, ExportSettings::setQuoteCharacter);
 	}
 
-	/** Build components */
+	/**
+	 * Build components
+	 */
 	private void buildComponents() {
 		// Default
 		exportSettings = new ExportSettings();

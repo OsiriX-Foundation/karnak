@@ -31,7 +31,9 @@ import org.karnak.frontend.project.ProjectView;
 import org.karnak.frontend.pseudonym.mapping.PseudonymMappingView;
 import org.springframework.security.access.annotation.Secured;
 
-/** The main layout. Contains the navigation menu. */
+/**
+ * The main layout. Contains the navigation menu.
+ */
 @CssImport(value = "./styles/shared-styles.css")
 @Route(value = "mainLayout")
 @Secured({ "ROLE_admin" })

@@ -37,7 +37,9 @@ import org.karnak.frontend.dicom.AbstractView;
 import org.karnak.frontend.dicom.PortField;
 import org.karnak.frontend.dicom.echo.DicomEchoSelectionDialog.DicomNodeSelectionEvent;
 
-/** Calling Order 1) constructor 2) setParameter 3) beforeEnter */
+/**
+ * Calling Order 1) constructor 2) setParameter 3) beforeEnter
+ */
 @SuppressWarnings("serial")
 public class DicomEchoView extends AbstractView implements HasUrlParameter<String> {
 

@@ -32,7 +32,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-/** UI content when the user is not logged in yet. */
+/**
+ * UI content when the user is not logged in yet.
+ */
 @Route(LoginScreen.ROUTE)
 @PageTitle("KARNAK - Login")
 @CssImport(value = "./styles/shared-styles.css")
@@ -70,7 +72,9 @@ public class LoginScreen extends FlexLayout implements BeforeEnterObserver {
 		}
 	}
 
-	/** Build User Interface */
+	/**
+	 * Build User Interface
+	 */
 	private void buildUI() {
 		setSizeFull();
 		setClassName("login-screen");

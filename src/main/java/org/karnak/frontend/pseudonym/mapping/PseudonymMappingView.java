@@ -73,7 +73,9 @@ public class PseudonymMappingView extends HorizontalLayout {
 		addComponentsView();
 	}
 
-	/** Build listeners */
+	/**
+	 * Build listeners
+	 */
 	private void buildListeners() {
 
 		// Find patient listener
@@ -105,7 +107,9 @@ public class PseudonymMappingView extends HorizontalLayout {
 		});
 	}
 
-	/** Remove previous results found to clear the view */
+	/**
+	 * Remove previous results found to clear the view
+	 */
 	private void removePreviousResultsFound() {
 		mappingResultComponents.forEach(c -> mappingLayout.remove(c));
 		if (pseudonymToLookForLabel != null) {
@@ -127,7 +131,9 @@ public class PseudonymMappingView extends HorizontalLayout {
 		mappingLayout.add(pseudonymToLookForLabel);
 	}
 
-	/** Find mapping patient in cache for all projects */
+	/**
+	 * Find mapping patient in cache for all projects
+	 */
 	private void mappingFindPatientInExternalIDCache() {
 
 		// Retrieve pseudonym patient mapping in all projects
@@ -155,7 +161,9 @@ public class PseudonymMappingView extends HorizontalLayout {
 		}
 	}
 
-	/** Find patient mapping in mainzelliste */
+	/**
+	 * Find patient mapping in mainzelliste
+	 */
 	private void mappingFindPatientMainzelliste() {
 		MappingResultComponent mappingMainzellisteResultComponent = new MappingResultComponent();
 
@@ -176,7 +184,9 @@ public class PseudonymMappingView extends HorizontalLayout {
 		}
 	}
 
-	/** Build components */
+	/**
+	 * Build components
+	 */
 	private void buildComponents() {
 		// Input pseudonym
 		mappingInputComponent = new MappingInputComponent();
@@ -185,7 +195,9 @@ public class PseudonymMappingView extends HorizontalLayout {
 		mappingResultComponents = new ArrayList<>();
 	}
 
-	/** Add components in the view */
+	/**
+	 * Add components in the view
+	 */
 	private void addComponentsView() {
 		setSizeFull();
 

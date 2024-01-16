@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import lombok.extern.slf4j.Slf4j;
 import org.dcm4che3.net.ApplicationEntity;
 import org.dcm4che3.net.Connection;
 import org.dcm4che3.net.Device;
@@ -28,8 +29,6 @@ import org.dcm4che3.tool.common.CLIUtils;
 import org.karnak.backend.dicom.DicomForwardDestination;
 import org.karnak.backend.dicom.ForwardDestination;
 import org.karnak.backend.dicom.ForwardDicomNode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.weasis.dicom.param.AdvancedParams;
@@ -37,9 +36,8 @@ import org.weasis.dicom.param.AttributeEditor;
 import org.weasis.dicom.param.DicomNode;
 
 @Service
+@Slf4j
 public class StoreScpForwardService {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(StoreScpForwardService.class);
 
 	private final Device device;
 
@@ -129,7 +127,7 @@ public class StoreScpForwardService {
 			}
 		}
 		catch (IOException e) {
-			LOGGER.error("Cannot read sop-classes", e);
+			log.error("Cannot read sop-classes", e);
 		}
 
 		for (String cuid : p.stringPropertyNames()) {

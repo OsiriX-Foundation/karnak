@@ -33,16 +33,14 @@ import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 import java.util.Calendar;
 import java.util.Date;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Gunter Zeilinger (gunterze@protonmail.com)
  * @since Apr 2019
  */
+@Slf4j
 public class DateTimeUtils {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(DateTimeUtils.class);
 
 	private static final DateTimeFormatter DA_PARSER = new DateTimeFormatterBuilder().appendValue(YEAR, 4)
 		.optionalStart()
@@ -298,7 +296,7 @@ public class DateTimeUtils {
 				return datetime.toLocalDate();
 			}
 			catch (Exception e) {
-				LOGGER.error("Date conversion", e);
+				log.error("Date conversion", e);
 			}
 		}
 		return null;
@@ -311,7 +309,7 @@ public class DateTimeUtils {
 				return datetime.toLocalTime();
 			}
 			catch (Exception e) {
-				LOGGER.error("Time conversion", e);
+				log.error("Time conversion", e);
 			}
 		}
 		return null;
@@ -323,7 +321,7 @@ public class DateTimeUtils {
 				return LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
 			}
 			catch (Exception e) {
-				LOGGER.error("DateTime conversion", e);
+				log.error("DateTime conversion", e);
 			}
 		}
 		return null;

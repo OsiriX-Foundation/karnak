@@ -15,12 +15,8 @@ import com.vaadin.flow.component.html.Span;
 import java.util.HashMap;
 import java.util.Map;
 import org.karnak.backend.data.entity.DestinationEntity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class GridDestination extends Grid<DestinationEntity> {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(GridDestination.class);
 
 	// Forward node / Id / Image
 	private Map<String, Map<Long, Image>> loadingImages = new HashMap<>();

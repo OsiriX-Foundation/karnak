@@ -14,7 +14,9 @@ import java.util.Objects;
 import java.util.Set;
 import org.karnak.backend.constant.Notification;
 
-/** Model used for serie summary notification */
+/**
+ * Model used for serie summary notification
+ */
 public class SerieSummaryNotification {
 
 	private String serieUid;

@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.karnak.backend.api.rqbody.Body;
@@ -32,14 +33,13 @@ import org.karnak.backend.api.rqbody.Fields;
 import org.karnak.backend.api.rqbody.Ids;
 import org.karnak.backend.api.rqbody.SearchIds;
 import org.karnak.backend.config.MainzellisteConfig;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 
-/** API model */
+/**
+ * API model
+ */
+@Slf4j
 public class PseudonymApi {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(PseudonymApi.class);
 
 	private static final String SERVER_URL = MainzellisteConfig.getInstance().getServerurl();
 
@@ -157,11 +157,11 @@ public class PseudonymApi {
 			patientArray = rqGetPatient(tokenId, shouldThrowException);
 		}
 		catch (InterruptedException e) {
-			LOGGER.warn("Session interrupted. Cannot create patient", e);
+			log.warn("Session interrupted. Cannot create patient", e);
 			Thread.currentThread().interrupt();
 		}
 		catch (Exception e) {
-			LOGGER.info("Cannot get patient", e);
+			log.info("Cannot get patient", e);
 		}
 		return patientArray;
 	}
@@ -189,11 +189,11 @@ public class PseudonymApi {
 			}
 		}
 		catch (InterruptedException e) {
-			LOGGER.warn("Session interrupted with Mainzelliste API", e);
+			log.warn("Session interrupted with Mainzelliste API", e);
 			Thread.currentThread().interrupt();
 		}
 		catch (Exception e) {
-			LOGGER.error("Cannot get a sessionId with Mainzelliste API", e);
+			log.error("Cannot get a sessionId with Mainzelliste API", e);
 		}
 		return this.sessionId;
 	}
@@ -328,7 +328,7 @@ public class PseudonymApi {
 				throw new IllegalStateException(errorMsg);
 			}
 			else {
-				LOGGER.info(errorMsg);
+				log.info(errorMsg);
 				status = false;
 			}
 		}

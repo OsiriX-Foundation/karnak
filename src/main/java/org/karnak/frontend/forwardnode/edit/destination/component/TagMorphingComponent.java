@@ -42,7 +42,9 @@ public class TagMorphingComponent extends VerticalLayout {
 
 	private ProfileLabel profileLabel;
 
-	/** Constructor */
+	/**
+	 * Constructor
+	 */
 	public TagMorphingComponent() {
 		this.destinationComponentUtil = new DestinationComponentUtil();
 	}
@@ -100,7 +102,9 @@ public class TagMorphingComponent extends VerticalLayout {
 		this.destinationBinder = destinationBinder;
 	}
 
-	/** Build deidentification components */
+	/**
+	 * Build deidentification components
+	 */
 	private void buildComponents() {
 		profileLabel = new ProfileLabel();
 		projectDropDown = destinationComponentUtil.buildProjectDropDown();
@@ -117,13 +121,17 @@ public class TagMorphingComponent extends VerticalLayout {
 			.bind(DestinationEntity::getTagMorphingProjectEntity, DestinationEntity::setTagMorphingProjectEntity);
 	}
 
-	/** Build listeners */
+	/**
+	 * Build listeners
+	 */
 	private void buildListeners() {
 		destinationComponentUtil.buildWarningNoProjectDefinedListener(warningNoProjectsDefined, tagMorphingCheckbox);
 		destinationComponentUtil.buildProjectDropDownListener(projectDropDown, profileLabel);
 	}
 
-	/** Add components */
+	/**
+	 * Add components
+	 */
 	private void addComponents() {
 		// Padding
 		setPadding(true);

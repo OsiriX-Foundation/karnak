@@ -28,7 +28,6 @@ package org.karnak.backend.controller;
 // @RequestMapping(EndPoint.FILE_PATH)
 // public class FileController {
 //
-// private static final Logger LOGGER = LoggerFactory.getLogger(FileController.class);
 //
 // // Services
 // private final FileService fileService;
@@ -59,7 +58,7 @@ package org.karnak.backend.controller;
 // try {
 // file = fileService.retrieveFileToDownload(aet, fileName);
 // } catch (Exception e) {
-// LOGGER.error("Unexpected exception when downloading", e);
+// log.error("Unexpected exception when downloading", e);
 // return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 // .body("Error when downloading the file: Internal server error => " + e.getMessage());
 // }

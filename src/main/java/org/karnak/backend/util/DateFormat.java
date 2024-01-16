@@ -20,15 +20,13 @@ import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import lombok.extern.slf4j.Slf4j;
 import org.dcm4che3.data.Attributes;
 import org.karnak.backend.data.entity.ArgumentEntity;
 import org.karnak.backend.dicom.DateTimeUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+@Slf4j
 public class DateFormat {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(DateFormat.class);
 
 	// Date formats
 	public static final String FORMAT_DDMMYYYY_SLASH = "dd/MM/yyyy";
@@ -121,7 +119,7 @@ public class DateFormat {
 				}
 			}
 			catch (Exception e) {
-				LOGGER.error("args {} is not correct", value, e);
+				log.error("args {} is not correct", value, e);
 			}
 		}
 		if (dcmElValue != null) {
@@ -146,7 +144,7 @@ public class DateFormat {
 					&& listValue.contains(argument.getArgumentValue()))) {
 			IllegalArgumentException missingParameters = new IllegalArgumentException(
 					"Cannot build the option date_format, arguments are not correct");
-			LOGGER.error("Missing argument, the class need pattern as parameters", missingParameters);
+			log.error("Missing argument, the class need pattern as parameters", missingParameters);
 			throw missingParameters;
 		}
 	}

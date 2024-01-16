@@ -19,7 +19,9 @@ import org.karnak.backend.service.SourceNodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-/** Logic service use to make calls to backend and implement logic linked to the view */
+/**
+ * Logic service use to make calls to backend and implement logic linked to the view
+ */
 @Service
 public class SourceLogic extends ListDataProvider<DicomSourceNodeEntity> {
 
@@ -29,7 +31,9 @@ public class SourceLogic extends ListDataProvider<DicomSourceNodeEntity> {
 	// Services
 	private final transient SourceNodeService sourceNodeService;
 
-	/** Text filter that can be changed separately. */
+	/**
+	 * Text filter that can be changed separately.
+	 */
 	private String filterText;
 
 	private ForwardNodeEntity forwardNodeEntity; // Current forward node

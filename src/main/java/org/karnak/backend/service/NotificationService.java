@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.karnak.backend.constant.Notification;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.TransferStatusEntity;
@@ -29,8 +30,6 @@ import org.karnak.backend.enums.DestinationType;
 import org.karnak.backend.model.notification.SerieSummaryNotification;
 import org.karnak.backend.model.notification.TransferMonitoringNotification;
 import org.karnak.backend.util.SystemPropertyUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -40,11 +39,12 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-/** Handle notifications */
+/**
+ * Handle notifications
+ */
 @Service
+@Slf4j
 public class NotificationService {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(NotificationService.class);
 
 	@Value("${mail.sender}")
 	private String mailSender;
@@ -434,7 +434,7 @@ public class NotificationService {
 			helper.setFrom(transferMonitoringNotification.getFrom());
 		}
 		catch (MessagingException e) {
-			LOGGER.error("Notification error when preparing email to send: {}", e.getMessage());
+			log.error("Notification error when preparing email to send: {}", e.getMessage());
 		}
 		javaMailSender.send(mimeMessage);
 	}

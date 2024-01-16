@@ -21,17 +21,15 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.validator.StringLengthValidator;
 import java.time.format.DateTimeFormatter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.backend.api.PseudonymApi;
 import org.karnak.backend.api.rqbody.Fields;
 import org.karnak.backend.cache.Patient;
 import org.karnak.frontend.component.ConfirmDialog;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+@Slf4j
 public class MainzellisteAddPatient extends VerticalLayout {
-
-	protected static final Logger LOGGER = LoggerFactory.getLogger(MainzellisteAddPatient.class);
 
 	private static final String ERROR_MESSAGE_PATIENT = "Length must be between 1 and 50.";
 
@@ -187,11 +185,11 @@ public class MainzellisteAddPatient extends VerticalLayout {
 							+ newPatientFields.get_issuerOfPatientID() + " " + "PatientSex:"
 							+ newPatientFields.get_patientSex() + " " + "PatientBirthDate:"
 							+ newPatientFields.get_patientBirthDate();
-					LOGGER.info("Added a new patient in Mainzelliste: {}", strPatient);
+					log.info("Added a new patient in Mainzelliste: {}", strPatient);
 				}
 			}
 			catch (Exception e) {
-				LOGGER.error("Cannot create a new patient with Mainzelliste API", e);
+				log.error("Cannot create a new patient with Mainzelliste API", e);
 			}
 			binder.readBean(null);
 		}

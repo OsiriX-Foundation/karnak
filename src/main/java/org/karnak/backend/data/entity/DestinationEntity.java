@@ -616,7 +616,6 @@ public class DestinationEntity implements Serializable {
 		}
 		return "Type of destination is unknown";
 	}
-
 	//
 	// @Override
 	// public boolean equals(Object o) {

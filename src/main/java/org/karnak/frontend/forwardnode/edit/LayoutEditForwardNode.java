@@ -46,7 +46,9 @@ import org.karnak.frontend.forwardnode.edit.source.SourceView;
 import org.karnak.frontend.forwardnode.edit.source.component.NewUpdateSourceNode;
 import org.karnak.frontend.util.UIS;
 
-/** Layout of the edit forward node */
+/**
+ * Layout of the edit forward node
+ */
 @SuppressWarnings("serial")
 public class LayoutEditForwardNode extends VerticalLayout {
 
@@ -107,7 +109,9 @@ public class LayoutEditForwardNode extends VerticalLayout {
 		addBinders();
 	}
 
-	/** Build layout */
+	/**
+	 * Build layout
+	 */
 	private void buildLayout() {
 		layoutDestinationsSources.setSizeFull();
 		getStyle().set("overflow-y", "auto");
@@ -116,7 +120,9 @@ public class LayoutEditForwardNode extends VerticalLayout {
 		setLayoutDestinationsSources(tabSourcesDestination.getSelectedTab().getLabel());
 	}
 
-	/** Add binders on components */
+	/**
+	 * Add binders on components
+	 */
 	private void addBinders() {
 		addBindersFilterBySOPClassesForm(newUpdateDestination.getFormDICOM().getFilterBySOPClassesForm());
 		addBindersFilterBySOPClassesForm(newUpdateDestination.getFormSTOW().getFilterBySOPClassesForm());
@@ -124,7 +130,9 @@ public class LayoutEditForwardNode extends VerticalLayout {
 		addBinderExtidInDicomTag(newUpdateDestination.getFormDICOM().getDeIdentificationComponent());
 	}
 
-	/** Add events on components */
+	/**
+	 * Add events on components
+	 */
 	private void addEvents() {
 		addEventButtonSaveNewUpdateSourceNode();
 		addEventButtonDeleteNewUpdateSourceNode();

@@ -14,14 +14,13 @@ import jakarta.annotation.PreDestroy;
 import java.io.File;
 import java.net.URL;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.repo.DestinationRepo;
 import org.karnak.backend.dicom.GatewayParams;
 import org.karnak.backend.model.event.NodeEvent;
 import org.karnak.backend.service.DicomGatewayService;
 import org.karnak.backend.util.NativeLibraryManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -31,9 +30,8 @@ import org.weasis.core.util.FileUtil;
 import org.weasis.core.util.StringUtil;
 
 @Service
+@Slf4j
 public class GatewayService implements ApplicationListener<ContextRefreshedEvent> {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(GatewayService.class);
 
 	private final GatewaySetUpService gatewaySetUpService;
 
@@ -58,16 +56,16 @@ public class GatewayService implements ApplicationListener<ContextRefreshedEvent
 					acceptedCallingAETitles);
 			gateway.init(gatewaySetUpService.getDestinations());
 			gateway.start(gatewaySetUpService.getCallingDicomNode(), gparams);
-			LOGGER.info("Karnak DICOM gateway servlet is running: {}", gatewaySetUpService);
+			log.info("Karnak DICOM gateway servlet is running: {}", gatewaySetUpService);
 		}
 		catch (Exception e) {
-			LOGGER.error("Cannot start DICOM gateway", e);
+			log.error("Cannot start DICOM gateway", e);
 		}
 	}
 
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent event) {
-		LOGGER.info("Application Event: {}", event);
+		log.info("Application Event: {}", event);
 	}
 
 	@EventListener
@@ -89,7 +87,7 @@ public class GatewayService implements ApplicationListener<ContextRefreshedEvent
 		destinationEntities.forEach(d -> d.setTransferInProgress(false));
 		destinationRepo.saveAll(destinationEntities);
 
-		LOGGER.info("{}", "Gateway has been stopped");
+		log.info("{}", "Gateway has been stopped");
 		String dir = System.getProperty("dicom.native.codec");
 		if (StringUtil.hasText(dir)) {
 			FileUtil.delete(new File(dir));
@@ -98,7 +96,7 @@ public class GatewayService implements ApplicationListener<ContextRefreshedEvent
 
 	@PostConstruct
 	public void init() {
-		LOGGER.info("{}", "Start the gateway manager running as a background process");
+		log.info("{}", "Start the gateway manager running as a background process");
 		try {
 			URL resource = this.getClass().getResource("/lib");
 			NativeLibraryManager.initNativeLibs(resource);

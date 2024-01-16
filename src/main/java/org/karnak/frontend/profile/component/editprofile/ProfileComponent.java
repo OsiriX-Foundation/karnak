@@ -26,15 +26,13 @@ import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.data.entity.ProfileEntity;
 import org.karnak.frontend.profile.ProfileLogic;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+@Slf4j
 public class ProfileComponent extends VerticalLayout {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(ProfileComponent.class);
 
 	private final WarningDeleteProfileUsed dialogWarning;
 
@@ -70,7 +68,7 @@ public class ProfileComponent extends VerticalLayout {
 
 		}
 		catch (final Exception e) {
-			LOGGER.error("Cannot create the StreamResource for downloading the yaml profile", e);
+			log.error("Cannot create the StreamResource for downloading the yaml profile", e);
 		}
 		return null;
 	}

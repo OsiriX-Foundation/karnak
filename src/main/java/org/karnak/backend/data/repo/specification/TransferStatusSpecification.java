@@ -25,7 +25,9 @@ import org.karnak.backend.enums.TransferStatusType;
 import org.karnak.frontend.monitoring.component.TransferStatusFilter;
 import org.springframework.data.jpa.domain.Specification;
 
-/** Transfer status specification: used to look for entries depending on criteria */
+/**
+ * Transfer status specification: used to look for entries depending on criteria
+ */
 public class TransferStatusSpecification implements Specification<TransferStatusEntity> {
 
 	@Serial

@@ -22,8 +22,6 @@ import org.karnak.backend.model.echo.DestinationEcho;
 import org.karnak.backend.model.echo.DestinationEchos;
 import org.karnak.backend.service.EchoService;
 import org.karnak.backend.util.SpringDocUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -32,13 +30,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-/** Rest controller managing echo */
+/**
+ * Rest controller managing echo
+ */
 @RestController
 @RequestMapping(EndPoint.ECHO_PATH)
 @Tag(name = "Echo", description = "API Endpoints for Echo")
 public class EchoController {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(EchoController.class);
 
 	// Services
 	private final EchoService echoService;

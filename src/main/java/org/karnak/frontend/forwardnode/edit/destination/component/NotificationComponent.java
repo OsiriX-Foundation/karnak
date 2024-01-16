@@ -23,7 +23,9 @@ import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.frontend.component.converter.HStringToIntegerConverter;
 import org.karnak.frontend.util.UIS;
 
-/** Create a notification component */
+/**
+ * Create a notification component
+ */
 public class NotificationComponent extends VerticalLayout {
 
 	// Components
@@ -41,7 +43,9 @@ public class NotificationComponent extends VerticalLayout {
 
 	private Div notificationInputsDiv;
 
-	/** Constructor */
+	/**
+	 * Constructor
+	 */
 	public NotificationComponent() {
 		// Size
 		setWidthFull();
@@ -59,7 +63,9 @@ public class NotificationComponent extends VerticalLayout {
 		addComponents();
 	}
 
-	/** Add components in notification components */
+	/**
+	 * Add components in notification components
+	 */
 	private void addComponents() {
 		notificationInputsDiv.add(UIS.setWidthFull(new HorizontalLayout(notify)),
 				UIS.setWidthFull(new HorizontalLayout(notifyObjectErrorPrefix, notifyObjectPattern, notifyObjectValues,
@@ -68,12 +74,16 @@ public class NotificationComponent extends VerticalLayout {
 		add(UIS.setWidthFull(new HorizontalLayout(activateNotification)), UIS.setWidthFull(notificationInputsDiv));
 	}
 
-	/** Build listeners on components */
+	/**
+	 * Build listeners on components
+	 */
 	private void buildListeners() {
 		buildListenerActivateNotification();
 	}
 
-	/** Listener activate notification */
+	/**
+	 * Listener activate notification
+	 */
 	private void buildListenerActivateNotification() {
 		activateNotification.addValueChangeListener(event -> {
 			if (event != null && event.getValue()) {
@@ -87,7 +97,9 @@ public class NotificationComponent extends VerticalLayout {
 		});
 	}
 
-	/** Set default values if textfield values are null or empty */
+	/**
+	 * Set default values if textfield values are null or empty
+	 */
 	private void updateDefaultValuesNotificationTextFields() {
 		if (notifyObjectErrorPrefix.getValue() == null || notifyObjectErrorPrefix.getValue().trim().isEmpty()) {
 			notifyObjectErrorPrefix.setValue(Notification.DEFAULT_SUBJECT_ERROR_PREFIX);
@@ -125,7 +137,9 @@ public class NotificationComponent extends VerticalLayout {
 		}
 	}
 
-	/** Build components used in Notification component */
+	/**
+	 * Build components used in Notification component
+	 */
 	private void buildComponents() {
 		buildNotificationInputsDiv();
 		buildActivateNotification();
@@ -136,7 +150,9 @@ public class NotificationComponent extends VerticalLayout {
 		buildNotifyInterval();
 	}
 
-	/** Notify interval */
+	/**
+	 * Notify interval
+	 */
 	private void buildNotifyInterval() {
 		notifyInterval = new TextField(String.format("Notif.: interval (Default: %s)", Notification.DEFAULT_INTERVAL));
 		notifyInterval.setWidth("18%");
@@ -146,7 +162,9 @@ public class NotificationComponent extends VerticalLayout {
 				Notification.DEFAULT_INTERVAL));
 	}
 
-	/** Notify Object Values */
+	/**
+	 * Notify Object Values
+	 */
 	private void buildNotifyObjectValues() {
 		notifyObjectValues = new TextField(
 				String.format("Notif.: subject values (Default: %s)", Notification.DEFAULT_SUBJECT_VALUES));
@@ -156,7 +174,9 @@ public class NotificationComponent extends VerticalLayout {
 				Notification.DEFAULT_SUBJECT_VALUES));
 	}
 
-	/** Notify Object Pattern */
+	/**
+	 * Notify Object Pattern
+	 */
 	private void buildNotifyObjectPattern() {
 		notifyObjectPattern = new TextField(
 				String.format("Notif.: subject pattern (Default: %s)", Notification.DEFAULT_SUBJECT_PATTERN));
@@ -166,7 +186,9 @@ public class NotificationComponent extends VerticalLayout {
 				Notification.DEFAULT_SUBJECT_PATTERN));
 	}
 
-	/** Notify Object Error Prefix */
+	/**
+	 * Notify Object Error Prefix
+	 */
 	private void buildNotifyObjectErrorPrefix() {
 		notifyObjectErrorPrefix = new TextField(
 				String.format("Notif.: error subject prefix (Default: %s)", Notification.DEFAULT_SUBJECT_ERROR_PREFIX));
@@ -176,7 +198,9 @@ public class NotificationComponent extends VerticalLayout {
 						Notification.DEFAULT_SUBJECT_ERROR_PREFIX));
 	}
 
-	/** Notify */
+	/**
+	 * Notify
+	 */
 	private void buildNotify() {
 		notify = new TextField("Notif.: list of emails");
 		notify.setWidth("100%");
@@ -184,14 +208,18 @@ public class NotificationComponent extends VerticalLayout {
 		notify.getStyle().set("padding", "0");
 	}
 
-	/** Activate Notification */
+	/**
+	 * Activate Notification
+	 */
 	private void buildActivateNotification() {
 		activateNotification = new Checkbox("Activate notification");
 		// By default deactivate
 		activateNotification.setValue(false);
 	}
 
-	/** Notification Inputs Div */
+	/**
+	 * Notification Inputs Div
+	 */
 	private void buildNotificationInputsDiv() {
 		notificationInputsDiv = new Div();
 		// By default hide

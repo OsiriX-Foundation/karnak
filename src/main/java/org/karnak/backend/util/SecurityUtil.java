@@ -91,7 +91,9 @@ public final class SecurityUtil {
 		return isAccessGranted;
 	}
 
-	/** Sign out method */
+	/**
+	 * Sign out method
+	 */
 	public static void signOut() {
 		try {
 			VaadinServletService.getCurrentServletRequest().logout();

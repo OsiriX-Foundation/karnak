@@ -13,15 +13,13 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import lombok.extern.slf4j.Slf4j;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.UID;
 import org.dcm4che3.io.DicomOutputStream;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+@Slf4j
 public class DicomPaneLogic {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(DicomPaneLogic.class);
 
 	// PANE
 	private final DicomPane pane;
@@ -40,7 +38,7 @@ public class DicomPaneLogic {
 				inputStream = new ByteArrayInputStream(tmp.toByteArray());
 			}
 			catch (IOException e) {
-				LOGGER.error("Cannot write dicom file: {}", e.getMessage()); // $NON-NLS-1$
+				log.error("Cannot write dicom file: {}", e.getMessage()); // $NON-NLS-1$
 			}
 		}
 

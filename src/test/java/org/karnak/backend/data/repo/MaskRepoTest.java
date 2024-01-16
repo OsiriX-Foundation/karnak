@@ -17,18 +17,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.awt.Rectangle;
 import java.util.List;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.data.entity.MaskEntity;
 import org.karnak.backend.data.entity.ProfileEntity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 @DataJpaTest
+@Slf4j
 class MaskRepoTest {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(MaskRepoTest.class);
 
 	@Autowired
 	private MaskRepo repository;
@@ -36,7 +34,9 @@ class MaskRepoTest {
 	@Autowired
 	private ProfileRepo profileRepo;
 
-	/** Test save and find record. */
+	/**
+	 * Test save and find record.
+	 */
 	@Test
 	void shouldSaveAndFindARecord() {
 		// Create an entity to save
@@ -44,25 +44,27 @@ class MaskRepoTest {
 		entity.setStationName("Name");
 
 		// Save the entity
-		LOGGER.info("Saving entity with name [{}]", entity.getStationName());
+		log.info("Saving entity with name [{}]", entity.getStationName());
 		entity = repository.save(entity);
 
 		// Test Save
 		assertEquals("Name", entity.getStationName());
 		assertNotNull(entity.getId());
-		LOGGER.info("Entity with name [{}] and id [{}] saved", entity.getStationName(), entity.getId());
+		log.info("Entity with name [{}] and id [{}] saved", entity.getStationName(), entity.getId());
 
 		// Find By Id
 		Optional<MaskEntity> foundByIdOpt = repository.findById(entity.getId());
 
 		// Test Find by Id
 		assertTrue(foundByIdOpt.isPresent());
-		LOGGER.info("Entity found with name [{}] and id [{}]", foundByIdOpt.get().getStationName(),
+		log.info("Entity found with name [{}] and id [{}]", foundByIdOpt.get().getStationName(),
 				foundByIdOpt.get().getId());
 		assertEquals(entity.getId(), foundByIdOpt.get().getId());
 	}
 
-	/** Test find all. */
+	/**
+	 * Test find all.
+	 */
 	@Test
 	void shouldFindAllRecords() {
 		// Create an entity to save
@@ -77,7 +79,7 @@ class MaskRepoTest {
 		entity.setProfileEntity(profileEntity);
 
 		// Save the entity
-		LOGGER.info("Saving entity with name [{}]", entity.getStationName());
+		log.info("Saving entity with name [{}]", entity.getStationName());
 		repository.saveAndFlush(entity);
 
 		// Find all
@@ -87,10 +89,12 @@ class MaskRepoTest {
 		assertNotNull(all);
 		assertTrue(all.size() > 0);
 		assertEquals(1, all.size());
-		LOGGER.info("Number of entities found [{}]", all.size());
+		log.info("Number of entities found [{}]", all.size());
 	}
 
-	/** Test modification of a record. */
+	/**
+	 * Test modification of a record.
+	 */
 	@Test
 	void shouldModifyRecord() {
 
@@ -102,9 +106,9 @@ class MaskRepoTest {
 		entity.setStationName(initialText);
 
 		// Save the entity
-		LOGGER.info("Saving entity with name [{}]", entity.getStationName());
+		log.info("Saving entity with name [{}]", entity.getStationName());
 		entity = repository.save(entity);
-		LOGGER.info("Id of the entity with name [{}]", entity.getId());
+		log.info("Id of the entity with name [{}]", entity.getId());
 
 		// Test Save
 		assertNotNull(entity);
@@ -112,17 +116,19 @@ class MaskRepoTest {
 
 		// Modify the record
 		entity.setStationName(modifiedText);
-		LOGGER.info("Modify entity name [{}] to [{}]", initialText, modifiedText);
+		log.info("Modify entity name [{}] to [{}]", initialText, modifiedText);
 		MaskEntity entityModified = repository.save(entity);
 
 		// Test Modify
 		assertNotNull(entityModified);
 		assertEquals(entity.getId(), entityModified.getId());
 		assertEquals(modifiedText, entityModified.getStationName());
-		LOGGER.info("Name of the entity with id [{}]: [{}]", entityModified.getId(), entityModified.getStationName());
+		log.info("Name of the entity with id [{}]: [{}]", entityModified.getId(), entityModified.getStationName());
 	}
 
-	/** Test delete record. */
+	/**
+	 * Test delete record.
+	 */
 	@Test
 	void shouldDeleteRecord() {
 		// Create an entity to save
@@ -132,7 +138,7 @@ class MaskRepoTest {
 		entity.addRectangle(new Rectangle());
 
 		// Save the entity
-		LOGGER.info("Saving entity with name [{}]", entity.getStationName());
+		log.info("Saving entity with name [{}]", entity.getStationName());
 		entity = repository.save(entity);
 
 		// Retrieve the entity
@@ -144,12 +150,12 @@ class MaskRepoTest {
 		// Delete the entity
 		entity = foundByIdOpt.get();
 		Long id = entity.getId();
-		LOGGER.info("Deleting entity with id [{}]", id);
+		log.info("Deleting entity with id [{}]", id);
 		repository.delete(entity);
 
 		// Test Delete
 		foundByIdOpt = repository.findById(id);
-		LOGGER.info("Is deleted entity with id [{}] present: [{}]", id, foundByIdOpt.isPresent());
+		log.info("Is deleted entity with id [{}] present: [{}]", id, foundByIdOpt.isPresent());
 		assertFalse(foundByIdOpt.isPresent());
 	}
 

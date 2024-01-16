@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
 import org.dcm4che3.data.Attributes;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -43,8 +44,6 @@ import org.karnak.backend.model.editor.TagMorphingEditor;
 import org.karnak.backend.model.event.NodeEvent;
 import org.karnak.backend.service.kheops.SwitchingAlbum;
 import org.karnak.backend.util.SystemPropertyUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -59,9 +58,8 @@ import org.weasis.dicom.param.DicomProgress;
 import org.weasis.dicom.param.TlsOptions;
 
 @Service
+@Slf4j
 public class GatewaySetUpService {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(GatewaySetUpService.class);
 
 	// Repositories
 	private final ForwardNodeRepo forwardNodeRepo;
@@ -294,7 +292,7 @@ public class GatewaySetUpService {
 			}
 		}
 		catch (IOException e) {
-			LOGGER.error("Cannot build ForwardDestination", e);
+			log.error("Cannot build ForwardDestination", e);
 		}
 	}
 
@@ -498,7 +496,9 @@ public class GatewaySetUpService {
 		gatewaySetUpVersion = lastVersion.getGatewaySetup();
 	}
 
-	/** Check if a refresh of the configuration should be done */
+	/**
+	 * Check if a refresh of the configuration should be done
+	 */
 	@Scheduled(fixedRate = 5000)
 	public void checkRefreshGatewaySetUp() {
 		// Retrieve last gateway version

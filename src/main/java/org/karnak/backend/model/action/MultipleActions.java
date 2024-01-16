@@ -11,6 +11,7 @@ package org.karnak.backend.model.action;
 
 import java.util.ArrayList;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.karnak.backend.config.AppConfig;
@@ -20,12 +21,9 @@ import org.karnak.backend.model.standard.Module;
 import org.karnak.backend.model.standard.ModuleAttribute;
 import org.karnak.backend.model.standard.StandardDICOM;
 import org.karnak.backend.util.MetadataDICOMObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+@Slf4j
 public class MultipleActions extends AbstractAction {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(MultipleActions.class);
 
 	final StandardDICOM standardDICOM;
 
@@ -67,14 +65,14 @@ public class MultipleActions extends AbstractAction {
 			else {
 				ActionItem action = defaultAction();
 				action.execute(dcm, tag, hmac);
-				LOGGER.warn("Cannot find the attribute {} in the SOP {}.  The strictest action will be chosen ({}).",
+				log.warn("Cannot find the attribute {} in the SOP {}.  The strictest action will be chosen ({}).",
 						tagPath, sopUID, symbol);
 			}
 		}
 		catch (StandardDICOMException standardDICOMException) {
 			ActionItem action = defaultAction();
 			action.execute(dcm, tag, hmac);
-			LOGGER.warn(
+			log.warn(
 					"Cannot execute the action {} with the SOP {} and the attribute {}. The strictest action will be chosen.",
 					symbol, sopUID, tagPath, standardDICOMException);
 		}

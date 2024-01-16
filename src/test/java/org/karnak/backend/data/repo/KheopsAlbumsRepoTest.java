@@ -16,19 +16,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.KheopsAlbumsEntity;
 import org.karnak.backend.enums.DestinationType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 @DataJpaTest
+@Slf4j
 class KheopsAlbumsRepoTest {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(KheopsAlbumsRepoTest.class);
 
 	@Autowired
 	private KheopsAlbumsRepo repository;
@@ -36,7 +34,9 @@ class KheopsAlbumsRepoTest {
 	@Autowired
 	private DestinationRepo destinationRepo;
 
-	/** Test save and find record. */
+	/**
+	 * Test save and find record.
+	 */
 	@Test
 	void shouldSaveAndFindARecord() {
 		// Create an entity to save
@@ -44,25 +44,27 @@ class KheopsAlbumsRepoTest {
 		entity.setCondition("Condition");
 
 		// Save the entity
-		LOGGER.info("Saving entity with Condition [{}]", entity.getCondition());
+		log.info("Saving entity with Condition [{}]", entity.getCondition());
 		entity = repository.save(entity);
 
 		// Test Save
 		assertEquals("Condition", entity.getCondition());
 		assertNotNull(entity.getId());
-		LOGGER.info("Entity with Condition [{}] and id [{}] saved", entity.getCondition(), entity.getId());
+		log.info("Entity with Condition [{}] and id [{}] saved", entity.getCondition(), entity.getId());
 
 		// Find By Id
 		Optional<KheopsAlbumsEntity> foundByIdOpt = repository.findById(entity.getId());
 
 		// Test Find by Id
 		assertTrue(foundByIdOpt.isPresent());
-		LOGGER.info("Entity found with Condition [{}] and id [{}]", foundByIdOpt.get().getCondition(),
+		log.info("Entity found with Condition [{}] and id [{}]", foundByIdOpt.get().getCondition(),
 				foundByIdOpt.get().getId());
 		assertEquals(entity.getId(), foundByIdOpt.get().getId());
 	}
 
-	/** Test find all. */
+	/**
+	 * Test find all.
+	 */
 	@Test
 	void shouldFindAllRecords() {
 		// Create an entity to save
@@ -79,7 +81,7 @@ class KheopsAlbumsRepoTest {
 		entity.setDestinationEntity(destinationEntity);
 
 		// Save the entity
-		LOGGER.info("Saving entity with Condition [{}]", entity.getCondition());
+		log.info("Saving entity with Condition [{}]", entity.getCondition());
 		repository.saveAndFlush(entity);
 
 		// Find all
@@ -89,10 +91,12 @@ class KheopsAlbumsRepoTest {
 		assertNotNull(all);
 		assertTrue(all.size() > 0);
 		assertEquals(1, all.size());
-		LOGGER.info("Number of entities found [{}]", all.size());
+		log.info("Number of entities found [{}]", all.size());
 	}
 
-	/** Test modification of a record. */
+	/**
+	 * Test modification of a record.
+	 */
 	@Test
 	void shouldModifyRecord() {
 
@@ -104,9 +108,9 @@ class KheopsAlbumsRepoTest {
 		entity.setCondition(initialText);
 
 		// Save the entity
-		LOGGER.info("Saving entity with Condition [{}]", entity.getCondition());
+		log.info("Saving entity with Condition [{}]", entity.getCondition());
 		entity = repository.save(entity);
-		LOGGER.info("Id of the entity with Condition [{}]", entity.getId());
+		log.info("Id of the entity with Condition [{}]", entity.getId());
 
 		// Test Save
 		assertNotNull(entity);
@@ -114,18 +118,19 @@ class KheopsAlbumsRepoTest {
 
 		// Modify the record
 		entity.setCondition(modifiedText);
-		LOGGER.info("Modify entity Condition [{}] to [{}]", initialText, modifiedText);
+		log.info("Modify entity Condition [{}] to [{}]", initialText, modifiedText);
 		KheopsAlbumsEntity entityModified = repository.save(entity);
 
 		// Test Modify
 		assertNotNull(entityModified);
 		assertEquals(entity.getId(), entityModified.getId());
 		assertEquals(modifiedText, entityModified.getCondition());
-		LOGGER.info("Condition of the entity with id [{}]: [{}]", entityModified.getId(),
-				entityModified.getCondition());
+		log.info("Condition of the entity with id [{}]: [{}]", entityModified.getId(), entityModified.getCondition());
 	}
 
-	/** Test delete record. */
+	/**
+	 * Test delete record.
+	 */
 	@Test
 	void shouldDeleteRecord() {
 		// Create an entity to save
@@ -134,7 +139,7 @@ class KheopsAlbumsRepoTest {
 		entity.setCondition(condition);
 
 		// Save the entity
-		LOGGER.info("Saving entity with Condition [{}]", entity.getCondition());
+		log.info("Saving entity with Condition [{}]", entity.getCondition());
 		entity = repository.save(entity);
 
 		// Retrieve the entity
@@ -146,16 +151,18 @@ class KheopsAlbumsRepoTest {
 		// Delete the entity
 		entity = foundByIdOpt.get();
 		Long id = entity.getId();
-		LOGGER.info("Deleting entity with id [{}]", id);
+		log.info("Deleting entity with id [{}]", id);
 		repository.delete(entity);
 
 		// Test Delete
 		foundByIdOpt = repository.findById(id);
-		LOGGER.info("Is deleted entity with id [{}] present: [{}]", id, foundByIdOpt.isPresent());
+		log.info("Is deleted entity with id [{}] present: [{}]", id, foundByIdOpt.isPresent());
 		assertFalse(foundByIdOpt.isPresent());
 	}
 
-	/** Test findAllByDestinationEntity method. */
+	/**
+	 * Test findAllByDestinationEntity method.
+	 */
 	@Test
 	void shouldFindAllByDestinationEntity() {
 		// Create and save destination
@@ -166,7 +173,7 @@ class KheopsAlbumsRepoTest {
 		destinationEntity.setPort(1);
 
 		// Save the entity
-		LOGGER.info("Saving entity with name [{}]", destinationEntity.getAeTitle());
+		log.info("Saving entity with name [{}]", destinationEntity.getAeTitle());
 		destinationEntity = destinationRepo.saveAndFlush(destinationEntity);
 
 		// Create and save 2 Kheops Albums with same destination
@@ -176,7 +183,7 @@ class KheopsAlbumsRepoTest {
 		entitySecond.setDestinationEntity(destinationEntity);
 
 		// Save the entity
-		LOGGER.info("Saving entities");
+		log.info("Saving entities");
 		entityFirst = repository.save(entityFirst);
 		entitySecond = repository.save(entitySecond);
 
@@ -189,7 +196,7 @@ class KheopsAlbumsRepoTest {
 		assertEquals(2, all.size());
 		assertEquals("AeTitle", all.get(0).getDestinationEntity().getAeTitle());
 		assertEquals("AeTitle", all.get(1).getDestinationEntity().getAeTitle());
-		LOGGER.info("Number of entities found [{}]", all.size());
+		log.info("Number of entities found [{}]", all.size());
 	}
 
 }

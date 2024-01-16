@@ -21,13 +21,17 @@ import org.karnak.backend.cache.Patient;
 import org.karnak.backend.util.DateFormat;
 import org.karnak.frontend.component.BoxShadowComponent;
 
-/** Result component */
+/**
+ * Result component
+ */
 public class MappingResultComponent extends VerticalLayout {
 
 	// Components
 	private Details patientFoundDetails;
 
-	/** Constructor */
+	/**
+	 * Constructor
+	 */
 	public MappingResultComponent() {
 		setWidth(98, Unit.PERCENTAGE);
 

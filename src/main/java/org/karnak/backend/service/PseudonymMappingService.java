@@ -9,19 +9,17 @@
  */
 package org.karnak.backend.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.karnak.backend.api.PseudonymApi;
 import org.karnak.backend.cache.Patient;
 import org.karnak.backend.dicom.DateTimeUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 public class PseudonymMappingService {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(PseudonymMappingService.class);
 
 	public Patient retrieveMainzellistePatient(final String pseudonym) {
 		Patient mainzellistePatient = null;

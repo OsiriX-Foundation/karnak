@@ -47,6 +47,5 @@ spring:
         enabled: false
 monitoring:
   max-history: 50000
-
 mail:
   sender: karnak@kehops.online

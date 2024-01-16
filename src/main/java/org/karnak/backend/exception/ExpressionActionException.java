@@ -10,19 +10,17 @@
 package org.karnak.backend.exception;
 
 import java.io.Serial;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class ExpressionActionException extends RuntimeException {
 
 	@Serial
 	private static final long serialVersionUID = -8468625700663388828L;
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ExpressionActionException.class);
-
 	public ExpressionActionException(String message) {
 		super(message);
-		LOGGER.error(message);
+		log.error(message);
 	}
 
 }

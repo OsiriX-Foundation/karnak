@@ -13,6 +13,7 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import java.util.ArrayList;
 import java.util.Objects;
+import lombok.extern.slf4j.Slf4j;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.service.ForwardNodeAPIService;
 import org.karnak.backend.service.ForwardNodeService;
@@ -20,16 +21,15 @@ import org.karnak.backend.service.ProjectService;
 import org.karnak.backend.service.SOPClassUIDService;
 import org.karnak.frontend.forwardnode.edit.destination.DestinationLogic;
 import org.karnak.frontend.forwardnode.edit.source.SourceLogic;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-/** Logic service use to make calls to backend and implement logic linked to the view */
+/**
+ * Logic service use to make calls to backend and implement logic linked to the view
+ */
 @Service
+@Slf4j
 public class ForwardNodeLogic extends ListDataProvider<ForwardNodeEntity> {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(ForwardNodeLogic.class);
 
 	// View
 	private ForwardNodeView forwardNodeView;
@@ -47,7 +47,9 @@ public class ForwardNodeLogic extends ListDataProvider<ForwardNodeEntity> {
 
 	private final DestinationLogic destinationLogic;
 
-	/** Text filter that can be changed separately. */
+	/**
+	 * Text filter that can be changed separately.
+	 */
 	private String filterText;
 
 	@Autowired
@@ -81,12 +83,16 @@ public class ForwardNodeLogic extends ListDataProvider<ForwardNodeEntity> {
 		return data.getId();
 	}
 
-	/** Initialize the data provider */
+	/**
+	 * Initialize the data provider
+	 */
 	private void initDataProvider() {
 		getItems().addAll(forwardNodeService.getAllForwardNodes());
 	}
 
-	/** Update the fragment without causing navigator to change view */
+	/**
+	 * Update the fragment without causing navigator to change view
+	 */
 	private void setFragmentParameter(String dataIdStr) {
 		final String fragmentParameter;
 		if (dataIdStr == null || dataIdStr.isEmpty()) {
@@ -104,7 +110,7 @@ public class ForwardNodeLogic extends ListDataProvider<ForwardNodeEntity> {
 			return Long.valueOf(dataIdStr);
 		}
 		catch (NumberFormatException e) {
-			LOGGER.error("Cannot get valueOf {}", dataIdStr, e);
+			log.error("Cannot get valueOf {}", dataIdStr, e);
 		}
 		return null;
 		/*

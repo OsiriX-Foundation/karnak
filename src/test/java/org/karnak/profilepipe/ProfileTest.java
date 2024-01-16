@@ -508,8 +508,8 @@ class ProfileTest {
 		dataset1.setString(0x70531209, VR.LO, "Private TagEntity");
 		dataset1.setString(0x70534209, VR.LO, "Private TagEntity");
 		dataset1.setString(0x70534205, VR.LO, "Private TagEntity"); // it's a private tag
-		// but it's not in
-		// scope
+																	// but it's not in
+																	// scope
 
 		dataset2.setString(Tag.PatientName, VR.PN, "TEST-Expr-AddAction");
 		dataset2.setString(Tag.StudyInstanceUID, VR.UI, "12345");

@@ -16,19 +16,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.data.entity.ArgumentEntity;
 import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.data.entity.ProfileEntity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 @DataJpaTest
+@Slf4j
 class ArgumentRepoTest {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(ArgumentRepoTest.class);
 
 	@Autowired
 	private ArgumentRepo repository;
@@ -39,7 +37,9 @@ class ArgumentRepoTest {
 	@Autowired
 	private ProfileRepo profileRepo;
 
-	/** Test save and find record. */
+	/**
+	 * Test save and find record.
+	 */
 	@Test
 	void shouldSaveAndFindARecord() {
 		// Create an entity to save
@@ -47,25 +47,27 @@ class ArgumentRepoTest {
 		entity.setArgumentKey("Key");
 
 		// Save the entity
-		LOGGER.info("Saving entity with Key [{}]", entity.getArgumentKey());
+		log.info("Saving entity with Key [{}]", entity.getArgumentKey());
 		entity = repository.save(entity);
 
 		// Test Save
 		assertEquals("Key", entity.getArgumentKey());
 		assertNotNull(entity.getId());
-		LOGGER.info("Entity with Key [{}] and id [{}] saved", entity.getArgumentKey(), entity.getId());
+		log.info("Entity with Key [{}] and id [{}] saved", entity.getArgumentKey(), entity.getId());
 
 		// Find By Id
 		Optional<ArgumentEntity> foundByIdOpt = repository.findById(entity.getId());
 
 		// Test Find by Id
 		assertTrue(foundByIdOpt.isPresent());
-		LOGGER.info("Entity found with Key [{}] and id [{}]", foundByIdOpt.get().getArgumentKey(),
+		log.info("Entity found with Key [{}] and id [{}]", foundByIdOpt.get().getArgumentKey(),
 				foundByIdOpt.get().getId());
 		assertEquals(entity.getId(), foundByIdOpt.get().getId());
 	}
 
-	/** Test find all. */
+	/**
+	 * Test find all.
+	 */
 	@Test
 	void shouldFindAllRecords() {
 		// Create an entity to save
@@ -84,7 +86,7 @@ class ArgumentRepoTest {
 		entity.setProfileElementEntity(profileElementEntity);
 
 		// Save the entity
-		LOGGER.info("Saving entity with Key [{}]", entity.getArgumentKey());
+		log.info("Saving entity with Key [{}]", entity.getArgumentKey());
 		repository.saveAndFlush(entity);
 
 		// Find all
@@ -94,10 +96,12 @@ class ArgumentRepoTest {
 		assertNotNull(all);
 		assertTrue(all.size() > 0);
 		assertEquals(1, all.size());
-		LOGGER.info("Number of entities found [{}]", all.size());
+		log.info("Number of entities found [{}]", all.size());
 	}
 
-	/** Test modification of a record. */
+	/**
+	 * Test modification of a record.
+	 */
 	@Test
 	void shouldModifyRecord() {
 
@@ -109,9 +113,9 @@ class ArgumentRepoTest {
 		entity.setArgumentKey(initialText);
 
 		// Save the entity
-		LOGGER.info("Saving entity with Key [{}]", entity.getArgumentKey());
+		log.info("Saving entity with Key [{}]", entity.getArgumentKey());
 		entity = repository.save(entity);
-		LOGGER.info("Id of the entity with Key [{}]", entity.getId());
+		log.info("Id of the entity with Key [{}]", entity.getId());
 
 		// Test Save
 		assertNotNull(entity);
@@ -119,17 +123,19 @@ class ArgumentRepoTest {
 
 		// Modify the record
 		entity.setArgumentKey(modifiedText);
-		LOGGER.info("Modify entity Key [{}] to [{}]", initialText, modifiedText);
+		log.info("Modify entity Key [{}] to [{}]", initialText, modifiedText);
 		ArgumentEntity entityModified = repository.save(entity);
 
 		// Test Modify
 		assertNotNull(entityModified);
 		assertEquals(entity.getId(), entityModified.getId());
 		assertEquals(modifiedText, entityModified.getArgumentKey());
-		LOGGER.info("Key of the entity with id [{}]: [{}]", entityModified.getId(), entityModified.getArgumentKey());
+		log.info("Key of the entity with id [{}]: [{}]", entityModified.getId(), entityModified.getArgumentKey());
 	}
 
-	/** Test delete record. */
+	/**
+	 * Test delete record.
+	 */
 	@Test
 	void shouldDeleteRecord() {
 		// Create an entity to save
@@ -138,7 +144,7 @@ class ArgumentRepoTest {
 		entity.setArgumentKey(key);
 
 		// Save the entity
-		LOGGER.info("Saving entity with Key [{}]", entity.getArgumentKey());
+		log.info("Saving entity with Key [{}]", entity.getArgumentKey());
 		entity = repository.save(entity);
 
 		// Retrieve the entity
@@ -150,12 +156,12 @@ class ArgumentRepoTest {
 		// Delete the entity
 		entity = foundByIdOpt.get();
 		Long id = entity.getId();
-		LOGGER.info("Deleting entity with id [{}]", id);
+		log.info("Deleting entity with id [{}]", id);
 		repository.delete(entity);
 
 		// Test Delete
 		foundByIdOpt = repository.findById(id);
-		LOGGER.info("Is deleted entity with id [{}] present: [{}]", id, foundByIdOpt.isPresent());
+		log.info("Is deleted entity with id [{}] present: [{}]", id, foundByIdOpt.isPresent());
 		assertFalse(foundByIdOpt.isPresent());
 	}
 

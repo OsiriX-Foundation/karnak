@@ -31,14 +31,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import lombok.extern.slf4j.Slf4j;
 import org.karnak.backend.cache.Patient;
 import org.karnak.backend.data.entity.ProjectEntity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+@Slf4j
 public class CSVDialog extends Dialog {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(CSVDialog.class);
 
 	private static final String EXTERNAL_PSEUDONYM = "External Pseudonym";
 
@@ -94,7 +92,7 @@ public class CSVDialog extends Dialog {
 			allRows = csvReader.readAll();
 		}
 		catch (IOException | CsvException e) {
-			LOGGER.error("Error while reading the CSV", e);
+			log.error("Error while reading the CSV", e);
 		}
 
 		setElement();
@@ -235,7 +233,7 @@ public class CSVDialog extends Dialog {
 			}
 		}
 		catch (Exception e) {
-			LOGGER.error("Error when reading selected columns", e);
+			log.error("Error when reading selected columns", e);
 		}
 	}
 

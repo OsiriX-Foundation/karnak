@@ -21,7 +21,7 @@
     <springframework.version>3.1.6</springframework.version>
     <vaadin.version>24.2.3</vaadin.version>
     <org.json.version>20231013</org.json.version>
-    <liquibase.version>4.23.0</liquibase.version>
+    <liquibase.version>4.22.0</liquibase.version>
     <opencsv.version>5.7.1</opencsv.version>
 
     <weasis-dicom-tools.version>5.31.1</weasis-dicom-tools.version>
@@ -288,10 +288,24 @@
 
     <resources>
       <resource>
-        <directory>src/main/resources</directory>
         <filtering>true</filtering>
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>**/application*.yml</include>
+          <include>**/application*.yaml</include>
+          <include>**/application*.properties</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>src/main/resources</directory>
+        <excludes>
+          <exclude>**/application*.yml</exclude>
+          <exclude>**/application*.yaml</exclude>
+          <exclude>**/application*.properties</exclude>
+        </excludes>
       </resource>
     </resources>
+
   </build>
 
   <!-- Dependency Management -->
@@ -435,6 +449,13 @@
       <groupId>io.swagger.core.v3</groupId>
       <artifactId>swagger-annotations</artifactId>
       <version>${swagger.version}</version>
+    </dependency>
+
+    <!-- Lombok -->
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <optional>true</optional>
     </dependency>
 
     <!-- Bean validation implementation -->
@@ -592,16 +613,6 @@
 
       <build>
         <plugins>
-          <plugin>
-            <artifactId>spring-boot-maven-plugin</artifactId>
-            <configuration>
-              <jvmArguments>-Dvaadin.productionMode</jvmArguments>
-              <layers>
-                <enabled>true</enabled>
-              </layers>
-            </configuration>
-            <groupId>org.springframework.boot</groupId>
-          </plugin>
           <plugin>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-maven-plugin</artifactId>

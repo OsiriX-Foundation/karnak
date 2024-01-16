@@ -19,7 +19,9 @@ import com.vaadin.flow.router.NotFoundException;
 import com.vaadin.flow.router.ParentLayout;
 import jakarta.servlet.http.HttpServletResponse;
 
-/** View shown when trying to navigate to a view that does not exist using */
+/**
+ * View shown when trying to navigate to a view that does not exist using
+ */
 @ParentLayout(MainLayout.class)
 @SuppressWarnings("serial")
 public class ErrorView extends VerticalLayout implements HasErrorParameter<NotFoundException> {

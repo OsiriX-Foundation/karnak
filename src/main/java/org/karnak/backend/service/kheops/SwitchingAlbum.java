@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.json.JSONObject;
@@ -32,16 +33,13 @@ import org.karnak.backend.model.profilepipe.HMAC;
 import org.karnak.backend.model.profiles.CleanPixelData;
 import org.karnak.backend.model.profiles.ProfileItem;
 import org.karnak.backend.service.profilepipe.Profile;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+@Slf4j
 public class SwitchingAlbum {
 
 	public static final ImmutableList<String> MIN_SCOPE_SOURCE = ImmutableList.of("read", "send");
 
 	public static final ImmutableList<String> MIN_SCOPE_DESTINATION = ImmutableList.of("write");
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(SwitchingAlbum.class);
 
 	private final KheopsApi kheopsAPI;
 
@@ -99,7 +97,7 @@ public class SwitchingAlbum {
 					}
 				}
 				catch (Exception e) {
-					LOGGER.error("Switching KHEOPS, cannot get action for the destination: {}",
+					log.error("Switching KHEOPS, cannot get action for the destination: {}",
 							destinationEntity.getDescription(), e);
 				}
 			}
@@ -134,7 +132,7 @@ public class SwitchingAlbum {
 				metadataToDo.add(new MetadataSwitching(studyInstanceUID, seriesInstanceUID, sopInstanceUID));
 			}
 			else {
-				LOGGER.warn("Can't validate a token for switching KHEOPS album [{}]. The series [{}] won't be shared.",
+				log.warn("Can't validate a token for switching KHEOPS album [{}]. The series [{}] won't be shared.",
 						kheopsAlbumsEntity.getId(), seriesInstanceUID);
 			}
 		}
@@ -146,11 +144,11 @@ public class SwitchingAlbum {
 			return validateIntrospectedToken(responseIntrospect, validMinScope);
 		}
 		catch (InterruptedException e) {
-			LOGGER.warn("Session interrupted", e);
+			log.warn("Session interrupted", e);
 			Thread.currentThread().interrupt();
 		}
 		catch (Exception e) {
-			LOGGER.error("Invalid token", e);
+			log.error("Invalid token", e);
 		}
 		return false;
 	}
@@ -171,7 +169,7 @@ public class SwitchingAlbum {
 				int status = shareSerie(urlAPI, metadataSwitching.getStudyInstanceUID(),
 						metadataSwitching.getSeriesInstanceUID(), authorizationSource, authorizationDestination);
 				if (status >= 400 && status <= 599) {
-					LOGGER.warn("Can't share the serie [{}] for switching KHEOPS album [{}]. The response status is {}",
+					log.warn("Can't share the serie [{}] for switching KHEOPS album [{}]. The response status is {}",
 							metadataSwitching.getSeriesInstanceUID(), id, status);
 					metadataSwitching.setApplied(false);
 				}
@@ -189,11 +187,11 @@ public class SwitchingAlbum {
 					authorizationDestination);
 		}
 		catch (InterruptedException e) {
-			LOGGER.warn("Session interrupted", e);
+			log.warn("Session interrupted", e);
 			Thread.currentThread().interrupt();
 		}
 		catch (Exception e) {
-			LOGGER.error("Can't share the serie {} in the study {}", seriesInstanceUID, studyInstanceUID, e);
+			log.error("Can't share the serie {} in the study {}", seriesInstanceUID, studyInstanceUID, e);
 		}
 		return -1;
 	}

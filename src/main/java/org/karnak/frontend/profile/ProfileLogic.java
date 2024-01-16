@@ -17,12 +17,11 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.function.Predicate;
+import lombok.extern.slf4j.Slf4j;
 import org.karnak.backend.data.entity.ProfileEntity;
 import org.karnak.backend.model.profilebody.ProfilePipeBody;
 import org.karnak.backend.service.profilepipe.ProfilePipeService;
 import org.karnak.frontend.profile.component.errorprofile.ProfileError;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.yaml.snakeyaml.Yaml;
@@ -30,9 +29,8 @@ import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.error.YAMLException;
 
 @Service
+@Slf4j
 public class ProfileLogic extends ListDataProvider<ProfileEntity> {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(ProfileLogic.class);
 
 	// view
 	private ProfileView profileView;
@@ -59,7 +57,9 @@ public class ProfileLogic extends ListDataProvider<ProfileEntity> {
 		super.refreshAll();
 	}
 
-	/** Initialize the data provider */
+	/**
+	 * Initialize the data provider
+	 */
 	private void initDataProvider() {
 		getItems().addAll(profilePipeService.getAllProfiles());
 	}
@@ -69,7 +69,7 @@ public class ProfileLogic extends ListDataProvider<ProfileEntity> {
 			return Long.valueOf(dataIdStr);
 		}
 		catch (NumberFormatException e) {
-			LOGGER.error("Cannot get valueOf {}", dataIdStr, e);
+			log.error("Cannot get valueOf {}", dataIdStr, e);
 		}
 		return null;
 	}
@@ -133,7 +133,7 @@ public class ProfileLogic extends ListDataProvider<ProfileEntity> {
 			}
 		}
 		catch (YAMLException e) {
-			LOGGER.error("Unable to read uploaded YAML", e);
+			log.error("Unable to read uploaded YAML", e);
 			profileView.getProfileErrorView()
 				.setView("Unable to read uploaded YAML file.\n"
 						+ "Please make sure it is a YAML file and respects the YAML structure.");

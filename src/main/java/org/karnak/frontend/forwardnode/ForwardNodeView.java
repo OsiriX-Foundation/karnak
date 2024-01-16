@@ -25,7 +25,9 @@ import org.karnak.frontend.forwardnode.edit.LayoutEditForwardNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 
-/** Forward Node View */
+/**
+ * Forward Node View
+ */
 @Route(value = ForwardNodeView.ROUTE, layout = MainLayout.class)
 @RouteAlias(value = "", layout = MainLayout.class)
 @PageTitle("KARNAK - Forward node")
@@ -97,12 +99,16 @@ public class ForwardNodeView extends HorizontalLayout implements HasUrlParameter
 		layoutEditForwardNode.load(currentForwardNodeEntity);
 	}
 
-	/** Init components */
+	/**
+	 * Init components
+	 */
 	private void initComponents() {
 		layoutNewGridForwardNode.getGridForwardNode().setItems(forwardNodeLogic);
 	}
 
-	/** Create and add the layout of the view */
+	/**
+	 * Create and add the layout of the view
+	 */
 	public void buildLayout() {
 		setSizeFull();
 		layoutNewGridForwardNode.setWidth("30%");
@@ -110,7 +116,9 @@ public class ForwardNodeView extends HorizontalLayout implements HasUrlParameter
 		add(layoutNewGridForwardNode, layoutEditForwardNode);
 	}
 
-	/** Event when adding a forward node in the LayoutNewGridForwardNode */
+	/**
+	 * Event when adding a forward node in the LayoutNewGridForwardNode
+	 */
 	private void addEventNewForwardNodeLayoutNewGrid() {
 		layoutNewGridForwardNode.getButtonAddNewForwardNode()
 			.addClickListener(click -> eventAddForwardNodeLayoutNewGrid(
@@ -130,7 +138,9 @@ public class ForwardNodeView extends HorizontalLayout implements HasUrlParameter
 		forwardNodeLogic.editForwardNode(forwardNodeEntity);
 	}
 
-	/** Add event when selecting a forward node in the grid LayoutNewGridForwardNode */
+	/**
+	 * Add event when selecting a forward node in the grid LayoutNewGridForwardNode
+	 */
 	private void addEventGridSelectionLayoutNewGrid() {
 		layoutNewGridForwardNode.getGridForwardNode().asSingleSelect().addValueChangeListener(event -> {
 			if (event.getValue() == null) {
@@ -141,7 +151,9 @@ public class ForwardNodeView extends HorizontalLayout implements HasUrlParameter
 		});
 	}
 
-	/** Add event when click on cancel button in LayoutEditForwardNode */
+	/**
+	 * Add event when click on cancel button in LayoutEditForwardNode
+	 */
 	private void addEventCancelButtonLayoutEdit() {
 		layoutEditForwardNode.getButtonForwardNodeSaveDeleteCancel().getCancel().addClickListener(event -> {
 			forwardNodeLogic.cancelForwardNode();
@@ -151,7 +163,9 @@ public class ForwardNodeView extends HorizontalLayout implements HasUrlParameter
 		});
 	}
 
-	/** Add event when click on delete button in LayoutEditForwardNode */
+	/**
+	 * Add event when click on delete button in LayoutEditForwardNode
+	 */
 	private void addEventDeleteButtonLayoutEdit() {
 		layoutEditForwardNode.getButtonForwardNodeSaveDeleteCancel().getDelete().addClickListener(event -> {
 			if (layoutEditForwardNode.getCurrentForwardNodeEntity() != null) {
@@ -167,7 +181,9 @@ public class ForwardNodeView extends HorizontalLayout implements HasUrlParameter
 		});
 	}
 
-	/** Add event when click on save button in LayoutEditForwardNode */
+	/**
+	 * Add event when click on save button in LayoutEditForwardNode
+	 */
 	private void addEventSaveButtonLayoutEdit() {
 		layoutEditForwardNode.getButtonForwardNodeSaveDeleteCancel().getSave().addClickListener(event -> {
 			if (layoutEditForwardNode.getBinderForwardNode()

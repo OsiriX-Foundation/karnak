@@ -9,7 +9,9 @@
  */
 package org.karnak.backend.enums;
 
-/** Environment variables of the system */
+/**
+ * Environment variables of the system
+ */
 public enum EnvironmentVariable {
 
 	/**
@@ -18,7 +20,9 @@ public enum EnvironmentVariable {
 	 */
 	IDP("IDP");
 
-	/** Name of the environment variable */
+	/**
+	 * Name of the environment variable
+	 */
 	final String code;
 
 	EnvironmentVariable(final String code) {

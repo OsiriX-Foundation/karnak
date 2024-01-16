@@ -10,6 +10,7 @@
 package org.karnak.backend.model.profiles;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.VR;
 import org.karnak.backend.data.entity.ArgumentEntity;

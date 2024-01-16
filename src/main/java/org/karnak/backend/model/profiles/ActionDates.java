@@ -10,6 +10,7 @@
 package org.karnak.backend.model.profiles;
 
 import java.time.DateTimeException;
+import lombok.extern.slf4j.Slf4j;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.VR;
 import org.karnak.backend.data.entity.ExcludedTagEntity;
@@ -27,12 +28,9 @@ import org.karnak.backend.util.DateFormat;
 import org.karnak.backend.util.ShiftByTagDate;
 import org.karnak.backend.util.ShiftDate;
 import org.karnak.backend.util.ShiftRangeDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+@Slf4j
 public class ActionDates extends AbstractProfileItem {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDates.class);
 
 	private final TagActionMap tagsAction;
 
@@ -110,7 +108,7 @@ public class ActionDates extends AbstractProfileItem {
 			}
 			catch (DateTimeException dateTimeException) {
 				String dcmElValue = dcmCopy.getString(tag);
-				LOGGER.warn(String.format("Invalid date %s, the most strictest action will be choose between X/Z/D",
+				log.warn(String.format("Invalid date %s, the most strictest action will be choose between X/Z/D",
 						dcmElValue), dateTimeException);
 				return new MultipleActions("X/Z/D");
 			}

@@ -1,4 +1,4 @@
-version: "3.7"
+version: '3.7'
 
 services:
   karnak-db:
@@ -40,7 +40,7 @@ services:
 
 
   karnak-cache:
-    image: redis:6.0.16-alpine3.15
+    image: redis:latest
     ports:
       - ${REDIS_PORT}:6379
 

@@ -82,7 +82,9 @@ public class ProjectSecret extends Div {
 		});
 	}
 
-	/** Manage event when importing a secret */
+	/**
+	 * Manage event when importing a secret
+	 */
 	private void eventImportSecret() {
 		secretComboBox.addCustomValueSetListener(event -> {
 			// Retrieve value entered by user

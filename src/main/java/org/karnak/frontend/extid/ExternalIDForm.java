@@ -21,12 +21,8 @@ import com.vaadin.flow.data.validator.StringLengthValidator;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.backend.cache.Patient;
 import org.karnak.backend.data.entity.ProjectEntity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ExternalIDForm extends Div {
-
-	protected static final Logger LOGGER = LoggerFactory.getLogger(ExternalIDForm.class);
 
 	private static final String ERROR_MESSAGE_PATIENT = "Length must be between 1 and 50.";
 

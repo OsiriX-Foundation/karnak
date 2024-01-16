@@ -9,6 +9,7 @@
  */
 package org.karnak.backend.service.profilepipe;
 
+import lombok.extern.slf4j.Slf4j;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.util.TagUtils;
 import org.karnak.backend.api.PseudonymApi;
@@ -20,12 +21,9 @@ import org.karnak.backend.enums.PseudonymType;
 import org.karnak.backend.model.profilepipe.PatientMetadata;
 import org.karnak.backend.util.PatientClientUtil;
 import org.karnak.backend.util.SpecialCharacter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+@Slf4j
 public class Pseudonym {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(Pseudonym.class);
 
 	private final PatientClient externalIdCache;
 
@@ -84,7 +82,7 @@ public class Pseudonym {
 				pseudonymExtidInTag = tagValue.split(delimiterSpec)[destinationEntity.getPosition()];
 			}
 			catch (ArrayIndexOutOfBoundsException e) {
-				LOGGER.error("Can not split the external pseudonym", e);
+				log.error("Can not split the external pseudonym", e);
 			}
 		}
 		else {

@@ -18,12 +18,10 @@ import java.net.SocketException;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Properties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class ServletUtil {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(ServletUtil.class);
 
 	private ServletUtil() {
 	}
@@ -177,7 +175,7 @@ public class ServletUtil {
 			response.sendError(code, message);
 		}
 		catch (IOException e) {
-			LOGGER.error("Cannot send http response message!", e);
+			log.error("Cannot send http response message!", e);
 		}
 	}
 

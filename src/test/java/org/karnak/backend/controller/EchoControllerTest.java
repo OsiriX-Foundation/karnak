@@ -23,7 +23,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-/** Unit test for the MVC controllers Tests for EchoController */
+/**
+ * Unit test for the MVC controllers Tests for EchoController
+ */
 @SpringJUnitWebConfig(classes = EchoService.class)
 class EchoControllerTest {
 

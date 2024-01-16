@@ -81,7 +81,9 @@ public class TransferStatusGridItemDetail extends FormLayout {
 
 	private TextField forwardNodeDescriptionField;
 
-	/** Constructor */
+	/**
+	 * Constructor
+	 */
 	public TransferStatusGridItemDetail() {
 		// Transfer Status
 		initTextFieldsTransferStatus();
@@ -93,7 +95,9 @@ public class TransferStatusGridItemDetail extends FormLayout {
 		initTextFieldsForwardNode();
 	}
 
-	/** Init destination text fields */
+	/**
+	 * Init destination text fields
+	 */
 	private void initTextFieldsDestination() {
 		destinationUrlField = new TextField("Destination Url");
 		destinationHostNameField = new TextField("Destination Host Name");
@@ -102,13 +106,17 @@ public class TransferStatusGridItemDetail extends FormLayout {
 		destinationDescriptionField = new TextField("Destination Description");
 	}
 
-	/** Init forward node text fields */
+	/**
+	 * Init forward node text fields
+	 */
 	private void initTextFieldsForwardNode() {
 		forwardNodeAeTitleField = new TextField("Forward Node AeTitle");
 		forwardNodeDescriptionField = new TextField("Forward Node Description");
 	}
 
-	/** Init transfer status text fields */
+	/**
+	 * Init transfer status text fields
+	 */
 	private void initTextFieldsTransferStatus() {
 		// Modality
 		modalityField = new TextField("Modality");

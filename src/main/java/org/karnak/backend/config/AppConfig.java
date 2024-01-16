@@ -12,6 +12,7 @@ package org.karnak.backend.config;
 import jakarta.annotation.PostConstruct;
 import java.io.InputStream;
 import java.net.URL;
+import lombok.extern.slf4j.Slf4j;
 import org.karnak.backend.cache.ExternalIDCache;
 import org.karnak.backend.cache.MainzellisteCache;
 import org.karnak.backend.cache.PatientClient;
@@ -21,8 +22,6 @@ import org.karnak.backend.model.standard.ConfidentialityProfiles;
 import org.karnak.backend.model.standard.StandardDICOM;
 import org.karnak.backend.service.profilepipe.Profile;
 import org.karnak.backend.service.profilepipe.ProfilePipeService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -38,9 +37,8 @@ import org.yaml.snakeyaml.constructor.Constructor;
 @EnableConfigurationProperties
 @ConfigurationProperties
 @EnableCaching
+@Slf4j
 public class AppConfig {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(AppConfig.class);
 
 	private static AppConfig instance;
 
@@ -136,7 +134,7 @@ public class AppConfig {
 				profilePipeService.saveProfilePipe(profilePipeYml, true);
 			}
 			catch (final Exception e) {
-				LOGGER.error("Cannot persist default profile {}", profileURL, e);
+				log.error("Cannot persist default profile {}", profileURL, e);
 			}
 		}
 	}

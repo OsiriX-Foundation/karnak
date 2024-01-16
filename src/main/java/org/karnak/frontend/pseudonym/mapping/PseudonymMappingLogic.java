@@ -19,8 +19,6 @@ import org.karnak.backend.cache.Patient;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.service.ProjectService;
 import org.karnak.backend.service.PseudonymMappingService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,8 +28,6 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class PseudonymMappingLogic {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(PseudonymMappingLogic.class);
 
 	// View
 	private PseudonymMappingView pseudonymMappingView;

@@ -19,7 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
-/** Service managing destinations */
+/**
+ * Service managing destinations
+ */
 @Service
 public class DestinationService {
 

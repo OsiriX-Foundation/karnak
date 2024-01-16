@@ -16,15 +16,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 import org.opencv.osgi.OpenCVNativeLoader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.weasis.core.util.FileUtil;
 import org.weasis.core.util.NativeLibrary;
 
+@Slf4j
 public class NativeLibraryManager {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(NativeLibraryManager.class);
 
 	private NativeLibraryManager() {
 	}
@@ -49,7 +47,7 @@ public class NativeLibraryManager {
 			FileUtil.writeStream(new URL(path).openStream(), outputFile, true);
 		}
 		catch (IOException e) {
-			LOGGER.error("copy native libs", e);
+			log.error("copy native libs", e);
 		}
 
 		OpenCVNativeLoader loader = new OpenCVNativeLoader();

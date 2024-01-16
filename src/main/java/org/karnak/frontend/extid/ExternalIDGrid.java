@@ -104,6 +104,7 @@ public class ExternalIDGrid extends PaginatedGrid<Patient, PatientFilter> {
 		binder = new Binder<>(Patient.class);
 		patientList = new ArrayList<>();
 		this.externalIDCache = AppConfig.getInstance().getExternalIDCache();
+		// TODO: to use instead of the current multiple filters..: cf TELIMA-257
 		this.patientFilter = new PatientFilter();
 
 		setPageSize(10);
@@ -308,6 +309,9 @@ public class ExternalIDGrid extends PaginatedGrid<Patient, PatientFilter> {
 	}
 
 	public void checkAndUpdateAllFilters() {
+		// TODO: replace by PatientFilter which will contains all filters and remove
+		// extidFilter, patientIdFilter, patientFirstNameFilter, patientLastNameFilter,
+		// issuerOfPatientIDFilter
 		List<Patient> filterList = patientsListInCache.stream().collect(Collectors.toList());
 
 		if (!extidFilter.getValue().equals("")) {

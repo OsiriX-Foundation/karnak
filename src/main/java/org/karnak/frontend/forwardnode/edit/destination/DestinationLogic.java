@@ -17,21 +17,21 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.model.event.NodeEvent;
 import org.karnak.backend.service.DestinationService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-/** Logic service use to make calls to backend and implement logic linked to the view */
+/**
+ * Logic service use to make calls to backend and implement logic linked to the view
+ */
 @Service
+@Slf4j
 public class DestinationLogic extends ListDataProvider<DestinationEntity> {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(DestinationLogic.class);
 
 	public static final String TRANSFER_IN_PROGRESS = "Transfer in progress";
 
@@ -45,7 +45,9 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
 	// Services
 	private final transient DestinationService destinationService;
 
-	/** Text filter that can be changed separately. */
+	/**
+	 * Text filter that can be changed separately.
+	 */
 	private String filterText;
 
 	private ForwardNodeEntity forwardNodeEntity; // Current forward node
@@ -78,7 +80,9 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
 		super.refreshAll();
 	}
 
-	/** Check activity on the forward node */
+	/**
+	 * Check activity on the forward node
+	 */
 	@Scheduled(fixedRate = 1000)
 	public void checkStatusTransfers() {
 		if (forwardNodeEntity != null) {
@@ -116,7 +120,7 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
 			}
 		}
 		catch (UIDetachedException e) {
-			LOGGER.trace(String.format("UIDetachedException:%s", e.getMessage()));
+			log.trace(String.format("UIDetachedException:%s", e.getMessage()));
 		}
 	}
 
@@ -146,7 +150,9 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
 		});
 	}
 
-	/** Enable save delete buttons */
+	/**
+	 * Enable save delete buttons
+	 */
 	private void enableSaveDeleteButtons() {
 		// Forward node
 		enableButtonTransferInProgress(destinationView.getButtonForwardNodeSaveDeleteCancel().getSave(),
@@ -164,7 +170,9 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
 				destinationView.getNewUpdateDestination().getButtonDestinationSTOWSaveDeleteCancel().getDelete());
 	}
 
-	/** Disable save delete buttons */
+	/**
+	 * Disable save delete buttons
+	 */
 	private void disableSaveDeleteButtons() {
 		// Forward node
 		disableButtonTransferInProgress(destinationView.getButtonForwardNodeSaveDeleteCancel().getSave(),

@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.dcm4che3.data.UID;
@@ -41,8 +42,6 @@ import org.karnak.backend.dicom.WebForwardDestination;
 import org.karnak.backend.exception.AbortException;
 import org.karnak.backend.model.event.TransferMonitoringEvent;
 import org.karnak.backend.model.image.TransformedPlanarImage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -59,9 +58,8 @@ import org.weasis.dicom.web.HttpException;
 import org.weasis.opencv.data.PlanarImage;
 
 @Service
+@Slf4j
 public class ForwardService {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(ForwardService.class);
 
 	private static final String ERROR_WHEN_FORWARDING = "Error when forwarding to the final destination";
 
@@ -79,7 +77,7 @@ public class ForwardService {
 		}
 		// Exclude DICOMDIR
 		if ("1.2.840.10008.1.3.10".equals(p.getCuid())) {
-			LOGGER.warn("Cannot send DICOMDIR {}", p.getIuid());
+			log.warn("Cannot send DICOMDIR {}", p.getIuid());
 			return;
 		}
 
@@ -93,7 +91,7 @@ public class ForwardService {
 			}
 		}
 		catch (IOException e) {
-			LOGGER.error("Cannot connect to the final destination", e);
+			log.error("Cannot connect to the final destination", e);
 			throw e;
 		}
 		finally {
@@ -245,7 +243,7 @@ public class ForwardService {
 			progressNotify(destination, p.getIuid(), p.getCuid(), true, streamSCU);
 			monitor(sourceNode.getId(), destination.getId(), attributesOriginal, attributesToSend, false,
 					e.getMessage(), attributesOriginal.getString(Tag.Modality), p.getCuid());
-			LOGGER.error(ERROR_WHEN_FORWARDING, e);
+			log.error(ERROR_WHEN_FORWARDING, e);
 		}
 		finally {
 			streamSCU.triggerCloseExecutor();
@@ -395,7 +393,7 @@ public class ForwardService {
 			progressNotify(destination, p.getIuid(), p.getCuid(), true, streamSCU);
 			monitor(fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, false, e.getMessage(),
 					attributesOriginal.getString(Tag.Modality), p.getCuid());
-			LOGGER.error(ERROR_WHEN_FORWARDING, e);
+			log.error(ERROR_WHEN_FORWARDING, e);
 		}
 		finally {
 			streamSCU.triggerCloseExecutor();
@@ -425,7 +423,7 @@ public class ForwardService {
 						throw new AbortException(Abort.FILE_EXCEPTION, httpException.getMessage());
 					}
 					else {
-						LOGGER.debug("File already present in destination");
+						log.debug("File already present in destination");
 					}
 				}
 			}
@@ -486,7 +484,7 @@ public class ForwardService {
 			progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
 			monitor(fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, false, e.getMessage(),
 					attributesOriginal.getString(Tag.Modality), p.getCuid());
-			LOGGER.error(ERROR_WHEN_FORWARDING, e);
+			log.error(ERROR_WHEN_FORWARDING, e);
 		}
 		finally {
 			files = cleanOrGetBulkDataFiles(in, copy == null);
@@ -560,7 +558,7 @@ public class ForwardService {
 				progressNotify(destination, p.getIuid(), p.getCuid(), false, 0);
 				monitor(fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, true, null,
 						attributesOriginal.getString(Tag.Modality), p.getCuid());
-				LOGGER.debug("File already present in destination");
+				log.debug("File already present in destination");
 			}
 		}
 		catch (AbortException e) {
@@ -581,7 +579,7 @@ public class ForwardService {
 			progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
 			monitor(fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, false, e.getMessage(),
 					attributesOriginal.getString(Tag.Modality), p.getCuid());
-			LOGGER.error(ERROR_WHEN_FORWARDING, e);
+			log.error(ERROR_WHEN_FORWARDING, e);
 		}
 	}
 

@@ -31,7 +31,9 @@ import org.karnak.frontend.monitoring.TransferStatusDataProvider;
 import org.karnak.frontend.util.UIS;
 import org.vaadin.klaudeta.PaginatedGrid;
 
-/** Grid for the monitoring view */
+/**
+ * Grid for the monitoring view
+ */
 public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity, TransferStatusFilter> {
 
 	// Tooltips

@@ -26,7 +26,9 @@ import org.karnak.frontend.monitoring.component.TransferStatusGrid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 
-/** Monitoring View */
+/**
+ * Monitoring View
+ */
 @Route(value = MonitoringView.ROUTE, layout = MainLayout.class)
 @PageTitle("KARNAK - Monitoring")
 @Secured({ "ROLE_admin" })
@@ -74,7 +76,9 @@ public class MonitoringView extends VerticalLayout {
 		addComponentsView();
 	}
 
-	/** Build components */
+	/**
+	 * Build components
+	 */
 	private void buildComponents() {
 		// Paginated Grid + data provider
 		transferStatusGrid = new TransferStatusGrid(transferStatusDataProvider);
@@ -105,7 +109,9 @@ public class MonitoringView extends VerticalLayout {
 		exportAnchor.add(exportButton);
 	}
 
-	/** Add components in the view */
+	/**
+	 * Add components in the view
+	 */
 	private void addComponentsView() {
 		add(transferStatusGrid);
 		HorizontalLayout buttonLayout = new HorizontalLayout(exportSettingsButton, exportAnchor, refreshGridButton);

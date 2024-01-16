@@ -11,11 +11,11 @@ package org.karnak;
 
 import com.vaadin.flow.spring.annotation.EnableVaadin;
 import java.util.Objects;
+import lombok.extern.slf4j.Slf4j;
 import org.karnak.backend.config.AppConfig;
 import org.karnak.backend.enums.ApplicationProfile;
 import org.karnak.backend.enums.EnvironmentVariable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.opencv.osgi.OpenCVNativeLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -32,12 +32,11 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableVaadin(value = "org.karnak")
 @EnableScheduling
 @EnableAsync
+@Slf4j
 public class KarnakApplication implements CommandLineRunner {
 
 	@Autowired(required = false)
 	private AppConfig myConfig;
-
-	private static final Logger log = LoggerFactory.getLogger(KarnakApplication.class);
 
 	public static void main(String[] args) {
 		SpringApplicationBuilder application = new SpringApplicationBuilder(KarnakApplication.class);
