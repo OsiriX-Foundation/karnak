@@ -27,7 +27,6 @@ server:
     session:
       persistent: false
   forward-headers-strategy: NATIVE
-
 spring:
   application:
     name: karnak

@@ -1,23 +1,90 @@
 version: '3.7'
 
 services:
-  karnak:
-    image: repo-docker.hcuge.ch:9082/karnak:${SERVICE_VERSION}
-
   karnak-db:
-    image: repo-docker.hcuge.ch:9082/postgres:hug-13.2-alpine
+    container_name: karnak-db
+    image: repo-docker.hcuge.ch:9082/postgres:14.6-alpine3.17
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_DB=karnak
+      - POSTGRES_USER=karnak
+      - POSTGRES_PASSWORD=karnak
+    volumes:
+      - karnak-db-data:/var/lib/postgresql/data
+    secrets:
+      - postgres_karnak_password
+    networks:
+      - karnak-data
 
   mainzelliste-db:
+    container_name: mainzelliste-db
     image: repo-docker.hcuge.ch:9082/postgres:hug-13.2-alpine
+    environment:
+      - POSTGRES_DB=mainzelliste
+      - POSTGRES_USER=mainzelliste
+      - POSTGRES_PASSWORD_FILE=/run/secrets/mainzellisteDbPassword
+    volumes:
+      - mainzelliste-db-data:/var/lib/postgresql/data
+    secrets:
+      - mainzellisteDbPassword
+    networks:
+      - mainzelliste-data
 
   mainzelliste:
-    image: repo-docker.hcuge.ch:9082/osirixfoundation/karnak-mainzelliste:extid
+    container_name: mainzelliste
+    image: osirixfoundation/karnak-mainzelliste:extid
+    env_file: mainzelliste.env
+    ports:
+      - "8083:8080"
+    secrets:
+      - mainzellisteDbPassword
+      - mainzellisteApiKey
+      - mainzellistePIDK1
+      - mainzellistePIDK2
+      - mainzellistePIDK3
+    depends_on:
+      - mainzelliste-db
+    networks:
+      - mainzelliste
+      - mainzelliste-data
+
+  node-dicom:
+    image: dcm4che/dcm4che-tools:5.22.6
+    entrypoint: [ "storescp", "-b", "NODE:4444", "--directory", "/home/images" ]
+    ports:
+      - 4444:4444
 
   karnak-cache:
-    image: repo-docker.hcuge.ch:9082/redis:6.0.16-alpine3.15
+    image: redis:latest
+    ports:
+      - 6379:6379
+#    command: redis-server --save 60 1 --requirepass MDNcVb924a --loglevel warning
 
-  db-backup:
-    image: repo-docker.hcuge.ch:9082/pqsql-backup-s3:2.0
 
-  mainzelliste-db-backup:
-    image: repo-docker.hcuge.ch:9082/pqsql-backup-s3:2.0
+secrets:
+  karnak_login_password:
+    file: secrets/karnak_login_password
+  postgres_karnak_password:
+    file: secrets/karnak_postgres_password
+  oidc_client_secret:
+    file: secrets/oidc_client_secret
+  mainzellisteDbPassword:
+    file: secrets/mainzelliste_postgres_password
+  mainzellisteApiKey:
+    file: secrets/mainzelliste_api_key
+  mainzellistePIDK1:
+    file: secrets/mainzelliste_pid_k1
+  mainzellistePIDK2:
+    file: secrets/mainzelliste_pid_k2
+  mainzellistePIDK3:
+    file: secrets/mainzelliste_pid_k3
+
+volumes:
+  mainzelliste-db-data:
+  karnak-db-data:
+networks:
+  reverseproxy:
+  karnak-data:
+  mainzelliste:
+  mainzelliste-data:
