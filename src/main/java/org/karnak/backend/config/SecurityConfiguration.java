@@ -1,6 +1,5 @@
 package org.karnak.backend.config;
 
-import ch.hcuge.springcloud.security.oauth2.resource.keycloak.KeycloakJwtGrantedAuthoritiesConverter;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -42,8 +41,7 @@ public class SecurityConfiguration {
 	private String jwkSetUri;
 
 	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http,
-			KeycloakJwtGrantedAuthoritiesConverter keycloakJwtGrantedAuthoritiesConverter) throws Exception {
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
 			// Disables cross-site request forgery (CSRF) protection for main route
 			.csrf(csrf -> csrf.ignoringRequestMatchers(AntPathRequestMatcher.antMatcher(EndPoint.ALL_REMAINING_PATH)))
