@@ -25,10 +25,8 @@
   <properties>
     <revision>SNAPSHOT</revision>
 
-    <!--      TODO: test -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-
     <enforcer.jdk-version>[${java.version},)</enforcer.jdk-version>
     <enforcer.maven-version>[3.3.0,)</enforcer.maven-version>
     <java.version>21</java.version>
@@ -43,7 +41,6 @@
     <mockito.version>5.2.0</mockito.version>
     <swagger.version>2.2.14</swagger.version>
 
-    <!--      TODO: test -->
     <sonar.language>java</sonar.language>
     <sonar.java.source>${java.version}</sonar.java.source>
     <sonar.test.exclusions>src/test/**/*</sonar.test.exclusions>
@@ -93,8 +90,6 @@
   <!-- Build-->
   <build>
     <defaultGoal>spring-boot:run</defaultGoal>
-
-    <!--      TODO: test -->
     <pluginManagement>
       <plugins>
         <plugin>
@@ -134,18 +129,6 @@
           </execution>
         </executions>
       </plugin>
-
-      <!--      TODO: test -->
-      <!--      <plugin>-->
-      <!--        <groupId>org.jacoco</groupId>-->
-      <!--        <artifactId>jacoco-maven-plugin</artifactId>-->
-      <!--        <configuration>-->
-      <!--          <excludes>-->
-      <!--            <exclude>**/org/karnak/frontend/**/*</exclude>-->
-      <!--          </excludes>-->
-      <!--        </configuration>-->
-      <!--      </plugin>-->
-
       <plugin>
         <groupId>com.diffplug.spotless</groupId>
         <artifactId>spotless-maven-plugin</artifactId>
