@@ -33,6 +33,7 @@
 
     <vaadin.version>24.2.3</vaadin.version>
     <org.json.version>20231013</org.json.version>
+    <gson.version>2.10.1</gson.version>
     <liquibase.version>4.23.0</liquibase.version>
     <opencsv.version>5.7.1</opencsv.version>
     <node.version>v20.11.0</node.version>
@@ -323,7 +324,7 @@
     <dependency>
       <artifactId>gson</artifactId>
       <groupId>com.google.code.gson</groupId>
-      <version>2.10.1</version>
+      <version>${gson.version}</version>
     </dependency>
 
     <!-- ============ -->
