@@ -25,6 +25,10 @@
   <properties>
     <revision>SNAPSHOT</revision>
 
+    <!--      TODO: test -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
     <enforcer.jdk-version>[${java.version},)</enforcer.jdk-version>
     <enforcer.maven-version>[3.3.0,)</enforcer.maven-version>
     <java.version>21</java.version>
@@ -38,6 +42,12 @@
     <h2.version>2.2.224</h2.version>
     <mockito.version>5.2.0</mockito.version>
     <swagger.version>2.2.14</swagger.version>
+
+    <!--      TODO: test -->
+    <sonar.language>java</sonar.language>
+    <sonar.java.source>${java.version}</sonar.java.source>
+    <sonar.test.exclusions>src/test/**/*</sonar.test.exclusions>
+
   </properties>
 
   <licenses>
@@ -83,8 +93,19 @@
   <!-- Build-->
   <build>
     <defaultGoal>spring-boot:run</defaultGoal>
-    <plugins>
 
+    <!--      TODO: test -->
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>com.diffplug.spotless</groupId>
+          <artifactId>spotless-maven-plugin</artifactId>
+          <version>2.41.1</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
+    <plugins>
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
@@ -114,13 +135,39 @@
         </executions>
       </plugin>
 
+      <!--      TODO: test -->
+      <!--      <plugin>-->
+      <!--        <groupId>org.jacoco</groupId>-->
+      <!--        <artifactId>jacoco-maven-plugin</artifactId>-->
+      <!--        <configuration>-->
+      <!--          <excludes>-->
+      <!--            <exclude>**/org/karnak/frontend/**/*</exclude>-->
+      <!--          </excludes>-->
+      <!--        </configuration>-->
+      <!--      </plugin>-->
+
       <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
+        <groupId>com.diffplug.spotless</groupId>
+        <artifactId>spotless-maven-plugin</artifactId>
         <configuration>
-          <excludes>
-            <exclude>**/org/karnak/frontend/**/*</exclude>
-          </excludes>
+          <!-- define a language-specific format -->
+          <java>
+            <licenseHeader>
+              <!-- @formatter:off -->
+              <content>
+/*
+ * Copyright (c) $YEAR Karnak Team and other contributors.
+ *
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
+ * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ */
+              </content>
+              <!-- @formatter:on -->
+            </licenseHeader>
+          </java>
         </configuration>
       </plugin>
     </plugins>
@@ -273,7 +320,6 @@
         </exclusion>
       </exclusions>
     </dependency>
-
 
 
     <!-- ========= -->
@@ -450,7 +496,6 @@
     </dependency>
 
   </dependencies>
-
 
 
   <!-- Profiles -->
