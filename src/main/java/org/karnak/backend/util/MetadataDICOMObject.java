@@ -10,6 +10,7 @@
 package org.karnak.backend.util;
 
 import org.dcm4che3.data.Attributes;
+import org.dcm4che3.img.util.DicomUtils;
 import org.dcm4che3.util.TagUtils;
 
 public class MetadataDICOMObject {
@@ -23,7 +24,7 @@ public class MetadataDICOMObject {
 	}
 
 	private static String getValueRec(Attributes dcm, int tag) {
-		String tagValue = dcm.getString(tag);
+		String tagValue = DicomUtils.getStringFromDicomElement(dcm, tag);
 		Attributes dcmParent = dcm.getParent();
 		if (dcmParent != null && tagValue == null) {
 			return getValueRec(dcmParent, tag);

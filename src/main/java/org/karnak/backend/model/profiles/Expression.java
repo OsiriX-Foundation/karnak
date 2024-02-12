@@ -10,7 +10,6 @@
 package org.karnak.backend.model.profiles;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.VR;
 import org.karnak.backend.data.entity.ArgumentEntity;
@@ -65,11 +64,10 @@ public class Expression extends AbstractProfileItem {
 		return null;
 	}
 
+	@Override
 	public void profileValidation() throws Exception {
-		if (!argumentEntities.stream().anyMatch(argument -> argument.getArgumentKey().equals("expr"))) {
-			List<String> args = argumentEntities.stream()
-				.map(ArgumentEntity::getArgumentKey)
-				.collect(Collectors.toList());
+		if (argumentEntities.stream().noneMatch(argument -> argument.getArgumentKey().equals("expr"))) {
+			List<String> args = argumentEntities.stream().map(ArgumentEntity::getArgumentKey).toList();
 			throw new IllegalArgumentException(
 					"Cannot build the expression: Missing argument, the class need [expr] as parameters. Parameters given "
 							+ args);

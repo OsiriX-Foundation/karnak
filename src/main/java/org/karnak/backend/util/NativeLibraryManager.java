@@ -1,15 +1,13 @@
-/// *
-// * Copyright (c) 2020-2021 Karnak Team and other contributors.
-// *
-// * This program and the accompanying materials are made available under the terms of the
-/// Eclipse
-// * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or
-/// the Apache
-// * License, Version 2.0 which is available at
-/// https://www.apache.org/licenses/LICENSE-2.0.
-// *
-// * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
-// */
+/*
+ * Copyright (c) 2020-2021 Karnak Team and other contributors.
+ *
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0,
+ * or the Apache License, Version 2.0 which is available at
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ */
 // package org.karnak.backend.util;
 //
 // import java.io.File;
@@ -32,11 +30,11 @@
 //
 // public static void initNativeLibs(URL resource) {
 // Optional<String> oLibPath =
-/// Arrays.stream(System.getProperty("java.library.path").split(File.pathSeparator))
+// Arrays.stream(System.getProperty("java.library.path").split(File.pathSeparator))
 // .filter(p -> p.contains("dicom-opencv")).findFirst();
 // if (oLibPath.isEmpty()) {
 // throw new IllegalStateException("OpenCV library is not configured in
-/// java.library.path");
+// java.library.path");
 // }
 //
 // String system = NativeLibrary.getNativeLibSpecification();

@@ -17,6 +17,7 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.util.Objects;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.VR;
+import org.dcm4che3.img.util.DicomUtils;
 import org.karnak.backend.exception.ExpressionActionException;
 import org.karnak.backend.model.action.ActionItem;
 import org.karnak.backend.model.action.Keep;
@@ -40,7 +41,7 @@ public class ExprAction implements ExpressionItem {
 	private Attributes dcmCopy;
 
 	public ExprAction(int tag, VR vr, Attributes dcm, Attributes dcmCopy) {
-		this.tag = Objects.requireNonNull(tag);
+		this.tag = tag;
 		this.vr = Objects.requireNonNull(vr);
 		this.stringValue = dcmCopy.getString(this.tag);
 		this.dcmCopy = dcmCopy;
@@ -48,7 +49,7 @@ public class ExprAction implements ExpressionItem {
 	}
 
 	public ExprAction(int tag, VR vr, String stringValue) {
-		this.tag = Objects.requireNonNull(tag);
+		this.tag = tag;
 		this.vr = Objects.requireNonNull(vr);
 		this.stringValue = stringValue;
 	}
@@ -137,7 +138,7 @@ public class ExprAction implements ExpressionItem {
 	}
 
 	public String getString(int tag) {
-		return dcmCopy.getString(tag);
+		return DicomUtils.getStringFromDicomElement(dcmCopy, tag);
 	}
 
 	public boolean tagIsPresent(int tag) {

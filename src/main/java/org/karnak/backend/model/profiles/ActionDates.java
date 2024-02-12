@@ -25,6 +25,7 @@ import org.karnak.backend.model.expression.ExpressionResult;
 import org.karnak.backend.model.profilepipe.HMAC;
 import org.karnak.backend.model.profilepipe.TagActionMap;
 import org.karnak.backend.util.DateFormat;
+import org.karnak.backend.util.ShiftByTagDate;
 import org.karnak.backend.util.ShiftDate;
 import org.karnak.backend.util.ShiftRangeDate;
 
@@ -64,14 +65,15 @@ public class ActionDates extends AbstractProfileItem {
 		try {
 			if (option == null) {
 				throw new Exception("Cannot build the profile " + codeName
-						+ " : An option must be given. Option available: [shift, shift_range]");
+						+ " : An option must be given. Option available: [shift, shift_range, shift_by_tag, date_format]");
 			}
 			switch (option) {
 				case "shift" -> ShiftDate.verifyShiftArguments(argumentEntities);
 				case "shift_range" -> ShiftRangeDate.verifyShiftArguments(argumentEntities);
+				case "shift_by_tag" -> ShiftByTagDate.verifyShiftArguments(argumentEntities);
 				case "date_format" -> DateFormat.verifyPatternArguments(argumentEntities);
 				default -> throw new Exception("Cannot build the profile " + codeName + " with the option given "
-						+ option + " : Option available (shift, shift_range)");
+						+ option + " : Option available (shift, shift_range, shift_by_tag, date_format)");
 			}
 		}
 		catch (Exception e) {
@@ -118,6 +120,7 @@ public class ActionDates extends AbstractProfileItem {
 		return switch (option) {
 			case "shift" -> ShiftDate.shift(dcmCopy, tag, argumentEntities);
 			case "shift_range" -> ShiftRangeDate.shift(dcmCopy, tag, argumentEntities, hmac);
+			case "shift_by_tag" -> ShiftByTagDate.shift(dcmCopy, tag, argumentEntities, hmac);
 			case "date_format" -> DateFormat.format(dcmCopy, tag, argumentEntities);
 			default -> null;
 		};
