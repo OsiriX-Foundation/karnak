@@ -17,15 +17,15 @@
     <enforcer.maven-version>[3.2.0,)</enforcer.maven-version>
     <java.version>17</java.version>
 
-    <springframework.version>3.1.6</springframework.version>
-    <springdoc.version>1.6.12</springdoc.version>
-    <vaadin.version>24.2.3</vaadin.version>
-    <org.json.version>20231013</org.json.version>
-    <liquibase.version>4.20.0</liquibase.version>
-    <opencsv.version>5.7.1</opencsv.version>
+    <springframework.version>3.2.5</springframework.version>
+    <springdoc.version>1.8.0</springdoc.version>
+    <vaadin.version>24.3.10</vaadin.version>
+    <org.json.version>20240303</org.json.version>
+    <liquibase.version>4.27.0</liquibase.version>
+    <opencsv.version>5.9</opencsv.version>
 
-    <weasis-dicom-tools.version>5.31.1</weasis-dicom-tools.version>
-    <weasis.opencv.native.version>4.8.1-dcm</weasis.opencv.native.version>
+    <weasis-dicom-tools.version>5.32.0</weasis-dicom-tools.version>
+    <weasis.opencv.native.version>4.9.0-dcm</weasis.opencv.native.version>
 
     <h2.version>2.2.224</h2.version>
     <mockito.version>5.2.0</mockito.version>
@@ -84,7 +84,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.12.0</version>
+          <version>3.12.1</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -119,7 +119,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>3.2.3</version>
+          <version>3.2.5</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -150,11 +150,6 @@
           <groupId>org.jacoco</groupId>
           <artifactId>jacoco-maven-plugin</artifactId>
           <version>0.8.11</version>
-        </plugin>
-        <plugin>
-          <groupId>com.diffplug.spotless</groupId>
-          <artifactId>spotless-maven-plugin</artifactId>
-          <version>2.41.1</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -447,7 +442,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>32.1.3-jre</version>
+      <version>33.1.0-jre</version>
     </dependency>
 
     <dependency>

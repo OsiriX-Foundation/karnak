@@ -31,6 +31,8 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
+import org.yaml.snakeyaml.LoaderOptions;
+import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
@@ -127,7 +129,9 @@ public class AppConfig {
     URL profileURL = Profile.class.getResource("profileByDefault.yml");
     if (!profileRepo.existsByNameAndByDefault("Dicom Basic Profile", true)) {
       try (InputStream inputStream = profileURL.openStream()) {
-        final Yaml yaml = new Yaml(new Constructor(ProfilePipeBody.class));
+        TypeDescription customTypeDescription = new TypeDescription(ProfilePipeBody.class);
+        LoaderOptions options = new LoaderOptions();
+        final Yaml yaml = new Yaml(new Constructor(customTypeDescription, options));
         final ProfilePipeBody profilePipeYml = yaml.load(inputStream);
         profilePipeService.saveProfilePipe(profilePipeYml, true);
       } catch (final Exception e) {
