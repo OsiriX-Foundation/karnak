@@ -8,10 +8,12 @@ karnakpassword: ${KARNAK_PASSWORD:admin}
 mainzelliste:
   apikey: '${MAINZELLISTE_API_KEY:changeThisApiKey}'
   serverurl: 'http://${MAINZELLISTE_HOSTNAME:localhost}:${MAINZELLISTE_HTTP_PORT:8083}'
+# - Logs
 logging:
   level:
     org:
       springframework: INFO
+      karnak: INFO
     com:
       vaadin:
         flow:
