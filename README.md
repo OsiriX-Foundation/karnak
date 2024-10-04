@@ -32,7 +32,7 @@ online [Karnak user guide](https://osirix-foundation.github.io/karnak-documentat
 
 Prerequisites:
 
-- JDK 17
+- JDK 21
 - Maven 3
 - Code formatter: [google-java-format](https://github.com/google/google-java-format)
 
@@ -66,9 +66,6 @@ see [karnak-docker](https://github.com/OsiriX-Foundation/karnak-docker).
             - `DB_USER=karnak`
             - `DB_NAME=karnak`
             - `DB_HOST=localhost`
-            - `MAINZELLISTE_HOSTNAME=localhost`
-            - `MAINZELLISTE_HTTP_PORT=8083`
-            - `MAINZELLISTE_API_KEY=changeThisApiKey`
             - `KARNAK_ADMIN=admin`
             - `KARNAK_PASSWORD=admin`
             - `KARNAK_LOGS_MAX_FILE_SIZE=100MB`

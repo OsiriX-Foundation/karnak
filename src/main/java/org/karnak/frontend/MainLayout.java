@@ -24,7 +24,6 @@ import org.karnak.frontend.dicom.DicomMainView;
 import org.karnak.frontend.extid.ExternalIDView;
 import org.karnak.frontend.forwardnode.ForwardNodeView;
 import org.karnak.frontend.help.HelpView;
-import org.karnak.frontend.mainzelliste.MainzellisteView;
 import org.karnak.frontend.monitoring.MonitoringView;
 import org.karnak.frontend.profile.ProfileView;
 import org.karnak.frontend.project.ProjectView;
@@ -53,7 +52,6 @@ public class MainLayout extends FlexLayout implements RouterLayout {
 		addSecuredMenu(ProfileView.class, ProfileView.VIEW_NAME, VaadinIcon.CLIPBOARD_TEXT.create());
 		addSecuredMenu(ProjectView.class, ProjectView.VIEW_NAME, VaadinIcon.FOLDER_OPEN_O.create());
 		addSecuredMenu(ExternalIDView.class, ExternalIDView.VIEW_NAME, VaadinIcon.CLIPBOARD_USER.create());
-		addSecuredMenu(MainzellisteView.class, MainzellisteView.VIEW_NAME, VaadinIcon.CLIPBOARD_USER.create());
 		addSecuredMenu(PseudonymMappingView.class, PseudonymMappingView.VIEW_NAME, VaadinIcon.SITEMAP.create());
 		addSecuredMenu(MonitoringView.class, MonitoringView.VIEW_NAME, VaadinIcon.PIE_BAR_CHART.create());
 		addSecuredMenu(DicomMainView.class, DicomMainView.VIEW_NAME, VaadinIcon.TOOLS.create());
