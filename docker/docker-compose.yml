@@ -45,5 +45,3 @@ volumes:
 networks:
   reverseproxy:
   karnak-data:
-  mainzelliste:
-  mainzelliste-data:
