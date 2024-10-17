@@ -47,5 +47,6 @@ spring:
         enabled: false
 monitoring:
   max-history: 50000
+  cleaning-frequency: 300000 # Represents 5 minutes
 mail:
   sender: no-reply@hcuge.ch
