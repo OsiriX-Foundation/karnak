@@ -139,8 +139,6 @@ management:
 monitoring:
   # Maximum of sop instance sent for the monitoring
   max-history: 300000
-  # Cleaning frequency of the monitoring in minutes
-  cleaning-frequency: 300000 # Represents 5 minutes
 
 mail:
   sender: no-reply@hcuge.ch
