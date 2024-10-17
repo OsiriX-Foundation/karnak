@@ -48,9 +48,6 @@ public class TransferMonitoringService {
 	@Value("${monitoring.max-history}")
 	private int sizeLimit;
 
-	@Value("${monitoring.cleaning-frequency}")
-	private int cleaningFrequencyInMinutes;
-
 	// Repositories
 	private final TransferStatusRepo transferStatusRepo;
 
