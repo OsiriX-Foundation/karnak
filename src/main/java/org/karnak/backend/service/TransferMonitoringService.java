@@ -68,10 +68,10 @@ public class TransferMonitoringService {
 	}
 
 	/**
-	 * Occurs every ${monitoring.cleaning-frequency} property: clean transfer_status table
-	 * if over the size limit LIFO: clean oldest records
+	 * Occurs every 5 min: clean transfer_status table if over the size limit LIFO: clean
+	 * oldest records
 	 */
-	@Scheduled(fixedRateString = "${monitoring.cleaning-frequency}")
+	@Scheduled(fixedRate = 5 * 60 * 1000)
 	public void cleanTransferStatus() {
 		int nbRecords = (int) transferStatusRepo.count();
 		if (nbRecords > sizeLimit) {
