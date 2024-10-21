@@ -9,7 +9,6 @@
  */
 package org.karnak.backend.service.gateway;
 
-import ch.hcuge.springcloud.security.oauth2.userinfo.Oauth2UserInfoAutoConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.cache.ExternalIDCache;
@@ -30,7 +29,6 @@ import org.karnak.backend.enums.DestinationType;
 import org.karnak.backend.enums.NodeEventType;
 import org.karnak.backend.model.event.NodeEvent;
 import org.mockito.Mockito;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.weasis.dicom.param.DicomNode;
@@ -45,7 +43,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@EnableAutoConfiguration(exclude = Oauth2UserInfoAutoConfiguration.class)
 @SpringBootTest
 class GatewaySetUpServiceTest {
 

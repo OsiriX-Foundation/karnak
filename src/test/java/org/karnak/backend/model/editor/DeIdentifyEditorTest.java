@@ -9,7 +9,6 @@
  */
 package org.karnak.backend.model.editor;
 
-import ch.hcuge.springcloud.security.oauth2.userinfo.Oauth2UserInfoAutoConfiguration;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.dcm4che3.data.VR;
@@ -22,7 +21,6 @@ import org.karnak.backend.data.entity.ProfileEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.data.entity.SecretEntity;
 import org.karnak.backend.enums.PseudonymType;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.weasis.dicom.param.AttributeEditorContext;
@@ -31,7 +29,6 @@ import org.weasis.dicom.param.DicomNode;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-@EnableAutoConfiguration(exclude = Oauth2UserInfoAutoConfiguration.class)
 @SpringBootTest
 class DeIdentifyEditorTest {
 

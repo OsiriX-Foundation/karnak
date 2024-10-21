@@ -9,8 +9,8 @@
  */
 package org.karnak;
 
+import ch.hcuge.springcloud.security.oauth2.userinfo.Oauth2UserInfoAutoConfiguration;
 import com.vaadin.flow.spring.annotation.EnableVaadin;
-import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 import org.karnak.backend.config.AppConfig;
 import org.karnak.backend.enums.ApplicationProfile;
@@ -26,7 +26,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-@SpringBootApplication(exclude = ErrorMvcAutoConfiguration.class)
+import java.util.Objects;
+
+@SpringBootApplication(exclude = { ErrorMvcAutoConfiguration.class, Oauth2UserInfoAutoConfiguration.class })
 @EntityScan("org.karnak.backend.data.entity")
 @EnableJpaRepositories("org.karnak.backend.data.repo")
 @EnableVaadin(value = "org.karnak")

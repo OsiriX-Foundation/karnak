@@ -9,14 +9,12 @@
  */
 package org.karnak.frontend.extid;
 
-import ch.hcuge.springcloud.security.oauth2.userinfo.Oauth2UserInfoAutoConfiguration;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.cache.ExternalIDCache;
 import org.karnak.backend.cache.MainzellisteCache;
 import org.karnak.backend.cache.Patient;
 import org.karnak.backend.config.RedisConfiguration;
 import org.karnak.backend.data.entity.ProjectEntity;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
@@ -29,7 +27,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@EnableAutoConfiguration(exclude = Oauth2UserInfoAutoConfiguration.class)
 @SpringBootTest
 class ExternalIDGridTest {
 
