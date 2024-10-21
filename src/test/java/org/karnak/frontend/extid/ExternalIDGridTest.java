@@ -9,14 +9,6 @@
  */
 package org.karnak.frontend.extid;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-
-import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.cache.ExternalIDCache;
 import org.karnak.backend.cache.MainzellisteCache;
@@ -25,6 +17,15 @@ import org.karnak.backend.config.RedisConfiguration;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 class ExternalIDGridTest {

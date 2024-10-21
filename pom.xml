@@ -107,11 +107,7 @@
         <artifactId>spring-boot-maven-plugin</artifactId>
         <configuration>
           <image>
-            <env>
-              <BPE_DELIM_LD_LIBRARY_PATH>:</BPE_DELIM_LD_LIBRARY_PATH>
-              <BPE_APPEND_LD_LIBRARY_PATH>/var/lib/native_lib:/var/lib/native_lib/native_lib
-              </BPE_APPEND_LD_LIBRARY_PATH>
-            </env>
+            <runImage>${docker-registry}/vna-docker-base-image:1.0.0</runImage>
           </image>
         </configuration>
       </plugin>
