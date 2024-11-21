@@ -9,12 +9,6 @@
  */
 package org.karnak.backend.service.kheops;
 
-import com.google.common.collect.ImmutableList;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
@@ -34,12 +28,18 @@ import org.karnak.backend.model.profiles.CleanPixelData;
 import org.karnak.backend.model.profiles.ProfileItem;
 import org.karnak.backend.service.profilepipe.Profile;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.stream.Collectors;
+
 @Slf4j
 public class SwitchingAlbum {
 
-	public static final ImmutableList<String> MIN_SCOPE_SOURCE = ImmutableList.of("read", "send");
+	public static final List<String> MIN_SCOPE_SOURCE = List.of("read", "send");
 
-	public static final ImmutableList<String> MIN_SCOPE_DESTINATION = ImmutableList.of("write");
+	public static final List<String> MIN_SCOPE_DESTINATION = List.of("write");
 
 	private final KheopsApi kheopsAPI;
 
