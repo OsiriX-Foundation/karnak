@@ -138,6 +138,7 @@ management:
         enabled: true
 
 monitoring:
+  # Maximum of sop instance sent for the monitoring
   max-history: 300000
 
 mail:
