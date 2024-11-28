@@ -11,7 +11,6 @@ package org.karnak.frontend.extid;
 
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.cache.ExternalIDCache;
-import org.karnak.backend.cache.MainzellisteCache;
 import org.karnak.backend.cache.Patient;
 import org.karnak.backend.config.RedisConfiguration;
 import org.karnak.backend.data.entity.ProjectEntity;
@@ -32,9 +31,6 @@ class ExternalIDGridTest {
 
 	@MockBean
 	private ExternalIDCache externalIDCache;
-
-	@MockBean
-	private MainzellisteCache mainzellisteCache;
 
 	@MockBean
 	private RedisConfiguration redisConfiguration;

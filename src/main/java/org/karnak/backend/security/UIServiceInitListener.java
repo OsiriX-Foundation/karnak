@@ -13,28 +13,28 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.server.ServiceInitEvent;
 import com.vaadin.flow.server.VaadinServiceInitListener;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import org.karnak.backend.util.SecurityUtil;
 import org.karnak.frontend.authentication.NotAuthorizedScreen;
 import org.karnak.frontend.dicom.DicomMainView;
 import org.karnak.frontend.extid.ExternalIDView;
 import org.karnak.frontend.forwardnode.ForwardNodeView;
 import org.karnak.frontend.help.HelpView;
-import org.karnak.frontend.mainzelliste.MainzellisteView;
 import org.karnak.frontend.profile.ProfileView;
 import org.karnak.frontend.project.ProjectView;
 import org.karnak.frontend.pseudonym.mapping.PseudonymMappingView;
 import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Component
 public class UIServiceInitListener implements VaadinServiceInitListener {
 
 	// All view classes
 	private final List<? extends Class<? extends com.vaadin.flow.component.Component>> viewClasses = Arrays.asList(
-			ForwardNodeView.class, ProfileView.class, ProjectView.class, ExternalIDView.class, MainzellisteView.class,
+			ForwardNodeView.class, ProfileView.class, ProjectView.class, ExternalIDView.class,
 			PseudonymMappingView.class, DicomMainView.class, HelpView.class);
 
 	/**

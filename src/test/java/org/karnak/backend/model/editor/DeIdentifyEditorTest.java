@@ -14,7 +14,6 @@ import org.dcm4che3.data.Tag;
 import org.dcm4che3.data.VR;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.cache.ExternalIDCache;
-import org.karnak.backend.cache.MainzellisteCache;
 import org.karnak.backend.config.RedisConfiguration;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ProfileEntity;
@@ -34,9 +33,6 @@ class DeIdentifyEditorTest {
 
 	@MockBean
 	private ExternalIDCache externalIDCache;
-
-	@MockBean
-	private MainzellisteCache mainzellisteCache;
 
 	@MockBean
 	private RedisConfiguration redisConfiguration;

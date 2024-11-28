@@ -16,7 +16,6 @@ import org.dcm4che3.data.VR;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.cache.ExternalIDCache;
-import org.karnak.backend.cache.MainzellisteCache;
 import org.karnak.backend.config.RedisConfiguration;
 import org.karnak.backend.data.entity.ArgumentEntity;
 import org.karnak.backend.data.entity.IncludedTagEntity;
@@ -38,9 +37,6 @@ class ProfileTest {
 
 	@MockBean
 	private ExternalIDCache externalIDCache;
-
-	@MockBean
-	private MainzellisteCache mainzellisteCache;
 
 	@MockBean
 	private RedisConfiguration redisConfiguration;

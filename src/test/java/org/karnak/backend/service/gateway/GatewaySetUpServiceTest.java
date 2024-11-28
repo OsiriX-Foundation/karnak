@@ -12,7 +12,6 @@ package org.karnak.backend.service.gateway;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.cache.ExternalIDCache;
-import org.karnak.backend.cache.MainzellisteCache;
 import org.karnak.backend.config.RedisConfiguration;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.DicomSourceNodeEntity;
@@ -48,9 +47,6 @@ class GatewaySetUpServiceTest {
 
 	@MockBean
 	private ExternalIDCache externalIDCache;
-
-	@MockBean
-	private MainzellisteCache mainzellisteCache;
 
 	@MockBean
 	private RedisConfiguration redisConfiguration;

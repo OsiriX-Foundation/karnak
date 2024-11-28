@@ -9,18 +9,17 @@
  */
 package org.karnak.frontend.pseudonym.mapping;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 import org.karnak.backend.cache.ExternalIDCache;
 import org.karnak.backend.cache.Patient;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.service.ProjectService;
-import org.karnak.backend.service.PseudonymMappingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Mapping logic service use to make calls to backend and implement logic linked to the
@@ -32,9 +31,7 @@ public class PseudonymMappingLogic {
 	// View
 	private PseudonymMappingView pseudonymMappingView;
 
-	// Services
-	private final PseudonymMappingService pseudonymMappingService;
-
+	// Service
 	private final ProjectService projectService;
 
 	// Cache
@@ -42,26 +39,14 @@ public class PseudonymMappingLogic {
 
 	/**
 	 * Autowired constructor
-	 * @param pseudonymMappingService Pseudonym mapping backend service
 	 * @param externalIDCache External ID Cache
 	 * @param projectService Project service
 	 */
 	@Autowired
-	public PseudonymMappingLogic(final PseudonymMappingService pseudonymMappingService,
-			final ExternalIDCache externalIDCache, final ProjectService projectService) {
-		this.pseudonymMappingService = pseudonymMappingService;
+	public PseudonymMappingLogic(final ExternalIDCache externalIDCache, final ProjectService projectService) {
 		this.externalIDCache = externalIDCache;
 		this.projectService = projectService;
 		this.pseudonymMappingView = null;
-	}
-
-	/**
-	 * Retrieve a patient stored in mainzelliste by its pseudonym
-	 * @param pseudonym Pseudonym
-	 * @return Patient found
-	 */
-	public Patient retrieveMainzellistePatient(String pseudonym) {
-		return pseudonymMappingService.retrieveMainzellistePatient(pseudonym);
 	}
 
 	/**
@@ -78,7 +63,7 @@ public class PseudonymMappingLogic {
 		List<Patient> patientsFound = externalIDCache.getAll()
 			.stream()
 			.filter(extId -> Objects.equals(extId.getPseudonym(), pseudonym))
-			.collect(Collectors.toList());
+			.toList();
 
 		// Add mapping found
 		patientsFound.forEach(p -> {
@@ -89,6 +74,8 @@ public class PseudonymMappingLogic {
 
 		return externalIDCacheMapping;
 	}
+
+	// TODO TELIMA-289: retrieve patients in pseudonym-service
 
 	public PseudonymMappingView getMappingView() {
 		return pseudonymMappingView;

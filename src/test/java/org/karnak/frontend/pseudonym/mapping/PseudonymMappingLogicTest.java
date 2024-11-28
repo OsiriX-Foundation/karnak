@@ -9,26 +9,24 @@
  */
 package org.karnak.frontend.pseudonym.mapping;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.cache.ExternalIDCache;
 import org.karnak.backend.cache.Patient;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.service.ProjectService;
-import org.karnak.backend.service.PseudonymMappingService;
 import org.mockito.Mockito;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class PseudonymMappingLogicTest {
 
 	// Service
 	private PseudonymMappingLogic pseudonymMappingLogic;
-
-	private final PseudonymMappingService pseudonymMappingServiceMock = Mockito.mock(PseudonymMappingService.class);
 
 	private final ExternalIDCache externalIDCacheMock = Mockito.mock(ExternalIDCache.class);
 
@@ -51,18 +49,7 @@ class PseudonymMappingLogicTest {
 		Mockito.when(projectServiceMock.retrieveProject(Mockito.anyLong())).thenReturn(projectEntity);
 
 		// Build mocked service
-		pseudonymMappingLogic = new PseudonymMappingLogic(pseudonymMappingServiceMock, externalIDCacheMock,
-				projectServiceMock);
-	}
-
-	@Test
-	void should_retrieve_mainzelliste_patient() {
-
-		// Call service
-		pseudonymMappingLogic.retrieveMainzellistePatient("pseudonym");
-
-		// Test results
-		Mockito.verify(pseudonymMappingServiceMock, Mockito.times(1)).retrieveMainzellistePatient(Mockito.anyString());
+		pseudonymMappingLogic = new PseudonymMappingLogic(externalIDCacheMock, projectServiceMock);
 	}
 
 	@Test
