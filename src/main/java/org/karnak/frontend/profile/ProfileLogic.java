@@ -24,6 +24,8 @@ import org.karnak.backend.service.profilepipe.ProfilePipeService;
 import org.karnak.frontend.profile.component.errorprofile.ProfileError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.yaml.snakeyaml.LoaderOptions;
+import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.error.YAMLException;
@@ -106,7 +108,7 @@ public class ProfileLogic extends ListDataProvider<ProfileEntity> {
 	}
 
 	private ProfilePipeBody readProfileYaml(InputStream stream) {
-		final Yaml yaml = new Yaml(new Constructor(ProfilePipeBody.class));
+		final Yaml yaml = new Yaml(new Constructor(ProfilePipeBody.class, new LoaderOptions()));
 		return yaml.load(stream);
 	}
 
