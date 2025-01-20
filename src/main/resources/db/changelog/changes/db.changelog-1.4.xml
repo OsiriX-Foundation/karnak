@@ -1,0 +1,21 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+
+  <!-- Following Mainzelliste removal, remap enum values -->
+  <!-- runOnChange="false" runAlways="false" are by default so should run only once and not each time the server is restarted -->
+  <changeSet author="karnak" id="1.4-1">
+
+    <update tableName="destination">
+      <column name="pseudonym_type" valueNumeric="0"/>
+      <where>pseudonym_type IN (0, 1, 2)</where>
+    </update>
+
+    <update tableName="destination">
+      <column name="pseudonym_type" valueNumeric="1"/>
+      <where>pseudonym_type = 3</where>
+    </update>
+  </changeSet>
+
+</databaseChangeLog>

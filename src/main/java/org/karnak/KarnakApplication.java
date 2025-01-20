@@ -39,6 +39,7 @@ public class KarnakApplication implements CommandLineRunner {
 	private AppConfig myConfig;
 
 	public static void main(String[] args) {
+
 		SpringApplicationBuilder application = new SpringApplicationBuilder(KarnakApplication.class);
 
 		// If environment variable IDP exists and has value "oidc": activate the profile
@@ -58,5 +59,4 @@ public class KarnakApplication implements CommandLineRunner {
 		log.info("using environment: " + (myConfig != null ? myConfig.getEnvironment() : ""));
 		log.info("name: " + (myConfig != null ? myConfig.getName() : ""));
 	}
-
 }

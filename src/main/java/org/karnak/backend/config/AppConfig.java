@@ -10,11 +10,8 @@
 package org.karnak.backend.config;
 
 import jakarta.annotation.PostConstruct;
-import java.io.InputStream;
-import java.net.URL;
 import lombok.extern.slf4j.Slf4j;
 import org.karnak.backend.cache.ExternalIDCache;
-import org.karnak.backend.cache.MainzellisteCache;
 import org.karnak.backend.cache.PatientClient;
 import org.karnak.backend.data.repo.ProfileRepo;
 import org.karnak.backend.model.profilebody.ProfilePipeBody;
@@ -31,15 +28,18 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
 import org.yaml.snakeyaml.LoaderOptions;
-import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
+
+import java.io.InputStream;
+import java.net.URL;
 
 @Configuration
 @EnableConfigurationProperties
 @ConfigurationProperties
 @EnableCaching
 @Slf4j
+
 public class AppConfig {
 
 	private static AppConfig instance;
@@ -58,15 +58,12 @@ public class AppConfig {
 
 	private final ExternalIDCache externalIDCache;
 
-	private final MainzellisteCache mainzellisteCache;
-
 	@Autowired
 	public AppConfig(final ProfileRepo profileRepo, final ProfilePipeService profilePipeService,
-			final ExternalIDCache externalIDCache, final MainzellisteCache mainzellisteCache) {
+			final ExternalIDCache externalIDCache) {
 		this.profileRepo = profileRepo;
 		this.profilePipeService = profilePipeService;
 		this.externalIDCache = externalIDCache;
-		this.mainzellisteCache = mainzellisteCache;
 	}
 
 	@PostConstruct
@@ -118,11 +115,6 @@ public class AppConfig {
 	@Bean("ExternalIDPatient")
 	public PatientClient getExternalIDCache() {
 		return externalIDCache;
-	}
-
-	@Bean("MainzellisteCache")
-	public PatientClient getMainzellisteCache() {
-		return mainzellisteCache;
 	}
 
 	// https://stackoverflow.com/questions/27405713/running-code-after-spring-boot-starts

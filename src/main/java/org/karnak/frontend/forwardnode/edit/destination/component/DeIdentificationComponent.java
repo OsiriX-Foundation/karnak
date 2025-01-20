@@ -9,25 +9,27 @@
  */
 package org.karnak.frontend.forwardnode.edit.destination.component;
 
-import static org.karnak.backend.enums.PseudonymType.CACHE_EXTID;
-import static org.karnak.backend.enums.PseudonymType.EXTID_IN_TAG;
-import static org.karnak.backend.enums.PseudonymType.MAINZELLISTE_EXTID;
-import static org.karnak.backend.enums.PseudonymType.MAINZELLISTE_PID;
-
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.NativeLabel;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
-import java.io.Serial;
-import java.util.Objects;
+import lombok.Getter;
+import lombok.Setter;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.frontend.component.ProjectDropDown;
 import org.karnak.frontend.util.UIS;
 
+import java.io.Serial;
+import java.util.Objects;
+
+import static org.karnak.backend.enums.PseudonymType.CACHE_EXTID;
+import static org.karnak.backend.enums.PseudonymType.EXTID_IN_TAG;
+
+@Getter
 public class DeIdentificationComponent extends VerticalLayout {
 
 	@Serial
@@ -43,12 +45,13 @@ public class DeIdentificationComponent extends VerticalLayout {
 	// Components
 	private Checkbox deIdentificationCheckbox;
 
-	private Label disclaimerLabel;
+	private NativeLabel disclaimerLabel;
 
 	private ProjectDropDown projectDropDown;
 
 	private PseudonymInDicomTagComponent pseudonymInDicomTagComponent;
 
+	@Setter
 	private Binder<DestinationEntity> destinationBinder;
 
 	private Div pseudonymDicomTagDiv;
@@ -161,15 +164,14 @@ public class DeIdentificationComponent extends VerticalLayout {
 		pseudonymTypeSelect.setLabel("Pseudonym type");
 		pseudonymTypeSelect.setWidth("100%");
 		pseudonymTypeSelect.getStyle().set("right", "0px");
-		pseudonymTypeSelect.setItems(MAINZELLISTE_PID.getValue(), MAINZELLISTE_EXTID.getValue(), CACHE_EXTID.getValue(),
-				EXTID_IN_TAG.getValue());
+		pseudonymTypeSelect.setItems(CACHE_EXTID.getValue(), EXTID_IN_TAG.getValue());
 	}
 
 	/**
 	 * Build disclaimer
 	 */
 	private void buildDisclaimerLabel() {
-		disclaimerLabel = new Label(LABEL_DISCLAIMER_DEIDENTIFICATION);
+		disclaimerLabel = new NativeLabel(LABEL_DISCLAIMER_DEIDENTIFICATION);
 		disclaimerLabel.getStyle().set("color", "red");
 		disclaimerLabel.setMinWidth("75%");
 		disclaimerLabel.getStyle().set("right", "0px");
@@ -217,26 +219,14 @@ public class DeIdentificationComponent extends VerticalLayout {
 		destinationBinder.forField(pseudonymTypeSelect)
 			.withValidator(Objects::nonNull, "Choose pseudonym type\n")
 			.bind(destination -> {
-				if (destination.getPseudonymType().equals(MAINZELLISTE_PID)) {
-					return MAINZELLISTE_PID.getValue();
-				}
-				else if (destination.getPseudonymType().equals(MAINZELLISTE_EXTID)) {
-					return MAINZELLISTE_EXTID.getValue();
-				}
-				else if (destination.getPseudonymType().equals(CACHE_EXTID)) {
+				if (destination.getPseudonymType().equals(CACHE_EXTID)) {
 					return CACHE_EXTID.getValue();
 				}
 				else {
 					return EXTID_IN_TAG.getValue();
 				}
 			}, (destination, s) -> {
-				if (s.equals(MAINZELLISTE_PID.getValue())) {
-					destination.setPseudonymType(MAINZELLISTE_PID);
-				}
-				else if (s.equals(MAINZELLISTE_EXTID.getValue())) {
-					destination.setPseudonymType(MAINZELLISTE_EXTID);
-				}
-				else if (s.equals(CACHE_EXTID.getValue())) {
+				if (s.equals(CACHE_EXTID.getValue())) {
 					destination.setPseudonymType(CACHE_EXTID);
 				}
 				else {
@@ -264,61 +254,9 @@ public class DeIdentificationComponent extends VerticalLayout {
 		if (!destinationEntity.isDesidentification()) {
 			// Reset the destination for pseudonym type, project, issuer of patient id
 			destinationEntity.setDeIdentificationProjectEntity(null);
-			destinationEntity.setPseudonymType(MAINZELLISTE_PID);
+			destinationEntity.setPseudonymType(CACHE_EXTID);
 			destinationEntity.setIssuerByDefault(null);
 		}
-	}
-
-	public Binder<DestinationEntity> getDestinationBinder() {
-		return destinationBinder;
-	}
-
-	public void setDestinationBinder(Binder<DestinationEntity> destinationBinder) {
-		this.destinationBinder = destinationBinder;
-	}
-
-	public ProjectDropDown getProjectDropDown() {
-		return projectDropDown;
-	}
-
-	public Checkbox getDeIdentificationCheckbox() {
-		return deIdentificationCheckbox;
-	}
-
-	public Label getDisclaimerLabel() {
-		return disclaimerLabel;
-	}
-
-	public PseudonymInDicomTagComponent getPseudonymInDicomTagComponent() {
-		return pseudonymInDicomTagComponent;
-	}
-
-	public Div getPseudonymDicomTagDiv() {
-		return pseudonymDicomTagDiv;
-	}
-
-	public Div getDeIdentificationDiv() {
-		return deIdentificationDiv;
-	}
-
-	public WarningNoProjectsDefined getWarningNoProjectsDefined() {
-		return warningNoProjectsDefined;
-	}
-
-	public Select<String> getPseudonymTypeSelect() {
-		return pseudonymTypeSelect;
-	}
-
-	public TextField getIssuerOfPatientIDByDefault() {
-		return issuerOfPatientIDByDefault;
-	}
-
-	public DestinationComponentUtil getDestinationComponentUtil() {
-		return destinationComponentUtil;
-	}
-
-	public ProfileLabel getProfileLabel() {
-		return profileLabel;
 	}
 
 }

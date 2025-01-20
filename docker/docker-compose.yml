@@ -2,7 +2,8 @@ version: '3.7'
 
 services:
   karnak-db:
-    image: postgres:12.4-alpine
+    container_name: karnak-db
+    image: postgres:14.6-alpine3.17
     environment:
       - POSTGRES_DB=karnak
       - POSTGRES_USER=karnak
@@ -13,31 +14,6 @@ services:
       - karnak-db-data:/var/lib/postgresql/data
     secrets:
       - postgres_karnak_password
-  mainzelliste-db:
-    image: postgres:9.5-alpine
-    environment:
-      - POSTGRES_DB=mainzelliste
-      - POSTGRES_USER=mainzelliste
-      - POSTGRES_PASSWORD_FILE=/run/secrets/mainzellisteDbPassword
-    volumes:
-      - mainzelliste-db-data:/var/lib/postgresql/data
-    secrets:
-      - mainzellisteDbPassword
-
-  mainzelliste:
-    image: osirixfoundation/karnak-mainzelliste:extid
-    ports:
-      - ${MAINZELLISTE_WEB_PORT}:8080
-    env_file: mainzelliste.env
-    secrets:
-      - mainzellisteDbPassword
-      - mainzellisteApiKey
-      - mainzellistePIDK1
-      - mainzellistePIDK2
-      - mainzellistePIDK3
-    depends_on:
-      - mainzelliste-db
-
 
   karnak-cache:
     image: redis:latest
@@ -46,19 +22,10 @@ services:
 
 
 secrets:
+  karnak_login_password:
+    file: secrets/karnak_login_password
   postgres_karnak_password:
     file: secrets/karnak_postgres_password
-  mainzellisteDbPassword:
-    file: secrets/mainzelliste_postgres_password
-  mainzellisteApiKey:
-    file: secrets/mainzelliste_api_key
-  mainzellistePIDK1:
-    file: secrets/mainzelliste_pid_k1
-  mainzellistePIDK2:
-    file: secrets/mainzelliste_pid_k2
-  mainzellistePIDK3:
-    file: secrets/mainzelliste_pid_k3
 
 volumes:
-  mainzelliste-db-data:
   karnak-db-data:

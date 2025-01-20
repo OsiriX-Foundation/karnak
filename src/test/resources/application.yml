@@ -12,9 +12,7 @@ name: test-YAML
 environment: LOCAL
 karnakadmin: admin
 karnakpassword: admin
-mainzelliste:
-  apikey: 'changeThisApiKey'
-  serverurl: 'http://localhost:8083'
+
 logging:
   level:
     com:

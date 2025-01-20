@@ -492,20 +492,20 @@ public class ForwardService {
 		return files;
 	}
 
-  private void uploadPayLoadFromTransformedImage(DicomStowRS stow, AdaptTransferSyntax syntax,
-      AttributeEditorContext context, Attributes attributes, BytesWithImageDescriptor desc)
-      throws Exception {
-    TransformedPlanarImage transformedPlanarImage = new TransformedPlanarImage();
-    try {
-      transformedPlanarImage = transformImage(attributes, context, transformedPlanarImage);
-      stow.uploadPayload(DicomStowRS.preparePayload(attributes, syntax, desc,
-          transformedPlanarImage != null ? transformedPlanarImage.getEditablePlanarImage() : null));
-    } finally {
-      if (transformedPlanarImage != null && transformedPlanarImage.getPlanarImage() != null) {
-        transformedPlanarImage.getPlanarImage().release();
-      }
-    }
-  }
+	private void uploadPayLoadFromTransformedImage(DicomStowRS stow, AdaptTransferSyntax syntax,
+			AttributeEditorContext context, Attributes attributes, BytesWithImageDescriptor desc) throws Exception {
+		TransformedPlanarImage transformedPlanarImage = new TransformedPlanarImage();
+		try {
+			transformedPlanarImage = transformImage(attributes, context, transformedPlanarImage);
+			stow.uploadPayload(DicomStowRS.preparePayload(attributes, syntax, desc,
+					transformedPlanarImage != null ? transformedPlanarImage.getEditablePlanarImage() : null));
+		}
+		finally {
+			if (transformedPlanarImage != null && transformedPlanarImage.getPlanarImage() != null) {
+				transformedPlanarImage.getPlanarImage().release();
+			}
+		}
+	}
 
 	public void transferOther(ForwardDicomNode fwdNode, WebForwardDestination destination, Attributes copy, Params p)
 			throws IOException {
