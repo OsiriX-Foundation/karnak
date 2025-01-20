@@ -18,9 +18,9 @@
     <enforcer.maven-version>[3.3.0,)</enforcer.maven-version>
     <java.version>21</java.version>
 
-    <springframework.version>3.2.5</springframework.version>
+    <springframework.version>3.3.5</springframework.version>
     <springdoc.version>1.8.0</springdoc.version>
-    <vaadin.version>24.3.10</vaadin.version>
+    <vaadin.version>24.6.2</vaadin.version>
     <org.json.version>20240303</org.json.version>
     <liquibase.version>4.27.0</liquibase.version>
     <opencsv.version>5.9</opencsv.version>
@@ -30,8 +30,7 @@
 
     <h2.version>2.2.224</h2.version>
     <mockito.version>5.2.0</mockito.version>
-    <swagger.version>2.2.14</swagger.version>
-    <junit.jupiter.version>5.8.2</junit.jupiter.version>
+    <swagger.version>2.2.22</swagger.version>
 
     <sonar.organization>osirix-foundation-1</sonar.organization>
     <sonar.projectKey>karnak</sonar.projectKey>
@@ -91,22 +90,22 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-install-plugin</artifactId>
-          <version>3.1.1</version>
+          <version>3.1.3</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-clean-plugin</artifactId>
-          <version>3.3.2</version>
+          <version>3.4.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-deploy-plugin</artifactId>
-          <version>3.1.1</version>
+          <version>3.1.2</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
-          <version>3.3.0</version>
+          <version>3.4.2</version>
         </plugin>
         <plugin>
           <groupId>org.apache.felix</groupId>
@@ -121,17 +120,17 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>3.2.5</version>
+          <version>3.5.2</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
-          <version>3.3.0</version>
+          <version>3.3.1</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-enforcer-plugin</artifactId>
-          <version>3.4.1</version>
+          <version>3.5.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -141,17 +140,17 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-site-plugin</artifactId>
-          <version>4.0.0-M13</version>
+          <version>4.0.0-M16</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>build-helper-maven-plugin</artifactId>
-          <version>3.5.0</version>
+          <version>3.6.0</version>
         </plugin>
         <plugin>
           <groupId>org.jacoco</groupId>
           <artifactId>jacoco-maven-plugin</artifactId>
-          <version>0.8.11</version>
+          <version>0.8.12</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -186,6 +185,10 @@
           <source>${java.version}</source>
           <target>${java.version}</target>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.liquibase</groupId>
+        <artifactId>liquibase-maven-plugin</artifactId>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -237,6 +240,7 @@
           </execution>
         </executions>
       </plugin>
+
       <!-- Take care of synchronizing java dependencies and imports in package.json and main.js files. It also creates webpack.config.js
         if not exists yet. -->
       <plugin>
@@ -357,12 +361,6 @@
     </dependency>
 
     <dependency>
-      <artifactId>liquibase-maven-plugin</artifactId>
-      <groupId>org.liquibase</groupId>
-      <version>${liquibase.version}</version>
-    </dependency>
-
-    <dependency>
       <artifactId>json</artifactId>
       <groupId>org.json</groupId>
       <version>${org.json.version}</version>
@@ -377,6 +375,12 @@
       <groupId>com.opencsv</groupId>
       <artifactId>opencsv</artifactId>
       <version>${opencsv.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -403,7 +407,9 @@
       </exclusions>
     </dependency>
 
-    <!-- jpa, crud repository -->
+    <!-- ====== -->
+    <!-- Lombok -->
+    <!-- ====== -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -467,10 +473,45 @@
       <scope>runtime</scope>
     </dependency>
 
+    <!-- ========= -->
+    <!-- Liquibase -->
+    <!-- ========= -->
+    <dependency>
+      <artifactId>liquibase-maven-plugin</artifactId>
+      <groupId>org.liquibase</groupId>
+      <version>${liquibase.version}</version>
+    </dependency>
+
+    <!-- ========= -->
+    <!--   Vaadin  -->
+    <!-- ========= -->
+    <!-- Vaadin Spring -->
+    <dependency>
+      <artifactId>vaadin-spring-boot-starter</artifactId>
+      <exclusions>
+        <!-- Excluding so that webjars are not included. -->
+        <exclusion>
+          <artifactId>vaadin-core</artifactId>
+          <groupId>com.vaadin</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>spring-boot-starter-web</artifactId>
+          <groupId>org.springframework.boot</groupId>
+        </exclusion>
+      </exclusions>
+      <groupId>com.vaadin</groupId>
+      <version>${vaadin.version}</version>
+    </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
       <version>4.5.14</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
     </dependency>
 
     <dependency>
@@ -550,6 +591,7 @@
       <artifactId>jackson-dataformat-xml</artifactId>
       <groupId>com.fasterxml.jackson.dataformat</groupId>
     </dependency>
+
 
     <!-- Tests -->
     <dependency>

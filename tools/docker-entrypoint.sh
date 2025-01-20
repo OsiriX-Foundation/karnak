@@ -45,23 +45,32 @@ SYS_PROPS+=" -Djava.library.path='/tmp/dicom-opencv'"
 ########################
 file_env 'KARNAK_LOGIN_PASSWORD'
 : "${KARNAK_LOGIN_PASSWORD:=undefined}"
+: "${OIDC_CLIENT_ID:=undefined}"
+: "${OIDC_CLIENT_SECRET:=undefined}"
+: "${OIDC_ISSUER_URI:=undefined}"
 SYS_PROPS+=" -Dkarnakadmin='$KARNAK_LOGIN_ADMIN'"
 SYS_PROPS+=" -Dkarnakpassword='$KARNAK_LOGIN_PASSWORD'"
 
 ##########################
 # KARNAK OPENID PROVIDER #
 ##########################
-: "${IDP:=undefined}"
-if [[ "$IDP" == "oidc" ]]
-then
-  file_env 'OIDC_CLIENT_SECRET'
-  : "${OIDC_CLIENT_ID:=undefined}"
-  : "${OIDC_CLIENT_SECRET:=undefined}"
-  : "${OIDC_ISSUER_URI:=undefined}"
-  SYS_PROPS+=" -Dspring.security.oauth2.client.registration.keycloak.client-id='$OIDC_CLIENT_ID'"
-  SYS_PROPS+=" -Dspring.security.oauth2.client.registration.keycloak.client-secret='$OIDC_CLIENT_SECRET'"
-  SYS_PROPS+=" -Dspring.security.oauth2.client.provider.keycloak.issuer-uri='$OIDC_ISSUER_URI'"
-fi
+# Only for HUG: do not comment for open source
+#: "${IDP:=undefined}"
+#if [[ "$IDP" == "oidc" ]]
+#then
+#  file_env 'OIDC_CLIENT_SECRET'
+#  : "${OIDC_CLIENT_ID:=undefined}"
+#  : "${OIDC_CLIENT_SECRET:=undefined}"
+#  : "${OIDC_ISSUER_URI:=undefined}"
+#  SYS_PROPS+=" -Dspring.security.oauth2.client.registration.keycloak.client-id='$OIDC_CLIENT_ID'"
+#  SYS_PROPS+=" -Dspring.security.oauth2.client.registration.keycloak.client-secret='$OIDC_CLIENT_SECRET'"
+#  SYS_PROPS+=" -Dspring.security.oauth2.client.provider.keycloak.issuer-uri='$OIDC_ISSUER_URI'"
+#fi
+
+# Only for HUG: do not set to open source
+SYS_PROPS+=" -Dspring.security.oauth2.client.registration.keycloak.client-id='$OIDC_CLIENT_ID'"
+SYS_PROPS+=" -Dspring.security.oauth2.client.registration.keycloak.client-secret='$OIDC_CLIENT_SECRET'"
+SYS_PROPS+=" -Dspring.security.oauth2.client.provider.keycloak.issuer-uri='$OIDC_ISSUER_URI'"
 
 ########################
 # DATABASE ENVIRONMENT #
@@ -80,19 +89,6 @@ DB_URL=jdbc:postgresql://$DB_HOST:$DB_PORT/$DB_NAME
 SYS_PROPS+=" -Dspring.datasource.username=$DB_USER"
 SYS_PROPS+=" -Dspring.datasource.password=$DB_PASSWORD"
 SYS_PROPS+=" -Dspring.datasource.url=$DB_URL"
-
-############################
-# MAINZELLISTE ENVIRONMENT #
-############################
-file_env 'MAINZELLISTE_API_KEY'
-: "${MAINZELLISTE_HOSTNAME:=localhost}"
-: "${MAINZELLISTE_HTTP_PORT:=8080}"
-: "${MAINZELLISTE_API_KEY:=undefined}"
-
-MAINZELLISTE_SERVER_URL=http://$MAINZELLISTE_HOSTNAME:$MAINZELLISTE_HTTP_PORT
-
-SYS_PROPS+=" -Dmainzelliste.serverurl=$MAINZELLISTE_SERVER_URL"
-SYS_PROPS+=" -Dmainzelliste.apikey=$MAINZELLISTE_API_KEY"
 
 # https://docs.hazelcast.org/docs/4.1/manual/html-single/index.html#running-in-modular-java
 # Hazelcast needs the java.se module and access to the following Java packages for a proper work

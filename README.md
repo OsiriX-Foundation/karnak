@@ -32,7 +32,7 @@ online [Karnak user guide](https://osirix-foundation.github.io/karnak-documentat
 
 Prerequisites:
 
-- JDK 17
+- JDK 21
 - Maven 3
 - Code formatter: [google-java-format](https://github.com/google/google-java-format)
 
@@ -49,7 +49,7 @@ see [karnak-docker](https://github.com/OsiriX-Foundation/karnak-docker).
 
 ## Debug in IntelliJ
 
-- Launch the components needed by Karnak (see below "Configure locally Mainzelliste and Postgres
+- Launch the components needed by Karnak (see below "Configure Postgres
   database with docker-compose")
 - Enable Spring and Spring Boot for the project
 - Create a Spring Boot launcher from main of StartApplication.java
@@ -57,7 +57,7 @@ see [karnak-docker](https://github.com/OsiriX-Foundation/karnak-docker).
     - In VM Options, add `-Djava.library.path="/tmp/dicom-opencv"`. Note: the tmp folder must be adapted according to your system and `dicom-opencv` is mandatory as the last folder.
     - In Environment variables, add the following values. The following values work with our default
       configuration define with docker used for the development (see: "Configure locally
-      Mainzelliste and Postgres database with docker-compose") :
+      Postgres database with docker-compose") :
         - Mandatory:
             - `ENVIRONMENT=DEV`
         - Optional:
@@ -66,9 +66,6 @@ see [karnak-docker](https://github.com/OsiriX-Foundation/karnak-docker).
             - `DB_USER=karnak`
             - `DB_NAME=karnak`
             - `DB_HOST=localhost`
-            - `MAINZELLISTE_HOSTNAME=localhost`
-            - `MAINZELLISTE_HTTP_PORT=8083`
-            - `MAINZELLISTE_API_KEY=changeThisApiKey`
             - `KARNAK_ADMIN=admin`
             - `KARNAK_PASSWORD=admin`
             - `KARNAK_LOGS_MAX_FILE_SIZE=100MB`
@@ -82,14 +79,13 @@ see [karnak-docker](https://github.com/OsiriX-Foundation/karnak-docker).
             - `OIDC_CLIENT_SECRET=undefined`
             - `OIDC_ISSUER_URI=undefined`
             
-## Configure locally Mainzelliste and Postgres database with docker-compose
+## Configure locally Postgres database with docker-compose
 
 Minimum docker-compose version: **1.22**
 
 - Go in the `docker` folder located in the root project folder.
 - To configure third-party components used by karnak, please refer to these links:
     - [docker hub postgres](https://hub.docker.com/_/postgres)
-    - [docker hub mainzelliste](https://hub.docker.com/r/osirixfoundation/karnak-mainzelliste)
 - Adapt the values if necessary (copy `.env.example` into `.env` and modify it)
 - Execute command:
     - start: `docker-compose up -d`

@@ -9,12 +9,12 @@
  */
 package org.karnak.backend.model.profilepipe;
 
-import java.time.LocalDate;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
-import org.karnak.backend.api.rqbody.Fields;
 import org.karnak.backend.cache.Patient;
 import org.weasis.dicom.util.DateUtil;
+
+import java.time.LocalDate;
 
 public class PatientMetadata {
 
@@ -101,10 +101,6 @@ public class PatientMetadata {
 			return samePatient;
 		}
 		return false;
-	}
-
-	public Fields generateMainzellisteFields() {
-		return new Fields(patientID, patientName, patientBirthDate, patientSex, issuerOfPatientID);
 	}
 
 }

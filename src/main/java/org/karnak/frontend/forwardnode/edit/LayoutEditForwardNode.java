@@ -9,16 +9,13 @@
  */
 package org.karnak.frontend.forwardnode.edit;
 
-import static org.karnak.backend.enums.PseudonymType.EXTID_IN_TAG;
-
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
-import java.util.HashSet;
-import java.util.Set;
+import lombok.Getter;
 import org.dcm4che3.util.TagUtils;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.DicomSourceNodeEntity;
@@ -46,6 +43,11 @@ import org.karnak.frontend.forwardnode.edit.source.SourceView;
 import org.karnak.frontend.forwardnode.edit.source.component.NewUpdateSourceNode;
 import org.karnak.frontend.util.UIS;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.karnak.backend.enums.PseudonymType.EXTID_IN_TAG;
+
 /**
  * Layout of the edit forward node
  */
@@ -72,10 +74,12 @@ public class LayoutEditForwardNode extends VerticalLayout {
 
 	private final NewUpdateDestination newUpdateDestination;
 
+	@Getter
 	private final ButtonSaveDeleteCancel buttonForwardNodeSaveDeleteCancel;
 
 	private final NewUpdateSourceNode newUpdateSourceNode;
 
+	@Getter
 	private ForwardNodeEntity currentForwardNodeEntity;
 
 	/**
@@ -305,14 +309,6 @@ public class LayoutEditForwardNode extends VerticalLayout {
 
 	public void updateForwardNodeInEditView() {
 		this.load(currentForwardNodeEntity);
-	}
-
-	public ButtonSaveDeleteCancel getButtonForwardNodeSaveDeleteCancel() {
-		return buttonForwardNodeSaveDeleteCancel;
-	}
-
-	public ForwardNodeEntity getCurrentForwardNodeEntity() {
-		return currentForwardNodeEntity;
 	}
 
 	public void setCurrentForwardNodeEntity(ForwardNodeEntity currentForwardNodeEntity) {
@@ -582,9 +578,12 @@ public class LayoutEditForwardNode extends VerticalLayout {
 			}, "A position must be defined, when a delimiter is present")
 			.bind(DestinationEntity::getPosition, DestinationEntity::setPosition);
 
-		deIdentificationComponent.getDestinationBinder()
-			.forField(deIdentificationComponent.getPseudonymInDicomTagComponent().getSavePseudonym())
-			.bind(DestinationEntity::getSavePseudonym, DestinationEntity::setSavePseudonym);
+		/*
+		 * deIdentificationComponent.getDestinationBinder()
+		 * .forField(deIdentificationComponent.getPseudonymInDicomTagComponent().
+		 * getSavePseudonym()) .bind(DestinationEntity::getSavePseudonym,
+		 * DestinationEntity::setSavePseudonym);
+		 */
 	}
 
 	/**

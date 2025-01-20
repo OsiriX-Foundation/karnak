@@ -11,14 +11,11 @@ package org.karnak.frontend.pseudonym.mapping;
 
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.NativeLabel;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import org.karnak.backend.cache.Patient;
 import org.karnak.frontend.MainLayout;
 import org.karnak.frontend.pseudonym.mapping.component.MappingInputComponent;
@@ -26,9 +23,13 @@ import org.karnak.frontend.pseudonym.mapping.component.MappingResultComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 @Route(value = PseudonymMappingView.ROUTE, layout = MainLayout.class)
-@PageTitle("KARNAK - Mainzelliste Mapping Pseudonym")
-@Tag("mainzelliste-mapping-pseudonym-view")
+@PageTitle("KARNAK - Mapping Pseudonym")
+@Tag("mapping-pseudonym-view")
 @Secured({ "ROLE_investigator" })
 @SuppressWarnings("serial")
 public class PseudonymMappingView extends HorizontalLayout {
@@ -48,7 +49,7 @@ public class PseudonymMappingView extends HorizontalLayout {
 
 	private MappingInputComponent mappingInputComponent;
 
-	private Label pseudonymToLookForLabel;
+	private NativeLabel pseudonymToLookForLabel;
 
 	/**
 	 * Autowired constructor.
@@ -89,9 +90,6 @@ public class PseudonymMappingView extends HorizontalLayout {
 				// Create title searched pseudonym
 				buildTitlePseudonymToLookFor(mappingInputComponent.getPseudonymTextField().getValue());
 
-				// Find mapping pseudonym/patient store in mainzelliste
-				mappingFindPatientMainzelliste();
-
 				// Find mapping pseudonym/patient store in external id cache
 				mappingFindPatientInExternalIDCache();
 
@@ -123,7 +121,7 @@ public class PseudonymMappingView extends HorizontalLayout {
 	 * @param pseudonym pseudonym to look for
 	 */
 	private void buildTitlePseudonymToLookFor(String pseudonym) {
-		pseudonymToLookForLabel = new Label(String.format("Pseudonym %s", pseudonym));
+		pseudonymToLookForLabel = new NativeLabel(String.format("Pseudonym %s", pseudonym));
 		pseudonymToLookForLabel.getElement().getStyle().set("margin-left", "1em");
 		pseudonymToLookForLabel.getStyle().set("font-size", "large").set("font-weight", "bolder");
 
@@ -161,28 +159,6 @@ public class PseudonymMappingView extends HorizontalLayout {
 		}
 	}
 
-	/**
-	 * Find patient mapping in mainzelliste
-	 */
-	private void mappingFindPatientMainzelliste() {
-		MappingResultComponent mappingMainzellisteResultComponent = new MappingResultComponent();
-
-		// Retrieve patient
-		Patient mainzellistePatientFound = pseudonymMappingLogic
-			.retrieveMainzellistePatient(mappingInputComponent.getPseudonymTextField().getValue());
-
-		// Handle result find patient
-		mappingMainzellisteResultComponent.handleResultFindPatient(mainzellistePatientFound,
-				mappingInputComponent.getPseudonymTextField().getValue(), "[Mainzelliste]");
-
-		if (mainzellistePatientFound != null) {
-			// Add in the list of components to reset
-			mappingResultComponents.add(mappingMainzellisteResultComponent);
-
-			// Add in the layout
-			mappingLayout.add(mappingMainzellisteResultComponent);
-		}
-	}
 
 	/**
 	 * Build components

@@ -29,12 +29,6 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.validator.group.GroupSequenceProvider;
@@ -44,11 +38,20 @@ import org.karnak.backend.data.validator.DestinationGroupSequenceProvider.Destin
 import org.karnak.backend.enums.DestinationType;
 import org.karnak.backend.enums.PseudonymType;
 
+import java.io.Serial;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+
 @GroupSequenceProvider(value = DestinationGroupSequenceProvider.class)
 @Entity(name = "Destination")
 @Table(name = "destination")
 public class DestinationEntity implements Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 4835879567037810171L;
 
 	private Long id;
@@ -170,7 +173,7 @@ public class DestinationEntity implements Serializable {
 		this.description = "";
 		this.desidentification = false;
 		this.issuerByDefault = "";
-		this.pseudonymType = PseudonymType.MAINZELLISTE_PID;
+		this.pseudonymType = PseudonymType.CACHE_EXTID;
 		this.tag = null;
 		this.delimiter = null;
 		this.position = null;
