@@ -21,9 +21,9 @@
     <springframework.version>3.3.5</springframework.version>
     <springdoc.version>1.8.0</springdoc.version>
     <vaadin.version>24.6.2</vaadin.version>
-    <org.json.version>20240303</org.json.version>
+    <org.json.version>20250107</org.json.version>
     <liquibase.version>4.27.0</liquibase.version>
-    <opencsv.version>5.9</opencsv.version>
+    <opencsv.version>5.10</opencsv.version>
 
     <weasis-dicom-tools.version>5.32.0</weasis-dicom-tools.version>
     <weasis.opencv.native.version>4.9.0-dcm</weasis.opencv.native.version>
