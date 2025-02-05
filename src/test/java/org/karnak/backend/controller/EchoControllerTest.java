@@ -14,8 +14,8 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.karnak.backend.model.echo.DestinationEcho;
 import org.karnak.backend.service.EchoService;
+import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -31,7 +31,7 @@ class EchoControllerTest {
 
 	private MockMvc mockMvc;
 
-	@MockBean
+	@Mock
 	private EchoService echoServiceMock;
 
 	/**
