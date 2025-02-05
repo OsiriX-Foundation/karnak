@@ -12,10 +12,7 @@ package org.karnak.frontend.extid;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -71,7 +68,7 @@ public class ExternalIDView extends HorizontalLayout {
 		getStyle().set("overflow-y", "auto");
 		VerticalLayout verticalLayout = new VerticalLayout();
 
-		Label labelDisclaimer = new Label(LABEL_DISCLAIMER_EXTID);
+		NativeLabel labelDisclaimer = new NativeLabel(LABEL_DISCLAIMER_EXTID);
 		labelDisclaimer.getStyle().set("color", "red");
 		labelDisclaimer.setMinWidth("75%");
 		labelDisclaimer.getStyle().set("right", "0px");
