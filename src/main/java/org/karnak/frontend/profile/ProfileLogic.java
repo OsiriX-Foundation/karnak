@@ -145,6 +145,7 @@ public class ProfileLogic extends ListDataProvider<ProfileEntity> {
 		var warningIssuer = new Dialog();
 		var content = new Div();
 		var divTitle = new Div();
+		var btn = new Div();
 		divTitle.setText("Warning");
 		divTitle.getStyle()
 			.set("font-size", "large")
@@ -158,8 +159,10 @@ public class ProfileLogic extends ListDataProvider<ProfileEntity> {
 		var txt = new Text(
 				"The Issuer of Patient ID is no longer linked to a profile. Please fill in this field in the destination in the de-identification menu.");
 
-		content.add(divTitle, txt, okBtn);
-		warningIssuer.add(content);
+		btn.getStyle().set("text-align", "right");
+		btn.add(okBtn);
+		content.add(divTitle, txt);
+		warningIssuer.add(content, btn);
 		warningIssuer.setMaxWidth("30%");
 		warningIssuer.open();
 	}
