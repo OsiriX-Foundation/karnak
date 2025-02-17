@@ -613,7 +613,7 @@ class ProfileTest {
 	}
 
 	@Test
-	void expressionProfileComputePatientAge_keepExistingAge() {
+	void expressionProfileComputePatientAge_overwriteExistingAge() {
 		final Attributes dataset1 = new Attributes();
 
 		dataset1.setString(Tag.PatientName, VR.PN, "TEST-Expr-ComputePatientName");
