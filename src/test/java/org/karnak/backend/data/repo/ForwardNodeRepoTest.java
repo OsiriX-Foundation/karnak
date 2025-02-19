@@ -145,7 +145,7 @@ class ForwardNodeRepoTest {
 		ForwardNodeEntity forwardNodeEntity = ForwardNodeEntity.ofEmpty();
 		forwardNodeEntity.setFwdDescription("description");
 		forwardNodeEntity.setFwdAeTitle("fwdAeTitle");
-		DestinationEntity destinationEntity = DestinationEntity.ofStow("description", null, "urlCredentials",
+		DestinationEntity destinationEntity = DestinationEntity.ofStow("description", null,
 				"headers");
 		forwardNodeEntity.addDestination(destinationEntity);
 
@@ -237,7 +237,7 @@ class ForwardNodeRepoTest {
 		ForwardNodeEntity forwardNodeEntity = ForwardNodeEntity.ofEmpty();
 		forwardNodeEntity.setFwdDescription("description");
 		forwardNodeEntity.setFwdAeTitle("fwdAeTitle");
-		DestinationEntity destinationEntity = DestinationEntity.ofStow("description", "url", "urlCredentials",
+		DestinationEntity destinationEntity = DestinationEntity.ofStow("description", "url",
 				"headers");
 		forwardNodeEntity.addDestination(destinationEntity);
 		entityManager.persistAndFlush(forwardNodeEntity);
