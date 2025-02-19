@@ -13,18 +13,21 @@ import com.vaadin.flow.component.UIDetachedException;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.data.provider.ListDataProvider;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.model.event.NodeEvent;
 import org.karnak.backend.service.DestinationService;
+import org.karnak.frontend.forwardnode.edit.destination.component.GridDestination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Logic service use to make calls to backend and implement logic linked to the view
@@ -50,7 +53,8 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
 	 */
 	private String filterText;
 
-	private ForwardNodeEntity forwardNodeEntity; // Current forward node
+	// Current forward node
+	private ForwardNodeEntity forwardNodeEntity;
 
 	/**
 	 * Autowired constructor
@@ -110,17 +114,19 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
 	 */
 	private void checkActivityEnableDisableButtons(List<DestinationEntity> destinationEntities) {
 		try {
-			// If a transfer is in progress: disable
-			if (destinationEntities.stream().anyMatch(DestinationEntity::isTransferInProgress)) {
-				destinationView.getUi().access(this::disableSaveDeleteButtons);
-			}
-			else {
-				// If no transfer: enable
-				destinationView.getUi().access(this::enableSaveDeleteButtons);
+			if (destinationView.getUi() != null) {
+				// If a transfer is in progress: disable
+				if (destinationEntities.stream().anyMatch(DestinationEntity::isTransferInProgress)) {
+					destinationView.getUi().access(this::disableSaveDeleteButtons);
+				}
+				else {
+					// If no transfer: enable
+					destinationView.getUi().access(this::enableSaveDeleteButtons);
+				}
 			}
 		}
 		catch (UIDetachedException e) {
-			log.trace(String.format("UIDetachedException:%s", e.getMessage()));
+			log.trace("UIDetachedException:{}", e.getMessage());
 		}
 	}
 
@@ -129,25 +135,55 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
 	 * @param activatedDestinationEntities Destinations to check
 	 */
 	private void checkActivityLoadingSpinner(List<DestinationEntity> activatedDestinationEntities) {
-		activatedDestinationEntities.forEach(d -> {
-			// Retrieve the loading image of the corresponding destination
-			Image loadingImage = destinationView.getGridDestination()
-				.getLoadingImages()
-				.get(forwardNodeEntity.getFwdAeTitle())
-				.get(d.getId());
+		try {
+			activatedDestinationEntities.forEach(d -> {
+				// Retrieve the loading image of the corresponding destination
+				Image loadingImage = retrieveLoadingImageOfGridDestination(destinationView.getGridDestination(),
+						forwardNodeEntity.getFwdAeTitle(), d.getId());
 
-			// Check there is some activity on the destination: if yes set the loading
-			// spinner visible
-			// otherwise set it invisible
-			if (d.isTransferInProgress() && !loadingImage.isVisible()) {
-				// Loading spinner visible
-				destinationView.getUi().access(() -> loadingImage.setVisible(true));
+				if (loadingImage != null && destinationView.getUi() != null) {
+					// Check there is some activity on the destination: if yes set the
+					// loading
+					// spinner visible otherwise set it invisible
+					if (d.isTransferInProgress() && !loadingImage.isVisible()) {
+						// Loading spinner visible
+						destinationView.getUi().access(() -> loadingImage.setVisible(true));
+					}
+					else if (!d.isTransferInProgress() && loadingImage.isVisible()) {
+						// Loading spinner invisible
+						destinationView.getUi().access(() -> loadingImage.setVisible(false));
+					}
+				}
+			});
+		}
+		catch (UIDetachedException e) {
+			log.trace("UIDetachedException:{}", e.getMessage());
+		}
+	}
+
+	/**
+	 * Depending on the destination/forward aet, retrieve the loading image
+	 * @param gridDestination Grid destination
+	 * @param forwardNodeAet Forward node AET
+	 * @param activatedDestinationEntityId Id of the destination
+	 * @return loading image found
+	 */
+	private Image retrieveLoadingImageOfGridDestination(GridDestination gridDestination, String forwardNodeAet,
+			Long activatedDestinationEntityId) {
+		Image loadingImage = null;
+
+		// Browse the maps to find the loading image of the destination
+		if (gridDestination != null) {
+			Map<String, Map<Long, Image>> gridDestinationLoadingImages = gridDestination.getLoadingImages();
+			if (gridDestinationLoadingImages.containsKey(forwardNodeAet)) {
+				Map<Long, Image> forwardAetLoadingImages = gridDestinationLoadingImages.get(forwardNodeAet);
+				if (forwardAetLoadingImages.containsKey(activatedDestinationEntityId)) {
+					loadingImage = forwardAetLoadingImages.get(activatedDestinationEntityId);
+				}
 			}
-			else if (!d.isTransferInProgress() && loadingImage.isVisible()) {
-				// Loading spinner invisible
-				destinationView.getUi().access(() -> loadingImage.setVisible(false));
-			}
-		});
+		}
+
+		return loadingImage;
 	}
 
 	/**
