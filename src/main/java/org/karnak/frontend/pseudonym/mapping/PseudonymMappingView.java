@@ -159,7 +159,6 @@ public class PseudonymMappingView extends HorizontalLayout {
 		}
 	}
 
-
 	/**
 	 * Build components
 	 */

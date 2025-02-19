@@ -38,7 +38,8 @@ public class RedisConfiguration {
 		ObjectMapper objectMapper = new ObjectMapper().registerModule(new Jdk8Module())
 			.registerModule(new JavaTimeModule());
 
-		Jackson2JsonRedisSerializer<Patient> serializer = new Jackson2JsonRedisSerializer<>(objectMapper, Patient.class);
+		Jackson2JsonRedisSerializer<Patient> serializer = new Jackson2JsonRedisSerializer<>(objectMapper,
+				Patient.class);
 
 		RedisTemplate<String, Patient> template = new RedisTemplate<>();
 		template.setConnectionFactory(connectionFactory);

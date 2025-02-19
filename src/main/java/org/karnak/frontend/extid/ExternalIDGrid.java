@@ -193,7 +193,8 @@ public class ExternalIDGrid extends PaginatedGrid<Patient, PatientFilter> {
 		deleteAllSelectedPatientsButton.addClickListener(e -> {
 			if (selectedPatients != null && !selectedPatients.isEmpty()) {
 				Div dialogContent = new Div();
-				dialogContent.add(new Text("Do you confirm the deletion of the " + selectedPatients.size() + " selected patients ?"));
+				dialogContent.add(new Text(
+						"Do you confirm the deletion of the " + selectedPatients.size() + " selected patients ?"));
 				WarningConfirmDialog dialog = new WarningConfirmDialog(dialogContent);
 				dialog.addConfirmationListener(componentEvent -> {
 					for (Patient p : selectedPatients) {
