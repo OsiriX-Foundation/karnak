@@ -10,7 +10,9 @@
 package org.karnak.frontend.extid;
 
 import com.vaadin.flow.component.Tag;
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -25,6 +27,7 @@ import java.util.ArrayList;
 import org.karnak.backend.cache.Patient;
 import org.karnak.frontend.MainLayout;
 import org.karnak.frontend.component.ProjectDropDown;
+import org.karnak.frontend.component.WarningConfirmDialog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 
@@ -56,6 +59,8 @@ public class ExternalIDView extends HorizontalLayout {
 
 	private Upload uploadCsvButton;
 
+	private final Button deleteAllButton;
+
 	private Div uploadCsvLabelDiv;
 
 	private final transient ExternalIDLogic externalIDLogic;
@@ -83,14 +88,29 @@ public class ExternalIDView extends HorizontalLayout {
 		projectDropDown.setItems(externalIDLogic.retrieveProject());
 		externalIDGrid = new ExternalIDGrid();
 		externalIDForm = new ExternalIDForm();
+		deleteAllButton = new Button("Delete all patients");
 
 		projectDropDown.addValueChangeListener(event -> {
 			setEnableAddPatient(!projectDropDown.isEmpty());
+			setEnableDeleteButtons(!projectDropDown.isEmpty());
 			externalIDForm.setProjectEntity(event.getValue());
 			externalIDGrid.setProjectEntity(event.getValue());
 			externalIDGrid.readAllCacheValue();
 		});
 		setEnableAddPatient(!projectDropDown.isEmpty());
+		setEnableDeleteButtons(!projectDropDown.isEmpty());
+
+		deleteAllButton.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
+		deleteAllButton.addClickListener(e -> {
+			Div dialogContent = new Div();
+			dialogContent.add(new Text("You are about to delete all the patients below. Are you sure ?"));
+			WarningConfirmDialog dialog = new WarningConfirmDialog(dialogContent);
+			dialog.addConfirmationListener(componentEvent -> {
+				externalIDGrid.getExternalIDCache().removeAll();
+				externalIDGrid.readAllCacheValue();
+			});
+			dialog.open();
+		});
 
 		externalIDForm.getAddPatientButton().addClickListener(click -> {
 			final Patient newPatient = externalIDForm.getNewPatient();
@@ -114,7 +134,7 @@ public class ExternalIDView extends HorizontalLayout {
 		validationStatus = externalIDGrid.setBinder();
 
 		verticalLayout.add(new H2("External Pseudonym"), labelDisclaimer, labelProject, projectDropDown,
-				uploadCsvLabelDiv, uploadCsvButton, externalIDForm, validationStatus, externalIDGrid);
+				uploadCsvLabelDiv, uploadCsvButton, externalIDForm, deleteAllButton, validationStatus, externalIDGrid);
 
 		add(verticalLayout);
 	}
@@ -178,6 +198,11 @@ public class ExternalIDView extends HorizontalLayout {
 		else {
 			uploadCsvButton.setMaxFiles(0);
 		}
+	}
+
+	public void setEnableDeleteButtons(boolean value) {
+		deleteAllButton.setEnabled(value);
+		externalIDGrid.setEnabledDeleteSelectedPatientsButton(value);
 	}
 
 }
