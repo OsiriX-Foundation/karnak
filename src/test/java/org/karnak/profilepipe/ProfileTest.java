@@ -579,9 +579,8 @@ class ProfileTest {
 
 		ProfileEntity profileEntity = new ProfileEntity("TEST", "0.9.1", "0.9.1", "DPA");
 		ProfileElementEntity profileElementEntity = new ProfileElementEntity("Expr", "expression.on.tags", null, null,
-			null, 0, profileEntity);
-		profileElementEntity
-			.addArgument(new ArgumentEntity("expr", "ComputePatientAge()", profileElementEntity));
+				null, 0, profileEntity);
+		profileElementEntity.addArgument(new ArgumentEntity("expr", "ComputePatientAge()", profileElementEntity));
 		profileElementEntity.addIncludedTag(new IncludedTagEntity("(0010,1010)", profileElementEntity));
 
 		profileEntity.addProfilePipe(profileElementEntity);
@@ -601,9 +600,8 @@ class ProfileTest {
 
 		ProfileEntity profileEntity = new ProfileEntity("TEST", "0.9.1", "0.9.1", "DPA");
 		ProfileElementEntity profileElementEntity = new ProfileElementEntity("Expr", "expression.on.tags", null, null,
-			null, 0, profileEntity);
-		profileElementEntity
-			.addArgument(new ArgumentEntity("expr", "ComputePatientAge()", profileElementEntity));
+				null, 0, profileEntity);
+		profileElementEntity.addArgument(new ArgumentEntity("expr", "ComputePatientAge()", profileElementEntity));
 		profileElementEntity.addIncludedTag(new IncludedTagEntity("(0010,1010)", profileElementEntity));
 
 		profileEntity.addProfilePipe(profileElementEntity);
@@ -625,14 +623,14 @@ class ProfileTest {
 		ProfileEntity profileEntity = new ProfileEntity("TEST", "0.9.1", "0.9.1", "DPA");
 		ProfileElementEntity profileElementEntity = new ProfileElementEntity("Expr", "expression.on.tags", null, null,
 				null, 0, profileEntity);
-		profileElementEntity
-				.addArgument(new ArgumentEntity("expr", "ComputePatientAge()", profileElementEntity));
+		profileElementEntity.addArgument(new ArgumentEntity("expr", "ComputePatientAge()", profileElementEntity));
 		profileElementEntity.addIncludedTag(new IncludedTagEntity("(0010,1010)", profileElementEntity));
 
 		profileEntity.addProfilePipe(profileElementEntity);
 		Profile profile = new Profile(profileEntity);
 		profile.applyAction(dataset1, dataset1, defaultHMAC, null, null, null);
-		// The patient age is voluntarily incorrect, should be replaced by the computed value i.e. 016Y
+		// The patient age is voluntarily incorrect, should be replaced by the computed
+		// value i.e. 016Y
 		assertEquals("016Y", dataset1.getString(Tag.PatientAge));
 	}
 
