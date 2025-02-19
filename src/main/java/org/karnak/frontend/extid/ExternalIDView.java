@@ -25,6 +25,7 @@ import com.vaadin.flow.router.Route;
 import java.io.InputStream;
 import java.util.ArrayList;
 import org.karnak.backend.cache.Patient;
+import org.karnak.backend.util.PatientClientUtil;
 import org.karnak.frontend.MainLayout;
 import org.karnak.frontend.component.ProjectDropDown;
 import org.karnak.frontend.component.WarningConfirmDialog;
@@ -106,7 +107,10 @@ public class ExternalIDView extends HorizontalLayout {
 			dialogContent.add(new Text("You are about to delete all the patients below. Are you sure ?"));
 			WarningConfirmDialog dialog = new WarningConfirmDialog(dialogContent);
 			dialog.addConfirmationListener(componentEvent -> {
-				externalIDGrid.getExternalIDCache().removeAll();
+				Long projectId = projectDropDown.getValue().getId();
+				for (Patient p : externalIDGrid.getPatientsListInCache()) {
+					externalIDGrid.getExternalIDCache().remove(PatientClientUtil.generateKey(p, projectId));
+				}
 				externalIDGrid.readAllCacheValue();
 			});
 			dialog.open();
