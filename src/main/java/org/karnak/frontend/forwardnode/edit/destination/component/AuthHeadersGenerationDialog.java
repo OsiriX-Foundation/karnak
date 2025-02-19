@@ -110,7 +110,7 @@ public class AuthHeadersGenerationDialog extends Dialog {
 	 * Display the form according to the Authentication Type selected in the select box
 	 * @param value : String corresponding to the Authentication Type chosen in the select box
 	 */
-	public void displayAuthTypeForm(String value) {
+	private void displayAuthTypeForm(String value) {
 		divContent.removeAll();
 		switch(value) {
 			case BASIC_AUTH:
