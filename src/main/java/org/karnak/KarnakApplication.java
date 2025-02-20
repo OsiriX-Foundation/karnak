@@ -59,4 +59,5 @@ public class KarnakApplication implements CommandLineRunner {
 		log.info("using environment: " + (myConfig != null ? myConfig.getEnvironment() : ""));
 		log.info("name: " + (myConfig != null ? myConfig.getName() : ""));
 	}
+
 }

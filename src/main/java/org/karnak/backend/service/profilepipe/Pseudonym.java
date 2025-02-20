@@ -47,7 +47,6 @@ public class Pseudonym {
 			return getPseudonymInDicom(dcm, destinationEntity, patientMetadata);
 		}
 
-
 		return null;
 	}
 
@@ -88,6 +87,5 @@ public class Pseudonym {
 		}
 		return pseudonymCacheExtID;
 	}
-
 
 }

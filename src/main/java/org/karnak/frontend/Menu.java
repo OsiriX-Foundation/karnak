@@ -92,18 +92,18 @@ public class Menu extends FlexLayout {
 		tabs.add(routerLink);
 	}
 
-
-	// Encapsulate the Tabs object previously used in a RouteTabs that handles selection of the right Tab depending on the navigation
+	// Encapsulate the Tabs object previously used in a RouteTabs that handles selection
+	// of the right Tab depending on the navigation
 	private static class RouteTabs extends Tabs implements BeforeEnterObserver {
+
 		private final Map<RouterLink, Tab> routerLinkTabMap = new HashMap<>();
 
 		public void add(RouterLink routerLink) {
 			routerLink.setHighlightCondition(HighlightConditions.locationPrefix());
-			routerLink.setHighlightAction(
-					(link, shouldHighlight) -> {
-						if (shouldHighlight) setSelectedTab(routerLinkTabMap.get(routerLink));
-					}
-			);
+			routerLink.setHighlightAction((link, shouldHighlight) -> {
+				if (shouldHighlight)
+					setSelectedTab(routerLinkTabMap.get(routerLink));
+			});
 			routerLinkTabMap.put(routerLink, new Tab(routerLink));
 			add(routerLinkTabMap.get(routerLink));
 		}
@@ -113,6 +113,7 @@ public class Menu extends FlexLayout {
 			// In case no tabs will match
 			setSelectedTab(null);
 		}
+
 	}
 
 }

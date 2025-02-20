@@ -19,7 +19,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 
-
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,23 +31,25 @@ import static org.mockito.Mockito.when;
 @SpringBootTest
 class ExternalIDGridTest {
 
-    @Mock
-    private ExternalIDCache externalIDCache; // Standalone Mockito mock replacing the @MockBean
+	@Mock
+	private ExternalIDCache externalIDCache; // Standalone Mockito mock replacing the
+												// @MockBean
 
-    @InjectMocks
-    private ExternalIDGrid externalIDGrid; // Class under test, dependencies injected by Mockito
+	@InjectMocks
+	private ExternalIDGrid externalIDGrid; // Class under test, dependencies injected by
+											// Mockito
 
-    @BeforeEach
-    void setUp() {
-        // Initialize mocks and inject them into the tested object
-        MockitoAnnotations.openMocks(this);
-    }
+	@BeforeEach
+	void setUp() {
+		// Initialize mocks and inject them into the tested object
+		MockitoAnnotations.openMocks(this);
+	}
 
-    @Test
-    void should_create_external_id_grid() {
-        // Test results
-        assertNotNull(externalIDGrid);
-    }
+	@Test
+	void should_create_external_id_grid() {
+		// Test results
+		assertNotNull(externalIDGrid);
+	}
 
 	@Test
 	void should_read_cache() {
