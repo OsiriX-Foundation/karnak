@@ -197,12 +197,11 @@ public class Profile {
 			if (!StringUtil.hasText(sopClassUID)) {
 				throw new IllegalStateException("DICOM Object does not contain sopClassUID");
 			}
-			String scuPattern = sopClassUID + ".";
 			MaskArea mask = getMask(dcmCopy.getString(Tag.StationName));
 			// A mask must be applied with all the US and Secondary Capture sopClassUID,
 			// and with
 			// BurnedInAnnotation
-			if (isCleanPixelAllowedDependingImageType(dcmCopy, sopClassUID, scuPattern)
+			if (isCleanPixelAllowedDependingImageType(dcmCopy, sopClassUID)
 					&& evaluateConditionCleanPixelData(dcmCopy)) {
 				context.setMaskArea(mask);
 				if (mask == null) {
@@ -219,16 +218,16 @@ public class Profile {
 	 * Determine if the clean pixel should be applied depending on the image type
 	 * @param dcmCopy Attributes
 	 * @param sopClassUID SopClassUID
-	 * @param scuPattern Pattern
 	 * @return true if the clean pixel could be applied
 	 */
-	private boolean isCleanPixelAllowedDependingImageType(Attributes dcmCopy, String sopClassUID, String scuPattern) {
+    boolean isCleanPixelAllowedDependingImageType(Attributes dcmCopy, String sopClassUID) {
 		// A mask must be applied with all the US and Secondary Capture sopClassUID, and
-		// with
-		// BurnedInAnnotation
-		return scuPattern.startsWith("1.2.840.10008.5.1.4.1.1.6.")
-				|| scuPattern.startsWith("1.2.840.10008.5.1.4.1.1.7.")
-				|| scuPattern.startsWith("1.2.840.10008.5.1.4.1.1.3.")
+		// with BurnedInAnnotation
+		String sopPattern = sopClassUID + ".";
+
+		return sopPattern.startsWith("1.2.840.10008.5.1.4.1.1.6.")
+				|| sopPattern.startsWith("1.2.840.10008.5.1.4.1.1.7.")
+				|| sopPattern.startsWith("1.2.840.10008.5.1.4.1.1.3.")
 				|| sopClassUID.equals("1.2.840.10008.5.1.4.1.1.77.1.1")
 				|| "YES".equalsIgnoreCase(dcmCopy.getString(Tag.BurnedInAnnotation));
 	}
