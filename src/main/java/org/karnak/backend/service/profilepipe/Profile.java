@@ -40,16 +40,14 @@ import org.karnak.backend.data.entity.SecretEntity;
 import org.karnak.backend.dicom.Defacer;
 import org.karnak.backend.enums.ProfileItemType;
 import org.karnak.backend.model.action.ActionItem;
+import org.karnak.backend.model.action.Add;
 import org.karnak.backend.model.action.Remove;
 import org.karnak.backend.model.action.ReplaceNull;
 import org.karnak.backend.model.expression.ExprCondition;
 import org.karnak.backend.model.expression.ExpressionResult;
 import org.karnak.backend.model.profilepipe.HMAC;
 import org.karnak.backend.model.profilepipe.HashContext;
-import org.karnak.backend.model.profiles.ActionTags;
-import org.karnak.backend.model.profiles.CleanPixelData;
-import org.karnak.backend.model.profiles.Defacing;
-import org.karnak.backend.model.profiles.ProfileItem;
+import org.karnak.backend.model.profiles.*;
 import org.slf4j.MDC;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
@@ -156,7 +154,15 @@ public class Profile {
 				}
 
 				if (currentAction != null) {
-					break;
+					if (currentAction instanceof Add) {
+						// When adding a new tag, the variable tag is irrelevant and should not be flagged as modified
+						// Set the current action to null after execution and do not break out of the loop if other
+						// profile elements should be applied to the tag
+						execute(currentAction, dcm, tag, hmac);
+						currentAction = null;
+					} else {
+						break;
+					}
 				}
 
 				if (profileEntity.equals(profilePassedInSequence)) {
@@ -177,15 +183,20 @@ public class Profile {
 			}
 			else {
 				if (currentAction != null) {
-					try {
-						currentAction.execute(dcm, tag, hmac);
-					}
-					catch (final Exception e) {
-						log.error("Cannot execute the currentAction {} for tag: {}", currentAction,
-								TagUtils.toString(tag), e);
-					}
+					execute(currentAction, dcm, tag, hmac);
 				}
 			}
+		}
+	}
+
+	private void execute(ActionItem currentAction, Attributes dcm, int tag, HMAC hmac) {
+		if (currentAction == null) return;
+		try {
+			currentAction.execute(dcm, tag, hmac);
+		}
+		catch (final Exception e) {
+			log.error("Cannot execute the currentAction {} for tag: {}", currentAction,
+					TagUtils.toString(tag), e);
 		}
 	}
 
