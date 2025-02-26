@@ -9,34 +9,11 @@
  */
 package org.karnak.backend.service.profilepipe;
 
-import static org.karnak.backend.dicom.DefacingUtil.isAxial;
-import static org.karnak.backend.dicom.DefacingUtil.isCT;
-
-import java.awt.Color;
-import java.awt.Shape;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
-import org.dcm4che3.data.Attributes;
-import org.dcm4che3.data.BulkData;
-import org.dcm4che3.data.Fragments;
-import org.dcm4che3.data.Sequence;
-import org.dcm4che3.data.Tag;
-import org.dcm4che3.data.VR;
+import org.dcm4che3.data.*;
 import org.dcm4che3.img.op.MaskArea;
 import org.dcm4che3.util.TagUtils;
-import org.karnak.backend.data.entity.DestinationEntity;
-import org.karnak.backend.data.entity.ProfileElementEntity;
-import org.karnak.backend.data.entity.ProfileEntity;
-import org.karnak.backend.data.entity.ProjectEntity;
-import org.karnak.backend.data.entity.SecretEntity;
+import org.karnak.backend.data.entity.*;
 import org.karnak.backend.dicom.Defacer;
 import org.karnak.backend.enums.ProfileItemType;
 import org.karnak.backend.model.action.ActionItem;
@@ -54,6 +31,15 @@ import org.slf4j.MarkerFactory;
 import org.weasis.core.util.StringUtil;
 import org.weasis.dicom.param.AttributeEditorContext;
 
+import java.awt.*;
+import java.math.BigInteger;
+import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static org.karnak.backend.dicom.DefacingUtil.isAxial;
+import static org.karnak.backend.dicom.DefacingUtil.isCT;
+
 @Slf4j
 public class Profile {
 
@@ -61,7 +47,7 @@ public class Profile {
 
 	private final Pseudonym pseudonym;
 
-	private final Map<String, MaskArea> maskMap;
+	private final Map<MaskStationCondition, MaskArea> maskMap;
 
 	public Profile(ProfileEntity profileEntity) {
 		this.maskMap = new HashMap<>();
@@ -69,20 +55,31 @@ public class Profile {
 		this.profiles = createProfilesList(profileEntity);
 	}
 
-	public void addMaskMap(Map<? extends String, ? extends MaskArea> maskMap) {
+	/*public void addMaskMap(Map<? extends String, ? extends MaskArea> maskMap) {
 		this.maskMap.putAll(maskMap);
-	}
+	}*/
 
-	public MaskArea getMask(String key) {
+	public MaskArea getMask(MaskStationCondition key) {
 		MaskArea mask = maskMap.get(key);
+		if (mask == null && (key.getImageWidth() != null || key.getImageHeight() != null)) {
+			// No exact match, remove image size information to match the station name only
+			key.setImageWidth(null);
+			key.setImageHeight(null);
+			mask = maskMap.get(key);
+		}
 		if (mask == null) {
-			mask = maskMap.get("*");
+			// No match with the station name, get the universal mask
+			mask = maskMap.get(new MaskStationCondition("*"));
 		}
 		return mask;
 	}
 
 	public void addMask(String stationName, MaskArea maskArea) {
-		this.maskMap.put(stationName, maskArea);
+		this.maskMap.put(new MaskStationCondition(stationName), maskArea);
+	}
+
+	public void addMask(MaskStationCondition key, MaskArea maskArea) {
+		this.maskMap.put(key, maskArea);
 	}
 
 	public static List<ProfileItem> getProfileItems(ProfileEntity profileEntity) {
@@ -120,7 +117,7 @@ public class Profile {
 					color = ActionTags.hexadecimal2Color(m.getColor());
 				}
 				List<Shape> shapeList = m.getRectangles().stream().map(Shape.class::cast).collect(Collectors.toList());
-				addMask(m.getStationName(), new MaskArea(shapeList, color));
+				addMask(new MaskStationCondition(m.getStationName(), m.getImageWidth(), m.getImageHeight()), new MaskArea(shapeList, color));
 			});
 			return profileItems;
 		}
@@ -208,7 +205,8 @@ public class Profile {
 			if (!StringUtil.hasText(sopClassUID)) {
 				throw new IllegalStateException("DICOM Object does not contain sopClassUID");
 			}
-			MaskArea mask = getMask(dcmCopy.getString(Tag.StationName));
+			String scuPattern = sopClassUID + ".";
+			MaskArea mask = getMask(new MaskStationCondition(dcmCopy.getString(Tag.StationName), dcmCopy.getString(Tag.Columns), dcmCopy.getString(Tag.Rows)));
 			// A mask must be applied with all the US and Secondary Capture sopClassUID,
 			// and with
 			// BurnedInAnnotation
