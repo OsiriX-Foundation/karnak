@@ -12,6 +12,7 @@ package org.karnak.backend.service.profilepipe;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.dcm4che3.data.VR;
+import org.dcm4che3.img.op.MaskArea;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.MaskEntity;
@@ -21,6 +22,7 @@ import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.data.entity.SecretEntity;
 import org.karnak.backend.enums.DestinationType;
 import org.karnak.backend.enums.PseudonymType;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.weasis.dicom.param.AttributeEditorContext;
 
 import java.awt.*;
@@ -33,6 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@SpringBootTest
 class ProfileTest {
 
 	@Test
@@ -173,6 +176,52 @@ class ProfileTest {
 
 		// Test results
 		assertTrue(evaluation);
+	}
+
+	@Test
+	void should_select_correct_mask_station_size() {
+
+		// Init data
+		ProfileEntity profileEntity = new ProfileEntity();
+		Attributes attributes = new Attributes();
+		attributes.setString(Tag.StationName, VR.SH, "ICT256");
+		Attributes attributes2 = new Attributes();
+		attributes2.setString(Tag.StationName, VR.SH, "ICT256");
+		attributes2.setString(Tag.Rows, VR.US, "1024");
+		attributes2.setString(Tag.Columns, VR.US, "1024");
+		Attributes attributes3 = new Attributes();
+		attributes3.setString(Tag.StationName, VR.SH, "ICT258");
+		attributes3.setString(Tag.Rows, VR.US, "1024");
+		attributes3.setString(Tag.Columns, VR.US, "1024");
+		Set<ProfileElementEntity> profileElementEntities = new HashSet<>();
+		ProfileElementEntity profileElementEntityCleanPixelData = new ProfileElementEntity();
+		profileElementEntityCleanPixelData.setCodename("clean.pixel.data");
+		profileElementEntityCleanPixelData.setName("nameCleanPixel");
+		profileElementEntityCleanPixelData.setAction("ReplaceNull");
+
+		MaskEntity maskEntity = new MaskEntity("*", "ffff00", profileEntity);
+		maskEntity.addRectangle("25 75 150 50");
+		MaskEntity maskEntityStation = new MaskEntity("ICT256", "00ff00", profileEntity);
+		maskEntityStation.addRectangle("350 15 150 50");
+		MaskEntity maskEntityStationSize = new MaskEntity("ICT256", 1024L, 1024L, "00ffff", profileEntity);
+		maskEntityStationSize.addRectangle("250 10 150 50");
+
+		profileElementEntities.add(profileElementEntityCleanPixelData);
+		profileEntity.setProfileElementEntities(profileElementEntities);
+		profileEntity.setMaskEntities(Set.of(maskEntity, maskEntityStation, maskEntityStationSize));
+		Profile profile = new Profile(profileEntity);
+
+		// Matches the maskEntityStation, stationName = ICT256
+		MaskArea ma = profile.getMask(new MaskStationCondition(attributes.getString(Tag.StationName), attributes.getString(Tag.Columns), attributes.getString(Tag.Rows)));
+		assertEquals(new Rectangle(350, 15, 150, 50), ma.getShapeList().getFirst());
+
+		// Matches the maskEntityStationSize, stationName = ICT256 && width = 1024 && height = 1024
+		MaskArea ma2 = profile.getMask(new MaskStationCondition(attributes2.getString(Tag.StationName), attributes2.getString(Tag.Columns), attributes2.getString(Tag.Rows)));
+		assertEquals(new Rectangle(250, 10, 150, 50), ma2.getShapeList().getFirst());
+
+		// Matches the maskEntity, stationName = *
+		MaskArea ma3 = profile.getMask(new MaskStationCondition(attributes3.getString(Tag.StationName), attributes3.getString(Tag.Columns), attributes3.getString(Tag.Rows)));
+		assertEquals(new Rectangle(25, 75, 150, 50), ma3.getShapeList().getFirst());
 	}
 
 }
