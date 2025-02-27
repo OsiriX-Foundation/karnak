@@ -25,10 +25,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class ProfileTest {
@@ -252,6 +249,11 @@ class ProfileTest {
 		profileElementEntityCleanPixelPerMachine.addIncludedTag(new IncludedTagEntity("(0028,0301)", profileElementEntityCleanPixelPerMachine));
 		profileElementEntityCleanPixelPerMachine.setPosition(2);
 
+		Set<ProfileElementEntity> profileElementEntities = new HashSet<>();
+		ProfileElementEntity profileElementEntityCleanPixelData = new ProfileElementEntity();
+		profileElementEntityCleanPixelData.setCodename("clean.pixel.data");
+		profileElementEntityCleanPixelData.setName("nameCleanPixel");
+		profileElementEntityCleanPixelData.setAction("ReplaceNull");
 		profileElementEntityCleanPixelData.setPosition(3);
 
 		profileElementEntities.add(profileElementEntityCleanPixelData);
