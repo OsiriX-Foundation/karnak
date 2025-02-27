@@ -61,7 +61,7 @@ public class Profile {
 
 	public MaskArea getMask(MaskStationCondition key) {
 		MaskArea mask = maskMap.get(key);
-		if (mask == null && (key.getImageWidth() != null || key.getImageHeight() != null)) {
+		if (mask == null) {
 			// No exact match, remove image size information to match the station name only
 			key.setImageWidth(null);
 			key.setImageHeight(null);
