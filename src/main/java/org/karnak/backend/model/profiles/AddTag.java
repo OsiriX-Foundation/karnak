@@ -17,7 +17,9 @@ import org.karnak.backend.config.AppConfig;
 import org.karnak.backend.data.entity.ArgumentEntity;
 import org.karnak.backend.data.entity.IncludedTagEntity;
 import org.karnak.backend.data.entity.ProfileElementEntity;
-import org.karnak.backend.model.action.*;
+import org.karnak.backend.model.action.ActionItem;
+import org.karnak.backend.model.action.Add;
+import org.karnak.backend.model.action.Keep;
 import org.karnak.backend.model.expression.ExprCondition;
 import org.karnak.backend.model.expression.ExpressionError;
 import org.karnak.backend.model.expression.ExpressionResult;
@@ -30,8 +32,6 @@ public class AddTag extends AbstractProfileItem {
 
 	private final TagActionMap tagsAction;
 
-	private final TagActionMap exceptedTagsAction;
-
 	private final ActionItem actionByDefault;
 
 	private boolean tagAdded = false;
@@ -41,7 +41,6 @@ public class AddTag extends AbstractProfileItem {
 	public AddTag(ProfileElementEntity profileElementEntity) throws Exception {
 		super(profileElementEntity);
 		tagsAction = new TagActionMap();
-		exceptedTagsAction = new TagActionMap();
 		actionByDefault = new Keep("K");
 		profileValidation();
 		setActionHashMap();
@@ -67,9 +66,9 @@ public class AddTag extends AbstractProfileItem {
 			String value = "";
 			VR vr = null;
 			for (ArgumentEntity ae : argumentEntities) {
-				if (ae.getArgumentKey().equals("value")) {
+				if ("value".equals(ae.getArgumentKey())) {
 					value = ae.getArgumentValue();
-				} else if (ae.getArgumentKey().equals("vr")) {
+				} else if ("vr".equals(ae.getArgumentKey())) {
 					vr = VR.valueOf(ae.getArgumentValue());
 				}
 			}
@@ -82,6 +81,7 @@ public class AddTag extends AbstractProfileItem {
 		return null;
 	}
 
+	@Override
 	public void profileValidation() throws Exception {
 		if (argumentEntities == null || argumentEntities.isEmpty()) {
 			throw new Exception("Cannot build the profile " + codeName + ": Need to specify value argument");
