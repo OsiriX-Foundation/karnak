@@ -217,6 +217,7 @@ class ProfileTest {
 		assertEquals(new Rectangle(25, 75, 150, 50), ma3.getShapeList().getFirst());
 	}
 
+	@Test
 	void cleanPixelData_imageTypeIsXA_forceCleanPixelByStationNumber() {
 		// Use case : X Ray Angiography that contains identifying information
 		// but the BurnedInAnnotation attribute is not set
