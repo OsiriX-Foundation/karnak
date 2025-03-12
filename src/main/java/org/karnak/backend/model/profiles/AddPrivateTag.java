@@ -14,7 +14,6 @@ import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.dcm4che3.data.VR;
 import org.dcm4che3.util.TagUtils;
-import org.karnak.backend.config.AppConfig;
 import org.karnak.backend.data.entity.ArgumentEntity;
 import org.karnak.backend.data.entity.IncludedTagEntity;
 import org.karnak.backend.data.entity.ProfileElementEntity;
@@ -26,11 +25,10 @@ import org.karnak.backend.model.expression.ExpressionError;
 import org.karnak.backend.model.expression.ExpressionResult;
 import org.karnak.backend.model.profilepipe.HMAC;
 import org.karnak.backend.model.profilepipe.TagActionMap;
-import org.karnak.backend.model.standard.AttributeDetail;
 import org.karnak.backend.model.standard.StandardDICOM;
 
 @Slf4j
-public class AddTag extends AbstractProfileItem {
+public class AddPrivateTag extends AbstractProfileItem {
 
 	private final TagActionMap tagsAction;
 
@@ -38,13 +36,10 @@ public class AddTag extends AbstractProfileItem {
 
 	private boolean tagAdded = false;
 
-	private final StandardDICOM standardDICOM;
-
 	private static final String LOG_PATTERN = "SOPInstanceUID={} TAG={} ACTION={} REASON={}";
 
-	public AddTag(ProfileElementEntity profileElementEntity) throws Exception {
+	public AddPrivateTag(ProfileElementEntity profileElementEntity) throws Exception {
 		super(profileElementEntity);
-		standardDICOM = AppConfig.getInstance().getStandardDICOM();
 
 		tagsAction = new TagActionMap();
 		actionByDefault = new Keep("K");
@@ -67,24 +62,31 @@ public class AddTag extends AbstractProfileItem {
 			IncludedTagEntity t = tagEntities.getFirst();
 			String tagValue = StandardDICOM.cleanTagPath(t.getTagValue());
 
-			if (!standardDICOM.getAttributesBySOP(dcm.getString(Tag.SOPClassUID), tagValue).isEmpty()) {
-
-				String value = "";
-				VR vr = VR.valueOf(standardDICOM.getAttributeDetail(tagValue).getValueRepresentation());
-				for (ArgumentEntity ae : argumentEntities) {
-					if ("value".equals(ae.getArgumentKey())) {
-						value = ae.getArgumentValue();
-					}
+			String value = "";
+			String privateCreator = null;
+			VR vr = null;
+			for (ArgumentEntity ae : argumentEntities) {
+				if ("value".equals(ae.getArgumentKey())) {
+					value = ae.getArgumentValue();
+				} else if ("vr".equals(ae.getArgumentKey())) {
+					vr = VR.valueOf(ae.getArgumentValue());
+				} else if ("privateCreator".equals(ae.getArgumentKey())) {
+					privateCreator = ae.getArgumentValue();
 				}
-				tagAdded = true;
-				return new Add("A", TagUtils.intFromHexString(tagValue), vr, value);
-			} else {
-				// Tag cannot be added in this instance, flag it as added so that the action is not applied on every attribute in the instance
+			}
+
+			int creatorTag = TagUtils.creatorTagOf(TagUtils.intFromHexString(tagValue));
+
+			if (privateCreator != null && dcm.contains(creatorTag) && !dcm.getString(creatorTag).equals(privateCreator)) {
+				// Collision between multiple Private Creator Tags, do not add the current tag and log a warning
 				tagAdded = true;
 				if (log.isWarnEnabled()) {
 					log.warn(LOG_PATTERN, dcm.getString(Tag.SOPInstanceUID), tagValue, "A",
-							"Tag not added, it is not defined in current SOP " + dcm.getString(Tag.SOPClassUID));
+							"Tag not added, PrivateCreatorID collision " + TagUtils.toString(creatorTag) + " existing: " + dcm.getString(creatorTag) + " - new: " + privateCreator);
 				}
+			} else {
+				tagAdded = true;
+				return new Add("A", TagUtils.intFromHexString(tagValue), vr, value, privateCreator);
 			}
 		}
 		return null;
@@ -92,25 +94,15 @@ public class AddTag extends AbstractProfileItem {
 
 	@Override
 	public void profileValidation() throws Exception {
-		if (argumentEntities == null || argumentEntities.isEmpty()) {
-			throw new Exception("Cannot build the profile " + codeName + ": Need to specify value argument");
+		if (argumentEntities == null || argumentEntities.size() < 2) {
+			throw new Exception("Cannot build the profile " + codeName + ": Need to specify value and vr argument");
 		}
 		if (tagEntities == null || tagEntities.size() > 1) {
 			throw new Exception("Cannot build the profile " + codeName + ": Exactly one tag is required");
 		}
 
-		AttributeDetail attr = standardDICOM.getAttributeDetail(StandardDICOM.cleanTagPath(tagEntities.getFirst().getTagValue()));
-
-		if (attr == null) {
-			throw new Exception("Cannot build the profile " + codeName + ": the tag " + tagEntities.getFirst().getTagValue() + " does not exist in the DICOM Standard");
-		} else {
-			try {
-				// The VR is currently retrieved from the DICOM Standard, in a very few cases, we cannot infer this value
-				// It should only concern fields that would not be included in profiles
-				VR.valueOf(attr.getValueRepresentation());
-			} catch (IllegalArgumentException e) {
-				throw new Exception("Cannot build the profile " + codeName + ": the tag " + tagEntities.getFirst().getTagValue() + " is not supported and cannot be added");
-			}
+		if (!TagUtils.isPrivateTag(TagUtils.intFromHexString(StandardDICOM.cleanTagPath(tagEntities.getFirst().getTagValue())))) {
+			throw new Exception("Cannot build the profile " + codeName + ": the tag " + tagEntities.getFirst().getTagValue() + " is not a private tag");
 		}
 
 		final ExpressionError expressionError = ExpressionResult.isValid(condition, new ExprCondition(new Attributes()),
