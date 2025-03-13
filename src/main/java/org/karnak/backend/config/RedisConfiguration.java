@@ -52,7 +52,7 @@ public class RedisConfiguration {
 	@Bean
 	public RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer() {
 		// ExternalIDCache
-		return (builder) -> builder.withCacheConfiguration("externalId.cache",
+		return builder -> builder.withCacheConfiguration("externalId.cache",
 				RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofDays(7)));
 	}
 

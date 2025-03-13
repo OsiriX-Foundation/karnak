@@ -29,6 +29,13 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.io.Serial;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.validator.group.GroupSequenceProvider;
@@ -37,14 +44,6 @@ import org.karnak.backend.data.validator.DestinationGroupSequenceProvider.Destin
 import org.karnak.backend.data.validator.DestinationGroupSequenceProvider.DestinationStowGroup;
 import org.karnak.backend.enums.DestinationType;
 import org.karnak.backend.enums.PseudonymType;
-
-import java.io.Serial;
-import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
 
 @GroupSequenceProvider(value = DestinationGroupSequenceProvider.class)
 @Entity(name = "Destination")
@@ -584,8 +583,8 @@ public class DestinationEntity implements Serializable {
 					return "Destination [id=" + id + ", description=" + description + ", type=" + destinationType
 							+ ", notify=" + notify + ", notifyObjectErrorPrefix=" + notifyObjectErrorPrefix
 							+ ", notifyObjectPattern=" + notifyObjectPattern + ", notifyObjectValues="
-							+ notifyObjectValues + ", notifyInterval=" + notifyInterval + ", url=" + url
-							+ ", headers=" + headers + "]";
+							+ notifyObjectValues + ", notifyInterval=" + notifyInterval + ", url=" + url + ", headers="
+							+ headers + "]";
 			}
 		}
 		return "Destination [id=" + id + ", description=" + description + ", type=" + destinationType + ", notify="

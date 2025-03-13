@@ -17,6 +17,7 @@ import org.dcm4che3.util.TagUtils;
 import org.karnak.backend.data.entity.ArgumentEntity;
 import org.karnak.backend.data.entity.IncludedTagEntity;
 import org.karnak.backend.data.entity.ProfileElementEntity;
+import org.karnak.backend.exception.ProfileException;
 import org.karnak.backend.model.action.ActionItem;
 import org.karnak.backend.model.action.Add;
 import org.karnak.backend.model.action.Keep;
@@ -38,7 +39,7 @@ public class AddPrivateTag extends AbstractProfileItem {
 
 	private static final String LOG_PATTERN = "SOPInstanceUID={} TAG={} ACTION={} REASON={}";
 
-	public AddPrivateTag(ProfileElementEntity profileElementEntity) throws Exception {
+	public AddPrivateTag(ProfileElementEntity profileElementEntity) throws ProfileException {
 		super(profileElementEntity);
 
 		tagsAction = new TagActionMap();
@@ -47,9 +48,9 @@ public class AddPrivateTag extends AbstractProfileItem {
 		setActionHashMap();
 	}
 
-	private void setActionHashMap() throws Exception {
+	private void setActionHashMap() {
 
-		if (tagEntities != null && tagEntities.size() > 0) {
+		if (tagEntities != null && !tagEntities.isEmpty()) {
 			for (IncludedTagEntity tag : tagEntities) {
 				tagsAction.put(tag.getTagValue(), actionByDefault);
 			}
@@ -93,22 +94,22 @@ public class AddPrivateTag extends AbstractProfileItem {
 	}
 
 	@Override
-	public void profileValidation() throws Exception {
+	public void profileValidation() throws ProfileException {
 		if (argumentEntities == null || argumentEntities.size() < 2) {
-			throw new Exception("Cannot build the profile " + codeName + ": Need to specify value and vr argument");
+			throw new ProfileException("Cannot build the profile " + codeName + ": Need to specify value and vr argument");
 		}
 		if (tagEntities == null || tagEntities.size() > 1) {
-			throw new Exception("Cannot build the profile " + codeName + ": Exactly one tag is required");
+			throw new ProfileException("Cannot build the profile " + codeName + ": Exactly one tag is required");
 		}
 
 		if (!TagUtils.isPrivateTag(TagUtils.intFromHexString(StandardDICOM.cleanTagPath(tagEntities.getFirst().getTagValue())))) {
-			throw new Exception("Cannot build the profile " + codeName + ": the tag " + tagEntities.getFirst().getTagValue() + " is not a private tag");
+			throw new ProfileException("Cannot build the profile " + codeName + ": the tag " + tagEntities.getFirst().getTagValue() + " is not a private tag");
 		}
 
 		final ExpressionError expressionError = ExpressionResult.isValid(condition, new ExprCondition(new Attributes()),
 				Boolean.class);
 		if (condition != null && !expressionError.isValid()) {
-			throw new Exception(expressionError.getMsg());
+			throw new ProfileException(expressionError.getMsg());
 		}
 	}
 }
