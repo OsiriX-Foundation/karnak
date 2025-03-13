@@ -17,7 +17,6 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextField;
-
 import java.util.Base64;
 
 public class AuthHeadersGenerationDialog extends Dialog {
@@ -59,6 +58,8 @@ public class AuthHeadersGenerationDialog extends Dialog {
 	private TextField oauthToken;
 
 	private final FormSTOW parentForm;
+
+	private static final String REQUIRED_MESSAGE = "This field is required";
 
 	public AuthHeadersGenerationDialog(FormSTOW parentForm) {
 		this.parentForm = parentForm;
@@ -105,23 +106,28 @@ public class AuthHeadersGenerationDialog extends Dialog {
 
 	/**
 	 * Display the form according to the Authentication Type selected in the select box
-	 * @param value : String corresponding to the Authentication Type chosen in the select box
+	 * @param value : String corresponding to the Authentication Type chosen in the select
+	 * box
 	 */
 	private void displayAuthTypeForm(String value) {
 		divContent.removeAll();
-		switch(value) {
+		switch (value) {
 			case BASIC_AUTH:
 				divContent.add(basicForm);
 				break;
 			case OAUTH2:
 				divContent.add(oauthForm);
 				break;
+			default:
+				break;
 		}
 	}
 
 	/**
-	 * Validation method for the authorization type select box, and the fields in the corresponding form
-	 * @param authType : String corresponding to the Authorization Type chosen in the select box
+	 * Validation method for the authorization type select box, and the fields in the
+	 * corresponding form
+	 * @param authType : String corresponding to the Authorization Type chosen in the
+	 * select box
 	 * @return true if the form is valid, false otherwise
 	 */
 	private boolean validateFields(String authType) {
@@ -130,7 +136,8 @@ public class AuthHeadersGenerationDialog extends Dialog {
 			authTypeSelect.setInvalid(true);
 			return false; // set the validation as failed
 		}
-		// Once the authorization type is chosen, ensure that the proper fields are filled for the generation
+		// Once the authorization type is chosen, ensure that the proper fields are filled
+		// for the generation
 		switch (authType) {
 			case BASIC_AUTH:
 				basicUsername.setInvalid(basicUsername.isEmpty());
@@ -139,6 +146,8 @@ public class AuthHeadersGenerationDialog extends Dialog {
 			case OAUTH2:
 				oauthToken.setInvalid(oauthToken.isEmpty());
 				return !(oauthToken.isEmpty());
+			default:
+				break;
 		}
 		return false;
 	}
@@ -149,7 +158,8 @@ public class AuthHeadersGenerationDialog extends Dialog {
 	}
 
 	/**
-	 * Create the elements necessary to render the Basic Auth form using the basicForm instance
+	 * Create the elements necessary to render the Basic Auth form using the basicForm
+	 * instance
 	 */
 	private void buildBasicAuthForm() {
 		basicForm = new FormLayout();
@@ -158,14 +168,14 @@ public class AuthHeadersGenerationDialog extends Dialog {
 		basicUsername = new TextField();
 		basicUsername.setWidth(FIELD_WIDTH);
 		basicUsername.setRequiredIndicatorVisible(true);
-		basicUsername.setErrorMessage("This field is required");
+		basicUsername.setErrorMessage(REQUIRED_MESSAGE);
 		basicUsername.setRequired(true);
 		basicUsername.setLabel("Username");
 
 		basicPassword = new TextField();
 		basicPassword.setWidth(FIELD_WIDTH);
 		basicPassword.setRequiredIndicatorVisible(true);
-		basicPassword.setErrorMessage("This field is required");
+		basicPassword.setErrorMessage(REQUIRED_MESSAGE);
 		basicPassword.setRequired(true);
 		basicPassword.setLabel("Password");
 
@@ -174,7 +184,8 @@ public class AuthHeadersGenerationDialog extends Dialog {
 	}
 
 	/**
-	 * Create the elements necessary to render the OAuth 2 form using the oauthForm instance
+	 * Create the elements necessary to render the OAuth 2 form using the oauthForm
+	 * instance
 	 */
 	private void buildOAuth2Form() {
 		oauthForm = new FormLayout();
@@ -183,23 +194,24 @@ public class AuthHeadersGenerationDialog extends Dialog {
 		oauthToken = new TextField();
 		oauthToken.setWidth(FIELD_WIDTH);
 		oauthToken.setRequiredIndicatorVisible(true);
-		oauthToken.setErrorMessage("This field is required");
+		oauthToken.setErrorMessage(REQUIRED_MESSAGE);
 		oauthToken.setLabel("OAuth 2 Token");
 
 		oauthForm.add(oauthToken);
 	}
 
 	/**
-	 * Generate the Authorization Header based on the Authorization type and the data entered.
-	 * The headers are appended to the parent form headers field.
-	 * @param authType : String corresponding to the Authorization Type chosen in the select box
+	 * Generate the Authorization Header based on the Authorization type and the data
+	 * entered. The headers are appended to the parent form headers field.
+	 * @param authType : String corresponding to the Authorization Type chosen in the
+	 * select box
 	 */
 	private void generateAuthHeaders(String authType) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(AUTHORIZATION_TAG);
 		sb.append("\n");
 		sb.append("<value>");
-		switch(authType) {
+		switch (authType) {
 			case BASIC_AUTH:
 				String credentials = basicUsername.getValue() + ":" + basicPassword.getValue();
 				sb.append("Basic ");
@@ -208,6 +220,8 @@ public class AuthHeadersGenerationDialog extends Dialog {
 			case OAUTH2:
 				sb.append("Bearer ");
 				sb.append(oauthToken.getValue());
+				break;
+			default:
 				break;
 		}
 		sb.append("</value>");

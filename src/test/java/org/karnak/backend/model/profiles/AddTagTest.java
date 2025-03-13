@@ -26,7 +26,7 @@ import org.karnak.backend.service.profilepipe.Profile;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-public class AddTagTest {
+class AddTagTest {
 
     @Test
     void addTag() {

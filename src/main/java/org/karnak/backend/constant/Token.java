@@ -26,4 +26,6 @@ public class Token {
 	// Prefix of built roles
 	public static final String PREFIX_ROLE = "ROLE_";
 
+	private Token() {
+	}
 }

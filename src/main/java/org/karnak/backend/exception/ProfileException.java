@@ -7,13 +7,20 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  */
-package org.karnak.backend.util;
+package org.karnak.backend.exception;
 
-public class PrivateTagPattern {
+import java.io.Serial;
+import lombok.extern.slf4j.Slf4j;
 
-	public static final String TAG_PATTERN = "(GGGG,EEEE) WHERE GGGG IS ODD";
+@Slf4j
+public class ProfileException extends RuntimeException {
 
-	private PrivateTagPattern() {
+	@Serial
+	private static final long serialVersionUID = -8468625700663388828L;
+
+	public ProfileException(String message) {
+		super(message);
+		log.error(message);
 	}
 
 }
