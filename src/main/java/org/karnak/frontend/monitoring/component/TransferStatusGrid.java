@@ -413,7 +413,7 @@ public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity, Tran
 			} else if (transferStatusEntity.isError()) {
 				pill.append("error");
 			} else {
-				pill.append("contrast");
+				span.getStyle().setBackgroundColor("#d38900");
 			}
 			span.getElement()
 				.getThemeList()
