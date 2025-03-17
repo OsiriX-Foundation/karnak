@@ -102,6 +102,9 @@ public class DestinationEntity implements Serializable {
 	// Prefix of the email object when containing an issue. Default value: **ERROR**
 	private String notifyObjectErrorPrefix;
 
+	// Prefix of the email object when a rejection occurred. Default value: **REJECTED**
+	private String notifyObjectRejectionPrefix;
+
 	// Pattern of the email object, see
 	// https://dzone.com/articles/java-string-format-examples.
 	// Default value:
@@ -178,6 +181,7 @@ public class DestinationEntity implements Serializable {
 
 		this.notify = "";
 		this.notifyObjectErrorPrefix = "";
+		this.notifyObjectRejectionPrefix = "";
 		this.notifyObjectPattern = "";
 		this.notifyObjectValues = "";
 		this.notifyInterval = 0;
@@ -300,6 +304,14 @@ public class DestinationEntity implements Serializable {
 
 	public void setNotifyObjectErrorPrefix(String notifyObjectErrorPrefix) {
 		this.notifyObjectErrorPrefix = notifyObjectErrorPrefix;
+	}
+
+	public String getNotifyObjectRejectionPrefix() {
+		return notifyObjectRejectionPrefix;
+	}
+
+	public void setNotifyObjectRejectionPrefix(String notifyObjectRejectionPrefix) {
+		this.notifyObjectRejectionPrefix = notifyObjectRejectionPrefix;
 	}
 
 	public String getNotifyObjectPattern() {
@@ -552,6 +564,7 @@ public class DestinationEntity implements Serializable {
 		return contains(description, filterText) //
 				|| contains(notify, filterText) //
 				|| contains(notifyObjectErrorPrefix, filterText) //
+				|| contains(notifyObjectRejectionPrefix, filterText) //
 				|| contains(notifyObjectPattern, filterText) //
 				|| contains(notifyObjectValues, filterText) //
 				|| contains(aeTitle, filterText) //
@@ -575,20 +588,20 @@ public class DestinationEntity implements Serializable {
 			switch (destinationType) {
 				case dicom:
 					return "Destination [id=" + id + ", description=" + description + ", type=" + destinationType
-							+ ", notify=" + notify + ", notifyObjectErrorPrefix=" + notifyObjectErrorPrefix
+							+ ", notify=" + notify + ", notifyObjectErrorPrefix=" + notifyObjectErrorPrefix + ", notifyObjectRejectionPrefix=" + notifyObjectRejectionPrefix
 							+ ", notifyObjectPattern=" + notifyObjectPattern + ", notifyObjectValues="
 							+ notifyObjectValues + ", notifyInterval=" + notifyInterval + ", aeTitle=" + aeTitle
 							+ ", hostname=" + hostname + ", port=" + port + ", useaetdest=" + useaetdest + "]";
 				case stow:
 					return "Destination [id=" + id + ", description=" + description + ", type=" + destinationType
-							+ ", notify=" + notify + ", notifyObjectErrorPrefix=" + notifyObjectErrorPrefix
+							+ ", notify=" + notify + ", notifyObjectErrorPrefix=" + notifyObjectErrorPrefix + ", notifyObjectRejectionPrefix=" + notifyObjectRejectionPrefix
 							+ ", notifyObjectPattern=" + notifyObjectPattern + ", notifyObjectValues="
 							+ notifyObjectValues + ", notifyInterval=" + notifyInterval + ", url=" + url + ", headers="
 							+ headers + "]";
 			}
 		}
 		return "Destination [id=" + id + ", description=" + description + ", type=" + destinationType + ", notify="
-				+ notify + ", notifyObjectErrorPrefix=" + notifyObjectErrorPrefix + ", notifyObjectPattern="
+				+ notify + ", notifyObjectErrorPrefix=" + notifyObjectErrorPrefix + ", notifyObjectRejectionPrefix=" + notifyObjectRejectionPrefix + ", notifyObjectPattern="
 				+ notifyObjectPattern + ", notifyObjectValues=" + notifyObjectValues + ", notifyInterval="
 				+ notifyInterval + "]";
 	}
