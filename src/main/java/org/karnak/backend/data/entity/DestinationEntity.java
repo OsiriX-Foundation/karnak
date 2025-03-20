@@ -596,8 +596,8 @@ public class DestinationEntity implements Serializable {
 					return "Destination [id=" + id + ", description=" + description + ", type=" + destinationType
 							+ ", notify=" + notify + ", notifyObjectErrorPrefix=" + notifyObjectErrorPrefix + ", notifyObjectRejectionPrefix=" + notifyObjectRejectionPrefix
 							+ ", notifyObjectPattern=" + notifyObjectPattern + ", notifyObjectValues="
-							+ notifyObjectValues + ", notifyInterval=" + notifyInterval + ", url=" + url
-							+ ", headers=" + headers + "]";
+							+ notifyObjectValues + ", notifyInterval=" + notifyInterval + ", url=" + url + ", headers="
+							+ headers + "]";
 			}
 		}
 		return "Destination [id=" + id + ", description=" + description + ", type=" + destinationType + ", notify="

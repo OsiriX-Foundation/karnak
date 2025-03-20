@@ -24,8 +24,6 @@ import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-import java.time.Duration;
-
 @Configuration
 public class RedisConfiguration {
 
@@ -54,7 +52,7 @@ public class RedisConfiguration {
 	@Bean
 	public RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer() {
 		// ExternalIDCache
-		return (builder) -> builder.withCacheConfiguration("externalId.cache",
+		return builder -> builder.withCacheConfiguration("externalId.cache",
 				RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofDays(7)));
 	}
 

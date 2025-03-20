@@ -11,15 +11,21 @@ package org.karnak.backend.data.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import jakarta.persistence.*;
-import org.karnak.backend.data.converter.RectangleListConverter;
-import org.karnak.backend.data.converter.RectangleListToStringListConverter;
-
-import java.awt.*;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import java.awt.Rectangle;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import org.karnak.backend.data.converter.RectangleListConverter;
+import org.karnak.backend.data.converter.RectangleListToStringListConverter;
 
 @Entity(name = "Masks")
 @Table(name = "masks")
@@ -44,7 +50,8 @@ public class MaskEntity implements Serializable {
 	public MaskEntity() {
 	}
 
-	public MaskEntity(String stationName, Long imageWidth, Long imageHeight, String color, ProfileEntity profileEntity) {
+	public MaskEntity(String stationName, Long imageWidth, Long imageHeight, String color,
+			ProfileEntity profileEntity) {
 		this.stationName = stationName;
 		this.color = color;
 		this.profileEntity = profileEntity;
@@ -107,13 +114,21 @@ public class MaskEntity implements Serializable {
 		this.stationName = stationName;
 	}
 
-	public Long getImageWidth() { return imageWidth; }
+	public Long getImageWidth() {
+		return imageWidth;
+	}
 
-	public void setImageWidth(Long imageWidth) { this.imageWidth = imageWidth; }
+	public void setImageWidth(Long imageWidth) {
+		this.imageWidth = imageWidth;
+	}
 
-	public Long getImageHeight() { return imageHeight; }
+	public Long getImageHeight() {
+		return imageHeight;
+	}
 
-	public void setImageHeight(Long imageHeight) { this.imageHeight = imageHeight; }
+	public void setImageHeight(Long imageHeight) {
+		this.imageHeight = imageHeight;
+	}
 
 	public String getColor() {
 		return color;

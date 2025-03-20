@@ -72,14 +72,11 @@ public class Profile {
 		this.profiles = createProfilesList(profileEntity);
 	}
 
-	/*public void addMaskMap(Map<? extends String, ? extends MaskArea> maskMap) {
-		this.maskMap.putAll(maskMap);
-	}*/
-
 	public MaskArea getMask(MaskStationCondition key) {
 		MaskArea mask = maskMap.get(key);
 		if (mask == null) {
-			// No exact match, remove image size information to match the station name only
+			// No exact match, remove image size information to match the station name
+			// only
 			key.setImageWidth(null);
 			key.setImageHeight(null);
 			mask = maskMap.get(key);
@@ -134,7 +131,8 @@ public class Profile {
 					color = ActionTags.hexadecimal2Color(m.getColor());
 				}
 				List<Shape> shapeList = m.getRectangles().stream().map(Shape.class::cast).collect(Collectors.toList());
-				addMask(new MaskStationCondition(m.getStationName(), m.getImageWidth(), m.getImageHeight()), new MaskArea(shapeList, color));
+				addMask(new MaskStationCondition(m.getStationName(), m.getImageWidth(), m.getImageHeight()),
+						new MaskArea(shapeList, color));
 			});
 			return profileItems;
 		}
@@ -149,9 +147,7 @@ public class Profile {
 
 			ActionItem currentAction = null;
 			ProfileItem currentProfile = null;
-			for (ProfileItem profileEntity : profiles.stream()
-				.filter(p -> !(p instanceof CleanPixelData))
-				.collect(Collectors.toList())) {
+			for (ProfileItem profileEntity : profiles.stream().filter(p -> !(p instanceof CleanPixelData)).toList()) {
 				currentProfile = profileEntity;
 
 				if (profileEntity.getCondition() == null
@@ -169,17 +165,22 @@ public class Profile {
 
 				if (currentAction != null) {
 					if (currentAction instanceof Add) {
-						// When adding a new tag, the variable tag is irrelevant and should not be flagged as modified
-						// Set the current action to null after execution and do not break out of the loop if other
+						// When adding a new tag, the variable tag is irrelevant and
+						// should not be flagged as modified
+						// Set the current action to null after execution and do not break
+						// out of the loop if other
 						// profile elements should be applied to the tag
 						execute(currentAction, dcm, tag, hmac);
 						currentAction = null;
 
-					} else if (currentAction instanceof ExcludeInstance) {
+					}
+					else if (currentAction instanceof ExcludeInstance) {
 						context.setAbort(AttributeEditorContext.Abort.FILE_EXCEPTION);
-						context.setAbortMessage(String.format("Instance excluded by profile: %s", profileEntity.getName()));
+						context.setAbortMessage(
+								String.format("Instance excluded by profile: %s", profileEntity.getName()));
 						return;
-					} else {
+					}
+					else {
 						break;
 					}
 				}
@@ -209,25 +210,27 @@ public class Profile {
 	}
 
 	private void execute(ActionItem currentAction, Attributes dcm, int tag, HMAC hmac) {
-		if (currentAction == null) return;
+		if (currentAction == null) {
+			return;
+		}
 		try {
 			currentAction.execute(dcm, tag, hmac);
 		}
 		catch (final Exception e) {
-			log.error("Cannot execute the currentAction {} for tag: {}", currentAction,
-					TagUtils.toString(tag), e);
+			log.error("Cannot execute the currentAction {} for tag: {}", currentAction, TagUtils.toString(tag), e);
 		}
 	}
 
 	public void applyCleanPixelData(Attributes dcmCopy, AttributeEditorContext context, ProfileEntity profileEntity) {
 		Object pix = dcmCopy.getValue(Tag.PixelData);
 		if ((pix instanceof BulkData || pix instanceof Fragments) && !profileEntity.getMaskEntities().isEmpty()
-				&& profiles.stream().anyMatch(p -> p instanceof CleanPixelData)) {
+				&& profiles.stream().anyMatch(CleanPixelData.class::isInstance)) {
 			String sopClassUID = dcmCopy.getString(Tag.SOPClassUID);
 			if (!StringUtil.hasText(sopClassUID)) {
 				throw new IllegalStateException("DICOM Object does not contain sopClassUID");
 			}
-			MaskArea mask = getMask(new MaskStationCondition(dcmCopy.getString(Tag.StationName), dcmCopy.getString(Tag.Columns), dcmCopy.getString(Tag.Rows)));
+			MaskArea mask = getMask(new MaskStationCondition(dcmCopy.getString(Tag.StationName),
+					dcmCopy.getString(Tag.Columns), dcmCopy.getString(Tag.Rows)));
 			// A mask must be applied with all the US and Secondary Capture sopClassUID,
 			// and with
 			// BurnedInAnnotation
@@ -250,7 +253,7 @@ public class Profile {
 	 * @param sopClassUID SopClassUID
 	 * @return true if the clean pixel could be applied
 	 */
-    boolean isCleanPixelAllowedDependingImageType(Attributes dcmCopy, String sopClassUID) {
+	boolean isCleanPixelAllowedDependingImageType(Attributes dcmCopy, String sopClassUID) {
 		// A mask must be applied with all the US and Secondary Capture sopClassUID, and
 		// with BurnedInAnnotation
 		String sopPattern = sopClassUID + ".";
@@ -284,19 +287,17 @@ public class Profile {
 	}
 
 	public void applyDefacing(Attributes dcmCopy, AttributeEditorContext context) {
-		ProfileItem profileItemDefacing = profiles.stream().filter(p -> p instanceof Defacing).findFirst().orElse(null);
-		if (profileItemDefacing != null) {
-			if (isCT(dcmCopy) && isAxial(dcmCopy)) {
-				if (profileItemDefacing.getCondition() == null) {
+		ProfileItem profileItemDefacing = profiles.stream().filter(Defacing.class::isInstance).findFirst().orElse(null);
+		if (profileItemDefacing != null && isCT(dcmCopy) && isAxial(dcmCopy)) {
+			if (profileItemDefacing.getCondition() == null) {
+				context.getProperties().setProperty(Defacer.APPLY_DEFACING, "true");
+			}
+			else {
+				ExprCondition exprCondition = new ExprCondition(dcmCopy);
+				boolean conditionIsOk = (Boolean) ExpressionResult.get(profileItemDefacing.getCondition(),
+						exprCondition, Boolean.class);
+				if (conditionIsOk) {
 					context.getProperties().setProperty(Defacer.APPLY_DEFACING, "true");
-				}
-				else {
-					ExprCondition exprCondition = new ExprCondition(dcmCopy);
-					boolean conditionIsOk = (Boolean) ExpressionResult.get(profileItemDefacing.getCondition(),
-							exprCondition, Boolean.class);
-					if (conditionIsOk) {
-						context.getProperties().setProperty(Defacer.APPLY_DEFACING, "true");
-					}
 				}
 			}
 		}

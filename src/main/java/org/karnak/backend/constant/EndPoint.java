@@ -27,4 +27,6 @@ public class EndPoint {
 
 	public static final String ALL_REMAINING_PATH = "/**";
 
+	private EndPoint() {
+	}
 }

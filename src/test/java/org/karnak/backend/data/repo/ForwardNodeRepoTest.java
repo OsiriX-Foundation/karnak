@@ -9,18 +9,17 @@
  */
 package org.karnak.backend.data.repo;
 
+import jakarta.validation.ConstraintViolationException;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
+import lombok.extern.slf4j.Slf4j;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import jakarta.validation.ConstraintViolationException;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Consumer;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.DicomSourceNodeEntity;
@@ -145,8 +144,7 @@ class ForwardNodeRepoTest {
 		ForwardNodeEntity forwardNodeEntity = ForwardNodeEntity.ofEmpty();
 		forwardNodeEntity.setFwdDescription("description");
 		forwardNodeEntity.setFwdAeTitle("fwdAeTitle");
-		DestinationEntity destinationEntity = DestinationEntity.ofStow("description", null,
-				"headers");
+		DestinationEntity destinationEntity = DestinationEntity.ofStow("description", null, "headers");
 		forwardNodeEntity.addDestination(destinationEntity);
 
 		String expectedMessage = "URL is mandatory";
@@ -200,7 +198,7 @@ class ForwardNodeRepoTest {
 		assertThat(all) //
 			.hasSize(1) //
 			.flatExtracting(ForwardNodeEntity::getDestinationEntities) //
-			.hasSize(0);
+			.isEmpty();
 	}
 
 	// @Test
@@ -222,7 +220,7 @@ class ForwardNodeRepoTest {
 		assertThat(all) //
 			.hasSize(1) //
 			.flatExtracting(ForwardNodeEntity::getSourceNodes) //
-			.hasSize(0);
+			.isEmpty();
 
 		assertThat(all) //
 			.hasSize(1) //
@@ -237,8 +235,7 @@ class ForwardNodeRepoTest {
 		ForwardNodeEntity forwardNodeEntity = ForwardNodeEntity.ofEmpty();
 		forwardNodeEntity.setFwdDescription("description");
 		forwardNodeEntity.setFwdAeTitle("fwdAeTitle");
-		DestinationEntity destinationEntity = DestinationEntity.ofStow("description", "url",
-				"headers");
+		DestinationEntity destinationEntity = DestinationEntity.ofStow("description", "url", "headers");
 		forwardNodeEntity.addDestination(destinationEntity);
 		entityManager.persistAndFlush(forwardNodeEntity);
 
@@ -251,7 +248,7 @@ class ForwardNodeRepoTest {
 		assertThat(all) //
 			.hasSize(1) //
 			.flatExtracting(ForwardNodeEntity::getSourceNodes) //
-			.hasSize(0);
+			.isEmpty();
 
 		assertThat(all) //
 			.hasSize(1) //
