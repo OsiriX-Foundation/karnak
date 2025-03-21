@@ -23,6 +23,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.lang.Nullable;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
@@ -35,8 +36,12 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @Slf4j
 public class KarnakApplication implements CommandLineRunner {
 
-	@Autowired(required = false)
-	private AppConfig myConfig;
+	private final AppConfig myConfig;
+
+	@Autowired
+	public KarnakApplication(@Nullable AppConfig myConfig) {
+		this.myConfig = myConfig;
+	}
 
 	public static void main(String[] args) {
 
