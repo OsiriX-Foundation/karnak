@@ -1,5 +1,3 @@
-version: '3.7'
-
 services:
   karnak-db:
     container_name: karnak-db
@@ -19,7 +17,6 @@ services:
     image: redis:latest
     ports:
       - 6379:6379
-
 
 secrets:
   karnak_login_password:
