@@ -7,7 +7,7 @@
   <groupId>org.karnak</groupId>
   <artifactId>karnak</artifactId>
   <name>${project.artifactId}</name>
-  <version>1.1.0</version>
+  <version>1.1.1</version>
   <description>Karnak</description>
   <packaging>jar</packaging>
 
