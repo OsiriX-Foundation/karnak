@@ -7,7 +7,7 @@
   <groupId>org.karnak</groupId>
   <artifactId>karnak</artifactId>
   <name>${project.artifactId}</name>
-  <version>1.0.3</version>
+  <version>1.1.0</version>
   <description>Karnak</description>
   <packaging>jar</packaging>
 
@@ -18,16 +18,16 @@
     <enforcer.maven-version>[3.3.0,)</enforcer.maven-version>
     <java.version>21</java.version>
 
-    <springframework.version>3.4.2</springframework.version>
+    <springframework.version>3.4.3</springframework.version>
     <springdoc.version>1.8.0</springdoc.version>
-    <vaadin.version>24.6.2</vaadin.version>
+    <vaadin.version>24.7.0</vaadin.version>
     <org.json.version>20250107</org.json.version>
     <opencsv.version>5.9</opencsv.version>
 
     <weasis-dicom-tools.version>5.32.0</weasis-dicom-tools.version>
     <weasis.opencv.native.version>4.9.0-dcm</weasis.opencv.native.version>
 
-    <h2.version>2.2.224</h2.version>
+    <h2.version>2.3.232</h2.version>
     <mockito.version>5.2.0</mockito.version>
     <swagger.version>2.2.26</swagger.version>
 
