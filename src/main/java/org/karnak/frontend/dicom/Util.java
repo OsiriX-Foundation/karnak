@@ -47,9 +47,12 @@ public class Util {
 
 	private static final ExecutorService THREAD_POOL = Executors.newCachedThreadPool();
 
+	private Util() {
+	}
+
 	private static <T> T timedCall(Callable<T> c, long timeout, TimeUnit timeUnit)
 			throws InterruptedException, ExecutionException, TimeoutException {
-		FutureTask<T> task = new FutureTask<T>(c);
+		FutureTask<T> task = new FutureTask<>(c);
 		THREAD_POOL.execute(task);
 		return task.get(timeout, timeUnit);
 	}
@@ -485,14 +488,14 @@ public class Util {
 
 	private static String getWarningItem(boolean fontIcon) {
 		if (fontIcon) {
-			return "<iron-icon class=\"icon\" icon=\"icons:error\" style=\"width:1em; height:1em;\"></iron-icon>";
+			return "<vaadin-icon icon=\"vaadin:exclamation-circle\" style=\"width:1em; height:1em;\"></vaadin-icon>";
 		}
 		return "WARN";
 	}
 
 	private static String getOKItem(boolean fontIcon) {
 		if (fontIcon) {
-			return "<iron-icon class=\"icon\" icon=\"icons:check-circle\" style=\"width:1em; height:1em;\"></iron-icon>";
+			return "<vaadin-icon icon=\"vaadin:check-circle\" style=\"width:1em; height:1em;\"></vaadin-icon>";
 		}
 		return "OK";
 	}

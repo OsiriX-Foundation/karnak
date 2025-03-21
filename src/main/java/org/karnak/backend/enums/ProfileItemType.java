@@ -9,7 +9,17 @@
  */
 package org.karnak.backend.enums;
 
-import org.karnak.backend.model.profiles.*;
+import org.karnak.backend.model.profiles.ActionDates;
+import org.karnak.backend.model.profiles.ActionTags;
+import org.karnak.backend.model.profiles.AddPrivateTag;
+import org.karnak.backend.model.profiles.AddTag;
+import org.karnak.backend.model.profiles.BasicProfile;
+import org.karnak.backend.model.profiles.CleanPixelData;
+import org.karnak.backend.model.profiles.Defacing;
+import org.karnak.backend.model.profiles.Expression;
+import org.karnak.backend.model.profiles.PrivateTags;
+import org.karnak.backend.model.profiles.ProfileItem;
+import org.karnak.backend.model.profiles.UpdateUIDsProfile;
 
 public enum ProfileItemType {
 
@@ -23,7 +33,8 @@ public enum ProfileItemType {
 	ACTION_DATES(ActionDates.class, "action.on.dates", "113107",
 			"Retain Longitudinal Temporal Information Modified Dates Option"),
 	EXPRESSION_TAGS(Expression.class, "expression.on.tags", null, null),
-	ADD_TAG(AddTag.class, "action.add.tag", null, null);
+	ADD_TAG(AddTag.class, "action.add.tag", null, null),
+	ADD_PRIVATE_TAG(AddPrivateTag.class, "action.add.private.tag", null, null);
 
 	private final Class<? extends ProfileItem> profileClass;
 
