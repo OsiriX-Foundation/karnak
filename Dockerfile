@@ -17,7 +17,7 @@ RUN java -Djarmode=layertools -jar application.jar extract
 
 # Build the final deployment image
 FROM eclipse-temurin:21-jdk-jammy
-WORKDIR app
+WORKDIR /app
 
 COPY --from=builder /app/bin/dependencies/ ./
 RUN true
