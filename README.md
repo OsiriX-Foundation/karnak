@@ -1,40 +1,33 @@
-[![License](https://img.shields.io/badge/License-EPL%202.0-blue.svg)](https://opensource.org/licenses/EPL-2.0) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)  ![Maven build](https://github.com/OsiriX-Foundation/karnak/workflows/Build/badge.svg?branch=master)
+[![License](https://img.shields.io/badge/License-EPL%202.0-blue.svg)](https://opensource.org/licenses/EPL-2.0) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)  ![Maven build](https://github.com/OsiriX-Foundation/karnak/workflows/Build/badge.svg)
 
 [![Sonar](https://sonarcloud.io/api/project_badges/measure?project=karnak&metric=ncloc)](https://sonarcloud.io/component_measures?id=karnak) [![Sonar](https://sonarcloud.io/api/project_badges/measure?project=karnak&metric=reliability_rating)](https://sonarcloud.io/component_measures?id=karnak) [![Sonar](https://sonarcloud.io/api/project_badges/measure?project=karnak&metric=sqale_rating)](https://sonarcloud.io/component_measures?id=karnak) [![Sonar](https://sonarcloud.io/api/project_badges/measure?project=karnak&metric=security_rating)](https://sonarcloud.io/component_measures?id=karnak) [![Sonar](https://sonarcloud.io/api/project_badges/measure?project=karnak&metric=alert_status)](https://sonarcloud.io/dashboard?id=karnak)
 
-Karnak is a DICOM gateway for data de-identification and DICOM attribute normalization.
+Karnak is a DICOM gateway designed for data de-identification and DICOM attribute normalization. It manages continuous DICOM data streams, functioning as a DICOM listener for input and supporting both DICOM and DICOMWeb formats for output.
 
-Karnak manages a continuous DICOM flow with a DICOM listener as input and a DICOM and/or DICOMWeb as
-output.
+For detailed usage instructions, refer to the [Karnak User Guide](https://osirix-foundation.github.io/karnak-documentation/).
 
-For more information, see the
-online [Karnak user guide](https://osirix-foundation.github.io/karnak-documentation/)
-
-:warning: **Security**: Karnak is using Logback and is not affected by CVE-2021-44228. [CVE-2021-42550 has been fixed](https://github.com/OsiriX-Foundation/karnak/issues/180) since v0.9.9
 
 # Application Features
 
 ## Gateway
 
-- Allows building mapping between a source and one or more destinations
-- Each destination can be DICOM or DICOMWeb
-- Filter the images providers by AETitle and/or hostname (ot ensure the authenticity of the source)
+- Allow to have multiple destinations for one source. 
+- A destination can be DICOM or DICOMWeb.
+- Provides filtering options for image providers by AE Title and/or hostname to ensure source authenticity.
+- Provides filtering options for SOP Class UID to send only specific SOP Class UIDs.
+- Use expressions to filter images from the DICOM tag values.
 
-## de-identification
+## De-identification
 
 - Each destination can be configured with a specific de-identification profile
-- Configuration for sending only specific SopClassUIDs
 - [Build your own de-identification profile](https://osirix-foundation.github.io/karnak-documentation/docs/deidentification/profiles)
-  or add modifications to the basic DICOM profile
-- Import and export the de-identification profiles
+- Import and export the de-identification profiles to share them with other users.
 
 # Build Karnak
 
 Prerequisites:
-
 - JDK 21
 - Maven 3
-- Code formatter: [google-java-format](https://github.com/google/google-java-format)
 
 ##### Karnak
 
@@ -42,22 +35,19 @@ Execute the maven command `mvn clean install -P production` in the root director
 
 # Run Karnak
 
-To configure and run Karnak with docker-compose,
-see [karnak-docker](https://github.com/OsiriX-Foundation/karnak-docker).
+To configure and run Karnak with docker, see [karnak-docker](https://github.com/OsiriX-Foundation/karnak-docker).
 
 # Debug Karnak
 
 ## Debug in IntelliJ
 
-- Launch the components needed by Karnak (see below "Configure Postgres
-  database with docker-compose")
+- Launch the components needed by Karnak (see below "Configure Postgres database with docker")
 - Enable Spring and Spring Boot for the project
 - Create a Spring Boot launcher from main of StartApplication.java
     - Working Directory must be the mvc directory
     - In VM Options, add `-Djava.library.path="/tmp/dicom-opencv"`. Note: the tmp folder must be adapted according to your system and `dicom-opencv` is mandatory as the last folder.
     - In Environment variables, add the following values. The following values work with our default
-      configuration define with docker used for the development (see: "Configure locally
-      Postgres database with docker-compose") :
+      configuration define with docker used for the development (see: "Configure locally Postgres database with docker") :
         - Mandatory:
             - `ENVIRONMENT=DEV`
         - Optional:
@@ -79,22 +69,20 @@ see [karnak-docker](https://github.com/OsiriX-Foundation/karnak-docker).
             - `OIDC_CLIENT_SECRET=undefined`
             - `OIDC_ISSUER_URI=undefined`
             
-## Configure locally Postgres database with docker-compose
-
-Minimum docker-compose version: **1.22**
+## Configure locally Postgres database with docker
 
 - Go in the `docker` folder located in the root project folder.
 - To configure third-party components used by karnak, please refer to these links:
     - [docker hub postgres](https://hub.docker.com/_/postgres)
 - Adapt the values if necessary (copy `.env.example` into `.env` and modify it)
 - Execute command:
-    - start: `docker-compose up -d`
-    - show the logs: `docker-compose logs -f`
-    - stop: `docker-compose down`
+    - start: `docker compose up -d`
+    - show the logs: `docker compose logs -f`
+    - stop: `docker compose down`
 
 # Docker
 
-Minimum docker version: **19.03**
+Minimum docker version: **20.10**
 
 ## Build with Dockerfile
 
