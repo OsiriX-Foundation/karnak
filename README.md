@@ -33,6 +33,8 @@ Prerequisites:
 
 Execute the maven command `mvn clean install -P production` in the root directory of the project.
 
+Note: When the tests are not skipped, it requires to run locally the cache, see below [Run locally the database and the cache with docker](#run-locally-the-database-and-the-cache-with-docker).
+
 # Run Karnak
 
 To configure and run Karnak with docker, see [karnak-docker](https://github.com/OsiriX-Foundation/karnak-docker).
@@ -45,7 +47,9 @@ To configure and run Karnak with docker, see [karnak-docker](https://github.com/
 - Enable Spring and Spring Boot for the project
 - Create a Spring Boot launcher from main of StartApplication.java
     - Working Directory must be the mvc directory
-    - In VM Options, add `-Djava.library.path="/tmp/dicom-opencv"`. Note: the tmp folder must be adapted according to your system and `dicom-opencv` is mandatory as the last folder.
+    - In VM Options:
+      - Add `-Djava.library.path="/tmp/dicom-opencv"`. Note: the tmp folder must be adapted according to your system and `dicom-opencv` is mandatory as the last folder.
+      - Optional: Add `-Dvaadin.productionMode=true` to enable production mode
     - In Environment variables, add the following values. The following values work with our default
       configuration define with docker used for the development (see: "Configure locally Postgres database with docker") :
         - Mandatory:
@@ -69,7 +73,7 @@ To configure and run Karnak with docker, see [karnak-docker](https://github.com/
             - `OIDC_CLIENT_SECRET=undefined`
             - `OIDC_ISSUER_URI=undefined`
             
-## Configure locally Postgres database with docker
+## Run locally the database and the cache with docker
 
 - Go in the `docker` folder located in the root project folder.
 - To configure third-party components used by karnak, please refer to these links:
