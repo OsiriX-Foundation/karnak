@@ -41,7 +41,7 @@ public class EchoServlet extends HttpServlet {
 	private static final long serialVersionUID = -8349040600894140520L;
 
 	@Autowired
-	private GatewaySetUpService globalConfig;
+	private transient GatewaySetUpService globalConfig;
 
 	@Override
 	public final void init() throws ServletException {
