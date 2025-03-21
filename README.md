@@ -6,7 +6,6 @@ Karnak is a DICOM gateway designed for data de-identification and DICOM attribut
 
 For detailed usage instructions, refer to the [Karnak User Guide](https://osirix-foundation.github.io/karnak-documentation/).
 
-
 # Application Features
 
 ## Gateway
@@ -20,7 +19,7 @@ For detailed usage instructions, refer to the [Karnak User Guide](https://osirix
 ## De-identification
 
 - Each destination can be configured with a specific de-identification profile
-- [Build your own de-identification profile](https://osirix-foundation.github.io/karnak-documentation/docs/deidentification/profiles)
+- [Build your own de-identification profile](https://osirix-foundation.github.io/karnak-documentation/en/profiles)
 - Import and export the de-identification profiles to share them with other users.
 
 # Build Karnak
@@ -32,8 +31,6 @@ Prerequisites:
 ##### Karnak
 
 Execute the maven command `mvn clean install -P production` in the root directory of the project.
-
-Note: When the tests are not skipped, it requires to run locally the cache, see below [Run locally the database and the cache with docker](#run-locally-the-database-and-the-cache-with-docker).
 
 # Run Karnak
 
