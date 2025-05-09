@@ -23,6 +23,8 @@ secrets:
     file: secrets/karnak_login_password
   postgres_karnak_password:
     file: secrets/karnak_postgres_password
+  postgres_karnak_key:
+    file: secrets/karnak_postgres_key
 
 volumes:
   karnak-db-data:

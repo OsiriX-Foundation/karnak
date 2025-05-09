@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-2021 Karnak Team and other contributors.
+ * Copyright (c) 2021 Karnak Team and other contributors.
  *
  * This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
@@ -9,18 +9,18 @@
  */
 package org.karnak.backend.enums;
 
-public enum PseudonymType {
+public enum AuthConfigType {
 
-	CACHE_EXTID("Pseudonym is already stored in KARNAK"), EXTID_IN_TAG("Pseudonym is in a DICOM tag"), EXTID_API("Pseudonym from external API");
+	OAUTH2("OAuth 2.0");
 
-	private final String value;
+	final String code;
 
-	PseudonymType(String value) {
-		this.value = value;
+	AuthConfigType(final String code) {
+		this.code = code;
 	}
 
-	public String getValue() {
-		return value;
+	public String getCode() {
+		return code;
 	}
 
 }

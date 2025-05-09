@@ -130,13 +130,15 @@ class AddTagTest {
         profileElementEntityAddBurnedAttr.addArgument(new ArgumentEntity("value", "YES", profileElementEntityAddBurnedAttr));
         profileElementEntityAddBurnedAttr.addIncludedTag(new IncludedTagEntity("(0028,0301)", profileElementEntityAddBurnedAttr));
         profileElementEntityAddBurnedAttr.setPosition(1);
+        profileElementEntityAddBurnedAttr.setProfileEntity(profileEntity);
 
         ProfileElementEntity profileElementEntitySetBurnedAttr = new ProfileElementEntity();
         profileElementEntitySetBurnedAttr.setCodename("expression.on.tags");
         profileElementEntitySetBurnedAttr.setName("Set tag BurnedInAnnotation to NO");
-        profileElementEntitySetBurnedAttr.addArgument(new ArgumentEntity("expr", "Replace('NO')", profileElementEntityAddBurnedAttr));
-        profileElementEntitySetBurnedAttr.addIncludedTag(new IncludedTagEntity("(0028,0301)", profileElementEntityAddBurnedAttr));
+        profileElementEntitySetBurnedAttr.addArgument(new ArgumentEntity("expr", "Replace('NO')", profileElementEntitySetBurnedAttr));
+        profileElementEntitySetBurnedAttr.addIncludedTag(new IncludedTagEntity("(0028,0301)", profileElementEntitySetBurnedAttr));
         profileElementEntitySetBurnedAttr.setPosition(2);
+        profileElementEntitySetBurnedAttr.setProfileEntity(profileEntity);
 
         profileElementEntities.add(profileElementEntityAddBurnedAttr);
         profileElementEntities.add(profileElementEntitySetBurnedAttr);
