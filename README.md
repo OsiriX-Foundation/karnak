@@ -57,6 +57,7 @@ To configure and run Karnak with docker, see [karnak-docker](https://github.com/
             - `DB_USER=karnak`
             - `DB_NAME=karnak`
             - `DB_HOST=localhost`
+            - `DB_ENCRYPTION_KEY=fsGuSZRIEr$HwlTDPglZg*Vl7WtJCZz6RLvqoMKWSA!`
             - `KARNAK_ADMIN=admin`
             - `KARNAK_PASSWORD=admin`
             - `KARNAK_LOGS_MAX_FILE_SIZE=100MB`

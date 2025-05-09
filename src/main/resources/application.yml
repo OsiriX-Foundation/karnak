@@ -5,6 +5,7 @@ name: KARNAK-Profile
 environment: LOCAL
 karnakadmin: ${KARNAK_ADMIN:admin}
 karnakpassword: ${KARNAK_PASSWORD:admin}
+karnakpostgreskey: ${DB_ENCRYPTION_KEY}
 
 # - Logs
 logging:
@@ -49,6 +50,7 @@ spring:
       max-lifetime: 270000 # 4 minutes 30 secondes
       validation-timeout: 3000
       connection-test-query: SELECT 1
+      connection-init-sql: select set_config('encryption.key', '${DB_ENCRYPTION_KEY}', false)
   mustache:
     check-template-location: false
   jpa:
@@ -73,6 +75,9 @@ spring:
 monitoring:
   # Maximum of sop instance sent for the monitoring
   max-history: 150000
+cache-api:
+  # Cache Time to leave in minutes for API calls
+  ttl: 15
 
 mail:
   sender: karnak@kheops.online
