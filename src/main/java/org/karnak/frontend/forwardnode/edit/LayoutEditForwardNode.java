@@ -423,9 +423,10 @@ public class LayoutEditForwardNode extends VerticalLayout {
 
 	private void removeCurrentDestination() {
 		if (newUpdateDestination.getCurrentDestinationEntity() != null) {
-			ConfirmDialog dialog = new ConfirmDialog("Are you sure to delete the forward node "
+			ConfirmDialog dialog = new ConfirmDialog("Are you sure to delete the destination "
 					+ newUpdateDestination.getCurrentDestinationEntity().getDescription() + " ["
-					+ newUpdateDestination.getCurrentDestinationEntity().getDestinationType() + "] ?");
+					+ newUpdateDestination.getCurrentDestinationEntity().getDestinationType() + "] ? " +
+					"<br>It will also delete the related entries from the monitoring view.");
 			dialog.addConfirmationListener(componentEvent -> {
 				NodeEvent nodeEvent = new NodeEvent(newUpdateDestination.getCurrentDestinationEntity(),
 						NodeEventType.REMOVE);
