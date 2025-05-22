@@ -116,14 +116,13 @@ public class ReplaceApi extends AbstractProfileItem {
                     throw new EndpointException("Unsupported HTTP Method : " + method);
                 }
 
-                try {
-                    ObjectMapper objectMapper = new ObjectMapper();
-                    value = objectMapper.readTree(response).at(responsePath).textValue();
-                    // Node that matches given JSON Pointer: if no match exists, will return a node for which TreeNode.isMissingNode() returns true.
-                } catch (JsonProcessingException e) {
+                ObjectMapper objectMapper = new ObjectMapper();
+                value = objectMapper.readTree(response).at(responsePath).textValue();
+                // Node that matches given JSON Pointer: if no match exists, will return a node for which TreeNode.isMissingNode() returns true.
+            } catch (JsonProcessingException e) {
+                if (defaultValue == null) {
                     throw new EndpointException("An error occurred while parsing the JSON response ", e);
                 }
-
             } catch (IllegalArgumentException e) {
                 if (defaultValue == null) {
                     // Abort current transfer, authConfig not defined
