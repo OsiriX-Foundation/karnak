@@ -124,4 +124,16 @@
     </createTable>
   </changeSet>
 
+  <changeSet author="karnak" id="1.4-9">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <foreignKeyConstraintExists foreignKeyName="destination_transfer_cascade_delete"/>
+      </not>
+    </preConditions>
+    <addForeignKeyConstraint baseColumnNames="destination_id" baseTableName="transfer_status"
+                             constraintName="destination_transfer_cascade_delete" deferrable="false" initiallyDeferred="false"
+                             onDelete="CASCADE" referencedColumnNames="id"
+                             referencedTableName="destination" validate="true"/>
+  </changeSet>
+
 </databaseChangeLog>
