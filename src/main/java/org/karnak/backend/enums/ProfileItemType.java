@@ -36,7 +36,7 @@ public enum ProfileItemType {
 	EXPRESSION_TAGS(Expression.class, "expression.on.tags", null, null),
 	ADD_TAG(AddTag.class, "action.add.tag", null, null),
 	ADD_PRIVATE_TAG(AddPrivateTag.class, "action.add.private.tag", null, null),
-	REPLACE_API(ReplaceApi.class, "action.replace.api", null, null),;
+	REPLACE_API(ReplaceApi.class, "action.replace.api", null, null);
 
 	private final Class<? extends ProfileItem> profileClass;
 
