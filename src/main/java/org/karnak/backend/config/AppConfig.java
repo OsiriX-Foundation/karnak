@@ -10,6 +10,8 @@
 package org.karnak.backend.config;
 
 import jakarta.annotation.PostConstruct;
+import java.io.InputStream;
+import java.net.URL;
 import lombok.extern.slf4j.Slf4j;
 import org.karnak.backend.cache.ExternalIDCache;
 import org.karnak.backend.cache.PatientClient;
@@ -30,9 +32,6 @@ import org.springframework.context.event.EventListener;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
-
-import java.io.InputStream;
-import java.net.URL;
 
 @Configuration
 @EnableConfigurationProperties
@@ -137,5 +136,4 @@ public class AppConfig {
 	public StandardDICOM getStandardDICOM() {
 		return new StandardDICOM();
 	}
-
 }
