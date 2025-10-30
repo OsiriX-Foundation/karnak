@@ -408,7 +408,7 @@ class ProfileTest {
 		dataset2.setString(Tag.PatientAge, VR.AS, "070Y");
 		dataset2.setString(Tag.PatientBirthDate, VR.DA, "20070823");
 		dataset2.setString(Tag.AcquisitionDateTime, VR.DT, "20070730131403.000000");
-		dataset2.setString(Tag.InstanceCreationTime, VR.TM, "131635");
+		dataset2.setString(Tag.InstanceCreationTime, VR.TM, "131635.000000");
 
 		ProfileEntity profileEntity = new ProfileEntity("TEST", "0.9.1", "0.9.1", "DPA");
 		ProfileElementEntity profileElementEntity = new ProfileElementEntity("Shift Date with argumentEntities",
@@ -445,7 +445,7 @@ class ProfileTest {
 		dataset2.setString(Tag.PatientAge, VR.AS, "069Y");
 		dataset2.setString(Tag.PatientBirthDate, VR.DA, "20080626");
 		dataset2.setString(Tag.AcquisitionDateTime, VR.DT, "20080602131454.000000");
-		dataset2.setString(Tag.InstanceCreationTime, VR.TM, "131726");
+		dataset2.setString(Tag.InstanceCreationTime, VR.TM, "131726.000000");
 
 		ProfileEntity profileEntity = new ProfileEntity("TEST", "0.9.1", "0.9.1", "DPA");
 		ProfileElementEntity profileElementEntity = new ProfileElementEntity("Shift Date with argumentEntities",

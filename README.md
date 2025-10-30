@@ -52,7 +52,7 @@ To configure and run Karnak with docker, see [karnak-docker](https://github.com/
         - Mandatory:
             - `ENVIRONMENT=DEV`
         - Optional:
-            - `DB_PASSWORD=5!KAnN@%98%d`
+            - `DB_PASSWORD=karnak`
             - `DB_PORT=5433`
             - `DB_USER=karnak`
             - `DB_NAME=karnak`
