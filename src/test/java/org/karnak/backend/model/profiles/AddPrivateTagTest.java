@@ -29,112 +29,133 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class AddPrivateTagTest {
 
-    @Test
-    void addPrivateTag() {
-        ProfileEntity profileEntity = new ProfileEntity();
-        Attributes attributes = new Attributes();
-        attributes.setString(Tag.Modality, VR.CS, "XA");
-        attributes.setString(Tag.SOPClassUID, VR.UI, "1.2.840.10008.5.1.4.1.1.12.1");
+	@Test
+	void addPrivateTag() {
+		ProfileEntity profileEntity = new ProfileEntity();
+		Attributes attributes = new Attributes();
+		attributes.setString(Tag.Modality, VR.CS, "XA");
+		attributes.setString(Tag.SOPClassUID, VR.UI, "1.2.840.10008.5.1.4.1.1.12.1");
 
-        Set<ProfileElementEntity> profileElementEntities = new HashSet<>();
-        ProfileElementEntity profileElementEntityAddBurnedAttr = new ProfileElementEntity();
-        profileElementEntityAddBurnedAttr.setCodename("action.add.private.tag");
-        profileElementEntityAddBurnedAttr.setName("Add private tag");
-        profileElementEntityAddBurnedAttr.addArgument(new ArgumentEntity("value", "PrivateValue", profileElementEntityAddBurnedAttr));
-        profileElementEntityAddBurnedAttr.addArgument(new ArgumentEntity("vr", "LO", profileElementEntityAddBurnedAttr));
-        profileElementEntityAddBurnedAttr.addArgument(new ArgumentEntity("privateCreator", "SIEMENS", profileElementEntityAddBurnedAttr));
+		Set<ProfileElementEntity> profileElementEntities = new HashSet<>();
+		ProfileElementEntity profileElementEntityAddBurnedAttr = new ProfileElementEntity();
+		profileElementEntityAddBurnedAttr.setCodename("action.add.private.tag");
+		profileElementEntityAddBurnedAttr.setName("Add private tag");
+		profileElementEntityAddBurnedAttr
+			.addArgument(new ArgumentEntity("value", "PrivateValue", profileElementEntityAddBurnedAttr));
+		profileElementEntityAddBurnedAttr
+			.addArgument(new ArgumentEntity("vr", "LO", profileElementEntityAddBurnedAttr));
+		profileElementEntityAddBurnedAttr
+			.addArgument(new ArgumentEntity("privateCreator", "SIEMENS", profileElementEntityAddBurnedAttr));
 
-        profileElementEntityAddBurnedAttr.addIncludedTag(new IncludedTagEntity("(0021,1000)", profileElementEntityAddBurnedAttr));
-        profileElementEntityAddBurnedAttr.setPosition(1);
+		profileElementEntityAddBurnedAttr
+			.addIncludedTag(new IncludedTagEntity("(0021,1000)", profileElementEntityAddBurnedAttr));
+		profileElementEntityAddBurnedAttr.setPosition(1);
 
-        profileElementEntities.add(profileElementEntityAddBurnedAttr);
-        profileEntity.setProfileElementEntities(profileElementEntities);
-        Profile profile = new Profile(profileEntity);
+		profileElementEntities.add(profileElementEntityAddBurnedAttr);
+		profileEntity.setProfileElementEntities(profileElementEntities);
+		Profile profile = new Profile(profileEntity);
 
-        profile.applyAction(attributes, attributes, null, null, null, null);
+		profile.applyAction(attributes, attributes, null, null, null, null);
 
-        assertEquals("PrivateValue", attributes.getString(TagUtils.intFromHexString(StandardDICOM.cleanTagPath("(0021,1000)"))));
-        assertEquals("SIEMENS", attributes.getString(TagUtils.intFromHexString(StandardDICOM.cleanTagPath("(0021,0010)"))));
-    }
+		assertEquals("PrivateValue",
+				attributes.getString(TagUtils.intFromHexString(StandardDICOM.cleanTagPath("(0021,1000)"))));
+		assertEquals("SIEMENS",
+				attributes.getString(TagUtils.intFromHexString(StandardDICOM.cleanTagPath("(0021,0010)"))));
+	}
 
-   @Test
-    void addPrivateTagWithExistingPrivateCreator() {
-        ProfileEntity profileEntity = new ProfileEntity();
-        Attributes attributes = new Attributes();
-        attributes.setString(Tag.Modality, VR.CS, "XA");
-        attributes.setString(Tag.SOPClassUID, VR.UI, "1.2.840.10008.5.1.4.1.1.12.1");
-        attributes.setString(TagUtils.intFromHexString(StandardDICOM.cleanTagPath("(0021,0010)")), VR.LO, "SIEMENS");
+	@Test
+	void addPrivateTagWithExistingPrivateCreator() {
+		ProfileEntity profileEntity = new ProfileEntity();
+		Attributes attributes = new Attributes();
+		attributes.setString(Tag.Modality, VR.CS, "XA");
+		attributes.setString(Tag.SOPClassUID, VR.UI, "1.2.840.10008.5.1.4.1.1.12.1");
+		attributes.setString(TagUtils.intFromHexString(StandardDICOM.cleanTagPath("(0021,0010)")), VR.LO, "SIEMENS");
 
-        Set<ProfileElementEntity> profileElementEntities = new HashSet<>();
-        ProfileElementEntity profileElementEntityAddBurnedAttr = new ProfileElementEntity();
-        profileElementEntityAddBurnedAttr.setCodename("action.add.private.tag");
-        profileElementEntityAddBurnedAttr.setName("Add private tag");
-       profileElementEntityAddBurnedAttr.addArgument(new ArgumentEntity("value", "PrivateValue", profileElementEntityAddBurnedAttr));
-       profileElementEntityAddBurnedAttr.addArgument(new ArgumentEntity("vr", "LO", profileElementEntityAddBurnedAttr));
-       profileElementEntityAddBurnedAttr.addIncludedTag(new IncludedTagEntity("(0021,1000)", profileElementEntityAddBurnedAttr));
-       profileElementEntityAddBurnedAttr.setPosition(1);
+		Set<ProfileElementEntity> profileElementEntities = new HashSet<>();
+		ProfileElementEntity profileElementEntityAddBurnedAttr = new ProfileElementEntity();
+		profileElementEntityAddBurnedAttr.setCodename("action.add.private.tag");
+		profileElementEntityAddBurnedAttr.setName("Add private tag");
+		profileElementEntityAddBurnedAttr
+			.addArgument(new ArgumentEntity("value", "PrivateValue", profileElementEntityAddBurnedAttr));
+		profileElementEntityAddBurnedAttr
+			.addArgument(new ArgumentEntity("vr", "LO", profileElementEntityAddBurnedAttr));
+		profileElementEntityAddBurnedAttr
+			.addIncludedTag(new IncludedTagEntity("(0021,1000)", profileElementEntityAddBurnedAttr));
+		profileElementEntityAddBurnedAttr.setPosition(1);
 
-       profileElementEntities.add(profileElementEntityAddBurnedAttr);
-       profileEntity.setProfileElementEntities(profileElementEntities);
-       Profile profile = new Profile(profileEntity);
+		profileElementEntities.add(profileElementEntityAddBurnedAttr);
+		profileEntity.setProfileElementEntities(profileElementEntities);
+		Profile profile = new Profile(profileEntity);
 
-       profile.applyAction(attributes, attributes, null, null, null, null);
+		profile.applyAction(attributes, attributes, null, null, null, null);
 
-       assertEquals("PrivateValue", attributes.getString(TagUtils.intFromHexString(StandardDICOM.cleanTagPath("(0021,1000)"))));
-    }
+		assertEquals("PrivateValue",
+				attributes.getString(TagUtils.intFromHexString(StandardDICOM.cleanTagPath("(0021,1000)"))));
+	}
 
-   @Test
-   void addPrivateTagWithExistingPrivateCreator_specifyPrivateCreator() {
-       ProfileEntity profileEntity = new ProfileEntity();
-       Attributes attributes = new Attributes();
-       attributes.setString(Tag.Modality, VR.CS, "XA");
-       attributes.setString(Tag.SOPClassUID, VR.UI, "1.2.840.10008.5.1.4.1.1.12.1");
-       attributes.setString(TagUtils.intFromHexString(StandardDICOM.cleanTagPath("(0021,0010)")), VR.LO, "SIEMENS");
+	@Test
+	void addPrivateTagWithExistingPrivateCreator_specifyPrivateCreator() {
+		ProfileEntity profileEntity = new ProfileEntity();
+		Attributes attributes = new Attributes();
+		attributes.setString(Tag.Modality, VR.CS, "XA");
+		attributes.setString(Tag.SOPClassUID, VR.UI, "1.2.840.10008.5.1.4.1.1.12.1");
+		attributes.setString(TagUtils.intFromHexString(StandardDICOM.cleanTagPath("(0021,0010)")), VR.LO, "SIEMENS");
 
-       Set<ProfileElementEntity> profileElementEntities = new HashSet<>();
-       ProfileElementEntity profileElementEntityAddBurnedAttr = new ProfileElementEntity();
-       profileElementEntityAddBurnedAttr.setCodename("action.add.private.tag");
-       profileElementEntityAddBurnedAttr.setName("Add private tag");
-       profileElementEntityAddBurnedAttr.addArgument(new ArgumentEntity("value", "PrivateValue", profileElementEntityAddBurnedAttr));
-       profileElementEntityAddBurnedAttr.addArgument(new ArgumentEntity("vr", "LO", profileElementEntityAddBurnedAttr));
-       profileElementEntityAddBurnedAttr.addArgument(new ArgumentEntity("privateCreator", "SIEMENS", profileElementEntityAddBurnedAttr));
-       profileElementEntityAddBurnedAttr.addIncludedTag(new IncludedTagEntity("(0021,1000)", profileElementEntityAddBurnedAttr));
-       profileElementEntityAddBurnedAttr.setPosition(1);
+		Set<ProfileElementEntity> profileElementEntities = new HashSet<>();
+		ProfileElementEntity profileElementEntityAddBurnedAttr = new ProfileElementEntity();
+		profileElementEntityAddBurnedAttr.setCodename("action.add.private.tag");
+		profileElementEntityAddBurnedAttr.setName("Add private tag");
+		profileElementEntityAddBurnedAttr
+			.addArgument(new ArgumentEntity("value", "PrivateValue", profileElementEntityAddBurnedAttr));
+		profileElementEntityAddBurnedAttr
+			.addArgument(new ArgumentEntity("vr", "LO", profileElementEntityAddBurnedAttr));
+		profileElementEntityAddBurnedAttr
+			.addArgument(new ArgumentEntity("privateCreator", "SIEMENS", profileElementEntityAddBurnedAttr));
+		profileElementEntityAddBurnedAttr
+			.addIncludedTag(new IncludedTagEntity("(0021,1000)", profileElementEntityAddBurnedAttr));
+		profileElementEntityAddBurnedAttr.setPosition(1);
 
-       profileElementEntities.add(profileElementEntityAddBurnedAttr);
-       profileEntity.setProfileElementEntities(profileElementEntities);
-       Profile profile = new Profile(profileEntity);
+		profileElementEntities.add(profileElementEntityAddBurnedAttr);
+		profileEntity.setProfileElementEntities(profileElementEntities);
+		Profile profile = new Profile(profileEntity);
 
-       profile.applyAction(attributes, attributes, null, null, null, null);
+		profile.applyAction(attributes, attributes, null, null, null, null);
 
-       assertEquals("PrivateValue", attributes.getString(TagUtils.intFromHexString(StandardDICOM.cleanTagPath("(0021,1000)"))));
-   }
+		assertEquals("PrivateValue",
+				attributes.getString(TagUtils.intFromHexString(StandardDICOM.cleanTagPath("(0021,1000)"))));
+	}
 
-    @Test
-    void addPrivateTagWithExistingPrivateCreator_PrivateCreatorCollision() {
-        ProfileEntity profileEntity = new ProfileEntity();
-        Attributes attributes = new Attributes();
-        attributes.setString(Tag.Modality, VR.CS, "XA");
-        attributes.setString(Tag.SOPClassUID, VR.UI, "1.2.840.10008.5.1.4.1.1.12.1");
-        attributes.setString(TagUtils.intFromHexString(StandardDICOM.cleanTagPath("(0021,0010)")), VR.LO, "SIEMENS");
+	@Test
+	void addPrivateTagWithExistingPrivateCreator_PrivateCreatorCollision() {
+		ProfileEntity profileEntity = new ProfileEntity();
+		Attributes attributes = new Attributes();
+		attributes.setString(Tag.Modality, VR.CS, "XA");
+		attributes.setString(Tag.SOPClassUID, VR.UI, "1.2.840.10008.5.1.4.1.1.12.1");
+		attributes.setString(TagUtils.intFromHexString(StandardDICOM.cleanTagPath("(0021,0010)")), VR.LO, "SIEMENS");
 
-        Set<ProfileElementEntity> profileElementEntities = new HashSet<>();
-        ProfileElementEntity profileElementEntityAddBurnedAttr = new ProfileElementEntity();
-        profileElementEntityAddBurnedAttr.setCodename("action.add.private.tag");
-        profileElementEntityAddBurnedAttr.setName("Add private tag");
-        profileElementEntityAddBurnedAttr.addArgument(new ArgumentEntity("value", "PrivateValue", profileElementEntityAddBurnedAttr));
-        profileElementEntityAddBurnedAttr.addArgument(new ArgumentEntity("vr", "LO", profileElementEntityAddBurnedAttr));
-        profileElementEntityAddBurnedAttr.addArgument(new ArgumentEntity("privateCreator", "PHILIPS", profileElementEntityAddBurnedAttr));
-        profileElementEntityAddBurnedAttr.addIncludedTag(new IncludedTagEntity("(0021,1000)", profileElementEntityAddBurnedAttr));
-        profileElementEntityAddBurnedAttr.setPosition(1);
+		Set<ProfileElementEntity> profileElementEntities = new HashSet<>();
+		ProfileElementEntity profileElementEntityAddBurnedAttr = new ProfileElementEntity();
+		profileElementEntityAddBurnedAttr.setCodename("action.add.private.tag");
+		profileElementEntityAddBurnedAttr.setName("Add private tag");
+		profileElementEntityAddBurnedAttr
+			.addArgument(new ArgumentEntity("value", "PrivateValue", profileElementEntityAddBurnedAttr));
+		profileElementEntityAddBurnedAttr
+			.addArgument(new ArgumentEntity("vr", "LO", profileElementEntityAddBurnedAttr));
+		profileElementEntityAddBurnedAttr
+			.addArgument(new ArgumentEntity("privateCreator", "PHILIPS", profileElementEntityAddBurnedAttr));
+		profileElementEntityAddBurnedAttr
+			.addIncludedTag(new IncludedTagEntity("(0021,1000)", profileElementEntityAddBurnedAttr));
+		profileElementEntityAddBurnedAttr.setPosition(1);
 
-        profileElementEntities.add(profileElementEntityAddBurnedAttr);
-        profileEntity.setProfileElementEntities(profileElementEntities);
-        Profile profile = new Profile(profileEntity);
+		profileElementEntities.add(profileElementEntityAddBurnedAttr);
+		profileEntity.setProfileElementEntities(profileElementEntities);
+		Profile profile = new Profile(profileEntity);
 
-        profile.applyAction(attributes, attributes, null, null, null, null);
+		profile.applyAction(attributes, attributes, null, null, null, null);
 
-        assertNull(attributes.getString(TagUtils.intFromHexString(StandardDICOM.cleanTagPath("(0021,1000)"))));
-        assertEquals("SIEMENS", attributes.getString(TagUtils.intFromHexString(StandardDICOM.cleanTagPath("(0021,0010)"))));
-    }
+		assertNull(attributes.getString(TagUtils.intFromHexString(StandardDICOM.cleanTagPath("(0021,1000)"))));
+		assertEquals("SIEMENS",
+				attributes.getString(TagUtils.intFromHexString(StandardDICOM.cleanTagPath("(0021,0010)"))));
+	}
+
 }

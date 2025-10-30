@@ -46,7 +46,8 @@ public class DicomEchoService {
 		try (ExecutorService executorService = Executors.newFixedThreadPool(poolSize)) {
 			List<DicomEchoThread> threads = createThreads(nodes); // Refactored helper
 			threadResult = executorService.invokeAll(threads, 30, TimeUnit.SECONDS);
-		} catch (InterruptedException e) {
+		}
+		catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 			throw e;
 		}
@@ -60,4 +61,5 @@ public class DicomEchoService {
 		}
 		return threads;
 	}
+
 }

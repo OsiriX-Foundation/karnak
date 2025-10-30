@@ -229,4 +229,5 @@ public class AuthHeadersGenerationDialog extends Dialog {
 		this.parentForm.appendToHeaders(sb.toString());
 		close();
 	}
+
 }

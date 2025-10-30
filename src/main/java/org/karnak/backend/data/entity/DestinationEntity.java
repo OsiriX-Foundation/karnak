@@ -643,22 +643,23 @@ public class DestinationEntity implements Serializable {
 			switch (destinationType) {
 				case dicom:
 					return "Destination [id=" + id + ", description=" + description + ", type=" + destinationType
-							+ ", notify=" + notify + ", notifyObjectErrorPrefix=" + notifyObjectErrorPrefix + ", notifyObjectRejectionPrefix=" + notifyObjectRejectionPrefix
-							+ ", notifyObjectPattern=" + notifyObjectPattern + ", notifyObjectValues="
-							+ notifyObjectValues + ", notifyInterval=" + notifyInterval + ", aeTitle=" + aeTitle
-							+ ", hostname=" + hostname + ", port=" + port + ", useaetdest=" + useaetdest + "]";
+							+ ", notify=" + notify + ", notifyObjectErrorPrefix=" + notifyObjectErrorPrefix
+							+ ", notifyObjectRejectionPrefix=" + notifyObjectRejectionPrefix + ", notifyObjectPattern="
+							+ notifyObjectPattern + ", notifyObjectValues=" + notifyObjectValues + ", notifyInterval="
+							+ notifyInterval + ", aeTitle=" + aeTitle + ", hostname=" + hostname + ", port=" + port
+							+ ", useaetdest=" + useaetdest + "]";
 				case stow:
 					return "Destination [id=" + id + ", description=" + description + ", type=" + destinationType
-							+ ", notify=" + notify + ", notifyObjectErrorPrefix=" + notifyObjectErrorPrefix + ", notifyObjectRejectionPrefix=" + notifyObjectRejectionPrefix
-							+ ", notifyObjectPattern=" + notifyObjectPattern + ", notifyObjectValues="
-							+ notifyObjectValues + ", notifyInterval=" + notifyInterval + ", url=" + url + ", headers="
-							+ headers + "]";
+							+ ", notify=" + notify + ", notifyObjectErrorPrefix=" + notifyObjectErrorPrefix
+							+ ", notifyObjectRejectionPrefix=" + notifyObjectRejectionPrefix + ", notifyObjectPattern="
+							+ notifyObjectPattern + ", notifyObjectValues=" + notifyObjectValues + ", notifyInterval="
+							+ notifyInterval + ", url=" + url + ", headers=" + headers + "]";
 			}
 		}
 		return "Destination [id=" + id + ", description=" + description + ", type=" + destinationType + ", notify="
-				+ notify + ", notifyObjectErrorPrefix=" + notifyObjectErrorPrefix + ", notifyObjectRejectionPrefix=" + notifyObjectRejectionPrefix + ", notifyObjectPattern="
-				+ notifyObjectPattern + ", notifyObjectValues=" + notifyObjectValues + ", notifyInterval="
-				+ notifyInterval + "]";
+				+ notify + ", notifyObjectErrorPrefix=" + notifyObjectErrorPrefix + ", notifyObjectRejectionPrefix="
+				+ notifyObjectRejectionPrefix + ", notifyObjectPattern=" + notifyObjectPattern + ", notifyObjectValues="
+				+ notifyObjectValues + ", notifyInterval=" + notifyInterval + "]";
 	}
 
 	public String retrieveStringReference() {

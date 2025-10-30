@@ -27,150 +27,156 @@ import org.karnak.backend.data.entity.AuthConfigEntity;
 @Uses(PasswordField.class)
 public class AuthConfigComponent extends VerticalLayout {
 
-    private TextField url;
-    private TextField scope;
-    private PasswordField clientSecret;
-    private PasswordField clientId;
-    private H2 title;
+	private TextField url;
 
-    private Button saveBtn;
-    private Button cancelBtn;
-    private Button deleteBtn;
+	private TextField scope;
 
-    private Binder<AuthConfigEntity> binder;
+	private PasswordField clientSecret;
 
-    public AuthConfigComponent() {
-        buildLayout();
-    }
+	private PasswordField clientId;
 
-    private void buildLayout() {
-        removeAll();
-        initDeleteButton();
-        title = new H2();
-        add(new HorizontalLayout(title, deleteBtn));
+	private H2 title;
 
-        VerticalLayout layout = new VerticalLayout();
-        layout.setWidthFull();
+	private Button saveBtn;
 
-        url = new TextField();
-        url.setLabel("Access Token URL");
-        url.setWidthFull();
-        layout.add(url);
-        scope = new TextField();
-        scope.setLabel("Scope");
-        scope.setWidthFull();
-        layout.add(scope);
-        clientSecret = new PasswordField();
-        clientSecret.setLabel("Client Secret");
-        clientSecret.setWidthFull();
-        layout.add(clientSecret);
-        clientId = new PasswordField();
-        clientId.setLabel("Client ID");
-        clientId.setWidthFull();
-        layout.add(clientId);
+	private Button cancelBtn;
 
-        add(layout);
+	private Button deleteBtn;
 
-        HorizontalLayout buttons = new HorizontalLayout();
-        saveBtn = new Button("Save");
-        buttons.add(saveBtn);
-        cancelBtn = new Button("Cancel");
-        buttons.add(cancelBtn);
+	private Binder<AuthConfigEntity> binder;
 
-        add(buttons);
+	public AuthConfigComponent() {
+		buildLayout();
+	}
 
-        setBinder();
+	private void buildLayout() {
+		removeAll();
+		initDeleteButton();
+		title = new H2();
+		add(new HorizontalLayout(title, deleteBtn));
 
-        this.setVisible(false);
-    }
+		VerticalLayout layout = new VerticalLayout();
+		layout.setWidthFull();
 
-    public void setBinder() {
-        binder = new BeanValidationBinder<>(AuthConfigEntity.class);
-        binder.forField(clientId)
-                .withValidator(StringUtils::isNotBlank, "Client ID is required")
-                .bind(AuthConfigEntity::getClientId, AuthConfigEntity::setClientId);
+		url = new TextField();
+		url.setLabel("Access Token URL");
+		url.setWidthFull();
+		layout.add(url);
+		scope = new TextField();
+		scope.setLabel("Scope");
+		scope.setWidthFull();
+		layout.add(scope);
+		clientSecret = new PasswordField();
+		clientSecret.setLabel("Client Secret");
+		clientSecret.setWidthFull();
+		layout.add(clientSecret);
+		clientId = new PasswordField();
+		clientId.setLabel("Client ID");
+		clientId.setWidthFull();
+		layout.add(clientId);
 
-        binder.forField(clientSecret)
-                .withValidator(StringUtils::isNotBlank, "Client Secret is required")
-                .bind(AuthConfigEntity::getClientSecret, AuthConfigEntity::setClientSecret);
+		add(layout);
 
-        binder.forField(url)
-                .withValidator(StringUtils::isNotBlank, "Url is required")
-                .bind(AuthConfigEntity::getAccessTokenUrl, AuthConfigEntity::setAccessTokenUrl);
+		HorizontalLayout buttons = new HorizontalLayout();
+		saveBtn = new Button("Save");
+		buttons.add(saveBtn);
+		cancelBtn = new Button("Cancel");
+		buttons.add(cancelBtn);
 
-        binder.forField(scope)
-                .withValidator(StringUtils::isNotBlank, "Scope is required")
-                .bind(AuthConfigEntity::getScope, AuthConfigEntity::setScope);
+		add(buttons);
 
-        binder.bindInstanceFields(this);
-    }
+		setBinder();
 
-    public void displayData(AuthConfigEntity data) {
-        this.binder.readBean(data);
+		this.setVisible(false);
+	}
 
-        title.setText(data.getCode());
-        url.setReadOnly(true);
-        scope.setReadOnly(true);
-        clientSecret.setReadOnly(true);
-        clientId.setReadOnly(true);
-        clientSecret.setRevealButtonVisible(false);
-        clientId.setRevealButtonVisible(false);
+	public void setBinder() {
+		binder = new BeanValidationBinder<>(AuthConfigEntity.class);
+		binder.forField(clientId)
+			.withValidator(StringUtils::isNotBlank, "Client ID is required")
+			.bind(AuthConfigEntity::getClientId, AuthConfigEntity::setClientId);
 
-        this.deleteBtn.setVisible(true);
-        this.saveBtn.setVisible(false);
-        this.cancelBtn.setVisible(false);
-        this.setVisible(true);
-    }
+		binder.forField(clientSecret)
+			.withValidator(StringUtils::isNotBlank, "Client Secret is required")
+			.bind(AuthConfigEntity::getClientSecret, AuthConfigEntity::setClientSecret);
 
-    public AuthConfigEntity getData() {
-        AuthConfigEntity entity = new AuthConfigEntity();
-        entity.setCode(title.getText());
-        return binder.writeBeanIfValid(entity) ? entity : null;
-    }
+		binder.forField(url)
+			.withValidator(StringUtils::isNotBlank, "Url is required")
+			.bind(AuthConfigEntity::getAccessTokenUrl, AuthConfigEntity::setAccessTokenUrl);
 
-    public boolean isValid() {
-        binder.validate();
-        return binder.isValid();
-    }
+		binder.forField(scope)
+			.withValidator(StringUtils::isNotBlank, "Scope is required")
+			.bind(AuthConfigEntity::getScope, AuthConfigEntity::setScope);
 
-    public void displayEmptyForm(String code) {
-        this.title.setText(code);
-        this.binder.readBean(new AuthConfigEntity()); // empty instance
-        url.setReadOnly(false);
-        scope.setReadOnly(false);
-        clientSecret.setReadOnly(false);
-        clientSecret.setRevealButtonVisible(true);
-        clientId.setReadOnly(false);
-        clientId.setRevealButtonVisible(true);
-        this.deleteBtn.setVisible(false);
-        this.saveBtn.setVisible(true);
-        this.cancelBtn.setVisible(true);
-        this.setVisible(true);
-    }
+		binder.bindInstanceFields(this);
+	}
 
-    public void cancel() {
-        this.setVisible(false);
-    }
+	public void displayData(AuthConfigEntity data) {
+		this.binder.readBean(data);
 
-    private void initDeleteButton() {
-        deleteBtn = new Button((new Icon(VaadinIcon.TRASH)));
-        deleteBtn.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
-    }
+		title.setText(data.getCode());
+		url.setReadOnly(true);
+		scope.setReadOnly(true);
+		clientSecret.setReadOnly(true);
+		clientId.setReadOnly(true);
+		clientSecret.setRevealButtonVisible(false);
+		clientId.setRevealButtonVisible(false);
 
-    public Button getDeleteBtn() {
-        return this.deleteBtn;
-    }
+		this.deleteBtn.setVisible(true);
+		this.saveBtn.setVisible(false);
+		this.cancelBtn.setVisible(false);
+		this.setVisible(true);
+	}
 
-    public Button getSaveBtn() {
-        return this.saveBtn;
-    }
+	public AuthConfigEntity getData() {
+		AuthConfigEntity entity = new AuthConfigEntity();
+		entity.setCode(title.getText());
+		return binder.writeBeanIfValid(entity) ? entity : null;
+	}
 
-    public Button getCancelBtn() {
-        return this.cancelBtn;
-    }
+	public boolean isValid() {
+		binder.validate();
+		return binder.isValid();
+	}
 
-    public String getAuthConfigCode() {
-        return this.title.getText();
-    }
+	public void displayEmptyForm(String code) {
+		this.title.setText(code);
+		this.binder.readBean(new AuthConfigEntity()); // empty instance
+		url.setReadOnly(false);
+		scope.setReadOnly(false);
+		clientSecret.setReadOnly(false);
+		clientSecret.setRevealButtonVisible(true);
+		clientId.setReadOnly(false);
+		clientId.setRevealButtonVisible(true);
+		this.deleteBtn.setVisible(false);
+		this.saveBtn.setVisible(true);
+		this.cancelBtn.setVisible(true);
+		this.setVisible(true);
+	}
+
+	public void cancel() {
+		this.setVisible(false);
+	}
+
+	private void initDeleteButton() {
+		deleteBtn = new Button((new Icon(VaadinIcon.TRASH)));
+		deleteBtn.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
+	}
+
+	public Button getDeleteBtn() {
+		return this.deleteBtn;
+	}
+
+	public Button getSaveBtn() {
+		return this.saveBtn;
+	}
+
+	public Button getCancelBtn() {
+		return this.cancelBtn;
+	}
+
+	public String getAuthConfigCode() {
+		return this.title.getText();
+	}
 
 }

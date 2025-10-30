@@ -162,8 +162,8 @@ public class NotificationService {
 				.anyMatch(SerieSummaryNotification::isContainsError);
 
 			boolean hasAtLeastOneFileNotSent = transferMonitoringNotification.getSerieSummaryNotifications()
-					.stream()
-					.anyMatch(ssm -> ssm.getNbTransferNotSent() > 0);
+				.stream()
+				.anyMatch(ssm -> ssm.getNbTransferNotSent() > 0);
 
 			// Temporary disable send of notification de-identified and in error
 			// TODO: have a discussion with business to know how to handle such cases
@@ -186,8 +186,8 @@ public class NotificationService {
 	 * Set values in transferMonitoringNotification built
 	 * @param transferMonitoringNotification TransferMonitoringNotification built
 	 * @param transferStatusEntity Transfer status
-	 * @param hasAtLeastOneFileInError Has at least one file not
-	 * transferred because of an unexpected error
+	 * @param hasAtLeastOneFileInError Has at least one file not transferred because of an
+	 * unexpected error
 	 * @param useOriginalValues Flag to know if we should use original values
 	 */
 	private void buildTransferMonitoringNotificationSetValues(
@@ -212,20 +212,20 @@ public class NotificationService {
 				Objects.equals(transferStatusEntity.getDestinationEntity().getDestinationType(), DestinationType.dicom)
 						? transferStatusEntity.getDestinationEntity().toStringDicomNotificationDestination()
 						: transferStatusEntity.getDestinationEntity().getUrl());
-		transferMonitoringNotification
-			.setSubject(buildSubject(hasAtLeastOneFileInError, hasAtLeastOneFileRejected, useOriginalValues, transferStatusEntity));
+		transferMonitoringNotification.setSubject(buildSubject(hasAtLeastOneFileInError, hasAtLeastOneFileRejected,
+				useOriginalValues, transferStatusEntity));
 	}
 
 	/**
 	 * Build notification subject email
-	 * @param hasAtLeastOneFileInError Flag to know if there is at least one file
-	 * that could not be sent because of an unexpected error
+	 * @param hasAtLeastOneFileInError Flag to know if there is at least one file that
+	 * could not be sent because of an unexpected error
 	 * @param useOriginalValues Check if we should use original or de-identified values
 	 * @param transferStatusEntity TransferStatusEntity to evaluate
 	 * @return Subject built
 	 */
-	private String buildSubject(boolean hasAtLeastOneFileInError, boolean hasAtLeastOneFileRejected, boolean useOriginalValues,
-			TransferStatusEntity transferStatusEntity) {
+	private String buildSubject(boolean hasAtLeastOneFileInError, boolean hasAtLeastOneFileRejected,
+			boolean useOriginalValues, TransferStatusEntity transferStatusEntity) {
 		StringBuilder subject = new StringBuilder();
 		if (hasAtLeastOneFileInError) {
 			String errorPrefix = transferStatusEntity.getDestinationEntity().getNotifyObjectErrorPrefix();
@@ -233,7 +233,8 @@ public class NotificationService {
 				subject.append(errorPrefix);
 				subject.append(Notification.SPACE);
 			}
-		} else if (hasAtLeastOneFileRejected) {
+		}
+		else if (hasAtLeastOneFileRejected) {
 			String rejectPrefix = transferStatusEntity.getDestinationEntity().getNotifyObjectRejectionPrefix();
 			if (rejectPrefix != null && !rejectPrefix.isEmpty()) {
 				subject.append(rejectPrefix);

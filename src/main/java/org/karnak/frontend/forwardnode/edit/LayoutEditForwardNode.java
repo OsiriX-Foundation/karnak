@@ -425,8 +425,8 @@ public class LayoutEditForwardNode extends VerticalLayout {
 		if (newUpdateDestination.getCurrentDestinationEntity() != null) {
 			ConfirmDialog dialog = new ConfirmDialog("Are you sure to delete the destination "
 					+ newUpdateDestination.getCurrentDestinationEntity().getDescription() + " ["
-					+ newUpdateDestination.getCurrentDestinationEntity().getDestinationType() + "] ? " +
-					"<br>It will also delete the related entries from the monitoring view.");
+					+ newUpdateDestination.getCurrentDestinationEntity().getDestinationType() + "] ? "
+					+ "<br>It will also delete the related entries from the monitoring view.");
 			dialog.addConfirmationListener(componentEvent -> {
 				NodeEvent nodeEvent = new NodeEvent(newUpdateDestination.getCurrentDestinationEntity(),
 						NodeEventType.REMOVE);
@@ -583,68 +583,68 @@ public class LayoutEditForwardNode extends VerticalLayout {
 
 	public void addBinderExtidFromApi(DeIdentificationComponent deIdentificationComponent) {
 		deIdentificationComponent.getDestinationBinder()
-				.forField(deIdentificationComponent.getPseudonymFromApiComponent().getUrl())
-				.withConverter(String::valueOf, value -> (value == null) ? "" : value, "Must be a URL")
-				.withValidator(url -> {
-					if (!deIdentificationComponent.getDeIdentificationCheckbox().getValue()
-							|| !deIdentificationComponent.getPseudonymTypeSelect()
+			.forField(deIdentificationComponent.getPseudonymFromApiComponent().getUrl())
+			.withConverter(String::valueOf, value -> (value == null) ? "" : value, "Must be a URL")
+			.withValidator(url -> {
+				if (!deIdentificationComponent.getDeIdentificationCheckbox().getValue()
+						|| !deIdentificationComponent.getPseudonymTypeSelect()
 							.getValue()
 							.equals(EXTID_API.getValue())) {
-						return true;
-					}
-					return (url != null && !url.equals(""));
-				}, "Please enter a valid URL\n")
-				.bind(DestinationEntity::getPseudonymUrl, DestinationEntity::setPseudonymUrl);
-
-		deIdentificationComponent.getDestinationBinder()
-				.forField(deIdentificationComponent.getPseudonymFromApiComponent().getMethod())
-				.withConverter(String::valueOf, value -> (value == null) ? "" : value, "Must be GET or POST method")
-				.withValidator(method -> {
-					if (!deIdentificationComponent.getDeIdentificationCheckbox().getValue()
-							|| !deIdentificationComponent.getPseudonymTypeSelect()
-							.getValue()
-							.equals(EXTID_API.getValue())) {
-						return true;
-					}
-					return method.equals("GET") || method.equals("POST");
-				}, "Method must be equal to GET or POST")
-				.bind(DestinationEntity::getMethod, DestinationEntity::setMethod);
-
-		deIdentificationComponent.getDestinationBinder()
-				.forField(deIdentificationComponent.getPseudonymFromApiComponent().getBody())
-				.withConverter(String::valueOf, value -> (value == null) ? "" : value)
-				.withValidator(body -> {
-					if (!deIdentificationComponent.getDeIdentificationCheckbox().getValue()
-							|| !deIdentificationComponent.getPseudonymTypeSelect()
-							.getValue()
-							.equals(EXTID_API.getValue())) {
-						return true;
-					}
-					if (deIdentificationComponent.getPseudonymFromApiComponent().getMethod().getValue().equals("POST")) {
-						return body != null && !body.equals("");
-					}
 					return true;
-				}, "Body is mandatory for a POST request")
-				.bind(DestinationEntity::getBody, DestinationEntity::setBody);
+				}
+				return (url != null && !url.equals(""));
+			}, "Please enter a valid URL\n")
+			.bind(DestinationEntity::getPseudonymUrl, DestinationEntity::setPseudonymUrl);
 
 		deIdentificationComponent.getDestinationBinder()
-				.forField(deIdentificationComponent.getPseudonymFromApiComponent().getAuthConfig())
-				.withConverter(String::valueOf, value -> (value == null) ? "" : value)
-				.bind(DestinationEntity::getAuthConfig, DestinationEntity::setAuthConfig);
-
-		deIdentificationComponent.getDestinationBinder()
-				.forField(deIdentificationComponent.getPseudonymFromApiComponent().getResponsePath())
-				.withConverter(String::valueOf, value -> (value == null) ? "" : value, "Response Path is mandatory")
-				.withValidator(responsePath -> {
-					if (!deIdentificationComponent.getDeIdentificationCheckbox().getValue()
-							|| !deIdentificationComponent.getPseudonymTypeSelect()
+			.forField(deIdentificationComponent.getPseudonymFromApiComponent().getMethod())
+			.withConverter(String::valueOf, value -> (value == null) ? "" : value, "Must be GET or POST method")
+			.withValidator(method -> {
+				if (!deIdentificationComponent.getDeIdentificationCheckbox().getValue()
+						|| !deIdentificationComponent.getPseudonymTypeSelect()
 							.getValue()
 							.equals(EXTID_API.getValue())) {
-						return true;
-					}
-					return responsePath != null && !responsePath.equals("");
-				}, "JSON Response path is mandatory")
-				.bind(DestinationEntity::getResponsePath, DestinationEntity::setResponsePath);
+					return true;
+				}
+				return method.equals("GET") || method.equals("POST");
+			}, "Method must be equal to GET or POST")
+			.bind(DestinationEntity::getMethod, DestinationEntity::setMethod);
+
+		deIdentificationComponent.getDestinationBinder()
+			.forField(deIdentificationComponent.getPseudonymFromApiComponent().getBody())
+			.withConverter(String::valueOf, value -> (value == null) ? "" : value)
+			.withValidator(body -> {
+				if (!deIdentificationComponent.getDeIdentificationCheckbox().getValue()
+						|| !deIdentificationComponent.getPseudonymTypeSelect()
+							.getValue()
+							.equals(EXTID_API.getValue())) {
+					return true;
+				}
+				if (deIdentificationComponent.getPseudonymFromApiComponent().getMethod().getValue().equals("POST")) {
+					return body != null && !body.equals("");
+				}
+				return true;
+			}, "Body is mandatory for a POST request")
+			.bind(DestinationEntity::getBody, DestinationEntity::setBody);
+
+		deIdentificationComponent.getDestinationBinder()
+			.forField(deIdentificationComponent.getPseudonymFromApiComponent().getAuthConfig())
+			.withConverter(String::valueOf, value -> (value == null) ? "" : value)
+			.bind(DestinationEntity::getAuthConfig, DestinationEntity::setAuthConfig);
+
+		deIdentificationComponent.getDestinationBinder()
+			.forField(deIdentificationComponent.getPseudonymFromApiComponent().getResponsePath())
+			.withConverter(String::valueOf, value -> (value == null) ? "" : value, "Response Path is mandatory")
+			.withValidator(responsePath -> {
+				if (!deIdentificationComponent.getDeIdentificationCheckbox().getValue()
+						|| !deIdentificationComponent.getPseudonymTypeSelect()
+							.getValue()
+							.equals(EXTID_API.getValue())) {
+					return true;
+				}
+				return responsePath != null && !responsePath.equals("");
+			}, "JSON Response path is mandatory")
+			.bind(DestinationEntity::getResponsePath, DestinationEntity::setResponsePath);
 	}
 
 	/**

@@ -16,6 +16,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AuthConfigRepo extends JpaRepository<AuthConfigEntity, Long> {
 
-    AuthConfigEntity findByCode(String code);
+	AuthConfigEntity findByCode(String code);
 
 }

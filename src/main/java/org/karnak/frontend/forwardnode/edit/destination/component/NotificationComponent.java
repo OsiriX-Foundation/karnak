@@ -71,10 +71,12 @@ public class NotificationComponent extends VerticalLayout {
 	 * Add components in notification components
 	 */
 	private void addComponents() {
-		//notificationObjectsDiv.add(UIS.setWidthFull(new HorizontalLayout(notify)), UIS.setWidthFull(new HorizontalLayout(notifyObjectErrorPrefix, notifyObjectRejectionPrefix)));
-		notificationInputsDiv.add(UIS.setWidthFull(new VerticalLayout(UIS.setWidthFull(new HorizontalLayout(notify)), UIS.setWidthFull(new HorizontalLayout(notifyObjectErrorPrefix, notifyObjectRejectionPrefix)),
-				UIS.setWidthFull(new HorizontalLayout(notifyObjectPattern, notifyObjectValues,
-						notifyInterval)))));
+		// notificationObjectsDiv.add(UIS.setWidthFull(new HorizontalLayout(notify)),
+		// UIS.setWidthFull(new HorizontalLayout(notifyObjectErrorPrefix,
+		// notifyObjectRejectionPrefix)));
+		notificationInputsDiv.add(UIS.setWidthFull(new VerticalLayout(UIS.setWidthFull(new HorizontalLayout(notify)),
+				UIS.setWidthFull(new HorizontalLayout(notifyObjectErrorPrefix, notifyObjectRejectionPrefix)),
+				UIS.setWidthFull(new HorizontalLayout(notifyObjectPattern, notifyObjectValues, notifyInterval)))));
 
 		add(UIS.setWidthFull(new HorizontalLayout(activateNotification)), notificationInputsDiv);
 	}
@@ -218,8 +220,8 @@ public class NotificationComponent extends VerticalLayout {
 	 * Notify Object Rejection Prefix
 	 */
 	private void buildNotifyObjectRejectionPrefix() {
-		notifyObjectRejectionPrefix = new TextField(
-				String.format("Notif.: rejection subject prefix (Default: %s)", Notification.DEFAULT_SUBJECT_REJECTION_PREFIX));
+		notifyObjectRejectionPrefix = new TextField(String.format("Notif.: rejection subject prefix (Default: %s)",
+				Notification.DEFAULT_SUBJECT_REJECTION_PREFIX));
 		notifyObjectRejectionPrefix.setWidth("49%");
 		UIS.setTooltip(notifyObjectRejectionPrefix,
 				String.format("Prefix of the email object in case of rejections. Default value: %s",
@@ -294,7 +296,7 @@ public class NotificationComponent extends VerticalLayout {
 
 		// Error Prefix
 		binder.forField(getNotifyObjectRejectionPrefix())
-				.bind(DestinationEntity::getNotifyObjectRejectionPrefix, DestinationEntity::setNotifyObjectRejectionPrefix);
+			.bind(DestinationEntity::getNotifyObjectRejectionPrefix, DestinationEntity::setNotifyObjectRejectionPrefix);
 
 		// Subject Pattern
 		binder.forField(getNotifyObjectPattern())

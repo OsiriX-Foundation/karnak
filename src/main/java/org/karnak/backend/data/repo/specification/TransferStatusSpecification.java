@@ -144,7 +144,8 @@ public class TransferStatusSpecification implements Specification<TransferStatus
 	 * @param predicates Predicates to build
 	 * @param pSent Path of sent
 	 */
-	private void buildCriteriaSent(CriteriaBuilder criteriaBuilder, List<Predicate> predicates, Path<Boolean> pSent, Path<Boolean> pError) {
+	private void buildCriteriaSent(CriteriaBuilder criteriaBuilder, List<Predicate> predicates, Path<Boolean> pSent,
+			Path<Boolean> pError) {
 		if (transferStatusFilter.getTransferStatusType() != null
 				&& !Objects.equals(transferStatusFilter.getTransferStatusType(), TransferStatusType.ALL)) {
 			predicates.add(criteriaBuilder.equal(pSent, transferStatusFilter.getTransferStatusType().getSent()));

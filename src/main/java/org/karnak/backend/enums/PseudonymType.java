@@ -11,7 +11,8 @@ package org.karnak.backend.enums;
 
 public enum PseudonymType {
 
-	CACHE_EXTID("Pseudonym is already stored in KARNAK"), EXTID_IN_TAG("Pseudonym is in a DICOM tag"), EXTID_API("Pseudonym from external API");
+	CACHE_EXTID("Pseudonym is already stored in KARNAK"), EXTID_IN_TAG("Pseudonym is in a DICOM tag"),
+	EXTID_API("Pseudonym from external API");
 
 	private final String value;
 

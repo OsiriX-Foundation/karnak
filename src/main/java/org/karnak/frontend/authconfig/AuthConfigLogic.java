@@ -59,4 +59,5 @@ public class AuthConfigLogic extends ListDataProvider<AuthConfigEntity> {
 		data.setCode(code);
 		authConfigRepo.save(data);
 	}
+
 }

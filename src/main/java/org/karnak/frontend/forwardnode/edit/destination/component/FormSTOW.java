@@ -85,7 +85,7 @@ public class FormSTOW extends VerticalLayout {
 
 		// Define layout
 		VerticalLayout destinationLayout = new VerticalLayout(UIS.setWidthFull(new HorizontalLayout(description)),
-                destinationCondition, UIS.setWidthFull(new HorizontalLayout(url, generateAuthorizationHeaderButton)),
+				destinationCondition, UIS.setWidthFull(new HorizontalLayout(url, generateAuthorizationHeaderButton)),
 				UIS.setWidthFull(headers));
 		VerticalLayout transferLayout = new VerticalLayout(
 				new HorizontalLayout(transferSyntaxComponent, transcodeOnlyUncompressedComponent));
@@ -117,9 +117,12 @@ public class FormSTOW extends VerticalLayout {
 	private void configureGenerateHeadersButton() {
 		this.generateAuthorizationHeaderButton.addClickListener(e -> {
 			if (this.headers.getValue().contains(AuthHeadersGenerationDialog.AUTHORIZATION_TAG)) {
-				WarningDialog wd = new WarningDialog("Cannot generate Authorization Header", "The Headers already contain an Authorization tag. Please remove it if you want to generate it.", "Ok");
+				WarningDialog wd = new WarningDialog("Cannot generate Authorization Header",
+						"The Headers already contain an Authorization tag. Please remove it if you want to generate it.",
+						"Ok");
 				wd.open();
-			} else {
+			}
+			else {
 				AuthHeadersGenerationDialog dialog = new AuthHeadersGenerationDialog(this);
 				dialog.open();
 			}

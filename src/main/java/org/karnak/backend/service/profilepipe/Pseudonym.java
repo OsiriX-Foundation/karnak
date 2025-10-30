@@ -67,22 +67,28 @@ public class Pseudonym {
 		}
 		String response = null;
 		if (destinationEntity.getMethod().equalsIgnoreCase("post")) {
-			response = endpointService.post(destinationEntity.getAuthConfig(), EndpointService.evaluateStringWithExpression(destinationEntity.getPseudonymUrl(), dcm), EndpointService.evaluateStringWithExpression(destinationEntity.getBody(), dcm));
-		} else {
-			response = endpointService.get(destinationEntity.getAuthConfig(), EndpointService.evaluateStringWithExpression(destinationEntity.getPseudonymUrl(), dcm));
+			response = endpointService.post(destinationEntity.getAuthConfig(),
+					EndpointService.evaluateStringWithExpression(destinationEntity.getPseudonymUrl(), dcm),
+					EndpointService.evaluateStringWithExpression(destinationEntity.getBody(), dcm));
+		}
+		else {
+			response = endpointService.get(destinationEntity.getAuthConfig(),
+					EndpointService.evaluateStringWithExpression(destinationEntity.getPseudonymUrl(), dcm));
 		}
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		String value = null;
-        try {
-            value = objectMapper.readTree(response).at(destinationEntity.getResponsePath()).textValue();
-        } catch (JsonProcessingException e) {
-            throw new EndpointException("An error occurred while parsing the JSON response ", e);
-        }
-		if (value == null) {
-			throw new IllegalStateException("Transfer aborted, replace value not found in response - " + destinationEntity.getResponsePath());
+		try {
+			value = objectMapper.readTree(response).at(destinationEntity.getResponsePath()).textValue();
 		}
-        return value;
+		catch (JsonProcessingException e) {
+			throw new EndpointException("An error occurred while parsing the JSON response ", e);
+		}
+		if (value == null) {
+			throw new IllegalStateException(
+					"Transfer aborted, replace value not found in response - " + destinationEntity.getResponsePath());
+		}
+		return value;
 	}
 
 	private String getPseudonymInDicom(Attributes dcm, DestinationEntity destinationEntity,

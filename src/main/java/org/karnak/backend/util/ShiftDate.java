@@ -37,7 +37,7 @@ public class ShiftDate {
 	public static String timeBySeconds(String time, int shiftSeconds) {
 		LocalTime localTime = DateTimeUtils.parseTM(time);
 		LocalTime dummyLocalTime = localTime.minusSeconds(shiftSeconds);
-		return  DateTimeUtils.formatTM(dummyLocalTime);
+		return DateTimeUtils.formatTM(dummyLocalTime);
 	}
 
 	public static String datetimeByDays(Date dateTime, int shiftDays, int shiftSeconds) {

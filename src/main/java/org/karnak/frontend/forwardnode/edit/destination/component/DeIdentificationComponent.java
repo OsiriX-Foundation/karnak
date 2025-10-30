@@ -238,9 +238,11 @@ public class DeIdentificationComponent extends VerticalLayout {
 			}, (destination, s) -> {
 				if (s.equals(EXTID_IN_TAG.getValue())) {
 					destination.setPseudonymType(EXTID_IN_TAG);
-				} else if (s.equals(EXTID_API.getValue())) {
+				}
+				else if (s.equals(EXTID_API.getValue())) {
 					destination.setPseudonymType(EXTID_API);
-				} else if (s.equals(CACHE_EXTID.getValue())) {
+				}
+				else if (s.equals(CACHE_EXTID.getValue())) {
 					destination.setPseudonymType(CACHE_EXTID);
 				}
 			});

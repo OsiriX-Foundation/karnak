@@ -64,12 +64,11 @@ public class SecurityConfiguration {
 	}
 
 	@Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        // Access to static resources, bypassing Spring security.
-        return web -> web.ignoring()
-                .requestMatchers("/VAADIN/**", "/img/**", "/icons/**",
-                        "/sw.js", "/favicon.ico", "/manifest.webmanifest",
-                        "/offline.html", "/sw-runtime-resources-precache.js");
-    }
+	public WebSecurityCustomizer webSecurityCustomizer() {
+		// Access to static resources, bypassing Spring security.
+		return web -> web.ignoring()
+			.requestMatchers("/VAADIN/**", "/img/**", "/icons/**", "/sw.js", "/favicon.ico", "/manifest.webmanifest",
+					"/offline.html", "/sw-runtime-resources-precache.js");
+	}
 
 }

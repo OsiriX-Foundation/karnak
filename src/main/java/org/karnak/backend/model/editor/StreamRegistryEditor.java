@@ -49,7 +49,7 @@ public class StreamRegistryEditor implements AttributeEditor {
 				study.setOtherPatientIDs(dcm.getStrings(Tag.OtherPatientIDs));
 				study.setAccessionNumber(dcm.getString(Tag.AccessionNumber));
 				study.setStudyDescription(dcm.getString(Tag.StudyDescription, ""));
-                LocalDateTime dateTime = DicomObjectUtil.dateTime(dcm, Tag.StudyDate, Tag.StudyTime);
+				LocalDateTime dateTime = DicomObjectUtil.dateTime(dcm, Tag.StudyDate, Tag.StudyTime);
 				study.setStudyDate(dateTime);
 				addStudy(study);
 			}

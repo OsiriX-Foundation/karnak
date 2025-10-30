@@ -43,9 +43,8 @@ public class PseudonymFromApi extends Div {
 		this.destinationBinder = destinationBinder;
 		setWidthFull();
 		setElements();
-		add(UIS.setWidthFull(new HorizontalLayout(url, method)),
-						body,
-						UIS.setWidthFull(new HorizontalLayout(responsePath, authConfig)));
+		add(UIS.setWidthFull(new HorizontalLayout(url, method)), body,
+				UIS.setWidthFull(new HorizontalLayout(responsePath, authConfig)));
 	}
 
 	public void setElements() {
