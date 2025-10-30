@@ -14,7 +14,8 @@ package org.karnak.backend.enums;
  */
 public enum TransferStatusType {
 
-	ALL(null, null, "All"), SENT(true, false, "Sent"), NOT_SENT(false, null, "Not Sent"), EXCLUDED(false, false, "Excluded"), ERROR(false, true, "Error");
+	ALL(null, null, "All"), SENT(true, false, "Sent"), NOT_SENT(false, null, "Not Sent"),
+	EXCLUDED(false, false, "Excluded"), ERROR(false, true, "Error");
 
 	/**
 	 * Predicate value for the sent attribute
@@ -48,4 +49,5 @@ public enum TransferStatusType {
 	public String getLabel() {
 		return label;
 	}
+
 }

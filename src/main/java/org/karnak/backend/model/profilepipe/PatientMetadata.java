@@ -11,12 +11,17 @@ package org.karnak.backend.model.profilepipe;
 
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
+import org.dcm4che3.img.util.DateTimeUtils;
 import org.karnak.backend.cache.Patient;
-import org.weasis.dicom.util.DateUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.weasis.core.util.StringUtil;
+
 
 import java.time.LocalDate;
 
 public class PatientMetadata {
+    private static final Logger LOGGER = LoggerFactory.getLogger( PatientMetadata.class );
 
 	private static final String PATIENT_SEX_OTHER = "O";
 
@@ -54,8 +59,13 @@ public class PatientMetadata {
 	}
 
 	private String setPatientBirthDate(String rawPatientBirthDate) {
-		return DateUtil.formatDicomDate(DateUtil.getDicomDate(rawPatientBirthDate));
-	}
+        try {
+            return DateTimeUtils.formatDA(DateTimeUtils.parseDA(rawPatientBirthDate));
+        } catch (Exception e) {
+            LOGGER.error("Error parsing patient birth date: " + rawPatientBirthDate);
+            return "";
+        }
+    }
 
 	public String getPatientID() {
 		return patientID;
@@ -82,7 +92,10 @@ public class PatientMetadata {
 	}
 
 	public LocalDate getLocalDatePatientBirthDate() {
-		return DateUtil.getDicomDate(patientBirthDate);
+        if (StringUtil.hasText(patientBirthDate)) {
+		    return DateTimeUtils.parseDA(patientBirthDate);
+        }
+        return null;
 	}
 
 	public String getIssuerOfPatientID() {

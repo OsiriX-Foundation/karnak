@@ -25,7 +25,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @EnableWebSecurity
 @Configuration
@@ -36,11 +35,11 @@ public class SecurityConfiguration {
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
 			// Disables cross-site request forgery (CSRF) protection for main route
-			.csrf(csrf -> csrf.ignoringRequestMatchers(AntPathRequestMatcher.antMatcher(EndPoint.ALL_REMAINING_PATH)))
+			.csrf(csrf -> csrf.ignoringRequestMatchers(EndPoint.ALL_REMAINING_PATH))
 			// Turns on/off authorizations
 			.authorizeHttpRequests(authorize -> authorize
 				// Actuator, health, info
-				.requestMatchers(AntPathRequestMatcher.antMatcher("/actuator/**"))
+				.requestMatchers("/actuator/**")
 				.permitAll()
 				.requestMatchers(EndpointRequest.to(HealthEndpoint.class, InfoEndpoint.class))
 				.permitAll()
@@ -48,7 +47,7 @@ public class SecurityConfiguration {
 				.requestMatchers(SecurityUtil::isFrameworkInternalRequest)
 				.permitAll()
 				// Allow endpoints
-				.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/api/echo/destinations"))
+				.requestMatchers(HttpMethod.GET, "/api/echo/destinations")
 				.permitAll()
 				// Deny
 				.requestMatchers(EndpointRequest.to(ShutdownEndpoint.class))
@@ -65,15 +64,12 @@ public class SecurityConfiguration {
 	}
 
 	@Bean
-	public WebSecurityCustomizer webSecurityCustomizer() {
-		// Access to static resources, bypassing Spring security.
-		return web -> web.ignoring()
-			.requestMatchers(AntPathRequestMatcher.antMatcher("/VAADIN/**"),
-					AntPathRequestMatcher.antMatcher("/img/**"), AntPathRequestMatcher.antMatcher("/icons/**"),
-					AntPathRequestMatcher.antMatcher("/sw.js"), AntPathRequestMatcher.antMatcher("/favicon.ico"),
-					AntPathRequestMatcher.antMatcher("/manifest.webmanifest"),
-					AntPathRequestMatcher.antMatcher("/offline.html"),
-					AntPathRequestMatcher.antMatcher("/sw-runtime-resources-precache.js"));
-	}
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        // Access to static resources, bypassing Spring security.
+        return web -> web.ignoring()
+                .requestMatchers("/VAADIN/**", "/img/**", "/icons/**",
+                        "/sw.js", "/favicon.ico", "/manifest.webmanifest",
+                        "/offline.html", "/sw-runtime-resources-precache.js");
+    }
 
 }
