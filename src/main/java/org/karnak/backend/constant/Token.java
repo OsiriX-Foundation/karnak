@@ -28,4 +28,5 @@ public class Token {
 
 	private Token() {
 	}
+
 }

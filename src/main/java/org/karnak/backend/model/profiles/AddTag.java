@@ -79,8 +79,10 @@ public class AddTag extends AbstractProfileItem {
 				}
 				tagAdded = true;
 				return new Add("A", TagUtils.intFromHexString(tagValue), vr, value);
-			} else {
-				// Tag cannot be added in this instance, flag it as added so that the action is not applied on every attribute in the instance
+			}
+			else {
+				// Tag cannot be added in this instance, flag it as added so that the
+				// action is not applied on every attribute in the instance
 				tagAdded = true;
 				if (log.isWarnEnabled()) {
 					log.warn(LOG_PATTERN, dcm.getString(Tag.SOPInstanceUID), tagValue, "A",
@@ -97,17 +99,23 @@ public class AddTag extends AbstractProfileItem {
 			throw new ProfileException("Cannot build the profile " + codeName + ": Need to specify value argument");
 		}
 
-		AttributeDetail attr = standardDICOM.getAttributeDetail(StandardDICOM.cleanTagPath(tagEntities.getFirst().getTagValue()));
+		AttributeDetail attr = standardDICOM
+			.getAttributeDetail(StandardDICOM.cleanTagPath(tagEntities.getFirst().getTagValue()));
 
 		if (attr == null) {
-			throw new ProfileException("Cannot build the profile " + codeName + ": the tag " + tagEntities.getFirst().getTagValue() + " does not exist in the DICOM Standard");
-		} else {
+			throw new ProfileException("Cannot build the profile " + codeName + ": the tag "
+					+ tagEntities.getFirst().getTagValue() + " does not exist in the DICOM Standard");
+		}
+		else {
 			try {
-				// The VR is currently retrieved from the DICOM Standard, in a very few cases, we cannot infer this value
+				// The VR is currently retrieved from the DICOM Standard, in a very few
+				// cases, we cannot infer this value
 				// It should only concern fields that would not be included in profiles
 				VR.valueOf(attr.getValueRepresentation());
-			} catch (IllegalArgumentException e) {
-				throw new ProfileException("Cannot build the profile " + codeName + ": the tag " + tagEntities.getFirst().getTagValue() + " is not supported and cannot be added");
+			}
+			catch (IllegalArgumentException e) {
+				throw new ProfileException("Cannot build the profile " + codeName + ": the tag "
+						+ tagEntities.getFirst().getTagValue() + " is not supported and cannot be added");
 			}
 		}
 
@@ -117,4 +125,5 @@ public class AddTag extends AbstractProfileItem {
 			throw new ProfileException(expressionError.getMsg());
 		}
 	}
+
 }

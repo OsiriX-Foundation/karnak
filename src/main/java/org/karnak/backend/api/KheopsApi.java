@@ -33,7 +33,9 @@ public class KheopsApi {
 
 	public KheopsApi() {
 		httpClient = HttpClient.newBuilder()
-			.version(HttpClient.Version.HTTP_1_1) // use HTTP 1.1 because an issue with HTTP 2 in Kheops (not image sent after 1000)
+			.version(HttpClient.Version.HTTP_1_1) // use HTTP 1.1 because an issue with
+													// HTTP 2 in Kheops (not image sent
+													// after 1000)
 			.build();
 	}
 

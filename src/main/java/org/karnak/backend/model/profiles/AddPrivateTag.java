@@ -69,23 +69,29 @@ public class AddPrivateTag extends AbstractProfileItem {
 			for (ArgumentEntity ae : argumentEntities) {
 				if ("value".equals(ae.getArgumentKey())) {
 					value = ae.getArgumentValue();
-				} else if ("vr".equals(ae.getArgumentKey())) {
+				}
+				else if ("vr".equals(ae.getArgumentKey())) {
 					vr = VR.valueOf(ae.getArgumentValue());
-				} else if ("privateCreator".equals(ae.getArgumentKey())) {
+				}
+				else if ("privateCreator".equals(ae.getArgumentKey())) {
 					privateCreator = ae.getArgumentValue();
 				}
 			}
 
 			int creatorTag = TagUtils.creatorTagOf(TagUtils.intFromHexString(tagValue));
 
-			if (privateCreator != null && dcm.contains(creatorTag) && !dcm.getString(creatorTag).equals(privateCreator)) {
-				// Collision between multiple Private Creator Tags, do not add the current tag and log a warning
+			if (privateCreator != null && dcm.contains(creatorTag)
+					&& !dcm.getString(creatorTag).equals(privateCreator)) {
+				// Collision between multiple Private Creator Tags, do not add the current
+				// tag and log a warning
 				tagAdded = true;
 				if (log.isWarnEnabled()) {
 					log.warn(LOG_PATTERN, dcm.getString(Tag.SOPInstanceUID), tagValue, "A",
-							"Tag not added, PrivateCreatorID collision " + TagUtils.toString(creatorTag) + " existing: " + dcm.getString(creatorTag) + " - new: " + privateCreator);
+							"Tag not added, PrivateCreatorID collision " + TagUtils.toString(creatorTag) + " existing: "
+									+ dcm.getString(creatorTag) + " - new: " + privateCreator);
 				}
-			} else {
+			}
+			else {
 				tagAdded = true;
 				return new Add("A", TagUtils.intFromHexString(tagValue), vr, value, privateCreator);
 			}
@@ -96,14 +102,17 @@ public class AddPrivateTag extends AbstractProfileItem {
 	@Override
 	public void profileValidation() throws ProfileException {
 		if (argumentEntities == null || argumentEntities.size() < 2) {
-			throw new ProfileException("Cannot build the profile " + codeName + ": Need to specify value and vr argument");
+			throw new ProfileException(
+					"Cannot build the profile " + codeName + ": Need to specify value and vr argument");
 		}
 		if (tagEntities == null || tagEntities.size() > 1) {
 			throw new ProfileException("Cannot build the profile " + codeName + ": Exactly one tag is required");
 		}
 
-		if (!TagUtils.isPrivateTag(TagUtils.intFromHexString(StandardDICOM.cleanTagPath(tagEntities.getFirst().getTagValue())))) {
-			throw new ProfileException("Cannot build the profile " + codeName + ": the tag " + tagEntities.getFirst().getTagValue() + " is not a private tag");
+		if (!TagUtils.isPrivateTag(
+				TagUtils.intFromHexString(StandardDICOM.cleanTagPath(tagEntities.getFirst().getTagValue())))) {
+			throw new ProfileException("Cannot build the profile " + codeName + ": the tag "
+					+ tagEntities.getFirst().getTagValue() + " is not a private tag");
 		}
 
 		final ExpressionError expressionError = ExpressionResult.isValid(condition, new ExprCondition(new Attributes()),
@@ -112,4 +121,5 @@ public class AddPrivateTag extends AbstractProfileItem {
 			throw new ProfileException(expressionError.getMsg());
 		}
 	}
+
 }

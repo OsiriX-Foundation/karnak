@@ -26,145 +26,117 @@ import org.karnak.backend.enums.AuthConfigType;
 @Table(name = "auth_config")
 public class AuthConfigEntity implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @JsonIgnore
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@JsonIgnore
+	private Long id;
 
-    @NotNull
-    private String code;
+	@NotNull
+	private String code;
 
-    @ColumnTransformer(
-            read =  "pgp_sym_decrypt(" +
-                    "    client_secret, " +
-                    "    current_setting('encryption.key')" +
-                    ")",
-            write = "pgp_sym_encrypt( " +
-                    "   ?, " +
-                    "    current_setting('encryption.key')" +
-                    ") "
-    )
-    @Column(columnDefinition = "bytea")
-    private String clientSecret;
+	@ColumnTransformer(
+			read = "pgp_sym_decrypt(" + "    client_secret, " + "    current_setting('encryption.key')" + ")",
+			write = "pgp_sym_encrypt( " + "   ?, " + "    current_setting('encryption.key')" + ") ")
+	@Column(columnDefinition = "bytea")
+	private String clientSecret;
 
-    @ColumnTransformer(
-            read =  "pgp_sym_decrypt(" +
-                    "    client_id, " +
-                    "    current_setting('encryption.key')" +
-                    ")",
-            write = "pgp_sym_encrypt( " +
-                    "   ?, " +
-                    "    current_setting('encryption.key')" +
-                    ") "
-    )
-    @Column(columnDefinition = "bytea")
-    private String clientId;
+	@ColumnTransformer(read = "pgp_sym_decrypt(" + "    client_id, " + "    current_setting('encryption.key')" + ")",
+			write = "pgp_sym_encrypt( " + "   ?, " + "    current_setting('encryption.key')" + ") ")
+	@Column(columnDefinition = "bytea")
+	private String clientId;
 
-    @ColumnTransformer(
-            read =  "pgp_sym_decrypt(" +
-                    "    access_token_url, " +
-                    "    current_setting('encryption.key')" +
-                    ")",
-            write = "pgp_sym_encrypt( " +
-                    "   ?, " +
-                    "    current_setting('encryption.key')" +
-                    ") "
-    )
-    @Column(columnDefinition = "bytea")
-    private String accessTokenUrl;
+	@ColumnTransformer(
+			read = "pgp_sym_decrypt(" + "    access_token_url, " + "    current_setting('encryption.key')" + ")",
+			write = "pgp_sym_encrypt( " + "   ?, " + "    current_setting('encryption.key')" + ") ")
+	@Column(columnDefinition = "bytea")
+	private String accessTokenUrl;
 
-    @ColumnTransformer(
-            read =  "pgp_sym_decrypt(" +
-                    "    scope, " +
-                    "    current_setting('encryption.key')" +
-                    ")",
-            write = "pgp_sym_encrypt( " +
-                    "   ?, " +
-                    "    current_setting('encryption.key')" +
-                    ") "
-    )
-    @Column(columnDefinition = "bytea")
-    private String scope;
+	@ColumnTransformer(read = "pgp_sym_decrypt(" + "    scope, " + "    current_setting('encryption.key')" + ")",
+			write = "pgp_sym_encrypt( " + "   ?, " + "    current_setting('encryption.key')" + ") ")
+	@Column(columnDefinition = "bytea")
+	private String scope;
 
-    @Column(name = "type")
-    @NotNull
-    private AuthConfigType authConfigType;
+	@Column(name = "type")
+	@NotNull
+	private AuthConfigType authConfigType;
 
-    public Long getId() {
-        return id;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public String getCode() {
-        return code;
-    }
+	public String getCode() {
+		return code;
+	}
 
-    public void setCode(String code) {
-        this.code = code;
-    }
+	public void setCode(String code) {
+		this.code = code;
+	}
 
-    public String getClientSecret() {
-        return clientSecret;
-    }
+	public String getClientSecret() {
+		return clientSecret;
+	}
 
-    public void setClientSecret(String clientSecret) {
-        this.clientSecret = clientSecret;
-    }
+	public void setClientSecret(String clientSecret) {
+		this.clientSecret = clientSecret;
+	}
 
-    public String getClientId() {
-        return clientId;
-    }
+	public String getClientId() {
+		return clientId;
+	}
 
-    public void setClientId(String clientId) {
-        this.clientId = clientId;
-    }
+	public void setClientId(String clientId) {
+		this.clientId = clientId;
+	}
 
-    public String getAccessTokenUrl() {
-        return accessTokenUrl;
-    }
+	public String getAccessTokenUrl() {
+		return accessTokenUrl;
+	}
 
-    public void setAccessTokenUrl(String accessTokenUrl) {
-        this.accessTokenUrl = accessTokenUrl;
-    }
+	public void setAccessTokenUrl(String accessTokenUrl) {
+		this.accessTokenUrl = accessTokenUrl;
+	}
 
-    public String getScope() {
-        return scope;
-    }
+	public String getScope() {
+		return scope;
+	}
 
-    public void setScope(String scope) {
-        this.scope = scope;
-    }
+	public void setScope(String scope) {
+		this.scope = scope;
+	}
 
-    public AuthConfigType getAuthConfigType() {
-        return authConfigType;
-    }
+	public AuthConfigType getAuthConfigType() {
+		return authConfigType;
+	}
 
-    public void setAuthConfigType(AuthConfigType authConfigType) {
-        this.authConfigType = authConfigType;
-    }
+	public void setAuthConfigType(AuthConfigType authConfigType) {
+		this.authConfigType = authConfigType;
+	}
 
-    @Override
-    public String toString() {
-        return this.code;
-    }
+	@Override
+	public String toString() {
+		return this.code;
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        AuthConfigEntity that = (AuthConfigEntity) o;
-        return Objects.equals(id, that.id) && Objects.equals(code, that.code) && Objects.equals(clientSecret, that.clientSecret) && Objects.equals(clientId, that.clientId) && Objects.equals(accessTokenUrl, that.accessTokenUrl) && Objects.equals(scope, that.scope);
-    }
+	@Override
+	public boolean equals(Object o) {
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		AuthConfigEntity that = (AuthConfigEntity) o;
+		return Objects.equals(id, that.id) && Objects.equals(code, that.code)
+				&& Objects.equals(clientSecret, that.clientSecret) && Objects.equals(clientId, that.clientId)
+				&& Objects.equals(accessTokenUrl, that.accessTokenUrl) && Objects.equals(scope, that.scope);
+	}
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, code, clientSecret, clientId, accessTokenUrl, scope);
-    }
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, code, clientSecret, clientId, accessTokenUrl, scope);
+	}
+
 }
-

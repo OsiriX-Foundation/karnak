@@ -48,7 +48,6 @@ public class AuthConfigView extends HorizontalLayout {
 
 	private NewAuthConfigComponent newAuthConfigComponent;
 
-
 	@Autowired
 	public AuthConfigView(AuthConfigLogic authConfigLogic) {
 
@@ -96,13 +95,15 @@ public class AuthConfigView extends HorizontalLayout {
 			if (event.getValue() != null) {
 				authConfigComponent.displayData(authConfigLogic.retrieveAuthConfig(event.getValue().getCode()));
 			}
-	});
+		});
 	}
 
 	private void addEventDeleteAuthConfig() {
 		authConfigComponent.getDeleteBtn().addClickListener(buttonClickEvent -> {
 			Div dialogContent = new Div();
-			dialogContent.add(new Text("Are you sure you want to delete the entry " + authConfigComponent.getAuthConfigCode() + "? Please make sure it is not used anywhere since it can result in errors."));
+			dialogContent
+				.add(new Text("Are you sure you want to delete the entry " + authConfigComponent.getAuthConfigCode()
+						+ "? Please make sure it is not used anywhere since it can result in errors."));
 			WarningConfirmDialog dialog = new WarningConfirmDialog(dialogContent);
 			dialog.addConfirmationListener(componentEvent -> {
 				authConfigLogic.deleteAuthConfig(authConfigComponent.getAuthConfigCode());
@@ -124,10 +125,12 @@ public class AuthConfigView extends HorizontalLayout {
 		if (name == null || name.isEmpty()) {
 			newAuthConfigComponent.getNewNameField().setInvalid(true);
 			newAuthConfigComponent.getNewNameField().setErrorMessage("Identifier is required");
-		} else if (authConfigLogic.contains(name)) {
+		}
+		else if (authConfigLogic.contains(name)) {
 			newAuthConfigComponent.getNewNameField().setInvalid(true);
 			newAuthConfigComponent.getNewNameField().setErrorMessage("This identifier already exists");
-		} else {
+		}
+		else {
 			newAuthConfigComponent.getNewNameField().setInvalid(false);
 			authConfigComponent.displayEmptyForm(name);
 			newAuthConfigComponent.resetNewAuthConfigComponent();
@@ -138,7 +141,8 @@ public class AuthConfigView extends HorizontalLayout {
 		authConfigComponent.getSaveBtn().addClickListener(buttonClickEvent -> {
 			if (authConfigComponent.isValid()) {
 				AuthConfigEntity newEntity = authConfigComponent.getData();
-				authConfigLogic.createAuthConfig(authConfigComponent.getAuthConfigCode(), AuthConfigType.OAUTH2, newEntity);
+				authConfigLogic.createAuthConfig(authConfigComponent.getAuthConfigCode(), AuthConfigType.OAUTH2,
+						newEntity);
 				authConfigLogic.refreshAll();
 				authConfigGrid.setItems(authConfigLogic.getItems());
 				authConfigGrid.select(newEntity);
@@ -152,4 +156,5 @@ public class AuthConfigView extends HorizontalLayout {
 			authConfigGrid.deselectAll();
 		});
 	}
+
 }

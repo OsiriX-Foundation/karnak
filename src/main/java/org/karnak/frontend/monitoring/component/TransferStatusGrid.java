@@ -410,14 +410,14 @@ public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity, Tran
 			pill.append("badge primary pill ");
 			if (transferStatusEntity.isSent()) {
 				pill.append("success");
-			} else if (transferStatusEntity.isError()) {
+			}
+			else if (transferStatusEntity.isError()) {
 				pill.append("error");
-			} else {
+			}
+			else {
 				span.getStyle().setBackgroundColor("#d38900");
 			}
-			span.getElement()
-				.getThemeList()
-				.add(pill.toString());
+			span.getElement().getThemeList().add(pill.toString());
 			span.setText(transferStatusEntity.isSent() ? "Sent" : transferStatusEntity.getReason());
 		});
 	}

@@ -136,4 +136,5 @@ public class AppConfig {
 	public StandardDICOM getStandardDICOM() {
 		return new StandardDICOM();
 	}
+
 }

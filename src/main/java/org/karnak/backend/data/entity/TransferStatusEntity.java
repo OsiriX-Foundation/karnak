@@ -31,7 +31,6 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.karnak.backend.util.DateFormat;
 
-
 @Entity(name = "TransferStatus")
 @Table(name = "transfer_status")
 public class TransferStatusEntity implements Serializable {
@@ -108,14 +107,14 @@ public class TransferStatusEntity implements Serializable {
 	public TransferStatusEntity() {
 	}
 
-	public TransferStatusEntity(Long forwardNodeId, Long destinationId, LocalDateTime transferDate, boolean sent, boolean error,
-			String reason, String patientIdOriginal, String accessionNumberOriginal, String studyDescriptionOriginal,
-			LocalDateTime studyDateOriginal, String studyUidOriginal, String serieDescriptionOriginal,
-			LocalDateTime serieDateOriginal, String serieUidOriginal, String sopInstanceUidOriginal,
-			String patientIdToSend, String accessionNumberToSend, String studyDescriptionToSend,
-			LocalDateTime studyDateToSend, String studyUidToSend, String serieDescriptionToSend,
-			LocalDateTime serieDateToSend, String serieUidToSend, String sopInstanceUidToSend, String modality,
-			String sopClassUid) {
+	public TransferStatusEntity(Long forwardNodeId, Long destinationId, LocalDateTime transferDate, boolean sent,
+			boolean error, String reason, String patientIdOriginal, String accessionNumberOriginal,
+			String studyDescriptionOriginal, LocalDateTime studyDateOriginal, String studyUidOriginal,
+			String serieDescriptionOriginal, LocalDateTime serieDateOriginal, String serieUidOriginal,
+			String sopInstanceUidOriginal, String patientIdToSend, String accessionNumberToSend,
+			String studyDescriptionToSend, LocalDateTime studyDateToSend, String studyUidToSend,
+			String serieDescriptionToSend, LocalDateTime serieDateToSend, String serieUidToSend,
+			String sopInstanceUidToSend, String modality, String sopClassUid) {
 		this.forwardNodeId = forwardNodeId;
 		this.destinationId = destinationId;
 		this.transferDate = transferDate;
@@ -145,20 +144,20 @@ public class TransferStatusEntity implements Serializable {
 	}
 
 	public static TransferStatusEntity buildTransferStatusEntity(Long forwardNodeId, Long destinationId,
-			Attributes attributesOriginal, Attributes attributesToSend, boolean sent, boolean error, String reason, String modality,
-			String sopClassUid) {
-		return new TransferStatusEntity(forwardNodeId, destinationId, LocalDateTime.now(ZoneId.of("CET")), sent, error, reason,
-				attributesOriginal.getString(Tag.PatientID), attributesOriginal.getString(Tag.AccessionNumber),
+			Attributes attributesOriginal, Attributes attributesToSend, boolean sent, boolean error, String reason,
+			String modality, String sopClassUid) {
+		return new TransferStatusEntity(forwardNodeId, destinationId, LocalDateTime.now(ZoneId.of("CET")), sent, error,
+				reason, attributesOriginal.getString(Tag.PatientID), attributesOriginal.getString(Tag.AccessionNumber),
 				attributesOriginal.getString(Tag.StudyDescription),
-                DicomObjectUtil.dateTime(attributesOriginal, Tag.StudyDate, Tag.StudyTime),
+				DicomObjectUtil.dateTime(attributesOriginal, Tag.StudyDate, Tag.StudyTime),
 				attributesOriginal.getString(Tag.StudyInstanceUID), attributesOriginal.getString(Tag.SeriesDescription),
-                DicomObjectUtil.dateTime(attributesOriginal,Tag.SeriesDate, Tag.SeriesTime),
+				DicomObjectUtil.dateTime(attributesOriginal, Tag.SeriesDate, Tag.SeriesTime),
 				attributesOriginal.getString(Tag.SeriesInstanceUID), attributesOriginal.getString(Tag.SOPInstanceUID),
 				attributesToSend.getString(Tag.PatientID), attributesToSend.getString(Tag.AccessionNumber),
 				attributesToSend.getString(Tag.StudyDescription),
-                DicomObjectUtil.dateTime(attributesToSend,Tag.StudyDate,Tag.StudyTime),
+				DicomObjectUtil.dateTime(attributesToSend, Tag.StudyDate, Tag.StudyTime),
 				attributesToSend.getString(Tag.StudyInstanceUID), attributesToSend.getString(Tag.SeriesDescription),
-                DicomObjectUtil.dateTime(attributesToSend, Tag.SeriesDate,Tag.SeriesTime),
+				DicomObjectUtil.dateTime(attributesToSend, Tag.SeriesDate, Tag.SeriesTime),
 				attributesToSend.getString(Tag.SeriesInstanceUID), attributesToSend.getString(Tag.SOPInstanceUID),
 				modality, sopClassUid);
 	}

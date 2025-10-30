@@ -43,122 +43,131 @@ import org.springframework.web.client.RestClient;
 @Service
 public class EndpointService {
 
-    private AuthConfigRepo authConfigRepo;
+	private AuthConfigRepo authConfigRepo;
 
-    @Autowired
-    public EndpointService(AuthConfigRepo authConfigRepo) {
-        this.authConfigRepo = authConfigRepo;
-    }
+	@Autowired
+	public EndpointService(AuthConfigRepo authConfigRepo) {
+		this.authConfigRepo = authConfigRepo;
+	}
 
-    OAuth2AuthorizedClientManager authorizedClientManager(ClientRegistrationRepository clientRegistrationRepository) {
-        OAuth2AuthorizedClientService service = new InMemoryOAuth2AuthorizedClientService(clientRegistrationRepository);
-        AuthorizedClientServiceOAuth2AuthorizedClientManager manager = new AuthorizedClientServiceOAuth2AuthorizedClientManager(clientRegistrationRepository, service);
-        OAuth2AuthorizedClientProvider authorizedClientProvider = OAuth2AuthorizedClientProviderBuilder.builder()
-                        .clientCredentials()
-                        .build();
-        manager.setAuthorizedClientProvider(authorizedClientProvider);
-        return manager;
-    }
+	OAuth2AuthorizedClientManager authorizedClientManager(ClientRegistrationRepository clientRegistrationRepository) {
+		OAuth2AuthorizedClientService service = new InMemoryOAuth2AuthorizedClientService(clientRegistrationRepository);
+		AuthorizedClientServiceOAuth2AuthorizedClientManager manager = new AuthorizedClientServiceOAuth2AuthorizedClientManager(
+				clientRegistrationRepository, service);
+		OAuth2AuthorizedClientProvider authorizedClientProvider = OAuth2AuthorizedClientProviderBuilder.builder()
+			.clientCredentials()
+			.build();
+		manager.setAuthorizedClientProvider(authorizedClientProvider);
+		return manager;
+	}
 
-    RestClient restClient(OAuth2AuthorizedClientManager authorizedClientManager) {
-        OAuth2ClientHttpRequestInterceptor requestInterceptor = new OAuth2ClientHttpRequestInterceptor(authorizedClientManager);
-        return RestClient.builder()
-                .requestInterceptor(requestInterceptor)
-                .build();
-    }
+	RestClient restClient(OAuth2AuthorizedClientManager authorizedClientManager) {
+		OAuth2ClientHttpRequestInterceptor requestInterceptor = new OAuth2ClientHttpRequestInterceptor(
+				authorizedClientManager);
+		return RestClient.builder().requestInterceptor(requestInterceptor).build();
+	}
 
-    public RestClient getAuthConfiguredRestClient(String authConfig) throws IllegalArgumentException {
-        AuthConfigEntity ace = authConfigRepo.findByCode(authConfig);
-        if (ace == null) {
-            throw new IllegalArgumentException("Authentication Code " + authConfig + " is not defined");
-        }
-        String clientId = ace.getClientId();
-        String clientSecret = ace.getClientSecret();
-        String scope = ace.getScope();
-        String tokenUrl = ace.getAccessTokenUrl();
+	public RestClient getAuthConfiguredRestClient(String authConfig) throws IllegalArgumentException {
+		AuthConfigEntity ace = authConfigRepo.findByCode(authConfig);
+		if (ace == null) {
+			throw new IllegalArgumentException("Authentication Code " + authConfig + " is not defined");
+		}
+		String clientId = ace.getClientId();
+		String clientSecret = ace.getClientSecret();
+		String scope = ace.getScope();
+		String tokenUrl = ace.getAccessTokenUrl();
 
-        ClientRegistration registration = ClientRegistration
-                .withRegistrationId(authConfig)
-                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-                .clientId(clientId)
-                .clientSecret(clientSecret)
-                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-                .scope(scope.split(" "))
-                .tokenUri(tokenUrl)
-                .build();
+		ClientRegistration registration = ClientRegistration.withRegistrationId(authConfig)
+			.authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+			.clientId(clientId)
+			.clientSecret(clientSecret)
+			.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+			.scope(scope.split(" "))
+			.tokenUri(tokenUrl)
+			.build();
 
-       return restClient(authorizedClientManager(new InMemoryClientRegistrationRepository(List.of(registration))));
-    }
+		return restClient(authorizedClientManager(new InMemoryClientRegistrationRepository(List.of(registration))));
+	}
 
-    public RestClient getNoAuthRestClient() {
-        return RestClient.builder().build();
-    }
+	public RestClient getNoAuthRestClient() {
+		return RestClient.builder().build();
+	}
 
-    @Cacheable(value = "endpoint.cache")
-    public String get(String authConfig, String url) throws IllegalArgumentException, HttpClientErrorException {
-        if (authConfig != null && !authConfig.isEmpty()) {
-            return getAuthConfiguredRestClient(authConfig).get().uri(url)
-                    .attributes(clientRegistrationId(authConfig))
-                    .retrieve().body(String.class);
-        } else {
-            return get(url);
-        }
-    }
+	@Cacheable(value = "endpoint.cache")
+	public String get(String authConfig, String url) throws IllegalArgumentException, HttpClientErrorException {
+		if (authConfig != null && !authConfig.isEmpty()) {
+			return getAuthConfiguredRestClient(authConfig).get()
+				.uri(url)
+				.attributes(clientRegistrationId(authConfig))
+				.retrieve()
+				.body(String.class);
+		}
+		else {
+			return get(url);
+		}
+	}
 
-    @Cacheable(value = "endpoint.cache")
-    public String post(String authConfig, String url, String body) {
-        if (authConfig != null && !authConfig.isEmpty()) {
-            return getAuthConfiguredRestClient(authConfig).post().uri(url)
-                    .attributes(clientRegistrationId(authConfig))
-                    .body(body).contentType(MediaType.APPLICATION_JSON)
-                    .retrieve().body(String.class);
-        } else {
-            return post(url, body);
-        }
-    }
+	@Cacheable(value = "endpoint.cache")
+	public String post(String authConfig, String url, String body) {
+		if (authConfig != null && !authConfig.isEmpty()) {
+			return getAuthConfiguredRestClient(authConfig).post()
+				.uri(url)
+				.attributes(clientRegistrationId(authConfig))
+				.body(body)
+				.contentType(MediaType.APPLICATION_JSON)
+				.retrieve()
+				.body(String.class);
+		}
+		else {
+			return post(url, body);
+		}
+	}
 
-    @Cacheable(value = "endpoint.cache")
-    public String get(String url) {
-        return getNoAuthRestClient().get().uri(url)
-                    .retrieve().body(String.class);
+	@Cacheable(value = "endpoint.cache")
+	public String get(String url) {
+		return getNoAuthRestClient().get().uri(url).retrieve().body(String.class);
 
-    }
+	}
 
-    @Cacheable(value = "endpoint.cache")
-    public String post(String url, String body) {
-        return getNoAuthRestClient().post().uri(url)
-                .body(body).contentType(MediaType.APPLICATION_JSON)
-                .retrieve().body(String.class);
-    }
+	@Cacheable(value = "endpoint.cache")
+	public String post(String url, String body) {
+		return getNoAuthRestClient().post()
+			.uri(url)
+			.body(body)
+			.contentType(MediaType.APPLICATION_JSON)
+			.retrieve()
+			.body(String.class);
+	}
 
+	public static String evaluateStringWithExpression(String url, Attributes dcm) {
+		if (url != null && !url.isEmpty()) {
+			Pattern p = Pattern.compile("\\{\\{([^\\}]+)\\}\\}");
+			Matcher m = p.matcher(url);
+			String replacedUrl = url;
+			while (m.find()) {
+				// The url contains parameters to replace
+				String param = (String) ExpressionResult.get(m.group(1), new ExprAction(1, VR.AE, dcm, dcm),
+						String.class);
+				replacedUrl = replacedUrl.replaceFirst("\\{\\{[^\\}]+\\}\\}", param);
+			}
+			return replacedUrl;
+		}
+		return null;
+	}
 
-    public static String evaluateStringWithExpression(String url, Attributes dcm) {
-        if (url != null && !url.isEmpty()) {
-            Pattern p = Pattern.compile("\\{\\{([^\\}]+)\\}\\}");
-            Matcher m = p.matcher(url);
-            String replacedUrl = url;
-            while (m.find()) {
-                // The url contains parameters to replace
-                String param = (String) ExpressionResult.get(m.group(1), new ExprAction(1, VR.AE, dcm, dcm), String.class);
-                replacedUrl = replacedUrl.replaceFirst("\\{\\{[^\\}]+\\}\\}", param);
-            }
-            return replacedUrl;
-        }
-        return null;
-    }
+	public static String validateStringWithExpression(String url) {
+		if (url != null && !url.isEmpty()) {
+			Pattern p = Pattern.compile("\\{\\{([^\\}]+)\\}\\}");
+			Matcher m = p.matcher(url);
+			while (m.find()) {
+				final ExpressionError expressionError = ExpressionResult.isValid(m.group(1),
+						new ExprAction(1, VR.AE, new Attributes(), new Attributes()), ActionItem.class);
+				if (!expressionError.isValid()) {
+					return expressionError.getMsg();
+				}
+			}
+		}
+		return null;
+	}
 
-    public static String validateStringWithExpression(String url) {
-        if (url != null && !url.isEmpty()) {
-            Pattern p = Pattern.compile("\\{\\{([^\\}]+)\\}\\}");
-            Matcher m = p.matcher(url);
-            while (m.find()) {
-                final ExpressionError expressionError = ExpressionResult.isValid(m.group(1),
-                        new ExprAction(1, VR.AE, new Attributes(), new Attributes()), ActionItem.class);
-                if (!expressionError.isValid()) {
-                    return expressionError.getMsg();
-                }
-            }
-        }
-        return null;
-    }
 }

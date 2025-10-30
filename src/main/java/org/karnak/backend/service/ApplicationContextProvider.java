@@ -16,18 +16,19 @@ import org.springframework.stereotype.Component;
 @Component
 public class ApplicationContextProvider implements ApplicationContextAware {
 
-    private static ApplicationContext context;
+	private static ApplicationContext context;
 
-    public static <T> T bean(Class<T> beanType) {
-        return context.getBean(beanType);
-    }
+	public static <T> T bean(Class<T> beanType) {
+		return context.getBean(beanType);
+	}
 
-    public static Object bean(String name) {
-        return context.getBean(name);
-    }
+	public static Object bean(String name) {
+		return context.getBean(name);
+	}
 
-    @Override
-    public void setApplicationContext(@SuppressWarnings("NullableProblems") ApplicationContext ac) {
-        context = ac;
-    }
+	@Override
+	public void setApplicationContext(@SuppressWarnings("NullableProblems") ApplicationContext ac) {
+		context = ac;
+	}
+
 }
