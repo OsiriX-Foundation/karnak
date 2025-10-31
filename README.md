@@ -28,13 +28,23 @@ Prerequisites:
 - JDK 21
 - Maven 3
 
-##### Karnak
+## Build for docker image
 
 Execute the maven command `mvn clean install -P production` in the root directory of the project.
 
+## Build for portable package
+
+Execute the maven command `mvn clean install -Pjpackage` in the root directory of the project.
+
 # Run Karnak
 
+## Run with docker
 To configure and run Karnak with docker, see [karnak-docker](https://github.com/OsiriX-Foundation/karnak-docker).
+
+## Run portable package
+Go in the folder `build-portable/target/karnak-system-jdk-version` and launch the executable `run.sh` (Linux or MacOS) or `run.bat` (Windows).
+
+Note: this portable package runs an embedded database (H2) in a file mode, and the redis server is replaced by an in-memory cache. For intensive use, it's recommended to use Karnak with docker and a Postgres database.
 
 # Debug Karnak
 

@@ -13,8 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import org.karnak.backend.cache.ExternalIDCache;
 import org.karnak.backend.cache.Patient;
+import org.karnak.backend.cache.PatientClient;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ public class PseudonymMappingLogic {
 	private final ProjectService projectService;
 
 	// Cache
-	private final ExternalIDCache externalIDCache;
+	private final PatientClient externalIDCache;
 
 	/**
 	 * Autowired constructor
@@ -42,7 +42,7 @@ public class PseudonymMappingLogic {
 	 * @param projectService Project service
 	 */
 	@Autowired
-	public PseudonymMappingLogic(final ExternalIDCache externalIDCache, final ProjectService projectService) {
+	public PseudonymMappingLogic(final PatientClient externalIDCache, final ProjectService projectService) {
 		this.externalIDCache = externalIDCache;
 		this.projectService = projectService;
 		this.pseudonymMappingView = null;

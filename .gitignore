@@ -54,3 +54,4 @@ pnpm-lock.yaml
 .vscode
 
 logs/
+/data/

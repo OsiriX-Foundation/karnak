@@ -12,6 +12,8 @@ package org.karnak.backend.config;
 import jakarta.annotation.PostConstruct;
 import java.io.InputStream;
 import java.net.URL;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.karnak.backend.cache.ExternalIDCache;
 import org.karnak.backend.cache.PatientClient;
@@ -38,28 +40,33 @@ import org.yaml.snakeyaml.constructor.Constructor;
 @ConfigurationProperties
 @EnableCaching
 @Slf4j
-
 public class AppConfig {
 
+	@Getter
 	private static AppConfig instance;
 
+	@Getter
+	@Setter
 	private String environment;
 
+	@Getter
+	@Setter
 	private String name;
 
+	@Setter
 	private String karnakadmin;
 
+	@Setter
 	private String karnakpassword;
 
 	private final ProfileRepo profileRepo;
 
 	private final ProfilePipeService profilePipeService;
 
-	private final ExternalIDCache externalIDCache;
+	private final PatientClient externalIDCache;
 
 	@Autowired
-	public AppConfig(final ProfileRepo profileRepo, final ProfilePipeService profilePipeService,
-			final ExternalIDCache externalIDCache) {
+	public AppConfig(ProfileRepo profileRepo, ProfilePipeService profilePipeService, PatientClient externalIDCache) {
 		this.profileRepo = profileRepo;
 		this.profilePipeService = profilePipeService;
 		this.externalIDCache = externalIDCache;
@@ -70,40 +77,12 @@ public class AppConfig {
 		instance = this;
 	}
 
-	public static AppConfig getInstance() {
-		return instance;
-	}
-
-	public String getEnvironment() {
-		return environment;
-	}
-
-	public void setEnvironment(String environment) {
-		this.environment = environment;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	public String getKarnakadmin() {
 		return karnakadmin != null ? karnakadmin : "admin";
 	}
 
-	public void setKarnakadmin(String karnakadmin) {
-		this.karnakadmin = karnakadmin;
-	}
-
 	public String getKarnakpassword() {
 		return karnakpassword != null ? karnakpassword : "admin";
-	}
-
-	public void setKarnakpassword(String karnakpassword) {
-		this.karnakpassword = karnakpassword;
 	}
 
 	@Bean("ConfidentialityProfiles")
