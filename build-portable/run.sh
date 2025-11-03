@@ -129,9 +129,16 @@ export PATH="$DCM4CHE_BIN:$PATH"
 STORESCP_BIN="$(command -v storescp || true)"
 [[ -z "$STORESCP_BIN" ]] && die "storescp not found in PATH. Ensure dcm4che is installed."
 
-# Check if Karnak executable exists
-KARNAK_BIN="$APP_BIN/Karnak"
-[[ ! -x "$KARNAK_BIN" ]] && die "Karnak executable not found at '$KARNAK_BIN'"
+# Check if Karnak executable exists and set path based on OS
+if [[ "$(uname)" == "Darwin" ]]; then
+  # macOS
+  KARNAK_BIN="$APP_DIR/Karnak.app/Contents/MacOS/Karnak"
+else
+  # Linux
+  KARNAK_BIN="$APP_BIN/Karnak"
+fi
+[[ ! -e "$KARNAK_BIN" ]] && die "Karnak executable not found at '$KARNAK_BIN'"
+
 
 # Check for existing storescp processes
 check_existing_storescp

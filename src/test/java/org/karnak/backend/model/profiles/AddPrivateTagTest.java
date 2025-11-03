@@ -25,8 +25,10 @@ import org.karnak.backend.data.entity.ProfileEntity;
 import org.karnak.backend.model.standard.StandardDICOM;
 import org.karnak.backend.service.profilepipe.Profile;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
+@ActiveProfiles("jpackage")
 public class AddPrivateTagTest {
 
 	@Test

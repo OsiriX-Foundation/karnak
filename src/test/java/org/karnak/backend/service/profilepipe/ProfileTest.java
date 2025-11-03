@@ -33,9 +33,11 @@ import org.karnak.backend.data.entity.SecretEntity;
 import org.karnak.backend.enums.DestinationType;
 import org.karnak.backend.enums.PseudonymType;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.weasis.dicom.param.AttributeEditorContext;
 
 @SpringBootTest
+@ActiveProfiles("jpackage")
 class ProfileTest {
 
 	@Test

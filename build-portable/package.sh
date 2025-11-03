@@ -108,7 +108,10 @@ if [ ! -d "$lib_dir" ]; then
 fi
 
 # Collect immediate subdirectories (folder names only)
-mapfile -t _subdirs < <(find "$lib_dir" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' 2>/dev/null || true)
+_subdirs=()
+while IFS= read -r -d '' dir; do
+  _subdirs+=("$(basename "$dir")")
+done < <(find "$lib_dir" -mindepth 1 -maxdepth 1 -type d -print0 2>/dev/null)
 
 if [ ${#_subdirs[@]} -eq 1 ]; then
   ARC_OS="${_subdirs[0]}"
@@ -275,6 +278,5 @@ if [ "$PACKAGE" = "YES" ] ; then
 fi
 
 "$curPath"/get-dcm4che.sh -v 5.34.1 -o "$OUTPUT_PATH/$NAME/bin/dcm4che" -a "${ARC_OS}"
-chmod +x "$OUTPUT_PATH/$NAME/bin/dcm4che"/*.sh
 cp -r "$curPath"/run.sh "$OUTPUT_PATH"/run.sh
 chmod +x "$OUTPUT_PATH"/run.sh

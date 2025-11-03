@@ -30,17 +30,13 @@ import org.karnak.backend.service.profilepipe.Profile;
 import org.karnak.backend.util.DicomObjectTools;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
+@ActiveProfiles("jpackage")
 class ProfileTest {
 
 	private static HMAC defaultHMAC;
-
-	@Mock
-	private ExternalIDCache externalIDCache;
-
-	@Mock
-	private RedisConfiguration redisConfiguration;
 
 	@BeforeAll
 	static void beforeAll() {
