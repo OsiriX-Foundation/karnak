@@ -24,8 +24,10 @@ import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.data.entity.ProfileEntity;
 import org.karnak.backend.service.profilepipe.Profile;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
+@ActiveProfiles("jpackage")
 class AddTagTest {
 
 	@Test

@@ -9,6 +9,7 @@
  */
 package org.karnak.backend.model.profilepipe;
 
+import lombok.Getter;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.dcm4che3.img.util.DateTimeUtils;
@@ -19,6 +20,7 @@ import org.weasis.core.util.StringUtil;
 
 import java.time.LocalDate;
 
+@Getter
 public class PatientMetadata {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PatientMetadata.class);
@@ -63,17 +65,9 @@ public class PatientMetadata {
 			return DateTimeUtils.formatDA(DateTimeUtils.parseDA(rawPatientBirthDate));
 		}
 		catch (Exception e) {
-			LOGGER.error("Error parsing patient birth date: " + rawPatientBirthDate);
+			LOGGER.error("Error parsing patient birth date: {}", rawPatientBirthDate);
 			return "";
 		}
-	}
-
-	public String getPatientID() {
-		return patientID;
-	}
-
-	public String getPatientName() {
-		return patientName;
 	}
 
 	public String getPatientLastName() {
@@ -81,15 +75,11 @@ public class PatientMetadata {
 	}
 
 	public String getPatientFirstName() {
-		String[] patientNameSplitted = patientName.split("\\^");
-		if (patientNameSplitted.length > 1) {
-			return patientNameSplitted[1];
+		String[] patientNameSplit = patientName.split("\\^");
+		if (patientNameSplit.length > 1) {
+			return patientNameSplit[1];
 		}
 		return "";
-	}
-
-	public String getPatientBirthDate() {
-		return patientBirthDate;
 	}
 
 	public LocalDate getLocalDatePatientBirthDate() {
@@ -97,14 +87,6 @@ public class PatientMetadata {
 			return DateTimeUtils.parseDA(patientBirthDate);
 		}
 		return null;
-	}
-
-	public String getIssuerOfPatientID() {
-		return issuerOfPatientID;
-	}
-
-	public String getPatientSex() {
-		return patientSex;
 	}
 
 	public boolean compareCachedPatient(Patient patient) {

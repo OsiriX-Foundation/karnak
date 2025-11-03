@@ -30,6 +30,7 @@ import org.karnak.backend.model.event.NodeEvent;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.mockito.Mock;
+import org.springframework.test.context.ActiveProfiles;
 import org.weasis.dicom.param.DicomNode;
 
 import java.util.ArrayList;
@@ -43,13 +44,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
+@ActiveProfiles("jpackage")
 class GatewaySetUpServiceTest {
-
-	@Mock
-	private ExternalIDCache externalIDCache;
-
-	@Mock
-	private RedisConfiguration redisConfiguration;
 
 	// Repositories
 	final ForwardNodeRepo forwardNodeRepoMock = Mockito.mock(ForwardNodeRepo.class);

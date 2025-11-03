@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-@Component
+@Component("patientClient")
 @Profile("jpackage")
 @Primary
 public class InMemoryExternalIDCache extends PatientClient {

@@ -42,7 +42,7 @@ public class PseudonymMappingLogic {
 	 * @param projectService Project service
 	 */
 	@Autowired
-	public PseudonymMappingLogic(final PatientClient externalIDCache, final ProjectService projectService) {
+	public PseudonymMappingLogic(PatientClient externalIDCache, ProjectService projectService) {
 		this.externalIDCache = externalIDCache;
 		this.projectService = projectService;
 		this.pseudonymMappingView = null;
