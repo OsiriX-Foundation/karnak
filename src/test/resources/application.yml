@@ -36,7 +36,7 @@ spring:
     config:
       enabled: false
   profiles:
-    active: '@activatedProperties@'
+    active: ${activatedProperties:}
   liquibase:
     enabled: false
   data:
