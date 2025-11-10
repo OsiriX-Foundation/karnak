@@ -38,6 +38,10 @@ public class SecurityConfiguration {
 			.csrf(csrf -> csrf.ignoringRequestMatchers(EndPoint.ALL_REMAINING_PATH))
 			// Turns on/off authorizations
 			.authorizeHttpRequests(authorize -> authorize
+				// Static resources - no authentication required
+				.requestMatchers("/VAADIN/**", "/img/**", "/icons/**", "/sw.js", "/favicon.ico",
+						"/manifest.webmanifest", "/offline.html", "/sw-runtime-resources-precache.js")
+				.permitAll()
 				// Actuator, health, info
 				.requestMatchers("/actuator/**")
 				.permitAll()

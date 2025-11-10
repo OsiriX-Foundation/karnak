@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <property name="LOGS" value="logs" />
-    <if condition='property("ENVIRONMENT").contains("DEV")'>
+    <condition class="ch.qos.logback.core.boolex.PropertyEqualityCondition">
+      <key>ENVIRONMENT</key>
+      <value>DEV</value>
+    </condition>
+    <if>
         <then>
             <appender name="DEV_OUT" class="ch.qos.logback.core.ConsoleAppender">
                 <encoder>
-                    <Pattern>%black(%d{ISO8601})  %highlight(%-5level) %marker %highlight(%X{SOPInstanceUID}) %highlight(%X{issuerOfPatientID}) %highlight(%X{PatientID}) [%yellow(%t)] %yellow(%C{1}): %msg%n%throwable </Pattern>
+                    <pattern>%black(%d{ISO8601})  %highlight(%-5level) %marker %highlight(%X{SOPInstanceUID}) %highlight(%X{issuerOfPatientID}) %highlight(%X{PatientID}) [%yellow(%t)] %yellow(%C{1}): %msg%n%throwable </pattern>
                 </encoder>
             </appender>
             <root level="info">
@@ -23,7 +27,7 @@
                     <level>WARN</level>
                 </filter>
                 <encoder>
-                    <Pattern>%black(%d{ISO8601})  %highlight(%-5level) %marker %highlight(%X{SOPInstanceUID}) %highlight(%X{issuerOfPatientID}) %highlight(%X{PatientID}) [%yellow(%t)] %yellow(%C{1}): %msg%n%throwable </Pattern>
+                    <pattern>%black(%d{ISO8601})  %highlight(%-5level) %marker %highlight(%X{SOPInstanceUID}) %highlight(%X{issuerOfPatientID}) %highlight(%X{PatientID}) [%yellow(%t)] %yellow(%C{1}): %msg%n%throwable </pattern>
                 </encoder>
             </appender>
             <!--
@@ -77,7 +81,7 @@
                     <onMatch>NEUTRAL</onMatch>
                 </filter>
                 <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-                    <Pattern>%d SOPInstanceUID_OLD=%X{SOPInstanceUID} SOPInstanceUID_NEW=%X{DeidentifySOPInstanceUID} SeriesInstanceUID_OLD=%X{SeriesInstanceUID} SeriesInstanceUID_NEW=%X{DeidentifySeriesInstanceUID} ProjectName=%X{ProjectName} ProfileName=%X{ProfileName} ProfileCodenames=%X{ProfileCodenames}</Pattern>
+                    <pattern>%d SOPInstanceUID_OLD=%X{SOPInstanceUID} SOPInstanceUID_NEW=%X{DeidentifySOPInstanceUID} SeriesInstanceUID_OLD=%X{SeriesInstanceUID} SeriesInstanceUID_NEW=%X{DeidentifySeriesInstanceUID} ProjectName=%X{ProjectName} ProfileName=%X{ProfileName} ProfileCodenames=%X{ProfileCodenames}</pattern>
                 </encoder>
             </appender>
 

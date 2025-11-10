@@ -13,15 +13,14 @@ logging:
     org:
       springframework: INFO
       karnak: INFO
-    com:
-      vaadin:
-        flow:
-          server:
-            communication:
-              # Suppress WARN  c.v.f.s.c.ReturnChannelHandler - Ignoring update for disabled return channel
-              rpc:
-                MapSyncRpcHandler: ERROR
-              ReturnChannelHandler: ERROR
+      hibernate:
+        orm:
+          # Suppress WARN of HHH90006001 in Hibernate 6
+          incubating: ERROR
+      atmosphere:
+         cpr:
+           # Suppress WARN  a.c.c.AtmosphereFramework - No BroadcasterCache configured
+           AtmosphereFramework: ERROR
 server:
   port: 8081
   servlet:
@@ -37,17 +36,18 @@ spring:
   profiles:
     active: ${activatedProperties:redis}
   datasource:
-    password: ${DB_PASSWORD:karnak}
     url: 'jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5433}/${DB_NAME:karnak}'
+    driver-class-name: org.postgresql.Driver
     username: ${DB_USER:karnak}
+    password: ${DB_PASSWORD:karnak}
     hikari:
       pool-name: karnak
       leak-detection-threshold: 0
       minimum-idle: 5
       maximum-pool-size: 10
       connection-timeout: 10000
-      idle-timeout: 300000
-      max-lifetime: 270000 # 4 minutes 30 secondes
+      idle-timeout: 300000 # 5 minutes
+      max-lifetime: 900000 # 15 minutes
       validation-timeout: 3000
       connection-test-query: SELECT 1
       connection-init-sql: select set_config('encryption.key', '${DB_ENCRYPTION_KEY}', false)
@@ -60,18 +60,17 @@ spring:
     generate-ddl: false
     show-sql: false
     open-in-view: false
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
     properties:
       hibernate:
         #    In order to still use the unique hibernate_sequence, otherwise we should create a sequence table_name_seq for
         #  each tables
         id:
           db_structure_naming_strategy: legacy
-        temp:
+        boot:
           use_jdbc_metadata_defaults: false
-      jdbc:
-        lob:
-          non_contextual_creation: true
+        jdbc:
+          lob:
+            non_contextual_creation: true
 monitoring:
   # Maximum of sop instance sent for the monitoring
   max-history: 150000

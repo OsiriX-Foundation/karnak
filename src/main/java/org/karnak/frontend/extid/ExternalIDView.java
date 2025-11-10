@@ -166,7 +166,7 @@ public class ExternalIDView extends HorizontalLayout {
 			openCSVButton.addClickListener(buttonClickEvent -> {
 				chooseSeparatorDialog.close();
 				char separator = ',';
-				if (!separatorCSVField.getValue().equals("")) {
+				if (!separatorCSVField.getValue().isEmpty()) {
 					separator = separatorCSVField.getValue().charAt(0);
 				}
 				CSVDialog csvDialog = new CSVDialog(inputStream, separator, projectDropDown.getValue());
