@@ -26,13 +26,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @EnableWebSecurity
 @Configuration
@@ -47,11 +45,15 @@ public class SecurityInMemoryConfig {
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
 			// Disables cross-site request forgery (CSRF) protection for main route
-			.csrf(csrf -> csrf.ignoringRequestMatchers(AntPathRequestMatcher.antMatcher(EndPoint.ALL_REMAINING_PATH)))
+			.csrf(csrf -> csrf.ignoringRequestMatchers(EndPoint.ALL_REMAINING_PATH))
 			// Turns on/off authorizations
 			.authorizeHttpRequests(authorize -> authorize
+				// Static resources - no authentication required
+				.requestMatchers("/VAADIN/**", "/img/**", "/icons/**", "/sw.js", "/favicon.ico",
+						"/manifest.webmanifest", "/offline.html", "/sw-runtime-resources-precache.js")
+				.permitAll()
 				// Actuator, health, info
-				.requestMatchers(AntPathRequestMatcher.antMatcher("/actuator/**"))
+				.requestMatchers("/actuator/**")
 				.permitAll()
 				.requestMatchers(EndpointRequest.to(HealthEndpoint.class, InfoEndpoint.class))
 				.permitAll()
@@ -59,14 +61,14 @@ public class SecurityInMemoryConfig {
 				.requestMatchers(SecurityUtil::isFrameworkInternalRequest)
 				.permitAll()
 				// Allow endpoints
-				.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/api/echo/destinations"))
+				.requestMatchers(HttpMethod.GET, "/api/echo/destinations")
 				.permitAll()
 				// Deny
 				.requestMatchers(EndpointRequest.to(ShutdownEndpoint.class))
 				.denyAll()
 				// Allows all authenticated traffic
 				// Allow admin role
-				.requestMatchers(AntPathRequestMatcher.antMatcher("/*"))
+				.requestMatchers("/*")
 				.hasRole(SecurityRole.ADMIN_ROLE.getType())
 				.anyRequest()
 				.authenticated())
@@ -81,18 +83,6 @@ public class SecurityInMemoryConfig {
 			.exceptionHandling(exceptionHandling -> exceptionHandling.accessDeniedPage(LOGIN_URL));
 
 		return http.build();
-	}
-
-	@Bean
-	public WebSecurityCustomizer webSecurityCustomizer() {
-		// Access to static resources, bypassing Spring security.
-		return web -> web.ignoring()
-			.requestMatchers(AntPathRequestMatcher.antMatcher("/VAADIN/**"),
-					AntPathRequestMatcher.antMatcher("/img/**"), AntPathRequestMatcher.antMatcher("/icons/**"),
-					AntPathRequestMatcher.antMatcher("/sw.js"), AntPathRequestMatcher.antMatcher("/favicon.ico"),
-					AntPathRequestMatcher.antMatcher("/manifest.webmanifest"),
-					AntPathRequestMatcher.antMatcher("/offline.html"),
-					AntPathRequestMatcher.antMatcher("/sw-runtime-resources-precache.js"));
 	}
 
 	@Bean

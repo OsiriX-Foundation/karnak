@@ -20,6 +20,7 @@ import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.OptionalParameter;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import lombok.Getter;
 import org.karnak.backend.data.entity.ProfileEntity;
 import org.karnak.frontend.MainLayout;
 import org.karnak.frontend.profile.component.ProfileGrid;
@@ -41,16 +42,21 @@ public class ProfileView extends HorizontalLayout implements HasUrlParameter<Str
 
 	private final ProfileLogic profileLogic;
 
+	@Getter
 	private final ProfileComponent profileComponent;
 
+	@Getter
 	private final ProfileElementMainView profileElementMainView;
 
+	@Getter
 	private final ProfileGrid profileGrid;
 
+	@Getter
 	private final ProfileErrorView profileErrorView;
 
 	private VerticalLayout barAndGridLayout;
 
+	@Getter
 	private final HorizontalLayout profileHorizontalLayout;
 
 	private Upload uploadProfile;
@@ -142,26 +148,6 @@ public class ProfileView extends HorizontalLayout implements HasUrlParameter<Str
 			String profileID = String.valueOf(profileEntity.getId());
 			UI.getCurrent().navigate(ProfileView.class, profileID);
 		}
-	}
-
-	public ProfileComponent getProfileComponent() {
-		return profileComponent;
-	}
-
-	public ProfileElementMainView getProfileElementMainView() {
-		return profileElementMainView;
-	}
-
-	public ProfileGrid getProfileGrid() {
-		return profileGrid;
-	}
-
-	public ProfileErrorView getProfileErrorView() {
-		return profileErrorView;
-	}
-
-	public HorizontalLayout getProfileHorizontalLayout() {
-		return profileHorizontalLayout;
 	}
 
 }

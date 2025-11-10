@@ -18,7 +18,8 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
-import com.vaadin.flow.server.StreamResource;
+import com.vaadin.flow.server.streams.DownloadHandler;
+import com.vaadin.flow.server.streams.DownloadResponse;
 import org.dcm4che3.data.Attributes;
 
 public class DicomPane extends Composite<Dialog> {
@@ -111,10 +112,12 @@ public class DicomPane extends Composite<Dialog> {
 		downloadTextBtn.setText("Download Text");
 		downloadTextBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
-		downloadTextAnchor = new Anchor(
-				new StreamResource("worklistItem.txt", () -> logic.getWorklistItemInputStreamText(dcm)), "");
+		downloadTextAnchor = new Anchor();
 		downloadTextAnchor.getElement().setAttribute("download", true);
 		downloadTextAnchor.add(downloadTextBtn);
+		downloadTextAnchor.setHref(
+				DownloadHandler.fromInputStream(event -> new DownloadResponse(logic.getWorklistItemInputStreamText(dcm),
+						"worklistItem.txt", "text/plain", -1)));
 	}
 
 	private void buildDownloadDicomAnchor() {
@@ -122,10 +125,12 @@ public class DicomPane extends Composite<Dialog> {
 		downloadDicomBtn.setText("Download DICOM");
 		downloadDicomBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
-		downloadDicomAnchor = new Anchor(
-				new StreamResource("worklistItem.dcm", () -> logic.getWorklistItemInputStreamInDicom(dcm)), "");
+		downloadDicomAnchor = new Anchor();
 		downloadDicomAnchor.getElement().setAttribute("download", true);
 		downloadDicomAnchor.add(downloadDicomBtn);
+		downloadDicomAnchor.setHref(DownloadHandler
+			.fromInputStream(event -> new DownloadResponse(logic.getWorklistItemInputStreamInDicom(dcm),
+					"worklistItem.dcm", "application/dicom", -1)));
 	}
 
 	private void buildCancelButton() {

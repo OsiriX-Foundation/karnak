@@ -1,4 +1,9 @@
 name: Build
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+  actions: read
 on:
   push:
     branches:
@@ -16,9 +21,9 @@ jobs:
       PUSH_PACKAGES: ${{ github.event_name == 'push' }}
     steps:
       - name: Setup NODE
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: "22"
+          node-version: 24
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis

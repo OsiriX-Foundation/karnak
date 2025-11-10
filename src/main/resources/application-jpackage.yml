@@ -2,7 +2,6 @@ spring:
   sql:
     init:
       mode: always
-      platform: h2
       schema-locations: classpath:schema-h2.sql
 
   datasource:
@@ -13,30 +12,12 @@ spring:
     # Use env or system props: H2_FILE_PWD / H2_USER_PWD
     password: "${H2_FILE_PWD:StrongFileKey} ${H2_USER_PWD:StrongUserPwd}"
     hikari:
-      pool-name: karnak
-      leak-detection-threshold: 0
-      minimum-idle: 5
-      maximum-pool-size: 10
-      connection-timeout: 10000
-      idle-timeout: 300000
-      max-lifetime: 270000
-      validation-timeout: 3000
-      connection-test-query: SELECT 1
-      connection-init-sql:
-
+      pool-name: karnak-h2
+      # Remove the PostgreSQL-specific encryption connection init SQL
+      connection-init-sql: null
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: update
-    properties:
-      hibernate:
-        id:
-          db_structure_naming_strategy: legacy
-        temp:
-          use_jdbc_metadata_defaults: false
-        jdbc:
-          lob:
-            non_contextual_creation: true
 
   liquibase:
     enabled: false

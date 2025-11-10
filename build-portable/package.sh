@@ -277,6 +277,6 @@ if [ "$PACKAGE" = "YES" ] ; then
   fi
 fi
 
-"$curPath"/get-dcm4che.sh -v 5.34.1 -o "$OUTPUT_PATH/$NAME/bin/dcm4che" -a "${ARC_OS}"
-cp -r "$curPath"/run.sh "$OUTPUT_PATH"/run.sh
+cp "$curPath/run.cfg" "$OUTPUT_PATH/"
+cp "$curPath/run.sh" "$OUTPUT_PATH/"
 chmod +x "$OUTPUT_PATH"/run.sh

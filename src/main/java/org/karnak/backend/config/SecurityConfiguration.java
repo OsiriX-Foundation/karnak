@@ -55,6 +55,10 @@ public class SecurityConfiguration {
 			.csrf(csrf -> csrf.ignoringRequestMatchers(EndPoint.ALL_REMAINING_PATH))
 			// Turns on/off authorizations
 			.authorizeHttpRequests(authorize -> authorize
+				// Static resources - no authentication required
+				.requestMatchers("/VAADIN/**", "/img/**", "/icons/**", "/sw.js", "/favicon.ico",
+						"/manifest.webmanifest", "/offline.html", "/sw-runtime-resources-precache.js")
+				.permitAll()
 				// Actuator, health, info
 				.requestMatchers("/actuator/**")
 				.permitAll()
@@ -80,14 +84,6 @@ public class SecurityConfiguration {
 			.logout(logout -> logout.addLogoutHandler(new OpenIdConnectLogoutHandler()));
 
 		return http.build();
-	}
-
-	@Bean
-	public WebSecurityCustomizer webSecurityCustomizer() {
-		// Access to static resources, bypassing Spring security.
-		return web -> web.ignoring()
-			.requestMatchers("/VAADIN/**", "/img/**", "/icons/**", "/sw.js", "/favicon.ico", "/manifest.webmanifest",
-					"/offline.html", "/sw-runtime-resources-precache.js");
 	}
 
 	/**
