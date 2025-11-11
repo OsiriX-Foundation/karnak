@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Profile;
 
 @Configuration
 @EnableCaching
-@Profile("jpackage")
+@Profile("portable")
 public class SimpleCacheConfiguration {
 
 	@Bean

@@ -229,7 +229,7 @@ else
   declare -a signArgs=()
 fi
 declare -a commonOptions=(
-"--java-options" "-Dspring.profiles.active=jpackage" \
+"--java-options" "-Dspring.profiles.active=portable" \
 "--java-options" "-Djava.library.path=\$APPDIR/dicom-opencv" \
 "--java-options" "--enable-native-access=ALL-UNNAMED");
 
