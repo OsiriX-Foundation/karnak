@@ -29,8 +29,6 @@ import org.karnak.backend.enums.NodeEventType;
 import org.karnak.backend.model.event.NodeEvent;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.mockito.Mock;
-import org.springframework.test.context.ActiveProfiles;
 import org.weasis.dicom.param.DicomNode;
 
 import java.util.ArrayList;
@@ -44,7 +42,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
-@ActiveProfiles("jpackage")
 class GatewaySetUpServiceTest {
 
 	// Repositories

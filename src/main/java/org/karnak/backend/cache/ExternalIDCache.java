@@ -15,7 +15,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 @Component("patientClient")
-@Profile("!jpackage")
+@Profile("!portable")
 public class ExternalIDCache extends PatientClient {
 
 	private static final String NAME = "externalId.cache";

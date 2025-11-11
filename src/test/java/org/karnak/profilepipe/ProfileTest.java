@@ -18,8 +18,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.karnak.backend.cache.ExternalIDCache;
-import org.karnak.backend.config.RedisConfiguration;
 import org.karnak.backend.data.entity.ArgumentEntity;
 import org.karnak.backend.data.entity.IncludedTagEntity;
 import org.karnak.backend.data.entity.ProfileElementEntity;
@@ -28,12 +26,9 @@ import org.karnak.backend.model.profilepipe.HMAC;
 import org.karnak.backend.model.profilepipe.HashContext;
 import org.karnak.backend.service.profilepipe.Profile;
 import org.karnak.backend.util.DicomObjectTools;
-import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
-@ActiveProfiles("jpackage")
 class ProfileTest {
 
 	private static HMAC defaultHMAC;

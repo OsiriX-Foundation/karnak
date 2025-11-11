@@ -27,7 +27,7 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
-@Profile("!jpackage")
+@Profile("!portable")
 public class RedisConfiguration {
 
 	@Value("${cache-api.ttl}")

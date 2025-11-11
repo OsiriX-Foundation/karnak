@@ -787,7 +787,7 @@
     </profile>
 
     <profile>
-      <id>jpackage</id>
+      <id>portable</id>
       <properties>
         <vaadin.productionMode>true</vaadin.productionMode>
       </properties>

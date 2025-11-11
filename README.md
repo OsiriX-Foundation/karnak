@@ -34,7 +34,7 @@ Execute the maven command `mvn clean install -P production` in the root director
 
 ## Build for portable package
 
-Execute the maven command `mvn clean install -Pjpackage` in the root directory of the project.
+Execute the maven command `mvn clean install -Pportable` in the root directory of the project.
 
 # Run Karnak
 
