@@ -36,6 +36,8 @@ Execute the maven command `mvn clean install -P production` in the root director
 
 Execute the maven command `mvn clean install -Pportable` in the root directory of the project.
 
+Note: on Windows the bash.exe must be specified: `mvn clean install -Pportable -Dbash.executable=${env.LOCALAPPDATA}\Programs\Git\bin\bash.exe`
+
 # Run Karnak
 
 ## Run with docker

@@ -237,11 +237,17 @@ mkdir -p "$INPUT_PATH_UNIX/portable/dicom-opencv"
 cp "$INPUT_PATH_UNIX/karnak-${KARNAK_VERSION}".jar "$INPUT_PATH_UNIX/portable/karnak-${KARNAK_VERSION}.jar"
 cp -r "$INPUT_PATH_UNIX/classes/lib/${ARC_OS}"/* "$INPUT_PATH_UNIX/portable/dicom-opencv/"
 
+if [ "$machine" = "windows" ] ; then
+  declare -a consoleArgs=("--win-console")
+else
+  declare -a consoleArgs=()
+fi
+
 $JPKGCMD --type app-image --input "$INPUT_DIR" --dest "$OUTPUT_PATH" --name "$NAME" \
 --main-jar karnak-"${KARNAK_VERSION}".jar --main-class org.springframework.boot.loader.launch.JarLauncher \
 --module-path "$JDK_PATH_UNIX/jmods" --add-modules ALL-MODULE-PATH \
 --resource-dir "$RES" --app-version "$KARNAK_CLEAN_VERSION" \
-"${tmpArgs[@]}" --verbose "${signArgs[@]}" "${commonOptions[@]}"
+"${tmpArgs[@]}" --verbose "${signArgs[@]}" "${commonOptions[@]}" "${consoleArgs[@]}"
 
 if [ "$machine" = "macosx" ] && [[ -n "$CERTIFICATE" ]] ; then
     codesign --timestamp --entitlements "$RES/uri-launcher.entitlements" --options runtime --force -vvv --sign "$CERTIFICATE" "$RES/$NAME.app"
@@ -254,7 +260,7 @@ if [ "$PACKAGE" = "YES" ] ; then
     [ "$arc" = "aarch64" ]  && UPGRADE_UID="d1aa27d0-b7af-11f0-a00b-e331bd36fe07" || UPGRADE_UID="d1aa27d0-b7af-11f0-a00b-e331bd36fe06"
     $JPKGCMD --type "msi" --app-image "$IMAGE_PATH" --dest "$OUTPUT_PATH" --name "$NAME" --resource-dir "$RES/msi/${arc}" \
     --license-file "$INPUT_PATH\Licence.txt" --description "Karnak DICOM Gateway for deidentification" --win-upgrade-uuid "$UPGRADE_UID"  \
-    --win-menu --win-menu-group "$NAME" --copyright "$COPYRIGHT" --app-version "$KARNAK_CLEAN_VERSION" --vendor "$VENDOR" "${tmpArgs[@]}" --verbose
+    --win-console --win-menu --win-menu-group "$NAME" --copyright "$COPYRIGHT" --app-version "$KARNAK_CLEAN_VERSION" --vendor "$VENDOR" "${tmpArgs[@]}" --verbose
     mv "$OUTPUT_PATH_UNIX/$NAME-$KARNAK_CLEAN_VERSION.msi" "$OUTPUT_PATH_UNIX/$NAME-$KARNAK_CLEAN_VERSION-${arc}.msi"
   elif [ "$machine" = "linux" ] ; then
     declare -a installerTypes=("deb" "rpm")
@@ -278,5 +284,9 @@ if [ "$PACKAGE" = "YES" ] ; then
 fi
 
 cp "$curPath/run.cfg" "$OUTPUT_PATH/"
-cp "$curPath/run.sh" "$OUTPUT_PATH/"
-chmod +x "$OUTPUT_PATH"/run.sh
+if [ "$machine" = "windows" ] ; then
+  cp "$curPath/run.bat" "$OUTPUT_PATH/"
+else
+  cp "$curPath/run.sh" "$OUTPUT_PATH/"
+  chmod +x "$OUTPUT_PATH"/run.sh
+fi
