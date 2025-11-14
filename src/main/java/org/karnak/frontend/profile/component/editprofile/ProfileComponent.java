@@ -20,14 +20,13 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.server.streams.DownloadHandler;
+import com.vaadin.flow.server.streams.DownloadResponse;
 import java.io.ByteArrayInputStream;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import com.vaadin.flow.server.streams.DownloadHandler;
-import com.vaadin.flow.server.streams.DownloadResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.data.entity.ProfileEntity;
@@ -88,8 +87,8 @@ public class ProfileComponent extends VerticalLayout {
 			updatedProfilePipes();
 		});
 
-		ProfileMetadata minVersion = new ProfileMetadata("Min. version KARNAK required",
-				profileEntity.getMinimumKarnakVersion(), profileEntity.getByDefault());
+		ProfileMetadata minVersion = new ProfileMetadata("Min Karnak version", profileEntity.getMinimumKarnakVersion(),
+				profileEntity.getByDefault());
 		minVersion.getValidateEditButton().addClickListener(event -> {
 			profileEntity.setMinimumKarnakVersion(minVersion.getValue());
 			updatedProfilePipes();

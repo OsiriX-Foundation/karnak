@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.karnak.backend.cache.Patient;
@@ -57,12 +56,12 @@ public class CSVDialog extends Dialog {
 			ISSUER_OF_PATIENT_ID };
 
 	@Getter
-    private final List<Patient> patientsList;
+	private final List<Patient> patientsList;
 
 	private NumberField fromLineField;
 
 	@Getter
-    private Button readCSVButton;
+	private Button readCSVButton;
 
 	private Button cancelButton;
 
@@ -238,7 +237,7 @@ public class CSVDialog extends Dialog {
 		}
 	}
 
-    public void resetPatientsList() {
+	public void resetPatientsList() {
 		patientsList.clear();
 	}
 

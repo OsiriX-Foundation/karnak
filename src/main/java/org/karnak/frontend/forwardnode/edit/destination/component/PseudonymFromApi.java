@@ -15,7 +15,6 @@ import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
-import java.io.Serial;
 import java.util.Objects;
 import lombok.Getter;
 import org.karnak.backend.data.entity.DestinationEntity;
@@ -23,9 +22,6 @@ import org.karnak.frontend.util.UIS;
 
 @Getter
 public class PseudonymFromApi extends Div {
-
-	@Serial
-	private static final long serialVersionUID = -8231199154345793870L;
 
 	private final Binder<DestinationEntity> destinationBinder;
 

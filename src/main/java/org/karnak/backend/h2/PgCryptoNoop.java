@@ -1,7 +1,9 @@
 package org.karnak.backend.h2;
 
 import java.nio.charset.StandardCharsets;
+import org.springframework.context.annotation.Profile;
 
+@Profile("portable")
 public final class PgCryptoNoop {
 
 	private PgCryptoNoop() {

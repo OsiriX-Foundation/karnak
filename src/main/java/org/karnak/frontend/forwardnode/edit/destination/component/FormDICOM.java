@@ -16,6 +16,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.textfield.TextFieldVariant;
 import com.vaadin.flow.data.binder.Binder;
 import java.util.Objects;
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.frontend.component.BoxShadowComponent;
@@ -35,22 +36,26 @@ public class FormDICOM extends VerticalLayout {
 
 	private TextField port;
 
-	private Checkbox useaetdest;
+	private Checkbox useAETitleCheckbox;
 
+	@Getter
 	private final DeIdentificationComponent deIdentificationComponent;
 
+	@Getter
 	private final TagMorphingComponent tagMorphingComponent;
 
+	@Getter
 	private final FilterBySOPClassesForm filterBySOPClassesForm;
-
-	private Checkbox activate;
 
 	private final DestinationCondition destinationCondition;
 
+	@Getter
 	private final NotificationComponent notificationComponent;
 
+	@Getter
 	private final TransferSyntaxComponent transferSyntaxComponent;
 
+	@Getter
 	private final TranscodeOnlyUncompressedComponent transcodeOnlyUncompressedComponent;
 
 	public FormDICOM() {
@@ -80,8 +85,8 @@ public class FormDICOM extends VerticalLayout {
 		description = new TextField("Description");
 		hostname = new TextField("Hostname");
 		port = new TextField("Port");
-		useaetdest = new Checkbox("Use AETitle destination");
-		activate = new Checkbox("Enable destination");
+		useAETitleCheckbox = new Checkbox("Use AETitle destination");
+		Checkbox activate = new Checkbox("Enable destination");
 
 		// Define layout
 		VerticalLayout destinationLayout = new VerticalLayout(
@@ -89,7 +94,7 @@ public class FormDICOM extends VerticalLayout {
 				UIS.setWidthFull(new HorizontalLayout(hostname, port)));
 		VerticalLayout transferLayout = new VerticalLayout(
 				new HorizontalLayout(transferSyntaxComponent, transcodeOnlyUncompressedComponent));
-		VerticalLayout useaetdestLayout = new VerticalLayout(new HorizontalLayout(useaetdest));
+		VerticalLayout useaetdestLayout = new VerticalLayout(new HorizontalLayout(useAETitleCheckbox));
 		VerticalLayout activateLayout = new VerticalLayout(activate);
 
 		// Set padding
@@ -124,7 +129,7 @@ public class FormDICOM extends VerticalLayout {
 		port.setWidth("30%");
 		port.addThemeVariants(TextFieldVariant.LUMO_ALIGN_RIGHT);
 
-		UIS.setTooltip(useaetdest,
+		UIS.setTooltip(useAETitleCheckbox,
 				"if \"true\" then use the destination AETitle as the calling  AETitle at the gateway side");
 	}
 
@@ -145,30 +150,6 @@ public class FormDICOM extends VerticalLayout {
 			.bind(DestinationEntity::getPort, DestinationEntity::setPort);
 
 		binder.bindInstanceFields(this);
-	}
-
-	public DeIdentificationComponent getDeIdentificationComponent() {
-		return deIdentificationComponent;
-	}
-
-	public TagMorphingComponent getTagMorphingComponent() {
-		return tagMorphingComponent;
-	}
-
-	public FilterBySOPClassesForm getFilterBySOPClassesForm() {
-		return filterBySOPClassesForm;
-	}
-
-	public NotificationComponent getNotificationComponent() {
-		return notificationComponent;
-	}
-
-	public TransferSyntaxComponent getTransferSyntaxComponent() {
-		return transferSyntaxComponent;
-	}
-
-	public TranscodeOnlyUncompressedComponent getTranscodeOnlyUncompressedComponent() {
-		return transcodeOnlyUncompressedComponent;
 	}
 
 }

@@ -15,7 +15,6 @@ import java.net.URL;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.karnak.backend.cache.ExternalIDCache;
 import org.karnak.backend.cache.PatientClient;
 import org.karnak.backend.data.repo.ProfileRepo;
 import org.karnak.backend.model.profilebody.ProfilePipeBody;

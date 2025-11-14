@@ -57,8 +57,7 @@ public class PseudonymMappingLogic {
 	public Map<String, Patient> retrieveExternalIDCachePatients(String pseudonym) {
 		Map<String, Patient> externalIDCacheMapping = new HashMap<>();
 
-		// Look for patients in externalID cache corresponding to the input of the
-		// user
+		// Look for patients in externalID cache corresponding to the input of the user
 		List<Patient> patientsFound = externalIDCache.getAll()
 			.stream()
 			.filter(extId -> Objects.equals(extId.getPseudonym(), pseudonym))

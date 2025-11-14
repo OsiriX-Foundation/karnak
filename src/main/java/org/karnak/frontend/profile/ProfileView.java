@@ -20,6 +20,7 @@ import com.vaadin.flow.router.OptionalParameter;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.streams.UploadHandler;
+import java.io.InputStream;
 import lombok.Getter;
 import org.karnak.backend.data.entity.ProfileEntity;
 import org.karnak.frontend.MainLayout;
@@ -30,12 +31,10 @@ import org.karnak.frontend.profile.component.errorprofile.ProfileErrorView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 
-import java.io.InputStream;
-
 @Route(value = ProfileView.ROUTE, layout = MainLayout.class)
-@PageTitle("KARNAK - Profiles")
+@PageTitle("Karnak - Profiles")
 @Secured({ "ROLE_admin" })
-@SuppressWarnings("serial")
+
 public class ProfileView extends HorizontalLayout implements HasUrlParameter<String> {
 
 	public static final String VIEW_NAME = "Profiles";
