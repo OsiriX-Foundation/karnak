@@ -10,13 +10,15 @@
 package org.karnak;
 
 import com.vaadin.flow.spring.annotation.EnableVaadin;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 import org.karnak.backend.config.AppConfig;
 import org.karnak.backend.enums.ApplicationProfile;
 import org.karnak.backend.enums.EnvironmentVariable;
-import org.opencv.osgi.OpenCVNativeLoader;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -43,6 +45,9 @@ public class KarnakApplication implements CommandLineRunner {
 		this.myConfig = myConfig;
 	}
 
+	@Value("${server.port}")
+	private int serverPort;
+
 	public static void main(String[] args) {
 
 		SpringApplicationBuilder application = new SpringApplicationBuilder(KarnakApplication.class);
@@ -60,9 +65,16 @@ public class KarnakApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) {
-		log.info("StartApplication");
-		log.info("using environment: " + (myConfig != null ? myConfig.getEnvironment() : ""));
-		log.info("name: " + (myConfig != null ? myConfig.getName() : ""));
+		log.info("Karnak application started successfully");
+		log.info("Environment: {}", myConfig != null ? myConfig.getEnvironment() : "not configured");
+		log.info("Profile name: {}", myConfig != null ? myConfig.getName() : "default");
+		try {
+			String hostname = InetAddress.getLocalHost().getHostAddress();
+			log.info("Web UI available at: http://{}:{}", hostname, serverPort);
+		}
+		catch (UnknownHostException e) {
+			log.info("Web UI available at: http://localhost:{}", serverPort);
+		}
 	}
 
 }
