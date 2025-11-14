@@ -9,6 +9,22 @@ set -euo pipefail
 log() { echo "[run.sh] $*"; }
 die() { echo "ERROR: $*" >&2; exit 1; }
 
+generate_db_password() {
+  local pwd_file="$APP_DIR/.db_pwd"
+
+  if [[ ! -f "$pwd_file" ]]; then
+    log "Generating database password..."
+    # Write to file with user-only permissions
+    openssl rand -base64 32 | tr -d "=+/" | cut -c1-32 > "$pwd_file"
+    chmod 600 "$pwd_file"
+    log "Database password stored in '$pwd_file' (user-only access)"
+  fi
+
+  # Read and export the password
+  DB_FILE_PWD=$(cat "$pwd_file")
+  export DB_FILE_PWD
+}
+
 # Default values
 CONFIG_FILE="./run.cfg"
 
@@ -31,7 +47,10 @@ done
 
 # Set the application directory
 APP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$APP_DIR"
 APP_BIN="$APP_DIR/Karnak/bin"
+
+generate_db_password
 
 # Source configuration file and export all variables
 if [[ -f "$CONFIG_FILE" ]]; then

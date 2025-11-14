@@ -1,3 +1,6 @@
+server:
+  address: localhost   # listen only on localhost
+  port: ${KARNAK_WEB_PORT:8081}
 spring:
   sql:
     init:
@@ -7,10 +10,10 @@ spring:
   datasource:
     url: jdbc:h2:file:./data/karnak;CIPHER=AES;AUTO_SERVER=TRUE
     driver-class-name: org.h2.Driver
-    username: sa
+    username: ${DB_USER:karnak}
     # Combined password => "<file_password> <user_password>"
     # Use env or system props: H2_FILE_PWD / H2_USER_PWD
-    password: "${H2_FILE_PWD:StrongFileKey} ${H2_USER_PWD:StrongUserPwd}"
+    password: "${DB_FILE_PWD:StrongFileKey} ${DB_PASSWORD:karnakUserPassword}"
     hikari:
       pool-name: karnak-h2
       # Remove the PostgreSQL-specific encryption connection init SQL

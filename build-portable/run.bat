@@ -16,8 +16,12 @@ exit /b 1
 
 rem Setup paths
 set "APP_DIR=%~dp0"
+cd /d "%APP_DIR%"
 set "APP_BIN=%APP_DIR%Karnak"
 set "KARNAK_BIN=%APP_BIN%\Karnak.exe"
+
+rem Generate or load database password
+call :generate_db_password
 
 rem Load configuration file
 if exist "%CONFIG_FILE%" (
@@ -43,6 +47,32 @@ rem Start Karnak
 echo [run.bat] Starting Karnak from '%KARNAK_BIN%'
 start "Karnak" "%KARNAK_BIN%"
 
+exit /b 0
+
+:generate_db_password
+set "PWD_FILE=%APP_DIR%.db_pwd"
+if not exist "%PWD_FILE%" (
+    echo [run.bat] Generating database password...
+    rem Generate random password using PowerShell
+    powershell -NoProfile -Command ^
+      "$path = '%PWD_FILE%';" ^
+      "$bytes = New-Object byte[] 32;" ^
+      "(New-Object Security.Cryptography.RNGCryptoServiceProvider).GetBytes($bytes);" ^
+      "$pwd = [Convert]::ToBase64String($bytes) -replace '[+/=]', '';" ^
+      "$pwd = $pwd.Substring(0,32);" ^
+      "Set-Content -Path $path -Value $pwd -NoNewline;" ^
+      "$acl = New-Object System.Security.AccessControl.FileSecurity;" ^
+      "$user = [System.Security.Principal.NTAccount]::new($env:UserDomain, $env:UserName);" ^
+      "$rule = New-Object System.Security.AccessControl.FileSystemAccessRule($user,'FullControl','Allow');" ^
+      "$acl.SetOwner($user);" ^
+      "$acl.SetAccessRuleProtection($true,$false);" ^
+      "$acl.SetAccessRule($rule);" ^
+      "Set-Acl -Path $path -AclObject $acl;"
+
+    echo [run.bat] Database password stored in '%PWD_FILE%' (user-only ACL set)
+)
+rem Read password from file
+set /p DB_FILE_PWD=<"%PWD_FILE%"
 exit /b 0
 
 :show_help

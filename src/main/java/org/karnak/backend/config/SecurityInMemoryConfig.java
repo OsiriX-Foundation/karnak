@@ -95,8 +95,8 @@ public class SecurityInMemoryConfig {
 	public UserDetailsService userDetailsService() {
 		// Configure users and roles in memory
 		UserDetails userDetails = User.builder()
-			.username(AppConfig.getInstance().getKarnakadmin())
-			.password("{noop}" + AppConfig.getInstance().getKarnakpassword())
+			.username(AppConfig.getInstance().getKarnakAdmin())
+			.password("{noop}" + AppConfig.getInstance().getKarnakPassword())
 			.roles(SecurityRole.ADMIN_ROLE.getType(), SecurityRole.INVESTIGATOR_ROLE.getType(),
 					SecurityRole.USER_ROLE.getType())
 			.build();

@@ -70,6 +70,9 @@ public class KarnakApplication implements CommandLineRunner {
 		log.info("Profile name: {}", myConfig != null ? myConfig.getName() : "default");
 		try {
 			String hostname = InetAddress.getLocalHost().getHostAddress();
+      if (hostname.startsWith("127.") || "0:0:0:0:0:0:0:1".equals(hostname) || "::1".equals(hostname)) {
+        hostname = "localhost";
+      }
 			log.info("Web UI available at: http://{}:{}", hostname, serverPort);
 		}
 		catch (UnknownHostException e) {
