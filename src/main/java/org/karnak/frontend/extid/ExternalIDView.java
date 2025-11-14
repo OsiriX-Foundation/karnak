@@ -40,7 +40,6 @@ import org.springframework.security.access.annotation.Secured;
 @PageTitle("Karnak - External ID")
 @Tag("extid-view")
 @Secured({ "ROLE_user", "ROLE_admin" })
-
 public class ExternalIDView extends HorizontalLayout {
 
 	public static final String VIEW_NAME = "External pseudonym";
