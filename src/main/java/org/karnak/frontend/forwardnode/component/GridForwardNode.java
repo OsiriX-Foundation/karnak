@@ -12,8 +12,9 @@ package org.karnak.frontend.forwardnode.component;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridSortOrder;
 import com.vaadin.flow.data.provider.SortDirection;
-import java.util.Arrays;
+import java.util.List;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
+import org.karnak.frontend.util.CollatorUtils;
 
 public class GridForwardNode extends Grid<ForwardNodeEntity> {
 
@@ -23,13 +24,16 @@ public class GridForwardNode extends Grid<ForwardNodeEntity> {
 		Column<ForwardNodeEntity> forwardAeTitleColumn = addColumn(ForwardNodeEntity::getFwdAeTitle)
 			.setHeader("Forward AETitle")
 			.setFlexGrow(20)
-			.setSortable(true);
+			.setSortable(true)
+			.setComparator(CollatorUtils.comparing(ForwardNodeEntity::getFwdAeTitle));
 
-		addColumn(ForwardNodeEntity::getFwdDescription).setHeader("Description").setFlexGrow(20).setSortable(true);
+		addColumn(ForwardNodeEntity::getFwdDescription).setHeader("Description")
+			.setFlexGrow(20)
+			.setSortable(true)
+			.setComparator(CollatorUtils.comparing(ForwardNodeEntity::getFwdDescription));
 
-		// Set by default the order on the name of the column Forward AeTitle
 		GridSortOrder<ForwardNodeEntity> order = new GridSortOrder<>(forwardAeTitleColumn, SortDirection.ASCENDING);
-		sort(Arrays.asList(order));
+		sort(List.of(order));
 	}
 
 	public ForwardNodeEntity getSelectedRow() {
