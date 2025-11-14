@@ -18,6 +18,8 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.validator.StringLengthValidator;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.backend.cache.Patient;
 import org.karnak.backend.data.entity.ProjectEntity;
@@ -28,6 +30,7 @@ public class ExternalIDForm extends Div {
 
 	private final Binder<Patient> binder;
 
+	@Setter
 	private transient ProjectEntity projectEntity;
 
 	private TextField externalIdField;
@@ -40,6 +43,7 @@ public class ExternalIDForm extends Div {
 
 	private TextField issuerOfPatientIdField;
 
+	@Getter
 	private Button addPatientButton;
 
 	private Button clearFieldsButton;
@@ -153,14 +157,6 @@ public class ExternalIDForm extends Div {
 		patientLastNameField.clear();
 		issuerOfPatientIdField.clear();
 		binder.readBean(null);
-	}
-
-	public Button getAddPatientButton() {
-		return addPatientButton;
-	}
-
-	public void setProjectEntity(ProjectEntity projectEntity) {
-		this.projectEntity = projectEntity;
 	}
 
 }

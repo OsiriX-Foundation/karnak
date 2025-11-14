@@ -29,7 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 
 @Route(value = AuthConfigView.ROUTE, layout = MainLayout.class)
-@PageTitle("KARNAK - Authentication Config")
+@PageTitle("Karnak - Authentication Config")
 @Tag("auth-config-view")
 @Secured({ "ROLE_admin" })
 public class AuthConfigView extends HorizontalLayout {

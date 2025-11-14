@@ -24,8 +24,6 @@ import org.dcm4che3.data.Attributes;
 
 public class DicomPane extends Composite<Dialog> {
 
-	private static final long serialVersionUID = 1L;
-
 	// CONTROLLER
 	private final DicomPaneLogic logic = new DicomPaneLogic(this);
 

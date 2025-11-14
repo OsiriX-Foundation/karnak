@@ -25,11 +25,9 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-
-import java.io.*;
-import java.util.ArrayList;
-
 import com.vaadin.flow.server.streams.UploadHandler;
+import java.io.InputStream;
+import java.util.ArrayList;
 import org.karnak.backend.cache.Patient;
 import org.karnak.backend.util.PatientClientUtil;
 import org.karnak.frontend.MainLayout;
@@ -39,10 +37,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 
 @Route(value = ExternalIDView.ROUTE, layout = MainLayout.class)
-@PageTitle("KARNAK - External ID")
+@PageTitle("Karnak - External ID")
 @Tag("extid-view")
 @Secured({ "ROLE_user", "ROLE_admin" })
-@SuppressWarnings("serial")
+
 public class ExternalIDView extends HorizontalLayout {
 
 	public static final String VIEW_NAME = "External pseudonym";
@@ -58,8 +56,6 @@ public class ExternalIDView extends HorizontalLayout {
 
 	private final ExternalIDGrid externalIDGrid;
 
-	private final Div validationStatus;
-
 	private final ExternalIDForm externalIDForm;
 
 	private UI ui;
@@ -72,13 +68,10 @@ public class ExternalIDView extends HorizontalLayout {
 
 	private Div uploadCsvLabelDiv;
 
-	private final transient ExternalIDLogic externalIDLogic;
-
 	@Autowired
 	public ExternalIDView(final ExternalIDLogic externalIDLogic) {
 		setSizeFull();
-		this.externalIDLogic = externalIDLogic;
-		this.externalIDLogic.setExternalIDView(this);
+		externalIDLogic.setExternalIDView(this);
 		getStyle().set("overflow-y", "auto");
 		VerticalLayout verticalLayout = new VerticalLayout();
 
@@ -143,7 +136,7 @@ public class ExternalIDView extends HorizontalLayout {
 			uploadCsvButton.setMaxFiles(1);
 		});
 
-		validationStatus = externalIDGrid.setBinder();
+		Div validationStatus = externalIDGrid.setBinder();
 
 		verticalLayout.add(new H2("External Pseudonym"), labelDisclaimer, labelProject, projectDropDown,
 				uploadCsvLabelDiv, uploadCsvButton, externalIDForm, deleteAllButton, validationStatus, externalIDGrid);

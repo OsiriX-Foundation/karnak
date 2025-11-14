@@ -17,6 +17,7 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.dom.Style;
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.frontend.component.BoxShadowComponent;
@@ -27,8 +28,10 @@ import org.karnak.frontend.util.UIS;
 
 public class FormSTOW extends VerticalLayout {
 
+	@Getter
 	private final DeIdentificationComponent deIdentificationComponent;
 
+	@Getter
 	private final TagMorphingComponent tagMorphingComponent;
 
 	private Binder<DestinationEntity> binder;
@@ -41,18 +44,20 @@ public class FormSTOW extends VerticalLayout {
 
 	private TextArea headers;
 
+	@Getter
 	private final FilterBySOPClassesForm filterBySOPClassesForm;
 
 	private SwitchingAlbumsView switchingAlbumsView;
 
-	private Checkbox activate;
-
 	private final DestinationCondition destinationCondition;
 
+	@Getter
 	private final NotificationComponent notificationComponent;
 
+	@Getter
 	private final TransferSyntaxComponent transferSyntaxComponent;
 
+	@Getter
 	private final TranscodeOnlyUncompressedComponent transcodeOnlyUncompressedComponent;
 
 	public FormSTOW() {
@@ -81,7 +86,7 @@ public class FormSTOW extends VerticalLayout {
 		this.generateAuthorizationHeaderButton = new Button(AuthHeadersGenerationDialog.TITLE);
 		this.headers = new TextArea("Headers");
 		this.switchingAlbumsView = new SwitchingAlbumsView();
-		this.activate = new Checkbox("Enable destination");
+		Checkbox activate = new Checkbox("Enable destination");
 
 		// Define layout
 		VerticalLayout destinationLayout = new VerticalLayout(UIS.setWidthFull(new HorizontalLayout(description)),
@@ -162,30 +167,6 @@ public class FormSTOW extends VerticalLayout {
 			existingHeaders += "\n";
 		}
 		this.headers.setValue(existingHeaders + value);
-	}
-
-	public DeIdentificationComponent getDeIdentificationComponent() {
-		return deIdentificationComponent;
-	}
-
-	public TagMorphingComponent getTagMorphingComponent() {
-		return tagMorphingComponent;
-	}
-
-	public FilterBySOPClassesForm getFilterBySOPClassesForm() {
-		return filterBySOPClassesForm;
-	}
-
-	public NotificationComponent getNotificationComponent() {
-		return notificationComponent;
-	}
-
-	public TransferSyntaxComponent getTransferSyntaxComponent() {
-		return transferSyntaxComponent;
-	}
-
-	public TranscodeOnlyUncompressedComponent getTranscodeOnlyUncompressedComponent() {
-		return transcodeOnlyUncompressedComponent;
 	}
 
 }

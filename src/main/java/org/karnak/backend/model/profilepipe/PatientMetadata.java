@@ -9,6 +9,7 @@
  */
 package org.karnak.backend.model.profilepipe;
 
+import java.time.LocalDate;
 import lombok.Getter;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
@@ -17,8 +18,6 @@ import org.karnak.backend.cache.Patient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.weasis.core.util.StringUtil;
-
-import java.time.LocalDate;
 
 @Getter
 public class PatientMetadata {

@@ -23,9 +23,10 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.WeakHashMap;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.backend.cache.Patient;
 import org.karnak.backend.cache.PatientClient;
@@ -47,10 +48,12 @@ public class ExternalIDGrid extends PaginatedGrid<Patient, PatientFilter> {
 
 	private final Binder<Patient> binder;
 
-	private final List<Patient> patientList;
-
+	@Getter
+	@Setter
 	private transient PatientClient externalIDCache;
 
+	@Getter
+	@Setter
 	private transient ProjectEntity projectEntity;
 
 	private Button deletePatientButton;
@@ -99,18 +102,19 @@ public class ExternalIDGrid extends PaginatedGrid<Patient, PatientFilter> {
 
 	private TextField issuerOfPatientIDFilter;
 
+	@Getter
 	private List<Patient> patientsListInCache = new ArrayList<>();
 
+	@Getter
+	@Setter
 	private transient Collection<Patient> duplicatePatientsList = new ArrayList<>();
-
-	private PatientFilter patientFilter;
 
 	public ExternalIDGrid() {
 		binder = new Binder<>(Patient.class);
-		patientList = new ArrayList<>();
+		List<Patient> patientList = new ArrayList<>();
 		this.externalIDCache = AppConfig.getInstance().getExternalIDCache();
-		// TODO: to use instead of the current multiple filters..: cf TELIMA-257
-		this.patientFilter = new PatientFilter();
+		// TODO: to use instead of the current multiple filters..
+		PatientFilter patientFilter = new PatientFilter();
 
 		setSelectionMode(Grid.SelectionMode.MULTI);
 
@@ -126,12 +130,12 @@ public class ExternalIDGrid extends PaginatedGrid<Patient, PatientFilter> {
 		setBinder();
 		readAllCacheValue();
 		editor.addOpenListener(e -> {
-			editButtons.stream().forEach(button -> button.setEnabled(!editor.isOpen()));
+			editButtons.forEach(button -> button.setEnabled(!editor.isOpen()));
 			deleteColumn.setVisible(false);
 		});
 
 		editor.addCloseListener(e -> {
-			editButtons.stream().forEach(button -> button.setEnabled(!editor.isOpen()));
+			editButtons.forEach(button -> button.setEnabled(!editor.isOpen()));
 			deleteColumn.setVisible(true);
 		});
 
@@ -306,8 +310,7 @@ public class ExternalIDGrid extends PaginatedGrid<Patient, PatientFilter> {
 		if (externalIDCache != null) {
 			Collection<Patient> patients = externalIDCache.getAll();
 			patientsListInCache = new ArrayList<>();
-			for (Iterator<Patient> iterator = patients.iterator(); iterator.hasNext();) {
-				final Patient patient = iterator.next();
+			for (final Patient patient : patients) {
 				if (projectEntity != null && patient.getProjectID() != null
 						&& patient.getProjectID().equals(projectEntity.getId())) {
 					patientsListInCache.add(patient);
@@ -382,34 +385,6 @@ public class ExternalIDGrid extends PaginatedGrid<Patient, PatientFilter> {
 
 	public void setEnabledDeleteSelectedPatientsButton(Boolean value) {
 		deleteAllSelectedPatientsButton.setEnabled(value);
-	}
-
-	public Collection<Patient> getDuplicatePatientsList() {
-		return duplicatePatientsList;
-	}
-
-	public void setDuplicatePatientsList(Collection<Patient> duplicatePatientsList) {
-		this.duplicatePatientsList = duplicatePatientsList;
-	}
-
-	public ProjectEntity getProjectEntity() {
-		return projectEntity;
-	}
-
-	public void setProjectEntity(ProjectEntity projectEntity) {
-		this.projectEntity = projectEntity;
-	}
-
-	public PatientClient getExternalIDCache() {
-		return externalIDCache;
-	}
-
-	public void setExternalIDCache(PatientClient externalIDCache) {
-		this.externalIDCache = externalIDCache;
-	}
-
-	public List<Patient> getPatientsListInCache() {
-		return patientsListInCache;
 	}
 
 }

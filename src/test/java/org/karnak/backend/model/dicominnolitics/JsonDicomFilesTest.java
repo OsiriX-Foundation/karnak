@@ -1,6 +1,7 @@
 package org.karnak.backend.model.dicominnolitics;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.Test;
 
 /**

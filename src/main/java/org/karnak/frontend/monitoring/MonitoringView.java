@@ -32,7 +32,7 @@ import org.springframework.security.access.annotation.Secured;
  * Monitoring View
  */
 @Route(value = MonitoringView.ROUTE, layout = MainLayout.class)
-@PageTitle("KARNAK - Monitoring")
+@PageTitle("Karnak - Monitoring")
 @Secured({ "ROLE_admin" })
 public class MonitoringView extends VerticalLayout {
 

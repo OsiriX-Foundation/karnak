@@ -31,12 +31,9 @@ public class FormSourceNode extends VerticalLayout {
 
 	private final Checkbox checkHostname;
 
-	private final ButtonSaveDeleteCancel buttonSaveDeleteCancel;
-
 	public FormSourceNode(Binder<DicomSourceNodeEntity> binder, ButtonSaveDeleteCancel buttonSaveDeleteCancel) {
 		setSizeFull();
 		this.binder = binder;
-		this.buttonSaveDeleteCancel = buttonSaveDeleteCancel;
 		aeTitle = new TextField("AETitle");
 		description = new TextField("Description");
 		hostname = new TextField("Hostname");
