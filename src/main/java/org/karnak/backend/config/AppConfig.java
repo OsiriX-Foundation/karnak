@@ -53,10 +53,10 @@ public class AppConfig {
 	private String name;
 
 	@Setter
-	private String karnakadmin;
+	private String karnakAdmin;
 
 	@Setter
-	private String karnakpassword;
+	private String karnakPassword;
 
 	private final ProfileRepo profileRepo;
 
@@ -76,12 +76,12 @@ public class AppConfig {
 		instance = this;
 	}
 
-	public String getKarnakadmin() {
-		return karnakadmin != null ? karnakadmin : "admin";
+	public String getKarnakAdmin() {
+		return karnakAdmin != null ? karnakAdmin : "admin";
 	}
 
-	public String getKarnakpassword() {
-		return karnakpassword != null ? karnakpassword : "admin";
+	public String getKarnakPassword() {
+		return karnakPassword != null ? karnakPassword : "karnak";
 	}
 
 	@Bean("ConfidentialityProfiles")

@@ -5,6 +5,37 @@
       <key>ENVIRONMENT</key>
       <value>DEV</value>
     </condition>
+
+      <springProfile name="portable">
+        <appender name="PORTABLE_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+          <encoder>
+            <pattern>%black(%d{ISO8601})  %highlight(%-5level) %marker %highlight(%X{SOPInstanceUID}) %highlight(%X{issuerOfPatientID}) %highlight(%X{PatientID}) [%yellow(%t)] %yellow(%C{1}): %msg%n%throwable </pattern>
+          </encoder>
+        </appender>
+
+        <appender name="PORTABLE_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+          <file>${LOGS}/karnak.log</file>
+          <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>${LOGS}/karnak%i.log</fileNamePattern>
+            <minIndex>${KARNAK_LOGS_MIN_INDEX:-1}</minIndex>
+            <maxIndex>${KARNAK_LOGS_MAX_INDEX:-10}</maxIndex>
+          </rollingPolicy>
+          <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>${KARNAK_LOGS_MAX_FILE_SIZE:-50MB}</maxFileSize>
+          </triggeringPolicy>
+          <encoder>
+            <pattern>%black(%d{ISO8601})  %highlight(%-5level) %marker %highlight(%X{SOPInstanceUID}) %highlight(%X{issuerOfPatientID}) %highlight(%X{PatientID}) [%yellow(%t)] %yellow(%C{1}): %msg%n%throwable </pattern>
+          </encoder>
+        </appender>
+
+        <root level="info">
+          <appender-ref ref="PORTABLE_CONSOLE" />
+          <appender-ref ref="PORTABLE_FILE" />
+        </root>
+        <logger name="org.weasis" level="info" />
+        <logger name="org.karnak" level="info" />
+      </springProfile>
+
     <if>
         <then>
             <appender name="DEV_OUT" class="ch.qos.logback.core.ConsoleAppender">
