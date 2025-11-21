@@ -89,7 +89,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
 	@Getter
 	private ForwardNodeEntity currentForwardNodeEntity;
 
-	public LayoutEditForwardNode(final ForwardNodeLogic forwardNodeLogic, Environment environment) {
+	public LayoutEditForwardNode(ForwardNodeLogic forwardNodeLogic, Environment environment) {
 		this.projectService = forwardNodeLogic.getProjectService();
 		this.sopClassUIDService = forwardNodeLogic.getSopClassUIDService();
 		this.currentForwardNodeEntity = null;
@@ -101,7 +101,7 @@ public class LayoutEditForwardNode extends VerticalLayout {
 		this.newUpdateSourceNode = new NewUpdateSourceNode();
 		this.sourceView = new SourceView(forwardNodeLogic);
 		this.destinationView = new DestinationView(forwardNodeLogic, environment);
-		this.editAETitleDescription = new EditAETitleDescription(binderForwardNode, environment);
+		this.editAETitleDescription = new EditAETitleDescription(binderForwardNode, forwardNodeLogic, environment);
 
 		// Init components
 		initComponents();
