@@ -21,10 +21,6 @@ import org.dcm4che3.io.DicomOutputStream;
 @Slf4j
 public class DicomPaneLogic {
 
-	public DicomPaneLogic(DicomPane pane) {
-		// PANE
-	}
-
 	public InputStream getWorklistItemInputStreamInDicom(Attributes attributes) {
 		InputStream inputStream = null;
 

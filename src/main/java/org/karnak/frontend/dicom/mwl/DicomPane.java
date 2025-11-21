@@ -25,7 +25,7 @@ import org.dcm4che3.data.Attributes;
 public class DicomPane extends Composite<Dialog> {
 
 	// CONTROLLER
-	private final DicomPaneLogic logic = new DicomPaneLogic(this);
+	private final DicomPaneLogic logic = new DicomPaneLogic();
 
 	// DATA
 	private final Attributes dcm;

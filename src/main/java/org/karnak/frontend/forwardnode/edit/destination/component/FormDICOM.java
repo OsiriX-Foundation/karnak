@@ -28,15 +28,22 @@ public class FormDICOM extends VerticalLayout {
 
 	private Binder<DestinationEntity> binder;
 
+	@Getter
 	private TextField aeTitle;
 
+	@Getter
 	private TextField description;
 
+	@Getter
 	private TextField hostname;
 
+	@Getter
 	private TextField port;
 
 	private Checkbox useAETitleCheckbox;
+
+	@Getter
+	private Checkbox activate;
 
 	@Getter
 	private final DeIdentificationComponent deIdentificationComponent;
@@ -86,7 +93,7 @@ public class FormDICOM extends VerticalLayout {
 		hostname = new TextField("Hostname");
 		port = new TextField("Port");
 		useAETitleCheckbox = new Checkbox("Use AETitle destination");
-		Checkbox activate = new Checkbox("Enable destination");
+		activate = new Checkbox("Enable destination");
 
 		// Define layout
 		VerticalLayout destinationLayout = new VerticalLayout(

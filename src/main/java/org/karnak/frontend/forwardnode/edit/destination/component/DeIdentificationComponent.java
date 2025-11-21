@@ -230,9 +230,7 @@ public class DeIdentificationComponent extends VerticalLayout {
 
 		destinationBinder.forField(pseudonymTypeSelect)
 			.withValidator(Objects::nonNull, "Choose pseudonym type\n")
-			.bind(destination -> {
-				return destination.getPseudonymType().getValue();
-			}, (destination, s) -> {
+			.bind(destination -> destination.getPseudonymType().getValue(), (destination, s) -> {
 				if (s.equals(EXTID_IN_TAG.getValue())) {
 					destination.setPseudonymType(EXTID_IN_TAG);
 				}
@@ -251,8 +249,7 @@ public class DeIdentificationComponent extends VerticalLayout {
 	 */
 	public void cleanUnSavedData(DestinationEntity destinationEntity) {
 		// Reset the destination for the part tag is in dicom tag in case the pseudonym
-		// type selected is
-		// not pseudonym in dicom tag or deidentification not active
+		// type selected is not pseudonym in dicom tag or deidentification not active
 		if (!destinationEntity.isDesidentification()
 				|| !Objects.equals(destinationEntity.getPseudonymType(), EXTID_IN_TAG)) {
 			destinationEntity.setTag(null);
