@@ -28,12 +28,10 @@
           </encoder>
         </appender>
 
-        <root level="info">
-          <appender-ref ref="PORTABLE_CONSOLE" />
-          <appender-ref ref="PORTABLE_FILE" />
-        </root>
-        <logger name="org.weasis" level="info" />
-        <logger name="org.karnak" level="info" />
+        <logger name="org.karnak" level="info" additivity="false">
+          <appender-ref ref="PORTABLE_CONSOLE"/>
+          <appender-ref ref="PORTABLE_FILE"/>
+        </logger>
       </springProfile>
 
     <if>

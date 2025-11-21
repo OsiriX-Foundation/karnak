@@ -54,13 +54,13 @@ Note: this portable package runs an embedded database (H2) in a file mode, and t
 
 - Launch the components needed by Karnak (see below "Configure Postgres database with docker")
 - Enable Spring and Spring Boot for the project
-- Create a Spring Boot launcher from main of StartApplication.java
+- Create a Spring Boot launcher from the main of StartApplication.java
     - Working Directory must be the mvc directory
     - In VM Options:
       - Add `-Djava.library.path="/tmp/dicom-opencv"`. Note: the tmp folder must be adapted according to your system and `dicom-opencv` is mandatory as the last folder.
       - Optional: Add `-Dvaadin.productionMode=true` to enable production mode
     - In Environment variables, add the following values. The following values work with our default
-      configuration define with docker used for the development (see: "Configure locally Postgres database with docker") :
+      configuration defined with docker used for the development (see: "Configure local Postgres database with docker") :
         - Mandatory:
             - `ENVIRONMENT=DEV`
         - Optional:
@@ -71,13 +71,7 @@ Note: this portable package runs an embedded database (H2) in a file mode, and t
             - `DB_HOST=localhost`
             - `DB_ENCRYPTION_KEY=fsGuSZRIEr$HwlTDPglZg*Vl7WtJCZz6RLvqoMKWSA!`
             - `KARNAK_ADMIN=admin`
-            - `KARNAK_PASSWORD=admin`
-            - `KARNAK_LOGS_MAX_FILE_SIZE=100MB`
-            - `KARNAK_LOGS_MIN_INDEX=1`
-            - `KARNAK_LOGS_MAX_INDEX=10`
-            - `KARNAK_CLINICAL_LOGS_MAX_FILE_SIZE=100MB`
-            - `KARNAK_CLINICAL_LOGS_MIN_INDEX=1`
-            - `KARNAK_CLINICAL_LOGS_MAX_INDEX=10`
+            - `KARNAK_PASSWORD=karnak`
             - `IDP=undefined`
             - `OIDC_CLIENT_ID=undefined`
             - `OIDC_CLIENT_SECRET=undefined`

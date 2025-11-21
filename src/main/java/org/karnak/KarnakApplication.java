@@ -24,6 +24,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.lang.Nullable;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -40,9 +42,12 @@ public class KarnakApplication implements CommandLineRunner {
 
 	private final AppConfig myConfig;
 
+	private final Environment environment;
+
 	@Autowired
-	public KarnakApplication(@Nullable AppConfig myConfig) {
+	public KarnakApplication(@Nullable AppConfig myConfig, Environment environment) {
 		this.myConfig = myConfig;
+		this.environment = environment;
 	}
 
 	@Value("${server.port}")
@@ -69,10 +74,13 @@ public class KarnakApplication implements CommandLineRunner {
 		log.info("Environment: {}", myConfig != null ? myConfig.getEnvironment() : "not configured");
 		log.info("Profile name: {}", myConfig != null ? myConfig.getName() : "default");
 		try {
-			String hostname = InetAddress.getLocalHost().getHostAddress();
-      if (hostname.startsWith("127.") || "0:0:0:0:0:0:0:1".equals(hostname) || "::1".equals(hostname)) {
-        hostname = "localhost";
-      }
+			String hostname;
+			if (environment.acceptsProfiles(Profiles.of("portable"))) {
+				hostname = "localhost";
+			}
+			else {
+				hostname = InetAddress.getLocalHost().getHostName();
+			}
 			log.info("Web UI available at: http://{}:{}", hostname, serverPort);
 		}
 		catch (UnknownHostException e) {

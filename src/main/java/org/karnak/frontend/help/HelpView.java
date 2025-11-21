@@ -43,8 +43,8 @@ public class HelpView extends VerticalLayout {
 				"General documentation");
 		generalDoc.setTarget("_blank");
 
-		Anchor installation = new Anchor("https://osirix-foundation.github.io/karnak-documentation/en/installation/",
-				"Installation and configuration with Docker");
+		Anchor installation = new Anchor("https://osirix-foundation.github.io/karnak-documentation/en/userguide/",
+				"User guide: configuration and administration");
 		installation.setTarget("_blank");
 
 		Anchor profile = new Anchor("https://osirix-foundation.github.io/karnak-documentation/en/profiles/",

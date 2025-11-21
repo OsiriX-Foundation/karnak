@@ -68,8 +68,8 @@ public class EndpointServiceTest {
 
 		Attributes attributes = new Attributes();
 		attributes.setString(Tag.PatientID, VR.LO, "1234");
-		attributes.setString(Tag.ClinicalTrialSponsorName, VR.LO, "project_hug_research");
-		assertEquals("http://example.com/project_hug_research/patient/1234/endpoint",
+		attributes.setString(Tag.ClinicalTrialSponsorName, VR.LO, "project_A");
+		assertEquals("http://example.com/project_A/patient/1234/endpoint",
 				evaluateStringWithExpression(testUrl, attributes));
 	}
 
@@ -92,7 +92,7 @@ public class EndpointServiceTest {
 
 		Attributes attributes = new Attributes();
 		attributes.setString(Tag.PatientID, VR.LO, "1234");
-		attributes.setString(Tag.ClinicalTrialSponsorName, VR.LO, "project_hug_research");
+		attributes.setString(Tag.ClinicalTrialSponsorName, VR.LO, "project_A");
 		assertEquals(testBody, evaluateStringWithExpression(testBody, attributes));
 	}
 
@@ -115,7 +115,7 @@ public class EndpointServiceTest {
 
 		Attributes attributes = new Attributes();
 		attributes.setString(Tag.PatientID, VR.LO, "1234");
-		attributes.setString(Tag.ClinicalTrialSponsorName, VR.LO, "project_hug_research");
+		attributes.setString(Tag.ClinicalTrialSponsorName, VR.LO, "project_A");
 		assertEquals("{ \"patientId\": 1234 }", evaluateStringWithExpression(testBody, attributes));
 	}
 
@@ -138,8 +138,8 @@ public class EndpointServiceTest {
 
 		Attributes attributes = new Attributes();
 		attributes.setString(Tag.PatientID, VR.LO, "1234");
-		attributes.setString(Tag.ClinicalTrialSponsorName, VR.LO, "project_hug_research");
-		assertEquals("{ \"patientId\": 1234, \"project\": \"project_hug_research\" }",
+		attributes.setString(Tag.ClinicalTrialSponsorName, VR.LO, "project_A");
+		assertEquals("{ \"patientId\": 1234, \"project\": \"project_A\" }",
 				evaluateStringWithExpression(testBody, attributes));
 	}
 

@@ -36,13 +36,18 @@ public class FormSTOW extends VerticalLayout {
 
 	private Binder<DestinationEntity> binder;
 
+	@Getter
 	private TextField description;
 
+	@Getter
 	private TextField url;
 
 	private Button generateAuthorizationHeaderButton;
 
 	private TextArea headers;
+
+	@Getter
+	private Checkbox activate;
 
 	@Getter
 	private final FilterBySOPClassesForm filterBySOPClassesForm;
@@ -86,7 +91,7 @@ public class FormSTOW extends VerticalLayout {
 		this.generateAuthorizationHeaderButton = new Button(AuthHeadersGenerationDialog.TITLE);
 		this.headers = new TextArea("Headers");
 		this.switchingAlbumsView = new SwitchingAlbumsView();
-		Checkbox activate = new Checkbox("Enable destination");
+		this.activate = new Checkbox("Enable destination");
 
 		// Define layout
 		VerticalLayout destinationLayout = new VerticalLayout(UIS.setWidthFull(new HorizontalLayout(description)),
