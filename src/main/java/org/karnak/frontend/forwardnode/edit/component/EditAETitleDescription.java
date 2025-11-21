@@ -24,6 +24,7 @@ import java.util.concurrent.CompletableFuture;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.util.SystemPropertyUtil;
+import org.karnak.frontend.forwardnode.ForwardNodeLogic;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
 import org.weasis.core.util.StringUtil;
@@ -40,13 +41,19 @@ public class EditAETitleDescription extends HorizontalLayout {
 
 	private final Binder<ForwardNodeEntity> binder;
 
-	public EditAETitleDescription(Binder<ForwardNodeEntity> binder, Environment environment) {
+	public EditAETitleDescription(Binder<ForwardNodeEntity> binder, ForwardNodeLogic forwardNodeLogic,
+			Environment environment) {
 		this.binder = binder;
 		this.textFieldAETitle = new TextField("Forward AETitle");
 		this.textFieldDescription = new TextField("Description");
 		this.selectFolderButton = new Button("Upload local folder", VaadinIcon.FOLDER_OPEN.create());
 		selectFolderButton.addClickListener(event -> {
 			ForwardNodeEntity forwardNode = binder.getBean();
+
+			if (forwardNode != null) {
+				forwardNode = forwardNodeLogic.retrieveForwardNodeById(forwardNode.getId());
+			}
+
 			if (forwardNode != null && forwardNode.getDestinationEntities() != null
 					&& !forwardNode.getDestinationEntities().isEmpty()
 					&& forwardNode.getDestinationEntities().stream().anyMatch(DestinationEntity::isActivate)) {
