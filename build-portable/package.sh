@@ -5,7 +5,6 @@
 
 # Build Parameters
 REVISON_INC="1"
-PACKAGE=NO
 
 # Options
 NAME="Karnak"
@@ -43,8 +42,6 @@ echo " --jdk -j
 Path of the jdk with the jpackage module"
 echo " --temp
 Path of the temporary directory during build"
-echo " --installer
-Build also an installer"
 echo " --mac-signing-key-user-name
 Key user name of the certificate to sign the bundle"
 exit 0
@@ -69,10 +66,6 @@ TEMP_PATH="$2"
 shift # past argument
 shift # past value
 ;;
---installer)
-PACKAGE="YES"
-shift # past argument
-;;
 --mac-signing-key-user-name)
 CERTIFICATE="$2"
 shift # past argument
@@ -89,7 +82,6 @@ set -- "${POSITIONAL[@]}" # restore positional parameters
 
 curPath=$(dirname "$(readlink -f "$0")")
 rootdir="$(dirname "$curPath")"
-
 
 echo "rootdir: $rootdir"
 
@@ -140,11 +132,9 @@ echo "Platform: $machine"
 
 if [ "$machine" = "windows" ] ; then
   INPUT_PATH_UNIX=$(cygpath -u "$INPUT_PATH")
-  OUTPUT_PATH_UNIX=$(cygpath -u "$OUTPUT_PATH")
   RES="${curPath}\resources\\${machine}"
 else
   INPUT_PATH_UNIX="$INPUT_PATH"
-  OUTPUT_PATH_UNIX="$OUTPUT_PATH"
   RES="${curPath}/resources/$machine"
 fi
 
@@ -189,15 +179,16 @@ fi
 
 if [ -z "$OUTPUT_PATH" ] ; then
   OUTPUT_PATH="target/karnak-$ARC_OS-jdk$INSTALLED_MAJOR_VERSION-$KARNAK_VERSION"
-  OUTPUT_PATH_UNIX="$OUTPUT_PATH"
+  if [ -n "${GITHUB_ENV:-}" ] && [ -f "$GITHUB_ENV" ]; then
+      echo "APP_PACKAGE_FOLDER=${OUTPUT_PATH}" >> "$GITHUB_ENV"
+      echo "APP_ARTIFACT=karnak-$ARC_OS-$KARNAK_VERSION.zip" >> "$GITHUB_ENV"
+  fi
 fi
 
 
 if [ "$machine" = "windows" ] ; then
   INPUT_DIR="$INPUT_PATH\portable"
-  IMAGE_PATH="$OUTPUT_PATH\\${NAME}"
 else
-  IMAGE_PATH="$OUTPUT_PATH/$NAME"
   INPUT_DIR="$INPUT_PATH_UNIX/portable"
 fi
 
@@ -222,6 +213,8 @@ fi
 if [ "$machine" = "macosx" ] ; then
   if [[ -n "$CERTIFICATE" ]] ; then
     declare -a signArgs=("--mac-package-identifier" "$IDENTIFIER" "--mac-signing-key-user-name" "$CERTIFICATE"  "--mac-sign")
+  elif [[ -n "$MAC_KEYCHAIN_PATH" && -f "$MAC_KEYCHAIN_PATH" ]] ; then
+    declare -a signArgs=("--mac-package-identifier" "$IDENTIFIER" "--mac-signing-keychain" "$MAC_KEYCHAIN_PATH" "--mac-sign")
   else
     declare -a signArgs=("--mac-package-identifier" "$IDENTIFIER")
   fi
@@ -249,38 +242,12 @@ $JPKGCMD --type app-image --input "$INPUT_DIR" --dest "$OUTPUT_PATH" --name "$NA
 --resource-dir "$RES" --app-version "$KARNAK_CLEAN_VERSION" \
 "${tmpArgs[@]}" --verbose "${signArgs[@]}" "${commonOptions[@]}" "${consoleArgs[@]}"
 
-if [ "$machine" = "macosx" ] && [[ -n "$CERTIFICATE" ]] ; then
-    codesign --timestamp --entitlements "$RES/uri-launcher.entitlements" --options runtime --force -vvv --sign "$CERTIFICATE" "$RES/$NAME.app"
-fi
-
-if [ "$PACKAGE" = "YES" ] ; then
-  VENDOR="Karnak Team"
-  COPYRIGHT="© 2009-2025 Karnak Team"
-  if [ "$machine" = "windows" ] ; then
-    [ "$arc" = "aarch64" ]  && UPGRADE_UID="d1aa27d0-b7af-11f0-a00b-e331bd36fe07" || UPGRADE_UID="d1aa27d0-b7af-11f0-a00b-e331bd36fe06"
-    $JPKGCMD --type "msi" --app-image "$IMAGE_PATH" --dest "$OUTPUT_PATH" --name "$NAME" --resource-dir "$RES/msi/${arc}" \
-    --license-file "$INPUT_PATH\Licence.txt" --description "Karnak DICOM Gateway for deidentification" --win-upgrade-uuid "$UPGRADE_UID"  \
-    --win-console --win-menu --win-menu-group "$NAME" --copyright "$COPYRIGHT" --app-version "$KARNAK_CLEAN_VERSION" --vendor "$VENDOR" "${tmpArgs[@]}" --verbose
-    mv "$OUTPUT_PATH_UNIX/$NAME-$KARNAK_CLEAN_VERSION.msi" "$OUTPUT_PATH_UNIX/$NAME-$KARNAK_CLEAN_VERSION-${arc}.msi"
-  elif [ "$machine" = "linux" ] ; then
-    declare -a installerTypes=("deb" "rpm")
-    for installerType in "${installerTypes[@]}"; do
-      [ "${installerType}" = "rpm" ] && DEPENDENCIES="" || DEPENDENCIES="libstdc++6, libgcc1"
-      $JPKGCMD --type "$installerType" --app-image "$IMAGE_PATH" --dest "$OUTPUT_PATH"  --name "$NAME" --resource-dir "$RES" \
-      --license-file "$INPUT_PATH/Licence.txt" --description "Karnak DICOM Gateway for deidentification" --vendor "$VENDOR" \
-      --copyright "$COPYRIGHT" --app-version "$KARNAK_CLEAN_VERSION" --linux-app-release "$REVISON_INC" \
-      --linux-package-name "karnak" --linux-deb-maintainer "Nicolas Roduit" --linux-rpm-license-type "EPL-2.0" \
-      --linux-menu-group "Viewer;MedicalSoftware;Graphics;" --linux-app-category "science" --linux-package-deps "${DEPENDENCIES}" \
-      --linux-shortcut "${tmpArgs[@]}" --verbose
-      if [ -d "${TEMP_PATH}" ] ; then
-        rm -rf "${TEMP_PATH}"
-      fi
-    done
-  elif [ "$machine" = "macosx" ] ; then
-    $JPKGCMD --type "pkg" --app-image "$IMAGE_PATH.app" --dest "$OUTPUT_PATH" --name "$NAME" --resource-dir "$RES" \
-    --license-file "$INPUT_PATH/Licence.txt" --copyright "$COPYRIGHT" --app-version "$KARNAK_CLEAN_VERSION" \
-    "${tmpArgs[@]}" --verbose "${signArgs[@]}"
-  fi
+if [ "$machine" = "macosx" ] ; then
+    if [[ -n "$CERTIFICATE" ]] ; then
+      codesign --timestamp --entitlements "$RES/uri-launcher.entitlements" --options runtime --force -vvv --sign "$CERTIFICATE" "$RES/$NAME.app"
+    elif [[ -n "$MAC_DEVELOPER_ID" && -n "$MAC_KEYCHAIN_PATH" && -f "$MAC_KEYCHAIN_PATH" ]] ; then
+      codesign --timestamp --entitlements "$RES/uri-launcher.entitlements" --options runtime --force -vvv --sign "$MAC_DEVELOPER_ID" --keychain "$MAC_KEYCHAIN_PATH" "$RES/$NAME.app"
+    fi
 fi
 
 cp "$curPath/run.cfg" "$OUTPUT_PATH/"
