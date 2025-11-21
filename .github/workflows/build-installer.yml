@@ -1,0 +1,87 @@
+name: Build installers
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    env:
+      NAME: "Karnak"
+      IDENTIFIER: "org.karnak.launcher"
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: macos-15-intel, platform: x64, wsystem: macosx, warc: x86-64 }
+          - { os: macos-latest, platform: arm64, wsystem: macosx, warc: aarch64 }
+          - { os: windows-latest, platform: x64, wsystem: windows, warc: x86-64 }
+          - { os: ubuntu-latest, platform: x64, wsystem: linux, warc: x86-64 }
+          - { os: ubuntu-latest, platform: arm64, wsystem: linux, warc: aarch64 }
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up JDK
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'maven'
+
+      - name: Import Developer Certificate
+        uses: apple-actions/import-codesign-certs@v5
+        if: matrix.wsystem == 'macosx'
+        id: cert
+        with:
+          p12-file-base64: ${{ secrets.MACOS_CERTIFICATE_DEVELOPMENT }}
+          p12-password: ${{ secrets.MACOS_CERTIFICATE_PWD }}
+
+      - name: Import Installer Certificate
+        uses: apple-actions/import-codesign-certs@v5
+        if: matrix.wsystem == 'macosx'
+        with:
+          create-keychain: "false"
+          keychain-password: ${{ steps.cert.outputs.keychain-password }}
+          p12-file-base64: ${{ secrets.MACOS_CERTIFICATE_INSTALLER }}
+          p12-password: ${{ secrets.MACOS_CERTIFICATE_PWD }}
+
+      - name: Build with Maven
+        shell: bash
+        env:
+          MAC_DEVELOPER_ID: ${{ secrets.MACOS__DEVELOPER_ID }}
+          MAC_KEYCHAIN_PATH: $HOME/Library/Keychains/signing_temp.keychain-db
+        run: |
+          mvn -B -Pportable clean install
+
+      - name: Zip the package
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p target
+          if [ ! -d "target/${{ env.APP_PACKAGE_FOLDER }}" ]; then
+            echo "Package folder target/${{ env.APP_PACKAGE_FOLDER }} not found" >&2
+            exit 1
+          fi
+          rm -f "target/${{ env.APP_ARTIFACT }}"
+          (cd target && zip -r "${{ env.APP_ARTIFACT }}" "${{ env.APP_PACKAGE_FOLDER }}")
+
+      - name: Notarize Release Build
+        if: matrix.wsystem == 'macosx'
+        run: |
+          xcrun notarytool submit \
+            "target/${{ env.APP_ARTIFACT }}" \
+            --apple-id "${{ secrets.APPLE_DEVELOPER_AC_USERNAME }}" \
+            --team-id "${{ secrets.APPLE_TEAM_ID }}" \
+            --password "${{ secrets.KARNAK_PWD }}" \
+            --wait
+
+      - name: Staple Release Build
+        if: matrix.wsystem == 'macosx'
+        run: |
+          xcrun stapler staple "target/${{ env.APP_ARTIFACT }}"
+
+      - name: Upload the packaged artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.APP_ARTIFACT }}
+          path: target/${{ env.APP_ARTIFACT }}
