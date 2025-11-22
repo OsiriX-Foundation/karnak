@@ -67,7 +67,7 @@ jobs:
           if (Test-Path $artifactPath) {
             Remove-Item $artifactPath -Force
           }
-          Compress-Archive -Path $packageFolder -DestinationPath $artifactPath -Force
+          Compress-Archive -Path $packageFolder -DestinationPath -CompressionLevel Optimal -Force
 
       - name: Zip the package (Unix)
         if: matrix.wsystem != 'windows'
@@ -79,7 +79,7 @@ jobs:
             exit 1
           fi
           rm -f "target/${{ env.APP_ARTIFACT }}"
-          (cd target && zip -r "${{ env.APP_ARTIFACT }}" "${{ env.APP_PACKAGE_FOLDER }}")
+          (cd target && zip -9 -r "${{ env.APP_ARTIFACT }}" "${{ env.APP_PACKAGE_FOLDER }}")
 
       - name: Notarize Release Build
         if: matrix.wsystem == 'macosx'

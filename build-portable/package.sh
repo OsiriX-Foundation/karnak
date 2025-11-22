@@ -182,7 +182,7 @@ if [ -z "$OUTPUT_PATH" ] ; then
   OUTPUT_PATH="target/$APP_PACKAGE_FOLDER"
   if [ -n "${GITHUB_ENV:-}" ] && [ -f "$GITHUB_ENV" ]; then
       echo "APP_PACKAGE_FOLDER=$APP_PACKAGE_FOLDER" >> "$GITHUB_ENV"
-      echo "APP_ARTIFACT=karnak-$ARC_OS-$KARNAK_VERSION.zip" >> "$GITHUB_ENV"
+      echo "APP_ARTIFACT=karnak-$APP_PACKAGE_FOLDER.zip" >> "$GITHUB_ENV"
   fi
 fi
 
