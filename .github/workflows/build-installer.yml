@@ -12,8 +12,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { os: macos-15-intel, platform: x64, wsystem: macosx, warc: x86-64 }
-          - { os: macos-latest, platform: arm64, wsystem: macosx, warc: aarch64 }
+#          - { os: macos-15-intel, platform: x64, wsystem: macosx, warc: x86-64 }
+#          - { os: macos-latest, platform: arm64, wsystem: macosx, warc: aarch64 }
           - { os: windows-latest, platform: x64, wsystem: windows, warc: x86-64 }
           - { os: ubuntu-latest, platform: x64, wsystem: linux, warc: x86-64 }
           - { os: ubuntu-latest, platform: arm64, wsystem: linux, warc: aarch64 }
@@ -57,6 +57,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          ls -la .
           mkdir -p target
           if [ ! -d "target/${{ env.APP_PACKAGE_FOLDER }}" ]; then
             echo "Package folder target/${{ env.APP_PACKAGE_FOLDER }} not found" >&2
