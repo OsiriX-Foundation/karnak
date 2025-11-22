@@ -16,7 +16,7 @@ jobs:
 #          - { os: macos-latest, platform: arm64, wsystem: macosx, warc: aarch64 }
           - { os: windows-latest, platform: x64, wsystem: windows, warc: x86-64 }
           - { os: ubuntu-latest, platform: x64, wsystem: linux, warc: x86-64 }
-          - { os: ubuntu-latest, platform: arm64, wsystem: linux, warc: aarch64 }
+          - { os: ubuntu-24.04-arm, platform: arm64, wsystem: linux, warc: aarch64 }
 
     steps:
       - uses: actions/checkout@v5
@@ -53,7 +53,24 @@ jobs:
         run: |
           mvn -B -Pportable clean install
 
-      - name: Zip the package
+      - name: Zip the package (Windows)
+        if: matrix.wsystem == 'windows'
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $packageFolder = "target/${{ env.APP_PACKAGE_FOLDER }}"
+          $artifactPath = "target/${{ env.APP_ARTIFACT }}"
+          if (-not (Test-Path $packageFolder)) {
+            Write-Error "Package folder $packageFolder not found"
+            exit 1
+          }
+          if (Test-Path $artifactPath) {
+            Remove-Item $artifactPath -Force
+          }
+          Compress-Archive -Path $packageFolder -DestinationPath $artifactPath -Force
+
+      - name: Zip the package (Unix)
+        if: matrix.wsystem != 'windows'
         shell: bash
         run: |
           set -euo pipefail
