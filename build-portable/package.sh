@@ -306,6 +306,7 @@ if [ "$machine" = "macosx" ] ; then
 
         # Clean up extracted native libraries from the main JAR
         rm -rf "$TEMP_JAR_DIR/BOOT-INF/classes/lib"
+        rm -rf "$TEMP_JAR_DIR/BOOT-INF/lib/license-checker-"*".jar"
 
         # Repackage JAR
         jar cf "$MAIN_JAR_ABS" -C "$TEMP_JAR_DIR" .
