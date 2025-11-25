@@ -178,10 +178,10 @@ if (( INSTALLED_MAJOR_VERSION < REQUIRED_MAJOR_VERSION )) ; then
 fi
 
 if [ -z "$OUTPUT_PATH" ] ; then
-  OUTPUT_PATH="target/karnak-$ARC_OS-jdk$INSTALLED_MAJOR_VERSION-$KARNAK_VERSION"
+  APP_PACKAGE_FOLDER="karnak-$ARC_OS-jdk$INSTALLED_MAJOR_VERSION-$KARNAK_VERSION"
+  OUTPUT_PATH="target/$APP_PACKAGE_FOLDER"
   if [ -n "${GITHUB_ENV:-}" ] && [ -f "$GITHUB_ENV" ]; then
-      echo "APP_PACKAGE_FOLDER=${OUTPUT_PATH}" >> "$GITHUB_ENV"
-      echo "APP_ARTIFACT=karnak-$ARC_OS-$KARNAK_VERSION.zip" >> "$GITHUB_ENV"
+      echo "APP_PACKAGE_FOLDER=$APP_PACKAGE_FOLDER" >> "$GITHUB_ENV"
   fi
 fi
 
@@ -210,17 +210,23 @@ if [ -d "${TEMP_PATH}" ] ; then
   rm -rf "${TEMP_PATH}"
 fi
 
+# Code signing options
 if [ "$machine" = "macosx" ] ; then
+  if [[ -n "$MAC_DEVELOPER_ID" ]] ; then
+   CERTIFICATE="$MAC_DEVELOPER_ID"
+  fi
+
   if [[ -n "$CERTIFICATE" ]] ; then
     declare -a signArgs=("--mac-package-identifier" "$IDENTIFIER" "--mac-signing-key-user-name" "$CERTIFICATE"  "--mac-sign")
-  elif [[ -n "$MAC_KEYCHAIN_PATH" && -f "$MAC_KEYCHAIN_PATH" ]] ; then
-    declare -a signArgs=("--mac-package-identifier" "$IDENTIFIER" "--mac-signing-keychain" "$MAC_KEYCHAIN_PATH" "--mac-sign")
   else
     declare -a signArgs=("--mac-package-identifier" "$IDENTIFIER")
   fi
+  echo "Sign args: ${signArgs[*]}"
 else
   declare -a signArgs=()
 fi
+
+# Common options
 declare -a commonOptions=(
 "--java-options" "-Dspring.profiles.active=portable" \
 "--java-options" "-Djava.library.path=\$APPDIR/dicom-opencv" \
@@ -242,11 +248,85 @@ $JPKGCMD --type app-image --input "$INPUT_DIR" --dest "$OUTPUT_PATH" --name "$NA
 --resource-dir "$RES" --app-version "$KARNAK_CLEAN_VERSION" \
 "${tmpArgs[@]}" --verbose "${signArgs[@]}" "${commonOptions[@]}" "${consoleArgs[@]}"
 
+# MacOS code signing
 if [ "$machine" = "macosx" ] ; then
+    APP_BUNDLE="$OUTPUT_PATH/$NAME.app"
+
     if [[ -n "$CERTIFICATE" ]] ; then
-      codesign --timestamp --entitlements "$RES/uri-launcher.entitlements" --options runtime --force -vvv --sign "$CERTIFICATE" "$RES/$NAME.app"
-    elif [[ -n "$MAC_DEVELOPER_ID" && -n "$MAC_KEYCHAIN_PATH" && -f "$MAC_KEYCHAIN_PATH" ]] ; then
-      codesign --timestamp --entitlements "$RES/uri-launcher.entitlements" --options runtime --force -vvv --sign "$MAC_DEVELOPER_ID" --keychain "$MAC_KEYCHAIN_PATH" "$RES/$NAME.app"
+      SIGN_ID="$CERTIFICATE"
+    else
+      SIGN_ID=""
+    fi
+
+    if [[ -n "$SIGN_ID" ]] ; then
+      echo "Signing all binaries in $APP_BUNDLE with certificate: $SIGN_ID"
+
+      # Sign all nested native libraries first (deepest to shallowest)
+      find "$APP_BUNDLE" -type f \( -name "*.dylib" -o -name "*.jnilib" \) | while read -r lib; do
+        echo "Signing: $lib"
+        codesign --force --options runtime --timestamp \
+          --sign "$SIGN_ID" "$lib" 2>&1 || echo "Warning: Could not sign $lib"
+      done
+
+      LAST_PWD=$(pwd)
+      echo "Last PWD: $LAST_PWD"
+
+      # Process JAR files containing native libraries
+      APP_DIR="$APP_BUNDLE/Contents/app"
+      MAIN_JAR="$APP_DIR/karnak-${KARNAK_VERSION}.jar"
+
+      if [ -f "$MAIN_JAR" ]; then
+        echo "Processing Spring Boot JAR: $MAIN_JAR"
+        TEMP_JAR_DIR=$(mktemp -d)
+
+        # Extract JAR
+        MAIN_JAR_ABS="$(cd "$(dirname "$MAIN_JAR")" && pwd)/$(basename "$MAIN_JAR")"
+        cd "$TEMP_JAR_DIR" && jar xf "$MAIN_JAR_ABS"
+
+        # Find and process nested JARs containing native libraries
+        find "$TEMP_JAR_DIR" -type f -name "*.jar" | grep -E '(.*-native-.*|jna-.*)' | while read -r nested_jar; do
+          echo "Processing nested JAR: $nested_jar"
+
+          NESTED_TEMP=$(mktemp -d)
+          cd "$NESTED_TEMP" && jar xf "$nested_jar"
+
+          # Sign native libraries in this nested JAR
+          find "$NESTED_TEMP" -type f \( -name "*.dylib" -o -name "*.jnilib" \) | while read -r lib; do
+            echo "Signing native library in nested JAR: $lib"
+            codesign --force --options runtime --timestamp \
+              --sign "$SIGN_ID" "$lib" 2>&1
+          done
+
+          # Repackage the nested JAR
+          jar cf "$nested_jar" -C "$NESTED_TEMP" .
+          rm -rf "$NESTED_TEMP"
+
+          echo "Repackaged nested JAR: $nested_jar"
+        done
+
+        # Clean up extracted native libraries from the main JAR
+        rm -rf "$TEMP_JAR_DIR/BOOT-INF/classes/lib"
+
+        # Repackage JAR
+        jar cf "$MAIN_JAR_ABS" -C "$TEMP_JAR_DIR" .
+        rm -rf "$TEMP_JAR_DIR"
+
+        echo "Repackaged and signed: $MAIN_JAR_ABS"
+      fi
+
+      cd "$LAST_PWD" || die "Cannot change directory to $curPath"
+
+
+      # Sign the entire app bundle
+      echo "Signing app bundle: $APP_BUNDLE"
+      codesign --deep --force --options runtime --timestamp \
+        --entitlements "$RES/uri-launcher.entitlements" \
+        --sign "$SIGN_ID" "$APP_BUNDLE"
+
+      # Verify
+      echo "Verifying signature..."
+      codesign --verify --deep --strict --verbose=2 "$APP_BUNDLE"
+      spctl --assess --verbose=4 --type execute "$APP_BUNDLE"
     fi
 fi
 

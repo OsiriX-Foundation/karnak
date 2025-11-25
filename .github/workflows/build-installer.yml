@@ -16,7 +16,7 @@ jobs:
           - { os: macos-latest, platform: arm64, wsystem: macosx, warc: aarch64 }
           - { os: windows-latest, platform: x64, wsystem: windows, warc: x86-64 }
           - { os: ubuntu-latest, platform: x64, wsystem: linux, warc: x86-64 }
-          - { os: ubuntu-latest, platform: arm64, wsystem: linux, warc: aarch64 }
+          - { os: ubuntu-24.04-arm, platform: arm64, wsystem: linux, warc: aarch64 }
 
     steps:
       - uses: actions/checkout@v5
@@ -49,27 +49,20 @@ jobs:
         shell: bash
         env:
           MAC_DEVELOPER_ID: ${{ secrets.MACOS__DEVELOPER_ID }}
-          MAC_KEYCHAIN_PATH: $HOME/Library/Keychains/signing_temp.keychain-db
         run: |
           mvn -B -Pportable clean install
 
-      - name: Zip the package
-        shell: bash
+      - name: Zip app for notarization
+        if: matrix.wsystem == 'macosx'
         run: |
-          set -euo pipefail
-          mkdir -p target
-          if [ ! -d "target/${{ env.APP_PACKAGE_FOLDER }}" ]; then
-            echo "Package folder target/${{ env.APP_PACKAGE_FOLDER }} not found" >&2
-            exit 1
-          fi
-          rm -f "target/${{ env.APP_ARTIFACT }}"
-          (cd target && zip -r "${{ env.APP_ARTIFACT }}" "${{ env.APP_PACKAGE_FOLDER }}")
+          cd "target/${{ env.APP_PACKAGE_FOLDER }}"
+          /usr/bin/ditto -c -k --keepParent "Karnak.app" "Karnak.zip"
 
       - name: Notarize Release Build
         if: matrix.wsystem == 'macosx'
         run: |
           xcrun notarytool submit \
-            "target/${{ env.APP_ARTIFACT }}" \
+            "target/${{ env.APP_PACKAGE_FOLDER }}/Karnak.zip" \
             --apple-id "${{ secrets.APPLE_DEVELOPER_AC_USERNAME }}" \
             --team-id "${{ secrets.APPLE_TEAM_ID }}" \
             --password "${{ secrets.KARNAK_PWD }}" \
@@ -78,10 +71,12 @@ jobs:
       - name: Staple Release Build
         if: matrix.wsystem == 'macosx'
         run: |
-          xcrun stapler staple "target/${{ env.APP_ARTIFACT }}"
+          xcrun stapler staple "target/${{ env.APP_PACKAGE_FOLDER }}/Karnak.app"
+          rm "target/${{ env.APP_PACKAGE_FOLDER }}/Karnak.zip"
 
       - name: Upload the packaged artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.APP_ARTIFACT }}
-          path: target/${{ env.APP_ARTIFACT }}
+          name: ${{ env.APP_PACKAGE_FOLDER }}
+          path: target/${{ env.APP_PACKAGE_FOLDER }}
+          compression-level: '9'
