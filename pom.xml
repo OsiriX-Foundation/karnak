@@ -525,6 +525,10 @@
           <artifactId>*</artifactId>
           <groupId>org.webjars.bowergithub.webcomponents</groupId>
         </exclusion>
+        <exclusion>
+          <groupId>com.vaadin</groupId>
+          <artifactId>license-checker</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
