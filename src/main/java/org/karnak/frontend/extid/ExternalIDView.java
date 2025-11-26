@@ -49,7 +49,7 @@ public class ExternalIDView extends HorizontalLayout {
 	private static final String LABEL_CHOOSE_PROJECT = "Choose a project:";
 
 	private static final String LABEL_DISCLAIMER_EXTID = "WARNING: The data that is added to this grid will be stored"
-			+ " temporally for a short period of time. If the machine restarts, the data will be deleted.";
+			+ " temporally for a short period of time. If the application restarts, the data will be deleted.";
 
 	private final ProjectDropDown projectDropDown;
 

@@ -39,7 +39,7 @@ public class PatientMetadata {
 	public PatientMetadata(Attributes dcm) {
 		patientID = dcm.getString(Tag.PatientID, "");
 		patientName = dcm.getString(Tag.PatientName, "");
-		patientBirthDate = setPatientBirthDate(dcm.getString(Tag.PatientBirthDate));
+		patientBirthDate = formatPatientBirthDate(dcm.getString(Tag.PatientBirthDate));
 		issuerOfPatientID = "";
 		patientSex = setPatientSex(dcm.getString(Tag.PatientSex, PATIENT_SEX_OTHER));
 	}
@@ -47,7 +47,7 @@ public class PatientMetadata {
 	public PatientMetadata(Attributes dcm, String issuerOfPatientIDByDefault) {
 		patientID = dcm.getString(Tag.PatientID, "");
 		patientName = dcm.getString(Tag.PatientName, "");
-		patientBirthDate = setPatientBirthDate(dcm.getString(Tag.PatientBirthDate));
+		patientBirthDate = formatPatientBirthDate(dcm.getString(Tag.PatientBirthDate));
 		issuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID, issuerOfPatientIDByDefault);
 		patientSex = setPatientSex(dcm.getString(Tag.PatientSex, PATIENT_SEX_OTHER));
 	}
@@ -59,7 +59,10 @@ public class PatientMetadata {
 		return patientSex;
 	}
 
-	private String setPatientBirthDate(String rawPatientBirthDate) {
+	private String formatPatientBirthDate(String rawPatientBirthDate) {
+		if (!StringUtil.hasText(rawPatientBirthDate)) {
+			return "";
+		}
 		try {
 			return DateTimeUtils.formatDA(DateTimeUtils.parseDA(rawPatientBirthDate));
 		}

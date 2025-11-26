@@ -234,42 +234,23 @@ public class ExternalIDGrid extends PaginatedGrid<Patient, PatientFilter> {
 
 	public void addFilterElements() {
 		HeaderRow filterRow = appendHeaderRow();
+		extidFilter = createAndConfigureFilterTextField(filterRow, extidColumn, true);
+		patientIdFilter = createAndConfigureFilterTextField(filterRow, patientIdColumn, true);
+		patientFirstNameFilter = createAndConfigureFilterTextField(filterRow, patientFirstNameColumn, false);
+		patientLastNameFilter = createAndConfigureFilterTextField(filterRow, patientLastNameColumn, false);
+		issuerOfPatientIDFilter = createAndConfigureFilterTextField(filterRow, issuerOfPatientIDColumn, false);
+	}
 
-		extidFilter = new TextField();
-
-		extidFilter.addValueChangeListener(event -> checkAndUpdateAllFilters());
-		extidFilter.setValueChangeMode(ValueChangeMode.EAGER);
-		filterRow.getCell(extidColumn).setComponent(extidFilter);
-		extidFilter.setSizeFull();
-		extidFilter.setPlaceholder(LABEL_FILTER);
-
-		patientIdFilter = new TextField();
-		patientIdFilter.addValueChangeListener(event -> checkAndUpdateAllFilters());
-		patientIdFilter.setValueChangeMode(ValueChangeMode.EAGER);
-		filterRow.getCell(patientIdColumn).setComponent(patientIdFilter);
-		patientIdFilter.setSizeFull();
-		patientIdFilter.setPlaceholder(LABEL_FILTER);
-
-		patientFirstNameFilter = new TextField();
-		patientFirstNameFilter.addValueChangeListener(event -> checkAndUpdateAllFilters());
-		patientFirstNameFilter.setValueChangeMode(ValueChangeMode.EAGER);
-		filterRow.getCell(patientFirstNameColumn).setComponent(patientFirstNameFilter);
-		patientFirstNameFilter.setSizeFull();
-		patientFirstNameFilter.setPlaceholder(LABEL_FILTER);
-
-		patientLastNameFilter = new TextField();
-		patientLastNameFilter.addValueChangeListener(event -> checkAndUpdateAllFilters());
-		patientLastNameFilter.setValueChangeMode(ValueChangeMode.EAGER);
-		filterRow.getCell(patientLastNameColumn).setComponent(patientLastNameFilter);
-		patientLastNameFilter.setSizeFull();
-		patientLastNameFilter.setPlaceholder(LABEL_FILTER);
-
-		issuerOfPatientIDFilter = new TextField();
-		issuerOfPatientIDFilter.addValueChangeListener(event -> checkAndUpdateAllFilters());
-		issuerOfPatientIDFilter.setValueChangeMode(ValueChangeMode.EAGER);
-		filterRow.getCell(issuerOfPatientIDColumn).setComponent(issuerOfPatientIDFilter);
-		issuerOfPatientIDFilter.setSizeFull();
-		issuerOfPatientIDFilter.setPlaceholder(LABEL_FILTER);
+	private TextField createAndConfigureFilterTextField(HeaderRow filterRow, Grid.Column<Patient> column,
+			boolean required) {
+		TextField filterField = new TextField();
+		filterField.setRequired(required);
+		filterField.addValueChangeListener(event -> checkAndUpdateAllFilters());
+		filterField.setValueChangeMode(ValueChangeMode.EAGER);
+		filterField.setSizeFull();
+		filterField.setPlaceholder(LABEL_FILTER);
+		filterRow.getCell(column).setComponent(filterField);
+		return filterField;
 	}
 
 	public Div setBinder() {
@@ -288,18 +269,17 @@ public class ExternalIDGrid extends PaginatedGrid<Patient, PatientFilter> {
 			.withStatusLabel(validationStatus)
 			.bind("patientId");
 
+		String maxLengthMessage = "Length must be between 0 and 50.";
 		binder.forField(patientFirstNameField)
-			.withValidator(StringUtils::isNotBlank, "Patient firstname is empty")
-			.withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
+			.withValidator(new StringLengthValidator(maxLengthMessage, 0, 50))
 			.bind("patientFirstName");
 
 		binder.forField(patientLastNameField)
-			.withValidator(StringUtils::isNotBlank, "Patient last name is empty")
-			.withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
+			.withValidator(new StringLengthValidator(maxLengthMessage, 0, 50))
 			.bind("patientLastName");
 
 		binder.forField(issuerOfPatientIdField)
-			.withValidator(new StringLengthValidator("Length must be between 0 and 50.", 0, 50))
+			.withValidator(new StringLengthValidator(maxLengthMessage, 0, 50))
 			.withStatusLabel(validationStatus)
 			.bind("issuerOfPatientId");
 

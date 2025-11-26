@@ -96,8 +96,11 @@ public class ExternalIDForm extends Div {
 
 		externalIdField = new TextField("External Pseudonym");
 		externalIdField.setWidth("20%");
+		externalIdField.setRequired(true);
 		patientIdField = new TextField("Patient ID");
 		patientIdField.setWidth("20%");
+		patientIdField.setRequired(true);
+
 		patientFirstNameField = new TextField("Patient first name");
 		patientFirstNameField.setWidth("20%");
 		patientLastNameField = new TextField("Patient last name");
@@ -123,18 +126,17 @@ public class ExternalIDForm extends Div {
 			.withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
 			.bind("patientId");
 
+		String maxLengthMessage = "Length must be between 0 and 50.";
 		binder.forField(patientFirstNameField)
-			.withValidator(StringUtils::isNotBlank, "Patient first name is empty")
-			.withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
+			.withValidator(new StringLengthValidator(maxLengthMessage, 0, 50))
 			.bind("patientFirstName");
 
 		binder.forField(patientLastNameField)
-			.withValidator(StringUtils::isNotBlank, "Patient last name is empty")
-			.withValidator(new StringLengthValidator(ERROR_MESSAGE_PATIENT, 1, 50))
+			.withValidator(new StringLengthValidator(maxLengthMessage, 0, 50))
 			.bind("patientLastName");
 
 		binder.forField(issuerOfPatientIdField)
-			.withValidator(new StringLengthValidator("Length must be between 0 and 50.", 0, 50))
+			.withValidator(new StringLengthValidator(maxLengthMessage, 0, 50))
 			.bind("issuerOfPatientId");
 	}
 
