@@ -4,8 +4,7 @@ server:
 spring:
   sql:
     init:
-      mode: always
-      schema-locations: classpath:schema-h2.sql
+      mode: never
 
   datasource:
     url: jdbc:h2:file:./data/karnak;CIPHER=AES;AUTO_SERVER=TRUE
@@ -20,10 +19,11 @@ spring:
       connection-init-sql: null
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
 
   liquibase:
-    enabled: false
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.yaml
 
   h2:
     console:
