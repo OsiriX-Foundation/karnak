@@ -272,7 +272,7 @@
     <sql dbms="postgresql">
       INSERT INTO secret(id, project_id, key, creation_date, active)
       SELECT NEXTVAL('hibernate_sequence'), id, secret, current_timestamp, true
-      FROM project
+      FROM project;
     </sql>
   </changeSet>
 

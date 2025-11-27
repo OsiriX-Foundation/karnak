@@ -23,6 +23,7 @@ import org.karnak.backend.model.standard.StandardDICOM;
 import org.karnak.backend.service.profilepipe.Profile;
 import org.karnak.backend.service.profilepipe.ProfilePipeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -62,10 +63,12 @@ public class AppConfig {
 
 	private final ProfilePipeService profilePipeService;
 
+	@Getter
 	private final PatientClient externalIDCache;
 
 	@Autowired
-	public AppConfig(ProfileRepo profileRepo, ProfilePipeService profilePipeService, PatientClient externalIDCache) {
+	public AppConfig(ProfileRepo profileRepo, ProfilePipeService profilePipeService,
+			@Qualifier("patientClient") PatientClient externalIDCache) {
 		this.profileRepo = profileRepo;
 		this.profilePipeService = profilePipeService;
 		this.externalIDCache = externalIDCache;
@@ -87,11 +90,6 @@ public class AppConfig {
 	@Bean("ConfidentialityProfiles")
 	public ConfidentialityProfiles getConfidentialityProfile() {
 		return new ConfidentialityProfiles();
-	}
-
-	@Bean("ExternalIDPatient")
-	public PatientClient getExternalIDCache() {
-		return externalIDCache;
 	}
 
 	// https://stackoverflow.com/questions/27405713/running-code-after-spring-boot-starts

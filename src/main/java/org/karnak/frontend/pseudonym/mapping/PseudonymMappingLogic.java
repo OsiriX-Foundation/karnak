@@ -18,6 +18,7 @@ import org.karnak.backend.cache.PatientClient;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 /**
@@ -38,12 +39,13 @@ public class PseudonymMappingLogic {
 
 	/**
 	 * Autowired constructor
-	 * @param externalIDCache External ID Cache
+	 * @param patientClient External ID Cache
 	 * @param projectService Project service
 	 */
 	@Autowired
-	public PseudonymMappingLogic(PatientClient externalIDCache, ProjectService projectService) {
-		this.externalIDCache = externalIDCache;
+	public PseudonymMappingLogic(@Qualifier("patientClient") PatientClient patientClient,
+			ProjectService projectService) {
+		this.externalIDCache = patientClient;
 		this.projectService = projectService;
 		this.pseudonymMappingView = null;
 	}
