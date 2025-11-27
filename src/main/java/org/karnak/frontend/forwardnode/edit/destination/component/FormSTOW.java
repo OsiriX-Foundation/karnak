@@ -28,33 +28,24 @@ import org.karnak.frontend.util.UIS;
 
 public class FormSTOW extends VerticalLayout {
 
+	private Binder<DestinationEntity> binder;
+
+	private TextField description;
+
+	private TextField url;
+
+	private Checkbox activate;
+
+	private final DestinationCondition destinationCondition;
+
+	@Getter
+	private final FilterBySOPClassesForm filterBySOPClassesForm;
+
 	@Getter
 	private final DeIdentificationComponent deIdentificationComponent;
 
 	@Getter
 	private final TagMorphingComponent tagMorphingComponent;
-
-	private Binder<DestinationEntity> binder;
-
-	@Getter
-	private TextField description;
-
-	@Getter
-	private TextField url;
-
-	private Button generateAuthorizationHeaderButton;
-
-	private TextArea headers;
-
-	@Getter
-	private Checkbox activate;
-
-	@Getter
-	private final FilterBySOPClassesForm filterBySOPClassesForm;
-
-	private SwitchingAlbumsView switchingAlbumsView;
-
-	private final DestinationCondition destinationCondition;
 
 	@Getter
 	private final NotificationComponent notificationComponent;
@@ -64,6 +55,12 @@ public class FormSTOW extends VerticalLayout {
 
 	@Getter
 	private final TranscodeOnlyUncompressedComponent transcodeOnlyUncompressedComponent;
+
+	private SwitchingAlbumsView switchingAlbumsView;
+
+	private Button generateAuthorizationHeaderButton;
+
+	private TextArea headers;
 
 	public FormSTOW() {
 		this.deIdentificationComponent = new DeIdentificationComponent();
@@ -156,10 +153,14 @@ public class FormSTOW extends VerticalLayout {
 	}
 
 	private void setBinder() {
+		binder.forField(description).bind(DestinationEntity::getDescription, DestinationEntity::setDescription);
 		binder.forField(url)
 			.withValidator(StringUtils::isNotBlank, "URL is mandatory")
 			.bind(DestinationEntity::getUrl, DestinationEntity::setUrl);
 
+		binder.forField(headers).bind(DestinationEntity::getHeaders, DestinationEntity::setHeaders);
+
+		binder.forField(activate).bind(DestinationEntity::isActivate, DestinationEntity::setActivate);
 		binder.forField(switchingAlbumsView)
 			.bind(DestinationEntity::getKheopsAlbumEntities, DestinationEntity::setKheopsAlbumEntities);
 

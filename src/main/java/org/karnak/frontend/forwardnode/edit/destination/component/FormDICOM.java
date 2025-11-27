@@ -28,21 +28,16 @@ public class FormDICOM extends VerticalLayout {
 
 	private Binder<DestinationEntity> binder;
 
-	@Getter
 	private TextField aeTitle;
 
-	@Getter
 	private TextField description;
 
-	@Getter
 	private TextField hostname;
 
-	@Getter
 	private TextField port;
 
 	private Checkbox useAETitleCheckbox;
 
-	@Getter
 	private Checkbox activate;
 
 	@Getter
@@ -76,12 +71,11 @@ public class FormDICOM extends VerticalLayout {
 	}
 
 	public void init(Binder<DestinationEntity> binder, ButtonSaveDeleteCancel buttonSaveDeleteCancel) {
-
 		this.binder = binder;
-		this.deIdentificationComponent.init(this.binder);
-		this.tagMorphingComponent.init(this.binder);
-		this.filterBySOPClassesForm.init(this.binder);
-		this.destinationCondition.init(this.binder);
+		deIdentificationComponent.init(this.binder);
+		tagMorphingComponent.init(this.binder);
+		filterBySOPClassesForm.init(this.binder);
+		destinationCondition.init(this.binder);
 		notificationComponent.init(this.binder);
 		transferSyntaxComponent.init(this.binder);
 		transcodeOnlyUncompressedComponent.init(this.binder);
@@ -147,6 +141,7 @@ public class FormDICOM extends VerticalLayout {
 			.withValidator(UIS::containsNoWhitespace, "AETitle contains white spaces")
 			.bind(DestinationEntity::getAeTitle, DestinationEntity::setAeTitle);
 
+		binder.forField(description).bind(DestinationEntity::getDescription, DestinationEntity::setDescription);
 		binder.forField(hostname)
 			.withValidator(StringUtils::isNotBlank, "Hostname is mandatory")
 			.bind(DestinationEntity::getHostname, DestinationEntity::setHostname);
@@ -156,6 +151,9 @@ public class FormDICOM extends VerticalLayout {
 			.withValidator(value -> 1 <= value && value <= 65535, "Port should be between 1 and 65535")
 			.bind(DestinationEntity::getPort, DestinationEntity::setPort);
 
+		binder.forField(useAETitleCheckbox).bind(DestinationEntity::getUseaetdest, DestinationEntity::setUseaetdest);
+
+		binder.forField(activate).bind(DestinationEntity::isActivate, DestinationEntity::setActivate);
 		binder.bindInstanceFields(this);
 	}
 
