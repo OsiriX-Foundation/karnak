@@ -131,7 +131,7 @@ public class FormDICOM extends VerticalLayout {
 		port.addThemeVariants(TextFieldVariant.LUMO_ALIGN_RIGHT);
 
 		UIS.setTooltip(useAETitleCheckbox,
-				"if \"true\" then use the destination AETitle as the calling  AETitle at the gateway side");
+				"if \"true\" then use the destination AETitle as the calling AETitle instead of the Forward Node AETitle");
 	}
 
 	private void setBinder() {

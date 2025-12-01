@@ -36,7 +36,7 @@ public class DeIdentificationComponent extends VerticalLayout {
 
 	private static final String LABEL_DISCLAIMER_DEIDENTIFICATION = "In order to ensure complete de-identification, visual verification of metadata and images is necessary.";
 
-	private static final String LABEL_DEFAULT_ISSUER = "If this field is empty, the Issuer of Patient ID is not used to define the authenticity of the patient";
+	private static final String LABEL_DEFAULT_ISSUER = "If this field is filled, it will be used with the Patient ID to ensure unique patient identification across different healthcare systems.";
 
 	// Components
 	private Checkbox deIdentificationCheckbox;
