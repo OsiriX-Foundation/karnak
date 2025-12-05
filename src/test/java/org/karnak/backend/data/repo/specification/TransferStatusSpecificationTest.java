@@ -26,7 +26,7 @@ import org.karnak.backend.data.repo.TransferStatusRepo;
 import org.karnak.backend.enums.TransferStatusType;
 import org.karnak.frontend.monitoring.component.TransferStatusFilter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.data.jpa.domain.Specification;
 
 @DataJpaTest
