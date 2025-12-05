@@ -12,7 +12,7 @@ package org.karnak.backend.dicom;
 import java.util.List;
 import java.util.Map;
 import lombok.Getter;
-import org.weasis.core.util.FileUtil;
+import org.weasis.core.util.StreamUtil;
 import org.weasis.dicom.param.AttributeEditor;
 import org.weasis.dicom.param.DicomProgress;
 import org.weasis.dicom.param.DicomState;
@@ -85,7 +85,7 @@ public class WebForwardDestination extends ForwardDestination {
 
 	@Override
 	public void stop() {
-		FileUtil.safeClose(stowRS);
+		StreamUtil.safeClose(stowRS);
 	}
 
 	@Override

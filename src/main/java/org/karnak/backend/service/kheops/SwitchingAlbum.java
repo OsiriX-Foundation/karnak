@@ -41,7 +41,7 @@ public class SwitchingAlbum {
 
 	private final KheopsApi kheopsAPI;
 
-	private final Map<Long, List> switchingAlbumToDo = new WeakHashMap<>();
+	private final Map<Long, List<MetadataSwitching>> switchingAlbumToDo = new WeakHashMap<>();
 
 	public SwitchingAlbum() {
 		kheopsAPI = new KheopsApi();
@@ -114,7 +114,7 @@ public class SwitchingAlbum {
 		String urlAPI = kheopsAlbumsEntity.getUrlAPI();
 		Long id = kheopsAlbumsEntity.getId();
 		if (!switchingAlbumToDo.containsKey(id)) {
-			switchingAlbumToDo.put(id, new ArrayList<MetadataSwitching>());
+			switchingAlbumToDo.put(id, new ArrayList<>());
 		}
 		ArrayList<MetadataSwitching> metadataToDo = (ArrayList<MetadataSwitching>) switchingAlbumToDo.get(id);
 
@@ -159,7 +159,7 @@ public class SwitchingAlbum {
 		String authorizationDestination = kheopsAlbumsEntity.getAuthorizationDestination();
 		String urlAPI = kheopsAlbumsEntity.getUrlAPI();
 
-		ArrayList<MetadataSwitching> metadataToDo = (ArrayList<MetadataSwitching>) switchingAlbumToDo.get(id);
+		List<MetadataSwitching> metadataToDo = switchingAlbumToDo.get(id);
 		metadataToDo.forEach(metadataSwitching -> {
 			if (metadataSwitching.getSOPinstanceUID().equals(sopInstanceUID) && !metadataSwitching.isApplied()) {
 				int status = shareSerie(urlAPI, metadataSwitching.getStudyInstanceUID(),

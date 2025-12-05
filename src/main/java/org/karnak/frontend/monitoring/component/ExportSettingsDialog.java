@@ -9,6 +9,7 @@
  */
 package org.karnak.frontend.monitoring.component;
 
+import com.vaadin.flow.component.ModalityMode;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -51,7 +52,7 @@ public class ExportSettingsDialog extends Dialog {
 	 * Constructor
 	 */
 	public ExportSettingsDialog() {
-		setModal(true);
+		setModality(ModalityMode.STRICT);
 
 		// Build components
 		buildComponents();

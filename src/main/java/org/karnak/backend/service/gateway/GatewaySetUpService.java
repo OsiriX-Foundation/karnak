@@ -9,8 +9,8 @@
  */
 package org.karnak.backend.service.gateway;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -107,8 +107,7 @@ public class GatewaySetUpService {
 
 		listenerAET = SystemPropertyUtil.retrieveSystemProperty("DICOM_LISTENER_AET", "KARNAK-GATEWAY");
 		listenerPort = SystemPropertyUtil.retrieveIntegerSystemProperty("DICOM_LISTENER_PORT", 11119);
-		listenerTLS = LangUtil
-			.getEmptytoFalse(SystemPropertyUtil.retrieveSystemProperty("DICOM_LISTENER_TLS", "false"));
+		listenerTLS = LangUtil.emptyToFalse(SystemPropertyUtil.retrieveSystemProperty("DICOM_LISTENER_TLS", "false"));
 
 		clientKey = SystemPropertyUtil.retrieveSystemProperty("TLS_KEYSTORE_PATH", null);
 		clientKeyPwd = SystemPropertyUtil.retrieveSystemProperty("TLS_KEYSTORE_SECRET", null);
@@ -124,7 +123,7 @@ public class GatewaySetUpService {
 		if (localPort != null && StringUtil.hasText(folder)) {
 			DicomNode localNode = new DicomNode(localAET, null, localPort);
 			log.info("Local DICOM Node configured: {}", localNode);
-			DicomListener listener = new DicomListener(new File(folder));
+			DicomListener listener = new DicomListener(Path.of(folder));
 			ListenerParams params = new ListenerParams(null, true, filePattern, null);
 			listener.start(localNode, params);
 		}

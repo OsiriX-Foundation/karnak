@@ -17,24 +17,23 @@ import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.enums.DestinationType;
 
 /**
- * @see https://stackoverflow.com/questions/27173960/jsr303-apply-all-validation-groups-defined-in-sequence
+ * @see <a href=
+ * "https://stackoverflow.com/questions/27173960/jsr303-apply-all-validation-groups-defined-in-sequence">Group
+ * validation</a>
  */
 public class DestinationGroupSequenceProvider implements DefaultGroupSequenceProvider<DestinationEntity> {
 
 	@Override
-	public List<Class<?>> getValidationGroups(DestinationEntity destinationEntity) {
+	public List<Class<?>> getValidationGroups(Class<?> beanType, DestinationEntity destinationEntity) {
 		if (destinationEntity != null) {
 			DestinationType type = destinationEntity.getDestinationType();
 			if (type != null) {
-				switch (type) {
-					case dicom:
-						return TYPE_DICOM_GROUPS;
-					case stow:
-						return TYPE_STOW_GROUPS;
-				}
+				return switch (type) {
+					case dicom -> TYPE_DICOM_GROUPS;
+					case stow -> TYPE_STOW_GROUPS;
+				};
 			}
 		}
-
 		return DEFAULT_GROUPS;
 	}
 
