@@ -14,11 +14,10 @@ import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Objects;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.codec.DecoderException;
-import org.apache.commons.codec.binary.Hex;
 import org.weasis.core.util.StringUtil;
 
 @Slf4j
@@ -27,6 +26,11 @@ public class HMAC {
 	public static final int KEY_BYTE_LENGTH = 16;
 
 	private static final String HMAC_SHA256 = "HmacSHA256";
+
+	private static final String HEX_DIGITS = "0123456789abcdef";
+
+	// Pre-computed lookup table for hex conversion (more efficient than array access)
+	private static final char[] HEX_LOOKUP = HEX_DIGITS.toCharArray();
 
 	private Mac mac;
 
@@ -51,8 +55,16 @@ public class HMAC {
 		return bytes;
 	}
 
-	public static String byteToHex(byte[] key) {
-		return Hex.encodeHexString(key);
+	public static String byteToHex(byte[] byteArray) {
+		Objects.requireNonNull(byteArray, "Byte array cannot be null");
+		final char[] hexChars = new char[byteArray.length * 2];
+		for (int i = 0; i < byteArray.length; i++) {
+			int byteValue = byteArray[i] & 0xFF;
+			// Extract the upper 4 bits and lower 4 bits
+			hexChars[i * 2] = HEX_LOOKUP[byteValue >>> 4];
+			hexChars[i * 2 + 1] = HEX_LOOKUP[byteValue & 0x0F];
+		}
+		return new String(hexChars);
 	}
 
 	public static String showHexKey(String key) {
@@ -60,19 +72,49 @@ public class HMAC {
 				key.substring(16, 20), key.substring(20));
 	}
 
-	public static byte[] hexToByte(String hexKey) {
-		try {
-			return Hex.decodeHex(hexKey.replace("-", ""));
+	public static byte[] hexToByte(String hexString) {
+		Objects.requireNonNull(hexString, "Hex string cannot be null");
+
+		// Remove optional 0x prefix
+		String cleanHex = hexString.startsWith("0x") ? hexString.substring(2) : hexString;
+
+		// Remove dashes (for UUID-like format)
+		cleanHex = cleanHex.replace("-", "");
+
+		if (cleanHex.isEmpty()) {
+			return new byte[0];
 		}
-		catch (DecoderException e) {
-			return null;
+
+		// Handle odd length by padding with leading zero
+		if (cleanHex.length() % 2 != 0) {
+			cleanHex = "0" + cleanHex;
 		}
+
+		byte[] result = new byte[cleanHex.length() / 2];
+		for (int i = 0; i < result.length; i++) {
+			int index = i * 2;
+			try {
+				result[i] = (byte) Integer.parseInt(cleanHex.substring(index, index + 2), 16);
+			}
+			catch (NumberFormatException e) {
+				throw new IllegalArgumentException("Invalid hex character at position " + index + " in: " + hexString,
+						e);
+			}
+		}
+		return result;
 	}
 
 	public static boolean validateKey(String hexKey) {
 		String cleanHexKey = hexKey.replace("-", "");
 		if (cleanHexKey.length() == 32) {
-			return hexToByte(cleanHexKey) != null;
+			try {
+				hexToByte(cleanHexKey);
+				return true;
+			}
+			catch (Exception e) {
+				log.warn("Invalid hex key: {}", hexKey, e);
+				return false;
+			}
 		}
 		return false;
 	}

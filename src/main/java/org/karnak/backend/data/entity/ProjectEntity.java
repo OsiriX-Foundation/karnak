@@ -11,6 +11,7 @@ package org.karnak.backend.data.entity;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -22,8 +23,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 import org.karnak.backend.model.profilepipe.HMAC;
 import org.karnak.backend.util.DateFormat;
 
@@ -66,8 +65,7 @@ public class ProjectEntity implements Serializable {
 		this.name = name;
 	}
 
-	@OneToMany(mappedBy = "projectEntity", cascade = CascadeType.ALL)
-	@LazyCollection(LazyCollectionOption.FALSE)
+	@OneToMany(mappedBy = "projectEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	public List<SecretEntity> getSecretEntities() {
 		return secretEntities;
 	}
@@ -76,8 +74,7 @@ public class ProjectEntity implements Serializable {
 		this.secretEntities = secretEntities;
 	}
 
-	@OneToMany(mappedBy = "deIdentificationProjectEntity")
-	@LazyCollection(LazyCollectionOption.FALSE)
+	@OneToMany(mappedBy = "deIdentificationProjectEntity", fetch = FetchType.EAGER)
 	public List<DestinationEntity> getDestinationEntities() {
 		return destinationEntities;
 	}

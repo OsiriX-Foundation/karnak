@@ -28,8 +28,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 import org.karnak.backend.data.converter.ArgumentToMapConverter;
 import org.karnak.backend.data.converter.TagListToStringListConverter;
 
@@ -152,8 +150,7 @@ public class ProfileElementEntity implements Serializable {
 	}
 
 	@JsonGetter("arguments")
-	@OneToMany(mappedBy = "profileElementEntity", cascade = CascadeType.ALL)
-	@LazyCollection(LazyCollectionOption.FALSE)
+	@OneToMany(mappedBy = "profileElementEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JsonSerialize(converter = ArgumentToMapConverter.class)
 	public List<ArgumentEntity> getArgumentEntities() {
 		return argumentEntities;

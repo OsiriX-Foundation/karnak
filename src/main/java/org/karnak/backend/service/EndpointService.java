@@ -44,7 +44,7 @@ import org.springframework.web.client.RestClient;
 @Service
 public class EndpointService {
 
-	private AuthConfigRepo authConfigRepo;
+	private final AuthConfigRepo authConfigRepo;
 
 	@Autowired
 	public EndpointService(AuthConfigRepo authConfigRepo) {

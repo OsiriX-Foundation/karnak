@@ -25,7 +25,6 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import java.util.Comparator;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.karnak.backend.model.dicom.ConfigNode;
 import org.karnak.backend.model.dicom.DicomNodeList;
 import org.karnak.frontend.component.AbstractDialog;
@@ -138,7 +137,6 @@ public class DicomWorkListSelectionDialog extends AbstractDialog {
 		return getDivConfigNodeComponentRenderer();
 	}
 
-	@NotNull
 	public static ComponentRenderer<Div, ConfigNode> getDivConfigNodeComponentRenderer() {
 		return new ComponentRenderer<>(item -> {
 			Div div = new Div();

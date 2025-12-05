@@ -11,11 +11,13 @@ package org.karnak.backend.model.profiles;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.dcm4che3.data.VR;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,18 +30,19 @@ import org.karnak.backend.exception.EndpointException;
 import org.karnak.backend.service.ApplicationContextProvider;
 import org.karnak.backend.service.EndpointService;
 import org.karnak.backend.service.profilepipe.Profile;
-import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.web.client.HttpClientErrorException;
 
 @SpringBootTest
+@TestPropertySource(properties = { "spring.cache.type=none" // Disable caching for tests
+})
 public class ReplaceApiTest {
 
 	// Services
-	@Mock
 	private static EndpointService endpointService;
 
 	private static MockedStatic<ApplicationContextProvider> acp;
@@ -54,8 +57,23 @@ public class ReplaceApiTest {
 
 	private final static String TEST_UNKNOWN_URL = "http://sample.unknown.com/endpoint";
 
+	@BeforeAll
+	static void setUpStatic() {
+		endpointService = Mockito.mock(EndpointService.class);
+		acp = Mockito.mockStatic(ApplicationContextProvider.class);
+	}
+
+	@AfterAll
+	static void tearDown() {
+		if (acp != null) {
+			acp.close();
+		}
+	}
+
 	@BeforeEach
 	void setUp() {
+		// Reset mock to clear any previous interactions
+		reset(endpointService);
 		when(endpointService.get(AUTH_CONFIG, TEST_URL))
 			.thenReturn("{\"id\": 411,\"type\": \"ZAWIN\",\"value\": \"78727671\"}");
 		when(endpointService.get(null, TEST_URL))
@@ -68,11 +86,6 @@ public class ReplaceApiTest {
 			.thenThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND));
 
 		acp.when(() -> ApplicationContextProvider.bean(EndpointService.class)).thenReturn(endpointService);
-	}
-
-	@BeforeAll
-	static void setUpStatic() {
-		acp = Mockito.mockStatic(ApplicationContextProvider.class);
 	}
 
 	@Test

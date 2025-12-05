@@ -19,9 +19,11 @@ import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.karnak.backend.data.entity.DestinationEntity;
+import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.data.entity.TransferStatusEntity;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
@@ -31,6 +33,12 @@ class TransferStatusRepoTest {
 
 	@Autowired
 	private TransferStatusRepo repository;
+
+	@Autowired
+	private DestinationRepo destinationRepo;
+
+	@Autowired
+	private ForwardNodeRepo forwardNodeRepo;
 
 	/**
 	 * Test save and find record.
@@ -172,8 +180,19 @@ class TransferStatusRepoTest {
 	 */
 	@Test
 	void shouldFindByDestinationIdAndTransferDateAfter() {
+		// Create required parent entities
+		ForwardNodeEntity forwardNode = new ForwardNodeEntity("TEST_AET");
+		forwardNode = forwardNodeRepo.saveAndFlush(forwardNode);
+
+		DestinationEntity destination = DestinationEntity.ofDicom("", "DEST_AET", "localhost", 11112, false);
+		destination.setDescription("Test Destination");
+		destination.setForwardNodeEntity(forwardNode);
+		destination = destinationRepo.saveAndFlush(destination);
+
 		// Init data
 		TransferStatusEntity transferStatusEntity = new TransferStatusEntity();
+		transferStatusEntity.setForwardNodeId(forwardNode.getId());
+		transferStatusEntity.setDestinationId(destination.getId());
 		transferStatusEntity.setTransferDate(LocalDateTime.of(2022, 1, 14, 15, 16, 17));
 		TransferStatusEntity toTest = repository.saveAndFlush(transferStatusEntity);
 

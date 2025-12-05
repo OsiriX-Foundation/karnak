@@ -36,8 +36,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.validator.group.GroupSequenceProvider;
 import org.karnak.backend.data.validator.DestinationGroupSequenceProvider;
 import org.karnak.backend.data.validator.DestinationGroupSequenceProvider.DestinationDicomGroup;
@@ -519,8 +517,7 @@ public class DestinationEntity implements Serializable {
 	}
 
 	@JsonGetter("kheopsAlbums")
-	@OneToMany(mappedBy = "destinationEntity", cascade = CascadeType.REMOVE)
-	@LazyCollection(LazyCollectionOption.FALSE)
+	@OneToMany(mappedBy = "destinationEntity", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
 	public List<KheopsAlbumsEntity> getKheopsAlbumEntities() {
 		return kheopsAlbumEntities;
 	}

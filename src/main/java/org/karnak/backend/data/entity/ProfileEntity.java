@@ -29,8 +29,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 
 @Entity(name = "Profile")
 @Table(name = "profile")
@@ -169,8 +167,7 @@ public class ProfileEntity implements Serializable {
 		this.maskEntities = maskEntities;
 	}
 
-	@OneToMany(mappedBy = "profileEntity")
-	@LazyCollection(LazyCollectionOption.FALSE)
+	@OneToMany(mappedBy = "profileEntity", fetch = FetchType.EAGER)
 	@JsonIgnore
 	public List<ProjectEntity> getProjectEntities() {
 		return projectEntities;
