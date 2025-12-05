@@ -11,8 +11,8 @@ package org.karnak.backend.service.gateway;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
-import java.io.File;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.karnak.backend.data.entity.DestinationEntity;
@@ -90,7 +90,7 @@ public class GatewayService implements ApplicationListener<ContextRefreshedEvent
 		log.info("{}", "Gateway has been stopped");
 		String dir = System.getProperty("dicom.native.codec");
 		if (StringUtil.hasText(dir)) {
-			FileUtil.delete(new File(dir));
+			FileUtil.delete(Path.of(dir));
 		}
 	}
 

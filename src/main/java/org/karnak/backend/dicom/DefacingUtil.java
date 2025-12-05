@@ -15,7 +15,8 @@ import org.dcm4che3.data.Tag;
 import org.opencv.core.Core.MinMaxLocResult;
 import org.weasis.opencv.data.ImageCV;
 import org.weasis.opencv.data.PlanarImage;
-import org.weasis.opencv.op.ImageProcessor;
+import org.weasis.opencv.op.ImageAnalyzer;
+import org.weasis.opencv.op.ImageTransformer;
 
 public class DefacingUtil {
 
@@ -81,12 +82,12 @@ public class DefacingUtil {
 		ImageCV imgTransform = new ImageCV();
 		srcImg.toMat().copyTo(imgTransform);
 
-		MinMaxLocResult minMaxLocResult = ImageProcessor.findMinMaxValues(imgTransform.toMat());
+		MinMaxLocResult minMaxLocResult = ImageAnalyzer.findMinMaxValues(imgTransform.toMat());
 		double min = minMaxLocResult.minVal;
 		double max = minMaxLocResult.maxVal;
 		double slope = 255.0 / (max - min);
 		double yint = 255.0 - slope * max;
-		imgTransform = ImageProcessor.rescaleToByte(imgTransform.toImageCV(), slope, yint);
+		imgTransform = ImageTransformer.rescaleToByte(imgTransform.toImageCV(), slope, yint);
 		return imgTransform;
 	}
 
@@ -100,7 +101,7 @@ public class DefacingUtil {
 		ImageCV imageForVisualizing = new ImageCV();
 		srcImg.toMat().copyTo(imageForVisualizing);
 		PlanarImage transformImg = transformToByte(imageForVisualizing);
-		transformImg = ImageProcessor.rescaleToByte(transformImg.toImageCV(), contrast / 100.0, brigtness);
+		transformImg = ImageTransformer.rescaleToByte(transformImg.toImageCV(), contrast / 100.0, brigtness);
 		return transformImg;
 	}
 

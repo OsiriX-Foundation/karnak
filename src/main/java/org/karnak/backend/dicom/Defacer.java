@@ -23,7 +23,7 @@ import org.opencv.imgproc.Imgproc;
 import org.weasis.core.util.MathUtil;
 import org.weasis.opencv.data.ImageCV;
 import org.weasis.opencv.data.PlanarImage;
-import org.weasis.opencv.op.ImageProcessor;
+import org.weasis.opencv.op.ImageAnalyzer;
 
 public class Defacer {
 
@@ -43,7 +43,7 @@ public class Defacer {
 		ImageCV skinImg = new ImageCV();
 		srcImg.toMat().copyTo(skinImg);
 
-		MinMaxLocResult minMaxLutFaceDetectionImg = ImageProcessor.findMinMaxValues(skinImg);
+		MinMaxLocResult minMaxLutFaceDetectionImg = ImageAnalyzer.findMinMaxValues(skinImg);
 
 		Imgproc.threshold(skinImg.toImageCV(), skinImg.toMat(), DefacingUtil.hounsfieldToPxlValue(attributes, 100),
 				minMaxLutFaceDetectionImg.maxVal, Imgproc.THRESH_TOZERO);
@@ -56,7 +56,7 @@ public class Defacer {
 		ImageCV faceDetectionImg = new ImageCV();
 		srcImg.toMat().copyTo(faceDetectionImg);
 
-		MinMaxLocResult minMaxLocResult = ImageProcessor.findMinMaxValues(faceDetectionImg.toMat());
+		MinMaxLocResult minMaxLocResult = ImageAnalyzer.findMinMaxValues(faceDetectionImg.toMat());
 
 		Imgproc.threshold(faceDetectionImg.toImageCV(), faceDetectionImg.toMat(),
 				DefacingUtil.hounsfieldToPxlValue(attributes, -500), minMaxLocResult.maxVal, Imgproc.THRESH_BINARY);

@@ -47,6 +47,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.weasis.core.util.FileUtil;
 import org.weasis.core.util.LangUtil;
+import org.weasis.core.util.StreamUtil;
 import org.weasis.dicom.param.AttributeEditor;
 import org.weasis.dicom.param.AttributeEditorContext;
 import org.weasis.dicom.param.AttributeEditorContext.Abort;
@@ -98,7 +99,7 @@ public class ForwardService {
 			if (!files.isEmpty()) {
 				// Force to clean if tmp bulk files
 				for (File file : files) {
-					FileUtil.delete(file);
+					FileUtil.delete(file.toPath());
 				}
 			}
 		}
@@ -278,7 +279,7 @@ public class ForwardService {
 	private static TransformedPlanarImage transformImage(Attributes attributes, AttributeEditorContext context,
 			TransformedPlanarImage transformedPlanarImage) {
 		MaskArea m = context.getMaskArea();
-		boolean defacing = LangUtil.getEmptytoFalse(context.getProperties().getProperty(Defacer.APPLY_DEFACING));
+		boolean defacing = LangUtil.emptyToFalse(context.getProperties().getProperty(Defacer.APPLY_DEFACING));
 		if (m != null || defacing) {
 			Editable<PlanarImage> editablePlanarImage = buildEditablePlanarImage(attributes, m, defacing,
 					transformedPlanarImage);
@@ -309,7 +310,7 @@ public class ForwardService {
 	}
 
 	private static List<File> cleanOrGetBulkDataFiles(DicomInputStream in, boolean clean) {
-		FileUtil.safeClose(in);
+		StreamUtil.safeClose(in);
 		if (clean) {
 			// Force to clean if tmp bulk files
 			ServiceUtil.safeClose(in);
@@ -497,8 +498,11 @@ public class ForwardService {
 		TransformedPlanarImage transformedPlanarImage = new TransformedPlanarImage();
 		try {
 			transformedPlanarImage = transformImage(attributes, context, transformedPlanarImage);
-			stow.uploadPayload(DicomStowRS.preparePayload(attributes, syntax, desc,
-					transformedPlanarImage != null ? transformedPlanarImage.getEditablePlanarImage() : null));
+			if (transformedPlanarImage == null) {
+				throw new IllegalStateException("Cannot transcode image for STOW-RS upload.");
+			}
+			stow.uploadPayload(DicomStowRS.createCompressedImagePayload(attributes, syntax, desc,
+					transformedPlanarImage.getEditablePlanarImage()));
 		}
 		finally {
 			if (transformedPlanarImage != null && transformedPlanarImage.getPlanarImage() != null) {
@@ -586,14 +590,14 @@ public class ForwardService {
 	private static void progressNotify(ForwardDestination destination, String iuid, String cuid, boolean failed,
 			StoreFromStreamSCU streamSCU) {
 		streamSCU.removeIUIDProcessed(iuid);
-		ServiceUtil.notifyProgession(destination.getState(), iuid, cuid,
+		ServiceUtil.notifyProgression(destination.getState(), iuid, cuid,
 				failed ? Status.ProcessingFailure : Status.Success,
 				failed ? ProgressStatus.FAILED : ProgressStatus.COMPLETED, streamSCU.getNumberOfSuboperations());
 	}
 
 	private static void progressNotify(ForwardDestination destination, String iuid, String cuid, boolean failed,
 			int subOperations) {
-		ServiceUtil.notifyProgession(destination.getState(), iuid, cuid,
+		ServiceUtil.notifyProgression(destination.getState(), iuid, cuid,
 				failed ? Status.ProcessingFailure : Status.Success,
 				failed ? ProgressStatus.FAILED : ProgressStatus.COMPLETED, subOperations);
 	}
