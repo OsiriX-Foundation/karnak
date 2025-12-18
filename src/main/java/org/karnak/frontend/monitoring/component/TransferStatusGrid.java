@@ -411,7 +411,7 @@ public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity, Tran
 	private ComponentRenderer<Span, TransferStatusEntity> createColumnStatusComponentRenderer() {
 		return new ComponentRenderer<>(Span::new, (span, transferStatusEntity) -> {
 			StringBuilder pill = new StringBuilder();
-			pill.append("badge primary pill ");
+			pill.append("badge primary ");
 			if (transferStatusEntity.isSent()) {
 				pill.append("success");
 			}
