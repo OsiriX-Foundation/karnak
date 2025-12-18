@@ -43,6 +43,7 @@ webpack.generated.js
 tsconfig.json
 node_modules/
 /frontend/generated/
+/src/main/frontend/generated/
 /src/main/dev-bundle/
 /src/main/bundles/
 types.d.ts
@@ -55,3 +56,4 @@ pnpm-lock.yaml
 
 logs/
 /data/
+/dicom/
