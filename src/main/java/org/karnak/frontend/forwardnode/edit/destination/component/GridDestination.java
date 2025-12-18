@@ -25,7 +25,7 @@ public class GridDestination extends Grid<DestinationEntity> {
 
 	private static final Map<Long, Boolean> loadingState = new HashMap<>();
 
-	private volatile UI attachedUi;
+	private UI attachedUi;
 
 	public GridDestination() {
 		setSizeFull();
