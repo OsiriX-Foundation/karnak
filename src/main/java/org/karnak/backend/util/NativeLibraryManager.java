@@ -19,7 +19,7 @@ import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.opencv.osgi.OpenCVNativeLoader;
 import org.weasis.core.util.FileUtil;
-import org.weasis.core.util.NativeLibrary;
+import org.weasis.opencv.natives.NativeLibrary;
 
 @Slf4j
 public class NativeLibraryManager {

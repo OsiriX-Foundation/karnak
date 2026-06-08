@@ -18,18 +18,18 @@
     <enforcer.jdk-version>[${java.version},)</enforcer.jdk-version>
     <enforcer.maven-version>[3.3.0,)</enforcer.maven-version>
 
-    <springframework.version>4.0.0</springframework.version>
+    <springframework.version>4.1.0-RC1</springframework.version>
     <springdoc.version>1.8.0</springdoc.version>
-    <vaadin.version>25.0.0</vaadin.version>
-    <org.json.version>20250517</org.json.version>
+    <vaadin.version>25.1.6</vaadin.version>
+    <org.json.version>20260522</org.json.version>
     <opencsv.version>5.12.0</opencsv.version>
 
-    <weasis-dicom-tools.version>5.34.1.7-SNAPSHOT</weasis-dicom-tools.version>
-    <weasis.opencv.native.version>4.12.2-dcm</weasis.opencv.native.version>
+    <weasis-dicom-tools.version>5.34.2</weasis-dicom-tools.version>
+    <weasis.opencv.native.version>4.13.0-dcm</weasis.opencv.native.version>
 
     <h2.version>2.4.240</h2.version>
-    <mockito.version>5.20.0</mockito.version>
-    <swagger.version>2.2.40</swagger.version>
+    <mockito.version>5.23.0</mockito.version>
+    <swagger.version>2.2.50</swagger.version>
 
     <sonar.organization>osirix-foundation-1</sonar.organization>
     <sonar.projectKey>karnak</sonar.projectKey>
@@ -85,7 +85,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.14.1</version>
+          <version>3.15.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -105,37 +105,37 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
-          <version>3.4.2</version>
+          <version>3.5.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.felix</groupId>
           <artifactId>maven-bundle-plugin</artifactId>
-          <version>6.0.0</version>
+          <version>6.0.2</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-dependency-plugin</artifactId>
-          <version>3.9.0</version>
+          <version>3.11.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>3.5.4</version>
+          <version>3.5.5</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
-          <version>3.3.1</version>
+          <version>3.4.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-enforcer-plugin</artifactId>
-          <version>3.6.1</version>
+          <version>3.6.3</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-resources-plugin</artifactId>
-          <version>3.3.1</version>
+          <version>3.5.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -150,7 +150,7 @@
         <plugin>
           <groupId>org.jacoco</groupId>
           <artifactId>jacoco-maven-plugin</artifactId>
-          <version>0.8.13</version>
+          <version>0.8.14</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -538,11 +538,20 @@
       <groupId>com.vaadin</groupId>
     </dependency>
 
+    <!-- Vaadin dev-mode server (Vaadin 25: no longer transitive). Needed to run
+         in development mode, e.g. from the IDE without -Dvaadin.productionMode=true.
+         Optional so it is not propagated transitively; production mode ignores it. -->
+    <dependency>
+      <groupId>com.vaadin</groupId>
+      <artifactId>vaadin-dev</artifactId>
+      <optional>true</optional>
+    </dependency>
+
     <!-- Vaadin - Addons -->
     <dependency>
       <artifactId>togglebutton</artifactId>
       <groupId>com.vaadin.componentfactory</groupId>
-      <version>3.0.0</version>
+      <version>4.2.0</version>
     </dependency>
     <dependency>
       <groupId>org.vaadin.klaudeta</groupId>
