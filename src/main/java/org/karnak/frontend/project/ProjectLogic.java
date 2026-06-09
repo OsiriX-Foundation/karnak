@@ -10,6 +10,8 @@
 package org.karnak.frontend.project;
 
 import com.vaadin.flow.data.provider.ListDataProvider;
+import com.vaadin.flow.spring.annotation.SpringComponent;
+import com.vaadin.flow.spring.annotation.UIScope;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -29,13 +31,13 @@ import org.karnak.frontend.project.component.GridProject;
 import org.karnak.frontend.project.component.NewProject;
 import org.karnak.frontend.util.CollatorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 /**
  * Project logic service use to make calls to backend and implement logic linked to the
  * project view
  */
-@Service
+@SpringComponent
+@UIScope
 @Slf4j
 public class ProjectLogic extends ListDataProvider<ProjectEntity> {
 

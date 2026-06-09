@@ -26,14 +26,14 @@ import org.karnak.frontend.project.component.EditProject;
 import org.karnak.frontend.project.component.GridProject;
 import org.karnak.frontend.project.component.NewProject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
+import jakarta.annotation.security.RolesAllowed;
 
 /**
  * Project View
  */
 @Route(value = ProjectView.ROUTE, layout = MainLayout.class)
 @PageTitle("Karnak - Projects")
-@Secured({ "ROLE_admin" })
+@RolesAllowed("admin")
 public class ProjectView extends HorizontalLayout implements HasUrlParameter<String> {
 
 	public static final String VIEW_NAME = "Projects";

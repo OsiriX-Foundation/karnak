@@ -13,6 +13,7 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.server.ServiceInitEvent;
 import com.vaadin.flow.server.VaadinServiceInitListener;
+import com.vaadin.flow.server.auth.AccessAnnotationChecker;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -35,6 +36,14 @@ public class UIServiceInitListener implements VaadinServiceInitListener {
 	private final List<? extends Class<? extends com.vaadin.flow.component.Component>> viewClasses = Arrays.asList(
 			ForwardNodeView.class, ProfileView.class, ProjectView.class, ExternalIDView.class,
 			PseudonymMappingView.class, DicomMainView.class, HelpView.class);
+
+	// Checks view security annotations (@RolesAllowed / @PermitAll / @AnonymousAllowed)
+	// against the current user.
+	private final AccessAnnotationChecker accessAnnotationChecker;
+
+	public UIServiceInitListener(AccessAnnotationChecker accessAnnotationChecker) {
+		this.accessAnnotationChecker = accessAnnotationChecker;
+	}
 
 	/**
 	 * Listen for the initialization of the UI (the internal root component in Vaadin) and
@@ -65,7 +74,7 @@ public class UIServiceInitListener implements VaadinServiceInitListener {
 		boolean isForwardNode = Objects.equals(event.getNavigationTarget().getName(),
 				"org.karnak.frontend.forwardnode.ForwardNodeView");
 
-		if (SecurityUtil.isUserLoggedIn() && !SecurityUtil.isAccessGranted(event.getNavigationTarget())
+		if (SecurityUtil.isUserLoggedIn() && !accessAnnotationChecker.hasAccess(event.getNavigationTarget())
 				&& !isLoginScreen) {
 			// If root requested
 			if (isForwardNode) {
@@ -74,7 +83,7 @@ public class UIServiceInitListener implements VaadinServiceInitListener {
 				// Try to find first authorized view
 				Optional<? extends Class<? extends com.vaadin.flow.component.Component>> firstAuthorizedViewFoundOpt = viewClasses
 					.stream()
-					.filter(SecurityUtil::isAccessGranted)
+					.filter(accessAnnotationChecker::hasAccess)
 					.findFirst();
 
 				// If an authorized view have been found

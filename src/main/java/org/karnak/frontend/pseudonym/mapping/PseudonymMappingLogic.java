@@ -9,6 +9,8 @@
  */
 package org.karnak.frontend.pseudonym.mapping;
 
+import com.vaadin.flow.spring.annotation.SpringComponent;
+import com.vaadin.flow.spring.annotation.UIScope;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,13 +21,13 @@ import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
 
 /**
  * Mapping logic service use to make calls to backend and implement logic linked to the
  * mapping view
  */
-@Service
+@SpringComponent
+@UIScope
 public class PseudonymMappingLogic {
 
 	// View

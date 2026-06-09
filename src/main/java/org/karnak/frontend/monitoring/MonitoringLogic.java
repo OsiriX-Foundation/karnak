@@ -12,6 +12,8 @@ package org.karnak.frontend.monitoring;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import com.vaadin.flow.component.notification.Notification.Position;
+import com.vaadin.flow.spring.annotation.SpringComponent;
+import com.vaadin.flow.spring.annotation.UIScope;
 import java.io.IOException;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,13 +26,13 @@ import org.karnak.frontend.util.NotificationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
 
 /**
  * Monitoring logic service use to make calls to backend and implement logic linked to the
  * monitoring view
  */
-@Service
+@SpringComponent
+@UIScope
 @Slf4j
 public class MonitoringLogic {
 

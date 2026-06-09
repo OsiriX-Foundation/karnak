@@ -14,6 +14,8 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.data.provider.ListDataProvider;
+import com.vaadin.flow.spring.annotation.SpringComponent;
+import com.vaadin.flow.spring.annotation.UIScope;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,13 +28,13 @@ import org.karnak.backend.model.profilebody.ProfilePipeBody;
 import org.karnak.backend.service.profilepipe.ProfilePipeService;
 import org.karnak.frontend.profile.component.errorprofile.ProfileError;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.error.YAMLException;
 
-@Service
+@SpringComponent
+@UIScope
 @Slf4j
 public class ProfileLogic extends ListDataProvider<ProfileEntity> {
 

@@ -13,12 +13,13 @@ import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.KeyModifier;
-import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLayout;
+import com.vaadin.flow.server.auth.AccessAnnotationChecker;
+import jakarta.annotation.security.PermitAll;
 import org.karnak.backend.util.SecurityUtil;
 import org.karnak.frontend.authconfig.AuthConfigView;
 import org.karnak.frontend.dicom.DicomMainView;
@@ -29,19 +30,20 @@ import org.karnak.frontend.monitoring.MonitoringView;
 import org.karnak.frontend.profile.ProfileView;
 import org.karnak.frontend.project.ProjectView;
 import org.karnak.frontend.pseudonym.mapping.PseudonymMappingView;
-import org.springframework.security.access.annotation.Secured;
 
 /**
  * The main layout. Contains the navigation menu.
  */
-@CssImport(value = "./styles/shared-styles.css")
 @Route(value = "mainLayout")
-@Secured({ "ROLE_admin" })
+@PermitAll
 public class MainLayout extends FlexLayout implements RouterLayout {
 
 	private final Menu menu;
 
-	public MainLayout() {
+	private final transient AccessAnnotationChecker accessAnnotationChecker;
+
+	public MainLayout(AccessAnnotationChecker accessAnnotationChecker) {
+		this.accessAnnotationChecker = accessAnnotationChecker;
 		setSizeFull();
 		setClassName("main-layout");
 
@@ -75,7 +77,9 @@ public class MainLayout extends FlexLayout implements RouterLayout {
 	 * @param icon Icon to apply to the menu
 	 */
 	private void addSecuredMenu(Class<? extends Component> securedClass, String viewName, Icon icon) {
-		if (SecurityUtil.isAccessGranted(securedClass)) {
+		// Only show the menu entry if the current user may access the target view, based on
+		// its security annotations (@RolesAllowed / @PermitAll / @AnonymousAllowed).
+		if (accessAnnotationChecker.hasAccess(securedClass)) {
 			icon.getStyle().setMargin("2%");
 			menu.addView(securedClass, viewName, icon);
 		}

@@ -24,11 +24,11 @@ import org.karnak.frontend.MainLayout;
 import org.karnak.frontend.dicom.echo.DicomEchoView;
 import org.karnak.frontend.dicom.monitor.MonitorView;
 import org.karnak.frontend.dicom.mwl.DicomWorkListView;
-import org.springframework.security.access.annotation.Secured;
+import jakarta.annotation.security.RolesAllowed;
 
 @Route(value = DicomMainView.ROUTE, layout = MainLayout.class)
 @PageTitle("Karnak - DICOM Tools")
-@Secured({ "ROLE_admin" })
+@RolesAllowed("admin")
 public class DicomMainView extends VerticalLayout {
 
 	public static final String VIEW_NAME = "DICOM Tools";

@@ -15,13 +15,13 @@ import static org.karnak.frontend.authentication.LoginScreen.LOGO_SIZE;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.karnak.backend.util.SecurityUtil;
 import org.karnak.frontend.image.LogoKarnak;
 
@@ -30,7 +30,7 @@ import org.karnak.frontend.image.LogoKarnak;
  */
 @Route(NotAuthorizedScreen.ROUTE)
 @PageTitle("Karnak - Not authorized")
-@CssImport(value = "./styles/shared-styles.css")
+@AnonymousAllowed
 public class NotAuthorizedScreen extends FlexLayout {
 
 	public static final String ROUTE = "not-authorized";

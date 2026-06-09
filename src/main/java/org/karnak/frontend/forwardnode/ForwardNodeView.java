@@ -24,7 +24,7 @@ import org.karnak.frontend.forwardnode.component.LayoutNewGridForwardNode;
 import org.karnak.frontend.forwardnode.edit.LayoutEditForwardNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.security.access.annotation.Secured;
+import jakarta.annotation.security.RolesAllowed;
 
 /**
  * Forward Node View
@@ -32,8 +32,7 @@ import org.springframework.security.access.annotation.Secured;
 @Route(value = ForwardNodeView.ROUTE, layout = MainLayout.class)
 @RouteAlias(value = "", layout = MainLayout.class)
 @PageTitle("Karnak - Forward node")
-@Secured({ "ROLE_admin" })
-
+@RolesAllowed("admin")
 public class ForwardNodeView extends HorizontalLayout implements HasUrlParameter<String> {
 
 	public static final String VIEW_NAME = "Gateway";

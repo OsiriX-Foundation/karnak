@@ -11,6 +11,8 @@ package org.karnak.frontend.forwardnode;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.data.provider.ListDataProvider;
+import com.vaadin.flow.spring.annotation.SpringComponent;
+import com.vaadin.flow.spring.annotation.UIScope;
 import java.util.ArrayList;
 import java.util.Objects;
 import lombok.Getter;
@@ -24,12 +26,12 @@ import org.karnak.backend.service.SOPClassUIDService;
 import org.karnak.frontend.forwardnode.edit.destination.DestinationLogic;
 import org.karnak.frontend.forwardnode.edit.source.SourceLogic;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 /**
  * Logic service use to make calls to backend and implement logic linked to the view
  */
-@Service
+@SpringComponent
+@UIScope
 @Slf4j
 public class ForwardNodeLogic extends ListDataProvider<ForwardNodeEntity> {
 

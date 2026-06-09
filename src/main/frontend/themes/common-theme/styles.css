@@ -1,1 +1,220 @@
-@import url('./main-layout.css');
+/* Global application styles for the Karnak UI (Lumo-based common-theme). */
+
+/* ===== Message box (see org.karnak.frontend.component.MessageBox) ===== */
+.stroked-button {
+  border: 1px solid currentColor;
+}
+
+.message-box {
+  width: 100%;
+}
+
+.message-box-layout {
+  border-style: solid;
+  border-width: 1px;
+  padding: 0;
+}
+
+.message-box-layout-with-margin {
+  margin: 0 16px;
+}
+
+.message-box-layout.info {
+  border-color: var(--lumo-primary-color);
+}
+
+.message-box-layout.warn {
+  border-color: var(--lumo-warning-color);
+}
+
+.message-box-layout.error {
+  border-color: var(--lumo-error-color);
+}
+
+.message-box-title {
+  margin: 0 0 0 16px;
+  padding: 0.8rem;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, .2);
+}
+
+.message-box-title.info {
+  background-color: var(--lumo-primary-color);
+  color: var(--lumo-primary-contrast-color);
+}
+
+.message-box-title.warn {
+  background-color: var(--lumo-warning-color);
+  color: var(--lumo-warning-contrast-color);
+}
+
+.message-box-title.error {
+  background-color: var(--lumo-error-color);
+  color: var(--lumo-error-contrast-color);
+}
+
+.message-box-content {
+  color: var(--lumo-body-text-color);
+  background-color: var(--lumo-base-color);
+  width: 100%;
+  margin: 0;
+  padding: 12px;
+}
+
+/* ===== Layout, navigation menu and forms ===== */
+html {
+  font-size: var(--lumo-font-size-s);
+}
+
+/* Stack login-screen vertically on narrow screen */
+@media (max-width: 800px) {
+  .login-screen {
+    flex-direction: column;
+  }
+
+  .login-information {
+    display: block;
+  }
+}
+
+label[disabled] {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.main-layout {
+  flex-direction: row;
+
+  /* Used by the menu and form overlays */
+  --overlay-box-shadow: 0 0 3px 2px var(--lumo-contrast-10pct);
+}
+
+.menu-bar {
+  flex-direction: column;
+  flex-shrink: 0;
+  background: var(--lumo-base-color);
+  box-shadow: var(--overlay-box-shadow);
+}
+
+.menu-header {
+  padding: 11px 16px;
+}
+
+.menu-bar vaadin-tabs {
+  align-items: flex-start;
+  transition: transform 300ms;
+}
+
+.menu-bar vaadin-tab {
+  padding: 0;
+}
+
+.menu-link {
+  margin: 0 -5%;
+  padding: 10px 37px;
+}
+
+.menu-link > span {
+  display: block;
+}
+
+.menu-button {
+  display: none;
+}
+
+.forwardnode-form {
+  height: 100%;
+  width: 300%;
+  background: var(--lumo-base-color);
+}
+
+.inputsourcenode-form {
+  height: 100%;
+  width: 250%;
+  background: var(--lumo-base-color);
+}
+
+/* On narrow screens, move the side bar to the top,
+ * except for the link-tabs, which are hidden but
+ * can be opened via a button.
+ */
+@media (max-width: 800px) {
+  .main-layout {
+    flex-direction: column;
+    --top-bar-height: 50px;
+    --top-bar-margin: 5vw;
+  }
+
+  .menu-bar {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    height: var(--top-bar-height);
+    margin: 0 var(--top-bar-margin);
+    background: none;
+    box-shadow: none;
+  }
+
+  .menu-bar vaadin-tabs {
+    transform: translateX(calc(-100% - var(--top-bar-margin)));
+    position: absolute;
+    top: var(--top-bar-height);
+    height: calc(100% - var(--top-bar-height));
+    z-index: 100;
+    box-shadow: var(--overlay-box-shadow);
+    background: var(--lumo-base-color);
+  }
+
+  .menu-bar .show-tabs {
+    transform: translateX(calc(0% - var(--top-bar-margin)));
+  }
+
+  .menu-button {
+    display: block;
+  }
+
+  .forwardnode-form {
+    height: calc(100% - var(--top-bar-height));
+  }
+
+  .destination-form {
+    height: calc(100% - var(--top-bar-height));
+  }
+
+  .sourcenode-form {
+    height: calc(100% - var(--top-bar-height));
+  }
+
+  .inputsourcenode-form {
+    height: calc(100% - var(--top-bar-height));
+  }
+}
+
+@media (max-width: 550px) {
+  .forwardnode-form {
+    width: 100%;
+
+    /* Prevent text-fields from overflowing on narrow screens */
+    --vaadin-text-field-default-width: 6em;
+  }
+
+  .destination-form {
+    width: 100%;
+
+    /* Prevent text-fields from overflowing on narrow screens */
+    --vaadin-text-field-default-width: 6em;
+  }
+
+  .sourcenode-form {
+    width: 100%;
+
+    /* Prevent text-fields from overflowing on narrow screens */
+    --vaadin-text-field-default-width: 6em;
+  }
+
+  .inputsourcenode-form {
+    width: 100%;
+
+    /* Prevent text-fields from overflowing on narrow screens */
+    --vaadin-text-field-default-width: 6em;
+  }
+}

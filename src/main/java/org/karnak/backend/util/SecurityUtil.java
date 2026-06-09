@@ -66,35 +66,6 @@ public final class SecurityUtil {
 	}
 
 	/**
-	 * Check if the role of the user can access the view
-	 * @param securedClass Secured Class
-	 * @return true if access is granted
-	 */
-	public static boolean isAccessGranted(Class<?> securedClass) {
-		boolean isAccessGranted = isUserLoggedIn();
-
-		// // TODO: currently deactivated: to uncomment when managing views by role
-		// // get the secured annotation
-		// Secured secured = AnnotationUtils.findAnnotation(securedClass, Secured.class);
-		//
-		// // allow if no roles are required
-		// if (secured == null) {
-		// isAccessGranted = true;
-		// } else {
-		// // lookup needed role in user roles
-		// List<String> allowedRoles = Arrays.asList(secured.value());
-		// Authentication authentication =
-		// SecurityContextHolder.getContext().getAuthentication();
-		// isAccessGranted =
-		// authentication != null
-		// && authentication.getAuthorities().stream()
-		// .map(GrantedAuthority::getAuthority)
-		// .anyMatch(allowedRoles::contains);
-		// }
-		return isAccessGranted;
-	}
-
-	/**
 	 * Sign out method
 	 */
 	public static void signOut() {

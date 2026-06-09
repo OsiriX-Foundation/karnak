@@ -26,14 +26,14 @@ import org.karnak.frontend.MainLayout;
 import org.karnak.frontend.monitoring.component.ExportSettingsDialog;
 import org.karnak.frontend.monitoring.component.TransferStatusGrid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
+import jakarta.annotation.security.RolesAllowed;
 
 /**
  * Monitoring View
  */
 @Route(value = MonitoringView.ROUTE, layout = MainLayout.class)
 @PageTitle("Karnak - Monitoring")
-@Secured({ "ROLE_admin" })
+@RolesAllowed("admin")
 public class MonitoringView extends VerticalLayout {
 
 	public static final String VIEW_NAME = "Monitoring";

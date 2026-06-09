@@ -12,15 +12,17 @@ package org.karnak.frontend.monitoring;
 import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.data.provider.QuerySortOrder;
 import com.vaadin.flow.data.provider.QuerySortOrderBuilder;
+import com.vaadin.flow.spring.annotation.SpringComponent;
+import com.vaadin.flow.spring.annotation.UIScope;
 import java.util.List;
 import org.karnak.frontend.monitoring.component.TransferStatusFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Component;
 import org.vaadin.artur.spring.dataprovider.FilterablePageableDataProvider;
 
-@Component
+@SpringComponent
+@UIScope
 public class TransferStatusDataProvider<T> extends FilterablePageableDataProvider<T, TransferStatusFilter> {
 
 	// Services

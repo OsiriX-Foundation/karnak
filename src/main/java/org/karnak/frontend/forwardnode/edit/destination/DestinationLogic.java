@@ -12,6 +12,9 @@ package org.karnak.frontend.forwardnode.edit.destination;
 import com.vaadin.flow.component.UIDetachedException;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.data.provider.ListDataProvider;
+import com.vaadin.flow.spring.annotation.SpringComponent;
+import com.vaadin.flow.spring.annotation.UIScope;
+import jakarta.annotation.PreDestroy;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -24,13 +27,12 @@ import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.model.event.NodeEvent;
 import org.karnak.backend.service.DestinationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
 
 /**
  * Logic service use to make calls to backend and implement logic linked to the view
  */
-@Service
+@SpringComponent
+@UIScope
 @Slf4j
 public class DestinationLogic extends ListDataProvider<DestinationEntity> {
 
@@ -46,6 +48,8 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
 	// Services
 	private final transient DestinationService destinationService;
 
+	private final transient DestinationStatusScheduler destinationStatusScheduler;
+
 	/**
 	 * Text filter that can be changed separately.
 	 */
@@ -59,11 +63,21 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
 	 * @param destinationService Destination Service
 	 */
 	@Autowired
-	public DestinationLogic(final DestinationService destinationService) {
+	public DestinationLogic(final DestinationService destinationService,
+			final DestinationStatusScheduler destinationStatusScheduler) {
 		super(new HashSet<>());
 		this.destinationService = destinationService;
+		this.destinationStatusScheduler = destinationStatusScheduler;
 		this.forwardNodeEntity = null;
 		this.filterText = "";
+		// Register with the singleton scheduler so the transfer-status polling runs for this
+		// UI-scoped logic; unregistered on UI detach (see onDestroy).
+		destinationStatusScheduler.register(this);
+	}
+
+	@PreDestroy
+	public void onDestroy() {
+		destinationStatusScheduler.unregister(this);
 	}
 
 	@Override
@@ -82,9 +96,9 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
 	}
 
 	/**
-	 * Check activity on the forward node
+	 * Check activity on the forward node. Invoked periodically by
+	 * {@link DestinationStatusScheduler}.
 	 */
-	@Scheduled(fixedRate = 1000)
 	public void checkStatusTransfers() {
 		if (forwardNodeEntity != null && destinationViewRef.get() != null) {
 			// Refreshed destinations from DB

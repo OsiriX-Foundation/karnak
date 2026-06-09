@@ -29,12 +29,11 @@ import org.karnak.frontend.profile.component.editprofile.ProfileComponent;
 import org.karnak.frontend.profile.component.editprofile.ProfileElementMainView;
 import org.karnak.frontend.profile.component.errorprofile.ProfileErrorView;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
+import jakarta.annotation.security.RolesAllowed;
 
 @Route(value = ProfileView.ROUTE, layout = MainLayout.class)
 @PageTitle("Karnak - Profiles")
-@Secured({ "ROLE_admin" })
-
+@RolesAllowed("admin")
 public class ProfileView extends HorizontalLayout implements HasUrlParameter<String> {
 
 	public static final String VIEW_NAME = "Profiles";
