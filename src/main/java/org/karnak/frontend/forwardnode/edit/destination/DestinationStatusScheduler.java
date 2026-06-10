@@ -15,14 +15,14 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 /**
- * Singleton scheduler that periodically triggers the transfer-status check on every active
- * {@link DestinationLogic}.
+ * Singleton scheduler that periodically triggers the transfer-status check on every
+ * active {@link DestinationLogic}.
  *
  * <p>
  * The polling must live in a singleton because {@code @Scheduled} is only processed on
- * singleton beans, whereas {@link DestinationLogic} is UI-scoped so that each user session
- * keeps its own view state. UI-scoped logics register themselves on creation and unregister on
- * destruction.
+ * singleton beans, whereas {@link DestinationLogic} is UI-scoped so that each user
+ * session keeps its own view state. UI-scoped logics register themselves on creation and
+ * unregister on destruction.
  */
 @Service
 public class DestinationStatusScheduler {

@@ -51,7 +51,7 @@ public class ProjectLogic extends ListDataProvider<ProjectEntity> {
 
 	private final transient ProfilePipeService profilePipeService;
 
-	private final SecretService secretService;
+	private final transient SecretService secretService;
 
 	/**
 	 * Autowired constructor

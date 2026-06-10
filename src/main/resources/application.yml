@@ -21,6 +21,13 @@ logging:
          cpr:
            # Suppress WARN  a.c.c.AtmosphereFramework - No BroadcasterCache configured
            AtmosphereFramework: ERROR
+    com:
+      vaadin:
+        copilot:
+          # Dev-mode Copilot has no enable/disable flag and its release-note fetch
+          # fails behind TLS-inspecting proxies (PKIX path building failed). The call
+          # is cosmetic, so silence its logger to drop the noisy stack trace.
+          VersionReleaseNoteHandler: "OFF"
 server:
   port: 8081
   servlet:

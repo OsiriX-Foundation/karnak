@@ -70,8 +70,8 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
 		this.destinationStatusScheduler = destinationStatusScheduler;
 		this.forwardNodeEntity = null;
 		this.filterText = "";
-		// Register with the singleton scheduler so the transfer-status polling runs for this
-		// UI-scoped logic; unregistered on UI detach (see onDestroy).
+		// Register with the singleton scheduler so the transfer-status polling runs for
+		// this UI-scoped logic; unregistered on UI detach (see onDestroy).
 		destinationStatusScheduler.register(this);
 	}
 
@@ -83,7 +83,10 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
 	@Override
 	public Object getId(DestinationEntity data) {
 		Objects.requireNonNull(data, "Cannot provide an id for a null item.");
-		return data.hashCode();
+		// Identify rows by the stable database id. DestinationEntity.hashCode() is also
+		// id-based, but using getId() directly keeps the grid's and data provider's item
+		// identity consistent (the grid uses this provider's getId by default).
+		return data.getId();
 	}
 
 	@Override
@@ -242,7 +245,7 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
 	 * @param filterTextInput the text to filter by, never null.
 	 */
 	public void setFilter(String filterTextInput) {
-		Objects.requireNonNull(filterText, "Filter text cannot be null.");
+		Objects.requireNonNull(filterTextInput, "Filter text cannot be null.");
 
 		final String filterTextInputTrim = filterTextInput.trim();
 
@@ -270,6 +273,12 @@ public class DestinationLogic extends ListDataProvider<DestinationEntity> {
 		this.forwardNodeEntity = forwardNodeEntity;
 		getItems().clear();
 		getItems().addAll(destinationService.retrieveDestinations(this.forwardNodeEntity));
+		// Notify the bound grid that the backing data changed. Re-calling
+		// Grid.setItems with the same DataProvider instance no longer forces a re-read,
+		// so the change must be signalled explicitly (otherwise a newly added/removed
+		// destination would not appear). super.refreshAll() only fires the change event;
+		// the overridden refreshAll() would reload from the (possibly stale) entity.
+		super.refreshAll();
 	}
 
 	/**

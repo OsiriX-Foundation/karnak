@@ -77,8 +77,8 @@ public class MainLayout extends FlexLayout implements RouterLayout {
 	 * @param icon Icon to apply to the menu
 	 */
 	private void addSecuredMenu(Class<? extends Component> securedClass, String viewName, Icon icon) {
-		// Only show the menu entry if the current user may access the target view, based on
-		// its security annotations (@RolesAllowed / @PermitAll / @AnonymousAllowed).
+		// Only show the menu entry if the current user may access the target view, based
+		// on its security annotations (@RolesAllowed / @PermitAll / @AnonymousAllowed).
 		if (accessAnnotationChecker.hasAccess(securedClass)) {
 			icon.getStyle().setMargin("2%");
 			menu.addView(securedClass, viewName, icon);

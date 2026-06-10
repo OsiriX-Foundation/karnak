@@ -26,7 +26,7 @@ import org.vaadin.artur.spring.dataprovider.FilterablePageableDataProvider;
 public class TransferStatusDataProvider<T> extends FilterablePageableDataProvider<T, TransferStatusFilter> {
 
 	// Services
-	private final MonitoringLogic monitoringLogic;
+	private final transient MonitoringLogic monitoringLogic;
 
 	// Default sort order
 	private final List<QuerySortOrder> defaultSortOrders;

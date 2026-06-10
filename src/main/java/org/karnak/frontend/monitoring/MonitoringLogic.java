@@ -42,7 +42,7 @@ public class MonitoringLogic {
 	private MonitoringView monitoringView;
 
 	// Services
-	private final TransferMonitoringService transferMonitoringService;
+	private final transient TransferMonitoringService transferMonitoringService;
 
 	@Autowired
 	public MonitoringLogic(final TransferMonitoringService transferMonitoringService) {

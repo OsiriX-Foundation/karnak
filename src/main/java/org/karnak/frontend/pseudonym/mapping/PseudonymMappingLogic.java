@@ -34,10 +34,10 @@ public class PseudonymMappingLogic {
 	private PseudonymMappingView pseudonymMappingView;
 
 	// Service
-	private final ProjectService projectService;
+	private final transient ProjectService projectService;
 
 	// Cache
-	private final PatientClient externalIDCache;
+	private final transient PatientClient externalIDCache;
 
 	/**
 	 * Autowired constructor

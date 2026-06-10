@@ -26,7 +26,7 @@ public class ExternalIDLogic {
 	@Setter
 	private ExternalIDView externalIDView;
 
-	private final ProjectService projectService;
+	private final transient ProjectService projectService;
 
 	@Autowired
 	public ExternalIDLogic(final ProjectService projectService) {

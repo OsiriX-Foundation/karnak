@@ -56,7 +56,6 @@ import org.weasis.core.util.StringUtil;
 /**
  * Layout of the edit forward node
  */
-
 public class LayoutEditForwardNode extends VerticalLayout {
 
 	// Services

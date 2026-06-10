@@ -30,7 +30,6 @@ public class GridDestination extends Grid<DestinationEntity> {
 	public GridDestination() {
 		setSizeFull();
 
-		getListDataView().setIdentifierProvider(DestinationEntity::getId);
 		addColumn(DestinationEntity::getDescription).setHeader("Description").setFlexGrow(20).setSortable(true);
 		addColumn(DestinationEntity::getDestinationType).setHeader("Type").setFlexGrow(20).setSortable(true);
 
@@ -40,9 +39,11 @@ public class GridDestination extends Grid<DestinationEntity> {
 			spanDot.getStyle().set("width", "30px");
 			spanDot.getStyle().set("border-radius", "50%");
 			spanDot.getStyle().set("display", "inline-block");
-			spanDot.getStyle().set("background-color", destination.isActivate() ? "#5FC04C" : "#FC4848");
+			spanDot.getStyle()
+				.set("background-color",
+						destination.isActivate() ? "var(--lumo-success-color)" : "var(--lumo-error-color)");
 			return spanDot;
-		}).setHeader("Enabled").setFlexGrow(20).setSortable(true);
+		}).setHeader("Enabled").setFlexGrow(20);
 
 		// Loading image - always create fresh based on entity state
 		addComponentColumn(destination -> {
@@ -56,6 +57,10 @@ public class GridDestination extends Grid<DestinationEntity> {
 
 	@Override
 	protected void onAttach(AttachEvent attachEvent) {
+		// MUST call super: Grid.onAttach performs the client-side data-communicator setup
+		// that actually renders the rows. Without it the grid body stays empty even
+		// though the data provider is correctly populated.
+		super.onAttach(attachEvent);
 		attachedUi = attachEvent.getUI();
 	}
 

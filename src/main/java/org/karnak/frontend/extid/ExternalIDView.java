@@ -75,7 +75,7 @@ public class ExternalIDView extends HorizontalLayout {
 		VerticalLayout verticalLayout = new VerticalLayout();
 
 		NativeLabel labelDisclaimer = new NativeLabel(LABEL_DISCLAIMER_EXTID);
-		labelDisclaimer.getStyle().set("color", "red");
+		labelDisclaimer.getStyle().set("color", "var(--lumo-error-text-color)");
 		labelDisclaimer.setMinWidth("75%");
 		labelDisclaimer.getStyle().set("right", "0px");
 

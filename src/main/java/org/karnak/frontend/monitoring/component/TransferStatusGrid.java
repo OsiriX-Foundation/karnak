@@ -419,7 +419,7 @@ public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity, Tran
 				pill.append("error");
 			}
 			else {
-				span.getStyle().setBackgroundColor("#d38900");
+				span.getStyle().setBackgroundColor("var(--lumo-warning-color)");
 			}
 			span.getElement().getThemeList().add(pill.toString());
 			span.setText(transferStatusEntity.isSent() ? "Sent" : transferStatusEntity.getReason());

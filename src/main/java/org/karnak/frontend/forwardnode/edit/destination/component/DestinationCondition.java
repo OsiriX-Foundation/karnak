@@ -45,7 +45,7 @@ public class DestinationCondition extends Div {
 	private void setElements() {
 		condition.setWidthFull();
 		textErrorConditionMsg.setText("");
-		textErrorConditionMsg.getStyle().set("color", "red");
+		textErrorConditionMsg.getStyle().set("color", "var(--lumo-error-text-color)");
 		textErrorConditionMsg.getStyle().set("font-size", "0.8em");
 	}
 

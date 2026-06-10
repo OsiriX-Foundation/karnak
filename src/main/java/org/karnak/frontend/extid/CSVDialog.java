@@ -115,7 +115,10 @@ public class CSVDialog extends Dialog {
 
 		divGridContent = new Div();
 		errorMsg = new Div();
-		errorMsg.getStyle().set("font-weight", "bolder").set("padding-bottom", "10px").set("color", "red");
+		errorMsg.getStyle()
+			.set("font-weight", "bolder")
+			.set("padding-bottom", "10px")
+			.set("color", "var(--lumo-error-text-color)");
 
 		fromLineField = new NumberField("From line ");
 		fromLineField.setValue(1d);
