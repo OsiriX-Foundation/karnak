@@ -16,7 +16,6 @@ import com.vaadin.flow.component.KeyModifier;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
-import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLayout;
 import com.vaadin.flow.server.auth.AccessAnnotationChecker;
 import jakarta.annotation.security.PermitAll;
@@ -33,8 +32,12 @@ import org.karnak.frontend.pseudonym.mapping.PseudonymMappingView;
 
 /**
  * The main layout. Contains the navigation menu.
+ *
+ * <p>
+ * The navigation access control also evaluates the parent layout of a view: without an
+ * annotation the layout would deny everything, so it permits all authenticated users and
+ * each view further restricts the access with its own annotation.
  */
-@Route(value = "mainLayout")
 @PermitAll
 public class MainLayout extends FlexLayout implements RouterLayout {
 

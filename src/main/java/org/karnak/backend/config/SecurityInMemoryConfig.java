@@ -9,15 +9,14 @@
  */
 package org.karnak.backend.config;
 
-import org.karnak.backend.cache.RequestCache;
-import org.karnak.backend.constant.EndPoint;
+import com.vaadin.flow.spring.security.VaadinSecurityConfigurer;
 import org.karnak.backend.enums.SecurityRole;
 import org.karnak.backend.security.DefaultIdpLoadCondition;
-import org.karnak.backend.util.SecurityUtil;
-import org.springframework.boot.security.autoconfigure.actuate.web.servlet.EndpointRequest;
+import org.karnak.frontend.authentication.LoginScreen;
 import org.springframework.boot.actuate.context.ShutdownEndpoint;
 import org.springframework.boot.actuate.info.InfoEndpoint;
 import org.springframework.boot.health.actuate.endpoint.HealthEndpoint;
+import org.springframework.boot.security.autoconfigure.actuate.web.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
@@ -37,50 +36,34 @@ import org.springframework.security.web.SecurityFilterChain;
 @Conditional(value = DefaultIdpLoadCondition.class)
 public class SecurityInMemoryConfig {
 
-	private static final String LOGIN_FAILURE_URL = "/login?error";
-
 	private static final String LOGIN_URL = "/login";
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
-			// Disables cross-site request forgery (CSRF) protection for main route
-			.csrf(csrf -> csrf.ignoringRequestMatchers(EndPoint.ALL_REMAINING_PATH))
 			// Turns on/off authorizations
 			.authorizeHttpRequests(authorize -> authorize
-				// Static resources - no authentication required
-				.requestMatchers("/VAADIN/**", "/img/**", "/icons/**", "/sw.js", "/favicon.ico",
-						"/manifest.webmanifest", "/offline.html", "/sw-runtime-resources-precache.js")
+				// Application static resources - no authentication required
+				.requestMatchers("/img/**", "/icons/**")
 				.permitAll()
+				// Deny the shutdown endpoint before permitting the other actuator
+				// endpoints
+				.requestMatchers(EndpointRequest.to(ShutdownEndpoint.class))
+				.denyAll()
 				// Actuator, health, info
 				.requestMatchers("/actuator/**")
 				.permitAll()
 				.requestMatchers(EndpointRequest.to(HealthEndpoint.class, InfoEndpoint.class))
 				.permitAll()
-				// Allows all internal traffic from the Vaadin framework
-				.requestMatchers(SecurityUtil::isFrameworkInternalRequest)
-				.permitAll()
 				// Allow endpoints
 				.requestMatchers(HttpMethod.GET, "/api/echo/destinations")
-				.permitAll()
-				// Deny
-				.requestMatchers(EndpointRequest.to(ShutdownEndpoint.class))
-				.denyAll()
-				// Allows all authenticated traffic
-				// Allow admin role
-				.requestMatchers("/*")
-				.hasRole(SecurityRole.ADMIN_ROLE.getType())
-				.anyRequest()
-				.authenticated())
-			// Enables form-based login and permits unauthenticated access to it
-			// Configures the login page URLs
-			.formLogin(formLogin -> formLogin.loginPage(LOGIN_URL)
-				.permitAll()
-				.loginProcessingUrl(LOGIN_URL)
-				.failureUrl(LOGIN_FAILURE_URL))
-			// Configures the logout URL
-			.logout(logout -> logout.logoutSuccessUrl(LOGIN_URL))
-			.exceptionHandling(exceptionHandling -> exceptionHandling.accessDeniedPage(LOGIN_URL));
+				.permitAll())
+			// Vaadin/Spring Security integration: permits the framework internal
+			// requests and the @AnonymousAllowed views, scopes CSRF, configures the
+			// request cache, the form login on the login view and requires
+			// authentication for any other request. It also enables the navigation
+			// access control which enforces the @RolesAllowed annotations of the views.
+			.with(VaadinSecurityConfigurer.vaadin(), vaadin -> vaadin.loginView(LoginScreen.class, LOGIN_URL));
 
 		return http.build();
 	}
@@ -102,11 +85,6 @@ public class SecurityInMemoryConfig {
 			.build();
 
 		return new InMemoryUserDetailsManager(userDetails);
-	}
-
-	@Bean
-	public RequestCache requestCache() { //
-		return new RequestCache();
 	}
 
 }

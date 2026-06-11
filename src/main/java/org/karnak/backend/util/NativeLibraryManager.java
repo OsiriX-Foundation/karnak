@@ -39,8 +39,10 @@ public class NativeLibraryManager {
 		System.setProperty("dicom.native.codec", libPath);
 
 		// When running from the build output (IntelliJ, mvn) the native library is on the
-		// classpath under /lib/<system>/<filename> and gets copied next to java.library.path.
-		// In the portable package it has already been extracted into the dicom-opencv folder
+		// classpath under /lib/<system>/<filename> and gets copied next to
+		// java.library.path.
+		// In the portable package it has already been extracted into the dicom-opencv
+		// folder
 		// (and may have been stripped from the jar), so we just load whatever is there.
 		String resourcePath = "/lib/" + system + "/" + filename;
 		try (InputStream in = NativeLibraryManager.class.getResourceAsStream(resourcePath)) {

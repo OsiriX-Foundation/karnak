@@ -9,38 +9,21 @@
  */
 package org.karnak.backend.util;
 
-import com.vaadin.flow.server.HandlerHelper;
 import com.vaadin.flow.server.VaadinServletService;
-import com.vaadin.flow.shared.ApplicationConstants;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
 import java.util.Objects;
-import java.util.stream.Stream;
 import org.karnak.backend.enums.SecurityRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 
-@Component
 public final class SecurityUtil {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SecurityUtil.class);
 
 	private SecurityUtil() {
-	}
-
-	/**
-	 * Determines if a request is internal to Vaadin
-	 * @param request Request
-	 * @return true if it is a internal request
-	 */
-	public static boolean isFrameworkInternalRequest(HttpServletRequest request) {
-		final String parameterValue = request.getParameter(ApplicationConstants.REQUEST_TYPE_PARAMETER);
-		return parameterValue != null && Stream.of(HandlerHelper.RequestType.values())
-			.anyMatch(r -> r.getIdentifier().equals(parameterValue));
 	}
 
 	/**

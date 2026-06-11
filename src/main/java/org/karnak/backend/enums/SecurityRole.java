@@ -56,6 +56,21 @@ public enum SecurityRole {
 	}
 
 	/**
+	 * Get the enum from the type in parameter
+	 * @param type Type of the enum
+	 * @return SecurityRole found
+	 */
+	public static SecurityRole fromType(final String type) {
+		if (type != null) {
+			return Arrays.stream(SecurityRole.values())
+				.filter(r -> type.trim().equalsIgnoreCase(r.getType()))
+				.findFirst()
+				.orElse(null);
+		}
+		return null;
+	}
+
+	/**
 	 * Getter for code
 	 * @return Role of the enum
 	 */
