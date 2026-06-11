@@ -11,7 +11,6 @@ package org.karnak.backend.service.gateway;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
-import java.net.URL;
 import java.nio.file.Path;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -98,8 +97,7 @@ public class GatewayService implements ApplicationListener<ContextRefreshedEvent
 	public void init() {
 		log.info("{}", "Start the gateway manager running as a background process");
 		try {
-			URL resource = this.getClass().getResource("/lib");
-			NativeLibraryManager.initNativeLibs(resource);
+			NativeLibraryManager.initNativeLibs();
 		}
 		catch (Exception e1) {
 			throw new IllegalStateException("Cannot register DICOM native librairies", e1);

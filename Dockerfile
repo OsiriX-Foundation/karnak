@@ -3,7 +3,7 @@
 # docker build -t osirixfoundation/karnak:latest -f Dockerfile .
 
 # Based on build image containing maven, jdk and git
-FROM maven:3.9-eclipse-temurin-21-jammy AS builder
+FROM maven:3.9-eclipse-temurin-25-noble AS builder
 WORKDIR /app
 
 # Build the Spring Boot application with layers
@@ -16,7 +16,7 @@ RUN cp ../target/karnak*.jar application.jar
 RUN java -Djarmode=layertools -jar application.jar extract
 
 # Build the final deployment image
-FROM eclipse-temurin:21-jdk-jammy
+FROM eclipse-temurin:25-jdk-noble
 WORKDIR /app
 
 COPY --from=builder /app/bin/dependencies/ ./

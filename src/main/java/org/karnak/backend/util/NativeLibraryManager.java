@@ -11,13 +11,11 @@ package org.karnak.backend.util;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
-import org.opencv.osgi.OpenCVNativeLoader;
 import org.weasis.core.util.FileUtil;
 import org.weasis.opencv.natives.NativeLibrary;
 
@@ -27,31 +25,39 @@ public class NativeLibraryManager {
 	private NativeLibraryManager() {
 	}
 
-	public static void initNativeLibs(URL resource) {
-		Optional<String> oLibPath = Arrays.stream(System.getProperty("java.library.path").split(File.pathSeparator))
+	public static void initNativeLibs() {
+		String libPath = Arrays.stream(System.getProperty("java.library.path", "").split(File.pathSeparator))
 			.filter(p -> p.contains("dicom-opencv"))
-			.findFirst();
-		if (oLibPath.isEmpty()) {
-			throw new IllegalStateException("OpenCV library is not configured in java.library.path");
-		}
+			.findFirst()
+			.orElseThrow(() -> new IllegalStateException(
+					"OpenCV library folder (a path containing \"dicom-opencv\") is not configured in java.library.path"));
 
 		String system = NativeLibrary.getNativeLibSpecification();
 		String filename = system.startsWith("win") ? "opencv_java.dll"
 				: system.startsWith("mac") ? "libopencv_java.dylib" : "libopencv_java.so";
-		Path outputFile = Path.of(oLibPath.get(), filename);
-		System.setProperty("dicom.native.codec", oLibPath.get());
+		Path outputFile = Path.of(libPath, filename);
+		System.setProperty("dicom.native.codec", libPath);
 
-		try {
-			Files.createDirectories(outputFile.getParent());
-			String path = resource.toString() + "/" + system + "/" + filename;
-			FileUtil.writeStream(new URL(path).openStream(), outputFile, true);
+		// When running from the build output (IntelliJ, mvn) the native library is on the
+		// classpath under /lib/<system>/<filename> and gets copied next to java.library.path.
+		// In the portable package it has already been extracted into the dicom-opencv folder
+		// (and may have been stripped from the jar), so we just load whatever is there.
+		String resourcePath = "/lib/" + system + "/" + filename;
+		try (InputStream in = NativeLibraryManager.class.getResourceAsStream(resourcePath)) {
+			if (in != null) {
+				Files.createDirectories(outputFile.getParent());
+				FileUtil.writeStream(in, outputFile, true);
+			}
+			else if (!Files.isReadable(outputFile)) {
+				throw new IllegalStateException("Native OpenCV library is neither on the classpath (" + resourcePath
+						+ ") nor already present at " + outputFile);
+			}
 		}
 		catch (IOException e) {
-			log.error("copy native libs", e);
+			throw new IllegalStateException("Cannot copy the native OpenCV library to " + outputFile, e);
 		}
 
-		OpenCVNativeLoader loader = new OpenCVNativeLoader();
-		loader.init();
+		NativeLibrary.loadLibraryFromAbsolutePath(outputFile);
 	}
 
 }

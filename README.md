@@ -4,6 +4,8 @@
 
 Karnak is a DICOM gateway designed for data de-identification and DICOM attribute normalization. It manages continuous DICOM data streams, functioning as a DICOM listener for input and supporting both DICOM and DICOMWeb formats for output.
 
+In practice, Karnak receives DICOM studies from one or more **sources** (modalities, PACS, workstations…), applies a configurable **de-identification / tag-morphing profile**, and forwards the result to one or more **destinations** over DICOM or DICOMWeb (STOW-RS). Everything is configured and monitored from a web interface.
+
 For detailed usage instructions, refer to the [Karnak User Guide](https://osirix-foundation.github.io/karnak-documentation/).
 
 # Application Features
@@ -22,11 +24,31 @@ For detailed usage instructions, refer to the [Karnak User Guide](https://osirix
 - [Build your own de-identification profile](https://osirix-foundation.github.io/karnak-documentation/en/profiles)
 - Import and export the de-identification profiles to share them with other users.
 
+# Getting started
+
+You don't need to build Karnak from source to use it. Pick the option that fits your needs:
+
+| I want to… | Use | Details |
+|------------|-----|---------|
+| Run Karnak in production | **Docker** | [karnak-docker](https://github.com/OsiriX-Foundation/karnak-docker) — Postgres + Redis, the recommended setup |
+| Try Karnak quickly on a single machine | **Portable package** | Self-contained, embedded database, no external services — see [Run portable package](#run-portable-package) |
+| Contribute to / develop Karnak | **Build from source** | See [Build Karnak](#build-karnak) and [Debug Karnak](#debug-karnak) |
+
+## Accessing Karnak
+
+Once Karnak is running, with the default configuration:
+
+- **Web interface**: <http://localhost:8081>
+- **Default credentials**: user `admin`, password `karnak` (change these in production via `KARNAK_ADMIN` / `KARNAK_PASSWORD`)
+- **DICOM listener**: AE Title `KARNAK-GATEWAY`, port `11119` (the portable package uses `11112`) — point your modality or PACS here to send studies to Karnak
+
+The web port (`KARNAK_WEB_PORT`), the listener AE Title (`DICOM_LISTENER_AET`) and port (`DICOM_LISTENER_PORT`), as well as the sources and destinations, are all configurable; see the [Karnak User Guide](https://osirix-foundation.github.io/karnak-documentation/).
+
 # Build Karnak
 
 Prerequisites:
-- JDK 21
-- Maven 3
+- JDK 25
+- Maven 3.3+
 
 ## Build for docker image
 
@@ -41,35 +63,42 @@ Note: on Windows the bash.exe must be specified: `mvn clean install -Pportable -
 # Run Karnak
 
 ## Run with docker
-To configure and run Karnak with docker, see [karnak-docker](https://github.com/OsiriX-Foundation/karnak-docker).
+To configure and run Karnak with docker, see [karnak-docker](https://github.com/OsiriX-Foundation/karnak-docker). This is the recommended setup for production.
 
 ## Run portable package
-Go in the folder `build-portable/target/karnak-system-jdk-version` and launch the executable `run.sh` (Linux or MacOS) or `run.bat` (Windows).
+After building the portable package (see [Build for portable package](#build-for-portable-package)), go into the generated folder `build-portable/target/karnak-<os>-jdk<version>-<karnak-version>` (for example `karnak-linux-x86-64-jdk25-...`) and launch the executable `run.sh` (Linux or macOS) or `run.bat` (Windows).
 
-Note: this portable package runs an embedded database (H2) in a file mode, and the redis server is replaced by an in-memory cache. For intensive use, it's recommended to use Karnak with docker and a Postgres database.
+Settings such as the web port and the DICOM listener can be adjusted in the `run.cfg` file located next to the executable.
+
+Then open <http://localhost:8081> and log in (see [Accessing Karnak](#accessing-karnak)).
+
+Note: this portable package runs an embedded database (H2) in file mode, and the Redis server is replaced by an in-memory cache. For intensive use, it's recommended to run Karnak with docker and a Postgres database.
 
 # Debug Karnak
 
 ## Debug in IntelliJ
 
-- Launch the components needed by Karnak (see below "Configure Postgres database with docker")
+- Launch the components needed by Karnak (see below "Run locally the database and the cache with docker")
+- Run `mvn clean install` once before the first debug session. Besides building the project, this copies
+  the native OpenCV library into `target/classes/lib/<os>-<cpu>/` — it is loaded at startup by the DICOM
+  gateway, and the application fails with "Cannot register DICOM native librairies" if it is missing.
 - Enable Spring and Spring Boot for the project
-- Create a Spring Boot launcher from the main of StartApplication.java
-    - Working Directory must be the mvc directory
+- Create a Spring Boot launcher from the main of `KarnakApplication.java`
+    - Working Directory must be the project root directory (the folder containing `pom.xml`)
     - In VM Options:
       - Add `-Djava.library.path="/tmp/dicom-opencv"`. Note: the tmp folder must be adapted according to your system and `dicom-opencv` is mandatory as the last folder.
       - Optional: Add `-Dvaadin.productionMode=true` to enable production mode
     - In Environment variables, add the following values. The following values work with our default
-      configuration defined with docker used for the development (see: "Configure local Postgres database with docker") :
+      configuration defined with docker used for the development (see: "Run locally the database and the cache with docker") :
         - Mandatory:
             - `ENVIRONMENT=DEV`
+            - `DB_ENCRYPTION_KEY=fsGuSZRIEr$HwlTDPglZg*Vl7WtJCZz6RLvqoMKWSA!`
         - Optional:
             - `DB_PASSWORD=karnak`
             - `DB_PORT=5433`
             - `DB_USER=karnak`
             - `DB_NAME=karnak`
             - `DB_HOST=localhost`
-            - `DB_ENCRYPTION_KEY=fsGuSZRIEr$HwlTDPglZg*Vl7WtJCZz6RLvqoMKWSA!`
             - `KARNAK_ADMIN=admin`
             - `KARNAK_PASSWORD=karnak`
             - `IDP=undefined`
@@ -127,7 +156,9 @@ An OpenID Connect identity provider can be configured by using the environment v
  - `OIDC_CLIENT_SECRET`: client secret of the identity provider
  - `OIDC_ISSUER_URI`: issuer URI of the identity provider
  
-# Documentation for API/Endpoints 
+# API / Endpoints
+
+Karnak exposes a small REST API in addition to the web interface. An OpenAPI (Swagger) description is generated by springdoc and the C-ECHO endpoint is available at `/api/echo`. For the full list of endpoints and their usage, refer to the [Karnak User Guide](https://osirix-foundation.github.io/karnak-documentation/).
 
 # Workflow
 

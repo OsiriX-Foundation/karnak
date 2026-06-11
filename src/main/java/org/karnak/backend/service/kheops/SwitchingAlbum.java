@@ -12,7 +12,7 @@ package org.karnak.backend.service.kheops;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import lombok.extern.slf4j.Slf4j;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
@@ -41,7 +41,7 @@ public class SwitchingAlbum {
 
 	private final KheopsApi kheopsAPI;
 
-	private final Map<Long, List<MetadataSwitching>> switchingAlbumToDo = new WeakHashMap<>();
+	private final Map<Long, List<MetadataSwitching>> switchingAlbumToDo = new ConcurrentHashMap<>();
 
 	public SwitchingAlbum() {
 		kheopsAPI = new KheopsApi();
