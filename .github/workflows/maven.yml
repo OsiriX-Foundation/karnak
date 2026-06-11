@@ -31,7 +31,7 @@ jobs:
         uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
-          java-version: '21'
+          java-version: '25'
           cache: 'maven'
       - name: Cache SonarCloud packages
         uses: actions/cache@v4
@@ -43,7 +43,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -Pcoverage -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:5.1.0.4751:sonar
+        run: mvn -Pcoverage -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:5.7.0.6970:sonar
       # Build Docker image and push it to Docker Hub
       - name: Build the spring app
         if: ${{ env.PUSH_PACKAGES }}

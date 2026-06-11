@@ -15,7 +15,7 @@ import com.vaadin.flow.theme.Theme;
 
 /**
  * Application shell configuration for the Vaadin UI.
- *
+ * <p>
  * All app-shell-level annotations such as @Push, @PWA, @Viewport, etc. must be placed on
  * a class implementing AppShellConfigurator.
  */

@@ -90,4 +90,4 @@ then
   SYS_PROPS+=" -Dlogging.config=$LOGBACK_CONFIGURATION_FILE"
 fi
 
-eval java "$SYS_PROPS" org.springframework.boot.loader.launch.JarLauncher
+eval java "$SYS_PROPS" -jar application.jar

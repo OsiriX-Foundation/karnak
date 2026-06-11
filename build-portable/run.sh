@@ -27,6 +27,8 @@ generate_db_password() {
 
 # Default values
 CONFIG_FILE="./run.cfg"
+# Seconds to wait for a graceful shutdown before sending SIGKILL
+SHUTDOWN_TIMEOUT="${KARNAK_SHUTDOWN_TIMEOUT:-30}"
 
 # Parse arguments
 while [[ $# -gt 0 ]]; do
@@ -81,15 +83,32 @@ fi
 [[ ! -e "$KARNAK_BIN" ]] && die "Karnak executable not found at '$KARNAK_BIN'"
 
 # Cleanup function
+SHUTTING_DOWN=0
 cleanup() {
-  log "Shutting down services..."
+  # Guard against running twice (e.g. INT trap then EXIT trap)
+  [[ "$SHUTTING_DOWN" == 1 ]] && return
+  SHUTTING_DOWN=1
+  trap - EXIT INT TERM
 
-  # Stop Karnak if running
+  # Stop Karnak if still running
   if [[ -n "${KARNAK_PID:-}" ]] && kill -0 "$KARNAK_PID" 2>/dev/null; then
-    log "Stopping Karnak (PID: $KARNAK_PID)"
-    kill "$KARNAK_PID" 2>/dev/null || true
-    # Wait briefly for Karnak to stop
-    sleep 1
+    log "Stopping Karnak (PID: $KARNAK_PID), waiting up to ${SHUTDOWN_TIMEOUT}s for graceful shutdown..."
+    kill -TERM "$KARNAK_PID" 2>/dev/null || true
+
+    # Poll for graceful shutdown, then escalate to SIGKILL
+    waited=0
+    while kill -0 "$KARNAK_PID" 2>/dev/null; do
+      if (( waited >= SHUTDOWN_TIMEOUT )); then
+        log "Karnak did not stop within ${SHUTDOWN_TIMEOUT}s, sending SIGKILL"
+        kill -KILL "$KARNAK_PID" 2>/dev/null || true
+        break
+      fi
+      sleep 1
+      waited=$((waited + 1))
+    done
+
+    # Reap the child so it does not linger as a zombie (<defunct>)
+    wait "$KARNAK_PID" 2>/dev/null || true
   fi
 
   log "Cleanup complete"
@@ -102,5 +121,6 @@ log "Starting Karnak from '$KARNAK_BIN'"
 "$KARNAK_BIN" &
 KARNAK_PID=$!
 
-# Wait for Karnak to finish
-wait $KARNAK_PID
+# Wait for Karnak to finish. A trapped signal interrupts wait and runs cleanup;
+# `|| true` keeps `set -e` from aborting before cleanup can reap the child.
+wait "$KARNAK_PID" || true

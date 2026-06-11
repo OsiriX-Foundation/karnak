@@ -2,30 +2,36 @@ name: Build installers
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     env:
       NAME: "Karnak"
       IDENTIFIER: "org.karnak.launcher"
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
         include:
-          - { os: macos-15-intel, platform: x64, wsystem: macosx, warc: x86-64 }
           - { os: macos-latest, platform: arm64, wsystem: macosx, warc: aarch64 }
           - { os: windows-latest, platform: x64, wsystem: windows, warc: x86-64 }
           - { os: ubuntu-latest, platform: x64, wsystem: linux, warc: x86-64 }
-          - { os: ubuntu-24.04-arm, platform: arm64, wsystem: linux, warc: aarch64 }
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Set up JDK
         uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
-          java-version: '21'
+          java-version: '25'
           cache: 'maven'
 
       - name: Import Developer Certificate
@@ -51,6 +57,15 @@ jobs:
           MAC_DEVELOPER_ID: ${{ secrets.MACOS__DEVELOPER_ID }}
         run: |
           mvn -B -Pportable clean install
+
+      - name: Verify package folder was resolved
+        shell: bash
+        run: |
+          if [ -z "${APP_PACKAGE_FOLDER:-}" ] || [ ! -d "target/${APP_PACKAGE_FOLDER}" ]; then
+            echo "::error::APP_PACKAGE_FOLDER was not set by the portable build (got '${APP_PACKAGE_FOLDER:-<empty>}')."
+            exit 1
+          fi
+          echo "Packaged into target/${APP_PACKAGE_FOLDER}"
 
       - name: Zip app for notarization
         if: matrix.wsystem == 'macosx'
@@ -80,3 +95,5 @@ jobs:
           name: ${{ env.APP_PACKAGE_FOLDER }}
           path: target/${{ env.APP_PACKAGE_FOLDER }}
           compression-level: '9'
+          if-no-files-found: error
+          retention-days: 30

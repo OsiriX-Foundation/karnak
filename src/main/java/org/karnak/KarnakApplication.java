@@ -12,12 +12,12 @@ package org.karnak;
 import com.vaadin.flow.spring.annotation.EnableVaadin;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.karnak.backend.config.AppConfig;
 import org.karnak.backend.enums.ApplicationProfile;
 import org.karnak.backend.enums.EnvironmentVariable;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -27,7 +27,6 @@ import org.springframework.boot.webmvc.autoconfigure.error.ErrorMvcAutoConfigura
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.lang.Nullable;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
@@ -38,36 +37,33 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @EnableAsync
 @Slf4j
+@NullMarked
 public class KarnakApplication implements CommandLineRunner {
 
-	private final AppConfig myConfig;
-
+	private final @Nullable AppConfig myConfig;
 	private final Environment environment;
+	private final int serverPort;
 
-	@Autowired
-	public KarnakApplication(@Nullable AppConfig myConfig, Environment environment) {
+	public KarnakApplication(@Nullable AppConfig myConfig, Environment environment,
+			@Value("${server.port}") int serverPort) {
 		this.myConfig = myConfig;
 		this.environment = environment;
+		this.serverPort = serverPort;
 	}
 
-	@Value("${server.port}")
-	private int serverPort;
-
-	public static void main(String[] args) {
-
+	static void main(String[] args) {
 		SpringApplicationBuilder application = new SpringApplicationBuilder(KarnakApplication.class);
 
-		// If environment variable IDP exists and has value "oidc": activate the profile
-		// application-oidc.yml
-		if (System.getenv().containsKey(EnvironmentVariable.IDP.getCode()) && Objects
-			.equals(System.getenv().get(EnvironmentVariable.IDP.getCode()), ApplicationProfile.OIDC.getCode())) {
+		// If environment variable IDP has value "oidc", activate the application-oidc.yml profile
+		String idp = System.getenv(EnvironmentVariable.IDP.getCode());
+		if (ApplicationProfile.OIDC.getCode().equals(idp)) {
 			application.profiles(ApplicationProfile.OIDC.getCode());
 		}
 
-		// Run application
 		application.run(args);
 	}
 
+	// The embedded web server serves plain HTTP (no TLS for the UI), so the http:// URL is intentional.
 	@Override
 	public void run(String... args) {
 		log.info("Karnak application started successfully");

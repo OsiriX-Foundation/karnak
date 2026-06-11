@@ -9,23 +9,22 @@ WORKDIR /app
 # Build the Spring Boot application with layers
 COPY pom.xml .
 COPY src ./src
-COPY frontend frontend
 RUN mvn -B package -P production
 WORKDIR /app/bin
 RUN cp ../target/karnak*.jar application.jar
-RUN java -Djarmode=layertools -jar application.jar extract
+RUN java -Djarmode=tools -jar application.jar extract --layers --destination extracted
 
 # Build the final deployment image
 FROM eclipse-temurin:25-jdk-noble
 WORKDIR /app
 
-COPY --from=builder /app/bin/dependencies/ ./
+COPY --from=builder /app/bin/extracted/dependencies/ ./
 RUN true
-COPY --from=builder /app/bin/spring-boot-loader/ ./
+COPY --from=builder /app/bin/extracted/spring-boot-loader/ ./
 RUN true
-COPY --from=builder /app/bin/snapshot-dependencies/ ./
+COPY --from=builder /app/bin/extracted/snapshot-dependencies/ ./
 RUN true
-COPY --from=builder /app/bin/application/ ./
+COPY --from=builder /app/bin/extracted/application/ ./
 RUN true
 COPY tools/docker-entrypoint.sh .
 

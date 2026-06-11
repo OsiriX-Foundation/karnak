@@ -7,19 +7,19 @@ FROM maven:3.9-eclipse-temurin-25-noble AS builder
 ARG JAR_FILE=target/karnak*.jar
 WORKDIR /app
 COPY ${JAR_FILE} application.jar
-RUN java -Djarmode=layertools -jar application.jar extract
+RUN java -Djarmode=tools -jar application.jar extract --layers --destination extracted
 
 # Build the final deployment image
 FROM eclipse-temurin:25-jdk-noble
 WORKDIR app
 
-COPY --from=builder /app/dependencies/ ./
+COPY --from=builder /app/extracted/dependencies/ ./
 RUN true
-COPY --from=builder /app/spring-boot-loader/ ./
+COPY --from=builder /app/extracted/spring-boot-loader/ ./
 RUN true
-COPY --from=builder /app/snapshot-dependencies/ ./
+COPY --from=builder /app/extracted/snapshot-dependencies/ ./
 RUN true
-COPY --from=builder /app/application/ ./
+COPY --from=builder /app/extracted/application/ ./
 RUN true
 COPY tools/docker-entrypoint.sh .
 
