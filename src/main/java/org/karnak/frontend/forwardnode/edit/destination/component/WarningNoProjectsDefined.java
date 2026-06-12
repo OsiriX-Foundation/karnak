@@ -13,7 +13,9 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import org.weasis.core.util.annotations.Generated;
 
+@Generated()
 public class WarningNoProjectsDefined extends Dialog {
 
 	private final Button btnValidate;

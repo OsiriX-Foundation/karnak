@@ -35,9 +35,11 @@ import org.springframework.stereotype.Service;
 import org.weasis.dicom.param.AdvancedParams;
 import org.weasis.dicom.param.AttributeEditor;
 import org.weasis.dicom.param.DicomNode;
+import org.weasis.core.util.annotations.Generated;
 
 @Service
 @Slf4j
+@Generated()
 public class StoreScpForwardService {
 
 	@Getter

@@ -25,10 +25,12 @@ import org.karnak.frontend.dicom.echo.DicomEchoView;
 import org.karnak.frontend.dicom.monitor.MonitorView;
 import org.karnak.frontend.dicom.mwl.DicomWorkListView;
 import jakarta.annotation.security.RolesAllowed;
+import org.weasis.core.util.annotations.Generated;
 
 @Route(value = DicomMainView.ROUTE, layout = MainLayout.class)
 @PageTitle("Karnak - DICOM Tools")
 @RolesAllowed("admin")
+@Generated()
 public class DicomMainView extends VerticalLayout {
 
 	public static final String VIEW_NAME = "DICOM Tools";

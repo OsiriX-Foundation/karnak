@@ -13,9 +13,11 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
+import org.weasis.core.util.annotations.Generated;
 
 @Component("patientClient")
 @Profile("!portable")
+@Generated()
 public class ExternalIDCache extends PatientClient {
 
 	private static final String NAME = "externalId.cache";

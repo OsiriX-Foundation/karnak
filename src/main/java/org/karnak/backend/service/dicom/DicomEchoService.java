@@ -14,8 +14,10 @@ import java.util.concurrent.ExecutionException;
 import org.karnak.backend.model.dicom.ConfigNode;
 import org.karnak.backend.service.thread.DicomEchoThread;
 import org.springframework.stereotype.Service;
+import org.weasis.core.util.annotations.Generated;
 
 @Service
+@Generated()
 public class DicomEchoService {
 
 	public String dicomEcho(List<ConfigNode> nodes) throws InterruptedException, ExecutionException {

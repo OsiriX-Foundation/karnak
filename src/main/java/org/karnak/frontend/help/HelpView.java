@@ -21,11 +21,13 @@ import com.vaadin.flow.router.Route;
 import org.karnak.frontend.MainLayout;
 import org.springframework.beans.factory.annotation.Value;
 import jakarta.annotation.security.RolesAllowed;
+import org.weasis.core.util.annotations.Generated;
 
 @Route(value = HelpView.ROUTE, layout = MainLayout.class)
 @PageTitle("Karnak - Help")
 @Tag("help-view")
 @RolesAllowed({ "admin", "user" })
+@Generated()
 public class HelpView extends VerticalLayout {
 
 	public static final String VIEW_NAME = "Help";

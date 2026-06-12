@@ -15,7 +15,9 @@ import com.vaadin.flow.data.provider.SortDirection;
 import java.util.List;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.frontend.util.CollatorUtils;
+import org.weasis.core.util.annotations.Generated;
 
+@Generated()
 public class GridProject extends Grid<ProjectEntity> {
 
 	public GridProject() {

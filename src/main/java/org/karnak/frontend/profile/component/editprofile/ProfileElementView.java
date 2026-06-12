@@ -16,7 +16,9 @@ import java.util.List;
 import org.karnak.backend.data.entity.ArgumentEntity;
 import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.data.entity.TagEntity;
+import org.weasis.core.util.annotations.Generated;
 
+@Generated()
 public class ProfileElementView extends Div {
 
 	ProfileElementEntity profileElementEntity;

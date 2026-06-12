@@ -23,8 +23,10 @@ import org.karnak.backend.service.ApplicationContextProvider;
 import org.karnak.backend.service.EndpointService;
 import org.karnak.backend.util.PatientClientUtil;
 import org.karnak.backend.util.SpecialCharacter;
+import org.weasis.core.util.annotations.Generated;
 
 @Slf4j
+@Generated()
 public class Pseudonym {
 
 	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();

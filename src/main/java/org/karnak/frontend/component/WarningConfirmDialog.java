@@ -22,7 +22,9 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import org.weasis.core.util.annotations.Generated;
 
+@Generated()
 public class WarningConfirmDialog extends Composite<Dialog> {
 
 	private static final String DEFAULT_TITLE = "Warning";

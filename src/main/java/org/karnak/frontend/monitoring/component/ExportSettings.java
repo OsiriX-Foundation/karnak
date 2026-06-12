@@ -12,12 +12,14 @@ package org.karnak.frontend.monitoring.component;
 import com.opencsv.CSVWriter;
 import lombok.Getter;
 import lombok.Setter;
+import org.weasis.core.util.annotations.Generated;
 
 /**
  * Model used to collect the export settings of the user
  */
 @Setter
 @Getter
+@Generated()
 public class ExportSettings {
 
 	private String delimiter;

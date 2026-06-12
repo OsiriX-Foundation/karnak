@@ -18,8 +18,10 @@ import org.dcm4che3.img.DicomOutputData;
 import org.dcm4che3.img.util.DicomUtils;
 import org.weasis.dicom.param.AttributeEditor;
 import org.weasis.dicom.param.DicomState;
+import org.weasis.core.util.annotations.Generated;
 
 @Getter
+@Generated()
 public abstract class ForwardDestination {
 
 	protected final List<AttributeEditor> dicomEditors;

@@ -31,8 +31,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.data.entity.ProfileEntity;
 import org.karnak.frontend.profile.ProfileLogic;
+import org.weasis.core.util.annotations.Generated;
 
 @Slf4j
+@Generated()
 public class ProfileComponent extends VerticalLayout {
 
 	private final WarningDeleteProfileUsed dialogWarning;

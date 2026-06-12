@@ -10,7 +10,9 @@
 package org.karnak.frontend.forwardnode.edit.destination.component;
 
 import com.vaadin.flow.component.html.Image;
+import org.weasis.core.util.annotations.Generated;
 
+@Generated()
 public class LoadingImage extends Image {
 
 	// Served statically from src/main/resources/META-INF/resources/img/ (relative to the

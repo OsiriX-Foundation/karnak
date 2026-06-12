@@ -22,12 +22,14 @@ import lombok.Setter;
 import org.karnak.backend.cache.Patient;
 import org.karnak.backend.util.DateFormat;
 import org.karnak.frontend.component.BoxShadowComponent;
+import org.weasis.core.util.annotations.Generated;
 
 /**
  * Result component
  */
 @Setter
 @Getter
+@Generated()
 public class MappingResultComponent extends VerticalLayout {
 
 	// Components

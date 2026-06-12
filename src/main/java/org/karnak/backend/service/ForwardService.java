@@ -57,9 +57,11 @@ import org.weasis.dicom.util.StoreFromStreamSCU;
 import org.weasis.dicom.web.DicomStowRS;
 import org.weasis.dicom.web.HttpException;
 import org.weasis.opencv.data.PlanarImage;
+import org.weasis.core.util.annotations.Generated;
 
 @Service
 @Slf4j
+@Generated()
 public class ForwardService {
 
 	private static final String ERROR_WHEN_FORWARDING = "Error when forwarding to the final destination";

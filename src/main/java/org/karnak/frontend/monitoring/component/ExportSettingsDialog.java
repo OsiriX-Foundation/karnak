@@ -24,10 +24,12 @@ import com.vaadin.flow.data.binder.ValidationException;
 import lombok.Getter;
 import lombok.Setter;
 import org.karnak.frontend.util.NotificationUtil;
+import org.weasis.core.util.annotations.Generated;
 
 /**
  * Dialog to get the input of the user concerning the export settings
  */
+@Generated()
 public class ExportSettingsDialog extends Dialog {
 
 	// Textfields

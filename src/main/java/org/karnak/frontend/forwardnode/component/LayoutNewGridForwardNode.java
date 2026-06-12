@@ -14,7 +14,9 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import lombok.Getter;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
+import org.weasis.core.util.annotations.Generated;
 
+@Generated()
 public class LayoutNewGridForwardNode extends VerticalLayout {
 
 	@Getter

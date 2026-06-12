@@ -15,8 +15,10 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.data.binder.Binder;
 import lombok.Getter;
 import org.karnak.backend.data.entity.DestinationEntity;
+import org.weasis.core.util.annotations.Generated;
 
 @Getter
+@Generated()
 public class FilterBySOPClassesForm extends HorizontalLayout {
 
 	private final MultiSelectComboBox<String> sopFilter;

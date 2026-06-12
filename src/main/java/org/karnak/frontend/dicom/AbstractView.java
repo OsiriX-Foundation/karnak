@@ -18,7 +18,9 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import org.karnak.backend.enums.MessageType;
 import org.karnak.backend.model.dicom.Message;
 import org.karnak.frontend.component.MessageBox;
+import org.weasis.core.util.annotations.Generated;
 
+@Generated()
 public abstract class AbstractView extends Div {
 
 	private static final int DURATION_MSG_INFO_SUCCESS = 5000;

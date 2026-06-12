@@ -30,7 +30,9 @@ import org.springframework.core.env.Profiles;
 import org.weasis.core.util.StringUtil;
 import org.weasis.dicom.op.CStore;
 import org.weasis.dicom.param.DicomNode;
+import org.weasis.core.util.annotations.Generated;
 
+@Generated()
 public class EditAETitleDescription extends HorizontalLayout {
 
 	private final TextField textFieldAETitle;

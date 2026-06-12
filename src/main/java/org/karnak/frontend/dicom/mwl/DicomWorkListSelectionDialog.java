@@ -28,7 +28,9 @@ import lombok.Getter;
 import org.karnak.backend.model.dicom.ConfigNode;
 import org.karnak.backend.model.dicom.DicomNodeList;
 import org.karnak.frontend.component.AbstractDialog;
+import org.weasis.core.util.annotations.Generated;
 
+@Generated()
 public class DicomWorkListSelectionDialog extends AbstractDialog {
 
 	// CONTROLLER

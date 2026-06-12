@@ -18,10 +18,12 @@ import org.karnak.backend.data.entity.AuthConfigEntity;
 import org.karnak.backend.data.repo.AuthConfigRepo;
 import org.karnak.backend.enums.AuthConfigType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.weasis.core.util.annotations.Generated;
 
 @SpringComponent
 @UIScope
 @Slf4j
+@Generated()
 public class AuthConfigLogic extends ListDataProvider<AuthConfigEntity> {
 
 	private final transient AuthConfigRepo authConfigRepo;

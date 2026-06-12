@@ -31,8 +31,10 @@ import org.karnak.backend.model.profilepipe.HMAC;
 import org.karnak.backend.model.profiles.CleanPixelData;
 import org.karnak.backend.model.profiles.ProfileItem;
 import org.karnak.backend.service.profilepipe.Profile;
+import org.weasis.core.util.annotations.Generated;
 
 @Slf4j
+@Generated()
 public class SwitchingAlbum {
 
 	public static final List<String> MIN_SCOPE_SOURCE = List.of("read", "send");

@@ -19,7 +19,9 @@ import org.karnak.backend.model.expression.ExprCondition;
 import org.karnak.backend.model.expression.ExpressionError;
 import org.karnak.backend.model.expression.ExpressionResult;
 import org.karnak.frontend.util.UIS;
+import org.weasis.core.util.annotations.Generated;
 
+@Generated()
 public class DestinationCondition extends Div {
 
 	private static final String LABEL_CONDITION = "Condition (Leave blank if no condition)";

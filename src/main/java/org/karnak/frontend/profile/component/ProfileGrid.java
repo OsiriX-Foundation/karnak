@@ -15,7 +15,9 @@ import com.vaadin.flow.data.provider.SortDirection;
 import java.util.Arrays;
 import org.karnak.backend.data.entity.ProfileEntity;
 import org.karnak.frontend.util.CollatorUtils;
+import org.weasis.core.util.annotations.Generated;
 
+@Generated()
 public class ProfileGrid extends Grid<ProfileEntity> {
 
 	public ProfileGrid() {

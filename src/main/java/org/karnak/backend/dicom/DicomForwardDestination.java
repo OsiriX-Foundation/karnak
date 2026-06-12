@@ -19,7 +19,9 @@ import org.weasis.dicom.param.DicomNode;
 import org.weasis.dicom.param.DicomProgress;
 import org.weasis.dicom.param.DicomState;
 import org.weasis.dicom.util.StoreFromStreamSCU;
+import org.weasis.core.util.annotations.Generated;
 
+@Generated()
 public class DicomForwardDestination extends ForwardDestination {
 
 	@Getter

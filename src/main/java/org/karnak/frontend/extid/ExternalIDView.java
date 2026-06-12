@@ -35,11 +35,13 @@ import org.karnak.frontend.component.ProjectDropDown;
 import org.karnak.frontend.component.WarningConfirmDialog;
 import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.annotation.security.RolesAllowed;
+import org.weasis.core.util.annotations.Generated;
 
 @Route(value = ExternalIDView.ROUTE, layout = MainLayout.class)
 @PageTitle("Karnak - External ID")
 @Tag("extid-view")
 @RolesAllowed({ "user", "admin" })
+@Generated()
 public class ExternalIDView extends HorizontalLayout {
 
 	public static final String VIEW_NAME = "External pseudonym";

@@ -17,7 +17,9 @@ import org.karnak.backend.model.dicom.Message;
 import org.karnak.backend.model.dicom.WadoNodeList;
 import org.karnak.backend.service.dicom.DicomEchoService;
 import org.karnak.backend.service.dicom.WadoService;
+import org.weasis.core.util.annotations.Generated;
 
+@Generated()
 public class MonitorLogic {
 
 	// PAGE

@@ -35,7 +35,9 @@ import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.util.PatientClientUtil;
 import org.karnak.frontend.component.WarningConfirmDialog;
 import org.vaadin.klaudeta.PaginatedGrid;
+import org.weasis.core.util.annotations.Generated;
 
+@Generated()
 public class ExternalIDGrid extends PaginatedGrid<Patient, PatientFilter> {
 
 	private static final String ERROR_MESSAGE_PATIENT = "Length must be between 1 and 50.";

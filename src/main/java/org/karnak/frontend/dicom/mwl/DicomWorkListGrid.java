@@ -17,7 +17,9 @@ import org.weasis.core.util.StringUtil;
 import org.weasis.dicom.op.CFind;
 import org.weasis.dicom.param.DicomParam;
 import org.weasis.dicom.tool.ModalityWorklist;
+import org.weasis.core.util.annotations.Generated;
 
+@Generated()
 public class DicomWorkListGrid extends Grid<Attributes> {
 
 	List<DicomParam> params = List.of(CFind.PatientName, CFind.PatientID, CFind.PatientBirthDate, CFind.PatientSex,

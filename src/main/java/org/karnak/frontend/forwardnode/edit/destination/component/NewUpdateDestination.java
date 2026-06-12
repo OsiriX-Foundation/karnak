@@ -20,8 +20,10 @@ import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.enums.DestinationType;
 import org.karnak.backend.enums.UIDType;
 import org.karnak.frontend.forwardnode.edit.component.ButtonSaveDeleteCancel;
+import org.weasis.core.util.annotations.Generated;
 
 @Getter
+@Generated()
 public class NewUpdateDestination extends VerticalLayout {
 
 	private final FormDICOM formDICOM;

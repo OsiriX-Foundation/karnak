@@ -22,6 +22,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import lombok.extern.slf4j.Slf4j;
 import org.karnak.frontend.image.LogoKarnak;
+import org.weasis.core.util.annotations.Generated;
 
 /**
  * UI content when the user is not logged in yet.
@@ -30,6 +31,7 @@ import org.karnak.frontend.image.LogoKarnak;
 @Route(LoginScreen.ROUTE)
 @PageTitle("Karnak - Login")
 @AnonymousAllowed
+@Generated()
 public class LoginScreen extends FlexLayout implements BeforeEnterObserver {
 
 	public static final String ROUTE = "login";

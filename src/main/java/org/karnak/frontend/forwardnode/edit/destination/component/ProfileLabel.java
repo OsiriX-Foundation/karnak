@@ -10,7 +10,9 @@
 package org.karnak.frontend.forwardnode.edit.destination.component;
 
 import com.vaadin.flow.component.html.Div;
+import org.weasis.core.util.annotations.Generated;
 
+@Generated()
 public class ProfileLabel extends Div {
 
 	public void setShowValue(String text) {

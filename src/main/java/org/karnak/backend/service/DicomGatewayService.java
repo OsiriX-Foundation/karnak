@@ -25,8 +25,10 @@ import org.weasis.dicom.param.AdvancedParams;
 import org.weasis.dicom.param.AttributeEditor;
 import org.weasis.dicom.param.DeviceListenerService;
 import org.weasis.dicom.param.DicomNode;
+import org.weasis.core.util.annotations.Generated;
 
 @Service
+@Generated()
 public class DicomGatewayService {
 
 	private final StoreScpForwardService storeScpForwardService;

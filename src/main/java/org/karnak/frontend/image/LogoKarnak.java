@@ -14,7 +14,9 @@ import com.vaadin.flow.server.streams.DownloadHandler;
 import com.vaadin.flow.server.streams.DownloadResponse;
 import java.io.InputStream;
 import org.karnak.frontend.forwardnode.edit.destination.component.LoadingImage;
+import org.weasis.core.util.annotations.Generated;
 
+@Generated()
 public class LogoKarnak extends Image {
 
 	private static final String LOGO_PATH = "karnak.png";

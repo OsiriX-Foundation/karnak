@@ -32,10 +32,12 @@ import org.karnak.backend.util.DateFormat;
 import org.karnak.frontend.monitoring.TransferStatusDataProvider;
 import org.karnak.frontend.util.UIS;
 import org.vaadin.klaudeta.PaginatedGrid;
+import org.weasis.core.util.annotations.Generated;
 
 /**
  * Grid for the monitoring view
  */
+@Generated()
 public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity, TransferStatusFilter> {
 
 	// Tooltips

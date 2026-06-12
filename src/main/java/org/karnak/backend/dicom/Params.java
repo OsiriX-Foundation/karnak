@@ -11,7 +11,9 @@ package org.karnak.backend.dicom;
 
 import java.io.InputStream;
 import org.dcm4che3.net.Association;
+import org.weasis.core.util.annotations.Generated;
 
+@Generated()
 public record Params(String iuid, String cuid, String tsuid, int priority, InputStream data, Association as) {
 
 }

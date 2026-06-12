@@ -14,7 +14,9 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
+import org.weasis.core.util.annotations.Generated;
 
+@Generated()
 public class WarningRemoveProjectUsed extends Dialog {
 
 	public void setText(ProjectEntity projectEntity) {

@@ -17,7 +17,9 @@ import org.springframework.cache.Cache;
 import org.springframework.cache.Cache.ValueWrapper;
 import org.springframework.cache.concurrent.ConcurrentMapCache;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.weasis.core.util.annotations.Generated;
 
+@Generated()
 public abstract class PatientClient {
 
 	private final Cache cache;

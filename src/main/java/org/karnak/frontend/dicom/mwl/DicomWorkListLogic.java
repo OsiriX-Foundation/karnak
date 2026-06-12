@@ -24,7 +24,9 @@ import org.weasis.dicom.param.DicomNode;
 import org.weasis.dicom.param.DicomParam;
 import org.weasis.dicom.param.DicomState;
 import org.weasis.dicom.tool.ModalityWorklist;
+import org.weasis.core.util.annotations.Generated;
 
+@Generated()
 public class DicomWorkListLogic {
 
 	// PAGE

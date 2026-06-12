@@ -25,9 +25,13 @@ import org.karnak.backend.util.MetadataDICOMObject;
 public class MultipleActions extends AbstractAction {
 
 	private final StandardDICOM standardDICOM;
+
 	private final ActionItem defaultDummyValue;
+
 	private final ActionItem actionUID;
+
 	private final ActionItem actionReplaceNull;
+
 	private final ActionItem actionRemove;
 
 	public MultipleActions(String symbol) {

@@ -16,7 +16,9 @@ import java.awt.Rectangle;
 import java.util.List;
 import java.util.Set;
 import org.karnak.backend.data.entity.MaskEntity;
+import org.weasis.core.util.annotations.Generated;
 
+@Generated()
 public class ProfileMasksView extends VerticalLayout {
 
 	private final Set<MaskEntity> maskEntities;

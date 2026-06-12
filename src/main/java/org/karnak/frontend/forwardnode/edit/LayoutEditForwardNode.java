@@ -52,10 +52,12 @@ import org.karnak.frontend.util.UIS;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
 import org.weasis.core.util.StringUtil;
+import org.weasis.core.util.annotations.Generated;
 
 /**
  * Layout of the edit forward node
  */
+@Generated()
 public class LayoutEditForwardNode extends VerticalLayout {
 
 	// Services

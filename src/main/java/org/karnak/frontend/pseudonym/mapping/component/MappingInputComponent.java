@@ -17,12 +17,14 @@ import com.vaadin.flow.dom.Style;
 import lombok.Getter;
 import lombok.Setter;
 import org.karnak.frontend.component.BoxShadowComponent;
+import org.weasis.core.util.annotations.Generated;
 
 /**
  * Input pseudonym that the user wants to look for
  */
 @Setter
 @Getter
+@Generated()
 public class MappingInputComponent extends VerticalLayout {
 
 	// Components

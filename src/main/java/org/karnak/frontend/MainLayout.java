@@ -29,6 +29,7 @@ import org.karnak.frontend.monitoring.MonitoringView;
 import org.karnak.frontend.profile.ProfileView;
 import org.karnak.frontend.project.ProjectView;
 import org.karnak.frontend.pseudonym.mapping.PseudonymMappingView;
+import org.weasis.core.util.annotations.Generated;
 
 /**
  * The main layout. Contains the navigation menu.
@@ -39,6 +40,7 @@ import org.karnak.frontend.pseudonym.mapping.PseudonymMappingView;
  * each view further restricts the access with its own annotation.
  */
 @PermitAll
+@Generated()
 public class MainLayout extends FlexLayout implements RouterLayout {
 
 	private final Menu menu;

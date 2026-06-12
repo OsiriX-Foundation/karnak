@@ -20,9 +20,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.vaadin.artur.spring.dataprovider.FilterablePageableDataProvider;
+import org.weasis.core.util.annotations.Generated;
 
 @SpringComponent
 @UIScope
+@Generated()
 public class TransferStatusDataProvider<T> extends FilterablePageableDataProvider<T, TransferStatusFilter> {
 
 	// Services

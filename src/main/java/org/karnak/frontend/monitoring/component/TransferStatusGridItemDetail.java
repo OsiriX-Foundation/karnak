@@ -17,7 +17,9 @@ import java.util.Objects;
 import org.karnak.backend.data.entity.TransferStatusEntity;
 import org.karnak.backend.enums.DestinationType;
 import org.karnak.backend.util.DateFormat;
+import org.weasis.core.util.annotations.Generated;
 
+@Generated()
 public class TransferStatusGridItemDetail extends FormLayout {
 
 	// Transfer Status

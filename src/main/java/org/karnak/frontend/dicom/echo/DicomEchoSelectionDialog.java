@@ -36,7 +36,9 @@ import org.karnak.backend.model.dicom.DicomNodeList;
 import org.karnak.backend.model.dicom.Message;
 import org.karnak.backend.util.DicomNodeUtil;
 import org.karnak.frontend.component.AbstractDialog;
+import org.weasis.core.util.annotations.Generated;
 
+@Generated()
 public class DicomEchoSelectionDialog extends AbstractDialog {
 
 	// CONTROLLER

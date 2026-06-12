@@ -20,11 +20,13 @@ import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.frontend.forwardnode.ForwardNodeLogic;
 import org.karnak.frontend.forwardnode.edit.source.component.GridSourceNode;
 import org.karnak.frontend.util.UIS;
+import org.weasis.core.util.annotations.Generated;
 
 /**
  * Source View
  */
 
+@Generated()
 public class SourceView extends VerticalLayout {
 
 	// Source Logic

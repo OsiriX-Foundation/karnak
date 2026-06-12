@@ -27,11 +27,13 @@ import org.karnak.frontend.authconfig.component.NewAuthConfigComponent;
 import org.karnak.frontend.component.WarningConfirmDialog;
 import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.annotation.security.RolesAllowed;
+import org.weasis.core.util.annotations.Generated;
 
 @Route(value = AuthConfigView.ROUTE, layout = MainLayout.class)
 @PageTitle("Karnak - Authentication Config")
 @Tag("auth-config-view")
 @RolesAllowed("admin")
+@Generated()
 public class AuthConfigView extends HorizontalLayout {
 
 	public static final String VIEW_NAME = "Authentication Config";

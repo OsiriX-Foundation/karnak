@@ -31,9 +31,11 @@ import org.weasis.dicom.param.AdvancedParams;
 import org.weasis.dicom.param.ConnectOptions;
 import org.weasis.dicom.param.DicomNode;
 import org.weasis.dicom.param.DicomState;
+import org.weasis.core.util.annotations.Generated;
 
 @WebServlet(urlPatterns = "/echo")
 @Slf4j
+@Generated()
 public class EchoServlet extends HttpServlet {
 
 	@Serial

@@ -23,7 +23,9 @@ import org.karnak.backend.model.dicom.DicomNodeList;
 import org.karnak.backend.model.dicom.WadoNodeList;
 import org.karnak.frontend.dicom.AbstractView;
 import org.karnak.frontend.dicom.Util;
+import org.weasis.core.util.annotations.Generated;
 
+@Generated()
 public class MonitorView extends AbstractView {
 
 	// CONTROLLER

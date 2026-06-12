@@ -28,9 +28,11 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.weasis.core.util.FileUtil;
 import org.weasis.core.util.StringUtil;
+import org.weasis.core.util.annotations.Generated;
 
 @Service
 @Slf4j
+@Generated()
 public class GatewayService implements ApplicationListener<ContextRefreshedEvent> {
 
 	private final GatewaySetUpService gatewaySetUpService;

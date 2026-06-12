@@ -12,6 +12,7 @@ package org.karnak.frontend;
 import com.vaadin.flow.component.page.AppShellConfigurator;
 import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.theme.Theme;
+import org.weasis.core.util.annotations.Generated;
 
 /**
  * Application shell configuration for the Vaadin UI.
@@ -21,6 +22,7 @@ import com.vaadin.flow.theme.Theme;
  */
 @Push // You can customize mode: @Push(PushMode.AUTOMATIC) or MANUAL if needed
 @Theme("common-theme")
+@Generated()
 public class AppShellConfig implements AppShellConfigurator {
 
 	// Add other app-shell settings here later (meta tags, viewport, etc.)

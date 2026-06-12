@@ -12,7 +12,9 @@ package org.karnak.frontend.profile.component.errorprofile;
 import lombok.Getter;
 import lombok.Setter;
 import org.karnak.backend.data.entity.ProfileElementEntity;
+import org.weasis.core.util.annotations.Generated;
 
+@Generated()
 public class ProfileError {
 
 	private ProfileElementEntity profileElementEntity;

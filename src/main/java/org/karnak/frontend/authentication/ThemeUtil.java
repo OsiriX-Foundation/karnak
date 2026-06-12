@@ -11,7 +11,9 @@ package org.karnak.frontend.authentication;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.theme.lumo.Lumo;
+import org.weasis.core.util.annotations.Generated;
 
+@Generated()
 public final class ThemeUtil {
 
 	private static final String THEME_COLOR_KEY = "theme-variant";

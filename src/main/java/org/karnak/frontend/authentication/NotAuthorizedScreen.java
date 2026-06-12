@@ -39,6 +39,7 @@ import org.karnak.frontend.image.LogoKarnak;
 import org.karnak.frontend.profile.ProfileView;
 import org.karnak.frontend.project.ProjectView;
 import org.karnak.frontend.pseudonym.mapping.PseudonymMappingView;
+import org.weasis.core.util.annotations.Generated;
 
 /**
  * UI content when the user is not authorized to see the view. Also serves as the error
@@ -47,6 +48,7 @@ import org.karnak.frontend.pseudonym.mapping.PseudonymMappingView;
 @Route(NotAuthorizedScreen.ROUTE)
 @PageTitle("Karnak - Not authorized")
 @AnonymousAllowed
+@Generated()
 public class NotAuthorizedScreen extends FlexLayout implements HasErrorParameter<AccessDeniedException> {
 
 	public static final String ROUTE = "not-authorized";

@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.weasis.core.util.annotations.Generated;
 
 /**
  * Singleton scheduler that periodically triggers the transfer-status check on every
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
  * unregister on destruction.
  */
 @Service
+@Generated()
 public class DestinationStatusScheduler {
 
 	private final Set<DestinationLogic> activeDestinationLogics = new CopyOnWriteArraySet<>();

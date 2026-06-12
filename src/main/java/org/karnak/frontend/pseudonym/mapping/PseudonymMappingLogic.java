@@ -21,6 +21,7 @@ import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.weasis.core.util.annotations.Generated;
 
 /**
  * Mapping logic service use to make calls to backend and implement logic linked to the
@@ -28,6 +29,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
  */
 @SpringComponent
 @UIScope
+@Generated()
 public class PseudonymMappingLogic {
 
 	// View

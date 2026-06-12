@@ -26,7 +26,9 @@ import java.util.List;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.util.SystemPropertyUtil;
 import org.karnak.frontend.util.CollatorUtils;
+import org.weasis.core.util.annotations.Generated;
 
+@Generated()
 public class GridForwardNode extends Grid<ForwardNodeEntity> {
 
 	public GridForwardNode() {

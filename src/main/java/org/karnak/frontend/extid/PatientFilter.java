@@ -11,10 +11,12 @@ package org.karnak.frontend.extid;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.weasis.core.util.annotations.Generated;
 
 // TODO: currently not used but should be used to replace filters in ExternalIDGrid
 @Setter
 @Getter
+@Generated()
 public class PatientFilter {
 
 	private String extidFilter;

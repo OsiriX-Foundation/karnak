@@ -42,7 +42,9 @@ import org.weasis.dicom.param.AdvancedParams;
 import org.weasis.dicom.param.ConnectOptions;
 import org.weasis.dicom.param.DicomNode;
 import org.weasis.dicom.param.DicomState;
+import org.weasis.core.util.annotations.Generated;
 
+@Generated()
 public class Util {
 
 	private static final ExecutorService THREAD_POOL = Executors.newCachedThreadPool();

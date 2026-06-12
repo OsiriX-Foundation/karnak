@@ -24,10 +24,12 @@ import org.karnak.backend.constant.Notification;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.frontend.component.converter.HStringToIntegerConverter;
 import org.karnak.frontend.util.UIS;
+import org.weasis.core.util.annotations.Generated;
 
 /**
  * Create a notification component
  */
+@Generated()
 public class NotificationComponent extends VerticalLayout {
 
 	// Components
@@ -58,6 +60,10 @@ public class NotificationComponent extends VerticalLayout {
 	@Setter
 	@Getter
 	private Checkbox activateNotification;
+
+	@Setter
+	@Getter
+	private Checkbox buildConformanceReport;
 
 	private Div notificationInputsDiv;
 
@@ -94,7 +100,8 @@ public class NotificationComponent extends VerticalLayout {
 				UIS.setWidthFull(new HorizontalLayout(notifyObjectErrorPrefix, notifyObjectRejectionPrefix)),
 				UIS.setWidthFull(new HorizontalLayout(notifyObjectPattern, notifyObjectValues, notifyInterval)))));
 
-		add(UIS.setWidthFull(new HorizontalLayout(activateNotification)), notificationInputsDiv);
+		add(UIS.setWidthFull(new HorizontalLayout(activateNotification, buildConformanceReport)),
+				notificationInputsDiv);
 	}
 
 	/**
@@ -110,16 +117,23 @@ public class NotificationComponent extends VerticalLayout {
 	private void buildListenerActivateNotification() {
 		activateNotification.addValueChangeListener(event -> {
 			if (event != null && event.getValue()) {
-				notificationInputsDiv.setVisible(true);
-				notificationObjectsDiv.setVisible(true);
 				// Set default values if null or empty
 				updateDefaultValuesNotificationTextFields();
 			}
-			else {
-				notificationInputsDiv.setVisible(false);
-				notificationObjectsDiv.setVisible(false);
-			}
+			updateNotificationInputsVisibility();
 		});
+		buildConformanceReport.addValueChangeListener(event -> updateNotificationInputsVisibility());
+	}
+
+	/**
+	 * The notification inputs (recipients...) are needed as soon as one of the email
+	 * features is enabled
+	 */
+	private void updateNotificationInputsVisibility() {
+		boolean visible = Boolean.TRUE.equals(activateNotification.getValue())
+				|| Boolean.TRUE.equals(buildConformanceReport.getValue());
+		notificationInputsDiv.setVisible(visible);
+		notificationObjectsDiv.setVisible(visible);
 	}
 
 	/**
@@ -176,6 +190,7 @@ public class NotificationComponent extends VerticalLayout {
 		buildNotificationInputsDiv();
 		buildNotificationObjectsDiv();
 		buildActivateNotification();
+		buildBuildConformanceReport();
 		buildNotify();
 		buildNotifyObjectErrorPrefix();
 		buildNotifyObjectRejectionPrefix();
@@ -264,6 +279,17 @@ public class NotificationComponent extends VerticalLayout {
 	}
 
 	/**
+	 * Build DICOM conformance report
+	 */
+	private void buildBuildConformanceReport() {
+		buildConformanceReport = new Checkbox("Build DICOM conformance report");
+		// By default deactivate
+		buildConformanceReport.setValue(false);
+		UIS.setTooltip(buildConformanceReport,
+				"Email a DICOM conformance validation report to the list of emails for each study sent to this destination");
+	}
+
+	/**
 	 * Notification Inputs Div
 	 */
 	private void buildNotificationInputsDiv() {
@@ -293,9 +319,14 @@ public class NotificationComponent extends VerticalLayout {
 		binder.forField(getActivateNotification())
 			.bind(DestinationEntity::isActivateNotification, DestinationEntity::setActivateNotification);
 
+		// Build DICOM conformance report
+		binder.forField(getBuildConformanceReport())
+			.bind(DestinationEntity::isBuildConformanceReport, DestinationEntity::setBuildConformanceReport);
+
 		// List of emails
 		binder.forField(getNotify()).withValidator((s, valueContext) -> {
-			if (StringUtils.isBlank(s) && getActivateNotification().getValue()) {
+			if (StringUtils.isBlank(s)
+					&& (getActivateNotification().getValue() || getBuildConformanceReport().getValue())) {
 				return ValidationResult.error("Should have at least one address email");
 			}
 			return ValidationResult.ok();

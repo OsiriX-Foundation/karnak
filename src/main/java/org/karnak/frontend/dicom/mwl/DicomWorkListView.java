@@ -40,10 +40,12 @@ import org.karnak.backend.model.dicom.Message;
 import org.karnak.backend.model.dicom.WorkListQueryData;
 import org.karnak.frontend.dicom.AbstractView;
 import org.karnak.frontend.dicom.PortField;
+import org.weasis.core.util.annotations.Generated;
 
 /**
  * Calling Order 1) constructor 2) setParameter 3) beforeEnter
  */
+@Generated()
 public class DicomWorkListView extends AbstractView implements HasUrlParameter<String> {
 
 	private static final String PARAMETER_CALLING_AET = "callingAET";

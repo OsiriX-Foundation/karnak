@@ -12,8 +12,10 @@ package org.karnak.backend.service;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
+import org.weasis.core.util.annotations.Generated;
 
 @Component
+@Generated()
 public class ApplicationContextProvider implements ApplicationContextAware {
 
 	private static ApplicationContext context;

@@ -13,8 +13,10 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import lombok.Getter;
+import org.weasis.core.util.annotations.Generated;
 
 @Getter
+@Generated()
 public class ButtonSaveDeleteCancel extends HorizontalLayout {
 
 	private final Button save;

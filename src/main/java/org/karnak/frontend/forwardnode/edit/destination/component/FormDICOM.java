@@ -23,7 +23,9 @@ import org.karnak.frontend.component.BoxShadowComponent;
 import org.karnak.frontend.component.converter.HStringToIntegerConverter;
 import org.karnak.frontend.forwardnode.edit.component.ButtonSaveDeleteCancel;
 import org.karnak.frontend.util.UIS;
+import org.weasis.core.util.annotations.Generated;
 
+@Generated()
 public class FormDICOM extends VerticalLayout {
 
 	private Binder<DestinationEntity> binder;

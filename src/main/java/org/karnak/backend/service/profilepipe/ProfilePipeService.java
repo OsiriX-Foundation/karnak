@@ -24,8 +24,10 @@ import org.karnak.backend.model.profilebody.ProfilePipeBody;
 import org.karnak.frontend.profile.component.errorprofile.ProfileError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.weasis.core.util.annotations.Generated;
 
 @Service
+@Generated()
 public class ProfilePipeService {
 
 	// Repositories

@@ -20,7 +20,9 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import org.weasis.core.util.annotations.Generated;
 
+@Generated()
 public class ConfirmDialog extends Composite<Dialog> {
 
 	// UI COMPONENTS

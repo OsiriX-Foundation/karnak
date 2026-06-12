@@ -86,3 +86,9 @@ cache-api:
 
 mail:
   sender: karnak@kheops.online
+
+conformance-report:
+  # A study report is flushed and emailed when no new instance arrived for this period
+  idle-timeout-seconds: 300
+  # Safety cap: a study trickling in for longer than this is flushed anyway
+  max-study-lifetime-seconds: 14400

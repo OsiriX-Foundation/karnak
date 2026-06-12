@@ -18,7 +18,9 @@ import java.util.List;
 import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.frontend.profile.component.editprofile.ProfileElementView;
 import org.karnak.frontend.profile.component.editprofile.ProfileShowHide;
+import org.weasis.core.util.annotations.Generated;
 
+@Generated()
 public class ProfileErrorView extends VerticalLayout {
 
 	public ProfileErrorView() {

@@ -17,7 +17,9 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import java.util.ArrayList;
 import java.util.List;
 import org.karnak.backend.data.entity.KheopsAlbumsEntity;
+import org.weasis.core.util.annotations.Generated;
 
+@Generated()
 public class SwitchingAlbumsView extends CustomField<List<KheopsAlbumsEntity>> {
 
 	private final NewSwitchingAlbum newSwitchingAlbum;

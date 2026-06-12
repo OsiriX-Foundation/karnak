@@ -13,7 +13,9 @@ import org.karnak.backend.enums.MessageFormat;
 import org.karnak.backend.enums.MessageLevel;
 import org.karnak.backend.model.dicom.Message;
 import org.karnak.backend.util.DicomNodeUtil;
+import org.weasis.core.util.annotations.Generated;
 
+@Generated()
 public class DicomEchoSelectionLogic {
 
 	// DIALOG

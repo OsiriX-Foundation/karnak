@@ -58,9 +58,11 @@ import org.weasis.dicom.param.DicomProgress;
 import org.weasis.dicom.param.ListenerParams;
 import org.weasis.dicom.param.TlsOptions;
 import org.weasis.dicom.tool.DicomListener;
+import org.weasis.core.util.annotations.Generated;
 
 @Service
 @Slf4j
+@Generated()
 public class GatewaySetUpService {
 
 	// Repositories

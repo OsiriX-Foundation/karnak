@@ -24,7 +24,9 @@ import org.weasis.core.util.MathUtil;
 import org.weasis.opencv.data.ImageCV;
 import org.weasis.opencv.data.PlanarImage;
 import org.weasis.opencv.op.ImageAnalyzer;
+import org.weasis.core.util.annotations.Generated;
 
+@Generated()
 public class Defacer {
 
 	public static final String APPLY_DEFACING = "defacing";

@@ -12,7 +12,9 @@ package org.karnak.backend.service.thread;
 import java.util.concurrent.Callable;
 import org.karnak.backend.model.dicom.WadoNode;
 import org.karnak.frontend.dicom.Util;
+import org.weasis.core.util.annotations.Generated;
 
+@Generated()
 public class WadoResponse implements Callable<String> {
 
 	private final WadoNode node;

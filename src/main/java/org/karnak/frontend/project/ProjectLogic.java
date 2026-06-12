@@ -31,6 +31,7 @@ import org.karnak.frontend.project.component.GridProject;
 import org.karnak.frontend.project.component.NewProject;
 import org.karnak.frontend.util.CollatorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.weasis.core.util.annotations.Generated;
 
 /**
  * Project logic service use to make calls to backend and implement logic linked to the
@@ -39,6 +40,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @SpringComponent
 @UIScope
 @Slf4j
+@Generated()
 public class ProjectLogic extends ListDataProvider<ProjectEntity> {
 
 	// View

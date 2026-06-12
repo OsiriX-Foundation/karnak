@@ -14,7 +14,9 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import org.weasis.core.util.annotations.Generated;
 
+@Generated()
 public class NewAuthConfigComponent extends HorizontalLayout {
 
 	private final Button newAuthConfigBtn;

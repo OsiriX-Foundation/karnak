@@ -25,11 +25,13 @@ import org.karnak.frontend.pseudonym.mapping.component.MappingInputComponent;
 import org.karnak.frontend.pseudonym.mapping.component.MappingResultComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.annotation.security.RolesAllowed;
+import org.weasis.core.util.annotations.Generated;
 
 @Route(value = PseudonymMappingView.ROUTE, layout = MainLayout.class)
 @PageTitle("Karnak - Mapping Pseudonym")
 @Tag("mapping-pseudonym-view")
 @RolesAllowed("investigator")
+@Generated()
 public class PseudonymMappingView extends HorizontalLayout {
 
 	public static final String VIEW_NAME = "Pseudonym mapping ";

@@ -19,7 +19,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.frontend.component.ProfileDropDown;
+import org.weasis.core.util.annotations.Generated;
 
+@Generated()
 public class EditProject extends VerticalLayout {
 
 	@Getter

@@ -25,7 +25,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.WeakHashMap;
 import org.karnak.backend.data.entity.KheopsAlbumsEntity;
+import org.weasis.core.util.annotations.Generated;
 
+@Generated()
 public class GridSwitchingAlbums extends Grid<KheopsAlbumsEntity> {
 
 	private final Binder<KheopsAlbumsEntity> binder;

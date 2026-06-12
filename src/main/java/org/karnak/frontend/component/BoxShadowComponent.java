@@ -11,7 +11,9 @@ package org.karnak.frontend.component;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;
+import org.weasis.core.util.annotations.Generated;
 
+@Generated()
 public class BoxShadowComponent extends Div {
 
 	public BoxShadowComponent(Component... component) {

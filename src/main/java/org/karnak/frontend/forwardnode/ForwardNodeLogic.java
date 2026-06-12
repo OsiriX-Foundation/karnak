@@ -26,6 +26,7 @@ import org.karnak.backend.service.SOPClassUIDService;
 import org.karnak.frontend.forwardnode.edit.destination.DestinationLogic;
 import org.karnak.frontend.forwardnode.edit.source.SourceLogic;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.weasis.core.util.annotations.Generated;
 
 /**
  * Logic service use to make calls to backend and implement logic linked to the view
@@ -33,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @SpringComponent
 @UIScope
 @Slf4j
+@Generated()
 public class ForwardNodeLogic extends ListDataProvider<ForwardNodeEntity> {
 
 	@Setter

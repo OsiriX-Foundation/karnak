@@ -30,10 +30,12 @@ import org.karnak.frontend.profile.component.editprofile.ProfileElementMainView;
 import org.karnak.frontend.profile.component.errorprofile.ProfileErrorView;
 import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.annotation.security.RolesAllowed;
+import org.weasis.core.util.annotations.Generated;
 
 @Route(value = ProfileView.ROUTE, layout = MainLayout.class)
 @PageTitle("Karnak - Profiles")
 @RolesAllowed("admin")
+@Generated()
 public class ProfileView extends HorizontalLayout implements HasUrlParameter<String> {
 
 	public static final String VIEW_NAME = "Profiles";

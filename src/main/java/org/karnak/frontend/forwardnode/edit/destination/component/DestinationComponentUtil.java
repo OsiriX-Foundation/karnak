@@ -16,7 +16,9 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.frontend.component.ProjectDropDown;
 import org.karnak.frontend.project.ProjectView;
+import org.weasis.core.util.annotations.Generated;
 
+@Generated()
 public class DestinationComponentUtil extends VerticalLayout {
 
 	/**

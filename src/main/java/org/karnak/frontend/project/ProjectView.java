@@ -27,6 +27,7 @@ import org.karnak.frontend.project.component.GridProject;
 import org.karnak.frontend.project.component.NewProject;
 import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.annotation.security.RolesAllowed;
+import org.weasis.core.util.annotations.Generated;
 
 /**
  * Project View
@@ -34,6 +35,7 @@ import jakarta.annotation.security.RolesAllowed;
 @Route(value = ProjectView.ROUTE, layout = MainLayout.class)
 @PageTitle("Karnak - Projects")
 @RolesAllowed("admin")
+@Generated()
 public class ProjectView extends HorizontalLayout implements HasUrlParameter<String> {
 
 	public static final String VIEW_NAME = "Projects";

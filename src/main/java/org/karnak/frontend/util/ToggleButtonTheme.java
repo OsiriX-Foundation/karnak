@@ -15,7 +15,9 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.theme.lumo.Lumo;
+import org.weasis.core.util.annotations.Generated;
 
+@Generated()
 public class ToggleButtonTheme extends HorizontalLayout {
 
 	private final ToggleButton toggleButton;

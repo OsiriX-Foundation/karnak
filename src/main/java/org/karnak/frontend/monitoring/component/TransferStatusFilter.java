@@ -13,7 +13,9 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.backend.enums.TransferStatusType;
+import org.weasis.core.util.annotations.Generated;
 
+@Generated()
 public class TransferStatusFilter {
 
 	private String studyUid;

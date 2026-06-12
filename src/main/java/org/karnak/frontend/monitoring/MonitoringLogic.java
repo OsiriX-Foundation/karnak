@@ -26,6 +26,7 @@ import org.karnak.frontend.util.NotificationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.weasis.core.util.annotations.Generated;
 
 /**
  * Monitoring logic service use to make calls to backend and implement logic linked to the
@@ -34,6 +35,7 @@ import org.springframework.data.domain.Pageable;
 @SpringComponent
 @UIScope
 @Slf4j
+@Generated()
 public class MonitoringLogic {
 
 	// View

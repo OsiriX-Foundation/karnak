@@ -11,7 +11,9 @@ package org.karnak.frontend.util;
 
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
+import org.weasis.core.util.annotations.Generated;
 
+@Generated()
 public class NotificationUtil {
 
 	private NotificationUtil() {

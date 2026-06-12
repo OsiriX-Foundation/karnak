@@ -28,12 +28,14 @@ import org.karnak.frontend.util.UIS;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
 import org.springframework.stereotype.Component;
+import org.weasis.core.util.annotations.Generated;
 
 /**
  * Destination View
  */
 @UIScope
 @Component
+@Generated()
 public class DestinationView extends VerticalLayout {
 
 	@Getter

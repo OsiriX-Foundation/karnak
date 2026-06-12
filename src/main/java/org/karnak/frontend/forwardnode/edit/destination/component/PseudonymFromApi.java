@@ -19,8 +19,10 @@ import java.util.Objects;
 import lombok.Getter;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.frontend.util.UIS;
+import org.weasis.core.util.annotations.Generated;
 
 @Getter
+@Generated()
 public class PseudonymFromApi extends Div {
 
 	private final Binder<DestinationEntity> destinationBinder;

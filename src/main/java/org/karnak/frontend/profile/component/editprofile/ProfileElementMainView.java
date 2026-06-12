@@ -20,7 +20,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.data.entity.ProfileEntity;
+import org.weasis.core.util.annotations.Generated;
 
+@Generated()
 public class ProfileElementMainView extends VerticalLayout {
 
 	private Set<ProfileElementEntity> profilesOrder;

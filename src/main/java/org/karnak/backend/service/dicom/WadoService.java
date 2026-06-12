@@ -15,8 +15,10 @@ import java.util.concurrent.ExecutionException;
 import org.karnak.backend.model.dicom.WadoNode;
 import org.karnak.backend.service.thread.WadoResponse;
 import org.springframework.stereotype.Service;
+import org.weasis.core.util.annotations.Generated;
 
 @Service
+@Generated()
 public class WadoService {
 
 	public String checkWado(List<WadoNode> nodes) throws InterruptedException, ExecutionException {
