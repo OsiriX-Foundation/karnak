@@ -14,12 +14,8 @@ import org.dcm4che3.data.Attributes;
 import org.karnak.backend.data.entity.ArgumentEntity;
 import org.karnak.backend.model.expression.ExprCondition;
 import org.karnak.backend.model.profilepipe.HMAC;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ShiftByTagDate {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(ShiftByTagDate.class);
 
 	private ShiftByTagDate() {
 	}
@@ -29,55 +25,14 @@ public class ShiftByTagDate {
 	}
 
 	public static String shift(Attributes dcm, int tag, List<ArgumentEntity> argumentEntities, HMAC hmac) {
-		try {
-			verifyShiftArguments(argumentEntities);
-		}
-		catch (IllegalArgumentException e) {
-			throw e;
-		}
+		verifyShiftArguments(argumentEntities);
 
 		String dcmElValue = dcm.getString(tag);
-		String shiftDaysTag = "";
-		String shiftSecondsTag = "";
+		String shiftDaysTag = ArgumentUtil.stringValue(argumentEntities, "days_tag", "");
+		String shiftSecondsTag = ArgumentUtil.stringValue(argumentEntities, "seconds_tag", "");
 
-		for (ArgumentEntity argumentEntity : argumentEntities) {
-			final String key = argumentEntity.getArgumentKey();
-			final String value = argumentEntity.getArgumentValue();
-
-			try {
-				if (key.equals("days_tag")) {
-					shiftDaysTag = value;
-				}
-				if (key.equals("seconds_tag")) {
-					shiftSecondsTag = value;
-				}
-			}
-			catch (Exception e) {
-				LOGGER.error("args {} is not correct", value, e);
-			}
-		}
-
-		final String shiftDaysValue = dcm.getString(ExprCondition.intFromHexString(shiftDaysTag));
-		final String shiftSecondsValue = dcm.getString(ExprCondition.intFromHexString(shiftSecondsTag));
-
-		int shiftDays = 0;
-		int shiftSeconds = 0;
-		try {
-			if (shiftDaysValue != null) {
-				shiftDays = Integer.parseInt(shiftDaysValue);
-			}
-		}
-		catch (Exception e) {
-			LOGGER.error("args {} is not correct", shiftDaysValue, e);
-		}
-		try {
-			if (shiftSecondsValue != null) {
-				shiftSeconds = Integer.parseInt(shiftSecondsValue);
-			}
-		}
-		catch (Exception e) {
-			LOGGER.error("args {} is not correct", shiftSecondsValue, e);
-		}
+		int shiftDays = ArgumentUtil.parseInt(dcm.getString(ExprCondition.intFromHexString(shiftDaysTag)), 0);
+		int shiftSeconds = ArgumentUtil.parseInt(dcm.getString(ExprCondition.intFromHexString(shiftSecondsTag)), 0);
 
 		return ShiftDate.shiftValue(dcm, tag, dcmElValue, shiftDays, shiftSeconds);
 	}

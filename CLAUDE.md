@@ -43,6 +43,23 @@ platform-specific `libopencv_java` into `target/classes/lib/<os>-<cpu>` during
 run the app outside Maven (e.g. IntelliJ), you must set the lib path manually —
 see the IntelliJ section below.
 
+### Writing tests
+
+Constraints for any new or edited test:
+
+- **Prefer real data over mocks.** When possible, build real objects or reuse
+  existing data structures / fixtures instead of fabricating mock data. Only mock
+  what is genuinely awkward to instantiate (external services, I/O, time).
+- **Frameworks: JUnit 6 (Jupiter) and Mockito only.** Do **not** use AssertJ
+  (`org.assertj` / `Assertions.assertThat`) — use JUnit 6's built-in assertions
+  (`org.junit.jupiter.api.Assertions`) and Mockito for stubbing/verification.
+- **Readable test names:** annotate test classes with
+  `@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)` and name
+  methods with underscores (e.g. `void returns_default_when_config_is_null()`) so
+  display names read as plain sentences instead of adding `@DisplayName` everywhere.
+- **Use Java 25 best practices** (records for fixtures, pattern matching, `var`
+  where it aids readability, text blocks, `List.of` / `Stream` idioms, etc.).
+
 ## Running locally for development
 
 1. Start Postgres + Redis: `cd docker && docker compose up -d` (copy

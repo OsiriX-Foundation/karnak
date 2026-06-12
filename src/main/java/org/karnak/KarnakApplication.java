@@ -41,7 +41,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class KarnakApplication implements CommandLineRunner {
 
 	private final @Nullable AppConfig myConfig;
+
 	private final Environment environment;
+
 	private final int serverPort;
 
 	public KarnakApplication(@Nullable AppConfig myConfig, Environment environment,
@@ -54,7 +56,8 @@ public class KarnakApplication implements CommandLineRunner {
 	static void main(String[] args) {
 		SpringApplicationBuilder application = new SpringApplicationBuilder(KarnakApplication.class);
 
-		// If environment variable IDP has value "oidc", activate the application-oidc.yml profile
+		// If environment variable IDP has value "oidc", activate the application-oidc.yml
+		// profile
 		String idp = System.getenv(EnvironmentVariable.IDP.getCode());
 		if (ApplicationProfile.OIDC.getCode().equals(idp)) {
 			application.profiles(ApplicationProfile.OIDC.getCode());
@@ -63,7 +66,8 @@ public class KarnakApplication implements CommandLineRunner {
 		application.run(args);
 	}
 
-	// The embedded web server serves plain HTTP (no TLS for the UI), so the http:// URL is intentional.
+	// The embedded web server serves plain HTTP (no TLS for the UI), so the http:// URL
+	// is intentional.
 	@Override
 	public void run(String... args) {
 		log.info("Karnak application started successfully");

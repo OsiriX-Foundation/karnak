@@ -12,11 +12,15 @@ package org.karnak.backend.model.notification;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Set;
+import lombok.Getter;
+import lombok.Setter;
 import org.karnak.backend.constant.Notification;
 
 /**
  * Model used for serie summary notification
  */
+@Setter
+@Getter
 public class SerieSummaryNotification {
 
 	private String serieUid;
@@ -36,78 +40,6 @@ public class SerieSummaryNotification {
 	private Set<String> transferredModalities;
 
 	private Set<String> transferredSopClassUid;
-
-	public String getSerieUid() {
-		return serieUid;
-	}
-
-	public void setSerieUid(String serieUid) {
-		this.serieUid = serieUid;
-	}
-
-	public String getSerieDescription() {
-		return serieDescription;
-	}
-
-	public void setSerieDescription(String serieDescription) {
-		this.serieDescription = serieDescription;
-	}
-
-	public LocalDateTime getSerieDate() {
-		return serieDate;
-	}
-
-	public void setSerieDate(LocalDateTime serieDate) {
-		this.serieDate = serieDate;
-	}
-
-	public long getNbTransferSent() {
-		return nbTransferSent;
-	}
-
-	public void setNbTransferSent(long nbTransferSent) {
-		this.nbTransferSent = nbTransferSent;
-	}
-
-	public long getNbTransferNotSent() {
-		return nbTransferNotSent;
-	}
-
-	public void setNbTransferNotSent(long nbTransferNotSent) {
-		this.nbTransferNotSent = nbTransferNotSent;
-	}
-
-	public boolean isContainsError() {
-		return containsError;
-	}
-
-	public void setContainsError(boolean containsError) {
-		this.containsError = containsError;
-	}
-
-	public Set<String> getUnTransferedReasons() {
-		return unTransferedReasons;
-	}
-
-	public void setUnTransferedReasons(Set<String> unTransferedReasons) {
-		this.unTransferedReasons = unTransferedReasons;
-	}
-
-	public Set<String> getTransferredModalities() {
-		return transferredModalities;
-	}
-
-	public void setTransferredModalities(Set<String> transferredModalities) {
-		this.transferredModalities = transferredModalities;
-	}
-
-	public Set<String> getTransferredSopClassUid() {
-		return transferredSopClassUid;
-	}
-
-	public void setTransferredSopClassUid(Set<String> transferredSopClassUid) {
-		this.transferredSopClassUid = transferredSopClassUid;
-	}
 
 	@Override
 	public boolean equals(Object o) {

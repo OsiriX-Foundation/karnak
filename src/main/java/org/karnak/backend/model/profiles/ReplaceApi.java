@@ -38,6 +38,8 @@ import org.weasis.dicom.param.AttributeEditorContext;
 @Slf4j
 public class ReplaceApi extends AbstractProfileItem {
 
+	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
 	private final TagActionMap tagsAction;
 
 	private final ActionItem actionByDefault;
@@ -45,6 +47,13 @@ public class ReplaceApi extends AbstractProfileItem {
 	private final TagActionMap exceptedTagsAction;
 
 	private EndpointService endpointService;
+
+	/**
+	 * Endpoint call configuration extracted from the profile {@code argumentEntities}.
+	 */
+	private record ApiArguments(String url, String responsePath, String method, String body, String authConfig,
+			String defaultValue) {
+	}
 
 	public ReplaceApi(ProfileElementEntity profileElementEntity) throws ProfileException {
 		super(profileElementEntity);
@@ -74,160 +83,145 @@ public class ReplaceApi extends AbstractProfileItem {
 		if (!tagsAction.isEmpty() && tagsAction.get(tag) == null) {
 			return null;
 		}
+		if (exceptedTagsAction.get(tag) != null) {
+			return null;
+		}
 
-		String value = null;
-		if (exceptedTagsAction.get(tag) == null) {
-			String url = null;
-			String responsePath = null;
-			String method = "get"; // defaults to get if not specified
-			String body = null;
-			String authConfig = null;
-			String defaultValue = null;
+		ApiArguments args = parseArguments(dcm);
+		String value = fetchValue(args);
 
-			for (ArgumentEntity ae : argumentEntities) {
-				if ("url".equals(ae.getArgumentKey())) {
-					url = evaluateStringWithExpression(ae.getArgumentValue(), dcm);
-				}
-				else if ("responsePath".equals(ae.getArgumentKey())) {
+		ActionItem replace = new Replace("D");
+		if (value != null && !value.isEmpty()) {
+			replace.setDummyValue(value);
+		}
+		else if (args.defaultValue() != null) {
+			replace.setDummyValue(args.defaultValue());
+		}
+		else {
+			throw new AbortException(AttributeEditorContext.Abort.CONNECTION_EXCEPTION,
+					"Transfer aborted, replace value not found in response - " + args.responsePath());
+		}
+		return replace;
+	}
+
+	private ApiArguments parseArguments(Attributes dcm) {
+		String url = null;
+		String responsePath = null;
+		String method = "get"; // defaults to get if not specified
+		String body = null;
+		String authConfig = null;
+		String defaultValue = null;
+		for (ArgumentEntity ae : argumentEntities) {
+			switch (ae.getArgumentKey()) {
+				case "url" -> url = evaluateStringWithExpression(ae.getArgumentValue(), dcm);
+				case "responsePath" -> {
 					responsePath = ae.getArgumentValue();
 					if (!responsePath.startsWith("/")) {
 						responsePath = "/" + responsePath;
 					}
 				}
-				else if ("method".equals(ae.getArgumentKey())) {
-					method = ae.getArgumentValue();
-				}
-				else if ("body".equals(ae.getArgumentKey())) {
-					body = evaluateStringWithExpression(ae.getArgumentValue(), dcm);
-				}
-				else if ("authConfig".equals(ae.getArgumentKey())) {
-					authConfig = ae.getArgumentValue();
-				}
-				else if ("defaultValue".equals(ae.getArgumentKey())) {
-					defaultValue = ae.getArgumentValue();
+				case "method" -> method = ae.getArgumentValue();
+				case "body" -> body = evaluateStringWithExpression(ae.getArgumentValue(), dcm);
+				case "authConfig" -> authConfig = ae.getArgumentValue();
+				case "defaultValue" -> defaultValue = ae.getArgumentValue();
+				default -> {
 				}
 			}
+		}
+		return new ApiArguments(url, responsePath, method, body, authConfig, defaultValue);
+	}
 
-			String response = null;
-			if (endpointService == null) {
-				endpointService = ApplicationContextProvider.bean(EndpointService.class);
+	// Returns the resolved value, or null to fall back to the configured default value.
+	private String fetchValue(ApiArguments args) {
+		if (endpointService == null) {
+			endpointService = ApplicationContextProvider.bean(EndpointService.class);
+		}
+		try {
+			String response = switch (args.method().toLowerCase()) {
+				case "post" -> endpointService.post(args.authConfig(), args.url(), args.body());
+				case "get" -> endpointService.get(args.authConfig(), args.url());
+				default -> throw new EndpointException("Unsupported HTTP Method : " + args.method());
+			};
+			return OBJECT_MAPPER.readTree(response).at(args.responsePath()).textValue();
+		}
+		catch (JsonProcessingException e) {
+			if (args.defaultValue() == null) {
+				throw new EndpointException("An error occurred while parsing the JSON response ", e);
 			}
-
-			try {
-				if (method.equalsIgnoreCase("post")) {
-					response = endpointService.post(authConfig, url, body);
-				}
-				else if (method.equalsIgnoreCase("get")) {
-					response = endpointService.get(authConfig, url);
-				}
-				else {
-					throw new EndpointException("Unsupported HTTP Method : " + method);
-				}
-
-				ObjectMapper objectMapper = new ObjectMapper();
-				value = objectMapper.readTree(response).at(responsePath).textValue();
-				// Node that matches given JSON Pointer: if no match exists, will return a
-				// node for which TreeNode.isMissingNode() returns true.
+		}
+		catch (IllegalArgumentException e) {
+			if (args.defaultValue() == null) {
+				// Abort current transfer, authConfig not defined
+				throw new EndpointException(e.getMessage());
 			}
-			catch (JsonProcessingException e) {
-				if (defaultValue == null) {
-					throw new EndpointException("An error occurred while parsing the JSON response ", e);
-				}
+		}
+		catch (HttpClientErrorException e) {
+			if (args.defaultValue() == null) {
+				// Abort current transfer
+				throw new EndpointException("HTTP Client Error : " + e.getStatusText() + " - " + args.url());
 			}
-			catch (IllegalArgumentException e) {
-				if (defaultValue == null) {
-					// Abort current transfer, authConfig not defined
-					throw new EndpointException(e.getMessage());
-				}
-			}
-			catch (HttpClientErrorException e) {
-				if (defaultValue == null) {
-					// Abort current transfer
-					throw new EndpointException("HTTP Client Error : " + e.getStatusText() + " - " + url);
-				}
-			}
-
-			ActionItem replace = new Replace("D");
-
-			if (value != null && !value.isEmpty()) {
-				replace.setDummyValue(value);
-			}
-			else if (defaultValue != null) {
-				replace.setDummyValue(defaultValue);
-			}
-			else {
-				throw new AbortException(AttributeEditorContext.Abort.CONNECTION_EXCEPTION,
-						"Transfer aborted, replace value not found in response - " + responsePath);
-			}
-			return replace;
 		}
 		return null;
 	}
 
 	@Override
 	public void profileValidation() throws ProfileException {
-		String errorMessage = "Cannot build the profile ";
+		String errorMessage = "Cannot build the profile " + codeName + ": ";
 
 		if (tagEntities == null || tagEntities.isEmpty()) {
-			throw new ProfileException(errorMessage + codeName + ": No tags defined");
+			throw new ProfileException(errorMessage + "No tags defined");
 		}
-
 		if (argumentEntities == null || argumentEntities.size() < 2) {
-			throw new ProfileException(
-					"Cannot build the profile " + codeName + ": Need to specify url and responsePath argument");
+			throw new ProfileException(errorMessage + "Need to specify url and responsePath argument");
 		}
-		else {
 
-			boolean urlProvided = false;
-			boolean responsePathProvided = false;
-			boolean isPost = false;
-			boolean bodyProvided = false;
-			for (ArgumentEntity ae : argumentEntities) {
-				if (ae.getArgumentKey().equals("url")) {
+		boolean urlProvided = false;
+		boolean responsePathProvided = false;
+		boolean isPost = false;
+		boolean bodyProvided = false;
+		for (ArgumentEntity ae : argumentEntities) {
+			switch (ae.getArgumentKey()) {
+				case "url" -> {
 					urlProvided = true;
-					String error = validateStringWithExpression(ae.getArgumentValue());
-					if (error != null) {
-						throw new ProfileException(String.format("Expression is not valid: \n\r%s", error));
-					}
+					validateExpression(ae.getArgumentValue());
 				}
-				else if (ae.getArgumentKey().equals("responsePath")) {
-					responsePathProvided = true;
-				}
-				else if (ae.getArgumentKey().equals("method")) {
-					if (!ae.getArgumentValue().equalsIgnoreCase("post")
-							&& !ae.getArgumentValue().equalsIgnoreCase("get")) {
-						throw new ProfileException(
-								"Cannot build the profile " + codeName + ": method must be get or post");
+				case "responsePath" -> responsePathProvided = true;
+				case "method" -> {
+					String method = ae.getArgumentValue();
+					if (!method.equalsIgnoreCase("post") && !method.equalsIgnoreCase("get")) {
+						throw new ProfileException(errorMessage + "method must be get or post");
 					}
-					else if (ae.getArgumentValue().equalsIgnoreCase("post")) {
-						isPost = true;
-					}
+					isPost = method.equalsIgnoreCase("post");
 				}
-				else if (ae.getArgumentKey().equals("body")) {
+				case "body" -> {
 					bodyProvided = true;
-					String error = validateStringWithExpression(ae.getArgumentValue());
-					if (error != null) {
-						throw new ProfileException(String.format("Expression is not valid: \n\r%s", error));
-					}
+					validateExpression(ae.getArgumentValue());
 				}
-			}
-			if (!urlProvided) {
-				throw new ProfileException("Cannot build the profile " + codeName + ": url argument is mandatory");
-			}
-			if (!responsePathProvided) {
-				throw new ProfileException(
-						"Cannot build the profile " + codeName + ": responsePath argument is mandatory");
-			}
-			if (isPost && !bodyProvided) {
-				throw new ProfileException(
-						"Cannot build the profile " + codeName + ": body argument is mandatory for a POST request");
+				default -> {
+				}
 			}
 		}
+		if (!urlProvided) {
+			throw new ProfileException(errorMessage + "url argument is mandatory");
+		}
+		if (!responsePathProvided) {
+			throw new ProfileException(errorMessage + "responsePath argument is mandatory");
+		}
+		if (isPost && !bodyProvided) {
+			throw new ProfileException(errorMessage + "body argument is mandatory for a POST request");
+		}
 
-		final ExpressionError expressionError = ExpressionResult.isValid(condition, new ExprCondition(new Attributes()),
+		ExpressionError expressionError = ExpressionResult.isValid(condition, new ExprCondition(new Attributes()),
 				Boolean.class);
 		if (condition != null && !expressionError.isValid()) {
 			throw new ProfileException(expressionError.getMsg());
+		}
+	}
+
+	private static void validateExpression(String expression) throws ProfileException {
+		String error = validateStringWithExpression(expression);
+		if (error != null) {
+			throw new ProfileException(String.format("Expression is not valid: \n\r%s", error));
 		}
 	}
 

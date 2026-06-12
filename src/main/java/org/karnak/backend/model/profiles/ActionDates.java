@@ -63,22 +63,17 @@ public class ActionDates extends AbstractProfileItem {
 
 	@Override
 	public void profileValidation() throws ProfileException {
-		try {
-			if (option == null) {
-				throw new ProfileException("Cannot build the profile " + codeName
-						+ " : An option must be given. Option available: [shift, shift_range, shift_by_tag, date_format]");
-			}
-			switch (option) {
-				case "shift" -> ShiftDate.verifyShiftArguments(argumentEntities);
-				case "shift_range" -> ShiftRangeDate.verifyShiftArguments(argumentEntities);
-				case "shift_by_tag" -> ShiftByTagDate.verifyShiftArguments(argumentEntities);
-				case "date_format" -> DateFormat.verifyPatternArguments(argumentEntities);
-				default -> throw new ProfileException("Cannot build the profile " + codeName + " with the option given "
-						+ option + " : Option available (shift, shift_range, shift_by_tag, date_format)");
-			}
+		if (option == null) {
+			throw new ProfileException("Cannot build the profile " + codeName
+					+ " : An option must be given. Option available: [shift, shift_range, shift_by_tag, date_format]");
 		}
-		catch (Exception e) {
-			throw e;
+		switch (option) {
+			case "shift" -> ShiftDate.verifyShiftArguments(argumentEntities);
+			case "shift_range" -> ShiftRangeDate.verifyShiftArguments(argumentEntities);
+			case "shift_by_tag" -> ShiftByTagDate.verifyShiftArguments(argumentEntities);
+			case "date_format" -> DateFormat.verifyPatternArguments(argumentEntities);
+			default -> throw new ProfileException("Cannot build the profile " + codeName + " with the option given "
+					+ option + " : Option available (shift, shift_range, shift_by_tag, date_format)");
 		}
 
 		final ExpressionError expressionError = ExpressionResult.isValid(condition, new ExprCondition(new Attributes()),

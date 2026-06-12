@@ -10,6 +10,7 @@
 package org.karnak.backend.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import org.dcm4che3.data.Attributes;
@@ -32,25 +33,11 @@ public class DicomObjectTools {
 		if (!StringUtil.hasText(path)) {
 			throw new IllegalArgumentException("path cannot be empty!");
 		}
-
-		List<Integer> tags = toTags(StringUtils.split(path, '.'));
-		int size = tags.size();
-		if (size == 1) {
-			return dcm.contains(tags.get(0));
-		}
-		else if (size > 1) {
-
-		}
-
-		return false;
+		return containsTagInPath(toTags(StringUtils.split(path, '.')), dcm);
 	}
 
 	public static List<Integer> toTags(String[] tagOrKeywords) {
-		List<Integer> tags = new ArrayList<>(tagOrKeywords.length);
-		for (int i = 0; i < tagOrKeywords.length; i++) {
-			tags.add(toTag(tagOrKeywords[i]));
-		}
-		return tags;
+		return Arrays.stream(tagOrKeywords).map(DicomObjectTools::toTag).toList();
 	}
 
 	public static int toTag(String tagOrKeyword) {
@@ -69,7 +56,7 @@ public class DicomObjectTools {
 	public static boolean containsTagInPath(List<Integer> path, Attributes dcm) {
 		int size = path.size();
 		if (size == 1) {
-			return dcm.contains(path.get(0));
+			return dcm.contains(path.getFirst());
 		}
 
 		List<Attributes> list = new ArrayList<>();

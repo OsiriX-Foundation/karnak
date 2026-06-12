@@ -222,14 +222,14 @@ public class Util {
 	}
 
 	public static boolean isReachableByPing(String host) throws Exception {
-		final String cmd;
+		final String[] cmd;
 		if (System.getProperty("os.name").startsWith("Win")) {
 			// For Windows
-			cmd = "ping -n 1 " + host;
+			cmd = new String[] { "ping", "-n", "1", host };
 		}
 		else {
 			// For Linux and OSX
-			cmd = "ping -c 1 " + host;
+			cmd = new String[] { "ping", "-c", "1", host };
 		}
 
 		try {
@@ -449,7 +449,7 @@ public class Util {
 					String[] line = val.split(",(?=([^\"]*\"[^\"]*\")*+[^\"]*$)", -1); // $NON-NLS-1$
 					if (line.length >= 2) {
 						try {
-							WadoNode node = new WadoNode(trimSplit(line[0]), new URL(trimSplit(line[1])));
+							WadoNode node = new WadoNode(trimSplit(line[0]), URI.create(trimSplit(line[1])).toURL());
 							list.add(node);
 
 							for (int i = 2; i < line.length; i++) {

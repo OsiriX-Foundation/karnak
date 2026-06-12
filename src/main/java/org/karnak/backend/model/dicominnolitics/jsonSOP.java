@@ -9,6 +9,9 @@
  */
 package org.karnak.backend.model.dicominnolitics;
 
+import lombok.Getter;
+
+@Getter
 public class jsonSOP {
 
 	private String name;
@@ -16,17 +19,5 @@ public class jsonSOP {
 	private String id;
 
 	private String ciod;
-
-	public String getName() {
-		return name;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public String getCiod() {
-		return ciod;
-	}
 
 }

@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import lombok.Getter;
 import org.karnak.backend.data.entity.ArgumentEntity;
 import org.karnak.backend.data.entity.ExcludedTagEntity;
 import org.karnak.backend.data.entity.IncludedTagEntity;
@@ -25,14 +26,18 @@ import org.karnak.backend.model.expression.ExpressionResult;
 
 public abstract class AbstractProfileItem implements ProfileItem {
 
+	@Getter
 	protected final String name;
 
+	@Getter
 	protected final String codeName;
 
+	@Getter
 	protected final String condition;
 
 	protected final String action;
 
+	@Getter
 	protected final String option;
 
 	protected final List<ArgumentEntity> argumentEntities;
@@ -43,6 +48,7 @@ public abstract class AbstractProfileItem implements ProfileItem {
 
 	protected final Map<Integer, ActionItem> tagMap;
 
+	@Getter
 	protected final Integer position;
 
 	protected AbstractProfileItem(ProfileElementEntity profileElementEntity) {
@@ -58,28 +64,8 @@ public abstract class AbstractProfileItem implements ProfileItem {
 		this.tagMap = new HashMap<>();
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public String getCodeName() {
-		return codeName;
-	}
-
-	public String getCondition() {
-		return condition;
-	}
-
-	public String getOption() {
-		return option;
-	}
-
 	public List<ArgumentEntity> getArguments() {
 		return argumentEntities;
-	}
-
-	public Integer getPosition() {
-		return position;
 	}
 
 	@Override

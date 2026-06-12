@@ -147,8 +147,7 @@ public class EndpointService {
 			String replacedUrl = url;
 			while (m.find()) {
 				// The url contains parameters to replace
-				String param = (String) ExpressionResult.get(m.group(1), new ExprAction(1, VR.AE, dcm, dcm),
-						String.class);
+				String param = (String) ExpressionResult.get(m.group(1), new ExprAction(1, VR.AE, dcm), String.class);
 				replacedUrl = replacedUrl.replaceFirst("\\{\\{[^\\}]+\\}\\}", param);
 			}
 			return replacedUrl;
@@ -162,7 +161,7 @@ public class EndpointService {
 			Matcher m = p.matcher(url);
 			while (m.find()) {
 				final ExpressionError expressionError = ExpressionResult.isValid(m.group(1),
-						new ExprAction(1, VR.AE, new Attributes(), new Attributes()), ActionItem.class);
+						new ExprAction(1, VR.AE, new Attributes()), ActionItem.class);
 				if (!expressionError.isValid()) {
 					return expressionError.getMsg();
 				}

@@ -81,12 +81,7 @@ public class Study {
 	}
 
 	public boolean isEmpty() {
-		for (Series s : seriesMap.values()) {
-			if (!s.isEmpty()) {
-				return false;
-			}
-		}
-		return true;
+		return seriesMap.values().stream().allMatch(Series::isEmpty);
 	}
 
 	public Series getSeries(String seriesUID) {

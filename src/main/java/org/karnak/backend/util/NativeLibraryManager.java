@@ -22,32 +22,45 @@ import org.weasis.opencv.natives.NativeLibrary;
 @Slf4j
 public class NativeLibraryManager {
 
+	/** Marker folder that must appear in {@code java.library.path}. */
+	static final String OPENCV_FOLDER = "dicom-opencv";
+
+	private static final String LIBRARY_PATH_PROPERTY = "java.library.path";
+
+	private static final String NATIVE_CODEC_PROPERTY = "dicom.native.codec";
+
 	private NativeLibraryManager() {
 	}
 
+	/** Extracts (if needed) and loads the native OpenCV library. */
 	public static void initNativeLibs() {
-		String libPath = Arrays.stream(System.getProperty("java.library.path", "").split(File.pathSeparator))
-			.filter(p -> p.contains("dicom-opencv"))
-			.findFirst()
-			.orElseThrow(() -> new IllegalStateException(
-					"OpenCV library folder (a path containing \"dicom-opencv\") is not configured in java.library.path"));
-
 		String system = NativeLibrary.getNativeLibSpecification();
-		String filename = system.startsWith("win") ? "opencv_java.dll"
-				: system.startsWith("mac") ? "libopencv_java.dylib" : "libopencv_java.so";
-		Path outputFile = Path.of(libPath, filename);
-		System.setProperty("dicom.native.codec", libPath);
+		Path libraryFile = prepareLibrary(system, System.getProperty(LIBRARY_PATH_PROPERTY, ""));
+		NativeLibrary.loadLibraryFromAbsolutePath(libraryFile);
+	}
 
-		// When running from the build output (IntelliJ, mvn) the native library is on the
-		// classpath under /lib/<system>/<filename> and gets copied next to
-		// java.library.path.
-		// In the portable package it has already been extracted into the dicom-opencv
-		// folder
-		// (and may have been stripped from the jar), so we just load whatever is there.
-		String resourcePath = "/lib/" + system + "/" + filename;
+	/**
+	 * Resolves the OpenCV library file, copying it from the classpath when available.
+	 *
+	 * <p>
+	 * When running from the build output (IntelliJ, Maven) the library is on the
+	 * classpath under {@code /lib/<system>/<filename>} and is copied next to
+	 * {@code java.library.path}. In the portable package it has already been extracted
+	 * into the {@code dicom-opencv} folder (and may have been stripped from the jar), so
+	 * whatever is there is used as-is.
+	 * @param system the native library specification (e.g. {@code linux-x86-64})
+	 * @param libraryPath the {@code java.library.path} value to search
+	 * @return the absolute path of the library to load
+	 */
+	static Path prepareLibrary(String system, String libraryPath) {
+		Path directory = resolveLibraryDirectory(libraryPath);
+		Path outputFile = directory.resolve(libraryFileName(system));
+		System.setProperty(NATIVE_CODEC_PROPERTY, directory.toString());
+
+		String resourcePath = "/lib/" + system + "/" + outputFile.getFileName();
 		try (InputStream in = NativeLibraryManager.class.getResourceAsStream(resourcePath)) {
 			if (in != null) {
-				Files.createDirectories(outputFile.getParent());
+				Files.createDirectories(directory);
 				FileUtil.writeStream(in, outputFile, true);
 			}
 			else if (!Files.isReadable(outputFile)) {
@@ -58,8 +71,28 @@ public class NativeLibraryManager {
 		catch (IOException e) {
 			throw new IllegalStateException("Cannot copy the native OpenCV library to " + outputFile, e);
 		}
+		return outputFile;
+	}
 
-		NativeLibrary.loadLibraryFromAbsolutePath(outputFile);
+	/** Finds the {@code dicom-opencv} folder declared in {@code java.library.path}. */
+	static Path resolveLibraryDirectory(String libraryPath) {
+		return Arrays.stream(libraryPath.split(File.pathSeparator))
+			.filter(segment -> segment.contains(OPENCV_FOLDER))
+			.findFirst()
+			.map(Path::of)
+			.orElseThrow(() -> new IllegalStateException("OpenCV library folder (a path containing \"" + OPENCV_FOLDER
+					+ "\") is not configured in " + LIBRARY_PATH_PROPERTY));
+	}
+
+	/** Maps a native library specification to the platform-specific file name. */
+	static String libraryFileName(String system) {
+		if (system.startsWith("win")) {
+			return "opencv_java.dll";
+		}
+		if (system.startsWith("mac")) {
+			return "libopencv_java.dylib";
+		}
+		return "libopencv_java.so";
 	}
 
 }

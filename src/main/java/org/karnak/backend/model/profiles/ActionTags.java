@@ -52,7 +52,7 @@ public class ActionTags extends AbstractProfileItem {
 
 		try {
 			if (hexColor != null && hexColor.length() > 6) {
-				intValue = (int) (Long.parseLong(hexColor, 16) & 0xffffffff);
+				intValue = (int) (Long.parseLong(hexColor, 16));
 			}
 			else {
 				intValue |= Integer.parseInt(hexColor, 16);

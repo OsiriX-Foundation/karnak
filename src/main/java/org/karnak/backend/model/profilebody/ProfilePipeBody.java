@@ -10,44 +10,32 @@
 package org.karnak.backend.model.profilebody;
 
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
 public class ProfilePipeBody {
 
+	@Setter
+	@Getter
 	private String name;
 
+	@Setter
+	@Getter
 	private String version;
 
+	@Setter
+	@Getter
 	private String minimumKarnakVersion;
 
+	@Setter
+	@Getter
 	private String defaultIssuerOfPatientID;
 
 	private List<ProfileElementBody> profiles;
 
+	@Setter
+	@Getter
 	private List<MaskBody> masks;
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getVersion() {
-		return version;
-	}
-
-	public void setVersion(String version) {
-		this.version = version;
-	}
-
-	public String getMinimumKarnakVersion() {
-		return minimumKarnakVersion;
-	}
-
-	public void setMinimumKarnakVersion(String minimumKarnakVersion) {
-		this.minimumKarnakVersion = minimumKarnakVersion;
-	}
 
 	public List<ProfileElementBody> getProfileElements() {
 		return profiles;
@@ -55,22 +43,6 @@ public class ProfilePipeBody {
 
 	public void setProfileElements(List<ProfileElementBody> profiles) {
 		this.profiles = profiles;
-	}
-
-	public String getDefaultIssuerOfPatientID() {
-		return defaultIssuerOfPatientID;
-	}
-
-	public void setDefaultIssuerOfPatientID(String defaultIssuerOfPatientID) {
-		this.defaultIssuerOfPatientID = defaultIssuerOfPatientID;
-	}
-
-	public List<MaskBody> getMasks() {
-		return masks;
-	}
-
-	public void setMasks(List<MaskBody> masks) {
-		this.masks = masks;
 	}
 
 }

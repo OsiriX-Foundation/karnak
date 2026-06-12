@@ -11,7 +11,9 @@ package org.karnak.backend.model.dicom;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import lombok.Getter;
 
+@Getter
 public class DicomNodeList extends ArrayList<ConfigNode> {
 
 	private final String name;
@@ -29,10 +31,6 @@ public class DicomNodeList extends ArrayList<ConfigNode> {
 	public DicomNodeList(String name, int initialCapacity) {
 		super(initialCapacity);
 		this.name = name;
-	}
-
-	public String getName() {
-		return name;
 	}
 
 	@Override

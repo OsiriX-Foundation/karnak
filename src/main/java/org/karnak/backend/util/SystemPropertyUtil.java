@@ -26,11 +26,8 @@ public class SystemPropertyUtil {
 		String val = System.getProperty(key);
 		if (!StringUtil.hasText(val)) {
 			val = System.getenv(key);
-			if (!StringUtil.hasText(val)) {
-				return defaultValue;
-			}
 		}
-		return val;
+		return StringUtil.hasText(val) ? val : defaultValue;
 	}
 
 	/**
@@ -40,12 +37,9 @@ public class SystemPropertyUtil {
 	 * @return property found
 	 */
 	public static Integer retrieveIntegerSystemProperty(String key, Integer defaultValue) {
-		String val = System.getProperty(key);
-		if (!StringUtil.hasText(val)) {
-			val = System.getenv(key);
-			if (!StringUtil.hasText(val)) {
-				return defaultValue;
-			}
+		String val = retrieveSystemProperty(key, null);
+		if (val == null) {
+			return defaultValue;
 		}
 		Integer intValue = StringUtil.getInteger(val);
 		return intValue != null ? intValue : defaultValue;

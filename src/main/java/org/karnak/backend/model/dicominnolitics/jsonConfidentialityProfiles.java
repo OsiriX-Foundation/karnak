@@ -9,6 +9,7 @@
  */
 package org.karnak.backend.model.dicominnolitics;
 
+import lombok.Getter;
 import org.karnak.backend.model.action.ActionItem;
 import org.karnak.backend.model.action.DefaultDummy;
 import org.karnak.backend.model.action.Keep;
@@ -20,10 +21,13 @@ import org.karnak.backend.model.action.UID;
 
 public class jsonConfidentialityProfiles {
 
+	@Getter
 	private String id;
 
+	@Getter
 	private String name;
 
+	@Getter
 	private String tag;
 
 	private String basicProfile;
@@ -31,18 +35,6 @@ public class jsonConfidentialityProfiles {
 	private String stdCompIOD;
 
 	private String cleanDescOpt;
-
-	public String getId() {
-		return id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public String getTag() {
-		return tag;
-	}
 
 	public ActionItem getBasicProfile() {
 		return convertAction(basicProfile);

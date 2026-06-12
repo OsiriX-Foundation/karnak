@@ -9,6 +9,9 @@
  */
 package org.karnak.backend.model.dicominnolitics;
 
+import lombok.Getter;
+
+@Getter
 public class jsonCIOD {
 
 	private String name;
@@ -18,21 +21,5 @@ public class jsonCIOD {
 	private String description;
 
 	private String linkToStandard;
-
-	public String getName() {
-		return name;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public String getLinkToStandard() {
-		return linkToStandard;
-	}
 
 }

@@ -13,11 +13,14 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import lombok.Getter;
 
 public class WadoNode {
 
+	@Getter
 	private final String name;
 
+	@Getter
 	private final URL url;
 
 	private final List<String> tagEntities = new ArrayList<>(2);
@@ -30,14 +33,6 @@ public class WadoNode {
 	@Override
 	public String toString() {
 		return name;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public URL getUrl() {
-		return url;
 	}
 
 	public List<String> getTags() {

@@ -9,6 +9,8 @@
  */
 package org.karnak.backend.model.action;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.VR;
@@ -27,12 +29,17 @@ public abstract class AbstractAction implements ActionItem {
 
 	protected static final String ADD_METHOD = "a";
 
+	@Getter
 	protected final String symbol;
 
+	@Setter
+	@Getter
 	protected String dummyValue;
 
 	protected int newTag;
 
+	@Setter
+	@Getter
 	protected VR vr;
 
 	protected AbstractAction(String symbol) {
@@ -73,26 +80,6 @@ public abstract class AbstractAction implements ActionItem {
 			case "D" -> new Replace("D");
 			default -> null;
 		};
-	}
-
-	public String getSymbol() {
-		return symbol;
-	}
-
-	public String getDummyValue() {
-		return dummyValue;
-	}
-
-	public void setDummyValue(String dummyValue) {
-		this.dummyValue = dummyValue;
-	}
-
-	public VR getVr() {
-		return vr;
-	}
-
-	public void setVr(VR vr) {
-		this.vr = vr;
 	}
 
 	public static String getStringValue(Attributes dcm, int tag) {

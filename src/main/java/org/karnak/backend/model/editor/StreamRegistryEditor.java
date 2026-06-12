@@ -15,6 +15,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
@@ -32,6 +34,8 @@ public class StreamRegistryEditor implements AttributeEditor {
 
 	private final Map<String, Study> studyMap = new HashMap<>();
 
+	@Getter
+	@Setter
 	private boolean enable = false;
 
 	public StreamRegistryEditor() {
@@ -96,25 +100,15 @@ public class StreamRegistryEditor implements AttributeEditor {
 		return studyMap.entrySet();
 	}
 
-	public boolean isEnable() {
-		return enable;
-	}
-
-	public void setEnable(boolean enable) {
-		this.enable = enable;
-	}
-
 	public void update(DicomProgress progress) {
 		if (enable) {
 			Attributes dcm = progress.getAttributes();
 			if (dcm != null) {
 				String sopUID = dcm.getString(Tag.AffectedSOPInstanceUID);
-				Iterator<Entry<String, Study>> studyIt = studyMap.entrySet().iterator();
-				while (studyIt.hasNext()) {
-					Study study = studyIt.next().getValue();
-					Iterator<Entry<String, Series>> seriesIt = study.getEntrySet().iterator();
-					while (seriesIt.hasNext()) {
-						Series series = seriesIt.next().getValue();
+				for (Entry<String, Study> stringStudyEntry : studyMap.entrySet()) {
+					Study study = stringStudyEntry.getValue();
+					for (Entry<String, Series> stringSeriesEntry : study.getEntrySet()) {
+						Series series = stringSeriesEntry.getValue();
 						SopInstance sopInstance = series.getSopInstance(sopUID);
 						if (sopInstance != null) {
 							sopInstance.setSent(!progress.isLastFailed());
