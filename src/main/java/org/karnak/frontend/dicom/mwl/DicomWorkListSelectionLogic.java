@@ -21,14 +21,17 @@ public class DicomWorkListSelectionLogic {
 	// DIALOG
 	private final DicomWorkListSelectionDialog dialog;
 
-	public DicomWorkListSelectionLogic(DicomWorkListSelectionDialog view) {
+	private final DicomNodeUtil dicomNodeUtil;
+
+	public DicomWorkListSelectionLogic(DicomWorkListSelectionDialog view, DicomNodeUtil dicomNodeUtil) {
 		this.dialog = view;
+		this.dicomNodeUtil = dicomNodeUtil;
 	}
 
 	public void loadDicomNodeList() {
 		try {
 			dialog.removeMessage();
-			dialog.loadWorkListNodes(DicomNodeUtil.getAllWorkListNodesDefinedLocally());
+			dialog.loadWorkListNodes(dicomNodeUtil.getWorkListNodes());
 		}
 		catch (Exception e) {
 			Message message = new Message(MessageLevel.ERROR, MessageFormat.TEXT, "Cannot read the set of worklists");

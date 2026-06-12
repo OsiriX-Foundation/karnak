@@ -1,0 +1,132 @@
+/*
+ * Copyright (c) 2026 Karnak Team and other contributors.
+ *
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
+ * License, Version 2.0 which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ */
+package org.karnak.backend.data.entity;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import java.io.Serializable;
+import java.util.Objects;
+
+@Entity(name = "DicomNodeConfig")
+@Table(name = "dicom_node_config")
+public class DicomNodeConfigEntity implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	private Long id;
+
+	private String description;
+
+	private String aeTitle;
+
+	private String hostname;
+
+	private Integer port;
+
+	private String nodeType;
+
+	public DicomNodeConfigEntity() {
+	}
+
+	public DicomNodeConfigEntity(String description, String aeTitle, String hostname, Integer port, String nodeType) {
+		this.description = description;
+		this.aeTitle = aeTitle;
+		this.hostname = hostname;
+		this.port = port;
+		this.nodeType = nodeType;
+	}
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	@NotBlank(message = "AETitle is mandatory")
+	@Size(max = 16, message = "AETitle has more than 16 characters")
+	@Column(name = "ae_title")
+	public String getAeTitle() {
+		return aeTitle;
+	}
+
+	public void setAeTitle(String aeTitle) {
+		this.aeTitle = aeTitle;
+	}
+
+	public String getHostname() {
+		return hostname;
+	}
+
+	public void setHostname(String hostname) {
+		this.hostname = hostname;
+	}
+
+	public Integer getPort() {
+		return port;
+	}
+
+	public void setPort(Integer port) {
+		this.port = port;
+	}
+
+	@NotBlank(message = "Node type is mandatory")
+	@Column(name = "node_type")
+	public String getNodeType() {
+		return nodeType;
+	}
+
+	public void setNodeType(String nodeType) {
+		this.nodeType = nodeType;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		DicomNodeConfigEntity that = (DicomNodeConfigEntity) o;
+		return Objects.equals(id, that.id) && Objects.equals(description, that.description)
+				&& Objects.equals(aeTitle, that.aeTitle) && Objects.equals(hostname, that.hostname)
+				&& Objects.equals(port, that.port) && Objects.equals(nodeType, that.nodeType);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, description, aeTitle, hostname, port, nodeType);
+	}
+
+	@Override
+	public String toString() {
+		return "DicomNodeConfig [id=" + id + ", description=" + description + ", aeTitle=" + aeTitle + ", hostname="
+				+ hostname + ", port=" + port + ", nodeType=" + nodeType + "]";
+	}
+
+}

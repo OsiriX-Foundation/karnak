@@ -9,29 +9,79 @@
  */
 package org.karnak.backend.util;
 
-import java.util.ArrayList;
+import java.io.InputStream;
 import java.util.List;
+import org.karnak.backend.model.dicom.ConfigNode;
 import org.karnak.backend.model.dicom.DicomNodeList;
-import org.karnak.frontend.dicom.Util;
+import org.karnak.backend.service.DicomNodeConfigService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class DicomNodeUtil {
 
-	private DicomNodeUtil() {
+	private final DicomNodeConfigService dicomNodeConfigService;
+
+	@Autowired
+	public DicomNodeUtil(DicomNodeConfigService dicomNodeConfigService) {
+		this.dicomNodeConfigService = dicomNodeConfigService;
 	}
 
-	public static List<DicomNodeList> getAllDicomNodeTypesDefinedLocally() {
-		List<DicomNodeList> dicomNodeTypes = new ArrayList<>();
-
-		dicomNodeTypes
-			.add(Util.readnodes(DicomNodeUtil.class.getResource("/config/workstations-nodes.csv"), "Workstations"));
-		dicomNodeTypes
-			.add(Util.readnodes(DicomNodeUtil.class.getResource("/config/pacs-nodes-web.csv"), "PACS Public WEB"));
-
-		return dicomNodeTypes;
+	public List<DicomNodeList> getAllDicomNodeTypes() {
+		return dicomNodeConfigService.getAllDicomNodeTypes();
 	}
 
-	public static DicomNodeList getAllWorkListNodesDefinedLocally() {
-		return Util.readnodes(DicomNodeUtil.class.getResource("/config/worklist-nodes.csv"), "Worklists");
+	public DicomNodeList getWorkListNodes() {
+		return dicomNodeConfigService.getWorkListNodes();
+	}
+
+	public ConfigNode saveDicomNode(String description, String aeTitle, String hostname, Integer port,
+			String nodeType) {
+		return dicomNodeConfigService.saveNode(description, aeTitle, hostname, port, nodeType);
+	}
+
+	public ConfigNode updateDicomNode(Long id, String description, String aeTitle, String hostname, Integer port) {
+		return dicomNodeConfigService.updateNode(id, description, aeTitle, hostname, port);
+	}
+
+	public void deleteDicomNode(Long id) {
+		dicomNodeConfigService.deleteNode(id);
+	}
+
+	/** Export every DICOM node from every group (worklists excluded) as CSV. */
+	public byte[] exportDicomNodes() {
+		return dicomNodeConfigService.exportDicomNodes();
+	}
+
+	/** Export every worklist node as CSV. */
+	public byte[] exportWorkListNodes() {
+		return dicomNodeConfigService.exportWorkListNodes();
+	}
+
+	/** Import DICOM nodes from CSV, dispatching each row to its group. */
+	public int importDicomNodes(InputStream inputStream, char separator) {
+		return dicomNodeConfigService.importDicomNodes(inputStream, separator);
+	}
+
+	/** Import worklist nodes from CSV, storing every row as a worklist node. */
+	public int importWorkListNodes(InputStream inputStream, char separator) {
+		return dicomNodeConfigService.importWorkListNodes(inputStream, separator);
+	}
+
+	public List<String> getGroups() {
+		return dicomNodeConfigService.getGroups();
+	}
+
+	public void createGroup(String name) {
+		dicomNodeConfigService.createGroup(name);
+	}
+
+	public void renameGroup(String oldName, String newName) {
+		dicomNodeConfigService.renameGroup(oldName, newName);
+	}
+
+	public int deleteGroup(String name) {
+		return dicomNodeConfigService.deleteGroup(name);
 	}
 
 }

@@ -15,17 +15,27 @@ import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.HasValue.ValueChangeEvent;
 import com.vaadin.flow.component.HasValue.ValueChangeListener;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.data.provider.DataProviderListener;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.flow.server.streams.DownloadHandler;
+import com.vaadin.flow.server.streams.DownloadResponse;
+import com.vaadin.flow.server.streams.UploadHandler;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -36,30 +46,65 @@ import org.karnak.backend.model.dicom.DicomNodeList;
 import org.karnak.backend.model.dicom.Message;
 import org.karnak.backend.util.DicomNodeUtil;
 import org.karnak.frontend.component.AbstractDialog;
+import org.karnak.frontend.dicom.PortField;
 import org.weasis.core.util.annotations.Generated;
 
 @Generated()
 public class DicomEchoSelectionDialog extends AbstractDialog {
 
 	// CONTROLLER
-	private final DicomEchoSelectionLogic logic = new DicomEchoSelectionLogic(this);
+	private final DicomEchoSelectionLogic logic;
+
+	private final DicomNodeUtil dicomNodeUtil;
 
 	// UI COMPONENTS
 	private Dialog dialog;
 
 	private Div titleBar;
 
-	private FormLayout formLayout;
+	private FormLayout groupFormLayout;
 
 	private Select<DicomNodeList> dicomNodeTypeSelector;
 
+	private TextField groupNameFld;
+
+	private HorizontalLayout groupBar;
+
+	private Button addGroupBtn;
+
+	private Button renameGroupBtn;
+
+	private Button deleteGroupBtn;
+
+	private FormLayout formLayout;
+
 	private ComboBox<ConfigNode> dicomNodeSelector;
+
+	private TextField editNameFld;
+
+	private TextField editAetFld;
+
+	private TextField editHostnameFld;
+
+	private PortField editPortFld;
 
 	private HorizontalLayout buttonBar;
 
 	private Button cancelBtn;
 
+	private Button deleteBtn;
+
+	private Button updateBtn;
+
 	private Button selectBtn;
+
+	private HorizontalLayout ioBar;
+
+	private Anchor exportAnchor;
+
+	private Upload importUpload;
+
+	private transient UI ui;
 
 	// DATA
 	private List<DicomNodeList> dicomNodeTypes;
@@ -70,11 +115,14 @@ public class DicomEchoSelectionDialog extends AbstractDialog {
 
 	private ListDataProvider<ConfigNode> dataProviderForDicomNodes;
 
-	public DicomEchoSelectionDialog() {
+	public DicomEchoSelectionDialog(DicomNodeUtil dicomNodeUtil) {
+		this.dicomNodeUtil = dicomNodeUtil;
+		this.ui = UI.getCurrent();
+		this.logic = new DicomEchoSelectionLogic(this, dicomNodeUtil);
 		init();
 		createMainLayout();
 		dialog.add(mainLayout);
-		selectDicomNoldeList(DicomNodeUtil.getAllDicomNodeTypesDefinedLocally());
+		selectDicomNoldeList(dicomNodeUtil.getAllDicomNodeTypes());
 	}
 
 	public void selectDicomNoldeList(List<DicomNodeList> nodeLists) {
@@ -97,10 +145,158 @@ public class DicomEchoSelectionDialog extends AbstractDialog {
 		mainLayout.setSpacing(true);
 
 		buildTitleBar();
+		buildGroupFormLayout();
+		buildGroupBar();
 		buildFormLayout();
+		buildIoBar();
 		buildButtonBar();
 
-		mainLayout.add(titleBar, formLayout, buttonBar);
+		mainLayout.add(titleBar, groupFormLayout, groupBar, formLayout, ioBar, buttonBar);
+	}
+
+	private void buildGroupFormLayout() {
+		groupFormLayout = new FormLayout();
+		groupFormLayout.setSizeFull();
+
+		buildDicomNodeTypeSelector();
+
+		groupNameFld = new TextField("Group name");
+		groupNameFld.setPlaceholder("New or renamed group");
+
+		groupFormLayout.add(dicomNodeTypeSelector, groupNameFld);
+	}
+
+	private void buildGroupBar() {
+		groupBar = new HorizontalLayout();
+		groupBar.setWidthFull();
+		groupBar.setPadding(false);
+		groupBar.setSpacing(true);
+
+		addGroupBtn = new Button("Add group");
+		addGroupBtn.addClickListener(event -> addGroup());
+
+		renameGroupBtn = new Button("Rename group");
+		renameGroupBtn.setEnabled(false);
+		renameGroupBtn.addClickListener(event -> renameGroup());
+
+		deleteGroupBtn = new Button("Delete group");
+		deleteGroupBtn.setEnabled(false);
+		deleteGroupBtn.addClickListener(event -> deleteGroup());
+
+		groupBar.add(addGroupBtn, renameGroupBtn, deleteGroupBtn);
+	}
+
+	private String currentGroupName() {
+		DicomNodeList group = dicomNodeTypeSelector.getValue();
+		return group == null ? null : group.getName();
+	}
+
+	private void addGroup() {
+		try {
+			String name = groupNameFld.getValue();
+			dicomNodeUtil.createGroup(name);
+			reloadGroups(name.trim());
+			displayMessage(new Message(MessageLevel.INFO, MessageFormat.TEXT, "Group \"" + name.trim() + "\" created"));
+		}
+		catch (Exception e) {
+			displayMessage(
+					new Message(MessageLevel.ERROR, MessageFormat.TEXT, "Cannot create the group: " + e.getMessage()));
+		}
+	}
+
+	private void renameGroup() {
+		String oldName = currentGroupName();
+		if (oldName == null) {
+			return;
+		}
+		try {
+			String newName = groupNameFld.getValue();
+			dicomNodeUtil.renameGroup(oldName, newName);
+			reloadGroups(newName.trim());
+			displayMessage(
+					new Message(MessageLevel.INFO, MessageFormat.TEXT, "Group renamed to \"" + newName.trim() + "\""));
+		}
+		catch (Exception e) {
+			displayMessage(
+					new Message(MessageLevel.ERROR, MessageFormat.TEXT, "Cannot rename the group: " + e.getMessage()));
+		}
+	}
+
+	private void deleteGroup() {
+		String name = currentGroupName();
+		if (name == null) {
+			return;
+		}
+		try {
+			int removed = dicomNodeUtil.deleteGroup(name);
+			reloadGroups(null);
+			displayMessage(new Message(MessageLevel.INFO, MessageFormat.TEXT,
+					"Group \"" + name + "\" deleted (" + removed + " node(s) removed)"));
+		}
+		catch (Exception e) {
+			displayMessage(
+					new Message(MessageLevel.ERROR, MessageFormat.TEXT, "Cannot delete the group: " + e.getMessage()));
+		}
+	}
+
+	private void reloadGroups(String groupToSelect) {
+		selectDicomNoldeList(dicomNodeUtil.getAllDicomNodeTypes());
+		if (groupToSelect != null) {
+			dicomNodeTypes.stream()
+				.filter(group -> groupToSelect.equals(group.getName()))
+				.findFirst()
+				.ifPresent(dicomNodeTypeSelector::setValue);
+		}
+	}
+
+	private void buildIoBar() {
+		ioBar = new HorizontalLayout();
+		ioBar.setWidthFull();
+		ioBar.setPadding(false);
+		ioBar.setSpacing(true);
+
+		exportAnchor = new Anchor();
+		exportAnchor.setHref(DownloadHandler
+			.fromInputStream(event -> new DownloadResponse(new ByteArrayInputStream(dicomNodeUtil.exportDicomNodes()),
+					"dicom-nodes.csv", "text/csv", -1)));
+		exportAnchor.getElement().setAttribute("download", true);
+		exportAnchor.add(new Button("Export all nodes (CSV)"));
+
+		importUpload = new Upload((UploadHandler) event -> {
+			byte[] bytes;
+			try (InputStream in = event.getInputStream()) {
+				bytes = in.readAllBytes();
+			}
+			importNodesFromCsv(bytes);
+		});
+		importUpload.setDropLabel(new Span("Import nodes (CSV)"));
+		importUpload.setMaxFiles(1);
+
+		ioBar.add(exportAnchor, importUpload);
+	}
+
+	private void importNodesFromCsv(byte[] bytes) {
+		try {
+			int count = dicomNodeUtil.importDicomNodes(new ByteArrayInputStream(bytes), ',');
+			runOnUi(() -> {
+				selectDicomNoldeList(dicomNodeUtil.getAllDicomNodeTypes());
+				displayMessage(
+						new Message(MessageLevel.INFO, MessageFormat.TEXT, count + " DICOM node(s) imported from CSV"));
+			});
+		}
+		catch (Exception e) {
+			runOnUi(() -> displayMessage(new Message(MessageLevel.ERROR, MessageFormat.TEXT,
+					"Cannot import the CSV file: " + e.getMessage())));
+		}
+	}
+
+	private void runOnUi(Runnable command) {
+		if (ui != null) {
+			ui.access(() -> command.run());
+		}
+		else {
+			command.run();
+		}
 	}
 
 	public void open() {
@@ -170,22 +366,65 @@ public class DicomEchoSelectionDialog extends AbstractDialog {
 		formLayout = new FormLayout();
 		formLayout.setSizeFull();
 
-		buildDicomNodeTypeSelector();
 		buildDicomNodeSelector();
+		buildEditFields();
 
-		formLayout.add(dicomNodeTypeSelector, dicomNodeSelector);
+		formLayout.add(dicomNodeSelector, editNameFld, editAetFld, editHostnameFld, editPortFld);
+	}
+
+	private void buildEditFields() {
+		editNameFld = new TextField("Description");
+		editAetFld = new TextField("AET");
+		editHostnameFld = new TextField("Hostname");
+		editPortFld = new PortField();
+		editPortFld.setLabel("Port");
+	}
+
+	private void populateEditFields(ConfigNode node) {
+		if (node == null) {
+			editNameFld.clear();
+			editAetFld.clear();
+			editHostnameFld.clear();
+			editPortFld.clear();
+			deleteBtn.setEnabled(false);
+			updateBtn.setEnabled(false);
+			return;
+		}
+
+		editNameFld.setValue(node.getName());
+		editAetFld.setValue(node.getAet());
+		editHostnameFld.setValue(node.getHostname());
+		editPortFld.setValue(node.getPort());
+
+		boolean persisted = node.getId() != null;
+		deleteBtn.setEnabled(persisted);
+		updateBtn.setEnabled(persisted);
 	}
 
 	private void buildDicomNodeTypeSelector() {
 		dicomNodeTypeSelector = new Select<>();
-		dicomNodeTypeSelector.setLabel("Dicom Nodes Type");
+		dicomNodeTypeSelector.setLabel("Group");
 		dicomNodeTypeSelector.setItems(dataProviderForDicomNodeTypes);
 
 		dicomNodeTypeSelector.addValueChangeListener((ValueChangeListener<ValueChangeEvent<DicomNodeList>>) event -> {
 			DicomNodeList selectedNodeType = event.getValue();
 
 			loadDicomNodes(selectedNodeType);
+			onGroupSelected(selectedNodeType);
 		});
+	}
+
+	private void onGroupSelected(DicomNodeList group) {
+		boolean hasGroup = group != null;
+		if (hasGroup && groupNameFld != null) {
+			groupNameFld.setValue(group.getName());
+		}
+		if (renameGroupBtn != null) {
+			renameGroupBtn.setEnabled(hasGroup);
+		}
+		if (deleteGroupBtn != null) {
+			deleteGroupBtn.setEnabled(hasGroup);
+		}
 	}
 
 	private void buildDicomNodeSelector() {
@@ -196,6 +435,8 @@ public class DicomEchoSelectionDialog extends AbstractDialog {
 		dicomNodeSelector.setItemLabelGenerator(item -> item.getName() + " [" + item.getAet() + " | "
 				+ item.getHostname() + " | " + item.getPort() + "]");
 		dicomNodeSelector.setRenderer(buildDicomNodeRenderer());
+
+		dicomNodeSelector.addValueChangeListener(event -> populateEditFields(event.getValue()));
 	}
 
 	private ComponentRenderer<Div, ConfigNode> buildDicomNodeRenderer() {
@@ -221,15 +462,69 @@ public class DicomEchoSelectionDialog extends AbstractDialog {
 		buttonBar.setSpacing(true);
 
 		buildCancelBtn();
+		buildDeleteBtn();
+		buildUpdateBtn();
 		buildSelectBtn();
 
-		buttonBar.add(cancelBtn, selectBtn);
+		buttonBar.add(cancelBtn, deleteBtn, updateBtn, selectBtn);
 	}
 
 	private void buildCancelBtn() {
 		cancelBtn = new Button("Cancel");
 
 		cancelBtn.addClickListener(event -> dialog.close());
+	}
+
+	private void buildDeleteBtn() {
+		deleteBtn = new Button("Delete");
+		deleteBtn.setEnabled(false);
+
+		deleteBtn.addClickListener(event -> deleteSelectedNode());
+	}
+
+	private void buildUpdateBtn() {
+		updateBtn = new Button("Save changes");
+		updateBtn.setEnabled(false);
+
+		updateBtn.addClickListener(event -> updateSelectedNode());
+	}
+
+	private void deleteSelectedNode() {
+		ConfigNode selected = dicomNodeSelector.getValue();
+		if (selected == null || selected.getId() == null) {
+			return;
+		}
+
+		try {
+			dicomNodeUtil.deleteDicomNode(selected.getId());
+			selectDicomNoldeList(dicomNodeUtil.getAllDicomNodeTypes());
+		}
+		catch (Exception e) {
+			displayMessage(new Message(MessageLevel.ERROR, MessageFormat.TEXT,
+					"Cannot delete the DICOM node: " + e.getMessage()));
+		}
+	}
+
+	private void updateSelectedNode() {
+		ConfigNode selected = dicomNodeSelector.getValue();
+		if (selected == null || selected.getId() == null) {
+			return;
+		}
+
+		if (editAetFld.isEmpty() || editHostnameFld.isEmpty() || editPortFld.isEmpty()) {
+			displayMessage(new Message(MessageLevel.WARN, MessageFormat.TEXT, "AET, Hostname and Port are required"));
+			return;
+		}
+
+		try {
+			dicomNodeUtil.updateDicomNode(selected.getId(), editNameFld.getValue(), editAetFld.getValue(),
+					editHostnameFld.getValue(), editPortFld.getValue());
+			selectDicomNoldeList(dicomNodeUtil.getAllDicomNodeTypes());
+		}
+		catch (Exception e) {
+			displayMessage(new Message(MessageLevel.ERROR, MessageFormat.TEXT,
+					"Cannot update the DICOM node: " + e.getMessage()));
+		}
 	}
 
 	private void buildSelectBtn() {

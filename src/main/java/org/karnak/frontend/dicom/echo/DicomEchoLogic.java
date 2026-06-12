@@ -31,7 +31,7 @@ public class DicomEchoLogic {
 
 		StringBuilder result = new StringBuilder();
 		result.append("<P><h6>Network status</h6>");
-		boolean reachable = Util.getNetworkResponse(result, aet, hostname, port, true);
+		boolean reachable = Util.getNetworkResponse(result, hostname, port, true);
 		result.append("</P>");
 		if (reachable) {
 			result.append("<br><P>");

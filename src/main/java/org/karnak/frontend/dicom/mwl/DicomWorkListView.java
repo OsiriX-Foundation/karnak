@@ -38,6 +38,8 @@ import org.karnak.backend.enums.Modality;
 import org.karnak.backend.model.dicom.ConfigNode;
 import org.karnak.backend.model.dicom.Message;
 import org.karnak.backend.model.dicom.WorkListQueryData;
+import org.karnak.backend.service.DicomNodeConfigService;
+import org.karnak.backend.util.DicomNodeUtil;
 import org.karnak.frontend.dicom.AbstractView;
 import org.karnak.frontend.dicom.PortField;
 import org.weasis.core.util.annotations.Generated;
@@ -106,6 +108,8 @@ public class DicomWorkListView extends AbstractView implements HasUrlParameter<S
 
 	private Button selectWorkListBtn;
 
+	private Button saveWorkListBtn;
+
 	private Button queryBtn;
 
 	// Query Result
@@ -135,7 +139,10 @@ public class DicomWorkListView extends AbstractView implements HasUrlParameter<S
 
 	private String actionParam;
 
-	public DicomWorkListView() {
+	private final DicomNodeUtil dicomNodeUtil;
+
+	public DicomWorkListView(DicomNodeUtil dicomNodeUtil) {
+		this.dicomNodeUtil = dicomNodeUtil;
 		init();
 		createView();
 		createMainLayout();
@@ -264,7 +271,7 @@ public class DicomWorkListView extends AbstractView implements HasUrlParameter<S
 
 	private void openDicomWorklistSelectionDialog() {
 		// DIALOGS
-		DicomWorkListSelectionDialog dicomWorklistSelectionDialog = new DicomWorkListSelectionDialog();
+		DicomWorkListSelectionDialog dicomWorklistSelectionDialog = new DicomWorkListSelectionDialog(dicomNodeUtil);
 
 		dicomWorklistSelectionDialog.addWorkListSelectionListener(e -> {
 			ConfigNode selectedWorkList = e.getSelectedWorkList();
@@ -341,9 +348,37 @@ public class DicomWorkListView extends AbstractView implements HasUrlParameter<S
 
 		buildClearBtn();
 		buildSelectWorkListBtn();
+		buildSaveWorkListBtn();
 		buildQueryBtn();
 
-		buttonBar.add(clearBtn, selectWorkListBtn, queryBtn);
+		buttonBar.add(clearBtn, selectWorkListBtn, saveWorkListBtn, queryBtn);
+	}
+
+	private void buildSaveWorkListBtn() {
+		saveWorkListBtn = new Button("Save Worklist");
+		saveWorkListBtn.getStyle().set("cursor", "pointer");
+
+		saveWorkListBtn.addClickListener(e -> saveCurrentWorkListNode());
+	}
+
+	private void saveCurrentWorkListNode() {
+		if (workListAetFld.isEmpty() || workListHostnameFld.isEmpty() || workListPortFld.isEmpty()) {
+			displayMessage(new Message(MessageLevel.WARN, MessageFormat.TEXT,
+					"Worklist AET, Hostname and Port are required to save a worklist"));
+			return;
+		}
+
+		String aet = workListAetFld.getValue();
+		try {
+			dicomNodeUtil.saveDicomNode(aet, aet, workListHostnameFld.getValue(), workListPortFld.getValue(),
+					DicomNodeConfigService.NODE_TYPE_WORKLIST);
+			displayMessage(new Message(MessageLevel.INFO, MessageFormat.TEXT,
+					"Worklist \"" + aet + "\" saved to the configuration"));
+		}
+		catch (Exception ex) {
+			displayMessage(new Message(MessageLevel.ERROR, MessageFormat.TEXT,
+					"Cannot save the worklist: " + ex.getMessage()));
+		}
 	}
 
 	private void buildClearBtn() {

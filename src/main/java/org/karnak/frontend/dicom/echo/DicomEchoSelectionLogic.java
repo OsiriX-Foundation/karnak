@@ -21,14 +21,17 @@ public class DicomEchoSelectionLogic {
 	// DIALOG
 	private final DicomEchoSelectionDialog dialog;
 
-	public DicomEchoSelectionLogic(DicomEchoSelectionDialog dialog) {
+	private final DicomNodeUtil dicomNodeUtil;
+
+	public DicomEchoSelectionLogic(DicomEchoSelectionDialog dialog, DicomNodeUtil dicomNodeUtil) {
 		this.dialog = dialog;
+		this.dicomNodeUtil = dicomNodeUtil;
 	}
 
 	public void loadDicomNodeList() {
 		try {
 			dialog.removeMessage();
-			dialog.loadDicomNodeTypes(DicomNodeUtil.getAllDicomNodeTypesDefinedLocally());
+			dialog.loadDicomNodeTypes(dicomNodeUtil.getAllDicomNodeTypes());
 		}
 		catch (Exception e) {
 			Message message = new Message(MessageLevel.ERROR, MessageFormat.TEXT,

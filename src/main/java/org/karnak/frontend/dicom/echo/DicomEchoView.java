@@ -33,6 +33,8 @@ import org.karnak.backend.enums.MessageLevel;
 import org.karnak.backend.model.dicom.ConfigNode;
 import org.karnak.backend.model.dicom.DicomEchoQueryData;
 import org.karnak.backend.model.dicom.Message;
+import org.karnak.backend.service.DicomNodeConfigService;
+import org.karnak.backend.util.DicomNodeUtil;
 import org.karnak.frontend.dicom.AbstractView;
 import org.karnak.frontend.dicom.PortField;
 import org.karnak.frontend.dicom.echo.DicomEchoSelectionDialog.DicomNodeSelectionEvent;
@@ -86,6 +88,8 @@ public class DicomEchoView extends AbstractView implements HasUrlParameter<Strin
 
 	private Button selectDicomNodeBtn;
 
+	private Button saveDicomNodeBtn;
+
 	private Button dicomEchoBtn;
 
 	// Dicom Echo Status
@@ -107,7 +111,10 @@ public class DicomEchoView extends AbstractView implements HasUrlParameter<Strin
 
 	private String actionParam;
 
-	public DicomEchoView() {
+	private final DicomNodeUtil dicomNodeUtil;
+
+	public DicomEchoView(DicomNodeUtil dicomNodeUtil) {
+		this.dicomNodeUtil = dicomNodeUtil;
 		init();
 		createView();
 		createMainLayout();
@@ -224,9 +231,10 @@ public class DicomEchoView extends AbstractView implements HasUrlParameter<Strin
 
 		buildClearBtn();
 		buildSelectDicomNodeBtn();
+		buildSaveDicomNodeBtn();
 		buildDicomEchoBtn();
 
-		buttonBar.add(clearBtn, selectDicomNodeBtn, dicomEchoBtn);
+		buttonBar.add(clearBtn, selectDicomNodeBtn, saveDicomNodeBtn, dicomEchoBtn);
 	}
 
 	private void buildClearBtn() {
@@ -244,7 +252,7 @@ public class DicomEchoView extends AbstractView implements HasUrlParameter<Strin
 	}
 
 	private void openDicomEchoSelectionDialog() {
-		DicomEchoSelectionDialog dicomEchoSelectionDialog = new DicomEchoSelectionDialog();
+		DicomEchoSelectionDialog dicomEchoSelectionDialog = new DicomEchoSelectionDialog(dicomNodeUtil);
 
 		dicomEchoSelectionDialog
 			.addDicomNodeSelectionListener((ComponentEventListener<DicomNodeSelectionEvent>) event -> {
@@ -256,6 +264,33 @@ public class DicomEchoView extends AbstractView implements HasUrlParameter<Strin
 			});
 
 		dicomEchoSelectionDialog.open();
+	}
+
+	private void buildSaveDicomNodeBtn() {
+		saveDicomNodeBtn = new Button("Save Node");
+		saveDicomNodeBtn.getStyle().set("cursor", "pointer");
+
+		saveDicomNodeBtn.addClickListener(event -> saveCurrentDicomNode());
+	}
+
+	private void saveCurrentDicomNode() {
+		if (calledAetFld.isEmpty() || calledHostnameFld.isEmpty() || calledPortFld.isEmpty()) {
+			displayMessage(new Message(MessageLevel.WARN, MessageFormat.TEXT,
+					"Called AET, Hostname and Port are required to save a DICOM node"));
+			return;
+		}
+
+		String aet = calledAetFld.getValue();
+		try {
+			dicomNodeUtil.saveDicomNode(aet, aet, calledHostnameFld.getValue(), calledPortFld.getValue(),
+					DicomNodeConfigService.NODE_TYPE_WORKSTATION);
+			displayMessage(new Message(MessageLevel.INFO, MessageFormat.TEXT,
+					"DICOM node \"" + aet + "\" saved to the configuration"));
+		}
+		catch (Exception e) {
+			displayMessage(new Message(MessageLevel.ERROR, MessageFormat.TEXT,
+					"Cannot save the DICOM node: " + e.getMessage()));
+		}
 	}
 
 	private void buildDicomEchoBtn() {

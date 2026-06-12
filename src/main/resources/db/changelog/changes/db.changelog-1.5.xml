@@ -1,0 +1,89 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+
+  <!-- DICOM node configuration: nodes and their (user-defined) groups -->
+
+  <changeSet author="karnak" id="1.5-1">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="dicom_node_config"/>
+      </not>
+    </preConditions>
+    <createTable tableName="dicom_node_config">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="dicom_node_config_pkey"/>
+      </column>
+      <column name="description" type="VARCHAR(255)"/>
+      <column name="ae_title" type="VARCHAR(16)"/>
+      <column name="hostname" type="VARCHAR(255)"/>
+      <column name="port" type="INTEGER"/>
+      <column name="node_type" type="VARCHAR(50)">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet author="karnak" id="1.5-2">
+    <preConditions onFail="MARK_RAN">
+      <and>
+        <tableExists tableName="dicom_node_config"/>
+        <sqlCheck expectedResult="0">SELECT COUNT(*) FROM dicom_node_config</sqlCheck>
+      </and>
+    </preConditions>
+    <insert tableName="dicom_node_config">
+      <column name="description" value="Karnak"/>
+      <column name="ae_title" value="KARNAK-GATEWAY"/>
+      <column name="hostname" value="localhost"/>
+      <column name="port" valueNumeric="11112"/>
+      <column name="node_type" value="WORKSTATION"/>
+    </insert>
+    <insert tableName="dicom_node_config">
+      <column name="description" value="Public dicomserver.co.uk"/>
+      <column name="ae_title" value="DICOMSERVER"/>
+      <column name="hostname" value="dicomserver.co.uk"/>
+      <column name="port" valueNumeric="11112"/>
+      <column name="node_type" value="PACS_WEB"/>
+    </insert>
+    <insert tableName="dicom_node_config">
+      <column name="description" value="Public dicomserver.co.uk"/>
+      <column name="ae_title" value="ADVT"/>
+      <column name="hostname" value="dicomserver.co.uk"/>
+      <column name="port" valueNumeric="104"/>
+      <column name="node_type" value="WORKLIST"/>
+    </insert>
+  </changeSet>
+
+  <changeSet author="karnak" id="1.5-3">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="dicom_node_group"/>
+      </not>
+    </preConditions>
+    <createTable tableName="dicom_node_group">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="dicom_node_group_pkey"/>
+      </column>
+      <column name="name" type="VARCHAR(50)">
+        <constraints nullable="false" unique="true" uniqueConstraintName="uc_dicom_node_group_name"/>
+      </column>
+    </createTable>
+  </changeSet>
+
+  <!--
+    Seed the groups from the distinct node types already present (excluding the reserved
+    WORKLIST group, which stays a single non-modifiable group handled in code). This keeps
+    existing nodes and any custom node types from previous versions visible as groups.
+  -->
+  <changeSet author="karnak" id="1.5-4">
+    <preConditions onFail="MARK_RAN">
+      <and>
+        <tableExists tableName="dicom_node_group"/>
+        <sqlCheck expectedResult="0">SELECT COUNT(*) FROM dicom_node_group</sqlCheck>
+      </and>
+    </preConditions>
+    <sql>INSERT INTO dicom_node_group (name) SELECT DISTINCT node_type FROM dicom_node_config WHERE node_type &lt;&gt; 'WORKLIST'</sql>
+  </changeSet>
+
+</databaseChangeLog>

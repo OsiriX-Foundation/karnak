@@ -20,9 +20,8 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import org.karnak.backend.model.dicom.DicomNodeList;
-import org.karnak.backend.model.dicom.WadoNodeList;
+import org.karnak.backend.util.DicomNodeUtil;
 import org.karnak.frontend.dicom.AbstractView;
-import org.karnak.frontend.dicom.Util;
 import org.weasis.core.util.annotations.Generated;
 
 @Generated()
@@ -32,7 +31,7 @@ public class MonitorView extends AbstractView {
 	private final MonitorLogic logic = new MonitorLogic(this);
 
 	// UI COMPONENTS
-	private VerticalLayout dicomAndWadoLayout;
+	private VerticalLayout dicomLayout;
 
 	// Dicom Layout
 	private HorizontalLayout dicomEchoLayout;
@@ -43,15 +42,6 @@ public class MonitorView extends AbstractView {
 
 	private Button dicomEchoBtn;
 
-	// WADO Layout
-	private HorizontalLayout wadoLayout;
-
-	private H6 wadoLayoutTitle;
-
-	private Select<WadoNodeList> wadoNodeListSelector;
-
-	private Button wadoBtn;
-
 	// Result Layout
 	private VerticalLayout resultLayout;
 
@@ -59,7 +49,10 @@ public class MonitorView extends AbstractView {
 
 	private Div resultDiv;
 
-	public MonitorView() {
+	private final DicomNodeUtil dicomNodeUtil;
+
+	public MonitorView(DicomNodeUtil dicomNodeUtil) {
+		this.dicomNodeUtil = dicomNodeUtil;
 		init();
 		createView();
 		createMainLayout();
@@ -87,10 +80,10 @@ public class MonitorView extends AbstractView {
 		mainLayout.setSpacing(true);
 		mainLayout.setWidthFull();
 
-		buildDicomAndWadoLayout();
+		buildDicomLayout();
 		buildResultLayout();
 
-		mainLayout.add(dicomAndWadoLayout, resultLayout);
+		mainLayout.add(dicomLayout, resultLayout);
 	}
 
 	private void buildDicomEchoLayoutTitle() {
@@ -115,19 +108,16 @@ public class MonitorView extends AbstractView {
 		dicomEchoNodeListSelector = new Select<>();
 		dicomEchoNodeListSelector.setEmptySelectionAllowed(false);
 
-		DicomNodeList pacsProdDicomNodeList = Util.readnodes(this.getClass().getResource("/config/pacs-nodes-web.csv"),
-				"PACS Public WEB");
-		DicomNodeList newPacsProdDicomNodeList = Util
-			.readnodes(this.getClass().getResource("/config/workstations-nodes.csv"), "Workstations");
+		var dicomNodeTypes = dicomNodeUtil.getAllDicomNodeTypes();
 
-		dicomEchoNodeListSelector.setItems(pacsProdDicomNodeList, newPacsProdDicomNodeList);
+		dicomEchoNodeListSelector.setItems(dicomNodeTypes);
 
 		dicomEchoNodeListSelector
 			.addValueChangeListener((ValueChangeListener<ValueChangeEvent<DicomNodeList>>) event -> logic
 				.dicomNodeListSelected(event.getValue()));
 
-		if (!pacsProdDicomNodeList.isEmpty()) {
-			dicomEchoNodeListSelector.setValue(pacsProdDicomNodeList);
+		if (!dicomNodeTypes.isEmpty()) {
+			dicomEchoNodeListSelector.setValue(dicomNodeTypes.getFirst());
 		}
 	}
 
@@ -136,62 +126,20 @@ public class MonitorView extends AbstractView {
 		dicomEchoBtn.addClickListener(event -> logic.dicomEcho());
 	}
 
-	private void buildWadoLayoutTitle() {
-		wadoLayoutTitle = new H6("WADO");
-	}
-
-	private void buildWadoLayout() {
-		wadoLayout = new HorizontalLayout();
-		wadoLayout.setMargin(false);
-		wadoLayout.setSpacing(true);
-		wadoLayout.setWidthFull();
-		wadoLayout.setDefaultVerticalComponentAlignment(Alignment.END);
-
-		buildwadoNodeListSelector();
-		buildWadoBtn();
-
-		wadoLayout.add(wadoNodeListSelector, wadoBtn);
-	}
-
-	private void buildwadoNodeListSelector() {
-		wadoNodeListSelector = new Select<>();
-		wadoNodeListSelector.setEmptySelectionAllowed(false);
-
-		WadoNodeList pacsProdWadoNodeList = Util.readWadoNodes(this.getClass().getResource("/config/pacs-wado-web.csv"),
-				"Public web");
-
-		wadoNodeListSelector.setItems(pacsProdWadoNodeList);
-
-		wadoNodeListSelector.addValueChangeListener((ValueChangeListener<ValueChangeEvent<WadoNodeList>>) event -> logic
-			.wadoNodeListSelected(event.getValue()));
-
-		if (!pacsProdWadoNodeList.isEmpty()) {
-			wadoNodeListSelector.setValue(pacsProdWadoNodeList);
-		}
-	}
-
-	private void buildWadoBtn() {
-		wadoBtn = new Button("Check!");
-
-		wadoBtn.addClickListener(event -> logic.wado());
-	}
-
-	private void buildDicomAndWadoLayout() {
-		dicomAndWadoLayout = new VerticalLayout();
-		dicomAndWadoLayout.setWidthFull();
-		dicomAndWadoLayout.setPadding(true);
-		dicomAndWadoLayout.setSpacing(false);
-		dicomAndWadoLayout.getStyle()
+	private void buildDicomLayout() {
+		dicomLayout = new VerticalLayout();
+		dicomLayout.setWidthFull();
+		dicomLayout.setPadding(true);
+		dicomLayout.setSpacing(false);
+		dicomLayout.getStyle()
 			.set("box-shadow",
 					"0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12)");
-		dicomAndWadoLayout.getStyle().set("border-radius", "4px");
+		dicomLayout.getStyle().set("border-radius", "4px");
 
 		buildDicomEchoLayoutTitle();
 		buildDicomEchoLayout();
-		buildWadoLayoutTitle();
-		buildWadoLayout();
 
-		dicomAndWadoLayout.add(dicomEchoLayoutTitle, dicomEchoLayout, wadoLayoutTitle, wadoLayout);
+		dicomLayout.add(dicomEchoLayoutTitle, dicomEchoLayout);
 	}
 
 	private void buildResultLayout() {

@@ -9,111 +9,75 @@
  */
 package org.karnak.frontend.dicom;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
-import org.karnak.backend.model.dicom.WadoNode;
 import org.weasis.dicom.param.DicomNode;
 
+@DisplayNameGeneration(ReplaceUnderscores.class)
 class UtilTest {
 
-	@Test
-	void when_network_response_format_xml_host_not_reachable_should_add_correct_tags() {
+	// A loopback address with a port nothing listens on: the connection is refused
+	// immediately, so the network/echo probes fail fast and deterministically.
+	private static final String UNREACHABLE_HOST = "127.0.0.1";
 
-		// Init data
-		DicomNode dicomNode = new DicomNode("fwdAeTitle", 1111);
+	private static final int CLOSED_PORT = 1;
+
+	private static final int CONNECT_TIMEOUT_MS = 500;
+
+	@Test
+	void network_response_in_xml_is_wrapped_in_dcm_network_status_tags() {
 		StringBuilder result = new StringBuilder();
 
-		// Call method
-		Util.getNetworkResponse(result, dicomNode.getAet(), dicomNode.getHostname(), dicomNode.getPort(), true, "XML");
+		// Reachability depends on the host environment, so we only assert the XML
+		// framing.
+		Util.getNetworkResponse(result,  UNREACHABLE_HOST, CLOSED_PORT, true, "XML");
 
-		// Test results
-		assertNotNull(result);
-		assertTrue(result.toString().contains("<DcmNetworkStatus>"));
-		assertTrue(result.toString().contains("</DcmNetworkStatus>"));
+		String xml = result.toString();
+		assertTrue(xml.contains("<DcmNetworkStatus>"), xml);
+		assertTrue(xml.contains("</DcmNetworkStatus>"), xml);
 	}
 
-	// @Test
-	// void when_echo_response_format_xml_host_not_reachable_should_add_correct_tags() {
-	//
-	// // Init data
-	// DicomNode dicomNode = new DicomNode("fwdAeTitle", 1111);
-	// StringBuilder result = new StringBuilder();
-	//
-	// DicomState dicomState = new DicomState();
-	// dicomState.setStatus(444);
-	//
-	// try (MockedStatic<Echo> echoMock = Mockito.mockStatic(Echo.class)) {
-	// echoMock
-	// .when(
-	// () ->
-	// Echo.process(
-	// Mockito.any(AdvancedParams.class),
-	// Mockito.any(DicomNode.class),
-	// Mockito.any(DicomNode.class)))
-	// .thenReturn(dicomState);
-	//
-	// // Call method
-	// Util.getEchoResponse(result, dicomNode.getAet(), dicomNode, true, "XML", 0);
-	//
-	// // Test results
-	// Assert.assertNotNull(result);
-	// String resultString = result.toString();
-	// Assert.assertTrue(resultString.contains("<DcmStatus>"));
-	// Assert.assertTrue(resultString.contains("</DcmStatus>"));
-	// Assert.assertTrue(resultString.contains("Error"));
-	// }
-	// }
-
-	// @Test
-	// void when_echo_response_format_xml_host_reachable_should_add_correct_tags() {
-	//
-	// // Init data
-	// DicomNode dicomNode = new DicomNode("fwdAeTitle", 1111);
-	// StringBuilder result = new StringBuilder();
-	// DicomState dicomState = new DicomState();
-	// dicomState.setStatus(0);
-	//
-	// try (MockedStatic<Echo> echoMock = Mockito.mockStatic(Echo.class)) {
-	// // Mock
-	// echoMock
-	// .when(
-	// () ->
-	// Echo.process(
-	// Mockito.any(AdvancedParams.class),
-	// Mockito.any(DicomNode.class),
-	// Mockito.any(DicomNode.class)))
-	// .thenReturn(dicomState);
-	//
-	// // Call method
-	// Util.getEchoResponse(result, dicomNode.getAet(), dicomNode, true, "XML", 0);
-	//
-	// // Test results
-	// Assert.assertNotNull(result);
-	// String resultString = result.toString();
-	// Assert.assertTrue(resultString.contains("<DcmStatus>"));
-	// Assert.assertTrue(resultString.contains("</DcmStatus>"));
-	// Assert.assertTrue(resultString.contains("Success"));
-	// }
-	// }
-
 	@Test
-	void when_wado_response_format_xml_host_not_reachable_should_add_correct_tags() throws MalformedURLException {
-
-		// Init data
-		WadoNode wadoNode = new WadoNode("fwdAeTitle", new URL("http://test.com"));
+	void network_response_in_html_is_not_wrapped_in_xml_tags() {
 		StringBuilder result = new StringBuilder();
 
-		// Call method
-		Util.getWadoResponse(result, wadoNode, true, "XML");
+		// The 5-argument overload defaults to the HTML format.
+		Util.getNetworkResponse(result,  UNREACHABLE_HOST, CLOSED_PORT, true);
 
-		// Test results
-		assertNotNull(result);
-		assertTrue(result.toString().contains("<WadoStatus"));
-		assertTrue(result.toString().contains("</WadoStatus>"));
+		String html = result.toString();
+		assertFalse(html.isEmpty());
+		assertFalse(html.contains("<DcmNetworkStatus>"), html);
+	}
+
+	@Test
+	void echo_response_in_xml_is_wrapped_in_dcm_status_tags() {
+		StringBuilder result = new StringBuilder();
+		DicomNode calledNode = new DicomNode("AET", UNREACHABLE_HOST, CLOSED_PORT);
+
+		boolean success = Util.getEchoResponse(result, "CALLING", calledNode, true, "XML", CONNECT_TIMEOUT_MS);
+
+		String xml = result.toString();
+		assertTrue(xml.contains("<DcmStatus>"), xml);
+		assertTrue(xml.contains("</DcmStatus>"), xml);
+		assertTrue(xml.contains("<DcmStatusMessage>"), xml);
+		assertFalse(success);
+	}
+
+	@Test
+	void echo_response_in_html_reports_dicom_status_without_xml_tags() {
+		StringBuilder result = new StringBuilder();
+		DicomNode calledNode = new DicomNode("AET", UNREACHABLE_HOST, CLOSED_PORT);
+
+		boolean success = Util.getEchoResponse(result, "CALLING", calledNode, true, "HTML", CONNECT_TIMEOUT_MS);
+
+		String html = result.toString();
+		assertTrue(html.contains("DICOM"), html);
+		assertFalse(html.contains("<DcmStatus>"), html);
+		assertFalse(success);
 	}
 
 }

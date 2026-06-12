@@ -32,7 +32,7 @@ public class DicomEchoThread implements Callable<String> {
 
 		boolean success = Util.getEchoResponse(result, "PACSMONITOR", dcmNode, true, "HTML", 3000);
 		if (!success) {
-			Util.getNetworkResponse(result, dcmNode.getAet(), dcmNode.getHostname(), dcmNode.getPort(), true);
+			Util.getNetworkResponse(result, dcmNode.getHostname(), dcmNode.getPort(), true);
 		}
 
 		result.append("</small></P><hr>");

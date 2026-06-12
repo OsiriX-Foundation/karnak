@@ -20,11 +20,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.karnak.backend.util.DicomNodeUtil;
 import org.karnak.frontend.MainLayout;
 import org.karnak.frontend.dicom.echo.DicomEchoView;
 import org.karnak.frontend.dicom.monitor.MonitorView;
 import org.karnak.frontend.dicom.mwl.DicomWorkListView;
 import jakarta.annotation.security.RolesAllowed;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.weasis.core.util.annotations.Generated;
 
 @Route(value = DicomMainView.ROUTE, layout = MainLayout.class)
@@ -61,7 +63,11 @@ public class DicomMainView extends VerticalLayout {
 	// DATA
 	private Map<Class<? extends Component>, Tab> navigationTargetToTab;
 
-	public DicomMainView() {
+	private final DicomNodeUtil dicomNodeUtil;
+
+	@Autowired
+	public DicomMainView(DicomNodeUtil dicomNodeUtil) {
+		this.dicomNodeUtil = dicomNodeUtil;
 		init();
 
 		createDicomWebToolsBrand();
@@ -78,13 +84,13 @@ public class DicomMainView extends VerticalLayout {
 
 	private void createMenu() {
 		tabDicomEchoView = new Tab("DICOM Echo");
-		pageDicomEchoView = new DicomEchoView();
+		pageDicomEchoView = new DicomEchoView(dicomNodeUtil);
 
 		tabDicomWorkListView = new Tab("DICOM Worklist");
-		pageDicomWorkListView = new DicomWorkListView();
+		pageDicomWorkListView = new DicomWorkListView(dicomNodeUtil);
 
 		tabMonitorView = new Tab("Monitor");
-		pageMonitorView = new MonitorView();
+		pageMonitorView = new MonitorView(dicomNodeUtil);
 
 		tabsToPages = new HashMap<>();
 		tabsToPages.put(tabDicomEchoView, pageDicomEchoView);
