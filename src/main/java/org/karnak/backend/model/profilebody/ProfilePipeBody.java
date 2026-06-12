@@ -10,31 +10,26 @@
 package org.karnak.backend.model.profilebody;
 
 import java.util.List;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
+@Getter
+@Setter
 public class ProfilePipeBody {
 
-	@Setter
-	@Getter
 	private String name;
 
-	@Setter
-	@Getter
 	private String version;
 
-	@Setter
-	@Getter
 	private String minimumKarnakVersion;
 
-	@Setter
-	@Getter
 	private String defaultIssuerOfPatientID;
 
+	@Getter(AccessLevel.NONE)
+	@Setter(AccessLevel.NONE)
 	private List<ProfileElementBody> profiles;
 
-	@Setter
-	@Getter
 	private List<MaskBody> masks;
 
 	public List<ProfileElementBody> getProfileElements() {

@@ -26,7 +26,7 @@ class MetadataSwitchingTest {
 
 		assertEquals("study", switching.getStudyInstanceUID());
 		assertEquals("series", switching.getSeriesInstanceUID());
-		assertEquals("sop", switching.getSOPinstanceUID());
+		assertEquals("sop", switching.getSopInstanceUID());
 		assertFalse(switching.isApplied());
 	}
 

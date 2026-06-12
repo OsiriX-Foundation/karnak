@@ -9,6 +9,7 @@
  */
 package org.karnak.backend.enums;
 
+import lombok.Getter;
 import org.karnak.backend.model.profiles.ActionDates;
 import org.karnak.backend.model.profiles.ActionTags;
 import org.karnak.backend.model.profiles.AddPrivateTag;
@@ -38,8 +39,10 @@ public enum ProfileItemType {
 	ADD_PRIVATE_TAG(AddPrivateTag.class, "action.add.private.tag", null, null),
 	REPLACE_API(ReplaceApi.class, "action.replace.api", null, null);
 
+	@Getter
 	private final Class<? extends ProfileItem> profileClass;
 
+	@Getter
 	private final String classAlias;
 
 	private final String codeValue;
@@ -63,29 +66,13 @@ public enum ProfileItemType {
 	}
 
 	public static String getCodeValue(String alias) {
-		for (ProfileItemType t : ProfileItemType.values()) {
-			if (t.classAlias.equals(alias)) {
-				return t.codeValue;
-			}
-		}
-		return null;
+		ProfileItemType t = getType(alias);
+		return t != null ? t.codeValue : null;
 	}
 
 	public static String getCodeMeaning(String alias) {
-		for (ProfileItemType t : ProfileItemType.values()) {
-			if (t.classAlias.equals(alias)) {
-				return t.codeMeaning;
-			}
-		}
-		return null;
-	}
-
-	public Class<? extends ProfileItem> getProfileClass() {
-		return profileClass;
-	}
-
-	public String getClassAlias() {
-		return classAlias;
+		ProfileItemType t = getType(alias);
+		return t != null ? t.codeMeaning : null;
 	}
 
 }

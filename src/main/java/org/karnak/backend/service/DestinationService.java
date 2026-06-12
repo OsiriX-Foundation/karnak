@@ -11,7 +11,7 @@ package org.karnak.backend.service;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
+import lombok.Getter;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.data.repo.DestinationRepo;
@@ -34,6 +34,7 @@ public class DestinationService {
 	private final KheopsAlbumsService kheopsAlbumsService;
 
 	// Event publisher
+	@Getter
 	private final ApplicationEventPublisher applicationEventPublisher;
 
 	/**
@@ -78,13 +79,10 @@ public class DestinationService {
 	 */
 	public void refreshLastTransferEmailLastCheck(DestinationEntity destinationEntity) {
 		if (destinationEntity.getId() != null) {
-			Optional<DestinationEntity> refreshedDestinationEntityOpt = destinationRepo
-				.findById(destinationEntity.getId());
-			if (refreshedDestinationEntityOpt.isPresent()) {
-				DestinationEntity destinationEntityRefreshed = refreshedDestinationEntityOpt.get();
-				destinationEntity.setLastTransfer(destinationEntityRefreshed.getLastTransfer());
-				destinationEntity.setEmailLastCheck(destinationEntityRefreshed.getEmailLastCheck());
-			}
+			destinationRepo.findById(destinationEntity.getId()).ifPresent(refreshed -> {
+				destinationEntity.setLastTransfer(refreshed.getLastTransfer());
+				destinationEntity.setEmailLastCheck(refreshed.getEmailLastCheck());
+			});
 		}
 	}
 
@@ -107,10 +105,6 @@ public class DestinationService {
 		if (forwardNodeEntityOfDest != null) {
 			forwardNodeService.deleteDestination(forwardNodeEntityOfDest, destinationEntity);
 		}
-	}
-
-	public ApplicationEventPublisher getApplicationEventPublisher() {
-		return applicationEventPublisher;
 	}
 
 	/**

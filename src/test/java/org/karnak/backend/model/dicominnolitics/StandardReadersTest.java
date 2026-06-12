@@ -39,15 +39,15 @@ class StandardReadersTest {
 		@Test
 		void constructor_and_static_reader_parse_the_resource() {
 			StandardModuleToAttributes std = new StandardModuleToAttributes();
-			jsonModuleToAttribute[] viaInstance = std.getModuleToAttributes();
-			jsonModuleToAttribute[] viaStatic = StandardModuleToAttributes.readJsonModuleToAttributes();
+			JsonModuleToAttribute[] viaInstance = std.getModuleToAttributes();
+			JsonModuleToAttribute[] viaStatic = StandardModuleToAttributes.readJsonModuleToAttributes();
 
 			assertNotNull(viaInstance);
 			assertNotNull(viaStatic);
 			assertTrue(viaInstance.length > 0);
 			assertTrue(viaStatic.length > 0);
 
-			jsonModuleToAttribute first = viaInstance[0];
+			JsonModuleToAttribute first = viaInstance[0];
 			// Walk the generated getters.
 			first.getModuleId();
 			first.getPath();
@@ -65,13 +65,13 @@ class StandardReadersTest {
 		@Test
 		void constructor_and_static_reader_parse_the_resource() {
 			StandardCIODtoModules std = new StandardCIODtoModules();
-			jsonCIODtoModule[] viaInstance = std.getCIODToModules();
+			JsonCIODtoModule[] viaInstance = std.getCIODToModules();
 
 			assertNotNull(viaInstance);
 			assertNotNull(StandardCIODtoModules.readJsonCIODToModules());
 			assertTrue(viaInstance.length > 0);
 
-			jsonCIODtoModule first = viaInstance[0];
+			JsonCIODtoModule first = viaInstance[0];
 			first.getCiodId();
 			first.getModuleId();
 			first.getUsage();
@@ -87,13 +87,13 @@ class StandardReadersTest {
 		@Test
 		void constructor_and_static_reader_parse_the_resource() {
 			StandardCIODS std = new StandardCIODS();
-			jsonCIOD[] viaInstance = std.getCIODS();
+			JsonCIOD[] viaInstance = std.getCIODS();
 
 			assertNotNull(viaInstance);
 			assertNotNull(StandardCIODS.readJsonCIODS());
 			assertTrue(viaInstance.length > 0);
 
-			jsonCIOD first = viaInstance[0];
+			JsonCIOD first = viaInstance[0];
 			first.getName();
 			first.getId();
 			first.getDescription();
@@ -108,13 +108,13 @@ class StandardReadersTest {
 		@Test
 		void constructor_and_static_reader_parse_the_resource() {
 			StandardSOPS std = new StandardSOPS();
-			jsonSOP[] viaInstance = std.getSOPS();
+			JsonSOP[] viaInstance = std.getSOPS();
 
 			assertNotNull(viaInstance);
 			assertNotNull(StandardSOPS.readJsonSOPS());
 			assertTrue(viaInstance.length > 0);
 
-			jsonSOP first = viaInstance[0];
+			JsonSOP first = viaInstance[0];
 			first.getName();
 			first.getId();
 			first.getCiod();
@@ -127,12 +127,12 @@ class StandardReadersTest {
 
 		@Test
 		void static_reader_parses_the_resource() {
-			jsonAttributes[] attributes = StandardAttributes.readJsonAttributes();
+			JsonAttributes[] attributes = StandardAttributes.readJsonAttributes();
 
 			assertNotNull(attributes);
 			assertTrue(attributes.length > 0);
 
-			jsonAttributes first = attributes[0];
+			JsonAttributes first = attributes[0];
 			first.getTag();
 			first.getName();
 			first.getKeyword();
@@ -148,14 +148,13 @@ class StandardReadersTest {
 	class ConfidentialityProfilesReader {
 
 		@Test
-		void constructor_parses_the_resource_and_exposes_profiles() {
-			new StandardConfidentialityProfiles();
-			jsonConfidentialityProfiles[] profiles = StandardConfidentialityProfiles.getConfidentialityProfiles();
+		void static_reader_parses_the_resource_and_exposes_profiles() {
+			JsonConfidentialityProfiles[] profiles = StandardConfidentialityProfiles.readJsonConfidentialityProfiles();
 
 			assertNotNull(profiles);
 			assertTrue(profiles.length > 0);
 
-			jsonConfidentialityProfiles first = profiles[0];
+			JsonConfidentialityProfiles first = profiles[0];
 			first.getId();
 			first.getName();
 			first.getTag();
@@ -166,20 +165,19 @@ class StandardReadersTest {
 	@Nested
 	class ConvertActionMapping {
 
-		// jsonConfidentialityProfiles.convertAction is exercised through the action
+		// JsonConfidentialityProfiles.convertAction is exercised through the action
 		// getters. Some profiles leave a profile string null (the switch would NPE), so
 		// each call is guarded; the standard set still drives the concrete branches.
 		@Test
 		void produces_concrete_action_items_across_the_standard_set() {
-			new StandardConfidentialityProfiles();
 			int resolved = 0;
-			for (jsonConfidentialityProfiles p : StandardConfidentialityProfiles.getConfidentialityProfiles()) {
+			for (JsonConfidentialityProfiles p : StandardConfidentialityProfiles.readJsonConfidentialityProfiles()) {
 				resolved += countActions(p);
 			}
 			assertTrue(resolved > 0);
 		}
 
-		private static int countActions(jsonConfidentialityProfiles p) {
+		private static int countActions(JsonConfidentialityProfiles p) {
 			return resolved(p::getBasicProfile) + resolved(p::getStdCompIOD) + resolved(p::getCleanDescOpt);
 		}
 

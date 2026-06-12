@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-2021 Karnak Team and other contributors.
+ * Copyright (c) 2021 Karnak Team and other contributors.
  *
  * This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
@@ -12,18 +12,20 @@ package org.karnak.backend.model.dicominnolitics;
 import lombok.Getter;
 
 @Getter
-public class jsonModuleToAttribute {
-
-	private String moduleId;
-
-	private String path;
+public class JsonAttributes {
 
 	private String tag;
 
-	private String type;
+	private String name;
 
-	private String linkToStandard;
+	private String keyword;
 
-	private String description;
+	private String valueRepresentation;
+
+	private String valueMultiplicity;
+
+	private String retired;
+
+	private String id;
 
 }

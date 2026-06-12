@@ -9,14 +9,10 @@
  */
 package org.karnak.backend.exception;
 
-import java.io.Serial;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class ProfileException extends RuntimeException {
-
-	@Serial
-	private static final long serialVersionUID = -8468625700663388828L;
 
 	public ProfileException(String message) {
 		super(message);

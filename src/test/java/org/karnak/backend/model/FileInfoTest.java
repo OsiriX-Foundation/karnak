@@ -22,10 +22,10 @@ class FileInfoTest {
 	void exposes_the_values_passed_to_the_constructor() {
 		FileInfo info = new FileInfo("file.dcm", "1.2.3", "1.2.840", "1.2.840.10008.1.2.1");
 
-		assertEquals("file.dcm", info.getFilename());
-		assertEquals("1.2.3", info.getIuid());
-		assertEquals("1.2.840", info.getCuid());
-		assertEquals("1.2.840.10008.1.2.1", info.getTsuid());
+		assertEquals("file.dcm", info.filename());
+		assertEquals("1.2.3", info.iuid());
+		assertEquals("1.2.840", info.cuid());
+		assertEquals("1.2.840.10008.1.2.1", info.tsuid());
 	}
 
 }

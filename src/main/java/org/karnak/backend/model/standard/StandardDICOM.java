@@ -13,11 +13,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Pattern;
 import org.dcm4che3.util.TagUtils;
 import org.karnak.backend.exception.ModuleNotFoundException;
 import org.karnak.backend.exception.SOPNotFoundException;
 
 public class StandardDICOM {
+
+	private static final Pattern TAG_SEPARATORS = Pattern.compile("[(),]");
 
 	private final SOPS sops;
 
@@ -32,7 +35,7 @@ public class StandardDICOM {
 	}
 
 	public static String cleanTagPath(String tagPath) {
-		return tagPath.replaceAll("[(),]", "").toLowerCase();
+		return TAG_SEPARATORS.matcher(tagPath).replaceAll("").toLowerCase();
 	}
 
 	public List<String> getAllSOPuids() {

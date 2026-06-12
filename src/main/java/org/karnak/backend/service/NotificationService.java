@@ -77,10 +77,7 @@ public class NotificationService {
 		buildNotificationsToSend().forEach(this::prepareAndSendNotification);
 	}
 
-	/**
-	 * Build transfer notification to send
-	 * @return notifications to send
-	 */
+	/** Builds the transfer notifications to send for every eligible destination. */
 	List<TransferMonitoringNotification> buildNotificationsToSend() {
 		List<TransferMonitoringNotification> transferMonitoringNotifications = new ArrayList<>();
 		destinationRepo
@@ -109,39 +106,21 @@ public class NotificationService {
 		return transferMonitoringNotifications;
 	}
 
-	/**
-	 * Build transfer notifications to send.
-	 * @param transferMonitoringNotifications List of notifications to fill
-	 * @param transferStatusBySourceAndStudy Map of TransferStatus by Source and Study:
-	 * <br>
-	 * <Source , <Study, List<TransferStatus>>>
-	 */
+	/** Builds a notification for each (source, study) group and adds it to the list. */
 	private void buildTransferMonitoringNotifications(
 			List<TransferMonitoringNotification> transferMonitoringNotifications,
 			Map<Long, Map<String, List<TransferStatusEntity>>> transferStatusBySourceAndStudy) {
-		transferStatusBySourceAndStudy.forEach(
-				// By source
-				(source, transferStatusByStudy) -> {
-					transferStatusByStudy.forEach(
-							// By study
-							(study, transferStatusEntities) -> {
-								// Build the transfer notification
-								TransferMonitoringNotification transferMonitoringNotification = buildTransferMonitoringNotification(
-										transferStatusEntities);
-								if (transferMonitoringNotification != null) {
-									transferMonitoringNotifications.add(transferMonitoringNotification);
-								}
-							});
-				});
+		transferStatusBySourceAndStudy.values()
+			.stream()
+			.flatMap(byStudy -> byStudy.values().stream())
+			.map(this::buildTransferMonitoringNotification)
+			.filter(Objects::nonNull)
+			.forEach(transferMonitoringNotifications::add);
 	}
 
 	/**
-	 * Build TransferMonitoringNotification depending on transferStatusEntities in
-	 * parameter. Calculate number of success/errors, determine distinct reasons of not
-	 * transferring and select values to display in the notification (originals or
-	 * de-identified) depending on the flag deidentification in the destination.
-	 * @param transferStatusEntities TransferStatusEntity to evaluate
-	 * @return populated TransferMonitoringNotification
+	 * Builds the notification for one study (counts, reasons, original vs de-identified
+	 * values).
 	 */
 	private TransferMonitoringNotification buildTransferMonitoringNotification(
 			List<TransferStatusEntity> transferStatusEntities) {
@@ -182,14 +161,7 @@ public class NotificationService {
 		return transferMonitoringNotification;
 	}
 
-	/**
-	 * Set values in transferMonitoringNotification built
-	 * @param transferMonitoringNotification TransferMonitoringNotification built
-	 * @param transferStatusEntity Transfer status
-	 * @param hasAtLeastOneFileInError Has at least one file not transferred because of an
-	 * unexpected error
-	 * @param useOriginalValues Flag to know if we should use original values
-	 */
+	/** Populates the notification fields (recipients, study identifiers, subject). */
 	private void buildTransferMonitoringNotificationSetValues(
 			TransferMonitoringNotification transferMonitoringNotification, TransferStatusEntity transferStatusEntity,
 			boolean hasAtLeastOneFileInError, boolean hasAtLeastOneFileRejected, boolean useOriginalValues) {
@@ -217,12 +189,8 @@ public class NotificationService {
 	}
 
 	/**
-	 * Build notification subject email
-	 * @param hasAtLeastOneFileInError Flag to know if there is at least one file that
-	 * could not be sent because of an unexpected error
-	 * @param useOriginalValues Check if we should use original or de-identified values
-	 * @param transferStatusEntity TransferStatusEntity to evaluate
-	 * @return Subject built
+	 * Builds the email subject: optional error/rejection prefix followed by the
+	 * configured pattern.
 	 */
 	private String buildSubject(boolean hasAtLeastOneFileInError, boolean hasAtLeastOneFileRejected,
 			boolean useOriginalValues, TransferStatusEntity transferStatusEntity) {
@@ -247,11 +215,8 @@ public class NotificationService {
 	}
 
 	/**
-	 * Build list of values to add to the subject
-	 * @param useOriginalValues Flag to know if we should use original or de-identified
-	 * values
-	 * @param transferStatusEntity TransferStatusEntity to evaluate
-	 * @return List of values to add to the subject
+	 * Builds the subject placeholder values selected by the destination's
+	 * notifyObjectValues.
 	 */
 	private Object[] buildSubjectValues(boolean useOriginalValues, TransferStatusEntity transferStatusEntity) {
 		List<String> subjectValues = new ArrayList<>();
@@ -293,51 +258,27 @@ public class NotificationService {
 		return subjectValues.toArray();
 	}
 
-	/**
-	 * Build subject value, if null set empty string in the subject
-	 * @param useOriginalValues Flag to know if we should use original value
-	 * @param original Value original
-	 * @param toSend Value transformed to send
-	 * @return subject value
-	 */
+	/** Returns the original or to-send value, or an empty string when null. */
 	private String buildSubjectValue(boolean useOriginalValues, String original, String toSend) {
 		return useOriginalValues ? original == null ? Notification.EMPTY_STRING : original
 				: toSend == null ? Notification.EMPTY_STRING : toSend;
 	}
 
-	/**
-	 * Build transfer serie summary results
-	 * @param transferStatusEntities TransferStatus to evaluate
-	 * @param isDestinationDeIdentify Flag to know if the destination should be
-	 * de-identify
-	 * @return Serie summary notifications
-	 */
+	/** Builds one summary notification per series (grouped by original series UID). */
 	private List<SerieSummaryNotification> buildSeriesSummaryNotification(
 			List<TransferStatusEntity> transferStatusEntities, boolean isDestinationDeIdentify) {
-		List<SerieSummaryNotification> serieSummaryNotifications = new ArrayList<>();
-		// Group by serie uid
-		Map<String, List<TransferStatusEntity>> transferStatusEntitiesBySerieUid = transferStatusEntities.stream()
-			.collect(Collectors.groupingBy(TransferStatusEntity::getSerieUidOriginal));
-		transferStatusEntitiesBySerieUid.forEach((serieUidOriginal, transfersToEvaluate) -> {
-			Optional<TransferStatusEntity> firstTransferStatusEntityOpt = transfersToEvaluate.stream().findFirst();
-			if (firstTransferStatusEntityOpt.isPresent()) {
-				TransferStatusEntity firstTransferStatusEntity = firstTransferStatusEntityOpt.get();
-				// Build serie summary
-				serieSummaryNotifications.add(buildSerieSummaryNotification(isDestinationDeIdentify,
-						transfersToEvaluate, firstTransferStatusEntity));
-			}
-		});
-
-		return serieSummaryNotifications;
+		// Group by serie uid; a group is never empty, so getFirst() is safe
+		return transferStatusEntities.stream()
+			.collect(Collectors.groupingBy(TransferStatusEntity::getSerieUidOriginal))
+			.values()
+			.stream()
+			.map(transfers -> buildSerieSummaryNotification(isDestinationDeIdentify, transfers, transfers.getFirst()))
+			.toList();
 	}
 
 	/**
-	 * Build summary notification for the serie in parameter
-	 * @param isDestinationDeIdentify Flag to know if the destination should be
-	 * de-identify
-	 * @param transfersToEvaluate Transfers to evaluate
-	 * @param transferStatusEntity TransferStatus containing general series values to set
-	 * @return Summary notification for this serie
+	 * Builds the summary (counts, distinct reasons/modalities/SOP classes) for a single
+	 * series.
 	 */
 	private SerieSummaryNotification buildSerieSummaryNotification(boolean isDestinationDeIdentify,
 			List<TransferStatusEntity> transfersToEvaluate, TransferStatusEntity transferStatusEntity) {
@@ -379,22 +320,15 @@ public class NotificationService {
 	}
 
 	/**
-	 * Determine if we have to use originals or de-identify values. If any transfer not
-	 * sent or flag deidentification for the destination is false: use originals values
-	 * @param hasTransferNotSent Flag to know if there are transfer not sent
-	 * @param isDestinationDeIdentify Is deidentification requested for the destination
-	 * @return true if we have to use originals values, false otherwise
+	 * Original values are used when a transfer failed or the destination is not
+	 * de-identified.
 	 */
 	private boolean determineUseOfOriginalOrDeIdentifyValues(boolean hasTransferNotSent,
 			boolean isDestinationDeIdentify) {
 		return hasTransferNotSent || !isDestinationDeIdentify;
 	}
 
-	/**
-	 * Gather TransferStatusEntities by Source and Study
-	 * @param transferStatusEntities Entities to gather
-	 * @return Map of <Source , <Study, List<TransferStatus>>>
-	 */
+	/** Groups transfer statuses by source (forward node) then by original study UID. */
 	private Map<Long, Map<String, List<TransferStatusEntity>>> gatherTransferStatusBySourceAndStudy(
 			List<TransferStatusEntity> transferStatusEntities) {
 		return transferStatusEntities.stream()
@@ -403,10 +337,8 @@ public class NotificationService {
 	}
 
 	/**
-	 * Retrieve TransferStatusEntities for this destination after the last email check
-	 * @param destinationEntity Destination to look for
-	 * @param lastCheck Last check for this destination
-	 * @return TransferStatusEntity found
+	 * Returns the transfer statuses for the destination created after the last email
+	 * check.
 	 */
 	private List<TransferStatusEntity> retrieveTransferStatusDestinationLastCheck(DestinationEntity destinationEntity,
 			LocalDateTime lastCheck) {
@@ -415,13 +347,8 @@ public class NotificationService {
 	}
 
 	/**
-	 * Check if notification should be sent depending on last check of notification
-	 * (compare to notification interval of the destination and current date) <br>
-	 * A transfer should not be in progress to send the notification and an extra timer of
-	 * 10s is added for serie transfers which are not immediately sent each time (a delay
-	 * is occurring between transfer of files in the same serie)
-	 * @param destinationEntity Destination to evaluate
-	 * @return true if the notification can be process, false otherwise
+	 * True when notifications are enabled, no transfer is in progress, and both the extra
+	 * series-completion delay and the destination's notify interval have elapsed.
 	 */
 	private boolean checkDestinationLastVerification(DestinationEntity destinationEntity) {
 		return !destinationEntity.isTransferInProgress() && destinationEntity.getLastTransfer() != null
@@ -435,10 +362,7 @@ public class NotificationService {
 				&& destinationEntity.isActivateNotification();
 	}
 
-	/**
-	 * Prepare and send the notification with values in parameter
-	 * @param transferMonitoringNotification Values to add to the thymeleaf template
-	 */
+	/** Renders the Thymeleaf template and sends the notification email. */
 	private void prepareAndSendNotification(TransferMonitoringNotification transferMonitoringNotification) {
 		Context context = new Context();
 		context.setVariable(Notification.CONTEXT_THYMELEAF, transferMonitoringNotification);

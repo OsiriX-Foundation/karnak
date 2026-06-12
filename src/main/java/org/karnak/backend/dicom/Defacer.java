@@ -39,60 +39,50 @@ public class Defacer {
 		return blurImg(mergedImg, faceDetectionImg);
 	}
 
-	public static PlanarImage filterBySkin(Attributes attributes, PlanarImage srcImg) {
-		ImageCV skinImg = new ImageCV();
-		srcImg.toMat().copyTo(skinImg);
-
-		MinMaxLocResult minMaxLutFaceDetectionImg = ImageAnalyzer.findMinMaxValues(skinImg);
-
-		Imgproc.threshold(skinImg.toImageCV(), skinImg.toMat(), DefacingUtil.hounsfieldToPxlValue(attributes, 100),
-				minMaxLutFaceDetectionImg.maxVal, Imgproc.THRESH_TOZERO);
-		Imgproc.threshold(skinImg.toImageCV(), skinImg.toMat(), DefacingUtil.hounsfieldToPxlValue(attributes, 300),
-				minMaxLutFaceDetectionImg.maxVal, Imgproc.THRESH_TOZERO_INV);
-		return skinImg;
-	}
-
-	public static PlanarImage faceDetection(Attributes attributes, PlanarImage srcImg) {
+	private static PlanarImage faceDetection(Attributes attributes, PlanarImage srcImg) {
 		ImageCV faceDetectionImg = new ImageCV();
 		srcImg.toMat().copyTo(faceDetectionImg);
 
 		MinMaxLocResult minMaxLocResult = ImageAnalyzer.findMinMaxValues(faceDetectionImg.toMat());
-
 		Imgproc.threshold(faceDetectionImg.toImageCV(), faceDetectionImg.toMat(),
 				DefacingUtil.hounsfieldToPxlValue(attributes, -500), minMaxLocResult.maxVal, Imgproc.THRESH_BINARY);
 
-		// ERODE
-		Mat kernel = new Mat();
-		int kernelSize = 5;
-		Mat ones = Mat.ones(kernelSize, kernelSize, CvType.CV_32F);
-		Core.multiply(ones, new Scalar(1 / (double) (kernelSize * kernelSize)), kernel);
-		Imgproc.erode(faceDetectionImg.toImageCV(), faceDetectionImg.toMat(), kernel);
+		Imgproc.erode(faceDetectionImg.toImageCV(), faceDetectionImg.toMat(), averagingKernel(5));
 
-		// RESCALE 8BIT
+		// Rescale to 8-bit then detect contours
 		faceDetectionImg = DefacingUtil.transformToByte(faceDetectionImg).toImageCV();
-
-		// CANNY DETECT CONTOUR
 		Imgproc.Canny(faceDetectionImg.toImageCV(), faceDetectionImg.toMat(), 240, 260);
 
-		// DRAW BLACK RECT 1/3
+		// Fill the lower two thirds (below the face) with white
 		int rectProportion = (int) (faceDetectionImg.height() / 2.9);
 		Rect rect = new Rect(0, rectProportion, faceDetectionImg.width(), faceDetectionImg.height());
 		Imgproc.rectangle(faceDetectionImg.toImageCV(), rect, new Scalar(255), Imgproc.FILLED);
 
-		for (int x = 0; x < faceDetectionImg.width(); x++) {
-			for (int y = 0; y < faceDetectionImg.height(); y++) {
-				if (MathUtil.isEqual(faceDetectionImg.toMat().get(y, x)[0], 255)) {
-					Imgproc.line(faceDetectionImg.toImageCV(), new Point(x, y + 1.0),
-							new Point(x, faceDetectionImg.height()), new Scalar(0));
+		blackenBelowFirstEdge(faceDetectionImg);
+		return faceDetectionImg;
+	}
+
+	/** Builds a normalized averaging kernel used as the erosion structuring element. */
+	private static Mat averagingKernel(int size) {
+		Mat kernel = new Mat();
+		Mat ones = Mat.ones(size, size, CvType.CV_32F);
+		Core.multiply(ones, new Scalar(1.0 / (size * size)), kernel);
+		return kernel;
+	}
+
+	/** For each column, blacks out everything below the first white edge pixel. */
+	private static void blackenBelowFirstEdge(ImageCV img) {
+		for (int x = 0; x < img.width(); x++) {
+			for (int y = 0; y < img.height(); y++) {
+				if (MathUtil.isEqual(img.toMat().get(y, x)[0], 255)) {
+					Imgproc.line(img.toImageCV(), new Point(x, y + 1.0), new Point(x, img.height()), new Scalar(0));
 					break;
 				}
 			}
 		}
-
-		return faceDetectionImg;
 	}
 
-	public static PlanarImage addRandPxlLine(PlanarImage srcImg, PlanarImage faceDetectImg, Attributes attributes) {
+	private static PlanarImage addRandPxlLine(PlanarImage srcImg, PlanarImage faceDetectImg, Attributes attributes) {
 		ImageCV randPxlLineImg = new ImageCV();
 		srcImg.toMat().copyTo(randPxlLineImg);
 		double pixelSpacing = attributes.getDouble(Tag.PixelSpacing, 0.5);
@@ -130,7 +120,7 @@ public class Defacer {
 		return randPxlLineImg;
 	}
 
-	public static PlanarImage blurImg(PlanarImage srcImg, PlanarImage faceDetectImg) {
+	private static PlanarImage blurImg(PlanarImage srcImg, PlanarImage faceDetectImg) {
 		ImageCV bluredImgRandPxlLine = new ImageCV();
 		srcImg.toMat().copyTo(bluredImgRandPxlLine);
 		Imgproc.blur(bluredImgRandPxlLine.toImageCV(), bluredImgRandPxlLine.toMat(), new Size(5, 5));
@@ -155,8 +145,7 @@ public class Defacer {
 		return bluredImgRandPxlLine;
 	}
 
-	public static PlanarImage mergeImg(PlanarImage srcImg, PlanarImage randPxlLineImg, PlanarImage faceDetectImg) {
-		// MERGE IMAGE SRC AND RAND PIXEL LINE
+	private static PlanarImage mergeImg(PlanarImage srcImg, PlanarImage randPxlLineImg, PlanarImage faceDetectImg) {
 		ImageCV newImg = new ImageCV();
 		srcImg.toMat().copyTo(newImg);
 

@@ -61,7 +61,14 @@ import org.weasis.dicom.param.AttributeEditorContext;
 @Slf4j
 public class Profile {
 
+	private static final Marker CLINICAL_MARKER = MarkerFactory.getMarker("CLINICAL");
+
 	private final List<ProfileItem> profiles;
+
+	/**
+	 * {@link #profiles} without the {@link CleanPixelData} items, applied on every tag.
+	 */
+	private final List<ProfileItem> tagProfiles;
 
 	private final Pseudonym pseudonym;
 
@@ -71,6 +78,7 @@ public class Profile {
 		this.maskMap = new HashMap<>();
 		this.pseudonym = new Pseudonym();
 		this.profiles = createProfilesList(profileEntity);
+		this.tagProfiles = profiles.stream().filter(p -> !(p instanceof CleanPixelData)).toList();
 	}
 
 	public MaskArea getMask(MaskStationCondition key) {
@@ -105,18 +113,15 @@ public class Profile {
 			ProfileItemType t = ProfileItemType.getType(profileElementEntity.getCodename());
 			if (t == null) {
 				log.error("Cannot find the profile codename: {}", profileElementEntity.getCodename());
+				continue;
 			}
-			else {
-				Object instanceProfileItem;
-				try {
-					instanceProfileItem = t.getProfileClass()
-						.getConstructor(ProfileElementEntity.class)
-						.newInstance(profileElementEntity);
-					profileItems.add((ProfileItem) instanceProfileItem);
-				}
-				catch (Exception e) {
-					log.error("Cannot build the profile: {}", t.getProfileClass().getName(), e);
-				}
+			try {
+				profileItems.add(t.getProfileClass()
+					.getConstructor(ProfileElementEntity.class)
+					.newInstance(profileElementEntity));
+			}
+			catch (Exception e) {
+				log.error("Cannot build the profile: {}", t.getProfileClass().getName(), e);
 			}
 		}
 		profileItems.sort(Comparator.comparing(ProfileItem::getPosition));
@@ -131,7 +136,7 @@ public class Profile {
 				if (StringUtil.hasText(m.getColor())) {
 					color = ActionTags.hexadecimal2Color(m.getColor());
 				}
-				List<Shape> shapeList = m.getRectangles().stream().map(Shape.class::cast).collect(Collectors.toList());
+				List<Shape> shapeList = m.getRectangles().stream().map(Shape.class::cast).toList();
 				addMask(new MaskStationCondition(m.getStationName(), m.getImageWidth(), m.getImageHeight()),
 						new MaskArea(shapeList, color));
 			});
@@ -148,7 +153,7 @@ public class Profile {
 
 			ActionItem currentAction = null;
 			ProfileItem currentProfile = null;
-			for (ProfileItem profileEntity : profiles.stream().filter(p -> !(p instanceof CleanPixelData)).toList()) {
+			for (ProfileItem profileEntity : tagProfiles) {
 				currentProfile = profileEntity;
 
 				if (profileEntity.getCondition() == null
@@ -193,12 +198,10 @@ public class Profile {
 			}
 
 			if (!(currentAction instanceof Remove) && !(currentAction instanceof ReplaceNull) && vr == VR.SQ) {
-				final ProfileItem finalCurrentProfile = currentProfile;
-				final ActionItem finalCurrentAction = currentAction;
 				Sequence seq = dcm.getSequence(tag);
 				if (seq != null) {
 					for (Attributes d : seq) {
-						applyAction(d, dcmCopy, hmac, finalCurrentProfile, finalCurrentAction, context);
+						applyAction(d, dcmCopy, hmac, currentProfile, currentAction, context);
 					}
 				}
 			}
@@ -232,9 +235,6 @@ public class Profile {
 			}
 			MaskArea mask = getMask(new MaskStationCondition(dcmCopy.getString(Tag.StationName),
 					dcmCopy.getString(Tag.Columns), dcmCopy.getString(Tag.Rows)));
-			// A mask must be applied with all the US and Secondary Capture sopClassUID,
-			// and with
-			// BurnedInAnnotation
 			if (isCleanPixelAllowedDependingImageType(dcmCopy, sopClassUID)
 					&& evaluateConditionCleanPixelData(dcmCopy)) {
 				context.setMaskArea(mask);
@@ -249,14 +249,10 @@ public class Profile {
 	}
 
 	/**
-	 * Determine if the clean pixel should be applied depending on the image type
-	 * @param dcmCopy Attributes
-	 * @param sopClassUID SopClassUID
-	 * @return true if the clean pixel could be applied
+	 * A mask applies to US, Secondary Capture and XC SOP classes, or any
+	 * BurnedInAnnotation image.
 	 */
 	boolean isCleanPixelAllowedDependingImageType(Attributes dcmCopy, String sopClassUID) {
-		// A mask must be applied with all the US and Secondary Capture sopClassUID, and
-		// with BurnedInAnnotation
 		String sopPattern = sopClassUID + ".";
 
 		return sopPattern.startsWith("1.2.840.10008.5.1.4.1.1.6.")
@@ -267,13 +263,11 @@ public class Profile {
 	}
 
 	/**
-	 * Evaluate the condition on the profile Clean Pixel Data
-	 * @param dcmCopy Context copy
-	 * @return true if the condition match, false if there are some exclusions
+	 * Evaluates the optional condition of the Clean Pixel Data profile item (true if
+	 * none).
 	 */
 	boolean evaluateConditionCleanPixelData(Attributes dcmCopy) {
 		boolean conditionCleanPixelData = true;
-		// Retrieve the profile item
 		ProfileItem profileItemCleanPixelData = profiles.stream()
 			.filter(CleanPixelData.class::isInstance)
 			.findFirst()
@@ -314,77 +308,52 @@ public class Profile {
 	 */
 	public void applyDeIdentification(Attributes dcm, DestinationEntity destinationEntity, ProfileEntity profileEntity,
 			AttributeEditorContext context, ProjectEntity projectEntity) {
-		final String SOPInstanceUID = dcm.getString(Tag.SOPInstanceUID);
-		final String SeriesInstanceUID = dcm.getString(Tag.SeriesInstanceUID);
-		final String IssuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID);
-		final String PatientID = dcm.getString(Tag.PatientID);
-		final HMAC hmac = generateHMAC(PatientID, projectEntity);
-
-		MDC.put("SOPInstanceUID", SOPInstanceUID);
-		MDC.put("SeriesInstanceUID", SeriesInstanceUID);
-		MDC.put("issuerOfPatientID", IssuerOfPatientID);
-		MDC.put("PatientID", PatientID);
+		HMAC hmac = generateHMAC(dcm.getString(Tag.PatientID), projectEntity);
+		putSourceMdc(dcm);
 
 		String pseudonymValue = this.pseudonym.generatePseudonym(destinationEntity, dcm);
-
-		String profilesCodeName = profiles.stream().map(ProfileItem::getCodeName).collect(Collectors.joining("-"));
-		BigInteger patientValue = generatePatientID(pseudonymValue, hmac);
-		String newPatientID = patientValue.toString(16).toUpperCase();
+		String newPatientID = generatePatientID(pseudonymValue, hmac).toString(16).toUpperCase();
 
 		Attributes dcmCopy = new Attributes(dcm);
-
-		// Apply clean pixel data
 		applyCleanPixelData(dcmCopy, context, profileEntity);
-
-		// Apply clean recognizable visual features option
+		// Clean recognizable visual features option
 		applyDefacing(dcmCopy, context);
-
 		applyAction(dcm, dcmCopy, hmac, null, null, context);
 
-		// Set tags by default
-		AttributesByDefault.setPatientModule(dcm, newPatientID, pseudonymValue,
-				destinationEntity.getDeIdentificationProjectEntity());
+		ProjectEntity deidProject = destinationEntity.getDeIdentificationProjectEntity();
+		AttributesByDefault.setPatientModule(dcm, newPatientID, pseudonymValue, deidProject);
 		AttributesByDefault.setSOPCommonModule(dcm);
-		AttributesByDefault.setClinicalTrialAttributes(dcm, destinationEntity.getDeIdentificationProjectEntity(),
-				pseudonymValue);
+		AttributesByDefault.setClinicalTrialAttributes(dcm, deidProject, pseudonymValue);
 
-		final Marker clincalMarker = MarkerFactory.getMarker("CLINICAL");
-		MDC.put("DeidentifySOPInstanceUID", dcm.getString(Tag.SOPInstanceUID));
-		MDC.put("DeidentifySeriesInstanceUID", dcm.getString(Tag.SeriesInstanceUID));
-		MDC.put("ProjectName", destinationEntity.getDeIdentificationProjectEntity().getName());
-		MDC.put("ProfileName", profileEntity.getName());
-		MDC.put("ProfileCodenames", profilesCodeName);
-		log.info(clincalMarker, "");
-		MDC.clear();
+		logClinicalEvent("Deidentify", dcm, deidProject.getName(), profileEntity.getName());
 	}
 
 	public void applyTagMorphing(Attributes dcm, DestinationEntity destinationEntity, ProfileEntity profileEntity,
 			AttributeEditorContext context, ProjectEntity projectEntity) {
-		final String SOPInstanceUID = dcm.getString(Tag.SOPInstanceUID);
-		final String SeriesInstanceUID = dcm.getString(Tag.SeriesInstanceUID);
-		final String IssuerOfPatientID = dcm.getString(Tag.IssuerOfPatientID);
-		final String PatientID = dcm.getString(Tag.PatientID);
-		final HMAC hmac = generateHMAC(PatientID, projectEntity);
-
-		MDC.put("SOPInstanceUID", SOPInstanceUID);
-		MDC.put("SeriesInstanceUID", SeriesInstanceUID);
-		MDC.put("issuerOfPatientID", IssuerOfPatientID);
-		MDC.put("PatientID", PatientID);
-
-		String profilesCodeName = profiles.stream().map(ProfileItem::getCodeName).collect(Collectors.joining("-"));
+		HMAC hmac = generateHMAC(dcm.getString(Tag.PatientID), projectEntity);
+		putSourceMdc(dcm);
 
 		Attributes dcmCopy = new Attributes(dcm);
-
-		// Apply actions on tags
 		applyAction(dcm, dcmCopy, hmac, null, null, context);
 
-		final Marker clincalMarker = MarkerFactory.getMarker("CLINICAL");
-		MDC.put("TagMorphingSOPInstanceUID", dcm.getString(Tag.SOPInstanceUID));
-		MDC.put("TagMorphingSeriesInstanceUID", dcm.getString(Tag.SeriesInstanceUID));
-		MDC.put("ProjectName", destinationEntity.getTagMorphingProjectEntity().getName());
-		MDC.put("ProfileName", profileEntity.getName());
-		MDC.put("ProfileCodenames", profilesCodeName);
-		log.info(clincalMarker, "");
+		logClinicalEvent("TagMorphing", dcm, destinationEntity.getTagMorphingProjectEntity().getName(),
+				profileEntity.getName());
+	}
+
+	private static void putSourceMdc(Attributes dcm) {
+		MDC.put("SOPInstanceUID", dcm.getString(Tag.SOPInstanceUID));
+		MDC.put("SeriesInstanceUID", dcm.getString(Tag.SeriesInstanceUID));
+		MDC.put("issuerOfPatientID", dcm.getString(Tag.IssuerOfPatientID));
+		MDC.put("PatientID", dcm.getString(Tag.PatientID));
+	}
+
+	private void logClinicalEvent(String prefix, Attributes dcm, String projectName, String profileName) {
+		MDC.put(prefix + "SOPInstanceUID", dcm.getString(Tag.SOPInstanceUID));
+		MDC.put(prefix + "SeriesInstanceUID", dcm.getString(Tag.SeriesInstanceUID));
+		MDC.put("ProjectName", projectName);
+		MDC.put("ProfileName", profileName);
+		MDC.put("ProfileCodenames", profiles.stream().map(ProfileItem::getCodeName).collect(Collectors.joining("-")));
+		log.info(CLINICAL_MARKER, "");
 		MDC.clear();
 	}
 

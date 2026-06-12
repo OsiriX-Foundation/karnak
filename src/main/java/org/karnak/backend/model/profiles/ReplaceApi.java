@@ -17,17 +17,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.dcm4che3.data.Attributes;
 import org.karnak.backend.data.entity.ArgumentEntity;
-import org.karnak.backend.data.entity.ExcludedTagEntity;
-import org.karnak.backend.data.entity.IncludedTagEntity;
 import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.exception.AbortException;
 import org.karnak.backend.exception.EndpointException;
 import org.karnak.backend.exception.ProfileException;
 import org.karnak.backend.model.action.ActionItem;
 import org.karnak.backend.model.action.Replace;
-import org.karnak.backend.model.expression.ExprCondition;
-import org.karnak.backend.model.expression.ExpressionError;
-import org.karnak.backend.model.expression.ExpressionResult;
 import org.karnak.backend.model.profilepipe.HMAC;
 import org.karnak.backend.model.profilepipe.TagActionMap;
 import org.karnak.backend.service.ApplicationContextProvider;
@@ -41,8 +36,6 @@ public class ReplaceApi extends AbstractProfileItem {
 	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
 	private final TagActionMap tagsAction;
-
-	private final ActionItem actionByDefault;
 
 	private final TagActionMap exceptedTagsAction;
 
@@ -59,23 +52,9 @@ public class ReplaceApi extends AbstractProfileItem {
 		super(profileElementEntity);
 		tagsAction = new TagActionMap();
 		exceptedTagsAction = new TagActionMap();
-		actionByDefault = new Replace("R");
+		ActionItem actionByDefault = new Replace("R");
 		profileValidation();
-		setActionHashMap();
-	}
-
-	private void setActionHashMap() {
-
-		if (tagEntities != null && !tagEntities.isEmpty()) {
-			for (IncludedTagEntity tag : tagEntities) {
-				tagsAction.put(tag.getTagValue(), actionByDefault);
-			}
-		}
-		if (excludedTagEntities != null) {
-			for (ExcludedTagEntity tag : excludedTagEntities) {
-				exceptedTagsAction.put(tag.getTagValue(), actionByDefault);
-			}
-		}
+		mapTagsToAction(tagsAction, exceptedTagsAction, actionByDefault);
 	}
 
 	@Override
@@ -211,11 +190,7 @@ public class ReplaceApi extends AbstractProfileItem {
 			throw new ProfileException(errorMessage + "body argument is mandatory for a POST request");
 		}
 
-		ExpressionError expressionError = ExpressionResult.isValid(condition, new ExprCondition(new Attributes()),
-				Boolean.class);
-		if (condition != null && !expressionError.isValid()) {
-			throw new ProfileException(expressionError.getMsg());
-		}
+		validateCondition();
 	}
 
 	private static void validateExpression(String expression) throws ProfileException {

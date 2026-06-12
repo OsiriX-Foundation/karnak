@@ -68,15 +68,11 @@ public class SwitchingAlbum {
 	}
 
 	public static boolean validateIntrospectedToken(JSONObject introspectObject, List<String> validMinScope) {
-		boolean valid = true;
 		if (!introspectObject.getBoolean("active")) {
 			return false;
 		}
 		final String scope = introspectObject.getString("scope");
-		for (String minScope : validMinScope) {
-			valid = scope.contains(minScope) && valid;
-		}
-		return valid;
+		return validMinScope.stream().allMatch(scope::contains);
 	}
 
 	public static ActionItem getAction(DestinationEntity destinationEntity, int tag) {
@@ -113,10 +109,7 @@ public class SwitchingAlbum {
 		String sopInstanceUID = dcm.getString(Tag.SOPInstanceUID);
 		String urlAPI = kheopsAlbumsEntity.getUrlAPI();
 		Long id = kheopsAlbumsEntity.getId();
-		if (!switchingAlbumToDo.containsKey(id)) {
-			switchingAlbumToDo.put(id, new ArrayList<>());
-		}
-		ArrayList<MetadataSwitching> metadataToDo = (ArrayList<MetadataSwitching>) switchingAlbumToDo.get(id);
+		List<MetadataSwitching> metadataToDo = switchingAlbumToDo.computeIfAbsent(id, k -> new ArrayList<>());
 
 		if ((condition == null || condition.isEmpty() || validateCondition(condition, dcm)) && metadataToDo.stream()
 			.noneMatch(metadataSwitching -> metadataSwitching.getSeriesInstanceUID().equals(seriesInstanceUID))) {
@@ -161,7 +154,7 @@ public class SwitchingAlbum {
 
 		List<MetadataSwitching> metadataToDo = switchingAlbumToDo.get(id);
 		metadataToDo.forEach(metadataSwitching -> {
-			if (metadataSwitching.getSOPinstanceUID().equals(sopInstanceUID) && !metadataSwitching.isApplied()) {
+			if (metadataSwitching.getSopInstanceUID().equals(sopInstanceUID) && !metadataSwitching.isApplied()) {
 				int status = shareSerie(urlAPI, metadataSwitching.getStudyInstanceUID(),
 						metadataSwitching.getSeriesInstanceUID(), authorizationSource, authorizationDestination);
 				if (status >= 400 && status <= 599) {

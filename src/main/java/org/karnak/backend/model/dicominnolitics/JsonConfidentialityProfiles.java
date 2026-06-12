@@ -19,7 +19,7 @@ import org.karnak.backend.model.action.Replace;
 import org.karnak.backend.model.action.ReplaceNull;
 import org.karnak.backend.model.action.UID;
 
-public class jsonConfidentialityProfiles {
+public class JsonConfidentialityProfiles {
 
 	@Getter
 	private String id;

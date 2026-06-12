@@ -11,35 +11,17 @@ package org.karnak.backend.model.editor;
 
 import org.dcm4che3.data.Attributes;
 import org.karnak.backend.data.entity.DestinationEntity;
-import org.karnak.backend.data.entity.ProfileEntity;
-import org.karnak.backend.data.entity.ProjectEntity;
-import org.karnak.backend.service.profilepipe.Profile;
-import org.weasis.dicom.param.AttributeEditor;
 import org.weasis.dicom.param.AttributeEditorContext;
-import org.weasis.dicom.param.AttributeEditorContext.Abort;
 
-public class TagMorphingEditor implements AttributeEditor {
-
-	private final Profile profile;
-
-	private final DestinationEntity destinationEntity;
-
-	private final ProfileEntity profileEntity;
-
-	private final ProjectEntity projectEntity;
+public class TagMorphingEditor extends AbstractProfileEditor {
 
 	public TagMorphingEditor(DestinationEntity destinationEntity) {
-		this.destinationEntity = destinationEntity;
-		this.projectEntity = destinationEntity.getTagMorphingProjectEntity();
-		this.profileEntity = projectEntity.getProfileEntity();
-		this.profile = new Profile(profileEntity);
+		super(destinationEntity, destinationEntity.getTagMorphingProjectEntity());
 	}
 
 	@Override
-	public void apply(Attributes dcm, AttributeEditorContext context) {
-		if (context.getAbort() != Abort.FILE_EXCEPTION) {
-			profile.applyTagMorphing(dcm, destinationEntity, profileEntity, context, projectEntity);
-		}
+	protected void applyProfile(Attributes dcm, AttributeEditorContext context) {
+		profile.applyTagMorphing(dcm, destinationEntity, profileEntity, context, projectEntity);
 	}
 
 }

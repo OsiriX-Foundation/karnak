@@ -11,6 +11,7 @@ package org.karnak.backend.dicom;
 
 import java.io.IOException;
 import java.util.List;
+import lombok.Getter;
 import org.weasis.dicom.param.AdvancedParams;
 import org.weasis.dicom.param.AttributeEditor;
 import org.weasis.dicom.param.DeviceOpService;
@@ -21,14 +22,18 @@ import org.weasis.dicom.util.StoreFromStreamSCU;
 
 public class DicomForwardDestination extends ForwardDestination {
 
+	@Getter
 	private final StoreFromStreamSCU streamSCU;
 
+	@Getter
 	private final DeviceOpService streamSCUService;
 
+	@Getter
 	private final boolean useDestinationAetForKeyMap;
 
 	private final ForwardDicomNode callingNode;
 
+	@Getter
 	private final DicomNode destinationNode;
 
 	public DicomForwardDestination(ForwardDicomNode fwdNode, DicomNode destinationNode) throws IOException {
@@ -50,10 +55,11 @@ public class DicomForwardDestination extends ForwardDestination {
 	 * connection and TLS)
 	 * @param fwdNode the DICOM forwarding node. Cannot be null.
 	 * @param destinationNode the DICOM destination node. Cannot be null.
-	 * @param useDestinationAetForKeyMap
-	 * @param progress
-	 * @param editors
-	 * @throws IOException
+	 * @param useDestinationAetForKeyMap whether the destination AET is used as the
+	 * key-map key
+	 * @param progress optional progress handler for the transfer
+	 * @param editors optional attribute editors applied before forwarding
+	 * @throws IOException if the association with the destination cannot be set up
 	 */
 	public DicomForwardDestination(AdvancedParams forwardParams, ForwardDicomNode fwdNode, DicomNode destinationNode,
 			boolean useDestinationAetForKeyMap, DicomProgress progress, List<AttributeEditor> editors)
@@ -75,33 +81,13 @@ public class DicomForwardDestination extends ForwardDestination {
 		setTranscodeOnlyUncompressed(transcodeOnlyUncompressed);
 	}
 
-	public StoreFromStreamSCU getStreamSCU() {
-		return streamSCU;
-	}
-
-	public DeviceOpService getStreamSCUService() {
-		return streamSCUService;
-	}
-
-	public boolean isUseDestinationAetForKeyMap() {
-		return useDestinationAetForKeyMap;
-	}
-
 	@Override
 	public ForwardDicomNode getForwardDicomNode() {
 		return callingNode;
 	}
 
-	public DicomNode getDestinationNode() {
-		return destinationNode;
-	}
-
 	@Override
 	public void stop() {
-		// Association as = streamSCU.getAssociation();
-		// if (as != null && as.isReadyForDataTransfer()) {
-		// as.abort();
-		// }
 		streamSCU.close(true);
 		streamSCUService.stop();
 	}

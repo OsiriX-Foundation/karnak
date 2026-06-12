@@ -70,13 +70,10 @@ public class ForwardNodeService {
 	}
 
 	public DestinationEntity getDestinationById(ForwardNodeEntity forwardNodeEntity, Long dataId) {
-		Collection<DestinationEntity> destinationEntities = getAllDestinations(forwardNodeEntity);
-		for (DestinationEntity destinationEntity : destinationEntities) {
-			if (Objects.equals(destinationEntity.getId(), dataId)) {
-				return destinationEntity;
-			}
-		}
-		return null;
+		return getAllDestinations(forwardNodeEntity).stream()
+			.filter(destinationEntity -> Objects.equals(destinationEntity.getId(), dataId))
+			.findFirst()
+			.orElse(null);
 	}
 
 	public DestinationEntity updateDestination(ForwardNodeEntity forwardNodeEntity, DestinationEntity data) {
@@ -106,13 +103,10 @@ public class ForwardNodeService {
 	}
 
 	public DicomSourceNodeEntity getSourceNodeById(ForwardNodeEntity forwardNodeEntity, Long dataId) {
-		Collection<DicomSourceNodeEntity> sourceNodes = getAllSourceNodes(forwardNodeEntity);
-		for (DicomSourceNodeEntity sourceNode : sourceNodes) {
-			if (Objects.equals(sourceNode.getId(), dataId)) {
-				return sourceNode;
-			}
-		}
-		return null;
+		return getAllSourceNodes(forwardNodeEntity).stream()
+			.filter(sourceNode -> Objects.equals(sourceNode.getId(), dataId))
+			.findFirst()
+			.orElse(null);
 	}
 
 	public DicomSourceNodeEntity updateSourceNode(ForwardNodeEntity forwardNodeEntity, DicomSourceNodeEntity data) {

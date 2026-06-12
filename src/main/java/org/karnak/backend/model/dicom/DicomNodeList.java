@@ -19,7 +19,6 @@ public class DicomNodeList extends ArrayList<ConfigNode> {
 	private final String name;
 
 	public DicomNodeList(String name) {
-		super();
 		this.name = name;
 	}
 

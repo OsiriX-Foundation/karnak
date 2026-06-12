@@ -11,7 +11,6 @@ package org.karnak.backend.model.editor;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -38,48 +37,53 @@ public class StreamRegistryEditor implements AttributeEditor {
 	@Setter
 	private boolean enable = false;
 
-	public StreamRegistryEditor() {
-	}
-
 	@Override
 	public void apply(Attributes dcm, AttributeEditorContext context) {
-		if (enable) {
-			String studyUID = dcm.getString(Tag.StudyInstanceUID);
-			Study study = getStudy(studyUID);
-			if (study == null) {
-				study = new Study(studyUID, dcm.getString(Tag.PatientID));
-				study.setOtherPatientIDs(dcm.getStrings(Tag.OtherPatientIDs));
-				study.setAccessionNumber(dcm.getString(Tag.AccessionNumber));
-				study.setStudyDescription(dcm.getString(Tag.StudyDescription, ""));
-				LocalDateTime dateTime = DicomObjectUtil.dateTime(dcm, Tag.StudyDate, Tag.StudyTime);
-				study.setStudyDate(dateTime);
-				addStudy(study);
-			}
-
-			String seriesUID = dcm.getString(Tag.SeriesInstanceUID);
-			Series series = study.getSeries(seriesUID);
-			if (series == null) {
-				series = new Series(seriesUID);
-				series.setSeriesDescription(dcm.getString(Tag.SeriesDescription, study.getStudyDescription()));
-				LocalDateTime dateTime = DicomObjectUtil.dateTime(dcm, Tag.SeriesDate, Tag.SeriesTime);
-				series.setSeriesDate(dateTime == null ? study.getStudyDate() : dateTime);
-				study.addSeries(series);
-			}
-
-			String sopUID = dcm.getString(Tag.SOPInstanceUID);
-			SopInstance sopInstance = series.getSopInstance(sopUID);
-			if (sopInstance == null) {
-				sopInstance = new SopInstance(sopUID);
-				sopInstance.setSopClassUID(dcm.getString(Tag.SOPClassUID));
-				series.addSopInstance(sopInstance);
-			}
-			else {
-				context.setAbort(Abort.FILE_EXCEPTION);
-				context.setAbortMessage("Duplicate transfer of " + sopUID);
-			}
-			// When it is a duplicate, avoid to send again a partial exam.
-			study.setTimeStamp(System.currentTimeMillis());
+		if (!enable) {
+			return;
 		}
+		Study study = getOrCreateStudy(dcm);
+		Series series = getOrCreateSeries(study, dcm);
+
+		String sopUID = dcm.getString(Tag.SOPInstanceUID);
+		if (series.getSopInstance(sopUID) == null) {
+			SopInstance sopInstance = new SopInstance(sopUID);
+			sopInstance.setSopClassUID(dcm.getString(Tag.SOPClassUID));
+			series.addSopInstance(sopInstance);
+		}
+		else {
+			context.setAbort(Abort.FILE_EXCEPTION);
+			context.setAbortMessage("Duplicate transfer of " + sopUID);
+		}
+		// When it is a duplicate, avoid to send again a partial exam.
+		study.setTimeStamp(System.currentTimeMillis());
+	}
+
+	private Study getOrCreateStudy(Attributes dcm) {
+		String studyUID = dcm.getString(Tag.StudyInstanceUID);
+		Study study = getStudy(studyUID);
+		if (study == null) {
+			study = new Study(studyUID, dcm.getString(Tag.PatientID));
+			study.setOtherPatientIDs(dcm.getStrings(Tag.OtherPatientIDs));
+			study.setAccessionNumber(dcm.getString(Tag.AccessionNumber));
+			study.setStudyDescription(dcm.getString(Tag.StudyDescription, ""));
+			study.setStudyDate(DicomObjectUtil.dateTime(dcm, Tag.StudyDate, Tag.StudyTime));
+			addStudy(study);
+		}
+		return study;
+	}
+
+	private Series getOrCreateSeries(Study study, Attributes dcm) {
+		String seriesUID = dcm.getString(Tag.SeriesInstanceUID);
+		Series series = study.getSeries(seriesUID);
+		if (series == null) {
+			series = new Series(seriesUID);
+			series.setSeriesDescription(dcm.getString(Tag.SeriesDescription, study.getStudyDescription()));
+			LocalDateTime dateTime = DicomObjectUtil.dateTime(dcm, Tag.SeriesDate, Tag.SeriesTime);
+			series.setSeriesDate(dateTime == null ? study.getStudyDate() : dateTime);
+			study.addSeries(series);
+		}
+		return series;
 	}
 
 	public void addStudy(Study study) {

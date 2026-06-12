@@ -75,7 +75,7 @@ public class ArgumentEntity implements Serializable {
 		this.argumentValue = value;
 	}
 
-	@ManyToOne()
+	@ManyToOne
 	@JoinColumn(name = "profile_element_id", nullable = false)
 	public ProfileElementEntity getProfileElementEntity() {
 		return profileElementEntity;

@@ -26,7 +26,7 @@ public class HMAC extends Hmac {
 	}
 
 	public HMAC(HashContext hashContext) {
-		super(hashContext.getSecret());
+		super(hashContext.secret());
 		this.hashContext = hashContext;
 	}
 

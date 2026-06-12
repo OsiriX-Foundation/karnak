@@ -11,7 +11,7 @@ package org.karnak.backend.model.notification;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,6 +20,7 @@ import lombok.Setter;
  */
 @Setter
 @Getter
+@EqualsAndHashCode
 public class TransferMonitoringNotification {
 
 	private String subject;
@@ -43,28 +44,5 @@ public class TransferMonitoringNotification {
 	private String destination;
 
 	private List<SerieSummaryNotification> serieSummaryNotifications;
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		TransferMonitoringNotification that = (TransferMonitoringNotification) o;
-		return Objects.equals(subject, that.subject) && Objects.equals(from, that.from) && Objects.equals(to, that.to)
-				&& Objects.equals(patientId, that.patientId) && Objects.equals(studyUid, that.studyUid)
-				&& Objects.equals(accessionNumber, that.accessionNumber)
-				&& Objects.equals(studyDescription, that.studyDescription) && Objects.equals(studyDate, that.studyDate)
-				&& Objects.equals(source, that.source) && Objects.equals(destination, that.destination)
-				&& Objects.equals(serieSummaryNotifications, that.serieSummaryNotifications);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(subject, from, to, patientId, studyUid, accessionNumber, studyDescription, studyDate,
-				source, destination, serieSummaryNotifications);
-	}
 
 }

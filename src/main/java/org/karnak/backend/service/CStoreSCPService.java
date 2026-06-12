@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -32,7 +31,6 @@ import org.dcm4che3.net.Status;
 import org.dcm4che3.net.pdu.PresentationContext;
 import org.dcm4che3.net.service.BasicCStoreSCP;
 import org.dcm4che3.net.service.DicomServiceException;
-import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.repo.DestinationRepo;
 import org.karnak.backend.dicom.ForwardDestination;
 import org.karnak.backend.dicom.ForwardDicomNode;
@@ -63,7 +61,7 @@ public class CStoreSCPService extends BasicCStoreSCP {
 	private volatile int status;
 
 	// Scheduled service for updating status transfer in progress
-	private ScheduledFuture isDelayOver;
+	private ScheduledFuture<?> isDelayOver;
 
 	private final ScheduledExecutorService executorService;
 
@@ -86,14 +84,11 @@ public class CStoreSCPService extends BasicCStoreSCP {
 	@Override
 	protected void store(Association as, PresentationContext pc, Attributes rq, PDVInputStream data, Attributes rsp)
 			throws IOException {
-		Optional<ForwardDicomNode> sourceNode = destinations.keySet()
+		ForwardDicomNode fwdNode = destinations.keySet()
 			.stream()
 			.filter(n -> n.getForwardAETitle().equals(as.getCalledAET()))
-			.findFirst();
-		if (sourceNode.isEmpty()) {
-			throw new IllegalStateException("Cannot find the forward AeTitle " + as.getCalledAET());
-		}
-		ForwardDicomNode fwdNode = sourceNode.get();
+			.findFirst()
+			.orElseThrow(() -> new IllegalStateException("Cannot find the forward AeTitle " + as.getCalledAET()));
 		List<ForwardDestination> destList = destinations.get(fwdNode);
 		if (destList == null || destList.isEmpty()) {
 			throw new IllegalStateException("No DICOM destinations for " + fwdNode);
@@ -129,11 +124,8 @@ public class CStoreSCPService extends BasicCStoreSCP {
 	}
 
 	/**
-	 * Update transfer status: if there is a transfer in progress set status to true and
-	 * schedule a thread which will set back status to false in a certain delay. If a
-	 * transfer is still in progress after the end of the delay, set status to true and an
-	 * other delay is scheduled.
-	 * @param destinations Destinations to update
+	 * Flags the destinations as transferring, then schedules clearing the flag after a
+	 * delay.
 	 */
 	private void updateTransferStatus(List<ForwardDestination> destinations) {
 		// if delay is over or first iteration
@@ -147,26 +139,16 @@ public class CStoreSCPService extends BasicCStoreSCP {
 	}
 
 	/**
-	 * Update the transfer status of a destination
-	 * @param destination Destination to retrieve
-	 * @param status Status to update
+	 * Persists the transfer-in-progress flag for an active destination when it changes.
 	 */
 	private void updateTransferStatus(ForwardDestination destination, boolean status) {
-		// Retrieve the destination entity
-		Optional<DestinationEntity> destinationEntityOptional = destinationRepo.findById(destination.getId());
-
-		if (destinationEntityOptional.isPresent()) {
-			// Update the transfer status if the destination has been found and is active
-			DestinationEntity destinationEntity = destinationEntityOptional.get();
-			if (destinationEntity.isActivate()) {
-				boolean oldStatus = destinationEntity.isTransferInProgress();
-				if (oldStatus != status) {
-					destinationEntity.setTransferInProgress(status);
-					destinationEntity.setLastTransfer(LocalDateTime.now(ZoneId.of("CET")));
-					destinationRepo.save(destinationEntity);
-				}
+		destinationRepo.findById(destination.getId()).ifPresent(destinationEntity -> {
+			if (destinationEntity.isActivate() && destinationEntity.isTransferInProgress() != status) {
+				destinationEntity.setTransferInProgress(status);
+				destinationEntity.setLastTransfer(LocalDateTime.now(ZoneId.of("CET")));
+				destinationRepo.save(destinationEntity);
 			}
-		}
+		});
 	}
 
 }

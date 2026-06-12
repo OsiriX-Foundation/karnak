@@ -10,8 +10,8 @@
 package org.karnak.backend.model.notification;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 import java.util.Set;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.karnak.backend.constant.Notification;
@@ -21,6 +21,7 @@ import org.karnak.backend.constant.Notification;
  */
 @Setter
 @Getter
+@EqualsAndHashCode
 public class SerieSummaryNotification {
 
 	private String serieUid;
@@ -40,29 +41,6 @@ public class SerieSummaryNotification {
 	private Set<String> transferredModalities;
 
 	private Set<String> transferredSopClassUid;
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		SerieSummaryNotification that = (SerieSummaryNotification) o;
-		return nbTransferSent == that.nbTransferSent && nbTransferNotSent == that.nbTransferNotSent
-				&& Objects.equals(serieUid, that.serieUid) && Objects.equals(serieDescription, that.serieDescription)
-				&& Objects.equals(serieDate, that.serieDate)
-				&& Objects.equals(unTransferedReasons, that.unTransferedReasons)
-				&& Objects.equals(transferredModalities, that.transferredModalities)
-				&& Objects.equals(transferredSopClassUid, that.transferredSopClassUid);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(serieUid, serieDescription, serieDate, nbTransferSent, nbTransferNotSent,
-				unTransferedReasons, transferredModalities, transferredSopClassUid);
-	}
 
 	public String toStringUnTransferredReasons() {
 		return String.join(Notification.COMMA_SEPARATOR, unTransferedReasons);

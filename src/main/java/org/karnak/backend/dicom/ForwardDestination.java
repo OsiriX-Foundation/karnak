@@ -10,6 +10,8 @@
 package org.karnak.backend.dicom;
 
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 import org.dcm4che3.data.UID;
 import org.dcm4che3.img.DicomImageReader;
 import org.dcm4che3.img.DicomOutputData;
@@ -17,12 +19,14 @@ import org.dcm4che3.img.util.DicomUtils;
 import org.weasis.dicom.param.AttributeEditor;
 import org.weasis.dicom.param.DicomState;
 
+@Getter
 public abstract class ForwardDestination {
 
 	protected final List<AttributeEditor> dicomEditors;
 
 	private final Long id;
 
+	@Setter
 	private boolean transcodeOnlyUncompressed = true;
 
 	private String outputTransferSyntax = "";
@@ -32,34 +36,14 @@ public abstract class ForwardDestination {
 		this.id = id;
 	}
 
-	public List<AttributeEditor> getDicomEditors() {
-		return dicomEditors;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
 	public abstract ForwardDicomNode getForwardDicomNode();
 
 	public abstract void stop();
 
 	public abstract DicomState getState();
 
-	public String getOutputTransferSyntax() {
-		return outputTransferSyntax;
-	}
-
 	public void setOutputTransferSyntax(String outputTransferSyntax) {
 		this.outputTransferSyntax = outputTransferSyntax != null ? outputTransferSyntax : "";
-	}
-
-	public boolean isTranscodeOnlyUncompressed() {
-		return transcodeOnlyUncompressed;
-	}
-
-	public void setTranscodeOnlyUncompressed(boolean transcodeOnlyUncompressed) {
-		this.transcodeOnlyUncompressed = transcodeOnlyUncompressed;
 	}
 
 	public String getOutputTransferSyntax(String originalTsuid) {

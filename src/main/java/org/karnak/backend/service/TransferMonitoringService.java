@@ -32,7 +32,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -86,17 +85,8 @@ public class TransferMonitoringService {
 	 * @return Transfer status entities found
 	 */
 	public Page<TransferStatusEntity> retrieveTransferStatusPageable(TransferStatusFilter filter, Pageable pageable) {
-		Page<TransferStatusEntity> transferStatusFound;
-		if (!filter.hasFilter()) {
-			// No filter
-			transferStatusFound = transferStatusRepo.findAll(pageable);
-		}
-		else {
-			// Create the specification and query the transfer status table
-			Specification<TransferStatusEntity> transferStatusSpecification = new TransferStatusSpecification(filter);
-			transferStatusFound = transferStatusRepo.findAll(transferStatusSpecification, pageable);
-		}
-		return transferStatusFound;
+		return filter.hasFilter() ? transferStatusRepo.findAll(new TransferStatusSpecification(filter), pageable)
+				: transferStatusRepo.findAll(pageable);
 	}
 
 	/**
@@ -105,17 +95,8 @@ public class TransferMonitoringService {
 	 * @return Transfer status entities found
 	 */
 	public List<TransferStatusEntity> retrieveTransferStatus(TransferStatusFilter filter) {
-		List<TransferStatusEntity> transferStatusFound;
-		if (!filter.hasFilter()) {
-			// No filter
-			transferStatusFound = transferStatusRepo.findAll();
-		}
-		else {
-			// Create the specification and query the transfer status table
-			Specification<TransferStatusEntity> transferStatusSpecification = new TransferStatusSpecification(filter);
-			transferStatusFound = transferStatusRepo.findAll(transferStatusSpecification);
-		}
-		return transferStatusFound;
+		return filter.hasFilter() ? transferStatusRepo.findAll(new TransferStatusSpecification(filter))
+				: transferStatusRepo.findAll();
 	}
 
 	/**
@@ -124,18 +105,8 @@ public class TransferMonitoringService {
 	 * @return Count of Transfer status entities found
 	 */
 	public int countTransferStatus(TransferStatusFilter filter) {
-		int countTransferStatus;
-
-		if (!filter.hasFilter()) {
-			// No filter
-			countTransferStatus = (int) transferStatusRepo.count();
-		}
-		else {
-			// Create the specification and query the transfer status table
-			Specification<TransferStatusEntity> transferStatusSpecification = new TransferStatusSpecification(filter);
-			countTransferStatus = (int) transferStatusRepo.count(transferStatusSpecification);
-		}
-		return countTransferStatus;
+		return (int) (filter.hasFilter() ? transferStatusRepo.count(new TransferStatusSpecification(filter))
+				: transferStatusRepo.count());
 	}
 
 	/**
@@ -145,7 +116,6 @@ public class TransferMonitoringService {
 	 */
 	public byte[] buildCsv(TransferStatusFilter filter, ExportSettings exportSettings)
 			throws CsvRequiredFieldEmptyException, CsvDataTypeMismatchException, IOException {
-		// Init outputStream + writer
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
 		OutputStreamWriter streamWriter = new OutputStreamWriter(stream);
 		CSVWriter writer = new CSVWriter(streamWriter,
@@ -155,15 +125,9 @@ public class TransferMonitoringService {
 						: CSVWriter.DEFAULT_QUOTE_CHARACTER,
 				CSVWriter.DEFAULT_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END);
 
-		// Mapping strategy
-		MonitoringCsvMappingStrategy<TransferStatusEntity> monitoringCsvMappingStrategy = new MonitoringCsvMappingStrategy<>();
-
-		// Bean to CSV
 		StatefulBeanToCsv<TransferStatusEntity> beanToCsv = new StatefulBeanToCsvBuilder<TransferStatusEntity>(writer)
-			.withMappingStrategy(monitoringCsvMappingStrategy)
+			.withMappingStrategy(new MonitoringCsvMappingStrategy<>())
 			.build();
-
-		// Write CSV
 		beanToCsv.write(retrieveTransferStatus(filter));
 
 		streamWriter.flush();

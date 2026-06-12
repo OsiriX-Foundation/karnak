@@ -58,7 +58,7 @@ class ModuleAttributeTest {
 					new ModuleAttribute("m:t2", "2", "m"), new ModuleAttribute("m:t3", "1C", "m"));
 
 			// Priority order is 1, 1C, 2, 2C, 3 -> 1C is the strictest present.
-			assertEquals("1C", ModuleAttribute.getStrictedType(attributes));
+			assertEquals("1C", ModuleAttribute.getStricterType(attributes));
 		}
 
 		@Test
@@ -66,17 +66,17 @@ class ModuleAttributeTest {
 			List<ModuleAttribute> attributes = List.of(new ModuleAttribute("m:t1", "3", "m"),
 					new ModuleAttribute("m:t2", "1", "m"));
 
-			assertEquals("1", ModuleAttribute.getStrictedType(attributes));
+			assertEquals("1", ModuleAttribute.getStricterType(attributes));
 		}
 
 		@Test
 		void returns_the_only_type_when_a_single_attribute_is_given() {
-			assertEquals("3", ModuleAttribute.getStrictedType(List.of(new ModuleAttribute("m:t1", "3", "m"))));
+			assertEquals("3", ModuleAttribute.getStricterType(List.of(new ModuleAttribute("m:t1", "3", "m"))));
 		}
 
 		@Test
 		void returns_null_for_an_empty_list() {
-			assertNull(ModuleAttribute.getStrictedType(List.of()));
+			assertNull(ModuleAttribute.getStricterType(List.of()));
 		}
 
 	}

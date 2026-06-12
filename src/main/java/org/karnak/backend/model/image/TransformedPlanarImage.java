@@ -18,8 +18,8 @@ import org.weasis.opencv.data.PlanarImage;
 @Getter
 public class TransformedPlanarImage {
 
-	Editable<PlanarImage> editablePlanarImage;
+	private Editable<PlanarImage> editablePlanarImage;
 
-	PlanarImage planarImage;
+	private PlanarImage planarImage;
 
 }

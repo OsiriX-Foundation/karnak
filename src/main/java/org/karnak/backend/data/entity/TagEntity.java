@@ -58,7 +58,7 @@ public abstract class TagEntity implements Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne()
+	@ManyToOne
 	@JoinColumn(name = "profile_element_id", nullable = false)
 	public ProfileElementEntity getProfileElementEntity() {
 		return profileElementEntity;

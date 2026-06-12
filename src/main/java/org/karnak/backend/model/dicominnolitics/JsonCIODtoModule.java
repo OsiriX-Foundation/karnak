@@ -7,33 +7,21 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  */
-package org.karnak.backend.api.rqbody;
+package org.karnak.backend.model.dicominnolitics;
 
-public class Body {
+import lombok.Getter;
 
-	private String type;
+@Getter
+public class JsonCIODtoModule {
 
-	private Data data;
+	private String ciodId;
 
-	public Body(String type, Data data) {
-		this.type = type;
-		this.data = data;
-	}
+	private String moduleId;
 
-	public String get_type() {
-		return this.type;
-	}
+	private String usage;
 
-	public void set_type(String type) {
-		this.type = type;
-	}
+	private String conditionalStatement;
 
-	public Data get_data() {
-		return this.data;
-	}
-
-	public void set_data(Data data) {
-		this.data = data;
-	}
+	private String informationEntity;
 
 }

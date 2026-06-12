@@ -11,8 +11,6 @@ package org.karnak.backend.exception;
 
 public final class EndpointException extends IllegalStateException {
 
-	private static final long serialVersionUID = 3993065212756372490L;
-
 	public EndpointException(String s) {
 		super(s);
 	}

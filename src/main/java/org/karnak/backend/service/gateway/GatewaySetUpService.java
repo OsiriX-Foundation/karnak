@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.dcm4che3.data.Attributes;
@@ -171,29 +170,15 @@ public class GatewaySetUpService {
 		return destMap.keySet().stream().filter(n -> n.getForwardAETitle().equals(fwdAET)).findFirst();
 	}
 
-	public List<ForwardDestination> getDestination(String fwdAET) {
-		Optional<ForwardDicomNode> node = getDestinationNode(fwdAET);
-		node.ifPresent(this::getDestinations);
-		return Collections.emptyList();
-	}
-
 	public List<ForwardDestination> getDestinations(ForwardDicomNode fwdSrcNode) {
-		List<ForwardDestination> destList = null;
-		if (fwdSrcNode != null) {
-			destList = destMap.get(fwdSrcNode);
-		}
-		if (destList == null) {
+		if (fwdSrcNode == null) {
 			return Collections.emptyList();
 		}
-		return destList;
+		return destMap.getOrDefault(fwdSrcNode, Collections.emptyList());
 	}
 
 	public Map<ForwardDicomNode, List<ForwardDestination>> getDestinations() {
 		return destMap;
-	}
-
-	public Set<ForwardDicomNode> getKeys() {
-		return destMap.keySet();
 	}
 
 	private void addDestinationNode(List<ForwardDestination> dstList, ForwardDicomNode fwdSrcNode,
@@ -214,18 +199,9 @@ public class GatewaySetUpService {
 
 			if (dstNode.isActivate()) {
 				if (dstNode.getDestinationType() == DestinationType.stow) {
-					// parse headers to hashmap
-					HashMap<String, String> map = new HashMap<>();
-					String headers = dstNode.getHeaders();
-					Document doc = Jsoup.parse(headers);
-					String key = doc.getElementsByTag("key").text();
-					String value = doc.getElementsByTag("value").text();
-					if (StringUtil.hasText(key)) {
-						map.put(key, value);
-					}
-
 					WebForwardDestination fwd = new WebForwardDestination(dstNode.getId(), fwdSrcNode, dstNode.getUrl(),
-							map, progress, editors, dstNode.getTransferSyntax(), dstNode.isTranscodeOnlyUncompressed());
+							parseHeaders(dstNode.getHeaders()), progress, editors, dstNode.getTransferSyntax(),
+							dstNode.isTranscodeOnlyUncompressed());
 
 					if (kheopsAlbumEntities != null && !kheopsAlbumEntities.isEmpty()) {
 						progress.addProgressListener((DicomProgress dicomProgress) -> {
@@ -253,11 +229,21 @@ public class GatewaySetUpService {
 	}
 
 	/**
-	 * Apply switching album editor
-	 * @param dstNode Destination
-	 * @param editors List of editors
-	 * @param kheopsAlbumEntities kheopsAlbumEntities
-	 * @return SwitchingAlbum created
+	 * Parses the destination headers ({@code <key>/<value>} XML) into a single-entry map.
+	 */
+	private static Map<String, String> parseHeaders(String headers) {
+		Map<String, String> map = new HashMap<>();
+		Document doc = Jsoup.parse(headers);
+		String key = doc.getElementsByTag("key").text();
+		if (StringUtil.hasText(key)) {
+			map.put(key, doc.getElementsByTag("value").text());
+		}
+		return map;
+	}
+
+	/**
+	 * Adds a KHEOPS switching-album editor when the destination has albums, and returns
+	 * it.
 	 */
 	private SwitchingAlbum applySwitchingAlbumEditor(DestinationEntity dstNode, List<AttributeEditor> editors,
 			List<KheopsAlbumsEntity> kheopsAlbumEntities) {
@@ -268,44 +254,25 @@ public class GatewaySetUpService {
 		return switchingAlbum;
 	}
 
-	/**
-	 * Switching editor
-	 * @param dstNode Destination
-	 * @param kheopsAlbumEntities kheopsAlbum Entities
-	 * @param switchingAlbum switchingAlbum
-	 * @return Editor
-	 */
+	/** Editor that switches the destination's KHEOPS albums for each instance. */
 	private AttributeEditor switchingEditor(DestinationEntity dstNode, List<KheopsAlbumsEntity> kheopsAlbumEntities,
 			SwitchingAlbum switchingAlbum) {
 		return (Attributes dcm, AttributeEditorContext context) -> kheopsAlbumEntities
 			.forEach(kheopsAlbums -> switchingAlbum.apply(dstNode, kheopsAlbums, dcm));
 	}
 
-	/**
-	 * Apply StreamRegistryEditor
-	 * @param editors List of editors
-	 */
 	private void applyStreamRegistryEditor(List<AttributeEditor> editors) {
 		editors.add(new StreamRegistryEditor());
 	}
 
-	/**
-	 * Apply Filter editor
-	 * @param dstNode Destination
-	 * @param editors List of editors
-	 */
+	/** Adds a SOP-class filter editor when filtering is enabled on the destination. */
 	private void applyFilterEditor(DestinationEntity dstNode, List<AttributeEditor> editors) {
-		final boolean filterBySOPClassesEnable = dstNode.isFilterBySOPClasses();
-		if (filterBySOPClassesEnable) {
+		if (dstNode.isFilterBySOPClasses()) {
 			editors.add(new FilterEditor(dstNode.getSOPClassUIDEntityFilters()));
 		}
 	}
 
-	/**
-	 * Apply Condition editor
-	 * @param dstNode Destination
-	 * @param editors List of editors
-	 */
+	/** Adds a condition editor when the destination defines one. */
 	private void applyConditionEditor(DestinationEntity dstNode, List<AttributeEditor> editors) {
 		if (!dstNode.getCondition().isEmpty()) {
 			editors.add(new ConditionEditor(dstNode.getCondition()));
@@ -313,10 +280,7 @@ public class GatewaySetUpService {
 	}
 
 	/**
-	 * Depending on the destination, apply changes on tags: deidentification or the tag
-	 * morphing profiles
-	 * @param dstNode Destination
-	 * @param editors List of editors
+	 * Adds the de-identification editor when the destination has an active de-id profile.
 	 */
 	private void applyDeIdentifyEditor(DestinationEntity dstNode, List<AttributeEditor> editors) {
 		if (dstNode.getDeIdentificationProjectEntity() != null
@@ -327,9 +291,8 @@ public class GatewaySetUpService {
 	}
 
 	/**
-	 * Depending on the destination, apply changes on tags: the tag morphing profiles
-	 * @param dstNode Destination
-	 * @param editors List of editors
+	 * Adds the tag-morphing editor when the destination has an active tag-morphing
+	 * profile.
 	 */
 	private void applyTagMorphingEditor(DestinationEntity dstNode, List<AttributeEditor> editors) {
 		if (dstNode.getTagMorphingProjectEntity() != null
@@ -359,14 +322,10 @@ public class GatewaySetUpService {
 		Object src = event.getSource();
 		Long id = event.getForwardNode().getId();
 		String aet = event.getForwardNode().getFwdAeTitle();
-		Optional<ForwardDicomNode> val = destMap.keySet().stream().filter(f -> id.equals(f.getId())).findFirst();
-		ForwardDicomNode fwdNode;
-		if (val.isEmpty()) {
+		ForwardDicomNode fwdNode = destMap.keySet().stream().filter(f -> id.equals(f.getId())).findFirst().orElse(null);
+		if (fwdNode == null) {
 			fwdNode = new ForwardDicomNode(aet, null, id);
 			destMap.put(fwdNode, new ArrayList<>(2));
-		}
-		else {
-			fwdNode = val.get();
 		}
 		switch (src) {
 			case DicomSourceNodeEntity srcNode -> {
@@ -403,9 +362,7 @@ public class GatewaySetUpService {
 				}
 				else if (type == NodeEventType.UPDATE && !aet.equals(fwdNode.getAet())) {
 					ForwardDicomNode newFwdNode = new ForwardDicomNode(aet, null, id);
-					for (DicomNode srcNode : fwdNode.getAcceptedSourceNodes()) {
-						newFwdNode.getAcceptedSourceNodes().add(srcNode);
-					}
+					newFwdNode.getAcceptedSourceNodes().addAll(fwdNode.getAcceptedSourceNodes());
 					destMap.put(newFwdNode, destMap.remove(fwdNode));
 				}
 			}

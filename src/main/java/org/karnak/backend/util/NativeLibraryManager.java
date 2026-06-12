@@ -10,6 +10,7 @@
 package org.karnak.backend.util;
 
 import java.io.File;
+import org.weasis.core.util.annotations.Generated;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -20,6 +21,7 @@ import org.weasis.core.util.FileUtil;
 import org.weasis.opencv.natives.NativeLibrary;
 
 @Slf4j
+@Generated
 public class NativeLibraryManager {
 
 	/** Marker folder that must appear in {@code java.library.path}. */

@@ -23,6 +23,7 @@ import org.karnak.backend.model.action.ActionItem;
 import org.karnak.backend.model.expression.ExprCondition;
 import org.karnak.backend.model.expression.ExpressionError;
 import org.karnak.backend.model.expression.ExpressionResult;
+import org.karnak.backend.model.profilepipe.TagActionMap;
 
 public abstract class AbstractProfileItem implements ProfileItem {
 
@@ -91,9 +92,27 @@ public abstract class AbstractProfileItem implements ProfileItem {
 
 	@Override
 	public void profileValidation() throws ProfileException {
+		validateCondition();
+	}
+
+	/** Validates the optional {@link #condition} SpEL expression. */
+	protected void validateCondition() throws ProfileException {
 		ExpressionError expressionError = ExpressionResult.isValid(condition, new ExprCondition(), Boolean.class);
 		if (condition != null && !expressionError.isValid()) {
 			throw new ProfileException(expressionError.getMsg());
+		}
+	}
+
+	/**
+	 * Maps each included tag (and each excluded tag when {@code excluded} is non-null) to
+	 * the action.
+	 */
+	protected void mapTagsToAction(TagActionMap included, TagActionMap excluded, ActionItem action) {
+		if (tagEntities != null) {
+			tagEntities.forEach(tag -> included.put(tag.getTagValue(), action));
+		}
+		if (excluded != null && excludedTagEntities != null) {
+			excludedTagEntities.forEach(tag -> excluded.put(tag.getTagValue(), action));
 		}
 	}
 

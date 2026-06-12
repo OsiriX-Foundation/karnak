@@ -9,9 +9,12 @@
  */
 package org.karnak.backend.enums;
 
+import lombok.Getter;
+
 /**
  * Enum for the transfer status
  */
+@Getter
 public enum TransferStatusType {
 
 	ALL(null, null, "All"), SENT(true, false, "Sent"), NOT_SENT(false, null, "Not Sent"),
@@ -36,18 +39,6 @@ public enum TransferStatusType {
 		this.label = label;
 		this.sent = sent;
 		this.error = error;
-	}
-
-	public Boolean getSent() {
-		return sent;
-	}
-
-	public Boolean getError() {
-		return error;
-	}
-
-	public String getLabel() {
-		return label;
 	}
 
 }

@@ -18,7 +18,9 @@ public class Patient implements Serializable {
 	@Serial
 	private static final long serialVersionUID = -6906583906530083181L;
 
-	private static final Character SPLIT_CHAR_PATIENT_NAME = '^';
+	private static final char NAME_SEPARATOR = '^';
+
+	private static final String NAME_SEPARATOR_REGEX = "\\^";
 
 	private String pseudonym;
 
@@ -148,23 +150,19 @@ public class Patient implements Serializable {
 	}
 
 	protected static String createPatientName(String patientFirstName, String patientLastName) {
-		if (patientFirstName == null || patientFirstName.equals("")) {
+		if (patientFirstName == null || patientFirstName.isEmpty()) {
 			return patientLastName;
 		}
-		return String.format("%s%c%s", patientLastName == null ? "" : patientLastName, SPLIT_CHAR_PATIENT_NAME,
-				patientFirstName);
+		return (patientLastName == null ? "" : patientLastName) + NAME_SEPARATOR + patientFirstName;
 	}
 
 	protected static String createPatientLastName(String patientName) {
-		return patientName.split(String.format("\\%c", SPLIT_CHAR_PATIENT_NAME))[0];
+		return patientName.split(NAME_SEPARATOR_REGEX)[0];
 	}
 
 	protected static String createPatientFirstName(String patientName) {
-		String[] patientNameSplitted = patientName.split(String.format("\\%c", SPLIT_CHAR_PATIENT_NAME));
-		if (patientNameSplitted.length > 1) {
-			return patientNameSplitted[1];
-		}
-		return "";
+		String[] parts = patientName.split(NAME_SEPARATOR_REGEX);
+		return parts.length > 1 ? parts[1] : "";
 	}
 
 	public void updatePatientName(String patientName) {

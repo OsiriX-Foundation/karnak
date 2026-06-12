@@ -13,37 +13,37 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.karnak.backend.model.dicominnolitics.StandardAttributes;
-import org.karnak.backend.model.dicominnolitics.jsonAttributes;
+import org.karnak.backend.model.dicominnolitics.JsonAttributes;
 
 public class AttributeDetails {
 
-	private final Map<String, AttributeDetail> hmapAttributeDetail;
+	private final Map<String, AttributeDetail> mapAttributeDetail;
 
 	public AttributeDetails() {
-		hmapAttributeDetail = initializeAttributes(StandardAttributes.readJsonAttributes());
+		mapAttributeDetail = initializeAttributes(StandardAttributes.readJsonAttributes());
 	}
 
-	private Map<String, AttributeDetail> initializeAttributes(jsonAttributes[] attributes) {
-		Map<String, AttributeDetail> hmapAttribute = new HashMap<>();
+	private Map<String, AttributeDetail> initializeAttributes(JsonAttributes[] attributes) {
+		Map<String, AttributeDetail> mapAttribute = new HashMap<>();
 
-		for (jsonAttributes attribute : attributes) {
+		for (JsonAttributes attribute : attributes) {
 			AttributeDetail attributeDetail = new AttributeDetail(attribute.getId(), attribute.getKeyword(),
 					attribute.getName(), attribute.getRetired(), attribute.getTag(), attribute.getValueMultiplicity(),
 					attribute.getValueRepresentation());
 
-			String attributeKey = attributeDetail.getId();
-			hmapAttribute.put(attributeKey, attributeDetail);
+			String attributeKey = attributeDetail.id();
+			mapAttribute.put(attributeKey, attributeDetail);
 		}
 
-		return hmapAttribute;
+		return mapAttribute;
 	}
 
 	public AttributeDetail getAttributeDetail(String id) {
-		return hmapAttributeDetail.get(id);
+		return mapAttributeDetail.get(id);
 	}
 
 	public List<AttributeDetail> getListAttributeDetail(List<String> listId) {
-		return hmapAttributeDetail.entrySet()
+		return mapAttributeDetail.entrySet()
 			.stream()
 			.filter(attributeDetail -> listId.contains(attributeDetail.getKey()))
 			.map(Map.Entry::getValue)

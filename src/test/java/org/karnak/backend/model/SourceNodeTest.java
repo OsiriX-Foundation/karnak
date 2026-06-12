@@ -26,8 +26,8 @@ class SourceNodeTest {
 		DicomNode node = new DicomNode("AET", "host", 104);
 		SourceNode source = new SourceNode("FWD", node);
 
-		assertEquals("FWD", source.getForwardAETitle());
-		assertSame(node, source.getSourceNode());
+		assertEquals("FWD", source.forwardAETitle());
+		assertSame(node, source.sourceNode());
 	}
 
 	@Test

@@ -14,6 +14,8 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.VR;
+import org.dcm4che3.util.TagUtils;
+import org.slf4j.MDC;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 import org.weasis.core.util.StringUtil;
@@ -21,13 +23,11 @@ import org.weasis.core.util.StringUtil;
 @Slf4j
 public abstract class AbstractAction implements ActionItem {
 
-	protected static final Marker CLINICAL_MARKER = MarkerFactory.getMarker("CLINICAL");
+	private static final Marker CLINICAL_MARKER = MarkerFactory.getMarker("CLINICAL");
 
-	protected static final String PATTERN_WITH_INOUT = "SOPInstanceUID_OLD={} TAG={} ACTION={} OLD={} NEW={}";
+	private static final String PATTERN_WITH_INOUT = "SOPInstanceUID_OLD={} TAG={} ACTION={} OLD={} NEW={}";
 
-	protected static final String PATTERN_WITH_IN = "SOPInstanceUID_OLD={} TAG={} ACTION={} OLD={}";
-
-	protected static final String ADD_METHOD = "a";
+	private static final String PATTERN_WITH_IN = "SOPInstanceUID_OLD={} TAG={} ACTION={} OLD={}";
 
 	@Getter
 	protected final String symbol;
@@ -96,6 +96,36 @@ public abstract class AbstractAction implements ActionItem {
 			}
 		}
 		return StringUtil.EMPTY_STRING;
+	}
+
+	/**
+	 * Trace-logs the action with the current tag value (read only when tracing is
+	 * enabled).
+	 */
+	protected void traceIn(Attributes dcm, int tag) {
+		if (log.isTraceEnabled()) {
+			log.trace(CLINICAL_MARKER, PATTERN_WITH_IN, MDC.get("SOPInstanceUID"), TagUtils.toString(tag), symbol,
+					getStringValue(dcm, tag));
+		}
+	}
+
+	/**
+	 * Trace-logs the action with the current tag value as old value and the given new
+	 * value.
+	 */
+	protected void traceInOut(Attributes dcm, int tag, String newValue) {
+		if (log.isTraceEnabled()) {
+			log.trace(CLINICAL_MARKER, PATTERN_WITH_INOUT, MDC.get("SOPInstanceUID"), TagUtils.toString(tag), symbol,
+					getStringValue(dcm, tag), newValue);
+		}
+	}
+
+	/** Trace-logs the action with explicit old and new values. */
+	protected void traceInOut(int tag, String oldValue, String newValue) {
+		if (log.isTraceEnabled()) {
+			log.trace(CLINICAL_MARKER, PATTERN_WITH_INOUT, MDC.get("SOPInstanceUID"), TagUtils.toString(tag), symbol,
+					oldValue, newValue);
+		}
 	}
 
 }

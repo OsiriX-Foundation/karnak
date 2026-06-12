@@ -9,8 +9,6 @@
  */
 package org.karnak.backend.data.validator;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import org.hibernate.validator.spi.group.DefaultGroupSequenceProvider;
 import org.karnak.backend.data.entity.DestinationEntity;
@@ -23,32 +21,28 @@ import org.karnak.backend.enums.DestinationType;
  */
 public class DestinationGroupSequenceProvider implements DefaultGroupSequenceProvider<DestinationEntity> {
 
+	private static final List<Class<?>> DEFAULT_GROUPS = List.of(DestinationEntity.class);
+
+	private static final List<Class<?>> TYPE_DICOM_GROUPS = List.of(DestinationEntity.class,
+			DestinationDicomGroup.class);
+
+	private static final List<Class<?>> TYPE_STOW_GROUPS = List.of(DestinationEntity.class, DestinationStowGroup.class);
+
 	@Override
 	public List<Class<?>> getValidationGroups(Class<?> beanType, DestinationEntity destinationEntity) {
-		if (destinationEntity != null) {
-			DestinationType type = destinationEntity.getDestinationType();
-			if (type != null) {
-				return switch (type) {
-					case dicom -> TYPE_DICOM_GROUPS;
-					case stow -> TYPE_STOW_GROUPS;
-				};
-			}
+		DestinationType type = destinationEntity != null ? destinationEntity.getDestinationType() : null;
+		if (type == null) {
+			return DEFAULT_GROUPS;
 		}
-		return DEFAULT_GROUPS;
+		return switch (type) {
+			case dicom -> TYPE_DICOM_GROUPS;
+			case stow -> TYPE_STOW_GROUPS;
+		};
 	}
 
 	public interface DestinationDicomGroup {
 
 	}
-
-	private static final List<Class<?>> DEFAULT_GROUPS = //
-			Collections.singletonList(DestinationEntity.class);
-
-	private static final List<Class<?>> TYPE_DICOM_GROUPS = //
-			Arrays.asList(DestinationEntity.class, DestinationDicomGroup.class);
-
-	private static final List<Class<?>> TYPE_STOW_GROUPS = //
-			Arrays.asList(DestinationEntity.class, DestinationStowGroup.class);
 
 	public interface DestinationStowGroup {
 

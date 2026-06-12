@@ -21,9 +21,6 @@ import org.karnak.backend.exception.ProfileException;
 import org.karnak.backend.model.action.ActionItem;
 import org.karnak.backend.model.action.Add;
 import org.karnak.backend.model.action.Keep;
-import org.karnak.backend.model.expression.ExprCondition;
-import org.karnak.backend.model.expression.ExpressionError;
-import org.karnak.backend.model.expression.ExpressionResult;
 import org.karnak.backend.model.profilepipe.HMAC;
 import org.karnak.backend.model.profilepipe.TagActionMap;
 import org.karnak.backend.model.standard.StandardDICOM;
@@ -31,30 +28,17 @@ import org.karnak.backend.model.standard.StandardDICOM;
 @Slf4j
 public class AddPrivateTag extends AbstractProfileItem {
 
-	private final TagActionMap tagsAction;
-
-	private final ActionItem actionByDefault;
-
-	private boolean tagAdded = false;
+	private boolean tagAdded;
 
 	private static final String LOG_PATTERN = "SOPInstanceUID={} TAG={} ACTION={} REASON={}";
 
 	public AddPrivateTag(ProfileElementEntity profileElementEntity) throws ProfileException {
 		super(profileElementEntity);
 
-		tagsAction = new TagActionMap();
-		actionByDefault = new Keep("K");
+		TagActionMap tagsAction = new TagActionMap();
+		ActionItem actionByDefault = new Keep("K");
 		profileValidation();
-		setActionHashMap();
-	}
-
-	private void setActionHashMap() {
-
-		if (tagEntities != null && !tagEntities.isEmpty()) {
-			for (IncludedTagEntity tag : tagEntities) {
-				tagsAction.put(tag.getTagValue(), actionByDefault);
-			}
-		}
+		mapTagsToAction(tagsAction, null, actionByDefault);
 	}
 
 	@Override
@@ -115,11 +99,7 @@ public class AddPrivateTag extends AbstractProfileItem {
 					+ tagEntities.getFirst().getTagValue() + " is not a private tag");
 		}
 
-		final ExpressionError expressionError = ExpressionResult.isValid(condition, new ExprCondition(new Attributes()),
-				Boolean.class);
-		if (condition != null && !expressionError.isValid()) {
-			throw new ProfileException(expressionError.getMsg());
-		}
+		validateCondition();
 	}
 
 }

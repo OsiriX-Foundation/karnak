@@ -77,8 +77,8 @@ public class ForwardService {
 			throw new IllegalStateException("Cannot find destinations from " + forwardNode.toString());
 		}
 		// Exclude DICOMDIR
-		if ("1.2.840.10008.1.3.10".equals(p.getCuid())) {
-			log.warn("Cannot send DICOMDIR {}", p.getIuid());
+		if ("1.2.840.10008.1.3.10".equals(p.cuid())) {
+			log.warn("Cannot send DICOMDIR {}", p.iuid());
 			return;
 		}
 
@@ -96,12 +96,8 @@ public class ForwardService {
 			throw e;
 		}
 		finally {
-			if (!files.isEmpty()) {
-				// Force to clean if tmp bulk files
-				for (File file : files) {
-					FileUtil.delete(file.toPath());
-				}
-			}
+			// Force to clean the temporary bulk files
+			files.forEach(file -> FileUtil.delete(file.toPath()));
 		}
 	}
 
@@ -117,45 +113,41 @@ public class ForwardService {
 	 */
 	private void prepareAndTransfer(ForwardDicomNode fwdNode, Params p, int index, ForwardDestination destination,
 			Attributes attributes, int nbDestinations, List<File> files) throws IOException {
-		if (destination instanceof DicomForwardDestination) {
-			// Prepare transfer only for dicom destination
-			prepareTransfer((DicomForwardDestination) destination, p);
+		// Prepare transfer only for dicom destination
+		if (destination instanceof DicomForwardDestination dicomDestination) {
+			prepareTransfer(dicomDestination, p);
 		}
 		if (index == 0) {
-			// Case first iteration: handle first destination of the forward node
+			// First iteration: handle the first destination of the forward node
 			Attributes attToApply = nbDestinations > 1 ? attributes : null;
-			if (destination instanceof DicomForwardDestination) {
-				List<File> list = transfer(fwdNode, (DicomForwardDestination) destination, attToApply, p);
-				if (list != null) {
-					files.addAll(list);
-				}
+			List<File> list = null;
+			if (destination instanceof DicomForwardDestination dicomDestination) {
+				list = transfer(fwdNode, dicomDestination, attToApply, p);
 			}
-			else if (destination instanceof WebForwardDestination) {
-				List<File> list = transfer(fwdNode, (WebForwardDestination) destination, attToApply, p);
-				if (list != null) {
-					files.addAll(list);
-				}
+			else if (destination instanceof WebForwardDestination webDestination) {
+				list = transfer(fwdNode, webDestination, attToApply, p);
+			}
+			if (list != null) {
+				files.addAll(list);
 			}
 		}
-		else {
-			// Case other iterations: handle other destinations of the forward node
-			if (!attributes.isEmpty()) {
-				if (destination instanceof DicomForwardDestination) {
-					transferOther(fwdNode, (DicomForwardDestination) destination, attributes, p);
-				}
-				else if (destination instanceof WebForwardDestination) {
-					transferOther(fwdNode, (WebForwardDestination) destination, attributes, p);
-				}
+		else if (!attributes.isEmpty()) {
+			// Other iterations: handle the remaining destinations of the forward node
+			if (destination instanceof DicomForwardDestination dicomDestination) {
+				transferOther(fwdNode, dicomDestination, attributes, p);
+			}
+			else if (destination instanceof WebForwardDestination webDestination) {
+				transferOther(fwdNode, webDestination, attributes, p);
 			}
 		}
 	}
 
 	public static StoreFromStreamSCU prepareTransfer(DicomForwardDestination destination, Params p) throws IOException {
-		String cuid = p.getCuid();
-		String tsuid = p.getTsuid();
+		String cuid = p.cuid();
+		String tsuid = p.tsuid();
 		String dstTsuid = destination.getOutputTransferSyntax(tsuid);
 		StoreFromStreamSCU streamSCU = destination.getStreamSCU();
-		streamSCU.prepareTransfer(destination.getStreamSCUService(), p.getIuid(), cuid, dstTsuid);
+		streamSCU.prepareTransfer(destination.getStreamSCUService(), p.iuid(), cuid, dstTsuid);
 		return streamSCU;
 	}
 
@@ -171,22 +163,22 @@ public class ForwardService {
 				throw new IllegalStateException("Association not ready for transfer.");
 			}
 			DataWriter dataWriter;
-			String cuid = p.getCuid();
-			String iuid = p.getIuid();
-			String tsuid = p.getTsuid();
+			String cuid = p.cuid();
+			String iuid = p.iuid();
+			String tsuid = p.tsuid();
 			var syntax = new AdaptTransferSyntax(tsuid,
 					streamSCU.selectTransferSyntax(cuid, destination.getOutputTransferSyntax(tsuid)));
 			List<AttributeEditor> editors = destination.getDicomEditors();
 			TransformedPlanarImage transformedPlanarImage = new TransformedPlanarImage();
 			if (copy == null && editors.isEmpty() && syntax.getRequested().equals(tsuid)) {
-				dataWriter = new InputStreamDataWriter(p.getData());
-				attributesToSend = new DicomInputStream(p.getData()).readDataset();
+				dataWriter = new InputStreamDataWriter(p.data());
+				attributesToSend = new DicomInputStream(p.data()).readDataset();
 				attributesOriginal.addAll(attributesToSend);
 			}
 			else {
 				AttributeEditorContext context = new AttributeEditorContext(tsuid, sourceNode,
 						streamSCU.getRemoteDicomNode());
-				in = new DicomInputStream(p.getData(), tsuid);
+				in = new DicomInputStream(p.data(), tsuid);
 				in.setIncludeBulkData(IncludeBulkData.URI);
 				Attributes attributes = in.readDataset();
 				attributesOriginal.addAll(attributes);
@@ -202,14 +194,14 @@ public class ForwardService {
 				}
 
 				if (context.getAbort() == Abort.FILE_EXCEPTION) {
-					if (p.getData() instanceof PDVInputStream) {
-						((PDVInputStream) p.getData()).skipAll();
+					if (p.data() instanceof PDVInputStream) {
+						((PDVInputStream) p.data()).skipAll();
 					}
 					throw new AbortException(context.getAbort(), context.getAbortMessage());
 				}
 				else if (context.getAbort() == Abort.CONNECTION_EXCEPTION) {
-					if (p.getAs() != null) {
-						p.getAs().abort();
+					if (p.as() != null) {
+						p.as().abort();
 					}
 					throw new AbortException(context.getAbort(),
 							"DICOM association abort: " + context.getAbortMessage());
@@ -219,31 +211,31 @@ public class ForwardService {
 
 			launchCStore(p, streamSCU, dataWriter, cuid, iuid, syntax, transformedPlanarImage);
 
-			progressNotify(destination, p.getIuid(), p.getCuid(), false, streamSCU);
+			progressNotify(destination, p.iuid(), p.cuid(), false, streamSCU);
 			monitor(sourceNode.getId(), destination.getId(), attributesOriginal, attributesToSend, true, false, null,
-					attributesOriginal.getString(Tag.Modality), p.getCuid());
+					attributesOriginal.getString(Tag.Modality), p.cuid());
 		}
 		catch (AbortException e) {
-			progressNotify(destination, p.getIuid(), p.getCuid(), true, streamSCU);
+			progressNotify(destination, p.iuid(), p.cuid(), true, streamSCU);
 			monitor(sourceNode.getId(), destination.getId(), attributesOriginal, attributesToSend, false, false,
-					e.getMessage(), attributesOriginal.getString(Tag.Modality), p.getCuid());
+					e.getMessage(), attributesOriginal.getString(Tag.Modality), p.cuid());
 			if (e.getAbort() == Abort.CONNECTION_EXCEPTION) {
 				throw e;
 			}
 		}
 		catch (IOException e) {
-			progressNotify(destination, p.getIuid(), p.getCuid(), true, streamSCU);
+			progressNotify(destination, p.iuid(), p.cuid(), true, streamSCU);
 			monitor(sourceNode.getId(), destination.getId(), attributesOriginal, attributesToSend, false, true,
-					e.getMessage(), attributesOriginal.getString(Tag.Modality), p.getCuid());
+					e.getMessage(), attributesOriginal.getString(Tag.Modality), p.cuid());
 			throw e;
 		}
 		catch (Exception e) {
 			if (e instanceof InterruptedException) {
 				Thread.currentThread().interrupt();
 			}
-			progressNotify(destination, p.getIuid(), p.getCuid(), true, streamSCU);
+			progressNotify(destination, p.iuid(), p.cuid(), true, streamSCU);
 			monitor(sourceNode.getId(), destination.getId(), attributesOriginal, attributesToSend, false, true,
-					e.getMessage(), attributesOriginal.getString(Tag.Modality), p.getCuid());
+					e.getMessage(), attributesOriginal.getString(Tag.Modality), p.cuid());
 			log.error(ERROR_WHEN_FORWARDING, e);
 		}
 		finally {
@@ -257,7 +249,7 @@ public class ForwardService {
 			AdaptTransferSyntax syntax, TransformedPlanarImage transformedPlanarImage)
 			throws IOException, InterruptedException {
 		try {
-			streamSCU.cstore(cuid, iuid, p.getPriority(), dataWriter, syntax.getSuitable());
+			streamSCU.cstore(cuid, iuid, p.priority(), dataWriter, syntax.getSuitable());
 		}
 		finally {
 			if (transformedPlanarImage != null && transformedPlanarImage.getPlanarImage() != null) {
@@ -333,9 +325,9 @@ public class ForwardService {
 			}
 
 			DataWriter dataWriter;
-			String tsuid = p.getTsuid();
-			String iuid = p.getIuid();
-			String cuid = p.getCuid();
+			String tsuid = p.tsuid();
+			String iuid = p.iuid();
+			String cuid = p.cuid();
 			var syntax = new AdaptTransferSyntax(tsuid,
 					streamSCU.selectTransferSyntax(cuid, destination.getOutputTransferSyntax(tsuid)));
 			List<AttributeEditor> editors = destination.getDicomEditors();
@@ -369,31 +361,31 @@ public class ForwardService {
 
 			launchCStore(p, streamSCU, dataWriter, cuid, iuid, syntax, transformedPlanarImage);
 
-			progressNotify(destination, p.getIuid(), p.getCuid(), false, streamSCU);
+			progressNotify(destination, p.iuid(), p.cuid(), false, streamSCU);
 			monitor(fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, true, false, null,
-					attributesOriginal.getString(Tag.Modality), p.getCuid());
+					attributesOriginal.getString(Tag.Modality), p.cuid());
 		}
 		catch (AbortException e) {
-			progressNotify(destination, p.getIuid(), p.getCuid(), true, streamSCU);
+			progressNotify(destination, p.iuid(), p.cuid(), true, streamSCU);
 			monitor(fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, false, false,
-					e.getMessage(), attributesOriginal.getString(Tag.Modality), p.getCuid());
+					e.getMessage(), attributesOriginal.getString(Tag.Modality), p.cuid());
 			if (e.getAbort() == Abort.CONNECTION_EXCEPTION) {
 				throw e;
 			}
 		}
 		catch (IOException e) {
-			progressNotify(destination, p.getIuid(), p.getCuid(), true, streamSCU);
+			progressNotify(destination, p.iuid(), p.cuid(), true, streamSCU);
 			monitor(fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, false, true,
-					e.getMessage(), attributesOriginal.getString(Tag.Modality), p.getCuid());
+					e.getMessage(), attributesOriginal.getString(Tag.Modality), p.cuid());
 			throw e;
 		}
 		catch (Exception e) {
 			if (e instanceof InterruptedException) {
 				Thread.currentThread().interrupt();
 			}
-			progressNotify(destination, p.getIuid(), p.getCuid(), true, streamSCU);
+			progressNotify(destination, p.iuid(), p.cuid(), true, streamSCU);
 			monitor(fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, false, true,
-					e.getMessage(), attributesOriginal.getString(Tag.Modality), p.getCuid());
+					e.getMessage(), attributesOriginal.getString(Tag.Modality), p.cuid());
 			log.error(ERROR_WHEN_FORWARDING, e);
 		}
 		finally {
@@ -410,12 +402,12 @@ public class ForwardService {
 		try {
 			List<AttributeEditor> editors = destination.getDicomEditors();
 			DicomStowRS stow = destination.getStowrsSingleFile();
-			var syntax = new AdaptTransferSyntax(p.getTsuid(), destination.getOutputTransferSyntax(p.getTsuid()));
+			var syntax = new AdaptTransferSyntax(p.tsuid(), destination.getOutputTransferSyntax(p.tsuid()));
 
-			if (syntax.getRequested().equals(p.getTsuid()) && copy == null && editors.isEmpty()) {
-				Attributes fmi = Attributes.createFileMetaInformation(p.getIuid(), p.getCuid(), syntax.getRequested());
-				try (InputStream stream = p.getData()) {
-					attributesToSend = new DicomInputStream(p.getData()).readDataset();
+			if (syntax.getRequested().equals(p.tsuid()) && copy == null && editors.isEmpty()) {
+				Attributes fmi = Attributes.createFileMetaInformation(p.iuid(), p.cuid(), syntax.getRequested());
+				try (InputStream stream = p.data()) {
+					attributesToSend = new DicomInputStream(p.data()).readDataset();
 					attributesOriginal.addAll(attributesToSend);
 					stow.uploadDicom(stream, fmi);
 				}
@@ -429,8 +421,8 @@ public class ForwardService {
 				}
 			}
 			else {
-				AttributeEditorContext context = new AttributeEditorContext(p.getTsuid(), fwdNode, null);
-				in = new DicomInputStream(p.getData(), p.getTsuid());
+				AttributeEditorContext context = new AttributeEditorContext(p.tsuid(), fwdNode, null);
+				in = new DicomInputStream(p.data(), p.tsuid());
 				in.setIncludeBulkData(IncludeBulkData.URI);
 				Attributes attributes = in.readDataset();
 				attributesToSend = attributes;
@@ -443,14 +435,14 @@ public class ForwardService {
 				}
 
 				if (context.getAbort() == Abort.FILE_EXCEPTION) {
-					if (p.getData() instanceof PDVInputStream) {
-						((PDVInputStream) p.getData()).skipAll();
+					if (p.data() instanceof PDVInputStream) {
+						((PDVInputStream) p.data()).skipAll();
 					}
 					throw new AbortException(context.getAbort(), context.getAbortMessage());
 				}
 				else if (context.getAbort() == Abort.CONNECTION_EXCEPTION) {
-					if (p.getAs() != null) {
-						p.getAs().abort();
+					if (p.as() != null) {
+						p.as().abort();
 					}
 					throw new AbortException(context.getAbort(), "STOW-RS abort: " + context.getAbortMessage());
 				}
@@ -463,28 +455,28 @@ public class ForwardService {
 					uploadPayLoadFromTransformedImage(stow, syntax, context, attributes, desc);
 				}
 			}
-			progressNotify(destination, p.getIuid(), p.getCuid(), false, 0);
+			progressNotify(destination, p.iuid(), p.cuid(), false, 0);
 			monitor(fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, true, false, null,
-					attributesOriginal.getString(Tag.Modality), p.getCuid());
+					attributesOriginal.getString(Tag.Modality), p.cuid());
 		}
 		catch (AbortException e) {
-			progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
+			progressNotify(destination, p.iuid(), p.cuid(), true, 0);
 			monitor(fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, false, false,
-					e.getMessage(), attributesOriginal.getString(Tag.Modality), p.getCuid());
+					e.getMessage(), attributesOriginal.getString(Tag.Modality), p.cuid());
 			if (e.getAbort() == Abort.CONNECTION_EXCEPTION) {
 				throw e;
 			}
 		}
 		catch (IOException e) {
-			progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
+			progressNotify(destination, p.iuid(), p.cuid(), true, 0);
 			monitor(fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, false, true,
-					e.getMessage(), attributesOriginal.getString(Tag.Modality), p.getCuid());
+					e.getMessage(), attributesOriginal.getString(Tag.Modality), p.cuid());
 			throw e;
 		}
 		catch (Exception e) {
-			progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
+			progressNotify(destination, p.iuid(), p.cuid(), true, 0);
 			monitor(fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, false, true,
-					e.getMessage(), attributesOriginal.getString(Tag.Modality), p.getCuid());
+					e.getMessage(), attributesOriginal.getString(Tag.Modality), p.cuid());
 			log.error(ERROR_WHEN_FORWARDING, e);
 		}
 		finally {
@@ -518,14 +510,14 @@ public class ForwardService {
 		try {
 			List<AttributeEditor> editors = destination.getDicomEditors();
 			DicomStowRS stow = destination.getStowrsSingleFile();
-			var syntax = new AdaptTransferSyntax(p.getTsuid(), destination.getOutputTransferSyntax(p.getTsuid()));
-			if (syntax.getRequested().equals(p.getTsuid()) && editors.isEmpty()) {
+			var syntax = new AdaptTransferSyntax(p.tsuid(), destination.getOutputTransferSyntax(p.tsuid()));
+			if (syntax.getRequested().equals(p.tsuid()) && editors.isEmpty()) {
 				attributesToSend = copy;
 				attributesOriginal.addAll(copy);
 				stow.uploadDicom(copy, syntax.getRequested());
 			}
 			else {
-				AttributeEditorContext context = new AttributeEditorContext(p.getTsuid(), fwdNode, null);
+				AttributeEditorContext context = new AttributeEditorContext(p.tsuid(), fwdNode, null);
 				Attributes attributes = new Attributes(copy);
 				attributesToSend = attributes;
 				attributesOriginal.addAll(attributes);
@@ -546,43 +538,43 @@ public class ForwardService {
 				else {
 					uploadPayLoadFromTransformedImage(stow, syntax, context, attributes, desc);
 				}
-				progressNotify(destination, p.getIuid(), p.getCuid(), false, 0);
+				progressNotify(destination, p.iuid(), p.cuid(), false, 0);
 				monitor(fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, true, false, null,
-						attributesOriginal.getString(Tag.Modality), p.getCuid());
+						attributesOriginal.getString(Tag.Modality), p.cuid());
 			}
 		}
 		catch (HttpException httpException) {
 			if (httpException.getStatusCode() != 409) {
-				progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
+				progressNotify(destination, p.iuid(), p.cuid(), true, 0);
 				monitor(fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, false, true,
-						httpException.getMessage(), attributesOriginal.getString(Tag.Modality), p.getCuid());
+						httpException.getMessage(), attributesOriginal.getString(Tag.Modality), p.cuid());
 				throw new AbortException(Abort.FILE_EXCEPTION, "DICOMWeb forward", httpException);
 			}
 			else {
-				progressNotify(destination, p.getIuid(), p.getCuid(), false, 0);
+				progressNotify(destination, p.iuid(), p.cuid(), false, 0);
 				monitor(fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, true, true, null,
-						attributesOriginal.getString(Tag.Modality), p.getCuid());
+						attributesOriginal.getString(Tag.Modality), p.cuid());
 				log.debug("File already present in destination");
 			}
 		}
 		catch (AbortException e) {
-			progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
+			progressNotify(destination, p.iuid(), p.cuid(), true, 0);
 			monitor(fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, false, false,
-					e.getMessage(), attributesOriginal.getString(Tag.Modality), p.getCuid());
+					e.getMessage(), attributesOriginal.getString(Tag.Modality), p.cuid());
 			if (e.getAbort() == Abort.CONNECTION_EXCEPTION) {
 				throw e;
 			}
 		}
 		catch (IOException e) {
-			progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
+			progressNotify(destination, p.iuid(), p.cuid(), true, 0);
 			monitor(fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, false, true,
-					e.getMessage(), attributesOriginal.getString(Tag.Modality), p.getCuid());
+					e.getMessage(), attributesOriginal.getString(Tag.Modality), p.cuid());
 			throw e;
 		}
 		catch (Exception e) {
-			progressNotify(destination, p.getIuid(), p.getCuid(), true, 0);
+			progressNotify(destination, p.iuid(), p.cuid(), true, 0);
 			monitor(fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, false, true,
-					e.getMessage(), attributesOriginal.getString(Tag.Modality), p.getCuid());
+					e.getMessage(), attributesOriginal.getString(Tag.Modality), p.cuid());
 			log.error(ERROR_WHEN_FORWARDING, e);
 		}
 	}

@@ -10,6 +10,7 @@
 package org.karnak.backend.config;
 
 import com.vaadin.flow.spring.security.VaadinSecurityConfigurer;
+import org.weasis.core.util.annotations.Generated;
 import org.karnak.backend.security.OidcRoleAuthoritiesMapper;
 import org.karnak.backend.security.OpenIdConnectLogoutHandler;
 import org.springframework.boot.actuate.context.ShutdownEndpoint;
@@ -28,6 +29,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 @Configuration
 @ConditionalOnProperty(value = "IDP", havingValue = "oidc")
+@Generated
 public class SecurityConfiguration {
 
 	// Spring Security default authorization request URL of the "keycloak" client

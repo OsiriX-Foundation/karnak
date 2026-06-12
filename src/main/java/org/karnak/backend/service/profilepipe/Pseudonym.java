@@ -17,7 +17,6 @@ import org.dcm4che3.util.TagUtils;
 import org.karnak.backend.cache.PatientClient;
 import org.karnak.backend.config.AppConfig;
 import org.karnak.backend.data.entity.DestinationEntity;
-import org.karnak.backend.enums.PseudonymType;
 import org.karnak.backend.exception.EndpointException;
 import org.karnak.backend.model.profilepipe.PatientMetadata;
 import org.karnak.backend.service.ApplicationContextProvider;
@@ -27,6 +26,8 @@ import org.karnak.backend.util.SpecialCharacter;
 
 @Slf4j
 public class Pseudonym {
+
+	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
 	private final PatientClient externalIdCache;
 
@@ -46,40 +47,27 @@ public class Pseudonym {
 			patientMetadata = new PatientMetadata(dcm, destinationEntity.getIssuerByDefault());
 		}
 
-		if (destinationEntity.getPseudonymType().equals(PseudonymType.CACHE_EXTID)) {
-			return getCacheExtid(patientMetadata, destinationEntity.getDeIdentificationProjectEntity().getId());
-		}
-
-		if (destinationEntity.getPseudonymType().equals(PseudonymType.EXTID_IN_TAG)) {
-			return getPseudonymInDicom(dcm, destinationEntity);
-		}
-
-		if (destinationEntity.getPseudonymType().equals(PseudonymType.EXTID_API)) {
-			return getPseudonymFromApi(dcm, destinationEntity);
-		}
-
-		return null;
+		return switch (destinationEntity.getPseudonymType()) {
+			case CACHE_EXTID ->
+				getCacheExtid(patientMetadata, destinationEntity.getDeIdentificationProjectEntity().getId());
+			case EXTID_IN_TAG -> getPseudonymInDicom(dcm, destinationEntity);
+			case EXTID_API -> getPseudonymFromApi(dcm, destinationEntity);
+		};
 	}
 
 	private String getPseudonymFromApi(Attributes dcm, DestinationEntity destinationEntity) {
 		if (endpointService == null) {
 			endpointService = ApplicationContextProvider.bean(EndpointService.class);
 		}
-		String response = null;
-		if (destinationEntity.getMethod().equalsIgnoreCase("post")) {
-			response = endpointService.post(destinationEntity.getAuthConfig(),
-					EndpointService.evaluateStringWithExpression(destinationEntity.getPseudonymUrl(), dcm),
-					EndpointService.evaluateStringWithExpression(destinationEntity.getBody(), dcm));
-		}
-		else {
-			response = endpointService.get(destinationEntity.getAuthConfig(),
-					EndpointService.evaluateStringWithExpression(destinationEntity.getPseudonymUrl(), dcm));
-		}
+		String url = EndpointService.evaluateStringWithExpression(destinationEntity.getPseudonymUrl(), dcm);
+		String response = destinationEntity.getMethod().equalsIgnoreCase("post")
+				? endpointService.post(destinationEntity.getAuthConfig(), url,
+						EndpointService.evaluateStringWithExpression(destinationEntity.getBody(), dcm))
+				: endpointService.get(destinationEntity.getAuthConfig(), url);
 
-		ObjectMapper objectMapper = new ObjectMapper();
-		String value = null;
+		String value;
 		try {
-			value = objectMapper.readTree(response).at(destinationEntity.getResponsePath()).textValue();
+			value = OBJECT_MAPPER.readTree(response).at(destinationEntity.getResponsePath()).textValue();
 		}
 		catch (JsonProcessingException e) {
 			throw new EndpointException("An error occurred while parsing the JSON response ", e);

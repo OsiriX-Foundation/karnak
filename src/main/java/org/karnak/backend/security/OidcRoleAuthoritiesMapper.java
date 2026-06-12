@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.NonNull;
 import org.karnak.backend.enums.SecurityRole;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -44,7 +45,8 @@ public class OidcRoleAuthoritiesMapper implements GrantedAuthoritiesMapper {
 	private static final String ROLES_CLAIM = "roles";
 
 	@Override
-	public Collection<? extends GrantedAuthority> mapAuthorities(Collection<? extends GrantedAuthority> authorities) {
+	@NonNull public Collection<? extends GrantedAuthority> mapAuthorities(
+			@NonNull Collection<? extends GrantedAuthority> authorities) {
 		Set<GrantedAuthority> mappedAuthorities = new HashSet<>(authorities);
 		for (GrantedAuthority authority : authorities) {
 			if (authority instanceof OidcUserAuthority oidcUserAuthority) {
@@ -61,10 +63,7 @@ public class OidcRoleAuthoritiesMapper implements GrantedAuthoritiesMapper {
 	}
 
 	/**
-	 * Extract the Karnak granted authorities from the realm and client roles found in the
-	 * claims in parameter
-	 * @param claims Claims of the ID token or of the userinfo response
-	 * @return Granted authorities corresponding to the roles known by Karnak
+	 * Maps the realm and client roles found in the claims to known Karnak authorities.
 	 */
 	private static Set<GrantedAuthority> extractRoles(Map<String, Object> claims) {
 		Set<String> roleNames = new HashSet<>(retrieveRoles(claims.get(REALM_ACCESS_CLAIM)));
@@ -79,10 +78,8 @@ public class OidcRoleAuthoritiesMapper implements GrantedAuthoritiesMapper {
 	}
 
 	/**
-	 * Retrieve the role names of an access claim ("realm_access" or one value of
-	 * "resource_access")
-	 * @param accessClaim Access claim to evaluate
-	 * @return Role names found
+	 * Returns the role names of an access claim ("realm_access" or a "resource_access"
+	 * entry).
 	 */
 	private static Collection<String> retrieveRoles(Object accessClaim) {
 		if (accessClaim instanceof Map<?, ?> access && access.get(ROLES_CLAIM) instanceof Collection<?> roles) {

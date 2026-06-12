@@ -24,15 +24,9 @@ public class WadoResponse implements Callable<String> {
 	@Override
 	public String call() throws Exception {
 		StringBuilder result = new StringBuilder();
-
-		result.append("<h6>WADO HTTP-GET: ");
-		result.append(node.toString());
-		result.append("</h6>");
-		result.append("<small>");
+		result.append("<h6>WADO HTTP-GET: ").append(node).append("</h6><small>");
 		Util.getWadoResponse(result, node, true, "HTML", 10000);
-		result.append("</small>");
-		result.append("<hr>");
-
+		result.append("</small><hr>");
 		return result.toString();
 	}
 

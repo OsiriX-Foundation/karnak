@@ -13,16 +13,11 @@ import java.time.DateTimeException;
 import lombok.extern.slf4j.Slf4j;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.VR;
-import org.karnak.backend.data.entity.ExcludedTagEntity;
-import org.karnak.backend.data.entity.IncludedTagEntity;
 import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.exception.ProfileException;
 import org.karnak.backend.model.action.ActionItem;
 import org.karnak.backend.model.action.MultipleActions;
 import org.karnak.backend.model.action.Replace;
-import org.karnak.backend.model.expression.ExprCondition;
-import org.karnak.backend.model.expression.ExpressionError;
-import org.karnak.backend.model.expression.ExpressionResult;
 import org.karnak.backend.model.profilepipe.HMAC;
 import org.karnak.backend.model.profilepipe.TagActionMap;
 import org.karnak.backend.util.DateFormat;
@@ -45,20 +40,7 @@ public class ActionDates extends AbstractProfileItem {
 		exceptedTagsAction = new TagActionMap();
 		actionByDefault = new Replace("D");
 		profileValidation();
-		setActionHashMap();
-	}
-
-	private void setActionHashMap() {
-		if (tagEntities != null && !tagEntities.isEmpty()) {
-			for (IncludedTagEntity tag : tagEntities) {
-				tagsAction.put(tag.getTagValue(), actionByDefault);
-			}
-		}
-		if (excludedTagEntities != null && !excludedTagEntities.isEmpty()) {
-			for (ExcludedTagEntity tag : excludedTagEntities) {
-				exceptedTagsAction.put(tag.getTagValue(), actionByDefault);
-			}
-		}
+		mapTagsToAction(tagsAction, exceptedTagsAction, actionByDefault);
 	}
 
 	@Override
@@ -76,11 +58,7 @@ public class ActionDates extends AbstractProfileItem {
 					+ option + " : Option available (shift, shift_range, shift_by_tag, date_format)");
 		}
 
-		final ExpressionError expressionError = ExpressionResult.isValid(condition, new ExprCondition(new Attributes()),
-				Boolean.class);
-		if (condition != null && !expressionError.isValid()) {
-			throw new ProfileException(expressionError.getMsg());
-		}
+		validateCondition();
 	}
 
 	@Override

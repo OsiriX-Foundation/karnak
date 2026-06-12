@@ -10,8 +10,6 @@
 package org.karnak.backend.service;
 
 import java.util.List;
-import java.util.Optional;
-import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.data.repo.ProjectRepo;
 import org.karnak.backend.enums.NodeEventType;
@@ -63,14 +61,11 @@ public class ProjectService {
 		}
 	}
 
-	/**
-	 * Update destinations
-	 * @param projectEntity Project destinations to update
-	 */
+	/** Publishes an update event for each of the project's destinations. */
 	private void updateDestinations(ProjectEntity projectEntity) {
-		for (DestinationEntity destinationEntity : projectEntity.getDestinationEntities()) {
-			applicationEventPublisher.publishEvent(new NodeEvent(destinationEntity, NodeEventType.UPDATE));
-		}
+		projectEntity.getDestinationEntities()
+			.forEach(destinationEntity -> applicationEventPublisher
+				.publishEvent(new NodeEvent(destinationEntity, NodeEventType.UPDATE)));
 	}
 
 	/**
@@ -98,14 +93,7 @@ public class ProjectService {
 	 * @return project found
 	 */
 	public ProjectEntity retrieveProject(Long id) {
-		ProjectEntity projectEntity = null;
-		if (id != null) {
-			Optional<ProjectEntity> projectEntityOptional = projectRepo.findById(id);
-			if (projectEntityOptional.isPresent()) {
-				projectEntity = projectEntityOptional.get();
-			}
-		}
-		return projectEntity;
+		return id == null ? null : projectRepo.findById(id).orElse(null);
 	}
 
 }

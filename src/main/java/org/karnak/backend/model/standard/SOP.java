@@ -11,7 +11,9 @@ package org.karnak.backend.model.standard;
 
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
 
+@Getter
 public class SOP {
 
 	private final String UID;
@@ -22,34 +24,14 @@ public class SOP {
 
 	private final String ciod_id;
 
-	private final ArrayList<Module> modules;
+	private final List<Module> modules;
 
-	SOP(String UID, String name, String ciod, String ciod_id, ArrayList<Module> modules) {
+	SOP(String UID, String name, String ciod, String ciod_id, List<Module> modules) {
 		this.UID = UID;
 		this.name = name;
 		this.ciod = ciod;
 		this.ciod_id = ciod_id;
 		this.modules = modules;
-	}
-
-	public String getUID() {
-		return UID;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public String getCiod() {
-		return ciod;
-	}
-
-	public String getCiod_id() {
-		return ciod_id;
-	}
-
-	public List<Module> getModules() {
-		return modules;
 	}
 
 }

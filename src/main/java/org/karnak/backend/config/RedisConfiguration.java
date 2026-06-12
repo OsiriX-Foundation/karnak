@@ -10,6 +10,7 @@
 package org.karnak.backend.config;
 
 import java.time.Duration;
+import org.weasis.core.util.annotations.Generated;
 import org.karnak.backend.cache.Patient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.cache.autoconfigure.RedisCacheManagerBuilderCustomizer;
@@ -25,6 +26,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 @Profile("!portable")
+@Generated
 public class RedisConfiguration {
 
 	@Value("${cache-api.ttl}")

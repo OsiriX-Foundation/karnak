@@ -7,22 +7,23 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  */
-package org.karnak.backend.api.rqbody;
+package org.karnak.backend.model.dicominnolitics;
 
-public class Ids {
+import lombok.Getter;
 
-	private String extid;
+@Getter
+public class JsonModuleToAttribute {
 
-	public Ids(String extid) {
-		this.extid = extid;
-	}
+	private String moduleId;
 
-	public String get_extid() {
-		return this.extid;
-	}
+	private String path;
 
-	public void set_extid(String extid) {
-		this.extid = extid;
-	}
+	private String tag;
+
+	private String type;
+
+	private String linkToStandard;
+
+	private String description;
 
 }

@@ -41,19 +41,24 @@ public final class SecurityUtil {
 	 * @return true if the user is logged and is an admin
 	 */
 	public static boolean isUserAdmin() {
-		return SecurityUtil.isUserLoggedIn() && SecurityContextHolder.getContext()
-			.getAuthentication()
-			.getAuthorities()
-			.stream()
-			.anyMatch(ga -> Objects.equals(ga.getAuthority(), SecurityRole.ADMIN_ROLE.getRole()));
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		return isUserLoggedIn() && authentication != null
+				&& authentication.getAuthorities()
+					.stream()
+					.anyMatch(ga -> Objects.equals(ga.getAuthority(), SecurityRole.ADMIN_ROLE.getRole()));
 	}
 
 	/**
 	 * Sign out method
 	 */
 	public static void signOut() {
+		var request = VaadinServletService.getCurrentServletRequest();
+		if (request == null) {
+			LOG.warn("Cannot sign out: no current servlet request available");
+			return;
+		}
 		try {
-			VaadinServletService.getCurrentServletRequest().logout();
+			request.logout();
 		}
 		catch (ServletException e) {
 			LOG.error("Error during logout");

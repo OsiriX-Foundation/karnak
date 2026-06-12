@@ -205,7 +205,7 @@ class HMACTest {
 			HashContext context = new HashContext(KEY, "PATIENT-1");
 			HMAC hmac = new HMAC(context);
 
-			assertEquals("PATIENT-1", hmac.getHashContext().getPatientID());
+			assertEquals("PATIENT-1", hmac.getHashContext().patientID());
 			assertEquals(new HMAC(KEY).uidHash("1.2.3"), hmac.uidHash("1.2.3"));
 		}
 

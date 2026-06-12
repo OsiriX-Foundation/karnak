@@ -36,6 +36,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.hibernate.validator.group.GroupSequenceProvider;
 import org.karnak.backend.data.validator.DestinationGroupSequenceProvider;
 import org.karnak.backend.data.validator.DestinationGroupSequenceProvider.DestinationDicomGroup;
@@ -431,9 +432,7 @@ public class DestinationEntity implements Serializable {
 	}
 
 	public Set<String> retrieveSOPClassUIDFiltersName() {
-		Set<String> sopList = new HashSet<>();
-		this.SOPClassUIDEntityFilters.forEach(sopClassUID -> sopList.add(sopClassUID.getName()));
-		return sopList;
+		return SOPClassUIDEntityFilters.stream().map(SOPClassUIDEntity::getName).collect(Collectors.toSet());
 	}
 
 	public PseudonymType getPseudonymType() {
@@ -660,84 +659,14 @@ public class DestinationEntity implements Serializable {
 	}
 
 	public String retrieveStringReference() {
-		if (destinationType != null) {
-			switch (destinationType) {
-				case dicom:
-					return getAeTitle();
-				case stow:
-					return getUrl() + ":" + getPort();
-			}
+		if (destinationType == null) {
+			return "Type of destination is unknown";
 		}
-		return "Type of destination is unknown";
+		return switch (destinationType) {
+			case dicom -> getAeTitle();
+			case stow -> getUrl() + ":" + getPort();
+		};
 	}
-	//
-	// @Override
-	// public boolean equals(Object o) {
-	// if (this == o) {
-	// return true;
-	// }
-	// if (o == null || getClass() != o.getClass()) {
-	// return false;
-	// }
-	// DestinationEntity that = (DestinationEntity) o;
-	// return desidentification == that.desidentification
-	// && issuerByDefault == that.issuerByDefault
-	// && filterBySOPClasses == that.filterBySOPClasses
-	// && Objects.equals(id, that.id)
-	// && Objects.equals(description, that.description)
-	// && destinationType == that.destinationType
-	// && pseudonymType == that.pseudonymType
-	// && Objects.equals(tag, that.tag)
-	// && Objects.equals(delimiter, that.delimiter)
-	// && Objects.equals(position, that.position)
-	// && Objects.equals(savePseudonym, that.savePseudonym)
-	// && Objects.equals(transferSyntax, that.transferSyntax)
-	// && Objects.equals(transcodeOnlyUncompressed, that.transcodeOnlyUncompressed)
-	// && Objects.equals(activateNotification, that.activateNotification)
-	// && Objects.equals(notify, that.notify)
-	// && Objects.equals(notifyObjectErrorPrefix, that.notifyObjectErrorPrefix)
-	// && Objects.equals(notifyObjectPattern, that.notifyObjectPattern)
-	// && Objects.equals(notifyObjectValues, that.notifyObjectValues)
-	// && Objects.equals(notifyInterval, that.notifyInterval)
-	// && Objects.equals(aeTitle, that.aeTitle)
-	// && Objects.equals(hostname, that.hostname)
-	// && Objects.equals(port, that.port)
-	// && Objects.equals(useaetdest, that.useaetdest)
-	// && Objects.equals(url, that.url)
-	// && Objects.equals(urlCredentials, that.urlCredentials)
-	// && Objects.equals(headers, that.headers);
-	// }
-	//
-	// @Override
-	// public int hashCode() {
-	// return Objects.hash(
-	// id,
-	// description,
-	// destinationType,
-	// desidentification,
-	// issuerByDefault,
-	// pseudonymType,
-	// tag,
-	// delimiter,
-	// position,
-	// savePseudonym,
-	// filterBySOPClasses,
-	// transferSyntax,
-	// transcodeOnlyUncompressed,
-	// activateNotification,
-	// notify,
-	// notifyObjectErrorPrefix,
-	// notifyObjectPattern,
-	// notifyObjectValues,
-	// notifyInterval,
-	// aeTitle,
-	// hostname,
-	// port,
-	// useaetdest,
-	// url,
-	// urlCredentials,
-	// headers);
-	// }
 
 	@Override
 	public boolean equals(Object o) {

@@ -11,11 +11,13 @@ package org.karnak.backend.model.standard;
 
 import java.util.Arrays;
 import java.util.List;
-import org.apache.commons.lang3.StringUtils;
+import java.util.stream.Collectors;
+import lombok.Getter;
 
+@Getter
 public class ModuleAttribute {
 
-	private static final List<String> strictedTypes = Arrays.asList("1", "1C", "2", "2C", "3");
+	private static final List<String> STRICTER_TYPES = List.of("1", "1C", "2", "2C", "3");
 
 	private final String moduleTagPath;
 
@@ -32,37 +34,19 @@ public class ModuleAttribute {
 		this.tagPath = generateTagPath(moduleTagPath, moduleId);
 	}
 
-	public static String getStrictedType(List<ModuleAttribute> moduleAttributes) {
-		for (String strictedType : strictedTypes) {
-			if (moduleAttributes.stream().anyMatch(attribute -> strictedType.equals(attribute.getType())) == true) {
-				return strictedType;
+	public static String getStricterType(List<ModuleAttribute> moduleAttributes) {
+		for (String stricterType : STRICTER_TYPES) {
+			if (moduleAttributes.stream().anyMatch(attribute -> stricterType.equals(attribute.getType()))) {
+				return stricterType;
 			}
 		}
 		return null;
 	}
 
-	private String generateTagPath(String tagPath, String moduleId) {
-		List<String> tagPathFiltered = Arrays.stream(tagPath.split(":"))
+	private static String generateTagPath(String tagPath, String moduleId) {
+		return Arrays.stream(tagPath.split(":"))
 			.filter(value -> !value.equals(moduleId))
-			.toList();
-
-		return StringUtils.join(tagPathFiltered, ":");
-	}
-
-	public String getModuleTagPath() {
-		return moduleTagPath;
-	}
-
-	public String getTagPath() {
-		return tagPath;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public String getModuleId() {
-		return moduleId;
+			.collect(Collectors.joining(":"));
 	}
 
 }

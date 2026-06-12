@@ -24,24 +24,16 @@ public class DicomEchoThread implements Callable<String> {
 
 	@Override
 	public String call() throws Exception {
-		StringBuilder result = new StringBuilder();
-
-		result.append("<P>");
 		DicomNode dcmNode = node.getCalledNode();
-		result.append("<h6>DICOM Echo: ");
-		result.append(node);
-		result.append("</h6>");
-		result.append(dcmNode.toString());
-		result.append("<br>");
-		result.append("<small>");
+		StringBuilder result = new StringBuilder();
+		result.append("<P><h6>DICOM Echo: ").append(node).append("</h6>").append(dcmNode).append("<br><small>");
+
 		boolean success = Util.getEchoResponse(result, "PACSMONITOR", dcmNode, true, "HTML", 3000);
 		if (!success) {
 			Util.getNetworkResponse(result, dcmNode.getAet(), dcmNode.getHostname(), dcmNode.getPort(), true);
 		}
-		result.append("</small>");
-		result.append("</P>");
-		result.append("<hr>");
 
+		result.append("</small></P><hr>");
 		return result.toString();
 	}
 

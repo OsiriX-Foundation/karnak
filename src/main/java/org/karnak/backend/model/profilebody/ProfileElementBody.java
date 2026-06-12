@@ -11,43 +11,32 @@ package org.karnak.backend.model.profilebody;
 
 import java.util.List;
 import java.util.Map;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
+@Getter
+@Setter
 public class ProfileElementBody {
 
-	@Setter
-	@Getter
 	private String name;
 
-	@Setter
-	@Getter
 	private String codename;
 
-	@Setter
-	@Getter
 	private String condition;
 
-	@Getter
-	@Setter
 	private String action;
 
-	@Getter
-	@Setter
 	private String option;
 
-	@Getter
-	@Setter
 	private String args;
 
+	@Getter(AccessLevel.NONE)
+	@Setter(AccessLevel.NONE)
 	private List<String> tagEntities;
 
-	@Getter
-	@Setter
 	private List<String> excludedTags;
 
-	@Getter
-	@Setter
 	private Map<String, String> arguments;
 
 	public List<String> getTags() {

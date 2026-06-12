@@ -11,20 +11,22 @@ package org.karnak.backend.model.profilepipe;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 import org.dcm4che3.util.TagUtils;
 import org.karnak.backend.model.action.ActionItem;
 import org.weasis.core.util.StringUtil;
 
 public class TagActionMap {
 
-	private final HashMap<Integer, ActionItem> tagAction;
+	private static final Pattern TAG_SEPARATORS = Pattern.compile("[(),]");
 
-	private final HashMap<String, ActionItem> tagPatternAction;
-
-	public TagActionMap() {
-		tagAction = new HashMap<>();
-		tagPatternAction = new HashMap<>();
+	/** A tag pattern resolved to its matching tag value and bit mask. */
+	private record PatternAction(int tag, int mask, ActionItem action) {
 	}
+
+	private final Map<Integer, ActionItem> tagAction = new HashMap<>();
+
+	private final Map<String, PatternAction> tagPatternAction = new HashMap<>();
 
 	public static boolean isValidPattern(String tagPattern) {
 		if (!StringUtil.hasText(tagPattern) || tagPattern.length() != 8) {
@@ -48,9 +50,11 @@ public class TagActionMap {
 	}
 
 	public void put(String tag, ActionItem action) {
-		String cleanTag = tag.replaceAll("[(),]", "").toUpperCase();
+		String cleanTag = TAG_SEPARATORS.matcher(tag).replaceAll("").toUpperCase();
 		if (isValidPattern(cleanTag)) {
-			tagPatternAction.put(cleanTag, action);
+			int patternTag = TagUtils.intFromHexString(cleanTag.replace("X", "0"));
+			int patternMask = TagUtils.intFromHexString(getMask(cleanTag));
+			tagPatternAction.put(cleanTag, new PatternAction(patternTag, patternMask, action));
 		}
 		else {
 			tagAction.put(TagUtils.intFromHexString(cleanTag), action);
@@ -60,13 +64,9 @@ public class TagActionMap {
 	public ActionItem get(Integer tag) {
 		ActionItem action = tagAction.get(tag);
 		if (action == null) {
-			for (Map.Entry<String, ActionItem> entry : tagPatternAction.entrySet()) {
-				String currentTagPattern = entry.getKey();
-				int patternTag = TagUtils.intFromHexString(currentTagPattern.replace("X", "0"));
-				int patternMask = TagUtils.intFromHexString(getMask(currentTagPattern));
-
-				if ((tag & patternMask) == patternTag) {
-					return entry.getValue();
+			for (PatternAction pattern : tagPatternAction.values()) {
+				if ((tag & pattern.mask()) == pattern.tag()) {
+					return pattern.action();
 				}
 			}
 		}

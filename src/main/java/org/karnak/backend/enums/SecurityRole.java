@@ -10,31 +10,18 @@
 package org.karnak.backend.enums;
 
 import java.util.Arrays;
+import lombok.Getter;
 
+@Getter
 public enum SecurityRole {
 
-	// Role admin
-	ADMIN_ROLE("ROLE_admin", "admin"),
-	// Role Investigator
-	INVESTIGATOR_ROLE("ROLE_investigator", "investigator"),
-	// Role user
+	ADMIN_ROLE("ROLE_admin", "admin"), INVESTIGATOR_ROLE("ROLE_investigator", "investigator"),
 	USER_ROLE("ROLE_user", "user");
 
-	/**
-	 * Role of the enum
-	 */
 	private final String role;
 
-	/**
-	 * Type of the enum
-	 */
 	private final String type;
 
-	/**
-	 * Constructor
-	 * @param role Role of the enum
-	 * @param type Type of the enum
-	 */
 	SecurityRole(final String role, final String type) {
 		this.role = role;
 		this.type = type;
@@ -70,25 +57,9 @@ public enum SecurityRole {
 		return null;
 	}
 
-	/**
-	 * Getter for code
-	 * @return Role of the enum
-	 */
-	public String getRole() {
-		return role;
-	}
-
-	/**
-	 * Getter for type
-	 * @return Type of the enum
-	 */
-	public String getType() {
-		return type;
-	}
-
 	@Override
 	public String toString() {
-		return "SecurityRole{" + "role='" + role + '\'' + "type='" + type + '\'' + '}';
+		return "SecurityRole{role='" + role + "', type='" + type + "'}";
 	}
 
 }

@@ -23,13 +23,10 @@ public class EmailConfig {
 
 	@Bean
 	public JavaMailSender getJavaMailSender() {
-
-		// retrieve system properties
 		String mailSmtpPort = SystemPropertyUtil.retrieveSystemProperty("MAIL_SMTP_PORT", "0");
 		String mailSmtpUser = SystemPropertyUtil.retrieveSystemProperty("MAIL_SMTP_USER", null);
 		String mailAuthType = SystemPropertyUtil.retrieveSystemProperty("MAIL_SMTP_TYPE", null);
 
-		// Configure JavaMailSender
 		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
 		mailSender.setHost(SystemPropertyUtil.retrieveSystemProperty("MAIL_SMTP_HOST", null));
 		mailSender.setPort(Integer.parseInt(mailSmtpPort));
@@ -37,26 +34,28 @@ public class EmailConfig {
 		mailSender.setPassword(SystemPropertyUtil.retrieveSystemProperty("MAIL_SMTP_SECRET", null));
 		mailSender.setDefaultEncoding("utf-8");
 
-		// Additional properties
 		Properties props = mailSender.getJavaMailProperties();
 		props.put("mail.transport.protocol", "smtp");
-
-		// Value with authentication should be "SSL" or "STARTTLS"
+		// Authentication value should be "SSL" or "STARTTLS"
 		if (StringUtil.hasText(mailAuthType)) {
-			props.put("mail.smtp.auth", "true");
-			if (Objects.equals("SSL", mailAuthType)) {
-				props.put("mail.smtp.socketFactory.port", mailSmtpPort); // SSL Port
-				props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory"); // SSL
-				// Factory
-				// Class
-				props.put("mail.smtp.ssl.checkserveridentity", true);
-			}
-			else {
-				props.put("mail.smtp.starttls.enable", "true");
-			}
-			props.setProperty("mail.smtp.submitter", mailSmtpUser);
+			configureAuthentication(props, mailAuthType, mailSmtpPort, mailSmtpUser);
 		}
 		return mailSender;
+	}
+
+	/** Enables SMTP auth, using SSL or STARTTLS depending on {@code mailAuthType}. */
+	private static void configureAuthentication(Properties props, String mailAuthType, String mailSmtpPort,
+			String mailSmtpUser) {
+		props.put("mail.smtp.auth", "true");
+		if (Objects.equals("SSL", mailAuthType)) {
+			props.put("mail.smtp.socketFactory.port", mailSmtpPort);
+			props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+			props.put("mail.smtp.ssl.checkserveridentity", true);
+		}
+		else {
+			props.put("mail.smtp.starttls.enable", "true");
+		}
+		props.setProperty("mail.smtp.submitter", mailSmtpUser);
 	}
 
 }

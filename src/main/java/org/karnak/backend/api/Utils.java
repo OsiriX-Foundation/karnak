@@ -14,9 +14,9 @@ import java.net.http.HttpRequest;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
-public class utils {
+public class Utils {
 
-	private utils() {
+	private Utils() {
 	}
 
 	public static HttpRequest.BodyPublisher buildDataFromMap(Map<Object, Object> data) {

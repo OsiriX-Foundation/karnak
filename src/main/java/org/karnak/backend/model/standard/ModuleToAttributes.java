@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.karnak.backend.exception.ModuleNotFoundException;
 import org.karnak.backend.model.dicominnolitics.StandardModuleToAttributes;
-import org.karnak.backend.model.dicominnolitics.jsonModuleToAttribute;
+import org.karnak.backend.model.dicominnolitics.JsonModuleToAttribute;
 
 public class ModuleToAttributes {
 
@@ -27,18 +27,14 @@ public class ModuleToAttributes {
 		HMapModuleAttributes = initializeAttributes(StandardModuleToAttributes.readJsonModuleToAttributes());
 	}
 
-	private Map<String, Map<String, ModuleAttribute>> initializeAttributes(jsonModuleToAttribute[] moduleToAttributes) {
+	private Map<String, Map<String, ModuleAttribute>> initializeAttributes(JsonModuleToAttribute[] moduleToAttributes) {
 		Map<String, Map<String, ModuleAttribute>> HMapModuleAttributes = new HashMap<>();
 
-		for (jsonModuleToAttribute moduleToAttribute : moduleToAttributes) {
+		for (JsonModuleToAttribute moduleToAttribute : moduleToAttributes) {
 			ModuleAttribute moduleAttribute = new ModuleAttribute(moduleToAttribute.getPath(),
 					moduleToAttribute.getType(), moduleToAttribute.getModuleId());
-
-			String moduleKey = moduleToAttribute.getModuleId();
-			if (!HMapModuleAttributes.containsKey(moduleKey)) {
-				HMapModuleAttributes.put(moduleKey, new HashMap<>());
-			}
-			HMapModuleAttributes.get(moduleKey).put(moduleAttribute.getTagPath(), moduleAttribute);
+			HMapModuleAttributes.computeIfAbsent(moduleToAttribute.getModuleId(), k -> new HashMap<>())
+				.put(moduleAttribute.getTagPath(), moduleAttribute);
 		}
 
 		return HMapModuleAttributes;

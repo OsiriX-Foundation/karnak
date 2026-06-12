@@ -22,9 +22,6 @@ import org.karnak.backend.exception.ProfileException;
 import org.karnak.backend.model.action.ActionItem;
 import org.karnak.backend.model.action.Add;
 import org.karnak.backend.model.action.Keep;
-import org.karnak.backend.model.expression.ExprCondition;
-import org.karnak.backend.model.expression.ExpressionError;
-import org.karnak.backend.model.expression.ExpressionResult;
 import org.karnak.backend.model.profilepipe.HMAC;
 import org.karnak.backend.model.profilepipe.TagActionMap;
 import org.karnak.backend.model.standard.AttributeDetail;
@@ -32,10 +29,6 @@ import org.karnak.backend.model.standard.StandardDICOM;
 
 @Slf4j
 public class AddTag extends AbstractProfileItem {
-
-	private final TagActionMap tagsAction;
-
-	private final ActionItem actionByDefault;
 
 	private boolean tagAdded;
 
@@ -47,19 +40,10 @@ public class AddTag extends AbstractProfileItem {
 		super(profileElementEntity);
 		standardDICOM = AppConfig.getInstance().getStandardDICOM();
 
-		tagsAction = new TagActionMap();
-		actionByDefault = new Keep("K");
+		TagActionMap tagsAction = new TagActionMap();
+		ActionItem actionByDefault = new Keep("K");
 		profileValidation();
-		setActionHashMap();
-	}
-
-	private void setActionHashMap() {
-
-		if (tagEntities != null && !tagEntities.isEmpty()) {
-			for (IncludedTagEntity tag : tagEntities) {
-				tagsAction.put(tag.getTagValue(), actionByDefault);
-			}
-		}
+		mapTagsToAction(tagsAction, null, actionByDefault);
 	}
 
 	@Override
@@ -71,7 +55,7 @@ public class AddTag extends AbstractProfileItem {
 			if (!standardDICOM.getAttributesBySOP(dcm.getString(Tag.SOPClassUID), tagValue).isEmpty()) {
 
 				String value = "";
-				VR vr = VR.valueOf(standardDICOM.getAttributeDetail(tagValue).getValueRepresentation());
+				VR vr = VR.valueOf(standardDICOM.getAttributeDetail(tagValue).valueRepresentation());
 				for (ArgumentEntity ae : argumentEntities) {
 					if ("value".equals(ae.getArgumentKey())) {
 						value = ae.getArgumentValue();
@@ -111,7 +95,7 @@ public class AddTag extends AbstractProfileItem {
 				// The VR is currently retrieved from the DICOM Standard, in a very few
 				// cases, we cannot infer this value
 				// It should only concern fields that would not be included in profiles
-				VR.valueOf(attr.getValueRepresentation());
+				VR.valueOf(attr.valueRepresentation());
 			}
 			catch (IllegalArgumentException e) {
 				throw new ProfileException("Cannot build the profile " + codeName + ": the tag "
@@ -119,11 +103,7 @@ public class AddTag extends AbstractProfileItem {
 			}
 		}
 
-		final ExpressionError expressionError = ExpressionResult.isValid(condition, new ExprCondition(new Attributes()),
-				Boolean.class);
-		if (condition != null && !expressionError.isValid()) {
-			throw new ProfileException(expressionError.getMsg());
-		}
+		validateCondition();
 	}
 
 }

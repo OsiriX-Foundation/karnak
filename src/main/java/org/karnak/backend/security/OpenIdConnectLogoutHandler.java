@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.time.Duration;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NonNull;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
@@ -21,7 +22,8 @@ import org.springframework.web.client.RestClient;
 import org.springframework.web.util.UriComponentsBuilder;
 
 /**
- * Handle IDP logout
+ * Logs out the local security context and propagates the logout to the OpenID Connect
+ * identity provider.
  */
 @Slf4j
 public class OpenIdConnectLogoutHandler extends SecurityContextLogoutHandler {
@@ -42,29 +44,25 @@ public class OpenIdConnectLogoutHandler extends SecurityContextLogoutHandler {
 	}
 
 	@Override
-	public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-		// Security context logout
+	public void logout(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
+			Authentication authentication) {
 		super.logout(request, response, authentication);
 
 		if (authentication != null && authentication.getPrincipal() instanceof OidcUser oidcUser) {
-			// Idp logout
 			propagateLogoutToIdp(oidcUser);
 		}
 	}
 
 	/**
-	 * Propagate logout to IDP. The local logout has already been done at this point, so
-	 * any failure to reach the IDP is only logged and never breaks the logout itself.
-	 * @param user OpenId Connect user
+	 * Best-effort IDP logout: the local logout already succeeded, so failures are only
+	 * logged.
 	 */
 	private void propagateLogoutToIdp(OidcUser user) {
-		// Build logout URI
 		String endSessionEndpoint = user.getIssuer() + END_SESSION_ENDPOINT;
 		String logoutUri = UriComponentsBuilder.fromUriString(endSessionEndpoint)
 			.queryParam(ID_TOKEN_HINT, user.getIdToken().getTokenValue())
 			.toUriString();
 
-		// Call IDP logout endpoint
 		try {
 			restClient.get().uri(logoutUri).retrieve().toBodilessEntity();
 			log.info("Successful IDP logout");

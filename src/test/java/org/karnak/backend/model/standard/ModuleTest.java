@@ -24,9 +24,9 @@ class ModuleTest {
 	void exposes_its_identifying_fields() {
 		Module module = new Module("patient", "M", "Patient");
 
-		assertEquals("patient", module.getId());
-		assertEquals("M", module.getUsage());
-		assertEquals("Patient", module.getInformationEntity());
+		assertEquals("patient", module.id());
+		assertEquals("M", module.usage());
+		assertEquals("Patient", module.informationEntity());
 	}
 
 	@Test

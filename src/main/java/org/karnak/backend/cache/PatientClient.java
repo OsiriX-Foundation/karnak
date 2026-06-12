@@ -12,6 +12,7 @@ package org.karnak.backend.cache;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
+import java.util.stream.Stream;
 import org.springframework.cache.Cache;
 import org.springframework.cache.Cache.ValueWrapper;
 import org.springframework.cache.concurrent.ConcurrentMapCache;
@@ -37,13 +38,11 @@ public abstract class PatientClient {
 	}
 
 	public Patient put(String key, Patient patient) {
-		ValueWrapper valueFromCache = cache.putIfAbsent(key, patient);
-		return valueFromCache != null ? (Patient) valueFromCache.get() : null;
+		return unwrap(cache.putIfAbsent(key, patient));
 	}
 
 	public Patient get(String key) {
-		ValueWrapper valueFromCache = cache.get(key);
-		return valueFromCache != null ? (Patient) valueFromCache.get() : null;
+		return unwrap(cache.get(key));
 	}
 
 	public void remove(String key) {
@@ -51,49 +50,47 @@ public abstract class PatientClient {
 	}
 
 	public Collection<Patient> getAll() {
-		// For in-memory cache (ConcurrentMapCache), get keys directly
+		// In-memory cache (ConcurrentMapCache): iterate the native map keys
 		if (cache instanceof ConcurrentMapCache concurrentMapCache) {
 			return concurrentMapCache.getNativeCache()
 				.keySet()
 				.stream()
-				.filter(Objects::nonNull)
 				.map(k -> get(k.toString()))
 				.filter(Objects::nonNull)
 				.toList();
 		}
-
-		// For Redis cache
+		// Redis cache: iterate the keys matching the cache prefix
 		if (redisTemplate != null) {
-			return Objects.requireNonNull(redisTemplate.keys(patternSearchAllKeysCache))
-				.stream()
-				.filter(Objects::nonNull)
-				.filter(c -> c.length() > prefixKeySearchCache.length())
-				.map(k -> {
-					ValueWrapper keyValue = cache.get(k.substring(prefixKeySearchCache.length()));
-					return keyValue != null ? (Patient) keyValue.get() : null;
-				})
-				.toList();
+			return redisCacheKeys().map(this::get).filter(Objects::nonNull).toList();
 		}
-
 		return Collections.emptyList();
 	}
 
 	public void removeAll() {
-		// For in-memory cache (ConcurrentMapCache), clear directly
+		// In-memory cache (ConcurrentMapCache): clear directly
 		if (cache instanceof ConcurrentMapCache concurrentMapCache) {
 			concurrentMapCache.clear();
 			return;
 		}
-
-		// For Redis cache
+		// Redis cache: evict every key matching the cache prefix
 		if (redisTemplate != null) {
-			Objects.requireNonNull(redisTemplate.keys(patternSearchAllKeysCache))
-				.stream()
-				.filter(Objects::nonNull)
-				.filter(c -> c.length() > prefixKeySearchCache.length())
-				.forEach(k -> remove(k.substring(prefixKeySearchCache.length())));
+			redisCacheKeys().forEach(this::remove);
 		}
+	}
 
+	private static Patient unwrap(ValueWrapper wrapper) {
+		return wrapper != null ? (Patient) wrapper.get() : null;
+	}
+
+	/**
+	 * Streams the Redis cache keys matching the cache prefix, with the prefix stripped.
+	 */
+	private Stream<String> redisCacheKeys() {
+		return Objects.requireNonNull(redisTemplate.keys(patternSearchAllKeysCache))
+			.stream()
+			.filter(Objects::nonNull)
+			.filter(c -> c.length() > prefixKeySearchCache.length())
+			.map(k -> k.substring(prefixKeySearchCache.length()));
 	}
 
 }

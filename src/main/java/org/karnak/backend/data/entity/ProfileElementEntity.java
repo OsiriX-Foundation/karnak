@@ -170,7 +170,7 @@ public class ProfileElementEntity implements Serializable {
 		this.position = position;
 	}
 
-	@ManyToOne()
+	@ManyToOne
 	@JoinColumn(name = "profile_id", nullable = false)
 	@JsonIgnore
 	public ProfileEntity getProfileEntity() {

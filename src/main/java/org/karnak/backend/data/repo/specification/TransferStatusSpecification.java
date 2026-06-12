@@ -18,7 +18,6 @@ import java.io.Serial;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.backend.data.entity.TransferStatusEntity;
 import org.karnak.backend.enums.TransferStatusType;
@@ -33,16 +32,10 @@ public class TransferStatusSpecification implements Specification<TransferStatus
 	@Serial
 	private static final long serialVersionUID = -939448741462690254L;
 
-	// Like character
 	private static final String LIKE = "%";
 
-	// Criteria to look for
 	private final TransferStatusFilter transferStatusFilter;
 
-	/**
-	 * Constructor with filter
-	 * @param transferStatusFilter Criteria to look for
-	 */
 	public TransferStatusSpecification(TransferStatusFilter transferStatusFilter) {
 		this.transferStatusFilter = transferStatusFilter;
 	}
@@ -50,129 +43,58 @@ public class TransferStatusSpecification implements Specification<TransferStatus
 	@Override
 	public Predicate toPredicate(Root<TransferStatusEntity> root, CriteriaQuery<?> query,
 			CriteriaBuilder criteriaBuilder) {
-		// Predicates to fill
 		List<Predicate> predicates = new ArrayList<>();
-
-		// Paths
-		// Study Uid
-		Path<String> pStudyUidOriginal = root.get("studyUidOriginal");
-		Path<String> pStudyUidToSend = root.get("studyUidToSend");
-		// Serie Uid
-		Path<String> pSerieUidOriginal = root.get("serieUidOriginal");
-		Path<String> pSerieUidToSend = root.get("serieUidToSend");
-		// Sop Instance Uid
-		Path<String> pSopInstanceUidOriginal = root.get("sopInstanceUidOriginal");
-		Path<String> pSopInstanceUidToSend = root.get("sopInstanceUidToSend");
-		// Status
-		Path<Boolean> pSent = root.get("sent");
-		// Error
-		Path<Boolean> pError = root.get("error");
-		// Transfer date
-		Path<LocalDateTime> pTransferDate = root.get("transferDate");
-
-		// Build criteria
 		if (transferStatusFilter != null) {
-			// Study Uid
-			buildCriteriaStudyUid(criteriaBuilder, predicates, pStudyUidOriginal, pStudyUidToSend);
-			// Serie Uid
-			buildCriteriaSerieUid(criteriaBuilder, predicates, pSerieUidOriginal, pSerieUidToSend);
-			// Sop Instance Uid
-			buildCriteriaSopInstanceUid(criteriaBuilder, predicates, pSopInstanceUidOriginal, pSopInstanceUidToSend);
-			// Sent
-			buildCriteriaSent(criteriaBuilder, predicates, pSent, pError);
-			// Transfer Date
-			buildCriteriaTransferDate(criteriaBuilder, predicates, pTransferDate);
+			addLikePredicate(criteriaBuilder, predicates, transferStatusFilter.getStudyUid(),
+					root.get("studyUidOriginal"), root.get("studyUidToSend"));
+			addLikePredicate(criteriaBuilder, predicates, transferStatusFilter.getSerieUid(),
+					root.get("serieUidOriginal"), root.get("serieUidToSend"));
+			addLikePredicate(criteriaBuilder, predicates, transferStatusFilter.getSopInstanceUid(),
+					root.get("sopInstanceUidOriginal"), root.get("sopInstanceUidToSend"));
+			addStatusPredicates(criteriaBuilder, predicates, root.get("sent"), root.get("error"));
+			addTransferDatePredicate(criteriaBuilder, predicates, root.get("transferDate"));
 		}
-
-		return criteriaBuilder.and(predicates.toArray(new Predicate[] {}));
+		return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
 	}
 
-	/**
-	 * Build criteria for study uid
-	 * @param criteriaBuilder CriteriaBuilder
-	 * @param predicates Predicates to build
-	 * @param pStudyUidOriginal Path of study uid original
-	 * @param pStudyUidToSend Path of study uid to send
-	 */
-	private void buildCriteriaStudyUid(CriteriaBuilder criteriaBuilder, List<Predicate> predicates,
-			Path<String> pStudyUidOriginal, Path<String> pStudyUidToSend) {
-		if (transferStatusFilter.getStudyUid() != null && StringUtils.isNotBlank(transferStatusFilter.getStudyUid())) {
-			predicates.add(criteriaBuilder.or(
-					criteriaBuilder.like(pStudyUidOriginal, LIKE + transferStatusFilter.getStudyUid().trim() + LIKE),
-					criteriaBuilder.like(pStudyUidToSend, LIKE + transferStatusFilter.getStudyUid().trim() + LIKE)));
+	/** Adds a LIKE match of the value on either the original or the to-send path. */
+	private void addLikePredicate(CriteriaBuilder criteriaBuilder, List<Predicate> predicates, String value,
+			Path<String> original, Path<String> toSend) {
+		if (StringUtils.isNotBlank(value)) {
+			String pattern = LIKE + value.trim() + LIKE;
+			predicates.add(
+					criteriaBuilder.or(criteriaBuilder.like(original, pattern), criteriaBuilder.like(toSend, pattern)));
 		}
 	}
 
 	/**
-	 * Build criteria for serie uid
-	 * @param criteriaBuilder CriteriaBuilder
-	 * @param predicates Predicates to build
-	 * @param pSerieUidOriginal Path of serie uid original
-	 * @param pSerieUidToSend Path of serie uid to send
+	 * Adds the sent (and, except for NOT_SENT, error) equality predicates for the
+	 * selected status.
 	 */
-	private void buildCriteriaSerieUid(CriteriaBuilder criteriaBuilder, List<Predicate> predicates,
-			Path<String> pSerieUidOriginal, Path<String> pSerieUidToSend) {
-		if (transferStatusFilter.getSerieUid() != null && StringUtils.isNotBlank(transferStatusFilter.getSerieUid())) {
-			predicates.add(criteriaBuilder.or(
-					criteriaBuilder.like(pSerieUidOriginal, LIKE + transferStatusFilter.getSerieUid() + LIKE),
-					criteriaBuilder.like(pSerieUidToSend, LIKE + transferStatusFilter.getSerieUid() + LIKE)));
-		}
-	}
-
-	/**
-	 * Build criteria for sop instance uid
-	 * @param criteriaBuilder CriteriaBuilder
-	 * @param predicates Predicates to build
-	 * @param pSopInstanceUidOriginal Path of sop instance uid original
-	 * @param pSopInstanceUidToSend Path of sop instance uid to send
-	 */
-	private void buildCriteriaSopInstanceUid(CriteriaBuilder criteriaBuilder, List<Predicate> predicates,
-			Path<String> pSopInstanceUidOriginal, Path<String> pSopInstanceUidToSend) {
-		if (transferStatusFilter.getSopInstanceUid() != null
-				&& StringUtils.isNotBlank(transferStatusFilter.getSopInstanceUid())) {
-			predicates.add(criteriaBuilder.or(
-					criteriaBuilder.like(pSopInstanceUidOriginal,
-							LIKE + transferStatusFilter.getSopInstanceUid() + LIKE),
-					criteriaBuilder.like(pSopInstanceUidToSend,
-							LIKE + transferStatusFilter.getSopInstanceUid() + LIKE)));
-		}
-	}
-
-	/**
-	 * Build criteria for sent
-	 * @param criteriaBuilder CriteriaBuilder
-	 * @param predicates Predicates to build
-	 * @param pSent Path of sent
-	 */
-	private void buildCriteriaSent(CriteriaBuilder criteriaBuilder, List<Predicate> predicates, Path<Boolean> pSent,
+	private void addStatusPredicates(CriteriaBuilder criteriaBuilder, List<Predicate> predicates, Path<Boolean> pSent,
 			Path<Boolean> pError) {
-		if (transferStatusFilter.getTransferStatusType() != null
-				&& !Objects.equals(transferStatusFilter.getTransferStatusType(), TransferStatusType.ALL)) {
-			predicates.add(criteriaBuilder.equal(pSent, transferStatusFilter.getTransferStatusType().getSent()));
-			if (!Objects.equals(transferStatusFilter.getTransferStatusType(), TransferStatusType.NOT_SENT)) {
-				predicates.add(criteriaBuilder.equal(pError, transferStatusFilter.getTransferStatusType().getError()));
+		TransferStatusType type = transferStatusFilter.getTransferStatusType();
+		if (type != null && type != TransferStatusType.ALL) {
+			predicates.add(criteriaBuilder.equal(pSent, type.getSent()));
+			if (type != TransferStatusType.NOT_SENT) {
+				predicates.add(criteriaBuilder.equal(pError, type.getError()));
 			}
 		}
 	}
 
-	/**
-	 * Build criteria for transfer date
-	 * @param criteriaBuilder CriteriaBuilder
-	 * @param predicates Predicates to build
-	 * @param pTransferDate Path of transfer date
-	 */
-	private void buildCriteriaTransferDate(CriteriaBuilder criteriaBuilder, List<Predicate> predicates,
+	/** Adds a transfer-date predicate: lower bound, upper bound, or a valid range. */
+	private void addTransferDatePredicate(CriteriaBuilder criteriaBuilder, List<Predicate> predicates,
 			Path<LocalDateTime> pTransferDate) {
-		if (transferStatusFilter.getStart() != null && transferStatusFilter.getEnd() == null) {
-			predicates.add(criteriaBuilder.greaterThanOrEqualTo(pTransferDate, transferStatusFilter.getStart()));
+		LocalDateTime start = transferStatusFilter.getStart();
+		LocalDateTime end = transferStatusFilter.getEnd();
+		if (start != null && end == null) {
+			predicates.add(criteriaBuilder.greaterThanOrEqualTo(pTransferDate, start));
 		}
-		else if (transferStatusFilter.getStart() == null && transferStatusFilter.getEnd() != null) {
-			predicates.add(criteriaBuilder.lessThanOrEqualTo(pTransferDate, transferStatusFilter.getEnd()));
+		else if (start == null && end != null) {
+			predicates.add(criteriaBuilder.lessThanOrEqualTo(pTransferDate, end));
 		}
-		else if (transferStatusFilter.getStart() != null && transferStatusFilter.getEnd() != null
-				&& transferStatusFilter.getStart().isBefore(transferStatusFilter.getEnd())) {
-			predicates.add(criteriaBuilder.between(pTransferDate, transferStatusFilter.getStart(),
-					transferStatusFilter.getEnd()));
+		else if (start != null && end != null && start.isBefore(end)) {
+			predicates.add(criteriaBuilder.between(pTransferDate, start, end));
 		}
 	}
 

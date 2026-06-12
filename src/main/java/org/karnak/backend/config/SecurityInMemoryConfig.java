@@ -10,6 +10,7 @@
 package org.karnak.backend.config;
 
 import com.vaadin.flow.spring.security.VaadinSecurityConfigurer;
+import org.weasis.core.util.annotations.Generated;
 import org.karnak.backend.enums.SecurityRole;
 import org.karnak.backend.security.DefaultIdpLoadCondition;
 import org.karnak.frontend.authentication.LoginScreen;
@@ -34,6 +35,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 @Configuration
 @Conditional(value = DefaultIdpLoadCondition.class)
+@Generated
 public class SecurityInMemoryConfig {
 
 	private static final String LOGIN_URL = "/login";

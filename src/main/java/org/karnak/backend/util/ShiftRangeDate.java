@@ -45,7 +45,7 @@ public class ShiftRangeDate {
 		int shiftMinDays = ArgumentUtil.intValue(argumentEntities, "min_days", 0);
 
 		String dcmElValue = dcm.getString(tag);
-		String patientID = hmac.getHashContext().getPatientID();
+		String patientID = hmac.getHashContext().patientID();
 		int shiftDays = (int) hmac.scaleHash(patientID, shiftMinDays, shiftMaxDays);
 		int shiftSeconds = (int) hmac.scaleHash(patientID, shiftMinSeconds, shiftMaxSeconds);
 

@@ -10,7 +10,11 @@
 package org.karnak.backend.model.profilebody;
 
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class MaskBody {
 
 	private String stationName;
@@ -22,45 +26,5 @@ public class MaskBody {
 	private String color;
 
 	private List<String> rectangles;
-
-	public String getStationName() {
-		return stationName;
-	}
-
-	public void setStationName(String stationName) {
-		this.stationName = stationName;
-	}
-
-	public String getColor() {
-		return color;
-	}
-
-	public void setColor(String color) {
-		this.color = color;
-	}
-
-	public List<String> getRectangles() {
-		return rectangles;
-	}
-
-	public void setRectangles(List<String> rectangles) {
-		this.rectangles = rectangles;
-	}
-
-	public Long getImageWidth() {
-		return imageWidth;
-	}
-
-	public void setImageWidth(Long imageWidth) {
-		this.imageWidth = imageWidth;
-	}
-
-	public Long getImageHeight() {
-		return imageHeight;
-	}
-
-	public void setImageHeight(Long imageHeight) {
-		this.imageHeight = imageHeight;
-	}
 
 }

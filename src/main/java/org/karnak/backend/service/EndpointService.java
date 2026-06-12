@@ -44,6 +44,8 @@ import org.springframework.web.client.RestClient;
 @Service
 public class EndpointService {
 
+	private static final Pattern EXPRESSION_PLACEHOLDER = Pattern.compile("\\{\\{([^}]+)\\}\\}");
+
 	private final AuthConfigRepo authConfigRepo;
 
 	@Autowired
@@ -142,13 +144,11 @@ public class EndpointService {
 
 	public static String evaluateStringWithExpression(String url, Attributes dcm) {
 		if (url != null && !url.isEmpty()) {
-			Pattern p = Pattern.compile("\\{\\{([^\\}]+)\\}\\}");
-			Matcher m = p.matcher(url);
+			Matcher m = EXPRESSION_PLACEHOLDER.matcher(url);
 			String replacedUrl = url;
 			while (m.find()) {
-				// The url contains parameters to replace
 				String param = (String) ExpressionResult.get(m.group(1), new ExprAction(1, VR.AE, dcm), String.class);
-				replacedUrl = replacedUrl.replaceFirst("\\{\\{[^\\}]+\\}\\}", param);
+				replacedUrl = replacedUrl.replaceFirst(EXPRESSION_PLACEHOLDER.pattern(), param);
 			}
 			return replacedUrl;
 		}
@@ -157,8 +157,7 @@ public class EndpointService {
 
 	public static String validateStringWithExpression(String url) {
 		if (url != null && !url.isEmpty()) {
-			Pattern p = Pattern.compile("\\{\\{([^\\}]+)\\}\\}");
-			Matcher m = p.matcher(url);
+			Matcher m = EXPRESSION_PLACEHOLDER.matcher(url);
 			while (m.find()) {
 				final ExpressionError expressionError = ExpressionResult.isValid(m.group(1),
 						new ExprAction(1, VR.AE, new Attributes()), ActionItem.class);

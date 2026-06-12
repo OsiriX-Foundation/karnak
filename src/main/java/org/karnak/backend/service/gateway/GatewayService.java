@@ -14,6 +14,7 @@ import jakarta.annotation.PreDestroy;
 import java.nio.file.Path;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NonNull;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.repo.DestinationRepo;
 import org.karnak.backend.dicom.GatewayParams;
@@ -63,7 +64,7 @@ public class GatewayService implements ApplicationListener<ContextRefreshedEvent
 	}
 
 	@Override
-	public void onApplicationEvent(ContextRefreshedEvent event) {
+	public void onApplicationEvent(@NonNull ContextRefreshedEvent event) {
 		log.info("Application Event: {}", event);
 	}
 
@@ -86,7 +87,7 @@ public class GatewayService implements ApplicationListener<ContextRefreshedEvent
 		destinationEntities.forEach(d -> d.setTransferInProgress(false));
 		destinationRepo.saveAll(destinationEntities);
 
-		log.info("{}", "Gateway has been stopped");
+		log.info("Gateway has been stopped");
 		String dir = System.getProperty("dicom.native.codec");
 		if (StringUtil.hasText(dir)) {
 			FileUtil.delete(Path.of(dir));
@@ -95,12 +96,12 @@ public class GatewayService implements ApplicationListener<ContextRefreshedEvent
 
 	@PostConstruct
 	public void init() {
-		log.info("{}", "Start the gateway manager running as a background process");
+		log.info("Start the gateway manager running as a background process");
 		try {
 			NativeLibraryManager.initNativeLibs();
 		}
-		catch (Exception e1) {
-			throw new IllegalStateException("Cannot register DICOM native librairies", e1);
+		catch (Exception e) {
+			throw new IllegalStateException("Cannot register DICOM native libraries", e);
 		}
 		initGateway();
 	}

@@ -12,12 +12,13 @@ package org.karnak.backend.service;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.dcm4che3.net.ApplicationEntity;
 import org.dcm4che3.net.Connection;
@@ -39,6 +40,7 @@ import org.weasis.dicom.param.DicomNode;
 @Slf4j
 public class StoreScpForwardService {
 
+	@Getter
 	private final Device device;
 
 	private final ApplicationEntity ae;
@@ -47,6 +49,7 @@ public class StoreScpForwardService {
 
 	private volatile int priority;
 
+	@Setter
 	private volatile int status;
 
 	private Map<ForwardDicomNode, List<ForwardDestination>> destinations;
@@ -78,19 +81,18 @@ public class StoreScpForwardService {
 		DicomForwardDestination uniqueDestination = new DicomForwardDestination(forwardParams, fwdNode, destinationNode,
 				attributesEditor);
 		this.destinations = new HashMap<>();
-		destinations.put(fwdNode, Collections.singletonList(uniqueDestination));
+		destinations.put(fwdNode, List.of(uniqueDestination));
 		cStoreSCPService.init(destinations);
-
-		device.setDimseRQHandler(createServiceRegistry());
-		device.addConnection(conn);
-		device.addApplicationEntity(ae);
-		ae.setAssociationAcceptor(true);
-		ae.addConnection(conn);
+		configureDevice();
 	}
 
 	public void init(Map<ForwardDicomNode, List<ForwardDestination>> destinations) {
 		this.destinations = Objects.requireNonNull(destinations);
 		cStoreSCPService.init(destinations);
+		configureDevice();
+	}
+
+	private void configureDevice() {
 		device.setDimseRQHandler(createServiceRegistry());
 		device.addConnection(conn);
 		device.addApplicationEntity(ae);
@@ -109,22 +111,12 @@ public class StoreScpForwardService {
 		return serviceRegistry;
 	}
 
-	public void setStatus(int status) {
-		this.status = status;
-	}
-
 	public void loadDefaultTransferCapability(URL transferCapabilityFile) {
 		Properties p = new Properties();
 
-		try {
-			if (transferCapabilityFile != null) {
-				try (InputStream in = transferCapabilityFile.openStream()) {
-					p.load(in);
-				}
-			}
-			else {
-				p.load(this.getClass().getResourceAsStream("sop-classes.properties"));
-			}
+		try (InputStream in = transferCapabilityFile != null ? transferCapabilityFile.openStream()
+				: getClass().getResourceAsStream("sop-classes.properties")) {
+			p.load(in);
 		}
 		catch (IOException e) {
 			log.error("Cannot read sop-classes", e);
@@ -144,10 +136,6 @@ public class StoreScpForwardService {
 
 	public Connection getConnection() {
 		return conn;
-	}
-
-	public Device getDevice() {
-		return device;
 	}
 
 	public void stop() {

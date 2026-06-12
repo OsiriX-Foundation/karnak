@@ -16,23 +16,38 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+import lombok.Getter;
+import lombok.Setter;
 
 public class Study {
 
+	@Getter
 	private final String studyInstanceUID;
 
 	private final Map<String, Series> seriesMap;
 
+	@Setter
+	@Getter
 	private String patientID;
 
+	@Setter
+	@Getter
 	private String[] otherPatientIDs;
 
+	@Setter
+	@Getter
 	private String studyDescription;
 
+	@Setter
+	@Getter
 	private String accessionNumber;
 
+	@Setter
+	@Getter
 	private LocalDateTime studyDate;
 
+	@Setter
+	@Getter
 	private long timeStamp;
 
 	public Study(String studyInstanceUID, String patientID) {
@@ -40,34 +55,6 @@ public class Study {
 		this.patientID = patientID == null ? "" : patientID;
 		this.studyDescription = "";
 		this.seriesMap = new HashMap<>();
-	}
-
-	public String getStudyInstanceUID() {
-		return studyInstanceUID;
-	}
-
-	public String getPatientID() {
-		return patientID;
-	}
-
-	public void setPatientID(String patientID) {
-		this.patientID = patientID;
-	}
-
-	public String getStudyDescription() {
-		return studyDescription;
-	}
-
-	public void setStudyDescription(String studyDesc) {
-		this.studyDescription = studyDesc;
-	}
-
-	public LocalDateTime getStudyDate() {
-		return studyDate;
-	}
-
-	public void setStudyDate(LocalDateTime studyDate) {
-		this.studyDate = studyDate;
 	}
 
 	public void addSeries(Series s) {
@@ -106,38 +93,10 @@ public class Study {
 		if (this == obj) {
 			return true;
 		}
-		if (obj == null) {
+		if (obj == null || getClass() != obj.getClass()) {
 			return false;
 		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		Study other = (Study) obj;
-		return studyInstanceUID.equals(other.studyInstanceUID);
-	}
-
-	public long getTimeStamp() {
-		return timeStamp;
-	}
-
-	public void setTimeStamp(long timeStamp) {
-		this.timeStamp = timeStamp;
-	}
-
-	public String[] getOtherPatientIDs() {
-		return otherPatientIDs;
-	}
-
-	public void setOtherPatientIDs(String[] otherPatientIDs) {
-		this.otherPatientIDs = otherPatientIDs;
-	}
-
-	public String getAccessionNumber() {
-		return accessionNumber;
-	}
-
-	public void setAccessionNumber(String accessionNumber) {
-		this.accessionNumber = accessionNumber;
+		return studyInstanceUID.equals(((Study) obj).studyInstanceUID);
 	}
 
 }

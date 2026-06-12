@@ -58,7 +58,7 @@ public class Expression extends AbstractProfileItem {
 	@Override
 	public ActionItem getAction(Attributes dcm, Attributes dcmCopy, int tag, HMAC hmac) {
 		if (exceptedTagsAction.get(tag) == null && tagsAction.get(tag) != null) {
-			final String expr = argumentEntities.get(0).getArgumentValue();
+			final String expr = argumentEntities.getFirst().getArgumentValue();
 			final ExprAction exprAction = new ExprAction(tag, dcm.getVR(tag), dcmCopy);
 			return (ActionItem) ExpressionResult.get(expr, exprAction, ActionItem.class);
 		}
@@ -74,7 +74,7 @@ public class Expression extends AbstractProfileItem {
 							+ args);
 		}
 
-		final String expr = argumentEntities.get(0).getArgumentValue();
+		final String expr = argumentEntities.getFirst().getArgumentValue();
 		final ExpressionError expressionError = ExpressionResult.isValid(expr,
 				new ExprAction(1, VR.AE, new Attributes()), ActionItem.class);
 

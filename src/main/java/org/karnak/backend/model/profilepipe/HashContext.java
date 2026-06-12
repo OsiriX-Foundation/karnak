@@ -9,18 +9,6 @@
  */
 package org.karnak.backend.model.profilepipe;
 
-import lombok.Getter;
-
-@Getter
-public class HashContext {
-
-	private final byte[] secret;
-
-	private final String PatientID;
-
-	public HashContext(byte[] secret, String PatientID) {
-		this.secret = secret;
-		this.PatientID = PatientID;
-	}
+public record HashContext(byte[] secret, String patientID) {
 
 }

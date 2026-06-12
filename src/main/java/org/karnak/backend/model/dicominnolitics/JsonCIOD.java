@@ -12,12 +12,14 @@ package org.karnak.backend.model.dicominnolitics;
 import lombok.Getter;
 
 @Getter
-public class jsonSOP {
+public class JsonCIOD {
 
 	private String name;
 
 	private String id;
 
-	private String ciod;
+	private String description;
+
+	private String linkToStandard;
 
 }

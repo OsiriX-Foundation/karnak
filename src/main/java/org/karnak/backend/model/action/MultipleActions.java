@@ -24,15 +24,11 @@ import org.karnak.backend.util.MetadataDICOMObject;
 @Slf4j
 public class MultipleActions extends AbstractAction {
 
-	final StandardDICOM standardDICOM;
-
-	final ActionItem defaultDummyValue;
-
-	final ActionItem actionUID;
-
-	final ActionItem actionReplaceNull;
-
-	final ActionItem actionRemove;
+	private final StandardDICOM standardDICOM;
+	private final ActionItem defaultDummyValue;
+	private final ActionItem actionUID;
+	private final ActionItem actionReplaceNull;
+	private final ActionItem actionRemove;
 
 	public MultipleActions(String symbol) {
 		super(symbol);
@@ -72,7 +68,7 @@ public class MultipleActions extends AbstractAction {
 	private ActionItem multipleAttributes(String sopUID, List<ModuleAttribute> moduleAttributes) {
 		List<ModuleAttribute> mandatory = getMandatoryAttributes(sopUID, moduleAttributes);
 		String currentType = mandatory.size() == 1 ? mandatory.getFirst().getType()
-				: ModuleAttribute.getStrictedType(mandatory.isEmpty() ? moduleAttributes : mandatory);
+				: ModuleAttribute.getStricterType(mandatory.isEmpty() ? moduleAttributes : mandatory);
 		return chooseAction(sopUID, currentType);
 	}
 

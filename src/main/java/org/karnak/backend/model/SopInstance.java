@@ -11,15 +11,21 @@ package org.karnak.backend.model;
 
 import java.util.Map;
 import java.util.Objects;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
 public class SopInstance {
 
 	private final String sopInstanceUID;
 
+	@Setter
 	private Integer instanceNumber;
 
+	@Setter
 	private String sopClassUID;
 
+	@Setter
 	private boolean sent;
 
 	public SopInstance(String sopInstanceUID) {
@@ -44,34 +50,6 @@ public class SopInstance {
 			return null;
 		}
 		return sopInstanceMap.get(sopUID);
-	}
-
-	public String getSopInstanceUID() {
-		return sopInstanceUID;
-	}
-
-	public Integer getInstanceNumber() {
-		return instanceNumber;
-	}
-
-	public void setInstanceNumber(Integer instanceNumber) {
-		this.instanceNumber = instanceNumber;
-	}
-
-	public String getSopClassUID() {
-		return sopClassUID;
-	}
-
-	public void setSopClassUID(String sopClassUID) {
-		this.sopClassUID = sopClassUID;
-	}
-
-	public boolean isSent() {
-		return sent;
-	}
-
-	public void setSent(boolean sent) {
-		this.sent = sent;
 	}
 
 }

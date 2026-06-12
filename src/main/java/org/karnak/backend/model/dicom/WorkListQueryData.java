@@ -45,8 +45,7 @@ public class WorkListQueryData {
 	private String accessionNumber;
 
 	public WorkListQueryData() {
-		callingAet = DEFAULT_VALUE_FOR_CALLING_AET;
-		scheduledModality = Modality.ALL;
+		reset();
 	}
 
 	public void reset() {

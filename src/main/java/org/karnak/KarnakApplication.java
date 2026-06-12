@@ -10,6 +10,7 @@
 package org.karnak;
 
 import com.vaadin.flow.spring.annotation.EnableVaadin;
+import org.weasis.core.util.annotations.Generated;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +39,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableAsync
 @Slf4j
 @NullMarked
+@Generated
 public class KarnakApplication implements CommandLineRunner {
 
 	private final @Nullable AppConfig myConfig;

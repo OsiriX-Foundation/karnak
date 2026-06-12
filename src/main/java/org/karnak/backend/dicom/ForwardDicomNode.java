@@ -11,12 +11,15 @@ package org.karnak.backend.dicom;
 
 import java.util.HashSet;
 import java.util.Set;
+import lombok.Getter;
 import org.weasis.dicom.param.DicomNode;
 
 public class ForwardDicomNode extends DicomNode {
 
+	@Getter
 	private final String forwardAETitle;
 
+	@Getter
 	private final Set<DicomNode> acceptedSourceNodes;
 
 	private final Long id;
@@ -50,14 +53,6 @@ public class ForwardDicomNode extends DicomNode {
 
 	public void addAcceptedSourceNode(Long id, String srcAeTitle, String srcHostname) {
 		acceptedSourceNodes.add(new DicomNode(id, srcAeTitle, srcHostname, null, srcHostname != null));
-	}
-
-	public Set<DicomNode> getAcceptedSourceNodes() {
-		return acceptedSourceNodes;
-	}
-
-	public String getForwardAETitle() {
-		return forwardAETitle;
 	}
 
 	@Override

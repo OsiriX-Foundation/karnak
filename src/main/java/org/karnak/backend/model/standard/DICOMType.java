@@ -32,19 +32,17 @@ public class DICOMType {
 		try {
 			List<ModuleAttribute> moduleAttribute = standardDICOM.getAttributesBySOP(sopUID, tagPath);
 			if (moduleAttribute.size() == 1) {
-				currentType = moduleAttribute.get(0).getType();
+				currentType = moduleAttribute.getFirst().getType();
 			}
 			else if (moduleAttribute.size() > 1) {
-				currentType = ModuleAttribute.getStrictedType(moduleAttribute);
+				currentType = ModuleAttribute.getStricterType(moduleAttribute);
 			}
 			else {
-				log.warn(String.format("Could not found the attribute %s in the SOP %s.", tagPath, sopUID));
+				log.warn("Could not find the attribute {} in the SOP {}.", tagPath, sopUID);
 			}
 		}
-		catch (StandardDICOMException standardDICOMException) {
-			log.error(
-					String.format("Could not find a DICOM type with the SOP %s and the attribute %s", sopUID, tagPath),
-					standardDICOMException);
+		catch (StandardDICOMException e) {
+			log.error("Could not find a DICOM type with the SOP {} and the attribute {}", sopUID, tagPath, e);
 		}
 		return currentType;
 	}
