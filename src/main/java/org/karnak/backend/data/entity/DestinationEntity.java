@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-2021 Karnak Team and other contributors.
+ * Copyright (c) 2020-2026 Karnak Team and other contributors.
  *
  * This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
@@ -36,6 +36,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.validator.group.GroupSequenceProvider;
@@ -68,6 +71,10 @@ public class DestinationEntity implements Serializable {
 	private boolean desidentification;
 
 	private String issuerByDefault;
+
+	@Setter
+	@Getter
+	private boolean skipIssuerOfPatientId;
 
 	private PseudonymType pseudonymType;
 
@@ -182,6 +189,7 @@ public class DestinationEntity implements Serializable {
 		this.description = "";
 		this.desidentification = false;
 		this.issuerByDefault = "";
+		this.skipIssuerOfPatientId = false;
 		this.pseudonymType = PseudonymType.CACHE_EXTID;
 		this.tag = null;
 		this.delimiter = null;
