@@ -320,8 +320,8 @@ public class NotificationComponent extends VerticalLayout {
 			.bind(DestinationEntity::isActivateNotification, DestinationEntity::setActivateNotification);
 
 		// Build DICOM conformance report
-		binder.forField(getBuildConformanceReport())
-			.bind(DestinationEntity::isBuildConformanceReport, DestinationEntity::setBuildConformanceReport);
+//		binder.forField(getBuildConformanceReport())
+//			.bind(DestinationEntity::isBuildConformanceReport, DestinationEntity::setBuildConformanceReport);
 
 		// List of emails
 		binder.forField(getNotify()).withValidator((s, valueContext) -> {

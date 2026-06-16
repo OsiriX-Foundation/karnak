@@ -53,7 +53,7 @@ public final class SecurityUtil {
 	public static void signOut() {
 		var request = VaadinServletService.getCurrentServletRequest();
 		if (request == null) {
-			LOG.warn("Cannot sign out: no current servlet request available");
+			log.warn("Cannot sign out: no current servlet request available");
 			return;
 		}
 		try {

@@ -39,8 +39,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.validator.group.GroupSequenceProvider;
 import org.karnak.backend.data.validator.DestinationGroupSequenceProvider;
 import org.karnak.backend.data.validator.DestinationGroupSequenceProvider.DestinationDicomGroup;
