@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-2021 Karnak Team and other contributors.
+ * Copyright (c) 2020-2026 Karnak Team and other contributors.
  *
  * This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
@@ -47,7 +47,8 @@ public class Pseudonym {
 		}
 
 		if (destinationEntity.getPseudonymType().equals(PseudonymType.CACHE_EXTID)) {
-			return getCacheExtid(patientMetadata, destinationEntity.getDeIdentificationProjectEntity().getId());
+			return getCacheExtid(patientMetadata, destinationEntity.getDeIdentificationProjectEntity().getId(),
+					destinationEntity.isSkipIssuerOfPatientId());
 		}
 
 		if (destinationEntity.getPseudonymType().equals(PseudonymType.EXTID_IN_TAG)) {
@@ -116,8 +117,9 @@ public class Pseudonym {
 		return pseudonymExtidInTag;
 	}
 
-	public String getCacheExtid(PatientMetadata patientMetadata, Long projectID) {
-		final String pseudonymCacheExtID = PatientClientUtil.getPseudonym(patientMetadata, externalIdCache, projectID);
+	public String getCacheExtid(PatientMetadata patientMetadata, Long projectID, boolean skipIssuerOfPatientId) {
+		final String pseudonymCacheExtID = PatientClientUtil.getPseudonym(patientMetadata, externalIdCache, projectID,
+				skipIssuerOfPatientId);
 		if (pseudonymCacheExtID == null) {
 			throw new IllegalStateException("Cannot get an external pseudonym in cache");
 		}

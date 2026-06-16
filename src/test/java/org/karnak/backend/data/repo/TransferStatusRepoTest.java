@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Karnak Team and other contributors.
+ * Copyright (c) 2022-2026 Karnak Team and other contributors.
  *
  * This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
@@ -220,6 +220,38 @@ class TransferStatusRepoTest {
 		assertEquals(2, transferStatusEntities.size());
 		assertEquals(transferStatusEntityBefore, transferStatusEntities.get(0));
 		assertEquals(transferStatusEntityAfter, transferStatusEntities.get(1));
+	}
+
+	/**
+	 * Test delete all records using JPA deleteAll()
+	 */
+	@Test
+	void shouldDeleteAllRecords() {
+		// Init data: save multiple entities
+		TransferStatusEntity entity1 = new TransferStatusEntity();
+		entity1.setPatientIdOriginal("patient1");
+		repository.saveAndFlush(entity1);
+
+		TransferStatusEntity entity2 = new TransferStatusEntity();
+		entity2.setPatientIdOriginal("patient2");
+		repository.saveAndFlush(entity2);
+
+		TransferStatusEntity entity3 = new TransferStatusEntity();
+		entity3.setPatientIdOriginal("patient3");
+		repository.saveAndFlush(entity3);
+
+		// Verify entities are present before deletion
+		List<TransferStatusEntity> beforeDelete = repository.findAll();
+		assertEquals(3, beforeDelete.size());
+		log.info("Number of entities before deleteAll: [{}]", beforeDelete.size());
+
+		// Call deleteAll (JPA)
+		repository.deleteAll();
+
+		// Verify all entities are deleted
+		List<TransferStatusEntity> afterDelete = repository.findAll();
+		assertTrue(afterDelete.isEmpty());
+		log.info("Number of entities after deleteAll: [{}]", afterDelete.size());
 	}
 
 }

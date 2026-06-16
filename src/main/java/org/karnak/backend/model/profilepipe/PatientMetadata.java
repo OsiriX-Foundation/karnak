@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-2021 Karnak Team and other contributors.
+ * Copyright (c) 2020-2026 Karnak Team and other contributors.
  *
  * This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
@@ -11,18 +11,16 @@ package org.karnak.backend.model.profilepipe;
 
 import java.time.LocalDate;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.dcm4che3.img.util.DateTimeUtils;
 import org.karnak.backend.cache.Patient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.weasis.core.util.StringUtil;
 
 @Getter
+@Slf4j
 public class PatientMetadata {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(PatientMetadata.class);
 
 	private static final String PATIENT_SEX_OTHER = "O";
 
@@ -67,7 +65,7 @@ public class PatientMetadata {
 			return DateTimeUtils.formatDA(DateTimeUtils.parseDA(rawPatientBirthDate));
 		}
 		catch (Exception e) {
-			LOGGER.error("Error parsing patient birth date: {}", rawPatientBirthDate);
+			log.error("Error parsing patient birth date: {}", rawPatientBirthDate);
 			return "";
 		}
 	}
@@ -92,10 +90,16 @@ public class PatientMetadata {
 	}
 
 	public boolean compareCachedPatient(Patient patient) {
+		return compareCachedPatient(patient, false);
+	}
+
+	public boolean compareCachedPatient(Patient patient, boolean skipIssuerOfPatientId) {
 		if (patient != null) {
 			boolean samePatient = patient.getPatientId().equals(patientID);
-			samePatient = samePatient && (patient.getIssuerOfPatientId() == null
-					|| patient.getIssuerOfPatientId().equals(issuerOfPatientID));
+			if (!skipIssuerOfPatientId) {
+				samePatient = samePatient && (patient.getIssuerOfPatientId() == null
+						|| patient.getIssuerOfPatientId().equals(issuerOfPatientID));
+			}
 			return samePatient;
 		}
 		return false;
