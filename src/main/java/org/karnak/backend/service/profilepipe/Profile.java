@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-2021 Karnak Team and other contributors.
+ * Copyright (c) 2020-2026 Karnak Team and other contributors.
  *
  * This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
@@ -353,7 +353,7 @@ public class Profile {
 		MDC.put("ProjectName", projectName);
 		MDC.put("ProfileName", profileName);
 		MDC.put("ProfileCodenames", profiles.stream().map(ProfileItem::getCodeName).collect(Collectors.joining("-")));
-		log.info(CLINICAL_MARKER, "");
+		log.debug(CLINICAL_MARKER, "");
 		MDC.clear();
 	}
 

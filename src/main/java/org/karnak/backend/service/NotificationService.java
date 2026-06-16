@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Karnak Team and other contributors.
+ * Copyright (c) 2021-2026 Karnak Team and other contributors.
  *
  * This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
@@ -12,6 +12,7 @@ package org.karnak.backend.service;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
+
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -72,9 +73,26 @@ public class NotificationService {
 	 * In a regular period of time, check for new inputs in the transfer notifications,
 	 * build the notifications and send them via email.
 	 */
-	@Scheduled(fixedRate = 180 * 1000)
+	@Scheduled(fixedRate = 120 * 1000)
 	public void determineNotificationToSend() {
-		buildNotificationsToSend().forEach(this::prepareAndSendNotification);
+		buildNotificationsToSend().stream().map(n -> {
+			logNotification(n);
+			return n;
+		}).filter(TransferMonitoringNotification::isEmailSendingEnabled).forEach(this::prepareAndSendNotification);
+	}
+
+	/**
+	 * Transfer logs
+	 * @param transferMonitoringNotification Transfer to log
+	 */
+	private void logNotification(TransferMonitoringNotification transferMonitoringNotification) {
+		// Transfer logs
+		log.info("Transfer processed from {} to {}. Details: {}", transferMonitoringNotification.getSource(),
+				transferMonitoringNotification.getDestination(),
+				transferMonitoringNotification.getSerieSummaryNotifications()
+					.stream()
+					.map(SerieSummaryNotification::toString)
+					.collect(Collectors.joining(",")));
 	}
 
 	/** Builds the transfer notifications to send for every eligible destination. */
@@ -131,6 +149,10 @@ public class NotificationService {
 			TransferStatusEntity firstTransferStatus = firstTransferStatusOpt.get();
 			transferMonitoringNotification = new TransferMonitoringNotification();
 
+			// If email notification should be sent
+			transferMonitoringNotification
+				.setEmailSendingEnabled(firstTransferStatus.getDestinationEntity().isActivateNotification());
+
 			// Build the serie notification part
 			transferMonitoringNotification.setSerieSummaryNotifications(buildSeriesSummaryNotification(
 					transferStatusEntities, firstTransferStatus.getDestinationEntity().isDesidentification()));
@@ -146,7 +168,8 @@ public class NotificationService {
 
 			// Temporary disable send of notification de-identified and in error
 			// TODO: have a discussion with business to know how to handle such cases
-			if (hasAtLeastOneFileNotSent && firstTransferStatus.getDestinationEntity().isDesidentification()) {
+			if (hasAtLeastOneFileNotSent && firstTransferStatus.getDestinationEntity().isDesidentification()
+					&& firstTransferStatus.getDestinationEntity().isActivateNotification()) {
 				return null;
 			}
 
@@ -358,8 +381,7 @@ public class NotificationService {
 					.isBefore(LocalDateTime.now(ZoneId.of("CET")))
 				&& (destinationEntity.getEmailLastCheck() == null || destinationEntity.getEmailLastCheck()
 					.plusSeconds(destinationEntity.getNotifyInterval().longValue())
-					.isBefore(LocalDateTime.now(ZoneId.of("CET"))))
-				&& destinationEntity.isActivateNotification();
+					.isBefore(LocalDateTime.now(ZoneId.of("CET"))));
 	}
 
 	/** Renders the Thymeleaf template and sends the notification email. */
@@ -377,7 +399,14 @@ public class NotificationService {
 		catch (MessagingException e) {
 			log.error("Notification error when preparing email to send: {}", e.getMessage());
 		}
-		javaMailSender.send(mimeMessage);
+
+		try {
+			javaMailSender.send(mimeMessage);
+		}
+		catch (Exception e) {
+			log.error("Notification error when sending email: {}", e.getMessage());
+		}
+
 	}
 
 }

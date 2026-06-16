@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Karnak Team and other contributors.
+ * Copyright (c) 2021-2026 Karnak Team and other contributors.
  *
  * This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
@@ -14,10 +14,6 @@ import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.karnak.backend.data.entity.TransferStatusEntity;
 import org.karnak.backend.data.repo.TransferStatusRepo;
@@ -30,11 +26,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Handle transfer monitoring
@@ -43,8 +44,8 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class TransferMonitoringService {
 
-	@Value("${monitoring.max-history}")
-	private int sizeLimit;
+	@Value("${monitoring.max-history-days:7}")
+	private int maxHistoryDays;
 
 	// Repositories
 	private final TransferStatusRepo transferStatusRepo;
@@ -66,16 +67,12 @@ public class TransferMonitoringService {
 	}
 
 	/**
-	 * Occurs every 5 min: clean transfer_status table if over the size limit LIFO: clean
-	 * oldest records
+	 * Occurs every hour: clean transfer_status table if over a certain number of days:
+	 * Clean oldest records
 	 */
-	@Scheduled(fixedRate = 5 * 60 * 1000)
-	public void cleanTransferStatus() {
-		int nbRecords = (int) transferStatusRepo.count();
-		if (nbRecords > sizeLimit) {
-			Pageable pageable = PageRequest.of(0, nbRecords - sizeLimit);
-			transferStatusRepo.deleteAll(transferStatusRepo.findAllByOrderByTransferDateAsc(pageable));
-		}
+	@Scheduled(cron = "0 0 * * * *")
+	public void cleanupOldRecords() {
+		transferStatusRepo.deleteOlderThan(LocalDateTime.now().minusDays(this.maxHistoryDays));
 	}
 
 	/**
@@ -107,6 +104,13 @@ public class TransferMonitoringService {
 	public int countTransferStatus(TransferStatusFilter filter) {
 		return (int) (filter.hasFilter() ? transferStatusRepo.count(new TransferStatusSpecification(filter))
 				: transferStatusRepo.count());
+	}
+
+	/**
+	 * Delete all transfer status records
+	 */
+	public void deleteAllTransferStatus() {
+		transferStatusRepo.deleteAll();
 	}
 
 	/**

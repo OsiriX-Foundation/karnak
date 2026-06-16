@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Karnak Team and other contributors.
+ * Copyright (c) 2021-2026 Karnak Team and other contributors.
  *
  * This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
@@ -9,11 +9,12 @@
  */
 package org.karnak.backend.model.notification;
 
-import java.time.LocalDateTime;
-import java.util.List;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Model used to build transfer monitoring notification
@@ -44,5 +45,7 @@ public class TransferMonitoringNotification {
 	private String destination;
 
 	private List<SerieSummaryNotification> serieSummaryNotifications;
+
+	private boolean emailSendingEnabled;
 
 }

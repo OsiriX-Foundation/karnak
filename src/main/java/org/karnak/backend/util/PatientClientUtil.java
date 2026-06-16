@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-2021 Karnak Team and other contributors.
+ * Copyright (c) 2020-2026 Karnak Team and other contributors.
  *
  * This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
@@ -35,6 +35,15 @@ public class PatientClientUtil {
 		return null;
 	}
 
+	public static String getPseudonym(PatientMetadata patientMetadata, PatientClient cache, Long projectID,
+			boolean skipIssuerOfPatientId) {
+		if (cache != null) {
+			final String key = generateKey(patientMetadata, projectID, skipIssuerOfPatientId);
+			return getCachedKey(key, patientMetadata, cache, skipIssuerOfPatientId);
+		}
+		return null;
+	}
+
 	private static String getCachedKey(String key, PatientMetadata patientMetadata, PatientClient cache) {
 		final Patient patient = cache.get(key);
 		if (patient != null && patientMetadata.compareCachedPatient(patient)) {
@@ -43,8 +52,24 @@ public class PatientClientUtil {
 		return null;
 	}
 
+	private static String getCachedKey(String key, PatientMetadata patientMetadata, PatientClient cache,
+			boolean skipIssuerOfPatientId) {
+		final Patient patient = cache.get(key);
+		if (patient != null && patientMetadata.compareCachedPatient(patient, skipIssuerOfPatientId)) {
+			return patient.getPseudonym();
+		}
+		return null;
+	}
+
 	public static String generateKey(String patientID, String issuerOfPatientID) {
 		return patientID.concat(issuerOfPatientID == null ? "" : issuerOfPatientID);
+	}
+
+	public static String generateKey(String patientID, String issuerOfPatientID, boolean skipIssuerOfPatientId) {
+		if (skipIssuerOfPatientId) {
+			return patientID;
+		}
+		return generateKey(patientID, issuerOfPatientID);
 	}
 
 	public static String generateKey(Patient patient) {
@@ -59,8 +84,19 @@ public class PatientClientUtil {
 		return generateKey(patientID, issuerOfPatientID);
 	}
 
+	public static String generateKey(PatientMetadata patientMetadata, boolean skipIssuerOfPatientId) {
+		String patientID = patientMetadata.getPatientID();
+		String issuerOfPatientID = patientMetadata.getIssuerOfPatientID();
+		return generateKey(patientID, issuerOfPatientID, skipIssuerOfPatientId);
+	}
+
 	public static String generateKey(PatientMetadata patientMetadata, Long projectID) {
 		final String key = generateKey(patientMetadata);
+		return key.concat(projectID == null ? "" : projectID.toString());
+	}
+
+	public static String generateKey(PatientMetadata patientMetadata, Long projectID, boolean skipIssuerOfPatientId) {
+		final String key = generateKey(patientMetadata, skipIssuerOfPatientId);
 		return key.concat(projectID == null ? "" : projectID.toString());
 	}
 

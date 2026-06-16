@@ -53,8 +53,8 @@ spring:
       minimum-idle: 5
       maximum-pool-size: 10
       connection-timeout: 10000
-      idle-timeout: 300000 # 5 minutes
-      max-lifetime: 900000 # 15 minutes
+      idle-timeout: 300000
+      max-lifetime: 270000 # 4 minutes 30 secondes
       validation-timeout: 3000
       connection-test-query: SELECT 1
       connection-init-sql: select set_config('encryption.key', '${DB_ENCRYPTION_KEY}', false)
@@ -78,8 +78,8 @@ spring:
           lob:
             non_contextual_creation: true
 monitoring:
-  # Maximum of sop instance sent for the monitoring
-  max-history: 150000
+  # Maximum number of days in the monitoring history
+  max-history-days: 3
 cache-api:
   # Cache Time to leave in minutes for API calls
   ttl: 15

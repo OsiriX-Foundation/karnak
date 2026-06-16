@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Karnak Team and other contributors.
+ * Copyright (c) 2022-2026 Karnak Team and other contributors.
  *
  * This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
@@ -132,6 +132,15 @@ class TransferMonitoringServiceTest {
 		// Test result
 		assertEquals(2L, count);
 		Mockito.verify(transferStatusRepoMock, Mockito.times(1)).count(Mockito.any(TransferStatusSpecification.class));
+	}
+
+	@Test
+	void shouldDeleteAllTransferStatus() {
+		// Call service
+		transferMonitoringService.deleteAllTransferStatus();
+
+		// Test result: verify deleteAll() is called exactly once on the repository
+		Mockito.verify(transferStatusRepoMock, Mockito.times(1)).deleteAll();
 	}
 
 }

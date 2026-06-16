@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-2021 Karnak Team and other contributors.
+ * Copyright (c) 2020-2026 Karnak Team and other contributors.
  *
  * This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
@@ -91,6 +91,19 @@ public class PatientMetadata {
 	public boolean compareCachedPatient(Patient patient) {
 		return patient != null && patient.getPatientId().equals(patientID)
 				&& (patient.getIssuerOfPatientId() == null || patient.getIssuerOfPatientId().equals(issuerOfPatientID));
+		return compareCachedPatient(patient, false);
+	}
+
+	public boolean compareCachedPatient(Patient patient, boolean skipIssuerOfPatientId) {
+		if (patient != null) {
+			boolean samePatient = patient.getPatientId().equals(patientID);
+			if (!skipIssuerOfPatientId) {
+				samePatient = samePatient && (patient.getIssuerOfPatientId() == null
+						|| patient.getIssuerOfPatientId().equals(issuerOfPatientID));
+			}
+			return samePatient;
+		}
+		return false;
 	}
 
 }
