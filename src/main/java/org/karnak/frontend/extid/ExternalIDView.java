@@ -26,7 +26,8 @@ import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.streams.UploadHandler;
-import java.io.InputStream;
+
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import org.karnak.backend.cache.Patient;
 import org.karnak.backend.util.PatientClientUtil;
@@ -60,8 +61,6 @@ public class ExternalIDView extends HorizontalLayout {
 	private final ExternalIDForm externalIDForm;
 
 	private UI ui;
-
-	private transient InputStream inputStream;
 
 	private Upload uploadCsvButton;
 
@@ -152,38 +151,39 @@ public class ExternalIDView extends HorizontalLayout {
 		uploadCsvLabelDiv.setText("Upload the CSV file containing the external ID associated with patient(s): ");
 		uploadCsvLabelDiv.getStyle().set("font-size", "large").set("font-weight", "bolder");
 
-		uploadCsvButton = new Upload((UploadHandler) upload -> {
-			inputStream = upload.getInputStream();
-			ui.access(() -> {
-				Dialog chooseSeparatorDialog = new Dialog();
-				TextField separatorCSVField = new TextField("Choose the separator for reading the CSV file");
-				separatorCSVField.setWidthFull();
-				separatorCSVField.setMaxLength(1);
-				separatorCSVField.setValue(",");
-				Button openCSVButton = new Button("Open CSV");
+		// Buffer the whole upload in memory: the request-bound input stream is only valid
+		// during the upload handler, but the CSV is parsed later (after the user picks a
+		// separator), so we keep the bytes and re-wrap them in a fresh stream each time.
+		uploadCsvButton = new Upload(UploadHandler.inMemory((metadata, data) -> ui.access(() -> {
+			Dialog chooseSeparatorDialog = new Dialog();
+			TextField separatorCSVField = new TextField("Choose the separator for reading the CSV file");
+			separatorCSVField.setWidthFull();
+			separatorCSVField.setMaxLength(1);
+			separatorCSVField.setValue(",");
+			Button openCSVButton = new Button("Open CSV");
 
-				openCSVButton.addClickListener(buttonClickEvent -> {
-					chooseSeparatorDialog.close();
-					char separator = ',';
-					if (!separatorCSVField.getValue().isEmpty()) {
-						separator = separatorCSVField.getValue().charAt(0);
-					}
-					CSVDialog csvDialog = new CSVDialog(inputStream, separator, projectDropDown.getValue());
-					csvDialog.setWidth("80%");
-					csvDialog.open();
+			openCSVButton.addClickListener(buttonClickEvent -> {
+				chooseSeparatorDialog.close();
+				char separator = ',';
+				if (!separatorCSVField.getValue().isEmpty()) {
+					separator = separatorCSVField.getValue().charAt(0);
+				}
+				CSVDialog csvDialog = new CSVDialog(new ByteArrayInputStream(data), separator,
+						projectDropDown.getValue());
+				csvDialog.setWidth("80%");
+				csvDialog.open();
 
-					csvDialog.getReadCSVButton().addClickListener(buttonClickEvent1 -> {
-						externalIDGrid.addPatientList(csvDialog.getPatientsList());
-						checkDuplicatePatient();
-						csvDialog.resetPatientsList();
-					});
+				csvDialog.getReadCSVButton().addClickListener(buttonClickEvent1 -> {
+					externalIDGrid.addPatientList(csvDialog.getPatientsList());
+					checkDuplicatePatient();
+					csvDialog.resetPatientsList();
 				});
-
-				chooseSeparatorDialog.add(separatorCSVField, openCSVButton);
-				chooseSeparatorDialog.open();
-				separatorCSVField.focus();
 			});
-		});
+
+			chooseSeparatorDialog.add(separatorCSVField, openCSVButton);
+			chooseSeparatorDialog.open();
+			separatorCSVField.focus();
+		})));
 		uploadCsvButton.setDropLabel(new Span("Drag and drop your CSV file here"));
 	}
 
