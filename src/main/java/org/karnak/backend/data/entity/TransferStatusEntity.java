@@ -236,6 +236,7 @@ public class TransferStatusEntity implements Serializable {
 		this.error = error;
 	}
 
+	@Column(columnDefinition = "text")
 	public String getReason() {
 		return reason;
 	}

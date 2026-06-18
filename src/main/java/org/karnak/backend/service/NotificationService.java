@@ -39,6 +39,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
+import org.weasis.core.util.StringUtil;
 
 /**
  * Handle notifications
@@ -46,6 +47,9 @@ import org.thymeleaf.context.Context;
 @Service
 @Slf4j
 public class NotificationService {
+
+	// Maximum length of a single reason rendered in the email summary
+	private static final int REASON_EMAIL_MAX_LENGTH = 200;
 
 	@Value("${mail.sender}")
 	private String mailSender;
@@ -313,10 +317,12 @@ public class NotificationService {
 		serieSummaryNotification.setNbTransferNotSent(transfersToEvaluate.stream().filter(t -> !t.isSent()).count());
 		// Any of the transfer contain an error
 		serieSummaryNotification.setContainsError(transfersToEvaluate.stream().anyMatch(TransferStatusEntity::isError));
-		// Distinct reasons
+		// Distinct reasons (truncated for the email summary: the full reason stays in the
+		// database and is shown in the monitoring view)
 		serieSummaryNotification.setUnTransferedReasons(transfersToEvaluate.stream()
 			.map(TransferStatusEntity::getReason)
 			.filter(Objects::nonNull)
+			.map(reason -> StringUtil.getTruncatedString(reason, REASON_EMAIL_MAX_LENGTH, StringUtil.Suffix.THREE_PTS))
 			.collect(Collectors.toSet()));
 		// Distinct modalities
 		serieSummaryNotification.setTransferredModalities(transfersToEvaluate.stream()

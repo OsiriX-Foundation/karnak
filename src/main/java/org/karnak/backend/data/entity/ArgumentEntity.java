@@ -10,6 +10,7 @@
 package org.karnak.backend.data.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -67,6 +68,7 @@ public class ArgumentEntity implements Serializable {
 		this.argumentKey = key;
 	}
 
+	@Column(columnDefinition = "text")
 	public String getArgumentValue() {
 		return argumentValue;
 	}

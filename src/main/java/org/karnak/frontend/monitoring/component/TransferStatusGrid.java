@@ -32,6 +32,7 @@ import org.karnak.backend.util.DateFormat;
 import org.karnak.frontend.monitoring.TransferStatusDataProvider;
 import org.karnak.frontend.util.UIS;
 import org.vaadin.klaudeta.PaginatedGrid;
+import org.weasis.core.util.StringUtil;
 import org.weasis.core.util.annotations.Generated;
 
 /**
@@ -46,6 +47,10 @@ public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity, Tran
 	public static final String TOOLTIP_FORMAT_DD_MM_YYYY = "Format: DD/MM/YYYY";
 
 	public static final String TOOLTIP_FORMAT_HH_MM = "Format: HH:MM";
+
+	// Max length of the reason shown in the badge (ellipsis included); full text in
+	// tooltip
+	private static final int REASON_DISPLAY_MAX_LENGTH = 80;
 
 	// Filter grid rows
 	@Setter
@@ -424,7 +429,20 @@ public class TransferStatusGrid extends PaginatedGrid<TransferStatusEntity, Tran
 				span.getStyle().setBackgroundColor("var(--lumo-warning-color)");
 			}
 			span.getElement().getThemeList().add(pill.toString());
-			span.setText(transferStatusEntity.isSent() ? "Sent" : transferStatusEntity.getReason());
+			if (transferStatusEntity.isSent()) {
+				span.setText("Sent");
+			}
+			else {
+				// The reason holds the (possibly long) exception message: keep the badge
+				// compact
+				// and expose the full text as a hover tooltip.
+				String reason = transferStatusEntity.getReason();
+				span.setText(
+						StringUtil.getTruncatedString(reason, REASON_DISPLAY_MAX_LENGTH, StringUtil.Suffix.THREE_PTS));
+				if (reason != null && reason.length() > REASON_DISPLAY_MAX_LENGTH) {
+					UIS.setTooltip(span, reason);
+				}
+			}
 		});
 	}
 

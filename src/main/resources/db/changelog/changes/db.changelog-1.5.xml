@@ -116,4 +116,32 @@
     </addColumn>
   </changeSet>
 
+  <!--
+    Widen transfer_status.reason from VARCHAR(255) to unlimited text. It stores exception
+    messages (e.getMessage(), including STOW-RS HTTP error bodies and uncapped generic
+    exceptions) which routinely exceed 255 characters; the truncated insert used to fail
+    with "value too long for type character varying(255)", silently dropping the diagnostic
+    row. CLOB maps to TEXT on Postgres and CLOB on H2 (portable build).
+  -->
+  <changeSet author="karnak" id="1.5-7">
+    <preConditions onFail="MARK_RAN">
+      <columnExists tableName="transfer_status" columnName="reason"/>
+    </preConditions>
+    <modifyDataType tableName="transfer_status" columnName="reason" newDataType="CLOB"/>
+  </changeSet>
+
+  <!--
+    Widen arguments.argument_value from VARCHAR(255) to unlimited text. It holds profile
+    element arguments, notably the "expr" SpEL condition of expression.on.tags; a long
+    expression passed profile validation (which only checks SpEL syntax, not length) and
+    then failed at save time without a readable error. CLOB maps to TEXT on Postgres and
+    CLOB on H2 (portable build).
+  -->
+  <changeSet author="karnak" id="1.5-8">
+    <preConditions onFail="MARK_RAN">
+      <columnExists tableName="arguments" columnName="argument_value"/>
+    </preConditions>
+    <modifyDataType tableName="arguments" columnName="argument_value" newDataType="CLOB"/>
+  </changeSet>
+
 </databaseChangeLog>

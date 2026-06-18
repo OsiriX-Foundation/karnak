@@ -242,6 +242,28 @@ class TransferStatusRepoTest {
 	}
 
 	/**
+	 * Regression test for issue #257: the reason column used to be VARCHAR(255) and
+	 * rejected long exception messages (e.g. STOW-RS HTTP error bodies), silently
+	 * dropping the diagnostic row. It is now mapped as unlimited text and must persist
+	 * messages well over 255 characters.
+	 */
+	@Test
+	void shouldPersistReasonLongerThan255Characters() {
+		// Build a reason longer than the former VARCHAR(255) limit
+		String longReason = "STOW-RS request failed (HTTP 400 Bad Request): ".concat("x".repeat(1000));
+		assertTrue(longReason.length() > 255);
+
+		TransferStatusEntity entity = new TransferStatusEntity();
+		entity.setReason(longReason);
+		entity = repository.saveAndFlush(entity);
+
+		// Reload from the database to confirm it round-trips untruncated
+		Optional<TransferStatusEntity> reloaded = repository.findById(entity.getId());
+		assertTrue(reloaded.isPresent());
+		assertEquals(longReason, reloaded.get().getReason());
+	}
+
+	/**
 	 * Test delete all records using JPA deleteAll()
 	 */
 	@Test
