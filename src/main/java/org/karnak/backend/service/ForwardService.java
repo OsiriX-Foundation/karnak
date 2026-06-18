@@ -51,8 +51,11 @@ import org.karnak.backend.dicom.ForwardDicomNode;
 import org.karnak.backend.dicom.Params;
 import org.karnak.backend.dicom.WebForwardDestination;
 import org.karnak.backend.exception.AbortException;
+import org.karnak.backend.model.event.ConformanceCollectEvent;
 import org.karnak.backend.model.event.TransferMonitoringEvent;
 import org.karnak.backend.model.image.TransformedPlanarImage;
+import org.karnak.backend.model.validation.InstanceConformanceData;
+import org.karnak.backend.model.validation.MetadataSnapshot;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
@@ -83,6 +86,11 @@ public class ForwardService {
 
 	@Value("${forward.fanout-max-threads:0}")
 	private int fanoutMaxThreads;
+
+    // Sequence depth the conformance snapshot is captured to when deep-sequence validation
+    // is enabled on the destination; must match the validator's recursion depth
+    @Value("${conformance-report.max-sequence-depth:8}")
+    private int conformanceMaxSequenceDepth;
 
 	private ExecutorService fanoutExecutor;
 
@@ -349,21 +357,21 @@ public class ForwardService {
 			launchCStore(p, streamSCU, dataWriter, cuid, iuid, syntax, transformedPlanarImage);
 
 			progressNotify(destination, p.iuid(), p.cuid(), false, streamSCU);
-			monitor(sourceNode.getId(), destination.getId(), attributesOriginal, attributesToSend, true, false, null,
-					attributesOriginal.getString(Tag.Modality), p.cuid());
+			monitor(sourceNode, destination, attributesOriginal, attributesToSend, true, false, null,
+					attributesOriginal.getString(Tag.Modality), p.cuid(), syntax.getSuitable());
 		}
 		catch (AbortException e) {
 			progressNotify(destination, p.iuid(), p.cuid(), true, streamSCU);
-			monitor(sourceNode.getId(), destination.getId(), attributesOriginal, attributesToSend, false, false,
-					e.getMessage(), attributesOriginal.getString(Tag.Modality), p.cuid());
+			monitor(sourceNode, destination, attributesOriginal, attributesToSend, false, false, e.getMessage(),
+					attributesOriginal.getString(Tag.Modality), p.cuid(), p.tsuid());
 			if (e.getAbort() == Abort.CONNECTION_EXCEPTION) {
 				throw e;
 			}
 		}
 		catch (IOException e) {
 			progressNotify(destination, p.iuid(), p.cuid(), true, streamSCU);
-			monitor(sourceNode.getId(), destination.getId(), attributesOriginal, attributesToSend, false, true,
-					e.getMessage(), attributesOriginal.getString(Tag.Modality), p.cuid());
+			monitor(sourceNode, destination, attributesOriginal, attributesToSend, false, true, e.getMessage(),
+					attributesOriginal.getString(Tag.Modality), p.cuid(), p.tsuid());
 			throw e;
 		}
 		catch (Exception e) {
@@ -371,8 +379,8 @@ public class ForwardService {
 				Thread.currentThread().interrupt();
 			}
 			progressNotify(destination, p.iuid(), p.cuid(), true, streamSCU);
-			monitor(sourceNode.getId(), destination.getId(), attributesOriginal, attributesToSend, false, true,
-					e.getMessage(), attributesOriginal.getString(Tag.Modality), p.cuid());
+			monitor(sourceNode, destination, attributesOriginal, attributesToSend, false, true, e.getMessage(),
+					attributesOriginal.getString(Tag.Modality), p.cuid(), p.tsuid());
 			log.error(ERROR_WHEN_FORWARDING, e);
 		}
 		finally {
@@ -502,21 +510,21 @@ public class ForwardService {
 			launchCStore(p, streamSCU, dataWriter, cuid, iuid, syntax, transformedPlanarImage);
 
 			progressNotify(destination, p.iuid(), p.cuid(), false, streamSCU);
-			monitor(fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, true, false, null,
-					attributesOriginal.getString(Tag.Modality), p.cuid());
+			monitor(fwdNode, destination, attributesOriginal, attributesToSend, true, false, null,
+					attributesOriginal.getString(Tag.Modality), p.cuid(), syntax.getSuitable());
 		}
 		catch (AbortException e) {
 			progressNotify(destination, p.iuid(), p.cuid(), true, streamSCU);
-			monitor(fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, false, false,
-					e.getMessage(), attributesOriginal.getString(Tag.Modality), p.cuid());
+			monitor(fwdNode, destination, attributesOriginal, attributesToSend, false, false, e.getMessage(),
+					attributesOriginal.getString(Tag.Modality), p.cuid(), p.tsuid());
 			if (e.getAbort() == Abort.CONNECTION_EXCEPTION) {
 				throw e;
 			}
 		}
 		catch (IOException e) {
 			progressNotify(destination, p.iuid(), p.cuid(), true, streamSCU);
-			monitor(fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, false, true,
-					e.getMessage(), attributesOriginal.getString(Tag.Modality), p.cuid());
+			monitor(fwdNode, destination, attributesOriginal, attributesToSend, false, true, e.getMessage(),
+					attributesOriginal.getString(Tag.Modality), p.cuid(), p.tsuid());
 			throw e;
 		}
 		catch (Exception e) {
@@ -524,8 +532,8 @@ public class ForwardService {
 				Thread.currentThread().interrupt();
 			}
 			progressNotify(destination, p.iuid(), p.cuid(), true, streamSCU);
-			monitor(fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, false, true,
-					e.getMessage(), attributesOriginal.getString(Tag.Modality), p.cuid());
+			monitor(fwdNode, destination, attributesOriginal, attributesToSend, false, true, e.getMessage(),
+					attributesOriginal.getString(Tag.Modality), p.cuid(), p.tsuid());
 			log.error(ERROR_WHEN_FORWARDING, e);
 		}
 		finally {
@@ -585,27 +593,27 @@ public class ForwardService {
 				}
 			}
 			progressNotify(destination, p.iuid(), p.cuid(), false, 0);
-			monitor(fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, true, false, null,
-					attributesOriginal.getString(Tag.Modality), p.cuid());
+			monitor(fwdNode, destination, attributesOriginal, attributesToSend, true, false, null,
+					attributesOriginal.getString(Tag.Modality), p.cuid(), syntax.getSuitable());
 		}
 		catch (AbortException e) {
 			progressNotify(destination, p.iuid(), p.cuid(), true, 0);
-			monitor(fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, false, false,
-					e.getMessage(), attributesOriginal.getString(Tag.Modality), p.cuid());
+			monitor(fwdNode, destination, attributesOriginal, attributesToSend, false, false, e.getMessage(),
+					attributesOriginal.getString(Tag.Modality), p.cuid(), p.tsuid());
 			if (e.getAbort() == Abort.CONNECTION_EXCEPTION) {
 				throw e;
 			}
 		}
 		catch (IOException e) {
 			progressNotify(destination, p.iuid(), p.cuid(), true, 0);
-			monitor(fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, false, true,
-					e.getMessage(), attributesOriginal.getString(Tag.Modality), p.cuid());
+			monitor(fwdNode, destination, attributesOriginal, attributesToSend, false, true, e.getMessage(),
+					attributesOriginal.getString(Tag.Modality), p.cuid(), p.tsuid());
 			throw e;
 		}
 		catch (Exception e) {
 			progressNotify(destination, p.iuid(), p.cuid(), true, 0);
-			monitor(fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, false, true,
-					e.getMessage(), attributesOriginal.getString(Tag.Modality), p.cuid());
+			monitor(fwdNode, destination, attributesOriginal, attributesToSend, false, true, e.getMessage(),
+					attributesOriginal.getString(Tag.Modality), p.cuid(), p.tsuid());
 			log.error(ERROR_WHEN_FORWARDING, e);
 		}
 		finally {
@@ -662,41 +670,41 @@ public class ForwardService {
 				}
 			}
 			progressNotify(destination, p.iuid(), p.cuid(), false, 0);
-			monitor(fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, true, false, null,
-					attributesOriginal.getString(Tag.Modality), p.cuid());
+			monitor(fwdNode, destination, attributesOriginal, attributesToSend, true, false, null,
+					attributesOriginal.getString(Tag.Modality), p.cuid(), syntax.getSuitable());
 		}
 		catch (HttpException httpException) {
 			if (httpException.getStatusCode() != 409) {
 				progressNotify(destination, p.iuid(), p.cuid(), true, 0);
-				monitor(fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, false, true,
-						httpException.getMessage(), attributesOriginal.getString(Tag.Modality), p.cuid());
+				monitor(fwdNode, destination, attributesOriginal, attributesToSend, false, true,
+						httpException.getMessage(), attributesOriginal.getString(Tag.Modality), p.cuid(), p.tsuid());
 				throw new AbortException(Abort.FILE_EXCEPTION, "DICOMWeb forward", httpException);
 			}
 			else {
 				progressNotify(destination, p.iuid(), p.cuid(), false, 0);
-				monitor(fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, true, true, null,
-						attributesOriginal.getString(Tag.Modality), p.cuid());
+				monitor(fwdNode, destination, attributesOriginal, attributesToSend, true, true, null,
+						attributesOriginal.getString(Tag.Modality), p.cuid(), p.tsuid());
 				log.debug("File already present in destination");
 			}
 		}
 		catch (AbortException e) {
 			progressNotify(destination, p.iuid(), p.cuid(), true, 0);
-			monitor(fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, false, false,
-					e.getMessage(), attributesOriginal.getString(Tag.Modality), p.cuid());
+			monitor(fwdNode, destination, attributesOriginal, attributesToSend, false, false, e.getMessage(),
+					attributesOriginal.getString(Tag.Modality), p.cuid(), p.tsuid());
 			if (e.getAbort() == Abort.CONNECTION_EXCEPTION) {
 				throw e;
 			}
 		}
 		catch (IOException e) {
 			progressNotify(destination, p.iuid(), p.cuid(), true, 0);
-			monitor(fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, false, true,
-					e.getMessage(), attributesOriginal.getString(Tag.Modality), p.cuid());
+			monitor(fwdNode, destination, attributesOriginal, attributesToSend, false, true, e.getMessage(),
+					attributesOriginal.getString(Tag.Modality), p.cuid(), p.tsuid());
 			throw e;
 		}
 		catch (Exception e) {
 			progressNotify(destination, p.iuid(), p.cuid(), true, 0);
-			monitor(fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, false, true,
-					e.getMessage(), attributesOriginal.getString(Tag.Modality), p.cuid());
+			monitor(fwdNode, destination, attributesOriginal, attributesToSend, false, true, e.getMessage(),
+					attributesOriginal.getString(Tag.Modality), p.cuid(), p.tsuid());
 			log.error(ERROR_WHEN_FORWARDING, e);
 		}
 	}
@@ -760,22 +768,36 @@ public class ForwardService {
 	}
 
 	/**
-	 * Publish an event for monitoring purpose
-	 * @param forwardNodeId ForwardNode Id
-	 * @param destinationId Destination Id
+	 * Publish an event for monitoring purpose and, when the destination requests a
+	 * conformance report, an event carrying a metadata-only snapshot of the dataset sent.
+	 * @param sourceNode Forward node
+	 * @param destination Destination
 	 * @param attributesOriginal Original value
 	 * @param attributesToSend De-identify value
 	 * @param sent Flag to know if the transfer occurred
 	 * @param reason Reason of not transferring the file
 	 * @param modality Modality of the file transferred
 	 * @param sopClassUid Sop Class Uid
+	 * @param tsuidSent Transfer syntax the file was (to be) sent with
 	 */
-	private void monitor(Long forwardNodeId, Long destinationId, Attributes attributesOriginal,
+	private void monitor(ForwardDicomNode sourceNode, ForwardDestination destination, Attributes attributesOriginal,
 			Attributes attributesToSend, boolean sent, boolean error, String reason, String modality,
-			String sopClassUid) {
-		applicationEventPublisher
-			.publishEvent(new TransferMonitoringEvent(TransferStatusEntity.buildTransferStatusEntity(forwardNodeId,
-					destinationId, attributesOriginal, attributesToSend, sent, error, reason, modality, sopClassUid)));
+			String sopClassUid, String tsuidSent) {
+		applicationEventPublisher.publishEvent(new TransferMonitoringEvent(
+				TransferStatusEntity.buildTransferStatusEntity(sourceNode.getId(), destination.getId(),
+						attributesOriginal, attributesToSend, sent, error, reason, modality, sopClassUid)));
+		if (destination.isBuildConformanceReport() && attributesToSend.containsValue(Tag.SOPClassUID)) {
+			// The snapshot must be built synchronously: bulk data references become
+			// invalid once the temporary files are cleaned. When deep-sequence validation is
+			// on, capture as deep as the validator recurses; otherwise the default depth
+			boolean deep = destination.isDeepSequenceValidation();
+			int snapshotDepth = deep ? conformanceMaxSequenceDepth : MetadataSnapshot.DEFAULT_MAX_SEQUENCE_DEPTH;
+			MetadataSnapshot snapshot = MetadataSnapshot.of(attributesToSend, snapshotDepth);
+			applicationEventPublisher
+				.publishEvent(new ConformanceCollectEvent(InstanceConformanceData.of(sourceNode.getId(),
+						destination.getId(), sourceNode.getAet(), tsuidSent, sent, reason,
+						destination.isCheckValueConformity(), deep, destination.isDeidentified(), snapshot)));
+		}
 	}
 
 }

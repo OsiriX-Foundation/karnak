@@ -31,6 +31,30 @@ public abstract class ForwardDestination {
 	@Setter
 	private boolean transcodeOnlyUncompressed = true;
 
+	/** When true, a DICOM conformance report is collected and emailed per study sent. */
+	@Setter
+	private boolean buildConformanceReport;
+
+	/**
+	 * When true, the conformance report also checks value-content conformity (VR rules).
+	 */
+	@Setter
+	private boolean checkValueConformity;
+
+	/**
+	 * When true, the conformance checks recurse through every sequence level (SR content
+	 * tree, enhanced multiframe functional groups, …) instead of only the first one.
+	 */
+	@Setter
+	private boolean deepSequenceValidation;
+
+	/**
+	 * Whether de-identification is enabled; drives PHI redaction in the conformance
+	 * report.
+	 */
+	@Setter
+	private boolean deidentified;
+
 	private String outputTransferSyntax = "";
 
 	protected ForwardDestination(Long id, List<AttributeEditor> dicomEditors) {

@@ -59,6 +59,9 @@ public class FormDICOM extends VerticalLayout {
 	private final NotificationComponent notificationComponent;
 
 	@Getter
+	private final ConformanceReportComponent conformanceReportComponent;
+
+	@Getter
 	private final TransferSyntaxComponent transferSyntaxComponent;
 
 	@Getter
@@ -70,6 +73,7 @@ public class FormDICOM extends VerticalLayout {
 		this.filterBySOPClassesForm = new FilterBySOPClassesForm();
 		this.destinationCondition = new DestinationCondition();
 		this.notificationComponent = new NotificationComponent();
+		this.conformanceReportComponent = new ConformanceReportComponent();
 		this.transferSyntaxComponent = new TransferSyntaxComponent();
 		this.transcodeOnlyUncompressedComponent = new TranscodeOnlyUncompressedComponent();
 	}
@@ -81,6 +85,7 @@ public class FormDICOM extends VerticalLayout {
 		filterBySOPClassesForm.init(this.binder);
 		destinationCondition.init(this.binder);
 		notificationComponent.init(this.binder);
+		conformanceReportComponent.init(this.binder);
 		transferSyntaxComponent.init(this.binder);
 		transcodeOnlyUncompressedComponent.init(this.binder);
 
@@ -114,6 +119,7 @@ public class FormDICOM extends VerticalLayout {
 				UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(transferLayout))),
 				UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(useaetdestLayout))),
 				UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(notificationComponent))),
+				UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(conformanceReportComponent))),
 				UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(tagMorphingComponent))),
 				UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(deIdentificationComponent))),
 				UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(filterBySOPClassesForm))),

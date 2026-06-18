@@ -120,8 +120,8 @@ public class NotificationComponent extends VerticalLayout {
 	}
 
 	/**
-	 * The notification inputs (recipients...) are needed as soon as one of the email
-	 * features is enabled
+	 * The notification inputs (recipients...) are needed as soon as the notification is
+	 * enabled
 	 */
 	private void updateNotificationInputsVisibility() {
 		boolean visible = Boolean.TRUE.equals(activateNotification.getValue());
@@ -302,7 +302,7 @@ public class NotificationComponent extends VerticalLayout {
 
 		// List of emails
 		binder.forField(getNotify()).withValidator((s, valueContext) -> {
-			if (StringUtils.isBlank(s) && Boolean.TRUE.equals(getActivateNotification().getValue())) {
+			if (StringUtils.isBlank(s) && getActivateNotification().getValue()) {
 				return ValidationResult.error("Should have at least one address email");
 			}
 			return ValidationResult.ok();

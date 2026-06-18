@@ -228,7 +228,11 @@ public class GatewaySetUpService {
 					WebForwardDestination fwd = new WebForwardDestination(dstNode.getId(), fwdSrcNode, dstNode.getUrl(),
 							parseHeaders(dstNode.getHeaders()), progress, editors, dstNode.getTransferSyntax(),
 							dstNode.isTranscodeOnlyUncompressed(),
-							dstNode.isHttp2() ? HttpClient.Version.HTTP_2 : HttpClient.Version.HTTP_1_1);
+                            dstNode.isHttp2() ? HttpClient.Version.HTTP_2 : HttpClient.Version.HTTP_1_1);
+					fwd.setBuildConformanceReport(dstNode.isBuildConformanceReport());
+					fwd.setCheckValueConformity(dstNode.isCheckValueConformity());
+					fwd.setDeepSequenceValidation(dstNode.isDeepSequenceValidation());
+					fwd.setDeidentified(dstNode.isDesidentification());
 
 					if (kheopsAlbumEntities != null && !kheopsAlbumEntities.isEmpty()) {
 						progress.addProgressListener((DicomProgress dicomProgress) -> {
@@ -243,9 +247,13 @@ public class GatewaySetUpService {
 					DicomNode destinationNode = new DicomNode(dstNode.getAeTitle(), dstNode.getHostname(),
 							dstNode.getPort());
 					DicomForwardDestination dest = new DicomForwardDestination(dstNode.getId(),
-							getDestinationAdvancedParameters(), fwdSrcNode, destinationNode, dstNode.getUseaetdest(),
+                            getDestinationAdvancedParameters(), fwdSrcNode, destinationNode, dstNode.getUseaetdest(),
 							progress, editors, dstNode.getTransferSyntax(), dstNode.isTranscodeOnlyUncompressed(),
-							resolvePoolSize(dstNode));
+                            resolvePoolSize(dstNode));
+					dest.setBuildConformanceReport(dstNode.isBuildConformanceReport());
+					dest.setCheckValueConformity(dstNode.isCheckValueConformity());
+					dest.setDeepSequenceValidation(dstNode.isDeepSequenceValidation());
+					dest.setDeidentified(dstNode.isDesidentification());
 
 					preNegotiateCommonSopClasses(dest);
 					dstList.add(dest);

@@ -55,6 +55,9 @@ public class FormSTOW extends VerticalLayout {
 	private final NotificationComponent notificationComponent;
 
 	@Getter
+	private final ConformanceReportComponent conformanceReportComponent;
+
+	@Getter
 	private final TransferSyntaxComponent transferSyntaxComponent;
 
 	@Getter
@@ -72,6 +75,7 @@ public class FormSTOW extends VerticalLayout {
 		this.filterBySOPClassesForm = new FilterBySOPClassesForm();
 		this.destinationCondition = new DestinationCondition();
 		this.notificationComponent = new NotificationComponent();
+		this.conformanceReportComponent = new ConformanceReportComponent();
 		this.transferSyntaxComponent = new TransferSyntaxComponent();
 		this.transcodeOnlyUncompressedComponent = new TranscodeOnlyUncompressedComponent();
 	}
@@ -84,6 +88,7 @@ public class FormSTOW extends VerticalLayout {
 		this.filterBySOPClassesForm.init(this.binder);
 		this.destinationCondition.init(binder);
 		this.notificationComponent.init(binder);
+		this.conformanceReportComponent.init(this.binder);
 		this.transferSyntaxComponent.init(this.binder);
 		this.transcodeOnlyUncompressedComponent.init(this.binder);
 
@@ -114,6 +119,7 @@ public class FormSTOW extends VerticalLayout {
 		add(UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(destinationLayout))));
 		add(UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(transferLayout))));
 		add(UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(notificationComponent))));
+		add(UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(conformanceReportComponent))));
 		add(UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(tagMorphingComponent))));
 		add(UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(deIdentificationComponent))));
 		add(UIS.setWidthFull(new BoxShadowComponent(UIS.setWidthFull(filterBySOPClassesForm))));

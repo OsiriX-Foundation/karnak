@@ -109,6 +109,22 @@ public class DestinationEntity implements Serializable {
 	// Activate notification
 	private boolean activateNotification;
 
+	// Build and email a DICOM conformance validation report for each study sent
+	private boolean buildConformanceReport;
+
+	// Also check that attribute values obey their VR length/format rules (PS3.5).
+	// Off by default: real-world data deviates often and this is noisy.
+	private boolean checkValueConformity;
+
+	// Recurse the conformance checks through every sequence level (SR content tree,
+	// enhanced multiframe functional groups, …) instead of only the first one.
+	// Off by default: deeper recursion enlarges the snapshot kept in memory.
+	private boolean deepSequenceValidation;
+
+	// list of emails (comma separated) the conformance report is sent to. When
+	// blank, the notification email list (notify) is used as a fallback.
+	private String conformanceReportNotify;
+
 	// list of emails (comma separated) used when the images have been sent (or
 	// partially sent) to the final destination. Note: if an issue appears before
 	// sending to the final destination then no email is delivered.
@@ -570,6 +586,38 @@ public class DestinationEntity implements Serializable {
 
 	public void setActivateNotification(boolean activateNotification) {
 		this.activateNotification = activateNotification;
+	}
+
+	public boolean isBuildConformanceReport() {
+		return buildConformanceReport;
+	}
+
+	public void setBuildConformanceReport(boolean buildConformanceReport) {
+		this.buildConformanceReport = buildConformanceReport;
+	}
+
+	public boolean isCheckValueConformity() {
+		return checkValueConformity;
+	}
+
+	public void setCheckValueConformity(boolean checkValueConformity) {
+		this.checkValueConformity = checkValueConformity;
+	}
+
+	public boolean isDeepSequenceValidation() {
+		return deepSequenceValidation;
+	}
+
+	public void setDeepSequenceValidation(boolean deepSequenceValidation) {
+		this.deepSequenceValidation = deepSequenceValidation;
+	}
+
+	public String getConformanceReportNotify() {
+		return conformanceReportNotify;
+	}
+
+	public void setConformanceReportNotify(String conformanceReportNotify) {
+		this.conformanceReportNotify = conformanceReportNotify;
 	}
 
 	public String getTransferSyntax() {
