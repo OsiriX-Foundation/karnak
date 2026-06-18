@@ -38,6 +38,8 @@ public class FormDICOM extends VerticalLayout {
 
 	private TextField port;
 
+	private TextField concurrentConnections;
+
 	private Checkbox useAETitleCheckbox;
 
 	private Checkbox activate;
@@ -88,13 +90,14 @@ public class FormDICOM extends VerticalLayout {
 		description = new TextField("Description");
 		hostname = new TextField("Hostname");
 		port = new TextField("Port");
+		concurrentConnections = new TextField("Concurrent connections");
 		useAETitleCheckbox = new Checkbox("Use AETitle destination");
 		activate = new Checkbox("Enable destination");
 
 		// Define layout
 		VerticalLayout destinationLayout = new VerticalLayout(
 				UIS.setWidthFull(new HorizontalLayout(aeTitle, description)), destinationCondition,
-				UIS.setWidthFull(new HorizontalLayout(hostname, port)));
+				UIS.setWidthFull(new HorizontalLayout(hostname, port, concurrentConnections)));
 		VerticalLayout transferLayout = new VerticalLayout(
 				new HorizontalLayout(transferSyntaxComponent, transcodeOnlyUncompressedComponent));
 		VerticalLayout useaetdestLayout = new VerticalLayout(new HorizontalLayout(useAETitleCheckbox));
@@ -132,6 +135,13 @@ public class FormDICOM extends VerticalLayout {
 		port.setWidth("30%");
 		port.addThemeVariants(TextFieldVariant.LUMO_ALIGN_RIGHT);
 
+		concurrentConnections.setWidth("30%");
+		concurrentConnections.addThemeVariants(TextFieldVariant.LUMO_ALIGN_RIGHT);
+		UIS.setTooltip(concurrentConnections,
+				"Number of parallel DICOM associations to this destination (1 = single connection). "
+						+ "Increase to speed up heavy multi-source forwarding, but keep it within the "
+						+ "destination PACS's concurrent-association limit.");
+
 		UIS.setTooltip(useAETitleCheckbox,
 				"if \"true\" then use the destination AETitle as the calling AETitle instead of the Forward Node AETitle");
 	}
@@ -152,6 +162,12 @@ public class FormDICOM extends VerticalLayout {
 			.withValidator(Objects::nonNull, "Port is mandatory")
 			.withValidator(value -> 1 <= value && value <= 65535, "Port should be between 1 and 65535")
 			.bind(DestinationEntity::getPort, DestinationEntity::setPort);
+
+		binder.forField(concurrentConnections)
+			.withConverter(new HStringToIntegerConverter())
+			.withValidator(Objects::nonNull, "Concurrent connections is mandatory")
+			.withValidator(value -> 1 <= value && value <= 50, "Concurrent connections should be between 1 and 50")
+			.bind(DestinationEntity::getConcurrentConnections, DestinationEntity::setConcurrentConnections);
 
 		binder.forField(useAETitleCheckbox).bind(DestinationEntity::getUseaetdest, DestinationEntity::setUseaetdest);
 

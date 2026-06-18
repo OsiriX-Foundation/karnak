@@ -38,6 +38,8 @@ public class FormSTOW extends VerticalLayout {
 
 	private Checkbox activate;
 
+	private Checkbox http2;
+
 	private final DestinationCondition destinationCondition;
 
 	@Getter
@@ -91,11 +93,12 @@ public class FormSTOW extends VerticalLayout {
 		this.headers = new TextArea("Headers");
 		this.switchingAlbumsView = new SwitchingAlbumsView();
 		this.activate = new Checkbox("Enable destination");
+		this.http2 = new Checkbox("Use HTTP/2");
 
 		// Define layout
 		VerticalLayout destinationLayout = new VerticalLayout(UIS.setWidthFull(new HorizontalLayout(description)),
 				destinationCondition, UIS.setWidthFull(new HorizontalLayout(url, generateAuthorizationHeaderButton)),
-				UIS.setWidthFull(headers));
+				UIS.setWidthFull(headers), http2);
 		VerticalLayout transferLayout = new VerticalLayout(
 				new HorizontalLayout(transferSyntaxComponent, transcodeOnlyUncompressedComponent));
 		VerticalLayout activateLayout = new VerticalLayout(activate);
@@ -152,6 +155,9 @@ public class FormSTOW extends VerticalLayout {
 		headers.getStyle().set("padding", "0px");
 		UIS.setTooltip(headers,
 				"Headers for HTTP request. Example of format:\n<key>Authorization</key>\n<value>Bearer 1v1pwxT4Ww4DCFzyaMt0NP</value>");
+
+		UIS.setTooltip(http2,
+				"Use HTTP/2 for STOW-RS uploads. Leave unchecked (HTTP/1.1) when the archive is behind a reverse proxy that caps HTTP/2 requests per connection (e.g. KHEOPS / nginx http2_max_requests=1000), which silently drops instances beyond the limit.");
 	}
 
 	private void setBinder() {
@@ -163,6 +169,7 @@ public class FormSTOW extends VerticalLayout {
 		binder.forField(headers).bind(DestinationEntity::getHeaders, DestinationEntity::setHeaders);
 
 		binder.forField(activate).bind(DestinationEntity::isActivate, DestinationEntity::setActivate);
+		binder.forField(http2).bind(DestinationEntity::isHttp2, DestinationEntity::setHttp2);
 		binder.forField(switchingAlbumsView)
 			.bind(DestinationEntity::getKheopsAlbumEntities, DestinationEntity::setKheopsAlbumEntities);
 

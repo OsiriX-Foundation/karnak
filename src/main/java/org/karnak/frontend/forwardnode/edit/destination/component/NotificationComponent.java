@@ -61,10 +61,6 @@ public class NotificationComponent extends VerticalLayout {
 	@Getter
 	private Checkbox activateNotification;
 
-	@Setter
-	@Getter
-	private Checkbox buildConformanceReport;
-
 	private Div notificationInputsDiv;
 
 	private Div notificationObjectsDiv;
@@ -100,8 +96,7 @@ public class NotificationComponent extends VerticalLayout {
 				UIS.setWidthFull(new HorizontalLayout(notifyObjectErrorPrefix, notifyObjectRejectionPrefix)),
 				UIS.setWidthFull(new HorizontalLayout(notifyObjectPattern, notifyObjectValues, notifyInterval)))));
 
-		add(UIS.setWidthFull(new HorizontalLayout(activateNotification, buildConformanceReport)),
-				notificationInputsDiv);
+		add(UIS.setWidthFull(new HorizontalLayout(activateNotification)), notificationInputsDiv);
 	}
 
 	/**
@@ -122,7 +117,6 @@ public class NotificationComponent extends VerticalLayout {
 			}
 			updateNotificationInputsVisibility();
 		});
-		buildConformanceReport.addValueChangeListener(event -> updateNotificationInputsVisibility());
 	}
 
 	/**
@@ -130,8 +124,7 @@ public class NotificationComponent extends VerticalLayout {
 	 * features is enabled
 	 */
 	private void updateNotificationInputsVisibility() {
-		boolean visible = Boolean.TRUE.equals(activateNotification.getValue())
-				|| Boolean.TRUE.equals(buildConformanceReport.getValue());
+		boolean visible = Boolean.TRUE.equals(activateNotification.getValue());
 		notificationInputsDiv.setVisible(visible);
 		notificationObjectsDiv.setVisible(visible);
 	}
@@ -190,7 +183,6 @@ public class NotificationComponent extends VerticalLayout {
 		buildNotificationInputsDiv();
 		buildNotificationObjectsDiv();
 		buildActivateNotification();
-		buildBuildConformanceReport();
 		buildNotify();
 		buildNotifyObjectErrorPrefix();
 		buildNotifyObjectRejectionPrefix();
@@ -279,17 +271,6 @@ public class NotificationComponent extends VerticalLayout {
 	}
 
 	/**
-	 * Build DICOM conformance report
-	 */
-	private void buildBuildConformanceReport() {
-		buildConformanceReport = new Checkbox("Build DICOM conformance report");
-		// By default deactivate
-		buildConformanceReport.setValue(false);
-		UIS.setTooltip(buildConformanceReport,
-				"Email a DICOM conformance validation report to the list of emails for each study sent to this destination");
-	}
-
-	/**
 	 * Notification Inputs Div
 	 */
 	private void buildNotificationInputsDiv() {
@@ -319,14 +300,9 @@ public class NotificationComponent extends VerticalLayout {
 		binder.forField(getActivateNotification())
 			.bind(DestinationEntity::isActivateNotification, DestinationEntity::setActivateNotification);
 
-		// Build DICOM conformance report
-//		binder.forField(getBuildConformanceReport())
-//			.bind(DestinationEntity::isBuildConformanceReport, DestinationEntity::setBuildConformanceReport);
-
 		// List of emails
 		binder.forField(getNotify()).withValidator((s, valueContext) -> {
-			if (StringUtils.isBlank(s)
-					&& (getActivateNotification().getValue() || getBuildConformanceReport().getValue())) {
+			if (StringUtils.isBlank(s) && Boolean.TRUE.equals(getActivateNotification().getValue())) {
 				return ValidationResult.error("Should have at least one address email");
 			}
 			return ValidationResult.ok();

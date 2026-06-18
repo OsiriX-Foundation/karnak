@@ -60,8 +60,8 @@ public class ForwardNodeService {
 	}
 
 	/**
-	 * Replaces the in-memory sources and destinations of an existing forward node with the
-	 * persisted ones, so a stale collection cannot overwrite freshly saved children.
+	 * Replaces the in-memory sources and destinations of an existing forward node with
+	 * the persisted ones, so a stale collection cannot overwrite freshly saved children.
 	 * @param forwardNodeEntity the forward node about to be saved
 	 */
 	private void reloadChildren(ForwardNodeEntity forwardNodeEntity) {

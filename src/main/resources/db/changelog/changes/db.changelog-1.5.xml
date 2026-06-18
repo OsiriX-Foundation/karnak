@@ -86,4 +86,34 @@
     <sql>INSERT INTO dicom_node_group (name) SELECT DISTINCT node_type FROM dicom_node_config WHERE node_type &lt;&gt; 'WORKLIST'</sql>
   </changeSet>
 
+  <!-- Per-destination number of concurrent DICOM associations (forward connection pool size) -->
+
+  <changeSet author="karnak" id="1.5-5">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="destination" columnName="concurrent_connections"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="destination">
+      <column name="concurrent_connections" type="INT" defaultValueNumeric="1">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+  </changeSet>
+
+  <!-- Per-destination HTTP version for STOW-RS uploads (default HTTP/1.1) -->
+
+  <changeSet author="karnak" id="1.5-6">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <columnExists tableName="destination" columnName="http2"/>
+      </not>
+    </preConditions>
+    <addColumn tableName="destination">
+      <column name="http2" type="BOOLEAN" defaultValueBoolean="false">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+  </changeSet>
+
 </databaseChangeLog>

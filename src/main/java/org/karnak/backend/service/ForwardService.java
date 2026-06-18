@@ -9,12 +9,22 @@
  */
 package org.karnak.backend.service;
 
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import lombok.extern.slf4j.Slf4j;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
@@ -35,6 +45,7 @@ import org.dcm4che3.net.Status;
 import org.karnak.backend.data.entity.TransferStatusEntity;
 import org.karnak.backend.dicom.Defacer;
 import org.karnak.backend.dicom.DicomForwardDestination;
+import org.karnak.backend.dicom.DicomForwardDestination.ScuLease;
 import org.karnak.backend.dicom.ForwardDestination;
 import org.karnak.backend.dicom.ForwardDicomNode;
 import org.karnak.backend.dicom.Params;
@@ -43,6 +54,7 @@ import org.karnak.backend.exception.AbortException;
 import org.karnak.backend.model.event.TransferMonitoringEvent;
 import org.karnak.backend.model.image.TransformedPlanarImage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.weasis.core.util.FileUtil;
@@ -57,20 +69,68 @@ import org.weasis.dicom.util.StoreFromStreamSCU;
 import org.weasis.dicom.web.DicomStowRS;
 import org.weasis.dicom.web.HttpException;
 import org.weasis.opencv.data.PlanarImage;
-import org.weasis.core.util.annotations.Generated;
 
 @Service
 @Slf4j
-@Generated()
 public class ForwardService {
 
 	private static final String ERROR_WHEN_FORWARDING = "Error when forwarding to the final destination";
 
 	private final ApplicationEventPublisher applicationEventPublisher;
 
+	@Value("${forward.parallel-fanout:true}")
+	private boolean parallelFanout;
+
+	@Value("${forward.fanout-max-threads:0}")
+	private int fanoutMaxThreads;
+
+	private ExecutorService fanoutExecutor;
+
 	@Autowired
 	public ForwardService(final ApplicationEventPublisher applicationEventPublisher) {
 		this.applicationEventPublisher = applicationEventPublisher;
+	}
+
+	@PostConstruct
+	void initFanoutExecutor() {
+		if (!parallelFanout) {
+			return;
+		}
+		int threads = fanoutMaxThreads > 0 ? fanoutMaxThreads : Math.max(4, Runtime.getRuntime().availableProcessors());
+		ThreadFactory threadFactory = new ThreadFactory() {
+			private final AtomicInteger counter = new AtomicInteger(1);
+
+			@Override
+			public Thread newThread(Runnable r) {
+				Thread t = new Thread(r, "forward-fanout-" + counter.getAndIncrement());
+				t.setDaemon(true);
+				return t;
+			}
+		};
+		// Bounded queue + caller-runs: under overload the submitting thread runs the task
+		// itself, degrading gracefully to sequential delivery rather than growing
+		// threads/queue
+		// without bound.
+		ThreadPoolExecutor executor = new ThreadPoolExecutor(threads, threads, 60L, TimeUnit.SECONDS,
+				new LinkedBlockingQueue<>(threads * 4), threadFactory, new ThreadPoolExecutor.CallerRunsPolicy());
+		executor.allowCoreThreadTimeOut(true);
+		this.fanoutExecutor = executor;
+	}
+
+	@PreDestroy
+	void shutdownFanoutExecutor() {
+		if (fanoutExecutor != null) {
+			fanoutExecutor.shutdown();
+			try {
+				if (!fanoutExecutor.awaitTermination(30, TimeUnit.SECONDS)) {
+					fanoutExecutor.shutdownNow();
+				}
+			}
+			catch (InterruptedException e) {
+				fanoutExecutor.shutdownNow();
+				Thread.currentThread().interrupt();
+			}
+		}
 	}
 
 	public void storeMultipleDestination(ForwardDicomNode forwardNode, List<ForwardDestination> destinations, Params p)
@@ -89,8 +149,16 @@ public class ForwardService {
 		List<File> files = new ArrayList<>();
 		try {
 			int nbDestinations = destinations.size();
-			for (int i = 0; i < nbDestinations; i++) {
-				prepareAndTransfer(forwardNode, p, i, destinations.get(i), attributes, nbDestinations, files);
+			// The first destination consumes the incoming stream once: for a single
+			// destination it streams straight through; for several it also buffers the
+			// dataset (bulk
+			// data spooled to temporary files) into "attributes" so the remaining
+			// destinations can be
+			// served from it.
+			prepareAndTransfer(forwardNode, p, 0, destinations.get(0), attributes, nbDestinations, files);
+
+			if (nbDestinations > 1 && !attributes.isEmpty()) {
+				fanOutToRemainingDestinations(forwardNode, p, destinations, attributes, nbDestinations, files);
 			}
 		}
 		catch (IOException e) {
@@ -98,8 +166,80 @@ public class ForwardService {
 			throw e;
 		}
 		finally {
-			// Force to clean the temporary bulk files
+			// Force to clean the temporary bulk files (only after every parallel sending
+			// has
+			// finished)
 			files.forEach(file -> FileUtil.delete(file.toPath()));
+		}
+	}
+
+	/**
+	 * Sends the buffered dataset to every destination after the first one. When parallel
+	 * fan-out is enabled the sends (and per-destination editor application) run
+	 * concurrently; otherwise they run sequentially as before. Each destination receives
+	 * its own dataset copy so per-destination editors mutate independent objects and
+	 * never read the shared buffer concurrently — the copies are made on the calling
+	 * thread, only the editor application and the network send run in parallel.
+	 */
+	private void fanOutToRemainingDestinations(ForwardDicomNode forwardNode, Params p,
+			List<ForwardDestination> destinations, Attributes attributes, int nbDestinations, List<File> files)
+			throws IOException {
+		if (!parallelFanout || fanoutExecutor == null) {
+			for (int i = 1; i < nbDestinations; i++) {
+				prepareAndTransfer(forwardNode, p, i, destinations.get(i), attributes, nbDestinations, files);
+			}
+			return;
+		}
+
+		List<Future<?>> futures = new ArrayList<>(nbDestinations - 1);
+		for (int i = 1; i < nbDestinations; i++) {
+			final int index = i;
+			final ForwardDestination destination = destinations.get(i);
+			final Attributes owned = new Attributes(attributes);
+			futures.add(fanoutExecutor.submit(() -> {
+				prepareAndTransfer(forwardNode, p, index, destination, owned, nbDestinations, files);
+				return null;
+			}));
+		}
+		awaitFanout(futures);
+	}
+
+	/**
+	 * Waits for every parallel destination send to finish. Unlike the former sequential
+	 * loop, all destinations are attempted even if one fails; the first failure is then
+	 * re-thrown so the calling source still sees a forwarding error.
+	 */
+	private void awaitFanout(List<Future<?>> futures) throws IOException {
+		IOException ioError = null;
+		RuntimeException runtimeError = null;
+		for (Future<?> future : futures) {
+			try {
+				future.get();
+			}
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				futures.forEach(f -> f.cancel(true));
+				throw new IOException("Interrupted while forwarding to multiple destinations", e);
+			}
+			catch (ExecutionException e) {
+				Throwable cause = e.getCause();
+				if (cause instanceof IOException io) {
+					ioError = ioError != null ? ioError : io;
+				}
+				else if (cause instanceof RuntimeException re) {
+					runtimeError = runtimeError != null ? runtimeError : re;
+				}
+				else {
+					runtimeError = runtimeError != null ? runtimeError
+							: new IllegalStateException(ERROR_WHEN_FORWARDING, cause);
+				}
+			}
+		}
+		if (ioError != null) {
+			throw ioError;
+		}
+		if (runtimeError != null) {
+			throw runtimeError;
 		}
 	}
 
@@ -115,47 +255,54 @@ public class ForwardService {
 	 */
 	private void prepareAndTransfer(ForwardDicomNode fwdNode, Params p, int index, ForwardDestination destination,
 			Attributes attributes, int nbDestinations, List<File> files) throws IOException {
-		// Prepare transfer only for dicom destination
+		Attributes attToApply = nbDestinations > 1 ? attributes : null;
 		if (destination instanceof DicomForwardDestination dicomDestination) {
-			prepareTransfer(dicomDestination, p);
+			// Lease one association from the destination's pool for the whole transfer,
+			// so the same connection is used by prepareTransfer and the sending, then
+			// return it.
+			ScuLease lease = dicomDestination.acquire();
+			try {
+				prepareTransfer(lease, dicomDestination, p);
+				if (index == 0) {
+					List<File> list = transfer(fwdNode, dicomDestination, lease, attToApply, p);
+					if (list != null) {
+						files.addAll(list);
+					}
+				}
+				else if (!attributes.isEmpty()) {
+					transferOther(fwdNode, dicomDestination, lease, attributes, p);
+				}
+			}
+			finally {
+				dicomDestination.release(lease);
+			}
 		}
-		if (index == 0) {
-			// First iteration: handle the first destination of the forward node
-			Attributes attToApply = nbDestinations > 1 ? attributes : null;
-			List<File> list = null;
-			if (destination instanceof DicomForwardDestination dicomDestination) {
-				list = transfer(fwdNode, dicomDestination, attToApply, p);
+		else if (destination instanceof WebForwardDestination webDestination) {
+			if (index == 0) {
+				List<File> list = transfer(fwdNode, webDestination, attToApply, p);
+				if (list != null) {
+					files.addAll(list);
+				}
 			}
-			else if (destination instanceof WebForwardDestination webDestination) {
-				list = transfer(fwdNode, webDestination, attToApply, p);
-			}
-			if (list != null) {
-				files.addAll(list);
-			}
-		}
-		else if (!attributes.isEmpty()) {
-			// Other iterations: handle the remaining destinations of the forward node
-			if (destination instanceof DicomForwardDestination dicomDestination) {
-				transferOther(fwdNode, dicomDestination, attributes, p);
-			}
-			else if (destination instanceof WebForwardDestination webDestination) {
+			else if (!attributes.isEmpty()) {
 				transferOther(fwdNode, webDestination, attributes, p);
 			}
 		}
 	}
 
-	public static StoreFromStreamSCU prepareTransfer(DicomForwardDestination destination, Params p) throws IOException {
+	public static StoreFromStreamSCU prepareTransfer(ScuLease lease, DicomForwardDestination destination, Params p)
+			throws IOException {
 		String cuid = p.cuid();
 		String tsuid = p.tsuid();
 		String dstTsuid = destination.getOutputTransferSyntax(tsuid);
-		StoreFromStreamSCU streamSCU = destination.getStreamSCU();
-		streamSCU.prepareTransfer(destination.getStreamSCUService(), p.iuid(), cuid, dstTsuid);
+		StoreFromStreamSCU streamSCU = lease.scu();
+		streamSCU.prepareTransfer(lease.service(), p.iuid(), cuid, dstTsuid);
 		return streamSCU;
 	}
 
-	public List<File> transfer(ForwardDicomNode sourceNode, DicomForwardDestination destination, Attributes copy,
-			Params p) throws IOException {
-		StoreFromStreamSCU streamSCU = destination.getStreamSCU();
+	public List<File> transfer(ForwardDicomNode sourceNode, DicomForwardDestination destination, ScuLease lease,
+			Attributes copy, Params p) throws IOException {
+		StoreFromStreamSCU streamSCU = lease.scu();
 		DicomInputStream in = null;
 		List<File> files;
 		Attributes attributesOriginal = new Attributes();
@@ -195,19 +342,7 @@ public class ForwardService {
 					cuid = attributes.getString(Tag.SOPClassUID);
 				}
 
-				if (context.getAbort() == Abort.FILE_EXCEPTION) {
-					if (p.data() instanceof PDVInputStream) {
-						((PDVInputStream) p.data()).skipAll();
-					}
-					throw new AbortException(context.getAbort(), context.getAbortMessage());
-				}
-				else if (context.getAbort() == Abort.CONNECTION_EXCEPTION) {
-					if (p.as() != null) {
-						p.as().abort();
-					}
-					throw new AbortException(context.getAbort(),
-							"DICOM association abort: " + context.getAbortMessage());
-				}
+				abortIfRequested(context, p, true, "DICOM association abort: ");
 				dataWriter = buildDataWriterFromTransformedImage(syntax, context, attributes, transformedPlanarImage);
 			}
 
@@ -264,13 +399,22 @@ public class ForwardService {
 			Attributes attributes, TransformedPlanarImage transformedPlanarImage) throws IOException {
 		DataWriter dataWriter;
 		BytesWithImageDescriptor desc = ImageAdapter.imageTranscode(attributes, syntax, context);
-		transformedPlanarImage = transformImage(attributes, context, transformedPlanarImage);
+		boolean transformed = transformImage(attributes, context, transformedPlanarImage);
 		dataWriter = ImageAdapter.buildDataWriter(attributes, syntax,
-				transformedPlanarImage != null ? transformedPlanarImage.getEditablePlanarImage() : null, desc);
+				transformed ? transformedPlanarImage.getEditablePlanarImage() : null, desc);
 		return dataWriter;
 	}
 
-	private static TransformedPlanarImage transformImage(Attributes attributes, AttributeEditorContext context,
+	/**
+	 * Configure the masking/defacing transformation on the given
+	 * {@link TransformedPlanarImage} in place. The realized {@link PlanarImage} is
+	 * produced lazily by the editable when the data writer is consumed and stored back on
+	 * the same instance, so the caller that owns {@code transformedPlanarImage} is
+	 * responsible for releasing it.
+	 * @return {@code true} if a transformation (mask or defacing) was configured,
+	 * {@code false} otherwise
+	 */
+	private static boolean transformImage(Attributes attributes, AttributeEditorContext context,
 			TransformedPlanarImage transformedPlanarImage) {
 		MaskArea m = context.getMaskArea();
 		boolean defacing = LangUtil.emptyToFalse(context.getProperties().getProperty(Defacer.APPLY_DEFACING));
@@ -278,9 +422,9 @@ public class ForwardService {
 			Editable<PlanarImage> editablePlanarImage = buildEditablePlanarImage(attributes, m, defacing,
 					transformedPlanarImage);
 			transformedPlanarImage.setEditablePlanarImage(editablePlanarImage);
-			return transformedPlanarImage;
+			return true;
 		}
-		return null;
+		return false;
 	}
 
 	private static Editable<PlanarImage> buildEditablePlanarImage(Attributes attributes, MaskArea m, boolean defacing,
@@ -316,9 +460,9 @@ public class ForwardService {
 		return null;
 	}
 
-	public void transferOther(ForwardDicomNode fwdNode, DicomForwardDestination destination, Attributes copy, Params p)
-			throws IOException {
-		StoreFromStreamSCU streamSCU = destination.getStreamSCU();
+	public void transferOther(ForwardDicomNode fwdNode, DicomForwardDestination destination, ScuLease lease,
+			Attributes copy, Params p) throws IOException {
+		StoreFromStreamSCU streamSCU = lease.scu();
 		Attributes attributesToSend = new Attributes();
 		Attributes attributesOriginal = new Attributes();
 		try {
@@ -351,13 +495,7 @@ public class ForwardService {
 					cuid = attributes.getString(Tag.SOPClassUID);
 				}
 
-				if (context.getAbort() == Abort.FILE_EXCEPTION) {
-					throw new AbortException(context.getAbort(), context.getAbortMessage());
-				}
-				else if (context.getAbort() == Abort.CONNECTION_EXCEPTION) {
-					throw new AbortException(context.getAbort(),
-							"DICOM association abort. " + context.getAbortMessage());
-				}
+				abortIfRequested(context, p, false, "DICOM association abort. ");
 				dataWriter = buildDataWriterFromTransformedImage(syntax, context, attributes, transformedPlanarImage);
 			}
 
@@ -436,18 +574,7 @@ public class ForwardService {
 					editors.forEach(e -> e.apply(attributes, context));
 				}
 
-				if (context.getAbort() == Abort.FILE_EXCEPTION) {
-					if (p.data() instanceof PDVInputStream) {
-						((PDVInputStream) p.data()).skipAll();
-					}
-					throw new AbortException(context.getAbort(), context.getAbortMessage());
-				}
-				else if (context.getAbort() == Abort.CONNECTION_EXCEPTION) {
-					if (p.as() != null) {
-						p.as().abort();
-					}
-					throw new AbortException(context.getAbort(), "STOW-RS abort: " + context.getAbortMessage());
-				}
+				abortIfRequested(context, p, true, "STOW-RS abort: ");
 
 				BytesWithImageDescriptor desc = ImageAdapter.imageTranscode(attributes, syntax, context);
 				if (desc == null) {
@@ -491,15 +618,14 @@ public class ForwardService {
 			AttributeEditorContext context, Attributes attributes, BytesWithImageDescriptor desc) throws Exception {
 		TransformedPlanarImage transformedPlanarImage = new TransformedPlanarImage();
 		try {
-			transformedPlanarImage = transformImage(attributes, context, transformedPlanarImage);
-			if (transformedPlanarImage == null) {
+			if (!transformImage(attributes, context, transformedPlanarImage)) {
 				throw new IllegalStateException("Cannot transcode image for STOW-RS upload.");
 			}
 			stow.uploadPayload(DicomStowRS.createCompressedImagePayload(attributes, syntax, desc,
 					transformedPlanarImage.getEditablePlanarImage()));
 		}
 		finally {
-			if (transformedPlanarImage != null && transformedPlanarImage.getPlanarImage() != null) {
+			if (transformedPlanarImage.getPlanarImage() != null) {
 				transformedPlanarImage.getPlanarImage().release();
 			}
 		}
@@ -525,13 +651,7 @@ public class ForwardService {
 				attributesOriginal.addAll(attributes);
 				editors.forEach(e -> e.apply(attributes, context));
 
-				if (context.getAbort() == Abort.FILE_EXCEPTION) {
-					throw new AbortException(context.getAbort(), context.getAbortMessage());
-				}
-				else if (context.getAbort() == Abort.CONNECTION_EXCEPTION) {
-					throw new AbortException(context.getAbort(),
-							"DICOM associtation abort. " + context.getAbortMessage());
-				}
+				abortIfRequested(context, p, false, "DICOM association abort. ");
 
 				BytesWithImageDescriptor desc = ImageAdapter.imageTranscode(attributes, syntax, context);
 				if (desc == null) {
@@ -540,10 +660,10 @@ public class ForwardService {
 				else {
 					uploadPayLoadFromTransformedImage(stow, syntax, context, attributes, desc);
 				}
-				progressNotify(destination, p.iuid(), p.cuid(), false, 0);
-				monitor(fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, true, false, null,
-						attributesOriginal.getString(Tag.Modality), p.cuid());
 			}
+			progressNotify(destination, p.iuid(), p.cuid(), false, 0);
+			monitor(fwdNode.getId(), destination.getId(), attributesOriginal, attributesToSend, true, false, null,
+					attributesOriginal.getString(Tag.Modality), p.cuid());
 		}
 		catch (HttpException httpException) {
 			if (httpException.getStatusCode() != 409) {
@@ -584,7 +704,8 @@ public class ForwardService {
 	private static void progressNotify(ForwardDestination destination, String iuid, String cuid, boolean failed,
 			StoreFromStreamSCU streamSCU) {
 		streamSCU.removeIUIDProcessed(iuid);
-		ServiceUtil.notifyProgression(destination.getState(), iuid, cuid,
+		// Use the leased SCU's own state (each pooled association has its own progress).
+		ServiceUtil.notifyProgression(streamSCU.getState(), iuid, cuid,
 				failed ? Status.ProcessingFailure : Status.Success,
 				failed ? ProgressStatus.FAILED : ProgressStatus.COMPLETED, streamSCU.getNumberOfSuboperations());
 	}
@@ -594,6 +715,35 @@ public class ForwardService {
 		ServiceUtil.notifyProgression(destination.getState(), iuid, cuid,
 				failed ? Status.ProcessingFailure : Status.Success,
 				failed ? ProgressStatus.FAILED : ProgressStatus.COMPLETED, subOperations);
+	}
+
+	/**
+	 * Translate an editor-requested abort into an {@link AbortException}. When
+	 * {@code streaming} is {@code true} (the source object is still being read off the
+	 * association) the pending payload is drained on a file-level abort and the
+	 * association is aborted on a connection-level abort before the exception is raised.
+	 * @param context the editor context carrying the requested {@link Abort}
+	 * @param p the transfer parameters (source stream / association)
+	 * @param streaming whether the incoming object is being streamed from the association
+	 * @param connectionAbortPrefix message prefix for a connection-level abort
+	 * @throws AbortException if an abort was requested
+	 * @throws IOException if draining the pending payload fails
+	 */
+	private static void abortIfRequested(AttributeEditorContext context, Params p, boolean streaming,
+			String connectionAbortPrefix) throws AbortException, IOException {
+		Abort abort = context.getAbort();
+		if (abort == Abort.FILE_EXCEPTION) {
+			if (streaming && p.data() instanceof PDVInputStream pdv) {
+				pdv.skipAll();
+			}
+			throw new AbortException(abort, context.getAbortMessage());
+		}
+		if (abort == Abort.CONNECTION_EXCEPTION) {
+			if (streaming && p.as() != null) {
+				p.as().abort();
+			}
+			throw new AbortException(abort, connectionAbortPrefix + context.getAbortMessage());
+		}
 	}
 
 	public static String selectTransferSyntax(Association as, String cuid, String filets) {

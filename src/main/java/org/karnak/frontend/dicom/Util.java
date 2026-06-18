@@ -44,18 +44,18 @@ public class Util {
 	private static Future<Boolean> portIsOpen(final ExecutorService es, final String host, final int port,
 			final int timeout) {
 		return es.submit(() -> {
-      try (Socket socket = new Socket()) {
-        socket.connect(new InetSocketAddress(host, port), timeout);
-        socket.close();
-        return true;
-      } catch (Exception ex) {
-        return false;
-      }
-    });
+			try (Socket socket = new Socket()) {
+				socket.connect(new InetSocketAddress(host, port), timeout);
+				socket.close();
+				return true;
+			}
+			catch (Exception ex) {
+				return false;
+			}
+		});
 	}
 
-	public static boolean getNetworkResponse(StringBuilder result, String host, int port,
-			boolean fontIcon) {
+	public static boolean getNetworkResponse(StringBuilder result, String host, int port, boolean fontIcon) {
 
 		return getNetworkResponse(result, host, port, fontIcon, "HTML");
 	}

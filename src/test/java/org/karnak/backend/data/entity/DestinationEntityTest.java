@@ -64,6 +64,13 @@ class DestinationEntityTest {
 			assertEquals("h=1", entity.getHeaders());
 		}
 
+		@Test
+		void stow_destination_defaults_to_http_1_1() {
+			// HTTP/1.1 is the safe default: HTTP/2 trips reverse-proxy per-connection
+			// request caps.
+			assertFalse(DestinationEntity.ofStowEmpty().isHttp2());
+		}
+
 	}
 
 	@Test
@@ -104,6 +111,7 @@ class DestinationEntityTest {
 		entity.setHeaders("h");
 		entity.setTransferSyntax("1.2.840.10008.1.2.1");
 		entity.setTranscodeOnlyUncompressed(true);
+		entity.setHttp2(true);
 		entity.setTransferInProgress(true);
 		entity.setLastTransfer(now);
 		entity.setEmailLastCheck(now);
@@ -142,6 +150,7 @@ class DestinationEntityTest {
 		assertEquals("h", entity.getHeaders());
 		assertEquals("1.2.840.10008.1.2.1", entity.getTransferSyntax());
 		assertTrue(entity.isTranscodeOnlyUncompressed());
+		assertTrue(entity.isHttp2());
 		assertTrue(entity.isTransferInProgress());
 		assertEquals(now, entity.getLastTransfer());
 		assertEquals(now, entity.getEmailLastCheck());

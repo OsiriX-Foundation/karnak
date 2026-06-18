@@ -34,7 +34,7 @@ class UtilTest {
 
 		// Reachability depends on the host environment, so we only assert the XML
 		// framing.
-		Util.getNetworkResponse(result,  UNREACHABLE_HOST, CLOSED_PORT, true, "XML");
+		Util.getNetworkResponse(result, UNREACHABLE_HOST, CLOSED_PORT, true, "XML");
 
 		String xml = result.toString();
 		assertTrue(xml.contains("<DcmNetworkStatus>"), xml);
@@ -46,7 +46,7 @@ class UtilTest {
 		StringBuilder result = new StringBuilder();
 
 		// The 5-argument overload defaults to the HTML format.
-		Util.getNetworkResponse(result,  UNREACHABLE_HOST, CLOSED_PORT, true);
+		Util.getNetworkResponse(result, UNREACHABLE_HOST, CLOSED_PORT, true);
 
 		String html = result.toString();
 		assertFalse(html.isEmpty());

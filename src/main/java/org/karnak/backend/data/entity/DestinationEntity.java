@@ -167,6 +167,12 @@ public class DestinationEntity implements Serializable {
 	// Transcode Only Uncompressed
 	private boolean transcodeOnlyUncompressed;
 
+	// Number of concurrent DICOM associations (forward connection pool)
+	private Integer concurrentConnections = 1;
+
+	// Use HTTP/2 for STOW-RS uploads. Default false (HTTP/1.1)
+	private boolean http2;
+
 	// Flag to know if there are some transfer activities on this destination
 	private boolean transferInProgress;
 
@@ -214,6 +220,7 @@ public class DestinationEntity implements Serializable {
 		this.headers = "";
 
 		this.transcodeOnlyUncompressed = false;
+		this.http2 = false;
 	}
 
 	public static DestinationEntity ofDicomEmpty() {
@@ -579,6 +586,25 @@ public class DestinationEntity implements Serializable {
 
 	public void setTranscodeOnlyUncompressed(boolean transcodeOnlyUncompressed) {
 		this.transcodeOnlyUncompressed = transcodeOnlyUncompressed;
+	}
+
+	@Column(name = "concurrent_connections")
+	@Min(groups = DestinationDicomGroup.class, value = 1, message = "Concurrent connections must be at least 1")
+	@Max(groups = DestinationDicomGroup.class, value = 50, message = "Concurrent connections must be 50 or less")
+	public Integer getConcurrentConnections() {
+		return concurrentConnections;
+	}
+
+	public void setConcurrentConnections(Integer concurrentConnections) {
+		this.concurrentConnections = concurrentConnections;
+	}
+
+	public boolean isHttp2() {
+		return http2;
+	}
+
+	public void setHttp2(boolean http2) {
+		this.http2 = http2;
 	}
 
 	public boolean isTransferInProgress() {

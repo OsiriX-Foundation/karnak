@@ -10,6 +10,7 @@
 package org.karnak.backend.service.gateway;
 
 import java.io.IOException;
+import java.net.http.HttpClient;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,6 +21,7 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.dcm4che3.data.Attributes;
+import org.dcm4che3.data.UID;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.karnak.backend.data.entity.DestinationEntity;
@@ -30,6 +32,7 @@ import org.karnak.backend.data.entity.VersionEntity;
 import org.karnak.backend.data.repo.DestinationRepo;
 import org.karnak.backend.data.repo.ForwardNodeRepo;
 import org.karnak.backend.data.repo.VersionRepo;
+import org.karnak.backend.dicom.CommonStorageSopClasses;
 import org.karnak.backend.dicom.DicomForwardDestination;
 import org.karnak.backend.dicom.ForwardDestination;
 import org.karnak.backend.dicom.ForwardDicomNode;
@@ -45,6 +48,7 @@ import org.karnak.backend.model.event.NodeEvent;
 import org.karnak.backend.service.kheops.SwitchingAlbum;
 import org.karnak.backend.util.SystemPropertyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.weasis.core.util.LangUtil;
@@ -73,6 +77,15 @@ public class GatewaySetUpService {
 	private final DestinationRepo destinationRepo;
 
 	private final Map<ForwardDicomNode, List<ForwardDestination>> destMap;
+
+	@Value("${forward.prenegotiate-sop-classes:true}")
+	private boolean preNegotiateSopClasses;
+
+	@Value("${forward.pool.max-per-destination:1}")
+	private int poolMaxPerDestination;
+
+	@Value("${forward.pool.max-ops-invoked:16}")
+	private int poolMaxOpsInvoked;
 
 	@Getter
 	private final String listenerAET;
@@ -147,6 +160,17 @@ public class GatewaySetUpService {
 		return params;
 	}
 
+	/**
+	 * Advanced parameters for outgoing destination associations, with the async C-STORE
+	 * window ({@code maxOpsInvoked}) taken from configuration so it can be balanced
+	 * against the pool size.
+	 */
+	private AdvancedParams getDestinationAdvancedParameters() {
+		AdvancedParams params = getDefaultAdvancedParameters();
+		params.getConnectOptions().setMaxOpsInvoked(Math.max(1, poolMaxOpsInvoked));
+		return params;
+	}
+
 	@Override
 	public String toString() {
 		return "Hostname=" + DicomNode.convertToIP(null) + " AETitle=" + listenerAET + " Port=" + listenerPort;
@@ -203,7 +227,8 @@ public class GatewaySetUpService {
 				if (dstNode.getDestinationType() == DestinationType.stow) {
 					WebForwardDestination fwd = new WebForwardDestination(dstNode.getId(), fwdSrcNode, dstNode.getUrl(),
 							parseHeaders(dstNode.getHeaders()), progress, editors, dstNode.getTransferSyntax(),
-							dstNode.isTranscodeOnlyUncompressed());
+							dstNode.isTranscodeOnlyUncompressed(),
+							dstNode.isHttp2() ? HttpClient.Version.HTTP_2 : HttpClient.Version.HTTP_1_1);
 
 					if (kheopsAlbumEntities != null && !kheopsAlbumEntities.isEmpty()) {
 						progress.addProgressListener((DicomProgress dicomProgress) -> {
@@ -218,9 +243,11 @@ public class GatewaySetUpService {
 					DicomNode destinationNode = new DicomNode(dstNode.getAeTitle(), dstNode.getHostname(),
 							dstNode.getPort());
 					DicomForwardDestination dest = new DicomForwardDestination(dstNode.getId(),
-							getDefaultAdvancedParameters(), fwdSrcNode, destinationNode, dstNode.getUseaetdest(),
-							progress, editors, dstNode.getTransferSyntax(), dstNode.isTranscodeOnlyUncompressed());
+							getDestinationAdvancedParameters(), fwdSrcNode, destinationNode, dstNode.getUseaetdest(),
+							progress, editors, dstNode.getTransferSyntax(), dstNode.isTranscodeOnlyUncompressed(),
+							resolvePoolSize(dstNode));
 
+					preNegotiateCommonSopClasses(dest);
 					dstList.add(dest);
 				}
 			}
@@ -228,6 +255,30 @@ public class GatewaySetUpService {
 		catch (IOException e) {
 			log.error("Cannot build ForwardDestination", e);
 		}
+	}
+
+	/**
+	 * Effective connection-pool size for a destination: its per-destination value when
+	 * set, otherwise the global {@code forward.pool.max-per-destination} default. Never
+	 * below 1.
+	 */
+	private int resolvePoolSize(DestinationEntity dstNode) {
+		Integer perDestination = dstNode.getConcurrentConnections();
+		int size = perDestination != null ? perDestination : poolMaxPerDestination;
+		return Math.max(1, size);
+	}
+
+	private void preNegotiateCommonSopClasses(DicomForwardDestination dest) {
+		if (!preNegotiateSopClasses) {
+			return;
+		}
+		// Every association in the pool must negotiate the same presentation contexts.
+		dest.getStreamSCUs().forEach(scu -> {
+			for (String sopClassUid : CommonStorageSopClasses.UIDS) {
+				// addData adds the SOP Class with Explicit + Implicit VR Little Endian
+				scu.addData(sopClassUid, UID.ExplicitVRLittleEndian);
+			}
+		});
 	}
 
 	/**

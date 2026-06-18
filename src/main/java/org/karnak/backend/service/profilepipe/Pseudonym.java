@@ -51,7 +51,8 @@ public class Pseudonym {
 
 		return switch (destinationEntity.getPseudonymType()) {
 			case CACHE_EXTID ->
-				getCacheExtid(patientMetadata, destinationEntity.getDeIdentificationProjectEntity().getId(), destinationEntity.isSkipIssuerOfPatientId());
+				getCacheExtid(patientMetadata, destinationEntity.getDeIdentificationProjectEntity().getId(),
+						destinationEntity.isSkipIssuerOfPatientId());
 			case EXTID_IN_TAG -> getPseudonymInDicom(dcm, destinationEntity);
 			case EXTID_API -> getPseudonymFromApi(dcm, destinationEntity);
 		};

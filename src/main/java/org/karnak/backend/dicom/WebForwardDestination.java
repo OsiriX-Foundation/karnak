@@ -9,6 +9,7 @@
  */
 package org.karnak.backend.dicom;
 
+import java.net.http.HttpClient;
 import java.util.List;
 import java.util.Map;
 import lombok.Getter;
@@ -43,16 +44,24 @@ public class WebForwardDestination extends ForwardDestination {
 
 	public WebForwardDestination(ForwardDicomNode fwdNode, String requestURL, Map<String, String> headers,
 			DicomProgress progress, List<AttributeEditor> editors) {
-		this(null, fwdNode, requestURL, headers, progress, editors, null, true);
+		this(null, fwdNode, requestURL, headers, progress, editors, null, true, HttpClient.Version.HTTP_1_1);
 	}
 
 	public WebForwardDestination(Long id, ForwardDicomNode fwdNode, String requestURL, Map<String, String> headers,
 			DicomProgress progress, List<AttributeEditor> editors, String outputTransferSyntax,
-			boolean transcodeOnlyUncompressed) {
+			boolean transcodeOnlyUncompressed, HttpClient.Version httpVersion) {
 		super(id, editors);
 		this.callingNode = fwdNode;
 		this.state = new DicomState(progress == null ? new DicomProgress() : progress);
-		this.stowRS = new DicomStowRS(requestURL, ContentType.APPLICATION_DICOM, null, headers);
+		// HTTP version is configurable per destination and defaults to HTTP/1.1: over
+		// HTTP/2 a reverse proxy in front of the archive (e.g. KHEOPS / nginx with the
+		// default
+		// http2_max_requests=1000) sends GOAWAY after 1000 requests on the connection,
+		// and the JDK HttpClient does not retry the non-idempotent STOW POSTs, so
+		// instances
+		// beyond the 1000th are silently dropped. See KheopsApi for the same default.
+		this.stowRS = new DicomStowRS(requestURL, ContentType.APPLICATION_DICOM, null, headers,
+				httpVersion == null ? HttpClient.Version.HTTP_1_1 : httpVersion);
 		setOutputTransferSyntax(outputTransferSyntax);
 		setTranscodeOnlyUncompressed(transcodeOnlyUncompressed);
 	}
