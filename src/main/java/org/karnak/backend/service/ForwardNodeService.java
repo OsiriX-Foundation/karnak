@@ -42,11 +42,36 @@ public class ForwardNodeService {
 
 	/**
 	 * Store given ForwardNode.
+	 *
+	 * <p>
+	 * The forward node form only edits the node's own fields (AE title, description). Its
+	 * destinations and sources are persisted through their own save flows. Because those
+	 * collections cascade from the forward node, an in-memory forward node that has not
+	 * been refreshed since a destination/source was edited would otherwise overwrite the
+	 * freshly saved children with a stale state. Reload the children from the database
+	 * first so only the forward node's own fields are updated.
 	 * @param forwardNodeEntity the updated or new forwardNodeEntity
 	 */
 	public void save(ForwardNodeEntity forwardNodeEntity) {
+		// Reload sources and destinations to avoid persisting a stale state
+		reloadChildren(forwardNodeEntity);
 		// Save forward node
 		forwardNodeRepo.saveAndFlush(forwardNodeEntity);
+	}
+
+	/**
+	 * Replaces the in-memory sources and destinations of an existing forward node with the
+	 * persisted ones, so a stale collection cannot overwrite freshly saved children.
+	 * @param forwardNodeEntity the forward node about to be saved
+	 */
+	private void reloadChildren(ForwardNodeEntity forwardNodeEntity) {
+		if (forwardNodeEntity == null || forwardNodeEntity.getId() == null) {
+			return;
+		}
+		forwardNodeRepo.findById(forwardNodeEntity.getId()).ifPresent(persisted -> {
+			forwardNodeEntity.setSourceNodes(new HashSet<>(persisted.getSourceNodes()));
+			forwardNodeEntity.setDestinationEntities(new HashSet<>(persisted.getDestinationEntities()));
+		});
 	}
 
 	/**
