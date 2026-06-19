@@ -28,12 +28,20 @@ import java.util.Objects;
 public class CuratedValidationRules {
 
 	/**
-	 * Source and vintage of the bundled DICOM standard JSON files, shown in report
-	 * headers. Keep in sync with doc/dicom-standard-json.md when updating the files.
+	 * Fallback source label used when the bundled JSON resource omits the {@code source}
+	 * field (e.g. an older rules file).
 	 */
-	public static final String DICOM_STANDARD_SOURCE = "innolitics/dicom-standard JSON (vendored 2025-11)";
+	public static final String DEFAULT_DICOM_STANDARD_SOURCE = "innolitics/dicom-standard JSON";
 
 	private static final String RESOURCE = "curated-validation-rules.json";
+
+	/**
+	 * Source and vintage of the bundled DICOM standard JSON files, shown in report
+	 * headers. Read from the {@code source} field of {@code curated-validation-rules.json}
+	 * so it lives next to the data it describes — update it there when re-vendoring the
+	 * standard files (see doc/dicom-standard-json.md).
+	 */
+	private String source;
 
 	private Map<String, EnumeratedRule> enumeratedValues;
 
@@ -51,6 +59,11 @@ public class CuratedValidationRules {
 		catch (Exception e) {
 			throw new JsonParseException("Cannot parse json %s correctly".formatted(RESOURCE), e);
 		}
+	}
+
+	/** Source and vintage label of the bundled DICOM standard JSON, for report headers. */
+	public String getDicomStandardSource() {
+		return source == null || source.isBlank() ? DEFAULT_DICOM_STANDARD_SOURCE : source;
 	}
 
 	public Map<String, EnumeratedRule> getEnumeratedValues() {

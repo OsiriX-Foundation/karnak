@@ -210,7 +210,7 @@ public class ConformanceReportService {
 		context.setVariable("report", report);
 		context.setVariable("destinationDescription", describeDestination(destinationEntity));
 		context.setVariable("karnakVersion", karnakVersion);
-		context.setVariable("dicomStandardSource", CuratedValidationRules.DICOM_STANDARD_SOURCE);
+		context.setVariable("dicomStandardSource", rules.getDicomStandardSource());
 		context.setVariable("generatedAt", TIMESTAMP_FORMAT.withZone(ZoneId.systemDefault()).format(clock.instant()));
 		context.setVariable("sopClassNames", uidNames(report.sopClassUids()));
 		context.setVariable("transferSyntaxNames", uidNames(report.transferSyntaxUids()));

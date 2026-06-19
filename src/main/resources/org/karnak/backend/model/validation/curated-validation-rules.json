@@ -1,5 +1,6 @@
 {
   "comment": "Curated validation rules supplementing the innolitics DICOM standard JSON, which has no machine-readable enumerated values or conditional-requirement predicates. Keys of enumeratedValues are lowercase 8-digit hex tags. See doc/dicom-standard-json.md.",
+  "source": "innolitics/dicom-standard JSON (vendored 2025-02)",
   "enumeratedValues": {
     "00100040": { "closed": true, "values": ["M", "F", "O"] },
     "00200060": { "closed": true, "values": ["R", "L"] },
