@@ -40,22 +40,27 @@ public class Pseudonym {
 	}
 
 	public String generatePseudonym(DestinationEntity destinationEntity, Attributes dcm) {
-
-		PatientMetadata patientMetadata;
-		if (destinationEntity.getIssuerByDefault() == null || !destinationEntity.getIssuerByDefault().isEmpty()) {
-			patientMetadata = new PatientMetadata(dcm);
-		}
-		else {
-			patientMetadata = new PatientMetadata(dcm, destinationEntity.getIssuerByDefault());
-		}
-
 		return switch (destinationEntity.getPseudonymType()) {
-			case CACHE_EXTID ->
-				getCacheExtid(patientMetadata, destinationEntity.getDeIdentificationProjectEntity().getId(),
-						destinationEntity.isSkipIssuerOfPatientId());
+			case CACHE_EXTID -> getCacheExtid(buildPatientMetadata(destinationEntity, dcm),
+					destinationEntity.getDeIdentificationProjectEntity().getId(),
+					destinationEntity.isSkipIssuerOfPatientId());
 			case EXTID_IN_TAG -> getPseudonymInDicom(dcm, destinationEntity);
 			case EXTID_API -> getPseudonymFromApi(dcm, destinationEntity);
 		};
+	}
+
+	/**
+	 * Builds the patient metadata used to resolve the cached pseudonym. When an "issuer
+	 * by default" is configured on the destination, it is used as a fallback for a
+	 * missing IssuerOfPatientID; otherwise the issuer is left empty so it does not take
+	 * part in the cache key.
+	 */
+	private static PatientMetadata buildPatientMetadata(DestinationEntity destinationEntity, Attributes dcm) {
+		String issuerByDefault = destinationEntity.getIssuerByDefault();
+		if (issuerByDefault == null || issuerByDefault.isEmpty()) {
+			return new PatientMetadata(dcm);
+		}
+		return new PatientMetadata(dcm, issuerByDefault);
 	}
 
 	private String getPseudonymFromApi(Attributes dcm, DestinationEntity destinationEntity) {

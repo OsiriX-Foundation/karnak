@@ -36,6 +36,12 @@ public class PatientMetadata {
 
 	private final String patientSex;
 
+	/**
+	 * Builds the metadata without an issuer of patient ID: the DICOM IssuerOfPatientID is
+	 * intentionally ignored so the issuer does not take part in the cache key. Use
+	 * {@link #PatientMetadata(Attributes, String)} to honor the DICOM issuer (with a
+	 * configurable fallback).
+	 */
 	public PatientMetadata(Attributes dcm) {
 		patientID = dcm.getString(Tag.PatientID, "");
 		patientName = dcm.getString(Tag.PatientName, "");

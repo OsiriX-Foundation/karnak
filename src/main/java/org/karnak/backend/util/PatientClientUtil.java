@@ -9,6 +9,7 @@
  */
 package org.karnak.backend.util;
 
+import java.util.Objects;
 import org.karnak.backend.cache.Patient;
 import org.karnak.backend.cache.PatientClient;
 import org.karnak.backend.model.profilepipe.PatientMetadata;
@@ -39,9 +40,28 @@ public class PatientClientUtil {
 			boolean skipIssuerOfPatientId) {
 		if (cache != null) {
 			final String key = generateKey(patientMetadata, projectID, skipIssuerOfPatientId);
-			return getCachedKey(key, patientMetadata, cache, skipIssuerOfPatientId);
+			final String pseudonym = getCachedKey(key, patientMetadata, cache, skipIssuerOfPatientId);
+			if (pseudonym == null && skipIssuerOfPatientId) {
+				// The populate side (manual entry / CSV import) always stores patients under a
+				// key embedding the issuer. When the issuer-skipping keyed lookup misses,
+				// fall back to an issuer-agnostic scan so the pseudonym is still found
+				// regardless of the issuer used at insertion time.
+				return findPseudonymIgnoringIssuer(patientMetadata, cache, projectID);
+			}
+			return pseudonym;
 		}
 		return null;
+	}
+
+	private static String findPseudonymIgnoringIssuer(PatientMetadata patientMetadata, PatientClient cache,
+			Long projectID) {
+		return cache.getAll()
+			.stream()
+			.filter(patient -> Objects.equals(patient.getProjectID(), projectID))
+			.filter(patient -> patientMetadata.compareCachedPatient(patient, true))
+			.map(Patient::getPseudonym)
+			.findFirst()
+			.orElse(null);
 	}
 
 	private static String getCachedKey(String key, PatientMetadata patientMetadata, PatientClient cache) {

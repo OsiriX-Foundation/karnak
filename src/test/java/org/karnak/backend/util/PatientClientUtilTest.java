@@ -106,4 +106,49 @@ class PatientClientUtilTest {
 
 	}
 
+	@Nested
+	class SkipIssuerLookup {
+
+		private static Patient patientWithProject() {
+			return new Patient("PSEUDO", "PID-1", "John", "Doe", "ISSUER-1", 5L);
+		}
+
+		private static PatientMetadata metadataWithoutIssuer() {
+			Attributes dcm = new Attributes();
+			dcm.setString(Tag.PatientID, VR.LO, "PID-1");
+			return new PatientMetadata(dcm);
+		}
+
+		@Test
+		void recovers_a_pseudonym_stored_with_an_issuer_when_skipping_the_issuer() {
+			PatientClient cache = new InMemoryExternalIDCache();
+			// The populate side embeds the issuer in the key.
+			cache.put(PatientClientUtil.generateKey(patientWithProject(), 5L), patientWithProject());
+
+			// Without skipping, the issuer-embedded key cannot be matched.
+			assertNull(PatientClientUtil.getPseudonym(metadataWithoutIssuer(), cache, 5L, false));
+			// Skipping the issuer falls back to an issuer-agnostic scan and finds it.
+			assertEquals("PSEUDO", PatientClientUtil.getPseudonym(metadataWithoutIssuer(), cache, 5L, true));
+		}
+
+		@Test
+		void does_not_match_across_project_boundaries() {
+			PatientClient cache = new InMemoryExternalIDCache();
+			cache.put(PatientClientUtil.generateKey(patientWithProject(), 5L), patientWithProject());
+
+			assertNull(PatientClientUtil.getPseudonym(metadataWithoutIssuer(), cache, 9L, true));
+		}
+
+		@Test
+		void does_not_match_a_different_patient_id() {
+			PatientClient cache = new InMemoryExternalIDCache();
+			cache.put(PatientClientUtil.generateKey(patientWithProject(), 5L), patientWithProject());
+
+			Attributes dcm = new Attributes();
+			dcm.setString(Tag.PatientID, VR.LO, "OTHER");
+			assertNull(PatientClientUtil.getPseudonym(new PatientMetadata(dcm), cache, 5L, true));
+		}
+
+	}
+
 }

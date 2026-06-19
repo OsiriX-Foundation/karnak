@@ -10,7 +10,6 @@
 package org.karnak;
 
 import com.vaadin.flow.spring.annotation.EnableVaadin;
-import org.weasis.core.util.annotations.Generated;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +29,7 @@ import org.springframework.core.env.Profiles;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.weasis.core.util.annotations.Generated;
 
 @SpringBootApplication(exclude = ErrorMvcAutoConfiguration.class)
 @EntityScan("org.karnak.backend.data.entity")
