@@ -18,6 +18,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -40,13 +41,13 @@ public class SecretEntity implements Serializable {
 
 	public SecretEntity(byte[] secretKey) {
 		this.secretKey = secretKey;
-		this.creationDate = LocalDateTime.now();
+		this.creationDate = LocalDateTime.now(ZoneId.of("CET"));
 	}
 
 	public SecretEntity(ProjectEntity projectEntity, byte[] secretKey) {
 		this.projectEntity = projectEntity;
 		this.secretKey = secretKey;
-		this.creationDate = LocalDateTime.now();
+		this.creationDate = LocalDateTime.now(ZoneId.of("CET"));
 	}
 
 	@Id

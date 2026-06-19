@@ -18,6 +18,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.karnak.backend.data.entity.TransferStatusEntity;
@@ -71,7 +72,7 @@ public class TransferMonitoringService {
 	 */
 	@Scheduled(cron = "0 0 * * * *")
 	public void cleanupOldRecords() {
-		transferStatusRepo.deleteOlderThan(LocalDateTime.now().minusDays(this.maxHistoryDays));
+		transferStatusRepo.deleteOlderThan(LocalDateTime.now(ZoneId.of("CET")).minusDays(this.maxHistoryDays));
 	}
 
 	/**
