@@ -29,18 +29,18 @@ import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
  * roles ({@link SecurityRole}).
  *
  * <p>
- * Roles are read from the Keycloak claims "realm_access.roles" and
- * "resource_access.*.roles" of the ID token and the userinfo endpoint. Only the roles
- * matching a {@link SecurityRole} type (admin, investigator, user) are mapped, as
+ * Roles are read exclusively from the Keycloak claim
+ * "resource_access.karnak.roles" of the ID token and the userinfo endpoint. Only the
+ * roles matching a {@link SecurityRole} type (admin, investigator, user) are mapped, as
  * "ROLE_"-prefixed granted authorities. The IDP must therefore be configured to include
- * the roles in the ID token or in the userinfo response (in Keycloak: client scope
- * "roles").
+ * the roles of the "karnak" client in the ID token or in the userinfo response (in
+ * Keycloak: client scope "roles").
  */
 public class OidcRoleAuthoritiesMapper implements GrantedAuthoritiesMapper {
 
-	private static final String REALM_ACCESS_CLAIM = "realm_access";
-
 	private static final String RESOURCE_ACCESS_CLAIM = "resource_access";
+
+	private static final String KARNAK_CLIENT = "karnak";
 
 	private static final String ROLES_CLAIM = "roles";
 
@@ -63,12 +63,13 @@ public class OidcRoleAuthoritiesMapper implements GrantedAuthoritiesMapper {
 	}
 
 	/**
-	 * Maps the realm and client roles found in the claims to known Karnak authorities.
+	 * Maps the roles of the "karnak" client found in the claims to known Karnak
+	 * authorities.
 	 */
 	private static Set<GrantedAuthority> extractRoles(Map<String, Object> claims) {
-		Set<String> roleNames = new HashSet<>(retrieveRoles(claims.get(REALM_ACCESS_CLAIM)));
+		Set<String> roleNames = new HashSet<>();
 		if (claims.get(RESOURCE_ACCESS_CLAIM) instanceof Map<?, ?> resourceAccess) {
-			resourceAccess.values().forEach(clientAccess -> roleNames.addAll(retrieveRoles(clientAccess)));
+			roleNames.addAll(retrieveRoles(resourceAccess.get(KARNAK_CLIENT)));
 		}
 		return roleNames.stream()
 			.map(SecurityRole::fromType)
@@ -78,8 +79,7 @@ public class OidcRoleAuthoritiesMapper implements GrantedAuthoritiesMapper {
 	}
 
 	/**
-	 * Returns the role names of an access claim ("realm_access" or a "resource_access"
-	 * entry).
+	 * Returns the role names of the "karnak" entry of the "resource_access" claim.
 	 */
 	private static Collection<String> retrieveRoles(Object accessClaim) {
 		if (accessClaim instanceof Map<?, ?> access && access.get(ROLES_CLAIM) instanceof Collection<?> roles) {

@@ -31,11 +31,12 @@ class OidcRoleAuthoritiesMapperTest {
 	private final OidcRoleAuthoritiesMapper mapper = new OidcRoleAuthoritiesMapper();
 
 	@Test
-	void should_map_realm_roles_of_id_token_to_karnak_roles() {
+	void should_map_karnak_client_roles_of_id_token_to_karnak_roles() {
 		// Init data
 		OidcIdToken idToken = OidcIdToken.withTokenValue("token")
 			.claim("sub", "user-id")
-			.claim("realm_access", Map.of("roles", List.of("admin", "investigator", "offline_access")))
+			.claim("resource_access",
+					Map.of("karnak", Map.of("roles", List.of("admin", "investigator", "offline_access"))))
 			.build();
 
 		// Call service
@@ -69,7 +70,7 @@ class OidcRoleAuthoritiesMapperTest {
 	void should_map_roles_of_oauth2_user_attributes() {
 		// Init data
 		OAuth2UserAuthority authority = new OAuth2UserAuthority(
-				Map.of("realm_access", Map.of("roles", List.of("admin"))));
+				Map.of("resource_access", Map.of("karnak", Map.of("roles", List.of("admin")))));
 
 		// Call service
 		Collection<? extends GrantedAuthority> mapped = mapper.mapAuthorities(List.of(authority));
@@ -104,7 +105,7 @@ class OidcRoleAuthoritiesMapperTest {
 	}
 
 	@Test
-	void should_merge_realm_and_client_roles_across_multiple_clients() {
+	void should_only_map_karnak_client_roles_ignoring_realm_and_other_clients() {
 		OidcIdToken idToken = OidcIdToken.withTokenValue("token")
 			.claim("sub", "user-id")
 			.claim("realm_access", Map.of("roles", List.of("admin")))
@@ -115,16 +116,16 @@ class OidcRoleAuthoritiesMapperTest {
 
 		Collection<? extends GrantedAuthority> mapped = mapper.mapAuthorities(List.of(new OidcUserAuthority(idToken)));
 
-		assertTrue(containsAuthority(mapped, "ROLE_admin"));
+		// Only the "karnak" client role is mapped (plus the original OIDC authority).
 		assertTrue(containsAuthority(mapped, "ROLE_user"));
-		assertTrue(containsAuthority(mapped, "ROLE_investigator"));
+		assertEquals(2, mapped.size());
 	}
 
 	@Test
 	void should_ignore_non_string_role_entries() {
 		OidcIdToken idToken = OidcIdToken.withTokenValue("token")
 			.claim("sub", "user-id")
-			.claim("realm_access", Map.of("roles", List.of("admin", 42, true)))
+			.claim("resource_access", Map.of("karnak", Map.of("roles", List.of("admin", 42, true))))
 			.build();
 
 		Collection<? extends GrantedAuthority> mapped = mapper.mapAuthorities(List.of(new OidcUserAuthority(idToken)));
