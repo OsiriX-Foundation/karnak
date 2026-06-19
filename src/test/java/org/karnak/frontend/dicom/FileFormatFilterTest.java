@@ -19,6 +19,7 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class FileFormatFilterTest {
@@ -27,9 +28,9 @@ class FileFormatFilterTest {
 	class Accept {
 
 		@Test
-		void accepts_directories() {
+		void accepts_directories(@TempDir File tempDir) {
 			var filter = new FileFormatFilter("dcm", "DICOM files");
-			assertTrue(filter.accept(new File("/tmp")));
+			assertTrue(filter.accept(tempDir));
 		}
 
 		@Test
