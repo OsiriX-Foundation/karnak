@@ -10,7 +10,6 @@
 package org.karnak.backend.config;
 
 import com.vaadin.flow.spring.security.VaadinSecurityConfigurer;
-import org.weasis.core.util.annotations.Generated;
 import org.karnak.backend.enums.SecurityRole;
 import org.karnak.backend.security.DefaultIdpLoadCondition;
 import org.karnak.frontend.authentication.LoginScreen;
@@ -31,6 +30,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.weasis.core.util.annotations.Generated;
 
 @EnableWebSecurity
 @Configuration

@@ -19,6 +19,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.dom.Style;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import jakarta.annotation.security.RolesAllowed;
 import org.karnak.backend.data.entity.AuthConfigEntity;
 import org.karnak.backend.enums.AuthConfigType;
 import org.karnak.frontend.MainLayout;
@@ -26,7 +27,6 @@ import org.karnak.frontend.authconfig.component.AuthConfigComponent;
 import org.karnak.frontend.authconfig.component.NewAuthConfigComponent;
 import org.karnak.frontend.component.WarningConfirmDialog;
 import org.springframework.beans.factory.annotation.Autowired;
-import jakarta.annotation.security.RolesAllowed;
 import org.weasis.core.util.annotations.Generated;
 
 @Route(value = AuthConfigView.ROUTE, layout = MainLayout.class)

@@ -16,6 +16,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import jakarta.annotation.security.RolesAllowed;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +25,6 @@ import org.karnak.frontend.MainLayout;
 import org.karnak.frontend.pseudonym.mapping.component.MappingInputComponent;
 import org.karnak.frontend.pseudonym.mapping.component.MappingResultComponent;
 import org.springframework.beans.factory.annotation.Autowired;
-import jakarta.annotation.security.RolesAllowed;
 import org.weasis.core.util.annotations.Generated;
 
 @Route(value = PseudonymMappingView.ROUTE, layout = MainLayout.class)

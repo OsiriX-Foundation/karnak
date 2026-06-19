@@ -42,10 +42,10 @@ public class PatientClientUtil {
 			final String key = generateKey(patientMetadata, projectID, skipIssuerOfPatientId);
 			final String pseudonym = getCachedKey(key, patientMetadata, cache, skipIssuerOfPatientId);
 			if (pseudonym == null && skipIssuerOfPatientId) {
-				// The populate side (manual entry / CSV import) always stores patients under a
-				// key embedding the issuer. When the issuer-skipping keyed lookup misses,
-				// fall back to an issuer-agnostic scan so the pseudonym is still found
-				// regardless of the issuer used at insertion time.
+				// The populated side (manual entry / CSV import) always stores patients
+				// under a key embedding the issuer. When the issuer-skipping keyed lookup
+				// misses, fall back to an issuer-agnostic scan, so the pseudonym is still
+				// found regardless of the issuer used at insertion time.
 				return findPseudonymIgnoringIssuer(patientMetadata, cache, projectID);
 			}
 			return pseudonym;

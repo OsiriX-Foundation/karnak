@@ -19,12 +19,12 @@ import org.karnak.backend.enums.MessageLevel;
 import org.karnak.backend.enums.Modality;
 import org.karnak.backend.model.dicom.Message;
 import org.karnak.backend.model.dicom.WorkListQueryData;
+import org.weasis.core.util.annotations.Generated;
 import org.weasis.dicom.op.CFind;
 import org.weasis.dicom.param.DicomNode;
 import org.weasis.dicom.param.DicomParam;
 import org.weasis.dicom.param.DicomState;
 import org.weasis.dicom.tool.ModalityWorklist;
-import org.weasis.core.util.annotations.Generated;
 
 @Generated()
 public class DicomWorkListLogic {

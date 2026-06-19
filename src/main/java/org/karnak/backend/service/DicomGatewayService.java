@@ -16,16 +16,14 @@ import java.util.Map;
 import java.util.Objects;
 import org.dcm4che3.net.Connection;
 import org.dcm4che3.net.TransferCapability;
-import org.karnak.backend.dicom.ForwardDestination;
-import org.karnak.backend.dicom.ForwardDicomNode;
-import org.karnak.backend.dicom.GatewayParams;
+import org.karnak.backend.dicom.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.weasis.core.util.annotations.Generated;
 import org.weasis.dicom.param.AdvancedParams;
 import org.weasis.dicom.param.AttributeEditor;
 import org.weasis.dicom.param.DeviceListenerService;
 import org.weasis.dicom.param.DicomNode;
-import org.weasis.core.util.annotations.Generated;
 
 @Service
 @Generated()

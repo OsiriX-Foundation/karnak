@@ -12,8 +12,8 @@ package org.karnak.backend.service.thread;
 import java.util.concurrent.Callable;
 import org.karnak.backend.model.dicom.ConfigNode;
 import org.karnak.frontend.dicom.Util;
-import org.weasis.dicom.param.DicomNode;
 import org.weasis.core.util.annotations.Generated;
+import org.weasis.dicom.param.DicomNode;
 
 @Generated()
 public class DicomEchoThread implements Callable<String> {

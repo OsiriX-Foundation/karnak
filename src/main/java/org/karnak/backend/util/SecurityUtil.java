@@ -12,7 +12,6 @@ package org.karnak.backend.util;
 import com.vaadin.flow.server.VaadinServletService;
 import jakarta.servlet.ServletException;
 import java.util.Objects;
-import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.karnak.backend.enums.SecurityRole;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;

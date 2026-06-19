@@ -16,9 +16,9 @@ import org.dcm4che3.data.UID;
 import org.dcm4che3.img.DicomImageReader;
 import org.dcm4che3.img.DicomOutputData;
 import org.dcm4che3.img.util.DicomUtils;
+import org.weasis.core.util.annotations.Generated;
 import org.weasis.dicom.param.AttributeEditor;
 import org.weasis.dicom.param.DicomState;
-import org.weasis.core.util.annotations.Generated;
 
 @Getter
 @Generated()

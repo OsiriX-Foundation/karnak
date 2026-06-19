@@ -18,9 +18,9 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import jakarta.annotation.security.RolesAllowed;
 import org.karnak.frontend.MainLayout;
 import org.springframework.beans.factory.annotation.Value;
-import jakarta.annotation.security.RolesAllowed;
 import org.weasis.core.util.annotations.Generated;
 
 @Route(value = HelpView.ROUTE, layout = MainLayout.class)

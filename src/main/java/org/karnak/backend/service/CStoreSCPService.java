@@ -37,8 +37,8 @@ import org.karnak.backend.dicom.ForwardDicomNode;
 import org.karnak.backend.dicom.Params;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.weasis.dicom.param.DicomNode;
 import org.weasis.core.util.annotations.Generated;
+import org.weasis.dicom.param.DicomNode;
 
 @Service
 @Slf4j

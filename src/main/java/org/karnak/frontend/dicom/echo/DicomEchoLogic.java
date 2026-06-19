@@ -11,8 +11,8 @@ package org.karnak.frontend.dicom.echo;
 
 import org.karnak.backend.model.dicom.DicomEchoQueryData;
 import org.karnak.frontend.dicom.Util;
-import org.weasis.dicom.param.DicomNode;
 import org.weasis.core.util.annotations.Generated;
+import org.weasis.dicom.param.DicomNode;
 
 @Generated()
 public class DicomEchoLogic {

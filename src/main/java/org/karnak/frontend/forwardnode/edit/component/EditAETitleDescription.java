@@ -28,9 +28,9 @@ import org.karnak.frontend.forwardnode.ForwardNodeLogic;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
 import org.weasis.core.util.StringUtil;
+import org.weasis.core.util.annotations.Generated;
 import org.weasis.dicom.op.CStore;
 import org.weasis.dicom.param.DicomNode;
-import org.weasis.core.util.annotations.Generated;
 
 @Generated()
 public class EditAETitleDescription extends HorizontalLayout {

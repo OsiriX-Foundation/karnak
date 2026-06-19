@@ -15,6 +15,7 @@ import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import jakarta.annotation.security.RolesAllowed;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -25,7 +26,6 @@ import org.karnak.frontend.MainLayout;
 import org.karnak.frontend.dicom.echo.DicomEchoView;
 import org.karnak.frontend.dicom.monitor.MonitorView;
 import org.karnak.frontend.dicom.mwl.DicomWorkListView;
-import jakarta.annotation.security.RolesAllowed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.weasis.core.util.annotations.Generated;
 

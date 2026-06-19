@@ -21,10 +21,10 @@ import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.weasis.core.util.MathUtil;
+import org.weasis.core.util.annotations.Generated;
 import org.weasis.opencv.data.ImageCV;
 import org.weasis.opencv.data.PlanarImage;
 import org.weasis.opencv.op.ImageAnalyzer;
-import org.weasis.core.util.annotations.Generated;
 
 @Generated()
 public class Defacer {

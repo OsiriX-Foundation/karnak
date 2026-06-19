@@ -26,12 +26,12 @@ import org.karnak.backend.dicom.ForwardDicomNode;
 import org.karnak.backend.dicom.WebForwardDestination;
 import org.karnak.backend.service.gateway.GatewaySetUpService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.weasis.core.util.annotations.Generated;
 import org.weasis.dicom.op.Echo;
 import org.weasis.dicom.param.AdvancedParams;
 import org.weasis.dicom.param.ConnectOptions;
 import org.weasis.dicom.param.DicomNode;
 import org.weasis.dicom.param.DicomState;
-import org.weasis.core.util.annotations.Generated;
 
 @WebServlet(urlPatterns = "/echo")
 @Slf4j

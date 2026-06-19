@@ -9,12 +9,11 @@
  */
 package org.karnak.backend.model.notification;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * Model used to build transfer monitoring notification

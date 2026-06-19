@@ -14,10 +14,10 @@ import java.util.List;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Keyword;
 import org.weasis.core.util.StringUtil;
+import org.weasis.core.util.annotations.Generated;
 import org.weasis.dicom.op.CFind;
 import org.weasis.dicom.param.DicomParam;
 import org.weasis.dicom.tool.ModalityWorklist;
-import org.weasis.core.util.annotations.Generated;
 
 @Generated()
 public class DicomWorkListGrid extends Grid<Attributes> {

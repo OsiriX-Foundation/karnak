@@ -53,6 +53,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.weasis.core.util.LangUtil;
 import org.weasis.core.util.StringUtil;
+import org.weasis.core.util.annotations.Generated;
 import org.weasis.dicom.param.AdvancedParams;
 import org.weasis.dicom.param.AttributeEditor;
 import org.weasis.dicom.param.AttributeEditorContext;
@@ -62,7 +63,6 @@ import org.weasis.dicom.param.DicomProgress;
 import org.weasis.dicom.param.ListenerParams;
 import org.weasis.dicom.param.TlsOptions;
 import org.weasis.dicom.tool.DicomListener;
-import org.weasis.core.util.annotations.Generated;
 
 @Service
 @Slf4j

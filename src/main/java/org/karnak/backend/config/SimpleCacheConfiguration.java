@@ -10,13 +10,13 @@
 package org.karnak.backend.config;
 
 import org.springframework.cache.CacheManager;
-import org.weasis.core.util.annotations.Generated;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
+import org.weasis.core.util.annotations.Generated;
 
 @Configuration
 @EnableCaching

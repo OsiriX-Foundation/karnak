@@ -15,12 +15,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.karnak.backend.exception.SOPNotFoundException;
-import org.karnak.backend.model.dicominnolitics.StandardCIODS;
-import org.karnak.backend.model.dicominnolitics.StandardCIODtoModules;
-import org.karnak.backend.model.dicominnolitics.StandardSOPS;
 import org.karnak.backend.model.dicominnolitics.JsonCIOD;
 import org.karnak.backend.model.dicominnolitics.JsonCIODtoModule;
 import org.karnak.backend.model.dicominnolitics.JsonSOP;
+import org.karnak.backend.model.dicominnolitics.StandardCIODS;
+import org.karnak.backend.model.dicominnolitics.StandardCIODtoModules;
+import org.karnak.backend.model.dicominnolitics.StandardSOPS;
 
 public class SOPS {
 

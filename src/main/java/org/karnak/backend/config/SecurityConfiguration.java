@@ -10,7 +10,6 @@
 package org.karnak.backend.config;
 
 import com.vaadin.flow.spring.security.VaadinSecurityConfigurer;
-import org.weasis.core.util.annotations.Generated;
 import org.karnak.backend.security.OidcRoleAuthoritiesMapper;
 import org.karnak.backend.security.OpenIdConnectLogoutHandler;
 import org.springframework.boot.actuate.context.ShutdownEndpoint;
@@ -25,6 +24,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
+import org.weasis.core.util.annotations.Generated;
 
 @EnableWebSecurity
 @Configuration

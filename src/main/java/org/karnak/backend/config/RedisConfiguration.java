@@ -10,7 +10,6 @@
 package org.karnak.backend.config;
 
 import java.time.Duration;
-import org.weasis.core.util.annotations.Generated;
 import org.karnak.backend.cache.Patient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.cache.autoconfigure.RedisCacheManagerBuilderCustomizer;
@@ -23,6 +22,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.serializer.JacksonJsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.weasis.core.util.annotations.Generated;
 
 @Configuration
 @Profile("!portable")

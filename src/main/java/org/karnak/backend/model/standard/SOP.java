@@ -9,7 +9,6 @@
  */
 package org.karnak.backend.model.standard;
 
-import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 

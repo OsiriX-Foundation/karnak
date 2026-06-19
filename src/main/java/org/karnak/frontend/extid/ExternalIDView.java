@@ -26,7 +26,7 @@ import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.streams.UploadHandler;
-
+import jakarta.annotation.security.RolesAllowed;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import org.karnak.backend.cache.Patient;
@@ -35,7 +35,6 @@ import org.karnak.frontend.MainLayout;
 import org.karnak.frontend.component.ProjectDropDown;
 import org.karnak.frontend.component.WarningConfirmDialog;
 import org.springframework.beans.factory.annotation.Autowired;
-import jakarta.annotation.security.RolesAllowed;
 import org.weasis.core.util.annotations.Generated;
 
 @Route(value = ExternalIDView.ROUTE, layout = MainLayout.class)

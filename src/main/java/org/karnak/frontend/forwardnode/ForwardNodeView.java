@@ -17,6 +17,7 @@ import com.vaadin.flow.router.OptionalParameter;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
+import jakarta.annotation.security.RolesAllowed;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.frontend.MainLayout;
 import org.karnak.frontend.component.ConfirmDialog;
@@ -24,7 +25,6 @@ import org.karnak.frontend.forwardnode.component.LayoutNewGridForwardNode;
 import org.karnak.frontend.forwardnode.edit.LayoutEditForwardNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import jakarta.annotation.security.RolesAllowed;
 import org.weasis.core.util.annotations.Generated;
 
 /**

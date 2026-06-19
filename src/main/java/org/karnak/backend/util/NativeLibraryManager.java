@@ -10,7 +10,6 @@
 package org.karnak.backend.util;
 
 import java.io.File;
-import org.weasis.core.util.annotations.Generated;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -18,6 +17,7 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import lombok.extern.slf4j.Slf4j;
 import org.weasis.core.util.FileUtil;
+import org.weasis.core.util.annotations.Generated;
 import org.weasis.opencv.natives.NativeLibrary;
 
 @Slf4j
