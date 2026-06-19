@@ -37,6 +37,9 @@
     <sonar.language>java</sonar.language>
     <sonar.java.source>${java.version}</sonar.java.source>
     <sonar.test.exclusions>src/test/**/*</sonar.test.exclusions>
+    <!-- The Vaadin frontend is excluded from JaCoCo (see the coverage profile); mirror that
+         exclusion here so SonarCloud does not count its lines as 0%-covered in the denominator. -->
+    <sonar.coverage.exclusions>**/org/karnak/frontend/**/*</sonar.coverage.exclusions>
 
     <bash.executable>bash</bash.executable>
     <!-- Tests require the native library and can only be run on Linux, Windows and macOS-->
