@@ -75,12 +75,16 @@ jobs:
 
       - name: Notarize Release Build
         if: matrix.wsystem == 'macosx'
+        env:
+          APPLE_ID: ${{ secrets.APPLE_DEVELOPER_AC_USERNAME }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APPLE_APP_PASSWORD: ${{ secrets.KARNAK_PWD }}
         run: |
           xcrun notarytool submit \
             "target/${{ env.APP_PACKAGE_FOLDER }}/Karnak.zip" \
-            --apple-id "${{ secrets.APPLE_DEVELOPER_AC_USERNAME }}" \
-            --team-id "${{ secrets.APPLE_TEAM_ID }}" \
-            --password "${{ secrets.KARNAK_PWD }}" \
+            --apple-id "$APPLE_ID" \
+            --team-id "$APPLE_TEAM_ID" \
+            --password "$APPLE_APP_PASSWORD" \
             --wait
 
       - name: Staple Release Build
