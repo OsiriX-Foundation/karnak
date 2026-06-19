@@ -41,6 +41,11 @@
     <bash.executable>bash</bash.executable>
     <!-- Tests require the native library and can only be run on Linux, Windows and macOS-->
     <argLine>-Djava.library.path=${project.build.outputDirectory}/lib/${os-name}-${cpu-name}</argLine>
+
+    <!-- JUnit tag filtering. By default the slow "performance" tests are skipped; run them
+         with -Pperformance. -->
+    <karnak.test.groups/>
+    <karnak.test.excludedGroups>performance</karnak.test.excludedGroups>
  </properties>
 
   <licenses>
@@ -300,6 +305,8 @@
         <configuration>
           <argLine>@{argLine} -XX:+EnableDynamicAgentLoading -Xshare:off</argLine>
           <parallel>all</parallel>
+          <groups>${karnak.test.groups}</groups>
+          <excludedGroups>${karnak.test.excludedGroups}</excludedGroups>
         </configuration>
       </plugin>
     </plugins>
@@ -647,6 +654,15 @@
   </dependencies>
 
   <profiles>
+    <!-- Profile: performance — also runs the @Tag("performance") gateway throughput/saturation
+         tests, which are skipped by default. Use: mvn test -Pperformance -->
+    <profile>
+      <id>performance</id>
+      <properties>
+        <karnak.test.groups>performance</karnak.test.groups>
+        <karnak.test.excludedGroups/>
+      </properties>
+    </profile>
     <!--  Profile: production -->
     <profile>
       <activation>
