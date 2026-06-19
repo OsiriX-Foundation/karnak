@@ -194,8 +194,8 @@ Karnak exposes a small REST API in addition to the web interface. An OpenAPI (Sw
 
 # Workflow
 
-![Workflow](doc/karnak-workflow.svg)
+![Workflow](img/karnak-workflow.svg)
 
 # Pipeline
 
-![Workflow](doc/karnak-pipeline.svg)
+![Workflow](img/karnak-pipeline.svg)
