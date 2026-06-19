@@ -117,6 +117,38 @@ Note: this portable package runs an embedded database (H2) in file mode, and the
     - show the logs: `docker compose logs -f`
     - stop: `docker compose down`
 
+# Code formatting
+
+Two formatting plugins are bound to the Maven build and run automatically during `mvn install`:
+
+- **[spring-javaformat](https://github.com/spring-io/spring-javaformat)** — applies the Spring Java
+  code style (indentation, spacing, line wrapping). It does not modify imports.
+- **[spotless](https://github.com/diffplug/spotless)** — removes unused imports, sorts them
+  (static imports first, then a blank line, then the rest) and enforces the EPL-2.0 OR Apache-2.0
+  license header on every Java file. It neither rejects nor expands wildcard imports
+  (`import x.y.*;`) — it leaves them untouched.
+
+CI and Sonar flag any style violation, so make sure your changes are formatted before pushing. You
+can apply both formatters locally with:
+
+```bash
+mvn spring-javaformat:apply spotless:apply
+```
+
+## IntelliJ setup
+
+Neither plugin **expands** an existing wildcard import into explicit single-class imports. Configure
+IntelliJ so it never produces wildcards in the first place:
+
+- **Settings → Editor → Code Style → Java → Imports**:
+    - *Class count to use import with '\*'*: `999`
+    - *Names count to use static import with '\*'*: `999`
+    - *Packages to Use Import with '\*'*: remove every entry
+- Run **Code → Optimize Imports** (⌃⌥O) to expand existing wildcards and drop unused imports. The
+  file must compile for IntelliJ to resolve the types.
+- Optional: enable **Settings → Tools → Actions on Save → Optimize imports** to keep imports clean
+  automatically, matching what spotless and spring-javaformat expect.
+
 # Docker
 
 Minimum docker version: **20.10**

@@ -269,6 +269,13 @@
         <configuration>
           <!-- define a language-specific format -->
           <java>
+            <!-- Organize imports: drop unused, sort alphabetically, never use '*'.
+                 Group order matches spring-javaformat: static imports first, a blank
+                 line, then all other imports (so the two plugins do not conflict). -->
+            <removeUnusedImports />
+            <importOrder>
+              <order>\#,</order>
+            </importOrder>
             <licenseHeader>
               <!-- @formatter:off -->
               <content>
