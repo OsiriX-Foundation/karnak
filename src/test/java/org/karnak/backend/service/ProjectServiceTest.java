@@ -11,6 +11,7 @@ package org.karnak.backend.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -21,6 +22,8 @@ import org.junit.jupiter.api.Test;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
+import org.karnak.backend.data.entity.ProjectGroupEntity;
+import org.karnak.backend.data.repo.ProjectGroupRepo;
 import org.karnak.backend.data.repo.ProjectRepo;
 import org.karnak.backend.model.event.NodeEvent;
 import org.mockito.Mockito;
@@ -34,6 +37,8 @@ class ProjectServiceTest {
 
 	// Repositories
 	private final ProjectRepo projectRepositoryMock = Mockito.mock(ProjectRepo.class);
+
+	private final ProjectGroupRepo projectGroupRepositoryMock = Mockito.mock(ProjectGroupRepo.class);
 
 	// Service
 	private ProjectService projectService;
@@ -50,7 +55,8 @@ class ProjectServiceTest {
 		Mockito.when(projectRepositoryMock.findById(Mockito.anyLong())).thenReturn(Optional.of(projectEntity));
 
 		// Build mocked service
-		projectService = new ProjectService(projectRepositoryMock, applicationEventPublisherMock);
+		projectService = new ProjectService(projectRepositoryMock, projectGroupRepositoryMock,
+				applicationEventPublisherMock);
 	}
 
 	@Test
@@ -127,6 +133,45 @@ class ProjectServiceTest {
 		assertNotNull(projectEntity);
 		assertEquals(Long.valueOf(1), projectEntity.getId());
 		assertEquals("projectEntityName", projectEntity.getName());
+	}
+
+	@Test
+	void should_assign_project_to_group() {
+		// Init data
+		ProjectEntity projectEntity = new ProjectEntity();
+		projectEntity.setId(1L);
+		ProjectGroupEntity group = new ProjectGroupEntity("Group A");
+		group.setId(10L);
+		Mockito.when(projectRepositoryMock.findById(1L)).thenReturn(Optional.of(projectEntity));
+
+		// Call service
+		projectService.assignToGroup(projectEntity, group);
+
+		// Test results
+		assertEquals(group, projectEntity.getGroup());
+		Mockito.verify(projectRepositoryMock, Mockito.times(1)).saveAndFlush(projectEntity);
+	}
+
+	@Test
+	void should_delete_group_and_detach_only_its_members() {
+		// Init data
+		ProjectGroupEntity group = new ProjectGroupEntity("Group A");
+		group.setId(10L);
+		ProjectEntity member = new ProjectEntity();
+		member.setId(1L);
+		member.setGroup(group);
+		ProjectEntity other = new ProjectEntity();
+		other.setId(2L);
+		Mockito.when(projectRepositoryMock.findAll()).thenReturn(List.of(member, other));
+
+		// Call service
+		projectService.deleteGroup(group);
+
+		// Test results
+		assertNull(member.getGroup());
+		Mockito.verify(projectRepositoryMock, Mockito.times(1)).saveAndFlush(member);
+		Mockito.verify(projectRepositoryMock, Mockito.never()).saveAndFlush(other);
+		Mockito.verify(projectGroupRepositoryMock, Mockito.times(1)).deleteById(10L);
 	}
 
 }

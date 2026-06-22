@@ -16,7 +16,10 @@ import java.util.Objects;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.DicomSourceNodeEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
+import org.karnak.backend.data.entity.ForwardNodeGroupEntity;
+import org.karnak.backend.data.repo.ForwardNodeGroupRepo;
 import org.karnak.backend.data.repo.ForwardNodeRepo;
+import org.karnak.frontend.util.CollatorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,9 +29,64 @@ public class ForwardNodeService {
 	// Repositories
 	private final ForwardNodeRepo forwardNodeRepo;
 
+	private final ForwardNodeGroupRepo forwardNodeGroupRepo;
+
 	@Autowired
-	public ForwardNodeService(final ForwardNodeRepo forwardNodeRepo) {
+	public ForwardNodeService(final ForwardNodeRepo forwardNodeRepo, final ForwardNodeGroupRepo forwardNodeGroupRepo) {
 		this.forwardNodeRepo = forwardNodeRepo;
+		this.forwardNodeGroupRepo = forwardNodeGroupRepo;
+	}
+
+	/** Retrieve all forward node groups, sorted by name. */
+	public List<ForwardNodeGroupEntity> getAllGroups() {
+		List<ForwardNodeGroupEntity> groups = forwardNodeGroupRepo.findAll();
+		groups.sort(CollatorUtils.comparing(ForwardNodeGroupEntity::getName));
+		return groups;
+	}
+
+	/** Create and persist a new forward node group. */
+	public ForwardNodeGroupEntity saveGroup(String name) {
+		return forwardNodeGroupRepo.saveAndFlush(new ForwardNodeGroupEntity(name));
+	}
+
+	/** Rename an existing forward node group. */
+	public void renameGroup(ForwardNodeGroupEntity group, String name) {
+		if (group == null || group.getId() == null) {
+			return;
+		}
+		forwardNodeGroupRepo.findById(group.getId()).ifPresent(persisted -> {
+			persisted.setName(name);
+			forwardNodeGroupRepo.saveAndFlush(persisted);
+		});
+	}
+
+	/**
+	 * Delete a forward node group. Members are detached first (their group is set to
+	 * null) so they fall back to the root of the list instead of being deleted.
+	 */
+	public void deleteGroup(ForwardNodeGroupEntity group) {
+		if (group == null || group.getId() == null) {
+			return;
+		}
+		forwardNodeRepo.findAll().forEach(forwardNode -> {
+			if (forwardNode.getGroup() != null && Objects.equals(forwardNode.getGroup().getId(), group.getId())) {
+				forwardNode.setGroup(null);
+				forwardNodeRepo.saveAndFlush(forwardNode);
+			}
+		});
+		forwardNodeGroupRepo.deleteById(group.getId());
+		forwardNodeGroupRepo.flush();
+	}
+
+	/** Assign a forward node to a group (null group removes it from any group). */
+	public void assignToGroup(ForwardNodeEntity forwardNode, ForwardNodeGroupEntity group) {
+		if (forwardNode == null || forwardNode.getId() == null) {
+			return;
+		}
+		forwardNodeRepo.findById(forwardNode.getId()).ifPresent(persisted -> {
+			persisted.setGroup(group);
+			forwardNodeRepo.saveAndFlush(persisted);
+		});
 	}
 
 	/**

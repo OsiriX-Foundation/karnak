@@ -29,12 +29,11 @@ import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
  * roles ({@link SecurityRole}).
  *
  * <p>
- * Roles are read exclusively from the Keycloak claim
- * "resource_access.karnak.roles" of the ID token and the userinfo endpoint. Only the
- * roles matching a {@link SecurityRole} type (admin, investigator, user) are mapped, as
- * "ROLE_"-prefixed granted authorities. The IDP must therefore be configured to include
- * the roles of the "karnak" client in the ID token or in the userinfo response (in
- * Keycloak: client scope "roles").
+ * Roles are read exclusively from the Keycloak claim "resource_access.karnak.roles" of
+ * the ID token and the userinfo endpoint. Only the roles matching a {@link SecurityRole}
+ * type (admin, investigator, user) are mapped, as "ROLE_"-prefixed granted authorities.
+ * The IDP must therefore be configured to include the roles of the "karnak" client in the
+ * ID token or in the userinfo response (in Keycloak: client scope "roles").
  */
 public class OidcRoleAuthoritiesMapper implements GrantedAuthoritiesMapper {
 

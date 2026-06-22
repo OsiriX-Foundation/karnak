@@ -18,8 +18,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.karnak.backend.data.entity.DestinationEntity;
+import org.karnak.backend.data.entity.NamedGroupEntity;
 import org.karnak.backend.data.entity.ProfileEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
+import org.karnak.backend.data.entity.ProjectGroupEntity;
 import org.karnak.backend.data.entity.SecretEntity;
 import org.karnak.backend.service.ProjectService;
 import org.karnak.backend.service.SecretService;
@@ -30,6 +32,7 @@ import org.karnak.frontend.project.component.EditProject;
 import org.karnak.frontend.project.component.GridProject;
 import org.karnak.frontend.project.component.NewProject;
 import org.karnak.frontend.util.CollatorUtils;
+import org.karnak.frontend.util.GroupTreeController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.weasis.core.util.annotations.Generated;
 
@@ -41,7 +44,7 @@ import org.weasis.core.util.annotations.Generated;
 @UIScope
 @Slf4j
 @Generated()
-public class ProjectLogic extends ListDataProvider<ProjectEntity> {
+public class ProjectLogic extends ListDataProvider<ProjectEntity> implements GroupTreeController<ProjectEntity> {
 
 	// View
 	@Getter
@@ -76,6 +79,51 @@ public class ProjectLogic extends ListDataProvider<ProjectEntity> {
 		getItems().clear();
 		getItems().addAll(projectService.getAllProjects());
 		super.refreshAll();
+		if (projectView != null) {
+			projectView.getGridProject().reload();
+		}
+	}
+
+	// --- GroupTreeController ---------------------------------------------------------
+
+	@Override
+	public List<ProjectEntity> listItems() {
+		return projectService.getAllProjects();
+	}
+
+	@Override
+	public List<? extends NamedGroupEntity> listGroups() {
+		return projectService.getAllGroups();
+	}
+
+	@Override
+	public NamedGroupEntity groupOf(ProjectEntity item) {
+		return item.getGroup();
+	}
+
+	@Override
+	public Long itemId(ProjectEntity item) {
+		return item.getId();
+	}
+
+	@Override
+	public NamedGroupEntity createGroup(String name) {
+		return projectService.saveGroup(name);
+	}
+
+	@Override
+	public void renameGroup(NamedGroupEntity group, String name) {
+		projectService.renameGroup((ProjectGroupEntity) group, name);
+	}
+
+	@Override
+	public void deleteGroup(NamedGroupEntity group) {
+		projectService.deleteGroup((ProjectGroupEntity) group);
+	}
+
+	@Override
+	public void assign(ProjectEntity item, NamedGroupEntity group) {
+		projectService.assignToGroup(item, (ProjectGroupEntity) group);
 	}
 
 	/**

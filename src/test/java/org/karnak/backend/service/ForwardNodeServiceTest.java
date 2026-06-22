@@ -12,13 +12,18 @@ package org.karnak.backend.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.DicomSourceNodeEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
+import org.karnak.backend.data.entity.ForwardNodeGroupEntity;
+import org.karnak.backend.data.repo.ForwardNodeGroupRepo;
 import org.karnak.backend.data.repo.ForwardNodeRepo;
 import org.mockito.Mockito;
 
@@ -27,6 +32,8 @@ class ForwardNodeServiceTest {
 	// Repositories
 	private final ForwardNodeRepo forwardNodeRepoMock = Mockito.mock(ForwardNodeRepo.class);
 
+	private final ForwardNodeGroupRepo forwardNodeGroupRepoMock = Mockito.mock(ForwardNodeGroupRepo.class);
+
 	// Service
 	private ForwardNodeService forwardNodeService;
 
@@ -34,7 +41,7 @@ class ForwardNodeServiceTest {
 	public void setUp() {
 
 		// Build mocked service
-		forwardNodeService = new ForwardNodeService(forwardNodeRepoMock);
+		forwardNodeService = new ForwardNodeService(forwardNodeRepoMock, forwardNodeGroupRepoMock);
 	}
 
 	@Test
@@ -196,6 +203,45 @@ class ForwardNodeServiceTest {
 		// Test result
 		assertEquals(1, forwardNodeEntity.getSourceNodes().size());
 		assertFalse(forwardNodeEntity.getSourceNodes().contains(sourceEntityToDelete));
+	}
+
+	@Test
+	void should_assign_forward_node_to_group() {
+		// Init data
+		ForwardNodeEntity forwardNodeEntity = new ForwardNodeEntity();
+		forwardNodeEntity.setId(1L);
+		ForwardNodeGroupEntity group = new ForwardNodeGroupEntity("Group A");
+		group.setId(10L);
+		Mockito.when(forwardNodeRepoMock.findById(1L)).thenReturn(Optional.of(forwardNodeEntity));
+
+		// Call service
+		forwardNodeService.assignToGroup(forwardNodeEntity, group);
+
+		// Test results
+		assertEquals(group, forwardNodeEntity.getGroup());
+		Mockito.verify(forwardNodeRepoMock, Mockito.times(1)).saveAndFlush(forwardNodeEntity);
+	}
+
+	@Test
+	void should_delete_group_and_detach_only_its_members() {
+		// Init data
+		ForwardNodeGroupEntity group = new ForwardNodeGroupEntity("Group A");
+		group.setId(10L);
+		ForwardNodeEntity member = new ForwardNodeEntity();
+		member.setId(1L);
+		member.setGroup(group);
+		ForwardNodeEntity other = new ForwardNodeEntity();
+		other.setId(2L);
+		Mockito.when(forwardNodeRepoMock.findAll()).thenReturn(List.of(member, other));
+
+		// Call service
+		forwardNodeService.deleteGroup(group);
+
+		// Test results
+		assertNull(member.getGroup());
+		Mockito.verify(forwardNodeRepoMock, Mockito.times(1)).saveAndFlush(member);
+		Mockito.verify(forwardNodeRepoMock, Mockito.never()).saveAndFlush(other);
+		Mockito.verify(forwardNodeGroupRepoMock, Mockito.times(1)).deleteById(10L);
 	}
 
 }

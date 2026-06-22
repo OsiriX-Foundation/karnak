@@ -21,6 +21,8 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
@@ -58,6 +60,9 @@ public class ProfileEntity implements Serializable {
 	private Set<MaskEntity> maskEntities = new HashSet<>();
 
 	private List<ProjectEntity> projectEntities;
+
+	// Optional organizational group (null = shown at the root of the list)
+	private ProfileGroupEntity group;
 
 	public ProfileEntity() {
 	}
@@ -175,6 +180,17 @@ public class ProfileEntity implements Serializable {
 
 	public void setProjectEntities(List<ProjectEntity> projectEntities) {
 		this.projectEntities = projectEntities;
+	}
+
+	@JsonIgnore
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "profile_group_id")
+	public ProfileGroupEntity getGroup() {
+		return group;
+	}
+
+	public void setGroup(ProfileGroupEntity group) {
+		this.group = group;
 	}
 
 	@Override

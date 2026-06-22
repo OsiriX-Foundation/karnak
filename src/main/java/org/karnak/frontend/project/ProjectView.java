@@ -80,7 +80,10 @@ public class ProjectView extends HorizontalLayout implements HasUrlParameter<Str
 
 		// Events
 		addEventButtonNewProject();
-		addEventGridSelection();
+	}
+
+	public GridProject getGridProject() {
+		return gridProject;
 	}
 
 	@Override
@@ -101,7 +104,8 @@ public class ProjectView extends HorizontalLayout implements HasUrlParameter<Str
 	 * Create and add the layout of the view
 	 */
 	private void buildLayout() {
-		VerticalLayout layoutNewProject = new VerticalLayout(this.newProject, this.gridProject);
+		VerticalLayout layoutNewProject = new VerticalLayout(this.newProject, this.gridProject.createAddGroupButton(),
+				this.gridProject);
 		setWidthFull();
 		layoutNewProject.setWidth("40%");
 		this.editProject.setWidth("60%");
@@ -114,7 +118,7 @@ public class ProjectView extends HorizontalLayout implements HasUrlParameter<Str
 	private void initComponents() {
 		initEditProject(editProject, gridProject);
 		initNewProjectForm(newProject);
-		gridProject.setItems(projectLogic);
+		gridProject.init(projectLogic, this::navigateProject);
 		newResearchBinder = newProject.getBinder();
 	}
 
@@ -146,17 +150,10 @@ public class ProjectView extends HorizontalLayout implements HasUrlParameter<Str
 			if (newResearchBinder.writeBeanIfValid(newProjectEntity)) {
 				projectLogic.createProject(newProjectEntity, new SecretEntity(HMAC.generateRandomKey()));
 				newProject.clear();
-				gridProject.select(newProjectEntity);
+				gridProject.selectItem(newProjectEntity);
 				navigateProject(newProjectEntity);
 			}
 		});
-	}
-
-	/**
-	 * Add event when selecting a project in the grid
-	 */
-	private void addEventGridSelection() {
-		gridProject.asSingleSelect().addValueChangeListener(event -> navigateProject(event.getValue()));
 	}
 
 	/**

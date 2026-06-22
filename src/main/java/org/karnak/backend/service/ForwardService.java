@@ -87,10 +87,11 @@ public class ForwardService {
 	@Value("${forward.fanout-max-threads:0}")
 	private int fanoutMaxThreads;
 
-    // Sequence depth the conformance snapshot is captured to when deep-sequence validation
-    // is enabled on the destination; must match the validator's recursion depth
-    @Value("${conformance-report.max-sequence-depth:8}")
-    private int conformanceMaxSequenceDepth;
+	// Sequence depth the conformance snapshot is captured to when deep-sequence
+	// validation is enabled on the destination; must match the validator's recursion
+	// depth
+	@Value("${conformance-report.max-sequence-depth:8}")
+	private int conformanceMaxSequenceDepth;
 
 	private ExecutorService fanoutExecutor;
 
@@ -788,8 +789,9 @@ public class ForwardService {
 						attributesOriginal, attributesToSend, sent, error, reason, modality, sopClassUid)));
 		if (destination.isBuildConformanceReport() && attributesToSend.containsValue(Tag.SOPClassUID)) {
 			// The snapshot must be built synchronously: bulk data references become
-			// invalid once the temporary files are cleaned. When deep-sequence validation is
-			// on, capture as deep as the validator recurses; otherwise the default depth
+			// invalid once the temporary files are cleaned. When deep-sequence validation
+			// is on, capture as deep as the validator recurses; otherwise the default
+			// depth
 			boolean deep = destination.isDeepSequenceValidation();
 			int snapshotDepth = deep ? conformanceMaxSequenceDepth : MetadataSnapshot.DEFAULT_MAX_SEQUENCE_DEPTH;
 			MetadataSnapshot snapshot = MetadataSnapshot.of(attributesToSend, snapshotDepth);

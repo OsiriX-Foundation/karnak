@@ -21,6 +21,7 @@ import jakarta.annotation.security.RolesAllowed;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.frontend.MainLayout;
 import org.karnak.frontend.component.ConfirmDialog;
+import org.karnak.frontend.forwardnode.component.GridForwardNode;
 import org.karnak.frontend.forwardnode.component.LayoutNewGridForwardNode;
 import org.karnak.frontend.forwardnode.edit.LayoutEditForwardNode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,7 +81,6 @@ public class ForwardNodeView extends HorizontalLayout implements HasUrlParameter
 		// Events
 		// LayoutNewGridForwardNode
 		addEventNewForwardNodeLayoutNewGrid();
-		addEventGridSelectionLayoutNewGrid();
 		// LayoutEditForwardNode
 		addEventCancelButtonLayoutEdit();
 		addEventDeleteButtonLayoutEdit();
@@ -105,7 +105,27 @@ public class ForwardNodeView extends HorizontalLayout implements HasUrlParameter
 	 * Init components
 	 */
 	private void initComponents() {
-		layoutNewGridForwardNode.getGridForwardNode().setItems(forwardNodeLogic);
+		GridForwardNode grid = layoutNewGridForwardNode.getGridForwardNode();
+		grid.init(forwardNodeLogic, this::onForwardNodeSelected);
+		// Insert the "Add group" button between the new-node form and the grid
+		layoutNewGridForwardNode.addComponentAtIndex(1, grid.createAddGroupButton());
+	}
+
+	public GridForwardNode getGridForwardNode() {
+		return layoutNewGridForwardNode.getGridForwardNode();
+	}
+
+	/**
+	 * Selection navigation for the forward node tree. Replicates the previous grid
+	 * selection listener: clearing the selection resets the Save/Delete button labels.
+	 * @param value the selected forward node, or {@code null} when cleared
+	 */
+	private void onForwardNodeSelected(ForwardNodeEntity value) {
+		if (value == null) {
+			layoutEditForwardNode.getButtonForwardNodeSaveDeleteCancel().getSave().setText(SAVE);
+			layoutEditForwardNode.getButtonForwardNodeSaveDeleteCancel().getDelete().setText(DELETE);
+		}
+		forwardNodeLogic.editForwardNode(value);
 	}
 
 	/**
@@ -136,21 +156,8 @@ public class ForwardNodeView extends HorizontalLayout implements HasUrlParameter
 	 */
 	private void eventAddForwardNodeLayoutNewGrid(ForwardNodeEntity forwardNodeEntity) {
 		forwardNodeLogic.addForwardNode(forwardNodeEntity);
-		layoutNewGridForwardNode.getGridForwardNode().getSelectionModel().select(forwardNodeEntity);
+		layoutNewGridForwardNode.getGridForwardNode().selectItem(forwardNodeEntity);
 		forwardNodeLogic.editForwardNode(forwardNodeEntity);
-	}
-
-	/**
-	 * Add event when selecting a forward node in the grid LayoutNewGridForwardNode
-	 */
-	private void addEventGridSelectionLayoutNewGrid() {
-		layoutNewGridForwardNode.getGridForwardNode().asSingleSelect().addValueChangeListener(event -> {
-			if (event.getValue() == null) {
-				layoutEditForwardNode.getButtonForwardNodeSaveDeleteCancel().getSave().setText(SAVE);
-				layoutEditForwardNode.getButtonForwardNodeSaveDeleteCancel().getDelete().setText(DELETE);
-			}
-			forwardNodeLogic.editForwardNode(event.getValue());
-		});
 	}
 
 	/**

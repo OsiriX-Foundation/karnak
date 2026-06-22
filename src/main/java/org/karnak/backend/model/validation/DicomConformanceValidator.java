@@ -65,9 +65,9 @@ public class DicomConformanceValidator {
 	private static final int MAX_LISTED_MODULE_ATTRIBUTES = 8;
 
 	/**
-	 * Default sequence recursion depth of the dataset sweep: the top-level dataset plus the
-	 * first level of sequence items. The deep-sequence-validation option raises this to walk
-	 * the whole SR content tree, enhanced-multiframe functional groups, etc.
+	 * Default sequence recursion depth of the dataset sweep: the top-level dataset plus
+	 * the first level of sequence items. The deep-sequence-validation option raises this
+	 * to walk the whole SR content tree, enhanced-multiframe functional groups, etc.
 	 */
 	public static final int DEFAULT_MAX_SEQUENCE_DEPTH = 1;
 
@@ -105,7 +105,8 @@ public class DicomConformanceValidator {
 	 * VR length and format rules (PS3.5 §6.2) — opt-in, as real-world data deviates often
 	 * @param maxSequenceDepth how many sequence levels the dataset sweep recurses into
 	 * ({@link #DEFAULT_MAX_SEQUENCE_DEPTH} = one level; higher walks SR content trees and
-	 * functional groups). Must not exceed the depth the {@code MetadataSnapshot} retained.
+	 * functional groups). Must not exceed the depth the {@code MetadataSnapshot}
+	 * retained.
 	 */
 	public InstanceValidationResult validate(Attributes attrs, Set<Integer> bulkPresentTags, String transferSyntaxUid,
 			boolean checkValueConformity, int maxSequenceDepth) {

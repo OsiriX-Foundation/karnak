@@ -14,23 +14,22 @@ import java.util.Objects;
 
 public record HashContext(byte[] secret, String patientID) {
 
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    return obj instanceof HashContext other
-        && Arrays.equals(secret, other.secret)
-        && Objects.equals(patientID, other.patientID);
-  }
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		return obj instanceof HashContext other && Arrays.equals(secret, other.secret)
+				&& Objects.equals(patientID, other.patientID);
+	}
 
-  @Override
-  public int hashCode() {
-    return 31 * Arrays.hashCode(secret) + Objects.hashCode(patientID);
-  }
+	@Override
+	public int hashCode() {
+		return 31 * Arrays.hashCode(secret) + Objects.hashCode(patientID);
+	}
 
-  @Override
-  public String toString() {
-    return "HashContext[secret=" + Arrays.toString(secret) + ", patientID=" + patientID + "]";
-  }
+	@Override
+	public String toString() {
+		return "HashContext[secret=" + Arrays.toString(secret) + ", patientID=" + patientID + "]";
+	}
 }

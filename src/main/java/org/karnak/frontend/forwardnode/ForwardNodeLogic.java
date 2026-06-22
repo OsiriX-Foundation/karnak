@@ -14,17 +14,21 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
+import org.karnak.backend.data.entity.ForwardNodeGroupEntity;
+import org.karnak.backend.data.entity.NamedGroupEntity;
 import org.karnak.backend.service.ForwardNodeAPIService;
 import org.karnak.backend.service.ForwardNodeService;
 import org.karnak.backend.service.ProjectService;
 import org.karnak.backend.service.SOPClassUIDService;
 import org.karnak.frontend.forwardnode.edit.destination.DestinationLogic;
 import org.karnak.frontend.forwardnode.edit.source.SourceLogic;
+import org.karnak.frontend.util.GroupTreeController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.weasis.core.util.annotations.Generated;
 
@@ -35,7 +39,8 @@ import org.weasis.core.util.annotations.Generated;
 @UIScope
 @Slf4j
 @Generated()
-public class ForwardNodeLogic extends ListDataProvider<ForwardNodeEntity> {
+public class ForwardNodeLogic extends ListDataProvider<ForwardNodeEntity>
+		implements GroupTreeController<ForwardNodeEntity> {
 
 	@Setter
 	@Getter
@@ -86,6 +91,51 @@ public class ForwardNodeLogic extends ListDataProvider<ForwardNodeEntity> {
 		getItems().clear();
 		getItems().addAll(forwardNodeService.getAllForwardNodes());
 		super.refreshAll();
+		if (forwardNodeView != null) {
+			forwardNodeView.getGridForwardNode().reload();
+		}
+	}
+
+	// --- GroupTreeController ---------------------------------------------------------
+
+	@Override
+	public List<ForwardNodeEntity> listItems() {
+		return forwardNodeService.getAllForwardNodes();
+	}
+
+	@Override
+	public List<? extends NamedGroupEntity> listGroups() {
+		return forwardNodeService.getAllGroups();
+	}
+
+	@Override
+	public NamedGroupEntity groupOf(ForwardNodeEntity item) {
+		return item.getGroup();
+	}
+
+	@Override
+	public Long itemId(ForwardNodeEntity item) {
+		return item.getId();
+	}
+
+	@Override
+	public NamedGroupEntity createGroup(String name) {
+		return forwardNodeService.saveGroup(name);
+	}
+
+	@Override
+	public void renameGroup(NamedGroupEntity group, String name) {
+		forwardNodeService.renameGroup((ForwardNodeGroupEntity) group, name);
+	}
+
+	@Override
+	public void deleteGroup(NamedGroupEntity group) {
+		forwardNodeService.deleteGroup((ForwardNodeGroupEntity) group);
+	}
+
+	@Override
+	public void assign(ForwardNodeEntity item, NamedGroupEntity group) {
+		forwardNodeService.assignToGroup(item, (ForwardNodeGroupEntity) group);
 	}
 
 	@Override

@@ -10,7 +10,10 @@
 package org.karnak.backend.service;
 
 import java.util.List;
+import java.util.Objects;
 import org.karnak.backend.data.entity.ProjectEntity;
+import org.karnak.backend.data.entity.ProjectGroupEntity;
+import org.karnak.backend.data.repo.ProjectGroupRepo;
 import org.karnak.backend.data.repo.ProjectRepo;
 import org.karnak.backend.enums.NodeEventType;
 import org.karnak.backend.model.event.NodeEvent;
@@ -28,18 +31,75 @@ public class ProjectService {
 	// Repositories
 	private final ProjectRepo projectRepo;
 
+	private final ProjectGroupRepo projectGroupRepo;
+
 	// Event publisher
 	private final ApplicationEventPublisher applicationEventPublisher;
 
 	/**
 	 * Autowired constructor
 	 * @param projectRepo Project repository
+	 * @param projectGroupRepo Project group repository
 	 * @param applicationEventPublisher Application Event Publisher
 	 */
 	@Autowired
-	public ProjectService(final ProjectRepo projectRepo, final ApplicationEventPublisher applicationEventPublisher) {
+	public ProjectService(final ProjectRepo projectRepo, final ProjectGroupRepo projectGroupRepo,
+			final ApplicationEventPublisher applicationEventPublisher) {
 		this.projectRepo = projectRepo;
+		this.projectGroupRepo = projectGroupRepo;
 		this.applicationEventPublisher = applicationEventPublisher;
+	}
+
+	/** Retrieve all project groups, sorted by name. */
+	public List<ProjectGroupEntity> getAllGroups() {
+		List<ProjectGroupEntity> groups = projectGroupRepo.findAll();
+		groups.sort(CollatorUtils.comparing(ProjectGroupEntity::getName));
+		return groups;
+	}
+
+	/** Create and persist a new project group. */
+	public ProjectGroupEntity saveGroup(String name) {
+		return projectGroupRepo.saveAndFlush(new ProjectGroupEntity(name));
+	}
+
+	/** Rename an existing project group. */
+	public void renameGroup(ProjectGroupEntity group, String name) {
+		if (group == null || group.getId() == null) {
+			return;
+		}
+		projectGroupRepo.findById(group.getId()).ifPresent(persisted -> {
+			persisted.setName(name);
+			projectGroupRepo.saveAndFlush(persisted);
+		});
+	}
+
+	/**
+	 * Delete a project group. Members are detached first (their group is set to null) so
+	 * they fall back to the root of the list instead of being deleted.
+	 */
+	public void deleteGroup(ProjectGroupEntity group) {
+		if (group == null || group.getId() == null) {
+			return;
+		}
+		projectRepo.findAll().forEach(project -> {
+			if (project.getGroup() != null && Objects.equals(project.getGroup().getId(), group.getId())) {
+				project.setGroup(null);
+				projectRepo.saveAndFlush(project);
+			}
+		});
+		projectGroupRepo.deleteById(group.getId());
+		projectGroupRepo.flush();
+	}
+
+	/** Assign a project to a group (null group removes it from any group). */
+	public void assignToGroup(ProjectEntity project, ProjectGroupEntity group) {
+		if (project == null || project.getId() == null) {
+			return;
+		}
+		projectRepo.findById(project.getId()).ifPresent(persisted -> {
+			persisted.setGroup(group);
+			projectRepo.saveAndFlush(persisted);
+		});
 	}
 
 	/**

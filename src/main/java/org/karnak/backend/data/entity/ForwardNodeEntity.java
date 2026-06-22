@@ -16,6 +16,8 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
@@ -46,6 +48,9 @@ public class ForwardNodeEntity implements Serializable {
 	// Specification of a final DICOM destination node. Multiple destinations can be
 	// defined either as a DICOM or DICOMWeb type.
 	private Set<DestinationEntity> destinationEntities = new HashSet<>();
+
+	// Optional organizational group (null = shown at the root of the list)
+	private ForwardNodeGroupEntity group;
 
 	public ForwardNodeEntity() {
 		this.fwdAeTitle = "";
@@ -124,6 +129,16 @@ public class ForwardNodeEntity implements Serializable {
 
 	public void removeDestination(DestinationEntity destinationEntity) {
 		this.destinationEntities.remove(destinationEntity);
+	}
+
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "forward_node_group_id")
+	public ForwardNodeGroupEntity getGroup() {
+		return group;
+	}
+
+	public void setGroup(ForwardNodeGroupEntity group) {
+		this.group = group;
 	}
 
 	/**

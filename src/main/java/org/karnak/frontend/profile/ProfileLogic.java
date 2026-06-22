@@ -23,10 +23,13 @@ import java.util.function.Predicate;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.karnak.backend.data.entity.NamedGroupEntity;
 import org.karnak.backend.data.entity.ProfileEntity;
+import org.karnak.backend.data.entity.ProfileGroupEntity;
 import org.karnak.backend.model.profilebody.ProfilePipeBody;
 import org.karnak.backend.service.profilepipe.ProfilePipeService;
 import org.karnak.frontend.profile.component.errorprofile.ProfileError;
+import org.karnak.frontend.util.GroupTreeController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.weasis.core.util.annotations.Generated;
 import org.yaml.snakeyaml.LoaderOptions;
@@ -38,7 +41,7 @@ import org.yaml.snakeyaml.error.YAMLException;
 @UIScope
 @Slf4j
 @Generated()
-public class ProfileLogic extends ListDataProvider<ProfileEntity> {
+public class ProfileLogic extends ListDataProvider<ProfileEntity> implements GroupTreeController<ProfileEntity> {
 
 	@Getter
 	@Setter
@@ -64,6 +67,51 @@ public class ProfileLogic extends ListDataProvider<ProfileEntity> {
 		getItems().clear();
 		getItems().addAll(profilePipeService.getAllProfiles());
 		super.refreshAll();
+		if (profileView != null) {
+			profileView.getProfileGrid().reload();
+		}
+	}
+
+	// --- GroupTreeController ---------------------------------------------------------
+
+	@Override
+	public List<ProfileEntity> listItems() {
+		return profilePipeService.getAllProfiles();
+	}
+
+	@Override
+	public List<? extends NamedGroupEntity> listGroups() {
+		return profilePipeService.getAllGroups();
+	}
+
+	@Override
+	public NamedGroupEntity groupOf(ProfileEntity item) {
+		return item.getGroup();
+	}
+
+	@Override
+	public Long itemId(ProfileEntity item) {
+		return item.getId();
+	}
+
+	@Override
+	public NamedGroupEntity createGroup(String name) {
+		return profilePipeService.saveGroup(name);
+	}
+
+	@Override
+	public void renameGroup(NamedGroupEntity group, String name) {
+		profilePipeService.renameGroup((ProfileGroupEntity) group, name);
+	}
+
+	@Override
+	public void deleteGroup(NamedGroupEntity group) {
+		profilePipeService.deleteGroup((ProfileGroupEntity) group);
+	}
+
+	@Override
+	public void assign(ProfileEntity item, NamedGroupEntity group) {
+		profilePipeService.assignToGroup(item, (ProfileGroupEntity) group);
 	}
 
 	/**
@@ -119,6 +167,7 @@ public class ProfileLogic extends ListDataProvider<ProfileEntity> {
 			if (profileErrors.stream().noneMatch(errorPredicate)) {
 				final ProfileEntity newProfileEntity = profilePipeService.saveProfilePipe(profilePipe, false);
 				profileView.getProfileErrorView().removeAll();
+				profileView.getProfileGrid().reload();
 				profileView.getProfileGrid().selectRow(newProfileEntity);
 				profileView.getProfileComponent().setProfile(newProfileEntity);
 				profileView.getProfileElementMainView().setProfile(newProfileEntity);

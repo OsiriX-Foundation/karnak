@@ -93,7 +93,8 @@ public class ConformanceReportService {
 	private long maxStudyLifetimeSeconds;
 
 	// Sequence recursion depth used when a destination enables deep-sequence validation
-	// (SR content tree, functional groups). Must match the snapshot depth in ForwardService
+	// (SR content tree, functional groups). Must match the snapshot depth in
+	// ForwardService
 	@Value("${conformance-report.max-sequence-depth:8}")
 	private int maxSequenceDepth;
 
@@ -118,9 +119,8 @@ public class ConformanceReportService {
 		try {
 			int depth = data.deepSequenceValidation() ? maxSequenceDepth
 					: DicomConformanceValidator.DEFAULT_MAX_SEQUENCE_DEPTH;
-			InstanceValidationResult result = data.sent()
-					? validator.validate(data.snapshot().metadata(), data.snapshot().bulkPresentTags(),
-							data.transferSyntaxUid(), data.checkValueConformity(), depth)
+			InstanceValidationResult result = data.sent() ? validator.validate(data.snapshot().metadata(),
+					data.snapshot().bulkPresentTags(), data.transferSyntaxUid(), data.checkValueConformity(), depth)
 					: null;
 			Instant now = clock.instant();
 			// A concurrent flush may close the accumulator between lookup and add: retry

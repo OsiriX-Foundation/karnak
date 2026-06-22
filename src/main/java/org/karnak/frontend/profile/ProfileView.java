@@ -10,6 +10,7 @@
 package org.karnak.frontend.profile;
 
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -81,7 +82,6 @@ public class ProfileView extends HorizontalLayout implements HasUrlParameter<Str
 
 		add(barAndGridLayout, profileHorizontalLayout);
 
-		addEventGridSelection();
 		addAttachListener(event -> this.ui = event.getUI());
 	}
 
@@ -110,17 +110,20 @@ public class ProfileView extends HorizontalLayout implements HasUrlParameter<Str
 		profileHorizontalLayout.setWidth("75%");
 		profileHorizontalLayout.getStyle().set("overflow-y", "auto");
 
+		Button addGroupButton = profileGrid.createAddGroupButton();
 		barAndGridLayout = new VerticalLayout();
 		barAndGridLayout.add(uploadProfile);
+		barAndGridLayout.add(addGroupButton);
 		barAndGridLayout.add(profileGrid);
 		barAndGridLayout.setFlexGrow(0, uploadProfile);
+		barAndGridLayout.setFlexGrow(0, addGroupButton);
 		barAndGridLayout.setFlexGrow(1, profileGrid);
 		barAndGridLayout.setWidth("25%");
 	}
 
 	private void initComponents() {
 		initUploadProfile();
-		profileGrid.setItems(profileLogic);
+		profileGrid.init(profileLogic, this::navigateProfile);
 	}
 
 	private void initUploadProfile() {
@@ -131,10 +134,6 @@ public class ProfileView extends HorizontalLayout implements HasUrlParameter<Str
 			}
 		});
 		uploadProfile.setDropLabel(new Span("Drag and drop your profile here"));
-	}
-
-	private void addEventGridSelection() {
-		profileGrid.asSingleSelect().addValueChangeListener(event -> navigateProfile(event.getValue()));
 	}
 
 	/**

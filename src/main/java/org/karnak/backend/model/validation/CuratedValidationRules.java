@@ -37,9 +37,10 @@ public class CuratedValidationRules {
 
 	/**
 	 * Source and vintage of the bundled DICOM standard JSON files, shown in report
-	 * headers. Read from the {@code source} field of {@code curated-validation-rules.json}
-	 * so it lives next to the data it describes — update it there when re-vendoring the
-	 * standard files (see doc/dicom-standard-json.md).
+	 * headers. Read from the {@code source} field of
+	 * {@code curated-validation-rules.json} so it lives next to the data it describes —
+	 * update it there when re-vendoring the standard files (see
+	 * doc/dicom-standard-json.md).
 	 */
 	private String source;
 
@@ -61,7 +62,9 @@ public class CuratedValidationRules {
 		}
 	}
 
-	/** Source and vintage label of the bundled DICOM standard JSON, for report headers. */
+	/**
+	 * Source and vintage label of the bundled DICOM standard JSON, for report headers.
+	 */
 	public String getDicomStandardSource() {
 		return source == null || source.isBlank() ? DEFAULT_DICOM_STANDARD_SOURCE : source;
 	}

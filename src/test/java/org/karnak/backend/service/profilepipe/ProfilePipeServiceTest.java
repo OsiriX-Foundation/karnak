@@ -17,9 +17,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.data.entity.ProfileEntity;
+import org.karnak.backend.data.entity.ProfileGroupEntity;
+import org.karnak.backend.data.repo.ProfileGroupRepo;
 import org.karnak.backend.data.repo.ProfileRepo;
 import org.karnak.backend.model.profilebody.MaskBody;
 import org.karnak.backend.model.profilebody.ProfileElementBody;
@@ -32,13 +35,15 @@ class ProfilePipeServiceTest {
 	// Repositories
 	private final ProfileRepo profileRepositoryMock = Mockito.mock(ProfileRepo.class);
 
+	private final ProfileGroupRepo profileGroupRepositoryMock = Mockito.mock(ProfileGroupRepo.class);
+
 	// Service
 	private ProfilePipeService profilePipeService;
 
 	@BeforeEach
 	public void setUp() {
 		// Build mocked service
-		profilePipeService = new ProfilePipeService(profileRepositoryMock);
+		profilePipeService = new ProfilePipeService(profileRepositoryMock, profileGroupRepositoryMock);
 	}
 
 	@Test
@@ -115,6 +120,45 @@ class ProfilePipeServiceTest {
 
 		// Test results
 		Mockito.verify(profileRepositoryMock, Mockito.times(1)).deleteById(Mockito.anyLong());
+	}
+
+	@Test
+	void should_assign_profile_to_group() {
+		// Init data
+		ProfileEntity profileEntity = new ProfileEntity();
+		profileEntity.setId(1L);
+		ProfileGroupEntity group = new ProfileGroupEntity("Group A");
+		group.setId(10L);
+		Mockito.when(profileRepositoryMock.findById(1L)).thenReturn(Optional.of(profileEntity));
+
+		// Call service
+		profilePipeService.assignToGroup(profileEntity, group);
+
+		// Test results
+		assertEquals(group, profileEntity.getGroup());
+		Mockito.verify(profileRepositoryMock, Mockito.times(1)).saveAndFlush(profileEntity);
+	}
+
+	@Test
+	void should_delete_group_and_detach_only_its_members() {
+		// Init data
+		ProfileGroupEntity group = new ProfileGroupEntity("Group A");
+		group.setId(10L);
+		ProfileEntity member = new ProfileEntity();
+		member.setId(1L);
+		member.setGroup(group);
+		ProfileEntity other = new ProfileEntity();
+		other.setId(2L);
+		Mockito.when(profileRepositoryMock.findAll()).thenReturn(List.of(member, other));
+
+		// Call service
+		profilePipeService.deleteGroup(group);
+
+		// Test results
+		assertNull(member.getGroup());
+		Mockito.verify(profileRepositoryMock, Mockito.times(1)).saveAndFlush(member);
+		Mockito.verify(profileRepositoryMock, Mockito.never()).saveAndFlush(other);
+		Mockito.verify(profileGroupRepositoryMock, Mockito.times(1)).deleteById(10L);
 	}
 
 }

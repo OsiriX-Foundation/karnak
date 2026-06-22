@@ -51,9 +51,10 @@ public record MetadataSnapshot(Attributes metadata, Set<Integer> bulkPresentTags
 	}
 
 	/**
-	 * Builds a snapshot copying sequences down to {@code maxSequenceDepth} nesting levels.
-	 * The depth must match the recursion depth of {@code DicomConformanceValidator}, so the
-	 * deep-sequence-validation option can validate as deep as the snapshot retained.
+	 * Builds a snapshot copying sequences down to {@code maxSequenceDepth} nesting
+	 * levels. The depth must match the recursion depth of
+	 * {@code DicomConformanceValidator}, so the deep-sequence-validation option can
+	 * validate as deep as the snapshot retained.
 	 */
 	public static MetadataSnapshot of(Attributes source, int maxSequenceDepth) {
 		Set<Integer> bulkTags = new HashSet<>();

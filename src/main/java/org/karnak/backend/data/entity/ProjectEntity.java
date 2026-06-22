@@ -42,6 +42,9 @@ public class ProjectEntity implements Serializable {
 
 	private ProfileEntity profileEntity;
 
+	// Optional organizational group (null = shown at the root of the list)
+	private ProjectGroupEntity group;
+
 	public ProjectEntity() {
 		this.destinationEntities = new ArrayList<>();
 		this.secretEntities = new ArrayList<>();
@@ -91,6 +94,16 @@ public class ProjectEntity implements Serializable {
 
 	public void setProfileEntity(ProfileEntity profileEntity) {
 		this.profileEntity = profileEntity;
+	}
+
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "project_group_id")
+	public ProjectGroupEntity getGroup() {
+		return group;
+	}
+
+	public void setGroup(ProjectGroupEntity group) {
+		this.group = group;
 	}
 
 	/**
