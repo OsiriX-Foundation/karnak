@@ -1,9 +1,6 @@
 name: Build
 permissions:
   contents: read
-  issues: read
-  pull-requests: read
-  actions: read
 on:
   push:
     branches:
@@ -12,11 +9,15 @@ on:
       - 'v*'
   pull_request:
     types: [ opened, synchronize, reopened ]
+# Cancel superseded runs on the same branch/PR; the latest push is the only one worth building.
+concurrency:
+  group: build-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-
+    timeout-minutes: 45
     env:
       PUSH_PACKAGES: ${{ github.event_name == 'push' }}
     steps:
@@ -26,24 +27,32 @@ jobs:
           node-version: 24
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+          persist-credentials: false
       - name: Set up JDK for compilation
         uses: actions/setup-java@ad2b38190b15e4d6bdf0c97fb4fca8412226d287 # v5
         with:
           distribution: 'temurin'
           java-version: '25'
           cache: 'maven'
-      - name: Cache SonarCloud packages
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+      - name: Build and test
+        run: mvn -Pcoverage -B verify
+      # Sonar analysis runs in a separate workflow_run-triggered workflow (sonar.yml) so it
+      # has access to P_SONAR_TOKEN even for pull requests from forks and Dependabot (where
+      # secrets are withheld from the triggering workflow) and never exposes secrets to PR code.
+      - name: Save PR context for Sonar analysis
+        if: github.event_name == 'pull_request'
+        run: |
+          mkdir -p pr-context
+          echo "${{ github.event.pull_request.number }}" > pr-context/pr_number
+          echo "${{ github.event.pull_request.head.ref }}" > pr-context/head_ref
+          echo "${{ github.event.pull_request.base.ref }}" > pr-context/base_ref
+      - name: Upload PR context
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v4
         with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
-      - name: Build and analyze
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.P_SONAR_TOKEN }}
-        run: mvn -Pcoverage -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:5.7.0.6970:sonar
+          name: pr-context
+          path: pr-context/
+          retention-days: 1
       # Build Docker image and push it to Docker Hub
       - name: Build the spring app
         if: ${{ env.PUSH_PACKAGES }}

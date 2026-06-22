@@ -1,0 +1,64 @@
+name: Sonar
+# Runs after the "Build" workflow completes. Using workflow_run means this job executes in the
+# base-repository context, so P_SONAR_TOKEN is available even for pull requests from forks and
+# Dependabot (where secrets are withheld from the triggering workflow).
+on:
+  workflow_run:
+    workflows: [ "Build" ]
+    types: [ completed ]
+permissions:
+  contents: read
+jobs:
+  sonar:
+    name: SonarCloud
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Download PR context
+        if: github.event.workflow_run.event == 'pull_request'
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v4
+        with:
+          name: pr-context
+          path: pr-context
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Resolve analysis parameters
+        id: ctx
+        run: |
+          if [ "${{ github.event.workflow_run.event }}" = "pull_request" ]; then
+            pr=$(cat pr-context/pr_number)
+            head=$(cat pr-context/head_ref)
+            base=$(cat pr-context/base_ref)
+            echo "checkout_ref=refs/pull/${pr}/head" >> "$GITHUB_OUTPUT"
+            echo "sonar_args=-Dsonar.pullrequest.key=${pr} -Dsonar.pullrequest.branch=${head} -Dsonar.pullrequest.base=${base}" >> "$GITHUB_OUTPUT"
+          else
+            echo "checkout_ref=${{ github.event.workflow_run.head_sha }}" >> "$GITHUB_OUTPUT"
+            echo "sonar_args=-Dsonar.branch.name=${{ github.event.workflow_run.head_branch }}" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Setup NODE
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: 24
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          ref: ${{ steps.ctx.outputs.checkout_ref }}
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+          persist-credentials: false
+      - name: Set up JDK for compilation
+        uses: actions/setup-java@ad2b38190b15e4d6bdf0c97fb4fca8412226d287 # v5
+        with:
+          distribution: 'temurin'
+          java-version: '25'
+          cache: 'maven'
+      - name: Cache SonarCloud packages
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: Build and analyze
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.P_SONAR_TOKEN }}
+        run: mvn -Pcoverage -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:5.7.0.6970:sonar ${{ steps.ctx.outputs.sonar_args }}
