@@ -142,17 +142,20 @@ public class ProjectView extends HorizontalLayout implements HasUrlParameter<Str
 	}
 
 	/**
-	 * Add event on button New Project
+	 * Add event on the new-project popup confirm
 	 */
 	private void addEventButtonNewProject() {
-		newProject.getButtonAdd().addClickListener(event -> {
+		newProject.getDialog().setOnConfirm(() -> {
 			ProjectEntity newProjectEntity = new ProjectEntity();
 			if (newResearchBinder.writeBeanIfValid(newProjectEntity)) {
 				projectLogic.createProject(newProjectEntity, new SecretEntity(HMAC.generateRandomKey()));
 				newProject.clear();
 				gridProject.selectItem(newProjectEntity);
 				navigateProject(newProjectEntity);
+				return true;
 			}
+			// Keep the popup open so the validation errors stay visible.
+			return false;
 		});
 	}
 

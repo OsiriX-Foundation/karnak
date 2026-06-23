@@ -9,7 +9,6 @@
  */
 package org.karnak.frontend.forwardnode;
 
-import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
@@ -139,15 +138,14 @@ public class ForwardNodeView extends HorizontalLayout implements HasUrlParameter
 	}
 
 	/**
-	 * Event when adding a forward node in the LayoutNewGridForwardNode
+	 * Event when adding a forward node from the new-forward-node popup
 	 */
 	private void addEventNewForwardNodeLayoutNewGrid() {
-		layoutNewGridForwardNode.getButtonAddNewForwardNode()
-			.addClickListener(click -> eventAddForwardNodeLayoutNewGrid(
-					new ForwardNodeEntity(layoutNewGridForwardNode.getTextFieldNewAETitleForwardNode().getValue())));
-		layoutNewGridForwardNode.getTextFieldNewAETitleForwardNode()
-			.addKeyDownListener(Key.ENTER, keyDownEvent -> eventAddForwardNodeLayoutNewGrid(
-					new ForwardNodeEntity(layoutNewGridForwardNode.getTextFieldNewAETitleForwardNode().getValue())));
+		layoutNewGridForwardNode.getNewForwardNodeDialog().setOnConfirm(() -> {
+			eventAddForwardNodeLayoutNewGrid(
+					new ForwardNodeEntity(layoutNewGridForwardNode.getTextFieldNewAETitleForwardNode().getValue()));
+			return true;
+		});
 	}
 
 	/**
