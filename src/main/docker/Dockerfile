@@ -3,7 +3,7 @@
 # docker build -t osirixfoundation/karnak:latest -f src/main/docker/Dockerfile .
 
 # Based on build image containing maven, jdk and git
-FROM maven:3.9-eclipse-temurin-25-noble AS builder
+FROM maven:3-eclipse-temurin-26-noble AS builder
 ARG JAR_FILE=target/karnak*.jar
 WORKDIR /app
 COPY ${JAR_FILE} application.jar
