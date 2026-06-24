@@ -10,6 +10,7 @@
 package org.karnak.frontend.forwardnode;
 
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.OptionalParameter;
@@ -132,9 +133,13 @@ public class ForwardNodeView extends HorizontalLayout implements HasUrlParameter
 	 */
 	public void buildLayout() {
 		setSizeFull();
-		layoutNewGridForwardNode.setWidth("30%");
-		layoutEditForwardNode.setWidth("70%");
-		add(layoutNewGridForwardNode, layoutEditForwardNode);
+		layoutNewGridForwardNode.setWidth("100%");
+		layoutEditForwardNode.setWidth("100%");
+		SplitLayout splitLayout = new SplitLayout(layoutNewGridForwardNode, layoutEditForwardNode);
+		splitLayout.setSizeFull();
+		// Draggable splitter between the node list (left) and the edit panel (right).
+		splitLayout.setSplitterPosition(30);
+		add(splitLayout);
 	}
 
 	/**
