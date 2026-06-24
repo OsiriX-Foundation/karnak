@@ -38,24 +38,24 @@ class MonitoringNodeTest {
 
 	@Test
 	void study_key_uses_destination_and_study_uid() {
-		StudyNode study = new StudyNode(5L, "1.2.3", null, "CT chest", null, null, null, null, null, null, 4, 40, 0, 0,
-				null, null);
+		StudyNode study = new StudyNode(5L, "1.2.3", null, "CT chest", null, null, null, null, null, null, null, 4, 40,
+				0, 0, null, null);
 		assertEquals("st:5:1.2.3", study.key());
 		assertFalse(study.hasErrors());
 	}
 
 	@Test
 	void series_key_uses_destination_and_serie_uid_and_flags_errors() {
-		SeriesNode series = new SeriesNode(5L, "1.2.3", "1.2.3.4", null, "axial", "CT", null, null, null, 40, 39, 1,
-				null, null);
+		SeriesNode series = new SeriesNode(5L, "1.2.3", null, null, null, null, null, null, null, null, null, "1.2.3.4",
+				null, "axial", null, "CT", null, null, null, 40, 39, 1, null, null);
 		assertEquals("se:5:1.2.3.4", series.key());
 		assertTrue(series.hasErrors());
 	}
 
 	@Test
 	void error_node_is_unique_per_parent_and_always_an_error() {
-		SeriesNode series = new SeriesNode(5L, "1.2.3", "1.2.3.4", null, "axial", "CT", null, null, null, 40, 39, 1,
-				null, null);
+		SeriesNode series = new SeriesNode(5L, "1.2.3", null, null, null, null, null, null, null, null, null, "1.2.3.4",
+				null, "axial", null, "CT", null, null, null, 40, 39, 1, null, null);
 		ErrorNode error = new ErrorNode(series.key(), "timeout", 3);
 		assertEquals("se:5:1.2.3.4|err:timeout", error.key());
 		assertTrue(error.hasErrors());

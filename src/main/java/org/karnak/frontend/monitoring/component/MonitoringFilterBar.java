@@ -38,8 +38,8 @@ public class MonitoringFilterBar extends HorizontalLayout {
 	/** Quick date-range presets. */
 	public enum RangePreset {
 
-		LAST_HOUR("Last hour"), LAST_24H("Last 24 hours"), TODAY("Today"), LAST_7_DAYS("Last 7 days"), ALL("All"),
-		CUSTOM("Custom");
+		LAST_5_MIN("Last 5 minutes"), LAST_15_MIN("Last 15 minutes"), LAST_HOUR("Last hour"), LAST_24H("Last 24 hours"),
+		TODAY("Today"), LAST_7_DAYS("Last 7 days"), ALL("All"), CUSTOM("Custom");
 
 		private final String label;
 
@@ -142,6 +142,14 @@ public class MonitoringFilterBar extends HorizontalLayout {
 		LocalDateTime start;
 		LocalDateTime end;
 		switch (preset) {
+			case LAST_5_MIN -> {
+				start = now.minusMinutes(5);
+				end = now;
+			}
+			case LAST_15_MIN -> {
+				start = now.minusMinutes(15);
+				end = now;
+			}
 			case LAST_HOUR -> {
 				start = now.minusHours(1);
 				end = now;

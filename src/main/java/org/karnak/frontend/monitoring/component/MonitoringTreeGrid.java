@@ -242,16 +242,20 @@ public class MonitoringTreeGrid extends TreeGrid<MonitoringNode> {
 				case DestinationNode d -> logic.listStudies(filter, d.destinationId())
 					.stream()
 					.<MonitoringNode>map(s -> new StudyNode(d.destinationId(), s.studyUid(), s.studyUidToSend(),
-							s.description(), s.patientIdOriginal(), s.patientIdToSend(), s.accessionNumberOriginal(),
-							s.accessionNumberToSend(), s.studyDateOriginal(), s.studyDateToSend(), s.series(),
-							s.instances(), s.sent(), s.errors(), s.firstSeen(), s.lastSeen()))
+							s.description(), s.descriptionToSend(), s.patientIdOriginal(), s.patientIdToSend(),
+							s.accessionNumberOriginal(), s.accessionNumberToSend(), s.studyDateOriginal(),
+							s.studyDateToSend(), s.series(), s.instances(), s.sent(), s.errors(), s.firstSeen(),
+							s.lastSeen()))
 					.toList();
 				case StudyNode s -> logic.listSeries(filter, s.destinationId(), s.studyUid())
 					.stream()
-					.<MonitoringNode>map(se -> new SeriesNode(s.destinationId(), s.studyUid(), se.serieUid(),
-							se.serieUidToSend(), se.serieDescription(), se.modality(), se.sopClassUids(),
-							se.serieDateOriginal(), se.serieDateToSend(), se.instances(), se.sent(), se.errors(),
-							se.firstSeen(), se.lastSeen()))
+					.<MonitoringNode>map(se -> new SeriesNode(s.destinationId(), s.studyUid(), s.studyUidToSend(),
+							s.patientIdOriginal(), s.patientIdToSend(), s.accessionNumberOriginal(),
+							s.accessionNumberToSend(), s.description(), s.descriptionToSend(), s.studyDateOriginal(),
+							s.studyDateToSend(), se.serieUid(), se.serieUidToSend(), se.serieDescription(),
+							se.serieDescriptionToSend(), se.modality(), se.sopClassUids(), se.serieDateOriginal(),
+							se.serieDateToSend(), se.instances(), se.sent(), se.errors(), se.firstSeen(),
+							se.lastSeen()))
 					.toList();
 				case SeriesNode se -> logic.listErrors(filter, se.destinationId(), se.serieUid())
 					.stream()

@@ -42,7 +42,7 @@ import org.weasis.core.util.annotations.Generated;
 @Generated()
 public class MonitoringDetailPanel extends VerticalLayout {
 
-	private record Field(String label, String value, boolean multiline) {
+	private record Field(String label, String value, boolean multiline, boolean header) {
 	}
 
 	private final Span title = new Span("Details");
@@ -104,11 +104,32 @@ public class MonitoringDetailPanel extends VerticalLayout {
 		List<Field> fields = fieldsFor(node);
 		StringBuilder copyBuilder = new StringBuilder(title.getText()).append('\n');
 		for (Field field : fields) {
-			form.addFormItem(readOnly(field), field.label());
-			copyBuilder.append(field.label()).append(": ").append(field.value()).append('\n');
+			if (field.header()) {
+				form.add(sectionHeader(field.label()));
+				copyBuilder.append('\n').append(field.label()).append('\n');
+			}
+			else {
+				form.addFormItem(readOnly(field), field.label());
+				copyBuilder.append(field.label()).append(": ").append(field.value()).append('\n');
+			}
 		}
 		copyText = copyBuilder.toString();
 		copyButton.setEnabled(true);
+	}
+
+	/**
+	 * A full-width section title separating the Patient / Study / Series / Transfer
+	 * groups.
+	 */
+	private Span sectionHeader(String title) {
+		Span span = new Span(title);
+		span.getStyle()
+			.set("font-weight", "600")
+			.set("text-transform", "uppercase")
+			.set("font-size", "var(--lumo-font-size-s)")
+			.set("color", "var(--lumo-secondary-text-color)")
+			.set("margin-top", "var(--lumo-space-s)");
+		return span;
 	}
 
 	private com.vaadin.flow.component.Component readOnly(Field field) {
@@ -148,14 +169,14 @@ public class MonitoringDetailPanel extends VerticalLayout {
 				number(fields, "Errors", d.errors());
 			}
 			case StudyNode s -> {
-				text(fields, "Study UID", s.studyUid());
-				deidentified(fields, "Study UID", s.studyUid(), s.studyUidToSend());
-				text(fields, "Patient ID", s.patientIdOriginal());
-				deidentified(fields, "Patient ID", s.patientIdOriginal(), s.patientIdToSend());
-				text(fields, "Accession number", s.accessionNumberOriginal());
-				deidentified(fields, "Accession number", s.accessionNumberOriginal(), s.accessionNumberToSend());
-				text(fields, "Description", s.description());
-				date(fields, "Study date", s.studyDateOriginal());
+				section(fields, "Patient");
+				pair(fields, "Patient ID", s.patientIdOriginal(), s.patientIdToSend());
+				section(fields, "Study");
+				pair(fields, "Study UID", s.studyUid(), s.studyUidToSend());
+				pair(fields, "Accession number", s.accessionNumberOriginal(), s.accessionNumberToSend());
+				pair(fields, "Description", s.description(), s.descriptionToSend());
+				datePair(fields, "Study date", s.studyDateOriginal(), s.studyDateToSend());
+				section(fields, "Transfer");
 				number(fields, "Series", s.series());
 				number(fields, "Instances", s.instances());
 				number(fields, "Sent", s.sent());
@@ -164,12 +185,20 @@ public class MonitoringDetailPanel extends VerticalLayout {
 				date(fields, "Last seen", s.lastSeen());
 			}
 			case SeriesNode se -> {
-				text(fields, "Series UID", se.serieUid());
-				deidentified(fields, "Series UID", se.serieUid(), se.serieUidToSend());
-				text(fields, "Description", se.description());
+				section(fields, "Patient");
+				pair(fields, "Patient ID", se.patientIdOriginal(), se.patientIdToSend());
+				section(fields, "Study");
+				pair(fields, "Study UID", se.studyUid(), se.studyUidToSend());
+				pair(fields, "Accession number", se.accessionNumberOriginal(), se.accessionNumberToSend());
+				pair(fields, "Description", se.studyDescriptionOriginal(), se.studyDescriptionToSend());
+				datePair(fields, "Study date", se.studyDateOriginal(), se.studyDateToSend());
+				section(fields, "Series");
+				pair(fields, "Series UID", se.serieUid(), se.serieUidToSend());
+				pair(fields, "Description", se.description(), se.descriptionToSend());
 				text(fields, "Modality", se.modality());
 				text(fields, "SOP classes", se.sopClassUids());
-				date(fields, "Series date", se.serieDateOriginal());
+				datePair(fields, "Series date", se.serieDateOriginal(), se.serieDateToSend());
+				section(fields, "Transfer");
 				number(fields, "Instances", se.instances());
 				number(fields, "Sent", se.sent());
 				number(fields, "Errors", se.errors());
@@ -177,37 +206,59 @@ public class MonitoringDetailPanel extends VerticalLayout {
 				date(fields, "Last seen", se.lastSeen());
 			}
 			case ErrorNode e -> {
-				fields.add(new Field("Reason", StringUtils.defaultString(e.reason()), true));
+				fields.add(new Field("Reason", StringUtils.defaultString(e.reason()), true, false));
 				number(fields, "Instances affected", e.instances());
 			}
 		}
 		return fields;
 	}
 
+	private void section(List<Field> fields, String title) {
+		fields.add(new Field(title, "", false, true));
+	}
+
 	private void text(List<Field> fields, String label, String value) {
 		if (StringUtils.isNotBlank(value)) {
-			fields.add(new Field(label, value, false));
+			fields.add(new Field(label, value, false, false));
 		}
 	}
 
 	private void number(List<Field> fields, String label, long value) {
-		fields.add(new Field(label, Long.toString(value), false));
+		fields.add(new Field(label, Long.toString(value), false, false));
 	}
 
 	private void date(List<Field> fields, String label, LocalDateTime value) {
 		if (value != null) {
-			fields.add(
-					new Field(label, DateFormat.format(value, DateFormat.FORMAT_DDMMYYYY_SLASH_HHMMSS_2POINTS), false));
+			fields.add(new Field(label, formatDate(value), false, false));
 		}
 	}
 
 	/**
-	 * Adds the de-identified value only when it is present and differs from the original.
+	 * Shows the collected (original) value and, when de-identification changed it, the
+	 * value actually sent on a second "(de-identified)" line — so both the original and
+	 * final data are visible side by side.
 	 */
-	private void deidentified(List<Field> fields, String label, String original, String toSend) {
-		if (StringUtils.isNotBlank(toSend) && !Objects.equals(original, toSend)) {
-			fields.add(new Field(label + " (de-identified)", toSend, false));
+	private void pair(List<Field> fields, String label, String original, String toSend) {
+		if (StringUtils.isNotBlank(original)) {
+			fields.add(new Field(label, original, false, false));
 		}
+		if (StringUtils.isNotBlank(toSend) && !Objects.equals(original, toSend)) {
+			fields.add(new Field(label + " (de-identified)", toSend, false, false));
+		}
+	}
+
+	/** Date variant of {@link #pair}: original date and, when changed, the sent date. */
+	private void datePair(List<Field> fields, String label, LocalDateTime original, LocalDateTime toSend) {
+		if (original != null) {
+			fields.add(new Field(label, formatDate(original), false, false));
+		}
+		if (toSend != null && !Objects.equals(original, toSend)) {
+			fields.add(new Field(label + " (de-identified)", formatDate(toSend), false, false));
+		}
+	}
+
+	private String formatDate(LocalDateTime value) {
+		return DateFormat.format(value, DateFormat.FORMAT_DDMMYYYY_SLASH_HHMMSS_2POINTS);
 	}
 
 	private void copyToClipboard() {

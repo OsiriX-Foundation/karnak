@@ -105,6 +105,7 @@ public class MonitoringAggregationService {
 
 		query.multiselect(root.get("studyUidOriginal"), cb.greatest(root.<String>get("studyUidToSend")),
 				cb.greatest(root.<String>get("studyDescriptionOriginal")),
+				cb.greatest(root.<String>get("studyDescriptionToSend")),
 				cb.greatest(root.<String>get("patientIdOriginal")), cb.greatest(root.<String>get("patientIdToSend")),
 				cb.greatest(root.<String>get("accessionNumberOriginal")),
 				cb.greatest(root.<String>get("accessionNumberToSend")),
@@ -120,9 +121,9 @@ public class MonitoringAggregationService {
 			.stream()
 			.map(row -> new StudyActivity(row.get(0, String.class), row.get(1, String.class), row.get(2, String.class),
 					row.get(3, String.class), row.get(4, String.class), row.get(5, String.class),
-					row.get(6, String.class), row.get(7, LocalDateTime.class), row.get(8, LocalDateTime.class),
-					value(row, 9), value(row, 10), value(row, 11), value(row, 12), row.get(13, LocalDateTime.class),
-					row.get(14, LocalDateTime.class)))
+					row.get(6, String.class), row.get(7, String.class), row.get(8, LocalDateTime.class),
+					row.get(9, LocalDateTime.class), value(row, 10), value(row, 11), value(row, 12), value(row, 13),
+					row.get(14, LocalDateTime.class), row.get(15, LocalDateTime.class)))
 			.collect(Collectors.toCollection(ArrayList::new));
 		result.sort(Comparator.comparingLong(StudyActivity::errors)
 			.reversed()
@@ -141,7 +142,8 @@ public class MonitoringAggregationService {
 		predicates.add(equalOrNull(cb, root.get("studyUidOriginal"), studyUid));
 
 		query.multiselect(root.get("serieUidOriginal"), cb.greatest(root.<String>get("serieUidToSend")),
-				cb.greatest(root.<String>get("serieDescriptionOriginal")), cb.greatest(root.<String>get("modality")),
+				cb.greatest(root.<String>get("serieDescriptionOriginal")),
+				cb.greatest(root.<String>get("serieDescriptionToSend")), cb.greatest(root.<String>get("modality")),
 				cb.greatest(root.<String>get("sopClassUids")),
 				cb.greatest(root.<LocalDateTime>get("serieDateOriginal")),
 				cb.greatest(root.<LocalDateTime>get("serieDateToSend")), cb.sum(root.<Long>get("instances")),
@@ -154,9 +156,9 @@ public class MonitoringAggregationService {
 			.getResultList()
 			.stream()
 			.map(row -> new SeriesActivity(row.get(0, String.class), row.get(1, String.class), row.get(2, String.class),
-					row.get(3, String.class), row.get(4, String.class), row.get(5, LocalDateTime.class),
-					row.get(6, LocalDateTime.class), value(row, 7), value(row, 8), value(row, 9),
-					row.get(10, LocalDateTime.class), row.get(11, LocalDateTime.class)))
+					row.get(3, String.class), row.get(4, String.class), row.get(5, String.class),
+					row.get(6, LocalDateTime.class), row.get(7, LocalDateTime.class), value(row, 8), value(row, 9),
+					value(row, 10), row.get(11, LocalDateTime.class), row.get(12, LocalDateTime.class)))
 			.collect(Collectors.toCollection(ArrayList::new));
 		result.sort(Comparator.comparingLong(SeriesActivity::errors)
 			.reversed()

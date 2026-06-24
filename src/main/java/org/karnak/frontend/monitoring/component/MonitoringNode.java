@@ -48,7 +48,7 @@ public sealed interface MonitoringNode {
 
 	/** A study under a destination, identified by its original Study Instance UID. */
 	record StudyNode(Long destinationId, String studyUid, String studyUidToSend, String description,
-			String patientIdOriginal, String patientIdToSend, String accessionNumberOriginal,
+			String descriptionToSend, String patientIdOriginal, String patientIdToSend, String accessionNumberOriginal,
 			String accessionNumberToSend, LocalDateTime studyDateOriginal, LocalDateTime studyDateToSend, long series,
 			long instances, long sent, long errors, LocalDateTime firstSeen,
 			LocalDateTime lastSeen) implements MonitoringNode {
@@ -63,10 +63,18 @@ public sealed interface MonitoringNode {
 		}
 	}
 
-	/** A series under a study, identified by its original Series Instance UID. */
-	record SeriesNode(Long destinationId, String studyUid, String serieUid, String serieUidToSend, String description,
-			String modality, String sopClassUids, LocalDateTime serieDateOriginal, LocalDateTime serieDateToSend,
-			long instances, long sent, long errors, LocalDateTime firstSeen,
+	/**
+	 * A series under a study, identified by its original Series Instance UID. It also
+	 * carries the patient/study context of its parent study so the detail panel can show
+	 * the full collected information (and the de-identification original/final values) at
+	 * series level.
+	 */
+	record SeriesNode(Long destinationId, String studyUid, String studyUidToSend, String patientIdOriginal,
+			String patientIdToSend, String accessionNumberOriginal, String accessionNumberToSend,
+			String studyDescriptionOriginal, String studyDescriptionToSend, LocalDateTime studyDateOriginal,
+			LocalDateTime studyDateToSend, String serieUid, String serieUidToSend, String description,
+			String descriptionToSend, String modality, String sopClassUids, LocalDateTime serieDateOriginal,
+			LocalDateTime serieDateToSend, long instances, long sent, long errors, LocalDateTime firstSeen,
 			LocalDateTime lastSeen) implements MonitoringNode {
 		@Override
 		public String key() {
