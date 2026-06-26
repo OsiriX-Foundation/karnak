@@ -16,8 +16,10 @@ import org.karnak.backend.model.dicom.DicomNodeList;
 import org.karnak.backend.model.dicom.Message;
 import org.karnak.backend.service.dicom.DicomEchoService;
 import org.weasis.core.util.annotations.Generated;
+import org.jspecify.annotations.NullUnmarked;
 
 @Generated()
+@NullUnmarked
 public class MonitorLogic {
 
 	// PAGE

@@ -17,6 +17,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import org.jspecify.annotations.NullUnmarked;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -28,6 +30,7 @@ import java.util.Objects;
  */
 @Entity(name = "DicomNodeGroup")
 @Table(name = "dicom_node_group")
+@NullUnmarked
 public class DicomNodeGroupEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

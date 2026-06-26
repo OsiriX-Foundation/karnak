@@ -18,11 +18,14 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import org.jspecify.annotations.NullUnmarked;
+
 import java.io.Serializable;
 import java.util.Objects;
 
 @Entity(name = "DicomSourceNode")
 @Table(name = "dicom_source_node")
+@NullUnmarked
 public class DicomSourceNodeEntity implements Serializable {
 
 	private static final long serialVersionUID = -4917273057619947934L;

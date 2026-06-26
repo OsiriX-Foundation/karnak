@@ -36,10 +36,12 @@ import org.weasis.core.util.annotations.Generated;
 import org.weasis.dicom.param.AdvancedParams;
 import org.weasis.dicom.param.AttributeEditor;
 import org.weasis.dicom.param.DicomNode;
+import org.jspecify.annotations.NullUnmarked;
 
 @Service
 @Slf4j
 @Generated()
+@NullUnmarked
 public class StoreScpForwardService {
 
 	@Getter

@@ -33,6 +33,7 @@ import org.karnak.frontend.project.component.GridProject;
 import org.karnak.frontend.project.component.NewProject;
 import org.karnak.frontend.util.CollatorUtils;
 import org.karnak.frontend.util.GroupTreeController;
+import org.jspecify.annotations.NullUnmarked;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.weasis.core.util.annotations.Generated;
 
@@ -44,6 +45,7 @@ import org.weasis.core.util.annotations.Generated;
 @UIScope
 @Slf4j
 @Generated()
+@NullUnmarked
 public class ProjectLogic extends ListDataProvider<ProjectEntity> implements GroupTreeController<ProjectEntity> {
 
 	// View

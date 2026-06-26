@@ -16,6 +16,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import org.jspecify.annotations.NullUnmarked;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -24,6 +26,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "secret")
+@NullUnmarked
 public class SecretEntity implements Serializable {
 
 	private Long id;

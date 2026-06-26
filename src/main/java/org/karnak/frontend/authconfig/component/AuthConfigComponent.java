@@ -25,9 +25,11 @@ import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.karnak.backend.data.entity.AuthConfigEntity;
 import org.weasis.core.util.annotations.Generated;
+import org.jspecify.annotations.NullUnmarked;
 
 @Uses(PasswordField.class)
 @Generated()
+@NullUnmarked
 public class AuthConfigComponent extends VerticalLayout {
 
 	private TextField url;

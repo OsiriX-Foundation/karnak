@@ -22,8 +22,10 @@ import com.vaadin.flow.server.streams.DownloadHandler;
 import com.vaadin.flow.server.streams.DownloadResponse;
 import org.dcm4che3.data.Attributes;
 import org.weasis.core.util.annotations.Generated;
+import org.jspecify.annotations.NullUnmarked;
 
 @Generated()
+@NullUnmarked
 public class DicomPane extends Composite<Dialog> {
 
 	// CONTROLLER

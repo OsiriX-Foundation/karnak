@@ -12,9 +12,11 @@ package org.karnak.backend.util;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.karnak.backend.data.entity.ArgumentEntity;
+import org.jspecify.annotations.NullUnmarked;
 
 /** Helpers to read values out of a profile item's {@link ArgumentEntity} list. */
 @Slf4j
+@NullUnmarked
 public final class ArgumentUtil {
 
 	private ArgumentUtil() {

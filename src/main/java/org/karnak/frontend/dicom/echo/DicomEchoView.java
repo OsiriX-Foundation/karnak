@@ -39,12 +39,14 @@ import org.karnak.frontend.dicom.AbstractView;
 import org.karnak.frontend.dicom.PortField;
 import org.karnak.frontend.dicom.echo.DicomEchoSelectionDialog.DicomNodeSelectionEvent;
 import org.weasis.core.util.annotations.Generated;
+import org.jspecify.annotations.NullUnmarked;
 
 /**
  * Calling Order 1) constructor 2) setParameter 3) beforeEnter
  */
 
 @Generated()
+@NullUnmarked
 public class DicomEchoView extends AbstractView implements HasUrlParameter<String> {
 
 	public static final String VIEW_NAME = "Dicom Echo";

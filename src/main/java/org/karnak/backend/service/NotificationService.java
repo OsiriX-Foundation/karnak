@@ -44,6 +44,7 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.weasis.core.util.StringUtil;
+import org.jspecify.annotations.NullUnmarked;
 
 /**
  * Handle notifications. Reads the aggregated {@code transfer_series_status} rows (one per
@@ -52,6 +53,7 @@ import org.weasis.core.util.StringUtil;
  */
 @Service
 @Slf4j
+@NullUnmarked
 public class NotificationService {
 
 	// Maximum length of a single reason rendered in the email summary

@@ -10,6 +10,7 @@
 package org.karnak.frontend.dicom.echo;
 
 import static org.karnak.frontend.dicom.mwl.DicomWorkListSelectionDialog.getDivConfigNodeComponentRenderer;
+import org.jspecify.annotations.NullUnmarked;
 
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -50,6 +51,7 @@ import org.karnak.frontend.dicom.PortField;
 import org.weasis.core.util.annotations.Generated;
 
 @Generated()
+@NullUnmarked
 public class DicomEchoSelectionDialog extends AbstractDialog {
 
 	// CONTROLLER

@@ -22,12 +22,16 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import org.jspecify.annotations.NullUnmarked;
+import org.jspecify.annotations.Nullable;
+
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity(name = "ForwardNode")
 @Table(name = "forward_node")
+@NullUnmarked
 public class ForwardNodeEntity implements Serializable {
 
 	private static final long serialVersionUID = 2095439136652046994L;

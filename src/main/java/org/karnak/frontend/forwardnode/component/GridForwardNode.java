@@ -28,9 +28,11 @@ import org.karnak.backend.util.SystemPropertyUtil;
 import org.karnak.frontend.util.CollatorUtils;
 import org.karnak.frontend.util.GroupTreeGrid;
 import org.karnak.frontend.util.GroupTreeNode;
+import org.jspecify.annotations.NullUnmarked;
 import org.weasis.core.util.annotations.Generated;
 
 @Generated()
+@NullUnmarked
 public class GridForwardNode extends GroupTreeGrid<ForwardNodeEntity> {
 
 	public GridForwardNode() {

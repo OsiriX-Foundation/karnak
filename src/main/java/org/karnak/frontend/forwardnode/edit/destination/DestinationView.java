@@ -30,6 +30,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
 import org.springframework.stereotype.Component;
 import org.weasis.core.util.annotations.Generated;
+import org.jspecify.annotations.NullUnmarked;
 
 /**
  * Destination View
@@ -37,6 +38,7 @@ import org.weasis.core.util.annotations.Generated;
 @UIScope
 @Component
 @Generated()
+@NullUnmarked
 public class DestinationView extends VerticalLayout {
 
 	@Getter

@@ -43,8 +43,10 @@ import org.karnak.backend.util.DicomNodeUtil;
 import org.karnak.frontend.component.AbstractDialog;
 import org.karnak.frontend.dicom.PortField;
 import org.weasis.core.util.annotations.Generated;
+import org.jspecify.annotations.NullUnmarked;
 
 @Generated()
+@NullUnmarked
 public class DicomWorkListSelectionDialog extends AbstractDialog {
 
 	// CONTROLLER

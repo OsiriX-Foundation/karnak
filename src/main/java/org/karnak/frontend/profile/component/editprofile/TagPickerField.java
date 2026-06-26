@@ -19,13 +19,15 @@ import java.util.ArrayList;
 import java.util.List;
 import org.karnak.backend.model.standard.AttributeDetail;
 import org.karnak.backend.service.DicomStandardService;
+import org.jspecify.annotations.NullUnmarked;
 
 /**
  * Editable list of DICOM tags used inside the profile element editor. Tags are added by
  * searching / browsing the DICOM dictionary ({@link TagPickerDialog}). Each tag is shown
- * as a removable chip displaying its value and attribute name. In single mode only one
- * tag is kept.
+ * tag is shown as a removable chip displaying its value and attribute name. In single
+ * mode only one tag is kept.
  */
+@NullUnmarked
 public class TagPickerField extends VerticalLayout {
 
 	private final transient DicomStandardService dicomStandardService;

@@ -18,8 +18,10 @@ import org.karnak.backend.enums.MessageLevel;
 import org.karnak.backend.enums.MessageType;
 import org.karnak.backend.model.dicom.Message;
 import org.weasis.core.util.annotations.Generated;
+import org.jspecify.annotations.NullUnmarked;
 
 @Generated()
+@NullUnmarked
 public class MessageBox extends Composite<Div> {
 
 	// UI COMPONENTS

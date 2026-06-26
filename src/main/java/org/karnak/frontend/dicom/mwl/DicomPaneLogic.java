@@ -18,9 +18,11 @@ import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.UID;
 import org.dcm4che3.io.DicomOutputStream;
 import org.weasis.core.util.annotations.Generated;
+import org.jspecify.annotations.NullUnmarked;
 
 @Slf4j
 @Generated()
+@NullUnmarked
 public class DicomPaneLogic {
 
 	public InputStream getWorklistItemInputStreamInDicom(Attributes attributes) {

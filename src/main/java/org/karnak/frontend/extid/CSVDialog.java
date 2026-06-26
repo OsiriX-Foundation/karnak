@@ -37,9 +37,11 @@ import org.karnak.backend.cache.Patient;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.weasis.core.util.StringUtil;
 import org.weasis.core.util.annotations.Generated;
+import org.jspecify.annotations.NullUnmarked;
 
 @Slf4j
 @Generated()
+@NullUnmarked
 public class CSVDialog extends Dialog {
 
 	private static final String EXTERNAL_PSEUDONYM = "External Pseudonym";

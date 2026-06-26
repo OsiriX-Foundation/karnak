@@ -16,6 +16,7 @@ import org.karnak.backend.model.standard.StandardDICOM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.jspecify.annotations.NullUnmarked;
 
 /**
  * UI-facing read access to the DICOM standard dictionary, used by the profile element
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
  * {@link StandardDICOM} bean.
  */
 @Service
+@NullUnmarked
 public class DicomStandardService {
 
 	/** Cap on the number of attributes returned by a single search. */

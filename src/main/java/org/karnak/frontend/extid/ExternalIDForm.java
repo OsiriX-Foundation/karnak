@@ -24,8 +24,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.karnak.backend.cache.Patient;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.weasis.core.util.annotations.Generated;
+import org.jspecify.annotations.NullUnmarked;
 
 @Generated()
+@NullUnmarked
 public class ExternalIDForm extends Div {
 
 	private static final String ERROR_MESSAGE_PATIENT = "Length must be between 1 and 50.";

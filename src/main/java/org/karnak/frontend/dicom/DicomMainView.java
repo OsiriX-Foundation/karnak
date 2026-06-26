@@ -28,11 +28,13 @@ import org.karnak.frontend.dicom.monitor.MonitorView;
 import org.karnak.frontend.dicom.mwl.DicomWorkListView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.weasis.core.util.annotations.Generated;
+import org.jspecify.annotations.NullUnmarked;
 
 @Route(value = DicomMainView.ROUTE, layout = MainLayout.class)
 @PageTitle("Karnak - DICOM Tools")
 @RolesAllowed("admin")
 @Generated()
+@NullUnmarked
 public class DicomMainView extends VerticalLayout {
 
 	public static final String VIEW_NAME = "DICOM Tools";

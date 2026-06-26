@@ -20,6 +20,7 @@ import lombok.Setter;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.frontend.util.UIS;
 import org.weasis.core.util.annotations.Generated;
+import org.jspecify.annotations.NullUnmarked;
 
 /**
  * DICOM conformance report configuration, kept separate from the notification settings:
@@ -27,6 +28,7 @@ import org.weasis.core.util.annotations.Generated;
  * notification emails when left blank). Custom report options will be added here.
  */
 @Generated()
+@NullUnmarked
 public class ConformanceReportComponent extends VerticalLayout {
 
 	@Setter

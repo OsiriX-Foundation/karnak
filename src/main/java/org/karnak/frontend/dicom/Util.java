@@ -26,7 +26,9 @@ import org.weasis.dicom.param.AdvancedParams;
 import org.weasis.dicom.param.ConnectOptions;
 import org.weasis.dicom.param.DicomNode;
 import org.weasis.dicom.param.DicomState;
+import org.jspecify.annotations.NullUnmarked;
 
+@NullUnmarked
 public class Util {
 
 	private static final ExecutorService THREAD_POOL = Executors.newCachedThreadPool();

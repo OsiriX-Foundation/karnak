@@ -29,6 +29,7 @@ import org.karnak.backend.service.TransferMonitoringService;
 import org.karnak.frontend.monitoring.component.ExportSettings;
 import org.karnak.frontend.monitoring.component.TransferStatusFilter;
 import org.karnak.frontend.util.NotificationUtil;
+import org.jspecify.annotations.NullUnmarked;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.weasis.core.util.annotations.Generated;
 
@@ -40,6 +41,7 @@ import org.weasis.core.util.annotations.Generated;
 @UIScope
 @Slf4j
 @Generated()
+@NullUnmarked
 public class MonitoringLogic {
 
 	// View

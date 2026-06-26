@@ -19,7 +19,9 @@ import org.dcm4che3.data.Sequence;
 import org.dcm4che3.data.VR;
 import org.dcm4che3.util.StringUtils;
 import org.weasis.core.util.StringUtil;
+import org.jspecify.annotations.NullUnmarked;
 
+@NullUnmarked
 public class DicomObjectTools {
 
 	private DicomObjectTools() {
