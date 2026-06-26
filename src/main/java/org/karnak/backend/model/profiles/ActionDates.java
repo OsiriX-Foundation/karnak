@@ -13,6 +13,7 @@ import java.time.DateTimeException;
 import lombok.extern.slf4j.Slf4j;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.VR;
+import org.jspecify.annotations.Nullable;
 import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.exception.ProfileException;
 import org.karnak.backend.model.action.ActionItem;
@@ -24,7 +25,6 @@ import org.karnak.backend.util.DateFormat;
 import org.karnak.backend.util.ShiftByTagDate;
 import org.karnak.backend.util.ShiftDate;
 import org.karnak.backend.util.ShiftRangeDate;
-import org.jspecify.annotations.Nullable;
 
 @Slf4j
 public class ActionDates extends AbstractProfileItem {

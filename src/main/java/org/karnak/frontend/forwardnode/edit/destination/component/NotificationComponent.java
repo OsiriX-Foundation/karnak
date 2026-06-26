@@ -20,12 +20,12 @@ import com.vaadin.flow.data.binder.ValidationResult;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
+import org.jspecify.annotations.NullUnmarked;
 import org.karnak.backend.constant.Notification;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.frontend.component.converter.HStringToIntegerConverter;
 import org.karnak.frontend.util.UIS;
 import org.weasis.core.util.annotations.Generated;
-import org.jspecify.annotations.NullUnmarked;
 
 /**
  * Create a notification component

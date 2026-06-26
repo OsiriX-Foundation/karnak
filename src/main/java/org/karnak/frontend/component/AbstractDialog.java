@@ -12,10 +12,10 @@ package org.karnak.frontend.component;
 import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import org.jspecify.annotations.NullUnmarked;
 import org.karnak.backend.enums.MessageType;
 import org.karnak.backend.model.dicom.Message;
 import org.weasis.core.util.annotations.Generated;
-import org.jspecify.annotations.NullUnmarked;
 
 @Generated()
 @NullUnmarked

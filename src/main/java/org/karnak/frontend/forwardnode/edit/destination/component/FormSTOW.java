@@ -19,6 +19,7 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.dom.Style;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
+import org.jspecify.annotations.NullUnmarked;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.frontend.component.BoxShadowComponent;
 import org.karnak.frontend.extid.WarningDialog;
@@ -26,7 +27,6 @@ import org.karnak.frontend.forwardnode.edit.component.ButtonSaveDeleteCancel;
 import org.karnak.frontend.kheops.SwitchingAlbumsView;
 import org.karnak.frontend.util.UIS;
 import org.weasis.core.util.annotations.Generated;
-import org.jspecify.annotations.NullUnmarked;
 
 @Generated()
 @NullUnmarked

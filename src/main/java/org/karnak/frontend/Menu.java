@@ -26,10 +26,10 @@ import com.vaadin.flow.router.HighlightConditions;
 import com.vaadin.flow.router.RouterLink;
 import java.util.HashMap;
 import java.util.Map;
+import org.jspecify.annotations.NullUnmarked;
 import org.karnak.backend.util.SecurityUtil;
 import org.karnak.frontend.util.ToggleButtonTheme;
 import org.weasis.core.util.annotations.Generated;
-import org.jspecify.annotations.NullUnmarked;
 
 @Generated()
 @NullUnmarked

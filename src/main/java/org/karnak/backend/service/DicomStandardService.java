@@ -10,13 +10,13 @@
 package org.karnak.backend.service;
 
 import java.util.List;
+import org.jspecify.annotations.NullUnmarked;
 import org.karnak.backend.model.standard.AttributeDetail;
 import org.karnak.backend.model.standard.ModuleAttribute;
 import org.karnak.backend.model.standard.StandardDICOM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.jspecify.annotations.NullUnmarked;
 
 /**
  * UI-facing read access to the DICOM standard dictionary, used by the profile element

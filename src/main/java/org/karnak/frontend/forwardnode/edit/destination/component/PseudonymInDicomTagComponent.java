@@ -15,10 +15,10 @@ import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import lombok.Getter;
+import org.jspecify.annotations.NullUnmarked;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.frontend.util.UIS;
 import org.weasis.core.util.annotations.Generated;
-import org.jspecify.annotations.NullUnmarked;
 
 @Getter
 @Generated()

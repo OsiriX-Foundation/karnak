@@ -21,12 +21,12 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.dcm4che3.net.Status;
+import org.jspecify.annotations.NullUnmarked;
 import org.weasis.dicom.op.Echo;
 import org.weasis.dicom.param.AdvancedParams;
 import org.weasis.dicom.param.ConnectOptions;
 import org.weasis.dicom.param.DicomNode;
 import org.weasis.dicom.param.DicomState;
-import org.jspecify.annotations.NullUnmarked;
 
 @NullUnmarked
 public class Util {

@@ -19,11 +19,11 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
+import org.jspecify.annotations.NullUnmarked;
 import org.karnak.backend.model.dicom.DicomNodeList;
 import org.karnak.backend.util.DicomNodeUtil;
 import org.karnak.frontend.dicom.AbstractView;
 import org.weasis.core.util.annotations.Generated;
-import org.jspecify.annotations.NullUnmarked;
 
 @Generated()
 @NullUnmarked

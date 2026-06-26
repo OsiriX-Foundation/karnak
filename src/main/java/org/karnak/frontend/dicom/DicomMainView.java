@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.jspecify.annotations.NullUnmarked;
 import org.karnak.backend.util.DicomNodeUtil;
 import org.karnak.frontend.MainLayout;
 import org.karnak.frontend.dicom.echo.DicomEchoView;
@@ -28,7 +29,6 @@ import org.karnak.frontend.dicom.monitor.MonitorView;
 import org.karnak.frontend.dicom.mwl.DicomWorkListView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.weasis.core.util.annotations.Generated;
-import org.jspecify.annotations.NullUnmarked;
 
 @Route(value = DicomMainView.ROUTE, layout = MainLayout.class)
 @PageTitle("Karnak - DICOM Tools")

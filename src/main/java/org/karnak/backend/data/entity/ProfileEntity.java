@@ -26,13 +26,12 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
-import org.jspecify.annotations.NullUnmarked;
-
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import org.jspecify.annotations.NullUnmarked;
 
 @Entity(name = "Profile")
 @Table(name = "profile")

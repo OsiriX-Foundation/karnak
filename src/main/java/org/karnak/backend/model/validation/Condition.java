@@ -9,9 +9,8 @@
  */
 package org.karnak.backend.model.validation;
 
-import org.jspecify.annotations.NullUnmarked;
-
 import java.util.List;
+import org.jspecify.annotations.NullUnmarked;
 
 /**
  * A single node of the conditional-requirement predicate DSL, deserialized from the

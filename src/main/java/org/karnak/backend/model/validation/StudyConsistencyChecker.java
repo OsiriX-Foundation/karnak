@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.Map;
 import org.dcm4che3.data.Tag;
 import org.dcm4che3.util.TagUtils;
-import org.karnak.backend.model.validation.StudyConformanceAccumulator.SeriesData;
 import org.jspecify.annotations.NullUnmarked;
+import org.karnak.backend.model.validation.StudyConformanceAccumulator.SeriesData;
 
 /**
  * Study-level consistency checks run when a study transfer batch is closed: identifier

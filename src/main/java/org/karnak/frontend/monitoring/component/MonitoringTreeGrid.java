@@ -25,12 +25,12 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+import org.jspecify.annotations.NullUnmarked;
 import org.karnak.frontend.monitoring.MonitoringLogic;
 import org.karnak.frontend.monitoring.component.MonitoringNode.DestinationNode;
 import org.karnak.frontend.monitoring.component.MonitoringNode.ErrorNode;
 import org.karnak.frontend.monitoring.component.MonitoringNode.SeriesNode;
 import org.karnak.frontend.monitoring.component.MonitoringNode.StudyNode;
-import org.jspecify.annotations.NullUnmarked;
 import org.weasis.core.util.annotations.Generated;
 
 /**

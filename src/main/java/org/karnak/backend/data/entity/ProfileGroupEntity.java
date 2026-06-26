@@ -15,10 +15,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
-import org.jspecify.annotations.NullUnmarked;
-
 import java.io.Serializable;
 import java.util.Objects;
+import org.jspecify.annotations.NullUnmarked;
 
 /**
  * Organizational group for {@link ProfileEntity}. A profile may belong to zero or one

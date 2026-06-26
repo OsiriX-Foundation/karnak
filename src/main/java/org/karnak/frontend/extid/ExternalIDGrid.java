@@ -28,6 +28,7 @@ import java.util.WeakHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
+import org.jspecify.annotations.NullUnmarked;
 import org.karnak.backend.cache.Patient;
 import org.karnak.backend.cache.PatientClient;
 import org.karnak.backend.config.AppConfig;
@@ -36,7 +37,6 @@ import org.karnak.backend.util.PatientClientUtil;
 import org.karnak.frontend.component.WarningConfirmDialog;
 import org.vaadin.klaudeta.PaginatedGrid;
 import org.weasis.core.util.annotations.Generated;
-import org.jspecify.annotations.NullUnmarked;
 
 @Generated()
 @NullUnmarked

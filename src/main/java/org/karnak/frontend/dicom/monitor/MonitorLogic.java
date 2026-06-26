@@ -10,13 +10,13 @@
 package org.karnak.frontend.dicom.monitor;
 
 import java.util.concurrent.ExecutionException;
+import org.jspecify.annotations.NullUnmarked;
 import org.karnak.backend.enums.MessageFormat;
 import org.karnak.backend.enums.MessageLevel;
 import org.karnak.backend.model.dicom.DicomNodeList;
 import org.karnak.backend.model.dicom.Message;
 import org.karnak.backend.service.dicom.DicomEchoService;
 import org.weasis.core.util.annotations.Generated;
-import org.jspecify.annotations.NullUnmarked;
 
 @Generated()
 @NullUnmarked

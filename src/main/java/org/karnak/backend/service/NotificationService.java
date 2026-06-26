@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.jspecify.annotations.NullUnmarked;
 import org.karnak.backend.constant.Notification;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.TransferSeriesReasonEntity;
@@ -44,7 +45,6 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.weasis.core.util.StringUtil;
-import org.jspecify.annotations.NullUnmarked;
 
 /**
  * Handle notifications. Reads the aggregated {@code transfer_series_status} rows (one per

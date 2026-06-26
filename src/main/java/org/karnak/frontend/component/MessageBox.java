@@ -14,11 +14,11 @@ import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import org.jspecify.annotations.NullUnmarked;
 import org.karnak.backend.enums.MessageLevel;
 import org.karnak.backend.enums.MessageType;
 import org.karnak.backend.model.dicom.Message;
 import org.weasis.core.util.annotations.Generated;
-import org.jspecify.annotations.NullUnmarked;
 
 @Generated()
 @NullUnmarked

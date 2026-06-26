@@ -23,6 +23,7 @@ import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import org.dcm4che3.util.TagUtils;
+import org.jspecify.annotations.NullUnmarked;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.DicomSourceNodeEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
@@ -51,7 +52,6 @@ import org.karnak.frontend.forwardnode.edit.source.component.NewUpdateSourceNode
 import org.karnak.frontend.util.UIS;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
-import org.jspecify.annotations.NullUnmarked;
 import org.weasis.core.util.StringUtil;
 import org.weasis.core.util.annotations.Generated;
 

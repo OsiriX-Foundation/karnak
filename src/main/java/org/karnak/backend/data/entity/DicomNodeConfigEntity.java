@@ -17,10 +17,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import org.jspecify.annotations.NullUnmarked;
-
 import java.io.Serializable;
 import java.util.Objects;
+import org.jspecify.annotations.NullUnmarked;
 
 @Entity(name = "DicomNodeConfig")
 @Table(name = "dicom_node_config")

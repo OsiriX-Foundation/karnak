@@ -18,10 +18,9 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import org.jspecify.annotations.NullUnmarked;
-
 import java.io.Serializable;
 import java.util.Objects;
+import org.jspecify.annotations.NullUnmarked;
 
 @Entity(name = "DicomSourceNode")
 @Table(name = "dicom_source_node")

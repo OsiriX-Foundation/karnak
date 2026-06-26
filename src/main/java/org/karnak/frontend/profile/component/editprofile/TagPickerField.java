@@ -17,9 +17,9 @@ import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import java.util.ArrayList;
 import java.util.List;
+import org.jspecify.annotations.NullUnmarked;
 import org.karnak.backend.model.standard.AttributeDetail;
 import org.karnak.backend.service.DicomStandardService;
-import org.jspecify.annotations.NullUnmarked;
 
 /**
  * Editable list of DICOM tags used inside the profile element editor. Tags are added by

@@ -24,13 +24,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import org.jspecify.annotations.NullUnmarked;
 import org.karnak.backend.data.entity.ProfileElementEntity;
 import org.karnak.backend.data.entity.ProfileEntity;
 import org.karnak.backend.enums.ProfileItemType;
 import org.karnak.frontend.component.ButtonFactory;
 import org.karnak.frontend.component.ConfirmDialog;
 import org.karnak.frontend.profile.ProfileLogic;
-import org.jspecify.annotations.NullUnmarked;
 
 @NullUnmarked
 public class ProfileElementMainView extends VerticalLayout {

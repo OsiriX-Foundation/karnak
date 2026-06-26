@@ -14,10 +14,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import org.jspecify.annotations.NullUnmarked;
-
 import java.io.Serializable;
 import java.util.Objects;
+import org.jspecify.annotations.NullUnmarked;
 
 @Entity(name = "Version")
 @Table(name = "version")

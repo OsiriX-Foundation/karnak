@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.NullUnmarked;
 import org.karnak.backend.data.entity.DicomNodeConfigEntity;
 import org.karnak.backend.data.entity.DicomNodeGroupEntity;
 import org.karnak.backend.data.repo.DicomNodeConfigRepo;
@@ -35,7 +36,6 @@ import org.karnak.backend.model.dicom.DicomNodeList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.weasis.dicom.param.DicomNode;
-import org.jspecify.annotations.NullUnmarked;
 
 @Service
 @NullUnmarked

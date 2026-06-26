@@ -32,6 +32,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import org.dcm4che3.data.Attributes;
+import org.jspecify.annotations.NullUnmarked;
 import org.karnak.backend.enums.MessageFormat;
 import org.karnak.backend.enums.MessageLevel;
 import org.karnak.backend.enums.Modality;
@@ -43,7 +44,6 @@ import org.karnak.backend.util.DicomNodeUtil;
 import org.karnak.frontend.dicom.AbstractView;
 import org.karnak.frontend.dicom.PortField;
 import org.weasis.core.util.annotations.Generated;
-import org.jspecify.annotations.NullUnmarked;
 
 /**
  * Calling Order 1) constructor 2) setParameter 3) beforeEnter

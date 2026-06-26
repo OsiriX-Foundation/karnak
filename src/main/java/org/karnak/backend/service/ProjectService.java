@@ -11,6 +11,7 @@ package org.karnak.backend.service;
 
 import java.util.List;
 import java.util.Objects;
+import org.jspecify.annotations.NullUnmarked;
 import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.data.entity.ProjectGroupEntity;
 import org.karnak.backend.data.repo.ProjectGroupRepo;
@@ -21,7 +22,6 @@ import org.karnak.frontend.util.CollatorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
-import org.jspecify.annotations.NullUnmarked;
 
 /**
  * Project service

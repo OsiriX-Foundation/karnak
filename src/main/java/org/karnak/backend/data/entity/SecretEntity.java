@@ -16,13 +16,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import org.jspecify.annotations.NullUnmarked;
-
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Objects;
+import org.jspecify.annotations.NullUnmarked;
 
 @Entity
 @Table(name = "secret")

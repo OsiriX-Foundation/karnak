@@ -25,10 +25,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import org.dcm4che3.util.TagUtils;
+import org.jspecify.annotations.NullUnmarked;
 import org.karnak.backend.model.standard.AttributeDetail;
 import org.karnak.backend.model.standard.ModuleAttribute;
 import org.karnak.backend.service.DicomStandardService;
-import org.jspecify.annotations.NullUnmarked;
 
 /**
  * Dialog that helps the user find DICOM tags for a profile element: a free-text search

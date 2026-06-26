@@ -22,12 +22,10 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import org.jspecify.annotations.NullUnmarked;
-import org.jspecify.annotations.Nullable;
-
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
+import org.jspecify.annotations.NullUnmarked;
 
 @Entity(name = "ForwardNode")
 @Table(name = "forward_node")

@@ -19,8 +19,8 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.img.util.DateTimeUtils;
-import org.karnak.backend.data.entity.ArgumentEntity;
 import org.jspecify.annotations.NullUnmarked;
+import org.karnak.backend.data.entity.ArgumentEntity;
 
 @Slf4j
 @NullUnmarked

@@ -25,12 +25,12 @@ import org.dcm4che3.data.Tag;
 import org.dcm4che3.data.UID;
 import org.dcm4che3.data.VR;
 import org.dcm4che3.util.TagUtils;
+import org.jspecify.annotations.NullUnmarked;
 import org.karnak.backend.exception.SOPNotFoundException;
 import org.karnak.backend.model.standard.AttributeDetail;
 import org.karnak.backend.model.standard.Module;
 import org.karnak.backend.model.standard.ModuleAttribute;
 import org.karnak.backend.model.standard.StandardDICOM;
-import org.jspecify.annotations.NullUnmarked;
 
 /**
  * Validates a single DICOM instance against the IOD of its SOP Class, using the bundled

@@ -21,6 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
+import org.jspecify.annotations.NullUnmarked;
 import org.karnak.backend.data.entity.ArgumentEntity;
 import org.karnak.backend.data.entity.ExcludedTagEntity;
 import org.karnak.backend.data.entity.IncludedTagEntity;
@@ -30,7 +31,6 @@ import org.karnak.backend.enums.ProfileItemType;
 import org.karnak.backend.service.DicomStandardService;
 import org.karnak.backend.service.profilepipe.ProfilePipeService;
 import org.karnak.frontend.profile.component.errorprofile.ProfileError;
-import org.jspecify.annotations.NullUnmarked;
 
 /**
  * Dialog used to add a new profile element or edit an existing one. The form adapts to

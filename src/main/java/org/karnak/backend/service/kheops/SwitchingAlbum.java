@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.json.JSONObject;
+import org.jspecify.annotations.Nullable;
 import org.karnak.backend.api.KheopsApi;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.KheopsAlbumsEntity;
@@ -31,7 +32,6 @@ import org.karnak.backend.model.profilepipe.HMAC;
 import org.karnak.backend.model.profiles.CleanPixelData;
 import org.karnak.backend.model.profiles.ProfileItem;
 import org.karnak.backend.service.profilepipe.Profile;
-import org.jspecify.annotations.Nullable;
 import org.weasis.core.util.annotations.Generated;
 
 @Slf4j

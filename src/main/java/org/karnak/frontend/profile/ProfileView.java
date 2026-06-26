@@ -26,6 +26,7 @@ import com.vaadin.flow.server.streams.UploadHandler;
 import jakarta.annotation.security.RolesAllowed;
 import java.io.InputStream;
 import lombok.Getter;
+import org.jspecify.annotations.NullUnmarked;
 import org.karnak.backend.data.entity.ProfileEntity;
 import org.karnak.frontend.MainLayout;
 import org.karnak.frontend.component.ButtonFactory;
@@ -35,7 +36,6 @@ import org.karnak.frontend.profile.component.editprofile.ProfileComponent;
 import org.karnak.frontend.profile.component.editprofile.ProfileElementMainView;
 import org.karnak.frontend.profile.component.errorprofile.ProfileErrorView;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.jspecify.annotations.NullUnmarked;
 import org.weasis.core.util.annotations.Generated;
 
 @Route(value = ProfileView.ROUTE, layout = MainLayout.class)
