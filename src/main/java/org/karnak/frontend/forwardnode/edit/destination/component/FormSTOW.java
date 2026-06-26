@@ -26,8 +26,10 @@ import org.karnak.frontend.forwardnode.edit.component.ButtonSaveDeleteCancel;
 import org.karnak.frontend.kheops.SwitchingAlbumsView;
 import org.karnak.frontend.util.UIS;
 import org.weasis.core.util.annotations.Generated;
+import org.jspecify.annotations.NullUnmarked;
 
 @Generated()
+@NullUnmarked
 public class FormSTOW extends VerticalLayout {
 
 	private Binder<DestinationEntity> binder;

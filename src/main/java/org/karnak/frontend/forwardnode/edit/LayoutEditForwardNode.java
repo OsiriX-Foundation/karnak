@@ -51,6 +51,7 @@ import org.karnak.frontend.forwardnode.edit.source.component.NewUpdateSourceNode
 import org.karnak.frontend.util.UIS;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
+import org.jspecify.annotations.NullUnmarked;
 import org.weasis.core.util.StringUtil;
 import org.weasis.core.util.annotations.Generated;
 
@@ -58,6 +59,7 @@ import org.weasis.core.util.annotations.Generated;
  * Layout of the edit forward node
  */
 @Generated()
+@NullUnmarked
 public class LayoutEditForwardNode extends VerticalLayout {
 
 	// Services

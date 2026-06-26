@@ -31,6 +31,7 @@ import org.karnak.frontend.forwardnode.edit.source.SourceLogic;
 import org.karnak.frontend.util.GroupTreeController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.weasis.core.util.annotations.Generated;
+import org.jspecify.annotations.NullUnmarked;
 
 /**
  * Logic service use to make calls to backend and implement logic linked to the view
@@ -39,6 +40,7 @@ import org.weasis.core.util.annotations.Generated;
 @UIScope
 @Slf4j
 @Generated()
+@NullUnmarked
 public class ForwardNodeLogic extends ListDataProvider<ForwardNodeEntity>
 		implements GroupTreeController<ForwardNodeEntity> {
 

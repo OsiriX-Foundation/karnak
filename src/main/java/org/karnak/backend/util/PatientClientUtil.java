@@ -13,7 +13,9 @@ import java.util.Objects;
 import org.karnak.backend.cache.Patient;
 import org.karnak.backend.cache.PatientClient;
 import org.karnak.backend.model.profilepipe.PatientMetadata;
+import org.jspecify.annotations.NullUnmarked;
 
+@NullUnmarked
 public class PatientClientUtil {
 
 	private PatientClientUtil() {

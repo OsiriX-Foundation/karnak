@@ -20,9 +20,11 @@ import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.frontend.component.ProjectDropDown;
 import org.karnak.frontend.util.UIS;
 import org.weasis.core.util.annotations.Generated;
+import org.jspecify.annotations.NullUnmarked;
 
 @Getter
 @Generated()
+@NullUnmarked
 public class TagMorphingComponent extends VerticalLayout {
 
 	// Labels

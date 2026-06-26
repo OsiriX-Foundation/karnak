@@ -30,6 +30,7 @@ import org.karnak.backend.model.standard.AttributeDetail;
 import org.karnak.backend.model.standard.Module;
 import org.karnak.backend.model.standard.ModuleAttribute;
 import org.karnak.backend.model.standard.StandardDICOM;
+import org.jspecify.annotations.NullUnmarked;
 
 /**
  * Validates a single DICOM instance against the IOD of its SOP Class, using the bundled
@@ -47,6 +48,7 @@ import org.karnak.backend.model.standard.StandardDICOM;
  * than one sequence level are skipped. VR checks are skipped for Implicit VR Little
  * Endian datasets (the VR would come from the dictionary, making the check circular).
  */
+@NullUnmarked
 public class DicomConformanceValidator {
 
 	private static final String TYPE_1 = "1";

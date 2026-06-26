@@ -31,6 +31,7 @@ import org.karnak.backend.service.DicomStandardService;
 import org.karnak.backend.service.profilepipe.ProfilePipeService;
 import org.karnak.frontend.profile.component.errorprofile.ProfileError;
 import org.karnak.frontend.util.GroupTreeController;
+import org.jspecify.annotations.NullUnmarked;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.weasis.core.util.annotations.Generated;
 import org.yaml.snakeyaml.LoaderOptions;
@@ -42,6 +43,7 @@ import org.yaml.snakeyaml.error.YAMLException;
 @UIScope
 @Slf4j
 @Generated()
+@NullUnmarked
 public class ProfileLogic extends ListDataProvider<ProfileEntity> implements GroupTreeController<ProfileEntity> {
 
 	@Getter

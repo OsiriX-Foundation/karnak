@@ -16,6 +16,7 @@ import org.dcm4che3.data.UID;
 import org.dcm4che3.img.DicomImageReader;
 import org.dcm4che3.img.DicomOutputData;
 import org.dcm4che3.img.util.DicomUtils;
+import org.jspecify.annotations.Nullable;
 import org.weasis.core.util.annotations.Generated;
 import org.weasis.dicom.param.AttributeEditor;
 import org.weasis.dicom.param.DicomState;
@@ -24,9 +25,9 @@ import org.weasis.dicom.param.DicomState;
 @Generated()
 public abstract class ForwardDestination {
 
-	protected final List<AttributeEditor> dicomEditors;
+	protected final @Nullable List<AttributeEditor> dicomEditors;
 
-	private final Long id;
+	private final @Nullable Long id;
 
 	@Setter
 	private boolean transcodeOnlyUncompressed = true;
@@ -57,7 +58,7 @@ public abstract class ForwardDestination {
 
 	private String outputTransferSyntax = "";
 
-	protected ForwardDestination(Long id, List<AttributeEditor> dicomEditors) {
+	protected ForwardDestination(@Nullable Long id, @Nullable List<AttributeEditor> dicomEditors) {
 		this.dicomEditors = dicomEditors;
 		this.id = id;
 	}
@@ -68,7 +69,7 @@ public abstract class ForwardDestination {
 
 	public abstract DicomState getState();
 
-	public void setOutputTransferSyntax(String outputTransferSyntax) {
+	public void setOutputTransferSyntax(@Nullable String outputTransferSyntax) {
 		this.outputTransferSyntax = outputTransferSyntax != null ? outputTransferSyntax : "";
 	}
 

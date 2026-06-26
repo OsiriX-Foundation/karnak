@@ -14,11 +14,14 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import org.jspecify.annotations.NullUnmarked;
+
 import java.io.Serializable;
 import java.util.Objects;
 
 @Entity(name = "SOPClassUID")
 @Table(name = "sop_class_uid")
+@NullUnmarked
 public class SOPClassUIDEntity implements Serializable {
 
 	private static final long serialVersionUID = 2885426916053925842L;

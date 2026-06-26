@@ -9,6 +9,8 @@
  */
 package org.karnak.backend.model.validation;
 
+import org.jspecify.annotations.NullUnmarked;
+
 import java.util.List;
 
 /**
@@ -26,6 +28,7 @@ import java.util.List;
  * <li>{@code notIn} — the tag holds none of these values.</li>
  * </ul>
  */
+@NullUnmarked
 public class Condition {
 
 	private String tag;

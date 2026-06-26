@@ -24,6 +24,7 @@ import org.karnak.backend.util.DateFormat;
 import org.karnak.backend.util.ShiftByTagDate;
 import org.karnak.backend.util.ShiftDate;
 import org.karnak.backend.util.ShiftRangeDate;
+import org.jspecify.annotations.Nullable;
 
 @Slf4j
 public class ActionDates extends AbstractProfileItem {
@@ -62,7 +63,7 @@ public class ActionDates extends AbstractProfileItem {
 	}
 
 	@Override
-	public ActionItem getAction(Attributes dcm, Attributes dcmCopy, int tag, HMAC hmac) {
+	public @Nullable ActionItem getAction(Attributes dcm, Attributes dcmCopy, int tag, HMAC hmac) {
 		final VR vr = dcm.getVR(tag);
 
 		if (vr == VR.AS || vr == VR.DA || vr == VR.DT || vr == VR.TM) {
@@ -90,7 +91,7 @@ public class ActionDates extends AbstractProfileItem {
 		return null;
 	}
 
-	private String applyOption(Attributes dcmCopy, int tag, HMAC hmac) throws DateTimeException {
+	private @Nullable String applyOption(Attributes dcmCopy, int tag, HMAC hmac) throws DateTimeException {
 		return switch (option) {
 			case "shift" -> ShiftDate.shift(dcmCopy, tag, argumentEntities);
 			case "shift_range" -> ShiftRangeDate.shift(dcmCopy, tag, argumentEntities, hmac);

@@ -18,11 +18,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import org.jspecify.annotations.NullUnmarked;
+
 import java.io.Serializable;
 import java.util.Objects;
 
 @Entity(name = "Arguments")
 @Table(name = "arguments")
+@NullUnmarked
 public class ArgumentEntity implements Serializable {
 
 	private static final long serialVersionUID = -839421871919135822L;

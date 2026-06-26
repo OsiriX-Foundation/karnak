@@ -15,6 +15,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import org.jspecify.annotations.NullUnmarked;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -24,6 +26,7 @@ import java.util.Objects;
  */
 @Entity(name = "ForwardNodeGroup")
 @Table(name = "forward_node_group")
+@NullUnmarked
 public class ForwardNodeGroupEntity implements NamedGroupEntity, Serializable {
 
 	private static final long serialVersionUID = 1L;

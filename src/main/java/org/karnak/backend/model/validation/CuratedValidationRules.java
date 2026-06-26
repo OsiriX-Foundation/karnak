@@ -18,6 +18,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import org.jspecify.annotations.NullUnmarked;
 
 /**
  * Curated validation rules supplementing the innolitics DICOM standard JSON (which has no
@@ -25,6 +26,7 @@ import java.util.Objects;
  * the bundled {@code curated-validation-rules.json} resource — see
  * {@code doc/dicom-standard-json.md} for the source and update procedure.
  */
+@NullUnmarked
 public class CuratedValidationRules {
 
 	/**

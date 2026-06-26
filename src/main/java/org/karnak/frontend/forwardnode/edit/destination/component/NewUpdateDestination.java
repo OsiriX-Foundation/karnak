@@ -21,9 +21,11 @@ import org.karnak.backend.enums.DestinationType;
 import org.karnak.backend.enums.UIDType;
 import org.karnak.frontend.forwardnode.edit.component.ButtonSaveDeleteCancel;
 import org.weasis.core.util.annotations.Generated;
+import org.jspecify.annotations.NullUnmarked;
 
 @Getter
 @Generated()
+@NullUnmarked
 public class NewUpdateDestination extends VerticalLayout {
 
 	private final FormDICOM formDICOM;

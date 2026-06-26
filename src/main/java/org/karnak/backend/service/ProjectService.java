@@ -21,11 +21,13 @@ import org.karnak.frontend.util.CollatorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.jspecify.annotations.NullUnmarked;
 
 /**
  * Project service
  */
 @Service
+@NullUnmarked
 public class ProjectService {
 
 	// Repositories

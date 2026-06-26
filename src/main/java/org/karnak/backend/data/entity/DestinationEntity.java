@@ -40,6 +40,7 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.group.GroupSequenceProvider;
+import org.jspecify.annotations.NullUnmarked;
 import org.karnak.backend.data.validator.DestinationGroupSequenceProvider;
 import org.karnak.backend.data.validator.DestinationGroupSequenceProvider.DestinationDicomGroup;
 import org.karnak.backend.data.validator.DestinationGroupSequenceProvider.DestinationStowGroup;
@@ -49,6 +50,7 @@ import org.karnak.backend.enums.PseudonymType;
 @GroupSequenceProvider(value = DestinationGroupSequenceProvider.class)
 @Entity(name = "Destination")
 @Table(name = "destination")
+@NullUnmarked
 public class DestinationEntity implements Serializable {
 
 	@Serial

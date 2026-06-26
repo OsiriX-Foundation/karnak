@@ -23,8 +23,10 @@ import org.karnak.backend.model.dicom.DicomNodeList;
 import org.karnak.backend.util.DicomNodeUtil;
 import org.karnak.frontend.dicom.AbstractView;
 import org.weasis.core.util.annotations.Generated;
+import org.jspecify.annotations.NullUnmarked;
 
 @Generated()
+@NullUnmarked
 public class MonitorView extends AbstractView {
 
 	// CONTROLLER

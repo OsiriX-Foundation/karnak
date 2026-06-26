@@ -16,8 +16,10 @@ import com.vaadin.flow.component.html.Div;
 import java.util.Collection;
 import org.karnak.backend.cache.Patient;
 import org.weasis.core.util.annotations.Generated;
+import org.jspecify.annotations.NullUnmarked;
 
 @Generated()
+@NullUnmarked
 public class DuplicateDialog extends Dialog {
 
 	private final Collection<Patient> duplicateList;

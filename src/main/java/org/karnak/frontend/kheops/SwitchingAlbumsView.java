@@ -18,8 +18,10 @@ import java.util.ArrayList;
 import java.util.List;
 import org.karnak.backend.data.entity.KheopsAlbumsEntity;
 import org.weasis.core.util.annotations.Generated;
+import org.jspecify.annotations.NullUnmarked;
 
 @Generated()
+@NullUnmarked
 public class SwitchingAlbumsView extends CustomField<List<KheopsAlbumsEntity>> {
 
 	private final NewSwitchingAlbum newSwitchingAlbum;

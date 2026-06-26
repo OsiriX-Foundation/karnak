@@ -30,6 +30,7 @@ import org.karnak.backend.enums.ProfileItemType;
 import org.karnak.backend.service.DicomStandardService;
 import org.karnak.backend.service.profilepipe.ProfilePipeService;
 import org.karnak.frontend.profile.component.errorprofile.ProfileError;
+import org.jspecify.annotations.NullUnmarked;
 
 /**
  * Dialog used to add a new profile element or edit an existing one. The form adapts to
@@ -37,6 +38,7 @@ import org.karnak.frontend.profile.component.errorprofile.ProfileError;
  * element through {@link ProfilePipeService#validateElement} before persisting it. Tags
  * are filled with the {@link TagPickerField} (search / browse the DICOM dictionary).
  */
+@NullUnmarked
 public class ProfileElementEditor extends Dialog {
 
 	/** The element types that can be created / edited from the UI. */

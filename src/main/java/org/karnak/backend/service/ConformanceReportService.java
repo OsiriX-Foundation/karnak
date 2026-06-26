@@ -45,6 +45,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
+import org.jspecify.annotations.NullUnmarked;
 
 /**
  * Collects the conformance data of forwarded instances (published by ForwardService for
@@ -53,6 +54,7 @@ import org.thymeleaf.context.Context;
  */
 @Service
 @Slf4j
+@NullUnmarked
 public class ConformanceReportService {
 
 	public static final String TEMPLATE_THYMELEAF = "conformanceReportEmail";

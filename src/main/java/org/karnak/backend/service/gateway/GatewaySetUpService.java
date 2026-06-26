@@ -24,6 +24,7 @@ import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.UID;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jspecify.annotations.NullUnmarked;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.DicomSourceNodeEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
@@ -67,6 +68,7 @@ import org.weasis.dicom.tool.DicomListener;
 @Service
 @Slf4j
 @Generated()
+@NullUnmarked
 public class GatewaySetUpService {
 
 	// Repositories

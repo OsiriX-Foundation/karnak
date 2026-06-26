@@ -15,12 +15,14 @@ import java.util.Map;
 import org.dcm4che3.data.Tag;
 import org.dcm4che3.util.TagUtils;
 import org.karnak.backend.model.validation.StudyConformanceAccumulator.SeriesData;
+import org.jspecify.annotations.NullUnmarked;
 
 /**
  * Study-level consistency checks run when a study transfer batch is closed: identifier
  * uniformity across the instances/series, SOP Class / Modality coherence and transfer
  * syntax acceptability.
  */
+@NullUnmarked
 final class StudyConsistencyChecker {
 
 	private StudyConsistencyChecker() {

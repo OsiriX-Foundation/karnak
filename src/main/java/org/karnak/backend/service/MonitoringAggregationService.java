@@ -44,6 +44,7 @@ import org.karnak.frontend.monitoring.component.TransferStatusFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.jspecify.annotations.NullUnmarked;
 
 /**
  * Aggregates the per-series {@code transfer_series_status} rows into the monitoring
@@ -53,6 +54,7 @@ import org.springframework.transaction.annotation.Transactional;
  * are reused ({@link TransferSeriesPredicates}).
  */
 @Service
+@NullUnmarked
 public class MonitoringAggregationService {
 
 	@PersistenceContext

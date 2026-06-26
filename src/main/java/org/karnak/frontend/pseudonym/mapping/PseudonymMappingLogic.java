@@ -21,6 +21,7 @@ import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.jspecify.annotations.NullUnmarked;
 import org.weasis.core.util.annotations.Generated;
 
 /**
@@ -30,6 +31,7 @@ import org.weasis.core.util.annotations.Generated;
 @SpringComponent
 @UIScope
 @Generated()
+@NullUnmarked
 public class PseudonymMappingLogic {
 
 	// View

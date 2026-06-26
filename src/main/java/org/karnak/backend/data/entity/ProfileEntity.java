@@ -26,6 +26,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
+import org.jspecify.annotations.NullUnmarked;
+
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
@@ -37,6 +39,7 @@ import java.util.Set;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonPropertyOrder({ "name", "version", "minimumKarnakVersion", "defaultIssuerOfPatientID", "profileElementEntities",
 		"maskEntities" })
+@NullUnmarked
 public class ProfileEntity implements Serializable {
 
 	private static final long serialVersionUID = -7178858361090900170L;

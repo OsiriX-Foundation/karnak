@@ -21,9 +21,11 @@ import org.karnak.backend.data.entity.ProjectEntity;
 import org.karnak.backend.data.entity.SecretEntity;
 import org.karnak.backend.model.profilepipe.HMAC;
 import org.karnak.frontend.component.WarningConfirmDialog;
+import org.jspecify.annotations.NullUnmarked;
 import org.weasis.core.util.annotations.Generated;
 
 @Generated()
+@NullUnmarked
 public class ProjectSecret extends Div {
 
 	private static final String WARNING_TEXT = "If you change the project secret, the consistency of previously de-identified DICOM files cannot be guaranteed anymore.";

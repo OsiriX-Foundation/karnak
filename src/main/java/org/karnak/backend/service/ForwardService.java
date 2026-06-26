@@ -67,6 +67,7 @@ import org.weasis.dicom.param.AttributeEditor;
 import org.weasis.dicom.param.AttributeEditorContext;
 import org.weasis.dicom.param.AttributeEditorContext.Abort;
 import org.weasis.dicom.util.ServiceUtil;
+import org.jspecify.annotations.NullUnmarked;
 import org.weasis.dicom.util.ServiceUtil.ProgressStatus;
 import org.weasis.dicom.util.StoreFromStreamSCU;
 import org.weasis.dicom.web.DicomStowRS;
@@ -75,6 +76,7 @@ import org.weasis.opencv.data.PlanarImage;
 
 @Service
 @Slf4j
+@NullUnmarked
 public class ForwardService {
 
 	private static final String ERROR_WHEN_FORWARDING = "Error when forwarding to the final destination";

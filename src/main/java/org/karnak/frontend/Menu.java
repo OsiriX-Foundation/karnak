@@ -29,8 +29,10 @@ import java.util.Map;
 import org.karnak.backend.util.SecurityUtil;
 import org.karnak.frontend.util.ToggleButtonTheme;
 import org.weasis.core.util.annotations.Generated;
+import org.jspecify.annotations.NullUnmarked;
 
 @Generated()
+@NullUnmarked
 public class Menu extends FlexLayout {
 
 	private static final String SHOW_TABS = "show-tabs";

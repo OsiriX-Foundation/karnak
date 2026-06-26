@@ -25,11 +25,13 @@ import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.frontend.component.converter.HStringToIntegerConverter;
 import org.karnak.frontend.util.UIS;
 import org.weasis.core.util.annotations.Generated;
+import org.jspecify.annotations.NullUnmarked;
 
 /**
  * Create a notification component
  */
 @Generated()
+@NullUnmarked
 public class NotificationComponent extends VerticalLayout {
 
 	// Components

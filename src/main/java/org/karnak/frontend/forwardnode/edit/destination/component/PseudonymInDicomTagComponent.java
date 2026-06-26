@@ -18,9 +18,11 @@ import lombok.Getter;
 import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.frontend.util.UIS;
 import org.weasis.core.util.annotations.Generated;
+import org.jspecify.annotations.NullUnmarked;
 
 @Getter
 @Generated()
+@NullUnmarked
 public class PseudonymInDicomTagComponent extends Div {
 
 	private final Binder<DestinationEntity> destinationBinder;

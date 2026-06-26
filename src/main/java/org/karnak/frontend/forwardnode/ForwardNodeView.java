@@ -27,6 +27,7 @@ import org.karnak.frontend.forwardnode.edit.LayoutEditForwardNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.weasis.core.util.annotations.Generated;
+import org.jspecify.annotations.NullUnmarked;
 
 /**
  * Forward Node View
@@ -36,6 +37,7 @@ import org.weasis.core.util.annotations.Generated;
 @PageTitle("Karnak - Forward node")
 @RolesAllowed("admin")
 @Generated()
+@NullUnmarked
 public class ForwardNodeView extends HorizontalLayout implements HasUrlParameter<String> {
 
 	public static final String VIEW_NAME = "Gateway";

@@ -35,8 +35,10 @@ import org.karnak.backend.model.dicom.DicomNodeList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.weasis.dicom.param.DicomNode;
+import org.jspecify.annotations.NullUnmarked;
 
 @Service
+@NullUnmarked
 public class DicomNodeConfigService {
 
 	/**

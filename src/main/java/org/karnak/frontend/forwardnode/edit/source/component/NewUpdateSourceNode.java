@@ -16,9 +16,11 @@ import com.vaadin.flow.data.binder.Binder;
 import lombok.Getter;
 import org.karnak.backend.data.entity.DicomSourceNodeEntity;
 import org.karnak.frontend.forwardnode.edit.component.ButtonSaveDeleteCancel;
+import org.jspecify.annotations.NullUnmarked;
 import org.weasis.core.util.annotations.Generated;
 
 @Generated()
+@NullUnmarked
 public class NewUpdateSourceNode extends VerticalLayout {
 
 	@Getter

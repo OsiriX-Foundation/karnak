@@ -35,6 +35,7 @@ import org.karnak.backend.data.entity.NamedGroupEntity;
 import org.karnak.frontend.component.ConfirmDialog;
 import org.karnak.frontend.util.GroupTreeNode.GroupNode;
 import org.karnak.frontend.util.GroupTreeNode.ItemNode;
+import org.jspecify.annotations.NullUnmarked;
 
 /**
  * A {@link TreeGrid} that shows feature items with an optional one-level grouping: group
@@ -51,6 +52,7 @@ import org.karnak.frontend.util.GroupTreeNode.ItemNode;
  *
  * @param <T> the feature item type
  */
+@NullUnmarked
 public abstract class GroupTreeGrid<T> extends TreeGrid<GroupTreeNode<T>> {
 
 	private transient GroupTreeController<T> controller;

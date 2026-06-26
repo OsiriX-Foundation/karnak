@@ -22,8 +22,10 @@ import org.karnak.backend.data.repo.ForwardNodeRepo;
 import org.karnak.frontend.util.CollatorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.jspecify.annotations.NullUnmarked;
 
 @Service
+@NullUnmarked
 public class ForwardNodeService {
 
 	// Repositories
