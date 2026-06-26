@@ -37,6 +37,7 @@ import org.karnak.backend.dicom.CommonStorageSopClasses;
 import org.karnak.backend.dicom.DicomForwardDestination;
 import org.karnak.backend.dicom.ForwardDestination;
 import org.karnak.backend.dicom.ForwardDicomNode;
+import org.karnak.backend.dicom.NullForwardDestination;
 import org.karnak.backend.dicom.WebForwardDestination;
 import org.karnak.backend.enums.DestinationType;
 import org.karnak.backend.enums.NodeEventType;
@@ -226,7 +227,18 @@ public class GatewaySetUpService {
 			DicomProgress progress = new DicomProgress();
 
 			if (dstNode.isActivate()) {
-				if (dstNode.getDestinationType() == DestinationType.stow) {
+				if (dstNode.isVirtualDestination()) {
+					// Report-only destination: process the dataset through the editors so
+					// the conformance report reflects what would be sent, but route the
+					// DICOM to devnull instead of forwarding it.
+					NullForwardDestination fwd = new NullForwardDestination(dstNode.getId(), fwdSrcNode, editors);
+					fwd.setBuildConformanceReport(dstNode.isBuildConformanceReport());
+					fwd.setCheckValueConformity(dstNode.isCheckValueConformity());
+					fwd.setDeepSequenceValidation(dstNode.isDeepSequenceValidation());
+					fwd.setDeidentified(dstNode.isDesidentification());
+					dstList.add(fwd);
+				}
+				else if (dstNode.getDestinationType() == DestinationType.stow) {
 					WebForwardDestination fwd = new WebForwardDestination(dstNode.getId(), fwdSrcNode, dstNode.getUrl(),
 							parseHeaders(dstNode.getHeaders()), progress, editors, dstNode.getTransferSyntax(),
 							dstNode.isTranscodeOnlyUncompressed(),

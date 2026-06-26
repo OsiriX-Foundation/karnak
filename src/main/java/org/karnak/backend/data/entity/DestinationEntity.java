@@ -123,6 +123,13 @@ public class DestinationEntity implements Serializable {
 	// Off by default: deeper recursion enlarges the snapshot kept in memory.
 	private boolean deepSequenceValidation;
 
+	// When true, this destination is a virtual "report-only" destination: the
+	// de-identified / tag-morphed dataset is validated and a conformance report is
+	// emailed, but nothing is forwarded to a real node (the DICOM is routed to
+	// devnull). Delivery settings (AETitle/host/port or URL, transfer syntax,
+	// notification, …) are therefore irrelevant and disabled in the UI.
+	private boolean virtualDestination;
+
 	// list of emails (comma separated) the conformance report is sent to. When
 	// blank, the notification email list (notify) is used as a fallback.
 	private String conformanceReportNotify;
@@ -612,6 +619,14 @@ public class DestinationEntity implements Serializable {
 
 	public void setDeepSequenceValidation(boolean deepSequenceValidation) {
 		this.deepSequenceValidation = deepSequenceValidation;
+	}
+
+	public boolean isVirtualDestination() {
+		return virtualDestination;
+	}
+
+	public void setVirtualDestination(boolean virtualDestination) {
+		this.virtualDestination = virtualDestination;
 	}
 
 	public String getConformanceReportNotify() {

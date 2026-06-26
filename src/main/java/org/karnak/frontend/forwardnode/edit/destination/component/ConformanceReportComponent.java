@@ -33,6 +33,10 @@ public class ConformanceReportComponent extends VerticalLayout {
 
 	@Setter
 	@Getter
+	private Checkbox virtualDestination;
+
+	@Setter
+	@Getter
 	private Checkbox buildConformanceReport;
 
 	@Setter
@@ -60,10 +64,21 @@ public class ConformanceReportComponent extends VerticalLayout {
 
 	private void buildComponents() {
 		buildOptionsDiv();
+		buildVirtualDestination();
 		buildBuildConformanceReport();
 		buildConformanceReportNotify();
 		buildCheckValueConformity();
 		buildDeepSequenceValidation();
+	}
+
+	private void buildVirtualDestination() {
+		virtualDestination = new Checkbox("Virtual destination (report only, discard DICOM)");
+		// By default deactivate
+		virtualDestination.setValue(false);
+		UIS.setTooltip(virtualDestination,
+				"Do not forward anything to the final node: validate each study and email the conformance report only. "
+						+ "The DICOM is routed to devnull and the delivery options (host/port or URL, transfer syntax, "
+						+ "notification, …) are disabled.");
 	}
 
 	private void buildBuildConformanceReport() {
@@ -108,7 +123,25 @@ public class ConformanceReportComponent extends VerticalLayout {
 
 	private void buildListeners() {
 		buildConformanceReport.addValueChangeListener(
-				event -> optionsDiv.setVisible(Boolean.TRUE.equals(buildConformanceReport.getValue())));
+				event -> optionsDiv.setVisible(isVirtual() || Boolean.TRUE.equals(buildConformanceReport.getValue())));
+		virtualDestination.addValueChangeListener(event -> applyVirtualReportOnly());
+	}
+
+	/**
+	 * A virtual destination is report-only, so the conformance report is mandatory: force
+	 * it on, show its options, and prevent toggling it off while virtual is selected.
+	 */
+	private void applyVirtualReportOnly() {
+		boolean virtual = isVirtual();
+		if (virtual) {
+			buildConformanceReport.setValue(true);
+		}
+		buildConformanceReport.setReadOnly(virtual);
+		optionsDiv.setVisible(virtual || Boolean.TRUE.equals(buildConformanceReport.getValue()));
+	}
+
+	private boolean isVirtual() {
+		return Boolean.TRUE.equals(virtualDestination.getValue());
 	}
 
 	private void addComponents() {
@@ -116,7 +149,8 @@ public class ConformanceReportComponent extends VerticalLayout {
 			.add(UIS.setWidthFull(new VerticalLayout(UIS.setWidthFull(new HorizontalLayout(conformanceReportNotify)),
 					UIS.setWidthFull(new HorizontalLayout(checkValueConformity)),
 					UIS.setWidthFull(new HorizontalLayout(deepSequenceValidation)))));
-		add(UIS.setWidthFull(new HorizontalLayout(buildConformanceReport)), optionsDiv);
+		add(UIS.setWidthFull(new HorizontalLayout(virtualDestination)),
+				UIS.setWidthFull(new HorizontalLayout(buildConformanceReport)), optionsDiv);
 	}
 
 	/**
@@ -124,6 +158,9 @@ public class ConformanceReportComponent extends VerticalLayout {
 	 * @param binder Binder
 	 */
 	public void init(Binder<DestinationEntity> binder) {
+		binder.forField(getVirtualDestination())
+			.bind(DestinationEntity::isVirtualDestination, DestinationEntity::setVirtualDestination);
+
 		binder.forField(getBuildConformanceReport())
 			.bind(DestinationEntity::isBuildConformanceReport, DestinationEntity::setBuildConformanceReport);
 

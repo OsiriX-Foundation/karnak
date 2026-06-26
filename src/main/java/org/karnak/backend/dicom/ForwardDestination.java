@@ -56,6 +56,14 @@ public abstract class ForwardDestination {
 	@Setter
 	private boolean deidentified;
 
+	/**
+	 * When true, this is a virtual "report-only" destination: the dataset is processed
+	 * (editors applied) and a conformance report is produced, but it is never forwarded
+	 * to a real node — the DICOM is discarded (devnull).
+	 */
+	@Setter
+	private boolean virtual;
+
 	private String outputTransferSyntax = "";
 
 	protected ForwardDestination(@Nullable Long id, @Nullable List<AttributeEditor> dicomEditors) {

@@ -83,6 +83,9 @@ public class NewUpdateDestination extends VerticalLayout {
 			binderFormSTOW.readBean(currentDestinationEntity);
 			handleEventTranscodeOnlyUncompressedWhenSomeTransferSyntax(formSTOW.getTranscodeOnlyUncompressedComponent(),
 					currentDestinationEntity.getTransferSyntax(), false);
+			// Re-apply last so the virtual (report-only) state wins over the transcode
+			// enabling driven by the transfer syntax above.
+			formSTOW.updateVirtualState();
 		}
 		else if (type == DestinationType.dicom) {
 			add(formDICOM);
@@ -90,6 +93,9 @@ public class NewUpdateDestination extends VerticalLayout {
 			handleEventTranscodeOnlyUncompressedWhenSomeTransferSyntax(
 					formDICOM.getTranscodeOnlyUncompressedComponent(), currentDestinationEntity.getTransferSyntax(),
 					false);
+			// Re-apply last so the virtual (report-only) state wins over the transcode
+			// enabling driven by the transfer syntax above.
+			formDICOM.updateVirtualState();
 		}
 	}
 
