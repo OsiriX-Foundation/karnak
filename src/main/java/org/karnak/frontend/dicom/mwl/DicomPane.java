@@ -15,7 +15,6 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.server.streams.DownloadHandler;
@@ -42,8 +41,6 @@ public class DicomPane extends Composite<Dialog> {
 	private Div titleBar;
 
 	private TextArea contentFld;
-
-	private HorizontalLayout buttonBar;
 
 	private Button cancelButton;
 
@@ -79,7 +76,7 @@ public class DicomPane extends Composite<Dialog> {
 		buildContentField();
 		buildButtonBar();
 
-		mainLayout.add(titleBar, contentFld, buttonBar);
+		mainLayout.add(titleBar, contentFld);
 
 		mainLayout.setFlexGrow(1, contentFld);
 	}
@@ -100,13 +97,11 @@ public class DicomPane extends Composite<Dialog> {
 	}
 
 	private void buildButtonBar() {
-		buttonBar = new HorizontalLayout();
-
 		buildDownloadTextAnchor();
 		buildDownloadDicomAnchor();
 		buildCancelButton();
 
-		buttonBar.add(cancelButton, downloadDicomAnchor, downloadTextAnchor);
+		currentDialog.getFooter().add(cancelButton, downloadDicomAnchor, downloadTextAnchor);
 	}
 
 	private void buildDownloadTextAnchor() {

@@ -55,7 +55,7 @@ public class KarnakApplication implements CommandLineRunner {
 		this.serverPort = serverPort;
 	}
 
-	static void main(String[] args) {
+	public static void main(String[] args) {
 		SpringApplicationBuilder application = new SpringApplicationBuilder(KarnakApplication.class);
 
 		// If environment variable IDP has value "oidc", activate the application-oidc.yml

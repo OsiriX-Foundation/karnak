@@ -151,7 +151,7 @@ public class ProfileView extends HorizontalLayout implements HasUrlParameter<Str
 	private void openNewProfileDialog() {
 		TextField name = new TextField("Name");
 		TextField version = new TextField("Version");
-		TextField minVersion = new TextField("Min Karnak version");
+		TextField minVersion = new TextField("Min Karnak version (optional)");
 		name.setWidthFull();
 		version.setWidthFull();
 		minVersion.setWidthFull();

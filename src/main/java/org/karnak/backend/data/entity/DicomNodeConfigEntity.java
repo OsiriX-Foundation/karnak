@@ -40,15 +40,23 @@ public class DicomNodeConfigEntity implements Serializable {
 
 	private String nodeType;
 
+	private String nodeGroup;
+
 	public DicomNodeConfigEntity() {
 	}
 
 	public DicomNodeConfigEntity(String description, String aeTitle, String hostname, Integer port, String nodeType) {
+		this(description, aeTitle, hostname, port, nodeType, null);
+	}
+
+	public DicomNodeConfigEntity(String description, String aeTitle, String hostname, Integer port, String nodeType,
+			String nodeGroup) {
 		this.description = description;
 		this.aeTitle = aeTitle;
 		this.hostname = hostname;
 		this.port = port;
 		this.nodeType = nodeType;
+		this.nodeGroup = nodeGroup;
 	}
 
 	@Id
@@ -106,6 +114,15 @@ public class DicomNodeConfigEntity implements Serializable {
 		this.nodeType = nodeType;
 	}
 
+	@Column(name = "node_group")
+	public String getNodeGroup() {
+		return nodeGroup;
+	}
+
+	public void setNodeGroup(String nodeGroup) {
+		this.nodeGroup = nodeGroup;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) {
@@ -117,18 +134,19 @@ public class DicomNodeConfigEntity implements Serializable {
 		DicomNodeConfigEntity that = (DicomNodeConfigEntity) o;
 		return Objects.equals(id, that.id) && Objects.equals(description, that.description)
 				&& Objects.equals(aeTitle, that.aeTitle) && Objects.equals(hostname, that.hostname)
-				&& Objects.equals(port, that.port) && Objects.equals(nodeType, that.nodeType);
+				&& Objects.equals(port, that.port) && Objects.equals(nodeType, that.nodeType)
+				&& Objects.equals(nodeGroup, that.nodeGroup);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, description, aeTitle, hostname, port, nodeType);
+		return Objects.hash(id, description, aeTitle, hostname, port, nodeType, nodeGroup);
 	}
 
 	@Override
 	public String toString() {
 		return "DicomNodeConfig [id=" + id + ", description=" + description + ", aeTitle=" + aeTitle + ", hostname="
-				+ hostname + ", port=" + port + ", nodeType=" + nodeType + "]";
+				+ hostname + ", port=" + port + ", nodeType=" + nodeType + ", nodeGroup=" + nodeGroup + "]";
 	}
 
 }

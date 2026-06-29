@@ -218,7 +218,7 @@ public class DestinationEntity implements Serializable {
 		this.description = "";
 		this.desidentification = false;
 		this.issuerByDefault = "";
-		this.skipIssuerOfPatientId = false;
+		this.skipIssuerOfPatientId = true;
 		this.pseudonymType = PseudonymType.CACHE_EXTID;
 		this.tag = null;
 		this.delimiter = null;
