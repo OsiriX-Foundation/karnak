@@ -1,11 +1,11 @@
 openapi: 3.0.3
 info:
-  title: Karnak API - ForwardNode, Profile, Project, Monitoring, Pseudonym, Echo
+  title: Karnak API - ForwardNode, Profile, Project, AuthConfig, Monitoring, Pseudonym, Echo
   description: >-
     OpenAPI 3.x specification covering the REST endpoints of the
     ForwardNodeController, ProfileController, ProjectController,
-    MonitoringController, PseudonymController and EchoController controllers
-    of Karnak.
+    AuthConfigController, MonitoringController, PseudonymController and
+    EchoController controllers of Karnak.
 
     Authentication: Basic Auth (default username/password `admin`/`karnak`,
     see `application.yml` / `KARNAK_ADMIN` / `KARNAK_PASSWORD`).
@@ -24,6 +24,10 @@ tags:
     description: Management of de-identification profiles and their elements
   - name: Project
     description: Management of projects
+  - name: AuthConfig
+    description: >-
+      Management of authentication configurations (OAuth2 clients) used by
+      STOW-RS destinations
   - name: Monitoring
     description: >-
       Monitoring aggregation data (Destination / Study / Series / error
@@ -632,6 +636,97 @@ paths:
       responses:
         "204":
           description: Secret deleted
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /api/auth-configs:
+    get:
+      tags: [AuthConfig]
+      summary: List all authentication configurations
+      operationId: retrieveAllAuthConfigs
+      responses:
+        "200":
+          description: Authentication configurations found
+          content:
+            application/json;version=1:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AuthConfig"
+        "204":
+          description: No authentication configuration found
+    post:
+      tags: [AuthConfig]
+      summary: Create an authentication configuration
+      operationId: createAuthConfig
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthConfigInput"
+      responses:
+        "201":
+          description: Authentication configuration created
+          content:
+            application/json;version=1:
+              schema:
+                $ref: "#/components/schemas/AuthConfig"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "409":
+          $ref: "#/components/responses/Conflict"
+
+  /api/auth-configs/{code}:
+    parameters:
+      - name: code
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags: [AuthConfig]
+      summary: Get an authentication configuration by its code
+      operationId: retrieveAuthConfig
+      responses:
+        "200":
+          description: Authentication configuration found
+          content:
+            application/json;version=1:
+              schema:
+                $ref: "#/components/schemas/AuthConfig"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    put:
+      tags: [AuthConfig]
+      summary: Update an authentication configuration
+      description: >-
+        Updatable fields: clientId, clientSecret, accessTokenUrl, scope,
+        authConfigType. A blank or missing clientSecret leaves the stored
+        secret untouched.
+      operationId: updateAuthConfig
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthConfigInput"
+      responses:
+        "200":
+          description: Authentication configuration updated
+          content:
+            application/json;version=1:
+              schema:
+                $ref: "#/components/schemas/AuthConfig"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    delete:
+      tags: [AuthConfig]
+      summary: Delete an authentication configuration
+      operationId: deleteAuthConfig
+      responses:
+        "204":
+          description: Authentication configuration deleted
         "404":
           $ref: "#/components/responses/NotFound"
 
@@ -1431,6 +1526,43 @@ components:
           format: date-time
         active:
           type: boolean
+
+    # ---------- AuthConfig ----------
+    AuthConfigInput:
+      type: object
+      required: [code, authConfigType]
+      properties:
+        code:
+          type: string
+          example: shanoir-stow
+        clientId:
+          type: string
+        clientSecret:
+          type: string
+          description: >-
+            Write-only. Accepted on create/update, never returned. On update,
+            a blank or missing value leaves the stored secret untouched.
+          writeOnly: true
+        accessTokenUrl:
+          type: string
+          format: uri
+        scope:
+          type: string
+        authConfigType:
+          $ref: "#/components/schemas/AuthConfigType"
+
+    AuthConfigType:
+      type: string
+      enum: [OAUTH2]
+
+    AuthConfig:
+      allOf:
+        - $ref: "#/components/schemas/AuthConfigInput"
+        - type: object
+          properties:
+            clientSecret:
+              writeOnly: true
+              description: Never populated in a response.
 
     # ---------- Monitoring ----------
     TransferStatusType:

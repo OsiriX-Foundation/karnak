@@ -44,4 +44,54 @@ public class AuthConfigService {
 			.toList();
 	}
 
+	/**
+	 * Retrieve all authentication configurations, sorted by code.
+	 * @return authentication configurations found
+	 */
+	public List<AuthConfigEntity> retrieveAllAuthConfigs() {
+		return authConfigRepo.findAll()
+			.stream()
+			.sorted(CollatorUtils.comparing(AuthConfigEntity::getCode))
+			.toList();
+	}
+
+	/**
+	 * Retrieve an authentication configuration by its code.
+	 * @param code the identifier
+	 * @return the matching entity, or {@code null} when it does not exist
+	 */
+	public AuthConfigEntity retrieveAuthConfigByCode(String code) {
+		return code == null ? null : authConfigRepo.findByCode(code);
+	}
+
+	/**
+	 * Save (create) an authentication configuration. Writes go through
+	 * {@link AuthConfigRepo} only: clientId/clientSecret/accessTokenUrl/scope are
+	 * pgcrypto-encrypted at the column level via {@code @ColumnTransformer}, never with
+	 * raw SQL.
+	 * @param authConfigEntity the entity to persist
+	 * @return the persisted entity
+	 */
+	public AuthConfigEntity save(AuthConfigEntity authConfigEntity) {
+		return authConfigRepo.saveAndFlush(authConfigEntity);
+	}
+
+	/**
+	 * Update an existing authentication configuration.
+	 * @param authConfigEntity the entity to persist
+	 * @return the persisted entity
+	 */
+	public AuthConfigEntity update(AuthConfigEntity authConfigEntity) {
+		return authConfigRepo.saveAndFlush(authConfigEntity);
+	}
+
+	/**
+	 * Delete an authentication configuration.
+	 * @param authConfigEntity the entity to remove
+	 */
+	public void remove(AuthConfigEntity authConfigEntity) {
+		authConfigRepo.deleteById(authConfigEntity.getId());
+		authConfigRepo.flush();
+	}
+
 }

@@ -17,6 +17,8 @@ public class EndPoint {
 
 	public static final String API_PATH = "/api";
 
+	public static final String AUTH_CONFIGS_PATH = API_PATH + "/auth-configs";
+
 	public static final String ECHO_PATH = API_PATH + "/echo";
 
 	public static final String FORWARD_NODES_PATH = API_PATH + "/forward-nodes";
