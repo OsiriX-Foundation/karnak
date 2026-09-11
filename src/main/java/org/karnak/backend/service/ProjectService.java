@@ -25,6 +25,7 @@ import org.karnak.frontend.util.CollatorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Project service
@@ -147,10 +148,21 @@ public class ProjectService {
 	}
 
 	/**
-	 * Remove project
+	 * Remove project. Destinations still referencing it (either side) would otherwise
+	 * make the delete fail on the FK constraint, so those references are cleared first —
+	 * the destinations become pass-through for that side and keep existing.
 	 * @param projectEntity Project to remove
 	 */
+	@Transactional
 	public void remove(ProjectEntity projectEntity) {
+		for (DestinationEntity destinationEntity : destinationRepo.findByDeIdentificationProjectEntity(projectEntity)) {
+			destinationEntity.setDeIdentificationProjectEntity(null);
+			destinationRepo.saveAndFlush(destinationEntity);
+		}
+		for (DestinationEntity destinationEntity : destinationRepo.findByTagMorphingProjectEntity(projectEntity)) {
+			destinationEntity.setTagMorphingProjectEntity(null);
+			destinationRepo.saveAndFlush(destinationEntity);
+		}
 		projectRepo.deleteById(projectEntity.getId());
 		projectRepo.flush();
 	}
