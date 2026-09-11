@@ -16,7 +16,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Valid;
+import jakarta.validation.Validation;
 import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
@@ -57,14 +59,23 @@ public class PseudonymController {
 
 	private final ProjectService projectService;
 
-	private final Validator validator;
+	/**
+	 * No {@link Validator} bean is published in this application's context (only
+	 * hibernate-validator is on the classpath, not spring-boot-starter-validation), and
+	 * no other controller needs one. Rather than wiring a container-managed bean for a
+	 * single call site, build a validator locally: the factory is held for the life of
+	 * the class (it is {@link AutoCloseable}, so one instance is built once, not per
+	 * request) and only the bulk-import endpoint uses it, to validate each row
+	 * independently instead of rejecting the whole batch on one bad row.
+	 */
+	private static final ValidatorFactory VALIDATOR_FACTORY = Validation.buildDefaultValidatorFactory();
+
+	private static final Validator VALIDATOR = VALIDATOR_FACTORY.getValidator();
 
 	@Autowired
-	public PseudonymController(final PseudonymCache pseudonymCache, final ProjectService projectService,
-			final Validator validator) {
+	public PseudonymController(final PseudonymCache pseudonymCache, final ProjectService projectService) {
 		this.pseudonymCache = pseudonymCache;
 		this.projectService = projectService;
-		this.validator = validator;
 	}
 
 	@Operation(summary = "List all pseudonyms")
@@ -128,7 +139,7 @@ public class PseudonymController {
 				result.addError(index, "Row is null");
 				continue;
 			}
-			Set<ConstraintViolation<PatientModel>> violations = validator.validate(patientModel);
+			Set<ConstraintViolation<PatientModel>> violations = VALIDATOR.validate(patientModel);
 			if (!violations.isEmpty()) {
 				String reason = violations.stream()
 					.map(violation -> violation.getPropertyPath() + " " + violation.getMessage())

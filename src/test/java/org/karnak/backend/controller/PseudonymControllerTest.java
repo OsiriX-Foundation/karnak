@@ -12,8 +12,6 @@ package org.karnak.backend.controller;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
 import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,15 +39,13 @@ class PseudonymControllerTest {
 
 	private final ProjectService projectServiceMock = Mockito.mock(ProjectService.class);
 
-	private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-
 	private PseudonymController pseudonymController;
 
 	private static final UUID PROJECT_UUID = UUID.randomUUID();
 
 	@BeforeEach
 	void setUp() {
-		pseudonymController = new PseudonymController(pseudonymCacheMock, projectServiceMock, validator);
+		pseudonymController = new PseudonymController(pseudonymCacheMock, projectServiceMock);
 
 		ProjectEntity project = new ProjectEntity();
 		project.setId(42L);
