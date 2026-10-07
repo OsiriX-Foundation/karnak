@@ -61,7 +61,14 @@ public class ExpressionResult {
 	public static Object get(String condition, ExpressionItem expressionItem, Class<?> typeOfReturn) {
 		try {
 			Object result = evaluate(condition, expressionItem, typeOfReturn);
-			return result != null ? result : "";
+			if (result != null) {
+				return result;
+			}
+			// SpEL ternaries use ": null" for no-action; only String callers expect "".
+			if (typeOfReturn == String.class) {
+				return "";
+			}
+			return null;
 		}
 		catch (final Exception e) {
 			throw new IllegalStateException(
