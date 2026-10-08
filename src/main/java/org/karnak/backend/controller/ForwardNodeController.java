@@ -26,6 +26,8 @@ import org.karnak.backend.data.entity.DestinationEntity;
 import org.karnak.backend.data.entity.DicomSourceNodeEntity;
 import org.karnak.backend.data.entity.ForwardNodeEntity;
 import org.karnak.backend.data.entity.ProjectEntity;
+import org.karnak.backend.enums.NodeEventType;
+import org.karnak.backend.model.event.NodeEvent;
 import org.karnak.backend.model.forwardnode.DestinationMapper;
 import org.karnak.backend.model.forwardnode.DestinationModel;
 import org.karnak.backend.model.forwardnode.DicomSourceNodeMapper;
@@ -320,6 +322,12 @@ public class ForwardNodeController {
 			return ResponseEntity.notFound().build();
 		}
 		destinationService.delete(existing);
+		// A REST delete used to leave the destination in the routing table of the instance that
+		// served it, which kept forwarding every instance to a destination that no longer
+		// exists, once more for each destination deleted this way. The event removes it from
+		// that instance's table and bumps the gateway version, so every other instance reloads.
+		destinationService.getApplicationEventPublisher()
+			.publishEvent(new NodeEvent(existing, NodeEventType.REMOVE)); // NOSONAR
 		return ResponseEntity.noContent().build();
 	}
 
