@@ -308,7 +308,6 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <argLine>@{argLine} -XX:+EnableDynamicAgentLoading -Xshare:off</argLine>
-          <parallel>all</parallel>
           <groups>${karnak.test.groups}</groups>
           <excludedGroups>${karnak.test.excludedGroups}</excludedGroups>
         </configuration>
