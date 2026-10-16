@@ -13,11 +13,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReference;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -59,7 +60,9 @@ public class StoreScpForwardService {
 	@Setter
 	private volatile int status;
 
-	private volatile Map<ForwardDicomNode, List<ForwardDestination>> destinations;
+	// Live routing table, shared by reference with the configuration that mutates it in
+	// place (a concurrent map of copy-on-write lists); only the reference is swapped here
+	private final AtomicReference<Map<ForwardDicomNode, List<ForwardDestination>>> destinations = new AtomicReference<>();
 
 	private final CStoreSCPService cStoreSCPService;
 
@@ -72,7 +75,6 @@ public class StoreScpForwardService {
 	@Autowired
 	public StoreScpForwardService(final CStoreSCPService cStoreSCPService) {
 		this.cStoreSCPService = cStoreSCPService;
-		this.destinations = null;
 		this.status = 0;
 		this.priority = 0;
 		this.conn = new Connection();
@@ -91,7 +93,7 @@ public class StoreScpForwardService {
 	 * added later, and keep accepting a removed one, until the next restart.
 	 */
 	private boolean isConfiguredSource(String aet) {
-		Map<ForwardDicomNode, List<ForwardDestination>> current = destinations;
+		Map<ForwardDicomNode, List<ForwardDestination>> current = destinations.get();
 		if (current == null) {
 			return true;
 		}
@@ -114,14 +116,15 @@ public class StoreScpForwardService {
 			List<AttributeEditor> attributesEditor) throws IOException {
 		DicomForwardDestination uniqueDestination = new DicomForwardDestination(forwardParams, fwdNode, destinationNode,
 				attributesEditor);
-		this.destinations = new HashMap<>();
-		destinations.put(fwdNode, List.of(uniqueDestination));
-		cStoreSCPService.init(destinations);
+		Map<ForwardDicomNode, List<ForwardDestination>> single = new ConcurrentHashMap<>();
+		single.put(fwdNode, List.of(uniqueDestination));
+		this.destinations.set(single);
+		cStoreSCPService.init(single);
 		configureDevice();
 	}
 
 	public void init(Map<ForwardDicomNode, List<ForwardDestination>> destinations) {
-		this.destinations = Objects.requireNonNull(destinations);
+		this.destinations.set(Objects.requireNonNull(destinations));
 		cStoreSCPService.init(destinations);
 		configureDevice();
 	}
@@ -190,7 +193,10 @@ public class StoreScpForwardService {
 	}
 
 	public void stop() {
-		destinations.values().forEach(l -> l.forEach(ForwardDestination::stop));
+		Map<ForwardDicomNode, List<ForwardDestination>> current = destinations.get();
+		if (current != null) {
+			current.values().forEach(l -> l.forEach(ForwardDestination::stop));
+		}
 		cStoreSCPService.getDestinations().values().forEach(l -> l.forEach(ForwardDestination::stop));
 	}
 
