@@ -12,6 +12,7 @@ package org.karnak.backend.service;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,7 @@ import org.jspecify.annotations.NullUnmarked;
 import org.karnak.backend.dicom.DicomForwardDestination;
 import org.karnak.backend.dicom.ForwardDestination;
 import org.karnak.backend.dicom.ForwardDicomNode;
+import org.karnak.backend.dicom.GatewayParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -57,7 +59,7 @@ public class StoreScpForwardService {
 	@Setter
 	private volatile int status;
 
-	private Map<ForwardDicomNode, List<ForwardDestination>> destinations;
+	private volatile Map<ForwardDicomNode, List<ForwardDestination>> destinations;
 
 	private final CStoreSCPService cStoreSCPService;
 
@@ -74,8 +76,29 @@ public class StoreScpForwardService {
 		this.status = 0;
 		this.priority = 0;
 		this.conn = new Connection();
-		this.ae = new ApplicationEntity("*");
+		this.ae = new ApplicationEntity("*") {
+			@Override
+			public boolean isAcceptedCallingAETitle(String aet) {
+				return super.isAcceptedCallingAETitle(aet) && isConfiguredSource(aet);
+			}
+		};
 		this.device = new Device("storescp");
+	}
+
+	/**
+	 * Checks the calling AET against the live routing table, which the configuration
+	 * updates at runtime: a list computed when the listener starts would refuse a source
+	 * added later, and keep accepting a removed one, until the next restart.
+	 */
+	private boolean isConfiguredSource(String aet) {
+		Map<ForwardDicomNode, List<ForwardDestination>> current = destinations;
+		if (current == null) {
+			return true;
+		}
+		String[] accepted = GatewayParams.getAcceptedCallingAETitles(current);
+		// No list (a forward node accepting any source) or no forward node: no
+		// restriction
+		return accepted == null || accepted.length == 0 || Arrays.asList(accepted).contains(aet);
 	}
 
 	/**
