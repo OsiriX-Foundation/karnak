@@ -287,14 +287,15 @@ public class GatewaySetUpService {
 					DicomNode destinationNode = new DicomNode(dstNode.getAeTitle(), dstNode.getHostname(),
 							dstNode.getPort());
 					DicomForwardDestination dest = new DicomForwardDestination(dstNode.getId(),
-							getDestinationAdvancedParameters(), fwdSrcNode, destinationNode, dstNode.getUseaetdest(),
-							progress, editors, dstNode.getTransferSyntax(), dstNode.isTranscodeOnlyUncompressed(),
+							getDestinationAdvancedParameters(), fwdSrcNode, destinationNode, progress, editors,
+							dstNode.getTransferSyntax(), dstNode.isTranscodeOnlyUncompressed(),
 							resolvePoolSize(dstNode));
 					dest.setBuildConformanceReport(dstNode.isBuildConformanceReport());
 					dest.setCheckValueConformity(dstNode.isCheckValueConformity());
 					dest.setDeepSequenceValidation(dstNode.isDeepSequenceValidation());
 					dest.setDeidentified(dstNode.isDesidentification());
 					dest.setImageIdentityCheck(dstNode.isImageIdentityCheck());
+					dest.setUseSourceAet(dstNode.isUseSourceAet());
 
 					preNegotiateCommonSopClasses(dest);
 					return dest;
@@ -323,7 +324,7 @@ public class GatewaySetUpService {
 			return;
 		}
 		// Every association in the pool must negotiate the same presentation contexts.
-		dest.getStreamSCUs().forEach(scu -> {
+		dest.setScuInitializer(scu -> {
 			for (String sopClassUid : CommonStorageSopClasses.UIDS) {
 				// addData adds the SOP Class with Explicit + Implicit VR Little Endian
 				scu.addData(sopClassUid, UID.ExplicitVRLittleEndian);

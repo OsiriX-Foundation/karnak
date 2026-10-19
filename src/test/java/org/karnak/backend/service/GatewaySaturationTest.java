@@ -93,7 +93,7 @@ class GatewaySaturationTest extends GatewayItTestSupport {
 
 		Scp scp = startScp();
 		DicomForwardDestination dest = new DicomForwardDestination(scp.port() + 0L, advancedParams(), fwdNode,
-				scp.node(), false, null, List.of(slowEditor), null, true, poolSize);
+				scp.node(), null, List.of(slowEditor), null, true, poolSize);
 		LoadStats stats = runLoad(dest, instances, concurrency, "slow-destination");
 
 		assertEquals(instances, receivedSopInstanceUids(scp.storageDir()).size(),

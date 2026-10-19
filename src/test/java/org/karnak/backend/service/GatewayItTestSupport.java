@@ -116,8 +116,8 @@ abstract class GatewayItTestSupport {
 	 */
 	protected DicomForwardDestination dicomDestination(ForwardDicomNode fwdNode, Scp scp, int poolSize)
 			throws IOException {
-		return new DicomForwardDestination(scp.port() + 0L, advancedParams(), fwdNode, scp.node(), false, null,
-				List.of(NOOP), null, true, poolSize);
+		return new DicomForwardDestination(scp.port() + 0L, advancedParams(), fwdNode, scp.node(), null, List.of(NOOP),
+				null, true, poolSize);
 	}
 
 	protected Params params(String iuid, byte[] object) {

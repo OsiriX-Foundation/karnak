@@ -42,9 +42,9 @@ class GatewayDicomNodeSourceTest {
 
 	@Test
 	void lists_dicom_destinations_with_descriptions_skipping_stow_and_deduplicating() {
-		var pacs = DestinationEntity.ofDicom("Main PACS", "PACS_AE", "pacs.host", 11112, false);
-		var pacsDuplicate = DestinationEntity.ofDicom("PACS copy", "PACS_AE", "pacs.host", 11112, false);
-		var viewer = DestinationEntity.ofDicom("Viewer", "VIEWER_AE", "viewer.host", 104, false);
+		var pacs = DestinationEntity.ofDicom("Main PACS", "PACS_AE", "pacs.host", 11112);
+		var pacsDuplicate = DestinationEntity.ofDicom("PACS copy", "PACS_AE", "pacs.host", 11112);
+		var viewer = DestinationEntity.ofDicom("Viewer", "VIEWER_AE", "viewer.host", 104);
 		var stow = DestinationEntity.ofStow("Cloud", "https://stow.example/dicomweb", "");
 		when(destinationRepo.findAll()).thenReturn(List.of(pacs, pacsDuplicate, viewer, stow));
 
@@ -65,7 +65,7 @@ class GatewayDicomNodeSourceTest {
 
 	@Test
 	void description_falls_back_to_ae_title_when_unset() {
-		var pacs = DestinationEntity.ofDicom("", "PACS_AE", "pacs.host", 11112, false);
+		var pacs = DestinationEntity.ofDicom("", "PACS_AE", "pacs.host", 11112);
 		when(destinationRepo.findAll()).thenReturn(List.of(pacs));
 
 		assertEquals("PACS_AE", gatewaySource.getNodes().getFirst().getDescription());

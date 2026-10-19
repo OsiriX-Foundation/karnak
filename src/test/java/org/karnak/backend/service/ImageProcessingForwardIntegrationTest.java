@@ -266,7 +266,7 @@ class ImageProcessingForwardIntegrationTest extends GatewayItTestSupport {
 	// ------------------------------------------------------------
 
 	private DicomForwardDestination destination(Scp scp, String outputTs, AttributeEditor editor) throws IOException {
-		return new DicomForwardDestination((long) scp.port(), advancedParams(), fwdNode, scp.node(), false, null,
+		return new DicomForwardDestination((long) scp.port(), advancedParams(), fwdNode, scp.node(), null,
 				List.of(editor), outputTs, true, 1);
 	}
 

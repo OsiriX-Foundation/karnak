@@ -308,7 +308,7 @@ public class ForwardService {
 			// Lease one association from the destination's pool for the whole transfer,
 			// so the same connection is used by prepareTransfer and the sending, then
 			// return it.
-			ScuLease lease = dicomDestination.acquire();
+			ScuLease lease = dicomDestination.acquire(p.as() != null ? p.as().getCallingAET() : null);
 			try {
 				prepareTransfer(lease, dicomDestination, p);
 				if (index == 0) {

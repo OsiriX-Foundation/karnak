@@ -129,7 +129,7 @@ class ForwardNodeRepoTest {
 		ForwardNodeEntity forwardNodeEntity = ForwardNodeEntity.ofEmpty();
 		forwardNodeEntity.setFwdDescription("description");
 		forwardNodeEntity.setFwdAeTitle("fwdAeTitle");
-		DestinationEntity destinationEntity = DestinationEntity.ofDicom("description", null, "hostname", 123, null);
+		DestinationEntity destinationEntity = DestinationEntity.ofDicom("description", null, "hostname", 123);
 		forwardNodeEntity.addDestination(destinationEntity);
 
 		String expectedMessage = "AETitle is mandatory";
@@ -207,8 +207,7 @@ class ForwardNodeRepoTest {
 		ForwardNodeEntity forwardNodeEntity = ForwardNodeEntity.ofEmpty();
 		forwardNodeEntity.setFwdDescription("description");
 		forwardNodeEntity.setFwdAeTitle("fwdAeTitle");
-		DestinationEntity destinationEntity = DestinationEntity.ofDicom("description", "aeTitle", "hostname", 123,
-				null);
+		DestinationEntity destinationEntity = DestinationEntity.ofDicom("description", "aeTitle", "hostname", 123);
 		forwardNodeEntity.addDestination(destinationEntity);
 		entityManager.persistAndFlush(forwardNodeEntity);
 
@@ -270,8 +269,7 @@ class ForwardNodeRepoTest {
 		sourceNode.setHostname("hostname");
 		sourceNode.setCheckHostname(Boolean.TRUE);
 		forwardNodeEntity.addSourceNode(sourceNode);
-		DestinationEntity destinationEntity = DestinationEntity.ofDicom("description", "aeTitle", "hostname", 123,
-				null);
+		DestinationEntity destinationEntity = DestinationEntity.ofDicom("description", "aeTitle", "hostname", 123);
 		forwardNodeEntity.addDestination(destinationEntity);
 		entityManager.persistAndFlush(forwardNodeEntity);
 

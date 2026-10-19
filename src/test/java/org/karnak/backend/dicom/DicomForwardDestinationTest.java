@@ -9,6 +9,7 @@
  */
 package org.karnak.backend.dicom;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -21,6 +22,7 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.dicom.DicomForwardDestination.ScuLease;
 import org.weasis.dicom.param.DicomNode;
+import org.weasis.dicom.util.StoreFromStreamSCU;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class DicomForwardDestinationTest {
@@ -30,7 +32,14 @@ class DicomForwardDestinationTest {
 		DicomNode dest = new DicomNode("DEST", "localhost", 104);
 		// No network is opened by the constructor; associations connect lazily on first
 		// use.
-		return new DicomForwardDestination(1L, null, source, dest, false, null, List.of(), null, true, poolSize);
+		return new DicomForwardDestination(1L, null, source, dest, null, List.of(), null, true, poolSize);
+	}
+
+	/**
+	 * The AE Title the SCU calls with (set on the association request only once opened).
+	 */
+	private static String callingAet(StoreFromStreamSCU scu) {
+		return scu.getDevice().getApplicationEntities().iterator().next().getAETitle();
 	}
 
 	@Test
@@ -74,6 +83,55 @@ class DicomForwardDestinationTest {
 		assertTrue(reused.exclusive(), "a freed slot must be leased exclusively again");
 		assertSame(a.scu(), reused.scu(), "the released association should be the one reused");
 		assertNotSame(b.scu(), reused.scu());
+	}
+
+	@Test
+	void source_aet_is_ignored_when_the_option_is_off() throws IOException {
+		DicomForwardDestination destination = destination(1);
+
+		ScuLease lease = destination.acquire("MODALITY");
+
+		assertSame(destination.getStreamSCU(), lease.scu());
+		assertEquals("SOURCE", callingAet(lease.scu()));
+	}
+
+	@Test
+	void each_source_aet_gets_its_own_association_calling_with_it() throws IOException {
+		DicomForwardDestination destination = destination(1);
+		destination.setUseSourceAet(true);
+
+		ScuLease modality1 = destination.acquire("MODALITY1");
+		ScuLease modality2 = destination.acquire("MODALITY2");
+
+		assertEquals("MODALITY1", callingAet(modality1.scu()));
+		assertEquals("MODALITY2", callingAet(modality2.scu()));
+		assertEquals("DEST", modality1.scu().getCalledNode().getAet());
+		assertTrue(modality1.exclusive());
+		assertTrue(modality2.exclusive(), "another source must not share the first source's association");
+
+		destination.release(modality1);
+		ScuLease again = destination.acquire("MODALITY1");
+		assertSame(modality1.scu(), again.scu(), "the source's association must be reused");
+		assertTrue(again.exclusive());
+	}
+
+	@Test
+	void unknown_source_aet_falls_back_to_the_forward_node_aet() throws IOException {
+		DicomForwardDestination destination = destination(1);
+		destination.setUseSourceAet(true);
+
+		assertEquals("SOURCE", callingAet(destination.acquire(null).scu()));
+	}
+
+	@Test
+	void scu_initializer_also_applies_to_source_pools_created_later() throws IOException {
+		DicomForwardDestination destination = destination(1);
+		destination.setUseSourceAet(true);
+		destination.setScuInitializer(scu -> scu.addData("1.2.840.10008.5.1.4.1.1.2", "1.2.840.10008.1.2.1"));
+
+		ScuLease lease = destination.acquire("MODALITY");
+
+		assertTrue(lease.scu().getAAssociateRQ().containsPresentationContextFor("1.2.840.10008.5.1.4.1.1.2"));
 	}
 
 }

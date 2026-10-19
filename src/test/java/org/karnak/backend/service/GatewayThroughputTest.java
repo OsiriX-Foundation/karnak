@@ -97,7 +97,7 @@ class GatewayThroughputTest extends GatewayItTestSupport {
 		for (int i = 0; i < destinationCount; i++) {
 			Scp scp = startScp();
 			scps.add(scp);
-			dests.add(new DicomForwardDestination(scp.port() + 0L, advancedParams(), fwdNode, scp.node(), false, null,
+			dests.add(new DicomForwardDestination(scp.port() + 0L, advancedParams(), fwdNode, scp.node(), null,
 					List.of(slowEditor), null, true, 1));
 		}
 

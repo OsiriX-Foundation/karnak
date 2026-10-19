@@ -88,8 +88,8 @@ class FanOutIntegrationTest extends GatewayItTestSupport {
 		// The dead destination is not first: the first destination buffers the dataset
 		// that the
 		// remaining destinations are served from, so the live ones must still receive it.
-		DicomForwardDestination deadDest = new DicomForwardDestination(99L, advancedParams(), fwdNode, dead, false,
-				null, List.of(NOOP), null, true, 1);
+		DicomForwardDestination deadDest = new DicomForwardDestination(99L, advancedParams(), fwdNode, dead, null,
+				List.of(NOOP), null, true, 1);
 		List<ForwardDestination> dests = List.of(dicomDestination(fwdNode, live1), deadDest,
 				dicomDestination(fwdNode, live2));
 
