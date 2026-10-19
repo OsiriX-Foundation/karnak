@@ -12,6 +12,7 @@ package org.karnak.backend.util;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import java.util.UUID;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.dcm4che3.data.VR;
@@ -20,10 +21,9 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.karnak.backend.cache.InMemoryExternalIDCache;
-import org.karnak.backend.model.patient.PatientModel;
 import org.karnak.backend.cache.PseudonymCache;
+import org.karnak.backend.model.patient.PatientModel;
 import org.karnak.backend.model.profilepipe.PatientMetadata;
-import java.util.UUID;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class PatientClientUtilTest {
