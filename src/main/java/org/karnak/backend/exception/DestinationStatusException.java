@@ -13,9 +13,9 @@ import java.io.IOException;
 import lombok.Getter;
 
 /**
- * A destination did not store the forwarded object. Carries the DIMSE status to return
- * to the source, so the sender learns about the refusal instead of receiving Success
- * and can retry when the status is transient (A700, out of resources).
+ * A destination did not store the forwarded object. Carries the DIMSE status to return to
+ * the source, so the sender learns about the refusal instead of receiving Success and can
+ * retry when the status is transient (A700, out of resources).
  */
 @Getter
 public final class DestinationStatusException extends IOException {

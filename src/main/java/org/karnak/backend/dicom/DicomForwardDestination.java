@@ -11,7 +11,8 @@ package org.karnak.backend.dicom;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -51,6 +52,9 @@ public class DicomForwardDestination extends ForwardDestination {
 
 		private final boolean[] inUse;
 
+		// Leases handed out and not yet returned, shared ones included
+		private int leases;
+
 		private int roundRobin;
 
 		private ScuPool(AdvancedParams forwardParams, DicomNode callingNode, DicomNode destinationNode,
@@ -69,6 +73,7 @@ public class DicomForwardDestination extends ForwardDestination {
 		}
 
 		private ScuLease acquire() {
+			leases++;
 			for (int i = 0; i < inUse.length; i++) {
 				if (!inUse[i]) {
 					inUse[i] = true;
@@ -80,8 +85,19 @@ public class DicomForwardDestination extends ForwardDestination {
 			return new ScuLease(scus.get(i), services.get(i), i, false);
 		}
 
+		private void release(ScuLease lease) {
+			leases--;
+			if (lease.exclusive()) {
+				inUse[lease.slot()] = false;
+			}
+		}
+
 		private boolean owns(ScuLease lease) {
 			return lease.slot() < scus.size() && scus.get(lease.slot()) == lease.scu();
+		}
+
+		private boolean isIdle() {
+			return leases == 0;
 		}
 
 		private void stop() {
@@ -98,8 +114,16 @@ public class DicomForwardDestination extends ForwardDestination {
 	// Pool calling with the forward node AE Title
 	private final ScuPool defaultPool;
 
-	// Pools calling with the source AE Title, created on first use for each source
-	private final Map<String, ScuPool> sourcePools = new HashMap<>();
+	/**
+	 * Upper bound of the pools kept for source AE Titles. Beyond it, the least recently
+	 * used idle pool is closed when a new source shows up, so a destination fed by many
+	 * sources does not keep one set of associations per source forever.
+	 */
+	static final int MAX_SOURCE_POOLS = 32;
+
+	// Pools calling with the source AE Title, created on first use for each source, in
+	// access order for the eviction
+	private final Map<String, ScuPool> sourcePools = new LinkedHashMap<>(16, 0.75f, true);
 
 	private final AdvancedParams forwardParams;
 
@@ -194,6 +218,7 @@ public class DicomForwardDestination extends ForwardDestination {
 		}
 		ScuPool pool = sourcePools.get(sourceAet);
 		if (pool == null) {
+			evictIdleSourcePools();
 			pool = new ScuPool(forwardParams, new DicomNode(sourceAet), destinationNode, null, poolSize);
 			pool.scus.forEach(scuInitializer);
 			sourcePools.put(sourceAet, pool);
@@ -201,18 +226,34 @@ public class DicomForwardDestination extends ForwardDestination {
 		return pool.acquire();
 	}
 
-	/** Returns a leased SCU to its pool. No-op for a shared (non-exclusive) lease. */
+	/**
+	 * Makes room for a new source pool: closes the least recently used pools that have no
+	 * lease out until the bound is respected. A pool still in use is never closed, so the
+	 * bound may be exceeded under load.
+	 */
+	private void evictIdleSourcePools() {
+		Iterator<ScuPool> pools = sourcePools.values().iterator();
+		while (sourcePools.size() >= MAX_SOURCE_POOLS && pools.hasNext()) {
+			ScuPool pool = pools.next();
+			if (pool.isIdle()) {
+				pools.remove();
+				pool.stop();
+			}
+		}
+	}
+
+	/** Returns a leased SCU to its pool. */
 	public synchronized void release(ScuLease lease) {
-		if (lease == null || !lease.exclusive()) {
+		if (lease == null) {
 			return;
 		}
 		if (defaultPool.owns(lease)) {
-			defaultPool.inUse[lease.slot()] = false;
+			defaultPool.release(lease);
 			return;
 		}
 		for (ScuPool pool : sourcePools.values()) {
 			if (pool.owns(lease)) {
-				pool.inUse[lease.slot()] = false;
+				pool.release(lease);
 				return;
 			}
 		}

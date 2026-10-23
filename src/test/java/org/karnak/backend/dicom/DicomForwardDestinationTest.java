@@ -124,6 +124,39 @@ class DicomForwardDestinationTest {
 	}
 
 	@Test
+	void least_recently_used_idle_source_pool_is_closed_beyond_the_bound() throws IOException {
+		DicomForwardDestination destination = destination(1);
+		destination.setUseSourceAet(true);
+		ScuLease oldest = destination.acquire("SRC0");
+		destination.release(oldest);
+		for (int i = 1; i <= DicomForwardDestination.MAX_SOURCE_POOLS; i++) {
+			destination.release(destination.acquire("SRC" + i));
+		}
+
+		ScuLease again = destination.acquire("SRC0");
+
+		assertNotSame(oldest.scu(), again.scu(), "the evicted source gets a new pool");
+		assertEquals("SRC0", callingAet(again.scu()));
+	}
+
+	@Test
+	void source_pool_with_a_lease_out_is_not_evicted() throws IOException {
+		DicomForwardDestination destination = destination(1);
+		destination.setUseSourceAet(true);
+		ScuLease busy = destination.acquire("SRC0");
+		// A shared lease on the exhausted pool also keeps it alive once the exclusive one
+		// is returned
+		ScuLease shared = destination.acquire("SRC0");
+		destination.release(busy);
+		assertFalse(shared.exclusive());
+		for (int i = 1; i <= DicomForwardDestination.MAX_SOURCE_POOLS; i++) {
+			destination.release(destination.acquire("SRC" + i));
+		}
+
+		assertSame(shared.scu(), destination.acquire("SRC0").scu(), "a pool in use must not be closed");
+	}
+
+	@Test
 	void scu_initializer_also_applies_to_source_pools_created_later() throws IOException {
 		DicomForwardDestination destination = destination(1);
 		destination.setUseSourceAet(true);
