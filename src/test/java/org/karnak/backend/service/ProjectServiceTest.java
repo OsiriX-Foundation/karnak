@@ -136,6 +136,35 @@ class ProjectServiceTest {
 	}
 
 	@Test
+	void should_detach_referencing_destinations_before_deleting_project() {
+		// A destination references the project on the de-identification side, another on
+		// the tag-morphing side. Both must be cleared to null (pass-through) before the
+		// delete, otherwise it fails on the FK constraint.
+		ProjectEntity projectEntity = new ProjectEntity();
+		projectEntity.setId(1L);
+
+		DestinationEntity deidentifyDestination = new DestinationEntity();
+		deidentifyDestination.setDeIdentificationProjectEntity(projectEntity);
+		Mockito.when(destinationRepositoryMock.findByDeIdentificationProjectEntity(projectEntity))
+			.thenReturn(List.of(deidentifyDestination));
+
+		DestinationEntity tagMorphingDestination = new DestinationEntity();
+		tagMorphingDestination.setTagMorphingProjectEntity(projectEntity);
+		Mockito.when(destinationRepositoryMock.findByTagMorphingProjectEntity(projectEntity))
+			.thenReturn(List.of(tagMorphingDestination));
+
+		// Call service
+		projectService.remove(projectEntity);
+
+		// Test results
+		assertNull(deidentifyDestination.getDeIdentificationProjectEntity());
+		assertNull(tagMorphingDestination.getTagMorphingProjectEntity());
+		Mockito.verify(destinationRepositoryMock, Mockito.times(1)).saveAndFlush(deidentifyDestination);
+		Mockito.verify(destinationRepositoryMock, Mockito.times(1)).saveAndFlush(tagMorphingDestination);
+		Mockito.verify(projectRepositoryMock, Mockito.times(1)).deleteById(1L);
+	}
+
+	@Test
 	void should_retrieve_all_projects() {
 		// Init data
 		ProjectEntity projectEntity = new ProjectEntity();
