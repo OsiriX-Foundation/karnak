@@ -334,11 +334,11 @@ public class ForwardNodeController {
 			return ResponseEntity.notFound().build();
 		}
 		destinationService.delete(existing);
-		// A REST delete used to leave the destination in the routing table of the instance
-		// that served it, which kept forwarding every instance to a destination that no
-		// longer exists, once more for each destination deleted this way. The event removes
-		// it from that instance's table and bumps the gateway version, so every other
-		// instance reloads.
+		// A REST delete used to leave the destination in the routing table of the
+		// instance that served it, which kept forwarding every instance to a destination
+		// that no longer exists, once more for each destination deleted this way. The
+		// event removes it from that instance's table and bumps the gateway version, so
+		// every other instance reloads.
 		applicationEventPublisher.publishEvent(new NodeEvent(existing, NodeEventType.REMOVE));
 		return ResponseEntity.noContent().build();
 	}
