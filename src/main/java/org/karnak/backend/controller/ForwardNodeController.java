@@ -40,6 +40,7 @@ import org.karnak.backend.service.ForwardNodeService;
 import org.karnak.backend.service.ProjectService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -70,14 +71,22 @@ public class ForwardNodeController {
 
 	private final ProjectService projectService;
 
+	/**
+	 * Publishes the {@link NodeEvent}s that keep the gateway routing table of this
+	 * instance in step with the database, and bump the gateway version so the other
+	 * instances reload. The Vaadin UI publishes the same events after its own writes.
+	 */
+	private final ApplicationEventPublisher applicationEventPublisher;
+
 	@Autowired
 	public ForwardNodeController(final ForwardNodeAPIService forwardNodeAPIService,
 			final ForwardNodeService forwardNodeService, final DestinationService destinationService,
-			final ProjectService projectService) {
+			final ProjectService projectService, final ApplicationEventPublisher applicationEventPublisher) {
 		this.forwardNodeAPIService = forwardNodeAPIService;
 		this.forwardNodeService = forwardNodeService;
 		this.destinationService = destinationService;
 		this.projectService = projectService;
+		this.applicationEventPublisher = applicationEventPublisher;
 	}
 
 	// ======== Forward Nodes ========
@@ -234,6 +243,9 @@ public class ForwardNodeController {
 			return ResponseEntity.notFound().build();
 		}
 		forwardNodeService.deleteSourceNode(node, sourceNode);
+		// Without the event the instance that served the call keeps accepting this source
+		// AE Title until its next reload; see deleteDestination.
+		applicationEventPublisher.publishEvent(new NodeEvent(sourceNode, NodeEventType.REMOVE));
 		return ResponseEntity.noContent().build();
 	}
 
@@ -322,12 +334,12 @@ public class ForwardNodeController {
 			return ResponseEntity.notFound().build();
 		}
 		destinationService.delete(existing);
-		// A REST delete used to leave the destination in the routing table of the instance that
-		// served it, which kept forwarding every instance to a destination that no longer
-		// exists, once more for each destination deleted this way. The event removes it from
-		// that instance's table and bumps the gateway version, so every other instance reloads.
-		destinationService.getApplicationEventPublisher()
-			.publishEvent(new NodeEvent(existing, NodeEventType.REMOVE)); // NOSONAR
+		// A REST delete used to leave the destination in the routing table of the instance
+		// that served it, which kept forwarding every instance to a destination that no
+		// longer exists, once more for each destination deleted this way. The event removes
+		// it from that instance's table and bumps the gateway version, so every other
+		// instance reloads.
+		applicationEventPublisher.publishEvent(new NodeEvent(existing, NodeEventType.REMOVE));
 		return ResponseEntity.noContent().build();
 	}
 
