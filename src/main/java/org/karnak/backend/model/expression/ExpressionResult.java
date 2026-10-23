@@ -64,13 +64,13 @@ public class ExpressionResult {
 	 *
 	 * <p>
 	 * {@link ReflectivePropertyAccessor} remembers the field or getter it resolved for a
-	 * (type, name) pair in an <em>instance</em> cache, and a {@link StandardEvaluationContext}
-	 * creates its own accessor. A context per evaluation therefore starts every evaluation
-	 * with an empty cache, so each {@code #Tag.PatientID} read called
-	 * {@code Tag.class.getFields()} — dcm4che's {@code Tag} has several thousand public
-	 * constants, and {@code getFields()} copies all of them on each call. The accessor is
-	 * thread safe (concurrent caches), so sharing it keeps the lookup cost to the first
-	 * evaluation of each property.
+	 * (type, name) pair in an <em>instance</em> cache, and a
+	 * {@link StandardEvaluationContext} creates its own accessor. A context per
+	 * evaluation therefore starts every evaluation with an empty cache, so each
+	 * {@code #Tag.PatientID} read called {@code Tag.class.getFields()} — dcm4che's
+	 * {@code Tag} has several thousand public constants, and {@code getFields()} copies
+	 * all of them on each call. The accessor is thread safe (concurrent caches), so
+	 * sharing it keeps the lookup cost to the first evaluation of each property.
 	 */
 	private static final ReflectivePropertyAccessor PROPERTY_ACCESSOR = new ReflectivePropertyAccessor();
 
