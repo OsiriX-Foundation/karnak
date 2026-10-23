@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024-2026 Karnak Team and other contributors.
+ * Copyright (c) 2026 Karnak Team and other contributors.
  *
  * This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
@@ -12,6 +12,7 @@ package org.karnak.backend.controller;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import jakarta.validation.Validation;
 import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,9 +29,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 /**
- * Unit test for {@link PseudonymController}, focused on the bulk import endpoint added
- * in WP-A2. Calls the controller directly against mocked collaborators, mirroring
- * {@code ProjectServiceTest}'s direct-unit-test style.
+ * Unit test for {@link PseudonymController}, focused on the bulk import endpoint. Calls
+ * the controller directly against mocked collaborators and a real Bean Validation
+ * validator, mirroring {@code ProjectServiceTest}'s direct-unit-test style.
  */
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class PseudonymControllerTest {
@@ -45,7 +46,8 @@ class PseudonymControllerTest {
 
 	@BeforeEach
 	void setUp() {
-		pseudonymController = new PseudonymController(pseudonymCacheMock, projectServiceMock);
+		pseudonymController = new PseudonymController(pseudonymCacheMock, projectServiceMock,
+				Validation.buildDefaultValidatorFactory().getValidator());
 
 		ProjectEntity project = new ProjectEntity();
 		project.setId(42L);
@@ -85,14 +87,13 @@ class PseudonymControllerTest {
 		PatientModel created = patient("PSY_1", "PAT_1");
 		PatientModel conflicting = patient("PSY_2", "PAT_2");
 		PatientModel existing = patient("PSY_2", "PAT_2_EXISTING");
-		PatientModel invalid = new PatientModel(); // missing pseudonym/patientId -> validation error
+		// Missing pseudonym and patientId: validation error
+		PatientModel invalid = new PatientModel();
 		PatientModel unknownProject = patient("PSY_4", "PAT_4");
 		unknownProject.setProjectUUID(UUID.randomUUID());
 
 		// First row: created. Second row: conflicts with an existing pseudonym.
-		Mockito.when(pseudonymCacheMock.put(Mockito.anyString(), Mockito.any()))
-			.thenReturn(null)
-			.thenReturn(existing);
+		Mockito.when(pseudonymCacheMock.put(Mockito.anyString(), Mockito.any())).thenReturn(null).thenReturn(existing);
 
 		ResponseEntity<PseudonymImportResult> response = pseudonymController
 			.importPseudonyms(List.of(created, conflicting, invalid, unknownProject));

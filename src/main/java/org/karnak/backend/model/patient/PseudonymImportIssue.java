@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024-2026 Karnak Team and other contributors.
+ * Copyright (c) 2026 Karnak Team and other contributors.
  *
  * This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0, or the Apache
@@ -16,9 +16,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * One row of a {@link PseudonymImportResult} that did not result in a created
- * pseudonym: either it conflicted with an existing one, or it failed validation /
- * lookup.
+ * One row of a {@link PseudonymImportResult} that did not result in a created pseudonym:
+ * either it conflicted with an existing one, or it failed validation / lookup.
  */
 @Getter
 @Setter

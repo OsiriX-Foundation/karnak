@@ -16,9 +16,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Valid;
-import jakarta.validation.Validation;
 import jakarta.validation.Validator;
-import jakarta.validation.ValidatorFactory;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
@@ -60,22 +58,18 @@ public class PseudonymController {
 	private final ProjectService projectService;
 
 	/**
-	 * No {@link Validator} bean is published in this application's context (only
-	 * hibernate-validator is on the classpath, not spring-boot-starter-validation), and
-	 * no other controller needs one. Rather than wiring a container-managed bean for a
-	 * single call site, build a validator locally: the factory is held for the life of
-	 * the class (it is {@link AutoCloseable}, so one instance is built once, not per
-	 * request) and only the bulk-import endpoint uses it, to validate each row
-	 * independently instead of rejecting the whole batch on one bad row.
+	 * Validates each row of a bulk import on its own, so that one invalid row is reported
+	 * instead of failing the whole batch the way {@code @Valid} on the request body
+	 * would. The bean comes from {@link org.karnak.backend.config.ValidationConfig}.
 	 */
-	private static final ValidatorFactory VALIDATOR_FACTORY = Validation.buildDefaultValidatorFactory();
-
-	private static final Validator VALIDATOR = VALIDATOR_FACTORY.getValidator();
+	private final Validator validator;
 
 	@Autowired
-	public PseudonymController(final PseudonymCache pseudonymCache, final ProjectService projectService) {
+	public PseudonymController(final PseudonymCache pseudonymCache, final ProjectService projectService,
+			final Validator validator) {
 		this.pseudonymCache = pseudonymCache;
 		this.projectService = projectService;
+		this.validator = validator;
 	}
 
 	@Operation(summary = "List all pseudonyms")
@@ -126,8 +120,8 @@ public class PseudonymController {
 					+ "logic as the single-create endpoint. A partial failure never fails the whole request: "
 					+ "invalid, unresolvable-project, or conflicting rows are reported in the response summary "
 					+ "instead of aborting the batch.")
-	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Import processed (see summary for "
-			+ "per-row outcome)") })
+	@ApiResponses(value = { @ApiResponse(responseCode = "200",
+			description = "Import processed, see the summary for the per-row outcome") })
 	@PostMapping(value = "/import", consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = ApiVersion.V1_APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('karnak_create')")
@@ -139,7 +133,7 @@ public class PseudonymController {
 				result.addError(index, "Row is null");
 				continue;
 			}
-			Set<ConstraintViolation<PatientModel>> violations = VALIDATOR.validate(patientModel);
+			Set<ConstraintViolation<PatientModel>> violations = validator.validate(patientModel);
 			if (!violations.isEmpty()) {
 				String reason = violations.stream()
 					.map(violation -> violation.getPropertyPath() + " " + violation.getMessage())
@@ -157,7 +151,7 @@ public class PseudonymController {
 				}
 			}
 			catch (RuntimeException e) {
-				result.addError(index, e.getMessage());
+				result.addError(index, e.getMessage() != null ? e.getMessage() : e.getClass().getSimpleName());
 			}
 		}
 		return ResponseEntity.ok(result);
@@ -165,8 +159,7 @@ public class PseudonymController {
 
 	/**
 	 * Shared create path used by both the single-create endpoint and the bulk import, so
-	 * their semantics (project lookup, key generation, conflict detection) match
-	 * exactly.
+	 * their semantics (project lookup, key generation, conflict detection) match exactly.
 	 */
 	private CreateOutcome createOne(PatientModel patientModel) {
 		ProjectEntity project = projectService.retrieveProjectByUuid(patientModel.getProjectUUID());
