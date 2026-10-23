@@ -5,8 +5,13 @@
 
   <!-- B-tree indexes on foreign-key columns that had none, so profile lookups by
        profile_element_id / profile_id stop doing sequential scans during forwarding.
-       transfer_status was dropped in 1.9-13; transfer_series_status.destination_id and
-       transfer_series_instance.series_status_id are already covered by existing indexes. -->
+       transfer_status was dropped in 1.9-13; transfer_series_status.destination_id,
+       transfer_series_instance.series_status_id and transfer_series_reason.series_status_id
+       are already covered by existing indexes or unique constraints (leading column).
+
+       PostgreSQL: CREATE INDEX CONCURRENTLY runs outside a transaction. If it is interrupted
+       it leaves an INVALID index behind, which both the indexExists precondition and
+       IF NOT EXISTS then skip. Repair with: REINDEX INDEX CONCURRENTLY <index name>; -->
 
   <changeSet author="karnak" id="3.1-1-h2" dbms="h2">
     <preConditions onFail="MARK_RAN">
@@ -310,25 +315,6 @@
       </not>
     </preConditions>
     <sql>CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_secret_project_id ON secret (project_id);</sql>
-  </changeSet>
-
-  <changeSet author="karnak" id="3.1-17-h2" dbms="h2">
-    <preConditions onFail="MARK_RAN">
-      <not>
-        <indexExists indexName="idx_transfer_series_reason_series_status_id"/>
-      </not>
-    </preConditions>
-    <createIndex indexName="idx_transfer_series_reason_series_status_id" tableName="transfer_series_reason">
-      <column name="series_status_id"/>
-    </createIndex>
-  </changeSet>
-  <changeSet author="karnak" id="3.1-17-postgresql" dbms="postgresql" runInTransaction="false">
-    <preConditions onFail="MARK_RAN">
-      <not>
-        <indexExists indexName="idx_transfer_series_reason_series_status_id"/>
-      </not>
-    </preConditions>
-    <sql>CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_transfer_series_reason_series_status_id ON transfer_series_reason (series_status_id);</sql>
   </changeSet>
 
 </databaseChangeLog>
